@@ -18,7 +18,7 @@
 DEBPATH     = NEONPATH + "/distros/ubuntu"
 DEBBASEPATH = ROOTPATH + "/#{DATE}-ubuntu"
 LPPATH      = "http://ppa.launchpad.net/amarok-nightly/ubuntu/pool/main/a/amarok-nightly"
-PACKAGES    = ["qt","strigi","kdelibs","kdebase-runtime","amarok"]
+PACKAGES    = ["qt","strigi","kdelibs","kdebase-runtime","taglib","amarok"]
 
 debemail    = ENV['DEBEMAIL']
 debfullname = ENV['DEBFULLNAME']
