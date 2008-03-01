@@ -227,11 +227,11 @@ inline void AtomicString::checkLazyDeletes()
     // only the main thread is allowed to delete
     if ( isMainThread() )
     {
-        s_lazyDeletes.setAutoDelete(true);
-        s_lazyDeletes.clear();
+        while (!s_lazyDeletes.isEmpty())
+          delete s_lazyDeletes.takeFirst();
     }
 }
 
 AtomicString::set_type AtomicString::s_store;
-Q3PtrList<QString> AtomicString::s_lazyDeletes;
+QList<QString *> AtomicString::s_lazyDeletes;
 QMutex AtomicString::s_storeMutex;

@@ -187,7 +187,7 @@ private:
 
     // static data
     static set_type s_store;    // main string store
-    static Q3PtrList<QString> s_lazyDeletes;  // strings scheduled for deletion
+    static QList<QString *> s_lazyDeletes;  // strings scheduled for deletion
                                              // by main thread
     static QMutex s_storeMutex;  // protects the static data above
 };
