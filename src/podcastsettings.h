@@ -16,7 +16,6 @@
 #include <KDialog>    //baseclass
 #include <KUrl>
 
-#include <q3ptrlist.h>
 
 class QDomNode;
 
@@ -63,7 +62,7 @@ class PodcastSettingsDialog : public KDialog
 
     public:
         explicit PodcastSettingsDialog( PodcastSettings *list, QWidget* parent=0 );
-        PodcastSettingsDialog( const Q3PtrList<PodcastSettings> &list, const QString &caption, QWidget* parent=0 );
+        PodcastSettingsDialog( const QList<PodcastSettings *> list, const QString &caption, QWidget* parent=0 );
 
         bool    configure();
         PodcastSettings *getSettings() { return m_settings; }
@@ -82,7 +81,7 @@ class PodcastSettingsDialog : public KDialog
         QString requesterSaveLocation();
 
         PodcastSettingsDialogBase *m_ps;
-        Q3PtrList<PodcastSettings> m_settingsList;
+        QList<PodcastSettings *> m_settingsList;
         PodcastSettings           *m_settings;
 };
 

@@ -85,7 +85,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget
     setSettings( settings );
 }
 
-PodcastSettingsDialog::PodcastSettingsDialog( const Q3PtrList<PodcastSettings> &list, const QString &caption, QWidget* parent )
+PodcastSettingsDialog::PodcastSettingsDialog( const QList<PodcastSettings *> list, const QString &caption, QWidget* parent )
     : KDialog(  parent )
         , m_settingsList( list )
 {
@@ -161,7 +161,7 @@ void PodcastSettingsDialog::slotOk()       //slot
 
     if ( !m_settingsList.isEmpty() )
     {
-        oldForeachType( Q3PtrList<PodcastSettings>, m_settingsList)
+        oldForeachType( QList<PodcastSettings *>, m_settingsList)
         {
             (*it)->m_saveLocation     = requesterSaveLocation().append( Amarok::vfatPath( (*it)->title() ) );
             (*it)->m_autoScan         = m_ps->m_autoFetchCheck->isChecked();
