@@ -123,7 +123,7 @@ class TrackNavigator;
 
             //required by QAbstractListModel
             int rowCount(const QModelIndex &parent = QModelIndex() ) const;
-            int columnCount(const QModelIndex &parent = QModelIndex() ) const { Q_UNUSED(parent); return 3; }
+            int columnCount(const QModelIndex &parent = QModelIndex() ) const { Q_UNUSED(parent); return 4; }
             QVariant data(const QModelIndex &index, int role) const;
 
             //overriding QAbstractItemModel

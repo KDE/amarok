@@ -184,6 +184,11 @@ Model::data( const QModelIndex& index, int role ) const
                     return m_items.at( row )->track()->artist()->name();
                 else
                     return "";
+            case 3:
+                return QString("%1 - %2 - %3")
+                    .arg(m_items.at( row )->track()->artist()->name())
+                    .arg(m_items.at( row )->track()->album()->name())
+                    .arg(m_items.at( row )->track()->name());
         }
     }
     // else
@@ -874,6 +879,8 @@ QVariant Model::headerData(int section, Qt::Orientation orientation, int role) c
             return "album";
         case 2:
             return "artist";
+        case 3:
+            return "custom";
         default:
             return QVariant();
      }
