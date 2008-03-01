@@ -20,7 +20,6 @@
 #include <xine.h>
 //Added by qt3to4:
 #include <QByteArray>
-#include <Q3PtrList>
 
 class XineConfigDialog;
 
@@ -135,7 +134,7 @@ class XineConfigDialog : public Amarok::PluginConfig
         void init();
         void showHidePluginConfigs() const;
         xine_t *m_xine;
-        Q3PtrList<XineGeneralEntry> m_entries;
+        QList<XineGeneralEntry *> m_entries;
         XineConfigBase* m_view;
 };
 

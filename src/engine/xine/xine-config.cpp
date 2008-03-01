@@ -194,7 +194,6 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
     }
 
     connect( m_view->deviceComboBox, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );
-    m_entries.setAutoDelete(true);
     m_view->deviceComboBox->setCurrentItem( (XineCfg::outputPlugin() == "auto" ) ? "Autodetect" : XineCfg::outputPlugin() );
     init();
     showHidePluginConfigs();
@@ -271,11 +270,11 @@ XineConfigDialog::hasChanged() const
     if(XineCfg::outputPlugin() != ((m_view->deviceComboBox->currentIndex() == 0) ? "auto" : m_view->deviceComboBox->currentText()))
         return true;
 
-    Q3PtrListIterator<XineGeneralEntry> it( m_entries );
+    QListIterator<XineGeneralEntry *> it( m_entries );
     XineGeneralEntry* entry;
-    while( (entry = it.current()) != 0 )
+    while( it.hasNext() )
     {
-        ++it;
+        it.next();
         if(entry->hasChanged())
             return true;
     }
@@ -294,7 +293,8 @@ void
 XineConfigDialog::reset(xine_t* xine) //SLOT
 {
     debug() << &m_xine << " " << &xine;
-    m_entries.clear();
+    while (!m_entries.isEmpty())
+      delete m_entries.takeFirst();
     m_xine = xine;
     debug() << "m_entries now empty " << m_entries.isEmpty();
     init();
@@ -309,11 +309,11 @@ XineConfigDialog::save()//SLOT
         //its not Autodetect really, its just auto
         XineCfg::setOutputPlugin((m_view->deviceComboBox->currentIndex() == 0)
             ? "auto" : m_view->deviceComboBox->currentText());
-        XineGeneralEntry* entry;
-        for(entry = m_entries.first(); entry; entry=m_entries.next())
+        QListIterator<XineGeneralEntry*> it(m_entries);
+        while(it.hasNext())
         {
-            if(entry->hasChanged())
-                entry->save();
+            if(it.next()->hasChanged())
+                it.next()->save();
         }
         emit settingsSaved();
     }
