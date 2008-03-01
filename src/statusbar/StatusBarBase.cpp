@@ -24,6 +24,8 @@
 
 #include "amarok.h"
 #include "debug.h"
+#include "MainWindow.h"
+#include "Sidebar.h"
 #include "StatusBarMessageLabel.h"
 #include "StatusBarBase.h"
 #include "threadmanager.h"
@@ -111,6 +113,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     addWidget(shortLongButton);
 
     KHBox *mainProgressBarBox = new KHBox( this );
+    mainProgressBarBox->setPreferredSize( MainWindow::self()->sideBar()->width(), height() );
+    mainProgressBarBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     mainProgressBarBox->setObjectName( "progressBox" );
     QToolButton *b1 = new QToolButton( mainProgressBarBox ); //cancelbutton
     b1->setObjectName( "cancelButton" );
