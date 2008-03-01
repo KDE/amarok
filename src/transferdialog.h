@@ -23,8 +23,6 @@
 #include <QCheckBox>
 #include <qmap.h>
 #include <QSignalMapper>
-//Added by qt3to4:
-#include <Q3PtrList>
 #include <QLabel>
 #include <kdialog.h>
 
@@ -60,7 +58,7 @@ class AMAROK_EXPORT TransferDialog : public KDialog
         QLabel                          *m_label1;
         QLabel                          *m_label2;
         QLabel                          *m_label3;
-        Q3PtrList<KComboBox>             *m_combolist;
+        QList<KComboBox *>             m_combolist;
         int                              m_sort1LastIndex;
         int                              m_sort2LastIndex;
 };

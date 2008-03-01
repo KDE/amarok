@@ -34,7 +34,6 @@
 #include <q3groupbox.h>
 #include <QLabel>
 #include <QLayout>
-#include <Q3PtrList>
 
 
 TransferDialog::TransferDialog( MediaDevice *mdev )
@@ -79,19 +78,18 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     m_label3 = new QLabel( i18n( "Select third grouping:\n" ), sorting );
     m_sort3  = new KComboBox( sorting );
 
-    m_combolist = new Q3PtrList<KComboBox>();
-    m_combolist->append( m_sort1 );
-    m_combolist->append( m_sort2 );
-    m_combolist->append( m_sort3 );
+    m_combolist.append( m_sort1 );
+    m_combolist.append( m_sort2 );
+    m_combolist.append( m_sort3 );
 
     KComboBox * comboTemp;
-    for( comboTemp = m_combolist->first(); comboTemp; comboTemp = m_combolist->next() )
-    {
-        comboTemp->addItem( i18n("None") );
-        comboTemp->addItem( i18n("Artist") );
-        comboTemp->addItem( i18n("Album") );
-        comboTemp->addItem( i18n("Genre") );
-        comboTemp->setCurrentItem( 0 );
+    QListIterator<KComboBox *> it(m_combolist);
+    while (it.hasNext()) {
+        it.next()->addItem( i18n("None") );
+        it.next()->addItem( i18n("Artist") );
+        it.next()->addItem( i18n("Album") );
+        it.next()->addItem( i18n("Genre") );
+        it.next()->setCurrentItem( 0 );
     }
 
     m_sort1->setCurrentItem( mdev->m_firstSort );
