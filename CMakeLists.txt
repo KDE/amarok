@@ -29,10 +29,12 @@ find_package(Taglib)
 macro_log_feature( TAGLIB_FOUND "taglib" "Read and write tags in audio files" "http://www.freshmeat.net/projects/taglib" TRUE "1.5.0" "")
 if (WIN32)
     find_package(Ruby)
-#     macro_log_feature( ${NOT RUBY_EXECUTABLE} "ruby" "Support for various services within amarok that use Ruby" "http://www.ruby.org" FALSE "1.8" "")
+#NOTE: cmake's FindRuby does not set a RUBY_FOUND variable, making this macro not possible.
+#     macro_log_feature( Ruby_FOUND "ruby" "Support for various services within amarok that use Ruby" "http://www.ruby.org" FALSE "1.8" "")
 else (WIN32)
     find_package(Ruby REQUIRED)
-#     macro_log_feature( ${NOT RUBY_EXECUTABLE} "ruby" "Support for various services within amarok that use Ruby" "http://www.ruby.org" TRUE "1.8" "")
+#NOTE: cmake's FindRuby does not set a RUBY_FOUND variable, making this macro not possible.
+#     macro_log_feature( Ruby_FOUND "ruby" "Support for various services within amarok that use Ruby" "http://www.ruby.org" TRUE "1.8" "")
 endif (WIN32)
 
 add_definitions (${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
