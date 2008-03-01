@@ -113,7 +113,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     addWidget(shortLongButton);
 
     KHBox *mainProgressBarBox = new KHBox( this );
-    mainProgressBarBox->setPreferredSize( MainWindow::self()->sideBar()->width(), height() );
+    mainProgressBarBox->setMaximumSize( MainWindow::self()->sideBar()->width(), height() );
     mainProgressBarBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     mainProgressBarBox->setObjectName( "progressBox" );
 
@@ -313,6 +313,7 @@ StatusBar::longMessage( const QString &text, MessageType type )
     SHOULD_BE_GUI
 
     //m_messageLabel->setMessage( text, type );
+    //Only show the message once if it gets presented multiple times..
 
     m_longMessageQueue.append( text );
 
@@ -342,7 +343,7 @@ StatusBar::popupDeleted( )
     } else {
         popupShown = false;
     }
-    
+
     //m_messageQueue.remove( static_cast<QWidget*>( obj ) );
 }
 
