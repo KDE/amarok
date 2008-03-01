@@ -170,7 +170,10 @@ QMimeData * CollectionTreeItemModelBase::mimeData(const QModelIndexList & indice
                 QueryMaker *qm = item->queryMaker();
                 CollectionTreeItem *tmpItem = item;
                 while ( tmpItem->isDataItem()  ) {
-                    qm->addMatch( tmpItem->data() );
+                    if ( tmpItem->data() )
+                        qm->addMatch( tmpItem->data() );
+                    else
+                        qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
                     tmpItem = tmpItem->parent();
                 }
                 addFilters( qm );

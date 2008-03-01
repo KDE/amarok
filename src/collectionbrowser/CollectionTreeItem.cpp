@@ -153,7 +153,7 @@ CollectionTreeItem::isDataItem() const
 
 QueryMaker*
 CollectionTreeItem::queryMaker() const {
-    if ( m_data.isNull() )
+    if ( m_parentCollection )
         return m_parentCollection->queryMaker();
     else {
         CollectionTreeItem *tmp = m_parent;

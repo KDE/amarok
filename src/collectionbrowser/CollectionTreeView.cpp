@@ -278,7 +278,10 @@ CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOpti
         CollectionTreeItem *tmp = item;
         while( tmp->isDataItem() )
         {
-            qm->addMatch( tmp->data() );
+            if ( tmp->data() )
+                qm->addMatch( tmp->data() );
+            else
+                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
             tmp = tmp->parent();
         }
         m_treeModel->addFilters( qm );
@@ -350,7 +353,10 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
         CollectionTreeItem *tmp = item;
         while( tmp->isDataItem() )
         {
-            qm->addMatch( tmp->data() );
+            if ( tmp->data() )
+                qm->addMatch( tmp->data() );
+            else
+                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
             tmp = tmp->parent();
         }
         m_treeModel->addFilters( qm );
