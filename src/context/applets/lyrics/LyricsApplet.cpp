@@ -150,8 +150,8 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_artist->setText( lyrics[ 0 ].toString() );
 
         m_lyrics->setPlainText( lyrics[ 3 ].toString() );
-        m_lyrics->adjustSize();
-        m_lyricsProxy->resize( m_lyrics->size() );
+//         m_lyrics->adjustSize();
+//         m_lyricsProxy->resize( m_lyrics->size() );
     }
     calculateHeight();
 }
