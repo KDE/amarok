@@ -220,6 +220,8 @@ TagDialog::previousTrack()
 
     if( m_trackIterator.hasPrevious() )
     {
+        if ( m_currentTrack == m_trackIterator.peekPrevious() )
+            m_trackIterator.previous();
         m_currentTrack = m_trackIterator.previous();
     }
     loadTags( m_currentTrack );
@@ -235,6 +237,8 @@ TagDialog::nextTrack()
 
     if( m_trackIterator.hasNext() )
     {
+        if ( m_currentTrack == m_trackIterator.peekNext() )
+            m_trackIterator.next();
         m_currentTrack = m_trackIterator.next();
     }
     loadTags( m_currentTrack );
@@ -271,14 +275,6 @@ TagDialog::enableItems()
     ui->checkBox_perTrack->setChecked( m_perTrack );
     ui->pushButton_previous->setEnabled( m_perTrack && m_trackIterator.hasPrevious() );
     ui->pushButton_next->setEnabled( m_perTrack && m_trackIterator.hasNext() );
-    if( m_tracks.count() == 1 )
-    {
-        ui->checkBox_perTrack->setEnabled( false );
-    }
-    else
-    {
-        ui->checkBox_perTrack->setEnabled( true );
-    }
 }
 
 
@@ -598,25 +594,14 @@ void TagDialog::init()
         m_perTrack = false;
         setMultipleTracksMode();
         readMultipleTracks();
-
-        ui->checkBox_perTrack->setChecked( m_perTrack );
-        if( m_tracks.count() == 1 )
-        {
-            ui->checkBox_perTrack->setEnabled( false );
-            ui->pushButton_previous->setEnabled( false );
-            ui->pushButton_next->setEnabled( false );
-        }
-        else
-        {
-            ui->checkBox_perTrack->setEnabled( true );
-            ui->pushButton_previous->setEnabled( m_perTrack );
-            ui->pushButton_next->setEnabled( m_perTrack );
-        }
+        enableItems();
     }
     else
     {
         m_perTrack = true;
         ui->checkBox_perTrack->hide();
+        ui->pushButton_previous->hide();
+        ui->pushButton_next->hide();
 
         loadLyrics( m_currentTrack );
         loadLabels( m_currentTrack );
