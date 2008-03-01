@@ -43,7 +43,6 @@
 #include <QTimerEvent>
 #include <QByteArray>
 #include <QLabel>
-#include <Q3ValueList>
 #include <QPixmap>
 
 #include "scriptmanager.h"
@@ -1578,21 +1577,23 @@ CollectionDB::artistTracks( const QString &artist_id )
 
 
 void
-CollectionDB::addImageToAlbum( const QString& image, Q3ValueList< QPair<QString, QString> > info, const bool temporary )
+CollectionDB::addImageToAlbum( const QString& image, QList< QPair<QString, QString> > info, const bool temporary )
 {
     int deviceid = MountPointManager::instance()->getIdForUrl( image );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, image );
-    for ( Q3ValueList< QPair<QString, QString> >::ConstIterator it = info.begin(); it != info.end(); ++it )
+    QListIterator< QPair<QString, QString> > it(info);
+    while(it.hasNext())
     {
-        if ( (*it).first.isEmpty() || (*it).second.isEmpty() )
+        QPair<QString, QString> next = it.next();
+        if ( next.first.isEmpty() || next.second.isEmpty() )
             continue;
 
         QString sql = QString( "INSERT INTO images%1 ( path, deviceid, artist, album ) VALUES ( '%3', %2" )
                             .arg( temporary ? "_temp" : "" )
                             .arg( deviceid )
                             .arg( escapeString( rpath ) );
-        sql += QString( ", '%1'" ).arg( escapeString( (*it).first ) );
-        sql += QString( ", '%1' );" ).arg( escapeString( (*it).second ) );
+        sql += QString( ", '%1'" ).arg( escapeString( next.first ) );
+        sql += QString( ", '%1' );" ).arg( escapeString( next.second ) );
 
 //         debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image;
         insert( sql, NULL );
@@ -2618,14 +2619,14 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
     return values[0].toInt();
 }
 
-Q3ValueList<PodcastChannelBundle>
+QList<PodcastChannelBundle>
 CollectionDB::getPodcastChannels()
 {
     QString command = "SELECT url, title, weblink, image, comment, copyright, parent, directory "
         ", autoscan, fetchtype, autotransfer, haspurge, purgecount FROM podcastchannels;";
 
     QStringList values = query( command );
-    Q3ValueList<PodcastChannelBundle> bundles;
+    QList<PodcastChannelBundle> bundles;
 
     oldForeach( values )
     {
@@ -2650,7 +2651,7 @@ CollectionDB::getPodcastChannels()
     return bundles;
 }
 
-Q3ValueList<PodcastEpisodeBundle>
+QList<PodcastEpisodeBundle>
 CollectionDB::getPodcastEpisodes( const KUrl &parent, bool onlyNew, int limit )
 {
     QString command = QString( "SELECT id, url, localurl, parent, guid, title, subtitle, composer, comment, filetype, createdate, length, size, isNew FROM podcastepisodes WHERE ( parent='%1'" ).arg( parent.url() );
@@ -2662,7 +2663,7 @@ CollectionDB::getPodcastEpisodes( const KUrl &parent, bool onlyNew, int limit )
     command += ';';
 
     QStringList values = query( command );
-    Q3ValueList<PodcastEpisodeBundle> bundles;
+    QList<PodcastEpisodeBundle> bundles;
 
     oldForeach( values )
     {
@@ -3453,7 +3454,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
 }
 
 
-Q3ValueList<MetaBundle>
+QList<MetaBundle>
 CollectionDB::bundlesByUrls( const KUrl::List& urls )
 {
     BundleList bundles;

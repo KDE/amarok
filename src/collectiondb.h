@@ -39,7 +39,6 @@
 //Added by qt3to4:
 #include <QTimerEvent>
 #include <QPixmap>
-#include <Q3ValueList>
 #include <QEvent>
 #include <QByteArray>
 
@@ -356,9 +355,9 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         /// use updatePodcastEpisode() always in preference
         int  addPodcastEpisode( const PodcastEpisodeBundle &episode, const int idToUpdate=0 );
         int  addPodcastFolder( const QString &name, const int parent_id=0, const bool isOpen=false );
-        Q3ValueList<PodcastChannelBundle> getPodcastChannels();
+        QList<PodcastChannelBundle> getPodcastChannels();
         PodcastEpisodeBundle getPodcastEpisodeById( int id );
-        Q3ValueList<PodcastEpisodeBundle> getPodcastEpisodes( const KUrl &parent, bool newOnly=false, int limit=-1 );
+        QList<PodcastEpisodeBundle> getPodcastEpisodes( const KUrl &parent, bool newOnly=false, int limit=-1 );
         void removePodcastChannel( const KUrl &url ); // will remove all episodes too
         void removePodcastEpisode( const int id );
         void removePodcastFolder( const int id );
@@ -376,7 +375,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
          * @return true if in the collection
          */
         bool bundleForUrl( MetaBundle* bundle );
-        Q3ValueList<MetaBundle> bundlesByUrls( const KUrl::List& urls );
+        QList<MetaBundle> bundlesByUrls( const KUrl::List& urls );
         void addAudioproperties( const MetaBundle& bundle );
 
         //Helper function for updateTags
@@ -483,7 +482,7 @@ class AMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         static QString makeShadowedImage( const QString& albumImage, bool cache = true );
 
         //local cover methods
-        void addImageToAlbum( const QString& image, Q3ValueList< QPair<QString, QString> > info, const bool temporary );
+        void addImageToAlbum( const QString& image, QList< QPair<QString, QString> > info, const bool temporary );
         QString notAvailCover( const bool withShadow = false, int width = 1 );
 
         //embedded cover methods
