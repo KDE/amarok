@@ -433,6 +433,7 @@ Q_DECLARE_METATYPE(MetaBundle)
 
 /// for your convenience
 typedef QList<MetaBundle> BundleList;
+typedef QListIterator<MetaBundle> BundleListIterator;
 
 
 

@@ -3529,12 +3529,15 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
             // them in the desired order :( (MySQL does though)
             oldForeach( paths )
             {
-                for( BundleList::Iterator jt = buns50.begin(), end = buns50.end(); jt != end; ++jt )
+                //for( BundleList::Iterator jt = buns50.begin(), end = buns50.end(); jt != end; ++jt )
+                BundleListIterator jt(buns50);
+                while(jt.hasNext())
                 {
-                    if ( ( *jt ).url().path() == ( *it ))
+                    MetaBundle next = jt.next();
+                    if ( next.url().path() == ( *it ))
                     {
-                        bundles += *jt;
-                        buns50.remove( jt );
+                        bundles += next;
+                        buns50.removeAll( next );
                         goto success;
                     }
                 }
