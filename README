@@ -14,7 +14,7 @@ interface that really makes playlist handling easy.
 
     * Quick and simple drag and drop playlist creation
     * Music library (built-in SQLite, MySQL, or PostgreSQL)
-    * Multiple backends supported (Phonon, xine, GStreamer, and Helix)
+    * Multiple backends supported (Phonon, and xine)
     * Plays all audio formats known to man
     * 10 band equalizer
     * Automatic cover art download using Amazon services
@@ -59,11 +59,6 @@ Recommended
       http://xinehq.de/
 
 Optional
-    * RealPlayer 10 or HelixPlayer 1.0
-      (multimedia framework)
-      http://www.real.com
-      (Note: only HelixPlayer is exactly RealPlayer without MP3 support)
-
     * KDE-Base 4.1 (or newer)
       (needed for Konqueror Sidebar)
       http://www.kde.org
@@ -187,7 +182,6 @@ splitting Amarok into the following packages:
 
    1. Amarok + one backend
    2. xine-engine
-   3. Helix-engine
    4. amarok_libvisual
    5. ipod media device
    6. ifp media device
@@ -196,8 +190,7 @@ splitting Amarok into the following packages:
    9. rio karma media device
 
 Amarok is modular and will be fully functional as long as one of 2 or 3 is
-also installed. Hence we suggest Amarok + one backend. Feel free to include the
-helix, engine if you can satisfy their dependencies.
+also installed. Hence we suggest Amarok + one backend.
 
 If you make packages for Amarok please let us know and we'll link to you on the
 homepage (as long as you don't object).
