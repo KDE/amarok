@@ -106,7 +106,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_iconLabel->setMinimumSize( QSize( 16,16) );
     m_iconLabel->hide();
     addPermanentWidget( m_iconLabel );
-    
+
     QToolButton *shortLongButton = new QToolButton();
     shortLongButton->setObjectName( "shortLongButton" );
     shortLongButton->hide();
@@ -116,9 +116,11 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     mainProgressBarBox->setPreferredSize( MainWindow::self()->sideBar()->width(), height() );
     mainProgressBarBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     mainProgressBarBox->setObjectName( "progressBox" );
+
     QToolButton *b1 = new QToolButton( mainProgressBarBox ); //cancelbutton
     b1->setObjectName( "cancelButton" );
     m_mainProgressBar  = new QProgressBar( mainProgressBarBox);
+
     QToolButton *b2 = new QToolButton( mainProgressBarBox ); //showprogressdetails button
     b2->setObjectName( "showAllProgressDetails" );
     mainProgressBarBox->setSpacing( 2 );
