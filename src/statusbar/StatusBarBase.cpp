@@ -315,11 +315,11 @@ StatusBar::longMessage( const QString &text, MessageType type )
     //m_messageLabel->setMessage( text, type );
 
     m_longMessageQueue.append( text );
-    
+
     if ( popupShown == false ) {
         popupDeleted( );
     }
-    
+
     writeLogFile( text );
 }
 
@@ -328,7 +328,7 @@ StatusBar::popupDeleted( )
 {
 
     if ( !m_longMessageQueue.isEmpty() ) {
-        
+
         PopupMessage * popup = new PopupMessage( this, this, 5000 );
         popup->setText( m_longMessageQueue.takeFirst() );
         //popup->setImage( QPixmap( KStandardDirs::locate( "data", "amarok/images/xine_logo.png" ) ) );
