@@ -892,7 +892,7 @@ HelixEngine::setEqualizerParameters( int preamp, const QList<int>& bandGains ) /
 
    PlayerControl::m_equalizerGains.resize( bandGains.count() );
    for ( uint i = 0; i < bandGains.count(); i++ )
-      m_equalizerGains[i] = ( *bandGains.at( i ) + 100 ) / 2;
+      m_equalizerGains[i] = ( bandGains.at( i ) + 100 ) / 2;
 
    updateEQgains();
 }
