@@ -69,8 +69,9 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     unsetColors();
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
-    connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
-             this, SLOT( ratingChanged( const QString&, int ) ) );
+    //PORT 2.0
+//     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
+//              this, SLOT( ratingChanged( const QString&, int ) ) );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -562,10 +563,11 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
 Amarok::OSD::OSD(): OSDWidget( 0 )
 {
-    connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
-             this,                   SLOT( slotCoverChanged( const QString&, const QString& ) ) );
-    connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
-             this,                   SLOT( slotImageChanged( const QString& ) ) );
+    //PORT 2.0
+//     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
+//              this,                   SLOT( slotCoverChanged( const QString&, const QString& ) ) );
+//     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
+//              this,                   SLOT( slotImageChanged( const QString& ) ) );
 }
 
 void
