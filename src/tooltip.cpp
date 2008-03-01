@@ -25,7 +25,6 @@
 #include <KGlobal>
 
 #include <q3simplerichtext.h>
-#include <Q3ValueList>
 #include <QApplication>
 #include <QCursor>
 #include <QEvent>
@@ -73,7 +72,7 @@ Amarok::ToolTip::Manager* Amarok::ToolTip::s_manager = 0;
 QPoint Amarok::ToolTip::s_pos;
 QRect Amarok::ToolTip::s_rect;
 QString Amarok::ToolTip::s_text;
-Q3ValueList<Amarok::ToolTip*> Amarok::ToolTip::s_tooltips;
+QList<Amarok::ToolTip*> Amarok::ToolTip::s_tooltips;
 int Amarok::ToolTip::s_hack = 0;
 
 void Amarok::ToolTip::add( ToolTipClient *client, QWidget *parent ) //static
@@ -140,7 +139,7 @@ Amarok::ToolTip::ToolTip( ToolTipClient *client, QWidget *parent )
 
 Amarok::ToolTip::~ToolTip()
 {
-    s_tooltips.remove( this );
+    s_tooltips.removeAll( this );
 }
 
 void Amarok::ToolTip::maybeTip( const QPoint &pos )

@@ -20,7 +20,6 @@
 #ifndef AMAROK_TOOLTIP_H
 #define AMAROK_TOOLTIP_H
 
-#include <Q3ValueList>
 #include <QFrame>
 #include <QPoint>
 #include <QTimer>
@@ -59,7 +58,7 @@ private:
     static QPoint s_pos;
     static QRect s_rect;
     static QString s_text;
-    static Q3ValueList<ToolTip*> s_tooltips;
+    static QList<ToolTip*> s_tooltips;
     class Manager;
     friend class Manager;
     static Manager* s_manager;
