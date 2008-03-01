@@ -74,10 +74,6 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
                     Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                     if( album )
                     {
-                        if( !album->hasImage(32) )
-                        {
-                            The::coverFetcher()->queueAlbum( album );
-                        }
                         return album->image( 32, false );
                     }
                     else
