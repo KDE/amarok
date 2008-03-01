@@ -246,9 +246,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
 
     MediaDevice *dev = new DummyMediaDevice();
     dev->init( this );
-    addDevice( dev );
-    activateDevice( 0, false );
-    updateDevices();
+    addDevice( dev, false );
     queue()->load( Amarok::saveLocation() + "transferlist.xml" );
     queue()->computeSize();
 
@@ -260,8 +258,9 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     PERF_LOG( "refeshing media device cache" )
     MediaDeviceCache::instance()->refreshCache();
     foreach( QString udi, MediaDeviceCache::instance()->getAll() )
-        deviceAdded( udi );
+        deviceAdded( udi, false );
 
+    PERF_LOG( "devices Added" )
     connect( m_deviceCombo,      SIGNAL( activated( int ) ), SLOT( activateDevice( int ) ) );
 
     connect( m_cancelButton,     SIGNAL( clicked() ),        SLOT( cancelClicked() ) );
@@ -284,6 +283,9 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
         }
     }
     */
+    //only update the GUI once!
+    updateDevices();
+    activateDevice( m_devices.count() -1, false );
 }
 
 bool
@@ -447,19 +449,25 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
 }
 
 void
-MediaBrowser::addDevice( MediaDevice *device )
+MediaBrowser::addDevice( MediaDevice *device, bool updateGui )
 {
     m_devices.append( device );
 
     device->loadConfig();
-
+    PERF_LOG( "device config loaded" )
     if( device->autoConnect() )
     {
         device->connectDevice( true );
-        updateButtons();
+        if( updateGui )
+        {
+            updateButtons();
+        }
     }
 
-    updateDevices();
+    if( updateGui )
+    {
+        updateDevices();
+    }
 }
 
 void
@@ -1020,7 +1028,14 @@ MediaView::newDirectory( MediaItem *parent )
 void
 MediaBrowser::deviceAdded( const QString &udi )
 {
+    deviceAdded( udi, true );
+}
+
+void
+MediaBrowser::deviceAdded( const QString &udi, bool updateGui )
+{
     DEBUG_BLOCK
+    PERF_LOG( "begin deviceAdded" )
     debug() << "deviceAdded called with a udi of: " << udi;
     if( MediaDeviceCache::instance()->deviceType( udi ) == MediaDeviceCache::SolidVolumeType &&
             !MediaDeviceCache::instance()->isGenericEnabled( udi ) )
@@ -1029,10 +1044,11 @@ MediaBrowser::deviceAdded( const QString &udi )
         return;
     }
     MediaDevice *md = loadDevicePlugin( udi );
+    PERF_LOG( "loaded plugin" )
     if( md )
     {
-        addDevice( md );
-        if( m_currentDevice == *(m_devices.constBegin()) || m_currentDevice == *(m_devices.constEnd()) )
+        addDevice( md, updateGui );
+        if( updateGui && ( m_currentDevice == *(m_devices.constBegin()) || m_currentDevice == *(m_devices.constEnd()) ) )
             activateDevice( m_devices.count()-1, false );
     }
 }

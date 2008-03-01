@@ -273,7 +273,8 @@ class MediaBrowser : public KVBox
 
         QMap<QString, QString> m_pluginName;
         QMap<QString, QString> m_pluginAmarokName;
-        void addDevice( MediaDevice *device );
+        void deviceAdded( const QString &udi, bool updateGui );
+        void addDevice( MediaDevice *device, bool updateGui );
         void removeDevice( MediaDevice *device );
 
         MediaQueue* m_queue;
