@@ -106,18 +106,62 @@ namespace Amarok
      * For recursively expanding the contents of a directory into a KUrl::List
      * (playlists are ignored)
      */
-    //PORT 2.0
-//     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url, int maxURLs = -1 ); //defined in playlistloader.cpp
-//     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls, int maxURLs = -1 ); //defined in playlistloader.cpp
 
     //New in Amarok2 -> recursiveUrlExpand has been replaced
     //existing code depending on this port need to be changed (max urls is removed)
     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url ); //defined in PlaylistHandler.cpp
     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls ); //defined in PlaylistHandler.cpp
 
-    AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime ); //defined in tracktooltip.cpp
+    AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime )
+    {
+        const QDateTime now = QDateTime::currentDateTime();
+        const int datediff = datetime.daysTo( now );
 
-    AMAROK_EXPORT QString verboseTimeSince( uint time_t ); //defined in tracktooltip.cpp
+        if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
+            const KCalendarSystem *cal = KGlobal::locale()->calendar();
+            const QDate date = datetime.date();
+            return i18nc( "monthname year", "%1 %2", cal->monthName(date),
+                          cal->yearString(date, KCalendarSystem::LongFormat) );
+        }
+
+        //TODO "last week" = maybe within 7 days, but prolly before last sunday
+
+        if( datediff >= 7 )  // return difference in weeks
+            return i18np( "One week ago", "%1 weeks ago", (datediff+3)/7 );
+
+        if( datediff == -1 )
+            return i18n( "Tomorrow" );
+
+        const int timediff = datetime.secsTo( now );
+
+        if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
+            return datediff == 1 ?
+                    i18n( "Yesterday" ) :
+                    i18np( "One day ago", "%1 days ago", (timediff+12*60*60)/(24*60*60) );
+
+        if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
+            return i18np( "One hour ago", "%1 hours ago", (timediff+30*60)/(60*60) );
+
+        //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
+
+        if( timediff >= 0 )  // return difference in minutes
+            return timediff/60 ?
+                    i18np( "One minute ago", "%1 minutes ago", (timediff+30)/60 ) :
+                    i18n( "Within the last minute" );
+
+        return i18n( "The future" );
+    }
+
+
+    AMAROK_EXPORT QString verboseTimeSince( uint time_t )
+    {
+        if( !time_t )
+            return i18n( "Never" );
+
+        QDateTime dt;
+        dt.setTime_t( time_t );
+        return verboseTimeSince( dt );
+    }
 
     /**
      * Function that must be used when separating contextBrowser escaped urls

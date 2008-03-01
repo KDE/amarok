@@ -42,7 +42,7 @@ email                : markey@web.de
 #include "scriptmanager.h"
 #include "ContextStatusBar.h"
 #include "systray.h"
-#include "tracktooltip.h"        //engineNewMetaData()
+// #include "tracktooltip.h"        //engineNewMetaData()
 #include "TheInstances.h"
 #include "metadata/tplugins.h"
 
@@ -771,7 +771,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     {
     case Engine::Empty:
         mainWindow()->setCaption( "Amarok - Pre-Alpha Software. Do NOT File Bugs." );
-        TrackToolTip::instance()->clear();
+//         TrackToolTip::instance()->clear();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         break;
 
@@ -804,12 +804,12 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool /*t
     if ( !currentTrack->prettyName().isEmpty() )
         mainWindow()->setCaption( i18n("Amarok - %1", currentTrack->prettyName() ) + " - Pre-alpha software, do _not_ file bugs" );
 
-    TrackToolTip::instance()->setTrack( currentTrack );
+//     TrackToolTip::instance()->setTrack( currentTrack );
 }
 
 void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
-    TrackToolTip::instance()->setPos( position );
+//     TrackToolTip::instance()->setPos( position );
 }
 
 void App::engineVolumeChanged( int newVolume )

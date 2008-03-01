@@ -427,7 +427,7 @@ set(amaroklib_LIB_SRCS
     threadmanager.cpp
     tooltip.cpp
     trackpickerdialog.cpp
-    tracktooltip.cpp
+#    tracktooltip.cpp
     transferdialog.cpp
     widgets/analyzerwidget.cpp
     widgets/progressslider.cpp
