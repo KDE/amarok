@@ -29,9 +29,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="10.352326"
-     inkscape:cx="13.678474"
-     inkscape:cy="60.15387"
+     inkscape:zoom="5.176163"
+     inkscape:cx="429.06469"
+     inkscape:cy="36.970674"
      inkscape:document-units="px"
      inkscape:current-layer="toolbarbackground"
      showgrid="true"
@@ -63,11 +63,11 @@
          height="90"
          width="1349"
          id="rect12421"
-         style="opacity:1;fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:#565755;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          id="rect8041"
          d="M -659,252 L -658.49575,282.27689 C -256.28804,328.82309 287.67067,328.09121 690,282.03488 L 690,252 L -659,252 z "
-         style="opacity:0.21000001;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:#e8e8e8;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
        id="buttonbar"

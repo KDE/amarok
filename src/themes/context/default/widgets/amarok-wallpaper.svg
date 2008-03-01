@@ -56,14 +56,14 @@
      id="layer1"
      transform="translate(-21,-262)">
     <rect
-       style="opacity:1;fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#565755;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect12421"
        width="668.57141"
        height="420"
        x="21"
        y="262" />
     <path
-       style="opacity:0.21000001;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#e8e8e8;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 21,262 L 21.4375,455.73718 C 238.8779,502.2624 473.04573,502.36184 690,454.89343 L 690,262.36218 L 21.4375,262.36218 L 21,262.36218 L 21,262 z "
        id="rect8041"
        sodipodi:nodetypes="ccccccc" />

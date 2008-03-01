@@ -71,7 +71,7 @@
          inkscape:export-ydpi="89.999985"
          inkscape:export-xdpi="89.999985"
          inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
-         style="fill:#666765;fill-opacity:1;stroke:#878782;stroke-width:1.05251479;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:1"
+         style="fill:#565755;fill-opacity:1;stroke:#666765;stroke-width:1.05251479;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:1"
          id="rect6405"
          width="290.38263"
          rx="5.7857981"
@@ -85,7 +85,7 @@
          inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
          id="path6407"
          d="M 191.94864,545.18145 C 188.76937,545.18145 186.20847,547.28804 186.20847,549.88057 L 186.20847,570.88005 C 280.84234,578.61847 377.07859,577.36511 474.24723,570.88005 L 474.24723,549.88057 C 474.24723,547.28804 471.68632,545.18145 468.50703,545.18145 L 191.94864,545.18145 z "
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:0.21" />
+         style="fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:1" />
     </g>
   </g>
 </svg>

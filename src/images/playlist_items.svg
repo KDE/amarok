@@ -97,13 +97,13 @@
     <linearGradient
        id="linearGradient3431">
       <stop
-         style="stop-color:#ffffff;stop-opacity:0.39215687;"
+         style="stop-color:#ffffff;stop-opacity:0.58823532;"
          offset="0"
          id="stop3433" />
       <stop
          id="stop3235"
          offset="0.25"
-         style="stop-color:#ffffff;stop-opacity:0.19607843;" />
+         style="stop-color:#ffffff;stop-opacity:0.39215687;" />
       <stop
          style="stop-color:#000000;stop-opacity:0;"
          offset="0.5"
@@ -111,9 +111,9 @@
       <stop
          id="stop3239"
          offset="0.75"
-         style="stop-color:#000000;stop-opacity:0.19607843;" />
+         style="stop-color:#000000;stop-opacity:0.39215687;" />
       <stop
-         style="stop-color:#000000;stop-opacity:0.39215687;"
+         style="stop-color:#000000;stop-opacity:0.58823532;"
          offset="1"
          id="stop3435" />
     </linearGradient>
@@ -305,10 +305,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284273"
-     inkscape:cx="289.8197"
-     inkscape:cy="104.11908"
+     inkscape:cx="374.64603"
+     inkscape:cy="211.10984"
      inkscape:document-units="px"
-     inkscape:current-layer="active_overlay"
+     inkscape:current-layer="head"
      showgrid="false"
      inkscape:window-width="1670"
      inkscape:window-height="972"
@@ -360,11 +360,7 @@
       <path
          id="path4208"
          d="M 430.54193,552.71524 L 430.54193,572.40274 L 724.54193,572.40274 L 724.54193,552.71524 L 430.54193,552.71524 z "
-         style="fill:#e8e8e8;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
-      <path
-         id="path4210"
-         d="M 431.69251,552.86902 L 723.3919,552.86902"
-         style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#e8e8e8;stroke-width:1.30400872;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
       <path
          id="path4212"
          d="M 430.54193,552.71524 L 430.54193,570.81048"
@@ -373,13 +369,17 @@
          id="path4214"
          d="M 724.54193,552.71524 L 724.54193,570.81048"
          style="fill:#2e609c;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         id="path4210"
+         d="M 431.69251,552.86902 L 723.3919,552.86902"
+         style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#666765;stroke-width:1.30400872;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
        id="body">
       <path
          id="path4218"
          d="M 430.52097,517.71562 L 430.52097,537.40313 L 724.52096,537.40313 L 724.52096,517.71562 L 430.52097,517.71562 z "
-         style="fill:#e8e8e8;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
+         style="fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:#66676f;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;opacity:1" />
       <path
          id="path4222"
          d="M 430.52097,517.73622 L 430.52097,537.38127"
@@ -389,13 +389,13 @@
          d="M 724.52096,517.73633 L 724.52096,537.38116"
          style="fill:none;fill-rule:evenodd;stroke:#2e3436;stroke-width:1.0419383;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
-         id="path4226"
-         d="M 431.6946,537.25352 L 723.34731,537.25352"
-         style="fill:none;fill-rule:evenodd;stroke:#e8e8e8;stroke-width:1.30390441;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
-      <path
          id="path4220"
          d="M 431.69055,517.86401 L 723.38993,517.86401"
-         style="fill:none;fill-rule:evenodd;stroke:#e8e8e8;stroke-width:1.30400872;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-rule:evenodd;stroke:#666765;stroke-width:1.30400872;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         id="path4226"
+         d="M 431.6946,537.25352 L 723.34731,537.25352"
+         style="fill:none;fill-rule:evenodd;stroke:#666765;stroke-width:1.30390441;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
        id="expand_button">
@@ -511,7 +511,7 @@
        id="head"
        transform="translate(-330.00001,47.90016)">
       <path
-         style="fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1"
+         style="fill:#565755;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1"
          id="path12573"
          d="M 760.48366,396.15802 C 760.48366,386.27802 761.11366,385.65802 771.05366,385.65802 L 1043.9137,385.65802 C 1053.8537,385.65802 1054.4837,386.27802 1054.4837,396.15802 L 1054.4837,445.65802 L 760.48366,445.65802 L 760.48366,396.15802 z "
          clip-rule="evenodd" />
@@ -528,20 +528,20 @@
          d="M 1054.6204,442.15502 L 1054.6204,452.92597"
          id="path12579" />
       <path
-         style="fill:#e8e8e8;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-width:0.97001058;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+         style="fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-width:0.97001058;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;opacity:1"
          d="M 770.96761,439.74045 C 761.08646,439.74045 760.46638,440.32376 760.46638,449.61896 L 760.46638,457.46885 L 1054.5009,457.46885 L 1054.5009,449.61896 C 1054.5009,440.32376 1053.8809,439.74045 1043.9997,439.74045 L 770.96761,439.74045 z "
          id="path12581" />
       <path
-         id="path12583"
-         d="M 761.60361,457.32298 L 1053.3612,457.32298"
-         style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#e8e8e8;stroke-width:1.29975498;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
-      <path
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:0.21"
+         style="fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:1"
          d="M 767.7992,387.05785 C 764.58728,387.05785 762,389.11885 762,391.65535 L 762,412.20054 C 857.60672,419.77154 954.83237,418.54524 1053,412.20054 L 1053,391.65535 C 1053,389.11885 1050.4123,387.05785 1047.2005,387.05785 L 767.7992,387.05785 z "
          id="path28191"
          inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
          inkscape:export-xdpi="89.999985"
          inkscape:export-ydpi="89.999985" />
+      <path
+         id="path12583"
+         d="M 761.60361,457.32298 L 1053.3612,457.32298"
+         style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#666765;stroke-width:1.29975498;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
        id="track"
@@ -551,14 +551,14 @@
          clip-rule="evenodd"
          d="M 730.48365,436.15802 C 730.48365,426.27802 731.11365,425.65802 741.05365,425.65802 L 1013.9137,425.65802 C 1023.8537,425.65802 1024.4837,426.27802 1024.4837,436.15802 L 1024.4837,485.65802 L 730.48365,485.65802 L 730.48365,436.15802 z "
          id="path12609"
-         style="fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1" />
+         style="fill:#565755;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1" />
       <path
          inkscape:export-ydpi="89.999985"
          inkscape:export-xdpi="89.999985"
          inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
          id="path12621"
          d="M 737.79919,427.05785 C 734.58727,427.05785 731.99999,429.11885 731.99999,431.65535 L 731.99999,452.20054 C 827.60671,459.77154 924.83236,458.54524 1023,452.20054 L 1023,431.65535 C 1023,429.11885 1020.4123,427.05785 1017.2005,427.05785 L 737.79919,427.05785 z "
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:0.21" />
+         style="fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:1" />
     </g>
     <path
        id="selection_left2"
@@ -581,14 +581,14 @@
            clip-rule="evenodd"
            d="M 730.48365,436.15802 C 730.48365,426.27802 731.11365,425.65802 741.05365,425.65802 L 1013.9137,425.65802 C 1023.8537,425.65802 1024.4837,426.27802 1024.4837,436.15802 L 1024.4837,485.65802 L 730.48365,485.65802 L 730.48365,436.15802 z "
            id="path12694"
-           style="fill:#666765;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1" />
+           style="fill:#565755;fill-opacity:1;fill-rule:evenodd;stroke:#2e3436;stroke-opacity:1" />
         <path
            inkscape:export-ydpi="89.999985"
            inkscape:export-xdpi="89.999985"
            inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
            id="path12696"
            d="M 737.79919,427.05785 C 734.58727,427.05785 731.99999,429.30547 731.99999,432.07164 L 731.99999,454.47712 C 827.60671,462.73364 924.83236,461.39631 1023,454.47712 L 1023,432.07164 C 1023,429.30547 1020.4123,427.05785 1017.2005,427.05785 L 737.79919,427.05785 z "
-           style="opacity:0.21000001;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1" />
+           style="opacity:1;fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1" />
       </g>
       <path
          clip-rule="evenodd"
