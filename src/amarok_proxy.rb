@@ -81,12 +81,6 @@ class Proxy
     # Now stream the music!
     myputs( "Before cp_all()" )
     cp_all_inward( serv, amaroks )
-
-    if @engine == 'helix-engine' && amaroks.eof
-      myputs( "EOF Detected, reconnecting" )
-      amaroks = amarok.accept
-      cp_all_inward( serv, amaroks )
-    end
   end
 
   def safe_write( output, data )
@@ -137,11 +131,7 @@ class Proxy
       filler = Array.new( 4096, 0 )
       safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
     end
-    if @engine == 'helix-engine'
-      data = income.read( 1024 )
-    else
-      data = income.read( 4 )
-    end
+    data = income.read( 4 )
     desync( data )
     holdover = ""
     loop do

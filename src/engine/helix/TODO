@@ -1,3 +1,0 @@
-- fix timesync with my alsa device implementation, so scope looks better when using it
-- support esd as someone actually asked for it on the channel
-- fade on stop

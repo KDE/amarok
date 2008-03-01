@@ -36,9 +36,6 @@
 /* have TunePimp */
 /* #undef HAVE_TUNEPIMP */
 
-/* support ALSA in the helix-engine */
-/* #undef USE_HELIX_ALSA */
-
 /* MySql database support enabled */
 #cmakedefine USE_MYSQL 1
 
