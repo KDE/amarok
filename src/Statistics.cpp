@@ -26,6 +26,7 @@
 #include <k3multipledrag.h>
 #include <k3urldrag.h>          //startDrag()
 #include <KApplication>
+#include <KCalendarSystem>
 #include <KIconLoader>
 #include <KLineEdit>
 #include <KLocale>
