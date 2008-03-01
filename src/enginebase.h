@@ -17,7 +17,6 @@
 
 #include <kurl.h>
 
-#include <q3valuelist.h>    //stack alloc
 #include <QByteArray>
 #include <QHash>
 #include <QObject>       //baseclass
@@ -213,7 +212,7 @@ namespace Engine
           * @param bandGains a list of 10 integers, ascending in frequency, the exact frequencies you amplify
           *                  are not too-important at this time
           */
-        virtual void setEqualizerParameters( int /*preamp*/, const Q3ValueList<int> &/*bandGains*/ ) {}
+        virtual void setEqualizerParameters( int /*preamp*/, const QList<int> &/*bandGains*/ ) {}
 
 
         /** Tries to retrieve metadata for the given url (called only if url

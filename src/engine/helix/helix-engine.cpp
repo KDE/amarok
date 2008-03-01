@@ -10,7 +10,6 @@
 #include <QThread>
 //Added by qt3to4:
 #include <QTimerEvent>
-#include <Q3ValueList>
 #include <QByteArray>
 #include <sys/param.h>
 #include <sys/types.h>
@@ -222,7 +221,7 @@ HelixEngine::init()
       long vol=0;
       bool eqenabled=false;
       int savedpreamp=0;
-      Q3ValueList<int> savedequalizerGains;
+      QList<int> savedequalizerGains;
 
       if (m_inited)
       {
@@ -887,7 +886,7 @@ HelixEngine::setEqualizerEnabled( bool enabled ) //SLOT
 
 // ok, this is lifted from gst... but why mess with what works?
 void
-HelixEngine::setEqualizerParameters( int preamp, const Q3ValueList<int>& bandGains ) //SLOT
+HelixEngine::setEqualizerParameters( int preamp, const QList<int>& bandGains ) //SLOT
 {
    m_preamp = ( preamp + 100 ) / 2;
 
