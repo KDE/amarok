@@ -15,8 +15,8 @@
 
 #include "amarok_export.h"
 
-#include <q3valuelist.h>
 #include <QByteArray>
+#include <QLinkedList>
 #include <QEvent>   //baseclass
 #include <QMap>
 #include <QMutex>
@@ -98,10 +98,10 @@ Q_OBJECT
 public:
     class Thread;
     friend class Thread;
-    typedef Q3ValueList<Thread*> ThreadList;
+    typedef QLinkedList<Thread *> ThreadList;
     class Job;
     friend class Job;
-    typedef Q3ValueList<Job*> JobList;
+    typedef QLinkedList<Job *> JobList;
 
     /*AMAROK_EXPORT*/ static ThreadManager *instance();
     static void deleteInstance();

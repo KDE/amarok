@@ -188,7 +188,7 @@ ThreadManager::event( QEvent *e )
         }
         else d << "aborted";
 
-        m_jobs.remove( job );
+        m_jobs.removeAll( job );
         delete job;
 
         d << ": " << name;
