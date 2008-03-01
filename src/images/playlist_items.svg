@@ -304,16 +304,16 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284273"
-     inkscape:cx="374.64603"
-     inkscape:cy="211.10984"
+     inkscape:zoom="16.000001"
+     inkscape:cx="116.66403"
+     inkscape:cy="301.36084"
      inkscape:document-units="px"
-     inkscape:current-layer="head"
-     showgrid="false"
+     inkscape:current-layer="track"
+     showgrid="true"
      inkscape:window-width="1670"
      inkscape:window-height="972"
      inkscape:window-x="0"
-     inkscape:window-y="15"
+     inkscape:window-y="0"
      inkscape:showpageshadow="false"
      showguides="true"
      inkscape:guide-bbox="true" />
@@ -532,8 +532,8 @@
          d="M 770.96761,439.74045 C 761.08646,439.74045 760.46638,440.32376 760.46638,449.61896 L 760.46638,457.46885 L 1054.5009,457.46885 L 1054.5009,449.61896 C 1054.5009,440.32376 1053.8809,439.74045 1043.9997,439.74045 L 770.96761,439.74045 z "
          id="path12581" />
       <path
-         style="fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:1"
-         d="M 767.7992,387.05785 C 764.58728,387.05785 762,389.11885 762,391.65535 L 762,412.20054 C 857.60672,419.77154 954.83237,418.54524 1053,412.20054 L 1053,391.65535 C 1053,389.11885 1050.4123,387.05785 1047.2005,387.05785 L 767.7992,387.05785 z "
+         style="opacity:1;fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
+         d="M 767.7992,387.05785 C 764.58728,387.05785 762,388.76793 762,390.87255 L 762,407.91961 C 857.60672,414.20153 954.83237,413.18402 1053,407.91961 L 1053,390.87255 C 1053,388.76793 1050.4123,387.05785 1047.2005,387.05785 L 767.7992,387.05785 z "
          id="path28191"
          inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
          inkscape:export-xdpi="89.999985"
@@ -542,6 +542,10 @@
          id="path12583"
          d="M 761.60361,457.32298 L 1053.3612,457.32298"
          style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#666765;stroke-width:1.29975498;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         style="opacity:1;fill:#66ffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
+         d="M 762.00002,407.65811 L 762.00002,408.47061 C 857.60674,414.75254 954.83239,413.73502 1053,408.47061 L 1053,407.65811 C 954.83239,412.92252 857.60674,413.94004 762.00002,407.65811 z "
+         id="path4244" />
     </g>
     <g
        id="track"
@@ -557,8 +561,12 @@
          inkscape:export-xdpi="89.999985"
          inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
          id="path12621"
-         d="M 737.79919,427.05785 C 734.58727,427.05785 731.99999,429.11885 731.99999,431.65535 L 731.99999,452.20054 C 827.60671,459.77154 924.83236,458.54524 1023,452.20054 L 1023,431.65535 C 1023,429.11885 1020.4123,427.05785 1017.2005,427.05785 L 737.79919,427.05785 z "
-         style="fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:1" />
+         d="M 737.79919,427.05785 C 734.58727,427.05785 731.99999,428.77473 731.99999,430.88772 L 731.99999,448.00253 C 827.60671,454.30942 924.83236,453.28787 1023,448.00253 L 1023,430.88772 C 1023,428.77473 1020.4123,427.05785 1017.2005,427.05785 L 737.79919,427.05785 z "
+         style="opacity:1;fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1" />
+      <path
+         style="opacity:1;fill:#66ffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
+         d="M 731.98365,447.70727 L 731.98365,448.51977 C 827.59037,454.8017 924.81602,453.78418 1022.9836,448.51977 L 1022.9836,447.70727 C 924.81602,452.97168 827.59037,453.9892 731.98365,447.70727 z "
+         id="path6186" />
     </g>
     <path
        id="selection_left2"
@@ -587,8 +595,12 @@
            inkscape:export-xdpi="89.999985"
            inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
            id="path12696"
-           d="M 737.79919,427.05785 C 734.58727,427.05785 731.99999,429.30547 731.99999,432.07164 L 731.99999,454.47712 C 827.60671,462.73364 924.83236,461.39631 1023,454.47712 L 1023,432.07164 C 1023,429.30547 1020.4123,427.05785 1017.2005,427.05785 L 737.79919,427.05785 z "
+           d="M 737.79919,427.05785 C 734.58727,427.05785 731.99999,428.92687 731.99999,431.2271 L 731.99999,449.85851 C 827.60671,456.72427 924.83236,455.6122 1023,449.85851 L 1023,431.2271 C 1023,428.92687 1020.4123,427.05785 1017.2005,427.05785 L 737.79919,427.05785 z "
            style="opacity:1;fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1" />
+        <path
+           style="opacity:1;fill:#66ffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
+           d="M 731.99965,449.65827 L 731.99965,450.47077 C 827.60637,456.7527 924.83202,455.73518 1022.9995,450.47077 L 1022.9995,449.65827 C 924.83202,454.92268 827.60637,455.9402 731.99965,449.65827 z "
+           id="path6184" />
       </g>
       <path
          clip-rule="evenodd"
@@ -625,5 +637,10 @@
        y="703.36243"
        transform="scale(-1,1)"
        inkscape:label="#rect10065" />
+    <path
+       style="opacity:1;fill:#66ffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
+       d="M 154 374.65625 L 154 375.46875 C 249.60672 381.75068 346.83237 380.73316 445 375.46875 L 445 374.65625 C 346.83237 379.92066 249.60672 380.93818 154 374.65625 z "
+       transform="translate(95,432.36218)"
+       id="path3272" />
   </g>
 </svg>
