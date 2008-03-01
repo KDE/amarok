@@ -589,7 +589,7 @@ XineEngine::setEqualizerEnabled( bool enable )
     m_equalizerEnabled = enable;
 
     if( !enable ) {
-        Q3ValueList<int> gains;
+        QList<int> gains;
         for( uint x = 0; x < 10; x++ )
             gains << -101; // sets eq gains to zero.
 
