@@ -34,19 +34,29 @@ class UploadUbuntu
 
     def CreateNUpload(package)
       `cp -rf #{DEBPATH}/#{package}-debian ./debian`
-    
+
       `dch -D "gutsy" -v "#{DATE}-0amarok#{REV}" "Nightly Build"`
       `dpkg-buildpackage -S -sa -rfakeroot -k"Amarok Nightly Builds"`
-      `dput amarok-nightly ../amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_source.changes`
+
+      # upload
+      if package != "amarok"
+        `dput amarok-nightly ../amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_source.changes`
+      else
+        `dput amarok-nightly ../amarok-nightly_#{DATE}-0amarok#{REV}_source.changes`
+      end
 
       `cp debian/changelog #{DEBPATH}/#{package}-debian/`
     end
     
     def Slap(package)
-      url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_i386.deb"
+      if package != "amarok"
+        url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_i386.deb"
+      else
+        url = "#{LPPATH}-#{package}/amarok-nightly_#{DATE}-0amarok#{REV}_i386.deb"
+      end
       `wget '#{url}'`
-	while $? != "0"
-	  sleep 600
+	while $? != 0
+	  sleep 60
 	  `wget '#{url}'`
 	end
     end
@@ -57,9 +67,9 @@ class UploadUbuntu
 
     for package in PACKAGES
       if package != "amarok"
-	dir = "amarok-nightly-#{package}-#{DATE}"
+        dir = "amarok-nightly-#{package}-#{DATE}"
       else
-	dir = "amarok-nightly-#{DATE}"
+        dir = "amarok-nightly-#{DATE}"
       end
       
       BaseDir()
