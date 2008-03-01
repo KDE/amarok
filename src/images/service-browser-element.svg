@@ -30,17 +30,17 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="134.13609"
-     inkscape:cy="-1.2183021"
+     inkscape:zoom="11.2"
+     inkscape:cx="106.57918"
+     inkscape:cy="42.003828"
      inkscape:document-units="px"
      inkscape:current-layer="g34622"
      inkscape:showpageshadow="false"
-     inkscape:window-width="1110"
-     inkscape:window-height="632"
-     inkscape:window-x="560"
-     inkscape:window-y="332"
-     showgrid="false" />
+     inkscape:window-width="1680"
+     inkscape:window-height="995"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     showgrid="true" />
   <metadata
      id="metadata8540">
     <rdf:RDF>
@@ -79,13 +79,21 @@
          y="543.52484"
          x="184.92107"
          height="61.030888" />
-      <path
-         inkscape:export-ydpi="89.999985"
-         inkscape:export-xdpi="89.999985"
-         inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
-         id="path6407"
-         d="M 191.94864,545.18145 C 188.76937,545.18145 186.20847,547.28804 186.20847,549.88057 L 186.20847,570.88005 C 280.84234,578.61847 377.07859,577.36511 474.24723,570.88005 L 474.24723,549.88057 C 474.24723,547.28804 471.68632,545.18145 468.50703,545.18145 L 191.94864,545.18145 z "
-         style="fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1;opacity:1" />
+      <g
+         id="g3146"
+         transform="matrix(1,0,0,0.675234,0,177.05637)">
+        <path
+           style="opacity:1;fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
+           d="M 191.94864,545.18145 C 188.76937,545.18145 186.20847,547.28804 186.20847,549.88057 L 186.20847,570.88005 C 280.84234,578.61847 377.07859,577.36511 474.24723,570.88005 L 474.24723,549.88057 C 474.24723,547.28804 471.68632,545.18145 468.50703,545.18145 L 191.94864,545.18145 z "
+           id="path6407"
+           inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
+           inkscape:export-xdpi="89.999985"
+           inkscape:export-ydpi="89.999985" />
+        <path
+           id="path2161"
+           d="M 474.2084,550.12369 L 474.2084,570.62369 C 377.05038,577.10804 280.83228,578.3593 186.2084,570.62369 L 186.2084,571.59244 C 280.84227,579.33086 377.07101,578.0775 474.23965,571.59244 L 474.23965,550.59244 C 474.23965,550.43041 474.22793,550.28153 474.2084,550.12369 z "
+           style="opacity:1;fill:#66ffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1" />
+      </g>
     </g>
   </g>
 </svg>

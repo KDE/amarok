@@ -29,9 +29,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.176163"
-     inkscape:cx="429.06469"
-     inkscape:cy="36.970674"
+     inkscape:zoom="0.64702038"
+     inkscape:cx="315.87214"
+     inkscape:cy="60.383562"
      inkscape:document-units="px"
      inkscape:current-layer="toolbarbackground"
      showgrid="true"
@@ -68,6 +68,10 @@
          id="rect8041"
          d="M -659,252 L -658.49575,282.27689 C -256.28804,328.82309 287.67067,328.09121 690,282.03488 L 690,252 L -659,252 z "
          style="opacity:1;fill:#e8e8e8;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         style="opacity:1;fill:#66ffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M -659,253.11681 L -658.5,283.39806 C -256.29228,329.94426 287.67067,329.20439 690,283.14806 L 690,281.14806 C 287.67067,327.20439 -256.2923,327.94426 -658.5,281.39806 L -658.96875,253.11681 L -659,253.11681 z "
+         id="path2165" />
     </g>
     <g
        id="buttonbar"
