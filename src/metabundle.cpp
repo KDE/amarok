@@ -31,7 +31,6 @@
 #include <qdom.h>
 #include <QFile> //decodePath()
 //Added by qt3to4:
-#include <Q3ValueList>
 #include <QByteArray>
 #include <attachedpictureframe.h>
 #include <fileref.h>
@@ -807,7 +806,7 @@ QString MetaBundle::prettyText( int column ) const
     return text.trimmed();
 }
 
-bool MetaBundle::matchesSimpleExpression( const QString &expression, const Q3ValueList<int> &columns ) const
+bool MetaBundle::matchesSimpleExpression( const QString &expression, const QList<int> &columns ) const
 {
     const QStringList terms = QString( expression.toLower() ).split( ' ' );
     bool matches = true;
@@ -823,7 +822,7 @@ bool MetaBundle::matchesSimpleExpression( const QString &expression, const Q3Val
     return matches;
 }
 
-void MetaBundle::reactToChanges( const Q3ValueList<int>& columns)
+void MetaBundle::reactToChanges( const QList<int>& columns)
 {
     // mark search dirty if we need to
     for (int i = 0; !m_isSearchDirty && i < columns.count(); i++)
@@ -870,12 +869,12 @@ bool MetaBundle::matchesFast(const QStringList &terms, ColumnMask columnMask) co
 }
 
 
-bool MetaBundle::matchesExpression( const QString &expression, const Q3ValueList<int> &defaultColumns ) const
+bool MetaBundle::matchesExpression( const QString &expression, const QList<int> &defaultColumns ) const
 {
     return matchesParsedExpression( ExpressionParser::parse( expression ), defaultColumns );
 }
 
-bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const Q3ValueList<int> &defaults ) const
+bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const QList<int> &defaults ) const
 {
     for( uint i = 0, n = data.count(); i < n; ++i ) //check each part for matchiness
     {
@@ -1504,7 +1503,7 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes ) cons
 
 void MetaBundle::setUrl( const KUrl &url )
 {
-    Q3ValueList<int> changes;
+    QList<int> changes;
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url = url; reactToChanges( changes );
 
@@ -1513,7 +1512,7 @@ void MetaBundle::setUrl( const KUrl &url )
 
 void MetaBundle::setPath( const QString &path )
 {
-    Q3ValueList<int> changes;
+    QList<int> changes;
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url.setPath( path ); reactToChanges( changes );
 
