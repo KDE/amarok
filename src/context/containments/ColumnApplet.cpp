@@ -71,7 +71,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     QString svgFile = KStandardDirs::locate( "data","desktoptheme/default/widgets/amarok-wallpaper.svg" );
     QString svg_source =  The::svgTinter()->tint( svgFile );
 
-
+    m_renderer =  new KSvgRenderer( The::svgTinter()->tint( svgFile ).toAscii() );
     
     m_tintedSvg.setSuffix( ".svg" );
     m_tintedSvg.open();
@@ -85,13 +85,13 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 
     debug() << "temp filename: " << m_tintedSvg.fileName();
 
-    m_job = new SvgRenderJob( file.fileName() );
+    //m_job = new SvgRenderJob( file.fileName() );
     //the background is not really important for the use of Amarok,
     //and running this in a thread makes startup quite a bit faster
     //consider only starting the thread if QThread::idealThreadCount > 1
     //if the background *has* to be there in time most of the time
-    connect( m_job, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( jobDone() ) );
-    ThreadWeaver::Weaver::instance()->enqueue( m_job );
+    //connect( m_job, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( jobDone() ) );
+    //ThreadWeaver::Weaver::instance()->enqueue( m_job );
     
     //m_background = new Svg( m_tintedSvg.fileName(), this );
     m_logo = new Svg( "widgets/amarok-logo", this );
@@ -169,10 +169,11 @@ void ColumnApplet::updateSize() // SLOT
 
 void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect)
 {
+    DEBUG_BLOCK
     Q_UNUSED( option );
     painter->save();
     //m_background->paint( painter, rect );
-    if( !m_masterImage.isNull() )
+    /*if( !m_masterImage.isNull() )
     {
     QImage scaled = m_masterImage.scaled( rect.size(), Qt::IgnoreAspectRatio, Qt::FastTransformation );
     painter->drawImage( rect, scaled );
@@ -180,7 +181,11 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     else
     {
         painter->fillRect( rect, QApplication::palette().window() );
-    }
+    }*/
+
+    m_renderer->render( painter, rect );
+
+    
     painter->restore();
     
     QSize size = m_logo->size();

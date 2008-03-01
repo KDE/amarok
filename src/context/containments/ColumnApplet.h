@@ -30,7 +30,7 @@
 
 #include <KTemporaryFile>
 #include <threadweaver/Job.h>
-
+#include <KSvgRenderer>
 
 
 namespace Context
@@ -99,6 +99,8 @@ private:
     QPixmapCache m_cache;
 
     SvgRenderJob *m_job;
+
+    KSvgRenderer * m_renderer;
 };
 
 K_EXPORT_AMAROK_APPLET( context, ColumnApplet )
