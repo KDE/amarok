@@ -22,6 +22,8 @@
 #include "debug.h"
 #include "PlaylistModel.h"
 
+#include <QHeaderView>
+
 
 
 Playlist::ClassicView::ClassicView(QWidget * parent)
@@ -30,7 +32,8 @@ Playlist::ClassicView::ClassicView(QWidget * parent)
     DEBUG_BLOCK
 
     connect ( this, SIGNAL( activated ( const QModelIndex & ) ), this, SLOT( play(const QModelIndex & ) ) );   
-    //connect ( this, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( play(const QModelIndex & ) ) );   
+    //connect ( this, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( play(const QModelIndex & ) ) );
+
 }
 
 Playlist::ClassicView::~ ClassicView()
@@ -46,6 +49,11 @@ void Playlist::ClassicView::setModel( Playlist::Model *model )
     m_model = model;
 
     QTreeView::setModel( model );
+
+    //just for fun
+    header()->hideSection(0);
+    header()->hideSection(1);
+    header()->hideSection(2);
 
 }
 
