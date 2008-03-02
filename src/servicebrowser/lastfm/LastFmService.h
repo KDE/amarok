@@ -64,6 +64,9 @@ private slots:
 
     void playCustomStation();
 
+    void handleNeighbourRadio();
+    void handlePersonalRadio();
+
     void setButtonsEnabled( bool enable );
 
 private:
@@ -79,6 +82,8 @@ private:
 
     KLineEdit * m_customStationEdit;
     QPushButton * m_customStationButton;
+
+    const QString m_userName;
 
     static LastFmService *ms_service;
 

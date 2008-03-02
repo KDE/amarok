@@ -20,7 +20,10 @@
 #include "CollectionManager.h"
 #include "meta/LastFmCapability.h"
 #include "playlist/PlaylistModel.h"
+#include "widgets/searchwidget.h"
 #include "TheInstances.h"
+
+#include <KPushButton>
 
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
@@ -64,8 +67,11 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
       m_scrobbler( scrobble ? new ScrobblerAdapter( this, username, password ) : 0 ),
       m_radio( new RadioAdapter( this, username, password ) ),
       m_collection( new LastFmServiceCollection( ) ),
-      m_polished( false )
+      m_polished( false ),
+      m_userName( username )
 {
+    //We have no use for searching currently..
+    m_searchWidget->setVisible( false );
     setShortDescription(  i18n( "Last.fm: The social music revolution." ) );
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
     
@@ -90,9 +96,16 @@ LastFmService::polish()
 {
     if( !m_polished )
     {
-        m_bottomPanel->setMaximumHeight( 100 );
-        
-        
+        m_bottomPanel->setMaximumHeight( 200 );
+
+        KPushButton *neighborRadioLabel = new KPushButton( m_bottomPanel );
+        neighborRadioLabel->setText( "Neighbour Radio" );
+        connect( neighborRadioLabel, SIGNAL(clicked()), SLOT(handleNeighbourRadio() ) );
+
+        KPushButton *personalRadioButton = new KPushButton( m_bottomPanel );
+        personalRadioButton->setText( "Personal Radio" );
+        connect( personalRadioButton, SIGNAL(clicked()), SLOT(handlePersonalRadio() ) );
+
         m_buttonBox = new KHBox(m_bottomPanel);
         m_buttonBox->setSpacing( 3 );
 
@@ -190,4 +203,20 @@ void LastFmService::playCustomStation()
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
         The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
     }
+}
+
+void LastFmService::handleNeighbourRadio()
+{
+    DEBUG_BLOCK
+    QString url = "lastfm://user/" + m_userName + "/neighbours";
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+}
+
+void LastFmService::handlePersonalRadio()
+{
+    DEBUG_BLOCK
+    QString url = "lastfm://user/" + m_userName + "/personal";
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
