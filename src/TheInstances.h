@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "amarok_export.h"
 
+#include <ksharedptr.h>
+
 namespace Playlist {
     class Model;
     class GraphicsView;
@@ -40,6 +42,22 @@ namespace Amarok {
     class ContextStatusBar;
 }
 
+namespace Meta {
+
+    class Artist;
+    class Album;
+    class Genre;
+    class Composer;
+    class Year;
+
+    typedef KSharedPtr<Artist> ArtistPtr;
+    typedef KSharedPtr<Album> AlbumPtr;
+    typedef KSharedPtr<Composer> ComposerPtr;
+    typedef KSharedPtr<Genre> GenrePtr;
+    typedef KSharedPtr<Year> YearPtr;
+
+}
+
 namespace The {
     AMAROK_EXPORT Playlist::Model*   playlistModel();       //defined in playlist/PlaylistModel.cpp
     Playlist::GraphicsView*          playlistView();
@@ -48,6 +66,13 @@ namespace The {
     AMAROK_EXPORT ServiceInfoProxy * serviceInfoProxy();
     AMAROK_EXPORT SvgTinter *        svgTinter();
     AMAROK_EXPORT Amarok::ContextStatusBar* statusBar();
+
+    AMAROK_EXPORT Meta::ArtistPtr defaultArtist();
+    AMAROK_EXPORT Meta::AlbumPtr defaultAlbum();
+    AMAROK_EXPORT Meta::ComposerPtr defaultComposer();
+    AMAROK_EXPORT Meta::GenrePtr defaultGenre();
+    AMAROK_EXPORT Meta::YearPtr defaultYear();
+    
 }
 
 #endif

@@ -27,6 +27,8 @@
 #include "debug.h"
 
 #include "debug.h"
+#include "meta/default/DefaultMetaTypes.h"
+#include "TheInstances.h"
 
 #include <KIcon>
 #include <KLocale>
@@ -155,6 +157,9 @@ MagnatuneTrack::MagnatuneTrack( const QString &name )
     : ServiceTrack( name )
     , m_downloadMembership ( false )
 {
+
+    setComposer( The::defaultComposer() );
+    setYear( The::defaultYear() );
 }
 
 MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
@@ -163,6 +168,10 @@ MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
 {
     DEBUG_BLOCK
     m_lofiUrl = resultRow[7];
+
+    setComposer( The::defaultComposer() );
+    setYear( The::defaultYear() );
+    
 }
 
 QString MagnatuneTrack::lofiUrl()
