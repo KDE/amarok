@@ -90,8 +90,15 @@ class TagDialog : public KDialog
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
         void queryDone();
 
+        void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
+        void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
+        void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
+        void resultReady( const QString &collectionId, const Meta::GenreList &genres );
+        void dataQueryDone();
+
     private:
         void init();
+        void startDataQuery();
         void readTags();
         void readMultipleTracks();
         void setMultipleTracksMode();
@@ -149,6 +156,11 @@ class TagDialog : public KDialog
         QListIterator<Meta::TrackPtr > m_trackIterator;
         QVariantMap m_currentData;
         QueryMaker *m_queryMaker;
+        QueryMaker *m_dataQueryMaker;
+        QStringList m_artists;
+        QStringList m_albums;
+        QStringList m_composers;
+        QStringList m_genres;
 
         Ui::TagDialogBase *ui;
 };

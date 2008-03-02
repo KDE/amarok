@@ -19,6 +19,7 @@
 #include "debug.h"
 #include "EditCapability.h"
 #include "MainWindow.h"
+#include "MetaQueryBuilder.h"
 #include "MetaUtility.h"
 #include "QueryMaker.h"
 #include "ContextStatusBar.h"       //for status messages
@@ -109,7 +110,9 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     , m_queryMaker( 0 )
     , ui( new Ui::TagDialogBase() )
 {
+    ui->setupUi( this );
     init();
+    startDataQuery();
 }
 
 TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
@@ -124,7 +127,9 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     m_tracks.append( track );
     //we changed the list after creating the iterator, so create a new iterator
     m_trackIterator = QListIterator<Meta::TrackPtr >( m_tracks );
+    ui->setupUi( this );
     init();
+    startDataQuery();
 }
 
 TagDialog::TagDialog( QueryMaker *qm )
@@ -136,6 +141,8 @@ TagDialog::TagDialog( QueryMaker *qm )
     , m_queryMaker( qm )
     , ui( new Ui::TagDialogBase() )
 {
+    ui->setupUi( this );
+    startDataQuery();
     qm->startTrackQuery();
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ) );
@@ -183,6 +190,75 @@ TagDialog::queryDone()
     else
     {
         deleteLater();
+    }
+}
+
+void
+TagDialog::resultReady( const QString &collectionId, const Meta::AlbumList &albums )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::AlbumPtr album, albums )
+    {
+        m_albums << album->name();
+    }
+}
+
+void
+TagDialog::resultReady( const QString &collectionId, const Meta::ArtistList &artists )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::ArtistPtr artist, artists )
+    {
+        m_artists << artist->name();
+    }
+}
+
+void
+TagDialog::resultReady( const QString &collectionId, const Meta::ComposerList &composers )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::ComposerPtr composer, composers )
+    {
+        m_composers << composer->name();
+    }
+}
+
+void
+TagDialog::resultReady( const QString &collectionId, const Meta::GenreList &genres )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::GenrePtr genre, genres )
+    {
+        m_genres << genre->name();
+    }
+}
+
+void
+TagDialog::dataQueryDone()
+{
+    m_dataQueryMaker->deleteLater();
+    m_dataQueryMaker = 0;
+    //we simply clear the completion data of all comboboxes
+    //then load the current track again. that's more work than necessary
+    //but the performance impact should be negligible
+    ui->kComboBox_artist->clear();
+    ui->kComboBox_artist->insertItems( 0, m_artists );
+    ui->kComboBox_album->clear();
+    ui->kComboBox_album->insertItems( 0, m_albums );
+    ui->kComboBox_composer->clear();
+    ui->kComboBox_composer->insertItems( 0, m_composers );
+    ui->kComboBox_genre->clear();
+    ui->kComboBox_genre->insertItems( 0, m_genres );
+    if( m_tracks.count() )
+    {
+        if( m_perTrack )
+        {
+            readTags();
+        }
+        else
+        {
+            readMultipleTracks();
+        }
     }
 }
 
@@ -443,8 +519,6 @@ void TagDialog::resetMusicbrainz() //SLOT
 void TagDialog::init()
 {
     DEBUG_BLOCK
-
-    ui->setupUi( this );
     // delete itself when closing
     setAttribute( Qt::WA_DeleteOnClose );
     setButtons( KDialog::None );
@@ -459,40 +533,17 @@ void TagDialog::init()
     ui->labelsTab->setEnabled( false );
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
-    int items = ui->kComboBox_artist->count();
-//     const QStringList artists = CollectionDB::instance()->artistList();
-    const QStringList artists;
-    ui->kComboBox_artist->insertItems( items, artists );
-    ui->kComboBox_artist->completionObject()->insertItems( artists );
     ui->kComboBox_artist->completionObject()->setIgnoreCase( true );
     ui->kComboBox_artist->setCompletionMode( KGlobalSettings::CompletionPopup );
 
-    items = ui->kComboBox_album->count();
-//     const QStringList albums = CollectionDB::instance()->albumList();
-    const QStringList albums;
-    ui->kComboBox_album->insertItems( items, albums );
-    ui->kComboBox_album->completionObject()->insertItems( albums );
     ui->kComboBox_album->completionObject()->setIgnoreCase( true );
     ui->kComboBox_album->setCompletionMode( KGlobalSettings::CompletionPopup );
 
-    items = ui->kComboBox_artist->count();
-//     const QStringList composers = CollectionDB::instance()->composerList();
-    const QStringList composers;
-    ui->kComboBox_composer->insertItems( items, composers );
-    ui->kComboBox_composer->completionObject()->insertItems( composers );
     ui->kComboBox_composer->completionObject()->setIgnoreCase( true );
     ui->kComboBox_composer->setCompletionMode( KGlobalSettings::CompletionPopup );
 
-    items = ui->kComboBox_artist->count();
-//     ui->kComboBox_rating->insertItems( items, MetaBundle::ratingList() );
-
-//    const QStringList genres = MetaBundle::genreList();
-    items = ui->kComboBox_artist->count();
-//     const QStringList genres = CollectionDB::instance()->genreList();
-    const QStringList genres;
-    ui->kComboBox_genre->insertItems( items, genres );
-    ui->kComboBox_genre->completionObject()->insertItems( genres );
     ui->kComboBox_genre->completionObject()->setIgnoreCase( true );
+    ui->kComboBox_genre->setCompletionMode( KGlobalSettings::CompletionPopup );
 
 //     const QStringList labels = CollectionDB::instance()->labelList();
     const QStringList labels;
@@ -616,6 +667,31 @@ void TagDialog::init()
     // make it as small as possible
     //resize( sizeHint().width(), minimumSize().height() );
 
+}
+
+void
+TagDialog::startDataQuery()
+{
+    Collection *coll = CollectionManager::instance()->primaryCollection();
+    if( !coll )
+    {
+        return;
+    }
+    QueryMaker *artist = coll->queryMaker()->startArtistQuery();
+    QueryMaker *album = coll->queryMaker()->startAlbumQuery();
+    QueryMaker *composer = coll->queryMaker()->startComposerQuery();
+    QueryMaker *genre = coll->queryMaker()->startGenreQuery();
+    QList<QueryMaker*> queries;
+    queries << artist << album << composer << genre;
+    //MetaQueryBuilder will run multiple different queries just fine as long as we do not use it
+    //to set the query type. Configuring the queries is ok though
+    m_dataQueryMaker = new MetaQueryBuilder( queries );
+    connect( m_dataQueryMaker, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
+    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
+    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
+    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( resultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
+    m_dataQueryMaker->run();
 }
 
 
