@@ -21,6 +21,7 @@
 #ifndef AMAROK_PLAYLISTMODEL_H
 #define AMAROK_PLAYLISTMODEL_H
 
+#include "debug.h"
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -107,6 +108,13 @@ class TrackNavigator;
         StartPlay  = 32,    /// start playback of the first item in the list if nothing else playing
         Colorize   = 64,    /// colorize newly added items
         AppendAndPlay = Append | Unique | StartPlay
+    };
+
+    enum StopAfterMode
+    {
+        StopNever = 0,
+        StopAfterCurrent,
+        StopAfterQueue
     };
 
 
@@ -198,6 +206,8 @@ class TrackNavigator;
             //Meta::PlaylistObserver virtual methods
             void trackListChanged( Meta::Playlist * playlist );
 
+            StopAfterMode stopAfterMode() const { return m_stopAfterMode; }
+            void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; }
             static Model* s_instance; //! instance variable
 
         public slots:
@@ -263,6 +273,8 @@ class TrackNavigator;
             Meta::AlbumPtr m_lastAddedTrackAlbum;
 
             Meta::PlaylistPtr m_observedPlaylist;   //! This is used for observing a dynamic or random playlist.
+
+            Playlist::StopAfterMode m_stopAfterMode;
 
     };
 }

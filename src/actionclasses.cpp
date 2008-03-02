@@ -20,6 +20,8 @@
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "MainWindow.h"
+#include "playlist/PlaylistModel.h"
+#include "TheInstances.h"
 //#include "mediumpluginmanager.h"
 
 #include "socketserver.h"       //Vis::Selector::showInstance()
@@ -439,6 +441,7 @@ StopAction::StopAction( KActionCollection *ac )
 {
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
+    setMenu( Amarok::StopMenu::instance() );
     connect( this, SIGNAL( triggered() ), EngineController::instance(), SLOT( stop() ) );
     ac->addAction( "stop", this );
 }
@@ -446,31 +449,32 @@ StopAction::StopAction( KActionCollection *ac )
 int
 StopAction::plug( QWidget *w, int )
 {
-    //KToolBar *bar = dynamic_cast<KToolBar*>(w);
+#if 0
+    KToolBar *bar = dynamic_cast<KToolBar*>(w);
     w->addAction( this );
-    /*
+
     if( bar && KAuthorized::authorizeKAction( name() ) )
     {
-        //const int id = KAction::getToolButtonID();
+        const int id = KAction::getToolButtonID();
 
-        //addContainer( bar, id );
+        addContainer( bar, id );
 
         w->addAction( this );
         connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
-        //bar->insertButton( QString::null, id, SIGNAL( clicked() ), EngineController::instance(), SLOT( stop() ),
-        //                   true, i18n( "Stop" ), index );
+        bar->insertButton( QString::null, id, SIGNAL( clicked() ), EngineController::instance(), SLOT( stop() ),
+                          true, i18n( "Stop" ), index );
 
-        //KToolBarButton* button = bar->getButton( id );
-        //button->setDelayedPopup( Amarok::StopMenu::instance() );
-        //button->setObjectName( "toolbutton_stop_menu" );
-        //button->setIcon( "media-playback-stop-amarok" );
-        //button->setEnabled( EngineController::instance()->engine()->loaded() );  // Disable button at startup
+        KToolBarButton* button = bar->getButton( id );
+
+        button->setObjectName( "toolbutton_stop_menu" );
+        button->setIcon( "media-playback-stop-amarok" );
+        button->setEnabled( EngineController::instance()->engine()->loaded() );  // Disable button at startup
 
         return associatedWidgets().count() - 1;
     }
     else return QAction::plug( w, index );
-    */
+#endif
     return 1;
 }
 
@@ -479,11 +483,13 @@ StopMenu::StopMenu()
     addTitle( i18n( "Stop" ) );
 
     m_stopNow        = addAction( i18n( "Now" ), this, SLOT( slotStopNow() ) );
+    m_stopNow->setCheckable( true );
     m_stopAfterTrack = addAction( i18n( "After Current Track" ), this, SLOT( slotStopAfterTrack() ) );
-    m_stopAfterQueue = addAction( i18n( "After Queue" ), this, SLOT( slotStopAfterQueue() ) );
+    m_stopAfterTrack->setCheckable( true );
+//     m_stopAfterQueue = addAction( i18n( "After Queue" ), this, SLOT( slotStopAfterQueue() ) );
 
     connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
-    connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
+    connect( this, SIGNAL( triggered(QAction*) ), SLOT( slotActivated(QAction*) ) );
 }
 
 KMenu*
@@ -496,14 +502,14 @@ StopMenu::instance()
 void
 StopMenu::slotAboutToShow()
 {
-    //PORT 2.0
-//     Playlist *pl = Playlist::instance();
+    Playlist::Model *pl = The::playlistModel();
 
     m_stopNow->setEnabled( Amarok::actionCollection()->action( "stop" )->isEnabled() );
 
     m_stopAfterTrack->setEnabled( EngineController::engine()->loaded() );
-//     m_stopAfterTrack->setChecked( pl->stopAfterMode() == Playlist::StopAfterCurrent );
+    m_stopAfterTrack->setChecked( pl->stopAfterMode() == Playlist::StopAfterCurrent );
 
+    //FIXME: REENABLE
 //     m_stopAfterQueue->setEnabled( pl->nextTracks().count() );
 //     m_stopAfterQueue->setChecked( pl->stopAfterMode() == Playlist::StopAfterQueue );
 }
@@ -512,24 +518,23 @@ void
 StopMenu::slotStopNow() //SLOT
 {
     //PORT 2.0
-//     Playlist* pl = Playlist::instance();
-//     const int mode = pl->stopAfterMode();
+    Playlist::Model* pl = The::playlistModel();
+    const int mode = pl->stopAfterMode();
 
-//     Amarok::actionCollection()->action( "stop" )->trigger();
-//     if( mode == Playlist::StopAfterCurrent || mode == Playlist::StopAfterQueue )
-//         pl->setStopAfterMode( Playlist::DoNotStop );
+    Amarok::actionCollection()->action( "stop" )->trigger();
+    if( mode == Playlist::StopAfterCurrent || mode == Playlist::StopAfterQueue )
+        pl->setStopAfterMode( Playlist::StopNever );
 }
 
 void
 StopMenu::slotStopAfterTrack() //SLOT
 {
-    //PORT 2.0
-//     Playlist* pl = Playlist::instance();
-//     const int mode = pl->stopAfterMode();
+    Playlist::Model* pl = The::playlistModel();
+    const int mode = pl->stopAfterMode();
 
-//     pl->setStopAfterMode( mode == Playlist::StopAfterCurrent
-//                                 ? Playlist::DoNotStop
-//                                 : Playlist::StopAfterCurrent );
+    pl->setStopAfterMode( mode == Playlist::StopAfterCurrent
+                                ? Playlist::StopNever
+                                : Playlist::StopAfterCurrent );
 }
 
 void
@@ -544,4 +549,8 @@ StopMenu::slotStopAfterQueue() //SLOT
 //                                 : Playlist::StopAfterQueue );
 }
 
+void StopMenu::slotActivated( QAction *action )
+{
+    action->setChecked( !action->isChecked() );
+}
 #include "actionclasses.moc"

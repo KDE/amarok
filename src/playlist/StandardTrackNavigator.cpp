@@ -30,13 +30,13 @@ void
 StandardTrackNavigator::advanceTrack()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
-    if( updateRow < m_playlistModel->rowCount() )
+    if( updateRow < m_playlistModel->rowCount() && m_playlistModel->stopAfterMode() != StopAfterCurrent )
     {
         setCurrentTrack( updateRow );
     }
     else
     {
-        // out of tracks to play
+        // out of tracks to play or stopAfterMode == Current.
         EngineController::instance()->stop();
     }
 }

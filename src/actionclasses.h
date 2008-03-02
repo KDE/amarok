@@ -145,6 +145,7 @@ namespace Amarok
             void slotStopNow();
             void slotStopAfterTrack();
             void slotStopAfterQueue();
+            void slotActivated( QAction *);
 
         private:
             StopMenu();
