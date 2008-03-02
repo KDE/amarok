@@ -61,8 +61,8 @@ CollectionWidget::CollectionWidget( const char* name )
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
     filterMenu->addAction( action );
 
-    action = new QAction( i18n( "Artist / Year - Album" ), menubar ); // This was Artist / Year - Album, but would require more logic to make it work so keep it like this for now
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistYearAlbum() ) );
+    action = new QAction( i18n( "Artist / Year - Album" ), menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT( sortByArtistYearAlbum() ) );
     filterMenu->addAction( action );
 
     action = new QAction( i18n( "Album" ), menubar );
@@ -98,7 +98,7 @@ void
 CollectionWidget::sortByArtistYearAlbum()
 {
     m_treeView->setShowYears( true );
-    m_treeView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Year << CategoryId::Album );
+    m_treeView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
 }
 
 void

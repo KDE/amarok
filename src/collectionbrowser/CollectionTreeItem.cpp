@@ -95,14 +95,19 @@ CollectionTreeItem::data( int role ) const {
                     }
                 }
             }
-//             else if ( CollectionWidget::instance()->view()->showYears() )
-//             {
-//                 if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
-//                 {
-//                     if( !album.isNull() )
-//                         name = QString::number( Meta::TrackPtr::dynamicCast(m_childItems[0]->data())->year() ) + " - " + album->prettyName();
-//                 }
-//             }
+            if ( CollectionWidget::instance()->view()->showYears() )
+            {
+                if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
+                {
+                    Meta::TrackPtr track = album->tracks()[0];
+                    QString year;
+                    if( track )
+                        year = track->year() ? track->year()->prettyName() : QString();
+                    else
+                        year = QString();
+                    name = year + " - " + album->prettyName();
+                }
+            }
             if ( name.isEmpty() )
                 return i18n( "Unknown" );
             return name;
