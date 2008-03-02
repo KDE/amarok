@@ -33,6 +33,7 @@ set(plasma_LIB_SRCS
     plasma/appletbrowser/kcategorizeditemsview.cpp
     plasma/appletbrowser/kcategorizeditemsviewdelegate.cpp
     plasma/appletbrowser/kcategorizeditemsviewmodels.cpp
+    plasma/appletbrowser/openwidgetassistant.cpp
     plasma/appletbrowser/plasmaappletitemmodel.cpp
     plasma/appletbrowser/customdragtreeview.cpp
     plasma/applethandle.cpp
@@ -99,6 +100,7 @@ kde4_add_library(amarokplasma SHARED ${plasma_LIB_SRCS})
 
 target_link_libraries(amarokplasma
 ${KDE4_KIO_LIBS}
+${KDE4_KFILE_LIBS}
 ${QT_QTUITOOLS_LIBRARY}
 ${QT_QTOPENGL_LIBRARY}
 ${OPENGL_gl_LIBRARY}
