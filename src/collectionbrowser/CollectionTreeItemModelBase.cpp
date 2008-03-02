@@ -349,8 +349,7 @@ CollectionTreeItemModelBase::queryDone()
     
     if (d->m_childQueries.count() == 0 /*&& d->m_compilationQueries.count() == 0 */ )
         m_timeLine->stop();
-
-    QTimer::singleShot( 0, qm, SLOT( deleteLater() ) );
+    qm->deleteLater();
 }
 
 void
