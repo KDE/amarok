@@ -405,7 +405,7 @@ set(amaroklib_LIB_SRCS
     MediaDevicePluginManager.cpp
     medium.cpp
     metabundle.cpp
-    moodbar.cpp
+#    moodbar.cpp
     mountpointmanager.cpp
     osd.cpp
     PixmapViewer.cpp
