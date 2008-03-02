@@ -24,6 +24,8 @@
 #include "debug.h"
 #include "meta/file/File.h"
 
+#include <KMD5>
+
 #include <cerrno>
 #include <iostream>
 
@@ -44,6 +46,29 @@
 
 #include <kglobal.h>
 #include <klocale.h>
+
+//Taglib:
+#include <apetag.h>
+#include <flacfile.h>
+#include <mpcfile.h>
+#include <mpegfile.h>
+#include <oggfile.h>
+#include <oggflacfile.h>
+#include <tlist.h>
+#include <tstring.h>
+#include <vorbisfile.h>
+
+#ifdef HAVE_MP4V2
+#include "metadata/mp4/mp4file.h"
+#include "metadata/mp4/mp4tag.h"
+#else
+#include "metadata/m4a/mp4file.h"
+#include "metadata/m4a/mp4itunestag.h"
+#endif
+
+#include <textidentificationframe.h>
+#include <uniquefileidentifierframe.h>
+#include <xiphcomment.h>
 
 #include <amarok_collection_interface.h>
 
@@ -225,9 +250,9 @@ CollectionScanner::scanFiles( const QStringList& entries )
         }
 
         else {
-//             MetaBundle::EmbeddedImageList images;
-            MetaFile::Track *track = new MetaFile::Track( KUrl( path ) );
-            const AttributeMap attributes = readTags( track );
+            //FIXME: PORT 2.0
+//             QList<EmbeddedImage> images;
+            const AttributeMap attributes = readTags( path );
 
             if( !attributes.empty() ) {
                 writeElement( "tags", attributes );
@@ -236,12 +261,14 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
                 if( !covers.contains( cover ) )
                     covers += cover;
-//FIXME: Port 2.0
-//                 oldForeachType( MetaBundle::EmbeddedImageList, images ) {
+
+                //FIXME: PORT 2.0
+//                 foreach( EmbeddedImage image, images )
+//                 {
 //                     AttributeMap attributes;
 //                     attributes["path"] = path;
-//                     attributes["hash"] = (*it).hash();
-//                     attributes["description"] = (*it).description();
+//                     attributes["hash"] = image.hash();
+//                     attributes["description"] = image.description();
 //                     writeElement( "embed", attributes );
 //                 }
             }
@@ -280,7 +307,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
 
 AttributeMap
-CollectionScanner::readTags( const KURL &url )
+CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle )
 {
     // Tests reveal the following:
     //
@@ -291,39 +318,176 @@ CollectionScanner::readTags( const KURL &url )
     //  Average                     Untested
     //  Accurate                    Untested
 
+    ScanMetaData smd;
+
+    TagLib::FileRef fileref;
+    TagLib::Tag *tag = 0;
+    fileref = TagLib::FileRef( TagLibEncodeName( path ), true, readStyle );
+
+    if( !fileref.isNull() )
+    {
+        smd.filesize = QFile( path ).size();
+
+        tag = fileref.tag();
+        if ( tag )
+        {
+#define strip( x ) TStringToQString( x ).trimmed()
+            smd.title = strip( tag->title() );
+            smd.artist = strip( tag->artist() );
+            smd.album = strip( tag->album() );
+            smd.comment = strip( tag->comment() );
+            smd.genre = strip( tag->genre() );
+            smd.year = QString::number( tag->year() );
+            smd.tracknr  = QString::number( tag->track() );
+#undef strip
+            smd.isValid = true;
+        }
+
+
+    /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
+        we have to cast the files, not the tags! */
+
+        QString disc;
+        QString compilation;
+        if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+        {
+            smd.filetype = ScanMetaData::mp3;
+            if ( file->ID3v2Tag() )
+            {
+                if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
+                    disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).trimmed();
+
+                if ( !file->ID3v2Tag()->frameListMap()["TBPM"].isEmpty() )
+                    smd.bpm = TStringToQString( file->ID3v2Tag()->frameListMap()["TBPM"].front()->toString() ).trimmed().toFloat();
+
+                if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
+                    smd.composer = TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).trimmed();
+
+                if ( !file->ID3v2Tag()->frameListMap()["TPE2"].isEmpty() ) // non-standard: Apple, Microsoft
+                    smd.artist = TStringToQString( file->ID3v2Tag()->frameListMap()["TPE2"].front()->toString() ).trimmed();
+
+                if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
+                    compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
+
+                //FIXME: Port 2.0
+//                 if(images) {
+//                     loadImagesFromTag( *file->ID3v2Tag(), *images );
+//                 }
+            }
+        }
+        else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+        {
+            smd.filetype = ScanMetaData::ogg;
+            if ( file->tag() )
+            {
+                if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() )
+                    smd.composer = TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).trimmed();
+
+                if ( !file->tag()->fieldListMap()[ "BPM" ].isEmpty() )
+                    smd.bpm = TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).trimmed().toFloat();
+
+                if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
+                    disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).trimmed();
+
+                if ( !file->tag()->fieldListMap()[ "COMPILATION" ].isEmpty() )
+                    compilation = TStringToQString( file->tag()->fieldListMap()["COMPILATION"].front() ).trimmed();
+            }
+        }
+        else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+        {
+            smd.filetype = ScanMetaData::flac;
+            if ( file->xiphComment() )
+            {
+                if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
+                    smd.composer = TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).trimmed();
+
+                if ( !file->xiphComment()->fieldListMap()[ "BPM" ].isEmpty() )
+                    smd.bpm = TStringToQString( file->xiphComment()->fieldListMap()["BPM"].front() ).trimmed().toFloat();
+
+                if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
+                    disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).trimmed();
+
+                if ( !file->xiphComment()->fieldListMap()[ "COMPILATION" ].isEmpty() )
+                    compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).trimmed();
+            }
+//             if ( images && file->ID3v2Tag() ) {
+//                 loadImagesFromTag( *file->ID3v2Tag(), *images );
+//             }
+        }
+        else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
+        {
+            smd.filetype = ScanMetaData::mp4;
+            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+            if( mp4tag )
+            {
+                smd.composer = TStringToQString( mp4tag->composer() );
+                smd.bpm = QString::number( mp4tag->bpm() ).toFloat();
+                disc = QString::number( mp4tag->disk() );
+                compilation = QString::number( mp4tag->compilation() );
+
+//                 if ( images && mp4tag->cover().size() ) {
+//                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
+//                 }
+            }
+        }
+
+        if ( !disc.isEmpty() )
+        {
+            int i = disc.indexOf('/');
+            if ( i != -1 )
+                // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
+                smd.discnumber = disc.left( i ).toInt();
+            else
+                smd.discnumber = disc.toInt();
+        }
+
+        if ( compilation.isEmpty() ) {
+            // well, it wasn't set, but if the artist is VA assume it's a compilation
+            if ( smd.artist == i18n( "Various Artists" ) )
+                smd.isCompilation = true;
+        } else {
+            int i = compilation.toInt();
+            if ( i == 0 )
+                smd.isCompilation = false;
+            else if ( i == 1 )
+                smd.isCompilation = true;
+        }
+    }
+
     AttributeMap attributes;
 
-    if ( !track->isPlayable() ) {
+    if ( !smd.isValid ) {
         std::cout << "<dud/>";
         return attributes;
     }
 
-    attributes["path"]    = track->playableUrl().path();
-    attributes["title"]   = track->prettyName();
-    attributes["artist"]  = track->artist() ? track->artist()->prettyName() : QString();
-    attributes["composer"]= track->composer() ? track->composer()->prettyName() : QString();
-    attributes["album"]   = track->album() ? track->album()->prettyName() : QString();
-    attributes["comment"] = track->comment();
-    attributes["genre"]   = track->genre() ? track->genre()->prettyName() : QString();
-    attributes["year"]    = track->year() > 0 ? QString::number( track->year() ) : QString();
-    attributes["track"]   = track->trackNumber() ? QString::number( track->trackNumber() ) : QString();
-    attributes["discnumber"]   = track->discNumber() ? QString::number( track->discNumber() ) : QString();
-    attributes["bpm"]   = /*mb.bpm() ? QString::number( mb.bpm() ) :*/ QString();
-    attributes["filetype"]  = track->type();
-//     attributes["uniqueid"] = mb.uniqueId(); //FIXME: Port
-//     attributes["compilation"] = QString::number( mb.compilation() );
+    attributes["path"]    = path;
+    attributes["title"]   = smd.title;
+    attributes["artist"]  = smd.artist;
+    attributes["composer"]= smd.composer;
+    attributes["album"]   = smd.album;
+    attributes["comment"] = smd.comment;
+    attributes["genre"]   = smd.genre;
+    attributes["year"]    = smd.year;
+    attributes["track"]   = smd.tracknr;
+    attributes["discnumber"]   = QString::number( smd.discnumber );
+    attributes["bpm"]   = QString::number( smd.bpm );
+    attributes["filetype"]  = QString::number( smd.filetype );
+//     attributes["uniqueid"] = QString::number( -1 ); //FIXME: Port
+    attributes["compilation"] = QString::number( smd.isCompilation );
 //FIXME: port
-//     if ( mb.audioPropertiesUndetermined() )
-//         attributes["audioproperties"] = "false";
-//     else {
+    static const int Undetermined = -2;
+    if ( smd.bitrate == Undetermined || smd.length == Undetermined || smd.samplerate == Undetermined )
+        attributes["audioproperties"] = "false";
+    else {
         attributes["audioproperties"] = "true";
-        attributes["bitrate"]         = QString::number( track->bitrate() );
-        attributes["length"]          = QString::number( track->length() );
-        attributes["samplerate"]      = QString::number( track->sampleRate() );
-//     }
+        attributes["bitrate"]         = QString::number( smd.bitrate );
+        attributes["length"]          = QString::number( smd.length * 1000 );
+        attributes["samplerate"]      = QString::number( smd.samplerate );
+    }
 
-    if ( track->filesize() >= 0 )
-        attributes["filesize"] = QString::number( track->filesize() );
+    if ( smd.filesize >= 0 )
+        attributes["filesize"] = QString::number( smd.filesize );
 
     return attributes;
 }
@@ -365,7 +529,6 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
 
     std::cout << text.toUtf8().data() << std::endl;
 }
-
 
 #include "collectionscanner.moc"
 

@@ -83,7 +83,6 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 void
 ScanResultProcessor::processScanResult( const QMap< QString, QHash<QString, QString> > &scanResult )
 {
-    DEBUG_BLOCK
     setupDatabase();
 
     QList<QHash<QString, QString> > dirData;
@@ -138,7 +137,6 @@ ScanResultProcessor::processDirectory( const QList<QHash<QString, QString> > &da
     //if all tracks have the same artist, use it as albumartist
     //try to find the albumartist A: tracks must have the artist A or A feat. B (and variants)
     //if no albumartist could be found, it's a compilation
-    DEBUG_BLOCK
 
     QSet<QString> artists;
     QString album;
@@ -252,7 +250,6 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
 void
 ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int albumArtistId )
 {
-    DEBUG_BLOCK
 
     //amarok 1 stored all tracks of a compilation in different directories.
     //try to detect these cases

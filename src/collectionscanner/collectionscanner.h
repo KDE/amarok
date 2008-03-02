@@ -20,6 +20,7 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
+#include "metadata/tfile_helper.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -30,7 +31,17 @@
 #include <QVector>
 
 #include <kapplication.h>
+#include <KUrl>
 #include <amarok_collection_interface.h>
+
+
+
+//Taglib includes..
+#include <audioproperties.h>
+#include <fileref.h>
+#include <tag.h>
+#include <id3v2tag.h>
+#include <id3v1tag.h>
 
 typedef QMap<QString, QString> AttributeMap;
 
@@ -43,6 +54,37 @@ namespace MetaFile
  * @class CollectionScanner
  * @short Scans directories and builds the Collection
  */
+// Imported from engineBase.
+class ScanMetaData {
+    public:
+        QString album;
+        QString artist;
+        QString comment;
+        QString composer;
+        QString genre;
+        QString title;
+        QString tracknr;
+        QString year;
+
+        int bitrate;
+        int discnumber;
+        int filesize;
+        int length;
+        int samplerate;
+
+        bool isCompilation;
+        bool isValid;
+
+        float bpm;
+
+        enum Type {
+            mp3,
+            ogg,
+            flac,
+            mp4
+        };
+        Type filetype;
+};
 
 class CollectionScanner : public KApplication
 {
@@ -70,7 +112,7 @@ private:
      * @track Track for the file.
      * @return QMap containing tags, or empty QMap on failure.
      */
-    AttributeMap readTags( MetaFile::Track *track );
+    AttributeMap readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast );
 
     /**
      * Helper method for writing XML elements to stdout.
@@ -79,9 +121,8 @@ private:
      */
     void writeElement( const QString& name, const AttributeMap& attributes );
 
-
     /**
-     * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
+     * @return the LOWERCASE file extension without the preceding '.', r "" if there is none
      */
     inline QString extension( const QString &fileName )
     {
@@ -95,6 +136,23 @@ private:
     {
         return fileName.section( '/', 0, -2 );
     }
+
+#ifdef COMPLEX_TAGLIB_FILENAME
+
+    inline const wchar_t* TagLibEncodeName(const QString &filename)
+    {
+        return reinterpret_cast<const wchar_t *>(filename.utf16());
+    }
+
+#else
+
+    inline TagLib::FileName TagLibEncodeName(const QString &filename)
+    {
+        const char * ret = QFile::encodeName( filename );
+        return ret;
+    }
+
+#endif
 
 
     const bool    m_importPlaylists;
