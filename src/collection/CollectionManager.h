@@ -38,9 +38,11 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         ~CollectionManager();
 
-        QueryMaker * queryMaker();
+        QueryMaker * queryMaker() const;
 
-        QList<Collection*> collections();
+        QList<Collection*> collections() const;
+
+        Collection* primaryCollection() const;
 
         /**
             This method will try to get a Track object for the given url. This method will return 0 if no Track object

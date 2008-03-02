@@ -44,6 +44,7 @@ struct CollectionManager::Private
     QList<Collection*> unmanagedCollections;
     QList<Collection*> managedCollections;
     QList<TrackProvider*> trackProviders;
+    Collection *primaryCollection;
 };
 
 class CollectionManagerSingleton
@@ -87,6 +88,7 @@ CollectionManager::init()
     DEBUG_BLOCK
 
     d->sqlDatabase = 0;
+    d->primaryCollection = 0;
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
     foreach( KService::Ptr service, plugins )
@@ -129,7 +131,7 @@ CollectionManager::checkCollectionChanges()
 }
 
 QueryMaker*
-CollectionManager::queryMaker()
+CollectionManager::queryMaker() const
 {
     return new MetaQueryBuilder( d->collections );
 }
@@ -151,13 +153,21 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     SqlStorage *sqlCollection = dynamic_cast<SqlStorage*>( newCollection );
     if( sqlCollection )
     {
+        //let's cheat a bit and assume that sqlStorage and the primaryCollection are always the same
+        //it is true for now anyway
         if( d->sqlDatabase )
         {
             if( d->sqlDatabase->sqlDatabasePriority() < sqlCollection->sqlDatabasePriority() )
+            {
                 d->sqlDatabase = sqlCollection;
+                d->primaryCollection = newCollection;
+            }
         }
         else
+        {
             d->sqlDatabase = sqlCollection;
+            d->primaryCollection = newCollection;
+        }
     }
     emit collectionAdded( newCollection );
 }
@@ -207,10 +217,16 @@ CollectionManager::slotCollectionChanged()
 }
 
 QList<Collection*>
-CollectionManager::collections()
+CollectionManager::collections() const
 {
     return d->collections;
 }
+
+Collection*
+CollectionManager::primaryCollection() const
+{
+    return d->primaryCollection;
+} 
 
 SqlStorage*
 CollectionManager::sqlStorage() const
