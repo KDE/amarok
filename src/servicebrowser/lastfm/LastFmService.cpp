@@ -100,11 +100,11 @@ LastFmService::polish()
 
         QPushButton *neighborRadioLabel = new QPushButton( m_bottomPanel );
         neighborRadioLabel->setText( i18n( "Neighbour Radio" ) );
-        connect( neighborRadioLabel, SIGNAL(clicked()), SLOT(handleNeighbourRadio() ) );
+        connect( neighborRadioLabel, SIGNAL(clicked()), SLOT(slotPlayNeighbourRadio() ) );
 
         QPushButton *personalRadioButton = new QPushButton( m_bottomPanel );
         personalRadioButton->setText( i18n( "Personal Radio" ) );
-        connect( personalRadioButton, SIGNAL(clicked()), SLOT(handlePersonalRadio() ) );
+        connect( personalRadioButton, SIGNAL(clicked()), SLOT(slotPlayPersonalRadio() ) );
 
         // Global streams
         {
