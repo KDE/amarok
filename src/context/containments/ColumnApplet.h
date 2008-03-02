@@ -43,27 +43,27 @@ class /*AMAROK_EXPORT*/ ColumnApplet : public Containment
 public:
     ColumnApplet( QObject *parent, const QVariantList &args );
     ~ColumnApplet() {}
-    
+
     virtual QRectF boundingRect() const;
-    
+
     void saveToConfig( KConfig& conf );
     void loadConfig( KConfig& conf );
-    
+
     void updateSize();
-    
+
     QSizeF sizeHint() const;
-    
+
     virtual void paintInterface(QPainter *painter,
                                 const QStyleOptionGraphicsItem *option,
                                 const QRect& contentsRect);
-    
+
     QList<QAction*> contextActions();
 
 public slots:
     void appletRemoved( QObject* object );
     Applet* addApplet( Plasma::Applet* applet );
-    
-    
+
+
 protected:
 //     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
 //     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
@@ -71,9 +71,9 @@ protected:
 
 protected slots:
     void launchAppletBrowser();
-    
+
     void recalculate();
-    
+
 private slots:
     void destroyApplet();
     void appletDisappearComplete(QGraphicsItem *item, Plasma::Phase::Animation anim);
@@ -82,7 +82,7 @@ private slots:
 private:
     QAction* m_appletBrowserAction;
     Plasma::AppletBrowser* m_appletBrowser;
-    
+
     QRectF m_geometry;
 
     QList<QAction*> *m_actions;
