@@ -313,7 +313,10 @@ StatusBar::longMessage( const QString &text, MessageType type )
     SHOULD_BE_GUI
 
     //m_messageLabel->setMessage( text, type );
+
     //Only show the message once if it gets presented multiple times..
+    if( m_longMessageQueue.contains( text ) )
+        return;
 
     m_longMessageQueue.append( text );
 
