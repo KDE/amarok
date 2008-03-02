@@ -327,6 +327,9 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     if( !fileref.isNull() )
     {
         smd.filesize = QFile( path ).size();
+        smd.length = fileref.audioProperties()->length();
+        smd.bitrate = fileref.audioProperties()->bitrate();
+        smd.samplerate = fileref.audioProperties()->sampleRate();
 
         tag = fileref.tag();
         if ( tag )
@@ -475,14 +478,13 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     attributes["filetype"]  = QString::number( smd.filetype );
 //     attributes["uniqueid"] = QString::number( -1 ); //FIXME: Port
     attributes["compilation"] = QString::number( smd.isCompilation );
-//FIXME: port
     static const int Undetermined = -2;
     if ( smd.bitrate == Undetermined || smd.length == Undetermined || smd.samplerate == Undetermined )
         attributes["audioproperties"] = "false";
     else {
         attributes["audioproperties"] = "true";
         attributes["bitrate"]         = QString::number( smd.bitrate );
-        attributes["length"]          = QString::number( smd.length * 1000 );
+        attributes["length"]          = QString::number( smd.length );
         attributes["samplerate"]      = QString::number( smd.samplerate );
     }
 
