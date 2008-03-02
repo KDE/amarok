@@ -32,6 +32,13 @@ def Strigi()
   @neon.CreateTar(dir)
 end
 
+def TagLib()
+  dir = "amarok-nightly-taglib-#{DATE}"
+
+  @neon.BaseDir()
+  `svn co svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib #{dir}`
+  @neon.CreateTar(dir)
+end
 
 def KdeLibs()
   dir = "amarok-nightly-kdelibs-#{DATE}"
@@ -53,7 +60,6 @@ def KdeBaseRuntime()
   #create CMakeLists.txt
   cmakefile = File.new( "#{dir}/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
   cmakefile << "file(GLOB _po_files *.po)\n"
-  cmakefile << "GETTEXT_PROCESS_PO_FILES(${CURRENT_LANG} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR} ${_po_files} )\n"
   cmakefile << "set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )\n"
   cmakefile << "find_package(KDE4 REQUIRED)\n"
   cmakefile << "find_package(Strigi REQUIRED)\n"

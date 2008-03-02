@@ -47,6 +47,8 @@ KdeLibs()
 
 KdeBaseRuntime()
 
+TagLib()
+
 Amarok()
 
 ###############################
