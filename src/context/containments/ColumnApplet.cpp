@@ -169,7 +169,6 @@ void ColumnApplet::updateSize() // SLOT
 
 void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect)
 {
-    DEBUG_BLOCK
     Q_UNUSED( option );
     painter->save();
     //m_background->paint( painter, rect );
