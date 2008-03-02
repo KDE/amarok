@@ -20,6 +20,8 @@
 #include "servicemetabase.h"
 
 #include "debug.h"
+#include "meta/default/DefaultMetaTypes.h"
+#include "TheInstances.h"
 
 using namespace Meta;
 
@@ -253,31 +255,46 @@ ServiceTrack::isEditable() const
 AlbumPtr
 ServiceTrack::album() const
 {
-    return AlbumPtr::staticCast( m_album );
+    if ( !m_album == 0 )
+        return AlbumPtr::staticCast( m_album );
+    else
+        return The::defaultAlbum();
 }
 
 ArtistPtr
 ServiceTrack::artist() const
 {
-    return ArtistPtr::staticCast( m_artist );
+    if ( !m_artist == 0 )
+        return ArtistPtr::staticCast( m_artist );
+    else
+        return The::defaultArtist();
 }
 
 GenrePtr
 ServiceTrack::genre() const
 {
-    return GenrePtr::staticCast( m_genre );
+    if ( !m_genre == 0 )
+        return GenrePtr::staticCast( m_genre );
+    else
+        return The::defaultGenre();
 }
 
 ComposerPtr
 ServiceTrack::composer() const
 {
-    return ComposerPtr::staticCast( m_composer );
+    if ( !m_composer == 0 )
+        return ComposerPtr::staticCast( m_composer );
+    else
+        return The::defaultComposer();
 }
 
 YearPtr
 ServiceTrack::year() const
 {
-    return YearPtr::staticCast( m_year );
+    if( !m_year == 0 )
+        return YearPtr::staticCast( m_year );
+    else
+        return The::defaultYear();
 }
 
 void
