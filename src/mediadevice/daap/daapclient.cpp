@@ -17,7 +17,6 @@
 #define AMAROK_DAAPCLIENT_CPP
 
 #include "addhostbase.h"
-#include "collectiondb.h"
 #include "daapreader/reader.h"
 #include "daapreader/authentication/contentfetcher.h"
 #include "daapclient.h"

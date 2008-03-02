@@ -4,7 +4,6 @@
 
 #include "amarok.h"
 #include "CollectionTreeItemModel.h"
-#include "collectiondb.h"
 #include "qstringx.h"
 
 
@@ -13,8 +12,9 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     bool isCompilation = false;
     if( !mb.album().isEmpty() )
     {
-        const int albumId = CollectionDB::instance()->albumID( mb.album() );
-        isCompilation = CollectionDB::instance()->albumIsCompilation( QString::number(albumId) );
+        //FIXME: PORT 2.0
+//         const int albumId = CollectionDB::instance()->albumID( mb.album() );
+//         isCompilation = CollectionDB::instance()->albumIsCompilation( QString::number(albumId) );
     }
 
     QMap<QString, QString> args;

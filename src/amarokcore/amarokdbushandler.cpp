@@ -25,7 +25,6 @@
 #include "amarokdbushandler.h"
 #include "app.h" //transferCliArgs
 #include "debug.h"
-#include "collectiondb.h"
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
 #include "context/LyricsManager.h"
@@ -775,42 +774,44 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     int DbusCollectionHandler::totalAlbums()
     {
-        QStringList albums = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM album;" );
+        QStringList albums = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM album;" );
         QString total = albums[0];
         return total.toInt();
     }
 
     int DbusCollectionHandler::totalArtists()
     {
-        QStringList artists = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM artist;" );
+        QStringList artists = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM artist;" );
         QString total = artists[0];
         return total.toInt();
     }
 
     int DbusCollectionHandler::totalComposers()
     {
-        QStringList composers = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM composer;" );
+        QStringList composers = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM composer;" );
         QString total = composers[0];
         return total.toInt();
     }
 
     int DbusCollectionHandler::totalCompilations()
     {
-        QStringList comps = CollectionDB::instance()->query( "SELECT COUNT( DISTINCT album ) FROM tags WHERE sampler = 1;" );
+        QStringList comps = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( DISTINCT album ) FROM tags WHERE sampler = 1;" );
         QString total = comps[0];
         return total.toInt();
     }
 
     int DbusCollectionHandler::totalGenres()
     {
-        QStringList genres = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM genre;" );
+        //This should really work across multiple collections, but theres no interface for it currently..
+        QStringList genres = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM genre;" );
         QString total = genres[0];
         return total.toInt();
     }
 
     int DbusCollectionHandler::totalTracks()
     {
-        QStringList tracks = CollectionDB::instance()->query( "SELECT COUNT( url ) FROM tags;" );
+        //This should really work across multiple collections, but theres no interface for it currently..
+        QStringList tracks = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( url ) FROM tags;" );
         QString total = tracks[0];
         int final = total.toInt();
         return final;
@@ -818,12 +819,16 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     bool DbusCollectionHandler::isDirInCollection( const QString& path )
     {
-        return CollectionDB::instance()->isDirInCollection( path );
+        AMAROK_NOTIMPLEMENTED
+        return false;
+//         return CollectionDB::instance()->isDirInCollection( path );
     }
 
     bool DbusCollectionHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
     {
-        return CollectionDB::instance()->moveFile( oldURL, newURL, overwrite );
+        AMAROK_NOTIMPLEMENTED
+        return false;
+//         return CollectionDB::instance()->moveFile( oldURL, newURL, overwrite );
     }
 
     QStringList DbusCollectionHandler::query( const QString& sql )
@@ -840,40 +845,46 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     void DbusCollectionHandler::migrateFile( const QString &oldURL, const QString &newURL )
     {
-        CollectionDB::instance()->migrateFile( oldURL, newURL );
+        AMAROK_NOTIMPLEMENTED
+        return;
+//         CollectionDB::instance()->migrateFile( oldURL, newURL );
     }
 
     void DbusCollectionHandler::scanCollection()
     {
-        CollectionDB::instance()->startScan();
+        CollectionManager::instance()->startFullScan();
     }
 
     void DbusCollectionHandler::scanCollectionChanges()
     {
-        CollectionDB::instance()->scanModifiedDirs();
+        CollectionManager::instance()->checkCollectionChanges();
     }
 
     int DbusCollectionHandler::addLabels( const QString &url, const QStringList &labels )
     {
-        CollectionDB *db = CollectionDB::instance();
-        QString uid = db->getUniqueId( url );
-        int count = 0;
-        oldForeach( labels )
-        {
-            if( db->addLabel( url, *it, uid , CollectionDB::typeUser ) )
-                count++;
-        }
-        return count;
+        AMAROK_NOTIMPLEMENTED
+        return -1;
+//         CollectionDB *db = CollectionDB::instance();
+//         QString uid = db->getUniqueId( url );
+//         int count = 0;
+//         oldForeach( labels )
+//         {
+//             if( db->addLabel( url, *it, uid , CollectionDB::typeUser ) )
+//                 count++;
+//         }
+//         return count;
     }
 
     void DbusCollectionHandler::removeLabels( const QString &url, const QStringList &oldLabels )
     {
-        CollectionDB::instance()->removeLabels( url, oldLabels, CollectionDB::typeUser );
+        AMAROK_NOTIMPLEMENTED
+        return;
     }
 
     void DbusCollectionHandler::disableAutoScoring( bool disable )
     {
-        CollectionDB::instance()->disableAutoScoring( disable );
+        AMAROK_NOTIMPLEMENTED
+        return;
     }
 
     int DbusCollectionHandler::deviceId( const QString &url )

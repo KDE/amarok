@@ -21,7 +21,6 @@
 
 AMAROK_EXPORT_PLUGIN( MassStorageDeviceHandlerFactory )
 
-#include "collectiondb.h"
 #include "debug.h"
 
 #include <kconfig.h>
@@ -122,19 +121,19 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( KSharedConfigPtr
 
 DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Medium * m ) const
 {
-    QStringList ids = CollectionDB::instance()->query( QString( "SELECT id, label, lastmountpoint "
+    QStringList ids = CollectionManager::instance()->sqlStorage()->query( QString( "SELECT id, label, lastmountpoint "
                                                                "FROM devices WHERE type = 'uuid' "
                                                                "AND uuid = '%1';" ).arg( m->id() ) );
     if ( ids.size() == 3 )
     {
         debug() << "Found existing UUID config for ID " << ids[0] << " , uuid " << m->id();
-        CollectionDB::instance()->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
+        CollectionManager::instance()->sqlStorage()->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
                                                   "id = %1;" ).arg( ids[0] ).arg( m->mountPoint() ) );
         return new MassStorageDeviceHandler( ids[0].toInt(), m->mountPoint(), m->id() );
     }
     else
     {
-        int id = CollectionDB::instance()->insert( QString( "INSERT INTO devices( type, uuid, lastmountpoint ) "
+        int id = CollectionManager::instance()->sqlStorage()->insert( QString( "INSERT INTO devices( type, uuid, lastmountpoint ) "
                                                             "VALUES ( 'uuid', '%1', '%2' );" )
                                                             .arg( m->id() )
                                                             .arg( m->mountPoint() ), "devices" );

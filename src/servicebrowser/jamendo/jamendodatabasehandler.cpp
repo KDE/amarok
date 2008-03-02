@@ -36,21 +36,22 @@ void
 JamendoDatabaseHandler::createDatabase( )
 {
     //Get database instance
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *db = CollectionManager::instance()->sqlStorage();
 
     QString genreAutoIncrement = "";
 
-    if ( db->getDbConnectionType() == DbConnection::postgresql )
-    {
-        db->query( QString( "CREATE SEQUENCE jamendo_genre_seq;" ) );
-
-        genreAutoIncrement  = QString( "DEFAULT nextval('jamendo_genre_seq')" );
-
-    }
-    else if ( db->getDbConnectionType() == DbConnection::mysql )
-    {
-        genreAutoIncrement = "AUTO_INCREMENT";
-    }
+    //FIXME: We don't currently support non sqlite databases, and thus this doesn't work and DbConnection will need to be moved..
+//     if ( db->getDbConnectionType() == DbConnection::postgresql )
+//     {
+//         db->query( QString( "CREATE SEQUENCE jamendo_genre_seq;" ) );
+// 
+//         genreAutoIncrement  = QString( "DEFAULT nextval('jamendo_genre_seq')" );
+// 
+//     }
+//     else if ( db->getDbConnectionType() == DbConnection::mysql )
+//     {
+//         genreAutoIncrement = "AUTO_INCREMENT";
+//     }
 
     // create table containing tracks
     QString queryString = "CREATE TABLE jamendo_tracks ("
@@ -131,7 +132,7 @@ JamendoDatabaseHandler::destroyDatabase( )
 
     debug() << "Destroy Jamendo database ";
 
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *db = CollectionManager::instance()->sqlStorage();
     debug() << "here1";
     QStringList result = db->query( "DROP TABLE jamendo_tracks;" );
     debug() << "here1";
@@ -153,13 +154,14 @@ JamendoDatabaseHandler::destroyDatabase( )
     result = db->query( "DROP INDEX jamendo_genre_name;");
 
     debug() << "here2";
-    if ( db->getDbConnectionType() == DbConnection::postgresql )
-    {
-        db->query( QString( "DROP SEQUENCE jamendo_track_seq;" ) );
-        db->query( QString( "DROP SEQUENCE jamendo_album_seq;" ) );
-        db->query( QString( "DROP SEQUENCE jamendo_artist_seq;" ) );
-        //db->query( QString( "DROP SEQUENCE jamendo_tags_seq;" ) );
-    }
+    //FIXME: We only support sqlite currently.  DbConnection no longer exists.
+//     if ( db->getDbConnectionType() == DbConnection::postgresql )
+//     {
+//         db->query( QString( "DROP SEQUENCE jamendo_track_seq;" ) );
+//         db->query( QString( "DROP SEQUENCE jamendo_album_seq;" ) );
+//         db->query( QString( "DROP SEQUENCE jamendo_artist_seq;" ) );
+//         //db->query( QString( "DROP SEQUENCE jamendo_tags_seq;" ) );
+//     }
 }
 
 int
@@ -169,16 +171,16 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
     JamendoTrack * jTrack = static_cast<JamendoTrack *> ( track );
     QString numberString;
 
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *db = CollectionManager::instance()->sqlStorage();
     QString queryString = "INSERT INTO jamendo_tracks ( id, name, track_number, length, "
                           "album_id, artist_id, preview_url ) VALUES ( "
                           + QString::number( jTrack->id() ) + ", '"
-                          + db->escapeString( jTrack->name() ) + "', "
+                          + db->escape( jTrack->name() ) + "', "
                           + QString::number( jTrack->trackNumber() ) + ", "
                           + QString::number( jTrack->length() ) + ", "
                           + QString::number( jTrack->albumId() ) + ", "
                           + QString::number( jTrack->artistId() ) + ", '"
-                          + db->escapeString( jTrack->url() ) + "' );";
+                          + db->escape( jTrack->url() ) + "' );";
 
     // debug() << "Adding Jamendo track " << queryString;
     int trackId = db->insert( queryString, NULL );
@@ -190,7 +192,7 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
     foreach( QString mood, moods ) {
         queryString = "INSERT INTO jamendo_moods ( track_id, mood ) VALUES ( "
                       + QString::number( trackId ) + ", '"
-                      + db->escapeString( mood ) +  "' );";
+                      + db->escape( mood ) +  "' );";
 
 
         //debug() << "Adding Jamendo mood: " << queryString;

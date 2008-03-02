@@ -36,7 +36,6 @@ class SqlCollectionFactory : public CollectionFactory
         virtual void init();
 };
 
-class CollectionDB;
 class CollectionLocation;
 class XesamCollectionBuilder;
 class ScanManager;

@@ -134,21 +134,21 @@ SmbDeviceHandlerFactory::createHandler( const Medium * m ) const
 {
     QString server = m->deviceNode().section( "/", 2, 2 );
     QString share = m->deviceNode().section( "/", 3, 3 );
-    QStringList ids = CollectionDB::instance()->query( QString( "SELECT id, label, lastmountpoint "
-                                                                "FROM devices WHERE type = 'smb' "
-                                                                "AND servername = '%1' AND sharename = '%2';" )
-                                                                .arg( server )
-                                                                .arg( share ) );
+    QStringList ids = CollectionManager::instance()->sqlStorage()->query( QString( "SELECT id, label, lastmountpoint "
+                                                                          "FROM devices WHERE type = 'smb' "
+                                                                          "AND servername = '%1' AND sharename = '%2';" )
+                                                                          .arg( server )
+                                                                          .arg( share ) );
     if ( ids.size() == 3 )
     {
         debug() << "Found existing SMB config for ID " << ids[0] << " , server " << server << " ,share " << share;
-        CollectionDB::instance()->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
+        CollectionManager::instance()->sqlStorage()->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
                                                   "id = %1;" ).arg( ids[0] ).arg( m->mountPoint() ) );
         return new SmbDeviceHandler( ids[0].toInt(), server, share, m->mountPoint() );
     }
     else
     {
-        int id = CollectionDB::instance()->insert( QString( "INSERT INTO devices"
+        int id = CollectionManager::instance()->sqlStorage()->insert( QString( "INSERT INTO devices"
                                                             "( type, servername, sharename, lastmountpoint ) "
                                                             "VALUES ( 'smb', '%1', '%2', '%3' );" )
                                                             .arg( server )

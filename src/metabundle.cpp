@@ -793,7 +793,7 @@ QString MetaBundle::prettyText( int column ) const
         case Score:      text = QString::number( static_cast<int>( score() ) );                      break;
         case Rating:     text = prettyRating();                                                      break;
         case PlayCount:  text = QString::number( playCount() );                                      break;
-        case LastPlayed: text = Amarok::verboseTimeSince( lastPlay() );                              break;
+        case LastPlayed: text = /*Amarok::verboseTimeSince( lastPlay() );*/  "BORK BORK";            break;
         case Filesize:   text = prettyFilesize();                                                    break;
         case Mood:
           text = moodbar_const().state() == Moodbar::JobRunning ? i18n( "Calculating..." )

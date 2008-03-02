@@ -17,7 +17,6 @@
 #include "threadmanager.h"
 
 #include "amarokconfig.h"
-#include "collectiondb.h"
 #include "debug.h"
 #include "ContextStatusBar.h"
 
@@ -276,8 +275,10 @@ ThreadManager::Thread::run()
     DEBUG_BLOCK
 
     //keep this first, before anything that uses the database, or SQLite may error out
-    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
-        CollectionDB::instance()->releasePreviousConnection( this );
+
+    // TODO: Do we need to port this to the new collection manager stuff?
+//     if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
+//         CollectionDB::instance()->releasePreviousConnection( this );
 
     if( m_job )
     {

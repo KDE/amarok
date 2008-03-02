@@ -21,10 +21,11 @@
 #include "mountpointmanager.h"
 
 #include "amarok.h"
-#include "collectiondb.h"
+#include "CollectionManager.h"
 #include "debug.h"
 #include "pluginmanager.h"
 #include "ContextStatusBar.h"
+#include "SqlStorage.h"
 
 //solid stuff
 #include <solid/predicate.h>
@@ -43,6 +44,7 @@ typedef Medium::List MediumList;
 MountPointManager::MountPointManager()
     : QObject( 0 )
 {
+    AMAROK_NOTIMPLEMENTED
     setObjectName( "MountPointManager" );
 
     if ( !Amarok::config( "Collection" ).readEntry( "DynamicCollection", true ) )
@@ -56,14 +58,15 @@ MountPointManager::MountPointManager()
 
     init();
 
-    CollectionDB *collDB = CollectionDB::instance();
+//     SqlStorage *collDB = CollectionManager::instance()->sqlStorage();
 
-    if ( collDB->adminValue( "Database Stats Version" ).toInt() >= 9 && /* make sure that deviceid actually exists*/
-         collDB->query( "SELECT COUNT(url) FROM statistics WHERE deviceid = -2;" ).first().toInt() != 0 )
-    {
-        connect( this, SIGNAL( mediumConnected( int ) ), SLOT( migrateStatistics() ) );
-        QTimer::singleShot( 0, this, SLOT( migrateStatistics() ) );
-    }
+    //FIXME: Port 2.0
+//     if ( collDB->adminValue( "Database Stats Version" ).toInt() >= 9 && /* make sure that deviceid actually exists*/
+//          collDB->query( "SELECT COUNT(url) FROM statistics WHERE deviceid = -2;" ).first().toInt() != 0 )
+//     {
+//         connect( this, SIGNAL( mediumConnected( int ) ), SLOT( migrateStatistics() ) );
+//         QTimer::singleShot( 0, this, SLOT( migrateStatistics() ) );
+//     }
     connect( this, SIGNAL( mediumConnected( int ) ), SLOT( updateStatisticsURLs() ) );
     updateStatisticsURLs();
 }
@@ -195,22 +198,23 @@ MountPointManager::getAbsolutePath( const int deviceId, const KUrl& relativePath
     else
     {
         m_handlerMapMutex.unlock();
-        QStringList lastMountPoint = CollectionDB::instance()->query(
-                                                 QString( "SELECT lastmountpoint FROM devices WHERE id = %1" )
-                                                 .arg( deviceId ) );
-        if ( lastMountPoint.count() == 0 )
-        {
-            //hmm, no device with that id in the DB...serious problem
-            getAbsolutePath( -1, relativePath, absolutePath );
-            warning() << "Device " << deviceId << " not in database, this should never happen! Returning " << absolutePath.path();
-        }
-        else
-        {
-            absolutePath.setPath( lastMountPoint.first() );
-            absolutePath.addPath( relativePath.path() );
-            absolutePath.cleanPath();
+        //FIXME: Port 2.0
+//         QStringList lastMountPoint = CollectionDB::instance()->query(
+//                                                  QString( "SELECT lastmountpoint FROM devices WHERE id = %1" )
+//                                                  .arg( deviceId ) );
+//         if ( lastMountPoint.count() == 0 )
+//         {
+//             //hmm, no device with that id in the DB...serious problem
+//             getAbsolutePath( -1, relativePath, absolutePath );
+//             warning() << "Device " << deviceId << " not in database, this should never happen! Returning " << absolutePath.path();
+//         }
+//         else
+//         {
+//             absolutePath.setPath( lastMountPoint.first() );
+//             absolutePath.addPath( relativePath.path() );
+//             absolutePath.cleanPath();
 //             debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path();
-        }
+//         }
     }
 }
 
@@ -454,19 +458,20 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
 void
 MountPointManager::migrateStatistics()
 {
-    QStringList urls = CollectionDB::instance()->query( "SELECT url FROM statistics WHERE deviceid = -2;" );
+    QStringList urls = CollectionManager::instance()->sqlStorage()->query( "SELECT url FROM statistics WHERE deviceid = -2;" );
     foreach( const QString &url, urls )
     {
         if ( QFile::exists( url ) )
         {
             int deviceid = getIdForUrl( url );
+            SqlStorage *db = CollectionManager::instance()->sqlStorage();
             QString rpath = getRelativePath( deviceid, url );
             QString update = QString( "UPDATE statistics SET deviceid = %1, url = '%2'" )
                                       .arg( deviceid )
-                                      .arg( CollectionDB::instance()->escapeString( rpath ) );
+                                      .arg( db->escape( rpath ) );
             update += QString( " WHERE url = '%1' AND deviceid = -2;" )
-                               .arg( CollectionDB::instance()->escapeString( url ) );
-            CollectionDB::instance()->query( update );
+                               .arg( db->escape( url ) );
+            db->query( update );
         }
     }
 }
@@ -522,9 +527,9 @@ bool UrlUpdateJob::doJob( )
 
 void UrlUpdateJob::updateStatistics( )
 {
-    CollectionDB *collDB = CollectionDB::instance();
+    SqlStorage *db = CollectionManager::instance()->sqlStorage();
     MountPointManager *mpm = MountPointManager::instance();
-    QStringList urls = collDB->query( "SELECT s.deviceid,s.url "
+    QStringList urls = db->query( "SELECT s.deviceid,s.url "
                                       "FROM statistics AS s LEFT JOIN tags AS t ON s.deviceid = t.deviceid AND s.url = t.url "
                                       "WHERE t.url IS NULL AND s.deviceid != -2;" );
     debug() << "Trying to update " << urls.count() / 2 << " statistics rows";
@@ -540,27 +545,27 @@ void UrlUpdateJob::updateStatistics( )
                 continue;
             QString newRpath = mpm->getRelativePath( newDeviceid, realURL );
 
-            int statCount = collDB->query(
+            int statCount = db->query(
                             QString( "SELECT COUNT( url ) FROM statistics WHERE deviceid = %1 AND url = '%2';" )
                                         .arg( newDeviceid )
-                                        .arg( collDB->escapeString( newRpath ) ) ).first().toInt();
+                                        .arg( db->escape( newRpath ) ) ).first().toInt();
             if( statCount )
                 continue;       //statistics row with new URL/deviceid values already exists
 
             QString sql = QString( "UPDATE statistics SET deviceid = %1, url = '%2'" )
-                                .arg( newDeviceid ).arg( collDB->escapeString( newRpath ) );
+                                .arg( newDeviceid ).arg( db->escape( newRpath ) );
             sql += QString( " WHERE deviceid = %1 AND url = '%2';" )
-                                .arg( deviceid ).arg( collDB->escapeString( rpath ) );
-            collDB->query( sql );
+                                .arg( deviceid ).arg( db->escape( rpath ) );
+            db->query( sql );
         }
     }
 }
 
 void UrlUpdateJob::updateLabels( )
 {
-    CollectionDB *collDB = CollectionDB::instance();
+    SqlStorage *db = CollectionManager::instance()->sqlStorage();
     MountPointManager *mpm = MountPointManager::instance();
-    QStringList labels = collDB->query( "SELECT l.deviceid,l.url "
+    QStringList labels = db->query( "SELECT l.deviceid,l.url "
                                         "FROM tags_labels AS l LEFT JOIN tags as t ON l.deviceid = t.deviceid AND l.url = t.url "
                                         "WHERE t.url IS NULL;" );
     debug() << "Trying to update " << labels.count() / 2 << " tags_labels rows";
@@ -577,9 +582,9 @@ void UrlUpdateJob::updateLabels( )
             QString newRpath = mpm->getRelativePath( newDeviceid, realUrl );
 
             //only update rows if there is not already a row with the new deviceid/rpath and the same labelid
-            QStringList labelids = collDB->query(
+            QStringList labelids = db->query(
                                         QString( "SELECT labelid FROM tags_labels WHERE deviceid = %1 AND url = '%2';" )
-                                                 .arg( QString::number( newDeviceid ), collDB->escapeString( newRpath ) ) );
+                                                 .arg( QString::number( newDeviceid ), db->escape( newRpath ) ) );
             QString existingLabelids;
             if( !labelids.isEmpty() )
             {
@@ -595,11 +600,11 @@ void UrlUpdateJob::updateLabels( )
             QString sql = QString( "UPDATE tags_labels SET deviceid = %1, url = '%2' "
                                     "WHERE deviceid = %3 AND url = '%4'%5;" )
                                     .arg( newDeviceid )
-                                    .arg( collDB->escapeString( newRpath ),
+                                    .arg( db->escape( newRpath ),
                                           QString::number( deviceid ),
-                                          collDB->escapeString( rpath ),
+                                          db->escape( rpath ),
                                           existingLabelids );
-            collDB->query( sql );
+            db->query( sql );
         }
     }
 }

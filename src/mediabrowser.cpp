@@ -22,7 +22,6 @@
 #include "amarokconfig.h"
 #include "app.h"
 #include "browserToolBar.h"
-#include "collectiondb.h"
 #include "collection/CollectionManager.h"
 #include "debug.h"
 #include "editfilterdialog.h"
@@ -778,8 +777,9 @@ MediaView::dragObject()
     md->addDragObject( K3ListView::dragObject() );
     K3URLDrag* ud = new K3URLDrag( urls, viewport() );
     md->addDragObject( ud );
-    md->setPixmap( CollectionDB::createDragPixmap( urls ),
-                  QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
+    //FIXME: PORT 2.0
+//     md->setPixmap( CollectionDB::createDragPixmap( urls ),
+//                   QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     return md;
 }
 
@@ -958,12 +958,14 @@ MediaView::contentsDropEvent( QDropEvent *e )
     {
         if( e->mimeData()->hasFormat( "amarok-sql" ) )
         {
-            QString data( e->mimeData()->data( "amarok-sql" ) );
-            QString playlist = data.section( "\n", 0, 0 );
-            QString query = data.section( "\n", 1 );
-            QStringList values = CollectionDB::instance()->query( query );
-            KUrl::List list = CollectionDB::instance()->URLsFromSqlDrag( values );
-            MediaBrowser::queue()->addUrls( list, playlist );
+            AMAROK_NOTIMPLEMENTED
+            //FIXME: PORT 2.0
+//             QString data( e->mimeData()->data( "amarok-sql" ) );
+//             QString playlist = data.section( "\n", 0, 0 );
+//             QString query = data.section( "\n", 1 );
+//             QStringList values = CollectionDB::instance()->query( query );
+// //             KUrl::List list = CollectionDB::instance()->URLsFromSqlDrag( values );
+//             MediaBrowser::queue()->addUrls( list, playlist );
         }
         else if ( KUrl::List::canDecode( e->mimeData() ) )
         {
@@ -1620,8 +1622,9 @@ MediaQueue::dragObject()
     K3URLDrag* urldrag = new K3URLDrag( urls, viewport() );
     md->addDragObject( d );
     md->addDragObject( urldrag );
-    md->setPixmap( CollectionDB::createDragPixmap( urls ),
-                  QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
+    //FIXME: Port 2.0
+//     md->setPixmap( CollectionDB::createDragPixmap( urls ),
+//                   QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     return md;
 }
 
@@ -1986,12 +1989,14 @@ MediaQueue::slotDropped( QDropEvent* e, Q3ListViewItem* parent, Q3ListViewItem* 
     {
         if( e->mimeData()->hasFormat( "amarok-sql" ) )
         {
-            QString data( e->mimeData()->data( "amarok-sql" ) );
-            QString playlist = data.section( "\n", 0, 0 );
-            QString query = data.section( "\n", 1 );
-            QStringList values = CollectionDB::instance()->query( query );
-            KUrl::List list = CollectionDB::instance()->URLsFromSqlDrag( values );
-            addUrls( list, playlist );
+            //FIXME: PORT 2.0
+            AMAROK_NOTIMPLEMENTED
+//             QString data( e->mimeData()->data( "amarok-sql" ) );
+//             QString playlist = data.section( "\n", 0, 0 );
+//             QString query = data.section( "\n", 1 );
+//             QStringList values = CollectionDB::instance()->query( query );
+//             KUrl::List list = CollectionDB::instance()->URLsFromSqlDrag( values );
+//             addUrls( list, playlist );
         }
         else if ( KUrl::List::canDecode( e->mimeData() ) )
         {

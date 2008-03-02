@@ -27,9 +27,9 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include "amarok.h"
 #include "debug.h"
 #include "meta/file/File.h"
-#include "collectiondb.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
 #include "collection/CollectionManager.h"
+#include "collection/SqlStorage.h"
 #include "k3bexporter.h"
 #include "playlist/PlaylistModel.h"
 #include "podcastbundle.h"
@@ -608,8 +608,8 @@ GenericMediaDevice::buildPodcastDestination( const PodcastEpisodeBundle *bundle 
     QString location = m_podcastLocation.endsWith('/') ? m_podcastLocation : m_podcastLocation + '/';
     // get info about the PodcastChannel
     QString parentUrl = bundle->parent().url();
-    QString sql = "SELECT title,parent FROM podcastchannels WHERE url='" + CollectionDB::instance()->escapeString( parentUrl ) + "';";
-    QStringList values = CollectionDB::instance()->query( sql );
+    QString sql = "SELECT title,parent FROM podcastchannels WHERE url='" + CollectionManager::instance()->sqlStorage()->escape( parentUrl ) + "';";
+    QStringList values = CollectionManager::instance()->sqlStorage()->query( sql );
     QString channelTitle;
     int parent = 0;
     channelTitle = values.first();
@@ -619,7 +619,7 @@ GenericMediaDevice::buildPodcastDestination( const PodcastEpisodeBundle *bundle 
     QString name;
     while ( parent > 0 )
     {
-        values = CollectionDB::instance()->query( sql.arg( parent ) );
+        values = CollectionManager::instance()->sqlStorage()->query( sql.arg( parent ) );
         name    =    values.first();
         parent  =   values.last().toInt();
         location += cleanPath( name ) + '/';

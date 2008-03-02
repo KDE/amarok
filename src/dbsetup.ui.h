@@ -30,7 +30,6 @@
 *****************************************************************************/
 #include "config-amarok.h"
 #include "amarokconfig.h"
-#include "collectiondb.h"
 
 void DbSetup::init()
 {

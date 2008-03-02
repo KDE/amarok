@@ -19,7 +19,7 @@
 #define AMAROK_COLLECTION_QUERYMAKER_H
 
 #include "amarok_export.h"
-#include "Meta.h"
+#include "meta/Meta.h"
 
 #include <QObject>
 #include <QStringList>

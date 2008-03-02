@@ -20,7 +20,6 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "amarokdbushandler.h"
 #include "atomicstring.h"
-#include "collectiondb.h"
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
 #include "context/ContextView.h"
@@ -590,7 +589,6 @@ void App::applySettings( bool firstTime )
     //TrackToolTip::instance()->removeFromWidget( m_tray );
 #endif
     Amarok::OSD::instance()->applySettings();
-    CollectionDB::instance()->applySettings();
     m_tray->setVisible( AmarokConfig::showTrayIcon() );
     //TrackToolTip::instance()->addToWidget( m_tray );
 
@@ -683,8 +681,6 @@ App::continueInit()
         Amarok::config().sync();
     }
 
-    //CollectionDB::instance()->checkDatabase();
-
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();
     PERF_LOG( "Done creating MainWindow" )
@@ -700,7 +696,6 @@ App::continueInit()
     //for us as default (bad KMainWindow)
     mainWindow()->setAttribute( Qt::WA_DeleteOnClose, false );
     //init playlist window as soon as the database is guaranteed to be usable
-    //connect( CollectionDB::instance(), SIGNAL( databaseUpdateDone() ), mainWindow(), SLOT( init() ) );
 
     // FIXME: something is broken with global shortcuts & windows,
     // dbus call is causing a ~30 second timeout. Disable for now.
@@ -747,12 +742,7 @@ App::continueInit()
     // Refetch covers every 80 days to comply with Amazon license
     new RefreshImages();
 
-    PERF_LOG( "Before accessing ColelctionDB" )
-    CollectionDB *collDB = CollectionDB::instance();
-    PERF_LOG( "After accessing CollectionDB" )
-    
     if ( AmarokConfig::monitorChanges() )
-        //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( scanModifiedDirs() ) );
         CollectionManager::instance()->checkCollectionChanges();
 
 

@@ -283,7 +283,6 @@
 #include "amarokconfig.h"
 #include "amarok.h"
 #include "app.h"
-#include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
@@ -328,19 +327,20 @@ MoodServer::MoodServer( void )
     connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ),
              SLOT( slotMoodbarPrefs( bool, bool, int, bool ) ) );
     PERF_LOG( "MoodServer:Connect to CollectionDB" )
-    connect( CollectionDB::instance(),
-             SIGNAL( fileMoved( const QString &, const QString & ) ),
-             SLOT( slotFileMoved( const QString &, const QString & ) ) );
-    PERF_LOG( "MoodServer: Connected to ColelctionDB" )
-    connect( CollectionDB::instance(),
-             SIGNAL( fileMoved( const QString &, const QString &, const QString & ) ),
-             SLOT( slotFileMoved( const QString &, const QString & ) ) );
-    connect( CollectionDB::instance(),
-             SIGNAL( fileDeleted( const QString & ) ),
-             SLOT( slotFileDeleted( const QString & ) ) );
-    connect( CollectionDB::instance(),
-             SIGNAL( fileDeleted( const QString &, const QString & ) ),
-             SLOT( slotFileDeleted( const QString & ) ) );
+            //FIXME: Port 2.0
+//     connect( CollectionDB::instance(),
+//              SIGNAL( fileMoved( const QString &, const QString & ) ),
+//              SLOT( slotFileMoved( const QString &, const QString & ) ) );
+//     PERF_LOG( "MoodServer: Connected to ColelctionDB" )
+//     connect( CollectionDB::instance(),
+//              SIGNAL( fileMoved( const QString &, const QString &, const QString & ) ),
+//              SLOT( slotFileMoved( const QString &, const QString & ) ) );
+//     connect( CollectionDB::instance(),
+//              SIGNAL( fileDeleted( const QString & ) ),
+//              SLOT( slotFileDeleted( const QString & ) ) );
+//     connect( CollectionDB::instance(),
+//              SIGNAL( fileDeleted( const QString &, const QString & ) ),
+//              SLOT( slotFileDeleted( const QString & ) ) );
 }
 
 

@@ -21,7 +21,7 @@
 */
 
 #include "amarok.h"
-#include "collectiondb.h"
+#include "CollectionManager.h"
 #include "mediabrowser.h"
 #include "MediaItem.h"
 #include "MetaUtility.h"  //Meta::secToPrettyTime
@@ -220,16 +220,19 @@ MediaItem::syncStatsFromPath( const QString &url )
     if( url.isEmpty() )
         return;
 
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url) );
+
     // copy Amarok rating, play count and last played time to device
-    int rating = CollectionDB::instance()->getSongRating( url )*10;
+    int rating = track->rating() * 10;
     if( rating )
         setRating( rating );
-    int playcount = CollectionDB::instance()->getPlayCount( url );
+    int playcount = track->playCount();
     if( playcount > played() )
         setPlayCount( playcount );
-    QDateTime lastplay = CollectionDB::instance()->getLastPlay( url );
-    if( lastplay > playTime() )
-        setLastPlayed( lastplay.toTime_t() );
+    //FIXME: Port 2.0
+//     QDateTime lastplay = CollectionDB::instance()->getLastPlay( url );
+//     if( lastplay > playTime() )
+//         setLastPlayed( lastplay.toTime_t() );
 }
 
 long

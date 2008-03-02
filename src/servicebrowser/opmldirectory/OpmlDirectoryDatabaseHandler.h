@@ -20,7 +20,6 @@
 #ifndef OPMLDIRECTORYDATABASEHANDLER_H
 #define OPMLDIRECTORYDATABASEHANDLER_H
 
-#include "collectiondb.h"
 #include "OpmlDirectoryMeta.h"
 
 

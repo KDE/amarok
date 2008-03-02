@@ -462,21 +462,24 @@ void TagDialog::init()
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
     int items = ui->kComboBox_artist->count();
-    const QStringList artists = CollectionDB::instance()->artistList();
+//     const QStringList artists = CollectionDB::instance()->artistList();
+    const QStringList artists;
     ui->kComboBox_artist->insertItems( items, artists );
     ui->kComboBox_artist->completionObject()->insertItems( artists );
     ui->kComboBox_artist->completionObject()->setIgnoreCase( true );
     ui->kComboBox_artist->setCompletionMode( KGlobalSettings::CompletionPopup );
 
     items = ui->kComboBox_album->count();
-    const QStringList albums = CollectionDB::instance()->albumList();
+//     const QStringList albums = CollectionDB::instance()->albumList();
+    const QStringList albums;
     ui->kComboBox_album->insertItems( items, albums );
     ui->kComboBox_album->completionObject()->insertItems( albums );
     ui->kComboBox_album->completionObject()->setIgnoreCase( true );
     ui->kComboBox_album->setCompletionMode( KGlobalSettings::CompletionPopup );
 
     items = ui->kComboBox_artist->count();
-    const QStringList composers = CollectionDB::instance()->composerList();
+//     const QStringList composers = CollectionDB::instance()->composerList();
+    const QStringList composers;
     ui->kComboBox_composer->insertItems( items, composers );
     ui->kComboBox_composer->completionObject()->insertItems( composers );
     ui->kComboBox_composer->completionObject()->setIgnoreCase( true );
@@ -487,12 +490,14 @@ void TagDialog::init()
 
 //    const QStringList genres = MetaBundle::genreList();
     items = ui->kComboBox_artist->count();
-    const QStringList genres = CollectionDB::instance()->genreList();
+//     const QStringList genres = CollectionDB::instance()->genreList();
+    const QStringList genres;
     ui->kComboBox_genre->insertItems( items, genres );
     ui->kComboBox_genre->completionObject()->insertItems( genres );
     ui->kComboBox_genre->completionObject()->setIgnoreCase( true );
 
-    const QStringList labels = CollectionDB::instance()->labelList();
+//     const QStringList labels = CollectionDB::instance()->labelList();
+    const QStringList labels;
     //TODO: figure out a way to add auto-completion support to kTestEdit_selectedLabels
 
     m_labelCloud = new KHTMLPart( ui->labels_favouriteLabelsFrame );
@@ -1624,7 +1629,8 @@ TagDialogWriter::completeJob()
 {
      for( int i = 0, size=m_tags.size(); i<size; ++i ) {
         if ( !m_failed[i] ) {
-            CollectionDB::instance()->updateTags( m_tags[i].url().path(), m_tags[i], false /* don't update browsers*/ );
+            //Port 2.0
+//             CollectionDB::instance()->updateTags( m_tags[i].url().path(), m_tags[i], false /* don't update browsers*/ );
 // PORT 2.0            Playlist::instance()->updateMetaData( m_tags[i] );
         }
      }

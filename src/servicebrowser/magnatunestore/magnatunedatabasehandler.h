@@ -21,7 +21,6 @@
 #ifndef MAGNATUNEDATABASEHANDLER_H
 #define MAGNATUNEDATABASEHANDLER_H
 
-#include "collectiondb.h"
 #include "MagnatuneMeta.h"
 
 #include <QStringList>

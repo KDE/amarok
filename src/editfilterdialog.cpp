@@ -11,7 +11,6 @@
 #include "editfilterdialog.h"
 
 #include "amarokconfig.h"
-#include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"
 
@@ -600,16 +599,17 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
     {
         valueWanted();
     }
-    else if( key=="label" )
-        textWanted( CollectionDB::instance()->labelList() );
-    else if( key=="album" )
-        textWanted( CollectionDB::instance()->albumList() );
-    else if( key=="artist" )
-        textWanted( CollectionDB::instance()->artistList() );
-    else if( key=="composer" )
-        textWanted( CollectionDB::instance()->composerList() );
-    else if( key=="genre" )
-        textWanted( CollectionDB::instance()->genreList() );
+    //FIXME: PORT 2.0
+//     else if( key=="label" )
+//         textWanted( CollectionDB::instance()->labelList() );
+//     else if( key=="album" )
+//         textWanted( CollectionDB::instance()->albumList() );
+//     else if( key=="artist" )
+//         textWanted( CollectionDB::instance()->artistList() );
+//     else if( key=="composer" )
+//         textWanted( CollectionDB::instance()->composerList() );
+//     else if( key=="genre" )
+//         textWanted( CollectionDB::instance()->genreList() );
     else if( key=="type" || key=="filetype" )
     {
         QStringList types;

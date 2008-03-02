@@ -757,12 +757,14 @@ void MainWindow::showQueueManager() //SLOT
 
 void MainWindow::showStatistics() //SLOT
 {
+#if 0
     if( Statistics::instance() ) {
         Statistics::instance()->raise();
         return;
     }
     Statistics dialog;
     dialog.exec();
+#endif
 }
 
 void MainWindow::slotToggleFocus() //SLOT

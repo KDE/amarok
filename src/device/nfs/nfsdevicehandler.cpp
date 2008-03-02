@@ -132,7 +132,7 @@ NfsDeviceHandlerFactory::createHandler( const Medium * m ) const
 {
     QString server = m->deviceNode().section( ":", 0, 0 );
     QString share = m->deviceNode().section( ":", 1, 1 );
-    QStringList ids = CollectionDB::instance()->query( QString( "SELECT id, label, lastmountpoint "
+    QStringList ids = CollectionManager::instance()->sqlStorage()->query( QString( "SELECT id, label, lastmountpoint "
                                                                 "FROM devices WHERE type = 'nfs' "
                                                                 "AND servername = '%1' AND sharename = '%2';" )
                                                                 .arg( server )
@@ -140,13 +140,13 @@ NfsDeviceHandlerFactory::createHandler( const Medium * m ) const
     if ( ids.size() == 3 )
     {
         debug() << "Found existing NFS config for ID " << ids[0] << " , server " << server << " ,share " << share;
-        CollectionDB::instance()->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
+        CollectionManager::instance()->sqlStorage()->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
                                                   "id = %1;" ).arg( ids[0] ).arg( m->mountPoint() ) );
         return new NfsDeviceHandler( ids[0].toInt(), server, share, m->mountPoint() );
     }
     else
     {
-        int id = CollectionDB::instance()->insert( QString( "INSERT INTO devices"
+        int id = CollectionManager::instance()->sqlStorage()->insert( QString( "INSERT INTO devices"
                                                             "( type, servername, sharename, lastmountpoint ) "
                                                             "VALUES ( 'nfs', '%1', '%2', '%3' );" )
                                                             .arg( server )

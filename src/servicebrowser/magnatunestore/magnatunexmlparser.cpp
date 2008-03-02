@@ -28,6 +28,7 @@
 #include <KLocale>
 
 #include <QDomDocument>
+#include <QFile>
 
 using namespace Meta;
 

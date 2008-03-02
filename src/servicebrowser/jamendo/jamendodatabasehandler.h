@@ -20,7 +20,6 @@
 #ifndef JAMENDODATABASEHANDLER_H
 #define JAMENDODATABASEHANDLER_H
 
-#include "collectiondb.h"
 #include "JamendoMeta.h"
 
 

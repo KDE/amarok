@@ -18,7 +18,6 @@
  ***************************************************************************/
 
 #include "amarok.h"
-#include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"
 
@@ -57,9 +56,6 @@ QueueLabel::QueueLabel( QWidget *parent, const char *name )
     connect( this,                 SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
              Playlist::instance(), SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ) );
 
-    connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString &, const QString & ) ),
-             this, SLOT( slotCoverChanged( const QString &, const QString & ) ) );
-
     setNum( 0 );
 }
 
@@ -81,9 +77,10 @@ void QueueLabel::slotCoverChanged( const QString &artist, const QString &album )
 
 void QueueLabel::getCover( const QString &artist, const QString &album )
 {
-    m_cover = CollectionDB::instance()->albumImage( artist, album, 50 );
-    if( m_cover == CollectionDB::instance()->notAvailCover( 50 ) )
-        m_cover = KIconLoader::global()->iconPath( "goto", -KIconLoader::SizeHuge );
+    //TODO: Port me.
+//     m_cover = CollectionDB::instance()->albumImage( artist, album, 50 );
+//     if( m_cover == CollectionDB::instance()->notAvailCover( 50 ) )
+//         m_cover = KIconLoader::global()->iconPath( "goto", -KIconLoader::SizeHuge );
 }
 
 void QueueLabel::setNum( int num )

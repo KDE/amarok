@@ -16,12 +16,13 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
-#include "collectiondb.h"
+#include "collection/CollectionManager.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "querybuilder.h"
+#include "collection/SqlStorage.h"
 
 #include "kio/job.h"
 #include <KLocale>
@@ -105,10 +106,13 @@ void LastFmEngine::updateCurrent()
     DEBUG_BLOCK
     if( m_suggestedsongs )
     {
-        QStringList relArtists = CollectionDB::instance()->similarArtists( EngineController::instance()->currentTrack()->artist()->name(), 10 );
-        
+        Meta::ArtistList artists = CollectionManager::instance()->relatedArtists( EngineController::instance()->currentTrack()->artist(), 30 );
+        QStringList relArtists;
+        foreach( Meta::ArtistPtr artist, artists )
+            relArtists << artist->name();
+
         QString token;
-        
+
         QueryBuilder qb;
         QStringList values;
         qb.clear();
@@ -121,7 +125,7 @@ void LastFmEngine::updateCurrent()
         qb.sortByFavorite();
         qb.setLimit( 0, 10 );
         values = qb.run();
-         
+
         if( !values.isEmpty() )
         {   
             for( int i = 0; i < values.count(); i += 5 ) // we iterate through each song + song info
@@ -132,10 +136,13 @@ void LastFmEngine::updateCurrent()
             }
         }
     }
-    
+
     if( m_relatedartists )
     {
-        QStringList data = CollectionDB::instance()->similarArtists( EngineController::instance()->currentTrack()->artist()->name(), 30 );
+        Meta::ArtistList artists = CollectionManager::instance()->relatedArtists( EngineController::instance()->currentTrack()->artist(), 30 );
+        QStringList data;
+        foreach( Meta::ArtistPtr artist, artists )
+            data << artist->name();
         setData( "relatedartists", data );
     }
 }

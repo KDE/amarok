@@ -36,7 +36,7 @@ void
 OpmlDirectoryDatabaseHandler::createDatabase( )
 {
     //Get database instance
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *db = CollectionManager::instance()->sqlStorage();
 
     QString genreAutoIncrement = "";
 
@@ -109,7 +109,7 @@ OpmlDirectoryDatabaseHandler::destroyDatabase( )
 
     //debug() << "Destroy OpmlDirectory database ";
 
-    CollectionDB *db = CollectionDB::instance();
+    SqlStorage *db = CollectionManager::instance()->sqlStorage();
     QStringList result = db->query( "DROP TABLE opmldirectory_tracks;" );
     result = db->query( "DROP TABLE opmldirectory_albums;" );
     result = db->query( "DROP TABLE opmldirectory_artists;" );
@@ -124,21 +124,21 @@ OpmlDirectoryDatabaseHandler::destroyDatabase( )
 int
 OpmlDirectoryDatabaseHandler::insertTrack( ServiceTrack *track )
 {
-
     QString numberString;
 
-    CollectionDB *db = CollectionDB::instance();
+    Collection *coll;
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     QString queryString = "INSERT INTO opmldirectory_tracks ( name, track_number, length, "
                           "album_id, artist_id, preview_url ) VALUES ( '"
-                          + db->escapeString( track->name() ) + "', "
+                          + sqlDb->escape( track->name() ) + "', "
                           + QString::number( 0 ) + ", "
                           + QString::number( 0 ) + ", "
                           + QString::number( track->albumId() ) + ", "
                           + QString::number( 1 ) + ", '"
-                          + db->escapeString( track->url() ) + "' );";
+                          + sqlDb->escape( track->url() ) + "' );";
 
    // debug() << "Adding opmldirectory_track " << queryString;
-    int trackId = db->insert( queryString, NULL );
+    int trackId = sqlDb->insert( queryString, NULL );
 
     return trackId;
 }

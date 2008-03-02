@@ -20,7 +20,6 @@
 #include "CollectionConfig.h"
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "collectiondb.h"
 #include "config-amarok.h"
 #include "directorylist.h"
 
@@ -90,12 +89,12 @@ int
 CollectionConfig::databaseTypeCode( const QString& type ) const
 {
     // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
-    int dbType = DbConnection::sqlite;
-    if ( type == "MySQL")
-        dbType = DbConnection::mysql;
-    else if ( type == "Postgresql" )
-        dbType = DbConnection::postgresql;
-    return dbType;
+//     int dbType = DbConnection::sqlite;
+//     if ( type == "MySQL")
+//         dbType = DbConnection::mysql;
+//     else if ( type == "Postgresql" )
+//         dbType = DbConnection::postgresql;
+    return 0; //Hardcode sqlite for now
 }
 
 

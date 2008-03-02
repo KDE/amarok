@@ -20,7 +20,6 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
-#include "collectiondb.h"
 #include "debug.h"
 #include "mediabrowser.h"
 #include "MediaItem.h"

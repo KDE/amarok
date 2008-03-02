@@ -14,7 +14,6 @@
 #include "amarok.h"
 #include "debug.h"
 #include "daapserver.h"
-#include "collectiondb.h"
 #include "AmarokProcess.h"
 
 #include <kstandarddirs.h>
@@ -65,7 +64,7 @@ DaapServer::readSql()
         {
             line.remove( 0, sqlPrefix.length() );
             debug() << "sql run " << line;
-            m_server->writeStdin( CollectionDB::instance()->query( line ).join("\n") );
+            m_server->writeStdin( CollectionManager::instance()->sqlStorage()->query( line ).join("\n") );
             m_server->writeStdin( "**** END SQL ****" );
         }
         else if( line.startsWith( serverStartPrefix ) )

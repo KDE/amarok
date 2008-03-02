@@ -18,7 +18,6 @@ email                : fh@ez.no
 #include "engineobserver.h"
 
 #include "debug.h"
-#include "collectiondb.h"
 #include "podcastbundle.h"
 
 

@@ -24,7 +24,6 @@
 #include "refreshimages.h"
 
 #include "amarok.h"
-#include "collectiondb.h"
 #include "debug.h"
 #include "ContextStatusBar.h"
 
@@ -47,7 +46,10 @@
 RefreshImages::RefreshImages()
 {
     //"SELECT asin, locale, filename FROM amazon WHERE refetchdate > %1 ;"
-    const QStringList staleImages = CollectionDB::instance()->staleImages();
+    AMAROK_NOTIMPLEMENTED;
+    //FIXME: Port 2.0
+//     const QStringList staleImages = CollectionDB::instance()->staleImages();
+    const QStringList staleImages = QStringList();
     QStringList::ConstIterator it = staleImages.constBegin();
     QStringList::ConstIterator end = staleImages.constEnd();
 
@@ -62,7 +64,9 @@ RefreshImages::RefreshImages()
         {
             //somehow we have entries without ASIN
             if ( !md5sum.isEmpty() ) //I've never seen this, just to be sure
-                CollectionDB::instance()->removeInvalidAmazonInfo(md5sum);
+                ;
+            //FIXME: PORT 2.0
+//                 CollectionDB::instance()->removeInvalidAmazonInfo(md5sum);
             it++;
             if ( it==end )
                 deleteLater();
@@ -130,7 +134,8 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
     if( !testUrl.isValid() ) //KIO crashs on empty strings!!!
     {
         //Amazon sometimes takes down covers
-        CollectionDB::instance()->removeInvalidAmazonInfo(xmlJob->objectName());
+        //FIXME: Port2.0
+//         CollectionDB::instance()->removeInvalidAmazonInfo(xmlJob->objectName());
         return;
     }
 
@@ -159,10 +164,10 @@ void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
     img.loadFromData(static_cast<KIO::StoredTransferJob*>(imageJob)->data());
     img.setText( "amazon-url", 0, m_jobInfo[imageJob->objectName()].m_detailUrl);
     img.save( Amarok::saveLocation("albumcovers/large/") + imageJob->objectName(), "PNG");
-
-    CollectionDB::instance()->newAmazonReloadDate( m_jobInfo[imageJob->objectName()].m_asin
-        , m_jobInfo[imageJob->objectName()].m_locale
-        , imageJob->objectName());
+//FIXME: PORT 2.0
+//     CollectionDB::instance()->newAmazonReloadDate( m_jobInfo[imageJob->objectName()].m_asin
+//         , m_jobInfo[imageJob->objectName()].m_locale
+//         , imageJob->objectName());
 
     if(m_jobInfo[imageJob->objectName()].m_last)
         deleteLater();

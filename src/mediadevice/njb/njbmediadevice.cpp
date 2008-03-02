@@ -30,7 +30,6 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 
 
 // Amarok
-#include <collectiondb.h>
 #include <debug.h>
 #include <metabundle.h>
 #include <statusbar/ContextStatusBar.h>
