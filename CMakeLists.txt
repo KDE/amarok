@@ -71,7 +71,6 @@ macro_log_feature( OPENGL_FOUND "opengl" "Support for gl-accellerated visualizat
 find_package(KdeMultimedia)
 macro_log_feature( KDEMULTIMEDIA_FOUND "kdemultimedia" "Support for playing audio cds" "http://www.kde.org" FALSE "4.0" "")
 
-macro_display_feature_log()
 
 macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
@@ -84,3 +83,4 @@ configure_file (config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.
 
 add_subdirectory( src )
 
+macro_display_feature_log()
