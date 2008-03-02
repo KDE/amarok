@@ -25,6 +25,8 @@ class LastFmServiceCollection;
 
 class KHBox;
 
+class QComboBox;
+
 namespace The
 {
     LastFmService *lastFmService();
@@ -64,8 +66,10 @@ private slots:
 
     void playCustomStation();
 
-    void handleNeighbourRadio();
-    void handlePersonalRadio();
+    void slotPlayNeighbourRadio();
+    void slotPlayPersonalRadio();
+
+    void slotPlayGlobalRadio();
 
     void setButtonsEnabled( bool enable );
 
@@ -74,16 +78,21 @@ private:
     RadioAdapter *m_radio;
     LastFmServiceCollection *m_collection;
 
+    void playLastFmStation( const KUrl &url );
+
     bool m_polished;
     KHBox *m_buttonBox;
     QPushButton *m_loveButton;
     QPushButton *m_banButton;
     QPushButton *m_skipButton;
 
+    QComboBox *m_globalComboBox;
+
     KLineEdit * m_customStationEdit;
     QPushButton * m_customStationButton;
 
     const QString m_userName;
+    QString m_station;
 
     static LastFmService *ms_service;
 

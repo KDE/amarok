@@ -23,7 +23,7 @@
 #include "widgets/searchwidget.h"
 #include "TheInstances.h"
 
-#include <KPushButton>
+#include <QComboBox>
 
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
@@ -98,13 +98,31 @@ LastFmService::polish()
     {
         m_bottomPanel->setMaximumHeight( 200 );
 
-        KPushButton *neighborRadioLabel = new KPushButton( m_bottomPanel );
-        neighborRadioLabel->setText( "Neighbour Radio" );
+        QPushButton *neighborRadioLabel = new QPushButton( m_bottomPanel );
+        neighborRadioLabel->setText( i18n( "Neighbour Radio" ) );
         connect( neighborRadioLabel, SIGNAL(clicked()), SLOT(handleNeighbourRadio() ) );
 
-        KPushButton *personalRadioButton = new KPushButton( m_bottomPanel );
-        personalRadioButton->setText( "Personal Radio" );
+        QPushButton *personalRadioButton = new QPushButton( m_bottomPanel );
+        personalRadioButton->setText( i18n( "Personal Radio" ) );
         connect( personalRadioButton, SIGNAL(clicked()), SLOT(handlePersonalRadio() ) );
+
+        // Global streams
+        {
+            KHBox *globalBox = new KHBox( m_bottomPanel );
+            QStringList lastfmGenres;
+
+            lastfmGenres << i18n("Global Tags") << "Alternative" << "Ambient" << "Chill Out" << "Classical"<< "Dance"
+                    << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
+                    << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
+                    << "Soundtrack" << "Techno" << "Trance";
+
+            m_globalComboBox = new QComboBox( globalBox );
+            m_globalComboBox->addItems( lastfmGenres );
+
+            QPushButton *playGlobal = new QPushButton( globalBox );
+            playGlobal->setText( i18n( "Play" ) );
+            connect( playGlobal, SIGNAL( clicked() ), SLOT( slotPlayGlobalRadio() ) );
+        }
 
         m_buttonBox = new KHBox(m_bottomPanel);
         m_buttonBox->setSpacing( 3 );
@@ -200,23 +218,32 @@ void LastFmService::playCustomStation()
 
     if ( !band.isEmpty() ) {
         QString url = "lastfm://artist/" + band + "/similarartists";
-        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-        The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+        playLastFmStation( KUrl( url ) );
     }
 }
 
-void LastFmService::handleNeighbourRadio()
+void LastFmService::slotPlayNeighbourRadio()
 {
     DEBUG_BLOCK
     QString url = "lastfm://user/" + m_userName + "/neighbours";
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+    playLastFmStation( KUrl( url ) );
 }
 
-void LastFmService::handlePersonalRadio()
+void LastFmService::slotPlayPersonalRadio()
 {
     DEBUG_BLOCK
     QString url = "lastfm://user/" + m_userName + "/personal";
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+    playLastFmStation( KUrl( url ) );
+}
+
+void LastFmService::slotPlayGlobalRadio()
+{
+    QString url = "lastfm://globaltags/" + m_globalComboBox->currentText();
+    playLastFmStation( KUrl( url ) );
+}
+
+void LastFmService::playLastFmStation( const KUrl &url )
+{
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
     The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
