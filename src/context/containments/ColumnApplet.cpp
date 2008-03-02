@@ -71,17 +71,14 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     QString svgFile = KStandardDirs::locate( "data","desktoptheme/default/widgets/amarok-wallpaper.svg" );
     QString svg_source =  The::svgTinter()->tint( svgFile );
 
-    m_renderer =  new KSvgRenderer( The::svgTinter()->tint( svgFile ).toAscii() );
-    
+    m_renderer =  new KSvgRenderer( svg_source.toAscii() );
+
     m_tintedSvg.setSuffix( ".svg" );
     m_tintedSvg.open();
-    
-    QFile file( m_tintedSvg.fileName() );
-    file.open( QIODevice::WriteOnly | QIODevice::Text );
 
-    QTextStream out( &file );
+    QTextStream out( &m_tintedSvg );
     out << svg_source;
-    file.close();
+    m_tintedSvg.close();
 
     debug() << "temp filename: " << m_tintedSvg.fileName();
 
@@ -95,7 +92,6 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     
     //m_background = new Svg( m_tintedSvg.fileName(), this );
     m_logo = new Svg( "widgets/amarok-logo", this );
-    m_logo->resize();
     m_width = 300; // TODO hardcoding for now, do we want this configurable?
     m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width();
     m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );
