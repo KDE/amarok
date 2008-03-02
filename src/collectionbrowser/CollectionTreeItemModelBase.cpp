@@ -66,7 +66,6 @@ CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 
 Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) const
 {
-    //DEBUG_BLOCK
     if ( !index.isValid() || !index.parent().isValid() )
         return Qt::ItemIsEnabled;
 
@@ -344,9 +343,6 @@ CollectionTreeItemModelBase::queryDone()
 
     //stop timer if there are no more animations active
 
-    debug() <<"no more m_childQueries: " << ( d->m_childQueries.count() == 0 );
-    debug() <<"no more m_compilationQueries: " << ( d->m_compilationQueries.count() == 0 );
-    
     if (d->m_childQueries.count() == 0 /*&& d->m_compilationQueries.count() == 0 */ )
         m_timeLine->stop();
     qm->deleteLater();
@@ -384,7 +380,6 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
             CollectionTreeItem *item = parent->child( i );
             if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
             {
-                debug() << "Item in m_expandedItems, querying for children";
                 listForLevel( item->level(), item->queryMaker(), item );
             }
         }
@@ -393,7 +388,6 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
         {
             if ( m_expandedItems.contains( parent->data() ) )
             {
-                debug() << "Requesting expansion of parent item";
                 emit expandIndex( parentIndex );
             }
             else
@@ -407,7 +401,6 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
     }
     else if( d->m_compilationQueries.contains( qm ) )
     {
-        debug() << "received result of compilation query";
         CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
         QModelIndex parentIndex;
         if (parent == m_rootItem ) // will never happen in CollectionTreeItemModel
@@ -486,8 +479,6 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
 
 void CollectionTreeItemModelBase::loadingAnimationTick()
 {
-
-    //DEBUG_BLOCK
     if ( m_animFrame == 0 )
         m_currentAnimPixmap = m_loading2;
     else
@@ -500,7 +491,6 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
     QList<CollectionTreeItem* > items = d->m_childQueries.values();
 
     foreach ( CollectionTreeItem* item, items ) {
-
         emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
     }
 
@@ -524,8 +514,9 @@ CollectionTreeItemModelBase::slotFilter()
             CollectionTreeItem *expandedItem = d->m_collections.value( expanded->collectionId() ).second;
             if ( expandedItem == 0 ) {
                 debug() << "ARRG! expandedItem is 0!!! id=" << expanded->collectionId() ;
-            } else
+            } else {
                 emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
+            }
         }
     }
 }
