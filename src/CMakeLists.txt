@@ -417,7 +417,7 @@ set(amaroklib_LIB_SRCS
     refreshimages.cpp
     scriptmanager.cpp
     Sidebar.h
-    SmartPlaylistEditor.cpp
+#    SmartPlaylistEditor.cpp
     socketserver.cpp
     StarManager.cpp
 #    Statistics.cpp
