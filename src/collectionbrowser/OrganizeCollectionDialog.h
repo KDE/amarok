@@ -11,26 +11,47 @@
 #ifndef AMAROK_ORGANIZECOLLECTIONDIALOG_H
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_H
 
-class OrganizeCollectionDialogBase : public KDialog
+#include "meta/Meta.h"
+
+#include <KDialog>
+
+#include <QtGui/QWidget>
+
+namespace Ui
+{
+    class OrganizeCollectionDialogBase;
+}
+
+class OrganizeCollectionDialog : public KDialog
 {
     Q_OBJECT
     public:
-    explicit OrganizeCollectionDialogBase( QWidget *parent=0, const char *name=0, bool modal=true,
+    explicit OrganizeCollectionDialog( QWidget *parent=0, const char *name=0, bool modal=true,
             const QString &caption=QString(),
-            QFlags<KDialog::ButtonCode> buttonMask=Ok|Apply|Cancel )
-        : KDialog( parent )
-    {
-        Q_UNUSED( name )
-        setCaption( caption );
-        setModal( modal );
-        setButtons( buttonMask );
-        showButtonSeparator( true );
-    }
+            QFlags<KDialog::ButtonCode> buttonMask=Ok|Apply|Cancel
+            );
 
+    ~OrganizeCollectionDialog();
     signals:
         void detailsClicked();
+        void updatePreview(QString);
     public slots:
-        void slotDetails() { KDialog::slotButtonClicked( Details ); emit detailsClicked(); adjustSize(); }
+        void slotDetails(); 
+    private:
+
+    QString buildDestination( const QString &format, const Meta::TrackPtr track ) const;
+    QString cleanPath( const QString &component ) const;
+    QString buildFormatTip() const;
+    QString buildFormatString() const;
+    void setPreviewTrack( const Meta::TrackPtr track );
+    void preview( const QString &format );
+    void update( int dummy );
+    void update( const QString & dummy );
+    void init();
+
+    Ui::OrganizeCollectionDialogBase *ui;
+    Meta::TrackPtr m_previewTrack;
+    bool detailed;
 };
 
 #endif
