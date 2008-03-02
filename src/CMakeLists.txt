@@ -449,7 +449,7 @@ kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokcore/amarokconfig.kcfgc)
 kde4_add_ui3_files(amaroklib_LIB_SRCS
    dbsetup.ui
 #   newdynamic.ui
-   collectionbrowser/OrganizeCollectionDialog.ui
+#   collectionbrowser/OrganizeCollectionDialog.ui
 #   tagdialogbase.ui
 #   tagguesserconfigdialog.ui
 )
