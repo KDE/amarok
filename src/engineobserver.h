@@ -24,7 +24,6 @@ email                : fh@ez.no
 #include <QSet>
 
 class EngineSubject;
-class MetaBundle;
 class QString;
 
 /**

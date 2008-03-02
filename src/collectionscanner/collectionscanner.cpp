@@ -22,6 +22,7 @@
 #include "amarok.h"
 #include "collectionscanner.h"
 #include "debug.h"
+#include "meta/file/File.h"
 
 #include <cerrno>
 #include <iostream>
@@ -224,9 +225,9 @@ CollectionScanner::scanFiles( const QStringList& entries )
         }
 
         else {
-            MetaBundle::EmbeddedImageList images;
-            MetaBundle mb( KUrl( path ), true, TagLib::AudioProperties::Fast, &images );
-            const AttributeMap attributes = readTags( mb );
+//             MetaBundle::EmbeddedImageList images;
+            MetaFile::Track *track = new MetaFile::Track( KUrl( path ) );
+            const AttributeMap attributes = readTags( track );
 
             if( !attributes.empty() ) {
                 writeElement( "tags", attributes );
@@ -235,14 +236,14 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
                 if( !covers.contains( cover ) )
                     covers += cover;
-
-                oldForeachType( MetaBundle::EmbeddedImageList, images ) {
-                    AttributeMap attributes;
-                    attributes["path"] = path;
-                    attributes["hash"] = (*it).hash();
-                    attributes["description"] = (*it).description();
-                    writeElement( "embed", attributes );
-                }
+//FIXME: Port 2.0
+//                 oldForeachType( MetaBundle::EmbeddedImageList, images ) {
+//                     AttributeMap attributes;
+//                     attributes["path"] = path;
+//                     attributes["hash"] = (*it).hash();
+//                     attributes["description"] = (*it).description();
+//                     writeElement( "embed", attributes );
+//                 }
             }
         }
 
@@ -279,7 +280,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
 
 AttributeMap
-CollectionScanner::readTags( const MetaBundle& mb )
+CollectionScanner::readTags( const KURL &url )
 {
     // Tests reveal the following:
     //
@@ -292,37 +293,37 @@ CollectionScanner::readTags( const MetaBundle& mb )
 
     AttributeMap attributes;
 
-    if ( !mb.isValidMedia() ) {
+    if ( !track->isPlayable() ) {
         std::cout << "<dud/>";
         return attributes;
     }
 
-    attributes["path"]    = mb.url().path();
-    attributes["title"]   = mb.title();
-    attributes["artist"]  = mb.artist();
-    attributes["composer"]= mb.composer();
-    attributes["album"]   = mb.album();
-    attributes["comment"] = mb.comment();
-    attributes["genre"]   = mb.genre();
-    attributes["year"]    = mb.year() ? QString::number( mb.year() ) : QString();
-    attributes["track"]   = mb.track() ? QString::number( mb.track() ) : QString();
-    attributes["discnumber"]   = mb.discNumber() ? QString::number( mb.discNumber() ) : QString();
-    attributes["bpm"]   = mb.bpm() ? QString::number( mb.bpm() ) : QString();
-    attributes["filetype"]  = QString::number( mb.fileType() );
-    attributes["uniqueid"] = mb.uniqueId();
-    attributes["compilation"] = QString::number( mb.compilation() );
-
-    if ( mb.audioPropertiesUndetermined() )
-        attributes["audioproperties"] = "false";
-    else {
+    attributes["path"]    = track->playableUrl().path();
+    attributes["title"]   = track->prettyName();
+    attributes["artist"]  = track->artist() ? track->artist()->prettyName() : QString();
+    attributes["composer"]= track->composer() ? track->composer()->prettyName() : QString();
+    attributes["album"]   = track->album() ? track->album()->prettyName() : QString();
+    attributes["comment"] = track->comment();
+    attributes["genre"]   = track->genre() ? track->genre()->prettyName() : QString();
+    attributes["year"]    = track->year() > 0 ? QString::number( track->year() ) : QString();
+    attributes["track"]   = track->trackNumber() ? QString::number( track->trackNumber() ) : QString();
+    attributes["discnumber"]   = track->discNumber() ? QString::number( track->discNumber() ) : QString();
+    attributes["bpm"]   = /*mb.bpm() ? QString::number( mb.bpm() ) :*/ QString();
+    attributes["filetype"]  = track->type();
+//     attributes["uniqueid"] = mb.uniqueId(); //FIXME: Port
+//     attributes["compilation"] = QString::number( mb.compilation() );
+//FIXME: port
+//     if ( mb.audioPropertiesUndetermined() )
+//         attributes["audioproperties"] = "false";
+//     else {
         attributes["audioproperties"] = "true";
-        attributes["bitrate"]         = QString::number( mb.bitrate() );
-        attributes["length"]          = QString::number( mb.length() );
-        attributes["samplerate"]      = QString::number( mb.sampleRate() );
-    }
+        attributes["bitrate"]         = QString::number( track->bitrate() );
+        attributes["length"]          = QString::number( track->length() );
+        attributes["samplerate"]      = QString::number( track->sampleRate() );
+//     }
 
-    if ( mb.filesize() >= 0 )
-        attributes["filesize"] = QString::number( mb.filesize() );
+    if ( track->filesize() >= 0 )
+        attributes["filesize"] = QString::number( track->filesize() );
 
     return attributes;
 }

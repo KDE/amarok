@@ -373,7 +373,6 @@ set(amaroklib_LIB_SRCS
     AmarokProcess.cpp
     app.cpp
     atomicstring.cpp
-    collectiondb.cpp
     CoverFetcher.cpp
     CoverManager.cpp
     cuefile.cpp
@@ -381,7 +380,7 @@ set(amaroklib_LIB_SRCS
     deletedialog.cpp
     deviceconfiguredialog.cpp
     directorylist.cpp
-    editfilterdialog.cpp
+#    editfilterdialog.cpp
     enginebase.cpp
     enginecontroller.cpp
     engineobserver.cpp
@@ -404,7 +403,6 @@ set(amaroklib_LIB_SRCS
     MediaDeviceCache.cpp
     MediaDevicePluginManager.cpp
     medium.cpp
-    metabundle.cpp
 #    moodbar.cpp
     mountpointmanager.cpp
     osd.cpp
@@ -413,7 +411,6 @@ set(amaroklib_LIB_SRCS
     pluginmanager.cpp
     podcastsettings.cpp
     prettypopupmenu.cpp
-    querybuilder.cpp
     refreshimages.cpp
     scriptmanager.cpp
     Sidebar.h
@@ -436,7 +433,6 @@ set(amaroklib_LIB_SRCS
     widgets/sliderwidget.cpp
     widgets/volumewidget.cpp
     widgets/MainToolbar.cpp
-    xmlloader.cpp
     SvgTinter.cpp
     xspfplaylist.cpp
 )

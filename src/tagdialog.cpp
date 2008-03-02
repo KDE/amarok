@@ -19,9 +19,7 @@
 #include "debug.h"
 #include "EditCapability.h"
 #include "MainWindow.h"
-#include "metabundle.h" // TagLibEncodeName
 #include "MetaUtility.h"
-#include "querybuilder.h"
 #include "QueryMaker.h"
 #include "ContextStatusBar.h"       //for status messages
 #include "TagGuesser.h"
@@ -59,12 +57,12 @@
 class TagDialogWriter : public ThreadManager::Job
 {
 public:
-    TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange );
+    TagDialogWriter( const QMap<QString, Meta::TrackPtr> tagsToChange );
     bool doJob();
     void completeJob();
 private:
     QList<bool> m_failed;
-    QList<MetaBundle> m_tags;
+    QList<Meta::TrackPtr> m_tags;
     bool    m_updateView;
     int     m_successCount;
     int     m_failCount;
@@ -486,7 +484,7 @@ void TagDialog::init()
     ui->kComboBox_composer->setCompletionMode( KGlobalSettings::CompletionPopup );
 
     items = ui->kComboBox_artist->count();
-    ui->kComboBox_rating->insertItems( items, MetaBundle::ratingList() );
+//     ui->kComboBox_rating->insertItems( items, MetaBundle::ratingList() );
 
 //    const QStringList genres = MetaBundle::genreList();
     items = ui->kComboBox_artist->count();
@@ -579,10 +577,11 @@ void TagDialog::init()
 //    connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
 
     //Update cover
-    connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
-            this, SLOT( loadCover( const QString&, const QString& ) ) );
-    connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
-             this, SLOT( loadCover( const QString&, const QString& ) ) );
+    //FIXME: Port 2.0
+//     connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
+//             this, SLOT( loadCover( const QString&, const QString& ) ) );
+//     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
+//              this, SLOT( loadCover( const QString&, const QString& ) ) );
 
 
 
@@ -1585,15 +1584,15 @@ TagDialog::selectOrInsertText( const QString &text, QComboBox *comboBox )
     }
 }
 
-TagDialogWriter::TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange )
+TagDialogWriter::TagDialogWriter( const QMap<QString, Meta::TrackPtr> tagsToChange )
         : ThreadManager::Job( "TagDialogWriter" ),
           m_successCount ( 0 ),
           m_failCount    ( 0 )
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    QMap<QString, MetaBundle>::ConstIterator end = tagsToChange.constEnd();
-    for(QMap<QString, MetaBundle>::ConstIterator it = tagsToChange.constBegin(); it != end; ++it ) {
-        MetaBundle mb = it.value();
+    QMap<QString, Meta::TrackPtr>::ConstIterator end = tagsToChange.constEnd();
+    for(QMap<QString, Meta::TrackPtr>::ConstIterator it = tagsToChange.constBegin(); it != end; ++it ) {
+        Meta::TrackPtr mb = it.value();
         m_tags += mb;
     }
 }
@@ -1601,27 +1600,30 @@ TagDialogWriter::TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange )
 bool
 TagDialogWriter::doJob()
 {
-    for( int i = 0, size=m_tags.size(); i<size; ++i ) {
-        TagLib::FileName path = TagLibEncodeName( m_tags[i].url().path() );
-        if ( !TagLib::File::isWritable( path ) ) {
-            Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n(
-                "The file %1 is not writable.", m_tags[i].url().fileName() ), KDE::StatusBar::Error );
-            m_failed += true;
-            continue;
-        }
+    //FIXME: Port 2.0
+//     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
+//         TagLib::FileName path = reinterpret_cast<const wchar_t *>( m_tags[i]->playableUrl().path().utf16() );
+//         if ( !TagLib::File::isWritable( path ) ) {
+//             Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n(
+//                 "The file %1 is not writable.", m_tags[i]->playableUrl().fileName() ), KDE::StatusBar::Error );
+//             m_failed += true;
+//             continue;
+//         }
+// 
+//         //FIXME: Port 2.0
+// //         bool result = m_tags[i].save();
+// //         m_tags[i].updateFilesize();
+// 
+//         if( result )
+//             m_successCount++;
+//         else {
+//             m_failCount++;
+//             m_failedURLs += m_tags[i].prettyUrl();
+//         }
+//         m_failed += !result;
+//     }
+//     return true;
 
-        bool result = m_tags[i].save();
-        m_tags[i].updateFilesize();
-
-        if( result )
-            m_successCount++;
-        else {
-            m_failCount++;
-            m_failedURLs += m_tags[i].prettyUrl();
-        }
-        m_failed += !result;
-    }
-    return true;
 }
 
 void

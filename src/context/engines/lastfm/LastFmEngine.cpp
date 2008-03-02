@@ -16,12 +16,12 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
+#include "collection/BlockingQuery.h"
 #include "collection/CollectionManager.h"
+#include "collection/QueryMaker.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "enginecontroller.h"
-#include "metabundle.h"
-#include "querybuilder.h"
 #include "collection/SqlStorage.h"
 
 #include "kio/job.h"
@@ -107,32 +107,29 @@ void LastFmEngine::updateCurrent()
     if( m_suggestedsongs )
     {
         Meta::ArtistList artists = CollectionManager::instance()->relatedArtists( EngineController::instance()->currentTrack()->artist(), 30 );
-        QStringList relArtists;
-        foreach( Meta::ArtistPtr artist, artists )
-            relArtists << artist->name();
 
         QString token;
 
-        QueryBuilder qb;
-        QStringList values;
-        qb.clear();
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
-        qb.addMatches( QueryBuilder::tabArtist, relArtists );
-        qb.sortByFavorite();
-        qb.setLimit( 0, 10 );
-        values = qb.run();
+        Collection *coll;
+        foreach( coll, CollectionManager::instance()->collections() )
+            if( coll->collectionId() == "localCollection" )
+                break;
+        QueryMaker *qm = coll->queryMaker();
+        qm->startTrackQuery();
+        qm->limitMaxResultSize( 10 );
+        foreach( Meta::ArtistPtr artist, artists )
+            qm->addFilter( QueryMaker::valArtist, artist->name() );
+        BlockingQuery bq( qm );
+        bq.startQuery();
 
-        if( !values.isEmpty() )
-        {   
-            for( int i = 0; i < values.count(); i += 5 ) // we iterate through each song + song info
+        Meta::TrackList tracks = bq.tracks( coll->collectionId() );
+        if( !tracks.empty() )
+        {
+            foreach( Meta::TrackPtr track, tracks ) // we iterate through each song + song info
             {
                 QVariantList song;
-                song << values[ i ] << values[ i + 1 ] << values[ i + 2 ] << values[ i + 3 ] << values[ i + 4 ];
-                setData( "suggestedsongs", values[ i + 2 ], song ); // data keyed  by song title
+                song << track->url() << track->name() << track->prettyName() << track->score() << track->rating();
+                setData( "suggestedsongs", track->prettyName(), song ); // data keyed  by song title
             }
         }
     }

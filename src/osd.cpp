@@ -349,6 +349,7 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     if( useMoodbar() )
     {
+#if 0 // Moodbar needs to be ported.
         QPixmap moodbar
           = m_moodbarBundle.moodbar().draw( rect.width(), MOODBAR_HEIGHT );
         QRect r( rect );
@@ -358,6 +359,7 @@ OSDWidget::paintEvent( QPaintEvent* )
 
         p.drawPixmap( r.left(), r.top(), moodbar );
         m_moodbarBundle = MetaBundle();
+#endif
     }
 
     if( m_rating > 0 )
@@ -451,8 +453,12 @@ OSDWidget::setScreen( int screen )
 bool
 OSDWidget::useMoodbar( void )
 {
+    //FIXME: Port 2.0
+#if 0
   return (m_moodbarBundle.moodbar().state() == Moodbar::Loaded  &&
           AmarokConfig::showMoodbar() );
+#endif
+    return false;
 }
 
 //////  OSDPreviewWidget below /////////////////////
@@ -557,8 +563,6 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
 
 //////  Amarok::OSD below /////////////////////
-
-#include "metabundle.h"
 
 Amarok::OSD::OSD(): OSDWidget( 0 )
 {

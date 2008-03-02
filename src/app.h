@@ -35,7 +35,6 @@ namespace Amarok {
 namespace KIO { class Job; }
 
 class KJob;
-class MetaBundle;
 class MainWindow;
 class MediaDeviceManager;
 class KSplashScreen;

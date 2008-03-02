@@ -643,11 +643,12 @@ MediaBrowser::slotSetFilter( const QString &text )
 void
 MediaBrowser::slotEditFilter()
 {
-    EditFilterDialog *fd = new EditFilterDialog( this, true, m_searchWidget->lineEdit()->text() );
-    connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
-    if( fd->exec() )
-        m_searchWidget->lineEdit()->setText( fd->filter() );
-    delete fd;
+    //FIXME: Port 2.0
+//     EditFilterDialog *fd = new EditFilterDialog( this, true, m_searchWidget->lineEdit()->text() );
+//     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
+//     if( fd->exec() )
+//         m_searchWidget->lineEdit()->setText( fd->filter() );
+//     delete fd;
 }
 
 void

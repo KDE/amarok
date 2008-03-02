@@ -1,5 +1,6 @@
 
 include_directories( ../
+                     ../meta
                     ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
 add_definitions(${TAGLIB_CFLAGS})

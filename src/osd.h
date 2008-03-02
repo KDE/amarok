@@ -15,7 +15,6 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
-#include "metabundle.h"
 #include "meta/Meta.h"
 
 #include <QPixmap>
@@ -65,9 +64,10 @@ class OSDWidget : public QWidget
         void setText( const QString &text ) { m_text = text; }
         void setDrawShadow( const bool b ) { m_drawShadow = b; }
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
-        void setMoodbar( void ) { m_moodbarBundle = MetaBundle(); }
-        void setMoodbar( const MetaBundle &bundle )
-          { m_moodbarBundle = bundle;  m_moodbarBundle.moodbar().load(); }
+        //FIXME: Port 2.0
+//         void setMoodbar( void ) { m_moodbarBundle = MetaBundle(); }
+//         void setMoodbar( const MetaBundle &bundle )
+//           { m_moodbarBundle = bundle;  m_moodbarBundle.moodbar().load(); }
 
     protected:
         /** determine new size and position */
@@ -97,7 +97,7 @@ class OSDWidget : public QWidget
         QString     m_text;
         QImage      m_cover;
         // need a whole MetaBundle to draw the moodbar on the fly
-        MetaBundle  m_moodbarBundle;
+//         MetaBundle  m_moodbarBundle;
         QPixmap     m_scaledCover;
 };
 

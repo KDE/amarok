@@ -31,7 +31,6 @@ email                : markey@web.de
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "Meta.h"
-#include "metabundle.h"
 #include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
@@ -117,8 +116,6 @@ App::App()
     PERF_LOG( "Registering taglib plugins" )
     registerTaglibPlugins();
     PERF_LOG( "Done Registering taglib plugins" )
-
-    qRegisterMetaType<MetaBundle>();
 
     qRegisterMetaType<Meta::DataPtr>();
     qRegisterMetaType<Meta::DataList>();
@@ -666,7 +663,8 @@ App::continueInit()
 
     PERF_LOG( "Starting moodserver" )
     // Make this instance so it can start receiving signals
-    MoodServer::instance();
+            //FIXME: REENABLE When the moodserver is ported.
+//     MoodServer::instance();
     PERF_LOG( "Done starting mood server" )
 
     // Remember old folder setup, so we can detect changes after the wizard was used

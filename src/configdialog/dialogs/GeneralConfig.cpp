@@ -119,7 +119,7 @@ GeneralConfig::updateSettings() //SLOT
 void
 GeneralConfig::slotUpdateMoodFrame() //SLOT
 {
-    if( Moodbar::executableExists() )
+    if( /*Moodbar::executableExists()*/ false /*FIXME: PORT 2.0*/)
       {
         moodbarHelpLabel->hide();
         moodFrame->setEnabled(true);

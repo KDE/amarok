@@ -7,7 +7,6 @@
 
 #include "debug.h"
 #include "enginecontroller.h"
-#include "metabundle.h"
 
 #include <KGlobal>
 

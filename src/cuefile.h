@@ -5,6 +5,7 @@
 #define CUEFILE_H
 
 #include "engineobserver.h"
+#include "meta/Meta.h"
 
 #include <QMap>
 #include <QObject>
@@ -59,7 +60,7 @@ class CueFile : public QObject, public QMap<long, CueFileItem>, public EngineObs
 
     signals:
         /** Transmits new metadata bundle */
-        void metaData( const MetaBundle& );
+        void metaData( const Meta::TrackPtr );
         /** Transmits new length information associated with current cue */
         void newCuePoint( long currentPos, long startPos, long endPos );
 

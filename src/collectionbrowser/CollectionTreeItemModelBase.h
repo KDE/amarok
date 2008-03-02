@@ -13,7 +13,6 @@
 
 #include "amarok_export.h"
 
-#include "../querybuilder.h"
 #include "meta/Meta.h"
 
 
@@ -32,11 +31,11 @@ namespace CategoryId
 {
     enum CatMenuId {
     None = 0,
-    Album = QueryBuilder::tabAlbum,
-    Artist = QueryBuilder::tabArtist,
-    Composer = QueryBuilder::tabComposer,
-    Genre = QueryBuilder::tabGenre,
-    Year = QueryBuilder::tabYear
+    Album,
+    Artist,
+    Composer,
+    Genre,
+    Year
     };
 }
 

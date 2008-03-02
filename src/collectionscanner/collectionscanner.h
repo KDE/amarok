@@ -20,7 +20,6 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
-#include "metabundle.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -35,6 +34,10 @@
 
 typedef QMap<QString, QString> AttributeMap;
 
+namespace MetaFile
+{
+    class Track;
+}
 
 /**
  * @class CollectionScanner
@@ -64,10 +67,10 @@ private:
 
     /**
      * Read metadata tags of a given file.
-     * @mb MetaBundle for the file.
+     * @track Track for the file.
      * @return QMap containing tags, or empty QMap on failure.
      */
-    AttributeMap readTags( const MetaBundle& mb );
+    AttributeMap readTags( MetaFile::Track *track );
 
     /**
      * Helper method for writing XML elements to stdout.

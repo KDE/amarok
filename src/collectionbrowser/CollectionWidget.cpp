@@ -20,7 +20,6 @@
 
 #include "CollectionWidget.h"
 #include "CollectionTreeView.h"
-#include "querybuilder.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
 #include "searchwidget.h"
 
@@ -49,7 +48,7 @@ CollectionWidget::CollectionWidget( const char* name )
 
     QList<int> cats = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     if ( cats.isEmpty() )
-        cats << QueryBuilder::tabArtist << QueryBuilder::tabAlbum;
+        cats << CategoryId::Artist << CategoryId::Album;
 
     m_treeView->setModel( new CollectionTreeItemModel( cats ) );
     sw->setup( m_treeView );
@@ -85,42 +84,42 @@ void
 CollectionWidget::sortByArtist()
 {
     m_treeView->setShowYears( false );
-    m_treeView->setLevels( QList<int>() << QueryBuilder::tabArtist );
+    m_treeView->setLevels( QList<int>() << CategoryId::Artist );
 }
 
 void
 CollectionWidget::sortByArtistAlbum()
 {
     m_treeView->setShowYears( false );
-    m_treeView->setLevels( QList<int>() << QueryBuilder::tabArtist << QueryBuilder::tabAlbum );
+    m_treeView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
 }
 
 void
 CollectionWidget::sortByArtistYearAlbum()
 {
     m_treeView->setShowYears( true );
-    m_treeView->setLevels( QList<int>() << QueryBuilder::tabArtist << QueryBuilder::tabYear << QueryBuilder::tabAlbum );
+    m_treeView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Year << CategoryId::Album );
 }
 
 void
 CollectionWidget::sortByAlbum()
 {
     m_treeView->setShowYears( false );
-    m_treeView->setLevels( QList<int>() << QueryBuilder::tabAlbum );
+    m_treeView->setLevels( QList<int>() << CategoryId::Album );
 }
 
 void
 CollectionWidget::sortByGenreArtist()
 {
     m_treeView->setShowYears( false );
-    m_treeView->setLevels( QList<int>() << QueryBuilder::tabGenre << QueryBuilder::tabArtist );
+    m_treeView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
 }
 
 void
 CollectionWidget::sortByGenreArtistAlbum()
 {
     m_treeView->setShowYears( false );
-    m_treeView->setLevels( QList<int>() << QueryBuilder::tabGenre << QueryBuilder::tabArtist << QueryBuilder::tabAlbum );
+    m_treeView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
 }
 
 

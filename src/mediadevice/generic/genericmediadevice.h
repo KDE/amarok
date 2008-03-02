@@ -115,7 +115,7 @@ class GenericMediaDevice : public MediaDevice
 
         KUrl::List        getSelectedItems();
         void              downloadSelectedItems();
-        void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base );
+        void              copyTrackSortHelper( const Meta::TrackPtr track, QString& sort, QString& base );
 
         void              listDir( const QString &dir );
         int               addTrackToList( int type, KUrl name, int size=0 );

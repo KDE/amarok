@@ -21,7 +21,6 @@
 #include "amarok.h"
 #include "config-amarok.h"
 #include "debug.h"
-#include "metabundle.h"
 
 
 #include <KIconEffect>

@@ -29,7 +29,6 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "metabundle.h"
 #include "AmarokProcess.h"
 #include "ContextStatusBar.h"
 

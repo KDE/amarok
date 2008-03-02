@@ -47,16 +47,16 @@ class MtpTrack {
 
     public:
         u_int32_t               id() const { return m_id; }
-        MetaBundle              *bundle() { return new MetaBundle( m_bundle ); }
+        Meta::TrackPtr              *track() { return m_track; }
         uint32_t                folderId() const { return m_folder_id; }
-        void                    setBundle( MetaBundle &bundle );
+        void                    setTrack( Meta::TrackPtr track );
         void                    setId( int id ) { m_id = id; }
         void                    setFolderId( const uint32_t folder_id ) { m_folder_id = folder_id; }
         void                    readMetaData( LIBMTP_track_t *track );
 
     private:
         u_int32_t               m_id;
-        MetaBundle              m_bundle;
+        Meta::TrackPtr          m_track;
         uint32_t                m_folder_id;
 };
 
@@ -149,14 +149,14 @@ class MtpMediaDevice : public MediaDevice
         static int              progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
 
     protected:
-        MediaItem*              trackExists( const MetaBundle &bundle );
+        MediaItem*              trackExists( const Meta::TrackPtr track );
 
         bool                    openDevice( bool silent );
         bool                    closeDevice();
         bool                    lockDevice( bool tryLock=false ) { if( tryLock ) { return m_mutex.tryLock(); } else { m_mutex.lock(); return true; } }
         void                    unlockDevice() { m_mutex.unlock(); }
 
-        MediaItem               *copyTrackToDevice( const MetaBundle &bundle );
+        MediaItem               *copyTrackToDevice( const Meta::TrackPtr track );
         int                     downloadSelectedItemsToCollection();
 
         void                    synchronizeDevice();
@@ -174,7 +174,7 @@ class MtpMediaDevice : public MediaDevice
         int                     readMtpMusic( void );
         void                    clearItems();
         int                     deleteObject( MtpMediaItem *deleteItem );
-        uint32_t                checkFolderStructure( const MetaBundle &bundle, bool create = true );
+        uint32_t                checkFolderStructure( const Meta::TrackPtr track, bool create = true );
         uint32_t                createFolder( const char *name, uint32_t parent_id );
         uint32_t                getDefaultParentId( void );
         uint32_t                folderNameToID( char *name, LIBMTP_folder_t *folderlist );

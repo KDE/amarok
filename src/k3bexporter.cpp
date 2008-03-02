@@ -18,7 +18,6 @@
 
 #include "amarok.h"
 
-#include "querybuilder.h"
 #include "AmarokProcess.h"
 
 #include <KLocale>

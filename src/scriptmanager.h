@@ -31,7 +31,6 @@
 #include <QMap>
 
 
-class MetaBundle;
 class KArchiveDirectory;
 class AmarokProcess;
 class AmarokProcIO;
