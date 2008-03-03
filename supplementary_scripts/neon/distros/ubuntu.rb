@@ -18,7 +18,8 @@
 DEBPATH     = NEONPATH + "/distros/ubuntu"
 DEBBASEPATH = ROOTPATH + "/#{DATE}-ubuntu"
 LPPATH      = "http://ppa.launchpad.net/amarok-nightly/ubuntu/pool/main/a/amarok-nightly"
-PACKAGES    = ["qt","strigi","kdelibs","kdebase-runtime","taglib","amarok"]
+PACKAGES    = ["qt","strigi","kdelibs","kdebase-runtime","taglib"]
+SVNPACKAGES = @packages
 
 debemail    = ENV['DEBEMAIL']
 debfullname = ENV['DEBFULLNAME']
@@ -32,54 +33,64 @@ class UploadUbuntu
       Dir.chdir(DEBBASEPATH)
     end
 
-    def CreateNUpload(package)
-      `cp -rf #{DEBPATH}/#{package}-debian ./debian`
+    Execute()
+  end
 
-      `dch -D "gutsy" -v "#{DATE}-0amarok#{REV}" "Nightly Build"`
-      `dpkg-buildpackage -S -sa -rfakeroot -k"Amarok Nightly Builds"`
+  def AmarokUpload()
+    # upload
+    `dput amarok-nightly ../amarok-nightly_#{DATE}-0amarok#{REV}_source.changes`
+  end
 
-      # upload
-      if package != "amarok"
-        `dput amarok-nightly ../amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_source.changes`
-      else
-        `dput amarok-nightly ../amarok-nightly_#{DATE}-0amarok#{REV}_source.changes`
-      end
+  def SrcUpload(package)
+    # upload
+    `dput amarok-nightly ../amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_source.changes`
+  end
 
-      `cp debian/changelog #{DEBPATH}/#{package}-debian/`
+  def CreateNUpload(package)
+    `cp -rf #{DEBPATH}/#{package}-debian ./debian`
+
+    `dch -D "gutsy" -v "#{DATE}-0amarok#{REV}" "Nightly Build"`
+    `dpkg-buildpackage -S -sa -rfakeroot -k"Amarok Nightly Builds"`
+
+    if package == "amarok"
+      AmarokUpload()
+    else
+      SrcUpload(package)
     end
-    
-    def Slap(package)
-      if package != "amarok"
-        url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_i386.deb"
-      else
-        url = "#{LPPATH}-#{package}/amarok-nightly_#{DATE}-0amarok#{REV}_i386.deb"
-      end
+
+    `cp debian/changelog #{DEBPATH}/#{package}-debian/`
+  end
+
+  def CheckAvailablilty(package)
+    url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_i386.deb"
+    `wget '#{url}'`
+    while $? != 0
+      sleep 60
       `wget '#{url}'`
-	while $? != 0
-	  sleep 60
-	  `wget '#{url}'`
-	end
     end
+  end
 
+  def Execute()
     Dir.chdir(ROOTPATH)
     Dir.mkdir(DEBBASEPATH)
     FileUtils.cp_r("#{BASEPATH}/.", DEBBASEPATH)
 
     for package in PACKAGES
-      if package != "amarok"
-        dir = "amarok-nightly-#{package}-#{DATE}"
-      else
-        dir = "amarok-nightly-#{DATE}"
+      if SVNPACKAGES.include?(package)
+        BaseDir()
+        Dir.chdir(dir)
+
+        CreateNUpload(package)
+        CheckAvailablilty(package)
       end
-      
-      BaseDir()
-      Dir.chdir(dir)
-    
-      CreateNUpload(package)
-      Slap(package)
     end
+
+    CreateNUpload("amarok")
+
   end
-  rescue
-    ENV['DEBEMAIL']    = debemail
-    ENV['DEBFULLNAME'] = debfullname
+
+rescue
+  ENV['DEBEMAIL']    = debemail
+  ENV['DEBFULLNAME'] = debfullname
+
 end
