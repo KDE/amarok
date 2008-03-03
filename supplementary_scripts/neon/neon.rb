@@ -17,9 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-DATE        = `date --utc +%Y%m%d`.chomp()
-DAYOFMONTH  = `date --utc +%d`.chomp()
-DAYOFWEEK   = `date --utc +%A`.chomp()
+DATE        = Time.now.utc.strftime("%Y%m%d")
+DAYOFMONTH  = Time.now.utc.mday()
+DAYOFWEEK   = Time.now.utc.wday()
 REV         = "1"
 NEONPATH    = Dir.pwd()
 ROOTPATH    = "#{ENV['HOME']}/amarok-nightly"
@@ -47,7 +47,7 @@ if DAYOFMONTH == 1
   QtCopy()
 end
 
-if DAYOFWEEK == "Sunday"
+if DAYOFWEEK == 1
   Strigi()
   KdeLibs()
   KdeBaseRuntime()
