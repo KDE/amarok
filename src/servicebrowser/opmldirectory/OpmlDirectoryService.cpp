@@ -148,7 +148,7 @@ void OpmlDirectoryService::updateButtonClicked()
     }
 
     m_tempFileName = tempFile.fileName();
-    m_listDownloadJob = KIO::file_copy( KUrl( "http://www.digitalpodcast.com/opml/digitalpodcastnoadult.opml" ), KUrl( m_tempFileName ), 0700 , KIO::Overwrite | KIO::HideProgressInfo );
+    m_listDownloadJob = KIO::file_copy( KUrl( "http://www.digitalpodcast.com/opml/digitalpodcastnoadult.opml" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo );
     Amarok::ContextStatusBar::instance() ->newProgressOperation( m_listDownloadJob )
     .setDescription( i18n( "Downloading OpmlDirectory Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
