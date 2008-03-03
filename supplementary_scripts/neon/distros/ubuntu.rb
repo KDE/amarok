@@ -77,6 +77,7 @@ class UploadUbuntu
 
     for package in PACKAGES
       if SVNPACKAGES.include?(package)
+        dir = "amarok-nightly-#{package}-#{DATE}"
         BaseDir()
         Dir.chdir(dir)
 
@@ -85,6 +86,8 @@ class UploadUbuntu
       end
     end
 
+    BaseDir()
+    Dir.chdir("amarok-nightly-#{DATE}")
     CreateNUpload("amarok")
 
   end
