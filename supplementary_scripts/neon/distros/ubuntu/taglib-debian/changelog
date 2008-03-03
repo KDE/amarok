@@ -3,9 +3,3 @@ amarok-nightly-taglib (20080301-0amarok1) gutsy; urgency=low
   * Nightly Build
 
  -- Amarok Nightly Builds <nightly@getamarok.com>  Sat, 01 Mar 2008 23:26:39 +0100
-
-amarok-nightly-taglib (20080224-0amarok4) gutsy; urgency=low
-
-  * Nightly Build
-
- -- Harald Sitter <apachelogger@ubuntu.com>  Sun, 24 Feb 2008 12:21:05 +0100

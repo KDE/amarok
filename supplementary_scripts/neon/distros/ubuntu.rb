@@ -57,8 +57,6 @@ class UploadUbuntu
     else
       SrcUpload(package)
     end
-
-    `cp debian/changelog #{DEBPATH}/#{package}-debian/`
   end
 
   def CheckAvailablilty(package)
