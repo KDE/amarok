@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+export PATH := /opt/amarok-nightly/bin:$(PATH)
+
 RUNTIME_DEPS := amarok-nightly-kdebase-runtime
 CURRENTVERSION := $(shell head -1 debian/changelog  | sed 's/[^(]*(\([^)]*\)).*/\1/')
 DEB_DH_MAKESHLIBS_ARGS_kdelibs5 := -V'amarok-nightly-kdelibs (>= $(CURRENTVERSION)), $(RUNTIME_DEPS)'  

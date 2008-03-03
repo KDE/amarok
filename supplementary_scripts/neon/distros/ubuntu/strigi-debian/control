@@ -2,16 +2,16 @@ Source: amarok-nightly-strigi
 Section: utils
 Priority: optional
 Maintainer: Amarok Nightly Builds <nightly@getamarok.com>
-Build-Depends: amarok-nightly-cdbs, debhelper (>= 5), cmake, quilt, libbz2-dev,
- libclucene-dev, libdbus-1-dev, libexiv2-dev, libqt4-dev, libxml2-dev,
+Build-Depends: amarok-nightly-cdbs, amarok-nightly-qt,
+ debhelper (>= 5), cmake, quilt, libbz2-dev,
+ libclucene-dev, libdbus-1-dev, libexiv2-dev, libxml2-dev,
  zlib1g-dev, libxml2-utils, python-support, python
 Standards-Version: 3.7.3
 
 Package: amarok-nightly-strigi
 Architecture: any
 Section: utils
-Depends: ${shlibs:Depends}, ${misc:Depends}, poppler-utils, dbus-x11 | dbus,
- libqt4-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, poppler-utils, dbus-x11 | dbus
 Description: fast indexing and searching tool for your personal data (daemon)
  Strigi is a program for fast indexing and searching your personal data.
 

@@ -3,7 +3,7 @@ Section: kde
 Priority: optional
 Maintainer: Amarok Nightly Builds <nightly@getamarok.com>
 Build-Depends: amarok-nightly-cdbs, amarok-nightly-kdelibs,
- amarok-nightly-strigi,
+ amarok-nightly-strigi, amarok-nightly-qt,
  libclucene-dev, libsmbclient-dev, libxcb1-dev, libxine-dev
 Standards-Version: 3.7.3
 

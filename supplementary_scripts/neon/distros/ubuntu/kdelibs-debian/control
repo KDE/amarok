@@ -2,8 +2,8 @@ Source: amarok-nightly-kdelibs
 Section: libs
 Priority: optional
 Maintainer: Amarok Nightly Builds <nightly@getamarok.com>
-Build-Depends: amarok-nightly-cdbs, amarok-nightly-strigi,
- shared-mime-info, libcupsys2-dev, libdbus-1-dev, libqt4-dev, libungif4-dev,
+Build-Depends: amarok-nightly-cdbs, amarok-nightly-strigi, amarok-nightly-qt,
+ shared-mime-info, libcupsys2-dev, libdbus-1-dev, libungif4-dev,
  libasound2-dev, libkeyutils-dev,
  libxml2-dev, libxml2-utils,  libxslt1-dev, libxtst-dev,
  libavahi-common-dev, libaspell-dev, libbz2-dev, libenchant-dev,
@@ -14,11 +14,11 @@ Package: amarok-nightly-kdelibs
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, xbase-clients, shared-mime-info, hicolor-icon-theme,
- libasound2-dev, libcupsys2-dev, libdbus-1-dev, libkeyutils-dev, libqt4-dev,
+ libasound2-dev, libcupsys2-dev, libdbus-1-dev, libkeyutils-dev,
  libxml2-dev, libxml2-utils, libxslt1-dev, libxtst-dev, libungif4-dev,
  libavahi-common-dev, libaspell-dev, libbz2-dev, libenchant-dev, libacl1-dev,
  libjasper-dev, libopenexr-dev, libpcre3-dev, libtiff4-dev, hspell, xsltproc,
- shared-mime-info, libqt4-debug, libc6-dbg [amd64]
+ shared-mime-info, libc6-dbg [amd64], amarok-nightly-qt
 Description: core libraries for all KDE 4 applications
  This package contains all the shared libraries. You need these libraries to
  run KDE applications.
