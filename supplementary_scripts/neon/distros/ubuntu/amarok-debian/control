@@ -2,19 +2,16 @@ Source: amarok-nightly
 Section: kde
 Priority: optional
 Maintainer: Amarok Nightly Builds <nightly@getamarok.com>
-Build-Depends: amarok-nightly-cdbs, amarok-nightly-kdelibs,
- amarok-nightly-strigi, amarok-nightly-kdebase-runtime,
- libxine-dev, libtag1-dev, 
- libmysqlclient15-dev, libpq-dev,
- libusb-dev, libifp-dev, libnjb-dev, libmtp-dev, libgpod-dev,
- ruby, ruby1.8-dev,
+Build-Depends: amarok-nightly-cdbs, amarok-nightly-kdelibs, amarok-nightly-taglib,
+ amarok-nightly-strigi, amarok-nightly-kdebase-runtime, amarok-nightly-qt,
+ libxine-dev, libmysqlclient15-dev, ruby, ruby1.8-dev
 Standards-Version: 3.7.3
 Homepage: http://amarok.kde.org
 
 Package: amarok-nightly
 Architecture: any
 Depends: ${shlibs:Depends}, ruby
-Recommends: konqueror-kde4 | www-browser, libqt0-ruby1.8, libvisual-0.4-plugins,
+Recommends: konqueror-kde4 | www-browser, libqt0-ruby1.8,
  amarok-nightly-kdebase-runtime
 Description: PREVIEW of a audio player for KDE 4 (please don't report bugs)
  Note that this is a technical preview, and therefore a lot of crashes and bugs

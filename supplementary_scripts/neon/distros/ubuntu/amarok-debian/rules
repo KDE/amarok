@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 #export DH_VERBOSE=1
+export PATH := /opt/amarok-nightly/bin:$(PATH)
 
 -include /opt/amarok-nightly/cdbs/kde.mk
 
