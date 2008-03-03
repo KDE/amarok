@@ -223,7 +223,7 @@ bool MagnatuneStore::updateMagnatuneList()
 
     m_tempFileName = tempFile.fileName();
 
-    m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0774 , KIO::Overwrite );
+    m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
     Amarok::ContextStatusBar::instance()->newProgressOperation( m_listDownloadJob )
     .setDescription( i18n( "Downloading Magnatune.com Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
@@ -252,6 +252,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     }
 
 
+    Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Updating the local Magnatune database."  ) );
     debug() << "MagnatuneStore: create xml parser";
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( m_tempFileName );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );

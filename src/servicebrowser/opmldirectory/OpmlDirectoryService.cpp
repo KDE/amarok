@@ -148,7 +148,7 @@ void OpmlDirectoryService::updateButtonClicked()
     }
 
     m_tempFileName = tempFile.fileName();
-    m_listDownloadJob = KIO::file_copy( KUrl( "http://www.digitalpodcast.com/opml/digitalpodcastnoadult.opml" ), KUrl( m_tempFileName ), 0774 , KIO::Overwrite );
+    m_listDownloadJob = KIO::file_copy( KUrl( "http://www.digitalpodcast.com/opml/digitalpodcastnoadult.opml" ), KUrl( m_tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
     Amarok::ContextStatusBar::instance() ->newProgressOperation( m_listDownloadJob )
     .setDescription( i18n( "Downloading OpmlDirectory Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
@@ -179,6 +179,7 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
     }
 
 
+    Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Updating the local OPML database."  ) );
     debug() << "OpmlDirectoryService: create xml parser";
     OpmlDirectoryXmlParser * parser = new OpmlDirectoryXmlParser( m_tempFileName );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );

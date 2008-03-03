@@ -143,7 +143,7 @@ namespace KDE
          * Set a temporary message over the mainText label, for 5 seconds.
          * ONLY USE FOR STATUS MESSAGES! ie "Buffering...", "Connecting to source..."
          */
-        void shortMessage( const QString &text, bool longShort = false );
+        AMAROK_EXPORT void shortMessage( const QString &text, bool longShort = false );
 
         void shortMessageThreadSafe( const QString &text );
 
