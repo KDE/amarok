@@ -21,6 +21,8 @@ def QtCopy()
   @neon.BaseDir()
   `svn co svn://anonsvn.kde.org/home/kde/trunk/qt-copy #{dir}`
   @neon.CreateTar(dir)
+
+  @packages += ["qt"]
 end
 
 
@@ -30,6 +32,8 @@ def Strigi()
   @neon.BaseDir()
   `svn co svn://anonsvn.kde.org/home/kde/trunk/kdesupport/strigi #{dir}`
   @neon.CreateTar(dir)
+
+  @packages += ["strigi"]
 end
 
 def TagLib()
@@ -38,6 +42,8 @@ def TagLib()
   @neon.BaseDir()
   `svn co svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib #{dir}`
   @neon.CreateTar(dir)
+
+  @packages += ["taglib"]
 end
 
 def KdeLibs()
@@ -46,6 +52,8 @@ def KdeLibs()
   @neon.BaseDir()
   `svn co svn://anonsvn.kde.org/home/kde/trunk/KDE/kdelibs #{dir}`
   @neon.CreateTar(dir)
+
+  @packages += ["kdelibs"]
 end
 
 
@@ -81,6 +89,8 @@ def KdeBaseRuntime()
   cmakefile.close()
 
   @neon.CreateTar(dir)
+
+  @packages += ["kdebase-runtime"]
 end
 
 

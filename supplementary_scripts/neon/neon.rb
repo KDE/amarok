@@ -18,12 +18,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 DATE        = `date --utc +%Y%m%d`.chomp()
+DAYOFMONTH  = `date --utc +%d`.chomp()
+DAYOFWEEK   = `date --utc +%A`.chomp()
 REV         = "1"
 NEONPATH    = Dir.pwd()
 ROOTPATH    = "#{ENV['HOME']}/amarok-nightly"
 BASEPATH    = "#{ROOTPATH}/#{DATE}"
 APPVERSION  = "2.0-SVN-Neon"
 CONFIG      = "#{ENV['HOME']}/.neonrc"
+
+@packages = ["amarok"]
 
 require 'fileutils'
 require 'libneon.rb'
@@ -39,24 +43,25 @@ require 'distro.rb'
 ###############################
 # Fetch Source
 
-QtCopy()
+if DAYOFMONTH == 1
+  QtCopy()
+end
 
-Strigi()
-
-KdeLibs()
-
-KdeBaseRuntime()
-
-TagLib()
+if DAYOFWEEK == "Sunday"
+  Strigi()
+  KdeLibs()
+  KdeBaseRuntime()
+  TagLib()
+end
 
 Amarok()
 
 ###############################
 # Publish
 
-PublishFtp.new()
-
-PublishFile.new()
+# PublishFtp.new()
+# 
+# PublishFile.new()
 
 ###############################
 # Distribution Uploads
