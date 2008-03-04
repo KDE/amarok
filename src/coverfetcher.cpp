@@ -193,8 +193,8 @@ CoverFetcher::startFetch()
 {
     DEBUG_FUNC_INFO
 
-    // Static license Key. Thanks muesli ;-)
-    const QString LICENSE( "D1URM11J3F2CEH" );
+    // Static license Key. Thanks hydrogen ;-)
+    const QString LICENSE( "11ZKJS8X1ETSTJ6MT802" );
 
     // reset all values
     m_coverAmazonUrls.clear();
@@ -214,29 +214,24 @@ CoverFetcher::startFetch()
 
     // '&' breaks searching
     query.remove('&');
+    
+    QString locale = AmarokConfig::amazonLocale();
+    QString tld;
 
-    // Bug 97901: Import cover from amazon france doesn't work properly
-    // (we have to set "mode=music-fr" instead of "mode=music")
-    QString musicMode = AmarokConfig::amazonLocale() == "fr" ? "music-fr" : "music";
-    //Amazon Japan isn't on xml.amazon.com
-    QString tld = "com";
-    int mibenum = 4;  // latin1
-    if( AmarokConfig::amazonLocale() == "jp" ) {
-        musicMode = "music-jp";
-        tld = "co.jp";
-        mibenum = 106;  // utf-8
-    }
-    else if( AmarokConfig::amazonLocale() == "ca" )
-        musicMode = "music-ca";
+    if( locale == "us" )
+        tld = "com";
+    else if( locale =="uk" )
+        tld = "co.uk";
+    else
+        tld = locale;
+
+    int mibenum = 106; // utf-8
 
     QString url;
-    // changed to type=lite because it makes less traffic
-    url = "http://xml.amazon." + tld
-        + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
-        + "&KeywordSearch=" + KURL::encode_string_no_slash( query, mibenum )
-        + "&mode=" + musicMode
-        + "&type=lite&locale=" + AmarokConfig::amazonLocale()
-        + "&page=1&f=xml";
+    url = "http://ecs.amazonaws." + tld
+        + "/onca/xml?Service=AWSECommerceService&Version=2007-10-29&Operation=ItemSearch&AssociateTag=webservices-20&AWSAccessKeyId=" + LICENSE
+        + "&Keywords=" + KURL::encode_string_no_slash( query, mibenum )
+        + "&SearchIndex=Music&ResponseGroup=Small,Images";
     debug() << url << endl;
 
     KIO::TransferJob* job = KIO::storedGet( url, false, false );
@@ -273,62 +268,114 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
         return;
     }
 
-    const QDomNode details = doc.documentElement().namedItem( "Details" );
-
-    // the url for the Amazon product info page
-    m_amazonURL = details.attributes().namedItem( "url" ).toAttr().value();
-    QDomNode it = details.firstChild();
-    while ( !it.isNull() ) {
-        if ( it.isElement() ) {
-            QDomElement e = it.toElement();
-            if(e.tagName()=="Asin")
-            {
-                m_asin = e.firstChild().toText().data();
-                debug() << "setting the ASIN as" << m_asin << endl;
-                break;
-            }
-        }
-        it = it.nextSibling();
-    }
-
-    QString size = "ImageUrl";
-    switch( m_size ) {
-        case 0:  size += "Small";  break;
-        case 1:  size += "Medium"; break;
-        default: size += "Large";  break;
-    }
-
-    debug() << "Fetching size: " << size << endl;
-
     m_coverAsins.clear();
     m_coverAmazonUrls.clear();
     m_coverUrls.clear();
     m_coverNames.clear();
-    for( QDomNode node = details; !node.isNull(); node = node.nextSibling() ) {
-        QString amazonUrl = node.attributes().namedItem( "url" ).toAttr().value();
-        QString coverUrl = node.namedItem( size ).firstChild().toText().nodeValue();
-        QString asin = node.namedItem( "Asin" ).firstChild().toText().nodeValue();
-        QString name = node.namedItem( "ProductName" ).firstChild().toText().nodeValue();
 
-    const QDomNode  artists = node.namedItem("Artists");
-    // in most cases, Amazon only sends one Artist in Artists
-    QString artist = "";
-    if (!artists.isNull()) artist = artists.namedItem( "Artist" ).firstChild().toText().nodeValue();
+    // the url for the Amazon product info page
+    const QDomNodeList list = doc.documentElement().namedItem( "Items" ).childNodes();
 
-        debug() << "name:" << name << " artist:" << artist << " url:" << coverUrl << endl;
-
-        if( !coverUrl.isEmpty() )
+    for(int i = 0; i < list.count(); i++ )
+    {
+        QDomNode n = list.item( i );
+        if( n.isElement() && n.nodeName() == "IsValid" )
         {
-            m_coverAmazonUrls += amazonUrl;
-            m_coverAsins += asin;
-            m_coverUrls += coverUrl;
-            m_coverNames += artist + " - " + name;
+            if( n.toElement().text() == "False" )
+            {
+                warning() << "The XML Is Invalid!";
+                return;
+            }
+        }
+        else if( list.item( i ).nodeName() == "Item" )
+        {
+            const QDomNode node = list.item( i );
+            debug() << "I Has an itemnode, parsing it!" << endl;
+            parseItemNode( node );
         }
     }
-
     attemptAnotherFetch();
 }
 
+void CoverFetcher::parseItemNode( const QDomNode &node )
+{
+    QDomNode it = node.firstChild();
+
+    QString size;
+    switch( m_size )
+    {
+        case 0:  size = "Small";  break;
+        case 1:  size = "Medium"; break;
+        default: size = "Large";  break;
+    }
+    size += "Image";
+    debug() << "Fetching size: " << size << endl;
+
+    while ( !it.isNull() ) {
+        if ( it.isElement() ) {
+            QDomElement e = it.toElement();
+            if(e.tagName()=="ASIN")
+            {
+                m_asin = e.text();
+                debug() << "setting the ASIN as" << m_asin << endl;
+                m_coverAsins += m_asin;
+            }
+            else if(e.tagName() == "DetailPageURL" )
+            {
+                m_amazonURL = e.text();
+                debug() << "Setting the details url to: " << m_amazonURL << endl;
+                m_coverAmazonUrls += m_amazonURL;
+            }
+            else if( e.tagName() == size )
+            {
+                QDomNode subIt = e.firstChild();
+                debug() << "NAME: "  << subIt.nodeName() << "VALUE: " << subIt.nodeValue() << endl;
+                while( !subIt.isNull() )
+                {
+                    if( subIt.isElement() )
+                    {
+                        QDomElement subE = subIt.toElement();
+                        if( subE.tagName() == "URL" )
+                        {
+                            const QString coverUrl = subE.text();
+                            m_coverUrls += coverUrl;
+                            debug() << "Setting Cover URL to: " << coverUrl << endl;
+                            break;
+                        }
+                    }
+                    subIt = subIt.nextSibling();
+                }
+            }
+            else if( e.tagName() == "ItemAttributes" )
+            {
+                QDomNodeList nodes = e.childNodes();
+                QDomNode iter;
+                QString artist;
+                QString album;
+                for( int i = 0; i < nodes.count(); i++ )
+                {
+                    iter = nodes.item( i );
+
+                    if( iter.isElement() )
+                    {
+                        if( iter.nodeName() == "Artist" )
+                        {
+                            artist = iter.toElement().text();
+                            debug() << "Set Artist to: " << artist << endl;
+                        }
+                        else if( iter.nodeName() == "Album" )
+                        {
+                            album = iter.toElement().text();
+                            debug() << "Set Album to: " << album << endl;
+                        }
+                    }
+                }
+                m_coverNames += QString( artist + " - " + album );
+            }
+        }
+        it = it.nextSibling();
+    }
+}
 
 void
 CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT

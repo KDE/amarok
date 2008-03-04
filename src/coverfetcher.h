@@ -9,6 +9,7 @@
 #include <qimage.h>       //stack allocated
 #include <qobject.h>      //baseclass
 #include <qstringlist.h>  //stack allocated
+#include <qdom.h>     //stack allocated
 
 namespace Amarok {
     void coverContextMenu(  QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager = true );
@@ -100,6 +101,9 @@ private:
 private:
     /// The fetch was successful!
     void finish();
+
+    /// Parse one <Item> QDomNode and append results.
+    void parseItemNode( const QDomNode &node );
 
     /// The fetch failed, finish up and log an error message
     void finishWithError( const QString &message, KIO::Job *job = 0 );
