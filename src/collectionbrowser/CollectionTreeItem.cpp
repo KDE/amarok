@@ -99,6 +99,9 @@ CollectionTreeItem::data( int role ) const {
             {
                 if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
                 {
+                    if ( album->tracks().size() == 0 )
+                        return i18n( "CRASH!!!! :-(" );
+
                     Meta::TrackPtr track = album->tracks()[0];
                     QString year;
                     if( track )
