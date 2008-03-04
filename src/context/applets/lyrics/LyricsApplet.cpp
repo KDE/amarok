@@ -66,6 +66,7 @@ void LyricsApplet::init()
     m_artistLabel = new QGraphicsSimpleTextItem( this );
     m_lyricsProxy = new QGraphicsProxyWidget( this );
     m_lyrics = new QTextEdit;
+    m_lyrics->setReadOnly( true );
     m_lyricsProxy->setWidget( m_lyrics );
     m_title = new QGraphicsSimpleTextItem( this );
     m_artist = new QGraphicsSimpleTextItem( this );
