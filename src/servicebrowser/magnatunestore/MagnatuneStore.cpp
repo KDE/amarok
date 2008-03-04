@@ -67,6 +67,8 @@ void MagnatuneServiceFactory::init()
     if ( config.isMember() )
         service->setMembership( config.membershipType(), config.username(), config.password() );
 
+    service->setStreamType( config.streamType() );
+
     emit newService( service );
 }
 
@@ -93,6 +95,7 @@ KConfigGroup MagnatuneServiceFactory::config()
 MagnatuneStore::MagnatuneStore( const char *name )
         : ServiceBase( name )
         , m_currentAlbum( 0 )
+        , m_streamType( MagnatuneMetaFactory::OGG )
 {
     setObjectName(name);
     DEBUG_BLOCK
@@ -223,7 +226,7 @@ bool MagnatuneStore::updateMagnatuneList()
 
     m_tempFileName = tempFile.fileName();
 
-    m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo );
+    m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
     Amarok::ContextStatusBar::instance()->newProgressOperation( m_listDownloadJob )
     .setDescription( i18n( "Downloading Magnatune.com Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
@@ -407,6 +410,7 @@ void MagnatuneStore::polish( )
             metaFactory->setMembershipInfo( m_membershipType.toLower(), m_username, m_password );
         }
 
+        metaFactory->setStreamType( m_streamType );
 
         ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
         m_collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, registry );
@@ -518,8 +522,10 @@ void MagnatuneStore::setMembership(const QString & type, const QString & usernam
     m_membershipType = type;
     m_username = username;
     m_password = password;
-    
 }
+
+
+
 
 void MagnatuneStore::moodMapReady(QMap< QString, int > map)
 {
@@ -540,6 +546,11 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
     variantMap["cloud_weights"] = QVariant( weights );
     
     The::serviceInfoProxy()->setCloud( variantMap );
+}
+
+void MagnatuneStore::setStreamType( int type )
+{
+    m_streamType = type;
 }
 
 

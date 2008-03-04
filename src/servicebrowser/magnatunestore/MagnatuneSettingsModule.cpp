@@ -20,6 +20,8 @@
 
 #include "MagnatuneSettingsModule.h"
 
+#include "MagnatuneMeta.h"
+
 #include "ui_MagnatuneConfigWidget.h"
 
 #include <kdebug.h>
@@ -46,6 +48,7 @@ MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVarian
     connect ( m_configDialog->passwordEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->typeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->isMemberCheckbox, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
+    connect ( m_configDialog->streamTypeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
     
 
     load();
@@ -63,6 +66,10 @@ void MagnatuneSettingsModule::save()
     m_config.setMembershipType( m_configDialog->typeComboBox->currentText() );
     m_config.setUsername( m_configDialog->usernameEdit->text() );
     m_config.setPassword( m_configDialog->passwordEdit->text() );
+
+
+    QString streamTypeString = m_configDialog->streamTypeComboBox->currentText();
+    m_config.setStreamType( m_configDialog->streamTypeComboBox->currentIndex() );
 
     m_config.save();
     KCModule::save();
@@ -83,6 +90,8 @@ void MagnatuneSettingsModule::load()
     m_configDialog->typeComboBox->setCurrentIndex( index );
     m_configDialog->usernameEdit->setText( m_config.username() );
     m_configDialog->passwordEdit->setText( m_config.password() );
+
+    m_configDialog->streamTypeComboBox->setCurrentIndex( m_config.streamType() );
 
     KCModule::load();
 }

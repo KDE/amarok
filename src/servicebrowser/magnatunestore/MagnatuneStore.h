@@ -80,6 +80,11 @@ public:
     ~MagnatuneStore() { }
 
     void setMembership( const QString &type, const QString &username,  const QString &password );
+
+    /**
+     * OGG, MP3 or LOFI
+     */
+    void setStreamType( int );
     
      /**
      * Do not do expensive initializations before we are actually shown
@@ -199,6 +204,8 @@ private:
     QString m_membershipType;
     QString m_username;
     QString m_password;
+
+    int m_streamType;
 
 };
 

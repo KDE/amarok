@@ -5,12 +5,53 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>399</width>
-    <height>265</height>
+    <width>375</width>
+    <height>328</height>
    </rect>
   </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" >
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title" >
+      <string>Stream options</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="text" >
+         <string>Preview stream type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QComboBox" name="streamTypeComboBox" >
+        <item>
+         <property name="text" >
+          <string>Ogg</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Mp3</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Lofi mp3</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
     <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
       <string>Membership options</string>

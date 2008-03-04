@@ -57,8 +57,13 @@ public:
     virtual QString sourceDescription();
     virtual QPixmap emblem();
 
+    void setOggUrl( const QString& url );
+    QString oggUrl() const;
+    
+
 private:
     QString m_lofiUrl;
+    QString m_oggUrl;
     bool m_downloadMembership;
     QList<QString> m_moods;
 
@@ -136,6 +141,8 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
 {
 
     public:
+        enum { OGG = 0, MP3 = 1, LOFI = 2 };
+        
         MagnatuneMetaFactory( const QString &dbPrefix, MagnatuneStore * store );
         virtual ~MagnatuneMetaFactory() {}
 
@@ -158,11 +165,15 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
         //stuff for supporting the new membership services at Magnatune.com
 
         void setMembershipInfo ( QString prefix, QString userName, QString password );
+        void setStreamType( int type );
+
 
 
     private:
 
         QString m_membershipPrefix;
+        int m_streamType;
+
         QString m_userName;
         QString m_password;
         MagnatuneStore * m_store;

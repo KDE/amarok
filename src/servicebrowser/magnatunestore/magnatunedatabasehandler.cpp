@@ -75,6 +75,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                           "album_id INTEGER,"
                           "artist_id INTEGER,"
                           "preview_lofi " + sqlDb->exactTextColumnType() + ',' +
+                          "preview_ogg " + sqlDb->exactTextColumnType() + ',' +
                           "preview_url " + sqlDb->exactTextColumnType() + ");";
 
     debug() << "Creating mangnatune_tracks: " << queryString;
@@ -178,13 +179,14 @@ MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
 
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     QString queryString = "INSERT INTO magnatune_tracks ( name, track_number, length, "
-                          "album_id, artist_id, preview_lofi, preview_url ) VALUES ( '"
+            "album_id, artist_id, preview_lofi, preview_ogg, preview_url ) VALUES ( '"
                           + sqlDb->escape( mTrack->name()) + "', "
                           + QString::number( mTrack->trackNumber() ) + ", "
                           + QString::number( mTrack->length() ) + ", "
                           + QString::number( mTrack->albumId() ) + ", "
                           + QString::number( mTrack->artistId() ) + ", '"
                           + sqlDb->escape( mTrack->lofiUrl() ) + "', '"
+                          + sqlDb->escape( mTrack->oggUrl() ) + "', '"
                           + sqlDb->escape( mTrack->url() ) + "' );";
 
 

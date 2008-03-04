@@ -344,6 +344,10 @@ MagnatuneXmlParser::parseTrack( const QDomElement &e )
             {
                 pCurrentTrack->setUrl( childElement.text() );
             }
+            else if ( sElementName == "oggurl" )
+            {
+                pCurrentTrack->setOggUrl( childElement.text() );
+            }
             else if ( sElementName == "mp3lofi" )
             {
                 pCurrentTrack->setLofiUrl( childElement.text() );

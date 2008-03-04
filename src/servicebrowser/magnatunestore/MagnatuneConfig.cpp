@@ -19,6 +19,7 @@
  **************************************************************************/
  
 #include "MagnatuneConfig.h"
+#include "MagnatuneMeta.h"
 
 #include <kdebug.h>
 #include <KConfig>
@@ -46,6 +47,17 @@ void MagnatuneConfig::load()
     m_membershipType = config.readEntry( "membershipType", QString() );
     m_username = config.readEntry( "username", QString() );
     m_password = config.readEntry( "password", QString() );
+
+    QString streamTypeString = config.readEntry( "streamType", QString() );
+   
+
+    //make ogg the default
+    if ( streamTypeString == "mp3" )
+        m_streamType = MagnatuneMetaFactory::MP3;
+    else if (  streamTypeString == "lofi_mp3"  )
+        m_streamType = MagnatuneMetaFactory::LOFI;
+    else 
+        m_streamType = MagnatuneMetaFactory::OGG;
     
 }
 
@@ -59,6 +71,18 @@ void MagnatuneConfig::save()
         config.writeEntry( "membershipType", m_membershipType );
         config.writeEntry( "username", m_username );
         config.writeEntry( "password", m_password );
+
+
+        QString streamTypeString;
+        if ( m_streamType == MagnatuneMetaFactory::MP3 )
+            streamTypeString = "mp3";
+        else if ( m_streamType == MagnatuneMetaFactory::LOFI )
+            streamTypeString = "lofi_mp3";
+        else
+            streamTypeString = "ogg";
+
+        config.writeEntry( "streamType", streamTypeString );
+
     }
 }
 
@@ -107,3 +131,13 @@ void MagnatuneConfig::setPassword( const QString &password )
 }
 
 
+int MagnatuneConfig::streamType() const
+{
+    return m_streamType;
+}
+
+
+void MagnatuneConfig::setStreamType( int theValue )
+{
+    m_streamType = theValue;
+}

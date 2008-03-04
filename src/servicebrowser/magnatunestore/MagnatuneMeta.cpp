@@ -40,6 +40,7 @@ using namespace Meta;
 MagnatuneMetaFactory::MagnatuneMetaFactory( const QString & dbPrefix, MagnatuneStore * store )
     : ServiceMetaFactory( dbPrefix )
     , m_membershipPrefix( QString() )
+    , m_streamType( OGG )
     , m_userName( QString() )
     , m_password( QString() )
     , m_store( store )
@@ -53,10 +54,16 @@ void MagnatuneMetaFactory::setMembershipInfo( QString prefix, QString userName, 
     m_password = password;
 }
 
+void MagnatuneMetaFactory::setStreamType(int type)
+{
+    m_streamType = type;
+}
+
+
 
 int MagnatuneMetaFactory::getTrackSqlRowCount()
 {
-   return ServiceMetaFactory::getTrackSqlRowCount() + 1;
+   return ServiceMetaFactory::getTrackSqlRowCount() + 2;
 }
 
 QString MagnatuneMetaFactory::getTrackSqlRows()
@@ -65,7 +72,8 @@ QString MagnatuneMetaFactory::getTrackSqlRows()
     QString sqlRows = ServiceMetaFactory::getTrackSqlRows();
 
     sqlRows += ", ";
-    sqlRows += tablePrefix() + "_tracks.preview_lofi ";
+    sqlRows += tablePrefix() + "_tracks.preview_lofi, ";
+    sqlRows += tablePrefix() + "_tracks.preview_ogg ";
 
     return sqlRows;
 }
@@ -76,10 +84,23 @@ TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
 
     MagnatuneTrack * track = new MagnatuneTrack( rows );
 
+
+    if ( m_streamType == OGG ) {
+        track->setUrl( track->oggUrl() );
+    } else if (  m_streamType == LOFI ) {
+        track->setUrl( track->lofiUrl() );
+    }
+
     if ( !m_membershipPrefix.isEmpty() ) {
         QString url = track->url();
         url.replace( "http://he3.", "http://" + m_userName + ":" + m_password + "@" + m_membershipPrefix + "." );
-        url.replace( ".mp3", "_nospeech.mp3" );
+        
+        if ( m_streamType == MP3 ) {
+            url.replace( ".mp3", "_nospeech.mp3" );
+        }  else if ( m_streamType == OGG ) {
+            url.replace( ".ogg", "_nospeech.ogg" );
+        }
+        
         track->setUrl( url );
 
         debug()  << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!PREFIX: " << m_membershipPrefix;
@@ -164,6 +185,7 @@ MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
 {
     DEBUG_BLOCK
     m_lofiUrl = resultRow[7];
+    m_oggUrl = resultRow[8];
 }
 
 QString MagnatuneTrack::lofiUrl()
@@ -174,6 +196,17 @@ QString MagnatuneTrack::lofiUrl()
 void MagnatuneTrack::setLofiUrl(const QString & url)
 {
     m_lofiUrl = url;
+}
+
+QString Meta::MagnatuneTrack::oggUrl() const
+{
+    return m_oggUrl;
+}
+
+
+void Meta::MagnatuneTrack::setOggUrl( const QString& url )
+{
+    m_oggUrl = url;
 }
 
 void Meta::MagnatuneTrack::setDownloadMembership()

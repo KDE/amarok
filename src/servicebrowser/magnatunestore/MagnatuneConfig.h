@@ -49,6 +49,12 @@ public:
     void setUsername( const QString &username );
     void setPassword( const QString &password );
 
+    void setStreamType( int theValue );
+    
+
+    int streamType() const;
+    
+
 private:
 
     bool m_hasChanged;
@@ -56,6 +62,7 @@ private:
     QString m_password;
     QString m_membershipType;
     bool m_isMember;
+    int m_streamType;
 
 };
 
