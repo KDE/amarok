@@ -9,8 +9,8 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="295.89392"
-   height="65.624985"
+   width="11"
+   height="120"
    id="svg8535"
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
@@ -21,30 +21,30 @@
   <defs
      id="defs8537">
     <linearGradient
-       id="linearGradient4133">
+       id="linearGradient4167">
       <stop
-         style="stop-color:#ffffff;stop-opacity:0;"
+         style="stop-color:#66ffff;stop-opacity:1;"
          offset="0"
-         id="stop4135" />
+         id="stop4169" />
       <stop
-         id="stop3206"
-         offset="0.5"
-         style="stop-color:#ffffff;stop-opacity:0.29411765;" />
+         id="stop7092"
+         offset="0.89999998"
+         style="stop-color:#66ffff;stop-opacity:0;" />
       <stop
-         style="stop-color:#ffffff;stop-opacity:0;"
+         style="stop-color:#66ffff;stop-opacity:0;"
          offset="1"
-         id="stop4137" />
+         id="stop4171" />
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient4133"
-       id="linearGradient7314"
-       x1="148.01222"
-       y1="602.24084"
-       x2="559.16052"
-       y2="602.24084"
+       xlink:href="#linearGradient4167"
+       id="linearGradient5152"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.2179661,0,0,4.4315293,-649.79544,-2339.5729)" />
+       x1="326.70218"
+       y1="565.73895"
+       x2="326.69421"
+       y2="544.77789"
+       gradientTransform="matrix(1.091117,0,0,0.1532239,298.58799,460.44825)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -56,17 +56,17 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.9046154"
-     inkscape:cx="147.94696"
-     inkscape:cy="6.8961042"
+     inkscape:zoom="43.096527"
+     inkscape:cx="16.932079"
+     inkscape:cy="115.58028"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g5148"
      inkscape:showpageshadow="false"
      inkscape:window-width="1670"
      inkscape:window-height="972"
      inkscape:window-x="0"
-     inkscape:window-y="0"
-     showgrid="false"
+     inkscape:window-y="15"
+     showgrid="true"
      showguides="true"
      inkscape:guide-bbox="true" />
   <metadata
@@ -84,30 +84,30 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-181.6604,-542.99857)">
-    <rect
-       height="63.660244"
-       x="-476.27402"
-       y="-608.08264"
-       ry="4.9499416"
-       rx="5.0638943"
-       width="294.07272"
-       id="sidebar_button"
-       style="fill:#666765;fill-opacity:1;stroke:#878782;stroke-width:1.08175671;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:1"
-       inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
-       inkscape:export-xdpi="89.999985"
-       inkscape:export-ydpi="89.999985"
-       transform="scale(-1,-1)" />
-    <rect
-       inkscape:export-ydpi="89.999985"
-       inkscape:export-xdpi="89.999985"
-       inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
-       style="opacity:0.7;fill:url(#linearGradient7314);fill-opacity:1;stroke:none;stroke-width:1.09622216;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:1"
-       id="rect6300"
-       width="64.741997"
-       y="184.96039"
-       x="-608.62354"
-       height="288.62912"
-       transform="matrix(0,-1,1,0,0,0)" />
+     transform="translate(-302.6604,-493.6236)">
+    <g
+       id="g5148"
+       transform="matrix(3.4404003e-2,0,0,1.8681462,285.52907,-522.50084)">
+      <rect
+         transform="scale(-1,-1)"
+         inkscape:export-ydpi="89.999985"
+         inkscape:export-xdpi="89.999985"
+         inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
+         style="fill:#e8e8e8;fill-opacity:1;stroke:none;stroke-width:1.08175671;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:1.08779998;stroke-opacity:1"
+         id="sidebar_button"
+         width="319.73022"
+         rx="0"
+         ry="4.994617"
+         y="-608.15607"
+         x="-817.67609"
+         height="64.234802" />
+      <path
+         style="fill:url(#linearGradient5152);fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
+         d="M 504.31757,543.92124 C 500.78849,543.92124 497.94583,544.13919 497.94583,544.40742 L 497.94583,546.58007 C 602.99179,547.3807 709.81644,547.25103 817.67607,546.58007 L 817.67607,544.40742 C 817.67607,544.13919 814.83341,543.92124 811.3043,543.92124 L 504.31757,543.92124 z "
+         id="path6407"
+         inkscape:export-filename="/home/lee/Work/amarok/service-browser-element.png"
+         inkscape:export-xdpi="89.999985"
+         inkscape:export-ydpi="89.999985" />
+    </g>
   </g>
 </svg>
