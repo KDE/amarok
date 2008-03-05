@@ -2,7 +2,7 @@ project(context-currenttrack)
 
 set( wiki_SRCS
 WikipediaApplet.cpp
-${CMAKE_SOURCE_DIR}/src/context/Applet.cpp )
+../../Applet.cpp )
 
 include_directories( ../..
                     ../../..

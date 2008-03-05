@@ -2,7 +2,7 @@ project(context-currenttrack)
 
 set(currenttrack_SRCS
 CurrentTrack.cpp
-${CMAKE_SOURCE_DIR}/src/context/Applet.cpp )
+../../Applet.cpp )
 
 include_directories( ../../..
                     ../..
