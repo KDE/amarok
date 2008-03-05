@@ -37,7 +37,7 @@ add_subdirectory( collectionscanner )
 add_subdirectory( collection )
 add_subdirectory( strigi )
 add_subdirectory( context )
-add_subdirectory( playlistmanager )
+# add_subdirectory( playlistmanager )
 add_subdirectory( servicebrowser )
 
 OPTION(USE_SYSTEM_SQLITE "Use system sqlite instead of amarok's own copy" OFF)
