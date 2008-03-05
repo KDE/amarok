@@ -60,7 +60,7 @@ void OpmlDirectoryInfoParser::getInfo(TrackPtr track)
     debug() << "OpmlDirectoryInfoParser: getInfo about feed: " << feed->url();
 
 
-    m_rssDownloadJob = KIO::storedGet( feed->url() );
+    m_rssDownloadJob = KIO::storedGet( feed->url(), KIO::Reload, KIO::HideProgressInfo );
     Amarok::ContextStatusBar::instance()->newProgressOperation( m_rssDownloadJob ).setDescription( i18n( "Fetching Podcast Info" ) );
     connect( m_rssDownloadJob, SIGNAL(result(KJob *)), SLOT( rssDownloadComplete( KJob*) ) );
 
