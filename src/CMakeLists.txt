@@ -148,7 +148,6 @@ qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice
 set(libconfigdialog_SRCS
     configdialog/ConfigDialog.cpp
     configdialog/ConfigDialogBase.cpp
-    configdialog/dialogs/AppearanceConfig.cpp
     configdialog/dialogs/CollectionConfig.cpp
     configdialog/dialogs/GeneralConfig.cpp
     configdialog/dialogs/MediadeviceConfig.cpp
@@ -158,7 +157,6 @@ set(libconfigdialog_SRCS
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
-    configdialog/dialogs/AppearanceConfig.ui
     configdialog/dialogs/CollectionConfig.ui
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/OsdConfig.ui
