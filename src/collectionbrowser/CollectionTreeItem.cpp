@@ -95,7 +95,7 @@ CollectionTreeItem::data( int role ) const {
                     }
                 }
             }
-            if ( CollectionWidget::instance()->view()->showYears() )
+            /*if ( CollectionWidget::instance()->view()->showYears() )
             {
                 if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
                 {
@@ -110,7 +110,7 @@ CollectionTreeItem::data( int role ) const {
                         year = QString();
                     name = year + " - " + album->prettyName();
                 }
-            }
+            }*/
             if ( name.isEmpty() )
                 return i18n( "Unknown" );
             return name;
