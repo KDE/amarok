@@ -43,6 +43,8 @@ public slots:
 
 private:
 
+    QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
+
     Context::Svg* m_theme;
     Context::Svg* m_header;
     qreal m_aspectRatio;
@@ -51,9 +53,13 @@ private:
 
     QGraphicsSimpleTextItem* m_wikipediaLabel;
     QGraphicsSimpleTextItem* m_currentLabel;
+    QGraphicsSimpleTextItem* m_currentTitle;
 
     QGraphicsProxyWidget* m_wikiPage;
     QWebView * m_webView;
+
+    QString m_label;
+    QString m_title;
 
 };
 

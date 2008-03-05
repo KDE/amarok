@@ -65,6 +65,10 @@ void WikipediaEngine::update()
 
     if( selection() == "artist" ) // default, or applet told us to fetch artist 
     {
+
+        setData( "wikipedia", "label", "Artist" );
+        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->artist()->prettyName() );
+        
         if ( (EngineController::instance()->currentTrack()->playableUrl().protocol() == "lastfm") ||
              (EngineController::instance()->currentTrack()->playableUrl().protocol() == "daap") ||
              !EngineController::engine()->isStream() )
@@ -73,10 +77,15 @@ void WikipediaEngine::update()
             //tmpWikiStr += wikiArtistPostfix(); //makes wikipedia bail out
         } else
             tmpWikiStr = EngineController::instance()->currentTrack()->artist()->prettyName();
-    } else if( selection() == "title" )
+    } else if( selection() == "title" ) {
         tmpWikiStr = EngineController::instance()->currentTrack()->prettyName();
+        setData( "wikipedia", "label", "Title" );
+        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->prettyName() );
+    }
     else if( selection() == "album" )
     {
+        setData( "wikipedia", "label", "Album" );
+        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->album()->prettyName() );
         if ( (EngineController::instance()->currentTrack()->playableUrl().protocol() == "lastfm") ||
              (EngineController::instance()->currentTrack()->playableUrl().protocol() == "daap") ||
              !EngineController::engine()->isStream() )
@@ -231,7 +240,20 @@ void WikipediaEngine::wikiResult( KJob* job )
     
     clearData( "wikipedia" );
 //     debug() << "sending wiki page:" << m_wikiHTMLSource;
-    setData( "wikipedia", selection(), m_wikiHTMLSource );
+    setData( "wikipedia", "page", m_wikiHTMLSource );
+
+    if( selection() == "artist" ) // default, or applet told us to fetch artist
+    {
+        setData( "wikipedia", "label", "Artist" );
+        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->artist()->prettyName() );
+    } else if( selection() == "title" ) {
+        setData( "wikipedia", "label", "Title" );
+        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->prettyName() );
+    } else if( selection() == "album" )
+    {
+        setData( "wikipedia", "label", "Album" );
+        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->album()->prettyName() );
+    }
 
     //debug() << m_wikiHTMLSource;
     

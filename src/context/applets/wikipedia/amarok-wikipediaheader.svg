@@ -9,8 +9,8 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="617.14288"
-   height="345.71429"
+   width="590.01141"
+   height="325.41241"
    id="svg2581"
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
@@ -3008,15 +3008,15 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="307.86728"
-     inkscape:cy="188.35217"
+     inkscape:zoom="1.4"
+     inkscape:cx="519.85053"
+     inkscape:cy="221.82568"
      inkscape:document-units="px"
      inkscape:current-layer="header"
-     inkscape:window-width="791"
-     inkscape:window-height="590"
-     inkscape:window-x="129"
-     inkscape:window-y="216"
+     inkscape:window-width="1680"
+     inkscape:window-height="995"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      height="185.71px"
      width="617.14288px" />
   <metadata
@@ -3034,16 +3034,17 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(69.291428,-101.64954)">
+     transform="translate(55.29143,-115.95141)">
     <g
        id="header">
       <rect
          style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
          id="wikipedialabel"
-         y="119.52284"
-         x="188.46434"
-         height="11.854431"
-         width="135.47922" />
+         y="116.07421"
+         x="-49.632576"
+         height="18"
+         width="577.38885"
+         transform="matrix(0.9999969,2.4741931e-3,0,1,0,0)" />
       <g
          transform="translate(14,14)"
          id="g3173">
@@ -3052,7 +3053,7 @@
            id="rect3285"
            d="M -60.04369,102.00439 C -65.163646,102.00439 -69.291428,106.44238 -69.29143,111.94925 C -69.29143,111.94925 -69.050198,122.29721 -68.600015,123.46954 L 520.02863,123.46954 C 520.4788,122.29721 520.72,121.01351 520.72,119.66227 L 520.72,111.94925 C 520.72,106.44238 516.59223,102.00439 511.47231,102.00439 L -60.04369,102.00439 z " />
         <g
-           transform="matrix(0.5113958,0,0,0.4586198,388.07423,129.62549)"
+           transform="matrix(0.2556979,0,0,0.2293099,490.86747,122.98741)"
            id="titlepage">
           <path
              d="M 16,8 L 16,120 C 16,120 79.15625,120 79.15625,120 L 79.1875,120 C 79.187503,120 91.09375,110.09375 96.59375,104.59375 C 102.09375,99.09375 112,87.1875 112,87.1875 L 112,87.15625 L 112,8 L 16,8 z "
@@ -3260,7 +3261,7 @@
           </g>
         </g>
         <g
-           transform="matrix(0.5113958,0,0,0.4586198,191.88736,106.0581)"
+           transform="matrix(0.2556979,0,0,0.2293099,394.26285,111.20371)"
            id="albumpage">
           <path
              d="M 16,8 L 16,120 C 16,120 79.15625,120 79.15625,120 L 79.1875,120 C 79.187503,120 91.09375,110.09375 96.59375,104.59375 C 102.09375,99.09375 112,87.1875 112,87.1875 L 112,87.15625 L 112,8 L 16,8 z "
@@ -3335,7 +3336,7 @@
         </g>
         <g
            id="artistpage"
-           transform="translate(-88.026627,83.507475)">
+           transform="matrix(0.5,0,0,0.5,255.05365,99.928399)">
           <g
              id="g4239"
              transform="translate(121.93129,0)">
@@ -3790,26 +3791,25 @@
       <rect
          style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
          id="currentlabel"
-         y="160.16663"
-         x="17.421844"
-         height="28.789333"
-         width="157.49458" />
+         y="142"
+         x="-53.292439"
+         height="18"
+         width="116.06601" />
       <rect
          style="opacity:1;fill:#39ffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="wikipediainformation"
-         y="232.34094"
+         y="165.91237"
          x="-53.999588"
-         height="209.02289"
-         width="583.22607" />
+         height="275.45145"
+         width="587.51178" />
       <rect
-         ry="81.303108"
-         rx="114.01875"
-         y="101.64954"
-         x="-69.291428"
-         height="345.71429"
-         width="617.14288"
-         id="rect3638"
-         style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0" />
+         style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+         id="currenttitle"
+         y="142"
+         x="82.675568"
+         height="18"
+         width="365.35172"
+         inkscape:label="#rect2744" />
     </g>
   </g>
 </svg>

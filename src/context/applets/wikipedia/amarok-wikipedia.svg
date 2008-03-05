@@ -10,8 +10,8 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.0"
-   width="588.5"
-   height="509"
+   width="575.61975"
+   height="495.35239"
    id="svg2581"
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
@@ -41,14 +41,15 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="0.88230945"
-     inkscape:cx="196.65417"
-     inkscape:cy="236.87319"
+     inkscape:zoom="1.7646189"
+     inkscape:cx="364.27956"
+     inkscape:cy="-80.169543"
      inkscape:window-x="0"
      inkscape:window-y="10"
      inkscape:current-layer="background"
      height="509px"
-     width="588.5px" />
+     width="588.5px"
+     showgrid="true" />
   <defs
      id="defs2583">
     <linearGradient
@@ -1934,31 +1935,32 @@
        y2="-15.33666" />
   </defs>
   <g
-     id="background">
+     id="background"
+     transform="translate(-5,-5.924231)">
     <rect
-       style="opacity:0.303371;fill:#0000ff;fill-opacity:0.7819148;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:0.30337123;fill:#0000ff;fill-opacity:0.78191457;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="wikipediainformation"
-       y="98.315674"
-       x="6.5639806"
-       height="402.96094"
-       width="575.10107"
+       y="59"
+       x="5"
+       height="442.27661"
+       width="575"
        inkscape:label="#rect2499" />
     <rect
        style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
        id="wikipedialabel"
        y="7"
-       x="241.16455"
-       height="12.987821"
-       width="135.47922" />
+       x="10"
+       height="18"
+       width="565" />
     <g
-       transform="matrix(0.9731065,0,0,1,73.903758,-96.080159)"
+       transform="matrix(0.9756078,0,0,1,72.601262,-96.080159)"
        id="g3173">
       <path
          style="fill:url(#linearGradient5565);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.97286767;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="rect3285"
          d="M -60.04369,102.00439 C -65.163646,102.00439 -69.291428,106.44238 -69.29143,111.94925 C -69.29143,111.94925 -69.050198,122.29721 -68.600015,123.46954 L 520.02863,123.46954 C 520.4788,122.29721 520.72,121.01351 520.72,119.66227 L 520.72,111.94925 C 520.72,106.44238 516.59223,102.00439 511.47231,102.00439 L -60.04369,102.00439 z " />
       <g
-         transform="matrix(0.5113958,0,0,0.4586198,388.07423,129.62549)"
+         transform="matrix(0.2556979,0,0,0.2293099,490.93354,123.47499)"
          id="titlepage">
         <path
            d="M 16,8 L 16,120 C 16,120 79.15625,120 79.15625,120 L 79.1875,120 C 79.187503,120 91.09375,110.09375 96.59375,104.59375 C 102.09375,99.09375 112,87.1875 112,87.1875 L 112,87.15625 L 112,8 L 16,8 z "
@@ -2166,7 +2168,7 @@
         </g>
       </g>
       <g
-         transform="matrix(0.5113958,0,0,0.4586198,191.88736,106.0581)"
+         transform="matrix(0.2556979,0,0,0.2293099,391.23647,111.6913)"
          id="albumpage">
         <path
            d="M 16,8 L 16,120 C 16,120 79.15625,120 79.15625,120 L 79.1875,120 C 79.187503,120 91.09375,110.09375 96.59375,104.59375 C 102.09375,99.09375 112,87.1875 112,87.1875 L 112,87.15625 L 112,8 L 16,8 z "
@@ -2241,7 +2243,7 @@
       </g>
       <g
          id="artistpage"
-         transform="translate(-88.026627,83.507475)">
+         transform="matrix(0.5,0,0,0.5,249.70258,100.41598)">
         <g
            id="g4239"
            transform="translate(121.93129,0)">
@@ -2695,10 +2697,19 @@
     </g>
     <rect
        style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
-       id="rect3943"
-       y="46.686302"
-       x="6.6527634"
-       height="28.789333"
-       width="321.83603" />
+       id="titlelabel"
+       y="34"
+       x="5"
+       height="18"
+       width="145"
+       inkscape:label="#rect3943" />
+    <rect
+       style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
+       id="title"
+       y="34"
+       x="160"
+       height="18"
+       width="330"
+       inkscape:label="#rect2647" />
   </g>
 </svg>

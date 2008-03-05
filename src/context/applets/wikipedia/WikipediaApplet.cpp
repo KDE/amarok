@@ -66,6 +66,7 @@ void WikipediaApplet::init()
 
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
     m_currentLabel = new QGraphicsSimpleTextItem( this );
+    m_currentTitle = new QGraphicsSimpleTextItem( this );
     
     m_webView = new QWebView();
     m_wikiPage = new QGraphicsProxyWidget( this );
@@ -81,6 +82,9 @@ void WikipediaApplet::init()
     m_currentLabel->setBrush( Qt::white );
     labelFont.setBold( false );
     m_currentLabel->setFont( labelFont );
+
+    m_currentTitle->setBrush( Qt::white );
+    m_currentTitle->setFont( labelFont );
 
     constraintsUpdated();
 
@@ -98,7 +102,14 @@ void WikipediaApplet::constraintsUpdated( Plasma::Constraints constraints )
     }
     
     m_wikipediaLabel->setPos( m_header->elementRect( "wikipedialabel" ).topLeft() );
-    m_currentLabel->setPos( m_header->elementRect( "currentlabel" ).topLeft() );
+    m_wikipediaLabel->setFont( shrinkTextSizeToFit( "Wikipedia", m_header->elementRect( "wikipedialabel" ) ) );
+    
+    m_currentLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() );
+    m_currentLabel->setFont( shrinkTextSizeToFit( m_label, m_header->elementRect( "titlelabel" ) ) );
+    
+    m_currentTitle->setPos( m_header->elementRect( "title" ).topLeft() );
+    m_currentTitle->setFont( shrinkTextSizeToFit( m_title, m_header->elementRect( "title" ) ) );
+
 
     kDebug() << "wikipedialabel top left: " <<  m_header->elementRect( "wikipedialabel" ).topLeft();
 
@@ -134,16 +145,33 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     DEBUG_BLOCK
     Q_UNUSED( name )
 
-    debug() << "got data from engine:" << data;
+    //debug() << "got data from engine:" << data;
     if( data.size() == 0 ) return;
 
-    if( data.contains( "message" ) )
-        m_webView->setHtml( data[ "message" ].toString() );
-    else
-    {
-        m_currentLabel->setText( data.keys()[ 0 ] ); // set type of data
+
+    
+    if( data.contains( "page" ) ) {
+        m_webView->setHtml( data[ "page" ].toString() );
+    } else {
         m_webView->setHtml( data[ data.keys()[ 0 ] ].toString() ); // set data
     }
+
+    if( data.contains( "label" ) )
+        m_label = data[ "label" ].toString() + ':';
+    else
+        m_label = QString();
+
+    if( data.contains( "title" ) )
+        m_title = data[ "title" ].toString();
+    else
+        m_title = QString();
+
+    
+    debug() << "label:" << m_label;
+    debug() << "title:" << m_title;
+    
+    m_currentTitle->setText( m_title );
+    m_currentLabel->setText( m_label );
 }
 
 void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -173,6 +201,36 @@ void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsIt
 
     kDebug() << "WikipediaApplet::paintInterface end";
 
+}
+
+QFont WikipediaApplet::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
+{
+    Q_UNUSED( text );
+    int size = 12; // start here, shrink if needed
+    QFont font( QString(), size, QFont::Light );
+    font.setStyleHint( QFont::SansSerif );
+    font.setStyleStrategy( QFont::PreferAntialias );
+    
+    QFontMetrics fm( font );
+    while( fm.height() > bounds.height() + 4 )
+    {
+        if( size < 0 )
+        {
+            size = 5;
+            break;
+        }
+        size--;
+        fm = QFontMetrics( QFont( QString(), size ) );
+    }
+    
+    // for aesthetics, we make it one smaller
+    size--;
+
+    QFont returnFont( QString(), size, QFont::Light );
+    font.setStyleHint( QFont::SansSerif );
+    font.setStyleStrategy( QFont::PreferAntialias );
+    
+    return QFont( returnFont );
 }
 
 
