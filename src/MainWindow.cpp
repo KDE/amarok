@@ -284,6 +284,13 @@ void MainWindow::init()
         addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), "collection-amarok" )
         PERF_LOG( "Created CollectionWidget" )
 
+        //cant use macros here since we need access to the browsers directly
+        PERF_LOG( "Creating ServiceBrowser" )
+        ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
+        m_browsers->addWidget( KIcon( "services-amarok" ), i18n("Internet"), internetContentServiceBrowser );
+        m_browserNames.append( "Internet" );
+        PERF_LOG( "Created ServiceBrowser" )
+
         PERF_LOG( "Do podcast stuff" )
         //TODO: find a better place to load the default collections and providers
         PodcastCollection *localPodcasts = new PodcastCollection();
@@ -301,13 +308,6 @@ void MainWindow::init()
         PERF_LOG( "Creating FileBrowser" )
         addBrowserMacro( FileBrowser::Widget, "FileBrowser::Widget",  i18n("Files"), "folder-amarok" )
         PERF_LOG( "Created FileBrowser" )
-
-        //cant use macros here since we need access to the browsers directly
-        PERF_LOG( "Creating ServiceBrowser" )
-        ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
-        m_browsers->addWidget( KIcon( "services-amarok" ), i18n("Internet"), internetContentServiceBrowser );
-        m_browserNames.append( "Internet" );
-        PERF_LOG( "Created ServiceBrowser" )
 
 
         //get the plugin manager
