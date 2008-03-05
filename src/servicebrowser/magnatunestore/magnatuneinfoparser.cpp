@@ -40,12 +40,10 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
    /* QString tempFile;
     QString orgHtml;*/
 
-    m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl(), KIO::Reload, KIO::HideProgressInfo  );
-    Amarok::ContextStatusBar::instance()->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
+    m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl(), KIO::Reload, KIO::HideProgressInfo );
+    Amarok::ContextStatusBar::instance()->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
     connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
 
-    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_infoDownloadJob )
-    .setDescription( i18n( "Fetching artist info..." ) );
 }
 
 
