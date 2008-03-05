@@ -84,6 +84,8 @@ int App::mainThreadId = 0;
 extern void setupEventHandler_mac(long);
 #endif
 
+#define AMAROK_CAPTION "Amarok 2 alpha"
+
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "Amarok" ), APP_VERSION,
     ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
@@ -758,7 +760,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     switch( state )
     {
     case Engine::Empty:
-        mainWindow()->setPlainCaption( i18n( "Amarok 2" ) );
+        mainWindow()->setPlainCaption( i18n( AMAROK_CAPTION ) );
 //         TrackToolTip::instance()->clear();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         break;
@@ -768,15 +770,16 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
             Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
         if ( !track->prettyName().isEmpty() )
             //TODO: write a utility function somewhere
-            mainWindow()->setPlainCaption( i18n( "%1  -  Amarok 2", track->prettyName() ) );
+            mainWindow()->setPlainCaption( i18n( "%1  -  %2", track->prettyName(), AMAROK_CAPTION ) );
         break;
 
     case Engine::Paused:
+        mainWindow()->setPlainCaption( i18n( "Paused  -  %1", QString( AMAROK_CAPTION ) ) );
         Amarok::OSD::instance()->OSDWidget::show( i18n("Paused") );
         break;
 
     case Engine::Idle:
-        mainWindow()->setPlainCaption( "Amarok 2" );
+        mainWindow()->setPlainCaption( AMAROK_CAPTION );
         break;
 
     default:
@@ -790,7 +793,7 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool /*t
     Meta::TrackPtr currentTrack = EngineController::instance()->currentTrack();
     Amarok::OSD::instance()->show( currentTrack );
     if ( !currentTrack->prettyName().isEmpty() )
-        mainWindow()->setPlainCaption( i18n( "%1  -  Amarok 2", currentTrack->prettyName() ) );
+        mainWindow()->setPlainCaption( i18n( "%1  -  %2", currentTrack->prettyName(), AMAROK_CAPTION ) );
 
 //     TrackToolTip::instance()->setTrack( currentTrack );
 }
