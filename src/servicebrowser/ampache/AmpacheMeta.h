@@ -25,6 +25,8 @@
 #include "../servicemetabase.h"
 #include "../ServiceAlbumCoverDownloader.h"
 
+#include <KStandardDirs>
+
 #include <QDateTime>
 #include <QString>
 #include <QStringList>
@@ -33,6 +35,23 @@
 
 namespace Meta
 {
+
+
+class AmpacheTrack  : public ServiceTrack
+{
+
+    public:
+        
+    AmpacheTrack( const QString& title )
+    : ServiceTrack( title )
+    {
+    }
+
+    virtual QString sourceName() { return "Ampache"; }
+    virtual QString sourceDescription() { return "The Ampache music server project: http://Ampache.org"; }
+    virtual QPixmap emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-default.png" );  }
+
+};
 
 
 class AmpacheAlbum  : public ServiceAlbumWithCover
