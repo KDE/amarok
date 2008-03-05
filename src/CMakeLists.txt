@@ -149,7 +149,6 @@ set(libconfigdialog_SRCS
     configdialog/ConfigDialogBase.cpp
     configdialog/dialogs/AppearanceConfig.cpp
     configdialog/dialogs/CollectionConfig.cpp
-    configdialog/dialogs/EngineConfig.cpp
     configdialog/dialogs/GeneralConfig.cpp
     configdialog/dialogs/MediadeviceConfig.cpp
     configdialog/dialogs/OsdConfig.cpp
