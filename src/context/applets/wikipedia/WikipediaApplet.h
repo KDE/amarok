@@ -44,6 +44,7 @@ public slots:
 private:
 
     QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
+    QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
 
     Context::Svg* m_theme;
     Context::Svg* m_header;

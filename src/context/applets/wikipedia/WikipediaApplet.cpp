@@ -105,18 +105,19 @@ void WikipediaApplet::constraintsUpdated( Plasma::Constraints constraints )
     m_wikipediaLabel->setFont( shrinkTextSizeToFit( "Wikipedia", m_header->elementRect( "wikipedialabel" ) ) );
 
     //center it
-
     float textWidth = m_wikipediaLabel->boundingRect().width();
     float totalWidth = m_header->elementRect( "wikipedialabel" ).width();
     float offsetX =  ( totalWidth - textWidth ) / 2;
-
-
     m_wikipediaLabel->setPos( m_header->elementRect( "Wikipedia" ).topLeft() + QPointF ( offsetX, 0 ) );
+
+    
     m_currentLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() );
     m_currentLabel->setFont( shrinkTextSizeToFit( m_label, m_header->elementRect( "titlelabel" ) ) );
+    m_currentLabel->setText( truncateTextToFit( m_label, m_currentLabel->font(), m_header->elementRect( "titlelabel" ) ) );
     
     m_currentTitle->setPos( m_header->elementRect( "title" ).topLeft() );
     m_currentTitle->setFont( shrinkTextSizeToFit( m_title, m_header->elementRect( "title" ) ) );
+    m_currentTitle->setText( truncateTextToFit( m_title, m_currentTitle->font(), m_header->elementRect( "title" ) ) );
 
 
     kDebug() << "wikipedialabel top left: " <<  m_header->elementRect( "wikipedialabel" ).topLeft();
@@ -177,9 +178,11 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     
     debug() << "label:" << m_label;
     debug() << "title:" << m_title;
-    
-    m_currentTitle->setText( m_title );
-    m_currentLabel->setText( m_label );
+
+
+    m_currentLabel->setText( truncateTextToFit( m_label, m_currentLabel->font(), m_header->elementRect( "titlelabel" ) ) );
+    m_currentTitle->setText( truncateTextToFit( m_title, m_currentTitle->font(), m_header->elementRect( "title" ) ) );
+
 }
 
 void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -241,6 +244,12 @@ QFont WikipediaApplet::shrinkTextSizeToFit( const QString& text, const QRectF& b
     return QFont( returnFont );
 }
 
+QString WikipediaApplet::truncateTextToFit( QString text, const QFont& font, const QRectF& bounds )
+{
+    QFontMetrics fm( font );
+    return fm.elidedText ( text, Qt::ElideRight, bounds.width() );
+    
+}
 
 
 #include "WikipediaApplet.moc"
