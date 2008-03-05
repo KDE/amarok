@@ -758,7 +758,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     switch( state )
     {
     case Engine::Empty:
-        mainWindow()->setCaption( "Amarok - Pre-Alpha Software. Do NOT File Bugs." );
+        mainWindow()->setPlainCaption( i18n( "Amarok 2" ) );
 //         TrackToolTip::instance()->clear();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         break;
@@ -768,7 +768,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
             Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
         if ( !track->prettyName().isEmpty() )
             //TODO: write a utility function somewhere
-            mainWindow()->setCaption( i18n("Amarok - Pre-Alpha Software. Do NOT File Bugs. - %1", track->prettyName() ) );
+            mainWindow()->setPlainCaption( i18n( "%1  -  Amarok 2", track->prettyName() ) );
         break;
 
     case Engine::Paused:
@@ -776,7 +776,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
         break;
 
     case Engine::Idle:
-        mainWindow()->setCaption( "Amarok - Pre-Alpha Software. Do NOT File Bugs." );
+        mainWindow()->setPlainCaption( "Amarok 2" );
         break;
 
     default:
@@ -790,7 +790,7 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool /*t
     Meta::TrackPtr currentTrack = EngineController::instance()->currentTrack();
     Amarok::OSD::instance()->show( currentTrack );
     if ( !currentTrack->prettyName().isEmpty() )
-        mainWindow()->setCaption( i18n("Amarok - %1", currentTrack->prettyName() ) + " - Pre-alpha software, do _not_ file bugs" );
+        mainWindow()->setPlainCaption( i18n( "%1  -  Amarok 2", currentTrack->prettyName() ) );
 
 //     TrackToolTip::instance()->setTrack( currentTrack );
 }
