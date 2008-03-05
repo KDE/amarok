@@ -30,7 +30,7 @@
 #include "amarok_export.h"
 #include "../collectionbrowser/SingleCollectionTreeItemModel.h"
 #include "../collectionbrowser/CollectionTreeItem.h"
-#include "../collectionbrowser/CollectionTreeView.h"
+#include "ServiceCollectionTreeView.h"
 #include "plugin/plugin.h"
 
 #include <khtml_part.h>
@@ -98,6 +98,8 @@ public:
     void setModel( SingleCollectionTreeItemModel * model );
     SingleCollectionTreeItemModel * getModel();
 
+    void setPlayableTracks( bool playable );
+
 
     virtual void polish() = 0;
     virtual bool updateContextView() { return false; }
@@ -118,19 +120,16 @@ protected slots:
 
 
     void homeButtonClicked();
-
     void itemActivated ( const QModelIndex & index );
-
     void itemSelected( CollectionTreeItem * item  );
 
 
 protected:
 
     virtual void generateWidgetInfo( QString html = QString() ) const;
-
+    
     static ServiceBase *s_instance;
-
-    CollectionTreeView *m_contentView;
+    ServiceCollectionTreeView *m_contentView;
 
     QPushButton *m_homeButton;
 

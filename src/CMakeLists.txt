@@ -106,36 +106,37 @@ set(libplugin_SRCS
 # SERVICEBROWSER
 #####################################################################
 set(libservicebrowser_SRCS
-    servicebrowser/servicebrowser.cpp
-    servicebrowser/servicebase.cpp
-    servicebrowser/ServicePluginManager.cpp
-    servicebrowser/servicemetabase.cpp
-    servicebrowser/servicecollection.cpp
-    servicebrowser/servicesqlquerymaker.cpp
-    servicebrowser/servicesqlcollection.cpp
-    servicebrowser/ServiceDynamicCollection.cpp
-    servicebrowser/infoparserbase.cpp
-    servicebrowser/ServiceSqlRegistry.cpp
-    servicebrowser/ServiceAlbumCoverDownloader.cpp
-    servicebrowser/ServiceInfoProxy.cpp
-    servicebrowser/ServiceListModel.cpp
-    servicebrowser/ServiceListDelegate.cpp
     servicebrowser/DynamicServiceQueryMaker.cpp
+    servicebrowser/infoparserbase.cpp
+    servicebrowser/ServiceAlbumCoverDownloader.cpp
+    servicebrowser/servicebase.cpp
+    servicebrowser/servicebrowser.cpp
+    servicebrowser/servicecollection.cpp
+    servicebrowser/ServiceCollectionTreeView.cpp
     servicebrowser/ServiceCustomActionsCapability.cpp
+    servicebrowser/ServiceDynamicCollection.cpp
+    servicebrowser/ServiceInfoProxy.cpp
+    servicebrowser/ServiceListDelegate.cpp
+    servicebrowser/ServiceListModel.cpp
+    servicebrowser/servicemetabase.cpp
+    servicebrowser/ServicePluginManager.cpp
     servicebrowser/ServiceSourceInfoCapability.cpp
+    servicebrowser/servicesqlcollection.cpp
+    servicebrowser/servicesqlquerymaker.cpp
+    servicebrowser/ServiceSqlRegistry.cpp
 )
 
 #####################################################################
 # SCRIPTABLESERVICE
 #####################################################################
 set(libscriptableservice_SRCS
-    servicebrowser/scriptableservice/scriptableservicemanager.cpp
-    servicebrowser/scriptableservice/ScriptableServiceInfoParser.cpp
-    servicebrowser/scriptableservice/scriptableservice.cpp
-    servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
-    servicebrowser/scriptableservice/DynamicScriptableServiceMeta.cpp
-    servicebrowser/scriptableservice/DynamicScriptableServiceCollection.cpp
     servicebrowser/scriptableservice/DynamicScriptableQueryMaker.cpp
+    servicebrowser/scriptableservice/DynamicScriptableServiceCollection.cpp
+    servicebrowser/scriptableservice/DynamicScriptableServiceMeta.cpp
+    servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
+    servicebrowser/scriptableservice/scriptableservice.cpp
+    servicebrowser/scriptableservice/ScriptableServiceInfoParser.cpp
+    servicebrowser/scriptableservice/scriptableservicemanager.cpp
 )
 
 

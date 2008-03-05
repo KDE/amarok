@@ -84,6 +84,9 @@ void OpmlDirectoryService::polish()
     generateWidgetInfo();
     if ( m_polished ) return;
 
+    //do not allow this content to get added to the playlist. At leats not for now
+    setPlayableTracks( false );
+
     KHBox * bottomPanelLayout = new KHBox;
     bottomPanelLayout->setParent( m_bottomPanel );
 

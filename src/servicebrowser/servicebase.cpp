@@ -85,7 +85,7 @@ ServiceBase::ServiceBase( const QString &name )
     nameLabel->setFont(QFont("Arial", 12, QFont::Bold));
     nameLabel->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
    
-    m_contentView = new CollectionTreeView( this );
+    m_contentView = new ServiceCollectionTreeView( this );
 
     m_contentView->setAlternatingRowColors ( true );
     //m_contentView->setAnimated( true );
@@ -223,6 +223,11 @@ void ServiceBase::generateWidgetInfo( QString html ) const
     map["service_name"] = m_name;
     map["main_info"] = html;
     The::serviceInfoProxy()->setInfo( map );
+}
+
+void ServiceBase::setPlayableTracks(bool playable)
+{
+    m_contentView->setPlayableTracks( playable );
 }
 
 
