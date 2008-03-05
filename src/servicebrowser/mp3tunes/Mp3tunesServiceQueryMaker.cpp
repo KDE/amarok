@@ -481,10 +481,6 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
     QDomElement trackListElement = root.firstChildElement("trackList");
 
 
-    QDomElement e = albumDataElement.firstChildElement("albumId");
-    QString albumId = e.text();
-    e = albumDataElement.firstChildElement("artistId");
-    QString artistId = e.text();
 
 
     QDomNode n = trackListElement.firstChild();
@@ -518,6 +514,11 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
 
         element = n.firstChildElement("trackNumber");
         track->setTrackNumber( element.text().toInt() );
+
+        element = n.firstChildElement("albumId");
+        QString albumId = element.text();
+        element = n.firstChildElement("artistId");
+        QString artistId = element.text();
 
 
         ArtistPtr artistPtr = m_collection->artistById( artistId.toInt() );
