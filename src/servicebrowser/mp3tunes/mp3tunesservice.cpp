@@ -38,14 +38,14 @@ void Mp3tunesServiceFactory::init()
 
     Mp3tunesConfig config;
     
-    ServiceBase* service = new Mp3tunesService( "Mp3tunes.com", config.email(), config.password() );
+    ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.email(), config.password() );
     emit newService( service );
 }
 
 
 QString Mp3tunesServiceFactory::name()
 {
-    return "Mp3tunes.com";
+    return "MP3tunes.com";
 }
 
 
@@ -76,7 +76,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
  , m_sessionId ( QString() )
 {
 
-    setShortDescription( i18n( "The Mp3Tunes Locker service. Access your stored music!" ) );
+    setShortDescription( i18n( "The MP3Tunes Locker service. Access your stored music!" ) );
     setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
 
 }

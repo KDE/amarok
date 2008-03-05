@@ -488,7 +488,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         QString title = element.text();
         if ( title.isEmpty() ) title = "Unknown";
 
-        ServiceTrack * track = new ServiceTrack( title  );
+        Mp3TunesTrack * track = new Mp3TunesTrack( title  );
         TrackPtr trackPtr( track );
 
         debug() << "Adding track: " <<  title;

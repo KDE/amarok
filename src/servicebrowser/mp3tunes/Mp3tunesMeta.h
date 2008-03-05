@@ -25,6 +25,8 @@
 #include "../servicemetabase.h"
 #include "../ServiceAlbumCoverDownloader.h"
 
+#include <KStandardDirs>
+
 #include <QDateTime>
 #include <QString>
 #include <QStringList>
@@ -33,6 +35,22 @@
 
 namespace Meta
 {
+
+class Mp3TunesTrack  : public ServiceTrack
+{
+
+    public:
+
+        Mp3TunesTrack( const QString& title )
+        : ServiceTrack( title )
+        {
+        }
+
+        virtual QString sourceName() { return "MP3tunes.com"; }
+        virtual QString sourceDescription() { return "Online music locker where you can safely store and access yout music: http://mp3tunes.com"; }
+        virtual QPixmap emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-default.png" );  }
+
+};
 
 
 class Mp3TunesAlbum  : public ServiceAlbumWithCover
