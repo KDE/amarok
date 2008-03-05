@@ -14,7 +14,6 @@ interface that really makes playlist handling easy.
 
     * Quick and simple drag and drop playlist creation
     * Music library (built-in SQLite, MySQL, or PostgreSQL)
-    * Multiple backends supported (Phonon, and xine)
     * Plays all audio formats known to man
     * 10 band equalizer
     * Automatic cover art download using Amazon services
@@ -51,12 +50,6 @@ Required
       http://www.ruby-lang.org
 
     * One of the multimedia frameworks listed below:
-
-Recommended
-    * xine-lib 1.0.2 (or newer)
-      Note: xine-lib 1.1.1 is required for gapless playback.
-      (multimedia framework)
-      http://xinehq.de/
 
 Optional
     * KDE-Base 4.1 (or newer)
@@ -180,14 +173,13 @@ benefit from optimisation, so the smallest binary is probably the best route.
 In order to limit the dependencies the Amarok package demands we suggest
 splitting Amarok into the following packages:
 
-   1. Amarok + one backend
-   2. xine-engine
-   4. amarok_libvisual
-   5. ipod media device
-   6. ifp media device
-   7. njb media device
-   8. mtp media device
-   9. rio karma media device
+   1. Amarok + Phonon Engine
+   2. amarok_libvisual
+   3. ipod media device
+   4. ifp media device
+   5. njb media device
+   6. mtp media device
+   7. rio karma media device
 
 Amarok is modular and will be fully functional as long as one of 2 or 3 is
 also installed. Hence we suggest Amarok + one backend.

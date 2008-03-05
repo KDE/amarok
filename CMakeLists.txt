@@ -59,9 +59,6 @@ macro_log_feature( LIBVISUAL_FOUND "libvisual" "Enable support for visualization
 macro_optional_find_package(Mp4v2)
 macro_log_feature( MP4V2_FOUND "libmp4v2" "Enable tagging of mp4 files from within amarok" "http://www.sf.net/projects/mpeg4ip" FALSE "" "" )
 
-macro_optional_find_package(Xine)
-macro_log_feature( XINE_FOUND "libxine" "Enable support for the xine music playing backend" "http://xinehq.de" FALSE "1.0.2" "")
-
 macro_optional_find_package(Mtp)
 macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.1.1" "")
 
