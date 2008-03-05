@@ -59,6 +59,8 @@ public:
 
     virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
 
+    virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
+
     //Methods "borrowed" from MemoryQueryMaker
     void handleResult();
     void handleResult( const Meta::TrackList &tracks );
@@ -80,6 +82,8 @@ protected:
     QString m_sessionId;
     QString m_parentAlbumId;
     QString m_parentArtistId;
+
+    QString m_artistFilter;
 
 public slots:
 

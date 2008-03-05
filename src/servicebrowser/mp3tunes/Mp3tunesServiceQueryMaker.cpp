@@ -67,6 +67,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::reset()
     d->returnDataPtrs = false;
     m_parentArtistId = QString();
     m_parentAlbumId = QString();
+    m_artistFilter = QString();
 
     return this;
 }
@@ -221,22 +222,30 @@ void Mp3tunesServiceQueryMaker::handleResult(const TrackList & tracks)
 void Mp3tunesServiceQueryMaker::fetchArtists()
 {
     DEBUG_BLOCK
-    if ( m_collection->artistMap().values().count() != 0 ) {
+    /*if ( m_collection->artistMap().values().count() != 0 && m_artistFilter.isEmpty()) {
         handleResult( m_collection->artistMap().values() );
         debug() << "no need to fetch artists again! ";
-    }
-    else {
+    }*/
+    //else {
 
-        QString urlString = "http://ws.mp3tunes.com/api/v0/lockerData?sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&output=xml&type=artist";
+        QString urlString = "http://ws.mp3tunes.com/api/v1/lockerData?sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&output=xml&type=artist";
+
+        if ( !m_artistFilter.isEmpty() ) {
+            urlString = "http://ws.mp3tunes.com/api/v1/lockerSearch?output=xml&sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&type=artist&s=" + m_artistFilter;
+        }
+
+
 
         urlString.replace( "<SESSION_ID>", m_sessionId);
         urlString.replace( "<PARTNER_TOKEN>", "7359149936");
+
+        debug() << "url: " << urlString;
 
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
             , this, SLOT( artistDownloadComplete( KJob *) ) );
-    }
+    //}
 }
 
 void Mp3tunesServiceQueryMaker::fetchAlbums()
@@ -258,7 +267,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
         handleResult( albums );
     } else {
 
-        QString urlString = "http://ws.mp3tunes.com/api/v0/lockerData?sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&output=xml&type=album& artist_id=<ARTIST_ID>";
+        QString urlString = "http://ws.mp3tunes.com/api/v1/lockerData?sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&output=xml&type=album& artist_id=<ARTIST_ID>";
 
         urlString.replace( "<SESSION_ID>", m_sessionId );
         urlString.replace( "<PARTNER_TOKEN>", "7359149936" );
@@ -288,7 +297,7 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
         handleResult( tracks );
     } else {
 
-        QString urlString = "http://ws.mp3tunes.com/api/v0/lockerData?sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&output=xml&type=track& album_id=<ALBUM_ID>";
+        QString urlString = "http://ws.mp3tunes.com/api/v1/lockerData?sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&output=xml&type=track& album_id=<ALBUM_ID>";
 
         urlString.replace( "<SESSION_ID>", m_sessionId );
         urlString.replace( "<PARTNER_TOKEN>", "7359149936" );
@@ -318,12 +327,13 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
 
     ArtistList artists;
 
-    //debug() << "recieved artists: " <<  m_storedTransferJob->data();
+    debug() << "recieved artists: " <<  m_storedTransferJob->data();
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
     doc.setContent( m_storedTransferJob->data() );
-    QDomElement root = doc.firstChildElement("mp3tunes");
+    QDomElement root = doc.firstChildElement( "mp3tunes" );
+    root = root.firstChildElement( "artistList" );
   
 
     QDomNode n = root.firstChild();
@@ -378,6 +388,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
     QDomDocument doc( "reply" );
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement("mp3tunes");
+    root = root.firstChildElement( "albumList" );
   
 
     QDomNode n = root.firstChild();
@@ -535,6 +546,18 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
    handleResult( tracks );
    emit queryDone();
 
+}
+
+QueryMaker * Mp3tunesServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
+{
+    DEBUG_BLOCK
+            debug() << "value: " << value;
+    //for now, only accept artist filters
+    if ( value == valArtist ) {
+        debug() << "Filter: " << filter;
+        m_artistFilter = filter;
+    }
+    return this;
 }
 
 #include "Mp3tunesServiceQueryMaker.moc"
