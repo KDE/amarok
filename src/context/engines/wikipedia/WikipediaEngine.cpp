@@ -72,7 +72,7 @@ void WikipediaEngine::update()
             tmpWikiStr = EngineController::instance()->currentTrack()->artist()->name();
             //tmpWikiStr += wikiArtistPostfix(); //makes wikipedia bail out
         } else
-            tmpWikiStr = EngineController::instance()->currentTrack()->prettyName();
+            tmpWikiStr = EngineController::instance()->currentTrack()->artist()->prettyName();
     } else if( selection() == "title" )
         tmpWikiStr = EngineController::instance()->currentTrack()->prettyName();
     else if( selection() == "album" )
