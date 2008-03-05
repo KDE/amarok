@@ -1,7 +1,8 @@
 project(context-currenttrack)
 
 set(currenttrack_SRCS
-CurrentTrack.cpp)
+CurrentTrack.cpp
+${CMAKE_SOURCE_DIR}/src/context/Applet.cpp )
 
 find_package(KDE4 REQUIRED)
 include (KDE4Defaults)

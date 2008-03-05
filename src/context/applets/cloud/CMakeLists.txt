@@ -1,7 +1,8 @@
 project(context-cloud)
 
 set(cloud_SRCS
-Cloud.cpp)
+Cloud.cpp
+${CMAKE_SOURCE_DIR}/src/context/Applet.cpp )
 
 include_directories( ../../..
                     ../..

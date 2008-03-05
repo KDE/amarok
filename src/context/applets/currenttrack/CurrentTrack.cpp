@@ -32,7 +32,7 @@
 #include <QMap>
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
-    : Plasma::Applet( parent, args )
+    : Context::Applet( parent, args )
     , m_configLayout( 0 )
     , m_width( 0 )
     , m_aspectRatio( 0.0 )
@@ -273,45 +273,6 @@ void CurrentTrack::configAccepted() // SLOT
 
 }
 
-// TODO abstract code into superclass so this is not duplicated in LastFmEvents, this is useful code for many applets
-
-QFont CurrentTrack::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
-{
-    Q_UNUSED( text );
-    int size = 12; // start here, shrink if needed
-    QFont font( QString(), size, QFont::Light );
-    font.setStyleHint( QFont::SansSerif );
-    font.setStyleStrategy( QFont::PreferAntialias );
-    
-    QFontMetrics fm( font );
-    while( fm.height() > bounds.height() + 4 )
-    {
-        if( size < 0 )
-        {
-            size = 5;
-            break;
-        }
-        size--;
-        fm = QFontMetrics( QFont( QString(), size ) );
-    }
-    
-    // for aesthetics, we make it one smaller
-    size--;
-
-    QFont returnFont( QString(), size, QFont::Light );
-    font.setStyleHint( QFont::SansSerif );
-    font.setStyleStrategy( QFont::PreferAntialias );
-    
-    return QFont( returnFont );
-}
-
-// returns truncated text with ... appended.
-QString CurrentTrack::truncateTextToFit( QString text, const QFont& font, const QRectF& bounds )
-{
-    QFontMetrics fm( font );
-    return fm.elidedText ( text, Qt::ElideRight, bounds.width() );
-    
-}
 
 bool CurrentTrack::resizeCover(QPixmap cover){
     if( !cover.isNull() )

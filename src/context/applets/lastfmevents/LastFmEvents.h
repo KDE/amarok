@@ -47,8 +47,6 @@ private slots:
     void configAccepted();
 
 private:
-    QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
-    QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
 
     KDialog* m_config;
     QVBoxLayout* m_configLayout;

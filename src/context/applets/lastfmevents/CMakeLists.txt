@@ -1,7 +1,8 @@
 project(context-lastfm)
 
 set(lastfmevents_SRCS
-LastFmEvents.cpp)
+LastFmEvents.cpp
+ ${CMAKE_SOURCE_DIR}/src/context/Applet.cpp )
 
 include_directories( ../..
                     ../../..

@@ -17,10 +17,25 @@
 #include "amarok_export.h"
 #include <plasma/applet.h>
 
+#include <QFont>
+#include <QRectF>
+#include <QString>
+
+
 namespace Context
 {
 
-typedef Plasma::Applet Applet;
+class Applet : public Plasma::Applet {
+
+    public:
+
+        Applet( QObject* parent, const QVariantList& args = QVariantList() );
+
+        //helper functions
+        QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
+        QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
+
+};
 
 } // Context namespace
 

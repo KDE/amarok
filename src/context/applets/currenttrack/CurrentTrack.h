@@ -51,8 +51,6 @@ private slots:
     void configAccepted();
 
 private:
-    QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
-    QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
 
     QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;

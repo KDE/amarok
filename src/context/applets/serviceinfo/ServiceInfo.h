@@ -53,7 +53,6 @@ private slots:
 
 private:
     void resize( qreal newWidth, qreal aspectRatio );
-    QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
 
     KDialog* m_config;
     QHBoxLayout* m_configLayout;

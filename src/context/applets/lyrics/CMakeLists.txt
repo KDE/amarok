@@ -1,7 +1,8 @@
 project(context-currenttrack)
 
 set(lyrics_SRCS
-LyricsApplet.cpp)
+LyricsApplet.cpp
+${CMAKE_SOURCE_DIR}/src/context/Applet.cpp )
 
 include_directories( ../..
                     ../../..

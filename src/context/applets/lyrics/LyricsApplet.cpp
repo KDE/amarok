@@ -27,7 +27,7 @@
 #include <KGlobalSettings>
 
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
-    : Plasma::Applet( parent, args )
+    : Context::Applet( parent, args )
     , m_header( 0 )
     , m_headerAspectRatio( 0.0 )
     , m_lyricsLabel( 0 )

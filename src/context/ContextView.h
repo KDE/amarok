@@ -69,7 +69,7 @@ public slots:
     void zoomIn();
     void zoomOut();
     
-    Applet* addApplet(const QString& name, const QStringList& args = QStringList());
+    Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
 protected:
     void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
     

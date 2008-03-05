@@ -31,7 +31,7 @@
 #include <QLabel>
 
 Cloud::Cloud( QObject* parent, const QVariantList& args )
-    : Plasma::Applet( parent, args )
+    : Context::Applet( parent, args )
     , m_config( 0 )
     , m_configLayout( 0 )
     , m_width( 0 )
@@ -181,35 +181,6 @@ qreal Cloud::heightForWidth(qreal width) const
     return width * m_aspectRatio;
 }
 
-QFont Cloud::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
-{
-
-    int size = 30; // start here, shrink if needed
-    QFont font( QString(), size, QFont::Light );
-    font.setStyleHint( QFont::SansSerif );
-    font.setStyleStrategy( QFont::PreferAntialias );
-
-    QFontMetrics fm( font );
-    while( fm.height() > bounds.height() + 4 )
-    {
-        if( size < 0 )
-        {
-            size = 5;
-            break;
-        }
-        size--;
-        fm = QFontMetrics( QFont( QString(), size ) );
-    }
-    
-    // for aesthetics, we make it one smaller
-    size--;
-
-    QFont returnFont( QString(), size, QFont::Light );
-    font.setStyleHint( QFont::SansSerif );
-    font.setStyleStrategy( QFont::PreferAntialias );
-    
-    return QFont( returnFont );
-}
 
 void Cloud::addText( QString text, int weight )
 {

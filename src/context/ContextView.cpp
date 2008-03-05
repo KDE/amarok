@@ -190,7 +190,7 @@ void ContextView::loadConfig()
     }
 }
 
-Applet* ContextView::addApplet(const QString& name, const QStringList& args)
+Plasma::Applet* ContextView::addApplet(const QString& name, const QStringList& args)
 {
     QVariantList argList;
     QStringListIterator i(args);

@@ -91,7 +91,6 @@ private slots:
 
 private:
     void resize( qreal newWidth, qreal aspectRatio );
-    QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
 
     void addText(QString text, int weight );
 

@@ -315,45 +315,5 @@ void LastFmEvents::configAccepted() // SLOT
     constraintsUpdated();
 }
 
-QFont LastFmEvents::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
-{
-    Q_UNUSED( text );
-    int size = 12; // start here, shrink if needed
-    QFont font( QString(), size, QFont::Bold );
-    font.setStyleHint( QFont::Times );
-    font.setStyleStrategy( QFont::PreferAntialias );
-
-    QFontMetrics fm( font );
-    while( fm.height() > bounds.height() + 4 )
-    {
-        if( size < 0 )
-        {
-            size = 5;
-            break;
-        }
-        size--;
-        fm = QFontMetrics( QFont( QString(), size ) );
-    }
-
-    // for aesthetics, we make it one smaller
-    size--;
-
-    QFont returnFont( QString(), size, QFont::Bold );
-    returnFont.setStyleHint( QFont::Times );
-    returnFont.setStyleStrategy( QFont::PreferAntialias );
-    return QFont( returnFont );
-}
-
-// returns truncated text with ... appended.
-QString LastFmEvents::truncateTextToFit( QString text, const QFont& font, const QRectF& bounds )
-{
-    QFontMetrics fm( font );
-    while( fm.width( text) > bounds.width() )
-    {
-        text.chop( 4 );
-        text += "...";
-    }
-    return text;
-}
 
 #include "LastFmEvents.moc"

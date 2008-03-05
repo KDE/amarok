@@ -1,7 +1,8 @@
 project(context-serviceinfo)
 
 set(serviceinfo_SRCS
-ServiceInfo.cpp)
+ServiceInfo.cpp
+${CMAKE_SOURCE_DIR}/src/context/Applet.cpp )
 
 include_directories( ../../..
                     ../..
