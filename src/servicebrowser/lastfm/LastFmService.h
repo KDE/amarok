@@ -68,6 +68,7 @@ private slots:
 
     void slotPlayNeighbourRadio();
     void slotPlayPersonalRadio();
+    void slotPlayLovedRadio();
 
     void slotPlayGlobalRadio();
 

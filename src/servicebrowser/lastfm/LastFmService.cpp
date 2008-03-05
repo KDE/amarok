@@ -106,6 +106,10 @@ LastFmService::polish()
         personalRadioButton->setText( i18n( "Personal Radio" ) );
         connect( personalRadioButton, SIGNAL(clicked()), SLOT(slotPlayPersonalRadio() ) );
 
+        QPushButton *lovedRadioButton = new QPushButton( m_bottomPanel );
+        lovedRadioButton->setText( i18n( "Loved Radio" ) );
+        connect( lovedRadioButton, SIGNAL(clicked()), SLOT(slotPlayLovedRadio() ) );
+
         // Global streams
         {
             KHBox *globalBox = new KHBox( m_bottomPanel );
@@ -217,29 +221,31 @@ void LastFmService::playCustomStation()
     QString band = m_customStationEdit->text();
 
     if ( !band.isEmpty() ) {
-        QString url = "lastfm://artist/" + band + "/similarartists";
-        playLastFmStation( KUrl( url ) );
+        playLastFmStation( "lastfm://artist/" + band + "/similarartists" );
     }
 }
 
 void LastFmService::slotPlayNeighbourRadio()
 {
     DEBUG_BLOCK
-    QString url = "lastfm://user/" + m_userName + "/neighbours";
-    playLastFmStation( KUrl( url ) );
+    playLastFmStation( "lastfm://user/" + m_userName + "/neighbours" );
 }
 
 void LastFmService::slotPlayPersonalRadio()
 {
     DEBUG_BLOCK
-    QString url = "lastfm://user/" + m_userName + "/personal";
-    playLastFmStation( KUrl( url ) );
+    playLastFmStation( "lastfm://user/" + m_userName + "/personal" );
+}
+
+void LastFmService::slotPlayLovedRadio()
+{
+    DEBUG_BLOCK
+    playLastFmStation( "lastfm://user/" + m_userName + "/loved" );
 }
 
 void LastFmService::slotPlayGlobalRadio()
 {
-    QString url = "lastfm://globaltags/" + m_globalComboBox->currentText();
-    playLastFmStation( KUrl( url ) );
+    playLastFmStation( "lastfm://globaltags/" + m_globalComboBox->currentText() );
 }
 
 void LastFmService::playLastFmStation( const KUrl &url )
