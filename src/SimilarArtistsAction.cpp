@@ -1,0 +1,46 @@
+/***************************************************************************
+ *   Copyright (c) 200  Dan Meltzer <hydrogen@notyetimplemented.com        *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
+ ***************************************************************************/
+
+#include "SimilarArtistsAction.h"
+#include "playlist/PlaylistModel.h"
+#include "collection/CollectionManager.h"
+#include "TheInstances.h"
+
+SimilarArtistsAction::SimilarArtistsAction( QObject *parent, Meta::Artist *artist)
+    : QAction( parent )
+    , m_artist( artist )
+{
+    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+
+    setText( i18n( "Play similar artists from last.fm" ) );
+}
+
+
+SimilarArtistsAction::~SimilarArtistsAction()
+{
+}
+
+void SimilarArtistsAction::slotTriggered()
+{
+    const QString url = "lastfm://artist/" + m_artist->prettyName() + "/similarartists";
+    Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+    The::playlistModel()->insertOptioned( lastfmtrack, Playlist::Append );
+}
+
+#include "SimilarArtistsAction.moc"

@@ -110,6 +110,13 @@ namespace LastFm
             Private * const d;
     };
 
+    class LastFmProviderCapability : public Meta::Capability
+    {
+        public:
+            LastFmProviderCapability();
+            ~LastFmProviderCapability();
+    };
+
     typedef KSharedPtr<Track> TrackPtr;
 }
 
