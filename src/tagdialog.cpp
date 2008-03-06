@@ -1698,8 +1698,7 @@ TagDialogWriter::doJob()
 //         }
 //         m_failed += !result;
 //     }
-//     return true;
-
+     return true;
 }
 
 void
