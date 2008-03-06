@@ -19,7 +19,7 @@
 class LastFmServiceCollection : public ServiceDynamicCollection
 {
 public:
-    LastFmServiceCollection();
+    LastFmServiceCollection( const QString& userName );
     virtual ~LastFmServiceCollection();
 
     virtual bool possiblyContainsTrack( const KUrl &url ) const;
@@ -29,6 +29,9 @@ public:
     virtual QString prettyName() const;
 
     virtual QueryMaker* queryMaker();
+
+private:
+    QString m_userName;
 };
 
 #endif // LASTFMSERVICECOLLECTION_H

@@ -77,13 +77,14 @@ Track::name() const
         QStringList elements = d->lastFmUri.split( "/", QString::SkipEmptyParts );
         if( elements.size() >= 2 && elements[0] == "lastfm:" )
         {
-            if( elements[1] == "globaltag" )
+            if( elements[1] == "globaltags" )
             {
+                debug() << "Global tags. Size = " << elements.size();
                 // lastfm://globaltag/<tag>
                 if( elements.size() >= 3 )
                     return i18n( "Global Tag Radio: %1", elements[2] );
             }
-            else if( elements[1] == "usertag" )
+            else if( elements[1] == "usertags" )
             {
                 // lastfm://usertag/<tag>
                 if( elements.size() >= 3 )

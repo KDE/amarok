@@ -66,7 +66,6 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
     : ServiceBase( name ),
       m_scrobbler( scrobble ? new ScrobblerAdapter( this, username, password ) : 0 ),
       m_radio( new RadioAdapter( this, username, password ) ),
-      m_collection( new LastFmServiceCollection( ) ),
       m_polished( false ),
       m_userName( username )
 {
@@ -164,6 +163,14 @@ LastFmService::polish()
 
         connect( m_customStationEdit, SIGNAL( returnPressed() ), this, SLOT( playCustomStation() ) );
         connect( m_customStationButton, SIGNAL( clicked() ), this, SLOT( playCustomStation() ) );
+
+
+        m_collection = new LastFmServiceCollection( m_userName );
+        CollectionManager::instance()->addUnmanagedCollection( m_collection );
+        QList<int> levels;
+        levels << CategoryId::Genre;
+        setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
+
         
         m_polished = true;
     }
