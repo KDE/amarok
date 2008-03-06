@@ -168,7 +168,7 @@ MediaItem
     {
         trackmeta->filetype = LIBMTP_FILETYPE_OGG;
     }
-    else if( track->type() == "ogg" )
+    else if( track->type() == "wma" )
     {
         trackmeta->filetype = LIBMTP_FILETYPE_WMA;
     }
