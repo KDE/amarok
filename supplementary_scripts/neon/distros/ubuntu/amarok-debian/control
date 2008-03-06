@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Amarok Nightly Builds <nightly@getamarok.com>
 Build-Depends: amarok-nightly-cdbs, amarok-nightly-kdelibs, amarok-nightly-taglib,
  amarok-nightly-strigi, amarok-nightly-kdebase-runtime, amarok-nightly-qt,
- libxine-dev, libmysqlclient15-dev, ruby, ruby1.8-dev
+ libmysqlclient15-dev, ruby, ruby1.8-dev
 Standards-Version: 3.7.3
 Homepage: http://amarok.kde.org
 
