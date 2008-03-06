@@ -16,6 +16,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#include "amarokconfig.h"
 #include "ContextStatusBar.h"
 #include "PlaylistManager.h"
 #include "PlaylistFileSupport.h"
@@ -213,22 +214,23 @@ PlaylistManager::save( Meta::TrackList tracks,
     Meta::M3UPlaylistPtr playlist( new Meta::M3UPlaylist( tracks ) );
 
     QFile file( location );
-    playlist->save( file, false );
+    playlist->save( file, AmarokConfig::relativePlaylist() );
 
     file.close();
     return true;
 }
 
-#include "PlaylistManager.moc"
-
-
-bool PlaylistManager::canExpand( Meta::TrackPtr track )
+bool
+PlaylistManager::canExpand( Meta::TrackPtr track )
 {
     return Meta::getFormat( track->url() ) != Meta::NotPlaylist;
 }
 
-Meta::PlaylistPtr PlaylistManager::expand( Meta::TrackPtr track )
+Meta::PlaylistPtr
+PlaylistManager::expand( Meta::TrackPtr track )
 {
    //this should really be made asyncrhonous
    return Meta::loadPlaylist( track->url() );
 }
+
+#include "PlaylistManager.moc"
