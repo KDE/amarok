@@ -34,7 +34,7 @@ class PodcastChannelProvider;
 /**
 	@author Bart Cerneels <bart.cerneels@gmail.com>
 */
-AMAROK_EXPORT class PodcastCollection : public Collection, public MemoryCollection
+class PodcastCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
