@@ -75,7 +75,7 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
 
     m_collection = new LastFmServiceCollection( m_userName );
-    CollectionManager::instance()->addUnmanagedCollection( m_collection );
+    //CollectionManager::instance()->addUnmanagedCollection( m_collection );
     QList<int> levels;
     levels << CategoryId::Genre;
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
