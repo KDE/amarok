@@ -29,9 +29,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.2940408"
-     inkscape:cx="526.33474"
-     inkscape:cy="-4.4047081"
+     inkscape:zoom="0.64702038"
+     inkscape:cx="329.78206"
+     inkscape:cy="48.019191"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -65,21 +65,17 @@
          id="rect12421"
          style="opacity:1;fill:#565755;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
-         style="opacity:1;fill:#e8e8e8;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="M -0.0061405445,0 L 0.0094409592,15.357952 C 402.21715,61.904152 946.67067,61.21258 1349,15.15625 L 1349,0 L -0.0061405445,0 z "
-         transform="translate(-659,252)"
          id="rect8041"
-         sodipodi:nodetypes="ccccc" />
+         d="M -659,252 L -658.49575,282.27689 C -256.28804,328.82309 287.67067,328.09121 690,282.03488 L 690,252 L -659,252 z "
+         style="opacity:1;fill:#e8e8e8;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          style="opacity:1;fill:#66ffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="M 0.010935492,13.400723 L -0.00056195335,15.372098 C 402.20716,61.918298 946.67067,61.21258 1349,15.15625 L 1349,13.15625 C 946.67067,59.21258 402.23422,59.94952 0.026516996,13.40332 L 0.0080334192,13.387612 L 0.010935492,13.400723 z "
-         transform="translate(-659,252)"
-         id="path2165"
-         sodipodi:nodetypes="ccccccc" />
+         d="M -659,253.11681 L -658.5,283.39806 C -256.29228,329.94426 287.67067,329.20439 690,283.14806 L 690,281.14806 C 287.67067,327.20439 -256.2923,327.94426 -658.5,281.39806 L -658.96875,253.11681 L -659,253.11681 z "
+         id="path2165" />
     </g>
     <g
        id="buttonbar"
-       transform="translate(-1151.7164,-703.31621)">
+       transform="translate(-1169.7164,-698.31622)">
       <g
          transform="matrix(0.998055,0,0,1.5195357,522.78904,-420.42228)"
          id="g10698">
