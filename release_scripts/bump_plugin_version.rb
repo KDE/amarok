@@ -7,24 +7,24 @@
 # no old and perhaps incompatible engines are getting loaded. After running, don't
 # forget to commit to svn. The script must be started from the amarok/ folder.
 #
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2005-2008 Mark Kretschmann <kretschmann@kde.org>
 # License: GNU General Public License V2
 
 
-def bump_desktop_files( folder )
-    Dir.foreach( folder ) do |x|
-        next if x[0, 1] == "."
-        if FileTest.directory?( "#{folder}/#{x}" )
-            print x + "\n"
-            files = Dir["#{folder}/#{x}/*.desktop"].delete_if { |a| a.include?( "install.desktop" ) }
-            file = File.new( files.join(), File::RDWR )
-            str = file.read()
-            file.rewind()
-            file.truncate( 0 )
+def bump_desktop_files
+    files = Dir["**/*.desktop"]
+
+    files.each do |path|
+        file = File.new(path, File::RDWR)
+        str = file.read
+        unless str[/X-KDE-Amarok-framework-version=[0-9]*/].nil?
+            puts path
             str.sub!( /X-KDE-Amarok-framework-version=[0-9]*/, "X-KDE-Amarok-framework-version=#{@version}" )
+            file.rewind
+            file.truncate(0)
             file << str
-            file.close()
         end
+        file.close
     end
 end
 
@@ -53,15 +53,14 @@ file.close()
 
 
 # Bump plugin desktop files
-print "\n\n"
-Dir.chdir( "src" )
-bump_desktop_files( "engine" )
-bump_desktop_files( "mediadevice" )
-bump_desktop_files( "device" )
+puts
+puts
+bump_desktop_files
 
 
-
-print "\n"
-print "\n"
+puts
+puts
 print "Done :) Now commit the source to SVN."
-print "\n\n"
+puts
+puts
+
