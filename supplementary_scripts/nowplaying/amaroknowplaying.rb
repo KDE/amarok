@@ -5,22 +5,22 @@
 # Use with the "/exec -o" command of your client. You can bind an alias like this:
 # /alias np exec -o /home/myself/amaroknowplaying.rb
 #
-# (c) 2005-2006 Mark Kretschmann <markey@web.de>
+# (c) 2005-2008 Mark Kretschmann <kretschmann@kde.org>
 # License: GNU General Public License V2
 
 
-title  = `dcop amarok player title 2> /dev/null`.chomp
+title  = `qdbus org.kde.amarok /Player title 2> /dev/null`.chomp
 exit( 1 ) unless $?.success? # Abort if Amarok isn't running
-artist = `dcop amarok player artist`.chomp
-album  = `dcop amarok player album`.chomp
-year   = `dcop amarok player year`.chomp
-lastfm = `dcop amarok player lastfmStation`.chomp
+artist = `qdbus org.kde.amarok /Player artist`.chomp
+album  = `qdbus org.kde.amarok /Player album`.chomp
+year   = `qdbus org.kde.amarok /Player year`.chomp
+lastfm = `qdbus org.kde.amarok /Player lastfmStation`.chomp
 
 output = ""
 
 
 if title.empty?
-    output += `dcop amarok player nowPlaying`.chomp
+    output += `qdbus org.kde.amarok /Player nowPlaying`.chomp
 else
     # Strip file extension
     extensions = ".ogg", ".mp3", ".wav", ".flac", ".fla", ".wma", ".mpc", ".oga"
