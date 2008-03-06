@@ -1094,7 +1094,8 @@ void MainWindow::createMenus()
     playlistMenu->addAction( actionCollection()->action("playlist_shuffle") );
 
     playlistMenu->addSeparator();
-    playlistMenu->addAction( actionCollection()->action("queue_selected") );
+    //FIXME: REENABLE When ported
+//     playlistMenu->addAction( actionCollection()->action("queue_selected") );
     playlistMenu->addAction( actionCollection()->action("playlist_remove_duplicates") );
     playlistMenu->addAction( actionCollection()->action("playlist_select_all") );
 
@@ -1116,11 +1117,12 @@ void MainWindow::createMenus()
     m_toolsMenu = new KMenu( m_menubar );
     m_toolsMenu->setTitle( i18n("&Tools") );
     m_toolsMenu->addAction( actionCollection()->action("cover_manager") );
-    m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
-    m_toolsMenu->addAction( actionCollection()->action("visualizations") );
-    m_toolsMenu->addAction( actionCollection()->action("equalizer") );
+//FIXME: Reenable when ported//working
+//     m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
+//     m_toolsMenu->addAction( actionCollection()->action("visualizations") );
+//     m_toolsMenu->addAction( actionCollection()->action("equalizer") );
     m_toolsMenu->addAction( actionCollection()->action("script_manager") );
-    m_toolsMenu->addAction( actionCollection()->action("statistics") );
+//     m_toolsMenu->addAction( actionCollection()->action("statistics") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( actionCollection()->action("update_collection") );
     m_toolsMenu->addAction( actionCollection()->action("rescan_collection") );
