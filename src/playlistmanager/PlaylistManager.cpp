@@ -199,18 +199,23 @@ PlaylistManager::typeName(int playlistCategory)
         return m_customCategories[playlistCategory];
     else
         //note: this shouldn't happen so I'm not translating it to facilitate bug reports
-        return QString("!!!Invalid Playlist Category!!!");
+        return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
 }
 
 bool
 PlaylistManager::save( Meta::TrackList tracks,
                         const QString &location )
 {
+    DEBUG_BLOCK
+
     KUrl url( location );
-    Meta::Format playlistFormat = Meta::getFormat( location );
+    //TODO: Meta::Format playlistFormat = Meta::getFormat( location );
     Meta::M3UPlaylistPtr playlist( new Meta::M3UPlaylist( tracks ) );
+
     QFile file( location );
     playlist->save( file, false );
+
+    file.close();
     return true;
 }
 
