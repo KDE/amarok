@@ -282,6 +282,7 @@ bool CurrentTrack::resizeCover(QPixmap cover){
     if( !cover.isNull() )
     {
         QSize rectSize = m_theme->elementRect( "albumart" ).size();
+        QPointF rectPos = m_theme->elementRect( "albumart" ).topLeft();
         debug() << "getting album rect:" <<  rectSize;
         int size = qMin( rectSize.width(), rectSize.height() );
         qreal pixmapRatio = (qreal)cover.width()/size;
@@ -299,9 +300,9 @@ bool CurrentTrack::resizeCover(QPixmap cover){
         }
 
 
-        m_albumCover->setPos( m_albumCover->x()+ moveByX, m_albumCover->y() + moveByY );
+        m_albumCover->setPos( rectPos.x()+ moveByX, rectPos.y() + moveByY );
         
-        m_sourceEmblem->setPos( m_albumCover->x()+ moveByX, m_albumCover->y() + moveByY );
+        m_sourceEmblem->setPos( rectPos.x()+ moveByX, rectPos.y() + moveByY );
         
         m_albumCover->setPixmap( cover );
         m_sourceEmblem->setPixmap( m_sourceEmblemPixmap );
