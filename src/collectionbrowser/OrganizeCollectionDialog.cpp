@@ -3,6 +3,7 @@
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
 
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "OrganizeCollectionDialog.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 #include "CollectionTreeItemModel.h"
@@ -56,42 +57,29 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
     ui->setupUi(widget);
     //init();
 
-    show();
     
 
-    ////////////
-    //Unported stuff
-    /*
-    OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
-            KDialogBase::Ok|KDialogBase::Cancel|KDialogBase::Details );
-    QVBox* page = base.makeVBoxMainWidget();
-
-    OrganizeCollectionDialog dialog( page );
-    dialog.folderCombo->insertStringList( folders, 0 );
-    dialog.folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
-    dialog.overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
-    dialog.filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
-    dialog.initialCheck->setChecked( AmarokConfig::groupArtists() );
-    dialog.spaceCheck->setChecked( AmarokConfig::replaceSpace() );
-    dialog.coverCheck->setChecked( AmarokConfig::coverIcons() );
-    dialog.ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
-    dialog.vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
-    dialog.asciiCheck->setChecked( AmarokConfig::asciiOnly() );
-    dialog.customschemeCheck->setChecked( AmarokConfig::useCustomScheme() );
-    dialog.formatEdit->setText( AmarokConfig::customScheme() );
-    dialog.regexpEdit->setText( AmarokConfig::replacementRegexp() );
-    dialog.replaceEdit->setText( AmarokConfig::replacementString() );
-    connect( &base, SIGNAL(detailsClicked()), &dialog, SLOT(slotDetails()) );
-
-    if( dialog.customschemeCheck->isChecked() )
-    {
-        base.setDetails( true );
-    }
+    //ui->folderCombo->insertStringList( folders, 0 );
+    //ui->folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
+    ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
+    ui->filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
+    ui->initialCheck->setChecked( AmarokConfig::groupArtists() );
+    ui->spaceCheck->setChecked( AmarokConfig::replaceSpace() );
+    ui->coverCheck->setChecked( AmarokConfig::coverIcons() );
+    ui->ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
+    ui->vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
+    ui->asciiCheck->setChecked( AmarokConfig::asciiOnly() );
+    ui->customschemeCheck->setChecked( AmarokConfig::useCustomScheme() );
+    ui->formatEdit->setText( AmarokConfig::customScheme() );
+    ui->regexpEdit->setText( AmarokConfig::replacementRegexp() );
+    ui->replaceEdit->setText( AmarokConfig::replacementString() );
+    connect( this, SIGNAL(buttonClicked(KDialog::ButtonCode)), this, SLOT(slotButtonClicked(KDialog::ButtonCode)));
+    if( ui->customschemeCheck->isChecked())
+        setDetailsWidgetVisible(true);
     else
-    {
-        dialog.slotDetails();
-    }
-    */
+        slotDetails();
+    init();
+    show();
 }
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
@@ -265,7 +253,11 @@ void OrganizeCollectionDialog::update( const QString & dummy )
     update( 0 );
 }
 
-
+void OrganizeCollectionDialog::slotButtonClicked(KDialog::ButtonCode button)
+{
+    if(button == Details)
+        slotDetails();
+}
 
 void OrganizeCollectionDialog::slotDetails()
 {
@@ -294,14 +286,16 @@ void OrganizeCollectionDialog::slotDetails()
         static_cast<QWidget *>(parent())->adjustSize();
         static_cast<QWidget *>(parent())->updateGeometry();
     }
-    emit detailsClicked();
+    //adjustSize();
+    //updateGeometry();
 }
+
+
+         
 
 
 void OrganizeCollectionDialog::init()
 {
-    detailed = true;
-
     ui->formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
             arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
 }

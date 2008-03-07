@@ -33,10 +33,10 @@ class OrganizeCollectionDialog : public KDialog
 
     ~OrganizeCollectionDialog();
     signals:
-        void detailsClicked();
         void updatePreview(QString);
     public slots:
-        void slotDetails(); 
+        void slotDetails();
+        void slotButtonClicked(KDialog::ButtonCode);
     private:
 
     QString buildDestination( const QString &format, const Meta::TrackPtr track ) const;
