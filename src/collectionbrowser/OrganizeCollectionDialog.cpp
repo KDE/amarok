@@ -12,6 +12,8 @@
 #include "atomicstring.h"
 #include "file/File.h"
 
+#include <KVBox>
+
 OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *parent,  const char *name, bool modal,
         const QString &caption,
         QFlags<KDialog::ButtonCode> buttonMask
@@ -22,7 +24,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
 
 {
     Q_UNUSED( name )
-        setCaption( caption );
+
+      setCaption( caption );
     setModal( modal );
     setButtons( buttonMask );
     showButtonSeparator( true );
@@ -44,9 +47,46 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
     }
     */
 
-    ui->setupUi( this );
+
+    KVBox* page = new KVBox(this);
+    ui->setupUi(page );
     init();
     show();
+    
+
+    ////////////
+    //Unported stuff
+    /*
+    OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
+            KDialogBase::Ok|KDialogBase::Cancel|KDialogBase::Details );
+    QVBox* page = base.makeVBoxMainWidget();
+
+    OrganizeCollectionDialog dialog( page );
+    dialog.folderCombo->insertStringList( folders, 0 );
+    dialog.folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
+    dialog.overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
+    dialog.filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
+    dialog.initialCheck->setChecked( AmarokConfig::groupArtists() );
+    dialog.spaceCheck->setChecked( AmarokConfig::replaceSpace() );
+    dialog.coverCheck->setChecked( AmarokConfig::coverIcons() );
+    dialog.ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
+    dialog.vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
+    dialog.asciiCheck->setChecked( AmarokConfig::asciiOnly() );
+    dialog.customschemeCheck->setChecked( AmarokConfig::useCustomScheme() );
+    dialog.formatEdit->setText( AmarokConfig::customScheme() );
+    dialog.regexpEdit->setText( AmarokConfig::replacementRegexp() );
+    dialog.replaceEdit->setText( AmarokConfig::replacementString() );
+    connect( &base, SIGNAL(detailsClicked()), &dialog, SLOT(slotDetails()) );
+
+    if( dialog.customschemeCheck->isChecked() )
+    {
+        base.setDetails( true );
+    }
+    else
+    {
+        dialog.slotDetails();
+    }
+    */
 }
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
@@ -312,35 +352,6 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         return;
     }
 
-    OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
-            KDialogBase::Ok|KDialogBase::Cancel|KDialogBase::Details );
-    QVBox* page = base.makeVBoxMainWidget();
-
-    OrganizeCollectionDialog dialog( page );
-    dialog.folderCombo->insertStringList( folders, 0 );
-    dialog.folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
-    dialog.overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
-    dialog.filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
-    dialog.initialCheck->setChecked( AmarokConfig::groupArtists() );
-    dialog.spaceCheck->setChecked( AmarokConfig::replaceSpace() );
-    dialog.coverCheck->setChecked( AmarokConfig::coverIcons() );
-    dialog.ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
-    dialog.vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
-    dialog.asciiCheck->setChecked( AmarokConfig::asciiOnly() );
-    dialog.customschemeCheck->setChecked( AmarokConfig::useCustomScheme() );
-    dialog.formatEdit->setText( AmarokConfig::customScheme() );
-    dialog.regexpEdit->setText( AmarokConfig::replacementRegexp() );
-    dialog.replaceEdit->setText( AmarokConfig::replacementString() );
-    connect( &base, SIGNAL(detailsClicked()), &dialog, SLOT(slotDetails()) );
-
-    if( dialog.customschemeCheck->isChecked() )
-    {
-        base.setDetails( true );
-    }
-    else
-    {
-        dialog.slotDetails();
-    }
 
     KURL::List previewURLs = Amarok::recursiveUrlExpand( urls.first(), 1 );
     if( previewURLs.count() )
