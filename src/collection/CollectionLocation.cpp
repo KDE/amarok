@@ -18,17 +18,26 @@
 
 #include "CollectionLocation.h"
 #include "Collection.h"
+#include "QueryMaker.h"
 
 CollectionLocation::CollectionLocation()
     :QObject()
+    , m_destination( 0 )
+    , m_sourceTracks()
+    , m_removeSources( false )
+    , m_parentCollection( 0 )
 {
     //nothing to do
 }
 
 CollectionLocation::CollectionLocation( const Collection* parentCollection)
     :QObject()
+    , m_destination( 0 )
+    , m_sourceTracks()
+    , m_removeSources( false )
+    , m_parentCollection( parentCollection )
 {
-    m_parentCollection = parentCollection;
+    //nothing to do
 }
 
 CollectionLocation::~CollectionLocation()
@@ -54,6 +63,12 @@ CollectionLocation::isWriteable() const
     return false;
 }
 
+bool
+CollectionLocation::isOrganizable() const
+{
+    return false;
+}
+
 void
 CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination )
 {
@@ -67,11 +82,34 @@ void
 CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination )
 {
     if( !destination->isWriteable() )
+    {
+        destination->deleteLater();
+        deleteLater();
         return;
+    }
     m_destination = destination;
+    m_sourceTracks = tracks;
     setupConnections();
     KUrl::List urls = getKIOCopyableUrls( tracks );
     emit startCopy( urls, false );
+}
+
+void
+CollectionLocation::prepareCopy( QueryMaker *qm, CollectionLocation *destination )
+{
+    if( !destination->isWriteable() )
+    {
+        destination->deleteLater();
+        qm->deleteLater();
+        deleteLater();
+        return;
+    }
+    m_destination = destination;
+    m_removeSources = false;
+    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    qm->startTrackQuery();
+    qm->run();
 }
 
 void
@@ -86,11 +124,34 @@ void
 CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination )
 {
     if( !destination->isWriteable() )
+    {
+        destination->deleteLater();
+        deleteLater();
         return;
+    }
     m_destination = destination;
+    m_sourceTracks = tracks;
     setupConnections();
     KUrl::List urls = getKIOCopyableUrls( tracks );
     emit startCopy( urls, true );
+}
+
+void
+CollectionLocation::prepareMove( QueryMaker *qm, CollectionLocation *destination )
+{
+    if( !destination->isWriteable() )
+    {
+        destination->deleteLater();
+        qm->deleteLater();
+        deleteLater();
+        return;
+    }
+    m_destination = destination;
+    m_removeSources = true;
+    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    qm->startTrackQuery();
+    qm->run();
 }
 
 bool
@@ -139,7 +200,34 @@ CollectionLocation::slotFinishCopy( bool removeSources )
         removeSourceTracks( m_sourceTracks );
     m_sourceTracks.clear();
     m_destination->deleteLater();
+    m_destination = 0;
     this->deleteLater();
+}
+
+void
+CollectionLocation::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+{
+    Q_UNUSED( collectionId )
+    m_sourceTracks << tracks;
+}
+
+void
+CollectionLocation::queryDone()
+{
+    QObject *obj = sender();
+    if( obj )
+    {
+        obj->deleteLater();
+    }
+    if( m_removeSources )
+    {
+        prepareMove( m_sourceTracks, m_destination );
+    }
+    else
+    {
+        prepareCopy( m_sourceTracks, m_destination );
+    }
+    m_removeSources = false;    //do not remove the sources because of a bug
 }
 
 void

@@ -26,6 +26,8 @@
 
 #include <KUrl>
 
+class QueryMaker;
+
 /**
     This base class defines the the methods necessary to allow the copying and moving of tracks between
     different collections in a generic way.
@@ -77,16 +79,25 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual bool isWriteable() const;
 
         /**
+         * Returns whether the collection is organizable or not. Organizable collections allow mvoe operations where
+         * the source and destination collection are the same.
+         * @return @c true if the collection location is organizable, false otherwise
+         */
+        virtual bool isOrganizable() const;
+
+        /**
             convenience method for copying a single track, @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
         void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
+        void prepareCopy( QueryMaker *qm, CollectionLocation *destination );
 
         /**
             convenience method for moving a single track, @see prepareMove( Meta::TrackList, CollectionLocation* )
         */
         void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
         void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
+        void prepareMove( QueryMaker *qm, CollectionLocation *destination );
 
         virtual bool remove( Meta::TrackPtr track );
 
@@ -116,16 +127,19 @@ class AMAROK_EXPORT CollectionLocation : public QObject
     private slots:
         void slotStartCopy( const KUrl::List &sources, bool removeSources );
         void slotFinishCopy( bool removeSources );
+        void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+        void queryDone();
 
     private:
         void setupConnections();
         void removeSourceTracks( const Meta::TrackList &tracks );
 
-        //only used in the source ColllectionLocation
+        //only used in the source CollectionLocation
         CollectionLocation * m_destination;
         Meta::TrackList m_sourceTracks;
 
-        //only used in the destination CollectionLocation
+        //used in the source collection to remember whether to copy or to move when a QueryMaker is used
+        //and in the destination collection in the end to tell the source whether to delete the files or not
         bool m_removeSources;
 
         const Collection* m_parentCollection;
