@@ -2,8 +2,8 @@
 #
 # Now playing script for IRC.
 
-# Use with the "/exec -o" command of your client. You can bind an alias like this:
-# /alias np exec -o /home/myself/amaroknowplaying.rb
+# Use with the "/exec -out" command of your client. You can bind an alias like this:
+# /alias np exec -out /home/myself/amaroknowplaying.rb
 #
 # (c) 2005-2008 Mark Kretschmann <kretschmann@kde.org>
 # License: GNU General Public License V2
