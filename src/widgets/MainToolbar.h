@@ -20,28 +20,46 @@
 #ifndef MAINTOOLBAR_H
 #define MAINTOOLBAR_H
 
+#include "engineobserver.h" //baseclass
+#include "toolbar.h"
+#include "volumewidget.h"
+
 #include <KHBox>
 
 #include <QSvgRenderer>
 
 /**
-A KHBox based toolbar with a nice svg background
+A KHBox based toolbar with a nice svg background and takes care of adding any additional controls needed by individual tracks
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class MainToolbar : public KHBox
+class MainToolbar : public KHBox, public EngineObserver
 {
 public:
     MainToolbar( QWidget * parent );
 
     ~MainToolbar();
 
+    virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
+
 protected:
       virtual void paintEvent(QPaintEvent *);
+      virtual void resizeEvent ( QResizeEvent * event );
+      void  handleAddActions();
 
 private:
 
+    //KHBox * m_insideBox;
+    QWidget * m_insideBox;
+    KToolBar *m_playerControlsToolbar;
+    KToolBar *m_addControlsToolbar;
+    VolumeWidget * m_volumeWidget;
+    
     QSvgRenderer * m_svgRenderer;
+    bool m_renderAddControls;
+  
+    QList<QAction *> m_additionalActions;
 };
 
 #endif

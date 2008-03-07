@@ -20,7 +20,6 @@
 #include "amarokconfig.h"
 #include "amarok.h"
 //#include "AmarokStatusBar.h"
-#include "analyzerwidget.h"
 #include "collection/CollectionManager.h"
 #include "collectionbrowser/CollectionWidget.h"
 #include "context/CoverBling.h"
@@ -36,7 +35,6 @@
 #include "mediabrowser.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
-#include "progressslider.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
 #include "servicebrowser/ServicePluginManager.h"
@@ -50,7 +48,6 @@
 #include "Statistics.h"
 #include "ContextStatusBar.h"
 #include "TheInstances.h"
-#include "volumewidget.h"
 #include "PodcastCollection.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/PlaylistFileProvider.h"
@@ -81,7 +78,6 @@
 #include <KMessageBox>      //savePlaylist()
 #include <KMenu>
 #include <KPushButton>
-#include <KToolBar>
 #include <kdeversion.h>
 
 #ifdef Q_WS_X11 
@@ -156,51 +152,7 @@ void MainWindow::init()
 
     {
         m_controlBar = new MainToolbar( this );
-        m_controlBar->setMaximumSize( 20000, 62 );
-        m_controlBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-        m_controlBar->setContentsMargins(0,0,0,2);
-        m_controlBar->layout()->setContentsMargins(0,0,0,2);
 
-        KVBox *aVBox     = new KVBox( m_controlBar );
-        aVBox->setMaximumSize( 50000, 60 );
-        aVBox->setContentsMargins(0,0,0,0);
-        aVBox->layout()->setContentsMargins(0,0,0,0);
-
-        KHBox *insideBox = new KHBox( aVBox );
-        insideBox->setMaximumSize( 600000, 45 );
-        insideBox->setContentsMargins(0,0,0,0);
-        insideBox->layout()->setContentsMargins(0,0,0,0);
-
-        AnalyzerWidget *aw = new AnalyzerWidget( insideBox );
-        aw->setMinimumSize( 200, 30 );
-
-        insideBox->layout()->setAlignment( aw, Qt::AlignLeft );
-
-        KToolBar *playerControlsToolbar = new Amarok::ToolBar( insideBox );
-
-        playerControlsToolbar->setMinimumSize( 180, 45 );
-        insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignCenter );
-
-//         QWidget * spacer = new QWidget( m_controlBar );
-//         spacer->setMinimumSize( 50, 30 );
-//         m_controlBar->layout()->setAlignment( spacer, Qt::AlignRight );
-
-        VolumeWidget *vw = new VolumeWidget( insideBox );
-        vw->setMinimumSize( 150, 30 );
-        insideBox->layout()->setAlignment( vw, Qt::AlignRight |  Qt::AlignVCenter);
-
-        ProgressWidget *pWidget = new ProgressWidget( aVBox );
-        pWidget->setMinimumSize( 400, 17 );
-        pWidget->setMaximumSize( 600000, 17 );
-
-        playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-        playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        playerControlsToolbar->setIconDimensions( 32 );
-        playerControlsToolbar->setMovable( false );
-        playerControlsToolbar->addAction( actionCollection()->action( "prev" ) );
-        playerControlsToolbar->addAction( actionCollection()->action( "play_pause" ) );
-        playerControlsToolbar->addAction( actionCollection()->action( "stop" ) );
-        playerControlsToolbar->addAction( actionCollection()->action( "next" ) );
     }
 
     QPalette p;
