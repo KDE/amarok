@@ -408,8 +408,6 @@ Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 Meta::Capability*
 Track::asCapabilityInterface( Meta::Capability::Type type )
 {
-    DEBUG_BLOCK
-    debug() << "type: " << type;
     switch( type )
     {
         case Meta::Capability::LastFm:
@@ -419,10 +417,8 @@ Track::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::SourceInfo:
             return new ServiceSourceInfoCapability( this );
         case Meta::Capability::CurrentTrackActions:
-            debug() << "correct interface";
             return new CurrentTrackActionsCapabilityImpl( this );
         default:
-            debug() << "wrong interface";
             return 0;
     }
 }
@@ -436,7 +432,7 @@ QString LastFm::Track::sourceName()
 
 QString LastFm::Track::sourceDescription()
 {
-    return "Last.fm is cool...";
+    return i18n( "Last.fm is cool..." );
 }
 
 QPixmap LastFm::Track::emblem()
