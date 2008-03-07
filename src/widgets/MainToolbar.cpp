@@ -72,10 +72,10 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_insideBox->setContentsMargins(0,0,0,0);
    // m_insideBox->layout()->setContentsMargins(0,0,0,0);
 
-    AnalyzerWidget *aw = new AnalyzerWidget( m_insideBox );
+    /*AnalyzerWidget *aw = new AnalyzerWidget( m_insideBox );
     //aw->setMinimumSize( 200, 30 );
     aw->setFixedSize( 200, 30 );
-    aw->move( 0, 0 );
+    aw->move( 0, 0 );*/
 
     //m_insideBox->layout()->setAlignment( aw, Qt::AlignLeft );
 
