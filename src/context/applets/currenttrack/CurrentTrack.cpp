@@ -204,6 +204,7 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     m_bigCover = data[ "albumart" ].value<QPixmap>();
     m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
 
+
     if(!resizeCover(m_bigCover))
     {
         warning() << "album cover of current track is null, did you forget to call Meta::Album::image?";
@@ -275,6 +276,9 @@ void CurrentTrack::configAccepted() // SLOT
 
 
 bool CurrentTrack::resizeCover(QPixmap cover){
+
+    DEBUG_BLOCK
+            
     if( !cover.isNull() )
     {
         QSize rectSize = m_theme->elementRect( "albumart" ).size();

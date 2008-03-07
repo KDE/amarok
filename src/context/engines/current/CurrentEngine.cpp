@@ -85,12 +85,14 @@ void CurrentEngine::message( const ContextState& state )
 
 void CurrentEngine::metadataChanged( Meta::Album* album )
 {
-    setData( "albumart", album->image( coverWidth() ) );
+    DEBUG_BLOCK
+    setData( "current",  "albumart", album->image( coverWidth() ) );
 }
 
 void
 CurrentEngine::metadataChanged( Meta::Track *track )
 {
+    DEBUG_BLOCK
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     setData( "current", "current", trackInfo );
 }
