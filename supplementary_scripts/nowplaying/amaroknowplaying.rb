@@ -14,7 +14,8 @@ exit( 1 ) unless $?.success? # Abort if Amarok isn't running
 artist = `qdbus org.kde.amarok /Player artist`.chomp
 album  = `qdbus org.kde.amarok /Player album`.chomp
 year   = `qdbus org.kde.amarok /Player year`.chomp
-lastfm = `qdbus org.kde.amarok /Player lastfmStation`.chomp
+#TODO currently not implemented in the dbus interface:
+#lastfm = `qdbus org.kde.amarok /Player lastfmStation`.chomp
 
 output = ""
 
@@ -42,11 +43,13 @@ else
         output += "]"
     end
 
-    unless lastfm.empty?
-        output += " (Last.fm #{lastfm})"
-    end
+#    unless lastfm.empty?
+#        output += " (Last.fm #{lastfm})"
+#    end
 end
 
 
-puts( "np: #{output}" ) unless output.empty?
+puts( "np: #{output} (Amarok 2)" ) unless output.empty?
+
+exit 0
 
