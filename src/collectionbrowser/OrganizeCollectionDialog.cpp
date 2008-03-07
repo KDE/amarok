@@ -6,11 +6,13 @@
 #include "OrganizeCollectionDialog.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 #include "CollectionTreeItemModel.h"
+#include "collection/CollectionManager.h"
+#include "collection/BlockingQuery.h"
 #include "qstringx.h"
 #include "atomicstring.h"
 #include "file/File.h"
 
-OrganizeCollectionDialog::OrganizeCollectionDialog( QWidget *parent,  const char *name, bool modal,
+OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *parent,  const char *name, bool modal,
         const QString &caption,
         QFlags<KDialog::ButtonCode> buttonMask
         )
@@ -24,9 +26,27 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( QWidget *parent,  const char
     setModal( modal );
     setButtons( buttonMask );
     showButtonSeparator( true );
-   // m_previewTrack = new MetaFile::Track; FIXME: Find a way to get a default track
+    /*
+    m_previewTrack = 0;
+    if ( tracks.size() > 0)
+    {
+        m_previewTrack = tracks[0];
+    }
 
+    Collection *coll = CollectionManager::instance()->primaryCollection();
+    QueryMaker *qm = coll->queryMaker()->startTrackQuery()->limitMaxResultSize(1);
+    BlockingQuery bq( qm );
+    bq.startQuery();
+    Meta::TrackList tracks = bq.tracks( coll->collectionId() );
+    if ( tracks.size() > 0)
+    {
+        m_previewTrack = tracks[0];
+    }
+    */
+
+    ui->setupUi( this );
     init();
+    show();
 }
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
@@ -37,6 +57,7 @@ OrganizeCollectionDialog::~OrganizeCollectionDialog()
 
 QString OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::TrackPtr track ) const
 {
+    return "abc";
     //FIXME: This code is directly copied from mediadevice/generic/genericmediadevice.cpp (with some modificatoins)
 
     bool isCompilation = track->album()->isCompilation();
@@ -239,5 +260,176 @@ void OrganizeCollectionDialog::init()
     ui->formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
             arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
 }
+
+
+/* Code to port
+ *
+bool
+CollectionView::isOrganizingFiles() const
+{
+    return m_organizeURLs.count() > 0;
+}
+
+void CollectionView::cancelOrganizingFiles()
+{
+    // Set the indicator
+    m_organizingFileCancelled = true;
+
+    // Cancel the current underlying CollectionDB::instance()->moveFile operation
+    CollectionDB::instance()->cancelMovingFileJob();
+}
+void
+CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, bool copy )  //SLOT
+{
+    if( m_organizingFileCancelled )
+    {
+        QString shortMsg = i18n( "Cannot start organize operation until jobs are aborted." );
+        Amarok::StatusBar::instance()->shortMessage( shortMsg, KDE::StatusBar::Sorry );
+        return;
+    }
+
+    if( m_organizeURLs.count() )
+    {
+        if( copy != m_organizeCopyMode )
+        {
+            QString shortMsg = i18n( "Cannot start organize operation of different kind while another is in progress." );
+            Amarok::StatusBar::instance()->shortMessage( shortMsg, KDE::StatusBar::Sorry );
+            return;
+        }
+        else
+        {
+            m_organizeURLs += Amarok::recursiveUrlExpand( urls );
+            Amarok::StatusBar::instance()->incrementProgressTotalSteps( this, urls.count() );
+            return;
+        }
+    }
+
+    QStringList folders = MountPointManager::instance()->collectionFolders();
+    if( folders.isEmpty() )
+    {
+        QString longMsg = i18n( "You need to configure at least one folder for your collection for organizing your files." );
+        Amarok::StatusBar::instance()->longMessage( longMsg, KDE::StatusBar::Sorry );
+        return;
+    }
+
+    OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
+            KDialogBase::Ok|KDialogBase::Cancel|KDialogBase::Details );
+    QVBox* page = base.makeVBoxMainWidget();
+
+    OrganizeCollectionDialog dialog( page );
+    dialog.folderCombo->insertStringList( folders, 0 );
+    dialog.folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
+    dialog.overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
+    dialog.filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
+    dialog.initialCheck->setChecked( AmarokConfig::groupArtists() );
+    dialog.spaceCheck->setChecked( AmarokConfig::replaceSpace() );
+    dialog.coverCheck->setChecked( AmarokConfig::coverIcons() );
+    dialog.ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
+    dialog.vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
+    dialog.asciiCheck->setChecked( AmarokConfig::asciiOnly() );
+    dialog.customschemeCheck->setChecked( AmarokConfig::useCustomScheme() );
+    dialog.formatEdit->setText( AmarokConfig::customScheme() );
+    dialog.regexpEdit->setText( AmarokConfig::replacementRegexp() );
+    dialog.replaceEdit->setText( AmarokConfig::replacementString() );
+    connect( &base, SIGNAL(detailsClicked()), &dialog, SLOT(slotDetails()) );
+
+    if( dialog.customschemeCheck->isChecked() )
+    {
+        base.setDetails( true );
+    }
+    else
+    {
+        dialog.slotDetails();
+    }
+
+    KURL::List previewURLs = Amarok::recursiveUrlExpand( urls.first(), 1 );
+    if( previewURLs.count() )
+    {
+        dialog.setPreviewBundle( MetaBundle( previewURLs.first() ) );
+        dialog.update( 0 );
+    }
+
+    base.setInitialSize( QSize( 450, 350 ) );
+
+    if( base.exec() == KDialogBase::Accepted )
+    {
+        AmarokConfig::setOrganizeDirectory( dialog.folderCombo->currentItem() );
+        AmarokConfig::setOverwriteFiles( dialog.overwriteCheck->isChecked() );
+        AmarokConfig::setGroupByFiletype( dialog.filetypeCheck->isChecked() );
+        AmarokConfig::setGroupArtists( dialog.initialCheck->isChecked() );
+        AmarokConfig::setIgnoreThe( dialog.ignoreTheCheck->isChecked() );
+        AmarokConfig::setReplaceSpace( dialog.spaceCheck->isChecked() );
+        AmarokConfig::setCoverIcons( dialog.coverCheck->isChecked() );
+        AmarokConfig::setVfatCompatible( dialog.vfatCheck->isChecked() );
+        AmarokConfig::setAsciiOnly( dialog.asciiCheck->isChecked() );
+        AmarokConfig::setUseCustomScheme( dialog.customschemeCheck->isChecked() );
+        AmarokConfig::setCustomScheme( dialog.formatEdit->text() );
+        AmarokConfig::setReplacementRegexp( dialog.regexpEdit->text() );
+        AmarokConfig::setReplacementString( dialog.replaceEdit->text() );
+        KURL::List skipped;
+
+        m_organizeURLs = Amarok::recursiveUrlExpand( urls );
+        m_organizeCopyMode = copy;
+        CollectionDB::instance()->createTables( true ); // create temp tables
+        Amarok::StatusBar::instance()->newProgressOperation( this )
+            .setDescription( caption )
+            .setAbortSlot( this, SLOT( cancelOrganizingFiles() ) )
+            .setTotalSteps( m_organizeURLs.count() );
+
+        while( !m_organizeURLs.empty() && !m_organizingFileCancelled )
+        {
+            KURL &src = m_organizeURLs.first();
+
+            if( !CollectionDB::instance()->organizeFile( src, dialog, copy ) )
+            {
+                skipped += src;
+            }
+
+            m_organizeURLs.pop_front();
+            Amarok::StatusBar::instance()->incrementProgress( this );
+
+            if( m_organizingFileCancelled ) m_organizeURLs.clear();
+        }
+
+        CollectionDB::instance()->sanitizeCompilations(); //queryBuilder doesn't handle unknownCompilations
+        CollectionDB::instance()->copyTempTables(); // copy temp table contents to permanent tables
+        CollectionDB::instance()->dropTables( true ); // and drop them
+
+        // and now do an incremental scan since this was disabled while organizing files
+        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( scanMonitor() ) );
+
+        if( !m_organizingFileCancelled && skipped.count() > 0 )
+        {
+            QString longMsg = i18n( "The following file could not be organized: ",
+                    "The following %n files could not be organized: ", skipped.count() );
+            bool first = true;
+            for( KURL::List::iterator it = skipped.begin();
+                    it != skipped.end();
+                    it++ )
+            {
+                if( !first )
+                    longMsg += i18n( ", " );
+                else
+                    first = false;
+                longMsg += (*it).path();
+            }
+            longMsg += i18n( "." );
+
+            QString shortMsg = i18n( "Sorry, one file could not be organized.",
+                    "Sorry, %n files could not be organized.", skipped.count() );
+            Amarok::StatusBar::instance()->shortLongMessage( shortMsg, longMsg, KDE::StatusBar::Sorry );
+        }
+        else if ( m_organizingFileCancelled )
+        {
+            Amarok::StatusBar::instance()->shortMessage( i18n( "Aborting jobs..." ) );
+            m_organizingFileCancelled = false;
+        }
+
+        m_dirty = true;
+        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+        Amarok::StatusBar::instance()->endProgressOperation( this );
+    }
+}
+ */
 
 #endif

@@ -62,6 +62,7 @@ class CollectionTreeView: public QTreeView {
         void playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode ) const;
         void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode ) const;
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
+        void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModelBase *m_treeModel;
         QTimer m_filterTimer;
