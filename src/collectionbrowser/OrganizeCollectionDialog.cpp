@@ -19,7 +19,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
         QFlags<KDialog::ButtonCode> buttonMask
         )
     : KDialog( parent )
-      , ui( new Ui::OrganizeCollectionDialogBase() ),
+      ,ui(new Ui::OrganizeCollectionDialogBase),
       detailed(true)
 
 {
@@ -48,9 +48,14 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
     */
 
 
-    KVBox* page = new KVBox(this);
-    ui->setupUi(page );
-    init();
+    KVBox *vbox = new KVBox( this );
+    setMainWidget( vbox );
+    QWidget *widget;
+    widget = new QWidget(vbox);
+
+    ui->setupUi(widget);
+    //init();
+
     show();
     
 

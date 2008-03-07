@@ -28,7 +28,7 @@ class OrganizeCollectionDialog : public KDialog
     public:
     explicit OrganizeCollectionDialog(QueryMaker *qm, QWidget *parent=0, const char *name=0, bool modal=true,
             const QString &caption=QString(),
-            QFlags<KDialog::ButtonCode> buttonMask=Ok|Apply|Cancel
+            QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel|Details
             );
 
     ~OrganizeCollectionDialog();
