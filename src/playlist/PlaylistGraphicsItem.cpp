@@ -159,7 +159,7 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
         if( !m_items )
         {
-            const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
+            Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
             m_items = new Playlist::GraphicsItem::ActiveItems();
             m_items->track = track;
             init( track );
@@ -1152,6 +1152,18 @@ QPointF Playlist::GraphicsItem::centerImage(QPixmap pixmap, QRectF rect)
 
     return QPointF( moveByX, moveByY );
 
+}
+
+bool Playlist::GraphicsItem::isCurrentTrack()
+{
+    const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
+    return index.data( ActiveTrackRole ).toBool();
+}
+
+Meta::TrackPtr Playlist::GraphicsItem::internalTrack()
+{
+    const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
+    return index.data( ItemRole ).value< Playlist::Item* >()->track();
 }
 
 

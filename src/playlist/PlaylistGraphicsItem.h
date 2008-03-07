@@ -67,6 +67,9 @@ namespace Playlist
             void editTrackInformation();
 
             const int groupMode() const { return m_groupMode; }
+
+            bool isCurrentTrack();
+            Meta::TrackPtr internalTrack();
        
         protected:
             void dragEnterEvent( QGraphicsSceneDragDropEvent *event );

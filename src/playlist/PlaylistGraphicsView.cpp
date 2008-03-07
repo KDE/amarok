@@ -20,6 +20,7 @@
 
 #include "amarok.h"
 #include "debug.h"
+#include "meta/CurrentTrackActionsCapability.h"
 #include "PlaylistModel.h"
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistGraphicsView.h"
@@ -105,6 +106,29 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     menu->addSeparator();
     menu->addAction( i18n( "Edit Track Information" ), this, SLOT( editTrackInformation() ) );
     menu->addSeparator();
+
+
+
+    //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
+    if( item->isCurrentTrack() ) {
+        
+        if ( item->internalTrack()->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
+            debug() << "2";
+            Meta::CurrentTrackActionsCapability *cac = item->internalTrack()->as<Meta::CurrentTrackActionsCapability>();
+            if( cac )
+            {
+                QList<QAction *> actions = cac->customActions();
+
+                foreach( QAction *action, actions )
+                    menu->addAction( action );
+                menu->addSeparator();
+            }
+        }
+
+    }
+
+    
+
     
     QPointF itemClickPos = item->mapFromScene( sceneClickPos );
     if( item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ) )

@@ -401,11 +401,10 @@ void Amarok::TrayIcon::setupMenu()
 
             foreach( QAction *action, m_extraActions )
                 contextMenu()->addAction( action );
-            //readd quit and minimize
             m_extraActions.append( contextMenu()->addSeparator() );
 
             
-            //rreadd
+            //readd
             contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
             contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
 
