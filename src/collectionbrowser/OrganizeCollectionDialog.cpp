@@ -30,15 +30,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
     setModal( modal );
     setButtons( buttonMask );
     showButtonSeparator( true );
-    /*
     m_previewTrack = 0;
-    if ( tracks.size() > 0)
-    {
-        m_previewTrack = tracks[0];
-    }
-
     Collection *coll = CollectionManager::instance()->primaryCollection();
-    QueryMaker *qm = coll->queryMaker()->startTrackQuery()->limitMaxResultSize(1);
+    qm->startTrackQuery();
     BlockingQuery bq( qm );
     bq.startQuery();
     Meta::TrackList tracks = bq.tracks( coll->collectionId() );
@@ -46,7 +40,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
     {
         m_previewTrack = tracks[0];
     }
-    */
 
 
     KVBox *vbox = new KVBox( this );
@@ -55,9 +48,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
     widget = new QWidget(vbox);
 
     ui->setupUi(widget);
-    //init();
-
-    
 
     //ui->folderCombo->insertStringList( folders, 0 );
     //ui->folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
