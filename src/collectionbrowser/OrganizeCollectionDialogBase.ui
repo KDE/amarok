@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>704</height>
+    <width>494</width>
+    <height>513</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -100,17 +100,23 @@
     </spacer>
    </item>
    <item>
-    <widget class="Q3GroupBox" name="groupingGroup" >
+    <widget class="QGroupBox" name="groupingGroup" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="title" >
       <string>File Naming Scheme</string>
      </property>
-     <property name="margin" >
-      <number>5</number>
-     </property>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>5</number>
-      </property>
+     <layout class="QVBoxLayout" name="verticalLayout" >
       <item>
        <widget class="QCheckBox" name="customschemeCheck" >
         <property name="toolTip" >
@@ -188,6 +194,14 @@
        </layout>
       </item>
      </layout>
+     <zorder>customschemeCheck</zorder>
+     <zorder>filetypeCheck</zorder>
+     <zorder>groupingGroup</zorder>
+     <zorder>formatLabel</zorder>
+     <zorder>customschemeCheck</zorder>
+     <zorder>filetypeCheck</zorder>
+     <zorder>initialCheck</zorder>
+     <zorder></zorder>
     </widget>
    </item>
    <item>
@@ -207,23 +221,23 @@
     </spacer>
    </item>
    <item>
-    <widget class="Q3GroupBox" name="replacementGroup" >
+    <widget class="QGroupBox" name="replacementGroup" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>150</height>
+      </size>
+     </property>
      <property name="title" >
       <string>Character Replacement</string>
      </property>
-     <property name="margin" >
-      <number>5</number>
-     </property>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>5</number>
-      </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2" >
       <item>
        <widget class="QCheckBox" name="spaceCheck" >
         <property name="toolTip" >
@@ -293,6 +307,12 @@
        </layout>
       </item>
      </layout>
+     <zorder>spaceCheck</zorder>
+     <zorder>asciiCheck</zorder>
+     <zorder>vfatCheck</zorder>
+     <zorder></zorder>
+     <zorder>textLabel2</zorder>
+     <zorder>previewBox</zorder>
     </widget>
    </item>
    <item>
@@ -312,18 +332,12 @@
     </spacer>
    </item>
    <item>
-    <widget class="Q3GroupBox" name="previewBox" >
+    <widget class="QGroupBox" name="previewBox" >
      <property name="title" >
       <string>Destination Preview</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>5</number>
-      </property>
-      <property name="spacing" >
-       <number>0</number>
-      </property>
-      <item row="0" column="1" >
+     <layout class="QVBoxLayout" name="verticalLayout_3" >
+      <item>
        <widget class="QLabel" name="previewText" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
@@ -392,16 +406,17 @@
     </spacer>
    </item>
   </layout>
+  <zorder>replacementGroup</zorder>
+  <zorder>groupingGroup</zorder>
+  <zorder>groupingGroup</zorder>
+  <zorder>replacementGroup</zorder>
+  <zorder>previewBox</zorder>
+  <zorder></zorder>
+  <zorder>previewBox</zorder>
  </widget>
  <layoutdefault spacing="6" margin="0" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>KComboBox</class>
    <extends>QComboBox</extends>
@@ -415,8 +430,6 @@
  </customwidgets>
  <includes>
   <include location="local" >kcombobox.h</include>
-  <include location="local" >klineedit.h</include>
-  <include location="local" >klineedit.h</include>
   <include location="local" >klineedit.h</include>
  </includes>
  <resources/>
@@ -488,24 +501,8 @@
   <connection>
    <sender>formatEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
    <slot>preview(QString)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>OrganizeCollectionDialogBase</sender>
-   <signal>updatePreview(QString)</signal>
-   <receiver>previewText</receiver>
-   <slot>setText(QString)</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>
@@ -520,7 +517,7 @@
   <connection>
    <sender>customschemeCheck</sender>
    <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
    <slot>update(int)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -536,7 +533,7 @@
   <connection>
    <sender>filetypeCheck</sender>
    <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
    <slot>update(int)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -552,7 +549,7 @@
   <connection>
    <sender>initialCheck</sender>
    <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
    <slot>update(int)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -568,7 +565,7 @@
   <connection>
    <sender>spaceCheck</sender>
    <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
    <slot>update(int)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -584,7 +581,7 @@
   <connection>
    <sender>asciiCheck</sender>
    <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
    <slot>update(int)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -600,7 +597,7 @@
   <connection>
    <sender>vfatCheck</sender>
    <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
    <slot>update(int)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -616,7 +613,7 @@
   <connection>
    <sender>ignoreTheCheck</sender>
    <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
    <slot>update(int)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -632,7 +629,7 @@
   <connection>
    <sender>folderCombo</sender>
    <signal>activated(int)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
    <slot>update(int)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -648,7 +645,9 @@
   <connection>
    <sender>regexpEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
+
+
    <slot>update(QString)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -664,7 +663,7 @@
   <connection>
    <sender>replaceEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>OrganizeCollectionDialogBase</receiver>
+   <receiver>OrganizeCollectionDialog</receiver>
    <slot>update(QString)</slot>
    <hints>
     <hint type="sourcelabel" >
