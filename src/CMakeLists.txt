@@ -234,6 +234,7 @@ set(meta_SRCS
     meta/DynamicPlaylist.cpp
     meta/MultiPlayableCapability.cpp
     meta/SourceInfoCapability.cpp
+    meta/CurrentTrackActionsCapability.cpp
 )
 
 #####################################################################

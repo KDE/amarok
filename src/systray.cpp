@@ -15,6 +15,7 @@
 #include "enginecontroller.h"
 #include "playlist/PlaylistModel.h"
 #include "meta/Meta.h"
+#include "meta/CurrentTrackActionsCapability.h"
 #include "TheInstances.h"
 
 #include <KAction>
@@ -50,21 +51,22 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         , overlay( 0 )
         , blinkTimerID( 0 )
         , overlayVisible( false )
-        , m_lastFmMode( false )
 {
+    DEBUG_BLOCK
+    
     PERF_LOG( "Begining TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();
-
-    PERF_LOG( "Before adding actions" );
-    contextMenu()->addAction( ac->action( "prev"       ) );
-    contextMenu()->addAction( ac->action( "play_pause" ) );
-    contextMenu()->addAction( ac->action( "play_pause" ) );
-    contextMenu()->addAction( ac->action( "next"       ) );
 
     //seems to be necessary
     QAction *quit = actionCollection()->action( "file_quit" );
     quit->disconnect();
     connect( quit, SIGNAL(activated()), kapp, SLOT(quit()) );
+
+    PERF_LOG( "Before adding actions" );
+    contextMenu()->addAction( ac->action( "prev"       ) );
+    //contextMenu()->addAction( ac->action( "play_pause" ) );
+    contextMenu()->addAction( ac->action( "play_pause" ) );
+    contextMenu()->addAction( ac->action( "next"       ) );
 
     baseIcon     = KSystemTrayIcon::loadIcon( "amarok" );
     playOverlay  = Amarok::loadOverlay( "play" );
@@ -170,6 +172,7 @@ Amarok::TrayIcon::event( QEvent *e )
 void
 Amarok::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
+    DEBUG_BLOCK
     // stop timer
     if ( blinkTimerID )
     {
@@ -193,27 +196,33 @@ Amarok::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldSt
            blinkTimerID = startTimer( 1500 );  // start 'blink' timer
 
         paintIcon( mergeLevel, true ); // repaint the icon
+        setupMenu();
         break;
 
     case Engine::Empty:
         overlayVisible = false;
         paintIcon( -1, true ); // repaint the icon
                                // fall through to default:
-    default:
-        setLastFm( false );
+    //default:
+        //setLastFm( false );
     }
 }
 
 void
 Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
+    DEBUG_BLOCK
+    
     Q_UNUSED( trackChanged )
     Q_UNUSED( newMetaData )
     Meta::TrackPtr track = EngineController::instance()->currentTrack();
     if( !track )
         return;
     trackLength = track->length() * 1000;
-    setLastFm( track->type() == "stream/lastfm" );
+    //setLastFm( track->type() == "stream/lastfm" ); //lets abstract this out....
+
+    setupMenu();
+
 }
 
 void
@@ -325,7 +334,9 @@ Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
     #endif
 }
 
-void
+
+//yuck... I really do not like this kind of service specific code in here...
+/*void
 Amarok::TrayIcon::setLastFm( bool lastFmActive )
 {
     if( lastFmActive == m_lastFmMode ) return;
@@ -358,4 +369,47 @@ Amarok::TrayIcon::setLastFm( bool lastFmActive )
         //contextMenu()->removeSeparator();
         m_lastFmMode = false;
    }
+}*/
+
+void Amarok::TrayIcon::setupMenu()
+{
+    DEBUG_BLOCK
+
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    
+    foreach( QAction * action, m_extraActions ) {
+        contextMenu()->removeAction( action );
+    }
+
+    KActionCollection* const ac = Amarok::actionCollection();
+    
+    debug() << "1";
+    if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
+        debug() << "2";
+        Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
+        if( cac )
+        {
+            debug() << "3";
+
+
+
+            //remove the two botton itmes, so we can push them to the button again
+            contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
+            contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
+
+            m_extraActions = cac->customActions();
+
+            foreach( QAction *action, m_extraActions )
+                contextMenu()->addAction( action );
+            //readd quit and minimize
+            m_extraActions.append( contextMenu()->addSeparator() );
+
+            
+            //rreadd
+            contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
+            contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
+
+        }
+
+    }
 }

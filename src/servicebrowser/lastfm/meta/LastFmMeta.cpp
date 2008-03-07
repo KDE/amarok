@@ -24,6 +24,8 @@
 #include "LastFmCapabilityImpl_p.moc"
 #include "MultiPlayableCapabilityImpl_p.h"
 #include "MultiPlayableCapabilityImpl_p.moc"
+#include "CurrentTrackActionsCapabilityImpl_p.h"
+#include "CurrentTrackActionsCapabilityImpl_p.moc"
 #include "ServiceSourceInfoCapability.h"
 
 #include "core/Radio.h"
@@ -60,6 +62,26 @@ Track::Track( const QString &lastFmUri )
     d->genrePtr = Meta::GenrePtr( new LastFmGenre( QPointer<Track::Private>( d ) ) );
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( QPointer<Track::Private>( d ) ) );
+
+
+    QAction * loveAction = new QAction( KIcon( "amarok_love" ), i18n( "Last.fm: &Love" ), this );
+    loveAction->setShortcut( i18n( "Ctrl+L" ) );
+    loveAction->setStatusTip( i18n( "Love this track on Last.fm" ) );
+    connect( loveAction, SIGNAL( triggered() ), this, SLOT( love() ) );
+    m_currentTrackActions.append( loveAction );
+
+    QAction * banAction = new QAction( KIcon( "amarok_remove" ), i18n( "Last.fm: &Ban" ), this );
+    banAction->setShortcut( i18n( "Ctrl+B" ) );
+    banAction->setStatusTip( i18n( "Ban this track" ) );
+    connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
+    m_currentTrackActions.append( banAction );
+
+    QAction * skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
+    skipAction->setShortcut( i18n( "Ctrl+S" ) );
+    skipAction->setStatusTip( i18n( "Skip this track" ) );
+    connect( skipAction, SIGNAL( triggered() ), this, SLOT( skip() ) );
+    m_currentTrackActions.append( skipAction );
+    
 }
 
 Track::~Track()
@@ -377,12 +399,17 @@ Track::playNext()
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::LastFm || type == Meta::Capability::MultiPlayable || Meta::Capability::SourceInfo;
+    return type == Meta::Capability::LastFm
+                || type == Meta::Capability::MultiPlayable
+                || Meta::Capability::SourceInfo
+                || Meta::Capability::CurrentTrackActions;
 }
 
 Meta::Capability*
 Track::asCapabilityInterface( Meta::Capability::Type type )
 {
+    DEBUG_BLOCK
+    debug() << "type: " << type;
     switch( type )
     {
         case Meta::Capability::LastFm:
@@ -391,7 +418,11 @@ Track::asCapabilityInterface( Meta::Capability::Type type )
             return new MultiPlayableCapabilityImpl( this );
         case Meta::Capability::SourceInfo:
             return new ServiceSourceInfoCapability( this );
-        default: 
+        case Meta::Capability::CurrentTrackActions:
+            debug() << "correct interface";
+            return new CurrentTrackActionsCapabilityImpl( this );
+        default:
+            debug() << "wrong interface";
             return 0;
     }
 }
@@ -411,6 +442,11 @@ QString LastFm::Track::sourceDescription()
 QPixmap LastFm::Track::emblem()
 {
     return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-lastfm.png" ) );
+}
+
+QList< QAction * > LastFm::Track::nowPlayingActions() const
+{
+    return m_currentTrackActions;
 }
 
 #include "LastFmMeta.moc"

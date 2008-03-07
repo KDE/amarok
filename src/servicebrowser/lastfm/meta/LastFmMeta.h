@@ -94,6 +94,8 @@ namespace LastFm
             virtual QString sourceDescription();
             virtual QPixmap emblem();
 
+            QList< QAction * > nowPlayingActions() const;
+
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
         public slots:
@@ -108,6 +110,7 @@ namespace LastFm
         private:
             //use a d-pointer because some code is going to work directly with LastFm::Track
             Private * const d;
+            QList< QAction * > m_currentTrackActions;
     };
 
     class LastFmProviderCapability : public Meta::Capability
