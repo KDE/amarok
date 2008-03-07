@@ -25,7 +25,7 @@
 
 
 EqualizerGraph::EqualizerGraph( QWidget* parent )
-    : QWidget( parent, 0, Qt::WNoAutoErase )
+    : QWidget( parent, Qt::WNoAutoErase )
     , m_backgroundPixmap( new QPixmap() )
 {}
 

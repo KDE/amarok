@@ -127,7 +127,7 @@ void Amarok::ToolTip::updateTip() //static
 }
 
 Amarok::ToolTip::ToolTip( ToolTipClient *client, QWidget *parent )
-    : QFrame(0,  0, Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint
+    : QFrame(0, Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint
                     | Qt::X11BypassWindowManagerHint ),
 //      QToolTip( ),
       m_client( client )
@@ -161,7 +161,8 @@ void Amarok::ToolTip::maybeTip( const QPoint &pos )
 
 void Amarok::ToolTip::showTip()
 {
-    m_timer.start( 15000, true );
+    m_timer.setSingleShot( true );
+    m_timer.start( 15000 );
     if( !isVisible() || sizeHint() != size() )
     {
         resize( sizeHint() );

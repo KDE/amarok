@@ -93,8 +93,8 @@ class URLLabel::Private
 };
 
 
-URLLabel::URLLabel( const QString& url, const QString& text, QWidget* parent, const char* /*name*/ ) :
-    QLabel( !text.isNull() ? text : url, parent, 0 ),
+URLLabel::URLLabel( const QString& url, const QString& text, QWidget* parent ) :
+    QLabel( !text.isNull() ? text : url, parent ),
     d( new Private( url, this ) )
 {
     setFont( font() );
@@ -103,8 +103,8 @@ URLLabel::URLLabel( const QString& url, const QString& text, QWidget* parent, co
 }
 
 
-URLLabel::URLLabel( QWidget* parent, const char* /*name*/ ) :
-    QLabel( parent, 0 ),
+URLLabel::URLLabel( QWidget* parent ) :
+    QLabel( parent ),
     d( new Private( QString::null, this ) )
 {
     setFont( font() );

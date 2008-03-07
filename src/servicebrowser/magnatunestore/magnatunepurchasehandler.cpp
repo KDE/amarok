@@ -190,7 +190,8 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
 
     if ( m_downloadDialog == 0 )
     {
-        m_downloadDialog = new MagnatuneDownloadDialog( m_parent, "downloaddialog", true, 0 );
+        m_downloadDialog = new MagnatuneDownloadDialog( m_parent );
+        m_downloadDialog->setModal( true );
         connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo * ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
 
     }

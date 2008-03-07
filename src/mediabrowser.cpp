@@ -2115,7 +2115,7 @@ MediaQueue::itemCountChanged()
 {
     if( childCount() == 0 )
         hide();
-    else if( !isShown() )
+    else if( !isVisible() )
         show();
 }
 

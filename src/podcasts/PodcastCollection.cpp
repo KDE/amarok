@@ -196,7 +196,7 @@ PodcastCollection::downloadResult( KJob * job )
 
         QFile *localFile = new QFile( localUrl.path() );
         localFile->open( IO_WriteOnly );
-        localFile->writeBlock( static_cast<KIO::StoredTransferJob *>(job)->data() );
+        localFile->write( static_cast<KIO::StoredTransferJob *>(job)->data() );
         localFile->close();
 
         episode->setPlayableUrl( localUrl );

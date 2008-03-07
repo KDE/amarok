@@ -244,7 +244,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
     if( provider )
     {
         bool ok;
-        QString url = QInputDialog::getText(
+        QString url = QInputDialog::getText( 0,
                             QString("Amarok"), i18n("Enter Podcast URL:"), QLineEdit::Normal,
                             QString::null, &ok );
         if ( ok && !url.isEmpty() ) {

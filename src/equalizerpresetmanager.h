@@ -32,7 +32,7 @@ class EqualizerPresetManager : public KDialog
     Q_OBJECT
 
     public:
-        explicit EqualizerPresetManager( QWidget *parent = 0, const char *name = 0 );
+        explicit EqualizerPresetManager( QWidget *parent = 0 );
         virtual ~EqualizerPresetManager();
 
         void setPresets(QMap< QString, QList<int> > presets);

@@ -35,7 +35,7 @@
 #include <QPushButton>
 #include <QTextStream>
 
-EqualizerPresetManager::EqualizerPresetManager( QWidget *parent, const char *name )
+EqualizerPresetManager::EqualizerPresetManager( QWidget *parent )
         : KDialog( parent )
 {
     setCaption( i18n("Presets") );
@@ -153,7 +153,7 @@ EqualizerPresetManager::slotDefault()
 
     QDomDocument d;
 
-    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) )
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.readAll() ) )
         return;
 
     QDomNode n = d.namedItem( "equalizerpresets" ).namedItem("preset");

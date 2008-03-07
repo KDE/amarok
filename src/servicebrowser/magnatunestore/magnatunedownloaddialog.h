@@ -44,7 +44,7 @@ public:
      * @param modal Sets modal state.
      * @param fl Additional dialog flags.
      */
-    explicit MagnatuneDownloadDialog( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    explicit MagnatuneDownloadDialog( QWidget* parent = 0, Qt::WFlags fl = 0 );
 
     /**
      * Destructor

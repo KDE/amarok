@@ -166,7 +166,7 @@ Vis::Selector::Selector( QWidget *parent )
 {
     Amarok::OverrideCursor waitcursor;
 
-    setCaption( KDialog::makeStandardCaption( i18n( "Visualizations" ) ) );
+    setWindowTitle( KDialog::makeStandardCaption( i18n( "Visualizations" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
 #ifdef Q_WS_X11
@@ -191,7 +191,7 @@ Vis::Selector::Selector( QWidget *parent )
     str[ fread( static_cast<void*>( str ), sizeof(char), 4096, vis ) ] = '\0';
     pclose( vis );
 
-    const QStringList entries = QStringList::split( '\n', QString::fromLocal8Bit( str ) );
+    const QStringList entries = QString::fromLocal8Bit( str ).split( '\n' );
 
     QStringList::ConstIterator end = entries.constEnd();
     for( QStringList::ConstIterator it = entries.constBegin(); it != end; ++it )

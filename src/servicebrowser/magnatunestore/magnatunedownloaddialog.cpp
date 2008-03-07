@@ -32,7 +32,7 @@
 
 
 
-MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, const char *name, bool modal, Qt::WFlags fl )
+MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
     setupUi(this);

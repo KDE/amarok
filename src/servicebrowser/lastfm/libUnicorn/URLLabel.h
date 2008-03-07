@@ -55,8 +55,8 @@ class UNICORN_DLLEXPORT URLLabel : public QLabel
 	Q_PROPERTY(bool useCursor READ useCursor WRITE setUseCursor )
 
 public:
-	URLLabel(QWidget* parent = 0, const char* name = 0);
-	URLLabel(const QString& url, const QString& text, QWidget* parent = 0, const char* name = 0);
+	URLLabel(QWidget* parent = 0);
+	URLLabel(const QString& url, const QString& text, QWidget* parent = 0);
 
 	virtual ~URLLabel();
 

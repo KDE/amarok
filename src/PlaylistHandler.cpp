@@ -310,7 +310,7 @@ PlaylistHandler::loadSMIL( QTextStream &stream )
 
     //audio sources...
     nodeList = doc.elementsByTagName( "audio" );
-    for( uint i = 0; i < nodeList.count(); i++ )
+    for( int i = 0; i < nodeList.count(); i++ )
     {
             node = nodeList.item(i);
             url.clear();
