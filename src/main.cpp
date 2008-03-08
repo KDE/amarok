@@ -72,7 +72,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Andrew de Quincey"), ki18n(( "Postgresql support" )), "adq_dvb@lidskialf.net" );
     aboutData.addCredit( ki18n("Andrew Turner"), ki18n(( "Patches" )), "andrewturner512@googlemail.com" );
     aboutData.addCredit( ki18n("Andy Kelk"), ki18n(( "MTP and Rio Karma media devices, patches" )), "andy@mopoke.co.uk" );
-    aboutData.addCredit( ki18n("Bart Cerneels"), ki18n(( "Podcast code improvements" )), "shanachie@yucom.be" );
+    aboutData.addCredit( ki18n("Bart Cerneels"), ki18n(( "Podcast code improvements" )), "bart.cerneels@kde.org" );
     aboutData.addCredit( ki18n("Christie Harris"), ki18n(( "Rokymoter (dangle)" )), "dangle.baby@gmail.com" );
     aboutData.addCredit( ki18n("Dan Leinir Turthra Jensen"), ki18n(( "First-run wizard, usability" )), "admin@REMOVEleinir.dk" );
     aboutData.addCredit( ki18n("Dan Meltzer"), ki18n(( "Code improvements" )), "hydrogen@notyetimplemented.com" );
