@@ -27,6 +27,8 @@
 #include <solid/storagedrive.h>
 #include <solid/storagevolume.h>
 
+#include <QDir>
+#include <QFile>
 #include <QList>
 
 #include "amarok.h"
@@ -189,7 +191,6 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
 void
 MediaDeviceCache::slotAccessibilityChanged( bool accessible, const QString &udi )
 {
-    DEBUG_BLOCK
     debug() << "accessibility of device " << udi << " has changed to accessible = " << (accessible ? "true":"false");
     if( accessible )
     {
@@ -217,7 +218,6 @@ MediaDeviceCache::slotAccessibilityChanged( bool accessible, const QString &udi 
 const MediaDeviceCache::DeviceType
 MediaDeviceCache::deviceType( const QString &udi ) const
 {
-    DEBUG_BLOCK
     if( m_type.contains( udi ) )
     {
         return m_type[udi];
@@ -228,7 +228,6 @@ MediaDeviceCache::deviceType( const QString &udi ) const
 const QString
 MediaDeviceCache::deviceName( const QString &udi ) const
 {
-    DEBUG_BLOCK
     if( m_name.contains( udi ) )
     {
         return m_name[udi];
@@ -239,7 +238,6 @@ MediaDeviceCache::deviceName( const QString &udi ) const
 bool
 MediaDeviceCache::isGenericEnabled( const QString &udi ) const
 {
-    DEBUG_BLOCK
     if( m_type[udi] != MediaDeviceCache::SolidVolumeType )
     {
         debug() << "Not SolidVolumeType, returning false";
@@ -257,20 +255,16 @@ MediaDeviceCache::isGenericEnabled( const QString &udi ) const
         debug() << "Could convert parent to PortableMediaPlayer, returning true";
         return true;
     }
-    KIO::UDSEntry udsentry;
-    if( !KIO::NetAccess::stat( ssa->filePath() + "/.is_audio_player", udsentry, Amarok::mainWindow() ) )
+    if( QFile::exists( ssa->filePath() + QDir::separator() + ".is_audio_player" ) )
     {
-        debug() << "Did not stat .is_audio_player successfully, returning false";
-        return false;
+        return true;
     }
-    debug() << "Returning true";
-    return true;
+    return false;
 }
 
 const QString
 MediaDeviceCache::volumeMountPoint( const QString &udi ) const
 {
-    DEBUG_BLOCK
     Solid::Device device( udi );
     Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
     if( !ssa || !ssa->isAccessible() )
