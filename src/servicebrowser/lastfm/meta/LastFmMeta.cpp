@@ -64,7 +64,7 @@ Track::Track( const QString &lastFmUri )
     d->yearPtr = Meta::YearPtr( new LastFmYear( QPointer<Track::Private>( d ) ) );
 
 
-    QAction * loveAction = new QAction( KIcon( "amarok_love" ), i18n( "Last.fm: &Love" ), this );
+    QAction * loveAction = new QAction( KIcon( "emblem-favorite-amarok" ), i18n( "Last.fm: &Love" ), this );
     loveAction->setShortcut( i18n( "Ctrl+L" ) );
     loveAction->setStatusTip( i18n( "Love this track on Last.fm" ) );
     connect( loveAction, SIGNAL( triggered() ), this, SLOT( love() ) );

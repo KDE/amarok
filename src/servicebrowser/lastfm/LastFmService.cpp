@@ -139,7 +139,7 @@ LastFmService::polish()
         m_loveButton = new QPushButton( m_buttonBox );
         m_loveButton->setText( i18n( "Love" ) );
         m_loveButton->setObjectName( "loveButton" );
-        m_loveButton->setIcon( KIcon( "amarok_love" ) );
+        m_loveButton->setIcon( KIcon( "emblem-favorite-amarok" ) );
         connect( m_loveButton, SIGNAL( clicked() ), this, SLOT( love() ) );
 
         m_banButton = new QPushButton( m_buttonBox );
