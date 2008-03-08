@@ -75,17 +75,17 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Andrew Turner"), ki18n(( "Patches" )), "andrewturner512@googlemail.com" );
     aboutData.addCredit( ki18n("Andy Kelk"), ki18n(( "MTP and Rio Karma media devices, patches" )), "andy@mopoke.co.uk" );
     aboutData.addCredit( ki18n("Bart Cerneels"), ki18n(( "podcast code improvements" )), "shanachie@yucom.be" );
-    aboutData.addCredit( ki18n("Christie Harris"), ki18n(( "roKymoter (dangle)" )), "dangle.baby@gmail.com" );
+    aboutData.addCredit( ki18n("Christie Harris"), ki18n(( "Rokymoter (dangle)" )), "dangle.baby@gmail.com" );
     aboutData.addCredit( ki18n("Dan Leinir Turthra Jensen"), ki18n(( "First-run wizard, usability" )), "admin@REMOVEleinir.dk" );
-    aboutData.addCredit( ki18n("Dan Meltzer"), ki18n(( "roKymoter (hydrogen)" )), "hydrogen@notyetimplemented.com" );
+    aboutData.addCredit( ki18n("Dan Meltzer"), ki18n(( "Rokymoter (hydrogen)" )), "hydrogen@notyetimplemented.com" );
     aboutData.addCredit( ki18n("Derek Nelson"), ki18n(( "graphics, splash-screen" )), "admrla@gmail.com" );
     aboutData.addCredit( ki18n("Enrico Ros"), ki18n(( "Analyzers, Context Browser and systray eye-candy" )), "eros.kde@email.it" );
     aboutData.addCredit( ki18n("Gérard Dürrmeyer"), ki18n(( "icons and image work" )), "gerard@randomtree.com" );
     aboutData.addCredit( ki18n("Giovanni Venturi"), ki18n(( "dialog to filter the collection titles" )), "giovanni@ksniffer.org" );
     aboutData.addCredit( ki18n("Greg Meyer"), ki18n(( "Live CD, Bug squashing (oggb4mp3)" )), "greg@gkmweb.com" );
-    aboutData.addCredit( ki18n("Harald Sitter"), ki18n(( "handbook enhancements, translations, bug fixes, screenshots, roKymoter (apachelogger)" )), "harald.sitter@kdemail.net" );
+    aboutData.addCredit( ki18n("Harald Sitter"), ki18n(( "handbook enhancements, translations, bug fixes, screenshots, Rokymoter (apachelogger)" )), "harald.sitter@kdemail.net" );
     aboutData.addCredit( ki18n("Jarkko Lehti"), ki18n(( "Tester, IRC channel operator, whipping" )), "grue@iki.fi" );
-    aboutData.addCredit( ki18n("Jocke Andersson"), ki18n(( "roKymoter, bug fixer and Swedish Bitch (Firetech)" )), "ajocke@gmail.com" );
+    aboutData.addCredit( ki18n("Jocke Andersson"), ki18n(( "Rokymoter, bug fixer and Swedish Bitch (Firetech)" )), "ajocke@gmail.com" );
     aboutData.addCredit( ki18n("Kenneth Wesley Wimer II"), ki18n(( "Icons" )), "kwwii@bootsplash.org" );
     aboutData.addCredit( ki18n( "Leo Franchi" ), ki18n( ( "Context View work" )  ), "lfranchi@gmail.com" );
     aboutData.addCredit( ki18n("Marco Gulino"), ki18n(( "Konqueror Sidebar, some DCOP methods" )), "marco@kmobiletools.org" );
@@ -101,7 +101,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Shane King"), ki18n(( "Patches & Windows porting (shakes)" )), "kde@dontletsstart.com" );
     aboutData.addCredit( ki18n("Stefan Bogner"), ki18n(( "Loadsa stuff" )), "bochi@online.ms" );
     aboutData.addCredit( ki18n("Stefan Siegel"), ki18n(( "Patches, Bugfixes" )), "kde@sdas.de" );
-    aboutData.addCredit( ki18n("Sven Krohlas"), ki18n(( "roKymoter (sven423)" )), "sven@asbest-online.de" );
+    aboutData.addCredit( ki18n("Sven Krohlas"), ki18n(( "Rokymoter (sven423)" )), "sven@asbest-online.de" );
     aboutData.addCredit( ki18n("Vadim Petrunin"), ki18n(( "Graphics, splash-screen (vnizzz)" )), "vnizzz@list.ru" );
     aboutData.addCredit( ki18n("Whitehawk Stormchaser"), ki18n(( "Tester, patches" )), "zerokode@gmx.net" );
 
