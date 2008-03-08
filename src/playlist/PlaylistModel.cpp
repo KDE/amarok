@@ -88,6 +88,12 @@ Model::init()
     QAction* redoButton  = m_undoStack->createRedoAction( this, i18n("Redo") );
     ac->addAction("playlist_redo", redoButton);
     redoButton->setIcon( KIcon( "edit-redo-amarok" ) );
+
+    //FIXME: because the restoring in app.cpp:711 causes problems we do it here. This doesn't respect the command line flags though.
+    if ( AmarokConfig::savePlaylist() )
+    {
+        The::playlistModel()->restoreSession();
+    }
 }
 
 Model::~Model()

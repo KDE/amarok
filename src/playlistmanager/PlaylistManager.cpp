@@ -214,6 +214,12 @@ PlaylistManager::save( Meta::TrackList tracks,
     Meta::M3UPlaylistPtr playlist( new Meta::M3UPlaylist( tracks ) );
 
     QFile file( location );
+    if (!file.open( QIODevice::WriteOnly | QIODevice::Text ))
+    {
+        debug() << "failed to open file " << location;
+        return false;
+    }
+
     playlist->save( file, AmarokConfig::relativePlaylist() );
 
     file.close();

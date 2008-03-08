@@ -67,7 +67,6 @@ loadPlaylist( const KUrl &url )
         debug() << "local file";
 
         file.setFileName( url.path() );
-        file.open( QFile::ReadOnly );
 
         if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
         {
