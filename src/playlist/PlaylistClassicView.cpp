@@ -21,6 +21,7 @@
 
 #include "debug.h"
 #include "PlaylistModel.h"
+#include "PlaylistViewCommon.h"
 #include "tagdialog.h"
 #include "meta/CurrentTrackActionsCapability.h"
 
@@ -92,41 +93,8 @@ void Playlist::ClassicView::contextMenuEvent( QContextMenuEvent *event )
     //item->setSelected( true );
     event->accept();
 
-    KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), this );
-    //playAction->setData( QVariant( sceneClickPos ) );
-    connect( playAction, SIGNAL( triggered() ), this, SLOT( playContext() ) );
+    Playlist::ViewCommon::trackMenu(this, &index, event->globalPos());
 
-    KMenu *menu = new KMenu( this );
-    
-    menu->addAction( playAction );
-    ( menu->addAction( i18n( "Queue Track" ), this, SLOT( queueItem() ) ) )->setEnabled( false );
-    ( menu->addAction( i18n( "Stop Playing After Track" ), this, SLOT( stopAfterTrack() ) ) )->setEnabled( false );
-    menu->addSeparator();
-    ( menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) ) )->setEnabled( true );
-    menu->addSeparator();
-    menu->addAction( i18n( "Edit Track Information" ), this, SLOT( editTrackInformation() ) );
-    menu->addSeparator();
-
-
-
-    //Meta::TrackPtr  item = m_model->data(index, TrackRole).value< Meta::TrackPtr >();
-    //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
-    if( index.data( ActiveTrackRole ).toBool() ) {
-
-        if ( index.data( ItemRole ).value< Playlist::Item* >()->track()->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
-            debug() << "2";
-            Meta::CurrentTrackActionsCapability *cac = index.data( ItemRole ).value< Playlist::Item* >()->track()->as<Meta::CurrentTrackActionsCapability>();
-            if( cac )
-            {
-                QList<QAction *> actions = cac->customActions();
-
-                foreach( QAction *action, actions )
-                    menu->addAction( action );
-                menu->addSeparator();
-            }
-        }
-    }
-    menu->exec( event->globalPos() );
 }
 
 void Playlist::ClassicView::removeSelection()
@@ -155,12 +123,8 @@ void Playlist::ClassicView::editTrackInformation()
         tracks << m_model->data(i, TrackRole).value< Meta::TrackPtr >();
     }
 
-        if(!m_contextIndex)
-            return;
-
     TagDialog *dialog = new TagDialog( tracks, this );
     dialog->show();
-    m_contextIndex = 0;
 }
 
 #include "PlaylistClassicView.moc"

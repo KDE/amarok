@@ -496,12 +496,6 @@ Playlist::GraphicsItem::editTrackInformation()
     dialog->show();
 }
 
-const bool
-Playlist::GraphicsItem::hasImage() const
-{
-    return m_items->track->album() && m_items->track->album()->hasImage();
-}
-
 void
 Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 {

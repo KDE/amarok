@@ -58,7 +58,6 @@ namespace Playlist
             void setRow( int row );
             const QRectF imageLocation() const { return QRectF( MARGIN, MARGIN, ALBUM_WIDTH, ALBUM_WIDTH ); }
 
-            const bool hasImage() const;
             void showImage() const;
             void fetchImage();
             void unsetImage();

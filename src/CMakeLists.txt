@@ -314,6 +314,7 @@ set(libplaylist_SRCS
     playlist/PlaylistModel.cpp
     playlist/PlaylistWidget.cpp
     playlist/RepeatTrackNavigator.cpp
+    playlist/PlaylistViewCommon.cpp
     playlist/StandardTrackNavigator.cpp
     playlist/TrackNavigator.cpp
     playlist/UndoCommands.cpp

@@ -26,6 +26,7 @@
 #include "PlaylistGraphicsView.h"
 #include "PlaylistGraphicsScene.h"
 #include "PlaylistDropVis.h"
+#include "PlaylistViewCommon.h"
 #include "TheInstances.h"
 
 #include <KAction>
@@ -93,62 +94,13 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     item->setSelected( true );
     event->accept();
 
-    KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), this );
-    playAction->setData( QVariant( sceneClickPos ) );
-    connect( playAction, SIGNAL( triggered() ), this, SLOT( playTrack() ) );
-
-    KMenu *menu = new KMenu( this );
-    
-    menu->addAction( playAction );
-    ( menu->addAction( i18n( "Queue Track" ), this, SLOT( queueItem() ) ) )->setEnabled( false );
-    ( menu->addAction( i18n( "Stop Playing After Track" ), this, SLOT( stopAfterTrack() ) ) )->setEnabled( false );
-    menu->addSeparator();
-    ( menu->addAction( i18n( "Remove From Playlist" ), this, SLOT( removeSelection() ) ) )->setEnabled( true );
-    menu->addSeparator();
-    menu->addAction( i18n( "Edit Track Information" ), this, SLOT( editTrackInformation() ) );
-    menu->addSeparator();
-
-
-
-    //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
-    if( item->isCurrentTrack() ) {
-        
-        if ( item->internalTrack()->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
-            debug() << "2";
-            Meta::CurrentTrackActionsCapability *cac = item->internalTrack()->as<Meta::CurrentTrackActionsCapability>();
-            if( cac )
-            {
-                QList<QAction *> actions = cac->customActions();
-
-                foreach( QAction *action, actions )
-                    menu->addAction( action );
-                menu->addSeparator();
-            }
-        }
-
-    }
-
-    
-
-    
-    QPointF itemClickPos = item->mapFromScene( sceneClickPos );
-    if( item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ) )
-    {
-        bool hasCover = item->hasImage();
-
-        QAction *showCoverAction  = menu->addAction( i18n( "Show Fullsize" ), this, SLOT( showItemImage() ) );
-        QAction *fetchCoverAction = menu->addAction( i18n( "Fetch Cover" ), this, SLOT( fetchItemImage() ) );
-        QAction *unsetCoverAction = menu->addAction( i18n( "Unset Cover" ), this, SLOT( unsetItemImage() ) );
-
-        showCoverAction->setEnabled( hasCover );
-        fetchCoverAction->setEnabled( true );
-        unsetCoverAction->setEnabled( hasCover );
-    }
-
-
     m_contextMenuItem = item;
 
-    menu->exec( event->globalPos() );
+    QPointF itemClickPos = item->mapFromScene( sceneClickPos );
+    int row = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(item) );
+    const QModelIndex index = The::playlistModel()->index( row, 0 );
+    Playlist::ViewCommon::trackMenu(this, &index ,event->globalPos(), item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ));
+
 }
 
 void
