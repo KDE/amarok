@@ -51,6 +51,16 @@ def KdeLibs()
 
   @neon.BaseDir()
   `svn co svn://anonsvn.kde.org/home/kde/trunk/KDE/kdelibs #{dir}`
+
+  # Change ksycoca file name
+  file = File.new( "#{dir}/sycoca/ksycoca.h", File::RDWR )
+  str = file.read()
+  file.rewind()
+  file.truncate( 0 )
+  str.sub!( /#define KSYCOCA_FILENAME \".*\"/, "#define KSYCOCA_FILENAME \"neonsycoca\"" )
+  file << str
+  file.close()
+
   @neon.CreateTar(dir)
 
   @packages += ["kdelibs"]
