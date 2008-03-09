@@ -39,7 +39,12 @@ class MetaBundle;
 
 class AMAROK_EXPORT Moodbar : public QObject
 {
+#ifdef __GNUC__
+#warning reenable Q_OBJECT once moodbar.cpp gets compiled again
+#endif
+#if 0
   Q_OBJECT
+#endif
 
 public:
   typedef Q3ValueVector<QColor> ColorList;
