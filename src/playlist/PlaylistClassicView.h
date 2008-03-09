@@ -43,11 +43,19 @@ namespace Playlist {
 private:
 
     Playlist::Model * m_model;
+        QPersistentModelIndex *m_contextIndex;
+
 
 private slots:
 
     void play( const QModelIndex & index );
+    void playContext( );
+    void removeSelection();
+    void editTrackInformation();
 
+
+protected:
+virtual void contextMenuEvent( QContextMenuEvent *event );
     
     };
 
