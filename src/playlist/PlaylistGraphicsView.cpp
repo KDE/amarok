@@ -99,7 +99,7 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     QPointF itemClickPos = item->mapFromScene( sceneClickPos );
     int row = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(item) );
     const QModelIndex index = The::playlistModel()->index( row, 0 );
-    Playlist::ViewCommon::trackMenu(this, &index ,event->globalPos(), item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ));
+    ViewCommon::trackMenu(this, &index ,event->globalPos(), item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ));
 
 }
 

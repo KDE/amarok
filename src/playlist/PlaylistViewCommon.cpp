@@ -19,8 +19,9 @@
  **************************************************************************/
 
 
-#include "tagdialog.h"
 #include "PlaylistViewCommon.h"
+
+#include "tagdialog.h"
 #include "PlaylistModel.h"
 #include "meta/CurrentTrackActionsCapability.h"
 
@@ -30,64 +31,58 @@
 #include <KMenu>
 #include <KAction>
 
-namespace Playlist
+//using namespace Playlist::ViewCommon;
+
+void Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, const QPoint &pos, bool coverActions)
 {
-    namespace ViewCommon
-    {
+    Meta::TrackPtr track= index->data( Playlist::ItemRole ).value< Playlist::Item* >()->track();
+    KMenu *menu = new KMenu( parent );
+    KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
+    //playAction->setData( QVariant( sceneClickPos ) );
+    QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playContext() ) );
 
-        void trackMenu( QWidget *parent, const QModelIndex *index, const QPoint &pos, bool coverActions)
-        {
-            Meta::TrackPtr track= index->data( Playlist::ItemRole ).value< Playlist::Item* >()->track();
-            KMenu *menu = new KMenu( parent );
-            KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
-            //playAction->setData( QVariant( sceneClickPos ) );
-            QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playContext() ) );
-
-
-            menu->addAction( playAction );
-            ( menu->addAction( i18n( "Queue Track" ), parent, SLOT( queueItem() ) ) )->setEnabled( false );
-            ( menu->addAction( i18n( "Stop Playing After Track" ), parent, SLOT( stopAfterTrack() ) ) )->setEnabled( false );
-            menu->addSeparator();
-            ( menu->addAction( i18n( "Remove From Playlist" ), parent, SLOT( removeSelection() ) ) )->setEnabled( true );
-            menu->addSeparator();
-            menu->addAction( i18n( "Edit Track Information" ), parent, SLOT( editTrackInformation() ) );
-            menu->addSeparator();
+    menu->addAction( playAction );
+    ( menu->addAction( i18n( "Queue Track" ), parent, SLOT( queueItem() ) ) )->setEnabled( false );
+    ( menu->addAction( i18n( "Stop Playing After Track" ), parent, SLOT( stopAfterTrack() ) ) )->setEnabled( false );
+    menu->addSeparator();
+    ( menu->addAction( i18n( "Remove From Playlist" ), parent, SLOT( removeSelection() ) ) )->setEnabled( true );
+    menu->addSeparator();
+    menu->addAction( i18n( "Edit Track Information" ), parent, SLOT( editTrackInformation() ) );
+    menu->addSeparator();
 
 
 
-            //Meta::TrackPtr  item = m_model->data(index, TrackRole).value< Meta::TrackPtr >();
-            //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
-            if( index->data( Playlist::ActiveTrackRole ).toBool() ) {
+    //Meta::TrackPtr  item = m_model->data(index, TrackRole).value< Meta::TrackPtr >();
+    //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
+    if( index->data( Playlist::ActiveTrackRole ).toBool() ) {
 
-                if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
-                    debug() << "2";
-                    Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
-                    if( cac )
-                    {
-                        QList<QAction *> actions = cac->customActions();
-
-                        foreach( QAction *action, actions )
-                            menu->addAction( action );
-                        menu->addSeparator();
-                    }
-                }
-            }
-
-            if (coverActions)
+        if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
+            debug() << "2";
+            Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
+            if( cac )
             {
-                bool hasCover = track->album() && track->album()->hasImage();
+                QList<QAction *> actions = cac->customActions();
 
-                QAction *showCoverAction  = menu->addAction( i18n( "Show Fullsize" ), parent , SLOT( showItemImage() ) );
-                QAction *fetchCoverAction = menu->addAction( i18n( "Fetch Cover" ), parent , SLOT( fetchItemImage() ) );
-                QAction *unsetCoverAction = menu->addAction( i18n( "Unset Cover" ), parent , SLOT( unsetItemImage() ) );
-
-                showCoverAction->setEnabled( hasCover );
-                fetchCoverAction->setEnabled( true );
-                unsetCoverAction->setEnabled( hasCover );
+                foreach( QAction *action, actions )
+                    menu->addAction( action );
+                menu->addSeparator();
             }
-
-            menu->exec( pos  );
         }
     }
+
+    if (coverActions)
+    {
+        bool hasCover = track->album() && track->album()->hasImage();
+
+        QAction *showCoverAction  = menu->addAction( i18n( "Show Fullsize" ), parent , SLOT( showItemImage() ) );
+        QAction *fetchCoverAction = menu->addAction( i18n( "Fetch Cover" ), parent , SLOT( fetchItemImage() ) );
+        QAction *unsetCoverAction = menu->addAction( i18n( "Unset Cover" ), parent , SLOT( unsetItemImage() ) );
+
+        showCoverAction->setEnabled( hasCover );
+        fetchCoverAction->setEnabled( true );
+        unsetCoverAction->setEnabled( hasCover );
+    }
+
+    menu->exec( pos  );
 }
 

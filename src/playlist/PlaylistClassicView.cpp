@@ -93,7 +93,7 @@ void Playlist::ClassicView::contextMenuEvent( QContextMenuEvent *event )
     //item->setSelected( true );
     event->accept();
 
-    Playlist::ViewCommon::trackMenu(this, &index, event->globalPos());
+    ViewCommon::trackMenu(this, &index, event->globalPos());
 
 }
 

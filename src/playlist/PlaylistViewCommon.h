@@ -25,7 +25,7 @@
 #include <QModelIndex>
 #include <QPoint>
 
-namespace Playlist{
+namespace Playlist {
     namespace ViewCommon {
 
         void editTrackInformation();
