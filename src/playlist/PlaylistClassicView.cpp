@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "PlaylistModel.h"
 #include "tagdialog.h"
+#include "meta/CurrentTrackActionsCapability.h"
 
 #include <KAction>
 #include <KMenu>
@@ -117,13 +118,13 @@ void Playlist::ClassicView::contextMenuEvent( QContextMenuEvent *event )
 
 
 
+    //Meta::TrackPtr  item = m_model->data(index, TrackRole).value< Meta::TrackPtr >();
     //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
-    /*
-    if( item->isCurrentTrack() ) {
+    if( index.data( ActiveTrackRole ).toBool() ) {
 
-        if ( item->internalTrack()->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
+        if ( index.data( ItemRole ).value< Playlist::Item* >()->track()->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
             debug() << "2";
-            Meta::CurrentTrackActionsCapability *cac = item->internalTrack()->as<Meta::CurrentTrackActionsCapability>();
+            Meta::CurrentTrackActionsCapability *cac = index.data( ItemRole ).value< Playlist::Item* >()->track()->as<Meta::CurrentTrackActionsCapability>();
             if( cac )
             {
                 QList<QAction *> actions = cac->customActions();
@@ -133,43 +134,13 @@ void Playlist::ClassicView::contextMenuEvent( QContextMenuEvent *event )
                 menu->addSeparator();
             }
         }
-
-    if( item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ) )
-    {
-        bool hasCover = item->hasImage();
-
-        QAction *showCoverAction  = menu->addAction( i18n( "Show Fullsize" ), this, SLOT( showItemImage() ) );
-        QAction *fetchCoverAction = menu->addAction( i18n( "Fetch Cover" ), this, SLOT( fetchItemImage() ) );
-        QAction *unsetCoverAction = menu->addAction( i18n( "Unset Cover" ), this, SLOT( unsetItemImage() ) );
-
-        showCoverAction->setEnabled( hasCover );
-        fetchCoverAction->setEnabled( true );
-        unsetCoverAction->setEnabled( hasCover );
     }
-
-
-    m_contextMenuItem = item;
-
-    */
     menu->exec( event->globalPos() );
 }
 
 void Playlist::ClassicView::removeSelection()
 {
     DEBUG_BLOCK
-    //Attempt 1 Doesn't work
-    /*QModelIndexList indexes = selectionModel()->selectedRows() ;
-    debug() << "this many to remove " <<  indexes.size();
-    foreach( QModelIndex i, indexes)
-    {
-        debug() << "removeSelection " << i.row();
-        if( i.isValid() && i.row() >= 0)
-        {
-            debug() << "removingSelection " << i.row();
-            model()->removeRows(i.row(), 1, i.parent());
-            debug() << "removedSelection " << i.row();
-        }
-    }*/
 
     QModelIndexList indexes = selectionModel()->selectedRows() ;
     while ( indexes.size() > 0 ) {
@@ -181,31 +152,6 @@ void Playlist::ClassicView::removeSelection()
         model()->removeRows( i.row(), count, i.parent() );
         indexes = selectionModel()->selectedRows() ;
     }
-    
-
-/* Attemp 2 Doesn't work'
-    QModelIndexList indicies = selectedIndexes();
-    debug() << "this many to remove " <<  indicies.size();
-    QList<QPersistentModelIndex> pindicies;
-    foreach( QModelIndex index, indicies)
-    {
-        pindicies << QPersistentModelIndex(index);
-    }
-    
-    QList<int> removed;
-    foreach( QModelIndex i, pindicies)
-    {
-        debug() << "removeSelection " << i.row();
-        if( i.isValid() && removed.indexOf(i.row()) < 0 && i.row() >= 0)
-        {
-            removed << i.row();
-            debug() << "removingSelection " << i.row();
-            model()->removeRows(i.row(), 1, i.parent());
-            debug() << "removedSelection " << i.row();
-        }
-    }
-*/
-
 }
 
 void Playlist::ClassicView::editTrackInformation()
@@ -221,12 +167,9 @@ void Playlist::ClassicView::editTrackInformation()
         if(!m_contextIndex)
             return;
 
-    //TagDialog *dialog = new TagDialog( m_model->data(*m_contextIndex, TrackRole).value< Meta::TrackPtr >(), this );
     TagDialog *dialog = new TagDialog( tracks, this );
     dialog->show();
     m_contextIndex = 0;
-
-
 }
 
 #include "PlaylistClassicView.moc"
