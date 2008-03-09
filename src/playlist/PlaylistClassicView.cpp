@@ -157,8 +157,9 @@ void Playlist::ClassicView::contextMenuEvent( QContextMenuEvent *event )
 void Playlist::ClassicView::removeSelection()
 {
     DEBUG_BLOCK
-        /* Attempt 1 Doesn't work 
-        QModelIndexList indexes = selectionModel()->selectedRows() ;
+    //Attempt 1 Doesn't work
+    /*QModelIndexList indexes = selectionModel()->selectedRows() ;
+    debug() << "this many to remove " <<  indexes.size();
     foreach( QModelIndex i, indexes)
     {
         debug() << "removeSelection " << i.row();
@@ -168,8 +169,16 @@ void Playlist::ClassicView::removeSelection()
             model()->removeRows(i.row(), 1, i.parent());
             debug() << "removedSelection " << i.row();
         }
+    }*/
+
+    QModelIndexList indexes = selectionModel()->selectedRows() ;
+    while ( indexes.size() > 0 ) {
+
+        QModelIndex i = indexes.takeFirst();
+        model()->removeRows( i.row(), 1, i.parent() );
+        indexes = selectionModel()->selectedRows() ;
     }
-    */
+    
 
 /* Attemp 2 Doesn't work'
     QModelIndexList indicies = selectedIndexes();

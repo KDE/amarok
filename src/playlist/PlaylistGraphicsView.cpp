@@ -71,6 +71,7 @@ Playlist::GraphicsView::setModel( Playlist::Model *model )
     connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( rowsRemoved( const QModelIndex&, int, int ) ) );
     connect( m_model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( dataChanged( const QModelIndex& ) ) );
     connect( m_model, SIGNAL( playlistGroupingChanged( ) ), this, SLOT( groupingChanged() ) );
+    connect( m_model, SIGNAL( rowsChanged( int ) ), this, SLOT( rowsChanged( int ) ) );
 
     show();
 }
@@ -432,10 +433,10 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
         double visibleTop = mapToScene( 0,0 ).y();
         double visibleBottom = mapToScene( 0, height() ).y();
 
-        // Animate the repositioning of the item if it is within the viewable area
-        if ( !( ( desiredY < visibleTop ) || ( desiredY > visibleBottom ) ) && 
+        // Animate the repositioning of the item if it is within the viewable area and this playlist is visible...
+       if ( !( ( desiredY < visibleTop ) || ( desiredY > visibleBottom ) ) &&
               ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) &&
-               ( itemHeight != 0 ) )
+               ( itemHeight != 0 ) && isVisible() )
         {
 
             m_isAnimating = true;
@@ -508,10 +509,6 @@ void Playlist::GraphicsView::groupingChanged()
    // update();
 }
 
-namespace The {
-    Playlist::GraphicsView* playlistView() { return Playlist::GraphicsView::instance(); }
-}
-
 void Playlist::GraphicsView::animationComplete()
 {
     while( !m_animators.empty () ) {
@@ -519,5 +516,20 @@ void Playlist::GraphicsView::animationComplete()
     }
     m_isAnimating = false;
 }
+
+void Playlist::GraphicsView::rowsChanged( int start )
+{
+    for ( int i = start; i < m_tracks.count(); i++ )
+        m_tracks.at( i )->setRow( i );
+}
+
+
+
+
+namespace The {
+    Playlist::GraphicsView* playlistView() { return Playlist::GraphicsView::instance(); }
+}
+
+
 
 #include "PlaylistGraphicsView.moc"

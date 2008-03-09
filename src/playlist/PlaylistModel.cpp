@@ -849,6 +849,8 @@ Model::removeTracksCommand( int position, int rows )
 
 
     emit playlistCountChanged( rowCount() );
+
+    emit rowsChanged( position );
     
     return ret;
 }

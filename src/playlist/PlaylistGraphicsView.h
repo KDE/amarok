@@ -65,6 +65,7 @@ namespace Playlist
             void dataChanged( const QModelIndex & index );
  
             void groupingChanged();
+            void rowsChanged( int start );
 
             void playTrack();
             void removeSelection();
