@@ -175,7 +175,10 @@ void Playlist::ClassicView::removeSelection()
     while ( indexes.size() > 0 ) {
 
         QModelIndex i = indexes.takeFirst();
-        model()->removeRows( i.row(), 1, i.parent() );
+        int count = 1;
+        while (!indexes.isEmpty() && indexes.takeFirst().row() == i.row() + count)
+            ++count;
+        model()->removeRows( i.row(), count, i.parent() );
         indexes = selectionModel()->selectedRows() ;
     }
     
