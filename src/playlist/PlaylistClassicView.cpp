@@ -41,6 +41,9 @@ Playlist::ClassicView::ClassicView(QWidget * parent)
     setUniformRowHeights(true);
     header()->setMovable(true);
     header()->setClickable(true);
+    setDragEnabled(true);
+    setDropIndicatorShown(true);
+    setDragDropMode(QAbstractItemView::InternalMove);
 
 }
 
