@@ -35,7 +35,7 @@ namespace Playlist
     namespace ViewCommon
     {
 
-        void trackMenu( QWidget *parent, QModelIndex *index, const QPoint &pos, bool coverActions)
+        void trackMenu( QWidget *parent, const QModelIndex *index, const QPoint &pos, bool coverActions)
         {
             Meta::TrackPtr track= index->data( Playlist::ItemRole ).value< Playlist::Item* >()->track();
             KMenu *menu = new KMenu( parent );
