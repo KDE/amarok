@@ -572,6 +572,10 @@ Model::insertOptioned( Meta::TrackList list, int options )
 void
 Model::insertOptioned( Meta::TrackPtr track, int options )
 {
+    if( !track )
+    {
+        return;
+    }
     Meta::TrackList list;
     list.append( track );
     insertOptioned( list, options );
@@ -589,7 +593,10 @@ Model::insertOptioned( Meta::PlaylistList list, int options )
 void
 Model::insertOptioned( Meta::PlaylistPtr playlist, int options )
 {
-    DEBUG_BLOCK
+    if( !playlist )
+    {
+        return;
+    }
     //TODO: Add this Meta::Playlist to the observed list
     insertOptioned( playlist->tracks(), options );
 }
@@ -615,6 +622,10 @@ Model::insertPlaylists( int row, Meta::PlaylistList playlists )
 void
 Model::insertOptioned( QueryMaker *qm, int options )
 {
+    if( !qm )
+    {
+        return;
+    }
     qm->startTrackQuery();
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
