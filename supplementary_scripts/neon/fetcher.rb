@@ -53,7 +53,7 @@ def KdeLibs()
   `svn co svn://anonsvn.kde.org/home/kde/trunk/KDE/kdelibs #{dir}`
 
   # Change ksycoca file name
-  file = File.new( "#{dir}/sycoca/ksycoca.h", File::RDWR )
+  file = File.new( "#{dir}/kdecore/sycoca/ksycoca.h", File::RDWR )
   str = file.read()
   file.rewind()
   file.truncate( 0 )
