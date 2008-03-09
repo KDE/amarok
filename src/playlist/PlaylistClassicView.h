@@ -48,7 +48,6 @@ private:
 
 private slots:
 
-    void play( const QModelIndex & index );
     void playContext( );
     void removeSelection();
     void editTrackInformation();

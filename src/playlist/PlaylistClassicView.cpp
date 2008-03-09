@@ -38,7 +38,6 @@ Playlist::ClassicView::ClassicView(QWidget * parent)
 {
     DEBUG_BLOCK
 
-    connect ( this, SIGNAL( activated ( const QModelIndex & ) ), this, SLOT( play(const QModelIndex & ) ) );   
     setUniformRowHeights(true);
     header()->setMovable(true);
     header()->setClickable(true);
@@ -59,6 +58,7 @@ void Playlist::ClassicView::setModel( Playlist::Model *model )
     DEBUG_BLOCK
 
     m_model = model;
+    connect ( this, SIGNAL( activated ( const QModelIndex & ) ), m_model , SLOT( play(const QModelIndex & ) ) );   
 
     QTreeView::setModel( model );
 
@@ -78,15 +78,6 @@ void Playlist::ClassicView::playContext()
 
     m_model->play( m_contextIndex->row() );
     m_contextIndex = 0;
-
-}
-
-void Playlist::ClassicView::play(const QModelIndex & index)
-{
-    DEBUG_BLOCK
-
-    debug() << " Here!!";
-    m_model->play( index.row() );
 
 }
 
