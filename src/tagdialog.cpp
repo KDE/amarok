@@ -144,8 +144,8 @@ TagDialog::TagDialog( QueryMaker *qm )
     ui->setupUi( this );
     startDataQuery();
     qm->startTrackQuery();
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ) );
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ) );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ), Qt::QueuedConnection );
     qm->run();
 }
 
@@ -249,7 +249,7 @@ TagDialog::dataQueryDone()
     ui->kComboBox_composer->insertItems( 0, m_composers );
     ui->kComboBox_genre->clear();
     ui->kComboBox_genre->insertItems( 0, m_genres );
-    if( m_tracks.count() )
+    if( !m_queryMaker )  //track query complete or not necessary
     {
         if( m_perTrack )
         {
