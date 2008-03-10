@@ -109,7 +109,7 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     m_volumeWidget = new VolumeWidget( m_insideBox );
     //vw->setMinimumSize( 150, 30 );
-    m_volumeWidget->setFixedSize( 150, 30 );
+    m_volumeWidget->setFixedSize( 200, 30 );
     
     //m_insideBox->layout()->setAlignment( vw, Qt::AlignRight |  Qt::AlignVCenter);
 

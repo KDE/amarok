@@ -25,6 +25,8 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "sliderwidget.h"
+#include "SvgTinter.h"
+#include "TheInstances.h"
 
 #include <QBitmap>
 #include <QBrush>
@@ -35,6 +37,7 @@
 #include <QStyle>
 #include <QStyleOptionComplex>
 #include <QTimer>
+#include <QPixmapCache>
 
 #include <kicon.h>
 #include <klocale.h>
@@ -48,6 +51,9 @@ Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
         , m_prevValue( 0 )
 {
     setRange( 0, max );
+
+
+    
 }
 
 void
@@ -177,7 +183,13 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     setMinimumWidth( m_pixmapInset.width() );
     setMinimumHeight( m_pixmapInset.height() );
 
+    QString file = KStandardDirs::locate( "data","amarok/images/volume_slider.svg" );
+    m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
+    if ( ! m_svgRenderer->isValid() )
+        debug() << "svg is kaputski";
+
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
+    
 }
 
 void
@@ -274,12 +286,74 @@ Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
 void
 Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
+    DEBUG_BLOCK
     QPainter p( this );
 
     const int padding = 7;
     const int offset = int( double( ( width() - 2 * padding ) * value() ) / maximum() );
 
-    const QRectF boundsG( 0, 0, offset + padding, m_pixmapGradient.height() );
+
+    //try something completely different here...
+    
+    double bgWidth = width();
+    double bgHeight = bgWidth / 7.0; //maintain sane aspect ratio
+
+    double knobX = ( bgWidth - bgHeight ) * ( ( double ) value() / 100.0 );
+
+
+    double fillLength = knobX + ( bgHeight / 2 );
+    double fillHeight = bgHeight * ( ( double ) knobX / bgWidth );
+    double fillOffsetY = ( bgHeight - fillHeight ) / 2;
+
+
+    //paint slider background
+    QString key = QString("volume-background:%1x%2-fill:%3")
+            .arg( bgWidth )
+            .arg( bgHeight )
+            .arg( fillLength );
+
+    QPixmap background( bgWidth, bgHeight );
+
+    if (!QPixmapCache::find(key, background)) {
+        debug() << QString("volume background %1 not in cache...").arg( key );
+        background.fill( Qt::transparent );
+        QPainter pt( &background );
+        m_svgRenderer->render( &pt, "volume-slider-background",  QRectF( 0, 0, bgWidth, bgHeight ) );
+        m_svgRenderer->render( &pt, "volume-fill",  QRectF( 0, fillOffsetY, fillLength, fillHeight ) );
+        m_svgRenderer->render( &pt, "volume-slider-position",  QRectF( knobX, 0, bgHeight, bgHeight ) );
+
+        QPixmapCache::insert(key, background);
+    }
+
+    p.drawPixmap( 0, 0, background );
+
+    int iconHeight = height() - ( bgHeight + 7 );
+    int iconWidth = ( double ) iconHeight * 1.33;
+    int iconX = ( width() - iconWidth ) / 2;
+
+    //paint volume icon
+    key = QString("volume-icon:%1x%2")
+            .arg( iconWidth )
+            .arg( iconHeight );
+
+    QPixmap icon( iconWidth, iconHeight );
+
+    if (!QPixmapCache::find(key, icon)) {
+        debug() << QString("volume icon %1 not in cache...").arg( key );
+        icon.fill( Qt::transparent );
+        QPainter pt( &icon );
+
+        m_svgRenderer->render( &pt, "volume-slider-icon",  QRectF( 0, 0, iconWidth, iconHeight ) );
+
+        QPixmapCache::insert(key, icon);
+    }
+
+    
+
+    p.drawPixmap( iconX, bgHeight + 2, icon );
+    
+
+    /*const QRectF boundsG( 0, 0, offset + padding, m_pixmapGradient.height() );
     p.drawPixmap( boundsG, m_pixmapGradient, boundsG );
 
     const QRectF boundsI( 0, 0, m_pixmapInset.width(), m_pixmapInset.height() );
@@ -287,14 +361,14 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
     const QRectF targetBounds( offset - m_handlePixmaps[0].width() / 2 + padding, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
     const QRectF srcBounds( 0, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
-    p.drawPixmap( targetBounds, m_handlePixmaps[m_animCount], srcBounds );
+    p.drawPixmap( targetBounds, m_handlePixmaps[m_animCount], srcBounds ); */
 
     // Draw percentage number
     p.setPen( palette().color( QPalette::Active, QColorGroup::Text ).dark() );
     QFont font;
     font.setPixelSize( 9 );
     p.setFont( font );
-    const QRect rect( 0, 0, 34, 15 );
+    const QRect rect( iconX + iconWidth + 5, ( int ) bgHeight + 2 , 34, 15 );
     if ( underMouse() )
         p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
 }

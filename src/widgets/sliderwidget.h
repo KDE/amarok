@@ -22,6 +22,7 @@
 
 #include <QPixmap>
 #include <QSlider>
+#include <QSvgRenderer>
 #include <QVector>
 
 class QPalette;
@@ -71,6 +72,7 @@ namespace Amarok
 
             Slider( const Slider& ); //undefined
             Slider &operator=( const Slider& ); //undefined
+
     };
 
     class VolumeSlider: public Slider
@@ -112,6 +114,7 @@ namespace Amarok
             QPixmap m_pixmapGradient;
 
             QVector<QPixmap> m_handlePixmaps;
+            QSvgRenderer * m_svgRenderer;
     };
 
 }
