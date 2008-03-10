@@ -43,9 +43,13 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     GenrePtr globalTagsPtr( globalTags );
     addGenre( globalTagsPtr->name(), globalTagsPtr );
 
-    m_neighbors = new ServiceGenre( i18n( "Neighbor Streams" ) );
+    m_neighbors = new ServiceGenre( i18n( "Neighbors' Radio" ) );
     GenrePtr neighborsPtr( m_neighbors );
     addGenre( neighborsPtr->name(), neighborsPtr );
+
+    m_friends = new ServiceGenre( i18n( "Friends' Radio" ) );
+    GenrePtr friendsPtr( m_friends );
+    addGenre( friendsPtr->name(), friendsPtr );
 
     QStringList lastfmPersonal;
     lastfmPersonal << "personal" << "neighbours" << "loved";
@@ -72,10 +76,13 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     }
 
     connect( The::webService(), SIGNAL( neighbours( WeightedStringList ) ), SLOT( slotAddNeighbours( WeightedStringList ) ) );
+    connect( The::webService(), SIGNAL( friends( QStringList ) ), SLOT( slotAddFriends( QStringList ) ) );
 
-    NeighboursRequest *nbr = new NeighboursRequest();
-    nbr->start();
+    NeighboursRequest *nr = new NeighboursRequest();
+    nr->start();
 
+    FriendsRequest *fr = new FriendsRequest();
+    fr->start();
 
     //TODO Automatically add simmilar artist streams for the users favorite artists.
 }
@@ -125,6 +132,16 @@ void LastFmServiceCollection::slotAddNeighbours( WeightedStringList list )
     }
 }
 
+void LastFmServiceCollection::slotAddFriends( QStringList list )
+{
+    foreach( const QString &string, list )
+    {
+        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/personal" );
+        TrackPtr trackPtr( track );
+        m_friends->addTrack( trackPtr );
+        addTrack( trackPtr->name(), trackPtr );
+    }
+}
 
 QueryMaker*
 LastFmServiceCollection::queryMaker()

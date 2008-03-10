@@ -40,10 +40,12 @@ public:
 
 private slots:
     void slotAddNeighbours( WeightedStringList list );
+    void slotAddFriends( QStringList list );
 
 private:
     QString m_userName;
     Meta::ServiceGenre *m_neighbors;
+    Meta::ServiceGenre *m_friends;
 };
 
 #endif // LASTFMSERVICECOLLECTION_H
