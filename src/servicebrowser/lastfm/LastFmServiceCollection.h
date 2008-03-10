@@ -16,8 +16,16 @@
 
 #include <ServiceDynamicCollection.h>
 
+#include "WeightedStringList.h"
+
+namespace Meta
+{
+    class ServiceGenre;
+}
+
 class LastFmServiceCollection : public ServiceDynamicCollection
 {
+    Q_OBJECT;
 public:
     LastFmServiceCollection( const QString& userName );
     virtual ~LastFmServiceCollection();
@@ -30,8 +38,12 @@ public:
 
     virtual QueryMaker* queryMaker();
 
+private slots:
+    void slotAddNeighbours( WeightedStringList list );
+
 private:
     QString m_userName;
+    Meta::ServiceGenre *m_neighbors;
 };
 
 #endif // LASTFMSERVICECOLLECTION_H

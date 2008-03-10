@@ -19,6 +19,10 @@
 #include "meta/LastFmMeta.h"
 #include "servicemetabase.h"
 
+// libunicorn includes
+#include "libUnicorn/WebService/Request.h"
+#include "WebService.h"
+
 #include "support/MemoryQueryMaker.h"
 
 #include <KLocale>
@@ -38,7 +42,11 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     ServiceGenre * globalTags = new ServiceGenre( "Global Tags" );
     GenrePtr globalTagsPtr( globalTags );
     addGenre( globalTagsPtr->name(), globalTagsPtr );
-   
+
+    m_neighbors = new ServiceGenre( i18n( "Neighbor Streams" ) );
+    GenrePtr neighborsPtr( m_neighbors );
+    addGenre( neighborsPtr->name(), neighborsPtr );
+
     QStringList lastfmPersonal;
     lastfmPersonal << "personal" << "neighbours" << "loved";
 
@@ -62,6 +70,11 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
         globalTags->addTrack( trackPtr );
         addTrack( trackPtr->name(), trackPtr );
     }
+
+    connect( The::webService(), SIGNAL( neighbours( WeightedStringList ) ), SLOT( slotAddNeighbours( WeightedStringList ) ) );
+
+    NeighboursRequest *nbr = new NeighboursRequest();
+    nbr->start();
 
 
     //TODO Automatically add simmilar artist streams for the users favorite artists.
@@ -100,6 +113,18 @@ LastFmServiceCollection::prettyName() const
     return i18n( "last.fm" );
 }
 
+void LastFmServiceCollection::slotAddNeighbours( WeightedStringList list )
+{
+    QStringList realList = list;
+    foreach( const QString &string, realList )
+    {
+        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/personal" );
+        TrackPtr trackPtr( track );
+        m_neighbors->addTrack( trackPtr );
+        addTrack( trackPtr->name(), trackPtr );
+    }
+}
+
 
 QueryMaker*
 LastFmServiceCollection::queryMaker()
@@ -108,3 +133,6 @@ LastFmServiceCollection::queryMaker()
     //return new LastFmServiceQueryMaker( this );
     return new MemoryQueryMaker( this, collectionId() );
 }
+
+#include "LastFmServiceCollection.moc"
+
