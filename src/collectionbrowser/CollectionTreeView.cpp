@@ -35,7 +35,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     : QTreeView( parent )
     , m_dragStartPosition()
 {
-    
+    setRootIsDecorated( true );
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -48,7 +48,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     m_treeModel = 0;
     m_filterModel = 0;
 
-    connect( this, SIGNAL( collapsed( const QModelIndex ) ), SLOT( slotCollapsed( const QModelIndex ) ) );
+    connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
 
    
 }
