@@ -333,7 +333,6 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
 void
 CollectionTreeItemModelBase::queryDone()
 {
-    DEBUG_BLOCK
     QueryMaker *qm = static_cast<QueryMaker*>( sender() );
     CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
 

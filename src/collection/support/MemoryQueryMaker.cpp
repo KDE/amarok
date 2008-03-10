@@ -45,7 +45,6 @@ class QueryJob : public ThreadWeaver::Job
     protected:
         void run()
         {
-            DEBUG_BLOCK
             m_queryMaker->runQuery();
             setFinished( true );
         }
@@ -127,7 +126,6 @@ MemoryQueryMaker::abortQuery()
 void
 MemoryQueryMaker::runQuery()
 {
-    DEBUG_BLOCK
     m_memCollection->acquireReadLock();
     //naive implementation, fix this
     //note: we are not handling filtering yet
@@ -181,7 +179,6 @@ MemoryQueryMaker::runQuery()
 void
 MemoryQueryMaker::handleResult()
 {
-    DEBUG_BLOCK
     //this gets called when we want to return all values for the given query type
     switch( d->type )
     {
@@ -245,7 +242,6 @@ MemoryQueryMaker::handleResult()
 void
 MemoryQueryMaker::handleResult( const TrackList &tracks )
 {
-    DEBUG_BLOCK
     switch( d->type )
     {
         case Private::TRACK :
