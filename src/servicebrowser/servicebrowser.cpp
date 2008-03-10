@@ -37,7 +37,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     ServiceListDelegate * delegate = new ServiceListDelegate( m_serviceListView );
     m_serviceListView->setItemDelegate( delegate );
     m_serviceListView->setModel( m_serviceListModel );
-    connect(m_serviceListView, SIGNAL( clicked ( const QModelIndex & )   ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
+    connect(m_serviceListView, SIGNAL( activated ( const QModelIndex & )   ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
     m_scriptableServiceManager = 0;
 }
 
