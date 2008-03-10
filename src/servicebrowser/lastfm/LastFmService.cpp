@@ -101,37 +101,7 @@ LastFmService::polish()
 {
     if( !m_polished )
     {
-        m_bottomPanel->setMaximumHeight( 200 );
-
-        QPushButton *neighborRadioLabel = new QPushButton( m_bottomPanel );
-        neighborRadioLabel->setText( i18n( "Neighbour Radio" ) );
-        connect( neighborRadioLabel, SIGNAL(clicked()), SLOT(slotPlayNeighbourRadio() ) );
-
-        QPushButton *personalRadioButton = new QPushButton( m_bottomPanel );
-        personalRadioButton->setText( i18n( "Personal Radio" ) );
-        connect( personalRadioButton, SIGNAL(clicked()), SLOT(slotPlayPersonalRadio() ) );
-
-        QPushButton *lovedRadioButton = new QPushButton( m_bottomPanel );
-        lovedRadioButton->setText( i18n( "Loved Radio" ) );
-        connect( lovedRadioButton, SIGNAL(clicked()), SLOT(slotPlayLovedRadio() ) );
-
-        // Global streams
-        {
-            KHBox *globalBox = new KHBox( m_bottomPanel );
-            QStringList lastfmGenres;
-
-            lastfmGenres << i18n("Global Tags") << "Alternative" << "Ambient" << "Chill Out" << "Classical"<< "Dance"
-                    << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
-                    << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
-                    << "Soundtrack" << "Techno" << "Trance";
-
-            m_globalComboBox = new QComboBox( globalBox );
-            m_globalComboBox->addItems( lastfmGenres );
-
-            QPushButton *playGlobal = new QPushButton( globalBox );
-            playGlobal->setText( i18n( "Play" ) );
-            connect( playGlobal, SIGNAL( clicked() ), SLOT( slotPlayGlobalRadio() ) );
-        }
+        m_bottomPanel->setMaximumHeight( 100 );
 
         m_buttonBox = new KHBox(m_bottomPanel);
         m_buttonBox->setSpacing( 3 );
@@ -228,29 +198,6 @@ void LastFmService::playCustomStation()
     if ( !band.isEmpty() ) {
         playLastFmStation( "lastfm://artist/" + band + "/similarartists" );
     }
-}
-
-void LastFmService::slotPlayNeighbourRadio()
-{
-    DEBUG_BLOCK
-    playLastFmStation( "lastfm://user/" + m_userName + "/neighbours" );
-}
-
-void LastFmService::slotPlayPersonalRadio()
-{
-    DEBUG_BLOCK
-    playLastFmStation( "lastfm://user/" + m_userName + "/personal" );
-}
-
-void LastFmService::slotPlayLovedRadio()
-{
-    DEBUG_BLOCK
-    playLastFmStation( "lastfm://user/" + m_userName + "/loved" );
-}
-
-void LastFmService::slotPlayGlobalRadio()
-{
-    playLastFmStation( "lastfm://globaltags/" + m_globalComboBox->currentText() );
 }
 
 void LastFmService::playLastFmStation( const KUrl &url )

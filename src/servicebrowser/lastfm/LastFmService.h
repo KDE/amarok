@@ -66,12 +66,6 @@ private slots:
 
     void playCustomStation();
 
-    void slotPlayNeighbourRadio();
-    void slotPlayPersonalRadio();
-    void slotPlayLovedRadio();
-
-    void slotPlayGlobalRadio();
-
     void setButtonsEnabled( bool enable );
 
 private:
