@@ -75,6 +75,7 @@ class UploadUbuntu
 
     for package in PACKAGES
       if SVNPACKAGES.include?(package)
+        puts "Ubuntu: uploading #{package}"
         dir = "amarok-nightly-#{package}-#{DATE}"
         BaseDir()
         Dir.chdir(dir)

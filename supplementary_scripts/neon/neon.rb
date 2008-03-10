@@ -43,11 +43,11 @@ require 'distro.rb'
 ###############################
 # Fetch Source
 
-if DAYOFMONTH == 1
+if DAYOFMONTH == 1 or $*[0] == all or $*[0] == qt
   QtCopy()
 end
 
-if DAYOFWEEK == 1
+if DAYOFWEEK == 1 or $*[0] == all or $*[0] == deps
   Strigi()
   KdeLibs()
   KdeBaseRuntime()
