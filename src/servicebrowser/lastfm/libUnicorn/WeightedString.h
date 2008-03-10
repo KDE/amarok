@@ -23,6 +23,8 @@
 
 #include <QStringList>
 
+#include "UnicornDllExportMacro.h"
+
 /** 
  * @author <max@last.fm>
  */
