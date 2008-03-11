@@ -23,9 +23,11 @@
 #include "Meta.h"
 #include "meta/Capability.h"
 #include "servicemetabase.h" // for the SourceInfoProvider
+#include "Track.h"
 
 #include <QObject>
 
+class Request;
 class TrackInfo;
 
 namespace LastFm
@@ -37,6 +39,7 @@ namespace LastFm
             class Private;
 
             Track( const QString &lastFmUri );
+            Track( ::Track track ); //Convienience Constructor to allow constructing a Meta::LastFmTrack from a LastFmTrack (confusing?)
             virtual ~Track();
 
         //methods inherited from Meta::MetaBase
@@ -107,7 +110,10 @@ namespace LastFm
             void playCurrent();
             void playNext();
 
+        private slots:
+            void slotResultReady( Request* );
         private:
+            void init( int id = -1 );
             //use a d-pointer because some code is going to work directly with LastFm::Track
             Private * const d;
             QList< QAction * > m_currentTrackActions;

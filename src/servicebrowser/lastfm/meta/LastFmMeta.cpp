@@ -55,6 +55,32 @@ Track::Track( const QString &lastFmUri )
 {
     d->lastFmUri = lastFmUri;
     d->t = this;
+
+    init();
+}
+
+Track::Track( ::Track track )
+    : QObject()
+    , Meta::Track()
+    , d( new Private() )
+{
+    d->t = this;
+    TrackToIdRequest *request = new TrackToIdRequest( track );
+    connect( request, SIGNAL( result( Request* ) ), SLOT( slotResultReady( Request* ) ) );
+    request->start();
+}
+
+
+Track::~Track()
+{
+    delete d;
+}
+
+void Track::init( int id /* = -1*/ )
+{
+    if( id != -1 )
+        d->lastFmUri = "lastfm://play/tracks/" + QString::number( id );
+    debug() << "LASTFMURI: " << d->lastFmUri;
     d->length = 0;
 
     d->albumPtr = Meta::AlbumPtr( new LastFmAlbum( QPointer<Track::Private>( d ) ) );
@@ -62,7 +88,6 @@ Track::Track( const QString &lastFmUri )
     d->genrePtr = Meta::GenrePtr( new LastFmGenre( QPointer<Track::Private>( d ) ) );
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( QPointer<Track::Private>( d ) ) );
-
 
     QAction * loveAction = new QAction( KIcon( "emblem-favorite-amarok" ), i18n( "Last.fm: &Love" ), this );
     loveAction->setShortcut( i18n( "Ctrl+L" ) );
@@ -81,14 +106,7 @@ Track::Track( const QString &lastFmUri )
     skipAction->setStatusTip( i18n( "Skip this track" ) );
     connect( skipAction, SIGNAL( triggered() ), this, SLOT( skip() ) );
     m_currentTrackActions.append( skipAction );
-    
 }
-
-Track::~Track()
-{
-    delete d;
-}
-
 QString
 Track::name() const
 {
@@ -384,6 +402,15 @@ Track::skip()
     }
 }
 
+void Track::slotResultReady( Request *_r )
+{
+    TrackToIdRequest *r = (TrackToIdRequest*)_r;
+    debug() << "SETTING ID: " << r->id();
+    if ( !r->failed() && r->isStreamable() )
+       init( r->id() );
+    else
+        init();
+}
 void
 Track::playCurrent()
 {
