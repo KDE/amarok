@@ -95,7 +95,9 @@ struct Playlist::GraphicsItem::ActiveItems
 
 
 const qreal Playlist::GraphicsItem::ALBUM_WIDTH = 50.0;
-const qreal Playlist::GraphicsItem::MARGIN = 4.0;
+const qreal Playlist::GraphicsItem::SINGLE_TRACK_ALBUM_WIDTH = 40.0;
+const qreal Playlist::GraphicsItem::MARGIN = 3.0;
+const qreal Playlist::GraphicsItem::MARGINH = 6;
 QFontMetricsF* Playlist::GraphicsItem::s_fm = 0;
 QSvgRenderer * Playlist::GraphicsItem::s_svgRenderer = 0;
 
@@ -294,6 +296,9 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     }
     if ( m_groupMode == None ) {
 
+        const qreal lineTwoYSingle = s_fm->height() + MARGIN;
+        
+
         m_items->topRightText->setPos( topRightAlignX, MARGIN );
         m_items->topRightText->setEditableText( album, totalWidth - ( topRightAlignX + 4 ) );
 
@@ -305,8 +310,8 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             m_items->topLeftText->setPos( leftAlignX, MARGIN );
         }
 
-        m_items->bottomLeftText->setPos( leftAlignX, lineTwoY );
-        m_items->bottomRightText->setPos( bottomRightAlignX, lineTwoY );
+        m_items->bottomLeftText->setPos( leftAlignX, lineTwoYSingle );
+        m_items->bottomRightText->setPos( bottomRightAlignX, lineTwoYSingle );
     } else if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
 
         int headingCenter = (int)( MARGIN + ( ALBUM_WIDTH - s_fm->height()) / 2 );
@@ -695,7 +700,8 @@ void Playlist::GraphicsItem::setRow(int row)
 
             case None:
                 debug() << "None";
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN + 2;
+                m_height =  qMax( SINGLE_TRACK_ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN + 2;
+                debug() << "Height for single track: " << m_height;
                 break;
             case Head:
                 debug() << "Head";
@@ -751,16 +757,18 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     QPixmap albumPixmap;
     if( m_items->track->album() )
     {
-        if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
+        if( !m_items->track->album()->hasImage( int( SINGLE_TRACK_ALBUM_WIDTH ) ) )
         {
 //             The::coverFetcher()->queueAlbum( m_items->track->album() );
         }
-        albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
+        albumPixmap =  m_items->track->album()->image( int( SINGLE_TRACK_ALBUM_WIDTH ) );
     }
     
     //offset cover if non square
     QPointF offset = centerImage( albumPixmap, imageLocation() );
-    QRectF imageRect( imageLocation().x() + offset.x(), imageLocation().y() + offset.y(), imageLocation().width() - offset.x() * 2, imageLocation().height() - offset.y() * 2 );
+    QRectF imageRect( imageLocationSingleTrack().x() + offset.x(),
+                      imageLocationSingleTrack().y() + offset.y(), imageLocationSingleTrack().width() - offset.x() * 2, imageLocationSingleTrack().height() - offset.y() * 2 );
+    
     painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
 
@@ -795,18 +803,17 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     //set overlay if item is active:
     //handleActiveOverlay( trackRect, active );
 
+    const qreal lineTwoY = s_fm->height() + MARGIN;
+    
     if ( active ) {
 
-        const qreal lineTwoY = m_height / 2 + MARGIN;
-        
-        painter->drawPixmap( ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "active_overlay", trackRect.width() - ( ALBUM_WIDTH + MARGIN + 4 ), s_fm->height() ) );
+        painter->drawPixmap( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "active_overlay", trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 4 ), s_fm->height() ) );
     }
     
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
-        const qreal lineTwoY = m_height / 2 + MARGIN;
-        painter->drawPixmap( ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "selection_left", s_fm->height() * 3, s_fm->height() ) );
+        painter->drawPixmap( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "selection_left", s_fm->height() * 3, s_fm->height() ) );
         painter->drawPixmap( (int)trackRect.width() - ( s_fm->height() * 3 + 2 ), lineTwoY, getCachedSvg( "selection_right", s_fm->height() * 3, s_fm->height() ) );
     }
 
@@ -853,7 +860,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
 
     //draw active track marker if needed
     if ( active )
-        painter->drawPixmap( trackRect.x() + 5, trackRect.y(), getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() ) );
+        painter->drawPixmap( trackRect.x() + 5, trackRect.y() + 2, getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() - 1 ) );
 
     
     //and make sure the top text elements are shown
@@ -886,8 +893,8 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
-        painter->drawPixmap( trackRect.x() + 2, trackRect.y() + 1, getCachedSvg( "selection_left", trackRect.height() * 3, trackRect.height() -1 ) );
-        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top() + 1, getCachedSvg( "selection_right", trackRect.height() * 3, trackRect.height() - 1 ) );
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y() + 2, getCachedSvg( "selection_left", trackRect.height() * 3, trackRect.height() -1 ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top() + 2, getCachedSvg( "selection_right", trackRect.height() * 3, trackRect.height() - 1 ) );
     }
 
 

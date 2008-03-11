@@ -56,7 +56,8 @@ namespace Playlist
             void play();
 
             void setRow( int row );
-            const QRectF imageLocation() const { return QRectF( MARGIN, MARGIN, ALBUM_WIDTH, ALBUM_WIDTH ); }
+            const QRectF imageLocation() const { return QRectF( MARGINH, MARGIN, ALBUM_WIDTH, ALBUM_WIDTH ); }
+            const QRectF imageLocationSingleTrack() const { return QRectF( MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH ); }
 
             void showImage() const;
             void fetchImage();
@@ -110,7 +111,9 @@ namespace Playlist
             bool m_dataChanged;
 
             static const qreal ALBUM_WIDTH;
+            static const qreal SINGLE_TRACK_ALBUM_WIDTH;
             static const qreal MARGIN;
+            static const qreal MARGINH;
             static QFontMetricsF* s_fm;
             static QSvgRenderer * s_svgRenderer;
     };
