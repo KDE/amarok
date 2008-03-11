@@ -41,6 +41,7 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         virtual void fetchFirst() { m_track->playCurrent(); }
         virtual void fetchNext() { m_track->playNext(); }
 
+        using Observer::metadataChanged;
         virtual void metadataChanged( Meta::Track *track )
         {
             KUrl url = track->playableUrl();

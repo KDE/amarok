@@ -1004,8 +1004,8 @@ void CoverView::setStatusText( QListWidgetItem *item )
 
 CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     : QListWidgetItem( parent )
-    , m_parent( parent )
     , m_albumPtr( album)
+    , m_parent( parent )
     , m_coverPixmap( )
 {
     m_album = album->prettyName();

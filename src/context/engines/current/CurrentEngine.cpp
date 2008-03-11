@@ -29,8 +29,8 @@ using namespace Context;
 CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
-    , m_requested( true )
     , m_coverWidth( 0 )
+    , m_requested( true )
 {
     Q_UNUSED( args )
     DEBUG_BLOCK

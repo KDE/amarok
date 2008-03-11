@@ -45,6 +45,4 @@ class CurrentTrackActionsCapabilityImpl : public Meta::CurrentTrackActionsCapabi
 
 
 
-
-
 #endif

@@ -57,6 +57,7 @@ public:
     void setCoverWidth( const int width ) { m_coverWidth = width; }
     
     // reimplemented from Meta::Observer
+    using Observer::metadataChanged;
     void metadataChanged( Meta::Album* album );
     void metadataChanged( Meta::Track *track );
     

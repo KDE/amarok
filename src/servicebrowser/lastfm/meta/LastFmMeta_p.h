@@ -71,8 +71,8 @@ class Track::Private : public QObject
 
     public:
         Private()
-            : m_webServiceRequest( 0 )
-            , lastFmUri( 0 )
+            : lastFmUri( 0 )
+            , m_webServiceRequest( 0 )
         {
         }
 

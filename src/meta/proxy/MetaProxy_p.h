@@ -68,7 +68,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             foreach( Meta::Observer *observer, observers )
                 observer->metadataChanged( proxy );
         }
-
+        using Observer::metadataChanged;
         void metadataChanged( Meta::Track *track )
         {
             Q_UNUSED( track )

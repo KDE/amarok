@@ -49,7 +49,6 @@ namespace Amarok
     bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right );
 }
 
-
 namespace Playlist {
 
 class TrackNavigator;
@@ -188,6 +187,7 @@ class TrackNavigator;
 
             void moveRow( int row, int to );
 
+            using Observer::metadataChanged;
             virtual void metadataChanged( Meta::Track *track );
             virtual void metadataChanged( Meta::Album *album );
 

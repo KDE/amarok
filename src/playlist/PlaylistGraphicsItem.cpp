@@ -200,7 +200,7 @@ Playlist::GraphicsItem::init( Meta::TrackPtr track )
     // Disabling the editable text for now as it is misleading.. (it doesn't do anything.)
     #define NewText( X ) \
         X = new Playlist::TextItem( this ); \
-//         X->setTextInteractionFlags( Qt::TextEditorInteraction ); \
+/*         X->setTextInteractionFlags( Qt::TextEditorInteraction );*/ \
         X->setFont( font );
     NewText( m_items->topLeftText )
     NewText( m_items->bottomLeftText )

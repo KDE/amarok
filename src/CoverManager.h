@@ -60,6 +60,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         static QString amazonTld();
 
         // Reimplemented from Meta::Observer
+        using Observer::metadataChanged;
         void metadataChanged( Meta::Album* album );
 
     public slots:
