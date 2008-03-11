@@ -195,7 +195,7 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     else
         index = indexAt( event->pos() );
 
-    if( index.isValid() && index.internalPointer()  && index.parent().isValid() )
+    if( index.isValid() && index.internalPointer()  /*&& index.parent().isValid()*/ )
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 

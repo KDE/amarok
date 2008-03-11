@@ -66,7 +66,7 @@ CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 
 Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) const
 {
-    if ( !index.isValid() || !index.parent().isValid() )
+    if ( !index.isValid() )
         return Qt::ItemIsEnabled;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
