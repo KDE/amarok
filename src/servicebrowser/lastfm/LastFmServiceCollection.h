@@ -18,6 +18,8 @@
 
 #include "WeightedStringList.h"
 
+class Request;
+
 namespace Meta
 {
     class ServiceGenre;
@@ -41,11 +43,15 @@ public:
 private slots:
     void slotAddNeighbours( WeightedStringList list );
     void slotAddFriends( QStringList list );
+    void slotRecentlyLovedTrackResult( Request* );
+    void slotRecentTrackResult( Request* );
 
 private:
     QString m_userName;
     Meta::ServiceGenre *m_neighbors;
     Meta::ServiceGenre *m_friends;
+    Meta::ServiceGenre *m_recentlyLoved;
+    Meta::ServiceGenre *m_recentlyPlayed;
 };
 
 #endif // LASTFMSERVICECOLLECTION_H

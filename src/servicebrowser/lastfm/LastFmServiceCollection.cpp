@@ -27,36 +27,42 @@
 
 #include <KLocale>
 
-using namespace Meta;
-
 LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     : ServiceDynamicCollection( "last.fm", "last.fm" ) 
 {
 
     m_userName = userName;
 
-    ServiceGenre * userStreams = new ServiceGenre( userName +"'s Streams" );
-    GenrePtr userStreamsPtr( userStreams );
+    Meta::ServiceGenre * userStreams = new Meta::ServiceGenre( userName +"'s Streams" );
+    Meta::GenrePtr userStreamsPtr( userStreams );
     addGenre( userStreamsPtr->name(), userStreamsPtr );
 
-    ServiceGenre * globalTags = new ServiceGenre( "Global Tags" );
-    GenrePtr globalTagsPtr( globalTags );
+    Meta::ServiceGenre * globalTags = new Meta::ServiceGenre( "Global Tags" );
+    Meta::GenrePtr globalTagsPtr( globalTags );
     addGenre( globalTagsPtr->name(), globalTagsPtr );
 
-    m_neighbors = new ServiceGenre( i18n( "Neighbors' Radio" ) );
-    GenrePtr neighborsPtr( m_neighbors );
+    m_neighbors = new Meta::ServiceGenre( i18n( "Neighbors' Radio" ) );
+    Meta::GenrePtr neighborsPtr( m_neighbors );
     addGenre( neighborsPtr->name(), neighborsPtr );
 
-    m_friends = new ServiceGenre( i18n( "Friends' Radio" ) );
-    GenrePtr friendsPtr( m_friends );
+    m_friends = new Meta::ServiceGenre( i18n( "Friends' Radio" ) );
+    Meta::GenrePtr friendsPtr( m_friends );
     addGenre( friendsPtr->name(), friendsPtr );
+
+    m_recentlyLoved = new Meta::ServiceGenre( i18n( "Recently Loved Tracks" ) );
+    Meta::GenrePtr recentlyLovedPtr( m_recentlyLoved );
+    addGenre( recentlyLovedPtr->name(), recentlyLovedPtr );
+
+    m_recentlyPlayed = new Meta::ServiceGenre( i18n( "Recently Played Tracks" ) );
+    Meta::GenrePtr recentlyPlayedPtr( m_recentlyPlayed );
+    addGenre( recentlyPlayedPtr->name(), recentlyPlayedPtr );
 
     QStringList lastfmPersonal;
     lastfmPersonal << "personal" << "neighbours" << "loved";
 
     foreach( const QString &station, lastfmPersonal ) {
         LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
-        TrackPtr trackPtr( track );
+        Meta::TrackPtr trackPtr( track );
         userStreams->addTrack( trackPtr );
         addTrack( trackPtr->name(), trackPtr );
     }
@@ -67,10 +73,10 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
             << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
             << "Soundtrack" << "Techno" << "Trance";
 
-    
+
     foreach( const QString &genre, lastfmGenres ) {
         LastFm::Track * track = new LastFm::Track( "lastfm://globaltags/" + genre );
-        TrackPtr trackPtr( track );
+        Meta::TrackPtr trackPtr( track );
         globalTags->addTrack( trackPtr );
         addTrack( trackPtr->name(), trackPtr );
     }
@@ -83,6 +89,14 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
 
     FriendsRequest *fr = new FriendsRequest();
     fr->start();
+
+    RecentlyLovedTracksRequest *rlt = new RecentlyLovedTracksRequest;
+    connect( rlt, SIGNAL( result( Request* ) ), SLOT( slotRecentlyLovedTrackResult( Request* ) ) );
+    rlt->start();
+
+    RecentTracksRequest *rt = new RecentTracksRequest;
+    connect( rt, SIGNAL( result( Request* ) ), SLOT( slotRecentTrackResult( Request* ) ) );
+    rt->start();
 
     //TODO Automatically add simmilar artist streams for the users favorite artists.
 }
@@ -100,7 +114,7 @@ LastFmServiceCollection::possiblyContainsTrack( const KUrl &url ) const
 }
 
 
-Meta::TrackPtr 
+Meta::TrackPtr
 LastFmServiceCollection::trackForUrl( const KUrl &url )
 {
     return Meta::TrackPtr( new LastFm::Track( url.url() ) );
@@ -126,7 +140,7 @@ void LastFmServiceCollection::slotAddNeighbours( WeightedStringList list )
     foreach( const QString &string, realList )
     {
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/personal" );
-        TrackPtr trackPtr( track );
+        Meta::TrackPtr trackPtr( track );
         m_neighbors->addTrack( trackPtr );
         addTrack( trackPtr->name(), trackPtr );
     }
@@ -137,12 +151,39 @@ void LastFmServiceCollection::slotAddFriends( QStringList list )
     foreach( const QString &string, list )
     {
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/personal" );
-        TrackPtr trackPtr( track );
+        Meta::TrackPtr trackPtr( track );
         m_friends->addTrack( trackPtr );
         addTrack( trackPtr->name(), trackPtr );
     }
 }
 
+void LastFmServiceCollection::slotRecentlyLovedTrackResult( Request* _r )
+{
+    RecentlyLovedTracksRequest *r = static_cast<RecentlyLovedTracksRequest*>( _r );
+
+    QList<Track> tracks = r->tracks();
+    foreach( Track track, tracks )
+    {
+        LastFm::Track *metaTrack = new LastFm::Track( track );
+        Meta::TrackPtr trackPtr( metaTrack );
+        m_recentlyLoved->addTrack( trackPtr );
+        addTrack( trackPtr->name(), trackPtr );
+    }
+}
+
+void LastFmServiceCollection::slotRecentTrackResult( Request* _r )
+{
+    RecentTracksRequest *r = static_cast<RecentTracksRequest*>(_r);
+
+    QList<Track> tracks = r->tracks();
+    foreach( Track track, tracks )
+    {
+        LastFm::Track *metaTrack = new LastFm::Track( track );
+        Meta::TrackPtr trackPtr( metaTrack );
+        m_recentlyPlayed->addTrack( trackPtr );
+        addTrack( trackPtr->name(), trackPtr );
+    }
+}
 QueryMaker*
 LastFmServiceCollection::queryMaker()
 {
