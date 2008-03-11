@@ -30,6 +30,7 @@
 class KUrl;
 class PodcastReader;
 class PodcastChannelProvider;
+class SqlStorage;
 
 /**
 	@author Bart Cerneels <bart.cerneels@gmail.com>
@@ -78,6 +79,11 @@ class PodcastCollection : public Collection, public MemoryCollection
 
     private:
         static PodcastCollection *s_instance;
+
+        /** creates all the necessary tables, indexes etc. for the database */
+        void createTables() const;
+
+        SqlStorage *m_sqlStorage;
 
         Meta::PodcastChannelList m_channels;
         PodcastChannelProvider *m_channelProvider;
