@@ -27,8 +27,8 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
     public:
         MultiPlayableCapabilityImpl( LastFm::Track *track )
             : Meta::MultiPlayableCapability()
-            , m_track( track )
             , m_url( track->playableUrl() )
+            , m_track( track )
         {
             m_track->subscribe( this );
         }
