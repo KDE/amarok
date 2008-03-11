@@ -176,7 +176,7 @@ QString
 ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
 {
     QMap<QString, int> artistCount;
-    foreach( QString artist, artists )
+    foreach( const QString &artist, artists )
     {
         //this needs to be improved
         if( artist.contains( "featuring" ) )

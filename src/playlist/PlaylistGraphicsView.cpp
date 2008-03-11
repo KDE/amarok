@@ -146,7 +146,7 @@ Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
     DEBUG_BLOCK
     event->accept();
-    foreach( QString mime, The::playlistModel()->mimeTypes() )
+    foreach( const QString &mime, The::playlistModel()->mimeTypes() )
     {
         if( event->mimeData()->hasFormat( mime ) )
         {
@@ -161,7 +161,7 @@ Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
 void
 Playlist::GraphicsView::dragMoveEvent( QDragMoveEvent *event )
 {
-    foreach( QString mime, The::playlistModel()->mimeTypes() )
+    foreach( const QString &mime, The::playlistModel()->mimeTypes() )
     {
         if( event->mimeData()->hasFormat( mime ) )
         {

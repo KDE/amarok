@@ -286,7 +286,7 @@ CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
         artistNames = Scrobbler::instance()->similarArtists( artist->name() );
     }*/
     QueryMaker *qm = queryMaker();
-    foreach( QString artist, artistNames )
+    foreach( const QString &artist, artistNames )
     {
         qm->addFilter( QueryMaker::valArtist, artist, true, true );
     }
@@ -298,7 +298,7 @@ CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
     QStringList ids = bq.collectionIds();
     Meta::ArtistList result;
     QSet<QString> artistNameSet;
-    foreach( QString collectionId, ids )
+    foreach( const QString &collectionId, ids )
     {
         Meta::ArtistList artists = bq.artists( collectionId );
         foreach( Meta::ArtistPtr artist, artists )

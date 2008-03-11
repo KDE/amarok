@@ -130,9 +130,9 @@ MediaDevicePluginManager::slotGenericVolumes()
     const QStringList addedList = mdvmd->getAddedList();
     const QStringList removedList = mdvmd->getRemovedList();
     delete mdvmd;
-    foreach( QString udi, addedList )
+    foreach( const QString &udi, addedList )
         MediaBrowser::instance()->deviceAdded( udi );
-    foreach( QString udi, removedList )
+    foreach( const QString &udi, removedList )
         MediaBrowser::instance()->deviceRemoved( udi );
     detectDevices();
 }

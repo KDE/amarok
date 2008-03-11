@@ -1516,11 +1516,11 @@ TagDialog::applyToAllTracks()
 
         QStringList tmpLabels = labelsForTrack( track );
         //apply delta
-        foreach( QString label, m_removedLabels )
+        foreach( const QString &label, m_removedLabels )
         {
             tmpLabels.removeAll( label );
         }
-        foreach( QString label, m_addedLabels )
+        foreach( const QString &label, m_addedLabels )
         {
             tmpLabels.append( label );
         }

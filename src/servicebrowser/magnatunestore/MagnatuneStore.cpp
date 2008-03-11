@@ -534,7 +534,7 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
     QList<QVariant> strings;
     QList<QVariant> weights;
 
-    foreach( QString key, map.keys() ) {
+    foreach( const QString &key, map.keys() ) {
     
         strings << key;
         weights << map.value( key );

@@ -949,7 +949,7 @@ SqlAlbum::removeImage()
     cacheFilter << QString( "*" + key );
     QStringList cachedImages = cacheDir.entryList( cacheFilter );
 
-    foreach( QString image, cachedImages )
+    foreach( const QString &image, cachedImages )
     {
         bool r = QFile::remove( cacheDir.filePath( image ) );
         debug() << "deleting cached image: " << image << " : " + ( r ? QString("ok") : QString("fail") );

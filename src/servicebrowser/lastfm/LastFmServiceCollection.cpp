@@ -54,7 +54,7 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     QStringList lastfmPersonal;
     lastfmPersonal << "personal" << "neighbours" << "loved";
 
-    foreach( QString station, lastfmPersonal ) {
+    foreach( const QString &station, lastfmPersonal ) {
         LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
         TrackPtr trackPtr( track );
         userStreams->addTrack( trackPtr );
@@ -68,7 +68,7 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
             << "Soundtrack" << "Techno" << "Trance";
 
     
-    foreach( QString genre, lastfmGenres ) {
+    foreach( const QString &genre, lastfmGenres ) {
         LastFm::Track * track = new LastFm::Track( "lastfm://globaltags/" + genre );
         TrackPtr trackPtr( track );
         globalTags->addTrack( trackPtr );

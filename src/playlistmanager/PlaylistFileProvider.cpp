@@ -37,7 +37,7 @@ PlaylistFileProvider::PlaylistFileProvider()
     debug() << "keys " << keys;
 
     //ConfigEntry: name, file
-    foreach( QString key, keys )
+    foreach( const QString &key, keys )
     {
         QStringList configEntry = Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
         Meta::PlaylistPtr playlist = Meta::loadPlaylist( KUrl( configEntry[1] ).path() );

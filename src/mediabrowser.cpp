@@ -256,7 +256,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
 
     PERF_LOG( "refeshing media device cache" )
     MediaDeviceCache::instance()->refreshCache();
-    foreach( QString udi, MediaDeviceCache::instance()->getAll() )
+    foreach( const QString &udi, MediaDeviceCache::instance()->getAll() )
         deviceAdded( udi, false );
 
     PERF_LOG( "devices Added" )

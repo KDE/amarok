@@ -78,7 +78,7 @@ QString SvgTinter::tint(QString filename)
 void SvgTinter::init(QColor systemColor, QList< QString > baseColorNames, int tintPercentage)
 {
 
-    foreach( QString baseColorName, baseColorNames ) {
+    foreach( const QString &baseColorName, baseColorNames ) {
 
         QColor baseColor( baseColorName );
         QColor tintedColor = blendColors( systemColor, baseColor, tintPercentage );
