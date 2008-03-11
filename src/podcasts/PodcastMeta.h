@@ -158,8 +158,8 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         virtual void setDuration( int duration ) { m_duration = duration; };
         virtual void setGuid( const QString &guid ) { m_guid = guid; };
 
-        virtual int sequence() { return m_sequenceNmbr; };
-        virtual void setSequenceNumbr( int sequenceNumber ) { m_sequenceNmbr = sequenceNumber; };
+        virtual int sequenceNumber() { return m_sequenceNmbr; };
+        virtual void setSequenceNumber( int sequenceNumber ) { m_sequenceNmbr = sequenceNumber; };
 
         virtual PodcastChannelPtr channel() { return m_channel; };
         virtual void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; };
