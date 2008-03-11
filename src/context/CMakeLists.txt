@@ -120,6 +120,8 @@ install(FILES
     plasma/servicetypes/plasma-runner.desktop
     plasma/servicetypes/plasma-scriptengine.desktop
     DESTINATION ${SERVICETYPES_INSTALL_DIR})
+
+add_subdirectory( desktoptheme )
 endif(NOT PLASMA_FOUND)
 
 ########### install files ###############
