@@ -31,6 +31,7 @@
 #include <kio/job.h>
 
 #include <QFile>
+#include <QDir>
 
 using namespace Meta;
 
@@ -162,17 +163,17 @@ PodcastCollection::slotDownloadEpisode( Meta::PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
 
-    KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( episode->url(), KIO::Reload, KIO::HideProgressInfo );
+    KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( episode->remoteUrl(), KIO::Reload, KIO::HideProgressInfo );
 
     m_jobMap[storedTransferJob] = episode;
     m_fileNameMap[storedTransferJob] = episode->remoteUrl().fileName();
 
+    debug() << "starting download for " << episode->title() << " url: " << episode->remoteUrl().prettyUrl();
     The::contextStatusBar()->newProgressOperation( storedTransferJob )
             .setDescription( episode->title().isEmpty()
             ? i18n( "Downloading Podcast Media" )
     : i18n( "Downloading Podcast \"%1\"" ).arg( episode->title() ) )
-            .setAbortSlot( this, SLOT( abortDownload()) )
-            .setProgressSignal( storedTransferJob, SIGNAL( percent( KJob *, unsigned long ) ) );
+            .setAbortSlot( this, SLOT( abortDownload()) );
 
     connect( storedTransferJob, SIGNAL(  finished( KJob * ) ), SLOT( downloadResult( KJob * ) ) );
     connect( storedTransferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ), SLOT( redirected( KIO::Job *,const KUrl& ) ) );
@@ -190,16 +191,29 @@ PodcastCollection::downloadResult( KJob * job )
     else
     {
         Meta::PodcastEpisodePtr episode = m_jobMap[job];
-        KUrl localUrl = KUrl::fromPath( Amarok::saveLocation("podcasts") );
-        localUrl.addPath( episode->channel()->title() );
-        localUrl.setFileName( m_fileNameMap[job] );
+
+        QDir dir( Amarok::saveLocation("podcasts") );
+        //save in directory with channels title
+        if ( !dir.exists( episode->channel()->title() ) )
+        {
+            dir.mkdir( episode->channel()->title() );
+        }
+        dir.cd( episode->channel()->title() );
+        KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
+        localUrl.addPath( m_fileNameMap[job] );
 
         QFile *localFile = new QFile( localUrl.path() );
-        localFile->open( IO_WriteOnly );
-        localFile->write( static_cast<KIO::StoredTransferJob *>(job)->data() );
+        if( localFile->open( IO_WriteOnly ) &&
+            localFile->write( static_cast<KIO::StoredTransferJob *>(job)->data() ) != -1 )
+        {
+            episode->setPlayableUrl( localUrl );
+        }
+        else
+        {
+            Amarok::ContextStatusBar::instance()->longMessage( i18n("Unable to save podcast episode file to %1" )
+                .arg(localUrl.prettyUrl()) );
+        }
         localFile->close();
-
-        episode->setPlayableUrl( localUrl );
     }
     //remove it from the jobmap
     m_jobMap.remove( job );
