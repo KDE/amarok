@@ -174,10 +174,14 @@ PodcastReader::read()
         {
             if( isStartElement() )
             {
-                if (QXmlStreamReader::name() == "item")
+                if( QXmlStreamReader::name() == "item" )
                 {
                     debug() << "new episode";
                     m_current = new Meta::PodcastEpisode( m_channel );
+                }
+                else if( QXmlStreamReader::name() == "enclosure" )
+                {
+                    m_urlString = QXmlStreamReader::attributes().value( QString(), QString("url") ).toString();
                 }
                 m_currentTag = QXmlStreamReader::name().toString();
             }
@@ -210,7 +214,8 @@ PodcastReader::read()
                 }
                 else if( QXmlStreamReader::name() == "enclosure" )
                 {
-                    static_cast<PodcastEpisode *>(m_current)->setUrl( m_urlString );
+                    debug() << "enclosure: url = " << m_urlString;
+                    static_cast<PodcastEpisode *>(m_current)->setUrl( KUrl( m_urlString ) );
                     m_urlString.clear();
                 }
             }
@@ -222,8 +227,6 @@ PodcastReader::read()
                     m_linkString += text().toString();
                 else if( m_currentTag == "description" )
                     m_descriptionString += text().toString();
-                else if( m_currentTag == "url" )
-                    m_urlString += text().toString();
                 else if( m_currentTag == "pubDate" )
                     m_pubDateString += text().toString();
                 else if( m_currentTag == "guid" )
