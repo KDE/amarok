@@ -31,6 +31,7 @@
 #include "PlaylistFileSupport.h"
 #include "RepeatTrackNavigator.h"
 #include "StandardTrackNavigator.h"
+#include "RepeatPlaylistNavigator.h"
 #include "ContextStatusBar.h"
 #include "TheInstances.h"
 #include "UndoCommands.h"
@@ -330,10 +331,13 @@ Model::play( int row )
 void
 Model::playlistRepeatMode( int item )
 {
+    // FIXME? couldn't this method go away, and just call playModeChanged() instead of this?
     if( item == 0 )
         playModeChanged( Playlist::Standard );
+    else if (item == 3)
+        playModeChanged( Playlist::RepeatPlaylist);
     else //for now just turn on repeat if anything but "off" is clicked
-        playModeChanged( Playlist::Repeat );
+        playModeChanged( Playlist::RepeatTrack );
 }
 
 void
@@ -414,8 +418,11 @@ Model::playModeChanged( int row )
         case Playlist::Standard:
             m_advancer = new StandardTrackNavigator(this);
             break;
-        case Playlist::Repeat:
+        case Playlist::RepeatTrack:
             m_advancer = new RepeatTrackNavigator(this);
+            break;
+        case Playlist::RepeatPlaylist:
+            m_advancer = new RepeatPlaylistNavigator(this);
             break;
     }
 }

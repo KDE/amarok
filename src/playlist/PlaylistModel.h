@@ -56,7 +56,9 @@ class TrackNavigator;
     enum PlaybackMode
     {
         Standard = 1,
-        Repeat
+        RepeatTrack,
+        RepeatAlbum,
+        RepeatPlaylist
     };
     enum Column
     {

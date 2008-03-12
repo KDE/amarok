@@ -316,6 +316,7 @@ set(libplaylist_SRCS
     playlist/RepeatTrackNavigator.cpp
     playlist/PlaylistViewCommon.cpp
     playlist/StandardTrackNavigator.cpp
+    playlist/RepeatPlaylistNavigator.cpp
     playlist/TrackNavigator.cpp
     playlist/UndoCommands.cpp
     playlist/PlaylistDropVis.cpp
