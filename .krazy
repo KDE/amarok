@@ -1,1 +1,1 @@
-SKIP /src/sqlite/\|/src/mediadevice/daap/mongrel/|/src/servicebrowser/lastfm/libUnicorn/
+SKIP /src/sqlite/\|/src/mediadevice/daap/mongrel/|/src/servicebrowser/lastfm/libUnicorn/|/src/servicebrowser/lastfm/core/|/src/context/plasma/

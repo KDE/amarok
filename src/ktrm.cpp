@@ -28,6 +28,7 @@
 #include "ContextStatusBar.h"
 
 #include <KIO/Job>
+#include <KLocale>
 #include <KProtocolManager>
 #include <KUrl>
 
@@ -753,7 +754,7 @@ void KTRMLookup::lookupResult( KIO::Job* job )
     DEBUG_BLOCK
     if ( !job->error() == 0 ) {
         warning() << "[MusicBrainzLookup] KIO error! errno: " << job->error();
-        Amarok::ContextStatusBar::instance()->longMessage( "Couldn't connect to MusicBrainz server." );
+        Amarok::ContextStatusBar::instance()->longMessage( i18n( "Could not connect to MusicBrainz server." ) );
         finished();
         return;
     }
@@ -765,7 +766,7 @@ void KTRMLookup::lookupResult( KIO::Job* job )
 
     if( !doc.setContent( xml ) ) {
         warning() << "[MusicBrainzLookup] Invalid XML";
-        Amarok::ContextStatusBar::instance()->longMessage( "MusicBrainz returned invalid content." );
+        Amarok::ContextStatusBar::instance()->longMessage( i18n( "MusicBrainz returned invalid content." ) );
         finished();
         return;
     }

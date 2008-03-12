@@ -262,7 +262,7 @@ namespace
         KUrl deviceUrl(device);
         if (deviceUrl.protocol() == "media" || deviceUrl.protocol() == "system")
         {
-            debug() << "WARNING: urlToDevice needs to be reimplemented with KDE4 technology, it's just a stub at the moment";
+            debug() << "WARNING: urlToDevice needs to be reimplemented with KDE4 technology, it is just a stub at the moment";
            QDBusInterface mediamanager( "org.kde.kded", "/modules/mediamanager", "org.kde.MediaManager" );
            QDBusReply<QStringList> reply = mediamanager.call( "properties",deviceUrl.fileName() );
            if (!reply.isValid()) {
@@ -368,7 +368,7 @@ void App::handleCliArgs() //static
                 tracks, Playlist::Replace|Playlist::DirectPlay);
         } else { // Default behaviour
             debug() <<
-                "Sorry, the engine doesn't support direct play from AudioCD..."
+                "Sorry, the engine does not support direct play from AudioCD..."
                    ;
         }
     }
@@ -611,7 +611,6 @@ void App::applySettings( bool firstTime )
         if( firstTime || AmarokConfig::soundSystem() !=
                          PluginManager::getService( engine )->property( "X-KDE-Amarok-name" ).toString() )
         {
-            PERF_LOG( "loading engine. didn't we do this somewhere else already?" )
             //will unload engine for us first if necessary
             engine = EngineController::instance()->loadEngine();
             PERF_LOG( "done loading engine" )

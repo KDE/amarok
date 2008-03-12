@@ -107,6 +107,7 @@ void Track::init( int id /* = -1*/ )
     connect( skipAction, SIGNAL( triggered() ), this, SLOT( skip() ) );
     m_currentTrackActions.append( skipAction );
 }
+
 QString
 Track::name() const
 {
@@ -119,7 +120,6 @@ Track::name() const
         {
             if( elements[1] == "globaltags" )
             {
-                debug() << "Global tags. Size = " << elements.size();
                 // lastfm://globaltag/<tag>
                 if( elements.size() >= 3 )
                     return i18n( "Global Tag Radio: %1", elements[2] );

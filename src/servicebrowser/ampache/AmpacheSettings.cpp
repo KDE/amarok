@@ -108,7 +108,7 @@ void AmpacheSettings::selectedItemChanged( const QString & name )
 {
     kDebug( 14310 ) << "Selection changed";
 
-    if ( name != "" ) {
+    if ( !name.isEmpty() ) {
 
         int index = m_configDialog->serverList->currentRow();
         AmpacheServerEntry server = m_config.servers().at( index );

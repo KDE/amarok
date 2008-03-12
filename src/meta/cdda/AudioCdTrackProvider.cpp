@@ -49,4 +49,3 @@ CDDAManager::playAudioCd( const QString &udi ) const
 
 #include "CDDAManager.moc"
 
-                

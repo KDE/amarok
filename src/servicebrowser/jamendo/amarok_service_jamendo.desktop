@@ -4,7 +4,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-jamendo-amarok
 Name=Jamendo Service
-Comment=Listen and download music uploaded by independant artist
+Comment=Listen and download music uploaded by independent artists
 
 
 ServiceTypes=Amarok/Plugin

@@ -702,7 +702,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
         {
             if( row < 0 )
             {
-                debug() << "Inserting at row: " << row << " so we're appending to the list.";
+                debug() << "Inserting at row: " << row << " so we are appending to the list.";
                 insertOptioned( trackListDrag->tracks(), Playlist::Append );
             }
             else
@@ -722,7 +722,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
         {
             if( row < 0 )
             {
-                debug() << "Inserting at row: " << row << " so we're appending to the list.";
+                debug() << "Inserting at row: " << row << " so we are appending to the list.";
                 insertOptioned( dragList->playlists(), Playlist::Append );
             }
             else

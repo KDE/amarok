@@ -356,7 +356,7 @@ QVariantList LastFmEngine::parseTitle( QString title )
         QRegExp rx2( "(.*) on (\\d+ \\w+ \\d\\d\\d\\d)" );
         if( rx2.indexIn( title ) == -1 )
         {
-            warning() << "couldn't match last.fm event title: " << title;
+            warning() << "could not match last.fm event title: " << title;
             return event;
         } else
         {

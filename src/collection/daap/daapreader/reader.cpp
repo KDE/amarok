@@ -480,7 +480,7 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 }
                 break;
             default:
-                warning() << tag << " doesn't work";
+                warning() << tag << " does not work";
             break;
         }
         index += tagLength + 8;

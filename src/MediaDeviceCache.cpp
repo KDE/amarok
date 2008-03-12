@@ -185,7 +185,7 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
         emit deviceRemoved( udi );
         return;
     }
-    debug() << "Odd, got a deviceRemoved at udi " << udi << " but it didn't seem to exist in the first place...";
+    debug() << "Odd, got a deviceRemoved at udi " << udi << " but it did not seem to exist in the first place...";
 }
 
 void
@@ -211,7 +211,7 @@ MediaDeviceCache::slotAccessibilityChanged( bool accessible, const QString &udi 
             emit deviceRemoved( udi );
             return;
         }
-        debug() << "Got accessibility changed to false but wasn't there in the first place...";
+        debug() << "Got accessibility changed to false but was not there in the first place...";
     }            
 }
 
