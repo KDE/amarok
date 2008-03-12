@@ -122,6 +122,17 @@ install(FILES
     DESTINATION ${SERVICETYPES_INSTALL_DIR})
 
 add_subdirectory( desktoptheme )
+
+set(default_animator_SRCS
+    animators/default/defaultAnimator.cpp
+   )
+
+kde4_add_plugin(plasma_animator_default ${default_animator_SRCS})
+target_link_libraries(plasma_animator_default ${KDE4_KDECORE_LIBS} amarokplasma)
+
+install(TARGETS plasma_animator_default DESTINATION ${PLUGIN_INSTALL_DIR})
+install(FILES animators/default/plasma-animator-default.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+
 endif(NOT PLASMA_FOUND)
 
 ########### install files ###############
