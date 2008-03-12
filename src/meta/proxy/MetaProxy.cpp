@@ -21,6 +21,7 @@
 #include "MetaProxy_p.moc"
 
 #include "debug.h"
+#include "EditCapability.h"
 
 #include "CollectionManager.h"
 
@@ -38,6 +39,32 @@ class ProxyGenre;
 class ProxyComposer;
 class ProxyYear;
 
+class EditCapabilityProxy : public Meta::EditCapability
+{
+    public:
+        EditCapabilityProxy( MetaProxy::Track *track )
+            : Meta::EditCapability()
+            , m_track( track ) {}
+
+        virtual bool isEditable() const { return true; }
+        virtual void setTitle( const QString &title ) { DEBUG_BLOCK m_track->setName( title ); }
+        virtual void setAlbum( const QString &newAlbum ) { DEBUG_BLOCK m_track->setAlbum( newAlbum ); }
+        virtual void setArtist( const QString &newArtist ) { DEBUG_BLOCK m_track->setArtist( newArtist ); }
+        virtual void setComposer( const QString &newComposer ) { DEBUG_BLOCK m_track->setComposer( newComposer ); }
+        virtual void setGenre( const QString &newGenre ) { DEBUG_BLOCK m_track->setGenre( newGenre ); }
+        virtual void setYear( const QString &newYear ) { DEBUG_BLOCK m_track->setYear( newYear ); }
+        virtual void setComment( const QString &newComment ) { /*m_track->setComment( newComment );*/ } // Do we want to support this?
+        virtual void setTrackNumber( int newTrackNumber ) { DEBUG_BLOCK m_track->setTrackNumber( newTrackNumber ); }
+        virtual void setDiscNumber( int newDiscNumber ) { DEBUG_BLOCK m_track->setDiscNumber( newDiscNumber ); }
+
+        virtual void beginMetaDataUpdate() {}  // Nothing to do, we cache everything
+        virtual void endMetaDataUpdate() {}
+        virtual void abortMetaDataUpdate() {}
+
+    private:
+        KSharedPtr<MetaProxy::Track> m_track;
+};
+
 MetaProxy::Track::Track( const KUrl &url )
     : Meta::Track()
     , d( new Private() )
@@ -54,7 +81,8 @@ MetaProxy::Track::Track( const KUrl &url )
     d->composerPtr = Meta::ComposerPtr( new ProxyComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new ProxyYear( QPointer<Track::Private>( d ) ) );
 
-    QTimer::singleShot( 0, d, SLOT( slotCheckCollectionManager() ) );
+    //FIXME: Causes crashes..
+//     QTimer::singleShot( 0, d, SLOT( slotCheckCollectionManager() ) );
 }
 
 MetaProxy::Track::~Track()
@@ -69,6 +97,12 @@ MetaProxy::Track::name() const
         return d->realTrack->name();
     else
         return d->cachedName;
+}
+
+void
+MetaProxy::Track::setName( const QString &name )
+{
+    d->cachedName = name;
 }
 
 QString
@@ -104,7 +138,8 @@ MetaProxy::Track::playableUrl() const
     if( d->realTrack )
         return d->realTrack->playableUrl();
     else
-        return KUrl();
+//         return KUrl();
+        return d->url; // Maybe?
 }
 
 QString
@@ -140,10 +175,22 @@ MetaProxy::Track::album() const
     return d->albumPtr;
 }
 
+void
+MetaProxy::Track::setAlbum( const QString &album )
+{
+    d->cachedAlbum = album;
+}
+
 Meta::ArtistPtr
 MetaProxy::Track::artist() const
 {
     return d->artistPtr;
+}
+
+void
+MetaProxy::Track::setArtist( const QString &artist )
+{
+    d->cachedArtist = artist;
 }
 
 Meta::GenrePtr
@@ -152,16 +199,33 @@ MetaProxy::Track::genre() const
     return d->genrePtr;
 }
 
+void
+MetaProxy::Track::setGenre( const QString &genre )
+{
+    d->cachedGenre = genre;
+}
+
 Meta::ComposerPtr
 MetaProxy::Track::composer() const
 {
     return d->composerPtr;
 }
 
+void
+MetaProxy::Track::setComposer( const QString &composer )
+{
+    d->cachedComposer = composer;
+}
 Meta::YearPtr
 MetaProxy::Track::year() const
 {
     return d->yearPtr;
+}
+
+void
+MetaProxy::Track::setYear( const QString &year )
+{
+    d->cachedYear = year;
 }
 
 QString
@@ -211,7 +275,13 @@ MetaProxy::Track::trackNumber() const
     if( d->realTrack )
         return d->realTrack->trackNumber();
     else
-        return 0;
+        return d->cachedTrackNumber;
+}
+
+void
+MetaProxy::Track::setTrackNumber( int number )
+{
+    d->cachedTrackNumber = number;
 }
 
 int
@@ -220,7 +290,13 @@ MetaProxy::Track::discNumber() const
     if( d->realTrack )
         return d->realTrack->discNumber();
     else
-        return 0;
+        return d->cachedDiscNumber;
+}
+
+void
+MetaProxy::Track::setDiscNumber( int discNumber )
+{
+    d->cachedDiscNumber = discNumber;
 }
 
 int
@@ -331,7 +407,9 @@ MetaProxy::Track::hasCapabilityInterface( Meta::Capability::Type type ) const
     if( d->realTrack )
         return d->realTrack->hasCapabilityInterface( type );
     else
-        return false;
+        if( type == Meta::Capability::Editable )
+            return true;
+    return false;
 }
 
 Meta::Capability*
@@ -340,7 +418,9 @@ MetaProxy::Track::asCapabilityInterface( Meta::Capability::Type type )
     if( d->realTrack )
         return d->realTrack->asCapabilityInterface( type );
     else
-        return 0;
+        if( type == Meta::Capability::Editable )
+            return new EditCapabilityProxy( this );
+    return 0;
 }
 
 bool

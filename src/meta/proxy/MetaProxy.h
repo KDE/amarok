@@ -36,6 +36,7 @@ namespace MetaProxy
 
         //methods inherited from Meta::MetaBase
             virtual QString name() const;
+            virtual void setName( const QString &name );
             virtual QString prettyName() const;
             virtual QString fullPrettyName() const;
             virtual QString sortableName() const;
@@ -48,10 +49,15 @@ namespace MetaProxy
             virtual bool isPlayable() const;
 
             virtual Meta::AlbumPtr album() const;
+            virtual void setAlbum( const QString &album );
             virtual Meta::ArtistPtr artist() const;
+            virtual void setArtist( const QString &artist );
             virtual Meta::GenrePtr genre() const;
+            virtual void setGenre( const QString &genre );
             virtual Meta::ComposerPtr composer() const;
+            virtual void setComposer( const QString &composer );
             virtual Meta::YearPtr year() const;
+            virtual void setYear( const QString &year );
 
             virtual QString comment() const;
 
@@ -62,7 +68,9 @@ namespace MetaProxy
             virtual void setRating( int newRating );
 
             virtual int trackNumber() const;
+            virtual void setTrackNumber( int number );
             virtual int discNumber() const;
+            virtual void setDiscNumber( int discNumber );
 
             virtual int length() const;
             virtual int filesize() const;

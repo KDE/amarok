@@ -110,7 +110,7 @@ XSPFPlaylist::save( const QString &location, bool relative )
 {
     DEBUG_BLOCK
     QFile file( location );
-    if( tracks().isEmpty() )
+    if( trackList().isEmpty() )
         return false;
 
     if( !file.open( QIODevice::WriteOnly ) )
@@ -525,10 +525,10 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 
         if ( !track->playableUrl().isEmpty() )
             APPENDNODE(location, track->playableUrl().url() )
-                    if ( !track->name().isEmpty() )
-                    APPENDNODE(title, track->name() )
-                    if ( track->artist() && !track->artist()->name().isEmpty() )
-                    APPENDNODE(creator, track->artist()->name() );
+        if ( !track->name().isEmpty() )
+            APPENDNODE(title, track->name() )
+        if ( track->artist() && !track->artist()->name().isEmpty() )
+            APPENDNODE(creator, track->artist()->name() );
         if ( !track->comment().isEmpty() )
             APPENDNODE(annotation, track->comment() );
         if ( track->album() && !track->album()->name().isEmpty() )

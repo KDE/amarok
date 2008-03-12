@@ -54,7 +54,12 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         QString cachedArtist;
         QString cachedAlbum;
         QString cachedName;
+        QString cachedGenre;
+        QString cachedComposer;
+        QString cachedYear;
         int cachedLength;
+        int cachedTrackNumber;
+        int cachedDiscNumber;
 
         Meta::ArtistPtr artistPtr;
         Meta::AlbumPtr albumPtr;
@@ -205,11 +210,15 @@ public:
 
     QString name() const
     {
-        if( d && d->realTrack ) {
+        if( d && d->realTrack )
+        {
             if ( d->realTrack->album() )
                 return d->realTrack->album()->name();
             return QString();
-        } else
+        }
+        else if ( d )
+              return d->cachedAlbum;
+        else
             return QString();
     }
 
@@ -218,7 +227,7 @@ public:
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->prettyName();
         else
-            return QString();
+            return name();
     }
 
     QPixmap image( int size, bool withShadow )
@@ -259,6 +268,8 @@ public:
     {
         if( d && d->realTrack && d->realTrack->genre() )
             return d->realTrack->genre()->name();
+        else if( d )
+            return d->cachedGenre;
         else
             return QString();
     }
@@ -307,6 +318,8 @@ public:
     {
         if( d && d->realTrack && d->realTrack->composer() )
             return d->realTrack->composer()->name();
+        else if ( d )
+            return d->cachedComposer;
         else
             return QString();
     }
@@ -316,7 +329,7 @@ public:
         if( d && d->realTrack && d->realTrack->composer())
             return d->realTrack->composer()->prettyName();
         else
-            return QString();
+            return name();
     }
 
     Meta::TrackList tracks()
@@ -355,6 +368,8 @@ public:
     {
         if( d && d->realTrack && d->realTrack->year() )
             return d->realTrack->year()->name();
+        else if( d )
+            return d->cachedYear;
         else
             return QString();
     }
@@ -364,7 +379,7 @@ public:
         if( d && d->realTrack && d->realTrack->year() )
             return d->realTrack->year()->prettyName();
         else
-            return QString();
+            return name();
     }
 
     Meta::TrackList tracks()
