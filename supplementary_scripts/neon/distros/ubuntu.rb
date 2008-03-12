@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+DEBVERSION  = "gutsy"
 DEBPATH     = NEONPATH + "/distros/ubuntu"
 DEBBASEPATH = ROOTPATH + "/#{DATE}-ubuntu"
 LPPATH      = "http://ppa.launchpad.net/amarok-nightly/ubuntu/pool/main/a/amarok-nightly"
@@ -48,7 +49,7 @@ class UploadUbuntu
   def CreateNUpload(package)
     `cp -rf #{DEBPATH}/#{package}-debian ./debian`
 
-    `dch -D "gutsy" -v "#{DATE}-0amarok#{REV}" "Nightly Build"`
+    `dch -D "#{DEBVERSION}" -v "#{DATE}-0amarok#{REV}" "Nightly Build"`
     `dpkg-buildpackage -S -sa -rfakeroot -k"Amarok Nightly Builds"`
 
     if package == "amarok"
