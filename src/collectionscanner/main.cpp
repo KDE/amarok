@@ -33,7 +33,7 @@ int main( int argc, char *argv[] )
     ki18n( "Amarok Collection Scanner\n\nNote: For debugging purposes this application can be invoked from the command line, but it will not actually build a collection this way." ), "0.1",
     ki18n( "Collection Scanner for Amarok" ), KAboutData::License_GPL,
     ki18n( "(C) 2003-2006, The Amarok Developers" ),
-    ki18n( "IRC:\nserver: irc.freenode.net / channels: #amarok #amarok.de #amarok.es\n\nFeedback:\namarok@kde.org" ),
+    ki18n( "IRC:\nserver: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org" ),
     I18N_NOOP( "http://amarok.kde.org" ) );
 
 
