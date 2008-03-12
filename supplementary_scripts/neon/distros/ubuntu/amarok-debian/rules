@@ -13,6 +13,7 @@ kde4-wrapper-creation:
 		echo export KDEHOME=~/.amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 		echo export KDEDIRS=/opt/amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 		echo export PATH=/opt/amarok-nightly/bin:\$$PATH >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+		echo /opt/amarok-nightly/bin/kbuildsycoca4 \"\$$@\" >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 		echo /opt/amarok-nightly/bin/amarok \"\$$@\" >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 		chmod 755 $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 
