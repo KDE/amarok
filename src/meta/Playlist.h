@@ -73,6 +73,7 @@ namespace Meta
             virtual KUrl retrievableUrl() = 0;
 
             virtual bool load( QTextStream &stream ) = 0;
+            virtual bool save( const QString &location, bool relative ) { return false; };
 
             /**
              * Retrieves a specialized interface which represents a capability of this

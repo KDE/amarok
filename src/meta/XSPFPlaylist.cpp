@@ -22,10 +22,14 @@
 
 #include "debug.h"
 #include "CollectionManager.h"
+#include "MainWindow.h"
+#include "meta/proxy/MetaProxy.h"
+#include "meta/MetaUtility.h"
 #include "PlaylistManager.h"
 #include "TheInstances.h"
 
 #include <kurl.h>
+#include <KMessageBox>
 
 #include <QDateTime>
 #include <QString>
@@ -35,6 +39,7 @@ namespace Meta
 
 XSPFPlaylist::XSPFPlaylist()
     : Meta::Playlist()
+    , QDomDocument()
     , m_url( PlaylistManager::newPlaylistFilePath( "xspf" ) )
 {
     m_name = m_url.fileName();
@@ -50,6 +55,7 @@ XSPFPlaylist::XSPFPlaylist()
 
 XSPFPlaylist::XSPFPlaylist( const KUrl &url )
     : Playlist()
+    , QDomDocument()
     , m_url( url )
 {
     DEBUG_BLOCK
@@ -78,8 +84,48 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url )
     }
 }
 
+XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
+    : Playlist()
+    , QDomDocument()
+{
+    DEBUG_BLOCK
+
+    QDomElement root = createElement( "playlist" );
+
+    root.setAttribute( "version", 1 );
+    root.setAttribute( "xmlns", "http://xspf.org/ns/1/" );
+
+    root.appendChild( createElement( "trackList" ) );
+
+    appendChild( root );
+    setTrackList( list );
+}
+
 XSPFPlaylist::~XSPFPlaylist()
 {
+}
+
+bool
+XSPFPlaylist::save( const QString &location, bool relative )
+{
+    DEBUG_BLOCK
+    QFile file( location );
+    if( tracks().isEmpty() )
+        return false;
+
+    if( !file.open( QIODevice::WriteOnly ) )
+    {
+        KMessageBox::sorry( MainWindow::self(), i18n( "Cannot write playlist (%1).").arg( file.fileName() ) );
+        return false;
+    }
+
+    QTextStream stream ( &file );
+
+    QDomDocument::save( stream, 2 );
+
+    file.close();
+
+    return true;
 }
 
 bool
@@ -106,7 +152,20 @@ XSPFPlaylist::tracks()
 
     foreach( const XSPFTrack &track, xspfTracks )
     {
-        tracks << CollectionManager::instance()->trackForUrl( track.location );
+        MetaProxy::Track *proxyTrack = new MetaProxy::Track( track.location );
+        {
+            //Fill in values from xspf..
+            QVariantMap map;
+            map.insert( Meta::Field::TITLE, track.title );
+            map.insert( Meta::Field::ALBUM, track.album );
+            map.insert( Meta::Field::ARTIST, track.creator );
+            map.insert( Meta::Field::LENGTH, track.duration );
+            map.insert( Meta::Field::TRACKNUMBER, track.trackNum );
+            map.insert( Meta::Field::URL, track.location );
+            Meta::Field::updateTrack( proxyTrack, map );
+        }
+        tracks << Meta::TrackPtr( proxyTrack );
+//         tracks << CollectionManager::instance()->trackForUrl( track.location );
     }
     return tracks;
 }
@@ -412,16 +471,23 @@ XSPFPlaylist::trackList()
 void
 XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 {
+    DEBUG_BLOCK
+
+            debug() << "here";
     if ( documentElement().namedItem( "trackList" ).isNull() )
+    {
+        debug() << "here1";
         documentElement().appendChild( createElement( "trackList" ) );
+    }
 
     QDomNode node = createElement( "trackList" );
-
+    debug() << "Here2";
     XSPFTrackList::iterator it;
 
     Meta::TrackPtr track;
     foreach( track, trackList )
     {
+        debug() << "here3";
         QDomNode subNode = createElement( "track" );
 
 //URI of resource to be rendered.

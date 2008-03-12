@@ -126,8 +126,16 @@ M3UPlaylist::loadM3u( QTextStream &stream )
 }
 
 bool
-M3UPlaylist::save( QFile &file, bool relative )
+M3UPlaylist::save( const QString &location, bool relative )
 {
+    QFile file( location );
+
+    if( !file.open( QIODevice::WriteOnly ) )
+    {
+        debug() << "Unable to write to playlist!";
+        return false;
+    }
+
     QTextStream stream( &file );
 
     stream << "#EXTM3U\n";

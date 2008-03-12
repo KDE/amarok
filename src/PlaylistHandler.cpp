@@ -208,18 +208,9 @@ PlaylistHandler::loadPls( QTextStream &stream )
 bool
 PlaylistHandler::savePls( Meta::TrackList tracks, const QString &location )
 {
-    QFile file( location );
-
-    if( !file.open( QIODevice::WriteOnly ) )
-    {
-        KMessageBox::sorry( MainWindow::self(), i18n( "Cannot write playlist (%1).").arg(location) );
-        return false;
-    }
-
     Meta::PLSPlaylist playlist( tracks );
-    playlist.save( file, false );
+    playlist.save( location, false );
 
-    file.close();
     return true;
 }
 
@@ -240,20 +231,10 @@ PlaylistHandler::saveM3u( Meta::TrackList tracks, const QString &location )
     if( location.isEmpty() )
         return false;
 
-    QFile file( location );
-
-    if( !file.open( QIODevice::WriteOnly ) )
-    {
-        KMessageBox::sorry( MainWindow::self(), i18n( "Cannot write playlist (%1).").arg(location) );
-        return false;
-    }
-
-
     Meta::M3UPlaylist playlist( tracks );
 
-    playlist.save( file, relative );
+    playlist.save( location, relative );
 
-    file.close(); // Flushes the file, before we read it
 //     The::userPlaylistProvider->addPlaylist( path, 0, true ); //Port 2.0: re add when we have a playlistbrowser
 
     return true;
@@ -485,18 +466,7 @@ PlaylistHandler::saveXSPF( Meta::TrackList tracks, const QString &location )
 
     playlist.setTrackList( tracks );
 
-    QFile file( location );
-    if( !file.open( QIODevice::WriteOnly ) )
-    {
-        KMessageBox::sorry( MainWindow::self(), i18n( "Cannot write playlist (%1).").arg(location) );
-        return false;
-    }
-
-    QTextStream stream ( &file );
-
-    playlist.save( stream, 2 );
-
-    file.close();
+    playlist.save( location, 2 );
 
     return true;
 }

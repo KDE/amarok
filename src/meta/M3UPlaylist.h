@@ -44,7 +44,7 @@ class M3UPlaylist : public Playlist
 
         ~M3UPlaylist();
 
-        bool save( QFile &file, bool relative );
+        bool save( const QString &location, bool relative );
 
         /* Playlist virtual functions */
         virtual QString name() const { return prettyName(); };

@@ -157,7 +157,7 @@ class TrackNavigator;
             ///Return list of items in playlist
             QList<Item*> itemList() const { return m_items; }
 
-            inline const QString defaultPlaylistPath() const { return Amarok::saveLocation() + "current.m3u"; }
+            inline const QString defaultPlaylistPath() const { return Amarok::saveLocation() + "current.xspf"; }
 
 
             /**

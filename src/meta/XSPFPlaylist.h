@@ -60,6 +60,7 @@ class XSPFPlaylist : public Playlist, public QDomDocument, public EditablePlayli
 public:
     XSPFPlaylist();
     XSPFPlaylist( const KUrl &url );
+    XSPFPlaylist( Meta::TrackList list );
 
     ~XSPFPlaylist();
 
@@ -67,6 +68,7 @@ public:
     virtual QString prettyName() const { return name(); }
 
     bool load( QTextStream &stream ) { return loadXSPF( stream ); };
+    bool save( const QString &location, bool relative );
 
     /** returns all tracks in this playlist */
     TrackList tracks();

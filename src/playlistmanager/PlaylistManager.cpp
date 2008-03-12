@@ -23,6 +23,8 @@
 #include "TheInstances.h"
 #include "debug.h"
 #include "M3UPlaylist.h"
+#include "PLSPlaylist.h"
+#include "XSPFPlaylist.h"
 
 #include <kio/jobclasses.h>
 #include <kio/job.h>
@@ -211,18 +213,37 @@ PlaylistManager::save( Meta::TrackList tracks,
 
     KUrl url( location );
     //TODO: Meta::Format playlistFormat = Meta::getFormat( location );
-    Meta::M3UPlaylistPtr playlist( new Meta::M3UPlaylist( tracks ) );
+//     Meta::M3UPlaylistPtr playlist( new Meta::M3UPlaylist( tracks ) );
+    Meta::Playlist *playlist;
 
-    QFile file( location );
-    if (!file.open( QIODevice::WriteOnly | QIODevice::Text ))
-    {
-        debug() << "failed to open file " << location;
-        return false;
+    Meta::Format format = Meta::getFormat( location );
+    switch( format ) {
+        case Meta::PLS:
+            playlist = new Meta::PLSPlaylist( tracks );
+            break;
+        case Meta::M3U:
+            playlist = new Meta::M3UPlaylist( tracks );
+            break;
+//         case RAM:
+//             playlist = loadRealAudioRam( stream );
+//             break;
+//         case ASX:
+//             playlist = loadASX( stream );
+//             break;
+//         case SMIL:
+//             playlist = loadSMIL( stream );
+//             break;
+        case Meta::XSPF:
+            playlist = new Meta::XSPFPlaylist( tracks );
+            break;
+
+        default:
+            debug() << "unknown type!";
+            break;
     }
 
-    playlist->save( file, AmarokConfig::relativePlaylist() );
+    playlist->save( location, AmarokConfig::relativePlaylist() );
 
-    file.close();
     return true;
 }
 

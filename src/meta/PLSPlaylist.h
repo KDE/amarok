@@ -43,7 +43,7 @@ class PLSPlaylist : public Playlist
 
         ~PLSPlaylist();
 
-        bool save( QFile &file, bool relative );
+        bool save( const QString &location, bool relative );
 
         /* Playlist virtual functions */
         virtual QString name() const { return prettyName(); };

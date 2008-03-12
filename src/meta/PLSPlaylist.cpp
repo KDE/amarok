@@ -216,9 +216,17 @@ PLSPlaylist::loadPls( QTextStream &stream )
 }
 
 bool
-PLSPlaylist::save( QFile &file, bool relative )
+PLSPlaylist::save( const QString &location, bool relative )
 {
     Q_UNUSED( relative );
+
+    QFile file( location );
+
+    if( !file.open( QIODevice::WriteOnly ) )
+    {
+        debug() << "Unable to open location!";
+        return false;
+    }
 
     QTextStream stream( &file );
     stream << "[Playlist]\n";
