@@ -43,11 +43,11 @@ require 'distro.rb'
 ###############################
 # Fetch Source
 
-if DAYOFMONTH == 1 or $*[0] == all or $*[0] == qt
+if DAYOFMONTH == 1 or $*[0] == "all" or $*[0] == "qt"
   QtCopy()
 end
 
-if DAYOFWEEK == 1 or $*[0] == all or $*[0] == deps
+if DAYOFWEEK == 3 or $*[0] == "all" or $*[0] == "deps"
   Strigi()
   KdeLibs()
   KdeBaseRuntime()
@@ -65,6 +65,8 @@ Amarok()
 
 ###############################
 # Distribution Uploads
+
+SVNPACKAGES = @packages
 
 UploadUbuntu.new()
 
