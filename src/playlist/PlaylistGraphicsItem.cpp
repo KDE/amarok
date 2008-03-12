@@ -151,14 +151,10 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 // 6) If this is your first night at ::paint method, you HAVE to paint.
     Q_UNUSED( painter ); Q_UNUSED( widget );
 
-    debug() << "painting row: " << m_currentRow;
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
 
     if( m_dataChanged || !m_items || ( option->rect.width() != m_items->lastWidth ) || m_groupModeChanged )
     {
-
-        debug() << "Data changed";
-
         if( !m_items )
         {
             Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
@@ -214,10 +210,6 @@ Playlist::GraphicsItem::init( Meta::TrackPtr track )
 void
 Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 {
-    DEBUG_BLOCK
-
-
-
     //just for good meassure:
 
     QFont font = m_items->topRightText->font();
@@ -747,8 +739,6 @@ void Playlist::GraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 
 void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
 {
-
-    DEBUG_BLOCK
     QRectF trackRect = option->rect;
     trackRect.setHeight( trackRect.height() - 2 );
     painter->drawPixmap( 0, 0, getCachedSvg( "track", trackRect.width(), trackRect.height() ) );
@@ -1140,8 +1130,6 @@ QPointF Playlist::GraphicsItem::centerImage(QPixmap pixmap, QRectF rect)
 {
 
     qreal pixmapRatio = (qreal) pixmap.width() / (qreal) pixmap.height();
-
-    debug() << "ratio: " << pixmapRatio;
 
     qreal moveByX = 0.0;
     qreal moveByY = 0.0;

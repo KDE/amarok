@@ -80,7 +80,6 @@ void Track::init( int id /* = -1*/ )
 {
     if( id != -1 )
         d->lastFmUri = "lastfm://play/tracks/" + QString::number( id );
-    debug() << "LASTFMURI: " << d->lastFmUri;
     d->length = 0;
 
     d->albumPtr = Meta::AlbumPtr( new LastFmAlbum( QPointer<Track::Private>( d ) ) );
@@ -405,7 +404,6 @@ Track::skip()
 void Track::slotResultReady( Request *_r )
 {
     TrackToIdRequest *r = (TrackToIdRequest*)_r;
-    debug() << "SETTING ID: " << r->id();
     if ( !r->failed() && r->isStreamable() )
        init( r->id() );
     else

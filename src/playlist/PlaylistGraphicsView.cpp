@@ -436,13 +436,11 @@ Playlist::GraphicsView::modelReset()
 void
 Playlist::GraphicsView::dataChanged(const QModelIndex & index)
 {
-     DEBUG_BLOCK
      if( !index.isValid() )
         return;
 
      if( m_tracks.count() > index.row() )
      {
-        debug() << "Refreshing item...";
         m_tracks.at( index.row() )->dataChanged();
      }
 }

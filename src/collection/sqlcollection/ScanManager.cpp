@@ -237,7 +237,7 @@ ScanManager::getDirsToScan() const
             {
                 result << folder;
                 changedFolderIds << id;
-                debug() << "Collection dir changed: " << folder;
+//                 debug() << "Collection dir changed: " << folder;
             }
         }
         else
@@ -245,7 +245,7 @@ ScanManager::getDirsToScan() const
             // this folder has been removed
             result << folder;
             changedFolderIds << id;
-            debug() << "Collection dir removed: " << folder;
+//             debug() << "Collection dir removed: " << folder;
         }
     }
     {
@@ -268,10 +268,10 @@ ScanManager::getDirsToScan() const
         QString sql = QString( "DELETE FROM tracks WHERE url IN ( %1 );" ).arg( ids );
         m_collection->query( sql );
     }
-    if( result.isEmpty() )
-        debug() << "incremental scan not necessary";
-    else
-        debug() << "scanning dirs: " << result;
+// //     if( result.isEmpty() )
+// //         debug() << "incremental scan not necessary";
+// // //     else
+// // //         debug() << "scanning dirs: " << result;
     return result;
 }
 

@@ -141,7 +141,6 @@ SqlQueryBuilder::returnResultAsDataPtrs( bool resultAsDataPtrs )
 void
 SqlQueryBuilder::run()
 {
-    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
         return; //better error handling?
     if( d->worker && !d->worker->isFinished() )
@@ -517,7 +516,6 @@ SqlQueryBuilder::query()
 QStringList
 SqlQueryBuilder::runQuery( const QString &query )
 {
-    debug() << "running query: " << query;
     return m_collection->query( query );
 }
 

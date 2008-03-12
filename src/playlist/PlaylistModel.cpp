@@ -457,14 +457,12 @@ Model::setActiveRow( int row )
 void
 Model::metadataChanged( Meta::Track *track )
 {
-    DEBUG_BLOCK
     const int size = m_items.size();
     const Meta::TrackPtr needle =  Meta::TrackPtr( track );
     for( int i = 0; i < size; i++ )
     {
         if( m_items.at( i )->track() == needle )
         {
-            debug() << "Track in playlist";
             emit dataChanged( createIndex( i, 0 ), createIndex( i, 0 ) );
             break;
         }
@@ -480,7 +478,6 @@ Model::metadataChanged( Meta::Track *track )
 void
 Model::metadataChanged(Meta::Album * album)
 {
-    DEBUG_BLOCK
     //process each track
     Meta::TrackList tracks = album->tracks();
     foreach( Meta::TrackPtr track, tracks ) {
@@ -492,7 +489,6 @@ Model::metadataChanged(Meta::Album * album)
 void
 Model::trackListChanged( Meta::Playlist * playlist )
 {
-    DEBUG_BLOCK
     //So what if it changes, we don't care. We shouldn't even receive these events!
     if( m_observedPlaylist != playlist)
         return;
