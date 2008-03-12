@@ -72,8 +72,9 @@ def KdeBaseRuntime()
 
   @neon.BaseDir()
   `svn co -N svn://anonsvn.kde.org/home/kde/trunk/KDE/kdebase/runtime #{dir}`
-  `svn up #{dir}/phonon`
   `svn up #{dir}/cmake`
+  `svn up #{dir}/phonon`
+  `svn up #{dir}/kstyles`
 
   #create CMakeLists.txt
   cmakefile = File.new( "#{dir}/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
@@ -96,6 +97,7 @@ def KdeBaseRuntime()
   #define subdirectories to use
   cmakefile << "add_subdirectory(cmake)\n"
   cmakefile << "add_subdirectory(phonon)\n"
+  cmakefile << "add_subdirectory(kstyles)\n"
   cmakefile.close()
 
   @neon.CreateTar(dir)
