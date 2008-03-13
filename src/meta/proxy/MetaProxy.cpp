@@ -47,15 +47,15 @@ class EditCapabilityProxy : public Meta::EditCapability
             , m_track( track ) {}
 
         virtual bool isEditable() const { return true; }
-        virtual void setTitle( const QString &title ) { DEBUG_BLOCK m_track->setName( title ); }
-        virtual void setAlbum( const QString &newAlbum ) { DEBUG_BLOCK m_track->setAlbum( newAlbum ); }
-        virtual void setArtist( const QString &newArtist ) { DEBUG_BLOCK m_track->setArtist( newArtist ); }
-        virtual void setComposer( const QString &newComposer ) { DEBUG_BLOCK m_track->setComposer( newComposer ); }
-        virtual void setGenre( const QString &newGenre ) { DEBUG_BLOCK m_track->setGenre( newGenre ); }
-        virtual void setYear( const QString &newYear ) { DEBUG_BLOCK m_track->setYear( newYear ); }
+        virtual void setTitle( const QString &title ) { m_track->setName( title ); }
+        virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
+        virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
+        virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
+        virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
+        virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
         virtual void setComment( const QString &newComment ) { /*m_track->setComment( newComment );*/ } // Do we want to support this?
-        virtual void setTrackNumber( int newTrackNumber ) { DEBUG_BLOCK m_track->setTrackNumber( newTrackNumber ); }
-        virtual void setDiscNumber( int newDiscNumber ) { DEBUG_BLOCK m_track->setDiscNumber( newDiscNumber ); }
+        virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
+        virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
 
         virtual void beginMetaDataUpdate() {}  // Nothing to do, we cache everything
         virtual void endMetaDataUpdate() {}
