@@ -52,6 +52,21 @@ class PlaylistManager : public QObject
             Custom
         };
 
+        enum PlaylistFormat
+        {
+            M3U,
+            PLS,
+            XML,
+            RAM,
+            SMIL,
+            ASX,
+            XSPF,
+            Unknown,
+            NotPlaylist = Unknown
+        };
+
+        static PlaylistFormat getFormat( const KUrl &path );
+
         static PlaylistManager * instance();
 
         static bool isPlaylist( const KUrl &path );

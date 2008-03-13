@@ -5,7 +5,6 @@
 //     media files in that directory show a longMessage (preferably one that disappears when given a signal)
 
 #include "enginecontroller.h"
-#include "PlaylistHandler.h"
 
 #include <kdirlister.h>
 #include <kfileitem.h>

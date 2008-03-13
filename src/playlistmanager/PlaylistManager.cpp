@@ -17,6 +17,7 @@
 */
 
 #include "amarokconfig.h"
+#include "app.h"
 #include "ContextStatusBar.h"
 #include "PlaylistManager.h"
 #include "PlaylistFileSupport.h"
@@ -26,6 +27,7 @@
 #include "PLSPlaylist.h"
 #include "XSPFPlaylist.h"
 
+#include <kdirlister.h>
 #include <kio/jobclasses.h>
 #include <kio/job.h>
 #include <KLocale>
@@ -258,6 +260,69 @@ PlaylistManager::expand( Meta::TrackPtr track )
 {
    //this should really be made asyncrhonous
    return Meta::loadPlaylist( track->url() );
+}
+
+PlaylistManager::PlaylistFormat
+PlaylistManager::getFormat( const KUrl &path )
+{
+    const QString ext = Amarok::extension( path.fileName() );
+
+    if( ext == "m3u" ) return M3U;
+    if( ext == "pls" ) return PLS;
+    if( ext == "ram" ) return RAM;
+    if( ext == "smil") return SMIL;
+    if( ext == "asx" || ext == "wax" ) return ASX;
+    if( ext == "xml" ) return XML;
+    if( ext == "xspf" ) return XSPF;
+
+    return Unknown;
+}
+
+namespace Amarok
+{
+    //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
+    KUrl::List
+    recursiveUrlExpand ( const KUrl &url )
+    {
+        typedef QMap<QString, KUrl> FileMap;
+
+        KDirLister lister ( false );
+        lister.setAutoUpdate ( false );
+        lister.setAutoErrorHandlingEnabled ( false, 0 );
+        lister.openUrl ( url );
+
+        while ( !lister.isFinished() )
+            kapp->processEvents ( QEventLoop::ExcludeUserInput );
+
+        KFileItemList items = lister.items();
+        KUrl::List urls;
+        FileMap files;
+        foreach ( const KFileItem& it, items )
+        {
+            if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
+            if ( it.isDir() ) urls += recursiveUrlExpand( it.url() );
+        }
+
+        oldForeachType ( FileMap, files )
+        // users often have playlist files that reflect directories
+        // higher up, or stuff in this directory. Don't add them as
+        // it produces double entries
+        if ( !PlaylistManager::isPlaylist( ( *it ).fileName() ) )
+            urls += *it;
+        return urls;
+    }
+
+    KUrl::List
+    recursiveUrlExpand ( const KUrl::List &list )
+    {
+        KUrl::List urls;
+        oldForeachType ( KUrl::List, list )
+        {
+            urls += recursiveUrlExpand ( *it );
+        }
+
+        return urls;
+    }
 }
 
 #include "PlaylistManager.moc"

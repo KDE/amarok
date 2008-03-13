@@ -408,7 +408,6 @@ set(amaroklib_LIB_SRCS
     mountpointmanager.cpp
     osd.cpp
     PixmapViewer.cpp
-    PlaylistHandler.cpp
     pluginmanager.cpp
     podcastsettings.cpp
     prettypopupmenu.cpp
