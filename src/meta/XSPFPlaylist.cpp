@@ -520,13 +520,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     }
 
         if ( !track->playableUrl().isEmpty() )
-        {
-            //If It's a lastfm track, we should store the lastfm stream url, not the url to the specific track..
-            if( track->type() == "stream/lastfm" )
-                APPENDNODE(location, track->prettyUrl() )
-            else
-                APPENDNODE(location, track->playableUrl().url() )
-        }
+            APPENDNODE(location, track->url() )
         if ( !track->name().isEmpty() )
             APPENDNODE(title, track->name() )
         if ( track->artist() && !track->artist()->name().isEmpty() )
