@@ -235,7 +235,10 @@ PLSPlaylist::save( const QString &location, bool relative )
     foreach( Meta::TrackPtr track, m_tracks )
     {
         stream << "File" << i << "=";
-        stream << KUrl( track->url() ).path();
+        if( track->type() == "stream/lastfm" )
+            stream << KUrl( track->prettyUrl() ).path();
+        else
+            stream << KUrl( track->playableUrl() ).path();
         stream << "\nTitle" << i << "=";
         stream << track->name();
         stream << "\nLength" << i << "=";

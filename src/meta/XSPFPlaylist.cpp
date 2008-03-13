@@ -473,21 +473,17 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 {
     DEBUG_BLOCK
 
-            debug() << "here";
     if ( documentElement().namedItem( "trackList" ).isNull() )
     {
-        debug() << "here1";
         documentElement().appendChild( createElement( "trackList" ) );
     }
 
     QDomNode node = createElement( "trackList" );
-    debug() << "Here2";
     XSPFTrackList::iterator it;
 
     Meta::TrackPtr track;
     foreach( track, trackList )
     {
-        debug() << "here3";
         QDomNode subNode = createElement( "track" );
 
 //URI of resource to be rendered.
@@ -524,7 +520,13 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     }
 
         if ( !track->playableUrl().isEmpty() )
-            APPENDNODE(location, track->playableUrl().url() )
+        {
+            //If It's a lastfm track, we should store the lastfm stream url, not the url to the specific track..
+            if( track->type() == "stream/lastfm" )
+                APPENDNODE(location, track->prettyUrl() )
+            else
+                APPENDNODE(location, track->playableUrl().url() )
+        }
         if ( !track->name().isEmpty() )
             APPENDNODE(title, track->name() )
         if ( track->artist() && !track->artist()->name().isEmpty() )

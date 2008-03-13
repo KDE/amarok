@@ -65,6 +65,7 @@ Track::Track( ::Track track )
     , d( new Private() )
 {
     d->t = this;
+    d->track = track.title();
     TrackToIdRequest *request = new TrackToIdRequest( track );
     connect( request, SIGNAL( result( Request* ) ), SLOT( slotResultReady( Request* ) ) );
     request->start();
@@ -112,74 +113,7 @@ Track::name() const
 {
     if( d->track.isEmpty() )
     {
-        // parse the url to get a name if we don't have a track name (ie we're not playing the station)
-        // do it as name rather than prettyname so it shows up nice in the playlist.
-        QStringList elements = d->lastFmUri.split( "/", QString::SkipEmptyParts );
-        if( elements.size() >= 2 && elements[0] == "lastfm:" )
-        {
-            if( elements[1] == "globaltags" )
-            {
-                // lastfm://globaltag/<tag>
-                if( elements.size() >= 3 )
-                    return i18n( "Global Tag Radio: %1", elements[2] );
-            }
-            else if( elements[1] == "usertags" )
-            {
-                // lastfm://usertag/<tag>
-                if( elements.size() >= 3 )
-                    return i18n( "User Tag Radio: %1", elements[2] );
-            }
-            else if( elements[1] == "artist" )
-            {
-                if( elements.size() >= 4 )
-                {
-                    // lastfm://artist/<artist>/similarartists
-                    if( elements[3] == "similarartists" )
-                        return i18n( "Similar Artists to %1", elements[2] );
-                    // lastfm://artist/<artist>/fans
-                    else if( elements[3] == "fans" )
-                        return i18n( "Artist Fan Radio: %1", elements[2] );
-                }
-            }
-            else if( elements[1] == "user" )
-            {
-                if( elements.size() >= 4 )
-                {
-                    // lastfm://user/<user>/neighbours
-                    if( elements[3] == "neighbours" )
-                        return i18n( "%1's Neighbor Radio", elements[2] );
-                    // lastfm://user/<user>/personal
-                    else if( elements[3] == "personal" )
-                        return i18n( "%1's Personal Radio", elements[2] );
-                    // lastfm://user/<user>/loved
-                    else if( elements[3] == "loved" )
-                        return i18n( "%1's Loved Radio", elements[2] );
-                    // lastfm://user/<user>/recommended/<popularity>
-                    else if( elements.size() >= 5 && elements[3] == "recommended" )
-                        return i18n( "%1's Recommended Radio (Popularity %2)", elements[2], elements[4] );
-                }
-            }
-            else if( elements[1] == "group" )
-            {
-                // lastfm://group/<group>
-                if( elements.size() >= 3 )
-                    return i18n( "Group Radio: %1", elements[2] );
-            }
-            else if( elements[1] == "play" )
-            {
-                if( elements.size() >= 4 )
-                {
-                    // lastfm://play/tracks/<track #s>
-                    if ( elements[2] == "tracks" )
-                        return i18n( "Track Radio" );
-                    // lastfm://play/artists/<artist #s>
-                    else if ( elements[2] == "artists" )
-                        return i18n( "Artist Radio" );
-                }
-            }
-        }
-        
-        return d->lastFmUri;
+        return streamName();
     }
     else
     {
@@ -370,6 +304,79 @@ void
 Track::setTrackInfo( const TrackInfo &trackInfo )
 {
     d->setTrackInfo( trackInfo );
+}
+
+QString
+Track::streamName() const
+{
+    // parse the url to get a name if we don't have a track name (ie we're not playing the station)
+    // do it as name rather than prettyname so it shows up nice in the playlist.
+    QStringList elements = d->lastFmUri.split( "/", QString::SkipEmptyParts );
+    if( elements.size() >= 2 && elements[0] == "lastfm:" )
+    {
+        if( elements[1] == "globaltags" )
+        {
+                // lastfm://globaltag/<tag>
+            if( elements.size() >= 3 )
+                return i18n( "Global Tag Radio: %1", elements[2] );
+        }
+        else if( elements[1] == "usertags" )
+        {
+                // lastfm://usertag/<tag>
+            if( elements.size() >= 3 )
+                return i18n( "User Tag Radio: %1", elements[2] );
+        }
+        else if( elements[1] == "artist" )
+        {
+            if( elements.size() >= 4 )
+            {
+                    // lastfm://artist/<artist>/similarartists
+                if( elements[3] == "similarartists" )
+                    return i18n( "Similar Artists to %1", elements[2] );
+                    // lastfm://artist/<artist>/fans
+                else if( elements[3] == "fans" )
+                    return i18n( "Artist Fan Radio: %1", elements[2] );
+            }
+        }
+        else if( elements[1] == "user" )
+        {
+            if( elements.size() >= 4 )
+            {
+                    // lastfm://user/<user>/neighbours
+                if( elements[3] == "neighbours" )
+                    return i18n( "%1's Neighbor Radio", elements[2] );
+                    // lastfm://user/<user>/personal
+                else if( elements[3] == "personal" )
+                    return i18n( "%1's Personal Radio", elements[2] );
+                    // lastfm://user/<user>/loved
+                else if( elements[3] == "loved" )
+                    return i18n( "%1's Loved Radio", elements[2] );
+                    // lastfm://user/<user>/recommended/<popularity>
+                else if( elements.size() >= 5 && elements[3] == "recommended" )
+                    return i18n( "%1's Recommended Radio (Popularity %2)", elements[2], elements[4] );
+            }
+        }
+        else if( elements[1] == "group" )
+        {
+                // lastfm://group/<group>
+            if( elements.size() >= 3 )
+                return i18n( "Group Radio: %1", elements[2] );
+        }
+        else if( elements[1] == "play" )
+        {
+            if( elements.size() >= 4 )
+            {
+                    // lastfm://play/tracks/<track #s>
+                if ( elements[2] == "tracks" )
+                    return i18n( "Track Radio" );
+                    // lastfm://play/artists/<artist #s>
+                else if ( elements[2] == "artists" )
+                    return i18n( "Artist Radio" );
+            }
+        }
+    }
+
+    return d->lastFmUri;
 }
 
 void

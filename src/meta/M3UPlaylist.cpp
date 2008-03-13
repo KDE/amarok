@@ -145,7 +145,11 @@ M3UPlaylist::save( const QString &location, bool relative )
     QList<int> lengths;
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        urls << track->url();
+        //Store the url to the stream if it's a lastfm track
+        if( track->type() == "stream/lastfm" )
+            urls << track->prettyUrl();
+        else
+            urls << track->playableUrl().url();
         titles << track->name();
         lengths << track->length();
     }

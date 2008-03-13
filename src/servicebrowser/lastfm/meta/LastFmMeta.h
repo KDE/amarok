@@ -101,6 +101,7 @@ namespace LastFm
 
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
+            QString streamName() const; // A nice name for the stream..
         public slots:
             void love();
             void ban();
