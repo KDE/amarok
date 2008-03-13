@@ -519,7 +519,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
         subNode.appendChild( X ); \
     }
 
-        if ( !track->playableUrl().isEmpty() )
+        if ( !track->url().isEmpty() )
             APPENDNODE(location, track->url() )
         if ( !track->name().isEmpty() )
             APPENDNODE(title, track->name() )
