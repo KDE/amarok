@@ -48,7 +48,6 @@ public:
     // moving the last applet to another column
     void balanceColumns()
     {
-        kDebug() << "balanceColumns";
         int numColumns = columns.size();
         if( numColumns == 1 ) // no balancing to do :)
             return;
@@ -237,8 +236,6 @@ T qSum(const QList<T>& container)
 
 void ContextLayout::relayout()
 {
-    kDebug() << "relayout";
-    
     QRectF rect = geometry().adjusted(margin(Plasma::LeftMargin), margin(Plasma::TopMargin), -margin(Plasma::RightMargin), -margin(Plasma::BottomMargin));
     const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
 

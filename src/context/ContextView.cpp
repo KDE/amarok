@@ -48,7 +48,6 @@ ContextView::ContextView( QWidget* parent )
     , EngineObserver( EngineController::instance() )
     , m_columns( 0 )
 {
-    DEBUG_BLOCK
 
     s_self = this;
 
@@ -93,7 +92,6 @@ ContextView::ContextView( QWidget* parent )
 
 ContextView::~ContextView()
 {
-    DEBUG_BLOCK
     clear( m_curState );
 }
 
@@ -104,7 +102,6 @@ void ContextView::clear()
 
 void ContextView::clear( const ContextState& state )
 {
-    DEBUG_BLOCK
     QString name = "amarok_";
 
     if( state == Home )
@@ -133,7 +130,6 @@ void ContextView::clear( const ContextState& state )
 
 void ContextView::engineStateChanged( Engine::State state, Engine::State oldState )
 {
-    DEBUG_BLOCK
     Q_UNUSED( oldState ); Q_UNUSED( state );
 
    switch( state )
@@ -227,7 +223,6 @@ ContextScene* ContextView::contextScene()
 
 void ContextView::resizeEvent( QResizeEvent* event )
 {
-    DEBUG_BLOCK
     Q_UNUSED( event )
         if ( testAttribute( Qt::WA_PendingResizeEvent ) ) {
             return; // lets not do this more than necessary, shall we?

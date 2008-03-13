@@ -39,19 +39,15 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_rating( -1 )
     , m_trackLength( 0 )
 {
-    DEBUG_BLOCK
-
     setHasConfigurationInterface( false );
 }
 
 CurrentTrack::~CurrentTrack()
 {
-    DEBUG_BLOCK
 }
 
 void CurrentTrack::init()
 {
-    DEBUG_BLOCK
     setDrawStandardBackground( true );
     dataEngine( "amarok-current" )->connectSource( "current", this );
 
@@ -105,9 +101,6 @@ void CurrentTrack::init()
 
 void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
 {
-    DEBUG_BLOCK
-
-
     prepareGeometryChange();
 
     if (constraints & Plasma::SizeConstraint && m_theme) {
@@ -181,7 +174,6 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
 
 void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
-    DEBUG_BLOCK
     Q_UNUSED( name );
 
     if( data.size() == 0 ) return;
@@ -223,7 +215,6 @@ qreal CurrentTrack::heightForWidth( qreal width ) const
 
 void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
-    DEBUG_BLOCK
     Q_UNUSED( option );
 
     debug() << "painting currenttrack applet in:" << contentsRect;
@@ -277,8 +268,6 @@ void CurrentTrack::configAccepted() // SLOT
 
 bool CurrentTrack::resizeCover(QPixmap cover){
 
-    DEBUG_BLOCK
-            
     if( !cover.isNull() )
     {
         QSize rectSize = m_theme->elementRect( "albumart" ).size();

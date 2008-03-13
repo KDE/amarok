@@ -145,7 +145,6 @@ void ColumnApplet::loadConfig( KConfig& conf )
 
 QSizeF ColumnApplet::sizeHint() const
 {
-    debug() << "column applet returning size hint:" << m_geometry.size();
     return m_geometry.size();
 }
 
@@ -156,9 +155,7 @@ QRectF ColumnApplet::boundingRect() const
 // call this when the view changes size: e.g. layout needs to be recalculated
 void ColumnApplet::updateSize() // SLOT
 {
-    DEBUG_BLOCK
     m_geometry = scene()->sceneRect();
-    debug() << "setting geometry:" << scene()->sceneRect();
     m_columns->setGeometry( scene()->sceneRect() );
     setGeometry( scene()->sceneRect() );
 }
