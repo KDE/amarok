@@ -88,6 +88,15 @@ AmpacheService::AmpacheService(const QString & name, const QString &url, const Q
     m_username = username;
     m_password = password;
 
+    //FIXME: HACK:  Force a reauthentication every hour to prevent the session from timing out.
+    // This should really be fixed by parsing a pretty error code from ampache
+     // and reauthenticating when it tells us the session is over
+    // However, vollmer needs to break out the error code for us to do that.
+    // ~hydrogen
+    QTimer *t = new QTimer(this);
+    connect(t, SIGNAL( timeout() ), SLOT(authenticate() ) );
+    t->start( 3600000 );
+
 }
 
 
@@ -100,15 +109,19 @@ AmpacheService::~AmpacheService()
 void AmpacheService::polish()
 {
     m_bottomPanel->hide();
-            
+
     if ( !m_authenticated )
-        authenticate( m_server, m_username, m_password );
+        authenticate( /*m_server, m_username, m_password*/ );
 
 }
 
-void AmpacheService::authenticate( const QString & server, const QString & username, const QString & password )
+ //FIXME: Are these parameters really necessary?  They only get passed member variables.  Disabling to make the hackaround work :)
+void AmpacheService::authenticate(/* const QString & server, const QString & username, const QString & password*/ )
 {
-
+    //Only adding these to make reverting my change easier if necessary.  Feel free to simply replace s/server/m_server and the like if the change is good.
+    const QString server = m_server;
+    const QString username = m_username;
+    const QString password = m_password;
     //lets keep this around for now if we want to allow pwople to add a service that prompts for stuff
     if ( server.isEmpty() || password.isEmpty() ) {
         KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to api, but that does not work

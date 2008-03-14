@@ -60,12 +60,9 @@ public:
 
     void polish();
 
-private:
-
-    void authenticate( const QString & server, const QString & username, const QString & password );
-
 private slots:
 
+    void authenticate(/* const QString & server, const QString & username, const QString & password */);
     void authenticationComplete(  KJob *job );
 
 private:
