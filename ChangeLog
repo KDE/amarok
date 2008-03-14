@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 1.4.9
   BUGFIXES:
+    * The last.fm dialog did not always properly disable options when the
+      username was not entered.
+    * Fix Amazon Cover fetching by using their new web service api.
     * Don't insert items into Dynamic Mode that don't exist.
     * If unavailable tracks are in the Playlist and random mode is on, don't
       stop those track is selected; continue with available tracks.

@@ -195,6 +195,9 @@
             <property name="name">
                 <cstring>groupBox2</cstring>
             </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
             <property name="title">
                 <string>last.fm Services</string>
             </property>
@@ -218,7 +221,7 @@
                         <cstring>kcfg_SubmitPlayedSongs</cstring>
                     </property>
                     <property name="enabled">
-                        <bool>true</bool>
+                        <bool>false</bool>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -231,10 +234,16 @@
                     <property name="text">
                         <string>Improve m&amp;y profile by submitting the tracks I play</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+Y</string>
+                    </property>
                 </widget>
                 <widget class="QCheckBox">
                     <property name="name">
                         <cstring>kcfg_RetrieveSimilarArtists</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
                     </property>
                     <property name="text">
                         <string>&amp;Retrieve similar artists</string>
@@ -280,8 +289,6 @@
         </spacer>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_ScrobblerUsername</sender>
@@ -294,7 +301,7 @@
     <include location="local" impldecl="in implementation">Options8.ui.h</include>
 </includes>
 <slots>
-    <slot access="protected">updateServices(const QString &amp;)</slot>
+    <slot access="protected">updateServices( const QString &amp; s )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>

@@ -12,13 +12,11 @@
 ** destructor.
 *****************************************************************************/
 
-void Options8::init()
-{
-    groupBox2->setEnabled( !s.isEmpty() );
-}
-
 void Options8::updateServices( const QString &s )
 {
-    groupBox2->setEnabled( !s.isEmpty() );
+    bool empty = s.isEmpty();
+    groupBox2->setEnabled( !empty );
+    kcfg_SubmitPlayedSongs->setEnabled( !empty );
+    kcfg_RetrieveSimilarArtists->setEnabled( !empty );
 }
 
