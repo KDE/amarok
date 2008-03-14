@@ -105,7 +105,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 url.prepend( "file://" );
 
             if( KUrl::isRelativeUrl( url ) ) {
-                KUrl kurl( KUrl( directory + line ) );
+                KUrl kurl( directory + line );
                 kurl.cleanPath();
                 debug() << "found track: " << kurl.path();
                 m_tracks.append( Meta::TrackPtr( new MetaProxy::Track( kurl ) ) );
@@ -177,4 +177,5 @@ M3UPlaylist::save( const QString &location, bool relative )
     return true;
 }
 
-}
+} //namespace Meta
+
