@@ -12,6 +12,10 @@
 ** destructor.
 *****************************************************************************/
 
+void Options8::init()
+{
+    groupBox2->setEnabled( !s.isEmpty() );
+}
 
 void Options8::updateServices( const QString &s )
 {
