@@ -89,7 +89,7 @@ class ContextWidget : public KVBox
     // Set a useful size default of the center tab.
     public:
         ContextWidget( QWidget *parent ) : KVBox( parent ) {}
-        QSize sizeHint() const { return QSize( 400, 300 ); }
+        QSize sizeHint() const { return QSize( static_cast<QWidget*>(parent())->size().width() / 3, 300 ); }
 };
 
 MainWindow *MainWindow::s_instance = 0;
@@ -122,6 +122,7 @@ MainWindow::MainWindow()
     }
     PERF_LOG( "Create sidebar" )
     m_browsers = new SideBar( this, new KVBox );
+    m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 }
 
 MainWindow::~MainWindow()
@@ -148,6 +149,7 @@ void MainWindow::init()
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
     PERF_LOG( "Create Playlist" )
     Playlist::Widget *playlistWidget = new Playlist::Widget( this );
+    playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
     PERF_LOG( "Playlist created" )
 
     {
@@ -167,7 +169,7 @@ void MainWindow::init()
     PERF_LOG( "Creating ContextWidget" )
     ContextWidget *contextWidget = new ContextWidget( this );
     PERF_LOG( "ContextWidget created" )
-    contextWidget->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
+    contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
     PERF_LOG( "Creating ContextView" )
     new Context::ContextView( contextWidget );
     PERF_LOG( "ContextView created" )

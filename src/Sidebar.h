@@ -106,6 +106,9 @@ class SideBar: public KHBox
     public slots:
         void showWidget( int index ) { m_bar->open( index ); }
 
+    protected:
+        QSize sizeHint() const { return QSize( static_cast<QWidget*>(parent())->size().width() / 4, 400 ); }
+
     private slots:
         void openWidget( int index )
         {

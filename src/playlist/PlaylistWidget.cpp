@@ -117,6 +117,10 @@ Widget::Widget( QWidget* parent )
 
 }
 
+QSize Widget::sizeHint() const
+{
+    return QSize( static_cast<QWidget*>(parent())->size().width() / 4 , 300 );
+}
 void Widget::switchView()
 {
     m_stackedWidget->setCurrentIndex( ( m_stackedWidget->currentIndex() + 1 ) % 2 );

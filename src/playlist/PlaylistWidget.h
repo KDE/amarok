@@ -36,6 +36,8 @@ namespace Playlist {
         public slots:
             void switchView();
 
+        protected:
+            QSize sizeHint() const;
         private:
             QStackedWidget *m_stackedWidget;
     };
