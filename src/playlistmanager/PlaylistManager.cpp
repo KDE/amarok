@@ -23,9 +23,9 @@
 #include "PlaylistFileSupport.h"
 #include "TheInstances.h"
 #include "debug.h"
-#include "M3UPlaylist.h"
-#include "PLSPlaylist.h"
-#include "XSPFPlaylist.h"
+#include "meta/M3UPlaylist.h"
+#include "meta/PLSPlaylist.h"
+#include "meta/XSPFPlaylist.h"
 
 #include <kdirlister.h>
 #include <kio/jobclasses.h>
