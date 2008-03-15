@@ -12,7 +12,14 @@
 class PodcastChannelBundle
 {
     public:
-        PodcastChannelBundle() { }
+        PodcastChannelBundle()
+            : m_parentId( -1 )
+            , m_autoscan( false )
+            , m_fetchType( -1 )
+            , m_autotransfer( false )
+            , m_purge( false )
+            , m_purgeCount( -1 ) { }
+
         PodcastChannelBundle( const KURL &url, const QString &title, const QString &author, const KURL &link,
                               const QString &desc,  const QString &copy, PodcastSettings *settings )
         {   m_url = url;
