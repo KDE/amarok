@@ -1,5 +1,5 @@
 [Desktop Entry]
-Encoding=UTF-8
+Name=Amarok Data Engine
 Type=ServiceType
 X-KDE-ServiceType=AmarokContext/DataEngine
 

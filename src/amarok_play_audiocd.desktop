@@ -1,7 +1,6 @@
 [Desktop Entry]
 ServiceTypes=media/audiocd
 Actions=Play;
-Encoding=UTF-8
 X-KDE-Priority=TopLevel
 
 [Desktop Action Play]

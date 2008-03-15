@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Type=Service
 Name=Phonon Engine
 Name[bg]=Phonon
@@ -54,7 +53,7 @@ Comment[tr]=Amarok için eklenti
 Comment[uk]=Втулок для Amarok
 Comment[zh_CN]=Amarok 插件
 Comment[zh_TW]=Amarok 插件
-ServiceTypes=Amarok/Plugin
+X-KDE-ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine
 X-KDE-Amarok-name=phonon-engine

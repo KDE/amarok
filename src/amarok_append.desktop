@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 ServiceTypes=KonqPopupMenu/Plugin,audio/*
 Actions=appendToPlaylist;appendAndPlay;queueTrack;
 Type=Service

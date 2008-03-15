@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 ServiceTypes=text/html,application/xml,application/xml,application/rss+xml,text/rdf
 Actions=addAsPodcast;
 [Desktop Action addAsPodcast]
