@@ -58,8 +58,9 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
 
     Q3GroupBox *location = new Q3GroupBox( 1, Qt::Vertical, i18n( "Music Location" ), vbox );
 
-    new QLabel( i18n( "Your music will be transferred to:\n%1" )
-                    .arg( transferDir ), location );
+    new QLabel( i18n( "Your music will be transferred to:\n%1",
+                    transferDir ),
+                location );
 
     KVBox *vbox2 = new KVBox( vbox );
     QLayout *vlayout = vbox2->layout();

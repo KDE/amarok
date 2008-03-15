@@ -92,9 +92,9 @@ PluginManager::createFromService( const KService::Ptr service )
 
     if ( !lib ) {
         KMessageBox::error( 0, i18n( "<p>KLibLoader could not load the plugin:<br/><i>%1</i></p>"
-                                     "<p>Error message:<br/><i>%2</i></p>" )
-                               .arg( service->library() )
-                               .arg( loader->lastErrorMessage() ) );
+                                     "<p>Error message:<br/><i>%2</i></p>",
+                                     service->library(),
+                                     loader->lastErrorMessage() ) );
         return 0;
     }
     //look up address of init function and cast it to pointer-to-function
@@ -172,10 +172,10 @@ PluginManager::showAbout( const QString &constraint )
 
     QString str  = "<html><body><table width=\"100%\" border=\"1\">";
 
-    str += body.arg( i18n( "Name" ),                s->name() );
+    str += body.arg( i18nc( "Title, as in: the title of this item", "Name" ),                s->name() );
     str += body.arg( i18n( "Library" ),             s->library() );
     str += body.arg( i18n( "Authors" ),             s->property( "X-KDE-Amarok-authors" ).toStringList().join( "\n" ) );
-    str += body.arg( i18n( "Email" ),               s->property( "X-KDE-Amarok-email" ).toStringList().join( "\n" ) );
+    str += body.arg( i18nc( "Property, belonging to the author of this item", "Email" ),               s->property( "X-KDE-Amarok-email" ).toStringList().join( "\n" ) );
     str += body.arg( i18n( "Version" ),             s->property( "X-KDE-Amarok-version" ).toString() );
     str += body.arg( i18n( "Framework Version" ),   s->property( "X-KDE-Amarok-framework-version" ).toString() );
 

@@ -112,7 +112,7 @@ CollectionTreeItem::data( int role ) const {
                 }
             }*/
             if ( name.isEmpty() )
-                return i18n( "Unknown" );
+                return i18nc( "The Name is not known", "Unknown" );
             return name;
         }
         else if ( role == CustomRoles::SortRole )

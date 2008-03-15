@@ -245,7 +245,7 @@ DaapClient::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
             break;
         default:
             urls = m_view->nodeBuildDragList( 0 );
-            menu.insertItem( SmallIconSet( "view-media-playlist-amarok" ), i18n( "&Load" ), LOAD );
+            menu.insertItem( SmallIconSet( "view-media-playlist-amarok" ), i18nc( "Replace current playlist with this", "&Load" ), LOAD );
             menu.insertItem( SmallIconSet( "list-add-amarok" ), i18n( "&Append to Playlist" ), APPEND );
             menu.insertItem( SmallIconSet( "media-seek-forward-amarok" ), i18n( "&Queue Tracks" ), QUEUE );
             menu.insertSeparator();
@@ -775,7 +775,7 @@ ServerItem::httpError( const QString& errorString )
 {
     stopAnimation();
     resetTitle();
-    Amarok::ContextStatusBar::instance()->longMessage( i18n( "The following error occurred while trying to connect to the remote server:<br>%1", errorString ) );
+    Amarok::ContextStatusBar::instance()->longMessage( i18n( "The following error occurred while trying to connect to the remote server:<br/>%1", errorString ) );
     m_reader->deleteLater();
     m_reader = 0;
     m_loaded = false;

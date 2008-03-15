@@ -313,7 +313,7 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
     {
 
         KMenu menu;
-        QAction* loadAction = new QAction( KIcon("file_open" ), i18n( "&Load" ), &menu );
+        QAction* loadAction = new QAction( KIcon("file_open" ), i18nc( "Replace the cuurent playlist with these tracks", "&Load" ), &menu );
         QAction* appendAction = new QAction( KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), &menu);
 
         menu.addAction( loadAction );

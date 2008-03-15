@@ -92,7 +92,7 @@ void OpmlDirectoryService::polish()
 
     m_updateListButton = new QPushButton;
     m_updateListButton->setParent( bottomPanelLayout );
-    m_updateListButton->setText( i18n( "Update" ) );
+    m_updateListButton->setText( i18nc( "Fetch new information from the website", "Update" ) );
     m_updateListButton->setObjectName( "updateButton" );
     m_updateListButton->setIcon( KIcon( "view-refresh-amarok" ) );
 

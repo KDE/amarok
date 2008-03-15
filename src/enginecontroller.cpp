@@ -198,10 +198,10 @@ EngineController::loadEngine( const QString &engineName )
             "Amarok is now updating the KDE configuration database. Please wait a couple of minutes, then restart Amarok.</p>"
             "<p>If this does not help, "
             "it is likely that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
-            "$ cd /path/to/amarok/source-code/<br>"
-            "$ su -c \"make uninstall\"<br>"
-            "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
-            "$ kbuildsycoca<br>"
+            "$ cd /path/to/amarok/source-code/<br/>"
+            "$ su -c \"make uninstall\"<br/>"
+            "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br/>"
+            "$ kbuildsycoca<br/>"
             "$ amarok</pre>"
             "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
 

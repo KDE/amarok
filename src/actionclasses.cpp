@@ -325,7 +325,7 @@ QString SelectAction::currentText() const {
 RandomAction::RandomAction( KActionCollection *ac ) :
     SelectAction( i18n( "Ra&ndom" ), &AmarokConfig::setRandomMode, ac, "random_mode" )
 {
-    setItems( QStringList() << i18n( "&Off" ) << i18n( "&Tracks" ) << i18n( "&Albums" ) );
+    setItems( QStringList() << i18nc( "State, as in disabled", "&Off" ) << i18nc( "Items, as in music", "&Tracks" ) << i18n( "&Albums" ) );
     setCurrentItem( AmarokConfig::randomMode() );
     setIcons( QStringList() << "go-next-amarok" << "media-playlist-shuffle-amarok" << "media-album-shuffle" );
 }
@@ -346,7 +346,7 @@ RandomAction::setCurrentItem( int n )
 FavorAction::FavorAction( KActionCollection *ac ) :
     SelectAction( i18n( "&Favor" ), &AmarokConfig::setFavorTracks, ac, "favor_tracks" )
 {
-    setItems( QStringList() << i18n( "Off" )
+    setItems( QStringList() << i18nc( "State, as in disabled", "Off" )
                             << i18n( "Higher &Scores" )
                             << i18n( "Higher &Ratings" )
                             << i18n( "Not Recently &Played" ) );
@@ -362,7 +362,7 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
     SelectAction( i18n( "&Repeat" ), &AmarokConfig::setRepeat, ac, "repeat" )
 {
     PERF_LOG( "Before setItems" );
-    setItems( QStringList() << i18n( "&Off" ) << i18n( "&Track" )
+    setItems( QStringList() << i18nc( "State, as in, disabled", "&Off" ) << i18nc( "Item, as in, music", "&Track" )
                             << i18n( "&Album" ) << i18n( "&Playlist" ) );
     PERF_LOG( "Before setIcons");
     setIcons( QStringList() << "go-down-amarok" << "media-track-repeat" << "media-album-repeat" << "media-playlist-repeat-amarok" );

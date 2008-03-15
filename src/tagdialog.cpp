@@ -697,7 +697,7 @@ TagDialog::startDataQuery()
 
 inline const QString TagDialog::unknownSafe( QString s ) {
     return ( s.isNull() || s.isEmpty() || s == "?" || s == "-" )
-           ? i18n ( "Unknown" )
+           ? i18nc( "The value for this tag is not known", "Unknown" )
            : s;
 }
 
@@ -831,9 +831,9 @@ void TagDialog::readTags()
     QDate firstPlayed = QDateTime::fromTime_t( m_currentTrack->firstPlayed() ).date();
     QDate lastPlayed = QDateTime::fromTime_t( m_currentTrack->lastPlayed() ).date();
     summaryText += body2cols.arg( i18n("First Played:"),
-                   m_currentTrack->playCount() ? KGlobal::locale()->formatDate( firstPlayed, KLocale::ShortDate ) : i18n("Never") );
+                   m_currentTrack->playCount() ? KGlobal::locale()->formatDate( firstPlayed, KLocale::ShortDate ) : i18nc( "When this track was first played", "Never") );
     summaryText += body2cols.arg( i18nc("a single item (singular)", "Last Played:"),
-                   m_currentTrack->playCount() ? KGlobal::locale()->formatDate( lastPlayed, KLocale::ShortDate ) : i18n("Never") );
+                   m_currentTrack->playCount() ? KGlobal::locale()->formatDate( lastPlayed, KLocale::ShortDate ) : i18nc( "When this track was last played", "Never") );
 
     summaryText += "</table></td></tr></table>";
     ui->summaryLabel->setText( summaryText );
@@ -971,7 +971,7 @@ TagDialog::setSingleTrackMode()
 void
 TagDialog::readMultipleTracks()
 {
-    setWindowTitle( KDialog::makeStandardCaption( i18np("1 Track", "Information for %1 Tracks", m_tracks.count()) ) );
+    setWindowTitle( KDialog::makeStandardCaption( i18ncp( "The amount of tracks being edited", "1 Track", "Information for %1 Tracks", m_tracks.count()) ) );
 
     //Check which fields are the same for all selected tracks
     QListIterator<Meta::TrackPtr > it( m_tracks );
@@ -1716,7 +1716,7 @@ TagDialogWriter::completeJob()
 //PORT 2.0        CollectionView::instance()->databaseChanged();
      if ( m_failCount )
         Amarok::ContextStatusBar::instance()->longMessage( i18n(
-                        "Sorry, the tag for the following files could not be changed:\n", m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );
+                        "Sorry, the tags for the following files could not be changed:\n%1", m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );
 }
 
 

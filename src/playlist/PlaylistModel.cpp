@@ -381,7 +381,7 @@ Model::prettyColumnName( Column index ) //static
 {
     switch( index )
     {
-        case Filename:   return i18n( "Filename"    );
+        case Filename:   return i18nc( "The name of the file this track is stored in", "Filename"    );
         case Title:      return i18n( "Title"       );
         case Artist:     return i18n( "Artist"      );
         case AlbumArtist:return i18n( "Album Artist");
@@ -389,11 +389,11 @@ Model::prettyColumnName( Column index ) //static
         case Year:       return i18n( "Year"        );
         case Album:      return i18n( "Album"       );
         case DiscNumber: return i18n( "Disc Number" );
-        case TrackNumber:return i18n( "Track"       );
+        case TrackNumber:return i18nc( "The Track number for this item", "Track"       );
         case Bpm:        return i18n( "BPM"         );
         case Genre:      return i18n( "Genre"       );
         case Comment:    return i18n( "Comment"     );
-        case Directory:  return i18n( "Directory"   );
+        case Directory:  return i18nc( "The location on disc of this track", "Directory"   );
         case Type:       return i18n( "Type"        );
         case Length:     return i18n( "Length"      );
         case Bitrate:    return i18n( "Bitrate"     );

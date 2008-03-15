@@ -200,7 +200,7 @@ CoverManager::CoverManager()
 
     m_amazonLocaleMenu = new KMenu( this );
 
-    a = m_amazonLocaleMenu->addAction( i18n("International"),  this, SLOT( slotSetLocaleIntl() ) );
+    a = m_amazonLocaleMenu->addAction( i18nc( "The locale to use when fetching covers from amazon.com", "International"),  this, SLOT( slotSetLocaleIntl() ) );
     if( m_currentLocale == CoverFetcher::International ) a->setChecked( true );
     localeGroup->addAction( a );
 
@@ -843,7 +843,7 @@ void CoverManager::updateStatusBar()
         //update the status text
         if( m_coversFetched + m_coverErrors >= m_progress->value() ) {
             //fetching finished
-            text = i18n( "Finished." );
+            text = i18nc( "The fetching is done.", "Finished." );
             if( m_coverErrors )
                 text += i18np( " Cover not found", " <b>%1</b> covers not found", m_coverErrors );
             //reset counters

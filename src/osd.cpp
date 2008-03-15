@@ -124,7 +124,7 @@ OSDWidget::volChanged( unsigned char volume )
     {
         m_volume = true;
         m_newvolume = volume;
-        m_text = m_newvolume ? i18n("Volume: %1%", m_newvolume) : i18n("Mute");
+        m_text = m_newvolume ? i18n("Volume: %1%", m_newvolume) : i18nc( "State, as in, The playback is silent", "Mute");
 
         show();
     }
@@ -183,8 +183,8 @@ OSDWidget::determineMetrics( const uint M )
     if( m_volume )
     {
         static const QString tmp = QString ("******").insert( 3,
-            ( i18n("Volume: 100%").length() >= i18n("Mute").length() )?
-            i18n("Volume: 100%") : i18n("Mute") );
+            ( i18n("Volume: 100%").length() >= i18nc( "State, as in, the playback is silent", "Mute" ).length() )?
+            i18n("Volume: 100%") : i18nc( "State, as in, the playback is silent", "Mute" ) );
 
         QRect tmpRect = fontMetrics().boundingRect( 0, 0,
             max.width() - image.width(), max.height() - fontMetrics().height(),

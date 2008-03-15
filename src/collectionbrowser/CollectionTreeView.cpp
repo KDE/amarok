@@ -133,7 +133,7 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         //CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 
         KMenu menu;
-        QAction* loadAction = new QAction( KIcon("file_open" ), i18n( "&Load" ), &menu );
+        QAction* loadAction = new QAction( KIcon("file_open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), &menu );
         QAction* appendAction = new QAction( KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), &menu);
         QAction* editAction = new QAction( i18n( "Edit Track Information" ), &menu );
         QAction* organizeAction = new QAction( i18n( "Organize Files" ), &menu );

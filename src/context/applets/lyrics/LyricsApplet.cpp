@@ -83,7 +83,7 @@ void LyricsApplet::init()
 
     m_titleLabel->setBrush( Qt::white );
     m_titleLabel->setFont( labelFont );
-    m_titleLabel->setText( i18n( "Title" ) + ':' );
+    m_titleLabel->setText( i18nc( "The name of the current playing song", "Title" ) + ':' );
 
     m_artistLabel->setBrush( Qt::white );
     m_artistLabel->setFont( labelFont );

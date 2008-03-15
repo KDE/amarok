@@ -133,10 +133,10 @@ QString OrganizeCollectionDialog::buildFormatTip() const
 {
     //FIXME: This is directly copied from mediadevice/generic/genericmediadeviceconfigdialog.ui.h
     QMap<QString, QString> args;
-    args["albumartist"] = i18n( "%1 or %2" ).arg( "Album Artist, The" , "The Album Artist" );
+    args["albumartist"] = i18n( "%1 or %2", QLatin1String("Album Artist, The") , QLatin1String("The Album Artist") );
     args["thealbumartist"] = "The Album Artist";
     args["theartist"] = "The Artist";
-    args["artist"] = i18n( "%1 or %2" ).arg( "Artist, The" , "The Artist" );
+    args["artist"] = i18n( "%1 or %2", QLatin1String("Artist, The") , QLatin1String("The Artist") );
     args["initial"] = i18n( "Artist's Initial" );
     args["filetype"] = i18n( "File Extension of Source" );
     args["track"] = i18n( "Track Number" );

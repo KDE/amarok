@@ -140,7 +140,7 @@ class SelectLabel : public QLabel
             QString tip = i18n("%1: %2", m_action->text().remove( '&' ),  m_action->currentText().remove( '&' ) );
 
             if( !isEnabled() )
-                tip += i18n("&nbsp;<br>&nbsp;<i>Disabled</i>");
+                tip += i18n("&nbsp;<br/>&nbsp;<i>Disabled</i>");
             else if( AmarokConfig::favorTracks() &&
                      m_action == Amarok::actionCollection()->action( "random_mode" ) ) //hack?
             {

@@ -293,17 +293,17 @@ Meta::prettyRating( int rating )
 {
     switch( rating )
     {
-        case 1: return i18n( "Awful" );
-        case 2: return i18n( "Bad" );
-        case 3: return i18n( "Barely tolerable" );
-        case 4: return i18n( "Tolerable" );
-        case 5: return i18n( "Okay" );
-        case 6: return i18n( "Good" );
-        case 7: return i18n( "Very good" );
-        case 8: return i18n( "Excellent" );
-        case 9: return i18n( "Amazing" );
-        case 10: return i18n( "Favorite" );
-        case 0: default: return i18n( "Not rated" ); // assume weird values as not rated
+        case 1: return i18nc( "The quality of music", "Awful" );
+        case 2: return i18nc( "The quality of music", "Bad" );
+        case 3: return i18nc( "The quality of music", "Barely tolerable" );
+        case 4: return i18nc( "The quality of music", "Tolerable" );
+        case 5: return i18nc( "The quality of music", "Okay" );
+        case 6: return i18nc( "The quality of music", "Good" );
+        case 7: return i18nc( "The quality of music", "Very good" );
+        case 8: return i18nc( "The quality of music", "Excellent" );
+        case 9: return i18nc( "The quality of music", "Amazing" );
+        case 10: return i18nc( "The quality of music", "Favorite" );
+        case 0: default: return i18nc( "The quality of music", "Not rated" ); // assume weird values as not rated
     }
     return "if you can see this, then that's a bad sign.";
 }

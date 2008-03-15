@@ -101,7 +101,7 @@ ProgressBar::setDone()
     if( !m_done ) {
         m_done = true;
         m_abort->setEnabled( false );
-        setStatus( i18n("Done") );
+        setStatus( i18nc( "The Operation is complete", "Done") );
     }
     else
         // then we we're aborted

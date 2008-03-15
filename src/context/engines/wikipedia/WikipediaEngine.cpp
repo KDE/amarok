@@ -234,7 +234,7 @@ void WikipediaEngine::wikiResult( KJob* job )
     m_wikiHTMLSource.append( m_wiki );
     if ( !m_wikiLanguages.isEmpty() )
     {
-        m_wikiHTMLSource.append( i18n( "Wikipedia Other Languages: <br>" )+ m_wikiLanguages );
+        m_wikiHTMLSource.append( i18n( "Wikipedia Other Languages: <br/>" )+ m_wikiLanguages );
     }
     m_wikiHTMLSource.append( "</body></html>\n" );
     

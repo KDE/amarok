@@ -116,7 +116,7 @@ XSPFPlaylist::save( const QString &location, bool relative )
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        KMessageBox::sorry( MainWindow::self(), i18n( "Cannot write playlist (%1).").arg( file.fileName() ) );
+        KMessageBox::sorry( MainWindow::self(), i18n( "Cannot write playlist (%1).", file.fileName() ) );
         return false;
     }
 

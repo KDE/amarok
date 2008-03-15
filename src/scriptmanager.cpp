@@ -699,7 +699,7 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 
             KTextEdit* editor = new KTextEdit( m_scripts[key].log );
             kapp->setTopWidget( editor );
-            editor->setWindowTitle( KDialog::makeStandardCaption( i18n( "Output Log for %1" ).arg( key ) ) );
+            editor->setWindowTitle( KDialog::makeStandardCaption( i18n( "Output Log for %1", key ) ) );
             editor->setReadOnly( true );
 
             QFont font( "fixed" );

@@ -315,14 +315,14 @@ IpodMediaDevice::IpodMediaDevice()
                             gen );
                 }
                 if( info->capacity > 0.f )
-                    gen->insertItem( i18n( "%1 GB %2 (x%3)" )
-                            .arg( QString::number( info->capacity ),
+                    gen->insertItem( i18n( "%1 GB %2 (x%3)",
+                                QString::number( info->capacity ),
                                 itdb_info_get_ipod_model_name_string( info->ipod_model ),
                                 info->model_number ),
                             index );
                 else
-                    gen->insertItem( i18n( "%1 (x%2)" )
-                            .arg( itdb_info_get_ipod_model_name_string( info->ipod_model ),
+                    gen->insertItem( i18n( "%1 (x%2)",
+                                itdb_info_get_ipod_model_name_string( info->ipod_model ),
                                 info->model_number ),
                             index );
             }
@@ -385,20 +385,21 @@ IpodMediaDevice::slotIpodAction( int id )
                         g_error_free(err);
                         //FIXME: update i18n files for next message
                         Amarok::ContextStatusBar::instance()->longMessage( 
-                                i18n( "Could not write SysInfo file to iPod (check the permissions of the file \"%1\" on your iPod)" ).arg( itunesDir( "Device:SysInfo" ) ) );
+                                i18n( "Could not write SysInfo file to iPod (check the permissions of the file \"%1\" on your iPod)",
+                                      itunesDir( "Device:SysInfo" ) ) );
 
                         //FIXME: update i18n files for next message
                         Amarok::ContextStatusBar::instance()->shortMessage(
-                                i18n( "Unable to set iPod model to %1 GB %2 (x%3)" )
-                                .arg( QString::number( table[index].capacity ),
+                                i18n( "Unable to set iPod model to %1 GB %2 (x%3)",
+                                    QString::number( table[index].capacity ),
                                     itdb_info_get_ipod_model_name_string( table[index].ipod_model ),
                                     table[index].model_number ) );
                     } 
                     else
                     {
                         Amarok::ContextStatusBar::instance()->shortMessage(
-                                i18n( "Setting iPod model to %1 GB %2 (x%3)" )
-                                .arg( QString::number( table[index].capacity ),
+                                i18n( "Setting iPod model to %1 GB %2 (x%3)",
+                                    QString::number( table[index].capacity ),
                                     itdb_info_get_ipod_model_name_string( table[index].ipod_model ),
                                     table[index].model_number ) );
                     }
@@ -996,8 +997,8 @@ IpodMediaDevice::createLockFile( bool silent )
                         KGuiItem(i18n("&Remove"), "editdelete"), QString(), KMessageBox::Dangerous )
                     == KMessageBox::Continue )
             {
-                msg = i18n( "Media Device: removing lockfile %1 failed: %2. " )
-                    .arg( lockFilePath, m_lockFile->errorString() );
+                msg = i18n( "Media Device: removing lockfile %1 failed: %2. ",
+                          lockFilePath, m_lockFile->errorString() );
                 ok = m_lockFile->remove();
             }
             else
@@ -1010,8 +1011,10 @@ IpodMediaDevice::createLockFile( bool silent )
     if( ok && !m_lockFile->open( QIODevice::WriteOnly ) )
     {
         ok = false;
-        msg = i18n( "Media Device: failed to create lockfile on iPod mounted at %1: %2" )
-            .arg(mountPoint(), m_lockFile->errorString());
+        msg = i18n( "Media Device: failed to create lockfile on iPod mounted at %1: %2",
+                    mountPoint(),
+                    m_lockFile->errorString()
+                  );
     }
 
     if( ok )
@@ -1363,7 +1366,7 @@ IpodMediaDevice::detectModel()
             if( !fwid )
             {
                 Amarok::StatusBar::instance()->longMessage(
-                        i18n("Your iPod's Firewire GUID is required for correctly updating its music database, but it is not known. See %1 for more information.").arg( "http://amarok.kde.org/wiki/Media_Device:IPod" ) );
+                                            i18n("Your iPod's Firewire GUID is required for correctly updating its music database, but it is not known. See http://amarok.kde.org/wiki/Media_Device:IPod for more information." ) );
             }
             else
                g_free( fwid );
@@ -2233,7 +2236,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
         }
         else
         {
-            menu.insertItem( SmallIconSet( "view-media-playlist-amarok" ), i18n( "&Load" ), LOAD );
+            menu.insertItem( SmallIconSet( "view-media-playlist-amarok" ), i18nc( "Replace current playlist with this", "&Load" ), LOAD );
             menu.insertItem( SmallIconSet( "list-add-amarok" ), i18n( "&Append to Playlist" ), APPEND );
             menu.insertItem( SmallIconSet( "media-seek-forward-amarok" ), i18n( "&Queue Tracks" ), QUEUE );
         }

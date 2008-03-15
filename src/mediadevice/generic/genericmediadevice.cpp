@@ -934,7 +934,7 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
     if ( item )
     {
         K3PopupMenu menu( m_view );
-        menu.insertItem( KIcon( "view-media-playlist-amarok" ), i18n( "&Load" ), LOAD );
+        menu.insertItem( KIcon( "view-media-playlist-amarok" ), i18nc( "Replace the current playlist with this","&Load" ), LOAD );
         menu.insertItem( KIcon( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( KIcon( "media-seek-forward-amarok" ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();

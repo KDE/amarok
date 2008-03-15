@@ -194,7 +194,7 @@ void MagnatuneStore::initBottomPanel()
 
     m_updateListButton = new QPushButton;
     m_updateListButton->setParent( hBoxBottom );
-    m_updateListButton->setText( i18n( "Update" ) );
+    m_updateListButton->setText( i18nc( "Fetch new information from the web site", "Update" ) );
     m_updateListButton->setObjectName( "updateButton" );
     m_updateListButton->setIcon( KIcon( "view-refresh-amarok" ) );
 

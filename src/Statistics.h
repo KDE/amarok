@@ -88,7 +88,7 @@ namespace Amarok {
             return i18np( "One week ago", "%1 weeks ago", (datediff+3)/7 );
 
         if( datediff == -1 )
-            return i18n( "Tomorrow" );
+            return i18nc( "When this track was last played", "Tomorrow" );
 
         const int timediff = datetime.secsTo( now );
 
@@ -113,7 +113,7 @@ namespace Amarok {
     QString verboseTimeSince( uint time_t )
     {
         if( !time_t )
-            return i18n( "Never" );
+            return i18nc( "The amount of time since last played", "Never" );
 
         QDateTime dt;
         dt.setTime_t( time_t );

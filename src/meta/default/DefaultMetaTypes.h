@@ -45,7 +45,7 @@ class AMAROK_EXPORT DefaultArtist : public Meta::Artist
         
         virtual ~DefaultArtist() {};
 
-        virtual QString name() const { return i18n( "Unknown" ); }
+        virtual QString name() const { return i18nc( "The value is not known", "Unknown" ); }
         virtual QString prettyName() const { return name(); };
 
         virtual TrackList tracks() { return TrackList(); }
@@ -75,7 +75,7 @@ class AMAROK_EXPORT DefaultAlbum : public Meta::Album
 
         virtual bool isCompilation() const { return false; }
 
-        virtual QString name() const { return i18n( "Unknown" ); }
+        virtual QString name() const { return i18nc( "The Value is not known", "Unknown" ); }
         virtual QString prettyName() const { return name(); };
 
         virtual TrackList tracks() { return TrackList(); }
@@ -100,7 +100,7 @@ class AMAROK_EXPORT DefaultComposer : public Meta::Composer
         
         virtual ~DefaultComposer() {};
         
-        virtual QString name() const { return i18n( "Unknown" ); }
+        virtual QString name() const { return i18nc( "The value is not known", "Unknown" ); }
         virtual QString prettyName() const { return name(); };
 
         virtual TrackList tracks() { return TrackList(); }
@@ -124,7 +124,7 @@ class AMAROK_EXPORT DefaultGenre : public Meta::Genre
         
         virtual ~DefaultGenre() {};
         
-        virtual QString name() const { return i18n( "Unknown" ); }
+        virtual QString name() const { return i18nc( "The value is not known", "Unknown" ); }
         virtual QString prettyName() const { return name(); };
 
         virtual TrackList tracks() { return TrackList(); }

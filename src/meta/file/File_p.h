@@ -91,10 +91,10 @@ public:
             if( item.isValid() && !item.value().toString().isEmpty()  )
                 return item.value().toString();
             else
-                return i18n( "Unknown" );
+                return i18nc( "The value is not known", "Unknown" );
         }
         else
-            return i18n( "Unknown" );
+            return i18nc( "The value is not known", "Unknown" );
     }
 
     QString prettyName() const
@@ -141,10 +141,10 @@ public:
             if( item.isValid() && !item.value().toString().isEmpty()  )
                 return item.value().toString();
             else
-                return i18n( "Unknown" );
+                return i18nc( "The value is not known", "Unknown" );
         }
         else
-            return i18n( "Unknown" );
+            return i18nc( "The value is not known", "Unknown" );
     }
 
     QString prettyName() const
@@ -181,10 +181,10 @@ public:
             if( item.isValid() && !item.value().toString().isEmpty()  )
                 return item.value().toString();
             else
-                return i18n( "Unknown" );
+                return i18nc( "The value is not known", "Unknown" );
         }
         else
-            return i18n( "Unknown" );
+            return i18nc( "The value is not known", "Unknown" );
     }
 
     QString prettyName() const
@@ -216,10 +216,10 @@ public:
             if( item.isValid() && !item.value().toString().isEmpty()  )
                 return item.value().toString();
             else
-                return i18n( "Unknown" );
+                return i18nc( "The value is not known", "Unknown" );
         }
         else
-            return i18n( "Unknown" );
+            return i18nc( "The value is not known", "Unknown" );
     }
 
     QString prettyName() const
@@ -251,10 +251,10 @@ public:
             if( item.isValid() && !item.value().toString().isEmpty()  )
                 return item.value().toString();
             else
-                return i18n( "Unknown" );
+                return i18nc( "The value is not known", "Unknown" );
         }
         else
-            return i18n( "Unknown" );
+            return i18nc( "The value is not known", "Unknown" );
     }
 
     QString prettyName() const

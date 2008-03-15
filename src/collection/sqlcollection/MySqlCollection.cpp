@@ -164,6 +164,6 @@ MySqlCollection::escape( QString text ) const               //krazy:exclude=cons
 void
 MySqlCollection::setMysqlError()
 {
-    m_error = i18n("MySQL reported the following error:<br>") + mysql_error(m_db)
+    m_error = i18n("MySQL reported the following error:<br/>") + mysql_error(m_db)
             + i18n("<p>You can configure MySQL in the Collection section under Settings->Configure Amarok</p>");
 }

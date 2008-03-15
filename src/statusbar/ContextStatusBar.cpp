@@ -95,7 +95,7 @@ ContextStatusBar::engineNewTrackPlaying()
         longMessage( i18n(
                 "<p>One of Mike Oldfield's best pieces of work, Amarok, inspired the name behind "
                 "the audio-player you are currently using. Thanks for choosing Amarok!</p>"
-                "<p align=right>Mark Kretschmann<br>Max Howell<br>Chris Muehlhaeuser<br>"
+                "<p align=right>Mark Kretschmann<br/>Max Howell<br/>Chris Muehlhaeuser<br/>"
                 "The many other people who have helped make Amarok what it is</p>" ), KDE::StatusBar::Information );
     }
 

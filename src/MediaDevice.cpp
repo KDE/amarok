@@ -393,8 +393,10 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
         {
             tryToRemove = true;
             Amarok::ContextStatusBar::instance()->longMessage(
-                    i18n( "Media Device: Copying %1 to %2 failed" )
-                    .arg( src.prettyUrl(), dst.prettyUrl() ),
+                    i18n( "Media Device: Copying %1 to %2 failed",
+                          src.prettyUrl(),
+                          dst.prettyUrl()
+                        ),
                     KDE::StatusBar::Error );
         }
         else
@@ -777,8 +779,8 @@ MediaDevice::transferFiles()
             MediaItem *item = trackExists( track );
             if( item && playlist.isEmpty() )
             {
-                Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
-                        arg( track->prettyUrl() ),
+                Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Track already on media device: %1",
+                                                                           track->prettyUrl() ),
                         KDE::StatusBar::Sorry );
                 existing += track->url();
                 setProgress( progress() + 1 );
@@ -1017,8 +1019,8 @@ MediaDevice::deleteFromDevice(MediaItem *item, int flags )
         if( numFiles > 0 && (flags & DeleteTrack) )
         {
             int button = KMessageBox::warningContinueCancel( m_parent,
-                    i18np( "<p>You have selected 1 track to be <b>irreversibly</b> deleted.",
-                        "<p>You have selected %1 tracks to be <b>irreversibly</b> deleted.",
+                    i18np( "<p>You have selected 1 track to be <b>irreversibly</b> deleted.</p>",
+                        "<p>You have selected %1 tracks to be <b>irreversibly</b> deleted.</p>",
                         numFiles
                         ),
                     QString(),

@@ -57,7 +57,7 @@ void CurrentTrack::init()
 
     KIconLoader iconLoader;
 
-    m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Track:" ) , this );
+    m_titleLabel = new QGraphicsSimpleTextItem( i18nc( "The name of the playing song", "Track:" ) , this );
     m_artistLabel = new QGraphicsSimpleTextItem( i18n( "Artist:" ), this );
     m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
     

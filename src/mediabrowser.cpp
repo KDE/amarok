@@ -1698,7 +1698,7 @@ MediaBrowser::disconnectClicked()
         int action = KMessageBox::questionYesNoCancel( MediaBrowser::instance(),
                 i18n( "Transfer in progress. Finish or stop after current track?" ),
                 i18n( "Stop Transfer?" ),
-                KGuiItem(i18n("&Finish"), "goto-page"),
+                KGuiItem(i18nc( "Wait until the transfer completes", "&Finish"), "goto-page"),
                 KGuiItem(i18n("&Stop"), "media-eject") );
         if( action == KMessageBox::Cancel )
         {
