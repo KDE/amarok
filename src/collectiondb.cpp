@@ -2157,7 +2157,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     if ( artist == i18n( "Various Artists" ) || artist.isEmpty() )
     {
          rs = query( QString(
-            "SELECT images.deviceid,images.path FROM images, artist, tags "
+            "SELECT distinct images.deviceid,images.path FROM images, artist, tags "
             "WHERE images.artist = artist.name "
             "AND artist.id = tags.artist "
             "AND tags.sampler = %1 "
@@ -2170,7 +2170,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     else
     {
         rs = query( QString(
-            "SELECT images.deviceid,images.path FROM images WHERE artist %1 AND album %2 AND deviceid IN (%3) ORDER BY path;" )
+            "SELECT distinct images.deviceid,images.path FROM images WHERE artist %1 AND album %2 AND deviceid IN (%3) ORDER BY path;" )
                     .arg( CollectionDB::likeCondition( artist ) )
                     .arg( CollectionDB::likeCondition( album ) )
                     .arg( deviceIds ) );
