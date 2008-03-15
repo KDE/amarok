@@ -41,7 +41,8 @@ namespace Meta
                         , MultiPlayable = 6
                         , Organisable = 7
                         , SourceInfo = 8
-                        , CurrentTrackActions = 9};
+                        , CurrentTrackActions = 9
+                        , StreamInfo = 10};
 
             virtual ~Capability();
 

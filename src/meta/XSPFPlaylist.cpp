@@ -25,6 +25,7 @@
 #include "MainWindow.h"
 #include "meta/proxy/MetaProxy.h"
 #include "meta/MetaUtility.h"
+#include "meta/StreamInfoCapability.h"
 #include "PlaylistManager.h"
 #include "TheInstances.h"
 
@@ -521,10 +522,21 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 
         if ( !track->url().isEmpty() )
             APPENDNODE(location, track->url() )
-        if ( !track->name().isEmpty() )
-            APPENDNODE(title, track->name() )
-        if ( track->artist() && !track->artist()->name().isEmpty() )
-            APPENDNODE(creator, track->artist()->name() );
+        Meta::StreamInfoCapability *streamInfo = track->as<Meta::StreamInfoCapability>();
+        if( streamInfo ) // We have a stream, use it's metadata instead of the tracks.
+        {
+            if( !streamInfo->streamName().isEmpty() )
+                APPENDNODE( title, streamInfo->streamName() )
+            if( !streamInfo->streamSource().isEmpty() )
+                APPENDNODE( creator, streamInfo->streamSource() )
+        }
+        else
+        {
+            if ( !track->name().isEmpty() )
+                APPENDNODE(title, track->name() )
+            if ( track->artist() && !track->artist()->name().isEmpty() )
+                APPENDNODE(creator, track->artist()->name() );
+        }
         if ( !track->comment().isEmpty() )
             APPENDNODE(annotation, track->comment() );
         if ( track->album() && !track->album()->name().isEmpty() )

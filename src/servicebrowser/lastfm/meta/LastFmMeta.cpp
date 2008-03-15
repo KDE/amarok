@@ -30,6 +30,7 @@
 
 #include "core/Radio.h"
 #include "LastFmService.h"
+#include "LastFmStreamInfoCapability.h"
 #include "RadioAdapter.h"
 #include "ScrobblerAdapter.h"
 
@@ -434,7 +435,8 @@ Track::hasCapabilityInterface( Meta::Capability::Type type ) const
     return type == Meta::Capability::LastFm
                 || type == Meta::Capability::MultiPlayable
                 || Meta::Capability::SourceInfo
-                || Meta::Capability::CurrentTrackActions;
+                || Meta::Capability::CurrentTrackActions
+                || Meta::Capability::StreamInfo;
 }
 
 Meta::Capability*
@@ -450,6 +452,8 @@ Track::asCapabilityInterface( Meta::Capability::Type type )
             return new ServiceSourceInfoCapability( this );
         case Meta::Capability::CurrentTrackActions:
             return new CurrentTrackActionsCapabilityImpl( this );
+        case Meta::Capability::StreamInfo:
+            return new LastFmStreamInfoCapability( this );
         default:
             return 0;
     }

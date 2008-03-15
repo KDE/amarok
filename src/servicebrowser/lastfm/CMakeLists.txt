@@ -38,6 +38,7 @@
             ScrobblerAdapter.cpp
             
             meta/LastFmMeta.cpp
+            meta/LastFmStreamInfoCapability.cpp
         
             core/Radio.cpp
             core/RadioPlaylist.cpp

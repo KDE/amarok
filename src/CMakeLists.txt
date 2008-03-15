@@ -221,6 +221,7 @@ set(meta_SRCS
     meta/LastFmCapability.cpp
     meta/CustomActionsCapability.cpp
     meta/OrganiseCapability.cpp
+    meta/StreamInfoCapability.cpp
     meta/Meta.cpp
     meta/proxy/MetaProxy.cpp
     meta/file/File.cpp
