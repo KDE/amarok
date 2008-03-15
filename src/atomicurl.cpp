@@ -90,15 +90,8 @@ KURL AtomicURL::url() const
 {
     if( isEmpty() )
         return KURL();
+
     return KURL( string(), 106 );
-    QString s = m_beginning;
-    if( !m_directory->isEmpty() || !m_filename.isEmpty() )
-    {
-        s += "/foo/";
-    }
-    KURL u( s );
-    u.setPath( path() );
-    return u;
 }
 
 bool AtomicURL::isEmpty() const
