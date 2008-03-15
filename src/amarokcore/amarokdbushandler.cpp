@@ -35,6 +35,7 @@
 #include "mediabrowser.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
+#include "meta/StreamInfoCapability.h"
 #include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
@@ -248,11 +249,16 @@ namespace Amarok
         return track ? track->cachedLyrics() : QString();
     }
 
-    // TODO: reimplement via last.fm service
-    //QString DbusPlayerHandler::lastfmStation()
-    //{
-    //   return LastFm::Controller::stationDescription(); //return QString::null if not playing
-    //}
+    QString DbusPlayerHandler::streamName()
+    {
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        if( !track )
+            return QString();
+        Meta::StreamInfoCapability *streamInfo = track->as<Meta::StreamInfoCapability>();
+        if( streamInfo )
+            return streamInfo->streamName();
+        return QString();
+    }
 
     QString DbusPlayerHandler::nowPlaying()
     {
