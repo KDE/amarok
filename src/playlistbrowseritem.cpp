@@ -1852,10 +1852,10 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         return;
     }
 
-    QDomNode type = d.namedItem("rss");
+    QDomNode type = d.elementsByTagName("rss").item( 0 );
     if( type.isNull() || type.toElement().attribute( "version" ) != "2.0" )
     {
-        type = d.namedItem("feed");
+        type = d.elementsByTagName("feed").item( 0 );
         if( type.isNull() )
         {
             Amarok::StatusBar::instance()->shortMessage( i18n("Sorry, only RSS 2.0 or Atom feeds for podcasts!") );
@@ -2358,6 +2358,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
       , m_parent( parent )
       , m_fetching( false )
       , m_onDisk( false )
+      , m_localUrl( KURL() )
 {
     const bool isAtom = ( feedType == ATOM );
     QString title = xml.namedItem( "title" ).toElement().text().remove("\n");
