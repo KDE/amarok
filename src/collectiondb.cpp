@@ -6044,6 +6044,7 @@ DbConnection::DbConnection()
 
 SqliteConnection::SqliteConnection( const SqliteConfig* config )
     : DbConnection()
+    , m_db( 0 )
 {
 
     DEBUG_BLOCK
