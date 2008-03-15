@@ -23,6 +23,7 @@
 #include "engineobserver.h" //baseclass
 #include "toolbar.h"
 #include "volumewidget.h"
+#include "SvgHandler.h"
 
 #include <KHBox>
 
@@ -33,7 +34,7 @@ A KHBox based toolbar with a nice svg background and takes care of adding any ad
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class MainToolbar : public KHBox, public EngineObserver
+class MainToolbar : public KHBox, public EngineObserver, public SvgHandler
 {
 public:
     MainToolbar( QWidget * parent );
