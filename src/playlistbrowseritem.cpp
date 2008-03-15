@@ -1142,7 +1142,10 @@ TrackItemInfo::TrackItemInfo( const MetaBundle &mb )
         m_length = mb.length();
     }
     else
+    {
         m_title = MetaBundle::prettyTitle( fileBaseName( m_url.path() ) );
+        m_length = 0;
+    }
 
     if( m_length < 0 )
         m_length = 0;
