@@ -279,7 +279,8 @@ MetaBundle::MetaBundle( const QString& title,
         , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
-	, m_isSearchDirty(true)
+        , m_isSearchDirty( true )
+        , m_searchColumns( Undetermined )
 {
     if( title.contains( '-' ) )
     {
