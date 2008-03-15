@@ -21,6 +21,8 @@
 #ifndef AMAROK_SIDEBARWIDGET_H
 #define AMAROK_SIDEBARWIDGET_H
 
+#include "SvgHandler.h"
+
 #include <QAbstractButton>
 #include <kvbox.h>
 
@@ -59,7 +61,7 @@ class SideBarWidget: public KVBox
 };
 
 
-class SideBarButton: public QAbstractButton
+class SideBarButton: public QAbstractButton, public SvgHandler
 {
     Q_OBJECT
 
