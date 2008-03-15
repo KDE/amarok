@@ -39,7 +39,7 @@
  * at the beginning of the list).
  */
 
-namespace KIO { class Job; }
+class KJob;
 
 class KTRMResult
 {
@@ -128,7 +128,7 @@ signals:
     void sigResult( KTRMResultList, QString );
 
 protected slots:
-    virtual void lookupResult( KIO::Job* );
+    virtual void lookupResult( KJob* );
 
 public:
     /**

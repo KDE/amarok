@@ -312,7 +312,7 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
     //call set row on all items below the first one potentially modified to
     //make sure that all items have correct background color and group info
 
-    int firstIndex = QMIN ( aboveIndex, moveMeIndex ) -1;
+    int firstIndex = qMin( aboveIndex, moveMeIndex ) -1;
     if ( firstIndex < 0 ) firstIndex = 0;
 
     if( moveMeIndex < aboveIndex )

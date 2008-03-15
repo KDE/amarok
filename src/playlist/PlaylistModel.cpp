@@ -920,7 +920,7 @@ void Model::moveRow(int row, int to)
     if ( to < row )
         offset = 1;
 
-    regroupAlbums( QMIN( row, to) , QMAX( row, to ), OffsetBetween, offset );
+    regroupAlbums( qMin( row, to) , qMax( row, to ), OffsetBetween, offset );
 
 }
 
@@ -1051,9 +1051,9 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
     // regroup the two affected areas
 
     if ( area1Start == area2Start ) //merge areas
-        area1End = QMAX( area1End, area2End );
+        area1End = qMax( area1End, area2End );
     else if ( area1End == area2End ) {//merge areas
-        area1Start = QMIN( area1Start, area2Start );
+        area1Start = qMin( area1Start, area2Start );
         area2Start = area1Start;
     }
 

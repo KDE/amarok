@@ -744,11 +744,11 @@ void KTRMLookup::puidGenerated()
     Amarok::ContextStatusBar::instance()->newProgressOperation( job )
             .setDescription( i18n( "MusicBrainz Lookup" ) );
 
-    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( lookupResult( KIO::Job* ) ) );
+    connect( job, SIGNAL( result( KJob* ) ), SLOT( lookupResult( KJob* ) ) );
 #endif
 }
 
-void KTRMLookup::lookupResult( KIO::Job* job )
+void KTRMLookup::lookupResult( KJob* job )
 {
 #if HAVE_TUNEPIMP >= 5
     DEBUG_BLOCK

@@ -22,9 +22,8 @@
 
 #include <QMap>
 #include <QObject>
-namespace KIO {
-    class Job;
-}
+
+class KJob;
 
 class JobInfo
 {
@@ -44,8 +43,8 @@ class RefreshImages : public QObject
   public:
     RefreshImages();
   private slots:
-    void finishedXmlFetch( KIO::Job* );
-    void finishedImageFetch( KIO::Job* );
+    void finishedXmlFetch( KJob* );
+    void finishedImageFetch( KJob* );
   private:
     static QString localeToTLD(const QString& locale);
     QMap<QString, JobInfo> m_jobInfo;

@@ -90,12 +90,12 @@ RefreshImages::RefreshImages()
         it++; //iterate to the next set
 
         m_jobInfo[md5sum] = JobInfo( asin, locale, it == end );
-        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( finishedXmlFetch( KIO::Job* ) ) );
+        connect( job, SIGNAL( result( KJob* ) ), SLOT( finishedXmlFetch( KJob* ) ) );
     }
 }
 
 void
-RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
+RefreshImages::finishedXmlFetch( KJob* xmlJob ) //SLOT
 {
     if ( xmlJob->error() )
     {
@@ -148,10 +148,10 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
        .namedItem( "Items" )
        .namedItem( "Item" )
        .namedItem( "DetailPageURL" ).firstChild().toText().data();
-    connect( imageJob, SIGNAL( result(KIO::Job*) ), SLOT( finishedImageFetch(KIO::Job*) ) );
+    connect( imageJob, SIGNAL( result(KJob*) ), SLOT( finishedImageFetch(KJob*) ) );
 }
 
-void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
+void RefreshImages::finishedImageFetch(KJob* imageJob)
 {
    if( imageJob->error() ) {
         Amarok::ContextStatusBar::instance()->shortMessage(i18n("There was an error communicating with Amazon."));
