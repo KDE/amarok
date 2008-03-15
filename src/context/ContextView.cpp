@@ -51,10 +51,6 @@ ContextView::ContextView( QWidget* parent )
 
     s_self = this;
 
-
-//     setFrameShape( QFrame::NoFrame );
-    setAutoFillBackground( true );
-
     PERF_LOG( "Creating contextScene" )
     setScene( new ContextScene( rect(), this ) );
     PERF_LOG( "Created ContextScene" )
