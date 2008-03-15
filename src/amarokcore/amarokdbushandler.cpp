@@ -255,9 +255,14 @@ namespace Amarok
         if( !track )
             return QString();
         Meta::StreamInfoCapability *streamInfo = track->as<Meta::StreamInfoCapability>();
+        QString streamText;
         if( streamInfo )
-            return streamInfo->streamName();
-        return QString();
+        {
+            streamText = streamInfo->streamName();
+            if( !streamInfo->streamSource().isEmpty() )
+                streamText += " (" + streamInfo->streamSource() + ')';
+        }
+        return streamText;
     }
 
     QString DbusPlayerHandler::nowPlaying()
