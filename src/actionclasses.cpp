@@ -175,9 +175,8 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
     if ( s_helpMenu == 0 )
         s_helpMenu = new KHelpMenu( parent, &aboutData, Amarok::actionCollection() );
-    return s_helpMenu->menu();
 
-    return (new KHelpMenu( parent, &aboutData, Amarok::actionCollection() ))->menu();
+    return s_helpMenu->menu();
 }
 
 void
