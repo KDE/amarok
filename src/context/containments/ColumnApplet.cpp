@@ -53,6 +53,7 @@ void SvgRenderJob::run()
 
 ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
+    , SvgHandler()
     , m_actions( 0 )
     , m_defaultColumnSize( 350 )
 {
@@ -68,19 +69,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 
     //HACK alert!
 
-    QString svgFile = KStandardDirs::locate( "data","desktoptheme/default/widgets/amarok-wallpaper.svg" );
-    QString svg_source =  The::svgTinter()->tint( svgFile );
-
-    m_renderer =  new KSvgRenderer( svg_source.toAscii() );
-
-    m_tintedSvg.setSuffix( ".svg" );
-    m_tintedSvg.open();
-
-    QTextStream out( &m_tintedSvg );
-    out << svg_source;
-    m_tintedSvg.close();
-
-    debug() << "temp filename: " << m_tintedSvg.fileName();
+    loadSvg( "desktoptheme/default/widgets/amarok-wallpaper.svg" );
 
     //m_job = new SvgRenderJob( file.fileName() );
     //the background is not really important for the use of Amarok,
@@ -175,7 +164,9 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
         painter->fillRect( rect, QApplication::palette().window() );
     }*/
 
-    m_renderer->render( painter, rect );
+    //m_renderer->render( painter, rect );
+
+    painter->drawPixmap(0, 0, renderSvg( "context_background", rect.width(), rect.height() ) );
 
     
     painter->restore();

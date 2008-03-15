@@ -21,6 +21,7 @@
 #include "context/Svg.h"
 
 #include "plasma/appletbrowser.h"
+#include "widgets/SvgHandler.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
@@ -37,7 +38,7 @@ namespace Context
 {
     class SvgRenderJob;
 
-class /*AMAROK_EXPORT*/ ColumnApplet : public Containment
+class /*AMAROK_EXPORT*/ ColumnApplet : public Containment, public SvgHandler
 {
     Q_OBJECT
 public:
@@ -100,7 +101,7 @@ private:
 
     SvgRenderJob *m_job;
 
-    KSvgRenderer * m_renderer;
+    //KSvgRenderer * m_renderer;
 };
 
 K_EXPORT_AMAROK_APPLET( context, ColumnApplet )
