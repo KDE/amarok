@@ -144,11 +144,15 @@ CollectionScanner::doJob() //SLOT
         }
 
         QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
-        folderFile.open( IO_WriteOnly );
-        QTextStream stream( &folderFile );
-        stream.setEncoding(QTextStream::UnicodeUTF8);
-        stream << entries.join( "\n" );
-        folderFile.close();
+        if ( !folderFile.open( IO_WriteOnly ) )
+            warning() << "Failed to open folder file " << folderFile.name()
+            << " read-only" << endl;
+        else {
+            QTextStream stream( &folderFile );
+            stream.setEncoding(QTextStream::UnicodeUTF8);
+            stream << entries.join( "\n" );
+            folderFile.close();
+        }
     }
 
     if( !entries.isEmpty() ) {

@@ -2379,13 +2379,14 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
     playlist->setTrackList( list, append );
 
     QFile file( item->url().path() );
-    file.open( IO_WriteOnly );
-
-    QTextStream stream ( &file );
-
-    playlist->save( stream, 2 );
-
-    file.close();
+    if ( !file.open( IO_WriteOnly ) )
+        warning() << "Could not open file " << file.name()
+        << " write-only" << endl;
+    else {
+        QTextStream stream ( &file );
+        playlist->save( stream, 2 );
+        file.close();
+    }
 }
 
 

@@ -792,12 +792,21 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
 void ContextBrowser::saveHtmlData()
 {
     QFile exportedDocument( Amarok::saveLocation() + "contextbrowser.html" );
-    exportedDocument.open(IO_WriteOnly);
-    QTextStream stream( &exportedDocument );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
-    stream << m_HTMLSource // the pure html data..
-        .replace( "<html>", QString( "<html><head><style type=\"text/css\">%1</style></head>" ).arg( HTMLView::loadStyleSheet() ) ); // and the stylesheet code
-    exportedDocument.close();
+    if ( !exportedDocument.open( IO_WriteOnly ) )
+        warning() << "Failed to open file " << exportedDocument.name()
+        << " write-only" << endl;
+    else {
+        QTextStream stream( &exportedDocument );
+        stream.setEncoding( QTextStream::UnicodeUTF8 );
+        stream << m_HTMLSource // the pure html data..
+            .replace( "<html>",
+                      QString( "<html><head><style type=\"text/css\">"
+                               "%1</style></head>" )
+                          .arg( HTMLView::loadStyleSheet() ) ); // and the
+                                                                // stylesheet
+                                                                // code
+        exportedDocument.close();
+    }
 }
 
 
