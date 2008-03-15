@@ -20,6 +20,7 @@
 
 #include "amarok.h"
 //#include "AmarokStatusBar.h"
+#include "CollectionManager.h"
 #include "ContextStatusBar.h"
 #include "debug.h"
 #include "PodcastReader.h"
@@ -36,9 +37,20 @@
 
 using namespace Meta;
 
+static const int PODCAST_DB_VERSION = 1;
+
 PodcastCollection::PodcastCollection() : Collection()
 {
     m_channelProvider = new PodcastChannelProvider( this );
+    m_sqlStorage = CollectionManager::instance()->sqlStorage();
+
+    QStringList values;
+    values = m_sqlStorage->query( QString( "SELECT version FROM admin WHERE key = 'AMAROK_PODCAST';") );
+    if( values.isEmpty() )
+    {
+        debug() << "creating Podcast Tables";
+        createTables();
+    }
 }
 
 
@@ -275,13 +287,13 @@ PodcastCollection::createTables() const
     m_sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
                     "id " + m_sqlStorage->idType() +
                     ",url " + m_sqlStorage->exactTextColumnType() + " UNIQUE"
+                    ",parent INTEGER"
                     ",localurl " + m_sqlStorage->exactTextColumnType() +
-                    ",parent " + m_sqlStorage->exactTextColumnType() +
                     ",guid " + m_sqlStorage->exactTextColumnType() +
                     ",title " + m_sqlStorage->textColumnType() +
                     ",subtitle " + m_sqlStorage->textColumnType() +
-                    ",composer " + m_sqlStorage->textColumnType() +
-                    ",comment " + m_sqlStorage->longTextColumnType() +
+                    ",sequencenumber INTEGER" +
+                    ",description " + m_sqlStorage->longTextColumnType() +
                     ",filetype "  + m_sqlStorage->textColumnType() +
                     ",createdate "  + m_sqlStorage->textColumnType() +
                     ",length INTEGER"
@@ -291,6 +303,9 @@ PodcastCollection::createTables() const
     m_sqlStorage->query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
     m_sqlStorage->query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
     m_sqlStorage->query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
+
+    m_sqlStorage->query( "INSERT INTO admin(key,version) "
+                          "VALUES('AMAROK_PODCAST'," + QString::number( PODCAST_DB_VERSION ) + ");" );
 }
 
 #include "PodcastCollection.moc"
