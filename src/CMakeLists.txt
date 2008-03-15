@@ -436,6 +436,7 @@ set(amaroklib_LIB_SRCS
     widgets/sliderwidget.cpp
     widgets/volumewidget.cpp
     widgets/MainToolbar.cpp
+    widgets/SvgHandler.cpp
     SvgTinter.cpp
     xspfplaylist.cpp
 )
