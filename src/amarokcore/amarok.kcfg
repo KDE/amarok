@@ -561,7 +561,7 @@
             <default>false</default>
         </entry>
         <entry key="ScrobblerUsername" type="String">
-            <label>Username</label>
+            <label context="Username for audioscrobbler login">Username</label>
             <whatsthis>The username to use for connecting to Audioscrobbler</whatsthis>
             <default/>
         </entry>

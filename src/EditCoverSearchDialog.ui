@@ -66,7 +66,7 @@
        <widget class="KComboBox" name="amazonLocale" >
         <item>
          <property name="text" >
-          <string>International</string>
+          <string comment="Search Amazon's main site for images: amazon.com">International</string>
          </property>
         </item>
         <item>

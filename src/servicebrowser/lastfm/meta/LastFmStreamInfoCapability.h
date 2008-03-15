@@ -17,6 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#ifndef AMAROK_LASTFMSTREAMINFOCAPABILITY_H
+#define AMAROK_LASTFMSTREAMINFOCAPABILITY_H
+
 #include "StreamInfoCapability.h"
 
 namespace LastFm
@@ -37,3 +40,5 @@ class LastFmStreamInfoCapability : public Meta::StreamInfoCapability
         LastFm::Track *m_sourceTrack;
 
 };
+
+#endif

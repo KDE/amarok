@@ -179,7 +179,7 @@
       <item row="0" column="0" colspan="2" >
        <widget class="QLabel" name="textLabel8" >
         <property name="text" >
-         <string>Name:</string>
+         <string comment="The name of the person buying songs from magnatune" >Name:</string>
         </property>
         <property name="wordWrap" >
          <bool>false</bool>
@@ -192,7 +192,7 @@
       <item row="1" column="0" colspan="2" >
        <widget class="QLabel" name="textLabel9" >
         <property name="text" >
-         <string>Email:</string>
+         <string comment="The e-mail address of the user" >E-mail:</string>
         </property>
         <property name="wordWrap" >
          <bool>false</bool>
@@ -217,7 +217,7 @@
         <property name="sizeType" >
          <enum>QSizePolicy::Fixed</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>40</width>
           <height>20</height>
@@ -244,7 +244,7 @@
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>40</width>
           <height>20</height>
@@ -270,6 +270,14 @@
          <number>0</number>
         </property>
         <widget class="QWidget" name="ccInfo" >
+         <property name="geometry" >
+          <rect>
+           <x>3</x>
+           <y>3</y>
+           <width>557</width>
+           <height>94</height>
+          </rect>
+         </property>
          <layout class="QGridLayout" >
           <item row="0" column="0" colspan="4" >
            <widget class="QLabel" name="textLabel2" >
@@ -761,7 +769,7 @@
             <property name="sizeType" >
              <enum>QSizePolicy::Fixed</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>16</width>
               <height>20</height>
@@ -812,6 +820,14 @@
          </layout>
         </widget>
         <widget class="QWidget" name="gcInfo" >
+         <property name="geometry" >
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>100</width>
+           <height>30</height>
+          </rect>
+         </property>
          <layout class="QGridLayout" >
           <item row="0" column="0" >
            <widget class="QLabel" name="textLabel3_2" >
@@ -938,16 +954,7 @@
      <property name="spacing" >
       <number>5</number>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin" >
       <number>0</number>
      </property>
      <item>
@@ -958,7 +965,7 @@
        <property name="sizeType" >
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>41</width>
          <height>21</height>
@@ -1038,22 +1045,6 @@
     <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ccRadioButton</sender>
-   <signal>clicked()</signal>
-   <receiver>magnatunePurchaseDialogBase</receiver>
-   <slot></slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>179</x>
-     <y>356</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>342</x>
-     <y>300</y>
     </hint>
    </hints>
   </connection>

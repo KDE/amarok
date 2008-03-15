@@ -19,7 +19,7 @@
       <item row="0" column="0" >
        <widget class="QLabel" name="label" >
         <property name="text" >
-         <string>email:</string>
+         <string comment="The e-mail address for Mp3Tunes logins" >E-Mail:</string>
         </property>
        </widget>
       </item>
@@ -29,7 +29,7 @@
       <item row="1" column="0" >
        <widget class="QLabel" name="label_2" >
         <property name="text" >
-         <string>password:</string>
+         <string comment="The Mp3Tunes password" >Password:</string>
         </property>
        </widget>
       </item>
