@@ -104,6 +104,7 @@ QSvgRenderer * Playlist::GraphicsItem::s_svgRenderer = 0;
 
 Playlist::GraphicsItem::GraphicsItem()
     : QGraphicsItem()
+    , SvgHandler()
     , m_items( 0 )
     , m_height( -1 )
     , m_groupMode( -1 )
@@ -118,15 +119,7 @@ Playlist::GraphicsItem::GraphicsItem()
         m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
     }
 
-    if ( !s_svgRenderer ) {
-
-        QString file = KStandardDirs::locate( "data","amarok/images/playlist_items.svg" );
-        QString svg_source =  The::svgTinter()->tint( file );
-        
-        s_svgRenderer = new QSvgRenderer( svg_source.toAscii() );
-        if ( ! s_svgRenderer->isValid() )
-            debug() << "svg is kaputski";
-    }
+    loadSvg( "amarok/images/playlist_items.svg" );
 
     setFlag( QGraphicsItem::ItemIsSelectable );
     setFlag( QGraphicsItem::ItemIsMovable );
@@ -381,17 +374,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         debug() << "Resizing active track overlay";
 
-        QString key = QString("active_overlay:%1x%2").arg(trackRect.width()).arg(trackRect.height());
-
-        QPixmap background( (int)( trackRect.width() ), (int)( trackRect.height() ) );
-        background.fill( Qt::transparent );
-
-
-        if (!QPixmapCache::find(key, background)) {
-            QPainter pt( &background );
-            s_svgRenderer->render( &pt, "active_overlay",   QRectF( 0, 0, trackRect.width(), trackRect.height() ) );
-            QPixmapCache::insert(key, background);
-        }
+        QPixmap background = renderSvg( "active_overlay", (int)( trackRect.width() ), (int)( trackRect.height() ), "active_overlay" );
         m_items->foreground->setPixmap( background );
         m_items->foreground->setZValue( 10.0 );
 
@@ -741,7 +724,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
 {
     QRectF trackRect = option->rect;
     trackRect.setHeight( trackRect.height() - 2 );
-    painter->drawPixmap( 0, 0, getCachedSvg( "track", trackRect.width(), trackRect.height() ) );
+    painter->drawPixmap( 0, 0, renderSvg( "track", trackRect.width(), trackRect.height(), "track" ) );
 
     //paint cover
     QPixmap albumPixmap;
@@ -797,14 +780,14 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     
     if ( active ) {
 
-        painter->drawPixmap( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "active_overlay", trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 4 ), s_fm->height() ) );
+        painter->drawPixmap( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2, lineTwoY, renderSvg( "active_overlay", trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 4 ), s_fm->height(), "active_overlay" ) );
     }
     
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
-        painter->drawPixmap( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2, lineTwoY, getCachedSvg( "selection_left", s_fm->height() * 3, s_fm->height() ) );
-        painter->drawPixmap( (int)trackRect.width() - ( s_fm->height() * 3 + 2 ), lineTwoY, getCachedSvg( "selection_right", s_fm->height() * 3, s_fm->height() ) );
+        painter->drawPixmap( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2, lineTwoY, renderSvg( "selection_left", s_fm->height() * 3, s_fm->height(), "selection_left" ) );
+        painter->drawPixmap( (int)trackRect.width() - ( s_fm->height() * 3 + 2 ), lineTwoY, renderSvg( "selection_right", s_fm->height() * 3, s_fm->height(), "selection_right" ) );
     }
 
 }
@@ -814,7 +797,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN+ 2, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
     QRectF headRect = option->rect;
 
-    painter->drawPixmap( 0, 0, getCachedSvg( "head", headRect.width(), headRect.height() ) );
+    painter->drawPixmap( 0, 0, renderSvg( "head", headRect.width(), headRect.height(), "head" ) );
 
 
     //paint collapse button
@@ -829,7 +812,8 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     else
         collapseString = "expand_button";
 
-    painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, getCachedSvg( collapseString, 16, 16 ) );
+
+        painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, renderSvg( collapseString, 16, 16, collapseString ) );
 
 
     //paint cover
@@ -850,7 +834,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
 
     //draw active track marker if needed
     if ( active )
-        painter->drawPixmap( trackRect.x() + 5, trackRect.y() + 2, getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() - 1 ) );
+        painter->drawPixmap( trackRect.x() + 5, trackRect.y() + 2, renderSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() - 1, "active_overlay"  ) );
 
     
     //and make sure the top text elements are shown
@@ -883,8 +867,8 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
-        painter->drawPixmap( trackRect.x() + 2, trackRect.y() + 2, getCachedSvg( "selection_left", trackRect.height() * 3, trackRect.height() -1 ) );
-        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top() + 2, getCachedSvg( "selection_right", trackRect.height() * 3, trackRect.height() - 1 ) );
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y() + 2, renderSvg( "selection_left", trackRect.height() * 3, trackRect.height() -1, "selection_left" ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top() + 2, renderSvg( "selection_right", trackRect.height() * 3, trackRect.height() - 1, "selection_right" ) );
     }
 
 
@@ -897,7 +881,7 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
     QRectF headRect = QRectF( option->rect.x(), option->rect.y(), option->rect.width(), option->rect.height() - 2 );
 
     //paint background
-    painter->drawPixmap( 0, 0, getCachedSvg( "collapsed_head", headRect.width(), headRect.height() ) );
+    painter->drawPixmap( 0, 0, renderSvg( "collapsed_head", headRect.width(), headRect.height(), "collapsed_head" ) );
 
     //paint collapse button
     QString collapseString;
@@ -911,7 +895,7 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
     else
         collapseString = "expand_button";
 
-    painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, getCachedSvg( collapseString, 16, 16 ) );
+    painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, renderSvg( collapseString, 16, 16, collapseString ) );
 
     //paint cover:
     QPixmap albumPixmap;
@@ -963,16 +947,16 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
 {
     QRectF trackRect = option->rect;
 
-    painter->drawPixmap( 0, 0, getCachedSvg( "body", trackRect.width(), trackRect.height() ) );
+    painter->drawPixmap( 0, 0, renderSvg( "body", trackRect.width(), trackRect.height(), "body" ) );
 
 
     //draw alternate background if needed
     if ( alternate )
-        painter->drawPixmap( 5, 0, getCachedSvg( "body_background", trackRect.width() - 10, trackRect.height() ) );
+        painter->drawPixmap( 5, 0, renderSvg( "body_background", trackRect.width() - 10, trackRect.height(), "body_background" ) );
 
     //draw active track marker if needed
     if ( active )
-        painter->drawPixmap( 5, 0, getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() ) );
+        painter->drawPixmap( 5, 0, renderSvg( "active_overlay", trackRect.width() - 10 , trackRect.height(), "active_overlay" ) );
 
 
     /*m_items->topRightText->setDefaultTextColor( Qt::black );
@@ -1013,8 +997,8 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
-        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height() * 3, trackRect.height() ) );
-        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height() * 3, trackRect.height() ) );
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), renderSvg( "selection_left", trackRect.height() * 3, trackRect.height(), "selection_left" ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top(), renderSvg( "selection_right", trackRect.height() * 3, trackRect.height(), "selection_right" ) );
     }
 
 
@@ -1025,7 +1009,7 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
    QRectF trackRect = option->rect;
    trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
 
-   painter->drawPixmap( 0, 0, getCachedSvg( "tail", trackRect.width(), trackRect.height() ) );
+   painter->drawPixmap( 0, 0, renderSvg( "tail", trackRect.width(), trackRect.height(), "tail" ) );
 
     if ( alternate )
     {
@@ -1033,13 +1017,13 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
         QRectF tempRect = trackRect;
         tempRect.setWidth( tempRect.width() - 10 );
         tempRect.setHeight( tempRect.height() - 4 );
-        painter->drawPixmap( 5, 0, getCachedSvg( "body_background", tempRect.width(), tempRect.height() ) );
+        painter->drawPixmap( 5, 0, renderSvg( "body_background", tempRect.width(), tempRect.height(), "body_background" ) );
 
     }
 
     //draw active track marker if needed
     if ( active )
-        painter->drawPixmap( 5, 0, getCachedSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() - 3 ) );
+        painter->drawPixmap( 5, 0, renderSvg( "active_overlay", trackRect.width() - 10 , trackRect.height() - 3, "active_overlay" ) );
 
     //make sure that the top text items are not shown
     if( m_items->topRightText->isVisible() )
@@ -1065,8 +1049,8 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
-        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), getCachedSvg( "selection_left", trackRect.height() * 3, trackRect.height() - 4 ) );
-        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top(), getCachedSvg( "selection_right", trackRect.height() * 3, trackRect.height() - 4 ) );
+        painter->drawPixmap( trackRect.x() + 2, trackRect.y(), renderSvg( "selection_left", trackRect.height() * 3, trackRect.height() - 4, "selection_left" ) );
+        painter->drawPixmap( (int)trackRect.bottomRight().x() - (trackRect.height() * 3 + 2), (int)trackRect.top(), renderSvg( "selection_right", trackRect.height() * 3, trackRect.height() - 4, "selection_right" ) );
     }
 
 }
@@ -1085,21 +1069,6 @@ void Playlist::GraphicsItem::paintCollapsed()
         m_items->bottomLeftText->hide();
 }
 
-QPixmap Playlist::GraphicsItem::getCachedSvg( QString name, int width, int height )
-{
-    QString key = QString("%1:%2x%3").arg( name ).arg( width ).arg( height );
-    QPixmap pixmap( width, height );
-    pixmap.fill( Qt::transparent );
-
-    if( !QPixmapCache::find(key, pixmap) )
-    {
-        QPainter pt2( &pixmap );
-        s_svgRenderer->render( &pt2, name, QRectF( 0, 0, width, height ) );
-        QPixmapCache::insert(key, pixmap);
-    }
-
-    return pixmap;
-}
 
 void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
 {
@@ -1114,7 +1083,7 @@ void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
             m_items->foreground->setPos( 0.0, rect.top() );
             //m_items->foreground->setZValue( 10.0 );
 
-            m_items->foreground->setPixmap( getCachedSvg( "active_overlay", rect.width(), rect.height() ) );
+            m_items->foreground->setPixmap( renderSvg( "active_overlay", rect.width(), rect.height(), "active_overlay" ) );
             m_items->foreground->show();
             debug() << "Done";
 

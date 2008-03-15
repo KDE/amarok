@@ -24,6 +24,9 @@
 
 
 #include "Meta.h"
+#include "SvgHandler.h"
+
+
 #include <QGraphicsItem>
 #include <QSvgRenderer>
 
@@ -41,7 +44,7 @@ namespace Playlist
      * Do not add any data members to GraphicsItem, you should be able to add them to
      * ActiveItems instead.
      */
-    class GraphicsItem : public QGraphicsItem
+    class GraphicsItem : public QGraphicsItem, public SvgHandler
     {
         class ActiveItems;
 
@@ -99,7 +102,6 @@ namespace Playlist
             void paintTail( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active, bool alternate  );
             void paintCollapsed( );
 
-            QPixmap getCachedSvg( QString name, int width, int height );
             void handleActiveOverlay( QRectF rect, bool active );
 
             ActiveItems* m_items;
