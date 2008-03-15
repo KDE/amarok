@@ -984,7 +984,9 @@ bool
 IpodMediaDevice::createLockFile( bool silent )
 {
     QString lockFilePath;
-    pathExists( itunesDir( "iTunes:iTunesLock" ), &lockFilePath );
+    if (!pathExists( itunesDir( "iTunes:iTunesLock" ), &lockFilePath ))
+        return false;
+
     m_lockFile = new QFile( lockFilePath );
     QString msg;
     bool ok = true;
@@ -1516,7 +1518,9 @@ IpodMediaDevice::checkIntegrity()
     }
 
     QString musicpath;
-    pathExists( itunesDir( "Music" ), &musicpath );
+    if (!pathExists( itunesDir( "Music" ), &musicpath ))
+        return false;
+
     QDir dir( musicpath, QString::null, QDir::Unsorted, QDir::Dirs );
     for(unsigned i=0; i<dir.count(); i++)
     {
@@ -2201,7 +2205,9 @@ IpodMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available
 
 #ifdef HAVE_STATVFS
     QString path;
-    pathExists( itunesDir(), &path );
+    if ( !pathExists( itunesDir(), &path ) )
+        return false;
+
     struct statvfs buf;
     if(statvfs(QFile::encodeName(path), &buf) != 0)
     {
