@@ -200,7 +200,7 @@ MediaDevicePluginManager::slotSolidDeviceAdded( const QString &udi )
     }
     else
     {
-        debug() << "device wasn't PMP, or was volume but not enabled" << endl;
+        debug() << "device was not PMP, or was volume but not enabled" << endl;
     }
 }
 

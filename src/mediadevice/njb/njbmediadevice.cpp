@@ -229,7 +229,7 @@ NjbMediaDevice::openDevice(bool)
 
     if( NJB_Capture(m_njb) == -1)
     {
-        debug() << ": couldn't capture\n";
+        debug() << ": could not capture\n";
         m_connected = false;
     }
     else

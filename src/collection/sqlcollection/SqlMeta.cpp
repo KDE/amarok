@@ -946,7 +946,7 @@ SqlAlbum::removeImage()
     // remove all cache images
     QDir        cacheDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     QStringList cacheFilter;
-    cacheFilter << QString( "*" + key );
+    cacheFilter << QString( '*' + key );
     QStringList cachedImages = cacheDir.entryList( cacheFilter );
 
     foreach( const QString &image, cachedImages )

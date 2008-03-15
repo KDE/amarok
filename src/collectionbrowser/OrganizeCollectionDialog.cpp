@@ -148,7 +148,7 @@ QString OrganizeCollectionDialog::buildFormatTip() const
             it != args.end();
             ++it )
     {
-        tooltip += QString( "<li>%1 - %2" ).arg( it.value(), "%" + it.key() );
+        tooltip += QString( "<li>%1 - %2" ).arg( it.value(), '%' + it.key() );
     }
     tooltip += "</ul>";
 

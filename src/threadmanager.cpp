@@ -328,7 +328,7 @@ void
 ThreadManager::Job::setProgressTotalSteps( uint steps )
 {
     if ( steps == 0 ) {
-        warning() << "You can't set steps to 0!\n";
+        warning() << "You cannot set steps to 0!\n";
         steps = 1;
     }
 

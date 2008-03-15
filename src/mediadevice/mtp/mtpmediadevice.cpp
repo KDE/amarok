@@ -194,7 +194,7 @@ MediaItem
         }
         else
         {
-            debug() << "We don't support the extension ." << extension;
+            debug() << "We do not support the extension ." << extension;
             Amarok::ContextStatusBar::instance()->shortLongMessage(
                 genericError,
                 i18n( "Cannot determine a valid file type" ),
@@ -273,7 +273,7 @@ MediaItem
         parent_id = checkFolderStructure( bundle );
         if( parent_id == 0 )
         {
-            debug() << "Couldn't create new parent (" << m_folderStructure << ")";
+            debug() << "Could not create new parent (" << m_folderStructure << ")";
             Amarok::ContextStatusBar::instance()->shortLongMessage(
                 genericError,
                 i18n( "Cannot create parent folder. Check your structure." ),

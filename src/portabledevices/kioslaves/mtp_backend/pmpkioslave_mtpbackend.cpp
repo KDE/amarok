@@ -445,7 +445,7 @@ MTPBackend::buildMusicListing()
             folderPath = m_folderIdToPathHash.value( trackList->parent_id );
             kDebug() << "Found track " << QString::fromUtf8( trackList->filename ) << " in folder " << folderPath;
             m_trackParentToPtrHash.insert( folderPath, trackList );
-            m_trackIdToPathHash.insert( trackList->item_id, folderPath + "/" + QString::number( trackList->item_id ) + "_###_" + QString::fromUtf8( trackList->filename ) );
+            m_trackIdToPathHash.insert( trackList->item_id, folderPath + '/' + QString::number( trackList->item_id ) + "_###_" + QString::fromUtf8( trackList->filename ) );
         }
         m_idToPtrHash.insert( trackList->item_id, (void*)trackList );
         m_objectTypeHash.insert( trackList->item_id, MTPBackend::TRACK );

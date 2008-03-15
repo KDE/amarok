@@ -167,7 +167,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
 
     if( m_dh == NULL )
     {
-        error() << "A suitable iRiver iFP device couldn't be found";
+        error() << "A suitable iRiver iFP device could not be found";
         Amarok::ContextStatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: A suitable iRiver iFP device could not be found")
                                         , KDE::StatusBar::Error );

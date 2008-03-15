@@ -498,7 +498,7 @@ MoodServer::slotNewJob( void )
     {
       // If we have an error starting the process, it's never
       // going to work, so call moodbarBroken()
-      warning() << "Can't start moodbar analyzer process!";
+      warning() << "Cannot start moodbar analyzer process!";
       delete m_currentProcess;
       m_currentProcess = 0;
       m_mutex.unlock();

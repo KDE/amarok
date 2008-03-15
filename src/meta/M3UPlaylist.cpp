@@ -97,11 +97,11 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             const int length = extinf.section( ',', 0, 0 ).toInt();
         }
 
-        else if( !line.startsWith( "#" ) && !line.isEmpty() )
+        else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {
             // KUrl::isRelativeUrl() expects absolute URLs to start with a protocol, so prepend it if missing
             QString url = line;
-            if( url.startsWith( "/" ) )
+            if( url.startsWith( '/' ) )
                 url.prepend( "file://" );
 
             if( KUrl::isRelativeUrl( url ) ) {

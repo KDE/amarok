@@ -301,8 +301,8 @@ void DynamicScriptableQueryMaker::fetchTracks()
         debug() << "running: " <<  m_script + " --populate " + QString::number( d->parentId );
 
         QStringList args;
-        args << "--populate ";
-        args << QString::number( d->parentId ) + " ";
+        args << "--populate";
+        args << QString::number( d->parentId );
         args << d->callbackString;
 
         d->scriptProcess = new AmarokProcess();

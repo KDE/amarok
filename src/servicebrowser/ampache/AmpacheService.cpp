@@ -44,7 +44,7 @@ void AmpacheServiceFactory::init()
 
     for( int i = 0; i < servers.size(); i++ ) {
         AmpacheServerEntry server = servers.at( i );
-        ServiceBase* service = new AmpacheService( "Ampache (" + server.name + ")", server.url, server. username, server.password );
+        ServiceBase* service = new AmpacheService( "Ampache (" + server.name + ')', server.url, server. username, server.password );
         debug() << "Emitting service!!!!!!";
         emit newService( service );
     }

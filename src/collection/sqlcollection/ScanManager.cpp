@@ -123,7 +123,7 @@ void ScanManager::startIncrementalScan()
 bool
 ScanManager::isDirInCollection( QString path )
 {
-    if ( path.endsWith( "/" ) )
+    if ( path.endsWith( '/' ) )
         path = path.left( path.length() - 1 );
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
