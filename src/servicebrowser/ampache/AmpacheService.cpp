@@ -84,7 +84,13 @@ AmpacheService::AmpacheService(const QString & name, const QString &url, const Q
     setShortDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server!" ) );
     setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
 
-    m_server = url;
+    //we are using http queries later on, so we require
+    KUrl kurl( url );
+    if( kurl.protocol() != "http" && kurl.protocol() != "https" )
+    {
+        kurl.setProtocol( "http" );
+    }
+    m_server = kurl.url();
     m_username = username;
     m_password = password;
 
@@ -129,11 +135,21 @@ void AmpacheService::authenticate(/* const QString & server, const QString & use
         if( !dlg.exec() )
             return; //the user canceled
 
-        m_server = dlg.username();
+        KUrl kurl( dlg.username() );
+        if( kurl.protocol() != "http" && kurl.protocol() != "https" )
+        {
+            kurl.setProtocol( "http" );
+        }
+        m_server = kurl.url();
         m_password = dlg.password();
 
     } else {
-        m_server = server;
+        KUrl kurl( server );
+        if( kurl.protocol() != "http" && kurl.protocol() != "https" )
+        {
+            kurl.setProtocol( "http" );
+        }
+        m_server = kurl.url();
         m_username = username;
         m_password = password;
     }
