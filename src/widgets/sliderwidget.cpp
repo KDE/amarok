@@ -151,9 +151,11 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     : Amarok::Slider( Qt::Horizontal, parent, max )
     , m_animCount( 0 )
     , m_animTimer( new QTimer( this ) )
-    , m_pixmapInset( QPixmap( KStandardDirs::locate( "data","amarok/images/volumeslider-inset.png" ) ) )
+    //, m_pixmapInset( QPixmap( KStandardDirs::locate( "data","amarok/images/volumeslider-inset.png" ) ) )
 {
     setFocusPolicy( Qt::NoFocus );
+
+    m_margin = 4;
 
     // BEGIN Calculate handle animation pixmaps for mouse-over effect
     QImage imgHandle    ( KStandardDirs::locate( "data","amarok/images/volumeslider-handle.png" ) );
@@ -178,11 +180,6 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     }
     // END
 
-    generateGradient();
-
-    setMinimumWidth( m_pixmapInset.width() );
-    setMinimumHeight( m_pixmapInset.height() );
-
     QString file = KStandardDirs::locate( "data","amarok/images/volume_slider.svg" );
     m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
     if ( ! m_svgRenderer->isValid() )
@@ -192,26 +189,7 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     
 }
 
-void
-Amarok::VolumeSlider::generateGradient()
-{
-    //QImage temp( KStandardDirs::locate( "data","amarok/images/volumeslider-gradient.png" ) );
-    //KIconEffect::colorize( temp, colorGroup().highlight(), 1.0 );
 
-    const QPixmap temp( KStandardDirs::locate( "data","amarok/images/volumeslider-gradient.png" ) );
-    const QBitmap mask( temp.createHeuristicMask() );
-
-    m_pixmapGradient = QPixmap( m_pixmapInset.size() );
-    QPainter p( &m_pixmapGradient );
-    QLinearGradient gradient( 0, 0, m_pixmapGradient.width(), 0 );
-    gradient.setColorAt( 0.0, colorGroup().alternateBase() );
-    gradient.setColorAt( 1.0, colorGroup().highlight() );
-    p.setPen( Qt::NoPen );
-    p.setBrush( gradient );
-    p.drawRect( m_pixmapGradient.rect() );
-    p.end();
-    m_pixmapGradient.setMask( mask );
-}
 
 void
 Amarok::VolumeSlider::slotAnimTimer() //SLOT
@@ -271,7 +249,15 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 void
 Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
 {
-    QSlider::setValue( QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().x(), width()-2 ) );
+
+    int x = e->pos().x();
+    
+    //is event witin slider bounds?
+    if ( ( x >= m_sliderX ) && ( x <= m_sliderX + m_sliderWidth ) )
+    {
+        QSlider::setValue( QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().x() - m_sliderX, m_sliderWidth-2 ) );
+
+    }
 }
 
 void
@@ -286,7 +272,9 @@ Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
 void
 Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
+
+    //debug() << "width: " << width() << ", height: " << height();
     QPainter p( this );
 
     const int padding = 7;
@@ -294,63 +282,56 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
 
     //try something completely different here...
-    
-    double bgWidth = width();
-    double bgHeight = bgWidth / 7.0; //maintain sane aspect ratio
 
-    double knobX = ( bgWidth - bgHeight ) * ( ( double ) value() / 100.0 );
+    double knobX = ( m_sliderWidth - m_sliderHeight ) * ( ( double ) value() / 100.0 );
 
 
-    double fillLength = knobX + ( bgHeight / 2 );
-    double fillHeight = bgHeight * ( ( double ) knobX / bgWidth );
-    double fillOffsetY = ( bgHeight - fillHeight ) / 2;
+    double fillLength = knobX + ( m_sliderHeight / 2 );
+    double fillHeight = m_sliderHeight * ( ( double ) knobX / m_sliderWidth );
+    double fillOffsetY = ( m_sliderHeight - fillHeight ) / 2;
 
 
     //paint slider background
     QString key = QString("volume-background:%1x%2-fill:%3")
-            .arg( bgWidth )
-            .arg( bgHeight )
+            .arg( m_sliderWidth )
+            .arg( m_sliderHeight )
             .arg( fillLength );
 
-    QPixmap background( bgWidth, bgHeight );
+    QPixmap background( m_sliderWidth, m_sliderHeight );
 
     if (!QPixmapCache::find(key, background)) {
         debug() << QString("volume background %1 not in cache...").arg( key );
         background.fill( Qt::transparent );
         QPainter pt( &background );
-        m_svgRenderer->render( &pt, "volume-slider-background",  QRectF( 0, 0, bgWidth, bgHeight ) );
+        m_svgRenderer->render( &pt, "volume-slider-background",  QRectF( 0, 0, m_sliderWidth, m_sliderHeight ) );
         m_svgRenderer->render( &pt, "volume-fill",  QRectF( 0, fillOffsetY, fillLength, fillHeight ) );
-        m_svgRenderer->render( &pt, "volume-slider-position",  QRectF( knobX, 0, bgHeight, bgHeight ) );
+        m_svgRenderer->render( &pt, "volume-slider-position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
 
         QPixmapCache::insert(key, background);
     }
 
-    p.drawPixmap( 0, 0, background );
-
-    int iconHeight = height() - ( bgHeight + 7 );
-    int iconWidth = ( double ) iconHeight * 1.33;
-    int iconX = ( width() - iconWidth ) / 2;
+    p.drawPixmap( m_sliderX, ( height() - m_sliderHeight ) / 2, background );
 
     //paint volume icon
     key = QString("volume-icon:%1x%2")
-            .arg( iconWidth )
-            .arg( iconHeight );
+            .arg( m_iconWidth )
+            .arg( m_iconHeight );
 
-    QPixmap icon( iconWidth, iconHeight );
+    QPixmap icon( m_iconWidth, m_iconHeight );
 
     if (!QPixmapCache::find(key, icon)) {
         debug() << QString("volume icon %1 not in cache...").arg( key );
         icon.fill( Qt::transparent );
         QPainter pt( &icon );
 
-        m_svgRenderer->render( &pt, "volume-slider-icon",  QRectF( 0, 0, iconWidth, iconHeight ) );
+        m_svgRenderer->render( &pt, "volume-slider-icon",  QRectF( 0, 0, m_iconWidth, m_iconHeight ) );
 
         QPixmapCache::insert(key, icon);
     }
 
     
 
-    p.drawPixmap( iconX, bgHeight + 2, icon );
+    p.drawPixmap( 0, ( height() - m_iconHeight ) / 2, icon );
     
 
     /*const QRectF boundsG( 0, 0, offset + padding, m_pixmapGradient.height() );
@@ -366,9 +347,9 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     // Draw percentage number
     p.setPen( palette().color( QPalette::Active, QColorGroup::Text ).dark() );
     QFont font;
-    font.setPixelSize( 9 );
+    font.setPixelSize( 12 );
     p.setFont( font );
-    const QRect rect( iconX + iconWidth + 5, ( int ) bgHeight + 2 , 34, 15 );
+    const QRect rect( m_iconWidth + m_sliderWidth, ( int ) ( height() - 15 ) / 2, 40, 15 );
     if ( underMouse() )
         p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
 }
@@ -393,10 +374,24 @@ Amarok::VolumeSlider::leaveEvent( QEvent* )
     m_animTimer->start( ANIM_INTERVAL );
 }
 
+/*
 void
 Amarok::VolumeSlider::paletteChange( const QPalette& )
 {
     generateGradient();
+}*/
+
+void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
+{
+    m_iconHeight = height() * 0.66;
+    m_iconWidth = ( double ) m_iconHeight * 1.33;
+    m_textWidth = 40;
+    m_sliderWidth = width() - ( m_iconWidth + m_textWidth + m_margin  );
+    m_sliderHeight = m_sliderWidth / 7.0; //maintain sane aspect ratio
+    if ( m_sliderHeight > height() )
+        m_sliderHeight = height();
+
+    m_sliderX = m_iconWidth + m_margin;
 }
 
 #include "sliderwidget.moc"

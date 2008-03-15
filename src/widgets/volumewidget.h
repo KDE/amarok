@@ -19,12 +19,12 @@
 #include "engineobserver.h"
 
 #include <QPointer>
-#include <QWidget>
+#include <KHBox>
 
 /*
 * A custom widget that serves as our volume slider within Amarok.
 */
-class VolumeWidget : public QWidget, public EngineObserver
+class VolumeWidget : public KHBox, public EngineObserver
 {
 Q_OBJECT
 public:

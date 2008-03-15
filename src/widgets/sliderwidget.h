@@ -87,17 +87,18 @@ namespace Amarok
 
             virtual void enterEvent( QEvent* );
             virtual void leaveEvent( QEvent* );
-            virtual void paletteChange( const QPalette& );
+            //virtual void paletteChange( const QPalette& );
             virtual void slideEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void contextMenuEvent( QContextMenuEvent* );
             virtual void wheelEvent( QWheelEvent *e );
+            virtual void resizeEvent(QResizeEvent * event);
 
         private slots:
             virtual void slotAnimTimer();
 
         private:
-            void generateGradient();
+            //void generateGradient();
 
             VolumeSlider( const VolumeSlider& ); //undefined
             VolumeSlider &operator=( const VolumeSlider& ); //undefined
@@ -110,8 +111,18 @@ namespace Amarok
             int     m_animCount;
             QTimer* m_animTimer;
 
-            QPixmap m_pixmapInset;
-            QPixmap m_pixmapGradient;
+
+            int m_iconHeight;
+            int m_iconWidth;
+            int m_textWidth;
+            int m_sliderWidth;
+            int m_sliderHeight;
+            int m_sliderX;
+
+            int m_margin;
+
+            //QPixmap m_pixmapInset;
+            //QPixmap m_pixmapGradient;
 
             QVector<QPixmap> m_handlePixmaps;
             QSvgRenderer * m_svgRenderer;

@@ -109,12 +109,16 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     m_volumeWidget = new VolumeWidget( m_insideBox );
     //vw->setMinimumSize( 150, 30 );
-    m_volumeWidget->setFixedSize( 200, 30 );
+    m_volumeWidget->setFixedSize( 160, 24 );
+
+    //m_volumeWidget->setMinimumSize( 230, 30 );
     
     //m_insideBox->layout()->setAlignment( vw, Qt::AlignRight |  Qt::AlignVCenter);
 
     //trigger a resize event to get everything laid out
     //resize( m_insideBox->width(), 62 );
+
+    m_renderAddControls = false;
 
 }
 
@@ -226,7 +230,7 @@ void MainToolbar::resizeEvent(QResizeEvent * event)
     int middle = event->size().width() / 2;
     
     m_playerControlsToolbar->move( middle - 90, 0 );
-    m_volumeWidget->move( event->size().width() - 150, ( m_insideBox->height() - m_volumeWidget->height() ) / 2 );
+    m_volumeWidget->move( event->size().width() - 170, /*( m_insideBox->height() - m_volumeWidget->height() ) / 2*/ 0 );
     m_addControlsToolbar->move( middle + 100, 10 ); //TODO:move a bit depending on how many actions are present so the actions are centered
     //and considder what happens if there are more than 3 actions
 

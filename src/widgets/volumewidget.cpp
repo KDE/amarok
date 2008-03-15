@@ -22,7 +22,7 @@
 #include <klocale.h>
 
 VolumeWidget::VolumeWidget( QWidget *parent )
-    : QWidget( parent ),
+    : KHBox( parent ),
       EngineObserver( EngineController::instance() ),
       m_slider( 0 )
 {
@@ -31,7 +31,8 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_slider->setValue( AmarokConfig::masterVolume() );
     setContentsMargins(0,0,0,0);
 
-    m_slider->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Ignored );
+    m_slider->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    //m_slider->setFixedSize( width(), height() );
 
     m_slider->setToolTip( i18n( "Volume control" ) );
 
