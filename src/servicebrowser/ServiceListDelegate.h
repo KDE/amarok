@@ -20,6 +20,8 @@
 #ifndef SERVICELISTDELEGATE_H
 #define SERVICELISTDELEGATE_H
 
+#include "../widgets/SvgHandler.h"
+
 #include <KStandardDirs>
 
 #include <QItemDelegate>
@@ -33,7 +35,7 @@ A delegate for displaying a nice overview of a service
 
 	@author 
 */
-class ServiceListDelegate : public QItemDelegate
+class ServiceListDelegate : public QItemDelegate, public SvgHandler
 {
 public:
     ServiceListDelegate( QListView *view );

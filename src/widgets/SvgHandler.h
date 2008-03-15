@@ -39,7 +39,7 @@ public:
     void loadSvg( QString name );
     void reTint();
 
-    QPixmap renderSvg( QString keyname, int width, int height, QString element = QString() );
+    QPixmap renderSvg( QString keyname, int width, int height, QString element = QString() ) const;
 
 private:
     QSvgRenderer * m_svgRenderer;

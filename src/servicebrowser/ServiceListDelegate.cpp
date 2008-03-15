@@ -33,18 +33,12 @@
 
 ServiceListDelegate::ServiceListDelegate( QListView *view )
  : QItemDelegate()
+ , SvgHandler()
  , m_view( view )
 {
     DEBUG_BLOCK
 
-    QString file = KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" );
-    QString svg_source =  The::svgTinter()->tint( file );
-
-
-    m_svgRendererActive = new  QSvgRenderer( svg_source.toAscii() );
-    svg_source.replace("stop-color:#6193cf", "stop-color:" + QApplication::palette().highlight().color().dark( 150 ).name() );
-    m_svgRendererInactive = new  QSvgRenderer( svg_source.toAscii() );
-
+   loadSvg( "amarok/images/service-browser-element.svg" );
 
 }
 
@@ -68,52 +62,11 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
 
-    //lets try yo have some fun with an svg...
-
-    QSvgRenderer * svgRenderer;
-
-    QString key;
-
-    if (option.state & QStyle::State_Selected) {
-        svgRenderer = m_svgRendererActive;
-        key = QString("service_list_item_selected:%1x%2")
-                      .arg( width )
-                      .arg( height );
-    } else { 
-        svgRenderer = m_svgRendererInactive;
-        key = QString("service_list_item_inactive:%1x%2")
-                      .arg( width )
-                      .arg( height );
-    }
-
-
-
-
-    QPixmap background( width - 4, height - 4 );
-
-    if (!QPixmapCache::find(key, background)) {
-
-        background.fill( Qt::transparent );
-        QPainter pt( &background );
-        svgRenderer->render ( &pt,  QRectF( 0, 0 ,width - 4, height - 4 ) );
-        QPixmapCache::insert(key, background);
-    }
+    QPixmap background = renderSvg( "service_list_item", width, height );
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
-
-    /*if (option.state & QStyle::State_Selected)
-        painter->setPen(Qt::blue);
-    else 
-        painter->setPen(Qt::gray);
-
-    //painter->drawRoundRect( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2 ,250,66, 8 ,8 );
-
-    if (option.state & QStyle::State_Selected)
-        painter->setPen(Qt::blue);
-    else 
-        painter->setPen(Qt::black);*/
-
+    
     painter->setFont(QFont("Arial", 14));
 
 

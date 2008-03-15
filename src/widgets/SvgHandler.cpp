@@ -51,7 +51,7 @@ void SvgHandler::loadSvg( QString name )
 }
 
 
-QPixmap SvgHandler::renderSvg( QString keyname, int width, int height, QString element )
+QPixmap SvgHandler::renderSvg( QString keyname, int width, int height, QString element ) const
 {
 
     QString key = QString("%1:%2x%3")
