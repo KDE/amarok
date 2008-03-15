@@ -202,6 +202,8 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac )
     engineStateChanged( EngineController::engine()->state() );
     PERF_LOG( "PlayPauseAction: after engineStateChanged" )
 
+    setShortcut( Qt::Key_Space );
+
     connect( this, SIGNAL(triggered()), EngineController::instance(), SLOT(playPause()) );
 }
 
