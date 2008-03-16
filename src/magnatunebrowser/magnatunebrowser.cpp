@@ -66,7 +66,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     m_purchaseHandler = 0;
     m_redownloadHandler = 0;
 
-    m_purchaseInProgress = 0;
+    m_purchaseInProgress = false;
 
     m_polished = false; 
 
@@ -298,7 +298,7 @@ void MagnatuneBrowser::initTopPanel( )
 
     updateGenreBox();
 
-    m_advancedFeaturesButton = new QPushButton( i18n( "Advanced" ), m_topPanel, "advancedButton" );
+    m_advancedFeaturesButton = new QPushButton( i18n( "Redownload" ), m_topPanel, "advancedButton" );
     connect( m_advancedFeaturesButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
 
     connect( m_genreComboBox, SIGNAL( activated ( int ) ), this, SLOT( genreChanged() ) );
