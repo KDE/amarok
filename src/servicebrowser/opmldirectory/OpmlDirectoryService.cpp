@@ -30,6 +30,7 @@
 #include <KTemporaryFile>
 #include <KRun>
 #include <KShell>
+#include <threadweaver/ThreadWeaver.h>
 
 #include <typeinfo>
 
@@ -187,7 +188,7 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
     OpmlDirectoryXmlParser * parser = new OpmlDirectoryXmlParser( m_tempFileName );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
-    ThreadManager::instance()->queueJob( parser );
+    ThreadWeaver::Weaver::instance()->enqueue( parser );
     downloadJob->deleteLater();
     m_listDownloadJob = 0;
 

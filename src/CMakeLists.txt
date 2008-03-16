@@ -424,7 +424,6 @@ set(amaroklib_LIB_SRCS
     tagdialog.cpp
     collectionbrowser/OrganizeCollectionDialog.cpp
     TagGuesser.cpp
-    threadmanager.cpp
     tooltip.cpp
     trackpickerdialog.cpp
 #    tracktooltip.cpp

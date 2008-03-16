@@ -28,7 +28,6 @@
 #include "Sidebar.h"
 #include "StatusBarMessageLabel.h"
 #include "StatusBarBase.h"
-#include "threadmanager.h"
 
 #include <kicon.h>
 #include <kiconloader.h>
@@ -50,6 +49,7 @@
 #include <QPushButton>
 #include <QStyle>   //class CloseButton
 #include <QStyleOption>
+#include <QThread>
 #include <QTimer>
 #include <QToolButton>
 #include <QToolTip> //QToolTip::palette()
@@ -58,6 +58,10 @@
 //segregated classes
 #include "popupMessage.h"
 #include "progressBar.h"
+
+#define SHOULD_BE_GUI if( QThread::currentThread() != QCoreApplication::instance()->thread() ) std::cout \
+    << "Should not be Threaded, but is running in" << \
+    long (QThread::currentThread()) <<std::endl;
 
 
 namespace KDE {

@@ -21,8 +21,8 @@
 #define JAMENDOXMLPARSER_H
 
 #include "jamendodatabasehandler.h"
-//#include "jamendotypes.h"
-#include "threadmanager.h"
+
+#include <threadweaver/Job.h>
 
 #include <QDomElement>
 #include <QMap>
@@ -34,7 +34,7 @@
 *
 * @author Nikolaj Hald Nielsen
 */
-class JamendoXmlParser : public ThreadManager::Job
+class JamendoXmlParser : public ThreadWeaver::Job
 {
     Q_OBJECT
 
@@ -48,16 +48,11 @@ public:
     JamendoXmlParser( const QString &fileName );
 
     /**
-     * The function that starts the actual work. Inherited fromThreadManager::Job 
+     * The function that starts the actual work. Inherited from ThreadWeaver::Job 
      * Note the work is performed in a separate thread
      * @return Returns true on success and false on failure
      */
-    bool doJob();
-
-    /**
-     * Called when the job has completed. Is executed in the GUI thread
-     */
-    void completeJob();
+    void run();
 
     /**
      * Destructor
@@ -75,9 +70,15 @@ public:
 signals:
 
     /**
-     * Signal emmited when parsing is complete.
+     * Signal emitted when parsing is complete.
      */
     void doneParsing();
+
+private slots:
+    /**
+     * Called when the job has completed. Is executed in the GUI thread
+     */
+    void completeJob();
 
 private:
 

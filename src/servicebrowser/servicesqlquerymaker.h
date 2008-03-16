@@ -24,8 +24,6 @@
 #include "ServiceSqlRegistry.h"
 #include "QueryMaker.h"
 
-#include "threadmanager.h"
-
 #include <threadweaver/Job.h>
 
 class ServiceSqlCollection;

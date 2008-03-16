@@ -21,7 +21,6 @@
 #include "QueryMaker.h"
 
 #include "amarok_export.h"
-#include "threadmanager.h"
 
 #include <threadweaver/Job.h>
 

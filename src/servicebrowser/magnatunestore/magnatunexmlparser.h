@@ -23,20 +23,20 @@
 
 #include "magnatunedatabasehandler.h"
 #include "MagnatuneMeta.h"
-#include "threadmanager.h"
 
 #include <qdom.h>
 #include <QString>
 #include <QDomElement>
 #include <QMap>
 
+#include <threadweaver/Job.h>
 
 /**
 * Parser for the XML file from http://magnatune.com/info/album_info.xml
 *
 * @author Nikolaj Hald Nielsen
 */
-class MagnatuneXmlParser : public ThreadManager::Job
+class MagnatuneXmlParser : public ThreadWeaver::Job
 {
     Q_OBJECT
 
@@ -50,16 +50,10 @@ public:
     MagnatuneXmlParser( const QString &fileName );
 
     /**
-     * The function that starts the actual work. Inherited fromThreadManager::Job
+     * The function that starts the actual work. Inherited from ThreadWeaver::Job
      * Note the work is performed in a separate thread
-     * @return Returns true on success and false on failure
      */
-    bool doJob();
-
-    /**
-     * Called when the job has completed. Is executed in the GUI thread
-     */
-    void completeJob();
+    void run();
 
     /**
      * Destructor
@@ -82,6 +76,13 @@ signals:
      * Signal emmited when parsing is complete.
      */
     void doneParsing();
+
+    private slots:
+        
+    /**
+     * Called when the job has completed. Is executed in the GUI thread
+     */
+    void completeJob();
 
 private:
 

@@ -23,10 +23,10 @@
 #include "medium.h"
 #include "plugin/plugin.h"
 #include "pluginmanager.h"
-#include "threadmanager.h"
 
 #include <KConfig>
 #include <KUrl>
+#include <threadweaver/Job.h>
 
 #include <QMap>
 #include <QMutex>
@@ -242,14 +242,12 @@ private slots:
 
 };
 
-class UrlUpdateJob : public ThreadManager::DependentJob
+class UrlUpdateJob : public ThreadWeaver::Job
 {
 public:
-    UrlUpdateJob( QObject *dependent ) : DependentJob( dependent, "UrlUpdateJob" ) {}
+    UrlUpdateJob( QObject *dependent );
 
-    virtual bool doJob();
-
-    virtual void completeJob() {}
+    virtual void run();
 
 private:
     void updateStatistics();

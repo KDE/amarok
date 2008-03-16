@@ -816,7 +816,6 @@ void App::slotConfigEqualizer() //SLOT
 
 void App::slotConfigAmarok( const QByteArray& page )
 {
-    DEBUG_THREAD_FUNC_INFO
 
     Amarok2ConfigDialog* dialog = static_cast<Amarok2ConfigDialog*>( KConfigDialog::exists( "settings" ) );
 

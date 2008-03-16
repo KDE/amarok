@@ -34,6 +34,9 @@
 #include <solid/devicenotifier.h>
 #include <solid/storagevolume.h>
 
+#include <threadweaver/Job.h>
+#include <threadweaver/ThreadWeaver.h>
+
 #include <QFile>
 #include <QList>
 #include <QStringList>
@@ -486,7 +489,7 @@ MountPointManager::updateStatisticsURLs( bool changed )
 void
 MountPointManager::startStatisticsUpdateJob()
 {
-    ThreadManager::instance()->queueJob( new UrlUpdateJob( this ) );
+    ThreadWeaver::Weaver::instance()->enqueue( new UrlUpdateJob( this ) );
 }
 
 void
@@ -517,12 +520,18 @@ MountPointManager::deviceRemoved( const QString &udi )
 
 //UrlUpdateJob
 
-bool UrlUpdateJob::doJob( )
+UrlUpdateJob::UrlUpdateJob( QObject *dependent )
+    : ThreadWeaver::Job( dependent )
+{
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( deleteLater() ) );
+}
+
+void
+UrlUpdateJob::run( )
 {
     DEBUG_BLOCK
     updateStatistics();
     updateLabels();
-    return true;
 }
 
 void UrlUpdateJob::updateStatistics( )

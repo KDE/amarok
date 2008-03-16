@@ -22,7 +22,6 @@
 
 #include "progressBar.h" //convenience
 #include "amarok_libs_export.h"
-#include "threadmanager.h"
 #include <QWidget>     //baseclass
 #include <QMap>        //stack allocated
 #include <QStatusBar>

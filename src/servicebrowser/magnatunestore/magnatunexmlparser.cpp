@@ -26,6 +26,7 @@
 
 #include <KFilterDev>
 #include <KLocale>
+#include <threadweaver/Job.h>
 
 #include <QDomDocument>
 #include <QFile>
@@ -33,25 +34,25 @@
 using namespace Meta;
 
 MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
-        : ThreadManager::Job( "MagnatuneXmlParser" )
+        : ThreadWeaver::Job()
 {
     m_currentArtist = "";
     m_sFileName = filename;
     debug() << "Creating MagnatuneXmlParser";
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
 }
 
 
 MagnatuneXmlParser::~MagnatuneXmlParser()
 {}
 
-bool
-MagnatuneXmlParser::doJob( )
+void
+MagnatuneXmlParser::run()
 {
     m_pCurrentArtist = 0;
     m_pCurrentAlbum = 0;
     debug() << "MagnatuneXmlParser::doJob";
     readConfigFile( m_sFileName );
-    return true;
 }
 
 
@@ -61,7 +62,8 @@ MagnatuneXmlParser::completeJob( )
     Amarok::ContextStatusBar::instance() ->longMessage(
         i18n( "Magnatune.com database update complete. Added %1 tracks on %2 albums from %3 artists", m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), KDE::StatusBar::Information );
 
-    emit( doneParsing() );
+    emit doneParsing();
+    deleteLater();
 }
 
 void

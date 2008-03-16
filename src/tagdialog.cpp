@@ -55,7 +55,7 @@
 
 #include "metadata/tfile_helper.h" //TagLib::File::isWritable
 
-class TagDialogWriter : public ThreadManager::Job
+/*class TagDialogWriter : public ThreadManager::Job
 {
 public:
     TagDialogWriter( const QMap<QString, Meta::TrackPtr> tagsToChange );
@@ -68,7 +68,7 @@ private:
     int     m_successCount;
     int     m_failCount;
     QStringList m_failedURLs;
-};
+};*/
 
 /*
 TagDialog::TagDialog( const KUrl& url, QWidget* parent )
@@ -1660,7 +1660,7 @@ TagDialog::selectOrInsertText( const QString &text, QComboBox *comboBox )
     }
 }
 
-TagDialogWriter::TagDialogWriter( const QMap<QString, Meta::TrackPtr> tagsToChange )
+/*TagDialogWriter::TagDialogWriter( const QMap<QString, Meta::TrackPtr> tagsToChange )
         : ThreadManager::Job( "TagDialogWriter" ),
           m_successCount ( 0 ),
           m_failCount    ( 0 )
@@ -1707,7 +1707,7 @@ TagDialogWriter::completeJob()
      for( int i = 0, size=m_tags.size(); i<size; ++i ) {
         if ( !m_failed[i] ) {
             //Port 2.0
-//             CollectionDB::instance()->updateTags( m_tags[i].url().path(), m_tags[i], false /* don't update browsers*/ );
+//             CollectionDB::instance()->updateTags( m_tags[i].url().path(), m_tags[i], false ); //do not update browsers
 // PORT 2.0            Playlist::instance()->updateMetaData( m_tags[i] );
         }
      }
@@ -1717,7 +1717,7 @@ TagDialogWriter::completeJob()
      if ( m_failCount )
         Amarok::ContextStatusBar::instance()->longMessage( i18n(
                         "Sorry, the tags for the following files could not be changed:\n%1", m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );
-}
+}*/
 
 
 #include "tagdialog.moc"

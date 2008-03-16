@@ -21,20 +21,20 @@
 #define OPMLDIRECTORYXMLPARSER_H
 
 #include "OpmlDirectoryDatabaseHandler.h"
-//#include "jamendotypes.h"
-#include "threadmanager.h"
 
 #include <QDomElement>
 #include <QMap>
 #include <QString>
 #include <QStringList>
 
+#include <threadweaver/Job.h>
+
 /**
 * Parser for the XML file from http://img.jamendo.com/data/dbdump.en.xml.gz
 *
 * @author Nikolaj Hald Nielsen
 */
-class OpmlDirectoryXmlParser : public ThreadManager::Job
+class OpmlDirectoryXmlParser : public ThreadWeaver::Job
 {
     Q_OBJECT
 
@@ -48,16 +48,11 @@ public:
     OpmlDirectoryXmlParser( const QString &fileName );
 
     /**
-     * The function that starts the actual work. Inherited fromThreadManager::Job 
+     * The function that starts the actual work. Inherited from ThreadWeaver::Job 
      * Note the work is performed in a separate thread
      * @return Returns true on success and false on failure
      */
-    bool doJob();
-
-    /**
-     * Called when the job has completed. Is executed in the GUI thread
-     */
-    void completeJob();
+    void run();
 
     /**
      * Destructor
@@ -78,6 +73,12 @@ signals:
      * Signal emmited when parsing is complete.
      */
     void doneParsing();
+
+    private slots:
+        /**
+         * Called when the job has completed. Is executed in the GUI thread
+         */
+        void completeJob();
 
 private:
 

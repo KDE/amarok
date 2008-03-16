@@ -23,8 +23,9 @@
 #include "SqlStorage.h"
 
 MagnatuneDatabaseWorker::MagnatuneDatabaseWorker()
-    : ThreadManager::Job( "MagnatuneDatabaseWorker" )
+    : ThreadWeaver::Job()
 {
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
 }
 
 
@@ -33,7 +34,8 @@ MagnatuneDatabaseWorker::~MagnatuneDatabaseWorker()
 }
 
 
-bool MagnatuneDatabaseWorker::doJob()
+void
+MagnatuneDatabaseWorker::run()
 {
     switch ( m_task ) {
         case FETCH_MODS:
@@ -43,10 +45,8 @@ bool MagnatuneDatabaseWorker::doJob()
             doFetchTrackswithMood();
             break;
         default:
-            return true;
+            break;
     }
-
-    return true;
 }
 
 void MagnatuneDatabaseWorker::completeJob()
@@ -59,8 +59,9 @@ void MagnatuneDatabaseWorker::completeJob()
             doFetchTrackswithMood();
             break;
         default:
-            return;
+            break;
     }
+    deleteLater();
 }
 
 

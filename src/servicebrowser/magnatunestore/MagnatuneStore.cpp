@@ -40,6 +40,7 @@
 #include <kurl.h>
 #include <kiconloader.h>   //multiTabBar icons
 #include <KTemporaryFile>
+#include <threadweaver/ThreadWeaver.h>
 
 #include <QGraphicsScene>
 #include <QSplitter>
@@ -261,7 +262,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
-    ThreadManager::instance() ->queueJob( parser );
+    ThreadWeaver::Weaver::instance()->enqueue( parser );
 }
 
 void MagnatuneStore::listDownloadCancelled( )
@@ -462,7 +463,7 @@ void MagnatuneStore::polish( )
     MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
     databaseWorker->fetchMoodMap();
     connect( databaseWorker, SIGNAL( gotMoodMap(QMap< QString, int >) ), this, SLOT( moodMapReady(QMap< QString, int >) ) );
-    ThreadManager::instance() ->queueJob( databaseWorker );
+    ThreadWeaver::Weaver::instance() ->enqueue( databaseWorker );
 
 
 }

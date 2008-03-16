@@ -32,7 +32,7 @@
 using namespace Meta;
 
 JamendoXmlParser::JamendoXmlParser( const QString &filename )
-        : ThreadManager::Job( "JamendoXmlParser" )
+        : ThreadWeaver::Job()
         , n_numberOfTransactions ( 0 )
         , n_maxNumberOfTransactions ( 5000 )
 {
@@ -40,6 +40,7 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
     m_sFileName = filename;
     albumTags.clear();
     m_dbHandler = new JamendoDatabaseHandler();
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
 }
 
 JamendoXmlParser::~JamendoXmlParser()
@@ -48,11 +49,10 @@ JamendoXmlParser::~JamendoXmlParser()
     delete m_dbHandler;
 }
 
-bool
-JamendoXmlParser::doJob( )
+void
+JamendoXmlParser::run( )
 {
     readConfigFile( m_sFileName );
-    return true;
 }
 
 void
@@ -66,7 +66,8 @@ JamendoXmlParser::completeJob( )
     debug() << "JamendoXmlParser: total number of artists: " << m_nNumberOfArtists;
     debug() << "JamendoXmlParser: total number of albums: " << m_nNumberOfAlbums;
     debug() << "JamendoXmlParser: total number of tracks: " << m_nNumberOfTracks;
-    emit( doneParsing() );
+    emit doneParsing();
+    deleteLater();
 }
 
 void
@@ -117,7 +118,6 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     //perhaps make this a config option
     m_dbHandler->trimGenres( 10 );
 
-    //completeJob is called by ThreadManager
 }
 
 void

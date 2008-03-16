@@ -28,11 +28,12 @@
 
 #include <KLocale>
 #include <KFilterDev>
+#include <threadweaver/Job.h>
 
 using namespace Meta;
 
 OpmlDirectoryXmlParser::OpmlDirectoryXmlParser( const QString &filename )
-        : ThreadManager::Job( "OpmlDirectoryXmlParser" )
+        : ThreadWeaver::Job()
         , n_numberOfTransactions ( 0 )
         , n_maxNumberOfTransactions ( 5000 )
 {
@@ -41,6 +42,7 @@ OpmlDirectoryXmlParser::OpmlDirectoryXmlParser( const QString &filename )
     albumTags.clear();
     m_dbHandler = new OpmlDirectoryDatabaseHandler();
     m_currentCategoryId = -1;
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
 }
 
 OpmlDirectoryXmlParser::~OpmlDirectoryXmlParser()
@@ -49,11 +51,10 @@ OpmlDirectoryXmlParser::~OpmlDirectoryXmlParser()
     delete m_dbHandler;
 }
 
-bool
-OpmlDirectoryXmlParser::doJob( )
+void
+OpmlDirectoryXmlParser::run()
 {
     readConfigFile( m_sFileName );
-    return true;
 }
 
 void
@@ -66,7 +67,8 @@ OpmlDirectoryXmlParser::completeJob( )
 
     debug() << "OpmlDirectoryXmlParser: total number of albums: " << m_nNumberOfCategories;
     debug() << "OpmlDirectoryXmlParser: total number of tracks: " << m_nNumberOfFeeds;
-    emit( doneParsing() );
+    emit doneParsing();
+    deleteLater();
 }
 
 void

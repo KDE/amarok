@@ -27,6 +27,7 @@
 #include <KTemporaryFile>
 #include <KRun>
 #include <KShell>
+#include <threadweaver/ThreadWeaver.h>
 
 #include <typeinfo>
 
@@ -189,7 +190,7 @@ void JamendoService::listDownloadComplete(KJob * downloadJob)
     JamendoXmlParser * parser = new JamendoXmlParser( m_tempFileName );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
-    ThreadManager::instance()->queueJob( parser );
+    ThreadWeaver::Weaver::instance()->enqueue( parser );
     downloadJob->deleteLater();
     m_listDownloadJob = 0;
 

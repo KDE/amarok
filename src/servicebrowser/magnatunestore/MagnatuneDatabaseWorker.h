@@ -23,7 +23,8 @@
 #define MAGNATUNEDATABASEWORKER_H
 
 #include "MagnatuneMeta.h"
-#include "threadmanager.h"
+
+#include <threadweaver/Job.h>
 
 /**
 A small helper class to do some simple asynchroneous database queries
@@ -31,7 +32,7 @@ A small helper class to do some simple asynchroneous database queries
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>   
 */
 
-class MagnatuneDatabaseWorker : public ThreadManager::Job
+class MagnatuneDatabaseWorker : public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
@@ -39,8 +40,7 @@ public:
 
     ~MagnatuneDatabaseWorker();
 
-    bool doJob();
-    void completeJob();
+    void run();
 
     void fetchMoodMap();
     void fetchTrackswithMood( QString mood, int noOfTracks );
@@ -49,6 +49,9 @@ signals:
 
     void gotMoodMap( QMap<QString, int> map );
     void gotTracks( Meta::TrackList tracks );
+
+private slots:
+    void completeJob();
 
 private:
 
