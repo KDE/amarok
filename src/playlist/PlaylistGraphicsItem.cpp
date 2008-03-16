@@ -1124,5 +1124,18 @@ Meta::TrackPtr Playlist::GraphicsItem::internalTrack()
     return index.data( ItemRole ).value< Playlist::Item* >()->track();
 }
 
+void Playlist::GraphicsItem::paletteChange()
+{
+    reTint();
+
+    //make sure this image is re rendered
+    if ( m_items && m_items->foreground ) {
+        delete m_items->foreground;
+        m_items->foreground = 0;
+    }
+    
+    refresh();
+}
+
 
 

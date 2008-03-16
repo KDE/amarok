@@ -321,5 +321,11 @@ QColor SideBarButton::blendColors( const QColor& color1, const QColor& color2, i
     return result;
 }
 
+void SideBarButton::paletteChange(const QPalette & oldPalette)
+{
+    reTint();
+    repaint( 0, 0, -1,-1 );
+}
+
 
 #include "SidebarWidget.moc"

@@ -36,20 +36,9 @@ SvgTinter * SvgTinter::instance()
 
 SvgTinter::SvgTinter()
 {
-    //for testing
-    QList<QString> baseColors;
-    baseColors << "#666765";
-    baseColors << "#878782";
-    //baseColors << "#e8e8e8";
-    baseColors << "#cdcec9";
-    baseColors << "#444444";
-
-    //QColor systemColor = QPalette::Window;
-    
-    init( App::instance()->palette().window().color(), baseColors, 100 );
-
-    debug() << "QPalette::Window: " << App::instance()->palette().highlight().color().name();
-    
+    m_firstRun = true;
+    init();
+    m_firstRun = false;
 }
 
 
@@ -75,23 +64,20 @@ QString SvgTinter::tint(QString filename)
 }
 
 
-void SvgTinter::init(QColor systemColor, QList< QString > baseColorNames, int tintPercentage)
+void SvgTinter::init( )
 {
 
-    foreach( const QString &baseColorName, baseColorNames ) {
+    if ( m_lastPalette != App::instance()->palette() || m_firstRun ) {
+        m_tintMap.insert( "#666765", App::instance()->palette().window().color().name() );
+        //insert a color for bright ( highlight color )
+        m_tintMap.insert( "#66ffff", App::instance()->palette().highlight().color().name() );
+        //a slightly lighter than window color:
+        m_tintMap.insert( "#e8e8e8", blendColors( App::instance()->palette().window().color(), "#ffffff", 90 ).name() );
+        //a slightly darker than window color:
+        m_tintMap.insert( "#565755", blendColors( App::instance()->palette().window().color(), "000000ff", 90 ).name() );
 
-        QColor baseColor( baseColorName );
-        QColor tintedColor = blendColors( systemColor, baseColor, tintPercentage );
-        m_tintMap.insert( baseColorName, tintedColor.name() );
-
+        m_lastPalette = App::instance()->palette();
     }
-    
-    //insert a color for bright ( highlight color )
-    m_tintMap.insert( "#66ffff", blendColors( App::instance()->palette().highlight().color(), "#66ffff", 100 ).name() );
-    //a slightly lighter than window color:
-    m_tintMap.insert( "#e8e8e8", blendColors( App::instance()->palette().window().color(), "#ffffff", 90 ).name() );
-    //a slightly darker than window color:
-    m_tintMap.insert( "#565755", blendColors( App::instance()->palette().window().color(), "000000ff", 90 ).name() );
 }
 
 
@@ -114,4 +100,6 @@ QColor SvgTinter::blendColors( const QColor& color1, const QColor& color2, int p
 namespace The {
     AMAROK_EXPORT SvgTinter* svgTinter() { return SvgTinter::instance(); }
 }
+
+
 

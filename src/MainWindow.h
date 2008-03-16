@@ -102,6 +102,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         virtual void showEvent( QShowEvent* );
         virtual QSize sizeHint() const;
 
+        virtual void paletteChange( const QPalette & oldPalette );
+
     private:
         enum MenuId { ID_SHOW_TOOLBAR = 2000, ID_SHOW_PLAYERWINDOW };
 

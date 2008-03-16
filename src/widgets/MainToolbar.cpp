@@ -250,4 +250,10 @@ void MainToolbar::resizeEvent(QResizeEvent * event)
     
 }
 
+void MainToolbar::paletteChange( const QPalette & oldPalette )
+{
+    reTint();
+    repaint( 0, 0, -1, -1 );
+}
+
 

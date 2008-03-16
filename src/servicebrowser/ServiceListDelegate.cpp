@@ -113,4 +113,9 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
 
 }
 
+void ServiceListDelegate::paletteChange()
+{
+    reTint();
+}
+
 

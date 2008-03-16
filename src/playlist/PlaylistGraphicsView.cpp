@@ -480,6 +480,14 @@ namespace The {
     Playlist::GraphicsView* playlistView() { return Playlist::GraphicsView::instance(); }
 }
 
+void Playlist::GraphicsView::paletteChange(const QPalette & oldPalette)
+{
+    foreach( Playlist::GraphicsItem* it, m_tracks )
+    {
+        it->paletteChange();
+    }
+}
+
 
 
 #include "PlaylistGraphicsView.moc"

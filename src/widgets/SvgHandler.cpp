@@ -62,7 +62,7 @@ QPixmap SvgHandler::renderSvg( QString keyname, int width, int height, QString e
     QPixmap pixmap( width, height );
     pixmap.fill( Qt::transparent );
 
-    if (!QPixmapCache::find(key, pixmap)) {
+    if ( !QPixmapCache::find(key, pixmap) ) {
         debug() << QString("svg %1 not in cache...").arg( key );
 
         QPainter pt( &pixmap );
@@ -72,6 +72,8 @@ QPixmap SvgHandler::renderSvg( QString keyname, int width, int height, QString e
             m_svgRenderer->render( &pt, QRectF( 0, 0, width, height ) );
   
         QPixmapCache::insert(key, pixmap);
+
+
     }
 
     return pixmap;
@@ -79,6 +81,9 @@ QPixmap SvgHandler::renderSvg( QString keyname, int width, int height, QString e
 
 void SvgHandler::reTint()
 {
+
+    The::svgTinter()->init();
+    
     delete m_svgRenderer;
     m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( m_svgFilename ).toAscii() );
     if ( ! m_svgRenderer->isValid() )

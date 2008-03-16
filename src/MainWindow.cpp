@@ -65,6 +65,7 @@
 #include <QTimer>           //search filter timer
 #include <QToolTip>         //QToolTip::add()
 #include <QVBoxLayout>
+#include <QPixmapCache>
 
 #include <KAction>          //m_actionCollection
 #include <KActionCollection>
@@ -1116,6 +1117,11 @@ void MainWindow::createMenus()
     m_menubar->addMenu( m_toolsMenu );
     m_menubar->addMenu( m_settingsMenu );
     m_menubar->addMenu( Amarok::Menu::helpMenu() );
+}
+
+void MainWindow::paletteChange(const QPalette & oldPalette)
+{
+    QPixmapCache::clear();
 }
 
 

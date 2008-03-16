@@ -34,8 +34,8 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     setObjectName( name );
     debug() << "ServiceBrowser starting...";
     m_serviceListView = new QListView( this );
-    ServiceListDelegate * delegate = new ServiceListDelegate( m_serviceListView );
-    m_serviceListView->setItemDelegate( delegate );
+    m_delegate = new ServiceListDelegate( m_serviceListView );
+    m_serviceListView->setItemDelegate( m_delegate );
     m_serviceListView->setModel( m_serviceListModel );
     connect(m_serviceListView, SIGNAL( activated ( const QModelIndex & )   ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
     m_scriptableServiceManager = 0;
@@ -115,6 +115,13 @@ void ServiceBrowser::home()
         if ( m_usingContextView )
             Context::ContextView::self()->clear();
     }
+}
+
+void ServiceBrowser::paletteChange(const QPalette & oldPalette)
+{
+    DEBUG_BLOCK
+    m_delegate->paletteChange();
+    m_serviceListView->reset();
 }
 
 

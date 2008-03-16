@@ -27,6 +27,7 @@
 #include <QFile>
 #include <QMap>
 #include <QString>
+#include <QPalette>
 
 /**
 This singleton class is used to tint the svg artwork to attempt to better match the users color scheme. 
@@ -41,7 +42,7 @@ class SvgTinter{
     ~SvgTinter();
 
     QString AMAROK_EXPORT tint( QString filename );
-    void init( QColor systemColor, QList<QString> baseColorNames, int tintPercentage );
+    void AMAROK_EXPORT init();
 
     QColor blendColors( const QColor& color1, const QColor& color2, int percent );
 
@@ -50,6 +51,9 @@ class SvgTinter{
 
         static SvgTinter * m_instance;
         QMap<QString, QString> m_tintMap;
+
+        QPalette m_lastPalette;
+        bool m_firstRun;
 
 };
 

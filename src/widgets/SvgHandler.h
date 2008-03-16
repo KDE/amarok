@@ -44,6 +44,7 @@ public:
 private:
     QSvgRenderer * m_svgRenderer;
     QString m_svgFilename;
+    QStringList m_keys;
 
 };
 

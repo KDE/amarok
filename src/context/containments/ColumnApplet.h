@@ -60,6 +60,8 @@ public:
 
     QList<QAction*> contextActions();
 
+    
+
 public slots:
     void appletRemoved( QObject* object );
     Applet* addApplet( Plasma::Applet* applet );
@@ -72,8 +74,8 @@ protected:
 
 protected slots:
     void launchAppletBrowser();
-
     void recalculate();
+    void paletteChange();
 
 private slots:
     void destroyApplet();

@@ -21,12 +21,14 @@
 
 #include "plasma/layouts/layoutanimator.h"
 #include "plasma/phase.h"
+#include "plasma/theme.h"
 
 #include <KAuthorized>
 #include <KMenu>
 #include <KTemporaryFile>
 #include <KStandardDirs>
 #include <KSvgRenderer>
+#include <KGlobalSettings>
 
 #include <threadweaver/ThreadWeaver.h>
 #include <threadweaver/Job.h>
@@ -97,6 +99,9 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_appletBrowser = new Plasma::AppletBrowser( this );
     m_appletBrowser->setApplication( "amarok" );
     m_appletBrowser->hide();
+
+    //connect ( Plasma::Theme::self(), SIGNAL( changed() ), this, SLOT( paletteChange() ) );
+    connect( KGlobalSettings::self(), SIGNAL(kdisplayPaletteChanged() ), this, SLOT( paletteChange() ) );
 }
 
 void ColumnApplet::saveToConfig( KConfig& conf )
@@ -319,10 +324,19 @@ void ColumnApplet::jobDone()
     m_masterImage = m_job->m_image;
     m_job->deleteLater();
     m_job = 0;
-    //we should request a redraw of the applet now, but I have now idea how to do that
+    //we should request a redraw of  applet now, but I have now idea how to do that
+}
+
+
+void ColumnApplet::paletteChange()
+{
+    reTint();
+    update( boundingRect() );
 }
 
 
 } // Context namespace
+
+
 
 #include "ColumnApplet.moc"

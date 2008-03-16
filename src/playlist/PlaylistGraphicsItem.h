@@ -71,6 +71,8 @@ namespace Playlist
 
             const int groupMode() const { return m_groupMode; }
 
+            void paletteChange();
+
             bool isCurrentTrack();
             Meta::TrackPtr internalTrack();
        
@@ -81,7 +83,8 @@ namespace Playlist
             void mousePressEvent( QGraphicsSceneMouseEvent* event );
             void mouseMoveEvent( QGraphicsSceneMouseEvent* event );
             void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
-            void hoverEnterEvent ( QGraphicsSceneHoverEvent * event ); 
+            void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
+
         
         private:
             void init( Meta::TrackPtr track );

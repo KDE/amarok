@@ -50,6 +50,7 @@ namespace Playlist
             const QList<GraphicsItem*> tracks() const { return m_tracks; }
             void  moveItem( Playlist::GraphicsItem *oldAbove, Playlist::GraphicsItem *newAbove );
 
+
         protected:
             virtual void contextMenuEvent( QContextMenuEvent *event );
             virtual void dragEnterEvent( QDragEnterEvent *event );
@@ -57,6 +58,9 @@ namespace Playlist
             virtual void dragLeaveEvent( QDragLeaveEvent *event );
             virtual void dropEvent( QDropEvent *event );
             virtual void keyPressEvent( QKeyEvent *event );
+            virtual void paletteChange( const QPalette & oldPalette );
+
+            
 
         private slots:
             void modelReset();

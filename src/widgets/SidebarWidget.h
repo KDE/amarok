@@ -75,6 +75,7 @@ class SideBarButton: public QAbstractButton, public SvgHandler
         virtual void paintEvent( QPaintEvent *e );
         virtual void enterEvent( QEvent* );
         virtual void leaveEvent( QEvent* );
+        virtual void paletteChange( const QPalette & oldPalette );
 
     private slots:
         virtual void slotAnimTimer();

@@ -30,7 +30,7 @@
 #include <QMap>
 
 
-
+class ServiceListDelegate;
 
 /**
 A browser for selecting and displaying a service in the style of the first imbedded Magnatune store from a list of available services. Allows many services to be shown as a single tab.
@@ -54,7 +54,11 @@ public:
 public slots:
 
     void addService( ServiceBase * service );
-    void setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ); 
+    void setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager );
+
+protected:
+
+    virtual void paletteChange( const QPalette & oldPalette );
 
 private:
 
@@ -68,6 +72,7 @@ private:
     ScriptableServiceManager * m_scriptableServiceManager;
     bool m_usingContextView;
     ServiceListModel * m_serviceListModel;
+    ServiceListDelegate * m_delegate;
 
 
 private slots:
