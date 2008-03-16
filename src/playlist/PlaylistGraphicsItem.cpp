@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-
+#include "app.h"
 #include "debug.h"
 #include "meta/MetaUtility.h"
 #include "AmarokMimeData.h"
@@ -1132,6 +1132,14 @@ void Playlist::GraphicsItem::paletteChange()
     if ( m_items && m_items->foreground ) {
         delete m_items->foreground;
         m_items->foreground = 0;
+    }
+
+    //ensure that the text items use a sane color
+    if ( m_items && m_items->bottomLeftText ) {
+        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text() );
+        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text() );
+        m_items->topLeftText->setDefaultTextColor( App::instance()->palette().text() );
+        m_items->topRightText->setDefaultTextColor( App::instance()->palette().text() );
     }
     
     refresh();
