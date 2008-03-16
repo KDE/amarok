@@ -3037,6 +3037,16 @@ MediaDevice::transferFiles()
                         {
                             transcodedBundle->setPodcastBundle( *bundle->podcastBundle() );
                             transcodedBundle->copyFrom( *bundle->podcastBundle() );
+                            //change the extension on the localUrl in the podcastbundle
+                            //to make sure it ends up with the correct extension
+                            //in the generic mediadevice.
+                            KURL localUrl = transcodedBundle->podcastBundle()->localUrl();
+                            QString filename = localUrl.filename();
+                            QString extension =
+                                QStringList::split( QString("."), filename ).last();
+                            filename.replace( extension, preferred );
+                            localUrl.setFileName( filename );
+                            transcodedBundle->podcastBundle()->setLocalURL( localUrl );
                         }
                         bundle = transcodedBundle;
                     }
