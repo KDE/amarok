@@ -50,6 +50,9 @@ public:
      */
     ~ServiceBrowser();
 
+    QMap<QString, ServiceBase *> services();
+    void removeService( QString name );
+    void resetService( QString name );
 
 public slots:
 

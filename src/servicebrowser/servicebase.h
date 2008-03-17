@@ -104,6 +104,8 @@ public:
     virtual void polish() = 0;
     virtual bool updateContextView() { return false; }
 
+    //virtual void reset() = 0;
+
 public slots:
 
     //void treeViewSelectionChanged( const QItemSelection & selected );

@@ -50,7 +50,8 @@ public:
     QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
 
-    void addService( ServiceBase * service ); 
+    void addService( ServiceBase * service );
+    void removeService(  ServiceBase * service );
 
 private:
 

@@ -50,6 +50,11 @@ public:
      */
     void init();
 
+    /**
+     * The service settings has been changed... add, remove or reset any affected services
+     */
+    void settingsChanged();
+
     QMap< QString, ServiceFactory* > factories();
 
 private:

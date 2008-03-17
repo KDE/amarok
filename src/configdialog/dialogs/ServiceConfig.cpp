@@ -64,6 +64,7 @@ ServiceConfig::~ServiceConfig()
 void ServiceConfig::updateSettings()
 {
     m_serviceSelector->save();
+    ServicePluginManager::instance()->settingsChanged();
 }
 
 

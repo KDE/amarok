@@ -86,7 +86,6 @@ void ServicePluginManager::init()
     foreach( ServiceFactory* factory,  m_factories.values() ) {
 
         //check if this service is enabled
-
         QString pluginName = factory->info().pluginName();
 
         debug() << "PLUGIN CHECK: " << pluginName;
@@ -105,6 +104,54 @@ void ServicePluginManager::slotNewService(ServiceBase * newService)
 QMap< QString, ServiceFactory * > ServicePluginManager::factories()
 {
     return m_factories;
+}
+
+void ServicePluginManager::settingsChanged()
+{
+
+
+    //for now, just delete and reload everything....
+    QMap<QString, ServiceBase *> activeServices =  m_serviceBrowser->services();
+    QList<QString> names = activeServices.keys();
+
+    foreach( QString serviceName, names ) {
+        m_serviceBrowser->removeService( serviceName );
+    }
+
+    init();
+
+
+    //way too advanced for now and does not solve the issue of some services being loaded multiple times
+    //based on their config
+    /*QMap<QString, ServiceBase *> activeServices =  m_serviceBrowser->services();
+    QList<QString> names = activeServices.keys();
+    
+    foreach( ServiceFactory* factory,  m_factories.values() ) {
+
+        //check if this service is enabled in the config
+        QString pluginName = factory->info().pluginName();
+
+        debug() << "PLUGIN CHECK: " << pluginName;
+        if ( factory->config().readEntry( pluginName + "Enabled", true ) ) {
+
+            //check if it is enabled but not loaded
+            if ( !names.contains( pluginName ) ) {
+                //load it
+                factory->init();
+            } else {
+                //loaded and enabled, so just reset it
+                activeServices[pluginName]->reset();
+            }
+        } else {
+            //check if it is loaded but needs to be disabled
+            if ( names.contains( pluginName ) ) {
+                //unload it
+                m_serviceBrowser->removeService( pluginName );
+            }
+        }
+    }*/
+
+    
 }
 
 

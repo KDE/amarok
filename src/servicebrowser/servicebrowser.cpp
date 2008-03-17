@@ -127,3 +127,25 @@ void ServiceBrowser::paletteChange(const QPalette & oldPalette)
 
 #include "servicebrowser.moc"
 
+
+
+QMap< QString, ServiceBase * > ServiceBrowser::services()
+{
+    return m_services;
+}
+
+void ServiceBrowser::removeService(QString name)
+{
+
+    ServiceBase * service = m_services.take( name );
+    if ( m_currentService = service )
+        home();
+    
+    m_serviceListModel->removeService( service );
+    delete service;
+    m_serviceListView->reset();
+}
+
+void ServiceBrowser::resetService(QString name)
+{
+}
