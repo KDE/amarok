@@ -99,6 +99,8 @@ private slots:
      */
     void purchase();
 
+    void purchaseCurrentTrackAlbum();
+
     /**
      * Slot for recieving notification that the update button has been clicked.
      */

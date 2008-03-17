@@ -28,6 +28,7 @@
 #include "meta/SourceInfoCapability.h"
 #include "ServiceCustomActionsCapability.h"
 #include "ServiceSourceInfoCapability.h"
+#include "ServiceCurrentTrackActionsCapability.h"
 
 #include <QAction>
 #include <QStringList>
@@ -88,6 +89,17 @@ class AMAROK_EXPORT CustomActionsProvider
 
 };
 
+class AMAROK_EXPORT CurrentTrackActionsProvider
+{
+
+    public:
+        CurrentTrackActionsProvider() {}
+        virtual ~CurrentTrackActionsProvider() {}
+
+        virtual QList< QAction *> currentTrackActions() { DEBUG_BLOCK return QList< QAction *>(); }
+
+};
+
 class AMAROK_EXPORT SourceInfoProvider
 {
 
@@ -128,7 +140,11 @@ typedef QList<ServiceComposerPtr> ServiceComposerList;
 typedef QList<ServiceGenrePtr > ServiceGenreList;
 typedef QList<ServiceYearPtr > ServiceYearList;
 
-class AMAROK_EXPORT ServiceTrack : public Meta::Track, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
+class AMAROK_EXPORT ServiceTrack : public Meta::Track,
+                                   public ServiceDisplayInfoProvider,
+                                   public CustomActionsProvider,
+                                   public SourceInfoProvider,
+                                   public CurrentTrackActionsProvider
 {
     public:
         //Give this a displayable name as some services has terrible names for their streams
@@ -198,7 +214,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track, public ServiceDisplayInfo
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::CustomActions ) ||
-                   ( type == Meta::Capability::SourceInfo );
+                   ( type == Meta::Capability::SourceInfo ) ||
+                   ( type == Meta::Capability::CurrentTrackActions );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
@@ -208,6 +225,11 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track, public ServiceDisplayInfo
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo )
                 return new ServiceSourceInfoCapability( this );
+            else if ( type == Meta::Capability::CurrentTrackActions ) {
+                debug() << "here";
+                return new ServiceCurrentTrackActionsCapability( this );
+
+            }
             else
                 return 0;
         }

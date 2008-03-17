@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,26 +17,26 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef SERVICECUSTOMACTIONSCAPABILITY_H
-#define SERVICECUSTOMACTIONSCAPABILITY_H
+#ifndef SERVICECURRENTTRACKACTIONSCAPABILITY_H
+#define SERVICECURRENTTRACKACTIONSCAPABILITY_H
 
 #include "amarok_export.h"
-#include "meta/CustomActionsCapability.h"
+#include "meta/CurrentTrackActionsCapability.h"
 
-class CustomActionsProvider;
+class CurrentTrackActionsProvider;
 
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AMAROK_EXPORT ServiceCustomActionsCapability : public Meta::CustomActionsCapability {
+class AMAROK_EXPORT ServiceCurrentTrackActionsCapability : public Meta::CurrentTrackActionsCapability {
     Q_OBJECT
     public:
-        ServiceCustomActionsCapability( CustomActionsProvider * customActionsProvider  );
-        virtual ~ServiceCustomActionsCapability();
+        ServiceCurrentTrackActionsCapability( CurrentTrackActionsProvider * currentTrackActionsProvider  );
+        virtual ~ServiceCurrentTrackActionsCapability();
         virtual QList< QAction * > customActions() const;
 
     private:
-        CustomActionsProvider * m_customActionsProvider;
+        CurrentTrackActionsProvider * m_currentTrackActionsProvider;
 };
 
 #endif

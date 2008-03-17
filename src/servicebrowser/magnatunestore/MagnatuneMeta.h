@@ -51,7 +51,7 @@ public:
     void setDownloadMembership();
 
     virtual QList< QAction *> customActions();
-
+    virtual QList< QAction *> currentTrackActions();
 
     virtual QString sourceName();
     virtual QString sourceDescription();
@@ -66,6 +66,8 @@ private:
     QString m_oggUrl;
     bool m_downloadMembership;
     QList<QString> m_moods;
+    QAction * m_purchaseCustomAction;
+    QAction * m_purchaseCurrentTrackAction;
 
 };
 

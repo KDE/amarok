@@ -24,6 +24,7 @@
 #include "collection/CollectionManager.h"
 #include "ContextStatusBar.h"
 #include "debug.h"
+#include "enginecontroller.h"
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"
 #include "magnatuneinfoparser.h"
@@ -552,6 +553,50 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
 void MagnatuneStore::setStreamType( int type )
 {
     m_streamType = type;
+}
+
+void MagnatuneStore::purchaseCurrentTrackAlbum()
+{
+    //get current track
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+
+    //check if this is indeed a magnatune track
+    Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
+    if( sic )
+    {
+        //is the source defined
+        QString source = sic->sourceName();
+        if ( source != "Magnatune.com" ) {
+            //not a Magnatune track, so dont bother...
+            delete sic;
+            return;
+        }
+        delete sic;
+    } else {
+        //not a Magnatune track, so dont bother...
+        return;
+    }
+
+    //so far so good...
+    //now the casting begins:
+
+    MagnatuneTrack * magnatuneTrack = dynamic_cast<MagnatuneTrack *> ( track.data() );
+    if ( !magnatuneTrack )
+        return;
+
+    MagnatuneAlbum * magnatuneAlbum = dynamic_cast<MagnatuneAlbum *> ( magnatuneTrack->album().data() );
+    if ( !magnatuneAlbum )
+        return;
+
+    if ( !m_purchaseHandler )
+    {
+        m_purchaseHandler = new MagnatunePurchaseHandler();
+        m_purchaseHandler->setParent( this );
+        connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
+    }
+
+    m_purchaseHandler->purchaseAlbum( magnatuneAlbum );
+    
 }
 
 

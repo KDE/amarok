@@ -114,6 +114,7 @@ set(libservicebrowser_SRCS
     servicebrowser/servicecollection.cpp
     servicebrowser/ServiceCollectionTreeView.cpp
     servicebrowser/ServiceCustomActionsCapability.cpp
+    servicebrowser/ServiceCurrentTrackActionsCapability.cpp
     servicebrowser/ServiceDynamicCollection.cpp
     servicebrowser/ServiceInfoProxy.cpp
     servicebrowser/ServiceListDelegate.cpp

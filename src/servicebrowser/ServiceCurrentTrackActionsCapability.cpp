@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,27 +17,24 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef SERVICECUSTOMACTIONSCAPABILITY_H
-#define SERVICECUSTOMACTIONSCAPABILITY_H
+#include "ServiceCurrentTrackActionsCapability.h"
 
-#include "amarok_export.h"
-#include "meta/CustomActionsCapability.h"
+#include "servicemetabase.h"
 
-class CustomActionsProvider;
+ServiceCurrentTrackActionsCapability::ServiceCurrentTrackActionsCapability( CurrentTrackActionsProvider * currentTrackActionsProvider )
+    : Meta::CurrentTrackActionsCapability( )
+    , m_currentTrackActionsProvider( currentTrackActionsProvider )
+    {}
 
-/**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class AMAROK_EXPORT ServiceCustomActionsCapability : public Meta::CustomActionsCapability {
-    Q_OBJECT
-    public:
-        ServiceCustomActionsCapability( CustomActionsProvider * customActionsProvider  );
-        virtual ~ServiceCustomActionsCapability();
-        virtual QList< QAction * > customActions() const;
 
-    private:
-        CustomActionsProvider * m_customActionsProvider;
-};
+ServiceCurrentTrackActionsCapability::~ServiceCurrentTrackActionsCapability()
+{
+}
 
-#endif
+QList< QAction * > ServiceCurrentTrackActionsCapability::customActions() const
+{
+    return m_currentTrackActionsProvider->currentTrackActions();
+}
+
+
 

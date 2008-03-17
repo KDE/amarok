@@ -176,12 +176,16 @@ GenrePtr MagnatuneMetaFactory::createGenre(const QStringList & rows)
 MagnatuneTrack::MagnatuneTrack( const QString &name )
     : ServiceTrack( name )
     , m_downloadMembership ( false )
+    , m_purchaseCustomAction( 0 )
+    , m_purchaseCurrentTrackAction( 0 )
 {
 }
 
 MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
     : ServiceTrack( resultRow )
     , m_downloadMembership ( false )
+    , m_purchaseCustomAction( 0 )
+    , m_purchaseCurrentTrackAction( 0 )
 {
     DEBUG_BLOCK
     m_lofiUrl = resultRow[7];
@@ -223,15 +227,36 @@ QList< QAction * > Meta::MagnatuneTrack::customActions()
     QString text = i18n( "&Buy" );
     if ( m_downloadMembership )
         text = i18n( "&Download" );
-    
-    QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), text, 0 );
 
-    MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
+    if ( !m_purchaseCustomAction ) {
+        m_purchaseCustomAction = new QAction( KIcon("get-hot-new-stuff-amarok" ), text, 0 );
+        MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
+        QObject::connect( m_purchaseCustomAction, SIGNAL( activated() ), mAlbum->store(), SLOT( purchase() ) );
+    }
 
-    QObject::connect( action, SIGNAL( activated() ), mAlbum->store(), SLOT( purchase() ) );
-
-    actions.append( action );
+    actions.append( m_purchaseCustomAction );
     return actions;
+}
+
+QList< QAction * > Meta::MagnatuneTrack::currentTrackActions()
+{
+
+    DEBUG_BLOCK
+    QList< QAction * > actions;
+
+    QString text = i18n( "Magnatune.com: &Buy" );
+    if ( m_downloadMembership )
+        text = i18n( "Magnatune.com: &Download" );
+
+    if ( !m_purchaseCurrentTrackAction ) {
+        m_purchaseCurrentTrackAction = new QAction( KIcon("get-hot-new-stuff-amarok" ), text, 0 );
+        MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
+        QObject::connect( m_purchaseCurrentTrackAction, SIGNAL( activated() ), mAlbum->store(), SLOT( purchaseCurrentTrackAlbum() ) );
+    }
+
+    actions.append( m_purchaseCurrentTrackAction );
+    return actions;
+
 }
 
 
@@ -413,7 +438,4 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
-
-
-
 
