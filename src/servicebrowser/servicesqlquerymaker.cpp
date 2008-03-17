@@ -180,7 +180,7 @@ ServiceSqlQueryMaker::startTrackQuery()
         //d->queryFrom = ' ' + prefix + "_tracks";
         
         d->withoutDuplicates = true;
-
+        d->queryFrom = ' ' + prefix + "_tracks";
         d->queryType = Private::TRACK;
         d->queryReturnValues =  m_metaFactory->getTrackSqlRows() + ',' +
         m_metaFactory->getAlbumSqlRows() + ',' +
@@ -207,7 +207,7 @@ ServiceSqlQueryMaker::startArtistQuery()
     if( d->queryType == Private::NONE )
     {
         QString prefix = m_metaFactory->tablePrefix();
-        //d->queryFrom = ' ' + prefix + "_artists";
+        d->queryFrom = ' ' + prefix + "_tracks";
         d->linkedTables |= Private::ARTISTS_TABLE;
         d->queryType = Private::ARTIST;
         d->withoutDuplicates = true;
@@ -223,7 +223,7 @@ ServiceSqlQueryMaker::startAlbumQuery()
     if( d->queryType == Private::NONE )
     {
         QString prefix = m_metaFactory->tablePrefix();
-        //d->queryFrom = ' ' + prefix + "_albums";
+        d->queryFrom = ' ' + prefix + "_tracks";
         d->queryType = Private::ALBUM;
         d->linkedTables |= Private::ALBUMS_TABLE;
         d->linkedTables |= Private::ARTISTS_TABLE;
@@ -254,11 +254,12 @@ ServiceSqlQueryMaker::startGenreQuery()
     DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
+
         QString prefix = m_metaFactory->tablePrefix();
-        //d->queryFrom = ' ' + prefix + "_genre";
+        d->queryFrom = ' ' + prefix + "_genre";
         d->queryType = Private::GENRE;
-        d->linkedTables |= Private::ALBUMS_TABLE;
-        d->linkedTables |= Private::GENRE_TABLE;
+        //d->linkedTables |= Private::ALBUMS_TABLE;
+        //d->linkedTables |= Private::GENRE_TABLE;
         d->withoutDuplicates = true;
         d->queryReturnValues = m_metaFactory->getGenreSqlRows();
         d->queryOrderBy = " GROUP BY " + prefix +"_genre.name"; // HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
@@ -477,7 +478,7 @@ ServiceSqlQueryMaker::linkTables()
 
     QString prefix = m_metaFactory->tablePrefix();
 
-    d->queryFrom = ' ' + prefix + "_tracks";
+    //d->queryFrom = ' ' + prefix + "_tracks";
 
     if( d->linkedTables & Private::ALBUMS_TABLE )
        d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
@@ -595,6 +596,7 @@ ServiceSqlQueryMaker::nameForValue(qint64 value)
             d->linkedTables |= Private::ALBUMS_TABLE;
             return prefix + "_albums.name";
         case valGenre:
+            d->queryFrom = prefix + "_tracks";
             d->linkedTables |= Private::ALBUMS_TABLE;
             d->linkedTables |= Private::GENRE_TABLE;
             return prefix + "_genre.name";
