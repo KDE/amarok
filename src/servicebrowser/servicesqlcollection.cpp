@@ -88,10 +88,29 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
     if ( !possiblyContainsTrack( url ) ) //do we even bother trying?
         return Meta::TrackPtr();
 
+
+    
+
     //split out the parts we can be sure about ( strip username and such info )
             QString trackRows = m_metaFactory->getTrackSqlRows() + ',' + m_metaFactory->getAlbumSqlRows() + ',' +  m_metaFactory->getArtistSqlRows() + ',' +  m_metaFactory->getGenreSqlRows();
 
     QString prefix = m_metaFactory->tablePrefix();
+
+    QString pristineUrl = url.url();
+    
+   if ( prefix == "magnatune" ) {
+
+        //ok, this is a little bit of service specific nastyness, I will try to figure out anothe rplace to put this....
+
+       pristineUrl.replace( "_nospeech", "" );
+       pristineUrl.replace( ".ogg", ".mp3" );
+       pristineUrl.replace( "-lofi.mp3", ".mp3" );
+
+       pristineUrl.replace( QRegExp( ".*:.*@download" ), "http://he3" );
+       pristineUrl.replace( QRegExp( ".*:.*@stream" ), "http://he3" );
+
+   }
+   
 
     QString from =  prefix + "_tracks";
     from += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
@@ -102,12 +121,12 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
             .arg( trackRows)
             .arg( from )
             .arg( prefix )
-            .arg( url.url() )
+            .arg( pristineUrl )
             .arg( prefix );
 
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
 
-    //debug() << "Querying for track: " << queryString;
+    debug() << "Querying for track: " << queryString;
     QStringList result = sqlDb->query( queryString );
     //debug() << "result: " << result;
 
