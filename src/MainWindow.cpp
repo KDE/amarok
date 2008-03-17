@@ -511,7 +511,8 @@ QSize MainWindow::sizeHint() const
 void MainWindow::savePlaylist() const //SLOT
 {
     QString playlistName = KFileDialog::getSaveFileName();
-    The::playlistModel()->saveM3U( playlistName );
+    if( !playlistName.isEmpty() )
+        The::playlistModel()->saveM3U( playlistName );
 }
 
 
