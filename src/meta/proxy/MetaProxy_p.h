@@ -194,7 +194,7 @@ public:
 
     Meta::ArtistPtr albumArtist() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->albumArtist();
         else
             return Meta::ArtistPtr();
