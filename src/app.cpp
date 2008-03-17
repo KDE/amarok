@@ -741,9 +741,9 @@ App::continueInit()
     // Refetch covers every 80 days to comply with Amazon license
     new RefreshImages();
 
-    if ( AmarokConfig::monitorChanges() )
+   /* if ( AmarokConfig::monitorChanges() )
         CollectionManager::instance()->checkCollectionChanges();
-
+   */
 
     handleCliArgs();
 
