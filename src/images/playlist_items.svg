@@ -272,7 +272,8 @@
        y1="295.28125"
        x2="160.70312"
        y2="281.4375"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(1111.0334,-187.03649)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient10055"
@@ -304,11 +305,11 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.0474569"
+     inkscape:zoom="2.8619842"
      inkscape:cx="150.45919"
-     inkscape:cy="291.7"
+     inkscape:cy="105.62338"
      inkscape:document-units="px"
-     inkscape:current-layer="track"
+     inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1280"
      inkscape:window-height="746"
@@ -333,13 +334,6 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-95,-432.36218)">
-    <rect
-       y="705.15802"
-       x="95"
-       height="30"
-       width="320"
-       id="rect4703"
-       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <g
        inkscape:label="#324"
        id="g8774"
@@ -489,19 +483,14 @@
     </g>
     <g
        id="active_overlay"
-       transform="translate(-1021.7521,580.75701)"
+       transform="translate(-1031.7209,606.91326)"
        inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
        inkscape:export-xdpi="89.999985"
        inkscape:export-ydpi="89.999985">
       <path
-         d="M 1137.4365,136.4931 C 1137.4365,134.58639 1138.99,133.03533 1140.8998,133.03533 L 1414.0046,133.03533 C 1415.9144,133.03533 1417.4679,134.58639 1417.4679,136.4931 L 1417.4679,143.40868 C 1417.4679,145.31539 1415.9144,146.86645 1414.0046,146.86645 L 1140.8998,146.86645 C 1138.99,146.86645 1137.4365,145.31539 1137.4365,143.40868 L 1137.4365,136.4931 z "
-         style="fill:#444444;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1"
-         id="path6373" />
-      <path
-         style="fill-opacity:1.0;fill-rule:evenodd;stroke:none;stroke-opacity:1;opacity:1;fill:url(#linearGradient5220)"
-         d="M 24.15625 281.4375 C 22.24655 281.43749 20.6876 282.99955 20.6875 284.90625 L 20.6875 287.15625 L 20.6875 289.5625 L 20.6875 291.8125 C 20.6876 293.7192 22.246549 295.28126 24.15625 295.28125 L 297.25 295.28125 C 299.1598 295.28125 300.71874 293.71922 300.71875 291.8125 L 300.71875 289.5625 L 300.71875 287.15625 L 300.71875 284.90625 C 300.71875 282.99953 299.1598 281.4375 297.25 281.4375 L 24.15625 281.4375 z "
-         id="path6375"
-         transform="translate(1116.7521,-148.39483)" />
+         style="opacity:1;fill:url(#linearGradient5220);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1"
+         d="M 1135.1896,94.401007 C 1133.2799,94.400997 1131.721,95.963057 1131.7209,97.869757 L 1131.7209,100.11976 L 1131.7209,102.52601 L 1131.7209,104.77601 C 1131.721,106.68271 1133.2799,108.24477 1135.1896,108.24476 L 1408.2834,108.24476 C 1410.1932,108.24476 1411.7521,106.68273 1411.7521,104.77601 L 1411.7521,102.52601 L 1411.7521,100.11976 L 1411.7521,97.869757 C 1411.7521,95.963037 1410.1932,94.401007 1408.2834,94.401007 L 1135.1896,94.401007 z "
+         id="path6375" />
     </g>
     <path
        id="body_background"
