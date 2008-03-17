@@ -290,12 +290,14 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     double fillHeight = m_sliderHeight * ( ( double ) knobX / m_sliderWidth );
     double fillOffsetY = ( m_sliderHeight - fillHeight ) / 2;
 
+    bool highlight = underMouse();
 
     //paint slider background
-    QString key = QString("volume-background:%1x%2-fill:%3")
+    QString key = QString("volume-background:%1x%2-fill:%3-highlight:%4")
             .arg( m_sliderWidth )
             .arg( m_sliderHeight )
-            .arg( fillLength );
+            .arg( fillLength )
+            .arg( highlight );
 
     QPixmap background( m_sliderWidth, m_sliderHeight );
 
@@ -305,7 +307,11 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         QPainter pt( &background );
         m_svgRenderer->render( &pt, "volume-slider-background",  QRectF( 0, 0, m_sliderWidth, m_sliderHeight ) );
         m_svgRenderer->render( &pt, "volume-fill",  QRectF( 0, fillOffsetY, fillLength, fillHeight ) );
-        m_svgRenderer->render( &pt, "volume-slider-position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+
+        if ( !highlight )
+            m_svgRenderer->render( &pt, "volume-slider-position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+        else
+            m_svgRenderer->render( &pt, "volume-slider-position-highlight",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
 
         QPixmapCache::insert(key, background);
     }
