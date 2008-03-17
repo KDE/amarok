@@ -85,6 +85,8 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
 {
     DEBUG_BLOCK
 
+    if ( !possiblyContainsTrack( url ) ) //do we even bother trying?
+        return Meta::TrackPtr();
 
     //split out the parts we can be sure about ( strip username and such info )
             QString trackRows = m_metaFactory->getTrackSqlRows() + ',' + m_metaFactory->getAlbumSqlRows() + ',' +  m_metaFactory->getArtistSqlRows() + ',' +  m_metaFactory->getGenreSqlRows();
@@ -96,7 +98,7 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
     from += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
     from += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
 
-    QString queryString = QString( "select %1 FROM %2 WHERE %3_tracks.preview_url LIKE '\%%4\%' GROUP BY %5_tracks.id;" )
+    QString queryString = QString( "select DISTINCT %1 FROM %2 WHERE %3_tracks.preview_url LIKE '\%%4\%' GROUP BY %5_tracks.id;" )
             .arg( trackRows)
             .arg( from )
             .arg( prefix )
@@ -105,9 +107,9 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
 
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
 
-    debug() << "Querying for track: " << queryString;
+    //debug() << "Querying for track: " << queryString;
     QStringList result = sqlDb->query( queryString );
-    debug() << "result: " << result;
+    //debug() << "result: " << result;
 
     return m_registry->getTrack( result );
 
