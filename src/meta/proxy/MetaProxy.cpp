@@ -81,8 +81,7 @@ MetaProxy::Track::Track( const KUrl &url )
     d->composerPtr = Meta::ComposerPtr( new ProxyComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new ProxyYear( QPointer<Track::Private>( d ) ) );
 
-    //FIXME: Causes crashes..
-//     QTimer::singleShot( 0, d, SLOT( slotCheckCollectionManager() ) );
+    QTimer::singleShot( 0, d, SLOT( slotCheckCollectionManager() ) );
 }
 
 MetaProxy::Track::~Track()
