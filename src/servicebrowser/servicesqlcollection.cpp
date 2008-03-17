@@ -117,7 +117,7 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
 bool ServiceSqlCollection::possiblyContainsTrack(const KUrl & url) const
 {
     DEBUG_BLOCK
-    return true;
+    return url.url().contains( m_metaFactory->tablePrefix(), Qt::CaseInsensitive );
 }
 
 #include "servicesqlcollection.moc"
