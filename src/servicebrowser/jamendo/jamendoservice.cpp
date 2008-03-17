@@ -71,6 +71,11 @@ JamendoService::JamendoService(const QString & name)
     setShortDescription(  i18n( "A site where artists can showcase their creations to the world" ) );
     setIcon( KIcon( "view-services-jamendo-amarok" ) );
 
+    ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo", this );
+    ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
+    m_collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
+    CollectionManager::instance()->addTrackProvider( m_collection );
+
 }
 
 
@@ -120,15 +125,10 @@ void JamendoService::polish()
     levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
 
-    ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo", this );
-    ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
-    m_collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
-
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
     connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
-    CollectionManager::instance()->addTrackProvider( m_collection );
     
     m_polished = true;
 
