@@ -98,7 +98,7 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
     from += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
     from += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
 
-    QString queryString = QString( "select DISTINCT %1 FROM %2 WHERE %3_tracks.preview_url LIKE '\%%4\%' GROUP BY %5_tracks.id;" )
+    QString queryString = QString( "select DISTINCT %1 FROM %2 WHERE %3_tracks.preview_url = '%4' GROUP BY %5_tracks.id;" )
             .arg( trackRows)
             .arg( from )
             .arg( prefix )
