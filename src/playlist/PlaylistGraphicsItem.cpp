@@ -372,13 +372,13 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
                 trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
         }
 
-        debug() << "Resizing active track overlay";
+        //debug() << "Resizing active track overlay";
 
         QPixmap background = renderSvg( "active_overlay", (int)( trackRect.width() ), (int)( trackRect.height() ), "active_overlay" );
         m_items->foreground->setPixmap( background );
         m_items->foreground->setZValue( 10.0 );
 
-        debug() << "Done";
+        //debug() << "Done";
 
     }
 
@@ -663,7 +663,7 @@ void Playlist::GraphicsItem::setRow(int row)
 
     if ( currentGroupState != m_groupMode ) {
 
-        debug() << "Group changed for row " << row;
+        //debug() << "Group changed for row " << row;
 
         prepareGeometryChange();
 
@@ -674,16 +674,16 @@ void Playlist::GraphicsItem::setRow(int row)
         switch ( m_groupMode ) {
 
             case None:
-                debug() << "None";
+                //debug() << "None";
                 m_height =  qMax( SINGLE_TRACK_ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN + 2;
-                debug() << "Height for single track: " << m_height;
+                //debug() << "Height for single track: " << m_height;
                 break;
             case Head:
-                debug() << "Head";
+                //debug() << "Head";
                 m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height() + 6;
                 break;
             case Head_Collapsed:
-                debug() << "Collapsed head";
+                //debug() << "Collapsed head";
                 m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN * 2 + s_fm->height() + 4;
                 if ( !m_items ) {
                     const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
@@ -694,15 +694,15 @@ void Playlist::GraphicsItem::setRow(int row)
                     m_items->groupedTracks = index.data( GroupedTracksRole ).toInt();
                 break;
             case Body:
-                debug() << "Body";
+                //debug() << "Body";
                 m_height =  s_fm->height()/*+ 2 * MARGIN*/;
                 break;
             case End:
-                debug() << "End";
+                //debug() << "End";
                 m_height =  s_fm->height() + 6 /*+ 2 * MARGIN*/;
                 break;
             case Collapsed:
-                debug() << "Collapsed";
+                //debug() << "Collapsed";
                 m_height =  0;
                 break;
             default:
@@ -752,7 +752,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     {
         //is the source defined
         QString source = sic->sourceName();
-        debug() << "Got SourceInfoCapability, source: " << source;
+        //debug() << "Got SourceInfoCapability, source: " << source;
         if ( !source.isEmpty() ) {
             painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
         }
@@ -851,7 +851,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     if( sic )
     {
 
-        debug() << "Got SourceInfoCapability!!";
+        //debug() << "Got SourceInfoCapability!!";
         //is the source defined
         QString source = sic->sourceName();
         if ( !source.isEmpty() ) {
@@ -1078,14 +1078,14 @@ void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
         if( !m_items->foreground )
         {
 
-            debug() << "Creating active track overlay";
+            //debug() << "Creating active track overlay";
             m_items->foreground = new QGraphicsPixmapItem( this );
             m_items->foreground->setPos( 0.0, rect.top() );
             //m_items->foreground->setZValue( 10.0 );
 
             m_items->foreground->setPixmap( renderSvg( "active_overlay", rect.width(), rect.height(), "active_overlay" ) );
             m_items->foreground->show();
-            debug() << "Done";
+            //debug() << "Done";
 
         }
         if( !m_items->foreground->isVisible() )
