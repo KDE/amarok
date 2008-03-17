@@ -77,6 +77,11 @@ public:
     virtual QPixmap emblem();
 
     virtual QList< QAction *> customActions();
+    virtual QList< QAction * > currentTrackActions();
+
+private:
+    QAction * m_downloadCustomAction;
+    QAction * m_downloadCurrentTrackAction;
 
 };
 

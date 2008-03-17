@@ -100,11 +100,15 @@ GenrePtr JamendoMetaFactory::createGenre( const QStringList & rows )
 
 JamendoTrack::JamendoTrack( const QString &name )
     : ServiceTrack( name )
+    , m_downloadCustomAction( 0 )
+    , m_downloadCurrentTrackAction( 0 )
 {
 }
 
 JamendoTrack::JamendoTrack( const QStringList & resultRow )
     : ServiceTrack( resultRow )
+    , m_downloadCustomAction( 0 )
+    , m_downloadCurrentTrackAction( 0 )
 {
 }
 
@@ -112,15 +116,32 @@ QList< QAction * > Meta::JamendoTrack::customActions()
 {
     DEBUG_BLOCK
     QList< QAction * > actions;
-    QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
 
-    JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
+    if ( !m_downloadCustomAction ) {
+        m_downloadCustomAction = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
+        JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
+        QObject::connect( m_downloadCustomAction, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
+    }
 
-    QObject::connect( action, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
-
-    actions.append( action );
+    actions.append( m_downloadCustomAction );
     return actions;
 }
+
+QList< QAction * > Meta::JamendoTrack::currentTrackActions()
+{
+    DEBUG_BLOCK
+    QList< QAction * > actions;
+
+    if ( !m_downloadCurrentTrackAction ) {
+        m_downloadCurrentTrackAction = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
+        JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
+        QObject::connect( m_downloadCurrentTrackAction, SIGNAL( activated() ), jAlbum->service(), SLOT( downloadCurrentTrackAlbum() ) );
+    }
+
+    actions.append( m_downloadCurrentTrackAction );
+    return actions;
+}
+
 
 
 QString Meta::JamendoTrack::sourceName()
@@ -319,6 +340,7 @@ JamendoGenre::JamendoGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
+
 
 
 

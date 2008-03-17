@@ -20,6 +20,7 @@
 #include "jamendoservice.h"
 
 #include "debug.h"
+#include "enginecontroller.h"
 #include "JamendoInfoParser.h"
 #include "jamendoxmlparser.h"
 #include "ServiceSqlRegistry.h"
@@ -253,26 +254,28 @@ void JamendoService::download()
 {
 
     if ( m_currentAlbum ){
-
-        m_downloadButton->setEnabled( false );
-
-        KTemporaryFile tempFile;
-        tempFile.setSuffix( ".torrent" );
-        tempFile.setAutoRemove( false );  
-        if( !tempFile.open() )
-        {
-            return;
-        }
-
-
-        m_torrentFileName = tempFile.fileName();
-        m_torrentDownloadJob = KIO::file_copy( KUrl( m_currentAlbum->oggTorrentUrl() ), KUrl( m_torrentFileName ), 0774 , KIO::Overwrite );
-        connect( m_torrentDownloadJob, SIGNAL( result( KJob * ) ),
-                this, SLOT( torrentDownloadComplete( KJob * ) ) );
-
-
+        download( m_currentAlbum );
     }
 
+}
+
+void JamendoService::download( JamendoAlbum * album )
+{
+    m_downloadButton->setEnabled( false );
+
+    KTemporaryFile tempFile;
+    tempFile.setSuffix( ".torrent" );
+    tempFile.setAutoRemove( false );
+    if( !tempFile.open() )
+    {
+        return;
+    }
+
+
+    m_torrentFileName = tempFile.fileName();
+    m_torrentDownloadJob = KIO::file_copy( KUrl( album->oggTorrentUrl() ), KUrl( m_torrentFileName ), 0774 , KIO::Overwrite );
+    connect( m_torrentDownloadJob, SIGNAL( result( KJob * ) ),
+             this, SLOT( torrentDownloadComplete( KJob * ) ) );
 }
 
 void JamendoService::torrentDownloadComplete(KJob * downloadJob)
@@ -297,10 +300,43 @@ void JamendoService::torrentDownloadComplete(KJob * downloadJob)
 }
 
 
+void JamendoService::downloadCurrentTrackAlbum()
+{
+        //get current track
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+
+    //check if this is indeed a Jamendo track
+    Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
+    if( sic )
+    {
+        //is the source defined
+        QString source = sic->sourceName();
+        if ( source != "Jamendo.com" ) {
+            //not a Jamendo track, so dont bother...
+            delete sic;
+            return;
+        }
+        delete sic;
+    } else {
+        //not a Jamendo track, so dont bother...
+        return;
+    }
+
+    //so far so good...
+    //now the casting begins:
+
+    JamendoTrack * jamendoTrack = dynamic_cast<JamendoTrack *> ( track.data() );
+    if ( !jamendoTrack )
+        return;
+
+    JamendoAlbum * jamendoAlbum = dynamic_cast<JamendoAlbum *> ( jamendoTrack->album().data() );
+    if ( !jamendoAlbum )
+        return;
+
+    download( jamendoAlbum );
+}
+
+
+
+
 #include "jamendoservice.moc"
-
-
-
-
-
-
