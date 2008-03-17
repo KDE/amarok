@@ -150,6 +150,9 @@ void MagnatuneStore::purchase( )
     if ( m_purchaseInProgress )
         return;
 
+    if ( !m_polished )
+        polish();
+
     debug() << "here";
 
     m_purchaseInProgress = true;
