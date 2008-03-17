@@ -264,6 +264,10 @@ void JamendoService::download()
 
 void JamendoService::download( JamendoAlbum * album )
 {
+
+    if ( !m_polished )
+        polish();
+    
     m_downloadButton->setEnabled( false );
 
     KTemporaryFile tempFile;
