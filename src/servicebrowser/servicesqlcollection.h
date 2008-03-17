@@ -45,6 +45,9 @@ class AMAROK_EXPORT ServiceSqlCollection : public Collection
 
         void emitUpdated() { emit( updated() ); }
 
+        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+
 
     private:
         ServiceMetaFactory * m_metaFactory;

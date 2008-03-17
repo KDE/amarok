@@ -429,6 +429,8 @@ void MagnatuneStore::polish( )
         //setModel( model );
         //connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 
+        CollectionManager::instance()->addTrackProvider( m_collection );
+
         connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
        /* m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));

@@ -19,6 +19,7 @@
 
 #include "jamendoservice.h"
 
+#include "CollectionManager.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "JamendoInfoParser.h"
@@ -127,6 +128,8 @@ void JamendoService::polish()
 
     connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
+    CollectionManager::instance()->addTrackProvider( m_collection );
+    
     m_polished = true;
 
 

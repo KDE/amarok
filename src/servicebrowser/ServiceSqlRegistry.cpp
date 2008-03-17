@@ -55,6 +55,13 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
 
    // DEBUG_BLOCK
 
+    //test if rowData is the correct length
+
+    int correctLength = m_metaFactory->getTrackSqlRowCount() + m_metaFactory->getAlbumSqlRowCount() + m_metaFactory->getArtistSqlRowCount() + m_metaFactory->getGenreSqlRowCount();
+
+    if ( rowData.size() != correctLength )
+        return Meta::TrackPtr();
+
     int id = rowData[0].toInt();
 
 
