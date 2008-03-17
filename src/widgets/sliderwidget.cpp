@@ -374,12 +374,19 @@ Amarok::VolumeSlider::leaveEvent( QEvent* )
     m_animTimer->start( ANIM_INTERVAL );
 }
 
-/*
+
 void
 Amarok::VolumeSlider::paletteChange( const QPalette& )
 {
-    generateGradient();
-}*/
+    The::svgTinter()->init();
+
+    QString file = KStandardDirs::locate( "data","amarok/images/volume_slider.svg" );
+    
+    delete m_svgRenderer;
+    m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
+    if ( ! m_svgRenderer->isValid() )
+        debug() << "svg is kaputski";
+}
 
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 {
@@ -393,5 +400,6 @@ void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 
     m_sliderX = m_iconWidth + m_margin;
 }
+
 
 #include "sliderwidget.moc"

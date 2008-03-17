@@ -87,7 +87,7 @@ namespace Amarok
 
             virtual void enterEvent( QEvent* );
             virtual void leaveEvent( QEvent* );
-            //virtual void paletteChange( const QPalette& );
+            virtual void paletteChange( const QPalette& );
             virtual void slideEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void contextMenuEvent( QContextMenuEvent* );
