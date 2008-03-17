@@ -45,6 +45,7 @@
 #include <QStringList>
 #include <QUndoStack>
 
+#include <KFileItem>
 #include <KIcon>
 #include <KUrl>
 
@@ -731,15 +732,26 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
     }
     else if( data->hasUrls() )
     {
-        //probably a drop from an external source
-        debug() << "Drop from external source";
+        //drop from an external source or the file browser
+        debug() << "Drop from external source or file browser";
         QList<QUrl> urls = data->urls();
         Meta::TrackList tracks;
         foreach( const QUrl &url, urls )
         {
-            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-            if( track )
-                tracks.append( track );
+            KUrl kurl = KUrl( url );
+            KFileItem kitem( KFileItem::Unknown, KFileItem::Unknown, kurl, true );
+            if( kitem.isDir() )
+            {
+                KIO::ListJob* lister = KIO::listRecursive( kurl ); //kjob's delete themselves
+                connect( lister, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList&) ), SLOT( directoryListResults( KIO::Job*, const KIO::UDSEntryList& ) ) );
+            }
+            else if( EngineController::canDecode( kurl ) )
+            {
+                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( kurl );
+                if( track )
+                    tracks.append( track );
+            }
+            //else TODO: notify user if can't decode, see also MyDirLister::matchesFilter
         }
         if( !tracks.isEmpty() )
             insertOptioned( tracks, Playlist::Append );
@@ -751,6 +763,30 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
 ////////////
 //Private Methods
 ///////////
+
+void
+Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
+{
+    DEBUG_BLOCK
+    Meta::TrackList tracks;
+    //dfaure says that job->redirectionUrl().isValid() ? job->redirectionUrl() : job->url(); might be needed
+    //but to wait until an issue is actually found, since it might take more work
+    const KUrl dir = static_cast<KIO::SimpleJob*>( job )->url();
+    foreach( KIO::UDSEntry entry, list )
+    {
+        KUrl currentUrl = dir;
+        currentUrl.addPath( entry.stringValue( KIO::UDSEntry::UDS_NAME ) );
+        debug() << "listing url: " << currentUrl;
+        if( !entry.isDir() &&  EngineController::canDecode( currentUrl ) )
+        {
+            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( currentUrl );
+            if( track )
+                tracks.append( track );
+        }
+    }
+    if( !tracks.isEmpty() )
+        insertOptioned( tracks, Playlist::Append );
+}
 
 
 void

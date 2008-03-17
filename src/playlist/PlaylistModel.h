@@ -229,7 +229,7 @@ class TrackNavigator;
             void queryDone();
             void newResultReady( const QString &collectionId, const Meta::TrackList &tracks );
             void playCurrentTrack();    ///connected to EngineController::orderCurrent
-
+            void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list ); //! directory listing, see ListJob
         private:
             /**
              * This performs the actual work involved with inserting tracks. It is to be *only* called by an UndoCommand.
