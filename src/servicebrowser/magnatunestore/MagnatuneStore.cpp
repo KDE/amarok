@@ -64,12 +64,6 @@ void MagnatuneServiceFactory::init()
 {
     DEBUG_BLOCK
     MagnatuneStore* service = new MagnatuneStore( "Magnatune.com" );
-    MagnatuneConfig config;
-
-    if ( config.isMember() )
-        service->setMembership( config.membershipType(), config.username(), config.password() );
-
-    service->setStreamType( config.streamType() );
 
     emit newService( service );
 }
@@ -125,6 +119,25 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
     m_polished = false;
     //polish( );  //FIXME not happening when shown for some reason
+
+
+    //do this stuff now to make us function properly as a track provider on startup. The expensive stuff will
+    //not happen untill the model is added to the view anyway.
+    MagnatuneMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune", this );
+
+    MagnatuneConfig config;
+    if ( config.isMember() ) {
+        setMembership( config.membershipType(), config.username(), config.password() );
+        metaFactory->setMembershipInfo( m_membershipType.toLower(), m_username, m_password );
+    }
+
+    setStreamType( config.streamType() );
+
+
+    metaFactory->setStreamType( m_streamType );
+    ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
+    m_collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, registry );
+    CollectionManager::instance()->addTrackProvider( m_collection );
 
 }
 
@@ -406,17 +419,6 @@ void MagnatuneStore::polish( )
         levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
 
-        MagnatuneMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune", this );
-
-        if( m_isMember ) {
-            metaFactory->setMembershipInfo( m_membershipType.toLower(), m_username, m_password );
-        }
-
-        metaFactory->setStreamType( m_streamType );
-
-        ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
-        m_collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, registry );
-
         m_infoParser = new MagnatuneInfoParser();
 
         connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
@@ -428,8 +430,6 @@ void MagnatuneStore::polish( )
         //setModel(new MagnatuneContentModel ( this ) );
         //setModel( model );
         //connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
-
-        CollectionManager::instance()->addTrackProvider( m_collection );
 
         connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
