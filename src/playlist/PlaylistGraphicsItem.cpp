@@ -240,7 +240,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         album = track->album()->name();
 
     const qreal lineTwoY = m_height / 2 + MARGIN;
-    const qreal textWidth = ( ( qreal( totalWidth ) - ALBUM_WIDTH ) / 2.0 );
+    const qreal textWidth = ( ( qreal( totalWidth ) - ( ALBUM_WIDTH + 2 * MARGIN ) ) / 2.0 );
     const qreal leftAlignX = ALBUM_WIDTH + MARGIN;
     qreal topRightAlignX;
     qreal bottomRightAlignX;
@@ -285,7 +285,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         
 
         m_items->topRightText->setPos( topRightAlignX, MARGIN );
-        m_items->topRightText->setEditableText( album, totalWidth - ( topRightAlignX + 4 ) );
+        m_items->topRightText->setEditableText( album, totalWidth - topRightAlignX );
 
         {
             QString artist;
