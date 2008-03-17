@@ -187,6 +187,10 @@ ServiceSqlQueryMaker::startTrackQuery()
         m_metaFactory->getArtistSqlRows() + ',' +
         m_metaFactory->getGenreSqlRows();
 
+        if ( d->linkedTables & Private::GENRE_TABLE ) {
+            d->linkedTables |= Private::ARTISTS_TABLE;
+        }
+
         if ( d->linkedTables & Private::ARTISTS_TABLE ) {
             d->linkedTables |= Private::ALBUMS_TABLE;
             d->queryOrderBy = " ORDER BY " + prefix + "_tracks.album_id"; //make sure items are added as album groups
