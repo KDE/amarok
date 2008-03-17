@@ -392,12 +392,15 @@ void Amarok::TrayIcon::setupMenu()
             debug() << "3";
 
 
-
             //remove the two botton itmes, so we can push them to the button again
             contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
             contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 
+
             m_extraActions = cac->customActions();
+
+            if ( contextMenu()->actions().size() < 5 )
+                m_extraActions.append( contextMenu()->addSeparator() );
 
             foreach( QAction *action, m_extraActions )
                 contextMenu()->addAction( action );
