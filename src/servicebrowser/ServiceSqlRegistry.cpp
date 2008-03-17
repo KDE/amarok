@@ -64,10 +64,14 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
 
     int id = rowData[0].toInt();
 
+    debug() << "track id: " << id;
+
 
     QMutexLocker locker( &m_trackMutex );
-    if( m_trackMap.contains( id ) )
+    if( m_trackMap.contains( id ) ) {
+        debug() << "already got it!";
         return m_trackMap.value( id );
+    }
     else
     {
 

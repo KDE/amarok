@@ -92,10 +92,10 @@ Model::init()
     redoButton->setIcon( KIcon( "edit-redo-amarok" ) );
 
     //FIXME: because the restoring in app.cpp:711 causes problems we do it here. This doesn't respect the command line flags though.
-    if ( AmarokConfig::savePlaylist() )
+    /*if ( AmarokConfig::savePlaylist() )
     {
         The::playlistModel()->restoreSession();
-    }
+    }*/
 }
 
 Model::~Model()

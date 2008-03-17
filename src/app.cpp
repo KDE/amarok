@@ -702,13 +702,7 @@ App::continueInit()
     initGlobalShortcuts();
     PERF_LOG( "Global shortcuts done" )
 #endif
-    //load previous playlist in separate thread
-    //FIXME: causes a lot of breakage due to the collection not being properly initialized at startup.
-    //Reenable when fixed.
-//     if ( restoreSession && AmarokConfig::savePlaylist() )
-//     {
-//         The::playlistModel()->restoreSession();
-//     }
+
     if( args->isSet( "engine" ) ) {
         // we correct some common errors (case issues, missing -engine off the end)
         QString engine = args->getOption( "engine" ).toLower();
@@ -746,6 +740,16 @@ App::continueInit()
    */
 
     handleCliArgs();
+
+    //load previous playlist in separate thread
+    //FIXME: causes a lot of breakage due to the collection not being properly initialized at startup.
+    //Reenable when fixed.
+
+    //Fixed! I think....
+    if ( restoreSession && AmarokConfig::savePlaylist() )
+    {
+        The::playlistModel()->restoreSession();
+    }
 
     delete m_splash;
     m_splash = 0;

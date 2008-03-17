@@ -85,6 +85,10 @@ void
 ContextStatusBar::engineNewTrackPlaying()
 {
     Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    
+    if( !track )
+        return;
+    
     QString title       = Qt::escape( track->name() );
     QString prettyTitle = Qt::escape( track->prettyName() );
     QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();

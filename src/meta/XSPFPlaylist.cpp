@@ -153,20 +153,28 @@ XSPFPlaylist::tracks()
 
     foreach( const XSPFTrack &track, xspfTracks )
     {
-        MetaProxy::Track *proxyTrack = new MetaProxy::Track( track.location );
-        {
-            //Fill in values from xspf..
-            QVariantMap map;
-            map.insert( Meta::Field::TITLE, track.title );
-            map.insert( Meta::Field::ALBUM, track.album );
-            map.insert( Meta::Field::ARTIST, track.creator );
-            map.insert( Meta::Field::LENGTH, track.duration );
-            map.insert( Meta::Field::TRACKNUMBER, track.trackNum );
-            map.insert( Meta::Field::URL, track.location );
-            Meta::Field::updateTrack( proxyTrack, map );
+
+        TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( track.location );
+        if ( trackPtr ){
+            tracks << trackPtr;
+        } else {
+        
+            MetaProxy::Track *proxyTrack = new MetaProxy::Track( track.location );
+            {
+                //Fill in values from xspf..
+                QVariantMap map;
+                map.insert( Meta::Field::TITLE, track.title );
+                map.insert( Meta::Field::ALBUM, track.album );
+                map.insert( Meta::Field::ARTIST, track.creator );
+                map.insert( Meta::Field::LENGTH, track.duration );
+                map.insert( Meta::Field::TRACKNUMBER, track.trackNum );
+                map.insert( Meta::Field::URL, track.location );
+                Meta::Field::updateTrack( proxyTrack, map );
+            }
+            tracks << Meta::TrackPtr( proxyTrack );
+    //         tracks << CollectionManager::instance()->trackForUrl( track.location );
         }
-        tracks << Meta::TrackPtr( proxyTrack );
-//         tracks << CollectionManager::instance()->trackForUrl( track.location );
+        
     }
     return tracks;
 }
