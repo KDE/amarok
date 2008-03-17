@@ -561,16 +561,17 @@ SqlTrack::updateStatisticsInDb()
         m_firstPlayed = QDateTime::currentDateTime().toTime_t();
         QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
         QString data = "%1,%2,%3,%4,%5,%6";
-        data = data.arg( count[0] ).arg( m_rating ).arg( m_score );
+        data = data.arg( urlId ).arg( m_rating ).arg( m_score );
         data = data.arg( m_playCount ).arg( m_lastPlayed ).arg( m_firstPlayed );
         insert = insert.arg( data );
+        m_collection->insert( insert, "statistics" );
     }
     else
     {
         QString update = "UPDATE statistics SET %1 WHERE url = %2;";
         QString data = "rating=%1, score=%2, playcount=%3, accessdate=%4";
         data = data.arg( m_rating ).arg( m_score ).arg( m_playCount ).arg( m_lastPlayed );
-        update = update.arg( data, count[0] );
+        update = update.arg( data, QString::number( urlId ) );
         m_collection->query( update );
     }
 }
@@ -582,6 +583,10 @@ SqlTrack::finishedPlaying( double playedFraction )
     Q_UNUSED( playedFraction );
     m_lastPlayed = QDateTime::currentDateTime().toTime_t();
     m_playCount++;
+    if( !m_firstPlayed )
+    {
+        m_firstPlayed = m_lastPlayed;
+    }
     //TODO get new rating
     updateStatisticsInDb();
     notifyObservers();
