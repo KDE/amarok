@@ -19,6 +19,7 @@
  
 #include "ServicePluginManager.h"
 #include "pluginmanager.h"
+#include "TheInstances.h"
 
 #include <kservice.h>
 
@@ -89,9 +90,10 @@ void ServicePluginManager::init()
         QString pluginName = factory->info().pluginName();
 
         debug() << "PLUGIN CHECK: " << pluginName;
-        if ( factory->config().readEntry( pluginName + "Enabled", true ) )
+        if ( factory->config().readEntry( pluginName + "Enabled", true ) ) {
             factory->init();
             m_loadedServices << pluginName;
+        }
     }
 
 }
@@ -162,6 +164,9 @@ QStringList ServicePluginManager::loadedServices()
     return m_loadedServices;
 }
 
+namespace The {
+    AMAROK_EXPORT ServicePluginManager* servicePluginManager() { return ServicePluginManager::instance(); }
+}
 
 
 

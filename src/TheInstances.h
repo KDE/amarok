@@ -36,7 +36,9 @@ namespace QueueManagerNS {
 }
 
 class ServiceInfoProxy;
+class ServicePluginManager;
 class SvgTinter;
+
 
 namespace Amarok {
     class ContextStatusBar;
@@ -64,6 +66,7 @@ namespace The {
     AMAROK_EXPORT PlaylistManager*   playlistManager();
     QueueManagerNS::Model*           queueModel();          //defined in queuemanager/QueueModel.cpp
     AMAROK_EXPORT ServiceInfoProxy * serviceInfoProxy();
+    AMAROK_EXPORT ServicePluginManager * servicePluginManager();
     AMAROK_EXPORT SvgTinter *        svgTinter();
     AMAROK_EXPORT Amarok::ContextStatusBar* statusBar();
 

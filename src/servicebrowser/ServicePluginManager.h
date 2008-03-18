@@ -34,7 +34,7 @@ class ServicePluginManager : public QObject {
     Q_OBJECT
 public:
 
-    static ServicePluginManager * instance();
+    AMAROK_EXPORT static ServicePluginManager * instance();
 
     ~ServicePluginManager();
 
@@ -56,7 +56,7 @@ public:
     void settingsChanged();
 
     QMap< QString, ServiceFactory* > factories();
-    QStringList loadedServices();
+    AMAROK_EXPORT QStringList loadedServices();
 
 private:
     ServicePluginManager();
