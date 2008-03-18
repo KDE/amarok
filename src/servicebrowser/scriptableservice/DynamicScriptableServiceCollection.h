@@ -19,7 +19,7 @@
 #ifndef DYNAMICSCRIPTABLESERVICECOLLECTION_H
 #define DYNAMICSCRIPTABLESERVICECOLLECTION_H
 
-#include "../ServiceDynamicCollection.h"
+#include <ServiceDynamicCollection.h>
 
 /**
 A collection that can call back a script to populate items as needed.

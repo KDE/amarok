@@ -28,10 +28,8 @@
 #include "meta/OrganiseCapability.h"
 #include "MetaUtility.h"
 #include "SimilarArtistsAction.h"
-#include "ServicePluginManager.h"
 #include "SqlRegistry.h"
 #include "SqlCollection.h"
-#include "TheInstances.h"
 
 #include "mountpointmanager.h"
 
@@ -795,11 +793,7 @@ SqlArtist::asCapabilityInterface( Meta::Capability::Type type )
         {
             QList<QAction*> actions;
             actions.append( new CopyToDeviceAction( m_collection, this ) );
-
-            //this should only be appended if last.fm is loaded
-            if( The::servicePluginManager()->loadedServices().contains( "amarok_service_lastfm" ) )
-                actions.append( new SimilarArtistsAction( m_collection, this ) );
-
+            actions.append( new SimilarArtistsAction( m_collection, this ) );
             return new CustomActionsCapability( actions );
         }
 
