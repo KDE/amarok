@@ -76,9 +76,6 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
 
     m_collection = new LastFmServiceCollection( m_userName );
     //CollectionManager::instance()->addUnmanagedCollection( m_collection );
-    QList<int> levels;
-    levels << CategoryId::Genre;
-    setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
     
     CollectionManager::instance()->addTrackProvider( m_collection );
 
@@ -101,6 +98,7 @@ LastFmService::polish()
 {
     if( !m_polished )
     {
+        
         m_bottomPanel->setMaximumHeight( 100 );
 
         m_buttonBox = new KHBox(m_bottomPanel);
@@ -139,6 +137,10 @@ LastFmService::polish()
 
         connect( m_customStationEdit, SIGNAL( returnPressed() ), this, SLOT( playCustomStation() ) );
         connect( m_customStationButton, SIGNAL( clicked() ), this, SLOT( playCustomStation() ) );
+
+        QList<int> levels;
+        levels << CategoryId::Genre;
+        setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
         m_polished = true;
     }
