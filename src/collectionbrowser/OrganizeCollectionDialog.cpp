@@ -401,7 +401,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         if( !m_organizingFileCancelled && skipped.count() > 0 )
         {
             QString longMsg = i18n( "The following file could not be organized: ",
-                    "The following %n files could not be organized: ", skipped.count() );
+                    "The following %1 files could not be organized: ", skipped.count() );
             bool first = true;
             for( KURL::List::iterator it = skipped.begin();
                     it != skipped.end();
@@ -416,7 +416,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
             longMsg += i18n( "." );
 
             QString shortMsg = i18n( "Sorry, one file could not be organized.",
-                    "Sorry, %n files could not be organized.", skipped.count() );
+                    "Sorry, %1 files could not be organized.", skipped.count() );
             Amarok::StatusBar::instance()->shortLongMessage( shortMsg, longMsg, KDE::StatusBar::Sorry );
         }
         else if ( m_organizingFileCancelled )
