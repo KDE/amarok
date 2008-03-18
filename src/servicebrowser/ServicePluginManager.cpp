@@ -90,8 +90,10 @@ void ServicePluginManager::init()
 
         debug() << "PLUGIN CHECK: " << pluginName;
         if ( factory->config().readEntry( pluginName + "Enabled", true ) )
+        {
             factory->init();
             m_loadedServices << pluginName;
+        }
     }
 
 }

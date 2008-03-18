@@ -20,7 +20,7 @@
 #define SERVICEDYNAMICCOLLECTION_H
 
 #include "amarok_export.h"
-#include <servicecollection.h>
+#include "servicecollection.h"
 
 typedef QMap<int, Meta::TrackPtr> TrackIdMap;
 typedef QMap<int, Meta::ArtistPtr> ArtistIdMap;
