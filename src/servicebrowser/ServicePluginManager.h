@@ -56,6 +56,7 @@ public:
     void settingsChanged();
 
     QMap< QString, ServiceFactory* > factories();
+    QStringList loadedServices();
 
 private:
     ServicePluginManager();
@@ -63,6 +64,7 @@ private:
     static ServicePluginManager * m_instance;
     ServiceBrowser * m_serviceBrowser;
     QMap< QString, ServiceFactory* > m_factories;
+    QStringList m_loadedServices;
     
 private slots:
     void slotNewService( ServiceBase *newService);

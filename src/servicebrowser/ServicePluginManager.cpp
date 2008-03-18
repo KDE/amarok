@@ -91,6 +91,7 @@ void ServicePluginManager::init()
         debug() << "PLUGIN CHECK: " << pluginName;
         if ( factory->config().readEntry( pluginName + "Enabled", true ) )
             factory->init();
+            m_loadedServices << pluginName;
     }
 
 }
@@ -118,6 +119,8 @@ void ServicePluginManager::settingsChanged()
         m_serviceBrowser->removeService( serviceName );
     }
 
+    m_loadedServices.clear();
+    
     init();
 
 
@@ -152,6 +155,11 @@ void ServicePluginManager::settingsChanged()
     }*/
 
     
+}
+
+QStringList ServicePluginManager::loadedServices()
+{
+    return m_loadedServices;
 }
 
 
