@@ -48,7 +48,8 @@ protected:
       virtual void paintEvent(QPaintEvent *);
       virtual void resizeEvent ( QResizeEvent * event );
       virtual void paletteChange( const QPalette & oldPalette );
-      void  handleAddActions();
+      void handleAddActions();
+      void centerAddActions();
 
 private:
 
@@ -60,6 +61,7 @@ private:
     
     QSvgRenderer * m_svgRenderer;
     bool m_renderAddControls;
+    int m_addActionsOffsetX;
   
     QList<QAction *> m_additionalActions;
 };

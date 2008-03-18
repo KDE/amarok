@@ -46,6 +46,7 @@ MainToolbar::MainToolbar( QWidget * parent )
  : KHBox( parent )
  , EngineObserver( EngineController::instance() )
  , SvgHandler()
+ , m_addActionsOffsetX( 0 )
 {
 
     /*QString file = KStandardDirs::locate( "data","amarok/images/toolbar-background.svg" );
@@ -207,15 +208,20 @@ void MainToolbar::handleAddActions()
         if( cac )
         {
 
-            m_renderAddControls = true;
             m_additionalActions = cac->customActions();
+            int numberOfActions = m_additionalActions.size();
+
+            if ( numberOfActions < 1 ) {
+                m_renderAddControls = false;
+                return;
+            }
+
+            m_renderAddControls = true;
 
             foreach( QAction *action, m_additionalActions )
                 m_addControlsToolbar->addAction( action );
-            
 
-            int middle = contentsRect().width() / 2;
-            m_addControlsToolbar->move( middle + 100, 10 );
+            centerAddActions();
             
             //m_insideBox->layout()->setAlignment( m_addControlsToolbar, Qt::AlignCenter );
             
@@ -244,8 +250,7 @@ void MainToolbar::resizeEvent(QResizeEvent * event)
     
     m_playerControlsToolbar->move( middle - 90, 0 );
     m_volumeWidget->move( event->size().width() - 170, /*( m_insideBox->height() - m_volumeWidget->height() ) / 2*/ 0 );
-    m_addControlsToolbar->move( middle + 100, 10 ); //TODO:move a bit depending on how many actions are present so the actions are centered
-    //and considder what happens if there are more than 3 actions
+    centerAddActions();
 
     
 }
@@ -254,6 +259,19 @@ void MainToolbar::paletteChange( const QPalette & oldPalette )
 {
     reTint();
     repaint( 0, 0, -1, -1 );
+}
+
+void MainToolbar::centerAddActions()
+{
+
+    int numberOfActions = m_additionalActions.size();
+    
+    int marginLeft, marginRight, marginTop, marginBottom;
+    m_addControlsToolbar->getContentsMargins( &marginLeft, &marginTop, &marginRight, &marginBottom );
+    int actionsSize = ( numberOfActions * 24 ) + marginLeft + marginRight + 8;
+    m_addActionsOffsetX = ( m_addControlsToolbar->width() - actionsSize ) / 2;
+    int middle = contentsRect().width() / 2;
+    m_addControlsToolbar->move( middle + 100 + m_addActionsOffsetX, 10 );
 }
 
 
