@@ -111,7 +111,8 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
 
    }
    
-
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+   
     QString from =  prefix + "_tracks";
     from += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
     from += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
@@ -121,10 +122,10 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
             .arg( trackRows)
             .arg( from )
             .arg( prefix )
-            .arg( pristineUrl )
+            .arg( sqlDb->escape( pristineUrl ) )
             .arg( prefix );
 
-    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+
 
     debug() << "Querying for track: " << queryString;
     QStringList result = sqlDb->query( queryString );
