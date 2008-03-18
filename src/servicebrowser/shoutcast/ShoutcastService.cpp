@@ -35,6 +35,7 @@ AMAROK_EXPORT_PLUGIN( ShoutcastServiceFactory )
 void ShoutcastServiceFactory::init()
 {
     ServiceBase* service = new ShoutcastService( "Shoutcast.com" );
+    m_activeServices << service;
     emit newService( service );
 }
 

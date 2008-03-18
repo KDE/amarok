@@ -55,6 +55,8 @@ class MagnatuneServiceFactory: public ServiceFactory
         virtual QString name();
         virtual KPluginInfo info();
         virtual KConfigGroup config();
+
+        virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.url().contains( "magnatune.com", Qt::CaseInsensitive ); }
 };
 
 
@@ -91,6 +93,8 @@ public:
      */
     void polish();
    // bool updateContextView();
+
+    virtual Collection * collection() { return m_collection; }
 
 private slots:
 

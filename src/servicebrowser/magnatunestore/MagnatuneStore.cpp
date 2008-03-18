@@ -64,6 +64,7 @@ void MagnatuneServiceFactory::init()
 {
     DEBUG_BLOCK
     MagnatuneStore* service = new MagnatuneStore( "Magnatune.com" );
+    m_activeServices << service;
 
     emit newService( service );
 }
@@ -137,7 +138,6 @@ MagnatuneStore::MagnatuneStore( const char *name )
     metaFactory->setStreamType( m_streamType );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, registry );
-    CollectionManager::instance()->addTrackProvider( m_collection );
 
 }
 

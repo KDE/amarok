@@ -60,6 +60,8 @@ public:
 
     void polish();
 
+    virtual Collection * collection() { return m_collection; }
+
 private slots:
 
     void authenticate(/* const QString & server, const QString & username, const QString & password */);

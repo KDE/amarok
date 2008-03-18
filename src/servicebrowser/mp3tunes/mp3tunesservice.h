@@ -60,6 +60,8 @@ public:
 
     void polish();
 
+    virtual Collection * collection() { return m_collection; }
+
 private:
 
     void authenticate( const QString & uname = "", const QString & passwd = "" );

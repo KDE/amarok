@@ -38,6 +38,7 @@ class ShoutcastServiceFactory: public ServiceFactory
         virtual QString name();
         virtual KPluginInfo info();
         virtual KConfigGroup config();
+
 };
 
 /**
@@ -54,6 +55,8 @@ public:
     ~ShoutcastService();
 
     void polish();
+
+    virtual Collection * collection() { return m_collection; }
 
 
 private:

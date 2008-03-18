@@ -45,6 +45,8 @@ class JamendoServiceFactory: public ServiceFactory
         virtual QString name();
         virtual KPluginInfo info();
         virtual KConfigGroup config();
+
+        virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.url().contains( "jamendo.com", Qt::CaseInsensitive ); }
 };
 
 /**
@@ -62,6 +64,7 @@ public:
     ~JamendoService();
 
     void polish();
+    virtual Collection * collection() { return m_collection; }
 
 private slots:
 

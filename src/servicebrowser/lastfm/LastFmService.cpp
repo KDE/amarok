@@ -35,6 +35,7 @@ LastFmServiceFactory::init()
     LastFmServiceConfig config;
 
     ServiceBase* service = new LastFmService( "Last.fm", config.username(), UnicornUtils::md5Digest( config.password().toUtf8() ), config.scrobble(), config.fetchSimilar() );
+    m_activeServices << service;
     emit newService( service );
 }
 
@@ -75,9 +76,6 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
 
     m_collection = new LastFmServiceCollection( m_userName );
-    //CollectionManager::instance()->addUnmanagedCollection( m_collection );
-    
-    CollectionManager::instance()->addTrackProvider( m_collection );
 
     Q_ASSERT( ms_service == 0 );
     ms_service = this;
@@ -87,8 +85,6 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
 LastFmService::~LastFmService()
 {
     ms_service = 0;
-
-    CollectionManager::instance()->removeTrackProvider( m_collection );
     delete m_collection;
 }
 
@@ -206,4 +202,9 @@ void LastFmService::playLastFmStation( const KUrl &url )
 {
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
     The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+}
+
+Collection * LastFmService::collection()
+{
+    return m_collection; 
 }

@@ -26,6 +26,8 @@
 //#include "servicemodelbase.h"
 
 #include "infoparserbase.h"
+#include "servicemetabase.h"
+#include "collection/CollectionManager.h"
 
 #include "amarok_export.h"
 #include "../collectionbrowser/SingleCollectionTreeItemModel.h"
@@ -47,7 +49,7 @@
 class ServiceBase;
 class SearchWidget;
 
-class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin
+class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, public TrackProvider
 {
     Q_OBJECT
     public:
@@ -59,8 +61,16 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin
         virtual KConfigGroup config() = 0;
         virtual KPluginInfo info() = 0;
 
+        virtual bool possiblyContainsTrack( const KUrl &url ) const { return false; }
+        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+
+        void clearActiveServices();
+
     signals:
         void newService( class ServiceBase *newService );
+
+    protected:
+        QList<ServiceBase *> m_activeServices;
 };
 
 
@@ -100,7 +110,8 @@ public:
 
     void setPlayableTracks( bool playable );
 
-
+    virtual Collection * collection() = 0;
+    
     virtual void polish() = 0;
     virtual bool updateContextView() { return false; }
 

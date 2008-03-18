@@ -41,6 +41,7 @@ AMAROK_EXPORT_PLUGIN( OpmlDirectoryServiceFactory )
 void OpmlDirectoryServiceFactory::init()
 {
     ServiceBase* service = new OpmlDirectoryService( "OpmlDirectory" );
+    m_activeServices << service;
     emit newService( service );
 }
 

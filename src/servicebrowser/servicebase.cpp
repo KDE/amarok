@@ -18,13 +18,12 @@
  ***************************************************************************/
 
 #include "servicebase.h"
-#include "servicemetabase.h"
 
 #include "amarok.h"
 
 #include "debug.h"
 
-
+#include "collection/Collection.h"
 #include "TheInstances.h"
 #include "searchwidget.h"
 #include "ServiceInfoProxy.h"
@@ -39,10 +38,41 @@
 
 ServiceFactory::ServiceFactory()
 {
+    CollectionManager::instance()->addTrackProvider( this );
 }
 
 ServiceFactory::~ ServiceFactory()
 {
+    CollectionManager::instance()->removeTrackProvider( this );
+}
+
+
+Meta::TrackPtr ServiceFactory::trackForUrl(const KUrl & url)
+{
+    if ( m_activeServices.size() == 0 ) {
+        debug() << "our service is needed for a url, so init it!";
+        init();
+    }
+
+    Meta::TrackPtr track;
+    
+    foreach( ServiceBase * service, m_activeServices ) {
+
+        if (  service->collection() )
+            track = service->collection()->trackForUrl( url );
+
+        if ( track )
+            return track;
+    }
+
+    return track;
+}
+
+
+
+void ServiceFactory::clearActiveServices()
+{
+    m_activeServices.clear();
 }
 
 
@@ -235,4 +265,6 @@ void ServiceBase::setPlayableTracks(bool playable)
 
 
 
+
 #include "servicebase.moc"
+

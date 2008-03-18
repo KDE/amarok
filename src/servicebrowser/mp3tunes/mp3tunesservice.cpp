@@ -39,6 +39,7 @@ void Mp3tunesServiceFactory::init()
     Mp3tunesConfig config;
     
     ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.email(), config.password() );
+    m_activeServices << service;
     emit newService( service );
 }
 

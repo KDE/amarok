@@ -112,10 +112,18 @@ QMap< QString, ServiceFactory * > ServicePluginManager::factories()
 void ServicePluginManager::settingsChanged()
 {
 
-
     //for now, just delete and reload everything....
     QMap<QString, ServiceBase *> activeServices =  m_serviceBrowser->services();
     QList<QString> names = activeServices.keys();
+
+    foreach( ServiceFactory * factory,  m_factories ) {
+        factory->clearActiveServices();
+    }
+    
+    foreach( QString serviceName, names ) {
+        m_serviceBrowser->removeService( serviceName );
+        delete activeServices.value( serviceName );
+    }
 
     foreach( QString serviceName, names ) {
         m_serviceBrowser->removeService( serviceName );

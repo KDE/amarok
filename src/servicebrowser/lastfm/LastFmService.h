@@ -44,6 +44,8 @@ public:
     virtual QString name();
     virtual KPluginInfo info();
     virtual KConfigGroup config();
+
+    virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.protocol() == "lastfm"; }
 };
 
 class LastFmService : public ServiceBase
@@ -58,6 +60,8 @@ public:
 
     RadioAdapter *radio() { return m_radio; }
     ScrobblerAdapter *scrobbler() { return m_scrobbler; }
+
+    virtual Collection * collection();
 
 private slots:
     void love();
