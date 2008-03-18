@@ -3041,10 +3041,7 @@ MediaDevice::transferFiles()
                             //to make sure it ends up with the correct extension
                             //in the generic mediadevice.
                             KURL localUrl = transcodedBundle->podcastBundle()->localUrl();
-                            QString filename = localUrl.filename();
-                            QString extension =
-                                QStringList::split( QString("."), filename ).last();
-                            filename.replace( extension, preferred );
+                            QString filename = QFileInfo( localUrl.path() ).baseName() + '.' + preferred;
                             localUrl.setFileName( filename );
                             transcodedBundle->podcastBundle()->setLocalURL( localUrl );
                         }
