@@ -74,9 +74,14 @@ void WikipediaEngine::update()
              !EngineController::engine()->isStream() )
         {
             tmpWikiStr = EngineController::instance()->currentTrack()->artist()->name();
-            //tmpWikiStr += wikiArtistPostfix(); //makes wikipedia bail out
-        } else
+            tmpWikiStr += wikiArtistPostfix(); //makes wikipedia bail out
+
+            debug() << "tmpWikiStr: " << tmpWikiStr;
+            
+        } else {
             tmpWikiStr = EngineController::instance()->currentTrack()->artist()->prettyName();
+            tmpWikiStr += wikiArtistPostfix(); //makes wikipedia bail out
+        }
     } else if( selection() == "title" ) {
         tmpWikiStr = EngineController::instance()->currentTrack()->prettyName();
         setData( "wikipedia", "label", "Title" );
@@ -108,6 +113,8 @@ void WikipediaEngine::update()
     m_wikiCurrentEntry = tmpWikiStr;
     
     m_wikiCurrentUrl = wikiURL( tmpWikiStr );
+
+    debug() << "wiki url: " << m_wikiCurrentUrl;
     
     setData( "wikipedia", "message", "fetching" );
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
@@ -148,7 +155,10 @@ void WikipediaEngine::wikiResult( KJob* job )
         // article was not found
         if( m_wikiCurrentEntry.endsWith( wikiArtistPostfix() ) )
         {
+            debug() << "m_wikiCurrentEntry.endsWith( wikiArtistPostfix() )";
             m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiArtistPostfix().length() );
+            debug() << "new m_wikiCurrentEntry: " << m_wikiCurrentEntry;
+            
             reloadWikipedia();
             return;
         }
@@ -273,6 +283,7 @@ WikipediaEngine::wikiLocale()
 QString
 WikipediaEngine::wikiArtistPostfix()
 {
+    DEBUG_BLOCK
     if( wikiLocale() == "en" )
         return " (band)";
     else if( wikiLocale() == "de" )
@@ -302,15 +313,30 @@ WikipediaEngine::wikiTrackPostfix()
 QString
 WikipediaEngine::wikiURL( const QString &item )
 {
+    /*return QString( "http://www.google.com/search?q=site:%1.wikipedia.org " )
+            .arg( wikiLocale() )
+            + KUrl::toPercentEncoding( item, "/" )
+            + "&btnI=Lucky";*/
+
+    
     return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() )
-        + KUrl::toPercentEncoding( item, "/" );
+    + KUrl::toPercentEncoding( item, "/" );
 }
 
 void
 WikipediaEngine::reloadWikipedia()
 {
     m_wikiJob = NULL;
-//     showWikipediaEntry( m_wikiCurrentEntry, true );
+
+    
+    m_wikiCurrentUrl = wikiURL( m_wikiCurrentEntry );
+    debug() << "wiki url: " << m_wikiCurrentUrl;
+    
+    setData( "wikipedia", "message", "fetching" );
+    m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
+    connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
+    
+    //showWikipediaEntry( m_wikiCurrentEntry, true );
 }
 
 #include "WikipediaEngine.moc"
