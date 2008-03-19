@@ -36,7 +36,9 @@ JamendoMetaFactory::JamendoMetaFactory( const QString & dbPrefix, JamendoService
 
 TrackPtr JamendoMetaFactory::createTrack( const QStringList & rows )
 {
-    return TrackPtr( new JamendoTrack( rows ) );
+    JamendoTrack * track = new JamendoTrack( rows );
+    track->setService( m_service );
+    return TrackPtr( track );
 }
 
 int JamendoMetaFactory::getAlbumSqlRowCount()
@@ -100,15 +102,19 @@ GenrePtr JamendoMetaFactory::createGenre( const QStringList & rows )
 
 JamendoTrack::JamendoTrack( const QString &name )
     : ServiceTrack( name )
+    , m_service ( 0 )
     , m_downloadCustomAction( 0 )
     , m_downloadCurrentTrackAction( 0 )
+    , m_showInServiceAction( 0 )
 {
 }
 
 JamendoTrack::JamendoTrack( const QStringList & resultRow )
     : ServiceTrack( resultRow )
+    , m_service ( 0 )
     , m_downloadCustomAction( 0 )
     , m_downloadCurrentTrackAction( 0 )
+    , m_showInServiceAction( 0 )
 {
 }
 
@@ -138,7 +144,13 @@ QList< QAction * > Meta::JamendoTrack::currentTrackActions()
         QObject::connect( m_downloadCurrentTrackAction, SIGNAL( activated() ), jAlbum->service(), SLOT( downloadCurrentTrackAlbum() ) );
     }
 
+    if ( !m_showInServiceAction ) {
+
+        m_showInServiceAction = new ShowInServiceAction( m_service, this );
+    }
+
     actions.append( m_downloadCurrentTrackAction );
+    actions.append( m_showInServiceAction );
     return actions;
 }
 
@@ -157,6 +169,11 @@ QString Meta::JamendoTrack::sourceDescription()
 QPixmap Meta::JamendoTrack::emblem()
 {
     return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-jamendo.png" ) );
+}
+
+void Meta::JamendoTrack::setService(JamendoService * service)
+{
+    m_service = service;
 }
 
 
@@ -340,6 +357,8 @@ JamendoGenre::JamendoGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
+
+
 
 
 

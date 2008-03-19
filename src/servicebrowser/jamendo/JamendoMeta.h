@@ -23,6 +23,7 @@
 
 #include "../servicemetabase.h"
 #include "../ServiceAlbumCoverDownloader.h"
+#include "../ShowInServiceAction.h"
 
 #include <QDateTime>
 #include <QString>
@@ -72,6 +73,8 @@ public:
     JamendoTrack( const QString &name );
     JamendoTrack( const QStringList &resultRow );
 
+    void setService( JamendoService * service );
+
     virtual QString sourceName();
     virtual QString sourceDescription();
     virtual QPixmap emblem();
@@ -80,8 +83,12 @@ public:
     virtual QList< QAction * > currentTrackActions();
 
 private:
+    
+    JamendoService * m_service;
+    
     QAction * m_downloadCustomAction;
     QAction * m_downloadCurrentTrackAction;
+    ShowInServiceAction * m_showInServiceAction;
 
 };
 
