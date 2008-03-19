@@ -59,6 +59,10 @@ Meta::ServiceAlbumWithCover::~ServiceAlbumWithCover()
 
 QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
 {
+    //DEBUG_BLOCK
+
+    //debug() << "size: " << size;
+    
     if( size > 1000 )
     {
         debug() << "Giant image detected, are you sure you want this?";
@@ -86,13 +90,16 @@ QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
         return QPixmap::fromImage( img );
     }
     else if ( m_hasFetchedCover ) {
-
+        //debug() << "Large cover loaded, resizing, saving and returning";
+        
         img = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         img.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
         return QPixmap::fromImage( img );
 
     } else if ( !m_isFetchingCover ) {
         m_isFetchingCover = true;
+
+        //debug() << "hmmm.... no cover, need to fetch it";
 
         if ( m_coverDownloader == 0 )
             m_coverDownloader = new ServiceAlbumCoverDownloader();
