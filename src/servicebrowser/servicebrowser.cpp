@@ -134,7 +134,7 @@ QMap< QString, ServiceBase * > ServiceBrowser::services()
     return m_services;
 }
 
-void ServiceBrowser::removeService(QString name)
+void ServiceBrowser::removeService( const QString &name )
 {
 
     ServiceBase * service = m_services.take( name );
@@ -146,6 +146,6 @@ void ServiceBrowser::removeService(QString name)
     m_serviceListView->reset();
 }
 
-void ServiceBrowser::resetService(QString name)
+void ServiceBrowser::resetService( const QString &name )
 {
 }

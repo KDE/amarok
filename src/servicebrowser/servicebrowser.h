@@ -51,8 +51,10 @@ public:
     ~ServiceBrowser();
 
     QMap<QString, ServiceBase *> services();
-    void removeService( QString name );
-    void resetService( QString name );
+    void removeService( const QString &name );
+    void resetService( const QString &name );
+
+    void showService( const QString &name );
 
 public slots:
 
@@ -66,8 +68,6 @@ protected:
 private:
 
     QListView * m_serviceListView;
-    
-    void showService( const QString &name );
 
     QMap<QString, ServiceBase *> m_services;
     ServiceBase * m_currentService;
