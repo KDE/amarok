@@ -158,11 +158,6 @@ private slots:
 
     void moodMapReady( QMap<QString, int> map );
 
-    void sortByArtist();
-    void sortByArtistAlbum();
-    void sortByAlbum();
-    void sortByGenreArtist();
-    void sortByGenreArtistAlbum();
 
 private:
     /**

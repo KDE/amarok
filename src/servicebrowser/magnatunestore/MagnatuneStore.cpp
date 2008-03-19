@@ -196,7 +196,7 @@ void MagnatuneStore::initTopPanel( )
     action = new QAction( i18n( "Genre / Artist / Album" ), m_menubar );
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
     m_filterMenu->addAction( action );
-
+    
     m_menubar->show();
 }
 
@@ -626,34 +626,6 @@ void MagnatuneStore::purchaseCurrentTrackAlbum()
     m_purchaseHandler->purchaseAlbum( magnatuneAlbum );
     
 }
-
-void MagnatuneStore::sortByArtist()
-{
-    m_contentView->setLevels( QList<int>() << CategoryId::Artist );
-}
-
-void MagnatuneStore::sortByArtistAlbum()
-{
-    m_contentView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
-}
-
-void MagnatuneStore::sortByAlbum()
-{
-    m_contentView->setLevels( QList<int>() << CategoryId::Album );
-}
-
-void MagnatuneStore::sortByGenreArtist()
-{
-    m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
-}
-
-void MagnatuneStore::sortByGenreArtistAlbum()
-{
-    m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
-}
-
-
-
 
 
 #include "MagnatuneStore.moc"

@@ -137,6 +137,12 @@ protected slots:
     void itemActivated ( const QModelIndex & index );
     void itemSelected( CollectionTreeItem * item  );
 
+    void sortByArtist();
+    void sortByArtistAlbum();
+    void sortByAlbum();
+    void sortByGenreArtist();
+    void sortByGenreArtistAlbum();
+
 
 protected:
 

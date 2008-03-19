@@ -30,7 +30,9 @@
 #include <KRun>
 #include <KShell>
 #include <threadweaver/ThreadWeaver.h>
+#include <KMenuBar>
 
+#include <QAction>
 #include <typeinfo>
 
 using namespace Meta;
@@ -128,6 +130,28 @@ void JamendoService::polish()
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
     connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
+
+    QAction *action = new QAction( i18n("Artist"), m_menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist() ) );
+    m_filterMenu->addAction( action );
+
+    action = new QAction( i18n( "Artist / Album" ), m_menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
+    m_filterMenu->addAction( action );
+
+    action = new QAction( i18n( "Album" ), m_menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT( sortByAlbum() ) );
+    m_filterMenu->addAction( action );
+
+    action = new QAction( i18n( "Genre / Artist" ), m_menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT( sortByGenreArtist() ) );
+    m_filterMenu->addAction( action );
+
+    action = new QAction( i18n( "Genre / Artist / Album" ), m_menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
+    m_filterMenu->addAction( action );
+    
+    m_menubar->show();
 
     
     m_polished = true;

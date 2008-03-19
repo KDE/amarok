@@ -266,6 +266,31 @@ void ServiceBase::setPlayableTracks(bool playable)
     m_contentView->setPlayableTracks( playable );
 }
 
+void ServiceBase::sortByArtist()
+{
+    m_contentView->setLevels( QList<int>() << CategoryId::Artist );
+}
+
+void ServiceBase::sortByArtistAlbum()
+{
+    m_contentView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
+}
+
+void ServiceBase::sortByAlbum()
+{
+    m_contentView->setLevels( QList<int>() << CategoryId::Album );
+}
+
+void ServiceBase::sortByGenreArtist()
+{
+    m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
+}
+
+void ServiceBase::sortByGenreArtistAlbum()
+{
+    m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
+}
+
 
 
 
