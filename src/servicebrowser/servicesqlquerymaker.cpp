@@ -187,16 +187,17 @@ ServiceSqlQueryMaker::startTrackQuery()
         m_metaFactory->getArtistSqlRows() + ',' +
         m_metaFactory->getGenreSqlRows();
 
-        if ( d->linkedTables & Private::GENRE_TABLE ) {
-            d->linkedTables |= Private::ARTISTS_TABLE;
-        }
+        d->linkedTables |= Private::GENRE_TABLE;
+        d->linkedTables |= Private::ARTISTS_TABLE;
+        d->linkedTables |= Private::ALBUMS_TABLE;
 
+        d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
+        
         if ( d->linkedTables & Private::ARTISTS_TABLE ) {
-            d->linkedTables |= Private::ALBUMS_TABLE;
-            d->queryOrderBy = " ORDER BY " + prefix + "_tracks.album_id"; //make sure items are added as album groups
+            d->queryOrderBy += " ORDER BY " + prefix + "_tracks.album_id"; //make sure items are added as album groups
         }
 
-        d->queryOrderBy += " GROUP BY  " + prefix + "_tracks.id";
+       
 
     }
     return this;
@@ -215,6 +216,8 @@ ServiceSqlQueryMaker::startArtistQuery()
         d->queryType = Private::ARTIST;
         d->withoutDuplicates = true;
         d->queryReturnValues = m_metaFactory->getArtistSqlRows();
+
+        d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
     }
     return this;
 }
@@ -233,6 +236,8 @@ ServiceSqlQueryMaker::startAlbumQuery()
         d->withoutDuplicates = true;
         d->queryReturnValues = m_metaFactory->getAlbumSqlRows() + ',' +
         m_metaFactory->getArtistSqlRows();
+
+        d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
     }
     return this;
 }
