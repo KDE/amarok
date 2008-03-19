@@ -30,7 +30,7 @@ class AMAROK_EXPORT SimilarArtistsAction : public QAction
 {
     Q_OBJECT
 public:
-    SimilarArtistsAction( QObject *parent, Meta::Artist *artist);
+    SimilarArtistsAction( QObject *parent, Meta::Artist *artist );
     ~SimilarArtistsAction();
 
     private slots:

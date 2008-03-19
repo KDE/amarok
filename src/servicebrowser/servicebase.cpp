@@ -291,6 +291,12 @@ void ServiceBase::sortByGenreArtistAlbum()
     m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
 }
 
+void ServiceBase::setFilter(const QString & filter)
+{
+    polish();
+    m_searchWidget->setSearchString( filter );
+}
+
 
 
 

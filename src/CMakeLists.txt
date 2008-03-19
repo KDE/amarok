@@ -125,6 +125,7 @@ set(libservicebrowser_SRCS
     servicebrowser/servicesqlcollection.cpp
     servicebrowser/servicesqlquerymaker.cpp
     servicebrowser/ServiceSqlRegistry.cpp
+    servicebrowser/ShowInServiceAction.cpp
 )
 
 #####################################################################

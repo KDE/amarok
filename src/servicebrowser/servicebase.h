@@ -116,12 +116,18 @@ public:
     virtual void polish() = 0;
     virtual bool updateContextView() { return false; }
 
+    void setFilter( const QString &filter );  
+
     //virtual void reset() = 0;
 
 public slots:
 
     //void treeViewSelectionChanged( const QItemSelection & selected );
     void infoChanged ( const QString &infoHtml );
+
+    void sortByArtistAlbum();
+
+
 
 
 signals:
@@ -138,7 +144,7 @@ protected slots:
     void itemSelected( CollectionTreeItem * item  );
 
     void sortByArtist();
-    void sortByArtistAlbum();
+
     void sortByAlbum();
     void sortByGenreArtist();
     void sortByGenreArtistAlbum();

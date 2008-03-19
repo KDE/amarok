@@ -21,7 +21,7 @@
 
 
 #include "MagnatuneMeta.h"
-#include "MagnatuneStore.h"
+#include "MagnatuneStore.h"'
 
 #include "amarok.h"
 #include "debug.h"
@@ -178,6 +178,7 @@ MagnatuneTrack::MagnatuneTrack( const QString &name )
     , m_downloadMembership ( false )
     , m_purchaseCustomAction( 0 )
     , m_purchaseCurrentTrackAction( 0 )
+    , m_showInServiceAction( 0 )
 {
 }
 
@@ -186,6 +187,7 @@ MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
     , m_downloadMembership ( false )
     , m_purchaseCustomAction( 0 )
     , m_purchaseCurrentTrackAction( 0 )
+    , m_showInServiceAction( 0 )
 {
     DEBUG_BLOCK
     m_lofiUrl = resultRow[7];
@@ -255,6 +257,16 @@ QList< QAction * > Meta::MagnatuneTrack::currentTrackActions()
     }
 
     actions.append( m_purchaseCurrentTrackAction );
+
+    if ( !m_showInServiceAction ) {
+
+        MagnatuneAlbum * malbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
+
+        if ( malbum )
+            m_showInServiceAction = new ShowInServiceAction( malbum->store(), this );
+    }
+
+    actions.append( m_showInServiceAction );
     return actions;
 
 }

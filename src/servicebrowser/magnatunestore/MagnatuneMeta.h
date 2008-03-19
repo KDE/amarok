@@ -23,6 +23,7 @@
 
 #include "../servicemetabase.h"
 #include "../ServiceAlbumCoverDownloader.h"
+#include "../ShowInServiceAction.h"
 
 #include <QDateTime>
 #include <QList>
@@ -68,6 +69,7 @@ private:
     QList<QString> m_moods;
     QAction * m_purchaseCustomAction;
     QAction * m_purchaseCurrentTrackAction;
+    ShowInServiceAction * m_showInServiceAction;
 
 };
 

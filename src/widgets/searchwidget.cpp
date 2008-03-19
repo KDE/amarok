@@ -73,4 +73,9 @@ SearchWidget::init( QWidget *parent )
 //    m_filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
 }
 
+void SearchWidget::setSearchString( const QString & searchString )
+{
+    m_sw->setText( searchString );
+}
+
 #include "searchwidget.moc"
