@@ -57,8 +57,6 @@ bool ExpressionParser::isAdvancedExpression( const QString &expression ) //stati
 
 void ExpressionParser::parseChar( const QChar &c )
 {
-    debug() << "m_string: " << m_string;
-    
     if( m_inQuote && c != '"' )
         m_string += c;
     else if( c.isSpace() )
@@ -173,7 +171,6 @@ void ExpressionParser::finishedToken()
 
 void ExpressionParser::finishedElement()
 {
-    debug() << "m_string: " << m_string;
     if( !m_inOrGroup )
         finishedOrGroup();
     m_inOrGroup = m_haveGroup = false;
@@ -183,11 +180,9 @@ void ExpressionParser::finishedElement()
     if( !m_element.text.isEmpty() || !m_element.field.isEmpty() )
         m_or.append( m_element );
 
-    debug() << "got elemt: " << m_element.text;
     //m_element = expression_element();
     m_element.negate = false;
     m_element.match = expression_element::Contains;
-    debug() << "got elemt: " << m_element.text;
     m_state = ExpectMinus;
 }
 

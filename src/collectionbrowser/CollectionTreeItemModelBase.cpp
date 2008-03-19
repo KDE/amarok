@@ -292,16 +292,13 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
     ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
     foreach( or_list orList, parsed )
     {
-        debug() << "or list!";
         foreach ( expression_element elem, orList )
         {
-            debug() << "expression_element!";
             if ( elem.field.isEmpty() )
             {
                 qm->beginOr();
                 foreach ( int level, m_levelType )
                 {
-                    debug() << "level: " << level;
                     qint64 value;
                     switch ( level )
                     {
