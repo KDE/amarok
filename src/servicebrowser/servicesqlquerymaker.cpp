@@ -196,6 +196,8 @@ ServiceSqlQueryMaker::startTrackQuery()
             d->queryOrderBy = " ORDER BY " + prefix + "_tracks.album_id"; //make sure items are added as album groups
         }
 
+        d->queryOrderBy += " GROUP BY  " + prefix + "_tracks.id";
+
     }
     return this;
 }
@@ -209,6 +211,7 @@ ServiceSqlQueryMaker::startArtistQuery()
         QString prefix = m_metaFactory->tablePrefix();
         d->queryFrom = ' ' + prefix + "_tracks";
         d->linkedTables |= Private::ARTISTS_TABLE;
+        d->linkedTables |= Private::ALBUMS_TABLE;
         d->queryType = Private::ARTIST;
         d->withoutDuplicates = true;
         d->queryReturnValues = m_metaFactory->getArtistSqlRows();
@@ -354,7 +357,8 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
     
     d->linkedTables |= Private::ALBUMS_TABLE;
     d->linkedTables |= Private::ARTISTS_TABLE;
-    d->linkedTables |= Private::GENRE_TABLE;
+    if( d->queryType == Private::GENRE );
+        d->linkedTables |= Private::GENRE_TABLE;
     d->queryMatch += QString( " AND " + prefix + "_albums.id = '%1'" ).arg( serviceAlbum->id() );
     return this;
 }
