@@ -44,7 +44,8 @@ class ServiceBrowser : public KVBox
 
 public:
 
-     ServiceBrowser(QWidget * parent, const QString& name );
+    static ServiceBrowser * instance();
+    
     /**
      * Destructor
      */
@@ -67,6 +68,10 @@ protected:
 
 private:
 
+    ServiceBrowser(QWidget * parent, const QString& name );
+
+    static ServiceBrowser * s_instance;
+            
     QListView * m_serviceListView;
 
     QMap<QString, ServiceBase *> m_services;

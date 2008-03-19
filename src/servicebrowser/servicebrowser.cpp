@@ -25,6 +25,17 @@
 
 #include <KIconLoader>
 
+ServiceBrowser * ServiceBrowser::s_instance = 0;
+
+ServiceBrowser * ServiceBrowser::instance()
+{
+    if ( s_instance == 0 )
+        s_instance = new ServiceBrowser( 0, "Internet Content" );
+
+    return s_instance;
+}
+
+
 ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     : KVBox( parent )
     , m_currentService( 0 )

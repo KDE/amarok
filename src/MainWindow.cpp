@@ -241,7 +241,8 @@ void MainWindow::init()
 
         //cant use macros here since we need access to the browsers directly
         PERF_LOG( "Creating ServiceBrowser" )
-        ServiceBrowser * internetContentServiceBrowser = new ServiceBrowser(this, "Internet Content" );;
+        ServiceBrowser * internetContentServiceBrowser = ServiceBrowser::instance();
+        internetContentServiceBrowser->setParent( this );
         m_browsers->addWidget( KIcon( "services-amarok" ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
         PERF_LOG( "Created ServiceBrowser" )
