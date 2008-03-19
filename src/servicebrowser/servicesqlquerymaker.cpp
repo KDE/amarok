@@ -414,6 +414,20 @@ ServiceSqlQueryMaker::addMatch( const DataPtr &data )
 QueryMaker*
 ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
+    DEBUG_BLOCK
+    
+    //a few hacks needed by some of the speedup code:
+
+    if ( d->queryType == Private::GENRE ) {
+
+        QString prefix = m_metaFactory->tablePrefix();
+        d->queryFrom = ' ' + prefix + "_tracks";
+        d->linkedTables |= Private::ALBUMS_TABLE;
+        d->linkedTables |= Private::ARTISTS_TABLE;
+        d->linkedTables |= Private::GENRE_TABLE;
+
+    }
+
     
     QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
