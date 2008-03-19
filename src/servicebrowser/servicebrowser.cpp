@@ -102,7 +102,12 @@ void ServiceBrowser::showService( const QString &name )
     if ( m_services.contains( name ) )
        service = m_services.value( name );
 
-    if ( service != 0 ) {
+    if ( service != 0 && service != m_currentService ) {
+        //if a service is already shown, make damn sure to deactivate that one first...
+
+        if ( m_currentService )
+            m_currentService->setParent( 0 );
+
         m_serviceListView->setParent( 0 );
         service->setParent ( this );
         service->move( QPoint( 0, 0 ) );
