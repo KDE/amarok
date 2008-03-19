@@ -337,7 +337,7 @@ void MainWindow::addBrowser( const QString &name, QWidget *browser, const QStrin
 void MainWindow::showBrowser( const QString &name )
 {
     const int index = m_browserNames.indexOf( name );
-    if( index >= 0 )
+    if( index >= 0 && index != m_browsers->currentIndex() )
         m_browsers->showWidget( index );
 }
 
