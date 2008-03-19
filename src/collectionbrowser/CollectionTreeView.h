@@ -45,6 +45,11 @@ class CollectionTreeView: public QTreeView {
     public slots:
         void slotSetFilterTimeout();
 
+        /**
+         * Bypass the filter timeout if we really need to start filtering *now*
+         */
+        void slotFilterNow();
+
     protected:
         void mousePressEvent( QMouseEvent *event );
         void mouseMoveEvent( QMouseEvent *event );

@@ -29,6 +29,11 @@ class SearchWidget : public QWidget
         KLineEdit *lineEdit() { return m_sw; }
         void setup( QObject* caller );
         void setSearchString( const QString &searchString );
+
+    signals:
+
+        void filterNow();
+
     private:
         void init( QWidget* parent );
 

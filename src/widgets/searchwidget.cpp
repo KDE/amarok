@@ -43,6 +43,10 @@ SearchWidget::setup( QObject* caller )
 //             SLOT(slotEditFilter() ) );
     connect( m_sw, SIGNAL( textChanged( const QString & ) ), caller,
              SLOT( slotSetFilterTimeout() ) );
+
+    connect( this, SIGNAL( filterNow() ), caller,
+             SLOT( filterNow() ) );
+    
 }
 
 ///Private
@@ -76,6 +80,7 @@ SearchWidget::init( QWidget *parent )
 void SearchWidget::setSearchString( const QString & searchString )
 {
     m_sw->setText( searchString );
+    emit filterNow();
 }
 
 #include "searchwidget.moc"
