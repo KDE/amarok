@@ -158,6 +158,12 @@ private slots:
 
     void moodMapReady( QMap<QString, int> map );
 
+    void sortByArtist();
+    void sortByArtistAlbum();
+    void sortByAlbum();
+    void sortByGenreArtist();
+    void sortByGenreArtistAlbum();
+
 private:
     /**
      * Helper function that initializes the button panel below the list view

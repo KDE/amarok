@@ -42,7 +42,9 @@
 #include <kiconloader.h>   //multiTabBar icons
 #include <KTemporaryFile>
 #include <threadweaver/ThreadWeaver.h>
+#include <KMenuBar>
 
+#include <QAction>
 #include <QGraphicsScene>
 #include <QSplitter>
 #include <q3dragobject.h>
@@ -175,6 +177,27 @@ void MagnatuneStore::initTopPanel( )
 {
 
     //connect( m_genreComboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( genreChanged( QString ) ) );
+    QAction *action = new QAction( i18n("Artist"), m_menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist() ) );
+    m_filterMenu->addAction( action );
+
+    action = new QAction( i18n( "Artist / Album" ), m_menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
+    m_filterMenu->addAction( action );
+
+    action = new QAction( i18n( "Album" ), m_menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT( sortByAlbum() ) );
+    m_filterMenu->addAction( action );
+
+    action = new QAction( i18n( "Genre / Artist" ), m_menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT( sortByGenreArtist() ) );
+    m_filterMenu->addAction( action );
+
+    action = new QAction( i18n( "Genre / Artist / Album" ), m_menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
+    m_filterMenu->addAction( action );
+
+    m_menubar->show();
 }
 
 void MagnatuneStore::initBottomPanel()
@@ -602,6 +625,31 @@ void MagnatuneStore::purchaseCurrentTrackAlbum()
 
     m_purchaseHandler->purchaseAlbum( magnatuneAlbum );
     
+}
+
+void MagnatuneStore::sortByArtist()
+{
+    m_contentView->setLevels( QList<int>() << CategoryId::Artist );
+}
+
+void MagnatuneStore::sortByArtistAlbum()
+{
+    m_contentView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
+}
+
+void MagnatuneStore::sortByAlbum()
+{
+    m_contentView->setLevels( QList<int>() << CategoryId::Album );
+}
+
+void MagnatuneStore::sortByGenreArtist()
+{
+    m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
+}
+
+void MagnatuneStore::sortByGenreArtistAlbum()
+{
+    m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
 }
 
 

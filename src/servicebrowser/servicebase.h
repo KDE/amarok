@@ -48,6 +48,7 @@
 
 class ServiceBase;
 class SearchWidget;
+class KMenuBar;
 
 class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, public TrackProvider
 {
@@ -159,6 +160,8 @@ protected:
 
     InfoParserBase * m_infoParser;
 
+    KMenuBar *m_menubar;
+    QMenu *m_filterMenu;
     SearchWidget * m_searchWidget;
 
     //void addToPlaylist( CollectionTreeItem * item );

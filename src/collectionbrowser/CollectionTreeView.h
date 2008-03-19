@@ -30,7 +30,7 @@ class CollectionTreeView: public QTreeView {
 
         QSortFilterProxyModel* filterModel() const;
 
-        void setLevels( const QList<int> &levels );
+        AMAROK_EXPORT void setLevels( const QList<int> &levels );
         void setLevel( int level, int type );
 
         void setModel ( QAbstractItemModel * model );

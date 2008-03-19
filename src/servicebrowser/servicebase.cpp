@@ -29,6 +29,7 @@
 #include "ServiceInfoProxy.h"
 
 #include <khbox.h>
+#include <KMenuBar>
 
 #include <QFrame>
 #include <QLabel>
@@ -143,6 +144,11 @@ ServiceBase::ServiceBase( const QString &name )
     m_filterModel = new QSortFilterProxyModel( this );
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+
+    m_menubar = new KMenuBar( m_topPanel );
+    m_filterMenu = m_menubar->addMenu( i18n( "Group By" ) );
+
+    m_menubar->hide();
 
     m_searchWidget = new SearchWidget( m_topPanel );
     m_searchWidget->setup( m_contentView );
