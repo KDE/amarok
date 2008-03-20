@@ -32,7 +32,7 @@ namespace Meta
 
     /**
      * This capability allows different meta types to display custom actions int the right click menu in the tree view
-     * or anywhere else where the actions are shown. This is usefull for purchasing from stores, downloading from services
+     * or anywhere else where the actions are shown. This is useful for purchasing from stores, downloading from services
      * banning a genre or whatever we can think of in the future
      */
     class AMAROK_EXPORT CustomActionsCapability : public Meta::Capability

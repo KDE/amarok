@@ -78,7 +78,7 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
 
 CollectionTreeView::~CollectionTreeView() {
 
-    //we dont know what collection this is as this class is used with many different collections...
+    //we don't know what collection this is as this class is used with many different collections...
     //KConfigGroup config = Amarok::config( "Collection Browser" );
     //config.writeEntry( "TreeCategory", m_treeModel->levels() );
     delete m_treeModel;
@@ -412,12 +412,6 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
     }
     QueryMaker *qm = new MetaQueryBuilder( queryMakers );
     TagDialog *dialog = new TagDialog( qm ); //the dialog will show itself automatically as soon as it is ready
-}
-
-void CollectionTreeView::slotFilterNow()
-{
-    DEBUG_BLOCK
-    m_treeModel->slotFilter();
 }
 
 #include "CollectionTreeView.moc"

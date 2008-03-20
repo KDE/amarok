@@ -105,7 +105,7 @@ void ContextView::clear( const ContextState& state )
     else if( state == Current )
         name += "current";
     else
-        return; // startup, or some other wierd case
+        return; // startup, or some other weird case
     name += "rc";
 
     // now we save the state, remembering the column info etc

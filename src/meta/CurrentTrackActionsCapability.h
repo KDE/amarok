@@ -23,8 +23,8 @@
 #include "amarok_export.h"
 
 /**
- * This capability allows tracks to display custom actions indifferent places ( such as the playlist context menu,
- * the system tray context mneu and others ) when they are the currently playing tracks. Inital use for this will
+ * This capability allows tracks to display custom actions in different places ( such as the playlist context menu,
+ * the system tray context menu and others ) when they are the currently playing tracks. Initial use for this will
  * to add last.fm skip, ban and love actions.
  */
 

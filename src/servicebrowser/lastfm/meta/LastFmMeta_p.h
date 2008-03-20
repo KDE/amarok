@@ -132,7 +132,7 @@ class Track::Private : public QObject
                 albumUrl = tmdr->metaData().albumPageUrl();
                 trackUrl = tmdr->metaData().trackPageUrl();
 
-                // TODO: need a seperate request to get artist url, it can wait until we're ready to do something with it
+                // TODO: need a separate request to get artist url, it can wait until we're ready to do something with it
 
                 notifyObservers();
 

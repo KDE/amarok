@@ -30,7 +30,7 @@
 
 
 struct DynamicScriptableQueryMaker::Private {
-    //dont change the order of items in this enum
+    //don't change the order of items in this enum
     enum QueryType { TRACK=1, ALBUM=2, ARTIST=3, GENRE=4, NONE=5 };
     QueryType type;
     QueryType closestParent;

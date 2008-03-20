@@ -212,7 +212,7 @@ void Playlist::AlbumGroup::offsetBetween(int first, int last, int offset)
     for (int j = 0; j < m_groups.count(); j++ ) {
         for ( int i = first; i <= last; i++ ) {
             if ( m_groups[ j ].rows.contains( i ) ) {
-                //offset all in this group (so we dont break any groups)
+                //offset all in this group (so we don't break any groups)
                 for ( int k = 0; k < m_groups[ j ].rows.count(); k++ ) {
                     m_groups[ j ].rows.append( m_groups[ j ].rows.takeFirst() + offset );
                 }

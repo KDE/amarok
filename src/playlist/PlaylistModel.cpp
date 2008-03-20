@@ -438,7 +438,7 @@ Model::setActiveRow( int row )
 
     m_activeRow = row;
 
-    //make sure that the group containg this track is expanded
+    //make sure that the group containing this track is expanded
 
     //not all tracks have a valid album ( radio stations for instance... )
     QString albumName;
@@ -1203,7 +1203,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
 
 
 
-    //make sure that a group containg playing track is expanded
+    //make sure that a group containing playing track is expanded
     if ( m_activeRow != -1 ){
         if ( m_albumGroups.contains( m_items[ m_activeRow ]->track()->album()->prettyName() ) ) {
             m_albumGroups[ m_items[ m_activeRow ]->track()->album()->prettyName() ]->setCollapsed( m_activeRow,  false );

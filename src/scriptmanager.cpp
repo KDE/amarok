@@ -93,7 +93,7 @@ namespace Amarok {
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * GHNS Customised Download implementation.
+ * GHNS Customized Download implementation.
  */
 #if 0 //TODO: PORT to KNS2
 class AmarokScriptNewStuff : public KNewStuff

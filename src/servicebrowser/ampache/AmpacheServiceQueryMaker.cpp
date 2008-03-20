@@ -338,7 +338,7 @@ void AmpacheServiceQueryMaker::artistDownloadComplete(KJob * job)
 
     ArtistList artists;
 
-    //debug() << "recieved artists: " <<  m_storedTransferJob->data();
+    //debug() << "received artists: " <<  m_storedTransferJob->data();
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -388,11 +388,11 @@ void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
         return;
     }
 
-    //debug() << "Recieved response: " << m_storedTransferJob->data();
+    //debug() << "Received response: " << m_storedTransferJob->data();
 
     AlbumList albums;
 
-    //debug() << "recieved artists: " <<  m_storedTransferJob->data();
+    //debug() << "received artists: " <<  m_storedTransferJob->data();
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -474,7 +474,7 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         return;
     }
 
-    //debug() << "Recieved response: " << m_storedTransferJob->data();
+    //debug() << "Received response: " << m_storedTransferJob->data();
 
     TrackList tracks;
 

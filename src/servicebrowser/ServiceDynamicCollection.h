@@ -29,7 +29,7 @@ typedef QMap<int, Meta::GenrePtr> GenreIdMap;
 
 
 /**
-A specialised collection used for services that dynamically fetch their data from somewhere ( a web service, an external program, etc....)
+A specialized collection used for services that dynamically fetch their data from somewhere ( a web service, an external program, etc....)
 
 	@author 
 */

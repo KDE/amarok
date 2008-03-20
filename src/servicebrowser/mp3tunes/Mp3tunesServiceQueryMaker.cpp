@@ -327,7 +327,7 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
 
     ArtistList artists;
 
-    debug() << "recieved artists: " <<  m_storedTransferJob->data();
+    debug() << "received artists: " <<  m_storedTransferJob->data();
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -378,11 +378,11 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
         return;
     }
 
-    debug() << "Recieved response: " << m_storedTransferJob->data();
+    debug() << "Received response: " << m_storedTransferJob->data();
 
     AlbumList albums;
 
-    //debug() << "recieved artists: " <<  m_storedTransferJob->data();
+    //debug() << "received artists: " <<  m_storedTransferJob->data();
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -465,11 +465,11 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         return;
     }
 
-    debug() << "Recieved response: " << m_storedTransferJob->data();
+    debug() << "Received response: " << m_storedTransferJob->data();
 
     TrackList tracks;
 
-    debug() << "recieved tracks: " <<  m_storedTransferJob->data();
+    debug() << "received tracks: " <<  m_storedTransferJob->data();
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );

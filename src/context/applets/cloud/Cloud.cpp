@@ -266,7 +266,7 @@ void Cloud::adjustCurrentLinePos()
         currentItemRect = currentItem->boundingRect();
         offsetY = ( (maxHeight - currentItemRect.height()) / 2 );
 
-        //untill we get a scroll area, dont print beyound the bottom of the rect
+        //until we get a scroll area, don't print beyound the bottom of the rect
         if ( m_runningY + offsetY + m_maxHeightInFirstLine + currentItemRect.height() >  m_theme->elementRect( "cloud" ).bottomLeft().y() ) {
             m_textItems.remove( currentItem );
             delete currentItem;

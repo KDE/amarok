@@ -79,7 +79,7 @@ NjbPlaylist::setPlaylist( njb_playlist_t* _newlist )
     // 	debug() << __PRETTY_FUNCTION__ << " this=" << this;
 
     //
-    // This function copys the new playlist BY VALUE over our current list.
+    // This function copies the new playlist BY VALUE over our current list.
     // It's needed so that objects of this class can be stored in a QValueList
     //
 

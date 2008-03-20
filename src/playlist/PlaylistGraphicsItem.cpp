@@ -356,7 +356,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         m_items->bottomRightText->setPos( bottomRightAlignX, 0 );
     }
 
-    //make sure the activ eitem overlay has the correct width
+    //make sure the active item overlay has the correct width
 
 
 

@@ -29,7 +29,7 @@ namespace Meta
 {
 
     /**
-    This capability allows getting aditional information about the source of a meta item. For now, it is intended for allowing the playlist to display a little emblem to let users know if a track is a Magnatune preview track, a lastfm stream or so on...
+    This capability allows getting additional information about the source of a meta item. For now, it is intended for allowing the playlist to display a little emblem to let users know if a track is a Magnatune preview track, a lastfm stream or so on...
 
         @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
     */

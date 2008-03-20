@@ -105,9 +105,9 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
     //DEBUG_BLOCK
 
     int width = m_view->viewport()->size().width() - 4;
-    int heigth = 90;
+    int height = 90;
 
-    return QSize ( width, heigth );
+    return QSize ( width, height );
 
     
 

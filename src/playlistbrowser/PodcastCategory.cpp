@@ -266,28 +266,28 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
 
     int width = m_view->viewport()->size().width() - 4;
 
-    //todo: the heigth should be defined the way it is in the delegate: iconpadY*2 + iconheight
+    //todo: the height should be defined the way it is in the delegate: iconpadY*2 + iconheight
     Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
-    int heigth = 24;
+    int height = 24;
     /* Why is this here anyways?
     if ( typeid( * pmc ) == typeid( Meta::PodcastChannel ) )
-        heigth = 24;
+        height = 24;
     */
     if (/*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
     {
         QString description = index.data( ShortDescriptionRole ).toString();
 
         QFontMetrics fm( QFont( "Arial", 8 ) );
-        heigth = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000,
+        height = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000,
                                    Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap ,
                                    description ).height() + 40;
-	    debug() << "Option is selected, height = " << heigth;
+	    debug() << "Option is selected, height = " << height;
     }
     //else
-	//debug() << "Option is not selected, height = " << heigth;
+	//debug() << "Option is not selected, height = " << height;
 
-    //m_lastHeight = heigth;
-    return QSize ( width, heigth );
+    //m_lastHeight = height;
+    return QSize ( width, height );
 }
 
 }

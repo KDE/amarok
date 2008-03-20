@@ -202,7 +202,7 @@ void MainWindow::init()
 
     //figure out the needed heigh tbased on system font settings
     // do make sure that it is at least 26 pixels tall though
-    //or progess bars will not fit...
+    //or progress bars will not fit...
 
     QFont currentFont = font();
     currentFont.setBold( true );

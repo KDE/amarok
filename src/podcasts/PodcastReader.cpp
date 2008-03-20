@@ -122,7 +122,7 @@ PodcastReader::read()
             debug() << "reading " << tokenString();
         }
         else
-            debug() << "some other error occured: " << errorString();
+            debug() << "some other error occurred: " << errorString();
 
         if( !m_current )
         {

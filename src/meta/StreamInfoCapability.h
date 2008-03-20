@@ -28,11 +28,11 @@ namespace Meta
 {
 
     /**
-     * This capability is designed to provide additonal information
+     * This capability is designed to provide additional information
      * about streaming metadata. For meta types that provide multiple
      * tracks within the same stream (lastfm, shoutcast, etc )
      * this capability is designed to return stream metadata,
-     * where the properties in the ::Track class refers to the track
+     * where the properties in the Meta::Track class refers to the track
      * being played within the stream.
 
         @author Dan Meltzer <hydrogen@notyetimplemented.com>

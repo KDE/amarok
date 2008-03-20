@@ -54,7 +54,7 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 {
     DEBUG_BLOCK
     
-    PERF_LOG( "Begining TrayIcon Constructor" );
+    PERF_LOG( "Beginning TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();
 
     //seems to be necessary
@@ -392,7 +392,7 @@ void Amarok::TrayIcon::setupMenu()
             debug() << "3";
 
 
-            //remove the two botton itmes, so we can push them to the button again
+            //remove the two bottom itmes, so we can push them to the button again
             contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
             contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 

@@ -123,7 +123,7 @@ namespace KDE
 
         /**
          * Shows a non-invasive messgeBox style message that the user has to dismiss
-         * but it doesn't interupt whatever he is doing at the current time.
+         * but it doesn't interrupt whatever he is doing at the current time.
          * Generally you should use these, as it is very easy for a user to not notice
          * statusBar messages.
          */

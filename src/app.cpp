@@ -418,7 +418,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
     options.add("a");
     options.add("append", ki18n( "Append files/URLs to playlist" ));
     options.add("e");
-    options.add("enqueue", ki18n("See append, available for backwards compatability"));
+    options.add("enqueue", ki18n("See append, available for backwards compatibility"));
     options.add("queue", ki18n("Queue URLs after the currently playing track"));
     options.add("l");
     options.add("load", ki18n("Load URLs, replacing current playlist"));

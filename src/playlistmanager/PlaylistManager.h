@@ -39,9 +39,9 @@ class PlaylistManager : public QObject
     Q_OBJECT
 
     public:
-        //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamicly.
+        //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamically.
 
-        //Dont forget to add a new default Category to PlaylistManager::typeName(int playlistCategory)
+        //Don't forget to add a new default Category to PlaylistManager::typeName(int playlistCategory)
         enum PlaylistCategory
         {
             CurrentPlaylist = 1,
@@ -97,7 +97,7 @@ class PlaylistManager : public QObject
 
         /**
          * Makes sure custom categories don't conflict with the default PlaylistCategory enum or
-         * other custom category by dynamicly providing a integer that identifies it.
+         * other custom category by dynamically providing a integer that identifies it.
          * @arg name a translated name that can be used to identify playlists offered by this provider
          */
         int registerCustomCategory( const QString &name );
