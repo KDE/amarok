@@ -119,7 +119,7 @@ public slots:
     void setDrawShadow( bool b ) { OSDWidget::setDrawShadow( b ); doUpdate(); }
     void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
-    void setTransparent( bool transparent) { setWindowOpacity( 0.7); doUpdate(); }
+    void setTransparent( bool transparent ) { if( transparent ) { setWindowOpacity( 0.7); } else setWindowOpacity( 1.0 ); doUpdate(); }
     void setUseCustomColors( const bool use, const QColor &fg, const QColor &/*bg*/ )
     {
         if( use ) {

@@ -160,6 +160,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
+    Q_UNUSED( p );
 
     QRectF tmp( 0, 0, contentsRect.width(), 0 );
     tmp.setHeight( contentsRect.width() * m_headerAspectRatio );
@@ -197,7 +198,7 @@ void LyricsApplet::calculateHeight()
     if( lyricsheight > m_header->elementRect( "lyrics" ).height() ) // too short
     {
         qreal expandBy = lyricsheight - m_header->elementRect( "lyrics" ).height();
-        setContentSize( size().width(), size().height() + expandBy );
+        setContentSize( (int)size().width(), (int)size().height() + expandBy );
     } /*else if( lyricsheight < m_header->elementRect( "lyrics" ).height() )
     { // too long
         qreal shrinkBy = m_header->elementRect( "lyrics" ).height() - lyricsheight;

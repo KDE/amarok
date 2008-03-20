@@ -16,6 +16,7 @@
 LastFmServiceQueryMaker::LastFmServiceQueryMaker( LastFmServiceCollection *collection )
     : m_resultAsDataPtrs( false )
 {
+    Q_UNUSED( collection );
 }
 
 

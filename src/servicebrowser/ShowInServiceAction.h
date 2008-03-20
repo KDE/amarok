@@ -29,11 +29,11 @@ An action to let the user locate and show the artist or album of a track in the 
 
 	@author 
 */
-AMAROK_EXPORT class ShowInServiceAction : public QAction
+class AMAROK_EXPORT ShowInServiceAction : public QAction
 {
     Q_OBJECT
 public:
-    AMAROK_EXPORT ShowInServiceAction( ServiceBase * service, Meta::ServiceTrack *track );
+    ShowInServiceAction( ServiceBase * service, Meta::ServiceTrack *track );
 
     ~ShowInServiceAction();
 

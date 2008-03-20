@@ -173,7 +173,7 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
         p.setOpacity( opacity );
         p.drawImage( 0, 0, imgHandleGlow );
         p.end();
-        m_handlePixmaps.append( QPixmap( dst ) );
+        m_handlePixmaps.append( QPixmap::fromImage( dst ) );
         opacity += step;
     }
     // END
@@ -390,11 +390,12 @@ Amarok::VolumeSlider::paletteChange( const QPalette& )
 
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 {
-    m_iconHeight = height() * 0.66;
-    m_iconWidth = ( double ) m_iconHeight * 1.33;
+    Q_UNUSED( event );
+    m_iconHeight = (int)height() * 0.66;
+    m_iconWidth = ( int ) m_iconHeight * 1.33;
     m_textWidth = 40;
     m_sliderWidth = width() - ( m_iconWidth + m_textWidth + m_margin  );
-    m_sliderHeight = m_sliderWidth / 7.0; //maintain sane aspect ratio
+    m_sliderHeight = (int)m_sliderWidth / 7.0; //maintain sane aspect ratio
     if ( m_sliderHeight > height() )
         m_sliderHeight = height();
 

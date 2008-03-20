@@ -126,7 +126,6 @@ OpmlDirectoryDatabaseHandler::insertTrack( ServiceTrack *track )
 {
     QString numberString;
 
-    Collection *coll;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     QString queryString = "INSERT INTO opmldirectory_tracks ( name, track_number, length, "
                           "album_id, artist_id, preview_url ) VALUES ( '"

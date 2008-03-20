@@ -77,7 +77,7 @@ RadioAdapter::stop()
 void
 RadioAdapter::error( RadioError errorCode, const QString& message )
 {
-    The::contextStatusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", message), KDE::StatusBar::Error );
+    The::contextStatusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2 Error code: %3", "Last.fm", message, errorCode), KDE::StatusBar::Error );
     stop();
 }
 

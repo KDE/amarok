@@ -482,6 +482,7 @@ namespace The {
 
 void Playlist::GraphicsView::paletteChange(const QPalette & oldPalette)
 {
+    Q_UNUSED( oldPalette );
     foreach( Playlist::GraphicsItem* it, m_tracks )
     {
         it->paletteChange();

@@ -830,6 +830,7 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     bool DbusCollectionHandler::isDirInCollection( const QString& path )
     {
+        Q_UNUSED( path );
         AMAROK_NOTIMPLEMENTED
         return false;
 //         return CollectionDB::instance()->isDirInCollection( path );
@@ -837,6 +838,7 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     bool DbusCollectionHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
     {
+        Q_UNUSED( oldURL ); Q_UNUSED( newURL ); Q_UNUSED( overwrite );
         AMAROK_NOTIMPLEMENTED
         return false;
 //         return CollectionDB::instance()->moveFile( oldURL, newURL, overwrite );
@@ -856,6 +858,7 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     void DbusCollectionHandler::migrateFile( const QString &oldURL, const QString &newURL )
     {
+        Q_UNUSED( oldURL ); Q_UNUSED( newURL );
         AMAROK_NOTIMPLEMENTED
         return;
 //         CollectionDB::instance()->migrateFile( oldURL, newURL );
@@ -873,6 +876,7 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     int DbusCollectionHandler::addLabels( const QString &url, const QStringList &labels )
     {
+        Q_UNUSED( url ); Q_UNUSED( labels );
         AMAROK_NOTIMPLEMENTED
         return -1;
 //         CollectionDB *db = CollectionDB::instance();
@@ -888,12 +892,14 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     void DbusCollectionHandler::removeLabels( const QString &url, const QStringList &oldLabels )
     {
+        Q_UNUSED( url ); Q_UNUSED( oldLabels );
         AMAROK_NOTIMPLEMENTED
         return;
     }
 
     void DbusCollectionHandler::disableAutoScoring( bool disable )
     {
+        Q_UNUSED( disable );
         AMAROK_NOTIMPLEMENTED
         return;
     }

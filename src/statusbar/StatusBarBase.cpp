@@ -314,6 +314,7 @@ StatusBar::shortLongMessage( const QString &_short, const QString &_long, Messag
 void
 StatusBar::longMessage( const QString &text, MessageType type )
 {
+    Q_UNUSED( type );
     SHOULD_BE_GUI
 
     //m_messageLabel->setMessage( text, type );

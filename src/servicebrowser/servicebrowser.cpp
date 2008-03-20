@@ -136,6 +136,7 @@ void ServiceBrowser::home()
 void ServiceBrowser::paletteChange(const QPalette & oldPalette)
 {
     DEBUG_BLOCK
+    Q_UNUSED( oldPalette );
     m_delegate->paletteChange();
     m_serviceListView->reset();
 }
@@ -154,9 +155,9 @@ void ServiceBrowser::removeService( const QString &name )
 {
 
     ServiceBase * service = m_services.take( name );
-    if ( m_currentService = service )
+    if ( m_currentService == service )
         home();
-    
+
     m_serviceListModel->removeService( service );
     delete service;
     m_serviceListView->reset();
@@ -164,4 +165,6 @@ void ServiceBrowser::removeService( const QString &name )
 
 void ServiceBrowser::resetService( const QString &name )
 {
+    //What in the world is this for...
+    Q_UNUSED( name );
 }

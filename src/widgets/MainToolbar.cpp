@@ -182,11 +182,13 @@ void MainToolbar::paintEvent(QPaintEvent *)
 
 void MainToolbar::engineStateChanged(Engine::State state, Engine::State oldState)
 {
+    Q_UNUSED( state ); Q_UNUSED( oldState );
     handleAddActions();
 }
 
 void MainToolbar::engineNewMetaData(const QHash< qint64, QString > & newMetaData, bool trackChanged)
 {
+    Q_UNUSED( newMetaData ); Q_UNUSED( trackChanged );
     handleAddActions();
 }
 
@@ -257,6 +259,7 @@ void MainToolbar::resizeEvent(QResizeEvent * event)
 
 void MainToolbar::paletteChange( const QPalette & oldPalette )
 {
+    Q_UNUSED( oldPalette );
     reTint();
     repaint( 0, 0, -1, -1 );
 }

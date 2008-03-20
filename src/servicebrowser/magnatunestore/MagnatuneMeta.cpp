@@ -21,7 +21,7 @@
 
 
 #include "MagnatuneMeta.h"
-#include "MagnatuneStore.h"'
+#include "MagnatuneStore.h"
 
 #include "amarok.h"
 #include "debug.h"

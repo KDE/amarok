@@ -70,6 +70,7 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
       m_polished( false ),
       m_userName( username )
 {
+    Q_UNUSED( fetchSimilar ); // TODO implement..
     //We have no use for searching currently..
     m_searchWidget->setVisible( false );
     setShortDescription(  i18n( "Last.fm: The social music revolution." ) );

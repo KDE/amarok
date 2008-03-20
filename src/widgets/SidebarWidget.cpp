@@ -279,7 +279,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     p.drawPixmap( 0, 0, background );
 
 
-    QColor baseColor = palette().text();
+    QColor baseColor = palette().text().color();
 
 
     QColor c;

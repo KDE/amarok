@@ -54,6 +54,7 @@ public:
     virtual QueryMaker* startAlbumQuery();
     virtual QueryMaker* startTrackQuery();
 
+    using DynamicServiceQueryMaker::addMatch;
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
 

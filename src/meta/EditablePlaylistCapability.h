@@ -45,18 +45,18 @@ class EditablePlaylistCapability : public Capability
         /** Returns true if the tags of this track are currently editable */
         virtual bool isEditable() const = 0;
 
-        virtual void setTitle( const QString &title ) {};
-        virtual void setCreator( const QString &creator ) {};
-        virtual void setAnnotation( const QString &annotation ) {};
-        virtual void setInfo( const KUrl &info ) {};
-        virtual void setLocation( const KUrl &location ) {};
-        virtual void setIdentifier( const QString &identifier ) {};
-        virtual void setImage( const KUrl &image ) {};
-        virtual void setDate( const QDateTime &date ) {};
-        virtual void setLicense( const KUrl &license ) {};
-        virtual void setAttribution( const KUrl &attribution, bool append = true ) {};
-        virtual void setLink( const KUrl &link ) {};
-        virtual void setTrackList( TrackList trackList, bool append = false ) {};
+        virtual void setTitle( const QString &title ) { Q_UNUSED( title ); };
+        virtual void setCreator( const QString &creator ) { Q_UNUSED( creator ); };
+        virtual void setAnnotation( const QString &annotation ) { Q_UNUSED( annotation ); };
+        virtual void setInfo( const KUrl &info ) { Q_UNUSED( info ); };
+        virtual void setLocation( const KUrl &location ) { Q_UNUSED( location); };
+        virtual void setIdentifier( const QString &identifier ) { Q_UNUSED( identifier); };
+        virtual void setImage( const KUrl &image ) { Q_UNUSED( image ); };
+        virtual void setDate( const QDateTime &date ) { Q_UNUSED( date); };
+        virtual void setLicense( const KUrl &license ) { Q_UNUSED( license ); };
+        virtual void setAttribution( const KUrl &attribution, bool append = true ) { Q_UNUSED( attribution); Q_UNUSED(append); };
+        virtual void setLink( const KUrl &link ) { Q_UNUSED( link ); };
+        virtual void setTrackList( TrackList trackList, bool append = false ) { Q_UNUSED( trackList ); Q_UNUSED( append ); };
 
         /** The playlist object should not store changed meta data immediately but cache the
         changes until endMetaDataUpdate() or abortMetaDataUpdate() is called */

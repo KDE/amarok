@@ -136,6 +136,7 @@ AudioController::engineStateChanged( Engine::State currentState, Engine::State o
 void 
 AudioController::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
 {
+    Q_UNUSED( trackLength );
     if( The::lastFmService()->radio()->currentTrack() )
     {
         emit trackEnded( m_currentTrackInfo, finalPosition );

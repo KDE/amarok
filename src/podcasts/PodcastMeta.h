@@ -212,11 +212,11 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
         virtual void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; };
         virtual PodcastEpisodeList episodes() { return m_episodes; };
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const { return false; };
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; };
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type ) { return static_cast<Meta::Capability *>( 0 ); };
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type ) { Q_UNUSED( type ); return static_cast<Meta::Capability *>( 0 ); };
 
-        virtual bool load( QTextStream &stream ) { return false; };
+        virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; };
 
     protected:
         KUrl m_url;

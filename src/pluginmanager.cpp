@@ -196,7 +196,7 @@ PluginManager::dump( const KService::Ptr service )
       << "---------------------------" << ENDLI
       << "name                          :" << service->name() << ENDLI
       << "library                       :" << service->library() << ENDLI
-      << "desktopEntryPath              :" << service->desktopEntryPath() << ENDLI
+      << "desktopEntryPath              :" << service->entryPath() << ENDLI
       << "X-KDE-Amarok-plugintype       :" << service->property( "X-KDE-Amarok-plugintype" ).toString() << ENDLI
       << "X-KDE-Amarok-name             :" << service->property( "X-KDE-Amarok-name" ).toString() << ENDLI
       << "X-KDE-Amarok-authors          :" << service->property( "X-KDE-Amarok-authors" ).toStringList() << ENDLI

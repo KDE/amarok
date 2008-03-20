@@ -81,6 +81,7 @@ LastFmSettings::appLanguage() const
 void 
 LastFmSettings::setFingerprintUploadUrl( const QString &url )
 {
+    AMAROK_NOTIMPLEMENTED
     // todo
 }
 

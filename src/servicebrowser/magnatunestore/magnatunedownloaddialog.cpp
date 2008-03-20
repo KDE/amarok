@@ -60,7 +60,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
 
     emit( downloadAlbum( m_currentDownloadInfo ) );
 
-    close( 0 );
+    close();
 
 }
 

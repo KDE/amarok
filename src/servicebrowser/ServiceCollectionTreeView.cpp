@@ -83,8 +83,8 @@ void ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
                 }
             }
                
-            if ( menu.count() > 0 ) {
-                QAction* result =  menu.exec( event->globalPos() );
+            if ( menu.actions().count() > 0 ) {
+                (void)menu.exec( event->globalPos() );
                 QSet<CollectionTreeItem*> items;
                 foreach( const QModelIndex &index, indices )
                 {

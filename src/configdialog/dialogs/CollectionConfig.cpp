@@ -88,6 +88,7 @@ CollectionConfig::updateSettings()
 int 
 CollectionConfig::databaseTypeCode( const QString& type ) const
 {
+    Q_UNUSED( type );
     // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
 //     int dbType = DbConnection::sqlite;
 //     if ( type == "MySQL")

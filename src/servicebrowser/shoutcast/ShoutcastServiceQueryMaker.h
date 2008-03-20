@@ -53,6 +53,7 @@ public:
     virtual QueryMaker* startTrackQuery();
     virtual QueryMaker* startGenreQuery();
 
+    using DynamicServiceQueryMaker::addMatch;
     virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
     //virtual QueryMaker* addMatch ( const Meta::DataPtr &data );
 

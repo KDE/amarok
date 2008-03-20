@@ -192,7 +192,7 @@ void Cloud::addText( QString text, int weight )
     //item->setParentItem( this );
     //item->connect ( item, SIGNAL( clicked( QString ) ), receiver, slot );
     QFont font = item->font();
-    font.setPointSize( weight * 1.5 + 10 );
+    font.setPointSize( (int)weight * 1.5 + 10 );
     item->setFont( font );
 
     QRectF itemRect = item->boundingRect();
@@ -242,8 +242,9 @@ void Cloud::adjustCurrentLinePos()
         //currentItem->setTextWidth ( -1 ); //do not break lines, ever!
         //currentItem->adjustSize();
         currentItemRect = currentItem->boundingRect();
-        totalWidth += currentItemRect.width();
-        if ( currentItemRect.height() > maxHeight ) maxHeight = currentItemRect.height();
+        totalWidth += (int)currentItemRect.width();
+        if ( currentItemRect.height() > maxHeight )
+            maxHeight = (int)currentItemRect.height();
     }
 
     if ( m_maxHeightInFirstLine < 1.0 )
@@ -264,7 +265,7 @@ void Cloud::adjustCurrentLinePos()
     while (!m_currentLineItems.isEmpty()) {
         currentItem = m_currentLineItems.takeFirst();
         currentItemRect = currentItem->boundingRect();
-        offsetY = ( (maxHeight - currentItemRect.height()) / 2 );
+        offsetY = (int)( (maxHeight - currentItemRect.height()) / 2 );
 
         //until we get a scroll area, don't print beyound the bottom of the rect
         if ( m_runningY + offsetY + m_maxHeightInFirstLine + currentItemRect.height() >  m_theme->elementRect( "cloud" ).bottomLeft().y() ) {
@@ -272,7 +273,7 @@ void Cloud::adjustCurrentLinePos()
             delete currentItem;
         } else {
             currentItem->setPos( QPointF( currentX + offsetX, m_runningY + offsetY + m_maxHeightInFirstLine ) );
-            currentX += currentItemRect.width();
+            currentX += (int)currentItemRect.width();
         }
     }
 
@@ -299,6 +300,7 @@ CloudTextItem::CloudTextItem(QString text, QGraphicsItem * parent, QGraphicsScen
 
 void CloudTextItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
+    Q_UNUSED( event );
    // debug() << "CloudTextItem::hoverEnterEvent!! " << endl;
     m_timeLine->stop();
     m_timeLine->setCurrentTime ( 0 );
@@ -311,7 +313,7 @@ void CloudTextItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 
 void CloudTextItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
-
+    Q_UNUSED( event );
    //setDefaultTextColor( QColor( 0, 0, 0 ) );
 
 
@@ -324,7 +326,7 @@ void CloudTextItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 
 void CloudTextItem::colorFadeSlot( int step ) {
 
-    int colorValue = 255 - step * 8.5;
+    int colorValue = static_cast<int>(255 - step * 8.5);
     if ( step == 100 ) colorValue = 0;
 
 
@@ -334,6 +336,7 @@ void CloudTextItem::colorFadeSlot( int step ) {
 
 void CloudTextItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
+    Q_UNUSED( event )
     debug() << "Mouse clicked!! " << endl;
     emit( clicked( toPlainText() ) );
 }

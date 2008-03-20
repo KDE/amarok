@@ -67,7 +67,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     setPalette( p );
 
     KHBox *hbox;
-    QLabel *label;
+//     QLabel *label;
     QLabel *alabel;
 
     m_layout = new QVBoxLayout( this );
@@ -88,7 +88,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     m_countdownFrame->setFixedWidth( fontMetrics().width( "X" ) );
     m_countdownFrame->setFrameStyle( QFrame::Plain | QFrame::Box );
     QPalette pal;
-    pal.setColor( m_countdownFrame->foregroundRole(), p.dark() );
+    pal.setColor( m_countdownFrame->foregroundRole(), p.dark().color() );
     m_countdownFrame->setPalette( pal );
 
 /*  label = new QLabel( this );
@@ -338,7 +338,8 @@ void PopupMessage::slideMask()
 {
 
     int anchorY = m_anchor->mapToGlobal( m_anchor->pos() ).y();
-    int ourY = m_anchor->mapToGlobal( pos() ).y();
+    // This is no longer used, saving it in case we need again..
+//     int ourY = m_anchor->mapToGlobal( pos() ).y();
     
     switch( m_stage )
     {
@@ -412,7 +413,7 @@ void KDE::CountdownFrame::paintEvent( QPaintEvent * e )
 
     QPalette p = palette();
     p.setCurrentColorGroup( QPalette::Active );
-    QPainter( this ).fillRect( 2, m_filled * height(), width() - 4, height() - m_filled * height(), p.highlight() );
+    QPainter( this ).fillRect( 2, (int)m_filled * height(), width() - 4, static_cast<int>(height() - m_filled * height()), p.highlight() );
 }
 
 #include "popupMessage.moc"

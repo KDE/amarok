@@ -370,7 +370,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
         queryMakers.append( qm );
     }
     QueryMaker *qm = new MetaQueryBuilder( queryMakers );
-    OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( qm ); //the dialog will show itself automatically as soon as it is ready
+    (void)new OrganizeCollectionDialog( qm ); //the dialog will show itself automatically as soon as it is ready
 }
 
 void
@@ -411,7 +411,7 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
         queryMakers.append( qm );
     }
     QueryMaker *qm = new MetaQueryBuilder( queryMakers );
-    TagDialog *dialog = new TagDialog( qm ); //the dialog will show itself automatically as soon as it is ready
+    (void)new TagDialog( qm ); //the dialog will show itself automatically as soon as it is ready
 }
 
 void CollectionTreeView::slotFilterNow()

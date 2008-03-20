@@ -62,7 +62,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
         virtual KConfigGroup config() = 0;
         virtual KPluginInfo info() = 0;
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const { return false; }
+        virtual bool possiblyContainsTrack( const KUrl &url ) const { Q_UNUSED( url ); return false; }
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
         void clearActiveServices();

@@ -69,15 +69,18 @@ PrettyPopupMenu::generateSidePixmap()
 QRect
 PrettyPopupMenu::sideImageRect() const
 {
-    return QStyle::visualRect( layoutDirection(), rect(), QRect( frameWidth(), frameWidth(),
-                s_sidePixmap.width(), height() - 2*frameWidth() ) );
+    QStyleOptionMenuItem *item;
+    item->initFrom( this );
+    int framewidth = style()->pixelMetric(QStyle::PM_MenuPanelWidth, item, this);
+    return QStyle::visualRect( layoutDirection(), rect(), QRect( framewidth, framewidth,
+                s_sidePixmap.width(), height() - 2*framewidth ) );
 }
 
 QColor
 PrettyPopupMenu::calcPixmapColor()
 {
     KConfigGroup cg = KGlobal::config()->group("WM");
-    QColor color = QApplication::palette().active().highlight();
+    QColor color = QApplication::palette().color( QPalette::Active, QPalette::Highlight);
 //     QColor activeTitle = QApplication::palette().active().background();
 //     QColor inactiveTitle = QApplication::palette().inactive().background();
     QColor activeTitle = cg.readEntry("activeBackground", color);
@@ -85,9 +88,9 @@ PrettyPopupMenu::calcPixmapColor()
 
     // figure out which color is most suitable for recoloring to
     int h1, s1, v1, h2, s2, v2, h3, s3, v3;
-    activeTitle.hsv(&h1, &s1, &v1);
-    inactiveTitle.hsv(&h2, &s2, &v2);
-    QApplication::palette().active().background().hsv(&h3, &s3, &v3);
+    activeTitle.getHsv(&h1, &s1, &v1);
+    inactiveTitle.getHsv(&h2, &s2, &v2);
+    QApplication::palette().color( QPalette::Active, QPalette::Background ).getHsv(&h3, &s3, &v3);
 
     if ( (qAbs(h1-h3)+qAbs(s1-s3)+qAbs(v1-v3) < qAbs(h2-h3)+qAbs(s2-s3)+qAbs(v2-v3)) &&
             ((qAbs(h1-h3)+qAbs(s1-s3)+qAbs(v1-v3) < 32) || (s1 < 32)) && (s2 > s1))
@@ -97,7 +100,7 @@ PrettyPopupMenu::calcPixmapColor()
 
     // limit max/min brightness
     int r, g, b;
-    color.rgb(&r, &g, &b);
+    color.getRgb(&r, &g, &b);
     int gray = qGray(r, g, b);
     if (gray > 180) {
         r = (r - (gray - 180) < 0 ? 0 : r - (gray - 180));
@@ -164,7 +167,9 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
 
     QStyleOptionFrame frOpt;
     frOpt.init(this);
-    frOpt.lineWidth = frameWidth();
+    QStyleOptionMenuItem *item;
+    item->initFrom( this );
+    frOpt.lineWidth = style()->pixelMetric(QStyle::PM_MenuPanelWidth, item, this);
     frOpt.midLineWidth = 0;
     style()->drawPrimitive( QStyle::PE_FrameMenu, &frOpt, &p, this);
 
@@ -174,7 +179,7 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
     {
         QRect drawRect = r.intersect( e->rect() ).intersect( sideImageRect() );
         QRect pixRect = drawRect;
-        pixRect.moveBy( -r.left(), -r.top() );
+        pixRect.translate( -r.left(), -r.top() );
         p.drawImage( drawRect.topLeft(), s_sidePixmap, pixRect );
     }
 

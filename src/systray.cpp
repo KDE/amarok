@@ -70,8 +70,8 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     contextMenu()->addAction( ac->action( "next"       ) );
 
     baseIcon     = KSystemTrayIcon::loadIcon( "amarok" );
-    playOverlay  = Amarok::loadOverlay( "play" );
-    pauseOverlay = Amarok::loadOverlay( "pause" );
+    playOverlay  = QPixmap::fromImage( Amarok::loadOverlay( "play" ) );
+    pauseOverlay = QPixmap::fromImage( Amarok::loadOverlay( "pause" ) );
     overlayVisible = false;
 
     //paintIcon();
@@ -192,6 +192,7 @@ Amarok::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldSt
         break;
 
     case Engine::Empty:
+    case Engine::Idle:
         overlayVisible = false;
         paintIcon( -1, true ); // repaint the icon
                                // fall through to default:
@@ -324,8 +325,6 @@ void Amarok::TrayIcon::setupMenu()
     foreach( QAction * action, m_extraActions ) {
         contextMenu()->removeAction( action );
     }
-
-    KActionCollection* const ac = Amarok::actionCollection();
 
     if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
         Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();

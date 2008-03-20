@@ -473,7 +473,7 @@ CoverFetcher::attemptAnotherFetch()
                 : QDialog( parent )
         {
             setupUi( this );
-            setCaption( i18n( "Amazon Query Editor" ) );
+            setWindowTitle( i18n( "Amazon Query Editor" ) );
             textLabel->setText( text );
             SearchLineEdit->setText( keyword );
 

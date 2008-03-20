@@ -38,7 +38,7 @@ namespace Playlist
             void focusOutEvent(QFocusEvent *event);
         private:
             QString m_fullText;
-            int m_width;
+            qreal m_width;
             static QFontMetricsF* s_fm;
     };
 }

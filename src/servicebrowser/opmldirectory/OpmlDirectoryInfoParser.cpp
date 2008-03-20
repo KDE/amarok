@@ -41,12 +41,12 @@ OpmlDirectoryInfoParser::~OpmlDirectoryInfoParser()
 
 void OpmlDirectoryInfoParser::getInfo(ArtistPtr artist)
 {
-
+    AMAROK_NOTIMPLEMENTED
 }
 
 void OpmlDirectoryInfoParser::getInfo(AlbumPtr album)
 {
-
+    AMAROK_NOTIMPLEMENTED
 }
 
 void OpmlDirectoryInfoParser::getInfo(TrackPtr track)

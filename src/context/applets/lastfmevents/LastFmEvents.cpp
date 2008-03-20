@@ -94,8 +94,8 @@ void LastFmEvents::init()
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
 
 //     debug() << "setting size to " << m_width;
-    m_theme->resize( m_width, m_width );
-    setContentSize( m_width, m_width );
+    m_theme->resize( (int)m_width, (int)m_width );
+    setContentSize( (int)m_width, (int)m_width );
 
 }
 
