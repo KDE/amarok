@@ -34,15 +34,16 @@
 #include <QImage>
 #include <QMenu>
 #include <QPainter>
+#include <QPixmapCache>
 #include <QStyle>
 #include <QStyleOptionComplex>
 #include <QTimer>
-#include <QPixmapCache>
+#include <QSvgRenderer>
 
-#include <kicon.h>
-#include <klocale.h>
-#include <kmenu.h>
-#include <kstandarddirs.h>
+#include <KIcon>
+#include <KLocale>
+#include <KMenu>
+#include <KStandardDirs>
 
 Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
         : QSlider( orientation, parent )
@@ -51,9 +52,6 @@ Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
         , m_prevValue( 0 )
 {
     setRange( 0, max );
-
-
-    
 }
 
 void
@@ -186,10 +184,7 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
         debug() << "svg is kaputski";
 
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
-    
 }
-
-
 
 void
 Amarok::VolumeSlider::slotAnimTimer() //SLOT
@@ -334,7 +329,6 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
         QPixmapCache::insert(key, icon);
     }
-
     
 
     p.drawPixmap( 0, ( height() - m_iconHeight ) / 2, icon );

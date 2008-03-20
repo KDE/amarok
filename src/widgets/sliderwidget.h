@@ -22,10 +22,10 @@
 
 #include <QPixmap>
 #include <QSlider>
-#include <QSvgRenderer>
 #include <QVector>
 
 class QPalette;
+class QSvgRenderer;
 class QTimer;
 
 namespace Amarok
