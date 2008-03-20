@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2004 Frederik Holljen <fh@ez.no>                        *
  *             (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
- *             (C) 2004, 2005 Mark Kretschmann                             *
+ *             (C) 2004, 2005 Mark Kretschmann <kretschmann@kde.org>       *
  *             (C) 2006, 2008 Ian Monroe <ian@monroe.nu>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -42,8 +42,6 @@
 #include <QFile>
 #include <QTimer>
 
-//#include <cstdlib>
-
 
 EngineController::ExtensionCache EngineController::s_extensionCache;
 
@@ -56,7 +54,6 @@ EngineController::instance()
 
     return &Instance;
 }
-
 
 EngineController::EngineController()
     : m_media( 0 )
@@ -84,7 +81,8 @@ EngineController::~EngineController()
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
 
-bool EngineController::canDecode( const KUrl &url ) //static
+bool
+EngineController::canDecode( const KUrl &url ) //static
 {
    //NOTE this function must be thread-safe
 
@@ -158,10 +156,12 @@ EngineController::installDistroCodec()
             }
         }
     }
-return false;
+
+    return false;
 }
 
-void EngineController::restoreSession()
+void
+EngineController::restoreSession()
 {
     //here we restore the session
     //however, do note, this is always done, KDE session management is not involved
@@ -175,8 +175,8 @@ void EngineController::restoreSession()
     }
 }
 
-
-void EngineController::endSession()
+void
+EngineController::endSession()
 {
     //only update song stats, when we're not going to resume it
     if ( !AmarokConfig::resumePlayback() && m_currentTrack )
@@ -189,8 +189,8 @@ void EngineController::endSession()
 // PUBLIC SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-
-void EngineController::play() //SLOT
+void
+EngineController::play() //SLOT
 {
     if ( m_media->state() == Phonon::PausedState )
     {
@@ -199,7 +199,8 @@ void EngineController::play() //SLOT
     else emit orderCurrent();
 }
 
-void EngineController::play( const Meta::TrackPtr& track, uint offset )
+void
+EngineController::play( const Meta::TrackPtr& track, uint offset )
 {
     DEBUG_BLOCK
 
@@ -219,24 +220,27 @@ void EngineController::play( const Meta::TrackPtr& track, uint offset )
     }
 }
 
-void EngineController::playUrl( const KUrl &url, uint offset )
+void
+EngineController::playUrl( const KUrl &url, uint offset )
 {
     m_stream = ( url.protocol() == "http" || url.protocol() == "rtsp" );
     m_media->setCurrentSource( url );
     m_media->pause();
     m_media->seek( offset );
     m_media->play();
+
     if( m_media->state() != Phonon::ErrorState )
         newTrackPlaying();
 }
 
-void EngineController::pause() //SLOT
+void
+EngineController::pause() //SLOT
 {
     m_media->pause();
 }
 
-
-void EngineController::stop() //SLOT
+void
+EngineController::stop() //SLOT
 {
     // will need to get a new instance of multi if played again
     delete m_multi;
@@ -252,9 +256,8 @@ void EngineController::stop() //SLOT
     m_media->stop();
 }
 
-
-
-void EngineController::playPause() //SLOT
+void
+EngineController::playPause() //SLOT
 {
     //this is used by the TrayIcon, PlayPauseAction and DCOP
 
@@ -267,7 +270,8 @@ void EngineController::playPause() //SLOT
 }
 
 
-void EngineController::seek( qint64 ms ) //SLOT
+void
+EngineController::seek( qint64 ms ) //SLOT
 {
     if( m_media->isSeekable() )
     {
@@ -276,39 +280,40 @@ void EngineController::seek( qint64 ms ) //SLOT
     }
 }
 
-
-void EngineController::seekRelative( int ms ) //SLOT
+void
+EngineController::seekRelative( int ms ) //SLOT
 {
     qint64 newPos = m_media->currentTime() + ms;
     seek( newPos <= 0 ? 0 : newPos );
 }
 
-
-void EngineController::seekForward( int ms )
+void
+EngineController::seekForward( int ms )
 {
     seekRelative( ms );
 }
 
 
-void EngineController::seekBackward( int ms )
+void
+EngineController::seekBackward( int ms )
 {
     seekRelative( -ms );
 }
 
-
-int EngineController::increaseVolume( int ticks ) //SLOT
+int
+EngineController::increaseVolume( int ticks ) //SLOT
 {
     return setVolume( volume() + ticks );
 }
 
-
-int EngineController::decreaseVolume( int ticks ) //SLOT
+int
+EngineController::decreaseVolume( int ticks ) //SLOT
 {
     return setVolume( volume() - ticks );
 }
 
-
-int EngineController::setVolume( int percent ) //SLOT
+int
+EngineController::setVolume( int percent ) //SLOT
 {
     if( percent < 0 ) percent = 0;
     if( percent > 100 ) percent = 100;
@@ -319,12 +324,14 @@ int EngineController::setVolume( int percent ) //SLOT
     return percent;
 }
 
-int EngineController::volume() const
+int
+EngineController::volume() const
 {
     return static_cast<int>( m_audio->volume() * 100.0 );
 }
 
-void EngineController::mute() //SLOT
+void
+EngineController::mute() //SLOT
 {
     m_audio->setMuted( !m_audio->isMuted() );
 }
@@ -379,16 +386,19 @@ EngineController::getAudioCDContents(const QString &device, KUrl::List &urls)
 {
     return false;
 }
+
 bool 
 EngineController::isStream()
 {
     return m_stream;
 }
+//
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void EngineController::slotTrackEnded() //SLOT
+void
+EngineController::slotTrackEnded() //SLOT
 {
     DEBUG_BLOCK
 /*    if ( AmarokConfig::trackDelayLength() > 0 )
@@ -406,9 +416,9 @@ void EngineController::slotTrackEnded() //SLOT
 }
 
 
-void EngineController::slotStateChanged( Engine::State newState ) //SLOT
+void
+EngineController::slotStateChanged( Engine::State newState ) //SLOT
 {
-
     switch( newState )
     {
     case Engine::Empty:
@@ -429,7 +439,8 @@ void EngineController::slotStateChanged( Engine::State newState ) //SLOT
     stateChangedNotify( newState );
 }
 
-void EngineController::trackDone()
+void
+EngineController::trackDone()
 {
     emit trackFinished(); 
     if( m_multi )
@@ -438,7 +449,8 @@ void EngineController::trackDone()
         The::playlistModel()->next();
 }
 
-void EngineController::slotPlayableUrlFetched( const KUrl &url )
+void
+EngineController::slotPlayableUrlFetched( const KUrl &url )
 {
     if( url.isEmpty() )
     {
@@ -450,16 +462,20 @@ void EngineController::slotPlayableUrlFetched( const KUrl &url )
     }
 }
 
-qint64 EngineController::trackPosition() const
+qint64
+EngineController::trackPosition() const
 {
 //NOTE: there was a bunch of last.fm logic removed from here
 //pretty sure it's irrelevant, if not, look back to March 2008
     return m_media->currentTime();
 }
 
-EngineController* The::engineController()
+EngineController*
+The::engineController()
 {
     return EngineController::instance(); //port amarok to the The:: style...
 }
 
+
 #include "enginecontroller.moc"
+

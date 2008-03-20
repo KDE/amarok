@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2004 Frederik Holljen <fh@ez.no>                        *
  *             (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
- *             (C) 2004,5 Mark Kretschmann                                 *
+ *             (C) 2004,5 Mark Kretschmann <kretschmann@kde.org>           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -69,8 +69,8 @@ public:
     bool loaded() { return instance()->state() != Engine::Empty; }
     bool getAudioCDContents(const QString &device, KUrl::List &urls);
     bool isStream();
+
 public slots:
-    
     void play();
     void play( const Meta::TrackPtr&, uint offset = 0 );
     void pause();
@@ -103,10 +103,12 @@ protected:
 
     void playUrl( const KUrl &url, uint offset );
     void trackDone();
+
 private slots:
     void slotTrackEnded();
     void slotStateChanged(Engine::State);
     void slotPlayableUrlFetched(const KUrl&);
+
 private:
     static ExtensionCache s_extensionCache;
     Phonon::MediaObject *m_media;
