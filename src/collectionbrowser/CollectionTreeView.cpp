@@ -414,4 +414,9 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
     TagDialog *dialog = new TagDialog( qm ); //the dialog will show itself automatically as soon as it is ready
 }
 
+void CollectionTreeView::slotFilterNow()
+{
+    m_treeModel->slotFilter();
+}
+
 #include "CollectionTreeView.moc"
