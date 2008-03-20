@@ -34,7 +34,7 @@ class AmpacheServiceFactory: public ServiceFactory
     Q_OBJECT
 
     public:
-        AmpacheServiceFactory() {}
+        explicit AmpacheServiceFactory() {}
         virtual ~AmpacheServiceFactory() {}
 
         virtual void init();

@@ -50,7 +50,7 @@ class MediaDeviceConfig : public KHBox
     Q_OBJECT
 
     public:
-        MediaDeviceConfig( QString id, QWidget *parent=0, const char *name=0 );
+        explicit MediaDeviceConfig( QString id, QWidget *parent=0, const char *name=0 );
         ~MediaDeviceConfig();
         QString oldPlugin() { return m_oldPlugin; }
         void setOldPlugin( const QString &oldPlugin ) { m_oldPlugin = oldPlugin; }

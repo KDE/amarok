@@ -48,7 +48,7 @@ class CloudTextItem : public QGraphicsTextItem
 
 Q_OBJECT
 public:
-    CloudTextItem(QString text, QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+    explicit CloudTextItem(QString text, QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
 
 protected:
     virtual void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );

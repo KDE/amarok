@@ -35,7 +35,7 @@ class Mp3tunesSettingsModule : public KCModule
 {
     Q_OBJECT
 public:
-    Mp3tunesSettingsModule( QWidget *parent = 0, const QVariantList &args = QVariantList() );
+    explicit Mp3tunesSettingsModule( QWidget *parent = 0, const QVariantList &args = QVariantList() );
 
     ~Mp3tunesSettingsModule();
 

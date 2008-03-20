@@ -54,7 +54,7 @@ class Mp3tunesService : public ServiceBase
 
 Q_OBJECT
 public:
-    Mp3tunesService( const QString &name, const QString &email = QString(), const QString &password = QString() );
+    explicit Mp3tunesService( const QString &name, const QString &email = QString(), const QString &password = QString() );
 
     ~Mp3tunesService();
 

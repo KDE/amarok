@@ -49,7 +49,7 @@ namespace TagLib {
        * \note In the current implementation, both \a readProperties and
        * \a propertiesStyle are ignored.
        */
-      File(const char *file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
+      explicit File(const char *file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!
        * Destroys this instance of the File.

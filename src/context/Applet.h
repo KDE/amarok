@@ -29,7 +29,7 @@ class Applet : public Plasma::Applet {
 
     public:
 
-        Applet( QObject* parent, const QVariantList& args = QVariantList() );
+        explicit Applet( QObject* parent, const QVariantList& args = QVariantList() );
 
         //helper functions
         QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );

@@ -24,7 +24,7 @@ namespace Context
 class AMAROK_EXPORT Svg : public Plasma::Svg
 {
 public:
-    Svg( const QString& imagePath, QObject* parent = 0 );
+    explicit Svg( const QString& imagePath, QObject* parent = 0 );
     
     // our elementRect takes care of the transform matrix
     QRect elementRect( const QString& elementId );

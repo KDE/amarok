@@ -28,7 +28,7 @@ class AMAROK_EXPORT TextWidget : public QGraphicsTextItem,
 {
         
 public:
-TextWidget( QGraphicsItem* parent = 0, QGraphicsScene* scene = 0 );
+    explicit TextWidget( QGraphicsItem* parent = 0, QGraphicsScene* scene = 0 );
     
     void setText( const QString text );
     

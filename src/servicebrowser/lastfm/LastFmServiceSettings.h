@@ -25,7 +25,7 @@ class LastFmServiceSettings : public KCModule
     Q_OBJECT
 
 public:
-    LastFmServiceSettings( QWidget *parent = 0, const QVariantList &args = QVariantList() );
+    explicit LastFmServiceSettings( QWidget *parent = 0, const QVariantList &args = QVariantList() );
 
     virtual ~LastFmServiceSettings();
 

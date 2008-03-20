@@ -28,9 +28,9 @@ class AMAROK_EXPORT Containment : public Plasma::Containment
 {
     Q_OBJECT
 public:
-    Containment(QGraphicsItem* parent = 0,
-                const QString& serviceId = QString(),
-                uint containmentId = 0);
+    explicit Containment(QGraphicsItem* parent = 0,
+                         const QString& serviceId = QString(),
+                         uint containmentId = 0);
     
     Containment(QObject* parent, const QVariantList& args);
     

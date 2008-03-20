@@ -75,7 +75,7 @@ Q_OBJECT
 class PodcastView : public QTreeView
 {
     public:
-        PodcastView( PodcastModel *model, QWidget *parent = 0 );
+        explicit PodcastView( PodcastModel *model, QWidget *parent = 0 );
         ~PodcastView();
 
         void contextMenuEvent( QContextMenuEvent* event );
