@@ -9,14 +9,16 @@ VERSION 2.0
     * Magnatune store: Support purchases using Magnatune gift cards
 
   CHANGES:
+	* The context view was reimplemented with Plasma technology from KDE.
+	* The audio engine system was removed. Amarok now uses Phonon from KDE.
     * Debugging output is now enabled with a runtime option (--debug). It's no
       longer necessary to rebuild Amarok.
-    * Remove the amarok loader application.
+    * Removed the amarok loader application.
     * The custom color theme options have been removed.
     * The player window (small XMMS like thingie) was removed.
     * DCOP interface replaced with D-Bus.
     * Dependencies lifted to KDE 4.1 and Qt 4.4. Refer to the README.
-    * Improved the startup time
+    * Improved the startup time.
 
   BUGFIXES:
 
