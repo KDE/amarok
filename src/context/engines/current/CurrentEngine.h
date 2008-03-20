@@ -42,31 +42,31 @@ class CurrentEngine : public Context::DataEngine,
                       public Meta::Observer
 {
     Q_OBJECT
-        
+
     Q_PROPERTY( int coverWidth READ coverWidth WRITE setCoverWidth  )
-    
+
 public:
 
     CurrentEngine( QObject* parent, const QList<QVariant>& args );
     virtual ~CurrentEngine();
-    
+
     QStringList sources() const;
     void message( const Context::ContextState& state );
-    
+
     int coverWidth() { return m_coverWidth; }
     void setCoverWidth( const int width ) { m_coverWidth = width; }
-    
+
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     void metadataChanged( Meta::Album* album );
     void metadataChanged( Meta::Track *track );
-    
+
 protected:
     bool sourceRequested( const QString& name );
-    
+
 private:
     void update();
-    
+
     int m_coverWidth;
     QStringList m_sources;
     bool m_requested;

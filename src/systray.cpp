@@ -15,6 +15,7 @@
 #include "enginecontroller.h"
 #include "playlist/PlaylistModel.h"
 #include "meta/Meta.h"
+#include "meta/MetaConstants.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "TheInstances.h"
 
@@ -53,7 +54,7 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         , overlayVisible( false )
 {
     DEBUG_BLOCK
-    
+
     PERF_LOG( "Beginning TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();
 
@@ -81,21 +82,17 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 bool
 Amarok::TrayIcon::event( QEvent *e )
 {
-    DEBUG_BLOCK
-        debug() << "Event type: " << e->type();
     switch( e->type() )
     {
     case QEvent::DragEnter:
-        debug() << "QEvent::DragEnter";
         #define e static_cast<QDragEnterEvent*>(e)
         {
             e->setAccepted( KUrl::List::canDecode( e->mimeData() ) );
             break;
         }
         #undef e
-        
+
     case QEvent::Drop:
-        debug() << "QEvent::Drop";
         #define e static_cast<QDropEvent*>(e)
         {
             KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
@@ -116,7 +113,6 @@ Amarok::TrayIcon::event( QEvent *e )
         #undef e
 
     case QEvent::Wheel:
-        debug() << "QEvent::Wheel";
         #define e static_cast<QWheelEvent*>(e)
         if( e->modifiers() == Qt::ControlModifier )
         {
@@ -132,13 +128,12 @@ Amarok::TrayIcon::event( QEvent *e )
         }
         else
             EngineController::instance()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
-        
+
         e->accept();
         #undef e
         break;
 
     case QEvent::Timer:
-        debug() << "QEvent::Timer";
         if( static_cast<QTimerEvent*>(e)->timerId() != blinkTimerID )
             return KSystemTrayIcon::event( e );
 
@@ -152,7 +147,6 @@ Amarok::TrayIcon::event( QEvent *e )
         break;
 
     case QEvent::MouseButtonPress:
-        debug() << "QEvent::MouseButtonPress";
         if( static_cast<QMouseEvent*>(e)->button() == Qt::MidButton )
         {
             EngineController::instance()->playPause();
@@ -163,7 +157,6 @@ Amarok::TrayIcon::event( QEvent *e )
         //else FALL THROUGH
 
     default:
-        debug() << "QEvent:: fall through";
         return KSystemTrayIcon::event( e );
     }
     return true;
@@ -172,7 +165,6 @@ Amarok::TrayIcon::event( QEvent *e )
 void
 Amarok::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
-    DEBUG_BLOCK
     // stop timer
     if ( blinkTimerID )
     {
@@ -203,23 +195,14 @@ Amarok::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldSt
         overlayVisible = false;
         paintIcon( -1, true ); // repaint the icon
                                // fall through to default:
-    //default:
-        //setLastFm( false );
     }
 }
 
 void
 Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
-    DEBUG_BLOCK
-    
     Q_UNUSED( trackChanged )
-    Q_UNUSED( newMetaData )
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
-    if( !track )
-        return;
-    trackLength = track->length() * 1000;
-    //setLastFm( track->type() == "stream/lastfm" ); //lets abstract this out....
+    trackLength = newMetaData.value( Meta::valLength ).toInt() * 1000;
 
     setupMenu();
 
@@ -334,64 +317,20 @@ Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
     #endif
 }
 
-
-//yuck... I really do not like this kind of service specific code in here...
-/*void
-Amarok::TrayIcon::setLastFm( bool lastFmActive )
-{
-    if( lastFmActive == m_lastFmMode ) return;
-
-    static int separatorId = 0;
-
-    KActionCollection* const ac = Amarok::actionCollection();
-    if( ac->action( "ban" ) == 0 ) return; //if the LastFm::Controller doesn't exist yet
-
-    if( lastFmActive )
-    {
-        contextMenu()->removeAction( ac->action( "play_pause" ) );
-        // items are inserted in reverse order!
-        contextMenu()->addAction( ac->action( "ban" ) );
-        contextMenu()->addAction( ac->action( "love" ) );
-        contextMenu()->addAction( ac->action( "skip" ) );
-        contextMenu()->addSeparator();
-
-        m_lastFmMode = true;
-    }
-    else
-    {
-
-        contextMenu()->addAction( ac->action( "play_pause" ) );
-        // items are inserted in reverse order!
-        contextMenu()->removeAction( ac->action( "ban" ) );
-        contextMenu()->removeAction( ac->action( "love" ) );
-        contextMenu()->removeAction( ac->action( "skip" ) );
-
-        //contextMenu()->removeSeparator();
-        m_lastFmMode = false;
-   }
-}*/
-
 void Amarok::TrayIcon::setupMenu()
 {
-    DEBUG_BLOCK
-
     Meta::TrackPtr track = EngineController::instance()->currentTrack();
-    
+
     foreach( QAction * action, m_extraActions ) {
         contextMenu()->removeAction( action );
     }
 
     KActionCollection* const ac = Amarok::actionCollection();
-    
-    debug() << "1";
+
     if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
-        debug() << "2";
         Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-            debug() << "3";
-
-
             //remove the two bottom itmes, so we can push them to the button again
             contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
             contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
@@ -406,7 +345,6 @@ void Amarok::TrayIcon::setupMenu()
                 contextMenu()->addAction( action );
             m_extraActions.append( contextMenu()->addSeparator() );
 
-            
             //readd
             contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
             contextMenu()->addAction( actionCollection()->action( "file_quit" ) );

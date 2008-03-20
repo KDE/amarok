@@ -31,7 +31,8 @@ class CurrentTrackActionsCapabilityImpl : public Meta::CurrentTrackActionsCapabi
     public:
         CurrentTrackActionsCapabilityImpl( LastFm::Track *track )
             : Meta::CurrentTrackActionsCapability()
-            , m_track( track ) { DEBUG_BLOCK }
+            , m_track( track )
+            {}
 
         virtual ~CurrentTrackActionsCapabilityImpl() {};
 

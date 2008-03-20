@@ -72,7 +72,6 @@ ContextStatusBar::engineStateChanged( Engine::State state, Engine::State /*oldSt
         break;
 
     case Engine::Playing:
-        DEBUG_LINE_INFO
         resetMainText(); // if we were paused, this is necessary
         break;
 
@@ -85,10 +84,10 @@ void
 ContextStatusBar::engineNewTrackPlaying()
 {
     Meta::TrackPtr track = EngineController::instance()->currentTrack();
-    
+
     if( !track )
         return;
-    
+
     QString title       = Qt::escape( track->name() );
     QString prettyTitle = Qt::escape( track->prettyName() );
     QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
@@ -122,7 +121,7 @@ ContextStatusBar::engineNewTrackPlaying()
 
     // check if we have any source info:
     hideMainTextIcon();
-    
+
     Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
     if( sic )
     {
@@ -136,18 +135,13 @@ ContextStatusBar::engineNewTrackPlaying()
         delete sic;
 
     }
-    
+
     // don't show '-' or '?'
     if( length.length() > 1 ) {
         title += " (";
         title += length;
         title += ')';
     }
-
-
-
-
-    
 
     setMainText( i18n( "Playing: %1", title ) );
 }

@@ -145,7 +145,7 @@ void ContextView::engineStateChanged( Engine::State state, Engine::State oldStat
 
 void ContextView::showHome()
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     clear( m_curState );
     m_curState = Home;
     loadConfig();
@@ -154,7 +154,7 @@ void ContextView::showHome()
 
 void ContextView::showCurrentTrack()
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     clear( m_curState );
     m_curState = Current;
     loadConfig();
@@ -164,7 +164,7 @@ void ContextView::showCurrentTrack()
 // loads applets onto the ContextScene from saved data, using m_curState
 void ContextView::loadConfig()
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     QString cur = "amarok_";
     if( m_curState == Home )
         cur += QString( "home" );
@@ -259,7 +259,7 @@ void ContextView::createContainment()
             (  contextScene()->addContainment( "context" ) );
     }
 }
-       
+
 } // Context namespace
 
 #include "ContextView.moc"

@@ -137,11 +137,11 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
     m_album->setFont( shrinkTextSizeToFit( album, m_theme->elementRect( "album" ) ) );
     m_album->setText( truncateTextToFit( album, m_album->font(), m_theme->elementRect( "album" ) ) );
-    
+
     m_score->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "score" ) ) );
     m_numPlayed->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayed" ) ) );
     m_playedLast->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlast" ) ) );
-    
+
     m_titleLabel->setFont( m_title->font() );
     m_artistLabel->setFont( m_artist->font() );
     m_albumLabel->setFont( m_album->font() );
@@ -151,22 +151,22 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_scoreLabel->resetTransform ();
     m_numPlayedLabel->resetTransform ();
     m_playedLastLabel->resetTransform ();
-    
+
     float currentHeight = m_scoreLabel->boundingRect().height();
     float desiredHeight = m_theme->elementRect( "scorelabel" ).height();
 
     float scaleFactor = desiredHeight / currentHeight;
     //float scaleFactor = currentHeight / desiredHeight;
-    
-    debug() << "scale factor: " << scaleFactor;
-    
+
+//     debug() << "scale factor: " << scaleFactor;
+
     m_scoreLabel->scale( scaleFactor, scaleFactor );
     m_numPlayedLabel->scale( scaleFactor, scaleFactor );
     m_playedLastLabel->scale( scaleFactor, scaleFactor );
 
     resizeCover(m_bigCover);
 
-    debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << m_theme->elementRect( "albumart" ).size().width();
+//     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << m_theme->elementRect( "albumart" ).size().width();
 
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 
@@ -179,7 +179,7 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     if( data.size() == 0 ) return;
 
     m_currentInfo = data[ "current" ].toMap();
-    kDebug() << "got data from engine: " << m_currentInfo;
+//     kDebug() << "got data from engine: " << m_currentInfo;
     m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), m_theme->elementRect( "track" ) ) );
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), m_theme->elementRect( "artist" ) ) );
@@ -217,12 +217,12 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 {
     Q_UNUSED( option );
 
-    debug() << "painting currenttrack applet in:" << contentsRect;
+//     debug() << "painting currenttrack applet in:" << contentsRect;
 
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
     if ( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) ) {
-        debug() << "Too little room to paint, hiding all children ( making myself invisible but still painted )!";
+//         debug() << "Too little room to paint, hiding all children ( making myself invisible but still painted )!";
         foreach ( QGraphicsItem * childItem, QGraphicsItem::children() ) {
             childItem->hide();
         }
@@ -272,7 +272,7 @@ bool CurrentTrack::resizeCover(QPixmap cover){
     {
         QSize rectSize = m_theme->elementRect( "albumart" ).size();
         QPointF rectPos = m_theme->elementRect( "albumart" ).topLeft();
-        debug() << "getting album rect:" <<  rectSize;
+//         debug() << "getting album rect:" <<  rectSize;
         int size = qMin( rectSize.width(), rectSize.height() );
         qreal pixmapRatio = (qreal)cover.width()/size;
 

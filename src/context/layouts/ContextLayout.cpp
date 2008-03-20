@@ -43,7 +43,6 @@ public:
     Private() : columnWidth( -1 )
      {}
 
-    
     // even out columns. this checks if any one column can be made shorter by
     // moving the last applet to another column
     void balanceColumns()
@@ -115,16 +114,16 @@ int ContextLayout::count() const
     int total = 0;
     for( int i = 0; i < d->columns.count(); i++ )
         total += d->columns[ i ]->count();
-    
+
     return total;
 }
 
 void ContextLayout::addItem(LayoutItem* item)
 {
-    kDebug() << "Add item";
+//     kDebug() << "Add item";
     if( d->columns.size() == 0 )
         d->columns << new VerticalLayout( this );
-    
+
     int smallestColumn = 0, min = (int)d->columns[ 0 ]->sizeHint().height();
     for( int i = 1; i < d->columns.size(); i++ ) // find shortest column to put
     {                                           // the applet in
@@ -133,7 +132,7 @@ void ContextLayout::addItem(LayoutItem* item)
             smallestColumn = i;
     }
 //     kDebug() << "smallest column is" << smallestColumn << "th (" << min << ")" << "of" << d->columns.size();
-    
+
 //     kDebug() << "found" << d->columns.size() << " column, adding applet to column:" << smallestColumn;
     d->columns[ smallestColumn ]->addItem( item );
     if (animator()) {
@@ -146,8 +145,8 @@ void ContextLayout::addItem(LayoutItem* item)
 
 void ContextLayout::removeItem(LayoutItem* item)
 {
-    kDebug() << "Remove item...";
-    
+//     kDebug() << "Remove item...";
+
     if(!item) {
         return;
     }
@@ -164,8 +163,8 @@ void ContextLayout::removeItem(LayoutItem* item)
         if( d->columns[ i ]->indexOf( item ) != 0 )
             d->columns[ i ]->removeItem( item );
     }
-    
 }
+
 int ContextLayout::indexOf(LayoutItem* item) const
 {
     int count = 0;
@@ -254,13 +253,13 @@ void ContextLayout::relayout()
 
         
         for( int i = d->columns.size(); i < numColumns; i++ ) {
-            kDebug() << "adding collumn!";
+//             kDebug() << "adding collumn!";
             VerticalLayout * newColumn = new VerticalLayout( 0 );
             d->columns << newColumn;
-            kDebug() << "1";
+//             kDebug() << "1";
             //addItem( newColumn );
             newColumn->setManagingLayout( this );
-            kDebug() << "2";
+//             kDebug() << "2";
         }
         
     } else if( numColumns < d->columns.size() ) // view was shrunk
@@ -298,9 +297,9 @@ void ContextLayout::relayout()
         //kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
         //kDebug() << ", d->columns[ i ]->sizeHint(): " << d->columns[ i ]->sizeHint();
         //kDebug() << ", d->columns[ i ]->sizeHint().height(): " << d->columns[ i ]->sizeHint().height();
-        int height1 = d->columns[ i ]->sizeHint().height();
-        int height2 = rect.height();
-        int maxHeight = qMax( height1, height2 );
+        qreal height1 = d->columns[ i ]->sizeHint().height();
+        qreal height2 = rect.height();
+        qreal maxHeight = qMax( height1, height2 );
         QSizeF size( columnWidth, maxHeight );
         d->columns[ i ]->setGeometry( QRectF( pos, size ) );
     }

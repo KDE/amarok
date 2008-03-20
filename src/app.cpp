@@ -792,7 +792,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
 
 void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool /*trackChanged*/ )
 {
-    DEBUG_BLOCK
+    Q_UNUSED( newMetaData );
     Meta::TrackPtr currentTrack = EngineController::instance()->currentTrack();
     Amarok::OSD::instance()->show( currentTrack );
     if ( !currentTrack->prettyName().isEmpty() )

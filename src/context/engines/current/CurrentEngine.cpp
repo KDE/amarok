@@ -33,7 +33,6 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     , m_requested( true )
 {
     Q_UNUSED( args )
-    DEBUG_BLOCK
     m_sources = QStringList();
     m_sources << "current";
 }
@@ -68,7 +67,6 @@ bool CurrentEngine::sourceRequested( const QString& name )
 
 void CurrentEngine::message( const ContextState& state )
 {
-    DEBUG_BLOCK
     if( state == Current && m_requested )
     {
         if( m_currentTrack )
@@ -85,21 +83,18 @@ void CurrentEngine::message( const ContextState& state )
 
 void CurrentEngine::metadataChanged( Meta::Album* album )
 {
-    DEBUG_BLOCK
     setData( "current",  "albumart", album->image( coverWidth() ) );
 }
 
 void
 CurrentEngine::metadataChanged( Meta::Track *track )
 {
-    DEBUG_BLOCK
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     setData( "current", "current", trackInfo );
 }
 
 void CurrentEngine::update()
 {
-    DEBUG_BLOCK
     m_currentTrack = EngineController::instance()->currentTrack();
     if( !m_currentTrack )
         return;
@@ -135,7 +130,6 @@ void CurrentEngine::update()
     } else {
         setData( "current", "source_emblem",  QVariant( QPixmap() ) );
     }
-    
 }
 
 #include "CurrentEngine.moc"

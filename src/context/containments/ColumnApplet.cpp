@@ -62,7 +62,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     DEBUG_BLOCK
 
     setContainmentType( CustomContainment );
-    
+
     m_columns = new ContextLayout( this );
     m_columns->setColumnWidth( m_defaultColumnSize );
     m_columns->setSpacing( 3 );
@@ -80,7 +80,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     //if the background *has* to be there in time most of the time
     //connect( m_job, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( jobDone() ) );
     //ThreadWeaver::Weaver::instance()->enqueue( m_job );
-    
+
     //m_background = new Svg( m_tintedSvg.fileName(), this );
     m_logo = new Svg( "widgets/amarok-logo", this );
     m_width = 300; // TODO hardcoding for now, do we want this configurable?
@@ -106,16 +106,15 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 
 void ColumnApplet::saveToConfig( KConfig& conf )
 {
-    DEBUG_BLOCK
-    debug() << "number of m_columns:" << m_columns->count();
+//     debug() << "number of m_columns:" << m_columns->count();
     for( int i = 0; i < m_columns->count(); i++ )
     {
         Applet* applet = dynamic_cast< Applet* >( m_columns->itemAt( i ) );
-        debug() << "trying to save an applet";
+//         debug() << "trying to save an applet";
         if( applet != 0 )
         {
             KConfigGroup cg( &conf, QString::number( applet->id() ) );
-            debug() << "saving applet" << applet->name();
+//             debug() << "saving applet" << applet->name();
             cg.writeEntry( "plugin", applet->pluginName() );
         }
     }
@@ -124,13 +123,12 @@ void ColumnApplet::saveToConfig( KConfig& conf )
 
 void ColumnApplet::loadConfig( KConfig& conf )
 {
-    DEBUG_BLOCK
     foreach( const QString& group, conf.groupList() )
     {
         KConfigGroup cg( &conf, group );
         QString plugin = cg.readEntry( "plugin", QString() );
-        debug() << "loading applet:" << plugin
-            << QStringList() << group.toUInt();
+//         debug() << "loading applet:" << plugin
+//             << QStringList() << group.toUInt();
         if( plugin != QString() )
             Plasma::Containment::addApplet( plugin );
     }
@@ -173,9 +171,8 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
 
     painter->drawPixmap(0, 0, renderSvg( "context_background", rect.width(), rect.height() ) );
 
-    
     painter->restore();
-    
+
     QSize size = m_logo->size();
     QSize pos = rect.size() - size;
     qreal newHeight  = m_aspectRatio * m_width;
@@ -183,7 +180,6 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     painter->save();
     m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
     painter->restore();
-    
 }
 
 void ColumnApplet::appletRemoved( QObject* object ) // SLOT
@@ -260,7 +256,7 @@ Plasma::Applet* ColumnApplet::addApplet( Applet* applet )
     DEBUG_BLOCK
 //     debug() << "m_columns:" << m_columns;
      m_columns->addItem( applet );
-    
+
     recalculate();
     return applet;
 }
@@ -273,13 +269,11 @@ void ColumnApplet::recalculate()
 
 QList<QAction*> ColumnApplet::contextActions()
 {
-    DEBUG_BLOCK
     return *m_actions;
 }
 
 void ColumnApplet::launchAppletBrowser() // SLOT
 {
-    DEBUG_BLOCK
     m_appletBrowser->show();
 }
 /*

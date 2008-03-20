@@ -79,7 +79,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 void
 OSDWidget::show( const QString &text, QImage newImage )
 {
-    DEBUG_BLOCK
     m_volume = false;
     if ( !newImage.isNull() )
     {
@@ -133,7 +132,6 @@ OSDWidget::volChanged( unsigned char volume )
 void
 OSDWidget::show() //virtual
 {
-    DEBUG_BLOCK
     if ( !isEnabled() || m_text.isEmpty() )
         return;
 
@@ -576,7 +574,6 @@ Amarok::OSD::OSD(): OSDWidget( 0 )
 void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
-    DEBUG_BLOCK
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setOffset( AmarokConfig::osdYOffset() );
     QString text = "";

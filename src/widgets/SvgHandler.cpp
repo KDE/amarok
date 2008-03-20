@@ -63,7 +63,7 @@ QPixmap SvgHandler::renderSvg( QString keyname, int width, int height, QString e
     pixmap.fill( Qt::transparent );
 
     if ( !QPixmapCache::find(key, pixmap) ) {
-        debug() << QString("svg %1 not in cache...").arg( key );
+//         debug() << QString("svg %1 not in cache...").arg( key );
 
         QPainter pt( &pixmap );
         if ( !element.isEmpty() )
