@@ -373,9 +373,9 @@ EngineController::state() const
 
         case Phonon::ErrorState:
         // fallthrough
-        
+
         case Phonon::LoadingState:
-            state = m_currentTrack->isPlayable() ? Engine::Empty : Engine::Idle;
+            state = m_currentTrack && m_currentTrack->isPlayable() ? Engine::Empty : Engine::Idle;
     }
 
     return state;

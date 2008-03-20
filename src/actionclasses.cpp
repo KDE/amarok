@@ -222,12 +222,11 @@ PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldSt
         setText( i18n( "Pause" ) );
         break;
     case Engine::Empty:
+    case Engine::Idle:
         setChecked( false );
         setIcon( KIcon("media-playback-start-amarok") );
         setText( i18n( "Play" ) );
         break;
-    case Engine::Idle:
-        return;
     }
 }
 //////////////////////////////////////////////////////////////////////////////////////////
