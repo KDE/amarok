@@ -679,7 +679,7 @@ void MainWindow::addLastfmGlobaltag() //SLOT
 void MainWindow::playAudioCD() //SLOT
 {
     KUrl::List urls;
-    if( EngineController::engine()->getAudioCDContents(QString(), urls) )
+    if( The::engineController()->getAudioCDContents(QString(), urls) )
     {
         Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
         if( !tracks.isEmpty() )
@@ -740,7 +740,7 @@ void MainWindow::slotToggleToolbar() //SLOT
 
 void MainWindow::toolsMenuAboutToShow() //SLOT
 {
-    Amarok::actionCollection()->action( "equalizer" )->setEnabled( !EngineController::hasEngineProperty( "HasEqualizer" ) );
+    Amarok::actionCollection()->action( "equalizer" )->setEnabled( false ); //TODO phonon
 }
 
 

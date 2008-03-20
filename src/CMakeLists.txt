@@ -31,7 +31,6 @@ add_subdirectory( scripts )
 add_subdirectory( themes )
 add_subdirectory( vis )
 add_subdirectory( metadata )
-add_subdirectory( engine )
 add_subdirectory( mediadevice )
 add_subdirectory( collectionscanner )
 add_subdirectory( collection )
@@ -386,7 +385,6 @@ set(amaroklib_LIB_SRCS
     deviceconfiguredialog.cpp
     directorylist.cpp
 #    editfilterdialog.cpp
-    enginebase.cpp
     enginecontroller.cpp
     engineobserver.cpp
     equalizergraph.cpp

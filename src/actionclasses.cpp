@@ -199,7 +199,7 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac )
     setText(i18n( "Play/Pause" ));
     ac->addAction("play_pause", this);
     PERF_LOG( "PlayPauseAction: before engineStateChanged" )
-    engineStateChanged( EngineController::engine()->state() );
+    engineStateChanged( EngineController::instance()->state() );
     PERF_LOG( "PlayPauseAction: after engineStateChanged" )
 
     setShortcut( Qt::Key_Space );
@@ -508,7 +508,7 @@ StopMenu::slotAboutToShow()
 
     m_stopNow->setEnabled( Amarok::actionCollection()->action( "stop" )->isEnabled() );
 
-    m_stopAfterTrack->setEnabled( EngineController::engine()->loaded() );
+    m_stopAfterTrack->setEnabled( The::engineController()->loaded() );
     m_stopAfterTrack->setChecked( pl->stopAfterMode() == Playlist::StopAfterCurrent );
 
     //FIXME: REENABLE

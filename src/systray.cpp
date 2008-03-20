@@ -117,8 +117,8 @@ Amarok::TrayIcon::event( QEvent *e )
         if( e->modifiers() == Qt::ControlModifier )
         {
             const bool up = e->delta() > 0;
-            if( up ) EngineController::instance()->previous();
-            else     EngineController::instance()->next();
+            if( up ) The::playlistModel()->back();
+            else     The::playlistModel()->next();
             break;
         }
         else if( e->modifiers() == Qt::ShiftModifier )

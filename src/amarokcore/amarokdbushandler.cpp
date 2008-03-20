@@ -28,7 +28,6 @@
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
 #include "context/LyricsManager.h"
-#include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
 #include "MainWindow.h"
@@ -48,6 +47,8 @@
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <QByteArray>
+
+#include <Phonon/MediaObject>
 
 #include <kactioncollection.h>
 #include <kstartupinfo.h>
@@ -87,7 +88,7 @@ namespace Amarok
 
     bool DbusPlayerHandler::equalizerEnabled()
     {
-        if(EngineController::hasEngineProperty( "HasEqualizer" ))
+        if( false )
             return AmarokConfig::equalizerEnabled();
         else
             return false;
@@ -100,7 +101,7 @@ namespace Amarok
 
     bool DbusPlayerHandler::isPlaying()
     {
-        return EngineController::engine()->state() == Engine::Playing;
+        return The::engineController()->state() == Phonon::PlayingState;
     }
 
     bool DbusPlayerHandler::randomModeStatus()
@@ -120,7 +121,7 @@ namespace Amarok
 
     int DbusPlayerHandler::getVolume()
     {
-        return EngineController::engine() ->volume();
+        return EngineController::instance()->volume();
     }
 
     int DbusPlayerHandler::sampleRate()
@@ -144,7 +145,7 @@ namespace Amarok
     int  DbusPlayerHandler::status()
     {
         // <0 - error, 0 - stopped, 1 - paused, 2 - playing
-        switch( EngineController::engine()->state() )
+        switch( EngineController::instance()->state() )
         {
         case Engine::Playing:
             return 2;
@@ -314,9 +315,11 @@ namespace Amarok
 
     void DbusPlayerHandler::configEqualizer()
     {
-        if(EngineController::hasEngineProperty( "HasEqualizer" ))
+        if( false ) //TODO phonon
+        {
             EqualizerSetup::instance()->show();
             EqualizerSetup::instance()->raise();
+        }
     }
 
     void DbusPlayerHandler::enableOSD(bool enable)
@@ -368,7 +371,7 @@ namespace Amarok
 
     void DbusPlayerHandler::next()
     {
-        EngineController::instance() ->next();
+        The::playlistModel()->next();
     }
 
     void DbusPlayerHandler::pause()
@@ -388,7 +391,7 @@ namespace Amarok
 
     void DbusPlayerHandler::prev()
     {
-        EngineController::instance() ->previous();
+        The::playlistModel()->back();
     }
 
     void DbusPlayerHandler::queueForTransfer( KUrl url )
@@ -400,7 +403,7 @@ namespace Amarok
 
     void DbusPlayerHandler::seek(int s)
     {
-        if ( s > 0 && EngineController::engine()->state() != Engine::Empty )
+        if ( s > 0 && The::engineController()->state() != Engine::Empty )
             EngineController::instance()->seek( s * 1000 );
     }
 
@@ -412,7 +415,7 @@ namespace Amarok
     void DbusPlayerHandler::setEqualizer(int preamp, int band60, int band170, int band310,
         int band600, int band1k, int band3k, int band6k, int band12k, int band14k, int band16k)
     {
-        if( EngineController::hasEngineProperty( "HasEqualizer" ) ) {
+        if( false ) {
             bool instantiated = EqualizerSetup::isInstantiated();
             EqualizerSetup* eq = EqualizerSetup::instance();
 
@@ -428,7 +431,7 @@ namespace Amarok
 
     void DbusPlayerHandler::setEqualizerEnabled( bool active )
     {
-        EngineController::engine()->setEqualizerEnabled( active );
+//TODO PhononEqualizer        EngineController::engine()->setEqualizerEnabled( active );
         AmarokConfig::setEqualizerEnabled( active );
 
         if( EqualizerSetup::isInstantiated() )
@@ -437,13 +440,11 @@ namespace Amarok
 
     void DbusPlayerHandler::setEqualizerPreset( QString name )
     {
-        if( EngineController::hasEngineProperty( "HasEqualizer" ) ) {
-            bool instantiated = EqualizerSetup::isInstantiated();
-            EqualizerSetup* eq = EqualizerSetup::instance();
-            eq->setPreset( name );
-            if ( !instantiated )
-                delete eq;
-        }
+        bool instantiated = EqualizerSetup::isInstantiated();
+        EqualizerSetup* eq = EqualizerSetup::instance();
+        eq->setPreset( name );
+        if ( !instantiated )
+            delete eq;
     }
 
     void DbusPlayerHandler::setLyricsByPath( const QString& url, const QString& lyrics )

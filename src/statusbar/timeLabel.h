@@ -23,6 +23,7 @@
 #include "actionclasses.h"
 #include "enginecontroller.h"
 #include "progressslider.h"
+#include "TheInstances.h"
 
 #include <QLabel>
 #include <kglobalsettings.h>
@@ -54,7 +55,7 @@ public:
             AmarokConfig::setLeftTimeDisplayEnabled( true );
         }
 
-        ProgressWidget::instance()->drawTimeDisplay( EngineController::engine()->position() );
+        ProgressWidget::instance()->drawTimeDisplay( The::engineController()->trackPosition() );
     }
 };
 

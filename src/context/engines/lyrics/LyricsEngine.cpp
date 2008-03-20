@@ -19,6 +19,7 @@
 #include "ContextView.h"
 #include "enginecontroller.h"
 #include "scriptmanager.h"
+#include "TheInstances.h"
 
 #include <QDomDocument>
 
@@ -64,7 +65,7 @@ void LyricsEngine::update()
         return;
     QString lyrics = curtrack->cachedLyrics();
     // don't rely on caching for streams
-    const bool cached = !lyrics.isEmpty() && !EngineController::engine()->isStream();
+    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
 
     QString title  = EngineController::instance()->currentTrack()->name();
     QString artist = EngineController::instance()->currentTrack()->artist()->name();

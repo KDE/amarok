@@ -91,6 +91,7 @@ Analyzer::Base<W>::transform( Scope &scope ) //virtual
 template<class W> void
 Analyzer::Base<W>::drawFrame()
 {
+#if 0
     EngineBase *engine = EngineController::engine();
 
     switch( engine->state() )
@@ -122,6 +123,7 @@ Analyzer::Base<W>::drawFrame()
     default:
         demo();
     }
+#endif
 }
 
 template<class W> int

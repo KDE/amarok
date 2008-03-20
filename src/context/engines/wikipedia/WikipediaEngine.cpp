@@ -18,6 +18,7 @@
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "enginecontroller.h"
+#include "TheInstances.h"
 
 using namespace Context;
 
@@ -71,7 +72,7 @@ void WikipediaEngine::update()
         
         if ( (EngineController::instance()->currentTrack()->playableUrl().protocol() == "lastfm") ||
              (EngineController::instance()->currentTrack()->playableUrl().protocol() == "daap") ||
-             !EngineController::engine()->isStream() )
+             !The::engineController()->isStream() )
         {
             tmpWikiStr = EngineController::instance()->currentTrack()->artist()->name();
             tmpWikiStr += wikiArtistPostfix(); //makes wikipedia bail out
@@ -93,7 +94,7 @@ void WikipediaEngine::update()
         setData( "wikipedia", "title", EngineController::instance()->currentTrack()->album()->prettyName() );
         if ( (EngineController::instance()->currentTrack()->playableUrl().protocol() == "lastfm") ||
              (EngineController::instance()->currentTrack()->playableUrl().protocol() == "daap") ||
-             !EngineController::engine()->isStream() )
+             !The::engineController()->isStream() )
         {
             tmpWikiStr = EngineController::instance()->currentTrack()->album ()->name();
             tmpWikiStr += wikiAlbumPostfix();

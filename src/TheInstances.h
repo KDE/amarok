@@ -30,6 +30,7 @@ namespace Playlist {
 }
 
 class PlaylistManager;
+class EngineController;
 
 namespace QueueManagerNS {
    class Model;
@@ -59,6 +60,7 @@ namespace Meta {
 }
 
 namespace The {
+    AMAROK_EXPORT EngineController*  engineController();
     AMAROK_EXPORT Playlist::Model*   playlistModel();       //defined in playlist/PlaylistModel.cpp
     Playlist::GraphicsView*          playlistView();
     AMAROK_EXPORT PlaylistManager*   playlistManager();
@@ -66,7 +68,7 @@ namespace The {
     AMAROK_EXPORT ServiceInfoProxy * serviceInfoProxy();
     AMAROK_EXPORT SvgTinter *        svgTinter();
     AMAROK_EXPORT Amarok::ContextStatusBar* statusBar();
-
+    
     AMAROK_EXPORT Meta::ArtistPtr defaultArtist();
     AMAROK_EXPORT Meta::AlbumPtr defaultAlbum();
     AMAROK_EXPORT Meta::ComposerPtr defaultComposer();

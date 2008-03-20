@@ -19,7 +19,6 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizergraph.h"
 #include "equalizerpresetmanager.h"
@@ -481,7 +480,7 @@ EqualizerSetup::presetChanged( QString title ) //SLOT
 void
 EqualizerSetup::setEqualizerEnabled( bool active ) //SLOT
 {
-    EngineController::engine()->setEqualizerEnabled( active );
+//TODO Phonon Equalizer    EngineController::engine()->setEqualizerEnabled( active );
     AmarokConfig::setEqualizerEnabled( active );
 
     if( active )
@@ -501,8 +500,8 @@ EqualizerSetup::setEqualizerParameters() //SLOT
     AmarokConfig::setEqualizerGains ( m_presets[ m_presetCombo->currentText() ] );
 
     // Transfer values to the engine if the EQ is enabled
-    if ( AmarokConfig::equalizerEnabled() )
-        EngineController::engine()->setEqualizerParameters( m_slider_preamp->value(), m_presets[ m_presetCombo->currentText() ] );
+ //TODO PhononEqualizer    if ( AmarokConfig::equalizerEnabled() )
+//       EngineController::engine()->setEqualizerParameters( m_slider_preamp->value(), m_presets[ m_presetCombo->currentText() ] );
 
     m_equalizerGraph->update();
 }

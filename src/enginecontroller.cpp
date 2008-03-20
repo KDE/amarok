@@ -1,8 +1,8 @@
 /***************************************************************************
  *   Copyright (C) 2004 Frederik Holljen <fh@ez.no>                        *
- *             (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
- *             (C) 2004,5 Mark Kretschmann                                 *
- *             (C) 2006 Ian Monroe                                         *
+ *             (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
+ *             (C) 2004, 2005 Mark Kretschmann                             *
+ *             (C) 2006, 2008 Ian Monroe <ian@monroe.nu>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,31 +18,34 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
+#include "ContextStatusBar.h"
 #include "debug.h"
-#include "enginebase.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "meta/Meta.h"
-#include "pluginmanager.h"
-#include "ContextStatusBar.h"
-#include "TheInstances.h"
+#include "meta/MultiPlayableCapability.h"
 #include "playlist/PlaylistModel.h"
+#include "pluginmanager.h"
+#include "TheInstances.h"
 
 #include <KApplication>
-#include <kio/global.h>
+#include <KFileItem>
 #include <KIO/Job>
 #include <KMessageBox>
 #include <KRun>
+
+#include <Phonon/BackendCapabilities>
+#include <Phonon/MediaObject>
+#include <Phonon/AudioOutput>
 
 #include <QByteArray>
 #include <QFile>
 #include <QTimer>
 
-#include <cstdlib>
+//#include <cstdlib>
 
 
 EngineController::ExtensionCache EngineController::s_extensionCache;
-
 
 EngineController*
 EngineController::instance()
@@ -56,162 +59,30 @@ EngineController::instance()
 
 
 EngineController::EngineController()
-        : m_engine( 0 )
-        , m_voidEngine( 0 )
-        , m_delayTime( 0 )
-        , m_muteVolume( 0 )
-        , m_xFadeThisTrack( false )
-        , m_timer( new QTimer( this ) )
-        , m_playFailureCount( 0 )
-        , m_lastFm( false )
-        , m_positionOffset( 0 )
-        , m_lastPositionOffset( 0 )
-        , m_multi( 0 )
+    : m_media( 0 )
+    , m_audio( 0 )
 {
-    PERF_LOG( "EngineController: loading void engine" )
-    m_voidEngine = m_engine = loadEngine( "void-engine" );
-    PERF_LOG( "EngineController: loaded void engine" )
+    PERF_LOG( "EngineController: loading phonon objects" )
+    m_media = new Phonon::MediaObject( this );
+    m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
-    connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
+    m_path = Phonon::createPath(m_media, m_audio);
+    PERF_LOG( "EngineController: loaded phonon objects" )
+
+    connect( m_media, SIGNAL( finished() ), SIGNAL( trackFinished() ) );
+    connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
+
 }
 
 EngineController::~EngineController()
 {
     DEBUG_FUNC_INFO //we like to know when singletons are destroyed
-
-    delete m_multi;
 }
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
-
-EngineBase*
-EngineController::loadEngine() //static
-{
-    /// always returns a valid pointer to EngineBase
-
-    DEBUG_BLOCK
-    //TODO remember song position, and resume playback
-
-    // new engine, new ext cache required
-    extensionCache().clear();
-
-    if( m_engine != m_voidEngine ) {
-        EngineBase *oldEngine = m_engine;
-
-        // we assign this first for thread-safety,
-        // EngineController::engine() must always return an engine!
-        m_engine = m_voidEngine;
-
-        // we unload the old engine first because there are a number of
-        // bugs associated with keeping one engine loaded while loading
-        // another, eg xine-engine can't init(), and aRts-engine crashes
-        PluginManager::unload( oldEngine );
-
-        // the engine is not required to do this when we unload it but
-        // we need to do it to ensure Amarok looks correct.
-        // We don't do this for the void-engine because that
-        // means Amarok sets all components to empty on startup, which is
-        // their responsibility.
-        slotStateChanged( Engine::Empty );
-    }
-
-    m_engine = loadEngine( AmarokConfig::soundSystem() );
-
-    const QString engineName = PluginManager::getService( m_engine )->property( "X-KDE-Amarok-name" ).toString();
-
-    if( !AmarokConfig::soundSystem().isEmpty() && engineName != AmarokConfig::soundSystem() ) {
-        //AmarokConfig::soundSystem() is empty on the first-ever-run
-
-        Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n(
-                "Sorry, the '%1' could not be loaded, instead we have loaded the '%2'.", AmarokConfig::soundSystem(), engineName ),
-                KDE::StatusBar::Sorry );
-
-        AmarokConfig::setSoundSystem( engineName );
-    }
-
-    // Important: Make sure soundSystem is not empty
-    if( AmarokConfig::soundSystem().isEmpty() )
-        AmarokConfig::setSoundSystem( engineName );
-
-    return m_engine;
-}
-
-#include <q3valuevector.h>
-EngineBase*
-EngineController::loadEngine( const QString &engineName )
-{
-    /// always returns a valid plugin (exits if it can't get one)
-
-    DEBUG_BLOCK
-
-    QString query = "[X-KDE-Amarok-plugintype] == 'engine' and [X-KDE-Amarok-name] != '%1'";
-    KService::List offers = PluginManager::query( query.arg( engineName ) );
-
-    // sort by rank, QValueList::operator[] is O(n), so this is quite inefficient
-    #define rank( x ) (x)->property( "X-KDE-Amarok-rank" ).toInt()
-    for( int n = offers.count()-1, i = 0; i < n; i++ )
-        for( int j = n; j > i; j-- )
-            if( rank( offers[j] ) > rank( offers[j-1] ) )
-                qSwap( offers[j], offers[j-1] );
-    #undef rank
-
-    // this is the actual engine we want
-    query = "[X-KDE-Amarok-plugintype] == 'engine' and [X-KDE-Amarok-name] == '%1'";
-    offers = PluginManager::query( query.arg( engineName ) ) + offers;
-
-    foreach( KService::Ptr service, offers ) {
-        Amarok::Plugin *plugin = PluginManager::createFromService( service );
-
-        if( plugin ) {
-            QObject *bar = Amarok::ContextStatusBar::instance();
-            EngineBase *engine = static_cast<EngineBase*>( plugin );
-
-            connect( engine, SIGNAL(stateChanged( Engine::State )),
-                       this,   SLOT(slotStateChanged( Engine::State )) );
-            connect( engine, SIGNAL(trackEnded()),
-                       this,   SLOT(slotTrackEnded()) );
-            if( bar )
-            {
-                connect( engine, SIGNAL(statusText( const QString& )),
-                            bar,   SLOT(shortMessage( const QString& )) );
-                connect( engine, SIGNAL(infoMessage( const QString& )),
-                            bar,   SLOT(longMessage( const QString& )) );
-            }
-            connect( engine, SIGNAL(showConfigDialog( const QByteArray& )),
-                       kapp,   SLOT(slotConfigAmarok( const QByteArray& )) );
-            connect( engine, SIGNAL( metaData( QHash<qint64, QString> ) ), SLOT( slotEngineMetaData( QHash<qint64, QString> ) ) );
-
-            if( engine->init() )
-                return engine;
-            else
-                warning() << "Could not init() an engine\n";
-        }
-    }
-
-    KRun::runCommand( "kbuildsycoca4", 0 );
-
-    KMessageBox::error( 0, i18n(
-            "<p>Amarok could not find any sound-engine plugins. "
-            "Amarok is now updating the KDE configuration database. Please wait a couple of minutes, then restart Amarok.</p>"
-            "<p>If this does not help, "
-            "it is likely that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
-            "$ cd /path/to/amarok/source-code/<br/>"
-            "$ su -c \"make uninstall\"<br/>"
-            "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br/>"
-            "$ kbuildsycoca<br/>"
-            "$ amarok</pre>"
-            "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
-
-    // don't use QApplication::exit, as the eventloop may not have started yet
-    std::exit( EXIT_SUCCESS );
-
-    // Not executed, just here to prevent compiler warning
-    return 0;
-}
-
 
 bool EngineController::canDecode( const KUrl &url ) //static
 {
@@ -242,30 +113,32 @@ bool EngineController::canDecode( const KUrl &url ) //static
     if ( !QFileInfo(url.path()).size() )
         return false;
 
-    const bool valid = engine()->canDecode( url );
-
-    if( engine() != EngineController::instance()->m_voidEngine )
+    bool valid;
     {
-        //we special case this as otherwise users hate us
-        if ( !valid && ext.toLower() == "mp3" && !installDistroCodec(AmarokConfig::soundSystem()) )
-            Amarok::ContextStatusBar::instance()->longMessageThreadSafe(
-                    i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
-                        "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
-                        "the installation of the multimedia-framework that the current engine uses. "
-                        "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok HandBook</i>.", AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
-
-        // Cache this result for the next lookup
-        if ( !ext.isEmpty() )
-            extensionCache().insert( ext, valid );
+        KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );
+        valid = Phonon::BackendCapabilities::isMimeTypeAvailable( item.mimetype() );
     }
 
+    //we special case this as otherwise users hate us
+    if ( !valid && ext.toLower() == "mp3" && !installDistroCodec() )
+        Amarok::ContextStatusBar::instance()->longMessageThreadSafe(
+                i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
+                    "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
+                    "the installation of the multimedia-framework that the current engine uses. "
+                    "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok HandBook</i>.", AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
+
+    // Cache this result for the next lookup
+    if ( !ext.isEmpty() )
+        extensionCache().insert( ext, valid );
     return valid;
 }
 
-bool EngineController::installDistroCodec( const QString& engine /*Filetype type*/)
+bool
+EngineController::installDistroCodec()
 {
     KService::List services = KServiceTypeTrader::self()->query( "Amarok/CodecInstall"
-        , QString("[X-KDE-Amarok-codec] == 'mp3' and [X-KDE-Amarok-engine] == '%1'").arg(engine) );
+        , QString("[X-KDE-Amarok-codec] == 'mp3' and [X-KDE-Amarok-engine] == 'phonon-%1'").arg("xine") );
+    //todo - figure out how to query Phonon for the current backend loaded
     if( !services.isEmpty() )
     {
         KService::Ptr service = services.first(); //list is not empty
@@ -310,34 +183,18 @@ void EngineController::endSession()
     {
         trackEnded( trackPosition(), m_currentTrack->length() * 1000, "quit" );
     }
-
-    PluginManager::unload( m_voidEngine );
-    m_voidEngine = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void EngineController::previous() //SLOT
-{
-    emit orderPrevious();
-}
-
-
-void EngineController::next( bool forceNext ) //SLOT
-{
-    m_previousUrl = m_currentTrack->url();
-    m_isTiming = false;
-    emit orderNext(forceNext);
-}
-
 
 void EngineController::play() //SLOT
 {
-    if ( m_engine->state() == Engine::Paused )
+    if ( m_media->state() == Phonon::PausedState )
     {
-        m_engine->unpause();
+        m_media->play();
     }
     else emit orderCurrent();
 }
@@ -347,6 +204,7 @@ void EngineController::play( const Meta::TrackPtr& track, uint offset )
     DEBUG_BLOCK
 
     delete m_multi;
+    m_multi = 0;
     m_currentTrack = track;
     m_multi = m_currentTrack->as<Meta::MultiPlayableCapability>();
 
@@ -363,192 +221,23 @@ void EngineController::play( const Meta::TrackPtr& track, uint offset )
 
 void EngineController::playUrl( const KUrl &url, uint offset )
 {
-    if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )
-    {
-        if( m_engine->play( offset ) )
-        {
-            
-        }
+    m_stream = ( url.protocol() == "http" || url.protocol() == "rtsp" );
+    m_media->setCurrentSource( url );
+    m_media->pause();
+    m_media->seek( offset );
+    m_media->play();
+    if( m_media->state() != Phonon::ErrorState )
         newTrackPlaying();
-    }
 }
-
-//i know that i should not jsut comment this code,
-//but there is a lot of important logic in there, so
-//i am leaving it in because we won't forget that it
-//exists that way
-/*
-void EngineController::play( const MetaBundle &bundle, uint offset )
-{
-    DEBUG_BLOCK
-
-    KUrl url = bundle.url();
-    // don't destroy connection if we need to change station
-    if( url.protocol() != "lastfm" && LastFm::Controller::instance()->isPlaying() )
-    {
-        m_engine->stop();
-        LastFm::Controller::instance()->playbackStopped();
-    }
-    m_lastFm = false;
-    //Holds the time since we started trying to play non-existent files
-    //so we know when to abort
-    static QTime failure_time;
-    if ( !m_playFailureCount )
-        failure_time.start();
-
-    debug() << "Loading URL: " << url.url();
-    m_lastMetadata.clear();
-
-    //TODO bummer why'd I do it this way? it should _not_ be in play!
-    //let Amarok know that the previous track is no longer playing
-    if ( m_timer->isActive() )
-        trackEnded( trackPosition(), m_bundle.length() * 1000, "change" );
-
-    if ( url.isLocalFile() ) {
-        // does the file really exist? the playlist entry might be old
-        if ( ! QFile::exists( url.path()) ) {
-            //debug() << "  file >" << url.path() << "< does not exist!";
-            Amarok::ContextStatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
-            goto some_kind_of_failure;
-        }
-    }
-    else
-    {
-        if( url.protocol() == "cdda" )
-            Amarok::ContextStatusBar::instance()->shortMessage( i18n("Starting CD Audio track...") );
-        else
-            Amarok::ContextStatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
-        debug() << "Connecting to protocol: " << url.protocol();
-    }
-
-    // WebDAV protocol is HTTP with extensions (and the "webdav" scheme
-    // is a KDE-ism anyway). Most engines cope with HTTP streaming, but
-    // not through KIO, so they don't support KDE-isms.
-    if ( url.protocol() == "webdav" )
-        url.setProtocol( "http" );
-    else if ( url.protocol() == "webdavs" )
-        url.setProtocol( "https" );
-
-    // streams from last.fm should be handled by our proxy, in order to authenticate with the server
-    else if ( url.protocol() == "lastfm" )
-    {
-        if( LastFm::Controller::instance()->isPlaying() )
-        {
-            LastFm::Controller::instance()->getService()->changeStation( url.url() );
-            connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
-                     this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
-            return;
-        }
-        else
-        {
-            url = LastFm::Controller::instance()->getNewProxy( url.url() );
-            if( url.isEmpty() ) goto some_kind_of_failure;
-            m_lastFm = true;
-
-            connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
-                    this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
-        }
-        debug() << "New URL is " << url.url();
-    }
-    else if (url.protocol() == "daap" )
-    {
-        KUrl newUrl = MediaBrowser::instance()->getProxyUrl( url );
-        if( !newUrl.isEmpty() )
-        {
-            debug() << newUrl;
-            url = newUrl;
-        }
-        else
-            return;
-    }
-
-    if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )
-    {
-        //assign bundle now so that it is available when the engine
-        //emits stateChanged( Playing )
-        if( !m_bundle.url().path().isEmpty() ) //wasn't playing before
-            m_previousUrl = m_bundle.url();
-        else
-            m_previousUrl = bundle.url();
-        m_bundle = bundle;
-
-        if( m_engine->play( offset ) )
-        {
-            //Reset failure count as we are now successfully playing a song
-            m_playFailureCount = 0;
-
-            // Ask engine for track length, if available. It's more reliable than TagLib.
-            const uint trackLength = m_engine->length() / 1000;
-            if ( trackLength ) m_bundle.setLength( trackLength );
-
-            m_xFadeThisTrack = !m_engine->isStream() && !(url.protocol() == "cdda") &&
-                    m_bundle.length()*1000 - offset - AmarokConfig::crossfadeLength()*2 > 0;
-
-            newMetaDataNotify( m_bundle, true );
-            return;
-        }
-    }
-
-    some_kind_of_failure:
-        debug() << "Failed to play this track.";
-
-        ++m_playFailureCount;
-
-        //Code to skip to next track if playback fails:
-        //
-        //  The failure counter is reset if a track plays successfully or if playback is
-        //  stopped, for whatever reason.
-        //  For normal playback, the attempt to play is stopped at the end of the playlist
-        //  For repeat playlist , a whole playlist worth of songs is tried
-        //  For repeat album, the number of songs tried is the number of tracks from the
-        //  album that are in the playlist.
-        //  For repeat track, no attempts are made
-        //  To prevent GUI freezes we don't try to play again after 0.5s of failure
-        int totalTracks = Playlist::instance()->totalTrackCount();
-        int currentTrack = Playlist::instance()->currentTrackIndex();
-        if ( ( ( Amarok::repeatPlaylist() && static_cast<int>(m_playFailureCount) < totalTracks )
-            || ( Amarok::repeatNone() && currentTrack != totalTracks - 1 )
-            || ( Amarok::repeatAlbum() && m_playFailureCount < Playlist::instance()->repeatAlbumTrackCount() ) )
-            && failure_time.elapsed() < 500 )
-        {
-
-           debug() << "Skipping to next track.";
-
-           // The test for loaded must be done _before_ next is called
-           if ( !m_engine->loaded() )
-           {
-               //False gives behaviour as if track played successfully
-               next( false );
-               QTimer::singleShot( 0, this, SLOT(play()) );
-           }
-           else
-           {
-               //False gives behaviour as if track played successfully
-               next( false );
-           }
-        }
-        else
-        {
-            //Stop playback, including resetting failure count (as all new failures are
-            //treated as independent after playback is stopped)
-            stop();
-        }
-}*/
-
 
 void EngineController::pause() //SLOT
 {
-    // TODO: will need to re-implement last.fm check!
-    if ( m_engine->loaded() /*&& !LastFm::Controller::instance()->isPlaying()*/ )
-        m_engine->pause();
+    m_media->pause();
 }
 
 
 void EngineController::stop() //SLOT
 {
-    //Reset failure counter as after stop, everything else is unrelated
-    m_playFailureCount = 0;
-
     // will need to get a new instance of multi if played again
     delete m_multi;
     m_multi = 0;
@@ -560,7 +249,7 @@ void EngineController::stop() //SLOT
     //Remove requirement for track to be loaded for stop to be called (fixes gltiches
     //where stop never properly happens if call to m_engine->load fails in play)
     //if ( m_engine->loaded() )
-    m_engine->stop();
+    m_media->stop();
 }
 
 
@@ -569,40 +258,29 @@ void EngineController::playPause() //SLOT
 {
     //this is used by the TrayIcon, PlayPauseAction and DCOP
 
-    if( m_engine->state() == Engine::Playing )
+    if( m_media->state() == Phonon::PlayingState )
     {
         pause();
-    }
-    else if( m_engine->state() == Engine::Paused )
-    {
-        if ( m_engine->loaded() )
-            m_engine->unpause();
     }
     else
         play();
 }
 
 
-void EngineController::seek( int ms ) //SLOT
+void EngineController::seek( qint64 ms ) //SLOT
 {
-    Meta::TrackPtr track = currentTrack();
-    if( !track )
-        return;
-    if( track->length() > 0 )
+    if( m_media->isSeekable() )
     {
+        m_media->seek( ms );
         trackPositionChangedNotify( ms, true ); /* User seek */
-        engine()->seek( ms );
     }
 }
 
 
 void EngineController::seekRelative( int ms ) //SLOT
 {
-    if( m_engine->state() != Engine::Empty )
-    {
-        int newPos = m_engine->position() + ms;
-        seek( newPos <= 0 ? 1 : newPos );
-    }
+    qint64 newPos = m_media->currentTime() + ms;
+    seek( newPos <= 0 ? 0 : newPos );
 }
 
 
@@ -620,131 +298,100 @@ void EngineController::seekBackward( int ms )
 
 int EngineController::increaseVolume( int ticks ) //SLOT
 {
-    return setVolume( m_engine->volume() + ticks );
+    return setVolume( volume() + ticks );
 }
 
 
 int EngineController::decreaseVolume( int ticks ) //SLOT
 {
-    return setVolume( m_engine->volume() - ticks );
+    return setVolume( volume() - ticks );
 }
 
 
 int EngineController::setVolume( int percent ) //SLOT
 {
-    m_muteVolume = 0;
-
     if( percent < 0 ) percent = 0;
     if( percent > 100 ) percent = 100;
-
-    if( (uint)percent != m_engine->volume() )
-    {
-        m_engine->setVolume( (uint)percent );
-
-        percent = m_engine->volume();
-        AmarokConfig::setMasterVolume( percent );
-        volumeChangedNotify( percent );
-        return percent;
-    }
-    else // Still notify
-    {
-        volumeChangedNotify( percent );
-    }
-
-    return m_engine->volume();
+    qreal newVolume = percent / 100.0; //Phonon's volume is 0.0 - 1.0
+    m_audio->setVolume( newVolume );
+    AmarokConfig::setMasterVolume( percent );
+    volumeChangedNotify( percent );
+    return percent;
 }
 
+int EngineController::volume() const
+{
+    return static_cast<int>( m_audio->volume() * 100.0 );
+}
 
 void EngineController::mute() //SLOT
 {
-    if( m_muteVolume == 0 )
-    {
-        int saveVolume = m_engine->volume();
-        setVolume( 0 );
-        m_muteVolume = saveVolume;
-    }
-    else
-    {
-        setVolume( m_muteVolume );
-        m_muteVolume = 0;
-    }
+    m_audio->setMuted( !m_audio->isMuted() );
 }
 
 Meta::TrackPtr
 EngineController::currentTrack() const
 {
-    return m_engine->state() == Engine::Empty ? Meta::TrackPtr() : m_currentTrack;
+    Phonon::State state = m_media->state();
+    return state == Phonon::ErrorState || state == Phonon::LoadingState ? Meta::TrackPtr() : m_currentTrack;
 }
 
 //do we actually need this method?
-uint
+qint64
 EngineController::trackLength() const
 {
-     Meta::TrackPtr track = currentTrack();
-    if( track )
-        return track->length() * 1000;
-    else
-        return 0;
+    return m_media->totalTime();
 }
 
-//do we actually need this method?
-KUrl
-EngineController::playingURL() const
+Engine::State
+EngineController::state() const
 {
-    Meta::TrackPtr track = currentTrack();
-    if( track )
-        return track->playableUrl();
-    else
-        return KUrl();
+    Engine::State state;
+
+    switch( m_media->state() )
+    {
+        case Phonon::PlayingState:
+            state = Engine::Playing;
+            break;
+
+        case Phonon::PausedState:
+            state = Engine::Paused;
+            break;
+
+        case Phonon::StoppedState:
+        // fallthrough
+
+        case Phonon::BufferingState:
+        // fallthrough
+
+        case Phonon::ErrorState:
+        // fallthrough
+        
+        case Phonon::LoadingState:
+            state = m_currentTrack->isPlayable() ? Engine::Empty : Engine::Idle;
+    }
+
+    return state;
 }
 
-
-void
-EngineController::slotEngineMetaData( const QHash<qint64, QString> &newMetaData )
+bool 
+EngineController::getAudioCDContents(const QString &device, KUrl::List &urls)
 {
-    bool trackChange = m_currentTrack->playableUrl().isLocalFile();
-    newMetaDataNotify( newMetaData, trackChange );
+    return false;
 }
- 
-
+bool 
+EngineController::isStream()
+{
+    return m_stream;
+}
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void EngineController::slotMainTimer() //SLOT
-{
-    const uint position = trackPosition();
-
-    trackPositionChangedNotify( position );
-
-    // Crossfading
-    if ( m_engine->state() == Engine::Playing &&
-         AmarokConfig::crossfade() && m_xFadeThisTrack &&
-         m_engine->hasPluginProperty( "HasCrossfade" ) &&
-//Port 2.0        Playlist::instance()->stopAfterMode() != Playlist::StopAfterCurrent &&
-         ( (uint) AmarokConfig::crossfadeType() == 0 ||    //Always or...
-           (uint) AmarokConfig::crossfadeType() == 1 ) &&  //...automatic track change only
-         ( The::playlistModel()->activeRow() < The::playlistModel()->rowCount() ) &&
-         m_currentTrack->length()*1000 - position < (uint) AmarokConfig::crossfadeLength() )
-    {
-        debug() << "Crossfading to next track...\n";
-        m_engine->setXFadeNextTrack( true );
-        trackDone();
-    }
-    else if ( m_engine->state() == Engine::Playing &&
-              AmarokConfig::fadeout() &&
-// Port 2.0              Playlist::instance()->stopAfterMode() == Playlist::StopAfterCurrent &&
-              m_currentTrack->length()*1000 - position < (uint) AmarokConfig::fadeoutLength() )
-    {
-        m_engine->beginFadeOut();
-    }
-}
-
-
 void EngineController::slotTrackEnded() //SLOT
 {
     DEBUG_BLOCK
-    if ( AmarokConfig::trackDelayLength() > 0 )
+/*    if ( AmarokConfig::trackDelayLength() > 0 )
     {
         //FIXME not perfect
         if ( !m_isTiming )
@@ -754,7 +401,8 @@ void EngineController::slotTrackEnded() //SLOT
         }
 
     }
-    else trackDone();
+    else */
+        trackDone();
 }
 
 
@@ -768,12 +416,10 @@ void EngineController::slotStateChanged( Engine::State newState ) //SLOT
 
     case Engine::Paused:
 
-        m_timer->stop();
         break;
 
     case Engine::Playing:
 
-        m_timer->start( MAIN_TIMER );
         break;
 
     default:
@@ -789,14 +435,14 @@ void EngineController::trackDone()
     if( m_multi )
         m_multi->fetchNext();
     else
-        next( false );
+        The::playlistModel()->next();
 }
 
 void EngineController::slotPlayableUrlFetched( const KUrl &url )
 {
     if( url.isEmpty() )
     {
-        next( false );
+        The::playlistModel()->next();
     }
     else
     {
@@ -804,21 +450,16 @@ void EngineController::slotPlayableUrlFetched( const KUrl &url )
     }
 }
 
-uint EngineController::trackPosition() const
+qint64 EngineController::trackPosition() const
 {
-    const uint buffertime = 5000; // worked for me with xine engine over 1 mbit dsl
-    if( !m_engine )
-        return 0;
-    uint pos = m_engine->position();
-    if( !m_lastFm )
-        return pos;
-
-    if( m_positionOffset + buffertime <= pos )
-        return pos - m_positionOffset - buffertime;
-    if( m_lastPositionOffset + buffertime <= pos )
-        return pos - m_lastPositionOffset - buffertime;
-    return pos;
+//NOTE: there was a bunch of last.fm logic removed from here
+//pretty sure it's irrelevant, if not, look back to March 2008
+    return m_media->currentTime();
 }
 
+EngineController* The::engineController()
+{
+    return EngineController::instance(); //port amarok to the The:: style...
+}
 
 #include "enginecontroller.moc"

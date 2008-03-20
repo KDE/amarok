@@ -25,7 +25,6 @@ email                : markey@web.de
 #include "context/ContextView.h"
 #include "CoverFetcher.h"
 #include "debug.h"
-#include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
 #include "MainWindow.h"
@@ -216,18 +215,16 @@ App::~App()
     // Hiding the OSD before exit prevents crash
     Amarok::OSD::instance()->hide();
 
-    EngineBase* const engine = EngineController::engine();
-
     if ( AmarokConfig::resumePlayback() ) {
-        if ( engine->state() != Engine::Empty ) {
-            AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().prettyUrl() );
-            AmarokConfig::setResumeTime( engine->position() );
+        if ( The::engineController()->state() != Engine::Empty ) {
+            AmarokConfig::setResumeTrack( The::engineController()->currentTrack()->playableUrl().prettyUrl() );
+            AmarokConfig::setResumeTime( The::engineController()->trackPosition() );
         }
         else AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
     }
 
-    EngineController::instance()->endSession(); //records final statistics
-    EngineController::instance()->detach( this );
+    The::engineController()->endSession(); //records final statistics
+    The::engineController()->detach( this );
 
     // do even if trayicon is not shown, it is safe
     Amarok::config().writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
@@ -350,19 +347,19 @@ void App::handleCliArgs() //static
     else if ( args->isSet( "next" ) )
     {
         haveArgs = true;
-        EngineController::instance()->next();
+        The::playlistModel()->next();
     }
     else if ( args->isSet( "previous" ) )
     {
         haveArgs = true;
-        EngineController::instance()->previous();
+        The::playlistModel()->back();
     }
     else if (args->isSet("cdplay"))
     {
         haveArgs = true;
         QString device = args->getOption("cdplay");
         KUrl::List urls;
-        if (EngineController::engine()->getAudioCDContents(device, urls)) {
+        if (The::engineController()->getAudioCDContents(device, urls)) {
             Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
             The::playlistModel()->insertOptioned(
                 tracks, Playlist::Replace|Playlist::DirectPlay);
@@ -606,6 +603,9 @@ void App::applySettings( bool firstTime )
 
 
     { //<Engine>
+        The::engineController()->setVolume( AmarokConfig::masterVolume() );
+
+#if 0
         EngineBase *engine = EngineController::engine();
 
         if( firstTime || AmarokConfig::soundSystem() !=
@@ -617,13 +617,12 @@ void App::applySettings( bool firstTime )
         }
 
         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
-        engine->setVolume( AmarokConfig::masterVolume() );
-
         engine->setEqualizerEnabled( AmarokConfig::equalizerEnabled() );
         if ( AmarokConfig::equalizerEnabled() )
             engine->setEqualizerParameters( AmarokConfig::equalizerPreamp(), AmarokConfig::equalizerGains() );
+#endif
+        Amarok::actionCollection()->action("play_audiocd")->setEnabled( false );
 
-        Amarok::actionCollection()->action("play_audiocd")->setEnabled( EngineController::hasEngineProperty( "HasKIO" ) || EngineController::hasEngineProperty("HasCDDA"));
     } //</Engine>
 
     { //<Collection>
@@ -899,7 +898,7 @@ void App::setRating( int n )
 
     n *= 2;
 
-    const Engine::State s = EngineController::instance()->engine()->state();
+    const Engine::State s = The::engineController()->state();
     if( s == Engine::Playing || s == Engine::Paused || s == Engine::Idle )
     {
         Meta::TrackPtr track = EngineController::instance()->currentTrack();

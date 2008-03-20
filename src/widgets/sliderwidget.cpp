@@ -223,7 +223,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
     menu.addAction(  i18n(    "20%" ) )->setData(  20 );
     menu.addAction(  i18n(     "0%" ) )->setData(   0 );
 
-    if( EngineController::hasEngineProperty( "HasEqualizer" ) )
+    if( false ) //TODO phonon
     {
         menu.addSeparator();
         menu.addAction( KIcon( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), kapp, SLOT( slotConfigEqualizer() ) )

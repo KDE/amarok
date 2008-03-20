@@ -15,7 +15,6 @@
 #include "app.h"
 #include "amarok.h"
 #include "debug.h"
-#include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
 #include "AmarokProcess.h"
 #include "ContextStatusBar.h"
@@ -133,9 +132,11 @@ Vis::SocketNotifier::request( int sockfd ) //slot
         }
         else if( result == "PCM" )
         {
+#if 0
             const Engine::Scope &scope = EngineController::engine()->scope();
 
             ::send( sockfd, (const char *)&scope[0], scope.size()*sizeof(int16_t), 0 );
+#endif
         }
     }
     else {

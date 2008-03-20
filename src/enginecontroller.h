@@ -13,20 +13,21 @@
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
-#include "enginebase.h"
 #include "engineobserver.h"
 #include "meta/Meta.h"
-#include "meta/MultiPlayableCapability.h"
 
-#include <QHash>
 #include <QMap>
 #include <QObject>
 
+#include <Phonon/Global>
+#include <Phonon/Path>
 
 class QTimer;
 
 
 namespace KIO { class Job; }
+namespace Meta { class MultiPlayableCapability; }
+namespace Phonon { class MediaObject; class AudioOutput; }
 
 /**
  * This class captures Amarok specific behaviour for some common features.
@@ -45,20 +46,13 @@ public:
     // from a plugin won't do any good. you'll only get a new
     // instance with a voidEngine
     static EngineController* instance();
-    static EngineBase*       engine() { return instance()->m_engine; }
     static bool              canDecode( const KUrl& );
     static ExtensionCache&   extensionCache() { return s_extensionCache; }
-    static QString           engineProperty( const QString& key ) { return engine()->pluginProperty( key ); }
-    static bool              hasEngineProperty( const QString& key ) { return engine()->hasPluginProperty( key ); }
 
-    uint                     trackPosition() const;
-
-    EngineBase* loadEngine();
+    qint64                  trackPosition() const;
 
     Meta::TrackPtr currentTrack() const;
-    uint trackLength() const;
-    KUrl previousURL() const { return m_previousUrl; }
-    KUrl playingURL() const;
+    qint64 trackLength() const;
 
     void restoreSession();
     void endSession();
@@ -67,20 +61,23 @@ public:
     static const int MAIN_TIMER = 150;
 
     /*enum Filetype { MP3 };*/ //assuming MP3 for time being
-    /*AMAROK_EXPORT*/ static bool installDistroCodec(const QString& engine /*Filetype type*/);
+    /*AMAROK_EXPORT*/ static bool installDistroCodec();
 
+    const Phonon::MediaObject* phononMediaObject() const { return m_media; } //!const so that it's only used by DBus for info
+    int volume() const;
+    Engine::State state() const;
+    bool loaded() { return instance()->state() != Engine::Empty; }
+    bool getAudioCDContents(const QString &device, KUrl::List &urls);
+    bool isStream();
 public slots:
-    void previous();
-    // forceNext make we go to next track even if Repeat Track is on
-    //NOTE If the track ended normally, call next(false) !
-    void next( const bool forceNext = true );
+    
     void play();
     void play( const Meta::TrackPtr&, uint offset = 0 );
     void pause();
     void stop();
     void playPause(); //pauses if playing, plays if paused or stopped
 
-    void seek( int ms );
+    void seek( qint64 ms );
     void seekRelative( int ms );
     void seekForward( int ms = 10000 );
     void seekBackward( int ms = 10000 );
@@ -91,22 +88,10 @@ public slots:
 
     void mute();
 
-    void playlistChanged() { m_engine->playlistChanged(); }
-
 signals:
-    void orderPrevious();
     void orderCurrent();
-    void orderNext( const bool );
     void statusText( const QString& );
     void trackFinished();
-
-private slots:
-    void slotEngineMetaData( const QHash<qint64, QString> &newMetaData );
-    void slotMainTimer();
-    void slotTrackEnded();
-    void slotStateChanged( Engine::State );
-    void trackDone();
-    void slotPlayableUrlFetched( const KUrl &url );
 
 protected:
     EngineController();
@@ -116,24 +101,18 @@ protected:
     EngineController( const EngineController& );
     EngineController &operator=( const EngineController& );
 
+    void playUrl( const KUrl &url, uint offset );
+    void trackDone();
+private slots:
+    void slotTrackEnded();
+    void slotStateChanged(Engine::State);
+    void slotPlayableUrlFetched(const KUrl&);
 private:
     static ExtensionCache s_extensionCache;
-
-    EngineBase* loadEngine( const QString &engineName );
-    void playUrl( const KUrl &url, uint offset );
-
-    EngineBase*     m_engine;
-    EngineBase*     m_voidEngine;
-    KUrl            m_previousUrl;
-    long            m_delayTime;
-    int             m_muteVolume;
-    bool            m_xFadeThisTrack;
-    bool            m_isTiming;
-    QTimer*         m_timer;
-    uint            m_playFailureCount;
-    // try to correct start time for tracks from last.fm streams
-    bool            m_lastFm;
-    uint            m_positionOffset, m_lastPositionOffset;
+    Phonon::MediaObject *m_media;
+    Phonon::AudioOutput *m_audio;
+    Phonon::Path        m_path;
+    bool                m_stream;
     Meta::TrackPtr  m_currentTrack;
     Meta::MultiPlayableCapability *m_multi;
 };

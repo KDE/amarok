@@ -560,7 +560,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
     {
         firstItemAdded = rowCount();
         insertTracks( firstItemAdded, list );
-        if( EngineController::engine()->state() != Engine::Playing )
+        if( The::engineController()->state() != Engine::Playing )
             play( firstItemAdded );
     }
     else if( options & Queue )
@@ -573,7 +573,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
         if ( rowCount() > firstItemAdded )
             play( firstItemAdded );
     }
-    else if( ( options & StartPlay ) && ( EngineController::engine()->state() != Engine::Playing ) && ( rowCount() != 0 ) )
+    else if( ( options & StartPlay ) && ( The::engineController()->state() != Engine::Playing ) && ( rowCount() != 0 ) )
     {
         play( firstItemAdded );
     }
