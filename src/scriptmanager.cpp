@@ -301,7 +301,7 @@ ScriptManager::specForScript( const QString& name )
 void
 ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 {
-    const QString args = QUrl::toPercentEncoding( artist ) + ' ' + QUrl::toPercentEncoding( title );
+    const QString args = QUrl::toPercentEncoding( artist ) + ' ' + QUrl::toPercentEncoding( title ); //krazy:exclude=qclasses
     notifyScripts( "fetchLyrics " + args );
 }
 

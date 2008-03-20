@@ -43,7 +43,7 @@
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLabel>
-#include <QMessageBox>
+#include <KMessageBox>
 #include <QTextDocument>
 #include <QTableWidget>
 #include <QToolTip>
@@ -691,11 +691,13 @@ MediaDeviceVolumeMarkerDialog::slotOk()
                 }
             }
             else
-                QMessageBox::critical( this, i18n( "Well, we tried..." ),
-                        i18n( "Could not create the marking file at %1.\n"
-                              "Ensure that you have the correct permissions\n"
-                              "to create that file.",
-                              QString( mountPoint + "/.is_audio_player" ) ) );
+                KMessageBox::sorry( this,
+                                    i18n( "Could not create the marking file at %1.\n"
+                                          "Ensure that you have the correct permissions\n"
+                                          "to create that file.",
+                                          QString( mountPoint + "/.is_audio_player" ) ),
+                                    i18n( "Well, we tried..." )
+                                  );
         }
         else
         {
@@ -703,11 +705,13 @@ MediaDeviceVolumeMarkerDialog::slotOk()
             bool success = QFile::remove( mountPoint + "/.is_audio_player" );
             if( !success )
             {
-                QMessageBox::critical( this, i18n( "Well, we tried..." ),
-                        i18n( "Could not remove the marking file at %1.\n"
-                              "Ensure that you have the correct permissions\n"
-                              "to remove that file.",
-                              QString( mountPoint + "/.is_audio_player" ) ) );
+                KMessageBox::sorry( this,
+                                    i18n( "Could not remove the marking file at %1.\n"
+                                          "Ensure that you have the correct permissions\n"
+                                          "to remove that file.",
+                                          QString( mountPoint + "/.is_audio_player" ) ),
+                                    i18n( "Well, we tried..." )
+                                  );
             }
             else
             {

@@ -276,7 +276,7 @@ TagDialog::accept() //SLOT
     ui->pushButton_ok->setEnabled( false ); //visual feedback
     saveTags();
 
-    QDialog::accept();
+    KDialog::accept();
 }
 
 
