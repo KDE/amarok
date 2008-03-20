@@ -56,9 +56,16 @@ namespace Amarok
     // Sorting of a tracklist.
     bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right )
     {
-        if( left->album() == right->album() )
-            return left->trackNumber() < right->trackNumber();
-
+        if( left->album() == right->album() ) // If the albums are the same
+        {
+            //First compare by disc number
+            if ( left->discNumber() < right->discNumber() )
+                return true;
+            else if( left->discNumber() == right->discNumber() ) //Disc #'s are equal, compare by track number
+                return left->trackNumber() < right->trackNumber();
+            else
+                return false; // Right disc has a lower number
+        }
         else if( left->artist() == right->artist() )
             return QString::localeAwareCompare( left->album()->prettyName(), right->album()->prettyName() ) < 0;
         else // compare artists alphabetically
