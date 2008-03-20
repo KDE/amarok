@@ -24,7 +24,7 @@ AMAROK_EXPORT_PLUGIN( PhononEngine )
 #include "debug.h"
 #include "statusbar/ContextStatusBar.h"
 
-#include <kmimetype.h>
+#include <KMimeType>
 
 #include <phonon/mediaobject.h>
 #include <phonon/path.h>
