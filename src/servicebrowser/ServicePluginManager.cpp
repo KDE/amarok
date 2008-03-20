@@ -122,11 +122,6 @@ void ServicePluginManager::settingsChanged()
     
     foreach( QString serviceName, names ) {
         m_serviceBrowser->removeService( serviceName );
-        delete activeServices.value( serviceName );
-    }
-
-    foreach( QString serviceName, names ) {
-        m_serviceBrowser->removeService( serviceName );
     }
 
     m_loadedServices.clear();
