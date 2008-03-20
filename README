@@ -41,15 +41,13 @@ Required
     * KDE-Libs 4.1 + KDE-Base-runtime 4.1 (or newer)
       http://www.kde.org
 
-    * TagLib 1.4 (or newer)
+    * TagLib 1.5 (or newer)
       (metadata tagging library)
       http://freshmeat.net/projects/taglib
 
     * Ruby 1.8
       (programming language, used for scoring, lyrics, last.fm streams)
       http://www.ruby-lang.org
-
-    * One of the multimedia frameworks listed below:
 
 Optional
     * KDE-Base 4.1 (or newer)
@@ -59,10 +57,6 @@ Optional
     * MySQL 4 or 5
       (faster database support)
       http://www.mysql.com
-
-    * PostgreSQL 7.4
-      (faster database support)
-      http://www.postgresql.org
 
     * OpenGL accelerated X-Server
       (visualization rendering)
