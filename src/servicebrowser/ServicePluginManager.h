@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef SERVICEPLUGINMANAGER_H
-#define SERVICEPLUGINMANAGER_H
+#ifndef AMAROK_SERVICEPLUGINMANAGER_H
+#define AMAROK_SERVICEPLUGINMANAGER_H
 
 #include "servicebase.h"
 #include "servicebrowser.h"
@@ -68,9 +68,8 @@ private:
     
 private slots:
     void slotNewService( ServiceBase *newService);
-
-   
-
 };
 
-#endif
+
+#endif //AMAROK_SERVICEPLUGINMANAGER_H
+

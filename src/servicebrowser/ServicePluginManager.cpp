@@ -20,7 +20,8 @@
 #include "ServicePluginManager.h"
 #include "pluginmanager.h"
 
-#include <kservice.h>
+#include <KService>
+
 
 ServicePluginManager * ServicePluginManager::m_instance = 0;
 
@@ -33,7 +34,6 @@ ServicePluginManager * ServicePluginManager::instance()
 }
 
 
-
 ServicePluginManager::ServicePluginManager( )
     : QObject()
     , m_serviceBrowser( 0 )
@@ -43,16 +43,19 @@ ServicePluginManager::ServicePluginManager( )
 
 
 ServicePluginManager::~ServicePluginManager()
-{
-}
+{}
 
-void ServicePluginManager::setBrowser( ServiceBrowser * browser ) {
+
+void ServicePluginManager::setBrowser( ServiceBrowser * browser )
+{
     m_serviceBrowser = browser;
 }
+
 
 void ServicePluginManager::collect()
 {
     DEBUG_BLOCK
+
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'service'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
     foreach( KService::Ptr service, plugins )
@@ -80,9 +83,9 @@ void ServicePluginManager::collect()
     }
 }
 
+
 void ServicePluginManager::init()
 {
-
     foreach( ServiceFactory* factory,  m_factories.values() ) {
 
         //check if this service is enabled
@@ -95,8 +98,8 @@ void ServicePluginManager::init()
             m_loadedServices << pluginName;
         }
     }
-
 }
+
 
 void ServicePluginManager::slotNewService(ServiceBase * newService)
 {
@@ -104,14 +107,15 @@ void ServicePluginManager::slotNewService(ServiceBase * newService)
     m_serviceBrowser->addService( newService );
 }
 
+
 QMap< QString, ServiceFactory * > ServicePluginManager::factories()
 {
     return m_factories;
 }
 
+
 void ServicePluginManager::settingsChanged()
 {
-
     //for now, just delete and reload everything....
     QMap<QString, ServiceBase *> activeServices =  m_serviceBrowser->services();
     QList<QString> names = activeServices.keys();
@@ -158,16 +162,12 @@ void ServicePluginManager::settingsChanged()
             }
         }
     }*/
-
-    
 }
 
 QStringList ServicePluginManager::loadedServices()
 {
     return m_loadedServices;
 }
-
-
 
 
 #include "ServicePluginManager.moc"
