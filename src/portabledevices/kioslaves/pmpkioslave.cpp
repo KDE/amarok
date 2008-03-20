@@ -276,7 +276,7 @@ PMPProtocol::udiFromUrl( const KUrl &url )
     if( url.isEmpty() )
     {
         error( KIO::ERR_CANNOT_OPEN_FOR_READING, i18n( "portable media player : Empty UDI passed in" ) );
-        return QString::null;
+        return QString();
     }
     
     QString path = url.path( KUrl::RemoveTrailingSlash );

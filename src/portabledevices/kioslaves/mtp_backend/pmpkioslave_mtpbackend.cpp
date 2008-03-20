@@ -430,14 +430,14 @@ MTPBackend::buildMusicListing()
     QString defaultMusicLocation = QString::number( defaultFolder->folder_id ) + "_###_" + QString::fromUtf8( defaultFolder->name );
     m_defaultMusicLocation = defaultMusicLocation;
     kDebug() << "defaultMusicLocation set to: " << defaultMusicLocation;
-    buildFolderList( folderList, QString::null );
+    buildFolderList( folderList, QString() );
     QString folderPath;
     while( trackList != 0 )
     {
         if( trackList->parent_id == 0 )
         {
             kDebug() << "Found track " << QString::fromUtf8( trackList->filename ) << " in base folder.";
-            m_trackParentToPtrHash.insert( QString::null, trackList );
+            m_trackParentToPtrHash.insert( QString(), trackList );
             m_trackIdToPathHash.insert( trackList->item_id, QString::number( trackList->item_id ) + QString( "_###_" ) + QString::fromUtf8( trackList->filename ) );
         }
         else
