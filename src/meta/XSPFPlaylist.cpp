@@ -259,7 +259,7 @@ XSPFPlaylist::link()
 }
 
 void
-XSPFPlaylist::setTitle( QString title )
+XSPFPlaylist::setTitle( const QString &title )
 {
     if ( documentElement().namedItem( "title" ).isNull() )
     {
@@ -273,7 +273,7 @@ XSPFPlaylist::setTitle( QString title )
 }
 
 void
-XSPFPlaylist::setCreator( QString creator )
+XSPFPlaylist::setCreator( const QString &creator )
 {
     if ( documentElement().namedItem( "creator" ).isNull() )
     {
@@ -287,7 +287,7 @@ XSPFPlaylist::setCreator( QString creator )
 }
 
 void
-XSPFPlaylist::setAnnotation( QString annotation )
+XSPFPlaylist::setAnnotation( const QString &annotation )
 {
     if ( documentElement().namedItem( "annotation" ).isNull() )
     {
@@ -301,7 +301,7 @@ XSPFPlaylist::setAnnotation( QString annotation )
 }
 
 void
-XSPFPlaylist::setInfo( KUrl info )
+XSPFPlaylist::setInfo( const KUrl &info )
 {
     if ( documentElement().namedItem( "info" ).isNull() )
     {
@@ -315,7 +315,7 @@ XSPFPlaylist::setInfo( KUrl info )
 }
 
 void
-XSPFPlaylist::setLocation( KUrl location )
+XSPFPlaylist::setLocation( const KUrl &location )
 {
     if ( documentElement().namedItem( "location" ).isNull() )
     {
@@ -329,7 +329,7 @@ XSPFPlaylist::setLocation( KUrl location )
 }
 
 void
-XSPFPlaylist::setIdentifier( QString identifier )
+XSPFPlaylist::setIdentifier( const QString &identifier )
 {
     if ( documentElement().namedItem( "identifier" ).isNull() )
     {
@@ -343,7 +343,7 @@ XSPFPlaylist::setIdentifier( QString identifier )
 }
 
 void
-XSPFPlaylist::setImage( KUrl image )
+XSPFPlaylist::setImage( const KUrl &image )
 {
     if ( documentElement().namedItem( "image" ).isNull() )
     {
@@ -357,7 +357,7 @@ XSPFPlaylist::setImage( KUrl image )
 }
 
 void
-XSPFPlaylist::setDate( QDateTime date )
+XSPFPlaylist::setDate( const QDateTime &date )
 {
     /* date needs timezone info to be compliant with the standard
     (ex. 2005-01-08T17:10:47-05:00 ) */
@@ -374,7 +374,7 @@ XSPFPlaylist::setDate( QDateTime date )
 }
 
 void
-XSPFPlaylist::setLicense( KUrl license )
+XSPFPlaylist::setLicense( const KUrl &license )
 {
     if ( documentElement().namedItem( "license" ).isNull() )
     {
@@ -388,7 +388,7 @@ XSPFPlaylist::setLicense( KUrl license )
 }
 
 void
-XSPFPlaylist::setAttribution( KUrl attribution, bool append )
+XSPFPlaylist::setAttribution( const KUrl &attribution, bool append )
 {
     if ( documentElement().namedItem( "attribution" ).isNull() )
         documentElement().insertBefore( createElement( "attribution" ), documentElement().namedItem( "trackList" ) );
@@ -412,7 +412,7 @@ XSPFPlaylist::setAttribution( KUrl attribution, bool append )
 }
 
 void
-XSPFPlaylist::setLink( KUrl link )
+XSPFPlaylist::setLink( const KUrl &link )
 {
     if ( documentElement().namedItem( "link" ).isNull() )
     {

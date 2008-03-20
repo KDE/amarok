@@ -87,17 +87,17 @@ public:
     KUrl link();
 
     /* EditablePlaylistCapability virtual functions */
-    void setTitle( QString title );
-    void setCreator( QString creator );
-    void setAnnotation( QString annotation );
-    void setInfo( KUrl info );
-    void setLocation( KUrl location );
-    void setIdentifier( QString identifier );
-    void setImage( KUrl image );
-    void setDate( QDateTime date );
-    void setLicense( KUrl license );
-    void setAttribution( KUrl attribution, bool append = true );
-    void setLink( KUrl link );
+    void setTitle( const QString &title );
+    void setCreator( const QString &creator );
+    void setAnnotation( const QString &annotation );
+    void setInfo( const KUrl &info );
+    void setLocation( const KUrl &location );
+    void setIdentifier( const QString &identifier );
+    void setImage( const KUrl &image );
+    void setDate( const QDateTime &date );
+    void setLicense( const KUrl &license );
+    void setAttribution( const KUrl &attribution, bool append = true );
+    void setLink( const KUrl &link );
     void setTrackList( TrackList trackList, bool append = false );
 
     //TODO: implement these

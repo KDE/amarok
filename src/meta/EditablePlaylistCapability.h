@@ -45,17 +45,17 @@ class EditablePlaylistCapability : public Capability
         /** Returns true if the tags of this track are currently editable */
         virtual bool isEditable() const = 0;
 
-        virtual void setTitle( QString title ) {};
-        virtual void setCreator( QString creator ) {};
-        virtual void setAnnotation( QString annotation ) {};
-        virtual void setInfo( KUrl info ) {};
-        virtual void setLocation( KUrl location ) {};
-        virtual void setIdentifier( QString identifier ) {};
-        virtual void setImage( KUrl image ) {};
-        virtual void setDate( QDateTime date ) {};
-        virtual void setLicense( KUrl license ) {};
-        virtual void setAttribution( KUrl attribution, bool append = true ) {};
-        virtual void setLink( KUrl link ) {};
+        virtual void setTitle( const QString &title ) {};
+        virtual void setCreator( const QString &creator ) {};
+        virtual void setAnnotation( const QString &annotation ) {};
+        virtual void setInfo( const KUrl &info ) {};
+        virtual void setLocation( const KUrl &location ) {};
+        virtual void setIdentifier( const QString &identifier ) {};
+        virtual void setImage( const KUrl &image ) {};
+        virtual void setDate( const QDateTime &date ) {};
+        virtual void setLicense( const KUrl &license ) {};
+        virtual void setAttribution( const KUrl &attribution, bool append = true ) {};
+        virtual void setLink( const KUrl &link ) {};
         virtual void setTrackList( TrackList trackList, bool append = false ) {};
 
         /** The playlist object should not store changed meta data immediately but cache the
