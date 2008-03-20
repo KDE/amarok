@@ -12,6 +12,7 @@
  ***************************************************************************/
 
 #include "progressslider.h"
+#include "sliderwidget.h"
 
 #include "amarokconfig.h"
 #include "debug.h"
@@ -25,9 +26,9 @@
 #include <QList>
 #include <QPolygon>
 
-#include <khbox.h>
-#include <klocale.h>
-#include <kpassivepopup.h>
+#include <KHBox>
+#include <KLocale>
+#include <KPassivePopup>
 
 //Class ProgressWidget
 ProgressWidget *ProgressWidget::s_instance = 0;
@@ -45,34 +46,32 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 
     m_slider = new Amarok::Slider( Qt::Horizontal, this );
     m_slider->setMouseTracking( true );
-    // the two time labels. m_timeLabel is the left one,
-    // m_timeLabel2 the right one.
-    m_timeLabel = new TimeLabel( this );
-    m_timeLabel->setToolTip( i18n( "The amount of time elapsed in current song" ) );
 
-    m_timeLabel2 = new TimeLabel( this );
-    m_timeLabel->setToolTip( i18n( "The amount of time remaining in current song" ) );
+    m_timeLabelLeft = new TimeLabel( this );
+    m_timeLabelLeft->setToolTip( i18n( "The amount of time elapsed in current song" ) );
 
-    m_timeLabel->hide();
-    m_timeLabel2->hide();
+    m_timeLabelRight = new TimeLabel( this );
+    m_timeLabelLeft->setToolTip( i18n( "The amount of time remaining in current song" ) );
+
+    m_timeLabelLeft->hide();
+    m_timeLabelRight->hide();
 
     box->addSpacing( 3 );
-    box->addWidget( m_timeLabel );
+    box->addWidget( m_timeLabelLeft );
     box->addWidget( m_slider );
-    box->addWidget( m_timeLabel2 );
+    box->addWidget( m_timeLabelRight );
 #ifdef Q_WS_MAC
     // don't overlap the resize handle with the time display
     box->addSpacing( 12 );
 #endif
 
     if( !AmarokConfig::leftTimeDisplayEnabled() )
-        m_timeLabel->hide();
+        m_timeLabelLeft->hide();
 
     engineStateChanged( Engine::Empty );
 
     connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
     connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
-
 }
 
 void
@@ -86,9 +85,9 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     const uint trackLength = track->length();
 
     if( AmarokConfig::leftTimeDisplayEnabled() )
-        m_timeLabel->show();
+        m_timeLabelLeft->show();
     else
-        m_timeLabel->hide();
+        m_timeLabelLeft->hide();
 
     // when the left label shows the remaining time and it's not a stream
     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
@@ -132,21 +131,21 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     s1 += ' ';
     s2 += ' ';
 
-    m_timeLabel->setText( s1 );
-    m_timeLabel2->setText( s2 );
+    m_timeLabelLeft->setText( s1 );
+    m_timeLabelRight->setText( s2 );
 
     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
-        m_timeLabel->setEnabled( false );
-        m_timeLabel2->setEnabled( true );
+        m_timeLabelLeft->setEnabled( false );
+        m_timeLabelRight->setEnabled( true );
     } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
-        m_timeLabel->setEnabled( true );
-        m_timeLabel2->setEnabled( false );
+        m_timeLabelLeft->setEnabled( true );
+        m_timeLabelRight->setEnabled( false );
     } else
     {
-        m_timeLabel->setEnabled( true );
-        m_timeLabel2->setEnabled( true );
+        m_timeLabelLeft->setEnabled( true );
+        m_timeLabelRight->setEnabled( true );
     }
 }
 
@@ -167,19 +166,21 @@ ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldStat
             m_slider->setEnabled( false );
             m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
             m_slider->setMaximum( 0 );
-//             m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
-//             m_timeLabel2->setEnabled( false );
-            m_timeLabel->hide();
-            m_timeLabel2->hide();
+//             m_timeLabelLeft->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
+//             m_timeLabelRight->setEnabled( false );
+            m_timeLabelLeft->hide();
+            m_timeLabelRight->hide();
             break;
 
         case Engine::Playing:
-            m_timeLabel->show();
-            m_timeLabel2->show();
+            m_timeLabelLeft->show();
+            m_timeLabelRight->show();
+            //fallthrough
+
         case Engine::Paused:
             DEBUG_LINE_INFO
-            m_timeLabel->setEnabled( true );
-            m_timeLabel2->setEnabled( true );
+            m_timeLabelLeft->setEnabled( true );
+            m_timeLabelRight->setEnabled( true );
             break;
 
         case Engine::Idle:

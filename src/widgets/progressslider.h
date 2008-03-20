@@ -11,20 +11,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PROGRESSWIDGET_H
-#define PROGRESSWIDGET_H
+#ifndef AMAROK_PROGRESSWIDGET_H
+#define AMAROK_PROGRESSWIDGET_H
 
 #include "engineobserver.h"
-#include "sliderwidget.h"
-
-#include <kpassivepopup.h>
 
 #include <unistd.h>
+
 #include <QHash>
 #include <QPainter>
 #include <QPolygon>
+#include <QWidget>
 
+namespace Amarok { class Slider; }
 class QLabel;
+
 
 class ProgressWidget : public QWidget, public EngineObserver
 {
@@ -46,8 +47,8 @@ class ProgressWidget : public QWidget, public EngineObserver
         virtual void engineNewTrackPlaying();
 
     private:
-        QLabel *m_timeLabel;
-        QLabel *m_timeLabel2;
+        QLabel *m_timeLabelLeft;
+        QLabel *m_timeLabelRight;
         int m_timeLength;
         Amarok::Slider *m_slider;
 };
