@@ -67,6 +67,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         setWindowOpacity( 0.7 );
     unsetColors();
 
+    m_timer->setSingleShot( true );
+
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
     //PORT 2.0
 //     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
@@ -85,7 +87,7 @@ OSDWidget::show( const QString &text, QImage newImage )
         m_cover = newImage;
         int w = m_scaledCover.width();
         int h = m_scaledCover.height();
-        m_scaledCover = m_cover.scaled( w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+        m_scaledCover = QPixmap::fromImage( m_cover.scaled( w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
     }
     else
         m_cover = Amarok::icon();
@@ -150,7 +152,9 @@ OSDWidget::show() //virtual
 //        bitBlt( this, 0, 0, &m_buffer );
 
         if( m_duration ) //duration 0 -> stay forever
-            m_timer->start( m_duration, true ); //calls hide()
+        {
+            m_timer->start( m_duration ); //calls hide()
+        }
     }
     else
         warning() << "Attempted to make an invalid sized OSD\n";
@@ -217,10 +221,13 @@ OSDWidget::determineMetrics( const uint M )
     {
         const int availableWidth = max.width() - rect.width() - M; //WILL be >= (minImageSize.width() - M)
 
-        m_scaledCover = m_cover.scaled(
-                qMin( availableWidth, m_cover.width() ),
-                qMin( rect.height(), m_cover.height() ),
-                Qt::KeepAspectRatio, Qt::SmoothTransformation ); //this will force us to be with our bounds
+        m_scaledCover = QPixmap::fromImage(
+                m_cover.scaled(
+                    qMin( availableWidth, m_cover.width() ),
+                    qMin( rect.height(), m_cover.height() ),
+                    Qt::KeepAspectRatio, Qt::SmoothTransformation
+                              )
+                                          ); //this will force us to be with our bounds
 
         int shadowWidth = 0;
         if( m_drawShadow && !m_scaledCover.hasAlpha() &&
@@ -284,13 +291,13 @@ OSDWidget::paintEvent( QPaintEvent* )
     rect.adjust( 0, 0, -1, -1 );
 
     // From qt sources
-    const uint xround = (M * 200) / size.width();
-    const uint yround = (M * 200) / size.height();
+    const uint xround = (M * 400) / size.width();
+    const uint yround = (M * 400) / size.height();
 
     QColor shadowColor;
     {
         int h,s,v;
-        foregroundColor().getHsv( &h, &s, &v );
+        palette().color(QPalette::Normal, QPalette::Foreground ).getHsv( &h, &s, &v );
         shadowColor = v > 128 ? Qt::black : Qt::white;
     }
 
@@ -298,10 +305,12 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     QPainter p( this );
 
-    p.fillRect( rect, backgroundColor() );
+//     p.fillRect( rect, palette().color( QPalette::Inactive, QPalette::Dark )/*.dark( 125 )*/ );
 
-    p.setPen( backgroundColor().dark() );
-    p.drawRoundRect( rect, xround, yround );
+    p.setBrush( palette().color( QPalette::Inactive, QPalette::Dark ) );
+    p.setPen( palette().color( QPalette::Normal, QPalette::Dark ).dark( 150 ) );
+    rect.setWidth( rect.width() );
+    p.drawRoundedRect( rect, 7.0, 15.0, Qt::RelativeSize );
 
     rect.adjust( M, M, -M, -M );
 
@@ -329,8 +338,7 @@ OSDWidget::paintEvent( QPaintEvent* )
                 shadow.save( folder + file, "PNG" );
             }
 
-            QPixmap target;
-            target.convertFromImage( shadow ); //FIXME slow
+            QPixmap target = QPixmap::fromImage( shadow ); //FIXME slow
             copyBlt( &target, 0, 0, &m_scaledCover );
             m_scaledCover = target;
             r.setTop( (size.height() - m_scaledCover.height()) / 2 );
@@ -339,7 +347,7 @@ OSDWidget::paintEvent( QPaintEvent* )
 
         p.drawPixmap( r.topLeft(), m_scaledCover );
 
-        rect.rLeft() += m_scaledCover.width() + M;
+        rect.setLeft( rect.left() + m_scaledCover.width() + M );
     }
 
     QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
@@ -404,7 +412,7 @@ OSDWidget::paintEvent( QPaintEvent* )
         p.drawImage( rect.topLeft() - QPoint(5,5), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
 
-    p.setPen( foregroundColor() );
+    p.setPen( palette().color( QPalette::Normal, QPalette::BrightText ) );
     p.setFont( font() );
     p.drawText( rect, align, m_text );
 }
@@ -433,10 +441,12 @@ OSDWidget::mousePressEvent( QMouseEvent* )
 void
 OSDWidget::unsetColors()
 {
-    const QColorGroup c = QApplication::palette().active();
+    QPalette p = QApplication::palette();
+    QPalette newPal = palette();
 
-    setPaletteForegroundColor( c.highlightedText() );
-    setPaletteBackgroundColor( c.highlight() );
+    newPal.setColor( QPalette::Active, QPalette::BrightText, p.color( QPalette::Active, QPalette::BrightText ) );
+    newPal.setColor( QPalette::Active, QPalette::Dark, p.color( QPalette::Active, QPalette::Dark ) );
+    setPalette( newPal );
 }
 
 void
