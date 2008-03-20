@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2007  Dan Meltzer <hydrogen@notyetimplemented.com>      *
  *   Copyright (C) 2007  Seb Ruiz <ruiz@kde.org>                           *
- *   Copyright (C) 2007  Mark Kretschmann <markey@web.de>                  *
+ *   Copyright (C) 2007-2008  Mark Kretschmann <kretschmann@kde.org>       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -90,6 +90,8 @@ PhononEngine::play( uint offset )
     DEBUG_BLOCK
 
     delete m_fader;
+    m_fader = 0;
+
     m_mediaObject->pause();
     seek( offset );
     m_mediaObject->play();
@@ -103,7 +105,8 @@ PhononEngine::stop()
 {
     DEBUG_BLOCK
 
-    m_mediaObject->stop();
+    //m_mediaObject->stop();
+    beginFadeOut();
     emit stateChanged( Engine::Empty );
 }
 
@@ -128,17 +131,17 @@ PhononEngine::unpause()
 void
 PhononEngine::beginFadeOut()
 {
+    DEBUG_BLOCK
+
     if( m_fader )
     {
-        return;
+        m_fader->deleteLater();
+        m_fader = 0;
     }
-    //this code causes a crash in phonon code in insertEffect
-    //i haven't had time to ask the phonon guys about it yet
-    //but the code *seems* to be right - max
-    /*m_fader = new Phonon::VolumeFaderEffect( this );
+    m_fader = new Phonon::VolumeFaderEffect( this );
     m_path.insertEffect( m_fader );
     m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
-    m_fader->fadeOut( AmarokConfig::fadeoutLength() );*/
+    m_fader->fadeOut( AmarokConfig::fadeoutLength() );
 }
 
 Engine::State

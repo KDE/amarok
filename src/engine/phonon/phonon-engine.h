@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2007 Dan Meltzer <hydrogen@notyetimplemented.com>       *
- *   Copyright (C) 2007 Mark Kretschmann <markey@web.de>                   *
+ *   Copyright (C) 2007-2008 Mark Kretschmann <kretschmann@kde.org>        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
