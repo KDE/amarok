@@ -86,10 +86,19 @@ AmpacheService::AmpacheService(const QString & name, const QString &url, const Q
     setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
 
     //we are using http queries later on, so we require
-    KUrl kurl( url );
-    if( kurl.protocol() != "http" && kurl.protocol() != "https" )
+    KUrl kurl;
+    if( url.contains( "//" ) )
+    {
+        kurl.setUrl( url, KUrl::TolerantMode );
+        if( kurl.protocol() != "http" && kurl.protocol() != "https" )
+        {
+            kurl.setProtocol( "http" );
+        }
+    }
+    else
     {
         kurl.setProtocol( "http" );
+        kurl.setAuthority( url );
     }
     m_server = kurl.url();
     m_username = username;
