@@ -105,7 +105,6 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
 
     if ( el.tagName() == "suggestions" )
     {
-
         const QDomNodeList l = doc.elementsByTagName( "suggestion" );
 
         if( l.length() ==0 )
@@ -125,8 +124,10 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
             }
 //             setData( "lyrics", "suggested", suggested );
             // TODO for now suggested is disabled
+            sendLyricsMessage( QString( "notfound" ) ); // FIXME: Until we support it, show something...
         }
-    } else
+    }
+    else
     {
         lyrics = el.text();
         EngineController::instance()->currentTrack()->setCachedLyrics( xmldoc); // TODO: setLyricsByPath?
