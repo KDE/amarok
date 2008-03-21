@@ -35,9 +35,9 @@
 #include <KMessageBox>
 #include <KRun>
 
+#include <Phonon/AudioOutput>
 #include <Phonon/BackendCapabilities>
 #include <Phonon/MediaObject>
-#include <Phonon/AudioOutput>
 
 #include <QByteArray>
 #include <QFile>
@@ -55,7 +55,6 @@ EngineController::instance()
 
     return &Instance;
 }
-
 
 EngineController::EngineController()
     : m_media( 0 )
@@ -164,7 +163,8 @@ EngineController::installDistroCodec()
             }
         }
     }
-return false;
+
+    return false;
 }
 
 void
@@ -182,7 +182,6 @@ EngineController::restoreSession()
     }
 }
 
-
 void
 EngineController::endSession()
 {
@@ -196,7 +195,6 @@ EngineController::endSession()
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
-
 
 void
 EngineController::play() //SLOT
@@ -247,7 +245,6 @@ EngineController::pause() //SLOT
     m_media->pause();
 }
 
-
 void
 EngineController::stop() //SLOT
 {
@@ -265,8 +262,6 @@ EngineController::stop() //SLOT
     m_media->stop();
 }
 
-
-
 void
 EngineController::playPause() //SLOT
 {
@@ -279,7 +274,6 @@ EngineController::playPause() //SLOT
     else
         play();
 }
-
 
 void
 EngineController::seek( int ms ) //SLOT
@@ -299,13 +293,11 @@ EngineController::seekRelative( int ms ) //SLOT
     seek( newPos <= 0 ? 0 : newPos );
 }
 
-
 void
 EngineController::seekForward( int ms )
 {
     seekRelative( ms );
 }
-
 
 void
 EngineController::seekBackward( int ms )
@@ -313,20 +305,17 @@ EngineController::seekBackward( int ms )
     seekRelative( -ms );
 }
 
-
 int
 EngineController::increaseVolume( int ticks ) //SLOT
 {
     return setVolume( volume() + ticks );
 }
 
-
 int
 EngineController::decreaseVolume( int ticks ) //SLOT
 {
     return setVolume( volume() - ticks );
 }
-
 
 int
 EngineController::setVolume( int percent ) //SLOT
@@ -445,7 +434,6 @@ EngineController::slotTrackEnded() //SLOT
     else */
         trackDone();
 }
-
 
 void
 EngineController::slotStateChanged() //SLOT
