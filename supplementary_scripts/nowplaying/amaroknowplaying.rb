@@ -38,7 +38,7 @@ else
 
     unless album.empty?
         output += " [#{album}"
-        output += ", #{year}" unless year == "0"
+        output += ", #{year}" unless year == "0" or year.empty?
         output += "]"
     end
 
