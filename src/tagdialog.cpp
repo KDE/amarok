@@ -865,10 +865,12 @@ void TagDialog::readTags()
     bool editable = m_currentTrack->hasCapabilityInterface( Meta::Capability::Editable );
     ui->kLineEdit_title->setReadOnly( !editable );
     ui->kComboBox_artist->setEnabled( editable );
+    ui->kComboBox_composer->setEnabled( editable );
     ui->kComboBox_album->setEnabled( editable );
     ui->kComboBox_genre->setEnabled( editable );
     ui->kComboBox_rating->setEnabled( editable );
     ui->qSpinBox_track->setEnabled( editable );
+    ui->qSpinBox_discNumber->setEnabled( editable );
     ui->qSpinBox_year->setEnabled( editable );
     ui->qSpinBox_score->setEnabled( editable );
     ui->kTextEdit_comment->setEnabled( editable );
