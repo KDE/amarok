@@ -30,6 +30,7 @@ email                : markey@web.de
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "Meta.h"
+#include "meta/MetaConstants.h"
 #include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
@@ -771,8 +772,8 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
         if ( oldState == Engine::Paused )
             Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
         if ( !track->prettyName().isEmpty() )
-            //TODO: write a utility function somewhere
-            mainWindow()->setPlainCaption( i18n( "%1  -  %2", track->prettyName(), AMAROK_CAPTION ) );
+//             //TODO: write a utility function somewhere
+            mainWindow()->setPlainCaption( i18n( "%1 - %2 -  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown"), track->prettyName(), AMAROK_CAPTION ) );
         break;
 
     case Engine::Paused:
@@ -789,13 +790,15 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     }
 }
 
-void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool /*trackChanged*/ )
+void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
-    Q_UNUSED( newMetaData );
     Meta::TrackPtr currentTrack = EngineController::instance()->currentTrack();
     Amarok::OSD::instance()->show( currentTrack );
-    if ( !currentTrack->prettyName().isEmpty() )
-        mainWindow()->setPlainCaption( i18n( "%1  -  %2", currentTrack->prettyName(), AMAROK_CAPTION ) );
+    if( !trackChanged )
+    {
+        if ( !currentTrack->prettyName().isEmpty() )
+           mainWindow()->setPlainCaption( i18n( "%1 - %2 -  %3", newMetaData.value( Meta::valArtist ), newMetaData.value( Meta::valTitle ), AMAROK_CAPTION ) );
+    }
 
 //     TrackToolTip::instance()->setTrack( currentTrack );
 }
