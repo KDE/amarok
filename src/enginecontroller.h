@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2004 Frederik Holljen <fh@ez.no>                        *
  *             (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
- *             (C) 2004,5 Mark Kretschmann <kretschmann@kde.org>           *
+ *             (C) 2004,5 Mark Kretschmann  <kretschmann@kde.org>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -49,10 +49,10 @@ public:
     static bool              canDecode( const KUrl& );
     static ExtensionCache&   extensionCache() { return s_extensionCache; }
 
-    qint64                  trackPosition() const;
+    int trackPosition() const;
 
     Meta::TrackPtr currentTrack() const;
-    qint64 trackLength() const;
+    int trackLength() const;
 
     void restoreSession();
     void endSession();
@@ -69,15 +69,15 @@ public:
     bool loaded() { return instance()->state() != Engine::Empty; }
     bool getAudioCDContents(const QString &device, KUrl::List &urls);
     bool isStream();
-
 public slots:
+    
     void play();
     void play( const Meta::TrackPtr&, uint offset = 0 );
     void pause();
     void stop();
     void playPause(); //pauses if playing, plays if paused or stopped
 
-    void seek( qint64 ms );
+    void seek( int ms );
     void seekRelative( int ms );
     void seekForward( int ms = 10000 );
     void seekBackward( int ms = 10000 );
@@ -90,6 +90,7 @@ public slots:
 
 signals:
     void orderCurrent();
+    void orderNext( bool );
     void statusText( const QString& );
     void trackFinished();
 
@@ -103,13 +104,13 @@ protected:
 
     void playUrl( const KUrl &url, uint offset );
     void trackDone();
-
 private slots:
     void slotTrackEnded();
-    void slotStateChanged(Engine::State);
+    void slotStateChanged();
     void slotPlayableUrlFetched(const KUrl&);
+    void slotTick( qint64 );
+    void slotTrackLengthChanged( qint64 );
     void slotMetaDataChanged();
-
 private:
     static ExtensionCache s_extensionCache;
     Phonon::MediaObject *m_media;
@@ -117,7 +118,7 @@ private:
     Phonon::Path        m_path;
     bool                m_stream;
     Meta::TrackPtr  m_currentTrack;
-    Meta::TrackPtr m_lastTrack;
+    Meta::TrackPtr  m_lastTrack;
     Meta::MultiPlayableCapability *m_multi;
 };
 

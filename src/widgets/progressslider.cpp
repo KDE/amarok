@@ -17,9 +17,9 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "timeLabel.h"
+#include "TheInstances.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -79,10 +79,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 {
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label.
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
-    if( !track )
-        return;
-    const uint trackLength = track->length();
+    const uint trackLength = The::engineController()->trackLength();
 
     if( AmarokConfig::leftTimeDisplayEnabled() )
         m_timeLabelLeft->show();
@@ -191,6 +188,8 @@ ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldStat
 void
 ProgressWidget::engineTrackLengthChanged( long seconds )
 {
+    DEBUG_BLOCK
+    debug() << "setting length to " << seconds << " cause it says " << The::engineController()->trackLength();
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( seconds * 1000 );
     m_slider->setEnabled( seconds > 0 );
@@ -200,10 +199,7 @@ ProgressWidget::engineTrackLengthChanged( long seconds )
 void
 ProgressWidget::engineNewTrackPlaying()
 {
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
-    if( !track )
-        return;
-    engineTrackLengthChanged( track->length() );
+    engineTrackLengthChanged( The::engineController()->trackLength() );
 }
 
 #include "progressslider.moc"

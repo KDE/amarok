@@ -56,6 +56,7 @@ EngineController::instance()
     return &Instance;
 }
 
+
 EngineController::EngineController()
     : m_media( 0 )
     , m_audio( 0 )
@@ -65,16 +66,22 @@ EngineController::EngineController()
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
     m_path = Phonon::createPath(m_media, m_audio);
+
+    m_media->setTickInterval( 250 ); //small tick interval to make progress slider smoother
     PERF_LOG( "EngineController: loaded phonon objects" )
 
-    connect( m_media, SIGNAL( finished() ), SIGNAL( trackFinished() ) );
+    connect( m_media, SIGNAL( finished() ), SLOT( slotTrackEnded() ) );
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
-
+    connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ), SLOT( slotStateChanged() ) );
+    connect( m_media, SIGNAL( tick( qint64 ) ), SLOT( slotTick( qint64 ) ) );
+    connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
 }
 
 EngineController::~EngineController()
 {
     DEBUG_FUNC_INFO //we like to know when singletons are destroyed
+    delete m_media;
+    delete m_audio;
 }
 
 
@@ -157,8 +164,7 @@ EngineController::installDistroCodec()
             }
         }
     }
-
-    return false;
+return false;
 }
 
 void
@@ -176,6 +182,7 @@ EngineController::restoreSession()
     }
 }
 
+
 void
 EngineController::endSession()
 {
@@ -189,6 +196,7 @@ EngineController::endSession()
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
+
 
 void
 EngineController::play() //SLOT
@@ -229,7 +237,6 @@ EngineController::playUrl( const KUrl &url, uint offset )
     m_media->pause();
     m_media->seek( offset );
     m_media->play();
-
     if( m_media->state() != Phonon::ErrorState )
         newTrackPlaying();
 }
@@ -239,6 +246,7 @@ EngineController::pause() //SLOT
 {
     m_media->pause();
 }
+
 
 void
 EngineController::stop() //SLOT
@@ -257,6 +265,8 @@ EngineController::stop() //SLOT
     m_media->stop();
 }
 
+
+
 void
 EngineController::playPause() //SLOT
 {
@@ -272,14 +282,15 @@ EngineController::playPause() //SLOT
 
 
 void
-EngineController::seek( qint64 ms ) //SLOT
+EngineController::seek( int ms ) //SLOT
 {
     if( m_media->isSeekable() )
     {
-        m_media->seek( ms );
+        m_media->seek( static_cast<qint64>( ms ) );
         trackPositionChangedNotify( ms, true ); /* User seek */
     }
 }
+
 
 void
 EngineController::seekRelative( int ms ) //SLOT
@@ -287,6 +298,7 @@ EngineController::seekRelative( int ms ) //SLOT
     qint64 newPos = m_media->currentTime() + ms;
     seek( newPos <= 0 ? 0 : newPos );
 }
+
 
 void
 EngineController::seekForward( int ms )
@@ -301,17 +313,20 @@ EngineController::seekBackward( int ms )
     seekRelative( -ms );
 }
 
+
 int
 EngineController::increaseVolume( int ticks ) //SLOT
 {
     return setVolume( volume() + ticks );
 }
 
+
 int
 EngineController::decreaseVolume( int ticks ) //SLOT
 {
     return setVolume( volume() - ticks );
 }
+
 
 int
 EngineController::setVolume( int percent ) //SLOT
@@ -344,11 +359,10 @@ EngineController::currentTrack() const
     return state == Phonon::ErrorState ? Meta::TrackPtr() : m_currentTrack;
 }
 
-//do we actually need this method?
-qint64
+int
 EngineController::trackLength() const
 {
-    return m_media->totalTime();
+    return static_cast<int>( m_media->totalTime() / 1000 );
 }
 
 Engine::State
@@ -374,7 +388,7 @@ EngineController::state() const
 
         case Phonon::ErrorState:
         // fallthrough
-
+        
         case Phonon::LoadingState:
             state = m_currentTrack && m_currentTrack->isPlayable() ? Engine::Empty : Engine::Idle;
     }
@@ -385,18 +399,34 @@ EngineController::state() const
 bool 
 EngineController::getAudioCDContents(const QString &device, KUrl::List &urls)
 {
+//since Phonon doesn't know anything about CD listings, there's actually no reason for this functionality to be here
+//kept to keep things compiling, probably should be in its own class.
     return false;
 }
 
-bool 
+bool
 EngineController::isStream()
 {
     return m_stream;
 }
-//
+
+int
+EngineController::trackPosition() const
+{
+//NOTE: there was a bunch of last.fm logic removed from here
+//pretty sure it's irrelevant, if not, look back to mid-March 2008
+    return static_cast<int>( m_media->currentTime() / 1000 );
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
+
+void
+EngineController::slotTick( qint64 position )
+{
+    trackPositionChangedNotify( static_cast<long>( position ), false ); //it expects milliseconds
+}
 
 void
 EngineController::slotTrackEnded() //SLOT
@@ -418,36 +448,20 @@ EngineController::slotTrackEnded() //SLOT
 
 
 void
-EngineController::slotStateChanged( Engine::State newState ) //SLOT
+EngineController::slotStateChanged() //SLOT
 {
-    switch( newState )
-    {
-    case Engine::Empty:
-        //FALL THROUGH
-
-    case Engine::Paused:
-
-        break;
-
-    case Engine::Playing:
-
-        break;
-
-    default:
-        ;
-    }
-
-    stateChangedNotify( newState );
+    DEBUG_BLOCK
+    stateChangedNotify( state() );
 }
 
 void
 EngineController::trackDone()
 {
-    emit trackFinished(); 
+    emit trackFinished();
     if( m_multi )
         m_multi->fetchNext();
     else
-        The::playlistModel()->next();
+        emit orderNext( false );
 }
 
 void
@@ -455,12 +469,18 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
 {
     if( url.isEmpty() )
     {
-        The::playlistModel()->next();
+        emit orderNext( false );
     }
     else
     {
         playUrl( url, 0 );
     }
+}
+
+void
+EngineController::slotTrackLengthChanged( qint64 milliseconds )
+{
+    trackLengthChangedNotify( static_cast<long>( milliseconds ) / 1000 );
 }
 
 void
@@ -506,20 +526,10 @@ EngineController::slotMetaDataChanged()
     newMetaDataNotify( meta, trackChanged);
 }
 
-qint64
-EngineController::trackPosition() const
-{
-//NOTE: there was a bunch of last.fm logic removed from here
-//pretty sure it's irrelevant, if not, look back to March 2008
-    return m_media->currentTime();
-}
-
 EngineController*
 The::engineController()
 {
     return EngineController::instance(); //port amarok to the The:: style...
 }
 
-
 #include "enginecontroller.moc"
-
