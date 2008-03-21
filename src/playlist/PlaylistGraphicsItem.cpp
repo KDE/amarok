@@ -164,22 +164,20 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
 
     // call paint method based on type
-    if ( m_groupMode == None ) {
+    if ( m_groupMode == None )
         paintSingleTrack( painter, option, isActiveTrack );
-    } else if ( m_groupMode == Head ) {
+    else if ( m_groupMode == Head )
         paintHead( painter, option, isActiveTrack );
-    } else if ( m_groupMode == Head_Collapsed ) {
+    else if ( m_groupMode == Head_Collapsed )
         paintCollapsedHead( painter, option, isActiveTrack );
-    } else if ( m_groupMode == Body ) {
+    else if ( m_groupMode == Body )
         paintBody( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
-    } else if ( m_groupMode == End ) {
+    else if ( m_groupMode == End )
         paintTail( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
-    } else if ( m_groupMode == Collapsed ) {
+    else if ( m_groupMode == Collapsed )
         paintCollapsed( );
-    }
 
     return;
-
 }
 
 void
@@ -213,7 +211,6 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     font.setBold( false );
     m_items->topLeftText->setFont( font );
 
-    
     if( totalWidth == -1 /*|| totalWidth == m_items->lastWidth */) //no change needed
         return;
     if( m_items->lastWidth != -5 ) //this isn't the first "resize"
@@ -230,10 +227,12 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         prettyLength = Meta::secToPrettyTime( seconds );
     }
     else
+    {
         if ( track->length() > 0 )
             prettyLength = Meta::secToPrettyTime( track->length() );
         else 
             prettyLength = QString();
+    }
 
     QString album;
     if( track->album() )
@@ -257,8 +256,6 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     bottomRightAlignX = ( totalWidth - 4 * MARGIN ) - lengthStringWidth ;
 
 
-
-
     qreal spaceForTopLeft = totalWidth - ( totalWidth - topRightAlignX ) - leftAlignX;
     qreal spaceForBottomLeft = totalWidth - ( totalWidth - bottomRightAlignX ) - leftAlignX;
 
@@ -270,19 +267,23 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         m_items->bottomLeftText->setFont( f );
         m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
 
-    } else {
+    }
+    else
+    {
         m_items->bottomLeftText->setFont( m_items->bottomRightText->font() );
+
         if ( track->trackNumber() > 0 )
-            m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg( QString::number( track->trackNumber() ), track->name() ) , spaceForBottomLeft );
+            m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg(
+                QString::number( track->trackNumber() ), track->name() ) , spaceForBottomLeft );
         else
             m_items->bottomLeftText->setEditableText( track->name() , spaceForBottomLeft );
-        
-        m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
-    }
-    if ( m_groupMode == None ) {
 
+        m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
+    } //ELSE HEAD_COLLAPSED
+
+    if ( m_groupMode == None )
+    {
         const qreal lineTwoYSingle = s_fm->height() + MARGIN;
-        
 
         m_items->topRightText->setPos( topRightAlignX, MARGIN );
         m_items->topRightText->setEditableText( album, totalWidth - topRightAlignX );
@@ -297,7 +298,9 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         m_items->bottomLeftText->setPos( leftAlignX, lineTwoYSingle );
         m_items->bottomRightText->setPos( bottomRightAlignX, lineTwoYSingle );
-    } else if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
+    }
+    else if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) )
+    {
 //FIXME: Is this still needed?
 //         int headingCenter = (int)( MARGIN + ( ALBUM_WIDTH - s_fm->height()) / 2 );
 
@@ -314,7 +317,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         int albumWidth = (int)s_fm->width( album );
 
-        int offsetX = static_cast<int>(MARGIN + ALBUM_WIDTH + ( ( headTextWidth - albumWidth ) / 2 ));
+        int offsetX = static_cast<int>(MARGIN + ALBUM_WIDTH + ( ( headTextWidth - albumWidth ) / 2 ) );
 
         //album goes at the bottom
         m_items->topRightText->setPos( offsetX , firstLineYOffset + MARGIN + s_fm->height() );
@@ -350,30 +353,38 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         m_items->bottomLeftText->setPos( MARGIN * 3, underImageY );
         m_items->bottomRightText->setPos( bottomRightAlignX, underImageY );
 
-    } else {
+    }
+    else
+    {
         m_items->bottomLeftText->setPos( MARGIN * 3, 0 );
         m_items->bottomRightText->setPos( bottomRightAlignX, 0 );
     }
 
     //make sure the active item overlay has the correct width
 
-
-
     if( m_items->foreground )
     {
 
         QRectF trackRect;
-        if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) ) {
+        if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) )
+        {
             trackRect = QRectF( 0, ALBUM_WIDTH + 2 * MARGIN, totalWidth, s_fm->height() );
-        } else {
+        }
+        else
+        {
             trackRect = QRectF( 0, 0, totalWidth, m_height );
-            if ( ( m_groupMode != Body) && !( ( m_groupMode == Head ) ) )
+            if ( ( m_groupMode != Body) && !( m_groupMode == Head ) )
                 trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
         }
 
         //debug() << "Resizing active track overlay";
 
-        QPixmap background = renderSvg( "active_overlay", (int)( trackRect.width() ), (int)( trackRect.height() ), "active_overlay" );
+        QPixmap background = renderSvg(
+                                        "active_overlay",
+                                        (int)trackRect.width(),
+                                        (int)trackRect.height(),
+                                        "active_overlay"
+                                      );
         m_items->foreground->setPixmap( background );
         m_items->foreground->setZValue( 10.0 );
 
@@ -636,13 +647,14 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
     {
         setPos( above->pos() );
         The::playlistView()->moveItem( this, above );
-    } else {
+    }
+    else
+    {
         //Don't just drop item into the void, make it the last item!
 
         The::playlistView()->moveItem( this, 0 );
         //setPos( above->pos() );
         //The::playlistView()->moveItem( this, above );
-
     }
 
     //make sure item resets its z value
@@ -660,18 +672,17 @@ void Playlist::GraphicsItem::setRow(int row)
     //figure out our group state and set height accordingly
     int currentGroupState = index.data( GroupRole ).toInt();
 
-    if ( currentGroupState != m_groupMode ) {
-
+    if ( currentGroupState != m_groupMode )
+    {
         //debug() << "Group changed for row " << row;
 
         prepareGeometryChange();
 
-
         m_groupMode = currentGroupState;
         m_groupModeChanged = true;
 
-        switch ( m_groupMode ) {
-
+        switch ( m_groupMode )
+        {
             case None:
                 //debug() << "None";
                 m_height =  qMax( SINGLE_TRACK_ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN + 2;
@@ -684,13 +695,14 @@ void Playlist::GraphicsItem::setRow(int row)
             case Head_Collapsed:
                 //debug() << "Collapsed head";
                 m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN * 2 + s_fm->height() + 4;
-                if ( !m_items ) {
+                if ( !m_items )
+                {
                     const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
                     m_items = new Playlist::GraphicsItem::ActiveItems();
                     m_items->track = track;
                     init( track );
                 }
-                    m_items->groupedTracks = index.data( GroupedTracksRole ).toInt();
+                m_items->groupedTracks = index.data( GroupedTracksRole ).toInt();
                 break;
             case Body:
                 //debug() << "Body";
@@ -728,19 +740,14 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     //paint cover
     QPixmap albumPixmap;
     if( m_items->track->album() )
-    {
-        if( !m_items->track->album()->hasImage( int( SINGLE_TRACK_ALBUM_WIDTH ) ) )
-        {
-//             The::coverFetcher()->queueAlbum( m_items->track->album() );
-        }
         albumPixmap =  m_items->track->album()->image( int( SINGLE_TRACK_ALBUM_WIDTH ) );
-    }
-    
+
     //offset cover if non square
     QPointF offset = centerImage( albumPixmap, imageLocation() );
     QRectF imageRect( imageLocationSingleTrack().x() + offset.x(),
-                      imageLocationSingleTrack().y() + offset.y(), imageLocationSingleTrack().width() - offset.x() * 2, imageLocationSingleTrack().height() - offset.y() * 2 );
-    
+                      imageLocationSingleTrack().y() + offset.y(), imageLocationSingleTrack().width() - offset.x() * 2,
+                      imageLocationSingleTrack().height() - offset.y() * 2 );
+
     painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
 
@@ -761,24 +768,19 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     }
 
 
-    /*m_items->topRightText->setDefaultTextColor( Qt::black );
-    m_items->topLeftText->setDefaultTextColor( Qt::black );
-    */
-        //and make sure the top text elements are shown
+    //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
         m_items->topRightText->show();
     if( !m_items->topLeftText->isVisible() )
         m_items->topLeftText->show();
-
-
 
     //set overlay if item is active:
     //handleActiveOverlay( trackRect, active );
 
     const qreal lineTwoY = s_fm->height() + MARGIN;
 
-    if ( active ) {
-
+    if ( active )
+    {
         painter->drawPixmap(
                              static_cast<int>( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2 ),
                              (int)lineTwoY,
@@ -825,7 +827,6 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
 
     painter->drawPixmap( 0, 0, renderSvg( "head", (int)headRect.width(), (int)headRect.height(), "head" ) );
 
-
     //paint collapse button
     QString collapseString;
     if ( m_groupMode == Head )
@@ -839,49 +840,56 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
         collapseString = "expand_button";
 
 
-        painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, renderSvg( collapseString, 16, 16, collapseString ) );
-
+        painter->drawPixmap(
+                             (int)( option->rect.width() - ( 16 + MARGIN ) ),
+                             (int)MARGIN,
+                             renderSvg( collapseString, 16, 16, collapseString )
+                           );
 
     //paint cover
     QPixmap albumPixmap;
     if( m_items->track->album() )
-    {
-        if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
-        {
-//             The::coverFetcher()->queueAlbum( m_items->track->album() );
-        }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
-    }
 
     //offset cover if non square
     QPointF offset = centerImage( albumPixmap, imageLocation() );
-    QRectF imageRect( imageLocation().x() + offset.x(), imageLocation().y() + offset.y(), imageLocation().width() - offset.x() * 2, imageLocation().height() - offset.y() * 2 );
+    QRectF imageRect( imageLocation().x() + offset.x(),
+                      imageLocation().y() + offset.y(),
+                      imageLocation().width() - offset.x() * 2,
+                      imageLocation().height() - offset.y() * 2
+                    );
     painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
     //draw active track marker if needed
     if ( active )
-        painter->drawPixmap( (int)trackRect.x() + 5, (int)trackRect.y() + 2, renderSvg( "active_overlay", (int)trackRect.width() - 10 , (int)trackRect.height() - 1, "active_overlay"  ) );
+        painter->drawPixmap(
+                             (int)trackRect.x() + 5,
+                             (int)trackRect.y() + 2,
+                             renderSvg(
+                                        "active_overlay",
+                                        (int)trackRect.width() - 10 ,
+                                        (int)trackRect.height() - 1,
+                                        "active_overlay"
+                                      )
+                           );
 
-    
     //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
         m_items->topRightText->show();
     if( !m_items->topLeftText->isVisible() )
         m_items->topLeftText->show();
 
-
-        //check if there is a emblem to display
+    //check if there is a emblem to display
     //does this track have the SourceInfoCapability?
 
     Meta::SourceInfoCapability *sic = m_items->track->as<Meta::SourceInfoCapability>();
     if( sic )
     {
-
         //debug() << "Got SourceInfoCapability!!";
         //is the source defined
         QString source = sic->sourceName();
-        if ( !source.isEmpty() ) {
-
+        if ( !source.isEmpty() )
+        {
             painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
         }
 
@@ -914,9 +922,6 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
                                       )
                            );
     }
-
-
-
 }
 
 void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
@@ -945,29 +950,23 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
     //paint cover:
     QPixmap albumPixmap;
     if( m_items->track->album() )
-    {
-        if( !m_items->track->album()->hasImage( int( ALBUM_WIDTH ) ) )
-        {
-//             The::coverFetcher()->queueAlbum( m_items->track->album() );
-        }
         albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
-    }
-    
+
     //offset cover if non square
     QPointF offset = centerImage( albumPixmap, imageLocation() );
-    QRectF imageRect( imageLocation().x() + offset.x(), imageLocation().y() + offset.y(), imageLocation().width() - offset.x() * 2, imageLocation().height() - offset.y() * 2 );
+    QRectF imageRect(
+                      imageLocation().x() + offset.x(),
+                      imageLocation().y() + offset.y(),
+                      imageLocation().width() - offset.x() * 2,
+                      imageLocation().height() - offset.y() * 2
+                    );
     painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
-
-    /*m_items->topRightText->setDefaultTextColor( Qt::white );
-    m_items->topLeftText->setDefaultTextColor( Qt::white );
-    */
-        //and make sure the top text elements are shown
+    //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
         m_items->topRightText->show();
     if( !m_items->topLeftText->isVisible() )
         m_items->topLeftText->show();
-
 
     //check if there is a emblem to display
     //does this track have the SourceInfoCapability?
@@ -976,11 +975,10 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
     {
         //is the source defined
         QString source = sic->sourceName();
-        if ( !source.isEmpty() ) {
-
+        if ( !source.isEmpty() )
+        {
             painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
         }
-
         delete sic;
     }
 
@@ -994,7 +992,6 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
 
     painter->drawPixmap( 0, 0, renderSvg( "body", (int)trackRect.width(), (int)trackRect.height(), "body" ) );
 
-
     //draw alternate background if needed
     if ( alternate )
         painter->drawPixmap( 5, 0, renderSvg( "body_background", (int)trackRect.width() - 10, (int)trackRect.height(), "body_background" ) );
@@ -1004,18 +1001,12 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
         painter->drawPixmap( 5, 0, renderSvg( "active_overlay", (int)trackRect.width() - 10 , (int)trackRect.height(), "active_overlay" ) );
 
 
-    /*m_items->topRightText->setDefaultTextColor( Qt::black );
-    m_items->topLeftText->setDefaultTextColor( Qt::black );
-    */
     //make sure that the top text items are not shown
-    if( m_items->topRightText->isVisible() )
-        m_items->topRightText->hide();
-    if( m_items->topLeftText->isVisible() )
-        m_items->topLeftText->hide();
-    if( !m_items->bottomRightText->isVisible() )
-        m_items->bottomRightText->show();
-    if( !m_items->bottomLeftText->isVisible() )
-        m_items->bottomLeftText->show();
+    m_items->topRightText->hide();
+    m_items->topLeftText->hide();
+    //And the bottom ones are!
+    m_items->bottomRightText->show();
+    m_items->bottomLeftText->show();
 
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
@@ -1041,8 +1032,6 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
                                       )
                            );
     }
-
-
 }
 
 void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate  )
@@ -1076,14 +1065,11 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
                            );
 
     //make sure that the top text items are not shown
-    if( m_items->topRightText->isVisible() )
-        m_items->topRightText->hide();
-    if( m_items->topLeftText->isVisible() )
-        m_items->topLeftText->hide();
-    if( !m_items->bottomRightText->isVisible() )
-        m_items->bottomRightText->show();
-    if( !m_items->bottomLeftText->isVisible() )
-        m_items->bottomLeftText->show();
+    m_items->topRightText->hide();
+    m_items->topLeftText->hide();
+    //And that the bottom ones are!
+    m_items->bottomRightText->show();
+    m_items->bottomLeftText->show();
 
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
@@ -1109,23 +1095,16 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
                                      )
                            );
     }
-
 }
 
 void Playlist::GraphicsItem::paintCollapsed()
 {
-
     // just make sure text items are hidden and then get the heck out of here...
-    if( m_items->topRightText->isVisible() )
-        m_items->topRightText->hide();
-    if( m_items->topLeftText->isVisible() )
-        m_items->topLeftText->hide();
-    if( m_items->bottomRightText->isVisible() )
-        m_items->bottomRightText->hide();
-    if( m_items->bottomLeftText->isVisible() )
-        m_items->bottomLeftText->hide();
+    m_items->topRightText->hide();
+    m_items->topLeftText->hide();
+    m_items->bottomRightText->hide();
+    m_items->bottomLeftText->hide();
 }
-
 
 void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
 {
@@ -1134,7 +1113,6 @@ void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
     {
         if( !m_items->foreground )
         {
-
             //debug() << "Creating active track overlay";
             m_items->foreground = new QGraphicsPixmapItem( this );
             m_items->foreground->setPos( 0.0, rect.top() );
@@ -1143,8 +1121,8 @@ void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
             m_items->foreground->setPixmap( renderSvg( "active_overlay", (int)rect.width(), (int)rect.height(), "active_overlay" ) );
             m_items->foreground->show();
             //debug() << "Done";
-
         }
+
         if( !m_items->foreground->isVisible() )
             m_items->foreground->show();
     }
@@ -1154,7 +1132,6 @@ void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
 
 QPointF Playlist::GraphicsItem::centerImage(QPixmap pixmap, QRectF rect)
 {
-
     qreal pixmapRatio = (qreal) pixmap.width() / (qreal) pixmap.height();
 
     qreal moveByX = 0.0;
@@ -1186,19 +1163,21 @@ void Playlist::GraphicsItem::paletteChange()
     reTint();
 
     //make sure this image is re rendered
-    if ( m_items && m_items->foreground ) {
+    if ( m_items && m_items->foreground )
+    {
         delete m_items->foreground;
         m_items->foreground = 0;
     }
 
     //ensure that the text items use a sane color
-    if ( m_items && m_items->bottomLeftText ) {
+    if ( m_items && m_items->bottomLeftText )
+    {
         m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
         m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
         m_items->topLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
         m_items->topRightText->setDefaultTextColor( App::instance()->palette().text().color() );
     }
-    
+
     refresh();
 }
 
