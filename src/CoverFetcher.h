@@ -15,6 +15,7 @@
 
 #include "meta/Meta.h"
 
+#include <QDomNode>
 #include <QImage>       //stack allocated
 #include <QLabel>       //baseclass
 #include <QMutex>
@@ -87,6 +88,8 @@ private slots:
 private:
     friend class CoverFetcherSingleton;
     CoverFetcher();
+    void parseItemNode( const QDomNode &node );
+
     Meta::AlbumList m_albums;
     Meta::AlbumPtr m_albumPtr;
     QMutex m_albumsMutex;

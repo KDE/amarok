@@ -16,7 +16,7 @@
    inkscape:version="0.45.1"
    version="1.0"
    sodipodi:docname="amarok-lyrics.svg"
-   sodipodi:docbase="/home/amarok-dev/amarok/src/context/applets/lyrics"
+   sodipodi:docbase="/home/hydrogen/kde/src/amarok/src/context/applets/lyrics"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs3488">
@@ -52,15 +52,15 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="297.49459"
-     inkscape:cy="93.583418"
+     inkscape:zoom="2.1088004"
+     inkscape:cx="256.56241"
+     inkscape:cy="145.10621"
      inkscape:document-units="px"
      inkscape:current-layer="svg3486"
-     inkscape:window-width="1430"
-     inkscape:window-height="814"
-     inkscape:window-x="103"
-     inkscape:window-y="69"
+     inkscape:window-width="1440"
+     inkscape:window-height="822"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      width="381.21px"
      height="143.0905px" />
   <metadata
@@ -77,15 +77,15 @@
   <rect
      width="140"
      height="12"
-     x="76.118927"
-     y="30.568537"
+     x="84.118927"
+     y="30"
      id="lyricstrackname"
      style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   <rect
      width="140"
      height="12"
-     x="337.50476"
-     y="30.568537"
+     x="371.50476"
+     y="30"
      id="lyricsartist"
      style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   <rect
@@ -94,14 +94,14 @@
      width="60"
      height="12"
      x="13.044676"
-     y="30.568537" />
+     y="30" />
   <rect
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="artistlabel"
      width="60"
      height="12"
      x="274.81631"
-     y="30.568537" />
+     y="30" />
   <rect
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="title"
