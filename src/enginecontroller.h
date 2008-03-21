@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2004 Frederik Holljen <fh@ez.no>                        *
  *             (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
- *             (C) 2004,5 Mark Kretschmann <kretschmann@kde.org>           *
+ *             (C) 2004-2008 Mark Kretschmann <kretschmann@kde.org>        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,16 +18,16 @@
 
 #include <QMap>
 #include <QObject>
+#include <QPointer>
 
 #include <Phonon/Global>
 #include <Phonon/Path>
 
 class QTimer;
 
-
 namespace KIO { class Job; }
 namespace Meta { class MultiPlayableCapability; }
-namespace Phonon { class MediaObject; class AudioOutput; }
+namespace Phonon { class AudioOutput; class MediaObject; class VolumeFaderEffect; }
 
 /**
  * This class captures Amarok specific behaviour for some common features.
@@ -112,16 +112,21 @@ private slots:
     void slotTick( qint64 );
     void slotTrackLengthChanged( qint64 );
     void slotMetaDataChanged();
+    void slotReallyStop(); //called after the fade-out has finished
 
 private:
     static ExtensionCache s_extensionCache;
+
     Phonon::MediaObject *m_media;
     Phonon::AudioOutput *m_audio;
     Phonon::Path        m_path;
-    bool                m_stream;
+    QPointer<Phonon::VolumeFaderEffect> m_fader;
+
+    bool m_isStream;
+
     Meta::TrackPtr  m_currentTrack;
     Meta::TrackPtr  m_lastTrack;
-    Meta::MultiPlayableCapability *m_multi;
+    QPointer<Meta::MultiPlayableCapability> m_multi;
 };
 
 

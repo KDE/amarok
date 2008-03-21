@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2004 Frederik Holljen <fh@ez.no>                        *
  *             (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
- *             (C) 2004, 2005 Mark Kretschmann <kretschmann@kde.org>       *
+ *             (C) 2004-2008 Mark Kretschmann <kretschmann@kde.org>        *
  *             (C) 2006, 2008 Ian Monroe <ian@monroe.nu>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -38,6 +38,7 @@
 #include <Phonon/AudioOutput>
 #include <Phonon/BackendCapabilities>
 #include <Phonon/MediaObject>
+#include <Phonon/VolumeFaderEffect>
 
 #include <QByteArray>
 #include <QFile>
@@ -199,6 +200,9 @@ EngineController::endSession()
 void
 EngineController::play() //SLOT
 {
+    if( m_fader )
+        m_fader->deleteLater();
+
     if ( m_media->state() == Phonon::PausedState )
     {
         m_media->play();
@@ -212,7 +216,6 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     DEBUG_BLOCK
 
     delete m_multi;
-    m_multi = 0;
     m_currentTrack = track;
     m_multi = m_currentTrack->as<Meta::MultiPlayableCapability>();
 
@@ -230,7 +233,7 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
 void
 EngineController::playUrl( const KUrl &url, uint offset )
 {
-    m_stream = ( url.protocol() == "http" || url.protocol() == "rtsp" );
+    m_isStream = ( url.protocol() == "http" || url.protocol() == "rtsp" );
     m_media->setCurrentSource( url );
     m_media->pause();
     m_media->seek( offset );
@@ -249,18 +252,28 @@ EngineController::pause() //SLOT
 void
 EngineController::stop() //SLOT
 {
-    // will need to get a new instance of multi if played again
+    DEBUG_BLOCK
+
+    // need to get a new instance of multi if played again
     delete m_multi;
-    m_multi = 0;
 
     //let Amarok know that the previous track is no longer playing
     if( m_currentTrack )
         trackEnded( trackPosition(), m_currentTrack->length() * 1000, "stop" );
 
-    //Remove requirement for track to be loaded for stop to be called (fixes gltiches
-    //where stop never properly happens if call to m_engine->load fails in play)
-    //if ( m_engine->loaded() )
-    m_media->stop();
+    if( m_fader )
+        m_fader->deleteLater();
+
+    if( AmarokConfig::fadeoutLength() ) {
+        m_fader = new Phonon::VolumeFaderEffect( this );
+        m_path.insertEffect( m_fader );
+        m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
+        m_fader->fadeOut( AmarokConfig::fadeoutLength() );
+
+        QTimer::singleShot( AmarokConfig::fadeoutLength() + 500, this, SLOT( slotReallyStop() ) ); //add 500ms for good measure, otherwise seems to cut off early
+    } 
+    else
+        m_media->stop();
 }
 
 void
@@ -399,7 +412,7 @@ EngineController::getAudioCDContents(const QString &device, KUrl::List &urls)
 bool
 EngineController::isStream()
 {
-    return m_stream;
+    return m_isStream;
 }
 
 int
@@ -515,6 +528,17 @@ EngineController::slotMetaDataChanged()
         m_lastTrack = m_currentTrack;
     }
     newMetaDataNotify( meta, trackChanged);
+}
+
+void
+EngineController::slotReallyStop() //SLOT
+{
+    DEBUG_BLOCK
+
+    if ( m_fader ) {
+        m_fader->deleteLater();
+        m_media->stop();
+    }
 }
 
 EngineController*
