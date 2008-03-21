@@ -81,8 +81,8 @@
 #include <KPushButton>
 #include <kdeversion.h>
 
-#ifdef Q_WS_X11 
-#include <fixx11h.h>        // not present in qt-mac builds 
+#ifdef Q_WS_X11
+#include <fixx11h.h> 
 #endif
 
 class ContextWidget : public KVBox
@@ -820,6 +820,7 @@ void MainWindow::createActions()
     KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
     ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( KIcon( "configure-shortcuts-amarok" ) );
     ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( "configure-amarok" ) );
+    ac->action(KStandardAction::name(KStandardAction::Preferences))->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
 
     KStandardAction::quit( kapp, SLOT( quit() ), ac );
 
@@ -1006,20 +1007,20 @@ void MainWindow::createMenus()
     
 
     //BEGIN Actions menu
-    KMenu *actionsMenu;
-    #ifdef Q_WS_MAC
-        m_menubar = new QMenuBar(0);  // Fixes menubar in OS X
-        actionsMenu = new KMenu( m_menubar );
-        // Add these functions to the dock icon menu in OS X
-        extern void qt_mac_set_dock_menu(QMenu *); 
-        qt_mac_set_dock_menu(actionsMenu); 
-        // Change to avoid duplicate menu titles in OS X
-        actionsMenu->setTitle( i18n("&Engage") );
-    #else
-        m_menubar = menuBar();
-        actionsMenu = new KMenu( m_menubar );
-        actionsMenu->setTitle( i18n("&Amarok") );
-    #endif
+    KMenu *actionsMenu;    
+#ifdef Q_WS_MAC
+    m_menubar = new QMenuBar(0);  // Fixes menubar in OS X
+    actionsMenu = new KMenu( m_menubar );
+    // Add these functions to the dock icon menu in OS X
+    extern void qt_mac_set_dock_menu(QMenu *); 
+    qt_mac_set_dock_menu(actionsMenu); 
+    // Change to avoid duplicate menu titles in OS X
+    actionsMenu->setTitle( i18n("&Playback") );
+#else
+    m_menubar = menuBar();
+    actionsMenu = new KMenu( m_menubar );
+    actionsMenu->setTitle( i18n("&Amarok") );
+#endif    
     actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
     actionsMenu->addAction( actionCollection()->action("lastfm_play") );
     actionsMenu->addAction( actionCollection()->action("play_audiocd") );
@@ -1028,10 +1029,21 @@ void MainWindow::createMenus()
     actionsMenu->addAction( actionCollection()->action("play_pause") );
     actionsMenu->addAction( actionCollection()->action("stop") );
     actionsMenu->addAction( actionCollection()->action("next") );
-    #ifndef Q_WS_MAC    // Hide in OS X. Avoids duplicate "Quit" in dock menu
     actionsMenu->addSeparator();
+#ifdef Q_WS_MAC
+    //BEGIN Mode submenu entries
+    QAction *repeat = actionCollection()->action("repeat");
+    connect( repeat, SIGNAL(triggered( int ) ), The::playlistModel(), SLOT(playlistRepeatMode(int) ) );
+    actionsMenu->addAction( repeat );
+    KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
+    actionsMenu->addAction( random );
+    random->menu()->addSeparator();
+    random->menu()->addAction( actionCollection()->action("favor_tracks") );
+    //END Mode submenu menu entries
+#endif
+#ifndef Q_WS_MAC    // Hide in OS X. Avoids duplicate "Quit" in dock menu
     actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
-    #endif
+#endif
     //END Actions menu
 
     //BEGIN Playlist menu
@@ -1059,6 +1071,7 @@ void MainWindow::createMenus()
     //END Playlist menu
 
     //BEGIN Mode menu
+#ifndef Q_WS_MAC    // Hide here because we moved it to the Playback Menu in OS X. 
     KMenu *modeMenu = new KMenu( m_menubar );
     modeMenu->setTitle( i18n("&Mode") );
     QAction *repeat = actionCollection()->action("repeat");
@@ -1068,6 +1081,7 @@ void MainWindow::createMenus()
     modeMenu->addAction( random );
     random->menu()->addSeparator();
     random->menu()->addAction( actionCollection()->action("favor_tracks") );
+#endif
     //END Mode menu
 
     //BEGIN Tools menu
@@ -1084,9 +1098,9 @@ void MainWindow::createMenus()
     m_toolsMenu->addAction( actionCollection()->action("update_collection") );
     m_toolsMenu->addAction( actionCollection()->action("rescan_collection") );
 
-    #ifndef HAVE_LIBVISUAL
+#ifndef HAVE_LIBVISUAL
     actionCollection()->action( "visualizations" )->setEnabled( false );
-    #endif
+#endif
 
     connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
     connect( m_toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
@@ -1101,21 +1115,19 @@ void MainWindow::createMenus()
     m_settingsMenu->addSeparator();
 #endif
 
-#ifdef Q_WS_MAC
-    // plug it first, as this item will be moved to the applications first menu
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
-#endif
-//    m_settingsMenu->addAction( actionCollection()->action("options_configure_globals") );
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
+//  m_settingsMenu->addAction( actionCollection()->action("options_configure_globals") );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
 
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
 
     m_menubar->addMenu( actionsMenu );
     m_menubar->addMenu( playlistMenu );
+#ifndef Q_WS_MAC
     m_menubar->addMenu( modeMenu );
+#endif
     m_menubar->addMenu( m_toolsMenu );
     m_menubar->addMenu( m_settingsMenu );
     m_menubar->addMenu( Amarok::Menu::helpMenu() );
