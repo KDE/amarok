@@ -75,7 +75,7 @@ namespace Playlist
 
             bool isCurrentTrack();
             Meta::TrackPtr internalTrack();
-       
+
         protected:
             void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
             void dropEvent( QGraphicsSceneDragDropEvent * event );
@@ -85,19 +85,16 @@ namespace Playlist
             void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
             void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
 
-        
         private:
             void init( Meta::TrackPtr track );
             void resize( Meta::TrackPtr track, int totalWidth );
             QString findArtistForCurrentAlbum() const;
 
-            
             /**
              * Calculated the needed offset to center the pixmap within the defined rect
              */
             QPointF centerImage( QPixmap pixmap, QRectF rect );
 
-            
             void paintSingleTrack ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
             void paintHead ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
             void paintCollapsedHead ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );

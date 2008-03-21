@@ -108,6 +108,7 @@ private slots:
     void slotTrackEnded();
     void slotStateChanged(Engine::State);
     void slotPlayableUrlFetched(const KUrl&);
+    void slotMetaDataChanged();
 
 private:
     static ExtensionCache s_extensionCache;
@@ -116,6 +117,7 @@ private:
     Phonon::Path        m_path;
     bool                m_stream;
     Meta::TrackPtr  m_currentTrack;
+    Meta::TrackPtr m_lastTrack;
     Meta::MultiPlayableCapability *m_multi;
 };
 

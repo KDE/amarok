@@ -23,6 +23,7 @@
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "meta/Meta.h"
+#include "meta/MetaConstants.h"
 #include "meta/MultiPlayableCapability.h"
 #include "playlist/PlaylistModel.h"
 #include "pluginmanager.h"
@@ -340,7 +341,7 @@ Meta::TrackPtr
 EngineController::currentTrack() const
 {
     Phonon::State state = m_media->state();
-    return state == Phonon::ErrorState || state == Phonon::LoadingState ? Meta::TrackPtr() : m_currentTrack;
+    return state == Phonon::ErrorState ? Meta::TrackPtr() : m_currentTrack;
 }
 
 //do we actually need this method?
@@ -460,6 +461,49 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
     {
         playUrl( url, 0 );
     }
+}
+
+void
+EngineController::slotMetaDataChanged()
+{
+    QHash<qint64, QString> meta;
+    {
+        QStringList data = m_media->metaData( "ARTIST" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valArtist, data.first() );
+    }
+    {
+        QStringList data = m_media->metaData( "ALBUM" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valAlbum, data.first() );
+    }
+    {
+        QStringList data = m_media->metaData( "TITLE" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valTitle, data.first() );
+    }
+    {
+        QStringList data = m_media->metaData( "GENRE" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valGenre, data.first() );
+    }
+    {
+        QStringList data = m_media->metaData( "TRACKNUMBER" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valTrackNr, data.first() );
+    }
+    {
+        QStringList data = m_media->metaData( "LENGTH" );
+        if( !data.isEmpty() )
+            meta.insert( Meta::valLength, data.first() );
+    }
+    bool trackChanged = false;
+    if( m_lastTrack != m_currentTrack )
+    {
+        trackChanged = true;
+        m_lastTrack = m_currentTrack;
+    }
+    newMetaDataNotify( meta, trackChanged);
 }
 
 qint64
