@@ -28,9 +28,9 @@
 #include "SqlStorage.h"
 #include "TheInstances.h"
 
-#include <kurl.h>
-#include <klocale.h>
-#include <kio/job.h>
+#include <KLocale>
+#include <KIO/Job>
+#include <KUrl>
 
 #include <QFile>
 #include <QDir>
@@ -39,13 +39,16 @@ using namespace Meta;
 
 static const int PODCAST_DB_VERSION = 1;
 
-PodcastCollection::PodcastCollection() : Collection()
+PodcastCollection::PodcastCollection()
 {
+    DEBUG_BLOCK
+
     m_channelProvider = new PodcastChannelProvider( this );
     m_sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QStringList values;
-    values = m_sqlStorage->query( QString( "SELECT version FROM admin WHERE key = 'AMAROK_PODCAST';") );
+
+    values = m_sqlStorage->query( "SELECT version FROM admin WHERE key = 'AMAROK_PODCAST';");
     if( values.isEmpty() )
     {
         debug() << "creating Podcast Tables";
@@ -55,8 +58,7 @@ PodcastCollection::PodcastCollection() : Collection()
 
 
 PodcastCollection::~PodcastCollection()
-{
-}
+{}
 
 QueryMaker*
 PodcastCollection::queryMaker()
