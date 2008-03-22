@@ -38,7 +38,6 @@ install(
         emblem-lastfm.png
         emblem-jamendo.png
         emblem-default.png
-        volume_slider.svg
-	progress_slider.svg
+        sliders.svg
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )

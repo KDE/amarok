@@ -70,8 +70,7 @@ namespace Amarok
             bool m_outside;
             int  m_prevValue;
 
-            Slider( const Slider& ); //undefined
-            Slider &operator=( const Slider& ); //undefined
+            Q_DISABLE_COPY( Slider );
 
     };
 
@@ -100,8 +99,7 @@ namespace Amarok
         private:
             //void generateGradient();
 
-            VolumeSlider( const VolumeSlider& ); //undefined
-            VolumeSlider &operator=( const VolumeSlider& ); //undefined
+            Q_DISABLE_COPY( VolumeSlider );
 
             ////////////////////////////////////////////////////////////////
             static const int ANIM_INTERVAL = 18;
@@ -138,37 +136,15 @@ namespace Amarok
         protected:
             virtual void paintEvent( QPaintEvent* );
 
-            virtual void enterEvent( QEvent* );
-            virtual void leaveEvent( QEvent* );
             virtual void paletteChange( const QPalette& );
             virtual void resizeEvent(QResizeEvent * event);
 
-        private slots:
-            virtual void slotAnimTimer();
-
         private:
-            TimeSlider( const TimeSlider& ); //undefined
-            TimeSlider &operator=( const TimeSlider& ); //undefined
-
+            Q_DISABLE_COPY( TimeSlider );
             ////////////////////////////////////////////////////////////////
-            static const int ANIM_INTERVAL = 18;
-            static const int ANIM_MAX = 18;
 
-            bool    m_animEnter;
-            int     m_animCount;
-            QTimer* m_animTimer;
-
-
-            int m_iconHeight;
-            int m_iconWidth;
-            int m_textWidth;
-            int m_sliderWidth;
             int m_sliderHeight;
-            int m_sliderX;
 
-            int m_margin;
-
-            QVector<QPixmap> m_handlePixmaps;
             QSvgRenderer * m_svgRenderer;
     };
 
