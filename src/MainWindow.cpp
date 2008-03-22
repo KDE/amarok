@@ -1030,8 +1030,7 @@ void MainWindow::createMenus()
     actionsMenu->addAction( actionCollection()->action("stop") );
     actionsMenu->addAction( actionCollection()->action("next") );
     actionsMenu->addSeparator();
-#ifdef Q_WS_MAC
-    //BEGIN Mode submenu entries
+
     QAction *repeat = actionCollection()->action("repeat");
     connect( repeat, SIGNAL(triggered( int ) ), The::playlistModel(), SLOT(playlistRepeatMode(int) ) );
     actionsMenu->addAction( repeat );
@@ -1039,8 +1038,7 @@ void MainWindow::createMenus()
     actionsMenu->addAction( random );
     random->menu()->addSeparator();
     random->menu()->addAction( actionCollection()->action("favor_tracks") );
-    //END Mode submenu menu entries
-#endif
+
 #ifndef Q_WS_MAC    // Hide in OS X. Avoids duplicate "Quit" in dock menu
     actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
 #endif
@@ -1069,20 +1067,6 @@ void MainWindow::createMenus()
     playlistMenu->addAction( actionCollection()->action("playlist_select_all") );
 
     //END Playlist menu
-
-    //BEGIN Mode menu
-#ifndef Q_WS_MAC    // Hide here because we moved it to the Playback Menu in OS X. 
-    KMenu *modeMenu = new KMenu( m_menubar );
-    modeMenu->setTitle( i18n("&Mode") );
-    QAction *repeat = actionCollection()->action("repeat");
-    connect( repeat, SIGNAL(triggered( int ) ), The::playlistModel(), SLOT(playlistRepeatMode(int) ) );
-    modeMenu->addAction( repeat );
-    KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
-    modeMenu->addAction( random );
-    random->menu()->addSeparator();
-    random->menu()->addAction( actionCollection()->action("favor_tracks") );
-#endif
-    //END Mode menu
 
     //BEGIN Tools menu
     m_toolsMenu = new KMenu( m_menubar );
