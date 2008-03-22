@@ -160,7 +160,7 @@ namespace Amarok
             double m_positionChange;
             int m_oldValue;
 
-            static const int FRAME_RATE = 25;
+            static const int FRAME_RATE = 30;
             static const int TICK_INTERVAL = 1000; //The time (in ms) between updates from the engine.
 
             QSvgRenderer * m_svgRenderer;

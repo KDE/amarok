@@ -471,7 +471,8 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     QPainter p( this );
     const short side = 15; // Size of the rounded parts.
 
-    double fillLength = m_knobX + ( m_sliderHeight / 2 );
+//     double fillLength = m_knobX + ( m_sliderHeight / 2 );
+//     double fillLength = width() - m_knobX;
 //     double fillHeight = m_sliderHeight * ( ( double ) knobX / m_sliderWidth );
 //     double fillOffsetY = ( m_sliderHeight - fillHeight ) / 2;
 
@@ -488,7 +489,12 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 
     m_svgRenderer->render( &pt, "progress-slider-position",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
 
+    //Paint the trail
+    m_svgRenderer->render( &pt, "progress-slider-center", QRectF( side, 0, m_knobX - 7, m_sliderHeight ) );
 
+
+    QPen pen( Qt::black, 1 );
+    p.setPen( pen );
     p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, background );
 }
 

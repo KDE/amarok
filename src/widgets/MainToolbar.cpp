@@ -58,11 +58,11 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     loadSvg( "amarok/images/toolbar-background.svg" );
 
-    setMaximumSize( 20000, 62 );
-    setMinimumSize( 200, 62 );
+    setMaximumSize( 20000, 67 );
+    setMinimumSize( 200, 67 );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setContentsMargins(0,0,0,2);
-    layout()->setContentsMargins(0,0,0,2);
+    layout()->setContentsMargins(0,0,0,5);
 
     KVBox *aVBox     = new KVBox( this );
     aVBox->setMaximumSize( 50000, 60 );
@@ -72,7 +72,6 @@ MainToolbar::MainToolbar( QWidget * parent )
     //m_insideBox = new KHBox( aVBox );
     m_insideBox = new QWidget( aVBox );
 
-    
     m_insideBox->setMaximumSize( 600000, 45 );
     m_insideBox->setContentsMargins(0,0,0,0);
    // m_insideBox->layout()->setContentsMargins(0,0,0,0);
@@ -87,12 +86,11 @@ MainToolbar::MainToolbar( QWidget * parent )
     ProgressWidget *pWidget = new ProgressWidget( aVBox );
     pWidget->setMinimumSize( 400, 17 );
     pWidget->setMaximumSize( 600000, 17 );
-
-    
+    pWidget->setContentsMargins(0,2,0,0);
 
     m_playerControlsToolbar = new Amarok::ToolBar( m_insideBox );
     //playerControlsToolbar->setMinimumSize( 180, 45 );
-    m_playerControlsToolbar->setFixedSize( 180, 45 );
+    m_playerControlsToolbar->setFixedSize( 180, 40 );
 
     //m_insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignCenter );
     m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
