@@ -33,15 +33,14 @@ meta types for use in the dynamic scriptable service. Nearly identical to the Se
 namespace Meta
 {
 
-class DynamicScriptableMetaItem
+class ScriptableServiceMetaItem
 {
 
     public:
-        DynamicScriptableMetaItem();
+        ScriptableServiceMetaItem( int level );
     
         void setCallbackString( QString callbackString );
         QString callbackString() const;
-        void setLevel( int level );
         int level() const;
     
     private:
@@ -53,36 +52,49 @@ class DynamicScriptableMetaItem
 };
 
 
-class DynamicScriptableTrack : public Meta::ServiceTrack
+class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServiceMetaItem
 {
     public:
-        DynamicScriptableTrack( const QString & name );
-        DynamicScriptableTrack( const QStringList & resultRow );
+        ScriptableServiceTrack( const QString & name );
+        ScriptableServiceTrack( const QStringList & resultRow );
 
 };
 
-class DynamicScriptableAlbum : public Meta::ServiceAlbum, public DynamicScriptableMetaItem
+class ScriptableServiceAlbum : public Meta::ServiceAlbum, public ScriptableServiceMetaItem
 {
     public:
-        DynamicScriptableAlbum( const QString & name );
-        DynamicScriptableAlbum( const QStringList & resultRow );
+        ScriptableServiceAlbum( const QString & name );
+        ScriptableServiceAlbum( const QStringList & resultRow );
 
 };
 
-class DynamicScriptableArtist : public Meta::ServiceArtist, public DynamicScriptableMetaItem
+class ScriptableServiceArtist : public Meta::ServiceArtist, public ScriptableServiceMetaItem
 {
     public:
-        DynamicScriptableArtist( const QString & name );
-        DynamicScriptableArtist( const QStringList & resultRow );
+        ScriptableServiceArtist( const QString & name );
+        ScriptableServiceArtist( const QStringList & resultRow );
+
+        void setGenreId( int artistId );
+        int genreId( ) const;
+
+    private:
+
+        int m_genreId;
 
 };
 
 
-class DynamicScriptableGenre : public Meta::ServiceGenre, public DynamicScriptableMetaItem
+class ScriptableServiceGenre : public Meta::ServiceGenre, public ScriptableServiceMetaItem
 {
     public:
-        DynamicScriptableGenre( const QString & name );
-        DynamicScriptableGenre( const QStringList & resultRow );
+        ScriptableServiceGenre( const QString & name );
+        ScriptableServiceGenre( const QStringList & resultRow );
+
+        void setDescription( const QString &description );
+        QString description();
+
+    private:
+        QString m_description;
 
 };
 

@@ -4,7 +4,7 @@
 # by creating a simple static browser with some cool radio
 # streams. Urls shamelessly stolen Cool-Streams.xml
 #
-# (c) 2007 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>
+# (c) 2007, 2008 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>
 #
 # License: GNU General Public License V2
 
@@ -37,15 +37,60 @@ stations = [ [ 'Bassdrive [Drum \'n Bass]',                   'http://www.bassdr
              ['X T C Radio [Techno/Trance]',                  'http://stream.xtcradio.com:8069/listen.pls' ] ]
 
 
+service_name = "Cool Streams"
 
-# create new browser
-`qdbus org.kde.amarok /ScriptableServiceManager createService "Cool Streams" "Streams" "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers"`
+loop do
+    message = gets
+    puts "script got message" + message
+    args = message.chomp.split(" ")
 
-parentId = `qdbus org.kde.amarok /ScriptableServiceManager insertAlbum "Cool Streams" "The Amarok crews top picks" "Just a parent item to show how nesting works"`.chomp
+    case args[0]
+        when "configure"
+            `qdbus org.kde.amarok /Playlist popupMessage "This script does not require any configuration."`
+        when "init"
 
-stations.each() do |station|
-    system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertTrack",  "Cool Streams", station[0], station[1], "Dummy html info", parentId)
+            #2 levels, categories and stations
+            levels = "2"
+            short_description = "List of some really cool radio streams"
+            root_html = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers"
+
+            # init new browser
+            system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "initService", service_name, levels, short_description, root_html )
+
+        when "populate"
+            if args[1].strip() == "1"
+                puts " Populating main level..."
+
+                #add top level item 
+                parentId = `qdbus org.kde.amarok /ScriptableServiceManager insertItem "Cool Streams" 1 -1 "The Amarok crews top picks" "Just a parent item to show how nesting works" "get_stations" ""`.chomp
+
+                #tell service that all items has been added ( no parent since these are top level items )
+                `qdbus org.kde.amarok /ScriptableServiceManager donePopulating "Cool Streams" "-1"`
+                puts "... done"
+                
+            else if args[1].strip() == "0" and args[3].strip() == "get_stations"
+            
+                puts " Populating station level..."
+
+                #leaf nodes
+                level = "0"
+                parent_id = args[2]
+
+                #no callback string needed for leaf nodes
+                callback_string = ""
+
+                #add the station streams as leaf nodes
+                stations.each() do |station|
+
+                    html_info = "A cool stream called" + station[0]
+                
+                    system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertItem", service_name, "0", parent_id, station[0], html_info, callback_string, station[1] )
+                end
+
+                #tell service that all items has been added to a parent item
+                `qdbus org.kde.amarok /ScriptableServiceManager donePopulating "Cool Streams" args[2]`
+            end
+        end
+    end
 end
-
-`qdbus org.kde.amarok /ScriptableServiceManager updateComplete "Cool Streams"`
 

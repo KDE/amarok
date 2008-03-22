@@ -158,6 +158,7 @@ ServiceBase::ServiceBase( const QString &name )
 
 ServiceBase::~ServiceBase()
 {
+    delete m_infoParser;
 }
 
 
@@ -295,6 +296,13 @@ void ServiceBase::setFilter(const QString & filter)
 {
     polish();
     m_searchWidget->setSearchString( filter );
+}
+
+void ServiceBase::setInfoParser(InfoParserBase * infoParser)
+{
+    m_infoParser = infoParser;
+    
+    connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
 }
 
 

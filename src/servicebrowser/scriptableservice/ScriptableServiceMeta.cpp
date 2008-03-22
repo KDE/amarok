@@ -17,88 +17,100 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "DynamicScriptableServiceMeta.h"
+#include "ScriptableServiceMeta.h"
 
 using namespace Meta;
 
 
-DynamicScriptableMetaItem::DynamicScriptableMetaItem() 
+ScriptableServiceMetaItem::ScriptableServiceMetaItem( int level )
     : m_callbackString( QString() )
-    , m_level( 0 )
+    , m_level( level )
 {}
 
-void Meta::DynamicScriptableMetaItem::setCallbackString(QString callbackString)
+void Meta::ScriptableServiceMetaItem::setCallbackString(QString callbackString)
 { 
     m_callbackString = callbackString;
 }
 
-QString Meta::DynamicScriptableMetaItem::callbackString() const
+QString Meta::ScriptableServiceMetaItem::callbackString() const
 {
     return m_callbackString;
 }
 
-
-void Meta::DynamicScriptableMetaItem::setLevel(int level)
-{
-    m_level = level;
-}
-
-int Meta::DynamicScriptableMetaItem::level() const
+int Meta::ScriptableServiceMetaItem::level() const
 {
     return m_level;
 }
 
 
 
-/* DynamicScriptableTrack */
-DynamicScriptableTrack::DynamicScriptableTrack( const QString & name )
+/* ScriptableServiceTrack */
+ScriptableServiceTrack::ScriptableServiceTrack( const QString & name )
     : ServiceTrack( name )
+    , ScriptableServiceMetaItem( 0 )
 {}
 
-DynamicScriptableTrack::DynamicScriptableTrack( const QStringList & resultRow )
+ScriptableServiceTrack::ScriptableServiceTrack( const QStringList & resultRow )
     : ServiceTrack( resultRow )
+    , ScriptableServiceMetaItem( 0 )
 {}
 
 
 
 
 /* DynamicScriptableAlbum */
-DynamicScriptableAlbum::DynamicScriptableAlbum( const QString & name )
+ScriptableServiceAlbum::ScriptableServiceAlbum( const QString & name )
     : ServiceAlbum( name )
-    , DynamicScriptableMetaItem()
+    , ScriptableServiceMetaItem( 1 )
 {}
 
-DynamicScriptableAlbum::DynamicScriptableAlbum( const QStringList & resultRow )
+ScriptableServiceAlbum::ScriptableServiceAlbum( const QStringList & resultRow )
     : ServiceAlbum( resultRow )
-    , DynamicScriptableMetaItem()
+    , ScriptableServiceMetaItem( 1 )
 {}
 
 
 
-/* DynamicScriptableArtist */
-DynamicScriptableArtist::DynamicScriptableArtist( const QString & name )
+/* ScriptableServiceArtist */
+ScriptableServiceArtist::ScriptableServiceArtist( const QString & name )
     : ServiceArtist( name )
-    , DynamicScriptableMetaItem()
+        , ScriptableServiceMetaItem( 2 )
 {}
 
-DynamicScriptableArtist::DynamicScriptableArtist( const QStringList & resultRow )
+ScriptableServiceArtist::ScriptableServiceArtist( const QStringList & resultRow )
     : ServiceArtist( resultRow )
-    , DynamicScriptableMetaItem()
+    , ScriptableServiceMetaItem( 2 )
 {}
 
+void Meta::ScriptableServiceArtist::setGenreId(int genreId)
+{
+    m_genreId = genreId;
+}
 
-/* DynamicScriptableGenre */
-DynamicScriptableGenre::DynamicScriptableGenre( const QString & name )
+
+int Meta::ScriptableServiceArtist::genreId() const
+{
+    return m_genreId;
+}
+
+/* ScriptableServiceGenre */
+ScriptableServiceGenre::ScriptableServiceGenre( const QString & name )
     : ServiceGenre( name )
-    , DynamicScriptableMetaItem()
+    , ScriptableServiceMetaItem( 3 )
 {}
 
-DynamicScriptableGenre::DynamicScriptableGenre( const QStringList & resultRow )
+ScriptableServiceGenre::ScriptableServiceGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
-    , DynamicScriptableMetaItem()
+    , ScriptableServiceMetaItem( 3 )
 {}
 
 
+void Meta::ScriptableServiceGenre::setDescription(const QString & description)
+{
+    m_description = description;
+}
 
-
-
+QString Meta::ScriptableServiceGenre::description()
+{
+    return m_description;
+}

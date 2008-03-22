@@ -18,13 +18,13 @@
  ***************************************************************************/
 
 #include "ScriptableServiceCollection.h"
-#include "support/MemoryQueryMaker.h"
 
+#include "ScriptableServiceQueryMaker.h"
 
-ScriptableServiceCollection::ScriptableServiceCollection(const QString & name)
-    : ServiceCollection()
+ScriptableServiceCollection::ScriptableServiceCollection( const QString &name,  AmarokProcIO * script )
+    : ServiceDynamicCollection( name, name ) 
+ , m_script( script )
 {
-    m_name = name;
 }
 
 
@@ -32,38 +32,26 @@ ScriptableServiceCollection::~ScriptableServiceCollection()
 {
 }
 
-QueryMaker*
-ScriptableServiceCollection::queryMaker()
+QueryMaker * ScriptableServiceCollection::queryMaker()
 {
-    return new MemoryQueryMaker( this, collectionId() );
-}
-
-QString ScriptableServiceCollection::prettyName() const
-{
-    return m_name;
+    return new ScriptableServiceQueryMaker( this, m_script );
 }
 
 QString ScriptableServiceCollection::collectionId() const
 {
-    return m_name;
+    return "Scriptable Service collection";
 }
 
-
-bool ScriptableServiceCollection::possiblyContainsTrack(const KUrl & url) const
+QString ScriptableServiceCollection::prettyName() const
 {
-    Q_UNUSED( url );
-    return false;
+    return collectionId();
 }
 
-Meta::TrackPtr ScriptableServiceCollection::trackForUrl(const KUrl & url)
+void ScriptableServiceCollection::donePopulating(int parentId)
 {
-    Q_UNUSED( url );
-    return Meta::TrackPtr();
+    DEBUG_BLOCK
+    Q_UNUSED( parentId );
+    emit updateComplete();
+    //emitUpdated();
 }
-
-CollectionLocation * ScriptableServiceCollection::location() const
-{
-    return 0;
-}
-
 

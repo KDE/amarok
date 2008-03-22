@@ -31,6 +31,8 @@
 #include "enginecontroller.h"
 #include "AmarokProcess.h"
 #include "ContextStatusBar.h"
+#include "TheInstances.h"
+#include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <KAboutApplicationDialog>
 #include <KAboutData>
@@ -154,24 +156,29 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_scoreCategory      = new QTreeWidgetItem( m_gui->treeWidget );
     m_transcodeCategory  = new QTreeWidgetItem( m_gui->treeWidget );
     m_contextCategory    = new QTreeWidgetItem( m_gui->treeWidget );
+    m_servicesCategory   = new QTreeWidgetItem( m_gui->treeWidget );
 
     m_generalCategory  ->setText( 0, i18n( "General" ) );
     m_lyricsCategory   ->setText( 0, i18n( "Lyrics" ) );
     m_scoreCategory    ->setText( 0, i18n( "Score" ) );
     m_transcodeCategory->setText( 0, i18n( "Transcoding" ) );
     m_contextCategory  ->setText( 0, i18n( "Context Browser" ) );
+    m_servicesCategory ->setText( 0, i18n( "Scripted Services" ) );
 
     m_generalCategory  ->setFlags( Qt::ItemIsEnabled );
     m_lyricsCategory   ->setFlags( Qt::ItemIsEnabled );
     m_scoreCategory    ->setFlags( Qt::ItemIsEnabled );
     m_transcodeCategory->setFlags( Qt::ItemIsEnabled );
     m_contextCategory  ->setFlags( Qt::ItemIsEnabled );
+    m_servicesCategory ->setFlags( Qt::ItemIsEnabled );
 
     m_generalCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
     m_lyricsCategory   ->setIcon( 0, SmallIcon( "folder-amarok" ) );
     m_scoreCategory    ->setIcon( 0, SmallIcon( "folder-amarok" ) );
     m_transcodeCategory->setIcon( 0, SmallIcon( "folder-amarok" ) );
     m_contextCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
+    m_servicesCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
+    
     
     // Restore the open/closed state of the category items
     KConfigGroup config = Amarok::config( "ScriptManager" );
@@ -180,6 +187,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_scoreCategory    ->setExpanded( config.readEntry( "Score category State", false ) );
     m_transcodeCategory->setExpanded( config.readEntry( "Transcode category open", false ) );
     m_contextCategory  ->setExpanded( config.readEntry( "Context category open", false ) );
+    m_servicesCategory ->setExpanded( config.readEntry( "Service category open", false ) );
 
     connect( m_gui->treeWidget, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), SLOT( slotCurrentChanged( QTreeWidgetItem* ) ) );
     connect( m_gui->treeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), SLOT( slotRunScript() ) );
@@ -234,6 +242,7 @@ ScriptManager::~ScriptManager()
     config.writeEntry( "Score category open", m_scoreCategory->isExpanded() );
     config.writeEntry( "Transcode category open", m_transcodeCategory->isExpanded() );
     config.writeEntry( "Context category open", m_contextCategory->isExpanded() );
+    config.writeEntry( "Service category open", m_servicesCategory->isExpanded() );
     config.sync();
     s_instance = 0;
 }
@@ -377,7 +386,8 @@ ScriptManager::slotCurrentChanged( QTreeWidgetItem* item )
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
                             item == m_scoreCategory ||
-                            item == m_transcodeCategory;
+                            item == m_transcodeCategory ||
+                            item == m_servicesCategory;
 
     if( item && !isCategory ) {
         const QString name = item->text( 0 );
@@ -592,6 +602,8 @@ ScriptManager::slotRunScript( bool silent )
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
     if( m_scripts[name].type == "lyrics" )
         emit lyricsScriptChanged();
+    else if( m_scripts[name].type == "service" )
+        The::scriptableServiceManager()->addRunningScript( name, script );
 
     return true;
 }
@@ -612,6 +624,10 @@ ScriptManager::slotStopScript()
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
 
     li->setIcon( 0, QPixmap() );
+
+    if( m_scripts.value( name ).type == "service" ) {
+        The::scriptableServiceManager()->removeRunningScript( name );
+    }
 }
 
 
@@ -663,7 +679,8 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
                             item == m_lyricsCategory ||
                             item == m_scoreCategory ||
                             item == m_transcodeCategory ||
-			    item == m_contextCategory;
+			                item == m_contextCategory ||
+                            item == m_servicesCategory;
 
     if( !item || isCategory ) return;
 
@@ -866,10 +883,14 @@ ScriptManager::loadScript( const QString& path )
                     li = new QTreeWidgetItem( m_scoreCategory );
                     li->setText( 0, name );
                 }
-		if( type == "context" ) {
-    		  li = new QTreeWidgetItem( m_contextCategory );
-                  li->setText( 0, name );
-		}
+                if( type == "service" ) {
+                    li = new QTreeWidgetItem( m_servicesCategory );
+                    li->setText( 0, name );
+                }
+                if( type == "context" ) {
+                    li = new QTreeWidgetItem( m_contextCategory );
+                        li->setText( 0, name );
+                }
             }
         }
 

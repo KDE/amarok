@@ -131,17 +131,17 @@ set(libservicebrowser_SRCS
 # SCRIPTABLESERVICE
 #####################################################################
 set(libscriptableservice_SRCS
-    servicebrowser/scriptableservice/DynamicScriptableQueryMaker.cpp
-    servicebrowser/scriptableservice/DynamicScriptableServiceCollection.cpp
-    servicebrowser/scriptableservice/DynamicScriptableServiceMeta.cpp
+    servicebrowser/scriptableservice/ScriptableServiceQueryMaker.cpp
     servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
-    servicebrowser/scriptableservice/scriptableservice.cpp
+    servicebrowser/scriptableservice/ScriptableServiceMeta.cpp
+    servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
+    servicebrowser/scriptableservice/ScriptableService.cpp
     servicebrowser/scriptableservice/ScriptableServiceInfoParser.cpp
-    servicebrowser/scriptableservice/scriptableservicemanager.cpp
+    servicebrowser/scriptableservice/ScriptableServiceManager.cpp
 )
 
 
-qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/scriptableservicemanager.h ScriptableServiceManager)
+qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/ScriptableServiceManager.h ScriptableServiceManager)
 
 #####################################################################
 # CONFIGDIALOG

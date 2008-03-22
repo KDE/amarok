@@ -110,11 +110,7 @@ void OpmlDirectoryService::polish()
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
     connect( m_subscribeButton, SIGNAL( clicked() ), this, SLOT( subscribe() ) );
 
-
-    m_infoParser = new OpmlDirectoryInfoParser();
-
-    //TODO: move this to base class?
-    connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
+    setInfoParser( new OpmlDirectoryInfoParser() );
 
     //m_model = new DatabaseDrivenContentModel();
     //m_dbHandler = new OpmlDirectoryDatabaseHandler();

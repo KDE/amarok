@@ -24,7 +24,7 @@
 
 #include "Meta.h"
 
-#include "DynamicScriptableServiceCollection.h"
+#include "ScriptableServiceCollection.h"
 
 using namespace Meta;
 
@@ -33,12 +33,12 @@ A query maker for fetching external data
 
 	@author
 */
-class DynamicScriptableQueryMaker : public DynamicServiceQueryMaker
+class ScriptableServiceQueryMaker : public DynamicServiceQueryMaker
 {
 Q_OBJECT
 public:
-    DynamicScriptableQueryMaker( DynamicScriptableServiceCollection * collection, QString script );
-    ~DynamicScriptableQueryMaker();
+    ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, AmarokProcIO * script );
+    ~ScriptableServiceQueryMaker();
 
     virtual QueryMaker* reset();
     virtual void run();
@@ -49,10 +49,11 @@ public:
     virtual QueryMaker* startAlbumQuery();
     virtual QueryMaker* startTrackQuery();
 
-    using DynamicServiceQueryMaker::addMatch;
     virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
+
+    virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
 
 
     virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
@@ -67,7 +68,7 @@ protected slots:
 
 protected:
 
-    void fetchGenres();
+    void fetchGenre();
     void fetchArtists();
     void fetchAlbums();
     void fetchTracks();
@@ -78,8 +79,8 @@ protected:
     void handleResult( const Meta::TrackList &tracks );
 
 
-    DynamicScriptableServiceCollection * m_collection;
-    QString m_script;
+    ScriptableServiceCollection * m_collection;
+    AmarokProcIO * m_script;
 
     class Private;
     Private * const d;

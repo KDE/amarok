@@ -112,11 +112,7 @@ void JamendoService::polish()
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
     connect( m_downloadButton, SIGNAL( clicked() ), this, SLOT( download() ) );
 
-
-    m_infoParser = new JamendoInfoParser();
-
-    //TODO: move this to base class?
-    connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
+    setInfoParser( new JamendoInfoParser() );
 
     //m_model = new DatabaseDrivenContentModel();
     //m_dbHandler = new JamendoDatabaseHandler();

@@ -154,6 +154,8 @@ QMap< QString, ServiceBase * > ServiceBrowser::services()
 void ServiceBrowser::removeService( const QString &name )
 {
 
+    DEBUG_BLOCK
+    debug() << "removing service: " << name;
     ServiceBase * service = m_services.take( name );
     if ( m_currentService == service )
         home();

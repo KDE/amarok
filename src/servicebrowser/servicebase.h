@@ -110,13 +110,15 @@ public:
     SingleCollectionTreeItemModel * getModel();
 
     void setPlayableTracks( bool playable );
-
+    void setInfoParser( InfoParserBase * infoParser );
+    
     virtual Collection * collection() = 0;
     
     virtual void polish() = 0;
     virtual bool updateContextView() { return false; }
 
-    void setFilter( const QString &filter );  
+    void setFilter( const QString &filter );
+    
 
     //virtual void reset() = 0;
 

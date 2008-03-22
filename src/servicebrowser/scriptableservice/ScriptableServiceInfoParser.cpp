@@ -42,6 +42,7 @@ void ScriptableServiceInfoParser::getInfo(ArtistPtr artist)
 
 void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
 {
+    DEBUG_BLOCK
     ServiceAlbum * serviceAlbum = dynamic_cast< ServiceAlbum * >( album.data() );
     if (serviceAlbum == 0) return;
     emit( info( serviceAlbum->description() ) );
@@ -49,8 +50,16 @@ void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
 
 void ScriptableServiceInfoParser::getInfo(TrackPtr track)
 {
+    DEBUG_BLOCK
     emit( info( track->name() ) );
 }
 
-#include "ScriptableServiceInfoParser.moc"
 
+void ScriptableServiceInfoParser::getInfo(Meta::GenrePtr genre)
+{
+    ScriptableServiceGenre * serviceGenre = dynamic_cast< ScriptableServiceGenre * >( genre.data() );
+    if (serviceGenre == 0) return;
+    emit( info( serviceGenre->description() ) );
+}
+
+#include "ScriptableServiceInfoParser.moc"

@@ -174,7 +174,8 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         QTreeWidgetItem*       m_lyricsCategory;
         QTreeWidgetItem*       m_scoreCategory;
         QTreeWidgetItem*       m_transcodeCategory;
-	QTreeWidgetItem*       m_contextCategory;
+        QTreeWidgetItem*       m_contextCategory;
+        QTreeWidgetItem*       m_servicesCategory;
 
         bool                   m_installSuccess;
 

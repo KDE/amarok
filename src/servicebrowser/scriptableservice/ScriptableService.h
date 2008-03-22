@@ -23,16 +23,23 @@
 
 #include "amarok.h"
 #include "../servicebase.h"
-#include "../servicemetabase.h"
-#include "DynamicScriptableServiceCollection.h"
+#include "ScriptableServiceMeta.h"
+#include "ScriptableServiceCollection.h"
 
 
-typedef QMap<int, Meta::TrackPtr> TrackIdMap;
-typedef QMap<int, Meta::ArtistPtr> ArtistIdMap;
-typedef QMap<int, Meta::AlbumPtr> AlbumIdMap;
-typedef QMap<int, Meta::GenrePtr> GenreIdMap;
-typedef QMap<int, Meta::ComposerPtr> ComposerIdMap;
-typedef QMap<int, Meta::YearPtr> YearIdMap;
+/* internally, we use the following level mapping:
+    0 = track
+    1 = album
+    2 = artist
+    3 = genre
+
+but we do our best to make this invisible to the scripts
+*/
+
+typedef QMap<int, Meta::ScriptableServiceTrack *> ScriptableServiceTrackIdMap;
+typedef QMap<int, Meta::ScriptableServiceArtist *> ScriptableServiceArtistIdMap;
+typedef QMap<int, Meta::ScriptableServiceAlbum *> ScriptableServiceAlbumIdMap;
+typedef QMap<int, Meta::ScriptableServiceGenre *> ScriptableServiceGenreIdMap;
 
 
 class ScriptableService : public ServiceBase
@@ -44,21 +51,22 @@ public:
      /**
      * Constructor
      */
-    ScriptableService( const QString &name );
+    ScriptableService( const QString &name, AmarokProcIO * script );
+    
     /**
      * Destructor
      */
-    ~ScriptableService() { }
+    ~ScriptableService();
 
-    void polish() {}
+    void init( int levels, const QString &rootHtml );
+
+    void polish();
 
     ServiceCollection * collection();
-    void setCollection( DynamicScriptableServiceCollection * collection );
+
+    int insertItem( int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl);
 
 
-    int addTrack( Meta::ServiceTrack * track, int albumId );
-    int addAlbum( Meta::ServiceAlbum * album );
-    int addArtist( Meta::ServiceArtist * artist );
 
     void donePopulating( int parentId );
 
@@ -71,14 +79,30 @@ private slots:
 
 private:
 
-    DynamicScriptableServiceCollection * m_collection;
+    bool m_polished;
+    
+    QString m_name;
+    QString m_rootHtml;
+    AmarokProcIO * m_script;
+            
+    int m_levels;
+
+    int addTrack( Meta::ScriptableServiceTrack * track );
+    int addAlbum( Meta::ScriptableServiceAlbum * album );
+    int addArtist( Meta::ScriptableServiceArtist * artist );
+    int addGenre( Meta::ScriptableServiceGenre * genre );
+
+    ScriptableServiceCollection * m_collection;
     int m_trackIdCounter;
     int m_albumIdCounter;
     int m_artistIdCounter;
+    int m_genreIdCounter;
 
-    TrackIdMap trackIdMap;
-    AlbumIdMap albumIdMap;
-    ArtistIdMap artistIdMap;
+    ScriptableServiceTrackIdMap m_ssTrackIdMap;
+    ScriptableServiceAlbumIdMap m_ssAlbumIdMap;
+    ScriptableServiceArtistIdMap m_ssArtistIdMap;
+    ScriptableServiceGenreIdMap m_ssGenreIdMap;
+    
 };
 
 

@@ -38,7 +38,7 @@
 #include "scriptmanager.h"
 #include "searchwidget.h"
 #include "servicebrowser/ServicePluginManager.h"
-#include "servicebrowser/scriptableservice/scriptableservice.h"
+#include "servicebrowser/scriptableservice/ScriptableService.h"
 #include "servicebrowser/servicebrowser.h"
 #include "servicebrowser/shoutcast/ShoutcastService.h"
 #include "servicebrowser/mp3tunes/mp3tunesservice.h"
@@ -272,7 +272,7 @@ void MainWindow::init()
         ServicePluginManager::instance()->init();
         PERF_LOG( "Initialised ServicePluginManager" )
 
-        internetContentServiceBrowser->setScriptableServiceManager( new ScriptableServiceManager( 0 ) );
+        internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
         new MediaBrowser( "MediaBrowser" );
         PERF_LOG( "created mediabrowser" )

@@ -21,6 +21,7 @@
 #define SCRIPTABLESERVICEINFOPARSER_H
 
 #include "infoparserbase.h"
+#include "ScriptableServiceMeta.h"
 
 /**
 Info parser for the scriptable services
@@ -36,6 +37,7 @@ public:
     ~ScriptableServiceInfoParser();
 
 
+    virtual void getInfo( Meta::GenrePtr genre );
     virtual void getInfo( Meta::ArtistPtr artist );
     virtual void getInfo( Meta::AlbumPtr album ) ;
     virtual void getInfo( Meta::TrackPtr track );

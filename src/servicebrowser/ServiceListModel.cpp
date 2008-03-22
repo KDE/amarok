@@ -78,7 +78,6 @@ void ServiceListModel::addService(ServiceBase * service)
 void ServiceListModel::removeService(ServiceBase * service)
 {
     int index = m_services.indexOf( service );
-    
     beginRemoveRows ( QModelIndex(), index, index );
     m_services.removeAt( index );
     endRemoveRows();

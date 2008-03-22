@@ -443,13 +443,9 @@ void MagnatuneStore::polish( )
         QList<int> levels;
         //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
         levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
-
-
-        m_infoParser = new MagnatuneInfoParser();
-
-        connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
-
-
+        
+        setInfoParser( new MagnatuneInfoParser() );
+        
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
         //model->setInfoParser( infoParser );
 

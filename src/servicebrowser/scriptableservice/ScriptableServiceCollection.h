@@ -15,43 +15,39 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/ 
- 
-#ifndef SCRIPTABLESERVICECOLLECTION_H
-#define SCRIPTABLESERVICECOLLECTION_H
+ ***************************************************************************/
+#ifndef DYNAMICSCRIPTABLESERVICECOLLECTION_H
+#define DYNAMICSCRIPTABLESERVICECOLLECTION_H
 
-#include "servicecollection.h"
+#include "../ServiceDynamicCollection.h"
+#include "AmarokProcess.h"
 
 /**
-A collection for use by the scriptable service. Stores everything in memory
+A collection that can call back a script to populate items as needed.
 
 	@author 
 */
-class ScriptableServiceCollection : public ServiceCollection
+class ScriptableServiceCollection : public ServiceDynamicCollection
 {
+    Q_OBJECT
 public:
-    ScriptableServiceCollection( const QString &name );
+    ScriptableServiceCollection( const QString &name, AmarokProcIO * script );
 
-    virtual ~ScriptableServiceCollection();
+    ~ScriptableServiceCollection();
 
-    virtual QueryMaker * queryMaker();
-    virtual void startFullScan() { }
+    virtual QueryMaker* queryMaker();
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
-  
-    virtual bool possiblyContainsTrack( const KUrl &url ) const;
-    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-    virtual CollectionLocation* location() const;
+    void donePopulating( int parentId );
 
-
-
-    
+    signals:
+        void updateComplete();
 
 private:
 
-    QString m_name;
+    AmarokProcIO * m_script;
 
 };
 
