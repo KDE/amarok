@@ -495,8 +495,6 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     m_svgRenderer->render( &pt, "progress-slider-center", QRectF( side, 0, m_knobX - 7, m_sliderHeight ) );
 
 
-    QPen pen( Qt::black, 1 );
-    p.setPen( pen );
     p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, background );
 }
 
