@@ -19,6 +19,7 @@
 
 #include "CollectionManager.h"
 
+#include <cassert>
 #include "debug.h"
 
 #include "BlockingQuery.h"
@@ -34,7 +35,7 @@
 #include <QList>
 #include <QTimer>
 
-#include <kservice.h>
+#include <KService>
 
 struct CollectionManager::Private
 {
@@ -91,6 +92,8 @@ CollectionManager::init()
     d->primaryCollection = 0;
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
+    assert( plugins.count() );
+
     foreach( KService::Ptr service, plugins )
     {
         Amarok::Plugin *plugin = PluginManager::createFromService( service );
