@@ -325,31 +325,38 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
                 }
                 qm->addFilter ( QueryMaker::valTitle, elem.text, false, false ); //always filter for track title too
                 qm->endAndOr();
-            } else {
-
+            }
+            else
+            {
                 //get field values based on name
                 qint64 value;
                 QString lcField = elem.field.toLower();
 
-                //NO i18n here please!
-                if ( lcField == "album" ) {
+                if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "album" ), Qt::CaseInsensitive ) == 0 )
+                {
                     value = QueryMaker::valAlbum;
                 } 
-                else if ( lcField == "artist" ) {
+                else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "artist" ), Qt::CaseInsensitive ) == 0 )
+                {
                     value = QueryMaker::valArtist;
                 }
-                else if ( lcField == "genre" ) {
+                else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "genre" ), Qt::CaseInsensitive ) == 0)
+                {
                     value = QueryMaker::valGenre;
                 }
-                else if ( lcField == "composer" ) {
+                else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0|| lcField.compare( i18n( "composer" ), Qt::CaseInsensitive ) == 0 )
+                {
                     value = QueryMaker::valComposer;
                 }
-                else if ( lcField == "year" ) {
+                else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "year" ), Qt::CaseInsensitive ) == 0)
+                {
                     value = QueryMaker::valYear;
-                } else {
+                }
+                else
+                {
                     value = -1;
                 }
-
+                
                 qm->addFilter ( value, elem.text, false, false );
 
             }
