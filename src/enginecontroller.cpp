@@ -270,7 +270,7 @@ EngineController::stop() //SLOT
         m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
         m_fader->fadeOut( AmarokConfig::fadeoutLength() );
 
-        QTimer::singleShot( AmarokConfig::fadeoutLength() + 500, this, SLOT( slotReallyStop() ) ); //add 500ms for good measure, otherwise seems to cut off early
+        QTimer::singleShot( AmarokConfig::fadeoutLength() + 1000, this, SLOT( slotReallyStop() ) ); //add 1s for good measure, otherwise seems to cut off early (buffering..)
     } 
     else
         m_media->stop();
