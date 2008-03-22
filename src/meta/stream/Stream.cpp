@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -18,58 +18,27 @@
 
 #include "Stream.h"
 #include "Stream_p.h"
+#include "Stream_p.moc"
 
-#include "enginecontroller.h"
-#include "engineobserver.h"
+#include "default/DefaultMetaTypes.h"
 #include "Meta.h"
-#include "meta/MetaConstants.h"
 
+#include <QPointer>
 #include <QSet>
 #include <QString>
 
 using namespace MetaStream;
-
-class Track::Private : public EngineObserver
-{
-public:
-    Private( Track *t )
-        : EngineObserver( EngineController::instance() )
-        , track( t )
-    {}
-    void notify() const
-    {
-        foreach( Meta::Observer *observer, observers )
-            observer->metadataChanged( track );
-    }
-
-    void newMetaData( QHash<qint64, QString> metaData, bool trackChanged )
-    {
-        Q_UNUSED( trackChanged )
-        if( metaData.contains( Meta::valArtist ) )
-            artist = metaData.value( Meta::valArtist );
-        if( metaData.contains( Meta::valTitle ) )
-            title = metaData.value( Meta::valTitle );
-        if( metaData.contains( Meta::valAlbum ) )
-            album = metaData.value( Meta::valAlbum );
-        notify();
-    }
-
-public:
-    QSet<Meta::Observer*> observers;
-    KUrl url;
-    QString title;
-    QString artist;
-    QString album;
-
-private:
-    Track *track;
-};
 
 Track::Track( const KUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
     d->url = url;
+    d->artistPtr = Meta::ArtistPtr( new StreamArtist( QPointer<Track::Private>( d ) ) );
+    d->albumPtr = Meta::AlbumPtr( new StreamAlbum( QPointer<Track::Private>( d ) ) );
+    d->genrePtr = Meta::GenrePtr( new Meta::DefaultGenre() );
+    d->composerPtr = Meta::ComposerPtr( new Meta::DefaultComposer() );
+    d->yearPtr = Meta::YearPtr( new Meta::DefaultYear() );
 }
 
 Track::~Track()
@@ -139,36 +108,31 @@ Track::isEditable() const
 Meta::AlbumPtr
 Track::album() const
 {
-    //TODO
-    return Meta::AlbumPtr();
+    return d->albumPtr;
 }
 
 Meta::ArtistPtr
 Track::artist() const
 {
-    //TODO
-    return Meta::ArtistPtr();
+    return d->artistPtr;
 }
 
 Meta::GenrePtr
 Track::genre() const
 {
-    //TODO
-    return Meta::GenrePtr();
+    return d->genrePtr;
 }
 
 Meta::ComposerPtr
 Track::composer() const
 {
-    //TODO
-    return Meta::ComposerPtr();
+    return d->composerPtr;
 }
 
 Meta::YearPtr
 Track::year() const
 {
-    //TODO
-    return Meta::YearPtr();
+    return d->yearPtr;
 }
 
 void
