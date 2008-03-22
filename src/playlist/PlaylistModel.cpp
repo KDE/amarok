@@ -150,7 +150,7 @@ Model::data( const QModelIndex& index, int role ) const
         Meta::TrackPtr track = m_items.at( row )->track();
 
         if ( !track->album() )
-            return None;  // no albm set
+            return None;  // no album set
         else if ( !m_albumGroups.contains( track->album()->prettyName() ) )
             return None;  // no group for this album, should never happen...
 
@@ -189,22 +189,30 @@ Model::data( const QModelIndex& index, int role ) const
         switch( index.column() )
         {
             case 0:
+            {
                 return m_items.at( row )->track()->name();
+            }
             case 1:
+            {
                 if ( m_items.at( row )->track()->album() )
                     return m_items.at( row )->track()->album()->name();
                 else
-                    return "";
+                    return QString();
+            }
             case 2:
+            {
                 if ( m_items.at( row )->track()->artist() )
                     return m_items.at( row )->track()->artist()->name();
                 else
-                    return "";
+                    return QString();
+            }
             case 3:
+            {
                 return QString("%1 - %2 - %3")
                     .arg(m_items.at( row )->track()->artist()->name())
                     .arg(m_items.at( row )->track()->album()->name())
                     .arg(m_items.at( row )->track()->name());
+            }
         }
     }
     // else
