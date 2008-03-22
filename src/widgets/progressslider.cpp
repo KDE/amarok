@@ -44,7 +44,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     box->setMargin( 1 );
     box->setSpacing( 3 );
 
-    m_slider = new Amarok::Slider( Qt::Horizontal, this );
+    m_slider = new Amarok::TimeSlider( /*Qt::Horizontal,*/ this );
     m_slider->setMouseTracking( true );
 
     m_timeLabelLeft = new TimeLabel( this );

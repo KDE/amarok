@@ -403,4 +403,149 @@ void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 }
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////// TIMESLIDER ////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+
+Amarok::TimeSlider::TimeSlider( QWidget *parent )
+    : Amarok::Slider( Qt::Horizontal, parent )
+        , m_animCount( 0 )
+        , m_animTimer( new QTimer( this ) )
+{
+    setFocusPolicy( Qt::NoFocus );
+
+    m_margin = 4;
+
+    // BEGIN Calculate handle animation pixmaps for mouse-over effect
+    QImage imgHandle    ( KStandardDirs::locate( "data","amarok/images/volumeslider-handle.png" ) );
+    QImage imgHandleGlow( KStandardDirs::locate( "data","amarok/images/volumeslider-handle_glow.png" ) );
+
+    float opacity = 0.0;
+    const float step = 1.0 / ANIM_MAX;
+    QImage dst;
+    QColor color = Qt::black;
+    for ( int i = 0; i < ANIM_MAX; ++i ) {
+        dst = imgHandle;
+        QPainter p( &dst );
+        p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
+        color.setAlphaF( opacity );
+        p.fillRect( dst.rect(), color );
+        p.setCompositionMode( QPainter::CompositionMode_Plus );
+        p.setOpacity( opacity );
+        p.drawImage( 0, 0, imgHandleGlow );
+        p.end();
+        m_handlePixmaps.append( QPixmap::fromImage( dst ) );
+        opacity += step;
+    }
+    // END
+
+    QString file = KStandardDirs::locate( "data","amarok/images/progress_slider.svg" );
+    m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
+    if ( ! m_svgRenderer->isValid() )
+        debug() << "svg is kaputski";
+
+    connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
+}
+
+void
+Amarok::TimeSlider::slotAnimTimer() //SLOT
+{
+    if ( m_animEnter ) {
+        m_animCount++;
+        repaint( );
+        if ( m_animCount == ANIM_MAX - 1 )
+            m_animTimer->stop();
+    } else {
+        m_animCount--;
+        repaint();
+        if ( m_animCount == 0 )
+            m_animTimer->stop();
+    }
+}
+
+void
+Amarok::TimeSlider::paintEvent( QPaintEvent * )
+{
+    //DEBUG_BLOCK
+
+    //debug() << "width: " << width() << ", height: " << height();
+    QPainter p( this );
+
+    double knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value(), m_sliderWidth );
+
+
+    double fillLength = knobX + ( m_sliderHeight / 2 );
+    double fillHeight = m_sliderHeight * ( ( double ) knobX / m_sliderWidth );
+    double fillOffsetY = ( m_sliderHeight - fillHeight ) / 2;
+
+    bool highlight = underMouse();
+
+    //Don't cache here, way too many renderings..
+
+    QPixmap background( m_sliderWidth, m_sliderHeight );
+
+
+    background.fill( Qt::transparent );
+    QPainter pt( &background );
+    m_svgRenderer->render( &pt, "volume-slider-background",  QRectF( 0, 0, m_sliderWidth, m_sliderHeight ) );
+    m_svgRenderer->render( &pt, "volume-fill",  QRectF( 0, fillOffsetY, fillLength, fillHeight ) );
+
+    if ( !highlight )
+        m_svgRenderer->render( &pt, "volume-slider-position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+    else
+        m_svgRenderer->render( &pt, "volume-slider-position-highlight",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+
+
+    p.drawPixmap( m_sliderX, ( height() - m_sliderHeight ) / 2, background );
+}
+
+void
+Amarok::TimeSlider::enterEvent( QEvent* )
+{
+    m_animEnter = true;
+    m_animCount = 0;
+
+    m_animTimer->start( ANIM_INTERVAL );
+}
+
+void
+Amarok::TimeSlider::leaveEvent( QEvent* )
+{
+    // This can happen if you enter and leave the widget quickly
+    if ( m_animCount == 0 )
+        m_animCount = 1;
+
+    m_animEnter = false;
+    m_animTimer->start( ANIM_INTERVAL );
+}
+
+
+void
+Amarok::TimeSlider::paletteChange( const QPalette& )
+{
+    The::svgTinter()->init();
+
+    QString file = KStandardDirs::locate( "data","amarok/images/progress_slider.svg" );
+    
+    delete m_svgRenderer;
+    m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
+    if ( ! m_svgRenderer->isValid() )
+        debug() << "svg is kaputski";
+}
+
+void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
+{
+    Q_UNUSED( event );
+    m_iconHeight = (int)height() * 0.66;
+    m_iconWidth = ( int ) m_iconHeight * 1.33;
+    m_textWidth = 40;
+    m_sliderWidth = width() - ( m_iconWidth + m_textWidth + m_margin  );
+    m_sliderHeight = (int)m_sliderWidth / 25.0; //maintain sane aspect ratio
+    if ( m_sliderHeight > height() )
+        m_sliderHeight = height();
+
+    m_sliderX = m_iconWidth + m_margin;
+}
+
 #include "sliderwidget.moc"

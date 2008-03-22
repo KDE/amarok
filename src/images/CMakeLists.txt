@@ -39,5 +39,6 @@ install(
         emblem-jamendo.png
         emblem-default.png
         volume_slider.svg
+	progress_slider.svg
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )

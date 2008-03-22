@@ -128,6 +128,50 @@ namespace Amarok
             QSvgRenderer * m_svgRenderer;
     };
 
+    class TimeSlider : public Amarok::Slider
+    {
+        Q_OBJECT;
+
+        public:
+            TimeSlider( QWidget *parent );
+
+        protected:
+            virtual void paintEvent( QPaintEvent* );
+
+            virtual void enterEvent( QEvent* );
+            virtual void leaveEvent( QEvent* );
+            virtual void paletteChange( const QPalette& );
+            virtual void resizeEvent(QResizeEvent * event);
+
+        private slots:
+            virtual void slotAnimTimer();
+
+        private:
+            TimeSlider( const TimeSlider& ); //undefined
+            TimeSlider &operator=( const TimeSlider& ); //undefined
+
+            ////////////////////////////////////////////////////////////////
+            static const int ANIM_INTERVAL = 18;
+            static const int ANIM_MAX = 18;
+
+            bool    m_animEnter;
+            int     m_animCount;
+            QTimer* m_animTimer;
+
+
+            int m_iconHeight;
+            int m_iconWidth;
+            int m_textWidth;
+            int m_sliderWidth;
+            int m_sliderHeight;
+            int m_sliderX;
+
+            int m_margin;
+
+            QVector<QPixmap> m_handlePixmaps;
+            QSvgRenderer * m_svgRenderer;
+    };
+
 }
 
 #endif
