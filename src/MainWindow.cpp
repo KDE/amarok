@@ -1015,7 +1015,7 @@ void MainWindow::createMenus()
     extern void qt_mac_set_dock_menu(QMenu *); 
     qt_mac_set_dock_menu(actionsMenu); 
     // Change to avoid duplicate menu titles in OS X
-    actionsMenu->setTitle( i18n("&Playback") );
+    actionsMenu->setTitle( i18n("&Music") );
 #else
     m_menubar = menuBar();
     actionsMenu = new KMenu( m_menubar );
