@@ -485,9 +485,10 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 
     background.fill( Qt::transparent );
     QPainter pt( &background );
+    m_svgRenderer->render( &pt, "progress-background-left", QRectF( 0, 0, side, m_sliderHeight ) );
     m_svgRenderer->render( &pt, "progress-slider-left", QRectF( 0, 0, side, m_sliderHeight ) );
     m_svgRenderer->render( &pt, "progress-background",  QRectF( side, 0, width() - side *2, m_sliderHeight ) );
-    m_svgRenderer->render( &pt, "progress-slider-right", QRectF( width() - side, 0, side, m_sliderHeight ) );
+    m_svgRenderer->render( &pt, "progress-background-right", QRectF( width() - side, 0, side, m_sliderHeight ) );
 
     m_svgRenderer->render( &pt, "progress-slider-position",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
 

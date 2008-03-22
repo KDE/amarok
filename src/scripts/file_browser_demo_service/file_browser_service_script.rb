@@ -50,7 +50,7 @@ end
 dir_walker = DirWalker.new
 
 #this one should really be made configurable....
-base_path = "/home/nhn/media/"
+base_path = "/media/music/"
 
 
 #for debug purposes only:
