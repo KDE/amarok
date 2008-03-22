@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QList>
 #include <QPolygon>
+#include <QTimer>
 
 #include <KHBox>
 #include <KLocale>
@@ -149,7 +150,8 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 void
 ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
-    m_slider->setValue( position );
+//     debug() << "POSITION: " << position;
+    m_slider->setSliderValue( position );
 
     if ( !m_slider->isEnabled() )
         drawTimeDisplay( position );
@@ -161,6 +163,7 @@ ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldStat
     switch ( state ) {
         case Engine::Empty:
             m_slider->setEnabled( false );
+            m_slider->timer()->stop();
             m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
             m_slider->setMaximum( 0 );
 //             m_timeLabelLeft->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
@@ -172,12 +175,15 @@ ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldStat
         case Engine::Playing:
             m_timeLabelLeft->show();
             m_timeLabelRight->show();
+            m_slider->timer()->start( m_slider->timerInterval() );
             //fallthrough
+            break;
 
         case Engine::Paused:
             DEBUG_LINE_INFO
             m_timeLabelLeft->setEnabled( true );
             m_timeLabelRight->setEnabled( true );
+            m_slider->timer()->stop();
             break;
 
         case Engine::Idle:
@@ -190,6 +196,7 @@ ProgressWidget::engineTrackLengthChanged( long seconds )
 {
     DEBUG_BLOCK
     debug() << "setting length to " << seconds << " cause it says " << The::engineController()->trackLength();
+    m_slider->timer()->stop();
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( seconds * 1000 );
     m_slider->setEnabled( seconds > 0 );

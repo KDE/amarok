@@ -133,17 +133,35 @@ namespace Amarok
         public:
             TimeSlider( QWidget *parent );
 
+//             void setMaximum( int maximum );
+
+            void setSliderValue( int value );
+            QTimer *timer() { return m_animTimer; }
+            short timerInterval() const { return TICK_INTERVAL / FRAME_RATE; }
+
         protected:
             virtual void paintEvent( QPaintEvent* );
 
             virtual void paletteChange( const QPalette& );
             virtual void resizeEvent(QResizeEvent * event);
 
+        private slots:
+            void slotUpdateAnim();
+
         private:
             Q_DISABLE_COPY( TimeSlider );
             ////////////////////////////////////////////////////////////////
 
+            QTimer *m_animTimer; // Used for a smooth progress.
+
             int m_sliderHeight;
+            int m_frame;
+            double m_knobX; // The position of the curren indicator.
+            double m_positionChange;
+            int m_oldValue;
+
+            static const int FRAME_RATE = 25;
+            static const int TICK_INTERVAL = 1000; //The time (in ms) between updates from the engine.
 
             QSvgRenderer * m_svgRenderer;
     };

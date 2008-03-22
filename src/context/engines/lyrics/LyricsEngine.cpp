@@ -30,7 +30,6 @@ LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     , ContextObserver( ContextView::self() )
     , LyricsObserver( LyricsManager::self() )
 {
-    DEBUG_BLOCK
     m_requested = true; // testing
 }
 
@@ -51,14 +50,12 @@ bool LyricsEngine::sourceRequested( const QString& name )
 
 void LyricsEngine::message( const ContextState& state )
 {
-    DEBUG_BLOCK
         if( state == Current && m_requested )
             update();
 }
 
 void LyricsEngine::update()
 {
-    DEBUG_BLOCK
 
         Meta::TrackPtr curtrack = EngineController::instance()->currentTrack();
     if( !curtrack )
@@ -109,7 +106,6 @@ void LyricsEngine::update()
     { // fetch by lyrics script
         clearData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
-        debug() << "telling scripts to fetch lyrics!";
         ScriptManager::instance()->notifyFetchLyrics( artist, title );
 
     }
@@ -118,8 +114,6 @@ void LyricsEngine::update()
 
 void LyricsEngine::newLyrics( QStringList& lyrics )
 {
-    DEBUG_BLOCK
-    debug() << "got new lyrics, sending to applets!";
     clearData( "lyrics" );
     setData( "lyrics", "lyrics", lyrics );
 }

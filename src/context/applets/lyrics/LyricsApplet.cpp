@@ -101,9 +101,6 @@ void LyricsApplet::init()
 
 void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
 {
-    DEBUG_BLOCK
-
-    kDebug() << "LyricsApplet::constraintsUpdated";
             
     prepareGeometryChange();
 
@@ -130,7 +127,6 @@ void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
-    DEBUG_BLOCK;
     Q_UNUSED( name )
     if( data.size() == 0 ) return;
 
@@ -138,7 +134,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->setPlainText( i18n( "No lyrics script is running!" ) );
     if( data.contains( "fetching" ) )
     {
-        debug() << "fetching";
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
     }else if( data.contains( "error" ) )
         m_lyrics->setPlainText( i18n( "Lyrics were not able to be downloaded. Please check your internet connection." ) );

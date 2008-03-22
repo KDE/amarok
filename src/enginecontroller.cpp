@@ -67,7 +67,7 @@ EngineController::EngineController()
 
     m_path = Phonon::createPath(m_media, m_audio);
 
-    m_media->setTickInterval( 250 ); //small tick interval to make progress slider smoother
+    m_media->setTickInterval( 1000 );
     PERF_LOG( "EngineController: loaded phonon objects" )
 
     connect( m_media, SIGNAL( finished() ), SLOT( slotTrackEnded() ) );

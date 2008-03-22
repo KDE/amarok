@@ -410,6 +410,10 @@ void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 
 Amarok::TimeSlider::TimeSlider( QWidget *parent )
     : Amarok::Slider( Qt::Horizontal, parent )
+    , m_animTimer( new QTimer( this ) )
+    , m_frame( 0 )
+    , m_knobX( 0.0 )
+    , m_positionChange( 0.0 )
 {
     setFocusPolicy( Qt::NoFocus );
 
@@ -418,6 +422,44 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
     if ( ! m_svgRenderer->isValid() )
         debug() << "svg is kaputski";
 
+    connect( m_animTimer, SIGNAL( timeout() ), SLOT( slotUpdateAnim() ) );
+
+}
+
+void
+Amarok::TimeSlider::setSliderValue( int value )
+{
+    if( value != 0 && m_oldValue != 0 )
+    {
+        m_frame = 1; // Reset the frame, as it animates between values.
+        m_knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value, width() );
+        double oldKnobX = QStyle::sliderPositionFromValue( minimum(), maximum(), m_oldValue, width() );
+        m_positionChange = ( m_knobX - oldKnobX ) / FRAME_RATE;
+//         debug() << " M_OLDKNOBX:" << oldKnobX << "MKNOBX: " << m_knobX << "DIFFERENCES: " << m_knobX - oldKnobX;
+//         debug() << "M_POSITIONCHANGE: " << m_positionChange;
+//         debug() << m_knobX;
+        m_animTimer->start( TICK_INTERVAL / FRAME_RATE );
+        m_oldValue = value;
+        repaint();
+    }
+    Amarok::Slider::setValue( value );
+}
+
+void
+Amarok::TimeSlider::slotUpdateAnim()
+{
+//     DEBUG_BLOCK
+    if( m_frame < FRAME_RATE - 1 )
+    {
+        m_frame++;
+//         debug() << "FRAME NUMBER: " << m_frame;
+//         debug() << "MOVING KNOBX BY: " << m_positionChange;
+        m_knobX += m_positionChange;
+//         debug() << m_knobX;
+        repaint();
+    }
+    else
+        m_animTimer->stop();
 }
 
 void
@@ -429,9 +471,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     QPainter p( this );
     const short side = 15; // Size of the rounded parts.
 
-    double knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value(), width() );
-
-    double fillLength = knobX + ( m_sliderHeight / 2 );
+    double fillLength = m_knobX + ( m_sliderHeight / 2 );
 //     double fillHeight = m_sliderHeight * ( ( double ) knobX / m_sliderWidth );
 //     double fillOffsetY = ( m_sliderHeight - fillHeight ) / 2;
 
@@ -446,7 +486,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     m_svgRenderer->render( &pt, "progress-background",  QRectF( side, 0, width() - side *2, m_sliderHeight ) );
     m_svgRenderer->render( &pt, "progress-slider-right", QRectF( width() - side, 0, side, m_sliderHeight ) );
 
-    m_svgRenderer->render( &pt, "progress-slider-position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+    m_svgRenderer->render( &pt, "progress-slider-position",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
 
 
     p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, background );
@@ -458,7 +498,7 @@ Amarok::TimeSlider::paletteChange( const QPalette& )
     The::svgTinter()->init();
 
     QString file = KStandardDirs::locate( "data","amarok/images/sliders.svg" );
-    
+
     delete m_svgRenderer;
     m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
     if ( ! m_svgRenderer->isValid() )

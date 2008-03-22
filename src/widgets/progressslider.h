@@ -23,7 +23,7 @@
 #include <QPolygon>
 #include <QWidget>
 
-namespace Amarok { class Slider; }
+namespace Amarok { class TimeSlider; }
 class QLabel;
 
 
@@ -50,6 +50,6 @@ class ProgressWidget : public QWidget, public EngineObserver
         QLabel *m_timeLabelLeft;
         QLabel *m_timeLabelRight;
         int m_timeLength;
-        Amarok::Slider *m_slider;
+        Amarok::TimeSlider *m_slider;
 };
 #endif

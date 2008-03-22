@@ -45,23 +45,16 @@ LyricsObserver::~LyricsObserver()
 
 void LyricsSubject::sendNewLyrics( QStringList lyrics )
 {
-    DEBUG_BLOCK
-    debug() << "sending lyrics!";
-    debug() << "observers:" << m_observers;
     foreach( LyricsObserver* obs, m_observers )
     {
-        debug() << "got an observer to send to";
         obs->newLyrics( lyrics );
     }
 }
 
 void LyricsSubject::sendLyricsMessage( QString msg )
 {
-    DEBUG_BLOCK
-    debug() << "sending lyrics message:" << msg;
     foreach( LyricsObserver* obs, m_observers )
     {
-        debug() << "got an observer to send to";
         obs->lyricsMessage( msg );
     }
 }
@@ -87,7 +80,6 @@ LyricsManager* LyricsManager::s_self = 0;
 
 void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
 {
-    DEBUG_BLOCK
     Q_UNUSED( cached );
 
     QDomDocument doc;
@@ -140,7 +132,6 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
             << QString() // TODO lyrics site
             << lyrics;
 
-        debug() << "sending lyrics data:" << lyricsData;
 //         setData( "lyrics", "lyrics", lyricsData );
         sendNewLyrics( lyricsData );
 
