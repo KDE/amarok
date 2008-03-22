@@ -1031,13 +1031,6 @@ void MainWindow::createMenus()
     actionsMenu->addAction( actionCollection()->action("next") );
     actionsMenu->addSeparator();
 
-    QAction *repeat = actionCollection()->action("repeat");
-    connect( repeat, SIGNAL(triggered( int ) ), The::playlistModel(), SLOT(playlistRepeatMode(int) ) );
-    actionsMenu->addAction( repeat );
-    KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
-    actionsMenu->addAction( random );
-    random->menu()->addSeparator();
-    random->menu()->addAction( actionCollection()->action("favor_tracks") );
 
 #ifndef Q_WS_MAC    // Hide in OS X. Avoids duplicate "Quit" in dock menu
     actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
@@ -1059,6 +1052,14 @@ void MainWindow::createMenus()
     playlistMenu->addSeparator();
     playlistMenu->addAction( actionCollection()->action("playlist_clear") );
     playlistMenu->addAction( actionCollection()->action("playlist_shuffle") );
+
+    QAction *repeat = actionCollection()->action("repeat");
+    connect( repeat, SIGNAL(triggered( int ) ), The::playlistModel(), SLOT(playlistRepeatMode(int) ) );
+    playlistMenu->addAction( repeat );
+    KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
+    playlistMenu->addAction( random );
+    random->menu()->addSeparator();
+    random->menu()->addAction( actionCollection()->action("favor_tracks") );
 
     playlistMenu->addSeparator();
     //FIXME: REENABLE When ported
