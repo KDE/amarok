@@ -1109,9 +1109,6 @@ void MainWindow::createMenus()
 
     m_menubar->addMenu( actionsMenu );
     m_menubar->addMenu( playlistMenu );
-#ifndef Q_WS_MAC
-    m_menubar->addMenu( modeMenu );
-#endif
     m_menubar->addMenu( m_toolsMenu );
     m_menubar->addMenu( m_settingsMenu );
     m_menubar->addMenu( Amarok::Menu::helpMenu() );
