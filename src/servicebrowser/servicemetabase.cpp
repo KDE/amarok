@@ -260,7 +260,8 @@ ServiceTrack::album() const
     if ( !m_album == 0 )
         return AlbumPtr::staticCast( m_album );
     else
-        return The::defaultAlbum();
+        //FIXME: always return the same default object. this applies to the other methods too
+        return Meta::AlbumPtr( new Meta::DefaultAlbum() );
 }
 
 ArtistPtr
@@ -269,7 +270,7 @@ ServiceTrack::artist() const
     if ( !m_artist == 0 )
         return ArtistPtr::staticCast( m_artist );
     else
-        return The::defaultArtist();
+        return Meta::ArtistPtr( new Meta::DefaultArtist() );
 }
 
 GenrePtr
@@ -278,7 +279,7 @@ ServiceTrack::genre() const
     if ( !m_genre == 0 )
         return GenrePtr::staticCast( m_genre );
     else
-        return The::defaultGenre();
+        return Meta::GenrePtr( new DefaultGenre() );
 }
 
 ComposerPtr
@@ -287,7 +288,7 @@ ServiceTrack::composer() const
     if ( !m_composer == 0 )
         return ComposerPtr::staticCast( m_composer );
     else
-        return The::defaultComposer();
+        return Meta::ComposerPtr( new DefaultComposer() );
 }
 
 YearPtr
@@ -296,7 +297,7 @@ ServiceTrack::year() const
     if( !m_year == 0 )
         return YearPtr::staticCast( m_year );
     else
-        return The::defaultYear();
+        return Meta::YearPtr( new DefaultYear() );
 }
 
 void

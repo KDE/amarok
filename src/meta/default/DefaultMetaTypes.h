@@ -37,12 +37,7 @@ class AMAROK_EXPORT DefaultArtist : public Meta::Artist
 {
     public:
 
-        static ArtistPtr instance() {
-            if ( !s_instance )
-                s_instance = ArtistPtr( new DefaultArtist() );
-            return s_instance;
-        }
-        
+        DefaultArtist() {};
         virtual ~DefaultArtist() {};
 
         virtual QString name() const { return i18nc( "The value is not known", "Unknown" ); }
@@ -51,27 +46,19 @@ class AMAROK_EXPORT DefaultArtist : public Meta::Artist
         virtual TrackList tracks() { return TrackList(); }
         virtual AlbumList albums() { return AlbumList(); }
 
-    private:
-
-        DefaultArtist() {};
-        static ArtistPtr s_instance;
-
 };
 
 class AMAROK_EXPORT DefaultAlbum : public Meta::Album
 {
     public:
 
-        static AlbumPtr instance() {
-            if ( !s_instance )
-                s_instance = AlbumPtr( new DefaultAlbum() );
-            return s_instance;
-        }
-        
+        DefaultAlbum()
+            : Meta::Album()
+            , m_albumArtist( new DefaultArtist() ) {}
         virtual ~DefaultAlbum() {};
 
         virtual bool hasAlbumArtist() const { return true; }
-        virtual ArtistPtr albumArtist() const { return DefaultArtist::instance(); }
+        virtual ArtistPtr albumArtist() const { return m_albumArtist; }
 
         virtual bool isCompilation() const { return false; }
 
@@ -81,9 +68,7 @@ class AMAROK_EXPORT DefaultAlbum : public Meta::Album
         virtual TrackList tracks() { return TrackList(); }
 
     private:
-
-        DefaultAlbum() {};
-        static AlbumPtr s_instance;
+        Meta::ArtistPtr m_albumArtist;
 
 };
 
@@ -92,12 +77,7 @@ class AMAROK_EXPORT DefaultComposer : public Meta::Composer
 {
     public:
 
-        static ComposerPtr instance() {
-            if ( !s_instance )
-                s_instance = ComposerPtr( new DefaultComposer() );
-            return s_instance;
-        }
-        
+        DefaultComposer() {};
         virtual ~DefaultComposer() {};
         
         virtual QString name() const { return i18nc( "The value is not known", "Unknown" ); }
@@ -107,7 +87,6 @@ class AMAROK_EXPORT DefaultComposer : public Meta::Composer
 
     private:
 
-        DefaultComposer() {};
         static ComposerPtr s_instance;
 
 };
@@ -116,12 +95,7 @@ class AMAROK_EXPORT DefaultGenre : public Meta::Genre
 {
     public:
 
-        static GenrePtr instance() {
-            if ( !s_instance )
-                s_instance = GenrePtr( new DefaultGenre() );
-            return s_instance;
-        }
-        
+        DefaultGenre() {};
         virtual ~DefaultGenre() {};
         
         virtual QString name() const { return i18nc( "The value is not known", "Unknown" ); }
@@ -129,22 +103,12 @@ class AMAROK_EXPORT DefaultGenre : public Meta::Genre
 
         virtual TrackList tracks() { return TrackList(); }
 
-    private:
-
-        DefaultGenre() {};
-        static GenrePtr s_instance;
-
 };
 class AMAROK_EXPORT DefaultYear : public Meta::Year
 {
     public:
 
-        static YearPtr instance() {
-            if ( !s_instance )
-                s_instance = YearPtr( new DefaultYear() );
-            return s_instance;
-        }
-        
+        DefaultYear() {};
         virtual ~DefaultYear() {};
         
         virtual QString name() const { return "0"; }
@@ -152,28 +116,8 @@ class AMAROK_EXPORT DefaultYear : public Meta::Year
 
         virtual TrackList tracks() { return TrackList(); }
 
-    private:
-
-        DefaultYear() {};
-        static YearPtr s_instance;
-
 };
 
-
-ArtistPtr DefaultArtist::s_instance = ArtistPtr();
-AlbumPtr DefaultAlbum::s_instance = AlbumPtr();
-ComposerPtr DefaultComposer::s_instance = ComposerPtr();
-GenrePtr DefaultGenre::s_instance = GenrePtr();
-YearPtr DefaultYear::s_instance = YearPtr();
-
-}
-
-namespace The {
-    Meta::ArtistPtr defaultArtist() { return  Meta::DefaultArtist::instance(); }
-    Meta::AlbumPtr defaultAlbum() { return Meta::DefaultAlbum::instance(); }
-    Meta::ComposerPtr defaultComposer() { return  Meta::DefaultComposer::instance(); }
-    Meta::GenrePtr defaultGenre() { return  Meta::DefaultGenre::instance(); }
-    Meta::YearPtr defaultYear() { return  Meta::DefaultYear::instance(); }
 }
 
 #endif

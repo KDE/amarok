@@ -69,12 +69,6 @@ namespace The {
     AMAROK_EXPORT SvgTinter *        svgTinter();
     AMAROK_EXPORT Amarok::ContextStatusBar* statusBar();
     
-    AMAROK_EXPORT Meta::ArtistPtr defaultArtist();
-    AMAROK_EXPORT Meta::AlbumPtr defaultAlbum();
-    AMAROK_EXPORT Meta::ComposerPtr defaultComposer();
-    AMAROK_EXPORT Meta::GenrePtr defaultGenre();
-    AMAROK_EXPORT Meta::YearPtr defaultYear();
-    
 }
 
 #endif
