@@ -471,7 +471,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 
     //debug() << "width: " << width() << ", height: " << height();
     QPainter p( this );
-    const short side = 15; // Size of the rounded parts.
+    const short side = 7; // Size of the rounded parts.
 
 //     double fillLength = m_knobX + ( m_sliderHeight / 2 );
 //     double fillLength = width() - m_knobX;
@@ -490,10 +490,11 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     m_svgRenderer->render( &pt, "progress-background",  QRectF( side, 0, width() - side *2, m_sliderHeight ) );
     m_svgRenderer->render( &pt, "progress-background-right", QRectF( width() - side, 0, side, m_sliderHeight ) );
 
-    m_svgRenderer->render( &pt, "progress-slider-position",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
-
     //Paint the trail
-    m_svgRenderer->render( &pt, "progress-slider-center", QRectF( side, 0, m_knobX - 7, m_sliderHeight ) );
+    m_svgRenderer->render( &pt, "progress-slider-center", QRectF( side, 0, m_knobX - 3, m_sliderHeight ) );
+
+    //And the progress indicator, this needs to happen after the trail so it's on top.
+    m_svgRenderer->render( &pt, "progress-slider-position",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
 
 
     p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, background );
