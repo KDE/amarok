@@ -35,6 +35,7 @@
 #include "mediabrowser.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
+#include "playlist/PlaylistGraphicsView.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"
 #include "servicebrowser/ServicePluginManager.h"
@@ -55,15 +56,7 @@
 
 #include "queuemanager/QueueManager.h"
 
-#include <QFont>
-#include <QHeaderView>
-#include <QLabel>           //search filter label
 #include <QList>
-#include <QPaintEngine>
-#include <QPainter>         //dynamic title
-#include <QPen>
-#include <QTimer>           //search filter timer
-#include <QToolTip>         //QToolTip::add()
 #include <QVBoxLayout>
 #include <QPixmapCache>
 
@@ -72,18 +65,16 @@
 #include <KActionMenu>
 #include <KApplication>     //kapp
 #include <KFileDialog>      //savePlaylist(), openPlaylist()
-#include <KGlobal>
 #include <KInputDialog>     //slotAddStream()
 #include <KLocale>
 #include <KMenuBar>
 #include <KMessageBox>      //savePlaylist()
 #include <KMenu>
 #include <KPushButton>
-#include <kdeversion.h>
 
-#ifdef Q_WS_X11
-#include <fixx11h.h> 
-#endif
+// #ifdef Q_WS_X11
+// #include <fixx11h.h> 
+// #endif
 
 class ContextWidget : public KVBox
 {
@@ -96,7 +87,7 @@ class ContextWidget : public KVBox
 MainWindow *MainWindow::s_instance = 0;
 
 MainWindow::MainWindow()
-        :KXmlGuiWindow( 0, Qt::WGroupLeader )
+        :KXmlGuiWindow( 0 )
         , m_lastBrowser( 0 )
 {
     setObjectName("MainWindow");
@@ -121,9 +112,6 @@ MainWindow::MainWindow()
         resize( AmarokConfig::mainWindowSize() );
         move( AmarokConfig::mainWindowPos() );
     }
-    PERF_LOG( "Create sidebar" )
-    m_browsers = new SideBar( this, new KVBox );
-    m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 }
 
 MainWindow::~MainWindow()
@@ -148,22 +136,20 @@ void MainWindow::init()
     //this function is necessary because Amarok::actionCollection() returns our actionCollection
     //via the App::m_pMainWindow pointer since App::m_pMainWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
-    PERF_LOG( "Create Playlist" )
-    Playlist::Widget *playlistWidget = new Playlist::Widget( this );
-    playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
-    PERF_LOG( "Playlist created" )
 
     {
         m_controlBar = new MainToolbar( this );
 
     }
 
-    QPalette p;
-    QColor bottomColor;
-    QColor topColor = bottomColor = palette().highlight().color().dark( 150 );
-    bottomColor = bottomColor.dark( 100 );
-    topColor.setAlpha( 75 );
-    bottomColor.setAlpha( 130 );
+    PERF_LOG( "Create sidebar" )
+    m_browsers = new SideBar( this, new KVBox );
+    m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
+
+    PERF_LOG( "Create Playlist" )
+    Playlist::Widget *playlistWidget = new Playlist::Widget( this );
+    playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
+    PERF_LOG( "Playlist created" )
 
     createMenus();
 
@@ -351,8 +337,6 @@ void MainWindow::showBrowser( const QString &name )
  */
 bool MainWindow::eventFilter( QObject *o, QEvent *e )
 {
-    typedef Q3ListViewItemIterator It;
-
     switch( e->type() )
     {
     case 6/*QEvent::KeyPress*/:
@@ -495,11 +479,10 @@ void MainWindow::closeEvent( QCloseEvent *e )
 
 void MainWindow::showEvent( QShowEvent* )
 {
-    //PORT 2.0
-//     static bool firstTime = true;
-//     if( firstTime )
-//         Playlist::instance()->setFocus();
-//     firstTime = false;
+    static bool firstTime = true;
+    if( firstTime )
+        The::playlistView()->setFocus( Qt::ActiveWindowFocusReason );
+    firstTime = false;
 }
 
 #include <qdesktopwidget.h>
@@ -513,7 +496,7 @@ void MainWindow::savePlaylist() const //SLOT
 {
     QString playlistName = KFileDialog::getSaveFileName();
     if( !playlistName.isEmpty() )
-        The::playlistModel()->saveM3U( playlistName );
+        The::playlistModel()->savePlaylist( playlistName );
 }
 
 
@@ -1003,9 +986,6 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
-
-    
-
     //BEGIN Actions menu
     KMenu *actionsMenu;    
 #ifdef Q_WS_MAC
@@ -1100,7 +1080,6 @@ void MainWindow::createMenus()
     m_settingsMenu->addSeparator();
 #endif
 
-//  m_settingsMenu->addAction( actionCollection()->action("options_configure_globals") );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );

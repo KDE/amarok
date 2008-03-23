@@ -134,7 +134,7 @@ class DbusPlaylistHandler : public QObject
       virtual void    removeCurrentTrack();
       virtual void    removeByIndex(int);
       virtual void    repopulate();
-      virtual void    saveM3u(const QString& path, bool relativePaths);
+      virtual void    savePlaylist(const QString& path, bool relativePaths);
       virtual void    setStopAfterCurrent(bool);
       virtual void    shortStatusMessage(const QString&);
       virtual void    shufflePlaylist();

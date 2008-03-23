@@ -34,7 +34,6 @@ email                : markey@web.de
 #include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
-
 #include "pluginmanager.h"
 #include "refreshimages.h"
 #include "scriptmanager.h"
@@ -60,7 +59,7 @@ email                : markey@web.de
 #include <KJobUiDelegate>
 #include <KLocale>
 #include <KRun>                //Amarok::invokeBrowser()
-#include <kshell.h>
+#include <KShell>
 #include <KShortcutsDialog>     //slotConfigShortcuts()
 #include <KSplashScreen>
 #include <KStandardDirs>
@@ -218,8 +217,12 @@ App::~App()
 
     if ( AmarokConfig::resumePlayback() ) {
         if ( The::engineController()->state() != Engine::Empty ) {
-            AmarokConfig::setResumeTrack( The::engineController()->currentTrack()->playableUrl().prettyUrl() );
-            AmarokConfig::setResumeTime( The::engineController()->trackPosition() );
+            Meta::TrackPtr track = The::engineController()->currentTrack();
+            if( track )
+            {
+                AmarokConfig::setResumeTrack( track->playableUrl().prettyUrl() );
+                AmarokConfig::setResumeTime( The::engineController()->trackPosition() );
+            }
         }
         else AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
     }
@@ -308,7 +311,7 @@ void App::handleCliArgs() //static
         int options = Playlist::AppendAndPlay;
         if( args->isSet( "queue" ) )
            options = Playlist::Queue;
-        else if( args->isSet( "append" ) || args->isSet( "enqueue" ) )
+        else if( args->isSet( "append" ) )
            options = Playlist::Append;
         else if( args->isSet( "load" ) )
             options = Playlist::Replace;
@@ -415,8 +418,6 @@ void App::initCliArgs( int argc, char *argv[] ) //static
     options.add(":", ki18n("Additional options:"));
     options.add("a");
     options.add("append", ki18n( "Append files/URLs to playlist" ));
-    options.add("e");
-    options.add("enqueue", ki18n("See append, available for backwards compatibility"));
     options.add("queue", ki18n("Queue URLs after the currently playing track"));
     options.add("l");
     options.add("load", ki18n("Load URLs, replacing current playlist"));
@@ -425,7 +426,6 @@ void App::initCliArgs( int argc, char *argv[] ) //static
     options.add("m");
     options.add("toggle-playlist-window", ki18n("Toggle the Playlist-window"));
     options.add("wizard", ki18n( "Run first-run wizard" ));
-    options.add("engine <name>", ki18n( "Use the <name> engine" ));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
     options.add("cdplay <device>", ki18n("Play an AudioCD from <device> or system:/media/<device>"));
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
@@ -626,13 +626,6 @@ void App::applySettings( bool firstTime )
 
     } //</Engine>
 
-    { //<Collection>
-//PORT 2.0        CollectionView::instance()->renderView(true);
-    } //</Collection>
-    { //<Context>
- //PORT 2.0       ContextBrowser::instance()->renderView();
-    } //</Context>
-
     {   // delete unneeded cover images from cache
         PERF_LOG( "Begin cover handling" )
         const QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
@@ -703,14 +696,6 @@ App::continueInit()
     PERF_LOG( "Global shortcuts done" )
 #endif
 
-    if( args->isSet( "engine" ) ) {
-        // we correct some common errors (case issues, missing -engine off the end)
-        QString engine = args->getOption( "engine" ).toLower();
-        if( engine.startsWith( "gstreamer" ) ) engine = "gst-engine";
-        if( !engine.endsWith( "engine" ) ) engine += "-engine";
-
-        AmarokConfig::setSoundSystem( engine );
-    }
     //create engine, show TrayIcon etc.
     applySettings( true );
     // Start ScriptManager. Must be created _after_ MainWindow.
@@ -721,15 +706,6 @@ App::continueInit()
     //do after applySettings(), or the OSD will flicker and other wierdness!
     //do before restoreSession()!
     EngineController::instance()->attach( this );
-
-    //set a default interface
-    engineStateChanged( Engine::Empty );
-    PERF_LOG( "Engine state changed" )
-    if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
-        //restore session as long as the user didn't specify media to play etc.
-        //do this after applySettings() so OSD displays correctly
-        EngineController::instance()->restoreSession();
-    }
 
     PERF_LOG( "before cover refresh" )
     // Refetch covers every 80 days to comply with Amazon license
@@ -749,6 +725,15 @@ App::continueInit()
     if ( restoreSession && AmarokConfig::savePlaylist() )
     {
         The::playlistModel()->restoreSession();
+    }
+
+        //set a default interface
+    engineStateChanged( Engine::Empty );
+    PERF_LOG( "Engine state changed" )
+    if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
+        //restore session as long as the user didn't specify media to play etc.
+        //do this after applySettings() so OSD displays correctly
+        EngineController::instance()->restoreSession();
     }
 
     delete m_splash;

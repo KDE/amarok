@@ -32,7 +32,7 @@
     <method name="removeByIndex" >
       <arg name="url" type="i" direction="in"/>
     </method>
-    <method name="saveM3u" >
+    <method name="savePlaylist" >
       <arg name="path" type="s" direction="in"/>
       <arg name="relativePaths" type="b" direction="in"/>
     </method>

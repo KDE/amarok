@@ -568,8 +568,10 @@ Model::insertOptioned( Meta::TrackList list, int options )
     {
         firstItemAdded = rowCount();
         insertTracks( firstItemAdded, list );
-        if( The::engineController()->state() != Engine::Playing )
-            play( firstItemAdded );
+        // This makes unpolite things happen on startup.. the enginecontroller and us are both trying to play.
+        // Is this really necessary or should places that want this behavior use a different set of options.
+/*        if( The::engineController()->state() != Engine::Playing )
+            play( firstItemAdded );*/
     }
     else if( options & Queue )
     {
@@ -653,7 +655,7 @@ Model::insertOptioned( QueryMaker *qm, int options )
 }
 
 bool
-Model::saveM3U( const QString &path ) const
+Model::savePlaylist( const QString &path ) const
 {
     Meta::TrackList tl;
     foreach( Item* item, itemList() )
