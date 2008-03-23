@@ -6,7 +6,41 @@ Amarok ChangeLog
 VERSION 2.0
   FEATURES:
   
-    * Magnatune store: Support purchases using Magnatune gift cards
+    * New Service Framework: Common framework for integrated services. A new
+      framework for adding the content of online services direclt into Amarok
+      in a consistent and well integrated way. All services are plugins and can
+      be enabled or disabled form the new service config screen. Services that
+      are not loaded will not degrade performance or increase memory usage.
+      The service frameworks also offers for free, or makes it very simple to
+      add features such as cached albumcover downloads, searching and filtering
+      to the individual services. Services can also be track providers, meaning
+      that if amarok recieves a url that one of the services knows how to 
+      handle, they will be presented with all the metadata that the servie can 
+      provide.
+    * Magnatune.com store: Support for purchases using Magnatune gift cards
+    * Magnatune.com store: Support for the upcomming Magnatune.com stream and
+      download memberships, allowing uninterrupred streaming at higher quality 
+      and free unlimited downloads respectively.
+    * Magnatune.com store: Add stream selection to the Magnatune service config,
+      allowing the selection of mp3, ogg or lo-fi mp3 streams, and make ogg the
+      default
+    * Jamendo.com service: Add new Jamendo service that allows for direct 
+      streaming and ( using the default bit torrent client ) downloads.
+    * Mp3Tunes.com service: A service for streaming music from a personal 
+      Mp3Tunes.com locker has been added.
+    * Ampache service: A new ampache has been built on top of the service 
+      framework. Together with a recent version of Ampache, this allows the 
+      seamless integration of content from one or more Ampache servers directly
+      into Amarok
+    * OPML Directory service: A simple podcast directory service has been added
+    * Shoutcast service: The shoutcast list from previos versions of Amarok has
+      been reimplemented as a service.
+    * Scriptable Service Manager: Add support for writing simple services using 
+      scripts. This allows quick prototyping of services as well as the
+      integration and distribution of community created services. The scripted
+      service can be started and stopped from the service manager. Also add 2 
+      simple demo scripts.
+
 
   CHANGES:
 	* The context view was reimplemented with Plasma technology from KDE.
@@ -19,6 +53,10 @@ VERSION 2.0
     * DCOP interface replaced with D-Bus.
     * Dependencies lifted to KDE 4.1 and Qt 4.4. Refer to the README.
     * Improved the startup time.
+    * The magnatune store is now implemented as a service, making it much more
+      seamlessly integrated with the rest of Amarok, and offering a number of
+      benefits such as propper filtering and sorting, automatic downloads and
+      caching of albums cover.
 
   BUGFIXES:
 
