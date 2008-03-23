@@ -28,6 +28,7 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "meta/PlaylistFileSupport.h"
 #include "PlaylistAlbumGroup.h"
+#include "TrackNavigator.h"
 
 #include "UndoCommands.h"
 
@@ -188,6 +189,8 @@ class TrackNavigator;
             Meta::TrackPtr activeTrack() const { return m_items.at( m_activeRow )->track(); }
             void setActiveItem( Playlist::Item* active) { setActiveRow( m_items.lastIndexOf(active) ); }
 
+            Meta::TrackPtr nextTrack() { return m_advancer->nextTrack(); }
+
             void moveRow( int row, int to );
 
             using Observer::metadataChanged;
@@ -229,10 +232,10 @@ class TrackNavigator;
             virtual void engineNewTrackPlaying();
 
         private slots:
-            void trackFinished(); //! what to do when a track finishes
+            //void trackFinished(); //! what to do when a track finishes
             void queryDone();
             void newResultReady( const QString &collectionId, const Meta::TrackList &tracks );
-            void playCurrentTrack();    ///connected to EngineController::orderCurrent
+            //void playCurrentTrack();    ///connected to EngineController::orderCurrent
             void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list ); //! directory listing, see ListJob
         private:
             /**

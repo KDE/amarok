@@ -22,6 +22,7 @@
 
 #include <Phonon/Global>
 #include <Phonon/Path>
+#include <Phonon/MediaSource> //Needed for the slot
 
 class QTimer;
 
@@ -74,7 +75,7 @@ public slots:
     void play();
     void play( const Meta::TrackPtr&, uint offset = 0 );
     void pause();
-    void stop();
+    void stop( bool forceInstant = false );
     void playPause(); //pauses if playing, plays if paused or stopped
 
     void seek( int ms );
@@ -89,8 +90,6 @@ public slots:
     void mute();
 
 signals:
-    void orderCurrent();
-    void orderNext( bool );
     void statusText( const QString& );
     void trackFinished();
 
@@ -106,7 +105,9 @@ protected:
     void trackDone();
 
 private slots:
+    void slotAboutToFinish();
     void slotTrackEnded();
+    void slotNewTrackPlaying( const Phonon::MediaSource &source);
     void slotStateChanged();
     void slotPlayableUrlFetched(const KUrl&);
     void slotTick( qint64 );

@@ -22,8 +22,8 @@ class Model;
     {
         public:
             RepeatTrackNavigator( Model* m ) : TrackNavigator( m ) { }
-            void advanceTrack();
-            void userAdvanceTrack();
+            Meta::TrackPtr nextTrack();
+            Meta::TrackPtr userNextTrack();
 
         private:
             Meta::TrackPtr m_previousTrack;

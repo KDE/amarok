@@ -71,10 +71,13 @@ EngineController::EngineController()
     PERF_LOG( "EngineController: loaded phonon objects" )
 
     connect( m_media, SIGNAL( finished() ), SLOT( slotTrackEnded() ) );
+    connect( m_media, SIGNAL( aboutToFinish() ), SLOT( slotAboutToFinish() ) );
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
     connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ), SLOT( slotStateChanged() ) );
     connect( m_media, SIGNAL( tick( qint64 ) ), SLOT( slotTick( qint64 ) ) );
     connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
+    connect( m_media, SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ),
+                       SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
 }
 
 EngineController::~EngineController()
@@ -200,6 +203,7 @@ EngineController::endSession()
 void
 EngineController::play() //SLOT
 {
+    DEBUG_BLOCK
     if( m_fader )
         m_fader->deleteLater();
 
@@ -207,7 +211,7 @@ EngineController::play() //SLOT
     {
         m_media->play();
     }
-    else emit orderCurrent();
+    else play( The::playlistModel()->activeTrack() );
 }
 
 void
@@ -233,10 +237,16 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
 void
 EngineController::playUrl( const KUrl &url, uint offset )
 {
+    DEBUG_BLOCK
     m_isStream = ( url.protocol() == "http" || url.protocol() == "rtsp" );
+    if( m_media->state() == Phonon::PlayingState )  //TODO: This should handle crossfading at some point.
+        stop( true /*Don't fade out*/ );
     m_media->setCurrentSource( url );
-    m_media->pause();
-    m_media->seek( offset );
+    if( offset != 0 )
+    {
+        m_media->pause();
+        m_media->seek( offset );
+    }
     m_media->play();
 
     if( m_media->state() != Phonon::ErrorState )
@@ -250,7 +260,7 @@ EngineController::pause() //SLOT
 }
 
 void
-EngineController::stop() //SLOT
+EngineController::stop( bool forceInstant ) //SLOT
 {
     DEBUG_BLOCK
 
@@ -264,7 +274,7 @@ EngineController::stop() //SLOT
     if( m_fader )
         m_fader->deleteLater();
 
-    if( AmarokConfig::fadeoutLength() ) {
+    if( AmarokConfig::fadeoutLength() && !forceInstant ) {
         m_fader = new Phonon::VolumeFaderEffect( this );
         m_path.insertEffect( m_fader );
         m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
@@ -438,21 +448,33 @@ EngineController::slotTick( qint64 position )
 }
 
 void
-EngineController::slotTrackEnded() //SLOT
+EngineController::slotAboutToFinish()
+{
+    if( m_multi )
+    {
+        m_multi->fetchNext();
+    }
+    else
+    {
+        trackEnded( m_media->currentTime(), m_media->totalTime(), i18n( "Previous track finished" ) );
+        m_currentTrack = The::playlistModel()->nextTrack();
+        if( m_currentTrack )
+            m_media->enqueue( m_currentTrack->playableUrl() );
+    }
+}
+
+void
+EngineController::slotTrackEnded()
+{
+    emit trackFinished();
+}
+
+void
+EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 {
     DEBUG_BLOCK
-/*    if ( AmarokConfig::trackDelayLength() > 0 )
-    {
-        //FIXME not perfect
-        if ( !m_isTiming )
-        {
-            QTimer::singleShot( AmarokConfig::trackDelayLength(), this, SLOT(trackDone()) );
-            m_isTiming = true;
-        }
-
-    }
-    else */
-        trackDone();
+    Q_UNUSED( source );
+    newTrackPlaying();
 }
 
 void
@@ -463,21 +485,11 @@ EngineController::slotStateChanged() //SLOT
 }
 
 void
-EngineController::trackDone()
-{
-    emit trackFinished();
-    if( m_multi )
-        m_multi->fetchNext();
-    else
-        emit orderNext( false );
-}
-
-void
 EngineController::slotPlayableUrlFetched( const KUrl &url )
 {
     if( url.isEmpty() )
     {
-        emit orderNext( false );
+        play( The::playlistModel()->nextTrack() );
     }
     else
     {

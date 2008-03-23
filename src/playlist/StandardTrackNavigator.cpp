@@ -26,18 +26,18 @@
 
 using namespace Playlist;
 
-void
-StandardTrackNavigator::advanceTrack()
+Meta::TrackPtr
+StandardTrackNavigator::nextTrack()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
     if( updateRow < m_playlistModel->rowCount() && m_playlistModel->stopAfterMode() != StopAfterCurrent )
     {
-        setCurrentTrack( updateRow );
+        return m_playlistModel->itemList().at( updateRow)->track();
     }
     else
     {
         // out of tracks to play or stopAfterMode == Current.
-        EngineController::instance()->stop();
+        return Meta::TrackPtr();
     }
 }
 

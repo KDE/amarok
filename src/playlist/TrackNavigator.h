@@ -20,6 +20,8 @@
 #ifndef AMAROK_TRACKADVANCER_H
 #define AMAROK_TRACKADVANCER_H
 
+#include "meta/Meta.h"
+
 namespace Playlist {
 
 class Model;
@@ -36,12 +38,12 @@ class Model;
         public: 
             TrackNavigator( Model* model ) : m_playlistModel( model ) { }
             virtual ~TrackNavigator() { }
-            /** Performs actions that need to be done after a track has finished playing */
-            virtual void advanceTrack() = 0;
+            /** The next track that the engine should play.  This is called a few seconds before the track actually ends */
+            virtual Meta::TrackPtr nextTrack() = 0;
             /// The user clicks next.
-            virtual void userAdvanceTrack() { advanceTrack(); }
+            virtual Meta::TrackPtr userNextTrack() { return nextTrack(); }
             ///The user clicks previous. By default it just go to the previous item in the playlist
-            virtual void recedeTrack();
+            virtual Meta::TrackPtr lastTrack();
         protected:
             ///Convenience function, set the current track in the playlistmodel and play it.
             ///@param position position in Model of track to start playing

@@ -26,26 +26,15 @@
 
 using namespace Playlist;
 
-void
-RepeatPlaylistNavigator::advanceTrack()
+Meta::TrackPtr
+RepeatPlaylistNavigator::nextTrack()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
     if( updateRow >= m_playlistModel->rowCount()  || updateRow < 0 )
     {
         updateRow = 0;
     }
-    setCurrentTrack( updateRow );
-}
-
-void
-RepeatPlaylistNavigator::userAdvanceTrack()
-{
-    int updateRow = m_playlistModel->activeRow() + 1;
-    if( updateRow >= m_playlistModel->rowCount() || updateRow < 0 )
-    {
-        updateRow = 0;
-    }
-    setCurrentTrack( updateRow );
+    return updateRow > 0 ? m_playlistModel->itemList().at( updateRow )->track() : Meta::TrackPtr();
 }
 
 

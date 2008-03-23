@@ -83,8 +83,6 @@ Model::Model( QObject* parent )
     , m_undoStack( new QUndoStack( this ) )
     , m_stopAfterMode( StopNever )
 {
-    connect( EngineController::instance(), SIGNAL( orderNext( bool ) ), this, SLOT( trackFinished() ), Qt::QueuedConnection );
-    connect( EngineController::instance(), SIGNAL( orderCurrent() ), this, SLOT( playCurrentTrack() ), Qt::QueuedConnection );
     s_instance = this;
 }
 
@@ -243,7 +241,7 @@ Model::data( const QModelIndex& index, int role ) const
 void
 Model::insertTrack( int row, Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     Meta::TrackList list;
     list.append( track );
     insertTracks( row, list );
@@ -321,15 +319,15 @@ Model::supportedDropActions() const
     return Qt::CopyAction | Qt::MoveAction;
 }
 
-void
-Model::trackFinished()
-{
-    if( m_activeRow < 0 || m_activeRow >= m_items.size() )
-        return;
-    Meta::TrackPtr track = m_items.at( m_activeRow )->track();
-    track->finishedPlaying( 1.0 ); //TODO: get correct value for parameter
-    m_advancer->advanceTrack();
-}
+// void
+// Model::trackFinished()
+// {
+//     if( m_activeRow < 0 || m_activeRow >= m_items.size() )
+//         return;
+//     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
+//     track->finishedPlaying( 1.0 ); //TODO: get correct value for parameter
+//     m_advancer->advanceTrack();
+// }
 
 void
 Model::play( const QModelIndex& index )
@@ -364,7 +362,7 @@ Model::next()
         return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
     track->finishedPlaying( 0.5 ); //TODO: get correct value for parameter
-    m_advancer->userAdvanceTrack();
+    EngineController::instance()->play( m_advancer->userNextTrack() );
 }
 
 void
@@ -374,23 +372,25 @@ Model::back()
         return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
     track->finishedPlaying( 0.5 ); //TODO: get correct value for parameter
-    m_advancer->recedeTrack();
+    EngineController::instance()->play( m_advancer->lastTrack() );
 }
 
-void
-Model::playCurrentTrack()
-{
-    int selected = m_activeRow;
-    if( selected < 0 || selected >= m_items.size() )
-    {
-        //play first track if there are tracks in the playlist
-        if( m_items.size() )
-            selected = 0;
-        else
-            return;
-    }
-    play( selected );
-}
+// void
+// Model::playCurrentTrack()
+// {
+//     DEBUG_BLOCK
+//     int selected = m_activeRow;
+//     if( selected < 0 || selected >= m_items.size() )
+//     {
+//         //play first track if there are tracks in the playlist
+//         if( m_items.size() )
+//             selected = 0;
+//         else
+//             return;
+//     }
+//     debug() << "SELECTED: " << selected;
+//     play( selected );
+// }
 
 
 QString
@@ -447,7 +447,7 @@ Model::playModeChanged( int row )
 void
 Model::setActiveRow( int row )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
 
     emit dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, 0 ) );
     emit dataChanged( createIndex( row, 0 ), createIndex( row, 0 ) );
@@ -465,7 +465,7 @@ Model::setActiveRow( int row )
     if( m_albumGroups.contains( albumName ) && !albumName.isEmpty() )
     {
         m_albumGroups[ albumName ]->setCollapsed( row,  false );
-        debug() << "Here";
+//         debug() << "Here";
         emit( playlistGroupingChanged() );
     }
 
@@ -527,7 +527,7 @@ void
 Model::insertOptioned( Meta::TrackList list, int options )
 {
 
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
 
 //TODO: we call insertOptioned on resume before the statusbar is fully created... We need a better way to handle this
     if( list.isEmpty() ) {
@@ -626,7 +626,7 @@ Model::insertOptioned( Meta::PlaylistPtr playlist, int options )
 void
 Model::insertPlaylist( int row, Meta::PlaylistPtr playlist )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     m_undoStack->push( new AddTracksCmd( 0, row, playlist->tracks() ) );
 }
 
@@ -669,13 +669,17 @@ Model::savePlaylist( const QString &path ) const
 void
 Model::engineNewTrackPlaying()
 {
+    DEBUG_BLOCK
     Meta::TrackPtr track = EngineController::instance()->currentTrack();
     if( track )
     {
+        DEBUG_LINE_INFO
         foreach( Item* item, itemList() )
         {
             if( item->track() == track )
             {
+                DEBUG_LINE_INFO
+                debug() << "TRACK INFO: " << track->prettyName();
                 setActiveItem( item );
                 return;
             }
@@ -720,7 +724,7 @@ bool
 Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
 {
     Q_UNUSED( column ); Q_UNUSED( parent );
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
 
     if( action == Qt::IgnoreAction )
         return true;
@@ -802,7 +806,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
 void
 Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     Meta::TrackList tracks;
     //dfaure says that job->redirectionUrl().isValid() ? job->redirectionUrl() : job->url(); might be needed
     //but to wait until an issue is actually found, since it might take more work
@@ -827,8 +831,8 @@ Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
 void
 Model::insertTracksCommand( int row, Meta::TrackList list )
 {
-    DEBUG_BLOCK
-    debug() << "inserting... row: " << row << ' ' << list.count() << " Tracks";
+//     DEBUG_BLOCK
+//     debug() << "inserting... row: " << row << ' ' << list.count() << " Tracks";
     if( !list.size() )
         return;
 
@@ -874,7 +878,7 @@ Model::insertTracksCommand( int row, Meta::TrackList list )
 Meta::TrackList
 Model::removeTracksCommand( int position, int rows )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
 
     beginRemoveRows( QModelIndex(), position, position + rows - 1 );
 //     TrackList::iterator start = m_tracks.begin() + position;
@@ -884,7 +888,7 @@ Model::removeTracksCommand( int position, int rows )
     for( int i = position; i < position + rows; i++ )
     {
 
-        debug() << "delete index " << i;
+//         debug() << "delete index " << i;
         Item* item = m_items.takeAt( position ); //take at position, row times
         item->track()->unsubscribe( this );
         if( item->track()->album() )
@@ -998,7 +1002,7 @@ void Model::moveRow(int row, int to)
 
 void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int offset )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
 
      //debug() << "first row: " << firstRow << ", last row: " << lastRow;
 
@@ -1017,7 +1021,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
     belowLast = lastRow + 1;
     if ( belowLast > ( m_items.count() - 1 ) ) belowLast = m_items.count() - 1;
 
-    debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
+//     debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
 
     //delete affected groups
 
@@ -1034,42 +1038,42 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
 
         int temp = group->firstInGroup( aboveFirst );
         if ( temp != -1 ) {
-            debug() << "--3";
+//             debug() << "--3";
             area1Start = temp;
             removeGroupAboveFirstRow = true;
         }
 
         temp = group->lastInGroup( firstRow + 1 );
         if ( temp != -1 ) {
-            debug() << "--4";
+//             debug() << "--4";
             area1End = temp;
             removeGroupBelowFirstRow = true;
         }
 
         temp = group->firstInGroup( lastRow - 1 );
         if ( temp != -1 ) {
-            debug() << "--5";
+//             debug() << "--5";
             area2Start = temp;
             removeGroupAboveLastRow = true;
         }
 
         temp = group->lastInGroup( belowLast );
         if ( temp != -1 ) {
-            debug() << "--6";
+//             debug() << "--6";
             area2End = temp;
             removeGroupBelowLastRow = true;
         }
 
         if ( removeGroupAboveFirstRow )
-        { group->removeGroup( aboveFirst ); debug() << "removing group at row: " <<  aboveFirst; }
+        { group->removeGroup( aboveFirst ); /*debug() << "removing group at row: " <<  aboveFirst;*/ }
 
         if ( removeGroupBelowFirstRow )
-            { group->removeGroup( firstRow + 1 ); debug() << "removing group at row: " <<  firstRow + 1; }
+            { group->removeGroup( firstRow + 1 ); /*debug() << "removing group at row: " <<  firstRow + 1;*/ }
 
         if ( removeGroupAboveLastRow )
-            { group->removeGroup( lastRow -1 ); debug() << "removing group at row: " <<  lastRow - 1; }
+            { group->removeGroup( lastRow -1 ); /*debug() << "removing group at row: " <<  lastRow - 1;*/ }
         if ( removeGroupBelowLastRow )
-        { group->removeGroup( belowLast );  debug() << "removing group at row: " <<  belowLast; }
+        { group->removeGroup( belowLast );  /*debug() << "removing group at row: " <<  belowLast;*/ }
 
         group->removeGroup( firstRow );
         group->removeGroup( lastRow );
@@ -1090,7 +1094,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
 
 
     if ( m_albumGroups.count() == 0 ) { // start from scratch
-        debug() << "--1";
+//         debug() << "--1";
         area1Start = 0;
         area1End = m_items.count();
         area2Start = area1Start; // just to skip second pass
@@ -1129,11 +1133,11 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
     }
 
 
-    debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
-    debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
+//     debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
+//     debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
 
     //debug stuff
-    debug() << "Groups before:";
+//     debug() << "Groups before:";
     foreach( AlbumGroup * ag, m_albumGroups)
        ag->printGroupRows();
 
@@ -1151,8 +1155,8 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
              if ( area1End != area2End ) {
                 area1End += offset;
                 area2Start += offset;
-                debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
-                debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
+//                 debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
+//                 debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
              }
         } else {
             offsetFrom = lastRow;
@@ -1172,7 +1176,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
     }
 
     //debug stuff
-    debug() << "Groups after offsetting:";
+//     debug() << "Groups after offsetting:";
     foreach( AlbumGroup * ag, m_albumGroups)
        ag->printGroupRows();
 
@@ -1207,7 +1211,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
 
     if ( ( area1Start == area2Start ) || area2Start == -1 ) {
 
-        debug() << "Groups after:";
+//         debug() << "Groups after:";
         foreach( AlbumGroup * ag, m_albumGroups)
             ag->printGroupRows();
         return;
@@ -1232,7 +1236,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
        }
     }
 
-    debug() << "Groups after:";
+//     debug() << "Groups after:";
     foreach( AlbumGroup *ag, m_albumGroups)
        ag->printGroupRows();
 
@@ -1242,7 +1246,7 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
     if ( m_activeRow != -1 ){
         if ( m_albumGroups.contains( m_items[ m_activeRow ]->track()->album()->prettyName() ) ) {
             m_albumGroups[ m_items[ m_activeRow ]->track()->album()->prettyName() ]->setCollapsed( m_activeRow,  false );
-            debug() << "Here";
+//             debug() << "Here";
             emit( playlistGroupingChanged() );
       }
    }

@@ -14,13 +14,14 @@
 
 using namespace Playlist;
 
-void
-RepeatTrackNavigator::advanceTrack()
+Meta::TrackPtr
+RepeatTrackNavigator::nextTrack()
 {
     if( !m_previousTrack || (m_previousTrack != m_playlistModel->activeTrack() ) ) // we need to repeat
     {
-        setCurrentTrack( m_playlistModel->activeRow() );
-        m_previousTrack = m_playlistModel->activeTrack();
+        Meta::TrackPtr nextTrack = m_playlistModel->activeTrack();
+        m_previousTrack = nextTrack;
+        return nextTrack;
     }
     else {
         if( m_previousTrack == m_playlistModel->activeTrack() ) // We already repeated, advance
@@ -28,14 +29,14 @@ RepeatTrackNavigator::advanceTrack()
             int updateRow = m_playlistModel->activeRow() + 1;
             if( updateRow < m_playlistModel->rowCount() )
             {
-                setCurrentTrack( updateRow );
+                return m_playlistModel->itemList().at( updateRow )->track();
             }
         }
     }
 }
 
-void
-RepeatTrackNavigator::userAdvanceTrack()
+Meta::TrackPtr
+RepeatTrackNavigator::userNextTrack()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
     if( updateRow < m_playlistModel->rowCount() )

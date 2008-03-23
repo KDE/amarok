@@ -33,15 +33,17 @@ TrackNavigator::setCurrentTrack( int position )
     m_playlistModel->play( position );
 }
 
-void Playlist::TrackNavigator::recedeTrack()
+Meta::TrackPtr
+Playlist::TrackNavigator::lastTrack()
 {
     DEBUG_BLOCK
     int updateRow = m_playlistModel->activeRow() - 1;
-    if ( updateRow < 0 ) 
-        return;
+    if ( updateRow < 0 )
+        return Meta::TrackPtr();
 
     if( updateRow < m_playlistModel->rowCount() )
     {
-        setCurrentTrack( updateRow );
+        return m_playlistModel->itemList().at( updateRow )->track();
     }
+    return Meta::TrackPtr();
 }
