@@ -480,24 +480,38 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 
     //Don't cache here, way too many renderings..
 
+    QString key = QString("progress-background:%1x%2")
+            .arg( width() )
+            .arg( m_sliderHeight );
+
     QPixmap background( width(), m_sliderHeight );
 
+    if (!QPixmapCache::find(key, background)) {
+        debug() << QString("progress background %1 not in cache...").arg( key );
+        background.fill( Qt::transparent );
+        QPainter pt( &background );
 
-    background.fill( Qt::transparent );
-    QPainter pt( &background );
-    m_svgRenderer->render( &pt, "progress-background-left", QRectF( 0, 0, side, m_sliderHeight ) );
-    m_svgRenderer->render( &pt, "progress-slider-left", QRectF( 0, 0, side, m_sliderHeight ) );
-    m_svgRenderer->render( &pt, "progress-background",  QRectF( side, 0, width() - side *2, m_sliderHeight ) );
-    m_svgRenderer->render( &pt, "progress-background-right", QRectF( width() - side, 0, side, m_sliderHeight ) );
+        m_svgRenderer->render( &pt, "progress-background-left", QRectF( 0, 0, side, m_sliderHeight ) );
+        m_svgRenderer->render( &pt, "progress-slider-left", QRectF( 0, 0, side, m_sliderHeight ) );
+        m_svgRenderer->render( &pt, "progress-background",  QRectF( side, 0, width() - side *2, m_sliderHeight ) );
+        m_svgRenderer->render( &pt, "progress-background-right", QRectF( width() - side, 0, side, m_sliderHeight ) );
+
+        QPixmapCache::insert(key, background);
+    }
+
+    QPixmap foreground( width(), m_sliderHeight );
+    foreground.fill( Qt::transparent );
+    QPainter pt2( &foreground );
 
     //Paint the trail
-    m_svgRenderer->render( &pt, "progress-slider-center", QRectF( side, 0, m_knobX - 3, m_sliderHeight ) );
+    m_svgRenderer->render( &pt2, "progress-slider-center", QRectF( side, 0, m_knobX - 3, m_sliderHeight ) );
 
     //And the progress indicator, this needs to happen after the trail so it's on top.
-    m_svgRenderer->render( &pt, "progress-slider-position",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
+    m_svgRenderer->render( &pt2, "progress-slider-position",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
 
 
     p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, background );
+    p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, foreground );
 }
 
 void
@@ -519,7 +533,6 @@ void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
     m_sliderHeight = (int)width() / 25.0; //maintain sane aspect ratio
     if ( m_sliderHeight > height() )
         m_sliderHeight = height();
-
 }
 
 #include "sliderwidget.moc"
