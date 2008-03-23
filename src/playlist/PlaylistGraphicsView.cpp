@@ -63,7 +63,7 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
 void
 Playlist::GraphicsView::setModel( Playlist::Model *model )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
 
     m_model = model;
 
@@ -146,7 +146,7 @@ Playlist::GraphicsView::editTrackInformation()
 void
 Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     event->accept();
     foreach( const QString &mime, The::playlistModel()->mimeTypes() )
     {
@@ -244,7 +244,7 @@ Playlist::GraphicsView::removeSelection()
             }
         }
         count = modelIndex.data( GroupRole ).toInt() == Head ? count - 1 : count;
-        debug() << "removing from index " << index << " and the next " << count << " elements";
+//         debug() << "removing from index " << index << " and the next " << count << " elements";
         m_model->removeRows( index, count );
     }
 
@@ -266,7 +266,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
     for ( int j = 0; j < start; j++ )
         cumulativeHeight += m_tracks.at( j )->boundingRect().height();
 
-    debug() << "start: " << start << " ,end: " << end;
+//     debug() << "start: " << start << " ,end: " << end;
     for( int i = start; i <= end; i++ )
     {
 
@@ -288,7 +288,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
 void
 Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int end )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     Q_UNUSED( parent );
     for( int i = end; i >= start; i-- )
         delete m_tracks.takeAt( i );
@@ -336,7 +336,7 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
         m_model->moveRow( moveMeIndex, aboveIndex );
         m_tracks.move( moveMeIndex, aboveIndex );
 
-        debug() << "First index: " << firstIndex;
+//         debug() << "First index: " << firstIndex;
 
         for ( int i = firstIndex; i < m_tracks.count(); i++ )
             m_tracks.at( i )->setRow( i );
@@ -351,9 +351,9 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
 void
 Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
 
-    debug() << "number if items: " << m_tracks.count();
+//     debug() << "number if items: " << m_tracks.count();
     if( startPosition < 0 )
         return;
 
