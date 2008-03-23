@@ -72,9 +72,9 @@
 #include <KMenu>
 #include <KPushButton>
 
-// #ifdef Q_WS_X11
-// #include <fixx11h.h> 
-// #endif
+#ifdef Q_WS_X11
+#include <fixx11h.h>
+#endif
 
 class ContextWidget : public KVBox
 {
