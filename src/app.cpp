@@ -703,9 +703,27 @@ App::continueInit()
     ScriptManager::instance();
     PERF_LOG( "ScriptManager started" )
 
+    //load previous playlist in separate thread
+    //FIXME: causes a lot of breakage due to the collection not being properly initialized at startup.
+    //Reenable when fixed.
+
+    //Fixed! I think....
+            if ( restoreSession && AmarokConfig::savePlaylist() )
+    {
+        The::playlistModel()->restoreSession();
+    }
+
     //do after applySettings(), or the OSD will flicker and other wierdness!
     //do before restoreSession()!
     EngineController::instance()->attach( this );
+    //set a default interface
+    engineStateChanged( Engine::Empty );
+    PERF_LOG( "Engine state changed" )
+    if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
+        //restore session as long as the user didn't specify media to play etc.
+        //do this after applySettings() so OSD displays correctly
+        EngineController::instance()->restoreSession();
+    }
 
     PERF_LOG( "before cover refresh" )
     // Refetch covers every 80 days to comply with Amazon license
@@ -716,25 +734,6 @@ App::continueInit()
    */
 
     handleCliArgs();
-
-    //load previous playlist in separate thread
-    //FIXME: causes a lot of breakage due to the collection not being properly initialized at startup.
-    //Reenable when fixed.
-
-    //Fixed! I think....
-    if ( restoreSession && AmarokConfig::savePlaylist() )
-    {
-        The::playlistModel()->restoreSession();
-    }
-
-        //set a default interface
-    engineStateChanged( Engine::Empty );
-    PERF_LOG( "Engine state changed" )
-    if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
-        //restore session as long as the user didn't specify media to play etc.
-        //do this after applySettings() so OSD displays correctly
-        EngineController::instance()->restoreSession();
-    }
 
     delete m_splash;
     m_splash = 0;

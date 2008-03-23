@@ -22,6 +22,7 @@
 #define AMAROK_PLAYLISTMODEL_H
 
 #include "debug.h"
+#include "engineobserver.h"
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -119,7 +120,7 @@ class TrackNavigator;
     };
 
 
-    class Model : public QAbstractListModel, public Meta::Observer, public Meta::PlaylistObserver
+    class Model : public QAbstractListModel, public Meta::Observer, public Meta::PlaylistObserver, public EngineObserver
     {
         friend class AddTracksCmd;
         friend class AddPlaylistsCmd;
@@ -223,6 +224,9 @@ class TrackNavigator;
             void playlistCountChanged( int newCount );
             void playlistGroupingChanged();
             void rowsChanged( int startRow );
+
+        protected:
+            virtual void engineNewTrackPlaying();
 
         private slots:
             void trackFinished(); //! what to do when a track finishes

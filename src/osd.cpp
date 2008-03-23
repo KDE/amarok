@@ -310,7 +310,7 @@ OSDWidget::paintEvent( QPaintEvent* )
     p.setBrush( palette().color( QPalette::Inactive, QPalette::Dark ) );
     p.setPen( palette().color( QPalette::Normal, QPalette::Dark ).dark( 150 ) );
     rect.setWidth( rect.width() );
-    p.drawRoundedRect( rect, 7.0, 15.0, Qt::RelativeSize );
+    p.drawRoundedRect( rect, 7.0, 7.0, Qt::RelativeSize );
 
     rect.adjust( M, M, -M, -M );
 

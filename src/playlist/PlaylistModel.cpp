@@ -77,6 +77,7 @@ Model *Model::s_instance = 0;
 
 Model::Model( QObject* parent )
     : QAbstractListModel( parent )
+    , EngineObserver( EngineController::instance() )
     , m_activeRow( -1 )
     , m_advancer( new StandardTrackNavigator( this ) )
     , m_undoStack( new QUndoStack( this ) )
@@ -663,6 +664,23 @@ Model::savePlaylist( const QString &path ) const
     if( The::playlistManager()->save( tl, path ) )
         return true;
     return false;
+}
+
+void
+Model::engineNewTrackPlaying()
+{
+    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    if( track )
+    {
+        foreach( Item* item, itemList() )
+        {
+            if( item->track() == track )
+            {
+                setActiveItem( item );
+                return;
+            }
+        }
+    }
 }
 
 Qt::ItemFlags
