@@ -317,7 +317,7 @@ Amarok::VolumeSlider::paletteChange( const QPalette& )
 {
     The::svgTinter()->init();
 
-    QString file = KStandardDirs::locate( "data","amarok/images/volume_slider.svg" );
+    QString file = KStandardDirs::locate( "data","amarok/images/sliders.svg" );
 
     delete m_svgRenderer;
     m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
