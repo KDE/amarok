@@ -15,33 +15,11 @@
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
    version="1.0"
-   sodipodi:docbase="/home/amarok-dev/amarok/src/images"
+   sodipodi:docbase="/home/hydrogen/kde/src/amarok/src/images"
    sodipodi:docname="sidebar_button.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs3300">
-    <linearGradient
-       id="linearGradient6311">
-      <stop
-         style="stop-color:#ffffff;stop-opacity:1;"
-         offset="0"
-         id="stop6313" />
-      <stop
-         style="stop-color:#ffffff;stop-opacity:0;"
-         offset="1"
-         id="stop6315" />
-    </linearGradient>
-    <linearGradient
-       id="linearGradient6289">
-      <stop
-         style="stop-color:#52a7ff;stop-opacity:1;"
-         offset="0"
-         id="stop6291" />
-      <stop
-         style="stop-color:#ffffff;stop-opacity:0;"
-         offset="1"
-         id="stop6293" />
-    </linearGradient>
     <linearGradient
        id="linearGradient5302">
       <stop
@@ -65,17 +43,6 @@
          id="stop4291" />
     </linearGradient>
     <linearGradient
-       id="linearGradient4277">
-      <stop
-         style="stop-color:#cfcfcf;stop-opacity:0.56122446;"
-         offset="0"
-         id="stop4279" />
-      <stop
-         style="stop-color:#000000;stop-opacity:0;"
-         offset="1"
-         id="stop4281" />
-    </linearGradient>
-    <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4287"
        id="linearGradient4293"
@@ -95,24 +62,6 @@
        y2="196.46446"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(1.1219512,0,0,1.0142335,-3.7367431,0.2036223)" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient6289"
-       id="linearGradient6295"
-       x1="24.144476"
-       y1="2"
-       x2="24.144476"
-       y2="199.5"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient6311"
-       id="linearGradient6317"
-       x1="19.277779"
-       y1="2.2499998"
-       x2="19.277779"
-       y2="182.00063"
-       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
