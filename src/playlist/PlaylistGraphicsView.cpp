@@ -485,6 +485,7 @@ namespace The {
 void Playlist::GraphicsView::paletteChange(const QPalette & oldPalette)
 {
     Q_UNUSED( oldPalette );
+    setBackgroundBrush( App::instance()->palette().window().color() );
     foreach( Playlist::GraphicsItem* it, m_tracks )
     {
         it->paletteChange();
