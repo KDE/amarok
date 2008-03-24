@@ -6,7 +6,6 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="513.12482"
@@ -19,29 +18,7 @@
    sodipodi:docbase="/home/hydrogen/kde/src/amarok/src/context/applets/lyrics"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
-     id="defs3488">
-    <linearGradient
-       id="linearGradient5695">
-      <stop
-         id="stop5697"
-         style="stop-color:#d3d7cf;stop-opacity:1"
-         offset="0" />
-      <stop
-         id="stop5699"
-         style="stop-color:#2e3436;stop-opacity:1"
-         offset="1" />
-    </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5695"
-       id="linearGradient3891"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.0022921,0,0,1.050283,-20.01211,-19.39612)"
-       x1="200"
-       y1="15"
-       x2="200.26465"
-       y2="38.905022" />
-  </defs>
+     id="defs3488" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"

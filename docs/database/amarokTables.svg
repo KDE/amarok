@@ -16,7 +16,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
    sodipodi:docname="amarokTables.svg"
-   sodipodi:docbase="/home/tobi"
+   sodipodi:docbase="/home/hydrogen/kde/src/amarok/docs/database"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0"
    inkscape:export-filename="/home/tobi/amarokTables.png"
@@ -34,71 +34,7 @@
     </rdf:RDF>
   </metadata>
   <defs
-     id="defs409">
-    <marker
-       inkscape:stockid="Arrow1Lstart"
-       orient="auto"
-       refY="0.0"
-       refX="0.0"
-       id="Arrow1Lstart"
-       style="overflow:visible">
-      <path
-         id="path4719"
-         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
-         transform="scale(0.8) translate(12.5,0)" />
-    </marker>
-    <marker
-       inkscape:stockid="Arrow1Lend"
-       orient="auto"
-       refY="0.0"
-       refX="0.0"
-       id="Arrow1Lend"
-       style="overflow:visible;">
-      <path
-         id="path4722"
-         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
-         transform="scale(0.8) rotate(180) translate(12.5,0)" />
-    </marker>
-    <marker
-       inkscape:stockid="Arrow1Mend"
-       orient="auto"
-       refY="0.0"
-       refX="0.0"
-       id="Arrow1Mend"
-       style="overflow:visible;">
-      <path
-         id="path4728"
-         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
-         transform="scale(0.4) rotate(180) translate(10,0)" />
-    </marker>
-    <title
-       id="title5">AmarokTables</title>
-    <title
-       id="title287">tracks--urls</title>
-    <title
-       id="title399">urls_labels--urls</title>
-    <title
-       id="title356">statistics--urls</title>
-    <title
-       id="title404">urls_labels--labels</title>
-    <title
-       id="title87">urls--devices</title>
-    <title
-       id="title302">tracks--genres</title>
-    <title
-       id="title307">tracks--composers</title>
-    <title
-       id="title312">tracks--years</title>
-    <title
-       id="title292">tracks--artists</title>
-    <title
-       id="title138">albums--artists</title>
-    <title
-       id="title297">tracks--albums</title>
-  </defs>
+     id="defs409" />
   <sodipodi:namedview
      inkscape:window-height="742"
      inkscape:window-width="1226"

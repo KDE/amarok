@@ -7,15 +7,16 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    sodipodi:docname="crsc-action-dynamic.svg"
-   sodipodi:docbase="/usr/src/packages/BUILD/svn-amaroK/multimedia/amarok/src/images/icons"
-   inkscape:version="0.41"
+   sodipodi:docbase="/home/hydrogen/kde/src/amarok/src/images/icons/svg"
+   inkscape:version="0.45.1"
    sodipodi:version="0.32"
    id="svg2"
    height="149.50000pt"
-   width="149.50000pt">
+   width="149.50000pt"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
     <linearGradient
@@ -41,46 +42,6 @@
          style="stop-color:#ffffff;stop-opacity:0.0000000;" />
     </linearGradient>
     <linearGradient
-       y2="288.31531"
-       x2="32.924732"
-       y1="290.43964"
-       x1="-47.420975"
-       gradientTransform="matrix(-0.739464,0.316880,0.000000,0.782730,218.3584,157.8226)"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient2076"
-       xlink:href="#linearGradient2066"
-       inkscape:collect="always" />
-    <linearGradient
-       gradientTransform="matrix(0.738093,0.000000,0.000000,0.708171,155.7329,140.8991)"
-       gradientUnits="userSpaceOnUse"
-       y2="267.50659"
-       x2="38.637398"
-       y1="220.60422"
-       x1="34.425518"
-       id="linearGradient2086"
-       xlink:href="#linearGradient2066"
-       inkscape:collect="always" />
-    <linearGradient
-       y2="233.44221"
-       x2="-65.644867"
-       y1="312.57361"
-       x1="8.1585665"
-       gradientTransform="matrix(0.780224,0.331014,0.000000,0.817639,133.5725,134.5599)"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient2176"
-       xlink:href="#linearGradient2235"
-       inkscape:collect="always" />
-    <linearGradient
-       y2="294.50870"
-       x2="32.924515"
-       y1="294.50870"
-       x1="-51.704765"
-       gradientTransform="matrix(0.222323,0.107080,-1.389416e-3,0.249686,-301.8608,-104.0289)"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient2227"
-       xlink:href="#linearGradient2066"
-       inkscape:collect="always" />
-    <linearGradient
        y2="294.50870"
        x2="32.924515"
        y1="294.50870"
@@ -89,36 +50,6 @@
        gradientUnits="userSpaceOnUse"
        id="linearGradient2233"
        xlink:href="#linearGradient2066"
-       inkscape:collect="always" />
-    <linearGradient
-       y2="291.24316"
-       x2="28.564842"
-       y1="303.01590"
-       x1="-52.635437"
-       gradientTransform="matrix(0.739464,0.316880,0.000000,0.782730,145.1483,158.3725)"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient2243"
-       xlink:href="#linearGradient2066"
-       inkscape:collect="always" />
-    <linearGradient
-       y2="353.22800"
-       x2="-42.572544"
-       y1="249.01021"
-       x1="52.432487"
-       gradientTransform="matrix(-0.780224,0.331014,0.000000,0.817639,229.5875,131.9624)"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient2247"
-       xlink:href="#linearGradient2235"
-       inkscape:collect="always" />
-    <linearGradient
-       y2="363.85355"
-       x2="27.436520"
-       y1="335.26694"
-       x1="-43.497032"
-       gradientTransform="matrix(-0.625015,0.548080,-0.807895,-0.312233,449.6759,426.2777)"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient2251"
-       xlink:href="#linearGradient2235"
        inkscape:collect="always" />
     <linearGradient
        y2="353.22800"
@@ -199,15 +130,11 @@
      id="base" />
   <metadata
      id="metadata7">
-    <rdf:RDF
-       id="RDF20">
+    <rdf:RDF>
       <cc:Work
-         id="Work22"
          rdf:about="">
-        <dc:format
-           id="format24">image/svg+xml</dc:format>
+        <dc:format>image/svg+xml</dc:format>
         <dc:type
-           id="type26"
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
       </cc:Work>
     </rdf:RDF>

@@ -14,11 +14,10 @@
    height="50"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45"
-   sodipodi:docname="background.svg"
-   sodipodi:docbase="/home/aseigo/kde4/KDE/kdebase/workspace/plasma/desktoptheme/widgets"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:modified="true">
+   inkscape:version="0.45.1"
+   sodipodi:docname="amarok-background.svg"
+   sodipodi:docbase="/home/hydrogen/kde/src/amarok/src/themes/context/default/widgets"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <metadata
      id="metadata2480">
     <rdf:RDF>
