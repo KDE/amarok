@@ -27,11 +27,6 @@ install(
         sidebar_button.svg
         splash_screen.jpg
         star.png
-        volumeslider-gradient.png
-        volumeslider-handle.png
-        volumeslider-handle_glow.png
-        volumeslider-inset.png
-        xine_logo.png
         toolbar-background.svg
         playlist_items.svg
         emblem-magnatune.png
