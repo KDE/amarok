@@ -54,7 +54,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
 
 
 
-    m_serviceName->setBrush( QBrush( Qt::white ) );
+    m_serviceName->setBrush( Plasma::Theme::self()->textColor() );
     //m_serviceMainInfo->setBrush( QBrush( Qt::white ) );
 
     // get natural aspect ratio, so we can keep it on resize
@@ -96,12 +96,12 @@ void ServiceInfo::constraintsUpdated( Plasma::Constraints constraints )
     float offsetX =  ( totalWidth - textWidth ) / 2;
 
     kDebug() << "offset: " << offsetX;
-    
+
     m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() + QPointF ( offsetX, 0 ) );
 
-    
 
-    
+
+
     //QSizeF infoSize( 200, 200 );
     QSizeF infoSize( m_theme->elementRect( "main_info" ).bottomRight().x() - m_theme->elementRect( "main_info" ).topLeft().x(), m_theme->elementRect( "main_info" ).bottomRight().y() - m_theme->elementRect( "main_info" ).topLeft().y() );
 
@@ -148,7 +148,7 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
             childItem->show();
         }
     }
-    
+
     p->save();
     m_theme->paint( p, contentsRect/*, "background" */);
     p->restore();

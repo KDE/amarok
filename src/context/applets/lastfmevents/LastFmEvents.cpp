@@ -44,7 +44,7 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
     Context::Theme::self()->setApplication( "amarok" );
 
     debug() << "Loading LastFmEvents applet";
-    
+
     setDrawStandardBackground( true );
     setHasConfigurationInterface( true );
 
@@ -74,9 +74,9 @@ void LastFmEvents::init()
         m_dates << new QGraphicsSimpleTextItem( this );
         m_cities << new QGraphicsSimpleTextItem( this );
         // white font for now
-        m_titles[ i ]->setBrush( Qt::white );
-        m_dates[ i ]->setBrush( Qt::white );
-        m_cities[ i ]->setBrush( Qt::white );
+        m_titles[ i ]->setBrush( Plasma::Theme::self()->textColor() );
+        m_dates[ i ]->setBrush( Plasma::Theme::self()->textColor() );
+        m_cities[ i ]->setBrush( Plasma::Theme::self()->textColor() );
     }
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "sysevents" ), this );
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "userevents" ), this );
@@ -85,7 +85,7 @@ void LastFmEvents::init()
     dataUpdated( "sysevents", dataEngine( "amarok-lastfm" )->query( "sysevents" ) );
     dataUpdated( "userevents", dataEngine( "amarok-lastfm" )->query( "userevents" ) );
     dataUpdated( "friendevents", dataEngine( "amarok-lastfm" )->query( "friendevents" ) );
-    
+
     if( !m_userEnabled && !m_friendEnabled && m_sysEnabled )
         showConfigurationInterface();
 

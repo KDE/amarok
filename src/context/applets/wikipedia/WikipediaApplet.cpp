@@ -16,6 +16,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "context/Svg.h"
+#include <plasma/theme.h>
 
 #include <QGraphicsTextItem>
 #include <QGraphicsSimpleTextItem>
@@ -70,15 +71,15 @@ void WikipediaApplet::init()
     QFont labelFont;
     labelFont.setBold( true );
     labelFont.setPointSize( labelFont.pointSize() + 3 );
-    m_wikipediaLabel->setBrush( Qt::white );
+    m_wikipediaLabel->setBrush( Plasma::Theme::self()->textColor() );
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
 
-    m_currentLabel->setBrush( Qt::white );
+    m_currentLabel->setBrush( Plasma::Theme::self()->textColor() );
     labelFont.setBold( false );
     m_currentLabel->setFont( labelFont );
 
-    m_currentTitle->setBrush( Qt::white );
+    m_currentTitle->setBrush( Plasma::Theme::self()->textColor() );
     m_currentTitle->setFont( labelFont );
 
     constraintsUpdated();

@@ -18,6 +18,8 @@
 #include "context/Svg.h"
 #include "meta/MetaUtility.h"
 
+#include <plasma/theme.h>
+
 
 #include <KIconLoader>
 
@@ -60,7 +62,7 @@ void CurrentTrack::init()
     m_titleLabel = new QGraphicsSimpleTextItem( i18nc( "The name of the playing song", "Track:" ) , this );
     m_artistLabel = new QGraphicsSimpleTextItem( i18n( "Artist:" ), this );
     m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
-    
+
     m_scoreLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "emblem-favorite", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
     m_numPlayedLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "view-refresh", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
     m_playedLastLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "user-away-extended", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
@@ -68,7 +70,7 @@ void CurrentTrack::init()
     m_scoreLabel->setTransformationMode( Qt::SmoothTransformation );
     m_numPlayedLabel->setTransformationMode( Qt::SmoothTransformation );
     m_playedLastLabel->setTransformationMode( Qt::SmoothTransformation );
-    
+
     m_title = new QGraphicsSimpleTextItem( this );
     m_artist = new QGraphicsSimpleTextItem( this );
     m_album = new QGraphicsSimpleTextItem( this );
@@ -77,20 +79,18 @@ void CurrentTrack::init()
     m_playedLast = new QGraphicsSimpleTextItem( this );
     m_albumCover = new QGraphicsPixmapItem( this );
     m_sourceEmblem = new QGraphicsPixmapItem( this );
-    
-    m_titleLabel->setBrush( QBrush( Qt::white ) );
-    m_artistLabel->setBrush( QBrush( Qt::white ) );
-    m_albumLabel->setBrush( QBrush( Qt::white ) );
-    //m_scoreLabel->setBrush( QBrush( Qt::white ) );
-    //m_numPlayedLabel->setBrush( QBrush( Qt::white ) );
-    //m_playedLastLabel->setBrush( QBrush( Qt::white ) );
-    
-    m_title->setBrush( QBrush( Qt::white ) );
-    m_artist->setBrush( QBrush( Qt::white ) );
-    m_album->setBrush( QBrush( Qt::white ) );
-    m_score->setBrush( QBrush( Qt::white ) );
-    m_numPlayed->setBrush( QBrush( Qt::white ) );
-    m_playedLast->setBrush( QBrush( Qt::white ) );
+
+    const QColor textColor = Plasma::Theme::self()->textColor();
+    m_titleLabel->setBrush( textColor );
+    m_artistLabel->setBrush( textColor );
+    m_albumLabel->setBrush( textColor );
+
+    m_title->setBrush( textColor );
+    m_artist->setBrush( textColor );
+    m_album->setBrush( textColor );
+    m_score->setBrush( textColor );
+    m_numPlayed->setBrush( textColor );
+    m_playedLast->setBrush( textColor );
 
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
@@ -232,7 +232,7 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
             childItem->show();
         }
     }
-    
+
     p->save();
     m_theme->paint( p, contentsRect, "background" );
     p->restore();
@@ -290,9 +290,9 @@ bool CurrentTrack::resizeCover(QPixmap cover){
 
 
         m_albumCover->setPos( rectPos.x()+ moveByX, rectPos.y() + moveByY );
-        
+
         m_sourceEmblem->setPos( rectPos.x()+ moveByX, rectPos.y() + moveByY );
-        
+
         m_albumCover->setPixmap( cover );
         m_sourceEmblem->setPixmap( m_sourceEmblemPixmap );
         return true;

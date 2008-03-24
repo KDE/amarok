@@ -76,38 +76,38 @@ void LyricsApplet::init()
     labelFont.setPointSize( labelFont.pointSize()  );
     labelFont.setStyleHint( QFont::Times );
     labelFont.setStyleStrategy( QFont::PreferAntialias );
-    
-    m_lyricsLabel->setBrush( Qt::white );
+
+    m_lyricsLabel->setBrush( Plasma::Theme::self()->textColor() );
     m_lyricsLabel->setFont( labelFont );
     m_lyricsLabel->setText( i18n( "Lyrics" ) );
 
-    m_titleLabel->setBrush( Qt::white );
+    m_titleLabel->setBrush( Plasma::Theme::self()->textColor() );
     m_titleLabel->setFont( labelFont );
     m_titleLabel->setText( i18nc( "The name of the current playing song", "Title" ) + ':' );
 
-    m_artistLabel->setBrush( Qt::white );
+    m_artistLabel->setBrush( Plasma::Theme::self()->textColor() );
     m_artistLabel->setFont( labelFont );
     m_artistLabel->setText( i18n( "Artist" ) + ':' );
 
-    m_lyrics->setTextColor( Qt::white );
+    m_lyrics->setTextColor( Plasma::Theme::self()->textColor() );
     QFont f = KGlobalSettings::smallestReadableFont();
     f.setPointSize( f.pointSize() - 1 ); // The smallest is still too big..
     m_lyrics->setFont( f );
-    m_title->setBrush( QBrush( Qt::white ) );
-    m_artist->setBrush( QBrush( Qt::white ) );
+    m_title->setBrush( Plasma::Theme::self()->textColor() );
+    m_artist->setBrush( Plasma::Theme::self()->textColor() );
 
     constraintsUpdated();
 }
 
 void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
 {
-            
+
     prepareGeometryChange();
 
     if (constraints & Plasma::SizeConstraint && m_header) {
         m_header->resize(contentSize().toSize());
     }
-    
+
     // align items
     m_lyricsLabel->setPos( m_header->elementRect( "title" ).topLeft());
     m_artistLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() );
