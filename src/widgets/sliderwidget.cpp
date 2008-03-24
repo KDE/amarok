@@ -303,7 +303,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     p.drawPixmap( 0, ( height() - m_iconHeight ) / 2, icon );
 
     // Draw percentage number
-    p.setPen( palette().color( QPalette::Active, QColorGroup::Text ).dark() );
+    p.setPen( palette().color( QPalette::Active, QColorGroup::Text ) );
     QFont font;
     font.setPixelSize( 12 );
     p.setFont( font );
