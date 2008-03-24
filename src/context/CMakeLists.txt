@@ -121,8 +121,6 @@ install(FILES
     plasma/servicetypes/plasma-scriptengine.desktop
     DESTINATION ${SERVICETYPES_INSTALL_DIR})
 
-add_subdirectory( desktoptheme )
-
 set(default_animator_SRCS
     animators/default/defaultAnimator.cpp
    )
