@@ -86,8 +86,6 @@ namespace Amarok
         protected:
             virtual void paintEvent( QPaintEvent* );
 
-            virtual void enterEvent( QEvent* );
-            virtual void leaveEvent( QEvent* );
             virtual void paletteChange( const QPalette& );
             virtual void slideEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
@@ -95,23 +93,10 @@ namespace Amarok
             virtual void wheelEvent( QWheelEvent *e );
             virtual void resizeEvent(QResizeEvent * event);
 
-        private slots:
-            virtual void slotAnimTimer();
-
         private:
-            //void generateGradient();
-
             Q_DISABLE_COPY( VolumeSlider );
 
             ////////////////////////////////////////////////////////////////
-            static const int ANIM_INTERVAL = 18;
-            static const int ANIM_MAX = 18;
-
-            bool    m_animEnter;
-            int     m_animCount;
-            QTimer* m_animTimer;
-
-
             int m_iconHeight;
             int m_iconWidth;
             int m_textWidth;
@@ -121,10 +106,6 @@ namespace Amarok
 
             int m_margin;
 
-            //QPixmap m_pixmapInset;
-            //QPixmap m_pixmapGradient;
-
-            QVector<QPixmap> m_handlePixmaps;
             QSvgRenderer * m_svgRenderer;
     };
 

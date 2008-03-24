@@ -149,59 +149,15 @@ Amarok::Slider::setValue( int newValue )
 
 Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     : Amarok::Slider( Qt::Horizontal, parent, max )
-    , m_animCount( 0 )
-    , m_animTimer( new QTimer( this ) )
-    //, m_pixmapInset( QPixmap( KStandardDirs::locate( "data","amarok/images/volumeslider-inset.png" ) ) )
 {
     setFocusPolicy( Qt::NoFocus );
 
     m_margin = 4;
 
-    // BEGIN Calculate handle animation pixmaps for mouse-over effect
-    QImage imgHandle    ( KStandardDirs::locate( "data","amarok/images/volumeslider-handle.png" ) );
-    QImage imgHandleGlow( KStandardDirs::locate( "data","amarok/images/volumeslider-handle_glow.png" ) );
-
-    float opacity = 0.0;
-    const float step = 1.0 / ANIM_MAX;
-    QImage dst;
-    QColor color = Qt::black;
-    for ( int i = 0; i < ANIM_MAX; ++i ) {
-        dst = imgHandle;
-        QPainter p( &dst );
-        p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
-        color.setAlphaF( opacity );
-        p.fillRect( dst.rect(), color );
-        p.setCompositionMode( QPainter::CompositionMode_Plus );
-        p.setOpacity( opacity );
-        p.drawImage( 0, 0, imgHandleGlow );
-        p.end();
-        m_handlePixmaps.append( QPixmap::fromImage( dst ) );
-        opacity += step;
-    }
-    // END
-
-    QString file = KStandardDirs::locate( "data","amarok/images/volume_slider.svg" );
+    QString file = KStandardDirs::locate( "data","amarok/images/sliders.svg" );
     m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
     if ( ! m_svgRenderer->isValid() )
         debug() << "svg is kaputski";
-
-    connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
-}
-
-void
-Amarok::VolumeSlider::slotAnimTimer() //SLOT
-{
-    if ( m_animEnter ) {
-        m_animCount++;
-        repaint( );
-        if ( m_animCount == ANIM_MAX - 1 )
-            m_animTimer->stop();
-    } else {
-        m_animCount--;
-        repaint();
-        if ( m_animCount == 0 )
-            m_animTimer->stop();
-    }
 }
 
 void
@@ -248,7 +204,7 @@ Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
 {
 
     int x = e->pos().x();
-    
+
     //is event witin slider bounds?
     if ( ( x >= m_sliderX ) && ( x <= m_sliderX + m_sliderWidth ) )
     {
@@ -298,17 +254,28 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
     QPixmap background( m_sliderWidth, m_sliderHeight );
 
-    if (!QPixmapCache::find(key, background)) {
+    const int side = 5;
+
+    if (!QPixmapCache::find(key, background))
+    {
         debug() << QString("volume background %1 not in cache...").arg( key );
         background.fill( Qt::transparent );
         QPainter pt( &background );
-        m_svgRenderer->render( &pt, "volume-slider-background",  QRectF( 0, 0, m_sliderWidth, m_sliderHeight ) );
-        m_svgRenderer->render( &pt, "volume-fill",  QRectF( 0, fillOffsetY, fillLength, fillHeight ) );
 
-        if ( !highlight )
-            m_svgRenderer->render( &pt, "volume-slider-position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
-        else
-            m_svgRenderer->render( &pt, "volume-slider-position-highlight",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+        m_svgRenderer->render( &pt, "volume-slider-background", QRectF( 0, 0, m_sliderWidth, m_sliderHeight ) );
+
+        m_svgRenderer->render( &pt, "volume-slider-left", QRectF( 0, 0, side, m_sliderHeight ) );
+        m_svgRenderer->render( &pt, "volume-slider-left-highlight", QRectF( 0, 0, side, m_sliderHeight ) );
+
+        m_svgRenderer->render( &pt, "volume-slider-right",  QRectF( 0, m_sliderWidth - side, side, m_sliderHeight ) );
+        m_svgRenderer->render( &pt, "volume-slider-right-highlight",  QRectF( 0, m_sliderWidth - side, side, m_sliderHeight ) );
+
+        m_svgRenderer->render( &pt, "volume-slider-center",  QRectF( side, 0, knobX +3, m_sliderHeight ) );
+        m_svgRenderer->render( &pt, "volume-slider-center-highlight",  QRectF( side, 0, knobX, m_sliderHeight ) );
+
+        m_svgRenderer->render( &pt, "volume-slider-position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+        m_svgRenderer->render( &pt, "volume-slider-position-highlight",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+
 
         QPixmapCache::insert(key, background);
     }
@@ -331,20 +298,9 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
         QPixmapCache::insert(key, icon);
     }
-    
+
 
     p.drawPixmap( 0, ( height() - m_iconHeight ) / 2, icon );
-    
-
-    /*const QRectF boundsG( 0, 0, offset + padding, m_pixmapGradient.height() );
-    p.drawPixmap( boundsG, m_pixmapGradient, boundsG );
-
-    const QRectF boundsI( 0, 0, m_pixmapInset.width(), m_pixmapInset.height() );
-    p.drawPixmap( boundsI, m_pixmapInset, boundsI );
-
-    const QRectF targetBounds( offset - m_handlePixmaps[0].width() / 2 + padding, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
-    const QRectF srcBounds( 0, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
-    p.drawPixmap( targetBounds, m_handlePixmaps[m_animCount], srcBounds ); */
 
     // Draw percentage number
     p.setPen( palette().color( QPalette::Active, QColorGroup::Text ).dark() );
@@ -357,33 +313,12 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 }
 
 void
-Amarok::VolumeSlider::enterEvent( QEvent* )
-{
-    m_animEnter = true;
-    m_animCount = 0;
-
-    m_animTimer->start( ANIM_INTERVAL );
-}
-
-void
-Amarok::VolumeSlider::leaveEvent( QEvent* )
-{
-    // This can happen if you enter and leave the widget quickly
-    if ( m_animCount == 0 )
-        m_animCount = 1;
-
-    m_animEnter = false;
-    m_animTimer->start( ANIM_INTERVAL );
-}
-
-
-void
 Amarok::VolumeSlider::paletteChange( const QPalette& )
 {
     The::svgTinter()->init();
 
     QString file = KStandardDirs::locate( "data","amarok/images/volume_slider.svg" );
-    
+
     delete m_svgRenderer;
     m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
     if ( ! m_svgRenderer->isValid() )
@@ -393,11 +328,11 @@ Amarok::VolumeSlider::paletteChange( const QPalette& )
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 {
     Q_UNUSED( event );
-    m_iconHeight = (int)height() * 0.66;
-    m_iconWidth = ( int ) m_iconHeight * 1.33;
+    m_iconHeight = static_cast<int>( height() * 0.66 );
+    m_iconWidth = static_cast<int>( m_iconHeight * 1.33 );
     m_textWidth = 40;
     m_sliderWidth = width() - ( m_iconWidth + m_textWidth + m_margin  );
-    m_sliderHeight = (int)m_sliderWidth / 7.0; //maintain sane aspect ratio
+    m_sliderHeight = (int)m_sliderWidth / 7; //maintain sane aspect ratio
     if ( m_sliderHeight > height() )
         m_sliderHeight = height();
 
@@ -495,24 +430,16 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     foreground.fill( Qt::transparent );
     QPainter pt2( &foreground );
 
-    if( !underMouse() )
-    {
+
     m_svgRenderer->render( &pt2, "progress-slider-left", QRectF( 0, 0, side, m_sliderHeight ) );
+    m_svgRenderer->render( &pt2, "progress-slider-left-highlight", QRectF( 0, 0, side, m_sliderHeight ) );
     //Paint the trail
     m_svgRenderer->render( &pt2, "progress-slider-center", QRectF( side, 0, m_knobX - 3, m_sliderHeight ) );
+    m_svgRenderer->render( &pt2, "progress-slider-center-highlight", QRectF( side, 0, m_knobX - 3, m_sliderHeight ) );
 
     //And the progress indicator, this needs to happen after the trail so it's on top.
     m_svgRenderer->render( &pt2, "progress-slider-position",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
-    }
-    else
-    {
-        m_svgRenderer->render( &pt2, "progress-slider-left-highlight", QRectF( 0, 0, side, m_sliderHeight ) );
-    //Paint the trail
-        m_svgRenderer->render( &pt2, "progress-slider-center-highlight", QRectF( side, 0, m_knobX - 3, m_sliderHeight ) );
-
-    //And the progress indicator, this needs to happen after the trail so it's on top.
-        m_svgRenderer->render( &pt2, "progress-slider-position-highlight",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
-    }
+    m_svgRenderer->render( &pt2, "progress-slider-position-highlight",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
 
 
     p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, background );
@@ -535,7 +462,7 @@ Amarok::TimeSlider::paletteChange( const QPalette& )
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
 {
     Q_UNUSED( event );
-    m_sliderHeight = (int)width() / 25.0; //maintain sane aspect ratio
+    m_sliderHeight = (int)width() / 25; //maintain sane aspect ratio
     if ( m_sliderHeight > height() )
         m_sliderHeight = height();
 }
