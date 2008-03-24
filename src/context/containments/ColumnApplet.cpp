@@ -140,7 +140,7 @@ QSizeF ColumnApplet::sizeHint() const
     return m_geometry.size();
 }
 
-QRectF ColumnApplet::boundingRect() const 
+QRectF ColumnApplet::boundingRect() const
 {
     return m_geometry;
 }

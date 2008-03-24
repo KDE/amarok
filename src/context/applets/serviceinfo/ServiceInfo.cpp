@@ -17,6 +17,8 @@
 #include "debug.h"
 #include "context/Svg.h"
 
+#include <plasma/theme.h>
+
 #include <QPainter>
 #include <QBrush>
 #include <QVBoxLayout>
