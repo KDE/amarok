@@ -471,14 +471,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 
     //debug() << "width: " << width() << ", height: " << height();
     QPainter p( this );
-    const short side = 7; // Size of the rounded parts.
-
-//     double fillLength = m_knobX + ( m_sliderHeight / 2 );
-//     double fillLength = width() - m_knobX;
-//     double fillHeight = m_sliderHeight * ( ( double ) knobX / m_sliderWidth );
-//     double fillOffsetY = ( m_sliderHeight - fillHeight ) / 2;
-
-    //Don't cache here, way too many renderings..
+    const short side = 10; // Size of the rounded parts.
 
     QString key = QString("progress-background:%1x%2")
             .arg( width() )
