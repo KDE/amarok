@@ -50,7 +50,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
 
-   
+
 }
 
 
@@ -199,7 +199,7 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 
-        playChildTracks( item, Playlist::Append );
+        playChildTracks( item, Playlist::AppendAndPlay );
     }
 }
 

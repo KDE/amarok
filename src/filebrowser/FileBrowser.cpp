@@ -411,7 +411,7 @@ void FileBrowser::Widget::fileSelected(const KFileItem & /*file*/)
   }
 
   Meta::TrackList trackList = CollectionManager::instance()->tracksForUrls( urlList );
-  The::playlistModel()->insertOptioned( trackList, Playlist::Append );
+  The::playlistModel()->insertOptioned( trackList, Playlist::AppendAndPlay );
   m_dir->view()->selectionModel()->clear();
 }
 
@@ -428,7 +428,7 @@ void FileBrowser::Widget::cmbPathReturnPressed( const QString& u )
 //   KUrl typedURL( u );
 //   if ( typedURL.hasPass() )
 //     typedURL.setPass( QString() );
-// 
+//
 //   QStringList urls = m_cmbPath->urls();
 //   urls.removeAll( typedURL.url() );
 //   urls.prepend( typedURL.url() );

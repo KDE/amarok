@@ -9,7 +9,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "CoverManager.h"
 
 #include "amarok.h"
@@ -474,16 +474,16 @@ void CoverManager::slotArtistSelected() //SLOT
 //     if ( item == m_artistView->firstChild() || item == m_artistView->lastChild() )
 //     {
 //         QStringList cl;
-// 
+//
 //         qb.clear();
 //         qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
-// 
+//
 //         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
 //         qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
 //         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 //         qb.setOptions( QueryBuilder::optOnlyCompilations );
 //         cl = qb.run();
-// 
+//
 //         for( int i = 0; i < cl.count(); i++ ) {
 //             albums.append( i18n( "Various Artists" ) );
 //             albums.append( cl[ i ] );
@@ -815,7 +815,7 @@ void CoverManager::playSelectedAlbums()
     {
         qm->addMatch( item->albumPtr() );
     }
-    The::playlistModel()->insertOptioned( qm, Playlist::Append );
+    The::playlistModel()->insertOptioned( qm, Playlist::AppendAndPlay );
 }
 
 QList<CoverViewItem*> CoverManager::selectedItems()
@@ -962,21 +962,21 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
 //     CoverViewItem *item = static_cast<CoverViewItem*>( currentItem() );
 //     if( !item )
 //        return 0;
-// 
+//
 //     const QString sql = "SELECT tags.url FROM tags, album WHERE album.name %1 AND tags.album = album.id ORDER BY tags.track;";
 //     const QStringList values = CollectionDB::instance()->query( sql.arg( CollectionDB::likeCondition( item->album() ) ) );
-// 
+//
 //     KUrl::List urls;
 //     for( QStringList::ConstIterator it = values.constBegin(), end = values.constEnd(); it != end; ++it )
 //         urls += *it;
-// 
+//
 //     QString imagePath = CollectionDB::instance()->albumImage( item->artist(), item->album(), false, 1 );
 //     K3MultipleDrag *drag = new K3MultipleDrag( this );
 //     drag->setPixmap( item->coverPixmap() );
 //     drag->addDragObject( new Q3IconDrag( this ) );
 //     drag->addDragObject( new Q3ImageDrag( QImage( imagePath ) ) );
 //     drag->addDragObject( new K3URLDrag( urls ) );
-// 
+//
 //     return drag;
 // }
 
@@ -985,7 +985,7 @@ void CoverView::setStatusText( QListWidgetItem *item )
     #define item static_cast<CoverViewItem *>( item )
     if ( !item )
         return;
-    
+
     bool sampler = false;
     //compilations have valDummy for artist.  see QueryBuilder::addReturnValue(..) for explanation
     //FIXME: Don't rely on other independent code, use an sql query
@@ -1072,7 +1072,7 @@ void CoverViewItem::calcRect( const QString& )
 //            if( button == KMessageBox::Cancel )
 //                return;
 //        }
-// 
+//
 //        QImage img;
 //        Q3ImageDrag::decode( e, img );
 //        m_albumPtr->setImage( img );

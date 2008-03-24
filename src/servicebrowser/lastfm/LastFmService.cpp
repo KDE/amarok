@@ -29,7 +29,7 @@
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
 
 
-void 
+void
 LastFmServiceFactory::init()
 {
     LastFmServiceConfig config;
@@ -40,14 +40,14 @@ LastFmServiceFactory::init()
 }
 
 
-QString 
+QString
 LastFmServiceFactory::name()
 {
     return "Last.fm";
 }
 
 
-KPluginInfo 
+KPluginInfo
 LastFmServiceFactory::info()
 {
     KPluginInfo pluginInfo(  "amarok_service_lastfm.desktop", "services" );
@@ -56,7 +56,7 @@ LastFmServiceFactory::info()
 }
 
 
-KConfigGroup 
+KConfigGroup
 LastFmServiceFactory::config()
 {
     return Amarok::config( LastFmServiceConfig::configSectionName() );
@@ -95,7 +95,7 @@ LastFmService::polish()
 {
     if( !m_polished )
     {
-        
+
         m_bottomPanel->setMaximumHeight( 100 );
 
         m_buttonBox = new KHBox(m_bottomPanel);
@@ -202,10 +202,10 @@ void LastFmService::playCustomStation()
 void LastFmService::playLastFmStation( const KUrl &url )
 {
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertOptioned( track, Playlist::AppendAndPlay );
 }
 
 Collection * LastFmService::collection()
 {
-    return m_collection; 
+    return m_collection;
 }

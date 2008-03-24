@@ -40,7 +40,7 @@ void SimilarArtistsAction::slotTriggered()
 {
     const QString url = "lastfm://artist/" + m_artist->prettyName() + "/similarartists";
     Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-    The::playlistModel()->insertOptioned( lastfmtrack, Playlist::Append );
+    The::playlistModel()->insertOptioned( lastfmtrack, Playlist::AppendAndPlay );
 }
 
 #include "SimilarArtistsAction.moc"

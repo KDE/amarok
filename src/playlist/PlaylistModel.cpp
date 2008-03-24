@@ -287,13 +287,13 @@ Model::insertTracks( int row, Meta::TrackList tracks )
 
             lastIndex = playlistIndex + 1;
         }
-        
+
 
     }
 
 
 
-    
+
 }
 
 bool
@@ -739,7 +739,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
             if( row < 0 )
             {
                 debug() << "Inserting at row: " << row << " so we are appending to the list.";
-                insertOptioned( trackListDrag->tracks(), Playlist::Append );
+                insertOptioned( trackListDrag->tracks(), Playlist::AppendAndPlay );
             }
             else
             {
@@ -759,7 +759,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
             if( row < 0 )
             {
                 debug() << "Inserting at row: " << row << " so we are appending to the list.";
-                insertOptioned( dragList->playlists(), Playlist::Append );
+                insertOptioned( dragList->playlists(), Playlist::AppendAndPlay );
             }
             else
             {
@@ -793,7 +793,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
             //else TODO: notify user if can't decode, see also MyDirLister::matchesFilter
         }
         if( !tracks.isEmpty() )
-            insertOptioned( tracks, Playlist::Append );
+            insertOptioned( tracks, Playlist::AppendAndPlay );
         return true;
     }
     return false;
@@ -929,7 +929,7 @@ Model::removeTracksCommand( int position, int rows )
     emit playlistCountChanged( rowCount() );
 
     emit rowsChanged( position );
-    
+
     return ret;
 }
 

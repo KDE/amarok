@@ -340,7 +340,7 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
         else if( result == appendAction )
         {
             debug() << "append " << indices.count() << " episodes";
-            m_model->loadItems( indices, Playlist::Append );
+            m_model->loadItems( indices, Playlist::AppendAndPlay );
         }
         else if( result == refreshAction )
         {
