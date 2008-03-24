@@ -302,14 +302,16 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
     p.drawPixmap( 0, ( height() - m_iconHeight ) / 2, icon );
 
-    // Draw percentage number
-    p.setPen( palette().color( QPalette::Active, QColorGroup::Text ) );
-    QFont font;
-    font.setPixelSize( 12 );
-    p.setFont( font );
-    const QRect rect( m_iconWidth + m_sliderWidth, ( int ) ( height() - 15 ) / 2, 40, 15 );
     if ( underMouse() )
+    {
+        // Draw percentage number
+        p.setPen( palette().color( QPalette::Active, QColorGroup::Text ).dark() );
+        QFont font;
+        font.setPixelSize( 12 );
+        p.setFont( font );
+        const QRect rect( m_iconWidth + m_sliderWidth, ( int ) ( height() - 15 ) / 2, 40, 15 );
         p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
+    }
 }
 
 void
