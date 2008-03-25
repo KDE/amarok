@@ -134,7 +134,6 @@ set(libscriptableservice_SRCS
     servicebrowser/scriptableservice/ScriptableServiceQueryMaker.cpp
     servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
     servicebrowser/scriptableservice/ScriptableServiceMeta.cpp
-    servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
     servicebrowser/scriptableservice/ScriptableService.cpp
     servicebrowser/scriptableservice/ScriptableServiceInfoParser.cpp
     servicebrowser/scriptableservice/ScriptableServiceManager.cpp
