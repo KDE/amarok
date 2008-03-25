@@ -39,7 +39,7 @@ class ControlBox;
 class AMAROK_EXPORT ContextView : public QGraphicsView, public EngineObserver, public ContextSubject
 {
     Q_OBJECT
-    
+
 public:
      ContextView( QWidget* parent );
     ~ContextView();
@@ -48,51 +48,51 @@ public:
          * Singleton pattern accessor.
      */
     static ContextView* self() { return s_self; }
-    
+
     /**
         Returns the context scene that this view is attached to.
     */
     ContextScene* contextScene();
-    
+
     /**
         Clears the context scene of all items, but first saves the current state of the scene into the
         config file using as a key the string parameter.
     */
     void clear( const ContextState& name );
-    
+
     /**
-        Clear the context scene of all items, discarding any data/widgets currently on the scene. 
+        Clear the context scene of all items, discarding any data/widgets currently on the scene.
     */
     void clear();
-    
+
 public slots:
     void zoomIn();
     void zoomOut();
-    
+
     Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
 protected:
-    void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
-    
+    void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
+
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
-        
+
 private:
     static ContextView* s_self;
 
     void loadConfig();
-    
+
     void showHome();
     void showCurrentTrack();
-    
+
     void createContainment();
-    
+
     typedef QPointer< Context::Applet > AppletPointer;
     // internal representation of the columns visible
     Containment* m_columns;
-    
+
     // holds what is currently being shown
     ContextState m_curState;
-    
+
     ControlBox* m_controlBox;
 
 };

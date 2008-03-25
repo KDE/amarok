@@ -43,10 +43,10 @@ namespace Amarok
             static   ContextStatusBar* instance() { return s_instance; }
 
         protected:  /* reimpl from engineobserver */
-            virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+            virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
             virtual void engineNewTrackPlaying();
     };
-    
+
     /**
      * Is used to queue up longMessages for the StatusBar before the StatusBar
      * is created.

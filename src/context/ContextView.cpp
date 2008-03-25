@@ -115,7 +115,7 @@ void ContextView::clear( const ContextState& state )
     foreach( const QString& group, appletConfig.groupList() )
         appletConfig.deleteGroup( group );
 
-    if( contextScene()->containments().size() > 0 ) 
+    if( contextScene()->containments().size() > 0 )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
         if( containment )
@@ -125,17 +125,18 @@ void ContextView::clear( const ContextState& state )
 }
 
 
-void ContextView::engineStateChanged( Engine::State state, Engine::State oldState )
+void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
-    Q_UNUSED( oldState ); Q_UNUSED( state );
+    Q_UNUSED( oldState );
 
    switch( state )
     {
-    case Engine::Playing:
-        showCurrentTrack();
+    case Phonon::PlayingState:
+        if( oldState != Phonon::PausedState )
+            showCurrentTrack();
         break;
 
-    case Engine::Empty:
+    case Phonon::StoppedState:
         showHome();
         break;
 
@@ -175,7 +176,7 @@ void ContextView::loadConfig()
 
     contextScene()->clearApplets();
     KConfig appletConfig( cur, KConfig::SimpleConfig );
-    if( contextScene()->containments().size() > 0 ) 
+    if( contextScene()->containments().size() > 0 )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
         if( containment )
@@ -227,7 +228,7 @@ void ContextView::resizeEvent( QResizeEvent* event )
 
     scene()->setSceneRect( rect() );
 
-    if( contextScene()->containments().size() > 0 ) 
+    if( contextScene()->containments().size() > 0 )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
         if( containment )

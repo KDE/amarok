@@ -42,7 +42,7 @@ EngineObserver::~EngineObserver()
 }
 
 void
-EngineObserver::engineStateChanged( Engine::State currentState, Engine::State oldState )
+EngineObserver::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
 {
     Q_UNUSED( oldState );
     Q_UNUSED( currentState );
@@ -92,7 +92,6 @@ EngineObserver::engineTrackLengthChanged( long seconds )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 EngineSubject::EngineSubject()
-    : m_oldEngineState( Engine::Empty )
 {}
 
 EngineSubject::~EngineSubject()
@@ -101,14 +100,12 @@ EngineSubject::~EngineSubject()
 }
 
 
-void EngineSubject::stateChangedNotify( Engine::State state )
+void EngineSubject::stateChangedNotify( Phonon::State newState, Phonon::State oldState )
 {
     foreach( EngineObserver *observer, Observers )
     {
-        observer->engineStateChanged( state, m_oldEngineState );
+        observer->engineStateChanged( newState, oldState );
     }
-
-    m_oldEngineState = state;
 }
 
 void EngineSubject::trackEnded( int finalPosition, int trackLength, const QString &reason )

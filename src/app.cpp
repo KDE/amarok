@@ -216,7 +216,7 @@ App::~App()
     Amarok::OSD::instance()->hide();
 
     if ( AmarokConfig::resumePlayback() ) {
-        if ( The::engineController()->state() != Engine::Empty ) {
+        if ( The::engineController()->state() != Phonon::StoppedState ) {
             Meta::TrackPtr track = The::engineController()->currentTrack();
             if( track )
             {
@@ -728,7 +728,7 @@ App::continueInit()
     //do before restoreSession()!
     EngineController::instance()->attach( this );
     //set a default interface
-    engineStateChanged( Engine::Empty );
+    engineStateChanged( Phonon::StoppedState );
     PERF_LOG( "Engine state changed" )
     if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
@@ -751,33 +751,34 @@ App::continueInit()
     PERF_LOG( "App init done" )
 }
 
-void App::engineStateChanged( Engine::State state, Engine::State oldState )
+void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     Meta::TrackPtr track = EngineController::instance()->currentTrack();
     //track is 0 if the engien state is Empty. we check that in the switch
     switch( state )
     {
-    case Engine::Empty:
+    case Phonon::StoppedState:
+    case Phonon::LoadingState:
         mainWindow()->setPlainCaption( i18n( AMAROK_CAPTION ) );
 //         TrackToolTip::instance()->clear();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         break;
 
-    case Engine::Playing:
-        if ( oldState == Engine::Paused )
+    case Phonon::PlayingState:
+        if ( oldState == Phonon::PausedState )
             Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
         if ( !track->prettyName().isEmpty() )
 //             //TODO: write a utility function somewhere
             mainWindow()->setPlainCaption( i18n( "%1 - %2 -  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown"), track->prettyName(), AMAROK_CAPTION ) );
         break;
 
-    case Engine::Paused:
+    case Phonon::PausedState:
         mainWindow()->setPlainCaption( i18n( "Paused  -  %1", QString( AMAROK_CAPTION ) ) );
         Amarok::OSD::instance()->OSDWidget::show( i18n("Paused") );
         break;
 
-    case Engine::Idle:
-        mainWindow()->setPlainCaption( AMAROK_CAPTION );
+    case Phonon::ErrorState:
+    case Phonon::BufferingState:
         break;
 
     default:
@@ -896,8 +897,8 @@ void App::setRating( int n )
 
     n *= 2;
 
-    const Engine::State s = The::engineController()->state();
-    if( s == Engine::Playing || s == Engine::Paused || s == Engine::Idle )
+    const Phonon::State s = The::engineController()->state();
+    if( s == Phonon::PlayingState || s == Phonon::PausedState )
     {
         Meta::TrackPtr track = EngineController::instance()->currentTrack();
         track->setRating( n );

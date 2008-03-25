@@ -7,7 +7,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "actionclasses.h"
 
 #include "config-amarok.h"             //HAVE_LIBVISUAL definition
@@ -184,7 +184,7 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
     if ( s_helpMenu == 0 )
         s_helpMenu = new KHelpMenu( parent, &aboutData, Amarok::actionCollection() );
-        
+
     return s_helpMenu->menu();
 }
 
@@ -208,24 +208,27 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac )
 }
 
 void
-PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldState*/ )
+PlayPauseAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/ )
 {
     switch( state ) {
-    case Engine::Playing:
+    case Phonon::PlayingState:
         setChecked( false );
         setIcon( KIcon("media-playback-pause-amarok") );
         setText( i18n( "Pause" ) );
         break;
-    case Engine::Paused:
+    case Phonon::PausedState:
         setChecked( true );
         setIcon( KIcon("media-playback-pause-amarok") );
         setText( i18n( "Pause" ) );
         break;
-    case Engine::Empty:
-    case Engine::Idle:
+    case Phonon::StoppedState:
+    case Phonon::LoadingState:
         setChecked( false );
         setIcon( KIcon("media-playback-start-amarok") );
         setText( i18n( "Play" ) );
+        break;
+    case Phonon::ErrorState:
+    case Phonon::BufferingState:
         break;
     }
 }

@@ -60,23 +60,26 @@ ContextStatusBar::ContextStatusBar( QWidget *parent, const char *name )
 }
 
 void
-ContextStatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+ContextStatusBar::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
     switch ( state ) {
-    case Engine::Empty:
+    case Phonon::StoppedState:
+    case Phonon::LoadingState:
         setMainText( QString() );
         break;
 
-    case Engine::Paused:
+    case Phonon::PausedState:
         m_mainTextLabel->setText( i18n( "Amarok is paused" ) ); // display TEMPORARY message
         break;
 
-    case Engine::Playing:
+    case Phonon::PlayingState:
         resetMainText(); // if we were paused, this is necessary
         break;
 
-    case Engine::Idle:
-        ; //just do nothing, idle is temporary and a limbo state
+    case Phonon::ErrorState:
+    case Phonon::BufferingState:
+        break;
+
     }
 }
 

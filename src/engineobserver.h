@@ -19,8 +19,8 @@ email                : fh@ez.no
 #define AMAROK_ENGINEOBSERVER_H
 
 #include "amarok_export.h"
-#include "engine_fwd.h"
 
+#include <Phonon/MediaObject>
 #include <QSet>
 
 class EngineSubject;
@@ -37,7 +37,7 @@ public:
     EngineObserver();
     EngineObserver( EngineSubject* );
     virtual ~EngineObserver();
-    virtual void engineStateChanged( Engine::State currentState, Engine::State oldState = Engine::Empty );
+    virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
     virtual void engineNewTrackPlaying();
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
@@ -62,7 +62,7 @@ public:
 protected:
     EngineSubject();
     virtual ~EngineSubject();
-    void stateChangedNotify( Engine::State /*state*/ );
+    void stateChangedNotify( Phonon::State newState, Phonon::State oldState );
     void trackEnded( int /*finalPosition*/, int /*trackLength*/, const QString &reason );
     void newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged ) const;
     void volumeChangedNotify( int /*percent*/ );
@@ -73,7 +73,6 @@ protected:
 
 private:
     QSet<EngineObserver*> Observers;
-    Engine::State m_oldEngineState;
 };
 
 #endif // AMAROK_ENGINEOBSERVER_H

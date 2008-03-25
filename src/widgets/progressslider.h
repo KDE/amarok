@@ -42,7 +42,7 @@ class ProgressWidget : public QWidget, public EngineObserver
 
     protected:
         virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
-        virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
         virtual void engineTrackLengthChanged( long seconds );
         virtual void engineNewTrackPlaying();
 

@@ -30,7 +30,7 @@ public:
 
 protected:
     // reimpl from engineobserver
-    virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
     // get notified of 'highlight' color change

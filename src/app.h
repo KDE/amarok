@@ -64,7 +64,7 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         void moodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
         void prepareToQuit();
     protected: /* for OSD, tray, and dcop */
-        void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+        void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
         void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
         void engineTrackPositionChanged( long position, bool /*userSeek*/ );
         void engineVolumeChanged( int );

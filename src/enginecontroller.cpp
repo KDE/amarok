@@ -73,7 +73,8 @@ EngineController::EngineController()
     connect( m_media, SIGNAL( finished() ), SLOT( slotTrackEnded() ) );
     connect( m_media, SIGNAL( aboutToFinish() ), SLOT( slotAboutToFinish() ) );
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
-    connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ), SLOT( slotStateChanged() ) );
+    connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ),
+                      SLOT( slotStateChanged( Phonon::State, Phonon::State ) ) );
     connect( m_media, SIGNAL( tick( qint64 ) ), SLOT( slotTick( qint64 ) ) );
     connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
     connect( m_media, SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ),
@@ -281,7 +282,7 @@ EngineController::stop( bool forceInstant ) //SLOT
         m_fader->fadeOut( AmarokConfig::fadeoutLength() );
 
         QTimer::singleShot( AmarokConfig::fadeoutLength() + 1000, this, SLOT( slotReallyStop() ) ); //add 1s for good measure, otherwise seems to cut off early (buffering..)
-    } 
+    }
     else
         m_media->stop();
 }
@@ -384,38 +385,7 @@ EngineController::trackLength() const
         return static_cast<int>( phononLength / 1000 );
 }
 
-Engine::State
-EngineController::state() const
-{
-    Engine::State state;
-
-    switch( m_media->state() )
-    {
-        case Phonon::PlayingState:
-            state = Engine::Playing;
-            break;
-
-        case Phonon::PausedState:
-            state = Engine::Paused;
-            break;
-
-        case Phonon::StoppedState:
-        // fallthrough
-
-        case Phonon::BufferingState:
-        // fallthrough
-
-        case Phonon::ErrorState:
-        // fallthrough
-        
-        case Phonon::LoadingState:
-            state = m_currentTrack && m_currentTrack->isPlayable() ? Engine::Empty : Engine::Idle;
-    }
-
-    return state;
-}
-
-bool 
+bool
 EngineController::getAudioCDContents(const QString &device, KUrl::List &urls)
 {
 //since Phonon doesn't know anything about CD listings, there's actually no reason for this functionality to be here
@@ -478,10 +448,13 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 }
 
 void
-EngineController::slotStateChanged() //SLOT
+EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldState ) //SLOT
 {
     DEBUG_BLOCK
-    stateChangedNotify( state() );
+    // Sanity checks
+    if( newState == oldState )
+        return;
+    stateChangedNotify( newState, oldState );
 }
 
 void

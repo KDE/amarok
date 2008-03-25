@@ -69,7 +69,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     if( !AmarokConfig::leftTimeDisplayEnabled() )
         m_timeLabelLeft->hide();
 
-    engineStateChanged( Engine::Empty );
+    engineStateChanged( Phonon::StoppedState );
 
     connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
     connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
@@ -158,10 +158,11 @@ ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 }
 
 void
-ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
     switch ( state ) {
-        case Engine::Empty:
+        case Phonon::StoppedState:
+        case Phonon::LoadingState:
             m_slider->setEnabled( false );
             m_slider->timer()->stop();
             m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
@@ -172,22 +173,26 @@ ProgressWidget::engineStateChanged( Engine::State state, Engine::State /*oldStat
             m_timeLabelRight->hide();
             break;
 
-        case Engine::Playing:
+        case Phonon::PlayingState:
             m_timeLabelLeft->show();
             m_timeLabelRight->show();
             m_slider->timer()->start( m_slider->timerInterval() );
             //fallthrough
             break;
 
-        case Engine::Paused:
+        case Phonon::BufferingState:
+            m_slider->timer()->stop(); // Don't keep animating if we are buffering.
+            break;
+
+        case Phonon::PausedState:
             DEBUG_LINE_INFO
             m_timeLabelLeft->setEnabled( true );
             m_timeLabelRight->setEnabled( true );
             m_slider->timer()->stop();
             break;
 
-        case Engine::Idle:
-            ; //just do nothing, idle is temporary and a limbo state
+        case Phonon::ErrorState:
+            ;
     }
 }
 

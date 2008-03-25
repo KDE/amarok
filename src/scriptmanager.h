@@ -160,7 +160,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );
 
         /** EngineObserver reimplementations **/
-        void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+        void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
         void engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool /*trackChanged*/ );
         void engineVolumeChanged( int newVolume );
 

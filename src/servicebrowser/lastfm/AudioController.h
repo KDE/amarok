@@ -39,11 +39,11 @@ public:
     QString currentTrackUrl() const;
 
     // these are unused, dummy implementations should be OK
-    QStringList soundSystems() { return QStringList(); } 
-    QStringList devices() { return QStringList(); } 
+    QStringList soundSystems() { return QStringList(); }
+    QStringList devices() { return QStringList(); }
 
     // EngineObserver
-    virtual void engineStateChanged( Engine::State currentState, Engine::State oldState = Engine::Empty );
+    virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
     virtual void engineNewTrackPlaying();
 

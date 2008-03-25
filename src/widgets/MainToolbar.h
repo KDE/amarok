@@ -32,7 +32,7 @@
 /**
 A KHBox based toolbar with a nice svg background and takes care of adding any additional controls needed by individual tracks
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class MainToolbar : public KHBox, public EngineObserver, public SvgHandler
 {
@@ -41,7 +41,7 @@ public:
 
     ~MainToolbar();
 
-    virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
+    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
 protected:
@@ -58,11 +58,11 @@ private:
     KToolBar *m_playerControlsToolbar;
     KToolBar *m_addControlsToolbar;
     VolumeWidget * m_volumeWidget;
-    
+
     QSvgRenderer * m_svgRenderer;
     bool m_renderAddControls;
     int m_addActionsOffsetX;
-  
+
     QList<QAction *> m_additionalActions;
 };
 

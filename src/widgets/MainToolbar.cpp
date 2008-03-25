@@ -178,7 +178,7 @@ void MainToolbar::paintEvent(QPaintEvent *)
 
 }
 
-void MainToolbar::engineStateChanged(Engine::State state, Engine::State oldState)
+void MainToolbar::engineStateChanged(Phonon::State state, Phonon::State oldState)
 {
     Q_UNUSED( state ); Q_UNUSED( oldState );
     handleAddActions();

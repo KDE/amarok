@@ -57,7 +57,7 @@ namespace Amarok
     {
         public:
             PlayPauseAction( KActionCollection* );
-            virtual void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
+            virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
     };
 
     class ToggleAction : public KToggleAction

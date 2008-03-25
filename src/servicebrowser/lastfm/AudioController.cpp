@@ -20,41 +20,41 @@
 #include <KLocale>
 
 
-AudioController::AudioController( QObject *parent ) 
+AudioController::AudioController( QObject *parent )
     : QObject( parent ), EngineObserver( EngineController::instance() )
 {
 }
 
 
-AudioController::~AudioController() 
+AudioController::~AudioController()
 {
 }
 
 
-void 
-AudioController::setVolume( int vol ) 
+void
+AudioController::setVolume( int vol )
 {
     EngineController::instance()->setVolume( vol );
 }
 
 
-void 
-AudioController::play() 
+void
+AudioController::play()
 {
     loadNext();
 }
 
 
-void 
-AudioController::play( RadioPlaylist &playlist ) 
+void
+AudioController::play( RadioPlaylist &playlist )
 {
     m_playlist = &playlist;
     loadNext();
 }
 
 
-void 
-AudioController::play( const QUrl &trackUrl ) 
+void
+AudioController::play( const QUrl &trackUrl )
 {
     TrackInfo ti;
     ti.setPath( trackUrl.toString() );
@@ -62,23 +62,23 @@ AudioController::play( const QUrl &trackUrl )
 }
 
 
-void 
-AudioController::play( const TrackInfo &track ) 
+void
+AudioController::play( const TrackInfo &track )
 {
     m_playlist = 0;
     playTrack( track );
 }
 
 
-void 
-AudioController::stop() 
+void
+AudioController::stop()
 {
     // do nothing, we ignore the radio's plea to stop and handle it elsewhere
 }
 
 
-void 
-AudioController::loadNext() 
+void
+AudioController::loadNext()
 {
     if ( m_playlist == 0 )
     {
@@ -96,7 +96,7 @@ AudioController::loadNext()
 }
 
 
-QString 
+QString
 AudioController::currentTrackUrl() const
 {
     LastFm::TrackPtr track = The::lastFmService()->radio()->currentTrack();
@@ -104,36 +104,34 @@ AudioController::currentTrackUrl() const
 }
 
 
-void 
-AudioController::engineStateChanged( Engine::State currentState, Engine::State oldState )
+void
+AudioController::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
 {
     if( currentState != oldState )
     {
         switch( currentState )
         {
-            case Engine::Empty:
+            case Phonon::StoppedState:
+            case Phonon::LoadingState:
                 emit stateChanged( State_Stopping );
                 emit stateChanged( State_Stopped );
                 break;
 
-            case Engine::Idle:
-                emit stateChanged( State_Stopped );
-                break;
-
-            case Engine::Playing:
+            case Phonon::PlayingState:
                 emit stateChanged( State_Streaming );
                 break;
 
-            case Engine::Paused:
-                // not supposed to pause the radio, so we'll just stop it
-                EngineController::instance()->stop();
-                break;
+                //FIXME: This is completely incorrect!  state Changes get triggerred for all tracks.  This causes pausing anything to stop playback...
+//             case Phonon::PausedState:
+//                 // not supposed to pause the radio, so we'll just stop it
+//                 EngineController::instance()->stop();
+//                 break;
         }
     }
 }
 
 
-void 
+void
 AudioController::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
 {
     Q_UNUSED( trackLength );
@@ -146,7 +144,7 @@ AudioController::engineTrackEnded( int finalPosition, int trackLength, const QSt
 }
 
 
-void 
+void
 AudioController::engineNewTrackPlaying()
 {
     if( The::lastFmService()->radio()->currentTrack() )

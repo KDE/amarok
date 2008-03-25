@@ -58,6 +58,8 @@ public:
     void restoreSession();
     void endSession();
 
+    Phonon::State state() const { return phononMediaObject()->state(); }
+
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
     static const int MAIN_TIMER = 150;
 
@@ -66,8 +68,7 @@ public:
 
     const Phonon::MediaObject* phononMediaObject() const { return m_media; } //!const so that it's only used by DBus for info
     int volume() const;
-    Engine::State state() const;
-    bool loaded() { return instance()->state() != Engine::Empty; }
+    bool loaded() { return phononMediaObject()->state() != Phonon::StoppedState; }
     bool getAudioCDContents(const QString &device, KUrl::List &urls);
     bool isStream();
 
@@ -108,7 +109,7 @@ private slots:
     void slotAboutToFinish();
     void slotTrackEnded();
     void slotNewTrackPlaying( const Phonon::MediaSource &source);
-    void slotStateChanged();
+    void slotStateChanged( Phonon::State newState, Phonon::State oldState);
     void slotPlayableUrlFetched(const KUrl&);
     void slotTick( qint64 );
     void slotTrackLengthChanged( qint64 );

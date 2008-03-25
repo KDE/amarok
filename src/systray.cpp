@@ -163,7 +163,7 @@ Amarok::TrayIcon::event( QEvent *e )
 }
 
 void
-Amarok::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
     // stop timer
     if ( blinkTimerID )
@@ -177,25 +177,29 @@ Amarok::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldSt
     // draw the right overlay for each state
     switch( state )
     {
-    case Engine::Paused:
-        overlay = &pauseOverlay;
-        paintIcon( mergeLevel, true );
-        break;
+        case Phonon::PausedState:
+            overlay = &pauseOverlay;
+            paintIcon( mergeLevel, true );
+            break;
 
-    case Engine::Playing:
-        overlay = &playOverlay;
-        if( AmarokConfig::animateTrayIcon() )
-           blinkTimerID = startTimer( 1500 );  // start 'blink' timer
+        case Phonon::PlayingState:
+            overlay = &playOverlay;
+            if( AmarokConfig::animateTrayIcon() )
+            blinkTimerID = startTimer( 1500 );  // start 'blink' timer
 
-        paintIcon( mergeLevel, true ); // repaint the icon
-        setupMenu();
-        break;
+            paintIcon( mergeLevel, true ); // repaint the icon
+            setupMenu();
+            break;
 
-    case Engine::Empty:
-    case Engine::Idle:
-        overlayVisible = false;
-        paintIcon( -1, true ); // repaint the icon
-                               // fall through to default:
+        case Phonon::StoppedState:
+        case Phonon::LoadingState:
+            overlayVisible = false;
+            paintIcon( -1, true ); // repaint the icon
+                                // fall through to default:
+
+        case Phonon::ErrorState:
+        case Phonon::BufferingState:
+            break;
     }
 }
 

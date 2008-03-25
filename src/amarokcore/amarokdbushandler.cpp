@@ -147,13 +147,16 @@ namespace Amarok
         // <0 - error, 0 - stopped, 1 - paused, 2 - playing
         switch( EngineController::instance()->state() )
         {
-        case Engine::Playing:
+        case Phonon::PlayingState:
+        case Phonon::BufferingState:
             return 2;
-        case Engine::Paused:
+        case Phonon::PausedState:
             return 1;
-        case Engine::Empty:
-        case Engine::Idle:
+        case Phonon::LoadingState:
+        case Phonon::StoppedState:
             return 0;
+        case Phonon::ErrorState:
+            return -1;
         }
         return -1;
     }
@@ -403,7 +406,7 @@ namespace Amarok
 
     void DbusPlayerHandler::seek(int s)
     {
-        if ( s > 0 && The::engineController()->state() != Engine::Empty )
+        if ( s > 0 && The::engineController()->state() != Phonon::StoppedState )
             EngineController::instance()->seek( s * 1000 );
     }
 

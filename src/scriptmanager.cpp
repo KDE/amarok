@@ -178,8 +178,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_transcodeCategory->setIcon( 0, SmallIcon( "folder-amarok" ) );
     m_contextCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
     m_servicesCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
-    
-    
+
+
     // Restore the open/closed state of the category items
     KConfigGroup config = Amarok::config( "ScriptManager" );
     m_generalCategory  ->setExpanded( config.readEntry( "General category open", false ) );
@@ -915,25 +915,29 @@ ScriptManager::loadScript( const QString& path )
 
 
 void
-ScriptManager::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+ScriptManager::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
     switch( state )
     {
-        case Engine::Empty:
-            notifyScripts( "engineStateChange: empty" );
+        case Phonon::StoppedState:
+        case Phonon::LoadingState:
+            notifyScripts( "engineStateChange: stopped" );
             break;
 
-        case Engine::Idle:
-            notifyScripts( "engineStateChange: idle" );
+        case Phonon::ErrorState:
+            notifyScripts( "engineStateChange: error" );
             break;
 
-        case Engine::Paused:
+        case Phonon::PausedState:
             notifyScripts( "engineStateChange: paused" );
             break;
 
-        case Engine::Playing:
+        case Phonon::PlayingState:
             notifyScripts( "engineStateChange: playing" );
             break;
+
+        case Phonon::BufferingState:
+            return;
     }
 }
 
