@@ -29,9 +29,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.1088004"
-     inkscape:cx="256.56241"
-     inkscape:cy="145.10621"
+     inkscape:zoom="2.1088003"
+     inkscape:cx="256.56242"
+     inkscape:cy="202.01061"
      inkscape:document-units="px"
      inkscape:current-layer="svg3486"
      inkscape:window-width="1440"
@@ -52,32 +52,32 @@
     </rdf:RDF>
   </metadata>
   <rect
-     width="140"
+     width="149.95827"
      height="12"
-     x="84.118927"
+     x="70.16066"
      y="30"
      id="lyricstrackname"
      style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   <rect
-     width="140"
+     width="196.90439"
      height="12"
-     x="371.50476"
-     y="30"
+     x="315.13602"
+     y="29.525797"
      id="lyricsartist"
      style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   <rect
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="titlelabel"
-     width="60"
+     width="61.896812"
      height="12"
-     x="13.044676"
+     x="3.0446758"
      y="30" />
   <rect
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="artistlabel"
-     width="60"
+     width="49.093323"
      height="12"
-     x="274.81631"
+     x="258.81631"
      y="30" />
   <rect
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
