@@ -361,7 +361,13 @@ Model::next()
     if( m_activeRow < 0 || m_activeRow >= m_items.size() )
         return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
-    track->finishedPlaying( 0.5 ); //TODO: get correct value for parameter
+    EngineController *ec = EngineController::instance();
+    Meta::TrackPtr playingTrack = ec->currentTrack();
+    // Sanity check.
+    if( playingTrack && track && playingTrack == track )
+    {
+        track->finishedPlaying( (double)ec->trackPosition() / (double)ec->trackLength() * 100 ); //TODO: get correct value for parameter
+    }
     EngineController::instance()->play( m_advancer->userNextTrack() );
 }
 
@@ -371,7 +377,11 @@ Model::back()
     if( m_activeRow < 0 || m_activeRow >= m_items.size() )
         return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
-    track->finishedPlaying( 0.5 ); //TODO: get correct value for parameter
+    Meta::TrackPtr playingTrack = EngineController::instance()->currentTrack();
+    // Sanity check.
+    if( playingTrack && track && playingTrack == track )
+        track->finishedPlaying( (double)EngineController::instance()->trackPosition() /
+                                (double)EngineController::instance()->trackLength() * 100 );
     EngineController::instance()->play( m_advancer->lastTrack() );
 }
 

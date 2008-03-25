@@ -467,7 +467,8 @@ namespace Amarok
     void DbusPlayerHandler::setScoreByPath( const QString &url, double score )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl(url) );
-        track->setScore( score );
+        if( track )
+            track->setScore( score );
     }
 
     void DbusPlayerHandler::setBpm( float bpm )

@@ -430,12 +430,14 @@ EngineController::slotAboutToFinish()
         m_currentTrack = The::playlistModel()->nextTrack();
         if( m_currentTrack )
             m_media->enqueue( m_currentTrack->playableUrl() );
+        slotTrackEnded(); // Phonon does not alert us that a track has finished if there is another source in the queue.
     }
 }
 
 void
 EngineController::slotTrackEnded()
 {
+    m_currentTrack->finishedPlaying( 1.0 );
     emit trackFinished();
 }
 
@@ -450,7 +452,6 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 void
 EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldState ) //SLOT
 {
-    DEBUG_BLOCK
     // Sanity checks
     if( newState == oldState )
         return;

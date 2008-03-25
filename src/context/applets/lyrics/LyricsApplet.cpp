@@ -143,7 +143,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     {
         QVariantList lyrics  = data[ "lyrics" ].toList();
         m_title->setText( truncateTextToFit( lyrics[ 1 ].toString(), m_title->font(), m_header->elementRect( "lyricstrackname" ) ) );
-        m_artist->setText( truncateTextToFit( lyrics[ 0 ].toString(), m_artist->font(), m_header->elementRect( "lyricsArtist" ) ) );
+        m_artist->setText( truncateTextToFit( lyrics[ 0 ].toString(), m_artist->font(), m_header->elementRect( "lyricsartist" ) ) );
 
         m_lyrics->setPlainText( lyrics[ 3 ].toString() );
 //         m_lyrics->adjustSize();

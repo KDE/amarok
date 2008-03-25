@@ -137,9 +137,8 @@ Meta::Track::addMatchTo( QueryMaker *qm )
 }
 
 void
-Meta::Track::finishedPlaying( double playedFraction )
+Meta::Track::finishedPlaying( double /*playedFraction*/ )
 {
-    Q_UNUSED( playedFraction )
 }
 
 void
@@ -224,7 +223,7 @@ Meta::Album::image( int size, bool withShadow )
     {
         QImage orgImage = QImage( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimise this!
         //scaled() does not change the original image but returns a scaled copy
-        img = orgImage.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ); 
+        img = orgImage.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         img.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
     }
 

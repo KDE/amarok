@@ -943,9 +943,12 @@ ScriptManager::engineStateChanged( Phonon::State state, Phonon::State /*oldState
 
 
 void
-ScriptManager::engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool /*trackChanged*/ )
+ScriptManager::engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool trackChanged )
 {
-    notifyScripts( "trackChange" );
+    if( trackChanged)
+    {
+        notifyScripts( "trackChange" );
+    }
 }
 
 

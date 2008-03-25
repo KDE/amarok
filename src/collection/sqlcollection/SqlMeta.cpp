@@ -27,6 +27,7 @@
 #include "meta/EditCapability.h"
 #include "meta/OrganiseCapability.h"
 #include "MetaUtility.h"
+#include "scriptmanager.h"
 #include "SimilarArtistsAction.h"
 #include "SqlRegistry.h"
 #include "SqlCollection.h"
@@ -180,7 +181,7 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     m_playCount = (*(iter++)).toInt();
     ++iter; //file type
     ++iter; //BPM
-    
+
     SqlRegistry* registry = m_collection->registry();
     QString artist = *(iter++);
     int artistId = (*(iter++)).toInt();
@@ -579,7 +580,6 @@ SqlTrack::updateStatisticsInDb()
 void
 SqlTrack::finishedPlaying( double playedFraction )
 {
-    AMAROK_NOTIMPLEMENTED
     Q_UNUSED( playedFraction );
     m_lastPlayed = QDateTime::currentDateTime().toTime_t();
     m_playCount++;
@@ -587,7 +587,7 @@ SqlTrack::finishedPlaying( double playedFraction )
     {
         m_firstPlayed = m_lastPlayed;
     }
-    //TODO get new rating
+    ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction, QString() );
     updateStatisticsInDb();
     notifyObservers();
 }
@@ -626,7 +626,6 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
     QString query = QString( "SELECT count(*) FROM lyrics WHERE url = '%1'")
                         .arg( m_collection->escape(m_rpath) );
     QStringList queryResult = m_collection->query( query );
-    debug() << "SQL RESULT: " << queryResult;
     if( queryResult[0].toInt() == 0 )
     {
         QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( '%1', '%2' );" )
@@ -672,7 +671,7 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
             //TODO These actions will hang around until m_collection is destructed.
             // Find a better parent to avoid this memory leak.
             actions.append( new CopyToDeviceAction( m_collection, this ) );
-            
+
             return new CustomActionsCapability( actions );
         }
 
@@ -931,7 +930,7 @@ SqlAlbum::setImage( const QImage &image )
 
     QByteArray key = md5sum( artist, album, QString() );
     image.save( Amarok::saveLocation( "albumcovers/large/" ) + key, "JPG" );
-    
+
     notifyObservers();
 }
 void
@@ -944,7 +943,7 @@ SqlAlbum::removeImage()
         return;
 
     QByteArray key = md5sum( artist, album, QString() );
-    
+
     // remove the large covers
     QFile::remove( Amarok::saveLocation( "albumcovers/large/" ) + key );
 
@@ -961,7 +960,7 @@ SqlAlbum::removeImage()
     }
 
     // TODO: remove directory image ??
-    
+
     notifyObservers();
 }
 
@@ -1051,7 +1050,7 @@ SqlAlbum::setCompilation( bool compilation )
             debug() << "User selected album as compilation";
             m_artistId = 0;
             m_artist = Meta::ArtistPtr();
-            
+
             QString update = "UPDATE albums SET artist = NULL WHERE id = %1;";
             m_collection->query( update.arg( m_id ) );
         }
