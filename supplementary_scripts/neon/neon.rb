@@ -47,14 +47,14 @@ if DAYOFMONTH == 1 or $*[0] == "all" or $*[0] == "qt"
   QtCopy()
 end
 
-if DAYOFWEEK == 0 or $*[0] == "all" or $*[0] == "deps"
-  Strigi()
-  KdeLibs()
+# if DAYOFWEEK == 0 or $*[0] == "all" or $*[0] == "deps"
+#   Strigi()
+#   KdeLibs()
   KdeBaseRuntime()
-  TagLib()
-end
+#   TagLib()
+# end
 
-Amarok()
+# Amarok()
 
 ###############################
 # Publish
@@ -68,7 +68,7 @@ Amarok()
 
 SVNPACKAGES = @packages
 
-UploadUbuntu.new()
+# UploadUbuntu.new()
 
 ###############################
 # Cleaning man

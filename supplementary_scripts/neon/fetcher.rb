@@ -16,11 +16,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 def QtCopy()
-  dir = "amarok-nightly-qt-#{DATE}"
+#   dir = "amarok-nightly-qt-#{DATE}"
+# 
+#   @neon.BaseDir()
+#   `svn co svn://anonsvn.kde.org/home/kde/trunk/qt-copy #{dir}`
+#   @neon.CreateTar(dir)
 
-  @neon.BaseDir()
-  `svn co svn://anonsvn.kde.org/home/kde/trunk/qt-copy #{dir}`
-  @neon.CreateTar(dir)
+  `wget ftp://ftp.kde.org/pub/kde/snapshots/qt-copy-*.tar.bz2`
 
   @packages += ["qt"]
 end
