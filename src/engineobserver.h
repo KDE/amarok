@@ -73,6 +73,7 @@ protected:
 
 private:
     QSet<EngineObserver*> Observers;
+    Phonon::State m_realState; // To work around the buffering issue
 };
 
 #endif // AMAROK_ENGINEOBSERVER_H

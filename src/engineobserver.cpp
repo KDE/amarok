@@ -92,6 +92,7 @@ EngineObserver::engineTrackLengthChanged( long seconds )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 EngineSubject::EngineSubject()
+    : m_realState( Phonon::StoppedState )
 {}
 
 EngineSubject::~EngineSubject()
@@ -102,10 +103,14 @@ EngineSubject::~EngineSubject()
 
 void EngineSubject::stateChangedNotify( Phonon::State newState, Phonon::State oldState )
 {
+    // We explicitly block notifications where newState == buffering in enginecontroller, so if the old state = buffering we can ignore the playing update.
+    if( newState == m_realState )  // To prevent Playing->Buffering->Playing->buffering.
+        return;
     foreach( EngineObserver *observer, Observers )
     {
         observer->engineStateChanged( newState, oldState );
     }
+    m_realState = newState;
 }
 
 void EngineSubject::trackEnded( int finalPosition, int trackLength, const QString &reason )

@@ -252,9 +252,6 @@ EngineController::playUrl( const KUrl &url, uint offset )
         m_media->seek( offset );
     }
     m_media->play();
-
-    if( m_media->state() != Phonon::ErrorState )
-        newTrackPlaying();
 }
 
 void
@@ -430,18 +427,22 @@ EngineController::slotAboutToFinish()
     else
     {
         trackEnded( m_media->currentTime(), m_media->totalTime(), i18n( "Previous track finished" ) );
+        slotTrackEnded(); // Phonon does not alert us that a track has finished if there is another source in the queue.
         m_currentTrack = The::playlistModel()->nextTrack();
         if( m_currentTrack )
             m_media->enqueue( m_currentTrack->playableUrl() );
-        slotTrackEnded(); // Phonon does not alert us that a track has finished if there is another source in the queue.
     }
 }
 
 void
 EngineController::slotTrackEnded()
 {
-    m_currentTrack->finishedPlaying( 1.0 );
-    emit trackFinished();
+    DEBUG_BLOCK
+    if( m_currentTrack ) // I have no idea why this can be null, but apparently it can..
+    {
+        m_currentTrack->finishedPlaying( 1.0 );
+        emit trackFinished();
+    }
 }
 
 void
@@ -457,6 +458,8 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
 {
     // Sanity checks
     if( newState == oldState )
+        return;
+    if( newState == Phonon::BufferingState ) //Ignore this for now, it's causing trouble;
         return;
     stateChangedNotify( newState, oldState );
 }
