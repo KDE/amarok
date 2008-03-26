@@ -186,7 +186,7 @@ class TrackNavigator;
 
             int activeRow() const { return m_activeRow; }
             void setActiveRow( int row );
-            Meta::TrackPtr activeTrack() const { return m_items.at( m_activeRow )->track(); }
+            Meta::TrackPtr activeTrack() const { return m_activeRow > -1 ? m_items.at( m_activeRow )->track() : Meta::TrackPtr(); }
             void setActiveItem( Playlist::Item* active) { setActiveRow( m_items.lastIndexOf(active) ); }
 
             Meta::TrackPtr nextTrack() { return m_advancer->nextTrack(); }

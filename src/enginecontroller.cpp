@@ -220,6 +220,9 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
 {
     DEBUG_BLOCK
 
+    if( !track ) // Guard
+        return;
+
     delete m_multi;
     m_currentTrack = track;
     m_multi = m_currentTrack->as<Meta::MultiPlayableCapability>();
