@@ -47,6 +47,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 
     m_slider = new Amarok::TimeSlider( /*Qt::Horizontal,*/ this );
     m_slider->setMouseTracking( true );
+    m_slider->setToolTip( i18n( "Track Progress" ) );
 
     m_timeLabelLeft = new TimeLabel( this );
     m_timeLabelLeft->setToolTip( i18n( "The amount of time elapsed in current song" ) );
