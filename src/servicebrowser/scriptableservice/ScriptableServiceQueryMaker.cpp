@@ -276,6 +276,10 @@ void ScriptableServiceQueryMaker::fetchGenre()
         args += QString::number( d->parentId );
         args += " ";
         args += d->callbackString;
+        if ( !d->filter.isEmpty() ) {
+            args += " ";
+            args += d->filter;
+        }
         debug() << "sending: "  << args;
         m_script->writeStdin( args );
 
@@ -318,6 +322,10 @@ void ScriptableServiceQueryMaker::fetchArtists()
         args += QString::number( d->parentId );
         args += " ";
         args += d->callbackString;
+        if ( !d->filter.isEmpty() ) {
+            args += " ";
+            args += d->filter;
+        }
         debug() << "sending: "  << args;
         m_script->writeStdin( args );
 
@@ -389,6 +397,10 @@ void ScriptableServiceQueryMaker::fetchTracks()
         args += QString::number( d->parentId );
         args += " ";
         args += d->callbackString;
+        if ( !d->filter.isEmpty() ) {
+            args += " ";
+            args += d->filter;
+        }
         debug() << "sending: "  << args;
         m_script->writeStdin( args );
         
@@ -484,10 +496,8 @@ QueryMaker * ScriptableServiceQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
 QueryMaker * ScriptableServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
 {
     d->filter = filter;
+    d->filter = d->filter.replace( " ", "%20" ); 
 }
-
-
-
 
 
 
