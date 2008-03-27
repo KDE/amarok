@@ -27,48 +27,48 @@ BASEPATH    = "#{ROOTPATH}/#{DATE}"
 APPVERSION  = "2.0-SVN-Neon"
 CONFIG      = "#{ENV['HOME']}/.neonrc"
 
-@packages = ["amarok"]
-
 require 'fileutils'
 require 'libneon.rb'
 require 'fetcher.rb'
 require 'publisher.rb'
 require 'distro.rb'
 
+#make main module accessible
+include Neon
 #make main class accessible
-@neon = Neon.new()
+@neon = Neon::Neon.new()
 #make configurations accessible
 @conf = Config::read(CONFIG)
 
 ###############################
 # Fetch Source
 
-if DAYOFMONTH == 1 or $*[0] == "all" or $*[0] == "qt"
-  QtCopy()
-end
-
+# if DAYOFMONTH == 1 or $*[0] == "all" or $*[0] == "qt"
+#   QtCopy()
+# end
+# 
 # if DAYOFWEEK == 0 or $*[0] == "all" or $*[0] == "deps"
 #   Strigi()
-#   KdeLibs()
-  KdeBaseRuntime()
 #   TagLib()
+#   KdeLibs()
+#   KdeBaseRuntime()
 # end
 
-# Amarok()
+Amarok()
 
-###############################
+##############################
 # Publish
 
 # PublishFtp.new()
-# 
+#
 # PublishFile.new()
 
-###############################
+##############################
 # Distribution Uploads
 
 SVNPACKAGES = @packages
 
-# UploadUbuntu.new()
+UploadUbuntu.new()
 
 ###############################
 # Cleaning man

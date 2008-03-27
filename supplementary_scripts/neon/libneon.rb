@@ -17,6 +17,7 @@
 
 require 'config.rb'
 
+  module Neon
   class Neon
   def initialize()
     #create today's basepath
@@ -30,15 +31,82 @@ require 'config.rb'
       FileUtils.chmod(0600, CONFIG)
     end
   end
+  end
+
+  def ThisMethod()
+    caller[0][/`([^']*)'/, 1]
+  end
 
   def BaseDir()
     Dir.chdir(BASEPATH)
   end
 
-  def CreateTar(dir)
-    puts Dir.pwd()
-    `find '#{dir}' -name '.svn' | xargs rm -rf`
-    `tar -cf #{dir}.tar #{dir}`
-    `bzip2 #{dir}.tar`
+  def GetTarball(comp)
+    puts "#{ThisMethod()} started with component: #{comp}"
+    BaseDir()
+    ftp = Net::FTP.new('ftp.kde.org')
+    ftp.login
+    files = ftp.chdir('pub/kde/snapshots')
+    files = ftp.list(comp + "*.tar.bz2")
+    file  = files[0].to_s.split(' ')[8]
+    ftp.getbinaryfile(comp + ".tar.bz2", file, 1024)
+    ftp.close
+    rev = file.chomp(".tar.bz2").reverse.chomp("-" + comp.reverse).reverse
+    @dir = "amarok-nightly-" + comp + "-" + rev
+    unless comp == "qt-copy"
+      `tar -xf #{file}`
+      FileUtils.rm_f(file)
+      FileUtils.mv(file.chomp(".tar.bz2"), @dir)
+    end
+    VarMagic(comp, rev)
   end
+
+  def CheckOut(comp, path, dir=nil, recursive=nil)
+    puts "#{ThisMethod()} started with component: #{comp}"
+    BaseDir()
+    unless recursive == "no"
+      cmd = "svn co"
+    else
+      cmd = "svn co -N"
+    end
+    unless dir
+      dir = "amarok-nightly-" + comp
+    end
+    `#{cmd} svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
+    count = 0
+    while $? != 0
+      unless count >= 20
+        `svn co svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
+        count += 1
+      else
+        puts "Neon::CheckOut svn co didn't exit properly in 20 tries, aborting checkout of #{comp}."
+        return
+      end
+    end
+    rev = `svn info #{dir}`.split("\n")[4].split(" ")[1]
+    @dir = dir + "-" + rev
+    FileUtils.mv(dir, @dir)
+    VarMagic(comp, rev)
+  end
+
+  def VarMagic(comp, rev)
+    if comp == "qt-copy" then
+      comp = "qt"
+    end
+    if @packages.nil?
+      @packages = {comp => rev}
+    else
+      @packages[comp] = [rev]
+    end
+  end
+
+  def CreateTar(comp, dir=nil)
+    puts "#{ThisMethod()} started with component: #{comp}"
+    `find '#{@dir}' -name '.svn' | xargs rm -rf`
+    `tar -cf #{@dir}.tar #{@dir}`
+    `bzip2 #{@dir}.tar`
+  end
+
 end
+
+

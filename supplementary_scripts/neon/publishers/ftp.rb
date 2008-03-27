@@ -61,19 +61,19 @@ class PublishFtp
 
   def Upload(host, dir, user, passwd)
     Neon.new.BaseDir()
-  
+
     ftp = Net::FTP.new(host)
     ftp.debug_mode=true
     ftp.login(user, passwd)
     ftp.chdir(dir)
-  
+
     Dir.foreach("."){|file|
       if file.include?(".tar.bz2")
 	ftp.putbinaryfile(file, File.basename(file))
       end
     }
     print ftp.list('all')
-  
+
     ftp.close
   end
 

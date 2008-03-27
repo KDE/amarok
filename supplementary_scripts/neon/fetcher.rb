@@ -16,46 +16,27 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 def QtCopy()
-#   dir = "amarok-nightly-qt-#{DATE}"
-# 
-#   @neon.BaseDir()
-#   `svn co svn://anonsvn.kde.org/home/kde/trunk/qt-copy #{dir}`
-#   @neon.CreateTar(dir)
-
-  `wget ftp://ftp.kde.org/pub/kde/snapshots/qt-copy-*.tar.bz2`
-
-  @packages += ["qt"]
+  GetTarball("qt-copy")
 end
 
-
 def Strigi()
-  dir = "amarok-nightly-strigi-#{DATE}"
-
-  @neon.BaseDir()
-  `svn co svn://anonsvn.kde.org/home/kde/trunk/kdesupport/strigi #{dir}`
-  @neon.CreateTar(dir)
-
-  @packages += ["strigi"]
+  comp = "strigi"
+  CheckOut(comp, "kdesupport/strigi")
+  CreateTar(comp)
 end
 
 def TagLib()
-  dir = "amarok-nightly-taglib-#{DATE}"
-
-  @neon.BaseDir()
-  `svn co svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib #{dir}`
-  @neon.CreateTar(dir)
-
-  @packages += ["taglib"]
+  comp = "taglib"
+  CheckOut(comp, "kdesupport/taglib")
+  CreateTar(comp)
 end
 
 def KdeLibs()
-  dir = "amarok-nightly-kdelibs-#{DATE}"
-
-  @neon.BaseDir()
-  `svn co svn://anonsvn.kde.org/home/kde/trunk/KDE/kdelibs #{dir}`
+  comp = "kdelibs"
+  GetTarball(comp)
 
   # Change ksycoca file name
-  file = File.new( "#{dir}/kdecore/sycoca/ksycoca.h", File::RDWR )
+  file = File.new( "#{@dir}/kdecore/sycoca/ksycoca.h", File::RDWR )
   str = file.read()
   file.rewind()
   file.truncate( 0 )
@@ -63,23 +44,20 @@ def KdeLibs()
   file << str
   file.close()
 
-  @neon.CreateTar(dir)
-
-  @packages += ["kdelibs"]
+  CreateTar(comp)
 end
 
 
 def KdeBaseRuntime()
-  dir = "amarok-nightly-kdebase-runtime-#{DATE}"
+  comp = "kdebase-runtime"
 
-  @neon.BaseDir()
-  `svn co -N svn://anonsvn.kde.org/home/kde/trunk/KDE/kdebase/runtime #{dir}`
-  `svn up #{dir}/cmake`
-  `svn up #{dir}/phonon`
-  `svn up #{dir}/kstyles`
+  CheckOut(comp, "KDE/kdebase/runtime", nil, "no")
+  `svn up #{@dir}/cmake`
+  `svn up #{@dir}/phonon`
+  `svn up #{@dir}/kstyles`
 
   #create CMakeLists.txt
-  cmakefile = File.new( "#{dir}/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
+  cmakefile = File.new( "#{@dir}/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
   cmakefile << "file(GLOB _po_files *.po)\n"
   cmakefile << "set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )\n"
   cmakefile << "find_package(KDE4 REQUIRED)\n"
@@ -102,20 +80,17 @@ def KdeBaseRuntime()
   cmakefile << "add_subdirectory(kstyles)\n"
   cmakefile.close()
 
-  @neon.CreateTar(dir)
-
-  @packages += ["kdebase-runtime"]
+  CreateTar(comp)
 end
 
 
 def Amarok()
-  dir = "amarok-nightly-#{DATE}"
+  comp = "amarok"
 
-  @neon.BaseDir()
-  `svn co svn://anonsvn.kde.org/home/kde/trunk/extragear/multimedia/amarok #{dir}`
+  CheckOut(comp, "extragear/multimedia/amarok", "amarok-nightly")
 
   # Change version
-  file = File.new( "#{dir}/src/amarok.h", File::RDWR )
+  file = File.new( "#{@dir}/src/amarok.h", File::RDWR )
   str = file.read()
   file.rewind()
   file.truncate( 0 )
@@ -123,5 +98,6 @@ def Amarok()
   file << str
   file.close()
 
-  @neon.CreateTar(dir)
+  CreateTar(comp)
+
 end

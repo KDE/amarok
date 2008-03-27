@@ -38,29 +38,29 @@ class UploadUbuntu
 
   def AmarokUpload()
     # upload
-    `dput amarok-nightly ../amarok-nightly_#{DATE}-0amarok#{REV}_source.changes`
+    `dput amarok-nightly ../amarok-nightly_#{DATE}.#{@rev}-0amarok#{REV}_source.changes`
   end
 
   def SrcUpload(package)
     # upload
-    `dput amarok-nightly ../amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_source.changes`
+    `dput amarok-nightly ../amarok-nightly-#{package}_#{DATE}.#{@rev}-0amarok#{REV}_source.changes`
   end
 
   def CreateNUpload(package)
     `cp -rf #{DEBPATH}/#{package}-debian ./debian`
 
-    `dch -D "#{DEBVERSION}" -v "#{DATE}-0amarok#{REV}" "Nightly Build"`
+    `dch -D "#{DEBVERSION}" -v "#{DATE}.#{@rev}-0amarok#{REV}" "Nightly Build"`
     `dpkg-buildpackage -S -sa -rfakeroot -k"Amarok Nightly Builds"`
 
-    if package == "amarok"
-      AmarokUpload()
-    else
-      SrcUpload(package)
-    end
+#     if package == "amarok"
+#       AmarokUpload()
+#     else
+#       SrcUpload(package)
+#     end
   end
 
   def CheckAvailablilty(package)
-    url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}-0amarok#{REV}_i386.deb"
+    url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}.#{@rev}-0amarok#{REV}_i386.deb"
     `wget '#{url}'`
     while $? != 0
       sleep 60
@@ -74,19 +74,21 @@ class UploadUbuntu
     FileUtils.cp_r("#{BASEPATH}/.", DEBBASEPATH)
 
     for package in PACKAGES
-      if SVNPACKAGES.include?(package)
-        puts "Ubuntu: uploading #{package}"
-        dir = "amarok-nightly-#{package}-#{DATE}"
+      if SVNPACKAGES.has_key?(package)
+        @rev = SVNPACKAGES[package]
+        puts "Ubuntu: uploading #{package} checkout revisoin #{@rev}"
+        dir = "amarok-nightly-#{package}-#{@rev}"
         BaseDir()
         Dir.chdir(dir)
 
         CreateNUpload(package)
-        CheckAvailablilty(package)
+#         CheckAvailablilty(package)
       end
     end
 
     BaseDir()
-    Dir.chdir("amarok-nightly-#{DATE}")
+    @rev = SVNPACKAGES["amarok"]
+    Dir.chdir("amarok-nightly-#{@rev}")
     CreateNUpload("amarok")
 
   end
