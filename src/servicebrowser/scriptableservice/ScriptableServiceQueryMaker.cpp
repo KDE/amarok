@@ -41,6 +41,7 @@ struct ScriptableServiceQueryMaker::Private {
     AmarokProcess * scriptProcess;
     AlbumQueryMode albumMode;
     QString filter;
+    QString lastFilter;
 };
 
 
@@ -77,6 +78,7 @@ QueryMaker * ScriptableServiceQueryMaker::reset()
     d->parentId = -1;
     d->scriptProcess = 0;
     d->filter = QString();
+    d->lastFilter = QString();
 
     return this;
 }
@@ -101,6 +103,7 @@ void ScriptableServiceQueryMaker::run()
 
     if ( d->callbackString.isEmpty() )
         d->callbackString = "none";
+
 
     if (  d->type == Private::GENRE )
         fetchGenre();
@@ -340,6 +343,9 @@ void ScriptableServiceQueryMaker::fetchAlbums()
 {
     DEBUG_BLOCK
 
+    if ( d->albumMode == OnlyCompilations)
+        return;
+
     AlbumList albums;
 
     if ( d->parentId != -1 ) {
@@ -506,25 +512,41 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter(qint64 value, const QString 
         d->filter = d->filter.replace( " ", "%20" );
     }
 
-    //we need to clear everything as we have no idea what the scripts wants to do...
-    //TODO: with KSharedPointers in use, does this leak!?
+    int level = 0;
+
+    if (  d->type == Private::GENRE )
+        level = 4;
+    if (  d->type == Private::ARTIST )
+        level = 3;
+    else if (  d->type == Private::ALBUM )
+        level = 2;
+    else if (  d->type == Private::TRACK )
+        level = 1;
 
 
-    m_collection->acquireWriteLock();
-            
-    m_collection->genreMap().clear();
-    m_collection->setGenreMap( GenreMap() );
-    
-    m_collection->artistMap().clear();
-    m_collection->setArtistMap( ArtistMap() );
-    
-    m_collection->albumMap().clear();
-    m_collection->setAlbumMap( AlbumMap() );
-    
-    m_collection->trackMap().clear();
-    m_collection->setTrackMap( TrackMap() );
-    
-    m_collection->releaseLock();
+    // should only clear all if we are querying for a top level item
+    if ( m_collection->levels() == level ) {
+        
+        //we need to clear everything as we have no idea what the scripts wants to do...
+        //TODO: with KSharedPointers in use, does this leak!?
+
+        debug() << "clear all!!!!!!!!!!!!!!";
+        
+        m_collection->acquireWriteLock();
+        m_collection->genreMap().clear();
+        m_collection->setGenreMap( GenreMap() );
+        m_collection->artistMap().clear();
+        m_collection->setArtistMap( ArtistMap() );
+        m_collection->albumMap().clear();
+        m_collection->setAlbumMap( AlbumMap() );
+        m_collection->trackMap().clear();
+        m_collection->setTrackMap( TrackMap() );
+        m_collection->releaseLock();
+
+        d->lastFilter = d->filter;
+
+    }
+
 }
 
 

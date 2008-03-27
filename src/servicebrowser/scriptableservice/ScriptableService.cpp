@@ -53,6 +53,7 @@ void ScriptableService::init( int levels, const QString & rootHtml, bool showSea
     m_rootHtml = rootHtml;
     setInfoParser( new ScriptableServiceInfoParser() );
     m_collection = new ScriptableServiceCollection( m_name, m_script );
+    m_collection->setLevels( levels );
 
     if ( !showSearchBar )
         m_searchWidget->hide();

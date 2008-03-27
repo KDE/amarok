@@ -42,12 +42,22 @@ public:
 
     void donePopulating( int parentId );
 
+    void setLevels( int theValue ) {
+        m_levels = theValue;
+    }
+    
+    int levels() const {
+        return m_levels;
+    }
+    
+
     signals:
         void updateComplete();
 
 private:
 
     AmarokProcIO * m_script;
+    int m_levels;
 
 };
 

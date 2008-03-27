@@ -91,6 +91,7 @@ int ScriptableServiceManager::insertItem(const QString & serviceName, int level,
 void ScriptableServiceManager::donePopulating(const QString & serviceName, int parentId)
 {
     DEBUG_BLOCK
+    debug() << "Service name: " << serviceName << ", parent id: " << parentId;
     if ( !m_serviceMap.contains( serviceName ) ) {
         //invalid service name
         return;
