@@ -57,7 +57,7 @@ class ScriptableServiceManager : public QObject
          * @param rootHtml The html to display when the service is selected
          * @return returns true if successful and false otherwise
          */
-        Q_SCRIPTABLE bool initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml );
+        Q_SCRIPTABLE bool initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar );
 
         /**
          * Add a new item to a service

@@ -49,6 +49,8 @@ public:
     virtual QueryMaker* startAlbumQuery();
     virtual QueryMaker* startTrackQuery();
 
+    virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
+
     virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );

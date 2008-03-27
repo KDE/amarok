@@ -7,6 +7,7 @@
       <arg name="levels" type="i" direction="in"/>
       <arg name="shortDescription" type="s" direction="in"/>
       <arg name="rootHtml" type="s" direction="in"/>
+      <arg name="showSearchBar" type="b" direction="in"/>
     </method>
     <method name="insertItem">
       <arg type="i" direction="out"/>

@@ -75,7 +75,7 @@ loop do
             root_html = "A small scripted service that recursively parses a directory structure. Not intended for any real use, but just as a small demo ( Done on a day with no internet access and nothing better to test the scriptable service framework against"
 
             # init new browser
-            system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "initService", @service_name, levels, short_description, root_html )
+            system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "initService", @service_name, levels, short_description, root_html, "false" )
 
         when "populate"
 

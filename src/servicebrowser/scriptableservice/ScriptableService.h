@@ -58,7 +58,7 @@ public:
      */
     ~ScriptableService();
 
-    void init( int levels, const QString &rootHtml );
+    void init( int levels, const QString &rootHtml, bool showSearchBar );
 
     void polish();
 

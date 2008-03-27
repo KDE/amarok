@@ -27,7 +27,7 @@
 
 using namespace Meta;
 
-ScriptableService::ScriptableService(const QString & name, AmarokProcIO * script )
+ScriptableService::ScriptableService( const QString & name, AmarokProcIO * script )
     : ServiceBase( name )
     , m_polished( false )
     , m_name( name )
@@ -39,7 +39,7 @@ ScriptableService::ScriptableService(const QString & name, AmarokProcIO * script
 {
     m_collection = 0;
     m_bottomPanel->hide();
-    m_searchWidget->hide();
+
 }
 
 ScriptableService::~ ScriptableService()
@@ -47,12 +47,15 @@ ScriptableService::~ ScriptableService()
     delete m_collection;
 }
 
-void ScriptableService::init(int levels, const QString & rootHtml)
+void ScriptableService::init( int levels, const QString & rootHtml, bool showSearchBar )
 {
     m_levels = levels;
     m_rootHtml = rootHtml;
     setInfoParser( new ScriptableServiceInfoParser() );
     m_collection = new ScriptableServiceCollection( m_name, m_script );
+
+    if ( !showSearchBar )
+        m_searchWidget->hide();
 }
 
 ServiceCollection * ScriptableService::collection()
@@ -61,7 +64,7 @@ ServiceCollection * ScriptableService::collection()
 }
 
 
-int ScriptableService::insertItem(int level, int parentId, const QString & name, const QString & infoHtml, const QString & callbackData, const QString & playableUrl)
+int ScriptableService::insertItem( int level, int parentId, const QString & name, const QString & infoHtml, const QString & callbackData, const QString & playableUrl )
 {
     DEBUG_BLOCK
 

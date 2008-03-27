@@ -55,7 +55,7 @@ loop do
             root_html = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers"
 
             # init new browser
-            system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "initService", service_name, levels, short_description, root_html )
+            system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "initService", service_name, levels, short_description, root_html, "false" )
 
         when "populate"
             if args[1].strip() == "1"

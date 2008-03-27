@@ -53,7 +53,7 @@ ScriptableServiceManager::ScriptableServiceManager( )
 }
 
 
-bool ScriptableServiceManager::initService( const QString &name, int levels, const QString &shortDescription,  const QString &rootHtml ) {
+bool ScriptableServiceManager::initService( const QString &name, int levels, const QString &shortDescription,  const QString &rootHtml, bool showSearchBar ) {
 
     DEBUG_BLOCK
 
@@ -67,7 +67,7 @@ bool ScriptableServiceManager::initService( const QString &name, int levels, con
     ScriptableService * service = m_serviceMap.value( name );
     service->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     service->setShortDescription( shortDescription );
-    service->init( levels, rootHtml );
+    service->init( levels, rootHtml, showSearchBar );
     m_rootHtml = rootHtml;
 
     emit addService( service );

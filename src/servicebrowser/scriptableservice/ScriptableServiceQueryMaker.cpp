@@ -40,6 +40,7 @@ struct ScriptableServiceQueryMaker::Private {
     int parentId;
     AmarokProcess * scriptProcess;
     AlbumQueryMode albumMode;
+    QString filter;
 };
 
 
@@ -75,6 +76,7 @@ QueryMaker * ScriptableServiceQueryMaker::reset()
     d->callbackString = QString();
     d->parentId = -1;
     d->scriptProcess = 0;
+    d->filter = QString();
 
     return this;
 }
@@ -348,6 +350,12 @@ void ScriptableServiceQueryMaker::fetchAlbums()
         args += QString::number( d->parentId );
         args += " ";
         args += d->callbackString;
+
+        if ( !d->filter.isEmpty() ) {
+            args += " ";
+            args += d->filter;
+        }
+        
         debug() << "sending: "  << args;
         m_script->writeStdin( args );
         
@@ -471,6 +479,11 @@ QueryMaker * ScriptableServiceQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
 {
     d->albumMode = mode;
     return this;
+}
+
+QueryMaker * ScriptableServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
+{
+    d->filter = filter;
 }
 
 
