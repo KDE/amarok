@@ -98,6 +98,10 @@ void ScriptableServiceQueryMaker::run()
     if ( d->type == Private::NONE )
         //TODO error handling
         return;
+
+    if ( d->callbackString.isEmpty() )
+        d->callbackString = "none";
+
     if (  d->type == Private::GENRE )
         fetchGenre();
     if (  d->type == Private::ARTIST )       
@@ -495,8 +499,32 @@ QueryMaker * ScriptableServiceQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
 
 QueryMaker * ScriptableServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
 {
-    d->filter = filter;
-    d->filter = d->filter.replace( " ", "%20" ); 
+    DEBUG_BLOCK
+
+    if ( value == valTitle ) {
+        d->filter += filter + " ";
+        d->filter = d->filter.replace( " ", "%20" );
+    }
+
+    //we need to clear everything as we have no idea what the scripts wants to do...
+    //TODO: with KSharedPointers in use, does this leak!?
+
+
+    m_collection->acquireWriteLock();
+            
+    m_collection->genreMap().clear();
+    m_collection->setGenreMap( GenreMap() );
+    
+    m_collection->artistMap().clear();
+    m_collection->setArtistMap( ArtistMap() );
+    
+    m_collection->albumMap().clear();
+    m_collection->setAlbumMap( AlbumMap() );
+    
+    m_collection->trackMap().clear();
+    m_collection->setTrackMap( TrackMap() );
+    
+    m_collection->releaseLock();
 }
 
 
