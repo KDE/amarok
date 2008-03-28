@@ -15,6 +15,7 @@ artist = `qdbus org.kde.amarok /Player artist`.chomp
 album  = `qdbus org.kde.amarok /Player album`.chomp
 year   = `qdbus org.kde.amarok /Player year`.chomp
 streamName = `qdbus org.kde.amarok /Player streamName`.chomp
+version = `qdbus org.kde.amarok /Player version`.chomp 
 
 output = ""
 
@@ -45,10 +46,14 @@ else
     unless streamName.empty?
         output += " (#{streamName})"
     end
+    
+    unless version.empty?
+        output += " (Amarok #{version})"
+    end
 end
 
 
-puts( "np: #{output} (Amarok 2)" ) unless output.empty?
+puts( "np: #{output}" ) unless output.empty?
 
 exit 0
 
