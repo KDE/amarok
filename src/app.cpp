@@ -285,6 +285,8 @@ namespace
 
 void App::handleCliArgs() //static
 {
+    DEBUG_BLOCK
+    
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
     if ( args->isSet( "cwd" ) )
@@ -663,7 +665,7 @@ App::continueInit()
 
     PERF_LOG( "Begin App::continueInit" )
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-    bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" )
+    bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
     PERF_LOG( "Starting moodserver" )
