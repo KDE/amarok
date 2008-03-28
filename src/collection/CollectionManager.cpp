@@ -27,7 +27,7 @@
 #include "MetaQueryBuilder.h"
 #include "meta/file/File.h"
 #include "meta/stream/Stream.h"
-#include "pluginmanager.h"
+#include "PluginManager.h"
 #include "SqlStorage.h"
 
 #include <QtAlgorithms>

@@ -35,7 +35,7 @@
 #include "meta/file/File.h"
 #include "mountpointmanager.h"
 #include "playlist/PlaylistModel.h"
-#include "pluginmanager.h"
+#include "PluginManager.h"
 #include "AmarokProcess.h"
 #include "scriptmanager.h"
 #include "searchwidget.h"

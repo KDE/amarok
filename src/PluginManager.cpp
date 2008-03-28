@@ -15,7 +15,7 @@ email                : markey@web.de
 
 #define DEBUG_PREFIX "PluginManager"
 
-#include "pluginmanager.h"
+#include "PluginManager.h"
 
 #include "debug.h"
 #include "plugin.h"

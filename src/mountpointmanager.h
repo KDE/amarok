@@ -22,7 +22,7 @@
 #include "amarok_export.h"
 #include "medium.h"
 #include "plugin/plugin.h"
-#include "pluginmanager.h"
+#include "PluginManager.h"
 
 #include <KConfig>
 #include <KUrl>

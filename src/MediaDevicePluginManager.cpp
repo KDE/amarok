@@ -25,7 +25,7 @@
 #include "mediabrowser.h"
 #include "MediaDeviceCache.h"
 #include "plugin/pluginconfig.h"
-#include "pluginmanager.h"
+#include "PluginManager.h"
 #include "ContextStatusBar.h"
 
 #include <KApplication>

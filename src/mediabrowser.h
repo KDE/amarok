@@ -19,7 +19,7 @@
 #include "browserToolBar.h"
 #include "medium.h"
 #include "Meta.h"
-#include "pluginmanager.h"
+#include "PluginManager.h"
 #include "plugin/plugin.h"   //baseclass
 
 #include <k3listview.h>       //baseclass

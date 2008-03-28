@@ -26,7 +26,7 @@
 #include "meta/MetaConstants.h"
 #include "meta/MultiPlayableCapability.h"
 #include "playlist/PlaylistModel.h"
-#include "pluginmanager.h"
+#include "PluginManager.h"
 #include "TheInstances.h"
 
 #include <KApplication>

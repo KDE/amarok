@@ -34,7 +34,7 @@ email                : markey@web.de
 #include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist/PlaylistModel.h"
-#include "pluginmanager.h"
+#include "PluginManager.h"
 #include "refreshimages.h"
 #include "scriptmanager.h"
 #include "ContextStatusBar.h"

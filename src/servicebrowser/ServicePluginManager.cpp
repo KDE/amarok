@@ -18,7 +18,7 @@
  */
  
 #include "ServicePluginManager.h"
-#include "pluginmanager.h"
+#include "PluginManager.h"
 
 #include <KService>
 

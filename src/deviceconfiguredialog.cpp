@@ -24,7 +24,7 @@
 #include "mediabrowser.h"
 #include "MediaDevice.h"
 #include "plugin/pluginconfig.h"
-#include "pluginmanager.h"
+#include "PluginManager.h"
 #include "scriptmanager.h"
 
 #include <KApplication>

@@ -23,7 +23,7 @@
 #include "MainWindow.h"
 #include "playlist/PlaylistModel.h"
 #include "TheInstances.h"
-//#include "mediumpluginmanager.h"
+//#include "mediumPluginManager.h"
 
 #include "socketserver.h"       //Vis::Selector::showInstance()
 #include "ContextStatusBar.h"

@@ -409,7 +409,7 @@ set(amaroklib_LIB_SRCS
     mountpointmanager.cpp
     osd.cpp
     PixmapViewer.cpp
-    pluginmanager.cpp
+    PluginManager.cpp
     podcastsettings.cpp
     prettypopupmenu.cpp
     refreshimages.cpp
