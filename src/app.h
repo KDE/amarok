@@ -50,8 +50,11 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
 
         static void handleCliArgs();
         static void initCliArgs( int argc, char *argv[] );
+        static void initCliArgs();
 
         static int mainThreadId;
+
+        virtual int newInstance();
 
         inline MainWindow *mainWindow() const { return m_mainWindow; }
 
@@ -102,6 +105,7 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         Amarok::TrayIcon    *m_tray;
         MediaDeviceManager  *m_mediaDeviceManager;
         KSplashScreen       *m_splash;
+
 };
 
 #define pApp static_cast<App*>(kapp)

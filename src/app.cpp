@@ -92,7 +92,6 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: " __DATE__ ")" ),
              ( "http://amarok.kde.org" ) );
 
-
 App::App()
         : KUniqueApplication()
         , m_splash( 0 )
@@ -308,6 +307,7 @@ void App::handleCliArgs() //static
 //                 PlaylistBrowserNS::instance()->addPodcast( url );
 //             else
                 list << url;
+                debug() << "here!!!!!!!!";
         }
 
         int options = Playlist::AppendAndPlay;
@@ -392,6 +392,7 @@ void App::handleCliArgs() //static
     firstTime = false;
 
     args->clear();    //free up memory
+
 }
 
 
@@ -399,10 +400,15 @@ void App::handleCliArgs() //static
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
 
-void App::initCliArgs( int argc, char *argv[] ) //static
+void App::initCliArgs( int argc, char *argv[] )
 {
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
+    initCliArgs();
+}
+
+void App::initCliArgs() //static
+{
 
     KCmdLineOptions options;
     options.add("+[URL(s)]", ki18n( "Files/URLs to open" ));
@@ -431,6 +437,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
     options.add("cdplay <device>", ki18n("Play an AudioCD from <device> or system:/media/<device>"));
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
+
 }
 
 
@@ -1133,5 +1140,26 @@ namespace Amarok
     { App::instance()->setMoodbarPrefs( show, moodier, alter, withMusic ); }
     KIO::Job *trashFiles( const KUrl::List &files ) { return App::instance()->trashFiles( files ); }
 }
+
+int App::newInstance()
+{
+    static bool first = true;
+    if ( isSessionRestored() && first)
+    {
+        first = false;
+        return 0;
+    }
+    
+    first = false;
+
+    //initCliArgs();
+    handleCliArgs();
+    return 0;
+}
+
+
+
+
+
 
 #include "app.moc"

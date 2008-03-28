@@ -148,6 +148,8 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
 TrackList
 XSPFPlaylist::tracks()
 {
+    DEBUG_BLOCK
+    
     XSPFTrackList xspfTracks = trackList();
     TrackList tracks;
 
@@ -176,6 +178,8 @@ XSPFPlaylist::tracks()
         }
         
     }
+    debug() << "returning " <<  tracks.size() << "tracks!";
+    
     return tracks;
 }
 

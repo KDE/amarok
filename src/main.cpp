@@ -103,7 +103,10 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Vadim Petrunin"), ki18n(( "Graphics" )), "vnizzz@list.ru" );
     aboutData.addCredit( ki18n("Whitehawk Stormchaser"), ki18n(( "Tester, patches" )), "zerokode@gmx.net" );
 
-    App::initCliArgs( argc, argv );
+    KCmdLineArgs::reset();
+    KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
+
+    App::initCliArgs();
     KUniqueApplication::addCmdLineOptions();
 
     if (!KUniqueApplication::start()) {

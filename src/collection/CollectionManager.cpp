@@ -240,6 +240,10 @@ CollectionManager::sqlStorage() const
 Meta::TrackList
 CollectionManager::tracksForUrls( const KUrl::List &urls )
 {
+    DEBUG_BLOCK
+
+    debug() << "adding " << urls.size() << " tracks";
+            
     Meta::TrackList tracks;
     foreach( KUrl url, urls )
         tracks.append( trackForUrl( url ) );
