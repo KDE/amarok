@@ -21,7 +21,7 @@
 #define AMAROK_TIMELABEL_H
 
 #include "actionclasses.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "progressslider.h"
 #include "TheInstances.h"
 

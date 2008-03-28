@@ -12,7 +12,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "playlist/PlaylistModel.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"

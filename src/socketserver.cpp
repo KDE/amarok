@@ -15,7 +15,7 @@
 #include "app.h"
 #include "amarok.h"
 #include "debug.h"
-#include "enginecontroller.h" //to get the engine
+#include "EngineController.h" //to get the engine
 #include "AmarokProcess.h"
 #include "ContextStatusBar.h"
 

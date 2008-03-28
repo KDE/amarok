@@ -23,7 +23,7 @@
 #include "Context.h"
 #include "ContextScene.h"
 #include "ContextObserver.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "Svg.h"
 
 #include <QGraphicsView>

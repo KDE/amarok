@@ -16,7 +16,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "sliderwidget.h"
 
 #include <klocale.h>

@@ -21,7 +21,7 @@
 #include "RepeatPlaylistNavigator.h"
 
 
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "PlaylistModel.h"
 
 using namespace Playlist;

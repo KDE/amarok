@@ -25,7 +25,7 @@
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "PlaylistItem.h"
 #include "PlaylistGraphicsView.h"
 #include "PlaylistFileSupport.h"

@@ -25,7 +25,7 @@ email                : markey@web.de
 #include "context/ContextView.h"
 #include "CoverFetcher.h"
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "equalizersetup.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"

@@ -21,7 +21,7 @@
 
 #include "CollectionManager.h"
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "JamendoInfoParser.h"
 #include "jamendoxmlparser.h"
 #include "ServiceSqlRegistry.h"

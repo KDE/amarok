@@ -17,7 +17,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
         //if osdUsePlaylistColumns()
 #include "meta/MetaUtility.h"
 #include "podcastbundle.h"

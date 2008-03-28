@@ -28,7 +28,7 @@
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
 #include "context/LyricsManager.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "equalizersetup.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"

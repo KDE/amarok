@@ -17,7 +17,7 @@
 #define AMAROKTOOLBAR_H
 
 #include "actionclasses.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 
 #include <ktoolbar.h>
 

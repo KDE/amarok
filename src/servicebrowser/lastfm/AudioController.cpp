@@ -13,7 +13,7 @@
 
 #include "AudioController.h"
 #include "core/Radio.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "LastFmService.h"
 #include "RadioAdapter.h"
 

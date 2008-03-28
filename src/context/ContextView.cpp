@@ -24,7 +24,6 @@
 #include "ContextScene.h"
 #include "DataEngineManager.h"
 #include "debug.h"
-#include "enginecontroller.h"
 #include "Svg.h"
 #include "Theme.h"
 

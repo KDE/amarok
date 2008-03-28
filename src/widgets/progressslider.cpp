@@ -16,7 +16,7 @@
 
 #include "amarokconfig.h"
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "meta/MetaUtility.h"
 #include "timeLabel.h"
 #include "TheInstances.h"

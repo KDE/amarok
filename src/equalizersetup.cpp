@@ -19,7 +19,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "equalizergraph.h"
 #include "equalizerpresetmanager.h"
 #include "widgets/sliderwidget.h"

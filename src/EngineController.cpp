@@ -11,9 +11,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#define DEBUG_PREFIX "controller"
+#define DEBUG_PREFIX "EngineController"
 
-#include "enginecontroller.h"
+#include "EngineController.h"
 
 #include "amarok.h"
 #include "amarokconfig.h"
@@ -546,4 +546,5 @@ The::engineController()
     return EngineController::instance(); //port amarok to the The:: style...
 }
 
-#include "enginecontroller.moc"
+#include "EngineController.moc"
+

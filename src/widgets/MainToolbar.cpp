@@ -25,10 +25,8 @@
 #include "SvgTinter.h"
 #include "TheInstances.h"
 
-
-
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "progressslider.h"
 

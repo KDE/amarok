@@ -4,7 +4,7 @@
 //TODO wait for lister to finish, if there are no files shown, but there are
 //     media files in that directory show a longMessage (preferably one that disappears when given a signal)
 
-#include "enginecontroller.h"
+#include "EngineController.h"
 
 #include <kdirlister.h>
 #include <kfileitem.h>

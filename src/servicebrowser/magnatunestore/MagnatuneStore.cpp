@@ -24,7 +24,7 @@
 #include "collection/CollectionManager.h"
 #include "ContextStatusBar.h"
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"
 #include "magnatuneinfoparser.h"

@@ -19,7 +19,7 @@
 #ifndef AMAROK_STREAM_P_H
 #define AMAROK_STREAM_P_H
 
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "engineobserver.h"
 #include "Meta.h"
 #include "MetaConstants.h"

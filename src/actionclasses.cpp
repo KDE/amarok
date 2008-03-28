@@ -18,7 +18,7 @@
 #include "app.h"
 #include "debug.h"
 #include "CoverManager.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "k3bexporter.h"
 #include "MainWindow.h"
 #include "playlist/PlaylistModel.h"

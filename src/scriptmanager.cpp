@@ -28,7 +28,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "AmarokProcess.h"
 #include "ContextStatusBar.h"
 #include "TheInstances.h"

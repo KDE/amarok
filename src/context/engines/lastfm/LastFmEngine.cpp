@@ -21,7 +21,7 @@
 #include "collection/QueryMaker.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "collection/SqlStorage.h"
 
 #include "kio/job.h"

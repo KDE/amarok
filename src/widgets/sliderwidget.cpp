@@ -25,7 +25,7 @@
 #include "amarokconfig.h"
 #include "app.h"
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "sliderwidget.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"

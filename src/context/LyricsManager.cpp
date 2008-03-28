@@ -14,7 +14,7 @@
 #include "LyricsManager.h"
 
 #include "debug.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 
 #include <QDomDocument>
 

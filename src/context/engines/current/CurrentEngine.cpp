@@ -17,7 +17,7 @@
 #include "debug.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
-#include "enginecontroller.h"
+#include "EngineController.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "meta/SourceInfoCapability.h"

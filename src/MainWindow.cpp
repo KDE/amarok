@@ -28,7 +28,7 @@
 #include "CoverManager.h" // for actions
 #include "debug.h"
 #include "editfilterdialog.h"
-#include "enginecontroller.h" //for actions in ctor
+#include "EngineController.h" //for actions in ctor
 #include "filebrowser/FileBrowser.h"
 #include "k3bexporter.h"
 #include "MainWindow.h"
