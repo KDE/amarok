@@ -44,17 +44,23 @@ public:
     ~MagnatuneInfoParser() {}
 
 
+    
     virtual void getInfo( Meta::ArtistPtr artist );
     virtual void getInfo( Meta::AlbumPtr album );
     virtual void getInfo( Meta::TrackPtr track );
 
+    void getFrontPage();
+
 private:
 
     KJob * m_infoDownloadJob;
+    KJob * m_frontPageDownloadJob;
+    
     QString extractArtistInfo( const QString &artistPage );
 private slots:
 
     void artistInfoDownloadComplete( KJob *downLoadJob );
+    void frontPageDownloadComplete( KJob *downLoadJob );
 
 signals:
 

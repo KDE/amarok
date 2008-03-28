@@ -111,6 +111,7 @@ public:
 
     void setPlayableTracks( bool playable );
     void setInfoParser( InfoParserBase * infoParser );
+    InfoParserBase * infoParser();
     
     virtual Collection * collection() = 0;
     

@@ -470,18 +470,22 @@ void MagnatuneStore::polish( )
     QString imagePath = url.url();
 
     
-    QString infoString = "<table align='center' border='0'><tbody align='center' valign='top'>"
+    /*QString infoString = "<table align='center' border='0'><tbody align='center' valign='top'>"
             "<tr align='center'><td><div align='center'>"
             "<IMG src='" + imagePath + "/magnatune_logo.png' width='200' height='36' align='center' border='0'>"
             "</div></td></tr><tr><td><BR>"
             + i18n( "Welcome to Amarok's integrated Magnatune.com store. If this is the "
             "first time you run it, you must update the database by pressing the "
             "'Update' button below." )
+            + "<p><a href=\"http://magnatune.com/artists/albums/ishwish-remember/hifi.xspf\">test</a>"
             + "</td></tr></tbody></table>";
 
 
-    generateWidgetInfo( infoString );
+    generateWidgetInfo( infoString );*/
 
+    MagnatuneInfoParser * parser = dynamic_cast<MagnatuneInfoParser *> ( infoParser() );
+    if ( parser )
+        parser->getFrontPage();
 
     //get a mood map we can show to the cloud view
 

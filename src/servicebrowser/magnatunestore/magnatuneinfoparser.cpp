@@ -149,6 +149,29 @@ MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
     return infoHtml;
 }
 
+void MagnatuneInfoParser::getFrontPage()
+{
+    m_frontPageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
+    Amarok::ContextStatusBar::instance()->newProgressOperation( m_frontPageDownloadJob ).setDescription( i18n( "Fetching Magnatune.com front page" ) );
+    connect( m_frontPageDownloadJob, SIGNAL(result(KJob *)), SLOT( frontPageDownloadComplete( KJob*) ) );
+}
+
+void MagnatuneInfoParser::frontPageDownloadComplete(KJob * downLoadJob)
+{
+    if ( !downLoadJob->error() == 0 )
+    {
+        //TODO: error handling here
+        return ;
+    }
+    if ( downLoadJob != m_frontPageDownloadJob )
+        return ; //not the right job, so let's ignore it
+
+
+
+    QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
+    emit ( info( infoString ) );
+}
+
 
 #include "magnatuneinfoparser.moc"
 

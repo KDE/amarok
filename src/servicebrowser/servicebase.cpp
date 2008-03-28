@@ -305,6 +305,11 @@ void ServiceBase::setInfoParser(InfoParserBase * infoParser)
     connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
 }
 
+InfoParserBase * ServiceBase::infoParser()
+{
+    return m_infoParser;
+}
+
 
 
 
