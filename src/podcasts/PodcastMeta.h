@@ -27,6 +27,7 @@
 #include <QSharedData>
 #include <QString>
 #include <QStringList>
+#include <QTextStream>
 
 namespace Meta
 {
