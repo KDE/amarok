@@ -276,6 +276,8 @@ EngineController::stop( bool forceInstant ) //SLOT
         m_fader->deleteLater();
 
     if( AmarokConfig::fadeoutLength() && !forceInstant ) {
+        stateChangedNotify( Phonon::StoppedState, Phonon::PlayingState ); //immediately disable Stop action
+
         m_fader = new Phonon::VolumeFaderEffect( this );
         m_path.insertEffect( m_fader );
         m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
