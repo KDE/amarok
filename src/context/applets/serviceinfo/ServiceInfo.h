@@ -50,6 +50,7 @@ public slots:
 
 private slots:
     void configAccepted();
+    void linkClicked( const QUrl & url );
 
 private:
     void resize( qreal newWidth, qreal aspectRatio );

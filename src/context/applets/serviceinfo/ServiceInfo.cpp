@@ -19,6 +19,7 @@
 
 #include <plasma/theme.h>
 
+#include <QDBusInterface>
 #include <QPainter>
 #include <QBrush>
 #include <QVBoxLayout>
@@ -54,6 +55,9 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     m_serviceMainInfo = new QGraphicsProxyWidget( this );
     m_serviceMainInfo->setWidget( m_webView );
 
+    m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
+
+    connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
 
     m_serviceName->setBrush( Plasma::Theme::self()->textColor() );
@@ -190,6 +194,19 @@ bool ServiceInfo::hasHeightForWidth() const
 qreal ServiceInfo::heightForWidth(qreal width) const
 {
     return width * m_aspectRatio;
+}
+
+void ServiceInfo::linkClicked( const QUrl & url )
+{
+    kDebug() << "Link clicked: " << url.toString();
+    
+    //for now, just handle xspf playlist files
+
+    if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) ) {
+        
+        QDBusInterface amarokPlaylist( "org.kde.amarok", "/Playlist" );
+        amarokPlaylist.call( "addMedia", url.toString() );
+    }
 }
 
 
