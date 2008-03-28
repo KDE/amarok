@@ -1,5 +1,6 @@
-// Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 /***************************************************************************
+ *   Copyright (C) 2004 by Max Howell <max.howell@methylblue.com>          *
+ *   Copyright (C) 2008 by Mark Kretschmann <kretschmann@kde.org>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -28,6 +29,7 @@
 #include "ContextStatusBar.h"
 #include "timeLabel.h"
 
+#include <KAuthorized>
 #include <KHBox>
 #include <KHelpMenu>
 #include <KIconLoader>
@@ -37,11 +39,10 @@
 #include <KStandardDirs>
 #include <KToolBar>
 #include <KUrl>
-#include <KAuthorized>
 
+#include <Q3PopupMenu>
 #include <QPixmap>
 #include <QToolTip>
-#include <Q3PopupMenu>
 
 
 namespace Amarok
@@ -232,6 +233,7 @@ PlayPauseAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldSt
         break;
     }
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // ToggleAction
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -437,17 +439,19 @@ BurnMenu::slotBurnSelectedTracks() //SLOT
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// StopMenuAction
+// StopAction
 //////////////////////////////////////////////////////////////////////////////////////////
 
 StopAction::StopAction( KActionCollection *ac )
   : KAction( 0 )
+  , EngineObserver( EngineController::instance() )
 {
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setMenu( Amarok::StopMenu::instance() );
     connect( this, SIGNAL( triggered() ), EngineController::instance(), SLOT( stop() ) );
     ac->addAction( "stop", this );
+    setEnabled( false );  // Disable action at startup
 }
 
 int
@@ -481,6 +485,27 @@ StopAction::plug( QWidget *w, int )
 #endif
     return 1;
 }
+
+void
+StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/ )
+{
+    switch( state ) {
+    case Phonon::PlayingState:
+        setEnabled( true );
+        break;
+    case Phonon::StoppedState:
+    case Phonon::LoadingState:
+        setDisabled( true );
+        break;
+    case Phonon::ErrorState:
+    case Phonon::BufferingState:
+        break;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// StopMenuAction
+//////////////////////////////////////////////////////////////////////////////////////////
 
 StopMenu::StopMenu()
 {

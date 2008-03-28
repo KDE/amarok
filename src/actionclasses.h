@@ -1,5 +1,6 @@
-// Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 /***************************************************************************
+ *   Copyright (C) 2004 by Max Howell <max.howell@methylblue.com>          *
+ *   Copyright (C) 2008 by Mark Kretschmann <kretschmann@kde.org>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -7,10 +8,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-//
-// Description: a popupmenu to control various features of Amarok
-//              also provides Amarok's helpMenu
 
 #ifndef AMAROK_ACTIONCLASSES_H
 #define AMAROK_ACTIONCLASSES_H
@@ -44,14 +41,12 @@ namespace Amarok
             static KHelpMenu  *s_helpMenu;
     };
 
-
     class MenuAction : public KAction
     {
         public:
             MenuAction( KActionCollection* );
             virtual int plug( QWidget*, int index = -1 );
     };
-
 
     class PlayPauseAction : public KToggleAction, public EngineObserver
     {
@@ -89,7 +84,6 @@ namespace Amarok
             void ( *m_function ) ( int );
             QStringList m_icons;
     };
-
 
     class RandomAction : public SelectAction
     {
@@ -133,6 +127,14 @@ namespace Amarok
             virtual QWidget* createWidget( QWidget* );
     };
 
+    class StopAction : public KAction, public EngineObserver
+    {
+        public:
+            StopAction( KActionCollection* );
+            virtual int plug( QWidget*, int index = -1 );
+            virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
+    };
+
     class StopMenu : public KMenu
     {
         Q_OBJECT
@@ -152,14 +154,6 @@ namespace Amarok
             QAction *m_stopNow;
             QAction *m_stopAfterTrack;
             QAction *m_stopAfterQueue;
-    };
-
-
-    class StopAction : public KAction
-    {
-        public:
-            StopAction( KActionCollection* );
-            virtual int plug( QWidget*, int index = -1 );
     };
 
 } /* namespace Amarok */
