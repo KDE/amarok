@@ -15,7 +15,7 @@
 #define LASTFMAUDIOCONTROLLER_H
 
 #include "core/RadioPlaylist.h"
-#include "engineobserver.h"
+#include "EngineObserver.h"
 #include "TrackInfo.h"
 
 #include <QStringList>

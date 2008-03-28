@@ -16,7 +16,7 @@
 #define VOLUMEWIDGET_H
 
 #include "sliderwidget.h"
-#include "engineobserver.h"
+#include "EngineObserver.h"
 
 #include <QPointer>
 #include <KHBox>

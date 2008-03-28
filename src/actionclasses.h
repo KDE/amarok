@@ -12,7 +12,7 @@
 #ifndef AMAROK_ACTIONCLASSES_H
 #define AMAROK_ACTIONCLASSES_H
 
-#include "engineobserver.h"
+#include "EngineObserver.h"
 #include "prettypopupmenu.h"
 #include "widgets/sliderwidget.h"
 

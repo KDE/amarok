@@ -21,7 +21,7 @@
 #ifndef AMAROK_CONTEXTSTATUSBAR_H
 #define AMAROK_CONTEXTSTATUSBAR_H
 
-#include "engineobserver.h" //baseclass
+#include "EngineObserver.h" //baseclass
 #include "StatusBarBase.h"  //baseclass
 //TODO:PORT to new playlist
 // #include "queueLabel.h"

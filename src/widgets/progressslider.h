@@ -14,7 +14,7 @@
 #ifndef AMAROK_PROGRESSWIDGET_H
 #define AMAROK_PROGRESSWIDGET_H
 
-#include "engineobserver.h"
+#include "EngineObserver.h"
 
 #include <unistd.h>
 

@@ -14,7 +14,7 @@
 #ifndef LASTFMSCROBBLERADAPTER_H
 #define LASTFMSCROBBLERADAPTER_H
 
-#include "engineobserver.h"
+#include "EngineObserver.h"
 #include "core/Scrobbler-12.h"
 
 #include <QVariant>

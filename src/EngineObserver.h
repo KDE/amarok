@@ -1,5 +1,5 @@
 /***************************************************************************
-                      engineobserver.h  -  Observer pattern for engine
+                      EngineObserver.h  -  Observer pattern for engine
                          -------------------
 begin                : Mar 14 2003
 copyright            : (C) 2003 by Frederik Holljen

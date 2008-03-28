@@ -15,7 +15,7 @@ email                : fh@ez.no
  *                                                                         *
  ***************************************************************************/
 
-#include "engineobserver.h"
+#include "EngineObserver.h"
 
 #include "debug.h"
 #include "podcastbundle.h"

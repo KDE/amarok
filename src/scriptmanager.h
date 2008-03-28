@@ -21,7 +21,7 @@
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
-#include "engineobserver.h"   //baseclass
+#include "EngineObserver.h"   //baseclass
 #include "MainWindow.h"
 #include "ui_scriptmanagerbase.h"
 

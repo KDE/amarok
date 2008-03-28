@@ -20,7 +20,7 @@
 #ifndef MAINTOOLBAR_H
 #define MAINTOOLBAR_H
 
-#include "engineobserver.h" //baseclass
+#include "EngineObserver.h" //baseclass
 #include "toolbar.h"
 #include "volumewidget.h"
 #include "SvgHandler.h"

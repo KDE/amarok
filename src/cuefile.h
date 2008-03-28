@@ -4,7 +4,7 @@
 #ifndef CUEFILE_H
 #define CUEFILE_H
 
-#include "engineobserver.h"
+#include "EngineObserver.h"
 #include "meta/Meta.h"
 
 #include <QMap>

@@ -22,7 +22,7 @@
 #define AMAROK_PLAYLISTMODEL_H
 
 #include "debug.h"
-#include "engineobserver.h"
+#include "EngineObserver.h"
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 #include "playlistmanager/PlaylistManager.h"

@@ -9,7 +9,7 @@
 #ifndef AMAROKSYSTRAY_H
 #define AMAROKSYSTRAY_H
 
-#include "engineobserver.h" //baseclass
+#include "EngineObserver.h" //baseclass
 
 #include <KAction>
 #include <ksystemtrayicon.h>

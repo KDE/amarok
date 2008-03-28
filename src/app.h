@@ -21,7 +21,7 @@
 #include "config-amarok.h"
 
 #include "amarok_export.h"
-#include "engineobserver.h" //baseclass
+#include "EngineObserver.h" //baseclass
 #include <KUniqueApplication>   //baseclass
 #include <KUrl>
 

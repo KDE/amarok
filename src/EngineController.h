@@ -13,7 +13,7 @@
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
-#include "engineobserver.h"
+#include "EngineObserver.h"
 #include "meta/Meta.h"
 
 #include <QMap>
