@@ -443,6 +443,8 @@ void App::initCliArgs() //static
 
 void App::initGlobalShortcuts()
 {
+    DEBUG_BLOCK
+
     EngineController* const ec = EngineController::instance();
     KAction* action;
 
