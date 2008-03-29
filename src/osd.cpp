@@ -64,7 +64,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
     if( AmarokConfig::osdUseTransparency() )
-        setWindowOpacity( 0.5 );
+        setWindowOpacity( 0.6 );
     unsetColors();
 
     m_timer->setSingleShot( true );
@@ -306,12 +306,11 @@ OSDWidget::paintEvent( QPaintEvent* )
     QPainter p( this );
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
 
-//     p.fillRect( rect, palette().color( QPalette::Inactive, QPalette::Dark )/*.dark( 125 )*/ );
+    p.fillRect( rect, QColor( 255, 255, 255, 0 ) ); //fill with transparent color
 
     p.setBrush( palette().color( QPalette::Inactive, QPalette::Dark ) );
     p.setPen( palette().color( QPalette::Normal, QPalette::Dark ).dark( 150 ) );
-    rect.setWidth( rect.width() );
-    p.drawRoundedRect( rect, 10.0, 10.0, Qt::RelativeSize );
+    p.drawRoundedRect( rect, 20.0, 15.0 );
 
     rect.adjust( M, M, -M, -M );
 
