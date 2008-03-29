@@ -20,10 +20,10 @@
 #ifndef AMAROK_SQL_SCANMANAGER_H
 #define AMAROK_SQL_SCANMANAGER_H
 
-#include "AmarokProcess.h"
-
 #include <QMutex>
 #include <QObject>
+#include <QProcess>
+#include <QTextStream>
 #include <QWaitCondition>
 #include <QXmlStreamReader>
 
@@ -31,6 +31,7 @@
 
 class SqlCollection;
 class XmlParseJob;
+class AmarokProcess;
 
 class ScanManager : public QObject
 {
@@ -64,6 +65,8 @@ class ScanManager : public QObject
 
         int m_restartCount;
         bool m_isIncremental;
+
+        QTextStream *m_textStream;
 };
 
 class XmlParseJob : public ThreadWeaver::Job
