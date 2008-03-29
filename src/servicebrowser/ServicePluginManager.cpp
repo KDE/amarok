@@ -100,19 +100,17 @@ void ServicePluginManager::init()
     }
 }
 
-
-void ServicePluginManager::slotNewService(ServiceBase * newService)
+void ServicePluginManager::slotNewService( ServiceBase *newService )
 {
     DEBUG_BLOCK
     m_serviceBrowser->addService( newService );
 }
 
-
-QMap< QString, ServiceFactory * > ServicePluginManager::factories()
+QMap<QString, ServiceFactory*>
+ServicePluginManager::factories()
 {
     return m_factories;
 }
-
 
 void ServicePluginManager::settingsChanged()
 {

@@ -119,7 +119,6 @@ void OpmlDirectoryService::polish()
     QList<int> levels;
     levels << CategoryId::Album;
 
-
     ServiceMetaFactory * metaFactory = new OpmlDirectoryMetaFactory( "opmldirectory", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new ServiceSqlCollection( "opmldirectory", "opmldirectory", metaFactory, registry );
@@ -129,9 +128,6 @@ void OpmlDirectoryService::polish()
     connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
     m_polished = true;
-
-
-
 }
 
 void OpmlDirectoryService::updateButtonClicked()

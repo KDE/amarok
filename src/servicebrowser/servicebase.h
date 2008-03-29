@@ -119,29 +119,20 @@ public:
     virtual bool updateContextView() { return false; }
 
     void setFilter( const QString &filter );
-    
 
     //virtual void reset() = 0;
 
 public slots:
-
     //void treeViewSelectionChanged( const QItemSelection & selected );
     void infoChanged ( const QString &infoHtml );
 
     void sortByArtistAlbum();
 
-
-
-
 signals:
-
     void home();
     void selectionChanged ( CollectionTreeItem * );
     
-
 protected slots:
-
-
     void homeButtonClicked();
     void itemActivated ( const QModelIndex & index );
     void itemSelected( CollectionTreeItem * item  );
@@ -152,9 +143,7 @@ protected slots:
     void sortByGenreArtist();
     void sortByGenreArtistAlbum();
 
-
 protected:
-
     virtual void generateWidgetInfo( QString html = QString() ) const;
     
     static ServiceBase *s_instance;
@@ -181,12 +170,9 @@ protected:
 
     //void addToPlaylist( CollectionTreeItem * item );
 
-   
-
 private: // need to move stuff here
      SingleCollectionTreeItemModel * m_model;
      QSortFilterProxyModel * m_filterModel;
-
 };
 
 

@@ -34,9 +34,7 @@ ServiceConfig::ServiceConfig( QWidget * parent )
  : ConfigDialogBase( parent )
  , m_configChanged( false )
 {
-
     m_serviceSelector = new KPluginSelector( this );
-//     m_serviceSelector->setMaximumSize( QSize( 3500000, 600 ) );
     m_serviceSelector->setSizePolicy( QSizePolicy:: Expanding, QSizePolicy::Expanding );
 
     QVBoxLayout *layout = new QVBoxLayout( this );
@@ -45,13 +43,11 @@ ServiceConfig::ServiceConfig( QWidget * parent )
 
     connect( m_serviceSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
 
-    
-    QList< ServiceFactory * > serviceFactories = ServicePluginManager::instance()->factories().values();
+    QList<ServiceFactory*> serviceFactories = ServicePluginManager::instance()->factories().values();
 
     QList<KPluginInfo> pluginInfoList;
-    foreach ( ServiceFactory * factory, serviceFactories ) {
+    foreach ( ServiceFactory * factory, serviceFactories )
         pluginInfoList.append( factory->info() );
-    }
 
     m_serviceSelector->addPlugins( pluginInfoList, KPluginSelector::ReadConfigFile, "Services" );
 }
