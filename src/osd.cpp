@@ -304,6 +304,7 @@ OSDWidget::paintEvent( QPaintEvent* )
     int align = Qt::AlignCenter | Qt::WordBreak;
 
     QPainter p( this );
+    p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
 
 //     p.fillRect( rect, palette().color( QPalette::Inactive, QPalette::Dark )/*.dark( 125 )*/ );
 
