@@ -1,19 +1,19 @@
 /***************************************************************************
- * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu> 
- * 
+ * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License or (at your option) version 3 or any later version
  * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy 
+ * by the membership of KDE e.V.), which shall act as a proxy
  * defined in Section 14 of version 3 of the license.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
@@ -230,7 +230,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     {
         if ( track->length() > 0 )
             prettyLength = Meta::secToPrettyTime( track->length() );
-        else 
+        else
             prettyLength = QString();
     }
 
@@ -404,7 +404,7 @@ Playlist::GraphicsItem::findArtistForCurrentAlbum() const
         return QString();
 
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
-    if( ! ( ( index.data( GroupRole ).toInt() == Head ) || ( index.data( GroupRole ).toInt() == Head_Collapsed ) ) ) 
+    if( ! ( ( index.data( GroupRole ).toInt() == Head ) || ( index.data( GroupRole ).toInt() == Head_Collapsed ) ) )
     {
         return QString();
     }
@@ -456,7 +456,7 @@ Playlist::GraphicsItem::play()
 void
 Playlist::GraphicsItem::showImage() const
 {
-    ( new CoverViewDialog( m_items->track->album(), The::playlistView() ) )->show(); 
+    ( new CoverViewDialog( m_items->track->album(), The::playlistView() ) )->show();
 }
 
 void
@@ -615,7 +615,7 @@ void
 Playlist::GraphicsItem::refresh()
 {
 
-    if (m_items && m_items->track ) 
+    if (m_items && m_items->track )
         resize( m_items->track,m_items->lastWidth );
 
 
@@ -797,23 +797,13 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap(
-                             static_cast<int>( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2 ),
+                             static_cast<int>(SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2),
                              (int)lineTwoY,
                              renderSvg(
-                                        "selection_left",
-                                        static_cast<int>( s_fm->height() * 3),
+                                        "selection",
+                                        trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 4 ),
                                         (int)s_fm->height(),
-                                        "selection_left"
-                                      )
-                           );
-        painter->drawPixmap(
-                             static_cast<int>(trackRect.width() - ( s_fm->height() * 3 + 2 )),
-                             (int)lineTwoY,
-                             renderSvg(
-                                        "selection_right",
-                                        static_cast<int>(s_fm->height() * 3),
-                                        (int)s_fm->height(),
-                                        "selection_right"
+                                        "selection"
                                       )
                            );
     }
@@ -902,23 +892,13 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap(
-                             static_cast<int>(trackRect.x() + 2),
-                             static_cast<int>(trackRect.y() + 2),
-                             renderSvg(
-                                        "selection_left",
-                                        static_cast<int>(trackRect.height() * 3),
-                                        static_cast<int>(trackRect.height() -1),
-                                        "selection_left"
-                                      )
-                           );
-        painter->drawPixmap(
-                             static_cast<int>(trackRect.bottomRight().x() - (trackRect.height() * 3 + 2)),
+                             static_cast<int>(trackRect.x() + 5),
                              static_cast<int>(trackRect.top() + 2),
                              renderSvg(
-                                        "selection_right",
-                                        static_cast<int>(trackRect.height() * 3),
+                                        "selection",
+                                        static_cast<int>( trackRect.width() - 10 ),
                                         static_cast<int>(trackRect.height() - 1),
-                                        "selection_right"
+                                        "selection"
                                       )
                            );
     }
@@ -1012,23 +992,13 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
     if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap(
-                             static_cast<int>( trackRect.x() + 2 ),
-                             (int)trackRect.y(),
-                             renderSvg(
-                                        "selection_left",
-                                        static_cast<int>( trackRect.height() * 3 ),
-                                        (int)trackRect.height(),
-                                        "selection_left"
-                                      )
-                           );
-        painter->drawPixmap(
-                             static_cast<int>( trackRect.bottomRight().x() - ( trackRect.height() * 3 + 2 ) ),
+                             static_cast<int>( trackRect.x() + 5 ),
                              (int)trackRect.top(),
                              renderSvg(
-                                        "selection_right",
-                                        static_cast<int>( trackRect.height() * 3 ),
+                                        "selection",
+                                        static_cast<int>( trackRect.width() - 10 ),
                                         (int)trackRect.height(),
-                                        "selection_right"
+                                        "selection"
                                       )
                            );
     }
@@ -1075,23 +1045,13 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
     if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap(
-                             static_cast<int>( trackRect.x() + 2 ),
-                             (int)trackRect.y(),
-                             renderSvg(
-                                        "selection_left",
-                                        static_cast<int>( trackRect.height() * 3 ),
-                                        static_cast<int>( trackRect.height() - 4 ),
-                                        "selection_left"
-                                      )
-                           );
-        painter->drawPixmap(
-                             static_cast<int>( trackRect.bottomRight().x() - (trackRect.height() * 3 + 2) ),
+                             static_cast<int>( trackRect.x() + 5 ),
                             (int)trackRect.top(),
                             renderSvg(
-                                       "selection_right",
-                                       static_cast<int>( trackRect.height() * 3 ),
+                                       "selection",
+                                       static_cast<int>( trackRect.width() - 10 ),
                                        static_cast<int>( trackRect.height() - 4 ),
-                                       "selection_right"
+                                       "selection"
                                      )
                            );
     }
