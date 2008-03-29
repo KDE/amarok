@@ -216,7 +216,6 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
 
 void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent) const
 {
-    //DEBUG_BLOCK
     if ( qm && parent ) {
 
         //this check should not hurt anyone... needs to check if single... needs it
@@ -556,7 +555,6 @@ CollectionTreeItemModelBase::slotFilter()
 void
 CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
 {
-    DEBUG_BLOCK
     if ( index.isValid() )      //probably unnecessary, but let's be safe
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
