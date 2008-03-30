@@ -306,7 +306,7 @@ OSDWidget::paintEvent( QPaintEvent* )
     QPainter p( this );
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
 
-    p.fillRect( rect, QColor( 255, 255, 255, 0 ) ); //fill with transparent color
+    p.fillRect( rect, Qt::transparent ); //fill with transparent color
 
     p.setBrush( palette().color( QPalette::Inactive, QPalette::Dark ) );
     p.setPen( palette().color( QPalette::Normal, QPalette::Dark ).dark( 150 ) );
