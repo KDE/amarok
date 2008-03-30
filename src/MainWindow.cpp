@@ -16,7 +16,7 @@
 
 #include "config-amarok.h"           //HAVE_LIBVISUAL definition
 
-#include "actionclasses.h"    //see toolbar construction
+#include "ActionClasses.h"    //see toolbar construction
 #include "amarokconfig.h"
 #include "amarok.h"
 //#include "AmarokStatusBar.h"

@@ -44,7 +44,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <metadata/tfile_helper.h>
 #include <hintlineedit.h>
 
-#include <kactionclasses.h>
+#include <kActionClasses.h>
 #include <kapplication.h>
 #include <kmountpoint.h>
 #include <kpushbutton.h>

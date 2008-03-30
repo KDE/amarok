@@ -14,7 +14,7 @@
 
 #include "config-amarok.h"           //HAVE_LIBVISUAL definition
 
-#include "actionclasses.h"   //mousePressEvent
+#include "ActionClasses.h"   //mousePressEvent
 #include "amarok.h"
 #include "blockanalyzer.h"
 #include "debug.h"

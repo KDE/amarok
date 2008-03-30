@@ -20,7 +20,7 @@
 
 
 #include "App.h"
-#include "actionclasses.h"
+#include "ActionClasses.h"
 #include "MainWindow.h" 
 #include "PlaylistClassicView.h"
 #include "PlaylistGraphicsView.h"

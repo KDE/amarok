@@ -20,7 +20,7 @@
 #ifndef AMAROK_TIMELABEL_H
 #define AMAROK_TIMELABEL_H
 
-#include "actionclasses.h"
+#include "ActionClasses.h"
 #include "EngineController.h"
 #include "progressslider.h"
 #include "TheInstances.h"

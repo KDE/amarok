@@ -19,7 +19,7 @@
 
 #include "MainToolbar.h"
 
-#include "actionclasses.h" 
+#include "ActionClasses.h" 
 #include "amarok.h"
 #include "analyzerwidget.h"
 #include "SvgTinter.h"

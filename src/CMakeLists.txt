@@ -371,7 +371,7 @@ set(amaroklib_LIB_SRCS
     ${libqueuemanager_SRCS}
     ${libplaylistmanager_SRCS}
     ${mediadevice_SRCS}
-    actionclasses.cpp
+    ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
     App.cpp

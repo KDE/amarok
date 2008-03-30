@@ -9,7 +9,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "actionclasses.h"
+#include "ActionClasses.h"
 
 #include "config-amarok.h"             //HAVE_LIBVISUAL definition
 
@@ -586,4 +586,4 @@ void StopMenu::slotActivated( QAction *action )
 {
     action->setChecked( !action->isChecked() );
 }
-#include "actionclasses.moc"
+#include "ActionClasses.moc"
