@@ -14,7 +14,7 @@
 #include "CollectionTreeItem.h"
 //#include "collection/sqlregistry.h"
 #include "debug.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "CoverFetcher.h"

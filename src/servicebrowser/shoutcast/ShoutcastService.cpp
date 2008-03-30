@@ -21,7 +21,7 @@
 #include "ShoutcastService.h"
 
 #include "debug.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "ContextStatusBar.h"
 
 #include <KTemporaryFile>

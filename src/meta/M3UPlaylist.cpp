@@ -19,7 +19,7 @@
 #include "M3UPlaylist.h"
 
 #include "debug.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "proxy/MetaProxy.h"
 #include "TheInstances.h"
 #include "PlaylistManager.h"

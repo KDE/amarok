@@ -13,7 +13,7 @@
 
 #include "LyricsApplet.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "context/Svg.h"
 #include "Theme.h"

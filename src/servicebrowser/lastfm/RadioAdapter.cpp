@@ -12,7 +12,7 @@
  ***************************************************************************/
 
 #include "RadioAdapter.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "core/Radio.h"
 #include "LastFmService.h"
 #include "LastFmSettings.h"

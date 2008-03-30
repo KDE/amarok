@@ -22,7 +22,7 @@
 
 #include "CloudEngine.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "ContextObserver.h"
 #include "ContextView.h"

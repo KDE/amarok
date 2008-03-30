@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "App.h" // application palette
 #include "debug.h"
 #include "meta/CurrentTrackActionsCapability.h"

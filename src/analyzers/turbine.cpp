@@ -10,7 +10,7 @@
 #include <cmath>
 #include <QPainter>
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "turbine.h"
 
 void TurbineAnalyzer::analyze( const Scope &scope )

@@ -24,7 +24,7 @@
 
 AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "meta/file/File.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"

@@ -21,7 +21,7 @@
 
 #include "debug.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "LastFmSettings.h"
 #include "libUnicorn/TrackInfo.h"

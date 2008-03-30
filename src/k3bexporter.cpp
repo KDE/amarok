@@ -16,7 +16,7 @@
 
 #include "k3bexporter.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 
 #include "AmarokProcess.h"
 

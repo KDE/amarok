@@ -15,7 +15,7 @@
 #define AMAROK_MEDIABROWSER_H
 
 #include "amarok_export.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "browserToolBar.h"
 #include "medium.h"
 #include "Meta.h"

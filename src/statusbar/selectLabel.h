@@ -25,7 +25,7 @@
 #define AMAROK_SELECTLABEL_H
 
 #include "ActionClasses.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "overlayWidget.h"
 #include "popupMessage.h"

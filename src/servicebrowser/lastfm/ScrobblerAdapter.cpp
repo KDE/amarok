@@ -15,7 +15,7 @@
 
 #include "ScrobblerAdapter.h"
 #include "EngineController.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "MetaConstants.h"
 #include "meta/LastFmMeta.h"

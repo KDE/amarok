@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"

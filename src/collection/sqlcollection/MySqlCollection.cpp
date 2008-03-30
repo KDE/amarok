@@ -19,7 +19,7 @@
 #include <klocale.h>
 
 #include "MySqlCollection.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "MySqlQueryMaker.h"

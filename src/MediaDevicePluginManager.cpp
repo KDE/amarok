@@ -18,7 +18,7 @@
 
 #include "MediaDevicePluginManager.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "deviceconfiguredialog.h"
 #include "hintlineedit.h"

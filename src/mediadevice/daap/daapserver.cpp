@@ -11,7 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "daapserver.h"
 #include "AmarokProcess.h"

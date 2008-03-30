@@ -12,7 +12,7 @@
  ***************************************************************************/
 
 #include "LastFmSettings.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "LastFmServiceConfig.h"
 #include "UnicornCommon.h"
 

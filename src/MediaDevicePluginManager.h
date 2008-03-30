@@ -18,7 +18,7 @@
 #ifndef MEDIUMPLUGINMANAGER_H
 #define MEDIUMPLUGINMANAGER_H
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "hintlineedit.h"
 #include "plugin/pluginconfig.h"
 

@@ -8,7 +8,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "boomanalyzer.h"
 #include <cmath>
 #include <QGridLayout>

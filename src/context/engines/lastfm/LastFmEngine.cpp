@@ -13,7 +13,7 @@
 
 #include "LastFmEngine.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "collection/BlockingQuery.h"

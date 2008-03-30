@@ -18,7 +18,7 @@
 
 #include "SqlMeta.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "BlockingQuery.h"
 #include "debug.h"
 #include "MainWindow.h"

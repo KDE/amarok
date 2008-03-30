@@ -21,7 +21,7 @@
 
 #include "ShoutcastServiceQueryMaker.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "servicemetabase.h"
 #include "collection/support/MemoryMatcher.h"

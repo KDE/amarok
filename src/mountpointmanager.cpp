@@ -20,7 +20,7 @@
 
 #include "mountpointmanager.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "CollectionManager.h"
 #include "debug.h"
 #include "PluginManager.h"

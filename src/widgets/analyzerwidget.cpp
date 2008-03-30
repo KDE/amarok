@@ -12,7 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 //
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "analyzerwidget.h"

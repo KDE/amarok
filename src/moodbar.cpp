@@ -281,7 +281,7 @@
 #include "config-amarok.h"
 
 #include "amarokconfig.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "App.h"
 #include "debug.h"
 #include "metabundle.h"

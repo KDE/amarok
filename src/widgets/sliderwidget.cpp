@@ -21,7 +21,7 @@
 
 #include "config-amarok.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "App.h"
 #include "debug.h"

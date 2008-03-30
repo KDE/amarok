@@ -12,7 +12,7 @@
 
 #include "TagGuesser.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 
 #include <KApplication>

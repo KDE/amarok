@@ -15,7 +15,7 @@
 
 #include "EngineController.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
 #include "ContextStatusBar.h"

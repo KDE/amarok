@@ -18,7 +18,7 @@
 
 #include "PodcastCollection.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 //#include "AmarokStatusBar.h"
 #include "CollectionManager.h"
 #include "ContextStatusBar.h"

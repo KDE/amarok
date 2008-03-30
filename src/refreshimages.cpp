@@ -23,7 +23,7 @@
 
 #include "refreshimages.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "ContextStatusBar.h"
 

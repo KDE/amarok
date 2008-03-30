@@ -18,7 +18,7 @@
 
 #include "ActionClasses.h"    //see toolbar construction
 #include "amarokconfig.h"
-#include "amarok.h"
+#include "Amarok.h"
 //#include "AmarokStatusBar.h"
 #include "collection/CollectionManager.h"
 #include "collectionbrowser/CollectionWidget.h"

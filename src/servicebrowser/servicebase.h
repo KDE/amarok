@@ -21,7 +21,7 @@
 #define AMAROKSERVICEBASE_H
 
 
-#include "amarok.h"
+#include "Amarok.h"
 //#include "servicemodelitembase.h"
 //#include "servicemodelbase.h"
 

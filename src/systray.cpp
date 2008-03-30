@@ -9,7 +9,7 @@
 
 #include "systray.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "EngineController.h"

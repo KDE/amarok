@@ -12,7 +12,7 @@
 
 #include "tagdialog.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "CollectionManager.h"
 #include "CoverFetcher.h"

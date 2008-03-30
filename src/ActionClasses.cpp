@@ -13,7 +13,7 @@
 
 #include "config-amarok.h"             //HAVE_LIBVISUAL definition
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "App.h"
 #include "debug.h"

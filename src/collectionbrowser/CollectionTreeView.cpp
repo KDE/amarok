@@ -8,7 +8,7 @@
 
 #include "CollectionTreeView.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
 #include "collectionbrowser/OrganizeCollectionDialog.h"

@@ -17,7 +17,7 @@
  
 #include "equalizersetup.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "EngineController.h"
 #include "equalizergraph.h"

@@ -18,7 +18,7 @@
 #ifndef AMAROK_COLLECTION_H
 #define AMAROK_COLLECTION_H
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarok_export.h"
 #include "plugin/plugin.h"
 #include "QueryMaker.h"

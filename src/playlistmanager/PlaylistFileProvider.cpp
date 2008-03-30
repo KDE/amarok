@@ -19,7 +19,7 @@
 #include "PlaylistFileProvider.h"
 #include "PlaylistFileSupport.h"
 #include "EditablePlaylistCapability.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 
 #include <QString>

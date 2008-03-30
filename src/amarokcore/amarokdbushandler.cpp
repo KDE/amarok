@@ -20,7 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "amarokdbushandler.h"
 #include "App.h" //transferCliArgs

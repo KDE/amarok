@@ -34,7 +34,7 @@
 //    #include "shfolder.h"
 #endif
 
-#include "amarok.h"
+#include "Amarok.h"
 
 using namespace std;
 

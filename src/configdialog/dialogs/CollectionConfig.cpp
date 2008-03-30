@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "CollectionConfig.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "config-amarok.h"
 #include "directorylist.h"

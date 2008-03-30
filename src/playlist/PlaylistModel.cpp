@@ -21,7 +21,7 @@
 
 #include "PlaylistModel.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
 #include "debug.h"

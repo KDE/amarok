@@ -14,7 +14,7 @@
 
 #include "CoverFetcher.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "CoverManager.h"
 #include "debug.h"

@@ -13,7 +13,7 @@
 
 #include "Statistics.h"
 
-#include "amarok.h"             //oldForeach macro
+#include "Amarok.h"             //oldForeach macro
 #include "amarokconfig.h"
 #include "browserToolBar.h"     //search toolbar
 #include "debug.h"

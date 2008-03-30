@@ -21,7 +21,7 @@
 #include "magnatuneredownloadhandler.h"
 #include "magnatuneredownloadhandler.moc"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 
 #include <KLocale>

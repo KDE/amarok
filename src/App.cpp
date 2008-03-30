@@ -16,7 +16,7 @@ email                : markey@web.de
  ***************************************************************************/
 #include "App.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "amarokdbushandler.h"
 #include "atomicstring.h"

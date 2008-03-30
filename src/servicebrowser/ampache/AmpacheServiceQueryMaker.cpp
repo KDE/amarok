@@ -22,7 +22,7 @@
 
 #include "AmpacheServiceQueryMaker.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "AmpacheMeta.h"
 #include "collection/support/MemoryMatcher.h"

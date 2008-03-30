@@ -22,7 +22,7 @@
 #define AMAROKMAGNATUNESTORE_H
 
 
-#include "amarok.h"
+#include "Amarok.h"
 //#include "magnatunepurchasedialog.h"
 #include "magnatunepurchasehandler.h"
 #include "magnatuneredownloadhandler.h"

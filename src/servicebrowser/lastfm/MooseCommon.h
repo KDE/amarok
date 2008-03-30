@@ -24,7 +24,7 @@
 #endif
 #define qDebug() debug()
 
-#include "amarok.h"
+#include "Amarok.h"
 
 namespace MooseUtils
 {

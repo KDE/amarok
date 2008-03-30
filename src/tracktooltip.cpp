@@ -18,7 +18,7 @@
 #include "tracktooltip.h"
 
 #include "amarokconfig.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarok_export.h"
 #include "App.h"
 #include "collectiondb.h"

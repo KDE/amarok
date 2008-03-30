@@ -20,7 +20,7 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "mediabrowser.h"
 #include "MediaItem.h"
 

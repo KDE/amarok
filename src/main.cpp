@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "App.h"
 #include "crashhandler.h"
 #include "metadata/tplugins.h"

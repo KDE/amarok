@@ -12,7 +12,7 @@
 
 #include "CoverManager.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "collection/BlockingQuery.h"
 #include "collection/Collection.h"

@@ -21,7 +21,7 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "EngineController.h"
 #include "meta/Meta.h"

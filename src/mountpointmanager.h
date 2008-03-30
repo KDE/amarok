@@ -18,7 +18,7 @@
 #ifndef AMAROK_MOUNTPOINTMANAGER_H
 #define AMAROK_MOUNTPOINTMANAGER_H
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarok_export.h"
 #include "medium.h"
 #include "plugin/plugin.h"

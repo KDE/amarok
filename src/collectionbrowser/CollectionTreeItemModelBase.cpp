@@ -14,7 +14,7 @@
 
 #include "CollectionTreeItemModelBase.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "AmarokMimeData.h"
 #include "Collection.h"
 #include "CollectionManager.h"

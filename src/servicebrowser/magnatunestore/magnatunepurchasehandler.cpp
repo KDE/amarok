@@ -20,7 +20,7 @@
 
 #include "magnatunepurchasehandler.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "magnatunedatabasehandler.h"
 #include "MagnatuneConfig.h"

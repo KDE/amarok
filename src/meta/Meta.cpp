@@ -19,7 +19,7 @@
 
 #include "Meta.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "Collection.h"
 #include "debug.h"

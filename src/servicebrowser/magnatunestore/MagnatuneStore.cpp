@@ -20,7 +20,7 @@
 #include "MagnatuneStore.h"
 
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "collection/CollectionManager.h"
 #include "ContextStatusBar.h"
 #include "debug.h"

@@ -31,7 +31,7 @@
 #include <QFile>
 #include <QList>
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "MediaDeviceCache.h"
 

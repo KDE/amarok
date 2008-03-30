@@ -23,7 +23,7 @@
 #include "MagnatuneMeta.h"
 #include "MagnatuneStore.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 
 #include "debug.h"

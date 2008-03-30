@@ -19,7 +19,7 @@
 
 #define DEBUG_PREFIX "CollectionScanner"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "collectionscanner.h"
 #include "debug.h"
 #include "meta/file/File.h"

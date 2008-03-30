@@ -13,7 +13,7 @@
 
 #include "ContextScene.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "plasma/containment.h"

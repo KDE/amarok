@@ -22,7 +22,7 @@
 
 #include "Mp3tunesServiceQueryMaker.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "debug.h"
 #include "Mp3tunesMeta.h"
 #include "collection/support/MemoryMatcher.h"

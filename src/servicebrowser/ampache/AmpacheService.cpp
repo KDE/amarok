@@ -19,7 +19,7 @@
 
 #include "AmpacheService.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 #include "AmpacheConfig.h"
 #include "collection/CollectionManager.h"
 #include "debug.h"
