@@ -33,6 +33,7 @@
 #include "k3bexporter.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
+#include "osd.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
 #include "playlist/PlaylistGraphicsView.h"
@@ -194,7 +195,7 @@ void MainWindow::init()
     currentFont.setBold( true );
     QFontMetrics fm( currentFont );
     int fontHeight = qMax( 26, fm.height() );
-    
+
     m_statusbarArea->setMinimumHeight( fontHeight );
     m_statusbarArea->setMaximumHeight( fontHeight );
     new Amarok::ContextStatusBar( m_statusbarArea );
@@ -205,7 +206,7 @@ void MainWindow::init()
 
 
 
-    
+
     setCentralWidget( centralWidget );
 
     //<Browsers>
@@ -809,6 +810,8 @@ void MainWindow::createActions()
 
     KAction *action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Media..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
+    action->setObjectName( "addMedia" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
     ac->addAction( "playlist_add", action );
 
     action = new KAction( KIcon( "edit-clear-list-amarok" ), i18nc( "clear playlist", "&Clear" ), this );
@@ -823,31 +826,31 @@ void MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
     ac->addAction( "playlist_save", action );
 
-    KAction *burn = new KAction( KIcon( "tools-media-optical-burn-amarok" ), i18n( "Burn Current Playlist" ), this );
-    connect( burn, SIGNAL( triggered(bool) ), SLOT( slotBurnPlaylist() ) );
-    burn->setEnabled( K3bExporter::isAvailable() );
-    ac->addAction( "playlist_burn", burn );
+    action = new KAction( KIcon( "tools-media-optical-burn-amarok" ), i18n( "Burn Current Playlist" ), this );
+    connect( action, SIGNAL( triggered(bool) ), SLOT( slotBurnPlaylist() ) );
+    action->setEnabled( K3bExporter::isAvailable() );
+    ac->addAction( "playlist_burn", action );
 
-    KAction *covermanager = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
-    connect( covermanager, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
-    ac->addAction( "cover_manager", covermanager );
+    action = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
+    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
+    ac->addAction( "cover_manager", action );
 
-    KAction *visuals = new KAction( KIcon( "view-media-visualization-amarok" ), i18n("&Visualizations"), this );
+    action = new KAction( KIcon( "view-media-visualization-amarok" ), i18n("&Visualizations"), this );
     // connect( visuals, SIGNAL( triggered(bool) ), Vis::Selector::instance(), SLOT( show() ) );
-    ac->addAction( "visualizations", visuals );
+    ac->addAction( "visualizations", action );
 
-    KAction *equalizer = new KAction( KIcon( "view-media-equalizer-amarok" ), i18n( "E&qualizer"), this );
-    connect( equalizer, SIGNAL( triggered(bool) ), kapp, SLOT( slotConfigEqualizer() ) );
-    ac->addAction( "equalizer", equalizer );
+    action = new KAction( KIcon( "view-media-equalizer-amarok" ), i18n( "E&qualizer"), this );
+    connect( action, SIGNAL( triggered(bool) ), kapp, SLOT( slotConfigEqualizer() ) );
+    ac->addAction( "equalizer", action );
 
-    KAction *toggleToolbar = new KAction( this );
-    toggleToolbar->setText( i18n("Hide Toolbar") );
+    action = new KAction( this );
+    action->setText( i18n("Hide Toolbar") );
 
     //FIXME m_controlBar is initialised after the actions are created so we need to change the text of this action
     //when the menu is shown
     //toggleToolbar->setText( !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
-    connect( toggleToolbar, SIGNAL( triggered(bool) ), SLOT( slotToggleToolbar() ) );
-    ac->addAction( "toggle_toolbar", toggleToolbar );
+    connect( action, SIGNAL( triggered(bool) ), SLOT( slotToggleToolbar() ) );
+    ac->addAction( "toggle_toolbar", action );
 
 //     KAction *update_podcasts = new KAction( this );
 //     update_podcasts->setText( i18n( "Update Podcasts" ) );
@@ -856,43 +859,49 @@ void MainWindow::createActions()
 //     connect(update_podcasts, SIGNAL(triggered(bool)),
 //             The::podcastCollection(), SLOT(slotUpdateAll()));
 
-    KAction *playact = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
-    connect(playact, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
-    ac->addAction( "playlist_playmedia", playact );
+    action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
+    connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
+    ac->addAction( "playlist_playmedia", action );
 
-    KAction *acd = new KAction( KIcon( "media-optical-audio-amarok" ), i18n("Play Audio CD"), this );
-    connect(acd, SIGNAL(triggered(bool)), SLOT(playAudioCD()));
-    ac->addAction( "play_audiocd", acd );
+    action = new KAction( KIcon( "media-optical-audio-amarok" ), i18n("Play Audio CD"), this );
+    connect(action, SIGNAL(triggered(bool)), SLOT(playAudioCD()));
+    ac->addAction( "play_audiocd", action );
 
-    KAction *script = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
-    connect(script, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
-    ac->addAction( "script_manager", script );
+    action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
+    connect(action, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
+    ac->addAction( "script_manager", action );
 
-    KAction *queue = new KAction( KIcon( "go-bottom-amarok"), i18n( "Queue Manager" ), this );
-    connect(queue, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
-    ac->addAction( "queue_manager", queue );
+    action = new KAction( KIcon( "go-bottom-amarok"), i18n( "Queue Manager" ), this );
+    connect(action, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
+    ac->addAction( "queue_manager", action );
 
-    KAction *seekForward = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
-    seekForward->setShortcut( Qt::Key_Right );
-    connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekForward()));
-    ac->addAction( "seek_forward", seekForward );
+    action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
+    action->setShortcut( Qt::Key_Right );
+    action->setObjectName( "seekForward" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
+    connect(action, SIGNAL(triggered(bool)), ec, SLOT(seekForward()));
+    ac->addAction( "seek_forward", action );
 
-    KAction *seekBackward = new KAction( KIcon( "media-seek-backward-amarok" ), i18n("&Seek Backward"), this );
-    seekForward->setShortcut( Qt::Key_Left );
-    connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
-    ac->addAction( "seek_backward", seekBackward );
+    action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n("&Seek Backward"), this );
+    action->setShortcut( Qt::Key_Left );
+    action->setObjectName( "seekBackward" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
+    connect(action, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
+    ac->addAction( "seek_backward", action );
 
-    KAction *statistics = new KAction( KIcon("view-statistics-amarok"), i18n( "Statistics" ), this );
-    connect(statistics, SIGNAL(triggered(bool)), SLOT(showStatistics()));
-    ac->addAction( "statistics", statistics );
+    action = new KAction( KIcon("view-statistics-amarok"), i18n( "Statistics" ), this );
+    connect(action, SIGNAL(triggered(bool)), SLOT(showStatistics()));
+    ac->addAction( "statistics", action );
+
     PERF_LOG( "MainWindow::createActions 6" )
-    KAction *update = new KAction( KIcon("view-refresh-amarok"), i18n( "Update Collection" ), this );
-    connect(update, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()));
-    ac->addAction( "update_collection", update );
+    action = new KAction( KIcon("view-refresh-amarok"), i18n( "Update Collection" ), this );
+    connect(action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()));
+    ac->addAction( "update_collection", action );
+
     PERF_LOG( "MainWindow::createActions 7" )
-    KAction *rescan = new KAction( KIcon("view-refresh-amarok"), i18n( "Rescan Collection" ), this );
-    connect(rescan, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(startFullScan()));
-    ac->addAction( "rescan_collection", rescan );
+    action = new KAction( KIcon("view-refresh-amarok"), i18n( "Rescan Collection" ), this );
+    connect(action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(startFullScan()));
+    ac->addAction( "rescan_collection", action );
 
     // TODO: Add these via last.fm service
 #if 0
@@ -936,33 +945,101 @@ void MainWindow::createActions()
     ac->addAction( "lastfm_add", addLastfm );
 #endif
 
-    KAction *previous = new KAction( this );
-    previous->setIcon( KIcon("media-skip-backward-amarok") );
-    previous->setText( i18n( "Previous Track" ) );
-    ac->addAction( "prev", previous );
-    connect( previous, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( back() ) );
+    action = new KAction( this );
+    action->setIcon( KIcon("media-skip-backward-amarok") );
+    action->setText( i18n( "Previous Track" ) );
+    action->setObjectName( "previousTrack" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Z ) );
+    ac->addAction( "prev", action );
+    connect( action, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( back() ) );
 
-    KAction *play = new KAction( this );
-    play->setIcon( KIcon("media-playback-start-amarok") );
-    play->setText( i18n( "Play" ) );
-    ac->addAction( "play", play );
-    connect( play, SIGNAL(triggered(bool)), ec, SLOT( play() ));
+    action = new KAction( this );
+    action->setIcon( KIcon("media-playback-start-amarok") );
+    action->setText( i18n( "Play" ) );
+    action->setObjectName( "play" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_X ) );
+    ac->addAction( "play", action );
+    connect( action, SIGNAL(triggered(bool)), ec, SLOT( play() ));
 
-    KAction *pause = new KAction( this );
-    pause->setIcon( KIcon("media-playback-pause-amarok") );
-    pause->setText( i18n( "Pause" ));
-    ac->addAction( "pause", pause );
-    connect( pause, SIGNAL(triggered(bool)), ec, SLOT( pause() ) );
+    action = new KAction( this );
+    action->setIcon( KIcon("media-playback-pause-amarok") );
+    action->setText( i18n( "Pause" ));
+    ac->addAction( "pause", action );
+    connect( action, SIGNAL(triggered(bool)), ec, SLOT( pause() ) );
 
-    KAction *next = new KAction( this );
-    next->setIcon( KIcon("media-skip-forward-amarok") );
-    next->setText( i18n( "Next Track" ) );
-    ac->addAction( "next", next );
-    connect( next, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( next() ) );
+    action = new KAction( this );
+    action->setObjectName( "nextTrack" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
+    action->setIcon( KIcon("media-skip-forward-amarok") );
+    action->setText( i18n( "Next Track" ) );
+    ac->addAction( "next", action );
+    connect( action, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( next() ) );
 
-    KAction *toggleFocus = new KAction(i18n( "Toggle Focus" ), ac);
-    toggleFocus->setShortcut( Qt::ControlModifier + Qt::Key_Tab );
-    connect( toggleFocus, SIGNAL(triggered(bool)), SLOT( slotToggleFocus() ));
+    action = new KAction(i18n( "Toggle Focus" ), this);
+    action->setShortcut( Qt::ControlModifier + Qt::Key_Tab );
+    connect( action, SIGNAL(triggered(bool)), SLOT( slotToggleFocus() ));
+
+    action = new KAction( i18n( "Increase Volume" ), this );
+    action->setObjectName( "increaseVolume" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Plus ) );
+    action->setShortcut( Qt::Key_Plus );
+    ac->addAction( "increaseVolume", action );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( increaseVolume() ) );
+
+    action = new KAction( i18n( "Decrease Volume" ), this );
+    action->setObjectName( "decreaseVolume" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Minus ) );
+    action->setShortcut( Qt::Key_Minus );
+    ac->addAction( "decreaseVolume", action );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( decreaseVolume() ) );
+
+    action = new KAction( i18n( "Toggle Main Window" ), this );
+    action->setObjectName( "toggleMainWindow" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
+    ac->addAction( "Toggle Main Window", action );
+    connect( action, SIGNAL( triggered() ), SLOT( showHide() ) );
+
+    action = new KAction( i18n( "Show OSD" ), this );
+    action->setObjectName( "showOSD" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
+    ac->addAction( "showOsd", action );
+    connect( action, SIGNAL( triggered() ), Amarok::OSD::instance(), SLOT( forceToggleOSD() ) );
+
+    action = new KAction( i18n( "Mute Volume" ), this );
+    action->setObjectName( "muteVolume" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_M ) );
+    ac->addAction( "mute", action );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( mute() ) );
+
+    action = new KAction( i18n( "Rate Current Track: 1" ), this );
+    action->setObjectName( "rate1" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_1 ) );
+    ac->addAction( "rate1", action );
+    connect( action, SIGNAL( triggered() ), SLOT( setRating1() ) );
+
+    action = new KAction( i18n( "Rate Current Track: 2" ), this );
+    action->setObjectName( "rate2" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_2 ) );
+    ac->addAction( "rate2", action );
+    connect( action, SIGNAL( triggered() ), SLOT( setRating2() ) );
+
+    action = new KAction( i18n( "Rate Current Track: 3" ), this );
+    action->setObjectName( "rate3" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_3 ) );
+    ac->addAction( "rate3", action );
+    connect( action, SIGNAL( triggered() ), SLOT( setRating3() ) );
+
+    action = new KAction( i18n( "Rate Current Track: 4" ), this );
+    action->setObjectName( "rate4" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_4 ) );
+    ac->addAction( "rate4", action );
+    connect( action, SIGNAL( triggered() ), SLOT( setRating4() ) );
+
+    action = new KAction( i18n( "Rate Current Track: 5" ), this );
+    action->setObjectName( "rate5" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
+    ac->addAction( "rate5", action );
+    connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
 
     PERF_LOG( "MainWindow::createActions 8" )
     new Amarok::MenuAction( ac );
@@ -984,23 +1061,42 @@ void MainWindow::createActions()
         action->setShortcutContext(Qt::WindowShortcut);
 }
 
+void MainWindow::setRating( int n )
+{
+    if( !AmarokConfig::useRatings() )
+        return;
+
+    n *= 2;
+
+    const Phonon::State s = The::engineController()->state();
+    if( s == Phonon::PlayingState || s == Phonon::PausedState )
+    {
+        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        track->setRating( n );
+        Amarok::OSD::instance()->OSDWidget::ratingChanged( track->rating() );
+    }
+    //PORT 2.0
+//     else if( MainWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
+//         Playlist::instance()->setSelectedRatings( n );
+}
+
 void MainWindow::createMenus()
 {
     //BEGIN Actions menu
-    KMenu *actionsMenu;    
+    KMenu *actionsMenu;
 #ifdef Q_WS_MAC
     m_menubar = new QMenuBar(0);  // Fixes menubar in OS X
     actionsMenu = new KMenu( m_menubar );
     // Add these functions to the dock icon menu in OS X
-    extern void qt_mac_set_dock_menu(QMenu *); 
-    qt_mac_set_dock_menu(actionsMenu); 
+    extern void qt_mac_set_dock_menu(QMenu *);
+    qt_mac_set_dock_menu(actionsMenu);
     // Change to avoid duplicate menu titles in OS X
     actionsMenu->setTitle( i18n("&Music") );
 #else
     m_menubar = menuBar();
     actionsMenu = new KMenu( m_menubar );
     actionsMenu->setTitle( i18n("&Amarok") );
-#endif    
+#endif
     actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
     actionsMenu->addAction( actionCollection()->action("lastfm_play") );
     actionsMenu->addAction( actionCollection()->action("play_audiocd") );

@@ -51,7 +51,6 @@ email                : markey@web.de
 #include <KConfigDialogManager>
 #include <KCursor>             //Amarok::OverrideCursor
 #include <KEditToolBar>        //slotConfigToolbars()
-#include <KGlobalAccel>        //initGlobalShortcuts()
 #include <KGlobalSettings>     //applyColorScheme()
 #include <KIO/CopyJob>
 #include <KIconLoader>         //amarok Icon
@@ -285,7 +284,7 @@ namespace
 void App::handleCliArgs() //static
 {
     DEBUG_BLOCK
-    
+
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
     if ( args->isSet( "cwd" ) )
@@ -438,115 +437,6 @@ void App::initCliArgs() //static
     options.add("cdplay <device>", ki18n("Play an AudioCD from <device> or system:/media/<device>"));
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 
-}
-
-
-void App::initGlobalShortcuts()
-{
-    DEBUG_BLOCK
-
-    EngineController* const ec = EngineController::instance();
-    KAction* action;
-
-    action = new KAction( i18n( "Play" ), mainWindow() );
-    action->setObjectName( "play" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_X ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( play() ) );
-
-    action = new KAction( i18n( "Pause" ), mainWindow() );
-    action->setObjectName( "pause" );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( pause() ) );
-
-    action = new KAction( i18n( "Play/Pause" ), mainWindow() );
-    action->setObjectName( "play-pause" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_C ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( playPause() ) );
-
-    action = new KAction( i18n( "Stop" ), mainWindow() );
-    action->setObjectName( "stop" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_V ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( stop() ) );
-
-//    m_pGlobalAccel->insert( "stop_after_global", i18n( "Stop Playing After Current Track" ), 0, KKey("WIN+CTRL+v"), 0, Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ), true, true );
-//     action = new KAction( i18n( "Stop Playing After Current Track" ), mainWindow() );
-//    action->setGlobalShortcut( KShortcut( Qt::META + Qt::CTRL + Qt::Key_V ) );
-    //Port 2.0
-//     connect( action, SIGNAL( triggered() ), Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ) );
-
-    action = new KAction( i18n( "Next Track" ), mainWindow() );
-    action->setObjectName( "nextTrack" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
-    connect( action, SIGNAL( triggered() ), The::playlistModel(), SLOT( next() ) );
-
-    action = new KAction( i18n( "Previous Track" ), mainWindow() );
-    action->setObjectName( "previousTrack" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Z ) );
-    connect( action, SIGNAL( triggered() ), The::playlistModel(), SLOT( previous() ) );
-
-    action = new KAction( i18n( "Increase Volume" ), mainWindow() );
-    action->setObjectName( "increaseVolume" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Plus ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( increaseVolume() ) );
-
-    action = new KAction( i18n( "Decrease Volume" ), mainWindow() );
-    action->setObjectName( "decreaseVolume" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Minus ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( decreaseVolume() ) );
-
-    action = new KAction( i18n( "Seek Forward" ), mainWindow() );
-    action->setObjectName( "seekForward" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( seekForward() ) );
-
-    action = new KAction( i18n( "Seek Backward" ), mainWindow() );
-    action->setObjectName( "seekBackward" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( seekBackward() ) );
-
-    action = new KAction( i18n( "Add Media..." ), mainWindow() );
-    action->setObjectName( "addMedia" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
-    connect( action, SIGNAL( triggered() ), mainWindow(), SLOT( slotAddLocation() ) );
-
-    action = new KAction( i18n( "Toggle Main Window" ), mainWindow() );
-    action->setObjectName( "toggleMainWindow" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
-    connect( action, SIGNAL( triggered() ), mainWindow(), SLOT( showHide() ) );
-
-    action = new KAction( i18n( "Show OSD" ), mainWindow() );
-    action->setObjectName( "showOSD" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
-    connect( action, SIGNAL( triggered() ), Amarok::OSD::instance(), SLOT( forceToggleOSD() ) );
-
-    action = new KAction( i18n( "Mute Volume" ), mainWindow() );
-    action->setObjectName( "muteVolume" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_M ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( mute() ) );
-
-    action = new KAction( i18n( "Rate Current Track: 1" ), mainWindow() );
-    action->setObjectName( "rate1" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_1 ) );
-    connect( action, SIGNAL( triggered() ), SLOT( setRating1() ) );
-
-    action = new KAction( i18n( "Rate Current Track: 2" ), mainWindow() );
-    action->setObjectName( "rate2" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_2 ) );
-    connect( action, SIGNAL( triggered() ), SLOT( setRating2() ) );
-
-    action = new KAction( i18n( "Rate Current Track: 3" ), mainWindow() );
-    action->setObjectName( "rate3" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_3 ) );
-    connect( action, SIGNAL( triggered() ), SLOT( setRating3() ) );
-
-    action = new KAction( i18n( "Rate Current Track: 4" ), mainWindow() );
-    action->setObjectName( "rate4" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_4 ) );
-    connect( action, SIGNAL( triggered() ), SLOT( setRating4() ) );
-
-    action = new KAction( i18n( "Rate Current Track: 5" ), mainWindow() );
-    action->setObjectName( "rate5" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
-    connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
 }
 
 
@@ -710,13 +600,6 @@ App::continueInit()
     //for us as default (bad KMainWindow)
     mainWindow()->setAttribute( Qt::WA_DeleteOnClose, false );
     //init playlist window as soon as the database is guaranteed to be usable
-
-    // FIXME: something is broken with global shortcuts & windows,
-    // dbus call is causing a ~30 second timeout. Disable for now.
-#ifndef Q_WS_WIN
-    initGlobalShortcuts();
-    PERF_LOG( "Global shortcuts done" )
-#endif
 
     //create engine, show TrayIcon etc.
     applySettings( true );
@@ -900,24 +783,6 @@ KIO::Job *App::trashFiles( const KUrl::List &files )
     Amarok::ContextStatusBar::instance()->newProgressOperation( job ).setDescription( i18n("Moving files to trash") );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotTrashResult( KJob* ) ) );
     return job;
-}
-
-void App::setRating( int n )
-{
-    if( !AmarokConfig::useRatings() ) return;
-
-    n *= 2;
-
-    const Phonon::State s = The::engineController()->state();
-    if( s == Phonon::PlayingState || s == Phonon::PausedState )
-    {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
-        track->setRating( n );
-        Amarok::OSD::instance()->OSDWidget::ratingChanged( track->rating() );
-    }
-    //PORT 2.0
-//     else if( MainWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
-//         Playlist::instance()->setSelectedRatings( n );
 }
 
 void App::slotTrashResult( KJob *job )
@@ -1151,7 +1016,7 @@ int App::newInstance()
         first = false;
         return 0;
     }
-    
+
     first = false;
 
     //initCliArgs();

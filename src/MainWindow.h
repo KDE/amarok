@@ -104,7 +104,16 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 
         virtual void paletteChange( const QPalette & oldPalette );
 
+    private slots:
+        void setRating1() { setRating( 1 ); }
+        void setRating2() { setRating( 2 ); }
+        void setRating3() { setRating( 3 ); }
+        void setRating4() { setRating( 4 ); }
+        void setRating5() { setRating( 5 ); }
+
     private:
+        void setRating( int n );
+
         enum MenuId { ID_SHOW_TOOLBAR = 2000, ID_SHOW_PLAYERWINDOW };
 
         QMenuBar      *m_menubar;

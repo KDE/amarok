@@ -73,11 +73,6 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         void engineVolumeChanged( int );
 
     private slots:
-        void setRating1() { setRating( 1 ); }
-        void setRating2() { setRating( 2 ); }
-        void setRating3() { setRating( 3 ); }
-        void setRating4() { setRating( 4 ); }
-        void setRating5() { setRating( 5 ); }
         void continueInit();
 
     public slots:
@@ -96,10 +91,6 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         void slotTrashResult( KJob *job );
 
     private:
-        void initGlobalShortcuts();
-
-        void setRating( int n );
-
         // ATTRIBUTES ------
         MainWindow          *m_mainWindow;
         Amarok::TrayIcon    *m_tray;
