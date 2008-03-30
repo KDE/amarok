@@ -52,7 +52,7 @@ void
 AnalyzerWidget::mousePressEvent( QMouseEvent *e)
 {
     if( e->button() == Qt::LeftButton ) {
-        AmarokConfig::setCurrentPlaylistAnalyzer( AmarokConfig::currentPlaylistAnalyzer() + 1 );
+        AmarokConfig::setCurrentAnalyzer( AmarokConfig::currentAnalyzer() + 1 );
         changeAnalyzer();
     }
 }

@@ -47,9 +47,6 @@
    <method name="encodedURL" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="engine" >
-      <arg type="s" direction="out"/>
-    </method>
    <method name="genre" >
       <arg type="s" direction="out"/>
     </method>

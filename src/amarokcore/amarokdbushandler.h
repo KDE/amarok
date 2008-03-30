@@ -63,7 +63,6 @@ class DbusPlayerHandler : public QObject
       virtual QString coverImage();
       virtual QString currentTime();
       virtual QString encodedURL();
-      virtual QString engine();
       virtual QString genre();
       virtual QString lyrics();
       virtual QString lyricsByPath( QString path );
@@ -159,10 +158,10 @@ class DbusPlaylistBrowserHandler : public QObject
 class DbusContextHandler: public QObject
 {
     Q_OBJECT
-    
+
 public:
     DbusContextHandler();
-    
+
 public:
     virtual void showLyrics( const QByteArray& in );
 };
@@ -220,10 +219,10 @@ class DbusScriptHandler : public QObject
 // class DbusMediaBrowserHandler : public QObject
 // {
 //     Q_OBJECT
-// 
+//
 //     public:
 //         DbusMediaBrowserHandler();
-// 
+//
 //     public /* DCOP */ slots:
 //       virtual void deviceConnect();
 //       virtual void deviceDisconnect();

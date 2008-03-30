@@ -14,10 +14,6 @@
         <whatsthis>Amarok version string, used to restart aRts in new installations.</whatsthis>
         <default></default>
     </entry>
-    <entry key="Player Pos" type="Point">
-        <label>Position of player window</label>
-        <whatsthis>The position of the Amarok main window when Amarok is started.</whatsthis>
-    </entry>
     <entry key="Main Window Pos" type="Point">
         <label>Position of main window</label>
         <whatsthis>The position of the main window when Amarok is started.</whatsthis>
@@ -171,25 +167,10 @@
         <whatsthis>The ID of the visual analyzer to display.</whatsthis>
         <default>-1</default>
     </entry>
-    <entry key="Current Playlist Analyzer" type="Int">
-        <label>Index of analyzer displayed in playlist window</label>
-        <whatsthis>The ID of the visual analyzer to display in playlist window.</whatsthis>
-        <default>0</default>
-    </entry>
-    <entry key="Playlist Window Splitter" type="IntList">
-        <label>Playlist window splitter positions</label>
-        <whatsthis>Currently unused</whatsthis>
-        <default>70,140</default>
-    </entry>
     <entry key="Show Splashscreen" type="Bool">
         <label>Whether a splash-screen should be displayed on startup</label>
         <whatsthis>Enable/Disable splashscreen during Amarok startup.</whatsthis>
         <default>true</default>
-    </entry>
-    <entry key="ContextBrowser StyleSheet" type="String">
-        <label>Set CSS stylesheet used to customize ContextBrowser's rendering</label>
-        <whatsthis>Set this to the style dir you want to use.</whatsthis>
-        <default>Default</default>
     </entry>
     <entry key="Relative Playlist" type="Bool">
         <label>Whether playlists store relative path</label>
@@ -314,10 +295,6 @@
         <label>Whether to fade out when exiting the program.</label>
         <default>true</default>
     </entry>
-    <entry key="Sound System" type="String">
-        <label>Sound system to use</label>
-        <whatsthis>Select the sound system used to play media. Amarok currently support aRts, GStreamer, xine, and NMM; however, their availability depends on the configuration used at compile time.</whatsthis>
-    </entry>
     <entry key="Equalizer Enabled" type="Bool">
         <label>Enables the equalizer plugin</label>
         <whatsthis>When enabled, an equalizer plugin filters the audio stream.</whatsthis>
@@ -401,10 +378,6 @@
         <whatsthis>The color of the OSD background. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
         <default>#1500a0</default>
     </entry>
-    <entry key="New Playlist Items Color" type="Color">
-        <label>The color that is used for new items in the playlist.</label>
-        <default>#0000ff</default>
-    </entry>
     <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed</label>
         <whatsthis>The time in milliseconds to show the OSD. A value of 0 means never hide. The default value is 5000 ms.</whatsthis>
@@ -440,22 +413,6 @@
         <default>Center</default>
     </entry>
 
-</group>
-
-<group name="Fonts">
-    <entry key="Use Custom Fonts" type="Bool">
-        <label>Whether to use user-defined fonts</label>
-        <whatsthis>Enabled/Disables custom fonts.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Playlist Window Font" type="Font">
-        <label>Font in playlist window</label>
-        <whatsthis>The font to use in the playlist window.</whatsthis>
-    </entry>
-    <entry key="Context Browser Font" type="Font">
-        <label>Font in context browser</label>
-        <whatsthis>The font to use in the context browser.</whatsthis>
-    </entry>
 </group>
 
 <group name="Session">

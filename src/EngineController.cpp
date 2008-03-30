@@ -70,6 +70,14 @@ EngineController::EngineController()
     m_media->setTickInterval( 1000 );
     PERF_LOG( "EngineController: loaded phonon objects" )
 
+    //TODO: The xine engine does not support crossfading.
+    // I cannot get the gstreamer engine to work, will test this once I do.
+
+//     if( AmarokConfig::trackDelayLength() > -1 )
+//         m_media->setTransitionTime( AmarokConfig::trackDelayLength() ); // Also Handles gapless.
+//     else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
+//         m_media->setTransitionTime( -AmarokConfig::crossfadeLength() );
+
     connect( m_media, SIGNAL( finished() ), SLOT( slotTrackEnded() ) );
     connect( m_media, SIGNAL( aboutToFinish() ), SLOT( slotAboutToFinish() ) );
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
@@ -132,10 +140,9 @@ EngineController::canDecode( const KUrl &url ) //static
     //we special case this as otherwise users hate us
     if ( !valid && ext.toLower() == "mp3" && !installDistroCodec() )
         Amarok::ContextStatusBar::instance()->longMessageThreadSafe(
-                i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
-                    "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
-                    "the installation of the multimedia-framework that the current engine uses. "
-                    "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok HandBook</i>.", AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
+                i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files.You may want to examine "
+                    "the installation of the backend that phonon uses.</p>"
+                    "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), KDE::StatusBar::Error );
 
     // Cache this result for the next lookup
     if ( !ext.isEmpty() )

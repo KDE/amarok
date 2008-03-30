@@ -230,11 +230,6 @@ namespace Amarok
         return track ? track->playableUrl().url() : QString();
     }
 
-    QString DbusPlayerHandler::engine()
-    {
-        return AmarokConfig::soundSystem();
-    }
-
     QString DbusPlayerHandler::genre()
     {
         Meta::TrackPtr track = EngineController::instance()->currentTrack();
