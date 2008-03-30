@@ -81,17 +81,22 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         }
 
     public slots:
-        void slotNewCollection( Collection *newCollection )
+        void slotNewTrackProvider( TrackProvider *newTrackProvider )
         {
-            if( newCollection->possiblyContainsTrack( url ) )
+            if ( !newTrackProvider )
             {
-                Meta::TrackPtr track = newCollection->trackForUrl( url );
+                return;
+            }
+
+            if( newTrackProvider->possiblyContainsTrack( url ) )
+            {
+                Meta::TrackPtr track = newTrackProvider->trackForUrl( url );
                 if( track )
                 {
                     track->subscribe( this );
                     realTrack = track;
                     notifyObservers();
-                    disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collection* ) ), this, SLOT( slotNewCollection( Collection* ) ) );
+                    disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( TrackProvider* ) ), this, SLOT( slotNewTrackProvider( TrackProvider* ) ) );
                 }
             }
         }

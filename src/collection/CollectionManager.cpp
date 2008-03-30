@@ -332,6 +332,7 @@ CollectionManager::addUnmanagedCollection( Collection *newCollection )
         d->collections.append( newCollection );
         d->trackProviders.append( newCollection );
         emit collectionAdded( newCollection );
+        emit trackProviderAdded( newCollection );
     }
 }
 
@@ -351,6 +352,7 @@ void
 CollectionManager::addTrackProvider( TrackProvider *provider )
 {
     d->trackProviders.append( provider );
+    emit trackProviderAdded( provider );
 }
 
 void

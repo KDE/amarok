@@ -73,7 +73,7 @@ MetaProxy::Track::Track( const KUrl &url )
     d->proxy = this;
     d->cachedLength = 0;
 
-    QObject::connect( CollectionManager::instance(), SIGNAL( collectionAdded( Collection* ) ), d, SLOT( slotNewCollection( Collection* ) ) );
+    QObject::connect( CollectionManager::instance(), SIGNAL( trackProviderAdded( TrackProvider* ) ), d, SLOT( slotNewTrackProvider( TrackProvider* ) ) );
 
     d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( QPointer<Track::Private>( d ) ) );
     d->artistPtr = Meta::ArtistPtr( new ProxyArtist( QPointer<Track::Private>( d ) ) );
