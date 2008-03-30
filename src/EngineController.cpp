@@ -113,14 +113,12 @@ EngineController::canDecode( const KUrl &url ) //static
 //     if ( PlaylistFile::isPlaylistFile( fileName ) ) return false;
 
     // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we don't really want them in the playlist :)
-    if ( url.protocol() == "fetchcover" || url.protocol() == "musicbrainz" ) return false;
+    if ( url.protocol() == "fetchcover" || url.protocol() == "musicbrainz" )
+        return false;
 
     // Accept non-local files, since we can't test them for validity at this point
-    // TODO actually, only accept unconditionally http stuff
-    // TODO this actually makes things like "Blarrghgjhjh:!!!" automatically get inserted
-    // into the playlist
-    // TODO remove for Amarok 1.3 and above silly checks, instead check for http type servers
-    if ( !url.isLocalFile() ) return true;
+    if ( url.protocol() == "http" || url.protocol() == "https" )
+        return true;
 
     // If extension is already in the cache, return cache result
     if ( extensionCache().contains( ext ) )
