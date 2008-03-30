@@ -33,7 +33,7 @@
 #include "k3bexporter.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
-#include "osd.h"
+#include "Osd.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
 #include "playlist/PlaylistGraphicsView.h"

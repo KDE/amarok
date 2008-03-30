@@ -32,7 +32,7 @@ email                : markey@web.de
 #include "Meta.h"
 #include "meta/MetaConstants.h"
 #include "mountpointmanager.h"
-#include "osd.h"
+#include "Osd.h"
 #include "playlist/PlaylistModel.h"
 #include "PluginManager.h"
 #include "refreshimages.h"

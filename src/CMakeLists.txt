@@ -407,7 +407,7 @@ set(amaroklib_LIB_SRCS
     medium.cpp
 #    moodbar.cpp
     mountpointmanager.cpp
-    osd.cpp
+    Osd.cpp
     PixmapViewer.cpp
     PluginManager.cpp
     podcastsettings.cpp

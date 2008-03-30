@@ -20,7 +20,7 @@
 
 #include "OsdConfig.h"
 #include "amarokconfig.h"
-#include "osd.h"
+#include "Osd.h"
 #include "qstringx.h"
 
 #include <QDesktopWidget>

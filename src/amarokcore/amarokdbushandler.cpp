@@ -36,7 +36,7 @@
 #include "meta/MetaUtility.h"
 #include "meta/StreamInfoCapability.h"
 #include "mountpointmanager.h"
-#include "osd.h"
+#include "Osd.h"
 #include "playlist/PlaylistModel.h"
 #include "progressslider.h"
 #include "scriptmanager.h"

@@ -12,7 +12,7 @@
  *            (C) 2005 Gábor Lehel <illissius@gmail.com>
  */
 
-#include "osd.h"
+#include "Osd.h"
 
 #include "amarok.h"
 #include "amarokconfig.h"
@@ -776,4 +776,4 @@ namespace ShadowEngine
     }
 }
 
-#include "osd.moc"
+#include "Osd.moc"
