@@ -20,7 +20,7 @@
 #include "amarokconfig.h"
 #include "amarok.h"
 #include "amarok_export.h"
-#include "app.h"
+#include "App.h"
 #include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"

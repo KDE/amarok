@@ -19,7 +19,7 @@
  **************************************************************************/
 
 #include "amarok.h"
-#include "app.h" // application palette
+#include "App.h" // application palette
 #include "debug.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "PlaylistModel.h"

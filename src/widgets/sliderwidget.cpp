@@ -23,7 +23,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "app.h"
+#include "App.h"
 #include "debug.h"
 #include "EngineController.h"
 #include "sliderwidget.h"

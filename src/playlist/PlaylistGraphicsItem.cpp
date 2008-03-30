@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#include "app.h"
+#include "App.h"
 #include "debug.h"
 #include "meta/MetaUtility.h"
 #include "AmarokMimeData.h"

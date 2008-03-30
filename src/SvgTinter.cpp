@@ -20,7 +20,7 @@
  
 #include "SvgTinter.h"
 
-#include "app.h"
+#include "App.h"
 #include "debug.h"
 
 SvgTinter * SvgTinter::m_instance = 0;

@@ -282,7 +282,7 @@
 
 #include "amarokconfig.h"
 #include "amarok.h"
-#include "app.h"
+#include "App.h"
 #include "debug.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"

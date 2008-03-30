@@ -14,7 +14,7 @@ email                : markey@web.de
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "app.h"
+#include "App.h"
 
 #include "amarok.h"
 #include "amarokconfig.h"
@@ -1029,4 +1029,4 @@ int App::newInstance()
 
 
 
-#include "app.moc"
+#include "App.moc"

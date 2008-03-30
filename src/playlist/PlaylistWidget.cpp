@@ -19,7 +19,7 @@
  **************************************************************************/
 
 
-#include "app.h"
+#include "App.h"
 #include "actionclasses.h"
 #include "MainWindow.h" 
 #include "PlaylistClassicView.h"

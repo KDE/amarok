@@ -18,7 +18,7 @@
 
 #include "PopupDropper.h"
 
-#include "app.h"
+#include "App.h"
 #include "debug.h"
 #include "contextview/contextview.h"
 #include "PopupDropperScene.h"

@@ -12,7 +12,7 @@
 
 #include "socketserver.h"
 
-#include "app.h"
+#include "App.h"
 #include "amarok.h"
 #include "debug.h"
 #include "EngineController.h" //to get the engine

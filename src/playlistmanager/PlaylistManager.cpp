@@ -17,7 +17,7 @@
 */
 
 #include "amarokconfig.h"
-#include "app.h"
+#include "App.h"
 #include "ContextStatusBar.h"
 #include "PlaylistManager.h"
 #include "PlaylistFileSupport.h"

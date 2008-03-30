@@ -23,7 +23,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "amarokdbushandler.h"
-#include "app.h" //transferCliArgs
+#include "App.h" //transferCliArgs
 #include "debug.h"
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"

@@ -20,7 +20,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "app.h"
+#include "App.h"
 #include "browserToolBar.h"
 #include "collection/CollectionManager.h"
 #include "debug.h"

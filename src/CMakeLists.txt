@@ -374,7 +374,7 @@ set(amaroklib_LIB_SRCS
     actionclasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
-    app.cpp
+    App.cpp
     atomicstring.cpp
     CoverFetcher.cpp
     CoverManager.cpp
@@ -437,7 +437,6 @@ set(amaroklib_LIB_SRCS
     widgets/MainToolbar.cpp
     widgets/SvgHandler.cpp
     SvgTinter.cpp
-    xspfplaylist.cpp
 )
 
 
@@ -502,7 +501,7 @@ install(TARGETS amaroklib DESTINATION ${LIB_INSTALL_DIR} )
 
 set(amarok_SRCS main.cpp )
 
-kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/hi*-app-amarok.png)
+kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
 if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
     target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
