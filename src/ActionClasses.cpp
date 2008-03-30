@@ -27,7 +27,6 @@
 
 #include "socketserver.h"       //Vis::Selector::showInstance()
 #include "ContextStatusBar.h"
-#include "timeLabel.h"
 
 #include <KAuthorized>
 #include <KHBox>
@@ -40,7 +39,6 @@
 #include <KToolBar>
 #include <KUrl>
 
-#include <Q3PopupMenu>
 #include <QPixmap>
 #include <QToolTip>
 

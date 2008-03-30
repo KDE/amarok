@@ -20,11 +20,10 @@
 #include "EngineController.h"
         //if osdUsePlaylistColumns()
 #include "meta/MetaUtility.h"
-#include "podcastbundle.h"
-#include "qstringx.h"
 #include "StarManager.h"
 
 #include <KApplication>
+#include <KIcon>
 #include <KStandardDirs>   //locate
 
 #include <QBitmap>
