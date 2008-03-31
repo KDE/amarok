@@ -24,6 +24,7 @@
 
 MagnatuneDatabaseWorker::MagnatuneDatabaseWorker()
     : ThreadWeaver::Job()
+    , m_registry( 0 )
 {
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
 }
@@ -56,7 +57,7 @@ void MagnatuneDatabaseWorker::completeJob()
             emit( gotMoodMap( m_moodMap ) );
             break;
         case FETCH_MOODY_TRACKS:
-            doFetchTrackswithMood();
+            emit( gotMoodyTracks( m_moodyTracks ) );
             break;
         default:
             break;
@@ -73,11 +74,13 @@ void MagnatuneDatabaseWorker::fetchMoodMap()
     m_moodMap.clear();
 }
 
-void MagnatuneDatabaseWorker::fetchTrackswithMood(QString mood, int noOfTracks)
+void MagnatuneDatabaseWorker::fetchTrackswithMood( QString mood, int noOfTracks, ServiceSqlRegistry * registry )
 {
     m_task = FETCH_MOODY_TRACKS;
     m_mood = mood;
     m_noOfTracks = noOfTracks;
+
+    m_registry = registry;
 
     m_moodyTracks.clear();
 }
@@ -87,7 +90,7 @@ void MagnatuneDatabaseWorker::doFetchMoodMap()
 {
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     QString queryString = "select count( mood ), mood from magnatune_moods GROUP BY mood;";
-    debug() << "Querying for moodss: " << queryString;
+    debug() << "Querying for moods: " << queryString;
     QStringList result = sqlDb->query( queryString );
     debug() << "result: " << result;
 
@@ -102,6 +105,54 @@ void MagnatuneDatabaseWorker::doFetchMoodMap()
 void MagnatuneDatabaseWorker::doFetchTrackswithMood()
 {
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+
+
+
+    //ok, a huge joing turned out to be _really_ slow, so lets chop up the query a bit...
+
+    QString queryString = "SELECT DISTINCT track_id FROM magnatune_moods WHERE mood =\"" + m_mood + "\"  ORDER BY RANDOM() LIMIT " + QString::number( m_noOfTracks, 10 ) + ';';
+
+    QStringList result = sqlDb->query( queryString );
+
+    int rowCount = ( m_registry->factory()->getTrackSqlRowCount() +
+            m_registry->factory()->getAlbumSqlRowCount() +
+            m_registry->factory()->getArtistSqlRowCount() +
+            m_registry->factory()->getGenreSqlRowCount() );
+
+    foreach( QString idString, result ) {
+
+        QString queryString = "SELECT DISTINCT ";
+        
+                
+        queryString += m_registry->factory()->getTrackSqlRows() + ',' +
+                    m_registry->factory()->getAlbumSqlRows() + ',' +
+                    m_registry->factory()->getArtistSqlRows() + ',' +
+                    m_registry->factory()->getGenreSqlRows();
+
+        queryString += " FROM magnatune_tracks LEFT JOIN magnatune_albums ON magnatune_tracks.album_id = magnatune_albums.id LEFT JOIN magnatune_artists ON magnatune_albums.artist_id = magnatune_artists.id LEFT JOIN magnatune_genre ON magnatune_genre.album_id = magnatune_albums.id";
+
+        queryString += " WHERE magnatune_tracks.id = " + idString;
+        queryString += " GROUP BY  magnatune_tracks.id";
+
+        //debug() << "Querying for moody tracks: " << queryString;
+
+        QStringList result = sqlDb->query( queryString );
+        //debug() << "result: " << result;
+
+
+
+        int resultRows = result.count() / rowCount;
+
+        for( int i = 0; i < resultRows; i++ )
+        {
+            QStringList row = result.mid( i*rowCount, rowCount );
+
+            Meta::TrackPtr trackptr =  m_registry->getTrack( row );
+
+            m_moodyTracks.append( trackptr );
+        }
+    }
+
 }
 
 #include "MagnatuneDatabaseWorker.moc"

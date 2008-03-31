@@ -97,6 +97,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
         , m_currentAlbum( 0 )
         , m_streamType( MagnatuneMetaFactory::OGG )
         , m_magnatuneTimestamp( 0 )
+        , m_registry( 0 )
 {
     setObjectName(name);
     DEBUG_BLOCK
@@ -140,8 +141,8 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
 
     metaFactory->setStreamType( m_streamType );
-    ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
-    m_collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, registry );
+    m_registry = new ServiceSqlRegistry( metaFactory );
+    m_collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
 
 }
 
@@ -392,32 +393,17 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem ){
 }
 
 
-/*void MagnatuneStore::addMoodyTracksToPlaylist(QString mood)
+void MagnatuneStore::addMoodyTracksToPlaylist( const QString &mood, int count )
 {
-   debug() << "addMoody: " << mood;
-   SimpleServiceTrackList tracks = m_dbHandler->getTracksByMood( mood );
 
-   int numberOfTracks = tracks.size();
 
-   if ( numberOfTracks < 11 ) {
-
-       foreach (SimpleServiceTrack * track, tracks) {
-           addTrackToPlaylist( dynamic_cast<MagnatuneTrack *> ( track ) );
-}
-} else {
-
-       int randomIndex;
-       for ( int i = 0; i < 10; i++ ) {
-           randomIndex = rand() % (numberOfTracks - i);
-           addTrackToPlaylist( dynamic_cast<MagnatuneTrack *> ( tracks.takeAt( randomIndex ) ) );
+    MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
+    databaseWorker->fetchTrackswithMood( mood, count, m_registry );
+    connect( databaseWorker, SIGNAL( gotMoodyTracks( Meta::TrackList ) ), this, SLOT( moodyTracksReady(Meta::TrackList ) ) );
+    
+    ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 
 }
-}
-
-
-    qDeleteAll( tracks );
-
-}*/
 
 
 
@@ -458,7 +444,7 @@ void MagnatuneStore::polish( )
     MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
     databaseWorker->fetchMoodMap();
     connect( databaseWorker, SIGNAL( gotMoodMap(QMap< QString, int >) ), this, SLOT( moodMapReady(QMap< QString, int >) ) );
-    ThreadWeaver::Weaver::instance() ->enqueue( databaseWorker );
+    ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 
     checkForUpdates();
 
@@ -584,6 +570,52 @@ void MagnatuneStore::timestampDownloadComplete( KJob *  job )
     }
 
 }
+
+void MagnatuneStore::moodyTracksReady( Meta::TrackList tracks )
+{
+    DEBUG_BLOCK
+    /*I know it is bad form to use hardcoded value 4 ( = eplace here )
+    but I was gettingall sorts of ambiguity between different "Playlist" definitions*/
+    The::playlistModel()->insertOptioned( tracks, 4 );
+}
+
+QString MagnatuneStore::messages()
+{
+    QString text = i18n( "The Magnatune.com service accepts the following messages: \n\n\taddMoodyTracks mood count: Adds a number of ranom tracks with the specified mood to the playlist. the mood argument _must_ have spaces escaped with %%20" );
+
+    return text;
+}
+
+QString MagnatuneStore::sendMessage( const QString & message )
+{
+    QStringList args = message.split( " ", QString::SkipEmptyParts );
+
+    if ( args.size() < 1 ) {
+        return i18n( "ERROR: No arguments supplied" );
+    }
+
+    if ( args[0] == "addMoodyTracks" ) {
+        if ( args.size() != 3 ) {
+            return i18n( "ERROR: Wrong number of arguments for addMoodyTracks" );
+        }
+
+        QString mood = args[1];
+        mood = mood.replace( "%20", " " );
+
+        bool ok;
+        int count = args[2].toInt( &ok );
+
+        if ( !ok )
+            return i18n( "ERROR: Parse error for argument 2 ( count )" );
+
+        addMoodyTracksToPlaylist( mood, count );
+
+        return i18n( "ok" );
+
+    }
+    
+}
+
 
 
 #include "MagnatuneStore.moc"

@@ -43,6 +43,7 @@ class AMAROK_EXPORT ServiceSqlRegistry : public QObject
         virtual ~ServiceSqlRegistry();
 
         void setMetaFactory( ServiceMetaFactory * metaFactory );
+        ServiceMetaFactory * factory();
 
         //TrackPtr getTrack( const QString &url );
         Meta::TrackPtr getTrack( const QStringList &rowData );

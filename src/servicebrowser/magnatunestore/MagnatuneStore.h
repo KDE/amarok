@@ -96,6 +96,9 @@ public:
 
     virtual Collection * collection() { return m_collection; }
 
+    virtual QString messages();
+    virtual QString sendMessage( const QString &message );
+
 private slots:
 
     /**
@@ -145,7 +148,7 @@ private slots:
      * Adds all tracks with a common mood to the playlist
      * @param mood The mood of the tracks to add
      */
-    //void addMoodyTracksToPlaylist( QString mood );
+    void addMoodyTracksToPlaylist( const QString &mood, int count );
 
 
      /**
@@ -157,6 +160,7 @@ private slots:
 
 
     void moodMapReady( QMap<QString, int> map );
+    void moodyTracksReady( Meta::TrackList tracks );
 
     void timestampDownloadComplete( KJob * job );
 
@@ -218,6 +222,7 @@ private:
     int m_streamType;
 
     qulonglong m_magnatuneTimestamp;
+    ServiceSqlRegistry * m_registry;
 
 };
 

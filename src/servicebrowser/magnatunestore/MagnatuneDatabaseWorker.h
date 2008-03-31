@@ -24,6 +24,8 @@
 
 #include "MagnatuneMeta.h"
 
+#include"ServiceSqlRegistry.h"
+
 #include <threadweaver/Job.h>
 
 /**
@@ -43,12 +45,12 @@ public:
     void run();
 
     void fetchMoodMap();
-    void fetchTrackswithMood( QString mood, int noOfTracks );
+    void fetchTrackswithMood( QString mood, int noOfTracks, ServiceSqlRegistry * registry );
 
 signals:
 
     void gotMoodMap( QMap<QString, int> map );
-    void gotTracks( Meta::TrackList tracks );
+    void gotMoodyTracks( Meta::TrackList tracks );
 
 private slots:
     void completeJob();
@@ -67,6 +69,8 @@ private:
 
     QString m_mood;
     int m_noOfTracks;
+
+    ServiceSqlRegistry * m_registry;
     
 
 };

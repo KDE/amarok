@@ -331,6 +331,12 @@ ServiceSqlRegistry::emptyCache()
     if( hasComposer ) m_composerMutex.unlock();
 }*/
 
+ServiceMetaFactory * ServiceSqlRegistry::factory()
+{
+    return m_metaFactory;
+}
 
 
 #include "ServiceSqlRegistry.moc"
+
+
