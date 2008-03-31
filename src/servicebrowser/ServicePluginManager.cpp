@@ -19,6 +19,7 @@
  
 #include "ServicePluginManager.h"
 #include "PluginManager.h"
+#include <servicepluginmanageradaptor.h>
 
 #include <KService>
 
@@ -39,6 +40,10 @@ ServicePluginManager::ServicePluginManager( )
     , m_serviceBrowser( 0 )
 {
     collect();
+
+    new ServicePluginManagerAdaptor( this );
+    QDBusConnection dbus = QDBusConnection::sessionBus();
+    dbus.registerObject("/ServicePluginManager", this);
 }
 
 
@@ -168,6 +173,52 @@ QStringList ServicePluginManager::loadedServices()
 }
 
 
+QStringList ServicePluginManager::loadedServiceNames()
+{
+    return m_serviceBrowser->services().keys();
+}
+
+QString ServicePluginManager::serviceDescription( const QString & serviceName )
+{
+    //get named service
+    if ( !m_serviceBrowser->services().contains( serviceName ) ) {
+        return i18n( "No service named %1 is curretly loaded", serviceName );
+    }
+
+    ServiceBase * service = m_serviceBrowser->services().value( serviceName );
+
+    return service->getShortDescription();
+}
+
+QString ServicePluginManager::serviceMessages( const QString & serviceName )
+{
+    //get named service
+    if ( !m_serviceBrowser->services().contains( serviceName ) ) {
+        return i18n( "No service named %1 is curretly loaded", serviceName );
+    }
+
+    ServiceBase * service = m_serviceBrowser->services().value( serviceName );
+
+    return service->messages();
+}
+
+QString ServicePluginManager::sendMessage( const QString & serviceName, const QString & message )
+{
+    //get named service
+    if ( !m_serviceBrowser->services().contains( serviceName ) ) {
+        return i18n( "No service named %1 is curretly loaded", serviceName );
+    }
+
+    ServiceBase * service = m_serviceBrowser->services().value( serviceName );
+
+    return service->sendMessage( message );
+}
+
+
+
+
 #include "ServicePluginManager.moc"
+
+
 
 

@@ -310,6 +310,16 @@ InfoParserBase * ServiceBase::infoParser()
     return m_infoParser;
 }
 
+QString ServiceBase::messages()
+{
+    return i18n( "This service does not accept any messages" );
+}
+
+QString ServiceBase::sendMessage(const QString & message)
+{
+    return i18n( "ERROR: unknown message" );
+}
+
 
 
 

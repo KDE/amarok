@@ -120,6 +120,21 @@ public:
 
     void setFilter( const QString &filter );
 
+    /**
+     * Returns a list of the messages that the current service accepts. Default impelentation does not
+     * accept any.
+     * @return A string containing a description of accepted messages.
+     */
+    virtual QString messages();
+
+    /**
+     * Send amessage to this service. Default implementation returns an error as no messages are
+     * accepted
+     * @param message The message to send to the service
+     * @return The reply to the message
+     */
+    virtual QString sendMessage( const QString &message );
+
     //virtual void reset() = 0;
 
 public slots:

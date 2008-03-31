@@ -127,6 +127,8 @@ set(libservicebrowser_SRCS
     servicebrowser/ShowInServiceAction.cpp
 )
 
+qt4_add_dbus_adaptor( libservicebrowser_SRCS servicebrowser/org.kde.amarok.ServicePluginManager.xml servicebrowser/ServicePluginManager.h ServicePluginManager)
+
 #####################################################################
 # SCRIPTABLESERVICE
 #####################################################################
