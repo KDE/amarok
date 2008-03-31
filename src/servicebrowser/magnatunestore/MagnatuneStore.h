@@ -194,10 +194,9 @@ private:
     MagnatunePurchaseHandler  *m_purchaseHandler;
     MagnatuneRedownloadHandler *m_redownloadHandler;
 
-    QPushButton *m_redownloadButton;
-    QPushButton *m_updateListButton;
     QPushButton *m_purchaseAlbumButton;
-    QPushButton *m_showInfoToggleButton;
+
+    QAction * m_updateAction;
 
     QComboBox   *m_genreComboBox;
     bool         m_purchaseInProgress;
@@ -217,6 +216,8 @@ private:
     QString m_password;
 
     int m_streamType;
+
+    qulonglong m_magnatuneTimestamp;
 
 };
 

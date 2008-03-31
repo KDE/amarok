@@ -96,6 +96,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
         : ServiceBase( name )
         , m_currentAlbum( 0 )
         , m_streamType( MagnatuneMetaFactory::OGG )
+        , m_magnatuneTimestamp( 0 )
 {
     setObjectName(name);
     DEBUG_BLOCK
@@ -204,9 +205,9 @@ void MagnatuneStore::initTopPanel( )
     connect( action, SIGNAL( triggered( bool) ), SLOT( processRedownload() ) );
     actionsMenu->addAction( action );
 
-    action = new QAction( i18n( "Update Database" ), m_menubar );
-    connect( action, SIGNAL( triggered( bool) ), SLOT( updateButtonClicked() ) );
-    actionsMenu->addAction( action );
+    m_updateAction = new QAction( i18n( "Update Database" ), m_menubar );
+    connect( m_updateAction, SIGNAL( triggered( bool) ), SLOT( updateButtonClicked() ) );
+    actionsMenu->addAction( m_updateAction );
     
     
     m_menubar->show();
@@ -214,25 +215,10 @@ void MagnatuneStore::initTopPanel( )
 
 void MagnatuneStore::initBottomPanel()
 {
-    m_bottomPanel->setMaximumHeight( 72 );
-
-
-    KHBox *hBoxTop = new KHBox( m_bottomPanel);
-    KHBox *hBoxBottom = new KHBox( m_bottomPanel);
-    hBoxTop->setMaximumHeight( 36 );
-    hBoxTop->setSpacing( 2 );
-    hBoxBottom->setMaximumHeight( 36 );
-    hBoxBottom->setSpacing( 2 );
-    //hBox->setMargin( 2 );
-
-    m_redownloadButton = new QPushButton;
-    m_redownloadButton->setParent( hBoxTop );
-    m_redownloadButton->setText( i18n( "Redownload" ) );
-    m_redownloadButton->setObjectName( "advancedButton" );
-    connect( m_redownloadButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
+    //m_bottomPanel->setMaximumHeight( 24 );
 
     m_purchaseAlbumButton = new QPushButton;
-    m_purchaseAlbumButton->setParent( hBoxTop );
+    m_purchaseAlbumButton->setParent( m_bottomPanel );
 
     MagnatuneConfig config;
     if ( config.isMember() && config.membershipType() == "Download" )
@@ -243,24 +229,15 @@ void MagnatuneStore::initBottomPanel()
     m_purchaseAlbumButton->setObjectName( "purchaseButton" );
     m_purchaseAlbumButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     m_purchaseAlbumButton->setEnabled( false );
-    //m_purchaseAlbumButton->setMaximumHeight( 30 );
 
-    m_updateListButton = new QPushButton;
-    m_updateListButton->setParent( hBoxBottom );
-    m_updateListButton->setText( i18nc( "Fetch new information from the web site", "Update" ) );
-    m_updateListButton->setObjectName( "updateButton" );
-    m_updateListButton->setIcon( KIcon( "view-refresh-amarok" ) );
 
-    connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
     connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT( purchase() ) );
 }
 
 void MagnatuneStore::updateButtonClicked()
 {
-    m_updateListButton->setEnabled( false );
+    m_updateAction->setEnabled( false );
     updateMagnatuneList();
-
-
 }
 bool MagnatuneStore::updateMagnatuneList()
 {
@@ -300,7 +277,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     if ( downLoadJob != m_listDownloadJob )
         return ; //not the right job, so let's ignore it
 
-    m_updateListButton->setEnabled( true );
+    m_updateAction->setEnabled( true );
     if ( !downLoadJob->error() == 0 )
     {
         //TODO: error handling here
@@ -327,7 +304,7 @@ void MagnatuneStore::listDownloadCancelled( )
     m_listDownloadJob = 0;
     debug() << "Aborted xml download";
 
-    m_updateListButton->setEnabled( true );
+    m_updateAction->setEnabled( true );
 }
 
 
@@ -341,7 +318,11 @@ void MagnatuneStore::doneParsing()
     //update the last update timestamp
 
     MagnatuneConfig config;
-    config.setLastUpdateTimestamp( QDateTime::currentDateTime().toTime_t() );
+    if ( m_magnatuneTimestamp == 0 )
+        config.setLastUpdateTimestamp( QDateTime::currentDateTime().toTime_t() );
+    else
+        config.setLastUpdateTimestamp( m_magnatuneTimestamp );
+    
     config.save();
     
 }
@@ -587,6 +568,7 @@ void MagnatuneStore::timestampDownloadComplete( KJob *  job )
 
 
     QString timestampString = ( ( KIO::StoredTransferJob* ) job )->data();
+    debug() << "Magnatune timestamp: " << timestampString;
 
     bool ok;
     qulonglong magnatuneTimestamp = timestampString.toULongLong( &ok );
@@ -594,7 +576,10 @@ void MagnatuneStore::timestampDownloadComplete( KJob *  job )
     MagnatuneConfig config;
     qulonglong localTimestamp = config.lastUpdateTimestamp();
 
+    debug() << "Last update timestamp: " << QString::number( localTimestamp );
+
     if ( ok && magnatuneTimestamp > localTimestamp ) {
+        m_magnatuneTimestamp = magnatuneTimestamp;
         updateButtonClicked();
     }
 
