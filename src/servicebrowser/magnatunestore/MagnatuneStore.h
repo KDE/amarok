@@ -158,6 +158,8 @@ private slots:
 
     void moodMapReady( QMap<QString, int> map );
 
+    void timestampDownloadComplete( KJob * job );
+
 
 private:
     /**
@@ -176,6 +178,8 @@ private:
      * @return Currently always returns true
      */
     bool updateMagnatuneList();
+
+    void checkForUpdates();
 
     /**
      * Adds a magnatune preview track to the playlist.
@@ -200,8 +204,8 @@ private:
 
     Meta::MagnatuneAlbum * m_currentAlbum;
 
-
     KIO::FileCopyJob * m_listDownloadJob;
+    KIO::StoredTransferJob* m_updateTimestampDownloadJob;
 
     ServiceSqlCollection * m_collection;
 

@@ -105,7 +105,7 @@ MagnatuneInfoParser::artistInfoDownloadComplete( KJob *downLoadJob )
 
 
 
-    QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
+    QString infoString = ( (KIO::StoredTransferJob* ) downLoadJob )->data();
     //debug() << "MagnatuneInfoParser: Artist info downloaded: " << infoString;
     infoString = extractArtistInfo( infoString );
 

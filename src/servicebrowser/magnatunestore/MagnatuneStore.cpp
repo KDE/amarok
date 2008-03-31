@@ -502,6 +502,8 @@ void MagnatuneStore::polish( )
     connect( databaseWorker, SIGNAL( gotMoodMap(QMap< QString, int >) ), this, SLOT( moodMapReady(QMap< QString, int >) ) );
     ThreadWeaver::Weaver::instance() ->enqueue( databaseWorker );
 
+    checkForUpdates();
+
 
 }
 
@@ -633,6 +635,39 @@ void MagnatuneStore::purchaseCurrentTrackAlbum()
 
     m_purchaseHandler->purchaseAlbum( magnatuneAlbum );
     
+}
+
+void MagnatuneStore::checkForUpdates()
+{
+    m_updateTimestampDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/info/last_update_timestamp" ), KIO::Reload, KIO::HideProgressInfo );
+    connect( m_updateTimestampDownloadJob, SIGNAL( result( KJob * ) ), SLOT( timestampDownloadComplete( KJob *  ) ) );
+}
+
+void MagnatuneStore::timestampDownloadComplete( KJob *  job )
+{
+    DEBUG_BLOCK
+    
+    if ( !job->error() == 0 )
+    {
+        //TODO: error handling here
+        return ;
+    }
+    if ( job != m_updateTimestampDownloadJob )
+        return ; //not the right job, so let's ignore it
+
+
+    QString timestampString = ( ( KIO::StoredTransferJob* ) job )->data();
+
+    bool ok;
+    qulonglong magnatuneTimestamp = timestampString.toULongLong( &ok );
+
+    MagnatuneConfig config;
+    qulonglong localTimestamp = config.lastUpdateTimestamp();
+
+    if ( ok && magnatuneTimestamp > localTimestamp ) {
+        updateButtonClicked();
+    }
+
 }
 
 
