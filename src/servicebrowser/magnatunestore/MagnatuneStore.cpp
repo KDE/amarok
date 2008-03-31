@@ -439,57 +439,23 @@ void MagnatuneStore::polish( )
     if (!m_polished) {
         m_polished = true;
 
-
-
-
-       // m_dbHandler = new MagnatuneDatabaseHandler();
-
-
         initTopPanel( );
         initBottomPanel();
 
         QList<int> levels;
-        //levels << CategoryId::Artist << CategoryId::Album << CategoryId::None;
         levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
         
         setInfoParser( new MagnatuneInfoParser() );
         
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
-        //model->setInfoParser( infoParser );
-
-        //setModel(new MagnatuneContentModel ( this ) );
-        //setModel( model );
-        //connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 
         connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
-
-       /* m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
-        m_contentView->setSortingEnabled ( true );
-        m_contentView->sortByColumn ( 0, Qt::AscendingOrder );
-    */
-        
-
-
-
-
     }
 
     KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
     QString imagePath = url.url();
 
     
-    /*QString infoString = "<table align='center' border='0'><tbody align='center' valign='top'>"
-            "<tr align='center'><td><div align='center'>"
-            "<IMG src='" + imagePath + "/magnatune_logo.png' width='200' height='36' align='center' border='0'>"
-            "</div></td></tr><tr><td><BR>"
-            + i18n( "Welcome to Amarok's integrated Magnatune.com store. If this is the "
-            "first time you run it, you must update the database by pressing the "
-            "'Update' button below." )
-            + "<p><a href=\"http://magnatune.com/artists/albums/ishwish-remember/hifi.xspf\">test</a>"
-            + "</td></tr></tbody></table>";
-
-
-    generateWidgetInfo( infoString );*/
 
     MagnatuneInfoParser * parser = dynamic_cast<MagnatuneInfoParser *> ( infoParser() );
     if ( parser )
@@ -508,53 +474,6 @@ void MagnatuneStore::polish( )
 }
 
 
-/*bool MagnatuneStore::updateContextView()
-{
-
-    MagnatuneMoodMap moodMap = m_dbHandler->getMoodMap( 20 );
-
-    int minMoodCount = 10000;
-    int maxMoodCount = 0;
-
-    //determine max and min counts
-    QMapIterator<QString, int> i(moodMap);
-    while (i.hasNext()) {
-        i.next();
-        if ( i.value() > maxMoodCount ) maxMoodCount = i.value();
-        if ( i.value() < minMoodCount ) minMoodCount = i.value();
-    }
-
-
-    //normalize and insert into cloud view
-
-
-    CloudBox * cloudBox = new CloudBox( 0, 0 );
-    cloudBox->setPos( 0, 0 );
-    cloudBox->setTitle( "Magnatune Moods" );
-
-    int steps = 10;
-    int stepBoundry = maxMoodCount / steps;
-
-
-    i.toFront();
-    while (i.hasNext()) {
-        i.next();
-        if ( i.value() < stepBoundry ) cloudBox->addText( i.key(), 8, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-        else  if ( i.value() < stepBoundry * 2 ) cloudBox->addText( i.key(), 12, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-        else  if ( i.value() < stepBoundry * 4 ) cloudBox->addText( i.key(), 16, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-        else  if ( i.value() < stepBoundry * 7 ) cloudBox->addText( i.key(), 20, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-        else cloudBox->addText( i.key(), 24, this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-    }
-
-    cloudBox->done();
-
-    ContextView::instance()->clear();
-    ContextView::instance()->addContextBox( cloudBox, -1 , true );
-
-    //connect( cloudBox, SIGNAL( itemSelected( QString ) ), this, SLOT( addMoodyTracksToPlaylist( QString ) ) );
-
-    return true;
-}*/
 
 void MagnatuneStore::setMembership(const QString & type, const QString & username, const QString & password)
 {
