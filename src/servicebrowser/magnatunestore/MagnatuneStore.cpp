@@ -179,24 +179,35 @@ void MagnatuneStore::initTopPanel( )
 
     //connect( m_genreComboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( genreChanged( QString ) ) );
     QAction *action = new QAction( i18n("Artist"), m_menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtist() ) );
     m_filterMenu->addAction( action );
 
     action = new QAction( i18n( "Artist / Album" ), m_menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
     m_filterMenu->addAction( action );
 
     action = new QAction( i18n( "Album" ), m_menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT( sortByAlbum() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByAlbum() ) );
     m_filterMenu->addAction( action );
 
     action = new QAction( i18n( "Genre / Artist" ), m_menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT( sortByGenreArtist() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtist() ) );
     m_filterMenu->addAction( action );
 
     action = new QAction( i18n( "Genre / Artist / Album" ), m_menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtistAlbum() ) );
     m_filterMenu->addAction( action );
+
+
+    QMenu * actionsMenu = m_menubar->addMenu( i18n( "Actions" ) );
+    action = new QAction( i18n( "Redownload" ), m_menubar );
+    connect( action, SIGNAL( triggered( bool) ), SLOT( processRedownload() ) );
+    actionsMenu->addAction( action );
+
+    action = new QAction( i18n( "Update Database" ), m_menubar );
+    connect( action, SIGNAL( triggered( bool) ), SLOT( updateButtonClicked() ) );
+    actionsMenu->addAction( action );
+    
     
     m_menubar->show();
 }
