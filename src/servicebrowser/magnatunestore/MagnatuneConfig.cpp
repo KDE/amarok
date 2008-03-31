@@ -48,6 +48,10 @@ void MagnatuneConfig::load()
     m_username = config.readEntry( "username", QString() );
     m_password = config.readEntry( "password", QString() );
 
+
+    qulonglong defaultLong = 0;
+    m_lastUpdateTimestamp = config.readEntry( "password", defaultLong );
+
     QString streamTypeString = config.readEntry( "streamType", QString() );
    
 
@@ -71,6 +75,8 @@ void MagnatuneConfig::save()
         config.writeEntry( "membershipType", m_membershipType );
         config.writeEntry( "username", m_username );
         config.writeEntry( "password", m_password );
+        config.writeEntry( "lastUpdate", QVariant( m_lastUpdateTimestamp ) );
+        
 
 
         QString streamTypeString;
@@ -140,4 +146,15 @@ int MagnatuneConfig::streamType() const
 void MagnatuneConfig::setStreamType( int theValue )
 {
     m_streamType = theValue;
+}
+
+
+qulonglong MagnatuneConfig::lastUpdateTimestamp()
+{
+    return m_lastUpdateTimestamp;
+}
+
+void MagnatuneConfig::setLastUpdateTimestamp( qulonglong timestamp )
+{
+    m_lastUpdateTimestamp = timestamp;
 }

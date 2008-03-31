@@ -50,9 +50,10 @@ public:
     void setPassword( const QString &password );
 
     void setStreamType( int theValue );
-    
-
     int streamType() const;
+
+    qulonglong lastUpdateTimestamp();
+    void setLastUpdateTimestamp( qulonglong timestamp );
     
 
 private:
@@ -63,6 +64,7 @@ private:
     QString m_membershipType;
     bool m_isMember;
     int m_streamType;
+    qulonglong m_lastUpdateTimestamp;
 
 };
 
