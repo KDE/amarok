@@ -40,7 +40,7 @@ void MagnatuneConfig::load()
 {
     m_hasChanged = false;
 
-    kDebug( 14310 ) << "load";
+    kDebug() << "load";
     KConfigGroup config = KGlobal::config()->group( "Service_Magnatune" );
 
     m_isMember = config.readEntry( "isMember", false );
@@ -50,7 +50,7 @@ void MagnatuneConfig::load()
 
 
     qulonglong defaultLong = 0;
-    m_lastUpdateTimestamp = config.readEntry( "password", defaultLong );
+    m_lastUpdateTimestamp = config.readEntry( "lastUpdate", defaultLong );
 
     QString streamTypeString = config.readEntry( "streamType", QString() );
    
@@ -67,7 +67,7 @@ void MagnatuneConfig::load()
 
 void MagnatuneConfig::save()
 {
-    kDebug( 14310 ) << "save";
+    kDebug() << "save";
     if ( m_hasChanged ) {
         KConfigGroup config = KGlobal::config()->group( "Service_Magnatune" );
 
@@ -156,5 +156,6 @@ qulonglong MagnatuneConfig::lastUpdateTimestamp()
 
 void MagnatuneConfig::setLastUpdateTimestamp( qulonglong timestamp )
 {
+    m_hasChanged = true;
     m_lastUpdateTimestamp = timestamp;
 }

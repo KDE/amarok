@@ -45,6 +45,7 @@
 #include <KMenuBar>
 
 #include <QAction>
+#include <QDateTime>
 #include <QGraphicsScene>
 #include <QSplitter>
 #include <q3dragobject.h>
@@ -325,6 +326,13 @@ void MagnatuneStore::doneParsing()
 
     debug() << "MagnatuneStore: done parsing";
     m_collection->emitUpdated();
+
+    //update the last update timestamp
+
+    MagnatuneConfig config;
+    config.setLastUpdateTimestamp( QDateTime::currentDateTime().toTime_t() );
+    config.save();
+    
 }
 
 void MagnatuneStore::processRedownload( )
