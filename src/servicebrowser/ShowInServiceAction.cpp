@@ -27,7 +27,7 @@ ShowInServiceAction::ShowInServiceAction( ServiceBase * service, Meta::ServiceTr
     , m_service( service )
 {
     setIcon ( KIcon( "system-search" ) );
-    setText( i18n( "Show artist info in service" ) );
+    setText( i18n( "Go to artist in %1 service", service->getName() ) );
 
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 }
