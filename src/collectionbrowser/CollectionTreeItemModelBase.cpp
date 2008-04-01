@@ -342,8 +342,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                     qm->endAndOr();
                 }
 
-                //always add track filter ( if supported
-
+                //always add track filter ( if supported..)
                 if ( ( validFilters & QueryMaker::TitleFilter ) != 0 ) {
                     qm->beginOr();
                     qm->addFilter ( QueryMaker::valTitle, elem.text, false, false ); //always filter for track title too
