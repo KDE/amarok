@@ -73,7 +73,7 @@ void ExpressionParser::parseChar( const QChar &c )
     else
         handleChar( c );
 
-    //debug() << m_string;
+    debug() << m_string;
 }
 
 void ExpressionParser::handleSpace( const QChar& )
@@ -147,14 +147,17 @@ void ExpressionParser::handleChar( const QChar &c )
 
 void ExpressionParser::finishedToken()
 {
+    debug() << "finishedToken got: '" <<  m_string << "'";
     enum { And, Or, Neither };
     int s;
     if( m_haveGroup || !m_element.field.isEmpty() )
         s = Neither;
     else if( m_string == "AND" )
         s = And;
-    else if( m_string == "OR" )
+    else if( m_string == "OR" ) {
         s = Or;
+        debug() << "got OR!";
+    }
     else
         s = Neither;
 
@@ -183,11 +186,12 @@ void ExpressionParser::finishedElement()
     m_string.clear();
 
     if( !m_element.text.isEmpty() ) {
-        //debug() << "appending '" << m_element.field << ":" << m_element.text << "'";
+        debug() << "appending '" << m_element.field << ":" << m_element.text << "'";
         m_or.append( m_element );
     }
 
     //m_element = expression_element();
+    m_element.field.clear();
     m_element.negate = false;
     m_element.match = expression_element::Contains;
     m_state = ExpectMinus;

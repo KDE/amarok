@@ -291,13 +291,21 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
     ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
     foreach( or_list orList, parsed )
     {
+        qm->beginOr();
+        
         foreach ( expression_element elem, orList )
         {
+
+            qm->beginOr();
+
+            
             if ( elem.field.isEmpty() )
             {
-                qm->beginOr();
+
                 foreach ( int level, m_levelType )
                 {
+                  
+                    
                     qint64 value;
                     switch ( level )
                     {
@@ -320,13 +328,19 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
                             value = -1;
                             break;
                     }
+                    qm->beginOr();
                     qm->addFilter ( value, elem.text, false, false );
+                    qm->endAndOr();
                 }
+                
+                qm->beginOr();
                 qm->addFilter ( QueryMaker::valTitle, elem.text, false, false ); //always filter for track title too
                 qm->endAndOr();
             }
             else
             {
+ 
+                
                 //get field values based on name
                 qint64 value;
                 QString lcField = elem.field.toLower();
@@ -355,11 +369,18 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
                 {
                     value = -1;
                 }
-                
+
+
                 qm->addFilter ( value, elem.text, false, false );
 
+
             }
+
+            qm->endAndOr();
+
+            
         }
+        qm->endAndOr();
     }
 }
 
