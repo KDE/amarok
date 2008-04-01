@@ -34,6 +34,10 @@ class SearchWidget : public QWidget
 
         void filterNow();
 
+    private slots:
+
+        void slotShowFilterEditor();
+        
     private:
         void init( QWidget* parent );
 

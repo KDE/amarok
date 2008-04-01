@@ -12,7 +12,7 @@
 
 #include "amarokconfig.h"
 #include "debug.h"
-#include "metabundle.h"
+//#include "metabundle.h"
 
 #include <KGlobal>
 #include <KLineEdit>
@@ -114,7 +114,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     m_comboKeyword->addItem( i18n("Simple Search") );
     m_vector.push_back("Simple Search");
-    if( metaBundleKeywords )
+   /* if( metaBundleKeywords )
     {
         for( int i=0; i < MetaBundle::NUM_COLUMNS; ++i )
         {
@@ -130,21 +130,33 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
         }
     }
     else
-    {
+    {*/
         m_comboKeyword->addItem( i18n("Album") );
         m_vector.push_back( "album" );
         m_comboKeyword->addItem( i18n("Artist") );
         m_vector.push_back( "artist" );
-        m_comboKeyword->addItem( i18n("Bitrate") );
+        m_comboKeyword->addItem( i18n("Composer") );
+        m_vector.push_back( "composer" );
+        m_comboKeyword->addItem( i18n("Genre") );
+        m_vector.push_back( "genre" );
+        m_comboKeyword->addItem( i18n("Title") );
+        m_vector.push_back( "title" );
+        m_comboKeyword->addItem( i18n("Track") );
+        m_vector.push_back( "track" );
+        m_comboKeyword->addItem( i18n("Year") );
+        m_vector.push_back( "year" );
+        
+        /*m_comboKeyword->addItem( i18n("Bitrate") );
         m_vector.push_back( "bitrate" );
         m_comboKeyword->addItem( i18n("BPM") );
         m_vector.push_back( "bpm" );
         m_comboKeyword->addItem( i18n("Comment") );
-        m_vector.push_back( "comment" );
-        m_comboKeyword->addItem( i18n("Composer") );
-        m_vector.push_back( "composer" );
-        m_comboKeyword->addItem( i18n("Directory") );
-        m_vector.push_back( "directory" );
+        m_vector.push_back( "comment" );*/
+        
+
+
+        /*m_comboKeyword->addItem( i18n("Directory") );
+        /*m_vector.push_back( "directory" );
         m_comboKeyword->addItem( i18n("Disc Number") );
         m_vector.push_back( "disc" );
         m_comboKeyword->addItem( i18n("Filename") );
@@ -152,10 +164,11 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
         m_comboKeyword->addItem( i18n("Mount Point") );
         m_vector.push_back( "mountpoint" );
         m_comboKeyword->addItem( i18n("Filetype") );
-        m_vector.push_back( "filetype" );
-        m_comboKeyword->addItem( i18n("Genre") );
-        m_vector.push_back( "genre" );
-        m_comboKeyword->addItem( i18n("Length") );
+        m_vector.push_back( "filetype" );*/
+        
+
+        
+       /* m_comboKeyword->addItem( i18n("Length") );
         m_vector.push_back( "length" );
         m_comboKeyword->addItem( i18n("Label") );
         m_vector.push_back( "label" );
@@ -177,13 +190,10 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
         }
         m_comboKeyword->addItem( i18n("File Size") );
         m_vector.push_back( "size" );
-        m_comboKeyword->addItem( i18n("Title") );
-        m_vector.push_back( "title" );
-        m_comboKeyword->addItem( i18n("Track") );
-        m_vector.push_back( "track" );
-        m_comboKeyword->addItem( i18n("Year") );
-        m_vector.push_back( "year" );
-    }
+
+        */
+
+    //}
 
     // the "Simple Search" text is selected in the comboKeyword
     m_selectedIndex = 0;

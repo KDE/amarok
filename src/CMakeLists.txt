@@ -385,7 +385,7 @@ set(amaroklib_LIB_SRCS
     deletedialog.cpp
     deviceconfiguredialog.cpp
     directorylist.cpp
-#    editfilterdialog.cpp
+    editfilterdialog.cpp
     EngineController.cpp
     EngineObserver.cpp
     equalizergraph.cpp

@@ -11,6 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "searchwidget.h"
+#include "editfilterdialog.h"
 
 #include <QVBoxLayout>
 
@@ -18,6 +19,7 @@
 #include <klocale.h>
 #include <khbox.h>
 #include <kpushbutton.h>
+
 
 SearchWidget::SearchWidget( QWidget *parent )
     : QWidget( parent ),
@@ -70,17 +72,31 @@ SearchWidget::init( QWidget *parent )
     layout->setContentsMargins(0,0,0,0);
     setLayout( layout );
 
-//    m_filterButton = new KPushButton( "...", searchBox );
-//    m_filterButton->setFlat( true ); //TODO: maybe?
-//    m_filterButton->setObjectName( "filter" );
-//    m_filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-//    m_filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
+    m_filterButton = new KPushButton( "...", searchBox );
+    m_filterButton->setFlat( true ); //TODO: maybe?
+    m_filterButton->setObjectName( "filter" );
+    m_filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+    m_filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
+
+    connect ( m_filterButton, SIGNAL( clicked() ), this, SLOT( slotShowFilterEditor() ) );
 }
 
 void SearchWidget::setSearchString( const QString & searchString )
 {
     m_sw->setText( searchString );
     emit filterNow();
+}
+
+void SearchWidget::slotShowFilterEditor()
+{
+    EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
+    
+    connect( fd, SIGNAL( filterChanged( const QString & ) ), m_sw,  SLOT( setText( const QString & ) ) );
+    //connect( fd, SIGNAL( filterChanged( const QString & ) ), m_caller,  SLOT( filterNow() ) );
+    
+    fd->exec();
+        //m_searchWidget->lineEdit()->setText( fd->filter() );
+    //delete fd;
 }
 
 #include "searchwidget.moc"
