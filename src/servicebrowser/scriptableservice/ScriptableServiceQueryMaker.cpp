@@ -546,7 +546,7 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter(qint64 value, const QString 
         d->lastFilter = d->filter;
 
     }
-
+    return this;
 }
 
 
