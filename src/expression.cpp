@@ -35,6 +35,7 @@ ParsedExpression ExpressionParser::parse()
         parseChar( m_expression.at( pos ) );
     finishedToken();
     finishedOrGroup();
+    
     return m_parsed;
 }
 
@@ -71,6 +72,8 @@ void ExpressionParser::parseChar( const QChar &c )
         handleQuote( c );
     else
         handleChar( c );
+
+    //debug() << m_string;
 }
 
 void ExpressionParser::handleSpace( const QChar& )
@@ -98,7 +101,7 @@ void ExpressionParser::handleColon( const QChar &c )
         m_string.clear();
         m_state = ExpectMod;
 
-        debug() << "got field: " << m_element.field;
+        //debug() << "got field: " << m_element.field;
     }
     else
         handleChar( c );
@@ -119,11 +122,13 @@ void ExpressionParser::handleQuote( const QChar& )
 {
     if( m_inQuote )
     {
+        //debug() << "end quote";
         finishedElement();
         m_inQuote = false;
     }
     else
     {
+        //debug() << "start quote";
         if( !m_string.isEmpty() )
             finishedToken();
         m_state = ExpectText;
@@ -177,8 +182,10 @@ void ExpressionParser::finishedElement()
     m_element.text = m_string;
     m_string.clear();
 
-    if( !m_element.text.isEmpty() || !m_element.field.isEmpty() )
+    if( !m_element.text.isEmpty() ) {
+        //debug() << "appending '" << m_element.field << ":" << m_element.text << "'";
         m_or.append( m_element );
+    }
 
     //m_element = expression_element();
     m_element.negate = false;
