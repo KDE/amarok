@@ -62,6 +62,8 @@ public:
 
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 
+    virtual int validFilterMask();
+    
     //Methods "borrowed" from MemoryQueryMaker
     void handleResult();
     void handleResult( const Meta::TrackList &tracks );

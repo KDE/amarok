@@ -59,6 +59,16 @@ class AMAROK_EXPORT QueryMaker : public QObject
                               , OnlyCompilations = 1
                               , OnlyNormalAlbums = 2 };
 
+        //not all implementations will accept all filter levels, so make it possible to
+        //specify which ones make sense for a given qm. Add to this as needed
+        enum ValidFilters { TitleFilter     =     1,
+                            AlbumFilter     =     2,
+                            ArtistFilter    =     4,
+                            GenreFilter     =     8,
+                            ComposerFilter  =    16,
+                            YearFilter      =    32,
+                            AllFilters      = 65535 };
+
         QueryMaker();
         virtual ~QueryMaker();
 
@@ -192,6 +202,9 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* beginAnd() = 0;
         virtual QueryMaker* beginOr() = 0;
         virtual QueryMaker* endAndOr() = 0;
+
+
+        virtual int validFilterMask();
 
     signals:
         void newResultReady( QString collectionId, Meta::TrackList );

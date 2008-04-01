@@ -470,11 +470,15 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
     QVariantMap variantMap;
     QList<QVariant> strings;
     QList<QVariant> weights;
+    QList<QVariant> dbusActions;
 
     foreach( const QString &key, map.keys() ) {
     
         strings << key;
         weights << map.value( key );
+
+        /*QString escapedKey = key.replace( " ", "%20" );
+        dbusActions << QString( "org.kde.amarok /ServicePluginManager sendMessage Magnatune.com \"addMoodyTracks %1 10\"").arg( escapedKey );*/
 
     }
 

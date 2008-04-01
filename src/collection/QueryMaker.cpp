@@ -39,5 +39,10 @@ QueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
     return this;
 }
 
+int QueryMaker::validFilterMask()
+{
+    return AllFilters;
+}
+
 #include "QueryMaker.moc"
 

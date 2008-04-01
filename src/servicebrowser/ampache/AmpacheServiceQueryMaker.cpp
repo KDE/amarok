@@ -556,12 +556,20 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 QueryMaker * AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
 {
     DEBUG_BLOCK
+
+    debug() << "value: " << value;
     //for now, only accept artist filters
     if ( value == valArtist ) {
         debug() << "Filter: " << filter;
         m_artistFilter = filter;
     }
     return this;
+}
+
+int AmpacheServiceQueryMaker::validFilterMask()
+{
+    //we only supprt artist filters for now...
+    return ArtistFilter;
 }
 
 #include "AmpacheServiceQueryMaker.moc"

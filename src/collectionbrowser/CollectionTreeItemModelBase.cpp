@@ -286,8 +286,12 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
 
 
 void
-CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
+CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 {
+
+    int validFilters = qm->validFilterMask();
+    debug() << " valid filters " << validFilters;
+    
     ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
     foreach( or_list orList, parsed )
     {
@@ -310,18 +314,23 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
                     switch ( level )
                     {
                         case CategoryId::Album:
+                            if ( ( validFilters & QueryMaker::AlbumFilter ) == 0 ) { debug() << "Album not supported"; continue; }
                             value = QueryMaker::valAlbum;
                             break;
                         case CategoryId::Artist:
+                            if ( ( validFilters & QueryMaker::ArtistFilter ) == 0 ) continue;
                             value = QueryMaker::valArtist;
                             break;
                         case CategoryId::Composer:
+                            if ( ( validFilters & QueryMaker::ComposerFilter ) == 0 ) continue;
                             value = QueryMaker::valComposer;
                             break;
                         case CategoryId::Genre:
+                            if ( ( validFilters & QueryMaker::GenreFilter ) == 0 ) continue;
                             value = QueryMaker::valGenre;
                             break;
                         case CategoryId::Year:
+                            if ( ( validFilters & QueryMaker::YearFilter ) == 0 ) continue;
                             value = QueryMaker::valYear;
                             break;
                         default:
@@ -332,37 +341,45 @@ CollectionTreeItemModelBase::addFilters(QueryMaker * qm) const
                     qm->addFilter ( value, elem.text, false, false );
                     qm->endAndOr();
                 }
-                
-                qm->beginOr();
-                qm->addFilter ( QueryMaker::valTitle, elem.text, false, false ); //always filter for track title too
-                qm->endAndOr();
+
+                //always add track filter ( if supported
+
+                if ( ( validFilters & QueryMaker::TitleFilter ) != 0 ) {
+                    qm->beginOr();
+                    qm->addFilter ( QueryMaker::valTitle, elem.text, false, false ); //always filter for track title too
+                    qm->endAndOr();
+                }
             }
             else
             {
- 
-                
+
                 //get field values based on name
                 qint64 value;
                 QString lcField = elem.field.toLower();
 
                 if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "album" ), Qt::CaseInsensitive ) == 0 )
                 {
+                    if ( ( validFilters & QueryMaker::AlbumFilter ) == 0 ) continue;
                     value = QueryMaker::valAlbum;
                 } 
                 else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "artist" ), Qt::CaseInsensitive ) == 0 )
                 {
+                    if ( ( validFilters & QueryMaker::ArtistFilter ) == 0 ) continue;
                     value = QueryMaker::valArtist;
                 }
                 else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "genre" ), Qt::CaseInsensitive ) == 0)
                 {
+                    if ( ( validFilters & QueryMaker::GenreFilter ) == 0 ) continue;
                     value = QueryMaker::valGenre;
                 }
                 else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0|| lcField.compare( i18n( "composer" ), Qt::CaseInsensitive ) == 0 )
                 {
+                    if ( ( validFilters & QueryMaker::ComposerFilter ) == 0 ) continue;
                     value = QueryMaker::valComposer;
                 }
                 else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "year" ), Qt::CaseInsensitive ) == 0)
                 {
+                    if ( ( validFilters & QueryMaker::YearFilter ) == 0 ) continue;
                     value = QueryMaker::valYear;
                 }
                 else
