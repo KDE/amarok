@@ -143,7 +143,7 @@ QueryMaker * AmpacheServiceQueryMaker::addMatch( const ArtistPtr & artist )
     if ( m_parentAlbumId.isEmpty() ) {
         const ServiceArtist * serviceArtist = static_cast< const ServiceArtist * >( artist.data() );
         m_parentArtistId = QString::number( serviceArtist->id() );
-        debug() << "parent id set to: " << m_parentArtistId;
+        //debug() << "parent id set to: " << m_parentArtistId;
     }
 
 
@@ -155,7 +155,7 @@ QueryMaker * AmpacheServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
     DEBUG_BLOCK
     const ServiceAlbum * serviceAlbum = static_cast< const ServiceAlbum * >( album.data() );
     m_parentAlbumId = QString::number( serviceAlbum->id() );
-    debug() << "parent id set to: " << m_parentAlbumId;
+    //debug() << "parent id set to: " << m_parentAlbumId;
     m_parentArtistId = QString();
 
 
@@ -246,7 +246,7 @@ void AmpacheServiceQueryMaker::fetchArtists()
             urlString += QString( "&filter=" + m_artistFilter );
         }
 
-        debug() << "Artist url: " << urlString;
+        //debug() << "Artist url: " << urlString;
 
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
@@ -282,7 +282,7 @@ void AmpacheServiceQueryMaker::fetchAlbums()
         urlString.replace( "<SESSION_ID>", m_sessionId);
         urlString.replace( "<FILTER>", m_parentArtistId );
 
-        debug() << "request url: " << urlString;
+        //debug() << "request url: " << urlString;
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
@@ -296,7 +296,7 @@ void AmpacheServiceQueryMaker::fetchTracks()
 
     TrackList tracks;
 
-    debug() << "parent album id: " << m_parentAlbumId;
+    //debug() << "parent album id: " << m_parentAlbumId;
 
     if ( !m_parentAlbumId.isEmpty() ) {
         AlbumMatcher albumMatcher( m_collection->albumById( m_parentAlbumId.toInt() ) );
@@ -438,7 +438,7 @@ void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
         element = n.firstChildElement( "artist" );
 
         int artistId = element.attribute( "id", "0" ).toInt();
-        debug() << "   Artist id: " <<  artistId;
+        //debug() << "   Artist id: " <<  artistId;
 
 
         ArtistPtr artistPtr = m_collection->artistById( m_parentArtistId.toInt() );
@@ -557,10 +557,10 @@ QueryMaker * AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & f
 {
     DEBUG_BLOCK
 
-    debug() << "value: " << value;
+    //debug() << "value: " << value;
     //for now, only accept artist filters
     if ( value == valArtist ) {
-        debug() << "Filter: " << filter;
+        //debug() << "Filter: " << filter;
         m_artistFilter = filter;
     }
     return this;

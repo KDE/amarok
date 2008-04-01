@@ -290,7 +290,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 {
 
     int validFilters = qm->validFilterMask();
-    debug() << " valid filters " << validFilters;
+    //debug() << " valid filters " << validFilters;
     
     ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
     foreach( or_list orList, parsed )
@@ -314,7 +314,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                     switch ( level )
                     {
                         case CategoryId::Album:
-                            if ( ( validFilters & QueryMaker::AlbumFilter ) == 0 ) { debug() << "Album not supported"; continue; }
+                            if ( ( validFilters & QueryMaker::AlbumFilter ) == 0 ) continue;
                             value = QueryMaker::valAlbum;
                             break;
                         case CategoryId::Artist:

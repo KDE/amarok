@@ -140,7 +140,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::addMatch( const ArtistPtr & artist )
     if ( m_parentAlbumId.isEmpty() ) {
         const ServiceArtist * serviceArtist = static_cast< const ServiceArtist * >( artist.data() );
         m_parentArtistId = QString::number( serviceArtist->id() );
-        debug() << "parent id set to: " << m_parentArtistId;
+        //debug() << "parent id set to: " << m_parentArtistId;
     }
 
 
@@ -152,7 +152,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
     DEBUG_BLOCK
     const ServiceAlbum * serviceAlbum = static_cast< const ServiceAlbum * >( album.data() );
     m_parentAlbumId = QString::number( serviceAlbum->id() );
-    debug() << "parent id set to: " << m_parentAlbumId;
+    //debug() << "parent id set to: " << m_parentAlbumId;
     m_parentArtistId = QString();
 
 
@@ -327,7 +327,7 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
 
     ArtistList artists;
 
-    debug() << "received artists: " <<  m_storedTransferJob->data();
+    //debug() << "received artists: " <<  m_storedTransferJob->data();
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -346,7 +346,7 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
         QDomElement element = n.firstChildElement("artistName");
         ServiceArtist * artist = new ServiceArtist( element.text() );
 
-        debug() << "Adding artist: " <<  element.text();
+        //debug() << "Adding artist: " <<  element.text();
 
         element = n.firstChildElement("artistId");
         artist->setId( element.text().toInt() );
@@ -378,7 +378,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
         return;
     }
 
-    debug() << "Received response: " << m_storedTransferJob->data();
+    //debug() << "Received response: " << m_storedTransferJob->data();
 
     AlbumList albums;
 
@@ -426,7 +426,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
 
         AlbumPtr albumPtr( album );
 
-        debug() << "Adding album: " <<  title;
+        //debug() << "Adding album: " <<  title;
 
         album->setId( albumId );
         
@@ -438,7 +438,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
         ArtistPtr artistPtr = m_collection->artistById( element.text().toInt() );
         if ( artistPtr.data() != 0 )
         {
-           debug() << "Found parent artist";
+           //debug() << "Found parent artist";
            album->setAlbumArtist( artistPtr );
         }
 
@@ -465,11 +465,11 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         return;
     }
 
-    debug() << "Received response: " << m_storedTransferJob->data();
+    //debug() << "Received response: " << m_storedTransferJob->data();
 
     TrackList tracks;
 
-    debug() << "received tracks: " <<  m_storedTransferJob->data();
+    //debug() << "received tracks: " <<  m_storedTransferJob->data();
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -498,7 +498,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         Mp3TunesTrack * track = new Mp3TunesTrack( title  );
         TrackPtr trackPtr( track );
 
-        debug() << "Adding track: " <<  title;
+        //debug() << "Adding track: " <<  title;
 
         element = n.firstChildElement("trackId");
         track->setId( element.text().toInt() );
@@ -523,7 +523,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
 
         ArtistPtr artistPtr = m_collection->artistById( artistId.toInt() );
         if ( artistPtr.data() != 0 ) { 
-           debug() << "Found parent artist";
+           //debug() << "Found parent artist";
            ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
            track->setArtist( artistPtr );
            artist->addTrack( trackPtr );
@@ -531,7 +531,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
 
         AlbumPtr albumPtr = m_collection->albumById( albumId.toInt() );
         if ( albumPtr.data() != 0 ) { 
-           debug() << "Found parent album";
+           //debug() << "Found parent album";
            ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
            track->setAlbum( albumPtr );
            album->addTrack( trackPtr );
@@ -552,10 +552,10 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
 QueryMaker * Mp3tunesServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
 {
     DEBUG_BLOCK
-            debug() << "value: " << value;
+            //debug() << "value: " << value;
     //for now, only accept artist filters
     if ( value == valArtist ) {
-        debug() << "Filter: " << filter;
+        //debug() << "Filter: " << filter;
         m_artistFilter = filter;
     }
     return this;
