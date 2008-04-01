@@ -101,7 +101,7 @@ Q_OBJECT
         CollectionTreeItem *m_rootItem;
         QList<int> m_levelType;
 
-        class Private;
+        struct Private;
         Private * const d;
 
         QTimeLine *m_timeLine;
