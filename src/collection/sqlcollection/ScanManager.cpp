@@ -20,7 +20,6 @@
 #include "ScanManager.h"
 
 #include "amarokconfig.h"
-#include "AmarokProcess.h"
 #include "statusbar/ContextStatusBar.h"
 #include "statusbar/progressBar.h"
 #include "debug.h"
@@ -48,7 +47,6 @@ ScanManager::ScanManager( SqlCollection *parent )
     , m_parser( 0 )
     , m_restartCount( 0 )
     , m_isIncremental( false )
-    , m_textStream( 0 )
 {
     //nothing to do
 }
@@ -64,8 +62,6 @@ ScanManager::startFullScan()
     }
     cleanTables();
     m_scanner = new AmarokProcess( this );
-    m_scanner->setTextModeEnabled( true );
-    m_textStream = new QTextStream( m_scanner );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << MountPointManager::instance()->collectionFolders();
@@ -102,8 +98,6 @@ void ScanManager::startIncrementalScan()
         return;
     }
     m_scanner = new AmarokProcess( this );
-    m_scanner->setTextModeEnabled( true );
-    m_textStream = new QTextStream( m_scanner );
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << dirs;
@@ -169,26 +163,22 @@ ScanManager::isFileInCollection( const QString &url  )
 void
 ScanManager::slotReadReady()
 {
+    QByteArray line;
     QString newData;
-    QString data = m_textStream->readLine();
+    line = m_scanner->readLine();
 
-    //converting the byte data as delivered by QProcess to a QString does not work correctly
-    //because it might truncate multi-byte characters. I'm leaving it the code below as a reference
-    //so that somebody can test if the new code works with the QTextStreamd defaults on win32, and
-    //fix it if it does not
-
-    while( !data.isEmpty() ) {
-        /*//important! see
+    while( !line.isEmpty() ) {
+        //important! see
         //http://www.qtcentre.org/forum/f-general-programming-9/t-passing-to-a-console-application-managed-via-qprocess-utf-8-encoded-parameters-5375.html
         //for an explanation of the QString::fromLocal8Bit call
 #ifdef Q_OS_WIN32
         QString data = QTextCodec::codecForName( "UTF-8" )->toUnicode( line ); // on windows we're UTF-8 regardless of what the codepage says
 #else
         QString data = QString::fromLocal8Bit( line );
-#endif*/
+#endif
         if( !data.startsWith( "exepath=" ) ) // skip binary location info from scanner
             newData += data;
-        data = m_textStream->readLine();
+        line = m_scanner->readLine();
     }
     if( m_parser )
         m_parser->addNewXmlData( newData );
@@ -203,8 +193,6 @@ ScanManager::slotFinished( )
     slotReadReady();
     m_scanner->deleteLater();
     m_scanner = 0;
-    delete m_textStream;
-    m_textStream = 0;
     m_restartCount = 0;
 }
 
@@ -214,13 +202,6 @@ ScanManager::slotError( QProcess::ProcessError error )
     if( error == QProcess::Crashed )
     {
         handleRestart();
-    }
-    else
-    {
-        m_scanner->deleteLater();
-        delete m_textStream;
-        m_scanner = 0;
-        m_textStream = 0;
     }
 }
 
@@ -256,6 +237,7 @@ ScanManager::getDirsToScan() const
             {
                 result << folder;
                 changedFolderIds << id;
+//                 debug() << "Collection dir changed: " << folder;
             }
         }
         else
@@ -263,6 +245,7 @@ ScanManager::getDirsToScan() const
             // this folder has been removed
             result << folder;
             changedFolderIds << id;
+//             debug() << "Collection dir removed: " << folder;
         }
     }
     {
@@ -285,6 +268,10 @@ ScanManager::getDirsToScan() const
         QString sql = QString( "DELETE FROM tracks WHERE url IN ( %1 );" ).arg( ids );
         m_collection->query( sql );
     }
+// //     if( result.isEmpty() )
+// //         debug() << "incremental scan not necessary";
+// // //     else
+// // //         debug() << "scanning dirs: " << result;
     return result;
 }
 
@@ -315,10 +302,7 @@ ScanManager::handleRestart()
             m_parser = 0;
         }
         delete m_scanner;
-        delete m_textStream;
         m_scanner = new AmarokProcess( this );
-        m_scanner->setTextModeEnabled( true );
-        m_textStream = new QTextStream( m_scanner );
         *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
         if( m_isIncremental )
         {
