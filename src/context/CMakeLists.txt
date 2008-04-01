@@ -99,9 +99,9 @@ endif(QT_QTOPENGL_FOUND AND OPENGL_FOUND)
 kde4_add_library(amarokplasma SHARED ${plasma_LIB_SRCS})
 
 target_link_libraries(amarokplasma
+${QT_QTUITOOLS_LIBRARY}
 ${KDE4_KIO_LIBS}
 ${KDE4_KFILE_LIBS}
-${QT_QTUITOOLS_LIBRARY}
 ${QT_QTOPENGL_LIBRARY}
 ${OPENGL_gl_LIBRARY}
 ${OPENGL_glu_LIBRARY}
