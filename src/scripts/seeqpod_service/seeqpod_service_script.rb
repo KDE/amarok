@@ -90,7 +90,7 @@ loop do
             else if args[1].strip() == "0"
                 parent_id = args[2]
 
-                url = "http://www.seeqpod.com/api/v0.2/<UID>/music/search/<QUERY>"
+                url = "http://www.seeqpod.com/api/v0.2/<UID>/music/search/<QUERY>/0/100"
 
                 url = url.gsub( "<UID>", @uid )
                 url = url.gsub( "<QUERY>", filter )
