@@ -118,8 +118,28 @@ class Converter
     def transferStatistics
         old_db = SQLite3::Database.new( "collection.db" )
         old_db.results_as_hash = true
-        old_db.execute( "SELECT url, percentage, rating, playcounter FROM statistics" ) do | row |
-            printf "URL: %s | PLAYCOUNT: %s | SCORE: %s | RATING: %s\n", row["url"], row["playcounter"], row["percentage"], row["rating"] if @options.verbose
+
+        # de-dynamic collection
+        devices_row = old_db.execute( "SELECT id, lastmountpoint FROM devices" )
+
+        statistics_row = old_db.execute( "SELECT deviceid, url, percentage, rating, playcounter FROM statistics" )
+
+        statistics_row.each do | tag |
+            url      = tag["url"]
+            deviceid = tag["deviceid"]
+
+            if deviceid == -1
+                url.slice!(1..url.length) # get rid of leading .
+            end
+
+            devices_row.each do | device |
+                if deviceid == device["id"]
+                    url = device["lastmountpoint"] + url.slice[1..url.length]
+                    url.sub!( "\/\/", "\/" ) #filter out multiple forward slashes
+                    break
+                end
+            end
+            puts url
         end
     end
 
