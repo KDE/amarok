@@ -34,14 +34,17 @@ end
 include REXML
 
 
-@uid = ""
-service_name = "Seeqpod.com"
-
-app = Qt::Application.new(ARGV)
-
 def configure
   @uid = Qt::InputDialog.getText( nil, "Configuration", "Please enter your Seeqpod UID:" )
+  @settings.setValue( "uid", Qt::Variant.new( @uid ) )
+  @settings.sync
 end
+
+
+app = Qt::Application.new(ARGV)
+@settings = Qt::Settings.new( "Amarok", "Seeqpod Service" )
+@uid = @settings.contains( "uid" ) ? @settings.value( "uid" ).toString : ""
+service_name = "Seeqpod.com"
 
 
 loop do
