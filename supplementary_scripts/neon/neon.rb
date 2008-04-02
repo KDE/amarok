@@ -43,16 +43,16 @@ include Neon
 ###############################
 # Fetch Source
 
-# if DAYOFMONTH == 1 or $*[0] == "all" or $*[0] == "qt"
-#   QtCopy()
-# end
-# 
-# if DAYOFWEEK == 0 or $*[0] == "all" or $*[0] == "deps"
-#   Strigi()
-#   TagLib()
-#   KdeLibs()
-#   KdeBaseRuntime()
-# end
+if DAYOFMONTH == 1 or $*[0] == "all" or $*[0] == "qt"
+  QtCopy()
+end
+
+if DAYOFWEEK == 0 or $*[0] == "all" or $*[0] == "deps"
+  Strigi()
+  TagLib()
+  KdeLibs()
+  KdeBaseRuntime()
+end
 
 Amarok()
 
