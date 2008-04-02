@@ -42,7 +42,7 @@ end
 
 
 app = Qt::Application.new(ARGV)
-@settings = Qt::Settings.new( "Amarok", "Seeqpod Service" )
+@settings = Qt::Settings.new( "./seeqpod_service_rc", Qt::Settings::IniFormat )
 @uid = @settings.contains( "uid" ) ? @settings.value( "uid" ).toString : ""
 service_name = "Seeqpod.com"
 
