@@ -128,13 +128,9 @@ class Converter
             url      = tag["url"]
             deviceid = tag["deviceid"]
 
-            if deviceid == -1
-                url.slice!(1..url.length) # get rid of leading .
-            end
-
             devices_row.each do | device |
                 if deviceid == device["id"]
-                    url = device["lastmountpoint"] + url.slice[1..url.length]
+                    url = "." + device["lastmountpoint"] + url.slice(1..url.length)
                     url.sub!( "\/\/", "\/" ) #filter out multiple forward slashes
                     break
                 end
