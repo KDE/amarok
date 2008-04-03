@@ -90,7 +90,7 @@ def Amarok()
   CheckOut(comp, "extragear/multimedia/amarok", "amarok-nightly")
 
   # Change version
-  file = File.new( "#{@dir}/src/amarok.h", File::RDWR )
+  file = File.new( "#{@dir}/src/Amarok.h", File::RDWR )
   str = file.read()
   file.rewind()
   file.truncate( 0 )

@@ -32,7 +32,7 @@ def Amarok()
   # Change version
   Dir.chdir(BASEPATH + "/" + @folder)
   Dir.chdir("src")
-  file = File.new( "#{NAME}.h", File::RDWR )
+  file = File.new( "Amarok.h", File::RDWR )
   str = file.read()
   file.rewind()
   file.truncate( 0 )
