@@ -53,11 +53,12 @@ require 'config.rb'
     ftp.close
     rev = file.chomp(".tar.bz2").reverse.chomp("-" + comp.reverse).reverse
     @dir = "amarok-nightly-" + comp + "-" + rev
-    unless comp == "qt-copy"
-      `tar -xf #{file}`
-      FileUtils.rm_f(file)
-      FileUtils.mv(file.chomp(".tar.bz2"), @dir)
+    if comp == "qt-copy"
+      @dir = "amarok-nightly-qt-" + rev
     end
+    `tar -xf #{file}`
+    FileUtils.rm_f(file)
+    FileUtils.mv(file.chomp(".tar.bz2"), @dir)
     VarMagic(comp, rev)
   end
 

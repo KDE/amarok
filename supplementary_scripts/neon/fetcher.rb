@@ -17,6 +17,7 @@
 
 def QtCopy()
   GetTarball("qt-copy")
+  CreateTar("qt")
 end
 
 def Strigi()
