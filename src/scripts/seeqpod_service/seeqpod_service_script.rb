@@ -69,10 +69,20 @@ loop do
             configure if @uid.empty?
             filter = "_none_"
 
-            if args.length == 5 
-                filter = args[4].strip();
+            offset = 0;
+
+            if args.length == 5
+                callback = args[4].strip();
+                callback_args = callback.chomp.split("#")
+                filter = callback_args[0];
+
+                if callback_args.length == 2
+                    offset = callback_args[1].to_i
+                end
+
                 name = filter.gsub( "%20", " " );
                 name = name.strip();
+
             else
                 name = "Enter Query..."
             end
@@ -82,6 +92,10 @@ loop do
 
                 html = "The results of your query for: " + filter;
 
+                if offset > 0
+                    name = name + " ( " + offset.to_s + " - " + (offset + 100).to_s + " )"
+                end
+
                 system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertItem", service_name, "1", "-1", name, html, filter, "" )
 
                 #tell service that all items has been added ( no parent since these are top level items )
@@ -90,10 +104,11 @@ loop do
             else if args[1].strip() == "0"
                 parent_id = args[2]
 
-                url = "http://www.seeqpod.com/api/v0.2/<UID>/music/search/<QUERY>/0/100"
+                url = "http://www.seeqpod.com/api/v0.2/<UID>/music/search/<QUERY>/<OFFSET>/100"
 
                 url = url.gsub( "<UID>", @uid )
                 url = url.gsub( "<QUERY>", filter )
+                url = url.gsub( "<OFFSET>", offset.to_s );
 
                 #fetch results
 
@@ -110,14 +125,18 @@ loop do
                     links << ele.text
                 end
 
+                count = 0
+                        
                 titles.each_with_index do |title, idx|
                     link = links[idx]
 
                     system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertItem", service_name, "0", parent_id, title, "", "", link )
+                    count = count + 1
                 end
 
                 #tell service that all items has been added to a parent item
                 system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "donePopulating", service_name, parent_id )
+
             end
         end
     end
