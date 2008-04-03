@@ -87,6 +87,7 @@ void CloudEngine::update()
     setData( "cloud", "cloud_name", m_storedCloud["cloud_name"] );
     setData( "cloud", "cloud_strings", m_storedCloud["cloud_strings"] );
     setData( "cloud", "cloud_weights", m_storedCloud["cloud_weights"] );
+    setData( "cloud", "cloud_actions", m_storedCloud["cloud_actions"] );
 
 }
 

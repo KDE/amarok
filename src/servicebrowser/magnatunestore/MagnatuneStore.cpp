@@ -470,21 +470,29 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
     QVariantMap variantMap;
     QList<QVariant> strings;
     QList<QVariant> weights;
-    QList<QVariant> dbusActions;
+    QVariantMap dbusActions;
 
     foreach( const QString &key, map.keys() ) {
     
         strings << key;
         weights << map.value( key );
 
-        /*QString escapedKey = key.replace( " ", "%20" );
-        dbusActions << QString( "org.kde.amarok /ServicePluginManager sendMessage Magnatune.com \"addMoodyTracks %1 10\"").arg( escapedKey );*/
+        QString escapedKey = key;
+        escapedKey.replace( " ", "%20" );
+        QVariantMap action;
+        action["component"]  = "/ServicePluginManager";
+        action["function"] = "sendMessage";
+        action["arg1"] = QString( "Magnatune.com").arg( escapedKey );
+        action["arg2"] = QString( "addMoodyTracks %1 10").arg( escapedKey );
+
+        dbusActions[key] = action;
 
     }
 
     variantMap["cloud_name"] = QVariant( "Magnatune Moods" );
     variantMap["cloud_strings"] = QVariant( strings );
     variantMap["cloud_weights"] = QVariant( weights );
+    variantMap["cloud_actions"] = QVariant( dbusActions );
     
     The::serviceInfoProxy()->setCloud( variantMap );
 }

@@ -63,7 +63,7 @@ private:
 
 
 signals:
-    void clicked( QString text );
+    void clicked( const QString &text );
 };
 
 
@@ -88,6 +88,7 @@ public slots:
 
 private slots:
     void configAccepted();
+    void cloudItemActivated( const QString &text ); 
 
 private:
     void resize( qreal newWidth, qreal aspectRatio );
@@ -130,6 +131,7 @@ private:
 
     QList<QVariant> m_strings;
     QList<QVariant> m_weights;
+    QVariantMap m_actions;
 
     bool m_initialized;
 

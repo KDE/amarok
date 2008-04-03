@@ -25,6 +25,7 @@
 
 #include <QPainter>
 #include <QBrush>
+#include <QDBusInterface>
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QSpinBox>
@@ -122,6 +123,7 @@ void Cloud::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     
     m_strings = data[ "cloud_strings" ].toList();
     m_weights = data[ "cloud_weights" ].toList();
+    m_actions = data[ "cloud_actions" ].toMap();
 
     if ( m_initialized ) {
         m_cloudName->setText( data[ "cloud_name" ].toString() );
@@ -217,6 +219,8 @@ void Cloud::addText( QString text, int weight )
 
     m_currentLineItems.append( item );
     m_textItems.append( item );
+
+    connect( item, SIGNAL( clicked(const QString&) ), this, SLOT( cloudItemActivated(const QString&) ) );
 
 }
 
@@ -398,7 +402,7 @@ void Cloud::cropAndNormalize( int minCount, int maxCount )
 
     int index = 0;
 
-    //meh, opimize later of needed...
+    //meh, opimize later if needed...
     QList<QVariant> m_newStrings;
     QList<QVariant> m_newWeights;
     
@@ -417,6 +421,38 @@ void Cloud::cropAndNormalize( int minCount, int maxCount )
 
     m_strings = m_newStrings;
     m_weights = m_newWeights;
+
+    
+}
+
+void Cloud::cloudItemActivated( const QString & text )
+{
+
+    kDebug() << "cloudItemActivated: '" << text;
+    //find the index of this item in the list
+
+    QVariantMap action = m_actions[text].toMap();
+
+    QString component = action["component"].toString();
+    QString function = action["function"].toString();
+    QString arg1 = action["arg1"].toString();
+    QString arg2 = action["arg2"].toString();
+    QString arg3 = action["arg3"].toString();
+    QString arg4 = action["arg4"].toString();
+
+    kDebug() << component << ", " << function << ", " << arg1 << ", " << arg2 << ", " << arg3 << ", " << arg4;
+
+    //QDBusInterface interface( "org.kde.amarok", component );
+    QDBusInterface interface( "org.kde.amarok", component );
+
+    if ( !arg4.isEmpty() )
+        interface.call( function, arg1, arg2, arg3, arg4 );
+    else if ( !arg3.isEmpty() )
+        interface.call( function, arg1, arg2, arg3 );
+    else if ( !arg2.isEmpty() )
+        interface.call( function, arg1, arg2 );
+    else if ( !arg1.isEmpty() )
+        interface.call( function, arg1 );
 
     
 }
