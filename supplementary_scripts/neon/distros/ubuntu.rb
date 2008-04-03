@@ -52,11 +52,11 @@ class UploadUbuntu
     `dch -D "#{DEBVERSION}" -v "#{DATE}.#{@rev}-0amarok#{REV}" "Nightly Build"`
     `dpkg-buildpackage -S -sa -rfakeroot -k"Amarok Nightly Builds"`
 
-#     if package == "amarok"
-#       AmarokUpload()
-#     else
-#       SrcUpload(package)
-#     end
+    if package == "amarok"
+      AmarokUpload()
+    else
+      SrcUpload(package)
+    end
   end
 
   def CheckAvailablilty(package)
@@ -82,7 +82,7 @@ class UploadUbuntu
         Dir.chdir(dir)
 
         CreateNUpload(package)
-#         CheckAvailablilty(package)
+        CheckAvailablilty(package)
       end
     end
 
