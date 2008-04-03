@@ -52,10 +52,10 @@ require 'config.rb'
     ftp.getbinaryfile(comp + ".tar.bz2", file, 1024)
     ftp.close
     rev = file.chomp(".tar.bz2").reverse.chomp("-" + comp.reverse).reverse
-    @dir = "amarok-nightly-" + comp + "-" + rev
     if comp == "qt-copy"
-      @dir = "amarok-nightly-qt-" + rev
+      comp = "qt"
     end
+    @dir = "amarok-nightly-" + comp + "-" + rev
     `tar -xf #{file}`
     FileUtils.rm_f(file)
     FileUtils.mv(file.chomp(".tar.bz2"), @dir)
@@ -75,14 +75,12 @@ require 'config.rb'
     end
     `#{cmd} svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
     count = 0
-    while $? != 0
-      unless count >= 20
+    while $? != 0 and count >= 20
         `svn co svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
         count += 1
-      else
+    else
         puts "Neon::CheckOut svn co didn't exit properly in 20 tries, aborting checkout of #{comp}."
         return
-      end
     end
     rev = `svn info #{dir}`.split("\n")[4].split(" ")[1]
     @dir = dir + "-" + rev
@@ -91,9 +89,6 @@ require 'config.rb'
   end
 
   def VarMagic(comp, rev)
-    if comp == "qt-copy" then
-      comp = "qt"
-    end
     if @packages.nil?
       @packages = {comp => rev}
     else
