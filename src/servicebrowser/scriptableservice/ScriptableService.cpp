@@ -290,6 +290,7 @@ void ScriptableService::polish()
         }
 
         m_contentView->setModel( new SingleCollectionTreeItemModel( m_collection, viewLevels ) );
+        m_polished = true;
 
     }
 
