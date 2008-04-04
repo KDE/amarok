@@ -143,8 +143,8 @@ class Converter
 
             urlid = new_db.get_first_value( "SELECT id FROM urls WHERE rpath=?", url )
 
-            update_count += new_db.execute( "UPDATE statistics SET createdate=?, score=?, rating=?, playcount=? WHERE url=?",
-                                            tag["createdate"], tag["percentage"], tag["rating"], tag["playcounter"], urlid );
+            new_db.execute( "UPDATE statistics SET createdate=?, score=?, rating=?, playcount=? WHERE url=?",
+                             tag["createdate"], tag["percentage"], tag["rating"], tag["playcounter"], urlid );
 
             puts "Transferred statistics for: " + url if @options.verbose
         end
