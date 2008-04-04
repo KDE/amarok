@@ -67,7 +67,7 @@ ContextView::ContextView( QWidget* parent )
     PERF_LOG( "Accessing Plasma::Theme" );
     // here we initialize all the Plasma paths to Amarok paths
     Theme::self()->setApplication( "amarok" );
-    Theme::self()->setThemeName( "Amarok-Aya" );
+    Theme::self()->setThemeName( "Amarok-Mockup" );
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
 

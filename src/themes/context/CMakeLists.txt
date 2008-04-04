@@ -1,2 +1,2 @@
 add_subdirectory(default)
-add_subdirectory(Amarok-Aya)
+add_subdirectory(Amarok-Mockup)
