@@ -129,6 +129,8 @@ class Converter
 
         statistics_row = old_db.execute( "SELECT deviceid, url, createdate, percentage, rating, playcounter FROM statistics" )
 
+        puts "Fetched #{statistics_row.size} rows"
+
         statistics_row.each do | tag |
             url      = tag["url"]
             deviceid = tag["deviceid"]
@@ -143,13 +145,15 @@ class Converter
 
             urlid = new_db.get_first_value( "SELECT id FROM urls WHERE rpath=?", url )
 
-            new_db.execute( "UPDATE statistics SET createdate=?, score=?, rating=?, playcount=? WHERE url=?",
-                             tag["createdate"], tag["percentage"], tag["rating"], tag["playcounter"], urlid );
+            updates = new_db.execute( "UPDATE statistics SET createdate=?, score=?, rating=?, playcount=? WHERE url=?",
+                                       tag["createdate"], tag["percentage"], tag["rating"], tag["playcounter"], urlid );
+
+            update_count += updates.size
 
             puts "Transferred statistics for: " + url if @options.verbose
         end
         puts
-        puts "Updated " + update_count + " statistics"
+        puts "Updated #{update_count} statistics"
     end
 
 end
