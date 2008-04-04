@@ -235,7 +235,7 @@ T qSum(const QList<T>& container)
 
 void ContextLayout::relayout()
 {
-    QRectF rect = geometry().adjusted(margin(Plasma::LeftMargin), margin(Plasma::TopMargin), -margin(Plasma::RightMargin), -margin(Plasma::BottomMargin));
+    QRectF rect = geometry().adjusted(0, 0, -0, -0);
     const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
 
     //const int numColumns = 1;
@@ -284,14 +284,14 @@ void ContextLayout::relayout()
 
     //kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
     
-    qreal columnWidth = ( rect.width() - margin( Plasma::LeftMargin ) ) / d->columns.size();
+    qreal columnWidth = ( rect.width() - 0 ) / d->columns.size();
 //     columnWidth -= ( numColumns - 1 ) * margin( Plasma::Layout::LeftMargin ); // make room between columns
 
     //kDebug() << "numColumns: " << d->columns.size();
     for( int i = 0; i < d->columns.size(); i++ ) // lay out columns
     {
         //kDebug() << "setting columns to width:" << columnWidth;
-        QPointF pos( ( ( i + 1 ) * margin( Plasma::LeftMargin  ) ) + ( i * columnWidth ), margin( Plasma::LeftMargin ) );
+        QPointF pos( ( ( i + 1 ) * 0 ) + ( i * columnWidth ), 0 );
         //kDebug() << "i: " << i;
        // kDebug() << ", d->columns[ i ]: " << d->columns[ i ];
         //kDebug() << "last one (" << d->columns.front() << " ) has height " << d->columns.front()->sizeHint().height();
