@@ -194,7 +194,8 @@ void Cloud::addText( QString text, int weight )
     //item->setParentItem( this );
     //item->connect ( item, SIGNAL( clicked( QString ) ), receiver, slot );
     QFont font = item->font();
-    font.setPointSize( (int)weight * 1.5 + 10 );
+    //font.setPointSize( (int)weight * 1.5 + 10 );
+    font.setPointSize( (int)weight + 8 );
     item->setFont( font );
 
     QRectF itemRect = item->boundingRect();
