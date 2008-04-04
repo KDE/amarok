@@ -46,6 +46,7 @@ Name[uk]=Пристрій носія MTP
 Name[uz]=MTP медиа-ускунаси
 Name[wa]=Édjin d' media MTP
 Name[zh_CN]=MTP 媒体设备
+Name[zh_TW]=MTP 媒體裝置
 X-KDE-Library=libamarok_mtp-mediadevice
 Comment=Plugin for Amarok
 Comment[af]=Inprop module vir Amarok

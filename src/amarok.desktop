@@ -101,6 +101,7 @@ Comment[tr]=Amarok - Müziğinizi yeniden keşfedin!
 Comment[uk]=Amarok - заново відчуйте свою музику!
 Comment[uz]=Amarok - мусиқага янгидан назар ташланг
 Comment[wa]=Amarok - Ridiscovroz vosse muzike!
+Comment[zh_TW]=Amarok - 重新發現你的音樂！
 Icon=amarok
 X-KDE-Protocols=http
 #don't add inode/directory to mimetypes it leads to misbehavior
