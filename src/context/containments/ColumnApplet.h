@@ -103,6 +103,9 @@ private:
 
     SvgRenderJob *m_job;
 
+    //HACK to make the applet browser not be empty untill it has been resized...
+    bool m_appletBrowserHasBeenKicked;
+
     //KSvgRenderer * m_renderer;
 };
 

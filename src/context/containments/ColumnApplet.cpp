@@ -58,6 +58,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     , SvgHandler()
     , m_actions( 0 )
     , m_defaultColumnSize( 350 )
+    , m_appletBrowserHasBeenKicked ( false )
 {
     DEBUG_BLOCK
 
@@ -277,6 +278,10 @@ QList<QAction*> ColumnApplet::contextActions()
 void ColumnApplet::launchAppletBrowser() // SLOT
 {
     m_appletBrowser->show();
+    if ( !m_appletBrowserHasBeenKicked ) {
+        m_appletBrowser->resize( m_appletBrowser->size() + QSize( 1 , 0 ) );
+        m_appletBrowserHasBeenKicked = true;
+    }
 }
 /*
 bool ColumnApplet::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
