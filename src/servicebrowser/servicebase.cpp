@@ -69,8 +69,6 @@ Meta::TrackPtr ServiceFactory::trackForUrl(const KUrl & url)
     return track;
 }
 
-
-
 void ServiceFactory::clearActiveServices()
 {
     m_activeServices.clear();
@@ -85,7 +83,6 @@ ServiceBase::ServiceBase( const QString &name )
         , m_polished( false )
         , m_infoParser( 0 )
 {
-
     DEBUG_BLOCK
 
     m_name = name;
@@ -102,7 +99,6 @@ ServiceBase::ServiceBase( const QString &name )
     //m_topPanel->setFixedHeight( 50 );
 
     KHBox * commonPanel = new KHBox ( m_topPanel );
-
 
     m_homeButton = new QPushButton( commonPanel );
     m_homeButton->setIcon( KIcon("go-previous-amarok") );
@@ -152,15 +148,12 @@ ServiceBase::ServiceBase( const QString &name )
 
     m_searchWidget = new SearchWidget( m_topPanel );
     m_searchWidget->setup( m_contentView );
-
-
 }
 
 ServiceBase::~ServiceBase()
 {
     delete m_infoParser;
 }
-
 
 QString ServiceBase::getName( )
 {
@@ -216,11 +209,9 @@ void ServiceBase::setModel( SingleCollectionTreeItemModel * model )
     m_model  = model;
 }
 
-
 SingleCollectionTreeItemModel * ServiceBase::getModel() {
     return m_model;
 }
-
 
 void ServiceBase::infoChanged ( const QString &infoHtml ) {
 
@@ -236,22 +227,17 @@ void ServiceBase::infoChanged ( const QString &infoHtml ) {
 
 void ServiceBase::itemSelected( CollectionTreeItem * item )
 {
-
-    
+    DEBUG_BLOCK
 
     Meta::DataPtr ptr = item->data();
-
     if ( ( ptr.data() == 0 ) || ( m_infoParser == 0 )) return; 
 
     debug() << "selected item: " << ptr.data()->name();
 
     ServiceDisplayInfoProvider * infoProvider = dynamic_cast<ServiceDisplayInfoProvider *>( ptr.data() );
-
     if (infoProvider == 0 ) return; 
 
     infoProvider->processInfoOf( m_infoParser );
-
-
 }
 
 void ServiceBase::generateWidgetInfo( QString html ) const
@@ -319,11 +305,6 @@ QString ServiceBase::sendMessage(const QString & message)
 {
     return i18n( "ERROR: unknown message" );
 }
-
-
-
-
-
 
 
 #include "servicebase.moc"
