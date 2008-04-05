@@ -79,7 +79,7 @@ EngineController::EngineController()
 //         m_media->setTransitionTime( -AmarokConfig::crossfadeLength() );
 
     connect( m_media, SIGNAL( finished() ), SLOT( slotTrackEnded() ) );
-    connect( m_media, SIGNAL( aboutToFinish() ), SLOT( slotAboutToFinish() ) );
+//    connect( m_media, SIGNAL( aboutToFinish() ), SLOT( slotAboutToFinish() ) );
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
     connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ),
                       SLOT( slotStateChanged( Phonon::State, Phonon::State ) ) );
@@ -247,7 +247,11 @@ void
 EngineController::playUrl( const KUrl &url, uint offset )
 {
     DEBUG_BLOCK
+   
     m_isStream = ( url.protocol() == "http" || url.protocol() == "rtsp" );
+    debug() << "m_isStream = " << m_isStream;
+    debug() << "protocol = " << url.protocol();
+
     if( m_media->state() == Phonon::PlayingState )  //TODO: This should handle crossfading at some point.
         stop( true /*Don't fade out*/ );
     m_media->setCurrentSource( url );
@@ -427,11 +431,10 @@ EngineController::slotTick( qint64 position )
 void
 EngineController::slotAboutToFinish()
 {
-    if( m_multi )
-    {
-        m_multi->fetchNext();
-    }
-    else
+#if 0
+    DEBUG_BLOCK
+
+    if( m_multi.isNull() )
     {
         trackEnded( m_media->currentTime(), m_media->totalTime(), i18n( "Previous track finished" ) );
         slotTrackEnded(); // Phonon does not alert us that a track has finished if there is another source in the queue.
@@ -439,16 +442,33 @@ EngineController::slotAboutToFinish()
         if( m_currentTrack )
             m_media->enqueue( m_currentTrack->playableUrl() );
     }
+    else
+    {
+        m_multi->fetchNext();
+    }
+#endif
 }
 
 void
 EngineController::slotTrackEnded()
 {
     DEBUG_BLOCK
-    if( m_currentTrack ) // I have no idea why this can be null, but apparently it can..
+
+    emit trackFinished();
+
+//    if( !m_currentTrack.isNull() )
+//        m_currentTrack->finishedPlaying( 1.0 );
+
+    if( m_multi )
+        m_multi->fetchNext();
+    else
     {
-        m_currentTrack->finishedPlaying( 1.0 );
-        emit trackFinished();
+        m_currentTrack = The::playlistModel()->nextTrack();
+
+        if( m_currentTrack ) {
+            m_media->setCurrentSource( m_currentTrack->playableUrl() );
+            m_media->play();
+        }
     }
 }
 
