@@ -20,6 +20,10 @@
 #include "ServiceInfoProxy.h"
 #include "debug.h"
 
+#include <KStandardDirs>
+
+#include <QFile>
+
 ServiceInfoProxy * ServiceInfoProxy::m_instance = 0;
 
 ServiceInfoProxy * ServiceInfoProxy::instance()
@@ -50,6 +54,8 @@ ServiceInfoProxy::ServiceInfoProxy()
     m_storedCloud["cloud_name"] = QVariant( "test cloud" );
     m_storedCloud["cloud_strings"] = QVariant( strings );
     m_storedCloud["cloud_weights"] = QVariant( weights );
+
+    loadHomePage();
 }
 
 ServiceInfoProxy::~ServiceInfoProxy()
@@ -115,6 +121,36 @@ QVariantMap ServiceInfoProxy::info()
 QVariantMap ServiceInfoProxy::cloud()
 {
     return m_storedCloud;
+}
+
+void ServiceInfoProxy::loadHomePage()
+{
+    DEBUG_BLOCK
+
+    KUrl dataUrl( KStandardDirs::locate( "data", "amarok/data/" ) );
+    QString dataPath = dataUrl.path();
+
+    //load html
+
+    QString htmlPath = dataPath + "service_info_frontpage.html";
+    QFile file( htmlPath );
+    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text) ) {
+        debug() << "error opening file. Error: " << file.error();
+        return;
+    }
+
+    QString html = file.readAll();
+
+    KUrl imageUrl( KStandardDirs::locate( "data", "amarok/images/" ) );
+    QString imagePath = imageUrl.url();
+
+    html.replace( "_PATH_", imagePath );
+
+    debug() << "html:" << html;
+
+    m_storedInfo["service_name"] =  i18n( "Home" );
+    m_storedInfo["main_info"] = html;
+
 }
 
 

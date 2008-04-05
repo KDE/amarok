@@ -34,5 +34,8 @@ install(
         emblem-jamendo.png
         emblem-default.png
         sliders.svg
+        service_info_frontpage_bg.png
+        service_info_frontpage_logo.png
+        service_info_frontpage_shadow.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )

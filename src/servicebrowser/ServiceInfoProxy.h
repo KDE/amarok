@@ -23,6 +23,7 @@
 #include "amarok_export.h"
 #include "ServiceInfoObserver.h"
 
+
 #include <QVariant>
 #include <QSet>
 
@@ -52,6 +53,7 @@ private:
     ServiceInfoProxy();
     void notifyObservers( QVariantMap infoMap ) const;
     void notifyCloudObservers( QVariantMap cloudMap ) const;
+    void loadHomePage();
     QSet<ServiceInfoObserver *> m_observers;
     QSet<ServiceInfoObserver *> m_cloudObservers;
 
