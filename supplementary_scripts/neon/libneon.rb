@@ -75,12 +75,14 @@ require 'config.rb'
     end
     `#{cmd} svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
     count = 0
-    while $? != 0 and count >= 20
+    while $? != 0
+      unless count >= 20
         `svn co svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
         count += 1
-    else
+      else
         puts "Neon::CheckOut svn co didn't exit properly in 20 tries, aborting checkout of #{comp}."
         return
+      end
     end
     rev = `svn info #{dir}`.split("\n")[4].split(" ")[1]
     @dir = dir + "-" + rev
