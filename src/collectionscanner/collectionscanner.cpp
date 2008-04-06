@@ -511,7 +511,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
         bool nonPrint = false;
         for( unsigned i = 0; i < len; i++ )
         {
-            if( data[i].category() == QChar::NoCategory )
+            if( !data[i].isPrint() )
             {
                 nonPrint = true;
                 break;
