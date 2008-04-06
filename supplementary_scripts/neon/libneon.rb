@@ -81,6 +81,7 @@ require 'config.rb'
         count += 1
       else
         puts "Neon::CheckOut svn co didn't exit properly in 20 tries, aborting checkout of #{comp}."
+        @cofailed = true
         return
       end
     end
@@ -99,6 +100,9 @@ require 'config.rb'
   end
 
   def CreateTar(comp, dir=nil)
+    if @cofailed
+      return
+    end
     puts "#{ThisMethod()} started with component: #{comp}"
     `find '#{@dir}' -name '.svn' | xargs rm -rf`
     `tar -cf #{@dir}.tar #{@dir}`
