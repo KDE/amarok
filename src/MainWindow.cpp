@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "MainWindow"
+
 #include "config-amarok.h"           //HAVE_LIBVISUAL definition
 
 #include "ActionClasses.h"    //see toolbar construction
@@ -88,9 +90,11 @@ class ContextWidget : public KVBox
 MainWindow *MainWindow::s_instance = 0;
 
 MainWindow::MainWindow()
-        :KXmlGuiWindow( 0 )
+        : KXmlGuiWindow( 0 )
         , m_lastBrowser( 0 )
 {
+    DEBUG_BLOCK
+
     setObjectName("MainWindow");
     s_instance = this;
 
@@ -106,20 +110,27 @@ MainWindow::MainWindow()
 
     //new K3bExporter();
 
-    if( AmarokConfig::mainWindowSize().isValid() )
+    KConfigGroup config = Amarok::config();
+    const QSize size = config.readEntry( "MainWindow Size", QSize() );
+    const QPoint pos = config.readEntry( "MainWindow Position", QPoint() );
+    if( size.isValid() )
     {
-        // if first ever run, use sizeHint(), and let
-        // KWindowSystem place us otherwise use the stored values
-        resize( AmarokConfig::mainWindowSize() );
-        move( AmarokConfig::mainWindowPos() );
+        resize( size );
+        move( pos );
     }
+    else
+        warning() << "MainWindow Size invalid! ignoring: " << size;
 }
 
 MainWindow::~MainWindow()
 {
     DEBUG_BLOCK
-    AmarokConfig::setMainWindowPos( pos() );  //TODO de XT?
-    AmarokConfig::setMainWindowSize( size() ); //TODO de XT?
+
+    KConfigGroup config = Amarok::config();
+    config.writeEntry( "MainWindow Size", size() );
+    config.writeEntry( "MainWindow Position", pos() );
+    config.sync(); // Needed? Not sure.
+
     delete m_playlistFiles;
 }
 
@@ -203,8 +214,6 @@ void MainWindow::init()
     mainLayout->addWidget( m_controlBar );
     mainLayout->addWidget( m_splitter );
     mainLayout->addWidget( m_statusbarArea);
-
-
 
 
     setCentralWidget( centralWidget );
