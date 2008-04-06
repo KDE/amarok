@@ -1,3 +1,4 @@
 apachelogger:
-* [21:52:41] <dirk> how about using the "green" build numbers from http://ktown.kde.org/~dirk/dashboard `
-
+* [neon] <dirk> how about using the "green" build numbers from http://ktown.kde.org/~dirk/dashboard `
+* [neon] should mr clean mess with remote locations? ... i.e. published stuff
+* [ubuntu] nuke changelog files and generate them on runtime (i.e. cut down the changelog length since they always have the same content anyway)

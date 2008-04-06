@@ -73,4 +73,6 @@ UploadUbuntu.new()
 ###############################
 # Cleaning man
 
-puts "Mr. Clean is not yet implemented, sorry :-("
+puts "Mr. Clean is not yet completely(?) implemented, sorry :-("
+
+FileUtils.rm_f(ROOTPATH)
