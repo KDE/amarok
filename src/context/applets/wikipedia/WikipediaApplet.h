@@ -50,8 +50,8 @@ private:
     QSizeF m_size;
 
     QGraphicsSimpleTextItem* m_wikipediaLabel;
-    QGraphicsSimpleTextItem* m_currentLabel;
-    QGraphicsSimpleTextItem* m_currentTitle;
+    //QGraphicsSimpleTextItem* m_currentLabel;
+    //QGraphicsSimpleTextItem* m_currentTitle;
 
     QGraphicsProxyWidget* m_wikiPage;
     QWebView * m_webView;
