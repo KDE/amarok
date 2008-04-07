@@ -250,13 +250,12 @@ EngineController::playUrl( const KUrl &url, uint offset )
     DEBUG_BLOCK
    
     m_isStream = ( url.protocol() == "http" || url.protocol() == "rtsp" );
-    debug() << "m_isStream = " << m_isStream;
+    debug() << "isStream = " << m_isStream;
     debug() << "protocol = " << url.protocol();
 
-    if( m_media->state() == Phonon::PlayingState )  //TODO: This should handle crossfading at some point.
-        stop( true /*Don't fade out*/ );
     m_media->setCurrentSource( url );
-    if( offset != 0 )
+
+    if( offset )
     {
         m_media->pause();
         m_media->seek( offset );
@@ -279,8 +278,11 @@ EngineController::stop( bool forceInstant ) //SLOT
     delete m_multi;
 
     //let Amarok know that the previous track is no longer playing
-    if( m_currentTrack )
+    if( m_currentTrack ) {
+        debug() << "m_currentTrack != 0";
+        m_currentTrack->finishedPlaying( 1.0 );
         trackEnded( trackPosition(), m_currentTrack->length() * 1000, "stop" );
+    }
 
     if( m_fader )
         m_fader->deleteLater();
@@ -297,6 +299,8 @@ EngineController::stop( bool forceInstant ) //SLOT
     }
     else
         m_media->stop();
+
+    emit trackFinished();
 }
 
 void
@@ -457,8 +461,8 @@ EngineController::slotTrackEnded()
 
     emit trackFinished();
 
-//    if( !m_currentTrack.isNull() )
-//        m_currentTrack->finishedPlaying( 1.0 );
+    if( m_currentTrack )
+        m_currentTrack->finishedPlaying( 1.0 );
 
     if( m_multi )
         m_multi->fetchNext();
@@ -478,6 +482,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 {
     DEBUG_BLOCK
     Q_UNUSED( source );
+
     newTrackPlaying();
 }
 
