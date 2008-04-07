@@ -13,7 +13,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
-   sodipodi:docbase="/home/amarok-dev/amarok/src/themes/context/Amarok-Aya/widgets"
+   sodipodi:docbase="/home/amarok-dev/amarok/src/themes/context/Amarok-Mockup/widgets"
    sodipodi:docname="background.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
@@ -245,9 +245,9 @@
        id="bottomleft"
        inkscape:label="#g2261"
        transform="matrix(1.5045287,0,0,1.8262374,-52.930231,-410.28332)"
-       style="opacity:0.9">
+       style="opacity:1">
       <rect
-         style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         style="opacity:0.9;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
          id="rect5161"
          width="6.6465998"
          height="5.4757395"
@@ -258,9 +258,9 @@
        id="bottomright"
        inkscape:label="#g3240"
        transform="matrix(1.8281101,0,0,1.9817982,-248.43304,-463.94635)"
-       style="opacity:0.9">
+       style="opacity:1">
       <rect
-         style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         style="opacity:0.9;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
          id="rect5156"
          width="5.47013"
          height="5.0459146"
@@ -270,7 +270,7 @@
     <g
        id="bottom"
        inkscape:label="#g3276"
-       style="opacity:0.9"
+       style="opacity:1"
        transform="matrix(1,0,0,2,0,-452.36218)">
       <rect
          y="452.36218"
@@ -278,7 +278,7 @@
          height="5"
          width="200"
          id="rect3194"
-         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:0.78431373" />
+         style="opacity:0.9;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:0.78431373" />
     </g>
   </g>
 </svg>
