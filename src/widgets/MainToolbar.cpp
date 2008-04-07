@@ -46,14 +46,6 @@ MainToolbar::MainToolbar( QWidget * parent )
  , SvgHandler()
  , m_addActionsOffsetX( 0 )
 {
-
-    /*QString file = KStandardDirs::locate( "data","amarok/images/toolbar-background.svg" );
-    
-    m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
-    if ( ! m_svgRenderer->isValid() )
-        debug() << "svg is kaputski";
-    */
-
     loadSvg( "amarok/images/toolbar-background.svg" );
 
     setMaximumSize( 20000, 67 );
@@ -120,13 +112,11 @@ MainToolbar::MainToolbar( QWidget * parent )
     //resize( m_insideBox->width(), 62 );
 
     m_renderAddControls = false;
-
 }
 
 
 MainToolbar::~MainToolbar()
-{
-}
+{}
 
 void MainToolbar::paintEvent(QPaintEvent *)
 {
@@ -166,14 +156,13 @@ void MainToolbar::paintEvent(QPaintEvent *)
    
     QPixmap background = renderSvg( "toolbarbackground", contentsRect().width(), contentsRect().height(), "toolbarbackground" );
     painter.drawPixmap( 0, 0, background );
-    QPixmap controlArea = renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
-    painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
+//    QPixmap controlArea = renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
+//    painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
     
     if ( m_renderAddControls ) {
         QPixmap addControlArea = renderSvg( "addbuttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
         painter.drawPixmap( addControlRect.x(), addControlRect.y(), addControlArea );
     }
-
 }
 
 void MainToolbar::engineStateChanged(Phonon::State state, Phonon::State oldState)
@@ -231,14 +220,10 @@ void MainToolbar::handleAddActions()
     }
 
     repaint ( 0, 0, -1, -1 ); // make sure that the add info area is shown or hidden at once.
-
-    
-
 }
 
 void MainToolbar::resizeEvent(QResizeEvent * event)
 {
-
     DEBUG_BLOCK
             
     QWidget::resizeEvent( event );
@@ -249,8 +234,6 @@ void MainToolbar::resizeEvent(QResizeEvent * event)
     m_playerControlsToolbar->move( middle - 90, 0 );
     m_volumeWidget->move( event->size().width() - 170, /*( m_insideBox->height() - m_volumeWidget->height() ) / 2*/ 0 );
     centerAddActions();
-
-    
 }
 
 void MainToolbar::paletteChange( const QPalette & oldPalette )
@@ -262,7 +245,6 @@ void MainToolbar::paletteChange( const QPalette & oldPalette )
 
 void MainToolbar::centerAddActions()
 {
-
     int numberOfActions = m_additionalActions.size();
     
     int marginLeft, marginRight, marginTop, marginBottom;
