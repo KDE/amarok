@@ -498,7 +498,7 @@ class StreamEditor : public KDialogBase
     public:
         StreamEditor( QWidget *parent, const QString &title, const QString &url, bool readonly = false );
 
-        KURL    url()  const { return KURL::KURL( m_urlLineEdit->text() ); }
+        KURL    url()  const { return KURL( m_urlLineEdit->text() ); }
         QString name() const { return m_nameLineEdit->text().replace( "\n", " " ); }
 
     private:

@@ -454,7 +454,7 @@ void PlaylistBrowser::loadCoolStreams()
         QDomElement e = n.toElement();
         QString name = e.attribute( "name" );
         e = n.namedItem( "url" ).toElement();
-        KURL url  = KURL::KURL( e.text() );
+        KURL url  = KURL( e.text() );
         last = new StreamEntry( m_coolStreams, last, url, name );
         last->setKept( false );
     }
