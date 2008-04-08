@@ -36,10 +36,10 @@ public:
     SvgHandler();
     ~SvgHandler();
 
-    void loadSvg( QString name );
+    void loadSvg( const QString& name );
     void reTint();
 
-    QPixmap renderSvg( QString keyname, int width, int height, QString element = QString() ) const;
+    QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString() ) const;
 
 private:
     QSvgRenderer * m_svgRenderer;

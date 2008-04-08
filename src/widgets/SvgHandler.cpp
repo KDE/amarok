@@ -28,21 +28,18 @@
 #include <QPainter>
 #include <QPixmapCache>
 
+
 SvgHandler::SvgHandler()
     : m_svgRenderer( 0 )
-    , m_svgFilename( QString() )
-{
-}
+{}
 
 SvgHandler::~SvgHandler()
 {
     delete m_svgRenderer;
-    m_svgRenderer = 0;
 }
 
-void SvgHandler::loadSvg( QString name )
+void SvgHandler::loadSvg( const QString& name )
 {
-
     m_svgFilename = KStandardDirs::locate( "data", name );
     
     m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( m_svgFilename ).toAscii() );
@@ -50,30 +47,26 @@ void SvgHandler::loadSvg( QString name )
         debug() << "svg file '" + m_svgFilename + "' cannot be loaded";
 }
 
-
-QPixmap SvgHandler::renderSvg( QString keyname, int width, int height, QString element ) const
+QPixmap SvgHandler::renderSvg( const QString& keyname, int width, int height, const QString& element ) const
 {
-
-    QString key = QString("%1:%2x%3")
-            .arg( keyname )
-            .arg( width )
-            .arg( height );
+    const QString key = QString("%1:%2x%3")
+        .arg( keyname )
+        .arg( width )
+        .arg( height );
 
     QPixmap pixmap( width, height );
     pixmap.fill( Qt::transparent );
 
-    if ( !QPixmapCache::find(key, pixmap) ) {
+    if ( !QPixmapCache::find( key, pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
         QPainter pt( &pixmap );
-        if ( !element.isEmpty() )
-            m_svgRenderer->render( &pt, element, QRectF( 0, 0, width, height ) );
-        else
+        if ( element.isEmpty() )
             m_svgRenderer->render( &pt, QRectF( 0, 0, width, height ) );
+        else
+            m_svgRenderer->render( &pt, element, QRectF( 0, 0, width, height ) );
   
-        QPixmapCache::insert(key, pixmap);
-
-
+        QPixmapCache::insert( key, pixmap );
     }
 
     return pixmap;
@@ -81,14 +74,12 @@ QPixmap SvgHandler::renderSvg( QString keyname, int width, int height, QString e
 
 void SvgHandler::reTint()
 {
-
     The::svgTinter()->init();
     
     delete m_svgRenderer;
     m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( m_svgFilename ).toAscii() );
     if ( ! m_svgRenderer->isValid() )
         debug() << "svg file '" + m_svgFilename + "' cannot be loaded";
-
 }
 
 
