@@ -95,10 +95,10 @@ void VerticalLayout::relayout()
     
     QRectF rect = geometry().adjusted(0, 0, 0, 0);
 
-//     debug() << "laying out column in rect::" << rect;
+     debug() << "laying out column in rect::" << rect;
 
     qreal top = 10.0;
-    qreal left = 10.0;
+    qreal left = 10.0; //Plasma::Layout::margin( Plasma::LeftMargin );
 
     foreach (LayoutItem *child , d->children) {
         qreal height = 0.0;
@@ -110,10 +110,10 @@ void VerticalLayout::relayout()
         
         const QRectF newgeom( rect.topLeft().x() + left,
                               rect.topLeft().y() + top,
-                                            rect.width(),
+                                           rect.width() - 6,
                                             height );
                                             
-//         debug() << "laying out child item with geometry:" << newgeom;
+         debug() << "laying out child item with geometry:" << newgeom;
                                             
         top += height /*+ spacing()*/;
         
