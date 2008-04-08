@@ -906,11 +906,11 @@ WebService::recommend( int type, QString username, QString artist, QString token
 
     QCString md5pass = KMD5( KMD5( m_password.utf8() ).hexDigest() + currentTime ).hexDigest();
 
-    QString token = QString( "user=%1&auth=%2&nonce=%3recipient=%4" )
-                       .arg( QString( QUrl( currentUsername() ).encodedPathAndQuery() ) )
-                       .arg( QString( QUrl( md5pass ).encodedPathAndQuery() ) )
-                       .arg( QString( QUrl( challenge ).encodedPathAndQuery() ) )
-                       .arg( QString( QUrl( username ).encodedPathAndQuery() ) );
+    token = QString( "user=%1&auth=%2&nonce=%3recipient=%4" )
+                .arg( QString( QUrl( currentUsername() ).encodedPathAndQuery() ) )
+                .arg( QString( QUrl( md5pass ).encodedPathAndQuery() ) )
+                .arg( QString( QUrl( challenge ).encodedPathAndQuery() ) )
+                .arg( QString( QUrl( username ).encodedPathAndQuery() ) );
 
     QHttpRequestHeader header( "POST", "/1.0/rw/recommend.php?" + token.utf8() );
     header.setValue( "Host", "wsdev.audioscrobbler.com" );
