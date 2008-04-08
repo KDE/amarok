@@ -25,6 +25,7 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
 
 add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS)
 
+set(TAGLIB_MIN_VERSION "1.5")
 find_package(Taglib)
 macro_log_feature( TAGLIB_FOUND "taglib" "Read and write tags in audio files" "http://www.freshmeat.net/projects/taglib" TRUE "1.5.0" "")
 if (WIN32)
