@@ -184,10 +184,10 @@ PodcastCollection::slotDownloadEpisode( Meta::PodcastEpisodePtr episode )
     m_fileNameMap[storedTransferJob] = KUrl( episode->url() ).fileName();
 
     debug() << "starting download for " << episode->title() << " url: " << episode->prettyUrl();
-    The::contextStatusBar()->newProgressOperation( storedTransferJob )
+    The::statusBar()->newProgressOperation( storedTransferJob )
             .setDescription( episode->title().isEmpty()
-            ? i18n( "Downloading Podcast Media" )
-    : i18n( "Downloading Podcast \"%1\"" ).arg( episode->title() ) )
+                ? i18n("Downloading Podcast Media")
+                : i18n("Downloading Podcast \"%1\"", episode->title()) )
             .setAbortSlot( this, SLOT( abortDownload()) );
 
     connect( storedTransferJob, SIGNAL(  finished( KJob * ) ), SLOT( downloadResult( KJob * ) ) );
@@ -200,7 +200,7 @@ PodcastCollection::downloadResult( KJob * job )
     DEBUG_BLOCK
     if( job->error() )
     {
-        Amarok::ContextStatusBar::instance()->longMessage( job->errorText() );
+        The::statusBar()->longMessage( job->errorText() );
         debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText() << endl;
     }
     else
@@ -225,8 +225,8 @@ PodcastCollection::downloadResult( KJob * job )
         }
         else
         {
-            Amarok::ContextStatusBar::instance()->longMessage( i18n("Unable to save podcast episode file to %1" )
-                .arg(localUrl.prettyUrl()) );
+            The::statusBar()->longMessage( i18n("Unable to save podcast episode file to %1",
+                            localUrl.prettyUrl()) );
         }
         localFile->close();
     }
