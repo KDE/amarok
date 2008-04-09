@@ -772,6 +772,7 @@ ScriptManager::scriptFinished( AmarokProcess* process ) //SLOT
     for( it = m_scripts.begin(); it != end; ++it )
         if( it.value().process == process ) break;
 
+    // FIXME The logic in this check doesn't make sense
     // Check if there was an error on exit
     if( process->error() != AmarokProcess::Crashed && process->exitStatus() != 0 ) {
         KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2", it.key(), process->exitStatus() ),it.value().log );
