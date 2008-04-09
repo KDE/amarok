@@ -114,3 +114,4 @@ QString Meta::ScriptableServiceGenre::description()
 {
     return m_description;
 }
+

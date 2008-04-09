@@ -159,3 +159,4 @@ void MagnatuneConfig::setLastUpdateTimestamp( qulonglong timestamp )
     m_hasChanged = true;
     m_lastUpdateTimestamp = timestamp;
 }
+
