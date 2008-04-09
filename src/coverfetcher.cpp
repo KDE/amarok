@@ -290,7 +290,6 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
         else if( list.item( i ).nodeName() == "Item" )
         {
             const QDomNode node = list.item( i );
-            debug() << "I Has an itemnode, parsing it!" << endl;
             parseItemNode( node );
         }
     }
@@ -309,7 +308,6 @@ void CoverFetcher::parseItemNode( const QDomNode &node )
         default: size = "Large";  break;
     }
     size += "Image";
-    debug() << "Fetching size: " << size << endl;
 
     while ( !it.isNull() ) {
         if ( it.isElement() ) {
@@ -317,19 +315,16 @@ void CoverFetcher::parseItemNode( const QDomNode &node )
             if(e.tagName()=="ASIN")
             {
                 m_asin = e.text();
-                debug() << "setting the ASIN as" << m_asin << endl;
                 m_coverAsins += m_asin;
             }
             else if(e.tagName() == "DetailPageURL" )
             {
                 m_amazonURL = e.text();
-                debug() << "Setting the details url to: " << m_amazonURL << endl;
                 m_coverAmazonUrls += m_amazonURL;
             }
             else if( e.tagName() == size )
             {
                 QDomNode subIt = e.firstChild();
-                debug() << "NAME: "  << subIt.nodeName() << "VALUE: " << subIt.nodeValue() << endl;
                 while( !subIt.isNull() )
                 {
                     if( subIt.isElement() )
@@ -339,7 +334,6 @@ void CoverFetcher::parseItemNode( const QDomNode &node )
                         {
                             const QString coverUrl = subE.text();
                             m_coverUrls += coverUrl;
-                            debug() << "Setting Cover URL to: " << coverUrl << endl;
                             break;
                         }
                     }
@@ -361,12 +355,10 @@ void CoverFetcher::parseItemNode( const QDomNode &node )
                         if( iter.nodeName() == "Artist" )
                         {
                             artist = iter.toElement().text();
-                            debug() << "Set Artist to: " << artist << endl;
                         }
                         else if( iter.nodeName() == "Title" )
                         {
                             album = iter.toElement().text();
-                            debug() << "Set Album to: " << album << endl;
                         }
                     }
                 }
