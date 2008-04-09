@@ -10,7 +10,7 @@ VERSION 1.4.9
     * Fix Amazon Cover fetching by using their new web service api.
     * Don't insert items into Dynamic Mode that don't exist.
     * If unavailable tracks are in the Playlist and random mode is on, don't
-      stop those track is selected; continue with available tracks.
+      stop those tracks if selected; continue with available tracks.
 
 
 VERSION 1.4.8
