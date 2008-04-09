@@ -1,5 +1,5 @@
 /* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@gmail.com>
+   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -178,16 +178,16 @@ PodcastCollection::slotDownloadEpisode( Meta::PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
 
-    KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( episode->remoteUrl(), KIO::Reload, KIO::HideProgressInfo );
+    KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( episode->url(), KIO::Reload, KIO::HideProgressInfo );
 
     m_jobMap[storedTransferJob] = episode;
-    m_fileNameMap[storedTransferJob] = episode->remoteUrl().fileName();
+    m_fileNameMap[storedTransferJob] = KUrl( episode->url() ).fileName();
 
-    debug() << "starting download for " << episode->title() << " url: " << episode->remoteUrl().prettyUrl();
+    debug() << "starting download for " << episode->title() << " url: " << episode->prettyUrl();
     The::contextStatusBar()->newProgressOperation( storedTransferJob )
             .setDescription( episode->title().isEmpty()
             ? i18n( "Downloading Podcast Media" )
-    : i18n( "Downloading Podcast \"%1\"", episode->title() ) )
+    : i18n( "Downloading Podcast \"%1\"" ).arg( episode->title() ) )
             .setAbortSlot( this, SLOT( abortDownload()) );
 
     connect( storedTransferJob, SIGNAL(  finished( KJob * ) ), SLOT( downloadResult( KJob * ) ) );
@@ -221,12 +221,12 @@ PodcastCollection::downloadResult( KJob * job )
         if( localFile->open( IO_WriteOnly ) &&
             localFile->write( static_cast<KIO::StoredTransferJob *>(job)->data() ) != -1 )
         {
-            episode->setPlayableUrl( localUrl );
+            episode->setLocalUrl( localUrl );
         }
         else
         {
-            Amarok::ContextStatusBar::instance()->longMessage( i18n("Unable to save podcast episode file to %1",
-                                                                    localUrl.prettyUrl()) );
+            Amarok::ContextStatusBar::instance()->longMessage( i18n("Unable to save podcast episode file to %1" )
+                .arg(localUrl.prettyUrl()) );
         }
         localFile->close();
     }

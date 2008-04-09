@@ -1,5 +1,5 @@
 /* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@gmail.com>
+   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -97,9 +97,9 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         virtual QString prettyName() const { return m_title; };
 
         //Track Methods
-        virtual KUrl playableUrl() const { return m_playableUrl; };
+        virtual KUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; };
         virtual QString prettyUrl() const { return m_url.prettyUrl(); };
-        virtual QString url() const { return m_url.prettyUrl(); };
+        virtual QString url() const { return m_url.url(); };
         virtual bool isPlayable() const { return true; };
         virtual bool isEditable() const { return false; };
 
@@ -149,11 +149,11 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         virtual int podcastType() { return EpisodeType; };
 
         //PodcastEpisode methods
+        virtual KUrl localUrl() const { return m_localUrl; };
         virtual QString pubDate() const { return m_pubDate; };
         virtual int duration() const { return m_duration; };
         virtual QString guid() const { return m_guid; };
 
-        virtual KUrl remoteUrl() const { return m_url; };
         virtual void setUrl( const KUrl &url ) { m_url = url; };
         virtual void setPubDate( const QString &pubDate ) { m_pubDate = pubDate; };
         virtual void setDuration( int duration ) { m_duration = duration; };
@@ -165,14 +165,14 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         virtual PodcastChannelPtr channel() { return m_channel; };
         virtual void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; };
 
-        virtual void setPlayableUrl( const KUrl &url ) { m_playableUrl = url; };
+        virtual void setLocalUrl( const KUrl &url ) { m_localUrl = url; };
 
     protected:
         PodcastChannelPtr m_channel;
         QString m_pubDate;
         QString m_guid;
         KUrl m_url;
-        KUrl m_playableUrl;
+        KUrl m_localUrl;
         int m_duration;
         int m_size;
         int m_sequenceNmbr;
