@@ -363,7 +363,7 @@ void CoverFetcher::parseItemNode( const QDomNode &node )
                             artist = iter.toElement().text();
                             debug() << "Set Artist to: " << artist << endl;
                         }
-                        else if( iter.nodeName() == "Album" )
+                        else if( iter.nodeName() == "Title" )
                         {
                             album = iter.toElement().text();
                             debug() << "Set Album to: " << album << endl;
