@@ -25,7 +25,7 @@
 require "net/http"
 require "rexml/document"
 begin
-  require "korundum"
+  require "Qt4"
 rescue LoadError
   error = "Qt4-Ruby (Ruby bindings for Qt4) is required for the 'Seeqpod' script.\n\nsudo apt-get install libqt4-ruby"
   `kdialog --sorry '#{error}'`
