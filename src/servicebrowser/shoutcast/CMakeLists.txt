@@ -16,6 +16,7 @@
 ########### next target ###############
 
         set(amarok_service_shoutcast_PART_SRCS
+            ShoutcastMeta.cpp
             ShoutcastService.cpp
             ShoutcastServiceCollection.cpp
             ShoutcastServiceQueryMaker.cpp

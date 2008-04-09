@@ -83,13 +83,13 @@ Track::playableUrl() const
 QString
 Track::prettyUrl() const
 {
-    return d->url.url();
+    return playableUrl().url();
 }
 
 QString
 Track::url() const
 {
-    return d->url.url();
+    return playableUrl().url();
 }
 
 bool
@@ -321,5 +321,11 @@ void
 Track::unsubscribe( Meta::Observer *observer )
 {
     d->observers.remove( observer );
+}
+
+void Track::updateUrl( const KUrl & url )
+{
+    d->url = url;
+    notifyObservers();
 }
 

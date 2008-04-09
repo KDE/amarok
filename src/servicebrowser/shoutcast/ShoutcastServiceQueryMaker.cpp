@@ -25,6 +25,7 @@
 #include "debug.h"
 #include "servicemetabase.h"
 #include "collection/support/MemoryMatcher.h"
+#include "ShoutcastMeta.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
@@ -310,9 +311,11 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete(KJob *job )
                 QString name =  e.attribute( "name" );
 
                 debug() << "add track: " <<  name;
-                ServiceTrack * track = new ServiceTrack(  name );
-                track->setUrl( "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
-                    + e.attribute( "id" ) + "&file=filename.pls" );
+
+                QString playlistUrl = "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
+                        + e.attribute( "id" ) + "&file=filename.pls";
+                
+                ShoutcastTrack * track = new ShoutcastTrack(  name, playlistUrl );
 
                 TrackPtr trackPtr( track );
                 m_collection->addTrack( name,  trackPtr );

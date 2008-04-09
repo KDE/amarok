@@ -19,11 +19,14 @@
 #ifndef AMAROK_STREAM_H
 #define AMAROK_STREAM_H
 
+#include "amarok_export.h"
 #include "Meta.h"
+
+
 
 namespace MetaStream
 {
-    class Track : public Meta::Track
+    class AMAROK_EXPORT Track : public Meta::Track
     {
         public:
             class Private;
@@ -94,6 +97,8 @@ namespace MetaStream
 
             virtual void subscribe( Meta::Observer *observer );
             virtual void unsubscribe( Meta::Observer *observer );
+
+            virtual void updateUrl( const KUrl &url );
 
         private:
             Private * const d;

@@ -22,6 +22,7 @@
 #ifndef AMAROK_META_PLAYLISTFILESUPPORT_H
 #define AMAROK_META_PLAYLISTFILESUPPORT_H
 
+#include "amarok_export.h"
 #include "Meta.h"
 #include "Playlist.h"
 
@@ -40,7 +41,7 @@ namespace Meta
 
     Format getFormat( const QString &filename );
 
-    PlaylistPtr loadPlaylist( const KUrl &url );
+    AMAROK_EXPORT PlaylistPtr loadPlaylist( const KUrl &url );
 
 }
 
