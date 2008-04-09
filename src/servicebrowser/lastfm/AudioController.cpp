@@ -121,7 +121,7 @@ AudioController::engineStateChanged( Phonon::State currentState, Phonon::State o
                 emit stateChanged( State_Streaming );
                 break;
 
-                //FIXME: This is completely incorrect!  state Changes get triggerred for all tracks.  This causes pausing anything to stop playback...
+                //FIXME: This is completely incorrect!  state Changes get triggered for all tracks.  This causes pausing anything to stop playback...
 //             case Phonon::PausedState:
 //                 // not supposed to pause the radio, so we'll just stop it
 //                 EngineController::instance()->stop();

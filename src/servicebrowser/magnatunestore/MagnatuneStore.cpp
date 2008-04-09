@@ -514,13 +514,13 @@ void MagnatuneStore::purchaseCurrentTrackAlbum()
         //is the source defined
         QString source = sic->sourceName();
         if ( source != "Magnatune.com" ) {
-            //not a Magnatune track, so dont bother...
+            //not a Magnatune track, so don't bother...
             delete sic;
             return;
         }
         delete sic;
     } else {
-        //not a Magnatune track, so dont bother...
+        //not a Magnatune track, so don't bother...
         return;
     }
 

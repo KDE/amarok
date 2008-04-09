@@ -132,7 +132,7 @@ void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldStat
     {
         // Note: This is not as accurate as it should be.  When the user manually changes tracks,
         // the engine sends a StoppedState followed by a PlayingState, causing the view to change.
-        // Unfortunatly, there is no easy way to fix this.
+        // Unfortunately, there is no easy way to fix this.
     case Phonon::PlayingState:
         showCurrentTrack();
         break;

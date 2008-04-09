@@ -339,13 +339,13 @@ void JamendoService::downloadCurrentTrackAlbum()
         //is the source defined
         QString source = sic->sourceName();
         if ( source != "Jamendo.com" ) {
-            //not a Jamendo track, so dont bother...
+            //not a Jamendo track, so don't bother...
             delete sic;
             return;
         }
         delete sic;
     } else {
-        //not a Jamendo track, so dont bother...
+        //not a Jamendo track, so don't bother...
         return;
     }
 

@@ -139,7 +139,7 @@ namespace Amarok
 
             int m_sliderHeight;
             int m_frame;
-            double m_knobX; // The position of the curren indicator.
+            double m_knobX; // The position of the current indicator.
             double m_positionChange;
             int m_oldValue;
 
