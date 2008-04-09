@@ -61,10 +61,13 @@ ShoutcastServiceQueryMaker::~ShoutcastServiceQueryMaker()
 
 QueryMaker * ShoutcastServiceQueryMaker::reset()
 {
+    DEBUG_BLOCK;
+    
     d->type = Private::NONE;
     d->maxsize = -1;
     d->returnDataPtrs = false;
     m_genreMatch = QString();
+    m_filter = QString();
 
     return this;
 }
@@ -181,21 +184,41 @@ void ShoutcastServiceQueryMaker::handleResult()
         default:
             break;
     }
-}
+
+ }
 
 void ShoutcastServiceQueryMaker::fetchGenres()
 {
     DEBUG_BLOCK
     //check if we already have the genres
-    if ( m_collection->genreMap().values().count() != 0 )
+    /*if ( m_collection->genreMap().values().count() != 0 && m_filter.isEmpty() )
     {
         handleResult();
         debug() << "no need to fetch genres again! ";
     }
-    else
+    else*/ if ( m_filter.isEmpty() )
     {
+        
+        m_collection->acquireReadLock();
+        m_collection->setGenreMap( GenreMap() );
+        m_collection->setTrackMap( TrackMap() );
+        m_collection->releaseLock();
+        
         m_storedTransferJob =  KIO::storedGet(  KUrl( "http://www.shoutcast.com/sbin/newxml.phtml" ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( genreDownloadComplete(KJob *) ) );
+    } else {
+
+        m_collection->acquireReadLock();
+        m_collection->setGenreMap( GenreMap() );
+        m_collection->setTrackMap( TrackMap() );
+        m_collection->releaseLock();
+        
+        ServiceGenre * genre = new ServiceGenre( "Results for: " + m_filter );
+        GenrePtr genrePtr( genre );
+        m_collection->addGenre( "Results for: " + m_filter,  genrePtr );
+        
+        handleResult();
+        emit( queryDone() );
     }
 }
 
@@ -204,16 +227,32 @@ void ShoutcastServiceQueryMaker::fetchStations()
 {
     DEBUG_BLOCK
 
-    GenreMatcher genreMatcher( m_collection->genreMap()[m_genreMatch] );
-    m_currentTrackQueryResults = genreMatcher.match( m_collection );
-    if( m_currentTrackQueryResults.count() > 0 )
+    bool refetch = false;
+
+    if ( m_collection->genreMap().isEmpty() )
+        refetch = true;
+    else {
+        GenreMatcher genreMatcher( m_collection->genreMap()[m_genreMatch] );
+        m_currentTrackQueryResults = genreMatcher.match( m_collection );
+        if ( m_currentTrackQueryResults.count() == 0 )
+            refetch = true;
+    }
+
+    
+    if( !refetch && m_filter.isEmpty() )
     {
         handleResult();
     }
-    else
+    else if ( m_filter.isEmpty() )
     {
         m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
+    } else {
+
+        debug() << "fetching tracks with filter: " << m_filter << " url: " << "http://www.shoutcast.com/sbin/newxml.phtml?genre=&s=" + m_filter;
+        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?search=" + m_filter ), KIO::NoReload, KIO::HideProgressInfo );
+        connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
+
     }
 }
 
@@ -280,7 +319,7 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 
 }
 
-void ShoutcastServiceQueryMaker::stationDownloadComplete(KJob *job )
+void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
 {
     DEBUG_BLOCK
     
@@ -320,10 +359,17 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete(KJob *job )
                 TrackPtr trackPtr( track );
                 m_collection->addTrack( name,  trackPtr );
 
-                GenrePtr genrePtr = m_collection->genreMap()[ m_genreMatch ];
-                ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
-                genre->addTrack( trackPtr );
-                track->setGenre( genrePtr );
+                if ( m_filter.isEmpty() ) {
+                    GenrePtr genrePtr = m_collection->genreMap()[ m_genreMatch ];
+                    ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
+                    genre->addTrack( trackPtr );
+                    track->setGenre( genrePtr );
+                } else {
+                    GenrePtr genrePtr = m_collection->genreMap()[ "Results for: " + m_filter ];
+                    ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
+                    genre->addTrack( trackPtr );
+                    track->setGenre( genrePtr );
+                }
 
                 m_currentTrackQueryResults.push_front( trackPtr );
 
@@ -335,6 +381,27 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete(KJob *job )
     m_storedTransferJob->deleteLater();
     handleResult();
     emit queryDone();
+}
+
+QueryMaker * ShoutcastServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
+{
+    DEBUG_BLOCK
+
+    //debug() << "value: " << value;
+    //for now, only accept artist filters
+    if ( value == valGenre ) {
+
+       /* if ( d->type == Private::GENRE ) {
+            m_collection->acquireReadLock();
+            m_collection->setGenreMap( GenreMap() );
+            m_collection->setTrackMap( TrackMap() );
+            m_collection->releaseLock();
+        }*/
+
+        debug() << "Filter: " << filter;
+        m_filter = filter;
+    }
+        return this;
 }
 
 

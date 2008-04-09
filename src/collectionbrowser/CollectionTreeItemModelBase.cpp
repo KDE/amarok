@@ -216,12 +216,15 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
 
 void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent) const
 {
+    //DEBUG_BLOCK
     if ( qm && parent ) {
 
         //this check should not hurt anyone... needs to check if single... needs it
         for( QMapIterator<QueryMaker*, CollectionTreeItem*> iter( d->m_childQueries ); iter.hasNext(); ) {
-            if( iter.next().value() == parent )
+            if( iter.next().value() == parent ) {
+                //debug() << "already querying for item...";
                 return;             //we are already querying for children of parent
+            }
         }
         if ( level > m_levelType.count() )
             return;

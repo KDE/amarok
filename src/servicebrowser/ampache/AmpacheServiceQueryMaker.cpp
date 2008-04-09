@@ -163,9 +163,6 @@ QueryMaker * AmpacheServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
 }
 
 
-
-
-
 // What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
 // The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
 // it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the

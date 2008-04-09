@@ -59,6 +59,8 @@ public:
 
     virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
 
+    virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
+
     //Methods "borrowed" from MemoryQueryMaker
     void runQuery();
     void handleResult();
@@ -83,6 +85,8 @@ protected:
     Private * const d;
 
     Meta::TrackList m_currentTrackQueryResults;
+
+    QString m_filter;
 
 public slots:
 
