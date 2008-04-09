@@ -18,9 +18,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "Mp3tunesMeta.h"
+
 #include "Amarok.h"
 #include "debug.h"
-#include "Mp3tunesMeta.h"
 
 #include <KIcon>
 #include <KLocale>

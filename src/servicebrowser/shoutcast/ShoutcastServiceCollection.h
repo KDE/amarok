@@ -16,8 +16,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#ifndef DYNAMICSERVICECOLLECTION_H
-#define DYNAMICSERVICECOLLECTION_H
+#ifndef SHOUTCASTSERVICECOLLECTION_H
+#define SHOUTCASTSERVICECOLLECTION_H
 
 #include <ServiceDynamicCollection.h>
 

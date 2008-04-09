@@ -26,9 +26,6 @@
 #include "Amarok.h"
 #include "debug.h"
 
-#include "debug.h"
-
-
 #include <KIcon>
 #include <KLocale>
 #include <KStandardDirs>

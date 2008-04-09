@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef SHOUTCASTSERVICEQUERYMAKER_H
-#define SHOUTCASTSERVICEQUERYMAKER_H
+#ifndef SCRIPTABLESERVICEQUERYMAKER_H
+#define SCRIPTABLESERVICEQUERYMAKER_H
 
 #include "DynamicServiceQueryMaker.h"
 

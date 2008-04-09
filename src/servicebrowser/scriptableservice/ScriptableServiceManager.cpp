@@ -23,7 +23,6 @@
 #include "collection/support/MemoryCollection.h"
 #include "debug.h"
 #include "ScriptableServiceCollection.h"
-#include "ScriptableServiceCollection.h"
 #include "ScriptableServiceMeta.h"
 #include <scriptableservicemanageradaptor.h>
 #include "servicemetabase.h"

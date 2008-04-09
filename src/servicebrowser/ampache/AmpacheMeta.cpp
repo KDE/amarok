@@ -17,8 +17,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "debug.h"
 #include "AmpacheMeta.h"
+#include "debug.h"
+
+
 using namespace Meta;
 
 //// AmpacheAlbum ////
