@@ -383,6 +383,8 @@ ScriptManager::findScripts() //SLOT
 void
 ScriptManager::slotCurrentChanged( QTreeWidgetItem* item )
 {
+    DEBUG_BLOCK
+
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
                             item == m_scoreCategory ||
@@ -612,6 +614,8 @@ ScriptManager::slotRunScript( bool silent )
 void
 ScriptManager::slotStopScript()
 {
+    DEBUG_BLOCK
+
     QTreeWidgetItem* const li = m_gui->treeWidget->currentItem();
     const QString name = li->text( 0 );
 
@@ -760,6 +764,8 @@ ScriptManager::slotReceivedStderr( AmarokProcess* process )
 void
 ScriptManager::scriptFinished( AmarokProcess* process ) //SLOT
 {
+    DEBUG_BLOCK
+
     // Look up script entry in our map
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
@@ -767,12 +773,15 @@ ScriptManager::scriptFinished( AmarokProcess* process ) //SLOT
         if( it.value().process == process ) break;
 
     // Check if there was an error on exit
-    if( process->error() != AmarokProcess::Crashed && process->exitStatus() != 0 )
-        KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2", it.key(), process->exitStatus() )
-                                           ,it.value().log );
-
+    if( process->error() != AmarokProcess::Crashed && process->exitStatus() != 0 ) {
+        KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2", it.key(), process->exitStatus() ),it.value().log );
+        warning() << "Script exited with error status: " << process->exitStatus();
+    }
+    
     // Destroy script process
-    delete it.value().process;
+    it.value().process->close();
+    it.value().process->deleteLater();
+
     it.value().process = 0;
     it.value().log.clear();
     it.value().li->setIcon( 0, QPixmap() );
