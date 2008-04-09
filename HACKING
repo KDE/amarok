@@ -301,6 +301,7 @@ set ignorecase
 set smartcase
 
 set title
+set showtabline=2  "Makes the status bar always show, also for just one tab
 
 autocmd FileType ruby set shiftwidth=2 tabstop=2
 
