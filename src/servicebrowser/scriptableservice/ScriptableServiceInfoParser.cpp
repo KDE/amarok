@@ -63,3 +63,4 @@ void ScriptableServiceInfoParser::getInfo(Meta::GenrePtr genre)
 }
 
 #include "ScriptableServiceInfoParser.moc"
+                 
