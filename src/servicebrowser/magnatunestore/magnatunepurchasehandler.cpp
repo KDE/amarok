@@ -75,7 +75,7 @@ void MagnatunePurchaseHandler:: purchaseAlbum( MagnatuneAlbum * album )
 
 
 
-void MagnatunePurchaseHandler::membershipDownload(QString membershipType, QString username, QString password)
+void MagnatunePurchaseHandler::membershipDownload( const QString &membershipType, const QString &username, const QString &password )
 {
     QString purchaseURL = "http://" + username + ":" + password + "@" + membershipType + ".magnatune.com/buy/membership_free_dl_xml?sku=" + m_currentAlbum->albumCode() + "&id=amarok";
 

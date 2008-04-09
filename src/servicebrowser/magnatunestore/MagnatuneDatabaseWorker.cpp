@@ -74,7 +74,7 @@ void MagnatuneDatabaseWorker::fetchMoodMap()
     m_moodMap.clear();
 }
 
-void MagnatuneDatabaseWorker::fetchTrackswithMood( QString mood, int noOfTracks, ServiceSqlRegistry * registry )
+void MagnatuneDatabaseWorker::fetchTrackswithMood( const QString &mood, int noOfTracks, ServiceSqlRegistry * registry )
 {
     m_task = FETCH_MOODY_TRACKS;
     m_mood = mood;

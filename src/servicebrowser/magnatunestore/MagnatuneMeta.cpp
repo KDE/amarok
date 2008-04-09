@@ -44,7 +44,7 @@ MagnatuneMetaFactory::MagnatuneMetaFactory( const QString & dbPrefix, MagnatuneS
 {
 }
 
-void MagnatuneMetaFactory::setMembershipInfo( QString prefix, QString userName, QString password )
+void MagnatuneMetaFactory::setMembershipInfo( const QString &prefix, const QString &userName, const QString &password )
 {
     m_membershipPrefix = prefix;
     m_userName = userName;

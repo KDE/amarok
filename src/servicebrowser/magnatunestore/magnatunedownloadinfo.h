@@ -45,7 +45,7 @@ public:
     bool initFromString( const QString &downloadInfoString, bool membershipDownload );
     bool initFromFile( const QString &downloadInfoFileName, bool membershipDownload );
 
-    void setMembershipInfo( QString username, QString password );
+    void setMembershipInfo( const QString &username, const QString &password );
     bool isMembershipDownload();
 
     DownloadFormatMap getFormatMap();

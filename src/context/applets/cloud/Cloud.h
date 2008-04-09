@@ -48,7 +48,7 @@ class CloudTextItem : public QGraphicsTextItem
 
 Q_OBJECT
 public:
-    explicit CloudTextItem(QString text, QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
+    explicit CloudTextItem( const QString &text, QGraphicsItem *parent = 0, QGraphicsScene *scene = 0 );
 
 protected:
     virtual void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
@@ -93,7 +93,7 @@ private slots:
 private:
     void resize( qreal newWidth, qreal aspectRatio );
 
-    void addText(QString text, int weight );
+    void addText( const QString &text, int weight );
 
     void cropAndNormalize( int minCount, int maxCount );
 

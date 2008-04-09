@@ -43,16 +43,16 @@ public:
     void /*AMAROK_EXPORT*/ subscribeForCloud( ServiceInfoObserver *observer );
     void /*AMAROK_EXPORT*/ unsubscribe( ServiceInfoObserver *observer );
 
-    void setInfo( QVariantMap infoMap );
-    void setCloud( QVariantMap cloudMap );
+    void setInfo( const QVariantMap &infoMap );
+    void setCloud( const QVariantMap &cloudMap );
     QVariantMap /*AMAROK_EXPORT*/ info(); // info about the service
     QVariantMap /*AMAROK_EXPORT*/ cloud(); //cloud view for the service
 
 private:
 
     ServiceInfoProxy();
-    void notifyObservers( QVariantMap infoMap ) const;
-    void notifyCloudObservers( QVariantMap cloudMap ) const;
+    void notifyObservers( const QVariantMap &infoMap ) const;
+    void notifyCloudObservers( const QVariantMap &cloudMap ) const;
     void loadHomePage();
     QSet<ServiceInfoObserver *> m_observers;
     QSet<ServiceInfoObserver *> m_cloudObservers;

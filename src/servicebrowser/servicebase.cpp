@@ -240,7 +240,7 @@ void ServiceBase::itemSelected( CollectionTreeItem * item )
     infoProvider->processInfoOf( m_infoParser );
 }
 
-void ServiceBase::generateWidgetInfo( QString html ) const
+void ServiceBase::generateWidgetInfo( const QString &html ) const
 {
     QVariantMap map;
     map["service_name"] = m_name;

@@ -168,7 +168,7 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
 
         //stuff for supporting the new membership services at Magnatune.com
 
-        void setMembershipInfo ( QString prefix, QString userName, QString password );
+        void setMembershipInfo ( const QString &prefix, const QString &userName, const QString &password );
         void setStreamType( int type );
 
 

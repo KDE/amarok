@@ -27,7 +27,7 @@ ScriptableServiceMetaItem::ScriptableServiceMetaItem( int level )
     , m_level( level )
 {}
 
-void Meta::ScriptableServiceMetaItem::setCallbackString(QString callbackString)
+void Meta::ScriptableServiceMetaItem::setCallbackString( const QString &callbackString )
 { 
     m_callbackString = callbackString;
 }

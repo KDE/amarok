@@ -45,7 +45,7 @@ public:
     void run();
 
     void fetchMoodMap();
-    void fetchTrackswithMood( QString mood, int noOfTracks, ServiceSqlRegistry * registry );
+    void fetchTrackswithMood( const QString &mood, int noOfTracks, ServiceSqlRegistry * registry );
 
 signals:
 

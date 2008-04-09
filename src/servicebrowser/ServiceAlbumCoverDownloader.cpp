@@ -33,7 +33,7 @@
 using namespace Meta;
 
 
-Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( QString name )
+Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QString &name )
     : ServiceAlbum( name )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
@@ -42,7 +42,7 @@ Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( QString name )
 }
 
 
-Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( QStringList resultRow )
+Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QStringList &resultRow )
     : ServiceAlbum( resultRow )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )

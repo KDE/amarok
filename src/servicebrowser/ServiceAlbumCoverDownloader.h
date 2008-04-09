@@ -49,8 +49,8 @@ private:
 
 public:
     
-    ServiceAlbumWithCover( QString name );
-    ServiceAlbumWithCover( QStringList resultRow );
+    ServiceAlbumWithCover( const QString &name );
+    ServiceAlbumWithCover( const QStringList &resultRow );
     
     virtual ~ServiceAlbumWithCover();
     

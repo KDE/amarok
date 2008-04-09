@@ -69,7 +69,7 @@ private:
     bool m_membershipDownload;
 
     bool parseDownloadXml( const QString &xml );
-    void membershipDownload( QString membershipType, QString username, QString password );
+    void membershipDownload( const QString &membershipType, const QString &username, const QString &password );
 
     /**
      * This function saves the xml download info received from Magnatune.com after a

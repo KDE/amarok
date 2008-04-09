@@ -151,10 +151,10 @@ public:
     void setGenre( const QString &genre );
     QString genre() const;
 
-    void setMp3TorrentUrl( QString url );
+    void setMp3TorrentUrl( const QString &url );
     QString mp3TorrentUrl();
 
-    void setOggTorrentUrl( QString url );
+    void setOggTorrentUrl( const QString &url );
     QString oggTorrentUrl();
 
     virtual QList< QAction *> customActions();

@@ -159,7 +159,7 @@ protected slots:
     void sortByGenreArtistAlbum();
 
 protected:
-    virtual void generateWidgetInfo( QString html = QString() ) const;
+    virtual void generateWidgetInfo( const QString &html = QString() ) const;
     
     static ServiceBase *s_instance;
     ServiceCollectionTreeView *m_contentView;

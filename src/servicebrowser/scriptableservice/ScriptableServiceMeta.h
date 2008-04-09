@@ -39,7 +39,7 @@ class ScriptableServiceMetaItem
     public:
         ScriptableServiceMetaItem( int level );
     
-        void setCallbackString( QString callbackString );
+        void setCallbackString( const QString &callbackString );
         QString callbackString() const;
         int level() const;
     

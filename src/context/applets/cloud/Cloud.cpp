@@ -184,7 +184,7 @@ qreal Cloud::heightForWidth(qreal width) const
 }
 
 
-void Cloud::addText( QString text, int weight )
+void Cloud::addText( const QString &text, int weight )
 {
     //debug() << "adding new text: " << text << " size: " << weight << endl;
 
@@ -290,10 +290,7 @@ void Cloud::adjustCurrentLinePos()
 
 
 
-
-
-
-CloudTextItem::CloudTextItem(QString text, QGraphicsItem * parent, QGraphicsScene * scene)
+CloudTextItem::CloudTextItem( const QString &text, QGraphicsItem * parent, QGraphicsScene * scene )
     : QGraphicsTextItem ( text, parent, scene )
 {
 

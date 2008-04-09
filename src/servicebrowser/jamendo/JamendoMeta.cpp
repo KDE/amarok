@@ -301,7 +301,7 @@ float JamendoAlbum::popularity() const
     return m_popularity;
 }
 
-void JamendoAlbum::setMp3TorrentUrl( QString url )
+void JamendoAlbum::setMp3TorrentUrl( const QString &url )
 {
     m_mp3TorrentUrl = url;
 }
@@ -311,7 +311,7 @@ QString JamendoAlbum::mp3TorrentUrl()
     return m_mp3TorrentUrl;
 }
 
-void JamendoAlbum::setOggTorrentUrl( QString url )
+void JamendoAlbum::setOggTorrentUrl( const QString &url )
 {
    m_oggTorrentUrl = url;
 }

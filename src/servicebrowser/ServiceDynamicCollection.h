@@ -64,10 +64,10 @@ public:
         //Override some stuff to be able to hande id mappings
         
 
-        void addTrack( QString key, Meta::TrackPtr trackPtr );
-        void addArtist( QString key, Meta::ArtistPtr artistPtr);
-        void addAlbum ( QString key, Meta::AlbumPtr albumPtr );
-        void addGenre( QString key, Meta::GenrePtr genrePtr);
+        void addTrack( const QString &key, Meta::TrackPtr trackPtr );
+        void addArtist( const QString &key, Meta::ArtistPtr artistPtr);
+        void addAlbum ( const QString &key, Meta::AlbumPtr albumPtr );
+        void addGenre( const QString &key, Meta::GenrePtr genrePtr);
 
         //TODO:
         //void setTrackMap( TrackMap map ) { m_trackMap = map; }

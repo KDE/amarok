@@ -277,7 +277,7 @@ bool MagnatuneDownloadInfo::isMembershipDownload()
     return m_membershipDownload;
 }
 
-void MagnatuneDownloadInfo::setMembershipInfo(QString username, QString password)
+void MagnatuneDownloadInfo::setMembershipInfo( const QString &username, const QString &password )
 {
     m_userName = username;
     m_password = password;

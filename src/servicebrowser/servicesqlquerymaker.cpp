@@ -758,7 +758,7 @@ ServiceSqlQueryMaker::handleYears( const QStringList &result )
 }*/
 
 QString
-ServiceSqlQueryMaker::escape( QString text ) const           //krazy:exclude=constref
+ServiceSqlQueryMaker::escape( QString text ) const        //krazy:exclude=constref
 {
     return text.replace( '\'', "''" );;
 }
