@@ -31,6 +31,8 @@
 
 #include <config.h>
 
+#include <string.h>
+
 namespace TagLib
 {
    namespace RealMedia
