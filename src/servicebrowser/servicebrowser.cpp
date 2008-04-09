@@ -48,7 +48,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     m_delegate = new ServiceListDelegate( m_serviceListView );
     m_serviceListView->setItemDelegate( m_delegate );
     m_serviceListView->setModel( m_serviceListModel );
-    connect(m_serviceListView, SIGNAL( clicked ( const QModelIndex & )   ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
+    connect(m_serviceListView, SIGNAL( clicked ( const QModelIndex & ) ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
     m_scriptableServiceManager = 0;
 }
 
@@ -60,11 +60,11 @@ ServiceBrowser::~ServiceBrowser()
 }
 
 
-//TODO: Thsi should be moved to the ScriptableServiceManager instead
+//TODO: This should be moved to the ScriptableServiceManager instead
 void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
     m_scriptableServiceManager = scriptableServiceManager;
     m_scriptableServiceManager->setParent( this );
-    connect ( m_scriptableServiceManager, SIGNAL( addService (  ServiceBase * ) ), this, SLOT( addService (  ServiceBase * ) ) );
+    connect ( m_scriptableServiceManager, SIGNAL( addService ( ServiceBase * ) ), this, SLOT( addService (  ServiceBase * ) ) );
 }
 
 
@@ -133,17 +133,13 @@ void ServiceBrowser::home()
     }
 }
 
-void ServiceBrowser::paletteChange(const QPalette & oldPalette)
+void ServiceBrowser::paletteChange( const QPalette & oldPalette )
 {
     DEBUG_BLOCK
     Q_UNUSED( oldPalette );
     m_delegate->paletteChange();
     m_serviceListView->reset();
 }
-
-
-#include "servicebrowser.moc"
-
 
 
 QMap< QString, ServiceBase * > ServiceBrowser::services()
@@ -168,5 +164,10 @@ void ServiceBrowser::removeService( const QString &name )
 void ServiceBrowser::resetService( const QString &name )
 {
     //What in the world is this for...
+
+    //Currently unused, but needed, in the future, for resetting a service based on config changes
+    //or the user choosing to reset the state of the service somehow.
     Q_UNUSED( name );
 }
+
+#include "servicebrowser.moc"
