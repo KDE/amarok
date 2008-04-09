@@ -54,7 +54,7 @@ class AmpacheService : public ServiceBase
 
 Q_OBJECT
 public:
-    AmpacheService( const QString &name, const QString &url = QString(), const QString &username = QString(), const QString &password = QString() );
+    explicit AmpacheService( const QString &name, const QString &url = QString(), const QString &username = QString(), const QString &password = QString() );
 
     ~AmpacheService();
 
