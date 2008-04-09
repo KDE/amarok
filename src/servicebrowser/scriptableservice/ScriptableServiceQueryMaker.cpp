@@ -281,10 +281,10 @@ void ScriptableServiceQueryMaker::fetchGenre()
         args += "populate ";
         args += "3 ";
         args += QString::number( d->parentId );
-        args += " ";
+        args += ' ';
         args += d->callbackString;
         if ( !d->filter.isEmpty() ) {
-            args += " ";
+            args += ' ';
             args += d->filter;
         }
         debug() << "sending: "  << args;
@@ -327,10 +327,10 @@ void ScriptableServiceQueryMaker::fetchArtists()
         args += "populate ";
         args += "2 ";
         args += QString::number( d->parentId );
-        args += " ";
+        args += ' ';
         args += d->callbackString;
         if ( !d->filter.isEmpty() ) {
-            args += " ";
+            args += ' ';
             args += d->filter;
         }
         debug() << "sending: "  << args;
@@ -366,11 +366,11 @@ void ScriptableServiceQueryMaker::fetchAlbums()
         args += "populate ";
         args += "1 ";
         args += QString::number( d->parentId );
-        args += " ";
+        args += ' ';
         args += d->callbackString;
 
         if ( !d->filter.isEmpty() ) {
-            args += " ";
+            args += ' ';
             args += d->filter;
         }
         
@@ -405,10 +405,10 @@ void ScriptableServiceQueryMaker::fetchTracks()
         args += "populate ";
         args += "0 ";
         args += QString::number( d->parentId );
-        args += " ";
+        args += ' ';
         args += d->callbackString;
         if ( !d->filter.isEmpty() ) {
-            args += " ";
+            args += ' ';
             args += d->filter;
         }
         debug() << "sending: "  << args;
@@ -508,7 +508,7 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter(qint64 value, const QString 
     DEBUG_BLOCK
 
     if ( value == valTitle ) {
-        d->filter += filter + " ";
+        d->filter += filter + ' ';
         d->filter = d->filter.replace( " ", "%20" );
     }
 
