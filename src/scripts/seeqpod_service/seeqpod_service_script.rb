@@ -47,6 +47,36 @@ app = Qt::Application.new(ARGV)
 service_name = "Seeqpod.com"
 
 
+#Seeqpod has given permission to use their background and logo in the html front page below!
+
+root_html = "" +
+"<HTML>" +
+"    <STYLE type=\"text/css\">" +
+"        BODY {" +
+"            margin: 0px;" +
+"            padding: 0px;" +
+"            font-family: Arial, Helvetica, sans-serif;" +
+"            font-size: 13px;" +
+"            background-color: #FFF;" +
+"            color: #878787;" +
+"            background-attachment: fixed;" +
+"            background-image:url(\"http://www.seeqpod.com/css/page/bg2.jpg\");" +
+"            background-repeat: no-repeat;" +
+"            background-position: center top;" +
+"        }" +
+"        DIV { text-align: center;  }" +
+"    </STYLE>" +
+"    <BODY>" +
+"        <DIV>" +
+"        <br><br>" +
+"        <IMG src=\"http://www.seeqpod.com/images/logo.png\" alt=\"SeeqPod.com\">" +
+"        <br><br>" +
+"        Welcome to the Amarok 2 SeeqPod.com scripted service. To search seeqpod, simply type in your search in the search box in the service and expand the item that apears in the list. Per default, this script will only return at most 100 matches, but by appending an #offset to your search, it will return latter matches. For instance, typing in \"Foobar\" will return the first 100 matches, \"Foobar#100\" the next 100 and so on." +
+"        </DIV>" +
+"    </BODY>" +
+"<HTML>"
+
+
 loop do
     message = gets
     puts "script got message" + message
@@ -60,7 +90,6 @@ loop do
             #2 levels, categories and stations
             levels = "2"
             short_description = "Search and stream from seeqpod.com"
-            root_html = "A small script to let you search and stream music from all over the internet, using seeqpod.com"
 
             # init new browser
             system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "initService", service_name, levels, short_description, root_html, "true" )
