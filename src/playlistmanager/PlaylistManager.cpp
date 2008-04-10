@@ -19,8 +19,11 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "ContextStatusBar.h"
+#include "CollectionManager.h"
 #include "PlaylistManager.h"
 #include "PlaylistFileSupport.h"
+#include "PodcastProvider.h"
+#include "sql/SqlPodcastProvider.h"
 #include "TheInstances.h"
 #include "debug.h"
 #include "meta/M3UPlaylist.h"
@@ -74,10 +77,16 @@ PlaylistManager::newPlaylistFilePath( const QString & fileExtension )
 }
 
 PlaylistManager::PlaylistManager()
-{}
+{
+    m_defaultPodcastProvider = SqlPodcastProvider::instance();
+    addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
+    CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
+}
 
 PlaylistManager::~PlaylistManager()
-{}
+{
+    delete m_defaultPodcastProvider;
+}
 
 PlaylistManager *
 PlaylistManager::instance()

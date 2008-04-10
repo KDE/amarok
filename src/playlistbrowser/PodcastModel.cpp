@@ -20,7 +20,7 @@
 #include "PodcastModel.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "TheInstances.h"
-#include "PodcastCollection.h"
+#include "PodcastProvider.h"
 #include "PodcastMeta.h"
 
 #include <QInputDialog>
@@ -249,8 +249,8 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
                             QString(), &ok );
         if ( ok && !url.isEmpty() ) {
         // user entered something and pressed OK
-        PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
-        channelProvider->addPodcast( url );
+        PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
+        podcastProvider->addPodcast( url );
         } else {
         // user entered nothing or pressed Cancel
             debug() << "invalid input or cancel";
@@ -318,8 +318,8 @@ PlaylistBrowserNS::PodcastModel::refreshPodcast( Meta::PodcastChannelPtr channel
             PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
     if( provider )
     {
-        PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
-        channelProvider->update( channel );
+        PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
+        podcastProvider->update( channel );
     }
     else
     {
@@ -352,8 +352,8 @@ PlaylistBrowserNS::PodcastModel::downloadEpisode( Meta::PodcastEpisodePtr episod
             PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
     if( provider )
     {
-        PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
-        channelProvider->downloadEpisode( episode );
+        PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
+        podcastProvider->downloadEpisode( episode );
     }
     else
     {

@@ -1,0 +1,67 @@
+/* This file is part of the KDE project
+   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+*/
+
+#ifndef PODCASTPROVIDER_H
+#define PODCASTPROVIDER_H
+
+#include "Collection.h"
+#include "PodcastMeta.h"
+#include "playlistmanager/PlaylistManager.h"
+
+#include <kio/jobclasses.h>
+#include <klocale.h>
+
+class KUrl;
+
+/**
+	@author Bart Cerneels <bart.cerneels@kde.org>
+*/
+class AMAROK_EXPORT PodcastProvider : public TrackProvider, public PlaylistProvider
+{
+    //Q_OBJECT
+    public:
+        virtual ~PodcastProvider() {};
+
+        virtual bool possiblyContainsTrack( const KUrl &url ) const = 0;
+        virtual Meta::TrackPtr trackForUrl( const KUrl &url ) = 0;
+
+        virtual void addPodcast( const KUrl &url ) = 0;
+
+        virtual void addChannel( Meta::PodcastChannelPtr channel ) = 0;
+        virtual void addEpisode( Meta::PodcastEpisodePtr episode ) = 0;
+
+        virtual Meta::PodcastChannelList channels()= 0;
+
+        // PlaylistProvider methods
+        virtual QString prettyName() const = 0;
+        virtual int category() const = 0;
+
+        virtual Meta::PlaylistList playlists() = 0;
+
+    public slots:
+        virtual void updateAll() = 0;
+        virtual void update( Meta::PodcastChannelPtr channel ) = 0;
+        virtual void downloadEpisode( Meta::PodcastEpisodePtr episode ) = 0;
+        virtual void slotUpdated() = 0;
+
+    signals:
+        virtual void updated() = 0;
+
+};
+
+#endif

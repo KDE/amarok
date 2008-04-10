@@ -52,7 +52,6 @@
 #include "Statistics.h"
 #include "ContextStatusBar.h"
 #include "TheInstances.h"
-#include "PodcastCollection.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/PlaylistFileProvider.h"
 #include "playlistbrowser/PlaylistBrowser.h"
@@ -242,13 +241,6 @@ void MainWindow::init()
         m_browsers->addWidget( KIcon( "services-amarok" ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
         PERF_LOG( "Created ServiceBrowser" )
-
-        PERF_LOG( "Do podcast stuff" )
-        //TODO: find a better place to load the default collections and providers
-        PodcastCollection *localPodcasts = new PodcastCollection();
-        The::playlistManager()->addProvider( localPodcasts->channelProvider(), PlaylistManager::PodcastChannel );
-        CollectionManager::instance()->addTrackProvider( localPodcasts );
-        PERF_LOG( "Podcast stuff done" )
 
         m_playlistFiles = new PlaylistFileProvider();
         The::playlistManager()->addProvider( m_playlistFiles, PlaylistManager::UserPlaylist );

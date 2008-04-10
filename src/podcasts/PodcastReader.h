@@ -19,7 +19,7 @@
 #ifndef PODCASTREADER_H
 #define PODCASTREADER_H
 
-#include "PodcastCollection.h"
+#include "PodcastProvider.h"
 #include "PodcastMeta.h"
 
 #include <QXmlStreamReader>
@@ -35,7 +35,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
 {
     Q_OBJECT
     public:
-        PodcastReader( PodcastCollection * collection );
+        PodcastReader( PodcastProvider * podcastProvider );
 
         bool read( QIODevice *device );
         bool read( const KUrl &url );
@@ -59,7 +59,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
 
     private:
         KUrl m_url;
-        PodcastCollection * m_collection;
+        PodcastProvider * m_podcastProvider;
         Meta::PodcastMetaCommon *m_current;
         Meta::PodcastChannelPtr m_channel;
 

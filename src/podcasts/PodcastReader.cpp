@@ -28,9 +28,9 @@
 
 using namespace Meta;
 
-PodcastReader::PodcastReader( PodcastCollection * collection )
+PodcastReader::PodcastReader( PodcastProvider * podcastProvider )
         : QXmlStreamReader()
-        , m_collection( collection )
+        , m_podcastProvider( podcastProvider )
         , m_current( 0 )
 {}
 
@@ -302,13 +302,13 @@ PodcastReader::commitChannel()
 {
     Q_ASSERT( m_channel );
 
-    if( m_collection->channels().contains( m_channel ) )
+    if( m_podcastProvider->channels().contains( m_channel ) )
         return;
 
     debug() << "commit new Podcast Channel (as Album) " << m_channel->title();
-    m_collection->acquireReadLock();
-    m_collection->addChannel( PodcastChannelPtr( m_channel ) );
-    m_collection->releaseLock();
+//     m_podcastProvider->acquireReadLock();
+    m_podcastProvider->addChannel( PodcastChannelPtr( m_channel ) );
+//     m_podcastProvider->releaseLock();
 
 //     emit finished( this, true );
 }
@@ -324,9 +324,9 @@ PodcastReader::commitEpisode()
     if( episodeMatch == item )
     {
         debug() << "commit episode " << m_current->title();
-        m_collection->acquireReadLock();
-        m_collection->addEpisode( item );
-        m_collection->releaseLock();
+//         m_podcastProvider->acquireReadLock();
+        m_podcastProvider->addEpisode( item );
+//         m_podcastProvider->releaseLock();
 
         Q_ASSERT( m_channel );
         //make a copy of the pointer and add that to the channel

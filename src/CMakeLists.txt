@@ -280,8 +280,9 @@ set( libcontextview_SRCS
 # PODCASTS
 #####################################################################
 set(libpodcasts_SRCS
-    podcasts/PodcastCollection.cpp
     podcasts/PodcastReader.cpp
+    podcasts/sql/SqlPodcastMeta.cpp
+    podcasts/sql/SqlPodcastProvider.cpp
 )
 
 #####################################################################

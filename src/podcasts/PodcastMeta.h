@@ -23,6 +23,7 @@
 #include "Playlist.h"
 
 #include <kurl.h>
+#include <KLocale>
 
 #include <QSharedData>
 #include <QString>
@@ -126,14 +127,14 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         virtual int filesize() const { return m_size; };
         virtual int sampleRate() const { return 0; };
         virtual int bitrate() const { return 0; };
-        virtual int trackNumber() const { return m_sequenceNmbr; };
+        virtual int trackNumber() const { return m_sequenceNumber; };
         virtual void setTrackNumber( int newTrackNumber ) { Q_UNUSED( newTrackNumber ); };
         virtual int discNumber() const { return 0; };
         virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ); };
         virtual uint lastPlayed() const { return 0; };
         virtual int playCount() const { return 0; };
 
-        virtual QString type() const { return QString( "Podcast" ); };
+        virtual QString type() const { return i18n( "Podcast" ); };
 
         virtual void beginMetaDataUpdate() {};
         virtual void endMetaDataUpdate() {};
@@ -150,6 +151,7 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
 
         //PodcastEpisode methods
         virtual KUrl localUrl() const { return m_localUrl; };
+        virtual void setLocalUrl( const KUrl &url ) { m_localUrl = url; };
         virtual QString pubDate() const { return m_pubDate; };
         virtual int duration() const { return m_duration; };
         virtual QString guid() const { return m_guid; };
@@ -159,29 +161,41 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         virtual void setDuration( int duration ) { m_duration = duration; };
         virtual void setGuid( const QString &guid ) { m_guid = guid; };
 
-        virtual int sequenceNumber() { return m_sequenceNmbr; };
-        virtual void setSequenceNumber( int sequenceNumber ) { m_sequenceNmbr = sequenceNumber; };
+        virtual int sequenceNumber() const { return m_sequenceNumber; };
+        virtual void setSequenceNumber( int sequenceNumber ) { m_sequenceNumber = sequenceNumber; };
 
         virtual PodcastChannelPtr channel() { return m_channel; };
         virtual void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; };
 
-        virtual void setLocalUrl( const KUrl &url ) { m_localUrl = url; };
-
     protected:
         PodcastChannelPtr m_channel;
-        QString m_pubDate;
-        QString m_guid;
-        KUrl m_url;
-        KUrl m_localUrl;
-        int m_duration;
-        int m_size;
-        int m_sequenceNmbr;
+
+        QString m_guid; //the GUID from the podcast feed
+        KUrl m_url; //remote url of the file
+        KUrl m_localUrl; //the localUrl, only valid if downloaded
+        QString m_title; //the title
+        QString m_subtitle; //a short description
+        QString m_description; //a longer description, possibly with HTML markup
+        QString m_mimeType; //the mimetype of the enclosure
+        //TODO: convert to QDateTime from a RFC822 format
+        QString m_pubDate; //the pubDate from the feed
+        int m_duration; //the playlength in seconds
+        int m_size; //the size tag from the enclosure
+        int m_sequenceNumber; //number of the episode
+        bool m_isNew; //listened to or not?
 
 };
 
 class PodcastChannel : public Playlist, public PodcastMetaCommon
 {
     public:
+
+        enum FetchType
+        {
+            DownloadWhenAvailable = 0,
+            StreamOrDownloadOnDemand
+        };
+
         virtual ~PodcastChannel() {};
 
         //Playlist virtual methods
@@ -196,19 +210,19 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
         virtual int podcastType() { return ChannelType; };
 
         //PodcastChannel specific methods
-
+        virtual QString title() const { return m_title; };
         virtual KUrl url() const { return m_url; };
-        virtual KUrl link() const { return m_link; };
+        virtual KUrl webLink() const { return m_link; };
         virtual QPixmap image() const { return m_image; };
         virtual QString copyright() { return m_copyright; };
-        virtual QStringList categories() const { return m_categories; };
+        virtual QStringList labels() const { return m_labels; };
 
         virtual void setUrl( KUrl &url ) { m_url = url; };
-        virtual void setLink( KUrl &link ) { m_link = link; };
+        virtual void setWebLink( KUrl &link ) { m_link = link; };
         virtual void setImage( QPixmap &image ) { m_image = image; };
         virtual void setCopyright( QString &copyright ) { m_copyright = copyright; };
-        virtual void setCategories( QStringList &categories ) { m_categories = categories; };
-        virtual void addCategory( QString &category ) { m_categories << category; };
+        virtual void setLabels( QStringList &labels ) { m_labels = labels; };
+        virtual void addLabel( QString &label ) { m_labels << label; };
 
         virtual void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; };
         virtual PodcastEpisodeList episodes() { return m_episodes; };
@@ -221,10 +235,17 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
 
     protected:
         KUrl m_url;
+        QString m_title;
         KUrl m_link;
-        QStringList m_categories;
-        QString m_copyright;
         QPixmap m_image;
+        QStringList m_labels;
+        QString m_copyright;
+        KUrl m_directory; //the local directory to save the files in.
+        bool m_autoScan; //should this channel be checked automaticly?
+        PodcastChannel::FetchType m_fetchType; //'download when available' or 'stream or download on demand'
+        bool m_autoTransfer; //copy to mediadevice?
+        bool m_hasPurge; //remove old episodes?
+        int m_purgeCount; //how many episodes do we keep on disk?
 
         PodcastEpisodeList m_episodes;
         TrackList m_tracks;

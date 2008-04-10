@@ -16,15 +16,13 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "PodcastCollection.h"
+#include "SqlPodcastProvider.h"
 
 #include "Amarok.h"
-//#include "AmarokStatusBar.h"
 #include "CollectionManager.h"
 #include "ContextStatusBar.h"
 #include "debug.h"
 #include "PodcastReader.h"
-#include "support/MemoryQueryMaker.h"
 #include "SqlStorage.h"
 #include "TheInstances.h"
 
@@ -39,11 +37,21 @@ using namespace Meta;
 
 static const int PODCAST_DB_VERSION = 1;
 
-PodcastCollection::PodcastCollection()
+SqlPodcastProvider * SqlPodcastProvider::s_instance = 0;
+
+SqlPodcastProvider *
+SqlPodcastProvider::instance()
+{
+    if ( s_instance == 0 )
+        s_instance = new SqlPodcastProvider();
+
+    return s_instance;
+}
+
+SqlPodcastProvider::SqlPodcastProvider()
 {
     DEBUG_BLOCK
 
-    m_channelProvider = new PodcastChannelProvider( this );
     m_sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QStringList values;
@@ -56,97 +64,40 @@ PodcastCollection::PodcastCollection()
     }
 }
 
-
-PodcastCollection::~PodcastCollection()
+SqlPodcastProvider::~SqlPodcastProvider()
 {}
 
-QueryMaker*
-PodcastCollection::queryMaker()
-{
-    return new MemoryQueryMaker( this, collectionId() );
-}
-
-QString
-PodcastCollection::collectionId() const
-{
-    return "Podcasts";
-}
-
 bool
-PodcastCollection::possiblyContainsTrack(const KUrl & url) const
+SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 {
     Q_UNUSED( url );
     return false;
 }
 
 Meta::TrackPtr
-PodcastCollection::trackForUrl(const KUrl & url)
+SqlPodcastProvider::trackForUrl(const KUrl & url)
 {
     Q_UNUSED( url );
     return TrackPtr();
 }
 
-CollectionLocation *
-PodcastCollection::location() const
+Meta::PlaylistList
+SqlPodcastProvider::playlists()
 {
-    return 0;
-}
+    Meta::PlaylistList playlistList;
 
-void
-PodcastCollection::slotUpdateAll()
-{
-    foreach( Meta::PodcastChannelPtr channel, m_channels )
+    QListIterator<Meta::SqlPodcastChannelPtr> i( m_channels );
+    while( i.hasNext() )
     {
-        slotUpdate( channel );
+        playlistList << PlaylistPtr::staticCast( i.next() );
     }
+    return playlistList;
 }
 
 void
-PodcastCollection::slotUpdate( Meta::PodcastChannelPtr channel )
-{
-    bool result = false;
-    PodcastReader * podcastReader = new PodcastReader( this );
-
-    connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
-             SLOT( slotReadResult( PodcastReader *, bool ) ) );
-
-    result = podcastReader->update( channel );
-}
-
-void
-PodcastCollection::slotReadResult( PodcastReader *podcastReader, bool result )
+SqlPodcastProvider::addPodcast(const KUrl & url)
 {
     DEBUG_BLOCK
-    if ( !result )
-    {
-        debug() << "Parse error in podcast "
-            << podcastReader->url() << " line: "
-            << podcastReader->lineNumber() << " column "
-            << podcastReader->columnNumber() << " : "
-            << podcastReader->errorString();
-    }
-    else
-    {
-        debug() << "Finished updating: " << podcastReader->url();
-    }
-
-    podcastReader->deleteLater();
-
-    m_channelProvider->slotUpdated();
-    emit( updated() );
-}
-
-
-void
-PodcastCollection::addPodcast(const QString & url)
-{
-    DEBUG_BLOCK
-
-    if( url.isNull() || url.isEmpty() )
-    {
-        debug() << " attempt to add an empty url";
-        return;
-    }
 
     KUrl kurl = KUrl( url );
 
@@ -160,22 +111,66 @@ PodcastCollection::addPodcast(const QString & url)
 }
 
 void
-PodcastCollection::addChannel( Meta::PodcastChannelPtr channel )
+SqlPodcastProvider::addChannel( Meta::PodcastChannelPtr channel )
 {
-    m_channels << channel;
-    debug() << "channel.count() = " << channel.count();
-    addAlbum( channel->name(), AlbumPtr::dynamicCast( channel ) );
+    m_channels << SqlPodcastChannelPtr( new Meta::SqlPodcastChannel( channel ) );
 }
 
 void
-PodcastCollection::addEpisode( Meta::PodcastEpisodePtr episode )
+SqlPodcastProvider::addEpisode( Meta::PodcastEpisodePtr episode )
 {
-    addTrack( episode->name(), TrackPtr::dynamicCast( episode ) );
+    new SqlPodcastEpisode( episode );
+}
+
+Meta::PodcastChannelList
+SqlPodcastProvider::channels()
+{
+    PodcastChannelList list;
+    QListIterator<SqlPodcastChannelPtr> i(m_channels);
+    while( i.hasNext() )
+    {
+        list << PodcastChannelPtr::dynamicCast( i.next() );
+    }
+    return list;
+}
+
+Meta::SqlPodcastChannelPtr
+SqlPodcastProvider::podcastChannelForId( int podcastChannelId )
+{
+    QListIterator<Meta::SqlPodcastChannelPtr> i( m_channels );
+    while( i.hasNext() )
+    {
+        if( i.next()->id() == podcastChannelId )
+            return i.previous();
+    }
+    return Meta::SqlPodcastChannelPtr();
 }
 
 void
-PodcastCollection::slotDownloadEpisode( Meta::PodcastEpisodePtr episode )
+SqlPodcastProvider::updateAll()
 {
+    foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
+    {
+        update( channel );
+    }
+}
+
+void
+SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
+{
+    bool result = false;
+    PodcastReader * podcastReader = new PodcastReader( this );
+
+    connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
+             SLOT( slotReadResult( PodcastReader *, bool ) ) );
+
+    result = podcastReader->update( channel );
+}
+
+void
+SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr podcastEpisode )
+{
+    SqlPodcastEpisodePtr episode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( podcastEpisode ) );
     DEBUG_BLOCK
 
     KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( episode->url(), KIO::Reload, KIO::HideProgressInfo );
@@ -195,7 +190,48 @@ PodcastCollection::slotDownloadEpisode( Meta::PodcastEpisodePtr episode )
 }
 
 void
-PodcastCollection::downloadResult( KJob * job )
+SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader, bool result )
+{
+    DEBUG_BLOCK
+    if ( !result )
+    {
+        debug() << "Parse error in podcast "
+            << podcastReader->url() << " line: "
+            << podcastReader->lineNumber() << " column "
+            << podcastReader->columnNumber() << " : "
+            << podcastReader->errorString();
+    }
+    else
+    {
+        debug() << "Finished updating: " << podcastReader->url();
+    }
+
+    podcastReader->deleteLater();
+
+    emit( updated() );
+}
+
+void
+SqlPodcastProvider::update( Meta::SqlPodcastChannelPtr channel )
+{
+    update( PodcastChannelPtr::dynamicCast( channel ) );
+}
+
+void
+SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr podcastEpisode )
+{
+    downloadEpisode( PodcastEpisodePtr::dynamicCast( podcastEpisode ) );
+}
+
+void
+SqlPodcastProvider::slotUpdated()
+{
+    DEBUG_BLOCK
+    emit updated();
+}
+
+void
+SqlPodcastProvider::downloadResult( KJob * job )
 {
     DEBUG_BLOCK
     if( job->error() )
@@ -205,7 +241,7 @@ PodcastCollection::downloadResult( KJob * job )
     }
     else
     {
-        Meta::PodcastEpisodePtr episode = m_jobMap[job];
+        Meta::SqlPodcastEpisodePtr episode = m_jobMap[job];
 
         QDir dir( Amarok::saveLocation("podcasts") );
         //save in directory with channels title
@@ -236,40 +272,14 @@ PodcastCollection::downloadResult( KJob * job )
 }
 
 void
-PodcastCollection::redirected( KIO::Job *job, const KUrl & redirectedUrl )
+SqlPodcastProvider::redirected( KIO::Job *job, const KUrl & redirectedUrl )
 {
     debug() << "redirecting to " << redirectedUrl << ". filename: " << redirectedUrl.fileName();
     m_fileNameMap[job] = redirectedUrl.fileName();
 }
 
-PodcastChannelProvider::PodcastChannelProvider( PodcastCollection *parent) : PlaylistProvider(),
-        m_parent( parent )
-{
-}
-
 void
-PodcastChannelProvider::slotUpdated()
-{
-    DEBUG_BLOCK
-    emit updated();
-}
-
-Meta::PlaylistList
-PodcastChannelProvider::playlists()
-{
-    Meta::PlaylistList playlistList;
-
-    QListIterator<Meta::PodcastChannelPtr> i( m_parent->channels() );
-    while( i.hasNext() )
-    {
-        playlistList << PlaylistPtr::staticCast( i.next() );
-    }
-    return playlistList;
-}
-
-//SQL storage stuff
-void
-PodcastCollection::createTables() const
+SqlPodcastProvider::createTables() const
 {
     DEBUG_BLOCK
 
@@ -279,6 +289,7 @@ PodcastCollection::createTables() const
                     ",title " + m_sqlStorage->textColumnType() +
                     ",weblink " + m_sqlStorage->exactTextColumnType() +
                     ",image " + m_sqlStorage->exactTextColumnType() +
+                    //TODO: change to description
                     ",comment " + m_sqlStorage->longTextColumnType() +
                     ",copyright "  + m_sqlStorage->textColumnType() +
                     ",directory "  + m_sqlStorage->textColumnType() +
@@ -296,6 +307,7 @@ PodcastCollection::createTables() const
                     ",subtitle " + m_sqlStorage->textColumnType() +
                     ",sequencenumber INTEGER" +
                     ",description " + m_sqlStorage->longTextColumnType() +
+                    //TODO: change to mimetype
                     ",filetype "  + m_sqlStorage->textColumnType() +
                     ",createdate "  + m_sqlStorage->textColumnType() +
                     ",length INTEGER"
@@ -310,4 +322,4 @@ PodcastCollection::createTables() const
                           "VALUES('AMAROK_PODCAST'," + QString::number( PODCAST_DB_VERSION ) + ");" );
 }
 
-#include "PodcastCollection.moc"
+#include "SqlPodcastProvider.moc"

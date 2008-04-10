@@ -28,6 +28,7 @@
 
 class PlaylistManager;
 class PlaylistProvider;
+class PodcastProvider;
 class KJob;
 
 /**
@@ -115,6 +116,7 @@ class PlaylistManager : public QObject
         bool canExpand( Meta::TrackPtr track );
         Meta::PlaylistPtr expand( Meta::TrackPtr track );
 
+        PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; };
 
     signals:
         void updated();
@@ -130,6 +132,8 @@ class PlaylistManager : public QObject
 
     private:
         static PlaylistManager* s_instance;
+
+        PodcastProvider *m_defaultPodcastProvider;
 
         QMultiMap<int, PlaylistProvider*> m_map; //Map PlaylistCategories to providers
         QMap<int, QString> m_customCategories;

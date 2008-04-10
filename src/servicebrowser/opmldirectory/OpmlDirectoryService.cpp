@@ -23,7 +23,7 @@
 #include "OpmlDirectoryInfoParser.h"
 #include "OpmlDirectoryXmlParser.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "podcasts/PodcastCollection.h"
+#include "podcasts/PodcastProvider.h"
 #include "ServiceSqlRegistry.h"
 #include "TheInstances.h"
 
@@ -243,8 +243,8 @@ void OpmlDirectoryService::subscribe()
     if( provider )
     {
         if ( m_currentFeed != 0 ) {
-            PodcastChannelProvider * channelProvider = static_cast<PodcastChannelProvider *>(provider);
-            channelProvider->addPodcast( m_currentFeed->url() );
+            PodcastProvider * podcastProvider = The::playlistManager()->defaultPodcasts();
+            podcastProvider->addPodcast( m_currentFeed->url() );
         }
     }
     else
