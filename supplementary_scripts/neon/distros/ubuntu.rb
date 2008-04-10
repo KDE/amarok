@@ -15,11 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-DEBVERSION  = "gutsy"
+DEBVERSION  = "hardy"
 DEBPATH     = NEONPATH + "/distros/ubuntu"
 DEBBASEPATH = ROOTPATH + "/#{DATE}-ubuntu"
 LPPATH      = "http://ppa.launchpad.net/amarok-nightly/ubuntu/pool/main/a/amarok-nightly"
-PACKAGES    = ["qt","strigi","kdelibs","kdebase-runtime","taglib"]
+PACKAGES    = ["qt","strigi","taglib","kdelibs","kdebase-runtime"]
 
 debemail    = ENV['DEBEMAIL']
 debfullname = ENV['DEBFULLNAME']
