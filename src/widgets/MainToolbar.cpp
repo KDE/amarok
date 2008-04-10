@@ -156,8 +156,8 @@ void MainToolbar::paintEvent(QPaintEvent *)
    
     QPixmap background = renderSvg( "toolbarbackground", contentsRect().width(), contentsRect().height(), "toolbarbackground" );
     painter.drawPixmap( 0, 0, background );
-//    QPixmap controlArea = renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
-//    painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
+    QPixmap controlArea = renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
+    painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
     
     if ( m_renderAddControls ) {
         QPixmap addControlArea = renderSvg( "addbuttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
