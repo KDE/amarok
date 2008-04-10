@@ -80,7 +80,9 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     m_playerControlsToolbar = new Amarok::ToolBar( m_insideBox );
     //playerControlsToolbar->setMinimumSize( 180, 45 );
-    m_playerControlsToolbar->setFixedSize( 180, 40 );
+    //m_playerControlsToolbar->setFixedSize( 180, 40 );
+    m_playerControlsToolbar->setFixedHeight( 40 );
+    
 
     //m_insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignCenter );
     m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -91,6 +93,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "play_pause" ) );
     m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "stop" ) );
     m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "next" ) );
+    m_playerControlsToolbar->adjustSize();
 
 
     m_addControlsToolbar = new Amarok::ToolBar( m_insideBox );
@@ -98,7 +101,8 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_addControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_addControlsToolbar->setIconDimensions( 16 );
     m_addControlsToolbar->setMovable( false );
-    m_addControlsToolbar->setFixedSize( 90, 22 );
+    //m_addControlsToolbar->setFixedSize( 90, 22 );
+    m_addControlsToolbar->setFixedHeight( 22 );
 
     m_volumeWidget = new VolumeWidget( m_insideBox );
     //vw->setMinimumSize( 150, 30 );
@@ -121,8 +125,11 @@ MainToolbar::~MainToolbar()
 void MainToolbar::paintEvent(QPaintEvent *)
 {
     int middle = contentsRect().width() / 2;
-    QRect controlRect( middle - 90, 0, 180, 40 );
-    QRect addControlRect( controlRect.bottomRight().x() + 10, 10, 90, 20 );
+
+    int controlWidth = m_playerControlsToolbar->width();
+    int addControlWidth = m_addControlsToolbar->width();
+    QRect controlRect( middle - controlWidth / 2, 0, controlWidth, 40 );
+    QRect addControlRect( controlRect.bottomRight().x() + 10, 10, addControlWidth, 20 );
 
 
     //Meta::TrackPtr track = EngineController::instance()->currentTrack();
@@ -208,7 +215,9 @@ void MainToolbar::handleAddActions()
             foreach( QAction *action, m_additionalActions )
                 m_addControlsToolbar->addAction( action );
 
-            centerAddActions();
+            m_addControlsToolbar->adjustSize();
+
+            //centerAddActions();
             
             //m_insideBox->layout()->setAlignment( m_addControlsToolbar, Qt::AlignCenter );
             
@@ -230,10 +239,12 @@ void MainToolbar::resizeEvent(QResizeEvent * event)
     //as we handle our own layout, we need to position items correctly
     
     int middle = event->size().width() / 2;
-    
-    m_playerControlsToolbar->move( middle - 90, 0 );
+
+    int controlWidth = m_playerControlsToolbar->width();
+    m_playerControlsToolbar->move( middle - ( controlWidth / 2 ), 0 );
+    m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 , 10 );
     m_volumeWidget->move( event->size().width() - 170, /*( m_insideBox->height() - m_volumeWidget->height() ) / 2*/ 0 );
-    centerAddActions();
+    //centerAddActions();
 }
 
 void MainToolbar::paletteChange( const QPalette & oldPalette )
@@ -243,7 +254,7 @@ void MainToolbar::paletteChange( const QPalette & oldPalette )
     repaint( 0, 0, -1, -1 );
 }
 
-void MainToolbar::centerAddActions()
+/*void MainToolbar::centerAddActions()
 {
     int numberOfActions = m_additionalActions.size();
     
@@ -252,7 +263,9 @@ void MainToolbar::centerAddActions()
     int actionsSize = ( numberOfActions * 24 ) + marginLeft + marginRight + 8;
     m_addActionsOffsetX = ( m_addControlsToolbar->width() - actionsSize ) / 2;
     int middle = contentsRect().width() / 2;
-    m_addControlsToolbar->move( middle + 100 + m_addActionsOffsetX, 10 );
-}
+
+    int controlWidth = m_playerControlsToolbar->width();
+    m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 + m_addActionsOffsetX, 10 );
+}*/
 
 

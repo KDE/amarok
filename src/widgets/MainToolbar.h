@@ -49,7 +49,7 @@ protected:
       virtual void resizeEvent ( QResizeEvent * event );
       virtual void paletteChange( const QPalette & oldPalette );
       void handleAddActions();
-      void centerAddActions();
+      //void centerAddActions();
 
 private:
 
