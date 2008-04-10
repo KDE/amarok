@@ -693,7 +693,7 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool tra
 //     TrackToolTip::instance()->setTrack( currentTrack );
 }
 
-void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )
+void App::engineTrackPositionChanged( long /*position*/, bool /*userSeek*/ )
 {
 //     TrackToolTip::instance()->setPos( position );
 }
