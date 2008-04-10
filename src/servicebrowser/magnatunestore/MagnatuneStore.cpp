@@ -17,51 +17,49 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+
 #include "MagnatuneStore.h"
 
-
 #include "Amarok.h"
-#include "collection/CollectionManager.h"
 #include "ContextStatusBar.h"
-#include "debug.h"
 #include "EngineController.h"
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"
-#include "magnatuneinfoparser.h"
-#include "playlist/PlaylistModel.h"
 #include "ServiceInfoProxy.h"
 #include "ServiceSqlRegistry.h"
 #include "TheInstances.h"
+#include "collection/CollectionManager.h"
+#include "debug.h"
+#include "magnatuneinfoparser.h"
+#include "playlist/PlaylistModel.h"
 
-//#include "../../contextview/contextview.h"
-//#include "../../contextview/cloudbox.h"
-//#include "../../contextview/graphicsitemfader.h"
-
-#include <kstandarddirs.h> //locate()
-#include <kurl.h>
-#include <kiconloader.h>   //multiTabBar icons
-#include <KTemporaryFile>
-#include <threadweaver/ThreadWeaver.h>
+#include <KIconLoader>   //multiTabBar icons
 #include <KMenuBar>
+#include <KStandardDirs>  //locate()
+#include <KTemporaryFile>
+#include <KUrl>
+#include <threadweaver/ThreadWeaver.h>
 
 #include <QAction>
 #include <QDateTime>
+#include <QDirModel>
 #include <QGraphicsScene>
-#include <QSplitter>
-#include <q3dragobject.h>
 #include <QLabel>
 #include <QMenu>
-
-#include <QTextStream>
-
+#include <QSplitter>
 #include <QStandardItemModel>
-#include <QDirModel>
+#include <QTextStream>
+#include <q3dragobject.h>
 
 #include <typeinfo>
 
 using namespace Meta;
 
 AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// class MagnatuneServiceFactory
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void MagnatuneServiceFactory::init()
 {
@@ -89,11 +87,15 @@ KConfigGroup MagnatuneServiceFactory::config()
     return Amarok::config( "Service_Magnatune" );
 }
 
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// class MagnatuneStore
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 MagnatuneStore::MagnatuneStore( const char *name )
         : ServiceBase( name )
+        , m_purchaseHandler( 0 )
+        , m_redownloadHandler( 0 )
+        , m_purchaseInProgress( 0 )
         , m_currentAlbum( 0 )
         , m_streamType( MagnatuneMetaFactory::OGG )
         , m_magnatuneTimestamp( 0 )
@@ -103,24 +105,12 @@ MagnatuneStore::MagnatuneStore( const char *name )
     DEBUG_BLOCK
     //initTopPanel( );
 
-
     setShortDescription( i18n( "The friendly record company with the motto \"We are not evil!\"" ) );
     setIcon( KIcon( "view-services-magnatune-amarok" ) );
 
-
     debug() << "Magnatune browser starting...";
 
-
-
     //initBottomPanel();
-
-    m_currentInfoUrl = "";
-
-    m_purchaseHandler = 0;
-    m_redownloadHandler = 0;
-
-    m_purchaseInProgress = 0;
-
 //    m_currentlySelectedItem = 0;
 
     m_polished = false;
@@ -139,14 +129,10 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
     setStreamType( config.streamType() );
 
-
     metaFactory->setStreamType( m_streamType );
     m_registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
-
 }
-
-
 
 
 void MagnatuneStore::purchase( )
@@ -175,10 +161,8 @@ void MagnatuneStore::purchase( )
 }
 
 
-
 void MagnatuneStore::initTopPanel( )
 {
-
     //connect( m_genreComboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( genreChanged( QString ) ) );
     QAction *action = new QAction( i18n("Artist"), m_menubar );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtist() ) );
@@ -231,15 +215,17 @@ void MagnatuneStore::initBottomPanel()
     m_purchaseAlbumButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     m_purchaseAlbumButton->setEnabled( false );
 
-
     connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT( purchase() ) );
 }
+
 
 void MagnatuneStore::updateButtonClicked()
 {
     m_updateAction->setEnabled( false );
     updateMagnatuneList();
 }
+
+
 bool MagnatuneStore::updateMagnatuneList()
 {
     //download new list from magnatune
@@ -272,7 +258,6 @@ bool MagnatuneStore::updateMagnatuneList()
 
 void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
 {
-
    debug() << "MagnatuneStore: xml file download complete";
 
     if ( downLoadJob != m_listDownloadJob )
@@ -295,10 +280,9 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     ThreadWeaver::Weaver::instance()->enqueue( parser );
 }
 
+
 void MagnatuneStore::listDownloadCancelled( )
 {
-
-
     Amarok::ContextStatusBar::instance() ->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     delete m_listDownloadJob;
@@ -312,7 +296,6 @@ void MagnatuneStore::listDownloadCancelled( )
 
 void MagnatuneStore::doneParsing()
 {
-
     debug() << "MagnatuneStore: done parsing";
     m_collection->emitUpdated();
 
@@ -325,8 +308,8 @@ void MagnatuneStore::doneParsing()
         config.setLastUpdateTimestamp( m_magnatuneTimestamp );
     
     config.save();
-    
 }
+
 
 void MagnatuneStore::processRedownload( )
 {
@@ -339,14 +322,11 @@ void MagnatuneStore::processRedownload( )
     m_redownloadHandler->showRedownloadDialog();
 }
 
+
 void MagnatuneStore::purchaseCompleted( bool )
 {
-
-    if ( m_purchaseHandler != 0 )
-    {
-        delete m_purchaseHandler;
-        m_purchaseHandler = 0;
-    }
+    delete m_purchaseHandler;
+    m_purchaseHandler = 0;
 
     m_purchaseAlbumButton->setEnabled( true );
     m_purchaseInProgress = false;
@@ -354,13 +334,11 @@ void MagnatuneStore::purchaseCompleted( bool )
     debug() << "Purchase operation complete";
 
     //TODO: display some kind of success dialog here?
-
-
 }
 
 
-void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem ){
-
+void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem )
+{
     DEBUG_BLOCK
 
     //we only enable the purchase button if there is only one item selected and it happens to
@@ -386,32 +364,21 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem ){
         m_purchaseAlbumButton->setEnabled( false );
 
     }
-
-
-
-    return;
 }
 
 
 void MagnatuneStore::addMoodyTracksToPlaylist( const QString &mood, int count )
 {
-
-
     MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
     databaseWorker->fetchTrackswithMood( mood, count, m_registry );
     connect( databaseWorker, SIGNAL( gotMoodyTracks( Meta::TrackList ) ), this, SLOT( moodyTracksReady(Meta::TrackList ) ) );
     
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
-
 }
 
 
-
-//using namespace Context;
-
-void MagnatuneStore::polish( )
+void MagnatuneStore::polish()
 {
-
     DEBUG_BLOCK;
 
     if (!m_polished) {
@@ -424,16 +391,13 @@ void MagnatuneStore::polish( )
         levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
         
         setInfoParser( new MagnatuneInfoParser() );
-        
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
         connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
     }
 
-    KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
+    const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
     QString imagePath = url.url();
-
-    
 
     MagnatuneInfoParser * parser = dynamic_cast<MagnatuneInfoParser *> ( infoParser() );
     if ( parser )
@@ -447,8 +411,6 @@ void MagnatuneStore::polish( )
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 
     checkForUpdates();
-
-
 }
 
 
@@ -462,11 +424,8 @@ void MagnatuneStore::setMembership(const QString & type, const QString & usernam
 }
 
 
-
-
 void MagnatuneStore::moodMapReady(QMap< QString, int > map)
 {
-
     QVariantMap variantMap;
     QList<QVariant> strings;
     QList<QVariant> weights;
@@ -497,10 +456,12 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
     The::serviceInfoProxy()->setCloud( variantMap );
 }
 
+
 void MagnatuneStore::setStreamType( int type )
 {
     m_streamType = type;
 }
+
 
 void MagnatuneStore::purchaseCurrentTrackAlbum()
 {
@@ -543,14 +504,15 @@ void MagnatuneStore::purchaseCurrentTrackAlbum()
     }
 
     m_purchaseHandler->purchaseAlbum( magnatuneAlbum );
-    
 }
+
 
 void MagnatuneStore::checkForUpdates()
 {
     m_updateTimestampDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/info/last_update_timestamp" ), KIO::Reload, KIO::HideProgressInfo );
     connect( m_updateTimestampDownloadJob, SIGNAL( result( KJob * ) ), SLOT( timestampDownloadComplete( KJob *  ) ) );
 }
+
 
 void MagnatuneStore::timestampDownloadComplete( KJob *  job )
 {
@@ -580,8 +542,8 @@ void MagnatuneStore::timestampDownloadComplete( KJob *  job )
         m_magnatuneTimestamp = magnatuneTimestamp;
         updateButtonClicked();
     }
-
 }
+
 
 void MagnatuneStore::moodyTracksReady( Meta::TrackList tracks )
 {
@@ -591,12 +553,14 @@ void MagnatuneStore::moodyTracksReady( Meta::TrackList tracks )
     The::playlistModel()->insertOptioned( tracks, 4 );
 }
 
+
 QString MagnatuneStore::messages()
 {
     QString text = i18n( "The Magnatune.com service accepts the following messages: \n\n\taddMoodyTracks mood count: Adds a number of ranom tracks with the specified mood to the playlist. the mood argument _must_ have spaces escaped with %%20" );
 
     return text;
 }
+
 
 QString MagnatuneStore::sendMessage( const QString & message )
 {
@@ -623,14 +587,12 @@ QString MagnatuneStore::sendMessage( const QString & message )
         addMoodyTracksToPlaylist( mood, count );
 
         return i18n( "ok" );
-
     }
-    
+
+    return i18n( "ERROR: Unknown argument." );
 }
 
 
-
 #include "MagnatuneStore.moc"
-
 
 

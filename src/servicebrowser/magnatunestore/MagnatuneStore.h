@@ -43,7 +43,7 @@
 #include <kvbox.h>
 
 
-class MagnatuneServiceFactory: public ServiceFactory
+class MagnatuneServiceFactory : public ServiceFactory
 {
     Q_OBJECT
 
@@ -71,7 +71,6 @@ class MagnatuneStore: public ServiceBase
     Q_OBJECT
 
 public:
-
      /**
      * Constructor
      */
@@ -100,7 +99,6 @@ public:
     virtual QString sendMessage( const QString &message );
 
 private slots:
-
     /**
      * Slot called when the purchase album button is clicked. Starts a purchase
      */
@@ -193,9 +191,9 @@ private:
 
     static MagnatuneStore *s_instance;
 
-    QString                    m_currentInfoUrl;
-    QMenu                *m_popupMenu;
-    MagnatunePurchaseHandler  *m_purchaseHandler;
+    QString m_currentInfoUrl;
+    QMenu *m_popupMenu;
+    MagnatunePurchaseHandler *m_purchaseHandler;
     MagnatuneRedownloadHandler *m_redownloadHandler;
 
     QPushButton *m_purchaseAlbumButton;
@@ -223,7 +221,6 @@ private:
 
     qulonglong m_magnatuneTimestamp;
     ServiceSqlRegistry * m_registry;
-
 };
 
 
