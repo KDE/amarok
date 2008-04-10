@@ -493,6 +493,7 @@ StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/
 {
     switch( state ) {
     case Phonon::PlayingState:
+    case Phonon::PausedState:
         setEnabled( true );
         break;
     case Phonon::StoppedState:
