@@ -144,6 +144,12 @@ Track::sortableName() const
     return name();
 }
 
+QString LastFm::Track::fixedName() const
+{
+    return streamName();
+}
+
+
 KUrl
 Track::playableUrl() const
 {
@@ -482,4 +488,6 @@ QList< QAction * > LastFm::Track::nowPlayingActions() const
 }
 
 #include "LastFmMeta.moc"
+
+
 
