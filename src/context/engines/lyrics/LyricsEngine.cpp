@@ -57,15 +57,15 @@ void LyricsEngine::message( const ContextState& state )
 void LyricsEngine::update()
 {
 
-        Meta::TrackPtr curtrack = EngineController::instance()->currentTrack();
+        Meta::TrackPtr curtrack = The::engineController()->currentTrack();
     if( !curtrack )
         return;
     QString lyrics = curtrack->cachedLyrics();
     // don't rely on caching for streams
     const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
 
-    QString title  = EngineController::instance()->currentTrack()->name();
-    QString artist = EngineController::instance()->currentTrack()->artist()->name();
+    QString title  = The::engineController()->currentTrack()->name();
+    QString artist = The::engineController()->currentTrack()->artist()->name();
 
     if( title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
         title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
@@ -77,7 +77,7 @@ void LyricsEngine::update()
         /* If title is empty, try to use pretty title.
            The fact that it often (but not always) has "artist name" together, can be bad,
            but at least the user will hopefully get nice suggestions. */
-        QString prettyTitle = EngineController::instance()->currentTrack()->prettyName();
+        QString prettyTitle = The::engineController()->currentTrack()->prettyName();
         int h = prettyTitle.indexOf( '-' );
         if ( h != -1 )
         {

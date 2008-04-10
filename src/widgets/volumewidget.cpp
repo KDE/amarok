@@ -18,12 +18,13 @@
 #include "amarokconfig.h"
 #include "EngineController.h"
 #include "sliderwidget.h"
+#include "TheInstances.h"
 
 #include <klocale.h>
 
 VolumeWidget::VolumeWidget( QWidget *parent )
     : KHBox( parent ),
-      EngineObserver( EngineController::instance() ),
+      EngineObserver( The::engineController() ),
       m_slider( 0 )
 {
     m_slider = new Amarok::VolumeSlider( this, Amarok::VOLUME_MAX );
@@ -36,7 +37,7 @@ VolumeWidget::VolumeWidget( QWidget *parent )
 
     m_slider->setToolTip( i18n( "Volume Control" ) );
 
-    EngineController* const ec = EngineController::instance();
+    EngineController* const ec = The::engineController();
     connect( m_slider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );
     connect( m_slider, SIGNAL(sliderReleased( int )), ec, SLOT(setVolume( int )) );
 }

@@ -121,31 +121,31 @@ namespace Amarok
 
     int DbusPlayerHandler::getVolume()
     {
-        return EngineController::instance()->volume();
+        return The::engineController()->volume();
     }
 
     int DbusPlayerHandler::sampleRate()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->sampleRate() : 0;
     }
 
     double DbusPlayerHandler::score()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->score() : 0.0;
     }
 
     int DbusPlayerHandler::rating()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->rating() : 0;
     }
 
     int  DbusPlayerHandler::status()
     {
         // <0 - error, 0 - stopped, 1 - paused, 2 - playing
-        switch( EngineController::instance()->state() )
+        switch( The::engineController()->state() )
         {
         case Phonon::PlayingState:
         case Phonon::BufferingState:
@@ -163,23 +163,23 @@ namespace Amarok
 
     int DbusPlayerHandler::trackCurrentTime()
     {
-        return EngineController::instance()->trackPosition() / 1000;
+        return The::engineController()->trackPosition() / 1000;
     }
 
     int DbusPlayerHandler::trackCurrentTimeMs()
     {
-        return EngineController::instance()->trackPosition();
+        return The::engineController()->trackPosition();
     }
 
     int DbusPlayerHandler::trackPlayCounter()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->playCount() : 0;
     }
 
     int DbusPlayerHandler::trackTotalTime()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->length() : 0;
     }
 
@@ -191,25 +191,25 @@ namespace Amarok
 
     QString DbusPlayerHandler::album()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->album()->prettyName() : QString();
     }
 
     QString DbusPlayerHandler::artist()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->artist()->prettyName() : QString();
     }
 
     QString DbusPlayerHandler::bitrate()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? QString::number( track->bitrate() ) : QString();
     }
 
     QString DbusPlayerHandler::comment()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->comment() : QString();
     }
 
@@ -221,24 +221,24 @@ namespace Amarok
 
     QString DbusPlayerHandler::currentTime()
     {
-        return Meta::secToPrettyTime( EngineController::instance()->trackPosition() / 1000 );
+        return Meta::secToPrettyTime( The::engineController()->trackPosition() / 1000 );
     }
 
     QString DbusPlayerHandler::encodedURL()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->playableUrl().url() : QString();
     }
 
     QString DbusPlayerHandler::genre()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->genre()->prettyName() : QString();
     }
 
     QString DbusPlayerHandler::lyrics()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->cachedLyrics() : QString();
     }
 
@@ -250,7 +250,7 @@ namespace Amarok
 
     QString DbusPlayerHandler::streamName()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         if( !track )
             return QString();
         Meta::StreamInfoCapability *streamInfo = track->as<Meta::StreamInfoCapability>();
@@ -266,38 +266,38 @@ namespace Amarok
 
     QString DbusPlayerHandler::nowPlaying()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         //TODO: i think this is not correct yet
         return track ? track->prettyName() : QString();
     }
 
     QString DbusPlayerHandler::path()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->playableUrl().path() : QString();
     }
 
     QString DbusPlayerHandler::title()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->prettyName() : QString();
     }
 
     QString DbusPlayerHandler::totalTime()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? Meta::secToPrettyTime( track->length() ) : QString();
     }
 
     QString DbusPlayerHandler::track()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? QString::number( track->trackNumber() ) : QString();
     }
 
     QString DbusPlayerHandler::type()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         QString type = track ? track->type() : QString();
         if( type == "stream/lastfm" )
             return "LastFm Stream";
@@ -307,7 +307,7 @@ namespace Amarok
 
     QString DbusPlayerHandler::year()
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->year()->prettyName() : QString();
     }
 
@@ -364,7 +364,7 @@ namespace Amarok
 
     void DbusPlayerHandler::mute()
     {
-        EngineController::instance()->mute();
+        The::engineController()->mute();
     }
 
     void DbusPlayerHandler::next()
@@ -374,17 +374,17 @@ namespace Amarok
 
     void DbusPlayerHandler::pause()
     {
-        EngineController::instance()->pause();
+        The::engineController()->pause();
     }
 
     void DbusPlayerHandler::play()
     {
-        EngineController::instance() ->play();
+        The::engineController() ->play();
     }
 
     void DbusPlayerHandler::playPause()
     {
-        EngineController::instance() ->playPause();
+        The::engineController() ->playPause();
     }
 
     void DbusPlayerHandler::prev()
@@ -402,12 +402,12 @@ namespace Amarok
     void DbusPlayerHandler::seek(int s)
     {
         if ( s > 0 && The::engineController()->state() != Phonon::StoppedState )
-            EngineController::instance()->seek( s * 1000 );
+            The::engineController()->seek( s * 1000 );
     }
 
     void DbusPlayerHandler::seekRelative(int s)
     {
-        EngineController::instance() ->seekRelative( s * 1000 );
+        The::engineController() ->seekRelative( s * 1000 );
     }
 
     void DbusPlayerHandler::setEqualizer(int preamp, int band60, int band170, int band310,
@@ -454,7 +454,7 @@ namespace Amarok
 
     void DbusPlayerHandler::setScore( float score )
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         if( track )
             track->setScore( score );
     }
@@ -485,7 +485,7 @@ namespace Amarok
 
     void DbusPlayerHandler::setRating( int rating )
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         if( track )
             track->setRating( rating );
     }
@@ -499,12 +499,12 @@ namespace Amarok
 
     void DbusPlayerHandler::setVolume(int volume)
     {
-        EngineController::instance()->setVolume(volume);
+        The::engineController()->setVolume(volume);
     }
 
     void DbusPlayerHandler::setVolumeRelative(int ticks)
     {
-        EngineController::instance()->increaseVolume(ticks);
+        The::engineController()->increaseVolume(ticks);
     }
 
     void DbusPlayerHandler::showBrowser( QString browser )
@@ -526,7 +526,7 @@ namespace Amarok
 
     void DbusPlayerHandler::stop()
     {
-        EngineController::instance() ->stop();
+        The::engineController() ->stop();
     }
 
     void DbusPlayerHandler::transferDeviceFiles()
@@ -537,12 +537,12 @@ namespace Amarok
 
     void DbusPlayerHandler::volumeDown()
     {
-        EngineController::instance()->decreaseVolume();
+        The::engineController()->decreaseVolume();
     }
 
     void DbusPlayerHandler::volumeUp()
     {
-        EngineController::instance()->increaseVolume();
+        The::engineController()->increaseVolume();
     }
 
     void DbusPlayerHandler::transferCliArgs( QStringList args )

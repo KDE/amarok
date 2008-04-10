@@ -19,11 +19,12 @@
 #include "debug.h"
 #include "MetaConstants.h"
 #include "meta/LastFmMeta.h"
+#include "TheInstances.h"
 
 
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &username, const QString &password )
     : QObject( parent ),
-      EngineObserver( EngineController::instance() ),
+      EngineObserver( The::engineController() ),
       m_manager( new ScrobblerManager( this ) ),
       m_username( username )
 {
@@ -44,14 +45,14 @@ ScrobblerAdapter::~ScrobblerAdapter()
 }
 
 
-void 
+void
 ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData*/, bool trackChanged )
 {
     debug() << "engineNewMetaData: trackChanged=" << trackChanged;
 
     // if trackChanged, it's a local file
     // also need to handle radio case
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
     bool isRadio = track && KUrl( track->url() ).protocol() == "lastfm";
     if (track && trackChanged || isRadio)
     {
@@ -81,7 +82,7 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData
 }
 
 
-void 
+void
 ScrobblerAdapter::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
 {
     Q_UNUSED( trackLength );
@@ -93,7 +94,7 @@ ScrobblerAdapter::engineTrackEnded( int finalPosition, int trackLength, const QS
 }
 
 
-void 
+void
 ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
 {
     // note: in the 1.2 protocol, it's OK to submit if the user seeks

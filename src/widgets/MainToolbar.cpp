@@ -42,7 +42,7 @@
 
 MainToolbar::MainToolbar( QWidget * parent )
  : KHBox( parent )
- , EngineObserver( EngineController::instance() )
+ , EngineObserver( The::engineController() )
  , SvgHandler()
  , m_addActionsOffsetX( 0 )
 {
@@ -132,7 +132,7 @@ void MainToolbar::paintEvent(QPaintEvent *)
     QRect addControlRect( controlRect.bottomRight().x() + 10, 10, addControlWidth, 20 );
 
 
-    //Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    //Meta::TrackPtr track = The::engineController()->currentTrack();
   /*  QString addString;
 
     if ( m_renderAddControls )
@@ -191,7 +191,7 @@ void MainToolbar::handleAddActions()
         m_addControlsToolbar->removeAction( action );
     }
     
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track ) {
         m_renderAddControls = false;
         return;

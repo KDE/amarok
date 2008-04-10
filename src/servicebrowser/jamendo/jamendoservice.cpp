@@ -25,6 +25,7 @@
 #include "JamendoInfoParser.h"
 #include "jamendoxmlparser.h"
 #include "ServiceSqlRegistry.h"
+#include "TheInstances.h"
 
 #include <KTemporaryFile>
 #include <KRun>
@@ -146,10 +147,10 @@ void JamendoService::polish()
     action = new QAction( i18n( "Genre / Artist / Album" ), m_menubar );
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
     m_filterMenu->addAction( action );
-    
+
     m_menubar->show();
 
-    
+
     m_polished = true;
 
 
@@ -179,7 +180,7 @@ void JamendoService::updateButtonClicked()
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
 
- 
+
   /* KIO::StoredTransferJob * job =  KIO::storedGet(  KUrl( "http://img.jamendo.com/data/dbdump.en.xml.gz" ) );
     Amarok::ContextStatusBar::instance() ->newProgressOperation( job )
     .setDescription( i18n( "Downloading Jamendo.com Database" ) )
@@ -287,7 +288,7 @@ void JamendoService::download( JamendoAlbum * album )
 
     if ( !m_polished )
         polish();
-    
+
     m_downloadButton->setEnabled( false );
 
     KTemporaryFile tempFile;
@@ -330,7 +331,7 @@ void JamendoService::torrentDownloadComplete(KJob * downloadJob)
 void JamendoService::downloadCurrentTrackAlbum()
 {
         //get current track
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
 
     //check if this is indeed a Jamendo track
     Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();

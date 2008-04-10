@@ -119,7 +119,7 @@ DEBUG_BLOCK
         if( appendType() == SUGGESTION )
         {
             // TODO some clever stuff here for spanning across artists
-            Meta::TrackPtr track = EngineController::instance()->currentTrack();
+            Meta::TrackPtr track = The::engineController()->currentTrack();
             QString artist = track ? track->artist()->name() : QString();
 
             if( artist.isEmpty() )

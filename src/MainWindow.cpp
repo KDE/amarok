@@ -807,7 +807,7 @@ bool MainWindow::isReallyShown() const
 void MainWindow::createActions()
 {
     KActionCollection* const ac = actionCollection();
-    const EngineController* const ec = EngineController::instance();
+    const EngineController* const ec = The::engineController();
 
     KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
     KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
@@ -1080,7 +1080,7 @@ void MainWindow::setRating( int n )
     const Phonon::State s = The::engineController()->state();
     if( s == Phonon::PlayingState || s == Phonon::PausedState )
     {
-        Meta::TrackPtr track = EngineController::instance()->currentTrack();
+        Meta::TrackPtr track = The::engineController()->currentTrack();
         track->setRating( n );
         Amarok::OSD::instance()->OSDWidget::ratingChanged( track->rating() );
     }

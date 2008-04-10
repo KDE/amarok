@@ -16,12 +16,13 @@
 #include "EngineController.h"
 #include "LastFmService.h"
 #include "RadioAdapter.h"
+#include "TheInstances.h"
 
 #include <KLocale>
 
 
 AudioController::AudioController( QObject *parent )
-    : QObject( parent ), EngineObserver( EngineController::instance() )
+    : QObject( parent ), EngineObserver( The::engineController() )
 {
 }
 
@@ -34,7 +35,7 @@ AudioController::~AudioController()
 void
 AudioController::setVolume( int vol )
 {
-    EngineController::instance()->setVolume( vol );
+    The::engineController()->setVolume( vol );
 }
 
 
@@ -124,7 +125,7 @@ AudioController::engineStateChanged( Phonon::State currentState, Phonon::State o
                 //FIXME: This is completely incorrect!  state Changes get triggered for all tracks.  This causes pausing anything to stop playback...
 //             case Phonon::PausedState:
 //                 // not supposed to pause the radio, so we'll just stop it
-//                 EngineController::instance()->stop();
+//                 The::engineController()->stop();
 //                 break;
         }
     }
@@ -149,7 +150,7 @@ AudioController::engineNewTrackPlaying()
 {
     if( The::lastFmService()->radio()->currentTrack() )
     {
-        if( Meta::TrackPtr::staticCast( The::lastFmService()->radio()->currentTrack() ) == EngineController::instance()->currentTrack() )
+        if( Meta::TrackPtr::staticCast( The::lastFmService()->radio()->currentTrack() ) == The::engineController()->currentTrack() )
             emit trackStarted( m_currentTrackInfo );
         else
             The::lastFmService()->radio()->stop();

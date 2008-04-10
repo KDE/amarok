@@ -43,10 +43,10 @@ class AMAROK_EXPORT EngineController : public QObject, public EngineSubject
 public:
     typedef QMap<QString, bool>  ExtensionCache;
 
-    // plugins have their own static space, so calling instance
-    // from a plugin won't do any good. you'll only get a new
-    // instance with a voidEngine
-    static EngineController* instance();
+    //NOTE: Use The::EngineController, this just exists to make the static work properly.
+    EngineController();
+    ~EngineController();
+
     static bool              canDecode( const KUrl& );
     static ExtensionCache&   extensionCache() { return s_extensionCache; }
 
@@ -95,13 +95,6 @@ signals:
     void trackFinished();
 
 protected:
-    EngineController();
-   ~EngineController();
-
-    // undefined
-    EngineController( const EngineController& );
-    EngineController &operator=( const EngineController& );
-
     void playUrl( const KUrl &url, uint offset );
     void trackDone();
 
@@ -118,6 +111,8 @@ private slots:
 
 private:
     static ExtensionCache s_extensionCache;
+
+    Q_DISABLE_COPY( EngineController );
 
     Phonon::MediaObject *m_media;
     Phonon::AudioOutput *m_audio;

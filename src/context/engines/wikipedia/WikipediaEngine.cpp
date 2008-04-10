@@ -60,7 +60,7 @@ void WikipediaEngine::update()
     DEBUG_BLOCK
     QString tmpWikiStr;
 
-    if ( !EngineController::instance()->currentTrack() ) {
+    if ( !The::engineController()->currentTrack() ) {
         return;
     }
 
@@ -68,35 +68,35 @@ void WikipediaEngine::update()
     {
 
         setData( "wikipedia", "label", "Artist" );
-        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->artist()->prettyName() );
+        setData( "wikipedia", "title", The::engineController()->currentTrack()->artist()->prettyName() );
         
-        if ( (EngineController::instance()->currentTrack()->playableUrl().protocol() == "lastfm") ||
-             (EngineController::instance()->currentTrack()->playableUrl().protocol() == "daap") ||
+        if ( (The::engineController()->currentTrack()->playableUrl().protocol() == "lastfm") ||
+             (The::engineController()->currentTrack()->playableUrl().protocol() == "daap") ||
              !The::engineController()->isStream() )
         {
-            tmpWikiStr = EngineController::instance()->currentTrack()->artist()->name();
+            tmpWikiStr = The::engineController()->currentTrack()->artist()->name();
             tmpWikiStr += wikiArtistPostfix(); //makes wikipedia bail out
 
             debug() << "tmpWikiStr: " << tmpWikiStr;
             
         } else {
-            tmpWikiStr = EngineController::instance()->currentTrack()->artist()->prettyName();
+            tmpWikiStr = The::engineController()->currentTrack()->artist()->prettyName();
             tmpWikiStr += wikiArtistPostfix(); //makes wikipedia bail out
         }
     } else if( selection() == "title" ) {
-        tmpWikiStr = EngineController::instance()->currentTrack()->prettyName();
+        tmpWikiStr = The::engineController()->currentTrack()->prettyName();
         setData( "wikipedia", "label", "Title" );
-        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->prettyName() );
+        setData( "wikipedia", "title", The::engineController()->currentTrack()->prettyName() );
     }
     else if( selection() == "album" )
     {
         setData( "wikipedia", "label", "Album" );
-        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->album()->prettyName() );
-        if ( (EngineController::instance()->currentTrack()->playableUrl().protocol() == "lastfm") ||
-             (EngineController::instance()->currentTrack()->playableUrl().protocol() == "daap") ||
+        setData( "wikipedia", "title", The::engineController()->currentTrack()->album()->prettyName() );
+        if ( (The::engineController()->currentTrack()->playableUrl().protocol() == "lastfm") ||
+             (The::engineController()->currentTrack()->playableUrl().protocol() == "daap") ||
              !The::engineController()->isStream() )
         {
-            tmpWikiStr = EngineController::instance()->currentTrack()->album ()->name();
+            tmpWikiStr = The::engineController()->currentTrack()->album ()->name();
             tmpWikiStr += wikiAlbumPostfix();
         }
     }
@@ -256,14 +256,14 @@ void WikipediaEngine::wikiResult( KJob* job )
     if( selection() == "artist" ) // default, or applet told us to fetch artist
     {
         setData( "wikipedia", "label", "Artist" );
-        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->artist()->prettyName() );
+        setData( "wikipedia", "title", The::engineController()->currentTrack()->artist()->prettyName() );
     } else if( selection() == "title" ) {
         setData( "wikipedia", "label", "Title" );
-        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->prettyName() );
+        setData( "wikipedia", "title", The::engineController()->currentTrack()->prettyName() );
     } else if( selection() == "album" )
     {
         setData( "wikipedia", "label", "Album" );
-        setData( "wikipedia", "title", EngineController::instance()->currentTrack()->album()->prettyName() );
+        setData( "wikipedia", "title", The::engineController()->currentTrack()->album()->prettyName() );
     }
 
     //debug() << m_wikiHTMLSource;

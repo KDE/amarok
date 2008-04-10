@@ -332,22 +332,22 @@ void App::handleCliArgs() //static
     else if ( args->isSet( "pause" ) )
     {
         haveArgs = true;
-        EngineController::instance()->pause();
+        The::engineController()->pause();
     }
     else if ( args->isSet( "stop" ) )
     {
         haveArgs = true;
-        EngineController::instance()->stop();
+        The::engineController()->stop();
     }
     else if ( args->isSet( "play-pause" ) )
     {
         haveArgs = true;
-        EngineController::instance()->playPause();
+        The::engineController()->playPause();
     }
     else if ( args->isSet( "play" ) ) //will restart if we are playing
     {
         haveArgs = true;
-        EngineController::instance()->play();
+        The::engineController()->play();
     }
     else if ( args->isSet( "next" ) )
     {
@@ -525,7 +525,7 @@ void App::applySettings( bool firstTime )
                          PluginManager::getService( engine )->property( "X-KDE-Amarok-name" ).toString() )
         {
             //will unload engine for us first if necessary
-            engine = EngineController::instance()->loadEngine();
+            engine = The::engineController()->loadEngine();
             PERF_LOG( "done loading engine" )
         }
 
@@ -620,14 +620,14 @@ App::continueInit()
 
     //do after applySettings(), or the OSD will flicker and other wierdness!
     //do before restoreSession()!
-    EngineController::instance()->attach( this );
+    The::engineController()->attach( this );
     //set a default interface
     engineStateChanged( Phonon::StoppedState );
     PERF_LOG( "Engine state changed" )
     if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly
-        EngineController::instance()->restoreSession();
+        The::engineController()->restoreSession();
     }
 
     PERF_LOG( "before cover refresh" )
@@ -647,7 +647,7 @@ App::continueInit()
 
 void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
     //track is 0 if the engien state is Empty. we check that in the switch
     switch( state )
     {
@@ -682,7 +682,7 @@ void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
 
 void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
-    Meta::TrackPtr currentTrack = EngineController::instance()->currentTrack();
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     Amarok::OSD::instance()->show( currentTrack );
     if( !trackChanged )
     {

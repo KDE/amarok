@@ -21,6 +21,7 @@
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "meta/SourceInfoCapability.h"
+#include "TheInstances.h"
 
 #include <QVariant>
 
@@ -95,7 +96,7 @@ CurrentEngine::metadataChanged( Meta::Track *track )
 
 void CurrentEngine::update()
 {
-    m_currentTrack = EngineController::instance()->currentTrack();
+    m_currentTrack = The::engineController()->currentTrack();
     if( !m_currentTrack )
         return;
     m_currentTrack->subscribe( this );

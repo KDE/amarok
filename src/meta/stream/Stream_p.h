@@ -23,6 +23,7 @@
 #include "EngineObserver.h"
 #include "Meta.h"
 #include "MetaConstants.h"
+#include "TheInstances.h"
 
 #include <QList>
 #include <QObject>
@@ -34,7 +35,7 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
     Q_OBJECT
     public:
         Private( Track *t )
-    : EngineObserver( EngineController::instance() )
+    : EngineObserver( The::engineController() )
                 , track( t )
                 {}
                 void notify() const

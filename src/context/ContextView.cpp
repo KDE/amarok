@@ -25,6 +25,7 @@
 #include "DataEngineManager.h"
 #include "debug.h"
 #include "Svg.h"
+#include "TheInstances.h"
 #include "Theme.h"
 
 #include <QFile>
@@ -44,7 +45,7 @@ ContextView* ContextView::s_self = 0;
 
 ContextView::ContextView( QWidget* parent )
     : QGraphicsView( parent )
-    , EngineObserver( EngineController::instance() )
+    , EngineObserver( The::engineController() )
     , m_columns( 0 )
 {
 

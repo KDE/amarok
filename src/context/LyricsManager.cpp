@@ -15,6 +15,7 @@
 
 #include "debug.h"
 #include "EngineController.h"
+#include "TheInstances.h"
 
 #include <QDomDocument>
 
@@ -122,13 +123,13 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
     else
     {
         lyrics = el.text();
-        EngineController::instance()->currentTrack()->setCachedLyrics( xmldoc); // TODO: setLyricsByPath?
+        The::engineController()->currentTrack()->setCachedLyrics( xmldoc); // TODO: setLyricsByPath?
 
         const QString title      = el.attribute( "title" );
 
         QStringList lyricsData;
         lyricsData << title
-            << EngineController::instance()->currentTrack()->artist()->name()
+            << The::engineController()->currentTrack()->artist()->name()
             << QString() // TODO lyrics site
             << lyrics;
 

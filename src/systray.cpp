@@ -46,7 +46,7 @@ namespace Amarok
 
 Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         : KSystemTrayIcon( playerWidget )
-        , EngineObserver( EngineController::instance() )
+        , EngineObserver( The::engineController() )
         , trackLength( 0 )
         , mergeLevel( -1 )
         , overlay( 0 )
@@ -123,11 +123,11 @@ Amarok::TrayIcon::event( QEvent *e )
         }
         else if( e->modifiers() == Qt::ShiftModifier )
         {
-            EngineController::instance()->seekRelative( (e->delta() / 120) * 5000 ); // 5 seconds for keyboard seeking
+            The::engineController()->seekRelative( (e->delta() / 120) * 5000 ); // 5 seconds for keyboard seeking
             break;
         }
         else
-            EngineController::instance()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
+            The::engineController()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
 
         e->accept();
         #undef e
@@ -149,7 +149,7 @@ Amarok::TrayIcon::event( QEvent *e )
     case QEvent::MouseButtonPress:
         if( static_cast<QMouseEvent*>(e)->button() == Qt::MidButton )
         {
-            EngineController::instance()->playPause();
+            The::engineController()->playPause();
 
             return true;
         }
@@ -324,7 +324,7 @@ Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 
 void Amarok::TrayIcon::setupMenu()
 {
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
 
     foreach( QAction * action, m_extraActions ) {
         contextMenu()->removeAction( action );

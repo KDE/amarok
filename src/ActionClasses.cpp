@@ -193,19 +193,19 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
 PlayPauseAction::PlayPauseAction( KActionCollection *ac )
         : KToggleAction( 0 )
-        , EngineObserver( EngineController::instance() )
+        , EngineObserver( The::engineController() )
 {
     setText(i18n( "Play/Pause" ));
     setObjectName( "play-pause" );
     setGlobalShortcut( KShortcut( Qt::META + Qt::Key_C ) );
     ac->addAction("play_pause", this);
     PERF_LOG( "PlayPauseAction: before engineStateChanged" )
-    engineStateChanged( EngineController::instance()->state() );
+    engineStateChanged( The::engineController()->state() );
     PERF_LOG( "PlayPauseAction: after engineStateChanged" )
 
     setShortcut( Qt::Key_Space );
 
-    connect( this, SIGNAL(triggered()), EngineController::instance(), SLOT(playPause()) );
+    connect( this, SIGNAL(triggered()), The::engineController(), SLOT(playPause()) );
 }
 
 void
@@ -444,14 +444,14 @@ BurnMenu::slotBurnSelectedTracks() //SLOT
 
 StopAction::StopAction( KActionCollection *ac )
   : KAction( 0 )
-  , EngineObserver( EngineController::instance() )
+  , EngineObserver( The::engineController() )
 {
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setObjectName( "stop" );
     setGlobalShortcut( KShortcut( Qt::META + Qt::Key_V ) );
     setMenu( Amarok::StopMenu::instance() );
-    connect( this, SIGNAL( triggered() ), EngineController::instance(), SLOT( stop() ) );
+    connect( this, SIGNAL( triggered() ), The::engineController(), SLOT( stop() ) );
     ac->addAction( "stop", this );
     setEnabled( false );  // Disable action at startup
 }
@@ -472,14 +472,14 @@ StopAction::plug( QWidget *w, int )
         w->addAction( this );
         connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
-        bar->insertButton( QString::null, id, SIGNAL( clicked() ), EngineController::instance(), SLOT( stop() ),
+        bar->insertButton( QString::null, id, SIGNAL( clicked() ), The::engineController(), SLOT( stop() ),
                           true, i18n( "Stop" ), index );
 
         KToolBarButton* button = bar->getButton( id );
 
         button->setObjectName( "toolbutton_stop_menu" );
         button->setIcon( "media-playback-stop-amarok" );
-        button->setEnabled( EngineController::instance()->engine()->loaded() );  // Disable button at startup
+        button->setEnabled( The::engineController()->engine()->loaded() );  // Disable button at startup
 
         return associatedWidgets().count() - 1;
     }
@@ -548,7 +548,6 @@ StopMenu::slotAboutToShow()
 void
 StopMenu::slotStopNow() //SLOT
 {
-    //PORT 2.0
     Playlist::Model* pl = The::playlistModel();
     const int mode = pl->stopAfterMode();
 

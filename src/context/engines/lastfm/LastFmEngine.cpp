@@ -23,6 +23,7 @@
 #include "ContextView.h"
 #include "EngineController.h"
 #include "collection/SqlStorage.h"
+#include "TheInstances.h"
 
 #include "kio/job.h"
 #include <KLocale>
@@ -49,7 +50,7 @@ LastFmEngine::LastFmEngine( QObject* parent, const QList<QVariant>& args )
 
     m_user = AmarokConfig::scrobblerUsername();
     m_sources << I18N_NOOP( "userevents" ) << I18N_NOOP( "sysevents" ) << I18N_NOOP( "friendevents" ) << I18N_NOOP( "relatedartists" ) << I18N_NOOP( "suggestedsongs" );
-    
+
 }
 
 LastFmEngine::~LastFmEngine()
@@ -86,7 +87,7 @@ bool LastFmEngine::sourceRequested( const QString& name )
         debug() << "data source not found!";
         return false;
     }
-    
+
     setData( name, QVariant());
     updateCurrent();
     return true;
@@ -95,18 +96,18 @@ bool LastFmEngine::sourceRequested( const QString& name )
 void LastFmEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK
-    if( state == Home ) 
+    if( state == Home )
         updateEvents();
     else if( state == Current )
         updateCurrent();
 }
 
-void LastFmEngine::updateCurrent() 
+void LastFmEngine::updateCurrent()
 {
     DEBUG_BLOCK
     if( m_suggestedsongs )
     {
-        Meta::ArtistList artists = CollectionManager::instance()->relatedArtists( EngineController::instance()->currentTrack()->artist(), 30 );
+        Meta::ArtistList artists = CollectionManager::instance()->relatedArtists( The::engineController()->currentTrack()->artist(), 30 );
 
         QString token;
 
@@ -136,7 +137,7 @@ void LastFmEngine::updateCurrent()
 
     if( m_relatedartists )
     {
-        Meta::ArtistList artists = CollectionManager::instance()->relatedArtists( EngineController::instance()->currentTrack()->artist(), 30 );
+        Meta::ArtistList artists = CollectionManager::instance()->relatedArtists( The::engineController()->currentTrack()->artist(), 30 );
         QStringList data;
         foreach( Meta::ArtistPtr artist, artists )
             data << artist->name();
@@ -155,13 +156,13 @@ void LastFmEngine::updateEvents()
          setData( I18N_NOOP( "userevents" ), I18N_NOOP( "username" ) );
         return;
     }
-    
+
     if( m_friendevents )
     {
         debug() << "getting friend events";
        // do friends
        QString cached = getCached( QString( Amarok::saveLocation() + "lastfm.events/friendevents.rss" ) );
-        // TODO take care of refreshing cache after its too old... say a week? 
+        // TODO take care of refreshing cache after its too old... say a week?
         if( cached == QString() ) // not cached, lets fetch it
         {
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/friendevents.rss" ).arg( m_user ) );
@@ -178,14 +179,14 @@ void LastFmEngine::updateEvents()
             }
         }
     }
-    
+
     if( m_sysevents )
     {
         debug() << "getting sys events";
-        
+
         // do systems recs
         QString cached = getCached( QString( Amarok::saveLocation() + "lastfm.events/eventsysrecs.rss" ) );
-        // TODO take care of refreshing cache after its too old... say a week? 
+        // TODO take care of refreshing cache after its too old... say a week?
         if( cached == QString() ) // not cached, lets fetch it
         {
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/eventsysrecs.rss" ).arg( m_user ) );
@@ -202,14 +203,14 @@ void LastFmEngine::updateEvents()
             }
         }
     }
-    
+
     if( m_userevents )
     {
         debug() << "getting user events";
-        
+
         // do user events
         QString cached = getCached( QString( Amarok::saveLocation() + "lastfm.events/events.rss" ) );
-        // TODO take care of refreshing cache after its too old... say a week? 
+        // TODO take care of refreshing cache after its too old... say a week?
         if( cached == QString() ) // not cached, lets fetch it
         {
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/events.rss" ).arg( m_user ) );
@@ -239,18 +240,18 @@ void LastFmEngine::friendResult( KJob* job )
         return;
     }
     if( job != m_friendJob ) return; // wrong job
-    
+
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     QString data = QString( storedJob->data() );
-    
+
     // cache data for later attempts
     QFile cache( QString( Amarok::saveLocation() + "lastfm.events/friendevents.rss" ) );
-    if ( cache.open( QFile::WriteOnly | QFile::Truncate ) )  
+    if ( cache.open( QFile::WriteOnly | QFile::Truncate ) )
     {
         QTextStream out( &cache );
         out << data;
     }
-    
+
     QVariantMap events = parseFeed( data );
     QMapIterator< QString, QVariant > iter( events );
     while( iter.hasNext() )
@@ -270,18 +271,18 @@ void LastFmEngine::sysResult( KJob* job )
         return;
     }
     if( job != m_sysJob ) return; // wrong job
-    
+
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     QString data = QString( storedJob->data() );
-    
+
     // cache data for later attempts
     QFile cache( QString( Amarok::saveLocation() + "lastfm.events/eventsysrecs.rss" ) );
-    if ( cache.open( QFile::WriteOnly | QFile::Truncate ) )  
+    if ( cache.open( QFile::WriteOnly | QFile::Truncate ) )
     {
         QTextStream out( &cache );
         out << data;
     }
-    
+
     QVariantMap events = parseFeed( data );
     QMapIterator< QString, QVariant > iter( events );
     while( iter.hasNext() )
@@ -301,18 +302,18 @@ void LastFmEngine::userResult( KJob* job )
         return;
     }
     if( job != m_userJob ) return;
-    
+
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     QString data = QString( storedJob->data() );
-    
+
     // cache data for later attempts
     QFile cache( QString( Amarok::saveLocation() + "lastfm.events/events.rss" ) );
-    if ( cache.open( QFile::WriteOnly | QFile::Truncate ) )  
+    if ( cache.open( QFile::WriteOnly | QFile::Truncate ) )
     {
         QTextStream out( &cache );
         out << data;
     }
-    
+
     QVariantMap events = parseFeed( data );
     QMapIterator< QString, QVariant > iter( events );
     while( iter.hasNext() )
@@ -329,7 +330,7 @@ QVariantMap LastFmEngine::parseFeed( QString content )
     // parse the xml rss feed
     QDomElement root = doc.firstChildElement().firstChildElement();
     QDomElement item = root.firstChildElement("item");
-    
+
     // iterate through the event items
     QVariantMap events;
     for(; !item.isNull(); item = item.nextSiblingElement( "item" ) )
@@ -340,7 +341,7 @@ QVariantMap LastFmEngine::parseFeed( QString content )
         event.append( item.firstChildElement( "link" ).text().simplified() );
         events.insert( event[ 0 ].toString(), event );
     }
-    
+
     return events;
 }
 
@@ -361,7 +362,7 @@ QVariantList LastFmEngine::parseTitle( QString title )
         } else
         {
             event.append( rx2.cap( 1 ).simplified() ); // title
-            event.append( rx2.cap( 2 ).simplified() ); // date 
+            event.append( rx2.cap( 2 ).simplified() ); // date
             event.append( QString().simplified() ); // location
             event.append( QString().simplified() );  // city
             return event;
@@ -369,7 +370,7 @@ QVariantList LastFmEngine::parseTitle( QString title )
     }else
     {
         event.append( rx.cap( 1 ).simplified() ); // title
-        event.append( rx.cap( 4 ).simplified() ); // date 
+        event.append( rx.cap( 4 ).simplified() ); // date
         event.append( rx.cap( 2 ).simplified() ); // location
         event.append( rx.cap( 3 ).simplified() ); // city
         return event;

@@ -53,7 +53,7 @@ ContextStatusBar* ContextStatusBar::s_instance = 0;
 
 ContextStatusBar::ContextStatusBar( QWidget *parent, const char *name )
         : KDE::StatusBar( parent, name )
-        , EngineObserver( EngineController::instance() )
+        , EngineObserver( The::engineController() )
 {
     s_instance = this; //static member
     setSizeGripEnabled( false );
@@ -86,7 +86,7 @@ ContextStatusBar::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
 void
 ContextStatusBar::engineNewTrackPlaying()
 {
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
 
     if( !track )
         return;

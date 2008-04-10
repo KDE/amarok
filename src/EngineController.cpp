@@ -47,14 +47,17 @@
 
 EngineController::ExtensionCache EngineController::s_extensionCache;
 
-EngineController*
-EngineController::instance()
+class EngineControllerSingleton
 {
-    //will only be instantiated the first time this function is called
-    //will work with the inline directive
-    static EngineController Instance;
+    public:
+        EngineController self;
+};
+K_GLOBAL_STATIC( EngineControllerSingleton, privateSelf )
 
-    return &Instance;
+EngineController*
+The::engineController()
+{
+    return &privateSelf->self;
 }
 
 EngineController::EngineController()
@@ -248,7 +251,7 @@ void
 EngineController::playUrl( const KUrl &url, uint offset )
 {
     DEBUG_BLOCK
-   
+
     m_isStream = ( url.protocol() == "http" || url.protocol() == "rtsp" );
     debug() << "isStream = " << m_isStream;
     debug() << "protocol = " << url.protocol();
@@ -569,12 +572,6 @@ EngineController::slotReallyStop() //SLOT
         m_fader->deleteLater();
         m_media->stop();
     }
-}
-
-EngineController*
-The::engineController()
-{
-    return EngineController::instance(); //port amarok to the The:: style...
 }
 
 #include "EngineController.moc"

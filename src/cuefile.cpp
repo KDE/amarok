@@ -7,6 +7,7 @@
 
 #include "debug.h"
 #include "EngineController.h"
+#include "TheInstances.h"
 
 #include <KGlobal>
 
@@ -22,7 +23,7 @@ CueFile *CueFile::instance()
 
     if(!s_instance)
     {
-        s_instance = new CueFile(EngineController::instance()); // FIXME berkus: le grand borkage (if engine is changed, e.g.)?
+        s_instance = new CueFile(The::engineController()); // FIXME berkus: le grand borkage (if engine is changed, e.g.)?
     }
 
     return s_instance;
@@ -238,7 +239,7 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
 //            debug() << "Checking " << position << " against pos " << it.key()/1000 << " title " << it.data().getTitle();
             if(it.key()/1000 <= position)
             {
-                MetaBundle bundle = EngineController::instance()->bundle(); // take current one and modify it
+                MetaBundle bundle = The::engineController()->bundle(); // take current one and modify it
                 if(it.data().getTitle() != bundle.title()
                    || it.data().getArtist() != bundle.artist()
                    || it.data().getAlbum() != bundle.album()

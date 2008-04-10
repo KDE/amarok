@@ -21,6 +21,7 @@
         //if osdUsePlaylistColumns()
 #include "meta/MetaUtility.h"
 #include "StarManager.h"
+#include "TheInstances.h"
 
 #include <KApplication>
 #include <KIcon>
@@ -100,7 +101,7 @@ OSDWidget::show( const QString &text, QImage newImage )
 void
 OSDWidget::ratingChanged( const QString& path, int rating )
 {
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
     if( track->playableUrl().isLocalFile() && track->playableUrl().path() == path )
@@ -640,7 +641,7 @@ Amarok::OSD::forceToggleOSD()
     if ( !isVisible() ) {
         const bool b = isEnabled();
         setEnabled( true );
-        show( EngineController::instance()->currentTrack() );
+        show( The::engineController()->currentTrack() );
         setEnabled( b );
     }
     else
@@ -651,8 +652,8 @@ void
 Amarok::OSD::slotCoverChanged( const QString &artist, const QString &album )
 {
 #if 0
-    if( AmarokConfig::osdCover() && artist == EngineController::instance()->bundle().artist()
-                                 && album  == EngineController::instance()->bundle().album()  )
+    if( AmarokConfig::osdCover() && artist == The::engineController()->bundle().artist()
+                                 && album  == The::engineController()->bundle().album()  )
     {
         QString location = CollectionDB::instance()->albumImage( artist, album, false, 0 );
 
@@ -668,7 +669,7 @@ void
 Amarok::OSD::slotImageChanged( const QString &remoteURL )
 {
 #if 0
-    QString url = EngineController::instance()->bundle().url().url();
+    QString url = The::engineController()->bundle().url().url();
     PodcastEpisodeBundle peb;
     if( CollectionDB::instance()->getPodcastEpisodeBundle( url, &peb ) )
     {

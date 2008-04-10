@@ -35,7 +35,7 @@
 ProgressWidget *ProgressWidget::s_instance = 0;
 ProgressWidget::ProgressWidget( QWidget *parent )
     : QWidget( parent )
-    , EngineObserver( EngineController::instance() )
+    , EngineObserver( The::engineController() )
     , m_timeLength( 0 )
 {
     s_instance = this;
@@ -72,7 +72,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 
     engineStateChanged( Phonon::StoppedState );
 
-    connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
+    connect( m_slider, SIGNAL(sliderReleased( int )), The::engineController(), SLOT(seek( int )) );
     connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
 }
 

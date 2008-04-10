@@ -77,7 +77,7 @@ Model *Model::s_instance = 0;
 
 Model::Model( QObject* parent )
     : QAbstractListModel( parent )
-    , EngineObserver( EngineController::instance() )
+    , EngineObserver( The::engineController() )
     , m_activeRow( -1 )
     , m_advancer( new StandardTrackNavigator( this ) )
     , m_undoStack( new QUndoStack( this ) )
@@ -340,7 +340,7 @@ Model::play( int row )
 {
 
     setActiveRow( row );
-    EngineController::instance()->play( m_items[ m_activeRow ]->track() );
+    The::engineController()->play( m_items[ m_activeRow ]->track() );
 }
 
 void
@@ -361,14 +361,14 @@ Model::next()
     if( m_activeRow < 0 || m_activeRow >= m_items.size() )
         return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
-    EngineController *ec = EngineController::instance();
+    EngineController *ec = The::engineController();
     Meta::TrackPtr playingTrack = ec->currentTrack();
     // Sanity check.
     if( playingTrack && track && playingTrack == track )
     {
         track->finishedPlaying( (double)ec->trackPosition() / (double)ec->trackLength() * 100 ); //TODO: get correct value for parameter
     }
-    EngineController::instance()->play( m_advancer->userNextTrack() );
+    The::engineController()->play( m_advancer->userNextTrack() );
 }
 
 void
@@ -377,12 +377,12 @@ Model::back()
     if( m_activeRow < 0 || m_activeRow >= m_items.size() )
         return;
     Meta::TrackPtr track = m_items.at( m_activeRow )->track();
-    Meta::TrackPtr playingTrack = EngineController::instance()->currentTrack();
+    Meta::TrackPtr playingTrack = The::engineController()->currentTrack();
     // Sanity check.
     if( playingTrack && track && playingTrack == track )
-        track->finishedPlaying( (double)EngineController::instance()->trackPosition() /
-                                (double)EngineController::instance()->trackLength() * 100 );
-    EngineController::instance()->play( m_advancer->lastTrack() );
+        track->finishedPlaying( (double)The::engineController()->trackPosition() /
+                                (double)The::engineController()->trackLength() * 100 );
+    The::engineController()->play( m_advancer->lastTrack() );
 }
 
 // void
@@ -682,7 +682,7 @@ void
 Model::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
         DEBUG_LINE_INFO

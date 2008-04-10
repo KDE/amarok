@@ -466,7 +466,7 @@ void MagnatuneStore::setStreamType( int type )
 void MagnatuneStore::purchaseCurrentTrackAlbum()
 {
     //get current track
-    Meta::TrackPtr track = EngineController::instance()->currentTrack();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
 
     //check if this is indeed a magnatune track
     Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
