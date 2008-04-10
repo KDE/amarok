@@ -35,9 +35,13 @@ include REXML
 
 
 def configure
-  @uid = Qt::InputDialog.getText( nil, "Configuration", "Please enter your Seeqpod UID:" )
-  @settings.setValue( "uid", Qt::Variant.new( @uid ) )
-  @settings.sync
+  ok = Qt::Boolean.new  # Will become nil if the user presses Cancel
+  uid = Qt::InputDialog.getText( nil, "Configuration", "Please enter your Seeqpod UID:", Qt::LineEdit::Normal, "", ok )
+  unless ok.nil?
+    @uid = uid
+    @settings.setValue( "uid", Qt::Variant.new( @uid ) )
+    @settings.sync
+  end
 end
 
 
