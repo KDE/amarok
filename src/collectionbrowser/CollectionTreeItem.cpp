@@ -89,9 +89,9 @@ CollectionTreeItem::data( int role ) const {
                 {
                     if( !track.isNull() ) {
                         if ( track->trackNumber() > 0 )
-                            name = QString::number( track->trackNumber() ) + " - " + track->prettyName();
+                            name = QString::number( track->trackNumber() ) + " - " + track->fixedName();
                         else
-                            name = track->prettyName();
+                            name = track->fixedName();
                     }
                 }
             }

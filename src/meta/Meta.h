@@ -87,6 +87,11 @@ namespace Meta
             virtual QString fullPrettyName() const { return prettyName(); }
             virtual QString sortableName() const { return prettyName(); }
 
+            /**used for showing a fixed name in the tree view. Needed for items that change
+             * their name occasionally such as some streams. These should overwrite this
+             */
+            virtual QString fixedName() const { return prettyName(); }
+
             virtual void addMatchTo( QueryMaker *qm ) = 0;
 
             virtual void subscribe( Observer *observer );
