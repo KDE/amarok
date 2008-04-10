@@ -58,8 +58,6 @@ class CollectionTreeView: public QTreeView {
     protected slots:
 
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
-        void slotExpand( const QModelIndex &index );
-        void slotCollapsed( const QModelIndex &index );
 
     private:
         // Utility function to play all items

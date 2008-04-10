@@ -47,10 +47,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     m_treeModel = 0;
     m_filterModel = 0;
-
-    connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
-
-
 }
 
 
@@ -60,7 +56,6 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
-    connect( m_treeModel, SIGNAL( expandIndex( const QModelIndex ) ), SLOT( slotExpand( const QModelIndex ) ) );
 
     m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSortRole( CustomRoles::SortRole );
@@ -70,7 +65,7 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
     m_filterModel->setSourceModel( model );
 
     QTreeView::setModel( m_filterModel );
-    //QTreeView::setModel( model );
+//     QTreeView::setModel( model );
 
 }
 
@@ -255,24 +250,6 @@ CollectionTreeView::slotSetFilterTimeout()
         m_filterTimer.stop();
         m_filterTimer.start( 500 );
     }
-}
-
-void
-CollectionTreeView::slotExpand( const QModelIndex &index )
-{
-    if( m_filterModel )
-        expand( m_filterModel->mapFromSource( index ) );
-    else
-        expand( index );
-}
-
-void
-CollectionTreeView::slotCollapsed( const QModelIndex &index )
-{
-    if( m_filterModel )
-        m_treeModel->slotCollapsed( m_filterModel->mapToSource( index ) );
-    else
-        m_treeModel->slotCollapsed( index );
 }
 
 void

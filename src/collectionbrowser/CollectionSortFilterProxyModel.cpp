@@ -23,7 +23,10 @@
 CollectionSortFilterProxyModel::CollectionSortFilterProxyModel(  QObject * parent )
  : QSortFilterProxyModel( parent )
 {
-    setDynamicSortFilter( true );
+    //NOTE: This does not work properly with our lazy loaded model.  Every time we get new data (usually around an expand)
+    // the view scrolls to make the selected item visible.  This is probably a bug in qt,
+    // but as the view appears to behave without it, I'm just disabling.
+//     setDynamicSortFilter( true );
 }
 
 
