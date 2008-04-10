@@ -59,6 +59,7 @@ class ScanMetaData {
     public:
         QString album;
         QString artist;
+        QString albumArtist;
         QString comment;
         QString composer;
         QString genre;

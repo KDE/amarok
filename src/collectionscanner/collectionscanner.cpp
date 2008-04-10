@@ -345,6 +345,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 #undef strip
             smd.isValid = true;
         }
+        smd.albumArtist = QString();
 
 
     /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
@@ -367,7 +368,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                     smd.composer = TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).trimmed();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TPE2"].isEmpty() ) // non-standard: Apple, Microsoft
-                    smd.artist = TStringToQString( file->ID3v2Tag()->frameListMap()["TPE2"].front()->toString() ).trimmed();
+                    smd.albumArtist = TStringToQString( file->ID3v2Tag()->frameListMap()["TPE2"].front()->toString() ).trimmed();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
@@ -467,6 +468,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     attributes["path"]    = path;
     attributes["title"]   = smd.title;
     attributes["artist"]  = smd.artist;
+    attributes["albumArtist"] = smd.albumArtist;
     attributes["composer"]= smd.composer;
     attributes["album"]   = smd.album;
     attributes["comment"] = smd.comment;
