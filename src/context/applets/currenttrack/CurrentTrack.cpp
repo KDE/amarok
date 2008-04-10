@@ -51,7 +51,6 @@ CurrentTrack::~CurrentTrack()
 void CurrentTrack::init()
 {
     setDrawStandardBackground( true );
-    dataEngine( "amarok-current" )->connectSource( "current", this );
 
     m_theme = new Context::Svg( "widgets/amarok-currenttrack", this );
     m_theme->setContentType( Context::Svg::SingleImage );
@@ -97,13 +96,14 @@ void CurrentTrack::init()
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
     resize( m_width, m_aspectRatio );
 
+    dataEngine( "amarok-current" )->connectSource( "current", this );
 }
 
 void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
 {
     prepareGeometryChange();
 
-    if (constraints & Plasma::SizeConstraint && m_theme) {
+    if (constraints & Plasma::SizeConstraint) {
         m_theme->resize(contentSize().toSize());
     }
 
