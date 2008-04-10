@@ -17,10 +17,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
+#include "servicebrowser.h"
 
 #include "context/ContextView.h"
 #include "debug.h"
-#include "servicebrowser.h"
 #include "ServiceListDelegate.h"
 
 #include <KIconLoader>
