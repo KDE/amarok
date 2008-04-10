@@ -984,8 +984,7 @@ bool
 IpodMediaDevice::createLockFile( bool silent )
 {
     QString lockFilePath;
-    if (!pathExists( itunesDir( "iTunes:iTunesLock" ), &lockFilePath ))
-        return false;
+    pathExists( itunesDir( "iTunes:iTunesLock" ), &lockFilePath );
 
     m_lockFile = new QFile( lockFilePath );
     QString msg;
