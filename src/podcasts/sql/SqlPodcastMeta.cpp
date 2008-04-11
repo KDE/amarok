@@ -51,7 +51,7 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     m_url = KUrl( episode->url() );
     //m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
     m_localUrl = episode->localUrl();
-    m_title = episode->m_title();
+    m_title = episode->title();
     m_guid = episode->guid();
 
     //commit to the database
