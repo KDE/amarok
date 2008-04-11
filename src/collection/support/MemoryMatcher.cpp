@@ -105,7 +105,7 @@ TrackList ArtistMatcher::match( MemoryCollection *memColl )
 AlbumList ArtistMatcher::matchAlbums(MemoryCollection * memColl)
 {
     ArtistMap artistMap = memColl->artistMap();
-    if ( artistMap.contains( m_artist->name() ) )
+    if ( m_artist && artistMap.contains( m_artist->name() ) )
     {
         ArtistPtr artist = artistMap.value( m_artist->name() );
 
