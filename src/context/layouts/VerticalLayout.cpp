@@ -92,36 +92,32 @@ Plasma::LayoutItem* VerticalLayout::takeAt(int i)
 
 void VerticalLayout::relayout()
 {
-    
-    QRectF rect = geometry().adjusted(0, 0, 0, 0);
 
-     debug() << "laying out column in rect::" << rect;
+    QRectF rect = geometry().adjusted(0, 0, 0, 0);
 
     qreal top = 10.0;
     qreal left = 10.0; //Plasma::Layout::margin( Plasma::LeftMargin );
 
     foreach (LayoutItem *child , d->children) {
         qreal height = 0.0;
-        
+
         if( child->hasHeightForWidth() )
             height = child->heightForWidth( rect.width() );
         else
             height = sizeHint().height();
-        
+
         const QRectF newgeom( rect.topLeft().x() + left,
                               rect.topLeft().y() + top,
                                            rect.width() - 6,
                                             height );
-                                            
-         debug() << "laying out child item with geometry:" << newgeom;
-                                            
+
         top += height /*+ spacing()*/;
-        
+
         if ( animator() )
             animator()->setGeometry( child , newgeom );
         else
             child->setGeometry( newgeom );
-        
+
     }
 
 }

@@ -383,8 +383,6 @@ ScriptManager::findScripts() //SLOT
 void
 ScriptManager::slotCurrentChanged( QTreeWidgetItem* item )
 {
-    DEBUG_BLOCK
-
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
                             item == m_scoreCategory ||
@@ -778,7 +776,7 @@ ScriptManager::scriptFinished( AmarokProcess* process ) //SLOT
         KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2", it.key(), process->exitStatus() ),it.value().log );
         warning() << "Script exited with error status: " << process->exitStatus();
     }
-    
+
     // Destroy script process
     it.value().process->close();
     it.value().process->deleteLater();

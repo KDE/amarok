@@ -221,7 +221,6 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
-            DEBUG_BLOCK
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
@@ -300,7 +299,6 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist, public ServiceDisplayIn
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
-            DEBUG_BLOCK
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
@@ -413,7 +411,6 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre, public ServiceDisplayInfo
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
-            DEBUG_BLOCK
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
@@ -459,7 +456,6 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer, public ServiceDispl
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
-            DEBUG_BLOCK
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
@@ -497,7 +493,6 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year, public ServiceDisplayInfoPr
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
-            DEBUG_BLOCK
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )

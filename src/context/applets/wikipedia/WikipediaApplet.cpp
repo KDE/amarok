@@ -100,7 +100,7 @@ void WikipediaApplet::constraintsUpdated( Plasma::Constraints constraints )
     float textWidth = m_wikipediaLabel->boundingRect().width();
     float totalWidth = m_header->elementRect( "wikipedialabel" ).width();
     float offsetX =  ( totalWidth - textWidth ) / 2;
-    m_wikipediaLabel->setPos( m_header->elementRect( "Wikipedia" ).topLeft() + QPointF ( offsetX, 0 ) );
+//     m_wikipediaLabel->setPos( m_header->elementRect( "Wikipedia" ).topLeft() + QPointF ( offsetX, 0 ) );
 
     /*m_currentLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() );
     m_currentLabel->setFont( shrinkTextSizeToFit( m_label, m_header->elementRect( "titlelabel" ) ) );
@@ -111,7 +111,7 @@ void WikipediaApplet::constraintsUpdated( Plasma::Constraints constraints )
     m_currentTitle->setText( truncateTextToFit( m_title, m_currentTitle->font(), m_header->elementRect( "title" ) ) );*/
 
 
-    kDebug() << "wikipedialabel top left: " <<  m_header->elementRect( "wikipedialabel" ).topLeft();
+//     kDebug() << "wikipedialabel top left: " <<  m_header->elementRect( "wikipedialabel" ).topLeft();
 
     m_wikiPage->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
 
@@ -124,7 +124,7 @@ void WikipediaApplet::constraintsUpdated( Plasma::Constraints constraints )
 
     m_wikiPage->show();
 
-    kDebug() << "m_wikiPage top left: " <<  m_wikiPage->boundingRect().topLeft();
+//     kDebug() << "m_wikiPage top left: " <<  m_wikiPage->boundingRect().topLeft();
 
 
 }
@@ -142,7 +142,6 @@ qreal WikipediaApplet::heightForWidth( qreal width ) const
 
 void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
-    DEBUG_BLOCK
     Q_UNUSED( name )
 
     //debug() << "got data from engine:" << data;

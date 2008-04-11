@@ -27,7 +27,6 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
     , ContextObserver( ContextView::self() )
     , m_wikiJob( 0 )
 {
-    DEBUG_BLOCK
     m_requested = true; // testing
     m_wikiLocale = "en";
     m_currentSelection = "artist";
@@ -50,26 +49,24 @@ bool WikipediaEngine::sourceRequested( const QString& name )
 
 void WikipediaEngine::message( const ContextState& state )
 {
-    DEBUG_BLOCK
     if( state == Current && m_requested )
         update();
 }
 
 void WikipediaEngine::update()
 {
-    DEBUG_BLOCK
     QString tmpWikiStr;
 
     if ( !The::engineController()->currentTrack() ) {
         return;
     }
 
-    if( selection() == "artist" ) // default, or applet told us to fetch artist 
+    if( selection() == "artist" ) // default, or applet told us to fetch artist
     {
 
         setData( "wikipedia", "label", "Artist" );
         setData( "wikipedia", "title", The::engineController()->currentTrack()->artist()->prettyName() );
-        
+
         if ( (The::engineController()->currentTrack()->playableUrl().protocol() == "lastfm") ||
              (The::engineController()->currentTrack()->playableUrl().protocol() == "daap") ||
              !The::engineController()->isStream() )
@@ -78,7 +75,7 @@ void WikipediaEngine::update()
             tmpWikiStr += wikiArtistPostfix(); //makes wikipedia bail out
 
             debug() << "tmpWikiStr: " << tmpWikiStr;
-            
+
         } else {
             tmpWikiStr = The::engineController()->currentTrack()->artist()->prettyName();
             tmpWikiStr += wikiArtistPostfix(); //makes wikipedia bail out
@@ -100,23 +97,23 @@ void WikipediaEngine::update()
             tmpWikiStr += wikiAlbumPostfix();
         }
     }
-    
+
     //Hack to make wiki searches work with magnatune preview tracks
-    
+
     if ( tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) ) {
         tmpWikiStr = tmpWikiStr.remove(" (PREVIEW: buy it at www.magnatune.com)" );
         int index = tmpWikiStr.indexOf( '-' );
         if ( index != -1 ) {
             tmpWikiStr = tmpWikiStr.left (index - 1);
         }
-        
+
     }
     m_wikiCurrentEntry = tmpWikiStr;
-    
+
     m_wikiCurrentUrl = wikiURL( tmpWikiStr );
 
     debug() << "wiki url: " << m_wikiCurrentUrl;
-    
+
     setData( "wikipedia", "message", "fetching" );
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
@@ -124,9 +121,8 @@ void WikipediaEngine::update()
 
 void WikipediaEngine::wikiResult( KJob* job )
 {
-    DEBUG_BLOCK
     if( !m_wikiJob ) return; //track changed while we were fetching
-    
+
     if ( !job->error() == 0 && job == m_wikiJob )
     { // make sure its not the wrong job (e.g. wiki request for now changed song
         setData( "wikipedia", "error" );
@@ -139,18 +135,18 @@ void WikipediaEngine::wikiResult( KJob* job )
 
     //debug() << "So far so good!";
 
-    
+
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     m_wiki = QString( storedJob->data() );
 
 
     //debug() << "reply: " << m_wiki;
-    
+
     // FIXME: Get a safer Regexp here, to match only inside of <head> </head> at least.
     if ( m_wiki.contains( "charset=utf-8"  ) ) {
         m_wiki = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
     }
-    
+
     if( m_wiki.indexOf( "var wgArticleId = 0" ) != -1 )
     {
         // article was not found
@@ -159,7 +155,7 @@ void WikipediaEngine::wikiResult( KJob* job )
             debug() << "m_wikiCurrentEntry.endsWith( wikiArtistPostfix() )";
             m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiArtistPostfix().length() );
             debug() << "new m_wikiCurrentEntry: " << m_wikiCurrentEntry;
-            
+
             reloadWikipedia();
             return;
         }
@@ -179,11 +175,11 @@ void WikipediaEngine::wikiResult( KJob* job )
 
 
     //debug() << "Even better";
-    
+
     //remove the new-lines and tabs(replace with spaces IS needed).
     m_wiki.replace( "\n", " " );
     m_wiki.replace( "\t", " " );
-    
+
     m_wikiLanguages.clear();
     // Get the available language list
     if ( m_wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") != -1 )
@@ -192,7 +188,7 @@ void WikipediaEngine::wikiResult( KJob* job )
         m_wikiLanguages = m_wikiLanguages.mid( m_wikiLanguages.indexOf("<ul>") );
         m_wikiLanguages = m_wikiLanguages.mid( 0, m_wikiLanguages.indexOf( "</div>" ) );
     }
-    
+
     QString copyright;
     QString copyrightMark = "<li id=\"f-copyright\">";
     if ( m_wiki.indexOf( copyrightMark ) != -1 )
@@ -203,7 +199,7 @@ void WikipediaEngine::wikiResult( KJob* job )
         //only one br at the beginning
         copyright.prepend( "<br />" );
     }
-    
+
     // Ok lets remove the top and bottom parts of the page
     m_wiki = m_wiki.mid( m_wiki.indexOf( "<h1 class=\"firstHeading\">" ) );
     m_wiki = m_wiki.mid( 0, m_wiki.indexOf( "<div class=\"printfooter\">" ) );
@@ -211,19 +207,19 @@ void WikipediaEngine::wikiResult( KJob* job )
     m_wiki += copyright;
     m_wiki.append( "</div>" );
     m_wiki.replace( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>"), QString() );
-    
+
     m_wiki.replace( QRegExp( "<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>" ), QString() );
-    
+
     m_wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>" ), "\\1" );
-    
+
     // Remove anything inside of a class called urlexpansion, as it's pointless for us
     m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ), QString() );
-    
+
     // Remove hidden table rows as well
     QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>", Qt::CaseInsensitive );
     hidden.setMinimal( true ); //greedy behaviour wouldn't be any good!
     m_wiki.replace( hidden, QString() );
-    
+
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
     m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString() );
     m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString() );
@@ -235,12 +231,12 @@ void WikipediaEngine::wikiResult( KJob* job )
     m_wiki.replace( "</option>\n" , QString() );
     m_wiki.replace( QRegExp( "<textarea[^>]*>" ), QString() );
     m_wiki.replace( "</textarea>" , QString() );
-    
+
     //first we convert all the links with protocol to external, as they should all be External Links.
     m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );
     //m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" +m_wikiBaseUrl );
     m_wiki.replace( QRegExp( "href= *\"#" ), "href=\"" +m_wikiCurrentUrl + '#' );
-    
+
     QString m_wikiHTMLSource = "<html><body>\n";
     m_wikiHTMLSource.append( m_wiki );
     if ( !m_wikiLanguages.isEmpty() )
@@ -248,7 +244,7 @@ void WikipediaEngine::wikiResult( KJob* job )
         m_wikiHTMLSource.append( i18n( "Wikipedia Other Languages: <br/>" )+ m_wikiLanguages );
     }
     m_wikiHTMLSource.append( "</body></html>\n" );
-    
+
     clearData( "wikipedia" );
 //     debug() << "sending wiki page:" << m_wikiHTMLSource;
     setData( "wikipedia", "page", m_wikiHTMLSource );
@@ -267,7 +263,7 @@ void WikipediaEngine::wikiResult( KJob* job )
     }
 
     //debug() << m_wikiHTMLSource;
-    
+
     m_wikiJob = 0;
 }
 
@@ -276,7 +272,7 @@ WikipediaEngine::wikiLocale()
 {
     if( m_wikiLocale.isEmpty() )
         return QString( "en" );
-    
+
     return m_wikiLocale;
 }
 
@@ -284,7 +280,6 @@ WikipediaEngine::wikiLocale()
 QString
 WikipediaEngine::wikiArtistPostfix()
 {
-    DEBUG_BLOCK
     if( wikiLocale() == "en" )
         return " (band)";
     else if( wikiLocale() == "de" )
@@ -319,7 +314,7 @@ WikipediaEngine::wikiURL( const QString &item )
             + KUrl::toPercentEncoding( item, "/" )
             + "&btnI=Lucky";*/
 
-    
+
     return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() )
     + KUrl::toPercentEncoding( item, "/" );
 }
@@ -329,14 +324,14 @@ WikipediaEngine::reloadWikipedia()
 {
     m_wikiJob = NULL;
 
-    
+
     m_wikiCurrentUrl = wikiURL( m_wikiCurrentEntry );
     debug() << "wiki url: " << m_wikiCurrentUrl;
-    
+
     setData( "wikipedia", "message", "fetching" );
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
-    
+
     //showWikipediaEntry( m_wikiCurrentEntry, true );
 }
 
