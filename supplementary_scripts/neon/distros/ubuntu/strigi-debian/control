@@ -3,7 +3,7 @@ Section: utils
 Priority: optional
 Maintainer: Amarok Nightly Builds <nightly@getamarok.com>
 Build-Depends: amarok-nightly-cdbs, amarok-nightly-qt,
- debhelper (>= 5), cmake, quilt, libbz2-dev,
+ debhelper (>= 6), cmake, quilt, libbz2-dev,
  libclucene-dev, libdbus-1-dev, libexiv2-dev, libxml2-dev,
  zlib1g-dev, libxml2-utils, python-support, python
 Standards-Version: 3.7.3

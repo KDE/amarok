@@ -1,6 +1,8 @@
 #!/usr/bin/make -f
 
--include debian/cmake.mk
+export DH_VERBOSE=1
+
+-include /usr/share/cdbs/1/rules/cmake.mk
 -include /usr/share/cdbs/1/rules/debhelper.mk
 -include /usr/share/cdbs/1/rules/utils.mk
 
@@ -9,7 +11,8 @@ PATH := /opt/amarok-nightly/bin:$(PATH)
 DEB_CMAKE_EXTRA_FLAGS = -DCMAKE_BUILD_TYPE=debugfull \
                         -DSTRIGI_EXTRA_INC_DIRECTORY=/opt/amarok-nightly/include \
                         -DSTRIGI_EXTRA_LIB_DIRECTORY=/opt/amarok-nightly/lib
-
+DEB_DH_INSTALL_ARGS := --sourcedir=debian/tmp
+DEB_DH_MAKESHLIBS_ARGS_ALL := -V
 DEB_CMAKE_PREFIX = /opt/amarok-nightly
 
 clean::
