@@ -76,10 +76,10 @@ class PodcastMetaCommon
         virtual int podcastType() { return NoType; };
 
     protected:
-        QString m_title;
-        QString m_description;
+        QString m_title; //the title
+        QString m_description; //a longer description, possibly with HTML markup
         QStringList m_keywords;
-        QString m_subtitle;
+        QString m_subtitle; //a short description
         QString m_summary;
         QString m_author;
 
@@ -124,7 +124,7 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         virtual int rating() const { return 0; };
         virtual void setRating( int newRating ) { Q_UNUSED( newRating ); };
         virtual int length() const { return m_duration; };
-        virtual int filesize() const { return m_size; };
+        virtual int filesize() const { return m_fileSize; };
         virtual int sampleRate() const { return 0; };
         virtual int bitrate() const { return 0; };
         virtual int trackNumber() const { return m_sequenceNumber; };
@@ -173,14 +173,11 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         QString m_guid; //the GUID from the podcast feed
         KUrl m_url; //remote url of the file
         KUrl m_localUrl; //the localUrl, only valid if downloaded
-        QString m_title; //the title
-        QString m_subtitle; //a short description
-        QString m_description; //a longer description, possibly with HTML markup
         QString m_mimeType; //the mimetype of the enclosure
         //TODO: convert to QDateTime from a RFC822 format
         QString m_pubDate; //the pubDate from the feed
         int m_duration; //the playlength in seconds
-        int m_size; //the size tag from the enclosure
+        int m_fileSize; //the size tag from the enclosure
         int m_sequenceNumber; //number of the episode
         bool m_isNew; //listened to or not?
 
@@ -212,13 +209,13 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
         //PodcastChannel specific methods
         virtual QString title() const { return m_title; };
         virtual KUrl url() const { return m_url; };
-        virtual KUrl webLink() const { return m_link; };
+        virtual KUrl webLink() const { return m_webLink; };
         virtual QPixmap image() const { return m_image; };
         virtual QString copyright() { return m_copyright; };
         virtual QStringList labels() const { return m_labels; };
 
         virtual void setUrl( KUrl &url ) { m_url = url; };
-        virtual void setWebLink( KUrl &link ) { m_link = link; };
+        virtual void setWebLink( KUrl &link ) { m_webLink = link; };
         virtual void setImage( QPixmap &image ) { m_image = image; };
         virtual void setCopyright( QString &copyright ) { m_copyright = copyright; };
         virtual void setLabels( QStringList &labels ) { m_labels = labels; };
@@ -236,7 +233,7 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
     protected:
         KUrl m_url;
         QString m_title;
-        KUrl m_link;
+        KUrl m_webLink;
         QPixmap m_image;
         QStringList m_labels;
         QString m_copyright;

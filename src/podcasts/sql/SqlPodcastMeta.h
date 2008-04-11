@@ -36,6 +36,8 @@ typedef QList<SqlPodcastChannelPtr> SqlPodcastChannelList;
 class SqlPodcastEpisode : public PodcastEpisode
 {
     public:
+//         static SqlPodcastEpisodePtr getEpisode( SqlPodcastProvider *provider );
+        
         SqlPodcastEpisode( const QStringList &queryResult );
 
         /** Copy from another PodcastEpisode
@@ -54,6 +56,8 @@ class SqlPodcastEpisode : public PodcastEpisode
         int id() const { return m_id; };
 
     private:
+        void updateInDb();
+
         bool m_batchUpdate;
 
         int m_id; //database ID
@@ -76,7 +80,8 @@ class SqlPodcastChannel : public PodcastChannel
         void addEpisode( SqlPodcastEpisodePtr episode ) { m_sqlEpisodes << episode; };
 
     private:
-        //cached database fields
+        void updateInDb();
+
         int m_id; //database ID
 
         SqlPodcastEpisodeList m_sqlEpisodes;

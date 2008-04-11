@@ -289,8 +289,7 @@ SqlPodcastProvider::createTables() const
                     ",title " + m_sqlStorage->textColumnType() +
                     ",weblink " + m_sqlStorage->exactTextColumnType() +
                     ",image " + m_sqlStorage->exactTextColumnType() +
-                    //TODO: change to description
-                    ",comment " + m_sqlStorage->longTextColumnType() +
+                    ",description " + m_sqlStorage->longTextColumnType() +
                     ",copyright "  + m_sqlStorage->textColumnType() +
                     ",directory "  + m_sqlStorage->textColumnType() +
                     ",labels" + m_sqlStorage->textColumnType() +
@@ -300,19 +299,18 @@ SqlPodcastProvider::createTables() const
     m_sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
                     "id " + m_sqlStorage->idType() +
                     ",url " + m_sqlStorage->exactTextColumnType() + " UNIQUE"
-                    ",parent INTEGER"
+                    ",channel INTEGER"
                     ",localurl " + m_sqlStorage->exactTextColumnType() +
                     ",guid " + m_sqlStorage->exactTextColumnType() +
                     ",title " + m_sqlStorage->textColumnType() +
                     ",subtitle " + m_sqlStorage->textColumnType() +
                     ",sequencenumber INTEGER" +
                     ",description " + m_sqlStorage->longTextColumnType() +
-                    //TODO: change to mimetype
-                    ",filetype "  + m_sqlStorage->textColumnType() +
-                    ",createdate "  + m_sqlStorage->textColumnType() +
-                    ",length INTEGER"
-                    ",size INTEGER"
-                    ",isNew BOOL );" ));
+                    ",mimetype "  + m_sqlStorage->textColumnType() +
+                    ",pubdate "  + m_sqlStorage->textColumnType() +
+                    ",duration INTEGER"
+                    ",filesize INTEGER"
+                    ",isnew BOOL );" ));
 
     m_sqlStorage->query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
     m_sqlStorage->query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
