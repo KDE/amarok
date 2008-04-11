@@ -497,6 +497,11 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
         return;
     if( newState == Phonon::BufferingState ) //Ignore this for now, it's causing trouble;
         return;
+    if( newState == Phonon::ErrorState ) {
+        warning() << "Phonon failed to play this URL. Error: " << m_media->errorString();
+        QTimer::singleShot( 0, this, SLOT( slotTrackEnded() ) );  // QTimer because we don't want to cause recursion
+    }
+
     stateChangedNotify( newState, oldState );
 }
 
