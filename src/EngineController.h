@@ -119,8 +119,6 @@ private:
     Phonon::Path        m_path;
     QPointer<Phonon::VolumeFaderEffect> m_fader;
 
-    bool m_isStream;
-
     Meta::TrackPtr  m_currentTrack;
     Meta::TrackPtr  m_lastTrack;
     QPointer<Meta::MultiPlayableCapability> m_multi;

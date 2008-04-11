@@ -252,10 +252,7 @@ EngineController::playUrl( const KUrl &url, uint offset )
 {
     DEBUG_BLOCK
 
-    m_isStream = ( url.protocol() == "http" || url.protocol() == "rtsp" );
-    debug() << "isStream = " << m_isStream;
-    debug() << "protocol = " << url.protocol();
-
+    debug() << "URL: " << url.url();
     m_media->setCurrentSource( url );
 
     if( offset )
@@ -415,7 +412,15 @@ EngineController::getAudioCDContents(const QString &device, KUrl::List &urls)
 bool
 EngineController::isStream()
 {
-    return m_isStream;
+    DEBUG_BLOCK
+
+    if( m_media ) {
+        debug() << "stream = true";
+        return m_media->currentSource().stream() != 0;
+    }
+
+    debug() << "stream = false";
+    return false;
 }
 
 int
@@ -493,11 +498,10 @@ void
 EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldState ) //SLOT
 {
     // Sanity checks
-    if( newState == oldState )
+    if( newState == oldState or newState == Phonon::BufferingState )
         return;
-    if( newState == Phonon::BufferingState ) //Ignore this for now, it's causing trouble;
-        return;
-    if( newState == Phonon::ErrorState ) {
+
+    if( newState == Phonon::ErrorState ) {  // If media is borked, skip to next track
         warning() << "Phonon failed to play this URL. Error: " << m_media->errorString();
         QTimer::singleShot( 0, this, SLOT( slotTrackEnded() ) );  // QTimer because we don't want to cause recursion
     }
