@@ -1,2 +1,2 @@
-name = Seeqpod.com
+name = SeeqPod.com
 type = service

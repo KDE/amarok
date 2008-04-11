@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 ###########################################################################
-#   Amarok script for interfacing with Seeqpod.com.                       #
+#   Amarok script for interfacing with SeeqPod.com.                       #
 #                                                                         #
 #   Copyright                                                             #
 #   (C) 2007, 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>         #
@@ -27,7 +27,7 @@ require "rexml/document"
 begin
   require "Qt4"
 rescue LoadError
-  error = "Qt4-Ruby (Ruby bindings for Qt4) is required for the 'Seeqpod' script.\n\nsudo apt-get install libqt4-ruby"
+  error = "Qt4-Ruby (Ruby bindings for Qt4) is required for the 'SeeqPod' script.\n\nsudo apt-get install libqt4-ruby"
   `kdialog --sorry '#{error}'`
   exit 1
 end
@@ -36,7 +36,7 @@ include REXML
 
 def configure
   ok = Qt::Boolean.new  # Will become nil if the user presses Cancel
-  uid = Qt::InputDialog.getText( nil, "Configuration", "Please enter your Seeqpod UID:", Qt::LineEdit::Normal, "", ok )
+  uid = Qt::InputDialog.getText( nil, "Configuration", "Please enter your SeeqPod UID:", Qt::LineEdit::Normal, "", ok )
   unless ok.nil?
     @uid = uid
     @settings.setValue( "uid", Qt::Variant.new( @uid ) )
@@ -48,10 +48,10 @@ end
 app = Qt::Application.new(ARGV)
 @settings = Qt::Settings.new( "./seeqpod_service_rc", Qt::Settings::IniFormat )
 @uid = @settings.contains( "uid" ) ? @settings.value( "uid" ).toString : ""
-service_name = "Seeqpod.com"
+service_name = "SeeqPod.com"
 
 
-#Seeqpod has given permission to use their background and logo in the html front page below!
+#SeeqPod has given permission to use their background and logo in the html front page below!
 
 root_html = "" +
 "<HTML>" +
@@ -75,7 +75,7 @@ root_html = "" +
 "        <br><br>" +
 "        <IMG src=\"http://www.seeqpod.com/images/logo.png\" alt=\"SeeqPod.com\">" +
 "        <br><br>" +
-"        Welcome to the Amarok 2 SeeqPod.com scripted service. To search seeqpod, simply type in your search in the search box in the service and expand the item that apears in the list. Per default, this script will only return at most 100 matches, but by appending an #offset to your search, it will return latter matches. For instance, typing in \"Foobar\" will return the first 100 matches, \"Foobar#100\" the next 100 and so on." +
+"        Welcome to the Amarok 2 SeeqPod.com scripted service. To search SeeqPod, simply type in your search in the search box in the service and expand the item that appears in the list. By default, this script will only return at most 100 matches, but by appending an #offset to your search, it will return further matches. For instance, typing in \"Foobar\" will return the first 100 matches, \"Foobar#100\" the next 100, and so on." +
 "        </DIV>" +
 "    </BODY>" +
 "<HTML>"
@@ -93,7 +93,7 @@ loop do
         when "init"
             #2 levels, categories and stations
             levels = "2"
-            short_description = "Search and stream from seeqpod.com"
+            short_description = "Search and stream from SeeqPod.com"
 
             # init new browser
             system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "initService", service_name, levels, short_description, root_html, "true" )
@@ -132,7 +132,7 @@ loop do
                 system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertItem", service_name, "1", "-1", name, html, filter, "" )
 
                 #tell service that all items has been added ( no parent since these are top level items )
-               `qdbus org.kde.amarok /ScriptableServiceManager donePopulating "Seeqpod.com" "-1"`
+               `qdbus org.kde.amarok /ScriptableServiceManager donePopulating "SeeqPod.com" "-1"`
                 
             else if args[1].strip() == "0"
                 parent_id = args[2]
