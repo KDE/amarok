@@ -498,7 +498,7 @@ void
 EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldState ) //SLOT
 {
     // Sanity checks
-    if( newState == oldState or newState == Phonon::BufferingState )
+    if( newState == oldState || newState == Phonon::BufferingState )
         return;
 
     if( newState == Phonon::ErrorState ) {  // If media is borked, skip to next track
