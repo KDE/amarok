@@ -57,7 +57,7 @@ class SqlPodcastProvider : public PodcastProvider
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 
-        SqlStorage* sqlStorage() { return m_sqlStorage; };
+        SqlStorage* sqlStorage() const;
 
     public slots:
         void updateAll();
@@ -84,8 +84,6 @@ class SqlPodcastProvider : public PodcastProvider
 
         /** creates all the necessary tables, indexes etc. for the database */
         void createTables() const;
-
-        SqlStorage *m_sqlStorage;
 
         Meta::SqlPodcastChannelList m_channels;
 

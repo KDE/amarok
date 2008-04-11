@@ -52,11 +52,9 @@ SqlPodcastProvider::SqlPodcastProvider()
 {
     DEBUG_BLOCK
 
-    m_sqlStorage = CollectionManager::instance()->sqlStorage();
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QStringList values;
-
-    values = m_sqlStorage->query( "SELECT version FROM admin WHERE key = 'AMAROK_PODCAST';");
+    QStringList values = sqlStorage->query( "SELECT version FROM admin WHERE key = 'AMAROK_PODCAST';");
     if( values.isEmpty() )
     {
         debug() << "creating Podcast Tables";
@@ -144,6 +142,12 @@ SqlPodcastProvider::podcastChannelForId( int podcastChannelId )
             return i.previous();
     }
     return Meta::SqlPodcastChannelPtr();
+}
+
+SqlStorage*
+SqlPodcastProvider::sqlStorage() const
+{
+    return CollectionManager::instance()->sqlStorage();
 }
 
 void
@@ -283,41 +287,42 @@ SqlPodcastProvider::createTables() const
 {
     DEBUG_BLOCK
 
-    m_sqlStorage->query( QString( "CREATE TABLE podcastchannels "
-                    "(id " + m_sqlStorage->idType() +
-                    ",url " + m_sqlStorage->exactTextColumnType() + " UNIQUE"
-                    ",title " + m_sqlStorage->textColumnType() +
-                    ",weblink " + m_sqlStorage->exactTextColumnType() +
-                    ",image " + m_sqlStorage->exactTextColumnType() +
-                    ",description " + m_sqlStorage->longTextColumnType() +
-                    ",copyright "  + m_sqlStorage->textColumnType() +
-                    ",directory "  + m_sqlStorage->textColumnType() +
-                    ",labels" + m_sqlStorage->textColumnType() +
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    sqlStorage->query( QString( "CREATE TABLE podcastchannels "
+                    "(id " + sqlStorage->idType() +
+                    ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
+                    ",title " + sqlStorage->textColumnType() +
+                    ",weblink " + sqlStorage->exactTextColumnType() +
+                    ",image " + sqlStorage->exactTextColumnType() +
+                    ",description " + sqlStorage->longTextColumnType() +
+                    ",copyright "  + sqlStorage->textColumnType() +
+                    ",directory "  + sqlStorage->textColumnType() +
+                    ",labels" + sqlStorage->textColumnType() +
                     ",autoscan BOOL, fetchtype INTEGER"
                     ",autotransfer BOOL, haspurge BOOL, purgecount INTEGER );" ) );
 
-    m_sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
-                    "id " + m_sqlStorage->idType() +
-                    ",url " + m_sqlStorage->exactTextColumnType() + " UNIQUE"
+    sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
+                    "id " + sqlStorage->idType() +
+                    ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
                     ",channel INTEGER"
-                    ",localurl " + m_sqlStorage->exactTextColumnType() +
-                    ",guid " + m_sqlStorage->exactTextColumnType() +
-                    ",title " + m_sqlStorage->textColumnType() +
-                    ",subtitle " + m_sqlStorage->textColumnType() +
+                    ",localurl " + sqlStorage->exactTextColumnType() +
+                    ",guid " + sqlStorage->exactTextColumnType() +
+                    ",title " + sqlStorage->textColumnType() +
+                    ",subtitle " + sqlStorage->textColumnType() +
                     ",sequencenumber INTEGER" +
-                    ",description " + m_sqlStorage->longTextColumnType() +
-                    ",mimetype "  + m_sqlStorage->textColumnType() +
-                    ",pubdate "  + m_sqlStorage->textColumnType() +
+                    ",description " + sqlStorage->longTextColumnType() +
+                    ",mimetype "  + sqlStorage->textColumnType() +
+                    ",pubdate "  + sqlStorage->textColumnType() +
                     ",duration INTEGER"
                     ",filesize INTEGER"
                     ",isnew BOOL );" ));
 
-    m_sqlStorage->query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
-    m_sqlStorage->query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
-    m_sqlStorage->query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
+    sqlStorage->query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
+    sqlStorage->query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
+    sqlStorage->query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
 
-    m_sqlStorage->query( "INSERT INTO admin(key,version) "
-                          "VALUES('AMAROK_PODCAST'," + QString::number( PODCAST_DB_VERSION ) + ");" );
+    sqlStorage->query( "INSERT INTO admin(key,version) "
+                       "VALUES('AMAROK_PODCAST'," + QString::number( PODCAST_DB_VERSION ) + ");" );
 }
 
 #include "SqlPodcastProvider.moc"
