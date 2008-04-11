@@ -391,36 +391,36 @@ void
 TagDialog::guessFromFilename() //SLOT
 {
      int cur = 0;
-     
+
     TagGuesser guesser( m_currentTrack->playableUrl().path() );
     if( !guesser.title().isNull() )
         ui->kLineEdit_title->setText( guesser.title() );
-    
+
     if( !guesser.artist().isNull() )
     {
         cur = ui->kComboBox_artist->currentIndex();
         ui->kComboBox_artist->setItemText( cur, guesser.artist() );
     }
-    
+
     if( !guesser.album().isNull() )
     {
         cur = ui->kComboBox_album->currentIndex();
         ui->kComboBox_album->setItemText( cur, guesser.album() );
     }
-    
+
     if( !guesser.track().isNull() )
         ui->qSpinBox_track->setValue( guesser.track().toInt() );
     if( !guesser.comment().isNull() )
         ui->kTextEdit_comment->setText( guesser.comment() );
     if( !guesser.year().isNull() )
         ui->qSpinBox_year->setValue( guesser.year().toInt() );
-    
+
     if( !guesser.composer().isNull() )
     {
         cur = ui->kComboBox_composer->currentIndex();
         ui->kComboBox_composer->setItemText( cur, guesser.composer() );
     }
-    
+
     if( !guesser.genre().isNull() )
     {
         cur = ui->kComboBox_genre->currentIndex();
@@ -554,7 +554,7 @@ void TagDialog::init()
     //m_labelCloud->view()->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored, false );
     QSizePolicy policy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     m_labelCloud->view()->setSizePolicy(policy);
-    
+
     //m_labelCloud->view()->setVScrollBarMode( Q3ScrollView::AlwaysOff );
     //m_labelCloud->view()->setHScrollBarMode( Q3ScrollView::AlwaysOff );
 
@@ -862,12 +862,19 @@ void TagDialog::readTags()
 
 
     // enable only for editable files
-    bool editable = m_currentTrack->hasCapabilityInterface( Meta::Capability::Editable );
-    ui->kLineEdit_title->setReadOnly( !editable );
-    ui->kComboBox_artist->setEnabled( editable );
-    ui->kComboBox_composer->setEnabled( editable );
-    ui->kComboBox_album->setEnabled( editable );
-    ui->kComboBox_genre->setEnabled( editable );
+#define enableOrDisable( X ) \
+    ui->X->setEnabled( editable ); \
+    qobject_cast<KLineEdit*>(ui->X->lineEdit())->setClearButtonShown( editable )
+
+    const bool editable = m_currentTrack->hasCapabilityInterface( Meta::Capability::Editable );
+    ui->kLineEdit_title->setEnabled( editable );
+    ui->kLineEdit_title->setClearButtonShown( editable );
+
+    enableOrDisable( kComboBox_artist );
+    enableOrDisable( kComboBox_composer );
+    enableOrDisable( kComboBox_album );
+    enableOrDisable( kComboBox_genre );
+#undef enableOrDisable
     ui->kComboBox_rating->setEnabled( editable );
     ui->qSpinBox_track->setEnabled( editable );
     ui->qSpinBox_discNumber->setEnabled( editable );
@@ -1217,12 +1224,12 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         storedScores.remove( track );
         storedScores.insert( track, ui->qSpinBox_score->value() );
     }
-    
+
     if( result & TagDialog::RATINGCHANGED ) {
         storedRatings.remove( track );
         storedRatings.insert( track, ui->kComboBox_rating->currentIndex() ? ui->kComboBox_rating->currentIndex() : 0 );
     }
-    
+
     if( result & TagDialog::LYRICSCHANGED ) {
         if ( ui->kTextEdit_lyrics->toPlainText().isEmpty() ) {
             storedLyrics.remove( track );
@@ -1687,11 +1694,11 @@ TagDialogWriter::doJob()
 //             m_failed += true;
 //             continue;
 //         }
-// 
+//
 //         //FIXME: Port 2.0
 // //         bool result = m_tags[i].save();
 // //         m_tags[i].updateFilesize();
-// 
+//
 //         if( result )
 //             m_successCount++;
 //         else {
