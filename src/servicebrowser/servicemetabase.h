@@ -291,7 +291,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist, public ServiceDisplayIn
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
-        
+
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::CustomActions ) ||
@@ -353,7 +353,6 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album, public ServiceDisplayInfo
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
         {
-            DEBUG_BLOCK
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )

@@ -142,7 +142,6 @@ ServiceSqlQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 void
 ServiceSqlQueryMaker::run()
 {
-    DEBUG_BLOCK
     if( d->queryType == Private::NONE )
         return; //better error handling?
     if( d->worker && !d->worker->isFinished() )
@@ -178,7 +177,7 @@ ServiceSqlQueryMaker::startTrackQuery()
     {
         QString prefix = m_metaFactory->tablePrefix();
         //d->queryFrom = ' ' + prefix + "_tracks";
-        
+
         d->withoutDuplicates = true;
         d->queryFrom = ' ' + prefix + "_tracks";
         d->queryType = Private::TRACK;
@@ -192,12 +191,12 @@ ServiceSqlQueryMaker::startTrackQuery()
         d->linkedTables |= Private::ALBUMS_TABLE;
 
         d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
-        
+
         if ( d->linkedTables & Private::ARTISTS_TABLE ) {
             d->queryOrderBy += " ORDER BY " + prefix + "_tracks.album_id"; //make sure items are added as album groups
         }
 
-       
+
 
     }
     return this;
@@ -354,12 +353,12 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 {
     DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
-    
+
     //this should NOT be made into a static cast as this might get called with an incompatible type!
     const ServiceAlbum * serviceAlbum = dynamic_cast<const ServiceAlbum *>( album.data() );
     if( !d || !serviceAlbum )
         return this;
-    
+
     d->linkedTables |= Private::ALBUMS_TABLE;
     d->linkedTables |= Private::ARTISTS_TABLE;
     if( d->queryType == Private::GENRE );
@@ -378,20 +377,20 @@ ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
     const ServiceGenre* serviceGenre = static_cast<const ServiceGenre *>( genre.data() );
     if( !d || !serviceGenre )
         return this;
- 
+
     //genres link to albums in the database, so we need to start from here unless soig a track query
-    
+
    // if (  d->queryType == Private::TRACK ) {
         //d->queryFrom = ' ' + prefix + "_tracks";
         d->linkedTables |= Private::ALBUMS_TABLE;
-    //} else 
+    //} else
         //d->queryFrom = ' ' + prefix + "_albums";
-    
+
         //if ( d->queryType == Private::ARTIST )
         //d->linkedTables |= Private::ARTISTS_TABLE;
     d->linkedTables |= Private::GENRE_TABLE;
     d->queryMatch += QString( " AND " + prefix + "_genre.name = '%1'" ).arg( serviceGenre->name() );
-    
+
     return this;
 }
 
@@ -424,7 +423,7 @@ QueryMaker*
 ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     DEBUG_BLOCK
-    
+
     //a few hacks needed by some of the speedup code:
 
     if ( d->queryType == Private::GENRE ) {
@@ -437,11 +436,11 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
 
     }
 
-    
+
     QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
-    
+
    /* Q_UNUSED( value );
     Q_UNUSED( filter );
     Q_UNUSED( matchBegin );
@@ -518,7 +517,7 @@ ServiceSqlQueryMaker::buildQuery()
 
     if( d->albumMode == OnlyCompilations )
         return;
-    
+
     linkTables();
     QString query = "SELECT ";
     if ( d->withoutDuplicates )
@@ -558,7 +557,7 @@ ServiceSqlQueryMaker::runQuery( const QString &query )
 
    if( d->albumMode == OnlyCompilations )
        return QStringList();
-            
+
     //debug() << "Query string: " << query;
     return m_collection->query( query );
 }
@@ -606,7 +605,7 @@ ServiceSqlQueryMaker::nameForValue(qint64 value)
 {
 
     QString prefix = m_metaFactory->tablePrefix();
-    
+
     switch( value )
     {
         case valTitle:
@@ -701,7 +700,7 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
 
     //debug() << "got " << result.size() << " rows";
     //debug() << "at " << rowCount << "row per item";
-    
+
     for( int i = 0; i < resultRows; i++ )
     {
         debug() << i;
