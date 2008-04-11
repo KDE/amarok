@@ -16,6 +16,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#include "debug.h"
 #include "SqlPodcastMeta.h"
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
@@ -47,11 +48,11 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result )
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     : Meta::PodcastEpisode()
 {
-    m_url = episode->url();
-    m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
+    m_url = KUrl( episode->url() );
+    //m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
     m_localUrl = episode->localUrl();
+    m_title = episode->m_title();
     m_guid = episode->guid();
-    m_title = episode->title();
 
     //commit to the database
     updateInDb();
@@ -60,14 +61,17 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
 void
 Meta::SqlPodcastEpisode::updateInDb()
 {
+    DEBUG_BLOCK
     QString boolTrue = SqlPodcastProvider::instance()->sqlStorage()->boolTrue();
     QString boolFalse = SqlPodcastProvider::instance()->sqlStorage()->boolFalse();
+    #define escape(x) SqlPodcastProvider::instance()->sqlStorage()->escape(x)
     QString insert = "INSERT INTO podcastepisodes(url,channel,localurl,guid,title,subtitle,sequencenumber,description,mimetype,pubdate,duration,filesize,isnew) VALUES ( %1 );";
-    QString data = "%1,%2,%3,%4,%5,%6,%7,%8,%9,%10,%11,%12,%13";
-    data = data.arg( m_url.url() ).arg( m_sqlChannel->id() );
-    data = data.arg( m_localUrl.url() ).arg( m_guid ).arg( m_title ).arg( m_subtitle );
-    data = data.arg( m_sequenceNumber ).arg( m_description ).arg( m_mimeType );
-    data = data.arg( m_pubDate ).arg( m_duration ).arg( m_fileSize ).arg( m_isNew ? boolTrue : boolFalse );
+    QString data = "'%1','%2','%3','%4','%5','%6',%7,'%8','%9','%10',%11,%12,%13";
+    data = data.arg( escape(m_url.url())).arg( /*m_sqlChannel->id()*/ 0 );
+    data = data.arg( escape(m_localUrl.url()) ).arg( escape(m_guid) ).arg( escape(m_title) ).arg( escape(m_subtitle) );
+    data = data.arg( QString::number(m_sequenceNumber) ).arg( escape(m_description) ).arg( escape(m_mimeType) );
+    data = data.arg( escape(m_pubDate) ).arg( QString::number(m_duration) ).arg( QString::number(m_fileSize) );
+    data = data.arg( m_isNew ? boolTrue : boolFalse );
     insert = insert.arg( data );
 
     m_id = SqlPodcastProvider::instance()->sqlStorage()->insert( insert, "podcastepisodes" );
@@ -110,18 +114,20 @@ Meta::SqlPodcastChannel::updateInDb()
 {
     QString boolTrue = SqlPodcastProvider::instance()->sqlStorage()->boolTrue();
     QString boolFalse = SqlPodcastProvider::instance()->sqlStorage()->boolFalse();
+    #define escape(x) SqlPodcastProvider::instance()->sqlStorage()->escape(x)
     QString insert = "INSERT INTO podcastchannels(url,title,weblink,image,description,copyright,labels,autoscan,fetchtype,autotransfer,haspurge,purgecount) VALUES ( %1 );";
-    QString data = "%1,%2,%3,%4,%5,%6,%7,%8,%9,%10,%11,%12,%13,%14";
-    data = data.arg( m_url.url() ).arg( m_title ).arg( m_webLink.url() );
-    data = data.arg( /*TODO:m_image.url()*/QString("") ).arg( m_description ).arg( m_copyright );
+    QString data = "'%1','%2','%3','%4','%5','%6','%7',%8,%9,%10,%11,%12";
+    data = data.arg( escape(m_url.url()) ).arg( escape(m_title) ).arg( escape(m_webLink.url()) );
+    //TODO:m_image.url()
+    data = data.arg( escape(QString("")) ).arg( escape(m_description) ).arg( escape(m_copyright) );
     //TODO: QStringList -> comma seperated QString
     QString labels = QString("");
-    data = data.arg( labels );
+    data = data.arg( escape(labels) );
     data = data.arg( m_autoScan ? boolTrue : boolFalse );
-    data = data.arg( m_fetchType );
+    data = data.arg( QString::number(m_fetchType) );
     data = data.arg( m_autoTransfer ? boolTrue : boolFalse );
     data = data.arg( m_hasPurge ? boolTrue : boolFalse );
-    data = data.arg( m_purgeCount );
+    data = data.arg( QString::number(m_purgeCount) );
     insert = insert.arg( data );
 
     m_id = SqlPodcastProvider::instance()->sqlStorage()->insert( insert, "podcastchannels" );

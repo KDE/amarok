@@ -219,6 +219,11 @@ PodcastReader::read()
                     static_cast<PodcastEpisode *>(m_current)->setUrl( KUrl( m_urlString ) );
                     m_urlString.clear();
                 }
+                else if( QXmlStreamReader::name() == "link" )
+                {
+                    m_channel->setWebLink( KUrl( m_linkString ) );
+                    m_linkString.clear();
+                }
             }
             else if( isCharacters() && !isWhitespace() )
             {
@@ -305,7 +310,7 @@ PodcastReader::commitChannel()
     if( m_podcastProvider->channels().contains( m_channel ) )
         return;
 
-    debug() << "commit new Podcast Channel (as Album) " << m_channel->title();
+    debug() << "commit new Podcast Channel " << m_channel->title();
 //     m_podcastProvider->acquireReadLock();
     m_podcastProvider->addChannel( PodcastChannelPtr( m_channel ) );
 //     m_podcastProvider->releaseLock();
@@ -316,14 +321,14 @@ PodcastReader::commitChannel()
 void
 PodcastReader::commitEpisode()
 {
+    DEBUG_BLOCK
     Q_ASSERT( m_current );
     PodcastEpisodePtr item = PodcastEpisodePtr( static_cast<PodcastEpisode *>(m_current) );
-    item->setAlbum( m_channel->name() );
 
     PodcastEpisodePtr episodeMatch = podcastEpisodeCheck( item );
     if( episodeMatch == item )
     {
-        debug() << "commit episode " << m_current->title();
+        debug() << "commit episode " << item->title();
 //         m_podcastProvider->acquireReadLock();
         m_podcastProvider->addEpisode( item );
 //         m_podcastProvider->releaseLock();

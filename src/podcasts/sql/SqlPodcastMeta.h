@@ -49,9 +49,6 @@ class SqlPodcastEpisode : public PodcastEpisode
         //Track Methods
         QString type() const { return i18n("SQL Podcast"); };
 
-        //PodcastMetaCommon methods
-        int podcastType() { return ChannelType; };
-
         //SqlPodcastEpisode specific methods
         int id() const { return m_id; };
 

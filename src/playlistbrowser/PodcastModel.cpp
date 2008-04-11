@@ -59,7 +59,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         QString title;
         QString description;
         KIcon icon;
-        if ( typeid( * pmc ) == typeid( Meta::PodcastChannel ) )
+        if ( pmc->podcastType() == Meta::PodcastMetaCommon::ChannelType )
         {
             Meta::PodcastChannel *channel = static_cast<Meta::PodcastChannel *>(index.internalPointer());
             title = channel->title();
@@ -67,7 +67,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             isChannel = true;
             icon = KIcon( "x-media-podcast-amarok" );
         }
-        else if ( typeid( * pmc ) == typeid( Meta::PodcastEpisode ) )
+        else if ( pmc->podcastType() == Meta::PodcastMetaCommon::EpisodeType )
         {
             Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>(index.internalPointer());
             title = episode->title();

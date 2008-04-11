@@ -147,7 +147,7 @@ class PodcastEpisode : public Track, public PodcastMetaCommon
         virtual void notifyObservers() const {};
 
         //PodcastMetaCommon methods
-        virtual int podcastType() { return EpisodeType; };
+        int podcastType() { return EpisodeType; };
 
         //PodcastEpisode methods
         virtual KUrl localUrl() const { return m_localUrl; };
@@ -204,22 +204,21 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
         virtual KUrl retrievableUrl() { return KUrl(); };
 
         //PodcastMetaCommon methods
-        virtual int podcastType() { return ChannelType; };
+        int podcastType() { return ChannelType; };
 
         //PodcastChannel specific methods
-        virtual QString title() const { return m_title; };
         virtual KUrl url() const { return m_url; };
         virtual KUrl webLink() const { return m_webLink; };
         virtual QPixmap image() const { return m_image; };
         virtual QString copyright() { return m_copyright; };
         virtual QStringList labels() const { return m_labels; };
 
-        virtual void setUrl( KUrl &url ) { m_url = url; };
-        virtual void setWebLink( KUrl &link ) { m_webLink = link; };
-        virtual void setImage( QPixmap &image ) { m_image = image; };
-        virtual void setCopyright( QString &copyright ) { m_copyright = copyright; };
-        virtual void setLabels( QStringList &labels ) { m_labels = labels; };
-        virtual void addLabel( QString &label ) { m_labels << label; };
+        virtual void setUrl( const KUrl &url ) { m_url = url; };
+        virtual void setWebLink( const KUrl &link ) { m_webLink = link; };
+        virtual void setImage( const QPixmap &image ) { m_image = image; };
+        virtual void setCopyright( const QString &copyright ) { m_copyright = copyright; };
+        virtual void setLabels( const QStringList &labels ) { m_labels = labels; };
+        virtual void addLabel( const QString &label ) { m_labels << label; };
 
         virtual void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; };
         virtual PodcastEpisodeList episodes() { return m_episodes; };
@@ -232,7 +231,6 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
 
     protected:
         KUrl m_url;
-        QString m_title;
         KUrl m_webLink;
         QPixmap m_image;
         QStringList m_labels;

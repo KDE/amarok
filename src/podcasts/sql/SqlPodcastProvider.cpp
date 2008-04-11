@@ -168,19 +168,19 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 }
 
 void
-SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr podcastEpisode )
+SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
 {
-    SqlPodcastEpisodePtr episode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( podcastEpisode ) );
+    SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
     DEBUG_BLOCK
 
-    KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( episode->url(), KIO::Reload, KIO::HideProgressInfo );
+    KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( sqlEpisode->url(), KIO::Reload, KIO::HideProgressInfo );
 
-    m_jobMap[storedTransferJob] = episode;
-    m_fileNameMap[storedTransferJob] = KUrl( episode->url() ).fileName();
+    m_jobMap[storedTransferJob] = sqlEpisode;
+    m_fileNameMap[storedTransferJob] = KUrl( sqlEpisode->url() ).fileName();
 
-    debug() << "starting download for " << episode->title() << " url: " << episode->prettyUrl();
+    debug() << "starting download for " << sqlEpisode->title() << " url: " << sqlEpisode->prettyUrl();
     The::statusBar()->newProgressOperation( storedTransferJob )
-            .setDescription( episode->title().isEmpty()
+            .setDescription( sqlEpisode->title().isEmpty()
                 ? i18n("Downloading Podcast Media")
                 : i18n("Downloading Podcast \"%1\"", episode->title()) )
             .setAbortSlot( this, SLOT( abortDownload()) );
@@ -241,15 +241,15 @@ SqlPodcastProvider::downloadResult( KJob * job )
     }
     else
     {
-        Meta::SqlPodcastEpisodePtr episode = m_jobMap[job];
+        Meta::SqlPodcastEpisodePtr sqlEpisode = m_jobMap[job];
 
         QDir dir( Amarok::saveLocation("podcasts") );
         //save in directory with channels title
-        if ( !dir.exists( episode->channel()->title() ) )
+        if ( !dir.exists( sqlEpisode->channel()->title() ) )
         {
-            dir.mkdir( episode->channel()->title() );
+            dir.mkdir( sqlEpisode->channel()->title() );
         }
-        dir.cd( episode->channel()->title() );
+        dir.cd( sqlEpisode->channel()->title() );
         KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
         localUrl.addPath( m_fileNameMap[job] );
 
@@ -257,7 +257,7 @@ SqlPodcastProvider::downloadResult( KJob * job )
         if( localFile->open( IO_WriteOnly ) &&
             localFile->write( static_cast<KIO::StoredTransferJob *>(job)->data() ) != -1 )
         {
-            episode->setLocalUrl( localUrl );
+            sqlEpisode->setLocalUrl( localUrl );
         }
         else
         {
