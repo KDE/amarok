@@ -146,7 +146,12 @@ Track::sortableName() const
 
 QString LastFm::Track::fixedName() const
 {
-    return streamName();
+
+    //unless this is a stream for a single track, return the generic name
+    if ( streamName() != "Track Radio" )
+        return streamName();
+    else
+        return name();
 }
 
 
