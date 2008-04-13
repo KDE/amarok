@@ -7,7 +7,6 @@ export DH_VERBOSE=1
 -include /usr/share/cdbs/1/rules/utils.mk
 
 DEB_CMAKE_EXTRA_FLAGS = -DCMAKE_BUILD_TYPE=debugfull
-DEB_DH_INSTALL_ARGS := --sourcedir=debian/tmp
 DEB_DH_MAKESHLIBS_ARGS_ALL := -V
 DEB_CMAKE_PREFIX = /opt/amarok-nightly
 
