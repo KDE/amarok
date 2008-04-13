@@ -43,9 +43,6 @@ class TrackToolTip : public QWidget, public Meta::Observer
     virtual void metaDataChanged( Meta::Album *album ) { ; } //TODO: Implement
     virtual void metaDataChanged( Meta::Artist *artist ) { ; } //TODO: Implement
 
-    public:
-//     virtual QPair<QString, QRect> toolTipText( QWidget*, const QPoint& ) const;
-
     private:
     QString tooltip() const;
     void updateWidgets();
