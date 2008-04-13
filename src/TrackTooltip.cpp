@@ -31,7 +31,7 @@
 #include <QApplication>
 #include <QLabel>
 #include <QPixmap>
-#include <QBoxLayout>
+#include <QGridLayout>
 
 TrackToolTip *TrackToolTip::instance()
 {
@@ -46,20 +46,18 @@ TrackToolTip::TrackToolTip()
 {
     setWindowFlags( Qt::ToolTip );
 //     setWindowOpacity( 0.6 ); // This doesn't work that well, the background should be transparent without the foreground, probably.
-    QVBoxLayout *vbl = new QVBoxLayout;
-    QHBoxLayout *hbl = new QHBoxLayout;
+    QGridLayout *l = new QGridLayout;
     m_imageLabel = new QLabel( this );
-    hbl->addWidget( m_imageLabel );
+    l->addWidget( m_imageLabel, 0, 0, 0, 2  );
     m_titleLabel = new QLabel( this );
     QFont f;
     f.setBold( true );
     m_titleLabel->setFont( f );
-    hbl->addWidget( m_titleLabel );
+    l->addWidget( m_titleLabel, 0, 1 );
 
-    vbl->addLayout( hbl );
     m_otherInfoLabel = new QLabel( this );
-    vbl->addWidget( m_otherInfoLabel );
-    setLayout( vbl );
+    l->addWidget( m_otherInfoLabel, 1, 1 );
+    setLayout( l );
     clear();
 
 }
