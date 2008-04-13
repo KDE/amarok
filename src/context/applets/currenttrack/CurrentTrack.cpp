@@ -186,7 +186,7 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
     m_album->setText( truncateTextToFit( album, m_album->font(), m_theme->elementRect( "album" ) ) );
     m_rating = m_currentInfo[ Meta::Field::RATING ].toInt();
-    m_score->setText( m_currentInfo[ Meta::Field::SCORE ].toString() );
+    m_score->setText( QString::number( m_currentInfo[ Meta::Field::SCORE ].toInt() ) );
     m_trackLength = m_currentInfo[ Meta::Field::LENGTH ].toInt();
     m_playedLast->setText( Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
     m_numPlayed->setText( m_currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
