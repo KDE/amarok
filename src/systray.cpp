@@ -18,7 +18,7 @@
 #include "meta/MetaConstants.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "TheInstances.h"
-#include "tracktooltip.h"
+#include "TrackTooltip.h"
 
 #include <KAction>
 #include <KApplication>

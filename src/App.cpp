@@ -39,7 +39,7 @@ email                : markey@web.de
 #include "scriptmanager.h"
 #include "ContextStatusBar.h"
 #include "systray.h"
-#include "tracktooltip.h"        //engineNewMetaData()
+#include "TrackTooltip.h"        //engineNewMetaData()
 #include "TheInstances.h"
 #include "metadata/tplugins.h"
 

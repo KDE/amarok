@@ -15,7 +15,7 @@
   email:     illissius@gmail.com
 */
 
-#include "tracktooltip.h"
+#include "TrackTooltip.h"
 
 #include "amarokconfig.h"
 #include "Amarok.h"
@@ -306,4 +306,4 @@ void TrackToolTip::updateWidgets()
     m_otherInfoLabel->setText( tooltip() );
 }
 
-#include "tracktooltip.moc"
+#include "TrackTooltip.moc"
