@@ -95,6 +95,7 @@ EngineController::EngineController()
 EngineController::~EngineController()
 {
     DEBUG_BLOCK //we like to know when singletons are destroyed
+    m_media->stop();
 
     delete m_media;
     delete m_audio;

@@ -45,6 +45,7 @@ TrackToolTip::TrackToolTip()
     , m_track( 0 )
 {
     setWindowFlags( Qt::ToolTip );
+    setWindowOpacity( 0.6 );
     QVBoxLayout *vbl = new QVBoxLayout;
     QHBoxLayout *hbl = new QHBoxLayout;
     m_imageLabel = new QLabel( this );
@@ -227,7 +228,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
         m_tooltip += "<center><b>Amarok</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
 
         if( m_track->album() )
-            m_image = m_track->album()->image();
+            m_image = m_track->album()->image().scaled( 100, 100);
 
         m_tooltip += "<td><table cellpadding='0' cellspacing='0'>";
 
