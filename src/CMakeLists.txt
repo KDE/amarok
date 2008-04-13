@@ -473,6 +473,7 @@ target_link_libraries(amaroklib
     ${KDE4_KFILE_LIBS}
     ${KDE4_KDE3SUPPORT_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
+    ${KDE4_KNEWSTUFF2_LIBS}
     ${QT_QTOPENGL_LIBRARY}
     ${OPENGL_gl_LIBRARY}
     ${OPENGL_glu_LIBRARY}
@@ -526,6 +527,7 @@ install(FILES amarokrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_append.desktop DESTINATION
 ${SERVICES_INSTALL_DIR}/ServiceMenus)
+install(FILES amarok.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 
 install(FILES context/servicetypes/amarok_context_applet.desktop
               context/servicetypes/amarok_data_engine.desktop

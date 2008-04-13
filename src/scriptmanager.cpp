@@ -43,6 +43,7 @@
 #include <KLocale>
 #include <KMenu>
 #include <KMessageBox>
+#include <knewstuff2/engine.h>
 #include <KProtocolManager>
 #include <KPushButton>
 #include <KRun>
@@ -89,30 +90,6 @@ namespace Amarok {
 
 
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// class AmarokScriptNewStuff
-////////////////////////////////////////////////////////////////////////////////
-
-/**
- * GHNS Customized Download implementation.
- */
-#if 0 //TODO: PORT to KNS2
-class AmarokScriptNewStuff : public KNewStuff
-{
-    public:
-    AmarokScriptNewStuff(const QString &type, QWidget *parentWidget=0)
-             : KNewStuff( type, parentWidget )
-    {}
-
-    bool install( const QString& fileName )
-    {
-        return ScriptManager::instance()->slotInstallScript( fileName );
-    }
-
-    virtual bool createUploadFile( const QString& ) { return false; } //make compile on kde 3.5
-};
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // class ScriptManager
@@ -485,24 +462,12 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 void
 ScriptManager::slotRetrieveScript()
 {
-#if 0 //FIXME: PORT To KNS2
-    // Delete KNewStuff's configuration entries. These entries reflect which scripts
-    // are already installed. As we cannot yet keep them in sync after uninstalling
-    // scripts, we deactivate the check marks entirely.
-    Amarok::config()->deleteGroup( "KNewStuffStatus" );
+    KNS::Engine *engine = new KNS::Engine();
+    engine->init( "amarok.knsrc" );
+    KNS::Entry::List entries = engine->downloadDialogModal();
 
-    // we need this because KNewStuffGeneric's install function isn't clever enough
-    AmarokScriptNewStuff *kns = new AmarokScriptNewStuff( "amarok/script", this );
-    KNS::Engine *engine = new KNS::Engine( kns, "amarok/script", this );
-    KNS::DownloadDialog *d = new KNS::DownloadDialog( engine, this );
-    d->setType( "amarok/script" );
-    // you have to do this by hand when providing your own Engine
-    KNS::ProviderLoader *p = new KNS::ProviderLoader( this );
-    QObject::connect( p, SIGNAL( providersLoaded(Provider::List*) ), d, SLOT( slotProviders (Provider::List *) ) );
-    p->load( "amarok/script", "http://amarok.kde.org/knewstuff/amarokscripts-providers.xml" );
-
-    d->exec();
-#endif
+    qDeleteAll( entries );
+    delete engine;
 }
 
 
