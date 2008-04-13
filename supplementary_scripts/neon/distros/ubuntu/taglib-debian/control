@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Amarok Nightly Builds <nightly@getamarok.com>
 Build-Depends: amarok-nightly-cdbs,
- debhelper (>= 5), cmake, quilt, libbz2-dev,
+ debhelper (>= 6), cmake, quilt, libbz2-dev,
  zlib1g-dev, doxygen, graphviz, gsfonts-x11
 Standards-Version: 3.7.3
 
@@ -11,7 +11,7 @@ Package: amarok-nightly-taglib
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}
-Description: TagLib Audio Meta-Data Library [development]
+Description: TagLib Audio Meta-Data Library
  TagLib is a library for reading and editing the meta-data of several popular
  audio formats. Currently it supports both ID3v1 and ID3v2 for MP3 files, Ogg
  Vorbis comments and ID3 tags and Vorbis comments in FLAC files.
