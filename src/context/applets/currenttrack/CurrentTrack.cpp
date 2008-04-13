@@ -63,8 +63,11 @@ void CurrentTrack::init()
     m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
 
     m_scoreLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "emblem-favorite", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+    m_scoreLabel->setToolTip( i18n( "Score" ) );
     m_numPlayedLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "view-refresh", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+    m_numPlayedLabel->setToolTip( i18n( "Play Count" ) );
     m_playedLastLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "user-away-extended", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+    m_playedLastLabel->setToolTip( i18n( "Last Played") );
 
     m_scoreLabel->setTransformationMode( Qt::SmoothTransformation );
     m_numPlayedLabel->setTransformationMode( Qt::SmoothTransformation );
