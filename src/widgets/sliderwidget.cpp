@@ -369,7 +369,7 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
 void
 Amarok::TimeSlider::setSliderValue( int value )
 {
-    if( value > 0 && m_oldValue != 0 )
+    if( value > 0 && value > m_oldValue /*don't animate if we go backwards..*/ )
     {
         m_frame = 1; // Reset the frame, as it animates between values.
         m_knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value, width() );
@@ -381,7 +381,12 @@ Amarok::TimeSlider::setSliderValue( int value )
         m_animTimer->start( TICK_INTERVAL / FRAME_RATE );
         repaint();
     }
+    else
+    {
+        m_knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value, width() );
+    }
     m_oldValue = value;
+    repaint();
     Amarok::Slider::setValue( value );
 }
 
