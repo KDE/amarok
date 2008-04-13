@@ -39,7 +39,7 @@ email                : markey@web.de
 #include "scriptmanager.h"
 #include "ContextStatusBar.h"
 #include "systray.h"
-// #include "tracktooltip.h"        //engineNewMetaData()
+#include "tracktooltip.h"        //engineNewMetaData()
 #include "TheInstances.h"
 #include "metadata/tplugins.h"
 
@@ -495,11 +495,11 @@ void App::applySettings( bool firstTime )
 
 #ifndef Q_WS_MAC
     //probably needs to be done in TrayIcon when it receives a QEvent::ToolTip (see QSystemtrayIcon documentation)
-    //TrackToolTip::instance()->removeFromWidget( m_tray );
+//     TrackToolTip::instance()->removeFromWidget( m_tray );
 #endif
     Amarok::OSD::instance()->applySettings();
     m_tray->setVisible( AmarokConfig::showTrayIcon() );
-    //TrackToolTip::instance()->addToWidget( m_tray );
+//     TrackToolTip::instance()->addToWidget( m_tray );
 
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
@@ -654,7 +654,7 @@ void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
     case Phonon::StoppedState:
     case Phonon::LoadingState:
         mainWindow()->setPlainCaption( i18n( AMAROK_CAPTION ) );
-//         TrackToolTip::instance()->clear();
+        TrackToolTip::instance()->clear();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         break;
 
@@ -690,12 +690,12 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool tra
            mainWindow()->setPlainCaption( i18n( "%1 - %2 -  %3", newMetaData.value( Meta::valArtist ), newMetaData.value( Meta::valTitle ), AMAROK_CAPTION ) );
     }
 
-//     TrackToolTip::instance()->setTrack( currentTrack );
+    TrackToolTip::instance()->setTrack( currentTrack );
 }
 
-void App::engineTrackPositionChanged( long /*position*/, bool /*userSeek*/ )
+void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
-//     TrackToolTip::instance()->setPos( position );
+    TrackToolTip::instance()->setPos( position );
 }
 
 void App::engineVolumeChanged( int newVolume )

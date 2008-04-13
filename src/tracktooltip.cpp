@@ -21,17 +21,17 @@
 #include "Amarok.h"
 #include "amarok_export.h"
 #include "App.h"
-#include "collectiondb.h"
 #include "debug.h"
-#include "metabundle.h"
+#include "meta/MetaUtility.h"
 #include "moodbar.h"
-#include "podcastbundle.h"
 
 #include <KCalendarSystem>
 #include <KStandardDirs>
 
 #include <QApplication>
+#include <QLabel>
 #include <QPixmap>
+#include <QBoxLayout>
 
 TrackToolTip *TrackToolTip::instance()
 {
@@ -39,52 +39,55 @@ TrackToolTip *TrackToolTip::instance()
     return &tip;
 }
 
-TrackToolTip::TrackToolTip(): m_haspos( false )
+TrackToolTip::TrackToolTip()
+    : QWidget( 0 )
+    , m_haspos( false )
+    , m_track( 0 )
 {
-    connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString &, const QString & ) ),
-             this, SLOT( slotCoverChanged( const QString &, const QString & ) ) );
-    connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString & ) ),
-             this, SLOT( slotImageChanged( const QString & ) ) );
-// PORT 2.0    connect( Playlist::instance(), SIGNAL( columnsChanged() ), this, SLOT( slotUpdate() ) );
-    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, float ) ),
-             this, SLOT( slotUpdate( const QString& ) ) );
-    connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
-             this, SLOT( slotUpdate( const QString& ) ) );
-    // Only connect this once -- m_tags exists for the lifetime of this instance
-    connect( &m_tags.moodbar(), SIGNAL( jobEvent( int ) ),
-             SLOT( slotMoodbarEvent() ) );
-    // This is so the moodbar can be re-rendered when AlterMood is changed
-    connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ),
-             SLOT( slotMoodbarEvent() ) );
+    setWindowFlags( Qt::ToolTip );
+    QVBoxLayout *vbl = new QVBoxLayout;
+    QHBoxLayout *hbl = new QHBoxLayout;
+    m_imageLabel = new QLabel( this );
+    hbl->addWidget( m_imageLabel );
+    m_titleLabel = new QLabel( this );
+    QFont f;
+    f.setBold( true );
+    m_titleLabel->setFont( f );
+    hbl->addWidget( m_titleLabel );
+
+    vbl->addLayout( hbl );
+    m_otherInfoLabel = new QLabel( this );
+    vbl->addWidget( m_otherInfoLabel );
+    setLayout( vbl );
     clear();
+
 }
 
-void TrackToolTip::addToWidget( QWidget *widget )
+void TrackToolTip::show( const QPoint & bottomRight )
 {
-    if( widget && !m_widgets.containsRef( widget ) )
-    {
-        m_widgets.append( widget );
-        Amarok::ToolTip::add( this, widget );
-    }
-}
+    const int x = bottomRight.x() - width();
+    const int y = bottomRight.y() - height();
 
-void TrackToolTip::removeFromWidget( QWidget *widget )
-{
-    if( widget && m_widgets.containsRef( widget ) )
-    {
-        Amarok::ToolTip::remove( widget );
-        m_widgets.removeRef( widget );
-    }
+    move( x, y );
+    QWidget::show();
+    QTimer::singleShot( 5000, this, SLOT( hide() ) ); // HACK: The system tray doesn't get mouse leave messages properly..
 }
-
 
 #define MOODBAR_WIDTH 150
 
 void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 {
-#if 0 //TODO PORT
-    if( force || m_tags != tags || m_tags.url() != tags.url() )
+    DEBUG_BLOCK
+    if( m_track && m_track->artist() )
+        m_track->artist()->unsubscribe( this );
+    if( m_track && m_track->album() )
+        m_track->album()->unsubscribe( this );
+    if( m_track )
+        m_track->unsubscribe( this );
+
+    if( force || m_track != track )
     {
+        DEBUG_LINE_INFO
         m_haspos = false;
         m_tooltip.clear();
 
@@ -92,49 +95,52 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
         const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
 
         QString filename = "", title = ""; //special case these, put the first one encountered on top
+        m_track = track;
 
 //         Playlist *playlist = Playlist::instance();
 //         const int n = playlist->numVisibleColumns();
 //         for( int i = 0; i < n; ++i )
 //         {
 //             const int column = playlist->mapToLogicalColumn( i );
-// 
+//
 //             if( column == PlaylistItem::Score )
 //             {
-//                 const float score = CollectionDB::instance()->getSongPercentage( tags.url().path() );
-//                 if( score > 0.f )
-//                 {
-//                     right << QString::number( score, 'f', 2 );  // 2 digits after decimal point
+                const float score = m_track->score();
+                if( score > 0.f )
+                {
+                    right << QString::number( score, 'f', 2 );  // 2 digits after decimal point
 //                     left << playlist->columnText( column );
-//                 }
+                    left << i18n( "Score" );
+                }
 //             }
 //             else if( column == PlaylistItem::Rating )
 //             {
-//                 const int rating = CollectionDB::instance()->getSongRating( tags.url().path() );
-//                 if( rating > 0 )
-//                 {
-//                     QString s;
-//                     for( int i = 0; i < rating / 2; ++i )
-//                         s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-//                              .arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) )
-//                              .arg( QFontMetrics( QToolTip::font() ).height() )
-//                              .arg( QFontMetrics( QToolTip::font() ).height() );
-//                     if( rating % 2 )
-//                         s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-//                              .arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) )
-//                              .arg( QFontMetrics( QToolTip::font() ).height() )
-//                              .arg( QFontMetrics( QToolTip::font() ).height() );
-//                     right << s;
+                const int rating = m_track->rating();
+                if( rating > 0 )
+                {
+                    QString s;
+                    for( int i = 0; i < rating / 2; ++i )
+                        s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+                             .arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) )
+                             .arg( QFontMetrics( QToolTip::font() ).height() )
+                             .arg( QFontMetrics( QToolTip::font() ).height() );
+                    if( rating % 2 )
+                        s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+                             .arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) )
+                             .arg( QFontMetrics( QToolTip::font() ).height() )
+                             .arg( QFontMetrics( QToolTip::font() ).height() );
+                    right << s;
 //                     left << playlist->columnText( column );
-//                 }
+                    left << i18n( "Rating" );
+                }
 //             }
 //             else if( column == PlaylistItem::Mood )
 //             {
 //                 if( !AmarokConfig::showMoodbar() )
 //                   continue;
-// 
+//
 //                 m_tags.moodbar().load();
-// 
+//
 //                 switch( tags.moodbar_const().state() )
 //                   {
 //                   case Moodbar::JobQueued:
@@ -142,7 +148,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 //                     right << tags.prettyText( column );
 //                     left  << playlist->columnText( column );
 //                     break;
-// 
+//
 //                   case Moodbar::Loaded:
 //                     {
 //                       // Ok so this is a hack, but it works quite well.
@@ -154,7 +160,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 //                       QString filename = KStandardDirs::locateLocal( "data",
 //                                                         "amarok/mood_tooltip.png" );
 //                       int height = QFontMetrics( QToolTip::font() ).height() - 2;
-// 
+//
 //                       if( m_moodbarURL != tags.url().url() )
 //                         {
 //                           QPixmap moodbar
@@ -163,12 +169,12 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 //                           moodbar.save( filename, "PNG", 100 );
 //                           m_moodbarURL = tags.url().url();
 //                         }
-// 
+//
 //                       right << QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
 //                           .arg( filename ).arg( height ).arg( MOODBAR_WIDTH );
 //                     }
 //                     break;
-// 
+//
 //                   default:
 //                     // no tag
 //                     break;
@@ -176,84 +182,83 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 //             }
 //             else if( column == PlaylistItem::PlayCount )
 //             {
-//                 const int count = CollectionDB::instance()->getPlayCount( tags.url().path() );
-//                 if( count > 0 )
-//                 {
-//                     right << QString::number( count );
+                const int count = m_track->playCount();
+                if( count > 0 )
+                {
+                    right << QString::number( count );
 //                     left << playlist->columnText( column );
-//                 }
+                    left << i18n( "Play Count" );
+                }
 //             }
 //             else if( column == PlaylistItem::LastPlayed )
 //             {
-//                 const uint lastPlayed = CollectionDB::instance()->getLastPlay( tags.url().path() ).toTime_t();
-//                 right << Amarok::verboseTimeSince( lastPlayed );
+                const uint lastPlayed = m_track->lastPlayed();
+                right << Amarok::verboseTimeSince( lastPlayed );
 //                 left << playlist->columnText( column );
+                left << i18n( "Last Played" );
 //             }
 //             else if( column == PlaylistItem::Filename && title.isEmpty() )
 //                 filename = tags.prettyText( column );
 //             else if( column == PlaylistItem::Title && filename.isEmpty() )
 //                 title = tags.prettyText( column );
+                right << m_track->prettyName();
+                left << i18n("Track: ");
 //             else if( column != PlaylistItem::Length )
 //             {
-//                 const QString tag = tags.prettyText( column );
-//                 if( !tag.isEmpty() )
-//                 {
-//                     right << tag;
-//                     left << playlist->columnText( column );
-//                 }
+                const QString length = QString::number( m_track->length() );
+                if( !length.isEmpty() )
+                {
+                    right << length;
+                    left << i18n( "Length" );
+                }
 //             }
 //         }
 
-        if( !filename.isEmpty() )
-        {
-            right.prepend( filename );
-            //PORT 2.0
-//             left.prepend( playlist->columnText( PlaylistItem::Filename ) );
-        }
-        else if( !title.isEmpty() )
-        {
-            right.prepend( title );
-            //PORT 2.0
-//             left.prepend( playlist->columnText( PlaylistItem::Title ) );
-        }
-
-        if( tags.length() > 0 ) //special case this too, always on the bottom
+//         if( tags.length() > 0 ) //special case this too, always on the bottom
+        if( length > 0 )
         {
             m_haspos = true;
-            right << "%9 / " + tags.prettyLength();
-            //PORT 2.0
+            right << "%1 / " + length;
 //             left << playlist->columnText( PlaylistItem::Length );
+            left << i18n( "Length" );
         }
 
         //NOTE it seems to be necessary to <center> each element indivdually
         m_tooltip += "<center><b>Amarok</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
 
-        m_tooltip += "%1"; //the cover gets substituted in, in tooltip()
-        m_cover = CollectionDB::instance()->podcastImage( tags, true );
-        if( m_cover.isEmpty() || m_cover.contains( "nocover" ) != -1 )
-        {
-            m_cover = CollectionDB::instance()->albumImage( tags, true, 150 );
-            if ( m_cover == CollectionDB::instance()->notAvailCover() )
-                m_cover.clear();
-        }
+        if( m_track->album() )
+            m_image = m_track->album()->image();
 
         m_tooltip += "<td><table cellpadding='0' cellspacing='0'>";
 
-        if (tags.title().isEmpty() || tags.artist().isEmpty())
-        // no title or no artist, so we add prettyTitle
-            m_tooltip += QString ("<tr><td align=center colspan='2'>%1</td></tr>")
-                      .arg(tags.veryNiceTitle());
+//         if (tags.title().isEmpty() || tags.artist().isEmpty())
+//         // no title or no artist, so we add prettyTitle
+//             m_tooltip += QString ("<tr><td align=center colspan='2'>%1</td></tr>")
+//                       .arg(tags.veryNiceTitle());
         for( int x = 0; x < left.count(); ++x )
             if ( !right[x].isEmpty() )
                 m_tooltip += tableRow.arg( left[x] ).arg( right[x] );
+        m_title = m_track->prettyName();
+        if( m_track->artist() )
+            m_title += i18n( " by " ) + m_track->artist()->prettyName();
+        if( m_track->album() )
+            m_title += i18n( " on " ) + m_track->album()->prettyName();
 
         m_tooltip += "</table></td>";
         m_tooltip += "</tr></table></center>";
 
-        m_tags = tags;
+        debug() << "TOOLTIP: " << m_tooltip;
+        debug() << m_title;
+
         updateWidgets();
+
+        m_track->subscribe( this );
+        if( m_track->artist() )
+            m_track->artist()->subscribe( this );
+        if( m_track->album() )
+            m_track->album()->subscribe( this );
+
     }
-#endif
 }
 
 void TrackToolTip::setPos( int pos )
@@ -268,92 +273,36 @@ void TrackToolTip::setPos( int pos )
 void TrackToolTip::clear()
 {
     m_pos     = 0;
-    m_cover.clear();
     m_tooltip = i18n( "Amarok - rediscover your music" );
-    m_tags    = MetaBundle();
-    m_tags.setUrl( KUrl() );
+    m_track = Meta::TrackPtr();
+    m_title.clear();
+    m_image = QPixmap();
 
     updateWidgets();
 }
 
-QPair<QString, QRect> TrackToolTip::toolTipText( QWidget*, const QPoint& ) const
-{
-    return QPair<QString, QRect>( tooltip(), QRect() );
-}
-
-void TrackToolTip::slotCoverChanged( const QString &artist, const QString &album )
-{
-    if( artist == m_tags.artist() && album == m_tags.album() )
-    {
-        m_cover = CollectionDB::instance()->albumImage( m_tags, true, 150 );
-        if( m_cover == CollectionDB::instance()->notAvailCover() )
-            m_cover.clear();
-
-        updateWidgets();
-    }
-}
-
-void TrackToolTip::slotImageChanged( const QString &remoteURL )
-{
-    PodcastEpisodeBundle peb;
-    if( CollectionDB::instance()->getPodcastEpisodeBundle( m_tags.url().url(), &peb ) )
-    {
-        PodcastChannelBundle pcb;
-        if( CollectionDB::instance()->getPodcastChannelBundle( peb.parent().url(), &pcb ) )
-        {
-            if( pcb.imageURL().url() == remoteURL )
-            {
-                m_cover = CollectionDB::instance()->podcastImage( remoteURL );
-                if( m_cover == CollectionDB::instance()->notAvailCover() )
-                    m_cover.clear();
-
-                updateWidgets();
-            }
-
-        }
-    }
-}
-
-void TrackToolTip::slotUpdate( const QString &url )
-{
-    //PORT 2.0
-    if( url.isNull() || url == m_tags.url().path() )
-        setTrack( Meta::TrackPtr(), true );
-}
-
-void
-TrackToolTip::slotMoodbarEvent( void )
-{
-  // Clear this so the moodbar gets redrawn
-  m_moodbarURL.clear();
-  // Reset the moodbar in case AlterMood has changed
-  m_tags.moodbar().reset();
-
-  //TODO: Port 2.0
-  setTrack( Meta::TrackPtr(), true );
-}
-
+// QPair<QString, QRect> TrackToolTip::toolTipText( QWidget*, const QPoint& ) const
+// {
+//     return QPair<QString, QRect>( tooltip(), QRect() );
+// }
 
 QString TrackToolTip::tooltip() const
 {
-    QString tip = m_tooltip;;
-    if( !m_tags.isEmpty() )
+    QString tip = m_tooltip;
+    if( m_track )
     {
-        if( !m_cover.isEmpty() )
-            tip = tip.arg( QString( "<td><table cellpadding='0' cellspacing='0'><tr><td>"
-                                        "<img src='%1'>"
-                                    "</td></tr></table></td>" ).arg( m_cover ) );
-        else
-            tip = tip.arg("");
         if( m_haspos )
-            tip = tip.arg( MetaBundle::prettyLength( m_pos / 1000, true ) );
+            tip = tip.arg( Meta::msToPrettyTime( m_pos ) );
     }
     return tip;
 }
 
 void TrackToolTip::updateWidgets()
 {
-    Amarok::ToolTip::updateTip();
+    if( !m_image.isNull() )
+        m_imageLabel->setPixmap( m_image );
+    m_titleLabel->setText( m_title );
+    m_otherInfoLabel->setText( tooltip() );
 }
 
 #include "tracktooltip.moc"

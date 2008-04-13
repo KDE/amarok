@@ -15,16 +15,17 @@
 #ifndef TRACKTOOLTIP_H
 #define TRACKTOOLTIP_H
 
-#include "metabundle.h"
 #include "meta/Meta.h"
 #include "tooltip.h"
 
-#include <QObject>
-#include <q3ptrlist.h>
+#include <QWidget>
+#include <QSystemTrayIcon>
 
+class QLabel;
 class QWidget;
 
-class TrackToolTip: public QObject, public Amarok::ToolTipClient
+// class TrackToolTip: public QObject, public Amarok::ToolTipClient, public Meta::Observer
+class TrackToolTip : public QWidget, public Meta::Observer
 {
     Q_OBJECT
 
@@ -32,34 +33,36 @@ class TrackToolTip: public QObject, public Amarok::ToolTipClient
     TrackToolTip();
     static TrackToolTip* instance();
 
-    void addToWidget( QWidget *widget );
-    void removeFromWidget( QWidget *widget );
-
     void setTrack( const Meta::TrackPtr track, bool force = false );
     void setPos( int pos );
     void clear();
+    void show( const QPoint &bottomRight );
+
+    //Reimplemented from Meta::Observer
+    virtual void metaDataChanged( Meta::Track *track ) { ; } //TODO: IMPLEMENT
+    virtual void metaDataChanged( Meta::Album *album ) { ; } //TODO: Implement
+    virtual void metaDataChanged( Meta::Artist *artist ) { ; } //TODO: Implement
 
     public:
-    virtual QPair<QString, QRect> toolTipText( QWidget*, const QPoint& ) const;
-
-    private slots:
-    void slotCoverChanged( const QString &artist, const QString &album );
-    void slotImageChanged( const QString &remoteURL );
-    void slotUpdate( const QString &url = QString() );
-    void slotMoodbarEvent( void );
+//     virtual QPair<QString, QRect> toolTipText( QWidget*, const QPoint& ) const;
 
     private:
     QString tooltip() const;
     void updateWidgets();
 
     static TrackToolTip *s_instance;
-    Q3PtrList<QWidget> m_widgets;
-    MetaBundle m_tags;
+    QList<QWidget> m_widgets;
+    Meta::TrackPtr m_track;
     int        m_pos;
-    QString    m_cover;
     QString    m_tooltip;
     bool       m_haspos;
     QString    m_moodbarURL;
+    QString m_title;
+
+    QLabel *m_imageLabel;
+    QPixmap m_image;
+    QLabel *m_titleLabel;
+    QLabel *m_otherInfoLabel;
 };
 
 #endif

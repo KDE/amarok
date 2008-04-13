@@ -18,6 +18,7 @@
 #include "meta/MetaConstants.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "TheInstances.h"
+#include "tracktooltip.h"
 
 #include <KAction>
 #include <KApplication>
@@ -91,6 +92,16 @@ Amarok::TrayIcon::event( QEvent *e )
             break;
         }
         #undef e
+
+    case QEvent::ToolTip:
+        DEBUG_LINE_INFO
+        TrackToolTip::instance()->show( static_cast<QHelpEvent*>(e)->globalPos() );
+        return true;
+
+    case QEvent::Leave:
+        DEBUG_LINE_INFO
+        TrackToolTip::instance()->hide();
+        return false;
 
     case QEvent::Drop:
         #define e static_cast<QDropEvent*>(e)
