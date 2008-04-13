@@ -379,7 +379,6 @@ Amarok::TimeSlider::setSliderValue( int value )
 //         debug() << "M_POSITIONCHANGE: " << m_positionChange;
 //         debug() << m_knobX;
         m_animTimer->start( TICK_INTERVAL / FRAME_RATE );
-        repaint();
     }
     else
     {
