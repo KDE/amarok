@@ -61,6 +61,7 @@ Widget::Widget( QWidget* parent )
 
 
     Playlist::GraphicsView* playView = The::playlistView();
+    playView->setFrameShape( QFrame::NoFrame );  // Get rid of the redundant border
     playView->setModel( playModel );
 
 
