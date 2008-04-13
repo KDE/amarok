@@ -2,7 +2,7 @@
 
 export DH_VERBOSE=1
 
--include /usr/share/cdbs/1/rules/cmake.mk
+-include /usr/share/cdbs/1/class/cmake.mk
 -include /usr/share/cdbs/1/rules/debhelper.mk
 -include /usr/share/cdbs/1/rules/utils.mk
 
