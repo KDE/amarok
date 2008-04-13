@@ -587,7 +587,7 @@ SqlTrack::finishedPlaying( double playedFraction )
     {
         m_firstPlayed = m_lastPlayed;
     }
-    ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction, QString() );
+    ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
     updateStatisticsInDb();
     notifyObservers();
 }
