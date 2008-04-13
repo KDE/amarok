@@ -353,6 +353,7 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
     , m_frame( 0 )
     , m_knobX( 0.0 )
     , m_positionChange( 0.0 )
+    , m_oldValue( 0 )
 {
     setFocusPolicy( Qt::NoFocus );
 
@@ -368,7 +369,7 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
 void
 Amarok::TimeSlider::setSliderValue( int value )
 {
-    if( value != 0 && m_oldValue != 0 )
+    if( value > 0 && m_oldValue != 0 )
     {
         m_frame = 1; // Reset the frame, as it animates between values.
         m_knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value, width() );
@@ -378,9 +379,9 @@ Amarok::TimeSlider::setSliderValue( int value )
 //         debug() << "M_POSITIONCHANGE: " << m_positionChange;
 //         debug() << m_knobX;
         m_animTimer->start( TICK_INTERVAL / FRAME_RATE );
-        m_oldValue = value;
         repaint();
     }
+    m_oldValue = value;
     Amarok::Slider::setValue( value );
 }
 
