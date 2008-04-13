@@ -1,0 +1,6 @@
+[KNewStuff2]
+ProvidersUrl=http://download.kde.org/khotnewstuff/amarokscripts-providers.xml
+Checksumpolicy=ifpossible
+SignaturePolicy=ifpossible
+
+TargetDir=amarok/scripts
