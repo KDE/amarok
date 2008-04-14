@@ -19,7 +19,7 @@
 #ifndef SQLREGISTRY_H
 #define SQLREGISTRY_H
 
-//#include "servicesqlcollection.h"
+//#include "ServiceSqlCollection.h"
 #include "amarok_export.h"
 #include "ServiceMetaBase.h"
 

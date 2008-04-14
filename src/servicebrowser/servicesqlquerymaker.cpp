@@ -22,7 +22,7 @@
 
 #include "debug.h"
 
-#include "servicesqlcollection.h"
+#include "ServiceSqlCollection.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>

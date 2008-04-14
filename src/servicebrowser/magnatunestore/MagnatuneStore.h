@@ -30,7 +30,7 @@
 #include "MagnatuneDatabaseHandler.h"
 
 #include "../ServiceBase.h"
-#include "servicesqlcollection.h"
+#include "ServiceSqlCollection.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>

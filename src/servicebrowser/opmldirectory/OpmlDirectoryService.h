@@ -23,7 +23,7 @@
 
 #include "../ServiceBase.h"
 #include "OpmlDirectoryDatabaseHandler.h"
-#include "servicesqlcollection.h"
+#include "ServiceSqlCollection.h"
 
 #include "Amarok.h"
 #include "ContextStatusBar.h"

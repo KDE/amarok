@@ -17,7 +17,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "servicesqlcollection.h"
+#include "ServiceSqlCollection.h"
 
 #include "CollectionManager.h"
 #include "servicesqlquerymaker.h"
@@ -142,5 +142,5 @@ bool ServiceSqlCollection::possiblyContainsTrack(const KUrl & url) const
     return url.url().contains( m_metaFactory->tablePrefix(), Qt::CaseInsensitive );
 }
 
-#include "servicesqlcollection.moc"
+#include "ServiceSqlCollection.moc"
 
