@@ -20,7 +20,7 @@
 #ifndef SHOUTCASTSERVICE_H
 #define SHOUTCASTSERVICE_H
 
-#include "servicebase.h"
+#include "ServiceBase.h"
 
 #include "ShoutcastServiceCollection.h"
 #include "servicemetabase.h"

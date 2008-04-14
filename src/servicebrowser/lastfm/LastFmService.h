@@ -14,7 +14,7 @@
 #ifndef LASTFMSERVICE_H
 #define LASTFMSERVICE_H
 
-#include "../servicebase.h"
+#include "../ServiceBase.h"
 
 #include <KLineEdit>
 

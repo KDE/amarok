@@ -108,7 +108,7 @@ set(libservicebrowser_SRCS
     servicebrowser/DynamicServiceQueryMaker.cpp
     servicebrowser/infoparserbase.cpp
     servicebrowser/ServiceAlbumCoverDownloader.cpp
-    servicebrowser/servicebase.cpp
+    servicebrowser/ServiceBase.cpp
     servicebrowser/servicebrowser.cpp
     servicebrowser/servicecollection.cpp
     servicebrowser/ServiceCollectionTreeView.cpp

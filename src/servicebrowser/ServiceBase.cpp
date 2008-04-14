@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "servicebase.h"
+#include "ServiceBase.h"
 
 #include "Amarok.h"
 
@@ -307,5 +307,5 @@ QString ServiceBase::sendMessage(const QString & message)
 }
 
 
-#include "servicebase.moc"
+#include "ServiceBase.moc"
 

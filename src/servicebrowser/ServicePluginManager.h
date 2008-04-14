@@ -20,7 +20,7 @@
 #ifndef AMAROK_SERVICEPLUGINMANAGER_H
 #define AMAROK_SERVICEPLUGINMANAGER_H
 
-#include "servicebase.h"
+#include "ServiceBase.h"
 #include "servicebrowser.h"
 
 #include <QObject>

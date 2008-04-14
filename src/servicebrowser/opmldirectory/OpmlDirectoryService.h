@@ -21,7 +21,7 @@
 #define OPMLDIRECTORYSERVICE_H
 
 
-#include "../servicebase.h"
+#include "../ServiceBase.h"
 #include "OpmlDirectoryDatabaseHandler.h"
 #include "servicesqlcollection.h"
 

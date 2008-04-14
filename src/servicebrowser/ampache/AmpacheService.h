@@ -22,7 +22,7 @@
 
 
 
-#include "../servicebase.h"
+#include "../ServiceBase.h"
 #include "AmpacheServiceCollection.h"
 
 #include <kio/jobclasses.h>

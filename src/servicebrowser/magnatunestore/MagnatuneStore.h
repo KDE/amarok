@@ -29,7 +29,7 @@
 #include "MagnatuneXmlParser.h"
 #include "MagnatuneDatabaseHandler.h"
 
-#include "../servicebase.h"
+#include "../ServiceBase.h"
 #include "servicesqlcollection.h"
 
 #include <kio/job.h>

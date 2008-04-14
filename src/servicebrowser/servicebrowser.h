@@ -22,7 +22,7 @@
 
 
 #include "scriptableservice/ScriptableServiceManager.h"
-#include "servicebase.h"
+#include "ServiceBase.h"
 #include "ServiceListModel.h"
 
 #include <kvbox.h>

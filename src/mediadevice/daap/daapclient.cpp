@@ -48,7 +48,7 @@
 #include <k3tempfile.h>
 #include <ktoolbar.h>
 #include <dnssd/remoteservice.h>
-#include <dnssd/servicebase.h>
+#include <dnssd/ServiceBase.h>
 #include <dnssd/servicebrowser.h>
 
 

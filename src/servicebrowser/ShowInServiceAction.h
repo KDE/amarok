@@ -19,7 +19,7 @@
 #ifndef SHOWINSERVICEACTION_H
 #define SHOWINSERVICEACTION_H
 
-#include "servicebase.h"
+#include "ServiceBase.h"
 #include "servicemetabase.h"
 
 #include <QAction>

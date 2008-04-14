@@ -21,7 +21,7 @@
 #define AMAROKSCRIPTABLESERVICEMANAGER_H
 
 #include "AmarokProcess.h"
-#include "../servicebase.h"
+#include "../ServiceBase.h"
 #include "ScriptableService.h"
 
 #include <QObject>

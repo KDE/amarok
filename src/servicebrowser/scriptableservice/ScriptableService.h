@@ -22,7 +22,7 @@
 
 
 #include "Amarok.h"
-#include "../servicebase.h"
+#include "../ServiceBase.h"
 #include "ScriptableServiceMeta.h"
 #include "ScriptableServiceCollection.h"
 
