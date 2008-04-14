@@ -24,7 +24,7 @@
 
 #include "../ServiceBase.h"
 #include "JamendoDatabaseHandler.h"
-//#include "../servicecollection.h"
+//#include "../ServiceCollection.h"
 #include "servicesqlcollection.h"
 
 #include "Amarok.h"

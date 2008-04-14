@@ -21,7 +21,7 @@
 
 #define DEBUG_PREFIX "ServiceCollection"
 
-#include "servicecollection.h"
+#include "ServiceCollection.h"
 
 #include "amarokconfig.h"
 #include "servicemetabase.h"
@@ -89,5 +89,5 @@ void ServiceCollection::emitUpdated()
 }
 
 
-#include "servicecollection.moc"
+#include "ServiceCollection.moc"
 

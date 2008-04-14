@@ -18,7 +18,7 @@ ADD_DEFINITIONS(${TAGLIB_CFLAGS} -DQT_STL)
 if(MP4V2_FOUND)
     ADD_DEFINITIONS(-DHAVE_MP4V2)
     include_directories( ${MP4V2_INCLUDE_DIR} )
-		endif(MP4V2_FOUND)
+        endif(MP4V2_FOUND)
 
 if(APPLE)
     set(mac_SRCS app_mac.cpp)
@@ -110,7 +110,7 @@ set(libservicebrowser_SRCS
     servicebrowser/ServiceAlbumCoverDownloader.cpp
     servicebrowser/ServiceBase.cpp
     servicebrowser/ServiceBrowser.cpp
-    servicebrowser/servicecollection.cpp
+    servicebrowser/ServiceCollection.cpp
     servicebrowser/ServiceCollectionTreeView.cpp
     servicebrowser/ServiceCustomActionsCapability.cpp
     servicebrowser/ServiceCurrentTrackActionsCapability.cpp

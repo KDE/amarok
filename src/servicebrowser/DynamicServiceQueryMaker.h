@@ -25,7 +25,7 @@
 
 #include "Meta.h"
 
-#include "servicecollection.h"
+#include "ServiceCollection.h"
 
 #include <kio/jobclasses.h>
 
