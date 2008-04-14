@@ -26,7 +26,7 @@
 //#include "MagnatunePurchaseDialog.h"
 #include "MagnatunePurchaseHandler.h"
 #include "MagnatuneRedownloadHandler.h"
-#include "magnatunexmlparser.h"
+#include "MagnatuneXmlParser.h"
 #include "MagnatuneDatabaseHandler.h"
 
 #include "../servicebase.h"

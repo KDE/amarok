@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "magnatunexmlparser.h"
+#include "MagnatuneXmlParser.h"
 
 #include "Amarok.h"
 #include "debug.h"
@@ -413,5 +413,5 @@ void MagnatuneXmlParser::setDbHandler(MagnatuneDatabaseHandler * dbHandler)
     m_dbHandler = dbHandler;
 }
 
-#include "magnatunexmlparser.moc"
+#include "MagnatuneXmlParser.moc"
 
