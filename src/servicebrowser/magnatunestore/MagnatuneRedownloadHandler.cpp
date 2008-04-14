@@ -18,8 +18,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/ 
 
-#include "magnatuneredownloadhandler.h"
-#include "magnatuneredownloadhandler.moc"
+#include "MagnatuneRedownloadHandler.h"
+#include "MagnatuneRedownloadHandler.moc"
 
 #include "Amarok.h"
 #include "debug.h"

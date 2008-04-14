@@ -25,7 +25,7 @@
             magnatunexmlparser.cpp
             MagnatuneDatabaseHandler.cpp
             MagnatuneRedownloadDialog.cpp
-            magnatuneredownloadhandler.cpp
+            MagnatuneRedownloadHandler.cpp
             MagnatuneDownloadInfo.cpp
             MagnatuneAlbumDownloader.cpp
             MagnatuneConfig.cpp
