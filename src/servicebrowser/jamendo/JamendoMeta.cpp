@@ -21,7 +21,7 @@
 
 #include "JamendoMeta.h"
 
-#include "jamendoservice.h"
+#include "JamendoService.h"
 
 #include "debug.h"
 #include <KStandardDirs>

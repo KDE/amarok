@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "jamendoservice.h"
+#include "JamendoService.h"
 
 #include "CollectionManager.h"
 #include "debug.h"
@@ -367,4 +367,4 @@ void JamendoService::downloadCurrentTrackAlbum()
 
 
 
-#include "jamendoservice.moc"
+#include "JamendoService.moc"

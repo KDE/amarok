@@ -16,7 +16,7 @@
 ########### next target ###############
 
         set(amarok_service_jamendo_PART_SRCS
-            jamendoservice.cpp
+            JamendoService.cpp
             JamendoMeta.cpp
             jamendodatabasehandler.cpp
             jamendoxmlparser.cpp
