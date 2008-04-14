@@ -19,7 +19,7 @@
  ***************************************************************************/ 
 
 
-#include "magnatunedownloaddialog.h"
+#include "MagnatuneDownloadDialog.h"
 
 #include "debug.h"
 
@@ -86,5 +86,5 @@ void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo * info )
 /*$SPECIALIZATION$*/
 
 
-#include "magnatunedownloaddialog.moc"
+#include "MagnatuneDownloadDialog.moc"
 

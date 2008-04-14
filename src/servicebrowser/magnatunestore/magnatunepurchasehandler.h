@@ -25,8 +25,8 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
-#include "magnatunealbumdownloader.h"
-#include "magnatunedownloaddialog.h"
+#include "MagnatuneAlbumDownloader.h"
+#include "MagnatuneDownloadDialog.h"
 #include "magnatunepurchasedialog.h"
 #include "MagnatuneMeta.h"
 

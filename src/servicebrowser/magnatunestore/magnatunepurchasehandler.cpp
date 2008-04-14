@@ -22,7 +22,7 @@
 
 #include "Amarok.h"
 #include "debug.h"
-#include "magnatunedatabasehandler.h"
+#include "MagnatuneDatabaseHandler.h"
 #include "MagnatuneConfig.h"
 #include "ContextStatusBar.h"
 

@@ -21,9 +21,9 @@
 #ifndef MAGNATUNE_REDOWNLOAD_HANDLER_H
 #define MAGNATUNE_REDOWNLOAD_HANDLER_H
 
-#include "magnatunealbumdownloader.h"
-#include "magnatunedownloaddialog.h"
-#include "magnatunedownloadinfo.h"
+#include "MagnatuneAlbumDownloader.h"
+#include "MagnatuneDownloadDialog.h"
+#include "MagnatuneDownloadInfo.h"
 #include "magnatuneredownloaddialog.h"
 
 #include <QObject>

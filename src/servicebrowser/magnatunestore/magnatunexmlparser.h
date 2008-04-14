@@ -21,7 +21,7 @@
 #ifndef MAGNATUNEXMLPARSER_H
 #define MAGNATUNEXMLPARSER_H
 
-#include "magnatunedatabasehandler.h"
+#include "MagnatuneDatabaseHandler.h"
 #include "MagnatuneMeta.h"
 
 #include <qdom.h>

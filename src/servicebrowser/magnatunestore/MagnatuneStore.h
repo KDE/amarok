@@ -27,7 +27,7 @@
 #include "magnatunepurchasehandler.h"
 #include "magnatuneredownloadhandler.h"
 #include "magnatunexmlparser.h"
-#include "magnatunedatabasehandler.h"
+#include "MagnatuneDatabaseHandler.h"
 
 #include "../servicebase.h"
 #include "servicesqlcollection.h"

@@ -21,7 +21,7 @@
 #include "magnatunepurchasedialog.h"
 
 #include "debug.h"
-#include "magnatunedatabasehandler.h"
+#include "MagnatuneDatabaseHandler.h"
 
 #include <KMessageBox>
 

@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/ 
 
-#include "magnatunealbumdownloader.h"
+#include "MagnatuneAlbumDownloader.h"
 
 #include "Amarok.h"
 #include "debug.h"
@@ -142,7 +142,7 @@ void MagnatuneAlbumDownloader::albumDownloadAborted( )
 }
 
 
-#include "magnatunealbumdownloader.moc"
+#include "MagnatuneAlbumDownloader.moc"
 
 
 

@@ -18,28 +18,28 @@
         set(amarok_service_magnatune_PART_SRCS
             magnatuneinfoparser.cpp
             MagnatuneStore.cpp
-            magnatunedownloaddialog.cpp
+            MagnatuneDownloadDialog.cpp
             magnatunepurchasedialog.cpp
             magnatunepurchasehandler.cpp
             MagnatuneMeta.cpp
             magnatunexmlparser.cpp
-            magnatunedatabasehandler.cpp
+            MagnatuneDatabaseHandler.cpp
             magnatuneredownloaddialog.cpp
             magnatuneredownloadhandler.cpp
-            magnatunedownloadinfo.cpp
-            magnatunealbumdownloader.cpp
+            MagnatuneDownloadInfo.cpp
+            MagnatuneAlbumDownloader.cpp
             MagnatuneConfig.cpp
             MagnatuneDatabaseWorker.cpp
         )
 
 #kde4_add_ui3_files(amarok_service_magnatune_PART_SRCS
-#           magnatunedownloaddialogbase.ui
+#           MagnatuneDownloadDialogBase.ui
 #           magnatuneredownloaddialogbase.ui
 #           magnatunepurchasedialogbase.ui
 #       )
 
         kde4_add_ui_files( amarok_service_magnatune_PART_SRCS
-            magnatunedownloaddialogbase.ui
+            MagnatuneDownloadDialogBase.ui
             magnatuneredownloaddialogbase.ui
             magnatunepurchasedialogbase.ui
         )

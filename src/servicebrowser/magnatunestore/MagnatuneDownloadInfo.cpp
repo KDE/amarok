@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 
-#include "magnatunedownloadinfo.h"
+#include "MagnatuneDownloadInfo.h"
 
 
 #include "debug.h"

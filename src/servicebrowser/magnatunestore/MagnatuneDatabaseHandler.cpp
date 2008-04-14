@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "magnatunedatabasehandler.h"
+#include "MagnatuneDatabaseHandler.h"
 
 #include "CollectionManager.h"
 #include "debug.h"

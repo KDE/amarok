@@ -22,7 +22,7 @@
 #define MAGNATUNEDOWNLOADDIALOG_H
 
 #include "ui_magnatunedownloaddialogbase.h"
-#include "magnatunedownloadinfo.h"
+#include "MagnatuneDownloadInfo.h"
 
 #include <qmap.h>
 

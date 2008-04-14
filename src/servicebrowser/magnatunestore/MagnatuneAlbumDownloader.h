@@ -21,7 +21,7 @@
 #ifndef MAGNATUNEALBUMDOWNLOADER_H
 #define MAGNATUNEALBUMDOWNLOADER_H
 
-#include "magnatunedownloadinfo.h"
+#include "MagnatuneDownloadInfo.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -32,7 +32,7 @@
 /**
 This class encapsulates the downloading of an album once all required information has been retrieved
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class MagnatuneAlbumDownloader: public QObject
 {
