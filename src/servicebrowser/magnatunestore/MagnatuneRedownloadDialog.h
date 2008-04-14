@@ -22,7 +22,7 @@
 #ifndef MAGNATUNE_REDOWNLOAD_DIALOG_H
 #define MAGNATUNE_REDOWNLOAD_DIALOG_H
 
-#include "ui_magnatuneredownloaddialogbase.h"
+#include "ui_MagnatuneRedownloadDialogBase.h"
 
 #include <QStringList>
 
