@@ -21,7 +21,7 @@
 #ifndef MAGNATUNEDOWNLOADDIALOG_H
 #define MAGNATUNEDOWNLOADDIALOG_H
 
-#include "ui_magnatunedownloaddialogbase.h"
+#include "ui_MagnatuneDownloadDialogBase.h"
 #include "MagnatuneDownloadInfo.h"
 
 #include <qmap.h>
