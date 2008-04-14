@@ -23,7 +23,7 @@
 
 
 #include "../servicebase.h"
-#include "jamendodatabasehandler.h"
+#include "JamendoDatabaseHandler.h"
 //#include "../servicecollection.h"
 #include "servicesqlcollection.h"
 

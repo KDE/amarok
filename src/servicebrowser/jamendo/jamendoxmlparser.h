@@ -20,7 +20,7 @@
 #ifndef JAMENDOXMLPARSER_H
 #define JAMENDOXMLPARSER_H
 
-#include "jamendodatabasehandler.h"
+#include "JamendoDatabaseHandler.h"
 
 #include <threadweaver/Job.h>
 

@@ -22,7 +22,7 @@
 
 #include "Collection.h"
 #include "support/MemoryCollection.h"
-#include "jamendo/jamendodatabasehandler.h"
+#include "jamendo/JamendoDatabaseHandler.h"
 
 #include <QtGlobal>
 

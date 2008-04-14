@@ -18,7 +18,7 @@
         set(amarok_service_jamendo_PART_SRCS
             JamendoService.cpp
             JamendoMeta.cpp
-            jamendodatabasehandler.cpp
+            JamendoDatabaseHandler.cpp
             jamendoxmlparser.cpp
             JamendoInfoParser.cpp
         )
