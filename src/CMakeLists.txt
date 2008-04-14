@@ -118,7 +118,7 @@ set(libservicebrowser_SRCS
     servicebrowser/ServiceInfoProxy.cpp
     servicebrowser/ServiceListDelegate.cpp
     servicebrowser/ServiceListModel.cpp
-    servicebrowser/servicemetabase.cpp
+    servicebrowser/ServiceMetaBase.cpp
     servicebrowser/ServicePluginManager.cpp
     servicebrowser/ServiceSourceInfoCapability.cpp
     servicebrowser/servicesqlcollection.cpp

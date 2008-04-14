@@ -21,7 +21,7 @@
 
 //#include "servicesqlcollection.h"
 #include "amarok_export.h"
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 
 #include <QHash>
 #include <QMutex>

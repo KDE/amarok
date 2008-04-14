@@ -21,7 +21,7 @@
 #define SERVICEALBUMCOVERDOWNLOADER_H
 
 
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 
 #include "amarok_export.h"
 #include <kio/jobclasses.h>

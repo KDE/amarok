@@ -17,7 +17,7 @@
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceQueryMaker.h"
 #include "meta/LastFmMeta.h"
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 
 // libunicorn includes
 #include "libUnicorn/WebService/Request.h"

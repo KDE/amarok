@@ -20,7 +20,7 @@
 #ifndef AMAROK_SERVICESQLQUERYMAKER_H
 #define AMAROK_SERVICESQLQUERYMAKER_H
 
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 #include "ServiceSqlRegistry.h"
 #include "QueryMaker.h"
 

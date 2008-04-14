@@ -22,7 +22,7 @@
 
 #include "Meta.h"
 #include "meta/Capability.h"
-#include "servicemetabase.h" // for the SourceInfoProvider
+#include "ServiceMetaBase.h" // for the SourceInfoProvider
 #include "Track.h"
 
 #include <QObject>

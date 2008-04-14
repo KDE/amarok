@@ -23,7 +23,7 @@
 #include "ServiceBase.h"
 
 #include "ShoutcastServiceCollection.h"
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 
 
 class ShoutcastServiceFactory: public ServiceFactory

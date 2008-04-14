@@ -19,7 +19,7 @@
  
 #include "ServiceCurrentTrackActionsCapability.h"
 
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 
 ServiceCurrentTrackActionsCapability::ServiceCurrentTrackActionsCapability( CurrentTrackActionsProvider * currentTrackActionsProvider )
     : Meta::CurrentTrackActionsCapability( )

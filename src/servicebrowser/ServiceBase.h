@@ -26,7 +26,7 @@
 //#include "servicemodelbase.h"
 
 #include "infoparserbase.h"
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 #include "collection/CollectionManager.h"
 
 #include "amarok_export.h"

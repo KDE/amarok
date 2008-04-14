@@ -19,7 +19,7 @@
 
 //
 #include "ScriptableServiceInfoParser.h"
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 
 using namespace Meta;
 

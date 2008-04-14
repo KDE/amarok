@@ -18,7 +18,7 @@
  ***************************************************************************/
  
 #include "ServiceSourceInfoCapability.h"
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 
 
 ServiceSourceInfoCapability::ServiceSourceInfoCapability(SourceInfoProvider * sourceInfoProvider)

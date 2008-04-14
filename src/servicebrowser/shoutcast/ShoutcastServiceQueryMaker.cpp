@@ -23,7 +23,7 @@
 
 #include "Amarok.h"
 #include "debug.h"
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 #include "collection/support/MemoryMatcher.h"
 #include "ShoutcastMeta.h"
 

@@ -21,7 +21,7 @@
 
 #include "amarok_export.h"
 #include "Collection.h"
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 #include "ServiceSqlRegistry.h"
 
 

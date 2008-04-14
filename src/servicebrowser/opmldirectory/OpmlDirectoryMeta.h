@@ -21,7 +21,7 @@
 #define OPMLDIRECTORYMETA_H
 
 
-#include "../servicemetabase.h"
+#include "../ServiceMetaBase.h"
 
 #include <QDateTime>
 #include <QString>

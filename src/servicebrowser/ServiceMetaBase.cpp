@@ -17,7 +17,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 
 #include "debug.h"
 #include "meta/default/DefaultMetaTypes.h"

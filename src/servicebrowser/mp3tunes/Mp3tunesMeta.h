@@ -22,7 +22,7 @@
 #define MP3TUNESMETA_H
 
 
-#include "../servicemetabase.h"
+#include "../ServiceMetaBase.h"
 #include "../ServiceAlbumCoverDownloader.h"
 
 #include <KStandardDirs>

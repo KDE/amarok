@@ -21,7 +21,7 @@
 #ifndef DYNAMICSCRIPTABLESERVICEMETA_H
 #define DYNAMICSCRIPTABLESERVICEMETA_H
 
-#include "../servicemetabase.h"
+#include "../ServiceMetaBase.h"
 
 /**
 meta types for use in the dynamic scriptable service. Nearly identical to the ServiceMetaBse types, except for a field for storing data to pass to the script to fetch child items for Genres, Artists and Albums and a level specifier

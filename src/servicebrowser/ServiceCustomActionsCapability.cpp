@@ -18,7 +18,7 @@
  ***************************************************************************/
  
 #include "ServiceCustomActionsCapability.h"
-#include "servicemetabase.h"
+#include "ServiceMetaBase.h"
 
 ServiceCustomActionsCapability::ServiceCustomActionsCapability(CustomActionsProvider * customActionsProvider)
     : Meta::CustomActionsCapability( )
