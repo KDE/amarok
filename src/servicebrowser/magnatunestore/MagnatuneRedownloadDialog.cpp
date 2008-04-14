@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/ 
 
-#include "magnatuneredownloaddialog.h"
+#include "MagnatuneRedownloadDialog.h"
 
 #include "debug.h"
 
@@ -82,5 +82,5 @@ void MagnatuneRedownloadDialog::selectionChanged( )
 /*$SPECIALIZATION$*/
 
 
-#include "magnatuneredownloaddialog.moc"
+#include "MagnatuneRedownloadDialog.moc"
 

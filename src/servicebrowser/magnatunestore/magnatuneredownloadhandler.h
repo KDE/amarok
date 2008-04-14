@@ -24,14 +24,14 @@
 #include "MagnatuneAlbumDownloader.h"
 #include "MagnatuneDownloadDialog.h"
 #include "MagnatuneDownloadInfo.h"
-#include "magnatuneredownloaddialog.h"
+#include "MagnatuneRedownloadDialog.h"
 
 #include <QObject>
 
 /**
 This class handles the redownloading of previously purchased albums
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 
 class MagnatuneRedownloadHandler : public QObject {
