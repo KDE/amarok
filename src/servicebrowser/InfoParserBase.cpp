@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "infoparserbase.h"
+#include "InfoParserBase.h"
 
 InfoParserBase::InfoParserBase()
   : QObject()
@@ -25,4 +25,4 @@ InfoParserBase::InfoParserBase()
 
 }
 
-#include "infoparserbase.moc"
+#include "InfoParserBase.moc"

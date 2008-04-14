@@ -20,7 +20,7 @@
 #ifndef OPMLDIRECTORYINFOPARSER_H
 #define OPMLDIRECTORYINFOPARSER_H
 
-#include <infoparserbase.h>
+#include <InfoParserBase.h>
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>

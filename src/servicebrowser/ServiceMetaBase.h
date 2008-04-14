@@ -22,7 +22,7 @@
 
 #include "amarok_export.h"
 #include "debug.h"
-#include "infoparserbase.h"
+#include "InfoParserBase.h"
 #include "Meta.h"
 #include "meta/CustomActionsCapability.h"
 #include "meta/SourceInfoCapability.h"

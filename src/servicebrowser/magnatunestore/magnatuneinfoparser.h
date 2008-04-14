@@ -20,7 +20,7 @@
 #ifndef MAGNATUNEINFOPARSER_H
 #define MAGNATUNEINFOPARSER_H
 
-#include "infoparserbase.h"
+#include "InfoParserBase.h"
 
 #include "MagnatuneMeta.h"
 

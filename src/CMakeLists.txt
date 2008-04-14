@@ -106,7 +106,7 @@ set(libplugin_SRCS
 #####################################################################
 set(libservicebrowser_SRCS
     servicebrowser/DynamicServiceQueryMaker.cpp
-    servicebrowser/infoparserbase.cpp
+    servicebrowser/InfoParserBase.cpp
     servicebrowser/ServiceAlbumCoverDownloader.cpp
     servicebrowser/ServiceBase.cpp
     servicebrowser/ServiceBrowser.cpp

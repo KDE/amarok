@@ -20,7 +20,7 @@
 #ifndef SCRIPTABLESERVICEINFOPARSER_H
 #define SCRIPTABLESERVICEINFOPARSER_H
 
-#include "infoparserbase.h"
+#include "InfoParserBase.h"
 #include "ScriptableServiceMeta.h"
 
 /**

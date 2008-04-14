@@ -25,7 +25,7 @@
 //#include "servicemodelitembase.h"
 //#include "servicemodelbase.h"
 
-#include "infoparserbase.h"
+#include "InfoParserBase.h"
 #include "ServiceMetaBase.h"
 #include "collection/CollectionManager.h"
 

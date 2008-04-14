@@ -20,7 +20,7 @@
 #ifndef JAMENDOINFOPARSER_H
 #define JAMENDOINFOPARSER_H
 
-#include <infoparserbase.h>
+#include <InfoParserBase.h>
 
 /**
 Handles the fetching and processing of Jamendo specific information for meta items
