@@ -33,6 +33,9 @@ void
 LastFmServiceFactory::init()
 {
     LastFmServiceConfig config;
+ 
+    //  The user activated the service, but didn't fill the username/password? Don't start it.
+    if ( config.username().isEmpty() || config.password().isEmpty() ) return; 
 
     ServiceBase* service = new LastFmService( "Last.fm", config.username(), UnicornUtils::md5Digest( config.password().toUtf8() ), config.scrobble(), config.fetchSimilar() );
     m_activeServices << service;
