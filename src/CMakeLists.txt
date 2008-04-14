@@ -167,7 +167,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
-    servicebrowser/magnatunestore/magnatunepurchasedialogbase.ui
+    servicebrowser/magnatunestore/MagnatunePurchaseDialogBase.ui
 )
 
 #####################################################################

@@ -23,7 +23,7 @@
 
 
 #include "Amarok.h"
-//#include "magnatunepurchasedialog.h"
+//#include "MagnatunePurchaseDialog.h"
 #include "magnatunepurchasehandler.h"
 #include "magnatuneredownloadhandler.h"
 #include "magnatunexmlparser.h"

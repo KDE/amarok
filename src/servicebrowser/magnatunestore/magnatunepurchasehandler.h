@@ -27,7 +27,7 @@
 
 #include "MagnatuneAlbumDownloader.h"
 #include "MagnatuneDownloadDialog.h"
-#include "magnatunepurchasedialog.h"
+#include "MagnatunePurchaseDialog.h"
 #include "MagnatuneMeta.h"
 
 

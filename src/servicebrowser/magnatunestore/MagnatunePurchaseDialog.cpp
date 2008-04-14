@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "magnatunepurchasedialog.h"
+#include "MagnatunePurchaseDialog.h"
 
 #include "debug.h"
 #include "MagnatuneDatabaseHandler.h"
@@ -211,5 +211,5 @@ void MagnatunePurchaseDialog::useGc()
 
 
 
-#include "magnatunepurchasedialog.moc"
+#include "MagnatunePurchaseDialog.moc"
 
