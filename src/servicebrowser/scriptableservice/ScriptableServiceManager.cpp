@@ -26,7 +26,7 @@
 #include "ScriptableServiceMeta.h"
 #include <scriptableservicemanageradaptor.h>
 #include "servicemetabase.h"
-#include "servicebrowser.h"
+#include "ServiceBrowser.h"
 
 #include <kiconloader.h>
 

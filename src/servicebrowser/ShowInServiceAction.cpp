@@ -19,7 +19,7 @@
 #include "ShowInServiceAction.h"
 
 #include "MainWindow.h"
-#include "servicebrowser.h"
+#include "ServiceBrowser.h"
 
 ShowInServiceAction::ShowInServiceAction( ServiceBase * service, Meta::ServiceTrack *track )
     : QAction( service )

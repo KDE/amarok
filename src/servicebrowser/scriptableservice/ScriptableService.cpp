@@ -19,7 +19,7 @@
 
 #include "ScriptableService.h"
 
-#include "servicebrowser.h"
+#include "ServiceBrowser.h"
 #include "ScriptableServiceInfoParser.h"
 #include "Amarok.h"
 #include "debug.h"

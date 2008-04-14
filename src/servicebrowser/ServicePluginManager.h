@@ -21,14 +21,14 @@
 #define AMAROK_SERVICEPLUGINMANAGER_H
 
 #include "ServiceBase.h"
-#include "servicebrowser.h"
+#include "ServiceBrowser.h"
 
 #include <QObject>
 
 /**
 A class to keep track of available service plugins and load them as needed
 
-	@author 
+    @author 
 */
 class ServicePluginManager : public QObject {
     

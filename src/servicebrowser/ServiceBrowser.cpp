@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "servicebrowser.h"
+#include "ServiceBrowser.h"
 
 #include "context/ContextView.h"
 #include "debug.h"
@@ -170,4 +170,4 @@ void ServiceBrowser::resetService( const QString &name )
     Q_UNUSED( name );
 }
 
-#include "servicebrowser.moc"
+#include "ServiceBrowser.moc"

@@ -109,7 +109,7 @@ set(libservicebrowser_SRCS
     servicebrowser/infoparserbase.cpp
     servicebrowser/ServiceAlbumCoverDownloader.cpp
     servicebrowser/ServiceBase.cpp
-    servicebrowser/servicebrowser.cpp
+    servicebrowser/ServiceBrowser.cpp
     servicebrowser/servicecollection.cpp
     servicebrowser/ServiceCollectionTreeView.cpp
     servicebrowser/ServiceCustomActionsCapability.cpp

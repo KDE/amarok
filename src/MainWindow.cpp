@@ -43,7 +43,7 @@
 #include "searchwidget.h"
 #include "servicebrowser/ServicePluginManager.h"
 #include "servicebrowser/scriptableservice/ScriptableService.h"
-#include "servicebrowser/servicebrowser.h"
+#include "servicebrowser/ServiceBrowser.h"
 #include "servicebrowser/shoutcast/ShoutcastService.h"
 #include "servicebrowser/mp3tunes/mp3tunesservice.h"
 #include "Sidebar.h"
