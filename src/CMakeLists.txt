@@ -122,7 +122,7 @@ set(libservicebrowser_SRCS
     servicebrowser/ServicePluginManager.cpp
     servicebrowser/ServiceSourceInfoCapability.cpp
     servicebrowser/ServiceSqlCollection.cpp
-    servicebrowser/servicesqlquerymaker.cpp
+    servicebrowser/ServiceSqlQueryMaker.cpp
     servicebrowser/ServiceSqlRegistry.cpp
     servicebrowser/ShowInServiceAction.cpp
 )

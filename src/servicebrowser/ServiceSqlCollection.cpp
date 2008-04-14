@@ -20,7 +20,7 @@
 #include "ServiceSqlCollection.h"
 
 #include "CollectionManager.h"
-#include "servicesqlquerymaker.h"
+#include "ServiceSqlQueryMaker.h"
 #include "SqlStorage.h"
 
 #include <klocale.h>

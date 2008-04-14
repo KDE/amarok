@@ -16,7 +16,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#include "servicesqlquerymaker.h"
+#include "ServiceSqlQueryMaker.h"
 
 #define DEBUG_PREFIX "ServiceSqlQueryMaker"
 
@@ -829,5 +829,5 @@ QueryMaker * ServiceSqlQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
 }
 
 
-#include "servicesqlquerymaker.moc"
+#include "ServiceSqlQueryMaker.moc"
 
