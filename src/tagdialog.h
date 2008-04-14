@@ -13,7 +13,7 @@
 #ifndef AMAROK_TAGDIALOG_H
 #define AMAROK_TAGDIALOG_H
 
-#include "config-amarok.h"
+#include <config-amarok.h>  
 
 #include "ktrm.h"
 #include "playlist/PlaylistItem.h"

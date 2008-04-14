@@ -16,12 +16,14 @@
 // Author: Melchior FRANZ <mfranz@kde.org>, (C) 2004
 //
 
+#include "sonogram.h"
+
 #include <QPainter>
 //Added by qt3to4:
 #include <QResizeEvent>
 #include <QPaintEvent>
 #include "debug.h"
-#include "sonogram.h"
+
 
 Sonogram::Sonogram(QWidget *parent) :
     Analyzer::Base2D(parent, 16, 9)

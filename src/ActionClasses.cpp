@@ -11,7 +11,7 @@
 
 #include "ActionClasses.h"
 
-#include "config-amarok.h"             //HAVE_LIBVISUAL definition
+#include <config-amarok.h>               //HAVE_LIBVISUAL definition
 
 #include "Amarok.h"
 #include "amarokconfig.h"

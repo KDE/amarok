@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "config-amarok.h"
+#include <config-amarok.h>  
 
 #if HAVE_TUNEPIMP
 

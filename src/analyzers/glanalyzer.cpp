@@ -15,12 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "config-amarok.h"
+#include "glanalyzer.h"
+
+#include <config-amarok.h>  
 
 #ifdef HAVE_QGLWIDGET
 
 #include <cmath>
-#include "glanalyzer.h"
 #include <kdebug.h>
 
 

@@ -16,7 +16,7 @@
 
 #include "mediabrowser.h"
 
-#include "config-amarok.h"
+#include <config-amarok.h>  
 
 #include "Amarok.h"
 #include "amarokconfig.h"

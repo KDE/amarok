@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef GLSTARVIEW_H
-#define GLSTARVIEW_H
+#ifndef GLANALYZER2_H
+#define GLANALYZER2_H
 
-#include "config-amarok.h"
+#include "config-amarok.h"        //krazy2:exclude=includes
 #ifdef HAVE_QGLWIDGET
 
 #include "analyzerbase.h"

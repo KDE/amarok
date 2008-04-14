@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "config-amarok.h"
+#include "glanalyzer3.h"
+
+#include <config-amarok.h>  
 
 #ifdef HAVE_QGLWIDGET
 
 #include <cmath>
 #include <cstdlib>
-#include "glanalyzer3.h"
 #include <kdebug.h>
 #include <kstandarddirs.h>
 #include <QImage>

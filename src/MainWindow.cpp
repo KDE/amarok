@@ -16,7 +16,7 @@
 
 #define DEBUG_PREFIX "MainWindow"
 
-#include "config-amarok.h"           //HAVE_LIBVISUAL definition
+#include <config-amarok.h>             //HAVE_LIBVISUAL definition
 
 #include "ActionClasses.h"    //see toolbar construction
 #include "amarokconfig.h"

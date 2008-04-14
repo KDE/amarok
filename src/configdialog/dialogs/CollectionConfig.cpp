@@ -20,7 +20,7 @@
 #include "CollectionConfig.h"
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "config-amarok.h"
+#include <config-amarok.h>  
 #include "directorylist.h"
 
 

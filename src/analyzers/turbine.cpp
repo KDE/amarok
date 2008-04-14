@@ -7,11 +7,15 @@
 // Copyright: like rest of Amarok
 //
 
-#include <cmath>
-#include <QPainter>
+#include "turbine.h"
 
 #include "Amarok.h"
-#include "turbine.h"
+
+#include <QPainter>
+
+#include <cmath>
+
+
 
 void TurbineAnalyzer::analyze( const Scope &scope )
 {

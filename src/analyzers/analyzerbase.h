@@ -12,7 +12,7 @@
 #define ANALYZERBASE_H
 
 
-#include "config-amarok.h"  //HAVE_QGLWIDGET
+#include <config-amarok.h>    //HAVE_QGLWIDGET
 
 #ifdef __FreeBSD__
 #include <sys/types.h>

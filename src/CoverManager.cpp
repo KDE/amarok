@@ -21,7 +21,7 @@
 #include "debug.h"
 #include "meta/Meta.h"
 #include "QueryMaker.h"
-#include "config-amarok.h"
+#include <config-amarok.h>  
 #include "PixmapViewer.h"
 #include "playlist/PlaylistModel.h"
 

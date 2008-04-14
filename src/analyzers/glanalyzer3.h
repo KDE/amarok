@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "config-amarok.h"
+#include <config-amarok.h>  
 #ifdef HAVE_QGLWIDGET
 
-#ifndef GLBOUNCER_H
-#define GLBOUNCER_H
+#ifndef GLANALYZER3_H
+#define GLANALYZER3_H
 
 #include "analyzerbase.h"
 #include <QString>

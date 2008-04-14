@@ -23,7 +23,7 @@
 #ifndef TFILE_HELPER_H
 #define TFILE_HELPER_H
 
-#include "config-amarok.h"
+#include <config-amarok.h>  
 
 #include <tfile.h>
 

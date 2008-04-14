@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef GLOSCOPE_H
-#define GLOSCOPE_H
+#ifndef GLANALYZER_H
+#define GLANALYZER_H
 
-#include "config-amarok.h"
+#include <config-amarok.h>  
 #ifdef HAVE_QGLWIDGET
 
 #include "analyzerbase.h"

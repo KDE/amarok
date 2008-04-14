@@ -26,7 +26,7 @@
 #ifndef TAGLIB_AUDIBLEPROPERTIES_H
 #define TAGLIB_AUDIBLEPROPERTIES_H
 
-#include "config-amarok.h"
+#include <config-amarok.h>  
 
 #include <audioproperties.h>
 #include <tstring.h>

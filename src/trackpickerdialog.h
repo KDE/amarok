@@ -16,7 +16,7 @@
 #ifndef TRACKPICKERDIALOG_H
 #define TRACKPICKERDIALOG_H
 
-#include "config-amarok.h"
+#include <config-amarok.h>  
 
 #ifdef HAVE_TUNEPIMP
 #include "ui_trackpickerdialogbase.h"

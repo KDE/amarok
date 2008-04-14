@@ -2,9 +2,10 @@
 #ifndef AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
 
+#include "OrganizeCollectionDialog.h"
+
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "OrganizeCollectionDialog.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 #include "CollectionTreeItemModel.h"
 #include "collection/CollectionManager.h"

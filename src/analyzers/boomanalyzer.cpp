@@ -8,8 +8,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "Amarok.h"
 #include "boomanalyzer.h"
+
+#include "Amarok.h"
 #include <cmath>
 #include <QGridLayout>
 #include <QLabel>

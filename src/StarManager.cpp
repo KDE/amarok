@@ -19,7 +19,7 @@
 #include "StarManager.h"
 
 #include "Amarok.h"
-#include "config-amarok.h"
+#include <config-amarok.h>  
 #include "debug.h"
 
 

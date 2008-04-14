@@ -278,7 +278,7 @@
 
 #include "moodbar.h"
 
-#include "config-amarok.h"
+#include <config-amarok.h>  
 
 #include "amarokconfig.h"
 #include "Amarok.h"

@@ -17,6 +17,7 @@
 //
 
 #include "baranalyzer.h"
+
 #include "debug.h"
 #include <cmath>     //log10(), etc.
 #include <QPainter>

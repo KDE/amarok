@@ -22,7 +22,7 @@
 
 #include "ktrm.h"
 
-#include "config-amarok.h"
+#include <config-amarok.h>  
 
 #include "debug.h"
 #include "ContextStatusBar.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "analyzerbase.h"
+
 #include <cmath>        //interpolate()
 #include "EngineController.h"
 #include <QEvent>     //event()

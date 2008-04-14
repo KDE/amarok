@@ -12,11 +12,13 @@
 
 #define DEBUG_PREFIX "BlockAnalyzer"
 
-#include "config-amarok.h"           //HAVE_LIBVISUAL definition
+#include "blockanalyzer.h"
+
+//HAVE_LIBVISUAL definition
+#include "config-amarok.h"        //krazy2:exclude=includes
 
 #include "ActionClasses.h"   //mousePressEvent
 #include "Amarok.h"
-#include "blockanalyzer.h"
 #include "debug.h"
 
 #include <cmath>
