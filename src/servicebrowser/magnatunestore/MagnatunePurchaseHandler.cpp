@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "magnatunepurchasehandler.h"
+#include "MagnatunePurchaseHandler.h"
 
 #include "Amarok.h"
 #include "debug.h"
@@ -302,15 +302,7 @@ void MagnatunePurchaseHandler::albumPurchaseCancelled( )
 }
 
 
-
-
-
-
-
-
-
-
-#include "magnatunepurchasehandler.moc"
+#include "MagnatunePurchaseHandler.moc"
 
 
 

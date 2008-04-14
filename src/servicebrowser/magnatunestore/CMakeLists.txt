@@ -20,7 +20,7 @@
             MagnatuneStore.cpp
             MagnatuneDownloadDialog.cpp
             MagnatunePurchaseDialog.cpp
-            magnatunepurchasehandler.cpp
+            MagnatunePurchaseHandler.cpp
             MagnatuneMeta.cpp
             magnatunexmlparser.cpp
             MagnatuneDatabaseHandler.cpp
