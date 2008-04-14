@@ -45,7 +45,7 @@
 #include "servicebrowser/scriptableservice/ScriptableService.h"
 #include "servicebrowser/ServiceBrowser.h"
 #include "servicebrowser/shoutcast/ShoutcastService.h"
-#include "servicebrowser/mp3tunes/mp3tunesservice.h"
+#include "servicebrowser/mp3tunes/Mp3tunesService.h"
 #include "Sidebar.h"
 #include "Sidebar.moc"
 #include "socketserver.h"

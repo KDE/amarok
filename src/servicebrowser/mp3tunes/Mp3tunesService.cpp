@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "mp3tunesservice.h"
+#include "Mp3tunesService.h"
 
 #include "Mp3tunesConfig.h"
 
@@ -186,7 +186,7 @@ void Mp3tunesService::authenticationComplete(KJob * job)
 
 
 
-#include "mp3tunesservice.moc"
+#include "Mp3tunesService.moc"
 
 
 

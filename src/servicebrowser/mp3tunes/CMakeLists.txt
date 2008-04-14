@@ -16,7 +16,7 @@
 ########### next target ###############
 
         set(amarok_service_mp3tunes_PART_SRCS
-            mp3tunesservice.cpp
+            Mp3tunesService.cpp
             Mp3tunesServiceCollection.cpp
             Mp3tunesServiceQueryMaker.cpp
             Mp3tunesMeta.cpp
