@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "jamendoxmlparser.h"
+#include "JamendoXmlParser.h"
 
 #include "Amarok.h"
 #include "debug.h"
@@ -386,5 +386,5 @@ void JamendoXmlParser::countTransaction()
 
 }
 
-#include "jamendoxmlparser.moc"
+#include "JamendoXmlParser.moc"
 

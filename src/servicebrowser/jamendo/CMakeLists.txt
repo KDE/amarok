@@ -19,7 +19,7 @@
             JamendoService.cpp
             JamendoMeta.cpp
             JamendoDatabaseHandler.cpp
-            jamendoxmlparser.cpp
+            JamendoXmlParser.cpp
             JamendoInfoParser.cpp
         )
 

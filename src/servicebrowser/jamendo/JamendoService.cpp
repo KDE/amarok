@@ -23,7 +23,7 @@
 #include "debug.h"
 #include "EngineController.h"
 #include "JamendoInfoParser.h"
-#include "jamendoxmlparser.h"
+#include "JamendoXmlParser.h"
 #include "ServiceSqlRegistry.h"
 #include "TheInstances.h"
 
