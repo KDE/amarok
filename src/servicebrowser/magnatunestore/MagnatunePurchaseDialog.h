@@ -21,7 +21,7 @@
 #ifndef MAGNATUNEPURCHASEDIALOG_H
 #define MAGNATUNEPURCHASEDIALOG_H
 
-#include "ui_magnatunepurchasedialogbase.h"
+#include "ui_MagnatunePurchaseDialogBase.h"
 #include "MagnatuneMeta.h"
 
 class MagnatunePurchaseDialog : public QDialog, public Ui::magnatunePurchaseDialogBase, public Meta::Observer
