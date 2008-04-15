@@ -40,13 +40,14 @@ class ScanResultProcessor
         ScanResultProcessor( SqlCollection *collection );
         ~ScanResultProcessor();
 
-        void processScanResult( const QMap<QString, QHash<QString, QString> > &scanResult );
-
         void addDirectory( const QString &dir, uint mtime );
         void setScanType( ScanType type );
+        void processDirectory( const QList<QHash<QString, QString> > &data );
+        void commit();
+        void rollback();
 
     private:
-        void processDirectory( const QList<QHash<QString, QString> > &data );
+
         void addTrack( const QHash<QString, QString> &trackData, int albumArtistId );
 
         int artistId( const QString &artist );

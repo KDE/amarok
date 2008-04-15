@@ -359,8 +359,20 @@ void
 XmlParseJob::run()
 {
     DEBUG_BLOCK
-    QMap<QString, QHash<QString, QString> > audioFileData;
-    QMap<QString, uint> directories;
+    QList<QHash<QString, QString> > directoryData;
+    bool firstTrack = true;
+    QString currentDir;
+
+    ScanResultProcessor processor( m_collection );
+    if( m_isIncremental )
+    {
+        processor.setScanType( ScanResultProcessor::IncrementalScan );
+    }
+    else
+    {
+        processor.setScanType( ScanResultProcessor::FullScan );
+    }
+    
     do
     {
         //get new xml data or wait till new xml data is available
@@ -414,14 +426,34 @@ XmlParseJob::run()
                     }
                     if( !attrs.value( "filesize" ).isEmpty() )
                         data.insert( Meta::Field::FILESIZE, attrs.value( "filesize" ).toString() );
-                    audioFileData.insert( attrs.value( "path" ).toString(), data );
+
+                    if( firstTrack )
+                    {
+                        KUrl url( data.value( Meta::Field::URL ) );
+                        currentDir = url.directory();
+                        firstTrack = false;
+                    }
+
+                    KUrl url( data.value( Meta::Field::URL ) );
+                    if( url.directory() == currentDir )
+                    {
+                        directoryData.append( data );
+                    }
+                    else
+                    {
+                        processor.processDirectory( directoryData );
+                        directoryData.clear();
+                        directoryData.append( data );
+                        currentDir = url.directory();
+                    }
                 }
                 else if( localname == "folder" )
                 {
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     const QString folder = attrs.value( "path" ).toString();
                     const QFileInfo info( folder );
-                    directories.insert( folder, info.lastModified().toTime_t() );
+
+                    processor.addDirectory( folder, info.lastModified().toTime_t() );
 
                     /*// Update dir statistics for rescanning purposes
                     if( info.exists() )
@@ -444,24 +476,15 @@ XmlParseJob::run()
         //the error cannot be PrematureEndOfDocumentError, so handle
         //an unrecoverable error here
         //TODO implement
+        processor.rollback();
     }
     else
     {
-        ScanResultProcessor processor( m_collection );
-        if( m_isIncremental )
+        if( !directoryData.isEmpty() )
         {
-            processor.setScanType( ScanResultProcessor::IncrementalScan );
+            processor.processDirectory( directoryData );
         }
-        else
-        {
-            processor.setScanType( ScanResultProcessor::FullScan );
-        }
-        foreach( const QString &dir, directories.keys() )
-        {
-            processor.addDirectory( dir, directories.value( dir ) );
-        }
-        Amarok::ContextStatusBar::instance()->setProgressStatus( this, i18n( "Processing scan results" ) );
-        processor.processScanResult( audioFileData );
+        processor.commit();
     }
 }
 

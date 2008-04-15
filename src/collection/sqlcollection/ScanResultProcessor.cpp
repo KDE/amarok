@@ -81,51 +81,21 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 }
 
 void
-ScanResultProcessor::processScanResult( const QMap< QString, QHash<QString, QString> > &scanResult )
+ScanResultProcessor::commit()
 {
-    setupDatabase();
-
-    QList<QHash<QString, QString> > dirData;
-    bool firstTrack = true;
-    bool firstDir = true;
-    QString dir;
-    QHash<QString,QString> track;
-    debug() << "Processing " << scanResult.size() << " tracks";
-    foreach( track, scanResult )
-    {
-        if( firstTrack )
-        {
-            KUrl url( track.value( Field::URL ) );
-            dir = url.directory();
-            firstTrack = false;
-        }
-
-        KUrl url( track.value( Field::URL ) );
-        if( url.directory() == dir )
-        {
-            dirData.append( track );
-        }
-        else
-        {
-            processDirectory( dirData );
-            dirData.clear();
-            dirData.append( track );
-            dir = url.directory();
-            firstDir = false;
-        }
-    }
-
-    // When only one directory contains music, we still need to process it here
-    if( firstDir )
-        processDirectory( dirData );
-
-    if( m_type == FullScan )
+    if( m_type == ScanResultProcessor::FullScan )
     {
         //TODO clean permanent tables
     }
     m_collection->dbUpdater()->copyToPermanentTables();
     m_collection->dbUpdater()->removeTemporaryTables();
     m_collection->sendChangedSignal();
+}
+
+void
+ScanResultProcessor::rollback()
+{
+    m_collection->dbUpdater()->removeTemporaryTables();
 }
 
 void
