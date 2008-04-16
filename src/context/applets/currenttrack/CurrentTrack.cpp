@@ -21,7 +21,6 @@
 #include <plasma/theme.h>
 
 #include <KIconLoader>
-#include <KGlobalSettings>
 
 #include <QPainter>
 #include <QBrush>

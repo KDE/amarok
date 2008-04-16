@@ -24,8 +24,6 @@
 #include <QPainter>
 #include <QPoint>
 
-#include <KGlobalSettings>
-
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_header( 0 )
