@@ -1,6 +1,8 @@
 /***************************************************************************
  * copyright        : (C) 2007 Ian Monroe <ian@monroe.nu>
- *                  : (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *                    (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *                    (C) 2008 Seb Ruiz <ruiz@kde.org>
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
@@ -21,6 +23,7 @@
 
 #include "PlaylistModel.h"
 
+#include "ActionClasses.h" //playlistModeChanged()
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
@@ -344,29 +347,6 @@ Model::play( int row )
 }
 
 void
-Model::playlistRepeatMode( int item )
-{
-    // FIXME? couldn't this method go away, and just call playModeChanged() instead of this?
-    if( item == 0 ) //OFF
-        playModeChanged( Playlist::Standard );
-    else if( item == 3 ) //PLAYLIST
-        playModeChanged( Playlist::RepeatPlaylist);
-    else //for now just turn on repeat if anything but "off" is clicked
-        playModeChanged( Playlist::RepeatTrack );
-}
-
-void
-Model::playlistRandomMode( int item )
-{
-    if( item == 0 ) //OFF
-        playModeChanged( Playlist::Standard );
-    else if( item == 1 ) //TRACK
-        playModeChanged( Playlist::RandomTrack );
-    else
-        debug() << "Sorry, this random mode has not been implemented";
-}
-
-void
 Model::next()
 {
     if( m_activeRow < 0 || m_activeRow >= m_items.size() )
@@ -447,23 +427,47 @@ Model::prettyColumnName( Column index ) //static
 }
 
 void
-Model::playModeChanged( int row )
+Model::playlistModeChanged()
 {
     delete m_advancer;
-    switch( row )
+
+    int options = Playlist::StandardPlayback;
+
+    debug() << "Repeat enabled: " << Amarok::repeatEnabled();
+    debug() << "Random enabled: " << Amarok::randomEnabled();
+
+    if( Amarok::repeatEnabled() )
+        options |= Playlist::RepeatPlayback;
+    if( Amarok::randomEnabled() )
+        options |= Playlist::RandomPlayback;
+    if( Amarok::repeatTrack() || Amarok::randomTracks() )
+        options |= Playlist::TrackPlayback;
+    if( Amarok::repeatAlbum() || Amarok::randomAlbums() )
+        options |= Playlist::AlbumPlayback;
+    if( Amarok::repeatPlaylist() )
+        options |= Playlist::PlaylistPlayback;
+
+    if( options == Playlist::StandardPlayback )
     {
-        case Playlist::Standard:
-            m_advancer = new StandardTrackNavigator( this );
-            break;
-        case Playlist::RepeatTrack:
+        m_advancer = new StandardTrackNavigator( this );
+    }
+    else if( options & Playlist::RepeatPlayback )
+    {
+        if( options & Playlist::TrackPlayback )
             m_advancer = new RepeatTrackNavigator( this );
-            break;
-        case Playlist::RepeatPlaylist:
+        else if( options & Playlist::PlaylistPlayback )
             m_advancer = new RepeatPlaylistNavigator( this );
-            break;
-        case Playlist::RandomTrack:
+    }
+    else if( options & Playlist::RandomPlayback )
+    {
+        if( options & Playlist::TrackPlayback )
             m_advancer = new RandomTrackNavigator( this );
     }
+    else
+    {
+        debug() << "Play mode not implemented, defaulting to Standard Playback";
+        m_advancer = new StandardTrackNavigator( this );
+    }   
 }
 
 void

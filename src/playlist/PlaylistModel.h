@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
+ *                        (C) 2008 Seb Ruiz <ruiz@kde.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -51,18 +52,20 @@ namespace Amarok
     bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right );
 }
 
-namespace Playlist {
-
-class TrackNavigator;
+namespace Playlist
+{
+    class TrackNavigator;
 
     enum PlaybackMode
     {
-        Standard = 1,
-        RepeatTrack,
-        RepeatAlbum,
-        RepeatPlaylist,
-        RandomTrack
+        StandardPlayback  = 0,
+        TrackPlayback     = 1,
+        AlbumPlayback     = 2,
+        PlaylistPlayback  = 4,
+        RandomPlayback    = 8,
+        RepeatPlayback    = 16
     };
+
     enum Column
     {
         Album  = 1,
@@ -91,6 +94,7 @@ class TrackNavigator;
         Year,
         NUM_COLUMNS
     };
+
     enum DataRoles
     {
         TrackRole = Qt::UserRole + 1,
@@ -101,6 +105,7 @@ class TrackNavigator;
         GroupedAlternateRole,
         GroupedCollapsibleRole
     };
+    
     ///Options for insertTracks
     enum AddOptions
     {
@@ -219,11 +224,11 @@ class TrackNavigator;
 
         public slots:
             void play( const QModelIndex& index );
-            void playlistRepeatMode( int item );
-            void playlistRandomMode( int item );
             void next();
             void back();
             void clear(); ///clear the playlist of all items
+
+            void playlistModeChanged(); //! Changes the trackadvancer
 
         signals:
             void playlistCountChanged( int newCount );
@@ -268,8 +273,6 @@ class TrackNavigator;
             void regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode = OffsetNone, int offset = 0 );
 
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
-
-            void playModeChanged( int mode ); //! Changes the trackadvancer to the given mode
 
             QString         m_playlistName;
             bool            m_proposeOverwriting;

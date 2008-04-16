@@ -45,18 +45,21 @@
 
 namespace Amarok
 {
-    bool repeatNone() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Off; }
-    bool repeatTrack() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Track; }
-    bool repeatAlbum() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Album; }
+    bool repeatNone()     { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Off; }
+    bool repeatTrack()    { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Track; }
+    bool repeatAlbum()    { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Album; }
     bool repeatPlaylist() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Playlist; }
-    bool randomOff() { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Off; }
-    bool randomTracks() { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Tracks; }
-    bool randomAlbums() { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Albums; }
-    bool favorNone() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::Off; }
-    bool favorScores() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::HigherScores; }
-    bool favorRatings() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::HigherRatings; }
-    bool favorLastPlay() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::LessRecentlyPlayed; }
-    bool entireAlbums() { return repeatAlbum() || randomAlbums(); }
+    bool randomOff()      { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Off; }
+    bool randomTracks()   { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Tracks; }
+    bool randomAlbums()   { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Albums; }
+    bool favorNone()      { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::Off; }
+    bool favorScores()    { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::HigherScores; }
+    bool favorRatings()   { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::HigherRatings; }
+    bool favorLastPlay()  { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::LessRecentlyPlayed; }
+
+    bool entireAlbums()   { return repeatAlbum()  || randomAlbums(); }
+    bool repeatEnabled()  { return repeatTrack()  || repeatAlbum() || repeatPlaylist(); }
+    bool randomEnabled()  { return randomTracks() || randomAlbums(); }
 }
 
 using namespace Amarok;
@@ -284,10 +287,19 @@ void SelectAction::setCurrentItem( int n )
 {
     const bool announce = n != currentItem();
 
+    debug() << "setCurrentItem: " << n;
+
     m_function( n );
     KSelectAction::setCurrentItem( n );
     AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit triggered( n );
+}
+
+void SelectAction::actionTriggered( QAction *a )
+{
+    m_function( currentItem() );
+    AmarokConfig::self()->writeConfig();
+    KSelectAction::actionTriggered( a );
 }
 
 void SelectAction::setEnabled( bool b )
@@ -343,7 +355,7 @@ RandomAction::RandomAction( KActionCollection *ac ) :
           << "media-album-shuffle";
     setIcons( icons );
 
-    connect( this, SIGNAL( triggered( int ) ), The::playlistModel(), SLOT( playlistRandomMode( int ) ) );
+    connect( this, SIGNAL( triggered( int ) ), The::playlistModel(), SLOT( playlistModeChanged() ) );
 }
 
 void
@@ -382,7 +394,7 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
     setIcons( QStringList() << "go-down-amarok" << "media-track-repeat" << "media-album-repeat" << "media-playlist-repeat-amarok" );
     setCurrentItem( AmarokConfig::repeat() );
     
-    connect( this, SIGNAL( triggered( int ) ), The::playlistModel(), SLOT( playlistRepeatMode( int ) ) );
+    connect( this, SIGNAL( triggered( int ) ), The::playlistModel(), SLOT( playlistModeChanged() ) );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -470,6 +482,7 @@ StopAction::StopAction( KActionCollection *ac )
 int
 StopAction::plug( QWidget *w, int )
 {
+    Q_UNUSED( w );
 #if 0
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
     w->addAction( this );

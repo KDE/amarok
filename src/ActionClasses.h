@@ -70,6 +70,8 @@ namespace Amarok
 
     class SelectAction : public KSelectAction
     {
+        Q_OBJECT
+
         public:
             SelectAction( const QString &text, void ( *f ) ( int ), KActionCollection* const ac, const char *name );
 
@@ -79,6 +81,9 @@ namespace Amarok
             virtual QString currentText() const;
             QStringList icons() const;
             QString currentIcon() const;
+
+        protected slots:
+            virtual void actionTriggered( QAction *a );
 
         private:
             void ( *m_function ) ( int );

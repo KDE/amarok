@@ -326,28 +326,22 @@ namespace Amarok
         AmarokConfig::setOsdEnabled( enable );
     }
 
-    void DbusPlayerHandler::enableRandomMode( bool /*enable*/ )
+    void DbusPlayerHandler::enableRandomMode( bool enable )
     {
-#if 0
         static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ))
             ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
-#endif
     }
 
-    void DbusPlayerHandler::enableRepeatPlaylist( bool /*enable*/ )
+    void DbusPlayerHandler::enableRepeatPlaylist( bool enable )
     {
-#if 0
         static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
-#endif
     }
 
-     void DbusPlayerHandler::enableRepeatTrack( bool /*enable*/)
+     void DbusPlayerHandler::enableRepeatTrack( bool enable)
     {
-#if 0
         static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Track : AmarokConfig::EnumRepeat::Off );
-#endif
     }
 
     void DbusPlayerHandler::mediaDeviceMount()

@@ -166,6 +166,8 @@ namespace Amarok
     bool favorRatings();
     bool favorLastPlay();
     bool entireAlbums(); //repeatAlbum() || randomAlbums()
+    bool repeatEnabled();
+    bool randomEnabled();
 
 // Port 2.0: Reenable when we have a new dynamic mode
 //     const DynamicMode *dynamicMode(); //defined in playlist.cpp
