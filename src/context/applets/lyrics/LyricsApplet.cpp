@@ -73,40 +73,41 @@ void LyricsApplet::init()
 
     QFont labelFont;
     labelFont.setBold( true );
-    labelFont.setPointSize( labelFont.pointSize()  );
+    labelFont.setPointSize( labelFont.pointSize() + 1 );
     labelFont.setStyleHint( QFont::Times );
     labelFont.setStyleStrategy( QFont::PreferAntialias );
 
-    m_lyricsLabel->setBrush( Plasma::Theme::self()->textColor() );
+    QFont textFont = QFont( labelFont );
+    textFont.setBold( false );
+
+    const QColor textColor = Plasma::Theme::self()->textColor();
+
+    m_lyricsLabel->setBrush( textColor );
     m_lyricsLabel->setFont( labelFont );
     m_lyricsLabel->setText( i18n( "Lyrics" ) );
 
-    m_titleLabel->setBrush( Plasma::Theme::self()->textColor() );
+    m_titleLabel->setBrush( textColor );
     m_titleLabel->setFont( labelFont );
     m_titleLabel->setText( i18nc( "The name of the current playing song", "Title" ) + ':' );
 
-    m_artistLabel->setBrush( Plasma::Theme::self()->textColor() );
+    m_artistLabel->setBrush( textColor );
     m_artistLabel->setFont( labelFont );
     m_artistLabel->setText( i18n( "Artist" ) + ':' );
 
-    m_lyrics->setTextColor( Plasma::Theme::self()->textColor() );
-    QFont f = KGlobalSettings::smallestReadableFont();
-    f.setPointSize( f.pointSize() - 1 ); // The smallest is still too big..
-    m_lyrics->setFont( f );
-    m_title->setBrush( Plasma::Theme::self()->textColor() );
-    m_artist->setBrush( Plasma::Theme::self()->textColor() );
+    m_lyrics->setTextColor( textColor );
+    m_lyrics->setFont( textFont );
+    m_title->setBrush( textColor );
+    m_artist->setBrush( textColor );
 
     constraintsUpdated();
 }
 
 void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
 {
-
     prepareGeometryChange();
 
-    if (constraints & Plasma::SizeConstraint && m_header) {
+    if( constraints & Plasma::SizeConstraint && m_header )
         m_header->resize(contentSize().toSize());
-    }
 
     // align items
     m_lyricsLabel->setPos( m_header->elementRect( "title" ).topLeft());
@@ -117,9 +118,11 @@ void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
     m_title->setPos( m_header->elementRect( "lyricstrackname" ).topLeft() );
     m_artist->setPos( m_header->elementRect( "lyricsartist" ).topLeft() );
 
-    QSizeF infoSize( m_header->elementRect( "lyrics" ).bottomRight().x() - m_header->elementRect( "lyrics" ).topLeft().x(), m_header->elementRect( "lyrics" ).bottomRight().y() - m_header->elementRect( "lyrics" ).topLeft().y() );
+    QSizeF infoSize( m_header->elementRect( "lyrics" ).bottomRight().x() - m_header->elementRect( "lyrics" ).topLeft().x(),
+                     m_header->elementRect( "lyrics" ).bottomRight().y() - m_header->elementRect( "lyrics" ).topLeft().y() );
 
-    if ( infoSize.isValid() ) {
+    if ( infoSize.isValid() )
+    {
         m_lyricsProxy->setMinimumSize( infoSize );
         m_lyricsProxy->setMaximumSize( infoSize );
     }
@@ -133,9 +136,8 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     if( data.contains( "noscriptrunning" ) )
         m_lyrics->setPlainText( i18n( "No lyrics script is running!" ) );
     if( data.contains( "fetching" ) )
-    {
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
-    }else if( data.contains( "error" ) )
+    else if( data.contains( "error" ) )
         m_lyrics->setPlainText( i18n( "Lyrics were not able to be downloaded. Please check your internet connection." ) );
     else if( data.contains( "suggested" ) )
         m_lyrics->setPlainText( i18n( "Todo.... show suggestions here!" ) );
@@ -204,7 +206,5 @@ void LyricsApplet::calculateHeight()
         m_size.setHeight( m_size.height() - shrinkBy );
     }*/
 }
-
-
 
 #include "LyricsApplet.moc"

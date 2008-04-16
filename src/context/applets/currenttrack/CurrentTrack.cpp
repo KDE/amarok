@@ -20,9 +20,8 @@
 
 #include <plasma/theme.h>
 
-
 #include <KIconLoader>
-
+#include <KGlobalSettings>
 
 #include <QPainter>
 #include <QBrush>
@@ -58,15 +57,35 @@ void CurrentTrack::init()
 
     KIconLoader iconLoader;
 
-    m_titleLabel = new QGraphicsSimpleTextItem( i18nc( "The name of the playing song", "Track:" ) , this );
-    m_artistLabel = new QGraphicsSimpleTextItem( i18n( "Artist:" ), this );
-    m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
+    const QColor textColor = Plasma::Theme::self()->textColor();
+    QFont labelFont;
+    labelFont.setBold( true );
+    labelFont.setPointSize( labelFont.pointSize() + 1  );
+    labelFont.setStyleHint( QFont::Times );
+    labelFont.setStyleStrategy( QFont::PreferAntialias );
 
-    m_scoreLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "emblem-favorite", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+    QFont textFont = QFont( labelFont );
+    textFont.setBold( false );
+
+    m_titleLabel = new QGraphicsSimpleTextItem( i18nc( "The name of the playing song", "Track:" ) , this );
+    m_titleLabel->setBrush( textColor );
+    m_titleLabel->setFont( labelFont );
+
+    m_artistLabel = new QGraphicsSimpleTextItem( i18n( "Artist:" ), this );
+    m_artistLabel->setBrush( textColor );
+    m_artistLabel->setFont( labelFont );
+
+    m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
+    m_albumLabel->setBrush( textColor );
+    m_albumLabel->setFont( labelFont );
+
+    m_scoreLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "emblem-favorite", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
     m_scoreLabel->setToolTip( i18n( "Score" ) );
-    m_numPlayedLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "view-refresh", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+
+    m_numPlayedLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "view-refresh", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
     m_numPlayedLabel->setToolTip( i18n( "Play Count" ) );
-    m_playedLastLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "user-away-extended", KIconLoader::Toolbar, KIconLoader::SizeLarge ) ), this );
+
+    m_playedLastLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "user-away-extended", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
     m_playedLastLabel->setToolTip( i18n( "Last Played") );
 
     m_scoreLabel->setTransformationMode( Qt::SmoothTransformation );
@@ -82,10 +101,12 @@ void CurrentTrack::init()
     m_albumCover = new QGraphicsPixmapItem( this );
     m_sourceEmblem = new QGraphicsPixmapItem( this );
 
-    const QColor textColor = Plasma::Theme::self()->textColor();
-    m_titleLabel->setBrush( textColor );
-    m_artistLabel->setBrush( textColor );
-    m_albumLabel->setBrush( textColor );
+    m_title->setFont( textFont );
+    m_artist->setFont( textFont );
+    m_album->setFont( textFont );
+    m_score->setFont( textFont );
+    m_numPlayed->setFont( textFont );
+    m_playedLast->setFont( textFont );
 
     m_title->setBrush( textColor );
     m_artist->setBrush( textColor );
@@ -106,10 +127,8 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
 {
     prepareGeometryChange();
 
-    if (constraints & Plasma::SizeConstraint) {
+    if( constraints & Plasma::SizeConstraint )
         m_theme->resize(contentSize().toSize());
-    }
-
 
     // here we put all of the text items into the correct locations
     m_titleLabel->setPos( m_theme->elementRect( "tracklabel" ).topLeft() );
@@ -130,30 +149,30 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
 
 
     QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
-    m_title->setFont( shrinkTextSizeToFit( title, m_theme->elementRect( "track" ) ) );
+//     m_title->setFont( shrinkTextSizeToFit( title, m_theme->elementRect( "track" ) ) );
     m_title->setText( truncateTextToFit( title, m_title->font(), m_theme->elementRect( "track" ) ) );
 
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-    m_artist->setFont( shrinkTextSizeToFit( artist, m_theme->elementRect( "artist" ) ) );
+//     m_artist->setFont( shrinkTextSizeToFit( artist, m_theme->elementRect( "artist" ) ) );
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), m_theme->elementRect( "artist" ) ) );
 
     QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-    m_album->setFont( shrinkTextSizeToFit( album, m_theme->elementRect( "album" ) ) );
+//     m_album->setFont( shrinkTextSizeToFit( album, m_theme->elementRect( "album" ) ) );
     m_album->setText( truncateTextToFit( album, m_album->font(), m_theme->elementRect( "album" ) ) );
 
-    m_score->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "score" ) ) );
-    m_numPlayed->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayed" ) ) );
-    m_playedLast->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlast" ) ) );
+//     m_score->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "score" ) ) );
+//     m_numPlayed->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayed" ) ) );
+//     m_playedLast->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlast" ) ) );
 
-    m_titleLabel->setFont( m_title->font() );
-    m_artistLabel->setFont( m_artist->font() );
-    m_albumLabel->setFont( m_album->font() );
+//     m_titleLabel->setFont( m_title->font() );
+//     m_artistLabel->setFont( m_artist->font() );
+//     m_albumLabel->setFont( m_album->font() );
 
 
     //calc scale factor..
-    m_scoreLabel->resetTransform ();
-    m_numPlayedLabel->resetTransform ();
-    m_playedLastLabel->resetTransform ();
+    m_scoreLabel->resetTransform();
+    m_numPlayedLabel->resetTransform();
+    m_playedLastLabel->resetTransform();
 
     float currentHeight = m_scoreLabel->boundingRect().height();
     float desiredHeight = m_theme->elementRect( "scorelabel" ).height();
@@ -167,7 +186,7 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_numPlayedLabel->scale( scaleFactor, scaleFactor );
     m_playedLastLabel->scale( scaleFactor, scaleFactor );
 
-    resizeCover(m_bigCover);
+    resizeCover( m_bigCover );
 
 //     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << m_theme->elementRect( "albumart" ).size().width();
 
