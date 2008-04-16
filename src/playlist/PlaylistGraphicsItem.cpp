@@ -462,8 +462,8 @@ Playlist::GraphicsItem::showImage() const
 void
 Playlist::GraphicsItem::fetchImage()
 {
-/*    CoverFetcher *fetcher = The::coverFetcher();
-    fetcher->manualFetch( m_items->track->album() );*/
+    CoverFetcher *fetcher = The::coverFetcher();
+    fetcher->manualFetch( m_items->track->album() );
 }
 
 void
