@@ -21,6 +21,7 @@
 #ifndef AMAROK_RANDOMTRACKNAVIGATOR_H
 #define AMAROK_RANDOMTRACKNAVIGATOR_H
 
+#include "meta/Meta.h"
 #include "playlist/TrackNavigator.h"
 
 namespace Playlist {
@@ -33,6 +34,11 @@ namespace Playlist {
         public:
             RandomTrackNavigator( Model *m ) : TrackNavigator( m ) { }
             Meta::TrackPtr nextTrack();
+
+        private:
+            void generateUnplayedTracks();
+            Meta::TrackList m_playedTracks;
+            Meta::TrackList m_unplayedTracks;
     };
 
  }

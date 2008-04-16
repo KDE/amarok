@@ -36,7 +36,7 @@ class Model;
     class TrackNavigator
     {
         public: 
-            TrackNavigator( Model* model ) : m_playlistModel( model ) { }
+            TrackNavigator( Model* model ) : m_playlistModel( model ) { m_playlistChanged = true; }
             virtual ~TrackNavigator() { }
             /** The next track that the engine should play.  This is called a few seconds before the track actually ends */
             virtual Meta::TrackPtr nextTrack() = 0;
@@ -44,11 +44,22 @@ class Model;
             virtual Meta::TrackPtr userNextTrack() { return nextTrack(); }
             ///The user clicks previous. By default it just go to the previous item in the playlist
             virtual Meta::TrackPtr lastTrack();
+
+            void setPlaylistChanged() { m_playlistChanged = true; }
+
         protected:
             ///Convenience function, set the current track in the playlistmodel and play it.
             ///@param position position in Model of track to start playing
             void setCurrentTrack( int position );
+            
+            const bool playlistChanged() const { return m_playlistChanged; }
+            void playlistChangeHandled() { m_playlistChanged = false; }
+
             Model* m_playlistModel; //! needed to manipulate the playlist
+
+        private:
+            // a flag which indicates that the playlist has somehow changed since last advance (eg insertion/removal of items)
+            bool m_playlistChanged;
     };
 }
 

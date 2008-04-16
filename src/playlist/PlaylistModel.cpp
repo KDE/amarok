@@ -98,6 +98,9 @@ Model::init()
     ac->addAction("playlist_redo", redoButton);
     redoButton->setIcon( KIcon( "edit-redo-amarok" ) );
 
+    // essentially announces to the TrackAdvancer that there was a change in the playlist
+    connect( this, SIGNAL( playlistCountChanged(int) ), SLOT( notifyAdvancersOnItemChange() ) );
+
     //FIXME: because the restoring in app.cpp:711 causes problems we do it here. This doesn't respect the command line flags though.
     /*if ( AmarokConfig::savePlaylist() )
     {
@@ -246,7 +249,6 @@ Model::insertTrack( int row, Meta::TrackPtr track )
     Meta::TrackList list;
     list.append( track );
     insertTracks( row, list );
-
 }
 
 void
@@ -256,28 +258,32 @@ Model::insertTracks( int row, Meta::TrackList tracks )
     bool containsPlaylists = false;
     QList<int> playlistIndices;
     int index = 0;
-    foreach( Meta::TrackPtr track, tracks ) {
-
-        if( The::playlistManager()->canExpand( track ) ) {
+    foreach( Meta::TrackPtr track, tracks )
+    {
+        if( The::playlistManager()->canExpand( track ) )
+        {
             containsPlaylists = true;
             playlistIndices.append( index );
             index++;
         }
     }
 
-
-    if ( !containsPlaylists ) {
+    if ( !containsPlaylists )
+    {
          //if its all plain tracks, do the easy thing
         m_undoStack->push( new AddTracksCmd( 0, row, tracks ) );
-    } else {
+    }
+    else
+    {
         //split it up, but add as much as possible as groups to keep the undo stuff usable
 
         int lastIndex = 0;
         int offset = 0;
 
-        foreach( int playlistIndex, playlistIndices ) {
-
-            if( ( playlistIndex  - lastIndex ) > 0 ) {
+        foreach( int playlistIndex, playlistIndices )
+        {
+            if( ( playlistIndex  - lastIndex ) > 0 )
+            {
                 m_undoStack->push( new AddTracksCmd( 0, row + lastIndex + offset, tracks.mid( lastIndex, playlistIndex  - lastIndex ) ) );
                 row = row + ( playlistIndex  - lastIndex );
             }
@@ -288,13 +294,7 @@ Model::insertTracks( int row, Meta::TrackList tracks )
 
             lastIndex = playlistIndex + 1;
         }
-
-
     }
-
-
-
-
 }
 
 bool
@@ -549,15 +549,12 @@ Model::clear()
 void
 Model::insertOptioned( Meta::TrackList list, int options )
 {
-
-//     DEBUG_BLOCK
-
-//TODO: we call insertOptioned on resume before the statusbar is fully created... We need a better way to handle this
-    if( list.isEmpty() ) {
-//         Amarok::ContextStatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
+    //TODO: we call insertOptioned on resume before the statusbar is fully created... We need a better way to handle this
+    if( list.isEmpty() )
+    {
+        // Amarok::ContextStatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
         return; // don't add empty items
     }
-
 
     if( options & Unique )
     {
@@ -641,9 +638,8 @@ void
 Model::insertOptioned( Meta::PlaylistPtr playlist, int options )
 {
     if( !playlist )
-    {
         return;
-    }
+    
     //TODO: Add this Meta::Playlist to the observed list
     insertOptioned( playlist->tracks(), options );
 }
@@ -651,7 +647,6 @@ Model::insertOptioned( Meta::PlaylistPtr playlist, int options )
 void
 Model::insertPlaylist( int row, Meta::PlaylistPtr playlist )
 {
-//     DEBUG_BLOCK
     m_undoStack->push( new AddTracksCmd( 0, row, playlist->tracks() ) );
 }
 
@@ -856,8 +851,6 @@ Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
 void
 Model::insertTracksCommand( int row, Meta::TrackList list )
 {
-//     DEBUG_BLOCK
-//     debug() << "inserting... row: " << row << ' ' << list.count() << " Tracks";
     if( !list.size() )
         return;
 
@@ -867,7 +860,6 @@ Model::insertTracksCommand( int row, Meta::TrackList list )
     {
         if( track )
         {
-
             track->subscribe( this );
             if( track->album() )
                 track->album()->subscribe( this );
@@ -899,12 +891,9 @@ Model::insertTracksCommand( int row, Meta::TrackList list )
     emit playlistCountChanged( rowCount() );
 }
 
-
 Meta::TrackList
 Model::removeTracksCommand( int position, int rows )
 {
-//     DEBUG_BLOCK
-
     beginRemoveRows( QModelIndex(), position, position + rows - 1 );
 //     TrackList::iterator start = m_tracks.begin() + position;
 //     TrackList::iterator end = start + rows;
@@ -912,8 +901,6 @@ Model::removeTracksCommand( int position, int rows )
     Meta::TrackList ret;
     for( int i = position; i < position + rows; i++ )
     {
-
-//         debug() << "delete index " << i;
         Item* item = m_items.takeAt( position ); //take at position, row times
         item->track()->unsubscribe( this );
         if( item->track()->album() )
@@ -921,7 +908,6 @@ Model::removeTracksCommand( int position, int rows )
         ret.push_back( item->track() );
         delete item;
     }
-
 
     //update m_activeRow
     bool activeRowChanged = true;
@@ -949,7 +935,6 @@ Model::removeTracksCommand( int position, int rows )
     The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
-
 
     emit playlistCountChanged( rowCount() );
 

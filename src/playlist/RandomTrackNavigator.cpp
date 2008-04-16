@@ -21,7 +21,7 @@
 #include "RandomTrackNavigator.h"
 
 #include "debug.h"
-#include "EngineController.h"
+#include "PlaylistItem.h"
 #include "PlaylistModel.h"
 
 #include <KRandom>
@@ -31,15 +31,35 @@ using namespace Playlist;
 Meta::TrackPtr
 RandomTrackNavigator::nextTrack()
 {
-    if( m_playlistModel->stopAfterMode() != StopAfterCurrent )
+    if( playlistChanged() )
     {
-        int nextRow = KRandom::random() % m_playlistModel->rowCount();
-        return m_playlistModel->itemList().at( nextRow )->track();
+        debug() << "Playlist has changed, regenerating unplayed tracks";
+        generateUnplayedTracks();
+        TrackNavigator::playlistChangeHandled();
     }
-    else
+
+    Meta::TrackPtr lastTrack = m_playlistModel->activeTrack();
+    m_playedTracks.append( lastTrack ); 
+    m_unplayedTracks.removeAll( lastTrack );
+
+    if( !m_unplayedTracks.isEmpty() && m_playlistModel->stopAfterMode() != StopAfterCurrent )
     {
-        // out of tracks to play or stopAfterMode == Current.
-        return Meta::TrackPtr();
+        int nextRow = KRandom::random() % m_unplayedTracks.count();
+        return m_unplayedTracks.at( nextRow );
+    }
+    
+    // out of tracks to play or stopAfterMode == Current.
+    return Meta::TrackPtr();
+}
+
+void
+RandomTrackNavigator::generateUnplayedTracks()
+{
+    m_unplayedTracks.clear();
+    foreach( Item *i, m_playlistModel->itemList() )
+    {
+        if( i && !m_playedTracks.contains( i->track() ) )
+            m_unplayedTracks.append( i->track() );
     }
 }
 

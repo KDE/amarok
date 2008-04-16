@@ -239,6 +239,8 @@ class TrackNavigator;
             void newResultReady( const QString &collectionId, const Meta::TrackList &tracks );
             //void playCurrentTrack();    ///connected to EngineController::orderCurrent
             void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list ); //! directory listing, see ListJob
+            void notifyAdvancersOnItemChange() { if( m_advancer ) m_advancer->setPlaylistChanged(); }
+
         private:
             /**
              * This performs the actual work involved with inserting tracks. It is to be *only* called by an UndoCommand.
