@@ -73,7 +73,6 @@ struct Playlist::GraphicsItem::ActiveItems
         delete foreground;
         delete topLeftText;
         delete topRightText;
-
     }
 
     QGraphicsPixmapItem* foreground;
@@ -614,11 +613,8 @@ Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 void
 Playlist::GraphicsItem::refresh()
 {
-
-    if (m_items && m_items->track )
+    if( m_items && m_items->track )
         resize( m_items->track,m_items->lastWidth );
-
-
 }
 
 void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
