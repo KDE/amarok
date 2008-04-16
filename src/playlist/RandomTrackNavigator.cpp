@@ -47,6 +47,10 @@ RandomTrackNavigator::nextTrack()
         int nextRow = KRandom::random() % m_unplayedTracks.count();
         return m_unplayedTracks.at( nextRow );
     }
+
+    m_playedTracks.clear();
+    TrackNavigator::setPlaylistChanged(); // will cause generateUnplayedTracks() to be called
+    debug() << "There are no more tracks to play, starting over";
     
     // out of tracks to play or stopAfterMode == Current.
     return Meta::TrackPtr();
