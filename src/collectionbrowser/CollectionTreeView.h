@@ -22,8 +22,10 @@ class QSortFilterProxyModel;
 class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
 
-class CollectionTreeView: public QTreeView {
-    Q_OBJECT
+class CollectionTreeView: public QTreeView
+{
+        Q_OBJECT
+
     public:
         CollectionTreeView( QWidget *parent = 0 );
         ~CollectionTreeView();
@@ -56,7 +58,6 @@ class CollectionTreeView: public QTreeView {
         void mouseDoubleClickEvent( QMouseEvent *event );
 
     protected slots:
-
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotExpand( const QModelIndex &index );
         void slotCollapsed( const QModelIndex &index );
@@ -76,7 +77,6 @@ class CollectionTreeView: public QTreeView {
         bool m_showYears;
 
     signals:
-
         void itemSelected( CollectionTreeItem * item );
 };
 

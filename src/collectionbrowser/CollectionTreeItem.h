@@ -16,13 +16,15 @@
 
 namespace CustomRoles
 {
-    enum CustomRolesId {
-    SortRole = Qt::UserRole + 1,
-    FilterRole = Qt::UserRole + 2
+    enum CustomRolesId
+    {
+        SortRole = Qt::UserRole + 1,
+        FilterRole = Qt::UserRole + 2
     };
 }
 
-class CollectionTreeItem {
+class CollectionTreeItem
+{
     public:
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent );
         CollectionTreeItem( Collection *parentCollection, CollectionTreeItem *parent );

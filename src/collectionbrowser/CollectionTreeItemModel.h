@@ -20,8 +20,9 @@
 class CollectionTreeItem;
 class Collection;
 
-class CollectionTreeItemModel: public CollectionTreeItemModelBase {
-Q_OBJECT
+class CollectionTreeItemModel: public CollectionTreeItemModelBase
+{
+        Q_OBJECT
 
     public:
         CollectionTreeItemModel( const QList<int> &levelType );
@@ -44,10 +45,7 @@ Q_OBJECT
         void update();
 
     private:
-
         void ensureChildrenLoaded( CollectionTreeItem *item ) const;
-
-
 };
 
 #endif
