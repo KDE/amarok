@@ -49,6 +49,7 @@ CurrentTrack::~CurrentTrack()
 void CurrentTrack::init()
 {
     setDrawStandardBackground( true );
+    createMenu();
 
     m_theme = new Context::Svg( "widgets/amarok-currenttrack", this );
     m_theme->setContentType( Context::Svg::SingleImage );
@@ -120,6 +121,21 @@ void CurrentTrack::init()
     resize( m_width, m_aspectRatio );
 
     dataEngine( "amarok-current" )->connectSource( "current", this );
+}
+
+void CurrentTrack::createMenu()
+{
+    QAction *showCoverAction  = new QAction( i18n( "Show Fullsize" ), this );
+    QAction *fetchCoverAction = new QAction( i18n( "Fetch Cover" ), this );
+    QAction *unsetCoverAction = new QAction( i18n( "Unset Cover" ), this );
+
+    connect( showCoverAction,  SIGNAL( triggered() ), this, SLOT( showItemImage() ) );
+    connect( fetchCoverAction, SIGNAL( triggered() ), this, SLOT( fetchItemImage() ) );
+    connect( unsetCoverAction, SIGNAL( triggered() ), this, SLOT( unsetItemImage() ) );
+
+    m_contextActions.append( showCoverAction );
+    m_contextActions.append( fetchCoverAction );
+    m_contextActions.append( unsetCoverAction );
 }
 
 void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )

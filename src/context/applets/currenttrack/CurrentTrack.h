@@ -21,6 +21,9 @@
 
 #include <KDialog>
 
+#include <QList>
+#include <QAction>
+
 class QGraphicsPixmapItem;
 class QLabel;
 class QHBoxLayout;
@@ -46,11 +49,13 @@ public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();
 
-
 private slots:
     void configAccepted();
 
 private:
+    void createMenu();
+    QList<QAction*> contextActions() { return m_contextActions; }
+    QList<QAction*> m_contextActions;
 
     QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;
