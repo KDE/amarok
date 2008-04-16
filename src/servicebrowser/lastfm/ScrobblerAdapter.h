@@ -27,9 +27,9 @@ public:
     ScrobblerAdapter( QObject *parent, const QString &username, const QString &password );
     virtual ~ScrobblerAdapter();
 
-    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
     virtual void engineTrackPositionChanged( long position , bool userSeek );
+    virtual void engineNewTrackPlaying();
 
     void skip();
     void love();

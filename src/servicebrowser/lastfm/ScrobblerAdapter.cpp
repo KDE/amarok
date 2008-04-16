@@ -46,18 +46,17 @@ ScrobblerAdapter::~ScrobblerAdapter()
 
 
 void
-ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData*/, bool trackChanged )
+ScrobblerAdapter::engineNewTrackPlaying()
 {
-    debug() << "engineNewMetaData: trackChanged=" << trackChanged;
-
+    DEBUG_BLOCK
     // if trackChanged, it's a local file
     // also need to handle radio case
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    bool isRadio = track && KUrl( track->url() ).protocol() == "lastfm";
-    kDebug() << "New Metadata: is Radio? " << isRadio;
-    if( track && ( trackChanged || isRadio ) )
+    if( track )
     {
-        DEBUG_LINE_INFO
+        const bool isRadio =  ( track->type() == "stream/lastfm" );
+        kDebug() << "ISRADIO: " << isRadio;
+
         checkScrobble();
 
         m_current.timeStampMe();
@@ -82,7 +81,6 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData
         }
     }
 }
-
 
 void
 ScrobblerAdapter::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
