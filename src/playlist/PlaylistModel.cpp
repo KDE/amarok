@@ -435,6 +435,9 @@ Model::playlistModeChanged()
 
     debug() << "Repeat enabled: " << Amarok::repeatEnabled();
     debug() << "Random enabled: " << Amarok::randomEnabled();
+    debug() << "Track mode:     " << ( Amarok::repeatTrack() || Amarok::randomTracks() );
+    debug() << "Album mode:     " << ( Amarok::repeatAlbum() || Amarok::randomAlbums() );
+    debug() << "Playlist mode:  " << Amarok::repeatPlaylist();
 
     if( Amarok::repeatEnabled() )
         options |= Playlist::RepeatPlayback;
