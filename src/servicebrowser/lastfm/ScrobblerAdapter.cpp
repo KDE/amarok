@@ -54,8 +54,10 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &/*newMetaData
     // also need to handle radio case
     Meta::TrackPtr track = The::engineController()->currentTrack();
     bool isRadio = track && KUrl( track->url() ).protocol() == "lastfm";
-    if (track && trackChanged || isRadio)
+    kDebug() << "New Metadata: is Radio? " << isRadio;
+    if( (track && trackChanged) || isRadio)
     {
+        DEBUG_LINE_INFO
         checkScrobble();
 
         m_current.timeStampMe();
