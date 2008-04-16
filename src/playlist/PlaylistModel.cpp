@@ -371,13 +371,12 @@ Model::next()
 {
     if( m_activeRow < 0 || m_activeRow >= m_items.size() )
         return;
-    Meta::TrackPtr track = m_items.at( m_activeRow )->track();
     EngineController *ec = The::engineController();
     Meta::TrackPtr playingTrack = ec->currentTrack();
     // Sanity check.
-    if( playingTrack && track && playingTrack == track )
+    if( playingTrack && activeTrack() && playingTrack == activeTrack() )
     {
-        track->finishedPlaying( (double)ec->trackPosition() / (double)ec->trackLength() * 100 ); //TODO: get correct value for parameter
+        activeTrack()->finishedPlaying( (double)ec->trackPosition() / (double)ec->trackLength() * 100 ); //TODO: get correct value for parameter
     }
     The::engineController()->play( m_advancer->userNextTrack() );
 }
