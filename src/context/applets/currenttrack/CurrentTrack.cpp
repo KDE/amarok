@@ -91,13 +91,13 @@ void CurrentTrack::init()
     m_numPlayedLabel->setTransformationMode( Qt::SmoothTransformation );
     m_playedLastLabel->setTransformationMode( Qt::SmoothTransformation );
 
-    m_title = new QGraphicsSimpleTextItem( this );
-    m_artist = new QGraphicsSimpleTextItem( this );
-    m_album = new QGraphicsSimpleTextItem( this );
-    m_score = new QGraphicsSimpleTextItem( this );
-    m_numPlayed = new QGraphicsSimpleTextItem( this );
-    m_playedLast = new QGraphicsSimpleTextItem( this );
-    m_albumCover = new QGraphicsPixmapItem( this );
+    m_title        = new QGraphicsSimpleTextItem( this );
+    m_artist       = new QGraphicsSimpleTextItem( this );
+    m_album        = new QGraphicsSimpleTextItem( this );
+    m_score        = new QGraphicsSimpleTextItem( this );
+    m_numPlayed    = new QGraphicsSimpleTextItem( this );
+    m_playedLast   = new QGraphicsSimpleTextItem( this );
+    m_albumCover   = new QGraphicsPixmapItem( this );
     m_sourceEmblem = new QGraphicsPixmapItem( this );
 
     m_title->setFont( textFont );
@@ -146,27 +146,14 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
     m_sourceEmblem->setPos( m_theme->elementRect( "albumart" ).topLeft() );
 
-
     QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
-//     m_title->setFont( shrinkTextSizeToFit( title, m_theme->elementRect( "track" ) ) );
     m_title->setText( truncateTextToFit( title, m_title->font(), m_theme->elementRect( "track" ) ) );
 
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-//     m_artist->setFont( shrinkTextSizeToFit( artist, m_theme->elementRect( "artist" ) ) );
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), m_theme->elementRect( "artist" ) ) );
 
     QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-//     m_album->setFont( shrinkTextSizeToFit( album, m_theme->elementRect( "album" ) ) );
     m_album->setText( truncateTextToFit( album, m_album->font(), m_theme->elementRect( "album" ) ) );
-
-//     m_score->setFont( shrinkTextSizeToFit( m_score->text(), m_theme->elementRect( "score" ) ) );
-//     m_numPlayed->setFont( shrinkTextSizeToFit( m_numPlayed->text(), m_theme->elementRect( "numplayed" ) ) );
-//     m_playedLast->setFont( shrinkTextSizeToFit( m_playedLast->text(), m_theme->elementRect( "playedlast" ) ) );
-
-//     m_titleLabel->setFont( m_title->font() );
-//     m_artistLabel->setFont( m_artist->font() );
-//     m_albumLabel->setFont( m_album->font() );
-
 
     //calc scale factor..
     m_scoreLabel->resetTransform();
@@ -179,18 +166,13 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     float scaleFactor = desiredHeight / currentHeight;
     //float scaleFactor = currentHeight / desiredHeight;
 
-//     debug() << "scale factor: " << scaleFactor;
-
     m_scoreLabel->scale( scaleFactor, scaleFactor );
     m_numPlayedLabel->scale( scaleFactor, scaleFactor );
     m_playedLastLabel->scale( scaleFactor, scaleFactor );
 
     resizeCover( m_bigCover );
 
-//     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << m_theme->elementRect( "albumart" ).size().width();
-
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
-
 }
 
 void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -200,7 +182,6 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     if( data.size() == 0 ) return;
 
     m_currentInfo = data[ "current" ].toMap();
-//     kDebug() << "got data from engine: " << m_currentInfo;
     m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), m_theme->elementRect( "track" ) ) );
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), m_theme->elementRect( "artist" ) ) );
@@ -238,20 +219,18 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 {
     Q_UNUSED( option );
 
-//     debug() << "painting currenttrack applet in:" << contentsRect;
-
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
-    if ( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) ) {
-//         debug() << "Too little room to paint, hiding all children ( making myself invisible but still painted )!";
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() ) {
+    if( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
+    {
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
             childItem->hide();
-        }
         return;
-    } else {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () ) {
+    }
+    else
+    {
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
             childItem->show();
-        }
     }
 
     p->save();
@@ -278,22 +257,19 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
 void CurrentTrack::showConfigurationInterface()
 {
-
 }
 
 void CurrentTrack::configAccepted() // SLOT
 {
-
 }
 
 
-bool CurrentTrack::resizeCover(QPixmap cover){
-
+bool CurrentTrack::resizeCover( QPixmap cover )
+{
     if( !cover.isNull() )
     {
         QSize rectSize = m_theme->elementRect( "albumart" ).size();
         QPointF rectPos = m_theme->elementRect( "albumart" ).topLeft();
-//         debug() << "getting album rect:" <<  rectSize;
         int size = qMin( rectSize.width(), rectSize.height() );
         qreal pixmapRatio = (qreal)cover.width()/size;
 
@@ -301,27 +277,24 @@ bool CurrentTrack::resizeCover(QPixmap cover){
         qreal moveByY = 0.0;
 
         //center the cover : if the cover is not squared, we get the missing pixels and center
-        if( cover.height()/pixmapRatio > rectSize.height() ) {
+        if( cover.height()/pixmapRatio > rectSize.height() )
+        {
             cover = cover.scaledToHeight( size, Qt::SmoothTransformation );
-            moveByX = qAbs( cover.rect().width() - cover.rect().height() ) /2.0;
-        } else {
-            cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
-            moveByY = qAbs( cover.rect().height() - cover.rect().width() ) /2.0;
+            moveByX = qAbs( cover.rect().width() - cover.rect().height() ) / 2.0;
         }
-
-
+        else
+        {
+            cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
+            moveByY = qAbs( cover.rect().height() - cover.rect().width() ) / 2.0;
+        }
         m_albumCover->setPos( rectPos.x()+ moveByX, rectPos.y() + moveByY );
-
         m_sourceEmblem->setPos( rectPos.x()+ moveByX, rectPos.y() + moveByY );
 
         m_albumCover->setPixmap( cover );
         m_sourceEmblem->setPixmap( m_sourceEmblemPixmap );
         return true;
     }
-    else
-    {
-        return false;
-    }
+    return false;
 }
 
 #include "CurrentTrack.moc"
