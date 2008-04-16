@@ -318,11 +318,12 @@ set(libplaylist_SRCS
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistWidget.cpp
-    playlist/RepeatTrackNavigator.cpp
     playlist/PlaylistViewCommon.cpp
-    playlist/StandardTrackNavigator.cpp
+    playlist/RandomTrackNavigator.cpp
     playlist/RepeatPlaylistNavigator.cpp
+    playlist/RepeatTrackNavigator.cpp
     playlist/TrackNavigator.cpp
+    playlist/StandardTrackNavigator.cpp
     playlist/UndoCommands.cpp
     playlist/PlaylistDropVis.cpp
     playlist/PlaylistGraphicsItem.cpp

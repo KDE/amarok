@@ -29,9 +29,10 @@
 #include "PlaylistItem.h"
 #include "PlaylistGraphicsView.h"
 #include "PlaylistFileSupport.h"
+#include "RandomTrackNavigator.h"
+#include "RepeatPlaylistNavigator.h"
 #include "RepeatTrackNavigator.h"
 #include "StandardTrackNavigator.h"
-#include "RepeatPlaylistNavigator.h"
 #include "ContextStatusBar.h"
 #include "TheInstances.h"
 #include "UndoCommands.h"
@@ -338,7 +339,6 @@ Model::play( const QModelIndex& index )
 void
 Model::play( int row )
 {
-
     setActiveRow( row );
     The::engineController()->play( m_items[ m_activeRow ]->track() );
 }
@@ -440,17 +440,19 @@ void
 Model::playModeChanged( int row )
 {
     delete m_advancer;
-    switch (row)
+    switch( row )
     {
         case Playlist::Standard:
-            m_advancer = new StandardTrackNavigator(this);
+            m_advancer = new StandardTrackNavigator( this );
             break;
         case Playlist::RepeatTrack:
-            m_advancer = new RepeatTrackNavigator(this);
+            m_advancer = new RepeatTrackNavigator( this );
             break;
         case Playlist::RepeatPlaylist:
-            m_advancer = new RepeatPlaylistNavigator(this);
+            m_advancer = new RepeatPlaylistNavigator( this );
             break;
+        case Playlist::RandomTrack:
+            m_advancer = new RandomTrackNavigator( this );
     }
 }
 

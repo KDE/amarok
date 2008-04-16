@@ -60,7 +60,8 @@ class TrackNavigator;
         Standard = 1,
         RepeatTrack,
         RepeatAlbum,
-        RepeatPlaylist
+        RepeatPlaylist,
+        RandomTrack
     };
     enum Column
     {
