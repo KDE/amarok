@@ -1046,11 +1046,8 @@ void MainWindow::createActions()
     new Amarok::MenuAction( ac );
     new Amarok::StopAction( ac );
     new Amarok::PlayPauseAction( ac );
-    PERF_LOG( "Before Repeat Action" )
     new Amarok::RepeatAction( ac );
-    PERF_LOG( "Before RandomAction" )
     new Amarok::RandomAction( ac );
-    PERF_LOG( "BeforeFavorAction" )
     new Amarok::FavorAction( ac );
 
     PERF_LOG( "MainWindow::createActions 9" )
@@ -1131,8 +1128,8 @@ void MainWindow::createMenus()
     playlistMenu->addAction( actionCollection()->action("playlist_shuffle") );
 
     QAction *repeat = actionCollection()->action("repeat");
-    connect( repeat, SIGNAL(triggered( int ) ), The::playlistModel(), SLOT(playlistRepeatMode(int) ) );
     playlistMenu->addAction( repeat );
+
     KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
     playlistMenu->addAction( random );
     random->menu()->addSeparator();

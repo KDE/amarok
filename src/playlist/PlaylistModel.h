@@ -220,6 +220,7 @@ class TrackNavigator;
         public slots:
             void play( const QModelIndex& index );
             void playlistRepeatMode( int item );
+            void playlistRandomMode( int item );
             void next();
             void back();
             void clear(); ///clear the playlist of all items

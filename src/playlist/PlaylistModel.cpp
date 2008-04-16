@@ -347,12 +347,23 @@ void
 Model::playlistRepeatMode( int item )
 {
     // FIXME? couldn't this method go away, and just call playModeChanged() instead of this?
-    if( item == 0 )
+    if( item == 0 ) //OFF
         playModeChanged( Playlist::Standard );
-    else if (item == 3)
+    else if( item == 3 ) //PLAYLIST
         playModeChanged( Playlist::RepeatPlaylist);
     else //for now just turn on repeat if anything but "off" is clicked
         playModeChanged( Playlist::RepeatTrack );
+}
+
+void
+Model::playlistRandomMode( int item )
+{
+    if( item == 0 ) //OFF
+        playModeChanged( Playlist::Standard );
+    else if( item == 1 ) //TRACK
+        playModeChanged( Playlist::RandomTrack );
+    else
+        debug() << "Sorry, this random mode has not been implemented";
 }
 
 void
