@@ -99,7 +99,6 @@ Request::onHeaderReceivedPrivate( const QHttpResponseHeader& header )
     m_timeout_timer.stop();
 
     m_responseHeaderCode = header.statusCode();
-    qDebug() << objectName() << "response:" << m_responseHeaderCode;
 
     // Let subclass have a stab
     bool handled = headerReceived( header );
@@ -179,7 +178,6 @@ Request::onFailurePrivate( int error_code, const QString &error_string )
 void
 Request::onSuccessPrivate( QByteArray data )
 {
-    qDebug() << objectName() << " request succeeded";
 //     LOG( 3, objectName() << " request returned:\n" <<
 //         "  " << data.data() << "\n" );
 
