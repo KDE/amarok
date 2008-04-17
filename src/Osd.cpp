@@ -281,6 +281,8 @@ OSDWidget::determineMetrics( const uint M )
 void
 OSDWidget::paintEvent( QPaintEvent* )
 {
+    DEBUG_BLOCK
+
     /// render with margin/spacing @param M and @param size
 
     uint M = m_m;
