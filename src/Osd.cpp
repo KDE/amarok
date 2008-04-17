@@ -308,8 +308,8 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     p.fillRect( rect, Qt::transparent ); //fill with transparent color
 
-    p.setBrush( palette().color( backgroundRole() ) );
-    p.setPen( palette().color( backgroundRole() ).dark( 150 ) );
+    p.setBrush( palette().color( QPalette::Active, QPalette::Window ) );
+    p.setPen( palette().color( QPalette::Active, QPalette::Window ).dark( 150 ) );
     //p.drawRoundedRect( rect, 20.0, 15.0 );
     p.drawRect( rect );
 
@@ -413,7 +413,7 @@ OSDWidget::paintEvent( QPaintEvent* )
         p.drawImage( rect.topLeft() - QPoint(5,5), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
 
-    p.setPen( palette().color( foregroundRole() ) );
+    p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
     p.setFont( font() );
     p.drawText( rect, align, m_text );
 }
@@ -585,10 +585,12 @@ Amarok::OSD::OSD(): OSDWidget( 0 )
 void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
+    DEBUG_BLOCK
+
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setOffset( AmarokConfig::osdYOffset() );
     QString text = "";
-    if( track->playableUrl().isEmpty() )
+    if( !track || track->playableUrl().isEmpty() )
         text = i18n( "No track playing" );
 
     else
@@ -631,8 +633,8 @@ Amarok::OSD::applySettings()
 
     if( AmarokConfig::osdUseCustomColors() )
     {
-        debug() << "setting text color: " << AmarokConfig::osdTextColor();
         setTextColor( AmarokConfig::osdTextColor() );
+        setBackgroundColor( AmarokConfig::osdBackgroundColor() );
     }
     else unsetColors();
 }

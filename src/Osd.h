@@ -54,14 +54,14 @@ class OSDWidget : public QWidget
         void setDuration( int ms ) { m_duration = ms; }
         void setTextColor( const QColor &color )
         {
-            QPalette palette;
-            palette.setColor(foregroundRole(), color);
+            QPalette palette = this->palette();
+            palette.setColor( QPalette::Active, QPalette::WindowText, color );
             setPalette(palette);
         }
         void setBackgroundColor( const QColor &color )
         {
-            QPalette palette;
-            palette.setColor(backgroundRole(), color);
+            QPalette palette = this->palette();
+            palette.setColor( QPalette::Active, QPalette::Window, color );
             setPalette(palette);
         }
         void setOffset( int y ) { m_y = y; }
