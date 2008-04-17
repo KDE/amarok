@@ -336,6 +336,7 @@ Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 void Amarok::TrayIcon::setupMenu()
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( !track ) return;
 
     foreach( QAction * action, m_extraActions ) {
         contextMenu()->removeAction( action );
@@ -364,6 +365,6 @@ void Amarok::TrayIcon::setupMenu()
             contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
 
         }
-
     }
 }
+
