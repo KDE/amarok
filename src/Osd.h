@@ -52,9 +52,16 @@ class OSDWidget : public QWidget
          * To force an update call show();
          */
         void setDuration( int ms ) { m_duration = ms; }
-        void setTextColor( const QColor &color ) {
+        void setTextColor( const QColor &color )
+        {
             QPalette palette;
             palette.setColor(foregroundRole(), color);
+            setPalette(palette);
+        }
+        void setBackgroundColor( const QColor &color )
+        {
+            QPalette palette;
+            palette.setColor(backgroundRole(), color);
             setPalette(palette);
         }
         void setOffset( int y ) { m_y = y; }
@@ -63,11 +70,8 @@ class OSDWidget : public QWidget
         void setScreen( int screen );
         void setText( const QString &text ) { m_text = text; }
         void setDrawShadow( const bool b ) { m_drawShadow = b; }
+        void setTranslucency( const bool b ) { if( b ) { setWindowOpacity( 0.7); } else setWindowOpacity( 1.0 ); }
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
-        //FIXME: Port 2.0
-//         void setMoodbar( void ) { m_moodbarBundle = MetaBundle(); }
-//         void setMoodbar( const MetaBundle &bundle )
-//           { m_moodbarBundle = bundle;  m_moodbarBundle.moodbar().load(); }
 
     protected:
         /** determine new size and position */
@@ -96,8 +100,6 @@ class OSDWidget : public QWidget
         bool        m_volume;
         QString     m_text;
         QImage      m_cover;
-        // need a whole MetaBundle to draw the moodbar on the fly
-//         MetaBundle  m_moodbarBundle;
         QPixmap     m_scaledCover;
 };
 
@@ -116,14 +118,16 @@ public:
 
 public slots:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
+    void setBackgroundColor( const QColor &color ) { OSDWidget::setBackgroundColor( color ); doUpdate(); }
     void setDrawShadow( bool b ) { OSDWidget::setDrawShadow( b ); doUpdate(); }
     void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
     void setTransparent( bool transparent ) { if( transparent ) { setWindowOpacity( 0.7); } else setWindowOpacity( 1.0 ); doUpdate(); }
-    void setUseCustomColors( const bool use, const QColor &fg, const QColor &/*bg*/ )
+    void setUseCustomColors( const bool use, const QColor &fg, const QColor &bg )
     {
         if( use ) {
             OSDWidget::setTextColor( fg );
+            OSDWidget::setBackgroundColor( bg );
         } else
             unsetColors();
         doUpdate();

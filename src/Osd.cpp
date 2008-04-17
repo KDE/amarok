@@ -308,9 +308,10 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     p.fillRect( rect, Qt::transparent ); //fill with transparent color
 
-    p.setBrush( palette().color( QPalette::Inactive, QPalette::Dark ) );
-    p.setPen( palette().color( QPalette::Normal, QPalette::Dark ).dark( 150 ) );
-    p.drawRoundedRect( rect, 20.0, 15.0 );
+    p.setBrush( palette().color( backgroundRole() ) );
+    p.setPen( palette().color( backgroundRole() ).dark( 150 ) );
+    //p.drawRoundedRect( rect, 20.0, 15.0 );
+    p.drawRect( rect );
 
     rect.adjust( M, M, -M, -M );
 
@@ -412,7 +413,7 @@ OSDWidget::paintEvent( QPaintEvent* )
         p.drawImage( rect.topLeft() - QPoint(5,5), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
 
-    p.setPen( palette().color( QPalette::Normal, QPalette::BrightText ) );
+    p.setPen( palette().color( foregroundRole() ) );
     p.setFont( font() );
     p.drawText( rect, align, m_text );
 }
@@ -630,6 +631,7 @@ Amarok::OSD::applySettings()
 
     if( AmarokConfig::osdUseCustomColors() )
     {
+        debug() << "setting text color: " << AmarokConfig::osdTextColor();
         setTextColor( AmarokConfig::osdTextColor() );
     }
     else unsetColors();
