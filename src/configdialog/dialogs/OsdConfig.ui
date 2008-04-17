@@ -61,7 +61,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="kcfg_OsdUseTransparency" >
+         <widget class="QCheckBox" name="kcfg_OsdUseTranslucency" >
           <property name="text" >
            <string>&amp;Translucent</string>
           </property>

@@ -63,7 +63,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 {
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
-    if( AmarokConfig::osdUseTransparency() )
+    if( AmarokConfig::osdUseTranslucency() )
         setWindowOpacity( 0.7 );
     unsetColors();
 

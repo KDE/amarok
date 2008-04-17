@@ -350,9 +350,9 @@
         <whatsthis>Draws a shadow around the OSD-text.</whatsthis>
         <default>true</default>
     </entry>
-    <entry key="Osd Use Transparency" type="Bool">
-        <label>Transparency Toggle</label>
-        <whatsthis>Make the background of the OSD transparent.</whatsthis>
+    <entry key="Osd Use Translucency" type="Bool">
+        <label>Translucency Toggle</label>
+        <whatsthis>Make the background of the OSD translucent.</whatsthis>
         <default>false</default>
     </entry>
     <entry key="Osd Use Custom Colors" type="Bool">

@@ -57,8 +57,8 @@ OsdConfig::OsdConfig( QWidget* parent )
              m_osdPreview,           SLOT( setScreen(int) ) );
     connect( kcfg_OsdEnabled,         SIGNAL( toggled(bool) ),
              m_osdPreview,           SLOT( setShown(bool) ) );
-    connect( kcfg_OsdUseTransparency, SIGNAL( toggled(bool) ),
-             m_osdPreview,           SLOT( setTransparent(bool) ));
+    connect( kcfg_OsdUseTranslucency, SIGNAL( toggled(bool) ),
+             m_osdPreview,           SLOT( setTranslucent(bool) ));
 
     Amarok::QStringx text = i18n(
             "<h3>Tags Displayed in OSD</h3>"
@@ -113,7 +113,7 @@ OsdConfig::updateSettings()
 {
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
     AmarokConfig::setOsdYOffset( m_osdPreview->y() );
-    AmarokConfig::setOsdUseTransparency( kcfg_OsdUseTransparency->isChecked() );
+    AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
 }
 
 
