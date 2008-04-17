@@ -614,10 +614,10 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
         text = i18n("No information available for this track");
 
     QImage image;
-    if( track->album() )
+    if( track && track->album() )
         image = track->album()->image().toImage();
 
-    OSDWidget::show( text , image );
+    OSDWidget::show( text, image );
 }
 
 void
