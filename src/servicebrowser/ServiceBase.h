@@ -22,8 +22,6 @@
 
 
 #include "Amarok.h"
-//#include "servicemodelitembase.h"
-//#include "servicemodelbase.h"
 
 #include "InfoParserBase.h"
 #include "ServiceMetaBase.h"
@@ -36,13 +34,11 @@
 #include "plugin/plugin.h"
 
 #include <khtml_part.h>
-//#include <klistwidget.h>
 #include <kvbox.h>
 
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
-//#include <QTreeView>
 
 #include <KPluginInfo>
 

@@ -26,7 +26,7 @@
 #include "App.h"
 #include "debug.h"
 #include "EngineController.h"
-#include "sliderwidget.h"
+#include "SliderWidget.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"
 
@@ -459,4 +459,4 @@ void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
         m_sliderHeight = height();
 }
 
-#include "sliderwidget.moc"
+#include "SliderWidget.moc"

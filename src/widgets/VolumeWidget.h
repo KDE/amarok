@@ -11,26 +11,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef ANALYZERWIDGET_H
-#define ANALYZERWIDGET_H
 
-#include <QWidget>
+#ifndef VOLUMEWIDGET_H
+#define VOLUMEWIDGET_H
+
+#include "SliderWidget.h"
+#include "EngineObserver.h"
+
+#include <QPointer>
+#include <KHBox>
 
 /*
-* A Widget to display our analyzers in.
+* A custom widget that serves as our volume slider within Amarok.
 */
-    class AnalyzerWidget : public QWidget
+class VolumeWidget : public KHBox, public EngineObserver
 {
     Q_OBJECT
-    public:
-        AnalyzerWidget( QWidget *parent );
-    protected:
-        virtual void resizeEvent( QResizeEvent* );
-        virtual void mousePressEvent( QMouseEvent* );
-        virtual void contextMenuEvent( QContextMenuEvent* );
-    private:
-        void changeAnalyzer();
-        QWidget *m_child;
+public:
+    VolumeWidget( QWidget * );
+
+private:
+    void engineVolumeChanged( int value );
+    QPointer<Amarok::Slider> m_slider;
+
 };
 
 #endif

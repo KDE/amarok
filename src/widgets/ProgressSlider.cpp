@@ -11,8 +11,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "progressslider.h"
-#include "sliderwidget.h"
+#include "ProgressSlider.h"
+#include "SliderWidget.h"
 
 #include "amarokconfig.h"
 #include "debug.h"
@@ -215,4 +215,4 @@ ProgressWidget::engineNewTrackPlaying()
     engineTrackLengthChanged( The::engineController()->trackLength() );
 }
 
-#include "progressslider.moc"
+#include "ProgressSlider.moc"

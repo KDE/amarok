@@ -14,7 +14,7 @@
 
 #include "EngineObserver.h"
 #include "prettypopupmenu.h"
-#include "widgets/sliderwidget.h"
+#include "widgets/SliderWidget.h"
 
 #include <KAction>
 #include <KToggleAction>

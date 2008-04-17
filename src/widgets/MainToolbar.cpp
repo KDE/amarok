@@ -21,7 +21,8 @@
 
 #include "ActionClasses.h" 
 #include "Amarok.h"
-#include "analyzerwidget.h"
+#include "AnalyzerWidget.h"
+#include "ProgressSlider.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"
 

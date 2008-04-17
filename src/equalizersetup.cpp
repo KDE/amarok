@@ -22,7 +22,7 @@
 #include "EngineController.h"
 #include "equalizergraph.h"
 #include "equalizerpresetmanager.h"
-#include "widgets/sliderwidget.h"
+#include "widgets/SliderWidget.h"
 
 #include <KApplication>
 #include <KComboBox>

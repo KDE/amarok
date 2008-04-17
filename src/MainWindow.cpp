@@ -40,7 +40,7 @@
 #include "playlist/PlaylistWidget.h"
 #include "playlist/PlaylistGraphicsView.h"
 #include "scriptmanager.h"
-#include "searchwidget.h"
+#include "SearchWidget.h"
 #include "servicebrowser/ServicePluginManager.h"
 #include "servicebrowser/scriptableservice/ScriptableService.h"
 #include "servicebrowser/ServiceBrowser.h"

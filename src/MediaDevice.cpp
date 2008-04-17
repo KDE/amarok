@@ -595,7 +595,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                     {
                         // don't submit tracks shorter than 30 sec or w/o artist/title
                         debug() << "scrobbling " << bundle->artist() << " - " << bundle->title();
-                        SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), false /* fake time  );
+                        SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), false * fake time  );
                         Scrobbler::instance()->m_submitter->submitItem( sit );
                     }
 

@@ -12,12 +12,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "volumewidget.h"
+#include "VolumeWidget.h"
 
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "EngineController.h"
-#include "sliderwidget.h"
+#include "SliderWidget.h"
 #include "TheInstances.h"
 
 #include <klocale.h>
@@ -48,4 +48,4 @@ VolumeWidget::engineVolumeChanged( int value )
     if( m_slider ) m_slider->setValue( value );
 }
 
-#include "volumewidget.moc"
+#include "VolumeWidget.moc"

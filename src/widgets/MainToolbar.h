@@ -22,7 +22,7 @@
 
 #include "EngineObserver.h" //baseclass
 #include "toolbar.h"
-#include "volumewidget.h"
+#include "VolumeWidget.h"
 #include "SvgHandler.h"
 
 #include <KHBox>

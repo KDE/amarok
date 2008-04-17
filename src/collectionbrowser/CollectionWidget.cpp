@@ -21,7 +21,7 @@
 #include "CollectionWidget.h"
 #include "CollectionTreeView.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
-#include "searchwidget.h"
+#include "SearchWidget.h"
 
 #include <KConfigGroup>
 #include <KLineEdit>

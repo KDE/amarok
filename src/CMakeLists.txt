@@ -432,12 +432,12 @@ set(amaroklib_LIB_SRCS
     trackpickerdialog.cpp
     TrackTooltip.cpp
     transferdialog.cpp
-    widgets/analyzerwidget.cpp
-    widgets/progressslider.cpp
-    widgets/searchwidget.cpp
+    widgets/AnalyzerWidget.cpp
+    widgets/ProgressSlider.cpp
+    widgets/SearchWidget.cpp
     widgets/SidebarWidget.cpp
-    widgets/sliderwidget.cpp
-    widgets/volumewidget.cpp
+    widgets/SliderWidget.cpp
+    widgets/VolumeWidget.cpp
     widgets/MainToolbar.cpp
     widgets/SvgHandler.cpp
     SvgTinter.cpp

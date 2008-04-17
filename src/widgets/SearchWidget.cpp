@@ -10,7 +10,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "searchwidget.h"
+#include "SearchWidget.h"
 #include "editfilterdialog.h"
 
 #include <QVBoxLayout>
@@ -99,4 +99,4 @@ void SearchWidget::slotShowFilterEditor()
     //delete fd;
 }
 
-#include "searchwidget.moc"
+#include "SearchWidget.moc"

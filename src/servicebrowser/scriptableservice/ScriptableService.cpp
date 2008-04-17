@@ -23,7 +23,7 @@
 #include "ScriptableServiceInfoParser.h"
 #include "Amarok.h"
 #include "debug.h"
-#include "searchwidget.h"
+#include "SearchWidget.h"
 
 using namespace Meta;
 

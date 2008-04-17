@@ -25,7 +25,7 @@
 
 #include "collection/Collection.h"
 #include "TheInstances.h"
-#include "searchwidget.h"
+#include "SearchWidget.h"
 #include "ServiceInfoProxy.h"
 
 #include <khbox.h>

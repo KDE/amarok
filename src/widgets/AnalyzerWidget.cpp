@@ -15,7 +15,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
-#include "analyzerwidget.h"
+#include "AnalyzerWidget.h"
 #include "analyzerbase.h"
 #include "socketserver.h"
 
@@ -25,7 +25,7 @@
 
 AnalyzerWidget::AnalyzerWidget( QWidget *parent )
     : QWidget( parent )
-        , m_child( 0 )
+    , m_child( 0 )
 {
     setObjectName(  "AnalyzerWidget" );
     setToolTip( i18n( "Click for more analyzers" ) );
@@ -71,4 +71,4 @@ AnalyzerWidget::contextMenuEvent( QContextMenuEvent *e)
 #endif
 }
 
-#include "analyzerwidget.moc"
+#include "AnalyzerWidget.moc"

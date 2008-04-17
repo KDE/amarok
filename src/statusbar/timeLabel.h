@@ -22,7 +22,7 @@
 
 #include "ActionClasses.h"
 #include "EngineController.h"
-#include "progressslider.h"
+#include "ProgressSlider.h"
 #include "TheInstances.h"
 
 #include <QLabel>

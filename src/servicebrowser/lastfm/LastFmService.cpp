@@ -20,7 +20,7 @@
 #include "CollectionManager.h"
 #include "meta/LastFmCapability.h"
 #include "playlist/PlaylistModel.h"
-#include "widgets/searchwidget.h"
+#include "widgets/SearchWidget.h"
 #include "TheInstances.h"
 
 #include <QComboBox>

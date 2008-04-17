@@ -38,7 +38,7 @@
 #include "mountpointmanager.h"
 #include "Osd.h"
 #include "playlist/PlaylistModel.h"
-#include "progressslider.h"
+#include "ProgressSlider.h"
 #include "scriptmanager.h"
 #include "ContextStatusBar.h"
 #include "TheInstances.h"
