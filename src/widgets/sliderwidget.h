@@ -116,8 +116,6 @@ namespace Amarok
         public:
             TimeSlider( QWidget *parent );
 
-//             void setMaximum( int maximum );
-
             void setSliderValue( int value );
             QTimer *timer() { return m_animTimer; }
             short timerInterval() const { return TICK_INTERVAL / FRAME_RATE; }

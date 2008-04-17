@@ -28,7 +28,6 @@
 #include "debug.h"
 #include "EngineController.h"
 #include "meta/CurrentTrackActionsCapability.h"
-#include "progressslider.h"
 
 #include <KAction>  
 #include <KToolBar>

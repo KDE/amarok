@@ -59,7 +59,8 @@ Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
 void
 Amarok::Slider::wheelEvent( QWheelEvent *e )
 {
-    if( orientation() == Qt::Vertical ) {
+    if( orientation() == Qt::Vertical )
+    {
         // Will be handled by the parent widget
         e->ignore();
         return;
@@ -202,7 +203,6 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 void
 Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
 {
-
     int x = e->pos().x();
 
     //is event witin slider bounds?
@@ -233,11 +233,8 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     const int padding = 7;
     const int offset = int( double( ( width() - 2 * padding ) * value() ) / maximum() );
 
-
     //try something completely different here...
-
     double knobX = ( m_sliderWidth - m_sliderHeight ) * ( ( double ) value() / 100.0 );
-
 
     double fillLength = knobX + ( m_sliderHeight / 2 );
     double fillHeight = m_sliderHeight * ( ( double ) knobX / m_sliderWidth );
@@ -256,7 +253,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
     const int side = 5;
 
-    if (!QPixmapCache::find(key, background))
+    if( !QPixmapCache::find(key, background) )
     {
         debug() << QString("volume background %1 not in cache...").arg( key );
         background.fill( Qt::transparent );
@@ -289,7 +286,8 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
     QPixmap icon( m_iconWidth, m_iconHeight );
 
-    if (!QPixmapCache::find(key, icon)) {
+    if( !QPixmapCache::find(key, icon) )
+    {
         debug() << QString("volume icon %1 not in cache...").arg( key );
         icon.fill( Qt::transparent );
         QPainter pt( &icon );
@@ -359,11 +357,8 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
 
     QString file = KStandardDirs::locate( "data","amarok/images/sliders.svg" );
     m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( file ).toAscii() );
-    if ( ! m_svgRenderer->isValid() )
-        debug() << "svg is kaputski";
 
     connect( m_animTimer, SIGNAL( timeout() ), SLOT( slotUpdateAnim() ) );
-
 }
 
 void
@@ -375,9 +370,6 @@ Amarok::TimeSlider::setSliderValue( int value )
         m_knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value, width() );
         double oldKnobX = QStyle::sliderPositionFromValue( minimum(), maximum(), m_oldValue, width() );
         m_positionChange = ( m_knobX - oldKnobX ) / FRAME_RATE;
-//         debug() << " M_OLDKNOBX:" << oldKnobX << "MKNOBX: " << m_knobX << "DIFFERENCES: " << m_knobX - oldKnobX;
-//         debug() << "M_POSITIONCHANGE: " << m_positionChange;
-//         debug() << m_knobX;
         m_animTimer->start( TICK_INTERVAL / FRAME_RATE );
     }
     else
@@ -392,14 +384,10 @@ Amarok::TimeSlider::setSliderValue( int value )
 void
 Amarok::TimeSlider::slotUpdateAnim()
 {
-//     DEBUG_BLOCK
     if( m_frame < FRAME_RATE - 1 )
     {
         m_frame++;
-//         debug() << "FRAME NUMBER: " << m_frame;
-//         debug() << "MOVING KNOBX BY: " << m_positionChange;
         m_knobX += m_positionChange;
-//         debug() << m_knobX;
         repaint();
     }
     else
@@ -409,9 +397,6 @@ Amarok::TimeSlider::slotUpdateAnim()
 void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
-    //DEBUG_BLOCK
-
-    //debug() << "width: " << width() << ", height: " << height();
     QPainter p( this );
     const short side = 10; // Size of the rounded parts.
 
