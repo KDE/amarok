@@ -1,16 +1,32 @@
 #!/usr/bin/env ruby
+###########################################################################
+#                                                                         #
+#   Simple script for testing the scriptable service browser              #
+#   by creating a simple static browser with some cool radio              #
+#   streams. Urls shamelessly stolen Cool-Streams.xml                     #
+#                                                                         #
+#   Copyright                                                             #
+#   (c) 2007, 2008 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>        #
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+#   This program is distributed in the hope that it will be useful,       #
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+#   GNU General Public License for more details.                          #
+#                                                                         #
+#   You should have received a copy of the GNU General Public License     #
+#   along with this program; if not, write to the                         #
+#   Free Software Foundation, Inc.,                                       #
+#   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         #
+###########################################################################
 
-# Simple script for testing the scriptable service browser 
-# by creating a simple static browser with some cool radio
-# streams. Urls shamelessly stolen Cool-Streams.xml
-#
-# (c) 2007, 2008 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>
-#
-# License: GNU General Public License V2
 
-
-stations = [ [ 'Bassdrive [Drum \'n Bass]',                   'http://www.bassdrive.com/v2/streams/BassDrive.m3u' ],
-             [ 'Bluemars [Ambient/Space-Music]',              'http://207.200.96.225:8020/listen.pls' ],
+stations = [ ['Bassdrive [Drum \'n Bass]',                    'http://www.bassdrive.com/v2/streams/BassDrive.m3u' ],
+             ['Bluemars [Ambient/Space-Music]',               'http://207.200.96.225:8020/listen.pls' ],
              ['Digitally Imported - Chillout [Chill-Out]',    'http://di.fm/mp3/chillout.pls' ],
              ['Digitally Imported - Classic Techno [Techno]', 'http://di.fm/mp3/classictechno.pls' ],
              ['Digitally Imported - Trance [Trance]',         'http://di.fm/mp3/trance.pls' ],
@@ -62,14 +78,13 @@ loop do
                 puts " Populating main level..."
 
                 #add top level item 
-                parentId = `qdbus org.kde.amarok /ScriptableServiceManager insertItem "Cool Streams" 1 -1 "The Amarok crews top picks" "Just a parent item to show how nesting works" "get_stations" ""`.chomp
+                parentId = `qdbus org.kde.amarok /ScriptableServiceManager insertItem "Cool Streams" 1 -1 "The Amarok Crew's Top Streams" "Just a parent item to show how nesting works" "get_stations" ""`.chomp
 
                 #tell service that all items has been added ( no parent since these are top level items )
                 `qdbus org.kde.amarok /ScriptableServiceManager donePopulating "Cool Streams" "-1"`
                 puts "... done"
                 
             else if args[1].strip() == "0" and args[3].strip() == "get_stations"
-            
                 puts " Populating station level..."
 
                 #leaf nodes
@@ -81,9 +96,7 @@ loop do
 
                 #add the station streams as leaf nodes
                 stations.each() do |station|
-
                     html_info = "A cool stream called" + station[0]
-                
                     system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertItem", service_name, "0", parent_id, station[0], html_info, callback_string, station[1] )
                 end
 
