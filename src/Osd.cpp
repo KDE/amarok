@@ -64,7 +64,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
     if( AmarokConfig::osdUseTransparency() )
-        setWindowOpacity( 0.6 );
+        setWindowOpacity( 0.7 );
     unsetColors();
 
     m_timer->setSingleShot( true );
