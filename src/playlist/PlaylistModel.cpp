@@ -83,11 +83,12 @@ Model::Model( QObject* parent )
     : QAbstractListModel( parent )
     , EngineObserver( The::engineController() )
     , m_activeRow( -1 )
-    , m_advancer( new StandardTrackNavigator( this ) )
+    , m_advancer( 0 )
     , m_undoStack( new QUndoStack( this ) )
     , m_stopAfterMode( StopNever )
 {
     s_instance = this;
+    playlistModeChanged(); // sets m_advancer.
 }
 
 void
