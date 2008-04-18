@@ -28,12 +28,7 @@ SimilarArtistsAction::SimilarArtistsAction( QObject *parent, Meta::Artist *artis
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 
-    setText( i18n( "Play similar artists from last.fm" ) );
-}
-
-
-SimilarArtistsAction::~SimilarArtistsAction()
-{
+    setText( i18n( "Play Similar Artists from last.fm" ) );
 }
 
 void SimilarArtistsAction::slotTriggered()
