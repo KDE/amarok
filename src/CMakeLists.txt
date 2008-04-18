@@ -420,7 +420,7 @@ set(amaroklib_LIB_SRCS
     refreshimages.cpp
     scriptmanager.cpp
     Sidebar.h
-    SimilarArtistsAction.cpp
+    servicebrowser/lastfm/SimilarArtistsAction.cpp
 #    SmartPlaylistEditor.cpp
     socketserver.cpp
     StarManager.cpp

@@ -29,7 +29,7 @@
 #include "meta/OrganiseCapability.h"
 #include "MetaUtility.h"
 #include "scriptmanager.h"
-#include "SimilarArtistsAction.h"
+#include "servicebrowser/lastfm/SimilarArtistsAction.h"
 #include "SqlRegistry.h"
 #include "SqlCollection.h"
 
