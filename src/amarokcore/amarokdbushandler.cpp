@@ -779,36 +779,41 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     int DbusCollectionHandler::totalAlbums()
     {
-        QStringList albums = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM album;" );
+        SqlStorage *s = CollectionManager::instance()->sqlStorage();
+        Q_ASSERT(s);
+        QStringList albums = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM albums;" );
         QString total = albums[0];
         return total.toInt();
     }
 
     int DbusCollectionHandler::totalArtists()
     {
-        QStringList artists = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM artist;" );
+        QStringList artists = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM artists;" );
         QString total = artists[0];
         return total.toInt();
     }
 
     int DbusCollectionHandler::totalComposers()
     {
-        QStringList composers = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM composer;" );
+        QStringList composers = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM composers;" );
         QString total = composers[0];
         return total.toInt();
     }
 
     int DbusCollectionHandler::totalCompilations()
     {
-        QStringList comps = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( DISTINCT album ) FROM tags WHERE sampler = 1;" );
-        QString total = comps[0];
-        return total.toInt();
+        AMAROK_NOTIMPLEMENTED
+        //Todo port 2.0
+        //QStringList comps = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( DISTINCT album ) FROM tags WHERE sampler = 1;" );
+        //QString total = comps[0];
+        //return total.toInt();
+        return -1;
     }
 
     int DbusCollectionHandler::totalGenres()
     {
         //This should really work across multiple collections, but theres no interface for it currently..
-        QStringList genres = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM genre;" );
+        QStringList genres = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM genres;" );
         QString total = genres[0];
         return total.toInt();
     }
@@ -816,7 +821,7 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
     int DbusCollectionHandler::totalTracks()
     {
         //This should really work across multiple collections, but theres no interface for it currently..
-        QStringList tracks = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( url ) FROM tags;" );
+        QStringList tracks = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( url ) FROM tracks;" );
         QString total = tracks[0];
         int final = total.toInt();
         return final;
