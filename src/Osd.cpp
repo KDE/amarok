@@ -446,28 +446,23 @@ OSDWidget::unsetColors()
     QPalette p = QApplication::palette();
     QPalette newPal = palette();
 
-    newPal.setColor( QPalette::Active, QPalette::BrightText, p.color( QPalette::Active, QPalette::BrightText ) );
-    newPal.setColor( QPalette::Active, QPalette::Dark, p.color( QPalette::Active, QPalette::Dark ) );
+    newPal.setColor( QPalette::Active, QPalette::WindowText, p.color( QPalette::Active, QPalette::WindowText ) );
+    newPal.setColor( QPalette::Active, QPalette::Window    , p.color( QPalette::Active, QPalette::Window ) );
     setPalette( newPal );
 }
 
 void
 OSDWidget::setScreen( int screen )
 {
-#if 0
     const int n = QApplication::desktop()->numScreens();
     m_screen = (screen >= n) ? n-1 : screen;
-#endif
 }
 
 bool
 OSDWidget::useMoodbar( void )
 {
-    //FIXME: Port 2.0
-#if 0
-  return (m_moodbarBundle.moodbar().state() == Moodbar::Loaded  &&
-          AmarokConfig::showMoodbar() );
-#endif
+    // TODO: Port 2.0
+    // return (m_moodbarBundle.moodbar().state() == Moodbar::Loaded && AmarokConfig::showMoodbar() );
     return false;
 }
 
@@ -631,6 +626,7 @@ Amarok::OSD::applySettings()
     setScreen( AmarokConfig::osdScreen() );
     setFont( AmarokConfig::osdFont() );
     setDrawShadow( AmarokConfig::osdDrawShadow() );
+    setTranslucent( AmarokConfig::osdUseTranslucency() );
 
     if( AmarokConfig::osdUseCustomColors() )
     {
@@ -656,6 +652,7 @@ Amarok::OSD::forceToggleOSD()
 void
 Amarok::OSD::slotCoverChanged( const QString &artist, const QString &album )
 {
+    Q_UNUSED( artist ); Q_UNUSED( album );
 #if 0
     if( AmarokConfig::osdCover() && artist == The::engineController()->bundle().artist()
                                  && album  == The::engineController()->bundle().album()  )
@@ -673,6 +670,7 @@ Amarok::OSD::slotCoverChanged( const QString &artist, const QString &album )
 void
 Amarok::OSD::slotImageChanged( const QString &remoteURL )
 {
+    Q_UNUSED( remoteURL );
 #if 0
     QString url = The::engineController()->bundle().url().url();
     PodcastEpisodeBundle peb;
