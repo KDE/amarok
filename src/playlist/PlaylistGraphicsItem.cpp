@@ -30,7 +30,7 @@
 #include "SvgTinter.h"
 #include "tagdialog.h"
 #include "TheInstances.h"
-#include "CoverManager.h"
+#include "covermanager/CoverManager.h"
 #include "meta/SourceInfoCapability.h"
 
 #include "KStandardDirs"

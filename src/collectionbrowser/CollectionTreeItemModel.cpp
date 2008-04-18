@@ -12,12 +12,11 @@
 #include "CollectionTreeItemModel.h"
 
 #include "CollectionTreeItem.h"
-//#include "collection/sqlregistry.h"
 #include "debug.h"
 #include "Amarok.h"
 #include "Collection.h"
 #include "CollectionManager.h"
-#include "CoverFetcher.h"
+#include "covermanager/CoverFetcher.h"
 #include "QueryMaker.h"
 
 #include <KLocale>

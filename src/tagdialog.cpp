@@ -15,7 +15,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "CollectionManager.h"
-#include "CoverFetcher.h"
+#include "covermanager/CoverFetcher.h"
 #include "debug.h"
 #include "EditCapability.h"
 #include "MainWindow.h"

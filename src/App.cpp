@@ -23,7 +23,7 @@ email                : markey@web.de
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
 #include "context/ContextView.h"
-#include "CoverFetcher.h"
+#include "covermanager/CoverFetcher.h"
 #include "debug.h"
 #include "EngineController.h"
 #include "equalizersetup.h"

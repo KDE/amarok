@@ -380,8 +380,8 @@ set(amaroklib_LIB_SRCS
     AmarokProcess.cpp
     App.cpp
     atomicstring.cpp
-    CoverFetcher.cpp
-    CoverManager.cpp
+    covermanager/CoverFetcher.cpp
+    covermanager/CoverManager.cpp
     cuefile.cpp
     dbsetup.ui.h
     deletedialog.cpp

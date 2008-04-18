@@ -27,7 +27,7 @@
 #include "context/CoverBling.h"
 #include "context/ContextView.h"
 #include "context/DataEngineManager.h"
-#include "CoverManager.h" // for actions
+#include "covermanager/CoverManager.h" // for actions
 #include "debug.h"
 #include "editfilterdialog.h"
 #include "EngineController.h" //for actions in ctor
@@ -117,8 +117,6 @@ MainWindow::MainWindow()
         resize( size );
         move( pos );
     }
-    else
-        warning() << "MainWindow Size invalid! ignoring: " << size;
 }
 
 MainWindow::~MainWindow()
@@ -148,10 +146,7 @@ void MainWindow::init()
     //via the App::m_pMainWindow pointer since App::m_pMainWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
 
-    {
-        m_controlBar = new MainToolbar( this );
-
-    }
+    m_controlBar = new MainToolbar( this );
 
     PERF_LOG( "Create sidebar" )
     m_browsers = new SideBar( this, new KVBox );
@@ -172,7 +167,6 @@ void MainWindow::init()
     new Context::ContextView( contextWidget );
     PERF_LOG( "ContextView created" )
     {
-
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
             new CoverBling( contextWidget );
     }
@@ -297,9 +291,9 @@ void MainWindow::slotShrinkBrowsers( int index ) const
     if( index == -1 )
     {
         QList<int> sizes;
-        sizes << m_browsers->sideBarWidget()->width()
-            << m_splitter->sizes()[1] + m_splitter->sizes()[0] - m_browsers->sideBarWidget()->width()
-            << m_splitter->sizes()[2];
+        sizes << m_browsers->sideBarWidget()->width() // browser bar
+              << m_splitter->sizes()[1] + m_splitter->sizes()[0] - m_browsers->sideBarWidget()->width() // context view
+              << m_splitter->sizes()[2]; // playlist
         m_splitter->setSizes( sizes );
     }
 }
