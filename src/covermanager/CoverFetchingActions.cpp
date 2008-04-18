@@ -22,6 +22,7 @@
 #include <QAction>
 #include <KIcon>
 #include <KLocale>
+#include <ksharedptr.h>
 
 #include "CoverFetcher.h"
 #include "CoverManager.h"
@@ -46,7 +47,7 @@ FetchCoverAction::FetchCoverAction( QObject *parent, Meta::Album *album )
 void
 FetchCoverAction::slotTriggered()
 {
-//    CoverFetcher::instance()->manualFetch( m_album );
+    CoverFetcher::instance()->manualFetch( KSharedPtr<Meta::Album>( m_album ) );
 }
 
 
@@ -69,7 +70,7 @@ DisplayCoverAction::DisplayCoverAction( QObject *parent, Meta::Album *album )
 void
 DisplayCoverAction::slotTriggered()
 {
-//    ( new CoverViewDialog( m_album, parent() ) )->show();
+    ( new CoverViewDialog( KSharedPtr<Meta::Album>( m_album ), dynamic_cast<QWidget*>( parent() ) ) )->show();
 }
 
 
