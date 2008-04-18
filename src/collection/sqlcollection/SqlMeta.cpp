@@ -22,6 +22,7 @@
 #include "BlockingQuery.h"
 #include "debug.h"
 #include "MainWindow.h"
+#include "covermanager/CoverFetchingActions.h"
 #include "mediadevice/CopyToDeviceAction.h"
 #include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
@@ -1087,6 +1088,9 @@ SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
             QList<QAction*> actions;
             actions.append( new CopyToDeviceAction( m_collection, this ) );
             actions.append( new CompilationAction( m_collection, this ) );
+            actions.append( new FetchCoverAction( m_collection, this ) );
+            actions.append( new DisplayCoverAction( m_collection, this ) );
+            actions.append( new UnsetCoverAction( m_collection, this ) );
             return new CustomActionsCapability( actions );
         }
 

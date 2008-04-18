@@ -381,6 +381,7 @@ set(amaroklib_LIB_SRCS
     App.cpp
     atomicstring.cpp
     covermanager/CoverFetcher.cpp
+    covermanager/CoverFetchingActions.cpp
     covermanager/CoverManager.cpp
     cuefile.cpp
     dbsetup.ui.h
