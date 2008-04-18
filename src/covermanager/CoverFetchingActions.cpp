@@ -70,7 +70,7 @@ DisplayCoverAction::DisplayCoverAction( QObject *parent, Meta::Album *album )
 void
 DisplayCoverAction::slotTriggered()
 {
-    ( new CoverViewDialog( KSharedPtr<Meta::Album>( m_album ), dynamic_cast<QWidget*>( parent() ) ) )->show();
+    ( new CoverViewDialog( KSharedPtr<Meta::Album>( m_album ), qobject_cast<QWidget*>( parent() ) ) )->show();
 }
 
 
