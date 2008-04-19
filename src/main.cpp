@@ -25,7 +25,7 @@
 #include <KCmdLineArgs>
 #include <KDebug>
 
-#define AMAROK_USE_DRKONQI
+//#define AMAROK_USE_DRKONQI
 
 extern AMAROK_EXPORT class KAboutData aboutData; //defined in amarokcore/app.cpp
 
