@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -12,12 +12,19 @@
    height="1052.3622047"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    sodipodi:docbase="/home/amarok-dev/amarok/src/themes/context/Amarok-Mockup/widgets"
    sodipodi:docname="background.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective58" />
     <linearGradient
        id="linearGradient5142">
       <stop
@@ -128,13 +135,13 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.627417"
-     inkscape:cx="107.92975"
-     inkscape:cy="600.63489"
+     inkscape:zoom="5.6568543"
+     inkscape:cx="164.00086"
+     inkscape:cy="685.80938"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
-     inkscape:window-width="1680"
-     inkscape:window-height="996"
+     inkscape:current-layer="top"
+     inkscape:window-width="1440"
+     inkscape:window-height="822"
      inkscape:window-x="0"
      inkscape:window-y="0"
      showguides="true"
@@ -246,11 +253,7 @@
          height="8"
          width="200"
          id="rect3172"
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.78431373;opacity:0.9" />
-      <path
-         style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.341641;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="M 105.52067,348.57597 L 294.47247,348.57597"
-         id="path5172" />
+         style="opacity:0.9;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.78431373" />
     </g>
     <g
        id="topright"
