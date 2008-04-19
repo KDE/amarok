@@ -1,6 +1,7 @@
 // (c) Pierpaolo Di Panfilo 2004
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
 // (c) 2007 Dan Meltzer <hydrogen@notyetimplemented.com>
+// (c) 2008 Seb Ruiz <ruiz@kde.org>
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -77,19 +78,26 @@ CoverManager *CoverManager::s_instance = 0;
 class ArtistItem : public QTreeWidgetItem
 {
     public:
-    ArtistItem(QTreeWidget *parent, Meta::ArtistPtr artist )
-        : QTreeWidgetItem( parent )
-        , m_artist( artist )
-        { setText( 0, artist->prettyName() ); }
-    ArtistItem(const QString &text, QTreeWidget *parent = 0 )
-        : QTreeWidgetItem( parent )
-        , m_artist( 0 ) { setText( 0, text ); }
+        ArtistItem( QTreeWidget *parent, Meta::ArtistPtr artist )
+            : QTreeWidgetItem( parent )
+            , m_artist( artist )
+        {
+            setText( 0, artist->prettyName() );
+        }
+    
+        ArtistItem( const QString &text, QTreeWidget *parent = 0 )
+            : QTreeWidgetItem( parent )
+            , m_artist( 0 )
+        {
+            setText( 0, text );
+        }
 
         Meta::ArtistPtr artist() const { return m_artist; }
 
     private:
         Meta::ArtistPtr m_artist;
 };
+
 
 CoverManager::CoverManager()
         : QSplitter( 0 )
@@ -126,14 +134,16 @@ CoverManager::CoverManager()
     item->setIcon(0, SmallIcon( "media-optical-audio-amarok" ) );
     items.append( item );
 
-    Collection *coll;
+    Collection *coll = 0;
     foreach( coll, CollectionManager::instance()->collections() )
         if( coll->collectionId() == "localCollection" )
             break;
+
     QueryMaker *qm = coll->queryMaker();
     qm->startArtistQuery();
     BlockingQuery bq( qm );
     bq.startQuery();
+
     Meta::ArtistList artists = bq.artists( coll->collectionId() );
     foreach( Meta::ArtistPtr artist, artists )
     {
@@ -143,9 +153,7 @@ CoverManager::CoverManager()
     }
     m_artistView->insertTopLevelItems( 0, items );
 
-
-
-    //TODO: Port
+    //TODO: Port Compilation listing
 //     ArtistItem *last = static_cast<ArtistItem *>(m_artistView->item( m_artistView->count() - 1));
 //     QueryBuilder qb;
 //     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
@@ -164,7 +172,6 @@ CoverManager::CoverManager()
     hbox->setSpacing( 4 );
 
     { //<Search LineEdit>
-//         KHBox *searchBox = new KHBox( hbox );
         m_searchEdit = new KLineEdit( hbox );
         m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
         m_searchEdit->setFrame( QFrame::Sunken );
@@ -310,11 +317,15 @@ void CoverManager::init()
 
     int i = 0;
     if ( !artistToSelectInInitFunction.isEmpty() )
+    {
         for( item = m_artistView->invisibleRootItem()->child( 0 );
-           i < m_artistView->invisibleRootItem()->childCount();
-           item = m_artistView->invisibleRootItem()->child( i++ ) )
+             i < m_artistView->invisibleRootItem()->childCount();
+             item = m_artistView->invisibleRootItem()->child( i++ ) )
+        {
             if ( item->text( 0 ) == artistToSelectInInitFunction )
                 break;
+        }
+    }
 
     if ( item == 0 )
         item = m_artistView->invisibleRootItem()->child( 0 );
@@ -454,7 +465,7 @@ void CoverManager::slotArtistSelected() //SLOT
 
     Meta::AlbumList albums;
 
-    Collection *coll;
+    Collection *coll = 0;
     foreach( coll, CollectionManager::instance()->collections() )
         if( coll->collectionId() == "localCollection" )
             break;
@@ -806,7 +817,7 @@ void CoverManager::deleteSelectedCovers()
 
 void CoverManager::playSelectedAlbums()
 {
-    Collection *coll;
+    Collection *coll = 0;
     foreach( coll, CollectionManager::instance()->collections() )
         if( coll->collectionId() == "localCollection" )
             break;
