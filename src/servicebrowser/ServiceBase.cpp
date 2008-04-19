@@ -50,6 +50,7 @@ ServiceFactory::~ ServiceFactory()
 
 Meta::TrackPtr ServiceFactory::trackForUrl(const KUrl & url)
 {
+    DEBUG_BLOCK
     if ( m_activeServices.size() == 0 ) {
         debug() << "our service is needed for a url, so init it!";
         init();

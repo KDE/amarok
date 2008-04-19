@@ -23,11 +23,20 @@
 
 #include <KLocale>
 
+using namespace Meta;
+
 AmpacheServiceCollection::AmpacheServiceCollection( const QString &server, const QString &sessionId )
     : ServiceDynamicCollection( "AmpacheCollection", "AmpacheCollection" )
     , m_server( server )
     , m_sessionId( sessionId )
 {
+    m_urlTrack = 0;
+    m_urlAlbum = 0;
+    m_urlArtist = 0;
+
+    m_urlTrackId = 0;
+    m_urlAlbumId = 0;
+    m_urlArtistId = 0;
 }
 
 
@@ -51,3 +60,95 @@ QString AmpacheServiceCollection::prettyName() const
 }
 
 
+bool AmpacheServiceCollection::possiblyContainsTrack(const KUrl & url) const
+{
+    return url.url().contains( m_server );
+}
+
+Meta::TrackPtr AmpacheServiceCollection::trackForUrl( const KUrl & url )
+{
+    DEBUG_BLOCK;
+    
+    m_urlTrack = 0;
+    m_urlAlbum = 0;
+    m_urlArtist = 0;
+
+    m_urlTrackId = 0;
+    m_urlAlbumId = 0;
+    m_urlArtistId = 0;
+
+    //send url_to_song to Ampache
+
+    QString requestUrl = QString( "%1/server/xml.server.php?action=url_to_song&auth=%2&url=%3")
+            . arg( m_server, m_sessionId, url.url() );
+
+    debug() << "request url: " << requestUrl;
+
+    m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo );
+    if ( !m_storedTransferJob->exec() ) {
+      return TrackPtr();
+    }
+
+    parseTrack( m_storedTransferJob->data() );
+    m_storedTransferJob->deleteLater();
+
+    return TrackPtr( m_urlTrack );
+
+
+}
+
+void AmpacheServiceCollection::parseTrack( const QString &xml )
+{
+    DEBUG_BLOCK
+
+     debug() << "Received track response: " << xml;
+
+     //so lets figure out what we got here:
+    QDomDocument doc( "reply" );
+    doc.setContent( xml );
+    QDomElement root = doc.firstChildElement("root");
+    QDomElement song = root.firstChildElement("song");
+
+    m_urlTrackId = song.attribute( "id", "0").toInt();
+
+    QDomElement element = song.firstChildElement("title");
+
+    QString title = element.text();
+    if ( title.isEmpty() ) title = "Unknown";
+
+    m_urlTrack = new AmpacheTrack( title );
+    TrackPtr trackPtr( m_urlTrack );
+
+    //debug() << "Adding track: " <<  title;
+
+    m_urlTrack->setId( m_urlTrackId );
+
+    element = song.firstChildElement("url");
+    m_urlTrack->setUrl( element.text() );
+
+    element = song.firstChildElement("time");
+    m_urlTrack->setLength( element.text().toInt() );
+
+    element = song.firstChildElement("track");
+    m_urlTrack->setTrackNumber( element.text().toInt() );
+
+    QDomElement albumElement = song.firstChildElement("album");
+    //m_urlAlbumId = albumElement.attribute( "id", "0").toInt();
+
+    AmpacheAlbum * album = new AmpacheAlbum( albumElement.text() );
+
+    QDomElement artElement = song.firstChildElement("art");
+    album->setCoverUrl( artElement.text() );
+
+    album->addTrack( trackPtr );
+    m_urlTrack->setAlbum( AlbumPtr( album ) );
+
+    QDomElement artistElement = song.firstChildElement("artist");
+    ServiceArtist * artist = new ServiceArtist( artistElement.text() );
+
+    ArtistPtr artistPtr( artist );
+    m_urlTrack->setArtist( artistPtr );
+    album->setAlbumArtist( artistPtr );
+ 
+
+}

@@ -322,7 +322,7 @@ void AmpacheServiceQueryMaker::fetchTracks()
 
 
 
-void AmpacheServiceQueryMaker::artistDownloadComplete(KJob * job)
+void AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
 {
     DEBUG_BLOCK
 

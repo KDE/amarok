@@ -39,7 +39,6 @@ void AmpacheServiceFactory::init()
 
     //read config and create the needed number of services
     AmpacheConfig config;
-
     AmpacheServerList servers = config.servers();
 
     for( int i = 0; i < servers.size(); i++ ) {
@@ -71,6 +70,26 @@ KConfigGroup AmpacheServiceFactory::config()
 {
     return Amarok::config( "Service_Ampache" );
 }
+
+
+bool AmpacheServiceFactory::possiblyContainsTrack(const KUrl & url) const
+{
+    DEBUG_BLOCK
+    debug() << "url: " << url.url();
+    AmpacheConfig config;
+    foreach( AmpacheServerEntry server, config.servers() ) {
+        if ( url.url().contains( server.url, Qt::CaseInsensitive ) ) {
+            debug() << "plausible...";
+            return true;
+        }
+    }
+
+    debug() << "do not think so...";
+
+    return false;
+}
+
+
 
 
 
@@ -113,6 +132,8 @@ AmpacheService::AmpacheService(const QString & name, const QString &url, const Q
     connect(t, SIGNAL( timeout() ), SLOT(authenticate() ) );
     t->start( 3600000 );
 
+    authenticate( );
+
 }
 
 
@@ -126,8 +147,8 @@ void AmpacheService::polish()
 {
     m_bottomPanel->hide();
 
-    if ( !m_authenticated )
-        authenticate( /*m_server, m_username, m_password*/ );
+    /*if ( !m_authenticated )
+        authenticate( );*/
 
 }
 
@@ -189,9 +210,13 @@ void AmpacheService::authenticate(/* const QString & server, const QString & use
 
 
     m_xmlDownloadJob = KIO::storedGet( authenticationString, KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
+    /*connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
     Amarok::ContextStatusBar::instance() ->newProgressOperation( m_xmlDownloadJob )
-    .setDescription( i18n( "Authenticating" ) );
+    .setDescription( i18n( "Authenticating" ) );*/
+
+    if ( m_xmlDownloadJob->exec() )
+        authenticationComplete( m_xmlDownloadJob );
+        
 
 }
 
@@ -245,6 +270,7 @@ void AmpacheService::authenticationComplete(KJob * job)
 
     m_xmlDownloadJob->deleteLater();
 }
+
 
 
 

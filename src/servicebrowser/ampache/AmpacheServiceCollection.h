@@ -20,6 +20,9 @@
 #define AMPACHESERVICECOLLECTION_H
 
 #include <ServiceDynamicCollection.h>
+#include "AmpacheMeta.h"
+
+#include <kio/jobclasses.h>
 
 /**
 A collection that dynamically fetches data from a remote location as needed
@@ -29,6 +32,7 @@ A collection that dynamically fetches data from a remote location as needed
 class AmpacheServiceCollection : public ServiceDynamicCollection
 {
 public:
+
     AmpacheServiceCollection( const QString &server, const QString &sessionId );
 
     virtual ~AmpacheServiceCollection();
@@ -38,10 +42,27 @@ public:
     virtual QString collectionId() const;
     virtual QString prettyName() const;
 
+    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+    virtual bool possiblyContainsTrack( const KUrl &url ) const;
+
 private:
+
+    void parseTrack( const QString &xml );
+    /*void parseAlbum( const QString &xml );
+    void parseArtist( const QString &xml );*/
 
     QString m_server;
     QString m_sessionId;
+
+    Meta::AmpacheTrack *m_urlTrack;
+    Meta::AmpacheAlbum *m_urlAlbum;
+    Meta::ServiceArtist *m_urlArtist;
+
+    int m_urlTrackId;
+    int m_urlAlbumId;
+    int m_urlArtistId;
+
+    KIO::StoredTransferJob * m_storedTransferJob;
 
 };
 

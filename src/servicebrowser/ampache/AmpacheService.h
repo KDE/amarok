@@ -37,6 +37,8 @@ class AmpacheServiceFactory: public ServiceFactory
         explicit AmpacheServiceFactory() {}
         virtual ~AmpacheServiceFactory() {}
 
+        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+
         virtual void init();
         virtual QString name();
         virtual KPluginInfo info();
