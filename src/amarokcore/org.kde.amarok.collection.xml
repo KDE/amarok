@@ -56,18 +56,5 @@
       <arg name="url" type="s" direction="in"/>
       <arg name="oldLabel" type="as" direction="in"/>
     </method>
-    <method name="deviceId" >
-      <arg name="url" type="s" direction="in"/>
-      <arg type="i" direction="out"/>
-    </method>
-    <method name="relativePath" >
-      <arg name="url" type="s" direction="in"/>
-      <arg type="s" direction="out"/>
-    </method>
-    <method name="absolutePath" >
-      <arg name="deviceid" type="i" direction="in"/>
-      <arg name="relativePath" type="s" direction="in"/>
-      <arg type="s" direction="out"/>
-    </method>
   </interface>
 </node>

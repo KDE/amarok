@@ -35,7 +35,6 @@
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "meta/StreamInfoCapability.h"
-#include "mountpointmanager.h"
 #include "Osd.h"
 #include "playlist/PlaylistModel.h"
 #include "ProgressSlider.h"
@@ -910,22 +909,6 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
         Q_UNUSED( disable );
         AMAROK_NOTIMPLEMENTED
         return;
-    }
-
-    int DbusCollectionHandler::deviceId( const QString &url )
-    {
-        return MountPointManager::instance()->getIdForUrl( url );
-    }
-
-    QString DbusCollectionHandler::relativePath( const QString &url )
-    {
-        int deviceid = deviceId( url );
-        return MountPointManager::instance()->getRelativePath( deviceid, url );
-    }
-
-    QString DbusCollectionHandler::absolutePath( int deviceid, const QString &relativePath )
-    {
-        return MountPointManager::instance()->getAbsolutePath( deviceid, relativePath );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////

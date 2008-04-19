@@ -19,7 +19,6 @@
 #include "debug.h"
 #include "querybuilder.h"
 #include "metabundle.h"
-#include "mountpointmanager.h"
 
 #include <KComboBox>
 #include <KLineEdit>

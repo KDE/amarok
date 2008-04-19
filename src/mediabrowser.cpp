@@ -33,7 +33,6 @@
 #include "MediaDeviceCache.h"
 #include "MediaDevicePluginManager.h"
 #include "meta/file/File.h"
-#include "mountpointmanager.h"
 #include "playlist/PlaylistModel.h"
 #include "PluginManager.h"
 #include "AmarokProcess.h"

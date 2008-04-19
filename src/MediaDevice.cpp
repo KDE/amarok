@@ -26,7 +26,6 @@
 #include "meta/file/File.h"
 #include "meta/Playlist.h"
 #include "meta/PlaylistFileSupport.h"
-#include "mountpointmanager.h"
 #include "PluginManager.h"
 #include "podcastbundle.h"
 #include "AmarokProcess.h"
