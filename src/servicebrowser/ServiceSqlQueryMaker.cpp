@@ -422,8 +422,6 @@ ServiceSqlQueryMaker::addMatch( const DataPtr &data )
 QueryMaker*
 ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    DEBUG_BLOCK
-
     //a few hacks needed by some of the speedup code:
 
     if ( d->queryType == Private::GENRE ) {
@@ -452,11 +450,8 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
 QueryMaker*
 ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    Q_UNUSED( value );
-    Q_UNUSED( filter );
-    Q_UNUSED( matchBegin );
-    Q_UNUSED( matchEnd );
-    //TODO
+    QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
+    d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
 }
 
@@ -765,24 +760,31 @@ ServiceSqlQueryMaker::escape( QString text ) const //krazy2:exclude=constref
 QString
 ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const
 {
-    QString escaped = text;
-    escaped.replace( '/', "//" ).replace( '%', "/%" ).replace( '_', "/_" );
-    escaped = escape( escaped );
+    if( anyBegin || anyEnd )
+    {
+        QString escaped = text;
+        escaped.replace( '/', "//" ).replace( '%', "/%" ).replace( '_', "/_" );
+        escaped = escape( escaped );
 
-    QString ret = " LIKE ";
+        QString ret = " LIKE ";
 
-    ret += '\'';
-    if ( anyBegin )
+        ret += '\'';
+        if ( anyBegin )
             ret += '%';
-    ret += escaped;
-    if ( anyEnd )
+        ret += escaped;
+        if ( anyEnd )
             ret += '%';
-    ret += '\'';
+        ret += '\'';
 
-    //Use / as the escape character
-    ret += " ESCAPE '/' ";
+        //Use / as the escape character
+        ret += " ESCAPE '/' ";
 
-    return ret;
+        return ret;
+    }
+    else
+    {
+        return QString( " = '%1' " ).arg( text );
+    }
 }
 
 
