@@ -60,8 +60,6 @@ void WikipediaApplet::init()
     m_size = m_header->size();
 
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
-   /* m_currentLabel = new QGraphicsSimpleTextItem( this );
-    m_currentTitle = new QGraphicsSimpleTextItem( this );*/
 
     m_webView = new QWebView();
     m_wikiPage = new QGraphicsProxyWidget( this );
@@ -74,13 +72,6 @@ void WikipediaApplet::init()
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
 
-    /*m_currentLabel->setBrush( Plasma::Theme::self()->textColor() );
-    labelFont.setBold( false );
-    m_currentLabel->setFont( labelFont );
-
-    m_currentTitle->setBrush( Plasma::Theme::self()->textColor() );
-    m_currentTitle->setFont( labelFont );
-*/
     constraintsUpdated();
 
 }
@@ -100,18 +91,6 @@ void WikipediaApplet::constraintsUpdated( Plasma::Constraints constraints )
     float textWidth = m_wikipediaLabel->boundingRect().width();
     float totalWidth = m_header->elementRect( "wikipedialabel" ).width();
     float offsetX =  ( totalWidth - textWidth ) / 2;
-//     m_wikipediaLabel->setPos( m_header->elementRect( "Wikipedia" ).topLeft() + QPointF ( offsetX, 0 ) );
-
-    /*m_currentLabel->setPos( m_header->elementRect( "titlelabel" ).topLeft() );
-    m_currentLabel->setFont( shrinkTextSizeToFit( m_label, m_header->elementRect( "titlelabel" ) ) );
-    m_currentLabel->setText( truncateTextToFit( m_label, m_currentLabel->font(), m_header->elementRect( "titlelabel" ) ) );
-
-    m_currentTitle->setPos( m_header->elementRect( "title" ).topLeft() );
-    m_currentTitle->setFont( shrinkTextSizeToFit( m_title, m_header->elementRect( "title" ) ) );
-    m_currentTitle->setText( truncateTextToFit( m_title, m_currentTitle->font(), m_header->elementRect( "title" ) ) );*/
-
-
-//     kDebug() << "wikipedialabel top left: " <<  m_header->elementRect( "wikipedialabel" ).topLeft();
 
     m_wikiPage->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
 
@@ -123,10 +102,6 @@ void WikipediaApplet::constraintsUpdated( Plasma::Constraints constraints )
     }
 
     m_wikiPage->show();
-
-//     kDebug() << "m_wikiPage top left: " <<  m_wikiPage->boundingRect().topLeft();
-
-
 }
 
 bool WikipediaApplet::hasHeightForWidth() const
@@ -144,7 +119,6 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 {
     Q_UNUSED( name )
 
-    //debug() << "got data from engine:" << data;
     if( data.size() == 0 ) return;
 
     if( data.contains( "page" ) ) {
@@ -162,13 +136,6 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         m_title = data[ "title" ].toString();
     else
         m_title = QString();
-
-    debug() << "label:" << m_label;
-    debug() << "title:" << m_title;
-
-    /*m_currentLabel->setText( truncateTextToFit( m_label, m_currentLabel->font(), m_header->elementRect( "titlelabel" ) ) );
-    m_currentTitle->setText( truncateTextToFit( m_title, m_currentTitle->font(), m_header->elementRect( "title" ) ) );*/
-
 }
 
 void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -180,17 +147,6 @@ void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsIt
     p->save();
     m_header->paint( p, contentsRect/*, "header" */);
     p->restore();
-
-   /* m_wikiPage->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
-
-    QSizeF infoSize( m_header->elementRect( "wikipediainformation" ).bottomRight().x() - m_header->elementRect( "wikipediainformation" ).topLeft().x(), m_header->elementRect( "wikipediainformation" ).bottomRight().y() - m_header->elementRect( "wikipediainformation" ).topLeft().y() );
-    //infoSize.setHeight(  infoSize.height() - 50 );
-
-    kDebug() << "2";
-
-    m_wikiPage->setMinimumSize( infoSize );
-    m_wikiPage->setMaximumSize( infoSize );
-    m_wikiPage->show();*/
 }
 
 
