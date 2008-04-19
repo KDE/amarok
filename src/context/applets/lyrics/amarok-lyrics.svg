@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -12,13 +12,21 @@
    height="290.2124"
    id="svg3486"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    version="1.0"
    sodipodi:docname="amarok-lyrics.svg"
    sodipodi:docbase="/home/hydrogen/kde/src/amarok/src/context/applets/lyrics"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
-     id="defs3488" />
+     id="defs3488">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 145.1062 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="513.12482 : 145.1062 : 1"
+       inkscape:persp3d-origin="256.56241 : 96.737467 : 1"
+       id="perspective12" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -31,7 +39,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="2.1088003"
      inkscape:cx="256.56242"
-     inkscape:cy="202.01061"
+     inkscape:cy="183.04248"
      inkscape:document-units="px"
      inkscape:current-layer="svg3486"
      inkscape:window-width="1440"
@@ -39,7 +47,8 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      width="381.21px"
-     height="143.0905px" />
+     height="143.0905px"
+     showgrid="false" />
   <metadata
      id="metadata3491">
     <rdf:RDF>
@@ -52,46 +61,11 @@
     </rdf:RDF>
   </metadata>
   <rect
-     width="149.95827"
-     height="12"
-     x="70.16066"
-     y="30"
-     id="lyricstrackname"
-     style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  <rect
-     width="196.90439"
-     height="12"
-     x="315.13602"
-     y="29.525797"
-     id="lyricsartist"
-     style="opacity:0;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.84200001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  <rect
-     style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
-     id="titlelabel"
-     width="61.896812"
-     height="12"
-     x="3.0446758"
-     y="30" />
-  <rect
-     style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
-     id="artistlabel"
-     width="49.093323"
-     height="12"
-     x="258.81631"
-     y="30" />
-  <rect
-     style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
-     id="title"
-     width="119.90112"
-     height="16"
-     x="200.81157"
-     y="0" />
-  <rect
      style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
      id="lyrics"
      width="513.12482"
-     height="233.34525"
+     height="289.77542"
      x="0"
-     y="56.867142"
+     y="0.43695247"
      inkscape:label="#rect2170" />
 </svg>

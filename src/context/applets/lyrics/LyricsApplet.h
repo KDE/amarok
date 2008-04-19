@@ -33,7 +33,6 @@ public:
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
     bool hasHeightForWidth() const;
-    qreal heightForWidth( qreal width ) const;
 
     void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints );
 public slots:
@@ -43,20 +42,10 @@ private:
     void calculateHeight();
 
     Context::Svg* m_header;
-    qreal m_headerAspectRatio;
 
-    // labels
-    QGraphicsSimpleTextItem* m_lyricsLabel;
-    QGraphicsSimpleTextItem* m_titleLabel;
-    QGraphicsSimpleTextItem* m_artistLabel;
-    QGraphicsSimpleTextItem* m_siteLabel;
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
     QTextEdit* m_lyrics;
-    // titles
-    QGraphicsSimpleTextItem* m_title;
-    QGraphicsSimpleTextItem* m_artist;
-    QGraphicsSimpleTextItem* m_site;
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
