@@ -21,6 +21,7 @@
 #include "debug.h"
 
 #include <QCoreApplication>
+#include <QEventLoop>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QStringList>
@@ -31,6 +32,7 @@ struct BlockingQuery::Private
 {
     QueryMaker *qm;
     QMutex mutex;
+    QEventLoop loop;
 //    QWaitCondition wait;
     QStringList collectionIds;
     QMutex dataMutex;
@@ -72,15 +74,8 @@ BlockingQuery::startQuery()
     connect( d->qm, SIGNAL( newResultReady( QString, QStringList ) ), SLOT( result( QString, QStringList ) ), Qt::DirectConnection );
     connect( d->qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::DirectConnection );
 
-    d->mutex.lock();
     d->qm->run();
-    while( !d->done )
-    {
-        d->mutex.unlock();
-        QCoreApplication::instance()->processEvents( QEventLoop::AllEvents );
-        d->mutex.lock();
-    }
-    d->mutex.unlock();
+    d->loop.exec();
 }
 
 QStringList
@@ -206,11 +201,8 @@ void
 BlockingQuery::queryDone()
 {
     DEBUG_BLOCK
-    //lock the mutex so we can be sure that we wait in run()
-    d->mutex.lock();
     d->done = true;
-    d->mutex.unlock();
-    //d->wait.wakeAll();
+    d->loop.exit();
 }
 
 void
