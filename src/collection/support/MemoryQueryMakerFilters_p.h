@@ -59,10 +59,14 @@ public:
 
     virtual bool filterMatches( Meta::TrackPtr track ) const
     {
-        bool result = true;
         foreach( Filter *filter, m_filters )
-            result &= filter->filterMatches( track );
-        return result;
+        {
+            if( !filter->filterMatches( track ) )
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
 private:
@@ -86,10 +90,14 @@ public:
 
     virtual bool filterMatches( Meta::TrackPtr track ) const
     {
-        bool result = false;
         foreach( Filter *filter, m_filters )
-            result |= filter->filterMatches( track );
-        return result;
+        {
+            if( filter->filterMatches( track ) )
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 private:
