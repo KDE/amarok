@@ -469,11 +469,14 @@ void CoverManager::slotArtistSelected() //SLOT
     foreach( coll, CollectionManager::instance()->collections() )
         if( coll->collectionId() == "localCollection" )
             break;
+    
     QueryMaker *qm = coll->queryMaker();
-    if ( item != m_artistView->invisibleRootItem()->child( 0 ) )
-        qm->addMatch( artist );
-
     qm->startAlbumQuery();
+    if( item != m_artistView->invisibleRootItem()->child( 0 ) )
+        qm->addMatch( artist );
+    else
+        qm->excludeFilter( QueryMaker::valAlbum, QString(), true, true );
+
     BlockingQuery bq( qm );
     bq.startQuery();
     albums = bq.albums( coll->collectionId() );
