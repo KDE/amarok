@@ -72,7 +72,6 @@ class CoverManager : public QSplitter, public Meta::Observer
 
         void slotArtistSelected();
         void coverItemExecuted( QListWidgetItem *item );
-        void showCoverMenu( QListWidgetItem *item, const QPoint& );
         void slotSetFilter();
         void slotSetFilterTimeout();
 
@@ -107,7 +106,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         void loadCover( const QString &, const QString & );
         QList<CoverViewItem*> selectedItems();
 
-        QTreeWidget     *m_artistView;
+        QTreeWidget    *m_artistView;
         CoverView      *m_coverView;
         KLineEdit      *m_searchEdit;
         KPushButton    *m_fetchButton;
@@ -146,10 +145,13 @@ class CoverManager : public QSplitter, public Meta::Observer
 
 class CoverView : public QListWidget
 {
-        Q_OBJECT
+    Q_OBJECT
 
     public:
         explicit CoverView( QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0 );
+
+    protected:
+        void contextMenuEvent( QContextMenuEvent *event );
 
     private slots:
         void setStatusText( QListWidgetItem *item );

@@ -20,6 +20,7 @@
 #include "CollectionManager.h"
 #include "browserToolBar.h"
 #include "debug.h"
+#include "meta/CurrentTrackActionsCapability.h"
 #include "meta/Meta.h"
 #include "QueryMaker.h"
 #include <config-amarok.h>  
@@ -66,11 +67,11 @@
 #include <QStringList>
 #include <QToolTip>
 #include <QTimer>    //search filter timer
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 //Added by qt3to4:
 #include <QDropEvent>
 #include <QToolButton>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
@@ -272,8 +273,6 @@ CoverManager::CoverManager()
     // signals and slots connections
     connect( m_artistView, SIGNAL(itemSelectionChanged() ),
                            SLOT( slotArtistSelected() ) );
-/*    connect( m_coverView,  SIGNAL(contextMenuRequested( Q3IconViewItem*, const QPoint& )),
-                           SLOT(showCoverMenu( Q3IconViewItem*, const QPoint& )) );*/
     connect( m_coverView,  SIGNAL(itemActivated( QListWidgetItem* )),
                            SLOT(coverItemExecuted( QListWidgetItem* )) );
     connect( m_timer,      SIGNAL(timeout()),
@@ -539,67 +538,6 @@ void CoverManager::slotArtistSelected() //SLOT
     }
 
     updateStatusBar();
-}
-
-void CoverManager::showCoverMenu( QListWidgetItem *item, const QPoint &p ) //SLOT
-{
-    Q_UNUSED( item );
-    Q_UNUSED( p );
-    //TODO: PORT
-#if 0
-    #define item static_cast<CoverViewItem*>(item)
-    if( !item ) return;
-
-    KMenu menu;
-
-    menu.addTitle( i18n( "Cover Image" ) );
-
-    QList<CoverViewItem*> selected = selectedItems();
-    const int nSelected = selected.count();
-
-    QAction* fetchSelectedAction = new QAction( KIcon( "get-hot-new-stuff-amarok" )
-        , ( nSelected == 1 ? i18n( "&Fetch From amazon.%1", CoverManager::amazonTld() )
-                           : i18n( "&Fetch Selected Covers" ) )
-        , &menu );
-    connect( fetchSelectedAction, SIGNAL( triggered() ), this, SLOT( fetchSelectedCovers() ) );
-
-    QAction* setCustomAction = new QAction( KIcon( "folder-amarok" )
-        , i18np( "Set &Custom Cover", "Set &Custom Cover for Selected Albums", nSelected )
-        , &menu );
-    connect( setCustomAction, SIGNAL( triggered() ), this, SLOT( setCustomSelectedCovers() ) );
-    QAction* unsetAction = new QAction( KIcon( "edit-delete-amarok" ), i18np( "&Unset Cover", "&Unset Selected Covers", nSelected ), &menu );
-    connect( unsetAction, SIGNAL( triggered() ), this, SLOT ( deleteSelectedCovers() ) );
-
-    QAction* playAlbumAction = new QAction( KIcon( "list-add-amarok" )
-        , i18np( "&Append to Playlist", "&Append Selected Albums to Playlist", nSelected )
-        , &menu );
-
-    connect( playAlbumAction, SIGNAL( triggered() ), this, SLOT( playSelectedAlbums() ) );
-
-    if( nSelected > 1 ) {
-        menu.addAction( fetchSelectedAction );
-        menu.addAction( setCustomAction );
-        menu.addAction( playAlbumAction );
-        menu.addAction( unsetAction );
-    }
-    else {
-        QAction* viewAction = new QAction( KIcon( "zoom-in-amarok" ), i18n( "&Show Fullsize" ), &menu );
-        connect( viewAction, SIGNAL( triggered() ), this, SLOT( viewSelectedCover() ) );
-        viewAction ->setEnabled( item->hasCover() );
-        unsetAction->setEnabled( item->canRemoveCover() );
-        menu.addAction( viewAction );
-        menu.addAction( fetchSelectedAction );
-        menu.addAction( setCustomAction );
-        menu.addAction( playAlbumAction );
-        menu.addSeparator();
-
-        menu.addAction( unsetAction );
-    }
-
-    menu.exec( p );
-
-    #undef item
-#endif
 }
 
 void CoverManager::viewSelectedCover()
@@ -956,13 +894,41 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setIconSize( QSize(100,100) );
     setTextElideMode( Qt::ElideRight );
     setMouseTracking( true );
-
-    // as long as QIconView only shows tooltips when the cursor is over the
-    // icon (and not the text), we have to create our own tooltips
-//     setShowToolTips( false );
+    setContextMenuPolicy( Qt::DefaultContextMenu );
 
     connect( this, SIGNAL( itemEntered( QListWidgetItem * ) ), SLOT( setStatusText( QListWidgetItem * ) ) );
     connect( this, SIGNAL( viewportEntered() ), CoverManager::instance(), SLOT( updateStatusBar() ) );
+}
+
+void CoverView::contextMenuEvent( QContextMenuEvent *event )
+{
+    CoverViewItem* item = dynamic_cast<CoverViewItem*>( itemAt( event->pos() ) );
+    if( item )
+    {
+        KMenu menu;
+        menu.addTitle( i18n( "Cover Image" ) );
+
+        Meta::AlbumPtr album = item->albumPtr();
+        if( album )
+        {
+            Meta::CustomActionsCapability *cac = album->as<Meta::CustomActionsCapability>();
+            if( cac )
+            {
+                QList<QAction *> actions = cac->customActions();
+
+                menu.addSeparator();
+                foreach( QAction *action, actions )
+                    menu.addAction( action );
+            }
+        }
+        menu.exec( event->globalPos() );
+    }
+    else
+        QListView::contextMenuEvent( event );
+    // TODO
+    // Multiple selections
+    // Play, Load and Append to playlist actions
+    // Set custom cover action
 }
 
 
