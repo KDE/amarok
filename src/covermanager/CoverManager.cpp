@@ -134,11 +134,7 @@ CoverManager::CoverManager()
     item->setIcon(0, SmallIcon( "media-optical-audio-amarok" ) );
     items.append( item );
 
-    Collection *coll = 0;
-    foreach( coll, CollectionManager::instance()->collections() )
-        if( coll->collectionId() == "localCollection" )
-            break;
-
+    Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->startArtistQuery();
     BlockingQuery bq( qm );
