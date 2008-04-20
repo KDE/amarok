@@ -34,22 +34,17 @@
 //  FetchCoverAction
 /////////////////////////////////////
 
-FetchCoverAction::FetchCoverAction( QObject *parent, Meta::Album *album )
-    : QAction( parent )
-    , m_album( album )
+void FetchCoverAction::init()
 {
-    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
-
-    setText( i18n("Fetch Cover") );
+    setText( i18np("Fetch Cover", "Fetch Covers", m_albums.count()) );
     setIcon( KIcon("list-add") );
-
-    setToolTip( i18n("Fetch the artwork for this album") );
+    setToolTip( i18np("Fetch the artwork for this album", "Fetch artwork for selected albums", m_albums.count()) );
+    BaseCoverAction::init();
 }
 
-void
-FetchCoverAction::slotTriggered()
+void FetchCoverAction::slotTriggered()
 {
-    CoverFetcher::instance()->manualFetch( KSharedPtr<Meta::Album>( m_album ) );
+    CoverFetcher::instance()->queueAlbums( m_albums );
 }
 
 
@@ -57,22 +52,17 @@ FetchCoverAction::slotTriggered()
 //  DisplayCoverAction
 /////////////////////////////////////
 
-DisplayCoverAction::DisplayCoverAction( QObject *parent, Meta::Album *album )
-    : QAction( parent )
-    , m_album( album )
+void DisplayCoverAction::init()
 {
-    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
-
     setText( i18n("Display Cover") );
     setIcon( KIcon("zoom-original") );
-
     setToolTip( i18n("Display artwork for this album") );
+    BaseCoverAction::init();
 }
 
-void
-DisplayCoverAction::slotTriggered()
+void DisplayCoverAction::slotTriggered()
 {
-    ( new CoverViewDialog( KSharedPtr<Meta::Album>( m_album ), qobject_cast<QWidget*>( parent() ) ) )->show();
+    ( new CoverViewDialog( m_albums.first(), qobject_cast<QWidget*>( parent() ) ) )->show();
 }
 
 
@@ -80,48 +70,42 @@ DisplayCoverAction::slotTriggered()
 //  UnsetCoverAction
 /////////////////////////////////////
 
-UnsetCoverAction::UnsetCoverAction( QObject *parent, Meta::Album *album )
-    : QAction( parent )
-    , m_album( album )
+void UnsetCoverAction::init()
 {
-    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
-
     setText( i18n("Unset Cover") );
     setIcon( KIcon("list-remove") );
-
     setToolTip( i18n("Remove artwork for this album") );
+    BaseCoverAction::init();
 }
 
 void
 UnsetCoverAction::slotTriggered()
 {
-    m_album->removeImage();
+    foreach( Meta::AlbumPtr album, m_albums )
+        album->removeImage();
 }
 
 /////////////////////////////////////
 //  SetCustomCoverAction
 /////////////////////////////////////
 
-SetCustomCoverAction::SetCustomCoverAction( QObject *parent, Meta::Album *album )
-    : QAction( parent )
-    , m_album( album )
+void SetCustomCoverAction::init()
 {
-    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
-
     setText( i18n("Set Custom Cover") );
     setIcon( KIcon("list-remove") );
-
     setToolTip( i18n("Set custom artwork for this album") );
+    BaseCoverAction::init();
 }
 
 void
 SetCustomCoverAction::slotTriggered()
 {
-    QString startPath = m_album->tracks().first()->playableUrl().directory();
+    QString startPath = m_albums.first()->tracks().first()->playableUrl().directory();
     KUrl file = KFileDialog::getImageOpenUrl( startPath, qobject_cast<QWidget*>( parent() ), i18n( "Select Cover Image File" ) );
     if( !file.isEmpty() )
     {
         QImage image( file.fileName() );
-        m_album->setImage( image );
+        foreach( Meta::AlbumPtr album, m_albums )
+            album->setImage( image );
     }
 }
