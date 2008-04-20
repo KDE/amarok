@@ -21,6 +21,8 @@
 
 #include <QAction>
 #include <KIcon>
+#include <KFile>
+#include <KFileDialog>
 #include <KLocale>
 #include <ksharedptr.h>
 
@@ -94,4 +96,32 @@ void
 UnsetCoverAction::slotTriggered()
 {
     m_album->removeImage();
+}
+
+/////////////////////////////////////
+//  SetCustomCoverAction
+/////////////////////////////////////
+
+SetCustomCoverAction::SetCustomCoverAction( QObject *parent, Meta::Album *album )
+    : QAction( parent )
+    , m_album( album )
+{
+    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+
+    setText( i18n("Set Custom Cover") );
+    setIcon( KIcon("list-remove") );
+
+    setToolTip( i18n("Set custom artwork for this album") );
+}
+
+void
+SetCustomCoverAction::slotTriggered()
+{
+    QString startPath = m_album->tracks().first()->playableUrl().directory();
+    KUrl file = KFileDialog::getImageOpenUrl( startPath, qobject_cast<QWidget*>( parent() ), i18n( "Select Cover Image File" ) );
+    if( !file.isEmpty() )
+    {
+        QImage image( file.fileName() );
+        m_album->setImage( image );
+    }
 }

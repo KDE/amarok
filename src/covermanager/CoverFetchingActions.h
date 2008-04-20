@@ -67,4 +67,17 @@ class AMAROK_EXPORT UnsetCoverAction : public QAction
         Meta::Album *m_album;
 };
 
+class AMAROK_EXPORT SetCustomCoverAction : public QAction
+{
+    Q_OBJECT
+    public:
+        SetCustomCoverAction( QObject *parent, Meta::Album *album );
+
+    private slots:
+        void slotTriggered();
+
+    private:
+        Meta::Album *m_album;
+};
+
 #endif
