@@ -222,16 +222,20 @@ ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int alb
 {
 
     //amarok 1 stored all tracks of a compilation in different directories.
+    //when using its "Organize Collection" feature
     //try to detect these cases
     QString albumName = trackData.value( Field::ALBUM );
     int album = 0;
     QFileInfo file( trackData.value( Field::URL ) );
     QDir dir = file.dir();
     dir.setFilter( QDir::Files );
+    //name filtering should be case-insensitive because we do not use QDir::CaseSensitive
+    QStringList filters << "*.mp3" << "*.ogg" << "*.oga" << "*.flac" << "*.wma";
+    dir.setNameFilters( filters );
     int compilationId = 0;
     //do not check existing albums if there is more than one file in the directory
     //see comments in checkExistingAlbums
-    //TODO: we should ignore any non-audio files in the directory...
+    //TODO: find a better way to ignore non-audio files than the extension matching above
     if( !m_filesInDirs.contains( dir.absolutePath() ) )
     {
         m_filesInDirs.insert( dir.absolutePath(), dir.count() );
@@ -446,12 +450,12 @@ int
 ScanResultProcessor::checkExistingAlbums( const QString &album )
 {
     AMAROK_NOTIMPLEMENTED
-    //TODO: check if this album already exists, ignoring the albumartist
+    //check if this album already exists, ignoring the albumartist
     //if it does, and if each file of the album is alone in its directory
     //it's probably a compilation.
-    QString query = "SELECT urls.deviceid,urls.rpath,albums.id,albums.artist FROM urls "
-                    "LEFT JOIN tracks on urls.id = tracks.url LEFT JOIN albums ON "
-                    "tracks.album = albums.id WHERE albums.name = '%1';";
+    QString query = "SELECT urls.deviceid,urls.rpath,albums.id,albums.artist FROM urls_temp AS urls "
+                    "LEFT JOIN tracks_temp on urls.id = tracks_temp.url LEFT JOIN albums_temp AS albums ON "
+                    "tracks_temp.album = albums.id WHERE albums.name = '%1';";
     query = query.arg( m_collection->escape( album ) );
     QStringList result = m_collection->query( query );
     for( QListIterator<QString> iter( result ); iter.hasNext(); )
