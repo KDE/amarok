@@ -24,6 +24,7 @@
 #include <KFile>
 #include <KFileDialog>
 #include <KLocale>
+#include <KMessageBox>
 #include <ksharedptr.h>
 
 #include "CoverFetcher.h"
@@ -81,8 +82,22 @@ void UnsetCoverAction::init()
 void
 UnsetCoverAction::slotTriggered()
 {
-    foreach( Meta::AlbumPtr album, m_albums )
-        album->removeImage();
+    int button = KMessageBox::warningContinueCancel( this,
+                            i18np( "Are you sure you want to remove this cover from the Collection?",
+                                  "Are you sure you want to delete these %1 covers from the Collection?",
+                                  m_albums.count() ),
+                            QString(),
+                            KStandardGuiItem::del() );
+
+    if ( button == KMessageBox::Continue )
+    {
+        foreach( Meta::AlbumPtr album, m_albums )
+        {
+            kapp->processEvents();
+            if( album->canUpdateImage() )
+                album->removeImage();
+        }
+    }
 }
 
 /////////////////////////////////////
