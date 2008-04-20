@@ -83,6 +83,7 @@ LastFmSettings::setFingerprintUploadUrl( const QString &url )
 {
     AMAROK_NOTIMPLEMENTED
     // todo
+    Q_UNUSED( url );
 }
 
 

@@ -42,11 +42,13 @@ OpmlDirectoryInfoParser::~OpmlDirectoryInfoParser()
 void OpmlDirectoryInfoParser::getInfo(ArtistPtr artist)
 {
     AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( artist );
 }
 
 void OpmlDirectoryInfoParser::getInfo(AlbumPtr album)
 {
     AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( album );
 }
 
 void OpmlDirectoryInfoParser::getInfo(TrackPtr track)
@@ -59,12 +61,9 @@ void OpmlDirectoryInfoParser::getInfo(TrackPtr track)
 
     debug() << "OpmlDirectoryInfoParser: getInfo about feed: " << feed->url();
 
-
     m_rssDownloadJob = KIO::storedGet( feed->url(), KIO::Reload, KIO::HideProgressInfo );
     Amarok::ContextStatusBar::instance()->newProgressOperation( m_rssDownloadJob ).setDescription( i18n( "Fetching Podcast Info" ) );
     connect( m_rssDownloadJob, SIGNAL(result(KJob *)), SLOT( rssDownloadComplete( KJob*) ) );
-
-
 }
 
 void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
@@ -78,8 +77,6 @@ void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
     
     if ( downLoadJob != m_rssDownloadJob )
         return ; //not the right job, so let's ignore it
-
-
 
     QString rssString = ((KIO::StoredTransferJob* ) downLoadJob)->data();
 
@@ -103,11 +100,8 @@ void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
     QString imageUrl = QString();
     QDomElement image = element.firstChildElement( "image" );
     
-    if ( !image.isNull() ) {
-
+    if ( !image.isNull() )
         imageUrl = image.firstChildElement( "url" ).text();
-    }
-
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
             "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
@@ -116,13 +110,11 @@ void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
     infoHtml += title;
     infoHtml += "</strong><br><br>";
 
-    if ( !imageUrl.isEmpty() ) { 
+    if ( !imageUrl.isEmpty() ) 
         infoHtml += "<img src=\"" + imageUrl + "\" align=\"middle\" border=\"1\">";
-    }
     
     infoHtml += "<br><p align=\"left\" >" + description;
     infoHtml += "</BODY></HTML>";
-
 
     emit ( info( infoHtml ) );
 

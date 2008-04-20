@@ -46,10 +46,7 @@ CoverBling::CoverBling( QWidget* parent )
 
     setFixedHeight( 200 );
 
-    Collection *coll;
-    foreach( coll, CollectionManager::instance()->collections() )
-        if( coll->collectionId() == "localCollection" )
-            break;
+    Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->startAlbumQuery();
     qm->limitMaxResultSize( 10 );

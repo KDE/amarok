@@ -111,10 +111,7 @@ void LastFmEngine::updateCurrent()
 
         QString token;
 
-        Collection *coll;
-        foreach( coll, CollectionManager::instance()->collections() )
-            if( coll->collectionId() == "localCollection" )
-                break;
+        Collection *coll = CollectionManager::instance()->primaryCollection();
         QueryMaker *qm = coll->queryMaker();
         qm->startTrackQuery();
         qm->limitMaxResultSize( 10 );

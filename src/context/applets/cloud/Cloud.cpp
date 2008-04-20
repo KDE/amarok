@@ -136,7 +136,6 @@ void Cloud::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
 {
     Q_UNUSED( option );
 
-
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
     if ( ( contentsRect.width() < 40 ) || ( contentsRect.height() < 40 ) ) {
@@ -145,7 +144,9 @@ void Cloud::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
             childItem->hide();
         }
         return;
-    } else {
+    }
+    else
+    {
         foreach ( QGraphicsItem * childItem, QGraphicsItem::children () ) {
             childItem->show();
         }
@@ -154,23 +155,19 @@ void Cloud::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
     p->save();
     m_theme->paint( p, contentsRect/*, "background" */);
     p->restore();
-
-
 }
 
 void Cloud::showConfigurationInterface()
 {
-
 }
 
 void Cloud::configAccepted() // SLOT
 {
-
 }
 
 void Cloud::resize( qreal newWidth, qreal aspectRatio )
 {
-
+    Q_UNUSED( newWidth ); Q_UNUSED( aspectRatio );
 }
 
 bool Cloud::hasHeightForWidth() const
@@ -186,9 +183,6 @@ qreal Cloud::heightForWidth(qreal width) const
 
 void Cloud::addText( const QString &text, int weight )
 {
-    //debug() << "adding new text: " << text << " size: " << weight << endl;
-
-    
     // create the new text item
     CloudTextItem * item = new CloudTextItem ( text, this, 0 );
     //item->setParentItem( this );
@@ -209,11 +203,10 @@ void Cloud::addText( const QString &text, int weight )
     }
 
     // Check if item will fit on the current line, if not, print current line   
-    if ( ( itemRect.width() + m_runningX ) > parentRect.width() ) {
-
+    if ( ( itemRect.width() + m_runningX ) > parentRect.width() )
+    {
         adjustCurrentLinePos();
         m_runningX = 0;
-
     }
 
     m_runningX += itemRect.width();
@@ -222,13 +215,11 @@ void Cloud::addText( const QString &text, int weight )
     m_textItems.append( item );
 
     connect( item, SIGNAL( clicked(const QString&) ), this, SLOT( cloudItemActivated(const QString&) ) );
-
 }
 
 void Cloud::adjustCurrentLinePos()
 {
     if ( m_currentLineItems.isEmpty() ) return;
-
 
     int totalWidth = 0;
     int maxHeight = 0;
@@ -236,14 +227,13 @@ void Cloud::adjustCurrentLinePos()
     int offsetY = 0;
     int currentX = 0;
 
-
     CloudTextItem * currentItem;
     QRectF currentItemRect;
     
-
     //First we run through the list to get the max height of an item
     // and the total width of all items.
-    foreach( currentItem, m_currentLineItems ) {
+    foreach( currentItem, m_currentLineItems )
+    {
         //currentItem->setTextWidth ( -1 ); //do not break lines, ever!
         //currentItem->adjustSize();
         currentItemRect = currentItem->boundingRect();
@@ -267,14 +257,15 @@ void Cloud::adjustCurrentLinePos()
 
     //then remove all items from the list, setting the correct position of each
     // in the process
-    while (!m_currentLineItems.isEmpty()) {
+    while( !m_currentLineItems.isEmpty() )
+    {
         currentItem = m_currentLineItems.takeFirst();
         currentItemRect = currentItem->boundingRect();
         offsetY = (int)( (maxHeight - currentItemRect.height()) / 2 );
 
         //until we get a scroll area, don't print beyound the bottom of the rect
         if ( m_runningY + offsetY + m_maxHeightInFirstLine + currentItemRect.height() >  m_theme->elementRect( "cloud" ).bottomLeft().y() ) {
-            m_textItems.remove( currentItem );
+            m_textItems.removeAll( currentItem );
             delete currentItem;
         } else {
             currentItem->setPos( QPointF( currentX + offsetX, m_runningY + offsetY + m_maxHeightInFirstLine ) );
@@ -283,17 +274,11 @@ void Cloud::adjustCurrentLinePos()
     }
 
     m_runningY += maxHeight;
-
 }
-
-
-
-
 
 CloudTextItem::CloudTextItem( const QString &text, QGraphicsItem * parent, QGraphicsScene * scene )
     : QGraphicsTextItem ( text, parent, scene )
 {
-
     setAcceptsHoverEvents( true );
     m_timeLine = new QTimeLine( 1000, this );
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( colorFadeSlot( int ) ) );
@@ -309,28 +294,21 @@ void CloudTextItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
     
     setDefaultTextColor( QColor( 0, 127, 255 ) );
     update();
-
-
 }
 
 void CloudTextItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
     Q_UNUSED( event );
-   //setDefaultTextColor( QColor( 0, 0, 0 ) );
 
-
-    //debug() << "CloudTextItem::hoverLeaveEvent!! " << endl;
     // Construct a 1-second timeline with a frame range of 0 - 30
     m_timeLine->setFrameRange(0, 30);
     m_timeLine->start();
-
 }
 
-void CloudTextItem::colorFadeSlot( int step ) {
-
+void CloudTextItem::colorFadeSlot( int step )
+{
     int colorValue = static_cast<int>(255 - step * 8.5);
     if ( step == 100 ) colorValue = 0;
-
 
     setDefaultTextColor( QColor( 0, colorValue / 2, colorValue ) );
     update();
@@ -345,12 +323,11 @@ void CloudTextItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 
 void Cloud::drawCloud()
 {
-        //clear all and start over
+    //clear all and start over
     m_maxHeightInFirstLine = 0.0;
     
-    while ( !m_textItems.isEmpty() ) {
+    while ( !m_textItems.isEmpty() )
         delete m_textItems.takeFirst();
-    }
 
 
     //make the cloud map valuse sane:
@@ -374,12 +351,11 @@ void Cloud::drawCloud()
 
 void Cloud::cropAndNormalize( int minCount, int maxCount )
 {
-
     int min = 100000;
     int max = 0;
     
-    foreach( QVariant weight, m_weights ) {
-
+    foreach( QVariant weight, m_weights )
+    {
         if ( weight.toInt() < min )
             min = weight.toInt();
         if (  weight.toInt() > max )
@@ -419,13 +395,10 @@ void Cloud::cropAndNormalize( int minCount, int maxCount )
 
     m_strings = m_newStrings;
     m_weights = m_newWeights;
-
-    
 }
 
 void Cloud::cloudItemActivated( const QString & text )
 {
-
     kDebug() << "cloudItemActivated: '" << text;
     //find the index of this item in the list
 
@@ -440,7 +413,6 @@ void Cloud::cloudItemActivated( const QString & text )
 
     kDebug() << component << ", " << function << ", " << arg1 << ", " << arg2 << ", " << arg3 << ", " << arg4;
 
-    //QDBusInterface interface( "org.kde.amarok", component );
     QDBusInterface interface( "org.kde.amarok", component );
 
     if ( !arg4.isEmpty() )
@@ -450,9 +422,7 @@ void Cloud::cloudItemActivated( const QString & text )
     else if ( !arg2.isEmpty() )
         interface.call( function, arg1, arg2 );
     else if ( !arg1.isEmpty() )
-        interface.call( function, arg1 );
-
-    
+        interface.call( function, arg1 );   
 }
 
 #include "Cloud.moc"

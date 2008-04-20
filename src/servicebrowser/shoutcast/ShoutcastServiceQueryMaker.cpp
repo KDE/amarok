@@ -387,6 +387,8 @@ QueryMaker * ShoutcastServiceQueryMaker::addFilter(qint64 value, const QString &
 {
     DEBUG_BLOCK
 
+    Q_UNUSED( matchBegin ); Q_UNUSED( matchEnd );
+
     //debug() << "value: " << value;
     //for now, only accept artist filters
     if ( value == valGenre ) {

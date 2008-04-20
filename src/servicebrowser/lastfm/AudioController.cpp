@@ -127,6 +127,8 @@ AudioController::engineStateChanged( Phonon::State currentState, Phonon::State o
 //                 // not supposed to pause the radio, so we'll just stop it
 //                 The::engineController()->stop();
 //                 break;
+            default:
+                break;
         }
     }
 }

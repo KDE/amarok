@@ -459,10 +459,7 @@ void CoverManager::slotArtistSelected() //SLOT
 
     Meta::AlbumList albums;
 
-    Collection *coll = 0;
-    foreach( coll, CollectionManager::instance()->collections() )
-        if( coll->collectionId() == "localCollection" )
-            break;
+    Collection *coll = CollectionManager::instance()->primaryCollection();
     
     QueryMaker *qm = coll->queryMaker();
     qm->startAlbumQuery();
@@ -685,10 +682,7 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
 
 void CoverManager::playSelectedAlbums()
 {
-    Collection *coll = 0;
-    foreach( coll, CollectionManager::instance()->collections() )
-        if( coll->collectionId() == "localCollection" )
-            break;
+    Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     foreach( CoverViewItem *item, selectedItems() )
     {

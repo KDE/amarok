@@ -183,7 +183,7 @@ void ServiceInfo::configAccepted() // SLOT
 
 void ServiceInfo::resize( qreal newWidth, qreal aspectRatio )
 {
-
+    Q_UNUSED( newWidth ); Q_UNUSED( aspectRatio );
 }
 
 bool ServiceInfo::hasHeightForWidth() const
