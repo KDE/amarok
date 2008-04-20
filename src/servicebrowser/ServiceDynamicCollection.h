@@ -40,7 +40,7 @@ public:
 
     Q_OBJECT
     public:
-        ServiceDynamicCollection( const QString &id, const QString &prettyName );
+        ServiceDynamicCollection( ServiceBase * service, const QString &id, const QString &prettyName );
         virtual ~ServiceDynamicCollection();
 
         virtual void startFullScan() {} //TODO

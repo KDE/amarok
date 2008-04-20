@@ -37,9 +37,10 @@ using namespace Meta;
 
 //ServiceCollection
 
-ServiceCollection::ServiceCollection( )
+ServiceCollection::ServiceCollection( ServiceBase * service )
     : Collection()
     , MemoryCollection()
+    , m_service( service )
 {
 
 
@@ -75,6 +76,11 @@ ServiceCollection::prettyName() const
     return "service collection";
 }
 
+ServiceBase * ServiceCollection::service()
+{
+    return m_service;
+}
+
 //the two following functions are brought to you by the department of redundancy department
 
 void ServiceCollection::forceUpdate()
@@ -87,6 +93,8 @@ void ServiceCollection::emitUpdated()
     emit( updated() );
 
 }
+
+
 
 
 #include "ServiceCollection.moc"

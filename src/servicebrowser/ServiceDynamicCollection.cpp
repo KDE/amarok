@@ -19,8 +19,8 @@
 
 #include "ServiceDynamicCollection.h"
 
-ServiceDynamicCollection::ServiceDynamicCollection( const QString &id, const QString &prettyName )
-    : ServiceCollection()
+ServiceDynamicCollection::ServiceDynamicCollection( ServiceBase * service, const QString &id, const QString &prettyName )
+    : ServiceCollection( service )
     , m_collectionId( id )
     , m_prettyName( prettyName )
 {

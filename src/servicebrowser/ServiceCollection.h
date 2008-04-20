@@ -22,15 +22,16 @@
 
 #include "Collection.h"
 #include "support/MemoryCollection.h"
-#include "jamendo/JamendoDatabaseHandler.h"
+#include "ServiceBase.h"
+
 
 #include <QtGlobal>
 
-class ServiceCollection : public Collection, public MemoryCollection
+class AMAROK_EXPORT ServiceCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
-        ServiceCollection( );
+        ServiceCollection( ServiceBase * service = 0 );
         virtual ~ServiceCollection();
 
         virtual void startFullScan();
@@ -40,7 +41,13 @@ class ServiceCollection : public Collection, public MemoryCollection
         virtual QString prettyName() const;
 
         void forceUpdate();
-        void emitUpdated(); 
+        void emitUpdated();
+
+        ServiceBase * service();
+
+    private:
+
+        ServiceBase * m_service;
 
 };
 

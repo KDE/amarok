@@ -25,8 +25,8 @@
 
 using namespace Meta;
 
-AmpacheServiceCollection::AmpacheServiceCollection( const QString &server, const QString &sessionId )
-    : ServiceDynamicCollection( "AmpacheCollection", "AmpacheCollection" )
+AmpacheServiceCollection::AmpacheServiceCollection( ServiceBase * service, const QString &server, const QString &sessionId )
+    : ServiceDynamicCollection( service, "AmpacheCollection", "AmpacheCollection" )
     , m_server( server )
     , m_sessionId( sessionId )
 {
@@ -116,7 +116,7 @@ void AmpacheServiceCollection::parseTrack( const QString &xml )
     QString title = element.text();
     if ( title.isEmpty() ) title = "Unknown";
 
-    m_urlTrack = new AmpacheTrack( title );
+    m_urlTrack = new AmpacheTrack( title, service() );
     TrackPtr trackPtr( m_urlTrack );
 
     //debug() << "Adding track: " <<  title;

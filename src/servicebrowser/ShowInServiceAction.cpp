@@ -41,6 +41,10 @@ void ShowInServiceAction::slotTriggered()
     DEBUG_BLOCK
     
     //artist or album?
+
+    if ( m_service == 0 )
+        return;
+            
     MainWindow::self()->showBrowser( "Internet" );
     m_service->setFilter( QString( "artist:\"%1\"" ).arg( m_track->artist()->prettyName() ) );
     m_service->sortByArtistAlbum();

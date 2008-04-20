@@ -28,7 +28,7 @@
 #include <KLocale>
 
 LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
-    : ServiceDynamicCollection( "last.fm", "last.fm" ) 
+    : ServiceDynamicCollection( 0, "last.fm", "last.fm" ) 
 {
 
     m_userName = userName;

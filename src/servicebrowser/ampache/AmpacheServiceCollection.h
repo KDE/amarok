@@ -33,7 +33,7 @@ class AmpacheServiceCollection : public ServiceDynamicCollection
 {
 public:
 
-    AmpacheServiceCollection( const QString &server, const QString &sessionId );
+    AmpacheServiceCollection( ServiceBase * service, const QString &server, const QString &sessionId );
 
     virtual ~AmpacheServiceCollection();
 

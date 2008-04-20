@@ -22,7 +22,7 @@
 #include "ScriptableServiceQueryMaker.h"
 
 ScriptableServiceCollection::ScriptableServiceCollection( const QString &name,  AmarokProcIO * script )
-    : ServiceDynamicCollection( name, name ) 
+    : ServiceDynamicCollection( 0, name, name ) 
  , m_script( script )
 {
 }
