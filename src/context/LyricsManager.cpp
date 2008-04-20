@@ -122,6 +122,11 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
     }
     else
     {
+        if( !The::engineController()->currentTrack() )
+        {
+            return;
+        }
+
         lyrics = el.text();
         The::engineController()->currentTrack()->setCachedLyrics( xmldoc); // TODO: setLyricsByPath?
 
