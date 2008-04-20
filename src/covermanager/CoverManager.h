@@ -93,11 +93,6 @@ class CoverManager : public QSplitter, public Meta::Observer
         void coverFetcherError();
         void stopFetching();
 
-
-        void setCustomSelectedCovers();
-        void fetchSelectedCovers();
-        void deleteSelectedCovers();
-        void viewSelectedCover();
         void playSelectedAlbums();
 
     private:

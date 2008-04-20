@@ -40,7 +40,6 @@
 #include <KLineEdit>
 #include <KLocale>
 #include <KMenu>    //showCoverMenu()
-#include <KMessageBox>    //showCoverMenu()
 #include <KPushButton>
 #include <KSqueezedTextLabel> //status label
 #include <KStandardDirs>   //KGlobal::dirs()
@@ -540,12 +539,7 @@ void CoverManager::slotArtistSelected() //SLOT
     updateStatusBar();
 }
 
-void CoverManager::viewSelectedCover()
-{
-    CoverViewItem* item = selectedItems().first();
-    viewCover( item->albumPtr(), this );
-}
-
+// called when a cover item is clicked
 void CoverManager::coverItemExecuted( QListWidgetItem *item ) //SLOT
 {
     #define item static_cast<CoverViewItem*>(item)
@@ -688,69 +682,6 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
         }
     }
 }
-
-void CoverManager::setCustomSelectedCovers()
-{
-    //function assumes something is selected
-    CoverViewItem* first = selectedItems().first();
-
-    Meta::TrackPtr track = first->albumPtr()->tracks().first();
-    QString startPath;
-    if( track )
-    {
-        KUrl url = track->playableUrl();
-        startPath = url.directory();
-    }
-    KUrl file = KFileDialog::getImageOpenUrl( startPath, this, i18n( "Select Cover Image File" ) );
-    if ( !file.isEmpty() ) {
-        kapp->processEvents();    //it may takes a while so process pending events
-        QString tmpFile;
-        QImage image( file.fileName() );
-        foreach( CoverViewItem *item, selectedItems() )
-        {
-            item->albumPtr()->setImage( image );
-            item->loadCover();
-        }
-        KIO::NetAccess::removeTempFile( tmpFile );
-    }
-}
-
-void CoverManager::fetchSelectedCovers()
-{
-    foreach( CoverViewItem *item, selectedItems() )
-        m_fetchCovers += item->albumPtr();
-
-    m_fetchingCovers += selectedItems().count();
-
-    m_fetcher->queueAlbums( m_fetchCovers );
-
-    updateStatusBar();
-}
-
-
-void CoverManager::deleteSelectedCovers()
-{
-    QList<CoverViewItem*> selected = selectedItems();
-
-    int button = KMessageBox::warningContinueCancel( this,
-                            i18np( "Are you sure you want to remove this cover from the Collection?",
-                                  "Are you sure you want to delete these %1 covers from the Collection?",
-                                  selected.count() ),
-                            QString(),
-                            KStandardGuiItem::del() );
-
-    if ( button == KMessageBox::Continue ) {
-        foreach( CoverViewItem *item, selected ) {
-            kapp->processEvents();
-            if( item->albumPtr()->canUpdateImage() )
-            {
-                item->albumPtr()->setImage( QImage() );
-                coverRemoved( item->artist(), item->album() );
-            }
-        }
-    }
-}
-
 
 void CoverManager::playSelectedAlbums()
 {
