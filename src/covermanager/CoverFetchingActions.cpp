@@ -20,6 +20,7 @@
 #include "CoverFetchingActions.h"
 
 #include <QAction>
+#include <KApplication>
 #include <KIcon>
 #include <KFile>
 #include <KFileDialog>
@@ -82,7 +83,7 @@ void UnsetCoverAction::init()
 void
 UnsetCoverAction::slotTriggered()
 {
-    int button = KMessageBox::warningContinueCancel( this,
+    int button = KMessageBox::warningContinueCancel( qobject_cast<QWidget*>( parent() ),
                             i18np( "Are you sure you want to remove this cover from the Collection?",
                                   "Are you sure you want to delete these %1 covers from the Collection?",
                                   m_albums.count() ),
