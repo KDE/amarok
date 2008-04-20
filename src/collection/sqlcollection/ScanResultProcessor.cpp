@@ -230,7 +230,8 @@ ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int alb
     QDir dir = file.dir();
     dir.setFilter( QDir::Files );
     //name filtering should be case-insensitive because we do not use QDir::CaseSensitive
-    QStringList filters << "*.mp3" << "*.ogg" << "*.oga" << "*.flac" << "*.wma";
+    QStringList filters;
+    filters << "*.mp3" << "*.ogg" << "*.oga" << "*.flac" << "*.wma";
     dir.setNameFilters( filters );
     int compilationId = 0;
     //do not check existing albums if there is more than one file in the directory
