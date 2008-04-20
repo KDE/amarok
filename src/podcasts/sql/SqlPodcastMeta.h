@@ -74,7 +74,7 @@ class SqlPodcastChannel : public PodcastChannel
 
         //SqlPodcastChannel specific methods
         int id() const { return m_id; };
-        void addEpisode( SqlPodcastEpisodePtr episode ) { m_sqlEpisodes << episode; };
+        virtual void addEpisode( SqlPodcastEpisodePtr episode ) { m_sqlEpisodes << episode; };
 
     private:
         void updateInDb();

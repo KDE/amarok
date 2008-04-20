@@ -166,7 +166,7 @@ namespace Amarok
         }
 
         void applySettings();
-        void show( Meta::TrackPtr track );
+        virtual void show( Meta::TrackPtr track );
 
     public slots:
         /**

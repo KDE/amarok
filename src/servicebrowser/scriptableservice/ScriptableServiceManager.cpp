@@ -84,6 +84,8 @@ int ScriptableServiceManager::insertItem(const QString & serviceName, int level,
     }
 
     m_serviceMap[serviceName]->insertItem( level, parentId, name, infoHtml, callbackData, playableUrl );
+
+    return -1; // FIXME: what should this return?
 }
 
 
@@ -97,8 +99,6 @@ void ScriptableServiceManager::donePopulating(const QString & serviceName, int p
     }
 
     m_serviceMap[serviceName]->donePopulating( parentId );
-
-
 }
 
 

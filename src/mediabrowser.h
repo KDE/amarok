@@ -185,7 +185,7 @@ class MediaQueue : public K3ListView
         void itemCountChanged();
 
     private slots:
-        void selectAll() {Q3ListView::selectAll(true); }
+        virtual void selectAll() {Q3ListView::selectAll(true); }
         void slotShowContextMenu( Q3ListViewItem* item, const QPoint& point, int );
         void slotDropped (QDropEvent* e, Q3ListViewItem* parent, Q3ListViewItem* after);
 
@@ -331,7 +331,7 @@ class MediaView : public K3ListView
         void rmbPressed( Q3ListViewItem*, const QPoint&, int );
         void renameItem( Q3ListViewItem *item );
         void slotExpand( Q3ListViewItem* );
-        void selectAll() { Q3ListView::selectAll(true); }
+        virtual void selectAll() { Q3ListView::selectAll(true); }
         void invokeItem( Q3ListViewItem*, const QPoint &, int column );
         void invokeItem( Q3ListViewItem* );
 
