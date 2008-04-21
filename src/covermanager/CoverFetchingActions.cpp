@@ -125,3 +125,5 @@ SetCustomCoverAction::slotTriggered()
             album->setImage( image );
     }
 }
+
+#include "coverfetchingactions.moc"
