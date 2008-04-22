@@ -86,7 +86,7 @@ class OSDWidget : public QWidget
 
         /** distance from screen edge */
         static const int MARGIN = 15;
-        static const double TRANSLUCENCY = 0.7;
+        static const long TRANSLUCENCY = 0.7;
 
         uint        m_m;
         QSize       m_size;
