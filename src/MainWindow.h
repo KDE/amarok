@@ -97,7 +97,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void showStatistics();
         void toolsMenuAboutToShow();
         void slotToggleFocus();
-        void slotToggleToolbar();
 //         void slotEditFilter();
         void slotSetFilter( const QString &filter );
 
@@ -117,8 +116,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 
     private:
         void setRating( int n );
-
-        enum MenuId { ID_SHOW_TOOLBAR = 2000, ID_SHOW_PLAYERWINDOW };
 
         QMenuBar      *m_menubar;
         KMenu         *m_toolsMenu;

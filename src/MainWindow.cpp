@@ -710,13 +710,6 @@ void MainWindow::slotToggleFocus() //SLOT
 //         m_browsers->currentWidget()->setFocus();
 }
 
-void MainWindow::slotToggleToolbar() //SLOT
-{
-    m_controlBar->setVisible( !m_controlBar->isHidden() );
-    AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
-    Amarok::actionCollection()->action( "toggle_toolbar" )->setText( !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
-}
-
 void MainWindow::toolsMenuAboutToShow() //SLOT
 {
     Amarok::actionCollection()->action( "equalizer" )->setEnabled( false ); //TODO phonon
@@ -844,15 +837,6 @@ void MainWindow::createActions()
     action = new KAction( KIcon( "view-media-equalizer-amarok" ), i18n( "E&qualizer"), this );
     connect( action, SIGNAL( triggered(bool) ), kapp, SLOT( slotConfigEqualizer() ) );
     ac->addAction( "equalizer", action );
-
-    action = new KAction( this );
-    action->setText( i18n("Hide Toolbar") );
-
-    //FIXME m_controlBar is initialised after the actions are created so we need to change the text of this action
-    //when the menu is shown
-    //toggleToolbar->setText( !m_controlBar->isHidden() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
-    connect( action, SIGNAL( triggered(bool) ), SLOT( slotToggleToolbar() ) );
-    ac->addAction( "toggle_toolbar", action );
 
 //     KAction *update_podcasts = new KAction( this );
 //     update_podcasts->setText( i18n( "Update Podcasts" ) );
@@ -1176,10 +1160,6 @@ void MainWindow::createMenus()
     m_settingsMenu = new KMenu( m_menubar );
     m_settingsMenu->setTitle( i18n("&Settings") );
     //TODO use KStandardAction or KXmlGuiWindow
-#ifndef Q_WS_MAC
-    m_settingsMenu->addAction( actionCollection()->action( "toggle_toolbar" ) );
-    m_settingsMenu->addSeparator();
-#endif
 
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
