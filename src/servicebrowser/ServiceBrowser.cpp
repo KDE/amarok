@@ -23,8 +23,6 @@
 #include "debug.h"
 #include "ServiceListDelegate.h"
 
-#include <KIconLoader>
-
 ServiceBrowser * ServiceBrowser::s_instance = 0;
 
 ServiceBrowser * ServiceBrowser::instance()

@@ -1,6 +1,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005-2006 Martin Aumueller <aumuell@reserv.at>
-// (c) 2005 Seb Ruiz <ruiz@kde.org>  
+// (c) 2005 Seb Ruiz <ruiz@kde.org>
 // (c) 2006 T.R.Shashwath <trshash84@gmail.com>
 /***************************************************************************
  *                                                                         *
@@ -16,7 +16,7 @@
 
 #include "mediabrowser.h"
 
-#include <config-amarok.h>  
+#include <config-amarok.h>
 
 #include "Amarok.h"
 #include "amarokconfig.h"
@@ -79,7 +79,6 @@
 #include <KDirLister>
 #include <KFileDialog>
 #include <KGlobal>
-#include <KIconLoader>
 #include <KInputDialog>
 #include <KIO/Job>
 #include <KLocale>
@@ -405,7 +404,7 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
         if( md && md->view() )
             md->view()->hide();
     }
-            
+
     if( index < 0 )
     {
         m_currentDevice = m_devices.last();

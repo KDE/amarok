@@ -654,7 +654,7 @@ void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
     case Phonon::LoadingState:
         mainWindow()->setPlainCaption( i18n( AMAROK_CAPTION ) );
         TrackToolTip::instance()->clear();
-        Amarok::OSD::instance()->setImage( QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+        Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         break;
 
     case Phonon::PlayingState:

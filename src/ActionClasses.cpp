@@ -31,7 +31,6 @@
 #include <KAuthorized>
 #include <KHBox>
 #include <KHelpMenu>
-#include <KIconLoader>
 #include <KLineEdit>
 #include <KLocale>
 #include <KPushButton>
@@ -342,13 +341,13 @@ RandomAction::RandomAction( KActionCollection *ac ) :
     SelectAction( i18n( "Ra&ndom" ), &AmarokConfig::setRandomMode, ac, "random_mode" )
 {
     QStringList items;
-    items << i18nc( "State, as in disabled", "&Off" ) 
+    items << i18nc( "State, as in disabled", "&Off" )
           << i18nc( "Items, as in music"   , "&Tracks" )
           << i18n( "&Albums" );
     setItems( items );
 
     setCurrentItem( AmarokConfig::randomMode() );
-    
+
     QStringList icons;
     icons << "go-next-amarok"
           << "media-playlist-shuffle-amarok"
@@ -393,7 +392,7 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
                             << i18n( "&Album" ) << i18n( "&Playlist" ) );
     setIcons( QStringList() << "go-down-amarok" << "media-track-repeat" << "media-album-repeat" << "media-playlist-repeat-amarok" );
     setCurrentItem( AmarokConfig::repeat() );
-    
+
     connect( this, SIGNAL( triggered( int ) ), The::playlistModel(), SLOT( playlistModeChanged() ) );
 }
 

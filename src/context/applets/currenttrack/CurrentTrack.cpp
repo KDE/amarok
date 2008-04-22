@@ -55,7 +55,7 @@ void CurrentTrack::init()
     m_theme->setContentType( Context::Svg::SingleImage );
     m_width = globalConfig().readEntry( "width", 500 );
 
-    KIconLoader iconLoader;
+    KIconLoader *iconLoader = KIconLoader::global();
 
     const QColor textColor = Plasma::Theme::self()->textColor();
     QFont labelFont;
@@ -79,13 +79,13 @@ void CurrentTrack::init()
     m_albumLabel->setBrush( textColor );
     m_albumLabel->setFont( labelFont );
 
-    m_scoreLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "emblem-favorite", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
+    m_scoreLabel = new QGraphicsPixmapItem( QPixmap(iconLoader->loadIcon( "emblem-favorite", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
     m_scoreLabel->setToolTip( i18n( "Score" ) );
 
-    m_numPlayedLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "view-refresh", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
+    m_numPlayedLabel = new QGraphicsPixmapItem( QPixmap(iconLoader->loadIcon( "view-refresh", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
     m_numPlayedLabel->setToolTip( i18n( "Play Count" ) );
 
-    m_playedLastLabel = new QGraphicsPixmapItem( QPixmap(iconLoader.loadIcon( "user-away-extended", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
+    m_playedLastLabel = new QGraphicsPixmapItem( QPixmap(iconLoader->loadIcon( "user-away-extended", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
     m_playedLastLabel->setToolTip( i18n( "Last Played") );
 
     m_scoreLabel->setTransformationMode( Qt::SmoothTransformation );

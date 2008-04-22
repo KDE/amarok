@@ -28,7 +28,6 @@
 #include <KCursor> //waiting cursor
 #include <KDialog>
 #include <KHBox>
-#include <KIconLoader>
 #include <KFileDialog>
 #include <KIO/Job>
 #include <KLineEdit>
@@ -304,7 +303,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
         finishWithError( i18n("Internal error, no albums in queue"), job );
         return;
     }
-    
+
     if ( job ) {
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
         m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );

@@ -38,7 +38,6 @@
 #include <KAboutData>
 #include <KApplication>
 #include <KFileDialog>
-#include <KIconLoader>
 #include <KIO/NetAccess>
 #include <KLocale>
 #include <KMenu>

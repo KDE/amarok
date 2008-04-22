@@ -23,7 +23,7 @@
 #include "meta/CurrentTrackActionsCapability.h"
 #include "meta/Meta.h"
 #include "QueryMaker.h"
-#include <config-amarok.h>  
+#include <config-amarok.h>
 #include "PixmapViewer.h"
 #include "playlist/PlaylistModel.h"
 
@@ -35,7 +35,6 @@
 #include <KConfig>
 #include <KCursor>
 #include <KFileDialog>
-#include <KIconLoader>
 #include <KIO/NetAccess>
 #include <KLineEdit>
 #include <KLocale>
@@ -84,7 +83,7 @@ class ArtistItem : public QTreeWidgetItem
         {
             setText( 0, artist->prettyName() );
         }
-    
+
         ArtistItem( const QString &text, QTreeWidget *parent = 0 )
             : QTreeWidgetItem( parent )
             , m_artist( 0 )
@@ -460,7 +459,7 @@ void CoverManager::slotArtistSelected() //SLOT
     Meta::AlbumList albums;
 
     Collection *coll = CollectionManager::instance()->primaryCollection();
-    
+
     QueryMaker *qm = coll->queryMaker();
     qm->startAlbumQuery();
     if( item != m_artistView->invisibleRootItem()->child( 0 ) )

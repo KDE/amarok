@@ -65,7 +65,6 @@
 #include <kfileplacesmodel.h>
 #include <KGenericFactory>
 #include <KGlobal>
-#include <KIconLoader>
 #include <KLocale>
 #include <KMenu>
 #include <KMessageBox>

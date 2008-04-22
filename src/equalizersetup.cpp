@@ -2,7 +2,7 @@
  Setup dialog for the equalizer
 
  (c) 2004 Mark Kretschmann <markey@web.de>
- (c) 2005 Seb Ruiz <ruiz@kde.org>  
+ (c) 2005 Seb Ruiz <ruiz@kde.org>
  (c) 2005 Markus Brueffer <markus@brueffer.de>
 ***************************************************************************/
 
@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "equalizersetup.h"
 
 #include "Amarok.h"
@@ -26,7 +26,6 @@
 
 #include <KApplication>
 #include <KComboBox>
-#include <KIconLoader>
 #include <KInputDialog>  //presets
 #include <KLocale>
 #include <KMenu>

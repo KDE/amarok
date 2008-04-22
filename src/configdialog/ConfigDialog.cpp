@@ -29,7 +29,6 @@
 #include "PlaybackConfig.h"
 #include "ServiceConfig.h"
 
-#include <KIconLoader>
 #include <KLocale>
 #include <KStandardDirs>
 

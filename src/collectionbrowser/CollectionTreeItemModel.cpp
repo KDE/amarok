@@ -21,7 +21,6 @@
 
 #include <KLocale>
 #include <KIcon>
-#include <KIconLoader>
 #include <QMimeData>
 #include <QPixmap>
 #include <QTimer>
@@ -95,7 +94,7 @@ CollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const {
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(parent.internalPointer());
     //we added the collection level so we have to be careful with the item level
-    return !item->isDataItem() || item->level() <= m_levelType.count(); 
+    return !item->isDataItem() || item->level() <= m_levelType.count();
 
 }
 

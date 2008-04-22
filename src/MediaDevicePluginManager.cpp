@@ -31,7 +31,6 @@
 #include <KApplication>
 #include <KComboBox>
 #include <KConfig>
-#include <KIconLoader>
 #include <KLineEdit>
 #include <KLocale>
 #include <KPushButton>
@@ -506,7 +505,7 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, QWidget *parent, const char *
                             ( sa->isAccessible() ?
                                 Qt::escape( sa->filePath() ) :
                                 Qt::escape( i18n( "Not Mounted" ) ) ) );
-            } 
+            }
         }
     }
 

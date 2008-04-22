@@ -20,7 +20,6 @@
 
 #include <KLocale>
 #include <KIcon>
-#include <KIconLoader>
 #include <QMapIterator>
 #include <QMimeData>
 #include <QPixmap>
@@ -28,7 +27,7 @@
 
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collection * collection, const QList<int> &levelType )
-    :CollectionTreeItemModelBase( ) 
+    :CollectionTreeItemModelBase( )
 {
     m_collection = collection;
     //we only have one collection that, by its very nature, is always expanded
@@ -47,7 +46,7 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
     m_rootItem = new CollectionTreeItem( m_collection, 0 );
 
     d->m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, new CollectionTreeItem( Meta::DataPtr(0), 0 ) ) );
-    
+
     updateHeaderText();
     m_expandedItems.clear();
     reset(); //resets the whole model, as the data changed

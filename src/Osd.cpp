@@ -43,7 +43,7 @@ namespace ShadowEngine
 
 namespace Amarok
 {
-    QImage icon() { return QImage( KIconLoader().iconPath( "amarok", -KIconLoader::SizeHuge ) ); }
+    QImage icon() { return QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ); }
 }
 
 #define MOODBAR_HEIGHT 20
