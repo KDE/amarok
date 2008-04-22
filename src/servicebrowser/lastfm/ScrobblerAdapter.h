@@ -16,6 +16,7 @@
 
 #include "EngineObserver.h"
 #include "core/Scrobbler-12.h"
+#include "meta/Meta.h"
 
 #include <QVariant>
 
@@ -37,6 +38,7 @@ public:
 
 private slots:
     void statusChanged( int statusCode, QVariant data );
+    void slotTrackLoved( Meta::TrackPtr );
 
 private:
     void resetVariables();

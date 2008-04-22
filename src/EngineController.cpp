@@ -318,6 +318,13 @@ EngineController::playPause() //SLOT
 }
 
 void
+EngineController::loveTrack()
+{
+    if( m_currentTrack )
+        emit loveTrack( m_currentTrack );
+}
+
+void
 EngineController::seek( int ms ) //SLOT
 {
     if( m_media->isSeekable() )

@@ -343,6 +343,11 @@ namespace Amarok
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Track : AmarokConfig::EnumRepeat::Off );
     }
 
+    void DbusPlayerHandler::loveTrack()
+    {
+        The::engineController()->loveTrack();
+    }
+
     void DbusPlayerHandler::mediaDeviceMount()
     {
         //if ( MediaBrowser::instance()->currentDevice() )

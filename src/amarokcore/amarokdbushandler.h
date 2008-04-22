@@ -79,6 +79,7 @@ class DbusPlayerHandler : public QObject
       virtual void enableRandomMode( bool enable );
       virtual void enableRepeatPlaylist( bool enable );
       virtual void enableRepeatTrack( bool enable );
+      virtual void loveTrack();
       virtual void mediaDeviceMount();
       virtual void mediaDeviceUmount();
       virtual void mute();

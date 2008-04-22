@@ -78,6 +78,7 @@ public slots:
     void pause();
     void stop( bool forceInstant = false );
     void playPause(); //pauses if playing, plays if paused or stopped
+    void loveTrack();
 
     void seek( int ms );
     void seekRelative( int ms );
@@ -93,6 +94,7 @@ public slots:
 signals:
     void statusText( const QString& );
     void trackFinished();
+    void loveTrack( Meta::TrackPtr );
 
 protected:
     void playUrl( const KUrl &url, uint offset );

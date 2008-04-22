@@ -1006,6 +1006,12 @@ void MainWindow::createActions()
     ac->addAction( "mute", action );
     connect( action, SIGNAL( triggered() ), ec, SLOT( mute() ) );
 
+    action = new KAction( i18n( "Love Current Track" ), this );
+    action->setObjectName( "loveTrack" );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_L ) );
+    ac->addAction( "loveTrack", action );
+    connect( action, SIGNAL(triggered()), ec, SLOT(loveTrack()) );
+
     action = new KAction( i18n( "Rate Current Track: 1" ), this );
     action->setObjectName( "rate1" );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_1 ) );

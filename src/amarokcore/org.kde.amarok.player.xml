@@ -124,6 +124,7 @@
    <method name="enableRepeatTrack" >
       <arg name="enable" type="b" direction="in"/>
     </method>
+   <method name="loveTrack" />
    <method name="mediaDeviceMount" />
    <method name="mediaDeviceUmount" />
    <method name="mute" />

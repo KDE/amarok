@@ -20,6 +20,7 @@
 #include "MetaConstants.h"
 #include "meta/LastFmMeta.h"
 #include "TheInstances.h"
+#include "libUnicorn/WebService/Request.h"
 
 
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &username, const QString &password )
@@ -31,6 +32,7 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &username, co
     resetVariables();
 
     connect( m_manager, SIGNAL( status( int, QVariant ) ), this, SLOT( statusChanged( int, QVariant ) ) );
+    connect( The::engineController(), SIGNAL(loveTrack(Meta::TrackPtr)), SLOT(slotTrackLoved(Meta::TrackPtr)));
 
     Scrobbler::Init init;
     init.username = username;
@@ -48,14 +50,10 @@ ScrobblerAdapter::~ScrobblerAdapter()
 void
 ScrobblerAdapter::engineNewTrackPlaying()
 {
-    DEBUG_BLOCK
-    // if trackChanged, it's a local file
-    // also need to handle radio case
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
-        const bool isRadio =  ( track->type() == "stream/lastfm" );
-        kDebug() << "ISRADIO: " << isRadio;
+        const bool isRadio = ( track->type() == "stream/lastfm" );
 
         checkScrobble();
 
@@ -87,7 +85,6 @@ ScrobblerAdapter::engineTrackEnded( int finalPosition, int trackLength, const QS
 {
     Q_UNUSED( trackLength );
 
-    debug() << "engineTrackEnded: reason=" << reason;
     engineTrackPositionChanged( finalPosition, false );
     checkScrobble();
     resetVariables();
@@ -116,6 +113,18 @@ void
 ScrobblerAdapter::love()
 {
     m_current.setRatingFlag( TrackInfo::Loved );
+}
+
+void
+ScrobblerAdapter::slotTrackLoved( Meta::TrackPtr track )
+{
+    TrackInfo trackInfo;
+    trackInfo.setTrack( track->name() );
+    if( track->artist() )
+        trackInfo.setArtist( track->artist()->name() );
+    if( track->album() )
+        trackInfo.setAlbum( track->album()->name() );
+    (new LoveRequest(trackInfo))->start();
 }
 
 
