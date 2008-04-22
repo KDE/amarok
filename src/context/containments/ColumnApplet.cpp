@@ -26,7 +26,6 @@
 #include <KAuthorized>
 #include <KMenu>
 #include <KTemporaryFile>
-#include <KStandardDirs>
 #include <KSvgRenderer>
 #include <KGlobalSettings>
 

@@ -41,7 +41,6 @@
 #include <KMenu>    //showCoverMenu()
 #include <KPushButton>
 #include <KSqueezedTextLabel> //status label
-#include <KStandardDirs>   //KGlobal::dirs()
 #include <KStatusBar>
 #include <KToolBar>
 #include <KUrl>

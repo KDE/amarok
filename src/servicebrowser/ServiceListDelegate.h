@@ -22,8 +22,6 @@
 
 #include "../widgets/SvgHandler.h"
 
-#include <KStandardDirs>
-
 #include <QItemDelegate>
 #include <QListView>
 #include <QSvgRenderer>
@@ -33,7 +31,7 @@
 /**
 A delegate for displaying a nice overview of a service
 
-	@author 
+	@author
 */
 class ServiceListDelegate : public QItemDelegate, public SvgHandler
 {
@@ -53,7 +51,7 @@ private:
     QSvgRenderer *m_svgRendererInactive;
 
     QListView *m_view;
-    
+
 };
 
 #endif

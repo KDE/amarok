@@ -38,7 +38,6 @@
 #include <KMessageBox>
 #include <KNumInput>
 #include <KRun>
-#include <KStandardDirs>
 #include <KTabWidget>
 #include <KTextEdit>
 #include <KVBox>

@@ -86,7 +86,6 @@
 #include <KMessageBox>
 #include <KPushButton>
 #include <KRun>
-#include <KStandardDirs> //locate file
 #include <KTabBar>
 #include <solid/device.h>
 #include <solid/deviceinterface.h>

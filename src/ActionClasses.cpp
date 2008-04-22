@@ -34,7 +34,6 @@
 #include <KLineEdit>
 #include <KLocale>
 #include <KPushButton>
-#include <KStandardDirs>
 #include <KToolBar>
 #include <KUrl>
 

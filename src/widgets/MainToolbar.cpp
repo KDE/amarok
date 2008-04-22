@@ -19,7 +19,7 @@
 
 #include "MainToolbar.h"
 
-#include "ActionClasses.h" 
+#include "ActionClasses.h"
 #include "Amarok.h"
 #include "AnalyzerWidget.h"
 #include "ProgressSlider.h"
@@ -30,10 +30,9 @@
 #include "EngineController.h"
 #include "meta/CurrentTrackActionsCapability.h"
 
-#include <KAction>  
+#include <KAction>
 #include <KToolBar>
-#include <KStandardDirs>
-#include <KVBox> 
+#include <KVBox>
 
 #include <QPainter>
 #include <QPixmapCache>
@@ -82,7 +81,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     //playerControlsToolbar->setMinimumSize( 180, 45 );
     //m_playerControlsToolbar->setFixedSize( 180, 40 );
     m_playerControlsToolbar->setFixedHeight( 40 );
-    
+
 
     //m_insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignCenter );
     m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -109,7 +108,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_volumeWidget->setFixedSize( 160, 24 );
 
     //m_volumeWidget->setMinimumSize( 230, 30 );
-    
+
     //m_insideBox->layout()->setAlignment( vw, Qt::AlignRight |  Qt::AlignVCenter);
 
     //trigger a resize event to get everything laid out
@@ -154,18 +153,18 @@ void MainToolbar::paintEvent(QPaintEvent *)
 
         if ( m_renderAddControls )
             m_svgRenderer->render( &pt, "buttonbar",  addControlRect );
-        
+
         QPixmapCache::insert(key, background);
     }*/
 
 
     QPainter painter( this );
-   
+
     QPixmap background = renderSvg( "toolbarbackground", contentsRect().width(), contentsRect().height(), "toolbarbackground" );
     painter.drawPixmap( 0, 0, background );
     QPixmap controlArea = renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
     painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
-    
+
     if ( m_renderAddControls ) {
         QPixmap addControlArea = renderSvg( "addbuttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
         painter.drawPixmap( addControlRect.x(), addControlRect.y(), addControlArea );
@@ -190,7 +189,7 @@ void MainToolbar::handleAddActions()
     foreach( QAction * action, m_additionalActions ) {
         m_addControlsToolbar->removeAction( action );
     }
-    
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track ) {
         m_renderAddControls = false;
@@ -218,9 +217,9 @@ void MainToolbar::handleAddActions()
             m_addControlsToolbar->adjustSize();
 
             //centerAddActions();
-            
+
             //m_insideBox->layout()->setAlignment( m_addControlsToolbar, Qt::AlignCenter );
-            
+
         } else {
             m_renderAddControls = false;
         }
@@ -234,10 +233,10 @@ void MainToolbar::handleAddActions()
 void MainToolbar::resizeEvent(QResizeEvent * event)
 {
     DEBUG_BLOCK
-            
+
     QWidget::resizeEvent( event );
     //as we handle our own layout, we need to position items correctly
-    
+
     int middle = event->size().width() / 2;
 
     int controlWidth = m_playerControlsToolbar->width();
@@ -257,7 +256,7 @@ void MainToolbar::paletteChange( const QPalette & oldPalette )
 /*void MainToolbar::centerAddActions()
 {
     int numberOfActions = m_additionalActions.size();
-    
+
     int marginLeft, marginRight, marginTop, marginBottom;
     m_addControlsToolbar->getContentsMargins( &marginLeft, &marginTop, &marginRight, &marginBottom );
     int actionsSize = ( numberOfActions * 24 ) + marginLeft + marginRight + 8;

@@ -24,9 +24,6 @@
 #include "amarokconfig.h"
 #include "debug.h"
 
-#include <KStandardDirs>
-
-
 #include <QDir>
 #include <QImage>
 
@@ -62,7 +59,7 @@ QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
     //DEBUG_BLOCK
 
     //debug() << "size: " << size;
-    
+
     if( size > 1000 )
     {
         debug() << "Giant image detected, are you sure you want this?";
@@ -77,7 +74,7 @@ QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
     if ( !cacheCoverDir.exists() ) {
         cacheCoverDir.mkpath( Amarok::saveLocation( "albumcovers/cache/" ) );
     }
-    
+
     if ( size <= 1 )
         size = AmarokConfig::coverPreviewSize();
     QString sizeKey = QString::number( size ) + '@';
@@ -91,7 +88,7 @@ QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
     }
     else if ( m_hasFetchedCover ) {
         //debug() << "Large cover loaded, resizing, saving and returning";
-        
+
         img = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         img.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
         return QPixmap::fromImage( img );
@@ -165,7 +162,7 @@ void ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
         debug() << "error detected";
         //we could not download, so inform album
         m_album->imageDownloadCanceled();
-        
+
         return ;
     }
     if ( downloadJob != m_albumDownloadJob )
@@ -179,9 +176,9 @@ void ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 
         return ;
     }
-    
+
     m_album->setImage( cover );
-    
+
     downloadJob->deleteLater();
 
     m_tempDir->unlink();

@@ -100,9 +100,9 @@ App::App()
     if( AmarokConfig::showSplashscreen() )
     {
         PERF_LOG( "Init KStandardDirs cache" )
-        KStandardDirs stdDirs;
+        KStandardDirs *stdDirs = KGlobal::dirs();
         PERF_LOG( "Finding image" )
-        QString img = stdDirs.findResource( "data", "amarok/images/splash_screen.jpg" );
+        QString img = stdDirs->findResource( "data", "amarok/images/splash_screen.jpg" );
         PERF_LOG( "Creating pixmap" )
         QPixmap splashpix( img );
         PERF_LOG( "Creating splashscreen" )

@@ -24,12 +24,9 @@
 #include "SvgTinter.h"
 #include "TheInstances.h"
 
-#include <KStandardDirs>
-
 #include <QAbstractItemDelegate>
 #include <QAction>
 #include <QApplication>
-#include <QFile>
 #include <QList>
 #include <QPainter>
 #include <QSvgRenderer>

@@ -33,8 +33,6 @@
 #include "covermanager/CoverManager.h"
 #include "meta/SourceInfoCapability.h"
 
-#include "KStandardDirs"
-
 #include <QBrush>
 #include <QDrag>
 #include <QFontMetricsF>
