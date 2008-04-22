@@ -70,7 +70,7 @@ class OSDWidget : public QWidget
         void setScreen( int screen );
         void setText( const QString &text ) { m_text = text; }
         void setDrawShadow( const bool b ) { m_drawShadow = b; }
-        void setTranslucent( const bool b ) { setWindowOpacity( b ? TRANSLUCENCY : 1.0 ); }
+        void setTranslucent( const bool b ) { setWindowOpacity( b ? OSDWidget::TRANSLUCENCY : 1.0 ); }
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
 
     protected:
@@ -86,7 +86,9 @@ class OSDWidget : public QWidget
 
         /** distance from screen edge */
         static const int MARGIN = 15;
-        static const long TRANSLUCENCY = 0.7;
+
+	/** Workaround OS X disliking non-int static variable initialization */
+        const double TRANSLUCENCY;
 
         uint        m_m;
         QSize       m_size;

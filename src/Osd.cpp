@@ -60,6 +60,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_drawShadow( false )
         , m_rating( 0 )
         , m_volume( false )
+        , TRANSLUCENCY( 0.7 ) // initialize OSD translucency here
 {
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
