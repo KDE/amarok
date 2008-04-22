@@ -70,7 +70,7 @@ class OSDWidget : public QWidget
         void setScreen( int screen );
         void setText( const QString &text ) { m_text = text; }
         void setDrawShadow( const bool b ) { m_drawShadow = b; }
-        void setTranslucent( const bool b ) { setWindowOpacity( b ? OSDWidget::TRANSLUCENCY : 1.0 ); }
+        void setTranslucent( const bool b ) { setWindowOpacity( b ? TRANSLUCENCY : 1.0 ); }
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
 
     protected:
