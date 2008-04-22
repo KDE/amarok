@@ -18,15 +18,7 @@
    sodipodi:docbase="/home/hydrogen/kde/src/amarok/src/context/applets/lyrics"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
-     id="defs3488">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 145.1062 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="513.12482 : 145.1062 : 1"
-       inkscape:persp3d-origin="256.56241 : 96.737467 : 1"
-       id="perspective12" />
-  </defs>
+     id="defs3488" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
