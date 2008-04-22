@@ -320,9 +320,16 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
     ScanMetaData smd;
 
+#ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t encodedName = reinterpret_cast<const wchar_t *>(filename.utf16());
+#else
+    QByteArray fileName = QFile::encodeName( path );
+    const char * encodedName = fileName.constData(); // valid as long as fileName exists
+#endif
+
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
-    fileref = TagLib::FileRef( TagLibEncodeName( path ), true, readStyle );
+    fileref = TagLib::FileRef( encodedName, true, readStyle );
 
     if( !fileref.isNull() )
     {

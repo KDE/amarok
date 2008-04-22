@@ -138,24 +138,6 @@ private:
         return fileName.section( '/', 0, -2 );
     }
 
-#ifdef COMPLEX_TAGLIB_FILENAME
-
-    inline const wchar_t* TagLibEncodeName(const QString &filename)
-    {
-        return reinterpret_cast<const wchar_t *>(filename.utf16());
-    }
-
-#else
-
-    inline TagLib::FileName TagLibEncodeName(const QString &filename)
-    {
-        const char * ret = QFile::encodeName( filename );
-        return ret;
-    }
-
-#endif
-
-
     const bool    m_importPlaylists;
     QStringList   m_folders;
     const bool    m_recursively;
