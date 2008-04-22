@@ -14,9 +14,10 @@
 #define DEBUG_PREFIX "lastfm"
 
 #include "ScrobblerAdapter.h"
-#include "EngineController.h"
 #include "Amarok.h"
 #include "debug.h"
+#include "EngineController.h"
+#include "MainWindow.h"
 #include "MetaConstants.h"
 #include "meta/LastFmMeta.h"
 #include "TheInstances.h"
@@ -32,7 +33,7 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &username, co
     resetVariables();
 
     connect( m_manager, SIGNAL( status( int, QVariant ) ), this, SLOT( statusChanged( int, QVariant ) ) );
-    connect( The::engineController(), SIGNAL(loveTrack(Meta::TrackPtr)), SLOT(slotTrackLoved(Meta::TrackPtr)));
+    connect( MainWindow::self(), SIGNAL(loveTrack(Meta::TrackPtr)), SLOT(slotTrackLoved(Meta::TrackPtr)));
 
     Scrobbler::Init init;
     init.username = username;

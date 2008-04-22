@@ -345,7 +345,7 @@ namespace Amarok
 
     void DbusPlayerHandler::loveTrack()
     {
-        The::engineController()->loveTrack();
+        MainWindow::self()->loveTrack();
     }
 
     void DbusPlayerHandler::mediaDeviceMount()

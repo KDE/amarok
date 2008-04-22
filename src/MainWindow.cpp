@@ -764,6 +764,13 @@ void MainWindow::showHide() //SLOT
 #endif
 }
 
+void
+MainWindow::loveTrack()
+{
+    Meta::TrackPtr cTrack = The::engineController()->currentTrack();
+    if( cTrack )
+        emit loveTrack( cTrack );
+}
 void MainWindow::activate()
 {
 #ifdef Q_WS_X11
@@ -1010,7 +1017,7 @@ void MainWindow::createActions()
     action->setObjectName( "loveTrack" );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_L ) );
     ac->addAction( "loveTrack", action );
-    connect( action, SIGNAL(triggered()), ec, SLOT(loveTrack()) );
+    connect( action, SIGNAL(triggered()), SLOT(loveTrack()) );
 
     action = new KAction( i18n( "Rate Current Track: 1" ), this );
     action->setObjectName( "rate1" );

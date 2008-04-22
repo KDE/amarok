@@ -65,8 +65,12 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         SideBar *sideBar() const { return m_browsers; }
         void deleteBrowsers();
 
+    signals:
+        void loveTrack( Meta::TrackPtr );
+
     public slots:
         void showHide();
+        void loveTrack();
 
     private slots:
         void slotShrinkBrowsers( int index ) const;
