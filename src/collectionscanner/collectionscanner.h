@@ -54,38 +54,6 @@ namespace MetaFile
  * @class CollectionScanner
  * @short Scans directories and builds the Collection
  */
-// Imported from engineBase.
-class ScanMetaData {
-    public:
-        QString album;
-        QString artist;
-        QString albumArtist;
-        QString comment;
-        QString composer;
-        QString genre;
-        QString title;
-        QString tracknr;
-        QString year;
-
-        int bitrate;
-        int discnumber;
-        int filesize;
-        int length;
-        int samplerate;
-
-        bool isCompilation;
-        bool isValid;
-
-        float bpm;
-
-        enum Type {
-            mp3,
-            ogg,
-            flac,
-            mp4
-        };
-        Type filetype;
-};
 
 class CollectionScanner : public KApplication
 {
@@ -105,6 +73,14 @@ private slots:
     void doJob();
 
 private:
+
+    enum FileType {
+        mp3,
+        ogg,
+        flac,
+        mp4
+    };
+
     void readDir( const QString& dir, QStringList& entries );
     void scanFiles( const QStringList& entries );
 

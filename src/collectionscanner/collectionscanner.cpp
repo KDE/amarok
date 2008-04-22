@@ -318,7 +318,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     //  Average                     Untested
     //  Accurate                    Untested
 
-    ScanMetaData smd;
 
 #ifdef COMPLEX_TAGLIB_FILENAME
     const wchar_t encodedName = reinterpret_cast<const wchar_t *>(filename.utf16());
@@ -331,29 +330,25 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     TagLib::Tag *tag = 0;
     fileref = TagLib::FileRef( encodedName, true, readStyle );
 
+    AttributeMap attributes;
+    bool isValid = false;
+    FileType fileType;
     if( !fileref.isNull() )
     {
-        smd.filesize = QFile( path ).size();
-        smd.length = fileref.audioProperties()->length();
-        smd.bitrate = fileref.audioProperties()->bitrate();
-        smd.samplerate = fileref.audioProperties()->sampleRate();
-
         tag = fileref.tag();
         if ( tag )
         {
 #define strip( x ) TStringToQString( x ).trimmed()
-            smd.title = strip( tag->title() );
-            smd.artist = strip( tag->artist() );
-            smd.album = strip( tag->album() );
-            smd.comment = strip( tag->comment() );
-            smd.genre = strip( tag->genre() );
-            smd.year = QString::number( tag->year() );
-            smd.tracknr  = QString::number( tag->track() );
+            attributes["title"] = strip( tag->title() );
+            attributes["artist"] = strip( tag->artist() );
+            attributes["album"] = strip( tag->album() );
+            attributes["comment"] = strip( tag->comment() );
+            attributes["genre"] = strip( tag->genre() );
+            attributes["year"] = QString::number( tag->year() );
+            attributes["track"]  = QString::number( tag->track() );
 #undef strip
-            smd.isValid = true;
+            isValid = true;
         }
-        smd.albumArtist = QString();
-
 
     /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
         we have to cast the files, not the tags! */
@@ -362,20 +357,20 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         QString compilation;
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
-            smd.filetype = ScanMetaData::mp3;
+            fileType = mp3;
             if ( file->ID3v2Tag() )
             {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).trimmed();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TBPM"].isEmpty() )
-                    smd.bpm = TStringToQString( file->ID3v2Tag()->frameListMap()["TBPM"].front()->toString() ).trimmed().toFloat();
+                    attributes["bpm"] = TStringToQString( file->ID3v2Tag()->frameListMap()["TBPM"].front()->toString() ).trimmed().toFloat();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
-                    smd.composer = TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).trimmed();
+                    attributes["composer"] = TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).trimmed();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TPE2"].isEmpty() ) // non-standard: Apple, Microsoft
-                    smd.albumArtist = TStringToQString( file->ID3v2Tag()->frameListMap()["TPE2"].front()->toString() ).trimmed();
+                    attributes["albumArtist"] = TStringToQString( file->ID3v2Tag()->frameListMap()["TPE2"].front()->toString() ).trimmed();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
@@ -388,14 +383,14 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
         {
-            smd.filetype = ScanMetaData::ogg;
+            fileType = ogg;
             if ( file->tag() )
             {
                 if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() )
-                    smd.composer = TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).trimmed();
+                    attributes["composer"] = TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).trimmed();
 
                 if ( !file->tag()->fieldListMap()[ "BPM" ].isEmpty() )
-                    smd.bpm = TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).trimmed().toFloat();
+                    attributes["bpm"] = TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).trimmed().toFloat();
 
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).trimmed();
@@ -406,14 +401,14 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
         {
-            smd.filetype = ScanMetaData::flac;
+            fileType = flac;
             if ( file->xiphComment() )
             {
                 if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
-                    smd.composer = TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).trimmed();
+                    attributes["composer"] = TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).trimmed();
 
                 if ( !file->xiphComment()->fieldListMap()[ "BPM" ].isEmpty() )
-                    smd.bpm = TStringToQString( file->xiphComment()->fieldListMap()["BPM"].front() ).trimmed().toFloat();
+                    attributes["bpm"] = TStringToQString( file->xiphComment()->fieldListMap()["BPM"].front() ).trimmed().toFloat();
 
                 if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).trimmed();
@@ -427,12 +422,12 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
         {
-            smd.filetype = ScanMetaData::mp4;
+            fileType = mp4;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
             {
-                smd.composer = TStringToQString( mp4tag->composer() );
-                smd.bpm = QString::number( mp4tag->bpm() ).toFloat();
+                attributes["composer"] = TStringToQString( mp4tag->composer() );
+                attributes["bpm"] = QString::number( mp4tag->bpm() ).toFloat();
                 disc = QString::number( mp4tag->disk() );
                 compilation = QString::number( mp4tag->compilation() );
 
@@ -447,58 +442,48 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             int i = disc.indexOf('/');
             if ( i != -1 )
                 // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
-                smd.discnumber = disc.left( i ).toInt();
+                attributes["discnumber"] = disc.left( i ).toInt();
             else
-                smd.discnumber = disc.toInt();
+                attributes["discnumber"] = disc.toInt();
         }
 
         if ( compilation.isEmpty() ) {
             // well, it wasn't set, but if the artist is VA assume it's a compilation
-            if ( smd.artist == i18n( "Various Artists" ) )
-                smd.isCompilation = true;
+            if ( attributes["artist"] == i18n( "Various Artists" ) )
+                attributes["compilation"] = true;
         } else {
             int i = compilation.toInt();
             if ( i == 0 )
-                smd.isCompilation = false;
+                attributes["compilation"] = QString::number( false );
             else if ( i == 1 )
-                smd.isCompilation = true;
+                attributes["compilation"] = QString::number( true );
         }
     }
 
-    AttributeMap attributes;
-
-    if ( !smd.isValid ) {
+    if ( !isValid ) {
         std::cout << "<dud/>";
         return attributes;
     }
 
     attributes["path"]    = path;
-    attributes["title"]   = smd.title;
-    attributes["artist"]  = smd.artist;
-    attributes["albumArtist"] = smd.albumArtist;
-    attributes["composer"]= smd.composer;
-    attributes["album"]   = smd.album;
-    attributes["comment"] = smd.comment;
-    attributes["genre"]   = smd.genre;
-    attributes["year"]    = smd.year;
-    attributes["track"]   = smd.tracknr;
-    attributes["discnumber"]   = QString::number( smd.discnumber );
-    attributes["bpm"]   = QString::number( smd.bpm );
-    attributes["filetype"]  = QString::number( smd.filetype );
+    attributes["filetype"]  = QString::number( fileType );
 //     attributes["uniqueid"] = QString::number( -1 ); //FIXME: Port
-    attributes["compilation"] = QString::number( smd.isCompilation );
+    const int bitrate = fileref.audioProperties()->bitrate();
+    const int length = fileref.audioProperties()->length();
+    const int samplerate = fileref.audioProperties()->sampleRate();
     static const int Undetermined = -2;
-    if ( smd.bitrate == Undetermined || smd.length == Undetermined || smd.samplerate == Undetermined )
+    if ( bitrate == Undetermined || length == Undetermined || samplerate == Undetermined )
         attributes["audioproperties"] = "false";
     else {
         attributes["audioproperties"] = "true";
-        attributes["bitrate"]         = QString::number( smd.bitrate );
-        attributes["length"]          = QString::number( smd.length );
-        attributes["samplerate"]      = QString::number( smd.samplerate );
+        attributes["bitrate"]         = QString::number( bitrate );
+        attributes["length"]          = QString::number( length );
+        attributes["samplerate"]      = QString::number( samplerate );
     }
 
-    if ( smd.filesize >= 0 )
-        attributes["filesize"] = QString::number( smd.filesize );
+    const int size = QFile( path ).size();
+    if( size >= 0 )
+        attributes["filesize"] =  QString::number( size );
 
     return attributes;
 }
