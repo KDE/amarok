@@ -54,6 +54,7 @@ void LyricsApplet::init()
     m_lyricsProxy = new QGraphicsProxyWidget( this );
     m_lyrics = new QTextEdit;
     m_lyrics->setReadOnly( true );
+    m_lyrics->setFrameShape( QFrame::NoFrame );
     m_lyricsProxy->setWidget( m_lyrics );
 
     constraintsUpdated();

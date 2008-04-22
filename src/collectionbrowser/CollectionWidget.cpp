@@ -45,6 +45,7 @@ CollectionWidget::CollectionWidget( const char* name )
     SearchWidget *sw = new SearchWidget( this );
 
     m_treeView = new CollectionTreeView( this );
+    m_treeView->setFrameShape( QFrame::NoFrame );
 
     QList<int> cats = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     if ( cats.isEmpty() )

@@ -164,7 +164,7 @@ void MainWindow::init()
     PERF_LOG( "ContextWidget created" )
     contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
     PERF_LOG( "Creating ContextView" )
-    new Context::ContextView( contextWidget );
+    (new Context::ContextView( contextWidget ))->setFrameShape( QFrame::NoFrame );
     PERF_LOG( "ContextView created" )
     {
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
