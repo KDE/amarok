@@ -50,6 +50,9 @@ class UNICORN_DLLEXPORT WebService : public QObject
         QString currentUsername() const { return m_username; }
         QString currentPassword() const { return m_password; }
 
+        // Added by Amarok.. why isn't this a method already?
+        bool isSubscriber() const { return m_isSubscriber; }
+
     //////
         QUrl streamUrl() const { return m_streamUrl; }
 

@@ -28,7 +28,7 @@
 #include <KLocale>
 
 LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
-    : ServiceDynamicCollection( 0, "last.fm", "last.fm" ) 
+    : ServiceDynamicCollection( 0, "last.fm", "last.fm" )
 {
 
     m_userName = userName;
@@ -57,15 +57,27 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     Meta::GenrePtr recentlyPlayedPtr( m_recentlyPlayed );
     addGenre( recentlyPlayedPtr->name(), recentlyPlayedPtr );
 
-    QStringList lastfmPersonal;
-    lastfmPersonal << "personal" << "neighbours" << "loved";
+    // Only show these if the user is a subscriber.
+    // Note: isSubscriber is a method we added locally to libUnicorn, if libUnicorn gets bumped we may need to readd if last.fm doesn't
+    if( The::webService()->isSubscriber() )
+    {
+        QStringList lastfmPersonal;
+        lastfmPersonal << "personal" << "loved";
 
-    foreach( const QString &station, lastfmPersonal ) {
-        LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
-        Meta::TrackPtr trackPtr( track );
-        userStreams->addTrack( trackPtr );
-        addTrack( trackPtr->name(), trackPtr );
+        foreach( const QString &station, lastfmPersonal )
+        {
+                LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
+                Meta::TrackPtr trackPtr( track );
+                userStreams->addTrack( trackPtr );
+                addTrack( trackPtr->name(), trackPtr );
+        }
     }
+
+    // Neighbors isn't reliant on being a subscriber.
+    LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + "neighbours" );
+    Meta::TrackPtr trackPtr( track );
+    userStreams->addTrack( trackPtr );
+    addTrack( trackPtr->name(), trackPtr );
 
     QStringList lastfmGenres;
     lastfmGenres << "Alternative" << "Ambient" << "Chill Out" << "Classical"<< "Dance"
@@ -107,7 +119,7 @@ LastFmServiceCollection::~LastFmServiceCollection()
 }
 
 
-bool 
+bool
 LastFmServiceCollection::possiblyContainsTrack( const KUrl &url ) const
 {
     return url.protocol() == "lastfm";
@@ -121,14 +133,14 @@ LastFmServiceCollection::trackForUrl( const KUrl &url )
 }
 
 
-QString 
+QString
 LastFmServiceCollection::collectionId() const
 {
     return "last.fm";
 }
 
 
-QString 
+QString
 LastFmServiceCollection::prettyName() const
 {
     return i18n( "last.fm" );
