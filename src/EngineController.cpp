@@ -533,44 +533,48 @@ EngineController::slotTrackLengthChanged( qint64 milliseconds )
 void
 EngineController::slotMetaDataChanged()
 {
+    DEBUG_BLOCK
+
     QHash<qint64, QString> meta;
-    {
-        QStringList data = m_media->metaData( "ARTIST" );
-        if( !data.isEmpty() )
-            meta.insert( Meta::valArtist, data.first() );
-    }
-    {
-        QStringList data = m_media->metaData( "ALBUM" );
-        if( !data.isEmpty() )
-            meta.insert( Meta::valAlbum, data.first() );
-    }
-    {
-        QStringList data = m_media->metaData( "TITLE" );
-        if( !data.isEmpty() )
-            meta.insert( Meta::valTitle, data.first() );
-    }
-    {
-        QStringList data = m_media->metaData( "GENRE" );
-        if( !data.isEmpty() )
-            meta.insert( Meta::valGenre, data.first() );
-    }
-    {
-        QStringList data = m_media->metaData( "TRACKNUMBER" );
-        if( !data.isEmpty() )
-            meta.insert( Meta::valTrackNr, data.first() );
-    }
-    {
-        QStringList data = m_media->metaData( "LENGTH" );
-        if( !data.isEmpty() )
-            meta.insert( Meta::valLength, data.first() );
-    }
+
+    QStringList artist = m_media->metaData( "ARTIST" );
+    debug() << "Artist     : " << artist;
+    if( !artist.isEmpty() )
+        meta.insert( Meta::valArtist, artist.first() );
+     
+    QStringList album = m_media->metaData( "ALBUM" );
+    debug() << "Album      : " << album;
+    if( !album.isEmpty() )
+        meta.insert( Meta::valAlbum, album.first() );
+     
+    QStringList title = m_media->metaData( "TITLE" );
+    debug() << "Title      : " << title;
+    if( !title.isEmpty() )
+        meta.insert( Meta::valTitle, title.first() );
+     
+    QStringList genre = m_media->metaData( "GENRE" );
+    debug() << "Genre      : " << genre;
+    if( !genre.isEmpty() )
+        meta.insert( Meta::valGenre, genre.first() );
+     
+    QStringList tracknum = m_media->metaData( "TRACKNUMBER" );
+    debug() << "Tracknumber: " << tracknum;
+    if( !tracknum.isEmpty() )
+        meta.insert( Meta::valTrackNr, tracknum.first() );
+     
+    QStringList length = m_media->metaData( "LENGTH" );
+    debug() << "Length     : " << length;
+    if( !length.isEmpty() )
+        meta.insert( Meta::valLength, length.first() );
+    
     bool trackChanged = false;
     if( m_lastTrack != m_currentTrack )
     {
         trackChanged = true;
         m_lastTrack = m_currentTrack;
     }
-    newMetaDataNotify( meta, trackChanged);
+    debug() << "Track changed: " << trackChanged;
+    newMetaDataNotify( meta, trackChanged );
 }
 
 void

@@ -117,9 +117,10 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_renderAddControls = false;
 }
 
-
 MainToolbar::~MainToolbar()
-{}
+{
+    DEBUG_BLOCK
+}
 
 void MainToolbar::paintEvent(QPaintEvent *)
 {
@@ -185,7 +186,6 @@ void MainToolbar::engineNewMetaData(const QHash< qint64, QString > & newMetaData
 
 void MainToolbar::handleAddActions()
 {
-
     foreach( QAction * action, m_additionalActions ) {
         m_addControlsToolbar->removeAction( action );
     }
