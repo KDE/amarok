@@ -189,7 +189,6 @@ void SideBarWidget::updateShortcuts()
 
 SideBarButton::SideBarButton( const QIcon &icon, const QString &text, QWidget *parent )
     : QAbstractButton( parent )
-    , SvgHandler()
     , m_animCount( 0 )
     , m_animTimer( new QTimer( this ) )
 {
@@ -199,8 +198,6 @@ SideBarButton::SideBarButton( const QIcon &icon, const QString &text, QWidget *p
     setText( text );
 
     setForegroundRole( QPalette::HighlightedText );
-
-    loadSvg( "amarok/images/sidebar_button.svg" );
 
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
 }
@@ -272,7 +269,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     QPainter p( this );
     p.initFrom( this );
 
-    QPixmap background = renderSvg( "sidebarbutton", contentsRect().width(), contentsRect().height() );
+    QPixmap background = The::svgHandler()->renderSvg( "amarok/images/sidebar_button.svg", "sidebarbutton", contentsRect().width(), contentsRect().height() );
     p.drawPixmap( 0, 0, background );
 
 
@@ -318,9 +315,9 @@ QColor SideBarButton::blendColors( const QColor& color1, const QColor& color2, i
     return result;
 }
 
-void SideBarButton::paletteChange(const QPalette & oldPalette)
+void SideBarButton::paletteChange(const QPalette & /*oldPalette*/)
 {
-    reTint();
+    The::svgHandler()->reTint( "amarok/images/sidebar_button.svg" );
     repaint( 0, 0, -1,-1 );
 }
 

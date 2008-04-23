@@ -42,41 +42,56 @@ SvgHandler * SvgHandler::instance()
 
 
 SvgHandler::SvgHandler()
-    : m_svgRenderer( 0 )
-{}
+    : m_renderers()
+{
+}
 
 SvgHandler::~SvgHandler()
 {
-    delete m_svgRenderer;
 }
 
-void SvgHandler::loadSvg( const QString& name )
+bool SvgHandler::loadSvg( const QString& name )
 {
-    m_svgFilename = KStandardDirs::locate( "data", name );
+    QString svgFilename = KStandardDirs::locate( "data", name );
     
-    m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( m_svgFilename ).toAscii() );
-    if ( ! m_svgRenderer->isValid() )
-        debug() << "svg file '" + m_svgFilename + "' cannot be loaded";
+    QSvgRenderer *renderer = new QSvgRenderer( The::svgTinter()->tint( svgFilename ).toAscii() );
+
+    if ( ! renderer->isValid() )
+    {
+        debug() << "Bluddy 'ell guvna, aye canna' load ya Ess Vee Gee at " << svgFilename;
+        return false;
+    }
+
+    if( m_renderers[name] )
+        delete m_renderers[name];
+
+    m_renderers[name] = renderer;
+    return true;
 }
 
-QPixmap SvgHandler::renderSvg( const QString& keyname, int width, int height, const QString& element ) const
+QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
 {
+    QPixmap pixmap( width, height );
+    pixmap.fill( Qt::transparent );
+
+    if( ! m_renderers[name] )
+        if( ! loadSvg( name ) )
+            return pixmap;
+
     const QString key = QString("%1:%2x%3")
         .arg( keyname )
         .arg( width )
         .arg( height );
 
-    QPixmap pixmap( width, height );
-    pixmap.fill( Qt::transparent );
 
     if ( !QPixmapCache::find( key, pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
         QPainter pt( &pixmap );
         if ( element.isEmpty() )
-            m_svgRenderer->render( &pt, QRectF( 0, 0, width, height ) );
+            m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
         else
-            m_svgRenderer->render( &pt, element, QRectF( 0, 0, width, height ) );
+            m_renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
   
         QPixmapCache::insert( key, pixmap );
     }
@@ -84,14 +99,13 @@ QPixmap SvgHandler::renderSvg( const QString& keyname, int width, int height, co
     return pixmap;
 }
 
-void SvgHandler::reTint()
+void SvgHandler::reTint( const QString &name )
 {
     The::svgTinter()->init();
-    
-    delete m_svgRenderer;
-    m_svgRenderer = new QSvgRenderer( The::svgTinter()->tint( m_svgFilename ).toAscii() );
-    if ( ! m_svgRenderer->isValid() )
-        debug() << "svg file '" + m_svgFilename + "' cannot be loaded";
+    loadSvg( name );
 }
 
+namespace The {
+    AMAROK_EXPORT SvgHandler* svgHandler() { return SvgHandler::instance(); }
+}
 

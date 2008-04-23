@@ -61,7 +61,7 @@ class SideBarWidget: public KVBox
 };
 
 
-class SideBarButton: public QAbstractButton, public SvgHandler
+class SideBarButton: public QAbstractButton
 {
     Q_OBJECT
 

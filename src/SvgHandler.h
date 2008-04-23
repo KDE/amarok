@@ -26,6 +26,7 @@
 
 #include <QString>
 #include <QSvgRenderer>
+#include <QMap>
 
 #include "amarok_export.h"
 
@@ -39,18 +40,18 @@ public:
 
     static AMAROK_EXPORT SvgHandler * instance();
 
-    SvgHandler();
     ~SvgHandler();
 
-    void loadSvg( const QString& name );
-    void reTint();
-
-    QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString() ) const;
+    QPixmap AMAROK_EXPORT renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
+    void AMAROK_EXPORT reTint( const QString &name );
 
 private:
-    QSvgRenderer * m_svgRenderer;
-    QString m_svgFilename;
-    QStringList m_keys;
+    SvgHandler();
+    bool loadSvg( const QString& name );
+
+    static SvgHandler* m_instance;
+
+    QMap<QString,QSvgRenderer*> m_renderers;
 
 };
 

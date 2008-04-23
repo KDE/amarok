@@ -14,6 +14,8 @@
 #ifndef COLUMN_APPLET_H
 #define COLUMN_APPLET_H
 
+#include "TheInstances.h"
+
 #include "amarok_export.h"
 #include "context/Applet.h"
 #include "context/Containment.h"
@@ -21,7 +23,7 @@
 #include "context/Svg.h"
 
 #include "plasma/appletbrowser.h"
-#include "widgets/SvgHandler.h"
+#include "SvgHandler.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
@@ -38,7 +40,7 @@ namespace Context
 {
     class SvgRenderJob;
 
-class /*AMAROK_EXPORT*/ ColumnApplet : public Containment, public SvgHandler
+class /*AMAROK_EXPORT*/ ColumnApplet : public Containment
 {
     Q_OBJECT
 public:

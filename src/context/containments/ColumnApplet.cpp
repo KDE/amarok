@@ -54,7 +54,6 @@ void SvgRenderJob::run()
 
 ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
-    , SvgHandler()
     , m_actions( 0 )
     , m_defaultColumnSize( 350 )
     , m_appletBrowserHasBeenKicked ( false )
@@ -72,8 +71,6 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_columns->setMargin( Plasma::BottomMargin, 0 );
 
     //HACK alert!
-
-    loadSvg( "desktoptheme/default/widgets/amarok-wallpaper.svg" );
 
     //m_job = new SvgRenderJob( file.fileName() );
     //the background is not really important for the use of Amarok,
@@ -171,7 +168,7 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
 
     //m_renderer->render( painter, rect );
 
-    painter->drawPixmap(0, 0, renderSvg( "context_background", rect.width(), rect.height() ) );
+    painter->drawPixmap(0, 0, The::svgHandler()->renderSvg( "desktoptheme/default/widgets/amarok-wallpaper.svg", "context_background", rect.width(), rect.height() ) );
 
     painter->restore();
 
@@ -329,7 +326,7 @@ void ColumnApplet::jobDone()
 
 void ColumnApplet::paletteChange()
 {
-    reTint();
+    The::svgHandler()->reTint( "desktoptheme/default/widgets/amarok-wallpaper.svg" );
     update( boundingRect() );
 }
 

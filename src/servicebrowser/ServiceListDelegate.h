@@ -20,7 +20,7 @@
 #ifndef SERVICELISTDELEGATE_H
 #define SERVICELISTDELEGATE_H
 
-#include "../widgets/SvgHandler.h"
+#include "../SvgHandler.h"
 
 #include <QItemDelegate>
 #include <QListView>
@@ -33,7 +33,7 @@ A delegate for displaying a nice overview of a service
 
 	@author
 */
-class ServiceListDelegate : public QItemDelegate, public SvgHandler
+class ServiceListDelegate : public QItemDelegate
 {
 public:
     ServiceListDelegate( QListView *view );
@@ -46,9 +46,6 @@ public:
     void paletteChange();
 
 private:
-
-    QSvgRenderer *m_svgRendererActive;
-    QSvgRenderer *m_svgRendererInactive;
 
     QListView *m_view;
 

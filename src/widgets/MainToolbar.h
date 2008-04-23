@@ -34,7 +34,7 @@ A KHBox based toolbar with a nice svg background and takes care of adding any ad
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MainToolbar : public KHBox, public EngineObserver, public SvgHandler
+class MainToolbar : public KHBox, public EngineObserver
 {
 public:
     MainToolbar( QWidget * parent );
@@ -59,7 +59,6 @@ private:
     KToolBar *m_addControlsToolbar;
     VolumeWidget * m_volumeWidget;
 
-    QSvgRenderer * m_svgRenderer;
     bool m_renderAddControls;
     int m_addActionsOffsetX;
 

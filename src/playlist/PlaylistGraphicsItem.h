@@ -44,7 +44,7 @@ namespace Playlist
      * Do not add any data members to GraphicsItem, you should be able to add them to
      * ActiveItems instead.
      */
-    class GraphicsItem : public QGraphicsItem, public SvgHandler
+    class GraphicsItem : public QGraphicsItem
     {
         class ActiveItems;
 

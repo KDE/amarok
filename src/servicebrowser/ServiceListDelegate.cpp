@@ -33,19 +33,14 @@
 
 ServiceListDelegate::ServiceListDelegate( QListView *view )
  : QItemDelegate()
- , SvgHandler()
  , m_view( view )
 {
     DEBUG_BLOCK
-
-   loadSvg( "amarok/images/service-browser-element.svg" );
 
 }
 
 ServiceListDelegate::~ServiceListDelegate()
 {
-    delete m_svgRendererActive;
-    delete m_svgRendererInactive;
 }
 
 void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
@@ -62,7 +57,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
 
-    QPixmap background = renderSvg( "service_list_item", width, height );
+    QPixmap background = The::svgHandler()->renderSvg( "amarok/images/service-browser-element.svg", "service_list_item", width, height );
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
@@ -115,7 +110,7 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
 
 void ServiceListDelegate::paletteChange()
 {
-    reTint();
+    The::svgHandler()->reTint( "amarok/images/service-browser-element.svg" );
 }
 
 

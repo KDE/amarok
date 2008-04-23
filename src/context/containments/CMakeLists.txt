@@ -8,7 +8,7 @@ include_directories( ../../..
                      
 set(context_SRCS
     ColumnApplet.cpp
-    ../../widgets/SvgHandler.cpp)
+    ../../SvgHandler.cpp)
 
 kde4_add_plugin(amarok_containment_context ${context_SRCS})
 target_link_libraries(amarok_containment_context amaroklib ${KDE4_KIO_LIBS})

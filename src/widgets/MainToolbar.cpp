@@ -42,10 +42,8 @@
 MainToolbar::MainToolbar( QWidget * parent )
  : KHBox( parent )
  , EngineObserver( The::engineController() )
- , SvgHandler()
  , m_addActionsOffsetX( 0 )
 {
-    loadSvg( "amarok/images/toolbar-background.svg" );
 
     setMaximumSize( 20000, 67 );
     setMinimumSize( 200, 67 );
@@ -161,13 +159,13 @@ void MainToolbar::paintEvent(QPaintEvent *)
 
     QPainter painter( this );
 
-    QPixmap background = renderSvg( "toolbarbackground", contentsRect().width(), contentsRect().height(), "toolbarbackground" );
+    QPixmap background = The::svgHandler()->renderSvg( "amarok/images/toolbar-background.svg", "toolbarbackground", contentsRect().width(), contentsRect().height(), "toolbarbackground" );
     painter.drawPixmap( 0, 0, background );
-    QPixmap controlArea = renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
+    QPixmap controlArea = The::svgHandler()->renderSvg( "amarok/images/toolbar-background.svg", "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
     painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
 
     if ( m_renderAddControls ) {
-        QPixmap addControlArea = renderSvg( "addbuttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
+        QPixmap addControlArea = The::svgHandler()->renderSvg( "amarok/images/toolbar-background.svg", "addbuttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
         painter.drawPixmap( addControlRect.x(), addControlRect.y(), addControlArea );
     }
 }
@@ -249,7 +247,7 @@ void MainToolbar::resizeEvent(QResizeEvent * event)
 void MainToolbar::paletteChange( const QPalette & oldPalette )
 {
     Q_UNUSED( oldPalette );
-    reTint();
+    The::svgHandler()->reTint( "amarok/images/toolbar-background.svg" );
     repaint( 0, 0, -1, -1 );
 }
 

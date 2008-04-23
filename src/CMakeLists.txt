@@ -440,7 +440,7 @@ set(amaroklib_LIB_SRCS
     widgets/SliderWidget.cpp
     widgets/VolumeWidget.cpp
     widgets/MainToolbar.cpp
-    widgets/SvgHandler.cpp
+    SvgHandler.cpp
     SvgTinter.cpp
 )
 
