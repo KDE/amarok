@@ -165,7 +165,7 @@ EngineController::installDistroCodec()
         QString installScript = service->exec();
         if( !installScript.isNull() ) //just a sanity check
         {
-            KGuiItem installButton("Install MP3 Support");
+            KGuiItem installButton( i18n( "Install MP3 Support" ) );
             if(KMessageBox::questionYesNo(MainWindow::self()
             , i18n("Amarok currently cannot play MP3 files.")
             , i18n( "No MP3 Support" )
