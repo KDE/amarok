@@ -28,7 +28,6 @@
 
 
 #include <QGraphicsItem>
-#include <QSvgRenderer>
 
 class QFontMetricsF;
 
@@ -117,7 +116,6 @@ namespace Playlist
             static const qreal MARGIN;
             static const qreal MARGINH;
             static QFontMetricsF* s_fm;
-            static QSvgRenderer * s_svgRenderer;
     };
 
 }

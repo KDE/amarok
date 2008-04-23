@@ -24,8 +24,6 @@
 
 #include <QItemDelegate>
 #include <QListView>
-#include <QSvgRenderer>
-
 
 
 /**

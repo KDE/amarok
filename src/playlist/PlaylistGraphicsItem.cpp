@@ -96,7 +96,6 @@ const qreal Playlist::GraphicsItem::SINGLE_TRACK_ALBUM_WIDTH = 40.0;
 const qreal Playlist::GraphicsItem::MARGIN = 3.0;
 const qreal Playlist::GraphicsItem::MARGINH = 6;
 QFontMetricsF* Playlist::GraphicsItem::s_fm = 0;
-QSvgRenderer * Playlist::GraphicsItem::s_svgRenderer = 0;
 
 
 Playlist::GraphicsItem::GraphicsItem()

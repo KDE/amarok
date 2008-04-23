@@ -27,7 +27,6 @@
 #include <QVector>
 
 class QPalette;
-class QSvgRenderer;
 class QTimer;
 
 namespace Amarok
@@ -73,7 +72,6 @@ namespace Amarok
             int  m_prevValue;
 
             Q_DISABLE_COPY( Slider );
-
     };
 
     class VolumeSlider: public Slider
@@ -105,8 +103,6 @@ namespace Amarok
             int m_sliderX;
 
             int m_margin;
-
-            QSvgRenderer * m_svgRenderer;
     };
 
     class TimeSlider : public Amarok::Slider
@@ -143,8 +139,6 @@ namespace Amarok
 
             static const int FRAME_RATE = 30;
             static const int TICK_INTERVAL = 1000; //The time (in ms) between updates from the engine.
-
-            QSvgRenderer * m_svgRenderer;
     };
 
 }

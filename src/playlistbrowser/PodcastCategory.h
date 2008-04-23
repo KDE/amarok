@@ -25,7 +25,6 @@
 #include <QContextMenuEvent>
 #include <QItemDelegate>
 #include <QListView>
-#include <QSvgRenderer>
 #include <QToolButton>
 #include <QTreeView>
 

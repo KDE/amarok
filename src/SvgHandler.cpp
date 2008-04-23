@@ -73,7 +73,7 @@ QSvgRenderer* SvgHandler::getRenderer( const QString& name )
 {
     if( ! m_renderers[name] )
         if( ! loadSvg( name ) )
-            return 0;
+            m_renderers[name] = new QSvgRenderer();
     return m_renderers[name];
 }
 
