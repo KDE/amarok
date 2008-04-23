@@ -739,6 +739,7 @@ ServiceGenre::ServiceGenre( const QString &name )
     , SourceInfoProvider()
     , m_name( name )
     , m_tracks()
+    , m_id( 0 )
 {
     //nothing to do
 }
