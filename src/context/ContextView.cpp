@@ -47,6 +47,7 @@ ContextView::ContextView( QWidget* parent )
     : QGraphicsView( parent )
     , EngineObserver( The::engineController() )
     , m_columns( 0 )
+    , m_curState( Home )
 {
 
     s_self = this;
