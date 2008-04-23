@@ -750,6 +750,7 @@ ServiceGenre::ServiceGenre(const QStringList & row)
     , CustomActionsProvider()
     , SourceInfoProvider()
     , m_tracks()
+    , m_id( 0 )
 {
     m_name = row[1];
 }
