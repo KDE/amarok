@@ -71,11 +71,10 @@ bool SvgHandler::loadSvg( const QString& name )
 
 QSvgRenderer* SvgHandler::getRenderer( const QString& name )
 {
-    QMap<QString,QSvgRenderer*>::iterator it = m_renderers.find( name );
-    if( it == m_renderers.end() )
+    if( ! m_renderers[name] )
         if( ! loadSvg( name ) )
-            it = m_renderers.insert( name, new QSvgRenderer() );
-    return it.value();
+            m_renderers[name] = new QSvgRenderer();
+    return m_renderers[name];
 }
 
 QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
