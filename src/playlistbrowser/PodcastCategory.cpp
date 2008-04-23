@@ -25,6 +25,7 @@
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
 #include "SvgTinter.h"
+#include "SvgHandler.h"
 #include "TheInstances.h"
 
 #include <QAction>
@@ -169,9 +170,7 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
             //only opens if selected AND not in cache, see TODO above
 
             QString file = KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" );
-            QString svg_source =  The::svgTinter()->tint( file );
-
-            QSvgRenderer *svgRenderer = new QSvgRenderer( svg_source.toAscii() );
+            QSvgRenderer *svgRenderer = The::svgHandler()->getRenderer( "amarok/images/service-browser-element.svg" );
 
             svgRenderer->render ( &pt,  QRectF( 0, 0 ,width - 40, height - 4 ) );
             QPixmapCache::insert(key, background);

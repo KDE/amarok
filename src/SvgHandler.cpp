@@ -69,6 +69,14 @@ bool SvgHandler::loadSvg( const QString& name )
     return true;
 }
 
+QSvgRenderer* SvgHandler::getRenderer( const QString& name )
+{
+    if( ! m_renderers[name] )
+        if( ! loadSvg( name ) )
+            return 0;
+    return m_renderers[name];
+}
+
 QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
 {
     QPixmap pixmap( width, height );

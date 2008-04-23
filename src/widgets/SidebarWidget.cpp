@@ -29,7 +29,6 @@
 #include <QApplication>
 #include <QList>
 #include <QPainter>
-#include <QSvgRenderer>
 #include <QTimer>
 #include <QWheelEvent>
 

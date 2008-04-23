@@ -27,8 +27,6 @@
 
 #include <KHBox>
 
-#include <QSvgRenderer>
-
 /**
 A KHBox based toolbar with a nice svg background and takes care of adding any additional controls needed by individual tracks
 

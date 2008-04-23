@@ -42,6 +42,7 @@ public:
 
     ~SvgHandler();
 
+    QSvgRenderer* AMAROK_EXPORT getRenderer( const QString &name );
     QPixmap AMAROK_EXPORT renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
     void AMAROK_EXPORT reTint( const QString &name );
 
