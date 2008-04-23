@@ -14,7 +14,7 @@ QT4_ADD_DBUS_INTERFACE( amarokcollectionscanner_SRCS ${amarok_collection_xml} am
 
 kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS})
 
-target_link_libraries(amarokcollectionscanner amarok_taglib amaroklib )
+target_link_libraries(amarokcollectionscanner amarok_taglib ${KDE4_KDEUI_LIBS} )
 
 install(TARGETS amarokcollectionscanner DESTINATION ${BIN_INSTALL_DIR} )
 

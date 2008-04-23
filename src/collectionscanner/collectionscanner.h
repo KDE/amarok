@@ -30,7 +30,8 @@
 #include <QStringList>
 #include <QVector>
 
-#include <kapplication.h>
+#include <KApplication>
+#include <KStandardDirs>
 #include <KUrl>
 #include <amarok_collection_interface.h>
 
@@ -80,6 +81,8 @@ private:
         flac,
         mp4
     };
+
+    inline QString saveLocation() const { return KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true ); }
 
     void readDir( const QString& dir, QStringList& entries );
     void scanFiles( const QStringList& entries );

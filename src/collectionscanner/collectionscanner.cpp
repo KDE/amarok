@@ -17,12 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#define DEBUG_PREFIX "CollectionScanner"
-
 #include "Amarok.h"
 #include "collectionscanner.h"
-#include "debug.h"
-#include "meta/file/File.h"
 
 #include <KMD5>
 
@@ -44,8 +40,8 @@
 #include <QTimer>
 #include <qdom.h>
 
-#include <kglobal.h>
-#include <klocale.h>
+#include <KGlobal>
+#include <KLocale>
 
 //Taglib:
 #include <apetag.h>
@@ -83,7 +79,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_recursively( recursive )
         , m_incremental( incremental )
         , m_restart( restart )
-        , m_logfile( Amarok::saveLocation( QString() ) + "collection_scan.log"  )
+        , m_logfile( saveLocation() + "collection_scan.log"  )
 {
     amarokCollectionInterface = new OrgKdeAmarokCollectionInterface("org.kde.amarok", "/Collection", QDBusConnection::sessionBus());
     kapp->setObjectName( QString( "amarokcollectionscanner" ).toAscii() );
@@ -96,7 +92,6 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
 
 CollectionScanner::~CollectionScanner()
 {
-    DEBUG_BLOCK
     delete amarokCollectionInterface;
 }
 
@@ -113,10 +108,8 @@ CollectionScanner::doJob() //SLOT
     if( m_restart ) {
         QFile logFile( m_logfile );
         QString lastFile;
-        if ( !logFile.open( QIODevice::ReadOnly ) )
-            warning() << "Failed to open log file " << logFile.fileName() << " read-only"
-           ;
-        else {
+        if ( logFile.open( QIODevice::ReadOnly ) )
+        {
             QTextStream logStream;
             logStream.setDevice(&logFile);
             logStream.setCodec(QTextCodec::codecForName( "UTF-8" ) );
@@ -124,11 +117,9 @@ CollectionScanner::doJob() //SLOT
             logFile.close();
         }
 
-        QFile folderFile( Amarok::saveLocation( QString() ) + "collection_scan.files"   );
-        if ( !folderFile.open( QIODevice::ReadOnly ) )
-            warning() << "Failed to open folder file " << folderFile.fileName()
-            << " read-only";
-        else {
+        QFile folderFile( saveLocation()  + "collection_scan.files"   );
+        if ( folderFile.open( QIODevice::ReadOnly ) )
+        {
             QTextStream folderStream;
             folderStream.setDevice(&folderFile);
             folderStream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
@@ -151,7 +142,7 @@ CollectionScanner::doJob() //SLOT
             readDir( dir, entries );
         }
 
-        QFile folderFile( Amarok::saveLocation( QString() ) + "collection_scan.files"   );
+        QFile folderFile( saveLocation() + "collection_scan.files"   );
         folderFile.open( QIODevice::WriteOnly );
         QTextStream stream( &folderFile );
         stream.setCodec( QTextCodec::codecForName("UTF-8") );
@@ -211,8 +202,6 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 void
 CollectionScanner::scanFiles( const QStringList& entries )
 {
-    DEBUG_BLOCK
-
     typedef QPair<QString, QString> CoverBundle;
 
     QStringList validImages;    validImages    << "jpg" << "png" << "gif" << "jpeg";
