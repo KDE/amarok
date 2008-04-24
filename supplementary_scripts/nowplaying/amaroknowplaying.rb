@@ -1,59 +1,128 @@
 #!/usr/bin/env ruby
-#
-# Now playing script for IRC.
+###########################################################################
+#   Now playing script for IRC. Supports both Amarok 1 and Amarok 2.      #
+#                                                                         #
+#   Use with the "/exec -out" command of your client.                     #
+#   You can bind an alias like this (tested with irssi):                  #
+#   /alias np exec -out /home/myself/amaroknowplaying.rb                  #
+#                                                                         #
+#   Copyright                                                             #
+#   (C) 2005-2008 Mark Kretschmann <kretschmann@kde.org>                  #
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+#   This program is distributed in the hope that it will be useful,       #
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+#   GNU General Public License for more details.                          #
+#                                                                         #
+#   You should have received a copy of the GNU General Public License     #
+#   along with this program; if not, write to the                         #
+#   Free Software Foundation, Inc.,                                       #
+#   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         #
+###########################################################################
 
-# Use with the "/exec -out" command of your client. You can bind an alias like this:
-# /alias np exec -out /home/myself/amaroknowplaying.rb
-#
-# (c) 2005-2008 Mark Kretschmann <kretschmann@kde.org>
-# License: GNU General Public License V2
+def amarok_1
+    title  = `dcop amarok player title 2> /dev/null`.chomp
+    artist = `dcop amarok player artist`.chomp
+    album  = `dcop amarok player album`.chomp
+    year   = `dcop amarok player year`.chomp
+    lastfm = `dcop amarok player lastfmStation`.chomp
 
+    output = ""
 
-title  = `qdbus org.kde.amarok /Player title 2> /dev/null`.chomp
-exit( 1 ) unless $?.success? # Abort if Amarok isn't running
-artist = `qdbus org.kde.amarok /Player artist`.chomp
-album  = `qdbus org.kde.amarok /Player album`.chomp
-year   = `qdbus org.kde.amarok /Player year`.chomp
-streamName = `qdbus org.kde.amarok /Player streamName`.chomp
-version = `qdbus org.kde.amarok /Player version`.chomp 
-
-output = ""
-
-
-if title.empty?
-    output += `qdbus org.kde.amarok /Player nowPlaying`.chomp
-else
-    # Strip file extension
-    extensions = ".ogg", ".mp3", ".wav", ".flac", ".fla", ".wma", ".mpc", ".oga"
-    ext = File.extname( title ).downcase
-
-    if extensions.include?( ext )
-        title = title[0, title.length - ext.length]
-    end
-
-    if artist.empty?
-        output += "#{title}"
+    if title.empty?
+        output += `dcop amarok player nowPlaying`.chomp
     else
-        output += "#{artist} - #{title}"
+        # Strip file extension
+        extensions = ".ogg", ".mp3", ".wav", ".flac", ".fla", ".wma", ".mpc"
+        ext = File.extname( title ).downcase
+
+        if extensions.include?( ext )
+            title = title[0, title.length - ext.length]
+        end
+
+        if artist.empty?
+            output += "#{title}"
+        else
+            output += "#{artist} - #{title}"
+        end
+
+        unless album.empty?
+            output += " [#{album}"
+            output += ", #{year}" unless year == "0"
+            output += "]"
+        end
+
+        unless lastfm.empty?
+            output += " (Last.fm #{lastfm})"
+        end
     end
 
-    unless album.empty?
-        output += " [#{album}"
-        output += ", #{year}" unless year == "0" or year.empty?
-        output += "]"
-    end
-
-    unless streamName.empty?
-        output += " (#{streamName})"
-    end
-    
-    unless version.empty?
-        output += " (Amarok #{version})"
-    end
+    puts( "np: #{output}" ) unless output.empty?
 end
 
 
-puts( "np: #{output}" ) unless output.empty?
+def amarok_2
+    title  = `qdbus org.kde.amarok /Player title 2> /dev/null`.chomp
+    artist = `qdbus org.kde.amarok /Player artist`.chomp
+    album  = `qdbus org.kde.amarok /Player album`.chomp
+    year   = `qdbus org.kde.amarok /Player year`.chomp
+    streamName = `qdbus org.kde.amarok /Player streamName`.chomp
+    version = `qdbus org.kde.amarok /Player version`.chomp 
 
-exit 0
+    output = ""
+
+    if title.empty?
+        output += `qdbus org.kde.amarok /Player nowPlaying`.chomp
+    else
+        # Strip file extension
+        extensions = ".ogg", ".mp3", ".wav", ".flac", ".fla", ".wma", ".mpc", ".oga"
+        ext = File.extname( title ).downcase
+
+        if extensions.include?( ext )
+            title = title[0, title.length - ext.length]
+        end
+
+        if artist.empty?
+            output += "#{title}"
+        else
+            output += "#{artist} - #{title}"
+        end
+
+        unless album.empty?
+            output += " [#{album}"
+            output += ", #{year}" unless year == "0" or year.empty?
+            output += "]"
+        end
+
+        unless streamName.empty?
+            output += " (#{streamName})"
+        end
+        
+        unless version.empty?
+            output += " (Amarok #{version})"
+        end
+    end
+
+    puts( "np: #{output}" ) unless output.empty?
+end
+
+
+test = `qdbus org.kde.amarok /Player title 2> /dev/null`.chomp
+if $?.success?
+  amarok_2
+  exit
+end
+test = `dcop amarok player title 2> /dev/null`.chomp
+if $?.success?
+  amarok_1
+  exit
+end
+
+exit( 1 ) # Abort if Amarok isn't running
+
 
