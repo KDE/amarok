@@ -30,9 +30,10 @@
 #include "SqlCollection.h"
 
 #include <QFileInfo>
-#include <QHash>
 #include <QListIterator>
+#include <QMap>
 #include <QStringList>
+#include <QVariant>
 #include <QXmlStreamAttributes>
 
 #include <threadweaver/ThreadWeaver.h>
@@ -359,7 +360,7 @@ void
 XmlParseJob::run()
 {
     DEBUG_BLOCK
-    QList<QHash<QString, QString> > directoryData;
+    QList<QVariantMap > directoryData;
     bool firstTrack = true;
     QString currentDir;
 
@@ -405,7 +406,7 @@ XmlParseJob::run()
                     emit incrementProgress();
                     //TODO handle tag data
                     QXmlStreamAttributes attrs = m_reader.attributes();
-                    QHash<QString, QString> data;
+                    QVariantMap data;
                     data.insert( Meta::Field::URL, attrs.value( "path" ).toString() );
                     data.insert( Meta::Field::TITLE, attrs.value( "title" ).toString() );
                     data.insert( Meta::Field::ARTIST, attrs.value( "artist" ).toString() );
@@ -429,12 +430,12 @@ XmlParseJob::run()
 
                     if( firstTrack )
                     {
-                        KUrl url( data.value( Meta::Field::URL ) );
+                        KUrl url( data.value( Meta::Field::URL ).toString() );
                         currentDir = url.directory();
                         firstTrack = false;
                     }
 
-                    KUrl url( data.value( Meta::Field::URL ) );
+                    KUrl url( data.value( Meta::Field::URL ).toString() );
                     if( url.directory() == currentDir )
                     {
                         directoryData.append( data );

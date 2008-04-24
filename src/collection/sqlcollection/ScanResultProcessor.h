@@ -24,6 +24,7 @@
 #include <QMap>
 #include <QPair>
 #include <QString>
+#include <QVariant>
 
 class SqlCollection;
 
@@ -42,13 +43,13 @@ class ScanResultProcessor
 
         void addDirectory( const QString &dir, uint mtime );
         void setScanType( ScanType type );
-        void processDirectory( const QList<QHash<QString, QString> > &data );
+        void processDirectory( const QList<QVariantMap > &data );
         void commit();
         void rollback();
 
     private:
 
-        void addTrack( const QHash<QString, QString> &trackData, int albumArtistId );
+        void addTrack( const QVariantMap &trackData, int albumArtistId );
 
         int artistId( const QString &artist );
         int genreId( const QString &genre );

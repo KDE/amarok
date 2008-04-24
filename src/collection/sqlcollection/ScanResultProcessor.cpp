@@ -99,7 +99,7 @@ ScanResultProcessor::rollback()
 }
 
 void
-ScanResultProcessor::processDirectory( const QList<QHash<QString, QString> > &data )
+ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
 {
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
@@ -112,20 +112,20 @@ ScanResultProcessor::processDirectory( const QList<QHash<QString, QString> > &da
     QString album;
     bool multipleAlbums = false;
     if( !data.isEmpty() )
-        album = data[0].value( Field::ALBUM );
-    QHash<QString,QString> row;
+        album = data[0].value( Field::ALBUM ).toString();
+    QVariantMap row;
     foreach( row, data )
     {
-        artists.insert( row.value( Field::ARTIST ) );
-        if( row.value( Field::ALBUM ) != album )
+        artists.insert( row.value( Field::ARTIST ).toString() );
+        if( row.value( Field::ALBUM ).toString() != album )
             multipleAlbums = true;
     }
     if( multipleAlbums || album.isEmpty() || data.count() > 60 || artists.size() == 1 )
     {
-        QHash<QString, QString> row;
+        QVariantMap row;
         foreach( row, data )
         {
-            int artist = artistId( row.value( Field::ARTIST ) );
+            int artist = artistId( row.value( Field::ARTIST ).toString() );
             addTrack( row, artist );
         }
     }
@@ -134,7 +134,7 @@ ScanResultProcessor::processDirectory( const QList<QHash<QString, QString> > &da
         QString albumArtist = findAlbumArtist( artists );
         //an empty string means that no albumartist was found
         int artist = albumArtist.isEmpty() ? 0 : artistId( albumArtist );
-        QHash<QString, QString> row;
+        QVariantMap row;
         foreach( row, data )
         {
             addTrack( row, artist );
@@ -218,15 +218,15 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
 }
 
 void
-ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int albumArtistId )
+ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 {
 
     //amarok 1 stored all tracks of a compilation in different directories.
     //when using its "Organize Collection" feature
     //try to detect these cases
-    QString albumName = trackData.value( Field::ALBUM );
+    QString albumName = trackData.value( Field::ALBUM ).toString();
     int album = 0;
-    QFileInfo file( trackData.value( Field::URL ) );
+    QFileInfo file( trackData.value( Field::URL ).toString() );
     QDir dir = file.dir();
     dir.setFilter( QDir::Files );
     //name filtering should be case-insensitive because we do not use QDir::CaseSensitive
@@ -249,17 +249,17 @@ ScanResultProcessor::addTrack( const QHash<QString, QString> &trackData, int alb
     {
         album = albumId( albumName, albumArtistId );
     }
-    int artist = artistId( trackData.value( Field::ARTIST ) );
-    int genre = genreId( trackData.value( Field::GENRE ) );
-    int composer = composerId( trackData.value( Field::COMPOSER ) );
-    int year = yearId( trackData.value( Field::YEAR ) );
-    int url = urlId( trackData.value( Field::URL ) );
+    int artist = artistId( trackData.value( Field::ARTIST ).toString() );
+    int genre = genreId( trackData.value( Field::GENRE ).toString() );
+    int composer = composerId( trackData.value( Field::COMPOSER ).toString() );
+    int year = yearId( trackData.value( Field::YEAR ).toString() );
+    int url = urlId( trackData.value( Field::URL ).toString() );
 
     QString insert = "INSERT INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
                      "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm,"
                      "createdate,modifydate) VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8',%9"; //goes up to tracknumber
     insert = insert.arg( url ).arg( artist ).arg( compilationId ? compilationId : album ).arg( genre ).arg( composer ).arg( year );
-    insert = insert.arg( m_collection->escape( trackData[ Field::TITLE ] ), m_collection->escape( trackData[ Field::COMMENT ] ) );
+    insert = insert.arg( m_collection->escape( trackData[ Field::TITLE ].toString() ), m_collection->escape( trackData[ Field::COMMENT ].toString() ) );
     insert = insert.arg( trackData[Field::TRACKNUMBER].toInt() );
 
     QString insert2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9);";
