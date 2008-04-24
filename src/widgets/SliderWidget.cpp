@@ -224,22 +224,13 @@ Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
 void
 Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
-    //DEBUG_BLOCK
-
     //debug() << "width: " << width() << ", height: " << height();
     QPainter p( this );
 
-    const int padding = 7;
-    const int offset = int( double( ( width() - 2 * padding ) * value() ) / maximum() );
+    const double knobX = ( m_sliderWidth - m_sliderHeight ) * ( ( double ) value() / 100.0 );
+    const double fillLength = knobX + ( m_sliderHeight / 2 );
 
-    //try something completely different here...
-    double knobX = ( m_sliderWidth - m_sliderHeight ) * ( ( double ) value() / 100.0 );
-
-    double fillLength = knobX + ( m_sliderHeight / 2 );
-    double fillHeight = m_sliderHeight * ( ( double ) knobX / m_sliderWidth );
-    double fillOffsetY = ( m_sliderHeight - fillHeight ) / 2;
-
-    bool highlight = underMouse();
+    const bool highlight = underMouse();
 
     //paint slider background
     QString key = QString("volume-background:%1x%2-fill:%3-highlight:%4")
@@ -301,7 +292,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
     p.drawPixmap( 0, ( height() - m_iconHeight ) / 2, icon );
 
-    if ( underMouse() )
+    if( highlight )
     {
         // Draw percentage number
         p.setPen( palette().color( QPalette::Active, QColorGroup::Text ) );
