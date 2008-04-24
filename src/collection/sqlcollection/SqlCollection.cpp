@@ -148,6 +148,12 @@ SqlCollection::dbUpdater() const
     return m_updater;
 }
 
+ScanManager*
+SqlCollection::scanManager() const
+{
+    return m_scanManager;
+}
+
 void
 SqlCollection::removeCollection()
 {

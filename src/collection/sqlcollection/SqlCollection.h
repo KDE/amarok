@@ -56,6 +56,7 @@ class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
 
         SqlRegistry* registry() const;
         DatabaseUpdater* dbUpdater() const;
+        ScanManager* scanManager() const;
         
         void removeCollection();    //testing, remove later
 

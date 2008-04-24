@@ -41,6 +41,8 @@ class ScanManager : public QObject
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url );
 
+        void setBlockScan( bool blockScan );
+
     public slots:
         void startFullScan();
         void startIncrementalScan();
@@ -64,6 +66,7 @@ class ScanManager : public QObject
 
         int m_restartCount;
         bool m_isIncremental;
+        bool m_blockScan;
 };
 
 class XmlParseJob : public ThreadWeaver::Job

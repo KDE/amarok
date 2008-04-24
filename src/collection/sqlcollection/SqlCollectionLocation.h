@@ -21,6 +21,9 @@
 
 #include "CollectionLocation.h"
 
+#include <QMap>
+#include <QString>
+
 class SqlCollection;
 
 class SqlCollectionLocation : public CollectionLocation
@@ -36,6 +39,9 @@ class SqlCollectionLocation : public CollectionLocation
         virtual void copyUrlsToCollection( const KUrl::List &sources );
 
     private:
+
+        void insertTracks( const QMap<QString, Meta::TrackPtr > &trackMap );
+
         SqlCollection *m_collection;
 };
 

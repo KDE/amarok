@@ -19,6 +19,9 @@
 #include "SqlCollectionLocation.h"
 
 #include "debug.h"
+#include "MetaUtility.h"
+#include "ScanManager.h"
+#include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
 
@@ -89,8 +92,28 @@ void
 SqlCollectionLocation::copyUrlsToCollection( const KUrl::List &sources )
 {
     Q_UNUSED( sources );
+    m_collection->scanManager()->setBlockScan( true );  //make sure the collection scanner does not run while we are coyping stuff
     //TODO
+    m_collection->scanManager()->setBlockScan( false );
     slotCopyOperationFinished();
+}
+
+void
+SqlCollectionLocation::insertTracks( const QMap<QString, Meta::TrackPtr > &trackMap )
+{
+    QList<QVariantMap > metadata;
+    const QStringList realUrls = trackMap.keys();
+    foreach( const QString url, realUrls )
+    {
+        QVariantMap trackData = Meta::Field::mapFromTrack( trackMap[ url ].data() );
+        trackData.insert( Meta::Field::URL, url );  //store the new url of the file
+        metadata.append( trackData );
+    }
+    ScanResultProcessor processor( m_collection );
+    processor.setScanType( ScanResultProcessor::IncrementalScan );
+    //TODO: get the new mtime of all updated/created directories
+    //TODO: insert all tracks using ScanResultProcessor::processDirectory
+    processor.commit();
 }
 
 #include "SqlCollectionLocation.moc"

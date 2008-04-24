@@ -48,6 +48,7 @@ ScanManager::ScanManager( SqlCollection *parent )
     , m_parser( 0 )
     , m_restartCount( 0 )
     , m_isIncremental( false )
+    , m_blockScan( false )
 {
     //nothing to do
 }
@@ -59,6 +60,11 @@ ScanManager::startFullScan()
     if( m_parser )
     {
         debug() << "scanner already running";
+        return;
+    }
+    if( m_blockScan )
+    {
+        debug() << "scanning currently blocked";
         return;
     }
     cleanTables();
@@ -91,6 +97,11 @@ void ScanManager::startIncrementalScan()
     if( m_parser )
     {
         debug() << "scanner already running";
+        return;
+    }
+    if( m_blockScan )
+    {
+        debug() << "scanning currently blocked";
         return;
     }
     QStringList dirs = getDirsToScan();
@@ -159,6 +170,13 @@ ScanManager::isFileInCollection( const QString &url  )
     QStringList values = m_collection->query( sql );
 
     return !values.isEmpty();
+}
+
+void
+ScanManager::setBlockScan( bool blockScan )
+{
+    m_blockScan = blockScan;
+    //TODO what happens if the collection scanner is currently running?
 }
 
 void
