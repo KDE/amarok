@@ -26,31 +26,43 @@
 
 #include <KStandardDirs>
 
+#include <QHash>
 #include <QPainter>
 #include <QPixmapCache>
 
-SvgHandler * SvgHandler::m_instance = 0;
+class SvgHandler::Private
+{
+    public:
+        QHash<QString,QSvgRenderer*> renderers;
+
+        bool loadSvg( const QString& name );
+};
+
+class SvgHandlerSingleton
+{
+    public:
+        SvgHandler instance;
+};
+
+K_GLOBAL_STATIC( SvgHandlerSingleton, privateInstance )
 
 SvgHandler * SvgHandler::instance()
 {
-
-    if ( m_instance == 0 )
-        m_instance = new SvgHandler();
-
-    return m_instance;
+    return &privateInstance->instance;
 }
 
 
 SvgHandler::SvgHandler()
-    : m_renderers()
+    : d( new Private() )
 {
 }
 
 SvgHandler::~SvgHandler()
 {
+    delete d;
 }
 
-bool SvgHandler::loadSvg( const QString& name )
+bool SvgHandler::Private::loadSvg( const QString& name )
 {
     QString svgFilename = KStandardDirs::locate( "data", name );
     
@@ -62,19 +74,19 @@ bool SvgHandler::loadSvg( const QString& name )
         return false;
     }
 
-    if( m_renderers[name] )
-        delete m_renderers[name];
+    if( renderers[name] )
+        delete renderers[name];
 
-    m_renderers[name] = renderer;
+    renderers[name] = renderer;
     return true;
 }
 
 QSvgRenderer* SvgHandler::getRenderer( const QString& name )
 {
-    if( ! m_renderers[name] )
-        if( ! loadSvg( name ) )
-            m_renderers[name] = new QSvgRenderer();
-    return m_renderers[name];
+    if( ! d->renderers[name] )
+        if( ! d->loadSvg( name ) )
+            d->renderers[name] = new QSvgRenderer();
+    return d->renderers[name];
 }
 
 QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
@@ -82,8 +94,8 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
     QPixmap pixmap( width, height );
     pixmap.fill( Qt::transparent );
 
-    if( ! m_renderers[name] )
-        if( ! loadSvg( name ) )
+    if( ! d->renderers[name] )
+        if( ! d->loadSvg( name ) )
             return pixmap;
 
     const QString key = QString("%1:%2x%3")
@@ -97,9 +109,9 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
 
         QPainter pt( &pixmap );
         if ( element.isEmpty() )
-            m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
+            d->renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
         else
-            m_renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
+            d->renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
   
         QPixmapCache::insert( key, pixmap );
     }
@@ -110,7 +122,7 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
 void SvgHandler::reTint( const QString &name )
 {
     The::svgTinter()->init();
-    loadSvg( name );
+    d->loadSvg( name );
 }
 
 namespace The {

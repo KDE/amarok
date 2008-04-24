@@ -22,11 +22,8 @@
 #define SVGHANDLER_H
 
 #include <QPixmap>
-#include <QSvgRenderer>
-
 #include <QString>
 #include <QSvgRenderer>
-#include <QMap>
 
 #include "amarok_export.h"
 
@@ -35,24 +32,23 @@ A class to abstract out some common opperations of users of tinted svgs
 
 	@author 
 */
-class SvgHandler{
+class AMAROK_EXPORT SvgHandler{
 public:
 
-    static AMAROK_EXPORT SvgHandler * instance();
+    static SvgHandler * instance();
 
     ~SvgHandler();
 
-    QSvgRenderer* AMAROK_EXPORT getRenderer( const QString &name );
-    QPixmap AMAROK_EXPORT renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
-    void AMAROK_EXPORT reTint( const QString &name );
+    QSvgRenderer* getRenderer( const QString &name );
+    QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
+    void reTint( const QString &name );
 
 private:
+    friend class SvgHandlerSingleton;
     SvgHandler();
-    bool loadSvg( const QString& name );
 
-    static SvgHandler* m_instance;
-
-    QMap<QString,QSvgRenderer*> m_renderers;
+    class Private;
+    Private * const d;
 
 };
 
