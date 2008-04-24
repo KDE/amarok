@@ -336,8 +336,7 @@ bool MainWindow::eventFilter( QObject *o, QEvent *e )
 {
     switch( e->type() )
     {
-    case 6/*QEvent::KeyPress*/:
-
+    case QEvent::KeyPress:
         //there are a few keypresses that we intercept
 
         #define e static_cast<QKeyEvent*>(e)

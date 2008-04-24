@@ -29,6 +29,7 @@ class VolumeWidget : public KHBox, public EngineObserver
     Q_OBJECT
 public:
     VolumeWidget( QWidget * );
+    Amarok::Slider* slider() const { return m_slider; }
 
 private:
     void engineVolumeChanged( int value );

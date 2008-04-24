@@ -31,6 +31,7 @@
 #include "meta/CurrentTrackActionsCapability.h"
 
 #include <KAction>
+#include <KApplication>
 #include <KToolBar>
 #include <KVBox>
 
@@ -43,7 +44,9 @@ MainToolbar::MainToolbar( QWidget * parent )
  : KHBox( parent )
  , EngineObserver( The::engineController() )
  , m_addActionsOffsetX( 0 )
+
 {
+    setObjectName( "MainToolbar" );
 
     setMaximumSize( 20000, 67 );
     setMinimumSize( 200, 67 );
@@ -113,6 +116,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     //resize( m_insideBox->width(), 62 );
 
     m_renderAddControls = false;
+    kapp->installEventFilter( this );
 }
 
 MainToolbar::~MainToolbar()
@@ -158,7 +162,6 @@ void MainToolbar::paintEvent(QPaintEvent *)
 
 
     QPainter painter( this );
-
     QPixmap background = The::svgHandler()->renderSvg( "amarok/images/toolbar-background.svg", "toolbarbackground", contentsRect().width(), contentsRect().height(), "toolbarbackground" );
     painter.drawPixmap( 0, 0, background );
     QPixmap controlArea = The::svgHandler()->renderSvg( "amarok/images/toolbar-background.svg", "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
@@ -242,6 +245,17 @@ void MainToolbar::resizeEvent(QResizeEvent * event)
     m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 , 10 );
     m_volumeWidget->move( event->size().width() - 170, /*( m_insideBox->height() - m_volumeWidget->height() ) / 2*/ 0 );
     //centerAddActions();
+}
+
+bool MainToolbar::eventFilter( QObject* object, QEvent* event )
+{
+    // This makes it possible to change volume by using the mouse wheel anywhere on the toolbar
+    if( event->type() == QEvent::Wheel && object == this ) {
+        kapp->sendEvent( m_volumeWidget->slider(), event );
+        return true;
+    }
+
+    return QWidget::eventFilter( object, event );
 }
 
 void MainToolbar::paletteChange( const QPalette & oldPalette )
