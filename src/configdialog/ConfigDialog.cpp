@@ -17,9 +17,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "ConfigDialog.h"
+
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "ConfigDialog.h"
 #include "debug.h"
 
 #include "CollectionConfig.h"

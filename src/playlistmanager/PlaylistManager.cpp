@@ -16,11 +16,12 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#include "PlaylistManager.h"
+
 #include "amarokconfig.h"
 #include "App.h"
 #include "ContextStatusBar.h"
 #include "CollectionManager.h"
-#include "PlaylistManager.h"
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"
 #include "sql/SqlPodcastProvider.h"

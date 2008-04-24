@@ -20,8 +20,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef __KATE_FILESELECTOR_H__
-#define __KATE_FILESELECTOR_H__
+#ifndef FILEBROWSER_H
+#define FILEBROWSER_H
 
 
 #include <KVBox>

@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  **************************************************************************/
 
-#ifndef AMAROK_DEFAULT_META_H
-#define AMAROK_DEFAULT_META_H
+#ifndef DEFAULTMETATYPES_H
+#define DEFAULTMETATYPES_H
 
 #include "amarok_export.h"
 #include "debug.h"

@@ -16,6 +16,8 @@
 
 #define DEBUG_PREFIX "MainWindow"
 
+#include "MainWindow.h"
+
 #include <config-amarok.h>             //HAVE_LIBVISUAL definition
 
 #include "ActionClasses.h"    //see toolbar construction
@@ -33,7 +35,6 @@
 #include "EngineController.h" //for actions in ctor
 #include "filebrowser/FileBrowser.h"
 #include "k3bexporter.h"
-#include "MainWindow.h"
 #include "mediabrowser.h"
 #include "Osd.h"
 #include "playlist/PlaylistModel.h"

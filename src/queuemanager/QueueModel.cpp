@@ -11,10 +11,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "QueueModel.h"
+
 #include "AmarokMimeData.h"
 #include "debug.h"
 #include "Meta.h"
-#include "QueueModel.h"
 #include "TheInstances.h"
 
 using namespace QueueManagerNS;

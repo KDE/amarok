@@ -11,8 +11,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROK_PROGRESSWIDGET_H
-#define AMAROK_PROGRESSWIDGET_H
+#ifndef PROGRESSSLIDER_H
+#define PROGRESSSLIDER_H
 
 #include "EngineObserver.h"
 

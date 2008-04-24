@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "trackpickerdialog.h"
+
 #include <config-amarok.h>  
 
 #if HAVE_TUNEPIMP
-
-#include "trackpickerdialog.h"
 
 #include <KApplication>
 #include <k3listview.h>

@@ -15,8 +15,8 @@
 // Author: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2005
 //
 
-#ifndef MEDIUMPLUGINMANAGER_H
-#define MEDIUMPLUGINMANAGER_H
+#ifndef MEDIADEVICEPLUGINMANAGER_H
+#define MEDIADEVICEPLUGINMANAGER_H
 
 #include "Amarok.h"
 #include "hintlineedit.h"

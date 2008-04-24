@@ -20,10 +20,11 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include "MediaItem.h"
+
 #include "Amarok.h"
 #include "CollectionManager.h"
 #include "mediabrowser.h"
-#include "MediaItem.h"
 #include "MetaUtility.h"  //Meta::secToPrettyTime
 
 #include <KIconLoader>

@@ -13,8 +13,9 @@
 
 #define DEBUG_PREFIX "QueueManager"
 
-#include "debug.h"
 #include "QueueManager.h"
+
+#include "debug.h"
 #include "QueueModel.h"
 #include "TheInstances.h"
 

@@ -33,6 +33,8 @@
 #include <KMessageBox>
 
 #include <QDateTime>
+#include <QDomElement>
+#include <QFile>
 #include <QString>
 
 namespace Meta

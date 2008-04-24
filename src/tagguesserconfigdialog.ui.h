@@ -21,6 +21,9 @@
 ** place of a destructor.
 *****************************************************************************/
 
+#ifndef TAGGUESSERCONFIGDIALOG_UI_H
+#define TAGGUESSERCONFIGDIALOG_UI_H
+
 #include "TagGuesser.h"
 
 #include <QEvent>
@@ -134,3 +137,5 @@ void TagGuesserConfigDialog::slotRemoveClicked()
 {
     delete lvSchemes->currentItem();
 }
+
+#endif

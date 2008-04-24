@@ -18,7 +18,7 @@
 #ifndef GLANALYZER2_H
 #define GLANALYZER2_H
 
-#include "config-amarok.h"        //krazy2:exclude=includes
+#include <config-amarok.h>        //krazy2:exclude=includes
 #ifdef HAVE_QGLWIDGET
 
 #include "analyzerbase.h"

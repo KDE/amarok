@@ -19,6 +19,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "SliderWidget.h"
+
 #include <config-amarok.h>  
 
 #include "Amarok.h"
@@ -26,7 +28,6 @@
 #include "App.h"
 #include "debug.h"
 #include "EngineController.h"
-#include "SliderWidget.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"

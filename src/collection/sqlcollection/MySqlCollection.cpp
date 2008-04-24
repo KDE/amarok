@@ -16,13 +16,14 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include <klocale.h>
-
 #include "MySqlCollection.h"
+
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "MySqlQueryMaker.h"
+
+#include <klocale.h>
 
 MySqlCollection::MySqlCollection( const QString &id, const QString &prettyName )
     : SqlCollection( id, prettyName )

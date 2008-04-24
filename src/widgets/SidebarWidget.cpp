@@ -18,8 +18,9 @@
   Boston, MA 02110-1301, USA.
 */
 
-#include "debug.h"
 #include "SidebarWidget.h"
+
+#include "debug.h"
 
 #include "SvgTinter.h"
 #include "TheInstances.h"

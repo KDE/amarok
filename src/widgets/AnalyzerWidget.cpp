@@ -12,10 +12,12 @@
  *                                                                         *
  ***************************************************************************/
 //
+
+#include "AnalyzerWidget.h"
+
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
-#include "AnalyzerWidget.h"
 #include "analyzerbase.h"
 #include "socketserver.h"
 

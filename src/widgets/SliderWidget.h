@@ -19,8 +19,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROKSLIDER_H
-#define AMAROKSLIDER_H
+#ifndef SLIDERWIDGET_H
+#define SLIDERWIDGET_H
 
 #include <QPixmap>
 #include <QSlider>

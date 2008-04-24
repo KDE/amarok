@@ -16,8 +16,8 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef AMAROK_CDDAMANAGER_H
-#define AMAROK_CDDAMANAGER_H
+#ifndef CDDAMANAGER_H
+#define CDDAMANAGER_H
 
 #include "meta.h"
 

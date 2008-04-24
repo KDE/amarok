@@ -15,7 +15,7 @@
 #include "blockanalyzer.h"
 
 //HAVE_LIBVISUAL definition
-#include "config-amarok.h"        //krazy2:exclude=includes
+#include <config-amarok.h>
 
 #include "ActionClasses.h"   //mousePressEvent
 #include "Amarok.h"

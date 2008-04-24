@@ -23,7 +23,8 @@
 #include <Playlist.h>
 #include <EditablePlaylistCapability.h>
 
-#include <QtXml>
+#include <QDomDocument>
+#include <QTextStream>
 
 class QTextStream;
 class KUrl;
