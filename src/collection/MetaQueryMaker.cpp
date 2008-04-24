@@ -16,13 +16,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "MetaQueryBuilder.h"
+#include "MetaQueryMaker.h"
 
 #include <QtGlobal>
 
 using namespace Meta;
 
-MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
+MetaQueryMaker::MetaQueryMaker( const QList<Collection*> &collections )
     : QueryMaker()
     , m_queryDoneCount( 0 )
     , m_queryDoneCountMutex()
@@ -44,7 +44,7 @@ MetaQueryBuilder::MetaQueryBuilder( const QList<Collection*> &collections )
     }
 }
 
-MetaQueryBuilder::MetaQueryBuilder( const QList<QueryMaker*> &queryMakers )
+MetaQueryMaker::MetaQueryMaker( const QList<QueryMaker*> &queryMakers )
     : QueryMaker()
     , builders( queryMakers )
     , m_queryDoneCount( 0 )
@@ -65,14 +65,14 @@ MetaQueryBuilder::MetaQueryBuilder( const QList<QueryMaker*> &queryMakers )
     }
 }
 
-MetaQueryBuilder::~MetaQueryBuilder()
+MetaQueryMaker::~MetaQueryMaker()
 {
     foreach( QueryMaker *b, builders )
         delete b;
 }
 
 QueryMaker*
-MetaQueryBuilder::reset()
+MetaQueryMaker::reset()
 {
     m_queryDoneCount = 0;
     foreach( QueryMaker *b, builders )
@@ -81,27 +81,27 @@ MetaQueryBuilder::reset()
 }
 
 void
-MetaQueryBuilder::run()
+MetaQueryMaker::run()
 {
     foreach( QueryMaker *b, builders )
         b->run();
 }
 
 void
-MetaQueryBuilder::abortQuery()
+MetaQueryMaker::abortQuery()
 {
     foreach( QueryMaker *b, builders )
         b->abortQuery();
 }
 
 int
-MetaQueryBuilder::resultCount() const
+MetaQueryMaker::resultCount() const
 {
     return builders.count();
 }
 
 QueryMaker*
-MetaQueryBuilder::startTrackQuery()
+MetaQueryMaker::startTrackQuery()
 {
     foreach( QueryMaker *b, builders )
         b->startTrackQuery();
@@ -109,7 +109,7 @@ MetaQueryBuilder::startTrackQuery()
 }
 
 QueryMaker*
-MetaQueryBuilder::startArtistQuery()
+MetaQueryMaker::startArtistQuery()
 {
     foreach( QueryMaker *b, builders )
         b->startArtistQuery();
@@ -117,7 +117,7 @@ MetaQueryBuilder::startArtistQuery()
 }
 
 QueryMaker*
-MetaQueryBuilder::startAlbumQuery()
+MetaQueryMaker::startAlbumQuery()
 {
     foreach( QueryMaker *b, builders )
         b->startAlbumQuery();
@@ -125,7 +125,7 @@ MetaQueryBuilder::startAlbumQuery()
 }
 
 QueryMaker*
-MetaQueryBuilder::startGenreQuery()
+MetaQueryMaker::startGenreQuery()
 {
     foreach( QueryMaker *b, builders )
         b->startGenreQuery();
@@ -133,7 +133,7 @@ MetaQueryBuilder::startGenreQuery()
 }
 
 QueryMaker*
-MetaQueryBuilder::startComposerQuery()
+MetaQueryMaker::startComposerQuery()
 {
     foreach( QueryMaker *b, builders )
         b->startComposerQuery();
@@ -141,7 +141,7 @@ MetaQueryBuilder::startComposerQuery()
 }
 
 QueryMaker*
-MetaQueryBuilder::startYearQuery()
+MetaQueryMaker::startYearQuery()
 {
     foreach( QueryMaker *b, builders )
         b->startYearQuery();
@@ -149,7 +149,7 @@ MetaQueryBuilder::startYearQuery()
 }
 
 QueryMaker*
-MetaQueryBuilder::startCustomQuery()
+MetaQueryMaker::startCustomQuery()
 {
     foreach( QueryMaker *b, builders )
         b->startCustomQuery();
@@ -157,7 +157,7 @@ MetaQueryBuilder::startCustomQuery()
 }
 
 QueryMaker*
-MetaQueryBuilder::addReturnValue( qint64 value )
+MetaQueryMaker::addReturnValue( qint64 value )
 {
     foreach( QueryMaker *b, builders )
         b->addReturnValue( value );
@@ -165,7 +165,7 @@ MetaQueryBuilder::addReturnValue( qint64 value )
 }
 
 QueryMaker*
-MetaQueryBuilder::orderBy( qint64 value, bool descending )
+MetaQueryMaker::orderBy( qint64 value, bool descending )
 {
     foreach( QueryMaker *b, builders )
         b->orderBy( value, descending );
@@ -173,7 +173,7 @@ MetaQueryBuilder::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-MetaQueryBuilder::includeCollection( const QString &collectionId )
+MetaQueryMaker::includeCollection( const QString &collectionId )
 {
     foreach( QueryMaker *b, builders )
         b->includeCollection( collectionId );
@@ -181,7 +181,7 @@ MetaQueryBuilder::includeCollection( const QString &collectionId )
 }
 
 QueryMaker*
-MetaQueryBuilder::excludeCollection( const QString &collectionId )
+MetaQueryMaker::excludeCollection( const QString &collectionId )
 {
     foreach( QueryMaker *b, builders )
         b->excludeCollection( collectionId );
@@ -189,7 +189,7 @@ MetaQueryBuilder::excludeCollection( const QString &collectionId )
 }
 
 QueryMaker*
-MetaQueryBuilder::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
+MetaQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     foreach( QueryMaker *b, builders )
         b->addFilter( value, filter, matchBegin, matchEnd );
@@ -197,7 +197,7 @@ MetaQueryBuilder::addFilter( qint64 value, const QString &filter, bool matchBegi
 }
 
 QueryMaker*
-MetaQueryBuilder::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
+MetaQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     foreach( QueryMaker *b, builders )
         b->excludeFilter( value, filter, matchBegin, matchEnd );
@@ -205,7 +205,7 @@ MetaQueryBuilder::excludeFilter( qint64 value, const QString &filter, bool match
 }
 
 QueryMaker*
-MetaQueryBuilder::addMatch( const TrackPtr &track )
+MetaQueryMaker::addMatch( const TrackPtr &track )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( track );
@@ -213,7 +213,7 @@ MetaQueryBuilder::addMatch( const TrackPtr &track )
 }
 
 QueryMaker*
-MetaQueryBuilder::addMatch( const ArtistPtr &artist )
+MetaQueryMaker::addMatch( const ArtistPtr &artist )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( artist );
@@ -221,7 +221,7 @@ MetaQueryBuilder::addMatch( const ArtistPtr &artist )
 }
 
 QueryMaker*
-MetaQueryBuilder::addMatch( const AlbumPtr &album )
+MetaQueryMaker::addMatch( const AlbumPtr &album )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( album );
@@ -229,7 +229,7 @@ MetaQueryBuilder::addMatch( const AlbumPtr &album )
 }
 
 QueryMaker*
-MetaQueryBuilder::addMatch( const GenrePtr &genre )
+MetaQueryMaker::addMatch( const GenrePtr &genre )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( genre );
@@ -237,7 +237,7 @@ MetaQueryBuilder::addMatch( const GenrePtr &genre )
 }
 
 QueryMaker*
-MetaQueryBuilder::addMatch( const ComposerPtr &composer )
+MetaQueryMaker::addMatch( const ComposerPtr &composer )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( composer );
@@ -245,7 +245,7 @@ MetaQueryBuilder::addMatch( const ComposerPtr &composer )
 }
 
 QueryMaker*
-MetaQueryBuilder::addMatch( const YearPtr &year )
+MetaQueryMaker::addMatch( const YearPtr &year )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( year );
@@ -253,7 +253,7 @@ MetaQueryBuilder::addMatch( const YearPtr &year )
 }
 
 QueryMaker*
-MetaQueryBuilder::addMatch( const DataPtr &data )
+MetaQueryMaker::addMatch( const DataPtr &data )
 {
     DataPtr tmp = const_cast<DataPtr&>( data );
     foreach( QueryMaker *b, builders )
@@ -262,7 +262,7 @@ MetaQueryBuilder::addMatch( const DataPtr &data )
 }
 
 QueryMaker*
-MetaQueryBuilder::returnResultAsDataPtrs( bool resultAsDataPtrs )
+MetaQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     foreach( QueryMaker *b, builders )
         b->returnResultAsDataPtrs( resultAsDataPtrs );
@@ -270,7 +270,7 @@ MetaQueryBuilder::returnResultAsDataPtrs( bool resultAsDataPtrs )
 }
 
 QueryMaker*
-MetaQueryBuilder::limitMaxResultSize( int size )
+MetaQueryMaker::limitMaxResultSize( int size )
 {
     foreach( QueryMaker *b, builders )
         b->limitMaxResultSize( size );
@@ -278,7 +278,7 @@ MetaQueryBuilder::limitMaxResultSize( int size )
 }
 
 QueryMaker*
-MetaQueryBuilder::beginAnd()
+MetaQueryMaker::beginAnd()
 {
     foreach( QueryMaker *b, builders )
         b->beginAnd();
@@ -286,7 +286,7 @@ MetaQueryBuilder::beginAnd()
 }
 
 QueryMaker*
-MetaQueryBuilder::beginOr()
+MetaQueryMaker::beginOr()
 {
     foreach( QueryMaker *b, builders )
         b->beginOr();
@@ -294,7 +294,7 @@ MetaQueryBuilder::beginOr()
 }
 
 QueryMaker*
-MetaQueryBuilder::endAndOr()
+MetaQueryMaker::endAndOr()
 {
     foreach( QueryMaker *b, builders )
         b->endAndOr();
@@ -302,7 +302,7 @@ MetaQueryBuilder::endAndOr()
 }
 
 void
-MetaQueryBuilder::slotQueryDone()
+MetaQueryMaker::slotQueryDone()
 {
     m_queryDoneCountMutex.lock();
     m_queryDoneCount++;
@@ -316,4 +316,4 @@ MetaQueryBuilder::slotQueryDone()
         m_queryDoneCountMutex.unlock();
 }
 
-#include "MetaQueryBuilder.moc"
+#include "MetaQueryMaker.moc"

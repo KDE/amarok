@@ -248,7 +248,7 @@ set(collection_SRCS
     collection/Collection.cpp
     collection/CollectionManager.cpp
     collection/CollectionLocation.cpp
-    collection/MetaQueryBuilder.cpp
+    collection/MetaQueryMaker.cpp
     collection/QueryMaker.cpp
     collection/support/MemoryMatcher.cpp
     collection/support/MemoryQueryMaker.cpp

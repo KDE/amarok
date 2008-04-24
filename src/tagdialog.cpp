@@ -19,7 +19,7 @@
 #include "debug.h"
 #include "EditCapability.h"
 #include "MainWindow.h"
-#include "MetaQueryBuilder.h"
+#include "MetaQueryMaker.h"
 #include "MetaUtility.h"
 #include "QueryMaker.h"
 #include "ContextStatusBar.h"       //for status messages
@@ -682,9 +682,9 @@ TagDialog::startDataQuery()
     QueryMaker *genre = coll->queryMaker()->startGenreQuery();
     QList<QueryMaker*> queries;
     queries << artist << album << composer << genre;
-    //MetaQueryBuilder will run multiple different queries just fine as long as we do not use it
+    //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
     //to set the query type. Configuring the queries is ok though
-    m_dataQueryMaker = new MetaQueryBuilder( queries );
+    m_dataQueryMaker = new MetaQueryMaker( queries );
     connect( m_dataQueryMaker, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
     connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
     connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );

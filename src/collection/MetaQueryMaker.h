@@ -15,8 +15,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef AMAROK_COLLECTION_METAQUERYBUILDER_H
-#define AMAROK_COLLECTION_METAQUERYBUILDER_H
+#ifndef COLLECTION_METAQUERYMAKER_H
+#define COLLECTION_METAQUERYMAKER_H
 
 #include "QueryMaker.h"
 #include "Collection.h"
@@ -24,14 +24,14 @@
 #include <QList>
 #include <QMutex>
 
-class MetaQueryBuilder : public QueryMaker
+class MetaQueryMaker : public QueryMaker
 {
     Q_OBJECT
 
     public:
-        MetaQueryBuilder( const QList<Collection*> &collections );
-        MetaQueryBuilder( const QList<QueryMaker*> &queryMakers );
-        ~MetaQueryBuilder();
+        MetaQueryMaker( const QList<Collection*> &collections );
+        MetaQueryMaker( const QList<QueryMaker*> &queryMakers );
+        ~MetaQueryMaker();
 
         virtual QueryMaker* reset();
         virtual void run();
@@ -81,4 +81,4 @@ class MetaQueryBuilder : public QueryMaker
 
 };
 
-#endif /* AMAROK_COLLECTION_METAQUERYBUILDER_H */
+#endif /* COLLECTION_METAQUERYMAKER_H */

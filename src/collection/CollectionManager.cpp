@@ -24,7 +24,7 @@
 
 #include "BlockingQuery.h"
 #include "Collection.h"
-#include "MetaQueryBuilder.h"
+#include "MetaQueryMaker.h"
 #include "meta/file/File.h"
 #include "meta/stream/Stream.h"
 #include "PluginManager.h"
@@ -136,7 +136,7 @@ CollectionManager::checkCollectionChanges()
 QueryMaker*
 CollectionManager::queryMaker() const
 {
-    return new MetaQueryBuilder( d->collections );
+    return new MetaQueryMaker( d->collections );
 }
 
 void

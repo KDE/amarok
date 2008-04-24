@@ -15,7 +15,7 @@
 #include "context/ContextView.h"
 #include "mediabrowser.h"
 #include "Meta.h"
-#include "MetaQueryBuilder.h"
+#include "MetaQueryMaker.h"
 #include "meta/CustomActionsCapability.h"
 #include "playlist/PlaylistModel.h"
 #include "QueryMaker.h"
@@ -367,7 +367,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
         m_treeModel->addFilters( qm );
         queryMakers.append( qm );
     }
-    QueryMaker *qm = new MetaQueryBuilder( queryMakers );
+    QueryMaker *qm = new MetaQueryMaker( queryMakers );
     (void)new OrganizeCollectionDialog( qm ); //the dialog will show itself automatically as soon as it is ready
 }
 
@@ -408,7 +408,7 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
         m_treeModel->addFilters( qm );
         queryMakers.append( qm );
     }
-    QueryMaker *qm = new MetaQueryBuilder( queryMakers );
+    QueryMaker *qm = new MetaQueryMaker( queryMakers );
     (void)new TagDialog( qm ); //the dialog will show itself automatically as soon as it is ready
 }
 
