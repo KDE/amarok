@@ -19,9 +19,9 @@
 #define AMAROK_COLLECTION_MYSQLQUERYMAKER_H
 
 #include "MySqlCollection.h"
-#include "SqlQueryBuilder.h"
+#include "SqlQueryMaker.h"
 
-class MySqlQueryMaker : public SqlQueryBuilder
+class MySqlQueryMaker : public SqlQueryMaker
 {
     public:
         MySqlQueryMaker( MySqlCollection* collection );

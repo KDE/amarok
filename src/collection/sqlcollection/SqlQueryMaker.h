@@ -15,8 +15,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef AMAROK_COLLECTION_SQLQUERYBUILDER_H
-#define AMAROK_COLLECTION_SQLQUERYBUILDER_H
+#ifndef AMAROK_COLLECTION_SQLQUERYMAKER_H
+#define AMAROK_COLLECTION_SQLQUERYMAKER_H
 
 #include "QueryMaker.h"
 
@@ -26,13 +26,13 @@
 
 class SqlCollection;
 
-class /*AMAROK_EXPORT*/ SqlQueryBuilder : public QueryMaker
+class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
 {
     Q_OBJECT
 
     public:
-        SqlQueryBuilder( SqlCollection* collection );
-        virtual ~SqlQueryBuilder();
+        SqlQueryMaker( SqlCollection* collection );
+        virtual ~SqlQueryMaker();
 
         virtual QueryMaker* reset();
         virtual void abortQuery();
@@ -106,4 +106,4 @@ class /*AMAROK_EXPORT*/ SqlQueryBuilder : public QueryMaker
 
 };
 
-#endif /* AMAROK_COLLECTION_SQLQUERYBUILDER_H */
+#endif /* AMAROK_COLLECTION_SQLQUERYMAKER_H */

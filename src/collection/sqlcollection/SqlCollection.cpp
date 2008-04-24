@@ -21,7 +21,7 @@
 
 #include "DatabaseUpdater.h"
 #include "ScanManager.h"
-#include "SqlQueryBuilder.h"
+#include "SqlQueryMaker.h"
 #include "SqliteCollection.h"
 //#include "mysqlcollection.h"
 //#include "postgresqlcollection.h"
@@ -133,7 +133,7 @@ SqlCollection::prettyName() const
 QueryMaker*
 SqlCollection::queryMaker()
 {
-    return new SqlQueryBuilder( this );
+    return new SqlQueryMaker( this );
 }
 
 SqlRegistry*

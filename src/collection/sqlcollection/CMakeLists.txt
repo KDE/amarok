@@ -37,7 +37,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     ScanResultProcessor.cpp
     SqlCollection.cpp
     SqlCollectionLocation.cpp
-    SqlQueryBuilder.cpp
+    SqlQueryMaker.cpp
     SqlRegistry.cpp
     SqlMeta.cpp 
     SqliteCollection.cpp

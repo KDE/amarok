@@ -19,7 +19,7 @@
 #include "MySqlQueryMaker.h"
 
 MySqlQueryMaker::MySqlQueryMaker( MySqlCollection *collection )
-    : SqlQueryBuilder( collection )
+    : SqlQueryMaker( collection )
 {
     //nothing to do
 }

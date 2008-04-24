@@ -15,9 +15,9 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#include "SqlQueryBuilder.h"
+#include "SqlQueryMaker.h"
 
-#define DEBUG_PREFIX "SqlQueryBuilder"
+#define DEBUG_PREFIX "SqlQueryMaker"
 
 #include "debug.h"
 
@@ -34,7 +34,7 @@ using namespace Meta;
 class SqlWorkerThread : public ThreadWeaver::Job
 {
     public:
-        SqlWorkerThread( SqlQueryBuilder *queryMaker )
+        SqlWorkerThread( SqlQueryMaker *queryMaker )
             : ThreadWeaver::Job()
             , m_queryMaker( queryMaker )
             , m_aborted( false )
@@ -58,12 +58,12 @@ class SqlWorkerThread : public ThreadWeaver::Job
             setFinished( !m_aborted );
         }
     private:
-        SqlQueryBuilder *m_queryMaker;
+        SqlQueryMaker *m_queryMaker;
 
         bool m_aborted;
 };
 
-struct SqlQueryBuilder::Private
+struct SqlQueryMaker::Private
 {
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64, URLS_TAB = 128, ALBUMARTIST_TAB = 256 };
@@ -86,7 +86,7 @@ struct SqlQueryBuilder::Private
     QStack<bool> andStack;
 };
 
-SqlQueryBuilder::SqlQueryBuilder( SqlCollection* collection )
+SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
     : QueryMaker()
     , m_collection( collection )
     , d( new Private )
@@ -97,13 +97,13 @@ SqlQueryBuilder::SqlQueryBuilder( SqlCollection* collection )
     reset();
 }
 
-SqlQueryBuilder::~SqlQueryBuilder()
+SqlQueryMaker::~SqlQueryMaker()
 {
     delete d;
 }
 
 QueryMaker*
-SqlQueryBuilder::reset()
+SqlQueryMaker::reset()
 {
     d->query.clear();
     d->queryType = Private::NONE;
@@ -125,21 +125,21 @@ SqlQueryBuilder::reset()
 }
 
 void
-SqlQueryBuilder::abortQuery()
+SqlQueryMaker::abortQuery()
 {
     if( d->worker )
         d->worker->requestAbort();
 }
 
 QueryMaker*
-SqlQueryBuilder::returnResultAsDataPtrs( bool resultAsDataPtrs )
+SqlQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     d->resultAsDataPtrs = resultAsDataPtrs;
     return this;
 }
 
 void
-SqlQueryBuilder::run()
+SqlQueryMaker::run()
 {
     if( d->queryType == Private::NONE )
         return; //better error handling?
@@ -159,7 +159,7 @@ SqlQueryBuilder::run()
 }
 
 void
-SqlQueryBuilder::done( ThreadWeaver::Job *job )
+SqlQueryMaker::done( ThreadWeaver::Job *job )
 {
     ThreadWeaver::Weaver::instance()->dequeue( job );
     job->deleteLater();
@@ -168,7 +168,7 @@ SqlQueryBuilder::done( ThreadWeaver::Job *job )
 }
 
 QueryMaker*
-SqlQueryBuilder::startTrackQuery()
+SqlQueryMaker::startTrackQuery()
 {
     //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
     if( d->queryType == Private::NONE )
@@ -188,7 +188,7 @@ SqlQueryBuilder::startTrackQuery()
 }
 
 QueryMaker*
-SqlQueryBuilder::startArtistQuery()
+SqlQueryMaker::startArtistQuery()
 {
     if( d->queryType == Private::NONE )
     {
@@ -202,7 +202,7 @@ SqlQueryBuilder::startArtistQuery()
 }
 
 QueryMaker*
-SqlQueryBuilder::startAlbumQuery()
+SqlQueryMaker::startAlbumQuery()
 {
     if( d->queryType == Private::NONE )
     {
@@ -216,7 +216,7 @@ SqlQueryBuilder::startAlbumQuery()
 }
 
 QueryMaker*
-SqlQueryBuilder::startComposerQuery()
+SqlQueryMaker::startComposerQuery()
 {
     if( d->queryType == Private::NONE )
     {
@@ -229,7 +229,7 @@ SqlQueryBuilder::startComposerQuery()
 }
 
 QueryMaker*
-SqlQueryBuilder::startGenreQuery()
+SqlQueryMaker::startGenreQuery()
 {
     if( d->queryType == Private::NONE )
     {
@@ -242,7 +242,7 @@ SqlQueryBuilder::startGenreQuery()
 }
 
 QueryMaker*
-SqlQueryBuilder::startYearQuery()
+SqlQueryMaker::startYearQuery()
 {
     if( d->queryType == Private::NONE )
     {
@@ -255,7 +255,7 @@ SqlQueryBuilder::startYearQuery()
 }
 
 QueryMaker*
-SqlQueryBuilder::startCustomQuery()
+SqlQueryMaker::startCustomQuery()
 {
     if( d->queryType == Private::NONE )
         d->queryType = Private::CUSTOM;
@@ -263,7 +263,7 @@ SqlQueryBuilder::startCustomQuery()
 }
 
 QueryMaker*
-SqlQueryBuilder::includeCollection( const QString &collectionId )
+SqlQueryMaker::includeCollection( const QString &collectionId )
 {
     if( !d->collectionRestriction )
     {
@@ -276,7 +276,7 @@ SqlQueryBuilder::includeCollection( const QString &collectionId )
 }
 
 QueryMaker*
-SqlQueryBuilder::excludeCollection( const QString &collectionId )
+SqlQueryMaker::excludeCollection( const QString &collectionId )
 {
     d->collectionRestriction = true;
     if( m_collection->collectionId() == collectionId )
@@ -285,7 +285,7 @@ SqlQueryBuilder::excludeCollection( const QString &collectionId )
 }
 
 QueryMaker*
-SqlQueryBuilder::addMatch( const TrackPtr &track )
+SqlQueryMaker::addMatch( const TrackPtr &track )
 {
     QString url = track->url();
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
@@ -296,7 +296,7 @@ SqlQueryBuilder::addMatch( const TrackPtr &track )
 }
 
 QueryMaker*
-SqlQueryBuilder::addMatch( const ArtistPtr &artist )
+SqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
     d->linkedTables |= Private::ARTIST_TAB;
     d->queryMatch += QString( " AND artists.name = '%1'" ).arg( escape( artist->name() ) );
@@ -304,7 +304,7 @@ SqlQueryBuilder::addMatch( const ArtistPtr &artist )
 }
 
 QueryMaker*
-SqlQueryBuilder::addMatch( const AlbumPtr &album )
+SqlQueryMaker::addMatch( const AlbumPtr &album )
 {
     d->linkedTables |= Private::ALBUM_TAB;
     //handle compilations
@@ -323,7 +323,7 @@ SqlQueryBuilder::addMatch( const AlbumPtr &album )
 }
 
 QueryMaker*
-SqlQueryBuilder::addMatch( const GenrePtr &genre )
+SqlQueryMaker::addMatch( const GenrePtr &genre )
 {
     d->linkedTables |= Private::GENRE_TAB;
     d->queryMatch += QString( " AND genres.name = '%1'" ).arg( escape( genre->name() ) );
@@ -331,7 +331,7 @@ SqlQueryBuilder::addMatch( const GenrePtr &genre )
 }
 
 QueryMaker*
-SqlQueryBuilder::addMatch( const ComposerPtr &composer )
+SqlQueryMaker::addMatch( const ComposerPtr &composer )
 {
     d->linkedTables |= Private::COMPOSER_TAB;
     d->queryMatch += QString( " AND composers.name = '%1'" ).arg( escape( composer->name() ) );
@@ -339,7 +339,7 @@ SqlQueryBuilder::addMatch( const ComposerPtr &composer )
 }
 
 QueryMaker*
-SqlQueryBuilder::addMatch( const YearPtr &year )
+SqlQueryMaker::addMatch( const YearPtr &year )
 {
     d->linkedTables |= Private::YEAR_TAB;
     d->queryMatch += QString( " AND years.name = '%1'" ).arg( escape( year->name() ) );
@@ -347,14 +347,14 @@ SqlQueryBuilder::addMatch( const YearPtr &year )
 }
 
 QueryMaker*
-SqlQueryBuilder::addMatch( const DataPtr &data )
+SqlQueryMaker::addMatch( const DataPtr &data )
 {
     ( const_cast<DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 
 QueryMaker*
-SqlQueryBuilder::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
+SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
@@ -362,7 +362,7 @@ SqlQueryBuilder::addFilter( qint64 value, const QString &filter, bool matchBegin
 }
 
 QueryMaker*
-SqlQueryBuilder::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
+SqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
@@ -370,7 +370,7 @@ SqlQueryBuilder::excludeFilter( qint64 value, const QString &filter, bool matchB
 }
 
 QueryMaker*
-SqlQueryBuilder::addReturnValue( qint64 value )
+SqlQueryMaker::addReturnValue( qint64 value )
 {
     if( d->queryType == Private::CUSTOM )
     {
@@ -382,7 +382,7 @@ SqlQueryBuilder::addReturnValue( qint64 value )
 }
 
 QueryMaker*
-SqlQueryBuilder::orderBy( qint64 value, bool descending )
+SqlQueryMaker::orderBy( qint64 value, bool descending )
 {
     if ( d->queryOrderBy.isEmpty() )
         d->queryOrderBy = " ORDER BY ";
@@ -392,14 +392,14 @@ SqlQueryBuilder::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-SqlQueryBuilder::limitMaxResultSize( int size )
+SqlQueryMaker::limitMaxResultSize( int size )
 {
     d->maxResultSize = size;
     return this;
 }
 
 QueryMaker*
-SqlQueryBuilder::setAlbumQueryMode( AlbumQueryMode mode )
+SqlQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     if( mode != AllAlbums )
     {
@@ -410,7 +410,7 @@ SqlQueryBuilder::setAlbumQueryMode( AlbumQueryMode mode )
 }
 
 QueryMaker*
-SqlQueryBuilder::beginAnd()
+SqlQueryMaker::beginAnd()
 {
     d->queryFilter += andOr();
     d->queryFilter += " ( 1 ";
@@ -419,7 +419,7 @@ SqlQueryBuilder::beginAnd()
 }
 
 QueryMaker*
-SqlQueryBuilder::beginOr()
+SqlQueryMaker::beginOr()
 {
     d->queryFilter += andOr();
     d->queryFilter += " ( 0 ";
@@ -428,7 +428,7 @@ SqlQueryBuilder::beginOr()
 }
 
 QueryMaker*
-SqlQueryBuilder::endAndOr()
+SqlQueryMaker::endAndOr()
 {
     d->queryFilter += ')';
     d->andStack.pop();
@@ -436,7 +436,7 @@ SqlQueryBuilder::endAndOr()
 }
 
 void
-SqlQueryBuilder::linkTables()
+SqlQueryMaker::linkTables()
 {
     d->linkedTables |= Private::TAGS_TAB; //HACK!!!
     //assuming that tracks is always included for now
@@ -469,7 +469,7 @@ SqlQueryBuilder::linkTables()
 }
 
 void
-SqlQueryBuilder::buildQuery()
+SqlQueryMaker::buildQuery()
 {
     linkTables();
     QString query = "SELECT ";
@@ -506,7 +506,7 @@ SqlQueryBuilder::buildQuery()
 }
 
 QString
-SqlQueryBuilder::query()
+SqlQueryMaker::query()
 {
     if ( d->query.isEmpty() )
         buildQuery();
@@ -514,13 +514,13 @@ SqlQueryBuilder::query()
 }
 
 QStringList
-SqlQueryBuilder::runQuery( const QString &query )
+SqlQueryMaker::runQuery( const QString &query )
 {
     return m_collection->query( query );
 }
 
 void
-SqlQueryBuilder::handleResult( const QStringList &result )
+SqlQueryMaker::handleResult( const QStringList &result )
 {
     if( !result.isEmpty() )
     {
@@ -556,7 +556,7 @@ SqlQueryBuilder::handleResult( const QStringList &result )
 }
 
 QString
-SqlQueryBuilder::nameForValue( qint64 value )
+SqlQueryMaker::nameForValue( qint64 value )
 {
     switch( value )
     {
@@ -621,12 +621,12 @@ SqlQueryBuilder::nameForValue( qint64 value )
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.playcounter";
         default:
-            return "ERROR: unknown value in SqlQueryBuilder::nameForValue(qint64): value=" + value;
+            return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
     }
 }
 
 QString
-SqlQueryBuilder::andOr() const
+SqlQueryMaker::andOr() const
 {
     return d->andStack.top() ? " AND " : " OR ";
 }
@@ -650,7 +650,7 @@ SqlQueryBuilder::andOr() const
         }
 
 void
-SqlQueryBuilder::handleTracks( const QStringList &result )
+SqlQueryMaker::handleTracks( const QStringList &result )
 {
     TrackList tracks;
     SqlRegistry* reg = m_collection->registry();
@@ -666,7 +666,7 @@ SqlQueryBuilder::handleTracks( const QStringList &result )
 }
 
 void
-SqlQueryBuilder::handleArtists( const QStringList &result )
+SqlQueryMaker::handleArtists( const QStringList &result )
 {
     ArtistList artists;
     SqlRegistry* reg = m_collection->registry();
@@ -680,7 +680,7 @@ SqlQueryBuilder::handleArtists( const QStringList &result )
 }
 
 void
-SqlQueryBuilder::handleAlbums( const QStringList &result )
+SqlQueryMaker::handleAlbums( const QStringList &result )
 {
     AlbumList albums;
     SqlRegistry* reg = m_collection->registry();
@@ -695,7 +695,7 @@ SqlQueryBuilder::handleAlbums( const QStringList &result )
 }
 
 void
-SqlQueryBuilder::handleGenres( const QStringList &result )
+SqlQueryMaker::handleGenres( const QStringList &result )
 {
     GenreList genres;
     SqlRegistry* reg = m_collection->registry();
@@ -709,7 +709,7 @@ SqlQueryBuilder::handleGenres( const QStringList &result )
 }
 
 void
-SqlQueryBuilder::handleComposers( const QStringList &result )
+SqlQueryMaker::handleComposers( const QStringList &result )
 {
     ComposerList composers;
     SqlRegistry* reg = m_collection->registry();
@@ -723,7 +723,7 @@ SqlQueryBuilder::handleComposers( const QStringList &result )
 }
 
 void
-SqlQueryBuilder::handleYears( const QStringList &result )
+SqlQueryMaker::handleYears( const QStringList &result )
 {
     YearList years;
     SqlRegistry* reg = m_collection->registry();
@@ -737,13 +737,13 @@ SqlQueryBuilder::handleYears( const QStringList &result )
 }
 
 QString
-SqlQueryBuilder::escape( QString text ) const           //krazy:exclude=constref
+SqlQueryMaker::escape( QString text ) const           //krazy:exclude=constref
 {
     return text.replace( '\'', "''" );;
 }
 
 QString
-SqlQueryBuilder::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const
+SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const
 {
     if( anyBegin || anyEnd )
     {
@@ -772,5 +772,5 @@ SqlQueryBuilder::likeCondition( const QString &text, bool anyBegin, bool anyEnd 
     }
 }
 
-#include "SqlQueryBuilder.moc"
+#include "SqlQueryMaker.moc"
 
