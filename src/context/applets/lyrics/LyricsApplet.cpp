@@ -26,7 +26,6 @@
 
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_header( 0 )
     , m_lyrics( 0 )
 {
     Context::Theme::self()->setApplication( "amarok" );
@@ -46,11 +45,6 @@ void LyricsApplet::init()
 
     dataEngine( "amarok-lyrics" )->connectSource( "lyrics", this );
 
-    m_header = new Context::Svg( "widgets/amarok-lyrics", this );
-    m_header->setContentType( Context::Svg::SingleImage );
-    m_header->resize();
-    setContentSize( m_header->size() );
-
     m_lyricsProxy = new QGraphicsProxyWidget( this );
     m_lyrics = new QTextEdit;
     m_lyrics->setReadOnly( true );
@@ -64,17 +58,8 @@ void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
 {
     prepareGeometryChange();
 
-    if( constraints & Plasma::SizeConstraint && m_header )
-        m_header->resize(contentSize().toSize());
-
-    QSizeF infoSize( m_header->elementRect( "lyrics" ).bottomRight().x() - m_header->elementRect( "lyrics" ).topLeft().x(),
-                     m_header->elementRect( "lyrics" ).bottomRight().y() - m_header->elementRect( "lyrics" ).topLeft().y() );
-
-    if ( infoSize.isValid() )
-    {
-        m_lyricsProxy->setMinimumSize( infoSize );
-        m_lyricsProxy->setMaximumSize( infoSize );
-    }
+    m_lyricsProxy->setMinimumSize( size() );
+    m_lyricsProxy->setMaximumSize( size() );
 }
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -101,15 +86,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     else if( data.contains( "notfound" ) )
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
     setContentSize( (int)size().width(), (int)size().height() );
-}
-
-void LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( option );
-    Q_UNUSED( p );
-
-    m_lyricsProxy->setPos( m_header->elementRect( "lyrics" ).topLeft() );
-    m_lyricsProxy->show();
 }
 
 bool LyricsApplet::hasHeightForWidth() const

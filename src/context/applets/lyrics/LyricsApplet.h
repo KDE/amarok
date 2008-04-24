@@ -31,7 +31,6 @@ public:
 
     void init();
 
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
     bool hasHeightForWidth() const;
 
     void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints );
@@ -40,8 +39,6 @@ public slots:
 
 private:
     void calculateHeight();
-
-    Context::Svg* m_header;
 
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
