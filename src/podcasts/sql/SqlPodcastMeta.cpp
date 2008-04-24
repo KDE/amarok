@@ -120,7 +120,7 @@ Meta::SqlPodcastChannel::updateInDb()
     data = data.arg( escape(m_url.url()) ).arg( escape(m_title) ).arg( escape(m_webLink.url()) );
     //TODO:m_image.url()
     data = data.arg( escape(QString("")) ).arg( escape(m_description) ).arg( escape(m_copyright) );
-    //TODO: QStringList -> comma seperated QString
+    //TODO: QStringList -> comma separated QString
     QString labels = QString("");
     data = data.arg( escape(labels) );
     data = data.arg( m_autoScan ? boolTrue : boolFalse );

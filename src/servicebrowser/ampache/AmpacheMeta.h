@@ -43,7 +43,7 @@ class AmpacheTrack  : public ServiceTrack
 
 public:
         
-    AmpacheTrack( const QString& title, ServiceBase * service = 0 )
+    explicit AmpacheTrack( const QString& title, ServiceBase * service = 0 )
     : ServiceTrack( title )
     , m_service( service )
     , m_showInServiceAction( 0 )

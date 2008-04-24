@@ -236,7 +236,7 @@ class PodcastChannel : public Playlist, public PodcastMetaCommon
         QStringList m_labels;
         QString m_copyright;
         KUrl m_directory; //the local directory to save the files in.
-        bool m_autoScan; //should this channel be checked automaticly?
+        bool m_autoScan; //should this channel be checked automatically?
         PodcastChannel::FetchType m_fetchType; //'download when available' or 'stream or download on demand'
         bool m_autoTransfer; //copy to mediadevice?
         bool m_hasPurge; //remove old episodes?
