@@ -21,7 +21,6 @@
 
 //BEGIN Includes
 #include "FileBrowser.h"
-#include "FileBrowser.moc"
 
 #include "collection/CollectionManager.h"
 #include "playlist/PlaylistModel.h"
@@ -529,3 +528,5 @@ class ActionLBItem : public QListWidgetItem
 //END ActionLBItem
 
 // kate: space-indent on; indent-width 4; replace-tabs on;
+
+#include "FileBrowser.moc"

@@ -4,8 +4,10 @@
 bool
 MyDirLister::matchesFilter( const KFileItem &item ) const
 {
+    if( item.isHidden() )
+        return false;
     return
-        ( item.isDir() && !item.isHidden() ) ||
+        item.isDir() ||
 //         EngineController::canDecode( item.url() ) || //FIXME: The way canDecode works in phonon this produces a hell of a lot of false positives.
         item.url().protocol() == "audiocd" ||
         PlaylistManager::isPlaylist( item.url() ) ||
