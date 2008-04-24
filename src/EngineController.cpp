@@ -480,6 +480,11 @@ EngineController::slotTrackEnded()
         m_currentTrack = The::playlistModel()->nextTrack();
 
         if( m_currentTrack ) {
+            if( m_currentTrack->playableUrl().isEmpty() )
+            {
+                m_media->stop();
+                return;
+            }
             m_media->setCurrentSource( m_currentTrack->playableUrl() );
             m_media->play();
         }
@@ -541,32 +546,32 @@ EngineController::slotMetaDataChanged()
     debug() << "Artist     : " << artist;
     if( !artist.isEmpty() )
         meta.insert( Meta::valArtist, artist.first() );
-     
+
     QStringList album = m_media->metaData( "ALBUM" );
     debug() << "Album      : " << album;
     if( !album.isEmpty() )
         meta.insert( Meta::valAlbum, album.first() );
-     
+
     QStringList title = m_media->metaData( "TITLE" );
     debug() << "Title      : " << title;
     if( !title.isEmpty() )
         meta.insert( Meta::valTitle, title.first() );
-     
+
     QStringList genre = m_media->metaData( "GENRE" );
     debug() << "Genre      : " << genre;
     if( !genre.isEmpty() )
         meta.insert( Meta::valGenre, genre.first() );
-     
+
     QStringList tracknum = m_media->metaData( "TRACKNUMBER" );
     debug() << "Tracknumber: " << tracknum;
     if( !tracknum.isEmpty() )
         meta.insert( Meta::valTrackNr, tracknum.first() );
-     
+
     QStringList length = m_media->metaData( "LENGTH" );
     debug() << "Length     : " << length;
     if( !length.isEmpty() )
         meta.insert( Meta::valLength, length.first() );
-    
+
     bool trackChanged = false;
     if( m_lastTrack != m_currentTrack )
     {
