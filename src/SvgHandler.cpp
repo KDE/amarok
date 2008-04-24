@@ -29,11 +29,15 @@
 #include <QHash>
 #include <QPainter>
 #include <QPixmapCache>
+#include <QReadLocker>
+#include <QReadWriteLock>
+#include <QWriteLocker>
 
 class SvgHandler::Private
 {
     public:
         QHash<QString,QSvgRenderer*> renderers;
+        QReadWriteLock lock;
 
         bool loadSvg( const QString& name );
 };
@@ -71,8 +75,10 @@ bool SvgHandler::Private::loadSvg( const QString& name )
     if ( ! renderer->isValid() )
     {
         debug() << "Bluddy 'ell guvna, aye canna' load ya Ess Vee Gee at " << svgFilename;
+        delete renderer;
         return false;
     }
+    QWriteLocker writeLocker( &lock );
 
     if( renderers[name] )
         delete renderers[name];
@@ -83,9 +89,17 @@ bool SvgHandler::Private::loadSvg( const QString& name )
 
 QSvgRenderer* SvgHandler::getRenderer( const QString& name )
 {
+    QReadLocker readLocker( &d->lock );
     if( ! d->renderers[name] )
+    {
+        readLocker.unlock();
         if( ! d->loadSvg( name ) )
+        {
+            QWriteLocker writeLocker( &d->lock );
             d->renderers[name] = new QSvgRenderer();
+        }
+        readLocker.relock();
+    }
     return d->renderers[name];
 }
 
@@ -94,9 +108,14 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
     QPixmap pixmap( width, height );
     pixmap.fill( Qt::transparent );
 
+    QReadLocker readLocker( &d->lock );
     if( ! d->renderers[name] )
+    {
+        readLocker.unlock();
         if( ! d->loadSvg( name ) )
             return pixmap;
+        readLocker.relock();
+    }
 
     const QString key = QString("%1:%2x%3")
         .arg( keyname )
