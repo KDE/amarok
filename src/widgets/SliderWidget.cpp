@@ -21,7 +21,7 @@
 
 #include "SliderWidget.h"
 
-#include <config-amarok.h>  
+#include <config-amarok.h>
 
 #include "Amarok.h"
 #include "amarokconfig.h"
@@ -245,7 +245,6 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
     if( !QPixmapCache::find(key, background) )
     {
-        debug() << QString("volume background %1 not in cache...").arg( key );
         background.fill( Qt::transparent );
         QPainter pt( &background );
 
@@ -280,7 +279,6 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
     if( !QPixmapCache::find(key, icon) )
     {
-        debug() << QString("volume icon %1 not in cache...").arg( key );
         icon.fill( Qt::transparent );
         QPainter pt( &icon );
 
@@ -389,7 +387,6 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     QPixmap background( width(), m_sliderHeight );
 
     if (!QPixmapCache::find(key, background)) {
-        debug() << QString("progress background %1 not in cache...").arg( key );
         background.fill( Qt::transparent );
         QPainter pt( &background );
 
