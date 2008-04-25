@@ -35,6 +35,7 @@ class SqlCollectionLocation : public CollectionLocation
 
         virtual QString prettyLocation() const;
         virtual bool isWriteable() const;
+        virtual bool isOrganizable() const;
         virtual bool remove( Meta::TrackPtr track );
         virtual void copyUrlsToCollection( const KUrl::List &sources );
 

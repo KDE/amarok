@@ -57,6 +57,12 @@ SqlCollectionLocation::isWriteable() const
 }
 
 bool
+SqlCollectionLocation::isOrganizable() const
+{
+    return true;
+}
+
+bool
 SqlCollectionLocation::remove( Meta::TrackPtr track )
 {
     KSharedPtr<SqlTrack> sqlTrack = KSharedPtr<SqlTrack>::dynamicCast( track );
