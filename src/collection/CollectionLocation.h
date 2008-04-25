@@ -79,7 +79,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual bool isWriteable() const;
 
         /**
-         * Returns whether the collection is organizable or not. Organizable collections allow mvoe operations where
+         * Returns whether the collection is organizable or not. Organizable collections allow move operations where
          * the source and destination collection are the same.
          * @return @c true if the collection location is organizable, false otherwise
          */
