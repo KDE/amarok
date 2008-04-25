@@ -311,8 +311,8 @@ OSDWidget::paintEvent( QPaintEvent *e )
         p.fillRect(QWidget::rect(), Qt::transparent);
     }
     m_background->paint(&p, e->rect());
-    p.setPen( palette().color( QPalette::Active, QPalette::HighlightedText ) );
-#if 0
+//     p.setPen( palette().color( QPalette::Active, QPalette::HighlightedText ) );
+    p.setPen( Qt::white ); // Revert this when the background can be colorized again.
     rect.adjust( M, M, -M, -M );
 
     if( !m_cover.isNull() )
@@ -412,8 +412,8 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
         p.drawImage( rect.topLeft() - QPoint(5,5), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
-#endif
-    p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
+//     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
+    p.setPen( Qt::white ); // This too.
     p.setFont( font() );
     p.drawText( rect, align, m_text );
 }

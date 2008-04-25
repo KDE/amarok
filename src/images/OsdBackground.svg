@@ -42,8 +42,8 @@
      pagecolor="#ffffff"
      id="base"
      inkscape:zoom="28.963094"
-     inkscape:cx="6.8482031"
-     inkscape:cy="19.782117"
+     inkscape:cx="0.52981736"
+     inkscape:cy="11.49571"
      inkscape:window-x="150"
      inkscape:window-y="75"
      inkscape:current-layer="svg2"
@@ -164,8 +164,8 @@
        height="165.51724"
        id="rect3334"
        transform="matrix(0,-1,1,0,0,0)" /></g><path
-     style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.54404147000000003;opacity:0.6"
-     d="M 9,15 L 10,15 L 10,16 L 9,16 L 9,15 z "
+     style="opacity:0.6;fill:#000000;fill-opacity:0.6;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1"
+     d="M 9,15 L 10,15 L 10,16 L 9,16 L 9,15 z"
      id="center" /><g
      style="overflow:visible"
      inkscape:label="#g2374"
