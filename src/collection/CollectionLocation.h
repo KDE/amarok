@@ -44,6 +44,14 @@ class QueryMaker;
     -remove( Meta::Track )
     -copyUrlsToCollection( KUrl::List )
 
+    Writeable collections that are also organizable should reimplement isOrganizable().
+    Organizable means that the user is able to decide (to varying degrees, the details depend
+    on the actual collection) where the files are stored in the filesystem (or some kind of VFS).
+    An example would be the local collection, where the user can select the directory structure
+    that Amarok uses to store the files. An example for a writable collection that is not
+    organizable are ipods, where the user has no control about the actual location of the music files
+    (they are automatically stored in a not human-readable form).
+
     Implementations which are only readable can reimplement getKIOCopyableUrls( Meta::TrackList )
     if it is necessary, but can use the default implementations if possible.
  
