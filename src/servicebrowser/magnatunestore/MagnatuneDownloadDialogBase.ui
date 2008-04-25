@@ -12,36 +12,13 @@
   <property name="windowTitle" >
    <string>Magnatune.com Album Download</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="2" column="0" >
-    <widget class="QPushButton" name="downloadButton" >
-     <property name="text" >
-      <string>&amp;Download</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="Q3GroupBox" name="groupBox2" >
-     <property name="title" >
-      <string>Magnatune info</string>
-     </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="Q3TextEdit" name="infoEdit" >
-        <property name="hScrollBarMode" >
-         <enum>Q3ScrollView::AlwaysOff</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
+  <layout class="QGridLayout" name="gridLayout_3" >
    <item row="0" column="0" >
-    <widget class="Q3GroupBox" name="groupBox1" >
+    <widget class="QGroupBox" name="groupBox1" >
      <property name="title" >
       <string>Download options</string>
      </property>
-     <layout class="QGridLayout" >
+     <layout class="QGridLayout" name="gridLayout" >
       <item row="0" column="0" >
        <widget class="QLabel" name="textLabel1" >
         <property name="text" >
@@ -84,22 +61,33 @@
      </layout>
     </widget>
    </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="groupBox2" >
+     <property name="title" >
+      <string>Magnatune info</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2" >
+      <item row="0" column="0" >
+       <widget class="QTextEdit" name="infoEdit" >
+        <property name="acceptDrops" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QPushButton" name="downloadButton" >
+     <property name="text" >
+      <string>&amp;Download</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-  </customwidget>
   <customwidget>
    <class>KUrlRequester</class>
    <extends>QFrame</extends>
@@ -107,11 +95,7 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <includes>
-  <include location="local" >kurlrequester.h</include>
-  <include location="local" >klineedit.h</include>
-  <include location="local" >kpushbutton.h</include>
- </includes>
+ <includes/>
  <resources/>
  <connections>
   <connection>
@@ -121,12 +105,12 @@
    <slot>downloadButtonClicked()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
+     <x>262</x>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
+     <x>262</x>
+     <y>283</y>
     </hint>
    </hints>
   </connection>
