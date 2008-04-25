@@ -186,7 +186,6 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
             break;
 
         case Phonon::PausedState:
-            DEBUG_LINE_INFO
             m_timeLabelLeft->setEnabled( true );
             m_timeLabelRight->setEnabled( true );
             m_slider->timer()->stop();
@@ -200,8 +199,6 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
 void
 ProgressWidget::engineTrackLengthChanged( long seconds )
 {
-    DEBUG_BLOCK
-    debug() << "setting length to " << seconds << " cause it says " << The::engineController()->trackLength();
     m_slider->timer()->stop();
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( seconds * 1000 );

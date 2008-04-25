@@ -76,7 +76,6 @@ void TrackToolTip::show( const QPoint & bottomRight )
 
 void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 {
-    DEBUG_BLOCK
     if( m_track && m_track->artist() )
         m_track->artist()->unsubscribe( this );
     if( m_track && m_track->album() )
@@ -86,7 +85,6 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 
     if( force || m_track != track )
     {
-        DEBUG_LINE_INFO
         m_haspos = false;
         m_tooltip.clear();
 
@@ -169,9 +167,6 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 
         m_tooltip += "</table></td>";
         m_tooltip += "</tr></table></center>";
-
-        debug() << "TOOLTIP: " << m_tooltip;
-        debug() << m_title;
 
         updateWidgets();
 

@@ -494,7 +494,6 @@ EngineController::slotTrackEnded()
 void
 EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 {
-    DEBUG_BLOCK
     Q_UNUSED( source );
 
     newTrackPlaying();

@@ -471,7 +471,7 @@ Model::playlistModeChanged()
     {
         debug() << "Play mode not implemented, defaulting to Standard Playback";
         m_advancer = new StandardTrackNavigator( this );
-    }   
+    }
 }
 
 void
@@ -646,7 +646,7 @@ Model::insertOptioned( Meta::PlaylistPtr playlist, int options )
 {
     if( !playlist )
         return;
-    
+
     //TODO: Add this Meta::Playlist to the observed list
     insertOptioned( playlist->tracks(), options );
 }
@@ -696,17 +696,13 @@ Model::savePlaylist( const QString &path ) const
 void
 Model::engineNewTrackPlaying()
 {
-    DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
-        DEBUG_LINE_INFO
         foreach( Item* item, itemList() )
         {
             if( item->track() == track )
             {
-                DEBUG_LINE_INFO
-                debug() << "TRACK INFO: " << track->prettyName();
                 setActiveItem( item );
                 return;
             }
