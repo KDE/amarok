@@ -8,7 +8,6 @@
 #include "amarokconfig.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 #include "CollectionTreeItemModel.h"
-#include "collection/CollectionManager.h"
 #include "collection/BlockingQuery.h"
 #include "qstringx.h"
 #include "atomicstring.h"
@@ -20,6 +19,22 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
         const QString &caption,
         QFlags<KDialog::ButtonCode> buttonMask
         )
+{
+    qm->startTrackQuery();
+    BlockingQuery bq( qm );
+    bq.startQuery();
+    Meta::TrackList tracks;
+    foreach( const QString &collectionId, bq.collectionIds() )
+    {
+        tracks << bq.tracks( collectionId );
+    }
+    OrganizeCollectionDialog( tracks, parent, name, modal, caption, buttonMask );
+}
+
+OrganizeCollectionDialog::OrganizeCollectionDialog(const Meta::TrackList &tracks, QWidget *parent,  const char *name, bool modal,
+        const QString &caption,
+        QFlags<KDialog::ButtonCode> buttonMask
+        )
     : KDialog( parent )
       ,ui(new Ui::OrganizeCollectionDialogBase),
       detailed(true)
@@ -27,16 +42,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
 {
     Q_UNUSED( name )
 
-      setCaption( caption );
+    setCaption( caption );
     setModal( modal );
     setButtons( buttonMask );
     showButtonSeparator( true );
     m_previewTrack = 0;
-    Collection *coll = CollectionManager::instance()->primaryCollection();
-    qm->startTrackQuery();
-    BlockingQuery bq( qm );
-    bq.startQuery();
-    Meta::TrackList tracks = bq.tracks( coll->collectionId() );
     if ( tracks.size() > 0)
     {
         m_previewTrack = tracks[0];
@@ -87,9 +97,20 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     bool isCompilation = track->album()->isCompilation();
     QMap<QString, QString> args;
     QString artist = track->artist()->name();
-    QString albumartist = artist;
+    QString albumartist;
     if( isCompilation )
         albumartist = i18n( "Various Artists" );
+    else
+    {
+        if( track->album() && track->album()->albumArtist() )
+        {
+            albumartist = track->album()->albumArtist()->name();
+        }
+        else
+        {
+            albumartist = artist;
+        }
+    }
     args["theartist"] = cleanPath( artist );
     args["thealbumartist"] = cleanPath( albumartist );
     if(!ui->ignoreTheCheck->isChecked() && artist.startsWith( "The " ) )
