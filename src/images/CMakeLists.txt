@@ -23,6 +23,7 @@ install(
         sbinner_stars.png
         smallstar.png
         icons/svg/sources.svg
+        OsdBackground.svg
         service-browser-element.svg
         sidebar_button.svg
         splash_screen.jpg

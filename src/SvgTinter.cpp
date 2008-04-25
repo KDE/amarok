@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "SvgTinter.h"
 
 #include "App.h"
@@ -27,10 +27,10 @@ SvgTinter * SvgTinter::m_instance = 0;
 
 SvgTinter * SvgTinter::instance()
 {
-    
+
     if ( m_instance == 0 )
         m_instance = new SvgTinter();
-    
+
     return m_instance;
 }
 
@@ -75,7 +75,6 @@ void SvgTinter::init( )
         m_tintMap.insert( "#e8e8e8", blendColors( App::instance()->palette().window().color(), "#ffffff", 90 ).name() );
         //a slightly darker than window color:
         m_tintMap.insert( "#565755", blendColors( App::instance()->palette().window().color(), "000000ff", 90 ).name() );
-
         m_lastPalette = App::instance()->palette();
     }
 }
@@ -83,7 +82,7 @@ void SvgTinter::init( )
 
 QColor SvgTinter::blendColors( const QColor& color1, const QColor& color2, int percent )
 {
-    
+
     const float factor1 = ( float ) percent / 100;
     const float factor2 = ( 100 - ( float ) percent ) / 100;
 

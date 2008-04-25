@@ -21,11 +21,13 @@
         //if osdUsePlaylistColumns()
 #include "meta/MetaUtility.h"
 #include "StarManager.h"
+#include "SvgHandler.h"
 #include "TheInstances.h"
 
 #include <KApplication>
 #include <KIcon>
 #include <KStandardDirs>   //locate
+#include <KWindowSystem>
 
 #include <QBitmap>
 #include <QDesktopWidget>
@@ -64,7 +66,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 {
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
-    setTranslucent( AmarokConfig::osdUseTranslucency() );
+//     setTranslucent( AmarokConfig::osdUseTranslucency() );
     unsetColors();
 
     m_timer->setSingleShot( true );
@@ -146,10 +148,8 @@ OSDWidget::show() //virtual
     {
         m_m = M;
         m_size = newGeometry.size();
-        //render( M, newGeometry.size() );
         setGeometry( newGeometry );
         QWidget::show();
-//        bitBlt( this, 0, 0, &m_buffer );
 
         if( m_duration ) //duration 0 -> stay forever
         {
@@ -310,10 +310,27 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     p.fillRect( rect, Qt::transparent ); //fill with transparent color
 
-    p.setBrush( palette().color( QPalette::Active, QPalette::Window ) );
-    p.setPen( palette().color( QPalette::Active, QPalette::Window ).dark( 150 ) );
-    //p.drawRoundedRect( rect, 20.0, 15.0 );
-    p.drawRect( rect );
+//     p.setBrush( palette().color( QPalette::Active, QPalette::Window ) );
+    if( KWindowSystem::compositingActive() )
+    {
+        p.drawPixmap(
+                        rect,
+                        The::svgHandler()->renderSvg(
+                            "amarok/images/OsdBackground.svg",
+                            "osd_background",
+                            rect.width(),
+                            rect.height(),
+                            "osd_background"
+                        )
+                    );
+        p.setPen( palette().color( QPalette::Active, QPalette::HighlightedText ) );
+    }
+    else
+    {
+        p.setBrush( palette().color( QPalette::Active, QPalette::Window ) );
+        p.drawRect( rect );
+        p.setPen( palette().color( QPalette::Active, QPalette::Window ).dark( 150 ) );
+    }
 
     rect.adjust( M, M, -M, -M );
 
