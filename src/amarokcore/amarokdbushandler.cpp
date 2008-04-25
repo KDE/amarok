@@ -767,7 +767,6 @@ DbusContextHandler::DbusContextHandler()
 
 void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 {
-    DEBUG_BLOCK
     LyricsManager::self()->lyricsResult( lyrics );
 }
 /////////////////////////////////////////////////////////////////////////////////////
