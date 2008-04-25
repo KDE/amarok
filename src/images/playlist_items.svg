@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
-   xmlns:ns="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,13 +13,20 @@
    height="322.79584"
    id="svg2465"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    sodipodi:docbase="/home/amarok-dev/amarok/src/images"
    sodipodi:docname="playlist_items.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0">
   <defs
      id="defs2467">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 161.39792 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="630.04346 : 161.39792 : 1"
+       inkscape:persp3d-origin="315.02173 : 107.59861 : 1"
+       id="perspective96" />
     <linearGradient
        inkscape:collect="always"
        id="linearGradient3447">
@@ -190,12 +196,12 @@
      inkscape:pageshadow="2"
      inkscape:zoom="2.8619841"
      inkscape:cx="291.60915"
-     inkscape:cy="209.84206"
+     inkscape:cy="237.7947"
      inkscape:document-units="px"
-     inkscape:current-layer="collapsed_head"
+     inkscape:current-layer="track"
      showgrid="false"
-     inkscape:window-width="1680"
-     inkscape:window-height="996"
+     inkscape:window-width="1440"
+     inkscape:window-height="822"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:showpageshadow="false"
@@ -208,12 +214,12 @@
   <metadata
      id="metadata2470">
     <rdf:RDF>
-      <ns:Work
+      <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </ns:Work>
+      </cc:Work>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
@@ -403,10 +409,6 @@
          id="path12583"
          d="M 431.6036,505.22314 L 723.36119,505.22314"
          style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#666765;stroke-width:1.29975498;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
-      <path
-         style="opacity:0.7;fill:#66ffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
-         d="M 432.00001,455.55827 L 432.00001,456.37077 C 527.60673,462.6527 624.83238,461.63518 722.99999,456.37077 L 722.99999,455.55827 C 624.83238,460.82268 527.60673,461.8402 432.00001,455.55827 z"
-         id="path4244" />
     </g>
     <g
        id="collapsed_head">
@@ -422,10 +424,6 @@
          inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
          inkscape:export-xdpi="89.999985"
          inkscape:export-ydpi="89.999985" />
-      <path
-         id="path6184"
-         d="M 431.858,609.65827 L 431.858,610.47077 C 527.46472,616.7527 624.69037,615.73518 722.85785,610.47077 L 722.85785,609.65827 C 624.69037,614.92268 527.46472,615.9402 431.858,609.65827 z"
-         style="fill:#66ffff;fill-opacity:1;stroke:none;stroke-width:1.05136227999999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998000000000;stroke-opacity:1;opacity:0.7" />
       <path
          clip-rule="evenodd"
          d="M 430.26472,660.42372 C 430.26472,663.57908 430.89502,663.77709 440.83958,663.77709 L 713.82488,663.77709 C 723.76944,663.77709 724.39974,663.57908 724.39974,660.42372 L 724.39974,644.61498 L 430.26472,644.61498 L 430.26472,660.42372 z"
@@ -459,10 +457,6 @@
          inkscape:export-filename="/home/lee/Work/amarok/amarok1-3-1.png"
          inkscape:export-xdpi="89.999985"
          inkscape:export-ydpi="89.999985" />
-      <path
-         style="opacity:0.7;fill:#66ffff;fill-opacity:1;stroke:none;stroke-width:1.05136228;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:1.08779998;stroke-opacity:1"
-         d="M 133.041,273.40689 L 133.041,274.3611 C 228.64772,281.73871 325.87337,280.54372 424.04095,274.3611 L 424.04095,273.40689 C 325.87337,279.5895 228.64772,280.7845 133.041,273.40689 z"
-         id="path3947" />
     </g>
     <g
        id="selection"

@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -12,13 +12,21 @@
    height="420"
    id="svg8033"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    sodipodi:docbase="/home/hydrogen/kde/src/amarok/src/themes/context/default/widgets"
    sodipodi:docname="amarok-wallpaper.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0">
   <defs
-     id="defs8035" />
+     id="defs8035">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 210 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="669 : 210 : 1"
+       inkscape:persp3d-origin="334.5 : 140 : 1"
+       id="perspective10" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -29,14 +37,14 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="82.818611"
-     inkscape:cx="2.9904711"
-     inkscape:cy="224.71863"
+     inkscape:zoom="2.5880816"
+     inkscape:cx="-96.241261"
+     inkscape:cy="225.76812"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1680"
-     inkscape:window-height="995"
+     inkscape:window-width="1440"
+     inkscape:window-height="822"
      inkscape:window-x="0"
      inkscape:window-y="0" />
   <metadata
@@ -67,9 +75,5 @@
        d="M 21,262 L 21.4375,455.73718 C 238.8779,502.2624 473.04573,502.36184 690,454.89343 L 690,262.36218 L 21.4375,262.36218 L 21,262.36218 L 21,262 z "
        id="rect8041"
        sodipodi:nodetypes="ccccccc" />
-    <path
-       style="opacity:1;fill:#66ffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 690,454.69958 C 473.04573,502.16798 238.8779,502.06848 21.4375,455.54328 L 21.4375,456.10578 C 238.8779,502.63098 473.04573,502.73028 690,455.26198 L 690,454.69958 z "
-       id="path2159" />
   </g>
 </svg>

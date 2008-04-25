@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -12,13 +12,21 @@
    height="90"
    id="svg8033"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    sodipodi:docbase="/home/amarok-dev/amarok/src/images"
    sodipodi:docname="toolbar-background.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0">
   <defs
-     id="defs8035" />
+     id="defs8035">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 45 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1349 : 45 : 1"
+       inkscape:persp3d-origin="674.5 : 30 : 1"
+       id="perspective14" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -29,14 +37,14 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.2940408"
-     inkscape:cx="668.00402"
-     inkscape:cy="171.6629"
+     inkscape:zoom="2.5880816"
+     inkscape:cx="699.54836"
+     inkscape:cy="102.79639"
      inkscape:document-units="px"
-     inkscape:current-layer="g10698"
+     inkscape:current-layer="toolbarbackground"
      showgrid="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="996"
+     inkscape:window-width="1440"
+     inkscape:window-height="822"
      inkscape:window-x="0"
      inkscape:window-y="0" />
   <metadata
@@ -68,10 +76,6 @@
          id="rect8041"
          d="M -659,252 L -658.49575,282.27689 C -256.28804,328.82309 287.67067,328.09121 690,282.03488 L 690,252 L -659,252 z "
          style="opacity:1;fill:#e8e8e8;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <path
-         style="opacity:1;fill:#66ffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="M -659,253.11681 L -658.5,283.39806 C -256.29228,329.94426 287.67067,329.20439 690,283.14806 L 690,281.14806 C 287.67067,327.20439 -256.2923,327.94426 -658.5,281.39806 L -658.96875,253.11681 L -659,253.11681 z "
-         id="path2165" />
     </g>
     <g
        id="buttonbar"
