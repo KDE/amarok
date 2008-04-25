@@ -118,6 +118,10 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
         void prepareMove( QueryMaker *qm, CollectionLocation *destination );
 
+        /**
+         * remove the track from the collection.
+         * Return true if the removal was successfull, false otherwise.
+         */
         virtual bool remove( Meta::TrackPtr track );
 
     signals:
