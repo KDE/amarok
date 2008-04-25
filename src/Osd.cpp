@@ -24,6 +24,8 @@
 #include "SvgHandler.h"
 #include "TheInstances.h"
 
+#include <plasma/svgpanel.h>
+
 #include <KApplication>
 #include <KIcon>
 #include <KStandardDirs>   //locate
@@ -68,6 +70,11 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     unsetColors();
 
     m_timer->setSingleShot( true );
+
+    const QString backgroundFilename = KStandardDirs::locate( "data", "amarok/images/OsdBackground.svg" );
+
+    m_background = new Plasma::SvgPanel( backgroundFilename );
+    m_background->setBorderFlags( Plasma::SvgPanel::DrawAllBorders );
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
     //PORT 2.0
@@ -277,7 +284,7 @@ OSDWidget::determineMetrics( const uint M )
 }
 
 void
-OSDWidget::paintEvent( QPaintEvent* )
+OSDWidget::paintEvent( QPaintEvent *e )
 {
     uint M = m_m;
     QSize size = m_size;
@@ -298,29 +305,14 @@ OSDWidget::paintEvent( QPaintEvent* )
     QPainter p( this );
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
 
-    p.fillRect( rect, Qt::transparent ); //fill with transparent color
-
     if( KWindowSystem::compositingActive() )
     {
-        p.drawPixmap(
-                        rect,
-                        The::svgHandler()->renderSvg(
-                            "amarok/images/OsdBackground.svg",
-                            "osd_background",
-                            rect.width(),
-                            rect.height(),
-                            "osd_background"
-                        )
-                    );
-        p.setPen( palette().color( QPalette::Active, QPalette::HighlightedText ) );
+        p.setCompositionMode(QPainter::CompositionMode_Source );
+        p.fillRect(QWidget::rect(), Qt::transparent);
     }
-    else
-    {
-        p.setBrush( palette().color( QPalette::Active, QPalette::Window ) );
-        p.drawRect( rect );
-        p.setPen( palette().color( QPalette::Active, QPalette::Window ).dark( 150 ) );
-    }
-
+    m_background->paint(&p, e->rect());
+    p.setPen( palette().color( QPalette::Active, QPalette::HighlightedText ) );
+#if 0
     rect.adjust( M, M, -M, -M );
 
     if( !m_cover.isNull() )
@@ -420,10 +412,18 @@ OSDWidget::paintEvent( QPaintEvent* )
 
         p.drawImage( rect.topLeft() - QPoint(5,5), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
-
+#endif
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
     p.setFont( font() );
     p.drawText( rect, align, m_text );
+}
+
+void
+OSDWidget::resizeEvent(QResizeEvent *e)
+{
+    m_background->resize(e->size());
+    setMask(m_background->mask());
+    QWidget::resizeEvent(e);
 }
 
 bool

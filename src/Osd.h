@@ -21,6 +21,10 @@
 #include <QImage>
 #include <QWidget> //baseclass
 
+namespace Plasma
+{
+    class SvgPanel;
+}
 
 class OSDWidget : public QWidget
 {
@@ -79,6 +83,7 @@ class OSDWidget : public QWidget
         /** reimplemented */
         virtual void paintEvent( QPaintEvent* );
         virtual void mousePressEvent( QMouseEvent* );
+        void resizeEvent( QResizeEvent *e );
         virtual bool event( QEvent* );
 
         bool useMoodbar( void );
@@ -100,6 +105,7 @@ class OSDWidget : public QWidget
         QString     m_text;
         QImage      m_cover;
         QPixmap     m_scaledCover;
+        Plasma::SvgPanel *m_background;
 };
 
 
