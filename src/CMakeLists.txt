@@ -427,7 +427,6 @@ set(amaroklib_LIB_SRCS
 #    Statistics.cpp
     systray.cpp
     tagdialog.cpp
-    collectionbrowser/OrganizeCollectionDialog.cpp
     TagGuesser.cpp
     tooltip.cpp
     trackpickerdialog.cpp
@@ -464,7 +463,6 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     playlistbrowser/PodcastCategoryBase.ui
     trackpickerdialogbase.ui
     podcastsettingsbase.ui
-   collectionbrowser/OrganizeCollectionDialogBase.ui
 )
 
 kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})

@@ -33,6 +33,7 @@ endif (WIN32)
 	
 set(amarok_collection-sqlcollection_PART_SRCS
     DatabaseUpdater.cpp
+    OrganizeCollectionDialog.cpp
     ScanManager.cpp
     ScanResultProcessor.cpp
     SqlCollection.cpp
@@ -44,6 +45,9 @@ set(amarok_collection-sqlcollection_PART_SRCS
 	${extra_src}
  )
 
+kde4_add_ui_files(amarok_collection-sqlcollection_PART_SRCS
+    OrganizeCollectionDialogBase.ui
+)
 
 kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-sqlcollection_PART_SRCS})
 

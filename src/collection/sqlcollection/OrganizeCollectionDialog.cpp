@@ -7,7 +7,6 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "ui_OrganizeCollectionDialogBase.h"
-#include "CollectionTreeItemModel.h"
 #include "collection/BlockingQuery.h"
 #include "qstringx.h"
 #include "atomicstring.h"
