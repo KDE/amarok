@@ -10,8 +10,8 @@
 
 #include "Amarok.h"
 #include "debug.h"
+#include "CollectionLocation.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
-#include "collectionbrowser/OrganizeCollectionDialog.h"
 #include "context/ContextView.h"
 #include "mediabrowser.h"
 #include "Meta.h"
@@ -134,12 +134,40 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         QAction* loadAction = new QAction( KIcon("file_open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), &menu );
         QAction* appendAction = new QAction( KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), &menu);
         QAction* editAction = new QAction( i18n( "Edit Track Information" ), &menu );
-        QAction* organizeAction = new QAction( i18n( "Organize Files" ), &menu );
+        QAction* organizeAction = 0;    //set below if necessary
         menu.addAction( loadAction );
         menu.addAction( appendAction );
         menu.addSeparator();
         menu.addAction( editAction );
-        menu.addAction( organizeAction );
+        {   //keep the scope of item minimal
+            CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
+            while( item->isDataItem() )
+            {
+                item = item->parent();
+            }
+            Collection *collection = item->parentCollection();
+            if( collection->location()->isOrganizable() )
+            {
+                bool onlyOneCollection = true;
+                foreach( const QModelIndex &index, indices )
+                {
+                    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
+                    while( item->isDataItem() )
+                    {
+                        item = item->parent();
+                    }
+                    onlyOneCollection = item->parentCollection() == collection;
+                    if( !onlyOneCollection )
+                        break;
+                }
+
+                if( onlyOneCollection )
+                {
+                    organizeAction = new QAction( i18n( "Organize Files" ), &menu );
+                    menu.addAction( organizeAction );
+                }
+            }
+        }
 
         if( indices.count() == 1 )
         {
@@ -333,6 +361,10 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Pla
 void
 CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) const
 {
+    if( !items.count() )
+    {
+        return;
+    }
     //find all selected parents in the list and ignore the rest
     QSet<CollectionTreeItem*> parents;
     foreach( CollectionTreeItem *item, items )
@@ -368,7 +400,21 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
         queryMakers.append( qm );
     }
     QueryMaker *qm = new MetaQueryMaker( queryMakers );
-    (void)new OrganizeCollectionDialog( qm ); //the dialog will show itself automatically as soon as it is ready
+    CollectionTreeItem *item = items.toList().first();
+    while( item->isDataItem() )
+    {
+        item = item->parent();
+    }
+    Collection *coll = item->parentCollection();
+    CollectionLocation *location = coll->location();
+    if( !location->isOrganizable() )
+    {
+        //how did we get here??
+        delete location;
+        delete qm;
+        return;
+    }
+    location->prepareMove( qm, coll->location() );
 }
 
 void
