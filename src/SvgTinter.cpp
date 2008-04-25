@@ -54,7 +54,7 @@ QString SvgTinter::tint(QString filename)
     QString svg_source( file.readAll() );
 
 
-    foreach ( QString colorName, m_tintMap.keys() ) {
+    foreach ( const QString &colorName, m_tintMap.keys() ) {
         //debug() << "replace " <<  colorName << " with " << m_tintMap.value( colorName );
         svg_source.replace( colorName, m_tintMap.value( colorName ) );
     }

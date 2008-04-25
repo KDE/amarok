@@ -62,11 +62,9 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_drawShadow( false )
         , m_rating( 0 )
         , m_volume( false )
-        , TRANSLUCENCY( 0.7 ) // initialize OSD translucency here
 {
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
-//     setTranslucent( AmarokConfig::osdUseTranslucency() );
     unsetColors();
 
     m_timer->setSingleShot( true );
@@ -281,20 +279,12 @@ OSDWidget::determineMetrics( const uint M )
 void
 OSDWidget::paintEvent( QPaintEvent* )
 {
-    DEBUG_BLOCK
-
-    /// render with margin/spacing @param M and @param size
-
     uint M = m_m;
     QSize size = m_size;
 
     QPoint point;
     QRect rect( point, size );
     rect.adjust( 0, 0, -1, -1 );
-
-    // From qt sources
-    const uint xround = (M * 400) / size.width();
-    const uint yround = (M * 400) / size.height();
 
     QColor shadowColor;
     {
@@ -310,7 +300,6 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     p.fillRect( rect, Qt::transparent ); //fill with transparent color
 
-//     p.setBrush( palette().color( QPalette::Active, QPalette::Window ) );
     if( KWindowSystem::compositingActive() )
     {
         p.drawPixmap(
@@ -644,7 +633,6 @@ Amarok::OSD::applySettings()
     setScreen( AmarokConfig::osdScreen() );
     setFont( AmarokConfig::osdFont() );
     setDrawShadow( AmarokConfig::osdDrawShadow() );
-    setTranslucent( AmarokConfig::osdUseTranslucency() );
 
     if( AmarokConfig::osdUseCustomColors() )
     {
