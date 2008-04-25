@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -88,10 +88,7 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
         return;
     }
     m_destination = destination;
-    m_sourceTracks = tracks;
-    setupConnections();
-    KUrl::List urls = getKIOCopyableUrls( tracks );
-    emit startCopy( urls, false );
+    startWorkflow( tracks, false );
 }
 
 void
@@ -130,10 +127,7 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
         return;
     }
     m_destination = destination;
-    m_sourceTracks = tracks;
-    setupConnections();
-    KUrl::List urls = getKIOCopyableUrls( tracks );
-    emit startCopy( urls, true );
+    startWorkflow( tracks, true );
 }
 
 void
@@ -161,7 +155,13 @@ CollectionLocation::remove( Meta::TrackPtr track )
     return false;
 }
 
-KUrl::List
+void
+CollectionLocation::abort()
+{
+    emit aborted();
+}
+
+void
 CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
     KUrl::List urls;
@@ -169,7 +169,7 @@ CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
         if( track->isPlayable() )
             urls.append( track->playableUrl() );
 
-    return urls;
+    slotGetKIOCopyableUrlsDone( urls );
 }
 
 void
@@ -181,9 +181,54 @@ CollectionLocation::copyUrlsToCollection( const KUrl::List &sources )
 }
 
 void
+CollectionLocation::showSourceDialog( const Meta::TrackList &tracks )
+{
+    Q_UNUSED( tracks )
+    slotShowSourceDialogDone();
+}
+
+void
+CollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
+{
+    Q_UNUSED( tracks )
+    Q_UNUSED( removeSources )
+    slotShowDestinationDialogDone();
+}
+
+void
+CollectionLocation::slotGetKIOCopyableUrlsDone( const KUrl::List &sources )
+{
+    emit startCopy( sources, m_removeSources );
+}
+
+void
 CollectionLocation::slotCopyOperationFinished()
 {
     emit finishCopy( m_removeSources );
+}
+
+void
+CollectionLocation::slotShowSourceDialogDone()
+{
+    emit prepareOperation( m_sourceTracks, m_removeSources );
+}
+
+void
+CollectionLocation::slotShowDestinationDialogDone()
+{
+    emit operationPrepared();
+}
+
+void
+CollectionLocation::slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources )
+{
+    showDestinationDialog( tracks, removeSources );
+}
+
+void
+CollectionLocation::slotOperationPrepared()
+{
+    getKIOCopyableUrls( m_sourceTracks );
 }
 
 void
@@ -202,6 +247,13 @@ CollectionLocation::slotFinishCopy( bool removeSources )
     m_destination->deleteLater();
     m_destination = 0;
     this->deleteLater();
+}
+
+void
+CollectionLocation::slotAborted()
+{
+    m_destination->deleteLater();
+    deleteLater();
 }
 
 void
@@ -233,10 +285,24 @@ CollectionLocation::queryDone()
 void
 CollectionLocation::setupConnections()
 {
+    connect( this, SIGNAL( prepareOperation( Meta::TrackList, bool ) ),
+             m_destination, SLOT( slotPrepareOperation( Meta::TrackList, bool ) ) );
+    connect( m_destination, SIGNAL( operationPrepared() ), SLOT( slotOperationPrepared() ) );
     connect( this, SIGNAL( startCopy( KUrl::List, bool ) ),
              m_destination, SLOT( slotStartCopy( KUrl::List, bool ) ) );
     connect( m_destination, SIGNAL( finishCopy( bool ) ),
              this, SLOT( slotFinishCopy( bool ) ) );
+    connect( this, SIGNAL( aborted() ), SLOT( slotAborted() ) );
+    connect( m_destination, SIGNAL( aborted() ), SLOT( slotAborted() ) );
+}
+
+void
+CollectionLocation::startWorkflow( const Meta::TrackList &tracks, bool removeSources )
+{
+    m_removeSources = removeSources;
+    m_sourceTracks = tracks;
+    setupConnections();
+    showSourceDialog( tracks );
 }
 
 void

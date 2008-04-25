@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,7 +45,26 @@ class QueryMaker;
     -copyUrlsToCollection( KUrl::List )
 
     Implementations which are only readable can reimplement getKIOCopyableUrls( Meta::TrackList )
-    if it is necessary, but can use the default implementations if possible
+    if it is necessary, but can use the default implementations if possible.
+ 
+    Implementations that need additional information provided by the user have to implement
+    showSourceDialog() and showDestinationDialog(), depending on whether the information is required
+    in the source, the destination, or both.
+
+    The methods will be called in the following order:
+    startWorkflow (source)
+    showSourceDialog (source) (reimplementable)
+    slotShowSourceDialogDone (source)
+    slotPrepareOperation (destination)
+    showDestinationDialog (destination) (reimplementable)
+    slotShowDestinationDialogDone (destination)
+    slotOperationPrepared (source)
+    getKIOCopyableUrls (source) (reimplementable)
+    slotGetKIOCopyableUrlsDone (source)
+    slotStartCopy (destination)
+    copyUrlsToCollection (destination) (reimplementable)
+    slotCopyOperationFinished (destination)
+    slotFinishCopy (source)
 */
 class AMAROK_EXPORT CollectionLocation : public QObject
 {
@@ -104,42 +123,72 @@ class AMAROK_EXPORT CollectionLocation : public QObject
     signals:
         void startCopy( const KUrl::List &sources, bool removeSources );
         void finishCopy( bool removeSources );
+        void prepareOperation( Meta::TrackList &tracks, bool removeSources );
+        void operationPrepared();
+        void aborted();
 
     protected:
         /**
+         * aborts the workflow
+         */
+        void abort();
+        /**
             this method is called on the source location, and should return a list of urls which the destination
             location can copy using KIO.
+            you must call slotGetKIOCopyableUrlsDone( KUrl::List ) after retrieving the urls. The order of urls
+            passed to that method has to be the same as the order of the tracks passed to this method.
         */
-        virtual KUrl::List getKIOCopyableUrls( const Meta::TrackList &tracks );
+        virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
         /**
             this method is called on the destination. reimplement it if your implementation
             is writeable. you must call slotCopyOperationFinished() when you are done copying
             the files.
-
-            Note: if you need additional information from the user, e.g. which directory
-            structure to use, call the necessary code from this method.
         */
         virtual void copyUrlsToCollection( const KUrl::List &sources );
 
+        /**
+         * this method is called on the source. It allows the source CollectionLocation to show a dialog.
+         * Classes that reimplement this method must call slotShowSourceDialogDone() after they have
+         * acquired all necessary information from the user.
+         */
+        virtual void showSourceDialog( const Meta::TrackList &tracks );
+        /**
+         * this metohd is called on the destination. It allows the destination CollectionLocation to show
+         * a dialog. Classes that reimplement this method must call slotShowDestinationDialogDone() after
+         * they have acquired all necessary information from the user.
+         */
+        virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
+
     protected slots:
+        /**
+         * this slot has to be called from getKIOCopyableUrls( Meta::TrackList )
+         * Please note: the order of urls in the argument has to be the same as in the tracklist
+         */
+        void slotGetKIOCopyableUrlsDone( const KUrl::List &sources );
         void slotCopyOperationFinished();
+        void slotShowSourceDialogDone();
+        void slotShowDestinationDialogDone();
 
     private slots:
+
+        void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources );
+        void slotOperationPrepared();
         void slotStartCopy( const KUrl::List &sources, bool removeSources );
         void slotFinishCopy( bool removeSources );
+        void slotAborted();
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
         void queryDone();
 
     private:
         void setupConnections();
+        void startWorkflow( const Meta::TrackList &tracks, bool removeSources );
         void removeSourceTracks( const Meta::TrackList &tracks );
 
         //only used in the source CollectionLocation
         CollectionLocation * m_destination;
         Meta::TrackList m_sourceTracks;
 
-        //used in the source collection to remember whether to copy or to move when a QueryMaker is used
-        //and in the destination collection in the end to tell the source whether to delete the files or not
+        //used in both locations to remember whether to remove the sources
         bool m_removeSources;
 
         const Collection* m_parentCollection;
