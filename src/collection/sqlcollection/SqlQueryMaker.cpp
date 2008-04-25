@@ -50,7 +50,6 @@ class SqlWorkerThread : public ThreadWeaver::Job
     protected:
         virtual void run()
         {
-            DEBUG_BLOCK
             QString query = m_queryMaker->query();
             QStringList result = m_queryMaker->runQuery( query );
             if( !m_aborted )

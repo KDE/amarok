@@ -64,7 +64,6 @@ BlockingQuery::~BlockingQuery()
 void
 BlockingQuery::startQuery()
 {
-    DEBUG_BLOCK
     connect( d->qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( result( QString, Meta::DataList ) ), Qt::DirectConnection );
     connect( d->qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( result( QString, Meta::TrackList ) ), Qt::DirectConnection );
     connect( d->qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( result( QString, Meta::AlbumList ) ), Qt::DirectConnection );
@@ -200,7 +199,6 @@ BlockingQuery::customData()
 void
 BlockingQuery::queryDone()
 {
-    DEBUG_BLOCK
     d->done = true;
     d->loop.exit();
 }
