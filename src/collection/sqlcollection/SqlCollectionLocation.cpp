@@ -19,7 +19,9 @@
 #include "SqlCollectionLocation.h"
 
 #include "debug.h"
+#include "Meta.h"
 #include "MetaUtility.h"
+#include "mountpointmanager.h"
 #include "ScanManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
@@ -120,6 +122,35 @@ SqlCollectionLocation::insertTracks( const QMap<QString, Meta::TrackPtr > &track
     //TODO: get the new mtime of all updated/created directories
     //TODO: insert all tracks using ScanResultProcessor::processDirectory
     processor.commit();
+}
+
+void
+SqlCollectionLocation::insertStatistics( const QMap<QString, Meta::TrackPtr > &trackMap )
+{
+    MountPointManager *mpm = MountPointManager::instance();
+    foreach( const QString &url, trackMap.keys() )
+    {
+        int deviceid = mpm->getIdForUrl( url );
+        QString rpath = mpm->getRelativePath( deviceid, url );
+        QString sql = QString( "SELECT COUNT(*) FROM statistics LEFT JOIN urls ON statistics.url = urls.id "
+                               "WHERE urls.deviceid = %1 AND urls.rpath = '%2';" ).arg( QString::number( deviceid ), m_collection->escape( rpath ) );
+        QStringList count = m_collection->query( sql );
+        if( count.first().toInt() != 0 )    //crash if the sql is bad
+        {
+            continue;   //a statistics row already exists for that url, and we cannot merge the statistics
+        }
+        //the row will exist because this method is called after insertTracks
+        QString select = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" ).arg( QString::number( deviceid ), m_collection->escape( rpath ) );
+        QStringList result = m_collection->query( select );
+        QString id = result.first();    //if result is empty something is going very wrong
+        //the following sql was copied from SqlMeta.cpp
+        QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
+        QString data = "%1,%2,%3,%4,%5,%6";
+        Meta::TrackPtr track = trackMap[ url ];
+        data = data.arg( id, QString::number( track->rating() ), QString::number( track->score() ) );
+        data = data.arg( QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ) );
+        m_collection->insert( insert.arg( data ), "statistics" );
+    }
 }
 
 #include "SqlCollectionLocation.moc"

@@ -42,6 +42,7 @@ class SqlCollectionLocation : public CollectionLocation
     private:
 
         void insertTracks( const QMap<QString, Meta::TrackPtr > &trackMap );
+        void insertStatistics( const QMap<QString, Meta::TrackPtr > &trackMap );
 
         SqlCollection *m_collection;
 };
