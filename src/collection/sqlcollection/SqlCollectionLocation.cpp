@@ -103,7 +103,7 @@ SqlCollectionLocation::insertTracks( const QMap<QString, Meta::TrackPtr > &track
 {
     QList<QVariantMap > metadata;
     const QStringList realUrls = trackMap.keys();
-    foreach( const QString url, realUrls )
+    foreach( const QString &url, realUrls )
     {
         QVariantMap trackData = Meta::Field::mapFromTrack( trackMap[ url ].data() );
         trackData.insert( Meta::Field::URL, url );  //store the new url of the file
