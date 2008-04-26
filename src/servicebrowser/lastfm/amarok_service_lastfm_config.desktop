@@ -9,4 +9,4 @@ X-KDE-ParentApp=amarok_service_lastfm
 X-KDE-ParentComponents=amarok_service_lastfm
 
 Name=Last.fm Service Config
-Comment=Sets up Last.fm username and password
+Comment=Set up Last.fm username and password

@@ -106,11 +106,12 @@ void AmpacheSettings::add()
 
 void AmpacheSettings::selectedItemChanged( const QString & name )
 {
-    kDebug( 14310 ) << "Selection changed";
+    kDebug( 14310 ) << "Selection changed to " << name;
 
     if ( !name.isEmpty() ) {
 
         int index = m_configDialog->serverList->currentRow();
+        kDebug( 14310 ) << "what index number did I find? " << index;
         AmpacheServerEntry server = m_config.servers().at( index );
     
         m_configDialog->nameEdit->setText( server.name );

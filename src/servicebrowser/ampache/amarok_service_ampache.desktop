@@ -3,7 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=amarok_download
 Name=Ampache Service
-Comment=Service plugin for Amarok
+Comment=Listen to music from an Ampache server
 
 
 ServiceTypes=Amarok/Plugin

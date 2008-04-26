@@ -3,7 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=amarok_download
 Name=Mp3tunes Service
-Comment=Browse and listen to the music stored on your mp3tunes account
+Comment=Browse and listen to the music stored in your mp3tunes account
 
 ServiceTypes=Amarok/Plugin
 

@@ -3,7 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=amarok_podcast
 Name=Opml Directory Service
-Comment=Browse a huge list of podcasts that can be subscribed to
+Comment=Browse and subscribe to a huge list of podcasts
 
 
 ServiceTypes=Amarok/Plugin

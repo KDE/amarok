@@ -3,7 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-magnatune-amarok
 Name=Magnatune Store
-Comment=Preview and buy music from the non evil Magnatune record label
+Comment=Preview and buy music from the non-evil Magnatune record label
 
 
 ServiceTypes=Amarok/Plugin
