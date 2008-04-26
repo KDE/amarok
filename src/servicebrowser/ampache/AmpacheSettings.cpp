@@ -72,7 +72,8 @@ void AmpacheSettings::load()
     kDebug( 14310 ) << "load";
 
     for( int i = 0; i < m_config.servers().size(); i++ ) {
-        m_configDialog->serverList->addItem( m_config.servers().at( i ).name );
+        if( !m_configDialog->serverList->findItems( m_config.servers().at( i ).name, Qt::MatchFixedString | Qt::MatchCaseSensitive ).count() )
+            m_configDialog->serverList->addItem( m_config.servers().at( i ).name );
     }
     
     KCModule::load();
