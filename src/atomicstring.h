@@ -52,7 +52,6 @@
 #include "amarok_export.h"
 
 #include <QString>
-#include <Q3PtrList>
 #include <QMutex>
 
 class AMAROK_EXPORT AtomicString

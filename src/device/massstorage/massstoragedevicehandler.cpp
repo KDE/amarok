@@ -26,7 +26,6 @@ AMAROK_EXPORT_PLUGIN( MassStorageDeviceHandlerFactory )
 #include <kconfig.h>
 #include <kurl.h>
 
-#include <q3valuelist.h>
 
 MassStorageDeviceHandler::MassStorageDeviceHandler(): DeviceHandler()
 {

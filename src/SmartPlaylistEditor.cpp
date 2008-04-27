@@ -35,7 +35,6 @@
 #include <QObject>
 #include <QStringList>
 #include <QToolButton>
-#include <q3vgroupbox.h>
 
 
 enum Fields

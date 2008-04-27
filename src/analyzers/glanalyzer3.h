@@ -22,8 +22,8 @@
 #define GLANALYZER3_H
 
 #include "analyzerbase.h"
+#include <QList>
 #include <QString>
-#include <q3ptrlist.h>
 
 class QWidget;
 class Ball;
@@ -62,7 +62,7 @@ private:
     
     static const int NUMBER_OF_BALLS = 16;
     
-    Q3PtrList<Ball> balls;
+    QList<Ball*> balls;
     Paddle * leftPaddle, * rightPaddle;
     float unitX, unitY;
     GLuint ballTexture;

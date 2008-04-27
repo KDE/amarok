@@ -38,7 +38,6 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <khbox.h>
-#include <q3popupmenu.h>
 #include <QPushButton>
 #include <kvbox.h>
 

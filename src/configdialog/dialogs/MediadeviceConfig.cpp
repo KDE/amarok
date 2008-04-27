@@ -20,7 +20,7 @@
 #include "MediadeviceConfig.h"
 #include "MediaDevicePluginManager.h"
 
-#include <Q3GroupBox>
+#include <QGroupBox>
 #include <QVBoxLayout>
 
 #include <KDialog>
@@ -40,7 +40,8 @@ MediadeviceConfig::MediadeviceConfig( QWidget* parent )
     KVBox *topbox = new KVBox( this );
     mainLayout->addWidget( topbox );
     topbox->setSpacing( KDialog::spacingHint() );
-    Q3GroupBox *mediaBox  = new Q3GroupBox( 2, Qt::Horizontal, i18n("Media Devices"), topbox );
+    QGroupBox *mediaBox  = new QGroupBox( i18n("Media Devices"), topbox );
+    mediaBox->setAlignment( Qt::Horizontal );
     mediaBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     KVBox *vbox = new KVBox( mediaBox );
     vbox->setSpacing( KDialog::spacingHint() );

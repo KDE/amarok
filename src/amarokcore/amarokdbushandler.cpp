@@ -43,8 +43,6 @@
 #include "TheInstances.h"
 
 #include <QFile>
-//Added by qt3to4:
-#include <Q3ValueList>
 #include <QByteArray>
 
 #include <Phonon/MediaObject>
@@ -972,8 +970,8 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
         QStringList stringList;
         if(configItem)
         {
-            Q3ValueList<QVariant> variantList = configItem->property().toList();
-            Q3ValueList<QVariant>::Iterator it = variantList.begin();
+            QVariantList variantList = configItem->property().toList();
+            QVariantList::Iterator it = variantList.begin();
             while(it != variantList.end())
             {
                 stringList << (*it).toString();

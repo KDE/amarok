@@ -27,6 +27,7 @@
 #include <kstandarddirs.h>
 #include <QImage>
 #include <sys/time.h>
+#include <QtAlgorithms>
 
 #ifndef HAVE_FABSF
 inline float fabsf(float f)
@@ -130,7 +131,6 @@ Analyzer::Base3D(parent, 15)
     loadTexture( KStandardDirs::locate("data","amarok/data/ball.png"), ballTexture );
     loadTexture( KStandardDirs::locate("data","amarok/data/grid.png"), gridTexture );
 
-    balls.setAutoDelete( true );
     leftPaddle = new Paddle( -1.0 );
     rightPaddle = new Paddle( 1.0 );
     for ( int i = 0; i < NUMBER_OF_BALLS; i++ )
@@ -153,6 +153,7 @@ GLAnalyzer3::~GLAnalyzer3()
     freeTexture( gridTexture );
     delete leftPaddle;
     delete rightPaddle;
+    qDeleteAll( balls );
     balls.clear();
 }
 

@@ -49,7 +49,6 @@
 #include <QSplitter>
 #include <QStandardItemModel>
 #include <QTextStream>
-#include <q3dragobject.h>
 
 #include <typeinfo>
 

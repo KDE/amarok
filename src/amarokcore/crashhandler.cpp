@@ -21,7 +21,6 @@
 
 #include <QFile>
 #include <QRegExp>
-#include <q3textstream.h>
 #include <qglobal.h> //qVersion()
 #include <QByteArray>
 

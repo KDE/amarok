@@ -32,7 +32,6 @@
 #include <KIO/Scheduler>
 #include <KLocale>
 
-#include <q3valuelist.h>
 #include <QDomDocument>
 #include <QDomNode>
 #include <QImage>

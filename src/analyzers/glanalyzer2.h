@@ -23,7 +23,6 @@
 
 #include "analyzerbase.h"
 #include <QString>
-#include <q3ptrlist.h>
 
 
 class GLAnalyzer2 : public Analyzer::Base3D

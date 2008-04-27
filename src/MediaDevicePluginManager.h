@@ -31,7 +31,6 @@
 #include <QLayout>
 #include <QMap>
 #include <QLabel>
-#include <Q3ValueList>
 
 class QAbstractButton;
 class QGroupBox;

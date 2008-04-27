@@ -23,10 +23,8 @@
 
 #include "playlistitem.h"
 #include "queueLabel.h"
-//Added by qt3to4:
 #include <QMouseEvent>
 #include <QDesktopWidget>
-#include <Q3PtrList>
 #include <QEvent>
 #include "PlaylistStatusBar.h"
 
