@@ -402,18 +402,36 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     foreground.fill( Qt::transparent );
     QPainter pt2( &foreground );
 
-
     QSvgRenderer* renderer = The::svgHandler()->getRenderer( "amarok/images/sliders.svg" );
-    renderer->render( &pt2, "progress-slider-left", QRectF( 0, 0, side, m_sliderHeight ) );
-    renderer->render( &pt2, "progress-slider-left-highlight", QRectF( 0, 0, side, m_sliderHeight ) );
+    QPixmap foregroundLeft( side, m_sliderHeight );
+    QString foregroundLeftKey = QString( "progress-foreground-left:%1X%2" ).arg( side ).arg( m_sliderHeight );
+    QRectF foregroundLeftRect( 0, 0, side, m_sliderHeight );
+    if( !QPixmapCache::find( foregroundLeftKey, foregroundLeft ) )
+    {
+        foregroundLeft.fill( Qt::transparent );
+        QPainter pt( &foregroundLeft );
+        renderer->render( &pt, "progress-slider-left", foregroundLeftRect );
+        renderer->render( &pt, "progress-slider-left-highlight", foregroundLeftRect );
+        QPixmapCache::insert( foregroundLeftKey, foregroundLeft );
+    }
+    pt2.drawPixmap( foregroundLeftRect, foregroundLeft, foregroundLeftRect );
     //Paint the trail
     renderer->render( &pt2, "progress-slider-center", QRectF( side, 0, m_knobX - 3, m_sliderHeight ) );
     renderer->render( &pt2, "progress-slider-center-highlight", QRectF( side, 0, m_knobX - 3, m_sliderHeight ) );
 
     //And the progress indicator, this needs to happen after the trail so it's on top.
-    renderer->render( &pt2, "progress-slider-position",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
-    renderer->render( &pt2, "progress-slider-position-highlight",  QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ) );
-
+    QString indicatorkey = QString( "progress-indicator:%1x%2" ).arg( m_sliderHeight ).arg( m_sliderHeight );
+    QPixmap indicator( m_sliderHeight, m_sliderHeight );
+    QRectF indicatorRect( 0, 0, m_sliderHeight, m_sliderHeight );
+    if( !QPixmapCache::find( indicatorkey, indicator ) )
+    {
+        indicator.fill( Qt::transparent );
+        QPainter pt( &indicator );
+        renderer->render( &pt, "progress-slider-position",  indicatorRect );
+        renderer->render( &pt, "progress-slider-position-highlight",  indicatorRect );
+        QPixmapCache::insert( indicatorkey, indicator );
+    }
+    pt2.drawPixmap( QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ), indicator, indicatorRect );
 
     p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, background );
     p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, foreground );
