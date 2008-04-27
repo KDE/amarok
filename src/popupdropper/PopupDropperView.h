@@ -1,65 +1,51 @@
-/*
- *  Copyright (c) 2007 Jeff Mitchell <kde-dev@emailgoeshere.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
-#ifndef AMAROK_POPUPDROPPER_VIEW_H
-#define AMAROK_POPUPDROPPER_VIEW_H
+/* 
+   Copyright (C) 2008 Jeff Mitchell <mitchell@kde.org>
 
-#include "amarok_export.h"
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public
+   License as published by the Free Software Foundation; either
+   version 2 of the License, or (at your option) any later version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public License
+   along with this library; see the file COPYING.LIB.  If not, write to
+   the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.
+*/
+
+#ifndef POPUPDROPPER_VIEW_H
+#define POPUPDROPPER_VIEW_H
 
 #include <QGraphicsView>
-#include <QObject>
-#include <QtGlobal>
 
-class QMouseEvent;
-class QGraphicsScene;
-class QPainter;
-class QRectF;
+class PopupDropper;
+class PopupDropperViewPrivate;
 
-/**
-  * This class contructs the PopupDropperView
-  * @author Jeff Mitchell <kde-dev@emailgoeshere.com>
-  */
+class PopupDropperView : public QGraphicsView
+{
+    Q_OBJECT
 
-namespace PopupDropperNS {
+    Q_PROPERTY( bool quitOnDragLeave READ quitOnDragLeave WRITE setQuitOnDragLeave )
 
-    class PopupDropperView : public QGraphicsView
-    {
-        Q_OBJECT
+public:
+    PopupDropperView( PopupDropper *pd, QGraphicsScene *scene, QWidget *parent );
+    ~PopupDropperView();
+
+    void dropEvent( QDropEvent *event );
+    void dragMoveEvent( QDragMoveEvent *event );
+    void dragLeaveEvent( QDragLeaveEvent *event );
     
-        public:
-    
-            /**
-            * Creates a new PopupDropperView.
-            * 
-            */
-            PopupDropperView( QGraphicsScene *scene, QWidget *parent  );
-            ~PopupDropperView();
+    bool quitOnDragLeave() const;
+    void setQuitOnDragLeave( bool quit );
 
-            void mouseMoveEvent( QMouseEvent *e );
-            void mouseReleaseEvent( QMouseEvent *e );
+private:
+    friend class PopupDropperViewPrivate;
+    PopupDropperViewPrivate* const d;
+};
 
-        public slots:
-            void setTransInValue( int value );
-            void setTransOutValue( int value );
-
-        signals:
-            void destroyMe();
-
-    };
-}
 #endif /* AMAROK_POPUPDROPPER_VIEW_H */
 

@@ -36,6 +36,7 @@ add_subdirectory( collectionscanner )
 add_subdirectory( collection )
 add_subdirectory( strigi )
 add_subdirectory( context )
+add_subdirectory( popupdropper )
 # add_subdirectory( playlistmanager )
 add_subdirectory( servicebrowser )
 
@@ -353,6 +354,16 @@ set(mediadevice_SRCS
 )
 
 #####################################################################
+# MEDIADEVICE
+#####################################################################
+set(popupdropper_SRCS
+    popupdropper/PopupDropper.cpp
+    popupdropper/PopupDropperAction.cpp
+    popupdropper/PopupDropperItem.cpp
+    popupdropper/PopupDropperView.cpp
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -375,6 +386,7 @@ set(amaroklib_LIB_SRCS
     ${libqueuemanager_SRCS}
     ${libplaylistmanager_SRCS}
     ${mediadevice_SRCS}
+    ${popupdropper_SRCS}
     ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
