@@ -21,6 +21,7 @@
 #define POPUPDROPPERACTION_H
 
 #include <QAction>
+#include <QIcon>
 #include <QString>
 
 class QSvgRenderer;
@@ -38,9 +39,13 @@ class PopupDropperAction : public QAction
 public:
     PopupDropperAction( QObject *parent );
     PopupDropperAction( const QString &file, const QString &text, QObject *parent );
+    PopupDropperAction( const QString &file, const QIcon &icon, const QString &text, QObject *parent );
     PopupDropperAction( const QByteArray &contents, const QString &text, QObject *parent );
+    PopupDropperAction( const QByteArray &contents, const QIcon &icon, const QString &text, QObject *parent );
     PopupDropperAction( QSvgRenderer* renderer, const QString &text, QObject *parent );
+    PopupDropperAction( QSvgRenderer* renderer, const QIcon &icon, const QString &text, QObject *parent );
     PopupDropperAction( QSvgRenderer* renderer, const QString &elementId, const QString &text, QObject *parent );
+    PopupDropperAction( QSvgRenderer* renderer, const QString &elementId, const QIcon &icon, const QString &text, QObject *parent );
     
     ~PopupDropperAction();
 

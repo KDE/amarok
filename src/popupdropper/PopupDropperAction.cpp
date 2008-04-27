@@ -17,6 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include <QIcon>
 #include <QString>
 #include <QtDebug>
 #include <QtSvg/QSvgRenderer>
@@ -59,8 +60,24 @@ PopupDropperAction::PopupDropperAction( const QString &file, const QString &text
     d->ownRenderer = true;
 }
 
+PopupDropperAction::PopupDropperAction( const QString &file, const QIcon &icon, const QString &text, QObject *parent )
+    : QAction( icon, text, parent )
+    , d( new PopupDropperActionPrivate )
+{
+    d->renderer = new QSvgRenderer( file, this );
+    d->ownRenderer = true;
+}
+
 PopupDropperAction::PopupDropperAction( const QByteArray &contents, const QString &text, QObject *parent )
     : QAction( text, parent )
+    , d( new PopupDropperActionPrivate )
+{
+    d->renderer = new QSvgRenderer( contents, this );
+    d->ownRenderer = true;
+}
+
+PopupDropperAction::PopupDropperAction( const QByteArray &contents, const QIcon &icon, const QString &text, QObject *parent )
+    : QAction( icon, text, parent )
     , d( new PopupDropperActionPrivate )
 {
     d->renderer = new QSvgRenderer( contents, this );
@@ -74,10 +91,27 @@ PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &t
     d->renderer = renderer;
 }
 
+PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QIcon &icon, const QString &text, QObject *parent )
+    : QAction( icon, text, parent )
+    , d( new PopupDropperActionPrivate )
+{
+    d->renderer = renderer;
+}
+
 //note that the elementId cannot be used by this directly; it is only here so that you can use it as a reference
 //when needing to pass it in somewhere else
 PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &elementId, const QString &text, QObject *parent )
     : QAction( text, parent )
+    , d( new PopupDropperActionPrivate )
+{
+    d->renderer = renderer;
+    d->elementId = elementId;
+}
+
+//note that the elementId cannot be used by this directly; it is only here so that you can use it as a reference
+//when needing to pass it in somewhere else
+PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &elementId, const QIcon &icon, const QString &text, QObject *parent )
+    : QAction( icon, text, parent )
     , d( new PopupDropperActionPrivate )
 {
     d->renderer = renderer;
