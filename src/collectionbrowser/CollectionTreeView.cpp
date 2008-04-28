@@ -268,10 +268,17 @@ void CollectionTreeView::mousePressEvent( QMouseEvent *e )
 
 void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
 {
+    DEBUG_BLOCK
+    bool noDrag = false;
     if( !( e->buttons() & Qt::LeftButton ) )
-        return;
+        noDrag = true;
     if( QLineF( e->pos(), m_dragStartPosition).length() < QApplication::startDragDistance() )
+        noDrag = true;
+    if( noDrag )
+    {
+        QTreeView::mouseMoveEvent( e );
         return;
+    }
 
     if( !m_pd )
         m_pd = createPopupDropper( Context::ContextView::self() );
@@ -307,7 +314,7 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
         //m_pd->show();
     }
 
-    QTreeView::mouseMoveEvent( e );
+    startDrag( Qt::CopyAction );
     debug() << "After the drag!";
 
     if( m_pd )
