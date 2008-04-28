@@ -261,14 +261,8 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
     if( QLineF( e->pos(), m_dragStartPosition).length() < QApplication::startDragDistance() )
         return;
 
-    // TODO port....
     if( !m_pd )
         m_pd = createPopupDropper( Context::ContextView::self() );
-    else {
-        //we need either a new one or to lear the old one as we keep changing items
-        delete m_pd;
-        m_pd = createPopupDropper( Context::ContextView::self() );
-    }
 
     if( m_pd && m_pd->isValid() && m_pd->isHidden() )
     {
@@ -306,11 +300,9 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
 
     if( m_pd )
     {
-        debug() << "Deleting PUD";
-        m_pd->deleteLater();
+        debug() << "clearing PUD";
+        m_pd->clear();
     }
-
-    m_pd = 0;
 }
 
 PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
