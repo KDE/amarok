@@ -65,7 +65,9 @@ class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-        virtual CollectionLocation* location() const;        
+        virtual CollectionLocation* location() const;
+        virtual bool isWritable() const;
+        virtual bool isOrganizable() const;
 
 
         //sqlcollection internal methods

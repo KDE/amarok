@@ -190,6 +190,18 @@ SqlCollection::location() const
     return new SqlCollectionLocation( this );
 }
 
+bool
+SqlCollection::isWritable() const
+{
+    return true;
+}
+
+bool
+SqlCollection::isOrganizable() const
+{
+    return true;
+}
+
 void
 SqlCollection::sendChangedSignal()
 {
