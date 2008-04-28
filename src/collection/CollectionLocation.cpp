@@ -164,16 +164,18 @@ CollectionLocation::abort()
 void
 CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
-    KUrl::List urls;
+    QMap<Meta::TrackPtr, KUrl> urls;
     foreach( Meta::TrackPtr track, tracks )
+    {
         if( track->isPlayable() )
-            urls.append( track->playableUrl() );
+            urls.insert( track, track->playableUrl() );
+    }
 
     slotGetKIOCopyableUrlsDone( urls );
 }
 
 void
-CollectionLocation::copyUrlsToCollection( const KUrl::List &sources )
+CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
     //reimplement in implementations which are writeable
     Q_UNUSED( sources )
@@ -196,7 +198,7 @@ CollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool r
 }
 
 void
-CollectionLocation::slotGetKIOCopyableUrlsDone( const KUrl::List &sources )
+CollectionLocation::slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
     emit startCopy( sources, m_removeSources );
 }
@@ -232,7 +234,7 @@ CollectionLocation::slotOperationPrepared()
 }
 
 void
-CollectionLocation::slotStartCopy( const KUrl::List &sources, bool removeSources )
+CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources, bool removeSources )
 {
     m_removeSources = removeSources;
     copyUrlsToCollection( sources );
@@ -288,8 +290,8 @@ CollectionLocation::setupConnections()
     connect( this, SIGNAL( prepareOperation( Meta::TrackList, bool ) ),
              m_destination, SLOT( slotPrepareOperation( Meta::TrackList, bool ) ) );
     connect( m_destination, SIGNAL( operationPrepared() ), SLOT( slotOperationPrepared() ) );
-    connect( this, SIGNAL( startCopy( KUrl::List, bool ) ),
-             m_destination, SLOT( slotStartCopy( KUrl::List, bool ) ) );
+    connect( this, SIGNAL( startCopy( QMap<Meta::TrackPtr, KUrl>, bool ) ),
+             m_destination, SLOT( slotStartCopy( QMap<Meta::TrackPtr, KUrl>, bool ) ) );
     connect( m_destination, SIGNAL( finishCopy( bool ) ),
              this, SLOT( slotFinishCopy( bool ) ) );
     connect( this, SIGNAL( aborted() ), SLOT( slotAborted() ) );

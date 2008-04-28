@@ -42,7 +42,7 @@ class QueryMaker;
     -prettyLocation()
     -isWriteable()
     -remove( Meta::Track )
-    -copyUrlsToCollection( KUrl::List )
+    -copyUrlsToCollection( QMap<Meta::TrackPtr, KUrl> )
 
     Writeable collections that are also organizable should reimplement isOrganizable().
     Organizable means that the user is able to decide (to varying degrees, the details depend
@@ -133,9 +133,9 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual bool remove( Meta::TrackPtr track );
 
     signals:
-        void startCopy( const KUrl::List &sources, bool removeSources );
+        void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources, bool removeSources );
         void finishCopy( bool removeSources );
-        void prepareOperation( Meta::TrackList &tracks, bool removeSources );
+        void prepareOperation( const Meta::TrackList &tracks, bool removeSources );
         void operationPrepared();
         void aborted();
 
@@ -147,7 +147,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         /**
             this method is called on the source location, and should return a list of urls which the destination
             location can copy using KIO.
-            you must call slotGetKIOCopyableUrlsDone( KUrl::List ) after retrieving the urls. The order of urls
+            you must call slotGetKIOCopyableUrlsDone( QMap<Meta::TrackPtr, KUrl> ) after retrieving the urls. The order of urls
             passed to that method has to be the same as the order of the tracks passed to this method.
         */
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
@@ -156,7 +156,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
             is writeable. you must call slotCopyOperationFinished() when you are done copying
             the files.
         */
-        virtual void copyUrlsToCollection( const KUrl::List &sources );
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
 
         /**
          * this method is called on the source. It allows the source CollectionLocation to show a dialog.
@@ -165,7 +165,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          */
         virtual void showSourceDialog( const Meta::TrackList &tracks );
         /**
-         * this metohd is called on the destination. It allows the destination CollectionLocation to show
+         * this method is called on the destination. It allows the destination CollectionLocation to show
          * a dialog. Classes that reimplement this method must call slotShowDestinationDialogDone() after
          * they have acquired all necessary information from the user.
          */
@@ -176,7 +176,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          * this slot has to be called from getKIOCopyableUrls( Meta::TrackList )
          * Please note: the order of urls in the argument has to be the same as in the tracklist
          */
-        void slotGetKIOCopyableUrlsDone( const KUrl::List &sources );
+        void slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources );
         void slotCopyOperationFinished();
         void slotShowSourceDialogDone();
         void slotShowDestinationDialogDone();
@@ -185,7 +185,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
 
         void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources );
         void slotOperationPrepared();
-        void slotStartCopy( const KUrl::List &sources, bool removeSources );
+        void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources, bool removeSources );
         void slotFinishCopy( bool removeSources );
         void slotAborted();
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
