@@ -16,7 +16,7 @@
 #include <kdebug.h>       //kBacktrace()
 #include <kglobal.h>
 #include <klocale.h>
-#include <k3tempfile.h>
+#include <KTemporaryFile>
 #include <ktoolinvocation.h>
 
 #include <QFile>
@@ -145,8 +145,8 @@ namespace Amarok
 
             /// obtain the backtrace with gdb
 
-            K3TempFile temp;
-            temp.setAutoDelete( true );
+            KTemporaryFile temp;
+            temp.setAutoRemove( true );
 
             const int handle = temp.handle();
 

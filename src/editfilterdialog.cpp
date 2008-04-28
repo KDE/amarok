@@ -23,7 +23,7 @@
 #include <QLayout>
 #include <QDateTime>
 #include <QLabel>
-#include <q3groupbox.h>
+#include <QGroupBox>
 #include <QRadioButton>
 #include <QLineEdit>
 #include <QComboBox>
@@ -209,7 +209,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     connect(m_comboKeyword, SIGNAL(activated(int)), this, SLOT(selectedKeyword(int)));
 
     // group of options on numeric attribute keywords: a value <,>,= ... or a value between Min and Max
-    m_groupBox = new Q3GroupBox( mainWidget(), "groupBox" );
+    m_groupBox = new QGroupBox( mainWidget() );
     m_groupBox->setTitle( i18n( "Attribute value is" ) );
     m_mainLay->addWidget( m_groupBox );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
@@ -287,7 +287,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_mainLay->addLayout( otherOptionsLayout );
 
     // the groupbox to select the action filter
-    m_groupBox2 = new Q3GroupBox( mainWidget(), "groupBox2" );
+    m_groupBox2 = new QGroupBox( mainWidget() );
     m_groupBox2->setTitle( i18n( "Filter action" ) );
     otherOptionsLayout->addWidget( m_groupBox2 );
 
@@ -344,7 +344,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     verticalCondLay->setMargin(15);
     verticalCondLay->setSpacing(0);
 
-    m_groupBox3 = new Q3GroupBox( mainWidget(), "groupBox3" );
+    m_groupBox3 = new QGroupBox( mainWidget() );
     m_groupBox3->setTitle( i18n( "Appending condition" ) );
     verticalCondLay->addWidget( m_groupBox3 );
 

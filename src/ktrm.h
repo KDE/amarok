@@ -27,7 +27,7 @@
 #ifndef KTRM_H
 #define KTRM_H
 
-#include <q3valuelist.h>
+#include <QList>
 #include <QMap>
 #include <QObject>
 #include <QString>
@@ -107,7 +107,7 @@ private:
     KTRMResultPrivate *d;
 };
 
-typedef Q3ValueList<KTRMResult> KTRMResultList;
+typedef QList<KTRMResult> KTRMResultList;
 
 /**
  * An abstraction for libtunepimp's TRM based lookup and file recognition.

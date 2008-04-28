@@ -17,7 +17,7 @@
 #include <QVector>
 
 
-class Q3GroupBox;
+class QGroupBox;
 class QCheckBox;
 class QComboBox;
 class QLabel;
@@ -48,7 +48,7 @@ class EditFilterDialog : public KDialog
         QComboBox *m_comboKeyword;
         KLineEdit *m_editKeyword;
 
-        Q3GroupBox *m_groupBox;
+        QGroupBox *m_groupBox;
 
         QComboBox *m_comboCondition;
         QLabel *m_filesizeLabel;
@@ -59,14 +59,14 @@ class EditFilterDialog : public KDialog
         QLabel *m_andLabel;
         QSpinBox *m_spinMax1, *m_spinMax2;
 
-        Q3GroupBox *m_groupBox2;
+        QGroupBox *m_groupBox2;
         QRadioButton *m_checkALL;
         QRadioButton *m_checkAtLeastOne;
         QRadioButton *m_checkExactly;
         QRadioButton *m_checkExclude;
         QList<QRadioButton*> m_actionCheck;
 
-        Q3GroupBox *m_groupBox3;
+        QGroupBox *m_groupBox3;
         QRadioButton *m_checkAND;
         QRadioButton *m_checkOR;
 
