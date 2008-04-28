@@ -67,4 +67,16 @@ Collection::location() const
     return new CollectionLocation( this );
 }
 
+bool
+Collection::isWritable() const
+{
+    return false;
+}
+
+bool
+Collection::isOrganizable() const
+{
+    return false;
+}
+
 #include "Collection.moc"

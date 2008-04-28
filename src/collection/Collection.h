@@ -72,6 +72,10 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider
 
         virtual CollectionLocation* location() const;
 
+        //convenience methods so that it is not necessary to create a CollectionLocation
+        virtual bool isWritable() const;
+        virtual bool isOrganizable() const;
+
     signals:
         void remove();
         void updated();
