@@ -21,6 +21,8 @@
 class QSortFilterProxyModel;
 class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
+class PopupDropper;
+class PopupDropperAction;
 
 class CollectionTreeView: public QTreeView
 {
@@ -69,12 +71,16 @@ class CollectionTreeView: public QTreeView
         void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode ) const;
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
+        PopupDropper* createPopupDropper( QWidget* parent );
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModelBase *m_treeModel;
         QTimer m_filterTimer;
         QPoint m_dragStartPosition;
         bool m_showTrackNumbers;
         bool m_showYears;
+        PopupDropper* m_pd;
+        PopupDropperAction* m_appendAction;
+        PopupDropperAction* m_loadAction;
 
     signals:
         void itemSelected( CollectionTreeItem * item );

@@ -81,7 +81,7 @@ void PopupDropperPrivate::timerFrameChanged( int frame ) //SLOT
 
 void PopupDropperPrivate::timerFinished() //SLOT
 {
-    qDebug() << "Timer finished! (at frame " << fadeTimer.currentFrame()  <<")";
+    //qDebug() << "Timer finished! (at frame " << fadeTimer.currentFrame()  <<")";
     if( fadeTimer.direction() == QTimeLine::Backward && ( !standalone || ( standalone && closeAtEndOfFade ) ) )
         view.hide();
     else
@@ -106,7 +106,7 @@ PopupDropper::PopupDropper( QWidget *parent, bool standalone )
     d->success = true;
     d->fadeTimer.setFrameRange( 0, d->frameMax );
     d->sharedRenderer = new QSvgRenderer();
-    qDebug() << "Popup Dropper created!";
+    //qDebug() << "Popup Dropper created!";
 }
 
 PopupDropper::~PopupDropper()
@@ -115,7 +115,7 @@ PopupDropper::~PopupDropper()
         hide();
     while( d->fadeTimer.state() == QTimeLine::Running )
         QApplication::processEvents();
-    qDebug() << "Popup Dropper destroyed!";
+    //qDebug() << "Popup Dropper destroyed!";
     delete d;
 }
 
@@ -141,7 +141,7 @@ void PopupDropper::show()
         qDebug() << "No shared renderer set!";
         return;
     }
-    qDebug() << "Showing PopupDropper";
+    //qDebug() << "Showing PopupDropper";
     d->fadeTimer.stop();
     d->fadeTimer.setDirection( QTimeLine::Forward );
     if( ( d->fade == PopupDropper::FadeIn || d->fade == PopupDropper::FadeInOut ) && d->fadeInTime > 0 )
@@ -152,10 +152,10 @@ void PopupDropper::show()
         QColor color = d->windowColor;
         color.setAlpha( 0 );
         setPalette( color, d->textColor );
-        qDebug() << "Timer startFrame = " << d->fadeTimer.startFrame();
-        qDebug() << "Timer endFrame = " << d->fadeTimer.endFrame();
+        //qDebug() << "Timer startFrame = " << d->fadeTimer.startFrame();
+        //qDebug() << "Timer endFrame = " << d->fadeTimer.endFrame();
         d->fadeTimer.start();
-        qDebug() << "Timer started";
+        //qDebug() << "Timer started";
     }
     d->view.show();
 }
@@ -176,7 +176,7 @@ void PopupDropper::hide( PopupDropper::HideReason reason )
             d->closeAtEndOfFade = true;
             break;
     }
-    qDebug() << "Hiding PopupDropper";
+    //qDebug() << "Hiding PopupDropper";
     bool wasRunning = false;
     if( d->fadeTimer.state() == QTimeLine::Running )
     {
@@ -190,10 +190,10 @@ void PopupDropper::hide( PopupDropper::HideReason reason )
         if( !wasRunning )
             d->fadeTimer.setCurrentTime( d->fadeOutTime );
         d->fadeTimer.setCurveShape( QTimeLine::LinearCurve );
-        qDebug() << "Timer startFrame = " << d->fadeTimer.startFrame();
-        qDebug() << "Timer endFrame = " << d->fadeTimer.endFrame();
+        //qDebug() << "Timer startFrame = " << d->fadeTimer.startFrame();
+        //qDebug() << "Timer endFrame = " << d->fadeTimer.endFrame();
         d->fadeTimer.start();
-        qDebug() << "Timer started";
+        //qDebug() << "Timer started";
     }
     else if ( !d->standalone || d->closeAtEndOfFade )
         d->view.hide();
@@ -256,10 +256,10 @@ void PopupDropper::forceUpdate()
 
 void PopupDropper::textUpdated()
 {
-    qDebug() << "In textUpdated";
+    //qDebug() << "In textUpdated";
     foreach( PopupDropperItem *pdi, d->pdiItems )
     {
-        qDebug() << "Setting " << pdi->textItem()->toPlainText() << " to " << pdi->action()->text();
+        //qDebug() << "Setting " << pdi->textItem()->toPlainText() << " to " << pdi->action()->text();
         pdi->textItem()->setPlainText( pdi->action()->text() );
     }
 
@@ -358,14 +358,14 @@ void PopupDropper::addItem( QGraphicsSvgItem *item, bool useSharedRenderer )
     pItem->setTextItem( textItem );
     for( int i = 0; i < d->pdiItems.size(); i++ )
     {
-        qDebug() << "Adjusting item " << i;
+        //qDebug() << "Adjusting item " << i;
         qreal partitionsize = d->scene.height() / d->pdiItems.size(); //gives partition size...now center in this area
         qreal my_min = i * partitionsize;
         qreal my_max = ( i + 1 ) * partitionsize;
-        qDebug() << "my_min = " << my_min << ", my_max = " << my_max;
+        //qDebug() << "my_min = " << my_min << ", my_max = " << my_max;
         qreal vert_center = ( ( my_max - my_min ) / 2 ) + my_min; //gives us our center line...now center the item around it
         qreal item_min = vert_center - ( d->pdiItems.at( i )->boundingRect().height() / 2 );
-        qDebug() << "vert_center = " << vert_center << ", ited->min = " << item_min;
+        //qDebug() << "vert_center = " << vert_center << ", ited->min = " << item_min;
         d->pdiItems.at( i )->setPos( 20, item_min );
         d->pdiItems.at( i )->reposTextItem();
     }

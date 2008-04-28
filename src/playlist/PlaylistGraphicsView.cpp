@@ -185,6 +185,7 @@ Playlist::GraphicsView::dragLeaveEvent( QDragLeaveEvent *event )
 void
 Playlist::GraphicsView::dropEvent( QDropEvent *event )
 {
+    DEBUG_BLOCK
     event->accept();
     The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
     Playlist::DropVis::instance()->hide();

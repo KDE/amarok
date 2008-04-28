@@ -83,6 +83,9 @@ public slots:
 private:
     friend class PopupDropperItemPrivate;
     PopupDropperItemPrivate* const d;
+
+signals:
+    void dropEvent( QDropEvent *event );
 };
 
 #endif

@@ -18,7 +18,12 @@
 #include "MetaQueryMaker.h"
 #include "meta/CustomActionsCapability.h"
 #include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistGraphicsView.h"
+#include "popupdropper/PopupDropper.h"
+#include "popupdropper/PopupDropperAction.h"
+#include "popupdropper/PopupDropperItem.h"
 #include "QueryMaker.h"
+#include "SvgHandler.h"
 #include "tagdialog.h"
 #include "TheInstances.h"
 
@@ -34,6 +39,9 @@
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : QTreeView( parent )
     , m_dragStartPosition()
+    , m_pd( 0 )
+    , m_appendAction( 0 )
+    , m_loadAction( 0 )
 {
     setRootIsDecorated( true );
     setSortingEnabled( true );
@@ -48,7 +56,13 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     m_treeModel = 0;
     m_filterModel = 0;
 
-     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
+    m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+                                     "append_playlist_xlarge", KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), this );
+    m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+                                     "load_playlist_xlarge", KIcon("file_open" ), 
+                                     i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+
+    connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
 }
 
 
@@ -131,12 +145,10 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         //CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 
         KMenu menu;
-        QAction* loadAction = new QAction( KIcon("file_open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), &menu );
-        QAction* appendAction = new QAction( KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), &menu);
         QAction* editAction = new QAction( i18n( "Edit Track Information" ), &menu );
         QAction* organizeAction = 0;    //set below if necessary
-        menu.addAction( loadAction );
-        menu.addAction( appendAction );
+        menu.addAction( m_loadAction );
+        menu.addAction( m_appendAction );
         menu.addSeparator();
         menu.addAction( editAction );
         {   //keep the scope of item minimal
@@ -196,9 +208,9 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
             if( index.isValid() && index.internalPointer() )
                 items.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
         }
-        if( result == loadAction )
+        if( result == dynamic_cast<QAction*>(m_loadAction) )
             playChildTracks( items, Playlist::Replace );
-        else if( result == appendAction )
+        else if( result == dynamic_cast<QAction*>(m_appendAction) )
             playChildTracks( items, Playlist::Append );
         else if( result == editAction )
         {
@@ -245,11 +257,54 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
         return;
 
     // TODO port....
-    //ContextView::instance()->showPopupDropper();
+    if( !m_pd )
+        m_pd = createPopupDropper( Context::ContextView::self() );
+
+    if( m_pd && m_pd->isValid() && m_pd->isHidden() )
+    {
+        //m_pd->show();
+    }
 
     QTreeView::mouseMoveEvent( e );
+    debug() << "After the drag!";
+
+    if( m_pd )
+        m_pd->deleteLater();
+
+    m_pd = 0;
 }
 
+PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
+{
+    PopupDropper* pd = new PopupDropper( parent );
+    if( !pd )
+        return 0;
+
+    pd->setQuitOnDragLeave( true );
+    pd->setFadeInTime( 500 );
+    pd->setFadeOutTime( 300 );
+    QColor windowColor( Qt::black );
+    windowColor.setAlpha( 128 );
+    QColor textColor( Qt::white );
+    pd->setColors( windowColor, textColor );
+
+    QFont font;
+    font.setPointSize( 16 );
+    font.setBold( true );
+
+    PopupDropperItem* pdi = new PopupDropperItem();
+    pdi->setAction( m_appendAction );
+    pdi->setFont( font );
+    pd->addItem( pdi, false );
+    connect( pdi, SIGNAL( dropEvent(QDropEvent*) ), Playlist::GraphicsView::instance(), SLOT( dropEvent(QDropEvent*) ) );
+
+    pdi = new PopupDropperItem();
+    pdi->setAction( m_loadAction );
+    pdi->setFont( font );
+    pd->addItem( pdi, false );
+
+    return pd;
+}
 
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {

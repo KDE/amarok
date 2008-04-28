@@ -4,7 +4,7 @@
    xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/"
    xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -15,12 +15,19 @@
    height="1052.3622047"
    id="svg29256"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    sodipodi:docbase="/home/hydrogen/kde/src/amarok/src/images/icons/svg"
    sodipodi:docname="sources.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs29258">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective7032" />
     <linearGradient
        inkscape:collect="always"
        id="linearGradient10275">
@@ -22950,14 +22957,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="-167.18826"
-     inkscape:cy="1019.469"
+     inkscape:cx="612.38983"
+     inkscape:cy="292.15783"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     inkscape:window-width="1018"
-     inkscape:window-height="692"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:window-width="1654"
+     inkscape:window-height="944"
+     inkscape:window-x="18"
+     inkscape:window-y="0"
      showguides="true"
      inkscape:guide-bbox="true"
      showgrid="true"
@@ -23085,7 +23092,7 @@
        transform="matrix(0.997579,-6.954143e-2,-8.538193e-2,-0.996348,0,0)" />
     <g
        style="display:inline"
-       id="g11436"
+       id="play_small"
        transform="translate(-459.17369,203.26257)"
        inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/22x22/actions/amarok_play.png"
        inkscape:export-xdpi="90"
@@ -23156,7 +23163,7 @@
     </g>
     <g
        style="display:inline"
-       id="g11444"
+       id="play_medium"
        transform="translate(-459.53581,196.83382)"
        inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/32x32/actions/amarok_play.png"
        inkscape:export-xdpi="90"
@@ -23231,7 +23238,7 @@
     </g>
     <g
        style="display:inline"
-       id="g11452"
+       id="stop_medium"
        inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/32x32/amarok_stop.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"
@@ -23310,7 +23317,7 @@
     </g>
     <g
        style="display:inline"
-       id="g11462"
+       id="stop_small"
        transform="translate(-452.46441,238.36962)"
        inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/22x22/actions/amarok_stop.png"
        inkscape:export-xdpi="90"
@@ -24586,7 +24593,7 @@
     </g>
     <g
        transform="matrix(0.727272,0,0,0.727272,-484.79231,253.22186)"
-       id="g11721"
+       id="play_xsmall"
        style="display:inline"
        inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/16x16/actions/amarok_play.png"
        inkscape:export-xdpi="90"
@@ -24657,7 +24664,7 @@
     </g>
     <g
        transform="matrix(0.727272,0,0,0.727272,-485.5656,298.11794)"
-       id="g11733"
+       id="stop_xsmall"
        style="display:inline"
        inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/16x16/actions/amarok_stop.png"
        inkscape:export-xdpi="90"
@@ -25232,11 +25239,12 @@
     </g>
     <g
        transform="matrix(1.5,0,0,1.5,-446.57151,102.02765)"
-       id="g11840"
+       id="play_large"
        style="display:inline"
        inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/48x48/actions/amarok_play.png"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90">
+       inkscape:export-ydpi="90"
+       inkscape:label="#play_large">
       <g
          inkscape:export-ydpi="89.999962"
          inkscape:export-xdpi="89.999962"
@@ -25310,7 +25318,7 @@
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
        inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/48x48/actions/amarok_stop.png"
-       id="g11856"
+       id="stop_large"
        style="display:inline">
       <g
          inkscape:export-ydpi="89.999962"
@@ -25881,7 +25889,7 @@
     </g>
     <g
        style="display:inline"
-       id="g11962"
+       id="play_xlarge"
        transform="matrix(2,0,0,2,-414.60721,7.2214883)"
        inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/64x64/actions/amarok_play.png"
        inkscape:export-xdpi="90"
@@ -25956,7 +25964,7 @@
     </g>
     <g
        style="display:inline"
-       id="g11978"
+       id="stop_xlarge"
        inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/64x64/actions/amarok_stop.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"
@@ -50339,7 +50347,7 @@
          style="fill:#b9cff9;fill-opacity:0;stroke:none;stroke-width:2.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0" />
     </g>
     <g
-       id="g12706"
+       id="append_playlist_xlarge"
        transform="translate(-5,-10.027002)">
       <g
          inkscape:export-ydpi="90"
@@ -50411,7 +50419,7 @@
          y="696.3891" />
     </g>
     <g
-       id="g12679"
+       id="append_playlist_large"
        transform="translate(-5,-8.1627445)">
       <g
          inkscape:export-ydpi="90"
@@ -50541,7 +50549,7 @@
          style="fill:#b9cff9;fill-opacity:0;stroke:none;stroke-width:2.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0" />
     </g>
     <g
-       id="g12664"
+       id="append_playlist_medium"
        transform="translate(-5,-6.8397464)">
       <g
          transform="matrix(0.999518,0,0,0.999518,-194.18958,281.66648)"
@@ -50613,7 +50621,7 @@
          y="725.20184" />
     </g>
     <g
-       id="g12649"
+       id="append_playlist_small"
        transform="translate(-5,-3.8609867)">
       <g
          inkscape:export-ydpi="90.000092"
@@ -50685,7 +50693,7 @@
          style="fill:#b9cff9;fill-opacity:0;stroke:none;stroke-width:2.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0" />
     </g>
     <g
-       id="g12634"
+       id="append_playlist_xsmall"
        transform="translate(-5,-3.9885502)">
       <g
          inkscape:export-ydpi="90.000092"
@@ -50757,7 +50765,7 @@
          y="738.35065" />
     </g>
     <g
-       id="g12721"
+       id="load_playlist_xsmall"
        transform="translate(-4,3.0114497)">
       <g
          inkscape:export-ydpi="90.000092"
@@ -50831,7 +50839,7 @@
          style="fill:#b9cff9;fill-opacity:0;stroke:none;stroke-width:2.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0" />
     </g>
     <g
-       id="g12736"
+       id="load_playlist_small"
        transform="translate(-4,0.4825187)">
       <g
          inkscape:export-ydpi="90.000092"
@@ -50905,7 +50913,7 @@
          y="796.87958" />
     </g>
     <g
-       id="g12751"
+       id="load_playlist_medium"
        transform="translate(-4,2.1602537)">
       <g
          id="g13565"
@@ -50970,7 +50978,7 @@
          style="fill:#b9cff9;fill-opacity:0;stroke:none;stroke-width:2.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0" />
     </g>
     <g
-       id="g12765"
+       id="load_playlist_large"
        transform="translate(-4,-1.1627445)">
       <g
          inkscape:export-ydpi="90"
@@ -51035,7 +51043,7 @@
          y="772.52484" />
     </g>
     <g
-       id="g12778"
+       id="load_playlist_xlarge"
        transform="translate(-4,-4.0270023)">
       <g
          id="g15468"

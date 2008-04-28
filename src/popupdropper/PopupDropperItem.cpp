@@ -81,7 +81,7 @@ PopupDropperItem::~PopupDropperItem()
 
 void PopupDropperItem::show()
 {
-    qDebug() << "Showing, starting tool tip timer";
+    //qDebug() << "Showing, starting tool tip timer";
     d->hoverTimer.start( d->hoverMsecs );
     QGraphicsSvgItem::show();
 }
@@ -97,7 +97,7 @@ void PopupDropperItem::setAction( QAction *action )
 {
     //note that this also sets the text
     d->action = action;
-    d->text = action->text();
+    d->text = action->iconText();
     PopupDropperAction* pudaction = dynamic_cast<PopupDropperAction*>(action);
     if( pudaction )
     {
@@ -150,7 +150,6 @@ void PopupDropperItem::reposTextItem()
 QSvgRenderer* PopupDropperItem::sharedRenderer() const
 {
     return QGraphicsSvgItem::renderer();
-    
 }
 
 void PopupDropperItem::setSharedRenderer( QSvgRenderer *renderer )
@@ -200,12 +199,17 @@ void PopupDropperItem::dropped( QDropEvent *event ) //virtual SLOT
     Q_UNUSED( event );
     qDebug() << "PopupDropperItem drop detected";
     if( d->action )
+    {
+        qDebug() << "Triggering action";
         d->action->activate( QAction::Trigger );
+    }
+    qDebug() << "emitting dropEvent";
+    emit dropEvent( event );
 }
 
 void PopupDropperItem::hoverTimeout() //SLOT
 {
-    qDebug() << "PopupDropperItem timeout";
+    //qDebug() << "PopupDropperItem timeout";
     if( d->action )
         d->action->activate( QAction::Hover );
 }
