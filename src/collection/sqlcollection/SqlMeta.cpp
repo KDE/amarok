@@ -543,11 +543,11 @@ SqlTrack::writeMetaDataToDb()
     QString genre = QString::number( KSharedPtr<SqlGenre>::staticCast( m_genre )->id() );
     QString composer = QString::number( KSharedPtr<SqlComposer>::staticCast( m_composer )->id() );
     QString year = QString::number( KSharedPtr<SqlYear>::staticCast( m_year )->id() );
-    tags.arg( m_collection->escape( m_title ), m_collection->escape( m_comment ),
+    tags = tags.arg( m_collection->escape( m_title ), m_collection->escape( m_comment ),
               QString::number( m_trackNumber ), QString::number( m_discNumber ),
               artist, album, genre, composer, year );
     tags += QString( ",filesize=%1" ).arg( m_filesize );
-    update.arg( tags, QString::number( id ) );
+    update = update.arg( tags, QString::number( id ) );
     m_collection->query( update );
 }
 
