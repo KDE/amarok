@@ -163,27 +163,25 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
                 item = item->parent();
             }
             Collection *collection = item->parentCollection();
-            if( collection->location()->isOrganizable() )
-            {
-                bool onlyOneCollection = true;
-                foreach( const QModelIndex &index, indices )
+            bool onlyOneCollection = true;
+            foreach( const QModelIndex &index, indices )
                 {
-                    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
-                    while( item->isDataItem() )
-                    {
-                        item = item->parent();
-                    }
-                    onlyOneCollection = item->parentCollection() == collection;
-                    if( !onlyOneCollection )
-                        break;
-                }
-
-                if( onlyOneCollection )
+                CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
+                while( item->isDataItem() )
                 {
-                    organizeAction = new QAction( i18n( "Organize Files" ), &menu );
-                    menu.addAction( organizeAction );
+                    item = item->parent();
                 }
+                onlyOneCollection = item->parentCollection() == collection;
+                if( !onlyOneCollection )
+                    break;
             }
+            CollectionLocation *collLoc = collection->location();
+            if( collLoc->isOrganizable() && onlyOneCollection )
+            {
+                organizeAction = new QAction( i18n( "Organize Files" ), &menu );
+                menu.addAction( organizeAction );
+            }
+            delete collLoc;
         }
 
         if( indices.count() == 1 )
