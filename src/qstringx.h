@@ -56,7 +56,7 @@ public:
     }
 
     // %something gets replaced by the value corresponding to key "something" in args
-    QString namedArgs( const QMap<QString, QString> args, bool opt=false ) const
+    QString namedArgs( const QMap<QString, QString> &args, bool opt=false ) const
     {
         QRegExp rxArg( "%[a-zA-Z0-9]+" );
 
@@ -85,7 +85,7 @@ public:
     // %something gets replaced by the value corresponding to key "something" in args,
     // however, if key "something" is not available,
     // then replace everything within surrounding { } by an empty string
-    QString namedOptArgs( const QMap<QString, QString> args ) const
+    QString namedOptArgs( const QMap<QString, QString> &args ) const
     {
         QRegExp rxOptArg( "\\{.*%[a-zA-Z0-9_]+.*\\}" );
         rxOptArg.setMinimal( true );

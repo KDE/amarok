@@ -148,20 +148,24 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     args["composer"] = cleanPath( track->composer()->prettyName() );
     args["year"] = cleanPath( track->year()->prettyName() );
     args["album"] = cleanPath( track->album()->prettyName() );
-    args["discnumber"] = QString::number( track->discNumber() );
+    if( track->discNumber() )
+    {
+        args["discnumber"] = QString::number( track->discNumber() );
+    }
     args["genre"] = cleanPath( track->genre()->prettyName() );
     args["comment"] = cleanPath( track->comment() );
     args["artist"] = artist;
     args["albumartist"] = albumartist;
-    args["initial"] = albumartist.mid( 0, 1 ).toUpper();
+    args["initial"] = albumartist.mid( 0, 1 ).toUpper();    //artists starting with The are already handled above
     args["filetype"] = track->type();
     args["rating"] = track->rating();
     args["filesize"] = track->filesize();
     args["length"] = track->length();
-    QString trackNum;
     if ( track->trackNumber() )
-        trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
-    args["track"] = trackNum;
+    {
+        QString trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
+        args["track"] = trackNum;
+    }
 
     Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );
