@@ -11,6 +11,7 @@
 #include "Amarok.h"
 #include "debug.h"
 #include "CollectionLocation.h"
+#include "CollectionManager.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
 #include "mediabrowser.h"
@@ -28,6 +29,7 @@
 #include "TheInstances.h"
 
 #include <QContextMenuEvent>
+#include <QHash>
 #include <QSet>
 
 #include <kconfig.h>
@@ -144,18 +146,11 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         menu.addAction( action );
     }
     
-    //if( index.isValid() && index.internalPointer()  )
-   /* if( !indices.isEmpty() )
+    QAction *organizeAction = 0;
+    QHash<QAction*, Collection*> copyDestination;
+    QHash<QAction*, Collection*> moveDestination;
+    if( !indices.isEmpty() )
     {
-        //CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-
-        KMenu menu;
-        QAction* editAction = new QAction( i18n( "Edit Track Information" ), &menu );
-        QAction* organizeAction = 0;    //set below if necessary
-        menu.addAction( m_loadAction );
-        menu.addAction( m_appendAction );
-        menu.addSeparator();
-        menu.addAction( editAction );
         {   //keep the scope of item minimal
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
             while( item->isDataItem() )
@@ -175,35 +170,46 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
                 if( !onlyOneCollection )
                     break;
             }
-            CollectionLocation *collLoc = collection->location();
-            if( collLoc->isOrganizable() && onlyOneCollection )
+            if( collection->isOrganizable() && onlyOneCollection )
             {
                 organizeAction = new QAction( i18n( "Organize Files" ), &menu );
                 menu.addAction( organizeAction );
             }
-            delete collLoc;
-        }
-
-        if( indices.count() == 1 )
-        {
-            if( indices.first().isValid() && indices.first().internalPointer() )
+            if( onlyOneCollection )
             {
-                Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
-                if( data )
+                QList<Collection*> writableCollections;
+                foreach( Collection *coll, CollectionManager::instance()->collections() )
                 {
-                    Meta::CustomActionsCapability *cac = data->as<Meta::CustomActionsCapability>();
-                    if( cac )
+                    if( coll->isWritable() && coll != collection )
                     {
-                        QList<QAction*> actions = cac->customActions();
-                        if( actions.count() )
-                            menu.addSeparator();
-                        foreach( QAction *action, actions )
-                            menu.addAction( action );
-                        delete cac;
+                        writableCollections.append( coll );
+                    }
+                }
+                if( !writableCollections.isEmpty() )
+                {
+                    KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
+                    foreach( Collection *coll, writableCollections )
+                    {
+                        QAction *action = new QAction( coll->prettyName(), copyMenu );
+                        copyMenu->addAction( action );
+                        copyDestination.insert( action, coll );
+                    }
+                    menu.addMenu( copyMenu );
+                    if( collection->isWritable() )
+                    {
+                        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
+                        foreach( Collection *coll, writableCollections )
+                        {
+                            QAction *action = new QAction( coll->prettyName(), moveMenu );
+                            moveMenu->addAction( action );
+                            moveDestination.insert( action, coll );
+                        }
+                        menu.addMenu( moveMenu );
                     }
                 }
             }
-        }*/
+        }
+    }
 
     
     QAction* result =  menu.exec( event->globalPos() );
@@ -221,9 +227,17 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
     {
         editTracks( items );
     }
-    else if( result == m_organizeAction )
+    else if( result == organizeAction )
     {
         organizeTracks( items );
+    }
+    else if( copyDestination.contains( result ) )
+    {
+        copyTracks( items, copyDestination[ result ], false );
+    }
+    else if( moveDestination.contains( result ) )
+    {
+        copyTracks( items, moveDestination[ result ], true );
     }
 
 }
@@ -488,6 +502,77 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 }
 
 void
+CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collection *destination, bool removeSources ) const
+{
+    if( !destination->isWritable() )
+    {
+        return;
+    }
+    //copied from organizeTracks. create a method for this somewhere
+    if( !items.count() )
+    {
+        return;
+    }
+    //find all selected parents in the list and ignore the rest
+    QSet<CollectionTreeItem*> parents;
+    foreach( CollectionTreeItem *item, items )
+    {
+        CollectionTreeItem *tmpItem = item;
+        while( tmpItem )
+        {
+            if( items.contains( tmpItem->parent() ) )
+            {
+                tmpItem = tmpItem->parent();
+            }
+            else
+            {
+                parents.insert( tmpItem );
+                break;
+            }
+        }
+    }
+    QList<QueryMaker*> queryMakers;
+    foreach( CollectionTreeItem *item, parents )
+    {
+        QueryMaker *qm = item->queryMaker();
+        CollectionTreeItem *tmp = item;
+        while( tmp->isDataItem() )
+        {
+            if ( tmp->data() )
+                qm->addMatch( tmp->data() );
+            else
+                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+            tmp = tmp->parent();
+        }
+        m_treeModel->addFilters( qm );
+        queryMakers.append( qm );
+    }
+    QueryMaker *qm = new MetaQueryMaker( queryMakers );
+    CollectionTreeItem *item = items.toList().first();
+    while( item->isDataItem() )
+    {
+        item = item->parent();
+    }
+    Collection *coll = item->parentCollection();
+    CollectionLocation *source = coll->location();
+    CollectionLocation *dest = destination->location();
+    if( removeSources )
+    {
+        if( !source->isWriteable() ) //error
+        {
+            delete dest;
+            delete source;
+            delete qm;
+        }
+        source->prepareMove( qm, dest );
+    }
+    else
+    {
+        source->prepareCopy( qm, dest );
+    }
+}
+
+void
 CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
 {
     //find all selected parents in the list and ignore the rest
@@ -555,7 +640,7 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
 
         actions.append( m_editAction );
 
-        {   //keep the scope of item minimal
+        /*{   //keep the scope of item minimal
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
             while( item->isDataItem() )
             {
@@ -584,7 +669,7 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
                     actions.append( m_organizeAction );
                 }
             }
-        }
+        }*/
 
         if( indices.count() == 1 )
         {

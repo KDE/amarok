@@ -74,6 +74,7 @@ class CollectionTreeView: public QTreeView
         void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode ) const;
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
+        void copyTracks( const QSet<CollectionTreeItem*> &items, Collection *destination, bool removeSources ) const;
         PopupDropper* createPopupDropper( QWidget* parent );
         PopupDropperActionList getActions( const QModelIndexList &indcies );
         
