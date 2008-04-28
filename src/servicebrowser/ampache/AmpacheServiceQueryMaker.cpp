@@ -271,6 +271,7 @@ void AmpacheServiceQueryMaker::fetchAlbums()
 
     if ( albums.count() > 0 ) {
         handleResult( albums );
+        emit queryDone();
     } else {
 
         QString urlString = "<SERVER>/server/xml.server.php?action=artist_albums&auth=<SESSION_ID>&filter=<FILTER>";
@@ -303,6 +304,7 @@ void AmpacheServiceQueryMaker::fetchTracks()
 
     if ( tracks.count() > 0 ) {
         handleResult( tracks );
+        emit queryDone();
     } else {
 
         QString urlString = "<SERVER>/server/xml.server.php?action=album_songs&auth=<SESSION_ID>&filter=<FILTER>";
