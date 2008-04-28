@@ -8,11 +8,14 @@
 #include "amarokconfig.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 #include "collection/BlockingQuery.h"
+#include "mountpointmanager.h"
 #include "qstringx.h"
 #include "atomicstring.h"
 #include "file/File.h"
 
 #include <KVBox>
+
+#include <QDir>
 
 OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *parent,  const char *name, bool modal,
         const QString &caption,
@@ -49,6 +52,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(const Meta::TrackList &tracks
     if ( tracks.size() > 0)
     {
         m_previewTrack = tracks[0];
+        m_allTracks = tracks;
     }
 
 
@@ -59,8 +63,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(const Meta::TrackList &tracks
 
     ui->setupUi(widget);
 
-    //ui->folderCombo->insertStringList( folders, 0 );
-    //ui->folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
+    QStringList folders = MountPointManager::instance()->collectionFolders();
+    ui->folderCombo->insertItems( 0, folders );
+    ui->folderCombo->setCurrentIndex( AmarokConfig::organizeDirectory() );
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
     ui->filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
     ui->initialCheck->setChecked( AmarokConfig::groupArtists() );
@@ -74,25 +79,34 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(const Meta::TrackList &tracks
     ui->regexpEdit->setText( AmarokConfig::replacementRegexp() );
     ui->replaceEdit->setText( AmarokConfig::replacementString() );
     connect( this, SIGNAL(buttonClicked(KDialog::ButtonCode)), this, SLOT(slotButtonClicked(KDialog::ButtonCode)));
+    connect( this, SIGNAL(updatePreview(QString)), ui->previewText, SLOT(setText(QString)));
     if( ui->customschemeCheck->isChecked())
         setDetailsWidgetVisible(true);
     else
         slotDetails();
     init();
-    show();
 }
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
 {
+    AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentIndex() );
     delete ui;
 }
 
-
-QString OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::TrackPtr track ) const
+QMap<Meta::TrackPtr, QString>
+OrganizeCollectionDialog::getDestinations()
 {
-    return "abc";
-    //FIXME: This code is directly copied from mediadevice/generic/genericmediadevice.cpp (with some modificatoins)
+    QString format = buildFormatString();
+    QMap<Meta::TrackPtr, QString> destinations;
+    foreach( const Meta::TrackPtr &track, m_allTracks )
+    {
+        destinations.insert( track, buildDestination( format, track ) );
+    }
+    return destinations;
+}
 
+QString OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::TrackPtr &track ) const
+{
     bool isCompilation = track->album()->isCompilation();
     QMap<QString, QString> args;
     QString artist = track->artist()->name();
@@ -123,6 +137,7 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     //these additional columns from MetaBundle were used before but haven't
     //been ported yet. Do they need to be?
     //Bpm,Directory,Bitrate,SampleRate,Mood
+    args["folder"] = ui->folderCombo->currentText();
     args["title"] = cleanPath( track->prettyName() );
     args["composer"] = cleanPath( track->composer()->prettyName() );
     args["year"] = cleanPath( track->year()->prettyName() );
@@ -201,7 +216,7 @@ QString OrganizeCollectionDialog::buildFormatString() const
     }
 
     if( ui->customschemeCheck->isChecked() )
-        format = ui->formatEdit->text();
+        format = QDir::fromNativeSeparators( ui->formatEdit->text() );
 
     return format;
 }
@@ -309,6 +324,7 @@ void OrganizeCollectionDialog::init()
 {
     ui->formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
             arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
+    preview( buildFormatString() );
 }
 
 

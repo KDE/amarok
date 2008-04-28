@@ -22,6 +22,7 @@
 #include "Meta.h"
 #include "MetaUtility.h"
 #include "mountpointmanager.h"
+#include "OrganizeCollectionDialog.h"
 #include "ScanManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
@@ -97,8 +98,37 @@ SqlCollectionLocation::remove( Meta::TrackPtr track )
 }
 
 void
-SqlCollectionLocation::copyUrlsToCollection( const KUrl::List &sources )
+SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
 {
+    DEBUG_BLOCK
+    OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks );
+    connect( dialog, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
+    connect( dialog, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
+    dialog->show();
+}
+
+void
+SqlCollectionLocation::slotDialogAccepted()
+{
+    DEBUG_BLOCK
+    sender()->deleteLater();
+    OrganizeCollectionDialog *dialog = qobject_cast<OrganizeCollectionDialog*>( sender() );
+    m_destinations = dialog->getDestinations();
+    slotShowDestinationDialogDone();
+}
+
+void
+SqlCollectionLocation::slotDialogRejected()
+{
+    DEBUG_BLOCK
+    sender()->deleteLater();
+    abort();
+}
+
+void
+SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
+{
+    DEBUG_BLOCK
     Q_UNUSED( sources );
     m_collection->scanManager()->setBlockScan( true );  //make sure the collection scanner does not run while we are coyping stuff
     //TODO
@@ -109,6 +139,7 @@ SqlCollectionLocation::copyUrlsToCollection( const KUrl::List &sources )
 void
 SqlCollectionLocation::insertTracks( const QMap<QString, Meta::TrackPtr > &trackMap )
 {
+    DEBUG_BLOCK
     QList<QVariantMap > metadata;
     const QStringList realUrls = trackMap.keys();
     foreach( const QString &url, realUrls )
@@ -127,6 +158,7 @@ SqlCollectionLocation::insertTracks( const QMap<QString, Meta::TrackPtr > &track
 void
 SqlCollectionLocation::insertStatistics( const QMap<QString, Meta::TrackPtr > &trackMap )
 {
+    DEBUG_BLOCK
     MountPointManager *mpm = MountPointManager::instance();
     foreach( const QString &url, trackMap.keys() )
     {

@@ -35,13 +35,15 @@ class OrganizeCollectionDialog : public KDialog
                                            QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel|Details );
 
     ~OrganizeCollectionDialog();
+
+    QMap<Meta::TrackPtr, QString> getDestinations();
     signals:
         void updatePreview(QString);
     public slots:
         void slotDetails();
         virtual void slotButtonClicked(KDialog::ButtonCode);
     private:
-        QString buildDestination( const QString &format, const Meta::TrackPtr track ) const;
+        QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;
         QString cleanPath( const QString &component ) const;
         QString buildFormatTip() const;
         QString buildFormatString() const;
@@ -54,6 +56,7 @@ class OrganizeCollectionDialog : public KDialog
         Ui::OrganizeCollectionDialogBase *ui;
         Meta::TrackPtr m_previewTrack;
         bool detailed;
+        Meta::TrackList m_allTracks;
 };
 
 #endif

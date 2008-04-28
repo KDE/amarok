@@ -37,7 +37,14 @@ class SqlCollectionLocation : public CollectionLocation
         virtual bool isWriteable() const;
         virtual bool isOrganizable() const;
         virtual bool remove( Meta::TrackPtr track );
-        virtual void copyUrlsToCollection( const KUrl::List &sources );
+
+    protected:
+        virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
+
+    private slots:
+        void slotDialogAccepted();
+        void slotDialogRejected();
 
     private:
 
@@ -45,6 +52,7 @@ class SqlCollectionLocation : public CollectionLocation
         void insertStatistics( const QMap<QString, Meta::TrackPtr > &trackMap );
 
         SqlCollection *m_collection;
+        QMap<Meta::TrackPtr, QString> m_destinations;
 };
 
 #endif
