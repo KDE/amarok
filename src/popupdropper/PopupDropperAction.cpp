@@ -52,6 +52,12 @@ PopupDropperAction::PopupDropperAction( QObject *parent )
 {
 }
 
+PopupDropperAction::PopupDropperAction( const QIcon & icon, const QString & text, QObject * parent )
+    : QAction( icon, text, parent )
+    , d( new PopupDropperActionPrivate )
+{
+}
+
 PopupDropperAction::PopupDropperAction( const QString &file, const QString &text, QObject *parent )
     : QAction( text, parent )
     , d( new PopupDropperActionPrivate )
@@ -59,15 +65,6 @@ PopupDropperAction::PopupDropperAction( const QString &file, const QString &text
     d->renderer = new QSvgRenderer( file, this );
     d->ownRenderer = true;
 }
-
-PopupDropperAction::PopupDropperAction( const QIcon & icon, const QString & text, QObject * parent )
-    : QAction( icon, text, parent )
-    , d( new PopupDropperActionPrivate )
-{
-    //d->renderer = new QSvgRenderer( file, this );
-    //d->ownRenderer = true;
-}
-
 
 PopupDropperAction::PopupDropperAction( const QString &file, const QIcon &icon, const QString &text, QObject *parent )
     : QAction( icon, text, parent )

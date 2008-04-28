@@ -58,8 +58,7 @@ public:
     void setElementId( const QString &id );
 
     //quick and dirty funtion for getting a PopupDropperAction from a QAction.
-    //no svg will be set... Should only be used as we transition to using PopupDropperAction
-    // throughout Amarok
+    //no svg will be set...should only be used to transition to using PopupDropperAction
     static PopupDropperAction * from( QAction * action );
 
 private:

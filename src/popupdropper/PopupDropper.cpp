@@ -204,6 +204,18 @@ bool PopupDropper::isHidden() const
     return d->view.isHidden();
 }
 
+void PopupDropper::clear()
+{
+    if( !d->view.isHidden() )
+        hide();
+    while( d->fadeTimer.state() == QTimeLine::Running )
+        QApplication::processEvents();  
+    d->itemCount = 0;
+    foreach( PopupDropperItem* item, d->pdiItems )
+        delete item;
+    d->pdiItems.clear();
+}
+
 bool PopupDropper::quitOnDragLeave() const
 {
     return d->view.quitOnDragLeave();
