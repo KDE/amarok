@@ -21,10 +21,12 @@
 
 #include "CollectionLocation.h"
 
+#include <QSet>
 #include <QMap>
 #include <QString>
 
 class SqlCollection;
+class KJob;
 
 class SqlCollectionLocation : public CollectionLocation
 {
@@ -36,7 +38,7 @@ class SqlCollectionLocation : public CollectionLocation
         virtual QString prettyLocation() const;
         virtual bool isWriteable() const;
         virtual bool isOrganizable() const;
-        virtual bool remove( Meta::TrackPtr track );
+        virtual bool remove( const Meta::TrackPtr &track );
 
     protected:
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
@@ -45,14 +47,24 @@ class SqlCollectionLocation : public CollectionLocation
     private slots:
         void slotDialogAccepted();
         void slotDialogRejected();
+        void slotJobFinished( KJob *job );
 
     private:
 
-        void insertTracks( const QMap<QString, Meta::TrackPtr > &trackMap );
-        void insertStatistics( const QMap<QString, Meta::TrackPtr > &trackMap );
+        void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap );
+        QMap<QString, uint> updatedMtime( const QStringList &urls );
+        void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap );
+        //called by the destination location if it detects that we are organizing the collection
+        //because the source does not need to remove the files, that was done by the destination
+        void movedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase );
 
         SqlCollection *m_collection;
         QMap<Meta::TrackPtr, QString> m_destinations;
+        bool m_removeSources;    //used by the destination to remember the value, needed in copyurlsToCollection
+        bool m_overwriteFiles;
+        QSet<KJob*> m_jobs;
+        QStringList m_ignoredDestinations;  //these tracks were not copied/moved because source and destiantion url were the same
+        QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;    //used in the source when organizing the collection
 };
 
 #endif

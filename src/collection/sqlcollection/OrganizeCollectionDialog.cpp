@@ -105,6 +105,12 @@ OrganizeCollectionDialog::getDestinations()
     return destinations;
 }
 
+bool
+OrganizeCollectionDialog::overwriteDestinations() const
+{
+    return ui->overwriteCheck->isChecked();
+}
+
 QString OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::TrackPtr &track ) const
 {
     bool isCompilation = track->album()->isCompilation();

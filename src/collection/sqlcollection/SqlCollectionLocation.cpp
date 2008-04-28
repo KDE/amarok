@@ -28,22 +28,31 @@
 #include "SqlCollection.h"
 #include "SqlMeta.h"
 
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
 
+#include <kjob.h>
 #include <KLocale>
 #include <KSharedPtr>
+#include <kio/job.h>
+#include <kio/jobclasses.h>
+
 
 using namespace Meta;
 
 SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
     : CollectionLocation()
     , m_collection( const_cast<SqlCollection*>( collection ) )
+    , m_removeSources( false )
+    , m_overwriteFiles( false )
 {
     //nothing to do
 }
 
 SqlCollectionLocation::~SqlCollectionLocation()
 {
+    DEBUG_BLOCK
     //nothing to do
 }
 
@@ -66,13 +75,22 @@ SqlCollectionLocation::isOrganizable() const
 }
 
 bool
-SqlCollectionLocation::remove( Meta::TrackPtr track )
+SqlCollectionLocation::remove( const Meta::TrackPtr &track )
 {
+    DEBUG_BLOCK
     KSharedPtr<SqlTrack> sqlTrack = KSharedPtr<SqlTrack>::dynamicCast( track );
     if( sqlTrack && sqlTrack->inCollection() && sqlTrack->collection()->collectionId() == m_collection->collectionId() )
     {
-        bool removed = QFile::remove( sqlTrack->playableUrl().path() );
-        if( removed )
+        bool removed;
+        if( m_tracksRemovedByDestination.contains( track ) )
+        {
+            removed = true;
+        }
+        else
+        {
+            removed = QFile::remove( sqlTrack->playableUrl().path() );
+        }
+        if( removed && ( !m_tracksRemovedByDestination.contains( track ) || m_tracksRemovedByDestination[ track ] ) )
         {
             
             QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
@@ -101,6 +119,7 @@ void
 SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
 {
     DEBUG_BLOCK
+    m_removeSources = removeSources;
     OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks );
     connect( dialog, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( dialog, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
@@ -114,6 +133,7 @@ SqlCollectionLocation::slotDialogAccepted()
     sender()->deleteLater();
     OrganizeCollectionDialog *dialog = qobject_cast<OrganizeCollectionDialog*>( sender() );
     m_destinations = dialog->getDestinations();
+    m_overwriteFiles = dialog->overwriteDestinations();
     slotShowDestinationDialogDone();
 }
 
@@ -126,42 +146,165 @@ SqlCollectionLocation::slotDialogRejected()
 }
 
 void
+SqlCollectionLocation::slotJobFinished( KJob *job )
+{
+    DEBUG_BLOCK
+    m_jobs.remove( job );
+    if( job->error() )
+    {
+        //TODO: proper error handling
+        warning() << "An error occured when copying a file: " << job->errorString();
+    }
+    job->deleteLater();
+    if( m_jobs.isEmpty() )
+    {
+        insertTracks( m_destinations );
+        insertStatistics( m_destinations );
+        m_collection->scanManager()->setBlockScan( false );
+        slotCopyOperationFinished();
+    }
+}
+
+void
 SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
     DEBUG_BLOCK
-    Q_UNUSED( sources );
     m_collection->scanManager()->setBlockScan( true );  //make sure the collection scanner does not run while we are coyping stuff
-    //TODO
-    m_collection->scanManager()->setBlockScan( false );
-    slotCopyOperationFinished();
+    //use a move instead of copy operation if we are actually organizing files
+    //which means that both collectionlocations represent the same collection
+    SqlCollectionLocation *sourceLocation = 0;
+    if( m_removeSources && source()->collection() == collection() )
+    {
+        sourceLocation = qobject_cast<SqlCollectionLocation*>( source() );
+    }
+    foreach( const Meta::TrackPtr &track, sources.keys() )
+    {
+        KIO::FileCopyJob *job;
+        KUrl dest( m_destinations[ track ] );
+        debug() << "copying from " << sources[ track ] << " to " << m_destinations[ track ];
+        KIO::JobFlags flags = KIO::HideProgressInfo;
+        if( m_overwriteFiles )
+        {
+            flags &= KIO::Overwrite;
+        }
+        QFileInfo info( m_destinations[ track ] );
+        QDir dir = info.dir();
+        if( !dir.exists() )
+        {
+            if( !dir.mkpath( "." ) )
+            {
+                warning() << "Could not create directory " << dir;
+                continue;
+            }
+        }
+        if( sourceLocation )
+        {
+            //we are organizing, so use file_move and check if source and dest are the same
+            if( sources[ track ] != dest )
+            {
+                job = KIO::file_move( sources[ track ], dest, -1, flags );
+                sourceLocation->movedByDestination( track, true );  //remove old location from tracks table
+            }
+            else
+            {
+                m_ignoredDestinations.append( m_destinations[ track ] );
+                sourceLocation->movedByDestination( track, false ); //no changes, so leave the database alone
+            }
+        }
+        else
+        {
+            job = KIO::file_copy( sources[ track ], dest, -1, flags );
+        }
+        connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
+        m_jobs.insert( job );
+        job->start();
+    }
 }
 
 void
-SqlCollectionLocation::insertTracks( const QMap<QString, Meta::TrackPtr > &trackMap )
+SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap )
 {
     DEBUG_BLOCK
     QList<QVariantMap > metadata;
-    const QStringList realUrls = trackMap.keys();
-    foreach( const QString &url, realUrls )
+    QStringList urls;
+    foreach( const Meta::TrackPtr &track, trackMap.keys() )
     {
-        QVariantMap trackData = Meta::Field::mapFromTrack( trackMap[ url ].data() );
-        trackData.insert( Meta::Field::URL, url );  //store the new url of the file
+        if( m_ignoredDestinations.contains( trackMap[ track ], Qt::CaseSensitive ) )
+        {
+            continue;
+        }
+        QVariantMap trackData = Meta::Field::mapFromTrack( track.data() );
+        trackData.insert( Meta::Field::URL, trackMap[ track ] );  //store the new url of the file
         metadata.append( trackData );
+        urls.append( trackMap[ track ] );
     }
     ScanResultProcessor processor( m_collection );
     processor.setScanType( ScanResultProcessor::IncrementalScan );
-    //TODO: get the new mtime of all updated/created directories
-    //TODO: insert all tracks using ScanResultProcessor::processDirectory
+    QMap<QString, uint> mtime = updatedMtime( urls );
+    foreach( const QString &dir, mtime.keys() )
+    {
+        processor.addDirectory( dir, mtime[ dir ] );
+    }
+    if( !metadata.isEmpty() )
+    {
+        QFileInfo info( metadata.first().value( Meta::Field::URL ).toString() );
+        QString currentDir = info.dir().absolutePath();
+        QList<QVariantMap > currentMetadata;
+        foreach( const QVariantMap &map, metadata )
+        {
+            debug() << "processing file " << map.value( Meta::Field::URL );
+            QFileInfo info( map.value( Meta::Field::URL ).toString() );
+            QString dir = info.dir().absolutePath();
+            if( dir != currentDir )
+            {
+                processor.processDirectory( currentMetadata );
+                currentDir = dir;
+                currentMetadata.clear();
+            }
+            currentMetadata.append( map );
+        }
+        if( !currentMetadata.isEmpty() )
+        {
+            processor.processDirectory( currentMetadata );
+        }
+    }
     processor.commit();
 }
 
+QMap<QString, uint>
+SqlCollectionLocation::updatedMtime( const QStringList &urls )
+{
+    DEBUG_BLOCK
+    QMap<QString, uint> mtime;
+    foreach( const QString &url, urls )
+    {
+        QFileInfo fileInfo( url );
+        QDir parentDir = fileInfo.dir();
+        while( !mtime.contains( parentDir.absolutePath() ) && m_collection->isDirInCollection( parentDir.absolutePath() ) )
+        {
+            QFileInfo dir( parentDir.absolutePath() );
+            mtime.insert( parentDir.absolutePath(), dir.lastModified().toTime_t() );
+            if( !parentDir.cdUp() )
+            {
+                break;  //we arrived at the root of the filesystem
+            }
+        }
+    }
+    return mtime;
+}
+
 void
-SqlCollectionLocation::insertStatistics( const QMap<QString, Meta::TrackPtr > &trackMap )
+SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap )
 {
     DEBUG_BLOCK
     MountPointManager *mpm = MountPointManager::instance();
-    foreach( const QString &url, trackMap.keys() )
+    foreach( const Meta::TrackPtr &track, trackMap.keys() )
     {
+        if( m_ignoredDestinations.contains( trackMap[ track ], Qt::CaseSensitive ) )
+        {
+            continue;
+        }
+        QString url = trackMap[ track ];
         int deviceid = mpm->getIdForUrl( url );
         QString rpath = mpm->getRelativePath( deviceid, url );
         QString sql = QString( "SELECT COUNT(*) FROM statistics LEFT JOIN urls ON statistics.url = urls.id "
@@ -178,11 +321,16 @@ SqlCollectionLocation::insertStatistics( const QMap<QString, Meta::TrackPtr > &t
         //the following sql was copied from SqlMeta.cpp
         QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
         QString data = "%1,%2,%3,%4,%5,%6";
-        Meta::TrackPtr track = trackMap[ url ];
         data = data.arg( id, QString::number( track->rating() ), QString::number( track->score() ) );
         data = data.arg( QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ) );
         m_collection->insert( insert.arg( data ), "statistics" );
     }
+}
+
+void
+SqlCollectionLocation::movedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase )
+{
+    m_tracksRemovedByDestination.insert( track, removeFromDatabase );
 }
 
 #include "SqlCollectionLocation.moc"

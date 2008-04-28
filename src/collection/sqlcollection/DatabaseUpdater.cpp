@@ -158,7 +158,7 @@ DatabaseUpdater::prepareTemporaryTables()
     m_collection->query( "INSERT INTO albums_temp SELECT * FROM albums;" );
     m_collection->query( "INSERT INTO genres_temp SELECT * FROM genres;" );
     m_collection->query( "INSERT INTO composers_temp SELECT * FROM composers;" );
-    m_collection->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
+    m_collection->query( "INSERT INTO tracks_temp SELECT * FROM tracks;" );
 }
 
 void
@@ -271,8 +271,14 @@ DatabaseUpdater::copyToPermanentTables()
     m_collection->query( "INSERT INTO directories SELECT * FROM directories_temp;" );
 
     //copy tracks last so that we don't get problems with foreign key constraints
-    //m_collection->query( "DELETE FROM tracks;" );
-    m_collection->insert( "INSERT INTO tracks SELECT * FROM tracks_temp;", QString() );
+    QStringList trackIdList = m_collection->query( "SELECT tracks.id FROM tracks;" );
+    QString trackIds = "-1";
+    foreach( const QString &trackId, trackIdList )
+    {
+        trackIds += ',';
+        trackIds += trackId;
+    }
+    m_collection->insert( QString( "INSERT INTO tracks SELECT * FROM tracks_temp WHERE tracks_temp.id NOT IN (%1);" ).arg( trackIds ), QString() );
 
     m_collection->sendChangedSignal();
 }

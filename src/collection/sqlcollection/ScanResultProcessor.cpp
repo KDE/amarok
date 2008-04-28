@@ -101,6 +101,7 @@ ScanResultProcessor::rollback()
 void
 ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
 {
+    setupDatabase();
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
     //if more than 60 files are in the dir, use the artist of each track as albumartist

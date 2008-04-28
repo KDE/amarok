@@ -37,6 +37,7 @@ class OrganizeCollectionDialog : public KDialog
     ~OrganizeCollectionDialog();
 
     QMap<Meta::TrackPtr, QString> getDestinations();
+    bool overwriteDestinations() const;
     signals:
         void updatePreview(QString);
     public slots:
