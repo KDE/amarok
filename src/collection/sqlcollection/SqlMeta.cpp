@@ -32,6 +32,7 @@
 #include "servicebrowser/lastfm/SimilarArtistsAction.h"
 #include "SqlRegistry.h"
 #include "SqlCollection.h"
+#include "popupdropper/PopupDropperAction.h"
 
 #include "mountpointmanager.h"
 
@@ -668,7 +669,7 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
 
         case Meta::Capability::CustomActions:
         {
-            QList<QAction*> actions;
+            QList<PopupDropperAction*> actions;
             //TODO These actions will hang around until m_collection is destructed.
             // Find a better parent to avoid this memory leak.
             actions.append( new CopyToDeviceAction( m_collection, this ) );
@@ -791,7 +792,7 @@ SqlArtist::asCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::CustomActions:
         {
-            QList<QAction*> actions;
+            QList<PopupDropperAction *> actions;
             actions.append( new CopyToDeviceAction( m_collection, this ) );
             actions.append( new SimilarArtistsAction( m_collection, this ) );
             return new CustomActionsCapability( actions );
@@ -810,12 +811,12 @@ SqlArtist::addToQueryResult( QueryBuilder &qb ) {
 
 //---------------Album compilation management actions-----
 
-class CompilationAction : public KAction
+class CompilationAction : public PopupDropperAction
 {
     Q_OBJECT
     public:
         CompilationAction( QObject* parent, SqlAlbum *album )
-            : KAction( parent )
+            : PopupDropperAction( parent )
             , m_album( album )
             , m_isCompilation( album->isCompilation() )
             {
@@ -1085,7 +1086,7 @@ SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::CustomActions:
         {
-            QList<QAction*> actions;
+            QList<PopupDropperAction*> actions;
             actions.append( new CopyToDeviceAction( m_collection, this ) );
             actions.append( new CompilationAction( m_collection, this ) );
             actions.append( new FetchCoverAction( m_collection, this ) );

@@ -23,6 +23,8 @@
 
 #include "JamendoService.h"
 
+#include "popupdropper/PopupDropperAction.h"
+
 #include "debug.h"
 #include <KStandardDirs>
 
@@ -118,13 +120,13 @@ JamendoTrack::JamendoTrack( const QStringList & resultRow )
 {
 }
 
-QList< QAction * > Meta::JamendoTrack::customActions()
+QList< PopupDropperAction * > Meta::JamendoTrack::customActions()
 {
     DEBUG_BLOCK
-    QList< QAction * > actions;
+            QList< PopupDropperAction * > actions;
 
     if ( !m_downloadCustomAction ) {
-        m_downloadCustomAction = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
+        m_downloadCustomAction = new PopupDropperAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
         QObject::connect( m_downloadCustomAction, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
     }
@@ -133,13 +135,13 @@ QList< QAction * > Meta::JamendoTrack::customActions()
     return actions;
 }
 
-QList< QAction * > Meta::JamendoTrack::currentTrackActions()
+QList< PopupDropperAction * > Meta::JamendoTrack::currentTrackActions()
 {
     DEBUG_BLOCK
-    QList< QAction * > actions;
+            QList< PopupDropperAction * > actions;
 
     if ( !m_downloadCurrentTrackAction ) {
-        m_downloadCurrentTrackAction = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
+        m_downloadCurrentTrackAction = new PopupDropperAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
         QObject::connect( m_downloadCurrentTrackAction, SIGNAL( activated() ), jAlbum->service(), SLOT( downloadCurrentTrackAlbum() ) );
     }
@@ -333,11 +335,11 @@ JamendoService * Meta::JamendoAlbum::service()
 
 
 
-QList< QAction * > Meta::JamendoAlbum::customActions()
+QList< PopupDropperAction * > Meta::JamendoAlbum::customActions()
 {
     DEBUG_BLOCK
-            QList< QAction * > actions;
-    QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&download" ), 0 );
+    QList< PopupDropperAction * > actions;
+    PopupDropperAction * action = new PopupDropperAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&download" ), 0 );
 
     QObject::connect( action, SIGNAL( activated() ) , m_service, SLOT( download() ) );
 

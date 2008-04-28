@@ -70,7 +70,7 @@ public:
     virtual void setCoverUrl( const QString &coverURL );
     virtual QString coverUrl() const;
 
-    virtual QList< QAction *> customActions();
+    virtual QList< PopupDropperAction *> customActions();
 
 
 };

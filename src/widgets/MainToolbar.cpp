@@ -29,6 +29,7 @@
 #include "debug.h"
 #include "EngineController.h"
 #include "meta/CurrentTrackActionsCapability.h"
+#include "popupdropper/PopupDropperAction.h"
 
 #include <KAction>
 #include <KApplication>
@@ -212,7 +213,7 @@ void MainToolbar::handleAddActions()
 
             m_renderAddControls = true;
 
-            foreach( QAction *action, m_additionalActions )
+            foreach( PopupDropperAction *action, m_additionalActions )
                 m_addControlsToolbar->addAction( action );
 
             m_addControlsToolbar->adjustSize();

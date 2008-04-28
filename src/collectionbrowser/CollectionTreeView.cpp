@@ -42,6 +42,8 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_pd( 0 )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
+    , m_editAction( 0 )
+    , m_organizeAction( 0 )
 {
     setRootIsDecorated( true );
     setSortingEnabled( true );
@@ -55,12 +57,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     m_treeModel = 0;
     m_filterModel = 0;
-
-    m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                                     "append_playlist_xlarge", KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), this );
-    m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                                     "load_playlist_xlarge", KIcon("file_open" ), 
-                                     i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
 }
@@ -139,8 +135,17 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         indices = tmp;
     }
 
+    PopupDropperActionList actions = getActions( indices );
+
+    KMenu menu;
+
+    foreach( PopupDropperAction * action, actions ) {
+        debug() << "adding: " << action->text();
+        menu.addAction( action );
+    }
+    
     //if( index.isValid() && index.internalPointer()  )
-    if( !indices.isEmpty() )
+   /* if( !indices.isEmpty() )
     {
         //CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 
@@ -200,29 +205,29 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
                     }
                 }
             }
-        }
-        QAction* result =  menu.exec( event->globalPos() );
-        QSet<CollectionTreeItem*> items;
-        foreach( const QModelIndex &index, indices )
-        {
-            if( index.isValid() && index.internalPointer() )
-                items.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
-        }
-        if( result == dynamic_cast<QAction*>(m_loadAction) )
-            playChildTracks( items, Playlist::Replace );
-        else if( result == dynamic_cast<QAction*>(m_appendAction) )
-            playChildTracks( items, Playlist::Append );
-        else if( result == editAction )
-        {
-            editTracks( items );
-        }
-        else if( result == organizeAction )
-        {
-            organizeTracks( items );
-        }
+        }*/
+
+    
+    QAction* result =  menu.exec( event->globalPos() );
+    QSet<CollectionTreeItem*> items;
+    foreach( const QModelIndex &index, indices )
+    {
+        if( index.isValid() && index.internalPointer() )
+            items.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
     }
-    else
-        debug() << "invalid index or null internalPointer";
+    if( result == dynamic_cast<QAction*>(m_loadAction) )
+        playChildTracks( items, Playlist::Replace );
+    else if( result == dynamic_cast<QAction*>(m_appendAction) )
+        playChildTracks( items, Playlist::Append );
+    else if( result == m_editAction )
+    {
+        editTracks( items );
+    }
+    else if( result == m_organizeAction )
+    {
+        organizeTracks( items );
+    }
+
 }
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
@@ -259,9 +264,40 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
     // TODO port....
     if( !m_pd )
         m_pd = createPopupDropper( Context::ContextView::self() );
+    else {
+        //we need either a new one or to lear the old one as we keep changing items
+        delete m_pd;
+        m_pd = createPopupDropper( Context::ContextView::self() );
+    }
 
     if( m_pd && m_pd->isValid() && m_pd->isHidden() )
     {
+
+        QModelIndexList indices = selectedIndexes();
+        if( m_filterModel )
+        {
+            QModelIndexList tmp;
+            foreach( const QModelIndex &idx, indices )
+            {
+                tmp.append( m_filterModel->mapToSource( idx ) );
+            }
+            indices = tmp;
+        }
+        
+        PopupDropperActionList actions = getActions( indices );
+
+        QFont font;
+        font.setPointSize( 16 );
+        font.setBold( true );
+
+        foreach( PopupDropperAction * action, actions ) {
+            
+            PopupDropperItem* pdi = new PopupDropperItem();
+            pdi->setAction( action );
+            pdi->setFont( font );
+            m_pd->addItem( pdi, false );
+        }
+
         //m_pd->show();
     }
 
@@ -291,21 +327,6 @@ PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
     windowColor.setAlpha( 128 );
     QColor textColor( Qt::white );
     pd->setColors( windowColor, textColor );
-
-    QFont font;
-    font.setPointSize( 16 );
-    font.setBold( true );
-
-    PopupDropperItem* pdi = new PopupDropperItem();
-    pdi->setAction( m_appendAction );
-    pdi->setFont( font );
-    pd->addItem( pdi, false );
-    connect( pdi, SIGNAL( dropEvent(QDropEvent*) ), Playlist::GraphicsView::instance(), SLOT( dropEvent(QDropEvent*) ) );
-
-    pdi = new PopupDropperItem();
-    pdi->setAction( m_loadAction );
-    pdi->setFont( font );
-    pd->addItem( pdi, false );
 
     return pd;
 }
@@ -520,6 +541,90 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
 void CollectionTreeView::slotFilterNow()
 {
     m_treeModel->slotFilter();
+}
+
+PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & indices )
+{
+    PopupDropperActionList actions;
+    
+    if( !indices.isEmpty() )
+    {
+
+        if ( m_appendAction == 0 )
+            m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append_playlist_xlarge", KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), this );
+
+        actions.append( m_appendAction );
+
+        if ( m_loadAction == 0 )
+            m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("file_open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+
+        actions.append( m_loadAction );
+
+        if ( m_editAction == 0 )
+            m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("file_open" ), i18n( "&Edit Track Information" ), this );
+
+        actions.append( m_editAction );
+
+        {   //keep the scope of item minimal
+            CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
+            while( item->isDataItem() )
+            {
+                item = item->parent();
+            }
+            Collection *collection = item->parentCollection();
+            if( collection->location()->isOrganizable() )
+            {
+                bool onlyOneCollection = true;
+                foreach( const QModelIndex &index, indices )
+                {
+                    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
+                    while( item->isDataItem() )
+                    {
+                        item = item->parent();
+                    }
+                    onlyOneCollection = item->parentCollection() == collection;
+                    if( !onlyOneCollection )
+                        break;
+                }
+
+                if( onlyOneCollection )
+                {
+                    if ( m_organizeAction == 0 )
+                        m_organizeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("file_open" ), i18nc( "Organize Files", "Organize Files" ), this );
+                    actions.append( m_organizeAction );
+                }
+            }
+        }
+
+        if( indices.count() == 1 )
+        {
+            if( indices.first().isValid() && indices.first().internalPointer() )
+            {
+                Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
+                if( data )
+                {
+                    Meta::CustomActionsCapability *cac = data->as<Meta::CustomActionsCapability>();
+                    if( cac )
+                    {
+                        PopupDropperActionList cActions = cac->customActions();
+                        
+                        foreach( PopupDropperAction *action, cActions ) {
+
+                            actions.append( action );
+                            debug() << "Got custom action: " << action->text();
+                        }
+                        delete cac;
+                    }
+                }
+            }
+        }
+    }
+
+    else
+        debug() << "invalid index or null internalPointer";
+
+    return actions;
+    
 }
 
 #include "CollectionTreeView.moc"

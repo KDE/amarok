@@ -20,13 +20,13 @@
 #ifndef LASTFMSIMILARARTISTSACTION_H
 #define LASTFMSIMILARARTISTSACTION_H
 
-#include <QAction>
+#include "popupdropper/PopupDropperAction.h"
 
 #include "amarok_export.h"
 #include "meta/Meta.h"
 
 
-class AMAROK_EXPORT SimilarArtistsAction : public QAction
+class AMAROK_EXPORT SimilarArtistsAction : public PopupDropperAction
 {
     Q_OBJECT
 public:

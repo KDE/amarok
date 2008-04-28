@@ -26,6 +26,7 @@
 #include <config-amarok.h>
 #include "PixmapViewer.h"
 #include "playlist/PlaylistModel.h"
+#include "popupdropper/PopupDropperAction.h"
 
 #include "TheInstances.h"
 
@@ -837,10 +838,10 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
             Meta::CustomActionsCapability *cac = album->as<Meta::CustomActionsCapability>();
             if( cac )
             {
-                QList<QAction *> actions = cac->customActions();
+                QList<PopupDropperAction *> actions = cac->customActions();
 
                 menu.addSeparator();
-                foreach( QAction *action, actions )
+                foreach( PopupDropperAction *action, actions )
                     menu.addAction( action );
             }
         }

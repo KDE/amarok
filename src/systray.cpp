@@ -19,6 +19,7 @@
 #include "meta/CurrentTrackActionsCapability.h"
 #include "TheInstances.h"
 #include "TrackTooltip.h"
+#include "popupdropper/PopupDropperAction.h"
 
 #include <KAction>
 #include <KApplication>
@@ -353,12 +354,12 @@ void Amarok::TrayIcon::setupMenu()
 
             m_extraActions = cac->customActions();
 
-            if ( contextMenu()->actions().size() < 5 )
-                m_extraActions.append( contextMenu()->addSeparator() );
+            //if ( contextMenu()->actions().size() < 5 )
+                //m_extraActions.append( contextMenu()->addSeparator() );
 
             foreach( QAction *action, m_extraActions )
                 contextMenu()->addAction( action );
-            m_extraActions.append( contextMenu()->addSeparator() );
+            //m_extraActions.append( contextMenu()->addSeparator() );
 
             //readd
             contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );

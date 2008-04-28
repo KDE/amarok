@@ -20,6 +20,8 @@
 #ifndef POPUPDROPPERACTION_H
 #define POPUPDROPPERACTION_H
 
+#include "amarok_export.h"
+
 #include <QAction>
 #include <QIcon>
 #include <QString>
@@ -29,7 +31,7 @@ class PopupDropperActionPrivate;
 
 // A QAction with support for SVGs
 
-class PopupDropperAction : public QAction
+class AMAROK_EXPORT PopupDropperAction : public QAction
 {
     Q_OBJECT
 
@@ -40,6 +42,7 @@ public:
     PopupDropperAction( QObject *parent );
     PopupDropperAction( const QString &file, const QString &text, QObject *parent );
     PopupDropperAction( const QString &file, const QIcon &icon, const QString &text, QObject *parent );
+    PopupDropperAction( const QIcon &icon, const QString &text, QObject *parent );
     PopupDropperAction( const QByteArray &contents, const QString &text, QObject *parent );
     PopupDropperAction( const QByteArray &contents, const QIcon &icon, const QString &text, QObject *parent );
     PopupDropperAction( QSvgRenderer* renderer, const QString &text, QObject *parent );
@@ -53,6 +56,11 @@ public:
     void setRenderer( QSvgRenderer *renderer );
     QString elementId() const;
     void setElementId( const QString &id );
+
+    //quick and dirty funtion for getting a PopupDropperAction from a QAction.
+    //no svg will be set... Should only be used as we transition to using PopupDropperAction
+    // throughout Amarok
+    static PopupDropperAction * from( QAction * action );
 
 private:
     friend class PopupDropperActionPrivate;

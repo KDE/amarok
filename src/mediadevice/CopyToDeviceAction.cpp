@@ -27,7 +27,7 @@
 
 
 CopyToDeviceAction::CopyToDeviceAction( QObject *parent, Meta::Track *track )
-    : QAction( parent )
+    : PopupDropperAction( parent )
     , m_tracks()
 {
     init();
@@ -38,7 +38,7 @@ CopyToDeviceAction::CopyToDeviceAction( QObject *parent, Meta::Track *track )
 }
 
 CopyToDeviceAction::CopyToDeviceAction( QObject *parent, Meta::Album *album )
-    : QAction( parent )
+    : PopupDropperAction( parent )
     , m_tracks( album->tracks() )
 {
     init();
@@ -47,7 +47,7 @@ CopyToDeviceAction::CopyToDeviceAction( QObject *parent, Meta::Album *album )
 }
 
 CopyToDeviceAction::CopyToDeviceAction( QObject *parent, Meta::Artist *artist )
-    : QAction( parent )
+    : PopupDropperAction( parent )
     , m_tracks( artist->tracks() )
 {
     init();

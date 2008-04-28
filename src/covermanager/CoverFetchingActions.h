@@ -19,7 +19,7 @@
 #ifndef COVERFETCHINGACTIONS_H
 #define COVERFETCHINGACTIONS_H
 
-#include <QAction>
+#include "popupdropper/PopupDropperAction.h"
 
 #include "Meta.h"
 
@@ -29,18 +29,18 @@
  * @author Seb Ruiz
  */
 
-class AMAROK_EXPORT BaseCoverAction : public QAction
+class AMAROK_EXPORT BaseCoverAction : public PopupDropperAction
 {
     Q_OBJECT
     public:
         BaseCoverAction( QObject *parent, Meta::Album *album )
-            : QAction( parent )
+            : PopupDropperAction( parent )
         {
             m_albums.append( KSharedPtr<Meta::Album>(album) );
             init();
         }
         BaseCoverAction( QObject *parent, Meta::AlbumList albums )
-            : QAction( parent )
+            : PopupDropperAction( parent )
         {
             m_albums = albums;
             init();

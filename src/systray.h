@@ -20,6 +20,8 @@ class QEvent;
 
 class App;
 
+class PopupDropperAction;
+
 namespace Amarok {
 
 class TrayIcon : public KSystemTrayIcon, public EngineObserver
@@ -53,7 +55,7 @@ private:
     QPixmap *overlay;   // the current overlay (may be NULL)
     int blinkTimerID;   // timer ID returned by QObject::startTimer()
     bool overlayVisible;// used for blinking / hiding overlay
-    QList<QAction*> m_extraActions;
+    QList<PopupDropperAction *> m_extraActions;
 };
 
 }

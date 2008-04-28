@@ -54,7 +54,7 @@ public:
     virtual QPixmap emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-default.png" );  }
     virtual bool hasSourceInfo() const { return false; }
 
-    virtual QList< QAction *> currentTrackActions();
+    virtual QList< PopupDropperAction *> currentTrackActions();
 
 private:
     ServiceBase * m_service;

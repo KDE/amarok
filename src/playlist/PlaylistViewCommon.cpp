@@ -25,6 +25,7 @@
 #include "PlaylistModel.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/CurrentTrackActionsCapability.h"
+#include "popupdropper/PopupDropperAction.h"
 
 #include <QObject>
 #include <QModelIndex>
@@ -59,10 +60,10 @@ void Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index,
             Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
             if( cac )
             {
-                QList<QAction *> actions = cac->customActions();
+                QList<PopupDropperAction *> actions = cac->customActions();
 
                 menu->addSeparator();
-                foreach( QAction *action, actions )
+                foreach( PopupDropperAction *action, actions )
                     menu->addAction( action );
             }
         }
@@ -76,10 +77,10 @@ void Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index,
             Meta::CustomActionsCapability *cac = album->as<Meta::CustomActionsCapability>();
             if( cac )
             {
-                QList<QAction *> actions = cac->customActions();
+                QList<PopupDropperAction *> actions = cac->customActions();
 
                 menu->addSeparator();
-                foreach( QAction *action, actions )
+                foreach( PopupDropperAction *action, actions )
                     menu->addAction( action );
             }
         }

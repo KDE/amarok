@@ -20,6 +20,7 @@
 #include "ServiceCollectionTreeView.h"
 
 #include "meta/CustomActionsCapability.h"
+#include "popupdropper/PopupDropperAction.h"
 
 #include <KMenu>
 
@@ -72,10 +73,10 @@ void ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
                         Meta::CustomActionsCapability *cac = data->as<Meta::CustomActionsCapability>();
                         if( cac )
                         {
-                            QList<QAction*> actions = cac->customActions();
+                            QList<PopupDropperAction*> actions = cac->customActions();
                             if( actions.count() )
                                 menu.addSeparator();
-                            foreach( QAction *action, actions )
+                            foreach( PopupDropperAction *action, actions )
                                 menu.addAction( action );
                             delete cac;
                         }

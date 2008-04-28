@@ -23,7 +23,7 @@
 #include "TheInstances.h"
 
 SimilarArtistsAction::SimilarArtistsAction( QObject *parent, Meta::Artist *artist)
-    : QAction( parent )
+    : PopupDropperAction( parent )
     , m_artist( artist )
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );

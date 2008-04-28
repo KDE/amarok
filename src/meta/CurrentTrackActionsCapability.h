@@ -35,7 +35,7 @@ namespace Meta {
         Q_OBJECT
         public:
             CurrentTrackActionsCapability();
-            CurrentTrackActionsCapability( const QList< QAction* > &actions );
+            CurrentTrackActionsCapability( const QList< PopupDropperAction * > &actions );
 
             static Type capabilityInterfaceType() { return Meta::Capability::CurrentTrackActions; }
     };

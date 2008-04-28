@@ -22,7 +22,7 @@
 #include "ServiceBrowser.h"
 
 ShowInServiceAction::ShowInServiceAction( ServiceBase * service, Meta::ServiceTrack *track )
-    : QAction( service )
+    : PopupDropperAction( service )
     , m_track( track )
     , m_service( service )
 {

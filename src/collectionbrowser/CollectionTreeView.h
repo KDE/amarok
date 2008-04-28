@@ -24,6 +24,9 @@ class CollectionTreeItemModelBase;
 class PopupDropper;
 class PopupDropperAction;
 
+
+typedef QList<PopupDropperAction *> PopupDropperActionList;
+
 class CollectionTreeView: public QTreeView
 {
         Q_OBJECT
@@ -72,6 +75,8 @@ class CollectionTreeView: public QTreeView
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
         PopupDropper* createPopupDropper( QWidget* parent );
+        PopupDropperActionList getActions( const QModelIndexList &indcies );
+        
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModelBase *m_treeModel;
         QTimer m_filterTimer;
@@ -81,6 +86,8 @@ class CollectionTreeView: public QTreeView
         PopupDropper* m_pd;
         PopupDropperAction* m_appendAction;
         PopupDropperAction* m_loadAction;
+        PopupDropperAction* m_editAction;
+        PopupDropperAction* m_organizeAction;
 
     signals:
         void itemSelected( CollectionTreeItem * item );

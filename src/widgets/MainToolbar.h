@@ -27,6 +27,8 @@
 
 #include <KHBox>
 
+class PopupDropperAction;
+
 /**
 A KHBox based toolbar with a nice svg background and takes care of adding any additional controls needed by individual tracks
 
@@ -61,7 +63,7 @@ private:
     bool m_renderAddControls;
     int m_addActionsOffsetX;
 
-    QList<QAction *> m_additionalActions;
+    QList<PopupDropperAction *> m_additionalActions;
 };
 
 #endif

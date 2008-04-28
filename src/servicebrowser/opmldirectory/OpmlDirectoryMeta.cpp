@@ -57,10 +57,10 @@ OpmlDirectoryFeed::OpmlDirectoryFeed( const QStringList & resultRow )
 {
 }
 
-QList< QAction * > Meta::OpmlDirectoryFeed::customActions()
+QList< PopupDropperAction * > Meta::OpmlDirectoryFeed::customActions()
 {
     DEBUG_BLOCK
-    QList< QAction * > actions;
+    QList< PopupDropperAction * > actions;
    /* QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
 
     JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );

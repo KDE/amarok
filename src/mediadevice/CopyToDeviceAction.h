@@ -19,7 +19,7 @@
 #ifndef COPYTODEVICEACTION_H
 #define COPYTODEVICEACTION_H
 
-#include <QAction>
+#include "popupdropper/PopupDropperAction.h"
 
 #include "Meta.h"
 
@@ -28,7 +28,7 @@
  *
  * @author Jamie Faris
  */
-class AMAROK_EXPORT CopyToDeviceAction : public QAction
+class AMAROK_EXPORT CopyToDeviceAction : public PopupDropperAction
 {
     Q_OBJECT
     public:

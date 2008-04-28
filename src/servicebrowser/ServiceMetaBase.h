@@ -85,7 +85,7 @@ class AMAROK_EXPORT CustomActionsProvider
         CustomActionsProvider() {}
         virtual ~CustomActionsProvider() {}
 
-        virtual QList< QAction *> customActions() { DEBUG_BLOCK return QList< QAction *>(); }
+        virtual QList< PopupDropperAction *> customActions() { DEBUG_BLOCK return QList< PopupDropperAction *>(); }
 
 };
 
@@ -96,7 +96,7 @@ class AMAROK_EXPORT CurrentTrackActionsProvider
         CurrentTrackActionsProvider() {}
         virtual ~CurrentTrackActionsProvider() {}
 
-        virtual QList< QAction *> currentTrackActions() { DEBUG_BLOCK return QList< QAction *>(); }
+        virtual QList< PopupDropperAction *> currentTrackActions() { DEBUG_BLOCK return QList< PopupDropperAction *>(); }
 
 };
 

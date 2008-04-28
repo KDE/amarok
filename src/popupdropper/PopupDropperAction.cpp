@@ -60,6 +60,15 @@ PopupDropperAction::PopupDropperAction( const QString &file, const QString &text
     d->ownRenderer = true;
 }
 
+PopupDropperAction::PopupDropperAction( const QIcon & icon, const QString & text, QObject * parent )
+    : QAction( icon, text, parent )
+    , d( new PopupDropperActionPrivate )
+{
+    //d->renderer = new QSvgRenderer( file, this );
+    //d->ownRenderer = true;
+}
+
+
 PopupDropperAction::PopupDropperAction( const QString &file, const QIcon &icon, const QString &text, QObject *parent )
     : QAction( icon, text, parent )
     , d( new PopupDropperActionPrivate )
@@ -145,5 +154,13 @@ void PopupDropperAction::setElementId( const QString &id )
     d->elementId = id;;
 }
 
+PopupDropperAction * PopupDropperAction::from( QAction * action )
+{
+    return new PopupDropperAction( QByteArray(), action->icon(), action->text(), action->parent() );
+}
+
+
 #include "PopupDropperAction.moc"
+
+
 

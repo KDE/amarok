@@ -23,8 +23,11 @@
 #include "amarok_export.h"
 #include "meta/Capability.h"
 
-#include <QAction>
+#include "popupdropper/PopupDropperAction.h";
 #include <QList>
+
+
+
 
 
 namespace Meta
@@ -40,15 +43,15 @@ namespace Meta
         Q_OBJECT
         public:
             CustomActionsCapability();
-            CustomActionsCapability( const QList< QAction* > &actions );
+            CustomActionsCapability( const QList< PopupDropperAction* > &actions );
             virtual ~CustomActionsCapability();
 
-            virtual QList< QAction * > customActions() const;
+            virtual QList<PopupDropperAction *> customActions() const;
             
             static Type capabilityInterfaceType() { return Meta::Capability::CustomActions; }
 
         protected:
-            QList< QAction* > m_actions;
+            QList< PopupDropperAction* > m_actions;
     };
 }
 
