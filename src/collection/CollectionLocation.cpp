@@ -18,11 +18,13 @@
 
 #include "CollectionLocation.h"
 #include "Collection.h"
+#include "debug.h"
 #include "QueryMaker.h"
 
 CollectionLocation::CollectionLocation()
     :QObject()
     , m_destination( 0 )
+    , m_source( 0 )
     , m_sourceTracks()
     , m_removeSources( false )
     , m_parentCollection( 0 )
@@ -33,6 +35,7 @@ CollectionLocation::CollectionLocation()
 CollectionLocation::CollectionLocation( const Collection* parentCollection)
     :QObject()
     , m_destination( 0 )
+    , m_source( 0 )
     , m_sourceTracks()
     , m_removeSources( false )
     , m_parentCollection( parentCollection )
@@ -88,6 +91,7 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
         return;
     }
     m_destination = destination;
+    m_destination->setSource( this );
     startWorkflow( tracks, false );
 }
 
@@ -127,6 +131,7 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
         return;
     }
     m_destination = destination;
+    destination->setSource( this );
     startWorkflow( tracks, true );
 }
 
@@ -149,7 +154,7 @@ CollectionLocation::prepareMove( QueryMaker *qm, CollectionLocation *destination
 }
 
 bool
-CollectionLocation::remove( Meta::TrackPtr track )
+CollectionLocation::remove( const Meta::TrackPtr &track )
 {
     Q_UNUSED( track )
     return false;
@@ -183,9 +188,10 @@ CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sour
 }
 
 void
-CollectionLocation::showSourceDialog( const Meta::TrackList &tracks )
+CollectionLocation::showSourceDialog( const Meta::TrackList &tracks, bool removeSources )
 {
     Q_UNUSED( tracks )
+    Q_UNUSED( removeSources )
     slotShowSourceDialogDone();
 }
 
@@ -200,13 +206,13 @@ CollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool r
 void
 CollectionLocation::slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
-    emit startCopy( sources, m_removeSources );
+    emit startCopy( sources );
 }
 
 void
 CollectionLocation::slotCopyOperationFinished()
 {
-    emit finishCopy( m_removeSources );
+    emit finishCopy();
 }
 
 void
@@ -224,6 +230,7 @@ CollectionLocation::slotShowDestinationDialogDone()
 void
 CollectionLocation::slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources )
 {
+    m_removeSources = removeSources;
     showDestinationDialog( tracks, removeSources );
 }
 
@@ -234,16 +241,16 @@ CollectionLocation::slotOperationPrepared()
 }
 
 void
-CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources, bool removeSources )
+CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
-    m_removeSources = removeSources;
     copyUrlsToCollection( sources );
 }
 
 void
-CollectionLocation::slotFinishCopy( bool removeSources )
+CollectionLocation::slotFinishCopy()
 {
-    if( removeSources )
+    DEBUG_BLOCK
+    if( m_removeSources )
         removeSourceTracks( m_sourceTracks );
     m_sourceTracks.clear();
     m_destination->deleteLater();
@@ -281,7 +288,6 @@ CollectionLocation::queryDone()
     {
         prepareCopy( m_sourceTracks, m_destination );
     }
-    m_removeSources = false;    //do not remove the sources because of a bug
 }
 
 void
@@ -290,10 +296,10 @@ CollectionLocation::setupConnections()
     connect( this, SIGNAL( prepareOperation( Meta::TrackList, bool ) ),
              m_destination, SLOT( slotPrepareOperation( Meta::TrackList, bool ) ) );
     connect( m_destination, SIGNAL( operationPrepared() ), SLOT( slotOperationPrepared() ) );
-    connect( this, SIGNAL( startCopy( QMap<Meta::TrackPtr, KUrl>, bool ) ),
-             m_destination, SLOT( slotStartCopy( QMap<Meta::TrackPtr, KUrl>, bool ) ) );
-    connect( m_destination, SIGNAL( finishCopy( bool ) ),
-             this, SLOT( slotFinishCopy( bool ) ) );
+    connect( this, SIGNAL( startCopy( QMap<Meta::TrackPtr, KUrl> ) ),
+             m_destination, SLOT( slotStartCopy( QMap<Meta::TrackPtr, KUrl> ) ) );
+    connect( m_destination, SIGNAL( finishCopy() ),
+             this, SLOT( slotFinishCopy() ) );
     connect( this, SIGNAL( aborted() ), SLOT( slotAborted() ) );
     connect( m_destination, SIGNAL( aborted() ), SLOT( slotAborted() ) );
 }
@@ -304,12 +310,13 @@ CollectionLocation::startWorkflow( const Meta::TrackList &tracks, bool removeSou
     m_removeSources = removeSources;
     m_sourceTracks = tracks;
     setupConnections();
-    showSourceDialog( tracks );
+    showSourceDialog( tracks, m_removeSources );
 }
 
 void
 CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
 {
+    DEBUG_BLOCK
     Meta::TrackList notDeletableTracks;
     foreach( Meta::TrackPtr track, tracks )
     {
@@ -317,6 +324,18 @@ CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
             notDeletableTracks.append( track );
     }
     //TODO inform user about tracks which were not deleted
+}
+
+CollectionLocation*
+CollectionLocation::source() const
+{
+    return m_source;
+}
+
+void
+CollectionLocation::setSource( CollectionLocation *source )
+{
+    m_source = source;
 }
 
 #include "CollectionLocation.moc"

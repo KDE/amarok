@@ -130,11 +130,11 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          * remove the track from the collection.
          * Return true if the removal was successfull, false otherwise.
          */
-        virtual bool remove( Meta::TrackPtr track );
+        virtual bool remove( const Meta::TrackPtr &track );
 
     signals:
-        void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources, bool removeSources );
-        void finishCopy( bool removeSources );
+        void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
+        void finishCopy();
         void prepareOperation( const Meta::TrackList &tracks, bool removeSources );
         void operationPrepared();
         void aborted();
@@ -144,6 +144,12 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          * aborts the workflow
          */
         void abort();
+
+        /**
+         * allows the destination location to access the source CollectionLocation.
+         * note: subclasses do not take ownership  of the pointer
+         */
+        CollectionLocation* source() const;
         /**
             this method is called on the source location, and should return a list of urls which the destination
             location can copy using KIO.
@@ -163,7 +169,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          * Classes that reimplement this method must call slotShowSourceDialogDone() after they have
          * acquired all necessary information from the user.
          */
-        virtual void showSourceDialog( const Meta::TrackList &tracks );
+        virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
         /**
          * this method is called on the destination. It allows the destination CollectionLocation to show
          * a dialog. Classes that reimplement this method must call slotShowDestinationDialogDone() after
@@ -185,8 +191,8 @@ class AMAROK_EXPORT CollectionLocation : public QObject
 
         void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources );
         void slotOperationPrepared();
-        void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources, bool removeSources );
-        void slotFinishCopy( bool removeSources );
+        void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
+        void slotFinishCopy();
         void slotAborted();
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
         void queryDone();
@@ -195,9 +201,12 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         void setupConnections();
         void startWorkflow( const Meta::TrackList &tracks, bool removeSources );
         void removeSourceTracks( const Meta::TrackList &tracks );
+        void setSource( CollectionLocation *source );
 
         //only used in the source CollectionLocation
         CollectionLocation * m_destination;
+        //only used in destination CollectionLocation
+        CollectionLocation *m_source;
         Meta::TrackList m_sourceTracks;
 
         //used in both locations to remember whether to remove the sources
