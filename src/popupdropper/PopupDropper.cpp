@@ -216,6 +216,11 @@ void PopupDropper::clear()
     d->pdiItems.clear();
 }
 
+bool PopupDropper::isEmpty() const
+{
+    return d->pdiItems.empty();
+}
+
 bool PopupDropper::quitOnDragLeave() const
 {
     return d->view.quitOnDragLeave();

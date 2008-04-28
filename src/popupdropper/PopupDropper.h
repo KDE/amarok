@@ -65,6 +65,7 @@ public:
     void hide( PopupDropper::HideReason = PopupDropper::Unknown );
     bool isHidden() const;
     void clear();
+    bool isEmpty() const;
     
     bool quitOnDragLeave() const;
     void setQuitOnDragLeave( bool quit );
