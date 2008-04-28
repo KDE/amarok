@@ -226,7 +226,7 @@
     </entry>
     <entry key="External Browser" type="String">
         <label>Filename of the external web browser to be invoked by Amarok.</label>
-        <default>kfmclient openURL</default>
+        <default>xdg-open</default>
     </entry>
     <entry key="Collection Browser View Mode" type="Int">
         <label>Whether the collection view is in the flat or tree view mode</label>

@@ -63,7 +63,7 @@ GeneralConfig::GeneralConfig( QWidget* parent )
 #ifdef Q_WS_MAC
             "open"
 #else
-            "kfmclient openUrl"
+            "xdg-open"
 #endif
       )
     {
