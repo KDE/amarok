@@ -18,7 +18,6 @@
 
 #include "CollectionLocation.h"
 #include "Collection.h"
-#include "debug.h"
 #include "QueryMaker.h"
 
 CollectionLocation::CollectionLocation()
@@ -249,7 +248,6 @@ CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources )
 void
 CollectionLocation::slotFinishCopy()
 {
-    DEBUG_BLOCK
     if( m_removeSources )
         removeSourceTracks( m_sourceTracks );
     m_sourceTracks.clear();
@@ -316,7 +314,6 @@ CollectionLocation::startWorkflow( const Meta::TrackList &tracks, bool removeSou
 void
 CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
 {
-    DEBUG_BLOCK
     Meta::TrackList notDeletableTracks;
     foreach( Meta::TrackPtr track, tracks )
     {
