@@ -253,7 +253,7 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
 {
     if( !( e->buttons() & Qt::LeftButton ) )
         return;
-    if( ( e->pos() - m_dragStartPosition).manhattanLength() < QApplication::startDragDistance() )
+    if( QLineF( e->pos(), m_dragStartPosition).length() < QApplication::startDragDistance() )
         return;
 
     // TODO port....
@@ -269,13 +269,17 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
     debug() << "After the drag!";
 
     if( m_pd )
+    {
+        debug() << "Deleting PUD";
         m_pd->deleteLater();
+    }
 
     m_pd = 0;
 }
 
 PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
 {
+    DEBUG_BLOCK
     PopupDropper* pd = new PopupDropper( parent );
     if( !pd )
         return 0;
