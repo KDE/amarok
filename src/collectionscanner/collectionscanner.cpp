@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2003-2005 by The Amarok Developers                      *
+ *             (C) 2008 Dan Meltzer <hydrogen@notyetimplemented.com        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -28,7 +29,6 @@
 #include <limits.h>    //PATH_MAX
 #include <stdlib.h>    //realpath
 
-#include <audioproperties.h>
 #include <fileref.h>
 #include <tag.h>
 #include <tstring.h>
@@ -46,6 +46,8 @@
 //Taglib:
 #include <apetag.h>
 #include <flacfile.h>
+#include <id3v1tag.h>
+#include <id3v2tag.h>
 #include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
@@ -82,7 +84,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_logfile( saveLocation() + "collection_scan.log"  )
 {
     amarokCollectionInterface = new OrgKdeAmarokCollectionInterface("org.kde.amarok", "/Collection", QDBusConnection::sessionBus());
-    kapp->setObjectName( QString( "amarokcollectionscanner" ).toAscii() );
+    kapp->setObjectName( "amarokcollectionscanner" );
     if( !restart )
         QFile::remove( m_logfile );
 
@@ -108,7 +110,7 @@ CollectionScanner::doJob() //SLOT
     if( m_restart ) {
         QFile logFile( m_logfile );
         QString lastFile;
-        if ( logFile.open( QIODevice::ReadOnly ) )
+        if( logFile.open( QIODevice::ReadOnly ) )
         {
             QTextStream logStream;
             logStream.setDevice(&logFile);
@@ -118,7 +120,7 @@ CollectionScanner::doJob() //SLOT
         }
 
         QFile folderFile( saveLocation()  + "collection_scan.files"   );
-        if ( folderFile.open( QIODevice::ReadOnly ) )
+        if( folderFile.open( QIODevice::ReadOnly ) )
         {
             QTextStream folderStream;
             folderStream.setDevice(&folderFile);
@@ -130,8 +132,10 @@ CollectionScanner::doJob() //SLOT
             entries.pop_front();
 
     }
-    else {
-        foreach( QString dir, m_folders ) {
+    else
+    {
+        foreach( QString dir, m_folders )
+        {
             if( dir.isEmpty() )
                 //apparently somewhere empty strings get into the mix
                 //which results in a full-system scan! Which we can't allow
@@ -142,7 +146,7 @@ CollectionScanner::doJob() //SLOT
             readDir( dir, entries );
         }
 
-        QFile folderFile( saveLocation() + "collection_scan.files"   );
+        QFile folderFile( saveLocation() + "collection_scan.files" );
         folderFile.open( QIODevice::WriteOnly );
         QTextStream stream( &folderFile );
         stream.setCodec( QTextCodec::codecForName("UTF-8") );
@@ -150,9 +154,11 @@ CollectionScanner::doJob() //SLOT
         folderFile.close();
     }
 
-    if( !entries.isEmpty() ) {
-        if( !m_restart ) {
-            AttributeMap attributes;
+    if( !entries.isEmpty() )
+    {
+        if( !m_restart )
+        {
+            AttributeHash attributes;
             attributes["count"] = QString::number( entries.count() );
             writeElement( "itemcount", attributes );
         }
@@ -175,19 +181,19 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     m_scannedFolders << d.canonicalPath();
 
     if( !d.exists() )
-       return;
-
-    AttributeMap attributes;
+        return;
+    AttributeHash attributes;
     attributes["path"] = dir;
     writeElement( "folder", attributes );
     d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files | QDir::Readable );
-    foreach( QFileInfo f, d.entryInfoList() )
+    QFileInfoList list = d.entryInfoList();
+    foreach( QFileInfo f, list )
     {
         if( !f.exists() )
             break;
 
         if( f.isSymLink() )
-            f = QFileInfo(f.symLinkTarget() );
+            f = QFileInfo( f.symLinkTarget() );
 
         if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
         {
@@ -212,7 +218,8 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
     int itemCount = 0;
 
-    oldForeachType( QStringList, entries ) {
+    for( QStringList::ConstIterator it = entries.constBegin(), end = entries.constEnd(); it != end; ++it )
+    {
         const QString path = *it;
         const QString ext  = extension( path );
         const QString dir  = directory( path );
@@ -220,9 +227,11 @@ CollectionScanner::scanFiles( const QStringList& entries )
         itemCount++;
 
         // Write path to logfile
-        if( !m_logfile.isEmpty() ) {
+        if( !m_logfile.isEmpty() )
+        {
             QFile log( m_logfile );
-            if( log.open( QIODevice::WriteOnly ) ) {
+            if( log.open( QIODevice::WriteOnly ) )
+            {
                 QByteArray cPath = path.toUtf8();
                 log.write( cPath, cPath.length() );
                 log.close();
@@ -232,18 +241,21 @@ CollectionScanner::scanFiles( const QStringList& entries )
         if( validImages.contains( ext ) )
             images += path;
 
-        else if( m_importPlaylists && validPlaylists.contains( ext ) ) {
-            AttributeMap attributes;
+        else if( m_importPlaylists && validPlaylists.contains( ext ) )
+        {
+            AttributeHash attributes;
             attributes["path"] = path;
             writeElement( "playlist", attributes );
         }
 
-        else {
+        else
+        {
             //FIXME: PORT 2.0
 //             QList<EmbeddedImage> images;
-            const AttributeMap attributes = readTags( path );
+            const AttributeHash attributes = readTags( path );
 
-            if( !attributes.empty() ) {
+            if( !attributes.empty() )
+            {
                 writeElement( "tags", attributes );
 
                 CoverBundle cover( attributes["artist"], attributes["album"] );
@@ -254,7 +266,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 //FIXME: PORT 2.0
 //                 foreach( EmbeddedImage image, images )
 //                 {
-//                     AttributeMap attributes;
+//                     AttributeHash attributes;
 //                     attributes["path"] = path;
 //                     attributes["hash"] = image.hash();
 //                     attributes["description"] = image.description();
@@ -265,25 +277,26 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
         // Update Compilation-flag, when this is the last loop-run
         // or we're going to switch to another dir in the next run
-        QStringList::ConstIterator itTemp( it );
+        QStringList::const_iterator itTemp( it );
         ++itTemp;
         if( path == entries.last() || dir != directory( *itTemp ) )
         {
             // we entered the next directory
-            oldForeachType( QStringList, images ) {
+            foreach( const QString &imagePath, images )
+            {
                 // Serialize CoverBundle list with AMAROK_MAGIC as separator
                 QString string;
 
                 for( QList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
                     string += (*it2).first + "AMAROK_MAGIC" + (*it2).second + "AMAROK_MAGIC";
 
-                AttributeMap attributes;
-                attributes["path"] = *it;
+                AttributeHash attributes;
+                attributes["path"] = imagePath;
                 attributes["list"] = string;
                 writeElement( "image", attributes );
             }
 
-            AttributeMap attributes;
+            AttributeHash attributes;
             attributes["path"] = dir;
             writeElement( "compilation", attributes );
 
@@ -295,7 +308,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
 }
 
 
-AttributeMap
+AttributeHash
 CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle )
 {
     // Tests reveal the following:
@@ -319,7 +332,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     TagLib::Tag *tag = 0;
     fileref = TagLib::FileRef( encodedName, true, readStyle );
 
-    AttributeMap attributes;
+    AttributeHash attributes;
     bool isValid = false;
     FileType fileType;
     if( !fileref.isNull() )
@@ -436,25 +449,26 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 attributes["discnumber"] = disc.toInt();
         }
 
-        if ( compilation.isEmpty() ) {
+        if ( compilation.isEmpty() )
+        {
             // well, it wasn't set, but if the artist is VA assume it's a compilation
             if ( attributes["artist"] == i18n( "Various Artists" ) )
                 attributes["compilation"] = true;
-        } else {
+        }
+        else
+        {
             int i = compilation.toInt();
-            if ( i == 0 )
-                attributes["compilation"] = QString::number( false );
-            else if ( i == 1 )
-                attributes["compilation"] = QString::number( true );
+            attributes["compilation"] = QString::number( i );
         }
     }
 
-    if ( !isValid ) {
+    if ( !isValid )
+    {
         std::cout << "<dud/>";
         return attributes;
     }
 
-    attributes["path"]    = path;
+    attributes["path"]      = path;
     attributes["filetype"]  = QString::number( fileType );
 //     attributes["uniqueid"] = QString::number( -1 ); //FIXME: Port
     const int bitrate = fileref.audioProperties()->bitrate();
@@ -463,7 +477,8 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     static const int Undetermined = -2;
     if ( bitrate == Undetermined || length == Undetermined || samplerate == Undetermined )
         attributes["audioproperties"] = "false";
-    else {
+    else
+    {
         attributes["audioproperties"] = "true";
         attributes["bitrate"]         = QString::number( bitrate );
         attributes["length"]          = QString::number( length );
@@ -479,17 +494,19 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
 
 void
-CollectionScanner::writeElement( const QString& name, const AttributeMap& attributes )
+CollectionScanner::writeElement( const QString &name, const AttributeHash &attributes )
 {
     QDomDocument doc; // A dummy. We don't really use DOM, but SAX2
     QDomElement element = doc.createElement( name );
 
-    oldForeachType( AttributeMap, attributes )
+    QHashIterator<QString, QString> it( attributes );
+    while( it.hasNext() )
     {
+        it.next();
         // There are at least some characters that Qt cannot categorize which make the resulting
         // xml document ill-formed and prevent the parser from processing the remaining document.
         // Because of this we skip attributes containing characters not belonging to any category.
-        QString data = it.value();
+        const QString data = it.value();
         const unsigned len = data.length();
         bool nonPrint = false;
         for( unsigned i = 0; i < len; i++ )

@@ -26,30 +26,17 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include <QMap>
+#include <QHash>
 #include <QStringList>
-#include <QVector>
 
 #include <KApplication>
 #include <KStandardDirs>
-#include <KUrl>
 #include <amarok_collection_interface.h>
-
-
 
 //Taglib includes..
 #include <audioproperties.h>
-#include <fileref.h>
-#include <tag.h>
-#include <id3v2tag.h>
-#include <id3v1tag.h>
 
-typedef QMap<QString, QString> AttributeMap;
-
-namespace MetaFile
-{
-    class Track;
-}
+typedef QHash<QString, QString> AttributeHash;
 
 /**
  * @class CollectionScanner
@@ -92,14 +79,14 @@ private:
      * @track Track for the file.
      * @return QMap containing tags, or empty QMap on failure.
      */
-    AttributeMap readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast );
+    AttributeHash readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast );
 
     /**
      * Helper method for writing XML elements to stdout.
      * @name Name of the element.
      * @attributes Key/value map of attributes.
      */
-    void writeElement( const QString& name, const AttributeMap& attributes );
+    void writeElement( const QString& name, const AttributeHash& attributes );
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', r "" if there is none
