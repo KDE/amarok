@@ -85,7 +85,7 @@ namespace SingleShotPool
     {
         QTimer *timer = parent->findChild<QTimer*>( slot );
 
-        return timer && timer->metaObject()->className() == "QTimer" && timer->isActive();
+        return timer && timer->metaObject()->className() == QLatin1String("QTimer") && timer->isActive();
     }
 }
 
