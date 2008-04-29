@@ -67,7 +67,7 @@ PlaylistBrowser::addCategory( int category )
     QString typeName = The::playlistManager()->typeName( category );
     debug() << typeName;
 
-    QWidget *widget;
+    QWidget *widget = 0;
 
     //TODO: PlaylistBrowser::iconForCategory( int playlistCategory )
     KIcon icon = KIcon( "view-media-playlist-amarok" );
