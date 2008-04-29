@@ -110,7 +110,9 @@ void ColumnApplet::saveToConfig( KConfig& conf )
 //     debug() << "number of m_columns:" << m_columns->count();
     for( int i = 0; i < m_columns->count(); i++ )
     {
-        Applet* applet = dynamic_cast< Applet* >( m_columns->itemAt( i ) );
+        Applet *applet = 0;
+        if( m_columns->itemAt( i ) )
+            applet = dynamic_cast< Applet* >( m_columns->itemAt( i ) );
 //         debug() << "trying to save an applet";
         if( applet != 0 )
         {
