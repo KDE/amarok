@@ -267,8 +267,9 @@ void ColumnApplet::recalculate()
     m_columns->invalidate();
 }
 
-QList<QAction*> ColumnApplet::contextActions()
+QList<QAction*> ColumnApplet::contextualActions()
 {
+    DEBUG_BLOCK
     return *m_actions;
 }
 

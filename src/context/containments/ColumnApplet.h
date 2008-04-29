@@ -61,7 +61,7 @@ public:
                                 const QStyleOptionGraphicsItem *option,
                                 const QRect& contentsRect);
 
-    QList<QAction*> contextActions();
+    QList<QAction*> contextualActions();
 
 
 
