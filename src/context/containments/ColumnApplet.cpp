@@ -111,8 +111,10 @@ void ColumnApplet::saveToConfig( KConfig& conf )
     for( int i = 0; i < m_columns->count(); i++ )
     {
         Applet *applet = 0;
-        if( m_columns->itemAt( i ) )
-            applet = dynamic_cast< Applet* >( m_columns->itemAt( i ) );
+        //FIXME: Reenable when working, the dynamic_cast causes a crash.
+        //QGraphicsLayoutItem *item = m_columns->itemAt( i );
+        //Q_ASSERT(item);
+        //applet = dynamic_cast<Plasma::Applet*>( item );
 //         debug() << "trying to save an applet";
         if( applet != 0 )
         {

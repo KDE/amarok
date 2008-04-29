@@ -167,7 +167,7 @@ QGraphicsLayoutItem*
 ContextLayout::itemAt(int at) const
 {
     int count = 0;
-    for( int i = 0; i < d->columns.size(); i++ )
+    for( int i = 0; i < d->columns.count(); i++ )
     {
         for( int k = 0; k < d->columns[ i ]->count(); k++ )
         {
