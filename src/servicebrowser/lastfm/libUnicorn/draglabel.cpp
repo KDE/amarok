@@ -950,7 +950,7 @@ DragLabel::mouseMoveEvent( QMouseEvent *event )
 void
 DragLabel::setItemSelected( const QString& text, bool selected, bool emitSignal )
 {
-    int index;
+    int index = -1;
     for( int i = m_itemsStartAt; i < m_items.count(); ++i )
     {
         if ( m_items[i].m_text == text )
@@ -958,6 +958,7 @@ DragLabel::setItemSelected( const QString& text, bool selected, bool emitSignal 
             index = i;
         }
     }
+	Q_ASSERT(index >= 0);
 
     setItemSelected( index - m_itemsStartAt, selected, emitSignal );
 }
