@@ -33,6 +33,8 @@ RepeatTrackNavigator::nextTrack()
             }
         }
     }
+
+	return Meta::TrackPtr();
 }
 
 Meta::TrackPtr
@@ -43,6 +45,7 @@ RepeatTrackNavigator::userNextTrack()
     {
         setCurrentTrack( updateRow );
     }
+	return Meta::TrackPtr();
 }
 
 
