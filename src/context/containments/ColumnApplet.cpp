@@ -86,7 +86,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );
     DEBUG_LINE_INFO
 
-    connect( this, SIGNAL( appletAdded( Plasma::Applet* ) ), this, SLOT( addApplet( Plasma::Applet* ) ) );
+    connect( this, SIGNAL( appletAdded( Plasma::Applet*, const QPointF & ) ), this, SLOT( addApplet( Plasma::Applet*, const QPointF & ) ) );
 
     DEBUG_LINE_INFO
 
@@ -252,7 +252,7 @@ void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 */
 
 
-Plasma::Applet* ColumnApplet::addApplet( Applet* applet )
+Plasma::Applet* ColumnApplet::addApplet( Applet* applet, const QPointF & )
 {
 //     debug() << "m_columns:" << m_columns;
      m_columns->addItem( applet );

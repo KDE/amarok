@@ -67,7 +67,7 @@ public:
 
 public slots:
     void appletRemoved( QObject* object );
-    Applet* addApplet( Plasma::Applet* applet );
+    Applet* addApplet( Plasma::Applet* applet, const QPointF &);
 
 
 protected:
