@@ -272,7 +272,7 @@ void QueueLabel::showToolTip()
         }
         if( length )
             text += QString("<center>%1</center>")
-                    .arg( i18ncp( "The Amount of tracks in queue", "1 track (%1)", "%1 tracks (%1)", count, MetaBundle::prettyLength( length, true ) )
+                    .arg( i18ncp( "The Amount of tracks in queue; %2 total playtime", "1 track (%2)", "%1 tracks (%2)", count, MetaBundle::prettyLength( length, true ) )
     }
 
     text += i18nc( "The next track to be played", "Next: %1", veryNiceTitle( item, true /*bold*/ ) );
