@@ -35,6 +35,7 @@
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "meta/StreamInfoCapability.h"
+#include "meta/SourceInfoCapability.h"
 #include "Osd.h"
 #include "playlist/PlaylistModel.h"
 #include "ProgressSlider.h"
@@ -257,7 +258,16 @@ namespace Amarok
             streamText = streamInfo->streamName();
             if( !streamInfo->streamSource().isEmpty() )
                 streamText += " (" + streamInfo->streamSource() + ')';
+        } else {
+            Meta::SourceInfoCapability *sourceInfo = track->as<Meta::SourceInfoCapability>();
+
+            if( sourceInfo )
+            {
+                streamText = sourceInfo->sourceName();
+                delete sourceInfo;
+            }
         }
+
         return streamText;
     }
 
