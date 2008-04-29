@@ -149,7 +149,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
     QString name;
     QString albumCode;
     QStringList magnatuneGenres;
-    int launchYear;
+    int launchYear = 0;
     QString coverUrl;
     QString description;
     QString artistName;
