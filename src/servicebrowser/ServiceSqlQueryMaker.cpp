@@ -361,7 +361,7 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 
     d->linkedTables |= Private::ALBUMS_TABLE;
     d->linkedTables |= Private::ARTISTS_TABLE;
-    if( d->queryType == Private::GENRE );
+    if( d->queryType == Private::GENRE )
         d->linkedTables |= Private::GENRE_TABLE;
     d->queryMatch += QString( " AND " + prefix + "_albums.id = '%1'" ).arg( serviceAlbum->id() );
     return this;
