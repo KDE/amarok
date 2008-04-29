@@ -6,7 +6,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #ifndef AMAROK_H
 #define AMAROK_H
 
@@ -23,8 +23,6 @@ class QEvent;
 class QMutex;
 class QPixmap;
 class QWidget;
-class Q3ListView;
-class Q3ListViewItem;
 namespace KIO { class Job; }
 
 namespace Amarok
