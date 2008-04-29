@@ -334,7 +334,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
     AttributeHash attributes;
     bool isValid = false;
-    FileType fileType;
+    FileType fileType = ogg;
     if( !fileref.isNull() )
     {
         tag = fileref.tag();
