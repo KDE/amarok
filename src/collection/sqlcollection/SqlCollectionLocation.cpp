@@ -179,7 +179,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
     }
     foreach( const Meta::TrackPtr &track, sources.keys() )
     {
-        KIO::FileCopyJob *job;
+        KIO::FileCopyJob *job = 0;
         KUrl dest( m_destinations[ track ] );
         debug() << "copying from " << sources[ track ] << " to " << m_destinations[ track ];
         KIO::JobFlags flags = KIO::HideProgressInfo;
