@@ -67,7 +67,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
     resize( m_width, m_aspectRatio );
 
-    constraintsUpdated();
+    constraintsEvent();
 }
 
 ServiceInfo::~ServiceInfo()
@@ -80,7 +80,7 @@ ServiceInfo::~ServiceInfo()
 
 }
 
-void ServiceInfo::constraintsUpdated( Plasma::Constraints constraints )
+void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
 {
 
     prepareGeometryChange();
@@ -131,7 +131,7 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
     if  ( m_initialized ) {
         m_serviceName->setText( data[ "service_name" ].toString() );
         m_webView->setHtml( data[ "main_info" ].toString() );
-        constraintsUpdated();
+        constraintsEvent();
     }
 
 }

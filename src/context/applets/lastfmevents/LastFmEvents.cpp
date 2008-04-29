@@ -99,7 +99,7 @@ void LastFmEvents::init()
 
 }
 
-void LastFmEvents::constraintsUpdated( Plasma::Constraints constraints )
+void LastFmEvents::constraintsEvent( Plasma::Constraints constraints )
 {
 //     DEBUG_BLOCK
     prepareGeometryChange();
@@ -312,7 +312,7 @@ void LastFmEvents::configAccepted() // SLOT
 
     cg.sync();
 
-    constraintsUpdated();
+    constraintsEvent();
 }
 
 

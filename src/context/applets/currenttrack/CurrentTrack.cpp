@@ -138,7 +138,7 @@ void CurrentTrack::createMenu()
     m_contextActions.append( unsetCoverAction );
 }
 
-void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
+void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 {
     prepareGeometryChange();
 
@@ -267,7 +267,7 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     p->restore();
 
     // TODO get, and then paint, album pixmap
-//     constraintsUpdated();
+//     constraintsEvent();
 
 }
 

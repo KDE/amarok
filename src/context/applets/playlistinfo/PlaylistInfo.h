@@ -36,7 +36,7 @@ public:
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
-    void constraintsUpdated();
+    void constraintsEvent();
     QSizeF contentSizeHint() const { return m_size; }
 
 public slots:

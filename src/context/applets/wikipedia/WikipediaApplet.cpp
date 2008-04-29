@@ -72,11 +72,11 @@ void WikipediaApplet::init()
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
 
-    constraintsUpdated();
+    constraintsEvent();
 
 }
 
-void WikipediaApplet::constraintsUpdated( Plasma::Constraints constraints )
+void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     prepareGeometryChange();
     if ( constraints & Plasma::SizeConstraint && m_header )

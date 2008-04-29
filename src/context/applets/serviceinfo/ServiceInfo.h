@@ -38,7 +38,7 @@ public:
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
-    void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints );
+    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;

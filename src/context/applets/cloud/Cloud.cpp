@@ -74,7 +74,7 @@ Cloud::Cloud( QObject* parent, const QVariantList& args )
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
     resize( m_width, m_aspectRatio );
 
-    constraintsUpdated();
+    constraintsEvent();
 }
 
 Cloud::~Cloud()
@@ -82,7 +82,7 @@ Cloud::~Cloud()
 
 }
 
-void Cloud::constraintsUpdated( Plasma::Constraints constraints )
+void Cloud::constraintsEvent( Plasma::Constraints constraints )
 {
 
     prepareGeometryChange();
@@ -202,7 +202,7 @@ void Cloud::addText( const QString &text, int weight )
         return;
     }
 
-    // Check if item will fit on the current line, if not, print current line   
+    // Check if item will fit on the current line, if not, print current line
     if ( ( itemRect.width() + m_runningX ) > parentRect.width() )
     {
         adjustCurrentLinePos();
@@ -325,7 +325,7 @@ void Cloud::drawCloud()
 {
     //clear all and start over
     m_maxHeightInFirstLine = 0.0;
-    
+
     while ( !m_textItems.isEmpty() )
         delete m_textItems.takeFirst();
 
@@ -353,7 +353,7 @@ void Cloud::cropAndNormalize( int minCount, int maxCount )
 {
     int min = 100000;
     int max = 0;
-    
+
     foreach( QVariant weight, m_weights )
     {
         if ( weight.toInt() < min )
@@ -422,7 +422,7 @@ void Cloud::cloudItemActivated( const QString & text )
     else if ( !arg2.isEmpty() )
         interface.call( function, arg1, arg2 );
     else if ( !arg1.isEmpty() )
-        interface.call( function, arg1 );   
+        interface.call( function, arg1 );
 }
 
 #include "Cloud.moc"

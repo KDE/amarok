@@ -33,7 +33,7 @@ public:
 
     bool hasHeightForWidth() const;
 
-    void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints );
+    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 

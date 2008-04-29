@@ -33,7 +33,7 @@ public:
 
     void init();
 
-    void constraintsUpdated( Plasma::Constraints constraints = Plasma::AllConstraints);
+    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
 

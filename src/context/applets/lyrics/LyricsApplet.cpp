@@ -50,10 +50,10 @@ void LyricsApplet::init()
     m_lyrics->setFrameShape( QFrame::NoFrame );
     m_lyricsProxy->setWidget( m_lyrics );
 
-    constraintsUpdated();
+    constraintsEvent();
 }
 
-void LyricsApplet::constraintsUpdated( Plasma::Constraints constraints )
+void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     prepareGeometryChange();
 

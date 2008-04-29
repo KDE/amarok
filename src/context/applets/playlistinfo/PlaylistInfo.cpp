@@ -36,29 +36,29 @@ PlayistInfo::PlayistInfo( QObject* parent, const QStringList& args )
     , m_trackLength( 0 )
 {
     DEBUG_BLOCK
-        
+
     setHasConfigurationInterface( true );
-    
+
     dataEngine( "amarok-current" )->connectSource( "current", this );
-    
+
     m_theme = new Context::Svg( "widgets/amarok-playlistinfo", this );
     m_theme->setContentType( Context::Svg::SingleImage );
     m_width = globalConfig().readEntry( "width", 500 );
-    
+
     m_totalTracks = new QGraphicsSimpleTextItem( this );
     m_totalTime = new QGraphicsSimpleTextItem( this );
     m_totalSize = new QGraphicsSimpleTextItem( this );
-    
+
     m_totalTracks->setBrush( QBrush( Qt::white ) );
     m_totalTime->setBrush( QBrush( Qt::white ) );
     m_totalSize->setBrush( QBrush( Qt::white ) );
-   
+
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
-    resize( m_width, m_aspectRatio ); 
-    
-    constraintsUpdated();
+    resize( m_width, m_aspectRatio );
+
+    constraintsEvent();
 }
 
 PlayistInfo::~PlayistInfo()
@@ -66,7 +66,7 @@ PlayistInfo::~PlayistInfo()
     DEBUG_BLOCK
 }
 
-void PlayistInfo::constraintsUpdated()
+void PlayistInfo::constraintsEvent()
 {
     prepareGeometryChange();
     // here we put all of the text items into the correct locations
@@ -77,12 +77,12 @@ void PlayistInfo::constraintsUpdated()
     m_numPlayed->setPos( m_theme->elementRect( "numplayed" ).topLeft() );
     m_playedLast->setPos( m_theme->elementRect( "playedlast" ).topLeft() );
     m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
-    
+
     QPixmap cover = m_albumCover->pixmap();
     cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
     m_albumCover->setPixmap( cover );
 //     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
-    
+
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 }
 
@@ -90,9 +90,9 @@ void PlayistInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
-    
+
     if( data.size() == 0 ) return;
-    
+
     QVariantList currentInfo = data[ "current" ].toList();
     kDebug() << "got data from engine: " << currentInfo;
     m_title->setText( currentInfo[ 1 ].toString() );
@@ -104,26 +104,26 @@ void PlayistInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
     m_score->setText( currentInfo[ 4 ].toString() );
     m_trackLength = currentInfo[ 5 ].toInt();
 //     m_playedLast->setText( Amarok::verboseTimeSince( currentInfo[ 6 ].toInt() ) );
-    
+
     // scale pixmap on demand
     QPixmap cover = m_albumCover->pixmap();
     cover = cover.scaledToWidth( m_theme->elementRect( "albumart" ).size().width(), Qt::SmoothTransformation );
     m_albumCover->setPixmap( cover );
 //     debug() << "changing pixmap size from " << m_albumCover->pixmap().width() << " to " << cover.width();
-    
+
     m_numPlayed->setText( currentInfo[ 7 ].toString() );
-    m_albumCover->setPixmap( data[ "albumart" ].value<QPixmap>() ); 
-    
+    m_albumCover->setPixmap( data[ "albumart" ].value<QPixmap>() );
+
 }
 
 void PlayistInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
-        
+
     p->save();
     m_theme->paint( p, contentsRect, "background" );
     p->restore();
-        
+
     p->save();
     int stars = m_rating / 2;
     for( int i = 1; i <= stars; i++ )
@@ -138,26 +138,26 @@ void PlayistInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
     p->restore();
 
     // TODO get, and then paint, album pixmap
-    
+
 }
 
 void PlayistInfo::showConfigurationInterface()
 {
-    if (m_config == 0) 
+    if (m_config == 0)
     {
         m_config = new KDialog();
         m_config->setCaption( i18n( "Configure Playlist Info Applet" ) );
-        
+
         QWidget* widget = new QWidget( m_config );
         m_config->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
         connect( m_config, SIGNAL(applyClicked()), this, SLOT(configAccepted()) );
         connect( m_config, SIGNAL(okClicked()), this, SLOT(configAccepted()) );
-        
+
         m_configLayout = new QHBoxLayout( widget );
         m_spinWidth = new QSpinBox();
         m_spinWidth->setRange( 200, 700 );
         m_spinWidth->setValue( m_width );
-        
+
         QLabel *labelWidth = new QLabel(i18n("Width"));
         m_configLayout->addWidget( labelWidth );
         m_configLayout->addWidget( m_spinWidth );
@@ -170,14 +170,14 @@ void PlayistInfo::showConfigurationInterface()
 void PlayistInfo::configAccepted() // SLOT
 {
     KConfigGroup cg = globalConfig();
-    
+
     m_width = m_spinWidth->value();
     resize( m_width, m_aspectRatio );
-    
+
     cg.writeEntry( "width", m_width );
-    
+
     cg.sync();
-    constraintsUpdated();
+    constraintsEvent();
 }
 
 void PlayistInfo::resize( qreal newWidth, qreal aspectRatio )
@@ -185,10 +185,10 @@ void PlayistInfo::resize( qreal newWidth, qreal aspectRatio )
     qreal height = aspectRatio * newWidth;
     m_size.setWidth( newWidth );
     m_size.setHeight( height );
-    
+
     m_theme->resize( m_size );
     kDebug() << "set new size: " << m_size;
-    constraintsUpdated();
+    constraintsEvent();
 }
 
 #include "PlayistInfo.moc"
