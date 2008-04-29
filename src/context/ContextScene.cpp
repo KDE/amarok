@@ -30,18 +30,8 @@
 namespace Context
 {
 
-ContextScene::ContextScene(QObject * parent)
+ContextScene::ContextScene( QObject * parent )
     : Plasma::Corona( parent )
-{
-}
-
-ContextScene::ContextScene(const QRectF & sceneRect, QObject * parent )
-    : Plasma::Corona( sceneRect, parent )
-{
-}
-
-ContextScene::ContextScene(qreal x, qreal y, qreal width, qreal height, QObject * parent)
-    : Plasma::Corona( x, y, width, height, parent )
 {
 }
 
@@ -54,7 +44,7 @@ void ContextScene::loadDefaultSetup()
     Plasma::Containment* c = addContainment( "context" );
     c->setScreen( 0 );
     c->setFormFactor( Plasma::Planar );
-    
+
 }
 
 void ContextScene::dragMoveEvent( QGraphicsSceneDragDropEvent * event )

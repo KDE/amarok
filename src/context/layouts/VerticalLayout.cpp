@@ -15,8 +15,7 @@
 
 #include "debug.h"
 
-#include "plasma/layouts/layoutitem.h"
-#include "plasma/layouts/layoutanimator.h"
+#include <plasma/applet.h>
 
 namespace Context
 {
@@ -25,12 +24,12 @@ namespace Context
 class VerticalLayout::Private
 {
 public:
-    QList<LayoutItem*> children;
+    QList<QGraphicsLayoutItem*> children;
     QRectF geometry;
 };
 
-VerticalLayout::VerticalLayout(LayoutItem *parent)
-    : Layout(parent),
+VerticalLayout::VerticalLayout(QGraphicsLayoutItem *parent)
+    : QGraphicsLayout(parent),
       d(new Private)
 {
 }
@@ -41,70 +40,79 @@ VerticalLayout::~VerticalLayout()
     delete d;
 }
 
-Qt::Orientations VerticalLayout::expandingDirections() const
-{
-    return Qt::Vertical;
-}
-
-void VerticalLayout::addItem(LayoutItem *item)
+void
+VerticalLayout::addItem( QGraphicsLayoutItem *item )
 {
     if (d->children.contains(item)) {
         return;
     }
 
     d->children << item;
-    item->setManagingLayout(this);
     relayout();
 }
 
-void VerticalLayout::removeItem(LayoutItem *item)
+void
+VerticalLayout::removeItem( QGraphicsLayoutItem *item )
 {
     if (!item) {
         return;
     }
 
-    d->children.removeAll(item);
-    item->unsetManagingLayout(this);
+    d->children.removeAll( item );
     relayout();
 }
 
-int VerticalLayout::indexOf(LayoutItem *item) const
+int
+VerticalLayout::indexOf( QGraphicsLayoutItem *item ) const
 {
-    return d->children.indexOf(item);
+    return d->children.indexOf( item );
 }
 
-Plasma::LayoutItem* VerticalLayout::itemAt(int i) const
+QGraphicsLayoutItem*
+VerticalLayout::itemAt( int i ) const
 {
-    return d->children[i];
+    return d->children[ i ];
 }
 
-int VerticalLayout::count() const
+int
+VerticalLayout::count() const
 {
     return d->children.count();
 }
 
-Plasma::LayoutItem* VerticalLayout::takeAt(int i)
+QGraphicsLayoutItem*
+VerticalLayout::takeAt( int i )
 {
-    Plasma::LayoutItem* item = d->children.takeAt(i);
+    QGraphicsLayoutItem* item = d->children.takeAt(i);
     relayout();
     return item;
+}
+
+void
+VerticalLayout::removeAt( int i )
+{
+    d->children.removeAt(i);
 }
 
 void VerticalLayout::relayout()
 {
 
-    QRectF rect = geometry().adjusted(0, 0, 0, 0);
+    QRectF rect = geometry().adjusted( 0, 0, 0, 0 );
 
     qreal top = 10.0;
     qreal left = 10.0; //Plasma::Layout::margin( Plasma::LeftMargin );
 
-    foreach (LayoutItem *child , d->children) {
+    foreach( QGraphicsLayoutItem *child , d->children )
+    {
         qreal height = 0.0;
 
-        if( child->hasHeightForWidth() )
-            height = child->heightForWidth( rect.width() );
-        else
-            height = sizeHint().height();
+//         if( Plasma::Applet *a = dynamic_cast<Plasma::Applet *>(child) )
+//         {
+//             if( a->hasHeightForWidth() )
+//                 height = a->heightForWidth( rect.width() );
+//         }
+//         else
+            height = effectiveSizeHint( Qt::PreferredSize ).height();
 
         const QRectF newgeom( rect.topLeft().x() + left,
                               rect.topLeft().y() + top,
@@ -113,37 +121,31 @@ void VerticalLayout::relayout()
 
         top += height /*+ spacing()*/;
 
-        if ( animator() )
-            animator()->setGeometry( child , newgeom );
-        else
-            child->setGeometry( newgeom );
-
+        child->setGeometry( newgeom );
     }
 
 }
 
-void VerticalLayout::setGeometry(const QRectF &geometry)
+void
+VerticalLayout::setGeometry( const QRectF &geometry )
 {
     d->geometry = geometry;
     relayout();
 }
 
-QRectF VerticalLayout::geometry() const
+QRectF
+VerticalLayout::geometry() const
 {
     return d->geometry;
 }
 
-QSizeF VerticalLayout::sizeHint() const
+QSizeF
+VerticalLayout::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {
     qreal height = 0.0;
-    foreach( LayoutItem* child, d->children )
-        height += child->sizeHint().height();
+    foreach( QGraphicsLayoutItem* child, d->children )
+        height += child->effectiveSizeHint( which ).height();
     return QSizeF( geometry().width(), height );
 }
 
-}
-
-void Context::VerticalLayout::releaseManagedItems()
-{
-    //FIXME!!
 }

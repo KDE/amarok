@@ -59,7 +59,7 @@ Cloud::Cloud( QObject* parent, const QVariantList& args )
     dataEngine( "amarok-cloud" )->connectSource( "cloud", this );
 
     m_theme = new Context::Svg( "widgets/amarok-cloud", this );
-    m_theme->setContentType( Context::Svg::SingleImage );
+    m_theme->setContainsMultipleImages( false );
     m_theme->resize( m_size );
     m_width = globalConfig().readEntry( "width", 500 );
 
@@ -88,7 +88,7 @@ void Cloud::constraintsUpdated( Plasma::Constraints constraints )
     prepareGeometryChange();
 
     if (constraints & Plasma::SizeConstraint && m_theme) {
-        m_theme->resize(contentSize().toSize());
+        m_theme->resize(size().toSize());
     }
 
     //make the text as large as possible:
@@ -100,7 +100,7 @@ void Cloud::constraintsUpdated( Plasma::Constraints constraints )
     float offsetX =  ( totalWidth - textWidth ) / 2;
 
     kDebug() << "offset: " << offsetX;
-    
+
     m_cloudName->setPos( m_theme->elementRect( "cloud_name" ).topLeft() + QPointF ( offsetX, 0 ) );
 
     drawCloud();
@@ -117,10 +117,10 @@ void Cloud::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     if( data.size() == 0 ) return;
 
     kDebug() << "got data from engine: " << data[ "cloud_name" ].toString();
-    
+
 
     //kDebug() << "got new data" << infoMap;
-    
+
     m_strings = data[ "cloud_strings" ].toList();
     m_weights = data[ "cloud_weights" ].toList();
     m_actions = data[ "cloud_actions" ].toMap();
@@ -151,7 +151,7 @@ void Cloud::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
             childItem->show();
         }
     }
-    
+
     p->save();
     m_theme->paint( p, contentsRect/*, "background" */);
     p->restore();
@@ -229,7 +229,7 @@ void Cloud::adjustCurrentLinePos()
 
     CloudTextItem * currentItem;
     QRectF currentItemRect;
-    
+
     //First we run through the list to get the max height of an item
     // and the total width of all items.
     foreach( currentItem, m_currentLineItems )
@@ -291,7 +291,7 @@ void CloudTextItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
    // debug() << "CloudTextItem::hoverEnterEvent!! " << endl;
     m_timeLine->stop();
     m_timeLine->setCurrentTime ( 0 );
-    
+
     setDefaultTextColor( QColor( 0, 127, 255 ) );
     update();
 }
@@ -332,9 +332,9 @@ void Cloud::drawCloud()
 
     //make the cloud map valuse sane:
     cropAndNormalize( 1, 40 );
-        
+
     m_runningY = m_theme->elementRect( "cloud_name" ).topLeft().y();
-    
+
     if ( m_strings.size() == m_weights.size() ) {
         int index = 0;
         foreach( QVariant stringVariant, m_strings ) {
@@ -379,7 +379,7 @@ void Cloud::cropAndNormalize( int minCount, int maxCount )
     //meh, opimize later if needed...
     QList<QVariant> m_newStrings;
     QList<QVariant> m_newWeights;
-    
+
     foreach( QVariant stringVariant, m_strings ) {
         int weight = m_weights.at( index ).toInt();
         if ( ( weight >= minCount ) && ( weight < maxCount ) ) {
@@ -389,7 +389,7 @@ void Cloud::cropAndNormalize( int minCount, int maxCount )
             m_newStrings.append( stringVariant.toString() );
             m_newWeights.append( maxCount / scaleFactor );
         }
-        
+
         index++;
     }
 

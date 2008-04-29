@@ -52,7 +52,7 @@ void WikipediaApplet::init()
     dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
 
     m_header = new Context::Svg( "widgets/amarok-wikipedia", this );
-    m_header->setContentType( Context::Svg::SingleImage );
+    m_header->setContainsMultipleImages( false );
 
     m_header->resize();
     m_aspectRatio = (qreal)m_header->size().height()
@@ -68,7 +68,7 @@ void WikipediaApplet::init()
     QFont labelFont;
     labelFont.setBold( true );
     labelFont.setPointSize( labelFont.pointSize() + 3 );
-    m_wikipediaLabel->setBrush( Plasma::Theme::self()->textColor() );
+    m_wikipediaLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
 
@@ -81,16 +81,11 @@ void WikipediaApplet::constraintsUpdated( Plasma::Constraints constraints )
     prepareGeometryChange();
     if ( constraints & Plasma::SizeConstraint && m_header )
     {
-        m_header->resize(contentSize().toSize());
+        m_header->resize(size().toSize());
     }
 
     m_wikipediaLabel->setPos( m_header->elementRect( "wikipedialabel" ).topLeft() );
     m_wikipediaLabel->setFont( shrinkTextSizeToFit( "Wikipedia", m_header->elementRect( "wikipedialabel" ) ) );
-
-    //center it
-    float textWidth = m_wikipediaLabel->boundingRect().width();
-    float totalWidth = m_header->elementRect( "wikipedialabel" ).width();
-    float offsetX =  ( totalWidth - textWidth ) / 2;
 
     m_wikiPage->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
 
@@ -142,7 +137,7 @@ void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsIt
 {
     Q_UNUSED( option );
 
-    m_header->resize(contentSize().toSize());
+    m_header->resize(size().toSize());
 
     p->save();
     m_header->paint( p, contentsRect/*, "header" */);

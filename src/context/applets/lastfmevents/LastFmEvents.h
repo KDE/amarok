@@ -16,7 +16,6 @@
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>
-#include <context/widgets/TextWidget.h>
 #include <context/Svg.h>
 #include <QGraphicsTextItem>
 #include <QTextDocument>

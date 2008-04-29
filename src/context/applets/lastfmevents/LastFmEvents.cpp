@@ -41,11 +41,10 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
     , m_userEnabled( false )
 {
     DEBUG_BLOCK
-    Context::Theme::self()->setApplication( "amarok" );
 
     debug() << "Loading LastFmEvents applet";
 
-    setDrawStandardBackground( true );
+    setBackgroundHints( Plasma::Applet::DefaultBackground );
     setHasConfigurationInterface( true );
 
     if( args.size() > 0 ) // we are being told what position to start at
@@ -66,7 +65,7 @@ void LastFmEvents::init()
     m_width = conf.readEntry( "width" , 400 );
 
     m_theme = new Context::Svg( "widgets/amarok-lastfm", this );
-    m_theme->setContentType( Plasma::Svg::SingleImage );
+    m_theme->setContainsMultipleImages( false );
 
     for( int i = 0; i < 14; i++ ) // create all the items
     {
@@ -74,9 +73,10 @@ void LastFmEvents::init()
         m_dates << new QGraphicsSimpleTextItem( this );
         m_cities << new QGraphicsSimpleTextItem( this );
         // white font for now
-        m_titles[ i ]->setBrush( Plasma::Theme::self()->textColor() );
-        m_dates[ i ]->setBrush( Plasma::Theme::self()->textColor() );
-        m_cities[ i ]->setBrush( Plasma::Theme::self()->textColor() );
+        const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
+        m_titles[ i ]->setBrush( textColor );
+        m_dates[ i ]->setBrush( textColor );
+        m_cities[ i ]->setBrush( textColor );
     }
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "sysevents" ), this );
     dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "userevents" ), this );
@@ -95,7 +95,7 @@ void LastFmEvents::init()
 
 //     debug() << "setting size to " << m_width;
     m_theme->resize( (int)m_width, (int)m_width );
-    setContentSize( (int)m_width, (int)m_width );
+    setPreferredSize( (int)m_width, (int)m_width );
 
 }
 
@@ -105,7 +105,7 @@ void LastFmEvents::constraintsUpdated( Plasma::Constraints constraints )
     prepareGeometryChange();
 
     if (constraints & Plasma::SizeConstraint && m_theme) {
-        m_theme->resize(contentSize().toSize());
+        m_theme->resize(size().toSize());
     }
 
 //     debug() << "resized svg to " << contentSize().toSize() << ", now re-laying out";

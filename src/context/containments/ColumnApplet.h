@@ -23,6 +23,7 @@
 #include "context/Svg.h"
 
 #include "plasma/appletbrowser.h"
+#include "plasma/animator.h"
 #include "SvgHandler.h"
 
 #include <QGraphicsSceneMouseEvent>
@@ -54,7 +55,7 @@ public:
 
     void updateSize();
 
-    QSizeF sizeHint() const;
+    QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const;
 
     virtual void paintInterface(QPainter *painter,
                                 const QStyleOptionGraphicsItem *option,
@@ -62,7 +63,7 @@ public:
 
     QList<QAction*> contextActions();
 
-    
+
 
 public slots:
     void appletRemoved( QObject* object );
@@ -81,7 +82,7 @@ protected slots:
 
 private slots:
     void destroyApplet();
-    void appletDisappearComplete(QGraphicsItem *item, Plasma::Phase::Animation anim);
+    void appletDisappearComplete(QGraphicsItem *item, Plasma::Animator::Animation anim);
 
     void jobDone();
 private:

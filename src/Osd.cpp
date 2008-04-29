@@ -24,7 +24,7 @@
 #include "SvgHandler.h"
 #include "TheInstances.h"
 
-#include <plasma/svgpanel.h>
+#include <plasma/panelsvg.h>
 
 #include <KApplication>
 #include <KIcon>
@@ -73,8 +73,9 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 
     const QString backgroundFilename = KStandardDirs::locate( "data", "amarok/images/OsdBackground.svg" );
 
-    m_background = new Plasma::SvgPanel( backgroundFilename );
-    m_background->setBorderFlags( Plasma::SvgPanel::DrawAllBorders );
+    m_background = new Plasma::PanelSvg( this );
+    m_background->setImagePath( backgroundFilename );
+    m_background->setEnabledBorders( Plasma::PanelSvg::AllBorders );
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
     //PORT 2.0

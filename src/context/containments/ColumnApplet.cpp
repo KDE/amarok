@@ -19,8 +19,6 @@
 #include "SvgTinter.h"
 #include "TheInstances.h"
 
-#include "plasma/layouts/layoutanimator.h"
-#include "plasma/phase.h"
 #include "plasma/theme.h"
 
 #include <KAuthorized>
@@ -62,13 +60,13 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 
     setContainmentType( CustomContainment );
 
+    DEBUG_LINE_INFO
     m_columns = new ContextLayout( this );
     m_columns->setColumnWidth( m_defaultColumnSize );
-    m_columns->setSpacing( 3 );
-    m_columns->setMargin( Plasma::LeftMargin, 0 );
-    m_columns->setMargin( Plasma::TopMargin, 0 );
-    m_columns->setMargin( Plasma::RightMargin, 0 );
-    m_columns->setMargin( Plasma::BottomMargin, 0 );
+    DEBUG_LINE_INFO
+//     m_columns->setSpacing( 3 );
+//     m_columns->setContentsMargins(0,0,0,0);
+    DEBUG_LINE_INFO
 
     //HACK alert!
 
@@ -80,14 +78,17 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     //connect( m_job, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( jobDone() ) );
     //ThreadWeaver::Weaver::instance()->enqueue( m_job );
 
+    DEBUG_LINE_INFO
     //m_background = new Svg( m_tintedSvg.fileName(), this );
     m_logo = new Svg( "widgets/amarok-logo", this );
     m_width = 300; // TODO hardcoding for now, do we want this configurable?
     m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width();
     m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );
+    DEBUG_LINE_INFO
 
     connect( this, SIGNAL( appletAdded( Plasma::Applet* ) ), this, SLOT( addApplet( Plasma::Applet* ) ) );
 
+    DEBUG_LINE_INFO
 
     m_appletBrowserAction = new QAction(i18n("Add applet"), this);
     connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser()));
@@ -98,6 +99,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_appletBrowser = new Plasma::AppletBrowser( this );
     m_appletBrowser->setApplication( "amarok" );
     m_appletBrowser->hide();
+    DEBUG_LINE_INFO
 
     //connect ( Plasma::Theme::self(), SIGNAL( changed() ), this, SLOT( paletteChange() ) );
     connect( KGlobalSettings::self(), SIGNAL(kdisplayPaletteChanged() ), this, SLOT( paletteChange() ) );
@@ -134,7 +136,7 @@ void ColumnApplet::loadConfig( KConfig& conf )
     recalculate();
 }
 
-QSizeF ColumnApplet::sizeHint() const
+QSizeF ColumnApplet::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {
     return m_geometry.size();
 }
@@ -299,12 +301,12 @@ void ColumnApplet::destroyApplet()
     }
 
     Applet *applet = qobject_cast<Applet*>(action->data().value<QObject*>());
-    Plasma::Phase::self()->animateItem(applet, Plasma::Phase::Disappear);
+    Plasma::Animator::self()->animateItem(applet, Plasma::Animator::DisappearAnimation);
 }
 
-void ColumnApplet::appletDisappearComplete(QGraphicsItem *item, Plasma::Phase::Animation anim)
+void ColumnApplet::appletDisappearComplete(QGraphicsItem *item, Plasma::Animator::Animation anim)
 {
-    if (anim == Plasma::Phase::Disappear) {
+    if (anim == Plasma::Animator::DisappearAnimation) {
         if (item->parentItem() == this) {
             Applet *applet = qgraphicsitem_cast<Applet*>(item);
 

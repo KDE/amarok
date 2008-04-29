@@ -18,7 +18,6 @@
 #include "Applet.h"
 #include "Context.h"
 #include <plasma/corona.h>
-#include <plasma/layouts/vboxlayout.h>
 
 namespace Context
 {
@@ -28,18 +27,16 @@ class AMAROK_EXPORT ContextScene : public Plasma::Corona
     Q_OBJECT
 public:
     explicit ContextScene(QObject * parent = 0);
-    explicit ContextScene(const QRectF & sceneRect, QObject * parent = 0);
-    explicit ContextScene(qreal x, qreal y, qreal width, qreal height, QObject * parent = 0);
     ~ContextScene();
-    
+
     void loadDefaultSetup();
-    
+
 signals:
     void appletRemoved( QObject *object );
-   
+
 protected slots:
 //     void appletDestroyed(QObject* object);
-        
+
 protected:
     void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
     /*void dragEnterEvent(QGraphicsSceneDragDropEvent* event);

@@ -44,7 +44,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     dataEngine( "amarok-service" )->connectSource( "service", this );
 
     m_theme = new Context::Svg( "widgets/amarok-serviceinfo", this );
-    m_theme->setContentType( Context::Svg::SingleImage );
+    m_theme->setContainsMultipleImages( false );
     m_theme->resize( m_size );
     m_width = globalConfig().readEntry( "width", 500 );
 
@@ -60,8 +60,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
 
-    m_serviceName->setBrush( Plasma::Theme::self()->textColor() );
-    //m_serviceMainInfo->setBrush( QBrush( Qt::white ) );
+    m_serviceName->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
 
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
@@ -87,7 +86,7 @@ void ServiceInfo::constraintsUpdated( Plasma::Constraints constraints )
     prepareGeometryChange();
 
     if (constraints & Plasma::SizeConstraint && m_theme) {
-        m_theme->resize(contentSize().toSize());
+        m_theme->resize(size().toSize());
     }
 
 
@@ -199,11 +198,11 @@ qreal ServiceInfo::heightForWidth(qreal width) const
 void ServiceInfo::linkClicked( const QUrl & url )
 {
     kDebug() << "Link clicked: " << url.toString();
-    
+
     //for now, just handle xspf playlist files
 
     if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) ) {
-        
+
         QDBusInterface amarokPlaylist( "org.kde.amarok", "/Playlist" );
         amarokPlaylist.call( "addMedia", url.toString() );
     }

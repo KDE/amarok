@@ -23,7 +23,7 @@
 
 #include "amarok_export.h"
 
-#include <plasma/layouts/layout.h>
+#include <QGraphicsLayout>
 
 namespace Context
 {
@@ -36,27 +36,25 @@ namespace Context
  * Additionally, this class only lays items out width-wise and
  * uses the items' heightForWidth for the heights
  */
-class AMAROK_EXPORT ContextLayout : public Plasma::Layout
+class AMAROK_EXPORT ContextLayout : public QGraphicsLayout
 {
 public:
     /** Construct a new flow layout with the specified parent. */
-    explicit ContextLayout(LayoutItem* parent);
+    explicit ContextLayout( QGraphicsLayoutItem* parent );
     virtual ~ContextLayout();
 
     // reimplemented
     virtual int count() const;
-    virtual void addItem(LayoutItem* item);
-    virtual void removeItem(LayoutItem* item);
-    virtual int indexOf(LayoutItem* item) const;
-    virtual LayoutItem* itemAt(int i) const;
-    virtual LayoutItem* takeAt(int i);
+    virtual void addItem( QGraphicsLayoutItem* item );
+    virtual void removeItem( QGraphicsLayoutItem* item );
+    virtual int indexOf( QGraphicsLayoutItem* item ) const;
+    virtual QGraphicsLayoutItem* itemAt( int i ) const;
+    virtual QGraphicsLayoutItem* takeAt( int i );
+    virtual void removeAt( int i );
 
-    virtual QSizeF sizeHint() const;
-    virtual Qt::Orientations expandingDirections() const;
+    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const;
     virtual void setColumnWidth( const qreal width );
     virtual qreal columnWidth() const;
-
-    virtual void releaseManagedItems();
 
 protected:
     void relayout();

@@ -48,16 +48,16 @@ CurrentTrack::~CurrentTrack()
 
 void CurrentTrack::init()
 {
-    setDrawStandardBackground( true );
+    setBackgroundHints( Plasma::Applet::DefaultBackground );
     createMenu();
 
     m_theme = new Context::Svg( "widgets/amarok-currenttrack", this );
-    m_theme->setContentType( Context::Svg::SingleImage );
+    m_theme->setContainsMultipleImages( false );
     m_width = globalConfig().readEntry( "width", 500 );
 
     KIconLoader *iconLoader = KIconLoader::global();
 
-    const QColor textColor = Plasma::Theme::self()->textColor();
+    const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
     QFont labelFont;
     labelFont.setBold( true );
     labelFont.setPointSize( labelFont.pointSize() + 1  );
@@ -143,7 +143,7 @@ void CurrentTrack::constraintsUpdated( Plasma::Constraints constraints )
     prepareGeometryChange();
 
     if( constraints & Plasma::SizeConstraint )
-        m_theme->resize(contentSize().toSize());
+        m_theme->resize(size().toSize());
 
     // here we put all of the text items into the correct locations
     m_titleLabel->setPos( m_theme->elementRect( "tracklabel" ).topLeft() );
@@ -284,7 +284,7 @@ bool CurrentTrack::resizeCover( QPixmap cover )
 {
     if( !cover.isNull() )
     {
-        QSize rectSize = m_theme->elementRect( "albumart" ).size();
+        QSizeF rectSize = m_theme->elementRect( "albumart" ).size();
         QPointF rectPos = m_theme->elementRect( "albumart" ).topLeft();
         int size = qMin( rectSize.width(), rectSize.height() );
         qreal pixmapRatio = (qreal)cover.width()/size;

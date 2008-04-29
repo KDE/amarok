@@ -270,7 +270,6 @@ set( libcontextview_SRCS
     context/DataEngineManager.cpp
     context/LyricsManager.cpp
     context/Svg.cpp
-    context/widgets/TextWidget.cpp
     context/layouts/ContextLayout.cpp
     context/layouts/VerticalLayout.cpp
     context/containments/ColumnApplet.cpp

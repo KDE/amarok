@@ -15,8 +15,7 @@
 
 #include "amarok_export.h"
 
-#include "plasma/layouts/layout.h"
-
+#include <QGraphicsLayout>
 #include <QtCore/QList>
 
 namespace Context
@@ -29,31 +28,29 @@ namespace Context
 * height.
 */
 
-class AMAROK_EXPORT VerticalLayout : public Plasma::Layout
+class AMAROK_EXPORT VerticalLayout : public QGraphicsLayout
 {
 public:
 
-    explicit VerticalLayout(LayoutItem *parent = 0);
+    explicit VerticalLayout( QGraphicsLayoutItem *parent = 0 );
     ~VerticalLayout();
-    
+
     // reimplemented from Layout
-    virtual void addItem(LayoutItem *l);
-    virtual void removeItem(LayoutItem *l);
-    virtual int indexOf(LayoutItem *l) const;
-    virtual LayoutItem *itemAt(int i) const;
-    virtual LayoutItem *takeAt(int i);
-    virtual Qt::Orientations expandingDirections() const;
-    virtual void setGeometry(const QRectF &geometry);
+    virtual void addItem( QGraphicsLayoutItem *l );
+    virtual void removeItem( QGraphicsLayoutItem *l );
+    virtual int indexOf( QGraphicsLayoutItem *l ) const;
+    virtual QGraphicsLayoutItem *itemAt( int i ) const;
+    virtual QGraphicsLayoutItem *takeAt( int i );
+    virtual void removeAt( int i );
+    virtual void setGeometry( const QRectF &geometry );
     virtual QRectF geometry() const;
     virtual int count() const;
 
-    virtual void releaseManagedItems();
-    
-    virtual QSizeF sizeHint() const;
-    
+    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
+
     protected:
         void relayout();
-        
+
     private:
         class Private;
         Private *const d;

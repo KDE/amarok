@@ -21,16 +21,17 @@ namespace Context
 {
 
 Svg::Svg( const QString& imagePath, QObject* parent )
-    : Plasma::Svg( imagePath, parent )
+    : Plasma::Svg( parent )
 {}
 
-QRect Svg::elementRect( const QString& elementId )
+QRectF Svg::elementRect( const QString& elementId )
 {
-    QRect rect = Plasma::Svg::elementRect( elementId );
-//     debug() << "original rect of element: " << elementId << " " << rect 
-//             << " transform matrix: " << matrixForElement( elementId ) 
+    QRectF rect = Plasma::Svg::elementRect( elementId );
+//     debug() << "original rect of element: " << elementId << " " << rect
+//             << " transform matrix: " << matrixForElement( elementId )
 //             << " new rect: " << rect.translated( (int)matrixForElement( elementId ).dx(), (int)matrixForElement( elementId ).dy() );
-    rect.translate( (int)matrixForElement( elementId ).dx(), (int)matrixForElement( elementId ).dy() );
+    //FIXME: Do we still need this? matrixForElement is now private... but I'm not sure what this function is supposed to do :(
+//     rect.translate( (int)matrixForElement( elementId ).dx(), (int)matrixForElement( elementId ).dy() );
 
     return rect;
 

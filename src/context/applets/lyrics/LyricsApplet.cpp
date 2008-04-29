@@ -28,7 +28,6 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_lyrics( 0 )
 {
-    Context::Theme::self()->setApplication( "amarok" );
     setHasConfigurationInterface( false );
 }
 
@@ -85,7 +84,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
     else if( data.contains( "notfound" ) )
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
-    setContentSize( (int)size().width(), (int)size().height() );
+    setPreferredSize( (int)size().width(), (int)size().height() );
 }
 
 bool LyricsApplet::hasHeightForWidth() const

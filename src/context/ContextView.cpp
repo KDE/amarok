@@ -53,7 +53,7 @@ ContextView::ContextView( QWidget* parent )
     s_self = this;
 
     PERF_LOG( "Creating contextScene" )
-    setScene( new ContextScene( rect(), this ) );
+    setScene( new ContextScene( this ) );
     PERF_LOG( "Created ContextScene" )
     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
@@ -68,8 +68,7 @@ ContextView::ContextView( QWidget* parent )
 
     PERF_LOG( "Accessing Plasma::Theme" );
     // here we initialize all the Plasma paths to Amarok paths
-    Theme::self()->setApplication( "amarok" );
-    Theme::self()->setThemeName( "Amarok-Mockup" );
+    Theme::defaultTheme()->setThemeName( "Amarok-Mockup" );
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
 
@@ -122,7 +121,7 @@ void ContextView::clear( const ContextState& state )
         if( containment )
             containment->saveToConfig( appletConfig );
     }
-    contextScene()->clearApplets();
+    contextScene()->clearContainments();
 }
 
 
@@ -181,7 +180,7 @@ void ContextView::loadConfig()
         cur += QString( "current" );
     cur += "rc";
 
-    contextScene()->clearApplets();
+    contextScene()->clearContainments();
     KConfig appletConfig( cur, KConfig::SimpleConfig );
     if( contextScene()->containments().size() > 0 )
     {

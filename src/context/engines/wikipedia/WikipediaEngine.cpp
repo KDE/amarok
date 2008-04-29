@@ -255,7 +255,7 @@ void WikipediaEngine::wikiResult( KJob* job )
     }
     m_wikiHTMLSource.append( "</body></html>\n" );
 
-    clearData( "wikipedia" );
+    removeAllData( "wikipedia" );
 //     debug() << "sending wiki page:" << m_wikiHTMLSource;
     setData( "wikipedia", "page", m_wikiHTMLSource );
 

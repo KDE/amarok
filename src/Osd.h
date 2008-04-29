@@ -23,7 +23,7 @@
 
 namespace Plasma
 {
-    class SvgPanel;
+    class PanelSvg;
 }
 
 class OSDWidget : public QWidget
@@ -105,7 +105,7 @@ class OSDWidget : public QWidget
         QString     m_text;
         QImage      m_cover;
         QPixmap     m_scaledCover;
-        Plasma::SvgPanel *m_background;
+        Plasma::PanelSvg *m_background;
 };
 
 

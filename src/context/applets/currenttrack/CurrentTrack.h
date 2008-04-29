@@ -17,7 +17,6 @@
 #include <context/Applet.h>
 #include <context/DataEngine.h>
 #include <context/Svg.h>
-#include <context/widgets/TextWidget.h>
 
 #include <KDialog>
 
@@ -71,7 +70,7 @@ private:
     QGraphicsPixmapItem* m_scoreLabel;
     QGraphicsPixmapItem* m_numPlayedLabel;
     QGraphicsPixmapItem* m_playedLastLabel;
-    
+
     QGraphicsSimpleTextItem* m_title;
     QGraphicsSimpleTextItem* m_artist;
     QGraphicsSimpleTextItem* m_album;

@@ -23,7 +23,6 @@
 #include <context/Applet.h>
 #include <context/DataEngine.h>
 #include <context/Svg.h>
-#include <context/widgets/TextWidget.h>
 
 #include <KDialog>
 
@@ -88,7 +87,7 @@ public slots:
 
 private slots:
     void configAccepted();
-    void cloudItemActivated( const QString &text ); 
+    void cloudItemActivated( const QString &text );
 
 private:
     void resize( qreal newWidth, qreal aspectRatio );
@@ -113,7 +112,7 @@ private:
     int m_minFontSize;
 
     float m_maxHeightInFirstLine;
- 
+
     QList<CloudTextItem *> m_currentLineItems;
     QList<CloudTextItem *> m_textItems;
 

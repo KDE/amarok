@@ -59,7 +59,7 @@ bool CurrentEngine::sourceRequested( const QString& name )
 {
     Q_UNUSED( name );
 /*    m_sources << name;    // we are already enabled if we are alive*/
-    clearData( name );
+    removeAllData( name );
     setData( name, QVariant());
     update();
     m_requested = true;
@@ -106,7 +106,7 @@ void CurrentEngine::update()
     int width = coverWidth();
     if( m_currentTrack->album() )
         m_currentTrack->album()->subscribe( this );
-    clearData( "current" );
+    removeAllData( "current" );
     if( m_currentTrack->album() ) {
 
         //add a source info emblem ( if available ) to the cover

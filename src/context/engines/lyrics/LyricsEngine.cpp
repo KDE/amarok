@@ -95,7 +95,7 @@ void LyricsEngine::update()
 
     if( ( !cached ) && ScriptManager::instance()->lyricsScriptRunning().isEmpty() ) // no lyrics, and no lyrics script!
     {
-        clearData( "lyrics" );
+        removeAllData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
         return;
     }
@@ -104,7 +104,7 @@ void LyricsEngine::update()
         LyricsManager::self()->lyricsResult( lyrics.toUtf8(), true );
     else
     { // fetch by lyrics script
-        clearData( "lyrics" );
+        removeAllData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
         ScriptManager::instance()->notifyFetchLyrics( artist, title );
 
@@ -114,13 +114,13 @@ void LyricsEngine::update()
 
 void LyricsEngine::newLyrics( QStringList& lyrics )
 {
-    clearData( "lyrics" );
+    removeAllData( "lyrics" );
     setData( "lyrics", "lyrics", lyrics );
 }
 
 void LyricsEngine::lyricsMessage( QString& msg )
 {
-    clearData( "lyrics" );
+    removeAllData( "lyrics" );
     setData( "lyrics", msg, msg );
 }
 
