@@ -36,7 +36,6 @@ add_subdirectory( collectionscanner )
 add_subdirectory( collection )
 add_subdirectory( strigi )
 add_subdirectory( context )
-add_subdirectory( popupdropper )
 # add_subdirectory( playlistmanager )
 add_subdirectory( servicebrowser )
 
