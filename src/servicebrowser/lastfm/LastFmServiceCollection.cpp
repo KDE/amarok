@@ -35,27 +35,27 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
 
     Meta::ServiceGenre * userStreams = new Meta::ServiceGenre( userName +"'s Streams" );
     Meta::GenrePtr userStreamsPtr( userStreams );
-    addGenre( userStreamsPtr->name(), userStreamsPtr );
+    addGenre( userStreamsPtr );
 
     Meta::ServiceGenre * globalTags = new Meta::ServiceGenre( "Global Tags" );
     Meta::GenrePtr globalTagsPtr( globalTags );
-    addGenre( globalTagsPtr->name(), globalTagsPtr );
+    addGenre( globalTagsPtr );
 
     m_neighbors = new Meta::ServiceGenre( i18n( "Neighbors' Radio" ) );
     Meta::GenrePtr neighborsPtr( m_neighbors );
-    addGenre( neighborsPtr->name(), neighborsPtr );
+    addGenre( neighborsPtr );
 
     m_friends = new Meta::ServiceGenre( i18n( "Friends' Radio" ) );
     Meta::GenrePtr friendsPtr( m_friends );
-    addGenre( friendsPtr->name(), friendsPtr );
+    addGenre( friendsPtr );
 
     m_recentlyLoved = new Meta::ServiceGenre( i18n( "Recently Loved Tracks" ) );
     Meta::GenrePtr recentlyLovedPtr( m_recentlyLoved );
-    addGenre( recentlyLovedPtr->name(), recentlyLovedPtr );
+    addGenre( recentlyLovedPtr );
 
     m_recentlyPlayed = new Meta::ServiceGenre( i18n( "Recently Played Tracks" ) );
     Meta::GenrePtr recentlyPlayedPtr( m_recentlyPlayed );
-    addGenre( recentlyPlayedPtr->name(), recentlyPlayedPtr );
+    addGenre( recentlyPlayedPtr );
 
     // Only show these if the user is a subscriber.
     // Note: isSubscriber is a method we added locally to libUnicorn, if libUnicorn gets bumped we may need to readd if last.fm doesn't
@@ -69,7 +69,7 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
                 LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
                 Meta::TrackPtr trackPtr( track );
                 userStreams->addTrack( trackPtr );
-                addTrack( trackPtr->name(), trackPtr );
+                addTrack( trackPtr );
         }
     }
 
@@ -77,7 +77,7 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + "neighbours" );
     Meta::TrackPtr trackPtr( track );
     userStreams->addTrack( trackPtr );
-    addTrack( trackPtr->name(), trackPtr );
+    addTrack( trackPtr );
 
     QStringList lastfmGenres;
     lastfmGenres << "Alternative" << "Ambient" << "Chill Out" << "Classical"<< "Dance"
@@ -90,7 +90,7 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
         LastFm::Track * track = new LastFm::Track( "lastfm://globaltags/" + genre );
         Meta::TrackPtr trackPtr( track );
         globalTags->addTrack( trackPtr );
-        addTrack( trackPtr->url(), trackPtr );
+        addTrack( trackPtr );
     }
 
     connect( The::webService(), SIGNAL( neighbours( WeightedStringList ) ), SLOT( slotAddNeighbours( WeightedStringList ) ) );
@@ -154,7 +154,7 @@ void LastFmServiceCollection::slotAddNeighbours( WeightedStringList list )
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/personal" );
         Meta::TrackPtr trackPtr( track );
         m_neighbors->addTrack( trackPtr );
-        addTrack( trackPtr->name(), trackPtr );
+        addTrack( trackPtr );
     }
 }
 
@@ -165,7 +165,7 @@ void LastFmServiceCollection::slotAddFriends( QStringList list )
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/personal" );
         Meta::TrackPtr trackPtr( track );
         m_friends->addTrack( trackPtr );
-        addTrack( trackPtr->name(), trackPtr );
+        addTrack( trackPtr );
     }
 }
 
@@ -179,7 +179,7 @@ void LastFmServiceCollection::slotRecentlyLovedTrackResult( Request* _r )
         LastFm::Track *metaTrack = new LastFm::Track( track );
         Meta::TrackPtr trackPtr( metaTrack );
         m_recentlyLoved->addTrack( trackPtr );
-        addTrack( trackPtr->name(), trackPtr );
+        addTrack( trackPtr );
     }
 }
 
@@ -193,7 +193,7 @@ void LastFmServiceCollection::slotRecentTrackResult( Request* _r )
         LastFm::Track *metaTrack = new LastFm::Track( track );
         Meta::TrackPtr trackPtr( metaTrack );
         m_recentlyPlayed->addTrack( trackPtr );
-        addTrack( trackPtr->name(), trackPtr );
+        addTrack( trackPtr );
     }
 }
 QueryMaker*

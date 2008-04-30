@@ -126,10 +126,9 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             genre->setDescription( infoHtml );
             return addGenre( genre );
             
-        } default:
-            return -1;
+        }
     }
-    
+    return -1;
 }
 
 
@@ -140,7 +139,9 @@ int ScriptableService::addTrack( ScriptableServiceTrack * track )
     int genreId = -1;
 
     TrackPtr trackPtr = TrackPtr( track );
-    m_collection->addTrack( track->name(), trackPtr );
+    m_collection->acquireWriteLock();
+    m_collection->addTrack( trackPtr );
+    m_collection->releaseLock();
 
     m_trackIdCounter++;
     track->setId( m_trackIdCounter );
@@ -196,7 +197,7 @@ int ScriptableService::addTrack( ScriptableServiceTrack * track )
 
     m_ssTrackIdMap.insert( m_trackIdCounter, track );
     m_collection->acquireWriteLock();
-    m_collection->addTrack( trackPtr->name(), trackPtr );
+    m_collection->addTrack( trackPtr );
     m_collection->releaseLock();
 
     //m_collection->emitUpdated();
@@ -219,7 +220,7 @@ int ScriptableService::addAlbum( ScriptableServiceAlbum * album )
     album->setId( m_albumIdCounter );
     m_ssAlbumIdMap.insert( m_albumIdCounter, album );
     m_collection->acquireWriteLock();
-    m_collection->addAlbum( album->name(), albumPtr );
+    m_collection->addAlbum( albumPtr );
     m_collection->releaseLock();
     //m_collection->emitUpdated();
     return m_albumIdCounter;
@@ -238,7 +239,7 @@ int ScriptableService::addArtist( Meta::ScriptableServiceArtist * artist )
     artist->setId( m_artistIdCounter );
     m_ssArtistIdMap.insert( m_artistIdCounter, artist );
     m_collection->acquireWriteLock();
-    m_collection->addArtist( artist->name(), artistPtr );
+    m_collection->addArtist( artistPtr );
     m_collection->releaseLock();
 
     return m_artistIdCounter;
@@ -255,7 +256,7 @@ int ScriptableService::addGenre( Meta::ScriptableServiceGenre * genre )
     genre->setId( m_genreIdCounter );
     m_ssGenreIdMap.insert( m_genreIdCounter, genre );
     m_collection->acquireWriteLock();
-    m_collection->addGenre( genre->name(), genrePtr );
+    m_collection->addGenre( genrePtr );
     m_collection->releaseLock();
 
     return m_genreIdCounter;

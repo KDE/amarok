@@ -213,9 +213,11 @@ void ShoutcastServiceQueryMaker::fetchGenres()
         m_collection->setTrackMap( TrackMap() );
         m_collection->releaseLock();
         
-        ServiceGenre * genre = new ServiceGenre( "Results for: " + m_filter );
+        ServiceGenre * genre = new ServiceGenre( i18n( "Results for: %1", m_filter ) );
         GenrePtr genrePtr( genre );
-        m_collection->addGenre( "Results for: " + m_filter,  genrePtr );
+        m_collection->acquireWriteLock();
+        m_collection->addGenre( genrePtr );
+        m_collection->releaseLock();
         
         handleResult();
         emit( queryDone() );
@@ -306,7 +308,9 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 
             ServiceGenre * genre = new ServiceGenre( name );
             GenrePtr genrePtr( genre );
-            m_collection->addGenre( name,  genrePtr );
+            m_collection->acquireWriteLock();
+            m_collection->addGenre( genrePtr );
+            m_collection->releaseLock();
 
         }
         n = n.nextSibling();
@@ -357,7 +361,9 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
                 ShoutcastTrack * track = new ShoutcastTrack(  name, playlistUrl );
 
                 TrackPtr trackPtr( track );
-                m_collection->addTrack( name,  trackPtr );
+                m_collection->acquireWriteLock();
+                m_collection->addTrack( trackPtr );
+                m_collection->releaseLock();
 
                 if ( m_filter.isEmpty() ) {
                     GenrePtr genrePtr = m_collection->genreMap()[ m_genreMatch ];

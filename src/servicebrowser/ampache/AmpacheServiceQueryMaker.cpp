@@ -364,7 +364,9 @@ void AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
 
         artists.push_back( artistPtr );
 
-        m_collection->addArtist( artist->name(),  artistPtr );
+        m_collection->acquireWriteLock();
+        m_collection->addArtist( artistPtr );
+        m_collection->releaseLock();
 
         n = n.nextSibling();
     }
@@ -431,14 +433,11 @@ void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
         //debug() << "   Id: " <<  albumId;
         //debug() << "   Cover url: " <<  coverUrl;
 
-
-        m_collection->addAlbum( title,  albumPtr );
+        m_collection->acquireWriteLock();
+        m_collection->addAlbum( albumPtr );
+        m_collection->releaseLock();
 
         element = n.firstChildElement( "artist" );
-
-        int artistId = element.attribute( "id", "0" ).toInt();
-        //debug() << "   Artist id: " <<  artistId;
-
 
         ArtistPtr artistPtr = m_collection->artistById( m_parentArtistId.toInt() );
         if ( artistPtr.data() != 0 )
@@ -503,10 +502,7 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         //debug() << "Adding track: " <<  title;
 
         track->setId( trackId );
-
-        m_collection->addTrack( element.text(),  trackPtr );
-
-
+        
         element = n.firstChildElement("url");
         track->setUrl( element.text() );
 
@@ -516,6 +512,9 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         element = n.firstChildElement("track");
         track->setTrackNumber( element.text().toInt() );
 
+        m_collection->acquireWriteLock();
+        m_collection->addTrack( trackPtr );
+        m_collection->releaseLock();
 
         QDomElement albumElement = n.firstChildElement("album");
         int albumId = albumElement.attribute( "id", "0").toInt();
@@ -555,6 +554,8 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 QueryMaker * AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
 {
     DEBUG_BLOCK
+    Q_UNUSED( matchBegin )
+    Q_UNUSED( matchEnd )
 
     //debug() << "value: " << value;
     //for now, only accept artist filters

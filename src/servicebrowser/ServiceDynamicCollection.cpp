@@ -34,36 +34,36 @@ ServiceDynamicCollection::~ServiceDynamicCollection()
 
 
 
-void ServiceDynamicCollection::addTrack( const QString &key, Meta::TrackPtr trackPtr)
+void ServiceDynamicCollection::addTrack( Meta::TrackPtr trackPtr)
 {
-    MemoryCollection::addTrack( key, trackPtr );
+    MemoryCollection::addTrack( trackPtr );
     const Meta::ServiceTrack * track = static_cast< const Meta::ServiceTrack * >( trackPtr.data() );
     
     if ( track->id() != 0 )
         m_trackIdMap.insert( track->id(), trackPtr );
 }
 
-void ServiceDynamicCollection::addArtist( const QString &key, Meta::ArtistPtr artistPtr)
+void ServiceDynamicCollection::addArtist( Meta::ArtistPtr artistPtr)
 {
-    MemoryCollection::addArtist( key, artistPtr );
+    MemoryCollection::addArtist( artistPtr );
     const Meta::ServiceArtist * artist = static_cast< const Meta::ServiceArtist* >( artistPtr.data() );
     
     if ( artist->id() != 0 )
         m_artistIdMap.insert( artist->id(), artistPtr );
 }
 
-void ServiceDynamicCollection::addAlbum( const QString &key, Meta::AlbumPtr albumPtr)
+void ServiceDynamicCollection::addAlbum( Meta::AlbumPtr albumPtr)
 {
-    MemoryCollection::addAlbum( key, albumPtr );
+    MemoryCollection::addAlbum( albumPtr );
     const Meta::ServiceAlbum * album = static_cast< const Meta::ServiceAlbum* >( albumPtr.data() );
     
     if ( album->id() != 0 )
         m_albumIdMap.insert( album->id(), albumPtr );
 }
 
-void ServiceDynamicCollection::addGenre( const QString &key, Meta::GenrePtr genrePtr)
+void ServiceDynamicCollection::addGenre( Meta::GenrePtr genrePtr)
 {
-    MemoryCollection::addGenre( key, genrePtr );
+    MemoryCollection::addGenre( genrePtr );
     const Meta::ServiceGenre * genre = static_cast< const Meta::ServiceGenre * >( genrePtr.data() );
     
     if ( genre->id() != 0 )

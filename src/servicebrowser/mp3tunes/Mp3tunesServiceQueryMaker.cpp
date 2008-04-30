@@ -355,7 +355,9 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
 
         artists.push_back( artistPtr );
 
-        m_collection->addArtist( artist->name(),  artistPtr );
+        m_collection->acquireWriteLock();
+        m_collection->addArtist( artistPtr );
+        m_collection->releaseLock();
 
         n = n.nextSibling();
     }
@@ -429,9 +431,9 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
         //debug() << "Adding album: " <<  title;
 
         album->setId( albumId );
-        
-        m_collection->addAlbum( title,  albumPtr );
-
+        m_collection->acquireWriteLock();
+        m_collection->addAlbum( albumPtr );
+        m_collection->releaseLock();
 
         element = n.firstChildElement("artistId");
 
@@ -503,9 +505,6 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         element = n.firstChildElement("trackId");
         track->setId( element.text().toInt() );
 
-        m_collection->addTrack( element.text(),  trackPtr );
-
-
         element = n.firstChildElement("playURL");
         track->setUrl( element.text() );
 
@@ -514,6 +513,10 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
 
         element = n.firstChildElement("trackNumber");
         track->setTrackNumber( element.text().toInt() );
+
+        m_collection->acquireWriteLock();
+        m_collection->addTrack( trackPtr );
+        m_collection->releaseLock();
 
         element = n.firstChildElement("albumId");
         QString albumId = element.text();
