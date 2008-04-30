@@ -1,3 +1,15 @@
+amarok-nightly-cdbs (1.2build2) hardy; urgency=low
+
+  * Rebuild
+
+ -- Project Neon <nightly@getamarok.com>  Wed, 30 Apr 2008 20:10:20 +0200
+
+amarok-nightly-cdbs (1.2build1) hardy; urgency=low
+
+  * Rebuild
+
+ -- Project Neon <nightly@getamarok.com>  Mon, 14 Apr 2008 18:20:24 +0200
+
 amarok-nightly-cdbs (1.2) hardy; urgency=low
 
   * Hardy upgrade
