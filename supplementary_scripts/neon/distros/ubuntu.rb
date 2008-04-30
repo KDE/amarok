@@ -25,7 +25,7 @@ debemail    = ENV['DEBEMAIL']
 debfullname = ENV['DEBFULLNAME']
 
 ENV['DEBEMAIL']    = "nightly@getamarok.com"
-ENV['DEBFULLNAME'] = "Amarok Nightly Builds"
+ENV['DEBFULLNAME'] = "Project Neon"
 
 class UploadUbuntu
   def initialize()
@@ -50,7 +50,7 @@ class UploadUbuntu
     `cp -rf #{DEBPATH}/#{package}-debian ./debian`
 
     `dch -D "#{DEBVERSION}" -v "#{DATE}.#{@rev}-0amarok#{REV}" "Nightly Build"`
-    `dpkg-buildpackage -S -sa -rfakeroot -k"Amarok Nightly Builds"`
+    `dpkg-buildpackage -S -sa -rfakeroot -k"#{ENV['DEBFULLNAME'}"`
 
     if package == "amarok"
       AmarokUpload()
