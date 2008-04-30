@@ -77,6 +77,12 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     m_background->setImagePath( backgroundFilename );
     m_background->setEnabledBorders( Plasma::PanelSvg::AllBorders );
 
+    const int topHeight = m_background->marginSize(Plasma::TopMargin);
+    const int leftWidth = m_background->marginSize(Plasma::LeftMargin);
+    const int rightWidth = m_background->marginSize(Plasma::RightMargin);
+    const int bottomHeight = m_background->marginSize(Plasma::BottomMargin);
+    setContentsMargins(leftWidth, topHeight, rightWidth, bottomHeight);
+
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
     //PORT 2.0
 //     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
@@ -306,12 +312,13 @@ OSDWidget::paintEvent( QPaintEvent *e )
     QPainter p( this );
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
 
+    p.setClipRect(e->rect());
     if( KWindowSystem::compositingActive() )
     {
         p.setCompositionMode(QPainter::CompositionMode_Source );
-        p.fillRect(QWidget::rect(), Qt::transparent);
+        p.fillRect( rect, Qt::transparent );
     }
-    m_background->paint(&p, e->rect());
+    m_background->paintPanel(&p, e->rect());
 //     p.setPen( palette().color( QPalette::Active, QPalette::HighlightedText ) );
     p.setPen( Qt::white ); // Revert this when the background can be colorized again.
     rect.adjust( M, M, -M, -M );
