@@ -1,7 +1,7 @@
 Source: amarok-nightly-strigi
 Section: utils
 Priority: optional
-Maintainer: Amarok Nightly Builds <nightly@getamarok.com>
+Maintainer: Project Neone <nightly@getamarok.com>
 Build-Depends: amarok-nightly-cdbs, amarok-nightly-qt,
  debhelper (>= 6), cmake, quilt, libbz2-dev,
  libclucene-dev, libdbus-1-dev, libexiv2-dev, libxml2-dev,

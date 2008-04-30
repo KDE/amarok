@@ -1,7 +1,7 @@
 Source: amarok-nightly-qt
 Section: libs
 Priority: optional
-Maintainer: Amarok Nightly Builds <anightly@getamarok.com>
+Maintainer: Project Neone <nightly@getamarok.com>
 Build-Depends: cdbs, debhelper (>= 5), quilt, sharutils, libxext-dev, libxrandr-dev, x11proto-core-dev, libsm-dev, libxmu-dev, libice-dev, libx11-dev, libxt-dev, libjpeg62-dev, zlib1g-dev, libmng-dev, libpng12-dev, libfreetype6-dev, flex, libpq-dev, libaudio-dev, libcupsys2-dev, xlibmesa-gl-dev | libgl-dev, libglu1-xorg-dev | libglu1-mesa-dev | libglu-dev, libxft-dev, libxrender-dev, libxcursor-dev, libxinerama-dev, libdbus-1-dev, libglib2.0-dev, libxi-dev
 Standards-Version: 3.7.3
 
