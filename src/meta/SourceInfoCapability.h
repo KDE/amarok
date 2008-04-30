@@ -37,13 +37,35 @@ namespace Meta
     public:
         Q_OBJECT
         public:
+            /**
+             * Constructor
+             */
             SourceInfoCapability();
+            /**
+             * Destructor
+             */
             virtual ~SourceInfoCapability();
 
+            /**
+             * Get the human readable name of the source, for instance "Magnatune.com"
+             * @return The name of the source
+             */
             virtual QString sourceName() = 0;
+            /**
+             * Get a brief human readable discription or the source
+             * @return The source description
+             */
             virtual QString sourceDescription() = 0;
+            /**
+             * Get a small 16x16 pixle emblem that represents the source.
+             * @return The source emblem
+             */
             virtual QPixmap emblem() = 0;
 
+            /**
+             * Get the capabilityInterfaceType of this capability
+             * @return The capabilityInterfaceType ( always Meta::Capability::SourceInfo; )
+             */
             static Type capabilityInterfaceType() { return Meta::Capability::SourceInfo; }
 
     };
