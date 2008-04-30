@@ -90,7 +90,7 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
         LastFm::Track * track = new LastFm::Track( "lastfm://globaltags/" + genre );
         Meta::TrackPtr trackPtr( track );
         globalTags->addTrack( trackPtr );
-        addTrack( trackPtr->name(), trackPtr );
+        addTrack( trackPtr->url(), trackPtr );
     }
 
     connect( The::webService(), SIGNAL( neighbours( WeightedStringList ) ), SLOT( slotAddNeighbours( WeightedStringList ) ) );
