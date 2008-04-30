@@ -1,11 +1,9 @@
-
-        include_directories( 
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/..
-        ${CMAKE_CURRENT_SOURCE_DIR}/../..
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../collection
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../meta
-        ${CMAKE_CURRENT_SOURCE_DIR}/libUnicorn
+        include_directories(
+        ..
+        ../..
+        ../../collection
+        ../../meta
+        libUnicorn
         ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
@@ -16,15 +14,15 @@
         if (WIN32)
             set(amarok_service_lastfm_extra_sources
                 libUnicorn/UnicornCommonWin.cpp)
-                
+
             add_definitions(-DUNICODE -D_UNICODE)
         endif (WIN32)
-        
+
         if (APPLE)
             set(amarok_service_lastfm_extra_sources
                 libUnicorn/UnicornCommonMac.cpp)
         endif (APPLE)
-        
+
         add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
         set(amarok_service_lastfm_PART_SRCS
@@ -36,10 +34,10 @@
             LastFmSettings.cpp
             RadioAdapter.cpp
             ScrobblerAdapter.cpp
-            
+
             meta/LastFmMeta.cpp
             meta/LastFmStreamInfoCapability.cpp
-        
+
             core/Radio.cpp
             core/RadioPlaylist.cpp
             core/Scrobbler-12.cpp
@@ -93,10 +91,10 @@
             libUnicorn/WebService/VerifyUserRequest.cpp
             libUnicorn/WebService/XmlRpc.cpp
             libUnicorn/WebService.cpp
-            
+
             ${amarok_service_lastfm_extra_sources}
         )
-        
+
         add_definitions(-DUNICORN_DLLEXPORT_PRO -DMOOSE_DLLEXPORT_PRO -DQT_XML_LIB)
 
         kde4_add_plugin(amarok_service_lastfm ${amarok_service_lastfm_PART_SRCS})
@@ -118,7 +116,6 @@
 
 
         kde4_add_plugin( kcm_amarok_service_lastfm ${kcm_amarok_service_lastfm_PART_SRCS} )
-
 
         target_link_libraries( kcm_amarok_service_lastfm amaroklib ${KDE4_KUTILS_LIBS} )
 

@@ -1,7 +1,6 @@
 
 include_directories(
     ../..
-    ../../amarokcore
     ../../engine
     ../../mediadevice
     ../../meta
@@ -31,33 +30,3 @@ install(TARGETS amarok_mtp-mediadevice DESTINATION ${PLUGIN_INSTALL_DIR})
 
 install(FILES amarok_mtp-mediadevice.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-
-#original Makefile.am contents follow:
-
-#kde_services_DATA = amarok_mtp-mediadevice.desktop
-#
-#
-#INCLUDES = \
-#	-I$(top_srcdir)/amarok/src \
-#        -I$(top_srcdir)/amarok/src/klegendary \
-#	-I$(top_builddir)/amarok/src \
-#	-I$(top_srcdir)/amarok/src/amarokcore \
-#	-I$(top_builddir)/amarok/src/amarokcore \
-#	-I$(top_srcdir)/amarok/src/engine \
-#	-I$(top_builddir)/amarok/src/engine \
-#	-I$(top_srcdir)/amarok/src/mediadevice \
-#	$(taglib_includes) \
-#	$(all_includes)
-#
-#METASOURCES = AUTO
-#kde_module_LTLIBRARIES = libamarok_mtp-mediadevice.la
-#
-#libamarok_mtp_mediadevice_la_LIBADD = $(top_builddir)/amarok/src/libamarok.la \
-#	-lkdeui -lkdecore -lmtp
-#
-#libamarok_mtp_mediadevice_la_LDFLAGS = $(KDE_PLUGIN) $(all_libraries)
-#
-#noinst_HEADERS = mtpmediadevice.h playlist.h track.h
-#
-#libamarok_mtp_mediadevice_la_SOURCES = mtpmediadevice.cpp playlist.cpp \
-#	track.cpp

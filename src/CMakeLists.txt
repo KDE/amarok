@@ -24,7 +24,6 @@ if(APPLE)
     set(mac_SRCS app_mac.cpp)
 endif(APPLE)
 
-add_subdirectory( amarokcore )
 add_subdirectory( data )
 add_subdirectory( images )
 add_subdirectory( scripts )
@@ -51,7 +50,6 @@ endif (USE_SYSTEM_SQLITE)
 
 
 include_directories(
-    amarokcore
     analyzers
     context
     context/widgets
@@ -80,18 +78,6 @@ if ( KDEMULTIMEDIA_FOUND )
 endif ( KDEMULTIMEDIA_FOUND )
 
 
-set(libamarokcore_SRCS
-    amarokcore/amarokdbushandler.cpp
-    amarokcore/crashhandler.cpp
-)
-
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.collection.xml amarokcore/amarokdbushandler.h Amarok::DbusCollectionHandler)
-#qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.mediabrowser.xml amarokcore/amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.player.xml amarokcore/amarokdbushandler.h Amarok::DbusPlayerHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlist.xml amarokcore/amarokdbushandler.h Amarok::DbusPlaylistHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlistbrowser.xml amarokcore/amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.script.xml amarokcore/amarokdbushandler.h Amarok::DbusScriptHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.context.xml amarokcore/amarokdbushandler.h Amarok::DbusContextHandler)
 
 #####################################################################
 # PLUGIN
@@ -366,7 +352,6 @@ set(popupdropper_SRCS
 #####################################################################
 set(amaroklib_LIB_SRCS
     ${libscriptableservice_SRCS}
-    ${libamarokcore_SRCS}
     ${libanalyzers_SRCS}
     ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
@@ -385,6 +370,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylistmanager_SRCS}
     ${mediadevice_SRCS}
     ${popupdropper_SRCS}
+    amarokdbushandler.cpp
     ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
@@ -393,6 +379,7 @@ set(amaroklib_LIB_SRCS
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverManager.cpp
+    crashhandler.cpp
     cuefile.cpp
     dbsetup.ui.h
     deletedialog.cpp
@@ -453,10 +440,18 @@ set(amaroklib_LIB_SRCS
     SvgTinter.cpp
 )
 
+qt4_add_dbus_adaptor(  amaroklib_LIB_SRCS org.kde.amarok.collection.xml amarokdbushandler.h Amarok::DbusCollectionHandler)
+#qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.mediabrowser.xml amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.player.xml amarokdbushandler.h Amarok::DbusPlayerHandler)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.playlist.xml amarokdbushandler.h Amarok::DbusPlaylistHandler)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.playlistbrowser.xml amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.script.xml amarokdbushandler.h Amarok::DbusScriptHandler)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.context.xml amarokdbushandler.h Amarok::DbusContextHandler)
+
 
 set( amaroklib_DEPENDS "amarokplasma" )
 
-kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokcore/amarokconfig.kcfgc)
+kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 
 kde4_add_ui3_files(amaroklib_LIB_SRCS
    dbsetup.ui
@@ -542,6 +537,16 @@ install(FILES amarok.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES context/servicetypes/amarok_context_applet.desktop
               context/servicetypes/amarok_data_engine.desktop
               DESTINATION ${SERVICETYPES_INSTALL_DIR} )
+
+install(FILES  amarok.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
+install(FILES org.kde.amarok.collection.xml
+              org.kde.amarok.context.xml
+              org.kde.amarok.mediabrowser.xml
+              org.kde.amarok.player.xml
+              org.kde.amarok.playlist.xml
+              org.kde.amarok.playlistbrowser.xml
+              org.kde.amarok.script.xml
+              DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 

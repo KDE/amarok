@@ -1,14 +1,13 @@
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../..
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../context
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../..amarokcore
+include_directories( ../../..
+                    ../../../context
                     ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
                     ${KDE4_INCLUDE_DIR}
-                    ${QT_INCLUDES} 
+                    ${QT_INCLUDES}
 )
 
 set( current_engine_SRCS
-    CurrentEngine.cpp 
+    CurrentEngine.cpp
 )
 
 kde4_add_plugin(amarok_data_engine_current ${current_engine_SRCS})

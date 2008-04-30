@@ -1,13 +1,10 @@
 
-include_directories( ../amarokcore ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 
 ########### next target ###############
 
 set(konqsidebar_universalamarok_PART_SRCS universalamarok.cpp )
-
-#kde4_add_dcop_stubs(konqsidebar_universalamarok_PART_SRCS ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdcopiface.h )
-
 
 kde4_add_plugin(konqsidebar_universalamarok ${konqsidebar_universalamarok_PART_SRCS})
 

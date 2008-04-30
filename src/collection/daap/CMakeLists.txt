@@ -1,25 +1,24 @@
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
-	${CMAKE_CURRENT_SOURCE_DIR}/../../meta
-	${CMAKE_CURRENT_SOURCE_DIR}/../../collection
-	${CMAKE_CURRENT_BINARY_DIR}/../..
-	${AMAROK_COLLECTION_SUPPORT_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/daapreader
-	${CMAKE_CURRENT_SOURCE_DIR}/daapreader/authentication
-        ${KDE4_INCLUDE_DIR}
-        ${QT_INCLUDES} )
+include_directories( ../..
+        ../../plugin
+   ../../meta
+   ../../collection
+   ${CMAKE_CURRENT_BINARY_DIR}/../..
+   ${AMAROK_COLLECTION_SUPPORT_DIR}
+   daapreader
+   /daapreader/authentication
+   ${KDE4_INCLUDE_DIR}
+   ${QT_INCLUDES} )
 
 
 ########### next target ###############
 
 set(amarok_collection-daapcollection_PART_SRCS
-	daapmeta.cpp
-	daapcollection.cpp
-	daapreader/reader.cpp
-	daapreader/authentication/contentfetcher.cpp
-	daapreader/authentication/hasher.c
-	daapreader/authentication/md5.c )
+   daapmeta.cpp
+   daapcollection.cpp
+   daapreader/reader.cpp
+   daapreader/authentication/contentfetcher.cpp
+   daapreader/authentication/hasher.c
+   daapreader/authentication/md5.c )
 
 kde4_add_plugin(amarok_collection-daapcollection WITH_PREFIX ${amarok_collection-daapcollection_PART_SRCS})
 

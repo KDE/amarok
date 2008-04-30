@@ -1,6 +1,5 @@
 
 include_directories( ../..
-    ../../amarokcore
     ../../statusbar
     ../../engine
     ../../plugin

@@ -9,7 +9,7 @@ add_definitions(${TAGLIB_CFLAGS})
 
 set(amarokcollectionscanner_SRCS main.cpp collectionscanner.cpp)
 
-set(amarok_collection_xml  ../amarokcore/org.kde.amarok.collection.xml)
+set(amarok_collection_xml  ../org.kde.amarok.collection.xml)
 QT4_ADD_DBUS_INTERFACE( amarokcollectionscanner_SRCS ${amarok_collection_xml} amarok_collection_interface )
 
 kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS})

@@ -1,12 +1,11 @@
 
 include_directories(
-    ../..
-	../../amarokcore 
-	../../engine
-	../../mediadevice
-    ../../meta
+   ../..
+   ../../engine
+   ../../mediadevice
+   ../../meta
     ${CMAKE_CURRENT_BINARY_DIR}/../../
-	${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+   ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 
 ########### next target ###############

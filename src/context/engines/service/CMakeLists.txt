@@ -1,15 +1,14 @@
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../..
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../context
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../servicebrowser
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../amarokcore
-                    ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
-                    ${KDE4_INCLUDE_DIR}
-                    ${QT_INCLUDES} 
+include_directories( ../../..
+                     ../../../context
+                     ../../../servicebrowser
+                     ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
+                     ${KDE4_INCLUDE_DIR}
+                     ${QT_INCLUDES}
 )
 
 set( service_engine_SRCS
-    ServiceEngine.cpp 
+    ServiceEngine.cpp
 )
 
 kde4_add_plugin(amarok_data_engine_service ${service_engine_SRCS})

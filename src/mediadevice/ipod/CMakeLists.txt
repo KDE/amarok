@@ -1,6 +1,5 @@
 
 include_directories( ../..
-    ../../amarokcore
     ../../engine
     ../../mediadevice
     ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )

@@ -1,14 +1,13 @@
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../..
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../context
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../..amarokcore
-                    ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
-                    ${KDE4_INCLUDE_DIR}
-                    ${QT_INCLUDES} 
+include_directories( ../../..
+                     ../../../context
+                     ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
+                     ${KDE4_INCLUDE_DIR}
+                     ${QT_INCLUDES}
 )
 
 set( lyrics_engine_SRCS
-    LyricsEngine.cpp 
+    LyricsEngine.cpp
 )
 
 kde4_add_plugin(amarok_data_engine_lyrics ${lyrics_engine_SRCS})

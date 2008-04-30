@@ -1,15 +1,14 @@
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../..
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../context
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../..amarokcore
-                    ../../../meta
-                    ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
-                    ${KDE4_INCLUDE_DIR}
-                    ${QT_INCLUDES} 
+include_directories( ../../..
+                     ../../../context
+                     ../../../meta
+                     ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
+                     ${KDE4_INCLUDE_DIR}
+                     ${QT_INCLUDES}
 )
 
 set( lastfm_engine_SRCS
-    LastFmEngine.cpp 
+    LastFmEngine.cpp
 )
 
 kde4_add_plugin(amarok_data_engine_lastfm ${lastfm_engine_SRCS})

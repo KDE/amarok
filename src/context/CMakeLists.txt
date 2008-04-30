@@ -9,8 +9,7 @@ add_subdirectory( containments )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
                     ..
-                    ../amarokcore
-   plasma
+                    plasma
                     ${CMAKE_CURRENT_BINARY_DIR}/..)
 
 

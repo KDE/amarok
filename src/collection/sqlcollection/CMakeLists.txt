@@ -5,11 +5,10 @@ macro_optional_find_package(PostgreSQL)
 #remove at some point
 find_package(Strigi REQUIRED)
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../meta
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../collection
+include_directories( ../..
+        ../../plugin
+        ../../meta
+        ../../collection
         ${CMAKE_CURRENT_BINARY_DIR}/../..
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
@@ -27,10 +26,10 @@ set (extra_src)
 endif (MSVC)
 else (WIN32)
 set (extra_src     
-	XesamDbus.cpp
-    XesamCollectionBuilder.cpp)
+   XesamDbus.cpp
+   XesamCollectionBuilder.cpp)
 endif (WIN32)
-	
+
 set(amarok_collection-sqlcollection_PART_SRCS
     DatabaseUpdater.cpp
     OrganizeCollectionDialog.cpp
@@ -42,7 +41,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     SqlRegistry.cpp
     SqlMeta.cpp 
     SqliteCollection.cpp
-	${extra_src}
+   ${extra_src}
  )
 
 kde4_add_ui_files(amarok_collection-sqlcollection_PART_SRCS

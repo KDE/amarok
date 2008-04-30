@@ -1,17 +1,14 @@
-
-
-        include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../plugin
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../amarokcore
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../meta
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../collection
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../servicebrowser
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../statusbar
-        ${CMAKE_CURRENT_BINARY_DIR}/../..
-        ${KDE4_INCLUDE_DIR}
-        ${STRIGI_INCLUDE_DIR}
-        ${QT_INCLUDES} )
+        include_directories( 
+            ../..
+            ../../plugin
+            ../../meta
+            ../../collection
+            ../../servicebrowser
+            ../../statusbar
+            ${CMAKE_CURRENT_BINARY_DIR}/../..
+            ${KDE4_INCLUDE_DIR}
+            ${STRIGI_INCLUDE_DIR}
+            ${QT_INCLUDES} )
 
 ########### next target ###############
 
