@@ -146,7 +146,7 @@ namespace Amarok
             /// obtain the backtrace with gdb
 
             KTemporaryFile temp;
-            temp.setAutoRemove( true );
+            temp.open();
 
             const int handle = temp.handle();
 
