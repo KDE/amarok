@@ -8,30 +8,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "Amarok.h"
-#include "amarokconfig.h"
 #include "crashhandler.h"
 
-#include <kapplication.h> //invokeMailer()
-#include <kdebug.h>       //kBacktrace()
-#include <kglobal.h>
-#include <klocale.h>
-#include <KTemporaryFile>
-#include <ktoolinvocation.h>
+#include "Amarok.h"
+#include "amarokconfig.h"
 
+#include <KApplication>  //invokeMailer()
+#include <KDebug>        //kBacktrace()
+#include <KGlobal>
+#include <KLocale>
+#include <KTemporaryFile>
+#include <KToolInvocation>
+
+#include <QByteArray>
 #include <QFile>
 #include <QRegExp>
-#include <qglobal.h> //qVersion()
-#include <QByteArray>
 
-
-#include <cstdio>         //popen, fread
+#include <cstdio>        //popen, fread
 #include <iostream>
-#include <sys/types.h>    //pid_t
-#include <sys/wait.h>     //waitpid
-#include <taglib.h>
-#include <unistd.h>       //write, getpid
 #include <string.h>
+#include <sys/types.h>   //pid_t
+#include <sys/wait.h>    //waitpid
+#include <taglib.h>
+#include <unistd.h>      //write, getpid
 
 #ifndef Q_WS_WIN
 #include <pthread.h>
@@ -147,14 +146,7 @@ namespace Amarok
 
             KTemporaryFile temp;
             temp.open();
-
             const int handle = temp.handle();
-
-//             QCString gdb_command_string =
-//                     "file amarok\n"
-//                     "attach " + QCString().setNum( ::getppid() ) + "\n"
-//                     "bt\n" "echo \\n\n"
-//                     "thread apply all bt\n";
 
             const QByteArray gdb_batch =
                     "bt\n"
@@ -172,7 +164,7 @@ namespace Amarok
 
             QByteArray gdb;
             gdb  = "gdb --nw -n --batch -x ";
-            gdb += temp.name().toLatin1();
+            gdb += temp.fileName().toLatin1();
             gdb += " amarok ";
             gdb += QByteArray().setNum( ::getppid() );
 

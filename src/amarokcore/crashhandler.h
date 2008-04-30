@@ -8,11 +8,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CRASH_H
-#define CRASH_H
+#ifndef AMAROK_CRASH_H
+#define AMAROK_CRASH_H
 
-#include <kcrash.h> //for main.cpp
+#include <KCrash>        //for main.cpp
 #include <amarok_export.h>
+
 namespace Amarok
 {
     /**
@@ -29,4 +30,5 @@ namespace Amarok
     };
 }
 
-#endif
+#endif //AMAROK_CRASH_H
+
