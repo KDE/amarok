@@ -47,18 +47,18 @@ class MemoryCollection
         ComposerMap composerMap() { return m_composerMap; }
         YearMap yearMap() { return m_yearMap; }
 
-        void setTrackMap( TrackMap map ) { m_trackMap = map; }
-        void addTrack( QString key, Meta::TrackPtr trackPtr ) { m_trackMap.insert( key, trackPtr ); }
-        void setArtistMap( ArtistMap map ) { m_artistMap = map; }
-        void addArtist( QString key, Meta::ArtistPtr artistPtr) { m_artistMap.insert( key, artistPtr ); }
-        void setAlbumMap( AlbumMap map ) { m_albumMap = map; }
-        void addAlbum ( QString key, Meta::AlbumPtr albumPtr ) { m_albumMap.insert( key, albumPtr ); }
+        void setTrackMap( const TrackMap &map ) { m_trackMap = map; }
+        void addTrack( Meta::TrackPtr trackPtr ) { m_trackMap.insert( trackPtr->url(), trackPtr ); }
+        void setArtistMap( const ArtistMap &map ) { m_artistMap = map; }
+        void addArtist( Meta::ArtistPtr artistPtr) { m_artistMap.insert( artistPtr->name(), artistPtr ); }
+        void setAlbumMap( const AlbumMap &map ) { m_albumMap = map; }
+        void addAlbum ( Meta::AlbumPtr albumPtr ) { m_albumMap.insert( albumPtr->name(), albumPtr ); }
         void setGenreMap( GenreMap map ) { m_genreMap = map; }
-        void addGenre( QString key, Meta::GenrePtr genrePtr) { m_genreMap.insert( key, genrePtr ); }
-        void setComposerMap( ComposerMap map ) { m_composerMap = map; }
-        void addComposer( QString key, Meta::ComposerPtr composerPtr ) { m_composerMap.insert( key, composerPtr ); }
-        void setYearMap( YearMap map ) { m_yearMap = map; }
-        void addYear( QString key, Meta::YearPtr yearPtr ) { m_yearMap.insert( key, yearPtr ); }
+        void addGenre( Meta::GenrePtr genrePtr) { m_genreMap.insert( genrePtr->name(), genrePtr ); }
+        void setComposerMap( const ComposerMap &map ) { m_composerMap = map; }
+        void addComposer( Meta::ComposerPtr composerPtr ) { m_composerMap.insert( composerPtr->name(), composerPtr ); }
+        void setYearMap( const YearMap &map ) { m_yearMap = map; }
+        void addYear( Meta::YearPtr yearPtr ) { m_yearMap.insert( yearPtr->name(), yearPtr ); }
 
     protected:
         QReadWriteLock m_readWriteLock;
