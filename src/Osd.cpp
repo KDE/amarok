@@ -54,8 +54,7 @@ namespace Amarok
 
 
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
-        : QWidget( parent, Qt::Window | Qt::X11BypassWindowManagerHint | Qt::WindowStaysOnTopHint
-        | Qt::FramelessWindowHint | Qt::CustomizeWindowHint )
+        : QWidget( parent, Qt::Window | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint )
         , m_duration( 2000 )
         , m_timer( new QTimer( this ) )
         , m_alignment( Middle )
@@ -107,7 +106,6 @@ OSDWidget::show( const QString &text, QImage newImage )
         m_cover = Amarok::icon();
 
     m_text = text;
-    debug() << m_text;
     if( !isVisible() )
         show();
 }
@@ -429,7 +427,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
 void
 OSDWidget::resizeEvent(QResizeEvent *e)
 {
-    m_background->resize(e->size());
+    m_background->resizePanel(e->size());
     setMask(m_background->mask());
     QWidget::resizeEvent(e);
 }
@@ -596,8 +594,6 @@ Amarok::OSD::OSD(): OSDWidget( 0 )
 void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
-    DEBUG_BLOCK
-
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setOffset( AmarokConfig::osdYOffset() );
     QString text = "";
