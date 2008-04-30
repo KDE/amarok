@@ -34,7 +34,7 @@ class ServiceListDelegate;
 
 /**
 A browser for selecting and displaying a service in the style of the first imbedded Magnatune store from a list of available services. Allows many services to be shown as a single tab.
-Implemented as a singleton
+Implemented as a singleton.
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
@@ -44,30 +44,70 @@ class ServiceBrowser : public KVBox
 
 public:
 
+    /**
+     * Get the ServiceBrowser instance. Create it if it does not exist yet. ( Singleton pattern ).
+     * @return The ServiceBrowser instance.
+     */
     static ServiceBrowser * instance();
     
     /**
-     * Destructor
+     * Destructor.
      */
     ~ServiceBrowser();
 
+    /**
+     * Get a map of the loaded services.
+     * @return the map of services.
+     */
     QMap<QString, ServiceBase *> services();
+    
+    /**
+     * Remove a named service from the service browser.
+     * @param name The name of the service to remove.
+     */
     void removeService( const QString &name );
+    
+    /**
+     * Reset a service and make it reload configuration. Not fully implemented..
+     * @param name The name of the service to reset.
+     */
     void resetService( const QString &name );
 
+    /**
+     * Make a service show. Hide any other active service if needed.
+     * @param name the service to show.
+     */
     void showService( const QString &name );
 
 public slots:
 
+    /**
+     * Add a service.
+     * @param service The service to add.
+     */
     void addService( ServiceBase * service );
+    
+    /**
+     * Set a scriptable service manager to handle scripted services.
+     * @param scriptableServiceManager The scriptable service manager to set.
+     */
     void setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager );
 
 protected:
 
+    /**
+     * Hanlde palette changes to ensure the service list is always tinted correctly.
+     * @param oldPalette The previously used palette.
+     */
     virtual void paletteChange( const QPalette & oldPalette );
 
 private:
 
+    /**
+     * Private constructor ( Singleton pattern )
+     * @param parent The parent widget.
+     * @param name The name of this widget.
+     */
     ServiceBrowser(QWidget * parent, const QString& name );
 
     static ServiceBrowser * s_instance;
@@ -85,7 +125,15 @@ private:
 
 private slots:
 
+    /**
+     * Slot called when an item in the service list has been activated and the corrosponding service should be shown.
+     * @param index The index that was activated
+     */
     void serviceActivated( const QModelIndex & index );
+    
+    /**
+     * Slot called when the active service should be hidden the service selection list shown again.
+     */
     void home();
 };
 
