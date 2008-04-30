@@ -33,6 +33,8 @@ Track::Track( const KUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
+    DEBUG_BLOCK
+
     d->url = url;
     d->artistPtr = Meta::ArtistPtr( new StreamArtist( QPointer<Track::Private>( d ) ) );
     d->albumPtr = Meta::AlbumPtr( new StreamAlbum( QPointer<Track::Private>( d ) ) );

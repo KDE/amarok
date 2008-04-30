@@ -19,6 +19,7 @@
 #ifndef AMAROK_STREAM_P_H
 #define AMAROK_STREAM_P_H
 
+#include "debug.h"
 #include "EngineController.h"
 #include "EngineObserver.h"
 #include "Meta.h"
@@ -44,11 +45,13 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
                         observer->metadataChanged( track );
                 }
 
-                void newMetaData( QHash<qint64, QString> metaData, bool trackChanged )
+                void engineNewMetaData( const QHash<qint64, QString> &metaData, bool trackChanged )
                 {
                     Q_UNUSED( trackChanged )
-                            if( metaData.contains( Meta::valArtist ) )
-                            artist = metaData.value( Meta::valArtist );
+                    DEBUG_BLOCK
+
+                    if( metaData.contains( Meta::valArtist ) )
+                        artist = metaData.value( Meta::valArtist );
                     if( metaData.contains( Meta::valTitle ) )
                         title = metaData.value( Meta::valTitle );
                     if( metaData.contains( Meta::valAlbum ) )
