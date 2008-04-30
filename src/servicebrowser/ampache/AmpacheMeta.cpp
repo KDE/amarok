@@ -51,12 +51,10 @@ QString AmpacheAlbum::coverUrl( ) const
 
 QList< PopupDropperAction * > Meta::AmpacheTrack::currentTrackActions()
 {
-    
-    DEBUG_BLOCK
-            QList< PopupDropperAction * > actions;
+    QList< PopupDropperAction * > actions;
 
-    if ( !m_showInServiceAction ) {
-
+    if ( !m_showInServiceAction )
+    {
         m_showInServiceAction = new ShowInServiceAction( m_service, this );
     }
 
@@ -64,13 +62,3 @@ QList< PopupDropperAction * > Meta::AmpacheTrack::currentTrackActions()
     return actions;
 
 }
-
-
-
-
-
-
-
-
-
-
