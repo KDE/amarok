@@ -34,20 +34,43 @@ namespace Meta
 {
 
     /**
-     * This capability allows different meta types to display custom actions int the right click menu in the tree view
+     * This capability allows different meta types to display custom actions in the right click menu in the tree view
      * or anywhere else where the actions are shown. This is useful for purchasing from stores, downloading from services
      * banning a genre or whatever we can think of in the future
+     *
+     *         @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
      */
+
     class AMAROK_EXPORT CustomActionsCapability : public Meta::Capability
     {
         Q_OBJECT
         public:
+            
+            /**
+             * Constructor
+             */
             CustomActionsCapability();
+            
+            /**
+             * Constructor
+             * @param actions A list of actions that to use.
+             */
             CustomActionsCapability( const QList< PopupDropperAction* > &actions );
+            /**
+             * Destructor
+             */
             virtual ~CustomActionsCapability();
 
+            /**
+             * Get the custom actions for this capablility
+             * @return Teh list of custom actions
+             */
             virtual QList<PopupDropperAction *> customActions() const;
-            
+
+            /**
+             * Get the capabilityInterfaceType of this capability
+             * @return The capabilityInterfaceType ( always Meta::Capability::CustomActions; )
+             */
             static Type capabilityInterfaceType() { return Meta::Capability::CustomActions; }
 
         protected:
