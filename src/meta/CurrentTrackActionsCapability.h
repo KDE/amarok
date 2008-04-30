@@ -25,7 +25,10 @@
 /**
  * This capability allows tracks to display custom actions in different places ( such as the playlist context menu,
  * the system tray context menu and others ) when they are the currently playing tracks. Initial use for this will
- * to add last.fm skip, ban and love actions.
+ * to add last.fm skip, ban and love actions. This class is based on the CustomActionsCapability class as their
+ * fuction is very simmilar althoug they are used in different places.
+ *
+ *         @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
 
 namespace Meta {
@@ -34,9 +37,20 @@ namespace Meta {
 
         Q_OBJECT
         public:
+            /**
+             * Constructor
+             */
             CurrentTrackActionsCapability();
+            /**
+             * Constructor
+             * @param actions A list of actions that to use.
+             */
             CurrentTrackActionsCapability( const QList< PopupDropperAction * > &actions );
-
+            
+            /**
+             * Get the capabilityInterfaceType of this capability
+             * @return The capabilityInterfaceType ( always Meta::Capability::CurrentTrackActions; )
+             */
             static Type capabilityInterfaceType() { return Meta::Capability::CurrentTrackActions; }
     };
 
