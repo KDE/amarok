@@ -161,12 +161,12 @@ namespace Amarok
 
     int DbusPlayerHandler::trackCurrentTime()
     {
-        return The::engineController()->trackPosition() / 1000;
+        return The::engineController()->trackPosition();
     }
 
     int DbusPlayerHandler::trackCurrentTimeMs()
     {
-        return The::engineController()->trackPosition();
+        return The::engineController()->trackPosition() * 1000;
     }
 
     int DbusPlayerHandler::trackPlayCounter()
@@ -219,7 +219,7 @@ namespace Amarok
 
     QString DbusPlayerHandler::currentTime()
     {
-        return Meta::secToPrettyTime( The::engineController()->trackPosition() / 1000 );
+        return Meta::secToPrettyTime( The::engineController()->trackPosition() );
     }
 
     QString DbusPlayerHandler::encodedURL()
