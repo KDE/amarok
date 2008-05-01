@@ -37,8 +37,80 @@ namespace Meta
 //forward declaration
 class ServiceAlbumCoverDownloader;
 
+
+/**
+A specialized ServiceAlbum that supports fetching its cover from a known url.
+Takes care of caching covers.
+
+    @author  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+*/
 class AMAROK_EXPORT ServiceAlbumWithCover : public ServiceAlbum
 {
+
+public:
+    
+    /**
+     * Constructor, reimplemented from ServiceAlbum.
+     * @param name The name of the album.
+     */
+    ServiceAlbumWithCover( const QString &name );
+
+    /**
+     * Constructor, reimplemented from ServiceAlbum.
+     * @param name The result list used to initialize the album.
+     */
+    ServiceAlbumWithCover( const QStringList &resultRow );
+    
+    /**
+     * Destructor.
+     */
+    virtual ~ServiceAlbumWithCover();
+    
+    /**
+     * Get the download prefix used for caching the cover.
+     * @return The prefix, most often the name of the parent service.
+     */
+    virtual QString downloadPrefix() const = 0;
+
+    /**
+     * Set the url from where to fetch the cover.
+     * @param coverUrl The cover url.
+     */
+    virtual void setCoverUrl( const QString &coverUrl ) = 0;
+    
+    /**
+     * Ger the cover url
+     * @return The url of the cover.
+     */
+    virtual QString coverUrl() const = 0;
+
+    /**
+     * Set the cover image of thes album.
+     * @param image The cover image.
+     */
+    void setImage( const QImage & image );
+    
+    /**
+     * Notify album that the download of the cover has been cancelled.
+     */
+    void imageDownloadCanceled() const;
+
+    /**
+     * Reimplemented from Meta::Album. Get wheter an album has a cover. This function always returns true to avoid the standard cover fetcher kicking in.
+     * @param size Unused.
+     * @return True.
+     */
+    virtual bool hasImage( int size = 1) const { Q_UNUSED( size ); return true; }
+
+    /**
+     * Get the image of this album. If the image has not yet been fetched, this call will return a standard
+     * "no-cover" cover and then start the download of the real cover. When the download is complete, any oberserves will be notified that the metadata of this album has been changed.
+     * @param size The required size of the album.
+     * @param withShadow Unused.
+     * @return The cover image or a default cover.
+     */
+    virtual QPixmap image( int size = 1, bool withShadow = false); //overridden from Meta::Album
+
 private:
 
     mutable QImage m_cover;
@@ -46,34 +118,13 @@ private:
     mutable bool m_isFetchingCover;
     QString m_coverDownloadPath;
     mutable ServiceAlbumCoverDownloader * m_coverDownloader;
-
-public:
-    
-    ServiceAlbumWithCover( const QString &name );
-    ServiceAlbumWithCover( const QStringList &resultRow );
-    
-    virtual ~ServiceAlbumWithCover();
-    
-    virtual QString downloadPrefix() const = 0;
-
-    virtual void setCoverUrl( const QString &coverUrl ) = 0;
-    virtual QString coverUrl() const = 0;
-
-    void setImage( const QImage & image );
-    void imageDownloadCanceled() const;
-
-
-    //always return true to avoid the standard cover fetcher, as we have our own way of getting that stuff...
-    virtual bool hasImage( int size = 1) const { Q_UNUSED( size ); return true; }
-
-    virtual QPixmap image( int size = 1, bool withShadow = false); //overridden from Meta::Album
 };
 
 
 /**
-A helper class for fetching covers from online services
+A helper class for fetching covers from online services, used by ServiceAlbumWithCover
 
-	@author 
+    @author  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class ServiceAlbumCoverDownloader : public QObject
 {
@@ -81,14 +132,34 @@ class ServiceAlbumCoverDownloader : public QObject
 
     public:
 
+        /**
+         * Constructor.
+         */
         ServiceAlbumCoverDownloader();
+        
+        /**
+         * Destructor.
+         */
         ~ServiceAlbumCoverDownloader();
 
+        /**
+         * Start the download of the cover of a ServiceAlbumWithCover.
+         * @param album The albumwhose cover should be downloaded.
+         */
         void downloadCover( Meta::ServiceAlbumWithCover * album );
 
     private slots:
 
+        /**
+         * Slot called when the download job is complete.
+         * @param downloadJob The job responsible for the cover download.
+         */
         void coverDownloadComplete( KJob * downloadJob );
+
+        /**
+         * Slot called if the download job is cancelled.
+         * @param downloadJob The job responsible for the cover download.
+         */
         void coverDownloadCanceled( KJob * downloadJob );
     private:
         ServiceAlbumWithCover * m_album;
