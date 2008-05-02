@@ -94,11 +94,11 @@ void Mp3tunesServiceQueryMaker::run()
     if ( d->type == Private::NONE )
         //TODO error handling
         return;
-    if (  d->type == Private::ARTIST )       
+    if (  d->type == Private::ARTIST )
         fetchArtists();
-    else if (  d->type == Private::ALBUM )       
+    else if (  d->type == Private::ALBUM )
         fetchAlbums();
-    else if (  d->type == Private::TRACK )       
+    else if (  d->type == Private::TRACK )
         fetchTracks();
 
 
@@ -194,7 +194,7 @@ void Mp3tunesServiceQueryMaker::handleResult( const ArtistList & artists )
 
     if ( d->maxsize >= 0 && artists.count() > d->maxsize ) {
         emitProperResult( ArtistPtr, artists.mid( 0, d->maxsize ) );
-    } else 
+    } else
         emitProperResult( ArtistPtr, artists );
 }
 
@@ -204,18 +204,18 @@ void Mp3tunesServiceQueryMaker::handleResult( const AlbumList &albums )
 
     if ( d->maxsize >= 0 && albums.count() > d->maxsize ) {
         emitProperResult( AlbumPtr, albums.mid( 0, d->maxsize ) );
-    } else 
+    } else
         emitProperResult( AlbumPtr, albums );
 }
 
 void Mp3tunesServiceQueryMaker::handleResult(const TrackList & tracks)
-{    
+{
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && tracks.count() > d->maxsize ) {
         emitProperResult( TrackPtr, tracks.mid( 0, d->maxsize ) );
-    } else 
-        emitProperResult( TrackPtr, tracks ); 
+    } else
+        emitProperResult( TrackPtr, tracks );
 }
 
 
@@ -260,7 +260,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
     if ( !m_parentArtistId.isEmpty() ) {
         ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
         albums = artistMatcher.matchAlbums( m_collection );
-    } else 
+    } else
         return;
 
     if ( albums.count() > 0 ) {
@@ -303,7 +303,7 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
         urlString.replace( "<PARTNER_TOKEN>", "7359149936" );
         if(  !m_parentAlbumId.isEmpty() )
             urlString.replace( "<ALBUM_ID>", m_parentAlbumId );
-        else 
+        else
             urlString.replace( "<ALBUM_ID>", m_parentArtistId );
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
@@ -334,7 +334,7 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement( "mp3tunes" );
     root = root.firstChildElement( "artistList" );
-  
+
 
     QDomNode n = root.firstChild();
     while( !n.isNull() )
@@ -391,7 +391,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement("mp3tunes");
     root = root.firstChildElement( "albumList" );
-  
+
 
     QDomNode n = root.firstChild();
     while( !n.isNull() )
@@ -413,16 +413,16 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
         int hasArt = element.text().toInt();
 
         Mp3TunesAlbum * album = new Mp3TunesAlbum( title );
-        
+
         if ( hasArt > 0 )
         {
-        
+
             QString coverUrl = "http://content.mp3tunes.com/storage/albumartget/<ALBUM_ID>?alternative=1&partner_token=<PARTNER_TOKEN>&sid=<SESSION_ID>";
 
             coverUrl.replace( "<SESSION_ID>", m_sessionId );
             coverUrl.replace( "<PARTNER_TOKEN>", "7359149936" );
             coverUrl.replace( "<ALBUM_ID>", albumIdStr );
-        
+
             album->setCoverUrl(coverUrl);
         }
 
@@ -525,7 +525,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
 
 
         ArtistPtr artistPtr = m_collection->artistById( artistId.toInt() );
-        if ( artistPtr.data() != 0 ) { 
+        if ( artistPtr.data() != 0 ) {
            //debug() << "Found parent artist";
            ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
            track->setArtist( artistPtr );
@@ -533,7 +533,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         }
 
         AlbumPtr albumPtr = m_collection->albumById( albumId.toInt() );
-        if ( albumPtr.data() != 0 ) { 
+        if ( albumPtr.data() != 0 ) {
            //debug() << "Found parent album";
            ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
            track->setAlbum( albumPtr );
@@ -552,7 +552,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
 
 }
 
-QueryMaker * Mp3tunesServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
+QueryMaker * Mp3tunesServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool /*matchBegin*/, bool /*matchEnd*/)
 {
     DEBUG_BLOCK
             //debug() << "value: " << value;
