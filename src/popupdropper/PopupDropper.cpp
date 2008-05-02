@@ -114,8 +114,10 @@ void PopupDropperPrivate::dragLeft()
 
 void PopupDropperPrivate::startDeleteTimer()
 {
-    qDebug() << "Starting delete timer";
     entered = false;
+    if( deleteTimeout == 0 )
+        return;
+    qDebug() << "Starting delete timer";
     deleteTimer.start( deleteTimeout  );
 }
 
