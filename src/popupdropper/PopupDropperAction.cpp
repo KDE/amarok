@@ -156,8 +156,5 @@ PopupDropperAction * PopupDropperAction::from( QAction * action )
     return new PopupDropperAction( QByteArray(), action->icon(), action->text(), action->parent() );
 }
 
-
 #include "PopupDropperAction.moc"
-
-
 

@@ -22,6 +22,8 @@
 
 #include <QList>
 #include <QObject>
+#include <QTimeLine>
+#include <QTimer>
 
 #include "PopupDropper.h"
 #include "PopupDropperView.h"
@@ -46,19 +48,29 @@ public:
     QTimeLine fadeTimer;
     int fadeInTime;
     int fadeOutTime;
+    QTimer deleteTimer;
+    int deleteTimeout;
     bool closeAtEndOfFade;
     int frameMax;
     QColor windowColor;
     QColor textColor;
     QString file;
     QSvgRenderer* sharedRenderer;
+    int horizontalOffset;
     int itemCount;
     int totalItems;
     QList<PopupDropperItem*> pdiItems;
+    int overlayLevel;
+    bool entered;
 
+    void dragLeft();
+    void dragEntered();
+    void startDeleteTimer();
+ 
 private slots:
-    void timerFrameChanged( int frame );
-    void timerFinished();
+    void fadeTimerFrameChanged( int frame );
+    void fadeTimerFinished();
+    void deleteTimerFinished();
 
 private:
     PopupDropper* q;

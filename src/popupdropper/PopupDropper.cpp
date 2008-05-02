@@ -47,26 +47,33 @@ PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget
     , fadeTimer()
     , fadeInTime( 800 )
     , fadeOutTime( 300 )
+    , deleteTimer()
+    , deleteTimeout( 1000 )
     , closeAtEndOfFade( true )
     , frameMax( 30 )
     , windowColor( 0, 0, 0, 64 )
     , textColor( 255, 255, 255, 255 )
     , file()
-    , sharedRenderer( new QSvgRenderer() )
+    , sharedRenderer( new QSvgRenderer( this ) )
+    , horizontalOffset( 30 )
     , itemCount( 0 )
     , totalItems( 0 )
     , pdiItems()
+    , overlayLevel( 1 )
+    , entered( false )
     , q( parent )
 {
-    connect( &fadeTimer, SIGNAL( frameChanged(int) ), this, SLOT( timerFrameChanged(int) ) );
-    connect( &fadeTimer, SIGNAL( finished() ), this, SLOT( timerFinished() ) );
+    deleteTimer.setSingleShot( true );
+    connect( &fadeTimer, SIGNAL( frameChanged(int) ), this, SLOT( fadeTimerFrameChanged(int) ) );
+    connect( &fadeTimer, SIGNAL( finished() ), this, SLOT( fadeTimerFinished() ) );
+    connect( &deleteTimer, SIGNAL( timeout() ), this, SLOT( deleteTimerFinished() ) );
 }
 
 PopupDropperPrivate::~PopupDropperPrivate()
 {
 }
 
-void PopupDropperPrivate::timerFrameChanged( int frame ) //SLOT
+void PopupDropperPrivate::fadeTimerFrameChanged( int frame ) //SLOT
 {
     if( fadeTimer.state() == QTimeLine::Running )
     {
@@ -79,13 +86,44 @@ void PopupDropperPrivate::timerFrameChanged( int frame ) //SLOT
     }
 }
 
-void PopupDropperPrivate::timerFinished() //SLOT
+void PopupDropperPrivate::fadeTimerFinished() //SLOT
 {
     //qDebug() << "Timer finished! (at frame " << fadeTimer.currentFrame()  <<")";
-    if( fadeTimer.direction() == QTimeLine::Backward && ( !standalone || ( standalone && closeAtEndOfFade ) ) )
+    if( fadeTimer.direction() == QTimeLine::Backward && closeAtEndOfFade )
+    {
+        qDebug() << "subtracting Overlay, closeAtEndOfFade = " << (closeAtEndOfFade?"true":"false");
         view.hide();
+        q->subtractOverlay();
+    }
     else
         q->setPalette( windowColor, textColor ); 
+}
+
+void PopupDropperPrivate::dragEntered()
+{
+    qDebug() << "PopupDropperPrivate::dragEntered";
+    entered = true;
+}
+
+void PopupDropperPrivate::dragLeft()
+{
+    qDebug() << "PopupDropperPrivate::dragLeft(), will hide PUD: " << (entered?"true":"false");
+    if( entered )
+        q->hide( PopupDropper::DragLeave );
+}
+
+void PopupDropperPrivate::startDeleteTimer()
+{
+    qDebug() << "Starting delete timer";
+    entered = false;
+    deleteTimer.start( deleteTimeout  );
+}
+
+void PopupDropperPrivate::deleteTimerFinished() //SLOT
+{
+    qDebug() << "Delete Timer Finished";
+    if( !entered )
+        q->hide( PopupDropper::DragLeave );
 }
 
 //////////////////////////////////////////////////////////////
@@ -94,6 +132,28 @@ PopupDropper::PopupDropper( QWidget *parent, bool standalone )
     : QObject( parent )
     , d( new PopupDropperPrivate( this, standalone, parent ) )
 {
+    initOverlay( parent );
+    d->sharedRenderer = new QSvgRenderer( this );
+    d->overlayLevel = 1;
+    //qDebug() << "Popup Dropper created!";
+}
+
+PopupDropper::~PopupDropper()
+{
+    clear();
+    while( d->fadeTimer.state() == QTimeLine::Running )
+        QApplication::processEvents();
+    //qDebug() << "Popup Dropper destroyed!";
+    delete d;
+}
+
+int PopupDropper::overlayLevel() const
+{
+    return d->overlayLevel;
+}
+
+void PopupDropper::initOverlay( QWidget* parent )
+{
     d->scene.setSceneRect( QRectF( parent->rect() ) );
     d->scene.setItemIndexMethod( QGraphicsScene::NoIndex );
     d->view.resize( parent->size() );
@@ -101,22 +161,34 @@ PopupDropper::PopupDropper( QWidget *parent, bool standalone )
     d->view.setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     d->view.setWindowTitle( "Drop something here." );
     d->view.setBackgroundRole( QPalette::Window );
-    setColors( d->windowColor, d->textColor );
     d->view.setAutoFillBackground( true );
+    setColors( d->windowColor, d->textColor );
     d->success = true;
     d->fadeTimer.setFrameRange( 0, d->frameMax );
-    d->sharedRenderer = new QSvgRenderer();
-    //qDebug() << "Popup Dropper created!";
 }
 
-PopupDropper::~PopupDropper()
+void PopupDropper::addOverlay()
 {
-    if( !d->view.isHidden() )
-        hide();
-    while( d->fadeTimer.state() == QTimeLine::Running )
-        QApplication::processEvents();
-    //qDebug() << "Popup Dropper destroyed!";
-    delete d;
+    m_viewStack.push( d );
+    PopupDropperPrivate* old_d = d;
+    d = new PopupDropperPrivate( this, false, &old_d->view );
+    initOverlay( &old_d->view );
+    d->sharedRenderer = old_d->sharedRenderer;
+    d->view.setQuitOnDragLeave( true );
+    d->overlayLevel = old_d->overlayLevel + 1;
+}
+
+bool PopupDropper::subtractOverlay()
+{
+    if( d->overlayLevel == 1 )
+        return false;
+    d->fade = PopupDropper::NoFade;
+    hide( PopupDropper::SubtractingOverlay );
+    PopupDropperPrivate* old_d = d;
+    d = m_viewStack.pop();
+    old_d->deleteLater();
+    d->startDeleteTimer();
+    return true;
 }
 
 bool PopupDropper::isValid() const
@@ -165,17 +237,22 @@ void PopupDropper::hide( PopupDropper::HideReason reason )
 {
     if( isHidden() )
         return;
- 
+
     switch( reason )
     {
         case PopupDropper::BackgroundChange:
             d->closeAtEndOfFade = false;
             break;
         case PopupDropper::DragLeave:
+        case PopupDropper::SubtractingOverlay:
         default:
             d->closeAtEndOfFade = true;
             break;
     }
+
+    if( d->fadeTimer.state() == QTimeLine::Running && d->fadeTimer.direction() == QTimeLine::Backward )
+        return;
+
     //qDebug() << "Hiding PopupDropper";
     bool wasRunning = false;
     if( d->fadeTimer.state() == QTimeLine::Running )
@@ -195,8 +272,12 @@ void PopupDropper::hide( PopupDropper::HideReason reason )
         d->fadeTimer.start();
         //qDebug() << "Timer started";
     }
-    else if ( !d->standalone || d->closeAtEndOfFade )
+    else if ( d->closeAtEndOfFade )
+    {
         d->view.hide();
+        if( reason != PopupDropper::SubtractingOverlay )
+            subtractOverlay();
+    }
 }
 
 bool PopupDropper::isHidden() const
@@ -206,14 +287,17 @@ bool PopupDropper::isHidden() const
 
 void PopupDropper::clear()
 {
-    if( !d->view.isHidden() )
-        hide();
     while( d->fadeTimer.state() == QTimeLine::Running )
         QApplication::processEvents();  
     d->itemCount = 0;
-    foreach( PopupDropperItem* item, d->pdiItems )
-        delete item;
-    d->pdiItems.clear();
+    do
+    {
+        foreach( PopupDropperItem* item, d->pdiItems )
+            delete item;
+        d->pdiItems.clear();
+        d->view.clearLastItem();
+    } while ( subtractOverlay() );
+    hide( PopupDropper::DragLeave );
 }
 
 bool PopupDropper::isEmpty() const
@@ -264,6 +348,16 @@ void PopupDropper::setFading( PopupDropper::Fading fade )
 const QTimeLine* PopupDropper::fadeTimer() const
 {
     return &d->fadeTimer;
+}
+
+int PopupDropper::deleteTimeout() const
+{
+    return d->deleteTimeout;
+}
+
+void PopupDropper::setDeleteTimeout( int msecs )
+{
+    d->deleteTimeout = msecs;
 }
 
 void PopupDropper::forceUpdate()
@@ -353,6 +447,16 @@ void PopupDropper::setSvgRenderer( QSvgRenderer *renderer )
     d->sharedRenderer = renderer;
 }
 
+int PopupDropper::horizontalOffset() const
+{
+    return d->horizontalOffset;
+}
+
+void PopupDropper::setHorizontalOffset( int pixels )
+{
+    d->horizontalOffset = pixels;
+}
+
 int PopupDropper::totalItems() const
 {
     return d->totalItems;
@@ -383,7 +487,7 @@ void PopupDropper::addItem( QGraphicsSvgItem *item, bool useSharedRenderer )
         qreal vert_center = ( ( my_max - my_min ) / 2 ) + my_min; //gives us our center line...now center the item around it
         qreal item_min = vert_center - ( d->pdiItems.at( i )->boundingRect().height() / 2 );
         //qDebug() << "vert_center = " << vert_center << ", ited->min = " << item_min;
-        d->pdiItems.at( i )->setPos( 20, item_min );
+        d->pdiItems.at( i )->setPos( d->horizontalOffset, item_min );
         d->pdiItems.at( i )->reposTextItem();
     }
     d->scene.addItem( pItem );

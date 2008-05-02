@@ -36,11 +36,14 @@ public:
     ~PopupDropperView();
 
     void dropEvent( QDropEvent *event );
+    void dragEnterEvent( QDragEnterEvent *event );
     void dragMoveEvent( QDragMoveEvent *event );
     void dragLeaveEvent( QDragLeaveEvent *event );
     
     bool quitOnDragLeave() const;
     void setQuitOnDragLeave( bool quit );
+
+    void clearLastItem();
 
 private:
     friend class PopupDropperViewPrivate;

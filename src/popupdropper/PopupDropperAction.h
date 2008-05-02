@@ -20,18 +20,18 @@
 #ifndef POPUPDROPPERACTION_H
 #define POPUPDROPPERACTION_H
 
-#include "kdemacros.h"
-
 #include <QAction>
 #include <QIcon>
 #include <QString>
+
+#include "amarok_export.h"
 
 class QSvgRenderer;
 class PopupDropperActionPrivate;
 
 // A QAction with support for SVGs
 
-class KDE_EXPORT PopupDropperAction : public QAction
+class AMAROK_EXPORT PopupDropperAction : public QAction
 {
     Q_OBJECT
 

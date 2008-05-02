@@ -25,6 +25,7 @@
 #include <QtDebug>
 
 #include "PopupDropper.h"
+#include "PopupDropper_p.h"
 #include "PopupDropperItem.h"
 #include "PopupDropperView.h"
 
@@ -87,11 +88,18 @@ void PopupDropperView::dragMoveEvent( QDragMoveEvent *event )
     event->accept();
 }
 
+void PopupDropperView::dragEnterEvent( QDragEnterEvent *event )
+{
+    qDebug() << "PopupDropperView::dragEnterEvent";
+    event->accept();
+    d->pd->d->dragEntered();
+}
+
 void PopupDropperView::dragLeaveEvent( QDragLeaveEvent *event )
 {
     qDebug() << "PopupDropperView::dragLeaveEvent";
     event->accept();
-    d->pd->hide( PopupDropper::DragLeave );
+    d->pd->d->dragLeft();
 }
 
 void PopupDropperView::dropEvent( QDropEvent *event )
@@ -113,5 +121,9 @@ void PopupDropperView::setQuitOnDragLeave( bool quit )
     d->quitOnDragLeave = quit;
 }
 
-#include "PopupDropperView.moc"
+void PopupDropperView::clearLastItem()
+{
+    d->lastItem = 0;
+}
 
+#include "PopupDropperView.moc"
