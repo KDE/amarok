@@ -67,8 +67,8 @@ bool AmpacheServiceCollection::possiblyContainsTrack(const KUrl & url) const
 
 Meta::TrackPtr AmpacheServiceCollection::trackForUrl( const KUrl & url )
 {
-    DEBUG_BLOCK;
-    
+//     DEBUG_BLOCK;
+
     m_urlTrack = 0;
     m_urlAlbum = 0;
     m_urlArtist = 0;
@@ -82,7 +82,7 @@ Meta::TrackPtr AmpacheServiceCollection::trackForUrl( const KUrl & url )
     QString requestUrl = QString( "%1/server/xml.server.php?action=url_to_song&auth=%2&url=%3")
             . arg( m_server, m_sessionId, url.url() );
 
-    debug() << "request url: " << requestUrl;
+//     debug() << "request url: " << requestUrl;
 
     m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo );
     if ( !m_storedTransferJob->exec() ) {
@@ -99,9 +99,9 @@ Meta::TrackPtr AmpacheServiceCollection::trackForUrl( const KUrl & url )
 
 void AmpacheServiceCollection::parseTrack( const QString &xml )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
 
-     debug() << "Received track response: " << xml;
+//      debug() << "Received track response: " << xml;
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
@@ -149,6 +149,6 @@ void AmpacheServiceCollection::parseTrack( const QString &xml )
     ArtistPtr artistPtr( artist );
     m_urlTrack->setArtist( artistPtr );
     album->setAlbumArtist( artistPtr );
- 
+
 
 }
