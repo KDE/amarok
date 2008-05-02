@@ -469,7 +469,10 @@ void PopupDropper::setTotalItems( int items )
 
 void PopupDropper::addItem( QGraphicsSvgItem *item, bool useSharedRenderer )
 {
+    //FIXME: Make separators use something graphical instead of just ignoring them
     PopupDropperItem *pItem = static_cast<PopupDropperItem*>( item );
+    if( pItem->action()->isSeparator() )
+        return;
     if( useSharedRenderer )
         pItem->setSharedRenderer( d->sharedRenderer );
     d->itemCount++;
