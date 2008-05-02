@@ -740,8 +740,8 @@ ServiceGenre::ServiceGenre( const QString &name )
     , CustomActionsProvider()
     , SourceInfoProvider()
     , m_name( name )
-    , m_tracks()
     , m_id( 0 )
+    , m_tracks()
 {
     //nothing to do
 }
@@ -751,8 +751,8 @@ ServiceGenre::ServiceGenre(const QStringList & row)
     , ServiceDisplayInfoProvider()
     , CustomActionsProvider()
     , SourceInfoProvider()
-    , m_tracks()
     , m_id( 0 )
+    , m_tracks()
 {
     m_name = row[1];
 }
