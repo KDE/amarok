@@ -53,8 +53,9 @@ set(plasma_LIB_SRCS
     plasma/scripting/dataenginescript.cpp
     plasma/scripting/runnerscript.cpp
     plasma/scripting/scriptengine.cpp
-    plasma/searchcontext.cpp
-    plasma/searchmatch.cpp
+    plasma/querymatch.cpp
+    plasma/runnercontext.cpp
+    plasma/runnermanager.cpp
     plasma/shadowitem.cpp
     plasma/svg.cpp
     plasma/theme.cpp
@@ -84,6 +85,7 @@ target_link_libraries(amarokplasma
     ${QT_QTUITOOLS_LIBRARY}
     ${KDE4_KIO_LIBS}
     ${KDE4_KFILE_LIBS}
+    ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTOPENGL_LIBRARY}
     ${OPENGL_gl_LIBRARY}
     ${OPENGL_glu_LIBRARY}

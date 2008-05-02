@@ -96,7 +96,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_actions = new QList<QAction*>();
     m_actions->append( m_appletBrowserAction );
 
-    m_appletBrowser = new Plasma::AppletBrowser( this );
+    m_appletBrowser = new Plasma::AppletBrowser();
     m_appletBrowser->setApplication( "amarok" );
     m_appletBrowser->hide();
     DEBUG_LINE_INFO
