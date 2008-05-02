@@ -80,6 +80,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(const Meta::TrackList &tracks
     ui->replaceEdit->setText( AmarokConfig::replacementString() );
     connect( this, SIGNAL(buttonClicked(KDialog::ButtonCode)), this, SLOT(slotButtonClicked(KDialog::ButtonCode)));
     connect( this, SIGNAL(updatePreview(QString)), ui->previewText, SLOT(setText(QString)));
+
+    connect( ui->filetypeCheck , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->initialCheck  , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     if( ui->customschemeCheck->isChecked())
         setDetailsWidgetVisible(true);
     else
@@ -144,7 +149,6 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     //been ported yet. Do they need to be?
     //Bpm,Directory,Bitrate,SampleRate,Mood
     args["folder"] = ui->folderCombo->currentText();
-    args["filetype"] = Amarok::extension( track->url() );
     args["title"] = cleanPath( track->prettyName() );
     args["composer"] = cleanPath( track->composer()->prettyName() );
     args["year"] = cleanPath( track->year()->prettyName() );
@@ -327,14 +331,15 @@ void OrganizeCollectionDialog::slotDetails()
     //updateGeometry();
 }
 
-
-
-
-
 void OrganizeCollectionDialog::init()
 {
     ui->formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
             arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
+    slotUpdatePreview();
+}
+
+void OrganizeCollectionDialog::slotUpdatePreview()
+{
     preview( buildFormatString() );
 }
 

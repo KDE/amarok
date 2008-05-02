@@ -50,6 +50,7 @@ class OrganizeCollectionDialog : public KDialog
     public slots:
         void slotDetails();
         virtual void slotButtonClicked(KDialog::ButtonCode);
+        void slotUpdatePreview();
     private:
         QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;
         QString cleanPath( const QString &component ) const;
