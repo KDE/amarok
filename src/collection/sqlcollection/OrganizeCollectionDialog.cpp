@@ -144,6 +144,7 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     //been ported yet. Do they need to be?
     //Bpm,Directory,Bitrate,SampleRate,Mood
     args["folder"] = ui->folderCombo->currentText();
+    args["filetype"] = Amarok::extension( track->url() );
     args["title"] = cleanPath( track->prettyName() );
     args["composer"] = cleanPath( track->composer()->prettyName() );
     args["year"] = cleanPath( track->year()->prettyName() );
@@ -327,7 +328,7 @@ void OrganizeCollectionDialog::slotDetails()
 }
 
 
-         
+
 
 
 void OrganizeCollectionDialog::init()
