@@ -296,18 +296,33 @@ void AmpacheServiceQueryMaker::fetchTracks()
 
     //debug() << "parent album id: " << m_parentAlbumId;
 
-    if ( !m_parentAlbumId.isEmpty() ) {
+    if ( !m_parentAlbumId.isEmpty() )
+    {
         AlbumMatcher albumMatcher( m_collection->albumById( m_parentAlbumId.toInt() ) );
         tracks = albumMatcher.match( m_collection );
-    } else
+    }
+    else if ( !m_parentArtistId.isEmpty() )
+    {
+        ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
+        tracks = artistMatcher.match( m_collection );
+    }
+    else
         return;
 
-    if ( tracks.count() > 0 ) {
+    if ( tracks.count() > 0 )
+    {
         handleResult( tracks );
         emit queryDone();
-    } else {
+    }
+    else
+    {
+        QString urlString;
 
-        QString urlString = "<SERVER>/server/xml.server.php?action=album_songs&auth=<SESSION_ID>&filter=<FILTER>";
+        if( !m_parentAlbumId.isEmpty() )
+            urlString = "<SERVER>/server/xml.server.php?action=album_songs&auth=<SESSION_ID>&filter=<FILTER>";
+        else if( !m_parentArtistId.isEmpty() )
+            urlString = "<SERVER>/server/xml.server.php?action=artist_songs&auth=<SESSION_ID>&filter=<FILTER>";
+        else return;
 
         urlString.replace( "<SERVER>", m_server);
         urlString.replace( "<SESSION_ID>", m_sessionId);
@@ -502,7 +517,7 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         //debug() << "Adding track: " <<  title;
 
         track->setId( trackId );
-        
+
         element = n.firstChildElement("url");
         track->setUrl( element.text() );
 
