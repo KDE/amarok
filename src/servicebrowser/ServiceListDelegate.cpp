@@ -47,12 +47,12 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 {
     //DEBUG_BLOCK
 
-    int width = m_view->viewport()->size().width() - 4;
-    int height = 90;
-    int iconWidth = 32;
-    int iconHeight = 32;
-    int iconPadX = 8;
-    int iconPadY = 4;
+    const int width = m_view->viewport()->size().width() - 4;
+    const int height = 90;
+    const int iconWidth = 32;
+    const int iconHeight = 32;
+    const int iconPadX = 8;
+    const int iconPadY = 4;
 
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
@@ -61,7 +61,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
-    
+
     painter->setFont(QFont("Arial", 14));
 
 
@@ -104,7 +104,7 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
 
     return QSize ( width, height );
 
-    
+
 
 }
 
