@@ -82,10 +82,8 @@ ScrobblerAdapter::engineNewTrackPlaying()
 }
 
 void
-ScrobblerAdapter::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
+ScrobblerAdapter::engineTrackEnded( int finalPosition, int /*trackLength*/, const QString &/*reason*/ )
 {
-    Q_UNUSED( trackLength );
-
     engineTrackPositionChanged( finalPosition, false );
     checkScrobble();
     resetVariables();
