@@ -99,6 +99,8 @@ class CollectionTreeView: public QTreeView
         PopupDropperAction* m_editAction;
         PopupDropperAction* m_organizeAction;
 
+        PopupDropperAction * m_caSeperator;
+
     signals:
         void itemSelected( CollectionTreeItem * item );
 };

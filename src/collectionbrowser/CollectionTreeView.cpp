@@ -59,6 +59,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_loadAction( 0 )
     , m_editAction( 0 )
     , m_organizeAction( 0 )
+    , m_caSeperator( 0 )
 {
     setRootIsDecorated( true );
     setSortingEnabled( true );
@@ -324,7 +325,7 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
             m_pd->addItem( pdi, false );
         }
 
-        m_pd->show();
+        //m_pd->show();
     }
 
     startDrag( Qt::CopyAction );
@@ -701,6 +702,12 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
                     Meta::CustomActionsCapability *cac = data->as<Meta::CustomActionsCapability>();
                     if( cac )
                     {
+                        if ( m_caSeperator == 0 ) {
+                            m_caSeperator = new PopupDropperAction( this );
+                            m_caSeperator->setSeparator ( true );
+                        }
+                        actions.append( m_caSeperator );
+                        
                         PopupDropperActionList cActions = cac->customActions();
                         
                         foreach( PopupDropperAction *action, cActions ) {
