@@ -19,6 +19,7 @@
 
 #include "ServiceMetaBase.h"
 
+#include "Amarok.h"
 #include "debug.h"
 #include "meta/default/DefaultMetaTypes.h"
 #include "TheInstances.h"
@@ -137,7 +138,7 @@ ServiceTrack::ServiceTrack(const QString & name)
     , m_albumName( 0 )
     , m_artistId( 0 )
     , m_artistName( 0 )
-    , m_type( 0 )
+//     , m_type( 0 )
 {
 }
 
@@ -151,7 +152,7 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
-    , m_type( 0 )
+//     , m_type( 0 )
 
 {
 
@@ -429,7 +430,8 @@ ServiceTrack::lastPlayed() const
 QString
 ServiceTrack::type() const
 {
-    return m_type;
+//     return m_type;
+    return Amarok::extension( url() );
 }
 
 void

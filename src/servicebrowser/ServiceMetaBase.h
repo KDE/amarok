@@ -270,7 +270,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         int m_artistId;
         QString m_artistName;
 
-        QString m_type;
+//         QString m_type;
 };
 
 class AMAROK_EXPORT ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
