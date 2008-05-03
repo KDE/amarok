@@ -36,20 +36,25 @@ class UploadUbuntu
     Execute()
   end
 
+  def SetVersion(package)
+    @rev = SVNPACKAGES[package]
+    @debversion  = "#{DATE}+svn#{@rev}-0amarok#{REV}"
+  end
+
   def AmarokUpload()
     # upload
-    `dput amarok-nightly ../amarok-nightly_#{DATE}.#{@rev}-0amarok#{REV}_source.changes`
+    `dput amarok-nightly ../amarok-nightly_#{@debversion}_source.changes`
   end
 
   def SrcUpload(package)
     # upload
-    `dput amarok-nightly ../amarok-nightly-#{package}_#{DATE}.#{@rev}-0amarok#{REV}_source.changes`
+    `dput amarok-nightly ../amarok-nightly-#{package}_#{@debversion}_source.changes`
   end
 
   def CreateNUpload(package)
     `cp -rf #{DEBPATH}/#{package}-debian ./debian`
 
-    `dch -D "#{DEBVERSION}" -v "#{DATE}.#{@rev}-0amarok#{REV}" "Nightly Build"`
+    `dch -D "#{DEBVERSION}" -v "#{@debversion}" "Nightly Build"`
     `dpkg-buildpackage -S -sa -rfakeroot -k"#{ENV['DEBFULLNAME']}"`
 
     if package == "amarok"
@@ -60,7 +65,8 @@ class UploadUbuntu
   end
 
   def CheckAvailablilty(package)
-    url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}.#{@rev}-0amarok#{REV}_i386.deb"
+    url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{@debversion}_i386.deb"
+
     `wget '#{url}'`
 
     turn = 0
@@ -81,7 +87,7 @@ class UploadUbuntu
 
     for package in PACKAGES
       if SVNPACKAGES.has_key?(package)
-        @rev = SVNPACKAGES[package]
+        SetVersion(package)
         puts "Ubuntu: uploading #{package} checkout revisoin #{@rev}"
         dir = "amarok-nightly-#{package}-#{@rev}"
         BaseDir()
@@ -93,7 +99,7 @@ class UploadUbuntu
     end
 
     BaseDir()
-    @rev = SVNPACKAGES["amarok"]
+    SetVersion("amarok")
     Dir.chdir("amarok-nightly-#{@rev}")
     CreateNUpload("amarok")
 
