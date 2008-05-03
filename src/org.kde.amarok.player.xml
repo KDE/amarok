@@ -17,137 +17,137 @@
     <method name="isPlaying" >
       <arg type="b" direction="out"/>
     </method>
-   <method name="randomModeStatus" >
+    <method name="randomModeStatus" >
       <arg type="b" direction="out"/>
     </method>
-   <method name="repeatPlaylistStatus" >
+    <method name="repeatPlaylistStatus" >
       <arg type="b" direction="out"/>
     </method>
-   <method name="repeatTrackStatus" >
+    <method name="repeatTrackStatus" >
       <arg type="b" direction="out"/>
     </method>
-   <method name="album" >
+    <method name="album" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="artist" >
+    <method name="artist" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="bitrate" >
+    <method name="bitrate" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="comment" >
+    <method name="comment" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="coverImage" >
+    <method name="coverImage" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="currentTime" >
+    <method name="currentTime" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="encodedURL" >
+    <method name="encodedURL" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="genre" >
+    <method name="genre" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="lyrics" >
+    <method name="lyrics" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="nowPlaying" >
+    <method name="nowPlaying" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="path" >
+    <method name="path" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="title" >
+    <method name="title" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="totalTime" >
+    <method name="totalTime" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="track" >
+    <method name="track" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="type" >
+    <method name="type" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="year" >
+    <method name="year" >
       <arg type="s" direction="out"/>
     </method>
-   <method name="getVolume" >
+    <method name="getVolume" >
       <arg type="i" direction="out"/>
     </method>
-   <method name="sampleRate" >
+    <method name="sampleRate" >
       <arg type="i" direction="out"/>
     </method>
-   <method name="score" >
+    <method name="score" >
       <arg type="d" direction="out"/>
     </method>
-   <method name="rating" >
+    <method name="rating" >
       <arg type="i" direction="out"/>
     </method>
-   <method name="status" >
+    <method name="status" >
       <arg type="i" direction="out"/>
     </method>
-   <method name="trackCurrentTime" >
+    <method name="trackCurrentTime" >
       <arg type="i" direction="out"/>
     </method>
-   <method name="trackCurrentTimeMs" >
+    <method name="trackCurrentTimeMs" >
       <arg type="i" direction="out"/>
     </method>
-   <method name="trackPlayCounter" >
+    <method name="trackPlayCounter" >
       <arg type="i" direction="out"/>
     </method>
-   <method name="trackTotalTime" >
+    <method name="trackTotalTime" >
       <arg type="i" direction="out"/>
     </method>
-   <method name="labels" >
+    <method name="labels" >
       <arg type="as" direction="out"/>
     </method>
-   <method name="lyricsByPath" >
+    <method name="lyricsByPath" >
       <arg type="s" direction="out"/>
       <arg name="path" type="s" direction="in"/>
     </method>
-   <method name="streamName" >
+    <method name="streamName" >
       <arg type="s" direction="out"/>
-   </method>
-   <method name="configEqualizer" />
-   <method name="enableOSD" >
+    </method>
+    <method name="configEqualizer" />
+    <method name="enableOSD" >
       <arg name="enable" type="b" direction="in"/>
     </method>
-   <method name="enableRandomMode" >
+    <method name="enableRandomMode" >
       <arg name="enable" type="b" direction="in"/>
     </method>
-   <method name="enableRepeatPlaylist" >
+    <method name="enableRepeatPlaylist" >
       <arg name="enable" type="b" direction="in"/>
     </method>
-   <method name="enableRepeatTrack" >
+    <method name="enableRepeatTrack" >
       <arg name="enable" type="b" direction="in"/>
     </method>
-   <method name="loveTrack" />
-   <method name="mediaDeviceMount" />
-   <method name="mediaDeviceUmount" />
-   <method name="mute" />
-   <method name="next" />
-   <method name="pause" />
-   <method name="play" />
-   <method name="playPause" />
-   <method name="prev" />
-   <method name="showOSD" />
-   <method name="stop" />
-   <method name="transferDeviceFiles" />
-   <method name="volumeDown" />
-   <method name="volumeUp" />
-   <method name="queueForTransfer" >
+    <method name="loveTrack" />
+    <method name="mediaDeviceMount" />
+    <method name="mediaDeviceUmount" />
+    <method name="mute" />
+    <method name="next" />
+    <method name="pause" />
+    <method name="play" />
+    <method name="playPause" />
+    <method name="prev" />
+    <method name="showOSD" />
+    <method name="stop" />
+    <method name="transferDeviceFiles" />
+    <method name="volumeDown" />
+    <method name="volumeUp" />
+    <method name="queueForTransfer" >
       <arg name="url" type="s" direction="in"/>
     </method>
-   <method name="seek" >
+    <method name="seek" >
       <arg name="s" type="i" direction="in"/>
     </method>
-   <method name="seekRelative" >
+    <method name="seekRelative" >
       <arg name="s" type="i" direction="in"/>
     </method>
-   <method name="setEqualizer" >
+    <method name="setEqualizer" >
       <arg type="i" direction="in"/>
       <arg type="i" direction="in"/>
       <arg type="i" direction="in"/>
@@ -160,43 +160,43 @@
       <arg type="i" direction="in"/>
       <arg type="i" direction="in"/>
     </method>
-   <method name="setEqualizerEnabled" >
+    <method name="setEqualizerEnabled" >
       <arg name="active" type="b" direction="in"/>
     </method>
-   <method name="setEqualizerPreset" >
+    <method name="setEqualizerPreset" >
       <arg name="name" type="s" direction="in"/>
     </method>
-   <method name="setLyricsByPath" >
+    <method name="setLyricsByPath" >
       <arg name="url" type="s" direction="in"/>
       <arg name="lyrics" type="s" direction="in"/>
     </method>
-   <method name="setBpm" >
+    <method name="setBpm" >
       <arg name="bpm" type="d" direction="in"/>
     </method>
-   <method name="setRating" >
+    <method name="setRating" >
       <arg name="rating" type="i" direction="in"/>
     </method>
-   <method name="setScore" >
+    <method name="setScore" >
       <arg name="score" type="i" direction="in"/>
     </method>
-   <method name="setVolume" >
+    <method name="setVolume" >
       <arg name="volume" type="i" direction="in"/>
     </method>
-   <method name="setVolumeRelative" >
+    <method name="setVolumeRelative" >
       <arg name="ticks" type="i" direction="in"/>
     </method>
-   <method name="showBrowser" >
+    <method name="showBrowser" >
       <arg name="browser" type="s" direction="in"/>
     </method>
-   <method name="setBpmByPath" >
+    <method name="setBpmByPath" >
       <arg name="url" type="s" direction="in"/>
       <arg name="bpm" type="d" direction="in"/>
     </method>
-   <method name="setScoreByPath" >
+    <method name="setScoreByPath" >
       <arg name="url" type="s" direction="in"/>
       <arg name="bpm" type="d" direction="in"/>
     </method>
-   <method name="setRatingByPath" >
+    <method name="setRatingByPath" >
       <arg name="url" type="s" direction="in"/>
       <arg name="rating" type="i" direction="in"/>
     </method>
