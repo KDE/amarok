@@ -67,12 +67,12 @@ KUrl
 PlaylistManager::newPlaylistFilePath( const QString & fileExtension )
 {
     int trailingNumber = 1;
-    QString fileName = i18n("Playlist_%1");
+    KLocalizedString fileName = ki18n("Playlist_%1");
     KUrl url( Amarok::saveLocation( "playlists" ) );
-    url.addPath( fileName.arg( trailingNumber ) );
+    url.addPath( fileName.subs( trailingNumber ).toString() );
 
     while( QFileInfo( url.path() ).exists() )
-        url.setFileName( fileName.arg( ++trailingNumber ) );
+        url.setFileName( fileName.subs( ++trailingNumber ).toString() );
 
     return KUrl( url.path() + fileExtension );
 }

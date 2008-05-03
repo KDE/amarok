@@ -180,8 +180,8 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 
     const uint count = queue.count();
     if( length )
-        menu->addTitle( i18np( "1 Queued Track (%1)", "%1 Queued Tracks (%1)", count )
-                           .arg( MetaBundle::prettyLength( length, true ) ) );
+        menu->addTitle( i18np( "1 Queued Track (%2)", "%1 Queued Tracks (%2)",
+	                       count, MetaBundle::prettyLength( length, true ) ) );
     else
         menu->addTitle( i18np( "1 Queued Track", "%1 Queued Tracks", count ) );
     menu->addAction(Amarok::actionCollection()->action( "queue_manager" ));

@@ -1904,8 +1904,8 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
         {
             tryToRemove = true;
             Amarok::ContextStatusBar::instance()->longMessage(
-                    i18n( "Media Device: Copying %1 to %2 failed" )
-                    .arg( src.prettyUrl(), dst.prettyUrl() ),
+                    i18n( "Media Device: Copying %1 to %2 failed",
+                           src.prettyUrl(), dst.prettyUrl() ),
                     KDE::StatusBar::Error );
         }
         else
@@ -2405,8 +2405,8 @@ MediaDevice::transferFiles()
             MediaItem *item = trackExists( *bundle );
             if( item && playlist.isEmpty() )
             {
-                Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
-                        arg( (*it).url().prettyUrl() ),
+                Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Track already on media device: %1",
+                                                                           (*it).url().prettyUrl() ),
                         KDE::StatusBar::Sorry );
                 existing += (*it).url();
                 setProgress( progress() + 1 );
