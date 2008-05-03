@@ -62,9 +62,15 @@ class UploadUbuntu
   def CheckAvailablilty(package)
     url = "#{LPPATH}-#{package}/amarok-nightly-#{package}_#{DATE}.#{@rev}-0amarok#{REV}_i386.deb"
     `wget '#{url}'`
+
+    turn = 0
     while $? != 0
       sleep 60
       `wget '#{url}'`
+       if turn > 360
+         exit 1 #leave me alone
+       end
+       turn += 1
     end
   end
 
