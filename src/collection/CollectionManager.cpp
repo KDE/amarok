@@ -121,7 +121,7 @@ CollectionManager::init()
         Amarok::Plugin *plugin = PluginManager::createFromService( service );
         if ( plugin )
         {
-            CollectionFactory* factory = qobject_cast<CollectionFactory*>( plugin );
+            CollectionFactory* factory = dynamic_cast<CollectionFactory*>( plugin );
             if ( factory )
             {
                 connect( factory, SIGNAL( newCollection( Collection* ) ), this, SLOT( slotNewCollection( Collection* ) ) );
