@@ -19,7 +19,6 @@
 
 #include "CollectionManager.h"
 
-#include <cassert>
 #include "debug.h"
 
 #include "BlockingQuery.h"
@@ -36,6 +35,8 @@
 #include <QTimer>
 
 #include <KService>
+#include <KMessageBox>
+#include <KRun>
 
 struct CollectionManager::Private
 {
@@ -92,7 +93,26 @@ CollectionManager::init()
     d->primaryCollection = 0;
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
-    assert( plugins.count() );
+//     assert( plugins.count() );
+    //This code was in enginecontroller originally, it now ends up here.
+    if( plugins.count() == 0 )
+    {
+        KRun::runCommand( "kbuildsycoca4", 0 );
+
+        KMessageBox::error( 0, i18n(
+                "<p>Amarok could not find any sound-engine plugins. "
+                "Amarok is now updating the KDE configuration database. Please wait a couple of minutes, then restart Amarok.</p>"
+                "<p>If this does not help, "
+                "it is likely that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
+                "$ cd /path/to/amarok/source-code/<br>"
+                "$ su -c \"make uninstall\"<br>"
+                "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
+                "$ kbuildsycoca<br>"
+                "$ amarok</pre>"
+                "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
+        // don't use QApplication::exit, as the eventloop may not have started yet
+        std::exit( EXIT_SUCCESS );
+    }
 
     foreach( KService::Ptr service, plugins )
     {
@@ -229,7 +249,7 @@ Collection*
 CollectionManager::primaryCollection() const
 {
     return d->primaryCollection;
-} 
+}
 
 SqlStorage*
 CollectionManager::sqlStorage() const
@@ -243,7 +263,7 @@ CollectionManager::tracksForUrls( const KUrl::List &urls )
     DEBUG_BLOCK
 
     debug() << "adding " << urls.size() << " tracks";
-            
+
     Meta::TrackList tracks;
     foreach( KUrl url, urls )
         tracks.append( trackForUrl( url ) );
