@@ -38,6 +38,8 @@
 #include <KMessageBox>
 #include <KRun>
 
+#include <cstdlib>
+
 struct CollectionManager::Private
 {
     QList<Collection*> collections;
