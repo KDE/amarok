@@ -40,6 +40,7 @@ Playlist::ClassicView::ClassicView(QWidget * parent)
     DEBUG_BLOCK
 
     setUniformRowHeights(true);
+    setSortingEnabled(true);
     header()->setMovable(true);
     header()->setClickable(true);
     setDragEnabled(true);
@@ -61,10 +62,11 @@ void Playlist::ClassicView::setModel( Playlist::Model *model )
     m_model = model;
     connect ( this, SIGNAL( activated ( const QModelIndex & ) ), m_model , SLOT( playTrack(const QModelIndex & ) ) );   
 
-    QTreeView::setModel( model );
+    m_proxyModel.setSourceModel( model );
+    QTreeView::setModel( &m_proxyModel );
 
     //just for fun
-    header()->hideSection(0);
+    //header()->hideSection(0);
     header()->hideSection(1);
     header()->hideSection(2);
 

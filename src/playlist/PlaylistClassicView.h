@@ -21,6 +21,7 @@
 #define PLAYLISTCLASSICVIEW_H
 
 #include <QTreeView>
+#include <QSortFilterProxyModel>
 
 /**
 A 'simple' classical playlist view for the purists out there
@@ -43,7 +44,8 @@ namespace Playlist {
 private:
 
     Playlist::Model * m_model;
-        QPersistentModelIndex *m_contextIndex;
+    QSortFilterProxyModel m_proxyModel;
+    QPersistentModelIndex *m_contextIndex;
 
 
 private slots:
