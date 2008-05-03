@@ -109,7 +109,6 @@ class DbusPlayerHandler : public QObject
       virtual void volumeDown();
       virtual void volumeUp();
       virtual void transferDeviceFiles();
-      virtual void transferCliArgs( QStringList args );
 };
 
 

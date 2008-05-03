@@ -20,13 +20,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarokdbushandler.h"
+
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "amarokdbushandler.h"
 #include "App.h" //transferCliArgs
 #include "debug.h"
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
+#include "collection/sqlcollection/SqlCollection.h"
 #include "context/LyricsManager.h"
 #include "EngineController.h"
 #include "equalizersetup.h"
@@ -68,8 +70,8 @@ namespace Amarok
     DbusPlayerHandler::DbusPlayerHandler()
         : QObject( kapp )
     {
-     (void)new PlayerAdaptor(this);
-     QDBusConnection::sessionBus().registerObject("/Player", this);
+        (void)new PlayerAdaptor(this);
+        QDBusConnection::sessionBus().registerObject("/Player", this);
     }
 
     QString DbusPlayerHandler::version()
@@ -79,6 +81,7 @@ namespace Amarok
 
     bool DbusPlayerHandler::dynamicModeStatus()
     {
+        AMAROK_NOTIMPLEMENTED
         return false;
         //TODO: PORT 2.0
 //         return Amarok::dynamicMode();
@@ -86,6 +89,7 @@ namespace Amarok
 
     bool DbusPlayerHandler::equalizerEnabled()
     {
+        AMAROK_NOTIMPLEMENTED
         if( false )
             return AmarokConfig::equalizerEnabled();
         else
@@ -183,6 +187,7 @@ namespace Amarok
 
     QStringList DbusPlayerHandler::labels()
     {
+        AMAROK_NOTIMPLEMENTED
         //TODO: fix me
         return QStringList();
     }
@@ -258,7 +263,10 @@ namespace Amarok
             streamText = streamInfo->streamName();
             if( !streamInfo->streamSource().isEmpty() )
                 streamText += " (" + streamInfo->streamSource() + ')';
-        } else {
+            delete streamInfo;
+        }
+        else
+        {
             Meta::SourceInfoCapability *sourceInfo = track->as<Meta::SourceInfoCapability>();
 
             if( sourceInfo )
@@ -274,8 +282,22 @@ namespace Amarok
     QString DbusPlayerHandler::nowPlaying()
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
-        //TODO: i think this is not correct yet
-        return track ? track->prettyName() : QString();
+        if( !track )
+            return QString();
+        QString playingText;
+        if( track->artist() )
+        {
+            playingText = track->artist()->prettyName();
+            playingText += " - ";
+        }
+        playingText += track->prettyName();
+        if( track->album() )
+        {
+            playingText += '(';
+            playingText += track->album()->prettyName();
+            playingText += ')';
+        }
+        return playingText;
     }
 
     QString DbusPlayerHandler::path()
@@ -320,6 +342,7 @@ namespace Amarok
 
     void DbusPlayerHandler::configEqualizer()
     {
+        AMAROK_NOTIMPLEMENTED
         if( false ) //TODO phonon
         {
             EqualizerSetup::instance()->show();
@@ -358,12 +381,14 @@ namespace Amarok
 
     void DbusPlayerHandler::mediaDeviceMount()
     {
+        AMAROK_NOTIMPLEMENTED
         //if ( MediaBrowser::instance()->currentDevice() )
         //   MediaBrowser::instance()->currentDevice()->connectDevice();
     }
 
     void DbusPlayerHandler::mediaDeviceUmount()
     {
+        AMAROK_NOTIMPLEMENTED
         //if ( MediaBrowser::instance()->currentDevice() )
         //    MediaBrowser::instance()->currentDevice()->disconnectDevice();
     }
@@ -400,6 +425,7 @@ namespace Amarok
 
     void DbusPlayerHandler::queueForTransfer( KUrl url )
     {
+        AMAROK_NOTIMPLEMENTED
         Q_UNUSED( url );
         //MediaBrowser::queue()->addUrl( url );
         //MediaBrowser::queue()->URLsAdded();
@@ -419,7 +445,9 @@ namespace Amarok
     void DbusPlayerHandler::setEqualizer(int preamp, int band60, int band170, int band310,
         int band600, int band1k, int band3k, int band6k, int band12k, int band14k, int band16k)
     {
-        if( false ) {
+        AMAROK_NOTIMPLEMENTED
+        if( false )
+        {
             bool instantiated = EqualizerSetup::isInstantiated();
             EqualizerSetup* eq = EqualizerSetup::instance();
 
@@ -435,6 +463,7 @@ namespace Amarok
 
     void DbusPlayerHandler::setEqualizerEnabled( bool active )
     {
+        AMAROK_NOTIMPLEMENTED
 //TODO PhononEqualizer        EngineController::engine()->setEqualizerEnabled( active );
         AmarokConfig::setEqualizerEnabled( active );
 
@@ -444,6 +473,7 @@ namespace Amarok
 
     void DbusPlayerHandler::setEqualizerPreset( QString name )
     {
+        AMAROK_NOTIMPLEMENTED
         bool instantiated = EqualizerSetup::isInstantiated();
         EqualizerSetup* eq = EqualizerSetup::instance();
         eq->setPreset( name );
@@ -474,6 +504,7 @@ namespace Amarok
 
     void DbusPlayerHandler::setBpm( float bpm )
     {
+        AMAROK_NOTIMPLEMENTED
         Q_UNUSED( bpm )
         //Meta::Track does not provide a setBpm method
         //is it necessary?
@@ -481,6 +512,7 @@ namespace Amarok
 
     void DbusPlayerHandler::setBpmByPath( const QString &url, float bpm )
     {
+        AMAROK_NOTIMPLEMENTED
         Q_UNUSED( url )
         Q_UNUSED( bpm )
         /*MetaBundle bundle( url );
@@ -537,6 +569,7 @@ namespace Amarok
 
     void DbusPlayerHandler::transferDeviceFiles()
     {
+        AMAROK_NOTIMPLEMENTED
         //if ( MediaBrowser::instance()->currentDevice() )
         //    MediaBrowser::instance()->currentDevice()->transferFiles();
     }
@@ -549,44 +582,6 @@ namespace Amarok
     void DbusPlayerHandler::volumeUp()
     {
         The::engineController()->increaseVolume();
-    }
-
-    void DbusPlayerHandler::transferCliArgs( QStringList args )
-    {
-        DEBUG_BLOCK
-
-        //stop startup cursor animation - do not mess with this, it's carefully crafted
-        //NOTE I have no idea why we need to do this, I never get startup notification from
-        //the amarok binary anyway --mxcl
-        debug() << "Startup ID: " << args.first();
-        kapp->setStartupId( args.first().toLocal8Bit() );
-#ifdef Q_WS_X11
-        // currently X11 only
-        KStartupInfo::appStarted();
-#endif
-        args.pop_front();
-
-        const int argc = args.count() + 1;
-        char **argv = new char*[argc];
-
-        QStringList::ConstIterator it = args.constBegin();
-        for( int i = 1; i < argc; ++i, ++it ) {
-            argv[i] = qstrdup( (*it).toLocal8Bit() );
-            debug() << "Extracted: " << argv[i];
-        }
-
-        // required, loader doesn't add it
-        argv[0] = qstrdup( "amarok" );
-
-        // re-initialize KCmdLineArgs with the new arguments
-        App::initCliArgs( argc, argv );
-        App::handleCliArgs();
-
-        //FIXME are we meant to leave this around?
-        //FIXME are we meant to allocate it all on the heap?
-        //NOTE we allow the memory leak because I think there are
-        // some very mysterious crashes due to deleting this
-        //delete[] argv;
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -653,18 +648,6 @@ namespace Amarok
     void DbusPlaylistHandler::removeCurrentTrack()
     {
         The::playlistModel()->removeRows( getActiveIndex(), 1 );
-#if 0
-        PlaylistItem* const item = Playlist::instance()->currentTrack();
-        if ( item ) {
-            if( item->isBeingRenamed() )
-                item->setDeleteAfterEditing( true );
-            else
-            {
-                Playlist::instance()->removeItem( item );
-                delete item;
-            }
-        }
-#endif
     }
 
     void DbusPlaylistHandler::removeByIndex( int index )
@@ -675,6 +658,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::repopulate()
     {
+        AMAROK_NOTIMPLEMENTED
         //PORT 2.0
 //         Playlist::instance()->repopulate();
     }
@@ -687,9 +671,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::setStopAfterCurrent( bool on )
     {
-        Q_UNUSED( on );
-        //PORT 2.0
-//         Playlist::instance()->setStopAfterCurrent( on );
+        The::playlistModel()->setStopAfterMode( on ? Playlist::StopAfterCurrent : Playlist::StopNever );
     }
 
     void DbusPlaylistHandler::shortStatusMessage(const QString& msg)
@@ -699,6 +681,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::shufflePlaylist()
     {
+        AMAROK_NOTIMPLEMENTED
         //PORT 2.0
 //         Playlist::instance()->shuffle();
     }
@@ -737,6 +720,7 @@ namespace Amarok
 
     void DbusPlaylistBrowserHandler::addPodcast( const QString &url )
     {
+        AMAROK_NOTIMPLEMENTED
         Q_UNUSED( url );
         //PORT 2.0
 //         PlaylistBrowser::instance()->addPodcast( url );
@@ -744,12 +728,14 @@ namespace Amarok
 
     void DbusPlaylistBrowserHandler::scanPodcasts()
     {
+        AMAROK_NOTIMPLEMENTED
         //PORT 2.0
 //         PlaylistBrowser::instance()->scanPodcasts();
     }
 
     void DbusPlaylistBrowserHandler::addPlaylist( const QString &url )
     {
+        AMAROK_NOTIMPLEMENTED
         Q_UNUSED( url );
         //PORT 2.0
 //         PlaylistBrowser::instance()->addPlaylist( url );
@@ -757,6 +743,7 @@ namespace Amarok
 
     int DbusPlaylistBrowserHandler::loadPlaylist( const QString &playlist )
     {
+        AMAROK_NOTIMPLEMENTED
         Q_UNUSED( playlist ); return -1;
         //PORT 2.0
 //         return PlaylistBrowser::instance()->loadPlaylist( playlist );
@@ -841,7 +828,8 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
     {
         //This should really work across multiple collections, but theres no interface for it currently..
         QStringList tracks = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( url ) FROM tracks;" );
-        if( tracks.size() < 0 );
+        if( tracks.size() < 0 )
+            return 0;
         QString total = tracks[0];
         int final = total.toInt();
         return final;
@@ -849,10 +837,9 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     bool DbusCollectionHandler::isDirInCollection( const QString& path )
     {
-        Q_UNUSED( path );
         AMAROK_NOTIMPLEMENTED
+        Q_UNUSED( path );
         return false;
-//         return CollectionDB::instance()->isDirInCollection( path );
     }
 
     bool DbusCollectionHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
@@ -870,6 +857,7 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 
     QStringList DbusCollectionHandler::similarArtists( int artists )
     {
+        AMAROK_NOTIMPLEMENTED
         Q_UNUSED( artists );
         //TODO: implement
         return QStringList();
