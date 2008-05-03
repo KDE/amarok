@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "PlaylistModel.h"
 #include "PlaylistViewCommon.h"
+#include "TheInstances.h"
 #include "tagdialog.h"
 #include "meta/CurrentTrackActionsCapability.h"
 
@@ -47,6 +48,11 @@ Playlist::ClassicView::ClassicView(QWidget * parent)
     setDropIndicatorShown(true);
     setDragDropMode(QAbstractItemView::InternalMove);
 
+    setRootIsDecorated( false );
+    setAlternatingRowColors ( true );
+    setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setModel( The::playlistModel() );
+
 }
 
 Playlist::ClassicView::~ ClassicView()
@@ -60,6 +66,7 @@ void Playlist::ClassicView::setModel( Playlist::Model *model )
     DEBUG_BLOCK
 
     m_model = model;
+    //Might need to adjust this for the proxy model
     connect ( this, SIGNAL( activated ( const QModelIndex & ) ), m_model , SLOT( playTrack(const QModelIndex & ) ) );   
 
     m_proxyModel.setSourceModel( model );

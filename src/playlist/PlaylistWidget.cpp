@@ -66,10 +66,6 @@ Widget::Widget( QWidget* parent )
 
 
     Playlist::ClassicView * clasicalPlaylistView = new Playlist::ClassicView( this );
-    clasicalPlaylistView->setRootIsDecorated( false );
-    clasicalPlaylistView->setAlternatingRowColors ( true );
-    clasicalPlaylistView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    clasicalPlaylistView->setModel( playModel );
 
 
     mainPlaylistlayout->setSpacing( 0 );
