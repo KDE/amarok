@@ -59,7 +59,7 @@ void Playlist::ClassicView::setModel( Playlist::Model *model )
     DEBUG_BLOCK
 
     m_model = model;
-    connect ( this, SIGNAL( activated ( const QModelIndex & ) ), m_model , SLOT( play(const QModelIndex & ) ) );   
+    connect ( this, SIGNAL( activated ( const QModelIndex & ) ), m_model , SLOT( playTrack(const QModelIndex & ) ) );   
 
     QTreeView::setModel( model );
 
@@ -70,7 +70,7 @@ void Playlist::ClassicView::setModel( Playlist::Model *model )
 
 }
 
-void Playlist::ClassicView::playContext()
+void Playlist::ClassicView::playTrack()
 {
     DEBUG_BLOCK
 

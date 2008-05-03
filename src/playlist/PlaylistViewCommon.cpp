@@ -42,7 +42,7 @@ void Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index,
     KMenu          *menu = new KMenu( parent );
     KAction  *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
 
-    QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playContext() ) );
+    QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playTrack() ) );
 
     menu->addAction( playAction );
   ( menu->addAction( i18n( "Queue Track" ), parent, SLOT( queueItem() ) ) )->setEnabled( false );

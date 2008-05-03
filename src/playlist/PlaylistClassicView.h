@@ -48,7 +48,7 @@ private:
 
 private slots:
 
-    void playContext( );
+    void playTrack( );
     void removeSelection();
     void editTrackInformation();
 
