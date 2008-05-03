@@ -86,6 +86,11 @@ class CollectionTreeView: public QTreeView
         void copyTracks( const QSet<CollectionTreeItem*> &items, Collection *destination, bool removeSources ) const;
         PopupDropper* createPopupDropper( QWidget* parent );
         PopupDropperActionList getActions( const QModelIndexList &indcies );
+
+        bool onlyOneCollection(  const QModelIndexList &indcies );
+        Collection * getCollection( const QModelIndexList &indcies );
+        QHash<PopupDropperAction*, Collection*> getCopyActions( const QModelIndexList &indcies );
+        QHash<PopupDropperAction*, Collection*> getMoveActions( const QModelIndexList &indcies );
         
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModelBase *m_treeModel;
@@ -100,6 +105,7 @@ class CollectionTreeView: public QTreeView
         PopupDropperAction* m_organizeAction;
 
         PopupDropperAction * m_caSeperator;
+        PopupDropperAction * m_cmSeperator;
 
     signals:
         void itemSelected( CollectionTreeItem * item );

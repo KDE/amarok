@@ -60,6 +60,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_editAction( 0 )
     , m_organizeAction( 0 )
     , m_caSeperator( 0 )
+    , m_cmSeperator( 0 )
 {
     setRootIsDecorated( true );
     setSortingEnabled( true );
@@ -161,8 +162,6 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
     }
     
     QAction *organizeAction = 0;
-    QHash<QAction*, Collection*> copyDestination;
-    QHash<QAction*, Collection*> moveDestination;
     if( !indices.isEmpty() )
     {
         {   //keep the scope of item minimal
@@ -172,61 +171,54 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
                 item = item->parent();
             }
             Collection *collection = item->parentCollection();
-            bool onlyOneCollection = true;
-            foreach( const QModelIndex &index, indices )
-                {
-                CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
-                while( item->isDataItem() )
-                {
-                    item = item->parent();
-                }
-                onlyOneCollection = item->parentCollection() == collection;
-                if( !onlyOneCollection )
-                    break;
-            }
-            if( collection->isOrganizable() && onlyOneCollection )
+            
+            if( collection->isOrganizable() && onlyOneCollection( indices) )
             {
                 organizeAction = new QAction( i18n( "Organize Files" ), &menu );
                 menu.addAction( organizeAction );
             }
-            if( onlyOneCollection )
-            {
-                QList<Collection*> writableCollections;
-                foreach( Collection *coll, CollectionManager::instance()->collections() )
-                {
-                    if( coll->isWritable() && coll != collection )
-                    {
-                        writableCollections.append( coll );
-                    }
-                }
-                if( !writableCollections.isEmpty() )
-                {
-                    KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
-                    foreach( Collection *coll, writableCollections )
-                    {
-                        QAction *action = new QAction( coll->prettyName(), copyMenu );
-                        copyMenu->addAction( action );
-                        copyDestination.insert( action, coll );
-                    }
-                    menu.addMenu( copyMenu );
-                    if( collection->isWritable() )
-                    {
-                        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
-                        foreach( Collection *coll, writableCollections )
-                        {
-                            QAction *action = new QAction( coll->prettyName(), moveMenu );
-                            moveMenu->addAction( action );
-                            moveDestination.insert( action, coll );
-                        }
-                        menu.addMenu( moveMenu );
-                    }
-                }
-            }
+
+
         }
     }
 
+
+    QHash<PopupDropperAction*, Collection*> copyDestination = getCopyActions( indices );
+    QHash<PopupDropperAction*, Collection*> moveDestination = getMoveActions( indices );
+
+    if ( !( copyDestination.empty() && moveDestination.empty() ) ) {
+        if ( m_cmSeperator == 0 ) {
+            m_cmSeperator = new PopupDropperAction( this );
+            m_cmSeperator->setSeparator ( true );
+        }
+        menu.addAction( m_cmSeperator );
+    }
+
     
-    QAction* result =  menu.exec( event->globalPos() );
+    if ( !copyDestination.empty() ) {
+        debug() << "got copy actions";
+        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
+        foreach( PopupDropperAction * action, copyDestination.keys() ) {
+            action->setParent( copyMenu );
+            copyMenu->addAction( action );
+        }
+        menu.addMenu( copyMenu );
+    }
+
+    if ( !moveDestination.empty() ) {
+        debug() << "got move actions";
+        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
+        foreach( PopupDropperAction * action, copyDestination.keys() ) {
+            action->setParent( moveMenu );
+            moveMenu->addAction( action );
+        }
+        menu.addMenu( moveMenu );
+    }
+
+    
+    PopupDropperAction* result = dynamic_cast< PopupDropperAction* > ( menu.exec( event->globalPos() ) );
+    if ( result == 0 ) return;
+    
     QSet<CollectionTreeItem*> items;
     foreach( const QModelIndex &index, indices )
     {
@@ -324,6 +316,45 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
             pdi->setFont( font );
             m_pd->addItem( pdi, false );
         }
+
+       /* QHash<PopupDropperAction*, Collection*> copyDestination = getCopyActions( indices );
+        QHash<PopupDropperAction*, Collection*> moveDestination = getMoveActions( indices );
+
+        if ( !( copyDestination.empty() && moveDestination.empty() ) ) {
+            if ( m_cmSeperator == 0 ) {
+                m_cmSeperator = new PopupDropperAction( this );
+                m_cmSeperator->setSeparator ( true );
+            }
+            PopupDropperItem* pdi = new PopupDropperItem();
+            pdi->setAction( m_cmSeperator );
+            pdi->setFont( font );
+            m_pd->addItem( pdi, false );
+        }
+
+    
+        if ( !copyDestination.empty() ) {
+            debug() << "got copy actions";
+            KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
+            foreach( PopupDropperAction * action, copyDestination.keys() ) {
+                action->setParent( copyMenu );
+                
+                PopupDropperItem* pdi = new PopupDropperItem();
+                pdi->setAction( m_cmSeperator );
+                pdi->setFont( font );
+                m_pd->addItem( pdi, false );
+            }
+            menu.addMenu( copyMenu );
+        }
+
+        if ( !moveDestination.empty() ) {
+            debug() << "got move actions";
+            KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
+            foreach( PopupDropperAction * action, copyDestination.keys() ) {
+                action->setParent( moveMenu );
+                moveMenu->addAction( action );
+            }
+            menu.addMenu( moveMenu );
+        }*/
 
         //m_pd->show();
     }
@@ -661,7 +692,7 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
 
         actions.append( m_editAction );
 
-        /*{   //keep the scope of item minimal
+        {   //keep the scope of item minimal
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
             while( item->isDataItem() )
             {
@@ -690,7 +721,7 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
                     actions.append( m_organizeAction );
                 }
             }
-        }*/
+        }
 
         if( indices.count() == 1 )
         {
@@ -729,4 +760,116 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
     
 }
 
+
+QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
+{
+    DEBUG_BLOCK
+    QHash<PopupDropperAction*, Collection*> copyDestination;
+    if( !indices.isEmpty() )
+    {
+
+        if( onlyOneCollection( indices) )
+        {
+            Collection *collection = getCollection( indices );
+            QList<Collection*> writableCollections;
+            foreach( Collection *coll, CollectionManager::instance()->collections() )
+            {
+                if( coll->isWritable() && coll != collection )
+                {
+                    debug() << "got writable collection";
+                    writableCollections.append( coll );
+                }
+            }
+            if( !writableCollections.isEmpty() )
+            {
+                foreach( Collection *coll, writableCollections )
+                {
+                    debug() << "creating action";
+                    PopupDropperAction *action = new PopupDropperAction( QIcon(), coll->prettyName(), 0 );
+                    copyDestination.insert( action, coll );
+                }
+
+            }
+        }
+    }
+    debug() << "returning " << copyDestination.size() << " actions.";
+    return copyDestination;
+}
+
+QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( const QModelIndexList & indices )
+{
+    DEBUG_BLOCK
+    QHash<PopupDropperAction*, Collection*> moveDestination;
+    if( !indices.isEmpty() )
+    {
+        if( onlyOneCollection( indices) )
+        {
+            Collection *collection = getCollection( indices );
+            QList<Collection*> writableCollections;
+            foreach( Collection *coll, CollectionManager::instance()->collections() )
+            {
+                if( coll->isWritable() && coll != collection )
+                {
+                    writableCollections.append( coll );
+                }
+            }
+            if( !writableCollections.isEmpty() )
+            {
+                if( collection->isWritable() )
+                {
+                    foreach( Collection *coll, writableCollections )
+                    {
+                        PopupDropperAction *action = new PopupDropperAction( QIcon(), coll->prettyName(), 0 );
+                        moveDestination.insert( action, coll );
+                    }
+                }
+            }
+        }
+    }
+    debug() << "returning " << moveDestination.size() << " actions.";
+    return moveDestination;
+}
+
+bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
+{
+    DEBUG_BLOCK
+    bool onlyOneCollection = true;
+    if( !indices.isEmpty() )
+    {
+        Collection *collection = getCollection( indices );
+        foreach( const QModelIndex &index, indices )
+        {
+            CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
+            while( item->isDataItem() )
+            {
+                item = item->parent();
+            }
+            onlyOneCollection = item->parentCollection() == collection;
+            if( !onlyOneCollection )
+                break;
+        }
+    }
+
+    return onlyOneCollection;
+}
+
+Collection * CollectionTreeView::getCollection( const QModelIndexList & indices )
+{
+    DEBUG_BLOCK
+    Collection *collection = 0;
+    if( !indices.isEmpty() )
+    {
+
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
+        while( item->isDataItem() )
+        {
+            item = item->parent();
+        }
+        collection = item->parentCollection();
+    }
+
+    return collection;
+}
+
 #include "CollectionTreeView.moc"
+
