@@ -18,7 +18,7 @@
 DEBVERSION  = "hardy"
 DEBPATH     = NEONPATH + "/distros/ubuntu"
 DEBBASEPATH = ROOTPATH + "/#{DATE}-ubuntu"
-LPPATH      = "http://ppa.launchpad.net/amarok-nightly/ubuntu/pool/main/a/amarok-nightly"
+LPPATH      = "http://ppa.launchpad.net/project-neon/ubuntu/pool/main/a/amarok-nightly"
 PACKAGES    = ["qt","strigi","taglib","kdelibs","kdebase-runtime"]
 
 debemail    = ENV['DEBEMAIL']
