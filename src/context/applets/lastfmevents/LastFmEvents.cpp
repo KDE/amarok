@@ -46,9 +46,6 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
 
     setBackgroundHints( Plasma::Applet::DefaultBackground );
     setHasConfigurationInterface( true );
-
-    if( args.size() > 0 ) // we are being told what position to start at
-        setPos( (qreal)args[0].toInt(), (qreal)args[1].toInt() );
 }
 
 LastFmEvents::~LastFmEvents()
@@ -93,7 +90,7 @@ void LastFmEvents::init()
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
 
-//     debug() << "setting size to " << m_width;
+    debug() << "setting size to " << m_width;
     m_theme->resize( (int)m_width, (int)m_width );
     setPreferredSize( (int)m_width, (int)m_width );
 
@@ -101,14 +98,14 @@ void LastFmEvents::init()
 
 void LastFmEvents::constraintsEvent( Plasma::Constraints constraints )
 {
-//     DEBUG_BLOCK
+    DEBUG_BLOCK
     prepareGeometryChange();
 
     if (constraints & Plasma::SizeConstraint && m_theme) {
         m_theme->resize(size().toSize());
     }
 
-//     debug() << "resized svg to " << contentSize().toSize() << ", now re-laying out";
+    debug() << "resized svg to " << size().toSize() << ", now re-laying out";
     for( int i = 0; i < 14; i++ ) // go through each row
     {
         QString titleElement = QString( "title%1" ).arg( i );

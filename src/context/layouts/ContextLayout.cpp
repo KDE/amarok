@@ -21,6 +21,8 @@
 #include "ContextLayout.h"
 
 #include "Applet.h"
+#include "debug.h"
+#include "VerticalLayout.h"
 
 #include <limits.h>
 #include <math.h>
@@ -90,7 +92,7 @@ public:
         }
     }
 
-    QList< QGraphicsLinearLayout* > columns;
+    QList< VerticalLayout* > columns;
     qreal columnWidth;
 };
 
@@ -98,7 +100,10 @@ ContextLayout::ContextLayout(QGraphicsLayoutItem *parent)
     : QGraphicsLayout(parent)
     , d(new Private)
 {
+    DEBUG_BLOCK
+    relayout();
 }
+
 ContextLayout::~ContextLayout()
 {
     delete d;
@@ -117,8 +122,9 @@ ContextLayout::count() const
 void
 ContextLayout::addItem(QGraphicsLayoutItem* item)
 {
+    DEBUG_BLOCK
     if( d->columns.size() == 0 )
-        d->columns << new QGraphicsLinearLayout( this );
+        d->columns << new VerticalLayout( this );
 
     int smallestColumn = 0, min = (int)d->columns[ 0 ]->effectiveSizeHint( Qt::PreferredSize ).height();
     for( int i = 1; i < d->columns.size(); i++ ) // find shortest column to put
@@ -243,22 +249,24 @@ T qSum(const QList<T>& container)
 void
 ContextLayout::relayout()
 {
-    QRectF rect = geometry().adjusted(0, 0, -0, -0);
+    DEBUG_BLOCK
+    QRectF rect = geometry();
     const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
 
     //const int numColumns = 1;
 
+    debug() << "laying out into:" << rect << "with" << numColumns << " columns";
     if( numColumns > d->columns.size() ) // need to make more columns
     {
         for( int i = d->columns.size(); i < numColumns; i++ ) {
-            QGraphicsLinearLayout *newColumn = new QGraphicsLinearLayout( Qt::Horizontal );
+            VerticalLayout *newColumn = new VerticalLayout( this );
             d->columns << newColumn;
         }
 
     }
     else if( numColumns < d->columns.size() ) // view was shrunk
     {
-        QGraphicsLinearLayout* column = d->columns[ d->columns.size() - 1 ];
+        VerticalLayout* column = d->columns[ d->columns.size() - 1 ];
         d->columns.removeAt( d->columns.size() - 1 );
         for( int i = 0; i < column->count() ; i++ )
         {
@@ -284,6 +292,7 @@ ContextLayout::relayout()
         qreal height2 = rect.height();
         qreal maxHeight = qMax( height1, height2 );
         QSizeF size( columnWidth, maxHeight );
+        debug() << "setting column" << i << " geometry to " << pos << " " << size;
         d->columns[ i ]->setGeometry( QRectF( pos, size ) );
     }
     d->balanceColumns();

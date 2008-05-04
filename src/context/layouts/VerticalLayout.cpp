@@ -36,7 +36,7 @@ VerticalLayout::VerticalLayout(QGraphicsLayoutItem *parent)
 
 VerticalLayout::~VerticalLayout()
 {
-    kDebug() << "help help, I'm being repressed: " << this;
+    debug() << "help help, I'm being repressed: " << this;
     delete d;
 }
 
@@ -96,9 +96,11 @@ VerticalLayout::removeAt( int i )
 
 void VerticalLayout::relayout()
 {
+    DEBUG_BLOCK
 
     QRectF rect = geometry().adjusted( 0, 0, 0, 0 );
 
+    debug() << "VerticalLayout::relayout laying out column in rect" << rect;
     qreal top = 10.0;
     qreal left = 10.0; //Plasma::Layout::margin( Plasma::LeftMargin );
 
@@ -106,12 +108,12 @@ void VerticalLayout::relayout()
     {
         qreal height = 0.0;
 
-//         if( Plasma::Applet *a = dynamic_cast<Plasma::Applet *>(child) )
-//         {
-//             if( a->hasHeightForWidth() )
-//                 height = a->heightForWidth( rect.width() );
-//         }
-//         else
+        if( Plasma::Applet *a = dynamic_cast<Plasma::Applet *>(child) )
+        {
+            if( a )
+                 height = a->effectiveSizeHint( Qt::PreferredSize, QSizeF( rect.width(), -1 ) ).height();
+        }
+        else
             height = effectiveSizeHint( Qt::PreferredSize ).height();
 
         const QRectF newgeom( rect.topLeft().x() + left,
@@ -121,6 +123,7 @@ void VerticalLayout::relayout()
 
         top += height /*+ spacing()*/;
 
+        debug() << "setting child geometry to" << newgeom;
         child->setGeometry( newgeom );
     }
 

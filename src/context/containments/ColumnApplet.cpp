@@ -193,68 +193,6 @@ void ColumnApplet::appletRemoved( QObject* object ) // SLOT
     recalculate();
 }
 
-/*
-// parts of this code come from Qt 4.3, src/gui/graphicsview/qgraphicsitem.cpp
-void ColumnApplet::mousePressEvent( QGraphicsSceneMouseEvent* event )
-{
-    DEBUG_BLOCK
-    if (event->button() == Qt::LeftButton && (flags() & ItemIsSelectable))
-    {
-        bool multiSelect = (event->modifiers() & Qt::ControlModifier) != 0;
-        if (!multiSelect) {
-            if (!isSelected()) {
-                if (scene())
-                    scene()->clearSelection();
-                setSelected(true);
-            }
-        }
-    } else if (!(flags() & ItemIsMovable)) {
-        event->ignore();
-    }
-}
-
-// parts of this code come from Qt 4.3, src/gui/graphicsview/qgraphicsitem.cpp
-void ColumnApplet::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
-{
-//     debug() << "layout manager got a mouse event";
-    if ( ( event->buttons() & Qt::LeftButton ) )
-    {
-
-        // Find the active view.
-        QGraphicsView *view = 0;
-        if (event->widget())
-            view = qobject_cast<QGraphicsView *>(event->widget()->parentWidget());
-
-        if ((flags() & ItemIsMovable) && (!parentItem() || !parentItem()->isSelected())) {
-            QPointF diff;
-            if (flags() & ItemIgnoresTransformations) {
-                    // Root items that ignore transformations need to
-                    // calculate their diff by mapping viewport coordinates to
-                    // parent coordinates. Items whose ancestors ignore
-                    // transformations can ignore this problem; their events
-                    // are already mapped correctly.
-                QTransform viewToParentTransform = (sceneTransform() * view->viewportTransform()).inverted();
-
-                QTransform myTransform = transform().translate(pos().x(), pos().y());
-                viewToParentTransform = myTransform * viewToParentTransform;
-
-                diff = viewToParentTransform.map(QPointF(view->mapFromGlobal(event->screenPos())))
-                    - viewToParentTransform.map(QPointF(view->mapFromGlobal(event->lastScreenPos())));
-            } else
-            {
-                diff = mapToParent(event->pos()) - mapToParent(event->lastPos());
-            }
-
-            moveBy(diff.x(), diff.y());
-
-            if (flags() & ItemIsSelectable)
-                setSelected(true);
-        }
-    }
-}
-
-*/
-
 
 Plasma::Applet* ColumnApplet::addApplet( Applet* applet, const QPointF & )
 {
@@ -267,7 +205,8 @@ Plasma::Applet* ColumnApplet::addApplet( Applet* applet, const QPointF & )
 
 void ColumnApplet::recalculate()
 {
-//     debug() << "got child item that wants a recalculation";
+    DEBUG_BLOCK
+    debug() << "got child item that wants a recalculation";
     m_columns->invalidate();
 }
 
@@ -285,6 +224,7 @@ void ColumnApplet::launchAppletBrowser() // SLOT
         m_appletBrowserHasBeenKicked = true;
     }
 }
+
 /*
 bool ColumnApplet::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
 {
