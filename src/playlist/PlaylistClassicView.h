@@ -20,6 +20,8 @@
 #ifndef PLAYLISTCLASSICVIEW_H
 #define PLAYLISTCLASSICVIEW_H
 
+#include <KLineEdit>
+
 #include <QTreeView>
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
@@ -40,20 +42,21 @@ namespace Playlist {
     
         ~ClassicView();
     
-        void  setModel( Playlist::Model *model );
-
 private:
 
-        QTreeView m_treeView;
+        QTreeView *m_treeView;
+        QVBoxLayout *m_layout;
+        KLineEdit *m_lineEdit;
 
     Playlist::Model * m_model;
-    QSortFilterProxyModel m_proxyModel;
+    QSortFilterProxyModel *m_proxyModel;
     QPersistentModelIndex *m_contextIndex;
 
 
 private slots:
 
     void playTrack( );
+    void playTrack( const QModelIndex &);
     void removeSelection();
     void editTrackInformation();
 
