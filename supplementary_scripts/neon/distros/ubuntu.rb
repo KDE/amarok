@@ -52,7 +52,7 @@ class UploadUbuntu
   end
 
   def CreateNUpload(package)
-    `cp -rf #{DEBPATH}/#{package}-debian ./debian`
+     FileUtils.cp_r("#{DEBPATH}/#{package}-debian", "./debian")
 
     `dch -D "#{DEBVERSION}" -v "#{@debversion}" "Nightly Build"`
     `dpkg-buildpackage -S -sa -rfakeroot -k"#{ENV['DEBFULLNAME']}"`
