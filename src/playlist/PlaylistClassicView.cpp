@@ -36,22 +36,28 @@
 
 
 Playlist::ClassicView::ClassicView(QWidget * parent)
-    : QTreeView( parent )
+    : QWidget( parent ), 
+    m_treeView( parent )
 {
     DEBUG_BLOCK
+    QVBoxLayout *layout = new QVBoxLayout(parent);
+    setLayout(layout);
+    layout->addWidget( &m_treeView );
+    m_lineEdit = new KLineEdit( m_editBox );
 
-    setUniformRowHeights(true);
-    setSortingEnabled(true);
-    header()->setMovable(true);
-    header()->setClickable(true);
-    setDragEnabled(true);
-    setDropIndicatorShown(true);
-    setDragDropMode(QAbstractItemView::InternalMove);
+    m_treeView.setUniformRowHeights(true);
+    m_treeView.setSortingEnabled(true);
+    m_treeView.header()->setMovable(true);
+    m_treeView.header()->setClickable(true);
+    m_treeView.setDragEnabled(true);
+    m_treeView.setDropIndicatorShown(true);
+    m_treeView.setDragDropMode(QAbstractItemView::InternalMove);
+    m_treeView.setRootIsDecorated( false );
+    m_treeView.setAlternatingRowColors ( true );
+    m_treeView.setSelectionMode( QAbstractItemView::ExtendedSelection );
+    m_treeView.setModel( The::playlistModel() );
 
-    setRootIsDecorated( false );
-    setAlternatingRowColors ( true );
-    setSelectionMode( QAbstractItemView::ExtendedSelection );
-    setModel( The::playlistModel() );
+
 
 }
 
@@ -67,15 +73,15 @@ void Playlist::ClassicView::setModel( Playlist::Model *model )
 
     m_model = model;
     //Might need to adjust this for the proxy model
-    connect ( this, SIGNAL( activated ( const QModelIndex & ) ), m_model , SLOT( playTrack(const QModelIndex & ) ) );   
+    connect ( &m_treeView, SIGNAL( activated ( const QModelIndex & ) ), m_model , SLOT( playTrack(const QModelIndex & ) ) );   
 
     m_proxyModel.setSourceModel( model );
-    QTreeView::setModel( &m_proxyModel );
+    m_treeView.setModel( &m_proxyModel );
 
     //just for fun
     //header()->hideSection(0);
-    header()->hideSection(1);
-    header()->hideSection(2);
+    m_treeView.header()->hideSection(1);
+    m_treeView.header()->hideSection(2);
 
 }
 
@@ -94,7 +100,7 @@ void Playlist::ClassicView::playTrack()
 void Playlist::ClassicView::contextMenuEvent( QContextMenuEvent *event )
 {
     DEBUG_BLOCK
-    QModelIndex index = indexAt(event->pos());
+    QModelIndex index = m_treeView.indexAt(event->pos());
     if( !index.isValid() )
         return;
 
@@ -110,22 +116,23 @@ void Playlist::ClassicView::removeSelection()
 {
     DEBUG_BLOCK
 
-    QModelIndexList indexes = selectionModel()->selectedRows() ;
+    QModelIndexList indexes = m_treeView.selectionModel()->selectedRows() ;
     while ( indexes.size() > 0 ) {
 
         QModelIndex i = indexes.takeFirst();
         int count = 1;
         while (!indexes.isEmpty() && indexes.takeFirst().row() == i.row() + count)
             ++count;
-        model()->removeRows( i.row(), count, i.parent() );
-        indexes = selectionModel()->selectedRows() ;
+        m_treeView.model()->removeRows( i.row(), count, i.parent() );
+        indexes = m_treeView.selectionModel()->selectedRows() ;
     }
 }
 
 void Playlist::ClassicView::editTrackInformation()
 {
     DEBUG_BLOCK
-    QModelIndexList selected = selectedIndexes();
+        /*
+    QModelIndexList selected = m_treeView.selectedIndexes();
     Meta::TrackList tracks;
     foreach(QModelIndex i, selected)
     {
@@ -134,6 +141,7 @@ void Playlist::ClassicView::editTrackInformation()
 
     TagDialog *dialog = new TagDialog( tracks, this );
     dialog->show();
+    */
 }
 
 #include "PlaylistClassicView.moc"

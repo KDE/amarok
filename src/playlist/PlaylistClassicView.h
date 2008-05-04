@@ -21,6 +21,7 @@
 #define PLAYLISTCLASSICVIEW_H
 
 #include <QTreeView>
+#include <QVBoxLayout>
 #include <QSortFilterProxyModel>
 
 /**
@@ -32,7 +33,7 @@ namespace Playlist {
 
     class Model;
     
-    class ClassicView : public QTreeView {
+    class ClassicView : public QWidget {
     Q_OBJECT
     public:
         ClassicView( QWidget * parent );
@@ -42,6 +43,8 @@ namespace Playlist {
         void  setModel( Playlist::Model *model );
 
 private:
+
+        QTreeView m_treeView;
 
     Playlist::Model * m_model;
     QSortFilterProxyModel m_proxyModel;
