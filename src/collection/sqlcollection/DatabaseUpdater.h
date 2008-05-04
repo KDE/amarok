@@ -38,7 +38,10 @@ public:
     void copyToPermanentTables();
     void cleanPermanentTables();
 
-    void deleteAllRedundant( const QString &name );
+    void deleteAllRedundant( const QString &type ); //type is artist,album,genre,composer or year
+
+    void removeFilesInDir( int deviceid, const QString &rdir );
+    void removeFilesInDirFromTemporaryTables( int deviceid, const QString &rdir );
 
 private:
     /** creates all the necessary tables, indexes etc. for the database */

@@ -462,8 +462,51 @@ DatabaseUpdater::adminValue( const QString &key ) const
 }
 
 void
-DatabaseUpdater::deleteAllRedundant( const QString &table )
+DatabaseUpdater::deleteAllRedundant( const QString &type )
 {
-    m_collection->query( QString( "DELETE FROM %1 WHERE id NOT IN ( SELECT %2 FROM tracks )" ).arg( table, table ) );
+    const QString tablename = type + 's';
+    m_collection->query( QString( "DELETE FROM %1 WHERE id NOT IN ( SELECT %2 FROM tracks )" ).arg( tablename, type ) );
+}
+
+void
+DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
+{
+    QString select = QString( "SELECT urls.id FROM urls LEFT JOIN directories ON urls.directory = directories.id "
+                              "WHERE directories.deviceid = %1 AND directories.dir = '%2';" )
+                                .arg( QString::number( deviceid ), m_collection->escape( rdir ) );
+    QStringList idResult = m_collection->query( select );
+    if( !idResult.isEmpty() )
+    {
+        QString ids;
+        foreach( const QString &id, idResult )
+        {
+            if( !ids.isEmpty() )
+                ids += ',';
+            ids += id;
+        }
+        QString drop = QString( "DELETE FROM tracks WHERE id IN (%1);" ).arg( ids );
+        m_collection->query( drop );
+    }
+}
+
+void
+DatabaseUpdater::removeFilesInDirFromTemporaryTables( int deviceid, const QString &rdir )
+{
+    QString select = QString( "SELECT urls.id FROM urls_temp AS urls LEFT JOIN directories_temp AS directories ON urls.directory = directories.id "
+                              "WHERE directories.deviceid = %1 AND directories.dir = '%2';" )
+                                .arg( QString::number( deviceid ), m_collection->escape( rdir ) );
+    QStringList idResult = m_collection->query( select );
+    if( !idResult.isEmpty() )
+    {
+        QString ids;
+        foreach( const QString &id, idResult )
+        {
+            if( !ids.isEmpty() )
+                ids += ',';
+            ids += id;
+        }
+        QString drop = QString( "DELETE FROM tracks_temp WHERE id IN (%1);" ).arg( ids );
+        m_collection->query( drop );
+    }
 }
 

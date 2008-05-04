@@ -77,18 +77,37 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
             m_collection->query( update );
         }
         m_directories.insert( dir, res[0].toInt() );
+        m_collection->dbUpdater()->removeFilesInDirFromTemporaryTables( deviceId, rdir );
     }
 }
 
 void
 ScanResultProcessor::commit()
 {
-    if( m_type == ScanResultProcessor::FullScan )
+    if( m_type == ScanResultProcessor::IncrementalScan )
     {
-        //TODO clean permanent tables
+        foreach( const QString &dir, m_directories.keys() )
+        {
+            debug() << "removing " << dir << " from database";
+            int deviceid = MountPointManager::instance()->getIdForUrl( dir );
+            const QString rpath = MountPointManager::instance()->getRelativePath( deviceid, dir );
+            m_collection->dbUpdater()->removeFilesInDir( deviceid, rpath );
+        }
+    }
+    else
+    {
+        m_collection->dbUpdater()->cleanPermanentTables();
     }
     m_collection->dbUpdater()->copyToPermanentTables();
     m_collection->dbUpdater()->removeTemporaryTables();
+    if( m_type == ScanResultProcessor::IncrementalScan )
+    {
+        m_collection->dbUpdater()->deleteAllRedundant( "album" );
+        m_collection->dbUpdater()->deleteAllRedundant( "artist" );
+        m_collection->dbUpdater()->deleteAllRedundant( "genre" );
+        m_collection->dbUpdater()->deleteAllRedundant( "composer" );
+        m_collection->dbUpdater()->deleteAllRedundant( "year" );
+    }
     m_collection->sendChangedSignal();
 }
 
