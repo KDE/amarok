@@ -12,7 +12,7 @@ Package: amarok-nightly
 Architecture: any
 Depends: ${shlibs:Depends}, ruby, amarok-nightly-kdebase-runtime
 Recommends: konqueror | www-browser, libqt0-ruby1.8
-Description: PREVIEW of a audio player for KDE 4 (please don't report bugs)
+Description: PREVIEW of a audio player for KDE (please don't report bugs)
  Note that this is a technical preview, and therefore a lot of crashes and bugs
  are to be expected, the Amarok team as well as the Ubuntu team kindly asks
  you not to report bugs you might experience in this version.
