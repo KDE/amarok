@@ -18,7 +18,7 @@ kde4-wrapper-creation:
 		echo mkdir -p \$$KDETMP >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 		echo export KDEDIRS=\$$KDEDIR >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 		echo /opt/amarok-nightly/bin/kbuildsycoca4 \"\$$@\" >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo /opt/amarok-nightly/bin/amarok \"\$$@\" >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+		echo /opt/amarok-nightly/bin/amarok --style oxygen \"\$$@\" >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 		chmod 755 $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 
 		echo "#!/bin/sh" > $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \

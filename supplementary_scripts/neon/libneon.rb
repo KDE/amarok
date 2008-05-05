@@ -41,6 +41,21 @@ require 'config.rb'
     Dir.chdir(BASEPATH)
   end
 
+  def CheckOutEval(comp, path, dir)
+    count = 0
+    `#{@cmd} svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
+    while $? != 0
+      unless count >= 20
+        `svn co svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
+        count += 1
+      else
+        puts "Neon::CheckOut svn co didn't exit properly in 20 tries, aborting checkout of #{comp}."
+        @cofailed = true
+        return
+      end
+    end
+  end
+
   def GetTarball(comp)
     puts "#{ThisMethod()} started with component: #{comp}"
     BaseDir()
@@ -66,24 +81,16 @@ require 'config.rb'
     puts "#{ThisMethod()} started with component: #{comp}"
     BaseDir()
     unless recursive == "no"
-      cmd = "svn co"
+      @cmd = "svn co"
     else
-      cmd = "svn co -N"
+      @cmd = "svn co -N"
     end
     unless dir
       dir = "amarok-nightly-" + comp
     end
-    `#{cmd} svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
-    count = 0
-    while $? != 0
-      unless count >= 20
-        `svn co svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
-        count += 1
-      else
-        puts "Neon::CheckOut svn co didn't exit properly in 20 tries, aborting checkout of #{comp}."
-        @cofailed = true
-        return
-      end
+    CheckOutEval(comp, path, dir)
+    if @cofailed
+      return
     end
     rev = `svn info #{dir}`.split("\n")[4].split(" ")[1]
     @dir = dir + "-" + rev
