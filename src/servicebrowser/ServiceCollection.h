@@ -40,7 +40,6 @@ class AMAROK_EXPORT ServiceCollection : public Collection, public MemoryCollecti
         virtual QString collectionId() const;
         virtual QString prettyName() const;
 
-        void forceUpdate();
         void emitUpdated();
 
         ServiceBase * service();
