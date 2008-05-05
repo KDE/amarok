@@ -1,5 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2003-2005 by The Amarok Developers                      *
+ *   Copyright (C) 2003-2007 Mark Kretschmann <kretschmann@kde.org>        *
+ *             (C) 2008 Dan Meltzer <hydrogen@notyetimplemented.com        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #ifndef COLLECTIONSCANNER_H
