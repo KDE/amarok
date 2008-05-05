@@ -99,7 +99,7 @@ void VerticalLayout::relayout()
 
     QRectF rect = geometry().adjusted( 0, 0, 0, 0 );
 
-    debug() << "VerticalLayout::relayout laying out column in rect" << rect;
+//    debug() << "VerticalLayout::relayout laying out column in rect" << rect;
     qreal top = 10.0;
     qreal left = 10.0; //Plasma::Layout::margin( Plasma::LeftMargin );
 

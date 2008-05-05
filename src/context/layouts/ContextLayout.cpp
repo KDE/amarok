@@ -250,13 +250,13 @@ T qSum(const QList<T>& container)
 void
 ContextLayout::relayout()
 {
-    DEBUG_BLOCK
+  //  DEBUG_BLOCK
     QRectF rect = d->geom;
     const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
 
     //const int numColumns = 1;
 
-    debug() << "ContextLayout::relayout laying out into:" << rect << "with" << numColumns << " columns";
+   // debug() << "ContextLayout::relayout laying out into:" << rect << "with" << numColumns << " columns";
     if( numColumns > d->columns.size() ) // need to make more columns
     {
         for( int i = d->columns.size(); i < numColumns; i++ ) {
@@ -293,7 +293,7 @@ ContextLayout::relayout()
         qreal height2 = rect.height();
         qreal maxHeight = qMax( height1, height2 );
         QSizeF size( columnWidth, maxHeight );
-        debug() << "setting column" << i << " geometry to " << pos << " " << size;
+//        debug() << "setting column" << i << " geometry to " << pos << " " << size;
         d->columns[ i ]->setGeometry( QRectF( pos, size ) );
     }
     d->balanceColumns();
@@ -301,8 +301,8 @@ ContextLayout::relayout()
 
 void ContextLayout::setGeometry( const QRectF& geom )
 {
-    DEBUG_BLOCK
-    debug() << "Setting ContextLayout geometry to" << geom; 
+ //   DEBUG_BLOCK
+ //   debug() << "Setting ContextLayout geometry to" << geom; 
     d->geom = geom;
     relayout();
 }
