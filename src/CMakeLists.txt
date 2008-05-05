@@ -486,6 +486,10 @@ target_link_libraries(amaroklib
     amarokplasma
 )
 
+if(APPLE)
+	SET_TARGET_PROPERTIES(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif(APPLE)
+
 if(KDEMULTIMEDIA_FOUND)
     target_link_libraries(amaroklib
         ${KCDDB_LIBRARY}
