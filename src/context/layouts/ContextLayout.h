@@ -55,10 +55,10 @@ public:
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const;
     virtual void setColumnWidth( const qreal width );
     virtual qreal columnWidth() const;
+    
+    virtual void setGeometry( const QRectF& geom );
 
-protected:
     void relayout();
-
 private:
     class Private;
     Private *const d;

@@ -94,6 +94,7 @@ public:
 
     QList< VerticalLayout* > columns;
     qreal columnWidth;
+    QRectF geom;
 };
 
 ContextLayout::ContextLayout(QGraphicsLayoutItem *parent)
@@ -127,7 +128,7 @@ ContextLayout::addItem(QGraphicsLayoutItem* item)
         d->columns << new VerticalLayout( this );
 
     int smallestColumn = 0, min = (int)d->columns[ 0 ]->effectiveSizeHint( Qt::PreferredSize ).height();
-    for( int i = 1; i < d->columns.size(); i++ ) // find shortest column to put
+    for( int i = 0; i < d->columns.size(); i++ ) // find shortest column to put
     {                                           // the applet in
         if( d->columns[ i ]->effectiveSizeHint( Qt::PreferredSize ).height() < min )
             smallestColumn = i;
@@ -250,12 +251,12 @@ void
 ContextLayout::relayout()
 {
     DEBUG_BLOCK
-    QRectF rect = geometry();
+    QRectF rect = d->geom;
     const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
 
     //const int numColumns = 1;
 
-    debug() << "laying out into:" << rect << "with" << numColumns << " columns";
+    debug() << "ContextLayout::relayout laying out into:" << rect << "with" << numColumns << " columns";
     if( numColumns > d->columns.size() ) // need to make more columns
     {
         for( int i = d->columns.size(); i < numColumns; i++ ) {
@@ -296,6 +297,14 @@ ContextLayout::relayout()
         d->columns[ i ]->setGeometry( QRectF( pos, size ) );
     }
     d->balanceColumns();
+}
+
+void ContextLayout::setGeometry( const QRectF& geom )
+{
+    DEBUG_BLOCK
+    debug() << "Setting ContextLayout geometry to" << geom; 
+    d->geom = geom;
+    relayout();
 }
 
 qreal

@@ -89,8 +89,6 @@ private:
     QAction* m_appletBrowserAction;
     Plasma::AppletBrowser* m_appletBrowser;
 
-    QRectF m_geometry;
-
     QList<QAction*> *m_actions;
 
     ContextLayout* m_columns;

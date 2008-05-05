@@ -96,7 +96,6 @@ VerticalLayout::removeAt( int i )
 
 void VerticalLayout::relayout()
 {
-    DEBUG_BLOCK
 
     QRectF rect = geometry().adjusted( 0, 0, 0, 0 );
 

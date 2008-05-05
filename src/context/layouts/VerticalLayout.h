@@ -48,8 +48,7 @@ public:
 
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
 
-    protected:
-        void relayout();
+    void relayout();
 
     private:
         class Private;

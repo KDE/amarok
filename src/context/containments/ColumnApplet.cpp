@@ -98,6 +98,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 
     m_appletBrowser = new Plasma::AppletBrowser();
     m_appletBrowser->setApplication( "amarok" );
+    m_appletBrowser->setContainment( this );
     m_appletBrowser->hide();
     DEBUG_LINE_INFO
 
@@ -142,19 +143,19 @@ void ColumnApplet::loadConfig( KConfig& conf )
 
 QSizeF ColumnApplet::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {
-    return m_geometry.size();
+    return geometry().size();
 }
 
 QRectF ColumnApplet::boundingRect() const
 {
-    return m_geometry;
+    return geometry();
 }
 // call this when the view changes size: e.g. layout needs to be recalculated
 void ColumnApplet::updateSize() // SLOT
 {
-    m_geometry = scene()->sceneRect();
     m_columns->setGeometry( scene()->sceneRect() );
     setGeometry( scene()->sceneRect() );
+    debug() << "ColumnApplet updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect();
 }
 
 void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect)
@@ -174,6 +175,7 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
 
     //m_renderer->render( painter, rect );
 
+    debug() << "drawing background in " << rect;
     painter->drawPixmap(0, 0, The::svgHandler()->renderSvg( "desktoptheme/default/widgets/amarok-wallpaper.svg", "context_background", rect.width(), rect.height() ) );
 
     painter->restore();
@@ -207,7 +209,8 @@ void ColumnApplet::recalculate()
 {
     DEBUG_BLOCK
     debug() << "got child item that wants a recalculation";
-    m_columns->invalidate();
+//    m_columns->invalidate();
+    m_columns->relayout();
 }
 
 QList<QAction*> ColumnApplet::contextualActions()

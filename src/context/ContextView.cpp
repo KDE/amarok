@@ -239,6 +239,8 @@ void ContextView::resizeEvent( QResizeEvent* event )
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
         if( containment )
             containment->updateSize();
+        else
+            debug() << "ContextView::resizeEvent NO CONTAINMENT TO UPDATE SIZE! BAD!";    
     }
 }
 
