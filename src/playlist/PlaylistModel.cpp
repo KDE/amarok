@@ -53,8 +53,6 @@
 #include <KIcon>
 #include <KUrl>
 
-using namespace Playlist;
-
 namespace Amarok
 {
     // Sorting of a tracklist.
@@ -77,9 +75,9 @@ namespace Amarok
     }
 }
 
-Model *Model::s_instance = 0;
+Playlist::Model *Playlist::Model::s_instance = 0;
 
-Model::Model( QObject* parent )
+Playlist::Model::Model( QObject* parent )
     : QAbstractListModel( parent )
     , EngineObserver( The::engineController() )
     , m_activeRow( -1 )
@@ -92,7 +90,7 @@ Model::Model( QObject* parent )
 }
 
 void
-Model::init()
+Playlist::Model::init()
 {
     KActionCollection* ac = Amarok::actionCollection();
     QAction* undoButton  = m_undoStack->createUndoAction( this, i18n("Undo") );
@@ -112,7 +110,7 @@ Model::init()
     }*/
 }
 
-Model::~Model()
+Playlist::Model::~Model()
 {
     if( AmarokConfig::savePlaylist() )
     {
@@ -127,13 +125,13 @@ Model::~Model()
 }
 
 int
-Model::rowCount( const QModelIndex& ) const
+Playlist::Model::rowCount( const QModelIndex& ) const
 {
     return m_items.size();
 }
 
 QVariant
-Model::data( const QModelIndex& index, int role ) const
+Playlist::Model::data( const QModelIndex& index, int role ) const
 {
     int row = index.row();
     /*if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
@@ -247,7 +245,7 @@ Model::data( const QModelIndex& index, int role ) const
 }
 
 void
-Model::insertTrack( int row, Meta::TrackPtr track )
+Playlist::Model::insertTrack( int row, Meta::TrackPtr track )
 {
 //     DEBUG_BLOCK
     Meta::TrackList list;
@@ -256,7 +254,7 @@ Model::insertTrack( int row, Meta::TrackPtr track )
 }
 
 void
-Model::insertTracks( int row, Meta::TrackList tracks )
+Playlist::Model::insertTracks( int row, Meta::TrackList tracks )
 {
     //check if any tracks in this list ha a url that is actuall a playlist
     bool containsPlaylists = false;
@@ -302,14 +300,14 @@ Model::insertTracks( int row, Meta::TrackList tracks )
 }
 
 bool
-Model::removeRows( int position, int rows, const QModelIndex& /*parent*/  )
+Playlist::Model::removeRows( int position, int rows, const QModelIndex& /*parent*/  )
 {
     m_undoStack->push( new RemoveTracksCmd( 0, position, rows ) );
     return true;
 }
 
 void
-Model::insertTracks( int row, QueryMaker *qm )
+Playlist::Model::insertTracks( int row, QueryMaker *qm )
 {
     qm->startTrackQuery();
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
@@ -319,7 +317,7 @@ Model::insertTracks( int row, QueryMaker *qm )
 }
 
 Qt::DropActions
-Model::supportedDropActions() const
+Playlist::Model::supportedDropActions() const
 {
     return Qt::CopyAction | Qt::MoveAction;
 }
@@ -335,20 +333,20 @@ Model::supportedDropActions() const
 // }
 
 void
-Model::play( const QModelIndex& index )
+Playlist::Model::play( const QModelIndex& index )
 {
     play( index.row() );
 }
 
 void
-Model::play( int row )
+Playlist::Model::play( int row )
 {
     setActiveRow( row );
     The::engineController()->play( m_items[ m_activeRow ]->track() );
 }
 
 void
-Model::next()
+Playlist::Model::next()
 {
     if( m_activeRow < 0 || m_activeRow >= m_items.size() )
         return;
@@ -363,7 +361,7 @@ Model::next()
 }
 
 void
-Model::back()
+Playlist::Model::back()
 {
     if( m_activeRow < 0 || m_activeRow >= m_items.size() )
         return;
@@ -395,7 +393,7 @@ Model::back()
 
 
 QString
-Model::prettyColumnName( Column index ) //static
+Playlist::Model::prettyColumnName( Column index ) //static
 {
     switch( index )
     {
@@ -428,7 +426,7 @@ Model::prettyColumnName( Column index ) //static
 }
 
 void
-Model::playlistModeChanged()
+Playlist::Model::playlistModeChanged()
 {
     delete m_advancer;
 
@@ -475,7 +473,7 @@ Model::playlistModeChanged()
 }
 
 void
-Model::setActiveRow( int row )
+Playlist::Model::setActiveRow( int row )
 {
 //     DEBUG_BLOCK
 
@@ -502,7 +500,7 @@ Model::setActiveRow( int row )
 }
 
 void
-Model::metadataChanged( Meta::Track *track )
+Playlist::Model::metadataChanged( Meta::Track *track )
 {
     const int size = m_items.size();
     const Meta::TrackPtr needle =  Meta::TrackPtr( track );
@@ -523,7 +521,7 @@ Model::metadataChanged( Meta::Track *track )
 }
 
 void
-Model::metadataChanged(Meta::Album * album)
+Playlist::Model::metadataChanged(Meta::Album * album)
 {
     //process each track
     Meta::TrackList tracks = album->tracks();
@@ -534,7 +532,7 @@ Model::metadataChanged(Meta::Album * album)
 }
 
 void
-Model::trackListChanged( Meta::Playlist * playlist )
+Playlist::Model::trackListChanged( Meta::Playlist * playlist )
 {
     //So what if it changes, we don't care. We shouldn't even receive these events!
     if( m_observedPlaylist != playlist)
@@ -542,7 +540,7 @@ Model::trackListChanged( Meta::Playlist * playlist )
 }
 
 void
-Model::clear()
+Playlist::Model::clear()
 {
     if( m_items.size() < 1 )
         return;
@@ -554,7 +552,7 @@ Model::clear()
 }
 
 void
-Model::insertOptioned( Meta::TrackList list, int options )
+Playlist::Model::insertOptioned( Meta::TrackList list, int options )
 {
     //TODO: we call insertOptioned on resume before the statusbar is fully created... We need a better way to handle this
     if( list.isEmpty() )
@@ -621,7 +619,7 @@ Model::insertOptioned( Meta::TrackList list, int options )
 }
 
 void
-Model::insertOptioned( Meta::TrackPtr track, int options )
+Playlist::Model::insertOptioned( Meta::TrackPtr track, int options )
 {
     if( !track )
     {
@@ -633,7 +631,7 @@ Model::insertOptioned( Meta::TrackPtr track, int options )
 }
 
 void
-Model::insertOptioned( Meta::PlaylistList list, int options )
+Playlist::Model::insertOptioned( Meta::PlaylistList list, int options )
 {
     foreach( Meta::PlaylistPtr playlist, list )
     {
@@ -642,7 +640,7 @@ Model::insertOptioned( Meta::PlaylistList list, int options )
 }
 
 void
-Model::insertOptioned( Meta::PlaylistPtr playlist, int options )
+Playlist::Model::insertOptioned( Meta::PlaylistPtr playlist, int options )
 {
     if( !playlist )
         return;
@@ -652,13 +650,13 @@ Model::insertOptioned( Meta::PlaylistPtr playlist, int options )
 }
 
 void
-Model::insertPlaylist( int row, Meta::PlaylistPtr playlist )
+Playlist::Model::insertPlaylist( int row, Meta::PlaylistPtr playlist )
 {
     m_undoStack->push( new AddTracksCmd( 0, row, playlist->tracks() ) );
 }
 
 void
-Model::insertPlaylists( int row, Meta::PlaylistList playlists )
+Playlist::Model::insertPlaylists( int row, Meta::PlaylistList playlists )
 {
     int lastRow = row;
     foreach( Meta::PlaylistPtr playlist, playlists )
@@ -669,7 +667,7 @@ Model::insertPlaylists( int row, Meta::PlaylistList playlists )
 }
 
 void
-Model::insertOptioned( QueryMaker *qm, int options )
+Playlist::Model::insertOptioned( QueryMaker *qm, int options )
 {
     if( !qm )
     {
@@ -683,7 +681,7 @@ Model::insertOptioned( QueryMaker *qm, int options )
 }
 
 bool
-Model::savePlaylist( const QString &path ) const
+Playlist::Model::savePlaylist( const QString &path ) const
 {
     Meta::TrackList tl;
     foreach( Item* item, itemList() )
@@ -694,7 +692,7 @@ Model::savePlaylist( const QString &path ) const
 }
 
 void
-Model::engineNewTrackPlaying()
+Playlist::Model::engineNewTrackPlaying()
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
@@ -711,7 +709,7 @@ Model::engineNewTrackPlaying()
 }
 
 Qt::ItemFlags
-Model::flags(const QModelIndex &index) const
+Playlist::Model::flags(const QModelIndex &index) const
 {
     if( index.isValid() )
     {
@@ -722,7 +720,7 @@ Model::flags(const QModelIndex &index) const
 }
 
 QStringList
-Model::mimeTypes() const //reimplemented
+Playlist::Model::mimeTypes() const //reimplemented
 {
     QStringList ret = QAbstractListModel::mimeTypes();
     ret << AmarokMimeData::TRACK_MIME;
@@ -731,7 +729,7 @@ Model::mimeTypes() const //reimplemented
 }
 
 QMimeData*
-Model::mimeData( const QModelIndexList &indexes ) const //reimplemented
+Playlist::Model::mimeData( const QModelIndexList &indexes ) const //reimplemented
 {
     AmarokMimeData* mime = new AmarokMimeData();
     Meta::TrackList selectedTracks;
@@ -744,7 +742,7 @@ Model::mimeData( const QModelIndexList &indexes ) const //reimplemented
 }
 
 bool
-Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
+Playlist::Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
 {
     Q_UNUSED( column ); Q_UNUSED( parent );
 //     DEBUG_BLOCK
@@ -827,7 +825,7 @@ Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, in
 ///////////
 
 void
-Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
+Playlist::Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
 {
 //     DEBUG_BLOCK
     Meta::TrackList tracks;
@@ -852,7 +850,7 @@ Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
 
 
 void
-Model::insertTracksCommand( int row, Meta::TrackList list )
+Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
 {
     if( !list.size() )
         return;
@@ -895,7 +893,7 @@ Model::insertTracksCommand( int row, Meta::TrackList list )
 }
 
 Meta::TrackList
-Model::removeTracksCommand( int position, int rows )
+Playlist::Model::removeTracksCommand( int position, int rows )
 {
     beginRemoveRows( QModelIndex(), position, position + rows - 1 );
 //     TrackList::iterator start = m_tracks.begin() + position;
@@ -947,7 +945,7 @@ Model::removeTracksCommand( int position, int rows )
 }
 
 void
-Model::queryDone() //Slot
+Playlist::Model::queryDone() //Slot
 {
     QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
     if( qm )
@@ -958,7 +956,7 @@ Model::queryDone() //Slot
 }
 
 void
-Model::newResultReady( const QString &collectionId, const Meta::TrackList &tracks ) //Slot
+Playlist::Model::newResultReady( const QString &collectionId, const Meta::TrackList &tracks ) //Slot
 {
     Meta::TrackList ourTracks = tracks;
     qStableSort( ourTracks.begin(), ourTracks.end(), Amarok::trackNumberLessThan );
@@ -974,7 +972,8 @@ Model::newResultReady( const QString &collectionId, const Meta::TrackList &track
     }
 }
 
-QVariant Model::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant
+Playlist::Model::headerData(int section, Qt::Orientation orientation, int role) const
 {
 
     Q_UNUSED( orientation );
@@ -999,7 +998,8 @@ QVariant Model::headerData(int section, Qt::Orientation orientation, int role) c
 
 }
 
-void Model::moveRow(int row, int to)
+void
+Playlist::Model::moveRow(int row, int to)
 {
 
     m_items.move( row, to );
@@ -1013,7 +1013,8 @@ void Model::moveRow(int row, int to)
 }
 
 
-void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int offset )
+void
+Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int offset )
 {
 //     DEBUG_BLOCK
 
@@ -1268,7 +1269,8 @@ void Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int
 
 }
 
-void Playlist::Model::setCollapsed(int row, bool collapsed)
+void
+Playlist::Model::setCollapsed(int row, bool collapsed)
 {
     //DEBUG_BLOCK
     m_albumGroups[ m_items[ row ]->track()->album()->prettyName() ]->setCollapsed( row,  collapsed );
