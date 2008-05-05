@@ -278,7 +278,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     DEBUG_BLOCK
 
     //Waah? when a parent item is dragged, startDrag is called a bunch of times
-    static bool ongoingDrags = false; 
+    static bool ongoingDrags = false;
     if( ongoingDrags )
         return;
     ongoingDrags = true;
