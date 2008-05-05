@@ -272,19 +272,16 @@ void CollectionTreeView::mousePressEvent( QMouseEvent *e )
     QTreeView::mousePressEvent( e );
 }
 
-void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
+void
+CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 {
     DEBUG_BLOCK
-    bool noDrag = false;
-    if( !( e->buttons() & Qt::LeftButton ) )
-        noDrag = true;
-    if( QLineF( e->pos(), m_dragStartPosition).length() < QApplication::startDragDistance() )
-        noDrag = true;
-    if( noDrag )
-    {
-        QTreeView::mouseMoveEvent( e );
+
+    //Waah? when a parent item is dragged, startDrag is called a bunch of times
+    static bool ongoingDrags = false; 
+    if( ongoingDrags )
         return;
-    }
+    ongoingDrags = true;
 
     if( !m_pd )
         m_pd = createPopupDropper( Context::ContextView::self() );
@@ -302,7 +299,7 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
             }
             indices = tmp;
         }
-        
+
         PopupDropperActionList actions = getActions( indices );
 
         QFont font;
@@ -321,45 +318,45 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
         QHash<PopupDropperAction*, Collection*> moveDestination = getMoveActions( indices );
 
         if ( !( copyDestination.empty() && moveDestination.empty() ) ) {
-            if ( m_cmSeperator == 0 ) {
-                m_cmSeperator = new PopupDropperAction( this );
-                m_cmSeperator->setSeparator ( true );
-            }
-            PopupDropperItem* pdi = new PopupDropperItem();
-            pdi->setAction( m_cmSeperator );
-            pdi->setFont( font );
-            m_pd->addItem( pdi, false );
-        }
+        if ( m_cmSeperator == 0 ) {
+        m_cmSeperator = new PopupDropperAction( this );
+        m_cmSeperator->setSeparator ( true );
+    }
+        PopupDropperItem* pdi = new PopupDropperItem();
+        pdi->setAction( m_cmSeperator );
+        pdi->setFont( font );
+        m_pd->addItem( pdi, false );
+    }
 
     
         if ( !copyDestination.empty() ) {
-            debug() << "got copy actions";
-            KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
-            foreach( PopupDropperAction * action, copyDestination.keys() ) {
-                action->setParent( copyMenu );
+        debug() << "got copy actions";
+        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
+        foreach( PopupDropperAction * action, copyDestination.keys() ) {
+        action->setParent( copyMenu );
                 
-                PopupDropperItem* pdi = new PopupDropperItem();
-                pdi->setAction( m_cmSeperator );
-                pdi->setFont( font );
-                m_pd->addItem( pdi, false );
-            }
-            menu.addMenu( copyMenu );
-        }
-
-        if ( !moveDestination.empty() ) {
-            debug() << "got move actions";
-            KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
-            foreach( PopupDropperAction * action, copyDestination.keys() ) {
-                action->setParent( moveMenu );
-                moveMenu->addAction( action );
-            }
-            menu.addMenu( moveMenu );
-        }*/
-
-        //m_pd->show();
+        PopupDropperItem* pdi = new PopupDropperItem();
+        pdi->setAction( m_cmSeperator );
+        pdi->setFont( font );
+        m_pd->addItem( pdi, false );
+    }
+        menu.addMenu( copyMenu );
     }
 
-    startDrag( Qt::CopyAction );
+        if ( !moveDestination.empty() ) {
+        debug() << "got move actions";
+        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
+        foreach( PopupDropperAction * action, copyDestination.keys() ) {
+        action->setParent( moveMenu );
+        moveMenu->addAction( action );
+    }
+        menu.addMenu( moveMenu );
+    }*/
+
+        m_pd->show();
+    }
+
+    QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";
 
     if( m_pd )
@@ -367,6 +364,7 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *e )
         debug() << "clearing PUD";
         m_pd->clear();
     }
+    ongoingDrags = false;
 }
 
 PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )

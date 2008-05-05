@@ -68,9 +68,8 @@ class CollectionTreeView: public QTreeView
 
     protected:
         void mousePressEvent( QMouseEvent *event );
-        void mouseMoveEvent( QMouseEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
-
+        void startDrag(Qt::DropActions supportedActions);
     protected slots:
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotExpand( const QModelIndex &index );
