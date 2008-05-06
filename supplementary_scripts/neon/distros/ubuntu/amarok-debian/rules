@@ -6,13 +6,6 @@ export PATH := /opt/amarok-nightly/bin:$(PATH)
 -include /opt/amarok-nightly/cdbs/kde.mk
 
 kde4-wrapper-creation:
-	mkdir -p $(DEB_DESTDIR)/usr/bin
-		echo "#!/bin/sh" > $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo /usr/bin/amarok-nightly-vars >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo /opt/amarok-nightly/bin/kbuildsycoca4 >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo /opt/amarok-nightly/bin/amarok --style oxygen \"\$$@\" >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		chmod 755 $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-
 	mkdir -p $(DEB_DESTDIR)/usr/share/applications
 		cat $(DEB_DESTDIR)/opt/amarok-nightly/share/applications/kde4/amarok.desktop \
 		| sed 's/Name.*=.*$$/& Nightly/' \

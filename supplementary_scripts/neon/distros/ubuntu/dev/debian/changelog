@@ -1,3 +1,17 @@
+amarok-nightly-tools (1.2) hardy; urgency=low
+
+  * Fix scripts
+  * Moved amarok-nightly wrapper from amarok-nightly package, since it depends
+    amarok-nightly-tools anyway.
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Tue, 06 May 2008 23:28:18 +0200
+
+amarok-nightly-tools (1.1) hardy; urgency=low
+
+  * Rename
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Tue, 06 May 2008 23:27:52 +0200
+
 amarok-nightly-tools (1.0) hardy; urgency=low
 
   * Initial release of development related stuff

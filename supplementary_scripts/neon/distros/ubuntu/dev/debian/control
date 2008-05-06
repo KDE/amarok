@@ -9,6 +9,7 @@ Homepage: http://amarok.kde.org
 Package: amarok-nightly-tools
 Architecture: all
 Recommends: amarok-nightly-deps
+Conflicts: amarok-nightly (<= 20080505+svn804295-0amarok1)
 Description: Tools for Project Neon (Amarok Nightly)
  Project Neon tools
 

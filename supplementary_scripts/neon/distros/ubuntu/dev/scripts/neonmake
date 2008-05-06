@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-/usr/bin/amarok-nightly-vars
+source /opt/amarok-nightly/neon/data/varsrc
 
 export KDE_COLOR_DEBUG=1
 export QTEST_COLORED=1
@@ -8,5 +8,3 @@ export QTEST_COLORED=1
   cmake "../" -DCMAKE_INSTALL_PREFIX=$NEONDIR -DCMAKE_BUILD_TYPE=debugfull && \
   nice make -j2 && \
   make install;
-
-echo "WARNING!!!!!!!: the current shell is configured for Project Neon (Amarok Nightly Builds), you really _DO NOT_ want to start any GUI application besides amarok-nightly!!!"
