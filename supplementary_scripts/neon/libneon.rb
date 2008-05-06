@@ -41,17 +41,21 @@ require 'config.rb'
     Dir.chdir(BASEPATH)
   end
 
-  def CheckOutEval(comp, path, dir)
+  def CheckOutEval(comp, path, dir, recursive=nil)
+    unless recursive == "no"
+      cmd = "svn co"
+    else
+      cmd = "svn co -N"
+    end
     count = 0
-    `#{@cmd} svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
+    `#{cmd} svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
     while $? != 0
       unless count >= 20
         `svn co svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
         count += 1
       else
-        puts "Neon::CheckOut svn co didn't exit properly in 20 tries, aborting checkout of #{comp}."
-        @cofailed = true
-        return
+        puts "Neon::CheckOut svn co didn't exit properly in 20 tries, aborting."
+        exit 0
       end
     end
   end
@@ -80,18 +84,10 @@ require 'config.rb'
   def CheckOut(comp, path, dir=nil, recursive=nil)
     puts "#{ThisMethod()} started with component: #{comp}"
     BaseDir()
-    unless recursive == "no"
-      @cmd = "svn co"
-    else
-      @cmd = "svn co -N"
-    end
     unless dir
       dir = "amarok-nightly-" + comp
     end
-    CheckOutEval(comp, path, dir)
-    if @cofailed
-      return
-    end
+    CheckOutEval(comp, path, dir, "#{recursive}")
     rev = `svn info #{dir}`.split("\n")[4].split(" ")[1]
     @dir = dir + "-" + rev
     FileUtils.mv(dir, @dir)

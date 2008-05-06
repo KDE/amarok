@@ -52,34 +52,15 @@ end
 def KdeBaseRuntime()
   comp = "kdebase-runtime"
 
-  def KdeBaseRuntimeCrapOut()
-    if @cofailed
-      return
-    end
-  end
-
   CheckOut(comp, "KDE/kdebase/runtime", nil, "no")
 
   CheckOutEval(comp, "KDE/kdebase/runtime/cmake", "#{@dir}/cmake")
-  if @cofailed
-    return
-  end
 
   CheckOutEval(comp, "KDE/kdebase/runtime/phonon", "#{@dir}/phonon")
-  if @cofailed
-    return
-  end
 
   CheckOutEval(comp, "KDE/kdebase/runtime/kstyles", "#{@dir}/kstyles")
-  if @cofailed
-    return
-  end
 
   CheckOutEval(comp, "KDE/kdebase/runtime/pics", "#{@dir}/pics")
-  if @cofailed
-    return
-  end
-
 
   #create CMakeLists.txt
   cmakefile = File.new( "#{@dir}/CMakeLists.txt", File::CREAT | File::RDWR | File::TRUNC )
