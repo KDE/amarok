@@ -48,15 +48,17 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
                 void engineNewMetaData( const QHash<qint64, QString> &metaData, bool trackChanged )
                 {
                     Q_UNUSED( trackChanged )
-                    DEBUG_BLOCK
 
-                    if( metaData.contains( Meta::valArtist ) )
-                        artist = metaData.value( Meta::valArtist );
-                    if( metaData.contains( Meta::valTitle ) )
-                        title = metaData.value( Meta::valTitle );
-                    if( metaData.contains( Meta::valAlbum ) )
-                        album = metaData.value( Meta::valAlbum );
-                    notify();
+                    if( metaData.value( Meta::valUrl ) == url.url() ) {
+                        debug() << "Applying new Metadata.";
+                        if( metaData.contains( Meta::valArtist ) )
+                            artist = metaData.value( Meta::valArtist );
+                        if( metaData.contains( Meta::valTitle ) )
+                            title = metaData.value( Meta::valTitle );
+                        if( metaData.contains( Meta::valAlbum ) )
+                            album = metaData.value( Meta::valAlbum );
+                        notify();
+                    }
                 }
 
     public:

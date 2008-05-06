@@ -541,6 +541,8 @@ EngineController::slotMetaDataChanged()
 
     QHash<qint64, QString> meta;
 
+    meta.insert( Meta::valUrl, m_media->currentSource().url() );
+
     QStringList artist = m_media->metaData( "ARTIST" );
     debug() << "Artist     : " << artist;
     if( !artist.isEmpty() )
