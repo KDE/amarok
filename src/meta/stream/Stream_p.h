@@ -51,6 +51,7 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
             Q_UNUSED( trackChanged )
 
             if( metaData.value( Meta::valUrl ) == url.url() ) {
+                DEBUG_BLOCK
                 debug() << "Applying new Metadata.";
 
                 if( metaData.contains( Meta::valArtist ) )

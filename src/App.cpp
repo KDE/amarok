@@ -681,6 +681,8 @@ void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
 
 void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
+    DEBUG_BLOCK
+
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     Amarok::OSD::instance()->show( currentTrack );
     if( !trackChanged )
