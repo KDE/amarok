@@ -8,30 +8,10 @@ export PATH := /opt/amarok-nightly/bin:$(PATH)
 kde4-wrapper-creation:
 	mkdir -p $(DEB_DESTDIR)/usr/bin
 		echo "#!/bin/sh" > $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo export PATH=/opt/amarok-nightly/bin:\$$PATH >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo export LD_LIBRARY_PATH=/opt/amarok-nightly/lib >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo export PKG_CONFIG_PATH=/opt/amarok-nightly/lib/pkgconfig >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo export QTDIR=/opt/amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo export KDEDIR=/opt/amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo export KDEHOME=~/.amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo export KDETMP=/tmp/\$$USER-amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo mkdir -p \$$KDETMP >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo export KDEDIRS=\$$KDEDIR >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-		echo /opt/amarok-nightly/bin/kbuildsycoca4 \"\$$@\" >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+		echo /usr/bin/amarok-nightly-vars >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
+		echo /opt/amarok-nightly/bin/kbuildsycoca4 >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 		echo /opt/amarok-nightly/bin/amarok --style oxygen \"\$$@\" >> $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
 		chmod 755 $(DEB_DESTDIR)/usr/bin/amarok-nightly; \
-
-		echo "#!/bin/sh" > $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
-		echo export PATH=/opt/amarok-nightly/bin:\$$PATH >> $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
-		echo export LD_LIBRARY_PATH=/opt/amarok-nightly/lib >> $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
-		echo export PKG_CONFIG_PATH=/opt/amarok-nightly/lib/pkgconfig >> $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
-		echo export QTDIR=/opt/amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
-		echo export KDEDIR=/opt/amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
-		echo export KDEHOME=~/.amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
-		echo export KDETMP=/tmp/\$$USER-amarok-nightly >> $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
-		echo mkdir -p \$$KDETMP >> $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
-		echo export KDEDIRS=\$$KDEDIR >> $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
-		chmod 755 $(DEB_DESTDIR)/usr/bin/amarok-nightly-vars; \
 
 	mkdir -p $(DEB_DESTDIR)/usr/share/applications
 		cat $(DEB_DESTDIR)/opt/amarok-nightly/share/applications/kde4/amarok.desktop \
