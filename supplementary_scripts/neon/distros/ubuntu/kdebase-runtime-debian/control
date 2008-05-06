@@ -4,7 +4,8 @@ Priority: optional
 Maintainer: Project Neone <nightly@getamarok.com>
 Build-Depends: amarok-nightly-cdbs, amarok-nightly-kdelibs,
  amarok-nightly-strigi, amarok-nightly-qt,
- libclucene-dev, libxcb1-dev, libxine-dev
+ libclucene-dev, libxcb1-dev, libxine-dev,
+ libbz2-dev, libxtst-dev
 Standards-Version: 3.7.3
 
 Package: amarok-nightly-kdebase-runtime
