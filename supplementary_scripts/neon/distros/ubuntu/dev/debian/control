@@ -1,23 +1,31 @@
-Source: amarok-nightly-dev
-Section: devel
+Source: amarok-nightly-tools
+Section: utils
 Priority: optional
 Maintainer: Project Neon <nightly@getamarok.com>
 Build-Depends: debhelper (>= 6), cdbs
 Standards-Version: 3.7.3
 Homepage: http://amarok.kde.org
 
-Package: amarok-nightly-dev
+Package: amarok-nightly-tools
 Architecture: all
-Depends: amarok-nightly-kdebase-runtime, amarok-nightly-taglib,
+Recommends: amarok-nightly-deps
+Description: Tools for Project Neon (Amarok Nightly)
+ Project Neon tools
+
+Package: amarok-nightly-deps
+Architecture: all
+Section: devel
+Depends: amarok-nightly-tools,
+ amarok-nightly-kdebase-runtime, amarok-nightly-taglib,
  libxext-dev, libxrandr-dev, x11proto-core-dev, libsm-dev, libxmu-dev,
  libice-dev, libx11-dev, libxt-dev, libjpeg62-dev, zlib1g-dev, libmng-dev,
  libpng12-dev, libfreetype6-dev, flex, libpq-dev, libaudio-dev, libcupsys2-dev,
  xlibmesa-gl-dev | libgl-dev, libglu1-xorg-dev | libglu1-mesa-dev | libglu-dev,
  libxft-dev, libxrender-dev, libxcursor-dev, libxinerama-dev, libdbus-1-dev,
  libglib2.0-dev, libxi-dev, libasound2-dev, libcupsys2-dev, libdbus-1-dev,
- libkeyutils-dev, libxml2-dev, libxml2-utils, libxslt1-dev, libxtst-dev, libungif4-dev,
- libavahi-common-dev, libaspell-dev, libbz2-dev, libenchant-dev, libacl1-dev,
- libjasper-dev, libopenexr-dev, libpcre3-dev, libtiff4-dev, hspell, xsltproc,
- shared-mime-info, libc6-dbg [amd64]
-Description: Development tools for Project Neon (Amarok Nightly)
- Project Neon development tools
+ libkeyutils-dev, libxml2-dev, libxml2-utils, libxslt1-dev, libxtst-dev,
+ libgif-dev, libavahi-common-dev, libaspell-dev, libbz2-dev, libenchant-dev,
+ libacl1-dev, libjasper-dev, libopenexr-dev, libpcre3-dev, libtiff4-dev, hspell,
+ xsltproc, shared-mime-info, libc6-dbg [amd64]
+Description: Development dependencies for Project Neon (Amarok Nightly)
+ Project Neon development dependencies
