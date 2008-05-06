@@ -36,30 +36,33 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
     Q_OBJECT
     public:
         Private( Track *t )
-    : EngineObserver( The::engineController() )
-                , track( t )
-                {}
-                void notify() const
-                {
-                    foreach( Meta::Observer *observer, observers )
-                        observer->metadataChanged( track );
-                }
+        : EngineObserver( The::engineController() )
+        , track( t )
+        {}
 
-                void engineNewMetaData( const QHash<qint64, QString> &metaData, bool trackChanged )
-                {
-                    Q_UNUSED( trackChanged )
+        void notify() const
+        {
+            foreach( Meta::Observer *observer, observers )
+            observer->metadataChanged( track );
+        }
 
-                    if( metaData.value( Meta::valUrl ) == url.url() ) {
-                        debug() << "Applying new Metadata.";
-                        if( metaData.contains( Meta::valArtist ) )
-                            artist = metaData.value( Meta::valArtist );
-                        if( metaData.contains( Meta::valTitle ) )
-                            title = metaData.value( Meta::valTitle );
-                        if( metaData.contains( Meta::valAlbum ) )
-                            album = metaData.value( Meta::valAlbum );
-                        notify();
-                    }
-                }
+        void engineNewMetaData( const QHash<qint64, QString> &metaData, bool trackChanged )
+        {
+            Q_UNUSED( trackChanged )
+
+            if( metaData.value( Meta::valUrl ) == url.url() ) {
+                debug() << "Applying new Metadata.";
+
+                if( metaData.contains( Meta::valArtist ) )
+                    artist = metaData.value( Meta::valArtist );
+                if( metaData.contains( Meta::valTitle ) )
+                    title = metaData.value( Meta::valTitle );
+                if( metaData.contains( Meta::valAlbum ) )
+                    album = metaData.value( Meta::valAlbum );
+
+                    notify();
+            }
+        }
 
     public:
         QSet<Meta::Observer*> observers;
