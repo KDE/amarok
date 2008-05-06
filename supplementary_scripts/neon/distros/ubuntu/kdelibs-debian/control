@@ -14,7 +14,7 @@ Package: amarok-nightly-kdelibs
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, xbase-clients, shared-mime-info, hicolor-icon-theme,
- libxml2-utils, hspell, xsltproc, shared-mime-info, libc6-dbg [amd64]
+ libxml2-utils, dbus-x11, hspell, xsltproc, shared-mime-info, libc6-dbg [amd64]
 Description: core libraries for all KDE 4 applications
  This package contains all the shared libraries. You need these libraries to
  run KDE applications.
