@@ -60,7 +60,7 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
                 if( metaData.contains( Meta::valAlbum ) )
                     album = metaData.value( Meta::valAlbum );
 
-                    notify();
+                notify();
             }
         }
 
