@@ -55,7 +55,7 @@ class UploadUbuntu
      FileUtils.cp_r("#{DEBPATH}/#{package}-debian", "./debian")
 
     `dch -D "#{DEBVERSION}" -v "#{@debversion}" "Nightly Build"`
-    `dpkg-buildpackage -S -sa -rfakeroot -k"#{ENV['DEBFULLNAME']}"`
+    `dpkg-buildpackage -S -sa -k"#{ENV['DEBFULLNAME']}"`
 
     if package == "amarok"
       AmarokUpload()
