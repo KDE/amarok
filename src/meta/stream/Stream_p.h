@@ -61,6 +61,15 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
                 if( metaData.contains( Meta::valAlbum ) )
                     album = metaData.value( Meta::valAlbum );
 
+                // Special demangling of artist/title for Shoutcast streams, which usually have "Artist - Title" in the title tag:
+                if( artist.isEmpty() && title.contains( " - " ) ) {
+                    const QStringList artist_title = title.split( " - " );
+                    if( artist_title.size() >= 2 ) {
+                        artist = artist_title[0];
+                        title  = artist_title[1];    
+                    }
+                }
+
                 notify();
             }
         }
