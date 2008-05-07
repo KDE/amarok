@@ -940,20 +940,6 @@ void MainWindow::createActions()
     connect( action, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( back() ) );
 
     action = new KAction( this );
-    action->setIcon( KIcon("media-playback-start-amarok") );
-    action->setText( i18n( "Play" ) );
-    action->setObjectName( "play" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_X ) );
-    ac->addAction( "play", action );
-    connect( action, SIGNAL(triggered(bool)), ec, SLOT( play() ));
-
-    action = new KAction( this );
-    action->setIcon( KIcon("media-playback-pause-amarok") );
-    action->setText( i18n( "Pause" ));
-    ac->addAction( "pause", action );
-    connect( action, SIGNAL(triggered(bool)), ec, SLOT( pause() ) );
-
-    action = new KAction( this );
     action->setObjectName( "nextTrack" );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
     action->setIcon( KIcon("media-skip-forward-amarok") );

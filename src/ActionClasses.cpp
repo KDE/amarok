@@ -196,15 +196,14 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac )
         : KToggleAction( 0 )
         , EngineObserver( The::engineController() )
 {
-    setText(i18n( "Play/Pause" ));
     setObjectName( "play-pause" );
+    setText( i18n( "Play/Pause" ) );
+    setShortcut( Qt::Key_Space );
     setGlobalShortcut( KShortcut( Qt::META + Qt::Key_C ) );
-    ac->addAction("play_pause", this);
+    ac->addAction( "play_pause", this );
     PERF_LOG( "PlayPauseAction: before engineStateChanged" )
     engineStateChanged( The::engineController()->state() );
     PERF_LOG( "PlayPauseAction: after engineStateChanged" )
-
-    setShortcut( Qt::Key_Space );
 
     connect( this, SIGNAL(triggered()), The::engineController(), SLOT(playPause()) );
 }
@@ -216,18 +215,15 @@ PlayPauseAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldSt
     case Phonon::PlayingState:
         setChecked( false );
         setIcon( KIcon("media-playback-pause-amarok") );
-        setText( i18n( "Pause" ) );
         break;
     case Phonon::PausedState:
         setChecked( true );
         setIcon( KIcon("media-playback-pause-amarok") );
-        setText( i18n( "Pause" ) );
         break;
     case Phonon::StoppedState:
     case Phonon::LoadingState:
         setChecked( false );
         setIcon( KIcon("media-playback-start-amarok") );
-        setText( i18n( "Play" ) );
         break;
     case Phonon::ErrorState:
     case Phonon::BufferingState:
