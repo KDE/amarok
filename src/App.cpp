@@ -745,7 +745,7 @@ void App::slotConfigShortcuts()
 
 void App::slotConfigToolBars()
 {
-    KEditToolBar dialog( mainWindow()->actionCollection(), mainWindow() );
+    KEditToolBar dialog( Amarok::actionCollection(), mainWindow() );
     dialog.setResourceFile( mainWindow()->xmlFile() );
 
     dialog.showButton( KEditToolBar::Apply, false );
