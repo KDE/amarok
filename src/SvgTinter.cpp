@@ -73,7 +73,7 @@ void SvgTinter::init( )
         //a slightly lighter than window color:
         m_tintMap.insert( "#e8e8e8", blendColors( App::instance()->palette().window().color(), "#ffffff", 90 ).name() );
         //a slightly darker than window color:
-        m_tintMap.insert( "#565755", blendColors( App::instance()->palette().window().color(), "000000ff", 90 ).name() );
+        m_tintMap.insert( "#565755", blendColors( App::instance()->palette().window().color(), "#0000ff", 90 ).name() );
         m_lastPalette = App::instance()->palette();
     }
 }
