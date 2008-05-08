@@ -101,6 +101,8 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_appletBrowser->setContainment( this );
     m_appletBrowser->hide();
     DEBUG_LINE_INFO
+    
+    debug() << "Creating ColumnApplet, max size:" << maximumSize();
 
     //connect ( Plasma::Theme::self(), SIGNAL( changed() ), this, SLOT( paletteChange() ) );
     connect( KGlobalSettings::self(), SIGNAL(kdisplayPaletteChanged() ), this, SLOT( paletteChange() ) );
@@ -153,12 +155,16 @@ QRectF ColumnApplet::boundingRect() const
 // call this when the view changes size: e.g. layout needs to be recalculated
 void ColumnApplet::updateSize() // SLOT
 {
+    // HACK HACK HACK i dont know where maximumSize is being set, but SOMETHING is setting it,
+    // and is preventing the containment from expanding when it should.
+    // so, we manually keep the size high.
+    setMaximumSize( QSizeF( 100000, 100000 ) );
     m_columns->setGeometry( scene()->sceneRect() );
     setGeometry( scene()->sceneRect() );
-    debug() << "ColumnApplet updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect();
+    debug() << "ColumnApplet updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
-void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect)
+void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect )
 {
     Q_UNUSED( option );
     painter->save();
@@ -174,7 +180,7 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     }*/
 
     //m_renderer->render( painter, rect );
-
+    
     debug() << "drawing background in " << rect;
     painter->drawPixmap(0, 0, The::svgHandler()->renderSvg( "desktoptheme/default/widgets/amarok-wallpaper.svg", "context_background", rect.width(), rect.height() ) );
 

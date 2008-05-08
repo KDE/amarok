@@ -69,10 +69,10 @@ public:
             if( columns[ maxColumn ]->count() == 1 ) // if the largest column only has
                 return; // one applet, we can't do anything more
 
-                qreal maxAppletHeight = columns[ maxColumn ]->itemAt( columns[ maxColumn ]->count() - 1 )->effectiveSizeHint( Qt::MaximumSize ).height() + 10;
+            qreal maxAppletHeight = columns[ maxColumn ]->itemAt( columns[ maxColumn ]->count() - 1 )->effectiveSizeHint( Qt::MaximumSize ).height() + 10;
             // HACK!
             // adding 10 is needed to cover the borders/padding... i can't get the exact
-            // value from Plasma::VBoxLayout because it's not exposed. arg!
+            // value from VerticalLayout because it's not exposed. arg!
 
 
             found = false;
@@ -254,12 +254,11 @@ ContextLayout::relayout()
     QRectF rect = d->geom;
     const int numColumns = qMax( (int)(rect.width() / d->columnWidth), 1 );    //use at least one column
 
-    //const int numColumns = 1;
-
-   // debug() << "ContextLayout::relayout laying out into:" << rect << "with" << numColumns << " columns";
+//    debug() << "ContextLayout::relayout laying out into:" << rect << "with" << numColumns << " columns";
     if( numColumns > d->columns.size() ) // need to make more columns
     {
         for( int i = d->columns.size(); i < numColumns; i++ ) {
+//            debug() << "ContextLayout::relayout making a new column";
             VerticalLayout *newColumn = new VerticalLayout( this );
             d->columns << newColumn;
         }
@@ -276,10 +275,11 @@ ContextLayout::relayout()
             int smallestColumn = 0, min = (int)d->columns[ 0 ]->effectiveSizeHint( Qt::PreferredSize ).height();
             for( int i = 1; i < d->columns.size(); i++ ) // find shortest column to put
             {                                           // the applet in
-            if( d->columns[ i ]->effectiveSizeHint( Qt::PreferredSize ).height() < min )
+                if( d->columns[ i ]->effectiveSizeHint( Qt::PreferredSize ).height() < min )
                     smallestColumn = i;
             }
             d->columns[ smallestColumn ]->addItem( applet );
+//            debug() << "ContextLayout::relayout removing a column, adding an applet to column" << smallestColumn;
         }
     }
 
@@ -293,7 +293,7 @@ ContextLayout::relayout()
         qreal height2 = rect.height();
         qreal maxHeight = qMax( height1, height2 );
         QSizeF size( columnWidth, maxHeight );
-//        debug() << "setting column" << i << " geometry to " << pos << " " << size;
+//        debug() << "setting column" << i << " geometry to pos" << pos << " " << size;
         d->columns[ i ]->setGeometry( QRectF( pos, size ) );
     }
     d->balanceColumns();
