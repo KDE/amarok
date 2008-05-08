@@ -832,7 +832,7 @@ Playlist::Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &l
     //dfaure says that job->redirectionUrl().isValid() ? job->redirectionUrl() : job->url(); might be needed
     //but to wait until an issue is actually found, since it might take more work
     const KUrl dir = static_cast<KIO::SimpleJob*>( job )->url();
-    foreach( KIO::UDSEntry entry, list )
+    foreach( const KIO::UDSEntry &entry, list )
     {
         KUrl currentUrl = dir;
         currentUrl.addPath( entry.stringValue( KIO::UDSEntry::UDS_NAME ) );
@@ -845,7 +845,10 @@ Playlist::Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &l
         }
     }
     if( !tracks.isEmpty() )
+    {
+        qStableSort(tracks.begin(), tracks.end(), Amarok::trackNumberLessThan);
         insertOptioned( tracks, Playlist::Append );
+    }
 }
 
 
