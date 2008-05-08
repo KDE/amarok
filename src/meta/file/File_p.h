@@ -44,11 +44,11 @@ public:
     Private( Track *t )
         : QObject()
         , url()
+        , tag( 0 )
         , batchUpdate( false )
         , album()
         , artist()
         , track( t )
-        , tag( 0 )
     {}
 
 public:
