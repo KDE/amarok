@@ -37,8 +37,9 @@ class EditCapabilityImpl : public Meta::EditCapability
     Q_OBJECT
     public:
         EditCapabilityImpl( MetaFile::Track *track )
-    : Meta::EditCapability()
-                , m_track( track ) {}
+        : Meta::EditCapability()
+        , m_track( track )
+        {}
 
         virtual bool isEditable() const { return m_track->isEditable(); }
         virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
@@ -123,7 +124,6 @@ Track::sortableName() const
 {
     return name();
 }
-
 
 KUrl
 Track::playableUrl() const

@@ -43,8 +43,8 @@ class Track::Private : public QObject
 public:
     Private( Track *t )
         : QObject()
-        , url()
         , tag( 0 )
+        , url()
         , batchUpdate( false )
         , album()
         , artist()
