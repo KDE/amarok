@@ -63,7 +63,6 @@ Track::Track( const KUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
-DEBUG_BLOCK
 #ifdef COMPLEX_TAGLIB_FILENAME
     const wchar_t encodedName = reinterpret_cast<const wchar_t *>(filename.utf16());
 #else
@@ -74,7 +73,6 @@ DEBUG_BLOCK
     d->fileRef = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
     if( !d->fileRef.isNull() )
     {
-DEBUG_LINE_INFO
         d->tag = d->fileRef.tag();
     }
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QPointer<MetaFile::Track::Private>( d ) ) );
