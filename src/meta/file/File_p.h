@@ -19,6 +19,7 @@
 #ifndef AMAROK_META_FILE_P_H
 #define AMAROK_META_FILE_P_H
 
+#include "debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
 
@@ -27,10 +28,11 @@
 #include <QSet>
 #include <QString>
 
-#include <kfilemetainfo.h>
-#include <kfilemetainfoitem.h>
 #include <KLocale>
 
+// Taglib Includes
+#include <fileref.h>
+#include <tag.h>
 namespace MetaFile
 {
 
@@ -41,16 +43,17 @@ class Track::Private : public QObject
 public:
     Private( Track *t )
         : QObject()
-        , metaInfo()
         , url()
         , batchUpdate( false )
         , album()
         , artist()
         , track( t )
+        , tag( 0 )
     {}
 
 public:
-    KFileMetaInfo metaInfo;
+    TagLib::FileRef fileRef;
+    TagLib::Tag *tag;
     KUrl url;
     bool batchUpdate;
     Meta::AlbumPtr album;
@@ -85,11 +88,11 @@ public:
 
     QString name() const
     {
-        if( d )
+        if( d && d->tag )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ARTIST ) );
-            if( item.isValid() && !item.value().toString().isEmpty()  )
-                return item.value().toString();
+            const QString itemName = TStringToQString( d->tag->artist() ).trimmed();
+            if( !itemName.isEmpty()  )
+                return itemName;
             else
                 return i18nc( "The value is not known", "Unknown" );
         }
@@ -135,11 +138,11 @@ public:
 
     QString name() const
     {
-        if( d )
+        if( d && d->tag )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ALBUM ) );
-            if( item.isValid() && !item.value().toString().isEmpty()  )
-                return item.value().toString();
+            const QString albumName = TStringToQString( d->tag->album() ).trimmed();
+            if( !albumName.isEmpty() )
+                return albumName;
             else
                 return i18nc( "The value is not known", "Unknown" );
         }
@@ -175,11 +178,11 @@ public:
 
     QString name() const
     {
-        if( d )
+        if( d && d->tag )
         {
-            KFileMetaInfoItem item = d->metaInfo.item(Meta::Field::xesamPrettyToFullFieldName(  Meta::Field::GENRE ) );
-            if( item.isValid() && !item.value().toString().isEmpty()  )
-                return item.value().toString();
+            const QString genreName = TStringToQString( d->tag->genre() ).trimmed();
+            if( !genreName.isEmpty() )
+                return genreName;
             else
                 return i18nc( "The value is not known", "Unknown" );
         }
@@ -210,12 +213,14 @@ public:
 
     QString name() const
     {
+        // Note: This needs a bit more work to implement using taglib, will investigate later..
         if( d )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) );
-            if( item.isValid() && !item.value().toString().isEmpty()  )
-                return item.value().toString();
-            else
+            AMAROK_NOTIMPLEMENTED
+//             KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) );
+//             if( item.isValid() && !item.value().toString().isEmpty()  )
+//                 return item.value().toString();
+//             else
                 return i18nc( "The value is not known", "Unknown" );
         }
         else
@@ -245,11 +250,11 @@ public:
 
     QString name() const
     {
-        if( d )
+        if( d && d->tag )
         {
-            KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::YEAR ) );
-            if( item.isValid() && !item.value().toString().isEmpty()  )
-                return item.value().toString();
+            const QString year = QString::number( d->tag->year() );
+            if( !year.isEmpty()  )
+                return year;
             else
                 return i18nc( "The value is not known", "Unknown" );
         }

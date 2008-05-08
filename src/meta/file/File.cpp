@@ -63,8 +63,20 @@ Track::Track( const KUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
+DEBUG_BLOCK
+#ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t encodedName = reinterpret_cast<const wchar_t *>(filename.utf16());
+#else
+    QByteArray fileName = QFile::encodeName( url.path() );
+    const char * encodedName = fileName.constData(); // valid as long as fileName exists
+#endif
     d->url = url;
-    d->metaInfo = KFileMetaInfo( url.path() );
+    d->fileRef = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
+    if( !d->fileRef.isNull() )
+    {
+DEBUG_LINE_INFO
+        d->tag = d->fileRef.tag();
+    }
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QPointer<MetaFile::Track::Private>( d ) ) );
     d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( QPointer<MetaFile::Track::Private>( d ) ) );
     d->genre = Meta::GenrePtr( new MetaFile::FileGenre( QPointer<MetaFile::Track::Private>( d ) ) );
@@ -80,15 +92,21 @@ Track::~Track()
 QString
 Track::name() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TITLE ) );
-    if( item.isValid() && !item.value().toString().isEmpty() ) {
-//         debug() << "NOT Here!";
-        return item.value().toString();
-    } else {
-//         debug() << "Here!";
-        //lets use the filename, or it will look really dull in the playlist
-        return d->url.fileName();
+    if( d && d->tag )
+    {
+        const QString trackName = TStringToQString( d->tag->title() ).trimmed();
+        if( !trackName.isEmpty() )
+        {
+            return trackName;
+        }
+        else
+        {
+            //lets use the filename, or it will look really dull in the playlist
+            return d->url.fileName();
+        }
     }
+    else
+        return "This is a bug!";
 }
 
 QString
@@ -175,88 +193,113 @@ Track::year() const
 void
 Track::setAlbum( const QString &newAlbum )
 {
+    AMAROK_NOTIMPLEMENTED
+    #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ALBUM ) ).setValue( newAlbum );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
         notifyObservers();
     }
+    #endif
 }
 
 void
 Track::setArtist( const QString& newArtist )
 {
+    AMAROK_NOTIMPLEMENTED
+    #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ARTIST ) ).setValue( newArtist );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
         notifyObservers();
     }
+    #endif
 }
 
 void
 Track::setGenre( const QString& newGenre )
 {
+    AMAROK_NOTIMPLEMENTED
+    #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::GENRE ) ).setValue( newGenre );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
         notifyObservers();
     }
+    #endif
 }
 
 void
 Track::setComposer( const QString& newComposer )
 {
+    AMAROK_NOTIMPLEMENTED
+    #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) ).setValue( newComposer );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
         notifyObservers();
     }
+    #endif
 }
 
 void
 Track::setYear( const QString& newYear )
 {
+    AMAROK_NOTIMPLEMENTED
+    #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::YEAR ) ).setValue( newYear );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
         notifyObservers();
     }
+    #endif
 }
 
 void
 Track::setTitle( const QString &newTitle )
 {
+    AMAROK_NOTIMPLEMENTED
+    #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TITLE ) ).setValue( newTitle );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
         notifyObservers();
     }
+    #endif
 }
 
 QString
 Track::comment() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMMENT ) );
-    if( item.isValid() )
-        return item.value().toString();
-    else
-        return QString();
+    if( d && d->tag )
+    {
+        const QString commentName = TStringToQString( d->tag->comment() ).trimmed();
+        if( !commentName.isEmpty() )
+            return commentName;
+        else
+            return QString();
+    }
+    return QString();
 }
 
 void
 Track::setComment( const QString& newComment )
 {
+    AMAROK_NOTIMPLEMENTED
+    #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMMENT ) ).setValue( newComment );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
         notifyObservers();
     }
+    #endif
 }
 
 double
@@ -286,83 +329,98 @@ Track::setRating( int newRating )
 int
 Track::trackNumber() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TRACKNUMBER ) );
-    if( item.isValid() )
-        return item.value().toInt();
-    else
-        return 0;
+    if( d && d->tag )
+    {
+        return d->tag->track();
+    }
+    return 0;
 }
 
 void
 Track::setTrackNumber( int newTrackNumber )
 {
+    AMAROK_NOTIMPLEMENTED
+    #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TRACKNUMBER ) ).setValue( newTrackNumber );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
         notifyObservers();
     }
+    #endif
 }
 
 int
 Track::discNumber() const
 {
+    AMAROK_NOTIMPLEMENTED
+    #if 0
     KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::DISCNUMBER ) );
     if( item.isValid() )
         return item.value().toInt();
     else
         return 0;
+    #endif
 }
 
 void
 Track::setDiscNumber( int newDiscNumber )
 {
+    AMAROK_NOTIMPLEMENTED
+    #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::DISCNUMBER ) ).setValue( newDiscNumber );
     if( !d->batchUpdate )
     {
         d->metaInfo.applyChanges();
         notifyObservers();
     }
+    #endif
 }
 
 int
 Track::length() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::LENGTH ) );
-    if( item.isValid() )
-        return item.value().toInt();
-    else
-        return 0;
+    if( d && !d->fileRef.isNull() )
+    {
+        int length = d->fileRef.audioProperties()->length();
+        if( length == -2 /*Undetermined*/ )
+            length = 0;
+        return length;
+    }
+    return 0;
 }
 
 int
 Track::filesize() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::FILESIZE ) );
-    if( item.isValid() )
-        return item.value().toInt();
-    else
-        return 0;
+    const int size = QFile( d->url.url() ).size();
+    return size;
 }
 
 int
 Track::sampleRate() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::SAMPLERATE ) );
-    if( item.isValid() )
-        return item.value().toInt();
-    else
-        return 0;
+    if( d && !d->fileRef.isNull() )
+    {
+        int sampleRate = d->fileRef.audioProperties()->sampleRate();
+        if( sampleRate == -2 /*Undetermined*/ )
+            sampleRate = 0;
+        return sampleRate;
+    }
+    return 0;
 }
 
 int
 Track::bitrate() const
 {
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::BITRATE ) );
-    if( item.isValid() )
-        return item.value().toInt();
-    else
-        return 0;
+    if( d && !d->fileRef.isNull() )
+    {
+        int bitrate = d->fileRef.audioProperties()->bitrate();
+        if( bitrate == -2 /*Undetermined*/ )
+            bitrate = 0;
+        return bitrate;
+    }
+    return 0;
 }
 
 uint
@@ -392,7 +450,8 @@ Track::beginMetaDataUpdate()
 void
 Track::endMetaDataUpdate()
 {
-    d->metaInfo.applyChanges();
+    AMAROK_NOTIMPLEMENTED
+//     d->metaInfo.applyChanges();
     d->batchUpdate = false;
     notifyObservers();
 
@@ -402,8 +461,9 @@ Track::endMetaDataUpdate()
 void
 Track::abortMetaDataUpdate()
 {
+    AMAROK_NOTIMPLEMENTED
     //KFileMetaInfo does not have a method to reset the items
-    d->metaInfo = KFileMetaInfo( d->url.path() );
+//     d->metaInfo = KFileMetaInfo( d->url.path() );
     d->batchUpdate = false;
 }
 
