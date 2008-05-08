@@ -59,25 +59,16 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
 
     // Only show these if the user is a subscriber.
     // Note: isSubscriber is a method we added locally to libUnicorn, if libUnicorn gets bumped we may need to readd if last.fm doesn't
-    if( The::webService()->isSubscriber() )
+    QStringList lastfmPersonal;
+    lastfmPersonal << "personal" << "loved" << "neighbours";
+
+    foreach( const QString &station, lastfmPersonal )
     {
-        QStringList lastfmPersonal;
-        lastfmPersonal << "personal" << "loved";
-
-        foreach( const QString &station, lastfmPersonal )
-        {
-                LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
-                Meta::TrackPtr trackPtr( track );
-                userStreams->addTrack( trackPtr );
-                addTrack( trackPtr );
-        }
+            LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
+            Meta::TrackPtr trackPtr( track );
+            userStreams->addTrack( trackPtr );
+            addTrack( trackPtr );
     }
-
-    // Neighbors isn't reliant on being a subscriber.
-    LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + "neighbours" );
-    Meta::TrackPtr trackPtr( track );
-    userStreams->addTrack( trackPtr );
-    addTrack( trackPtr );
 
     QStringList lastfmGenres;
     lastfmGenres << "Alternative" << "Ambient" << "Chill Out" << "Classical"<< "Dance"
