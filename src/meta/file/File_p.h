@@ -19,6 +19,7 @@
 #ifndef AMAROK_META_FILE_P_H
 #define AMAROK_META_FILE_P_H
 
+#include "debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
 
