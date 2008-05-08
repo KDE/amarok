@@ -97,19 +97,6 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
     QString prefix = m_metaFactory->tablePrefix();
 
     QString pristineUrl = url.url();
-    
-   if ( prefix == "magnatune" ) {
-
-        //ok, this is a little bit of service specific nastyness, I will try to figure out anothe rplace to put this....
-
-       pristineUrl.replace( "_nospeech", "" );
-       pristineUrl.replace( ".ogg", ".mp3" );
-       pristineUrl.replace( "-lofi.mp3", ".mp3" );
-
-       pristineUrl.replace( QRegExp( ".*:.*@download" ), "http://he3" );
-       pristineUrl.replace( QRegExp( ".*:.*@stream" ), "http://he3" );
-
-   }
    
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
    

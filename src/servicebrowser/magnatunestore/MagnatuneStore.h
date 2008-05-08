@@ -28,9 +28,9 @@
 #include "MagnatuneRedownloadHandler.h"
 #include "MagnatuneXmlParser.h"
 #include "MagnatuneDatabaseHandler.h"
+#include "MagnatuneSqlCollection.h"
 
 #include "../ServiceBase.h"
-#include "ServiceSqlCollection.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -207,7 +207,7 @@ private:
     KIO::FileCopyJob * m_listDownloadJob;
     KIO::StoredTransferJob* m_updateTimestampDownloadJob;
 
-    ServiceSqlCollection * m_collection;
+    MagnatuneSqlCollection * m_collection;
 
     QString m_tempFileName;
 

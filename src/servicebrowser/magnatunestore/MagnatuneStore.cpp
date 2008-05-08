@@ -130,7 +130,7 @@ MagnatuneStore::MagnatuneStore( const char *name )
 
     metaFactory->setStreamType( m_streamType );
     m_registry = new ServiceSqlRegistry( metaFactory );
-    m_collection = new ServiceSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
+    m_collection = new MagnatuneSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
 }
 
 
