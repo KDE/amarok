@@ -69,7 +69,7 @@
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" >
          <size>
           <width>40</width>
           <height>20</height>
@@ -121,7 +121,7 @@
       <item row="4" column="0" colspan="2" >
        <widget class="QLabel" name="label_4" >
         <property name="text" >
-         <string>For more information about the Magnatune.com memberships, and to sign up, go to http://magnatune.com/&lt;To be anounced></string>
+         <string>For more information about the Magnatune.com memberships, and to sign up, go to &lt;a href="http://magnatune.com/compare_plans">http://magnatune.com/compare_plans&lt;/a> </string>
         </property>
         <property name="textFormat" >
          <enum>Qt::AutoText</enum>
