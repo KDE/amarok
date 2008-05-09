@@ -26,6 +26,8 @@ ShoutcastTrack::ShoutcastTrack( const QString &name, const KUrl & playlistUrl )
     : MetaStream::Track( KUrl() )
     , m_playlistUrl( playlistUrl )
 {
+    DEBUG_BLOCK
+
     m_title = name;
 }
 
