@@ -76,10 +76,10 @@ void SvgTinter::init( )
         m_tintMap.insert( "#565755", blendColors( App::instance()->palette().window().color(), "#0000ff", 90 ).name() );
 
         //list background:
-        m_tintMap.insert( "#010101", App::instance()->palette().base().color().name() );
+        m_tintMap.insert( "#f0f0f0", App::instance()->palette().base().color().name() );
 
         //alternate list background:
-        m_tintMap.insert( "#111111", App::instance()->palette().alternateBase().color().name() );
+        m_tintMap.insert( "#e0e0e0", App::instance()->palette().alternateBase().color().name() );
 
 
 
