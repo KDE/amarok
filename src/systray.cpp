@@ -79,8 +79,8 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 
     PERF_LOG( "Before adding actions" );
     contextMenu()->addAction( ac->action( "prev"       ) );
-    //contextMenu()->addAction( ac->action( "play_pause" ) );
     contextMenu()->addAction( ac->action( "play_pause" ) );
+    contextMenu()->addAction( ac->action( "stop" ) );
     contextMenu()->addAction( ac->action( "next"       ) );
 
     baseIcon     = KSystemTrayIcon::loadIcon( "amarok" );
