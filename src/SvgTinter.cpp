@@ -74,6 +74,16 @@ void SvgTinter::init( )
         m_tintMap.insert( "#e8e8e8", blendColors( App::instance()->palette().window().color(), "#ffffff", 90 ).name() );
         //a slightly darker than window color:
         m_tintMap.insert( "#565755", blendColors( App::instance()->palette().window().color(), "#0000ff", 90 ).name() );
+
+        //list background:
+        m_tintMap.insert( "#010101", App::instance()->palette().base().color().name() );
+
+        //alternate list background:
+        m_tintMap.insert( "#111111", App::instance()->palette().alternateBase().color().name() );
+
+
+
+        
         m_lastPalette = App::instance()->palette();
     }
 }
