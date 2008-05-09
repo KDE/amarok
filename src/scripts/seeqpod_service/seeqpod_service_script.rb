@@ -36,7 +36,7 @@ include REXML
 
 def configure
   ok = Qt::Boolean.new  # Will become nil if the user presses Cancel
-  uid = Qt::InputDialog.getText( nil, "Configuration", "Please enter your SeeqPod UID:", Qt::LineEdit::Normal, "", ok )
+  uid = Qt::InputDialog.getText( nil, "Configuration", "Please enter your SeeqPod API UID (check your SeeqPod profile):", Qt::LineEdit::Normal, "", ok )
   unless ok.nil?
     @uid = uid
     @settings.setValue( "uid", Qt::Variant.new( @uid ) )
