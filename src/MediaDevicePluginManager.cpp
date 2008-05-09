@@ -499,11 +499,11 @@ MediaDeviceConfig::MediaDeviceConfig( QString udi, QWidget *parent, const char *
                 if( !device.parent().product().isEmpty() )
                     table += row.arg( Qt::escape( i18n( "Product:" ) ),
                         Qt::escape( device.parent().product() ) );
-                Solid::StorageAccess *sa = device.as<Solid::StorageAccess>();
-                if( sa )
+                Solid::StorageAccess *ssa = device.as<Solid::StorageAccess>();
+                if( ssa )
                     table += row.arg( Qt::escape( i18n( "Mount Point:" ) ),
-                            ( sa->isAccessible() ?
-                                Qt::escape( sa->filePath() ) :
+                            ( ssa->isAccessible() ?
+                                Qt::escape( ssa->filePath() ) :
                                 Qt::escape( i18n( "Not Mounted" ) ) ) );
             }
         }
