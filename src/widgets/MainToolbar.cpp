@@ -136,40 +136,31 @@ void MainToolbar::paintEvent(QPaintEvent *)
 
 
     //Meta::TrackPtr track = The::engineController()->currentTrack();
-  /*  QString addString;
 
-    if ( m_renderAddControls )
-        addString = "-add";
-
-    QString key = QString("toolbar-background%1:%2x%3")
-                            .arg( addString )
-                            .arg( contentsRect().width() )
-                            .arg( contentsRect().height() );
-
-    QPixmap background(contentsRect().width(), contentsRect().height() );
-
-    if (!QPixmapCache::find(key, background)) {
-        debug() << QString("toolbar background %1 not in cache...").arg( key );
-
-        QPainter pt( &background );
-        m_svgRenderer->render( &pt, "toolbarbackground",  contentsRect() );
-        m_svgRenderer->render( &pt, "buttonbar",  controlRect );
-
-        if ( m_renderAddControls )
-            m_svgRenderer->render( &pt, "buttonbar",  addControlRect );
-
-        QPixmapCache::insert(key, background);
-    }*/
-
-
+    int tileWidth = contentsRect().height() * 2;
+    
     QPainter painter( this );
-    QPixmap background = The::svgHandler()->renderSvg( "amarok/images/toolbar-background.svg", "toolbarbackground", contentsRect().width(), contentsRect().height(), "toolbarbackground" );
-    painter.drawPixmap( 0, 0, background );
-    QPixmap controlArea = The::svgHandler()->renderSvg( "amarok/images/toolbar-background.svg", "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
+    QPixmap backgroundTile = The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "toolbar_background",tileWidth , contentsRect().height(), "toolbar_background" );
+    
+
+    int offset = 0;
+    while( ( offset + tileWidth ) <= contentsRect().width() ) {
+        //debug() << "painting tile...!";
+        painter.drawPixmap( offset, 0, backgroundTile );
+        offset += tileWidth;
+    }
+
+    int leftover = contentsRect().width() - offset;
+
+    if ( leftover > 0 )
+        painter.drawPixmap( offset, 0, backgroundTile, 0, 0, leftover, contentsRect().height() );
+    
+
+    QPixmap controlArea = The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
     painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
 
     if ( m_renderAddControls ) {
-        QPixmap addControlArea = The::svgHandler()->renderSvg( "amarok/images/toolbar-background.svg", "addbuttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
+        QPixmap addControlArea = The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "buttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
         painter.drawPixmap( addControlRect.x(), addControlRect.y(), addControlArea );
     }
 }

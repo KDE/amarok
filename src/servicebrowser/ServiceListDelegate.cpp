@@ -48,7 +48,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     //DEBUG_BLOCK
 
     const int width = m_view->viewport()->size().width() - 4;
-    const int height = 90;
+    const int height = 76;
     const int iconWidth = 32;
     const int iconHeight = 32;
     const int iconPadX = 8;
@@ -57,7 +57,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
 
-    QPixmap background = The::svgHandler()->renderSvg( "amarok/images/service-browser-element.svg", "service_list_item", width, height );
+    QPixmap background = The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "service_list_item", width, height - 4, "service_list_item" );
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
@@ -100,7 +100,7 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
     //DEBUG_BLOCK
 
     int width = m_view->viewport()->size().width() - 4;
-    int height = 90;
+    int height = 76;
 
     return QSize ( width, height );
 

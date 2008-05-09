@@ -248,21 +248,21 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         background.fill( Qt::transparent );
         QPainter pt( &background );
 
-        QSvgRenderer *renderer = The::svgHandler()->getRenderer( "amarok/images/sliders.svg" );
+        QSvgRenderer *renderer = The::svgHandler()->getRenderer( "amarok/images/default-template.svg" );
 
-        renderer->render( &pt, "volume-slider-background", QRectF( 0, 0, m_sliderWidth, m_sliderHeight ) );
+        renderer->render( &pt, "slider_center", QRectF( side, 0, m_sliderWidth - side * 2, m_sliderHeight ) );
 
-        renderer->render( &pt, "volume-slider-left", QRectF( 0, 0, side, m_sliderHeight ) );
-        renderer->render( &pt, "volume-slider-left-highlight", QRectF( 0, 0, side, m_sliderHeight ) );
+        renderer->render( &pt, "slider_left", QRectF( 0, 0, side, m_sliderHeight ) );
+        renderer->render( &pt, "slider_left_highlight", QRectF( 0, 0, side, m_sliderHeight ) );
 
-        renderer->render( &pt, "volume-slider-right",  QRectF( 0, m_sliderWidth - side, side, m_sliderHeight ) );
-        renderer->render( &pt, "volume-slider-right-highlight",  QRectF( 0, m_sliderWidth - side, side, m_sliderHeight ) );
+        renderer->render( &pt, "slider_right",  QRectF( m_sliderWidth - side, 0, side, m_sliderHeight ) );
+        //renderer->render( &pt, "slider_right_highlight",  QRectF( m_sliderWidth - side,0 , side, m_sliderHeight ) );
 
-        renderer->render( &pt, "volume-slider-center",  QRectF( side, 0, knobX +3, m_sliderHeight ) );
-        renderer->render( &pt, "volume-slider-center-highlight",  QRectF( side, 0, knobX, m_sliderHeight ) );
+        renderer->render( &pt, "slider_center",  QRectF( side, 0, knobX +3, m_sliderHeight ) );
+        renderer->render( &pt, "slider_center_highlight",  QRectF( side, 0, knobX, m_sliderHeight ) );
 
-        renderer->render( &pt, "volume-slider-position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
-        renderer->render( &pt, "volume-slider-position-highlight",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+        renderer->render( &pt, "slider_position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+        //renderer->render( &pt, "slider_position_highlight",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
 
 
         QPixmapCache::insert(key, background);
@@ -282,7 +282,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         icon.fill( Qt::transparent );
         QPainter pt( &icon );
 
-        The::svgHandler()->getRenderer( "amarok/images/sliders.svg" )->render( &pt, "volume-slider-icon",  QRectF( 0, 0, m_iconWidth, m_iconHeight ) );
+        The::svgHandler()->getRenderer( "amarok/images/default-template.svg" )->render( &pt, "volume_icon",  QRectF( 0, 0, m_iconWidth, m_iconHeight ) );
 
         QPixmapCache::insert(key, icon);
     }
@@ -378,7 +378,7 @@ void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    const short side = 10; // Size of the rounded parts.
+    const short side = 5; // Size of the rounded parts.
 
     QString key = QString("progress-background:%1x%2")
             .arg( width() )
@@ -390,10 +390,10 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
         background.fill( Qt::transparent );
         QPainter pt( &background );
 
-        QSvgRenderer* renderer = The::svgHandler()->getRenderer( "amarok/images/sliders.svg" );
-        renderer->render( &pt, "progress-background-left", QRectF( 0, 0, side, m_sliderHeight ) );
-        renderer->render( &pt, "progress-background",  QRectF( side, 0, width() - side *2, m_sliderHeight ) );
-        renderer->render( &pt, "progress-background-right", QRectF( width() - side, 0, side, m_sliderHeight ) );
+        QSvgRenderer* renderer = The::svgHandler()->getRenderer( "amarok/images/default-template.svg" );
+        renderer->render( &pt, "slider_left", QRectF( 0, 0, side, m_sliderHeight ) );
+        renderer->render( &pt, "slider_center",  QRectF( side, 0, width() - side *2, m_sliderHeight ) );
+        renderer->render( &pt, "slider_right", QRectF( width() - side, 0, side, m_sliderHeight ) );
 
         QPixmapCache::insert(key, background);
     }
@@ -402,7 +402,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     foreground.fill( Qt::transparent );
     QPainter pt2( &foreground );
 
-    QSvgRenderer* renderer = The::svgHandler()->getRenderer( "amarok/images/sliders.svg" );
+    QSvgRenderer* renderer = The::svgHandler()->getRenderer( "amarok/images/default-template.svg" );
     QPixmap foregroundLeft( side, m_sliderHeight );
     QString foregroundLeftKey = QString( "progress-foreground-left:%1X%2" ).arg( side ).arg( m_sliderHeight );
     QRectF foregroundLeftRect( 0, 0, side, m_sliderHeight );
@@ -410,14 +410,14 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     {
         foregroundLeft.fill( Qt::transparent );
         QPainter pt( &foregroundLeft );
-        renderer->render( &pt, "progress-slider-left", foregroundLeftRect );
-        renderer->render( &pt, "progress-slider-left-highlight", foregroundLeftRect );
+        renderer->render( &pt, "slider_left", foregroundLeftRect );
+        renderer->render( &pt, "slider_left_highlight", foregroundLeftRect );
         QPixmapCache::insert( foregroundLeftKey, foregroundLeft );
     }
     pt2.drawPixmap( foregroundLeftRect, foregroundLeft, foregroundLeftRect );
     //Paint the trail
-    renderer->render( &pt2, "progress-slider-center", QRectF( side, 0, m_knobX - 3, m_sliderHeight ) );
-    renderer->render( &pt2, "progress-slider-center-highlight", QRectF( side, 0, m_knobX - 3, m_sliderHeight ) );
+    renderer->render( &pt2, "slider_center", QRectF( side, 0, m_knobX, m_sliderHeight ) );
+    renderer->render( &pt2, "slider_center_highlight", QRectF( side, 0, m_knobX, m_sliderHeight ) );
 
     //And the progress indicator, this needs to happen after the trail so it's on top.
     QString indicatorkey = QString( "progress-indicator:%1x%2" ).arg( m_sliderHeight ).arg( m_sliderHeight );
@@ -427,8 +427,8 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     {
         indicator.fill( Qt::transparent );
         QPainter pt( &indicator );
-        renderer->render( &pt, "progress-slider-position",  indicatorRect );
-        renderer->render( &pt, "progress-slider-position-highlight",  indicatorRect );
+        renderer->render( &pt, "slider_position",  indicatorRect );
+        //renderer->render( &pt, "progress-slider-position-highlight",  indicatorRect );
         QPixmapCache::insert( indicatorkey, indicator );
     }
     pt2.drawPixmap( QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ), indicator, indicatorRect );
@@ -440,7 +440,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 void
 Amarok::TimeSlider::paletteChange( const QPalette& )
 {
-    The::svgHandler()->reTint( "amarok/images/sliders.svg" );
+    The::svgHandler()->reTint( "amarok/images/default-template.svg" );
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)

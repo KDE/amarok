@@ -80,10 +80,10 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 
     DEBUG_LINE_INFO
     //m_background = new Svg( m_tintedSvg.fileName(), this );
-    m_logo = new Svg( "widgets/amarok-logo", this );
+    /*m_logo = new Svg( "widgets/amarok-logo", this );
     m_width = 300; // TODO hardcoding for now, do we want this configurable?
     m_aspectRatio = (qreal)m_logo->size().height() / (qreal)m_logo->size().width();
-    m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );
+    m_logo->resize( (int)m_width, (int)( m_width * m_aspectRatio ) );*/
     DEBUG_LINE_INFO
 
     connect( this, SIGNAL( appletAdded( Plasma::Applet*, const QPointF & ) ), this, SLOT( addApplet( Plasma::Applet*, const QPointF & ) ) );
@@ -182,17 +182,19 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     //m_renderer->render( painter, rect );
     
     debug() << "drawing background in " << rect;
-    painter->drawPixmap(0, 0, The::svgHandler()->renderSvg( "desktoptheme/default/widgets/amarok-wallpaper.svg", "context_background", rect.width(), rect.height() ) );
+    painter->drawPixmap(0, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "context_wallpaper", rect.width(), rect.height(), "context_wallpaper" ) );
+
+    painter->drawPixmap(rect.width() - 320, rect.height() - 223, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "amarok_logo", 300, 203, "amarok_logo" ) );
 
     painter->restore();
 
-    QSize size = m_logo->size();
+    /*QSize size = m_logo->size();
     QSize pos = rect.size() - size;
     qreal newHeight  = m_aspectRatio * m_width;
     m_logo->resize( QSize( (int)m_width, (int)newHeight ) );
     painter->save();
     m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
-    painter->restore();
+    painter->restore();*/
 }
 
 void ColumnApplet::appletRemoved( QObject* object ) // SLOT
