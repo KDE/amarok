@@ -35,9 +35,9 @@
      showgrid="false"
      showguides="true"
      inkscape:snap-global="false"
-     inkscape:zoom="0.57535325"
-     inkscape:cx="1877.6038"
-     inkscape:cy="872.43551"
+     inkscape:zoom="0.81367237"
+     inkscape:cx="2141.7451"
+     inkscape:cy="1040.2777"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:current-layer="svg2"
@@ -74,6 +74,48 @@
   </metadata>
   <defs
      id="defs5">
+    <linearGradient
+       id="linearGradient4287">
+      <stop
+         style="stop-color:#565755;stop-opacity:1;"
+         offset="0"
+         id="stop4289" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop4291" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4287"
+       id="linearGradient4293"
+       x1="-20.623943"
+       y1="14.089844"
+       x2="159.36685"
+       y2="14.089844"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.6133093,0,0,1.3466667,138.29503,-2382.7395)" />
+    <linearGradient
+       id="linearGradient5302">
+      <stop
+         style="stop-color:#e8e8e8;stop-opacity:1;"
+         offset="0"
+         id="stop5304" />
+      <stop
+         style="stop-color:#e8e8e8;stop-opacity:0;"
+         offset="1"
+         id="stop5306" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5302"
+       id="linearGradient5308"
+       x1="30.641293"
+       y1="2.0101013"
+       x2="30.641293"
+       y2="196.46446"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.1219512,0,0,1.0142335,2329.3871,125.31283)" />
     <filter
        id="AI_Sfocatura_4">
       <feGaussianBlur
@@ -1056,6 +1098,26 @@
        y1="33.516422"
        x2="33.193432"
        y2="33.361313" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5302"
+       id="linearGradient14019"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.1219512,0,0,1.0142335,2329.3871,125.31283)"
+       x1="30.641293"
+       y1="2.0101013"
+       x2="30.641293"
+       y2="196.46446" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4287"
+       id="linearGradient14021"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.6133093,0,0,1.3466667,138.29503,-2382.7395)"
+       x1="-20.623943"
+       y1="14.089844"
+       x2="159.36685"
+       y2="14.089844" />
   </defs>
   <rect
      style="opacity:1;fill:#2e3436;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
@@ -2531,7 +2593,7 @@
        y="36.077286">Service browser</tspan></text>
   <g
      id="service_list_item"
-     transform="translate(498.20821,103.23661)">
+     transform="translate(538.18365,110.18886)">
     <path
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
@@ -2631,4 +2693,73 @@
        x="1742.4402"
        y="754.63318"
        id="tspan12940">66ffff      -- Highlight color ( bright color )</tspan></text>
+  <g
+     id="sidebar_button"
+     transform="translate(13.518955,14.74795)">
+    <rect
+       transform="matrix(0,1,-1,0,0,0)"
+       rx="13.685"
+       y="-2393.5227"
+       x="125.64618"
+       height="59.514824"
+       width="200.93616"
+       id="123"
+       style="fill:url(#linearGradient14021);fill-opacity:1" />
+    <rect
+       rx="13.685"
+       y="127.35154"
+       x="2336.6594"
+       height="197.22212"
+       width="54.211517"
+       id="rect8261"
+       style="fill:url(#linearGradient14019);fill-opacity:1" />
+  </g>
+  <rect
+     ry="13.49079"
+     rx="6.0480866"
+     y="31.659628"
+     x="2230.0305"
+     height="402.81375"
+     width="300.49258"
+     id="rect13038"
+     style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.24827053;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <rect
+     style="opacity:1;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.35100657;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect13040"
+     width="140.12518"
+     height="29.310698"
+     x="2319.7737"
+     y="11.581699"
+     rx="20"
+     ry="20" />
+  <text
+     inkscape:export-ydpi="90"
+     inkscape:export-xdpi="90"
+     inkscape:export-filename="/home/lee/amarok-mockup12.png"
+     xml:space="preserve"
+     style="font-size:17.20758438px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:FreeSans"
+     x="2292.0098"
+     y="31.60887"
+     id="text13042"
+     transform="scale(1.0283625,0.9724197)"
+     sodipodi:linespacing="125%"><tspan
+       id="tspan13044"
+       sodipodi:role="line"
+       x="2292.0098"
+       y="31.60887">Sidebar</tspan></text>
+  <text
+     inkscape:export-ydpi="90"
+     inkscape:export-xdpi="90"
+     inkscape:export-filename="/home/lee/amarok-mockup12.png"
+     xml:space="preserve"
+     style="font-size:17.20758438px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:FreeSans"
+     x="2247.2432"
+     y="105.97066"
+     id="text14027"
+     transform="scale(1.0283625,0.9724197)"
+     sodipodi:linespacing="125%"><tspan
+       id="tspan14029"
+       sodipodi:role="line"
+       x="2247.2432"
+       y="105.97066">sidebar_button</tspan></text>
 </svg>

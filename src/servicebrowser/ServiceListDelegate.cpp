@@ -110,7 +110,7 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
 
 void ServiceListDelegate::paletteChange()
 {
-    The::svgHandler()->reTint( "amarok/images/service-browser-element.svg" );
+    The::svgHandler()->reTint( "amarok/images/default-template.svg" );
 }
 
 

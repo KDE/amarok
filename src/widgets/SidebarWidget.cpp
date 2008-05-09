@@ -269,7 +269,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     QPainter p( this );
     p.initFrom( this );
 
-    QPixmap background = The::svgHandler()->renderSvg( "amarok/images/sidebar_button.svg", "sidebarbutton", contentsRect().width(), contentsRect().height() );
+    QPixmap background = The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" );
     p.drawPixmap( 0, 0, background );
 
 
