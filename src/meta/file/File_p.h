@@ -23,6 +23,7 @@
 #include "Meta.h"
 #include "MetaUtility.h"
 
+#include <QFile>
 #include <QObject>
 #include <QPointer>
 #include <QSet>
@@ -33,10 +34,46 @@
 // Taglib Includes
 #include <fileref.h>
 #include <tag.h>
+#include <flacfile.h>
+#include <id3v1tag.h>
+#include <id3v2tag.h>
+#include <mpcfile.h>
+#include <mpegfile.h>
+#include <oggfile.h>
+#include <oggflacfile.h>
+#include <tlist.h>
+#include <tstring.h>
+#include <vorbisfile.h>
+
+#ifdef HAVE_MP4V2
+#include "metadata/mp4/mp4file.h"
+#include "metadata/mp4/mp4tag.h"
+#else
+#include "metadata/m4a/mp4file.h"
+#include "metadata/m4a/mp4itunestag.h"
+#endif
+
 namespace MetaFile
 {
 
 //d-pointer implementation
+
+struct MetaData
+{
+    QString title;
+    QString artist;
+    QString album;
+    QString comment;
+    QString composer;
+    int discNumber;
+    int trackNumber;
+    int length;
+    int fileSize;
+    int sampleRate;
+    int bitRate;
+    int year;
+
+};
 
 class Track::Private : public QObject
 {
@@ -62,9 +99,96 @@ public:
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
 
+    MetaData m_data;
+    void updateMetaData();
+
 private:
     Track *track;
 };
+
+void Track::Private::updateMetaData()
+{
+    #define strip( x ) TStringToQString( x ).trimmed()
+    if( tag )
+    {
+        m_data.title = strip( tag->title() );
+        m_data.artist = strip( tag->artist() );
+        m_data.album = strip( tag->album() );
+        m_data.comment = strip( tag->comment() );
+        m_data.trackNumber = tag->track();
+        m_data.year = tag->year();
+    }
+    if( !fileRef.isNull() )
+    {
+        m_data.bitRate = fileRef.audioProperties()->bitrate();
+        m_data.sampleRate = fileRef.audioProperties()->sampleRate();
+        m_data.length = fileRef.audioProperties()->length();
+    }
+    //This is pretty messy...
+    QString disc;
+
+    if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileRef.file() ) )
+    {
+        if( file->ID3v2Tag() )
+        {
+            const TagLib::ID3v2::FrameListMap flm = file->ID3v2Tag()->frameListMap();
+            if( !flm[ "TPOS" ].isEmpty() )
+                disc = strip( flm[ "TPOS" ].front()->toString() );
+
+            if( !flm[ "TCOM" ].isEmpty() )
+                m_data.composer = strip( flm[ "TCOM" ].front()->toString() );
+
+            if( !flm[ "TPE2" ].isEmpty() )
+                m_data.artist = strip( flm[ "TPE2" ].front()->toString() );
+
+        }
+    }
+
+    else if( TagLib::Ogg::Vorbis::File *file = dynamic_cast< TagLib::Ogg::Vorbis::File *>( fileRef.file() ) )
+    {
+        if( file->tag() )
+        {
+            const TagLib::Ogg::FieldListMap flm = file->tag()->fieldListMap();
+            if( !flm[ "COMPOSER" ].isEmpty() )
+                m_data.composer = strip( flm[ "COMPOSER" ].front() );
+            if( !flm[ "DISCNUMBER" ].isEmpty() )
+                disc = strip( flm[ "DISCNUMBER" ].front() );
+        }
+    }
+
+    else if( TagLib::FLAC::File *file = dynamic_cast< TagLib::FLAC::File *>( fileRef.file() ) )
+    {
+        if( file->xiphComment() )
+        {
+            const TagLib::Ogg::FieldListMap flm = file->xiphComment()->fieldListMap();
+            if( !flm[ "COMPOSER "].isEmpty() )
+                m_data.composer = strip( flm[ "COMPOSER" ].front() );
+            if( !flm[ "DISCNUMBER" ].isEmpty() )
+                disc = strip( flm[ "DISCNUMBER" ].front() );
+        }
+    }
+
+    else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileRef.file() ) )
+    {
+        TagLib::MP4::Tag *mp4tag = dynamic_cast< TagLib::MP4::Tag *>( file->tag() );
+        if( mp4tag )
+        {
+            m_data.composer = strip( mp4tag->composer() );
+            disc = QString::number( mp4tag->disk() );
+        }
+    }
+
+    if( !disc.isEmpty() )
+    {
+        int i = disc.indexOf( '/' );
+        if( i != -1 )
+            m_data.discNumber = disc.left( i ).toInt();
+        else
+            m_data.discNumber = disc.toInt();
+    }
+
+    m_data.fileSize = QFile( url.url() ).size();
+}
 
 // internal helper classes
 
@@ -88,11 +212,11 @@ public:
 
     QString name() const
     {
-        if( d && d->tag )
+        if( d )
         {
-            const QString itemName = TStringToQString( d->tag->artist() ).trimmed();
-            if( !itemName.isEmpty()  )
-                return itemName;
+            const QString artist = d->m_data.artist;
+            if( !artist.isEmpty() )
+                return artist;
             else
                 return i18nc( "The value is not known", "Unknown" );
         }
@@ -138,9 +262,9 @@ public:
 
     QString name() const
     {
-        if( d && d->tag )
+        if( d )
         {
-            const QString albumName = TStringToQString( d->tag->album() ).trimmed();
+            const QString albumName = d->m_data.album;
             if( !albumName.isEmpty() )
                 return albumName;
             else
@@ -213,14 +337,13 @@ public:
 
     QString name() const
     {
-        // Note: This needs a bit more work to implement using taglib, will investigate later..
-        if( d )
+        if( d && d->tag )
         {
             AMAROK_NOTIMPLEMENTED
-//             KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) );
-//             if( item.isValid() && !item.value().toString().isEmpty()  )
-//                 return item.value().toString();
-//             else
+            const QString composer = d->m_data.composer;
+            if( !composer.isEmpty() )
+                return composer;
+            else
                 return i18nc( "The value is not known", "Unknown" );
         }
         else
@@ -250,9 +373,9 @@ public:
 
     QString name() const
     {
-        if( d && d->tag )
+        if( d )
         {
-            const QString year = QString::number( d->tag->year() );
+            const QString year = QString::number( d->m_data.year );
             if( !year.isEmpty()  )
                 return year;
             else

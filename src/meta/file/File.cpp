@@ -23,7 +23,6 @@
 #include "meta/EditCapability.h"
 #include "MetaUtility.h"
 
-#include <QFile>
 #include <QPointer>
 #include <QString>
 
@@ -37,8 +36,8 @@ class EditCapabilityImpl : public Meta::EditCapability
     Q_OBJECT
     public:
         EditCapabilityImpl( MetaFile::Track *track )
-        : Meta::EditCapability()
-        , m_track( track )
+            : Meta::EditCapability()
+            , m_track( track )
         {}
 
         virtual bool isEditable() const { return m_track->isEditable(); }
@@ -75,6 +74,7 @@ Track::Track( const KUrl &url )
     {
         d->tag = d->fileRef.tag();
     }
+    d->updateMetaData();
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QPointer<MetaFile::Track::Private>( d ) ) );
     d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( QPointer<MetaFile::Track::Private>( d ) ) );
     d->genre = Meta::GenrePtr( new MetaFile::FileGenre( QPointer<MetaFile::Track::Private>( d ) ) );
@@ -92,7 +92,7 @@ Track::name() const
 {
     if( d && d->tag )
     {
-        const QString trackName = TStringToQString( d->tag->title() ).trimmed();
+        const QString trackName = d->m_data.title;
         if( !trackName.isEmpty() )
         {
             return trackName;
@@ -124,6 +124,7 @@ Track::sortableName() const
 {
     return name();
 }
+
 
 KUrl
 Track::playableUrl() const
@@ -276,7 +277,7 @@ Track::comment() const
 {
     if( d && d->tag )
     {
-        const QString commentName = TStringToQString( d->tag->comment() ).trimmed();
+        const QString commentName = d->m_data.comment;
         if( !commentName.isEmpty() )
             return commentName;
         else
@@ -328,7 +329,7 @@ Track::trackNumber() const
 {
     if( d && d->tag )
     {
-        return d->tag->track();
+        return d->m_data.trackNumber;
     }
     return 0;
 }
@@ -350,14 +351,10 @@ Track::setTrackNumber( int newTrackNumber )
 int
 Track::discNumber() const
 {
-    AMAROK_NOTIMPLEMENTED
-    #if 0
-    KFileMetaInfoItem item = d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::DISCNUMBER ) );
-    if( item.isValid() )
-        return item.value().toInt();
-    else
-        return 0;
-    #endif
+    if( d && d->tag )
+    {
+        return d->m_data.discNumber;
+    }
 }
 
 void
@@ -379,7 +376,7 @@ Track::length() const
 {
     if( d && !d->fileRef.isNull() )
     {
-        int length = d->fileRef.audioProperties()->length();
+        int length = d->m_data.length;
         if( length == -2 /*Undetermined*/ )
             length = 0;
         return length;
@@ -390,8 +387,7 @@ Track::length() const
 int
 Track::filesize() const
 {
-    const int size = QFile( d->url.url() ).size();
-    return size;
+    return d->m_data.fileSize;
 }
 
 int
@@ -399,7 +395,7 @@ Track::sampleRate() const
 {
     if( d && !d->fileRef.isNull() )
     {
-        int sampleRate = d->fileRef.audioProperties()->sampleRate();
+        int sampleRate = d->m_data.sampleRate;
         if( sampleRate == -2 /*Undetermined*/ )
             sampleRate = 0;
         return sampleRate;
@@ -412,7 +408,7 @@ Track::bitrate() const
 {
     if( d && !d->fileRef.isNull() )
     {
-        int bitrate = d->fileRef.audioProperties()->bitrate();
+        int bitrate = d->m_data.bitRate;
         if( bitrate == -2 /*Undetermined*/ )
             bitrate = 0;
         return bitrate;
