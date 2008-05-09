@@ -35,12 +35,12 @@
      showgrid="false"
      showguides="true"
      inkscape:snap-global="false"
-     inkscape:zoom="1.1507065"
+     inkscape:zoom="0.57535325"
      inkscape:cx="1877.6038"
-     inkscape:cy="1185.2868"
+     inkscape:cy="872.43551"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:current-layer="service_list_item"
+     inkscape:current-layer="svg2"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="false">
     <inkscape:grid
@@ -2589,4 +2589,46 @@
        d="M 1265.952,9.47819 C 1255.0233,9.47819 1254.327,10.13554 1254.327,20.63444 L 1254.327,44.22819 L 1577.577,44.22819 L 1577.577,20.63444 C 1577.577,10.13554 1576.8808,9.47819 1565.952,9.47819 L 1265.952,9.47819 z "
        style="opacity:1;fill:#e0e0e0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1" />
   </g>
+  <text
+     xml:space="preserve"
+     style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:FreeSans"
+     x="1742.4402"
+     y="554.63318"
+     id="text12924"><tspan
+       sodipodi:role="line"
+       id="tspan12926"
+       x="1742.4402"
+       y="554.63318">Any occurence of the following colors in the elements will be replaced by  the</tspan><tspan
+       sodipodi:role="line"
+       x="1742.4402"
+       y="579.63318"
+       id="tspan12946">corrosponding color from the current color schemes palette</tspan><tspan
+       sodipodi:role="line"
+       x="1742.4402"
+       y="604.63318"
+       id="tspan12942"></tspan><tspan
+       sodipodi:role="line"
+       x="1742.4402"
+       y="629.63318"
+       id="tspan12944">666765  --  Window color</tspan><tspan
+       sodipodi:role="line"
+       x="1742.4402"
+       y="654.63318"
+       id="tspan12928">e8e8e8  --  Slightly lighter than window color ( + 10% white )</tspan><tspan
+       sodipodi:role="line"
+       x="1742.4402"
+       y="679.63318"
+       id="tspan12930">565755  --  Slightly darker than window color ( + 10% black )</tspan><tspan
+       sodipodi:role="line"
+       x="1742.4402"
+       y="704.63318"
+       id="tspan12932">f0f0f0     --  Base color ( list / text background )</tspan><tspan
+       sodipodi:role="line"
+       x="1742.4402"
+       y="729.63318"
+       id="tspan12934">e0e0e0   -- Alternate base color ( alternate list items )</tspan><tspan
+       sodipodi:role="line"
+       x="1742.4402"
+       y="754.63318"
+       id="tspan12940">66ffff      -- Highlight color ( bright color )</tspan></text>
 </svg>
