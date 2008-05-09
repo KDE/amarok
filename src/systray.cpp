@@ -1,9 +1,8 @@
-// AmarokSystray
 /******************************************************************************
  * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>               *
- *           (c) 2003 Max Howell <max.howell@methylblue.com>                  *
- *           (c) 2004 Enrico Ros <eros.kde@email.it>                          *
- *           (c) 2006 Ian Monroe <ian@monroe.nu>                              *
+ * Copyright (c) 2003 Max Howell <max.howell@methylblue.com>                  *
+ * Copyright (c) 2004 Enrico Ros <eros.kde@email.it>                          *
+ * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                              *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -22,15 +21,15 @@
 #include "systray.h"
 
 #include "Amarok.h"
-#include "amarokconfig.h"
-#include "debug.h"
 #include "EngineController.h"
-#include "playlist/PlaylistModel.h"
-#include "meta/Meta.h"
-#include "meta/MetaConstants.h"
-#include "meta/CurrentTrackActionsCapability.h"
 #include "TheInstances.h"
 #include "TrackTooltip.h"
+#include "amarokconfig.h"
+#include "debug.h"
+#include "meta/CurrentTrackActionsCapability.h"
+#include "meta/Meta.h"
+#include "meta/MetaConstants.h"
+#include "playlist/PlaylistModel.h"
 #include "popupdropper/PopupDropperAction.h"
 
 #include <KAction>
@@ -100,10 +99,8 @@ Amarok::TrayIcon::event( QEvent *e )
     {
     case QEvent::DragEnter:
         #define e static_cast<QDragEnterEvent*>(e)
-        {
-            e->setAccepted( KUrl::List::canDecode( e->mimeData() ) );
-            break;
-        }
+        e->setAccepted( KUrl::List::canDecode( e->mimeData() ) );
+        break;
         #undef e
 
     case QEvent::ToolTip:
@@ -119,7 +116,7 @@ Amarok::TrayIcon::event( QEvent *e )
     case QEvent::Drop:
         #define e static_cast<QDropEvent*>(e)
         {
-            KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
+            const KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
             if( !list.isEmpty() )
             {
                 KMenu *popup = new KMenu;
@@ -174,7 +171,6 @@ Amarok::TrayIcon::event( QEvent *e )
         if( static_cast<QMouseEvent*>(e)->button() == Qt::MidButton )
         {
             The::engineController()->playPause();
-
             return true;
         }
 
@@ -219,7 +215,7 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
         case Phonon::LoadingState:
             overlayVisible = false;
             paintIcon( -1, true ); // repaint the icon
-                                // fall through to default:
+            // FALL THROUGH
 
         case Phonon::ErrorState:
         case Phonon::BufferingState:
@@ -238,18 +234,22 @@ Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
 }
 
 void
-Amarok::TrayIcon::engineTrackPositionChanged( long position, bool /*userSeek*/ )
+Amarok::TrayIcon::engineTrackPositionChanged( long position, bool userSeek )
 {
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( position )
+    Q_UNUSED( userSeek )
 /*
     mergeLevel = trackLength ? ((baseIcon.height() + 1) * position) / trackLength : -1;
     paintIcon( mergeLevel );
 */
 }
 
-
 void
 Amarok::TrayIcon::paletteChange( const QPalette & op )
 {
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( op )
 /*
     if ( palette().active().highlight() == op.active().highlight() || alternateIcon.isNull() )
         return;
@@ -311,6 +311,9 @@ Amarok::TrayIcon::paintIcon( int mergePixels, bool force )
 void
 Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 {
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( sourcePixmap )
+
     #if 0
     if ( !overlayVisible || !overlay || overlay->isNull() )
         return setPixmap( sourcePixmap ); // @since 3.2
@@ -346,7 +349,8 @@ Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
     #endif
 }
 
-void Amarok::TrayIcon::setupMenu()
+void
+Amarok::TrayIcon::setupMenu()
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track ) return;
@@ -363,7 +367,6 @@ void Amarok::TrayIcon::setupMenu()
             contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
             contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 
-
             m_extraActions = cac->customActions();
 
             //if ( contextMenu()->actions().size() < 5 )
@@ -376,7 +379,6 @@ void Amarok::TrayIcon::setupMenu()
             //readd
             contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
             contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
-
         }
     }
 }

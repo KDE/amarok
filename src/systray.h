@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROKSYSTRAY_H
-#define AMAROKSYSTRAY_H
+#ifndef AMAROK_SYSTRAY_H
+#define AMAROK_SYSTRAY_H
 
 #include "EngineObserver.h" //baseclass
 
@@ -69,4 +69,5 @@ private:
 
 }
 
-#endif
+#endif // AMAROK_SYSTRAY_H
+
