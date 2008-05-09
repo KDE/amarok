@@ -35,12 +35,12 @@
      showgrid="false"
      showguides="true"
      inkscape:snap-global="false"
-     inkscape:zoom="3.2546895"
-     inkscape:cx="1918.4579"
-     inkscape:cy="1151.399"
+     inkscape:zoom="1.1507065"
+     inkscape:cx="1877.6038"
+     inkscape:cy="1185.2868"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:current-layer="svg2"
+     inkscape:current-layer="service_list_item"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="false">
     <inkscape:grid
@@ -1203,34 +1203,8 @@
        x="1595.6666"
        id="tspan9578"
        sodipodi:role="line">buttonbar</tspan></text>
-  <g
-     id="head"
-     transform="translate(-498.46458,595.63953)">
-    <path
-       style="fill:#f8f7f6;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.04944277;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-       d="M 1254.326,85.497401 L 1254.326,106.643 L 1577.57,106.643 L 1577.57,85.497401 L 1254.326,85.497401 z "
-       id="path10133"
-       inkscape:export-filename="/home/lee/amarok-mockup12.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
-    <path
-       inkscape:export-ydpi="90"
-       inkscape:export-xdpi="90"
-       inkscape:export-filename="/home/lee/amarok-mockup12.png"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1"
-       id="path10137"
-       d="M 1254.3262,22.80419 C 1254.3262,10.26446 1255.0188,9.47755 1265.9476,9.47755 L 1565.9491,9.47755 C 1576.8779,9.47755 1577.5706,10.26446 1577.5706,22.80419 L 1577.5706,85.62977 L 1254.3262,85.62977 L 1254.3262,22.80419 z "
-       clip-rule="evenodd" />
-    <path
-       inkscape:export-ydpi="90"
-       inkscape:export-xdpi="90"
-       inkscape:export-filename="/home/lee/amarok-mockup12.png"
-       id="path10139"
-       d="M 1265.952,9.47819 C 1255.0233,9.47819 1254.327,10.13554 1254.327,20.63444 L 1254.327,44.22819 L 1577.577,44.22819 L 1577.577,20.63444 C 1577.577,10.13554 1576.8808,9.47819 1565.952,9.47819 L 1265.952,9.47819 z "
-       style="opacity:0.1;fill:#828586;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1" />
-  </g>
   <path
-     style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.04944277;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     style="fill:#f0f0f0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.04944277;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      d="M 755.447,705.38993 L 755.447,726.53553 L 1079.2381,726.53553 L 1079.2381,705.38993 L 755.447,705.38993 z "
      id="body"
      inkscape:export-filename="/home/lee/amarok-mockup12.png"
@@ -1272,7 +1246,7 @@
      inkscape:export-filename="/home/lee/amarok-mockup12.png"
      id="tail"
      d="M 754.578,764.22022 L 754.578,785.36582 L 1078.3691,785.36582 L 1078.3691,764.22022 L 754.578,764.22022 z "
-     style="fill:#f8f7f6;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.04944277;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
+     style="fill:#e0e0e0;fill-opacity:0.94117647;fill-rule:evenodd;stroke:none;stroke-width:1.04944277;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
   <text
      sodipodi:linespacing="125%"
      transform="scale(1.0283625,0.9724197)"
@@ -1317,12 +1291,12 @@
        clip-rule="evenodd"
        d="M 1697.5841,24.55591 C 1697.5841,12.01618 1698.2767,11.22927 1709.2054,11.22927 L 2009.207,11.22927 C 2020.1358,11.22927 2020.8285,12.01618 2020.8285,24.55591 L 2020.8285,87.38149 L 1697.5841,87.38149 L 1697.5841,24.55591 z "
        id="path10178"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1"
+       style="fill:#f0f0f0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1"
        inkscape:export-filename="/home/lee/amarok-mockup12.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
-       style="fill:#f3f3f3;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1"
+       style="fill:#e0e0e0;fill-opacity:0.94117647;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1"
        d="M 1709.2099,11.217 C 1698.2812,11.217 1697.5849,11.87435 1697.5849,22.37325 L 1697.5849,45.967 L 2020.8349,45.967 L 2020.8349,22.37325 C 2020.8349,11.87435 2020.1387,11.217 2009.2099,11.217 L 1709.2099,11.217 z "
        id="path10180"
        inkscape:export-filename="/home/lee/amarok-mockup12.png"
@@ -1334,7 +1308,7 @@
        d="M 1697.58,87.41716 C 1697.5943,89.05252 1697.6142,90.85794 1697.6142,92.94148 L 1697.6142,107.2662 L 1702.4202,107.491 L 1708.7025,101.51704 L 1714.9846,107.491 L 1721.2667,101.51704 L 1727.5488,107.491 L 1733.8654,101.51704 L 1740.1476,107.491 L 1746.3953,101.51704 L 1752.6775,107.491 L 1758.9597,101.51704 L 1765.2418,107.491 L 1771.524,101.51704 L 1777.8405,107.491 L 1784.1227,101.51704 L 1790.4048,107.491 L 1796.6871,101.51704 L 1802.9349,107.491 L 1809.2169,101.51704 L 1815.4991,107.491 L 1821.8157,101.51704 L 1828.0978,107.491 L 1834.3799,101.51704 L 1840.6622,107.491 L 1846.9443,101.51704 L 1853.2264,107.491 L 1859.5085,101.51704 L 1865.7908,107.491 L 1872.0729,101.51704 L 1878.3551,107.491 L 1884.6372,101.51704 L 1890.9194,107.491 L 1897.2015,101.51704 L 1903.518,107.491 L 1909.8002,101.51704 L 1916.0824,107.491 L 1922.3302,101.51704 L 1928.6124,107.491 L 1934.8945,101.51704 L 1941.211,107.491 L 1947.4931,101.51704 L 1953.7754,107.491 L 1960.0575,101.51704 L 1966.3396,107.491 L 1972.6217,101.51704 L 1978.8695,107.491 L 1985.1862,101.51704 L 1991.4682,107.491 L 1997.7505,101.51704 L 2004.0326,107.491 L 2010.3147,101.51704 L 2016.5969,107.491 L 2020.5103,106.94502 L 2020.1671,92.94148 C 2020.1671,90.83883 2020.1866,89.02053 2020.2013,87.41716 L 1697.58,87.41716 z "
        style="fill:#2e3436;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.16592717;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;filter:url(#filter10251)" />
     <path
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.16592717;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       style="fill:#e0e0e0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.16592717;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
        d="M 1697.58,87.41716 C 1697.5943,89.05252 1697.6142,90.85794 1697.6142,92.94148 L 1697.6142,107.2662 L 1702.4256,107.491 L 1708.7151,101.51704 L 1715.0042,107.491 L 1721.2935,101.51704 L 1727.5826,107.491 L 1733.9065,101.51704 L 1740.1955,107.491 L 1746.4505,101.51704 L 1752.7397,107.491 L 1759.0289,101.51704 L 1765.3183,107.491 L 1771.6075,101.51704 L 1777.9311,107.491 L 1784.2204,101.51704 L 1790.5096,107.491 L 1796.799,101.51704 L 1803.0539,107.491 L 1809.3429,101.51704 L 1815.6323,107.491 L 1821.9559,101.51704 L 1828.2452,107.491 L 1834.5342,101.51704 L 1840.8238,107.491 L 1847.1129,101.51704 L 1853.402,107.491 L 1859.6913,101.51704 L 1865.9807,107.491 L 1872.27,101.51704 L 1878.5591,107.491 L 1884.8483,101.51704 L 1891.1375,107.491 L 1897.4269,101.51704 L 1903.7504,107.491 L 1910.0399,101.51704 L 1916.329,107.491 L 1922.5839,101.51704 L 1928.8732,107.491 L 1935.1623,101.51704 L 1941.486,107.491 L 1947.7753,101.51704 L 1954.0646,107.491 L 1960.3537,101.51704 L 1966.6431,107.491 L 1972.9321,101.51704 L 1979.1871,107.491 L 1985.5107,101.51704 L 1991.8,107.491 L 1998.0893,101.51704 L 2004.3786,107.491 L 2010.6677,101.51704 L 2016.9571,107.491 L 2020.8749,106.94502 L 2020.5312,92.94148 C 2020.5312,90.83883 2020.5508,89.02053 2020.5655,87.41716 L 1697.58,87.41716 z "
        id="path12644" />
   </g>
@@ -2110,12 +2084,12 @@
        clip-rule="evenodd"
        d="M 2223.3094,487.22591 C 2223.3094,474.68618 2224.002,473.89927 2234.9308,473.89927 L 2534.9323,473.89927 C 2545.8611,473.89927 2546.5538,474.68618 2546.5538,487.22591 L 2546.5538,550.05149 L 2223.3094,550.05149 L 2223.3094,487.22591 z "
        id="path2734"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1"
+       style="fill:#f0f0f0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1"
        inkscape:export-filename="/home/lee/amarok-mockup12.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
-       style="opacity:0.1;fill:#828586;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1"
+       style="opacity:1;fill:#e0e0e0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1"
        d="M 2234.9352,473.89991 C 2224.0065,473.89991 2223.3102,474.55726 2223.3102,485.05616 L 2223.3102,508.64991 L 2546.5602,508.64991 L 2546.5602,485.05616 C 2546.5602,474.55726 2545.864,473.89991 2534.9352,473.89991 L 2234.9352,473.89991 z "
        id="path2736"
        inkscape:export-filename="/home/lee/amarok-mockup12.png"
@@ -2142,7 +2116,7 @@
        x="1471.0959"
        y="1052.925" /></text>
   <path
-     style="fill:#f8f7f6;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.04944277;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     style="fill:#e0e0e0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.04944277;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      d="M 753.3824,733.1314 L 753.3824,754.277 L 1077.1735,754.277 L 1077.1735,733.1314 L 753.3824,733.1314 z "
      id="alt_body"
      inkscape:export-filename="/home/lee/amarok-mockup12.png"
@@ -2555,23 +2529,14 @@
        sodipodi:role="line"
        x="1840.7462"
        y="36.077286">Service browser</tspan></text>
-  <rect
-     style="opacity:1;fill:#2e3436;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-     id="rect7100"
-     width="344.83713"
-     height="142.17113"
-     x="1785.509"
-     y="110.70809"
-     rx="10"
-     ry="6.3110271" />
   <g
      id="service_list_item"
-     transform="translate(541.65978,123.22433)">
+     transform="translate(498.20821,103.23661)">
     <path
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
        inkscape:export-filename="/home/lee/amarok-mockup12.png"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#f0f0f0;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path7096"
        d="M 1254.3262,22.80419 C 1254.3262,10.26446 1255.0188,9.47755 1265.9476,9.47755 L 1565.9491,9.47755 C 1576.8779,9.47755 1577.5706,10.26446 1577.5706,22.80419 L 1577.5706,85.62977 L 1254.3262,85.62977 L 1254.3262,22.80419 z "
        clip-rule="evenodd" />
@@ -2580,8 +2545,8 @@
        inkscape:export-xdpi="90"
        inkscape:export-filename="/home/lee/amarok-mockup12.png"
        id="path7098"
-       d="M 1265.952,9.47819 C 1255.0233,9.47819 1254.327,10.13554 1254.327,20.63444 L 1254.327,44.22819 L 1577.577,44.22819 L 1577.577,20.63444 C 1577.577,10.13554 1576.8808,9.47819 1565.952,9.47819 L 1265.952,9.47819 z "
-       style="opacity:0.1;fill:#828586;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1" />
+       d="M 1266.4038,9.9127057 C 1255.5099,9.9127057 1254.8158,10.561836 1254.8158,20.929457 L 1254.8158,44.22819 L 1577.0339,44.22819 L 1577.0339,20.929457 C 1577.0339,10.561836 1576.3398,9.9127057 1565.446,9.9127057 L 1266.4038,9.9127057 z "
+       style="opacity:1;fill:#e0e0e0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1" />
   </g>
   <text
      inkscape:export-ydpi="90"
@@ -2598,4 +2563,30 @@
        sodipodi:role="line"
        x="1806.4214"
        y="92.259117">service_list_item</tspan></text>
+  <g
+     id="head"
+     transform="translate(-498.46458,595.63953)">
+    <path
+       style="fill:#e0e0e0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.04944277;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       d="M 1254.326,85.497401 L 1254.326,106.643 L 1577.57,106.643 L 1577.57,85.497401 L 1254.326,85.497401 z "
+       id="path10133"
+       inkscape:export-filename="/home/lee/amarok-mockup12.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/lee/amarok-mockup12.png"
+       style="fill:#f0f0f0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1"
+       id="path10137"
+       d="M 1254.3262,22.80419 C 1254.3262,10.26446 1255.0188,9.47755 1265.9476,9.47755 L 1565.9491,9.47755 C 1576.8779,9.47755 1577.5706,10.26446 1577.5706,22.80419 L 1577.5706,85.62977 L 1254.3262,85.62977 L 1254.3262,22.80419 z "
+       clip-rule="evenodd" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/lee/amarok-mockup12.png"
+       id="path10139"
+       d="M 1265.952,9.47819 C 1255.0233,9.47819 1254.327,10.13554 1254.327,20.63444 L 1254.327,44.22819 L 1577.577,44.22819 L 1577.577,20.63444 C 1577.577,10.13554 1576.8808,9.47819 1565.952,9.47819 L 1265.952,9.47819 z "
+       style="opacity:1;fill:#e0e0e0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.08181298;stroke-opacity:1" />
+  </g>
 </svg>
