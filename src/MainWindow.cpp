@@ -141,6 +141,7 @@ MainWindow::~MainWindow()
 void MainWindow::init()
 {
     layout()->setContentsMargins( 0, 0, 0, 0 );
+    layout()->setSpacing( 0 );
     DEBUG_BLOCK
 
     //this function is necessary because Amarok::actionCollection() returns our actionCollection
@@ -148,6 +149,8 @@ void MainWindow::init()
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
 
     m_controlBar = new MainToolbar( this );
+    m_controlBar->layout()->setContentsMargins( 0, 0, 0, 0 );
+    m_controlBar->layout()->setSpacing( 0 );
 
     PERF_LOG( "Create sidebar" )
     m_browsers = new SideBar( this, new KVBox );
@@ -175,8 +178,10 @@ void MainWindow::init()
     connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setContentsMargins( 1, 1, 1, 1 );
-    mainLayout->setSpacing( 1 );
+    //mainLayout->setContentsMargins( 1, 1, 1, 1 );
+    //mainLayout->setSpacing( 1 );
+    mainLayout->setContentsMargins( 0, 0, 0, 0 );   //
+    mainLayout->setSpacing( 0 );
 
     QWidget *centralWidget = new QWidget( this );
     centralWidget->setLayout( mainLayout );

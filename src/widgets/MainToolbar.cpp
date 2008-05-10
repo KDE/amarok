@@ -52,8 +52,8 @@ MainToolbar::MainToolbar( QWidget * parent )
     setMaximumSize( 20000, 67 );
     setMinimumSize( 200, 67 );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    setContentsMargins(0,0,0,2);
-    layout()->setContentsMargins(0,0,0,5);
+    setContentsMargins(0,0,0,0);
+    layout()->setContentsMargins(0,0,0,0);
 
     KVBox *aVBox     = new KVBox( this );
     aVBox->setMaximumSize( 50000, 60 );
