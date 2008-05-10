@@ -13,21 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'libosc'
-
-SUSEPATH     = NEONPATH + "/distros/suse"
-SUSEBASEPATH = ROOTPATH + "/#{DATE}-suse"
-PACKAGES     = ["qt","strigi","taglib","kdelibs","kdebase-runtime"]
-
-class UploadSuse
-  def initialize()
-    def BaseDir()
-      Dir.chdir(SUSEBASEPATH)
+module Osc
+  class Osc
+    def initialize()
+      # look for checkout - create if not available
     end
 
-    Execute()
-  end
+    def OscAdd()
+    end
 
-  def Execute()
+    def OscCommit()
+    end
+
+    def TarRename()
+    end
   end
 end
