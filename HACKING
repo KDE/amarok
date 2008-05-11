@@ -48,6 +48,7 @@ Example:
  | }
 
 Header includes should be listed in the following order:
+    - Own Header
     - Amarok includes
     - KDE includes
     - Qt includes
@@ -159,7 +160,7 @@ See: http://www.parashift.com/c++-faq-lite/const-correctness.html
 
 Example:
 
- | bool 
+ | bool
  | MyClass::isValidFile( const QString& path ) const
  | {
  |     const bool valid = QFile::exist( path );
@@ -205,7 +206,7 @@ Usage of Amarok::config()
 We provide this method for convenience, but it is important to use it properly. By
 inspection, we can see that we may produce very obscure bugs in the wrong case:
 
- | KConfig 
+ | KConfig
  | *config( const QString &group )
  | {
  |    //Slightly more useful config() that allows setting the group simultaneously
@@ -214,7 +215,7 @@ inspection, we can see that we may produce very obscure bugs in the wrong case:
  | }
 
 Take the following example:
- 
+
  | void
  | f1()
  | {
