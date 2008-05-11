@@ -23,7 +23,7 @@
 
 #include "amarok_export.h"
 #include "Amarok.h"
-#include "browserToolBar.h"
+#include "BrowserToolBar.h"
 #include "medium.h"
 #include "Meta.h"
 #include "PluginManager.h"
@@ -42,7 +42,6 @@
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QWidget>
-
 
 class MediaBrowser;
 class MediaDevice;
@@ -298,7 +297,7 @@ class MediaBrowser : public KVBox
         KVBox*           m_configBox;
         KComboBox*       m_configPluginCombo;
         KComboBox*       m_deviceCombo;
-        Browser::ToolBar*m_toolbar;
+        Browser::ToolBar *m_toolbar;
         typedef QMap<QString, MediaItem*> ItemMap;
         mutable QMutex   m_itemMapMutex;
         ItemMap          m_itemMap;

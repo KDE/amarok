@@ -31,7 +31,6 @@
 #include "context/DataEngineManager.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "debug.h"
-#include "editfilterdialog.h"
 #include "EngineController.h" //for actions in ctor
 #include "filebrowser/FileBrowser.h"
 #include "k3bexporter.h"
@@ -303,15 +302,6 @@ void MainWindow::slotShrinkBrowsers( int index ) const
         m_splitter->setSizes( sizes );
     }
 }
-
-// void MainWindow::slotEditFilter() //SLOT
-// {
-//     EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
-//     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
-//     if( fd->exec() )
-//         m_searchWidget->lineEdit()->setText( fd->filter() );
-//     delete fd;
-// }
 
 void MainWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
 {

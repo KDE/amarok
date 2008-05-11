@@ -25,7 +25,7 @@
 #include "collection/BlockingQuery.h"
 #include "collection/Collection.h"
 #include "CollectionManager.h"
-#include "browserToolBar.h"
+#include "BrowserToolBar.h"
 #include "debug.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "meta/Meta.h"

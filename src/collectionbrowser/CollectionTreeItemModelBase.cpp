@@ -27,7 +27,7 @@
 #include "CollectionManager.h"
 #include "CollectionTreeItem.h"
 #include "debug.h"
-#include "expression.h"
+#include "Expression.h"
 #include "QueryMaker.h"
 
 #include <KIcon>

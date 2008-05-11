@@ -385,13 +385,13 @@ set(amaroklib_LIB_SRCS
     deletedialog.cpp
     deviceconfiguredialog.cpp
     directorylist.cpp
-    editfilterdialog.cpp
+    EditFilterDialog.cpp
     EngineController.cpp
     EngineObserver.cpp
     equalizergraph.cpp
     equalizerpresetmanager.cpp
     equalizersetup.cpp
-    expression.cpp
+    Expression.cpp
     fht.cpp
     filebrowser/FileBrowser.cpp
     filebrowser/kbookmarkhandler.cpp

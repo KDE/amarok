@@ -11,7 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "SearchWidget.h"
-#include "editfilterdialog.h"
+#include "EditFilterDialog.h"
 
 #include <QVBoxLayout>
 

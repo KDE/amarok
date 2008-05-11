@@ -17,7 +17,7 @@
   Boston, MA 02110-1301, USA.
 */
 
-#include "expression.h"
+#include "Expression.h"
 #include "debug.h"
 
 ExpressionParser::ExpressionParser( const QString &expression )
