@@ -555,7 +555,7 @@ void MagnatuneStore::moodyTracksReady( Meta::TrackList tracks )
 
 QString MagnatuneStore::messages()
 {
-    QString text = i18n( "The Magnatune.com service accepts the following messages: \n\n\taddMoodyTracks mood count: Adds a number of ranom tracks with the specified mood to the playlist. the mood argument _must_ have spaces escaped with %%20" );
+    QString text = i18n( "The Magnatune.com service accepts the following messages: \n\n\taddMoodyTracks mood count: Adds a number of random tracks with the specified mood to the playlist. The mood argument _must_ have spaces escaped with %%20" );
 
     return text;
 }
