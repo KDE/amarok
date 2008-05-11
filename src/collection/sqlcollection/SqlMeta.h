@@ -23,8 +23,10 @@
 #include "Meta.h"
 
 #include <QByteArray>
+#include <QMap>
 #include <QMutex>
 #include <QStringList>
+#include <QVariant>
 
 class SqlCollection;
 
@@ -157,8 +159,7 @@ class SqlTrack : public Meta::Track
         Meta::YearPtr m_year;
 
         bool m_batchUpdate;
-        class MetaCache;
-        MetaCache *m_cache;
+        QVariantMap m_cache;
 };
 
 class SqlArtist : public Meta::Artist
