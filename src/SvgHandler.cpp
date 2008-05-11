@@ -38,7 +38,7 @@
 class SvgHandler::Private
 {
     public:
-        QHash<QString,QSvgRenderer*> renderers;
+        QHash<QString,KSvgRenderer*> renderers;
         QReadWriteLock lock;
 
         bool loadSvg( const QString& name );
@@ -82,7 +82,7 @@ bool SvgHandler::Private::loadSvg( const QString& name )
     else
         svgFilename = name;
     
-    QSvgRenderer *renderer = new QSvgRenderer( The::svgTinter()->tint( svgFilename ).toAscii() );
+    KSvgRenderer *renderer = new KSvgRenderer( The::svgTinter()->tint( svgFilename ).toAscii() );
 
     if ( ! renderer->isValid() )
     {
@@ -99,7 +99,7 @@ bool SvgHandler::Private::loadSvg( const QString& name )
     return true;
 }
 
-QSvgRenderer* SvgHandler::getRenderer( const QString& name )
+KSvgRenderer* SvgHandler::getRenderer( const QString& name )
 {
     QReadLocker readLocker( &d->lock );
     if( ! d->renderers[name] )
@@ -108,14 +108,14 @@ QSvgRenderer* SvgHandler::getRenderer( const QString& name )
         if( ! d->loadSvg( name ) )
         {
             QWriteLocker writeLocker( &d->lock );
-            d->renderers[name] = new QSvgRenderer();
+            d->renderers[name] = new KSvgRenderer();
         }
         readLocker.relock();
     }
     return d->renderers[name];
 }
 
-QSvgRenderer * SvgHandler::getRenderer()
+KSvgRenderer * SvgHandler::getRenderer()
 {
     return getRenderer( d->themeFile );
 }

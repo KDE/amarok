@@ -23,7 +23,7 @@
 
 #include <QPixmap>
 #include <QString>
-#include <QSvgRenderer>
+#include <KSvgRenderer>
 
 #include "amarok_export.h"
 
@@ -39,8 +39,8 @@ public:
 
     ~SvgHandler();
 
-    QSvgRenderer* getRenderer( const QString &name );
-    QSvgRenderer* getRenderer();
+    KSvgRenderer* getRenderer( const QString &name );
+    KSvgRenderer* getRenderer();
     QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
 
     /**
