@@ -373,7 +373,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         //debug() << "Resizing active track overlay";
 
         QPixmap background = The::svgHandler()->renderSvg(
-                                         "amarok/images/default-template.svg",
+                                         
                                         "active_overlay",
                                         (int)trackRect.width(),
                                         (int)trackRect.height(),
@@ -726,7 +726,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
 {
     QRectF trackRect = option->rect;
     trackRect.setHeight( trackRect.height() - 2 );
-    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "track", (int)trackRect.width(), (int)trackRect.height(), "track" ) );
+    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "track", (int)trackRect.width(), (int)trackRect.height(), "track" ) );
 
     //paint cover
     QPixmap albumPixmap;
@@ -776,7 +776,6 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
                              static_cast<int>( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2 ),
                              (int)lineTwoY,
                              The::svgHandler()->renderSvg(
-                                        "amarok/images/default-template.svg",
                                         "active_overlay",
                                         static_cast<int>( trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 4 ) ),
                                         (int)s_fm->height(),
@@ -792,7 +791,6 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
                              static_cast<int>(SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2),
                              (int)lineTwoY,
                              The::svgHandler()->renderSvg(
-                                         "amarok/images/default-template.svg",
                                         "selection",
                                         trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 4 ),
                                         (int)s_fm->height(),
@@ -808,7 +806,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN+ 2, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
     QRectF headRect = option->rect;
 
-    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "head", (int)headRect.width(), (int)headRect.height(), "head" ) );
+    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "head", (int)headRect.width(), (int)headRect.height(), "head" ) );
 
     //paint collapse button
     QString collapseString;
@@ -826,7 +824,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
         painter->drawPixmap(
                              (int)( option->rect.width() - ( 16 + MARGIN ) ),
                              (int)MARGIN,
-                              The::svgHandler()->renderSvg( "amarok/images/default-template.svg", collapseString, 16, 16, collapseString )
+                              The::svgHandler()->renderSvg( collapseString, 16, 16, collapseString )
                            );
 
     //paint cover
@@ -849,7 +847,6 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
                              (int)trackRect.x() + 5,
                              (int)trackRect.y() + 2,
                              The::svgHandler()->renderSvg(
-                                             "amarok/images/default-template.svg",
                                         "active_overlay",
                                         (int)trackRect.width() - 10 ,
                                         (int)trackRect.height() - 1,
@@ -889,7 +886,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
                              static_cast<int>(trackRect.x() + 5),
                              static_cast<int>(trackRect.top() + 2),
                              The::svgHandler()->renderSvg(
-                                             "amarok/images/default-template.svg",
+                                             
                                         "selection",
                                         static_cast<int>( trackRect.width() - 10 ),
                                         static_cast<int>(trackRect.height() - 1),
@@ -906,7 +903,7 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
     QRectF headRect = QRectF( option->rect.x(), option->rect.y(), option->rect.width(), option->rect.height() - 2 );
 
     //paint background
-    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "collapsed_head", (int)headRect.width(), (int)headRect.height(), "collapsed_head" ) );
+    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "collapsed_head", (int)headRect.width(), (int)headRect.height(), "collapsed_head" ) );
 
     //paint collapse button
     QString collapseString;
@@ -920,7 +917,7 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
     else
         collapseString = "expand_button";
 
-    painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", collapseString, 16, 16, collapseString ) );
+    painter->drawPixmap( (int)( option->rect.width() - ( 16 + MARGIN ) ), (int)MARGIN, The::svgHandler()->renderSvg( collapseString, 16, 16, collapseString ) );
 
     //paint cover:
     QPixmap albumPixmap;
@@ -966,17 +963,17 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
     QRectF trackRect = option->rect;
 
     if ( alternate )
-        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "body", (int)trackRect.width(), (int)trackRect.height(), "body" ) );
+        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "body", (int)trackRect.width(), (int)trackRect.height(), "body" ) );
     else
-        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "alt_body", (int)trackRect.width(), (int)trackRect.height(), "alt_body" ) );
+        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "alt_body", (int)trackRect.width(), (int)trackRect.height(), "alt_body" ) );
 
     //draw alternate background if needed
     /*if ( alternate )
-        painter->drawPixmap( 5, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "body_background", (int)trackRect.width() - 10, (int)trackRect.height(), "body_background" ) );
+        painter->drawPixmap( 5, 0, The::svgHandler()->renderSvg( "body_background", (int)trackRect.width() - 10, (int)trackRect.height(), "body_background" ) );
 */
     //draw active track marker if needed
     if ( active )
-        painter->drawPixmap( 5, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "active_overlay", (int)trackRect.width() - 10 , (int)trackRect.height(), "active_overlay" ) );
+        painter->drawPixmap( 5, 0, The::svgHandler()->renderSvg( "active_overlay", (int)trackRect.width() - 10 , (int)trackRect.height(), "active_overlay" ) );
 
 
     //make sure that the top text items are not shown
@@ -993,7 +990,7 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
                              static_cast<int>( trackRect.x() + 5 ),
                              (int)trackRect.top(),
                              The::svgHandler()->renderSvg(
-                                        "amarok/images/default-template.svg",
+                                        
                                         "selection",
                                         static_cast<int>( trackRect.width() - 10 ),
                                         (int)trackRect.height(),
@@ -1008,12 +1005,12 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
    QRectF trackRect = option->rect;
    trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
 
-   //painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "tail", (int)trackRect.width(), (int)trackRect.height(), "tail" ) );
+   //painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "tail", (int)trackRect.width(), (int)trackRect.height(), "tail" ) );
 
    if ( alternate )
-       painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "body", (int)trackRect.width(), (int)trackRect.height(), "body" ) );
+       painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "body", (int)trackRect.width(), (int)trackRect.height(), "body" ) );
    else
-       painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "alt_body", (int)trackRect.width(), (int)trackRect.height(), "alt_body" ) );
+       painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "alt_body", (int)trackRect.width(), (int)trackRect.height(), "alt_body" ) );
 
     /*if ( alternate )
     {
@@ -1021,7 +1018,7 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
         QRectF tempRect = trackRect;
         tempRect.setWidth( tempRect.width() - 10 );
         tempRect.setHeight( tempRect.height() - 4 );
-        painter->drawPixmap( 5, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "body_background", (int)tempRect.width(), (int)tempRect.height(), "body_background" ) );
+        painter->drawPixmap( 5, 0, The::svgHandler()->renderSvg( "body_background", (int)tempRect.width(), (int)tempRect.height(), "body_background" ) );
 
     }*/
 
@@ -1031,7 +1028,7 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
                              5,
                              0,
                              The::svgHandler()->renderSvg(
-                                             "amarok/images/default-template.svg",
+                                             
                                         "active_overlay",
                                         static_cast<int>( trackRect.width() - 10 ),
                                         static_cast<int>( trackRect.height() - 3),
@@ -1053,7 +1050,7 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
                              static_cast<int>( trackRect.x() + 5 ),
                             (int)trackRect.top(),
                             The::svgHandler()->renderSvg(
-                                       "amarok/images/default-template.svg",
+                                       
                                        "selection",
                                        static_cast<int>( trackRect.width() - 10 ),
                                        static_cast<int>( trackRect.height() - 4 ),
@@ -1084,7 +1081,7 @@ void Playlist::GraphicsItem::handleActiveOverlay( QRectF rect, bool active )
             m_items->foreground->setPos( 0.0, rect.top() );
             //m_items->foreground->setZValue( 10.0 );
 
-            m_items->foreground->setPixmap( The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "active_overlay", (int)rect.width(), (int)rect.height(), "active_overlay" ) );
+            m_items->foreground->setPixmap( The::svgHandler()->renderSvg( "active_overlay", (int)rect.width(), (int)rect.height(), "active_overlay" ) );
             m_items->foreground->show();
             //debug() << "Done";
         }
@@ -1126,7 +1123,7 @@ Meta::TrackPtr Playlist::GraphicsItem::internalTrack()
 
 void Playlist::GraphicsItem::paletteChange()
 {
-    The::svgHandler()->reTint( "amarok/images/default-template.svg" );
+    The::svgHandler()->reTint( );
 
     //make sure this image is re rendered
     if ( m_items && m_items->foreground )

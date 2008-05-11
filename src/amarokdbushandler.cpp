@@ -43,6 +43,7 @@
 #include "ProgressSlider.h"
 #include "scriptmanager.h"
 #include "ContextStatusBar.h"
+#include "SvgHandler.h"
 #include "TheInstances.h"
 
 #include <QFile>
@@ -584,6 +585,11 @@ namespace Amarok
         The::engineController()->increaseVolume();
     }
 
+    void Amarok::DbusPlayerHandler::setThemeFile( const QString & url )
+    {
+        The::svgHandler()->setThemeFile( url );
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DbusPlaylistHandler
 /////////////////////////////////////////////////////////////////////////////////////
@@ -1045,5 +1051,7 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
 //     }
 
 } //namespace Amarok
+
+
 
 #include "amarokdbushandler.moc"

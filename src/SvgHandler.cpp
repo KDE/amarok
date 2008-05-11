@@ -20,7 +20,9 @@
  
 #include "SvgHandler.h"
 
+#include "App.h"
 #include "debug.h"
+#include "MainWindow.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"
 
@@ -40,6 +42,8 @@ class SvgHandler::Private
         QReadWriteLock lock;
 
         bool loadSvg( const QString& name );
+        QString themeFile;
+        bool customTheme;
 };
 
 class SvgHandlerSingleton
@@ -59,6 +63,9 @@ SvgHandler * SvgHandler::instance()
 SvgHandler::SvgHandler()
     : d( new Private() )
 {
+    //use default theme
+    d->themeFile = "amarok/images/default-template.svg";
+    d->customTheme = false;
 }
 
 SvgHandler::~SvgHandler()
@@ -68,7 +75,12 @@ SvgHandler::~SvgHandler()
 
 bool SvgHandler::Private::loadSvg( const QString& name )
 {
-    QString svgFilename = KStandardDirs::locate( "data", name );
+    QString svgFilename;
+    
+    if ( !customTheme )
+        svgFilename = KStandardDirs::locate( "data", name );
+    else
+        svgFilename = name;
     
     QSvgRenderer *renderer = new QSvgRenderer( The::svgTinter()->tint( svgFilename ).toAscii() );
 
@@ -101,6 +113,11 @@ QSvgRenderer* SvgHandler::getRenderer( const QString& name )
         readLocker.relock();
     }
     return d->renderers[name];
+}
+
+QSvgRenderer * SvgHandler::getRenderer()
+{
+    return getRenderer( d->themeFile );
 }
 
 QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
@@ -138,13 +155,42 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
     return pixmap;
 }
 
-void SvgHandler::reTint( const QString &name )
+QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, const QString & element)
+{
+    return renderSvg( d->themeFile, keyname, width, height, element );
+}
+
+void SvgHandler::reTint( )
 {
     The::svgTinter()->init();
-    d->loadSvg( name );
+    d->loadSvg( d->themeFile );
 }
+
+QString SvgHandler::themeFile()
+{
+    return d->themeFile;
+}
+
+void SvgHandler::setThemeFile( const QString & themeFile )
+{
+    DEBUG_BLOCK
+    debug() << "got new theme file: " << themeFile;
+    d->themeFile = themeFile;
+    d->customTheme = true;
+    reTint();
+    
+    //redraw entire app....
+    QPixmapCache::clear();
+    App::instance()->mainWindow()->update();
+}
+
+
 
 namespace The {
     AMAROK_EXPORT SvgHandler* svgHandler() { return SvgHandler::instance(); }
 }
+
+
+
+
 

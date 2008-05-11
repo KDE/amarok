@@ -40,8 +40,22 @@ public:
     ~SvgHandler();
 
     QSvgRenderer* getRenderer( const QString &name );
+    QSvgRenderer* getRenderer();
     QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
-    void reTint( const QString &name );
+
+    /**
+     * OVerloaded function that uses the current theme
+     * @param keyname the name of the key to save in the cache
+     * @param width Widht of the resulting pixmap
+     * @param height Height of the resulting pixmap
+     * @param element The theme element to render ( if none the entire svg is rendered )
+     * @return The svg element/file rendered into a pixmap
+     */
+    QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString() );
+    void reTint( );
+
+    QString themeFile();
+    void setThemeFile( const QString  & themeFile );
 
 private:
     friend class SvgHandlerSingleton;

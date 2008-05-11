@@ -182,9 +182,9 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     //m_renderer->render( painter, rect );
     
     debug() << "drawing background in " << rect;
-    painter->drawPixmap(0, 0, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "context_wallpaper", rect.width(), rect.height(), "context_wallpaper" ) );
+    painter->drawPixmap(0, 0, The::svgHandler()->renderSvg( "context_wallpaper", rect.width(), rect.height(), "context_wallpaper" ) );
 
-    painter->drawPixmap(rect.width() - 320, rect.height() - 223, The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "amarok_logo", 300, 203, "amarok_logo" ) );
+    painter->drawPixmap(rect.width() - 320, rect.height() - 223, The::svgHandler()->renderSvg( "amarok_logo", 300, 203, "amarok_logo" ) );
 
     painter->restore();
 
@@ -284,7 +284,7 @@ void ColumnApplet::jobDone()
 
 void ColumnApplet::paletteChange()
 {
-    The::svgHandler()->reTint( "desktoptheme/default/widgets/amarok-wallpaper.svg" );
+    The::svgHandler()->reTint();
     update( boundingRect() );
 }
 

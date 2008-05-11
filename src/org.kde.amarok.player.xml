@@ -179,6 +179,9 @@
     <method name="setScore" >
       <arg name="score" type="i" direction="in"/>
     </method>
+    <method name="setThemeFile" >
+        <arg name="url" type="s" direction="in"/>
+    </method>
     <method name="setVolume" >
       <arg name="volume" type="i" direction="in"/>
     </method>

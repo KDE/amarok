@@ -57,7 +57,7 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
 
-    QPixmap background = The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "service_list_item", width, height - 4, "service_list_item" );
+    QPixmap background = The::svgHandler()->renderSvg( "service_list_item", width, height - 4, "service_list_item" );
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
@@ -110,7 +110,7 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
 
 void ServiceListDelegate::paletteChange()
 {
-    The::svgHandler()->reTint( "amarok/images/default-template.svg" );
+    The::svgHandler()->reTint( );
 }
 
 

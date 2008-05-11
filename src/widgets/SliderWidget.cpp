@@ -248,7 +248,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         background.fill( Qt::transparent );
         QPainter pt( &background );
 
-        QSvgRenderer *renderer = The::svgHandler()->getRenderer( "amarok/images/default-template.svg" );
+        QSvgRenderer *renderer = The::svgHandler()->getRenderer();
 
         renderer->render( &pt, "slider_center", QRectF( side, 0, m_sliderWidth - side * 2, m_sliderHeight ) );
 
@@ -282,7 +282,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         icon.fill( Qt::transparent );
         QPainter pt( &icon );
 
-        The::svgHandler()->getRenderer( "amarok/images/default-template.svg" )->render( &pt, "volume_icon",  QRectF( 0, 0, m_iconWidth, m_iconHeight ) );
+        The::svgHandler()->getRenderer()->render( &pt, "volume_icon",  QRectF( 0, 0, m_iconWidth, m_iconHeight ) );
 
         QPixmapCache::insert(key, icon);
     }
@@ -305,7 +305,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 void
 Amarok::VolumeSlider::paletteChange( const QPalette& )
 {
-    The::svgHandler()->reTint( "amarok/images/sliders.svg" );
+    The::svgHandler()->reTint();
 }
 
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
@@ -390,7 +390,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
         background.fill( Qt::transparent );
         QPainter pt( &background );
 
-        QSvgRenderer* renderer = The::svgHandler()->getRenderer( "amarok/images/default-template.svg" );
+        QSvgRenderer* renderer = The::svgHandler()->getRenderer();
         renderer->render( &pt, "slider_left", QRectF( 0, 0, side, m_sliderHeight ) );
         renderer->render( &pt, "slider_center",  QRectF( side, 0, width() - side *2, m_sliderHeight ) );
         renderer->render( &pt, "slider_right", QRectF( width() - side, 0, side, m_sliderHeight ) );
@@ -402,7 +402,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     foreground.fill( Qt::transparent );
     QPainter pt2( &foreground );
 
-    QSvgRenderer* renderer = The::svgHandler()->getRenderer( "amarok/images/default-template.svg" );
+    QSvgRenderer* renderer = The::svgHandler()->getRenderer();
     QPixmap foregroundLeft( side, m_sliderHeight );
     QString foregroundLeftKey = QString( "progress-foreground-left:%1X%2" ).arg( side ).arg( m_sliderHeight );
     QRectF foregroundLeftRect( 0, 0, side, m_sliderHeight );
@@ -440,7 +440,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 void
 Amarok::TimeSlider::paletteChange( const QPalette& )
 {
-    The::svgHandler()->reTint( "amarok/images/default-template.svg" );
+    The::svgHandler()->reTint();
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)

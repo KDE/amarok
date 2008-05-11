@@ -269,7 +269,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     QPainter p( this );
     p.initFrom( this );
 
-    QPixmap background = The::svgHandler()->renderSvg( "amarok/images/default-template.svg", "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" );
+    QPixmap background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" );
     p.drawPixmap( 0, 0, background );
 
 
@@ -317,7 +317,7 @@ QColor SideBarButton::blendColors( const QColor& color1, const QColor& color2, i
 
 void SideBarButton::paletteChange(const QPalette & /*oldPalette*/)
 {
-    The::svgHandler()->reTint( "amarok/images/sidebar_button.svg" );
+    The::svgHandler()->reTint();
     repaint( 0, 0, -1,-1 );
 }
 

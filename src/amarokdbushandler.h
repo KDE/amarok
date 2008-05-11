@@ -101,6 +101,7 @@ class DbusPlayerHandler : public QObject
       virtual void setBpmByPath( const QString &url, float bpm );
       virtual void setRating( int rating );
       virtual void setRatingByPath( const QString &url, int rating );
+      virtual void setThemeFile( const QString &url );
       virtual void setVolume( int );
       virtual void setVolumeRelative( int );
       virtual void showBrowser( QString browser );
