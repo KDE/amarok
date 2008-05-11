@@ -24,17 +24,12 @@ install(
         smallstar.png
         icons/svg/sources.svg
         OsdBackground.svg
-        service-browser-element.svg
-        sidebar_button.svg
         splash_screen.jpg
         star.png
-        toolbar-background.svg
-        playlist_items.svg
         emblem-magnatune.png
         emblem-lastfm.png
         emblem-jamendo.png
         emblem-default.png
-        sliders.svg
         pud_items.svg
         default-template.svgz
         service_info_frontpage_bg.png
