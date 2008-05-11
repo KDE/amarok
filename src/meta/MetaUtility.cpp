@@ -18,14 +18,21 @@
 
 #include "MetaUtility.h"
 
+#include "debug.h"
 #include "Meta.h"
 #include "meta/Capability.h"
 #include "meta/EditCapability.h"
 
 #include <QChar>
+#include <QFile>
 
 #include <klocale.h>
 #include <kio/global.h>
+
+// Taglib
+#include <taglib/tag.h>
+#include <tlist.h>
+#include <tstring.h>
 
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
         static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
@@ -94,7 +101,7 @@ Meta::Field::mapFromTrack( const Meta::Track *track )
     map.insert( Meta::Field::SCORE, QVariant( track->score() ) );
     map.insert( Meta::Field::PLAYCOUNT, QVariant( track->playCount() ) );
     map.insert( Meta::Field::LAST_PLAYED, QVariant( track->lastPlayed() ) );
-    
+
     return map;
 }
 
@@ -138,6 +145,70 @@ Meta::Field::updateTrack( Meta::Track *track, const QVariantMap &metadata )
     ec->setYear( year );
 
     ec->endMetaDataUpdate();
+}
+
+void
+Meta::Field::writeFields( const QString &filename, const QVariantMap &changes )
+{
+    #ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t encodedName = reinterpret_cast<const wchar_t *>(filename.utf16());
+    #else
+    QByteArray fileName = QFile::encodeName( fileName );
+    const char * encodedName = fileName.constData(); // valid as long as fileName exists
+    #endif
+
+    TagLib::FileRef f = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
+    return writeFields( f, changes );
+}
+
+void
+Meta::Field::writeFields( TagLib::FileRef file, const QVariantMap &changes )
+{
+    DEBUG_BLOCK
+   debug() << "CHANGES: " << changes;
+    if( file.isNull() || changes.isEmpty() )
+        return;
+    DEBUG_LINE_INFO
+    TagLib::Tag *tag = file.tag();
+    if( changes.contains( Meta::Field::TITLE ) )
+    {
+        const TagLib::String title = QStringToTString( changes.value( Meta::Field::TITLE ).toString() );
+        tag->setTitle( title );
+    }
+
+    if( changes.contains( Meta::Field::ALBUM ) )
+    {
+        const TagLib::String album = QStringToTString( changes.value( Meta::Field::ALBUM ).toString() );
+        tag->setAlbum( album );
+    }
+
+    if( changes.contains( Meta::Field::ARTIST ) )
+    {
+        const TagLib::String artist = QStringToTString( changes.value( Meta::Field::ARTIST ).toString() );
+        tag->setArtist( artist );
+    }
+
+    if( changes.contains( Meta::Field::COMMENT ) )
+    {
+        const TagLib::String comment = QStringToTString( changes.value( Meta::Field::COMMENT ).toString() );
+        tag->setComment( comment );
+    }
+
+    if( changes.contains( Meta::Field::GENRE ) )
+    {
+        const TagLib::String genre = QStringToTString( changes.value( Meta::Field::GENRE ).toString() );
+        tag->setGenre( genre );
+    }
+    if( changes.contains( Meta::Field::YEAR ) )
+    {
+        const unsigned int year = changes.value( Meta::Field::YEAR ).toUInt();
+        tag->setYear( year );
+    }
+    if( changes.contains( Meta::Field::TRACKNUMBER ) )
+    {
+        const unsigned int trackNumber = changes.value( Meta::Field::YEAR ).toUInt();
+        tag->setTrack( trackNumber );
+    }
 }
 
 QString

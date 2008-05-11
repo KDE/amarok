@@ -60,7 +60,7 @@ Track::Track( const KUrl &url )
     , d( new Track::Private( this ) )
 {
 #ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t encodedName = reinterpret_cast<const wchar_t *>(filename.utf16());
+    const wchar_t encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
 #else
     QByteArray fileName = QFile::encodeName( url.path() );
     const char * encodedName = fileName.constData(); // valid as long as fileName exists
@@ -71,7 +71,7 @@ Track::Track( const KUrl &url )
     {
         d->tag = d->fileRef.tag();
     }
-    d->updateMetaData();
+    d->readMetaData();
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QPointer<MetaFile::Track::Private>( d ) ) );
     d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( QPointer<MetaFile::Track::Private>( d ) ) );
     d->genre = Meta::GenrePtr( new MetaFile::FileGenre( QPointer<MetaFile::Track::Private>( d ) ) );
@@ -188,39 +188,38 @@ Track::year() const
 void
 Track::setAlbum( const QString &newAlbum )
 {
+    DEBUG_BLOCK
+    d->changes.insert( Meta::Field::ALBUM, QVariant( newAlbum ) );
+    debug() << "CHANGES HERE: " << d->changes;
     if( !d->batchUpdate )
     {
         d->m_data.album = newAlbum;
-        d->tag->setAlbum( QStringToTString( newAlbum ) );
+        d->writeMetaData();
         notifyObservers();
     }
-    else
-        AMAROK_NOTIMPLEMENTED
 }
 
 void
 Track::setArtist( const QString& newArtist )
 {
+    d->changes.insert( Meta::Field::ARTIST, QVariant( newArtist ) );
     if( !d->batchUpdate )
     {
         d->m_data.artist = newArtist;
-        d->tag->setArtist( QStringToTString( newArtist ) );
+        d->writeMetaData();
         notifyObservers();
     }
-    else
-        AMAROK_NOTIMPLEMENTED
 }
 
 void
 Track::setGenre( const QString& newGenre )
 {
+    d->changes.insert( Meta::Field::GENRE, QVariant( newGenre ) );
     if( !d->batchUpdate )
     {
-        d->tag->setGenre( QStringToTString( newGenre ) );
+        d->writeMetaData();
         notifyObservers();
     }
-    else
-        AMAROK_NOTIMPLEMENTED
 }
 
 void
@@ -240,10 +239,11 @@ Track::setComposer( const QString& newComposer )
 void
 Track::setYear( const QString& newYear )
 {
+    d->changes.insert( Meta::Field::YEAR, QVariant( newYear ) );
     if( !d->batchUpdate )
     {
         d->m_data.year = newYear.toInt();
-        d->tag->setYear( newYear.toInt() );
+        d->writeMetaData();
         notifyObservers();
     }
 }
@@ -251,12 +251,11 @@ Track::setYear( const QString& newYear )
 void
 Track::setTitle( const QString &newTitle )
 {
-    DEBUG_BLOCK
+    d->changes.insert( Meta::Field::TITLE, QVariant( newTitle ) );
     if( !d->batchUpdate )
     {
-        DEBUG_LINE_INFO
         d->m_data.title = newTitle;
-        d->tag->setTitle( QStringToTString( newTitle ) );
+        d->writeMetaData();
         notifyObservers();
     }
 }
@@ -278,10 +277,11 @@ Track::comment() const
 void
 Track::setComment( const QString& newComment )
 {
+    d->changes.insert( Meta::Field::COMMENT, QVariant( newComment ) );
     if( !d->batchUpdate )
     {
         d->m_data.comment = newComment;
-        d->tag->setComment( QStringToTString( newComment ) );
+        d->writeMetaData();
         notifyObservers();
     }
 }
@@ -323,10 +323,11 @@ Track::trackNumber() const
 void
 Track::setTrackNumber( int newTrackNumber )
 {
+    d->changes.insert( Meta::Field::TRACKNUMBER, QVariant( newTrackNumber ) );
     if( !d->batchUpdate )
     {
         d->m_data.trackNumber = newTrackNumber;
-        d->tag->setTrack( newTrackNumber );
+        d->writeMetaData();
         notifyObservers();
     }
 }
@@ -338,6 +339,7 @@ Track::discNumber() const
     {
         return d->m_data.discNumber;
     }
+    return 0;
 }
 
 void
@@ -426,20 +428,17 @@ Track::beginMetaDataUpdate()
 void
 Track::endMetaDataUpdate()
 {
-    AMAROK_NOTIMPLEMENTED
-//     d->metaInfo.applyChanges();
+ DEBUG_LINE_INFO
+    debug() << "CHANGES HERE: " << d->changes;
+    d->writeMetaData();
     d->batchUpdate = false;
     notifyObservers();
-
-
 }
 
 void
 Track::abortMetaDataUpdate()
 {
-    AMAROK_NOTIMPLEMENTED
-    //KFileMetaInfo does not have a method to reset the items
-//     d->metaInfo = KFileMetaInfo( d->url.path() );
+    d->changes.clear();
     d->batchUpdate = false;
 }
 

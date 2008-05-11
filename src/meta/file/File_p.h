@@ -99,14 +99,16 @@ public:
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
 
+    void readMetaData();
+    QVariantMap changes;
+    void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( fileRef, changes ); changes.clear(); readMetaData(); }
     MetaData m_data;
-    void updateMetaData();
 
 private:
     Track *track;
 };
 
-void Track::Private::updateMetaData()
+void Track::Private::readMetaData()
 {
     #define strip( x ) TStringToQString( x ).trimmed()
     if( tag )
