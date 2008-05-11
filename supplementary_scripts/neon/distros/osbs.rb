@@ -15,11 +15,11 @@
 
 require 'libosc'
 
-RPMPATH     = NEONPATH + "/distros/suse"
-RPMPATH = ROOTPATH + "/#{DATE}-suse"
-PACKAGES     = ["qt","strigi","taglib","kdelibs","kdebase-runtime"]
+RPMPATH  = NEONPATH + "/distros/suse"
+RPMPATH  = ROOTPATH + "/#{DATE}-suse"
+PACKAGES = ["qt","strigi","taglib","kdelibs","kdebase-runtime"]
 
-class UploadSuse
+class UploadOSBS
   def initialize()
     def BaseDir()
       Dir.chdir(RPMPATH)
