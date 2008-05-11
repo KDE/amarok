@@ -236,7 +236,7 @@ Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
 void
 Amarok::TrayIcon::engineTrackPositionChanged( long position, bool userSeek )
 {
-    AMAROK_NOTIMPLEMENTED
+    //AMAROK_NOTIMPLEMENTED
     Q_UNUSED( position )
     Q_UNUSED( userSeek )
 /*
