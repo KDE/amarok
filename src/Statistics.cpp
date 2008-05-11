@@ -20,7 +20,7 @@
 
 #include "playlist/PlaylistModel.h"
 #include "querybuilder.h"
-#include "tagdialog.h"         //showContextMenu()
+#include "TagDialog.h"         //showContextMenu()
 #include "TheInstances.h"
 
 #include <k3multipledrag.h>

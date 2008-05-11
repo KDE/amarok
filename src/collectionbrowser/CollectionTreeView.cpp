@@ -38,7 +38,7 @@
 #include "popupdropper/PopupDropperItem.h"
 #include "QueryMaker.h"
 #include "SvgHandler.h"
-#include "tagdialog.h"
+#include "TagDialog.h"
 #include "TheInstances.h"
 
 #include <QContextMenuEvent>

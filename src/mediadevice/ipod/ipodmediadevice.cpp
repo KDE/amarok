@@ -38,7 +38,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <k3bexporter.h>
 #include <playlist.h>
 #include <playlistbrowser.h>
-#include <tagdialog.h>
+#include <TagDialog.h>
 #include <threadmanager.h>
 #include <metadata/tplugins.h>
 #include <metadata/tfile_helper.h>

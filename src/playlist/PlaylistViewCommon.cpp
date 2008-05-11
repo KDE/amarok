@@ -21,7 +21,7 @@
 
 #include "PlaylistViewCommon.h"
 
-#include "tagdialog.h"
+#include "TagDialog.h"
 #include "PlaylistModel.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/CurrentTrackActionsCapability.h"

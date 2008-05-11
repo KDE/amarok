@@ -28,7 +28,7 @@
 #include "PlaylistModel.h"
 #include "PlaylistTextItem.h"
 #include "SvgTinter.h"
-#include "tagdialog.h"
+#include "TagDialog.h"
 #include "TheInstances.h"
 #include "covermanager/CoverManager.h"
 #include "meta/SourceInfoCapability.h"

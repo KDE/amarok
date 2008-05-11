@@ -423,7 +423,7 @@ set(amaroklib_LIB_SRCS
     StarManager.cpp
 #    Statistics.cpp
     systray.cpp
-    tagdialog.cpp
+    TagDialog.cpp
     TagGuesser.cpp
     tooltip.cpp
     trackpickerdialog.cpp
@@ -456,7 +456,6 @@ kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 kde4_add_ui3_files(amaroklib_LIB_SRCS
    dbsetup.ui
 #   newdynamic.ui
-#   tagdialogbase.ui
 #   tagguesserconfigdialog.ui
 )
 

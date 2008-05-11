@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "tagdialog.h"
+#include "TagDialog.h"
 
 #include "Amarok.h"
 #include "amarokconfig.h"
@@ -1736,4 +1736,4 @@ TagDialogWriter::completeJob()
 }*/
 
 
-#include "tagdialog.moc"
+#include "TagDialog.moc"

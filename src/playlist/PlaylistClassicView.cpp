@@ -23,7 +23,7 @@
 #include "PlaylistModel.h"
 #include "PlaylistViewCommon.h"
 #include "TheInstances.h"
-#include "tagdialog.h"
+#include "TagDialog.h"
 #include "meta/CurrentTrackActionsCapability.h"
 
 #include <KAction>
