@@ -311,7 +311,6 @@ Amarok::TrayIcon::paintIcon( int mergePixels, bool force )
 void
 Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 {
-    AMAROK_NOTIMPLEMENTED
     Q_UNUSED( sourcePixmap )
 
     #if 0
