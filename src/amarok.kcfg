@@ -462,37 +462,6 @@
     </entry>
 </group>
 
-<group name="Postgresql">
-    <entry key="PostgresqlHost" type="String">
-        <label>Host</label>
-        <whatsthis>The host Postgresql server is running on</whatsthis>
-        <default>localhost</default>
-    </entry>
-    <entry key="PostgresqlPort" type="Int">
-        <label>Port</label>
-        <whatsthis>The port Postgresql server is listening</whatsthis>
-        <default>5432</default>
-    </entry>
-    <entry key="PostgresqlDbName" type="String">
-        <label>Database name</label>
-        <whatsthis>The database's name</whatsthis>
-        <default>amarok</default>
-    </entry>
-    <entry key="PostgresqlUser" type="String">
-        <label>User</label>
-        <whatsthis>The user's name to use for connecting Postgresql</whatsthis>
-        <default>amarok</default>
-    </entry>
-    <entry key="PostgresqlPassword" type="Password">
-        <label>Password</label>
-        <whatsthis>The user's password</whatsthis>
-    </entry>
-    <entry key="PostgresqlPassword2" type="String">
-        <label>Password</label>
-        <whatsthis>The user's password</whatsthis>
-    </entry>
-</group>
-
 <group name="Scrobbler">
         <entry key="SubmitPlayedSongs" type="Bool">
             <label>Submit played songs</label>

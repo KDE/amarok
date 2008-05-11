@@ -45,20 +45,8 @@ MagnatuneDatabaseHandler::createDatabase( )
     QString genreAutoIncrement = "";
     QString moodsAutoIncrement = "";
 
-   /* if ( sqlDb->type() == DbConnection::postgresql )
-    {
-        sqlDb->query( QString( "CREATE SEQUENCE magnatune_track_seq;" ) );
-        sqlDb->query( QString( "CREATE SEQUENCE magnatune_album_seq;" ) );
-        sqlDb->query( QString( "CREATE SEQUENCE magnatune_artist_seq;" ) );
-        sqlDb->query( QString( "CREATE SEQUENCE magnatune_moods_seq;" ) );
-
-        tracksAutoIncrement = QString( "DEFAULT nextval('magnatune_track_seq')" );
-        albumsAutoIncrement = QString( "DEFAULT nextval('magnatune_album_seq')" );
-        artistAutoIncrement = QString( "DEFAULT nextval('magnatune_artist_seq')" );
-        moodsAutoIncrement  = QString( "DEFAULT nextval('magnatune_moods_seq')" );
-
-    }
-    else if ( sqlDb->type() == DbConnection::mysql )
+    /*
+    if ( sqlDb->type() == DbConnection::mysql )
     {
         tracksAutoIncrement = "AUTO_INCREMENT";
         albumsAutoIncrement = "AUTO_INCREMENT";

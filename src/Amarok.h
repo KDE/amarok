@@ -143,8 +143,8 @@ namespace Amarok
     }
 
     /**
-    * Returns internal code for database type, DbConnection::sqlite, DbConnection::mysql, or DbConnection::postgresql
-    * @param type either "SQLite", "MySQL", or "Postgresql".
+    * Returns internal code for database type, DbConnection::sqlite or DbConnection::mysql
+    * @param type either "SQLite", or "MySQL".
     */
     int databaseTypeCode( const QString type ); //defined in configdialog.cpp
 

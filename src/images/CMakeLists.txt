@@ -36,7 +36,7 @@ install(
         emblem-default.png
         sliders.svg
         pud_items.svg
-        default-template.svg
+        default-template.svgz
         service_info_frontpage_bg.png
         service_info_frontpage_logo.png
         service_info_frontpage_shadow.png

@@ -24,7 +24,6 @@
 #include "SqlQueryMaker.h"
 #include "SqliteCollection.h"
 //#include "mysqlcollection.h"
-//#include "postgresqlcollection.h"
 #include "SqlCollectionLocation.h"
 
 #ifdef Q_OS_WIN32
@@ -55,9 +54,6 @@ SqlCollectionFactory::init()
 //fix this later
         case DbConnection::mysql :
             collection = new MySqlCollection( "localCollection", i18n( "Local collection" ) );
-            break;
-        case DbConnection::postgresql :
-            collection = new PostgreSqlCollection( "localCollection", i18n( "Local collection" ) );
             break;
         default :
             collection = new SqlCollection( "localCollection", i18n( "Local collection" ) );

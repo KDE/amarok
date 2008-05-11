@@ -20,16 +20,16 @@
 #include "CollectionConfig.h"
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include <config-amarok.h>  
+#include <config-amarok.h>
 #include "directorylist.h"
 
 
 CollectionConfig::CollectionConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
-    setupUi( this ); 
+    setupUi( this );
 
-#if !defined(USE_MYSQL) && !defined(USE_POSTGRESQL)
+#if !defined(USE_MYSQL)
     databaseBox->hide();
 #endif
 
@@ -82,10 +82,10 @@ CollectionConfig::updateSettings()
 
 
 ///////////////////////////////////////////////////////////////
-// PRIVATE METHODS 
+// PRIVATE METHODS
 ///////////////////////////////////////////////////////////////
 
-int 
+int
 CollectionConfig::databaseTypeCode( const QString& type ) const
 {
     Q_UNUSED( type );
@@ -93,8 +93,6 @@ CollectionConfig::databaseTypeCode( const QString& type ) const
 //     int dbType = DbConnection::sqlite;
 //     if ( type == "MySQL")
 //         dbType = DbConnection::mysql;
-//     else if ( type == "Postgresql" )
-//         dbType = DbConnection::postgresql;
     return 0; //Hardcode sqlite for now
 }
 

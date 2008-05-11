@@ -36,9 +36,6 @@
 /* MySql database support enabled */
 #cmakedefine USE_MYSQL 1
 
-/* Postgresql database support enabled */
-#cmakedefine USE_POSTGRESQL 1
-
 /* Whether taglib exposes filenames as TagLib::FileName type */
 #cmakedefine HAVE_TAGLIB_FILENAME 1
 

@@ -41,13 +41,6 @@ JamendoDatabaseHandler::createDatabase( )
     QString genreAutoIncrement = "";
 
     //FIXME: We don't currently support non sqlite databases, and thus this doesn't work and DbConnection will need to be moved..
-//     if ( db->getDbConnectionType() == DbConnection::postgresql )
-//     {
-//         db->query( QString( "CREATE SEQUENCE jamendo_genre_seq;" ) );
-// 
-//         genreAutoIncrement  = QString( "DEFAULT nextval('jamendo_genre_seq')" );
-// 
-//     }
 //     else if ( db->getDbConnectionType() == DbConnection::mysql )
 //     {
 //         genreAutoIncrement = "AUTO_INCREMENT";
@@ -155,13 +148,6 @@ JamendoDatabaseHandler::destroyDatabase( )
 
     debug() << "here2";
     //FIXME: We only support sqlite currently.  DbConnection no longer exists.
-//     if ( db->getDbConnectionType() == DbConnection::postgresql )
-//     {
-//         db->query( QString( "DROP SEQUENCE jamendo_track_seq;" ) );
-//         db->query( QString( "DROP SEQUENCE jamendo_album_seq;" ) );
-//         db->query( QString( "DROP SEQUENCE jamendo_artist_seq;" ) );
-//         //db->query( QString( "DROP SEQUENCE jamendo_tags_seq;" ) );
-//     }
 }
 
 int

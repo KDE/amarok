@@ -1,5 +1,4 @@
 macro_optional_find_package(MySQL)
-macro_optional_find_package(PostgreSQL)
 
 #build-time only dependency in XesamDbus.h
 #remove at some point
@@ -52,17 +51,6 @@ kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-
 
 target_link_libraries(amarok_collection-sqlcollection amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
-
-#if(POSTGRESQL_FOUND)
-#    set(amarok_postgresql_SRCS
-#       postgresqlcollection.cpp
-#        postgresqlquerymaker.cpp)
-#
-#    kde4_add_plugin(amarok_collection-postgresql WITH_PREFIX ${amarok_postgresql_SRCS})
-#    target_link_libraries(amarok_collection-postgresql amarok_collection-sqlcollection ${KDE4_KDECORE_LIBS} )
-#    install(TARGETS amarok_collection-postgresql DESTINATION ${PLUGIN_INSTALL_DIR})
-#    install(FILES amarok_collection-postgresql.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-#endif(POSTGRESQL_FOUND)
 
 #if(MYSQL_FOUND)
 #    set(amarok_mysql_SRCS
