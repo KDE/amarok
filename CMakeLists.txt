@@ -53,9 +53,6 @@ macro_log_feature( IFP_FOUND "libifp" "Support iRiver iFP audio devices" "http:/
 macro_optional_find_package(MySQL)
 macro_log_feature( MYSQL_FOUND "mysql" "Store Collection in a mysql database instead of a sqlite one" "http://www.mysql.com" FALSE "4.1.0" "" )
 
-macro_optional_find_package(PostgreSQL)
-macro_log_feature( POSTGRESQL_FOUND "postgresql" "Store Collection in a postgresql database instead of a sqlite one" "http://www.postgresql.org" FALSE "7.4" "" )
-
 macro_optional_find_package(Libvisual)
 macro_log_feature( LIBVISUAL_FOUND "libvisual" "Enable support for visualizations" "http://localhost.nl/~synap/libvisual/jj" FALSE "0.4.0" "")
 
