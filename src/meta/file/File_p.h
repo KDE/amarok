@@ -186,7 +186,7 @@ void Track::Private::updateMetaData()
         else
             m_data.discNumber = disc.toInt();
     }
-
+#undef strip
     m_data.fileSize = QFile( url.url() ).size();
 }
 

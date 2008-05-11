@@ -26,9 +26,6 @@
 #include <QPointer>
 #include <QString>
 
-#include <kfilemetainfo.h>
-#include <kfilemetainfoitem.h>
-
 using namespace MetaFile;
 
 class EditCapabilityImpl : public Meta::EditCapability
@@ -191,43 +188,39 @@ Track::year() const
 void
 Track::setAlbum( const QString &newAlbum )
 {
-    AMAROK_NOTIMPLEMENTED
-    #if 0
-    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ALBUM ) ).setValue( newAlbum );
     if( !d->batchUpdate )
     {
-        d->metaInfo.applyChanges();
+        d->m_data.album = newAlbum;
+        d->tag->setAlbum( QStringToTString( newAlbum ) );
         notifyObservers();
     }
-    #endif
+    else
+        AMAROK_NOTIMPLEMENTED
 }
 
 void
 Track::setArtist( const QString& newArtist )
 {
-    AMAROK_NOTIMPLEMENTED
-    #if 0
-    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::ARTIST ) ).setValue( newArtist );
     if( !d->batchUpdate )
     {
-        d->metaInfo.applyChanges();
+        d->m_data.artist = newArtist;
+        d->tag->setArtist( QStringToTString( newArtist ) );
         notifyObservers();
     }
-    #endif
+    else
+        AMAROK_NOTIMPLEMENTED
 }
 
 void
 Track::setGenre( const QString& newGenre )
 {
-    AMAROK_NOTIMPLEMENTED
-    #if 0
-    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::GENRE ) ).setValue( newGenre );
     if( !d->batchUpdate )
     {
-        d->metaInfo.applyChanges();
+        d->tag->setGenre( QStringToTString( newGenre ) );
         notifyObservers();
     }
-    #endif
+    else
+        AMAROK_NOTIMPLEMENTED
 }
 
 void
@@ -247,29 +240,25 @@ Track::setComposer( const QString& newComposer )
 void
 Track::setYear( const QString& newYear )
 {
-    AMAROK_NOTIMPLEMENTED
-    #if 0
-    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::YEAR ) ).setValue( newYear );
     if( !d->batchUpdate )
     {
-        d->metaInfo.applyChanges();
+        d->m_data.year = newYear.toInt();
+        d->tag->setYear( newYear.toInt() );
         notifyObservers();
     }
-    #endif
 }
 
 void
 Track::setTitle( const QString &newTitle )
 {
-    AMAROK_NOTIMPLEMENTED
-    #if 0
-    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TITLE ) ).setValue( newTitle );
+    DEBUG_BLOCK
     if( !d->batchUpdate )
     {
-        d->metaInfo.applyChanges();
+        DEBUG_LINE_INFO
+        d->m_data.title = newTitle;
+        d->tag->setTitle( QStringToTString( newTitle ) );
         notifyObservers();
     }
-    #endif
 }
 
 QString
@@ -289,15 +278,12 @@ Track::comment() const
 void
 Track::setComment( const QString& newComment )
 {
-    AMAROK_NOTIMPLEMENTED
-    #if 0
-    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMMENT ) ).setValue( newComment );
     if( !d->batchUpdate )
     {
-        d->metaInfo.applyChanges();
+        d->m_data.comment = newComment;
+        d->tag->setComment( QStringToTString( newComment ) );
         notifyObservers();
     }
-    #endif
 }
 
 double
@@ -337,15 +323,12 @@ Track::trackNumber() const
 void
 Track::setTrackNumber( int newTrackNumber )
 {
-    AMAROK_NOTIMPLEMENTED
-    #if 0
-    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::TRACKNUMBER ) ).setValue( newTrackNumber );
     if( !d->batchUpdate )
     {
-        d->metaInfo.applyChanges();
+        d->m_data.trackNumber = newTrackNumber;
+        d->tag->setTrack( newTrackNumber );
         notifyObservers();
     }
-    #endif
 }
 
 int
