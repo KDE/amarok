@@ -15,14 +15,14 @@
 
 require 'libosc'
 
-SUSEPATH     = NEONPATH + "/distros/suse"
-SUSEBASEPATH = ROOTPATH + "/#{DATE}-suse"
+RPMPATH     = NEONPATH + "/distros/suse"
+RPMPATH = ROOTPATH + "/#{DATE}-suse"
 PACKAGES     = ["qt","strigi","taglib","kdelibs","kdebase-runtime"]
 
 class UploadSuse
   def initialize()
     def BaseDir()
-      Dir.chdir(SUSEBASEPATH)
+      Dir.chdir(RPMPATH)
     end
 
     Execute()
