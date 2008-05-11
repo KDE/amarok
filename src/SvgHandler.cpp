@@ -64,7 +64,7 @@ SvgHandler::SvgHandler()
     : d( new Private() )
 {
     //use default theme
-    d->themeFile = "amarok/images/default-template.svg";
+    d->themeFile = "amarok/images/default-theme.svgz";
     d->customTheme = false;
 }
 
