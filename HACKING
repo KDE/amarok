@@ -64,12 +64,15 @@ TIP:
 Kate/KDevelop users can sort the headers automatically. Select the lines you want to sort,
 then Tools -> Filter Selection Through Command -> "sort".
 
+In vim the same can be achieved by marking the block, and then doing ":sort".
 
 Example:
 
- | #include "amarok.h"
- | #include "debug.h"
- | #include "playlist.h"
+ | #include "MySuperWidget.h"
+ |
+ | #include "Amarok.h"
+ | #include "Debug.h"
+ | #include "Playlist.h"
  |
  | #include <KDialogBase>    //baseclass
  | #include <KPushButton>    //see function...
