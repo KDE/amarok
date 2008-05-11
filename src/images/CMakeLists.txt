@@ -31,7 +31,7 @@ install(
         emblem-jamendo.png
         emblem-default.png
         pud_items.svg
-        default-template.svgz
+        default-theme.svgz
         service_info_frontpage_bg.png
         service_info_frontpage_logo.png
         service_info_frontpage_shadow.png

@@ -23,6 +23,9 @@
 #include "App.h"
 #include "debug.h"
 
+#include <QBuffer>
+#include <KFilterDev>
+
 SvgTinter * SvgTinter::m_instance = 0;
 
 SvgTinter * SvgTinter::instance()
@@ -51,14 +54,32 @@ QString SvgTinter::tint(QString filename)
 {
     QFile file( filename );
     file.open( QIODevice::ReadOnly );
-    QString svg_source( file.readAll() );
+    QByteArray svg_source( file.readAll() );
 
-    foreach ( const QString &colorName, m_tintMap.keys() ) {
-        //debug() << "replace " <<  colorName << " with " << m_tintMap.value( colorName );
-        svg_source.replace( colorName, m_tintMap.value( colorName ) );
+    // Copied from KSvgrenderer.cpp as we don't load it directly.
+    if (!svg_source.startsWith("<?xml"))
+    {
+        QBuffer buf( &svg_source );
+        QIODevice *flt = KFilterDev::device(
+                                            &buf, QString::fromLatin1("application/x-gzip"), false);
+        if (!flt)
+            return QString();
+        if (!flt->open(QIODevice::ReadOnly))
+        {
+            delete flt;
+            return QString();
+        }
+        svg_source = flt->readAll();
+        delete flt;
     }
 
-    return svg_source;
+    QString svg_string( svg_source );
+    foreach ( const QString &colorName, m_tintMap.keys() ) {
+        //debug() << "replace " <<  colorName << " with " << m_tintMap.value( colorName );
+        svg_string.replace( colorName, m_tintMap.value( colorName ) );
+    }
+
+    return svg_string;
 
 }
 
@@ -83,7 +104,7 @@ void SvgTinter::init( )
 
 
 
-        
+
         m_lastPalette = App::instance()->palette();
     }
 }
