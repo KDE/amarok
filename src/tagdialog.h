@@ -20,7 +20,7 @@
 #ifndef AMAROK_TAGDIALOG_H
 #define AMAROK_TAGDIALOG_H
 
-#include <config-amarok.h>  
+#include <config-amarok.h>
 
 #include "ktrm.h"
 #include "playlist/PlaylistItem.h"
@@ -36,13 +36,6 @@
 #include <QMap>
 #include <QVariant>
 #include <QtGui/QWidget>
-
-
-namespace TagLib {
-    namespace ID3v2 {
-        class Tag;
-    }
-}
 
 namespace Ui
 {

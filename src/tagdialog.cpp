@@ -76,36 +76,6 @@ private:
     QStringList m_failedURLs;
 };*/
 
-/*
-TagDialog::TagDialog( const KUrl& url, QWidget* parent )
-    : TagDialogBase( parent )
-    , m_playlistItem( 0 )
-    , m_currentCover( 0 )
-{
-
-    init();
-}
-
-
-TagDialog::TagDialog( const KUrl::List list, QWidget* parent )
-    : TagDialogBase( parent )
-    , m_bundle()
-    , m_playlistItem( 0 )
-    , m_urlList( list )
-    , m_currentCover( 0 )
-{
-    init();
-}*/
-
-
-// TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent )
-//     : TagDialogBase( parent )
-//     , m_bundle( mb )
-//     , m_playlistItem( item )
-//     , m_currentCover( 0 )
-// {
-//     init();
-// }
 
 TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     :KDialog( parent )
@@ -531,11 +501,11 @@ void TagDialog::init()
 
     KConfigGroup config = Amarok::config( "TagDialog" );
 
-    ui->kTabWidget->addTab( ui->summaryTab, i18n( "Summary" ) );
-    ui->kTabWidget->addTab( ui->tagsTab, i18n( "Tags" ) );
-    ui->kTabWidget->addTab( ui->lyricsTab, i18n( "Lyrics" ) );
+    ui->kTabWidget->addTab( ui->summaryTab   , i18n( "Summary" ) );
+    ui->kTabWidget->addTab( ui->tagsTab      , i18n( "Tags" ) );
+    ui->kTabWidget->addTab( ui->lyricsTab    , i18n( "Lyrics" ) );
     ui->kTabWidget->addTab( ui->statisticsTab, i18n( "Statistics" ) );
-    ui->kTabWidget->addTab( ui->labelsTab, i18n( "Labels" ) );
+    ui->kTabWidget->addTab( ui->labelsTab    , i18n( "Labels" ) );
     ui->labelsTab->setEnabled( false );
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
@@ -556,13 +526,8 @@ void TagDialog::init()
     //TODO: figure out a way to add auto-completion support to kTestEdit_selectedLabels
 
     m_labelCloud = new KHTMLPart( ui->labels_favouriteLabelsFrame );
-    //m_labelCloud = new HTMLView( labels_favouriteLabelsFrame );
-    //m_labelCloud->view()->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored, false );
     QSizePolicy policy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     m_labelCloud->view()->setSizePolicy(policy);
-
-    //m_labelCloud->view()->setVScrollBarMode( Q3ScrollView::AlwaysOff );
-    //m_labelCloud->view()->setHScrollBarMode( Q3ScrollView::AlwaysOff );
 
     new QVBoxLayout( ui->labels_favouriteLabelsFrame );
     //labels_favouriteLabelsFrame->layout()->addWidget( m_labelCloud->view() );
@@ -590,32 +555,26 @@ void TagDialog::init()
         ui->scoreLabel->hide();
     }
 
-    //HACK due to deficiency in Qt that will be addressed in version 4
-    // QSpinBox doesn't emit valueChanged if you edit the value with
-    // the lineEdit until you change the keyboard focus
-    connect( ui->qSpinBox_year,  SIGNAL(valueChanged( int )), SLOT(checkModified()) );
-    connect( ui->qSpinBox_track, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
-    connect( ui->qSpinBox_score, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
-    connect( ui->qSpinBox_discNumber, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
 
     // Connects for modification check
-    connect( ui->kLineEdit_title,   SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
-    connect( ui->kComboBox_composer,SIGNAL(activated( int )),               SLOT(checkModified()) );
-    connect( ui->kComboBox_composer,SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
-    connect( ui->kComboBox_artist,  SIGNAL(activated( int )),               SLOT(checkModified()) );
-    connect( ui->kComboBox_artist,  SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
-    connect( ui->kComboBox_album,   SIGNAL(activated( int )),               SLOT(checkModified()) );
-    connect( ui->kComboBox_album,   SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
-    connect( ui->kComboBox_genre,   SIGNAL(activated( int )),               SLOT(checkModified()) );
-    connect( ui->kComboBox_genre,   SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
-    connect( ui->kComboBox_rating,  SIGNAL(activated( int )),               SLOT(checkModified()) );
-    connect( ui->kComboBox_rating,  SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
-    connect( ui->qSpinBox_track, SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
-    connect( ui->qSpinBox_year,  SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
-    connect( ui->qSpinBox_score, SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
-    connect( ui->kTextEdit_comment, SIGNAL(textChanged()),                  SLOT(checkModified()) );
-    connect( ui->kTextEdit_lyrics,  SIGNAL(textChanged()),                  SLOT(checkModified()) );
-    connect( ui->kTextEdit_selectedLabels, SIGNAL(textChanged()),           SLOT(checkModified()) );
+    connect( ui->kLineEdit_title,     SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( ui->kComboBox_composer,  SIGNAL(activated( int )),               SLOT(checkModified()) );
+    connect( ui->kComboBox_composer,  SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( ui->kComboBox_artist,    SIGNAL(activated( int )),               SLOT(checkModified()) );
+    connect( ui->kComboBox_artist,    SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( ui->kComboBox_album,     SIGNAL(activated( int )),               SLOT(checkModified()) );
+    connect( ui->kComboBox_album,     SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( ui->kComboBox_genre,     SIGNAL(activated( int )),               SLOT(checkModified()) );
+    connect( ui->kComboBox_genre,     SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( ui->kComboBox_rating,    SIGNAL(activated( int )),               SLOT(checkModified()) );
+    connect( ui->kComboBox_rating,    SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( ui->qSpinBox_track,      SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
+    connect( ui->qSpinBox_year,       SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
+    connect( ui->qSpinBox_score,      SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
+    connect( ui->kTextEdit_comment,   SIGNAL(textChanged()),                  SLOT(checkModified()) );
+    connect( ui->kTextEdit_lyrics,    SIGNAL(textChanged()),                  SLOT(checkModified()) );
+    connect( ui->kTextEdit_selectedLabels, SIGNAL(textChanged()),             SLOT(checkModified()) );
+    connect( ui->qSpinBox_discNumber, SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
 
     // Remember original button text
     m_buttonMbText = ui->pushButton_musicbrainz->text();
@@ -629,9 +588,6 @@ void TagDialog::init()
 
     // set an icon for the open-in-konqui button
     ui->pushButton_open->setIcon( KIcon( "folder-amarok" ) );
-
-    //Update lyrics on Context Browser
-//    connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
 
     //Update cover
     //FIXME: Port 2.0
@@ -651,7 +607,8 @@ void TagDialog::init()
     connect( ui->pushButton_guessTags, SIGNAL(clicked()), SLOT( guessFromFilename() ) );
     connect( ui->pushButton_setFilenameSchemes, SIGNAL(clicked()), SLOT( setFileNameSchemes() ) );
 
-    if( m_tracks.count() > 1 ) {   //editing multiple tracks
+    if( m_tracks.count() > 1 )
+    {   //editing multiple tracks
         m_perTrack = false;
         setMultipleTracksMode();
         readMultipleTracks();
@@ -668,11 +625,6 @@ void TagDialog::init()
         loadLabels( m_currentTrack );
         readTags();
     }
-
-
-    // make it as small as possible
-    //resize( sizeHint().width(), minimumSize().height() );
-
 }
 
 void
@@ -707,7 +659,8 @@ inline const QString TagDialog::unknownSafe( QString s ) {
            : s;
 }
 
-const QStringList TagDialog::statisticsData() {
+const QStringList TagDialog::statisticsData()
+{
 
     QStringList data, values;
     //TODO: port
@@ -781,16 +734,20 @@ void TagDialog::readTags()
                     m_currentTrack->name(),  m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString() ) ) );
 
     QString niceTitle;
-    if ( m_currentTrack->album()->name().isEmpty() ) {
-        if( !m_currentTrack->name().isEmpty() ) {
+    if ( m_currentTrack->album()->name().isEmpty() )
+    {
+        if( !m_currentTrack->name().isEmpty() )
+        {
             if( !m_currentTrack->artist()->name().isEmpty() )
                 niceTitle = i18n( "<b>%1</b> by <b>%2</b>", m_currentTrack->name(),  m_currentTrack->artist()->name() );
             else
                 niceTitle = QString( "<b>%1</b>").arg( m_currentTrack->name() );
         }
-        else niceTitle = m_currentTrack->prettyName();
+        else
+            niceTitle = m_currentTrack->prettyName();
     }
-    else {
+    else
+    {
         niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" ,
             m_currentTrack->name(), m_currentTrack->artist()->name(), m_currentTrack->album()->name() );
     }
@@ -808,12 +765,6 @@ void TagDialog::readTags()
     ui->qSpinBox_score->setValue( static_cast<int>(m_currentTrack->score()) );
     ui->qSpinBox_discNumber->setValue( m_currentTrack->discNumber() );
     ui->kTextEdit_comment->setText( m_currentTrack->comment() );
-
-    //TODO Port 2.0
-    //bool extended = m_bundle.hasExtendedMetaInformation();
-    //qSpinBox_discNumber->setEnabled( extended );
-    //kComboBox_composer->setEnabled( extended );
-
 
     QString summaryText, statisticsText;
     const QString body2cols = "<tr><td><nobr>%1</nobr></td><td><b>%2</b></td></tr>";
@@ -847,7 +798,8 @@ void TagDialog::readTags()
     statisticsText = "<table>";
 
     QStringList sData = statisticsData();
-    for ( int i = 0; i < sData.count(); i+=2 ) {
+    for ( int i = 0; i < sData.count(); i+=2 )
+    {
         statisticsText += body2cols.arg( sData[i], sData[i+1] );
     }
 
@@ -932,7 +884,6 @@ void TagDialog::readTags()
 void
 TagDialog::setMultipleTracksMode()
 {
-
     ui->kTabWidget->setTabEnabled( ui->kTabWidget->indexOf(ui->summaryTab), false );
     ui->kTabWidget->setTabEnabled( ui->kTabWidget->indexOf(ui->lyricsTab), false );
 
@@ -989,7 +940,7 @@ TagDialog::readMultipleTracks()
     setWindowTitle( KDialog::makeStandardCaption( i18ncp( "The amount of tracks being edited", "1 Track", "Information for %1 Tracks", m_tracks.count()) ) );
 
     //Check which fields are the same for all selected tracks
-    QListIterator<Meta::TrackPtr > it( m_tracks );
+    QListIterator< Meta::TrackPtr > it( m_tracks );
 
     m_currentData = QVariantMap();
 
@@ -1003,80 +954,92 @@ TagDialog::readMultipleTracks()
     {
         QVariantMap data = dataForTrack( it.next() );
         songCount++;
-        if ( data.value( Meta::Field::RATING ).toInt() ) {
+        if ( data.value( Meta::Field::RATING ).toInt() )
+        {
             ratingCount++;
             ratingSum += data.value( Meta::Field::RATING ).toInt();
         }
-        if ( data.value( Meta::Field::SCORE ).toDouble() > 0.f ) {
+        if ( data.value( Meta::Field::SCORE ).toDouble() > 0.f )
+        {
             scoreCount++;
             scoreSum += data.value( Meta::Field::SCORE ).toDouble();
         }
 
-        if( !it.peekPrevious()->playableUrl().isLocalFile() ) {
+        if( !it.peekPrevious()->playableUrl().isLocalFile() )
+        {
             // If we have a non local file, don't even lose more time comparing
             artist = album = genre = comment = year = false;
             score  = rating = composer = discNumber = false;
             continue;
         }
         if ( artist && data.value( Meta::Field::ARTIST ).toString() != first.value( Meta::Field::ARTIST ).toString() )
-            artist=false;
+            artist = false;
         if ( album && data.value( Meta::Field::ALBUM ).toString() != first.value( Meta::Field::ALBUM ).toString() )
-            album=false;
+            album = false;
         if ( genre && data.value( Meta::Field::GENRE ).toString() != first.value( Meta::Field::GENRE ).toString() )
-            genre=false;
+            genre = false;
         if ( comment && data.value( Meta::Field::COMMENT ).toString() != first.value( Meta::Field::COMMENT ).toString() )
-            comment=false;
+            comment = false;
         if ( year && data.value( Meta::Field::YEAR ).toInt() != first.value( Meta::Field::YEAR ).toInt() )
-            year=false;
+            year = false;
         if ( composer && data.value( Meta::Field::COMPOSER ).toString() != first.value( Meta::Field::COMPOSER ).toString() )
-            composer=false;
+            composer = false;
         if ( discNumber && data.value( Meta::Field::DISCNUMBER ).toInt() != first.value( Meta::Field::DISCNUMBER ).toInt() )
-            discNumber=false;
+            discNumber = false;
         //score is double internally, but we only show ints in the tab
         if ( score && data.value( Meta::Field::SCORE ).toInt() != first.value( Meta::Field::SCORE ).toInt() )
             score = false;
         if ( rating && data.value( Meta::Field::RATING ).toInt() != first.value( Meta::Field::RATING ).toInt() )
             rating = false;
     }
-    // Set them in the dialog and in m_bundle ( so we don't break hasChanged() )
+    // Set them in the dialog and in the track ( so we don't break hasChanged() )
     int cur_item;
-    if (artist) {
+    if( artist )
+    {
         cur_item = ui->kComboBox_artist->currentIndex();
         m_currentData.insert( Meta::Field::ARTIST, first.value( Meta::Field::ARTIST ) );
         selectOrInsertText( first.value( Meta::Field::ARTIST ).toString(), ui->kComboBox_artist );
     }
-    if (album) {
+    if( album )
+    {
         cur_item = ui->kComboBox_album->currentIndex();
         m_currentData.insert( Meta::Field::ALBUM, first.value( Meta::Field::ALBUM ) );
         selectOrInsertText( first.value( Meta::Field::ALBUM ).toString(), ui->kComboBox_album );
     }
-    if (genre) {
+    if( genre )
+    {
         cur_item = ui->kComboBox_genre->currentIndex();
         m_currentData.insert( Meta::Field::GENRE, first.value( Meta::Field::GENRE ) );
         selectOrInsertText( first.value( Meta::Field::GENRE ).toString(), ui->kComboBox_genre );
     }
-    if (comment) {
+    if( comment )
+    {
         m_currentData.insert( Meta::Field::COMMENT, first.value( Meta::Field::COMMENT ) );
         ui->kTextEdit_comment->setText( first.value( Meta::Field::COMMENT ).toString() );
     }
-    if (composer) {
+    if( composer )
+    {
         cur_item = ui->kComboBox_composer->currentIndex();
         m_currentData.insert( Meta::Field::COMPOSER, first.value( Meta::Field::COMPOSER ) );
         selectOrInsertText( first.value( Meta::Field::COMPOSER ).toString(), ui->kComboBox_composer );
     }
-    if (year) {
+    if( year )
+    {
         m_currentData.insert( Meta::Field::YEAR, first.value( Meta::Field::YEAR ) );
         ui->qSpinBox_year->setValue( first.value( Meta::Field::YEAR ).toInt() );
     }
-    if (discNumber) {
+    if( discNumber )
+    {
         m_currentData.insert( Meta::Field::DISCNUMBER, first.value( Meta::Field::DISCNUMBER ) );
         ui->qSpinBox_discNumber->setValue( first.value( Meta::Field::DISCNUMBER ).toInt() );
     }
-    if (score) {
+    if( score )
+    {
         m_currentData.insert( Meta::Field::SCORE, first.value( Meta::Field::SCORE ) );
         ui->qSpinBox_score->setValue( first.value( Meta::Field::SCORE ).toInt() );
     }
-    if (rating) {
+    if( rating )
+    {
         m_currentData.insert( Meta::Field::RATING, first.value( Meta::Field::RATING ) );
         ui->kComboBox_rating->setCurrentIndex( first.value( Meta::Field::RATING ).toInt() ? first.value( Meta::Field::RATING ).toInt() - 1 : 0 );
     }
@@ -1089,15 +1052,17 @@ TagDialog::readMultipleTracks()
     const QString body = "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>";
     QString statisticsText = "<table>";
 
-    if( AmarokConfig::useRatings() ) {
+    if( AmarokConfig::useRatings() )
+    {
         statisticsText += body.arg( i18n( "Rated Songs:" ) , QString::number( ratingCount )  );
-        if ( ratingCount )
+        if( ratingCount )
             statisticsText += body.arg( i18n( "Average Rating:" ) , QString::number( (float)ratingSum / (float)ratingCount/2.0, 'f', 1  ) );
     }
 
-    if( AmarokConfig::useRatings() ) {
+    if( AmarokConfig::useRatings() )
+    {
         statisticsText += body.arg( i18n( "Scored Songs:" ) , QString::number( scoreCount )  );
-        if ( scoreCount )
+        if( scoreCount )
             statisticsText += body.arg( i18n( "Average Score:" ) , QString::number( scoreSum / scoreCount, 'f', 1 ) );
     }
 
@@ -1177,25 +1142,27 @@ TagDialog::changes()
 
     modified |= !equalString( ui->kTextEdit_comment->toPlainText(), m_currentData.value( Meta::Field::COMMENT ).toString() );
 
-    if (!m_tracks.count() || m_perTrack) { //ignore these on MultipleTracksMode
+    if( !m_tracks.count() || m_perTrack )
+    { //ignore these on MultipleTracksMode
         modified |= !equalString( ui->kLineEdit_title->text(), m_currentData.value( Meta::Field::TITLE ).toString() );
         modified |= ui->qSpinBox_track->value() != m_currentData.value( Meta::Field::TRACKNUMBER ).toInt();
     }
-    if (modified)
+    if( modified )
         result |= TagDialog::TAGSCHANGED;
 
-    if (ui->qSpinBox_score->value() != m_currentData.value( Meta::Field::SCORE ).toInt() )
+    if( ui->qSpinBox_score->value() != m_currentData.value( Meta::Field::SCORE ).toInt() )
         result |= TagDialog::SCORECHANGED;
     int currentRating = m_currentData.value( Meta::Field::RATING ).toInt();
-    if (ui->kComboBox_rating->currentIndex() != ( currentRating ? currentRating - 1 : 0 ) )
+    if( ui->kComboBox_rating->currentIndex() != ( currentRating ? currentRating - 1 : 0 ) )
         result |= TagDialog::RATINGCHANGED;
 
-    if (!m_tracks.count() || m_perTrack) { //ignore these on MultipleTracksMode
+    if( !m_tracks.count() || m_perTrack )
+    { //ignore these on MultipleTracksMode
         if ( !equalString( ui->kTextEdit_lyrics->toPlainText(), m_lyrics ) )
             result |= TagDialog::LYRICSCHANGED;
     }
 
-    if ( !equalString( ui->kTextEdit_selectedLabels->toPlainText(), m_commaSeparatedLabels ) )
+    if( !equalString( ui->kTextEdit_selectedLabels->toPlainText(), m_commaSeparatedLabels ) )
         result |= TagDialog::LABELSCHANGED;
 
     return result;
@@ -1211,7 +1178,8 @@ void
 TagDialog::storeTags( const Meta::TrackPtr &track )
 {
     int result = changes();
-    if( result & TagDialog::TAGSCHANGED ) {
+    if( result & TagDialog::TAGSCHANGED )
+    {
         QVariantMap map( m_currentData );
 
         map.insert( Meta::Field::TITLE, ui->kLineEdit_title->text() );
@@ -1226,22 +1194,27 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         storedTags.remove( track );
         storedTags.insert( track, map );
     }
-    if( result & TagDialog::SCORECHANGED ) {
+    if( result & TagDialog::SCORECHANGED )
+    {
         storedScores.remove( track );
         storedScores.insert( track, ui->qSpinBox_score->value() );
     }
 
-    if( result & TagDialog::RATINGCHANGED ) {
+    if( result & TagDialog::RATINGCHANGED )
+    {
         storedRatings.remove( track );
         storedRatings.insert( track, ui->kComboBox_rating->currentIndex() ? ui->kComboBox_rating->currentIndex() : 0 );
     }
 
-    if( result & TagDialog::LYRICSCHANGED ) {
-        if ( ui->kTextEdit_lyrics->toPlainText().isEmpty() ) {
+    if( result & TagDialog::LYRICSCHANGED )
+    {
+        if ( ui->kTextEdit_lyrics->toPlainText().isEmpty() )
+        {
             storedLyrics.remove( track );
             storedLyrics.insert( track, QString() );
         }
-        else {
+        else
+        {
             QDomDocument doc;
             QDomElement e = doc.createElement( "lyrics" );
             e.setAttribute( "artist", ui->kComboBox_artist->currentText() );
@@ -1484,49 +1457,56 @@ TagDialog::applyToAllTracks()
         int changed = 0;
         QString artist = data.contains( Meta::Field::ARTIST ) ? data.value( Meta::Field::ARTIST ).toString() : QString();
         if( !ui->kComboBox_artist->currentText().isEmpty() && ui->kComboBox_artist->currentText() != artist ||
-             ui->kComboBox_artist->currentText().isEmpty() && !artist.isEmpty() ) {
+             ui->kComboBox_artist->currentText().isEmpty() && !artist.isEmpty() )
+        {
             data.insert( Meta::Field::ARTIST, ui->kComboBox_artist->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         QString album = data.contains( Meta::Field::ALBUM ) ? data.value( Meta::Field::ALBUM ).toString() : QString();
         if( !ui->kComboBox_album->currentText().isEmpty() && ui->kComboBox_album->currentText() != album ||
-             ui->kComboBox_album->currentText().isEmpty() && !album.isEmpty() ) {
+             ui->kComboBox_album->currentText().isEmpty() && !album.isEmpty() )
+        {
             data.insert( Meta::Field::ALBUM, ui->kComboBox_album->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         QString genre = data.contains( Meta::Field::GENRE ) ? data.value( Meta::Field::GENRE ).toString() : QString();
         if( !ui->kComboBox_genre->currentText().isEmpty() && ui->kComboBox_genre->currentText() != genre ||
-             ui->kComboBox_genre->currentText().isEmpty() && !genre.isEmpty() ) {
+             ui->kComboBox_genre->currentText().isEmpty() && !genre.isEmpty() )
+        {
             data.insert( Meta::Field::GENRE, ui->kComboBox_genre->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         QString comment = data.contains( Meta::Field::COMMENT ) ? data.value( Meta::Field::COMMENT ).toString() : QString();
         if( !ui->kTextEdit_comment->toPlainText().isEmpty() && ui->kTextEdit_comment->toPlainText() != comment ||
-             ui->kTextEdit_comment->toPlainText().isEmpty() && !comment.isEmpty() ) {
+             ui->kTextEdit_comment->toPlainText().isEmpty() && !comment.isEmpty() )
+        {
             data.insert( Meta::Field::COMMENT, ui->kTextEdit_comment->toPlainText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         QString composer = data.contains( Meta::Field::COMPOSER ) ? data.value( Meta::Field::COMPOSER ).toString() : QString();
         if( !ui->kComboBox_composer->currentText().isEmpty() && ui->kComboBox_composer->currentText() != composer ||
-             ui->kComboBox_composer->currentText().isEmpty() && !composer.isEmpty() ) {
+             ui->kComboBox_composer->currentText().isEmpty() && !composer.isEmpty() )
+        {
             data.insert( Meta::Field::COMPOSER, ui->kComboBox_composer->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         int year = data.contains( Meta::Field::YEAR ) ? data.value( Meta::Field::YEAR ).toInt() : 0;
         if( ui->qSpinBox_year->value() && ui->qSpinBox_year->value() != year ||
-                ! ui->qSpinBox_year->value() && year ) {
+                ! ui->qSpinBox_year->value() && year )
+        {
             data.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         int discnumber = data.contains( Meta::Field::DISCNUMBER ) ? data.value( Meta::Field::DISCNUMBER ).toInt() : 0;
         if( ui->qSpinBox_discNumber->value() && ui->qSpinBox_discNumber->value() != discnumber ||
-                ! ui->qSpinBox_discNumber->value() && discnumber ) {
+                ! ui->qSpinBox_discNumber->value() && discnumber )
+        {
             data.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
             changed |= TagDialog::TAGSCHANGED;
         }
@@ -1571,14 +1551,16 @@ TagDialog::labelListFromText( const QString &text )
     oldForeach( tmp )
     {
         QString tmpString = (*it).trimmed();
-        if ( !tmpString.isEmpty() ) {
+        if ( !tmpString.isEmpty() )
+        {
             map.remove( tmpString );
             map.insert( tmpString, 0 );
         }
     }
     QStringList result;
     QMap<QString, int>::ConstIterator endMap( map.constEnd() );
-    for(QMap<QString, int>::ConstIterator it = map.constBegin(); it != endMap; ++it ) {
+    for(QMap<QString, int>::ConstIterator it = map.constBegin(); it != endMap; ++it ) 
+    {
         result.append( it.key() );
     }
     return result;
