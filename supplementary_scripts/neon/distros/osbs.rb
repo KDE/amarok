@@ -13,10 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'libosc'
+require 'libosc.rb'
 
-RPMPATH  = NEONPATH + "/distros/suse"
-RPMPATH  = ROOTPATH + "/#{DATE}-suse"
+RPMPATH  = NEONPATH + "/distros/osbs"
+RPMPATH  = ROOTPATH + "/#{DATE}-osbs"
 PACKAGES = ["qt","strigi","taglib","kdelibs","kdebase-runtime"]
 
 class UploadOSBS

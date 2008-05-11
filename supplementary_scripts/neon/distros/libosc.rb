@@ -16,13 +16,17 @@
 module Osc
   class Osc
     def initialize()
-      # look for checkout - create if not available
+      unless File.exist?(RPMPATH)
+        system("osc", "checkout", "home:apachelogger", RPMPATH) 
+      end
     end
 
     def OscAdd()
     end
 
-    def OscCommit()
+    def OscCommit(package)
+      Dir.chdir(RPMPATH + "/" + package)
+      system("osc", "commit") 
     end
 
     def TarRename()
