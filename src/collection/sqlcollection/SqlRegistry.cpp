@@ -23,6 +23,7 @@
 #include "debug.h"
 
 #include "mountpointmanager.h"
+#include "SqlCollection.h"
 
 #include <QHashIterator>
 #include <QMutableHashIterator>
@@ -90,6 +91,20 @@ SqlRegistry::getArtist( const QString &name, int id )
         return m_artistMap.value( name );
     else
     {
+        if( id == -1 )
+        {
+            QString query = QString( "SELECT id FROM artists WHERE name = '%1';" ).arg( m_collection->escape( name ) );
+            QStringList res = m_collection->query( query );
+            if( res.isEmpty() )
+            {
+                QString insert = QString( "INSERT INTO artists( name ) VALUES ('%1');" ).arg( m_collection->escape( name ) );
+                id = m_collection->insert( insert, "artists" );
+            }
+            else
+            {
+                id = res[0].toInt();
+            }
+        }
         ArtistPtr artist( new SqlArtist( m_collection, id, name ) );
         m_artistMap.insert( name, artist );
         return artist;
@@ -104,6 +119,20 @@ SqlRegistry::getGenre( const QString &name, int id )
         return m_genreMap.value( name );
     else
     {
+        if( id == -1 )
+        {
+            QString query = QString( "SELECT id FROM genres WHERE name = '%1';" ).arg( m_collection->escape( name ) );
+            QStringList res = m_collection->query( query );
+            if( res.isEmpty() )
+            {
+                QString insert = QString( "INSERT INTO genres( name ) VALUES ('%1');" ).arg( m_collection->escape( name ) );
+                id = m_collection->insert( insert, "genres" );
+            }
+            else
+            {
+                id = res[0].toInt();
+            }
+        }
         GenrePtr genre( new SqlGenre( m_collection, id, name ) );
         m_genreMap.insert( name, genre );
         return genre;
@@ -118,6 +147,20 @@ SqlRegistry::getComposer( const QString &name, int id )
         return m_composerMap.value( name );
     else
     {
+        if( id == -1 )
+        {
+            QString query = QString( "SELECT id FROM composers WHERE name = '%1';" ).arg( m_collection->escape( name ) );
+            QStringList res = m_collection->query( query );
+            if( res.isEmpty() )
+            {
+                QString insert = QString( "INSERT INTO composers( name ) VALUES ('%1');" ).arg( m_collection->escape( name ) );
+                id = m_collection->insert( insert, "composers" );
+            }
+            else
+            {
+                id = res[0].toInt();
+            }
+        }
         ComposerPtr composer( new SqlComposer( m_collection, id, name ) );
         m_composerMap.insert( name, composer );
         return composer;
@@ -132,6 +175,20 @@ SqlRegistry::getYear( const QString &name, int id )
         return m_yearMap.value( name );
     else
     {
+        if( id == -1 )
+        {
+            QString query = QString( "SELECT id FROM years WHERE name = '%1';" ).arg( m_collection->escape( name ) );
+            QStringList res = m_collection->query( query );
+            if( res.isEmpty() )
+            {
+                QString insert = QString( "INSERT INTO years( name ) VALUES ('%1');" ).arg( m_collection->escape( name ) );
+                id = m_collection->insert( insert, "years" );
+            }
+            else
+            {
+                id = res[0].toInt();
+            }
+        }
         YearPtr year( new SqlYear( m_collection, id, name ) );
         m_yearMap.insert( name, year );
         return year;
@@ -146,6 +203,20 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist )
         return m_albumMap.value( name );
     else
     {
+        if( id == -1 )
+        {
+            QString query = QString( "SELECT id FROM albums WHERE name = '%1';" ).arg( m_collection->escape( name ) );
+            QStringList res = m_collection->query( query );
+            if( res.isEmpty() )
+            {
+                QString insert = QString( "INSERT INTO albums( name ) VALUES ('%1');" ).arg( m_collection->escape( name ) );
+                id = m_collection->insert( insert, "albums" );
+            }
+            else
+            {
+                id = res[0].toInt();
+            }
+        }
         AlbumPtr album( new SqlAlbum( m_collection, id, name, artist ) );
         m_albumMap.insert( name, album );
         return album;

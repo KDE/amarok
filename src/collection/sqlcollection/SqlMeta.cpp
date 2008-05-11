@@ -491,7 +491,8 @@ SqlTrack::commitMetaDataChanges()
         if( m_cache.contains( Meta::Field::ALBUM ) )
         {
             KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-            m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString() );
+            int artistId = KSharedPtr<SqlArtist>::staticCast( m_artist )->id();
+            m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
             KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
         }
         if( m_cache.contains( Meta::Field::COMPOSER ) )
