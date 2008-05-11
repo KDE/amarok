@@ -1419,11 +1419,30 @@ TagDialog::saveTags()
             emit lyricsChanged( track->url() );
         }
         Meta::EditCapability *ec = track->as<Meta::EditCapability>();
-        if( !ec )
+        if( !ec || !ec->isEditable() )
         {
             continue;
         }
+        QVariantMap data = storedTags[ track ];
         ec->beginMetaDataUpdate();
+        if( data.contains( Meta::Field::TITLE ) )
+            ec->setTitle( data.value( Meta::Field::TITLE ).toString() );
+        if( data.contains( Meta::Field::COMMENT ) )
+            ec->setComment( data.value( Meta::Field::COMMENT ).toString() );
+        if( data.contains( Meta::Field::ARTIST ) )
+            ec->setArtist( data.value( Meta::Field::ARTIST ).toString() );
+        if( data.contains( Meta::Field::ALBUM ) )
+            ec->setAlbum( data.value( Meta::Field::ALBUM ).toString() );
+        if( data.contains( Meta::Field::GENRE ) )
+            ec->setGenre( data.value( Meta::Field::GENRE ).toString() );
+        if( data.contains( Meta::Field::COMPOSER ) )
+            ec->setComposer( data.value( Meta::Field::COMPOSER ).toString() );
+        if( data.contains( Meta::Field::YEAR ) )
+            ec->setYear( data.value( Meta::Field::YEAR ).toString() );
+        if( data.contains( Meta::Field::TRACKNUMBER ) )
+            ec->setTrackNumber( data.value( Meta::Field::TRACKNUMBER ).toInt() );
+        if( data.contains( Meta::Field::DISCNUMBER ) )
+            ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
         ec->endMetaDataUpdate();
     }
     //TODO: port 2.0
