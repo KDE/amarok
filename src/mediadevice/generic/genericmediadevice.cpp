@@ -32,7 +32,6 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include "collection/SqlStorage.h"
 #include "k3bexporter.h"
 #include "playlist/PlaylistModel.h"
-#include "podcastbundle.h"
 #include "statusbar/ContextStatusBar.h"
 #include "TheInstances.h"
 #include "transferdialog.h"
@@ -601,7 +600,7 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
         }
     }
 }
-
+/* //PORT to meta
 QString
 GenericMediaDevice::buildPodcastDestination( const PodcastEpisodeBundle *bundle )
 {
@@ -627,7 +626,7 @@ GenericMediaDevice::buildPodcastDestination( const PodcastEpisodeBundle *bundle 
     location += cleanPath( channelTitle ) + '/' + cleanPath( bundle->localUrl().fileName() );
     return location;
 }
-
+*/
 
 MediaItem *
 GenericMediaDevice::copyTrackToDevice( const Meta::TrackPtr track )

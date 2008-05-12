@@ -34,7 +34,6 @@
 #include "meta/Playlist.h"
 #include "meta/PlaylistFileSupport.h"
 #include "PluginManager.h"
-#include "podcastbundle.h"
 #include "AmarokProcess.h"
 #include "scriptmanager.h"
 #include "ContextStatusBar.h"

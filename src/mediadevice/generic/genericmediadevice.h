@@ -110,7 +110,7 @@ class GenericMediaDevice : public MediaDevice
         MediaItem        *trackExists( const Meta::TrackPtr track );
 
         QString           buildDestination( const QString &format, const Meta::TrackPtr track );
-        QString           buildPodcastDestination( const PodcastEpisodeBundle *bundle );
+        //QString           buildPodcastDestination( const PodcastEpisodeBundle *bundle );
         void              checkAndBuildLocation( const QString& location );
 
         KUrl::List        getSelectedItems();

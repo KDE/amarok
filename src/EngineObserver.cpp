@@ -18,8 +18,6 @@ email                : fh@ez.no
 #include "EngineObserver.h"
 
 #include "Debug.h"
-#include "podcastbundle.h"
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS EngineObserver
