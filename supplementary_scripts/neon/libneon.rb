@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-#
 # Copyright (C) 2008 Harald Sitter <harald@getamarok.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -113,5 +111,3 @@ require 'config.rb'
   end
 
 end
-
-
