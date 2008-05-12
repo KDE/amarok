@@ -229,93 +229,37 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
     //debug() << "width: " << width() << ", height: " << height();
     QPainter p( this );
-
+    
+    static const short side = 5; // Size of the rounded parts.
     const double knobX = ( m_sliderWidth - m_sliderHeight ) * ( ( double ) value() / 100.0 );
     const double fillLength = knobX + ( m_sliderHeight / 2 );
 
     const bool highlight = underMouse();
 
-    //paint slider background
-    QString key = QString("volume-background:%1x%2-fill:%3-highlight:%4")
-            .arg( m_sliderWidth )
-            .arg( m_sliderHeight )
-            .arg( fillLength )
-            .arg( highlight );
+    p.drawPixmap( m_sliderX + side, 0, The::svgHandler()->renderSvg( "volume_slider_center", m_sliderWidth - side * 2, m_sliderHeight, "slider_center" ) );
+    p.drawPixmap( m_sliderX, 0, The::svgHandler()->renderSvg( "volume_slider_left", side, m_sliderHeight, "slider_left" ) );
+    p.drawPixmap( m_sliderX, 0, The::svgHandler()->renderSvg( "volume_slider_left_highlight", side, m_sliderHeight, "slider_left_highlight" ) );
+    p.drawPixmap( m_sliderX + m_sliderWidth - side , 0, The::svgHandler()->renderSvg( "volume_slider_right", side, m_sliderHeight, "slider_right" ) );
 
-    QPixmap background( m_sliderWidth, m_sliderHeight );
+    //tile this to make it look good!
+    int tileWidth = 16;
+    QPixmap sliderTile = The::svgHandler()->renderSvg( "slider_center_highlight", tileWidth, m_sliderHeight, "slider_center_highlight" );
 
-    const int side = 5;
-
-    if( !QPixmapCache::find( key, background ) )
-    {
-        background.fill( Qt::transparent );
-        QPainter pt( &background );
-
-        /*QSvgRenderer *renderer = The::svgHandler()->getRenderer();
-
-        renderer->render( &pt, "slider_center", QRectF( side, 0, m_sliderWidth - side * 2, m_sliderHeight ) );
-
-        renderer->render( &pt, "slider_left", QRectF( 0, 0, side, m_sliderHeight ) );
-        renderer->render( &pt, "slider_left_highlight", QRectF( 0, 0, side, m_sliderHeight ) );
-
-        renderer->render( &pt, "slider_right",  QRectF( m_sliderWidth - side, 0, side, m_sliderHeight ) );
-*/
-
-
-
-
-        
-        pt.drawPixmap( side, 0, The::svgHandler()->renderSvg( "volume_slider_center", m_sliderWidth - side * 2, m_sliderHeight, "slider_center" ) );
-
-        pt.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_slider_left", side, m_sliderHeight, "slider_left" ) );
-        
-        pt.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_slider_left_highlight", side, m_sliderHeight, "slider_left_highlight" ) );
-
-        pt.drawPixmap( m_sliderWidth - side, 0, The::svgHandler()->renderSvg( "volume_slider_right", side, m_sliderHeight, "slider_right" ) );
-
-        //tile this to make it look good!
-        int tileWidth = 16;
-        QPixmap sliderTile = The::svgHandler()->renderSvg( "slider_center_highlight", tileWidth, m_sliderHeight, "slider_center_highlight" );
-
-        int offset = side;
-        int xMax =  knobX + m_sliderHeight / 2;
-        while( ( offset + tileWidth ) <= xMax ) {
-            pt.drawPixmap( offset , 0, sliderTile );
-            offset += tileWidth;
-        }
-        
-    //paint as much of the last tile as needed
-        int leftover = xMax - offset;
-        if ( leftover > 0 )
-            pt.drawPixmap( offset, 0, sliderTile, 0, 0, leftover, m_sliderHeight );
-
-        pt.drawPixmap( knobX, 0, The::svgHandler()->renderSvg( "volume_slider_position", m_sliderHeight, m_sliderHeight, "slider_position" ) );
-
-
-        QPixmapCache::insert( key, background );
+    int offset = side;
+    int xMax =  knobX + m_sliderHeight / 2;
+    while( ( offset + tileWidth ) <= xMax ) {
+        p.drawPixmap( m_sliderX + offset , 0, sliderTile );
+        offset += tileWidth;
     }
 
-    p.drawPixmap( m_sliderX, ( height() - m_sliderHeight ) / 2, background );
+//paint as much of the last tile as needed
+    int leftover = xMax - offset;
+    if ( leftover > 0 )
+        p.drawPixmap( m_sliderX + offset, 0, sliderTile, 0, 0, leftover, m_sliderHeight );
 
-    //paint volume icon
-    key = QString("volume-icon:%1x%2")
-            .arg( m_iconWidth )
-            .arg( m_iconHeight );
+    p.drawPixmap( m_sliderX + knobX, 0, The::svgHandler()->renderSvg( "volume_slider_position", m_sliderHeight, m_sliderHeight, "slider_position" ) );
 
-    QPixmap icon( m_iconWidth, m_iconHeight );
-
-    if( !QPixmapCache::find(key, icon) )
-    {
-        icon.fill( Qt::transparent );
-        QPainter pt( &icon );
-
-        The::svgHandler()->getRenderer()->render( &pt, "volume_icon",  QRectF( 0, 0, m_iconWidth, m_iconHeight ) );
-
-        QPixmapCache::insert(key, icon);
-    }
-
-
-    p.drawPixmap( 0, ( height() - m_iconHeight ) / 2, icon );
+    p.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_icon", m_iconWidth, m_iconHeight, "volume_icon" ) ) ;
 
     if( highlight )
     {
