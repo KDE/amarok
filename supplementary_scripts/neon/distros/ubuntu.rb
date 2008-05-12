@@ -54,6 +54,11 @@ class UploadUbuntu
   def CreateNUpload(package)
      FileUtils.cp_r("#{DEBPATH}/#{package}-debian", "./debian")
 
+     # automatic copyright/license listing
+     FileUtils.cp_r("#{DEBPATH}/copyright", "./debian/copyright")
+    `grep -i -R copyright * | grep -v "/debian/" >> ./debian/copyright`
+    `licensecheck * | grep -v "/debian/" >> ./debian/copyright`
+
     `dch -D "#{DEBVERSION}" -v "#{@debversion}" "Nightly Build"`
     `dpkg-buildpackage -S -sa -k"#{ENV['DEBFULLNAME']}"`
 
