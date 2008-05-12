@@ -152,23 +152,23 @@ Amarok::Slider::setValue( int newValue )
 }
 
 
-void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, int pos )
+void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos )
 {
 
     static const short side = 5; // Size of the rounded parts.
 
     double knobX;
-    if( pos == -1 )
+    if( pos < 0 )
         knobX = ( width - height ) * ( ( double ) value() / 100.0 );
     else
         knobX = pos;
     
     const double fillLength = knobX + ( height / 2 );
 
-    p->drawPixmap( x + side, y, The::svgHandler()->renderSvg( "volume_slider_center", width - side * 2, height, "slider_center" ) );
-    p->drawPixmap( x, y, The::svgHandler()->renderSvg( "volume_slider_left", side, height, "slider_left" ) );
-    p->drawPixmap( x, y, The::svgHandler()->renderSvg( "volume_slider_left_highlight", side, height, "slider_left_highlight" ) );
-    p->drawPixmap( x + width - side , y, The::svgHandler()->renderSvg( "volume_slider_right", side, height, "slider_right" ) );
+    p->drawPixmap( x + side, y, The::svgHandler()->renderSvg( "slider_center", width - side * 2, height, "slider_center" ) );
+    p->drawPixmap( x, y, The::svgHandler()->renderSvg( "slider_left", side, height, "slider_left" ) );
+    p->drawPixmap( x, y, The::svgHandler()->renderSvg( "slider_left_highlight", side, height, "slider_left_highlight" ) );
+    p->drawPixmap( x + width - side , y, The::svgHandler()->renderSvg( "slider_right", side, height, "slider_right" ) );
 
     //tile this to make it look good!
     int tileWidth = 16;
