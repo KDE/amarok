@@ -58,6 +58,8 @@ namespace Amarok
             virtual void mousePressEvent( QMouseEvent* );
             virtual void slideEvent( QMouseEvent* );
 
+            void paintCustomSlider( QPainter *p, int x, int y, int width, int height, int pos = -1 );
+
             bool m_sliding;
 
             /// we flip the value for vertical sliders

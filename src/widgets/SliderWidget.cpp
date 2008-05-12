@@ -151,6 +151,45 @@ Amarok::Slider::setValue( int newValue )
         m_prevValue = newValue;
 }
 
+
+void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, int pos )
+{
+
+    static const short side = 5; // Size of the rounded parts.
+
+    double knobX;
+    if( pos == -1 )
+        knobX = ( width - height ) * ( ( double ) value() / 100.0 );
+    else
+        knobX = pos;
+    
+    const double fillLength = knobX + ( height / 2 );
+
+    p->drawPixmap( x + side, y, The::svgHandler()->renderSvg( "volume_slider_center", width - side * 2, height, "slider_center" ) );
+    p->drawPixmap( x, y, The::svgHandler()->renderSvg( "volume_slider_left", side, height, "slider_left" ) );
+    p->drawPixmap( x, y, The::svgHandler()->renderSvg( "volume_slider_left_highlight", side, height, "slider_left_highlight" ) );
+    p->drawPixmap( x + width - side , y, The::svgHandler()->renderSvg( "volume_slider_right", side, height, "slider_right" ) );
+
+    //tile this to make it look good!
+    int tileWidth = 16;
+    QPixmap sliderTile = The::svgHandler()->renderSvg( "slider_center_highlight", tileWidth, height, "slider_center_highlight" );
+
+    int offset = side;
+    int xMax =  knobX + height / 2;
+    while( ( offset + tileWidth ) <= xMax ) {
+        p->drawPixmap( x + offset , y, sliderTile );
+        offset += tileWidth;
+    }
+
+//paint as much of the last tile as needed
+    int leftover = xMax - offset;
+    if ( leftover > 0 )
+        p->drawPixmap( x + offset, y, sliderTile, 0, 0, leftover, height );
+
+    p->drawPixmap( x + knobX, y, The::svgHandler()->renderSvg( "volume_slider_position", height, height, "slider_position" ) );
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS VolumeSlider
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -227,50 +266,23 @@ Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
 void
 Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
-    //debug() << "width: " << width() << ", height: " << height();
-    QPainter p( this );
-    
-    static const short side = 5; // Size of the rounded parts.
-    const double knobX = ( m_sliderWidth - m_sliderHeight ) * ( ( double ) value() / 100.0 );
-    const double fillLength = knobX + ( m_sliderHeight / 2 );
+    QPainter *p = new QPainter( this );
 
-    const bool highlight = underMouse();
+    paintCustomSlider( p, m_sliderX, 0, m_sliderWidth, m_sliderHeight );
+    p->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_icon", m_iconWidth, m_iconHeight, "volume_icon" ) ) ;
 
-    p.drawPixmap( m_sliderX + side, 0, The::svgHandler()->renderSvg( "volume_slider_center", m_sliderWidth - side * 2, m_sliderHeight, "slider_center" ) );
-    p.drawPixmap( m_sliderX, 0, The::svgHandler()->renderSvg( "volume_slider_left", side, m_sliderHeight, "slider_left" ) );
-    p.drawPixmap( m_sliderX, 0, The::svgHandler()->renderSvg( "volume_slider_left_highlight", side, m_sliderHeight, "slider_left_highlight" ) );
-    p.drawPixmap( m_sliderX + m_sliderWidth - side , 0, The::svgHandler()->renderSvg( "volume_slider_right", side, m_sliderHeight, "slider_right" ) );
-
-    //tile this to make it look good!
-    int tileWidth = 16;
-    QPixmap sliderTile = The::svgHandler()->renderSvg( "slider_center_highlight", tileWidth, m_sliderHeight, "slider_center_highlight" );
-
-    int offset = side;
-    int xMax =  knobX + m_sliderHeight / 2;
-    while( ( offset + tileWidth ) <= xMax ) {
-        p.drawPixmap( m_sliderX + offset , 0, sliderTile );
-        offset += tileWidth;
-    }
-
-//paint as much of the last tile as needed
-    int leftover = xMax - offset;
-    if ( leftover > 0 )
-        p.drawPixmap( m_sliderX + offset, 0, sliderTile, 0, 0, leftover, m_sliderHeight );
-
-    p.drawPixmap( m_sliderX + knobX, 0, The::svgHandler()->renderSvg( "volume_slider_position", m_sliderHeight, m_sliderHeight, "slider_position" ) );
-
-    p.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_icon", m_iconWidth, m_iconHeight, "volume_icon" ) ) ;
-
-    if( highlight )
+    if( underMouse() )
     {
         // Draw percentage number
-        p.setPen( palette().color( QPalette::Active, QColorGroup::Text ) );
+        p->setPen( palette().color( QPalette::Active, QColorGroup::Text ) );
         QFont font;
         font.setPixelSize( 12 );
-        p.setFont( font );
+        p->setFont( font );
         const QRect rect( m_iconWidth + m_sliderWidth, ( int ) ( height() - 15 ) / 2, 40, 15 );
-        p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
+        p->drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
     }
+
+    delete p;
 }
 
 void
@@ -347,82 +359,10 @@ Amarok::TimeSlider::slotUpdateAnim()
 void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
-    QPainter p( this );
-    static const short side = 5; // Size of the rounded parts.
 
-    QString key = QString("progress-background:%1x%2")
-            .arg( width() )
-            .arg( m_sliderHeight );
-
-    QPixmap background( width(), m_sliderHeight );
-
-    if (!QPixmapCache::find(key, background))
-    {
-        background.fill( Qt::transparent );
-        QPainter pt( &background );
-
-        QSvgRenderer* renderer = The::svgHandler()->getRenderer();
-        renderer->render( &pt, "slider_left", QRectF( 0, 0, side, m_sliderHeight ) );
-        renderer->render( &pt, "slider_center",  QRectF( side, 0, width() - side *2, m_sliderHeight ) );
-        renderer->render( &pt, "slider_right", QRectF( width() - side, 0, side, m_sliderHeight ) );
-
-        QPixmapCache::insert(key, background);
-    }
-
-    QPixmap foreground( width(), m_sliderHeight );
-    foreground.fill( Qt::transparent );
-    QPainter pt2( &foreground );
-
-    QSvgRenderer* renderer = The::svgHandler()->getRenderer();
-    QPixmap foregroundLeft( side, m_sliderHeight );
-    QString foregroundLeftKey = QString( "progress-foreground-left:%1X%2" ).arg( side ).arg( m_sliderHeight );
-    QRectF foregroundLeftRect( 0, 0, side, m_sliderHeight );
-    if( !QPixmapCache::find( foregroundLeftKey, foregroundLeft ) )
-    {
-        foregroundLeft.fill( Qt::transparent );
-        QPainter pt( &foregroundLeft );
-        renderer->render( &pt, "slider_left", foregroundLeftRect );
-        renderer->render( &pt, "slider_left_highlight", foregroundLeftRect );
-        QPixmapCache::insert( foregroundLeftKey, foregroundLeft );
-    }
-    pt2.drawPixmap( foregroundLeftRect, foregroundLeft, foregroundLeftRect );
-    //Paint the trail
-    
-    //renderer->render( &pt2, "slider_center", QRectF( side, 0, m_knobX, m_sliderHeight ) );
-
-    //tile this to make it look good!
-    int tileWidth = 16;
-    QPixmap sliderTile = The::svgHandler()->renderSvg( "slider_center_highlight", tileWidth, m_sliderHeight, "slider_center_highlight" );
-
-    int offset = side;
-    int xMax =  m_knobX + m_sliderHeight / 2;
-    while( ( offset + tileWidth ) <= xMax ) {
-        pt2.drawPixmap( offset , 0, sliderTile );
-        offset += tileWidth;
-    }
-        
-    //paint as much of the last tile as needed
-    int leftover = xMax - offset;
-    if ( leftover > 0 )
-        pt2.drawPixmap( offset, 0, sliderTile, 0, 0, leftover, m_sliderHeight );
-    
-
-    //And the progress indicator, this needs to happen after the trail so it's on top.
-    QString indicatorkey = QString( "progress-indicator:%1x%2" ).arg( m_sliderHeight ).arg( m_sliderHeight );
-    QPixmap indicator( m_sliderHeight, m_sliderHeight );
-    QRectF indicatorRect( 0, 0, m_sliderHeight, m_sliderHeight );
-    if( !QPixmapCache::find( indicatorkey, indicator ) )
-    {
-        indicator.fill( Qt::transparent );
-        QPainter pt( &indicator );
-        renderer->render( &pt, "slider_position",  indicatorRect );
-        //renderer->render( &pt, "progress-slider-position-highlight",  indicatorRect );
-        QPixmapCache::insert( indicatorkey, indicator );
-    }
-    pt2.drawPixmap( QRectF( m_knobX, 0, m_sliderHeight, m_sliderHeight ), indicator, indicatorRect );
-
-    p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, background );
-    p.drawPixmap( 0, ( height() - m_sliderHeight ) / 2, foreground );
+    QPainter *p = new QPainter( this );
+    paintCustomSlider( p, 0, ( height() - m_sliderHeight ) / 2, width(), m_sliderHeight, m_knobX );
+    delete p;
 }
 
 void
@@ -438,5 +378,7 @@ void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
     if ( m_sliderHeight > height() )
         m_sliderHeight = height();
 }
+
+
 
 #include "SliderWidget.moc"
