@@ -312,14 +312,11 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 
             qm->beginOr();
 
-            
             if ( elem.field.isEmpty() )
             {
 
                 foreach ( int level, m_levelType )
                 {
-                  
-                    
                     qint64 value;
                     switch ( level )
                     {
@@ -363,43 +360,74 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
             {
 
                 //get field values based on name
-                qint64 value;
                 QString lcField = elem.field.toLower();
+                QueryMaker::NumberComparison compare = QueryMaker::Equals;
+                switch( elem.match )
+                {
+                    case expression_element::More:
+                        compare = QueryMaker::GreaterThan;
+                        break;
+                    case expression_element::Less:
+                        compare = QueryMaker::LessThan;
+                        break;
+                    case expression_element::Contains:
+                        compare = QueryMaker::Equals;
+                        break;
+                }
 
                 if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "album" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & QueryMaker::AlbumFilter ) == 0 ) continue;
-                    value = QueryMaker::valAlbum;
+                    qm->addFilter ( QueryMaker::valAlbum, elem.text, false, false );
                 } 
                 else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "artist" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & QueryMaker::ArtistFilter ) == 0 ) continue;
-                    value = QueryMaker::valArtist;
+                    qm->addFilter ( QueryMaker::valArtist, elem.text, false, false );
                 }
                 else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "genre" ), Qt::CaseInsensitive ) == 0)
                 {
                     if ( ( validFilters & QueryMaker::GenreFilter ) == 0 ) continue;
-                    value = QueryMaker::valGenre;
+                    qm->addFilter ( QueryMaker::valGenre, elem.text, false, false );
                 }
                 else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0|| lcField.compare( i18n( "composer" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & QueryMaker::ComposerFilter ) == 0 ) continue;
-                    value = QueryMaker::valComposer;
+                    qm->addFilter ( QueryMaker::valComposer, elem.text, false, false );
                 }
                 else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "year" ), Qt::CaseInsensitive ) == 0)
                 {
                     if ( ( validFilters & QueryMaker::YearFilter ) == 0 ) continue;
-                    value = QueryMaker::valYear;
+                    qm->addFilter ( QueryMaker::valYear, elem.text, false, false );
                 }
-                else
+                else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "comment" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    value = -1;
+                    qm->addFilter ( QueryMaker::valYear, elem.text, false, false );
                 }
-
-
-                qm->addFilter ( value, elem.text, false, false );
-
-
+                else if( lcField.compare( "rating", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "rating" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    qm->addNumberFilter( QueryMaker::valRating, elem.text.toInt(), compare );
+                }
+                else if( lcField.compare( "score", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "score" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    qm->addNumberFilter( QueryMaker::valScore, elem.text.toInt(), compare );
+                }
+                else if( lcField.compare( "playcount", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "playcount" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    qm->addNumberFilter( QueryMaker::valPlaycount, elem.text.toInt(), compare );
+                }
+                else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "length" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    qm->addNumberFilter( QueryMaker::valLength, elem.text.toInt(), compare );
+                }
+                else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "discnumber" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    qm->addNumberFilter( QueryMaker::valDiscNr, elem.text.toInt(), compare );
+                }
+                else if( lcField.compare( "tracknumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "tracknumber" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    qm->addNumberFilter( QueryMaker::valTrackNr, elem.text.toInt(), compare );
+                }
             }
 
             qm->endAndOr();
