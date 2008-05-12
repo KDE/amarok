@@ -23,7 +23,7 @@
 
 #include "SmartPlaylistEditor.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "querybuilder.h"
 #include "metabundle.h"
 

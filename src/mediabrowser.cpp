@@ -28,7 +28,7 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "collection/CollectionManager.h"
-#include "debug.h"
+#include "Debug.h"
 #include "EditFilterDialog.h"
 #include "deviceconfiguredialog.h"
 #include "Expression.h"

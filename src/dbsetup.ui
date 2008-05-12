@@ -264,7 +264,7 @@
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">amarokconfig.h</include>
-    <include location="local" impldecl="in implementation">debug.h</include>
+    <include location="local" impldecl="in implementation">Debug.h</include>
     <include location="local" impldecl="in implementation">config-amarok.h</include>
     <include location="local" impldecl="in implementation">dbsetup.ui.h</include>
 </includes>

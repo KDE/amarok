@@ -14,7 +14,7 @@
 #include "ColumnApplet.h"
 
 #include "ContextScene.h"
-#include "debug.h"
+#include "Debug.h"
 #include "Svg.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"

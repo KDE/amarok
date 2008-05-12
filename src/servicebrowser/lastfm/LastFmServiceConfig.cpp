@@ -14,7 +14,7 @@
 #define DEBUG_PREFIX "lastfm"
 
 #include "LastFmServiceConfig.h"
-#include "debug.h"
+#include "Debug.h"
 
 
 LastFmServiceConfig::LastFmServiceConfig()

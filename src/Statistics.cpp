@@ -16,7 +16,7 @@
 #include "Amarok.h"             //oldForeach macro
 #include "amarokconfig.h"
 #include "BrowserToolBar.h"     //search toolbar
-#include "debug.h"
+#include "Debug.h"
 
 #include "playlist/PlaylistModel.h"
 #include "querybuilder.h"

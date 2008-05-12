@@ -15,7 +15,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
-#include "debug.h"
+#include "Debug.h"
 #include "metabundlesaver.h"
 #include "scancontroller.h"
 #include <kapplication.h>

@@ -21,7 +21,7 @@
 
 #include "MagnatuneDownloadDialog.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <kfiledialog.h>
 #include <kurlrequester.h>

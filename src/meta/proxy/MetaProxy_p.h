@@ -19,7 +19,7 @@
 #ifndef AMAROK_METAPROXY_P_H
 #define AMAROK_METAPROXY_P_H
 
-#include "debug.h"
+#include "Debug.h"
 
 #include "Amarok.h"
 #include "amarokconfig.h"

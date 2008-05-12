@@ -22,7 +22,7 @@
 #include "SingleCollectionTreeItemModel.h"
 
 #include "CollectionTreeItem.h"
-#include "debug.h"
+#include "Debug.h"
 #include "Amarok.h"
 #include "Collection.h"
 #include "CollectionManager.h"

@@ -19,7 +19,7 @@
 
 #include "tooltip.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <KApplication>
 #include <KGlobal>

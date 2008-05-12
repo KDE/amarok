@@ -19,7 +19,7 @@
 #include "authentication/contentfetcher.h"
 #include "daapcollection.h"
 #include "daapmeta.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <QByteArray>
 #include <QDateTime>

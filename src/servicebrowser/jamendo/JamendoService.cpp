@@ -20,7 +20,7 @@
 #include "JamendoService.h"
 
 #include "CollectionManager.h"
-#include "debug.h"
+#include "Debug.h"
 #include "EngineController.h"
 #include "JamendoInfoParser.h"
 #include "JamendoXmlParser.h"

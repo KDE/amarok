@@ -22,7 +22,7 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
-#include "debug.h"
+#include "Debug.h"
 #include "PluginManager.h"
 #include "ContextStatusBar.h"
 #include "SqlStorage.h"

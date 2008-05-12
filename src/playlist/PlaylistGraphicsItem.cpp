@@ -19,7 +19,7 @@
  **************************************************************************/
 
 #include "App.h"
-#include "debug.h"
+#include "Debug.h"
 #include "meta/MetaUtility.h"
 #include "AmarokMimeData.h"
 #include "PlaylistGraphicsItem.h"

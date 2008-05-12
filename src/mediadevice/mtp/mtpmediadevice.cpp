@@ -32,7 +32,7 @@
 AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 
 // Amarok
-#include <debug.h>
+#include <Debug.h>
 #include <statusbar/ContextStatusBar.h>
 #include <statusbar/popupMessage.h>
 

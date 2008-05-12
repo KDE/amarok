@@ -32,7 +32,7 @@
 #include <QList>
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "MediaDeviceCache.h"
 
 

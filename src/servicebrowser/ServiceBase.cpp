@@ -21,7 +21,7 @@
 
 #include "Amarok.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include "collection/Collection.h"
 #include "TheInstances.h"

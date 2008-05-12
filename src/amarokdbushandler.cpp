@@ -25,7 +25,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "App.h" //transferCliArgs
-#include "debug.h"
+#include "Debug.h"
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
 #include "collection/sqlcollection/SqlCollection.h"

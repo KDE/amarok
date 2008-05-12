@@ -23,7 +23,7 @@
 
 #include "OpmlDirectoryService.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 using namespace Meta;
 

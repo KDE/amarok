@@ -19,7 +19,7 @@
 
 #include "ServiceListDelegate.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "ServiceBase.h"
 #include "ServiceListModel.h"
 #include "SvgTinter.h"

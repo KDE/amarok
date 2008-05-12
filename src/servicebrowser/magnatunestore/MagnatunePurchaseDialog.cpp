@@ -20,7 +20,7 @@
 
 #include "MagnatunePurchaseDialog.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "MagnatuneDatabaseHandler.h"
 
 #include <KMessageBox>

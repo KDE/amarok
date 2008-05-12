@@ -25,7 +25,7 @@
 #include "TheInstances.h"
 #include "TrackTooltip.h"
 #include "amarokconfig.h"
-#include "debug.h"
+#include "Debug.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"

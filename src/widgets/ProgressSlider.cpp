@@ -15,7 +15,7 @@
 #include "SliderWidget.h"
 
 #include "amarokconfig.h"
-#include "debug.h"
+#include "Debug.h"
 #include "EngineController.h"
 #include "meta/MetaUtility.h"
 #include "timeLabel.h"

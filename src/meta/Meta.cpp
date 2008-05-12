@@ -22,7 +22,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "Collection.h"
-#include "debug.h"
+#include "Debug.h"
 #include "QueryMaker.h"
 
 #include <QDir>

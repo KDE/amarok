@@ -19,8 +19,8 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <config-amarok.h>  
-#include <debug.h>
+#include <config-amarok.h>
+#include <Debug.h>
 
 #include <QFile>
 

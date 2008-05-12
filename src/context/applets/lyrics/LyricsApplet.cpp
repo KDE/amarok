@@ -14,7 +14,7 @@
 #include "LyricsApplet.h"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "context/Svg.h"
 #include "Theme.h"
 

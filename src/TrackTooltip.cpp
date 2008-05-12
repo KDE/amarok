@@ -21,7 +21,7 @@
 #include "Amarok.h"
 #include "amarok_export.h"
 #include "App.h"
-#include "debug.h"
+#include "Debug.h"
 #include "meta/MetaUtility.h"
 #include "moodbar.h"
 

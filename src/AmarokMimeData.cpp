@@ -18,7 +18,7 @@
 
 #include "AmarokMimeData.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <QCoreApplication>
 #include <QList>

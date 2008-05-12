@@ -20,7 +20,7 @@
 
 #include "MagnatuneRedownloadDialog.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <QPushButton>
 

@@ -27,7 +27,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "App.h"
-#include "debug.h"
+#include "Debug.h"
 #include "mediabrowser.h"
 #include "MediaItem.h"
 #include "meta/file/File.h"

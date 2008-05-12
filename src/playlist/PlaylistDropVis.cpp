@@ -20,7 +20,7 @@
 
 #include "PlaylistDropVis.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistGraphicsView.h"
 #include "PlaylistModel.h"

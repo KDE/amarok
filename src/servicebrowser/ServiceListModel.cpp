@@ -20,7 +20,7 @@
 #include "ServiceListModel.h"
 
 
-#include "debug.h"
+#include "Debug.h"
 
 ServiceListModel::ServiceListModel()
  : QAbstractListModel()

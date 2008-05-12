@@ -20,7 +20,7 @@
 #include "ServiceMetaBase.h"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "meta/default/DefaultMetaTypes.h"
 #include "TheInstances.h"
 
@@ -739,8 +739,8 @@ ServiceGenre::ServiceGenre( const QString &name )
     , ServiceDisplayInfoProvider()
     , CustomActionsProvider()
     , SourceInfoProvider()
-    , m_name( name )
     , m_id( 0 )
+    , m_name( name )
     , m_tracks()
 {
     //nothing to do

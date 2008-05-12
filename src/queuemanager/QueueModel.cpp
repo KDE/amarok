@@ -14,7 +14,7 @@
 #include "QueueModel.h"
 
 #include "AmarokMimeData.h"
-#include "debug.h"
+#include "Debug.h"
 #include "Meta.h"
 #include "TheInstances.h"
 

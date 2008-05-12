@@ -19,7 +19,7 @@
 */
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include "PodcastCategory.h"
 #include "PodcastModel.h"

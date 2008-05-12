@@ -18,7 +18,7 @@
 #define DEBUG_PREFIX "lastfm"
 #include <qdebug.h>
 #include "logger.h"
-#include "debug.h"
+#include "Debug.h"
 #ifdef qDebug
 #undef qDebug
 #endif

@@ -20,7 +20,7 @@
 
 #define DEBUG_PREFIX "ServiceSqlQueryMaker"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include "ServiceSqlCollection.h"
 

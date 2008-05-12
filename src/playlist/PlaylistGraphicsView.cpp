@@ -20,7 +20,7 @@
 
 #include "Amarok.h"
 #include "App.h" // application palette
-#include "debug.h"
+#include "Debug.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "PlaylistModel.h"
 #include "PlaylistGraphicsItem.h"

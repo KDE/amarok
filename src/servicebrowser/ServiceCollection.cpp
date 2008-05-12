@@ -25,7 +25,7 @@
 
 #include "amarokconfig.h"
 #include "ServiceMetaBase.h"
-#include "debug.h"
+#include "Debug.h"
 #include "support/MemoryQueryMaker.h"
 //#include "reader.h"
 

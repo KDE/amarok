@@ -25,7 +25,7 @@
 
 #include "ActionClasses.h"   //mousePressEvent
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <cmath>
 

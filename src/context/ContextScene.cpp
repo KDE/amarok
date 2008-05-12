@@ -15,7 +15,7 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "debug.h"
+#include "Debug.h"
 #include "plasma/containment.h"
 
 #include <QGraphicsSceneDragDropEvent>

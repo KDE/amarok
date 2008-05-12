@@ -17,7 +17,7 @@
 */
 #include "medium.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <KConfig>
 #include <KLocale>

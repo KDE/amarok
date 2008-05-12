@@ -21,7 +21,7 @@
 #include "SvgTinter.h"
 
 #include "App.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <QBuffer>
 #include <KFilterDev>

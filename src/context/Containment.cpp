@@ -13,7 +13,7 @@
 
 #include "Containment.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include "plasma/corona.h"
 

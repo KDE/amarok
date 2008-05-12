@@ -20,7 +20,7 @@
 
 #include "Amarok.h"
 #include <config-amarok.h>  
-#include "debug.h"
+#include "Debug.h"
 
 
 #include <KIconEffect>

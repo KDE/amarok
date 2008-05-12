@@ -21,7 +21,7 @@
 static const char* rcsid __attribute__((unused)) =
 "$Id: track.cpp,v 1.10.2.8 2005/07/05 00:25:09 acejones Exp $";
 
-#include "debug.h"
+#include "Debug.h"
 #include "track.h"
 #include "njbmediadevice.h"
 

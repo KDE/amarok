@@ -13,7 +13,7 @@
 
 #include "LyricsManager.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "EngineController.h"
 #include "TheInstances.h"
 

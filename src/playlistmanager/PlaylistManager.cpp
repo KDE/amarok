@@ -26,7 +26,7 @@
 #include "PodcastProvider.h"
 #include "sql/SqlPodcastProvider.h"
 #include "TheInstances.h"
-#include "debug.h"
+#include "Debug.h"
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"

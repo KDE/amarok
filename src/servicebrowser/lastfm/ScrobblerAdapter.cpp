@@ -15,7 +15,7 @@
 
 #include "ScrobblerAdapter.h"
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "MetaConstants.h"

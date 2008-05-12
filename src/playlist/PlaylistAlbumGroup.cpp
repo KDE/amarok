@@ -19,7 +19,7 @@
 
 #include "PlaylistAlbumGroup.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 namespace Playlist {
 

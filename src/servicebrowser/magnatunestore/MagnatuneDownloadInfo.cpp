@@ -22,7 +22,7 @@
 #include "MagnatuneDownloadInfo.h"
 
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <QFile>
 #include <Q3TextStream>

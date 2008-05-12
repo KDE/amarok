@@ -21,7 +21,7 @@
 
 AMAROK_EXPORT_PLUGIN( MassStorageDeviceHandlerFactory )
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <kconfig.h>
 #include <kurl.h>

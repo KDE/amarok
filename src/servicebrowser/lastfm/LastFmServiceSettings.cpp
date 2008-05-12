@@ -15,7 +15,7 @@
 
 #include "LastFmServiceSettings.h"
 #include "ui_LastFmConfigWidget.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <QVBoxLayout>
 

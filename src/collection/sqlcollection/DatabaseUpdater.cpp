@@ -18,7 +18,7 @@
 
 #include "DatabaseUpdater.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "SqlCollection.h"
 
 static const int DB_VERSION = 1;

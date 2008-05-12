@@ -19,7 +19,7 @@
 
 #include "JamendoInfoParser.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "JamendoMeta.h"
 
 #include <KLocale>

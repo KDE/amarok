@@ -60,7 +60,6 @@ include_directories(
     mediadevice
     servicebrowser
     #servicebrowser/magnatunestore
-    ${CMAKE_CURRENT_SOURCE_DIR}
     meta
     collection
     podcasts
@@ -455,8 +454,6 @@ kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 
 kde4_add_ui3_files(amaroklib_LIB_SRCS
    dbsetup.ui
-#   newdynamic.ui
-#   tagguesserconfigdialog.ui
 )
 
 kde4_add_ui_files(amaroklib_LIB_SRCS

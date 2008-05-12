@@ -16,7 +16,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "App.h"
-#include "debug.h"
+#include "Debug.h"
 #include "covermanager/CoverManager.h"
 #include "EngineController.h"
 #include "k3bexporter.h"

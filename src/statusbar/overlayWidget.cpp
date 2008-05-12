@@ -24,7 +24,7 @@
 //Added by qt3to4:
 #include <QEvent>
 
-#include "debug.h"
+#include "Debug.h"
 
 
 namespace KDE {

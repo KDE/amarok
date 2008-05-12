@@ -21,7 +21,7 @@
 #include "MagnatunePurchaseHandler.h"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "MagnatuneDatabaseHandler.h"
 #include "MagnatuneConfig.h"
 #include "ContextStatusBar.h"

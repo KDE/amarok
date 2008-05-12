@@ -18,7 +18,7 @@
 
 #include "PodcastReader.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <kio/job.h>
 #include <kurl.h>

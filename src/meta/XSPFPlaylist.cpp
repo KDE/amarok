@@ -20,7 +20,7 @@
 
 #include "XSPFPlaylist.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "CollectionManager.h"
 #include "MainWindow.h"
 #include "meta/proxy/MetaProxy.h"

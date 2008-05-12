@@ -19,7 +19,7 @@
 
 #include "PlaylistClassicView.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "PlaylistModel.h"
 #include "PlaylistViewCommon.h"
 #include "TheInstances.h"

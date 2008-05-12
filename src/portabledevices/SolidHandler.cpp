@@ -21,7 +21,7 @@
 
 #include <QList>
 
-#include "debug.h"
+#include "Debug.h"
 #include "SolidHandler.h"
 
 

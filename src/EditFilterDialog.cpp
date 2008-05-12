@@ -18,7 +18,7 @@
 #include "EditFilterDialog.h"
 
 #include "amarokconfig.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <KGlobal>
 #include <KLineEdit>

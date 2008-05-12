@@ -23,7 +23,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "CoverManager.h"
-#include "debug.h"
+#include "Debug.h"
 //#include "AmarokStatusBar.h"
 #include "ContextStatusBar.h"
 #include "ui_EditCoverSearchDialog.h"

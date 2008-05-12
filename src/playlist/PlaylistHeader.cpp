@@ -19,7 +19,7 @@
  **************************************************************************/
 
 
-#include "debug.h"
+#include "Debug.h"
 
 #include "PlaylistHeader.h"
 

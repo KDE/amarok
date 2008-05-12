@@ -20,7 +20,7 @@
 #include "ShoutcastMeta.h"
 #include "PlaylistFileSupport.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 ShoutcastTrack::ShoutcastTrack( const QString &name, const KUrl & playlistUrl )
     : MetaStream::Track( KUrl() )

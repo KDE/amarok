@@ -21,7 +21,7 @@
 #include "Amarok.h"
 #include "CollectionManager.h"
 #include "ContextStatusBar.h"
-#include "debug.h"
+#include "Debug.h"
 #include "PodcastReader.h"
 #include "SqlStorage.h"
 #include "TheInstances.h"

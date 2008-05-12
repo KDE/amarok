@@ -17,7 +17,7 @@
 */
 
 #include "PLSPlaylist.h"
-#include "debug.h"
+#include "Debug.h"
 #include "Meta.h"
 #include "proxy/MetaProxy.h"
 #include "EditCapability.h"

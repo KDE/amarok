@@ -29,7 +29,7 @@
 #include "ServiceSqlRegistry.h"
 #include "TheInstances.h"
 #include "collection/CollectionManager.h"
-#include "debug.h"
+#include "Debug.h"
 #include "magnatuneinfoparser.h"
 #include "playlist/PlaylistModel.h"
 

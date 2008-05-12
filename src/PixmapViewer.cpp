@@ -19,7 +19,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 #include "PixmapViewer.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <KApplication>
 

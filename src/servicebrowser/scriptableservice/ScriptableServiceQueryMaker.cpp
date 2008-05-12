@@ -23,7 +23,7 @@
 #include "collection/support/MemoryMatcher.h"
 #include "AmarokProcess.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <KRun>
 #include <KShell>

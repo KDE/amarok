@@ -19,7 +19,7 @@
 
 #include "OpmlDirectoryService.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "OpmlDirectoryInfoParser.h"
 #include "OpmlDirectoryXmlParser.h"
 #include "playlistmanager/PlaylistManager.h"

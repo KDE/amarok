@@ -24,7 +24,7 @@
 
 #include <config-amarok.h>  
 
-#include "debug.h"
+#include "Debug.h"
 #include "ContextStatusBar.h"
 
 #include <KIO/Job>

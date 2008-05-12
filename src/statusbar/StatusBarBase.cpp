@@ -23,7 +23,7 @@
 #define DEBUG_PREFIX "StatusBar"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "MainWindow.h"
 #include "Sidebar.h"
 #include "StatusBarMessageLabel.h"

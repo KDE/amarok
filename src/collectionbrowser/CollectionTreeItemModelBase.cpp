@@ -26,7 +26,7 @@
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "CollectionTreeItem.h"
-#include "debug.h"
+#include "Debug.h"
 #include "Expression.h"
 #include "QueryMaker.h"
 

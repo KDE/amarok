@@ -20,7 +20,7 @@
 #include "JamendoDatabaseHandler.h"
 
 #include "CollectionManager.h"
-#include "debug.h"
+#include "Debug.h"
 #include "SqlStorage.h"
 
 using namespace Meta;

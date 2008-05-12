@@ -25,7 +25,7 @@
 
 #include "popupdropper/PopupDropperAction.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include <KStandardDirs>
 
 using namespace Meta;

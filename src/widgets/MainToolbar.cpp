@@ -26,7 +26,7 @@
 #include "SvgTinter.h"
 #include "TheInstances.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "EngineController.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "popupdropper/PopupDropperAction.h"

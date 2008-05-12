@@ -13,7 +13,7 @@
 
 #include "VerticalLayout.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <plasma/applet.h>
 

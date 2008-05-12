@@ -20,7 +20,7 @@
 #ifndef AMAROK_STREAM_P_H
 #define AMAROK_STREAM_P_H
 
-#include "debug.h"
+#include "Debug.h"
 #include "EngineController.h"
 #include "EngineObserver.h"
 #include "Meta.h"

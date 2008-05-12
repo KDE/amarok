@@ -15,7 +15,7 @@
 
 #include "QueueManager.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "QueueModel.h"
 #include "TheInstances.h"
 

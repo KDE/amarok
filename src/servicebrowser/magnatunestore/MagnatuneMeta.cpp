@@ -24,7 +24,7 @@
 #include "MagnatuneStore.h"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <KIcon>
 #include <KLocale>

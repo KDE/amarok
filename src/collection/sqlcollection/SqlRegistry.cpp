@@ -20,7 +20,7 @@
 
 #include "SqlRegistry.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include "mountpointmanager.h"
 #include "SqlCollection.h"

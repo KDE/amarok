@@ -22,7 +22,7 @@
 #include "App.h"
 #include "browserToolBar.h"
 #include "collectiondb.h"
-#include "debug.h"
+#include "Debug.h"
 #include "editfilterdialog.h"
 #include "deviceconfiguredialog.h"
 #include "expression.h"

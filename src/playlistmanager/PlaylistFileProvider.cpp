@@ -20,7 +20,7 @@
 #include "PlaylistFileSupport.h"
 #include "EditablePlaylistCapability.h"
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <QString>
 #include <QFile>

@@ -17,7 +17,7 @@ email                : markey@web.de
 
 #include "PluginManager.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "plugin.h"
 
 #include <KLibLoader>

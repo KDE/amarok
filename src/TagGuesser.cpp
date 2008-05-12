@@ -21,7 +21,7 @@
 #include "TagGuesser.h"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <KApplication>
 #include <KConfig>

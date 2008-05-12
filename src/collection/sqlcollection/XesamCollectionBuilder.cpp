@@ -18,7 +18,7 @@
 
 #include "XesamCollectionBuilder.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
 #include "SqlCollection.h"

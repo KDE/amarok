@@ -17,7 +17,7 @@
 */
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "PlaylistBrowser.h"
 #include "Playlist.h"
 #include "PodcastMeta.h"

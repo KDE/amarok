@@ -23,7 +23,7 @@
 #include "ServiceEngine.h"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "ServiceInfoProxy.h"

@@ -20,7 +20,7 @@
 #include "OpmlDirectoryInfoParser.h"
 
 #include "ContextStatusBar.h"
-#include "debug.h"
+#include "Debug.h"
 #include "OpmlDirectoryMeta.h"
 
 #include <KLocale>

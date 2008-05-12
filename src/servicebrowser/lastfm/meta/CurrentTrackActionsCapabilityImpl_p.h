@@ -23,7 +23,7 @@
 
 #include "meta/CurrentTrackActionsCapability.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 class CurrentTrackActionsCapabilityImpl : public Meta::CurrentTrackActionsCapability
 {

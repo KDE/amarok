@@ -19,7 +19,7 @@
 
 #define DEBUG_PREFIX "CoverBling"
 
-#include "debug.h"
+#include "Debug.h"
 #include "CoverBling.h"
 #include "collection/CollectionManager.h"
 #include "collection/BlockingQuery.h"

@@ -23,7 +23,7 @@
 #include "Context.h"
 #include "ContextScene.h"
 #include "DataEngineManager.h"
-#include "debug.h"
+#include "Debug.h"
 #include "Svg.h"
 #include "TheInstances.h"
 #include "Theme.h"

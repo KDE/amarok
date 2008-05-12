@@ -19,7 +19,7 @@
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
 #include "ContextStatusBar.h"
-#include "debug.h"
+#include "Debug.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "meta/Meta.h"

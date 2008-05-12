@@ -19,7 +19,7 @@
 
 #include "CollectionManager.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include "BlockingQuery.h"
 #include "Collection.h"

@@ -20,7 +20,7 @@
 
 #include "ShoutcastService.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "Amarok.h"
 #include "ContextStatusBar.h"
 

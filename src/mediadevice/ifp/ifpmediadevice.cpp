@@ -29,7 +29,7 @@
 
 AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 
-#include "debug.h"
+#include "Debug.h"
 #include "metabundle.h"
 #include "statusbar/ContextStatusBar.h"
 #include "transferdialog.h"

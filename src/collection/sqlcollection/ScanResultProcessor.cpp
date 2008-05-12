@@ -18,7 +18,7 @@
 
 #include "ScanResultProcessor.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"

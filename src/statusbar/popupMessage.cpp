@@ -22,7 +22,7 @@
  ***************************************************************************/
 
 #include "popupMessage.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <kpushbutton.h>
 #include <kstandardguiitem.h>

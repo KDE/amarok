@@ -17,7 +17,7 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "debug.h"
+#include "Debug.h"
 #include "analyzerbase.h"
 #include "socketserver.h"
 

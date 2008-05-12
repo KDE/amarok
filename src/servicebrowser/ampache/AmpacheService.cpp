@@ -22,7 +22,7 @@
 #include "Amarok.h"
 #include "AmpacheConfig.h"
 #include "collection/CollectionManager.h"
-#include "debug.h"
+#include "Debug.h"
 #include "ContextStatusBar.h"
 
 

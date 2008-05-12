@@ -21,7 +21,7 @@
 #include "ContextLayout.h"
 
 #include "Applet.h"
-#include "debug.h"
+#include "Debug.h"
 #include "VerticalLayout.h"
 
 #include <limits.h>

@@ -18,7 +18,7 @@
 
 #include "SqlCollectionLocation.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
 #include "mountpointmanager.h"

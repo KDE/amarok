@@ -30,7 +30,7 @@
 #include "context/ContextView.h"
 #include "context/DataEngineManager.h"
 #include "covermanager/CoverManager.h" // for actions
-#include "debug.h"
+#include "Debug.h"
 #include "EngineController.h" //for actions in ctor
 #include "filebrowser/FileBrowser.h"
 #include "k3bexporter.h"

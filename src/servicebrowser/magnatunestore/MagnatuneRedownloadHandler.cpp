@@ -22,7 +22,7 @@
 #include "MagnatuneRedownloadHandler.moc"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <KLocale>
 #include "KMessageBox"

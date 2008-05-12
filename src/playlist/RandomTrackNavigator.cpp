@@ -20,7 +20,7 @@
 
 #include "RandomTrackNavigator.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "PlaylistItem.h"
 #include "PlaylistModel.h"
 

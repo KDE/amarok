@@ -20,7 +20,7 @@
 #include "JamendoXmlParser.h"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "ContextStatusBar.h"
 
 #include <QDomDocument>

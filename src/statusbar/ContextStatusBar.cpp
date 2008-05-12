@@ -22,7 +22,7 @@
 
 #include "amarokconfig.h"
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "EngineController.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"

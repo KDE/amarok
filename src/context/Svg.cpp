@@ -13,7 +13,7 @@
 
 #include "Svg.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <QMatrix>
 

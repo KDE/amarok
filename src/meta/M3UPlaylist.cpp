@@ -18,7 +18,7 @@
 
 #include "M3UPlaylist.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "Amarok.h"
 #include "proxy/MetaProxy.h"
 #include "TheInstances.h"

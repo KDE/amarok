@@ -13,7 +13,7 @@
 
 #include "TextWidget.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <QTextDocument>
 

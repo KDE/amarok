@@ -20,7 +20,7 @@
 
 #include "StandardTrackNavigator.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "EngineController.h"
 #include "PlaylistModel.h"
 

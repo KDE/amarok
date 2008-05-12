@@ -15,7 +15,7 @@
 #include "PlayistInfo.h"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "context/Svg.h"
 
 #include <QPainter>

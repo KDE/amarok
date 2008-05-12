@@ -23,7 +23,7 @@
 #include "amarokconfig.h"
 #include "CollectionManager.h"
 #include "covermanager/CoverFetcher.h"
-#include "debug.h"
+#include "Debug.h"
 #include "EditCapability.h"
 #include "MainWindow.h"
 #include "MetaQueryMaker.h"
@@ -1559,7 +1559,7 @@ TagDialog::labelListFromText( const QString &text )
     }
     QStringList result;
     QMap<QString, int>::ConstIterator endMap( map.constEnd() );
-    for(QMap<QString, int>::ConstIterator it = map.constBegin(); it != endMap; ++it ) 
+    for(QMap<QString, int>::ConstIterator it = map.constBegin(); it != endMap; ++it )
     {
         result.append( it.key() );
     }

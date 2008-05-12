@@ -24,7 +24,7 @@
 
 #include "amarokconfig.h"
 #include "daapmeta.h"
-#include "debug.h"
+#include "Debug.h"
 #include "MemoryQueryMaker.h"
 #include "reader.h"
 

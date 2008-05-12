@@ -20,7 +20,7 @@
 #include "MemoryQueryMaker.h"
 #include "MemoryQueryMakerFilters_p.h"
 #include "MemoryMatcher.h"
-#include "debug.h"
+#include "Debug.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>

@@ -18,7 +18,7 @@
 #include "transferdialog.h"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "mediabrowser.h"
 #include "MediaDevice.h"
 

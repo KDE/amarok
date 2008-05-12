@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 #include "metabundle.h"
 
 #include "playlistitem.h"

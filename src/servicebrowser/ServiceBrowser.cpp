@@ -20,7 +20,7 @@
 #include "ServiceBrowser.h"
 
 #include "context/ContextView.h"
-#include "debug.h"
+#include "Debug.h"
 #include "ServiceListDelegate.h"
 
 ServiceBrowser * ServiceBrowser::s_instance = 0;

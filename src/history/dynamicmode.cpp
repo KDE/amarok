@@ -17,7 +17,7 @@
 
 #include "querybuilder.h" // querybuilder
 #include "collectiondb.h" // similar artists
-#include "debug.h"
+#include "Debug.h"
 #include "EngineController.h" // HACK to get current artist for suggestion retrieval
 #include "MainWindow.h"
 #include "meta/Meta.h"

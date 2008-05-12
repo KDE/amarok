@@ -22,7 +22,7 @@
 #define DEFAULTMETATYPES_H
 
 #include "amarok_export.h"
-#include "debug.h"
+#include "Debug.h"
 #include "Meta.h"
 
 #include "TheInstances.h"

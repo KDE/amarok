@@ -20,7 +20,7 @@
 #include "MetaProxy_p.h"
 #include "MetaProxy_p.moc"
 
-#include "debug.h"
+#include "Debug.h"
 #include "EditCapability.h"
 
 #include "CollectionManager.h"

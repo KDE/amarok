@@ -13,7 +13,7 @@
 
 #include "LastFmEvents.h"
 
-#include "debug.h"
+#include "Debug.h"
 #include "Theme.h"
 
 #include <QGraphicsTextItem>

@@ -18,7 +18,7 @@
 
 #include "AudioCdTrackProvider_p.h"
 
-#include "debug.h"
+#include "Debug.h"
 
 #include <solid/block.h>
 #include <solid/device.h>

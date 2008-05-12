@@ -21,7 +21,7 @@
 #include "SvgHandler.h"
 
 #include "App.h"
-#include "debug.h"
+#include "Debug.h"
 #include "MainWindow.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"
