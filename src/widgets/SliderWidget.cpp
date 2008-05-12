@@ -259,7 +259,22 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         //renderer->render( &pt, "slider_right_highlight",  QRectF( m_sliderWidth - side,0 , side, m_sliderHeight ) );
 
         renderer->render( &pt, "slider_center",  QRectF( side, 0, knobX +3, m_sliderHeight ) );
-        renderer->render( &pt, "slider_center_highlight",  QRectF( side, 0, knobX, m_sliderHeight ) );
+
+        //tile this to make it look good!
+        int tileWidth = 16;
+        QPixmap sliderTile = The::svgHandler()->renderSvg( "slider_center_highlight", tileWidth, m_sliderHeight, "slider_center_highlight" );
+
+        int offset = side;
+        int xMax =  knobX + m_sliderHeight / 2;
+        while( ( offset + tileWidth ) <= xMax ) {
+            pt.drawPixmap( offset , 0, sliderTile );
+            offset += tileWidth;
+        }
+        
+    //paint as much of the last tile as needed
+        int leftover = xMax - offset;
+        if ( leftover > 0 )
+            pt.drawPixmap( offset, 0, sliderTile, 0, 0, leftover, m_sliderHeight );
 
         renderer->render( &pt, "slider_position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
         //renderer->render( &pt, "slider_position_highlight",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
