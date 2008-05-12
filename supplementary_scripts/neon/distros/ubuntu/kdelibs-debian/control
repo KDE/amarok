@@ -14,7 +14,20 @@ Package: amarok-nightly-kdelibs
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, xbase-clients, shared-mime-info, hicolor-icon-theme,
- libxml2-utils, dbus-x11, hspell, xsltproc, shared-mime-info, libc6-dbg [amd64]
+ libxml2-utils, dbus-x11, hspell, xsltproc, shared-mime-info
 Description: core libraries for all KDE 4 applications
  This package contains all the shared libraries. You need these libraries to
  run KDE applications.
+
+Package: amarok-nightly-kdelibs-dbg
+Section: libdevel
+Architecture: any
+Priority: extra
+Depends: amarok-nightly-qt-dbg, libc6-dbg [amd64]
+Description: debugging symbols for amarok-nightly-kdelibs
+ This package contains the debugging symbols associated with amarok-nightly.
+ They will automatically be used by gdb for debugging amarok-nightly-related
+ issues.
+ .
+ This package is part of Project Neon, The Amarok Nightly Builds project.
+ See the 'amarok-nightly' package for more information.
