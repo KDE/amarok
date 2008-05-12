@@ -37,12 +37,12 @@ class SearchWidget : public QWidget
     private slots:
 
         void slotShowFilterEditor();
-        
-    private:
-        void init( QWidget* parent );
 
-        KLineEdit *m_sw;
-        KPushButton * m_filterButton;
+    private:
+        void init( QWidget *parent );
+
+        KLineEdit   *m_sw;
+        KPushButton *m_filterButton;
 };
 
 #endif

@@ -45,20 +45,18 @@ public:
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
 protected:
-      virtual void paintEvent(QPaintEvent *);
-      virtual void resizeEvent ( QResizeEvent * event );
+      virtual void paintEvent( QPaintEvent * );
+      virtual void resizeEvent( QResizeEvent * event );
       virtual bool eventFilter( QObject*, QEvent* );
       virtual void paletteChange( const QPalette & oldPalette );
       void handleAddActions();
       //void centerAddActions();
 
 private:
-
-    //KHBox * m_insideBox;
-    QWidget * m_insideBox;
-    KToolBar *m_playerControlsToolbar;
-    KToolBar *m_addControlsToolbar;
-    VolumeWidget * m_volumeWidget;
+    QWidget      *m_insideBox;
+    KToolBar     *m_playerControlsToolbar;
+    KToolBar     *m_addControlsToolbar;
+    VolumeWidget *m_volumeWidget;
 
     bool m_renderAddControls;
     int m_addActionsOffsetX;

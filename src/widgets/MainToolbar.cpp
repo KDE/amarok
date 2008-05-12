@@ -22,14 +22,13 @@
 #include "ActionClasses.h"
 #include "Amarok.h"
 #include "AnalyzerWidget.h"
-#include "ProgressSlider.h"
-#include "SvgTinter.h"
-#include "TheInstances.h"
-
 #include "Debug.h"
 #include "EngineController.h"
 #include "meta/CurrentTrackActionsCapability.h"
+#include "ProgressSlider.h"
 #include "popupdropper/PopupDropperAction.h"
+#include "SvgTinter.h"
+#include "TheInstances.h"
 
 #include <KAction>
 #include <KApplication>
@@ -42,9 +41,9 @@
 #include <QResizeEvent>
 
 MainToolbar::MainToolbar( QWidget * parent )
- : KHBox( parent )
- , EngineObserver( The::engineController() )
- , m_addActionsOffsetX( 0 )
+    : KHBox( parent )
+    , EngineObserver( The::engineController() )
+    , m_addActionsOffsetX( 0 )
 
 {
     setObjectName( "MainToolbar" );
@@ -52,8 +51,8 @@ MainToolbar::MainToolbar( QWidget * parent )
     setMaximumSize( 20000, 67 );
     setMinimumSize( 200, 67 );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    setContentsMargins(0,0,0,0);
-    layout()->setContentsMargins(0,0,0,0);
+    setContentsMargins( 0, 0, 0, 0 );
+    layout()->setContentsMargins( 0, 0, 0, 0 );
 
     KVBox *aVBox     = new KVBox( this );
     aVBox->setMaximumSize( 50000, 60 );
@@ -64,8 +63,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_insideBox = new QWidget( aVBox );
 
     m_insideBox->setMaximumSize( 600000, 45 );
-    m_insideBox->setContentsMargins(0,0,0,0);
-   // m_insideBox->layout()->setContentsMargins(0,0,0,0);
+    m_insideBox->setContentsMargins( 0, 0, 0, 0 );
 
     /*AnalyzerWidget *aw = new AnalyzerWidget( m_insideBox );
     //aw->setMinimumSize( 200, 30 );
@@ -77,15 +75,11 @@ MainToolbar::MainToolbar( QWidget * parent )
     ProgressWidget *pWidget = new ProgressWidget( aVBox );
     pWidget->setMinimumSize( 400, 17 );
     pWidget->setMaximumSize( 600000, 17 );
-    pWidget->setContentsMargins(0,2,0,0);
+    pWidget->setContentsMargins( 0, 2, 0, 0 );
 
     m_playerControlsToolbar = new Amarok::ToolBar( m_insideBox );
-    //playerControlsToolbar->setMinimumSize( 180, 45 );
-    //m_playerControlsToolbar->setFixedSize( 180, 40 );
     m_playerControlsToolbar->setFixedHeight( 40 );
 
-
-    //m_insideBox->layout()->setAlignment( playerControlsToolbar, Qt::AlignCenter );
     m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_playerControlsToolbar->setIconDimensions( 32 );
@@ -96,25 +90,15 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "next" ) );
     m_playerControlsToolbar->adjustSize();
 
-
     m_addControlsToolbar = new Amarok::ToolBar( m_insideBox );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_addControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_addControlsToolbar->setIconDimensions( 16 );
     m_addControlsToolbar->setMovable( false );
-    //m_addControlsToolbar->setFixedSize( 90, 22 );
     m_addControlsToolbar->setFixedHeight( 22 );
 
     m_volumeWidget = new VolumeWidget( m_insideBox );
-    //vw->setMinimumSize( 150, 30 );
     m_volumeWidget->setFixedSize( 160, 24 );
-
-    //m_volumeWidget->setMinimumSize( 230, 30 );
-
-    //m_insideBox->layout()->setAlignment( vw, Qt::AlignRight |  Qt::AlignVCenter);
-
-    //trigger a resize event to get everything laid out
-    //resize( m_insideBox->width(), 62 );
 
     m_renderAddControls = false;
     kapp->installEventFilter( this );
@@ -125,7 +109,7 @@ MainToolbar::~MainToolbar()
     DEBUG_BLOCK
 }
 
-void MainToolbar::paintEvent(QPaintEvent *)
+void MainToolbar::paintEvent( QPaintEvent * )
 {
     int middle = contentsRect().width() / 2;
 
@@ -138,13 +122,14 @@ void MainToolbar::paintEvent(QPaintEvent *)
     //Meta::TrackPtr track = The::engineController()->currentTrack();
 
     int tileWidth = contentsRect().height() * 2;
-    
+
     QPainter painter( this );
     QPixmap backgroundTile = The::svgHandler()->renderSvg( "toolbar_background",tileWidth , contentsRect().height(), "toolbar_background" );
-    
+
 
     int offset = 0;
-    while( ( offset + tileWidth ) <= contentsRect().width() ) {
+    while( ( offset + tileWidth ) <= contentsRect().width() )
+    {
         //debug() << "painting tile...!";
         painter.drawPixmap( offset, 0, backgroundTile );
         offset += tileWidth;
@@ -154,24 +139,24 @@ void MainToolbar::paintEvent(QPaintEvent *)
 
     if ( leftover > 0 )
         painter.drawPixmap( offset, 0, backgroundTile, 0, 0, leftover, contentsRect().height() );
-    
 
     QPixmap controlArea = The::svgHandler()->renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
     painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
 
-    if ( m_renderAddControls ) {
+    if ( m_renderAddControls )
+    {
         QPixmap addControlArea = The::svgHandler()->renderSvg( "buttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
         painter.drawPixmap( addControlRect.x(), addControlRect.y(), addControlArea );
     }
 }
 
-void MainToolbar::engineStateChanged(Phonon::State state, Phonon::State oldState)
+void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     Q_UNUSED( state ); Q_UNUSED( oldState );
     handleAddActions();
 }
 
-void MainToolbar::engineNewMetaData(const QHash< qint64, QString > & newMetaData, bool trackChanged)
+void MainToolbar::engineNewMetaData( const QHash< qint64, QString > &newMetaData, bool trackChanged )
 {
     Q_UNUSED( newMetaData ); Q_UNUSED( trackChanged );
     handleAddActions();
@@ -179,17 +164,18 @@ void MainToolbar::engineNewMetaData(const QHash< qint64, QString > & newMetaData
 
 void MainToolbar::handleAddActions()
 {
-    foreach( QAction * action, m_additionalActions ) {
+    foreach( QAction * action, m_additionalActions )
         m_addControlsToolbar->removeAction( action );
-    }
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( !track ) {
+    if( !track )
+    {
         m_renderAddControls = false;
         return;
     }
 
-    if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
+    if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    {
         Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
@@ -197,7 +183,8 @@ void MainToolbar::handleAddActions()
             m_additionalActions = cac->customActions();
             int numberOfActions = m_additionalActions.size();
 
-            if ( numberOfActions < 1 ) {
+            if ( numberOfActions < 1 )
+            {
                 m_renderAddControls = false;
                 return;
             }
@@ -213,17 +200,17 @@ void MainToolbar::handleAddActions()
 
             //m_insideBox->layout()->setAlignment( m_addControlsToolbar, Qt::AlignCenter );
 
-        } else {
-            m_renderAddControls = false;
         }
-    } else {
-        m_renderAddControls = false;
+        else
+            m_renderAddControls = false;
     }
+    else
+        m_renderAddControls = false;
 
     repaint ( 0, 0, -1, -1 ); // make sure that the add info area is shown or hidden at once.
 }
 
-void MainToolbar::resizeEvent(QResizeEvent * event)
+void MainToolbar::resizeEvent(QResizeEvent *event)
 {
     DEBUG_BLOCK
 

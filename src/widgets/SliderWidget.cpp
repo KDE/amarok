@@ -41,8 +41,8 @@
 #include <QPixmapCache>
 #include <QStyle>
 #include <QStyleOptionComplex>
-#include <QTimer>
 #include <QSvgRenderer>
+#include <QTimer>
 
 #include <KIcon>
 #include <KLocale>
@@ -50,10 +50,10 @@
 #include <KStandardDirs>
 
 Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
-        : QSlider( orientation, parent )
-        , m_sliding( false )
-        , m_outside( false )
-        , m_prevValue( 0 )
+    : QSlider( orientation, parent )
+    , m_sliding( false )
+    , m_outside( false )
+    , m_prevValue( 0 )
 {
     setRange( 0, max );
 }
@@ -89,17 +89,21 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
         //feels better, but using set value of 20 is bad of course
         QRect rect( -20, -20, width()+40, height()+40 );
 
-        if ( orientation() == Qt::Horizontal && !rect.contains( e->pos() ) ) {
+        if ( orientation() == Qt::Horizontal && !rect.contains( e->pos() ) )
+        {
             if ( !m_outside )
                 QSlider::setValue( m_prevValue );
             m_outside = true;
-        } else {
+        }
+        else
+        {
             m_outside = false;
             slideEvent( e );
             emit sliderMoved( value() );
         }
     }
-    else QSlider::mouseMoveEvent( e );
+    else
+        QSlider::mouseMoveEvent( e );
 }
 
 void
@@ -141,7 +145,6 @@ void
 Amarok::Slider::setValue( int newValue )
 {
     //don't adjust the slider while the user is dragging it!
-
     if ( !m_sliding || m_outside )
         QSlider::setValue( adjustValue( newValue ) );
     else
@@ -156,14 +159,14 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     : Amarok::Slider( Qt::Horizontal, parent, max )
 {
     setFocusPolicy( Qt::NoFocus );
-
     m_margin = 4;
 }
 
 void
 Amarok::VolumeSlider::mousePressEvent( QMouseEvent *e )
 {
-    if( e->button() != Qt::RightButton ) {
+    if( e->button() != Qt::RightButton )
+    {
         Amarok::Slider::mousePressEvent( e );
         slideEvent( e );
     }
@@ -173,7 +176,7 @@ void
 Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 {
     QMenu menu;
-    menu.setTitle( i18n( "Volume" ) );
+    menu.setTitle(   i18n( "Volume" ) );
     menu.addAction(  i18n(   "100%" ) )->setData( 100 );
     menu.addAction(  i18n(    "80%" ) )->setData(  80 );
     menu.addAction(  i18n(    "60%" ) )->setData(  60 );
@@ -189,7 +192,8 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
     }
 
     QAction* a = menu.exec( mapToGlobal( e->pos() ) );
-    if( a ) {
+    if( a )
+    {
         const int n = a->data().toInt();
         if( n >= 0 )
         {
@@ -208,7 +212,6 @@ Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
     if ( ( x >= m_sliderX ) && ( x <= m_sliderX + m_sliderWidth ) )
     {
         QSlider::setValue( QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().x() - m_sliderX, m_sliderWidth-2 ) );
-
     }
 }
 
@@ -243,7 +246,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
     const int side = 5;
 
-    if( !QPixmapCache::find(key, background) )
+    if( !QPixmapCache::find( key, background ) )
     {
         background.fill( Qt::transparent );
         QPainter pt( &background );
@@ -280,7 +283,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         //renderer->render( &pt, "slider_position_highlight",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
 
 
-        QPixmapCache::insert(key, background);
+        QPixmapCache::insert( key, background );
     }
 
     p.drawPixmap( m_sliderX, ( height() - m_sliderHeight ) / 2, background );
@@ -327,8 +330,8 @@ void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 {
     Q_UNUSED( event );
     m_iconHeight = static_cast<int>( height() * 0.66 );
-    m_iconWidth = static_cast<int>( m_iconHeight * 1.33 );
-    m_textWidth = 40;
+    m_iconWidth  = static_cast<int>( m_iconHeight * 1.33 );
+    m_textWidth  = 40;
     m_sliderWidth = width() - ( m_iconWidth + m_textWidth + m_margin  );
     m_sliderHeight = (int)m_sliderWidth / 7; //maintain sane aspect ratio
     if ( m_sliderHeight > height() )
@@ -352,7 +355,6 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
     , m_oldValue( 0 )
 {
     setFocusPolicy( Qt::NoFocus );
-
     connect( m_animTimer, SIGNAL( timeout() ), SLOT( slotUpdateAnim() ) );
 }
 
@@ -393,7 +395,7 @@ void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    const short side = 5; // Size of the rounded parts.
+    static const short side = 5; // Size of the rounded parts.
 
     QString key = QString("progress-background:%1x%2")
             .arg( width() )
@@ -401,7 +403,8 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 
     QPixmap background( width(), m_sliderHeight );
 
-    if (!QPixmapCache::find(key, background)) {
+    if (!QPixmapCache::find(key, background))
+    {
         background.fill( Qt::transparent );
         QPainter pt( &background );
 

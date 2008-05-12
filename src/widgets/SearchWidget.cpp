@@ -15,24 +15,24 @@
 
 #include <QVBoxLayout>
 
-#include <klineedit.h>
-#include <klocale.h>
-#include <khbox.h>
-#include <kpushbutton.h>
+#include <KLineEdit>
+#include <KLocale>
+#include <KHBox>
+#include <KPushButton>
 
 
 SearchWidget::SearchWidget( QWidget *parent )
-    : QWidget( parent ),
-      m_sw( 0 ),
-      m_filterButton( 0 )
+    : QWidget( parent )
+    , m_sw( 0 )
+    , m_filterButton( 0 )
 {
     init( parent );
 }
 
-SearchWidget::SearchWidget( QWidget *parent, QWidget* caller )
-    : QWidget( parent ),
-      m_sw( 0 ),
-      m_filterButton( 0 )
+SearchWidget::SearchWidget( QWidget *parent, QWidget *caller )
+    : QWidget( parent )
+    , m_sw( 0 )
+    , m_filterButton( 0 )
 {
     init( parent );
     setup( caller );
@@ -41,14 +41,11 @@ SearchWidget::SearchWidget( QWidget *parent, QWidget* caller )
 void
 SearchWidget::setup( QObject* caller )
 {
-//    connect( m_filterButton, SIGNAL( clicked() ), caller,
-//             SLOT(slotEditFilter() ) );
     connect( m_sw, SIGNAL( textChanged( const QString & ) ), caller,
              SLOT( slotSetFilterTimeout() ) );
-
     connect( this, SIGNAL( filterNow() ), caller,
              SLOT( filterNow() ) );
-    
+
 }
 
 ///Private
@@ -65,8 +62,7 @@ SearchWidget::init( QWidget *parent )
     m_sw->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_sw->setClearButtonShown( true );
     m_sw->setFrame( QFrame::Sunken );
-    m_sw->setToolTip( i18n(
-                                "Enter space-separated terms to search in the playlist." ) );
+    m_sw->setToolTip( i18n(  "Enter space-separated terms to search in the playlist." ) );
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( searchBox );
     layout->setContentsMargins(0,0,0,0);
@@ -81,22 +77,24 @@ SearchWidget::init( QWidget *parent )
     connect ( m_filterButton, SIGNAL( clicked() ), this, SLOT( slotShowFilterEditor() ) );
 }
 
-void SearchWidget::setSearchString( const QString & searchString )
+void
+SearchWidget::setSearchString( const QString &searchString )
 {
     m_sw->setText( searchString );
     emit filterNow();
 }
 
-void SearchWidget::slotShowFilterEditor()
+void
+SearchWidget::slotShowFilterEditor()
 {
-    EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
-    
+    EditFilterDialog *fd = new EditFilterDialog( this, true, QString() );
+
     connect( fd, SIGNAL( filterChanged( const QString & ) ), m_sw,  SLOT( setText( const QString & ) ) );
-    //connect( fd, SIGNAL( filterChanged( const QString & ) ), m_caller,  SLOT( filterNow() ) );
-    
+
     fd->exec();
         //m_searchWidget->lineEdit()->setText( fd->filter() );
     //delete fd;
 }
 
 #include "SearchWidget.moc"
+

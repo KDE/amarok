@@ -23,18 +23,16 @@
 #include <klocale.h>
 
 VolumeWidget::VolumeWidget( QWidget *parent )
-    : KHBox( parent ),
-      EngineObserver( The::engineController() ),
-      m_slider( 0 )
+    : KHBox( parent )
+    , EngineObserver( The::engineController() )
+    , m_slider( 0 )
 {
     m_slider = new Amarok::VolumeSlider( this, Amarok::VOLUME_MAX );
     m_slider->setObjectName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
-    setContentsMargins(0,0,0,0);
+    setContentsMargins( 0, 0, 0, 0 );
 
     m_slider->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-    //m_slider->setFixedSize( width(), height() );
-
     m_slider->setToolTip( i18n( "Volume Control" ) );
 
     EngineController* const ec = The::engineController();
@@ -45,7 +43,8 @@ VolumeWidget::VolumeWidget( QWidget *parent )
 void
 VolumeWidget::engineVolumeChanged( int value )
 {
-    if( m_slider ) m_slider->setValue( value );
+    if( m_slider )
+        m_slider->setValue( value );
 }
 
 #include "VolumeWidget.moc"
