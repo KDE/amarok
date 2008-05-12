@@ -19,7 +19,7 @@ install(
         emblem-jamendo.png
         emblem-lastfm.png
         emblem-magnatune.png
-        icons/svg/sources.svg
+        icons/svg/sources.svgz
         loading1.png
         loading2.png
         menu_sidepixmap.png
