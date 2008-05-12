@@ -379,6 +379,13 @@ void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
         m_sliderHeight = height();
 }
 
+void Amarok::Slider::paletteChange(const QPalette & oldPalette)
+{
+    Q_UNUSED( oldPalette );
+    The::svgHandler()->reTint();
+    repaint( 0, 0, -1, -1 );
+}
+
 
 
 #include "SliderWidget.moc"

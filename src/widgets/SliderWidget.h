@@ -58,6 +58,8 @@ namespace Amarok
             virtual void mousePressEvent( QMouseEvent* );
             virtual void slideEvent( QMouseEvent* );
 
+            virtual void paletteChange( const QPalette & oldPalette );
+
             void paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos = -1.0 );
 
             bool m_sliding;
