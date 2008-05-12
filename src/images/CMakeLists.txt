@@ -5,35 +5,35 @@ add_subdirectory( icons )
 
 install(
         FILES
+        OsdBackground.svg
         amarok_icon.svg
         back_stars_grey.png
-        currenttrack_play.png
         currenttrack_pause.png
-        currenttrack_stop.png
-        currenttrack_stop_small.png
+        currenttrack_play.png
         currenttrack_repeat.png
         currenttrack_repeat_small.png
+        currenttrack_stop.png
+        currenttrack_stop_small.png
+        default-theme.svgz
+        emblem-default.png
+        emblem-jamendo.png
+        emblem-lastfm.png
+        emblem-magnatune.png
+        icons/svg/sources.svg
         loading1.png
         loading2.png
         menu_sidepixmap.png
         more_albums.png
         musicbrainz.png
         nocover.png
-        shadow_albumcover.png
-        sbinner_stars.png
-        smallstar.png
-        icons/svg/sources.svg
-        OsdBackground.svg
-        splash_screen.jpg
-        star.png
-        emblem-magnatune.png
-        emblem-lastfm.png
-        emblem-jamendo.png
-        emblem-default.png
         pud_items.svg
-        default-theme.svgz
+        sbinner_stars.png
         service_info_frontpage_bg.png
         service_info_frontpage_logo.png
         service_info_frontpage_shadow.png
+        shadow_albumcover.png
+        smallstar.png
+        splash_screen.jpg
+        star.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )
