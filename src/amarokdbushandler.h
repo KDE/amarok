@@ -23,9 +23,8 @@
 #include "amarok_export.h"
 
 #include <QObject>
-//Added by qt3to4:
 #include <QByteArray>
-#include <kurl.h>
+#include <KUrl>
 
 namespace Amarok
 {
@@ -175,13 +174,14 @@ class AMAROK_EXPORT DbusCollectionHandler : public QObject
    public:
        DbusCollectionHandler();
 
-   public /* DCOP */ slots:
+   public slots:
       virtual int totalAlbums();
       virtual int totalArtists();
       virtual int totalComposers();
       virtual int totalCompilations();
       virtual int totalGenres();
       virtual int totalTracks();
+      virtual int totalTime();
       virtual bool isDirInCollection( const QString &path );
       virtual bool moveFile( const QString &oldURL, const QString &newURL, bool overwrite );
       virtual QStringList query(const QString& sql);
@@ -202,7 +202,7 @@ class DbusScriptHandler : public QObject
    public:
        DbusScriptHandler();
 
-   public /* DCOP */ slots:
+   public slots:
       virtual bool runScript(const QString&);
       virtual bool stopScript(const QString&);
       virtual QStringList listRunningScripts();
