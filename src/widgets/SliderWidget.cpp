@@ -251,7 +251,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         background.fill( Qt::transparent );
         QPainter pt( &background );
 
-        QSvgRenderer *renderer = The::svgHandler()->getRenderer();
+        /*QSvgRenderer *renderer = The::svgHandler()->getRenderer();
 
         renderer->render( &pt, "slider_center", QRectF( side, 0, m_sliderWidth - side * 2, m_sliderHeight ) );
 
@@ -259,9 +259,19 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         renderer->render( &pt, "slider_left_highlight", QRectF( 0, 0, side, m_sliderHeight ) );
 
         renderer->render( &pt, "slider_right",  QRectF( m_sliderWidth - side, 0, side, m_sliderHeight ) );
-        //renderer->render( &pt, "slider_right_highlight",  QRectF( m_sliderWidth - side,0 , side, m_sliderHeight ) );
+*/
 
-        //renderer->render( &pt, "slider_center",  QRectF( side, 0, knobX +3, m_sliderHeight ) );
+
+
+
+        
+        pt.drawPixmap( side, 0, The::svgHandler()->renderSvg( "volume_slider_center", m_sliderWidth - side * 2, m_sliderHeight, "slider_center" ) );
+
+        pt.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_slider_left", side, m_sliderHeight, "slider_left" ) );
+        
+        pt.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_slider_left_highlight", side, m_sliderHeight, "slider_left_highlight" ) );
+
+        pt.drawPixmap( m_sliderWidth - side, 0, The::svgHandler()->renderSvg( "volume_slider_right", side, m_sliderHeight, "slider_right" ) );
 
         //tile this to make it look good!
         int tileWidth = 16;
@@ -279,8 +289,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         if ( leftover > 0 )
             pt.drawPixmap( offset, 0, sliderTile, 0, 0, leftover, m_sliderHeight );
 
-        renderer->render( &pt, "slider_position",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
-        //renderer->render( &pt, "slider_position_highlight",  QRectF( knobX, 0, m_sliderHeight, m_sliderHeight ) );
+        pt.drawPixmap( knobX, 0, The::svgHandler()->renderSvg( "volume_slider_position", m_sliderHeight, m_sliderHeight, "slider_position" ) );
 
 
         QPixmapCache::insert( key, background );
