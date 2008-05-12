@@ -417,7 +417,23 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     pt2.drawPixmap( foregroundLeftRect, foregroundLeft, foregroundLeftRect );
     //Paint the trail
     renderer->render( &pt2, "slider_center", QRectF( side, 0, m_knobX, m_sliderHeight ) );
-    renderer->render( &pt2, "slider_center_highlight", QRectF( side, 0, m_knobX, m_sliderHeight ) );
+
+    //tile this to make it look good!
+    int tileWidth = 16;
+    QPixmap sliderTile = The::svgHandler()->renderSvg( "slider_center_highlight", tileWidth, m_sliderHeight, "slider_center_highlight" );
+
+    int offset = side;
+    int xMax =  m_knobX + m_sliderHeight / 2;
+    while( ( offset + tileWidth ) <= xMax ) {
+        pt2.drawPixmap( offset , 0, sliderTile );
+        offset += tileWidth;
+    }
+        
+    //paint as much of the last tile as needed
+    int leftover = xMax - offset;
+    if ( leftover > 0 )
+        pt2.drawPixmap( offset, 0, sliderTile, 0, 0, leftover, m_sliderHeight );
+    
 
     //And the progress indicator, this needs to happen after the trail so it's on top.
     QString indicatorkey = QString( "progress-indicator:%1x%2" ).arg( m_sliderHeight ).arg( m_sliderHeight );
