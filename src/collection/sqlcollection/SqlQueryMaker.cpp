@@ -534,7 +534,12 @@ SqlQueryMaker::linkTables()
     if( d->linkedTables & Private::YEAR_TAB )
         d->queryFrom += " LEFT JOIN years ON tracks.year = years.id";
     if( d->linkedTables & Private::STATISTICS_TAB )
-        d->queryFrom += " LEFT JOIN statistics ON urls.id = statistics.url";
+        if( d->linkedTables & Private::URLS_TAB )
+            d->queryFrom += " LEFT JOIN statistics ON urls.id = statistics.url";
+        else if( d->linkedTables & Private::TAGS_TAB )
+            d->queryFrom += " LEFT JOIN statistics ON tracks.url = statistics.url";
+        else
+            d->queryFrom += " statistics";
 }
 
 void
@@ -676,7 +681,7 @@ SqlQueryMaker::nameForValue( qint64 value )
             return "tracks.filetype";
         case valScore:
             d->linkedTables |= Private::STATISTICS_TAB;
-            return "statistics.percentage";
+            return "statistics.score";
         case valRating:
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.rating";
@@ -688,7 +693,7 @@ SqlQueryMaker::nameForValue( qint64 value )
             return "statistics.accessdate";
         case valPlaycount:
             d->linkedTables |= Private::STATISTICS_TAB;
-            return "statistics.playcounter";
+            return "statistics.playcount";
         default:
             return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
     }
