@@ -3,6 +3,7 @@ include_directories(
    ../..
    ../../engine
    ../../mediadevice
+   ../../dialogs
    ../../meta
     ${CMAKE_CURRENT_BINARY_DIR}/../../
    ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )

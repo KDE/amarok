@@ -55,6 +55,8 @@ include_directories(
     context/widgets
     configdialog
     configdialog/dialogs
+    dialogs
+    dbus
     plugin
     statusbar
     mediadevice
@@ -148,7 +150,6 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/OsdConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
-    EditCoverSearchDialog.ui
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
@@ -370,11 +371,24 @@ set(amaroklib_LIB_SRCS
     ${libplaylistmanager_SRCS}
     ${mediadevice_SRCS}
     ${popupdropper_SRCS}
-    amarokdbushandler.cpp
     ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
     App.cpp
+    EngineController.cpp
+    EngineObserver.cpp
+    Expression.cpp
+    MainWindow.cpp
+    MediaDevice.cpp
+    MediaDeviceCache.cpp
+    MediaDevicePluginManager.cpp
+    MediaItem.cpp
+    Osd.cpp
+    PluginManager.cpp
+    Sidebar.h
+    StarManager.cpp
+    SvgHandler.cpp
+    SvgTinter.cpp
     atomicstring.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
@@ -382,71 +396,58 @@ set(amaroklib_LIB_SRCS
     crashhandler.cpp
     cuefile.cpp
     dbsetup.ui.h
-    deletedialog.cpp
-    deviceconfiguredialog.cpp
+    dbus/amarokdbushandler.cpp
+    dialogs/EditFilterDialog.cpp
+    dialogs/PixmapViewer.cpp
+    dialogs/TagDialog.cpp
+    dialogs/TagGuesser.cpp
+    dialogs/deletedialog.cpp
+    dialogs/deviceconfiguredialog.cpp
+    dialogs/scriptmanager.cpp
+    dialogs/trackpickerdialog.cpp
+    dialogs/transferdialog.cpp
     directorylist.cpp
-    EditFilterDialog.cpp
-    EngineController.cpp
-    EngineObserver.cpp
     equalizergraph.cpp
     equalizerpresetmanager.cpp
     equalizersetup.cpp
-    Expression.cpp
     fht.cpp
     filebrowser/FileBrowser.cpp
-    filebrowser/kbookmarkhandler.cpp
     filebrowser/MyDirLister.cpp
     filebrowser/MyDirOperator.cpp
-    hintlineedit.cpp
+    filebrowser/kbookmarkhandler.cpp
     k3bexporter.cpp
     ktrm.cpp
-    MainWindow.cpp
     mediabrowser.cpp
-    MediaItem.cpp
-    MediaDevice.cpp
-    MediaDeviceCache.cpp
-    MediaDevicePluginManager.cpp
     medium.cpp
-#    moodbar.cpp
     mountpointmanager.cpp
-    Osd.cpp
-    PixmapViewer.cpp
-    PluginManager.cpp
     podcastsettings.cpp
     prettypopupmenu.cpp
     refreshimages.cpp
-    scriptmanager.cpp
-    Sidebar.h
     servicebrowser/lastfm/SimilarArtistsAction.cpp
-#    SmartPlaylistEditor.cpp
     socketserver.cpp
-    StarManager.cpp
-#    Statistics.cpp
     systray.cpp
-    TagDialog.cpp
-    TagGuesser.cpp
-    tooltip.cpp
-    trackpickerdialog.cpp
-    TrackTooltip.cpp
-    transferdialog.cpp
     widgets/AnalyzerWidget.cpp
+    widgets/MainToolbar.cpp
     widgets/ProgressSlider.cpp
     widgets/SearchWidget.cpp
     widgets/SidebarWidget.cpp
     widgets/SliderWidget.cpp
+    widgets/TrackTooltip.cpp
     widgets/VolumeWidget.cpp
-    widgets/MainToolbar.cpp
-    SvgHandler.cpp
-    SvgTinter.cpp
+    widgets/hintlineedit.cpp
+    widgets/tooltip.cpp
+#    SmartPlaylistEditor.cpp
+#    Statistics.cpp
+#    moodbar.cpp
 )
 
-qt4_add_dbus_adaptor(  amaroklib_LIB_SRCS org.kde.amarok.collection.xml amarokdbushandler.h Amarok::DbusCollectionHandler)
-#qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.mediabrowser.xml amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.player.xml amarokdbushandler.h Amarok::DbusPlayerHandler)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.playlist.xml amarokdbushandler.h Amarok::DbusPlaylistHandler)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.playlistbrowser.xml amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.script.xml amarokdbushandler.h Amarok::DbusScriptHandler)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS org.kde.amarok.context.xml amarokdbushandler.h Amarok::DbusContextHandler)
+qt4_add_dbus_adaptor(  amaroklib_LIB_SRCS dbus/org.kde.amarok.collection.xml amarokdbushandler.h Amarok::DbusCollectionHandler)
+#qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.mediabrowser.xml amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.player.xml amarokdbushandler.h Amarok::DbusPlayerHandler)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.playlist.xml amarokdbushandler.h Amarok::DbusPlaylistHandler)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.playlistbrowser.xml amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.script.xml amarokdbushandler.h Amarok::DbusScriptHandler)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.context.xml amarokdbushandler.h Amarok::DbusContextHandler)
 
 
 set( amaroklib_DEPENDS "amarokplasma" )
@@ -458,12 +459,13 @@ kde4_add_ui3_files(amaroklib_LIB_SRCS
 )
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
-    deletedialogbase.ui
-    scriptmanagerbase.ui
-    tagdialogbase.ui
-    tagguesserconfigdialog.ui
+    dialogs/EditCoverSearchDialog.ui
+    dialogs/deletedialogbase.ui
+    dialogs/scriptmanagerbase.ui
+    dialogs/tagdialogbase.ui
+    dialogs/tagguesserconfigdialog.ui
+    dialogs/trackpickerdialogbase.ui
     playlistbrowser/PodcastCategoryBase.ui
-    trackpickerdialogbase.ui
     podcastsettingsbase.ui
 )
 
@@ -540,13 +542,13 @@ install(FILES context/servicetypes/amarok_context_applet.desktop
               DESTINATION ${SERVICETYPES_INSTALL_DIR} )
 
 install(FILES  amarok.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
-install(FILES org.kde.amarok.collection.xml
-              org.kde.amarok.context.xml
-              org.kde.amarok.mediabrowser.xml
-              org.kde.amarok.player.xml
-              org.kde.amarok.playlist.xml
-              org.kde.amarok.playlistbrowser.xml
-              org.kde.amarok.script.xml
+install(FILES dbus/org.kde.amarok.collection.xml
+              dbus/org.kde.amarok.context.xml
+              dbus/org.kde.amarok.mediabrowser.xml
+              dbus/org.kde.amarok.player.xml
+              dbus/org.kde.amarok.playlist.xml
+              dbus/org.kde.amarok.playlistbrowser.xml
+              dbus/org.kde.amarok.script.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
