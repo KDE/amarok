@@ -261,7 +261,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         renderer->render( &pt, "slider_right",  QRectF( m_sliderWidth - side, 0, side, m_sliderHeight ) );
         //renderer->render( &pt, "slider_right_highlight",  QRectF( m_sliderWidth - side,0 , side, m_sliderHeight ) );
 
-        renderer->render( &pt, "slider_center",  QRectF( side, 0, knobX +3, m_sliderHeight ) );
+        //renderer->render( &pt, "slider_center",  QRectF( side, 0, knobX +3, m_sliderHeight ) );
 
         //tile this to make it look good!
         int tileWidth = 16;
@@ -434,7 +434,8 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
     }
     pt2.drawPixmap( foregroundLeftRect, foregroundLeft, foregroundLeftRect );
     //Paint the trail
-    renderer->render( &pt2, "slider_center", QRectF( side, 0, m_knobX, m_sliderHeight ) );
+    
+    //renderer->render( &pt2, "slider_center", QRectF( side, 0, m_knobX, m_sliderHeight ) );
 
     //tile this to make it look good!
     int tileWidth = 16;
