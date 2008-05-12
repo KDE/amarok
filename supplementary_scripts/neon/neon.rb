@@ -75,4 +75,4 @@ UploadUbuntu.new()
 
 puts "Mr. Clean is not yet completely(?) implemented, sorry :-("
 
-FileUtils.rm_f(ROOTPATH)
+FileUtils.rm_r(ROOTPATH)
