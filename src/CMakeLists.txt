@@ -51,23 +51,22 @@ endif (USE_SYSTEM_SQLITE)
 
 include_directories(
     analyzers
-    context
-    context/widgets
+    collection
     configdialog
     configdialog/dialogs
-    dialogs
+    context
+    context/widgets
     dbus
-    plugin
-    statusbar
+    dialogs
     mediadevice
-    servicebrowser
-    #servicebrowser/magnatunestore
     meta
-    collection
-    podcasts
-    widgets
     playlistbrowser
     playlistmanager
+    plugin
+    podcasts
+    servicebrowser
+    statusbar
+    widgets
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB_INCLUDE_DIR}
@@ -99,8 +98,8 @@ set(libservicebrowser_SRCS
     servicebrowser/ServiceBrowser.cpp
     servicebrowser/ServiceCollection.cpp
     servicebrowser/ServiceCollectionTreeView.cpp
-    servicebrowser/ServiceCustomActionsCapability.cpp
     servicebrowser/ServiceCurrentTrackActionsCapability.cpp
+    servicebrowser/ServiceCustomActionsCapability.cpp
     servicebrowser/ServiceDynamicCollection.cpp
     servicebrowser/ServiceInfoProxy.cpp
     servicebrowser/ServiceListDelegate.cpp
@@ -120,12 +119,12 @@ qt4_add_dbus_adaptor( libservicebrowser_SRCS servicebrowser/org.kde.amarok.Servi
 # SCRIPTABLESERVICE
 #####################################################################
 set(libscriptableservice_SRCS
-    servicebrowser/scriptableservice/ScriptableServiceQueryMaker.cpp
-    servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
-    servicebrowser/scriptableservice/ScriptableServiceMeta.cpp
     servicebrowser/scriptableservice/ScriptableService.cpp
+    servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
     servicebrowser/scriptableservice/ScriptableServiceInfoParser.cpp
     servicebrowser/scriptableservice/ScriptableServiceManager.cpp
+    servicebrowser/scriptableservice/ScriptableServiceMeta.cpp
+    servicebrowser/scriptableservice/ScriptableServiceQueryMaker.cpp
 )
 
 
@@ -160,13 +159,13 @@ kde4_add_ui_files(libconfigdialog_SRCS
 # COLLECTIONBROWSER
 #####################################################################
 set(libcollectionbrowser_SRCS
-    collectionbrowser/CollectionTreeView.cpp
-    collectionbrowser/CollectionTreeItemModelBase.cpp
-    collectionbrowser/CollectionTreeItemModel.cpp
-    collectionbrowser/SingleCollectionTreeItemModel.cpp
     collectionbrowser/CollectionSortFilterProxyModel.cpp
     collectionbrowser/CollectionTreeItem.cpp
+    collectionbrowser/CollectionTreeItemModel.cpp
+    collectionbrowser/CollectionTreeItemModelBase.cpp
+    collectionbrowser/CollectionTreeView.cpp
     collectionbrowser/CollectionWidget.cpp
+    collectionbrowser/SingleCollectionTreeItemModel.cpp
 )
 
 #####################################################################
@@ -190,12 +189,12 @@ set(libanalyzers_SRCS
 #####################################################################
 set(libstatusbar_SRCS
     #statusbar/AmarokStatusBar.cpp
-    statusbar/StatusBarBase.cpp
     statusbar/ContextStatusBar.cpp
+    statusbar/StatusBarBase.cpp
+    statusbar/StatusBarMessageLabel.cpp
     statusbar/overlayWidget.cpp
     statusbar/popupMessage.cpp
     statusbar/progressBar.cpp
-    statusbar/StatusBarMessageLabel.cpp
     statusbar/selectLabel.cpp
 #   statusbar/queueLabel.cpp
 )
@@ -205,25 +204,25 @@ set(libstatusbar_SRCS
 #####################################################################
 set(meta_SRCS
     meta/Capability.cpp
-    meta/EditCapability.cpp
-    meta/LastFmCapability.cpp
-    meta/CustomActionsCapability.cpp
-    meta/OrganiseCapability.cpp
-    meta/StreamInfoCapability.cpp
-    meta/Meta.cpp
-    meta/proxy/MetaProxy.cpp
-    meta/file/File.cpp
-    meta/stream/Stream.cpp
-    meta/PlaylistFileSupport.cpp
-    meta/MetaUtility.cpp
-    meta/XSPFPlaylist.cpp
-    meta/M3UPlaylist.cpp
-    meta/PLSPlaylist.cpp
-    meta/EditablePlaylistCapability.cpp
-    meta/DynamicPlaylist.cpp
-    meta/MultiPlayableCapability.cpp
-    meta/SourceInfoCapability.cpp
     meta/CurrentTrackActionsCapability.cpp
+    meta/CustomActionsCapability.cpp
+    meta/DynamicPlaylist.cpp
+    meta/EditCapability.cpp
+    meta/EditablePlaylistCapability.cpp
+    meta/LastFmCapability.cpp
+    meta/M3UPlaylist.cpp
+    meta/Meta.cpp
+    meta/MetaUtility.cpp
+    meta/MultiPlayableCapability.cpp
+    meta/OrganiseCapability.cpp
+    meta/PLSPlaylist.cpp
+    meta/PlaylistFileSupport.cpp
+    meta/SourceInfoCapability.cpp
+    meta/StreamInfoCapability.cpp
+    meta/XSPFPlaylist.cpp
+    meta/file/File.cpp
+    meta/proxy/MetaProxy.cpp
+    meta/stream/Stream.cpp
 )
 
 #####################################################################
@@ -250,16 +249,16 @@ set(collection_SRCS
 set( libcontextview_SRCS
     context/Applet.cpp
     context/Containment.cpp
-    context/ContextView.cpp
     context/ContextObserver.cpp
     context/ContextScene.cpp
+    context/ContextView.cpp
     context/CoverBling.cpp
     context/DataEngineManager.cpp
     context/LyricsManager.cpp
     context/Svg.cpp
+    context/containments/ColumnApplet.cpp
     context/layouts/ContextLayout.cpp
     context/layouts/VerticalLayout.cpp
-    context/containments/ColumnApplet.cpp
 )
 
 #####################################################################
@@ -300,24 +299,24 @@ set(libplaylistmanager_SRCS
 # PLAYLIST
 #####################################################################
 set(libplaylist_SRCS
-    playlist/PlaylistHeader.cpp
-    playlist/PlaylistItem.cpp
-    playlist/PlaylistModel.cpp
-    playlist/PlaylistWidget.cpp
-    playlist/PlaylistViewCommon.cpp
-    playlist/RandomTrackNavigator.cpp
-    playlist/RepeatPlaylistNavigator.cpp
-    playlist/RepeatTrackNavigator.cpp
-    playlist/TrackNavigator.cpp
-    playlist/StandardTrackNavigator.cpp
-    playlist/UndoCommands.cpp
+    playlist/PlaylistAlbumGroup.cpp
+    playlist/PlaylistClassicView.cpp
     playlist/PlaylistDropVis.cpp
     playlist/PlaylistGraphicsItem.cpp
     playlist/PlaylistGraphicsScene.cpp
     playlist/PlaylistGraphicsView.cpp
+    playlist/PlaylistHeader.cpp
+    playlist/PlaylistItem.cpp
+    playlist/PlaylistModel.cpp
     playlist/PlaylistTextItem.cpp
-    playlist/PlaylistAlbumGroup.cpp
-    playlist/PlaylistClassicView.cpp
+    playlist/PlaylistViewCommon.cpp
+    playlist/PlaylistWidget.cpp
+    playlist/RandomTrackNavigator.cpp
+    playlist/RepeatPlaylistNavigator.cpp
+    playlist/RepeatTrackNavigator.cpp
+    playlist/StandardTrackNavigator.cpp
+    playlist/TrackNavigator.cpp
+    playlist/UndoCommands.cpp
 )
 
 #####################################################################
