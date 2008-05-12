@@ -20,9 +20,6 @@
     <method name="totalTracks" >
       <arg type="i" direction="out"/>
     </method>
-    <method name="totalTime" >
-        <arg type="i" direction="out"/>
-    </method>
     <method name="isDirInCollection" >
       <arg type="b" direction="out"/>
       <arg name="name" type="s" direction="in"/>

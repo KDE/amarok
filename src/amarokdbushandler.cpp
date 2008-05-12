@@ -841,15 +841,6 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
         return final;
     }
 
-    int DbusCollectionHandler::totalTime()
-    {
-        // The total length of ones primary collection, in seconds
-        QStringList totalTime = CollectionManager::instance()->sqlStorage()->query( "SELECT SUM( length ) from tracks;" );
-        if( totalTime.size() < 0 )
-            return 0;
-        return totalTime[ 0 ].toInt();
-    }
-
     bool DbusCollectionHandler::isDirInCollection( const QString& path )
     {
         AMAROK_NOTIMPLEMENTED
