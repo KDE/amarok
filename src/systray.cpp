@@ -262,6 +262,7 @@ Amarok::TrayIcon::paletteChange( const QPalette & op )
 void
 Amarok::TrayIcon::paintIcon( int mergePixels, bool force )
 {
+#if 0
     // skip redrawing the same pixmap
     static int mergePixelsCache = 0;
     if ( mergePixels == mergePixelsCache && !force )
@@ -306,6 +307,7 @@ Amarok::TrayIcon::paintIcon( int mergePixels, bool force )
     copyBlt( &tmpTrayPixmap, 0,0, &grayedIcon, 0,0,
             alternateIcon.width(), mergePixels>0 ? mergePixels-1 : 0 );
     blendOverlay( tmpTrayPixmap );
+#endif
 }
 
 void
