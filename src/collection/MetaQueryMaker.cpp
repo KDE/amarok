@@ -165,6 +165,14 @@ MetaQueryMaker::addReturnValue( qint64 value )
 }
 
 QueryMaker*
+MetaQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
+{
+    foreach( QueryMaker *qm, builders )
+        qm->addReturnFunction( function, value );
+    return this;
+}
+
+QueryMaker*
 MetaQueryMaker::orderBy( qint64 value, bool descending )
 {
     foreach( QueryMaker *b, builders )
@@ -201,6 +209,22 @@ MetaQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBe
 {
     foreach( QueryMaker *b, builders )
         b->excludeFilter( value, filter, matchBegin, matchEnd );
+    return this;
+}
+
+QueryMaker*
+MetaQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+{
+    foreach( QueryMaker *b, builders )
+        b->addNumberFilter( value, filter, compare);
+    return this;
+}
+
+QueryMaker*
+MetaQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+{
+    foreach( QueryMaker *b, builders )
+        b->excludeNumberFilter( value, filter, compare );
     return this;
 }
 

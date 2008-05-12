@@ -38,6 +38,14 @@ QueryMaker * DynamicServiceQueryMaker::addReturnValue(qint64 value)
     return this;
 }
 
+QueryMaker* DynamicServiceQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( value )
+    Q_UNUSED( function )
+    return this;
+}
+
 QueryMaker * DynamicServiceQueryMaker::orderBy(qint64 value, bool descending)
 {
     Q_UNUSED( value );
@@ -121,6 +129,24 @@ QueryMaker * DynamicServiceQueryMaker::excludeFilter(qint64 value, const QString
     Q_UNUSED( filter );
     Q_UNUSED( matchBegin );
     Q_UNUSED( matchEnd );
+    return this;
+}
+
+QueryMaker* DynamicServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( value )
+    Q_UNUSED( filter )
+    Q_UNUSED( compare )
+    return this;
+}
+
+QueryMaker* DynamicServiceQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( value )
+    Q_UNUSED( filter )
+    Q_UNUSED( compare )
     return this;
 }
 

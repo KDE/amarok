@@ -455,6 +455,28 @@ ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool m
     return this;
 }
 
+
+QueryMaker*
+ServiceSqlQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( value )
+    Q_UNUSED( filter )
+    Q_UNUSED( compare )
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( value )
+    Q_UNUSED( filter )
+    Q_UNUSED( compare )
+    return this;
+}
+
+
 QueryMaker*
 ServiceSqlQueryMaker::addReturnValue( qint64 value )
 {
@@ -465,6 +487,14 @@ ServiceSqlQueryMaker::addReturnValue( qint64 value )
             d->queryReturnValues += ',';
         d->queryReturnValues += nameForValue( value );
     }*/
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
+{
+    Q_UNUSED( value )
+    Q_UNUSED( function )
     return this;
 }
 

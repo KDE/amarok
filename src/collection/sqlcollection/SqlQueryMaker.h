@@ -62,7 +62,11 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
 
+        virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, NumberComparison compare );
+        virtual QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare );
+
         virtual QueryMaker* addReturnValue( qint64 value );
+        virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
 
         virtual QueryMaker* limitMaxResultSize( int size );

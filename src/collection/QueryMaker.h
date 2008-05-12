@@ -69,6 +69,15 @@ class AMAROK_EXPORT QueryMaker : public QObject
                             YearFilter      =    32,
                             AllFilters      = 65535 };
 
+        enum ReturnFunction { Count = 0,
+                              Sum = 1,
+                              Max = 2,
+                              Min = 3 };
+
+        enum NumberComparison { Equals = 0,
+                               GreaterThan = 1,
+                               LessThan = 2 };
+
         QueryMaker();
         virtual ~QueryMaker();
 
@@ -171,6 +180,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
             @return this
           */
         virtual QueryMaker* addReturnValue( qint64 value ) = 0;
+        virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value ) = 0;
         virtual QueryMaker* orderBy( qint64 value, bool descending = false ) = 0;
 
         virtual QueryMaker* includeCollection( const QString &collectionId ) = 0;
@@ -186,6 +196,9 @@ class AMAROK_EXPORT QueryMaker : public QObject
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
+
+        virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, NumberComparison compare ) = 0;
+        virtual QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare ) = 0;
 
         /**
             limit the maximum number of items in a result. the result will have [0..@p size ] items. When this function

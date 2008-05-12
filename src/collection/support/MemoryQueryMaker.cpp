@@ -18,7 +18,8 @@
 */
 
 #include "MemoryQueryMaker.h"
-#include "MemoryQueryMakerFilters_p.h"
+//#include "MemoryQueryMakerFilters_p.h"
+#include "MemoryFilter.h"
 #include "MemoryMatcher.h"
 #include "Debug.h"
 
@@ -60,7 +61,7 @@ struct MemoryQueryMaker::Private {
     MemoryMatcher* matcher;
     QueryJob *job;
     int maxsize;
-    QStack<ContainerFilter*> containerFilters;
+    QStack<ContainerMemoryFilter*> containerFilters;
     bool usingFilters;
 };
 
@@ -93,7 +94,7 @@ MemoryQueryMaker::reset()
     if( !d->containerFilters.isEmpty() )
         delete d->containerFilters.first();
     d->containerFilters.clear();
-    d->containerFilters.push( new AndFilter() );
+    d->containerFilters.push( new AndContainerMemoryFilter() );
     d->usingFilters = false;
     return this;
 }
@@ -396,6 +397,15 @@ MemoryQueryMaker::addReturnValue( qint64 value )
 }
 
 QueryMaker*
+MemoryQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
+{
+    Q_UNUSED( value )
+    Q_UNUSED( function )
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
 MemoryQueryMaker::orderBy( qint64 value, bool descending )
 {
     Q_UNUSED( value ); Q_UNUSED( descending );
@@ -533,8 +543,25 @@ MemoryQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegi
 QueryMaker*
 MemoryQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    Filter *tmp = FilterFactory::filter( value, filter, matchBegin, matchEnd );
-    d->containerFilters.top()->addFilter( new NegateFilter( tmp ) );
+    MemoryFilter *tmp = FilterFactory::filter( value, filter, matchBegin, matchEnd );
+    d->containerFilters.top()->addFilter( new NegateMemoryFilter( tmp ) );
+    d->usingFilters = true;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::addNumberFilter( qint64 value, qint64 filter, NumberComparison compare )
+{
+    d->containerFilters.top()->addFilter( FilterFactory::numberFilter( value, filter, compare ) );
+    d->usingFilters = true;
+    return this;
+}
+
+QueryMaker*
+MemoryQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare )
+{
+    MemoryFilter *tmp = FilterFactory::numberFilter( value, filter, compare );
+    d->containerFilters.top()->addFilter( new NegateMemoryFilter( tmp ) );
     d->usingFilters = true;
     return this;
 }
@@ -549,7 +576,7 @@ MemoryQueryMaker::limitMaxResultSize( int size )
 QueryMaker*
 MemoryQueryMaker::beginAnd()
 {
-    ContainerFilter *filter = new AndFilter();
+    ContainerMemoryFilter *filter = new AndContainerMemoryFilter();
     d->containerFilters.top()->addFilter( filter );
     d->containerFilters.push( filter );
     return this;
@@ -558,7 +585,7 @@ MemoryQueryMaker::beginAnd()
 QueryMaker*
 MemoryQueryMaker::beginOr()
 {
-    ContainerFilter *filter = new OrFilter();
+    ContainerMemoryFilter *filter = new OrContainerMemoryFilter();
     d->containerFilters.top()->addFilter( filter );
     d->containerFilters.push( filter );
     return this;

@@ -369,6 +369,46 @@ SqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBeg
 }
 
 QueryMaker*
+SqlQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+{
+    QString comparison;
+    switch( compare )
+    {
+        case QueryMaker::Equals:
+            comparison = "=";
+            break;
+        case QueryMaker::GreaterThan:
+            comparison = ">";
+            break;
+        case QueryMaker::LessThan:
+            comparison = "<";
+            break;
+    }
+    d->queryFilter += QString( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+    return this;
+}
+
+QueryMaker*
+SqlQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+{
+    QString comparison;
+    switch( compare )
+    {
+        case QueryMaker::Equals:
+            comparison = "!=";
+            break;
+        case QueryMaker::GreaterThan:   //negating greater than is less or equal
+            comparison = "<=";
+            break;
+        case QueryMaker::LessThan:      //negating less than is greater or equal
+            comparison = ">=";
+            break;
+    }
+    d->queryFilter += QString( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+    return this;
+}
+
+QueryMaker*
 SqlQueryMaker::addReturnValue( qint64 value )
 {
     if( d->queryType == Private::CUSTOM )
@@ -376,6 +416,36 @@ SqlQueryMaker::addReturnValue( qint64 value )
         if ( !d->queryReturnValues.isEmpty() )
             d->queryReturnValues += ',';
         d->queryReturnValues += nameForValue( value );
+    }
+    return this;
+}
+
+QueryMaker*
+SqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
+{
+    if( d->queryType == Private::CUSTOM )
+    {
+        if( !d->queryReturnValues.isEmpty() )
+            d->queryReturnValues += ',';
+        QString sqlfunction;
+        switch( function )
+        {
+            case QueryMaker::Count:
+                sqlfunction = "COUNT";
+                break;
+            case QueryMaker::Sum:
+                sqlfunction = "SUM";
+                break;
+            case QueryMaker::Max:
+                sqlfunction = "MAX";
+                break;
+            case QueryMaker::Min:
+                sqlfunction = "MIN";
+                break;
+            default:
+                sqlfunction = "Unknown function in SqlQueryMaker::addReturnFunction, function was: " + function;
+        }
+        d->queryReturnValues += QString( "%1(%2)" ).arg( sqlfunction, nameForValue( value ) );
     }
     return this;
 }
