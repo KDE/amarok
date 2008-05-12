@@ -29,9 +29,11 @@
 #include <KStandardDirs>
 
 #include <QApplication>
+#include <QGridLayout>
 #include <QLabel>
 #include <QPixmap>
-#include <QGridLayout>
+#include <QTimer>
+#include <QToolTip>
 
 TrackToolTip *TrackToolTip::instance()
 {

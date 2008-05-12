@@ -435,7 +435,6 @@ set(amaroklib_LIB_SRCS
     widgets/TrackTooltip.cpp
     widgets/VolumeWidget.cpp
     widgets/hintlineedit.cpp
-    widgets/tooltip.cpp
 #    SmartPlaylistEditor.cpp
 #    Statistics.cpp
 #    moodbar.cpp

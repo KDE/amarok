@@ -16,7 +16,6 @@
 #define TRACKTOOLTIP_H
 
 #include "meta/Meta.h"
-#include "tooltip.h"
 
 #include <QWidget>
 #include <QSystemTrayIcon>
