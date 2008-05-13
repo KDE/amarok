@@ -66,7 +66,6 @@ public:
 
 
 public slots:
-    void appletRemoved( QObject* object );
     Applet* addApplet( Plasma::Applet* applet, const QPointF &);
 
 
@@ -81,9 +80,8 @@ protected slots:
     void paletteChange();
 
 private slots:
-    void destroyApplet();
-    void appletDisappearComplete(QGraphicsItem *item, Plasma::Animator::Animation anim);
 
+    void appletRemoved( Plasma::Applet * );
     void jobDone();
 private:
     QAction* m_appletBrowserAction;

@@ -59,6 +59,7 @@ public:
     virtual void setGeometry( const QRectF& geom );
 
     void relayout();
+        
 private:
     class Private;
     Private *const d;

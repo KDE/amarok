@@ -104,6 +104,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     
     debug() << "Creating ColumnApplet, max size:" << maximumSize();
 
+connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
     //connect ( Plasma::Theme::self(), SIGNAL( changed() ), this, SLOT( paletteChange() ) );
     connect( KGlobalSettings::self(), SIGNAL(kdisplayPaletteChanged() ), this, SLOT( paletteChange() ) );
 }
@@ -197,18 +198,12 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     painter->restore();*/
 }
 
-void ColumnApplet::appletRemoved( QObject* object ) // SLOT
-{
-    Q_UNUSED( object )
-    recalculate();
-}
-
-
 Plasma::Applet* ColumnApplet::addApplet( Applet* applet, const QPointF & )
 {
 //     debug() << "m_columns:" << m_columns;
-     m_columns->addItem( applet );
-
+    m_columns->addItem( applet );
+    
+    connect( applet, SIGNAL( destroyed( QObject * ) ), this, SLOT( appletRemoved( QObject* ) ) );
     recalculate();
     return applet;
 }
@@ -217,13 +212,12 @@ void ColumnApplet::recalculate()
 {
     DEBUG_BLOCK
     debug() << "got child item that wants a recalculation";
-//    m_columns->invalidate();
-    m_columns->relayout();
+    m_columns->invalidate();
+//    m_columns->relayout();
 }
 
 QList<QAction*> ColumnApplet::contextualActions()
 {
-    DEBUG_BLOCK
     return *m_actions;
 }
 
@@ -248,31 +242,6 @@ bool ColumnApplet::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
     return false;
 }*/
 
-void ColumnApplet::destroyApplet()
-{
-    QAction *action = qobject_cast<QAction*>(sender());
-
-    if (!action) {
-        return;
-    }
-
-    Applet *applet = qobject_cast<Applet*>(action->data().value<QObject*>());
-    Plasma::Animator::self()->animateItem(applet, Plasma::Animator::DisappearAnimation);
-}
-
-void ColumnApplet::appletDisappearComplete(QGraphicsItem *item, Plasma::Animator::Animation anim)
-{
-    if (anim == Plasma::Animator::DisappearAnimation) {
-        if (item->parentItem() == this) {
-            Applet *applet = qgraphicsitem_cast<Applet*>(item);
-
-            if (applet) {
-                applet->destroy();
-            }
-        }
-    }
-}
-
 void ColumnApplet::jobDone()
 {
     m_masterImage = m_job->m_image;
@@ -286,6 +255,18 @@ void ColumnApplet::paletteChange()
 {
     The::svgHandler()->reTint();
     update( boundingRect() );
+}
+
+void 
+ColumnApplet::appletRemoved( Plasma::Applet* applet )
+{
+    DEBUG_BLOCK
+    QGraphicsLayoutItem* item = dynamic_cast< QGraphicsLayoutItem* >( applet );
+    if( item )
+        m_columns->removeItem( item );
+    else
+        debug() << "GOT NON-QGraphicsLayoutItem in APPLETREMOVED";
+    
 }
 
 

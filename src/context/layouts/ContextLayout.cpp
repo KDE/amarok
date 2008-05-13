@@ -141,11 +141,11 @@ ContextLayout::addItem(QGraphicsLayoutItem* item)
 void
 ContextLayout::removeItem(QGraphicsLayoutItem* item)
 {
-
+    DEBUG_BLOCK
     if(!item) {
         return;
     }
-
+    debug() << "got item to remove";
     // find item and remove it
     for( int i = 0; i < d->columns.size(); i++ )
     {
@@ -298,6 +298,7 @@ ContextLayout::relayout()
     }
     d->balanceColumns();
 }
+
 
 void ContextLayout::setGeometry( const QRectF& geom )
 {

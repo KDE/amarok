@@ -31,7 +31,7 @@ namespace Context
 class AMAROK_EXPORT VerticalLayout : public QGraphicsLayout
 {
 public:
-
+    
     explicit VerticalLayout( QGraphicsLayoutItem *parent = 0 );
     ~VerticalLayout();
 
@@ -49,10 +49,10 @@ public:
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
 
     void relayout();
-
-    private:
-        class Private;
-        Private *const d;
+        
+private:
+    class Private;
+    Private *const d;
 };
 
 }

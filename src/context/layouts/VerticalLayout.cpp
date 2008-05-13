@@ -54,10 +54,12 @@ VerticalLayout::addItem( QGraphicsLayoutItem *item )
 void
 VerticalLayout::removeItem( QGraphicsLayoutItem *item )
 {
+    DEBUG_BLOCK
     if (!item) {
         return;
     }
 
+    debug() << "GOT CHILD ITEM TO REMOVE";
     d->children.removeAll( item );
     relayout();
 }
@@ -106,12 +108,9 @@ void VerticalLayout::relayout()
     foreach( QGraphicsLayoutItem *child , d->children )
     {
         qreal height = 0.0;
-
-        if( Plasma::Applet *a = dynamic_cast<Plasma::Applet *>(child) )
-        {
-            if( a )
-                 height = a->effectiveSizeHint( Qt::PreferredSize, QSizeF( rect.width(), -1 ) ).height();
-        }
+        Plasma::Applet* a = dynamic_cast< Plasma::Applet * >(child);
+        if( a )
+            height = a->effectiveSizeHint( Qt::PreferredSize, QSizeF( rect.width(), -1 ) ).height();
         else
             height = effectiveSizeHint( Qt::PreferredSize ).height();
 
