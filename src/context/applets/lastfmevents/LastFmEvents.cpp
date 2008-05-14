@@ -31,14 +31,6 @@
 
 LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_config( 0 )
-    , m_configLayout( 0 )
-    , m_friendBox( 0 )
-    , m_sysBox( 0 )
-    , m_userBox( 0 )
-    , m_friendEnabled( false )
-    , m_sysEnabled( false )
-    , m_userEnabled( false )
 {
     DEBUG_BLOCK
 
@@ -56,20 +48,18 @@ void LastFmEvents::init()
 {
     DEBUG_BLOCK
     KConfigGroup conf = globalConfig();
-    m_userEnabled = conf.readEntry( "user", false );
-    m_sysEnabled = conf.readEntry( "sys", false );
-    m_friendEnabled = conf.readEntry( "friend", false );
+
     m_width = conf.readEntry( "width" , 400 );
 
     m_theme = new Context::Svg( "widgets/amarok-lastfm", this );
     m_theme->setContainsMultipleImages( false );
-
+    debug() << "LastFmEvents loaded theme file:" << m_theme->imagePath();
+    
     for( int i = 0; i < 14; i++ ) // create all the items
     {
         m_titles << new QGraphicsSimpleTextItem( this );
         m_dates << new QGraphicsSimpleTextItem( this );
         m_cities << new QGraphicsSimpleTextItem( this );
-        // white font for now
         const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
         m_titles[ i ]->setBrush( textColor );
         m_dates[ i ]->setBrush( textColor );
@@ -82,9 +72,6 @@ void LastFmEvents::init()
     dataUpdated( "sysevents", dataEngine( "amarok-lastfm" )->query( "sysevents" ) );
     dataUpdated( "userevents", dataEngine( "amarok-lastfm" )->query( "userevents" ) );
     dataUpdated( "friendevents", dataEngine( "amarok-lastfm" )->query( "friendevents" ) );
-
-    if( !m_userEnabled && !m_friendEnabled && m_sysEnabled )
-        showConfigurationInterface();
 
     // calculate aspect ratio, and resize to desired width
     m_theme->resize();
@@ -105,7 +92,7 @@ void LastFmEvents::constraintsEvent( Plasma::Constraints constraints )
         m_theme->resize(size().toSize());
     }
 
-    debug() << "resized svg to " << size().toSize() << ", now re-laying out";
+    debug() << "resized LastFmEvents svg to " << size().toSize() << ", now re-laying out";
     for( int i = 0; i < 14; i++ ) // go through each row
     {
         QString titleElement = QString( "title%1" ).arg( i );
@@ -124,10 +111,10 @@ void LastFmEvents::constraintsEvent( Plasma::Constraints constraints )
 
 void LastFmEvents::dataUpdated( const QString& name, const Context::DataEngine::Data& data )
 {
-//     DEBUG_BLOCK
-//         debug() << "got data from engine: " << data;
+    DEBUG_BLOCK
+    debug() << "got data from engine: " << data;
     Context::DataEngine::DataIterator iter( data );
-    if( m_sysEnabled && name == QString( "sysevents" ) )
+    if( name == QString( "sysevents" ) )
     {
         int count = 4; // system events are the 5th-10th rows
         while( iter.hasNext() )
@@ -154,7 +141,7 @@ void LastFmEvents::dataUpdated( const QString& name, const Context::DataEngine::
             count++;
         }
     }
-    if( m_friendEnabled && name == QString( "friendevents" ) )
+    if( name == QString( "friendevents" ) )
     {
         int count = 0; // first 5 rows
         while( iter.hasNext() )
@@ -180,7 +167,7 @@ void LastFmEvents::dataUpdated( const QString& name, const Context::DataEngine::
             count++;
         }
     }
-    if( m_userEnabled && name == QString( "userevents" ) )
+    if( name == QString( "userevents" ) )
     {
         int count = 10;
         while( iter.hasNext() )
@@ -210,15 +197,16 @@ void LastFmEvents::dataUpdated( const QString& name, const Context::DataEngine::
     update();
 }
 
-bool LastFmEvents::hasHeightForWidth() const
+QSizeF 
+LastFmEvents::effectiveSizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
-    return true;
+    DEBUG_BLOCK
+    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
+    {
+        return QSizeF( m_aspectRatio * constraint.width(), constraint.width() );
+    }
 }
 
-qreal LastFmEvents::heightForWidth( qreal width ) const
-{
-    return width * m_aspectRatio;
-}
 
 void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect& contentsRect )
 {
@@ -261,56 +249,5 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     }
 
 }
-
-void LastFmEvents::showConfigurationInterface()
-{
-    DEBUG_BLOCK
-    if (m_config == 0)
-    {
-        m_config = new KDialog;
-        m_config->setCaption( i18n( "Configure Last.Fm Events" ) );
-
-        QWidget* widget = new QWidget( m_config );
-        m_config->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
-        connect( m_config, SIGNAL(applyClicked()), this, SLOT(configAccepted()) );
-        connect( m_config, SIGNAL(okClicked()), this, SLOT(configAccepted()) );
-
-        m_configLayout = new QVBoxLayout( widget );
-        m_friendBox = new QCheckBox();
-        m_friendBox->setText( i18n( "Show Friend Events" ) );
-        m_sysBox = new QCheckBox();
-        m_sysBox->setText( i18n( "Show Recommended Events" ) );
-        m_userBox = new QCheckBox();
-        m_userBox->setText( i18n( "Show Your Future Events" ) );
-
-        m_configLayout->addWidget( m_friendBox );
-        m_configLayout->addWidget( m_sysBox );
-        m_configLayout->addWidget( m_userBox );
-
-        m_config->setMainWidget( widget );
-    }
-
-    m_config->show();
-}
-
-void LastFmEvents::configAccepted() // SLOT
-{
-    DEBUG_BLOCK
-    debug() << "saving config";
-    KConfigGroup cg = globalConfig();
-
-    m_friendBox->checkState() ? m_friendEnabled = true : m_friendEnabled = false;
-    m_sysBox->checkState() ? m_sysEnabled = true : m_sysEnabled = false;
-    m_userBox->checkState() ? m_userEnabled = true : m_userEnabled = false;
-
-    cg.writeEntry( "friend" , m_friendEnabled );
-    cg.writeEntry( "sys" , m_sysEnabled );
-    cg.writeEntry( "user" , m_userEnabled );
-
-    cg.sync();
-
-    constraintsEvent();
-}
-
 
 #include "LastFmEvents.moc"

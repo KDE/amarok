@@ -34,24 +34,17 @@ public:
     void init();
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
-    bool hasHeightForWidth() const;
-    qreal heightForWidth( qreal width ) const;
+
+    QSizeF effectiveSizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
 
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-    void showConfigurationInterface();
 
 private slots:
     void configAccepted();
 
 private:
-
-    KDialog* m_config;
-    QVBoxLayout* m_configLayout;
-    QCheckBox* m_friendBox;
-    QCheckBox* m_sysBox;
-    QCheckBox* m_userBox;
 
     qreal m_aspectRatio;
     qreal m_width;
@@ -62,10 +55,6 @@ private:
     QList< QGraphicsSimpleTextItem* > m_titles;
     QList< QGraphicsSimpleTextItem* > m_dates;
     QList< QGraphicsSimpleTextItem* > m_cities;
-
-    bool m_friendEnabled;
-    bool m_sysEnabled;
-    bool m_userEnabled;
 };
 
 K_EXPORT_AMAROK_APPLET( lastfmevents, LastFmEvents )
