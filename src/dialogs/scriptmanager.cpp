@@ -219,7 +219,6 @@ ScriptManager::~ScriptManager()
     config.writeEntry( "Transcode category open", m_transcodeCategory->isExpanded() );
     config.writeEntry( "Context category open", m_contextCategory->isExpanded() );
     config.writeEntry( "Service category open", m_servicesCategory->isExpanded() );
-    config.sync();
     s_instance = 0;
 }
 
