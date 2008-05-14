@@ -58,7 +58,8 @@ Cloud::Cloud( QObject* parent, const QVariantList& args )
 
     dataEngine( "amarok-cloud" )->connectSource( "cloud", this );
 
-    m_theme = new Context::Svg( "widgets/amarok-cloud", this );
+    m_theme = new Context::Svg( this );
+    m_theme->setImagePath( "widgets/amarok-cloud" );
     m_theme->setContainsMultipleImages( false );
     m_theme->resize( m_size );
     m_width = globalConfig().readEntry( "width", 500 );

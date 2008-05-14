@@ -43,7 +43,8 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
 
     dataEngine( "amarok-service" )->connectSource( "service", this );
 
-    m_theme = new Context::Svg( "widgets/amarok-serviceinfo", this );
+    m_theme = new Context::Svg( this );
+    m_theme->setImagePath( "widgets/amarok-serviceinfo" );
     m_theme->setContainsMultipleImages( false );
     m_theme->resize( m_size );
     m_width = globalConfig().readEntry( "width", 500 );

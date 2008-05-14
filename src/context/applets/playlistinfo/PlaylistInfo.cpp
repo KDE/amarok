@@ -41,7 +41,8 @@ PlayistInfo::PlayistInfo( QObject* parent, const QStringList& args )
 
     dataEngine( "amarok-current" )->connectSource( "current", this );
 
-    m_theme = new Context::Svg( "widgets/amarok-playlistinfo", this );
+    m_theme = new Context::Svg( this );
+    m_theme->setImagePath( "widgets/amarok-playlistinfo" );
     m_theme->setContentType( Context::Svg::SingleImage );
     m_width = globalConfig().readEntry( "width", 500 );
 

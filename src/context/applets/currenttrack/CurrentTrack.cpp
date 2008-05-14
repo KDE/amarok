@@ -51,7 +51,8 @@ void CurrentTrack::init()
     setBackgroundHints( Plasma::Applet::DefaultBackground );
     createMenu();
 
-    m_theme = new Context::Svg( "widgets/amarok-currenttrack", this );
+    m_theme = new Context::Svg( this );
+    m_theme->setImagePath( "widgets/amarok-currenttrack" );
     m_theme->setContainsMultipleImages( false );
     m_width = globalConfig().readEntry( "width", 500 );
 

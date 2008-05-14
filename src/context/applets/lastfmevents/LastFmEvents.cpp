@@ -51,7 +51,8 @@ void LastFmEvents::init()
 
     m_width = conf.readEntry( "width" , 400 );
 
-    m_theme = new Context::Svg( "widgets/amarok-lastfm", this );
+    m_theme = new Context::Svg( this );
+    m_theme->setImagePath( "widgets/amarok-lastfm" );
     m_theme->setContainsMultipleImages( false );
     debug() << "LastFmEvents loaded theme file:" << m_theme->imagePath();
     

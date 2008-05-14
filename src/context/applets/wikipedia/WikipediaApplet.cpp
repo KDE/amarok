@@ -51,7 +51,8 @@ void WikipediaApplet::init()
 
     dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
 
-    m_header = new Context::Svg( "widgets/amarok-wikipedia", this );
+    m_header = new Context::Svg( this );
+    m_header->setImagePath( "widgets/amarok-wikipedia" );
     m_header->setContainsMultipleImages( false );
 
     m_header->resize();

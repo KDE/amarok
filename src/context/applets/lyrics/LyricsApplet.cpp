@@ -15,7 +15,6 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "context/Svg.h"
 #include "Theme.h"
 
 #include <QGraphicsSimpleTextItem>
