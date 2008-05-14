@@ -17,27 +17,28 @@
 #define AMAROK_PLAYLISTWINDOW_H
 
 #include "amarok_export.h"
-#include "widgets/MainToolbar.h"
+#include "meta/Meta.h"
 
-#include <khbox.h>          //baseclass for DynamicBox
-#include <kxmlguiwindow.h>
-#include <kxmlguiclient.h>  //baseclass (for XMLGUI)
+#include <KXmlGuiWindow>
 
 class ContextWidget;
-class KMenu;
+class MainToolbar;
 class MediaBrowser;
-class QMenuBar;
-class QTimer;
+class PlaylistFileProvider;
 class SearchWidget;
 class SideBar;
+
+class KMenu;
+
+class QMenuBar;
 class QSplitter;
-class PlaylistFileProvider;
+class QTimer;
 
 /**
   * @class MainWindow
   * @short The MainWindow widget class.
   *
-  * This is the main window widget (the Playlist not Player).
+  * This is the main window widget.
   */
 class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 {
@@ -132,7 +133,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         KMenu         *m_searchMenu;
 
         SearchWidget  *m_searchWidget;
-        MainToolbar    *m_controlBar;
+        MainToolbar   *m_controlBar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;
         MediaBrowser  *m_currMediaBrowser;
@@ -144,8 +145,9 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 
         void    createActions();
         void    createMenus();
-        int m_lastBrowser;
-        int m_searchField;
+        int     m_lastBrowser;
+        int     m_searchField;
+
         static MainWindow *s_instance;
 };
 

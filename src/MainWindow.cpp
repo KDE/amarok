@@ -23,17 +23,16 @@
 #include "ActionClasses.h"    //see toolbar construction
 #include "amarokconfig.h"
 #include "Amarok.h"
-//#include "AmarokStatusBar.h"
 #include "collection/CollectionManager.h"
 #include "collectionbrowser/CollectionWidget.h"
 #include "context/CoverBling.h"
 #include "context/ContextView.h"
-#include "context/DataEngineManager.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "Debug.h"
 #include "EngineController.h" //for actions in ctor
 #include "filebrowser/FileBrowser.h"
 #include "k3bexporter.h"
+#include "MainToolbar.h"
 #include "mediabrowser.h"
 #include "Osd.h"
 #include "playlist/PlaylistModel.h"
@@ -44,11 +43,8 @@
 #include "servicebrowser/ServicePluginManager.h"
 #include "servicebrowser/scriptableservice/ScriptableService.h"
 #include "servicebrowser/ServiceBrowser.h"
-#include "servicebrowser/shoutcast/ShoutcastService.h"
-#include "servicebrowser/mp3tunes/Mp3tunesService.h"
 #include "Sidebar.h"
 #include "Sidebar.moc"
-#include "socketserver.h"
 #include "Statistics.h"
 #include "ContextStatusBar.h"
 #include "TheInstances.h"
@@ -58,6 +54,7 @@
 
 #include "queuemanager/QueueManager.h"
 
+#include <QDesktopWidget>
 #include <QList>
 #include <QVBoxLayout>
 #include <QPixmapCache>
@@ -73,6 +70,7 @@
 #include <KMessageBox>      //savePlaylist()
 #include <KMenu>
 #include <KPushButton>
+#include <KWindowSystem>
 
 #ifdef Q_WS_X11
 #include <fixx11h.h>
@@ -89,8 +87,8 @@ class ContextWidget : public KVBox
 MainWindow *MainWindow::s_instance = 0;
 
 MainWindow::MainWindow()
-        : KXmlGuiWindow( 0 )
-        , m_lastBrowser( 0 )
+    : KXmlGuiWindow( 0 )
+    , m_lastBrowser( 0 )
 {
     DEBUG_BLOCK
 
@@ -126,7 +124,6 @@ MainWindow::~MainWindow()
     KConfigGroup config = Amarok::config();
     config.writeEntry( "MainWindow Size", size() );
     config.writeEntry( "MainWindow Position", pos() );
-    config.sync(); // Needed? Not sure.
 
     delete m_playlistFiles;
 }
@@ -137,7 +134,8 @@ MainWindow::~MainWindow()
 /**
  * This function will initialize the playlist window.
  */
-void MainWindow::init()
+void
+MainWindow::init()
 {
     layout()->setContentsMargins( 0, 0, 0, 0 );
     layout()->setSpacing( 0 );
@@ -191,15 +189,11 @@ void MainWindow::init()
     m_splitter->addWidget( m_contextWidget );
     m_splitter->addWidget( playlistWidget );
 
-
     //make room for a full width statusbar at the bottom of everything
-
     KHBox * m_statusbarArea = new KHBox( this );
-
     //figure out the needed heigh tbased on system font settings
     // do make sure that it is at least 26 pixels tall though
     //or progress bars will not fit...
-
     QFont currentFont = font();
     currentFont.setBold( true );
     QFontMetrics fm( currentFont );
@@ -212,7 +206,6 @@ void MainWindow::init()
     mainLayout->addWidget( m_controlBar );
     mainLayout->addWidget( m_splitter );
     mainLayout->addWidget( m_statusbarArea);
-
 
     setCentralWidget( centralWidget );
 
@@ -273,24 +266,26 @@ void MainWindow::init()
     }
     //</Browsers>
 
-
     kapp->installEventFilter( this ); // keyboards shortcuts for the browsers
 
     Amarok::MessageQueue::instance()->sendMessages();
 }
 
-void MainWindow::deleteBrowsers()
+void
+MainWindow::deleteBrowsers()
 {
     m_browsers->deleteBrowsers();
 }
 
-void MainWindow::slotSetFilter( const QString &filter ) //SLOT
+void
+MainWindow::slotSetFilter( const QString &filter ) //SLOT
 {
     Q_UNUSED( filter );
 //    m_lineEdit->setText( filter );
 }
 
-void MainWindow::slotShrinkBrowsers( int index ) const
+void
+MainWindow::slotShrinkBrowsers( int index ) const
 {
     // Because QSplitter sucks and will not recompute sizes if a pane is shrunk and not hidden.
     if( index == -1 )
@@ -303,7 +298,8 @@ void MainWindow::slotShrinkBrowsers( int index ) const
     }
 }
 
-void MainWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
+void
+MainWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
 {
     if( !m_browserNames.contains( name ) )
     {
@@ -312,7 +308,8 @@ void MainWindow::addBrowser( const QString &name, QWidget *browser, const QStrin
     }
 }
 
-void MainWindow::showBrowser( const QString &name )
+void
+MainWindow::showBrowser( const QString &name )
 {
     const int index = m_browserNames.indexOf( name );
     if( index >= 0 && index != m_browsers->currentIndex() )
@@ -327,118 +324,15 @@ void MainWindow::showBrowser( const QString &name )
  * Here we filter some events for the Playlist Search LineEdit and the Playlist. @n
  * this makes life easier since we have more useful functions available from this class
  */
-bool MainWindow::eventFilter( QObject *o, QEvent *e )
+bool
+MainWindow::eventFilter( QObject *o, QEvent *e )
 {
-    switch( e->type() )
-    {
-    case QEvent::KeyPress:
-        //there are a few keypresses that we intercept
-
-        #define e static_cast<QKeyEvent*>(e)
-
-        //TODO:PORT ME
-//         if( e->key() == Qt::Key_F2 )
-//         {
-//             // currentItem is ALWAYS visible.
-//             Q3ListViewItem *item = pl->currentItem();
-//
-//             // intercept F2 for inline tag renaming
-//             // NOTE: tab will move to the next tag
-//             // NOTE: if item is still null don't select first item in playlist, user wouldn't want that. It's silly.
-//             // TODO: berkus has solved the "inability to cancel" issue with K3ListView, but it's not in kdelibs yet..
-//
-//             // item may still be null, but this is safe
-//             // NOTE: column 0 cannot be edited currently, hence we pick column 1
-//             pl->rename( item, 1 ); //TODO what if this column is hidden?
-//
-//             return true;
-//         }
-
-
-//         if( o == m_searchWidget->lineEdit() ) //the search lineedit
-//         {
-//             Q3ListViewItem *item;
-//             switch( e->key() )
-//             {
-//             case Qt::Key_Up:
-//             case Qt::Key_Down:
-//             case Qt::Key_PageDown:
-//             case Qt::Key_PageUp:
-//                 pl->setFocus();
-//                 QApplication::sendEvent( pl, e );
-//                 return true;
-//
-//             case Qt::Key_Return:
-//             case Qt::Key_Enter:
-//                 item = *It( pl, It::Visible );
-//                 //m_lineEdit->clear();
-//                 pl->m_filtertimer->stop(); //HACK HACK HACK
-//
-//                 if( e->modifiers() & Qt::ControlModifier )
-//                 {
-//                     QList<PlaylistItem*> in, out;
-//                     if( e->modifiers() & Qt::ShiftModifier )
-//                         for( It it( pl, It::Visible ); PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++it )
-//                         {
-//                             pl->queue( x, true );
-//                             ( pl->m_nextTracks.contains( x ) ? in : out ).append( x );
-//                         }
-//                     else
-//                     {
-//                         It it( pl, It::Visible );
-//                         pl->activate( *it );
-//                         ++it;
-//                         for( int i = 0; PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++i, ++it )
-//                         {
-//                             in.append( x );
-//                             pl->m_nextTracks.insert( i, x );
-//                         }
-//                     }
-//                     if( !in.isEmpty() || !out.isEmpty() )
-//                         emit pl->queueChanged( in, out );
-//                     pl->setFilter( "" );
-//                     pl->ensureItemCentered( ( e->modifiers() & Qt::ShiftModifier ) ? item : pl->currentTrack() );
-//                 }
-//                 else
-//                 {
-//                     pl->setFilter( "" );
-//                     if( ( e->modifiers() & Qt::ShiftModifier ) && item )
-//                     {
-//                         pl->queue( item );
-//                         pl->ensureItemCentered( item );
-//                     }
-//                     else
-//                     {
-//                         pl->activate( item );
-//                         pl->showCurrentTrack();
-//                     }
-//                 }
-//                 return true;
-//
-//             case Qt::Key_Escape:
-//                 m_searchWidget->lineEdit()->clear();
-//                 return true;
-//
-//             default:
-//                 return false;
-//             }
-//         }
-
-        //following are for Playlist::instance() only
-        //we don't handle these in the playlist because often we manipulate the lineEdit too
-
-        #undef e
-        break;
-
-    default:
-        break;
-    }
-
     return QWidget::eventFilter( o, e );
 }
 
 
-void MainWindow::closeEvent( QCloseEvent *e )
+void
+MainWindow::closeEvent( QCloseEvent *e )
 {
 #ifdef Q_WS_MAC
     Q_UNUSED( e );
@@ -468,7 +362,8 @@ void MainWindow::closeEvent( QCloseEvent *e )
 }
 
 
-void MainWindow::showEvent( QShowEvent* )
+void
+MainWindow::showEvent( QShowEvent* )
 {
     static bool firstTime = true;
     if( firstTime )
@@ -476,14 +371,15 @@ void MainWindow::showEvent( QShowEvent* )
     firstTime = false;
 }
 
-#include <qdesktopwidget.h>
-QSize MainWindow::sizeHint() const
+QSize
+MainWindow::sizeHint() const
 {
     return QApplication::desktop()->screenGeometry( (QWidget*)this ).size() / 1.5;
 }
 
 
-void MainWindow::savePlaylist() const //SLOT
+void
+MainWindow::savePlaylist() const //SLOT
 {
     QString playlistName = KFileDialog::getSaveFileName();
     if( !playlistName.isEmpty() )
@@ -491,24 +387,28 @@ void MainWindow::savePlaylist() const //SLOT
 }
 
 
-void MainWindow::slotBurnPlaylist() const //SLOT
+void
+MainWindow::slotBurnPlaylist() const //SLOT
 {
     K3bExporter::instance()->exportCurrentPlaylist();
 }
 
-void MainWindow::slotShowCoverManager() const //SLOT
+void
+MainWindow::slotShowCoverManager() const //SLOT
 {
     CoverManager::showOnce();
 }
 
-void MainWindow::slotPlayMedia() //SLOT
+void
+MainWindow::slotPlayMedia() //SLOT
 {
     // Request location and immediately start playback
     slotAddLocation( true );
 }
 
 
-void MainWindow::slotAddLocation( bool directPlay ) //SLOT
+void
+MainWindow::slotAddLocation( bool directPlay ) //SLOT
 {
     // open a file selector to add media to the playlist
     KUrl::List files;
@@ -523,19 +423,21 @@ void MainWindow::slotAddLocation( bool directPlay ) //SLOT
     Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( files );
 
     The::playlistModel()->insertOptioned( tracks.takeFirst(), options );
-
+    // If this isn't done each track will be inserted with Option, which is not ideal.
     foreach( Meta::TrackPtr track, tracks )
     {
         The::playlistModel()->insertOptioned( track, Playlist::Append );
     }
 }
 
-void MainWindow::slotAddStream() //SLOT
+void
+MainWindow::slotAddStream() //SLOT
 {
     bool ok;
     QString url = KInputDialog::getText( i18n("Add Stream"), i18n("Enter Stream URL:"), QString(), &ok, this );
 
-    if ( !ok ) return;
+    if( !ok )
+        return;
 
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
 
@@ -650,7 +552,8 @@ void MainWindow::addLastfmGlobaltag() //SLOT
 }
 #endif
 
-void MainWindow::playAudioCD() //SLOT
+void
+MainWindow::playAudioCD() //SLOT
 {
     KUrl::List urls;
     if( The::engineController()->getAudioCDContents(QString(), urls) )
@@ -665,13 +568,15 @@ void MainWindow::playAudioCD() //SLOT
     }
 }
 
-void MainWindow::showScriptSelector() //SLOT
+void
+MainWindow::showScriptSelector() //SLOT
 {
     ScriptManager::instance()->show();
     ScriptManager::instance()->raise();
 }
 
-void MainWindow::showQueueManager() //SLOT
+void
+MainWindow::showQueueManager() //SLOT
 {
     if( QueueManagerNS::QueueManager::instance() )
     {
@@ -686,7 +591,8 @@ void MainWindow::showQueueManager() //SLOT
     }
 }
 
-void MainWindow::showStatistics() //SLOT
+void
+MainWindow::showStatistics() //SLOT
 {
 #if 0
     if( Statistics::instance() ) {
@@ -698,20 +604,20 @@ void MainWindow::showStatistics() //SLOT
 #endif
 }
 
-void MainWindow::slotToggleFocus() //SLOT
+void
+MainWindow::slotToggleFocus() //SLOT
 {
     //Port 2.0
 //     if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() /*|| m_searchWidget->lineEdit()->hasFocus()*/ ) )
 //         m_browsers->currentWidget()->setFocus();
 }
 
-void MainWindow::toolsMenuAboutToShow() //SLOT
+void
+MainWindow::toolsMenuAboutToShow() //SLOT
 {
     Amarok::actionCollection()->action( "equalizer" )->setEnabled( false ); //TODO phonon
 }
 
-
-#include <kwindowsystem.h>
 /**
  * Show/hide playlist global shortcut and PlayerWindow PlaylistButton connect to this slot
  * RULES:
@@ -725,7 +631,8 @@ void MainWindow::toolsMenuAboutToShow() //SLOT
  * this has taken me hours to get right, change at your peril!
  * there are more contingencies than you can believe
  */
-void MainWindow::showHide() //SLOT
+void
+MainWindow::showHide() //SLOT
 {
 #ifdef Q_WS_X11
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
@@ -759,7 +666,8 @@ MainWindow::loveTrack()
     if( cTrack )
         emit loveTrack( cTrack );
 }
-void MainWindow::activate()
+void
+MainWindow::activate()
 {
 #ifdef Q_WS_X11
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
@@ -775,7 +683,8 @@ void MainWindow::activate()
 #endif
 }
 
-bool MainWindow::isReallyShown() const
+bool
+MainWindow::isReallyShown() const
 {
 #ifdef Q_WS_X11
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
@@ -785,7 +694,8 @@ bool MainWindow::isReallyShown() const
 #endif
 }
 
-void MainWindow::createActions()
+void
+MainWindow::createActions()
 {
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = The::engineController();
@@ -1031,7 +941,8 @@ void MainWindow::createActions()
         action->setShortcutContext(Qt::WindowShortcut);
 }
 
-void MainWindow::setRating( int n )
+void
+MainWindow::setRating( int n )
 {
     if( !AmarokConfig::useRatings() )
         return;
@@ -1045,12 +956,10 @@ void MainWindow::setRating( int n )
         track->setRating( n );
         Amarok::OSD::instance()->OSDWidget::ratingChanged( track->rating() );
     }
-    //PORT 2.0
-//     else if( MainWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
-//         Playlist::instance()->setSelectedRatings( n );
 }
 
-void MainWindow::createMenus()
+void
+MainWindow::createMenus()
 {
     //BEGIN Actions menu
     KMenu *actionsMenu;
@@ -1156,30 +1065,30 @@ void MainWindow::createMenus()
     m_menubar->addMenu( Amarok::Menu::helpMenu() );
 }
 
-void MainWindow::paletteChange(const QPalette & oldPalette)
+void
+MainWindow::paletteChange(const QPalette & oldPalette)
 {
     QPixmapCache::clear();
 }
 
-QSize MainWindow::backgroundSize()
+QSize
+MainWindow::backgroundSize()
 {
-    
+
     QPoint topLeft = mapToGlobal( m_controlBar->rect().topLeft() );
     QPoint bottomRight1= mapToGlobal( m_controlBar->rect().bottomRight() );
 
     return QSize( bottomRight1.x() - topLeft.x(), m_controlBar->rect().height() +  m_contextWidget->rect().height() );
-    
+
 }
 
-int MainWindow::contextXOffset()
+int
+MainWindow::contextXOffset()
 {
     QPoint topLeft1 = mapToGlobal( m_controlBar->pos() );
     QPoint topLeft2 = mapToGlobal( m_contextWidget->pos() );
 
     return topLeft2.x() - topLeft1.x();
-
 }
-
-
 
 #include "MainWindow.moc"

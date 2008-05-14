@@ -112,6 +112,7 @@ MainToolbar::~MainToolbar()
 
 void MainToolbar::paintEvent( QPaintEvent * )
 {
+/*
     int middle = contentsRect().width() / 2;
 
     int controlWidth = m_playerControlsToolbar->width();
@@ -153,6 +154,7 @@ void MainToolbar::paintEvent( QPaintEvent * )
         QPixmap addControlArea = The::svgHandler()->renderSvg( "buttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
         painter.drawPixmap( addControlRect.x(), addControlRect.y(), addControlArea );
     }
+ */
 }
 
 void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
