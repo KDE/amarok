@@ -21,7 +21,5 @@ namespace Context
 {
     typedef Plasma::Svg Svg;
 
-}
-
 } // namespace Context
 

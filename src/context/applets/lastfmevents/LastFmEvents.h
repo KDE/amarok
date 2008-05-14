@@ -41,9 +41,6 @@ public:
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
-private slots:
-    void configAccepted();
-
 private:
 
     qreal m_aspectRatio;
