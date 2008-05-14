@@ -23,6 +23,7 @@
 #include <kxmlguiwindow.h>
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
+class ContextWidget;
 class KMenu;
 class MediaBrowser;
 class QMenuBar;
@@ -64,6 +65,12 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 
         SideBar *sideBar() const { return m_browsers; }
         void deleteBrowsers();
+
+
+        //will return the size of the rect defined top, right and left by the main toolbar and bottom by the context view.
+        QSize backgroundSize();
+
+        int contextXOffset();
 
     signals:
         void loveTrack( Meta::TrackPtr );
@@ -130,6 +137,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         QStringList    m_lastfmTags;
         MediaBrowser  *m_currMediaBrowser;
         QSplitter     *m_splitter;
+
+        ContextWidget *m_contextWidget;
 
         PlaylistFileProvider *m_playlistFiles;
 

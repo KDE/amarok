@@ -24,6 +24,7 @@
 #include "AnalyzerWidget.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "MainWindow.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "ProgressSlider.h"
 #include "popupdropper/PopupDropperAction.h"
@@ -118,27 +119,15 @@ void MainToolbar::paintEvent( QPaintEvent * )
     QRect controlRect( middle - controlWidth / 2, 0, controlWidth, 40 );
     QRect addControlRect( controlRect.bottomRight().x() + 10, 10, addControlWidth, 20 );
 
+    QSize backgroundSize = MainWindow::self()->backgroundSize();
 
-    //Meta::TrackPtr track = The::engineController()->currentTrack();
-
-    int tileWidth = contentsRect().height() * 2;
+    //debug() << "Background size: " << backgroundSize;
 
     QPainter painter( this );
-    QPixmap backgroundTile = The::svgHandler()->renderSvg( "toolbar_background",tileWidth , contentsRect().height(), "toolbar_background" );
+    QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
 
-
-    int offset = 0;
-    while( ( offset + tileWidth ) <= contentsRect().width() )
-    {
-        //debug() << "painting tile...!";
-        painter.drawPixmap( offset, 0, backgroundTile );
-        offset += tileWidth;
-    }
-
-    int leftover = contentsRect().width() - offset;
-
-    if ( leftover > 0 )
-        painter.drawPixmap( offset, 0, backgroundTile, 0, 0, leftover, contentsRect().height() );
+    //paint as much as we need
+    painter.drawPixmap( 0, 0, mainBackground, 0, 0, contentsRect().width(), contentsRect().height() );
 
     QPixmap controlArea = The::svgHandler()->renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
     painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );

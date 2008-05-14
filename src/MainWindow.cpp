@@ -163,15 +163,15 @@ void MainWindow::init()
     createMenus();
 
     PERF_LOG( "Creating ContextWidget" )
-    ContextWidget *contextWidget = new ContextWidget( this );
+    m_contextWidget = new ContextWidget( this );
     PERF_LOG( "ContextWidget created" )
-    contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+            m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
     PERF_LOG( "Creating ContextView" )
-    (new Context::ContextView( contextWidget ))->setFrameShape( QFrame::NoFrame );
+            (new Context::ContextView( m_contextWidget ))->setFrameShape( QFrame::NoFrame );
     PERF_LOG( "ContextView created" )
     {
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
-            new CoverBling( contextWidget );
+            new CoverBling( m_contextWidget );
     }
 
     connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
@@ -188,7 +188,7 @@ void MainWindow::init()
     m_splitter = new QSplitter( Qt::Horizontal, centralWidget );
     m_splitter->setHandleWidth( 0 );
     m_splitter->addWidget( m_browsers );
-    m_splitter->addWidget( contextWidget );
+    m_splitter->addWidget( m_contextWidget );
     m_splitter->addWidget( playlistWidget );
 
 
@@ -1159,6 +1159,25 @@ void MainWindow::createMenus()
 void MainWindow::paletteChange(const QPalette & oldPalette)
 {
     QPixmapCache::clear();
+}
+
+QSize MainWindow::backgroundSize()
+{
+    
+    QPoint topLeft = mapToGlobal( m_controlBar->rect().topLeft() );
+    QPoint bottomRight1= mapToGlobal( m_controlBar->rect().bottomRight() );
+
+    return QSize( bottomRight1.x() - topLeft.x(), m_controlBar->rect().height() +  m_contextWidget->rect().height() );
+    
+}
+
+int MainWindow::contextXOffset()
+{
+    QPoint topLeft1 = mapToGlobal( m_controlBar->pos() );
+    QPoint topLeft2 = mapToGlobal( m_contextWidget->pos() );
+
+    return topLeft2.x() - topLeft1.x();
+
 }
 
 

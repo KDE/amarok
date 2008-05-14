@@ -15,6 +15,7 @@
 
 #include "ContextScene.h"
 #include "Debug.h"
+#include "MainWindow.h"
 #include "Svg.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"
@@ -181,9 +182,26 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     }*/
 
     //m_renderer->render( painter, rect );
+
+    QSize backgroundSize = MainWindow::self()->backgroundSize();
+    int offset = MainWindow::self()->contextXOffset();
+
+    int top = backgroundSize.height() - rect.height();
+    int left = offset;
+    int height = rect.height();
+    int width = rect.width();
+    
+    QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
     
     debug() << "drawing background in " << rect;
-    painter->drawPixmap(0, 0, The::svgHandler()->renderSvg( "context_wallpaper", rect.width(), rect.height(), "context_wallpaper" ) );
+   
+    //paint as much as we need
+    painter->drawPixmap( 0, 0, mainBackground, left, 67, width, rect.height()+1 );
+
+
+
+
+    
 
     painter->drawPixmap(rect.width() - 320, rect.height() - 223, The::svgHandler()->renderSvg( "amarok_logo", 300, 203, "amarok_logo" ) );
 
