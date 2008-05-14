@@ -392,7 +392,7 @@ set(amaroklib_LIB_SRCS
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverManager.cpp
-    crashhandler.cpp
+    CrashHandler.cpp
     cuefile.cpp
     dbsetup.ui.h
     dbus/amarokdbushandler.cpp
