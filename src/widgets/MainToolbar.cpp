@@ -130,21 +130,21 @@ void MainToolbar::paintEvent( QPaintEvent * )
     int height= contentsRect().height();
     
     QString key = QString("toolbar:%1x%2").arg( width, height );
-    QPixmap toobarBackground( width, height );
-    toobarBackground.fill( Qt::blue );
+    QPixmap toolbarBackground( width, height );
+    toolbarBackground.fill( Qt::blue );
 
-    if ( !QPixmapCache::find( key, toobarBackground ) ) {
+    if ( !QPixmapCache::find( key, toolbarBackground ) ) {
 
         QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
-        toobarBackground = mainBackground.copy( 0, 0, width, height );
-        QPixmapCache::insert( key, toobarBackground );
+        toolbarBackground = mainBackground.copy( 0, 0, width, height );
+        QPixmapCache::insert( key, toolbarBackground );
     }
 
 
     QPainter painter( this );
  
     //paint as much as we need
-    painter.drawPixmap( 0, 0, toobarBackground );
+    painter.drawPixmap( 0, 0, toolbarBackground );
 
     QPixmap controlArea = The::svgHandler()->renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
     painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
