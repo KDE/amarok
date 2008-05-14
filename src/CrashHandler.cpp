@@ -8,7 +8,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "crashhandler.h"
+#include "CrashHandler.h"
 
 #include "Amarok.h"
 #include "amarokconfig.h"

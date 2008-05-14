@@ -17,7 +17,7 @@
 
 #include "Amarok.h"
 #include "App.h"
-#include "crashhandler.h"
+#include "CrashHandler.h"
 #include "metadata/tplugins.h"
 
 #include <KAboutData>
