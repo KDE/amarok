@@ -1,3 +1,5 @@
+#ifndef README
+#define README
 
  Amarok - the audio player for KDE
 ===================================
@@ -13,11 +15,10 @@ interface that really makes playlist handling easy.
 ==========
 
     * Quick and simple drag and drop playlist creation
-    * Music library (built-in SQLite, MySQL, or PostgreSQL)
+    * Music library (built-in SQLite, or MySQL)
     * Plays all audio formats known to man
     * 10 band equalizer
-    * Automatic cover art download using Amazon services
-    * The unique and powerful stylable context browser
+    * Cover art download using Amazon services
     * Automatic play-statistics generation (iRate style)
     * Full lyrics download
     * Learn about your music with integrated Wikipedia
@@ -30,7 +31,8 @@ interface that really makes playlist handling easy.
     * Access to iPod, iRiver IFP, USB Mass Storage and many other devices
     * Powerful scripting interface
     * KDE integration
-    * Preview and buy albums from the Magnatune.com music store
+    * Integration with multiple web sources, Magnatune, Jamendo, Ampache and Mp3tunes 
+      among others.
 --------------------------------------------------------------------------------
 
 
@@ -197,3 +199,4 @@ of commits, visit http://commitfilter.kde.org/.
 WWW : http://amarok.kde.org
 MAIL: amarok@kde.org
 IRC : irc.freenode.net - #amarok, #amarok.de, #amarok.es
+#endif // README
