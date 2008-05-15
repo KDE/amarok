@@ -112,6 +112,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         virtual void closeEvent( QCloseEvent* );
         virtual void showEvent( QShowEvent* );
         virtual QSize sizeHint() const;
+        virtual void resizeEvent ( QResizeEvent * event );
 
         virtual void paletteChange( const QPalette & oldPalette );
 

@@ -1091,4 +1091,10 @@ MainWindow::contextXOffset()
     return topLeft2.x() - topLeft1.x();
 }
 
+void MainWindow::resizeEvent( QResizeEvent * event )
+{
+    QWidget::resizeEvent( event );
+    m_controlBar->reRender();
+}
+
 #include "MainWindow.moc"

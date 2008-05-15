@@ -45,6 +45,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     : KHBox( parent )
     , EngineObserver( The::engineController() )
     , m_addActionsOffsetX( 0 )
+    , m_ignoreCache( false )
 
 {
     setObjectName( "MainToolbar" );
@@ -133,11 +134,13 @@ void MainToolbar::paintEvent( QPaintEvent * )
     QPixmap toolbarBackground( width, height );
     toolbarBackground.fill( Qt::blue );
 
-    if ( !QPixmapCache::find( key, toolbarBackground ) ) {
+    if ( m_ignoreCache || !QPixmapCache::find( key, toolbarBackground ) ) {
 
         QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
         toolbarBackground = mainBackground.copy( 0, 0, width, height );
         QPixmapCache::insert( key, toolbarBackground );
+        m_ignoreCache = false;
+        
     }
 
 
@@ -264,5 +267,11 @@ void MainToolbar::paletteChange( const QPalette & oldPalette )
     int controlWidth = m_playerControlsToolbar->width();
     m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 + m_addActionsOffsetX, 10 );
 }*/
+
+void MainToolbar::reRender()
+{
+    m_ignoreCache = true;
+    update();
+}
 
 

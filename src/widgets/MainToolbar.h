@@ -44,6 +44,8 @@ public:
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
+    void reRender();
+
 protected:
       virtual void paintEvent( QPaintEvent * );
       virtual void resizeEvent( QResizeEvent * event );
@@ -60,6 +62,8 @@ private:
 
     bool m_renderAddControls;
     int m_addActionsOffsetX;
+
+    bool m_ignoreCache;
 
     QList<PopupDropperAction *> m_additionalActions;
 };
