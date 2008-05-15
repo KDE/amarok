@@ -222,14 +222,17 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
 }
 
-bool CurrentTrack::hasHeightForWidth() const
-{
-    return true;
-}
 
-qreal CurrentTrack::heightForWidth( qreal width ) const
+QSizeF 
+CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
-    return width * m_aspectRatio;
+    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
+    {
+        return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
+    } else
+    {
+        return constraint;
+    }
 }
 
 void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
