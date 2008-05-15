@@ -204,7 +204,7 @@ LastFmEvents::effectiveSizeHint( Qt::SizeHint which, const QSizeF & constraint) 
     DEBUG_BLOCK
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
     {
-        return QSizeF( m_aspectRatio * constraint.width(), constraint.width() );
+        return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
     }
 }
 
