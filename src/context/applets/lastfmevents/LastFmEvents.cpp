@@ -205,7 +205,8 @@ LastFmEvents::effectiveSizeHint( Qt::SizeHint which, const QSizeF & constraint) 
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
     {
         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-    }
+    } else
+        return constraint;
 }
 
 
