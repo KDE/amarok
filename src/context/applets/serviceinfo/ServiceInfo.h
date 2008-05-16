@@ -43,6 +43,8 @@ public:
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
 
+    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
+
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();
