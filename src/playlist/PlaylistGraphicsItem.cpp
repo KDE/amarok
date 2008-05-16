@@ -782,6 +782,12 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
                                         "active_overlay"
                                       )
                            );
+
+        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
+        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
+    } else {
+        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
+        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
     }
 
     //set selection marker if needed
@@ -842,7 +848,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
     //draw active track marker if needed
-    if ( active )
+    if ( active ) {
         painter->drawPixmap(
                              (int)trackRect.x() + 5,
                              (int)trackRect.y() + 2,
@@ -853,6 +859,13 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
                                         "active_overlay"
                                       )
                            );
+
+        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
+        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
+    } else {
+        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
+        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
+    }
 
     //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
@@ -972,9 +985,15 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
         painter->drawPixmap( 5, 0, The::svgHandler()->renderSvg( "body_background", (int)trackRect.width() - 10, (int)trackRect.height(), "body_background" ) );
 */
     //draw active track marker if needed
-    if ( active )
+    if ( active ) {
         painter->drawPixmap( 5, 0, The::svgHandler()->renderSvg( "active_overlay", (int)trackRect.width() - 10 , (int)trackRect.height(), "active_overlay" ) );
 
+        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
+        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
+    } else {
+        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
+        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
+    }
 
     //make sure that the top text items are not shown
     m_items->topRightText->hide();
@@ -1023,7 +1042,7 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
     }*/
 
     //draw active track marker if needed
-    if ( active )
+    if ( active ) {
         painter->drawPixmap(
                              5,
                              0,
@@ -1035,6 +1054,13 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
                                         "active_overlay"
                                       )
                            );
+
+        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
+        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
+    } else {
+        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
+        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
+    }
 
     //make sure that the top text items are not shown
     m_items->topRightText->hide();
