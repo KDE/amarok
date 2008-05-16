@@ -62,7 +62,7 @@ Cloud::Cloud( QObject* parent, const QVariantList& args )
     m_cloudName = new QGraphicsSimpleTextItem( this );
     m_cloudName->setText( "Cloud View ( empty )" );
 
-    m_cloudName->setBrush( QBrush( Qt::white ) );
+    //m_cloudName->setBrush( QBrush( Qt::white ) );
 
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
@@ -415,3 +415,15 @@ void Cloud::cloudItemActivated( const QString & text )
 }
 
 #include "Cloud.moc"
+
+
+QSizeF Cloud::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
+{
+    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
+    {
+        return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
+    } else
+    {
+        return constraint;
+    }
+}
