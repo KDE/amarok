@@ -85,7 +85,11 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
         m_header->resize(size().toSize());
     }
 
-    m_wikipediaLabel->setPos( m_header->elementRect( "wikipedialabel" ).topLeft() );
+    float textWidth = m_wikipediaLabel->boundingRect().width();
+    float totalWidth = m_header->elementRect( "wikipedialabel" ).width();
+    float offsetX =  ( totalWidth - textWidth ) / 2;
+
+    m_wikipediaLabel->setPos( offsetX, m_header->elementRect( "wikipedialabel" ).topLeft().y() );
     m_wikipediaLabel->setFont( shrinkTextSizeToFit( "Wikipedia", m_header->elementRect( "wikipedialabel" ) ) );
 
     m_wikiPage->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
