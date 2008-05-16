@@ -794,11 +794,11 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap(
-                             static_cast<int>(SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 2),
+                             static_cast<int>( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 6 ),
                              (int)lineTwoY,
                              The::svgHandler()->renderSvg(
                                         "selection",
-                                        trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 4 ),
+                                        trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 8 ),
                                         (int)s_fm->height(),
                                         "selection"
                                       )
