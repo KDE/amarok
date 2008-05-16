@@ -35,6 +35,7 @@
 #include <QBitmap>
 #include <QBrush>
 #include <QContextMenuEvent>
+#include <QFontMetrics>
 #include <QImage>
 #include <QMenu>
 #include <QPainter>
@@ -268,7 +269,9 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPainter *p = new QPainter( this );
 
-    paintCustomSlider( p, m_sliderX, ( m_iconHeight -m_sliderHeight ) / 2 , m_sliderWidth, m_sliderHeight );
+    int sliderY =  ( m_iconHeight -m_sliderHeight ) / 2;
+
+    paintCustomSlider( p, m_sliderX, sliderY, m_sliderWidth, m_sliderHeight );
     p->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_icon", m_iconWidth, m_iconHeight, "volume_icon" ) ) ;
 
     if( underMouse() )
@@ -278,7 +281,13 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         //QFont font;
         //font.setPixelSize( 12 );
         //p->setFont( font );
-        const QRect rect( m_iconWidth + m_sliderWidth, ( int ) ( height() - 15 ) / 2, 40, 15 );
+
+        QFontMetrics fm( font() );
+        int pixelsHigh = fm.height();
+
+        int yOffset =  sliderY + ( m_sliderHeight - pixelsHigh ) / 2;
+
+        const QRect rect( m_iconWidth + m_sliderWidth + 4, yOffset, 40, pixelsHigh );
         p->drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
     }
 
