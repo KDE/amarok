@@ -59,7 +59,7 @@ QStringList CurrentEngine::sources() const
 
 bool CurrentEngine::sourceRequested( const QString& name )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     Q_UNUSED( name );
 /*    m_sources << name;    // we are already enabled if we are alive*/
     removeAllData( name );
@@ -71,12 +71,16 @@ bool CurrentEngine::sourceRequested( const QString& name )
 
 void CurrentEngine::message( const ContextState& state )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
+
+    m_currentTrack = The::engineController()->currentTrack();
     
-    if( state == Current && m_requested )
+    if( state == Current /*&& m_requested*/ )
     {
+        debug() << "1";
         if( m_currentTrack )
         {
+            debug() << "2";
             m_currentTrack->unsubscribe( this );
             if( m_currentTrack->album() )
             {
@@ -89,14 +93,14 @@ void CurrentEngine::message( const ContextState& state )
 
 void CurrentEngine::metadataChanged( Meta::Album* album )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     setData( "current",  "albumart", album->image( coverWidth() ) );
 }
 
 void
 CurrentEngine::metadataChanged( Meta::Track *track )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     setData( "current", "current", trackInfo );
 }
@@ -104,7 +108,7 @@ CurrentEngine::metadataChanged( Meta::Track *track )
 void CurrentEngine::update()
 {
 
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     
     m_currentTrack = The::engineController()->currentTrack();
     if( !m_currentTrack )

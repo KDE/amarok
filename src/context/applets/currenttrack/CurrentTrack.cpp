@@ -196,6 +196,8 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
 {
     Q_UNUSED( name );
 
+    kDebug() << "CurrentTrack::dataUpdated";
+
     if( data.size() == 0 ) return;
 
     m_currentInfo = data[ "current" ].toMap();
