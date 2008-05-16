@@ -55,6 +55,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setContentsMargins( 0, 0, 0, 0 );
     layout()->setContentsMargins( 0, 0, 0, 0 );
+    setAutoFillBackground ( false );
 
     KVBox *aVBox     = new KVBox( this );
     aVBox->setMaximumSize( 50000, 60 );
@@ -93,6 +94,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "stop" ) );
     m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "next" ) );
     m_playerControlsToolbar->adjustSize();
+    
 
     m_addControlsToolbar = new Amarok::ToolBar( m_insideBox );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -115,7 +117,7 @@ MainToolbar::~MainToolbar()
     DEBUG_BLOCK
 }
 
-void MainToolbar::paintEvent( QPaintEvent * e )
+void MainToolbar::paintEvent( QPaintEvent * )
 {
 
     int middle = contentsRect().width() / 2;
@@ -131,8 +133,8 @@ void MainToolbar::paintEvent( QPaintEvent * e )
 
    //lets cache this or we will be cutting up this big image all the damn time!
 
-    int width = e->rect().width();
-    int height= e->rect().height();
+    int width = contentsRect().width();
+    int height= contentsRect().height();
     
     QString key = QString("toolbar:%1x%2").arg( width, height );
     QPixmap toolbarBackground( width, height );
