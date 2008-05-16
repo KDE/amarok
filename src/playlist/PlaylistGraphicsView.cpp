@@ -50,7 +50,7 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     setAcceptDrops( true );
     setAlignment( Qt::AlignLeft | Qt::AlignTop );
     setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
-    setBackgroundBrush( App::instance()->palette().window().color() );
+    //setBackgroundBrush( App::instance()->palette().window().color() );
 
     setScene( new Playlist::GraphicsScene() );
     scene()->addItem( Playlist::DropVis::instance() );
