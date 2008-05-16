@@ -110,7 +110,7 @@
        y="352.36218"
        inkscape:label="#rect2160" />
     <rect
-       style="opacity:0.9;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:0.5;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="right"
        width="10"
        height="100"
@@ -121,14 +121,14 @@
        id="left"
        inkscape:label="#g3338"
        transform="matrix(0.8333333,0,0,1,18.333335,0)"
-       style="opacity:0.9">
+       style="opacity:1">
       <rect
          y="352.36218"
          x="86"
          height="100"
          width="12"
          id="rect3196"
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.14072546;stroke-opacity:1" />
+         style="fill:#ffffff;fill-opacity:0.5;stroke:none;stroke-width:0.14072546;stroke-opacity:1" />
     </g>
     <g
        id="topleft"
@@ -141,7 +141,7 @@
          height="8"
          width="14"
          id="rect3264"
-         style="opacity:0.9;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:0.96078431" />
+         style="opacity:0.5;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:0.96078431" />
     </g>
     <g
        id="top"
@@ -154,7 +154,7 @@
          height="8"
          width="200"
          id="rect3172"
-         style="opacity:0.9;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.78431373" />
+         style="opacity:0.5;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.78431373" />
     </g>
     <g
        id="topright"
@@ -162,7 +162,7 @@
        transform="matrix(1.2501498,0,0,1.2500002,-75.046129,-88.090611)"
        style="opacity:1">
       <rect
-         style="opacity:0.9;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         style="opacity:0.5;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
          id="rect5153"
          width="7.9952698"
          height="8"
@@ -175,7 +175,7 @@
        transform="matrix(1.5045287,0,0,1.8262374,-13.05884,-410.2833)"
        style="opacity:1">
       <rect
-         style="opacity:0.9;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         style="opacity:0.5;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
          id="rect5161"
          width="6.6465998"
          height="5.4757395"
@@ -188,7 +188,7 @@
        transform="matrix(1.8281101,0,0,1.9817982,-248.43304,-463.94635)"
        style="opacity:1">
       <rect
-         style="opacity:0.9;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         style="opacity:0.5;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
          id="rect5156"
          width="5.47013"
          height="5.0459146"
@@ -206,7 +206,7 @@
          height="5"
          width="200"
          id="rect3194"
-         style="opacity:0.9;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:0.78431373" />
+         style="opacity:0.5;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:0.78431373" />
     </g>
   </g>
 </svg>
