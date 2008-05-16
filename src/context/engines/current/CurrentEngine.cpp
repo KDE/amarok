@@ -33,9 +33,11 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     , m_coverWidth( 0 )
     , m_requested( true )
 {
+    DEBUG_BLOCK
     Q_UNUSED( args )
     m_sources = QStringList();
     m_sources << "current";
+    update();
 }
 
 CurrentEngine::~CurrentEngine()
@@ -57,6 +59,7 @@ QStringList CurrentEngine::sources() const
 
 bool CurrentEngine::sourceRequested( const QString& name )
 {
+    //DEBUG_BLOCK
     Q_UNUSED( name );
 /*    m_sources << name;    // we are already enabled if we are alive*/
     removeAllData( name );
@@ -68,6 +71,8 @@ bool CurrentEngine::sourceRequested( const QString& name )
 
 void CurrentEngine::message( const ContextState& state )
 {
+    //DEBUG_BLOCK
+    
     if( state == Current && m_requested )
     {
         if( m_currentTrack )
@@ -84,18 +89,23 @@ void CurrentEngine::message( const ContextState& state )
 
 void CurrentEngine::metadataChanged( Meta::Album* album )
 {
+    //DEBUG_BLOCK
     setData( "current",  "albumart", album->image( coverWidth() ) );
 }
 
 void
 CurrentEngine::metadataChanged( Meta::Track *track )
 {
+    //DEBUG_BLOCK
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     setData( "current", "current", trackInfo );
 }
 
 void CurrentEngine::update()
 {
+
+    //DEBUG_BLOCK
+    
     m_currentTrack = The::engineController()->currentTrack();
     if( !m_currentTrack )
         return;
