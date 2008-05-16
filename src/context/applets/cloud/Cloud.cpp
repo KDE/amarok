@@ -75,6 +75,8 @@ Cloud::Cloud( QObject* parent, const QVariantList& args )
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
     resize( m_width, m_aspectRatio );
 
+    setPreferredSize( m_theme->size() );
+
     constraintsEvent();
 }
 
