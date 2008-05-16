@@ -268,7 +268,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPainter *p = new QPainter( this );
 
-    paintCustomSlider( p, m_sliderX, 0, m_sliderWidth, m_sliderHeight );
+    paintCustomSlider( p, m_sliderX, ( m_iconHeight -m_sliderHeight ) / 2 , m_sliderWidth, m_sliderHeight );
     p->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_icon", m_iconWidth, m_iconHeight, "volume_icon" ) ) ;
 
     if( underMouse() )
