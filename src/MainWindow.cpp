@@ -1078,7 +1078,7 @@ MainWindow::backgroundSize()
     QPoint topLeft = mapToGlobal( m_controlBar->rect().topLeft() );
     QPoint bottomRight1= mapToGlobal( m_controlBar->rect().bottomRight() );
 
-    return QSize( bottomRight1.x() - topLeft.x(), m_controlBar->rect().height() +  m_contextWidget->rect().height() );
+    return QSize( bottomRight1.x() - topLeft.x() + 1, m_controlBar->rect().height() +  m_contextWidget->rect().height() );
 
 }
 

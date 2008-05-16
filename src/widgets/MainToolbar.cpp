@@ -115,7 +115,7 @@ MainToolbar::~MainToolbar()
     DEBUG_BLOCK
 }
 
-void MainToolbar::paintEvent( QPaintEvent * )
+void MainToolbar::paintEvent( QPaintEvent * e )
 {
 
     int middle = contentsRect().width() / 2;
@@ -131,12 +131,12 @@ void MainToolbar::paintEvent( QPaintEvent * )
 
    //lets cache this or we will be cutting up this big image all the damn time!
 
-    int width = contentsRect().width();
-    int height= contentsRect().height();
+    int width = e->rect().width();
+    int height= e->rect().height();
     
     QString key = QString("toolbar:%1x%2").arg( width, height );
     QPixmap toolbarBackground( width, height );
-    toolbarBackground.fill( Qt::blue );
+
 
     if ( m_ignoreCache || !QPixmapCache::find( key, toolbarBackground ) ) {
 

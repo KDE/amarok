@@ -102,7 +102,6 @@ void SvgTinter::init( )
         //alternate list background:
         m_tintMap.insert( "#e0e0e0", App::instance()->palette().alternateBase().color().name() );
 
-        
         //highlight/window mix:
         m_tintMap.insert( "#123456", blendColors( App::instance()->palette().window().color(), App::instance()->palette().highlight().color().name(), 80 ).name() );
 
