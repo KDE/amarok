@@ -199,11 +199,14 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     painter->drawPixmap( 0, 0, mainBackground, left, 67, width, rect.height()+1 );
 
 
+    QRectF bounds = The::svgHandler()->getRenderer()->boundsOnElement ( "amarok_logo" );
+    double aspectRatio = bounds.width() / bounds.height();
 
+    int logoWidth = 300;
+    int logoHeight = ( int )( ( double ) logoWidth / aspectRatio );
 
     
-
-    painter->drawPixmap(rect.width() - 320, rect.height() - 223, The::svgHandler()->renderSvg( "amarok_logo", 300, 203, "amarok_logo" ) );
+    painter->drawPixmap(rect.width() - ( logoWidth + 20 ) , rect.height() - ( logoHeight + 20 ) , The::svgHandler()->renderSvg( "amarok_logo", logoWidth, logoHeight, "amarok_logo" ) );
 
     painter->restore();
 
