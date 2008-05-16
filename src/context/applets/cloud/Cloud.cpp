@@ -23,36 +23,31 @@
 #include "Debug.h"
 #include "context/Svg.h"
 
-#include <QPainter>
 #include <QBrush>
-#include <QDBusInterface>
-#include <QVBoxLayout>
 #include <QCheckBox>
-#include <QSpinBox>
+#include <QDBusInterface>
 #include <QLabel>
+#include <QPainter>
+#include <QSpinBox>
+#include <QVBoxLayout>
 
 Cloud::Cloud( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
+    , m_runningX( 0.0 )
+    , m_runningY( 0.0 )
+    , m_currentLineMaxHeight( 0.0 )
+    , m_maxFontSize( 30 )
+    , m_minFontSize( 3 )
+    , m_maxHeightInFirstLine( 0.0 )
     , m_config( 0 )
     , m_configLayout( 0 )
     , m_width( 0 )
     , m_aspectRatio( 0 )
     , m_size( QSizeF() )
+    , m_initialized( false )
 
 {
     DEBUG_BLOCK
-
-    m_initialized = false;
-
-    m_maxFontSize = 30;
-    m_minFontSize = 3;
-
-    m_runningX = 0.0;
-    m_runningY = 0.0;
-
-    m_maxHeightInFirstLine = 0.0;
-
-    m_currentLineMaxHeight = 0.0;
 
     setHasConfigurationInterface( false );
 
@@ -67,7 +62,6 @@ Cloud::Cloud( QObject* parent, const QVariantList& args )
     m_cloudName = new QGraphicsSimpleTextItem( this );
     m_cloudName->setText( "Cloud View ( empty )" );
 
-
     m_cloudName->setBrush( QBrush( Qt::white ) );
 
     // get natural aspect ratio, so we can keep it on resize
@@ -81,13 +75,10 @@ Cloud::Cloud( QObject* parent, const QVariantList& args )
 }
 
 Cloud::~Cloud()
-{
-
-}
+{}
 
 void Cloud::constraintsEvent( Plasma::Constraints constraints )
 {
-
     prepareGeometryChange();
 
     if (constraints & Plasma::SizeConstraint && m_theme) {
@@ -109,7 +100,6 @@ void Cloud::constraintsEvent( Plasma::Constraints constraints )
     drawCloud();
 
     m_initialized = true;
-
 }
 
 void Cloud::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -132,7 +122,6 @@ void Cloud::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
         m_cloudName->setText( data[ "cloud_name" ].toString() );
         drawCloud();
     }
-
 }
 
 void Cloud::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -161,12 +150,10 @@ void Cloud::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
 }
 
 void Cloud::showConfigurationInterface()
-{
-}
+{}
 
 void Cloud::configAccepted() // SLOT
-{
-}
+{}
 
 void Cloud::resize( qreal newWidth, qreal aspectRatio )
 {
@@ -182,7 +169,6 @@ qreal Cloud::heightForWidth(qreal width) const
 {
     return width * m_aspectRatio;
 }
-
 
 void Cloud::addText( const QString &text, int weight )
 {

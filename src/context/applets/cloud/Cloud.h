@@ -30,11 +30,11 @@
 #include <QTimeLine>
 #include <qwebview.h>
 
-class QGraphicsPixmapItem;
-class QLabel;
-class QHBoxLayout;
-class QSpinBox;
 class QCheckBox;
+class QGraphicsPixmapItem;
+class QHBoxLayout;
+class QLabel;
+class QSpinBox;
 
 
 /**
@@ -64,7 +64,6 @@ private:
 signals:
     void clicked( const QString &text );
 };
-
 
 
 class Cloud : public Context::Applet
@@ -133,9 +132,6 @@ private:
     QVariantMap m_actions;
 
     bool m_initialized;
-
-
-
 };
 
 K_EXPORT_AMAROK_APPLET( cloud, Cloud )
