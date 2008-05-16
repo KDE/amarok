@@ -197,7 +197,7 @@ qreal ServiceInfo::heightForWidth(qreal width) const
 }
 
 QSizeF 
-        ServiceInfo::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
+ServiceInfo::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
     {

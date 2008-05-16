@@ -30,20 +30,24 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
     m_requested = true; // testing
     m_wikiLocale = "en";
     m_currentSelection = "artist";
+    m_sources << "current";
+    update();
 }
 
 QStringList WikipediaEngine::sources() const
 {
-    return QStringList();
+    return m_sources;
 }
 
 bool WikipediaEngine::sourceRequested( const QString& name )
 {
+    DEBUG_BLOCK
     Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
-    setData( "wikipedia", QVariant() );
+    removeAllData( name );
+    setData( name, QVariant());
     update();
-    //FIXME return something!
+    m_requested = true;
     return true;
 }
 
@@ -55,12 +59,16 @@ void WikipediaEngine::message( const ContextState& state )
 
 void WikipediaEngine::update()
 {
+    DEBUG_BLOCK
+    
     QString tmpWikiStr;
 
     if ( !The::engineController()->currentTrack() ) {
         return;
     }
-
+    
+    removeAllData( "wikipedia" );
+    
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
 
     if( selection() == "artist" ) // default, or applet told us to fetch artist
@@ -131,6 +139,8 @@ void WikipediaEngine::update()
 
 void WikipediaEngine::wikiResult( KJob* job )
 {
+    DEBUG_BLOCK
+    
     if( !m_wikiJob ) return; //track changed while we were fetching
 
     if ( !job->error() == 0 && job == m_wikiJob )
@@ -184,7 +194,7 @@ void WikipediaEngine::wikiResult( KJob* job )
     }
 
 
-    //debug() << "Even better";
+    debug() << "Even better";
 
     //remove the new-lines and tabs(replace with spaces IS needed).
     m_wiki.replace( "\n", " " );
@@ -256,7 +266,7 @@ void WikipediaEngine::wikiResult( KJob* job )
     m_wikiHTMLSource.append( "</body></html>\n" );
 
     removeAllData( "wikipedia" );
-//     debug() << "sending wiki page:" << m_wikiHTMLSource;
+    debug() << "sending wiki page:" << m_wikiHTMLSource;
     setData( "wikipedia", "page", m_wikiHTMLSource );
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();

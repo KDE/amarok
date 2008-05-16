@@ -49,8 +49,6 @@ WikipediaApplet::~ WikipediaApplet()
 void WikipediaApplet::init()
 {
 
-    dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
-
     m_header = new Context::Svg( this );
     m_header->setImagePath( "widgets/amarok-wikipedia" );
     m_header->setContainsMultipleImages( false );
@@ -73,6 +71,8 @@ void WikipediaApplet::init()
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
 
+    dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
+    
     constraintsEvent();
 
 }
@@ -113,6 +113,8 @@ qreal WikipediaApplet::heightForWidth( qreal width ) const
 
 void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
+
+    kDebug() << "WikipediaApplet::dataUpdated: " << name;
     Q_UNUSED( name )
 
     if( data.size() == 0 ) return;
@@ -148,3 +150,15 @@ void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsIt
 
 
 #include "WikipediaApplet.moc"
+
+
+QSizeF WikipediaApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
+{
+    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
+    {
+        return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
+    } else
+    {
+        return constraint;
+    }
+}

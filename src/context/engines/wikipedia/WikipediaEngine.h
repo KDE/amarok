@@ -72,6 +72,7 @@ private:
     QString m_wikiLocale;
     // stores what features are enabled
     bool m_requested;
+    QStringList m_sources;
     
 };
 
