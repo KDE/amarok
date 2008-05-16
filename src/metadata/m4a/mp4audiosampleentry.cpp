@@ -19,11 +19,13 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <iostream>
 #include "mp4audiosampleentry.h"
-#include "mp4isobox.h"
+
 #include "mp4file.h"
+#include "mp4isobox.h"
 #include "mp4propsproxy.h"
+
+#include <iostream>
 
 using namespace TagLib;
 

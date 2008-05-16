@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QMap>
 #include <QString>
+#include <QStringList>
 
 namespace Solid {
     class Device;
@@ -37,7 +38,7 @@ class MediaDeviceCache : public QObject
         enum DeviceType { SolidPMPType, SolidVolumeType, ManualType, InvalidType };
 
         static MediaDeviceCache* instance() { return s_instance ? s_instance : new MediaDeviceCache(); }
-        
+
         /**
         * Creates a new MediaDeviceCache.
         * 

@@ -20,8 +20,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "Amarok.h"
 #include "collectionscanner.h"
+
+#include "Amarok.h"
 
 #include <KMD5>
 
@@ -55,7 +56,6 @@
 #include <oggfile.h>
 #include <oggflacfile.h>
 #include <tlist.h>
-#include <tstring.h>
 #include <vorbisfile.h>
 
 #ifdef HAVE_MP4V2

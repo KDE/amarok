@@ -18,6 +18,11 @@
 
 #define DEBUG_PREFIX "MediaDeviceCache"
 
+#include "MediaDeviceCache.h"
+
+#include "Amarok.h"
+#include "Debug.h"
+
 #include <KConfig>
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
@@ -30,11 +35,6 @@
 #include <QDir>
 #include <QFile>
 #include <QList>
-
-#include "Amarok.h"
-#include "Debug.h"
-#include "MediaDeviceCache.h"
-
 
 MediaDeviceCache* MediaDeviceCache::s_instance = 0;
 

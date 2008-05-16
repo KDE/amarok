@@ -15,12 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  ***************************************************************************/
 
-#ifndef AMAROK_REPEATTRACKADVANCER_H
-#define AMAROK_REPEATTRACKADVANCER_H
+#ifndef REPEATTRACKNAVIGATOR_H
+#define REPEATTRACKNAVIGATOR_H
 
 #include "meta/Meta.h"
 #include "playlist/TrackNavigator.h"
-
 
 namespace Playlist {
 class Model;

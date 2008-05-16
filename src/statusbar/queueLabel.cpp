@@ -17,12 +17,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
+#include "queueLabel.h"
+
 #include "Amarok.h"
 #include "Debug.h"
 #include "metabundle.h"
 
 #include "playlistitem.h"
-#include "queueLabel.h"
 #include <QMouseEvent>
 #include <QDesktopWidget>
 #include <QEvent>

@@ -17,13 +17,14 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "PopupDropperItem.h"
+
 #include <QtGui>
 #include <QtDebug>
 #include <QtSvg/QSvgRenderer>
 #include <QtSvg/QGraphicsSvgItem>
 #include <QFont>
 
-#include "PopupDropperItem.h"
 #include "PopupDropperAction.h"
 
 class PopupDropperItemPrivate

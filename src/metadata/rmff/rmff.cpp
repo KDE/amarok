@@ -26,6 +26,9 @@
  *   https://common.helixcommunity.org/nonav/2003/HCS_SDK_r5/helixsdk.htm  *
  *                                                                         *
  ***************************************************************************/
+
+#include "rmff.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -39,7 +42,6 @@
 #include <iostream>
 #include <string.h>
 
-#include "rmff.h"
 
 #define UNPACK4(a, buf, i) memcpy((void *)&a, (void *) &buf[i], 4),i+=4,a=ntohl(a)
 #define UNPACK2(a, buf, i) memcpy((void *)&a, (void *) &buf[i], 2),i+=2,a=ntohs(a)

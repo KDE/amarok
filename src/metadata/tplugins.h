@@ -19,8 +19,8 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#ifndef METADATA_TPLUGIN_H
-#define METADATA_TPLUGIN_H
+#ifndef TPLUGIN_H
+#define TPLUGIN_H
 #include <amarok_libs_export.h>
 
 void AMAROK_TAGLIB_EXPORT registerTaglibPlugins();

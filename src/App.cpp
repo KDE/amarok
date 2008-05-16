@@ -162,7 +162,7 @@ App::App()
                 if( len > 4 && bp.right( 4 ) == ".app" )
                 {
                     bp.append( "/Contents/MacOS" );
-                    QByteArray path = getenv( "PATH" );
+                    QByteArray path = qgetenv( "PATH" );
                     if( path.length() > 0 )
                     {
                         path.prepend( ":" );

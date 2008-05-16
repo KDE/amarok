@@ -153,7 +153,7 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
     if( job->error() )
     {
         //TODO: proper error handling
-        warning() << "An error occured when copying a file: " << job->errorString();
+        warning() << "An error occurred when copying a file: " << job->errorString();
     }
     job->deleteLater();
     if( m_jobs.isEmpty() )

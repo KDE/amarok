@@ -29,7 +29,11 @@
 #ifndef _RMFF_H_INCLUDED_
 #define _RMFF_H_INCLUDED_
 
-#include <config-amarok.h>  
+#include <config-amarok.h>
+
+#include <taglib/audioproperties.h>
+#include <tfile.h>
+#include <taglib/id3v1tag.h>
 
 namespace TagLib
 {

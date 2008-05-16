@@ -16,9 +16,10 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#include "PlaylistBrowser.h"
+
 #include "Amarok.h"
 #include "Debug.h"
-#include "PlaylistBrowser.h"
 #include "Playlist.h"
 #include "PodcastMeta.h"
 #include "PodcastModel.h"

@@ -1,7 +1,7 @@
 /***************************************************************************
     copyright            : (C) 2006 by Lukáš Lalinský
     email                : lalinsky@gmail.com
-    
+
     copyright            : (C) 2004 by Allan Sandfeld Jensen
     email                : kde@carewolf.org
                            (original MPC implementation)
@@ -23,17 +23,18 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <tbytevector.h>
-#include <tstring.h>
+#include "ttafile.h"
+
 #if 0
 #include <tdebug.h>
 #endif
-
-#include "ttafile.h"
-#include "id3v1tag.h"
-#include "id3v2tag.h"
-#include "id3v2header.h"
 #include "combinedtag.h"
+#include "id3v1tag.h"
+#include "id3v2header.h"
+#include "id3v2tag.h"
+
+#include <tbytevector.h>
+#include <tstring.h>
 
 using namespace TagLib;
 

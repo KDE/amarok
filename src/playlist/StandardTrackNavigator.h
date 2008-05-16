@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef AMAROK_STANDARDTRACKADVANCER_H
-#define AMAROK_STANDARDTRACKADVANCER_H
+#ifndef STANDARDTRACKNAVIGATOR_H
+#define STANDARDTRACKNAVIGATOR_H
 
 #include "playlist/TrackNavigator.h"
 

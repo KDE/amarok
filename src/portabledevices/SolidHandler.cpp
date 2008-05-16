@@ -16,14 +16,14 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "solid/device.h"
-#include "solid/devicenotifier.h"
+#include "SolidHandler.h"
+
+#include <solid/device.h>
+#include <solid/devicenotifier.h>
 
 #include <QList>
 
 #include "Debug.h"
-#include "SolidHandler.h"
-
 
 using namespace PortableDevicesNS;
 

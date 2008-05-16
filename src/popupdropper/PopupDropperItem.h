@@ -47,7 +47,7 @@ class PopupDropperItem : public QGraphicsSvgItem
 
 public:
     PopupDropperItem( QGraphicsItem *parent = 0 );
-    PopupDropperItem( const QString &file, QGraphicsItem *parent = 0 );
+    explicit PopupDropperItem( const QString &file, QGraphicsItem *parent = 0 );
     virtual ~PopupDropperItem();
 
     void show();

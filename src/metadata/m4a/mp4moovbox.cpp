@@ -19,11 +19,13 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include "tlist.h"
-#include <iostream>
 #include "mp4moovbox.h"
+
 #include "boxfactory.h"
 #include "mp4file.h"
+#include "tlist.h"
+
+#include <iostream>
 
 using namespace TagLib;
 

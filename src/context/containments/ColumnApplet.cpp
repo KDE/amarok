@@ -157,7 +157,7 @@ QRectF ColumnApplet::boundingRect() const
 // call this when the view changes size: e.g. layout needs to be recalculated
 void ColumnApplet::updateSize() // SLOT
 {
-    // HACK HACK HACK i dont know where maximumSize is being set, but SOMETHING is setting it,
+    // HACK HACK HACK i don't know where maximumSize is being set, but SOMETHING is setting it,
     // and is preventing the containment from expanding when it should.
     // so, we manually keep the size high.
     setMaximumSize( QSizeF( 100000, 100000 ) );

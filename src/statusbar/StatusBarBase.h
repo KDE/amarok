@@ -17,14 +17,15 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef KDE_STATUSBAR_H
-#define KDE_STATUSBAR_H
+#ifndef STATUSBARBASE_H
+#define STATUSBARBASE_H
 
 #include "progressBar.h" //convenience
-#include "amarok_libs_export.h"
-#include <QWidget>     //baseclass
+#include "amarok_export.h"
+
 #include <QMap>        //stack allocated
 #include <QStatusBar>
+#include <QWidget>     //baseclass
 
 class StatusBarMessageLabel;
 class QLabel;

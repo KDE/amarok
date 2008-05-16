@@ -18,9 +18,10 @@
  *   <http://www.gnu.org/licenses/>.                                       *
  ***************************************************************************/
 
+#include "asffile.h"
+
 #include <tbytevectorlist.h>
 #include <tstring.h>
-#include "asffile.h"
 #include "asftag.h"
 #include "asfproperties.h"
 

@@ -48,7 +48,7 @@ class KMenuBar;
 
 
 /**
-A virtual base class for factories for creating and handeling the different types of service plugins
+A virtual base class for factories for creating and handling the different types of service plugins
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */

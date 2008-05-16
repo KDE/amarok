@@ -18,17 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#include "PlaylistGraphicsView.h"
+
 #include "Amarok.h"
 #include "App.h" // application palette
 #include "Debug.h"
-#include "meta/CurrentTrackActionsCapability.h"
-#include "PlaylistModel.h"
-#include "PlaylistGraphicsItem.h"
-#include "PlaylistGraphicsView.h"
-#include "PlaylistGraphicsScene.h"
 #include "PlaylistDropVis.h"
+#include "PlaylistGraphicsItem.h"
+#include "PlaylistGraphicsScene.h"
+#include "PlaylistModel.h"
 #include "PlaylistViewCommon.h"
 #include "TheInstances.h"
+#include "meta/CurrentTrackActionsCapability.h"
 
 #include <KAction>
 #include <KMenu>

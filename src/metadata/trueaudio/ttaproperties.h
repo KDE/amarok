@@ -26,13 +26,15 @@
 #ifndef TAGLIB_TTAPROPERTIES_H
 #define TAGLIB_TTAPROPERTIES_H
 
-#include "audioproperties.h"
+#include <audioproperties.h>
+#include <taglib/taglib.h>
+#include <taglib/tbytevector.h>
 
 namespace TagLib {
 
   namespace TTA {
 
-    
+
     static const TagLib::uint HeaderSize = 18;
 
     //! An implementation of audio property reading for TTA

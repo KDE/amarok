@@ -18,10 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#include "PlaylistHeader.h"
 
 #include "Debug.h"
-
-#include "PlaylistHeader.h"
 
 #include <KLocale>
 

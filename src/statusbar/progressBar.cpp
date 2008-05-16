@@ -17,17 +17,17 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
  ***************************************************************************/
 
-#include "Debug.h"
 #include "progressBar.h"
+
+#include "Debug.h"
 #include "ContextStatusBar.h"
 
-#include <klocale.h>
-#include <kpushbutton.h>
-#include <kstandardguiitem.h>
-#include <kguiitem.h>
+#include <KGuiItem>
+#include <KLocale>
+#include <KPushButton>
+#include <KStandardGuiItem>
 
 #include <QLabel>
-
 
 namespace KDE {
 

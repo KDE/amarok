@@ -30,12 +30,13 @@
  *   USA, or check http://www.fsf.org/about/contact.html                   *
  ***************************************************************************/
 
+#include "taglib_realmediafile.h"
+
 #include "../tfile_helper.h"
 #include <audioproperties.h>
 #include <tstring.h>
 #include <id3v1tag.h>
 #include "rmff.h"
-#include "taglib_realmediafile.h"
 
 using namespace TagLib;
 using namespace TagLib::RealMedia;

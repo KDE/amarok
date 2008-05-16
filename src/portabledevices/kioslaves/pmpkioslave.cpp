@@ -16,9 +16,10 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include "pmpkioslave.h"
+
 #include "pmpbackend.h"
 #include "pmpdevice.h"
-#include "pmpkioslave.h"
 
 #include <QCoreApplication>
 #include <QString>

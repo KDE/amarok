@@ -1,7 +1,7 @@
 /***************************************************************************
     copyright            : (C) 2006 by Lukáš Lalinský
     email                : lalinsky@gmail.com
-    
+
     copyright            : (C) 2002 by Scott Wheeler
     email                : wheeler@kde.org 
                            (original Vorbis implementation)
@@ -23,14 +23,13 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <bitset>
+#include "speexfile.h"
 
-#include <tstring.h>
 #if 0
 #include <tdebug.h>
 #endif
-
-#include "speexfile.h"
+#include <bitset>
+#include <tstring.h>
 
 using namespace TagLib;
 

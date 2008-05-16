@@ -18,8 +18,9 @@
  *   <http://www.gnu.org/licenses/>.                                       *
  ***************************************************************************/
 
-#include <tstring.h>
 #include "asfproperties.h"
+
+#include <tstring.h>
 
 using namespace TagLib;
 

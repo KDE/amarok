@@ -18,6 +18,8 @@
    Boston, MA 02110-1301, USA.
 */
 
+#include "kbookmarkhandler.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -35,8 +37,6 @@
 #include "FileBrowser.h"
 #include "MyDirOperator.h"
 
-#include "kbookmarkhandler.h"
-#include "kbookmarkhandler.moc"
 
 KBookmarkHandler::KBookmarkHandler( FileBrowser::Widget *parent, KMenu* kpopupmenu )
     : QObject( parent ),
@@ -106,5 +106,6 @@ void KBookmarkHandler::endFolder()
   *m_importStream << "</folder>\n";
 }
 
+#include "kbookmarkhandler.moc"
 // kate: space-indent on; indent-width 2; replace-tabs on;
 

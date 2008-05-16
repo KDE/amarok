@@ -20,6 +20,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
  ***************************************************************************/
 
+#include "ContextStatusBar.h"
+
 #include "amarokconfig.h"
 #include "Amarok.h"
 #include "Debug.h"
@@ -27,12 +29,11 @@
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "meta/SourceInfoCapability.h"
-#include "ContextStatusBar.h"
 #include "TheInstances.h"
 
-#include <khbox.h>
-#include <kiconloader.h>
-#include <klocale.h>
+#include <KHBox>
+#include <KIconLoader>
+#include <KLocale>
 
 #include <QLabel>
 #include <QLayout>

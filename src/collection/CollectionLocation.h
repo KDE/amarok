@@ -128,7 +128,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
 
         /**
          * remove the track from the collection.
-         * Return true if the removal was successfull, false otherwise.
+         * Return true if the removal was successful, false otherwise.
          */
         virtual bool remove( const Meta::TrackPtr &track );
 

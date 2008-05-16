@@ -18,18 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#include "PlaylistWidget.h"
 
-#include "App.h"
 #include "ActionClasses.h"
+#include "App.h"
 #include "MainWindow.h" 
 #include "PlaylistClassicView.h"
 #include "PlaylistGraphicsView.h"
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
-#include "PlaylistWidget.h"
-//#include "statusbar/AmarokStatusBar.h"
-#include "statusbar/selectLabel.h"
 #include "TheInstances.h"
+#include "statusbar/selectLabel.h"
 #include "toolbar.h"
 
 #include <KToolBarSpacerAction>

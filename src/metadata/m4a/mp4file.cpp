@@ -19,17 +19,18 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <tbytevector.h>
-#include <tstring.h>
+#include "mp4file.h"
+
+#include "boxfactory.h"
+#include "itunesdatabox.h"
+#include "mp4audioproperties.h"
+#include "mp4itunestag.h"
+#include "mp4propsproxy.h"
+#include "mp4tagsproxy.h"
 #include "tlist.h"
 
-#include "mp4itunestag.h"
-#include "mp4file.h"
-#include "boxfactory.h"
-#include "mp4tagsproxy.h"
-#include "mp4propsproxy.h"
-#include "mp4audioproperties.h"
-#include "itunesdatabox.h"
+#include <tbytevector.h>
+#include <tstring.h>
 
 using namespace TagLib;
 

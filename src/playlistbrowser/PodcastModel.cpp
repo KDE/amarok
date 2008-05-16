@@ -16,8 +16,9 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "Debug.h"
 #include "PodcastModel.h"
+
+#include "Debug.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "TheInstances.h"
 #include "PodcastProvider.h"

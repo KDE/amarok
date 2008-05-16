@@ -16,8 +16,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#ifndef CURRENTTRACKACTIONCAPABILITY_H
-#define CURRENTTRACKACTIONCAPABILITY_H
+#ifndef CURRENTTRACKACTIONSCAPABILITY_H
+#define CURRENTTRACKACTIONSCAPABILITY_H
 
 #include "CustomActionsCapability.h"
 #include "amarok_export.h"
@@ -26,7 +26,7 @@
  * This capability allows tracks to display custom actions in different places ( such as the playlist context menu,
  * the system tray context menu and others ) when they are the currently playing tracks. Initial use for this will
  * to add last.fm skip, ban and love actions. This class is based on the CustomActionsCapability class as their
- * fuction is very simmilar althoug they are used in different places.
+ * function is very similar although they are used in different places.
  *
  *         @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */

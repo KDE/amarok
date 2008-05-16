@@ -17,6 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "PopupDropper.h"
+#include "PopupDropper_p.h"
+
 #include <QtDebug>
 #include <QAction>
 #include <QApplication>
@@ -32,8 +35,6 @@
 
 #include "math.h"
 
-#include "PopupDropper.h"
-#include "PopupDropper_p.h"
 #include "PopupDropperItem.h"
 
 PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget* widget )

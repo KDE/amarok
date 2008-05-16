@@ -19,12 +19,14 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <deque>
-#include <iostream>
 #include "mp4mvhdbox.h"
+
 #include "boxfactory.h"
 #include "mp4file.h"
 #include "mp4propsproxy.h"
+
+#include <deque>
+#include <iostream>
 
 using namespace TagLib;
 

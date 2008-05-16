@@ -63,7 +63,7 @@ class SqlCollectionLocation : public CollectionLocation
         bool m_removeSources;    //used by the destination to remember the value, needed in copyurlsToCollection
         bool m_overwriteFiles;
         QSet<KJob*> m_jobs;
-        QStringList m_ignoredDestinations;  //these tracks were not copied/moved because source and destiantion url were the same
+        QStringList m_ignoredDestinations;  //these tracks were not copied/moved because source and destination url were the same
         QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;    //used in the source when organizing the collection
 };
 

@@ -1,4 +1,3 @@
-find_package(Strigi REQUIRED)
 include_directories(${STRIGI_INCLUDE_DIR})
 
 # build the analyzer as a module

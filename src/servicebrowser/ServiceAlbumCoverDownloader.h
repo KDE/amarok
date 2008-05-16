@@ -96,7 +96,7 @@ public:
     void imageDownloadCanceled() const;
 
     /**
-     * Reimplemented from Meta::Album. Get wheter an album has a cover. This function always returns true to avoid the standard cover fetcher kicking in.
+     * Reimplemented from Meta::Album. Get whether an album has a cover. This function always returns true to avoid the standard cover fetcher kicking in.
      * @param size Unused.
      * @return True.
      */

@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  ***************************************************************************/
 
-#ifndef AMAROK_REPEATPLAYLISTADVANCER_H
-#define AMAROK_REPEATPLAYLISTADVANCER_H
+#ifndef REPEATPLAYLISTNAVIGATOR_H
+#define REPEATPLAYLISTNAVIGATOR_H
 
 #include "meta/Meta.h"
 #include "playlist/TrackNavigator.h"

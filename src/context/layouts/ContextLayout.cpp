@@ -319,3 +319,4 @@ ContextLayout::setColumnWidth( const qreal width )
 {
     d->columnWidth = width;
 }
+

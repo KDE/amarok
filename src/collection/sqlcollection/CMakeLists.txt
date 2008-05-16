@@ -2,7 +2,6 @@ macro_optional_find_package(MySQL)
 
 #build-time only dependency in XesamDbus.h
 #remove at some point
-find_package(Strigi REQUIRED)
 
 include_directories( ../..
         ../../plugin

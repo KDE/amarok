@@ -52,7 +52,7 @@ namespace Meta
              */
             virtual QString sourceName() = 0;
             /**
-             * Get a brief human readable discription or the source
+             * Get a brief human readable description or the source
              * @return The source description
              */
             virtual QString sourceDescription() = 0;

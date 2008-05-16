@@ -18,8 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#include "Debug.h"
 #include "PlaylistItem.h"
+
+#include "Debug.h"
 
 Playlist::Item::Item( Meta::TrackPtr track )
     : m_track( track )

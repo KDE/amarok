@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 #include "taglib_mp4filetyperesolver.h"
+
 #include "mp4file.h"
 
 #include <string.h>

@@ -19,11 +19,13 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <iostream>
 #include "itunesdatabox.h"
-#include "tbytevector.h"
+
 #include "mp4isobox.h"
+#include "tbytevector.h"
 #include "tfile.h"
+
+#include <iostream>
 
 using namespace TagLib;
 

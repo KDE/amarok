@@ -24,8 +24,8 @@
 
 #define DEBUG_PREFIX "IpodMediaDevice"
 
-#include <config-amarok.h>  
 #include "ipodmediadevice.h"
+#include <config-amarok.h>
 //Added by qt3to4:
 #include <Q3PtrList>
 

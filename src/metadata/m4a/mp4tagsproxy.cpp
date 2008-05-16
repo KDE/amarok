@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 #include "mp4tagsproxy.h"
+
 #include "itunesdatabox.h"
 
 using namespace TagLib;

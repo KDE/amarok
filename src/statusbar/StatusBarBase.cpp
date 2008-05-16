@@ -22,20 +22,21 @@
 
 #define DEBUG_PREFIX "StatusBar"
 
+#include "StatusBarBase.h"
+
 #include "Amarok.h"
 #include "Debug.h"
 #include "MainWindow.h"
 #include "Sidebar.h"
 #include "StatusBarMessageLabel.h"
-#include "StatusBarBase.h"
 
-#include <kicon.h>
-#include <kiconloader.h>
-#include <kjob.h>
-#include <klocale.h>
+#include <KIcon>
+#include <KIconLoader>
+#include <KJob>
+#include <KLocale>
 #include <KStandardDirs>
-#include <kstandardguiitem.h>
-#include <kvbox.h>
+#include <KStandardGuiItem>
+#include <KVBox>
 
 #include <QDateTime>      //writeLogFile()
 #include <QFile>          //writeLogFile()

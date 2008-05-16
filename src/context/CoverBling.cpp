@@ -19,8 +19,9 @@
 
 #define DEBUG_PREFIX "CoverBling"
 
-#include "Debug.h"
 #include "CoverBling.h"
+
+#include "Debug.h"
 #include "collection/CollectionManager.h"
 #include "collection/BlockingQuery.h"
 #include "meta/Meta.h"
@@ -31,7 +32,9 @@
 #else
 #include <GL/glext.h>
 #endif
-#include <QtOpenGL>
+#include <QGLFormat>
+#include <QGLWidget>
+#include <QTimer>
 #include <KStandardDirs>
 
 #define TEXTURE_SIZE QSize( 256, 256 )

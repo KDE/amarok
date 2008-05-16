@@ -23,14 +23,15 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <tstring.h>
+#include "ttaproperties.h"
+
 #if 0
 #include <tdebug.h>
 #endif
-#include <bitset>
-
-#include "ttaproperties.h"
 #include "ttafile.h"
+
+#include <bitset>
+#include <tstring.h>
 
 using namespace TagLib;
 

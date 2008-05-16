@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#include "UndoCommands.h"
 
 #include "TheInstances.h"
-#include "UndoCommands.h"
 
 using namespace Playlist;
 using namespace Qt;

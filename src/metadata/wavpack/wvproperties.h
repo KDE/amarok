@@ -26,13 +26,15 @@
 #ifndef TAGLIB_WVPROPERTIES_H
 #define TAGLIB_WVPROPERTIES_H
 
-#include "audioproperties.h"
+#include <audioproperties.h>
+#include <taglib.h>
+#include <tbytevector.h>
 
 namespace TagLib {
 
   namespace WavPack {
 
-    
+
     static const TagLib::uint HeaderSize = 32;
 
     //! An implementation of audio property reading for WavPack

@@ -18,19 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#include "PlaylistGraphicsItem.h"
+
+#include "AmarokMimeData.h"
 #include "App.h"
 #include "Debug.h"
-#include "meta/MetaUtility.h"
-#include "AmarokMimeData.h"
-#include "PlaylistGraphicsItem.h"
-#include "PlaylistGraphicsView.h"
 #include "PlaylistDropVis.h"
+#include "PlaylistGraphicsView.h"
 #include "PlaylistModel.h"
 #include "PlaylistTextItem.h"
 #include "SvgTinter.h"
 #include "TagDialog.h"
 #include "TheInstances.h"
 #include "covermanager/CoverManager.h"
+#include "meta/MetaUtility.h"
 #include "meta/SourceInfoCapability.h"
 
 #include <QBrush>

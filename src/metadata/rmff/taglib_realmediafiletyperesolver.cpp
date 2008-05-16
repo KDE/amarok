@@ -23,10 +23,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "taglib_realmediafiletyperesolver.h"
+
 #include "../tfile_helper.h"
 #include <audioproperties.h>
 #include <id3v1tag.h>
-#include "taglib_realmediafiletyperesolver.h"
 #include "taglib_realmediafile.h"
 #include "rmff.h"
 

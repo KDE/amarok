@@ -18,10 +18,10 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#include "PodcastCategory.h"
+
 #include "Amarok.h"
 #include "Debug.h"
-
-#include "PodcastCategory.h"
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
 #include "SvgTinter.h"
@@ -29,20 +29,20 @@
 #include "TheInstances.h"
 
 #include <QAction>
-#include <QToolBar>
+#include <QFile>
+#include <QFontMetrics>
+#include <QHBoxLayout>
 #include <QHeaderView>
-#include <qnamespace.h>
 #include <QIcon>
-#include <QPainter>
-#include <QPixmapCache>
 #include <QLinearGradient>
 #include <QModelIndexList>
-#include <QFontMetrics>
+#include <QPainter>
+#include <QPixmapCache>
 #include <QRegExp>
 #include <QSvgRenderer>
-#include <QFile>
+#include <QToolBar>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <qnamespace.h>
 
 #include <KMenu>
 #include <KStandardDirs>

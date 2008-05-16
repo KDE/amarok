@@ -19,13 +19,15 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <iostream>
 #include "itunestmpobox.h"
+
 #include "itunesdatabox.h"
-#include "mp4isobox.h"
 #include "mp4file.h"
-#include "tfile.h"
+#include "mp4isobox.h"
 #include "mp4tagsproxy.h"
+#include "tfile.h"
+
+#include <iostream>
 
 using namespace TagLib;
 

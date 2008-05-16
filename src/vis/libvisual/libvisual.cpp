@@ -8,6 +8,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "libvisual.h"
+
 extern "C"
 {
     #include <sys/types.h>  //this must be _before_ sys/socket on freebsd
@@ -19,7 +21,6 @@ extern "C"
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-#include "libvisual.h"
 
 
 int

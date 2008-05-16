@@ -16,8 +16,9 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "Debug.h"
 #include "SqlPodcastMeta.h"
+
+#include "Debug.h"
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
 

@@ -1,7 +1,7 @@
 /***************************************************************************
     copyright            : (C) 2006 by Lukáš Lalinský
     email                : lalinsky@gmail.com
-    
+
     copyright            : (C) 2004 by Allan Sandfeld Jensen 
     email                : kde@carewolf.org 
                            (original MPC implementation)
@@ -23,13 +23,14 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
+#include "wvfile.h"
+
 #include <tbytevector.h>
 #include <tstring.h>
 #if 0
 #include <tdebug.h>
 #endif
 
-#include "wvfile.h"
 #include "id3v1tag.h"
 #include "id3v2header.h" 
 #include "apetag.h"

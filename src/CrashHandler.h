@@ -8,8 +8,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROK_CRASH_H
-#define AMAROK_CRASH_H
+#ifndef CRASHHANDLER_H
+#define CRASHHANDLER_H
 
 #include <KCrash>        //for main.cpp
 #include <amarok_export.h>

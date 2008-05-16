@@ -18,8 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  ***************************************************************************/
 
-#include "Debug.h"
 #include "PlaylistGraphicsScene.h"
+
+#include "Debug.h"
 #include "PlaylistDropVis.h"
 #include "PlaylistModel.h"
 #include "TheInstances.h"
