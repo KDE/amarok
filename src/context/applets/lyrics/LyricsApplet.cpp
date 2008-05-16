@@ -26,6 +26,7 @@
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_lyrics( 0 )
+    , m_aspectRatio( 1 )
 {
     setHasConfigurationInterface( false );
 }
@@ -41,13 +42,15 @@ LyricsApplet::~ LyricsApplet()
 void LyricsApplet::init()
 {
 
-    dataEngine( "amarok-lyrics" )->connectSource( "lyrics", this );
 
     m_lyricsProxy = new QGraphicsProxyWidget( this );
     m_lyrics = new QTextEdit;
     m_lyrics->setReadOnly( true );
     m_lyrics->setFrameShape( QFrame::NoFrame );
     m_lyricsProxy->setWidget( m_lyrics );
+    m_lyrics->setPlainText( i18n( "Hello, World" ) );
+
+    dataEngine( "amarok-lyrics" )->connectSource( "lyrics", this );
 
     constraintsEvent();
 }
@@ -62,6 +65,7 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
+    kDebug() << "LyricsApplet::dataUpdated";
     Q_UNUSED( name )
     if( data.size() == 0 ) return;
 
@@ -92,3 +96,15 @@ bool LyricsApplet::hasHeightForWidth() const
 }
 
 #include "LyricsApplet.moc"
+
+
+QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
+{
+    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
+    {
+        return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
+    } else
+    {
+        return constraint;
+    }
+}

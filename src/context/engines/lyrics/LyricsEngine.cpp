@@ -35,7 +35,9 @@ LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
 
 QStringList LyricsEngine::sources() const
 {
-    return QStringList(); // we don't have pre-set sources, as there is only
+    QStringList sourcesList;
+    sourcesList << "lyrics";
+    return sourcesList; // we don't have pre-set sources, as there is only
     // one source---lyrics.
 }
 
@@ -43,21 +45,22 @@ bool LyricsEngine::sourceRequested( const QString& name )
 {
     Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
-    setData( name, QVariant() );
+    removeAllData( name );
+    setData( name, QVariant());
     update();
     return true;
 }
 
 void LyricsEngine::message( const ContextState& state )
 {
-        if( state == Current && m_requested )
-            update();
+    if( state == Current && m_requested )
+        update();
 }
 
 void LyricsEngine::update()
 {
 
-        Meta::TrackPtr curtrack = The::engineController()->currentTrack();
+    Meta::TrackPtr curtrack = The::engineController()->currentTrack();
     if( !curtrack )
         return;
     QString lyrics = curtrack->cachedLyrics();

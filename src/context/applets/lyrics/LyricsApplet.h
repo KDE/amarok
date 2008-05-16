@@ -34,6 +34,9 @@ public:
     bool hasHeightForWidth() const;
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+
+    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
+    
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
@@ -43,6 +46,7 @@ private:
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
     QTextEdit* m_lyrics;
+    qreal m_aspectRatio;
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
