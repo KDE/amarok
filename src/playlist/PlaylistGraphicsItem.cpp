@@ -178,7 +178,7 @@ Playlist::GraphicsItem::init( Meta::TrackPtr track )
 {
     Q_UNUSED( track );
     QFont font;
-    font.setPointSize( font.pointSize() - 1 );
+    //font.setPointSize( font.pointSize() - 1 );
     // Disabling the editable text for now as it is misleading.. (it doesn't do anything.)
     #define NewText( X ) \
         X = new Playlist::TextItem( this ); \
