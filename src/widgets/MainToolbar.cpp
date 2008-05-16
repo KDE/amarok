@@ -236,7 +236,7 @@ void MainToolbar::resizeEvent(QResizeEvent *event)
     int controlWidth = m_playerControlsToolbar->width();
     m_playerControlsToolbar->move( middle - ( controlWidth / 2 ), 0 );
     m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 , 9 );
-    m_volumeWidget->move( event->size().width() - 170, /*( m_insideBox->height() - m_volumeWidget->height() ) / 2*/ 0 );
+    m_volumeWidget->move( event->size().width() - 170, 11 );
     //centerAddActions();
 }
 
