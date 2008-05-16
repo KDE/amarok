@@ -120,8 +120,19 @@ void Cloud::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 
     if ( m_initialized ) {
         m_cloudName->setText( data[ "cloud_name" ].toString() );
+
+        float textWidth = m_cloudName->boundingRect().width();
+        float totalWidth = m_theme->elementRect( "cloud_name" ).width();
+        float offsetX =  ( totalWidth - textWidth ) / 2;
+
+        m_cloudName->setPos( m_theme->elementRect( "cloud_name" ).topLeft() + QPointF ( offsetX, 0 ) );
+        
         drawCloud();
+
+
     }
+
+
 }
 
 void Cloud::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
