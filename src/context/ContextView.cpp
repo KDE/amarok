@@ -128,8 +128,11 @@ void ContextView::clear( const ContextState& state )
 void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     Q_UNUSED( oldState );
+    Q_UNUSED( state );
+    
+    messageNotify( Current );
 
-   switch( state )
+ /*  switch( state )
     {
         // Note: This is not as accurate as it should be.  When the user manually changes tracks,
         // the engine sends a StoppedState followed by a PlayingState, causing the view to change.
@@ -144,7 +147,7 @@ void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldStat
 
     default:
         ;
-    }
+    }*/
 }
 
 void ContextView::showHome()
