@@ -81,11 +81,13 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     m_playerControlsToolbar = new Amarok::ToolBar( m_insideBox );
     m_playerControlsToolbar->setFixedHeight( 40 );
+    m_playerControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
 
     m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_playerControlsToolbar->setIconDimensions( 32 );
     m_playerControlsToolbar->setMovable( false );
+    m_playerControlsToolbar->setFloatable ( false );
     m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "prev" ) );
     m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "play_pause" ) );
     m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "stop" ) );
@@ -97,7 +99,9 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_addControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_addControlsToolbar->setIconDimensions( 16 );
     m_addControlsToolbar->setMovable( false );
+    m_playerControlsToolbar->setFloatable ( false );
     m_addControlsToolbar->setFixedHeight( 22 );
+    m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
 
     m_volumeWidget = new VolumeWidget( m_insideBox );
     m_volumeWidget->setFixedSize( 160, 24 );
@@ -118,8 +122,8 @@ void MainToolbar::paintEvent( QPaintEvent * )
 
     int controlWidth = m_playerControlsToolbar->width();
     int addControlWidth = m_addControlsToolbar->width();
-    QRect controlRect( middle - controlWidth / 2, 0, controlWidth, 40 );
-    QRect addControlRect( controlRect.bottomRight().x() + 10, 10, addControlWidth, 20 );
+    QRect controlRect( m_playerControlsToolbar->x(), m_playerControlsToolbar->y() +2, controlWidth, m_playerControlsToolbar->height() );
+    QRect addControlRect( m_addControlsToolbar->x(), m_addControlsToolbar->y() +2, addControlWidth, m_addControlsToolbar->height() );
 
     QSize backgroundSize = MainWindow::self()->backgroundSize();
 
@@ -231,7 +235,7 @@ void MainToolbar::resizeEvent(QResizeEvent *event)
 
     int controlWidth = m_playerControlsToolbar->width();
     m_playerControlsToolbar->move( middle - ( controlWidth / 2 ), 0 );
-    m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 , 10 );
+    m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 , 9 );
     m_volumeWidget->move( event->size().width() - 170, /*( m_insideBox->height() - m_volumeWidget->height() ) / 2*/ 0 );
     //centerAddActions();
 }
