@@ -241,12 +241,12 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         qreal middle = textWidth + ALBUM_WIDTH + ( MARGIN * 2.0 );
         qreal rightWidth = totalWidth - qMax( s_fm->width( album )
             , s_fm->width( prettyLength ) );
-        topRightAlignX = qMax( middle, rightWidth );
+        topRightAlignX = qMax( middle, totalWidth - ( s_fm->width( album ) + MARGIN * 2 ) );
     }
 
     //lets use all the horizontal space we can get for now..
     int lengthStringWidth = (int)(s_fm->width( prettyLength ));
-    bottomRightAlignX = ( totalWidth - 4 * MARGIN ) - lengthStringWidth ;
+    bottomRightAlignX = ( totalWidth - 2 * MARGIN ) - lengthStringWidth ;
 
 
     qreal spaceForTopLeft = totalWidth - ( totalWidth - topRightAlignX ) - leftAlignX;
