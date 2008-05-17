@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License          *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
- 
+
 #include "CollectionTreeView.h"
 
 #include "Amarok.h"
@@ -160,28 +160,6 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         debug() << "adding: " << action->text();
         menu.addAction( action );
     }
-    
-    QAction *organizeAction = 0;
-    if( !indices.isEmpty() )
-    {
-        {   //keep the scope of item minimal
-            CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
-            while( item->isDataItem() )
-            {
-                item = item->parent();
-            }
-            Collection *collection = item->parentCollection();
-            
-            if( collection->isOrganizable() && onlyOneCollection( indices) )
-            {
-                organizeAction = new QAction( i18n( "Organize Files" ), &menu );
-                menu.addAction( organizeAction );
-            }
-
-
-        }
-    }
-
 
     QHash<PopupDropperAction*, Collection*> copyDestination = getCopyActions( indices );
     QHash<PopupDropperAction*, Collection*> moveDestination = getMoveActions( indices );
@@ -194,7 +172,7 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         menu.addAction( m_cmSeperator );
     }
 
-    
+
     if ( !copyDestination.empty() ) {
         debug() << "got copy actions";
         KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
@@ -215,10 +193,10 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
         menu.addMenu( moveMenu );
     }
 
-    
+
     PopupDropperAction* result = dynamic_cast< PopupDropperAction* > ( menu.exec( event->globalPos() ) );
     if ( result == 0 ) return;
-    
+
     QSet<CollectionTreeItem*> items;
     foreach( const QModelIndex &index, indices )
     {
@@ -232,10 +210,6 @@ CollectionTreeView::contextMenuEvent(QContextMenuEvent* event)
     else if( result == m_editAction )
     {
         editTracks( items );
-    }
-    else if( result == organizeAction )
-    {
-        organizeTracks( items );
     }
     else if( copyDestination.contains( result ) )
     {
@@ -307,7 +281,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         font.setBold( true );
 
         foreach( PopupDropperAction * action, actions ) {
-            
+
             PopupDropperItem* pdi = new PopupDropperItem();
             pdi->setAction( action );
             pdi->setFont( font );
@@ -328,13 +302,13 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         m_pd->addItem( pdi, false );
     }
 
-    
+
         if ( !copyDestination.empty() ) {
         debug() << "got copy actions";
         KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
         foreach( PopupDropperAction * action, copyDestination.keys() ) {
         action->setParent( copyMenu );
-                
+
         PopupDropperItem* pdi = new PopupDropperItem();
         pdi->setAction( m_cmSeperator );
         pdi->setFont( font );
@@ -671,7 +645,7 @@ void CollectionTreeView::slotFilterNow()
 PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & indices )
 {
     PopupDropperActionList actions;
-    
+
     if( !indices.isEmpty() )
     {
 
@@ -736,9 +710,9 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
                             m_caSeperator->setSeparator ( true );
                         }
                         actions.append( m_caSeperator );
-                        
+
                         PopupDropperActionList cActions = cac->customActions();
-                        
+
                         foreach( PopupDropperAction *action, cActions ) {
 
                             actions.append( action );
@@ -755,7 +729,7 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
         debug() << "invalid index or null internalPointer";
 
     return actions;
-    
+
 }
 
 
