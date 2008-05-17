@@ -346,7 +346,7 @@ RandomAction::RandomAction( KActionCollection *ac ) :
     QStringList icons;
     icons << "go-next-amarok"
           << "media-playlist-shuffle-amarok"
-          << "media-album-shuffle";
+          << "media-album-shuffle-amarok";
     setIcons( icons );
 
     connect( this, SIGNAL( triggered( int ) ), The::playlistModel(), SLOT( playlistModeChanged() ) );
