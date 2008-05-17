@@ -514,6 +514,7 @@ kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.
 if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
     target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
+    SET_TARGET_PROPERTIES(Amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     install(TARGETS Amarok DESTINATION ${BIN_INSTALL_DIR})
 
 else(Q_WS_MAC)
