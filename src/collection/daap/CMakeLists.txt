@@ -24,6 +24,10 @@ kde4_add_plugin(amarok_collection-daapcollection WITH_PREFIX ${amarok_collection
 
 target_link_libraries(amarok_collection-daapcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDNSSD_LIBS})
 
+if(APPLE)
+	SET_TARGET_PROPERTIES(amarok_collection-daapcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif(APPLE)
+
 install(TARGETS amarok_collection-daapcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
