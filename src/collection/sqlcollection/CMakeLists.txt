@@ -51,6 +51,9 @@ kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-
 
 target_link_libraries(amarok_collection-sqlcollection amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
 
+if(APPLE)
+	SET_TARGET_PROPERTIES(amarok_collection-sqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif(APPLE)
 
 #if(MYSQL_FOUND)
 #    set(amarok_mysql_SRCS
