@@ -92,6 +92,10 @@ target_link_libraries(amarokplasma
     ${QT_QTWEBKIT_LIBRARY}
 )
 
+if(APPLE)
+	SET_TARGET_PROPERTIES(amarokplasma PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif(APPLE)
+
 add_definitions(-DMAKE_PLASMA_LIB)
 set_target_properties(amarokplasma PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS amarokplasma DESTINATION                ${LIB_INSTALL_DIR})

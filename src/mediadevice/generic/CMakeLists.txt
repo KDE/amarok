@@ -22,6 +22,10 @@ kde4_add_plugin(amarok_generic-mediadevice WITH_PREFIX ${amarok_generic-mediadev
 
 target_link_libraries(amarok_generic-mediadevice ${KDE4_KDECORE_LIBS} amaroklib)
 
+if(APPLE)
+	SET_TARGET_PROPERTIES(amarok_generic-mediadevice PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif(APPLE)
+
 install(TARGETS amarok_generic-mediadevice DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 

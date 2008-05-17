@@ -16,5 +16,9 @@ kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS
 
 target_link_libraries(amarokcollectionscanner amarok_taglib ${KDE4_KDEUI_LIBS} )
 
+if(APPLE)
+	SET_TARGET_PROPERTIES(amarokcollectionscanner PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif(APPLE)
+
 install(TARGETS amarokcollectionscanner DESTINATION ${BIN_INSTALL_DIR} )
 
