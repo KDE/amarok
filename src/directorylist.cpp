@@ -45,13 +45,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
         "These folders will be scanned for "
         "media to make up your collection:"), this ))->setAlignment( Qt::AlignJustify );
 
-//     m_view = new QTreeWidget( this );
-//     m_view->setColumnCount( 1 );
-    m_dirOperator = new KDirOperator( KUrl( "/" ), this );
-    m_dirOperator->setSizePolicy (QSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
-    m_dirOperator->setView( KFile::Simple );
-    m_dirOperator->dirLister()->setDirOnlyMode( true );
-    m_dirOperator->show();
+    m_view = new QFixedListView( this );
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
 
@@ -69,19 +63,21 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
 
-//     m_view->setRootIsDecorated( true );
-//     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_view->addColumn( QString() );
+    m_view->setRootIsDecorated( true );
+    m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_view->setResizeMode( Q3ListView::LastColumn );
 
-//     reinterpret_cast<QWidget*>(m_view->header())->hide();
+    reinterpret_cast<QWidget*>(m_view->header())->hide();
 
 #ifdef Q_OS_WIN32
     foreach( QFileInfo drive, QDir::drives () )
     {
         // exclude trailing slash on drive letter
-//         m_view->insertTopLevelItem( 0, new CollectionFolder::Item( m_view, drive.filePath().left( 2 ) ) );
+        new CollectionFolder::Item( m_view, drive.filePath().left( 2 ) );
     }
 #else
-    m_dirOperator->dirLister()->openUrl( KUrl( "/" ) );
+    new CollectionFolder::Item( m_view, "/" );
 #endif
 
     setSpacing( 6 );
@@ -128,42 +124,43 @@ CollectionSetup::writeConfig()
 // CLASS Item
 //////////////////////////////////////////////////////////////////////////////////////////
 
-namespace CollectionFolder
-{
+namespace CollectionFolder {
 
-Item::Item( QTreeWidget *parent, const QString &root )
-    : QTreeWidgetItem( parent )
+Item::Item( Q3ListView *parent, const QString &root )
+    : Q3CheckListItem( parent, root, Q3CheckListItem::CheckBox  )
     , m_lister( this )
     , m_url( KUrl::fromPath( root ) )
     , m_listed( false )
     , m_fullyDisabled( false )
 {
-    setText( 0, root );
-    setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     m_lister.setDelayedMimeTypes( true );
     //Since we create the "/" checklistitem here, we need to enable it if needed
     if ( CollectionSetup::instance()->m_dirs.contains( root ) )
-        setCheckState( 0, Qt::Checked );
+        static_cast<Q3CheckListItem*>( this )->setOn(true);
     m_lister.setDirOnlyMode( true );
     connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
-
-    setExpanded( true );
+#ifdef Q_OS_WIN32
+    setExpandable( true );
+#else
+    setOpen( true );
+#endif
+    setVisible( true );
 }
 
 
-Item::Item( QTreeWidgetItem *parent, const KUrl &url , bool full_disable /* default=false */ )
-    : QTreeWidgetItem( parent )
+Item::Item( Q3ListViewItem *parent, const KUrl &url , bool full_disable /* default=false */ )
+    : Q3CheckListItem( parent, url.fileName(), Q3CheckListItem::CheckBox )
     , m_lister( this )
     , m_url( url )
     , m_listed( false )
     , m_fullyDisabled( full_disable )
 {
-    setCheckState( 0, Qt::Unchecked );
-    setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    setText( 0, url.fileName() );
     m_lister.setDelayedMimeTypes( true );
     m_lister.setDirOnlyMode( true );
+    setExpandable( true );
     connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
+    connect( &m_lister, SIGNAL(completed()), SLOT(completed()) );
+    connect( &m_lister, SIGNAL(canceled()), SLOT(completed()) );
 }
 
 
@@ -173,8 +170,9 @@ Item::fullPath() const
     return m_url.path();
 }
 
+
 void
-Item::setExpanded( bool b )
+Item::setOpen( bool b )
 {
     if ( !m_listed )
     {
@@ -182,11 +180,12 @@ Item::setExpanded( bool b )
         m_listed = true;
     }
 
-    QTreeWidgetItem::setExpanded( b );
+    Q3ListViewItem::setOpen( b );
 }
 
+
 void
-Item::setCheckState( int column, Qt::CheckState checkState )
+Item::stateChange( bool b )
 {
     QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
 
@@ -194,15 +193,10 @@ Item::setCheckState( int column, Qt::CheckState checkState )
         return;
 
     if( CollectionSetup::instance()->recursive() )
-    {
-        const int children = childCount();
-        for( int i = 0; i < children; i++ )
-        {
-            QTreeWidgetItem *childItem = QTreeWidgetItem::child( i );
-            if ( dynamic_cast<Item*>( childItem ) && !dynamic_cast<Item*>( childItem )->isFullyDisabled() )
-               childItem->setCheckState( 0, Qt::Checked );
-        }
-    }
+        for( Q3ListViewItem *item = firstChild(); item; item = item->nextSibling() )
+            if ( dynamic_cast<Item*>( item ) && !dynamic_cast<Item*>( item )->isFullyDisabled() )
+               static_cast<Q3CheckListItem*>(item)->Q3CheckListItem::setOn( b );
+
     //If it is disabled, allow us to change its appearance (above code) but not add it
     //to the list of folders (code below)
     if ( isDisabled() )
@@ -210,8 +204,7 @@ Item::setCheckState( int column, Qt::CheckState checkState )
 
     // Update folder list
     QStringList::Iterator it = cs_m_dirs.find( m_url.path() );
-    if ( checkState == Qt::Checked )
-    {
+    if ( isOn() ) {
         if ( it == cs_m_dirs.end() )
             cs_m_dirs << m_url.path();
 
@@ -231,8 +224,7 @@ Item::setCheckState( int column, Qt::CheckState checkState )
             }
         }
     }
-    else
-    {
+    else {
         //Deselect item and recurse through children but only deselect children if they
         //do not exist unless we are in recursive mode (where no children should be
         //selected if the parent is being unselected)
@@ -260,7 +252,19 @@ Item::setCheckState( int column, Qt::CheckState checkState )
                 ++diriter;
         }
     }
+
+    // Redraw parent items
+    listView()->triggerUpdate();
 }
+
+
+void
+Item::activate()
+{
+    if( !isDisabled() )
+        Q3CheckListItem::activate();
+}
+
 
 void
 Item::newItems( const KFileItemList &list ) //SLOT
@@ -283,46 +287,46 @@ Item::newItems( const KFileItemList &list ) //SLOT
 
         if ( !item->isFullyDisabled() )
         {
-            if( CollectionSetup::instance()->recursive() && ( checkState( 0 ) == Qt::Checked ) ||
+            if( CollectionSetup::instance()->recursive() && isOn() ||
                 CollectionSetup::instance()->m_dirs.contains( item->fullPath() ) )
             {
-                item->setCheckState( 0, Qt::Checked );
+                item->setOn( true );
             }
         }
 
-//         item->setPixmap( 0, (*it).pixmap( KIconLoader::SizeSmall ) );
+        item->setPixmap( 0, (*it).pixmap( KIconLoader::SizeSmall ) );
     }
 }
 
 
-// void
-// Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
-// {
-//     bool dirty = false;
-//     QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
-//
-//     // Figure out if a child folder is activated
-//     for ( QStringList::ConstIterator iter = cs_m_dirs.constBegin(), end = cs_m_dirs.constEnd();
-//             iter != end;
-//             ++iter )
-//         if ( ( *iter ).startsWith( m_url.path( KUrl::AddTrailingSlash ) ) )
-//             if ( *iter != "/" ) // "/" should not match as a child of "/"
-//                 dirty = true;
-//
-//     // Use a different color if this folder has an activated child folder
-//     const QFont f = p->font();
-//     QColorGroup _cg = cg;
-//     if ( dirty )
-//     {
-//         _cg.setColor( QColorGroup::Text, listView()->colorGroup().link() );
-//         QFont font = p->font();
-//         font.setBold( !font.bold() );
-//         p->setFont( font );
-//     }
-//
-//     Q3CheckListItem::paintCell( p, isDisabled() ? listView()->palette().disabled() : _cg, column, width, align );
-//     p->setFont( f );
-// }
+void
+Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
+{
+    bool dirty = false;
+    QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
+
+    // Figure out if a child folder is activated
+    for ( QStringList::ConstIterator iter = cs_m_dirs.constBegin(), end = cs_m_dirs.constEnd();
+            iter != end;
+            ++iter )
+        if ( ( *iter ).startsWith( m_url.path( KUrl::AddTrailingSlash ) ) )
+            if ( *iter != "/" ) // "/" should not match as a child of "/"
+                dirty = true;
+
+    // Use a different color if this folder has an activated child folder
+    const QFont f = p->font();
+    QColorGroup _cg = cg;
+    if ( dirty )
+    {
+        _cg.setColor( QColorGroup::Text, listView()->colorGroup().link() );
+        QFont font = p->font();
+        font.setBold( !font.bold() );
+        p->setFont( font );
+    }
+
+    Q3CheckListItem::paintCell( p, isDisabled() ? listView()->palette().disabled() : _cg, column, width, align );
+    p->setFont( f );
+}
 
 } //namespace Collection
 
