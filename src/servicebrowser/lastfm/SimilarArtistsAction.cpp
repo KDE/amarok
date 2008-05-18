@@ -22,12 +22,15 @@
 #include "collection/CollectionManager.h"
 #include "TheInstances.h"
 
+#include <KIcon>
+
 SimilarArtistsAction::SimilarArtistsAction( QObject *parent, Meta::Artist *artist)
     : PopupDropperAction( parent )
     , m_artist( artist )
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 
+    setIcon( KIcon("view-services-lastfm-amarok") );
     setText( i18n( "Play Similar Artists from last.fm" ) );
 }
 
