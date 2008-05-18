@@ -1,10 +1,11 @@
 ##### menus #####
-* media-album-cover-amarok              open cover manager                                      ?media-album-cover
 * media-track-repeat-amarok             repeat track                                            ?media-track-repeat
-* media-album-repeat-amarok             repeat album                                            ?media-album-repeat
-* media-playlist-repeat-amarok          repeat playlist                                         ?media-playlist-repeat
-* media-album-shuffle-amarok            shuffle/random album                                    ?media-album-shuffle
 * media-track-queue-amarok              queue selected track                                    ?media-track-queue
+* media-track-edit-amarok               edit track's metadata                                   ?media-track-edit
+* media-album-cover-amarok              open cover manager                                      ?media-album-cover
+* media-album-repeat-amarok             repeat album                                            ?media-album-repeat
+* media-album-shuffle-amarok            shuffle/random album                                    ?media-album-shuffle
+* media-playlist-repeat-amarok          repeat playlist                                         ?media-playlist-repeat
 * view-media-visualization-amarok       totally SUXXXX
 * view-list-icons                       change view in cover manager                            ?view-media-cover
 * ?preferences-desktop-locale-amarok    change locale in cover manager

@@ -50,7 +50,7 @@ void Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index,
     menu->addSeparator();
   ( menu->addAction( i18n( "Remove From Playlist" ), parent, SLOT( removeSelection() ) ) )->setEnabled( true );
     menu->addSeparator();
-    menu->addAction( i18n( "Edit Track Information" ), parent, SLOT( editTrackInformation() ) );
+    menu->addAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Information" ), parent, SLOT( editTrackInformation() ) );
 
     //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
     if( index->data( Playlist::ActiveTrackRole ).toBool() )
