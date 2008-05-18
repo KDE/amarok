@@ -650,17 +650,17 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
     {
 
         if ( m_appendAction == 0 )
-            m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append_playlist_xlarge", KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), this );
+            m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append_playlist_xlarge", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
 
         actions.append( m_appendAction );
 
         if ( m_loadAction == 0 )
-            m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("file_open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+            m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
 
         actions.append( m_loadAction );
 
         if ( m_editAction == 0 )
-            m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("file_open" ), i18n( "&Edit Track Information" ), this );
+            m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("media-track-edit-amarok" ), i18n( "&Edit Track Information" ), this );
 
         actions.append( m_editAction );
 

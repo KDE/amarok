@@ -642,7 +642,7 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
     Q3PopupMenu menu( this );
     enum Actions { APPEND, QUEUE, INFO };
 
-    menu.insertItem( KIcon( "list-add-amarok" ), i18n( "&Append to Playlist" ), APPEND );
+    menu.insertItem( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), APPEND );
     menu.insertItem( KIcon( "go-next-amarok" ), i18n( "&Queue Track" ), QUEUE );
 
     menu.addSeparator();

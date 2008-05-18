@@ -48,7 +48,7 @@ void Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index,
   ( menu->addAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), parent, SLOT( queueItem() ) ) )->setEnabled( false );
   ( menu->addAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After Track" ), parent, SLOT( stopAfterTrack() ) ) )->setEnabled( false );
     menu->addSeparator();
-  ( menu->addAction( i18n( "Remove From Playlist" ), parent, SLOT( removeSelection() ) ) )->setEnabled( true );
+  ( menu->addAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), parent, SLOT( removeSelection() ) ) )->setEnabled( true );
     menu->addSeparator();
     menu->addAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Information" ), parent, SLOT( editTrackInformation() ) );
 

@@ -2237,7 +2237,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
         else
         {
             menu.insertItem( SmallIconSet( "view-media-playlist-amarok" ), i18nc( "Replace current playlist with this", "&Load" ), LOAD );
-            menu.insertItem( SmallIconSet( "list-add-amarok" ), i18n( "&Append to Playlist" ), APPEND );
+            menu.insertItem( SmallIconSet( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), APPEND );
             menu.insertItem( SmallIconSet( "media-seek-forward-amarok" ), i18n( "&Queue Tracks" ), QUEUE );
         }
         menu.insertSeparator();

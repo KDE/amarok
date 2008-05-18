@@ -2,6 +2,8 @@
 * media-track-repeat-amarok             repeat track                                            ?media-track-repeat
 * media-track-queue-amarok              queue selected track                                    ?media-track-queue
 * media-track-edit-amarok               edit track's metadata                                   ?media-track-edit
+* media-track-remove-amarok             remove track from playlist                              ?media-track-remove
+* media-track-add-amarok                add track to playlist                                   ?media-track-add
 * media-album-cover-amarok              open cover manager                                      ?media-album-cover
 * media-album-repeat-amarok             repeat album                                            ?media-album-repeat
 * media-album-shuffle-amarok            shuffle/random album                                    ?media-album-shuffle
