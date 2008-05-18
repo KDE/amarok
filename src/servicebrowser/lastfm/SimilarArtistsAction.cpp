@@ -31,7 +31,7 @@ SimilarArtistsAction::SimilarArtistsAction( QObject *parent, Meta::Artist *artis
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 
     setIcon( KIcon("view-services-lastfm-amarok") );
-    setText( i18n( "Play Similar Artists from last.fm" ) );
+    setText( i18n( "Play Similar Artists from Last.fm" ) );
 }
 
 void SimilarArtistsAction::slotTriggered()
