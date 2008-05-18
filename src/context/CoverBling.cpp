@@ -37,6 +37,8 @@
 #include <QTimer>
 #include <KStandardDirs>
 
+#include <climits>
+
 #define TEXTURE_SIZE QSize( 256, 256 )
 
 
