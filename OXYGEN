@@ -4,6 +4,7 @@
 * media-album-repeat-amarok             repeat album                                            ?media-album-repeat
 * media-playlist-repeat-amarok          repeat playlist                                         ?media-playlist-repeat
 * media-album-shuffle-amarok            shuffle/random album                                    ?media-album-shuffle
+* media-track-queue-amarok              queue selected track                                    ?media-track-queue
 * view-media-visualization-amarok       totally SUXXXX
 * view-list-icons                       change view in cover manager                            ?view-media-cover
 * ?preferences-desktop-locale-amarok    change locale in cover manager
