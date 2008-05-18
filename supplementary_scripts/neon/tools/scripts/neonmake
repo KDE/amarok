@@ -7,4 +7,4 @@ export QTEST_COLORED=1
 
   cmake "../" -DCMAKE_INSTALL_PREFIX=$NEONDIR -DCMAKE_BUILD_TYPE=debugfull && \
   nice make -j2 && \
-  make install;
+  sudo make install;
