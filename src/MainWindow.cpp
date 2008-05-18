@@ -714,7 +714,7 @@ MainWindow::createActions()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
     ac->addAction( "playlist_add", action );
 
-    action = new KAction( KIcon( "edit-clear-list-amarok" ), i18nc( "clear playlist", "&Clear" ), this );
+    action = new KAction( KIcon( "edit-clear-list-amarok" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
     connect( action, SIGNAL( triggered( bool ) ), The::playlistModel(), SLOT( clear() ) );
     ac->addAction( "playlist_clear", action );
 
