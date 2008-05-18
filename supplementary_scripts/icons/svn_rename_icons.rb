@@ -22,7 +22,10 @@ sizes = [128,64,48,32,22,16]
 Dir.chdir("../../src/images/icons")
 
 for size in sizes do
-    system("svn", "mv", "hi#{size}-action-#{ARGV[0]}.png", "hi#{size}-action-#{ARGV[1]}-amarok.png") 
+  system("svn", "mv", "hi#{size}-action-#{ARGV[0]}.png", "hi#{size}-action-#{ARGV[1]}-amarok.png")
+  if $? != 0
+    system("mv", "hi#{size}-action-#{ARGV[0]}.png", "hi#{size}-action-#{ARGV[1]}-amarok.png")
+  end
 end
 
 exit 0
