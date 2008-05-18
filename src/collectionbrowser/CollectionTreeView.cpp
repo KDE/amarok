@@ -689,7 +689,7 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
                 if( onlyOneCollection )
                 {
                     if ( m_organizeAction == 0 )
-                        m_organizeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("file_open" ), i18nc( "Organize Files", "Organize Files" ), this );
+                        m_organizeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("folder-open" ), i18nc( "Organize Files", "Organize Files" ), this );
                     actions.append( m_organizeAction );
                 }
             }
