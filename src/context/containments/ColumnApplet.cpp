@@ -19,6 +19,7 @@
 #include "Svg.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"
+#include "WidgetBackgroundPainter.h"
 
 #include "plasma/theme.h"
 
@@ -163,41 +164,23 @@ void ColumnApplet::updateSize() // SLOT
     setMaximumSize( QSizeF( 100000, 100000 ) );
     m_columns->setGeometry( scene()->sceneRect() );
     setGeometry( scene()->sceneRect() );
-    debug() << "ColumnApplet updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
+    //debug() << "ColumnApplet updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
 void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect )
 {
     Q_UNUSED( option );
     painter->save();
-    //m_background->paint( painter, rect );
-    /*if( !m_masterImage.isNull() )
-    {
-    QImage scaled = m_masterImage.scaled( rect.size(), Qt::IgnoreAspectRatio, Qt::FastTransformation );
-    painter->drawImage( rect, scaled );
-    }
-    else
-    {
-        painter->fillRect( rect, QApplication::palette().window() );
-    }*/
 
-    //m_renderer->render( painter, rect );
-
-    QSize backgroundSize = MainWindow::self()->backgroundSize();
-    int offset = MainWindow::self()->contextXOffset();
-
-    int top = backgroundSize.height() - rect.height();
-    int left = offset;
-    int height = rect.height();
+    int height = rect.height(); //?
     int width = rect.width();
-    
-    QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
-    
-    debug() << "drawing background in " << rect;
-   
-    //paint as much as we need
-    painter->drawPixmap( 0, 0, mainBackground, left, 67, width, rect.height()+1 );
 
+    int offsetX = MainWindow::self()->contextRectGlobal().x();
+    int offsetY = MainWindow::self()->contextRectGlobal().topLeft().y();
+
+    //debug() << "offset: " << offsetX << " x " << offsetY;
+    
+    painter->drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( "Context", offsetX, offsetY, 0, 0, width, height ) );
 
     QRectF bounds = The::svgHandler()->getRenderer()->boundsOnElement ( "amarok_logo" );
     double aspectRatio = bounds.width() / bounds.height();
@@ -205,7 +188,6 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     int logoWidth = 300;
     int logoHeight = ( int )( ( double ) logoWidth / aspectRatio );
 
-    
     painter->drawPixmap(rect.width() - ( logoWidth + 20 ) , rect.height() - ( logoHeight + 20 ) , The::svgHandler()->renderSvg( "amarok_logo", logoWidth, logoHeight, "amarok_logo" ) );
 
     painter->restore();

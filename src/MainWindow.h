@@ -72,6 +72,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         QSize backgroundSize();
 
         int contextXOffset();
+        QRect contextRectGlobal();
+        QPoint globalBackgroundOffset();
 
     signals:
         void loveTrack( Meta::TrackPtr );

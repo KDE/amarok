@@ -1075,10 +1075,10 @@ QSize
 MainWindow::backgroundSize()
 {
 
-    QPoint topLeft = mapToGlobal( m_controlBar->rect().topLeft() );
-    QPoint bottomRight1= mapToGlobal( m_controlBar->rect().bottomRight() );
+    QPoint topLeft = mapToGlobal( QPoint( 0, 0 ) );
+    QPoint bottomRight1 = mapToGlobal( QPoint( width(), height() ) );
 
-    return QSize( bottomRight1.x() - topLeft.x() + 1, m_controlBar->rect().height() +  m_contextWidget->rect().height() );
+    return QSize( bottomRight1.x() - topLeft.x() + 1, bottomRight1.y() - topLeft.y() );
 
 }
 
@@ -1098,3 +1098,16 @@ void MainWindow::resizeEvent( QResizeEvent * event )
 }
 
 #include "MainWindow.moc"
+
+
+QPoint MainWindow::globalBackgroundOffset()
+{
+    return menuBar()->mapToGlobal( QPoint( 0, 0 ) );
+}
+
+QRect MainWindow::contextRectGlobal()
+{
+    //debug() << "pos of context vidget within main window is: " << m_contextWidget->pos();
+    QPoint contextPos = m_splitter->mapToGlobal( m_contextWidget->pos() );
+    return QRect( contextPos.x(), contextPos.y(), m_contextWidget->width(), m_contextWidget->height() );
+}

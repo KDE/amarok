@@ -30,6 +30,7 @@
 #include "popupdropper/PopupDropperAction.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"
+#include "WidgetBackgroundPainter.h"
 
 #include <KAction>
 #include <KApplication>
@@ -127,34 +128,13 @@ void MainToolbar::paintEvent( QPaintEvent * )
     QRect controlRect( m_playerControlsToolbar->x(), m_playerControlsToolbar->y() +2, controlWidth, m_playerControlsToolbar->height() );
     QRect addControlRect( m_addControlsToolbar->x(), m_addControlsToolbar->y() +2, addControlWidth, m_addControlsToolbar->height() );
 
-    QSize backgroundSize = MainWindow::self()->backgroundSize();
-
-    //debug() << "Background size: " << backgroundSize;
-
-   //lets cache this or we will be cutting up this big image all the damn time!
-
     int width = contentsRect().width();
-    int height= contentsRect().height();
-    
-    QString key = QString("toolbar:%1x%2").arg( width, height );
-    QPixmap toolbarBackground( width, height );
-
-
-    if ( m_ignoreCache || !QPixmapCache::find( key, toolbarBackground ) ) {
-
-        QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
-        toolbarBackground = mainBackground.copy( 0, 0, width, height );
-        QPixmapCache::insert( key, toolbarBackground );
-        m_ignoreCache = false;
-        
-    }
-
-
+    int height = contentsRect().height();
     QPainter painter( this );
- 
-    //paint as much as we need
-    painter.drawPixmap( 0, 0, toolbarBackground );
+    painter.drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( this, 0, 0, width, height, m_ignoreCache ) );
+    m_ignoreCache = false;
 
+    
     QPixmap controlArea = The::svgHandler()->renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
     painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
 

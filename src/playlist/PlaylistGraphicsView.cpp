@@ -23,12 +23,15 @@
 #include "Amarok.h"
 #include "App.h" // application palette
 #include "Debug.h"
+
 #include "PlaylistDropVis.h"
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistGraphicsScene.h"
 #include "PlaylistModel.h"
 #include "PlaylistViewCommon.h"
+#include "SvgTinter.h"
 #include "TheInstances.h"
+#include "WidgetBackgroundPainter.h"
 #include "meta/CurrentTrackActionsCapability.h"
 
 #include <KAction>
@@ -37,8 +40,10 @@
 #include <QGraphicsItemAnimation>
 #include <QModelIndex>
 #include <QKeyEvent>
+#include <QPixmapCache>
 #include <QTimeLine>
 #include <QVariant>
+#include <QScrollBar>
 
 Playlist::GraphicsView *Playlist::GraphicsView::s_instance = 0;
 
@@ -59,6 +64,8 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
     m_timer = 0;
+
+    setObjectName( "PlaylistGraphicsView" );
 }
 
 void
@@ -494,6 +501,19 @@ void Playlist::GraphicsView::paletteChange(const QPalette & oldPalette)
     }
 }
 
+void Playlist::GraphicsView::drawBackground(QPainter * painter, const QRectF & rect)
+{
+
+    //DEBUG_BLOCK
+
+    int width = contentsRect().width();
+    int height = contentsRect().height();
+    painter->drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( this, 0, 0, width, height ) );
+
+}
+
 
 
 #include "PlaylistGraphicsView.moc"
+
+
