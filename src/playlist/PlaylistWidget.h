@@ -22,7 +22,8 @@
 #ifndef AMAROK_PLAYLISTWIDGET_H
 #define AMAROK_PLAYLISTWIDGET_H
 
-#include <QStackedWidget>
+#include "widgets/StackedWidget.h"
+
 #include <QWidget>
 
 namespace Playlist {
@@ -38,8 +39,10 @@ namespace Playlist {
 
         protected:
             QSize sizeHint() const;
+            virtual void paintEvent( QPaintEvent * );
+            
         private:
-            QStackedWidget *m_stackedWidget;
+            Amarok::StackedWidget *m_stackedWidget;
     };
 }
 

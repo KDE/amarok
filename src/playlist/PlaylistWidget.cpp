@@ -30,6 +30,8 @@
 #include "TheInstances.h"
 #include "statusbar/selectLabel.h"
 #include "toolbar.h"
+#include "WidgetBackgroundPainter.h"
+#include "widgets/Widget.h"
 
 #include <KToolBarSpacerAction>
 
@@ -47,13 +49,16 @@ Widget::Widget( QWidget* parent )
     QVBoxLayout* layout = new QVBoxLayout( this );
     layout->setContentsMargins(0,0,0,0);
 
-    QWidget * layoutHolder = new QWidget( this );
+    Amarok::Widget * layoutHolder = new Amarok::Widget( this );
+
+    layoutHolder->setMinimumWidth( 100 );
+    layoutHolder->setMinimumHeight( 200 );
+           
 
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
     mainPlaylistlayout->setContentsMargins(0,0,0,0);
 
-
-    //Playlist::HeaderWidget* header = new Playlist::HeaderWidget( layoutHolder );
+    Playlist::HeaderWidget* header = new Playlist::HeaderWidget( layoutHolder );
 
     Playlist::Model* playModel = The::playlistModel();
     playModel->init();
@@ -71,7 +76,8 @@ Widget::Widget( QWidget* parent )
     //mainPlaylistlayout->addWidget( header );
     mainPlaylistlayout->addWidget( playView );
 
-    m_stackedWidget = new QStackedWidget( this );
+    m_stackedWidget = new  Amarok::StackedWidget( this );
+
     m_stackedWidget->addWidget( layoutHolder );
     m_stackedWidget->addWidget( clasicalPlaylistView );
 
@@ -121,6 +127,9 @@ void Widget::switchView()
 {
     m_stackedWidget->setCurrentIndex( ( m_stackedWidget->currentIndex() + 1 ) % 2 );
 }
+
+void Widget::paintEvent( QPaintEvent * )
+{}
 
 
 

@@ -63,6 +63,17 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
 
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
+
+    //make background transparant
+    QPalette p = palette();
+    QColor c = p.color( QPalette::Base );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+    setPalette( p );
+
+    setBackgroundBrush ( QBrush( Qt::transparent ) );
+    setAutoFillBackground ( true );
+
     m_timer = 0;
 
     setObjectName( "PlaylistGraphicsView" );
@@ -500,18 +511,6 @@ void Playlist::GraphicsView::paletteChange(const QPalette & oldPalette)
         it->paletteChange();
     }
 }
-
-void Playlist::GraphicsView::drawBackground(QPainter * painter, const QRectF & rect)
-{
-
-    //DEBUG_BLOCK
-
-    int width = contentsRect().width();
-    int height = contentsRect().height();
-    painter->drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( this, 0, 0, width, height ) );
-
-}
-
 
 
 #include "PlaylistGraphicsView.moc"

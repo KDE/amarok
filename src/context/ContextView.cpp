@@ -66,6 +66,15 @@ ContextView::ContextView( QWidget* parent )
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setMouseTracking( true );
 
+
+
+    //make background transparant
+    QPalette p = palette();
+    QColor c = p.color( QPalette::Base );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+    setPalette( p );
+
     PERF_LOG( "Accessing Plasma::Theme" );
     // here we initialize all the Plasma paths to Amarok paths
     Theme::defaultTheme()->setThemeName( "Amarok-Mockup" );

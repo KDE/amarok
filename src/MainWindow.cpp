@@ -1111,3 +1111,13 @@ QRect MainWindow::contextRectGlobal()
     QPoint contextPos = m_splitter->mapToGlobal( m_contextWidget->pos() );
     return QRect( contextPos.x(), contextPos.y(), m_contextWidget->width(), m_contextWidget->height() );
 }
+
+void MainWindow::paintEvent(QPaintEvent *)
+{
+
+    QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background2", contentsRect().width(), contentsRect().height(), "context_wallpaper" );
+
+
+    QPainter painter( this );
+    painter.drawPixmap( 0, 0, mainBackground );
+}

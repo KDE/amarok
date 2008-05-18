@@ -61,8 +61,7 @@ namespace Playlist
             virtual void keyPressEvent( QKeyEvent *event );
             virtual void paletteChange( const QPalette & oldPalette );
 
-            virtual void drawBackground ( QPainter * painter, const QRectF & rect );
-
+            //virtual void drawBackground ( QPainter * painter, const QRectF & rect );
             
 
         private slots:

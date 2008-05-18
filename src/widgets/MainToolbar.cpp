@@ -131,7 +131,7 @@ void MainToolbar::paintEvent( QPaintEvent * )
     int width = contentsRect().width();
     int height = contentsRect().height();
     QPainter painter( this );
-    painter.drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( this, 0, 0, width, height, m_ignoreCache ) );
+    //painter.drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( this, 0, 0, width, height, m_ignoreCache ) );
     m_ignoreCache = false;
 
     

@@ -172,7 +172,7 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     Q_UNUSED( option );
     painter->save();
 
-    int height = rect.height(); //?
+    /*int height = rect.height(); //?
     int width = rect.width();
 
     int offsetX = MainWindow::self()->contextRectGlobal().x();
@@ -181,7 +181,8 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     //debug() << "offset: " << offsetX << " x " << offsetY;
     
     painter->drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( "Context", offsetX, offsetY, 0, 0, width, height ) );
-
+*/
+    
     QRectF bounds = The::svgHandler()->getRenderer()->boundsOnElement ( "amarok_logo" );
     double aspectRatio = bounds.width() / bounds.height();
 
