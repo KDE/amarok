@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0.0
+Name=Amarok Nightly
+Exec=amarok-nightly %U
+TryExec=amarok-nightly
+Icon=amarok
+X-KDE-Protocols=http
+MimeType=audio/aac;audio/mp4;audio/mpeg;audio/mpegurl;audio/vnd.rn-realaudio;audio/vorbis;audio/x-flac;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;video/x-ms-asf;
+Categories=Qt;KDE;AudioVideo;Audio;Player;

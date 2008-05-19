@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Version=1.0.0
+Name=Amarok Nightly Audio Configuration
+Exec=amarok-nightly-phonon
+TryExec=amarok-nightly-phonon
+Icon=amarok
+Categories=Qt;KDE;AudioVideo;Audio;Player;
