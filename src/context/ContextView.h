@@ -93,7 +93,7 @@ private:
     // holds what is currently being shown
     ContextState m_curState;
 
-    ControlBox* m_controlBox;
+    //ControlBox* m_controlBox;
 
 };
 
