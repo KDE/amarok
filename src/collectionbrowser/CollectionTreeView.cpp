@@ -75,6 +75,19 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     m_treeModel = 0;
     m_filterModel = 0;
 
+
+    //transparency
+    QPalette p = palette();
+    QColor c = p.color( QPalette::Base );
+    c.setAlpha( 77 );
+    p.setColor( QPalette::Base, c );
+
+    c = p.color( QPalette::AlternateBase );
+    c.setAlpha( 77 );
+    p.setColor( QPalette::AlternateBase, c );
+
+    setPalette( p );
+
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
 }
 
