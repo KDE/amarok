@@ -60,6 +60,8 @@ def KdeBaseRuntime()
 
   CheckOutEval(comp, "KDE/kdebase/runtime/kstyles", "#{@dir}/kstyles")
 
+  CheckOutEval(comp, "KDE/kdebase/runtime/kcmshell", "#{@dir}/kcmshell")
+
   CheckOutEval(comp, "KDE/kdebase/runtime/pics", "#{@dir}/pics")
 
   #create CMakeLists.txt
@@ -84,6 +86,7 @@ def KdeBaseRuntime()
   cmakefile << "add_subdirectory(cmake)\n"
   cmakefile << "add_subdirectory(phonon)\n"
   cmakefile << "add_subdirectory(kstyles)\n"
+  cmakefile << "add_subdirectory(kcmshell)\n"
   cmakefile << "add_subdirectory(pics)\n"
   cmakefile.close()
 
