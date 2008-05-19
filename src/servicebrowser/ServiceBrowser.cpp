@@ -43,6 +43,14 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     setObjectName( name );
     debug() << "ServiceBrowser starting...";
     m_serviceListView = new QListView( this );
+
+    //make background transparant
+    QPalette p = m_serviceListView->palette();
+    QColor c = p.color( QPalette::Base );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+    m_serviceListView->setPalette( p );
+
     m_delegate = new ServiceListDelegate( m_serviceListView );
     m_serviceListView->setItemDelegate( m_delegate );
     m_serviceListView->setModel( m_serviceListModel );
