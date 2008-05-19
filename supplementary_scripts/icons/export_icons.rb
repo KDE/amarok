@@ -20,9 +20,9 @@
 
 @app             = "amarok"
 @iconset         = "hi"
-@exportpath      = "../src/images"
-bigsvg           = "../src/images/amarok_icon.svg"
-smallsvg         = "../src/images/amarok_icon_small.svg"
+@exportpath      = "../../src/images"
+bigsvg           = "../../src/images/amarok_icon.svg"
+smallsvg         = "../../src/images/amarok_icon_small.svg"
 resolutions      = [128,64,48,32]
 smallresolutions = [22,16]
 
