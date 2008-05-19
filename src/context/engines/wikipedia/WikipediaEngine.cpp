@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+ * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>  *
  **************************************************************************/
 
 /***************************************************************************
@@ -62,21 +63,20 @@ void WikipediaEngine::update()
     DEBUG_BLOCK
     
     QString tmpWikiStr;
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
 
-    if ( !The::engineController()->currentTrack() ) {
+    if ( !currentTrack ) {
         return;
     }
     
-    removeAllData( "wikipedia" );
-    
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    DataEngine::Data data;
 
     if( selection() == "artist" ) // default, or applet told us to fetch artist
     {
-        setData( "wikipedia", "label", "Artist" );
+        data["wikipedia"] = "label, artist";
         if( currentTrack->artist() )
         {
-            setData( "wikipedia", "title", currentTrack->artist()->prettyName() );
+            data["wikipedia"] = "title", currentTrack->artist()->prettyName();
 
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                 ( currentTrack->playableUrl().protocol() == "daap" ) ||
@@ -97,15 +97,15 @@ void WikipediaEngine::update()
     else if( selection() == "title" )
     {
         tmpWikiStr = currentTrack->prettyName();
-        setData( "wikipedia", "label", "Title" );
-        setData( "wikipedia", "title", currentTrack->prettyName() );
+        data["wikipedia"] = "label", "Title";
+        data["wikipedia"] = "title", currentTrack->prettyName();
     }
     else if( selection() == "album" )
     {
         if( currentTrack->album() )
         {
-            setData( "wikipedia", "label", "Album" );
-            setData( "wikipedia", "title", currentTrack->album()->prettyName() );
+            data["wikipedia"] = "label", "Album";
+            data["wikipedia"] = "title", currentTrack->album()->prettyName();
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                 ( currentTrack->playableUrl().protocol() == "daap" ) ||
                 !The::engineController()->isStream() )
@@ -126,8 +126,18 @@ void WikipediaEngine::update()
         }
 
     }
-    m_wikiCurrentEntry = tmpWikiStr;
 
+    if( m_wikiCurrentEntry == tmpWikiStr ) {
+        debug() << "Same entry requested again. Ignoring.";
+        return;
+    }
+
+    removeAllData( "wikipedia" );
+
+    foreach( QString key, data.keys() )
+        setData( key, data[key] );
+
+    m_wikiCurrentEntry = tmpWikiStr;
     m_wikiCurrentUrl = wikiURL( tmpWikiStr );
 
     debug() << "wiki url: " << m_wikiCurrentUrl;
@@ -167,32 +177,30 @@ void WikipediaEngine::wikiResult( KJob* job )
         m_wiki = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
     }
 
-    if( m_wiki.indexOf( "var wgArticleId = 0" ) != -1 )
+    if( m_wiki.contains( "var wgArticleId = 0" ) )
     {
+        QString entry;
+        debug() << "Article not found. Retrying with refinements.";
+
         // article was not found
         if( m_wikiCurrentEntry.endsWith( wikiArtistPostfix() ) )
         {
             debug() << "m_wikiCurrentEntry.endsWith( wikiArtistPostfix() )";
-            m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiArtistPostfix().length() );
-            debug() << "new m_wikiCurrentEntry: " << m_wikiCurrentEntry;
-
-            reloadWikipedia();
-            return;
+            entry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiArtistPostfix().length() );
         }
         else if( m_wikiCurrentEntry.endsWith( wikiAlbumPostfix() ) )
         {
-            m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiAlbumPostfix().length() );
-            reloadWikipedia();
-            return;
+            entry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiAlbumPostfix().length() );
         }
         else if( m_wikiCurrentEntry.endsWith( wikiTrackPostfix() ) )
         {
-            m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiTrackPostfix().length() );
-            reloadWikipedia();
-            return;
+            entry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiTrackPostfix().length() );
         }
-    }
 
+        m_wikiCurrentUrl = wikiURL( entry );
+        reloadWikipedia();
+        return;
+    }
 
     debug() << "Even better";
 
@@ -323,8 +331,8 @@ WikipediaEngine::wikiAlbumPostfix()
 {
     if( wikiLocale() == "en" )
         return " (album)";
-    else
-        return "";
+
+    return QString();
 }
 
 QString
@@ -332,8 +340,8 @@ WikipediaEngine::wikiTrackPostfix()
 {
     if( wikiLocale() == "en" )
         return " (song)";
-    else
-        return "";
+
+    return QString();
 }
 
 QString
@@ -352,17 +360,13 @@ WikipediaEngine::wikiURL( const QString &item )
 void
 WikipediaEngine::reloadWikipedia()
 {
-    m_wikiJob = NULL;
-
-
-    m_wikiCurrentUrl = wikiURL( m_wikiCurrentEntry );
+    DEBUG_BLOCK
+        
     debug() << "wiki url: " << m_wikiCurrentUrl;
 
     setData( "wikipedia", "message", "fetching" );
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
-
-    //showWikipediaEntry( m_wikiCurrentEntry, true );
 }
 
 #include "WikipediaEngine.moc"
