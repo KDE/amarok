@@ -1112,12 +1112,33 @@ QRect MainWindow::contextRectGlobal()
     return QRect( contextPos.x(), contextPos.y(), m_contextWidget->width(), m_contextWidget->height() );
 }
 
-void MainWindow::paintEvent(QPaintEvent *)
+void MainWindow::paintEvent( QPaintEvent * e )
 {
+    //DEBUG_BLOCK
 
-    QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background2", contentsRect().width(), contentsRect().height(), "context_wallpaper" );
+    int x = e->rect().x();
+    int y = e->rect().y();
+    int w = e->rect().width();
+    int h = e->rect().height();
 
+            
+    QString key = QString("main_bg_part:%1,%2-%3x%4").arg( x ).arg( y ).arg( w ).arg( h );
+    QPixmap backgroundPart( w, h );
 
+    //debug() << "key: " << key;
+
+    if ( !QPixmapCache::find( key, backgroundPart ) ) {
+
+        //debug() << "cutout: " << x << ", " << y << ", " << w << ", " << h;
+        
+        QSize backgroundSize( width(), height() );
+        QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
+        backgroundPart = mainBackground.copy( x, y, w, h );
+        QPixmapCache::insert( key, backgroundPart );
+
+    }
+    
     QPainter painter( this );
-    painter.drawPixmap( 0, 0, mainBackground );
+    painter.drawPixmap( x, y, backgroundPart );
+
 }
