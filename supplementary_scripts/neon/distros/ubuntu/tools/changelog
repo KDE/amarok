@@ -1,3 +1,9 @@
+amarok-nightly-tools (1.3) hardy; urgency=low
+
+  * Sync with SVN
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Mon, 19 May 2008 23:00:18 +0200
+
 amarok-nightly-tools (1.2) hardy; urgency=low
 
   * Fix scripts
