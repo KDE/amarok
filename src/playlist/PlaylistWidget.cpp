@@ -58,7 +58,7 @@ Widget::Widget( QWidget* parent )
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
     mainPlaylistlayout->setContentsMargins(0,0,0,0);
 
-    Playlist::HeaderWidget* header = new Playlist::HeaderWidget( layoutHolder );
+    //Playlist::HeaderWidget* header = new Playlist::HeaderWidget( layoutHolder );
 
     Playlist::Model* playModel = The::playlistModel();
     playModel->init();
