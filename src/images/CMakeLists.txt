@@ -37,3 +37,5 @@ install(
         star.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )
+
+kde4_install_icons( ${ICON_INSTALL_DIR} )
