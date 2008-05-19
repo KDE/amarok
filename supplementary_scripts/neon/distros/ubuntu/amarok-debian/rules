@@ -6,12 +6,6 @@ export PATH := /opt/amarok-nightly/bin:$(PATH)
 -include /opt/amarok-nightly/cdbs/kde.mk
 
 kde4-wrapper-creation:
-	mkdir -p $(DEB_DESTDIR)/usr/share/applications
-		cat $(DEB_DESTDIR)/opt/amarok-nightly/share/applications/kde4/amarok.desktop \
-		| sed 's/Name.*=.*$$/& Nightly/' \
-		| sed 's/Exec=[a-z]*/&-nightly/' \
-		 > $(DEB_DESTDIR)/usr/share/applications/amarok-nightly.desktop; \
-
 	rm $(DEB_DESTDIR)/opt/amarok-nightly/share/applications/kde4/amarok.desktop
 
 	mkdir -p $(DEB_DESTDIR)/opt/amarok-nightly/share/kde4/servicetypes
