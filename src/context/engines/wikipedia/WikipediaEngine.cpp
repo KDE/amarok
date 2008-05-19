@@ -27,11 +27,11 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
     , m_wikiJob( 0 )
+    , m_currentSelection( "artist" )
+    , m_wikiLocale( "en" )
+    , m_requested( true )
+    , m_sources( "current" )
 {
-    m_requested = true; // testing
-    m_wikiLocale = "en";
-    m_currentSelection = "artist";
-    m_sources << "current";
     update();
 }
 
@@ -44,11 +44,12 @@ bool WikipediaEngine::sourceRequested( const QString& name )
 {
     DEBUG_BLOCK
     Q_UNUSED( name )
+
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     removeAllData( name );
     setData( name, QVariant());
     update();
-    m_requested = true;
+
     return true;
 }
 
@@ -97,14 +98,14 @@ void WikipediaEngine::update()
     else if( selection() == "title" )
     {
         tmpWikiStr = currentTrack->prettyName();
-        data["wikipedia"] = "label", "Title";
+        data["wikipedia"] = QString( "label" ), QString( "Title" );
         data["wikipedia"] = "title", currentTrack->prettyName();
     }
     else if( selection() == "album" )
     {
         if( currentTrack->album() )
         {
-            data["wikipedia"] = "label", "Album";
+            data["wikipedia"] = QString( "label" ), QString( "Album" );
             data["wikipedia"] = "title", currentTrack->album()->prettyName();
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                 ( currentTrack->playableUrl().protocol() == "daap" ) ||
@@ -120,11 +121,11 @@ void WikipediaEngine::update()
 
     if ( tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) ) {
         tmpWikiStr = tmpWikiStr.remove(" (PREVIEW: buy it at www.magnatune.com)" );
+
         int index = tmpWikiStr.indexOf( '-' );
         if ( index != -1 ) {
             tmpWikiStr = tmpWikiStr.left (index - 1);
         }
-
     }
 
     if( m_wikiCurrentEntry == tmpWikiStr ) {
@@ -138,37 +139,33 @@ void WikipediaEngine::update()
         setData( key, data[key] );
 
     m_wikiCurrentEntry = tmpWikiStr;
-    m_wikiCurrentUrl = wikiURL( tmpWikiStr );
+    m_wikiCurrentUrl = wikiUrl( tmpWikiStr );
 
     debug() << "wiki url: " << m_wikiCurrentUrl;
 
-    setData( "wikipedia", "message", "fetching" );
+    setData( "wikipedia", "message", i18n( "Fetching content.." ) );
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
 }
 
-void WikipediaEngine::wikiResult( KJob* job )
+void
+WikipediaEngine::wikiResult( KJob* job )
 {
     DEBUG_BLOCK
     
     if( !m_wikiJob ) return; //track changed while we were fetching
 
-    if ( !job->error() == 0 && job == m_wikiJob )
+    if( !job->error() == 0 && job == m_wikiJob )
     { // make sure its not the wrong job (e.g. wiki request for now changed song
         setData( "wikipedia", "error" );
         m_wikiJob = 0; // clear job
         return;
     }
-    if ( job != m_wikiJob )
+    if( job != m_wikiJob )
         return; //not the right job, so let's ignore it
 
-
-    //debug() << "So far so good!";
-
-
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    m_wiki = QString( storedJob->data() );
-
+    m_wiki = storedJob->data();
 
     //debug() << "reply: " << m_wiki;
 
@@ -197,7 +194,7 @@ void WikipediaEngine::wikiResult( KJob* job )
             entry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiTrackPostfix().length() );
         }
 
-        m_wikiCurrentUrl = wikiURL( entry );
+        m_wikiCurrentUrl = wikiUrl( entry );
         reloadWikipedia();
         return;
     }
@@ -274,7 +271,6 @@ void WikipediaEngine::wikiResult( KJob* job )
     m_wikiHTMLSource.append( "</body></html>\n" );
 
     removeAllData( "wikipedia" );
-    debug() << "sending wiki page:" << m_wikiHTMLSource;
     setData( "wikipedia", "page", m_wikiHTMLSource );
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
@@ -300,20 +296,17 @@ void WikipediaEngine::wikiResult( KJob* job )
         }
     }
 
-    //debug() << m_wikiHTMLSource;
-
     m_wikiJob = 0;
 }
 
 QString
-WikipediaEngine::wikiLocale()
+WikipediaEngine::wikiLocale() const
 {
     if( m_wikiLocale.isEmpty() )
         return QString( "en" );
 
     return m_wikiLocale;
 }
-
 
 QString
 WikipediaEngine::wikiArtistPostfix()
@@ -345,7 +338,7 @@ WikipediaEngine::wikiTrackPostfix()
 }
 
 QString
-WikipediaEngine::wikiURL( const QString &item )
+WikipediaEngine::wikiUrl( const QString &item ) const
 {
     /*return QString( "http://www.google.com/search?q=site:%1.wikipedia.org " )
             .arg( wikiLocale() )
@@ -353,8 +346,7 @@ WikipediaEngine::wikiURL( const QString &item )
             + "&btnI=Lucky";*/
 
 
-    return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() )
-    + KUrl::toPercentEncoding( item, "/" );
+    return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() ) + KUrl::toPercentEncoding( item, "/" );
 }
 
 void
@@ -364,7 +356,7 @@ WikipediaEngine::reloadWikipedia()
         
     debug() << "wiki url: " << m_wikiCurrentUrl;
 
-    setData( "wikipedia", "message", "fetching" );
+    setData( "wikipedia", "message", i18n( "Fetching content.." ) );
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
 }

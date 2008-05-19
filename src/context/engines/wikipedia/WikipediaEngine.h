@@ -19,7 +19,7 @@
 
 #include <context/DataEngine.h>
 
-#include <kio/job.h>
+#include <KIO/Job>
 
 /**
     This class provide Wikipedia data for use in Context applets. 
@@ -58,8 +58,8 @@ private:
     QString wikiArtistPostfix();
     QString wikiAlbumPostfix();
     QString wikiTrackPostfix();
-    QString wikiURL( const QString& item );
-    QString wikiLocale();
+    QString wikiUrl( const QString& item ) const;
+    QString wikiLocale() const;
     
     void reloadWikipedia();
     
@@ -74,9 +74,9 @@ private:
     // stores what features are enabled
     bool m_requested;
     QStringList m_sources;
-    
 };
 
 K_EXPORT_AMAROK_DATAENGINE( wikipedia, WikipediaEngine )
 
 #endif
+
