@@ -90,7 +90,7 @@ Widget::Widget( QWidget* parent )
     layout->addWidget( plBar );
     plBar->setObjectName( "PlaylistToolBar" );
 
-    KAction * action = new KAction( KIcon( "get-hot-new-stuff-amarok" ), i18nc( "switch view", "&View" ), this );
+    KAction * action = new KAction( KIcon( "view-media-playlist-amarok" ), i18nc( "switch view", "&View" ), this );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( switchView() ) );
             Amarok::actionCollection()->addAction( "playlist_switch", action );
 

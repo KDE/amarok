@@ -106,7 +106,7 @@ void JamendoService::polish()
     m_downloadButton->setParent( bottomPanelLayout );
     m_downloadButton->setText( i18n( "Download" ) );
     m_downloadButton->setObjectName( "downloadButton" );
-    m_downloadButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    m_downloadButton->setIcon( KIcon( "collection-amarok" ) );
 
     m_downloadButton->setEnabled( false );
 
