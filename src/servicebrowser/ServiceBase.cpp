@@ -114,6 +114,7 @@ ServiceBase::ServiceBase( const QString &name )
     nameLabel->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
    
     m_contentView = new ServiceCollectionTreeView( this );
+    m_contentView->setFrameShape( QFrame::NoFrame );
 
     m_contentView->setAlternatingRowColors ( true );
     //m_contentView->setAnimated( true );
