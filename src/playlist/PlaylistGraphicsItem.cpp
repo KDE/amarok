@@ -851,11 +851,11 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     //draw active track marker if needed
     if ( active ) {
         painter->drawPixmap(
-                             (int)trackRect.x() + 5,
+                             (int)trackRect.x(),
                              (int)trackRect.y() + 2,
                              The::svgHandler()->renderSvg(
                                         "active_overlay",
-                                        (int)trackRect.width() - 10 ,
+                                        (int)trackRect.width(),
                                         (int)trackRect.height() - 1,
                                         "active_overlay"
                                       )
@@ -897,12 +897,12 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap(
-                             static_cast<int>(trackRect.x() + 5),
+                             static_cast<int>(trackRect.x()),
                              static_cast<int>(trackRect.top() + 2),
                              The::svgHandler()->renderSvg(
                                              
                                         "selection",
-                                        static_cast<int>( trackRect.width() - 10 ),
+                                        static_cast<int>( trackRect.width()),
                                         static_cast<int>(trackRect.height() - 1),
                                         "selection"
                                       )
@@ -987,7 +987,7 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
 */
     //draw active track marker if needed
     if ( active ) {
-        painter->drawPixmap( 5, 0, The::svgHandler()->renderSvg( "active_overlay", (int)trackRect.width() - 10 , (int)trackRect.height(), "active_overlay" ) );
+        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "active_overlay", (int)trackRect.width(), (int)trackRect.height(), "active_overlay" ) );
 
         m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
         m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
@@ -1007,12 +1007,12 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
     if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap(
-                             static_cast<int>( trackRect.x() + 5 ),
+                             static_cast<int>( trackRect.x() ),
                              (int)trackRect.top(),
                              The::svgHandler()->renderSvg(
                                         
                                         "selection",
-                                        static_cast<int>( trackRect.width() - 10 ),
+                                        static_cast<int>( trackRect.width() ),
                                         (int)trackRect.height(),
                                         "selection"
                                       )
@@ -1045,12 +1045,12 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
     //draw active track marker if needed
     if ( active ) {
         painter->drawPixmap(
-                             5,
+                             0,
                              0,
                              The::svgHandler()->renderSvg(
                                              
                                         "active_overlay",
-                                        static_cast<int>( trackRect.width() - 10 ),
+                                        static_cast<int>( trackRect.width() ),
                                         static_cast<int>( trackRect.height() - 3),
                                         "active_overlay"
                                       )
@@ -1074,12 +1074,12 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
     if( option->state & QStyle::State_Selected )
     {
         painter->drawPixmap(
-                             static_cast<int>( trackRect.x() + 5 ),
+                             static_cast<int>( trackRect.x() ),
                             (int)trackRect.top(),
                             The::svgHandler()->renderSvg(
                                        
                                        "selection",
-                                       static_cast<int>( trackRect.width() - 10 ),
+                                       static_cast<int>( trackRect.width() ),
                                        static_cast<int>( trackRect.height() - 4 ),
                                        "selection"
                                      )
