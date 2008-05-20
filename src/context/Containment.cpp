@@ -34,7 +34,9 @@ Containment::Containment( QObject* parent, const QVariantList& args )
 
 Containment::~Containment()
 {
+    DEBUG_BLOCK
 }
 
 } // namespace Context
 #include "Containment.moc"
+
