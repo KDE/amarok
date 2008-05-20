@@ -33,6 +33,7 @@ namespace Context
 ContextScene::ContextScene( QObject * parent )
     : Plasma::Corona( parent )
 {
+    setBackgroundBrush( Qt::NoBrush );
 }
 
 ContextScene::~ContextScene()
