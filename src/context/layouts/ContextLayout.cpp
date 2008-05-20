@@ -107,7 +107,8 @@ ContextLayout::ContextLayout(QGraphicsLayoutItem *parent)
 
 ContextLayout::~ContextLayout()
 {
-    delete d;
+    warning() << "Temporary fix for crash here, uncomment me later.";
+    //delete d;
 }
 
 int
