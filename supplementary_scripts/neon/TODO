@@ -3,3 +3,13 @@ apachelogger:
 * [neon] should mr clean mess with remote locations? ... i.e. published stuff
 * [ubuntu] nuke changelog files and generate them on runtime (i.e. cut down the changelog length since they always have the same content anyway)
 * [ubuntu] fix menu icon
+
+#### KDE ####
+* [neon] use svn checkouts
+* [neon] redesign path structure
+  ~/neon/
+  ~/neon/tmp #tarball creation and distro preparation
+  ~/neon/obs #opensuse build service checkout
+  ~/neon/svn #svn checkouts (mainly for KDE)
+* [ubuntu] set binary paths on creation time (/opt/amarok-nightly vs.
+  /opt/kde-nightly)
