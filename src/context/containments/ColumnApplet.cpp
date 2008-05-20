@@ -28,6 +28,7 @@
 #include <KTemporaryFile>
 #include <KSvgRenderer>
 #include <KGlobalSettings>
+#include <KIcon>
 
 #include <threadweaver/ThreadWeaver.h>
 #include <threadweaver/Job.h>
@@ -92,7 +93,7 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
 
     DEBUG_LINE_INFO
 
-    m_appletBrowserAction = new QAction(i18n("Add applet"), this);
+    m_appletBrowserAction = new QAction(KIcon("list-add-amarok"), i18n("Add applet"), this);
     connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser()));
     // set up default context menu actions
     m_actions = new QList<QAction*>();
