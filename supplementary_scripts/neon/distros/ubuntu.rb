@@ -93,7 +93,7 @@ class UploadUbuntu
     for package in PACKAGES
       if SVNPACKAGES.has_key?(package)
         SetVersion(package)
-        puts "Ubuntu: uploading #{package} checkout revisoin #{@rev}"
+        puts "Ubuntu: uploading #{package} checkout revision #{@rev}"
         dir = "amarok-nightly-#{package}-#{@rev}"
         BaseDir()
         Dir.chdir(dir)
