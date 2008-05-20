@@ -344,13 +344,13 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         int underImageY = (int)( MARGIN + ALBUM_WIDTH + 6 );
 
-        m_items->bottomLeftText->setPos( MARGIN * 3, underImageY );
+        m_items->bottomLeftText->setPos( MARGIN, underImageY );
         m_items->bottomRightText->setPos( bottomRightAlignX, underImageY );
 
     }
     else
     {
-        m_items->bottomLeftText->setPos( MARGIN * 3, 0 );
+        m_items->bottomLeftText->setPos( MARGIN, 0 );
         m_items->bottomRightText->setPos( bottomRightAlignX, 0 );
     }
 
