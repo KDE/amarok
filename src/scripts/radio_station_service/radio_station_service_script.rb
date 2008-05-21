@@ -25,33 +25,32 @@
 ###########################################################################
 
 
-stations = [ ['Bassdrive [Drum \'n Bass]',                    'http://www.bassdrive.com/v2/streams/BassDrive.m3u' ],
-             ['Bluemars [Ambient/Space-Music]',               'http://207.200.96.225:8020/listen.pls' ],
-             ['Digitally Imported - Chillout [Chill-Out]',    'http://di.fm/mp3/chillout.pls' ],
-             ['Digitally Imported - Classic Techno [Techno]', 'http://di.fm/mp3/classictechno.pls' ],
-             ['Digitally Imported - Trance [Trance]',         'http://di.fm/mp3/trance.pls' ],
-             ['Electronic Culture [Minimal Techno]',          'http://www.shouted.fm/tunein/electro-dsl.m3u' ],
-             ['Frequence 3 [Pop]',                            'http://streams.frequence3.net/hd-mp3.m3u' ],
-             ['Gaming FM [Computer-Music]',                   'http://208.64.81.140:7500/listen.pls' ],
-             ['Groove Salad [Chill-Out]',                     'http://www.somafm.com/groovesalad.pls' ],
-             ['Drone Zone [Ambient]',                         'http://somafm.com/dronezone.pls' ],
-             ['Tags Trance Trip [Trance]',                    'http://somafm.com/tagstrance.pls' ],
-             ['Indie Pop Rocks [Indie]',                      'http://www.somafm.com/indiepop.pls' ],
-             ['Kohina [Computer-Music]',                      'http://la.campus.ltu.se:8000/stream.ogg.m3u' ],
-             ['Mostly Classical [Classical]',                 'http://www.sky.fm/mp3/classical.pls' ],
-             ['MTH.House [House]',                            'http://stream.mth-house.de:8500/listen.pls' ],
-             ['Nectarine Demoscene Radio [Computer-Music]',   'http://nectarine.sik.fi:8002/live.mp3.m3u' ],
-             ['Philosomatika [Psytrance]',                    'http://philosomatika.com/Philosomatika.pls' ],
+stations = [ ['Bassdrive [Drum \'n Bass]',                    'http://www.bassdrive.com/v2/streams/BassDrive.m3u'],
+             ['Bluemars [Ambient/Space-Music]',               'http://207.200.96.225:8020/listen.pls'],
+             ['Digitally Imported - Chillout [Chill-Out]',    'http://di.fm/mp3/chillout.pls'],
+             ['Digitally Imported - Classic Techno [Techno]', 'http://di.fm/mp3/classictechno.pls'],
+             ['Digitally Imported - Trance [Trance]',         'http://di.fm/mp3/trance.pls'],
+             ['Electronic Culture [Minimal Techno]',          'http://www.shouted.fm/tunein/electro-dsl.m3u'],
+             ['Frequence 3 [Pop]',                            'http://streams.frequence3.net/hd-mp3.m3u'],
+             ['Gaming FM [Computer-Music]',                   'http://208.64.81.140:7500/listen.pls'],
+             ['Groove Salad [Chill-Out]',                     'http://www.somafm.com/groovesalad.pls'],
+             ['Drone Zone [Ambient]',                         'http://somafm.com/dronezone.pls'],
+             ['Tags Trance Trip [Trance]',                    'http://somafm.com/tagstrance.pls'],
+             ['Indie Pop Rocks [Indie]',                      'http://www.somafm.com/indiepop.pls'],
+             ['Kohina [Computer-Music]',                      'http://la.campus.ltu.se:8000/stream.ogg.m3u'],
+             ['Mostly Classical [Classical]',                 'http://www.sky.fm/mp3/classical.pls'],
+             ['MTH.House [House]',                            'http://stream.mth-house.de:8500/listen.pls'],
+             ['Nectarine Demoscene Radio [Computer-Music]',   'http://nectarine.sik.fi:8002/live.mp3.m3u'],
+             ['Philosomatika [Psytrance]',                    'http://philosomatika.com/Philosomatika.pls'],
              ['Proton Radio [House/Dance]',                   'http://protonradio.com/proton.m3u' ],
-             ['Pure DJ [Trance]',                             'http://www.puredj.com/etc/pls/128K.pls' ],
-             ['Radio.BMJ.net [Trance/Livesets]',              'http://radio.bmj.net:8000/listen.pls' ],
-             ['Radio Paradise [Rock/Pop/Alternative]',        'http://www.radioparadise.com/musiclinks/rp_128.m3u' ],
-             ['Raggakings [Reggae]',                          'http://www.raggakings.net/listen.m3u' ],
-             ['Secret Agent [Downtempo/Lounge]',              'http://somafm.com/secretagent.pls' ],
-             ['SLAY Radio [C64 Remixes]',                     'http://sc.slayradio.org:8000/listen.pls' ],
-             ['Virgin Radio [Rock/Pop]',                      'http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb' ],
-             ['X T C Radio [Techno/Trance]',                  'http://stream.xtcradio.com:8069/listen.pls' ] ]
-
+             ['Pure DJ [Trance]',                             'http://www.puredj.com/etc/pls/128K.pls'],
+             ['Radio.BMJ.net [Trance/Livesets]',              'http://radio.bmj.net:8000/listen.pls'],
+             ['Radio Paradise [Rock/Pop/Alternative]',        'http://www.radioparadise.com/musiclinks/rp_128.m3u'],
+             ['Raggakings [Reggae]',                          'http://www.raggakings.net/listen.m3u'],
+             ['Secret Agent [Downtempo/Lounge]',              'http://somafm.com/secretagent.pls'],
+             ['SLAY Radio [C64 Remixes]',                     'http://sc.slayradio.org:8000/listen.pls'],
+             ['Virgin Radio [Rock/Pop]',                      'http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb'],
+             ['X T C Radio [Techno/Trance]',                  'http://stream.xtcradio.com:8069/listen.pls'] ]
 
 service_name = "Cool Streams"
 
@@ -71,7 +70,7 @@ loop do
             root_html = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers"
 
             # init new browser
-            system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "initService", service_name, levels, short_description, root_html, "false" )
+            system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "initService", service_name, levels, short_description, root_html, "false")
 
         when "populate"
             if args[1].strip() == "1"
@@ -97,7 +96,7 @@ loop do
                 #add the station streams as leaf nodes
                 stations.each() do |station|
                     html_info = "A cool stream called" + station[0]
-                    system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertItem", service_name, "0", parent_id, station[0], html_info, callback_string, station[1] )
+                    system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertItem", service_name, "0", parent_id, station[0], html_info, callback_string, station[1])
                 end
 
                 #tell service that all items has been added to a parent item
