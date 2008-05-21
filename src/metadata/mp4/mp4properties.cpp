@@ -29,6 +29,7 @@ email                : andrew.leadbetter@gmail.com
 #include <systems.h>
 #endif
 
+#include <string.h>
 #include <stdint.h>
 
 #ifndef UINT64_TO_DOUBLE

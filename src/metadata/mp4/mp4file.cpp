@@ -30,6 +30,7 @@ email                : aumuell@reserv.at
 #include <audioproperties.h>
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #define MP4V2_HAS_WRITE_BUG 1
 
