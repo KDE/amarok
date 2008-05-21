@@ -344,7 +344,7 @@ RandomAction::RandomAction( KActionCollection *ac ) :
     setCurrentItem( AmarokConfig::randomMode() );
 
     QStringList icons;
-    icons << "go-next-amarok"
+    icons << "media-playlist-shuffle-off-amarok"
           << "media-playlist-shuffle-amarok"
           << "media-album-shuffle-amarok";
     setIcons( icons );
@@ -385,7 +385,7 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
 {
     setItems( QStringList() << i18nc( "State, as in, disabled", "&Off" ) << i18nc( "Item, as in, music", "&Track" )
                             << i18n( "&Album" ) << i18n( "&Playlist" ) );
-    setIcons( QStringList() << "go-down-amarok" << "media-track-repeat-amarok" << "media-album-repeat-amarok" << "media-playlist-repeat-amarok" );
+    setIcons( QStringList() << "media-playlist-repeat-off-amarok" << "media-track-repeat-amarok" << "media-album-repeat-amarok" << "media-playlist-repeat-amarok" );
     setCurrentItem( AmarokConfig::repeat() );
 
     connect( this, SIGNAL( triggered( int ) ), The::playlistModel(), SLOT( playlistModeChanged() ) );
