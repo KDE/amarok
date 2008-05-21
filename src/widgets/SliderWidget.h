@@ -144,7 +144,7 @@ namespace Amarok
             static const int FRAME_RATE = 30;
             static const int TICK_INTERVAL = 1000; //The time (in ms) between updates from the engine.
     };
-
 }
 
 #endif
+

@@ -37,7 +37,6 @@
 #include <QContextMenuEvent>
 #include <QFontMetrics>
 #include <QImage>
-#include <QMenu>
 #include <QPainter>
 #include <QPixmapCache>
 #include <QStyle>
@@ -155,7 +154,6 @@ Amarok::Slider::setValue( int newValue )
 
 void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos )
 {
-
     static const short side = 5; // Size of the rounded parts.
 
     double knobX;
@@ -246,7 +244,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 void
 Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
 {
-    int x = e->pos().x();
+    const int x = e->pos().x();
 
     //is event witin slider bounds?
     if ( ( x >= m_sliderX ) && ( x <= m_sliderX + m_sliderWidth ) )
@@ -269,7 +267,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPainter *p = new QPainter( this );
 
-    int sliderY =  ( m_iconHeight -m_sliderHeight ) / 2;
+    const int sliderY =  ( m_iconHeight -m_sliderHeight ) / 2;
 
     paintCustomSlider( p, m_sliderX, sliderY, m_sliderWidth, m_sliderHeight );
     p->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_icon", m_iconWidth, m_iconHeight, "volume_icon" ) ) ;
@@ -283,9 +281,9 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         //p->setFont( font );
 
         QFontMetrics fm( font() );
-        int pixelsHigh = fm.height();
+        const int pixelsHigh = fm.height();
 
-        int yOffset =  sliderY + ( m_sliderHeight - pixelsHigh ) / 2;
+        const int yOffset =  sliderY + ( m_sliderHeight - pixelsHigh ) / 2;
 
         const QRect rect( m_iconWidth + m_sliderWidth + 4, yOffset, 40, pixelsHigh );
         p->drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
@@ -368,7 +366,6 @@ Amarok::TimeSlider::slotUpdateAnim()
 void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
-
     QPainter *p = new QPainter( this );
     paintCustomSlider( p, 0, ( height() - m_sliderHeight ) / 2, width(), m_sliderHeight, m_knobX );
     delete p;
@@ -396,5 +393,5 @@ void Amarok::Slider::paletteChange(const QPalette & oldPalette)
 }
 
 
-
 #include "SliderWidget.moc"
+
