@@ -15,7 +15,9 @@
 * ?preferences-desktop-locale-amarok    change locale in cover manager
 
 ##### collection #####
-* collection                            generic collection icon for collection tab              ?media-collection
+* collection-amarok                     generic collection icon for collection tab              ?media-collection
+* collection-rescan-amarok              rescan collection storage path                          ?media-collection-rescan
+* collection-refresh-amarok             refresh collection with changes                         ?media-collection-refresh
 
 ##### devices #####
 * connect                               connect/mount media device                              ?multimedia-player-connect

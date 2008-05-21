@@ -786,12 +786,12 @@ MainWindow::createActions()
     ac->addAction( "statistics", action );
 
     PERF_LOG( "MainWindow::createActions 6" )
-    action = new KAction( KIcon("view-refresh-amarok"), i18n( "Update Collection" ), this );
+    action = new KAction( KIcon("collection-refresh-amarok"), i18n( "Update Collection" ), this );
     connect(action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()));
     ac->addAction( "update_collection", action );
 
     PERF_LOG( "MainWindow::createActions 7" )
-    action = new KAction( KIcon("view-refresh-amarok"), i18n( "Rescan Collection" ), this );
+    action = new KAction( KIcon("collection-rescan-amarok"), i18n( "Rescan Collection" ), this );
     connect(action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(startFullScan()));
     ac->addAction( "rescan_collection", action );
 
