@@ -2,7 +2,7 @@ Source: amarok-nightly-kdebase-runtime
 Section: kde
 Priority: optional
 Maintainer: Project Neone <nightly@getamarok.com>
-Build-Depends: amarok-nightly-cdbs, amarok-nightly-kdelibs, amarok-nightly-strigi, amarok-nightly-qt,
+Build-Depends: amarok-nightly-cdbs, amarok-nightly-kdelibs, amarok-nightly-strigi, amarok-nightly-qt, amarok-nightly-deps,
  libclucene-dev, libxcb1-dev, libxine-dev,
  libbz2-dev, libxtst-dev
 Standards-Version: 3.7.3
