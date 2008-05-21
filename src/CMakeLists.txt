@@ -433,6 +433,7 @@ set(amaroklib_LIB_SRCS
     widgets/TrackTooltip.cpp
     widgets/VolumeWidget.cpp
     widgets/hintlineedit.cpp
+    widgets/Splitter.cpp
     WidgetBackgroundPainter.cpp
 #    SmartPlaylistEditor.cpp
 #    Statistics.cpp

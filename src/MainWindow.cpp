@@ -51,6 +51,7 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/PlaylistFileProvider.h"
 #include "playlistbrowser/PlaylistBrowser.h"
+#include "widgets/Splitter.h"
 
 #include "queuemanager/QueueManager.h"
 
@@ -183,7 +184,7 @@ MainWindow::init()
     QWidget *centralWidget = new QWidget( this );
     centralWidget->setLayout( mainLayout );
 
-    m_splitter = new QSplitter( Qt::Horizontal, centralWidget );
+    m_splitter = new Amarok::Splitter( Qt::Horizontal, centralWidget );
     m_splitter->setHandleWidth( 0 );
     m_splitter->addWidget( m_browsers );
     m_splitter->addWidget( m_contextWidget );
