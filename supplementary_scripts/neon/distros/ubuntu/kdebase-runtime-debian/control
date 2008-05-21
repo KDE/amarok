@@ -17,15 +17,15 @@ Description: runtime components from the official KDE release
  functionality, and outstanding graphical design with the technological
  superiority of the Unix operating system.
 
-Package: amarok-nightly-kdebase-runtime-dbg
-Section: libdevel
-Architecture: any
-Priority: extra
-Depends: amarok-nightly-kdelibs-dbg
-Description: debugging symbols for amarok-nightly-kdebase-runtime
- This package contains the debugging symbols associated with amarok-nightly.
- They will automatically be used by gdb for debugging amarok-nightly-related
- issues.
- .
- This package is part of Project Neon, The Amarok Nightly Builds project.
- See the 'amarok-nightly' package for more information.
+#Package: amarok-nightly-kdebase-runtime-dbg
+#Section: libdevel
+#Architecture: any
+#Priority: extra
+#Depends: amarok-nightly-kdelibs-dbg
+#Description: debugging symbols for amarok-nightly-kdebase-runtime
+# This package contains the debugging symbols associated with amarok-nightly.
+# They will automatically be used by gdb for debugging amarok-nightly-related
+# issues.
+# .
+# This package is part of Project Neon, The Amarok Nightly Builds project.
+# See the 'amarok-nightly' package for more information.

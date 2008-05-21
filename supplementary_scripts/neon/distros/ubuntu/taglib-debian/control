@@ -19,14 +19,14 @@ Description: TagLib Audio Meta-Data Library
  This is the development package which contains headers and static libraries
  for the TagLib Audio Meta-Data Library.
 
-Package: amarok-nightly-taglib-dbg
-Section: libdevel
-Architecture: any
-Priority: extra
-Description: debugging symbols for amarok-nightly-taglib
- This package contains the debugging symbols associated with amarok-nightly.
- They will automatically be used by gdb for debugging amarok-nightly-related
- issues.
- .
- This package is part of Project Neon, The Amarok Nightly Builds project.
- See the 'amarok-nightly' package for more information.
+#Package: amarok-nightly-taglib-dbg
+#Section: libdevel
+#Architecture: any
+#Priority: extra
+#Description: debugging symbols for amarok-nightly-taglib
+# This package contains the debugging symbols associated with amarok-nightly.
+# They will automatically be used by gdb for debugging amarok-nightly-related
+# issues.
+# .
+# This package is part of Project Neon, The Amarok Nightly Builds project.
+# See the 'amarok-nightly' package for more information.

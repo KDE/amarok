@@ -38,15 +38,15 @@ Description: PREVIEW of a audio player for KDE (please don't report bugs)
  .
  This package is part of Project Neon, The Amarok Nightly Builds project.
 
-Package: amarok-nightly-dbg
-Section: libdevel
-Architecture: any
-Priority: extra
-Depends: amarok-nightly-kdebase-runtime-dbg, amarok-nightly-taglib-dbg, amarok-nightly-strigi-dbg
-Description: debugging symbols for amarok-nightly
- This package contains the debugging symbols associated with amarok-nightly.
- They will automatically be used by gdb for debugging amarok-nightly-related
- issues.
- .
- This package is part of Project Neon, The Amarok Nightly Builds project.
- See the 'amarok-nightly' package for more information.
+#Package: amarok-nightly-dbg
+#Section: libdevel
+#Architecture: any
+#Priority: extra
+#Depends: amarok-nightly-kdebase-runtime-dbg, amarok-nightly-taglib-dbg, amarok-nightly-strigi-dbg
+#Description: debugging symbols for amarok-nightly
+# This package contains the debugging symbols associated with amarok-nightly.
+# They will automatically be used by gdb for debugging amarok-nightly-related
+# issues.
+# .
+# This package is part of Project Neon, The Amarok Nightly Builds project.
+# See the 'amarok-nightly' package for more information.
