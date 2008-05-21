@@ -3,10 +3,10 @@
 #                                                                         #
 #   Simple script for testing the scriptable service browser              #
 #   by creating a simple static browser with some cool radio              #
-#   streams. Urls shamelessly stolen Cool-Streams.xml                     #
+#   streams. URLs shamelessly stolen Cool-Streams.xml                     #
 #                                                                         #
 #   Copyright                                                             #
-#   (c) 2007, 2008 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>        #
+#   (C) 2007, 2008 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>        #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -61,9 +61,9 @@ loop do
 
     case args[0]
         when "configure"
-            `qdbus org.kde.amarok /Playlist popupMessage "This script does not require any configuration."`
-        when "init"
+            system("qdbus", "org.kde.amarok", "/Playlist popupMessage" "This script does not require any configuration.")
 
+        when "init"
             #2 levels, categories and stations
             levels = "2"
             short_description = "List of some really cool radio streams"
@@ -74,15 +74,15 @@ loop do
 
         when "populate"
             if args[1].strip() == "1"
-                puts " Populating main level..."
+                puts "Populating main level..."
 
-                #add top level item 
-                parentId = `qdbus org.kde.amarok /ScriptableServiceManager insertItem "Cool Streams" 1 -1 "The Amarok Crew's Top Streams" "Just a parent item to show how nesting works" "get_stations" ""`.chomp
+                #add top level item
+                system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertItem", "Cool Streams", "1", "-1", "The Amarok Crew\'s Top Streams", "Just a parent item to show how nesting works", "get_stations", "")
 
                 #tell service that all items has been added ( no parent since these are top level items )
-                `qdbus org.kde.amarok /ScriptableServiceManager donePopulating "Cool Streams" "-1"`
+                system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "donePopulating", "Cool Streams", "-1")
                 puts "... done"
-                
+
             else if args[1].strip() == "0" and args[3].strip() == "get_stations"
                 puts " Populating station level..."
 
@@ -100,7 +100,7 @@ loop do
                 end
 
                 #tell service that all items has been added to a parent item
-                `qdbus org.kde.amarok /ScriptableServiceManager donePopulating "Cool Streams" args[2]`
+                system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "donePopulating", "Cool Streams", args[2])
             end
         end
     end
