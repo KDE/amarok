@@ -80,7 +80,7 @@ void LastFmEvents::init()
 
     debug() << "setting size to " << m_width;
     m_theme->resize( (int)m_width, (int)m_width );
-    setPreferredSize( (int)m_width, (int)m_width );
+    setMaximumSize( 10000, 10000 ); // allow effectiveSizeHint to report preferred size without limit
 
 }
 
@@ -199,14 +199,16 @@ void LastFmEvents::dataUpdated( const QString& name, const Context::DataEngine::
 }
 
 QSizeF 
-LastFmEvents::effectiveSizeHint( Qt::SizeHint which, const QSizeF & constraint) const
+LastFmEvents::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
     DEBUG_BLOCK
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
     {
         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
     } else
+    {
         return constraint;
+    }
 }
 
 
@@ -217,7 +219,8 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
-    if ( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) ) {
+    if ( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) ) 
+    {
         debug() << "Too little room to paint, hiding all children ( making myself invisible but still painted )!";
         foreach ( QGraphicsItem * childItem, QGraphicsItem::children() ) {
             childItem->hide();

@@ -119,14 +119,14 @@ void ColumnApplet::saveToConfig( KConfig& conf )
     {
         Applet *applet = 0;
         //FIXME: Reenable when working, the dynamic_cast causes a crash.
-        //QGraphicsLayoutItem *item = m_columns->itemAt( i );
+        QGraphicsLayoutItem *item = m_columns->itemAt( i );
         //Q_ASSERT(item);
-        //applet = dynamic_cast<Plasma::Applet*>( item );
-//         debug() << "trying to save an applet";
+        applet = dynamic_cast<Plasma::Applet*>( item );
+        debug() << "trying to save an applet";
         if( applet != 0 )
         {
             KConfigGroup cg( &conf, QString::number( applet->id() ) );
-//             debug() << "saving applet" << applet->name();
+            debug() << "saving applet" << applet->name();
             cg.writeEntry( "plugin", applet->pluginName() );
         }
     }
@@ -208,7 +208,6 @@ Plasma::Applet* ColumnApplet::addApplet( Applet* applet, const QPointF & )
 //     debug() << "m_columns:" << m_columns;
     m_columns->addItem( applet );
     
-    connect( applet, SIGNAL( destroyed( QObject * ) ), this, SLOT( appletRemoved( QObject* ) ) );
     recalculate();
     return applet;
 }

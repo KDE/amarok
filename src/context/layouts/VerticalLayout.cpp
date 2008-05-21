@@ -112,14 +112,17 @@ void VerticalLayout::relayout()
         if( a )
             height = a->effectiveSizeHint( Qt::PreferredSize, QSizeF( rect.width(), -1 ) ).height();
         else
+        {
+            debug() << "BAD BAD BAD Vertical Layout is managing a non-Plasma::Applet!!!";
             height = effectiveSizeHint( Qt::PreferredSize ).height();
+        }
 
         const QRectF newgeom( rect.topLeft().x() + left,
                               rect.topLeft().y() + top,
                                            rect.width() - left * 2,
                                             height );
-
-        top += height /*+ spacing()*/;
+                                                              
+                                        top += height;
 
         debug() << "setting child geometry to" << newgeom;
         child->setGeometry( newgeom );

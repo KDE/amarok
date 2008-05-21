@@ -42,6 +42,7 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
 
 CurrentEngine::~CurrentEngine()
 {
+    DEBUG_BLOCK
     if( m_currentTrack )
     {
         m_currentTrack->unsubscribe( this );
@@ -54,6 +55,7 @@ CurrentEngine::~CurrentEngine()
 
 QStringList CurrentEngine::sources() const
 {
+    DEBUG_BLOCK
     return m_sources; // we don't have sources, if connected, it is enabled.
 }
 
@@ -107,7 +109,6 @@ CurrentEngine::metadataChanged( Meta::Track *track )
 
 void CurrentEngine::update()
 {
-
     DEBUG_BLOCK
     
     m_currentTrack = The::engineController()->currentTrack();
@@ -130,7 +131,7 @@ void CurrentEngine::update()
 
      }
     else
-        setData( "current", "albumart", QVariant( QPixmap() ) );
+    setData( "current", "albumart", QVariant( QPixmap() ) );
     setData( "current", "current", trackInfo );
 
     Meta::SourceInfoCapability *sic = m_currentTrack->as<Meta::SourceInfoCapability>();

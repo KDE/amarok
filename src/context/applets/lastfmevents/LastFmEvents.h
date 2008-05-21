@@ -35,7 +35,7 @@ public:
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
 
-    QSizeF effectiveSizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
+    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
 
     void paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect);
 public slots:

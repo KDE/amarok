@@ -122,6 +122,7 @@ void CurrentTrack::init()
     resize( m_width, m_aspectRatio );
 
     dataEngine( "amarok-current" )->connectSource( "current", this );
+    dataUpdated( "current", dataEngine("amarok-current" )->query( "current" ) ); // get data initally
 }
 
 void CurrentTrack::createMenu()
@@ -194,6 +195,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
 void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
+    DEBUG_BLOCK
     Q_UNUSED( name );
 
     kDebug() << "CurrentTrack::dataUpdated";
