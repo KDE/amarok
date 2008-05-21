@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 ServiceTypes=KPluginInfo
-Icon=view-services-mp3tunes
+Icon=view-services-mp3tunes-amarok
 Name=Mp3tunes Service
 Comment=Browse and listen to the music stored in your mp3tunes account
 
