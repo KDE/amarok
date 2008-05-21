@@ -2,8 +2,8 @@
                         amarokslider.cpp  -  description
                            -------------------
   begin                : Dec 15 2003
-  copyright            : (C) 2003 by Mark Kretschmann
-  email                : markey@web.de
+  copyright            : (C) 2003-2008 by Mark Kretschmann
+  email                : kretschmann@kde.org 
   copyright            : (C) 2005 by Gábor Lehel
   email                : illissius@gmail.com
   copyright            : (C) 2008 by Dan Meltzer
@@ -32,17 +32,13 @@
 #include "SvgTinter.h"
 #include "TheInstances.h"
 
-#include <QBitmap>
-#include <QBrush>
 #include <QContextMenuEvent>
 #include <QFontMetrics>
-#include <QImage>
 #include <QPainter>
 #include <QPixmapCache>
 #include <QStyle>
 #include <QStyleOptionComplex>
 #include <QSvgRenderer>
-#include <QTimer>
 
 #include <KIcon>
 #include <KLocale>
@@ -320,55 +316,24 @@ void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 
 Amarok::TimeSlider::TimeSlider( QWidget *parent )
     : Amarok::Slider( Qt::Horizontal, parent )
-    , m_animTimer( new QTimer( this ) )
-    , m_frame( 0 )
     , m_knobX( 0.0 )
-    , m_positionChange( 0.0 )
-    , m_oldValue( 0 )
 {
     setFocusPolicy( Qt::NoFocus );
-    connect( m_animTimer, SIGNAL( timeout() ), SLOT( slotUpdateAnim() ) );
 }
 
 void
 Amarok::TimeSlider::setSliderValue( int value )
 {
-    if( value > 0 && value > m_oldValue /*don't animate if we go backwards..*/ )
-    {
-        m_frame = 1; // Reset the frame, as it animates between values.
-        m_knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value, width() );
-        double oldKnobX = QStyle::sliderPositionFromValue( minimum(), maximum(), m_oldValue, width() );
-        m_positionChange = ( m_knobX - oldKnobX ) / FRAME_RATE;
-        m_animTimer->start( TICK_INTERVAL / FRAME_RATE );
-    }
-    else
-    {
-        m_knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value, width() );
-    }
-    m_oldValue = value;
-    repaint();
     Amarok::Slider::setValue( value );
-}
-
-void
-Amarok::TimeSlider::slotUpdateAnim()
-{
-    if( m_frame < FRAME_RATE - 1 )
-    {
-        m_frame++;
-        m_knobX += m_positionChange;
-        repaint();
-    }
-    else
-        m_animTimer->stop();
+    m_knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value, width() );
+    update();
 }
 
 void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
-    QPainter *p = new QPainter( this );
-    paintCustomSlider( p, 0, ( height() - m_sliderHeight ) / 2, width(), m_sliderHeight, m_knobX );
-    delete p;
+    QPainter p( this );
+    paintCustomSlider( &p, 0, ( height() - m_sliderHeight ) / 2, width(), m_sliderHeight, m_knobX );
 }
 
 void

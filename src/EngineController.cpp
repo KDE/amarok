@@ -64,13 +64,16 @@ EngineController::EngineController()
     : m_media( 0 )
     , m_audio( 0 )
 {
+    DEBUG_BLOCK
+
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
     m_path = Phonon::createPath(m_media, m_audio);
 
-    m_media->setTickInterval( 1000 );
+    m_media->setTickInterval( 100 );
+    debug() << "Tick Interval (actual): " << m_media->tickInterval();
     PERF_LOG( "EngineController: loaded phonon objects" )
 
     //TODO: The xine engine does not support crossfading.

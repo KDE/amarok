@@ -2,8 +2,8 @@
                        amarokslider.h  -  description
                           -------------------
  begin                : Dec 15 2003
- copyright            : (C) 2003 by Mark Kretschmann
- email                : markey@web.de
+ copyright            : (C) 2003-2008 by Mark Kretschmann
+ email                : kretschmann@kde.org
  copyright            : (C) 2005 by Gábor Lehel
  email                : illissius@gmail.com
  copyright            : (C) 2008 by Dan Meltzer
@@ -117,17 +117,12 @@ namespace Amarok
             TimeSlider( QWidget *parent );
 
             void setSliderValue( int value );
-            QTimer *timer() { return m_animTimer; }
-            short timerInterval() const { return TICK_INTERVAL / FRAME_RATE; }
 
         protected:
             virtual void paintEvent( QPaintEvent* );
 
             virtual void paletteChange( const QPalette& );
             virtual void resizeEvent(QResizeEvent * event);
-
-        private slots:
-            void slotUpdateAnim();
 
         private:
             Q_DISABLE_COPY( TimeSlider );
@@ -136,13 +131,7 @@ namespace Amarok
             QTimer *m_animTimer; // Used for a smooth progress.
 
             int m_sliderHeight;
-            int m_frame;
             double m_knobX; // The position of the current indicator.
-            double m_positionChange;
-            int m_oldValue;
-
-            static const int FRAME_RATE = 30;
-            static const int TICK_INTERVAL = 1000; //The time (in ms) between updates from the engine.
     };
 }
 

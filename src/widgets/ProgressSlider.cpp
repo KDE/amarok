@@ -25,7 +25,6 @@
 #include <QLabel>
 #include <QList>
 #include <QPolygon>
-#include <QTimer>
 
 #include <KHBox>
 #include <KLocale>
@@ -165,7 +164,6 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
         case Phonon::StoppedState:
         case Phonon::LoadingState:
             m_slider->setEnabled( false );
-            m_slider->timer()->stop();
             m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
             m_slider->setMaximum( 0 );
 //             m_timeLabelLeft->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
@@ -177,18 +175,15 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
         case Phonon::PlayingState:
             m_timeLabelLeft->show();
             m_timeLabelRight->show();
-            m_slider->timer()->start( m_slider->timerInterval() );
             //fallthrough
             break;
 
         case Phonon::BufferingState:
-            m_slider->timer()->stop(); // Don't keep animating if we are buffering.
             break;
 
         case Phonon::PausedState:
             m_timeLabelLeft->setEnabled( true );
             m_timeLabelRight->setEnabled( true );
-            m_slider->timer()->stop();
             break;
 
         case Phonon::ErrorState:
@@ -199,7 +194,6 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
 void
 ProgressWidget::engineTrackLengthChanged( long seconds )
 {
-    m_slider->timer()->stop();
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( seconds * 1000 );
     m_slider->setEnabled( seconds > 0 );
