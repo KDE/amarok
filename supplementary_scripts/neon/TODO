@@ -5,6 +5,8 @@ apachelogger:
 * [ubuntu] fix menu icon
 
 #### KDE ####
+* [neon] remove neon.rb -> move constants and stuff to libneon.rb
+* [neon] replace neon.rb with amarok.rb and kde.rb
 * [neon] use svn checkouts
 * [neon] redesign path structure
   ~/neon/
