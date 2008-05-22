@@ -1,19 +1,19 @@
 /***************************************************************************
- * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu> 
- * 
+ * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License or (at your option) version 3 or any later version
  * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy 
+ * by the membership of KDE e.V.), which shall act as a proxy
  * defined in Section 14 of version 3 of the license.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
@@ -173,7 +173,7 @@ Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
         {
             QGraphicsView::dragEnterEvent( event );
             event->acceptProposedAction();
-            Playlist::DropVis::instance()->show();
+            Playlist::DropVis::instance()->show( event->pos().y() );
             return;
         }
     }
@@ -187,7 +187,7 @@ Playlist::GraphicsView::dragMoveEvent( QDragMoveEvent *event )
         if( event->mimeData()->hasFormat( mime ) )
         {
             QGraphicsView::dragMoveEvent( event );
-            Playlist::DropVis::instance()->show();
+            Playlist::DropVis::instance()->show( event->pos().y() );
             event->acceptProposedAction();
             return;
         }
@@ -252,8 +252,8 @@ Playlist::GraphicsView::removeSelection()
         int count = 1;
         int index = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(i) );
         QModelIndex modelIndex = The::playlistModel()->index( index, 0 );
-        QModelIndex nextIndex = The::playlistModel()->index( index+1 , 0 );
-        if( modelIndex.data( GroupRole ).toInt() == Head && nextIndex.data( GroupRole ).toInt() != Head )
+        QModelIndex nextIndex = The::playlistModel()->index( index + 1 , 0 );
+        if( modelIndex.data( GroupRole ).toInt() == Head && nextIndex.data( GroupRole ).toInt() != Head ) // If a selected item is the head of a group, and the item after it is not the head of a group, then we remove all of the group.
         {
             QModelIndex in = modelIndex;
             int i = index;
@@ -264,7 +264,6 @@ Playlist::GraphicsView::removeSelection()
             }
         }
         count = modelIndex.data( GroupRole ).toInt() == Head ? count - 1 : count;
-//         debug() << "removing from index " << index << " and the next " << count << " elements";
         m_model->removeRows( index, count );
     }
 
@@ -280,7 +279,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
      //call setRow on track imidiately preceding the insertion as this might have to change its
     // look and height if it has been grouped by the model.
     if ( start > 0 )
-        m_tracks[ start-1]->setRow( start-1 );
+        m_tracks[ start-1 ]->setRow( start-1 );
 
     double cumulativeHeight = 0;
     for ( int j = 0; j < start; j++ )
@@ -295,7 +294,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
         item->setPos( 0.0, cumulativeHeight );
         cumulativeHeight += item->boundingRect().height();
         scene()->addItem( item );
-        m_tracks.insert( i, item  );
+        m_tracks.insert( i, item );
     }
 
     // make sure all following tracks has their colors updated correctly
@@ -386,7 +385,7 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
         m_timer->setUpdateInterval( 30 ); // make sure that there is no leftover time
                                     //that results in items not moving all the way
         connect( m_timer, SIGNAL( finished () ), this, SLOT( animationComplete() ) );
-        
+
     }
 
     double cumulativeHeight = 0;
@@ -417,13 +416,13 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
             bool moveUp = false;
             if( desiredY > currentY )
                 moveUp = true;
-    
+
             qreal distanceMoved = moveUp ? ( desiredY - currentY ) : ( currentY - desiredY );
-    
+
             QGraphicsItemAnimation *animator = new QGraphicsItemAnimation;
             animator->setItem( item );
             animator->setTimeLine( m_timer );
-    
+
             // if distanceMoved is negative, then we are moving the object towards the bottom of the screen
             for( qreal i = 0; i < distanceMoved; ++i )
             {
