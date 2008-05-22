@@ -56,15 +56,26 @@ set(plasma_LIB_SRCS
     plasma/querymatch.cpp
     plasma/runnercontext.cpp
     plasma/runnermanager.cpp
+    plasma/service.cpp
+    plasma/servicejob.cpp
     plasma/shadowitem.cpp
     plasma/svg.cpp
     plasma/theme.cpp
     plasma/toolbox.cpp
     plasma/uiloader.cpp
     plasma/view.cpp
+    plasma/widgets/checkbox.cpp
+    plasma/widgets/combobox.cpp
+    plasma/widgets/flash.cpp
+    plasma/widgets/groupbox.cpp
     plasma/widgets/icon.cpp
+    plasma/widgets/label.cpp
+    plasma/widgets/lineedit.cpp
     plasma/widgets/meter.cpp
+    plasma/widgets/pushbutton.cpp
+    plasma/widgets/radiobutton.cpp
     plasma/widgets/signalplotter.cpp
+    plasma/widgets/textedit.cpp
     plasma/widgets/webcontent.cpp
 )
 
@@ -86,11 +97,15 @@ target_link_libraries(amarokplasma
     ${KDE4_KIO_LIBS}
     ${KDE4_KFILE_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
-    ${QT_QTOPENGL_LIBRARY}
-    ${OPENGL_gl_LIBRARY}
-    ${OPENGL_glu_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
 )
+
+if(QT_QTOPENGL_FOUND AND OPENGL_FOUND)
+    target_link_libraries(amarokplasma
+        ${QT_QTOPENGL_LIBRARY}
+        ${OPENGL_gl_LIBRARY}
+    )
+endif(QT_QTOPENGL_FOUND AND OPENGL_FOUND)
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarokplasma PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
