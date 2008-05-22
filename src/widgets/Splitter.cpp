@@ -43,14 +43,11 @@ SplitterHandle::~ SplitterHandle()
 
 void SplitterHandle::paintEvent( QPaintEvent * event )
 {
-    DEBUG_BLOCK
-    debug() << "rect: " << rect();
     QPixmap handle = The::svgHandler()->renderSvg( "splitter_handle", rect().width(), rect().height(), "splitter_handle" );
     QPainter painter( this );
     //QPixmap handle( rect().width(), rect().height() );
     //handle.fill( Qt::blue );
     painter.drawPixmap( 0, 0, handle );
-    
 }
 
 
