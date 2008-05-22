@@ -108,3 +108,4 @@ QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) con
         return constraint;
     }
 }
+

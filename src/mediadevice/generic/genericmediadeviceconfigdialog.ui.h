@@ -1,6 +1,3 @@
-//Added by qt3to4:
-#include <Q3ComboBox>
-#include <Q3PopupMenu>
 /*
   (c) 2006 Roel Meeuws <r.j.meeuws+amarok@gmail.com>
 
@@ -22,6 +19,14 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
+
+#ifndef GENERICMEDIADEVICECONFIGDIALOG_UI_H
+#define GENERICMEDIADEVICECONFIGDIALOG_UI_H
+
+
+//Added by qt3to4:
+#include <Q3ComboBox>
+#include <Q3PopupMenu>
 
 
 /// Configuration Dialog Extension slots
@@ -325,3 +330,5 @@ void GenericMediaDeviceConfigDialog::destroy()
 
     m_unsupportedMenu = NULL;
 }
+
+#endif

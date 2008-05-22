@@ -166,3 +166,4 @@ QSizeF WikipediaApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) 
         return constraint;
     }
 }
+

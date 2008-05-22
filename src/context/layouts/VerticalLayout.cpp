@@ -36,7 +36,7 @@ VerticalLayout::VerticalLayout(QGraphicsLayoutItem *parent)
 
 VerticalLayout::~VerticalLayout()
 {
-    debug() << "help help, I'm being repressed: " << this;
+    debug() << "help help, I am being repressed: " << this;
     delete d;
 }
 

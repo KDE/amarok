@@ -28,6 +28,10 @@
 ** These will automatically be called by the form's constructor and
 ** destructor.
 *****************************************************************************/
+
+#ifndef DBSETUP_UI_H
+#define DBSETUP_UI_H
+
 #include <config-amarok.h>
 #include "amarokconfig.h"
 
@@ -58,3 +62,5 @@ void DbSetup::databaseEngine_activated( int item )
         configStack->raiseWidget( 2 );
 #endif
 }
+
+#endif

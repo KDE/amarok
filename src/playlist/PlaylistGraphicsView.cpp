@@ -64,7 +64,7 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
 
-    //make background transparant
+    //make background transparent
     QPalette p = palette();
     QColor c = p.color( QPalette::Base );
     c.setAlpha( 0 );

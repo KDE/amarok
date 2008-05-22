@@ -1143,3 +1143,4 @@ void MainWindow::paintEvent( QPaintEvent * e )
     painter.drawPixmap( x, y, backgroundPart );
 
 }
+

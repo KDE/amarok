@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
  ***************************************************************************/
-#ifndef KONQUERORSIDEBAR_H
-#define KONQUERORSIDEBAR_H
+#ifndef UNIVERSALAMAROK_H
+#define UNIVERSALAMAROK_H
 
 #include <khtml_part.h>
 #include <konqsidebarplugin.h>

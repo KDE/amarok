@@ -68,7 +68,7 @@ ContextView::ContextView( QWidget* parent )
 
 
 
-    //make background transparant
+    //make background transparent
     QPalette p = palette();
     QColor c = p.color( QPalette::Base );
     c.setAlpha( 0 );

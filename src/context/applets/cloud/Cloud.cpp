@@ -438,3 +438,4 @@ QSizeF Cloud::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
         return constraint;
     }
 }
+
