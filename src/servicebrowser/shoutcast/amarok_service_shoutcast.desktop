@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 ServiceTypes=KPluginInfo
-Icon=amarok_download
+Icon=download-amarok
 Name=Shoutcast Service
 Comment=A service that allows browsing of thousands of shoutcast stations
 

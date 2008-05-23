@@ -228,7 +228,7 @@ QList< PopupDropperAction * > Meta::MagnatuneTrack::customActions()
         text = i18n( "&Download Album" );
 
     if ( !m_purchaseCustomAction ) {
-        m_purchaseCustomAction = new PopupDropperAction( KIcon("get-hot-new-stuff-amarok" ), text, 0 );
+        m_purchaseCustomAction = new PopupDropperAction( KIcon("download-amarok" ), text, 0 );
         MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
         QObject::connect( m_purchaseCustomAction, SIGNAL( activated() ), mAlbum->store(), SLOT( purchase() ) );
     }
@@ -248,7 +248,7 @@ QList< PopupDropperAction * > Meta::MagnatuneTrack::currentTrackActions()
         text = i18n( "Magnatune.com: &Download Album" );
 
     if ( !m_purchaseCurrentTrackAction ) {
-        m_purchaseCurrentTrackAction = new PopupDropperAction( KIcon("get-hot-new-stuff-amarok" ), text, 0 );
+        m_purchaseCurrentTrackAction = new PopupDropperAction( KIcon("download-amarok" ), text, 0 );
         MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
         QObject::connect( m_purchaseCurrentTrackAction, SIGNAL( activated() ), mAlbum->store(), SLOT( purchaseCurrentTrackAlbum() ) );
     }
@@ -425,7 +425,7 @@ QList< PopupDropperAction * > MagnatuneAlbum::customActions()
     if ( m_downloadMembership )
         text = i18n( "&Download Album" );
 
-    PopupDropperAction * action = new PopupDropperAction( KIcon("get-hot-new-stuff-amarok" ), text, 0 );
+    PopupDropperAction * action = new PopupDropperAction( KIcon("download-amarok" ), text, 0 );
 
     QObject::connect( action, SIGNAL( activated() ) , m_store, SLOT( purchase() ) );
 

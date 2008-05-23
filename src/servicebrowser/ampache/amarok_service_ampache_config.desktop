@@ -1,5 +1,5 @@
 [Desktop Entry]
-Icon=amarok_download
+Icon=download-amarok
 Type=Service
 ServiceTypes=Amarok/Plugin
 X-KDE-ServiceTypes=KCModule

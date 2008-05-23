@@ -211,7 +211,7 @@ void MagnatuneStore::initBottomPanel()
         m_purchaseAlbumButton->setText( i18n( "Purchase Album" ) );
     
     m_purchaseAlbumButton->setObjectName( "purchaseButton" );
-    m_purchaseAlbumButton->setIcon( KIcon( "collection-amarok" ) );
+    m_purchaseAlbumButton->setIcon( KIcon( "download-amarok" ) );
     m_purchaseAlbumButton->setEnabled( false );
 
     connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT( purchase() ) );
