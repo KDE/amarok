@@ -503,7 +503,7 @@ if(USE_SYSTEM_SQLITE)
 endif(USE_SYSTEM_SQLITE)
 
 set_target_properties(amaroklib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-install(TARGETS amaroklib DESTINATION ${LIB_INSTALL_DIR} )
+install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 
 #####################################################################

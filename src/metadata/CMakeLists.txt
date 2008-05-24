@@ -138,4 +138,4 @@ endif(MP4V2_FOUND)
 
 ########### install files ###############
 
-install(TARGETS amarok_taglib DESTINATION ${LIB_INSTALL_DIR} )
+install(TARGETS amarok_taglib ${INSTALL_TARGETS_DEFAULT_ARGS} )
