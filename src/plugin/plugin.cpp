@@ -17,7 +17,6 @@
 
 #include "plugin.h"
 #include "pluginconfig.h"
-#include "pluginconfig.moc"
 
 namespace Amarok {
 
