@@ -21,7 +21,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 
 #include <QDomDocument>
 #include <QFile>
@@ -60,7 +60,7 @@ JamendoXmlParser::completeJob( )
 {
 
 
-    Amarok::ContextStatusBar::instance()->longMessage( i18n( "Jamendo.com database update complete. Added %1 tracks on %2 albums from %3 artists",  m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), KDE::StatusBar::Information );
+    The::statusBar()->longMessage( i18n( "Jamendo.com database update complete. Added %1 tracks on %2 albums from %3 artists",  m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), KDE::StatusBar::Information );
 
 
     debug() << "JamendoXmlParser: total number of artists: " << m_nNumberOfArtists;

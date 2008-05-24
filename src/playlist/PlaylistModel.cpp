@@ -36,7 +36,7 @@
 #include "RepeatPlaylistNavigator.h"
 #include "RepeatTrackNavigator.h"
 #include "StandardTrackNavigator.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 #include "TheInstances.h"
 #include "UndoCommands.h"
 
@@ -557,7 +557,7 @@ Playlist::Model::insertOptioned( Meta::TrackList list, int options )
     //TODO: we call insertOptioned on resume before the statusbar is fully created... We need a better way to handle this
     if( list.isEmpty() )
     {
-        // Amarok::ContextStatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
+        // The::statusBar()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
         return; // don't add empty items
     }
 
@@ -580,7 +580,7 @@ Playlist::Model::insertOptioned( Meta::TrackList list, int options )
 
         }
         if ( alreadyOnPlaylist )
-            Amarok::ContextStatusBar::instance()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%1 tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
+            The::statusBar()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%1 tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
     }
 
     int firstItemAdded = -1;

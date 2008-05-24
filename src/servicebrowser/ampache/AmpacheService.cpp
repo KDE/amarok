@@ -23,7 +23,7 @@
 #include "AmpacheConfig.h"
 #include "collection/CollectionManager.h"
 #include "Debug.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 
 
 #include <KMessageBox>
@@ -211,7 +211,7 @@ void AmpacheService::authenticate(/* const QString & server, const QString & use
 
     m_xmlDownloadJob = KIO::storedGet( authenticationString, KIO::NoReload, KIO::HideProgressInfo );
     /*connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
-    Amarok::ContextStatusBar::instance() ->newProgressOperation( m_xmlDownloadJob )
+    The::statusBar() ->newProgressOperation( m_xmlDownloadJob )
     .setDescription( i18n( "Authenticating" ) );*/
 
     if ( m_xmlDownloadJob->exec() )

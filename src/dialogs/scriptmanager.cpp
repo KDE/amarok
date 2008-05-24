@@ -30,7 +30,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "AmarokProcess.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 #include "TheInstances.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
@@ -309,7 +309,7 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
     const QString script = ensureScoreScriptRunning();
     if( script.isNull() )
     {
-        Amarok::ContextStatusBar::instance()->longMessage(
+        The::statusBar()->longMessage(
             i18n( "No score scripts were found, or none of them worked. Automatic scoring will be disabled. Sorry." ),
             KDE::StatusBar::Sorry );
         return;

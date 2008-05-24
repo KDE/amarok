@@ -26,7 +26,7 @@
 //#include "mediumPluginManager.h"
 
 #include "socketserver.h"       //Vis::Selector::showInstance()
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 
 #include <KAuthorized>
 #include <KHBox>

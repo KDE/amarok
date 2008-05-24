@@ -34,7 +34,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <Debug.h>
 #include <metabundle.h>
 #include <collectiondb.h>
-#include <statusbar/ContextStatusBar.h>
+#include <statusbar/StatusBar.h>
 #include <k3bexporter.h>
 #include <playlist.h>
 #include <playlistbrowser.h>
@@ -384,12 +384,12 @@ IpodMediaDevice::slotIpodAction( int id )
                     {
                         g_error_free(err);
                         //FIXME: update i18n files for next message
-                        Amarok::ContextStatusBar::instance()->longMessage( 
+                        The::statusBar()->longMessage( 
                                 i18n( "Could not write SysInfo file to iPod (check the permissions of the file \"%1\" on your iPod)",
                                       itunesDir( "Device:SysInfo" ) ) );
 
                         //FIXME: update i18n files for next message
-                        Amarok::ContextStatusBar::instance()->shortMessage(
+                        The::statusBar()->shortMessage(
                                 i18n( "Unable to set iPod model to %1 GB %2 (x%3)",
                                     QString::number( table[index].capacity ),
                                     itdb_info_get_ipod_model_name_string( table[index].ipod_model ),
@@ -397,7 +397,7 @@ IpodMediaDevice::slotIpodAction( int id )
                     } 
                     else
                     {
-                        Amarok::ContextStatusBar::instance()->shortMessage(
+                        The::statusBar()->shortMessage(
                                 i18n( "Setting iPod model to %1 GB %2 (x%3)",
                                     QString::number( table[index].capacity ),
                                     itdb_info_get_ipod_model_name_string( table[index].ipod_model ),
@@ -684,7 +684,7 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
     }
     if ( !dir.exists() )
     {
-        Amarok::ContextStatusBar::instance()->longMessage(
+        The::statusBar()->longMessage(
                 i18n( "Media Device: Creating directory for file %1 failed", url.path() ),
                 KDE::StatusBar::Error );
         return NULL;
@@ -724,11 +724,11 @@ void
 IpodMediaDevice::synchronizeDevice()
 {
     debug() << "Syncing iPod!";
-    Amarok::ContextStatusBar::instance()->newProgressOperation( this )
+    The::statusBar()->newProgressOperation( this )
         .setDescription( i18n( "Flushing iPod filesystem transfer cache" ) )
         .setTotalSteps( 1 );
     writeITunesDB();
-    Amarok::ContextStatusBar::instance()->endProgressOperation( this );
+    The::statusBar()->endProgressOperation( this );
 }
 
 MediaItem *
@@ -1024,7 +1024,7 @@ IpodMediaDevice::createLockFile( bool silent )
     m_lockFile = 0;
 
     if( !msg.isEmpty() )
-        Amarok::ContextStatusBar::instance()->longMessage( msg, KDE::StatusBar::Sorry );
+        The::statusBar()->longMessage( msg, KDE::StatusBar::Sorry );
     return false;
 }
 
@@ -1034,7 +1034,7 @@ IpodMediaDevice::initializeIpod()
     QDir dir( mountPoint() );
     if( !dir.exists() )
     {
-        Amarok::ContextStatusBar::instance()->longMessage(
+        The::statusBar()->longMessage(
                 i18n("Media device: Mount point %1 does not exist", mountPoint() ),
                 KDE::StatusBar::Error );
         return false;
@@ -1087,7 +1087,7 @@ IpodMediaDevice::initializeIpod()
     if( !writeITunesDB( false ) )
         return false;
 
-    Amarok::ContextStatusBar::instance()->longMessage(
+    The::statusBar()->longMessage(
             i18n("Media Device: Initialized iPod mounted at %1", mountPoint() ),
             KDE::StatusBar::Information );
 
@@ -1108,7 +1108,7 @@ IpodMediaDevice::openDevice( bool silent )
 
     if( m_itdb )
     {
-        Amarok::ContextStatusBar::instance()->longMessage(
+        The::statusBar()->longMessage(
                 i18n("Media Device: iPod at %1 already opened", mountPoint() ),
                 KDE::StatusBar::Sorry );
         return false;
@@ -1171,7 +1171,7 @@ IpodMediaDevice::openDevice( bool silent )
     {
         if( !silent )
         {
-            Amarok::ContextStatusBar::instance()->longMessage(
+            The::statusBar()->longMessage(
                     i18n("Media Device: No mounted iPod found" ),
                     KDE::StatusBar::Sorry );
         }
@@ -1195,7 +1195,7 @@ IpodMediaDevice::openDevice( bool silent )
                     m_itdb = 0;
                 }
 
-                Amarok::ContextStatusBar::instance()->longMessage(
+                The::statusBar()->longMessage(
                         i18n("Media Device: Failed to initialize iPod mounted at %1", mountPoint() ),
                         KDE::StatusBar::Sorry );
 
@@ -1231,7 +1231,7 @@ IpodMediaDevice::openDevice( bool silent )
             if( !dir.exists() )
             {
                 debug() << "failed to create hash dir " << real;
-                Amarok::ContextStatusBar::instance()->longMessage(
+                The::statusBar()->longMessage(
                         i18n( "Media device: Failed to create directory %1", real ),
                         KDE::StatusBar::Error );
                 return false;
@@ -1365,7 +1365,7 @@ IpodMediaDevice::detectModel()
             gchar *fwid = itdb_device_get_sysinfo( m_itdb->device, "FirewireGuid" );
             if( !fwid )
             {
-                Amarok::StatusBar::instance()->longMessage(
+                The::statusBar()->longMessage(
                                             i18n("Your iPod's Firewire GUID is required for correctly updating its music database, but it is not known. See http://amarok.kde.org/wiki/Media_Device:IPod for more information." ) );
             }
             else
@@ -1375,7 +1375,7 @@ IpodMediaDevice::detectModel()
     else
     {
         debug() << "iPod type detection failed, no video support";
-        Amarok::ContextStatusBar::instance()->longMessage(
+        The::statusBar()->longMessage(
                 i18n("iPod type detection failed: no support for iPod Shuffle, for artwork or video") );
         guess = true;
     }
@@ -1477,7 +1477,7 @@ IpodMediaDevice::updateArtwork()
         }
     }
 
-    Amarok::ContextStatusBar::instance()->shortMessage(
+    The::statusBar()->shortMessage(
             i18np( "Updated artwork for one track", "Updated artwork for %1 tracks", updateCount ) );
 
     if(!m_dbChanged)
@@ -1541,7 +1541,7 @@ IpodMediaDevice::checkIntegrity()
 
     updateRootItems();
 
-    Amarok::ContextStatusBar::instance()->shortMessage(
+    The::statusBar()->shortMessage(
             i18n( "Scanning for stale and orphaned tracks finished" ) );
 
     return true;
@@ -1973,7 +1973,7 @@ IpodMediaDevice::writeITunesDB( bool threaded )
         }
         else
         {
-            Amarok::ContextStatusBar::instance()->longMessage(
+            The::statusBar()->longMessage(
                     i18n("Media device: failed to write iPod database"),
                     KDE::StatusBar::Error );
         }
@@ -2484,7 +2484,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
                     }
 
                     if( dupes > 0 )
-                        Amarok::ContextStatusBar::instance()->shortMessage( i18np(
+                        The::statusBar()->shortMessage( i18np(
                                     "One duplicate track not added to database",
                                     "%1 duplicate tracks not added to database", dupes ) );
                 }

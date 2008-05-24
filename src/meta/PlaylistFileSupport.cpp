@@ -21,7 +21,7 @@
 #include "PlaylistFileSupport.h"
 #include "Debug.h"
 #include "collection/CollectionManager.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 #include "meta/XSPFPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/M3UPlaylist.h"
@@ -71,7 +71,7 @@ loadPlaylist( const KUrl &url )
         if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
         {
             debug() << "could not read file " << url.path();
-            Amarok::ContextStatusBar::instance()->longMessageThreadSafe( i18n( "Cannot read playlist (%1).", url.url() ) );
+            The::statusBar()->longMessageThreadSafe( i18n( "Cannot read playlist (%1).", url.url() ) );
             return playlist;
         }
     } else {

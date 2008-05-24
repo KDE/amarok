@@ -46,7 +46,7 @@
 #include "Sidebar.h"
 #include "Sidebar.moc"
 #include "Statistics.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 #include "TheInstances.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/PlaylistFileProvider.h"
@@ -202,7 +202,7 @@ MainWindow::init()
 
     m_statusbarArea->setMinimumHeight( fontHeight );
     m_statusbarArea->setMaximumHeight( fontHeight );
-    new Amarok::ContextStatusBar( m_statusbarArea );
+    new Amarok::StatusBar( m_statusbarArea );
 
     mainLayout->addWidget( m_controlBar );
     mainLayout->addWidget( m_splitter );

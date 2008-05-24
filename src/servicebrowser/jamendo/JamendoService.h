@@ -28,7 +28,7 @@
 #include "ServiceSqlCollection.h"
 
 #include "Amarok.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 

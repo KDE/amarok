@@ -20,7 +20,7 @@
 #include "ScanManager.h"
 
 #include "amarokconfig.h"
-#include "statusbar/ContextStatusBar.h"
+#include "statusbar/StatusBar.h"
 #include "statusbar/progressBar.h"
 #include "Debug.h"
 #include "meta/MetaConstants.h"
@@ -358,14 +358,14 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     , m_collection( collection )
     , m_isIncremental( false )
 {
-    Amarok::ContextStatusBar::instance()->newProgressOperation( this )
+    The::statusBar()->newProgressOperation( this )
             .setDescription( i18n( "Scanning music" ) );
-    connect( this, SIGNAL( incrementProgress() ), Amarok::ContextStatusBar::instance(), SLOT( incrementProgress() ), Qt::QueuedConnection );
+    connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
 }
 
 XmlParseJob::~XmlParseJob()
 {
-    Amarok::ContextStatusBar::instance()->endProgressOperation( this );
+    The::statusBar()->endProgressOperation( this );
 }
 
 void
@@ -417,7 +417,7 @@ XmlParseJob::run()
                 if( localname == "itemcount" )
                 {
                     //TODO handle itemcount
-                    Amarok::ContextStatusBar::instance()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
+                    The::statusBar()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
                 }
                 else if( localname == "tags" )
                 {

@@ -25,7 +25,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 
 #include <KIO/Job>
 #include <kio/jobclasses.h>
@@ -84,7 +84,7 @@ RefreshImages::RefreshImages()
         KIO::TransferJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
         KIO::Scheduler::scheduleJob( job );
 
-        //Amarok::ContextStatusBar::instance()->newProgressOperation( job );
+        //The::statusBar()->newProgressOperation( job );
         job->setObjectName( md5sum );
         it++; //iterate to the next set
 
@@ -98,7 +98,7 @@ RefreshImages::finishedXmlFetch( KJob* xmlJob ) //SLOT
 {
     if ( xmlJob->error() )
     {
-        Amarok::ContextStatusBar::instance()->shortMessage( i18n( "There was an error communicating with Amazon." ) );
+        The::statusBar()->shortMessage( i18n( "There was an error communicating with Amazon." ) );
         if ( m_jobInfo[ xmlJob->objectName() ].m_last )
             deleteLater();
 
@@ -140,7 +140,7 @@ RefreshImages::finishedXmlFetch( KJob* xmlJob ) //SLOT
 
     KIO::TransferJob* imageJob = KIO::storedGet( imageUrl, KIO::NoReload, KIO::HideProgressInfo );
     KIO::Scheduler::scheduleJob(imageJob);
-    //Amarok::ContextStatusBar::instance()->newProgressOperation( imageJob );
+    //The::statusBar()->newProgressOperation( imageJob );
     imageJob->setObjectName(xmlJob->objectName());
     //get the URL of the detail page
     m_jobInfo[xmlJob->objectName()].m_detailUrl = doc.documentElement()
@@ -153,7 +153,7 @@ RefreshImages::finishedXmlFetch( KJob* xmlJob ) //SLOT
 void RefreshImages::finishedImageFetch(KJob* imageJob)
 {
    if( imageJob->error() ) {
-        Amarok::ContextStatusBar::instance()->shortMessage(i18n("There was an error communicating with Amazon."));
+        The::statusBar()->shortMessage(i18n("There was an error communicating with Amazon."));
         if(m_jobInfo[imageJob->objectName()].m_last)
             deleteLater();
 

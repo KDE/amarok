@@ -18,29 +18,27 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
  ***************************************************************************/
 
-#ifndef AMAROK_CONTEXTSTATUSBAR_H
-#define AMAROK_CONTEXTSTATUSBAR_H
+#ifndef AMAROK_StatusBar_H
+#define AMAROK_StatusBar_H
 
 #include "EngineObserver.h" //baseclass
 #include "StatusBarBase.h"  //baseclass
+
+#include <QStack>
 //TODO:PORT to new playlist
 // #include "queueLabel.h"
-
-#include <Q3ValueStack>
-//Added by qt3to4:
-#include <QLabel>
 
 class QTimer;
 
 namespace Amarok
 {
-    class AMAROK_EXPORT ContextStatusBar : public KDE::StatusBar, public EngineObserver
+    class AMAROK_EXPORT StatusBar : public KDE::StatusBar, public EngineObserver
     {
-        static ContextStatusBar* s_instance;
+        static StatusBar* s_instance;
 
         public:
-            explicit ContextStatusBar( QWidget *parent, const char *name = 0 );
-            static   ContextStatusBar* instance() { return s_instance; }
+            explicit StatusBar( QWidget *parent, const char *name = 0 );
+            static   StatusBar* instance() { return s_instance; }
 
         protected:  /* reimpl from engineobserver */
             virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
@@ -59,14 +57,14 @@ namespace Amarok
             void sendMessages();
         private:
             MessageQueue();
-            Q3ValueStack<QString> m_messages;
+            QStack<QString> m_messages;
             bool m_queueMessages;
     };
 }
 
 namespace The
 {
-    inline Amarok::ContextStatusBar *contextStatusBar() { return Amarok::ContextStatusBar::instance(); }
+    inline Amarok::StatusBar *statusBar() { return Amarok::StatusBar::instance(); }
 }
 
 #endif

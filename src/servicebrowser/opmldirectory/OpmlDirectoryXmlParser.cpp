@@ -21,7 +21,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 
 #include <QDomDocument>
 #include <QFile>
@@ -60,7 +60,7 @@ OpmlDirectoryXmlParser::run()
 void
 OpmlDirectoryXmlParser::completeJob( )
 {
-    Amarok::ContextStatusBar::instance()->longMessage(
+    The::statusBar()->longMessage(
         i18n( "OpmlDirectory update complete. Added %1 feeds in %2 categories", m_nNumberOfFeeds, m_nNumberOfCategories ),
         KDE::StatusBar::Information );
 

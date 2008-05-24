@@ -42,7 +42,7 @@
 #include "playlist/PlaylistModel.h"
 #include "ProgressSlider.h"
 #include "scriptmanager.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 #include "SvgHandler.h"
 #include "TheInstances.h"
 
@@ -648,7 +648,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::popupMessage( const QString& msg )
     {
-        ContextStatusBar::instance()->longMessageThreadSafe( msg );
+        StatusBar::instance()->longMessageThreadSafe( msg );
     }
 
     void DbusPlaylistHandler::removeCurrentTrack()
@@ -682,7 +682,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::shortStatusMessage(const QString& msg)
     {
-        ContextStatusBar::instance()->shortMessage( msg );
+        StatusBar::instance()->shortMessage( msg );
     }
 
     void DbusPlaylistHandler::shufflePlaylist()

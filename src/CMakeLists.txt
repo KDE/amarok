@@ -188,8 +188,7 @@ set(libanalyzers_SRCS
 # STATUSBAR
 #####################################################################
 set(libstatusbar_SRCS
-    #statusbar/AmarokStatusBar.cpp
-    statusbar/ContextStatusBar.cpp
+    statusbar/StatusBar.cpp
     statusbar/StatusBarBase.cpp
     statusbar/StatusBarMessageLabel.cpp
     statusbar/overlayWidget.cpp

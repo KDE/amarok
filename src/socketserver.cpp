@@ -17,7 +17,7 @@
 #include "Debug.h"
 #include "EngineController.h" //to get the engine
 #include "AmarokProcess.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 
 #include <KDialog>
 #include <KLocale>
@@ -264,7 +264,7 @@ Vis::Selector::viewportPaintEvent( QPaintEvent *e )
 
         //TODO the right message if amarok_libvisual is present but libvisual isn't
         hide();
-        Amarok::ContextStatusBar::instance()->longMessage( i18n(
+        The::statusBar()->longMessage( i18n(
                 "<div align=center>"
                 "<h3>No Visualizations Found</h3>"
                 "Possible reasons:"

@@ -20,7 +20,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
  ***************************************************************************/
 
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 
 #include "amarokconfig.h"
 #include "Amarok.h"
@@ -40,8 +40,6 @@
 #include <QTextDocument>
 #include <QTimer>
 
-// stuff that must be included last
-//#include "startupTips.h"
 #include "timeLabel.h"
 
 
@@ -50,9 +48,9 @@ using namespace Amarok;
 
 KAction *action( const char *name ) { return (KAction*)Amarok::actionCollection()->action( name ); }
 
-ContextStatusBar* ContextStatusBar::s_instance = 0;
+StatusBar* StatusBar::s_instance = 0;
 
-ContextStatusBar::ContextStatusBar( QWidget *parent, const char *name )
+StatusBar::StatusBar( QWidget *parent, const char *name )
         : KDE::StatusBar( parent, name )
         , EngineObserver( The::engineController() )
 {
@@ -61,7 +59,7 @@ ContextStatusBar::ContextStatusBar( QWidget *parent, const char *name )
 }
 
 void
-ContextStatusBar::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
+StatusBar::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
     switch ( state ) {
     case Phonon::StoppedState:
@@ -85,7 +83,7 @@ ContextStatusBar::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
 }
 
 void
-ContextStatusBar::engineNewTrackPlaying()
+StatusBar::engineNewTrackPlaying()
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
@@ -170,7 +168,7 @@ MessageQueue::addMessage(const QString& message)
     if(m_queueMessages)
         m_messages.push(message);
     else
-        ContextStatusBar::instance()->longMessage(message);
+        StatusBar::instance()->longMessage(message);
 }
 
 void
@@ -179,12 +177,6 @@ MessageQueue::sendMessages()
      m_queueMessages = false;
      while(! m_messages.isEmpty())
      {
-        ContextStatusBar::instance()->longMessage(m_messages.pop());
+        StatusBar::instance()->longMessage(m_messages.pop());
      }
 }
-
-
-namespace The {
-    AMAROK_EXPORT Amarok::ContextStatusBar* statusBar() { return Amarok::ContextStatusBar::instance(); }
-}
-

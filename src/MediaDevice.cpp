@@ -36,7 +36,7 @@
 #include "PluginManager.h"
 #include "AmarokProcess.h"
 #include "scriptmanager.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 
 #include <KIO/Job>
 #include <KMessageBox>
@@ -397,7 +397,7 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
         if(m_copyFailed)
         {
             tryToRemove = true;
-            Amarok::ContextStatusBar::instance()->longMessage(
+            The::statusBar()->longMessage(
                     i18n( "Media Device: Copying %1 to %2 failed",
                           src.prettyUrl(),
                           dst.prettyUrl()
@@ -411,7 +411,7 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
             {
                 tryToRemove = true;
                 // probably s.th. went wrong
-                Amarok::ContextStatusBar::instance()->longMessage(
+                The::statusBar()->longMessage(
                         i18n( "Media Device: Reading tags from %1 failed", dst.prettyUrl() ),
                         KDE::StatusBar::Error );
             }
@@ -491,13 +491,13 @@ MediaDevice::connectDevice( bool silent )
             purgeEmptyItems();
             if( numDeleted < 0 )
             {
-                Amarok::ContextStatusBar::instance()->longMessage(
+                The::statusBar()->longMessage(
                         i18n( "Failed to purge podcasts already played" ),
                         KDE::StatusBar::Sorry );
             }
             else if( numDeleted > 0 )
             {
-                Amarok::ContextStatusBar::instance()->shortMessage(
+                The::statusBar()->shortMessage(
                         i18np( "Purged 1 podcasts already played",
                             "Purged %1 podcasts already played",
                             numDeleted ) );
@@ -520,7 +520,7 @@ MediaDevice::connectDevice( bool silent )
         disconnectDevice( m_runDisconnectHook );
     }
 
-    Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Device successfully connected" ) );
+    The::statusBar()->shortMessage( i18n( "Device successfully connected" ) );
 
     m_parent->updateDevices();
 
@@ -558,13 +558,13 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
     bool result = true;
     if( postDisconnectHook && runPostDisconnectCommand() != 0 )
     {
-        Amarok::ContextStatusBar::instance()->longMessage(
+        The::statusBar()->longMessage(
                 i18n( "Post-disconnect command failed, before removing device, please make sure that it is safe to do so." ),
                 KDE::StatusBar::Information );
         result = false;
     }
     else
-        Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
+        The::statusBar()->shortMessage( i18n( "Device successfully disconnected" ) );
 
     m_parent->updateDevices();
 
@@ -784,7 +784,7 @@ MediaDevice::transferFiles()
             MediaItem *item = trackExists( track );
             if( item && playlist.isEmpty() )
             {
-                Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Track already on media device: %1",
+                The::statusBar()->shortMessage( i18n( "Track already on media device: %1",
                                                                            track->prettyUrl() ),
                         KDE::StatusBar::Sorry );
                 existing += track->url();
@@ -830,7 +830,7 @@ MediaDevice::transferFiles()
 
                 if( !isPlayable( track ) )
                 {
-                    Amarok::ContextStatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1", track->prettyUrl() ),
+                    The::statusBar()->shortMessage( i18n( "Track not playable on media device: %1", track->prettyUrl() ),
                             KDE::StatusBar::Sorry );
                     unplayable += (*it)->url();
                     transferredItem->setFailed();
@@ -844,7 +844,7 @@ MediaDevice::transferFiles()
             {
                 if( !isCanceled() )
                 {
-                    Amarok::ContextStatusBar::instance()->longMessage(
+                    The::statusBar()->longMessage(
                             i18n( "Failed to copy track to media device: %1", track->url() ),
                             KDE::StatusBar::Sorry );
                     transferredItem->setFailed();
@@ -953,11 +953,11 @@ MediaDevice::transferFiles()
         {
             longMsg += "<br>" + (*it).prettyUrl();
         }
-        Amarok::ContextStatusBar::instance()->shortLongMessage( msg, longMsg, KDE::StatusBar::Sorry );
+        The::statusBar()->shortLongMessage( msg, longMsg, KDE::StatusBar::Sorry );
     }
     else if( !msg.isEmpty() )
     {
-        Amarok::ContextStatusBar::instance()->shortMessage( msg, KDE::StatusBar::Sorry );
+        The::statusBar()->shortMessage( msg, KDE::StatusBar::Sorry );
     }
 
     m_parent->updateButtons();

@@ -32,7 +32,7 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 // Amarok
 #include <Debug.h>
 #include <metabundle.h>
-#include <statusbar/ContextStatusBar.h>
+#include <statusbar/StatusBar.h>
 #include <statusbar/popupMessage.h>
 
 
@@ -206,7 +206,7 @@ NjbMediaDevice::openDevice(bool)
     int n;
     if( NJB_Discover( njbs, 0, &n) == -1 || n == 0 )
     {
-        Amarok::ContextStatusBar::instance()->shortLongMessage( genericError, i18n("A suitable Nomad device could not be found"), KDE::StatusBar::Error );
+        The::statusBar()->shortLongMessage( genericError, i18n("A suitable Nomad device could not be found"), KDE::StatusBar::Error );
         debug() << ": no NJBs found\n";
 
         return false;
@@ -216,7 +216,7 @@ NjbMediaDevice::openDevice(bool)
 
     if( NJB_Open( m_njb ) == -1 )
     {
-        Amarok::ContextStatusBar::instance()->shortLongMessage( genericError, i18n("Nomad device could not be opened"), KDE::StatusBar::Error );
+        The::statusBar()->shortLongMessage( genericError, i18n("Nomad device could not be opened"), KDE::StatusBar::Error );
 
 
         return false;
@@ -319,7 +319,7 @@ NjbMediaDevice::deleteTrack(NjbMediaItem *trackItem)
     if( status != NJB_SUCCESS)
     {
         debug() << ": NJB_Delete_Track failed";
-        Amarok::ContextStatusBar::instance()->shortLongMessage( i18n( "Deleting failed" ), i18n( "Deleting track(s) failed." ), KDE::StatusBar::Error );
+        The::statusBar()->shortLongMessage( i18n( "Deleting failed" ), i18n( "Deleting track(s) failed." ), KDE::StatusBar::Error );
         return -1;
     }
 

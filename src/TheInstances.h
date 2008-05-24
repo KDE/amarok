@@ -42,7 +42,7 @@ class SvgTinter;
 class ScriptableServiceManager;
 
 namespace Amarok {
-    class ContextStatusBar;
+    class StatusBar;
 }
 
 namespace Meta {
@@ -71,7 +71,7 @@ namespace The {
     AMAROK_EXPORT ScriptableServiceManager * scriptableServiceManager();
     AMAROK_EXPORT SvgHandler *       svgHandler();
     AMAROK_EXPORT SvgTinter *        svgTinter();
-    AMAROK_EXPORT Amarok::ContextStatusBar* statusBar();
+    AMAROK_EXPORT Amarok::StatusBar* statusBar();
 
     
 }

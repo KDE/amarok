@@ -34,7 +34,7 @@ AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 
 // Amarok
 #include <Debug.h>
-#include <statusbar/ContextStatusBar.h>
+#include <statusbar/StatusBar.h>
 #include <statusbar/popupMessage.h>
 
 // KDE
@@ -196,7 +196,7 @@ MediaItem
         else
         {
             debug() << "We do not support the extension ." << extension;
-            Amarok::ContextStatusBar::instance()->shortLongMessage(
+            The::statusBar()->shortLongMessage(
                 genericError,
                 i18n( "Cannot determine a valid file type" ),
                 KDE::StatusBar::Error
@@ -275,7 +275,7 @@ MediaItem
         if( parent_id == 0 )
         {
             debug() << "Could not create new parent (" << m_folderStructure << ")";
-            Amarok::ContextStatusBar::instance()->shortLongMessage(
+            The::statusBar()->shortLongMessage(
                 genericError,
                 i18n( "Cannot create parent folder. Check your structure." ),
                 KDE::StatusBar::Error
@@ -300,7 +300,7 @@ MediaItem
     if( ret < 0 )
     {
         debug() << "Could not write file " << ret;
-        Amarok::ContextStatusBar::instance()->shortLongMessage(
+        The::statusBar()->shortLongMessage(
             genericError,
             i18n( "File write failed" ),
             KDE::StatusBar::Error
@@ -722,7 +722,7 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
             if( ret != 0 )
             {
                 debug() << "Get Track failed: " << ret;
-                Amarok::ContextStatusBar::instance()->shortLongMessage(
+                The::statusBar()->shortLongMessage(
                     genericError,
                     i18n( "Could not copy track from device." ),
                     KDE::StatusBar::Error
@@ -953,7 +953,7 @@ MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
         }
         else
         {
-            Amarok::ContextStatusBar::instance()->shortLongMessage(
+            The::statusBar()->shortLongMessage(
                 genericError,
                 i18n( "Could not create new playlist on device." ),
                 KDE::StatusBar::Error
@@ -967,7 +967,7 @@ MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
         int ret = LIBMTP_Update_Playlist( m_device, metadata );
         if( ret != 0 )
         {
-            Amarok::ContextStatusBar::instance()->shortLongMessage(
+            The::statusBar()->shortLongMessage(
                 genericError,
                 i18n( "Could not update playlist on device." ),
                 KDE::StatusBar::Error
@@ -1072,7 +1072,7 @@ MtpMediaDevice::deleteObject( MtpMediaItem *deleteItem )
     if( status != 0 )
     {
         debug() << "delete object failed";
-        Amarok::ContextStatusBar::instance()->shortLongMessage(
+        The::statusBar()->shortLongMessage(
             genericError,
             i18n( "Delete failed" ),
             KDE::StatusBar::Error
@@ -1133,7 +1133,7 @@ MtpMediaDevice::openDevice( bool silent )
     m_critical_mutex.unlock();
     if( m_device == 0 ) {
         debug() << "No devices.";
-        Amarok::ContextStatusBar::instance()->shortLongMessage(
+        The::statusBar()->shortLongMessage(
             genericError,
             i18n( "MTP device could not be opened" ),
             KDE::StatusBar::Error

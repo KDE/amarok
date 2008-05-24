@@ -25,7 +25,7 @@
 #include "CoverManager.h"
 #include "Debug.h"
 //#include "AmarokStatusBar.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 #include "ui_EditCoverSearchDialog.h"
 #include "TheInstances.h"
 

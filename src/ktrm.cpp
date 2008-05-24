@@ -25,7 +25,7 @@
 #include <config-amarok.h>  
 
 #include "Debug.h"
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 
 #include <KIO/Job>
 #include <KLocale>
@@ -741,7 +741,7 @@ void KTRMLookup::puidGenerated()
 
     KIO::Job *job = KIO::storedGet( QString( "http://musicbrainz.org/ws/1/track/?type=xml&puid=%1" ).arg( puid ) , KIO::NoReload, KIO::HideProgressInfo );
 
-    Amarok::ContextStatusBar::instance()->newProgressOperation( job )
+    The::statusBar()->newProgressOperation( job )
             .setDescription( i18n( "MusicBrainz Lookup" ) );
 
     connect( job, SIGNAL( result( KJob* ) ), SLOT( lookupResult( KJob* ) ) );
@@ -754,7 +754,7 @@ void KTRMLookup::lookupResult( KJob* job )
     DEBUG_BLOCK
     if ( !job->error() == 0 ) {
         warning() << "[MusicBrainzLookup] KIO error! errno: " << job->error();
-        Amarok::ContextStatusBar::instance()->longMessage( i18n( "Could not connect to MusicBrainz server." ) );
+        The::statusBar()->longMessage( i18n( "Could not connect to MusicBrainz server." ) );
         finished();
         return;
     }
@@ -766,7 +766,7 @@ void KTRMLookup::lookupResult( KJob* job )
 
     if( !doc.setContent( xml ) ) {
         warning() << "[MusicBrainzLookup] Invalid XML";
-        Amarok::ContextStatusBar::instance()->longMessage( i18n( "MusicBrainz returned invalid content." ) );
+        The::statusBar()->longMessage( i18n( "MusicBrainz returned invalid content." ) );
         finished();
         return;
     }

@@ -45,8 +45,8 @@ TrackToolTip *TrackToolTip::instance()
 
 TrackToolTip::TrackToolTip()
     : QWidget( 0 )
-    , m_haspos( false )
     , m_track( 0 )
+    , m_haspos( false )
 {
     setWindowFlags( Qt::ToolTip );
 //     setWindowOpacity( 0.6 ); // This doesn't work that well, the background should be transparent without the foreground, probably.

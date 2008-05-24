@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Amarok.h"
 
-#include "ContextStatusBar.h"
+#include "StatusBar.h"
 
 #include <KConfigGroup>
 #include <KDialog>
@@ -159,7 +159,7 @@ bool DeleteDialog::showTrashDialog(QWidget* parent, const KUrl::List& files)
              ( job = Amarok::trashFiles( files )   ) )
         {
             if(shouldDelete) //amarok::trashFiles already does the progress operation
-                Amarok::ContextStatusBar::instance()->newProgressOperation( job )
+                The::statusBar()->newProgressOperation( job )
                     .setDescription( i18n("Deleting files") );
         }
 
