@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "ServiceCollectionTreeView.h"
 
 #include "meta/CustomActionsCapability.h"
@@ -44,9 +44,12 @@ void ServiceCollectionTreeView::mouseDoubleClickEvent( QMouseEvent* event )
 
 void ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
 {
-    if ( m_playableTracks ) {
+    if ( m_playableTracks )
+    {
         CollectionTreeView::contextMenuEvent( event );
-    } else {
+    }
+    else
+    {
 
         QModelIndexList indices = selectedIndexes();
         if( filterModel() )
@@ -83,8 +86,9 @@ void ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
                     }
                 }
             }
-               
-            if ( menu.actions().count() > 0 ) {
+
+            if ( menu.actions().count() > 0 )
+            {
                 (void)menu.exec( event->globalPos() );
                 QSet<CollectionTreeItem*> items;
                 foreach( const QModelIndex &index, indices )
@@ -96,20 +100,19 @@ void ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
         }
         else
             debug() << "invalid index or null internalPointer";
-
     }
-    
 }
 
-
-
-bool ServiceCollectionTreeView::playableTracks() const {
+bool
+ServiceCollectionTreeView::playableTracks() const
+{
     return m_playableTracks;
 }
 
 
-void ServiceCollectionTreeView::setPlayableTracks( bool playable ) {
+void
+ServiceCollectionTreeView::setPlayableTracks( bool playable )
+{
     m_playableTracks = playable;
 }
-
 

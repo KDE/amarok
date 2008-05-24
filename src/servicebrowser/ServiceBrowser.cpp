@@ -67,25 +67,26 @@ ServiceBrowser::~ServiceBrowser()
     qDeleteAll( m_services.values() );
 }
 
-
 //TODO: This should be moved to the ScriptableServiceManager instead
-void ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager ) {
+void
+ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptableServiceManager )
+{
     m_scriptableServiceManager = scriptableServiceManager;
     m_scriptableServiceManager->setParent( this );
     connect ( m_scriptableServiceManager, SIGNAL( addService ( ServiceBase * ) ), this, SLOT( addService (  ServiceBase * ) ) );
 }
 
-
-void ServiceBrowser::addService( ServiceBase * service ) {
-
+void
+ServiceBrowser::addService( ServiceBase * service )
+{
     //insert service into service map
     m_services[service->getName()] = service;
     m_serviceListModel->addService( service );
     connect( service, SIGNAL( home() ), this, SLOT( home() ) );
 }
 
-
-void ServiceBrowser::serviceActivated( const QModelIndex & index )
+void
+ServiceBrowser::serviceActivated( const QModelIndex & index )
 {
     DEBUG_BLOCK
     ServiceBase * service = 0;
@@ -95,16 +96,15 @@ void ServiceBrowser::serviceActivated( const QModelIndex & index )
     else
         return;
 
-    if ( service ) {
+    if ( service )
+    {
         debug() << "Show service: " <<  service->getName();
         showService( service->getName() );
     }
-
-
 }
 
-
-void ServiceBrowser::showService( const QString &name )
+void
+ServiceBrowser::showService( const QString &name )
 {
     ServiceBase * service = 0;
     if ( m_services.contains( name ) )
@@ -126,10 +126,11 @@ void ServiceBrowser::showService( const QString &name )
     }
 }
 
-
-void ServiceBrowser::home()
+void
+ServiceBrowser::home()
 {
-    if ( m_currentService != 0 ) {
+    if ( m_currentService != 0 )
+    {
         m_currentService->setParent( 0 );
         m_serviceListView->setParent( this );
         m_currentService = 0;
@@ -141,7 +142,8 @@ void ServiceBrowser::home()
     }
 }
 
-void ServiceBrowser::paletteChange( const QPalette & oldPalette )
+void
+ServiceBrowser::paletteChange( const QPalette & oldPalette )
 {
     DEBUG_BLOCK
     Q_UNUSED( oldPalette );
@@ -150,14 +152,15 @@ void ServiceBrowser::paletteChange( const QPalette & oldPalette )
 }
 
 
-QMap< QString, ServiceBase * > ServiceBrowser::services()
+QMap< QString, ServiceBase * >
+ServiceBrowser::services()
 {
     return m_services;
 }
 
-void ServiceBrowser::removeService( const QString &name )
+void
+ServiceBrowser::removeService( const QString &name )
 {
-
     DEBUG_BLOCK
     debug() << "removing service: " << name;
     ServiceBase * service = m_services.take( name );
@@ -169,7 +172,8 @@ void ServiceBrowser::removeService( const QString &name )
     m_serviceListView->reset();
 }
 
-void ServiceBrowser::resetService( const QString &name )
+void
+ServiceBrowser::resetService( const QString &name )
 {
     //What in the world is this for...
 
@@ -179,3 +183,4 @@ void ServiceBrowser::resetService( const QString &name )
 }
 
 #include "ServiceBrowser.moc"
+

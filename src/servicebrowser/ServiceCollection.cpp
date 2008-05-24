@@ -1,4 +1,4 @@
-/* 
+/*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
@@ -16,8 +16,6 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
-
-
 
 #define DEBUG_PREFIX "ServiceCollection"
 
@@ -42,14 +40,10 @@ ServiceCollection::ServiceCollection( ServiceBase * service )
     , MemoryCollection()
     , m_service( service )
 {
-
-
-
 }
 
 ServiceCollection::~ServiceCollection()
 {
-
 }
 
 void
@@ -84,11 +78,7 @@ ServiceBase * ServiceCollection::service()
 void ServiceCollection::emitUpdated()
 {
     emit( updated() );
-
 }
-
-
-
 
 #include "ServiceCollection.moc"
 

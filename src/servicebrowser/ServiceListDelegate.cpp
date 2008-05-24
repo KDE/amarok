@@ -36,14 +36,14 @@ ServiceListDelegate::ServiceListDelegate( QListView *view )
  , m_view( view )
 {
     DEBUG_BLOCK
-
 }
 
 ServiceListDelegate::~ServiceListDelegate()
 {
 }
 
-void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+void
+ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
     //DEBUG_BLOCK
 
@@ -89,10 +89,10 @@ void ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem &
     painter->drawText ( textRect, Qt::TextWordWrap | Qt::AlignHCenter, index.data( ShortDescriptionRole ).toString() );
 
     painter->restore();
-
 }
 
-QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+QSize
+ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
     Q_UNUSED( option );
     Q_UNUSED( index );
@@ -103,14 +103,11 @@ QSize ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
     int height = 76;
 
     return QSize ( width, height );
-
-
-
 }
 
-void ServiceListDelegate::paletteChange()
+void
+ServiceListDelegate::paletteChange()
 {
     The::svgHandler()->reTint( );
 }
-
 

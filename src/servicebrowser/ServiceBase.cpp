@@ -48,7 +48,8 @@ ServiceFactory::~ ServiceFactory()
 }
 
 
-Meta::TrackPtr ServiceFactory::trackForUrl(const KUrl & url)
+Meta::TrackPtr
+ServiceFactory::trackForUrl(const KUrl & url)
 {
     DEBUG_BLOCK
     if ( m_activeServices.size() == 0 ) {
@@ -57,9 +58,9 @@ Meta::TrackPtr ServiceFactory::trackForUrl(const KUrl & url)
     }
 
     Meta::TrackPtr track;
-    
-    foreach( ServiceBase * service, m_activeServices ) {
 
+    foreach( ServiceBase * service, m_activeServices )
+    {
         if (  service->collection() )
             track = service->collection()->trackForUrl( url );
 
@@ -112,7 +113,7 @@ ServiceBase::ServiceBase( const QString &name )
     nameLabel->setText( m_name );
     nameLabel->setFont(QFont("Arial", 12, QFont::Bold));
     nameLabel->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
-   
+
     m_contentView = new ServiceCollectionTreeView( this );
     m_contentView->setFrameShape( QFrame::NoFrame );
 
@@ -124,7 +125,7 @@ ServiceBase::ServiceBase( const QString &name )
     m_contentView->setDragEnabled ( true );
     m_contentView->setDragDropMode ( QAbstractItemView::DragOnly );
 
-    
+
     //connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
     //connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
 
@@ -157,53 +158,63 @@ ServiceBase::~ServiceBase()
     delete m_infoParser;
 }
 
-QString ServiceBase::getName( )
+QString
+ServiceBase::getName( )
 {
     return m_name;
 }
 
-void ServiceBase::setShortDescription( const QString &shortDescription )
+void
+ServiceBase::setShortDescription( const QString &shortDescription )
 {
     m_shortDescription = shortDescription;
 }
 
-QString ServiceBase::getShortDescription( )
+QString
+ServiceBase::getShortDescription( )
 {
     return m_shortDescription;
 }
 
-void ServiceBase::setLongDescription( const QString &longDescription )
+void
+ServiceBase::setLongDescription( const QString &longDescription )
 {
     m_longDescription = longDescription;
 }
 
-QString ServiceBase::getLongDescription( )
+QString
+ServiceBase::getLongDescription( )
 {
     return m_longDescription;
 }
 
-void ServiceBase::setIcon( const QIcon &icon )
+void
+ServiceBase::setIcon( const QIcon &icon )
 {
     m_icon = icon;
 }
 
-QIcon ServiceBase::getIcon( )
+QIcon
+ServiceBase::getIcon( )
 {
     return m_icon;
 }
 
-void ServiceBase::homeButtonClicked( ) 
+void
+ServiceBase::homeButtonClicked( ) 
 {
     emit( home() );
 }
 
-void ServiceBase::itemActivated ( const QModelIndex & index )
+void
+ServiceBase::itemActivated ( const QModelIndex & index )
 {
     Q_UNUSED( index );
 }
 
 
-void ServiceBase::setModel( SingleCollectionTreeItemModel * model )
+void
+ServiceBase::setModel( SingleCollectionTreeItemModel * model )
 {
     //m_filterModel->setSourceModel( model );
     //m_contentView->setModel( m_filterModel );
@@ -211,23 +222,25 @@ void ServiceBase::setModel( SingleCollectionTreeItemModel * model )
     m_model  = model;
 }
 
-SingleCollectionTreeItemModel * ServiceBase::getModel() {
+SingleCollectionTreeItemModel *
+ServiceBase::getModel()
+{
     return m_model;
 }
 
-void ServiceBase::infoChanged ( const QString &infoHtml ) {
-
-
+void
+ServiceBase::infoChanged( const QString &infoHtml )
+{
     DEBUG_BLOCK
 
     QVariantMap map;
     map["service_name"] = m_name;
     map["main_info"] = infoHtml;
     The::serviceInfoProxy()->setInfo( map );
-
 }
 
-void ServiceBase::itemSelected( CollectionTreeItem * item )
+void
+ServiceBase::itemSelected( CollectionTreeItem * item )
 {
     DEBUG_BLOCK
 
@@ -242,7 +255,8 @@ void ServiceBase::itemSelected( CollectionTreeItem * item )
     infoProvider->processInfoOf( m_infoParser );
 }
 
-void ServiceBase::generateWidgetInfo( const QString &html ) const
+void
+ServiceBase::generateWidgetInfo( const QString &html ) const
 {
     QVariantMap map;
     map["service_name"] = m_name;
@@ -250,60 +264,71 @@ void ServiceBase::generateWidgetInfo( const QString &html ) const
     The::serviceInfoProxy()->setInfo( map );
 }
 
-void ServiceBase::setPlayableTracks(bool playable)
+void
+ServiceBase::setPlayableTracks(bool playable)
 {
     m_contentView->setPlayableTracks( playable );
 }
 
-void ServiceBase::sortByArtist()
+void
+ServiceBase::sortByArtist()
 {
     m_contentView->setLevels( QList<int>() << CategoryId::Artist );
 }
 
-void ServiceBase::sortByArtistAlbum()
+void
+ServiceBase::sortByArtistAlbum()
 {
     m_contentView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
 }
 
-void ServiceBase::sortByAlbum()
+void
+ServiceBase::sortByAlbum()
 {
     m_contentView->setLevels( QList<int>() << CategoryId::Album );
 }
 
-void ServiceBase::sortByGenreArtist()
+void
+ServiceBase::sortByGenreArtist()
 {
     m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
 }
 
-void ServiceBase::sortByGenreArtistAlbum()
+void
+ServiceBase::sortByGenreArtistAlbum()
 {
     m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
 }
 
-void ServiceBase::setFilter(const QString & filter)
+void
+ServiceBase::setFilter(const QString & filter)
 {
     polish();
     m_searchWidget->setSearchString( filter );
 }
 
-void ServiceBase::setInfoParser(InfoParserBase * infoParser)
+void
+ServiceBase::setInfoParser(InfoParserBase * infoParser)
 {
     m_infoParser = infoParser;
-    
+
     connect ( m_infoParser, SIGNAL( info( QString) ), this, SLOT( infoChanged( QString ) ) );
 }
 
-InfoParserBase * ServiceBase::infoParser()
+InfoParserBase *
+ServiceBase::infoParser()
 {
     return m_infoParser;
 }
 
-QString ServiceBase::messages()
+QString
+ServiceBase::messages()
 {
     return i18n( "This service does not accept any messages" );
 }
 
-QString ServiceBase::sendMessage(const QString & message)
+QString
+ServiceBase::sendMessage(const QString & message)
 {
     return i18n( "ERROR: unknown message" );
 }

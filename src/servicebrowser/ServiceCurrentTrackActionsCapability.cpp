@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "ServiceCurrentTrackActionsCapability.h"
 
 #include "ServiceMetaBase.h"
@@ -24,17 +24,17 @@
 ServiceCurrentTrackActionsCapability::ServiceCurrentTrackActionsCapability( CurrentTrackActionsProvider * currentTrackActionsProvider )
     : Meta::CurrentTrackActionsCapability( )
     , m_currentTrackActionsProvider( currentTrackActionsProvider )
-    {}
+{
+}
 
 
 ServiceCurrentTrackActionsCapability::~ServiceCurrentTrackActionsCapability()
 {
 }
 
-QList< PopupDropperAction * > ServiceCurrentTrackActionsCapability::customActions() const
+QList< PopupDropperAction * >
+ServiceCurrentTrackActionsCapability::customActions() const
 {
     return m_currentTrackActionsProvider->currentTrackActions();
 }
-
-
 

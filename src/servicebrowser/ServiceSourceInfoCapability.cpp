@@ -27,25 +27,25 @@ ServiceSourceInfoCapability::ServiceSourceInfoCapability(SourceInfoProvider * so
     m_sourceInfoProvider = sourceInfoProvider;
 }
 
-
 ServiceSourceInfoCapability::~ServiceSourceInfoCapability()
 {
 }
 
-QString ServiceSourceInfoCapability::sourceName()
+QString
+ServiceSourceInfoCapability::sourceName()
 {
     return m_sourceInfoProvider->sourceName();
 }
 
-QString ServiceSourceInfoCapability::sourceDescription()
+QString
+ServiceSourceInfoCapability::sourceDescription()
 {
     return m_sourceInfoProvider->sourceDescription();
 }
 
-QPixmap ServiceSourceInfoCapability::emblem()
+QPixmap
+ServiceSourceInfoCapability::emblem()
 {
     return m_sourceInfoProvider->emblem();
 }
-
-
 

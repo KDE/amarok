@@ -26,3 +26,4 @@ InfoParserBase::InfoParserBase()
 }
 
 #include "InfoParserBase.moc"
+

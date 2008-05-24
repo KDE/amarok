@@ -35,9 +35,6 @@ ServiceSqlCollection::ServiceSqlCollection( const QString &id, const QString &pr
     , m_collectionId( id )
     , m_prettyName( prettyName )
 {
-
-    
-    
 }
 
 ServiceSqlCollection::~ServiceSqlCollection()
@@ -76,30 +73,28 @@ ServiceSqlCollection::insert( const QString &statement, const QString &table )
 
 
 QString
-ServiceSqlCollection::escape( const QString &text ) const           //krazy:exclude=constref
+ServiceSqlCollection::escape( const QString &text ) const
 {
     return CollectionManager::instance()->sqlStorage()->escape( text );
 }
 
-Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
+Meta::TrackPtr
+ServiceSqlCollection::trackForUrl(const KUrl & url)
 {
     DEBUG_BLOCK
 
     if ( !possiblyContainsTrack( url ) ) //do we even bother trying?
         return Meta::TrackPtr();
 
-
-    
-
     //split out the parts we can be sure about ( strip username and such info )
-            QString trackRows = m_metaFactory->getTrackSqlRows() + ',' + m_metaFactory->getAlbumSqlRows() + ',' +  m_metaFactory->getArtistSqlRows() + ',' +  m_metaFactory->getGenreSqlRows();
+    QString trackRows = m_metaFactory->getTrackSqlRows() + ',' + m_metaFactory->getAlbumSqlRows() + ',' +  m_metaFactory->getArtistSqlRows() + ',' +  m_metaFactory->getGenreSqlRows();
 
     QString prefix = m_metaFactory->tablePrefix();
 
     QString pristineUrl = url.url();
-   
+
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
-   
+
     QString from =  prefix + "_tracks";
     from += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
     from += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
@@ -112,18 +107,15 @@ Meta::TrackPtr ServiceSqlCollection::trackForUrl(const KUrl & url)
             .arg( sqlDb->escape( pristineUrl ) )
             .arg( prefix );
 
-
-
     debug() << "Querying for track: " << queryString;
     QStringList result = sqlDb->query( queryString );
     //debug() << "result: " << result;
 
     return m_registry->getTrack( result );
-
-    
 }
 
-bool ServiceSqlCollection::possiblyContainsTrack(const KUrl & url) const
+bool
+ServiceSqlCollection::possiblyContainsTrack(const KUrl & url) const
 {
     DEBUG_BLOCK
     return url.url().contains( m_metaFactory->tablePrefix(), Qt::CaseInsensitive );

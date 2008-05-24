@@ -26,7 +26,6 @@
 using namespace Meta;
 
 
-
 DynamicServiceQueryMaker::DynamicServiceQueryMaker( )
  : QueryMaker()
 {
@@ -94,14 +93,14 @@ QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
 }
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::ComposerPtr & composer)
-{ 
+{
     DEBUG_BLOCK
     Q_UNUSED( composer );
     return this;
 }
 
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::YearPtr & year)
-{   
+{
     DEBUG_BLOCK
     Q_UNUSED( year );
     return this;
@@ -158,9 +157,4 @@ QueryMaker * DynamicServiceQueryMaker::limitMaxResultSize(int size)
 
 
 #include "DynamicServiceQueryMaker.moc"
-
-
-
-
-
 

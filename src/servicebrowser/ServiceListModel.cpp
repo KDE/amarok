@@ -27,12 +27,12 @@ ServiceListModel::ServiceListModel()
 {
 }
 
-
 ServiceListModel::~ServiceListModel()
 {
 }
 
-int ServiceListModel::rowCount(const QModelIndex & parent) const
+int
+ServiceListModel::rowCount(const QModelIndex & parent) const
 {
     Q_UNUSED( parent );
     // DEBUG_BLOCK
@@ -42,12 +42,12 @@ int ServiceListModel::rowCount(const QModelIndex & parent) const
     return m_services.count();
 }
 
-QVariant ServiceListModel::data(const QModelIndex & index, int role) const
+QVariant
+ServiceListModel::data(const QModelIndex & index, int role) const
 {
      //DEBUG_BLOCK
      if ( (!index.isValid()) || ( m_services.count() <= index.row() ) )
          return QVariant();
-
 
     if ( role == Qt::DisplayRole )
         return QVariant( m_services[index.row()]->getName() );
@@ -59,29 +59,24 @@ QVariant ServiceListModel::data(const QModelIndex & index, int role) const
        return QVariant( m_services[index.row()]->getLongDescription() );
    else if ( role == ServiceRole )
        return qVariantFromValue( m_services[index.row()] );
-    else 
+    else
         return QVariant();
-
-
 }
 
-void ServiceListModel::addService(ServiceBase * service)
+void
+ServiceListModel::addService(ServiceBase * service)
 {
-
     beginInsertRows ( QModelIndex(), m_services.count(), m_services.count() + 1 );
     m_services.push_back( service );
     endInsertRows();
-
-
 }
 
-void ServiceListModel::removeService(ServiceBase * service)
+void
+ServiceListModel::removeService(ServiceBase * service)
 {
     int index = m_services.indexOf( service );
     beginRemoveRows ( QModelIndex(), index, index );
     m_services.removeAt( index );
     endRemoveRows();
-    
 }
-
 

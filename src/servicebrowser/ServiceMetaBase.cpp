@@ -31,18 +31,20 @@ ServiceMetaFactory::ServiceMetaFactory(const QString &dbPrefix)
 {
 }
 
-QString ServiceMetaFactory::tablePrefix()
+QString
+ServiceMetaFactory::tablePrefix()
 {
     return m_dbTablePrefix;
 }
 
-
-int ServiceMetaFactory::getTrackSqlRowCount()
+int
+ServiceMetaFactory::getTrackSqlRowCount()
 {
     return 7;
 }
 
-QString ServiceMetaFactory::getTrackSqlRows()
+QString
+ServiceMetaFactory::getTrackSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
     return m_dbTablePrefix + "_tracks.id, " +
@@ -52,20 +54,22 @@ QString ServiceMetaFactory::getTrackSqlRows()
            m_dbTablePrefix + "_tracks.preview_url, " +
            m_dbTablePrefix + "_tracks.album_id, " +
            m_dbTablePrefix + "_tracks.artist_id ";
-
 }
 
-TrackPtr ServiceMetaFactory::createTrack(const QStringList & rows)
+TrackPtr
+ServiceMetaFactory::createTrack(const QStringList & rows)
 {
     return TrackPtr( new ServiceTrack( rows ) );
 }
 
-int ServiceMetaFactory::getAlbumSqlRowCount()
+int
+ServiceMetaFactory::getAlbumSqlRowCount()
 {
     return 4;
 }
 
-QString ServiceMetaFactory::getAlbumSqlRows()
+QString
+ServiceMetaFactory::getAlbumSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
     return m_dbTablePrefix + "_albums.id, " +
@@ -74,17 +78,20 @@ QString ServiceMetaFactory::getAlbumSqlRows()
            m_dbTablePrefix + "_albums.artist_id ";
 }
 
-AlbumPtr ServiceMetaFactory::createAlbum(const QStringList & rows)
+AlbumPtr
+ServiceMetaFactory::createAlbum(const QStringList & rows)
 {
     return AlbumPtr( new ServiceAlbum( rows ) );
 }
 
-int ServiceMetaFactory::getArtistSqlRowCount()
+int
+ServiceMetaFactory::getArtistSqlRowCount()
 {
     return 3;
 }
 
-QString ServiceMetaFactory::getArtistSqlRows()
+QString
+ServiceMetaFactory::getArtistSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
     return m_dbTablePrefix + "_artists.id, " +
@@ -92,27 +99,29 @@ QString ServiceMetaFactory::getArtistSqlRows()
            m_dbTablePrefix + "_artists.description ";
 }
 
-ArtistPtr ServiceMetaFactory::createArtist(const QStringList & rows)
+ArtistPtr
+ServiceMetaFactory::createArtist(const QStringList & rows)
 {
     return ArtistPtr( new ServiceArtist ( rows ) );
-
 }
 
-int ServiceMetaFactory::getGenreSqlRowCount()
+int
+ServiceMetaFactory::getGenreSqlRowCount()
 {
     return 2;
 }
 
-QString ServiceMetaFactory::getGenreSqlRows()
+QString
+ServiceMetaFactory::getGenreSqlRows()
 {
     DEBUG_BLOCK
     //subclasses must not change the order of these items, but only append new ones
     return m_dbTablePrefix + "_genre.id, " +
            m_dbTablePrefix + "_genre.name " ;
-
 }
 
-GenrePtr ServiceMetaFactory::createGenre(const QStringList & rows)
+GenrePtr
+ServiceMetaFactory::createGenre(const QStringList & rows)
 {
     return GenrePtr( new ServiceGenre ( rows ) );
 }
@@ -138,7 +147,6 @@ ServiceTrack::ServiceTrack(const QString & name)
     , m_albumName( 0 )
     , m_artistId( 0 )
     , m_artistName( 0 )
-//     , m_type( 0 )
 {
 }
 
@@ -152,10 +160,7 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
-//     , m_type( 0 )
-
 {
-
     m_id = resultRow[0].toInt();
     m_name = resultRow[1];
     m_trackNumber = resultRow[2].toInt();
@@ -175,36 +180,41 @@ ServiceTrack::~ServiceTrack()
 }
 
 
-void ServiceTrack::setId(int id)
+void
+ServiceTrack::setId(int id)
 {
     m_id = id;
 }
 
-int ServiceTrack::id() const
+int
+ServiceTrack::id() const
 {
     return m_id;
 }
 
-void ServiceTrack::setAlbumId(int albumId)
+void
+ServiceTrack::setAlbumId(int albumId)
 {
     m_albumId = albumId;
 }
 
-int ServiceTrack::albumId() const
+int
+ServiceTrack::albumId() const
 {
     return m_albumId;
 }
 
-void ServiceTrack::setArtistId(int id)
+void
+ServiceTrack::setArtistId(int id)
 {
     m_artistId = id;
 }
 
-int ServiceTrack::artistId() const
+int
+ServiceTrack::artistId() const
 {
     return m_artistId;
 }
-
 
 QString
 ServiceTrack::name() const
@@ -237,7 +247,8 @@ ServiceTrack::prettyUrl() const
     return m_displayUrl;
 }
 
-void ServiceTrack::setUrl(const QString & url)
+void
+ServiceTrack::setUrl(const QString & url)
 {
     m_playableUrl = url;
     m_displayUrl = url;
@@ -484,9 +495,6 @@ void ServiceTrack::processInfoOf(InfoParserBase * infoParser)
 
 
 //ServiceArtist
-
-
-
 ServiceArtist::ServiceArtist( const QString & name )
     : Meta::Artist()
     , ServiceDisplayInfoProvider()
@@ -521,17 +529,17 @@ ServiceArtist::~ServiceArtist()
 }
 
 
-void ServiceArtist::setId(int id)
+void
+ServiceArtist::setId(int id)
 {
     m_id = id;
 }
 
-int ServiceArtist::id() const
+int
+ServiceArtist::id() const
 {
     return m_id;
 }
-
-
 
 QString
 ServiceArtist::name() const
@@ -545,7 +553,8 @@ ServiceArtist::prettyName() const
     return m_name;
 }
 
-void ServiceArtist::setTitle(const QString & title)
+void
+ServiceArtist::setTitle(const QString & title)
 {
     m_name = title;
 }
@@ -570,22 +579,23 @@ ServiceArtist::addTrack( TrackPtr track )
 }
 
 
-void ServiceArtist::setDescription(const QString &description)
+void
+ServiceArtist::setDescription(const QString &description)
 {
     m_description = description;
 }
 
-QString ServiceArtist::description() const
+QString
+ServiceArtist::description() const
 {
     return m_description;
 }
 
-void ServiceArtist::processInfoOf(InfoParserBase * infoParser)
+void
+ServiceArtist::processInfoOf(InfoParserBase * infoParser)
 {
     infoParser->getInfo( ArtistPtr ( this ) );
 }
-
-
 
 
 
@@ -618,40 +628,43 @@ ServiceAlbum::ServiceAlbum(const QStringList & resultRow)
     //m_artistName = resultRow[4];
 }
 
-
-
 ServiceAlbum::~ServiceAlbum()
 {
     //nothing to do
 }
 
-
-void ServiceAlbum::setId(int id)
+void
+ServiceAlbum::setId(int id)
 {
     m_id = id;
 }
 
-int ServiceAlbum::id() const
+int
+ServiceAlbum::id() const
 {
     return m_id;
 }
 
-void ServiceAlbum::setArtistId(int artistId)
+void
+ServiceAlbum::setArtistId(int artistId)
 {
     m_artistId = artistId;
 }
 
-int ServiceAlbum::artistId() const
+int
+ServiceAlbum::artistId() const
 {
     return m_artistId;
 }
 
-void ServiceAlbum::setArtistName(const QString & name)
+void
+ServiceAlbum::setArtistName(const QString & name)
 {
     m_artistName = name;
 }
 
-QString ServiceAlbum::artistName() const
+QString
+ServiceAlbum::artistName() const
 {
     return m_artistName;
 }
@@ -668,7 +681,8 @@ ServiceAlbum::prettyName() const
     return m_name;
 }
 
-void ServiceAlbum::setTitle(const QString & title)
+void
+ServiceAlbum::setTitle(const QString & title)
 {
     m_name = title;
 }
@@ -720,16 +734,17 @@ void ServiceAlbum::setDescription(const QString &description)
     m_description = description;
 }
 
-QString ServiceAlbum::description() const
+QString
+ServiceAlbum::description() const
 {
     return m_description;
 }
 
-void ServiceAlbum::processInfoOf(InfoParserBase * infoParser)
+void
+ServiceAlbum::processInfoOf(InfoParserBase * infoParser)
 {
     infoParser->getInfo( AlbumPtr( this ) );
 }
-
 
 
 //ServiceGenre
@@ -762,13 +777,14 @@ ServiceGenre::~ServiceGenre()
     //nothing to do
 }
 
-
-void ServiceGenre::setId(int id)
+void
+ServiceGenre::setId(int id)
 {
     m_id = id;
 }
 
-int ServiceGenre::id() const
+int
+ServiceGenre::id() const
 {
     return m_id;
 }
@@ -785,18 +801,20 @@ ServiceGenre::prettyName() const
     return m_name;
 }
 
-void ServiceGenre::setName(const QString & name)
+void
+ServiceGenre::setName(const QString & name)
 {
     m_name = name;
 }
 
-
-int ServiceGenre::albumId()
+int
+ServiceGenre::albumId()
 {
     return m_albumId;
 }
 
-void ServiceGenre::setAlbumId(int albumId)
+void
+ServiceGenre::setAlbumId(int albumId)
 {
     m_albumId = albumId;
 }
@@ -814,7 +832,8 @@ ServiceGenre::addTrack( TrackPtr track )
     m_tracks.append( track );
 }
 
-void ServiceGenre::processInfoOf(InfoParserBase * infoParser)
+void
+ServiceGenre::processInfoOf(InfoParserBase * infoParser)
 {
     Q_UNUSED( infoParser );
     return; // do nothing
@@ -862,7 +881,8 @@ ServiceComposer::addTrack( ServiceTrackPtr track )
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
-void ServiceComposer::processInfoOf(InfoParserBase * infoParser)
+void
+ServiceComposer::processInfoOf(InfoParserBase * infoParser)
 {
     Q_UNUSED( infoParser );
     return; // do nothing
@@ -911,11 +931,10 @@ ServiceYear::addTrack( ServiceTrackPtr track )
 }
 
 
-void ServiceYear::processInfoOf(InfoParserBase * infoParser)
+void
+ServiceYear::processInfoOf(InfoParserBase * infoParser)
 {
     Q_UNUSED( infoParser );
     return; // do nothing
 }
-
-
 

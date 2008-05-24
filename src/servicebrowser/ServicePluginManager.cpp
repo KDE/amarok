@@ -48,16 +48,17 @@ ServicePluginManager::ServicePluginManager( )
 
 
 ServicePluginManager::~ServicePluginManager()
-{}
+{
+}
 
-
-void ServicePluginManager::setBrowser( ServiceBrowser * browser )
+void
+ServicePluginManager::setBrowser( ServiceBrowser * browser )
 {
     m_serviceBrowser = browser;
 }
 
-
-void ServicePluginManager::collect()
+void
+ServicePluginManager::collect()
 {
     DEBUG_BLOCK
 
@@ -88,8 +89,8 @@ void ServicePluginManager::collect()
     }
 }
 
-
-void ServicePluginManager::init()
+void
+ServicePluginManager::init()
 {
     foreach( ServiceFactory* factory,  m_factories.values() ) {
 
@@ -105,7 +106,8 @@ void ServicePluginManager::init()
     }
 }
 
-void ServicePluginManager::slotNewService( ServiceBase *newService )
+void
+ServicePluginManager::slotNewService( ServiceBase *newService )
 {
     DEBUG_BLOCK
     m_serviceBrowser->addService( newService );
@@ -117,30 +119,32 @@ ServicePluginManager::factories()
     return m_factories;
 }
 
-void ServicePluginManager::settingsChanged()
+void
+ServicePluginManager::settingsChanged()
 {
     //for now, just delete and reload everything....
     QMap<QString, ServiceBase *> activeServices =  m_serviceBrowser->services();
     QList<QString> names = activeServices.keys();
 
-    foreach( ServiceFactory * factory,  m_factories ) {
+    foreach( ServiceFactory * factory,  m_factories )
+    {
         factory->clearActiveServices();
     }
-    
-    foreach( QString serviceName, names ) {
+
+    foreach( QString serviceName, names )
+    {
         m_serviceBrowser->removeService( serviceName );
     }
 
     m_loadedServices.clear();
-    
-    init();
 
+    init();
 
     //way too advanced for now and does not solve the issue of some services being loaded multiple times
     //based on their config
     /*QMap<QString, ServiceBase *> activeServices =  m_serviceBrowser->services();
     QList<QString> names = activeServices.keys();
-    
+
     foreach( ServiceFactory* factory,  m_factories.values() ) {
 
         //check if this service is enabled in the config
@@ -167,21 +171,25 @@ void ServicePluginManager::settingsChanged()
     }*/
 }
 
-QStringList ServicePluginManager::loadedServices()
+QStringList
+ServicePluginManager::loadedServices()
 {
     return m_loadedServices;
 }
 
 
-QStringList ServicePluginManager::loadedServiceNames()
+QStringList
+ServicePluginManager::loadedServiceNames()
 {
     return m_serviceBrowser->services().keys();
 }
 
-QString ServicePluginManager::serviceDescription( const QString & serviceName )
+QString
+ServicePluginManager::serviceDescription( const QString & serviceName )
 {
     //get named service
-    if ( !m_serviceBrowser->services().contains( serviceName ) ) {
+    if ( !m_serviceBrowser->services().contains( serviceName ) )
+    {
         return i18n( "No service named %1 is curretly loaded", serviceName );
     }
 
@@ -190,10 +198,12 @@ QString ServicePluginManager::serviceDescription( const QString & serviceName )
     return service->getShortDescription();
 }
 
-QString ServicePluginManager::serviceMessages( const QString & serviceName )
+QString
+ServicePluginManager::serviceMessages( const QString & serviceName )
 {
     //get named service
-    if ( !m_serviceBrowser->services().contains( serviceName ) ) {
+    if ( !m_serviceBrowser->services().contains( serviceName ) )
+    {
         return i18n( "No service named %1 is curretly loaded", serviceName );
     }
 
@@ -205,7 +215,8 @@ QString ServicePluginManager::serviceMessages( const QString & serviceName )
 QString ServicePluginManager::sendMessage( const QString & serviceName, const QString & message )
 {
     //get named service
-    if ( !m_serviceBrowser->services().contains( serviceName ) ) {
+    if ( !m_serviceBrowser->services().contains( serviceName ) )
+    {
         return i18n( "No service named %1 is curretly loaded", serviceName );
     }
 
@@ -214,11 +225,5 @@ QString ServicePluginManager::sendMessage( const QString & serviceName, const QS
     return service->sendMessage( message );
 }
 
-
-
-
 #include "ServicePluginManager.moc"
-
-
-
 

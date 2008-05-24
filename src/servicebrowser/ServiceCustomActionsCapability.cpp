@@ -16,15 +16,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "ServiceCustomActionsCapability.h"
 #include "ServiceMetaBase.h"
 
 ServiceCustomActionsCapability::ServiceCustomActionsCapability(CustomActionsProvider * customActionsProvider)
     : Meta::CustomActionsCapability( )
     , m_customActionsProvider( customActionsProvider )
-    {}
-
+{
+}
 
 ServiceCustomActionsCapability::~ServiceCustomActionsCapability()
 {
@@ -34,6 +34,4 @@ QList< PopupDropperAction * > ServiceCustomActionsCapability::customActions() co
 {
         return m_customActionsProvider->customActions();
 }
-
-
 

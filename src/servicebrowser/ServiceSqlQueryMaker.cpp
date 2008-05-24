@@ -90,7 +90,6 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
     , m_collection( collection )
     , m_registry( registry )
     , m_metaFactory( metaFactory )
-
     , d( new Private )
 {
     //d->includedBuilder = true;
@@ -192,12 +191,10 @@ ServiceSqlQueryMaker::startTrackQuery()
 
         d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
 
-        if ( d->linkedTables & Private::ARTISTS_TABLE ) {
+        if ( d->linkedTables & Private::ARTISTS_TABLE )
+        {
             d->queryOrderBy += " ORDER BY " + prefix + "_tracks.album_id"; //make sure items are added as album groups
         }
-
-
-
     }
     return this;
 }
@@ -261,7 +258,6 @@ ServiceSqlQueryMaker::startGenreQuery()
     DEBUG_BLOCK
     if( d->queryType == Private::NONE )
     {
-
         QString prefix = m_metaFactory->tablePrefix();
         d->queryFrom = ' ' + prefix + "_genre";
         d->queryType = Private::GENRE;
@@ -300,7 +296,6 @@ ServiceSqlQueryMaker::startCustomQuery()
 QueryMaker*
 ServiceSqlQueryMaker::includeCollection( const QString &collectionId )
 {
-
     Q_UNUSED( collectionId );
   /*  if( !d->collectionRestriction )
     {
@@ -326,7 +321,6 @@ QueryMaker*
 ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
 {
     //DEBUG_BLOCK
-
     Q_UNUSED( track );
     //TODO still pondereing this one...
     return this;
@@ -423,28 +417,17 @@ QueryMaker*
 ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     //a few hacks needed by some of the speedup code:
-
-    if ( d->queryType == Private::GENRE ) {
-
+    if ( d->queryType == Private::GENRE )
+    {
         QString prefix = m_metaFactory->tablePrefix();
         d->queryFrom = ' ' + prefix + "_tracks";
         d->linkedTables |= Private::ALBUMS_TABLE;
         d->linkedTables |= Private::ARTISTS_TABLE;
         d->linkedTables |= Private::GENRE_TABLE;
-
     }
-
-
     QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
-
-   /* Q_UNUSED( value );
-    Q_UNUSED( filter );
-    Q_UNUSED( matchBegin );
-    Q_UNUSED( matchEnd );
-    //TODO
-    return this;*/
 }
 
 QueryMaker*
@@ -454,7 +437,6 @@ ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool m
     d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
 }
-
 
 QueryMaker*
 ServiceSqlQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
@@ -475,7 +457,6 @@ ServiceSqlQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMak
     Q_UNUSED( compare )
     return this;
 }
-
 
 QueryMaker*
 ServiceSqlQueryMaker::addReturnValue( qint64 value )
@@ -515,11 +496,9 @@ ServiceSqlQueryMaker::limitMaxResultSize( int size )
     return this;
 }
 
-
 void
 ServiceSqlQueryMaker::linkTables()
 {
-
     if( !d->linkedTables )
         return;
 
@@ -533,13 +512,11 @@ ServiceSqlQueryMaker::linkTables()
        d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
     if( d->linkedTables & Private::GENRE_TABLE )
        d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
-
 }
 
 void
 ServiceSqlQueryMaker::buildQuery()
 {
-
     if( d->albumMode == OnlyCompilations )
         return;
 
@@ -628,7 +605,6 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
 QString
 ServiceSqlQueryMaker::nameForValue(qint64 value)
 {
-
     QString prefix = m_metaFactory->tablePrefix();
 
     switch( value )
@@ -708,7 +684,6 @@ ServiceSqlQueryMaker::handleArtists( const QStringList &result )
     for( int i = 0; i < resultRows; i++ )
     {
         QStringList row = result.mid( i*rowCount, rowCount );
-
         artists.append( m_registry->getArtist( row ) );
     }
     emitProperResult( ArtistPtr, artists );
@@ -817,7 +792,6 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
     }
 }
 
-
 QueryMaker*
 ServiceSqlQueryMaker::beginAnd()
 {
@@ -854,7 +828,8 @@ ServiceSqlQueryMaker::andOr() const
     return d->andStack.top() ? " AND " : " OR ";
 }
 
-QueryMaker * ServiceSqlQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
+QueryMaker *
+ServiceSqlQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
 {
     d->albumMode = mode;
     return this;

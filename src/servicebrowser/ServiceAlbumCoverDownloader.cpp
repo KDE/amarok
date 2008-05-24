@@ -38,7 +38,6 @@ Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QString &name )
 {
 }
 
-
 Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QStringList &resultRow )
     : ServiceAlbum( resultRow )
     , m_hasFetchedCover( false )
@@ -47,14 +46,13 @@ Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QStringList &resultRow
 {
 }
 
-
 Meta::ServiceAlbumWithCover::~ServiceAlbumWithCover()
 {
     delete m_coverDownloader;
 }
 
-
-QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
+QPixmap
+ServiceAlbumWithCover::image(int size, bool withShadow)
 {
     //DEBUG_BLOCK
 
@@ -107,7 +105,8 @@ QPixmap ServiceAlbumWithCover::image(int size, bool withShadow)
     return Album::image( size, withShadow );
 }
 
-void ServiceAlbumWithCover::setImage( const QImage & image )
+void
+ServiceAlbumWithCover::setImage( const QImage & image )
 {
     m_cover = image;
     m_hasFetchedCover = true;
@@ -115,7 +114,8 @@ void ServiceAlbumWithCover::setImage( const QImage & image )
     notifyObservers();
 }
 
-void ServiceAlbumWithCover::imageDownloadCanceled() const
+void
+ServiceAlbumWithCover::imageDownloadCanceled() const
 {
     m_hasFetchedCover = false;
     m_isFetchingCover = false;
@@ -136,7 +136,8 @@ ServiceAlbumCoverDownloader::~ServiceAlbumCoverDownloader()
     delete m_tempDir;
 }
 
-void ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover * album )
+void
+ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover * album )
 {
     m_album = album;
 
@@ -152,29 +153,31 @@ void ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover * album )
     connect( m_albumDownloadJob, SIGNAL( canceled( KJob* ) ), SLOT( coverDownloadCanceled( KJob * ) ) );
 }
 
-void ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
+void
+ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 {
 
     debug() << "cover download complete";
 
-    if ( !downloadJob || !downloadJob->error() == 0 )
+    if( !downloadJob || !downloadJob->error() == 0 )
     {
         debug() << "error detected";
         //we could not download, so inform album
         m_album->imageDownloadCanceled();
 
-        return ;
+        return;
     }
     if ( downloadJob != m_albumDownloadJob )
-        return ; //not the right job, so let's ignore it
+        return; //not the right job, so let's ignore it
 
     QImage cover = QImage( m_coverDownloadPath );
-    if ( cover.isNull() ) {
+    if ( cover.isNull() )
+    {
         debug() << "file not a valid image";
         //the file wasn't an image, so inform album
         m_album->imageDownloadCanceled();
 
-        return ;
+        return;
     }
 
     m_album->setImage( cover );
