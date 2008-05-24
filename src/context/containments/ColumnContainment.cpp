@@ -11,7 +11,7 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "ColumnApplet.h"
+#include "ColumnContainment.h"
 
 #include "ContextScene.h"
 #include "Debug.h"
@@ -53,7 +53,7 @@ void SvgRenderJob::run()
     renderer.render( &painter );
 }
 
-ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
+ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_actions( 0 )
     , m_defaultColumnSize( 350 )
@@ -104,15 +104,15 @@ ColumnApplet::ColumnApplet( QObject *parent, const QVariantList &args )
     m_appletBrowser->setContainment( this );
     m_appletBrowser->hide();
     DEBUG_LINE_INFO
-    
-    debug() << "Creating ColumnApplet, max size:" << maximumSize();
+
+    debug() << "Creating ColumnContainment, max size:" << maximumSize();
 
 connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
     //connect ( Plasma::Theme::self(), SIGNAL( changed() ), this, SLOT( paletteChange() ) );
     connect( KGlobalSettings::self(), SIGNAL(kdisplayPaletteChanged() ), this, SLOT( paletteChange() ) );
 }
 
-void ColumnApplet::saveToConfig( KConfig& conf )
+void ColumnContainment::saveToConfig( KConfig& conf )
 {
 //     debug() << "number of m_columns:" << m_columns->count();
     for( int i = 0; i < m_columns->count(); i++ )
@@ -133,7 +133,7 @@ void ColumnApplet::saveToConfig( KConfig& conf )
     conf.sync();
 }
 
-void ColumnApplet::loadConfig( KConfig& conf )
+void ColumnContainment::loadConfig( KConfig& conf )
 {
     foreach( const QString& group, conf.groupList() )
     {
@@ -147,17 +147,17 @@ void ColumnApplet::loadConfig( KConfig& conf )
     recalculate();
 }
 
-QSizeF ColumnApplet::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
+QSizeF ColumnContainment::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {
     return geometry().size();
 }
 
-QRectF ColumnApplet::boundingRect() const
+QRectF ColumnContainment::boundingRect() const
 {
     return geometry();
 }
 // call this when the view changes size: e.g. layout needs to be recalculated
-void ColumnApplet::updateSize() // SLOT
+void ColumnContainment::updateSize() // SLOT
 {
     // HACK HACK HACK i don't know where maximumSize is being set, but SOMETHING is setting it,
     // and is preventing the containment from expanding when it should.
@@ -165,10 +165,10 @@ void ColumnApplet::updateSize() // SLOT
     setMaximumSize( QSizeF( 100000, 100000 ) );
     m_columns->setGeometry( scene()->sceneRect() );
     setGeometry( scene()->sceneRect() );
-    //debug() << "ColumnApplet updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
+    //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
-void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect )
+void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect )
 {
     Q_UNUSED( option );
     painter->save();
@@ -180,10 +180,10 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     int offsetY = MainWindow::self()->contextRectGlobal().topLeft().y();
 
     //debug() << "offset: " << offsetX << " x " << offsetY;
-    
+
     painter->drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( "Context", offsetX, offsetY, 0, 0, width, height ) );
 */
-    
+
     QRectF bounds = The::svgHandler()->getRenderer()->boundsOnElement ( "amarok_logo" );
     double aspectRatio = bounds.width() / bounds.height();
 
@@ -203,16 +203,16 @@ void ColumnApplet::paintInterface(QPainter *painter, const QStyleOptionGraphicsI
     painter->restore();*/
 }
 
-Plasma::Applet* ColumnApplet::addApplet( Applet* applet, const QPointF & )
+Plasma::Applet* ColumnContainment::addApplet( Applet* applet, const QPointF & )
 {
 //     debug() << "m_columns:" << m_columns;
     m_columns->addItem( applet );
-    
+
     recalculate();
     return applet;
 }
 
-void ColumnApplet::recalculate()
+void ColumnContainment::recalculate()
 {
     DEBUG_BLOCK
     debug() << "got child item that wants a recalculation";
@@ -220,12 +220,12 @@ void ColumnApplet::recalculate()
 //    m_columns->relayout();
 }
 
-QList<QAction*> ColumnApplet::contextualActions()
+QList<QAction*> ColumnContainment::contextualActions()
 {
     return *m_actions;
 }
 
-void ColumnApplet::launchAppletBrowser() // SLOT
+void ColumnContainment::launchAppletBrowser() // SLOT
 {
     m_appletBrowser->show();
     if ( !m_appletBrowserHasBeenKicked ) {
@@ -235,7 +235,7 @@ void ColumnApplet::launchAppletBrowser() // SLOT
 }
 
 /*
-bool ColumnApplet::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
+bool ColumnContainment::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
 {
     Applet *applet = qgraphicsitem_cast<Applet*>(watched);
     //QEvent::GraphicsSceneHoverEnter
@@ -246,7 +246,7 @@ bool ColumnApplet::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
     return false;
 }*/
 
-void ColumnApplet::jobDone()
+void ColumnContainment::jobDone()
 {
     m_masterImage = m_job->m_image;
     m_job->deleteLater();
@@ -255,14 +255,14 @@ void ColumnApplet::jobDone()
 }
 
 
-void ColumnApplet::paletteChange()
+void ColumnContainment::paletteChange()
 {
     The::svgHandler()->reTint();
     update( boundingRect() );
 }
 
-void 
-ColumnApplet::appletRemoved( Plasma::Applet* applet )
+void
+ColumnContainment::appletRemoved( Plasma::Applet* applet )
 {
     DEBUG_BLOCK
     QGraphicsLayoutItem* item = dynamic_cast< QGraphicsLayoutItem* >( applet );
@@ -270,7 +270,7 @@ ColumnApplet::appletRemoved( Plasma::Applet* applet )
         m_columns->removeItem( item );
     else
         debug() << "GOT NON-QGraphicsLayoutItem in APPLETREMOVED";
-    
+
 }
 
 
@@ -278,4 +278,4 @@ ColumnApplet::appletRemoved( Plasma::Applet* applet )
 
 
 
-#include "ColumnApplet.moc"
+#include "ColumnContainment.moc"

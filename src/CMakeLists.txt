@@ -255,7 +255,6 @@ set( libcontextview_SRCS
     context/CoverBling.cpp
     context/DataEngineManager.cpp
     context/LyricsManager.cpp
-    context/containments/ColumnApplet.cpp
     context/layouts/ContextLayout.cpp
     context/layouts/VerticalLayout.cpp
 )

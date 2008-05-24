@@ -41,12 +41,12 @@ namespace Context
 {
     class SvgRenderJob;
 
-class /*AMAROK_EXPORT*/ ColumnApplet : public Containment
+class /*AMAROK_EXPORT*/ ColumnContainment : public Containment
 {
     Q_OBJECT
 public:
-    ColumnApplet( QObject *parent, const QVariantList &args );
-    ~ColumnApplet() {}
+    ColumnContainment( QObject *parent, const QVariantList &args );
+    ~ColumnContainment() {}
 
     virtual QRectF boundingRect() const;
 
@@ -108,7 +108,7 @@ private:
     //KSvgRenderer * m_renderer;
 };
 
-K_EXPORT_AMAROK_APPLET( context, ColumnApplet )
+K_EXPORT_AMAROK_APPLET( context, ColumnContainment )
 
 
 class SvgRenderJob : public ThreadWeaver::Job
