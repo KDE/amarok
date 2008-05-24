@@ -1,10 +1,7 @@
-
 include_directories( ../../..
                     ../../../context
                     ../../../servicebrowser
                     ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
-                    ${KDE4_INCLUDE_DIR}
-                    ${QT_INCLUDES}
 )
 
 set( cloud_engine_SRCS

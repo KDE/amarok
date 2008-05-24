@@ -1,10 +1,7 @@
-
 include_directories( ../../..
                      ../../../context
                      ../../../meta
                      ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
-                     ${KDE4_INCLUDE_DIR}
-                     ${QT_INCLUDES}
 )
 
 set( lastfm_engine_SRCS

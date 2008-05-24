@@ -25,7 +25,8 @@
 namespace Context
 {
 
-class AMAROK_EXPORT Applet : public Plasma::Applet {
+class AMAROK_EXPORT Applet : public Plasma::Applet
+{
 
     public:
 

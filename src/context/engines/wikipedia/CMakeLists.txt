@@ -1,9 +1,6 @@
-
 include_directories( ../../..
                      ../../../context
                      ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
-                     ${KDE4_INCLUDE_DIR}
-                     ${QT_INCLUDES}
 )
 
 set( wikipedia_engine_SRCS
