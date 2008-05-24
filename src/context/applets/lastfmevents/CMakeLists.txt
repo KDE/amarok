@@ -1,17 +1,14 @@
 project(context-lastfm)
 
-set(lastfmevents_SRCS
-LastFmEvents.cpp
- ../../Applet.cpp )
+set( lastfmevents_SRCS LastFmEvents.cpp )
 
 include_directories( ../..
-                    ../../..
-                    ${KDE4_INCLUDE_DIR}/amarok ) # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
+                    ../../.. )
 
 kde4_add_plugin(amarok_context_applet_lastfmevents ${lastfmevents_SRCS})
 
 if(APPLE)
-	SET_TARGET_PROPERTIES(amarok_context_applet_lastfmevents PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+   SET_TARGET_PROPERTIES(amarok_context_applet_lastfmevents PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
 target_link_libraries(amarok_context_applet_lastfmevents amaroklib ${KDE4_KIO_LIBS})

@@ -1,16 +1,13 @@
 project(context-cloud)
 
-set(cloud_SRCS
-Cloud.cpp
-../../Applet.cpp )
+set(cloud_SRCS Cloud.cpp )
 
-include_directories( ../../..
-                    ../..
-                    ${KDE4_INCLUDE_DIR}/amarok ) # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
+include_directories( ../..
+                     ../../.. )
 
 kde4_add_plugin(amarok_context_applet_cloud ${cloud_SRCS})
 if(APPLE)
-	SET_TARGET_PROPERTIES(amarok_context_applet_cloud PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+   SET_TARGET_PROPERTIES(amarok_context_applet_cloud PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 target_link_libraries(amarok_context_applet_cloud amaroklib ${QT_QTWEBKIT_LIBRARY} ${KDE4_KIO_LIBS})
 

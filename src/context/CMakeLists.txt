@@ -108,7 +108,7 @@ if(QT_QTOPENGL_FOUND AND OPENGL_FOUND)
 endif(QT_QTOPENGL_FOUND AND OPENGL_FOUND)
 
 if(APPLE)
-	SET_TARGET_PROPERTIES(amarokplasma PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+   SET_TARGET_PROPERTIES(amarokplasma PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
 add_definitions(-DMAKE_PLASMA_LIB)
