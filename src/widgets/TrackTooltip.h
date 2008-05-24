@@ -38,9 +38,9 @@ class TrackToolTip : public QWidget, public Meta::Observer
     void show( const QPoint &bottomRight );
 
     //Reimplemented from Meta::Observer
-    virtual void metaDataChanged( Meta::Track *track ) { ; } //TODO: IMPLEMENT
-    virtual void metaDataChanged( Meta::Album *album ) { ; } //TODO: Implement
-    virtual void metaDataChanged( Meta::Artist *artist ) { ; } //TODO: Implement
+    virtual void metadataChanged( Meta::Track *track );
+    virtual void metadataChanged( Meta::Album *album );
+    virtual void metadataChanged( Meta::Artist *artist );
 
     private:
     QString tooltip() const;

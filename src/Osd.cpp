@@ -108,6 +108,8 @@ OSDWidget::show( const QString &text, QImage newImage )
     m_text = text;
     if( !isVisible() )
         show();
+
+    update(); // needed if e.g. cover image changed
 }
 
 void
@@ -582,18 +584,22 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
 //////  Amarok::OSD below /////////////////////
 
-Amarok::OSD::OSD(): OSDWidget( 0 )
+Amarok::OSD::OSD(): OSDWidget( 0 ), m_track( 0 )
 {
-    //PORT 2.0
-//     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
-//              this,                   SLOT( slotCoverChanged( const QString&, const QString& ) ) );
-//     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
-//              this,                   SLOT( slotImageChanged( const QString& ) ) );
 }
 
 void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
+    if( m_track && m_track->artist() )
+        m_track->artist()->unsubscribe( this );
+    if( m_track && m_track->album() )
+        m_track->album()->unsubscribe( this );
+    if( m_track )
+        m_track->unsubscribe( this );
+
+    m_track = track;
+
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setOffset( AmarokConfig::osdYOffset() );
     QString text = "";
@@ -622,7 +628,13 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
 
     QImage image;
     if( track && track->album() )
-        image = track->album()->image().toImage();
+        image = track->album()->image( 100 ).toImage();
+
+    m_track->subscribe( this );
+    if( m_track->artist() )
+        m_track->artist()->subscribe( this );
+    if( m_track->album() )
+        m_track->album()->subscribe( this );
 
     OSDWidget::show( text, image );
 }
@@ -702,6 +714,21 @@ Amarok::OSD::slotImageChanged( const QString &remoteURL )
 #endif
 }
 
+
+void Amarok::OSD::metadataChanged( Meta::Track *track )
+{
+    show( The::engineController()->currentTrack() );
+}
+
+void Amarok::OSD::metadataChanged( Meta::Album *album )
+{
+    show( The::engineController()->currentTrack() );
+}
+
+void Amarok::OSD::metadataChanged( Meta::Artist *artist )
+{
+    show( The::engineController()->currentTrack() );
+}
 
 /* Code copied from kshadowengine.cpp
  *

@@ -157,7 +157,7 @@ private:
 
 namespace Amarok
 {
-    class OSD : public OSDWidget
+    class OSD : public OSDWidget, public Meta::Observer
     {
         Q_OBJECT
 
@@ -171,6 +171,11 @@ namespace Amarok
         void applySettings();
         virtual void show( Meta::TrackPtr track );
 
+        //Reimplemented from Meta::Observer
+        virtual void metadataChanged( Meta::Track *track );
+        virtual void metadataChanged( Meta::Album *album );
+        virtual void metadataChanged( Meta::Artist *artist );
+
     public slots:
         /**
          * When user pushs global shortcut or uses DCOP OSD is toggle
@@ -180,6 +185,8 @@ namespace Amarok
 
     private:
         OSD();
+
+        Meta::TrackPtr m_track;
 
     private slots:
         void slotCoverChanged( const QString &artist, const QString &album );

@@ -24,6 +24,8 @@
 #include "Debug.h"
 #include "meta/MetaUtility.h"
 #include "moodbar.h"
+#include "EngineController.h"
+#include "TheInstances.h"
 
 #include <KCalendarSystem>
 #include <KStandardDirs>
@@ -49,13 +51,13 @@ TrackToolTip::TrackToolTip()
     setWindowFlags( Qt::ToolTip );
 //     setWindowOpacity( 0.6 ); // This doesn't work that well, the background should be transparent without the foreground, probably.
     QGridLayout *l = new QGridLayout;
-    m_imageLabel = new QLabel( this );
-    l->addWidget( m_imageLabel, 0, 0, 0, 2  );
     m_titleLabel = new QLabel( this );
     QFont f;
     f.setBold( true );
     m_titleLabel->setFont( f );
-    l->addWidget( m_titleLabel, 0, 1 );
+    l->addWidget( m_titleLabel, 0, 0, 1, 2 );
+    m_imageLabel = new QLabel( this );
+    l->addWidget( m_imageLabel, 1, 0 );
 
     m_otherInfoLabel = new QLabel( this );
     l->addWidget( m_otherInfoLabel, 1, 1 );
@@ -133,7 +135,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
         left << i18n( "Last Played" );
 
         right << m_track->prettyName();
-        left << i18n("Track: ");
+        left << i18n("Track");
 
         const QString length = Meta::secToPrettyTime( m_track->length() );
         if( !length.isEmpty() )
@@ -153,7 +155,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
         m_tooltip += "<center><b>Amarok</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
 
         if( m_track->album() )
-            m_image = m_track->album()->image().scaled( 100, 100);
+            m_image = m_track->album()->image( 100 );
 
         m_tooltip += "<td><table cellpadding='0' cellspacing='0'>";
 
@@ -218,6 +220,21 @@ void TrackToolTip::updateWidgets()
         m_imageLabel->setPixmap( m_image );
     m_titleLabel->setText( m_title );
     m_otherInfoLabel->setText( tooltip() );
+}
+
+void TrackToolTip::metadataChanged( Meta::Track * /*track*/ )
+{
+    setTrack( The::engineController()->currentTrack(), true );
+}
+
+void TrackToolTip::metadataChanged( Meta::Album * /*album*/ )
+{
+    setTrack( The::engineController()->currentTrack(), true );
+}
+
+void TrackToolTip::metadataChanged( Meta::Artist * /*artist*/ )
+{
+    setTrack( The::engineController()->currentTrack(), true );
 }
 
 #include "TrackTooltip.moc"
