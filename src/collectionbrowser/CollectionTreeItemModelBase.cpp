@@ -211,7 +211,7 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
             break;
 
         case CategoryId::Genre :
-            icon = "kfm";
+            icon = "favorite-genres-amarok";
             break;
 
         case CategoryId::Year :
