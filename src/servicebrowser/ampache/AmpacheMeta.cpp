@@ -62,3 +62,4 @@ QList< PopupDropperAction * > Meta::AmpacheTrack::currentTrackActions()
     return actions;
 
 }
+

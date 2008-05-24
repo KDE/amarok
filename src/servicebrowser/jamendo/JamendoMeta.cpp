@@ -17,8 +17,6 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-
-
 #include "JamendoMeta.h"
 
 #include "JamendoService.h"
@@ -43,12 +41,14 @@ TrackPtr JamendoMetaFactory::createTrack( const QStringList & rows )
     return TrackPtr( track );
 }
 
-int JamendoMetaFactory::getAlbumSqlRowCount()
+int
+JamendoMetaFactory::getAlbumSqlRowCount()
 {
     return ServiceMetaFactory::getAlbumSqlRowCount() + 6;
 }
 
-QString JamendoMetaFactory::getAlbumSqlRows()
+QString
+JamendoMetaFactory::getAlbumSqlRows()
 {
     QString sqlRows = ServiceMetaFactory::getAlbumSqlRows();
 
@@ -63,19 +63,22 @@ QString JamendoMetaFactory::getAlbumSqlRows()
     return sqlRows;
 }
 
-AlbumPtr JamendoMetaFactory::createAlbum( const QStringList & rows )
+AlbumPtr
+JamendoMetaFactory::createAlbum( const QStringList & rows )
 {
     JamendoAlbum * album = new JamendoAlbum( rows );
     album->setService( m_service );
     return AlbumPtr( album );
 }
 
-int JamendoMetaFactory::getArtistSqlRowCount()
+int
+JamendoMetaFactory::getArtistSqlRowCount()
 {
     return ServiceMetaFactory::getArtistSqlRowCount() + 4;
 }
 
-QString JamendoMetaFactory::getArtistSqlRows()
+QString
+JamendoMetaFactory::getArtistSqlRows()
 {
     QString sqlRows = ServiceMetaFactory::getArtistSqlRows();
 
@@ -88,17 +91,17 @@ QString JamendoMetaFactory::getArtistSqlRows()
     return sqlRows;
 }
 
-ArtistPtr JamendoMetaFactory::createArtist( const QStringList & rows )
+ArtistPtr
+JamendoMetaFactory::createArtist( const QStringList & rows )
 {
     return ArtistPtr( new JamendoArtist( rows ) );
 }
 
-
-GenrePtr JamendoMetaFactory::createGenre( const QStringList & rows )
+GenrePtr
+JamendoMetaFactory::createGenre( const QStringList & rows )
 {
     return GenrePtr( new JamendoGenre( rows ) );
 }
-
 
 //// JamendoTrack ////
 
@@ -120,12 +123,14 @@ JamendoTrack::JamendoTrack( const QStringList & resultRow )
 {
 }
 
-QList< PopupDropperAction * > Meta::JamendoTrack::customActions()
+QList< PopupDropperAction * >
+Meta::JamendoTrack::customActions()
 {
     DEBUG_BLOCK
-            QList< PopupDropperAction * > actions;
+    QList< PopupDropperAction * > actions;
 
-    if ( !m_downloadCustomAction ) {
+    if ( !m_downloadCustomAction )
+    {
         m_downloadCustomAction = new PopupDropperAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
         QObject::connect( m_downloadCustomAction, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
@@ -135,50 +140,50 @@ QList< PopupDropperAction * > Meta::JamendoTrack::customActions()
     return actions;
 }
 
-QList< PopupDropperAction * > Meta::JamendoTrack::currentTrackActions()
+QList< PopupDropperAction * >
+Meta::JamendoTrack::currentTrackActions()
 {
     DEBUG_BLOCK
-            QList< PopupDropperAction * > actions;
+    QList< PopupDropperAction * > actions;
 
-    if ( !m_downloadCurrentTrackAction ) {
+    if ( !m_downloadCurrentTrackAction )
+    {
         m_downloadCurrentTrackAction = new PopupDropperAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
         QObject::connect( m_downloadCurrentTrackAction, SIGNAL( activated() ), jAlbum->service(), SLOT( downloadCurrentTrackAlbum() ) );
     }
 
-    if ( !m_showInServiceAction ) {
-
+    if ( !m_showInServiceAction )
         m_showInServiceAction = new ShowInServiceAction( m_service, this );
-    }
 
     actions.append( m_downloadCurrentTrackAction );
     actions.append( m_showInServiceAction );
     return actions;
 }
 
-
-
-QString Meta::JamendoTrack::sourceName()
+QString
+Meta::JamendoTrack::sourceName()
 {
     return "Jamendo.com";
 }
 
-QString Meta::JamendoTrack::sourceDescription()
+QString
+Meta::JamendoTrack::sourceDescription()
 {
     return "A site where artists can freely share their music";
 }
 
-QPixmap Meta::JamendoTrack::emblem()
+QPixmap
+Meta::JamendoTrack::emblem()
 {
     return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-jamendo.png" ) );
 }
 
-void Meta::JamendoTrack::setService(JamendoService * service)
+void
+Meta::JamendoTrack::setService(JamendoService * service)
 {
     m_service = service;
 }
-
-
 
 //// JamendoArtist ////
 
@@ -194,53 +199,56 @@ JamendoArtist::JamendoArtist( const QStringList & resultRow )
     m_photoURL = resultRow[4];
     m_jamendoURL = resultRow[5];
     m_homeURL = resultRow[6];
-
 }
 
-void JamendoArtist::setCountry( const QString & country )
+void
+JamendoArtist::setCountry( const QString & country )
 {
     m_country = country;
 }
 
-QString JamendoArtist::country() const
+QString
+JamendoArtist::country() const
 {
     return m_country;
 }
 
 
-void JamendoArtist::setPhotoURL( const QString &photoURL )
+void
+JamendoArtist::setPhotoURL( const QString &photoURL )
 {
     m_photoURL = photoURL;
 }
 
-QString JamendoArtist::photoURL( ) const
+QString
+JamendoArtist::photoURL( ) const
 {
     return m_photoURL;
 }
 
-void JamendoArtist::setHomeURL( const QString &homeURL )
+void
+JamendoArtist::setHomeURL( const QString &homeURL )
 {
     m_homeURL = homeURL;
 }
 
-QString JamendoArtist::homeURL( ) const
+QString
+JamendoArtist::homeURL( ) const
 {
     return m_homeURL;
 }
 
-void JamendoArtist::setJamendoURL( const QString & jamendoURL )
+void
+JamendoArtist::setJamendoURL( const QString & jamendoURL )
 {
     m_jamendoURL = jamendoURL;
 }
 
-QString JamendoArtist::jamendoURL() const
+QString
+JamendoArtist::jamendoURL() const
 {
     return m_jamendoURL;
 }
-
-
-
-
 
 
 //// JamendoAlbum ////
@@ -253,7 +261,6 @@ JamendoAlbum::JamendoAlbum( const QString &name )
 JamendoAlbum::JamendoAlbum( const QStringList & resultRow )
     : ServiceAlbumWithCover( resultRow )
 {
-
     m_popularity = resultRow[4].toFloat();
     m_coverURL = resultRow[5];
     m_launchYear = resultRow[6].toInt();
@@ -262,80 +269,92 @@ JamendoAlbum::JamendoAlbum( const QStringList & resultRow )
     m_oggTorrentUrl = resultRow[9];
 }
 
-void JamendoAlbum::setCoverUrl( const QString &coverURL )
+void
+JamendoAlbum::setCoverUrl( const QString &coverURL )
 {
     m_coverURL = coverURL;
 }
 
-QString JamendoAlbum::coverUrl( ) const
+QString
+JamendoAlbum::coverUrl( ) const
 {
     return m_coverURL;
 }
 
-void JamendoAlbum::setLaunchYear( int launchYear )
+void
+JamendoAlbum::setLaunchYear( int launchYear )
 {
     m_launchYear = launchYear;
 }
 
-int JamendoAlbum::launchYear( ) const
+int
+JamendoAlbum::launchYear( ) const
 {
     return m_launchYear;
 }
 
-void JamendoAlbum::setGenre( const QString&genre )
+void
+JamendoAlbum::setGenre( const QString&genre )
 {
     m_genre = genre;
 }
 
-QString JamendoAlbum::genre( ) const
+QString
+JamendoAlbum::genre( ) const
 {
     return m_genre;
 }
 
-
-void JamendoAlbum::setPopularity( float popularity )
+void
+JamendoAlbum::setPopularity( float popularity )
 {
     m_popularity = popularity;
 }
 
-float JamendoAlbum::popularity() const
+float
+JamendoAlbum::popularity() const
 {
     return m_popularity;
 }
 
-void JamendoAlbum::setMp3TorrentUrl( const QString &url )
+void
+JamendoAlbum::setMp3TorrentUrl( const QString &url )
 {
     m_mp3TorrentUrl = url;
 }
 
-QString JamendoAlbum::mp3TorrentUrl()
+QString
+JamendoAlbum::mp3TorrentUrl()
 {
     return m_mp3TorrentUrl;
 }
 
-void JamendoAlbum::setOggTorrentUrl( const QString &url )
+void
+JamendoAlbum::setOggTorrentUrl( const QString &url )
 {
    m_oggTorrentUrl = url;
 }
 
-QString JamendoAlbum::oggTorrentUrl()
+QString
+JamendoAlbum::oggTorrentUrl()
 {
     return m_oggTorrentUrl;
 }
 
-void Meta::JamendoAlbum::setService( JamendoService * service )
+void
+Meta::JamendoAlbum::setService( JamendoService * service )
 {
     m_service = service;
 }
 
-JamendoService * Meta::JamendoAlbum::service()
+JamendoService *
+Meta::JamendoAlbum::service()
 {
     return m_service;
 }
 
-
-
-QList< PopupDropperAction * > Meta::JamendoAlbum::customActions()
+QList< PopupDropperAction * >
+Meta::JamendoAlbum::customActions()
 {
     DEBUG_BLOCK
     QList< PopupDropperAction * > actions;
@@ -348,8 +367,6 @@ QList< PopupDropperAction * > Meta::JamendoAlbum::customActions()
 }
 
 
-
-
 JamendoGenre::JamendoGenre( const QString & name )
     : ServiceGenre( name )
 {
@@ -359,11 +376,4 @@ JamendoGenre::JamendoGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {
 }
-
-
-
-
-
-
-
 

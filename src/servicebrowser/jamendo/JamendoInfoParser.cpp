@@ -31,16 +31,17 @@ JamendoInfoParser::JamendoInfoParser()
 {
 }
 
-
 JamendoInfoParser::~JamendoInfoParser()
 {
 }
 
-void JamendoInfoParser::getInfo(ArtistPtr artist)
+void
+JamendoInfoParser::getInfo(ArtistPtr artist)
 {
     DEBUG_BLOCK
     JamendoArtist * jamendoArtist = dynamic_cast<JamendoArtist *> ( artist.data() );
-    if ( jamendoArtist == 0) return;
+    if ( jamendoArtist == 0)
+        return;
 
     QString description = jamendoArtist->description();
 
@@ -66,7 +67,8 @@ void JamendoInfoParser::getInfo(ArtistPtr artist)
     emit( info( infoHtml ) );
 }
 
-void JamendoInfoParser::getInfo(AlbumPtr album)
+void
+JamendoInfoParser::getInfo(AlbumPtr album)
 {
     DEBUG_BLOCK
     JamendoAlbum * jamendoAlbum = dynamic_cast<JamendoAlbum *> ( album.data() );
@@ -97,7 +99,8 @@ void JamendoInfoParser::getInfo(AlbumPtr album)
     emit( info( infoHtml ) );
 }
 
-void JamendoInfoParser::getInfo(TrackPtr track)
+void
+JamendoInfoParser::getInfo(TrackPtr track)
 {
     DEBUG_BLOCK
     JamendoTrack * jamendoTrack = dynamic_cast<JamendoTrack *> ( track.data() );
@@ -117,3 +120,4 @@ void JamendoInfoParser::getInfo(TrackPtr track)
 }
 
 #include "JamendoInfoParser.moc"
+

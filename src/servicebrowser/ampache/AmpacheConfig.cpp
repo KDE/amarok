@@ -29,16 +29,16 @@ AmpacheConfig::AmpacheConfig()
     load();
 }
 
-void AmpacheConfig::load()
+void
+AmpacheConfig::load()
 {
     KConfigGroup config = KGlobal::config()->group( "Service_Ampache" );
-
 
     int serverIndex = 0;
     QString serverEntry = "server" + QString::number( serverIndex );
 
-    while ( config.hasKey ( serverEntry ) ) {
-
+    while ( config.hasKey( serverEntry ) )
+    {
         QStringList list = config.readEntry(serverEntry, QStringList() );
 
         AmpacheServerEntry entry;
@@ -52,35 +52,30 @@ void AmpacheConfig::load()
 
         serverIndex++;
         serverEntry = "server" + QString::number( serverIndex );
-
     }
-
 }
 
-void AmpacheConfig::save()
+void
+AmpacheConfig::save()
 {
-
-
     //delete all entries to make sure the indexes are correct
     KConfigGroup config = KGlobal::config()->group( "Service_Ampache" );
-    
-    kDebug( 14310 ) << "saving to config file " << KGlobal::config()->name() ;
 
+    kDebug( 14310 ) << "saving to config file " << KGlobal::config()->name() ;
 
     int serverIndex = 0;
     QString serverEntry = "server" + QString::number( serverIndex );
 
-    while ( config.hasKey ( serverEntry ) ) {
-
+    while ( config.hasKey ( serverEntry ) )
+    {
         kDebug( 14310 ) << "deleting " << serverEntry;
         config.deleteEntry( serverEntry );
         serverIndex++;
         serverEntry = "server" + QString::number( serverIndex );
     }
 
-
-    for( int i = 0; i < m_servers.size(); i++ ) {
-
+    for( int i = 0; i < m_servers.size(); i++ )
+    {
         AmpacheServerEntry entry = m_servers.at( i );
         QStringList list;
 
@@ -92,37 +87,37 @@ void AmpacheConfig::save()
         serverEntry = "server" + QString::number( i );
         kDebug( 14310 ) << "adding " << serverEntry;
         config.writeEntry( serverEntry, list );
-
     }
-
-
 }
 
-int AmpacheConfig::serverCount()
+int
+AmpacheConfig::serverCount()
 {
     return m_servers.size();
 }
 
-AmpacheServerList AmpacheConfig::servers()
+AmpacheServerList
+AmpacheConfig::servers()
 {
     return m_servers;
 }
 
-void AmpacheConfig::addServer( const AmpacheServerEntry &server )
+void
+AmpacheConfig::addServer( const AmpacheServerEntry &server )
 {
     m_servers.append( server );
 }
 
-void AmpacheConfig::removeServer( int index )
+void
+AmpacheConfig::removeServer( int index )
 {
     m_servers.removeAt( index );
-
 }
 
-void AmpacheConfig::updateServer( int index, const AmpacheServerEntry & server )
+void
+AmpacheConfig::updateServer( int index, const AmpacheServerEntry & server )
 {
     m_servers.removeAt( index );
     m_servers.insert( index, server );
 }
-
 

@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "AmpacheSettings.h"
 
 #include "ui_AmpacheConfigWidget.h"
@@ -33,7 +33,6 @@ K_EXPORT_PLUGIN( AmpacheSettingsFactory( "kcm_amarok_ampache" ) )
 AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
     : KCModule( AmpacheSettingsFactory::componentData(), parent, args )
 {
-
     kDebug( 14310 ) << "Creating Ampache config object";
 
     QVBoxLayout* l = new QVBoxLayout( this );
@@ -41,7 +40,6 @@ AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
     m_configDialog = new Ui::AmpacheConfigWidget;
     m_configDialog->setupUi( w );
     l->addWidget( w );
-
 
     connect ( m_configDialog->addButton, SIGNAL( clicked() ), this, SLOT( add() ) );
     connect ( m_configDialog->removeButton, SIGNAL( clicked() ), this, SLOT( remove() ) );
@@ -56,82 +54,75 @@ AmpacheSettings::~AmpacheSettings()
 }
 
 
-void AmpacheSettings::save()
+void
+AmpacheSettings::save()
 {
-
     kDebug( 14310 ) << "save";
-
     m_config.save();
-    
     KCModule::save();
 }
 
-void AmpacheSettings::load()
+void
+AmpacheSettings::load()
 {
-
     kDebug( 14310 ) << "load";
-
-    for( int i = 0; i < m_config.servers().size(); i++ ) {
+    for( int i = 0; i < m_config.servers().size(); i++ )
+    {
         if( !m_configDialog->serverList->findItems( m_config.servers().at( i ).name, Qt::MatchFixedString | Qt::MatchCaseSensitive ).count() )
             m_configDialog->serverList->addItem( m_config.servers().at( i ).name );
     }
-    
     KCModule::load();
 }
 
-void AmpacheSettings::defaults()
+void
+AmpacheSettings::defaults()
 {
     kDebug( 14310 ) << "defaults";
 }
 
-
-void AmpacheSettings::add()
+void
+AmpacheSettings::add()
 {
     kDebug( 14310 ) << "add";
-    
-    
 
     AmpacheServerEntry server;
-
     server.name = m_configDialog->nameEdit->text();
     server.url = m_configDialog->serverEdit->text();
     server.username = m_configDialog->userEdit->text();
     server.password = m_configDialog->passEdit->text();
 
     m_configDialog->serverList->addItem( server.name );
-
     m_config.addServer( server );
-
     emit changed( true );
 }
 
-void AmpacheSettings::selectedItemChanged( const QString & name )
+void
+AmpacheSettings::selectedItemChanged( const QString & name )
 {
     kDebug( 14310 ) << "Selection changed to " << name;
 
-    if ( !name.isEmpty() ) {
-
+    if ( !name.isEmpty() )
+    {
         int index = m_configDialog->serverList->currentRow();
         kDebug( 14310 ) << "what index number did I find? " << index;
         AmpacheServerEntry server = m_config.servers().at( index );
-    
+
         m_configDialog->nameEdit->setText( server.name );
         m_configDialog->serverEdit->setText( server.url );
         m_configDialog->userEdit->setText( server.username );
         m_configDialog->passEdit->setText( server.password );
-
         m_configDialog->removeButton->setEnabled( true );
-
-    } else {
+    }
+    else
+    {
         m_configDialog->removeButton->setEnabled( false );
     }
-
 }
 
-void AmpacheSettings::remove()
+void
+AmpacheSettings::remove()
 {
     int index = m_configDialog->serverList->currentRow();
-    
     m_configDialog->serverList->takeItem( index );
     m_config.removeServer( index );
     m_configDialog->nameEdit->setText( QString() );
@@ -140,10 +131,10 @@ void AmpacheSettings::remove()
     m_configDialog->passEdit->setText( QString() );
 
     emit changed( true );
-    
 }
 
-void AmpacheSettings::modify()
+void
+AmpacheSettings::modify()
 {
     int index = m_configDialog->serverList->currentRow();
 
@@ -152,13 +143,9 @@ void AmpacheSettings::modify()
     server.url = m_configDialog->serverEdit->text();
     server.username = m_configDialog->userEdit->text();
     server.password = m_configDialog->passEdit->text();
-
     m_config.updateServer( index, server );
-
     m_configDialog->serverList->takeItem( index );
     m_configDialog->serverList->insertItem( index, server.name );
-
-
 
     emit changed( true );
 }

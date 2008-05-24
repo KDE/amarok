@@ -39,33 +39,36 @@ AmpacheServiceCollection::AmpacheServiceCollection( ServiceBase * service, const
     m_urlArtistId = 0;
 }
 
-
 AmpacheServiceCollection::~AmpacheServiceCollection()
 {
 }
 
-QueryMaker * AmpacheServiceCollection::queryMaker()
+QueryMaker *
+AmpacheServiceCollection::queryMaker()
 {
     return new AmpacheServiceQueryMaker( this, m_server, m_sessionId );
 }
 
-QString AmpacheServiceCollection::collectionId() const
+QString
+AmpacheServiceCollection::collectionId() const
 {
     return "Ampache: " + m_server;
 }
 
-QString AmpacheServiceCollection::prettyName() const
+QString
+AmpacheServiceCollection::prettyName() const
 {
     return i18n( "Ampache Server %1", m_server );
 }
 
-
-bool AmpacheServiceCollection::possiblyContainsTrack(const KUrl & url) const
+bool
+AmpacheServiceCollection::possiblyContainsTrack(const KUrl & url) const
 {
     return url.url().contains( m_server );
 }
 
-Meta::TrackPtr AmpacheServiceCollection::trackForUrl( const KUrl & url )
+Meta::TrackPtr
+AmpacheServiceCollection::trackForUrl( const KUrl & url )
 {
 //     DEBUG_BLOCK;
 
@@ -85,7 +88,8 @@ Meta::TrackPtr AmpacheServiceCollection::trackForUrl( const KUrl & url )
 //     debug() << "request url: " << requestUrl;
 
     m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo );
-    if ( !m_storedTransferJob->exec() ) {
+    if ( !m_storedTransferJob->exec() )
+    {
       return TrackPtr();
     }
 
@@ -93,8 +97,6 @@ Meta::TrackPtr AmpacheServiceCollection::trackForUrl( const KUrl & url )
     m_storedTransferJob->deleteLater();
 
     return TrackPtr( m_urlTrack );
-
-
 }
 
 void AmpacheServiceCollection::parseTrack( const QString &xml )
@@ -149,6 +151,5 @@ void AmpacheServiceCollection::parseTrack( const QString &xml )
     ArtistPtr artistPtr( artist );
     m_urlTrack->setArtist( artistPtr );
     album->setAlbumArtist( artistPtr );
-
-
 }
+

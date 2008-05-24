@@ -34,34 +34,33 @@
 
 using namespace Meta;
 
-struct AmpacheServiceQueryMaker::Private {
+struct AmpacheServiceQueryMaker::Private
+{
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     QueryType type;
     int maxsize;
     bool returnDataPtrs;
 };
 
-
 AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QString &server, const QString &sessionId  )
- : DynamicServiceQueryMaker()
- , m_storedTransferJob( 0 )
- , d( new Private )
- , m_server( server )
- , m_sessionId( sessionId )
-
+    : DynamicServiceQueryMaker()
+    , m_storedTransferJob( 0 )
+    , d( new Private )
+    , m_server( server )
+    , m_sessionId( sessionId )
 {
     DEBUG_BLOCK
     m_collection = collection;
     reset();
 }
 
-
 AmpacheServiceQueryMaker::~AmpacheServiceQueryMaker()
 {
     delete d;
 }
 
-QueryMaker * AmpacheServiceQueryMaker::reset()
+QueryMaker *
+AmpacheServiceQueryMaker::reset()
 {
     d->type = Private::NONE;
     d->maxsize = -1;
@@ -82,13 +81,13 @@ AmpacheServiceQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
     return this;
 }
 
-void AmpacheServiceQueryMaker::run()
+void
+AmpacheServiceQueryMaker::run()
 {
     DEBUG_BLOCK
 
-
-    if ( m_storedTransferJob != 0 )
-    return;
+    if( m_storedTransferJob != 0 )
+        return;
 
     m_collection->acquireReadLock();
     //naive implementation, fix this
@@ -104,53 +103,54 @@ void AmpacheServiceQueryMaker::run()
     else if (  d->type == Private::TRACK )
         fetchTracks();
 
-
      m_collection->releaseLock();
 }
 
-
-void AmpacheServiceQueryMaker::abortQuery()
+void
+AmpacheServiceQueryMaker::abortQuery()
 {
 }
 
-QueryMaker * AmpacheServiceQueryMaker::startArtistQuery()
+QueryMaker *
+AmpacheServiceQueryMaker::startArtistQuery()
 {
     DEBUG_BLOCK
     d->type = Private::ARTIST;
     return this;
 }
 
-QueryMaker * AmpacheServiceQueryMaker::startAlbumQuery()
+QueryMaker *
+AmpacheServiceQueryMaker::startAlbumQuery()
 {
     DEBUG_BLOCK
     d->type = Private::ALBUM;
     return this;
 }
 
-QueryMaker * AmpacheServiceQueryMaker::startTrackQuery()
+QueryMaker *
+AmpacheServiceQueryMaker::startTrackQuery()
 {
     DEBUG_BLOCK
     d->type = Private::TRACK;
     return this;
 }
 
-
-
-QueryMaker * AmpacheServiceQueryMaker::addMatch( const ArtistPtr & artist )
+QueryMaker *
+AmpacheServiceQueryMaker::addMatch( const ArtistPtr & artist )
 {
     DEBUG_BLOCK
 
-    if ( m_parentAlbumId.isEmpty() ) {
+    if ( m_parentAlbumId.isEmpty() )
+    {
         const ServiceArtist * serviceArtist = static_cast< const ServiceArtist * >( artist.data() );
         m_parentArtistId = QString::number( serviceArtist->id() );
         //debug() << "parent id set to: " << m_parentArtistId;
     }
-
-
     return this;
 }
 
-QueryMaker * AmpacheServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
+QueryMaker *
+AmpacheServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
 {
     DEBUG_BLOCK
     const ServiceAlbum * serviceAlbum = static_cast< const ServiceAlbum * >( album.data() );
@@ -158,10 +158,8 @@ QueryMaker * AmpacheServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
     //debug() << "parent id set to: " << m_parentAlbumId;
     m_parentArtistId = QString();
 
-
     return this;
 }
-
 
 // What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
 // The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
@@ -182,44 +180,51 @@ QueryMaker * AmpacheServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
             } \
         }
 
-
-void AmpacheServiceQueryMaker::handleResult() {
+void AmpacheServiceQueryMaker::handleResult()
+{
     DEBUG_BLOCK
-
 }
 
 void AmpacheServiceQueryMaker::handleResult( const ArtistList & artists )
 {
     DEBUG_BLOCK
 
-    if ( d->maxsize >= 0 && artists.count() > d->maxsize ) {
+    if ( d->maxsize >= 0 && artists.count() > d->maxsize )
+    {
         emitProperResult( ArtistPtr, artists.mid( 0, d->maxsize ) );
-    } else
+    }
+    else
         emitProperResult( ArtistPtr, artists );
 }
 
-void AmpacheServiceQueryMaker::handleResult( const AlbumList &albums )
+void
+AmpacheServiceQueryMaker::handleResult( const AlbumList &albums )
 {
     DEBUG_BLOCK
 
-    if ( d->maxsize >= 0 && albums.count() > d->maxsize ) {
+    if ( d->maxsize >= 0 && albums.count() > d->maxsize )
+    {
         emitProperResult( AlbumPtr, albums.mid( 0, d->maxsize ) );
-    } else
+    }
+    else
         emitProperResult( AlbumPtr, albums );
 }
 
-void AmpacheServiceQueryMaker::handleResult(const TrackList & tracks)
+void
+AmpacheServiceQueryMaker::handleResult(const TrackList & tracks)
 {
     DEBUG_BLOCK
 
-    if ( d->maxsize >= 0 && tracks.count() > d->maxsize ) {
+    if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
+    {
         emitProperResult( TrackPtr, tracks.mid( 0, d->maxsize ) );
-    } else
+    }
+    else
         emitProperResult( TrackPtr, tracks );
 }
 
-
-void AmpacheServiceQueryMaker::fetchArtists()
+void
+AmpacheServiceQueryMaker::fetchArtists()
 {
     DEBUG_BLOCK
 
@@ -239,7 +244,8 @@ void AmpacheServiceQueryMaker::fetchArtists()
         urlString.replace( "<SERVER>", m_server);
         urlString.replace( "<SESSION_ID>", m_sessionId);
 
-        if ( !m_artistFilter.isEmpty() ) {
+        if ( !m_artistFilter.isEmpty() )
+        {
             urlString += QString( "&filter=" + m_artistFilter );
         }
 
@@ -254,26 +260,30 @@ void AmpacheServiceQueryMaker::fetchArtists()
     m_lastArtistFilter = m_artistFilter;
 }
 
-void AmpacheServiceQueryMaker::fetchAlbums()
+void
+AmpacheServiceQueryMaker::fetchAlbums()
 {
     DEBUG_BLOCK
 
     AlbumList albums;
 
-
     //debug() << "parent id: " << m_parentId;
 
-    if ( !m_parentArtistId.isEmpty() ) {
+    if ( !m_parentArtistId.isEmpty() )
+    {
         ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
         albums = artistMatcher.matchAlbums( m_collection );
-    } else
+    }
+    else
         return;
 
-    if ( albums.count() > 0 ) {
+    if ( albums.count() > 0 )
+    {
         handleResult( albums );
         emit queryDone();
-    } else {
-
+    }
+    else
+    {
         QString urlString = "<SERVER>/server/xml.server.php?action=artist_albums&auth=<SESSION_ID>&filter=<FILTER>";
 
         urlString.replace( "<SERVER>", m_server);
@@ -288,7 +298,8 @@ void AmpacheServiceQueryMaker::fetchAlbums()
     }
 }
 
-void AmpacheServiceQueryMaker::fetchTracks()
+void
+AmpacheServiceQueryMaker::fetchTracks()
 {
     DEBUG_BLOCK
 
@@ -337,9 +348,8 @@ void AmpacheServiceQueryMaker::fetchTracks()
     }
 }
 
-
-
-void AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
+void
+AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
 {
     DEBUG_BLOCK
 
@@ -390,10 +400,10 @@ void AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
 
    handleResult( artists );
    emit queryDone();
-
 }
 
-void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
+void
+AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
 {
     DEBUG_BLOCK
 
@@ -441,7 +451,6 @@ void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
 
         QString coverUrl = element.text();
 
-
         AlbumPtr albumPtr( album );
 
         //debug() << "Adding album: " <<  title;
@@ -473,10 +482,10 @@ void AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
 
    handleResult( albums );
    emit queryDone();
-
 }
 
-void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
+void
+AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 {
     DEBUG_BLOCK
 
@@ -504,12 +513,11 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         //    break;
 
         int trackId = e.attribute( "id", "0").toInt();
-
-
         QDomElement element = n.firstChildElement("title");
 
         QString title = element.text();
-        if ( title.isEmpty() ) title = "Unknown";
+        if ( title.isEmpty() )
+            title = "Unknown";
 
         AmpacheTrack * track = new AmpacheTrack( title, m_collection->service()  );
         TrackPtr trackPtr( track );
@@ -517,7 +525,6 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         //debug() << "Adding track: " <<  title;
 
         track->setId( trackId );
-
         element = n.firstChildElement("url");
         track->setUrl( element.text() );
 
@@ -537,9 +544,9 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         QDomElement artistElement = n.firstChildElement("artist");
         int artistId = artistElement.attribute( "id", "0").toInt();
 
-
         ArtistPtr artistPtr = m_collection->artistById( artistId );
-        if ( artistPtr.data() != 0 ) {
+        if ( artistPtr.data() != 0 )
+        {
             //debug() << "Found parent artist " << artistPtr->name();
            ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
            track->setArtist( artistPtr );
@@ -547,7 +554,8 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         }
 
         AlbumPtr albumPtr = m_collection->albumById( albumId );
-        if ( albumPtr.data() != 0 ) {
+        if ( albumPtr.data() != 0 )
+        {
            //debug() << "Found parent album " << albumPtr->name() ;
            ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
            track->setAlbum( albumPtr );
@@ -557,16 +565,15 @@ void AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         tracks.push_back( trackPtr );
 
         n = n.nextSibling();
-    }
-
+   }
    m_storedTransferJob->deleteLater();
 
    handleResult( tracks );
    emit queryDone();
-
 }
 
-QueryMaker * AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
+QueryMaker *
+AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
 {
     DEBUG_BLOCK
     Q_UNUSED( matchBegin )
@@ -574,19 +581,20 @@ QueryMaker * AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & f
 
     //debug() << "value: " << value;
     //for now, only accept artist filters
-    if ( value == valArtist ) {
+    if ( value == valArtist )
+    {
         //debug() << "Filter: " << filter;
         m_artistFilter = filter;
     }
     return this;
 }
 
-int AmpacheServiceQueryMaker::validFilterMask()
+int
+AmpacheServiceQueryMaker::validFilterMask()
 {
     //we only supprt artist filters for now...
     return ArtistFilter;
 }
 
 #include "AmpacheServiceQueryMaker.moc"
-
 

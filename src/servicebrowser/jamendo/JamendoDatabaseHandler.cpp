@@ -26,11 +26,12 @@
 using namespace Meta;
 
 JamendoDatabaseHandler::JamendoDatabaseHandler()
-{}
-
+{
+}
 
 JamendoDatabaseHandler::~JamendoDatabaseHandler()
-{}
+{
+}
 
 void
 JamendoDatabaseHandler::createDatabase( )
@@ -58,9 +59,7 @@ JamendoDatabaseHandler::createDatabase( )
 
     debug() << "Creating jamendo_tracks: " << queryString;
 
-
     QStringList result = db->query( queryString );
-
     db->query( "CREATE INDEX jamendo_tracks_id ON jamendo_tracks(id);" );
     db->query( "CREATE INDEX jamendo_tracks_album_id ON jamendo_tracks(album_id);" );
     db->query( "CREATE INDEX jamendo_tracks_artist_id ON jamendo_tracks(artist_id);" );
@@ -95,9 +94,6 @@ JamendoDatabaseHandler::createDatabase( )
                   "jamendo_url " + db->textColumnType() + ',' +
                   "home_url " + db->textColumnType() + ");";
 
-
-
-
     debug() << "Creating jamendo_artists: " << queryString;
 
     result = db->query( queryString );
@@ -116,13 +112,11 @@ JamendoDatabaseHandler::createDatabase( )
 
     db->query( "CREATE INDEX jamendo_genre_name ON jamendo_genre(name);" );
     db->query( "CREATE INDEX jamendo_genre_album_id ON jamendo_genre(album_id);" );
-
 }
 
 void
 JamendoDatabaseHandler::destroyDatabase( )
 {
-
     debug() << "Destroy Jamendo database ";
 
     SqlStorage *db = CollectionManager::instance()->sqlStorage();
@@ -153,7 +147,6 @@ JamendoDatabaseHandler::destroyDatabase( )
 int
 JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
 {
-
     JamendoTrack * jTrack = static_cast<JamendoTrack *> ( track );
     QString numberString;
 
@@ -191,7 +184,6 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
 int
 JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 {
-
     JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album );
 
     QString queryString;
@@ -257,8 +249,6 @@ int JamendoDatabaseHandler::insertGenre(ServiceGenre * genre)
     return sqlDb->insert( queryString, 0 );
 }
 
-
-
 void
 JamendoDatabaseHandler::begin( )
 {
@@ -275,20 +265,12 @@ JamendoDatabaseHandler::commit( )
     mgr->sqlStorage()->query( queryString );
 }
 
-void JamendoDatabaseHandler::trimGenres(int minCount)
+void
+JamendoDatabaseHandler::trimGenres(int minCount)
 {
     QString query = QString("delete from jamendo_genre where name IN ( SELECT name from jamendo_genre GROUP BY jamendo_genre.name HAVING COUNT ( jamendo_genre.name ) < %1 );").arg( minCount );
 
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     sqlDb->query( query );
 }
-
-
-
-
-
-
-
-
-
 
