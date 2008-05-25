@@ -18,6 +18,8 @@
  */
  
 #include "ServicePluginManager.h"
+
+#include "Amarok.h"
 #include "PluginManager.h"
 #include <servicepluginmanageradaptor.h>
 
@@ -98,7 +100,7 @@ ServicePluginManager::init()
         QString pluginName = factory->info().pluginName();
 
         debug() << "PLUGIN CHECK: " << pluginName;
-        if ( factory->config().readEntry( pluginName + "Enabled", true ) )
+        if ( Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true ) )
         {
             factory->init();
             m_loadedServices << pluginName;
