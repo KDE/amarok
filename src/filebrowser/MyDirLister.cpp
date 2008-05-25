@@ -19,6 +19,7 @@ MyDirLister::matchesFilter( const KFileItem &item ) const
         item.name().endsWith( ".ogg", Qt::CaseInsensitive ) ||
         item.name().endsWith( ".oga", Qt::CaseInsensitive ) ||
         item.name().endsWith( ".flac", Qt::CaseInsensitive ) ||
+        item.name().endsWith( ".avi", Qt::CaseInsensitive ) ||
         item.name().endsWith( ".wma", Qt::CaseInsensitive );
 
 }
