@@ -262,6 +262,9 @@ Amarok::TrayIcon::paletteChange( const QPalette & op )
 void
 Amarok::TrayIcon::paintIcon( int mergePixels, bool force )
 {
+    Q_UNUSED( mergePixels )
+    Q_UNUSED( force )
+
 #if 0
     // skip redrawing the same pixmap
     static int mergePixelsCache = 0;
