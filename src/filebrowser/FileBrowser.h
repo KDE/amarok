@@ -23,31 +23,29 @@
 #ifndef FILEBROWSER_H
 #define FILEBROWSER_H
 
-
-#include <KVBox>
 #include <KFile>
 #include <KFileItem>
-#include <KUrl>
 #include <KToolBar>
+#include <KUrl>
+#include <KVBox>
 
-class QAbstractItemView;
+// class KUrlComboBox;
 class KActionCollection;
 class KActionSelector;
-class KConfigBase;
 class KBookmarkHandler;
+class KConfigBase;
 class KDirOperator;
 class KFilePlacesModel;
 class KHistoryComboBox;
 class KUrlNavigator;
-// class KUrlComboBox;
+class QAbstractItemView;
 class QAction;
-class QToolButton;
 class QCheckBox;
 class QEvent;
-class QSpinBox;
-class QShowEvent;
 class QFocusEvent;
-
+class QShowEvent;
+class QSpinBox;
+class QToolButton;
 
 /*
     The kate file selector presents a directory view, in which the default action is

@@ -22,58 +22,36 @@
 //BEGIN Includes
 #include "FileBrowser.h"
 
-#include "collection/CollectionManager.h"
-#include "playlist/PlaylistModel.h"
 #include "TheInstances.h"
+#include "collection/CollectionManager.h"
 #include "filebrowser/MyDirOperator.h"
 #include "filebrowser/kbookmarkhandler.h"
+#include "playlist/PlaylistModel.h"
 
+#include <QCheckBox>
+#include <QDir>
 #include <QLayout>
-#include <QToolButton>
-#include <khbox.h>
-#include <kvbox.h>
-#include <QLabel>
-
+#include <QLineEdit>
 #include <QListWidget>
 #include <QScrollBar>
-#include <QSpinBox>
-#include <QGroupBox>
-#include <QCheckBox>
-#include <QRegExp>
-#include <QTimer>
-#include <QDir>
-//Added by qt3to4:
-#include <QPixmap>
-#include <QFocusEvent>
-#include <QEvent>
-#include <QFrame>
-#include <QShowEvent>
-#include <QResizeEvent>
-#include <QVBoxLayout>
-#include <QLineEdit>
+#include <QToolButton>
 
 #include <KActionCollection>
 #include <KActionMenu>
 #include <KActionSelector>
 #include <KApplication>
-#include <KConfig>
 #include <KComboBox>
-#include <KDebug>
-#include <KDialog>
-#include <KFileItem>
-#include <kfileplacesmodel.h>
-#include <KGenericFactory>
-#include <KGlobal>
-#include <KLocale>
-#include <KMenu>
-#include <KMessageBox>
-#include <KProtocolInfo>
-// #include <KUrlComboBox>
-#include <KUrlNavigator>
-#include <KUrlCompletion>
+#include <KConfig>
 #include <KConfigGroup>
+#include <KDebug>
+#include <KFileItem>
+#include <KGlobal>
 #include <KHistoryComboBox>
-#include <kdeversion.h>
+#include <KLocale>
+#include <KUrlCompletion>
+#include <KUrlNavigator>
+#include <kfileplacesmodel.h>
+// #include <KUrlComboBox>
 //END Includes
 
 //BEGIN Toolbar
@@ -161,10 +139,8 @@ FileBrowser::Widget::Widget( const char * name )
   filterBox->setStretchFactor(m_filter, 2);
   connect( m_btnFilter, SIGNAL( clicked() ), this, SLOT( btnFilterClick() ) );
 
-  connect( m_filter, SIGNAL( activated(const QString&) ),
-           SLOT( slotFilterChange(const QString&) ) );
-  connect( m_filter, SIGNAL( returnPressed(const QString&) ),
-           m_filter, SLOT( addToHistory(const QString&) ) );
+  connect( m_filter, SIGNAL( activated(const QString&) ), SLOT( slotFilterChange(const QString&) ) );
+  connect( m_filter, SIGNAL( returnPressed(const QString&) ), m_filter, SLOT( addToHistory(const QString&) ) );
 
   // kaction for the dir sync method
   m_acSyncDir = m_actionCollection->addAction( "sync_dir" );
@@ -177,19 +153,14 @@ FileBrowser::Widget::Widget( const char * name )
 
 //   connect( m_cmbPath, SIGNAL( urlActivated( const KUrl&  )),
 //            this, SLOT( cmbPathActivated( const KUrl& ) ));
-  connect( m_urlNav, SIGNAL( urlChanged( const KUrl&  )),
-           this, SLOT( cmbPathActivated( const KUrl& ) ));
+  connect( m_urlNav, SIGNAL( urlChanged( const KUrl&  )), this, SLOT( cmbPathActivated( const KUrl& ) ));
 //   connect( m_cmbPath, SIGNAL( returnPressed( const QString&  )),
 //            this, SLOT( cmbPathReturnPressed( const QString& ) ));
-  connect(m_dir, SIGNAL(urlEntered(const KUrl&)),
-          this, SLOT(dirUrlEntered(const KUrl&)) );
-
-  connect(m_dir, SIGNAL(finishedLoading()),
-          this, SLOT(dirFinishedLoading()) );
+  connect(m_dir, SIGNAL(urlEntered(const KUrl&)), this, SLOT(dirUrlEntered(const KUrl&)) );
+  connect(m_dir, SIGNAL(finishedLoading()), this, SLOT(dirFinishedLoading()) );
 
   // Connect the bookmark handler
-  connect( m_bookmarkHandler, SIGNAL( openUrl( const QString& )),
-           this, SLOT( setDir( const QString& ) ) );
+  connect( m_bookmarkHandler, SIGNAL( openUrl( const QString& )), this, SLOT( setDir( const QString& ) ) );
 
   waitingUrl.clear();
 
@@ -214,11 +185,7 @@ FileBrowser::Widget::Widget( const char * name )
 
   m_actionCollection->addAssociatedWidget(this);
   foreach (QAction* action, m_actionCollection->actions())
-#if QT_VERSION < KDE_MAKE_VERSION(4,4,0)
-    action->setShortcutContext(Qt::WidgetShortcut); // remove after Qt4.4 becomes mandatory
-#else
     action->setShortcutContext(Qt::WidgetWithChildrenShortcut);
-#endif
 }
 
 FileBrowser::Widget::~Widget()
@@ -229,7 +196,6 @@ FileBrowser::Widget::~Widget()
 
 void FileBrowser::Widget::readConfig()
 {
-
 //   dir->setView( KFile::Default );
 //   dir->view()->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
@@ -241,12 +207,10 @@ void FileBrowser::Widget::readConfig()
   // if we restore history
 
   m_filter->setMaxCount( fileselectorConfigGroup.readEntry( "filter history len", 9 ) );
-
 }
 
 void FileBrowser::Widget::readSessionConfig(KConfigBase *config, const QString & name)
 {
-
   KConfigGroup cgView(config, name + ":view");
   m_dir->setViewConfig(cgView );
 
@@ -358,7 +322,6 @@ void FileBrowser::Widget::slotFilterChange( const QString & nf )
   m_dir->updateDir();
   // this will be never true after the filter has been used;)
   m_btnFilter->setEnabled( !( empty && lastFilter.isEmpty() ) );
-
 }
 
 namespace FileBrowser {
@@ -413,9 +376,6 @@ void FileBrowser::Widget::fileSelected(const KFileItem & /*file*/)
   m_dir->view()->selectionModel()->clear();
 }
 
-
-
-
 void FileBrowser::Widget::cmbPathActivated( const KUrl& u )
 {
   cmbPathReturnPressed( u.url() );
@@ -444,7 +404,6 @@ void FileBrowser::Widget::dirUrlEntered( const KUrl& u )
 void FileBrowser::Widget::dirFinishedLoading()
 {}
 
-
 /*
    When the button in the filter box toggles:
    If off:
@@ -452,6 +411,7 @@ void FileBrowser::Widget::dirFinishedLoading()
    If on:
    Set last filter.
 */
+
 void FileBrowser::Widget::btnFilterClick()
 {
   if ( !m_btnFilter->isChecked() )
