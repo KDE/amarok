@@ -1069,18 +1069,18 @@ MainWindow::createMenus()
 void
 MainWindow::paletteChange(const QPalette & oldPalette)
 {
+    Q_UNUSED( oldPalette )
+
     QPixmapCache::clear();
 }
 
 QSize
 MainWindow::backgroundSize()
 {
-
     QPoint topLeft = mapToGlobal( QPoint( 0, 0 ) );
     QPoint bottomRight1 = mapToGlobal( QPoint( width(), height() ) );
 
     return QSize( bottomRight1.x() - topLeft.x() + 1, bottomRight1.y() - topLeft.y() );
-
 }
 
 int
@@ -1141,6 +1141,5 @@ void MainWindow::paintEvent( QPaintEvent * e )
     
     QPainter painter( this );
     painter.drawPixmap( x, y, backgroundPart );
-
 }
 
