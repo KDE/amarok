@@ -781,6 +781,17 @@ ScriptManager::scriptRunningOfType( const QString &type ) const
 QString
 ScriptManager::ensureScoreScriptRunning()
 {
+    AMAROK_NOTIMPLEMENTED
+
+    // FIXME this code sometimes causes a crash:
+    //
+    //#26 0xb5d91b24 in QTreeWidget::setCurrentItem (this=0x8757538, item=0x8941fe0) at itemviews/qtreewidget.cpp:2749                   
+    //#27 0xb78b78e7 in ScriptManager::runScript (this=0x870bc00, name=@0x8710484, silent=true)                                          
+    //    at /var/tmp/paludis/media-sound-amarok-scm/work/amarok/amarok/src/dialogs/scriptmanager.cpp:236                                
+    //#28 0xb78b7a94 in ScriptManager::ensureScoreScriptRunning (this=0x870bc00)                                                         
+    //    at /var/tmp/paludis/media-sound-amarok-scm/work/amarok/amarok/src/dialogs/scriptmanager.cpp:798                                
+
+#if 0
     QString s = scoreScriptRunning();
     if( !s.isNull() )
         return s;
@@ -798,6 +809,7 @@ ScriptManager::ensureScoreScriptRunning()
         if( runScript( *it, true ) )
             return *it;
 
+#endif
     return QString();
 }
 
