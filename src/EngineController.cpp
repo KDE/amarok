@@ -117,7 +117,12 @@ EngineController::canDecode( const KUrl &url ) //static
     const QString fileName = url.fileName();
     const QString ext = Amarok::extension( fileName );
 
+    // We can't use playlists in the engine
     if ( PlaylistManager::isPlaylist( url ) )
+        return false;
+
+    // Playing images is pretty stupid
+    if ( ext == "png" || ext == "jpg" )
         return false;
 
     // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we don't really want them in the playlist :)
@@ -132,16 +137,12 @@ EngineController::canDecode( const KUrl &url ) //static
     if ( extensionCache().contains( ext ) )
         return s_extensionCache[ext];
 
-    // If file has 0 bytes, ignore it and return false, not to infect the cache with corrupt files.
-    // TODO also ignore files that are too small?
+    // If file has 0 bytes, ignore it and return false, so that we don't infect the cache with corrupt files
     if ( !QFileInfo(url.path()).size() )
         return false;
 
-    bool valid;
-    {
-        KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );
-        valid = Phonon::BackendCapabilities::isMimeTypeAvailable( item.mimetype() );
-    }
+    KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );
+    const bool valid = Phonon::BackendCapabilities::isMimeTypeAvailable( item.mimetype() );
 
     //we special case this as otherwise users hate us
     if ( !valid && ext.toLower() == "mp3" && !installDistroCodec() )
@@ -153,6 +154,7 @@ EngineController::canDecode( const KUrl &url ) //static
     // Cache this result for the next lookup
     if ( !ext.isEmpty() )
         extensionCache().insert( ext, valid );
+
     return valid;
 }
 
