@@ -157,8 +157,6 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         knobX = ( width - height ) * ( ( double ) value() / 100.0 );
     else
         knobX = pos;
-    
-    const double fillLength = knobX + ( height / 2 );
 
     p->drawPixmap( x + side, y, The::svgHandler()->renderSvg( "slider_center", width - side * 2, height, "slider_center" ) );
     p->drawPixmap( x, y, The::svgHandler()->renderSvg( "slider_left", side, height, "slider_left" ) );
@@ -176,7 +174,7 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         offset += tileWidth;
     }
 
-//paint as much of the last tile as needed
+    //paint as much of the last tile as needed
     int leftover = xMax - offset;
     if ( leftover > 0 )
         p->drawPixmap( x + offset, y, sliderTile, 0, 0, leftover, height );
