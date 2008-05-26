@@ -117,8 +117,8 @@ EngineController::canDecode( const KUrl &url ) //static
     const QString fileName = url.fileName();
     const QString ext = Amarok::extension( fileName );
 
-    //Port 2.0
-//     if ( PlaylistFile::isPlaylistFile( fileName ) ) return false;
+    if ( PlaylistManager::isPlaylist( url ) )
+        return false;
 
     // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we don't really want them in the playlist :)
     if ( url.protocol() == "fetchcover" || url.protocol() == "musicbrainz" )
