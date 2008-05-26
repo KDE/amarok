@@ -176,6 +176,10 @@ namespace Amarok
         virtual void metadataChanged( Meta::Album *album );
         virtual void metadataChanged( Meta::Artist *artist );
 
+        virtual void metadataChanged( Meta::Genre * ) {}; //prevent compiler warning
+        virtual void metadataChanged( Meta::Composer * ) {}; //prevent compiler warning
+        virtual void metadataChanged( Meta::Year * ) {}; //prevent compiler warning
+
     public slots:
         /**
          * When user pushs global shortcut or uses DCOP OSD is toggle

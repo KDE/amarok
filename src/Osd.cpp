@@ -717,16 +717,19 @@ Amarok::OSD::slotImageChanged( const QString &remoteURL )
 
 void Amarok::OSD::metadataChanged( Meta::Track *track )
 {
+    Q_UNUSED( track )
     show( The::engineController()->currentTrack() );
 }
 
 void Amarok::OSD::metadataChanged( Meta::Album *album )
 {
+    Q_UNUSED( album )
     show( The::engineController()->currentTrack() );
 }
 
 void Amarok::OSD::metadataChanged( Meta::Artist *artist )
 {
+    Q_UNUSED( artist )
     show( The::engineController()->currentTrack() );
 }
 
