@@ -42,6 +42,10 @@ class TrackToolTip : public QWidget, public Meta::Observer
     virtual void metadataChanged( Meta::Album *album );
     virtual void metadataChanged( Meta::Artist *artist );
 
+    virtual void metadataChanged( Meta::Genre * ) {}; //prevent compiler warning
+    virtual void metadataChanged( Meta::Composer * ) {}; //prevent compiler warning
+    virtual void metadataChanged( Meta::Year * ) {}; //prevent compiler warning
+
     private:
     QString tooltip() const;
     void updateWidgets();
