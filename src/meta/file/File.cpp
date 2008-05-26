@@ -87,7 +87,7 @@ Track::~Track()
 QString
 Track::name() const
 {
-    if( d && d->tag )
+    if( d )
     {
         const QString trackName = d->m_data.title;
         if( !trackName.isEmpty() )
