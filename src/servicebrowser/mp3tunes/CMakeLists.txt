@@ -15,6 +15,7 @@
         set(amarok_service_mp3tunes_PART_SRCS
             Mp3tunesService.cpp
             Mp3tunesServiceCollection.cpp
+	    Mp3tunesServiceCollectionLocation.cpp
             Mp3tunesServiceQueryMaker.cpp
             Mp3tunesMeta.cpp
             Mp3tunesConfig.cpp

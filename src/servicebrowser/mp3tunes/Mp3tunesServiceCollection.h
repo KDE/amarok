@@ -19,13 +19,8 @@
 #ifndef MP3TUNESSERVICECOLLECTION_H
 #define MP3TUNESSERVICECOLLECTION_H
 
-#include <ServiceCollection.h>
+#include <ServiceCollectionLocation.h>
 
-/**
-A collection that dynamically fetches data from a remote location as needed
-
-	@author 
-*/
 class Mp3tunesServiceCollection : public ServiceCollection
 {
 public:

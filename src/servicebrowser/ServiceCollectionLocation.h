@@ -19,17 +19,17 @@
 #define AMAROK_SERVICECOLLECTIONLOCATION_H
 
 #include <CollectionLocation.h>
-
+#include "ServiceCollection.h"
 #include <QSet>
 #include <QMap>
 #include <QString>
-class ServiceCollection;
+
 
 class ServiceCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
     public:
-        ServiceCollectionLocation(ServiceCollection const *parentCollection);
+        ServiceCollectionLocation();
         virtual ~ServiceCollectionLocation();
 
         //These are service dependant
@@ -39,10 +39,9 @@ class ServiceCollectionLocation : public CollectionLocation
         //virtual bool remove( const Meta::TrackPtr &track );
         
     private:
-        ServiceCollection *m_collection;
+       
         bool m_removeSources;    //used by the destination to remember the value, needed in copyurlsToCollection
         bool m_overwriteFiles;
 };
 
 #endif
- 

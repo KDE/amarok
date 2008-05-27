@@ -19,24 +19,27 @@
 #define MP3TUNESSERVICECOLLECTIONLOCATION_H
 
 #include <ServiceCollectionLocation.h>
+#include "Mp3tunesServiceCollection.h"
 
 #include <QSet>
 #include <QMap>
 #include <QString>
 
-class MP3tunesServiceCollectionLocation : public ServiceCollectionLocation
+
+class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
 {
     Q_OBJECT
     public:
-        MP3tunesServiceCollectionLocation(MP3tunesServiceCollection const *parentCollection);
-        virtual ~MP3tunesServiceCollectionLocation();
+        Mp3tunesServiceCollectionLocation(Mp3tunesServiceCollection const *parentCollection);
+        virtual ~Mp3tunesServiceCollectionLocation();
 
         //These are service dependant
         virtual QString prettyLocation() const;
         virtual bool isWriteable() const;
         virtual bool isOrganizable() const;
-        virtual bool remove( const Meta::TrackPtr &track );
-    
+//        virtual bool remove( const Meta::TrackPtr &track );
+    private:
+        Mp3tunesServiceCollection *m_collection;
 };
 
 #endif

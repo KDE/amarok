@@ -16,11 +16,12 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 #include "Mp3tunesServiceCollectionLocation.h"
-
+#include "Debug.h"
 using namespace Meta;
 
 Mp3tunesServiceCollectionLocation::Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection const *parentCollection )
-    : ServiceCollectionLocation(parentCollection)
+    : ServiceCollectionLocation()
+    , m_collection( const_cast<Mp3tunesServiceCollection*>(  parentCollection ) )
 {}
 
 Mp3tunesServiceCollectionLocation::~Mp3tunesServiceCollectionLocation()

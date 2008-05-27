@@ -97,10 +97,10 @@ set(libservicebrowser_SRCS
     servicebrowser/ServiceBase.cpp
     servicebrowser/ServiceBrowser.cpp
     servicebrowser/ServiceCollection.cpp
+    servicebrowser/ServiceCollectionLocation.cpp
     servicebrowser/ServiceCollectionTreeView.cpp
     servicebrowser/ServiceCurrentTrackActionsCapability.cpp
     servicebrowser/ServiceCustomActionsCapability.cpp
-    servicebrowser/ServiceDynamicCollection.cpp
     servicebrowser/ServiceInfoProxy.cpp
     servicebrowser/ServiceListDelegate.cpp
     servicebrowser/ServiceListModel.cpp
