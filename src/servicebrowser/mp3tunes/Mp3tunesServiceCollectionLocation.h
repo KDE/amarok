@@ -15,33 +15,28 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#include "ServiceCollectionLocation.h"
-#include "Debug.h"
-using namespace Meta;
+#ifndef MP3TUNESSERVICECOLLECTIONLOCATION_H
+#define MP3TUNESSERVICECOLLECTIONLOCATION_H
 
-ServiceCollectionLocation::ServiceCollectionLocation( ServiceCollection const *parentCollection )
-    : CollectionLocation()
-    , m_collection( const_cast<ServiceCollection*>( parentCollection ) )
-    , m_removeSources( false )
-    , m_overwriteFiles( false )
-{}
+#include <ServiceCollectionLocation.h>
 
-ServiceCollectionLocation::~ServiceCollectionLocation()
+#include <QSet>
+#include <QMap>
+#include <QString>
+
+class MP3tunesServiceCollectionLocation : public ServiceCollectionLocation
 {
-    DEBUG_BLOCK
-}
+    Q_OBJECT
+    public:
+        MP3tunesServiceCollectionLocation(MP3tunesServiceCollection const *parentCollection);
+        virtual ~MP3tunesServiceCollectionLocation();
 
-QString ServiceCollectionLocation::prettyLocation() const
-{
-    return QString();
-}
+        //These are service dependant
+        virtual QString prettyLocation() const;
+        virtual bool isWriteable() const;
+        virtual bool isOrganizable() const;
+        virtual bool remove( const Meta::TrackPtr &track );
+    
+};
 
-bool ServiceCollectionLocation::isWriteable() const
-{
-    return false;
-}
-
-bool ServiceCollectionLocation::isOrganizable() const
-{
-    return false;
-}
+#endif

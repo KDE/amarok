@@ -15,33 +15,30 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#include "ServiceCollectionLocation.h"
-#include "Debug.h"
+#include "Mp3tunesServiceCollectionLocation.h"
+
 using namespace Meta;
 
-ServiceCollectionLocation::ServiceCollectionLocation( ServiceCollection const *parentCollection )
-    : CollectionLocation()
-    , m_collection( const_cast<ServiceCollection*>( parentCollection ) )
-    , m_removeSources( false )
-    , m_overwriteFiles( false )
+Mp3tunesServiceCollectionLocation::Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection const *parentCollection )
+    : ServiceCollectionLocation(parentCollection)
 {}
 
-ServiceCollectionLocation::~ServiceCollectionLocation()
+Mp3tunesServiceCollectionLocation::~Mp3tunesServiceCollectionLocation()
 {
     DEBUG_BLOCK
 }
 
-QString ServiceCollectionLocation::prettyLocation() const
+QString Mp3tunesServiceCollectionLocation::prettyLocation() const
 {
-    return QString();
+    return "MP3Tunes Locker";
 }
 
-bool ServiceCollectionLocation::isWriteable() const
+bool Mp3tunesServiceCollectionLocation::isWriteable() const
 {
-    return false;
+    return true;
 }
 
-bool ServiceCollectionLocation::isOrganizable() const
+bool Mp3tunesServiceCollectionLocation::isOrganizable() const
 {
     return false;
 }
