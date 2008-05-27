@@ -136,7 +136,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, b
         {
             startIndex += 12;
             debug() << "found wav";
-            m_downloadFormats[ "Wav" ] = downloadInfoString.mid( startIndex, endIndex - startIndex );
+            m_downloadFormats[ "Wav" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
 
         }
     }
@@ -149,7 +149,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, b
         {
             startIndex += 16;
             debug() << "found 128k mp3";
-            m_downloadFormats[ "128 kbit/s MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex );
+            m_downloadFormats[ "128 kbit/s MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
 
         }
     }
@@ -162,7 +162,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, b
         {
             startIndex += 12;
             debug() << "found ogg-vorbis";
-            m_downloadFormats[ "Ogg-Vorbis" ] = downloadInfoString.mid( startIndex, endIndex - startIndex );
+            m_downloadFormats[ "Ogg-Vorbis" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
 
         }
     }
@@ -175,7 +175,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, b
         {
             startIndex += 12;
             debug() << "found vbr mp3";
-            m_downloadFormats[ "VBR MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex );
+            m_downloadFormats[ "VBR MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
 
         }
     }
@@ -188,7 +188,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, b
         {
             startIndex += 13;
             debug() << "found flac";
-            m_downloadFormats[ "FLAC" ] = downloadInfoString.mid( startIndex, endIndex - startIndex );
+            m_downloadFormats[ "FLAC" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
 
         }
     }
@@ -201,7 +201,7 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, b
         {
             startIndex += 9;
             debug() << "found dl-message";
-            m_downloadMessage = downloadInfoString.mid( startIndex, endIndex - startIndex );
+            m_downloadMessage = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
         }
     }
 
