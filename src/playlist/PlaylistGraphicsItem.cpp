@@ -239,9 +239,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     qreal bottomRightAlignX;
 
     {
-        qreal middle = textWidth + ALBUM_WIDTH + ( MARGIN * 2.0 );
-        qreal rightWidth = totalWidth - qMax( s_fm->width( album )
-            , s_fm->width( prettyLength ) );
+        const qreal middle = textWidth + ALBUM_WIDTH + ( MARGIN * 2.0 );
         topRightAlignX = qMax( middle, totalWidth - ( s_fm->width( album ) + MARGIN * 2 ) );
     }
 
