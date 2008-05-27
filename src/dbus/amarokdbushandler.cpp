@@ -38,6 +38,7 @@
 #include "meta/MetaUtility.h"
 #include "meta/StreamInfoCapability.h"
 #include "meta/SourceInfoCapability.h"
+#include "mountpointmanager.h"
 #include "Osd.h"
 #include "playlist/PlaylistModel.h"
 #include "ProgressSlider.h"
@@ -847,7 +848,19 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
         Q_UNUSED( path );
         return false;
     }
+    QString DbusCollectionHandler::mainCollectionPath()
+    {
+        /*The main collection path is defined as the first path encountered*/
+        QStringList folders = MountPointManager::instance()->collectionFolders();
 
+        QString firstPath = "NONE";
+
+        if(!folders.isEmpty()) {
+            firstPath = folders[0];
+        }
+
+        return firstPath;
+    }
     bool DbusCollectionHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
     {
         Q_UNUSED( oldURL ); Q_UNUSED( newURL ); Q_UNUSED( overwrite );

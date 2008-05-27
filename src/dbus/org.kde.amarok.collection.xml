@@ -56,5 +56,8 @@
       <arg name="url" type="s" direction="in"/>
       <arg name="oldLabel" type="as" direction="in"/>
     </method>
+    <method name="mainCollectionPath" >
+        <arg type="s" direction="out"/>
+    </method>
   </interface>
 </node>

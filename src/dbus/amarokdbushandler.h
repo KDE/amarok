@@ -183,6 +183,7 @@ class AMAROK_EXPORT DbusCollectionHandler : public QObject
       virtual int totalGenres();
       virtual int totalTracks();
       virtual bool isDirInCollection( const QString &path );
+      virtual QString mainCollectionPath();
       virtual bool moveFile( const QString &oldURL, const QString &newURL, bool overwrite );
       virtual QStringList query(const QString& sql);
       virtual QStringList similarArtists( int artists );
