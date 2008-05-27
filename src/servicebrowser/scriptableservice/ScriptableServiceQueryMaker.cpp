@@ -505,6 +505,9 @@ QueryMaker * ScriptableServiceQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
 
 QueryMaker * ScriptableServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
 {
+    Q_UNUSED( matchBegin )
+    Q_UNUSED( matchEnd )
+
     DEBUG_BLOCK
 
     if ( value == valTitle ) {

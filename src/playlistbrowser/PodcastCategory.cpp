@@ -266,7 +266,7 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     int width = m_view->viewport()->size().width() - 4;
 
     //todo: the height should be defined the way it is in the delegate: iconpadY*2 + iconheight
-    Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
+    //Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
     int height = 24;
     /* Why is this here anyways?
     if ( typeid( * pmc ) == typeid( Meta::PodcastChannel ) )

@@ -55,8 +55,12 @@ public:
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
 
-    virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+    virtual QueryMaker* addMatch ( const Meta::TrackPtr & )    { return this; } //prevent compiler warning
+    virtual QueryMaker* addMatch ( const Meta::ComposerPtr & ) { return this; } //prevent compiler warning
+    virtual QueryMaker* addMatch ( const Meta::YearPtr & )     { return this; } //prevent compiler warning
+    virtual QueryMaker* addMatch ( const Meta::DataPtr & )     { return this; } //prevent compiler warning
 
+    virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
 
     virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
 
