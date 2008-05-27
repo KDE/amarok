@@ -26,7 +26,7 @@
 using namespace Meta;
 
 AmpacheServiceCollection::AmpacheServiceCollection( ServiceBase * service, const QString &server, const QString &sessionId )
-    : ServiceDynamicCollection( service, "AmpacheCollection", "AmpacheCollection" )
+    : ServiceCollection( service, "AmpacheCollection", "AmpacheCollection" )
     , m_server( server )
     , m_sessionId( sessionId )
 {

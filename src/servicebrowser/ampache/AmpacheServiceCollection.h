@@ -19,7 +19,7 @@
 #ifndef AMPACHESERVICECOLLECTION_H
 #define AMPACHESERVICECOLLECTION_H
 
-#include <ServiceDynamicCollection.h>
+#include <ServiceCollection.h>
 #include "AmpacheMeta.h"
 
 #include <kio/jobclasses.h>
@@ -29,7 +29,7 @@ A collection that dynamically fetches data from a remote location as needed
 
 	@author 
 */
-class AmpacheServiceCollection : public ServiceDynamicCollection
+class AmpacheServiceCollection : public ServiceCollection
 {
 public:
 

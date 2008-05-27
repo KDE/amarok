@@ -22,7 +22,7 @@
 #include "Mp3tunesServiceQueryMaker.h"
 
 Mp3tunesServiceCollection::Mp3tunesServiceCollection( const QString &sessionId )
-    : ServiceDynamicCollection( 0, "Mp3tunesCollection", "Mp3tunesCollection" )
+    : ServiceCollection( 0, "Mp3tunesCollection", "Mp3tunesCollection" )
  , m_sessionId( sessionId )
 {
 }

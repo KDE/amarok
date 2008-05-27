@@ -1,6 +1,7 @@
 /*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+   Copyright (C) 2008 Casey Link <unnamedrambler@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,6 +43,15 @@ ServiceCollection::ServiceCollection( ServiceBase * service )
 {
 }
 
+ServiceCollection::ServiceCollection( ServiceBase * service, const QString &id, const QString &prettyName )
+    : Collection()
+    , MemoryCollection()
+    , m_service( service )
+    , m_collectionId( id )
+    , m_prettyName( prettyName )
+{
+}
+
 ServiceCollection::~ServiceCollection()
 {
 }
@@ -61,13 +71,13 @@ ServiceCollection::queryMaker()
 QString
 ServiceCollection::collectionId() const
 {
-    return "service collection";
+    return m_collectionId;
 }
 
 QString
 ServiceCollection::prettyName() const
 {
-    return "service collection";
+    return m_prettyName;
 }
 
 ServiceBase * ServiceCollection::service()
@@ -79,6 +89,64 @@ void ServiceCollection::emitUpdated()
 {
     emit( updated() );
 }
+
+
+void ServiceCollection::addTrack( Meta::TrackPtr trackPtr)
+{
+    MemoryCollection::addTrack( trackPtr );
+    const Meta::ServiceTrack * track = static_cast< const Meta::ServiceTrack * >( trackPtr.data() );
+
+    if ( track->id() != 0 )
+        m_trackIdMap.insert( track->id(), trackPtr );
+}
+
+void ServiceCollection::addArtist( Meta::ArtistPtr artistPtr)
+{
+    MemoryCollection::addArtist( artistPtr );
+    const Meta::ServiceArtist * artist = static_cast< const Meta::ServiceArtist* >( artistPtr.data() );
+
+    if ( artist->id() != 0 )
+        m_artistIdMap.insert( artist->id(), artistPtr );
+}
+
+void ServiceCollection::addAlbum( Meta::AlbumPtr albumPtr)
+{
+    MemoryCollection::addAlbum( albumPtr );
+    const Meta::ServiceAlbum * album = static_cast< const Meta::ServiceAlbum* >( albumPtr.data() );
+
+    if ( album->id() != 0 )
+        m_albumIdMap.insert( album->id(), albumPtr );
+}
+
+void ServiceCollection::addGenre( Meta::GenrePtr genrePtr)
+{
+    MemoryCollection::addGenre( genrePtr );
+    const Meta::ServiceGenre * genre = static_cast< const Meta::ServiceGenre * >( genrePtr.data() );
+
+    if ( genre->id() != 0 )
+        m_genreIdMap.insert( genre->id(), genrePtr );
+}
+
+Meta::TrackPtr ServiceCollection::trackById( int id )
+{
+    return m_trackIdMap.value( id );
+}
+
+Meta::AlbumPtr ServiceCollection::albumById( int id )
+{
+    return m_albumIdMap.value( id );
+}
+
+Meta::ArtistPtr ServiceCollection::artistById( int id )
+{
+    return m_artistIdMap.value( id );
+}
+
+Meta::GenrePtr ServiceCollection::genreById( int id )
+{
+    return m_genreIdMap.value( id );
+}
+
 
 #include "ServiceCollection.moc"
 

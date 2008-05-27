@@ -19,7 +19,7 @@
 #ifndef DYNAMICSCRIPTABLESERVICECOLLECTION_H
 #define DYNAMICSCRIPTABLESERVICECOLLECTION_H
 
-#include "../ServiceDynamicCollection.h"
+#include "../ServiceCollection.h"
 #include "AmarokProcess.h"
 
 /**
@@ -27,7 +27,7 @@ A collection that can call back a script to populate items as needed.
 
 	@author 
 */
-class ScriptableServiceCollection : public ServiceDynamicCollection
+class ScriptableServiceCollection : public ServiceCollection
 {
     Q_OBJECT
 public:

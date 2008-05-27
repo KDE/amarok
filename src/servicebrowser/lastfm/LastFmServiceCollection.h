@@ -14,7 +14,7 @@
 #ifndef LASTFMSERVICECOLLECTION_H
 #define LASTFMSERVICECOLLECTION_H
 
-#include <ServiceDynamicCollection.h>
+#include <ServiceCollection.h>
 
 #include "WeightedStringList.h"
 
@@ -25,7 +25,7 @@ namespace Meta
     class ServiceGenre;
 }
 
-class LastFmServiceCollection : public ServiceDynamicCollection
+class LastFmServiceCollection : public ServiceCollection
 {
     Q_OBJECT;
 public:
