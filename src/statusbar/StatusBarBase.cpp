@@ -118,8 +118,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     addWidget(shortLongButton);
 
     KHBox *mainProgressBarBox = new KHBox( this );
-    mainProgressBarBox->setMaximumSize( MainWindow::self()->sideBar()->width(), height() );
-    mainProgressBarBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    mainProgressBarBox->setMaximumSize( MainWindow::self()->width(), height() );
+    mainProgressBarBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     mainProgressBarBox->setObjectName( "progressBox" );
 
     QToolButton *b1 = new QToolButton( mainProgressBarBox ); //cancelbutton
@@ -162,8 +162,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     m_messageLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_messageLabel->setMinimumTextHeight( barHeight );
-
-
 
 }
 
