@@ -1,6 +1,7 @@
 /***************************************************************************
 * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
-**************************************************************************/
+* copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>  *
+***************************************************************************/
 
 /***************************************************************************
 *                                                                         *
@@ -70,7 +71,7 @@ public slots:
 
 
 protected:
-//     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
+    virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
 //     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
 //     bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
 

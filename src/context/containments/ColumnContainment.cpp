@@ -1,6 +1,7 @@
 /***************************************************************************
 * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
-**************************************************************************/
+* copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>  *
+***************************************************************************/
 
 /***************************************************************************
 *                                                                         *
@@ -231,6 +232,23 @@ void ColumnContainment::launchAppletBrowser() // SLOT
     if ( !m_appletBrowserHasBeenKicked ) {
         m_appletBrowser->resize( m_appletBrowser->size() + QSize( 1 , 0 ) );
         m_appletBrowserHasBeenKicked = true;
+    }
+}
+
+void ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent * event )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( event )
+
+    // Discoverability: We're also showing the context menu on left-click, when clicking empty space
+    if( event->button() == Qt::LeftButton )
+    {
+        bool insideApplet = false;
+        foreach( Applet* applet, applets() )
+            insideApplet |= applet->geometry().contains( event->pos() );
+
+        if( !insideApplet )
+            m_appletBrowserAction->trigger();
     }
 }
 
