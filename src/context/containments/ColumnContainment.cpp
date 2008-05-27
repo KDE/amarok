@@ -150,6 +150,9 @@ void ColumnContainment::loadConfig( KConfig& conf )
 
 QSizeF ColumnContainment::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {
+    Q_UNUSED( which )
+    Q_UNUSED( constraint )
+
     return geometry().size();
 }
 
@@ -157,6 +160,7 @@ QRectF ColumnContainment::boundingRect() const
 {
     return geometry();
 }
+
 // call this when the view changes size: e.g. layout needs to be recalculated
 void ColumnContainment::updateSize() // SLOT
 {
