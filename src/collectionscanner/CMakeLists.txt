@@ -20,5 +20,5 @@ if(APPLE)
 	SET_TARGET_PROPERTIES(amarokcollectionscanner PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
-install(TARGETS amarokcollectionscanner DESTINATION ${BIN_INSTALL_DIR} )
+install(TARGETS amarokcollectionscanner ${INSTALL_TARGETS_DEFAULT_ARGS} )
 

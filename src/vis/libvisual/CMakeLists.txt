@@ -6,7 +6,7 @@ kde4_add_executable(amarok_libvisual ${amarok_libvisual_SRCS})
 
 target_link_libraries(amarok_libvisual  ${KDE4_KDECORE_LIBS} )
 
-install(TARGETS amarok_libvisual DESTINATION ${BIN_INSTALL_DIR})
+install(TARGETS amarok_libvisual ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 
 ########### install files ###############

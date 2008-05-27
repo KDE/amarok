@@ -515,11 +515,11 @@ if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
     target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
     SET_TARGET_PROPERTIES(Amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    install(TARGETS Amarok DESTINATION ${BIN_INSTALL_DIR})
+    install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
     target_link_libraries(amarok ${KDE4_KDECORE_LIBS} amaroklib )
-    install(TARGETS amarok DESTINATION ${BIN_INSTALL_DIR})
+    install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif(Q_WS_MAC)
 
 
