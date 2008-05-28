@@ -342,6 +342,7 @@ void ScriptableServiceQueryMaker::fetchArtists()
 void ScriptableServiceQueryMaker::fetchAlbums()
 {
     DEBUG_BLOCK
+    debug() << "parent id: " << d->parentId;
 
     if ( d->albumMode == OnlyCompilations)
         return;
@@ -549,6 +550,13 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter(qint64 value, const QString 
         d->lastFilter = d->filter;
 
     }
+    return this;
+}
+
+QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::DataPtr & data )
+{
+    //DEBUG_BLOCK
+    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 

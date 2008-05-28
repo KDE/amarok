@@ -83,9 +83,9 @@ int ScriptableServiceManager::insertItem(const QString & serviceName, int level,
         return -1;
     }
 
-    m_serviceMap[serviceName]->insertItem( level, parentId, name, infoHtml, callbackData, playableUrl );
+    return m_serviceMap[serviceName]->insertItem( level, parentId, name, infoHtml, callbackData, playableUrl );
 
-    return -1; // FIXME: what should this return?
+    //return -1; // FIXME: what should this return?
 }
 
 
