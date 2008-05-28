@@ -140,8 +140,16 @@ loop do
                 #fetch results
                     data = Net::HTTP.get_response( URI.parse( args[3].strip() ) ).body
 
+                #cut result down to size a little
+                startIndex = data.index( "<ul id=\"chapters\">" )
+                data = data.slice!(startIndex..data.length-1)
+
+                #remove all <em> and </em> as they screw up simple parsing if present
+                data = data.gsub("<em>", "")
+                data = data.gsub("</em>", "")
+
                 #get stuff we need
-                data.scan(/<li><em>(.*?)<\/em>.*\n.*\n.*\n.*href=\"(.*?\.ogg)\">ogg\svorbis/) do |a|
+                    data.scan(/<li>(.*?)<br\s\/>\n.*\n.*\n.*href=\"(.*?\.ogg)\">ogg\svorbis/) do |a|
                     puts "title: " + a[0]
                     puts "url: " + a[1]
                     
