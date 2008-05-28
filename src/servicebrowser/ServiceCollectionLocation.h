@@ -19,13 +19,15 @@
 #define AMAROK_SERVICECOLLECTIONLOCATION_H
 
 #include <CollectionLocation.h>
+#include "amarok_export.h"
 #include "ServiceCollection.h"
+
 #include <QSet>
 #include <QMap>
 #include <QString>
 
 
-class ServiceCollectionLocation : public CollectionLocation
+class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
     public:
