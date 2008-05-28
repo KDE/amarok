@@ -150,10 +150,12 @@ loop do
 
                 #get stuff we need
                     data.scan(/<li>(.*?)<br\s\/>\n.*\n.*\n.*href=\"(.*?\.ogg)\">ogg\svorbis/) do |a|
-                    puts "title: " + a[0]
-                    puts "url: " + a[1]
+                    #puts "title: " + a[0]
+                    #puts "url: " + a[1]
+
+                    title = a[0].gsub( "&#8217;", "'" )
                     
-                   system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertItem", service_name, "0", parent_id, a[0], "", "", a[1] )
+                    system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "insertItem", service_name, "0", parent_id, title, "", "", a[1] )
                 end
 
                 system("qdbus", "org.kde.amarok", "/ScriptableServiceManager", "donePopulating", service_name, parent_id )
