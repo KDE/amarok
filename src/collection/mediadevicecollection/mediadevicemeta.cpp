@@ -23,7 +23,7 @@
 #include "mediadevicecollection.h"
 
 using namespace Meta;
-MediaDeviceTrack::MediaDeviceTrack( MediaDeviceCollection *collection, const QString &format);
+MediaDeviceTrack::MediaDeviceTrack( MediaDeviceCollection *collection, const QString &format)
     : Meta::Track()
     , m_collection( collection )
     , m_artist( 0 )

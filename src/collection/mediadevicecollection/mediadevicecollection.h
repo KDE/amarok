@@ -26,7 +26,7 @@
 #include "MemoryCollection.h"
 //#include "reader.h"
 
-#include <QMap>
+//#include <QMap>
 #include <QtGlobal>
 
 //#include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
@@ -47,55 +47,41 @@ class MediaDeviceCollectionFactory : public CollectionFactory
         virtual void init();
 
     private:
-        QString serverKey( const DNSSD::RemoteService *service ) const;
+	//        QString serverKey( const DNSSD::RemoteService *service ) const;
 
     private slots:
-        void connectToManualServers();
-        QString resolve( const QString &hostname );
-        void serverOffline( DNSSD::RemoteService::Ptr );
-        void foundMediaDevice( DNSSD::RemoteService::Ptr );
-        void resolvedMediaDevice( bool );
-        void slotCollectionReady();
-        void slotCollectionDownloadFailed();
+    
+      //   void foundMediaDevice( DNSSD::RemoteService::Ptr );
+      //  void resolvedMediaDevice( bool );
 
     private:
-        DNSSD::ServiceBrowser* m_browser;
 
-        QMap<QString, MediaDeviceCollection*> m_collectionMap;
+    //        QMap<QString, MediaDeviceCollection*> m_collectionMap;
 };
 
 class MediaDeviceCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
-        MediaDeviceCollection( const QString &host, const QString &ip, quint16 port );
+
+        MediaDeviceCollection();
         virtual ~MediaDeviceCollection();
 
         virtual void startFullScan();
         virtual QueryMaker* queryMaker();
 
         virtual QString collectionId() const;
-        virtual QString prettyName() const;
-
-        void serverOffline();
+        virtual QString prettyName() const;        
 
     signals:
         void collectionReady();
 
     public slots:
-        void loadedDataFromServer();
-        void parsingFailed();
 
     private slots:
-        void passwordRequired();
-        void httpError( const QString &error );
 
     private:
-        QString m_host;
-        quint16 m_port;
-        QString m_ip;
 
-        MediaDevice::Reader *m_reader;
 
 };
 
