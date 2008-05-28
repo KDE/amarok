@@ -99,7 +99,7 @@ AmpacheService::AmpacheService(const QString & name, const QString &url, const Q
     , m_collection( 0 )
 {
     setShortDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server!" ) );
-    setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    setIcon( KIcon( "view-services-ampache-amarok" ) );
 
     //we are using http queries later on, so we require
     KUrl kurl;
