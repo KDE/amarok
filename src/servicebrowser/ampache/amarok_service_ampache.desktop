@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 ServiceTypes=KPluginInfo
-Icon=download-amarok
+Icon=view-services-ampache-amarok
 Name=Ampache Service
 Comment=Listen to music from an Ampache server
 
