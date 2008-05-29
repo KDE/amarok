@@ -121,7 +121,7 @@ DaapCollectionFactory::serverOffline( DNSSD::RemoteService::Ptr service )
             warning() << "collection already null";
     }
     else
-        warning() << "removing non-existant service";
+        warning() << "removing non-existent service";
 }
 
 void

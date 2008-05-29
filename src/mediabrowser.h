@@ -83,14 +83,14 @@ class SpaceLabel : public QLabel {
 
             if(m_used > 0)
             {
-                QColor blueish(70,120,255);
+                QColor bluish(70,120,255);
                 if(e->rect().left() < used)
                 {
                     int right = used;
                     if(e->rect().right() < right)
                         right = e->rect().right();
                     p.fillRect(e->rect().left(), e->rect().top(),
-                            used, e->rect().bottom()+1, QBrush(blueish, Qt::SolidPattern));
+                            used, e->rect().bottom()+1, QBrush(bluish, Qt::SolidPattern));
                 }
             }
 
