@@ -94,7 +94,7 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
 
     DEBUG_LINE_INFO
 
-    m_appletBrowserAction = new QAction(KIcon("list-add-amarok"), i18n("Add applet"), this);
+    m_appletBrowserAction = new QAction(KIcon("list-add-amarok"), i18n("Add Applet..."), this);
     connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser()));
     // set up default context menu actions
     m_actions = new QList<QAction*>();
