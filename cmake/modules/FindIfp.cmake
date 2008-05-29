@@ -1,4 +1,4 @@
-# - Find IPF library
+# - Find IFP library
 # Find the native IFP includes and library
 # This module defines
 #  IFP_INCLUDE_DIR, where to find ifp.h, etc.
