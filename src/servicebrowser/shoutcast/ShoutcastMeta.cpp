@@ -83,4 +83,9 @@ QString ShoutcastTrack::name() const
     }
 }
 
+QString ShoutcastTrack::url() const
+{
+    return m_playlistUrl.url();
+}
+
 

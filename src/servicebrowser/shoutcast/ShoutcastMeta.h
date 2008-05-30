@@ -35,6 +35,10 @@ public:
 
     virtual QString name() const;
 
+    //we need to return something else here or we will be dowloading every single playlist when we insert into the
+    //memory collection
+    virtual QString url() const;
+    
     KUrl playableUrl() const;
     virtual Meta::GenrePtr genre();
 
