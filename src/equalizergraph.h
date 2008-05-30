@@ -1,7 +1,7 @@
 /***************************************************************************
- *   Copyright (c) 2004 Mark Kretschmann <markey@web.de>                   *
- *             (c) 1998-2000 Peter Alm, Mikael Alm, Olle Hallnas           *
+ *   Copyright (c) 1998-2000 Peter Alm, Mikael Alm, Olle Hallnas           *
  *                 Thomas Nilsson and 4Front Technologies                  *
+ *             (c) 2004 Mark Kretschmann <markey@web.de>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,11 +18,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-
-/***************************************************************************
-  Graphical spline display for equalizer
-  Based on code from XMMS
-***************************************************************************/
 
 #ifndef AMAROK_EQUALIZERGRAPH_H
 #define AMAROK_EQUALIZERGRAPH_H
