@@ -42,7 +42,7 @@
 #include "Osd.h"
 #include "playlist/PlaylistModel.h"
 #include "ProgressSlider.h"
-#include "scriptmanager.h"
+#include "ScriptManager.h"
 #include "StatusBar.h"
 #include "SvgHandler.h"
 #include "TheInstances.h"

@@ -35,7 +35,7 @@
 #include "meta/PlaylistFileSupport.h"
 #include "PluginManager.h"
 #include "AmarokProcess.h"
-#include "scriptmanager.h"
+#include "ScriptManager.h"
 #include "StatusBar.h"
 
 #include <KIO/Job>

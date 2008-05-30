@@ -23,7 +23,7 @@
 
 #define DEBUG_PREFIX "ScriptManager"
 
-#include "scriptmanager.h"
+#include "ScriptManager.h"
 
 #include "Amarok.h"
 #include "amarokconfig.h"
@@ -945,4 +945,5 @@ ScriptManager::engineVolumeChanged( int newVolume )
 }
 
 
-#include "scriptmanager.moc"
+#include "ScriptManager.moc"
+

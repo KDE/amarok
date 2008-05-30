@@ -35,7 +35,7 @@ email                : markey@web.de
 #include "playlist/PlaylistModel.h"
 #include "PluginManager.h"
 #include "refreshimages.h"
-#include "scriptmanager.h"
+#include "ScriptManager.h"
 #include "StatusBar.h"
 #include "systray.h"
 #include "TrackTooltip.h"        //engineNewMetaData()

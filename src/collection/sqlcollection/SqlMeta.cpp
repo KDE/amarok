@@ -28,7 +28,7 @@
 #include "meta/EditCapability.h"
 #include "meta/OrganiseCapability.h"
 #include "MetaUtility.h"
-#include "scriptmanager.h"
+#include "ScriptManager.h"
 #include "servicebrowser/lastfm/SimilarArtistsAction.h"
 #include "SqlRegistry.h"
 #include "SqlCollection.h"

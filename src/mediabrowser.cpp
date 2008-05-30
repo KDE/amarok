@@ -41,7 +41,7 @@
 #include "playlist/PlaylistModel.h"
 #include "PluginManager.h"
 #include "AmarokProcess.h"
-#include "scriptmanager.h"
+#include "ScriptManager.h"
 #include "SearchWidget.h"
 #include "StatusBar.h"
 #include "transferdialog.h"

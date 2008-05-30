@@ -38,7 +38,7 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
 #include "playlist/PlaylistGraphicsView.h"
-#include "scriptmanager.h"
+#include "ScriptManager.h"
 #include "SearchWidget.h"
 #include "servicebrowser/ServicePluginManager.h"
 #include "servicebrowser/scriptableservice/ScriptableService.h"

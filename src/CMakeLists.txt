@@ -399,7 +399,7 @@ set(amaroklib_LIB_SRCS
     dialogs/TagGuesser.cpp
     dialogs/deletedialog.cpp
     dialogs/deviceconfiguredialog.cpp
-    dialogs/scriptmanager.cpp
+    dialogs/ScriptManager.cpp
     dialogs/trackpickerdialog.cpp
     dialogs/transferdialog.cpp
     directorylist.cpp
@@ -458,7 +458,7 @@ kde4_add_ui3_files(amaroklib_LIB_SRCS
 kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/EditCoverSearchDialog.ui
     dialogs/deletedialogbase.ui
-    dialogs/scriptmanagerbase.ui
+    dialogs/ScriptManagerBase.ui
     dialogs/tagdialogbase.ui
     dialogs/tagguesserconfigdialog.ui
     dialogs/trackpickerdialogbase.ui

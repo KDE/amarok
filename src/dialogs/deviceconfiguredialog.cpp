@@ -25,7 +25,7 @@
 #include "MediaDevice.h"
 #include "plugin/pluginconfig.h"
 #include "PluginManager.h"
-#include "scriptmanager.h"
+#include "ScriptManager.h"
 
 #include <KApplication>
 #include <KComboBox>
