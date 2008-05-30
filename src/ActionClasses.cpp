@@ -528,6 +528,8 @@ StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/
 // StopMenuAction
 //////////////////////////////////////////////////////////////////////////////////////////
 
+K_GLOBAL_STATIC( StopMenu, s_stopMenu )
+
 StopMenu::StopMenu()
 {
     addTitle( i18n( "Stop" ) );
@@ -545,8 +547,7 @@ StopMenu::StopMenu()
 KMenu*
 StopMenu::instance()
 {
-    static StopMenu menu;
-    return &menu;
+    return s_stopMenu;
 }
 
 void
@@ -602,4 +603,7 @@ void StopMenu::slotActivated( QAction *action )
 {
     action->setChecked( !action->isChecked() );
 }
+
+
 #include "ActionClasses.moc"
+

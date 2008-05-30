@@ -145,6 +145,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
+            StopMenu();
             static KMenu *instance();
 
         private slots:
@@ -155,7 +156,6 @@ namespace Amarok
             void slotActivated( QAction *);
 
         private:
-            StopMenu();
             QAction *m_stopNow;
             QAction *m_stopAfterTrack;
             QAction *m_stopAfterQueue;
