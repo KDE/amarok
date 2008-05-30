@@ -309,9 +309,12 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
     const QString script = ensureScoreScriptRunning();
     if( script.isNull() )
     {
+    // Scoring is currently disabled, so don't show warning
+#if 0
         The::statusBar()->longMessage(
             i18n( "No score scripts were found, or none of them worked. Automatic scoring will be disabled. Sorry." ),
             KDE::StatusBar::Sorry );
+#endif
         return;
     }
 
