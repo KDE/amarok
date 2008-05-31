@@ -60,7 +60,7 @@ Track::Track( const KUrl &url )
     , d( new Track::Private( this ) )
 {
 #ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
+    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
 #else
     QByteArray fileName = QFile::encodeName( url.path() );
     const char * encodedName = fileName.constData(); // valid as long as fileName exists
