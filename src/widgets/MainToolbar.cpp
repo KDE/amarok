@@ -24,30 +24,30 @@
 #include "AnalyzerWidget.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "MainWindow.h"
-#include "meta/CurrentTrackActionsCapability.h"
 #include "ProgressSlider.h"
-#include "popupdropper/PopupDropperAction.h"
+#include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "TheInstances.h"
+#include "VolumeWidget.h"
 #include "WidgetBackgroundPainter.h"
+#include "meta/CurrentTrackActionsCapability.h"
+#include "popupdropper/PopupDropperAction.h"
+#include "toolbar.h"
 
 #include <KAction>
 #include <KApplication>
-#include <KToolBar>
 #include <KVBox>
 
 #include <QPainter>
 #include <QPixmapCache>
-#include <QVBoxLayout>
 #include <QResizeEvent>
+#include <QVBoxLayout>
 
 MainToolbar::MainToolbar( QWidget * parent )
     : KHBox( parent )
     , EngineObserver( The::engineController() )
     , m_addActionsOffsetX( 0 )
     , m_ignoreCache( false )
-
 {
     setObjectName( "MainToolbar" );
 
@@ -120,22 +120,16 @@ MainToolbar::~MainToolbar()
 
 void MainToolbar::paintEvent( QPaintEvent * )
 {
+    const int controlWidth = m_playerControlsToolbar->width();
+    const int addControlWidth = m_addControlsToolbar->width();
+    const QRect controlRect( m_playerControlsToolbar->x(), m_playerControlsToolbar->y() +2, controlWidth, m_playerControlsToolbar->height() );
+    const QRect addControlRect( m_addControlsToolbar->x(), m_addControlsToolbar->y() +2, addControlWidth, m_addControlsToolbar->height() );
 
-    int middle = contentsRect().width() / 2;
-
-    int controlWidth = m_playerControlsToolbar->width();
-    int addControlWidth = m_addControlsToolbar->width();
-    QRect controlRect( m_playerControlsToolbar->x(), m_playerControlsToolbar->y() +2, controlWidth, m_playerControlsToolbar->height() );
-    QRect addControlRect( m_addControlsToolbar->x(), m_addControlsToolbar->y() +2, addControlWidth, m_addControlsToolbar->height() );
-
-    int width = contentsRect().width();
-    int height = contentsRect().height();
     QPainter painter( this );
     //painter.drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( this, 0, 0, width, height, m_ignoreCache ) );
     m_ignoreCache = false;
-
     
-    QPixmap controlArea = The::svgHandler()->renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
+    const QPixmap controlArea = The::svgHandler()->renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
     painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
 
     if ( m_renderAddControls )
@@ -143,7 +137,6 @@ void MainToolbar::paintEvent( QPaintEvent * )
         QPixmap addControlArea = The::svgHandler()->renderSvg( "buttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
         painter.drawPixmap( addControlRect.x(), addControlRect.y(), addControlArea );
     }
-
 }
 
 void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
@@ -175,9 +168,8 @@ void MainToolbar::handleAddActions()
         Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-
             m_additionalActions = cac->customActions();
-            int numberOfActions = m_additionalActions.size();
+            const int numberOfActions = m_additionalActions.size();
 
             if ( numberOfActions < 1 )
             {
@@ -213,9 +205,9 @@ void MainToolbar::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent( event );
     //as we handle our own layout, we need to position items correctly
 
-    int middle = event->size().width() / 2;
+    const int middle = event->size().width() / 2;
+    const int controlWidth = m_playerControlsToolbar->width();
 
-    int controlWidth = m_playerControlsToolbar->width();
     m_playerControlsToolbar->move( middle - ( controlWidth / 2 ), 0 );
     m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 , 9 );
     m_volumeWidget->move( event->size().width() - 170, 11 );
@@ -236,6 +228,7 @@ bool MainToolbar::eventFilter( QObject* object, QEvent* event )
 void MainToolbar::paletteChange( const QPalette & oldPalette )
 {
     Q_UNUSED( oldPalette );
+
     The::svgHandler()->reTint();
     repaint( 0, 0, -1, -1 );
 }

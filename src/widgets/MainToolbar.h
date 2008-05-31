@@ -21,13 +21,12 @@
 #define MAINTOOLBAR_H
 
 #include "EngineObserver.h" //baseclass
-#include "toolbar.h"
-#include "VolumeWidget.h"
-#include "SvgHandler.h"
 
 #include <KHBox>
 
 class PopupDropperAction;
+class KToolBar;
+class VolumeWidget;
 
 /**
 A KHBox based toolbar with a nice svg background and takes care of adding any additional controls needed by individual tracks
