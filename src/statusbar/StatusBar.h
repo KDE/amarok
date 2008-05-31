@@ -64,7 +64,7 @@ namespace Amarok
 
 namespace The
 {
-    inline Amarok::StatusBar *statusBar() { return Amarok::StatusBar::instance(); }
+    inline AMAROK_EXPORT Amarok::StatusBar *statusBar() { return Amarok::StatusBar::instance(); }
 }
 
 #endif
