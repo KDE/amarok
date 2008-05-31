@@ -149,8 +149,12 @@ namespace Amarok
             const int handle = temp.handle();
 
             const QByteArray gdb_batch =
-                    "bt\n";
+                    "bt\n"
+                    "echo \\n\\n\n"
+                    "echo ==== (gdb) thread apply all bt ====\\n\n"
+                    "thread apply all bt\n";
 #if 0
+                    "bt\n"
                     "echo \\n\\n\n"
                     "bt full\n"
                     "echo \\n\\n\n"
