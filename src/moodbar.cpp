@@ -1,20 +1,20 @@
-/***************************************************************************
-                        moodbar.cpp  -  description
-                           -------------------
-  begin                : 6th Nov 2005
-  copyright            : (C) 2006 by Joseph Rabinoff
-  copyright            : (C) 2005 by Gav Wood
-  email                : bobqwatson@yahoo.com
-***************************************************************************/
+/*
+    Copyright (c) 2005 Gav Wood <gav@kde.org>
+              (c) 2006 Joseph Rabinoff <bobqwatson@yahoo.com>
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 // Although the current incarnation of moodbar.cpp shares bits and
 // pieces of code with Gav Wood's original, it has been completely
