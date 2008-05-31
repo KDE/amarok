@@ -18,42 +18,40 @@
 
 #include "MainWindow.h"
 
-#include <config-amarok.h>             //HAVE_LIBVISUAL definition
+#include <config-amarok.h>    //HAVE_LIBVISUAL definition
 
-#include "ActionClasses.h"    //see toolbar construction
-#include "amarokconfig.h"
 #include "Amarok.h"
-#include "collection/CollectionManager.h"
-#include "collectionbrowser/CollectionWidget.h"
-#include "context/CoverBling.h"
-#include "context/ContextView.h"
-#include "covermanager/CoverManager.h" // for actions
 #include "Debug.h"
 #include "EngineController.h" //for actions in ctor
-#include "filebrowser/FileBrowser.h"
-#include "k3bexporter.h"
 #include "MainToolbar.h"
-#include "mediabrowser.h"
 #include "Osd.h"
-#include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistWidget.h"
-#include "playlist/PlaylistGraphicsView.h"
 #include "ScriptManager.h"
 #include "SearchWidget.h"
-#include "servicebrowser/ServicePluginManager.h"
-#include "servicebrowser/scriptableservice/ScriptableService.h"
-#include "servicebrowser/ServiceBrowser.h"
 #include "Sidebar.h"
 #include "Sidebar.moc"
 #include "Statistics.h"
 #include "StatusBar.h"
 #include "TheInstances.h"
-#include "playlistmanager/PlaylistManager.h"
-#include "playlistmanager/PlaylistFileProvider.h"
+#include "amarokconfig.h"
+#include "collection/CollectionManager.h"
+#include "collectionbrowser/CollectionWidget.h"
+#include "context/ContextView.h"
+#include "context/CoverBling.h"
+#include "covermanager/CoverManager.h" // for actions
+#include "filebrowser/FileBrowser.h"
+#include "k3bexporter.h"
+#include "mediabrowser.h"
+#include "playlist/PlaylistGraphicsView.h"
+#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistWidget.h"
 #include "playlistbrowser/PlaylistBrowser.h"
-#include "widgets/Splitter.h"
-
+#include "playlistmanager/PlaylistFileProvider.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "queuemanager/QueueManager.h"
+#include "servicebrowser/ServiceBrowser.h"
+#include "servicebrowser/ServicePluginManager.h"
+#include "servicebrowser/scriptableservice/ScriptableService.h"
+#include "widgets/Splitter.h"
 
 #include <QDesktopWidget>
 #include <QList>
@@ -133,7 +131,7 @@ MainWindow::~MainWindow()
 ///////// public interface
 
 /**
- * This function will initialize the playlist window.
+ * This function will initialize the main window.
  */
 void
 MainWindow::init()
@@ -164,9 +162,9 @@ MainWindow::init()
     PERF_LOG( "Creating ContextWidget" )
     m_contextWidget = new ContextWidget( this );
     PERF_LOG( "ContextWidget created" )
-            m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+    m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
     PERF_LOG( "Creating ContextView" )
-            (new Context::ContextView( m_contextWidget ))->setFrameShape( QFrame::NoFrame );
+    (new Context::ContextView( m_contextWidget ))->setFrameShape( QFrame::NoFrame );
     PERF_LOG( "ContextView created" )
     {
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
@@ -176,9 +174,7 @@ MainWindow::init()
     connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    //mainLayout->setContentsMargins( 1, 1, 1, 1 );
-    //mainLayout->setSpacing( 1 );
-    mainLayout->setContentsMargins( 0, 0, 0, 0 );   //
+    mainLayout->setContentsMargins( 0, 0, 0, 0 );
     mainLayout->setSpacing( 0 );
 
     QWidget *centralWidget = new QWidget( this );
@@ -191,15 +187,14 @@ MainWindow::init()
     m_splitter->addWidget( playlistWidget );
 
     //make room for a full width statusbar at the bottom of everything
-    KHBox * m_statusbarArea = new KHBox( this );
-    //figure out the needed heigh tbased on system font settings
-    // do make sure that it is at least 26 pixels tall though
+    KHBox *m_statusbarArea = new KHBox( this );
+    //figure out the needed height based on system font settings
+    //do make sure that it is at least 26 pixels tall though
     //or progress bars will not fit...
     QFont currentFont = font();
     currentFont.setBold( true );
     QFontMetrics fm( currentFont );
     int fontHeight = qMax( 26, fm.height() );
-
     m_statusbarArea->setMinimumHeight( fontHeight );
     m_statusbarArea->setMaximumHeight( fontHeight );
     new Amarok::StatusBar( m_statusbarArea );
@@ -229,7 +224,7 @@ MainWindow::init()
 
         //cant use macros here since we need access to the browsers directly
         PERF_LOG( "Creating ServiceBrowser" )
-        ServiceBrowser * internetContentServiceBrowser = ServiceBrowser::instance();
+        ServiceBrowser *internetContentServiceBrowser = ServiceBrowser::instance();
         internetContentServiceBrowser->setParent( this );
         m_browsers->addWidget( KIcon( "services-amarok" ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
@@ -245,7 +240,6 @@ MainWindow::init()
         PERF_LOG( "Creating FileBrowser" )
         addBrowserMacro( FileBrowser::Widget, "FileBrowser::Widget",  i18n("Files"), "folder-amarok" )
         PERF_LOG( "Created FileBrowser" )
-
 
         //get the plugin manager
         ServicePluginManager::instance()->setBrowser( internetContentServiceBrowser );
@@ -266,8 +260,6 @@ MainWindow::init()
         PERF_LOG( "finished MainWindow::init" )
     }
     //</Browsers>
-
-    kapp->installEventFilter( this ); // keyboards shortcuts for the browsers
 
     Amarok::MessageQueue::instance()->sendMessages();
 }
@@ -317,21 +309,6 @@ MainWindow::showBrowser( const QString &name )
         m_browsers->showWidget( index );
 }
 
-
-/**
- * @param o The object
- * @param e The event
- *
- * Here we filter some events for the Playlist Search LineEdit and the Playlist. @n
- * this makes life easier since we have more useful functions available from this class
- */
-bool
-MainWindow::eventFilter( QObject *o, QEvent *e )
-{
-    return QWidget::eventFilter( o, e );
-}
-
-
 void
 MainWindow::closeEvent( QCloseEvent *e )
 {
@@ -342,8 +319,6 @@ MainWindow::closeEvent( QCloseEvent *e )
 
     //KDE policy states we should hide to tray and not quit() when the
     //close window button is pushed for the main widget
-
-    //e->accept(); //if we don't do this the info box appears on quit()!
 
     if( AmarokConfig::showTrayIcon() && e->spontaneous() && !kapp->sessionSaving() )
     {
@@ -378,7 +353,6 @@ MainWindow::sizeHint() const
     return QApplication::desktop()->screenGeometry( (QWidget*)this ).size() / 1.5;
 }
 
-
 void
 MainWindow::savePlaylist() const //SLOT
 {
@@ -386,7 +360,6 @@ MainWindow::savePlaylist() const //SLOT
     if( !playlistName.isEmpty() )
         The::playlistModel()->savePlaylist( playlistName );
 }
-
 
 void
 MainWindow::slotBurnPlaylist() const //SLOT
@@ -406,7 +379,6 @@ MainWindow::slotPlayMedia() //SLOT
     // Request location and immediately start playback
     slotAddLocation( true );
 }
-
 
 void
 MainWindow::slotAddLocation( bool directPlay ) //SLOT
@@ -444,114 +416,6 @@ MainWindow::slotAddStream() //SLOT
 
     The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
 }
-
-// TODO: need to add these menu items via last.fm service
-#if 0
-void MainWindow::playLastfmPersonal() //SLOT
-{
-    if( !LastFm::Controller::checkCredentials() ) return;
-
-    const KUrl url( QString( "lastfm://user/%1/personal" )
-                    .arg( AmarokConfig::scrobblerUsername() ) );
-
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
-}
-
-
-void MainWindow::addLastfmPersonal() //SLOT
-{
-    if( !LastFm::Controller::checkCredentials() ) return;
-
-    const KUrl url( QString( "lastfm://user/%1/personal" )
-                    .arg( AmarokConfig::scrobblerUsername() ) );
-
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-
-    The::playlistModel()->insertOptioned( track, Playlist::Append );
-}
-
-
-void MainWindow::playLastfmNeighbor() //SLOT
-{
-    if( !LastFm::Controller::checkCredentials() ) return;
-
-    const KUrl url( QString( "lastfm://user/%1/neighbours" )
-                    .arg( AmarokConfig::scrobblerUsername() ) );
-
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-
-    The::playlistModel()->insertOptioned( track, Playlist::Append );
-}
-
-
-void MainWindow::addLastfmNeighbor() //SLOT
-{
-    if( !LastFm::Controller::checkCredentials() ) return;
-
-    const KUrl url( QString( "lastfm://user/%1/neighbours" )
-                    .arg( AmarokConfig::scrobblerUsername() ) );
-
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-
-    The::playlistModel()->insertOptioned( track, Playlist::Append );
-}
-
-
-void MainWindow::playLastfmCustom() //SLOT
-{
-    const QString token = LastFm::Controller::createCustomStation();
-    if( token.isEmpty() ) return;
-
-    const KUrl url( "lastfm://artist/" + token + "/similarartists" );
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
-}
-
-
-void MainWindow::addLastfmCustom() //SLOT
-{
-    const QString token = LastFm::Controller::createCustomStation();
-    if( token.isEmpty() ) return;
-
-    const KUrl url( "lastfm://artist/" + token + "/similarartists" );
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-
-    The::playlistModel()->insertOptioned( track, Playlist::Append );
-}
-
-
-void MainWindow::playLastfmGlobaltag() //SLOT
-{
-    if( !LastFm::Controller::checkCredentials() ) return;
-
-    KAction *action = dynamic_cast<KAction*>( sender() );
-    if( !action ) return;
-
-    const QString tag = action->text();
-    const KUrl url( "lastfm://globaltags/" + tag );
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
-}
-
-
-void MainWindow::addLastfmGlobaltag() //SLOT
-{
-    if( !LastFm::Controller::checkCredentials() ) return;
-
-    KAction *action = dynamic_cast<KAction*>( sender() );
-    if( !action ) return;
-
-    const QString tag = action->text();
-    const KUrl url( "lastfm://globaltags/" + tag );
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-
-    The::playlistModel()->insertOptioned( track, Playlist::Append );
-}
-#endif
 
 void
 MainWindow::playAudioCD() //SLOT

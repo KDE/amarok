@@ -57,8 +57,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         //takes into account minimized, multiple desktops, etc.
         bool isReallyShown() const;
 
-        virtual bool eventFilter( QObject*, QEvent* );
-
         //instance is declared in KXMLGUI
         static MainWindow *self() { return s_instance; }
 

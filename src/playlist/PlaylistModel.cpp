@@ -103,11 +103,6 @@ Playlist::Model::init()
     // essentially announces to the TrackAdvancer that there was a change in the playlist
     connect( this, SIGNAL( playlistCountChanged(int) ), SLOT( notifyAdvancersOnItemChange() ) );
 
-    //FIXME: because the restoring in app.cpp:711 causes problems we do it here. This doesn't respect the command line flags though.
-    /*if ( AmarokConfig::savePlaylist() )
-    {
-        The::playlistModel()->restoreSession();
-    }*/
 }
 
 Playlist::Model::~Model()
@@ -134,13 +129,6 @@ QVariant
 Playlist::Model::data( const QModelIndex& index, int role ) const
 {
     int row = index.row();
-    /*if( ( role ==  Qt::FontRole) && ( row == m_activeRow ) )
-    {
-        QFont original;
-        original.setBold( true );
-        return original;
-    }
-    else*/
     if( role == ItemRole && ( row != -1 ) )
         return QVariant::fromValue( m_items.at( row ) );
 
