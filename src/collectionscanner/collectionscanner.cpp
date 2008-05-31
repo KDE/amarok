@@ -324,7 +324,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
 
 #ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
+    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
 #else
     QByteArray fileName = QFile::encodeName( path );
     const char * encodedName = fileName.constData(); // valid as long as fileName exists
