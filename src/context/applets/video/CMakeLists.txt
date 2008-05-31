@@ -2,7 +2,8 @@ project(context-video)
 
 set(video_SRCS
     Video.cpp
-    ../../Applet.cpp)
+    # ../../Applet.cpp
+    )
 
 include_directories( ../../..
                     ../..
