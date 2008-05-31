@@ -77,7 +77,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
  , m_sessionId ( QString() )
 {
 
-    setShortDescription( i18n( "The MP3Tunes Locker service. Access your stored music!" ) );
+    setShortDescription( i18n( "The MP3tunes Locker service. Access your stored music!" ) );
     setIcon( KIcon( "view-services-mp3tunes-amarok" ) );
 
 }
@@ -99,11 +99,11 @@ void Mp3tunesService::polish()
 void Mp3tunesService::authenticate( const QString & uname, const QString & passwd )
 {
 
-QString username, password;
+    QString username, password;
    
     if ( uname.isEmpty() || passwd.isEmpty() ) {
         KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to api, but that does not work
-        dlg.setPrompt( i18n( "Enter a login and a password" ) );
+        dlg.setPrompt( i18n( "Enter your MP3tunes login and password" ) );
         if( !dlg.exec() )
             return; //the user canceled
 
@@ -125,12 +125,10 @@ QString username, password;
     debug() << "Authenticating with string: " << authenticationString;
 
 
-
     m_xmlDownloadJob = KIO::storedGet( authenticationString, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
-    The::statusBar() ->newProgressOperation( m_xmlDownloadJob )
-    .setDescription( i18n( "Authenticating" ) );
 
+    The::statusBar()->newProgressOperation( m_xmlDownloadJob ).setDescription( i18n( "Authenticating" ) );
 }
 
 void Mp3tunesService::authenticationComplete(KJob * job)
