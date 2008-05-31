@@ -34,6 +34,7 @@ namespace Playlist {
         public:
             RandomTrackNavigator( Model *m ) : TrackNavigator( m ) { }
             Meta::TrackPtr nextTrack();
+            Meta::TrackPtr lastTrack();
 
         private:
             void generateUnplayedTracks();

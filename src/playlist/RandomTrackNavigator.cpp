@@ -39,7 +39,7 @@ RandomTrackNavigator::nextTrack()
     }
 
     Meta::TrackPtr lastTrack = m_playlistModel->activeTrack();
-    m_playedTracks.append( lastTrack ); 
+    m_playedTracks.append( lastTrack );
     m_unplayedTracks.removeAll( lastTrack );
 
     if( !m_unplayedTracks.isEmpty() && m_playlistModel->stopAfterMode() != StopAfterCurrent )
@@ -51,9 +51,15 @@ RandomTrackNavigator::nextTrack()
     m_playedTracks.clear();
     TrackNavigator::setPlaylistChanged(); // will cause generateUnplayedTracks() to be called
     debug() << "There are no more tracks to play, starting over";
-    
+
     // out of tracks to play or stopAfterMode == Current.
     return Meta::TrackPtr();
+}
+
+Meta::TrackPtr
+RandomTrackNavigator::lastTrack()
+{
+    return m_playedTracks.takeAt( m_playedTracks.count() - 1 );
 }
 
 void
