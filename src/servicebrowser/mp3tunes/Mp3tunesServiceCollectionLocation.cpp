@@ -43,3 +43,15 @@ bool Mp3tunesServiceCollectionLocation::isOrganizable() const
 {
     return false;
 }
+bool Mp3tunesServiceCollectionLocation::remove( const Meta::TrackPtr &track ) 
+{
+    //TODO
+    return false;
+}
+void Mp3tunesServiceCollectionLocation::copyUrlsToCollection ( 
+        const QMap<Meta::TrackPtr, KUrl> &sources ) 
+{
+    //TODO 
+    //do not forget to call slotCopyOperationFinished() when you are done copying
+    //the files.
+}

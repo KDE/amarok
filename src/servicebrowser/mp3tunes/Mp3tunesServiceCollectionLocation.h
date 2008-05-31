@@ -33,11 +33,13 @@ class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
         Mp3tunesServiceCollectionLocation(Mp3tunesServiceCollection const *parentCollection);
         virtual ~Mp3tunesServiceCollectionLocation();
 
-        //These are service dependant
+        
         virtual QString prettyLocation() const;
         virtual bool isWriteable() const;
         virtual bool isOrganizable() const;
-//        virtual bool remove( const Meta::TrackPtr &track );
+        virtual bool remove( const Meta::TrackPtr &track );
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
+        
     private:
         Mp3tunesServiceCollection *m_collection;
 };
