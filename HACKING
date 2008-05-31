@@ -29,7 +29,7 @@ Formatting
 
 Example:
 
- | bool 
+ | bool
  | MyClass::myMethod( QStringList list, const QString &name )
  | {
  |     if( list.isEmpty() )
@@ -40,11 +40,8 @@ Example:
  |       when you do not need it outside the loop. Let the compiler
  |       optimise it.
  |      */
- |     foreach( QString string, list )
- |     {
- |
+ |     foreach( const QString &string, list )
  |         debug() << "Current string is " << string << endl;
- |     }
  | }
 
 Header includes should be listed in the following order:
