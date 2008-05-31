@@ -47,8 +47,8 @@ class Mp3TunesTrack  : public ServiceTrack
         }
 
         virtual QString sourceName() { return "MP3tunes.com"; }
-        virtual QString sourceDescription() { return "Online music locker where you can safely store and access yout music: http://mp3tunes.com"; }
-        virtual QPixmap emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-default.png" );  }
+        virtual QString sourceDescription() { return "Online music locker where you can safely store and access your music: http://mp3tunes.com"; }
+        virtual QPixmap emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-mp3tunes.png" );  }
 
 };
 
