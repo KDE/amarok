@@ -27,7 +27,7 @@
 /**
 An abstract base class for observers that wants to be notified when here is new contex information available about an active service
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
 class AMAROK_EXPORT ServiceInfoObserver{
 public:

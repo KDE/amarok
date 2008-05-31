@@ -28,10 +28,11 @@
 /**
 Abstract base class for info parsers
 
-	@author  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AMAROK_EXPORT InfoParserBase  : public QObject{
-Q_OBJECT
+class AMAROK_EXPORT InfoParserBase  : public QObject
+{
+    Q_OBJECT
 
 public:
 
@@ -52,7 +53,6 @@ public:
      */
     virtual void getInfo( Meta::AlbumPtr album ) = 0;
 
-
     /**
      * Overloaded function
      * Fetches info about track and emits infoReady( Qstring )
@@ -62,15 +62,11 @@ public:
     virtual void getInfo( Meta::TrackPtr track ) = 0;
 
 signals:
-
     /**
      * Signal emmited when new html info is ready to be shown
      * @param info The string containing the html formatted information
      */
     void info( QString info );
-
-
 };
-
 
 #endif

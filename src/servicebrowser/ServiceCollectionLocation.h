@@ -38,9 +38,8 @@ class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
         virtual QString prettyLocation() const;
         virtual bool isWriteable() const;
         virtual bool isOrganizable() const;
-        
+        //virtual bool remove( const Meta::TrackPtr &track );
     private:
-       
         bool m_removeSources;    //used by the destination to remember the value, needed in copyurlsToCollection
         bool m_overwriteFiles;
 };

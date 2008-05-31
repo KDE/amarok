@@ -31,25 +31,23 @@
 /**
 A proxy class for relaying information from the currently active service to the ServiceEngine so it can be displayed in a plasma applet in the context view. It is a singleton and included in the "The" namespace for easy access
 
-	Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+    Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
 class AMAROK_EXPORT ServiceInfoProxy{
 public:
-
-    static /*AMAROK_EXPORT*/ ServiceInfoProxy * instance();
+    static ServiceInfoProxy * instance();
     ~ServiceInfoProxy();
 
-    void /*AMAROK_EXPORT*/ subscribe( ServiceInfoObserver *observer );
-    void /*AMAROK_EXPORT*/ subscribeForCloud( ServiceInfoObserver *observer );
-    void /*AMAROK_EXPORT*/ unsubscribe( ServiceInfoObserver *observer );
+    void subscribe( ServiceInfoObserver *observer );
+    void subscribeForCloud( ServiceInfoObserver *observer );
+    void unsubscribe( ServiceInfoObserver *observer );
 
     void setInfo( const QVariantMap &infoMap );
     void setCloud( const QVariantMap &cloudMap );
-    QVariantMap /*AMAROK_EXPORT*/ info(); // info about the service
-    QVariantMap /*AMAROK_EXPORT*/ cloud(); //cloud view for the service
+    QVariantMap info(); // info about the service
+    QVariantMap cloud(); //cloud view for the service
 
 private:
-
     ServiceInfoProxy();
     void notifyObservers( const QVariantMap &infoMap ) const;
     void notifyCloudObservers( const QVariantMap &cloudMap ) const;

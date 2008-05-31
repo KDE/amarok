@@ -36,7 +36,6 @@
 
 class AMAROK_EXPORT ServiceMetaFactory
 {
-
     public:
         ServiceMetaFactory( const QString &dbPrefix );
         virtual ~ServiceMetaFactory() {}
@@ -60,49 +59,38 @@ class AMAROK_EXPORT ServiceMetaFactory
         virtual Meta::GenrePtr createGenre( const QStringList &rows );
 
     private:
-
         QString m_dbTablePrefix;
-
-
 };
 
 class AMAROK_EXPORT ServiceDisplayInfoProvider
 {
-
     public:
         ServiceDisplayInfoProvider() {}
         virtual ~ServiceDisplayInfoProvider() {}
 
         virtual void processInfoOf( InfoParserBase * infoParser ) = 0;
-
 };
-
 
 class AMAROK_EXPORT CustomActionsProvider
 {
-
     public:
         CustomActionsProvider() {}
         virtual ~CustomActionsProvider() {}
 
         virtual QList< PopupDropperAction *> customActions() { DEBUG_BLOCK return QList< PopupDropperAction *>(); }
-
 };
 
 class AMAROK_EXPORT CurrentTrackActionsProvider
 {
-
     public:
         CurrentTrackActionsProvider() {}
         virtual ~CurrentTrackActionsProvider() {}
 
         virtual QList< PopupDropperAction *> currentTrackActions() { DEBUG_BLOCK return QList< PopupDropperAction *>(); }
-
 };
 
 class AMAROK_EXPORT SourceInfoProvider
 {
-
     public:
         SourceInfoProvider() {}
         virtual ~SourceInfoProvider() {}
@@ -111,14 +99,12 @@ class AMAROK_EXPORT SourceInfoProvider
         virtual QString sourceDescription() { return QString(); }
         virtual QPixmap emblem()  { return QPixmap(); }
         virtual bool hasSourceInfo() const { return true; }
-
 };
 
 
 
 namespace Meta
 {
-
 class ServiceTrack;
 class ServiceAlbum;
 class ServiceArtist;
@@ -211,7 +197,6 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
-
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::CustomActions ) ||
@@ -273,10 +258,12 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 //         QString m_type;
 };
 
-class AMAROK_EXPORT ServiceArtist : public Meta::Artist, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
+class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
+                                    public ServiceDisplayInfoProvider,
+                                    public CustomActionsProvider,
+                                    public SourceInfoProvider
 {
     public:
-
         ServiceArtist( const QStringList & resultRow );
         ServiceArtist( const QString & name );
         virtual ~ServiceArtist();
@@ -322,10 +309,12 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist, public ServiceDisplayIn
         QString m_name;
         QString m_description;
         TrackList m_tracks;
-
 };
 
-class AMAROK_EXPORT ServiceAlbum : public Meta::Album, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
+class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
+                                   public ServiceDisplayInfoProvider,
+                                   public CustomActionsProvider,
+                                   public SourceInfoProvider
 {
     public:
         ServiceAlbum( const QStringList & resultRow );
@@ -341,7 +330,6 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album, public ServiceDisplayInfo
         virtual TrackList tracks();
 
         virtual void processInfoOf( InfoParserBase * infoParser );
-
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
@@ -359,11 +347,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album, public ServiceDisplayInfo
                 return 0;
         }
 
-
-
-
         //ServiceAlbum specific methods
-
         void addTrack( TrackPtr track );
         void setAlbumArtist( ArtistPtr artist );
         void setIsCompilation( bool compilation );
@@ -389,7 +373,10 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album, public ServiceDisplayInfo
         QString m_artistName;
 };
 
-class AMAROK_EXPORT ServiceGenre : public Meta::Genre, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
+class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
+                                   public ServiceDisplayInfoProvider,
+                                   public CustomActionsProvider,
+                                   public SourceInfoProvider
 {
     public:
         ServiceGenre( const QString &name );
@@ -435,7 +422,10 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre, public ServiceDisplayInfo
         TrackList m_tracks;
 };
 
-class AMAROK_EXPORT ServiceComposer : public Meta::Composer, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
+class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
+                                      public ServiceDisplayInfoProvider,
+                                      public CustomActionsProvider,
+                                      public SourceInfoProvider
 {
     public:
         ServiceComposer( const QString &name );
@@ -472,7 +462,10 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer, public ServiceDispl
         TrackList m_tracks;
 };
 
-class AMAROK_EXPORT ServiceYear : public Meta::Year, public ServiceDisplayInfoProvider, public CustomActionsProvider, public SourceInfoProvider
+class AMAROK_EXPORT ServiceYear : public Meta::Year,
+                                  public ServiceDisplayInfoProvider,
+                                  public CustomActionsProvider,
+                                  public SourceInfoProvider
 {
     public:
         ServiceYear( const QString &name );

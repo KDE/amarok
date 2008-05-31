@@ -27,7 +27,7 @@
 /**
 An action to let the user locate and show the artist or album of a track in the correct service
 
-	@author 
+    @author
 */
 class AMAROK_EXPORT ShowInServiceAction : public PopupDropperAction
 {

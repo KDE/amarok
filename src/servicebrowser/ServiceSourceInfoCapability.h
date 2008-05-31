@@ -29,7 +29,8 @@ class SourceInfoProvider;
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 
-class AMAROK_EXPORT ServiceSourceInfoCapability : public Meta::SourceInfoCapability {
+class AMAROK_EXPORT ServiceSourceInfoCapability : public Meta::SourceInfoCapability
+{
 public:
     ServiceSourceInfoCapability( SourceInfoProvider * sourceInfoProvider );
 
@@ -39,8 +40,8 @@ public:
     QString sourceDescription();
     QPixmap emblem();
 
-    private:
-        SourceInfoProvider * m_sourceInfoProvider;
+private:
+    SourceInfoProvider * m_sourceInfoProvider;
 
 };
 

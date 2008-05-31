@@ -15,7 +15,7 @@ interface that really makes playlist handling easy.
 ==========
 
     * Quick and simple drag and drop playlist creation
-    * Music library (built-in SQLite, or MySQL)
+    * Music library (built-in SQLite or MySQL)
     * Plays all audio formats known to man
     * 10 band equalizer
     * Cover art download using Amazon services
@@ -50,11 +50,6 @@ Required
     * Ruby 1.8
       (programming language, used for scoring, lyrics, last.fm streams)
       http://www.ruby-lang.org
-
-Optional
-    * KDE-Base 4.1 (or newer)
-      (needed for Konqueror Sidebar)
-      http://www.kde.org
 
     * MySQL 4 or 5
       (faster database support)
@@ -104,7 +99,7 @@ Optional
     * libkarma 0.0.5 && OMFS 0.6.1
       (Rio Karma support via USB)
       http://freakysoft.de/html/libkarma/ && http://linux-karma.sf.net/
-      
+
 Please note, if compiling from source you must also install the devel versions
 of these packages.
 --------------------------------------------------------------------------------
@@ -121,19 +116,6 @@ Packages for popular distributions are available at http://amarok.kde.org
 
  INSTALLATION-FAQ
 ==================
-
-Q: I have the required version of GStreamer installed but configure doesn't
-   find it!
-Q: I have pkg-config problems.
-A: Here's an extract from the PKG-CONFIG man page:
-
-     pkg-config retrieves information about packages from  special metadata
-     files. These files are named after the package, with the extension
-     .pc. By default, pkg-config looks in the directory prefix/lib/pkgconfig
-     for these  files;  it will  also  look in the colon-separated list of
-     directories specified by the PKG_CONFIG_PATH environment variable.
-
-   So, do export PKG_CONFIG_PATH="/path/to/gstreamer-0.x.y.pc" and reconfigure.
 
 Q: Can I improve Amarok's startup time?
 A: Prelinking Amarok has spectacular results; however if you have binary openGL

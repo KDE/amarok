@@ -37,7 +37,7 @@ enum {
 /**
 A very simple model to hold the available services
 
-	@author 
+    @author
 */
 class ServiceListModel : public QAbstractListModel
 {
@@ -49,14 +49,11 @@ public:
     int rowCount( const QModelIndex & parent = QModelIndex() ) const;
     QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
-
     void addService( ServiceBase * service );
     void removeService(  ServiceBase * service );
 
 private:
-
     QList<ServiceBase * > m_services;
-
 };
 
 #endif

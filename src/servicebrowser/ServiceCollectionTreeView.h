@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef SERVICECOLLECTIONTREEVIEW_H
 #define SERVICECOLLECTIONTREEVIEW_H
 
@@ -25,7 +25,7 @@
 /**
 A simple extension of the CollectionTreeView class that allows optional support for specifying that tracks are not playable and thus should not be added to the playlist on activation and does not have the add and load options in the context menu.
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 
 class ServiceCollectionTreeView : public CollectionTreeView
@@ -36,9 +36,6 @@ public:
 
     void setPlayableTracks( bool playable );
     bool playableTracks() const;
-    
-
-    
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent* event);

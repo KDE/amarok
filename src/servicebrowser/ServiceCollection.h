@@ -38,7 +38,7 @@ typedef QMap<int, Meta::GenrePtr> GenreIdMap;
 This is a specialized collection that can be used by services who dynamically
 fetch their data from somewhere ( a web service, an external program, etc....)
 
-    @author 
+    @author
  */
 
 class AMAROK_EXPORT ServiceCollection : public Collection, public MemoryCollection
@@ -48,7 +48,7 @@ class AMAROK_EXPORT ServiceCollection : public Collection, public MemoryCollecti
         ServiceCollection( ServiceBase * service = 0 );
         ServiceCollection( ServiceBase * service, const QString &id, const QString &prettyName );
         virtual ~ServiceCollection();
-        
+
         virtual void startFullScan();
         virtual QueryMaker* queryMaker();
 
@@ -56,7 +56,7 @@ class AMAROK_EXPORT ServiceCollection : public Collection, public MemoryCollecti
         virtual QString prettyName() const;
 
         void emitUpdated();
-        
+
         virtual QStringList query( const QString &query ) { Q_UNUSED( query ); return QStringList(); }
         virtual int insert( const QString &statement, const QString &table ) { Q_UNUSED( statement ); Q_UNUSED( table ); return 0; }
 
@@ -69,25 +69,23 @@ class AMAROK_EXPORT ServiceCollection : public Collection, public MemoryCollecti
         Meta::GenrePtr genreById( int id );
 
         //Override some stuff to be able to hande id mappings
-        
 
         void addTrack( Meta::TrackPtr trackPtr );
         void addArtist( Meta::ArtistPtr artistPtr);
         void addAlbum ( Meta::AlbumPtr albumPtr );
         void addGenre( Meta::GenrePtr genrePtr);
-        
+
         //TODO:
         //void setTrackMap( TrackMap map ) { m_trackMap = map; }
         //void setArtistMap( ArtistMap map ) { m_artistMap = map; }
         //void setAlbumMap( AlbumMap map ) { m_albumMap = map; }
         //void setGenreMap( GenreMap map ) { m_genreMap = map; }
-        
+
         ServiceBase * service();
 
     private:
-
         ServiceBase * m_service;
-        
+
         ServiceMetaFactory * m_metaFactory;
 
         QString m_collectionId;
@@ -97,7 +95,6 @@ class AMAROK_EXPORT ServiceCollection : public Collection, public MemoryCollecti
         ArtistIdMap m_artistIdMap;
         AlbumIdMap m_albumIdMap;
         GenreIdMap m_genreIdMap;
-
 };
 
 #endif

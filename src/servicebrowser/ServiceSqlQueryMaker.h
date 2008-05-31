@@ -83,8 +83,6 @@ class ServiceSqlQueryMaker : public QueryMaker
         QStringList runQuery( const QString &query );
         void handleResult( const QStringList &result );
 
-        
-
     protected:
         virtual QString escape( QString text ) const;
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;

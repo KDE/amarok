@@ -27,8 +27,8 @@
 #include <QContextMenuEvent>
 
 ServiceCollectionTreeView::ServiceCollectionTreeView( QWidget *parent )
- : CollectionTreeView( parent )
- , m_playableTracks( true ) //per default, act just like a normal CollectionTreeView
+    : CollectionTreeView( parent )
+    , m_playableTracks( true ) //per default, act just like a normal CollectionTreeView
 {
 }
 
@@ -36,21 +36,20 @@ ServiceCollectionTreeView::~ServiceCollectionTreeView()
 {
 }
 
-void ServiceCollectionTreeView::mouseDoubleClickEvent( QMouseEvent* event )
+void
+ServiceCollectionTreeView::mouseDoubleClickEvent( QMouseEvent* event )
 {
     if ( m_playableTracks )
         CollectionTreeView::mouseDoubleClickEvent( event );
 }
 
-void ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
+void
+ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
 {
     if ( m_playableTracks )
-    {
         CollectionTreeView::contextMenuEvent( event );
-    }
     else
     {
-
         QModelIndexList indices = selectedIndexes();
         if( filterModel() )
         {
@@ -64,7 +63,6 @@ void ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
 
         if( !indices.isEmpty() )
         {
-
             KMenu menu;
             if( indices.count() == 1 )
             {
@@ -87,7 +85,7 @@ void ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
                 }
             }
 
-            if ( menu.actions().count() > 0 )
+            if( menu.actions().count() > 0 )
             {
                 (void)menu.exec( event->globalPos() );
                 QSet<CollectionTreeItem*> items;

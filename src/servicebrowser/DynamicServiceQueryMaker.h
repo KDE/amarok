@@ -20,12 +20,10 @@
 #ifndef DYNAMICSERVICEQUERYMAKER_H
 #define DYNAMICSERVICEQUERYMAKER_H
 
-#include "amarok_export.h"
-#include "QueryMaker.h"
-
 #include "Meta.h"
-
+#include "QueryMaker.h"
 #include "ServiceCollection.h"
+#include "amarok_export.h"
 
 #include <kio/jobclasses.h>
 
@@ -36,10 +34,10 @@ namespace ThreadWeaver
 
 
 /**
-A base class for implementing custom querymakers that fetch data from an external source. 
+A base class for implementing custom querymakers that fetch data from an external source.
 Basically just stubs out the stuff that not every dynamic querymaker will need
 
-	@author
+    @author
 */
 class AMAROK_EXPORT DynamicServiceQueryMaker : public QueryMaker
 {
@@ -47,7 +45,6 @@ Q_OBJECT
 public:
     DynamicServiceQueryMaker( );
     virtual ~DynamicServiceQueryMaker() {};
-
 
     //this is the stuff that must be implmeneted
     virtual QueryMaker* reset() = 0;
@@ -57,7 +54,7 @@ public:
     virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs ) = 0;
 
 
-    //below here is the stuf that each dynamic querymaker will most likely only need 
+    //below here is the stuf that each dynamic querymaker will most likely only need
     //Some of, hense they are all stubbed out:
 
     virtual QueryMaker* startTrackQuery()  { return this; }
@@ -74,7 +71,6 @@ public:
 
     virtual QueryMaker* includeCollection ( const QString &collectionId );
     virtual QueryMaker* excludeCollection ( const QString &collectionId );
-
 
     virtual QueryMaker* addMatch ( const Meta::TrackPtr &track );
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
@@ -97,8 +93,6 @@ public:
     virtual QueryMaker* beginAnd() { return this; }
     virtual QueryMaker* beginOr() { return this; }
     virtual QueryMaker* endAndOr() { return this; }
-
-
 };
 
 #endif

@@ -20,7 +20,7 @@
 #ifndef SERVICELISTDELEGATE_H
 #define SERVICELISTDELEGATE_H
 
-#include "../SvgHandler.h"
+#include "SvgHandler.h"
 
 #include <QItemDelegate>
 #include <QListView>
@@ -29,7 +29,7 @@
 /**
 A delegate for displaying a nice overview of a service
 
-	@author
+    @author
 */
 class ServiceListDelegate : public QItemDelegate
 {
@@ -37,16 +37,13 @@ public:
     ServiceListDelegate( QListView *view );
     ~ServiceListDelegate();
 
-
-    void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
     void paletteChange();
 
 private:
-
     QListView *m_view;
-
 };
 
 #endif

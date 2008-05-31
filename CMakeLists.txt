@@ -2,7 +2,6 @@ project(Amarok)
 
 cmake_minimum_required(VERSION 2.4.5)
 
-
 #We depend on kde4.1 now.. I believe this is the easiest way to do it.
 set(KDE_MIN_VERSION "4.00.61")
 find_package(KDE4)
@@ -10,12 +9,6 @@ find_package(KDE4)
 include (KDE4Defaults)
 include (MacroLibrary)
 
-include(CheckIncludeFile)
-include(CheckIncludeFiles)
-include(CheckSymbolExists)
-include(CheckFunctionExists)
-include(CheckLibraryExists)
-include(CheckPrototypeExists)
 include(CheckTypeSize)
 include(MacroBoolTo01)
 include(MacroLogFeature)
@@ -82,7 +75,7 @@ check_type_size("long" SIZEOF_LONG)
 
 check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 
-configure_file (config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
+configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
 add_subdirectory( src )
 

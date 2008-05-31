@@ -25,10 +25,10 @@
 #include "ServiceBase.h"
 #include "ServiceListModel.h"
 
-#include <kvbox.h>
+#include <KVBox>
+
 #include <QListView>
 #include <QMap>
-
 
 class ServiceListDelegate;
 
@@ -49,7 +49,7 @@ public:
      * @return The ServiceBrowser instance.
      */
     static ServiceBrowser * instance();
-    
+
     /**
      * Destructor.
      */
@@ -60,13 +60,13 @@ public:
      * @return the map of services.
      */
     QMap<QString, ServiceBase *> services();
-    
+
     /**
      * Remove a named service from the service browser.
      * @param name The name of the service to remove.
      */
     void removeService( const QString &name );
-    
+
     /**
      * Reset a service and make it reload configuration. Not fully implemented..
      * @param name The name of the service to reset.
@@ -86,7 +86,7 @@ public slots:
      * @param service The service to add.
      */
     void addService( ServiceBase * service );
-    
+
     /**
      * Set a scriptable service manager to handle scripted services.
      * @param scriptableServiceManager The scriptable service manager to set.
@@ -111,7 +111,7 @@ private:
     ServiceBrowser(QWidget * parent, const QString& name );
 
     static ServiceBrowser * s_instance;
-            
+
     QListView * m_serviceListView;
 
     QMap<QString, ServiceBase *> m_services;
@@ -130,7 +130,7 @@ private slots:
      * @param index The index that was activated
      */
     void serviceActivated( const QModelIndex & index );
-    
+
     /**
      * Slot called when the active service should be hidden the service selection list shown again.
      */

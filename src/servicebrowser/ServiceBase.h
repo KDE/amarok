@@ -20,32 +20,27 @@
 #ifndef AMAROKSERVICEBASE_H
 #define AMAROKSERVICEBASE_H
 
-
-#include "Amarok.h"
-
-#include "InfoParserBase.h"
-#include "ServiceMetaBase.h"
-#include "collection/CollectionManager.h"
-
-#include "amarok_export.h"
-#include "../collectionbrowser/SingleCollectionTreeItemModel.h"
 #include "../collectionbrowser/CollectionTreeItem.h"
+#include "../collectionbrowser/SingleCollectionTreeItemModel.h"
+#include "Amarok.h"
+#include "InfoParserBase.h"
 #include "ServiceCollectionTreeView.h"
+#include "ServiceMetaBase.h"
+#include "amarok_export.h"
+#include "collection/CollectionManager.h"
 #include "plugin/plugin.h"
 
+#include <KPluginInfo>
+#include <KVBox>
 #include <khtml_part.h>
-#include <kvbox.h>
 
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 
-#include <KPluginInfo>
-
 class ServiceBase;
 class SearchWidget;
 class KMenuBar;
-
 
 /**
 A virtual base class for factories for creating and handling the different types of service plugins
@@ -60,7 +55,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
          * Constructor.
          */
         ServiceFactory();
-        
+
         /**
          * Destructor.
          */
@@ -70,19 +65,19 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
          * Initialize the service plugins of this type. Reimplemented by subclasses.
          */
         virtual void init() = 0;
-        
+
         /**
          * Get the name of this service type. Reimplemented by subclasses.
          * @return The name.
          */
         virtual QString name() = 0;
-        
+
         /**
          * Get a KConfigGroup object containing the config for this tyoe of service. Reimplemented by subclasses.
-         * @return 
+         * @return
          */
         virtual KConfigGroup config() = 0;
-        
+
         /**
          * Get a KPluginInfo object containing the info about this plugin. Reimplemented by subclasses.
          * @return The plugin info.
@@ -96,7 +91,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
          * @return A bool representing whether the ServiceFactory believes that a service of this kind can process the given url.
          */
         virtual bool possiblyContainsTrack( const KUrl &url ) const { Q_UNUSED( url ); return false; }
-        
+
         /**
          * Attempt to create a Meta::Track object from a given url. This method is meant as a proxy that will forward this call to one or more
          * services managed by this factory. If init has not been called ( no services of this kind has been loaded ) they can now be loaded on
@@ -133,13 +128,12 @@ class AMAROK_EXPORT ServiceBase : public KVBox
     Q_OBJECT
 
 public:
-     
 
      /**
       * Constructor.
       */
     ServiceBase( const QString &name );
-    
+
     /**
      * Destructor.
      */
@@ -156,43 +150,43 @@ public:
      * @param shortDescription The description.
      */
     void setShortDescription( const QString &shortDescription );
-    
+
     /**
      * Get the short description of this service.
      * @return The short description.
      */
     QString getShortDescription();
-    
+
     /**
      * Set a long description of the service. This is for allowing users to get more detailed info a about a service.
      * @param longDescription The long description.
      */
     void setLongDescription( const QString &longDescription );
-    
+
     /**
      * Get the long description of this service.
      * @return The long description.
      */
     QString getLongDescription();
-    
+
     /**
      * Set the icon that will be used to identify this service.
      * @param icon The icon to use.
      */
     void setIcon( const QIcon &icon );
-    
+
     /**
      * Get the icon of this service.
      * @return The icon
      */
     QIcon getIcon();
-    
+
     /**
      * Set the SingleCollectionTreeItemModel that will be used to populate the tree view.
      * @param model The model.
      */
     void setModel( SingleCollectionTreeItemModel * model );
-    
+
     /**
      * Get the model that is used for displaying items in the tree view.
      * @return The model.
@@ -204,30 +198,30 @@ public:
      * @param playable Are tracks playlable.
      */
     void setPlayableTracks( bool playable );
-    
+
     /**
      * Set the info parser that will be used to show information about selected items in the service info context applet.
      * @param infoParser The info parser to use.
      */
     void setInfoParser( InfoParserBase * infoParser );
-    
+
     /**
      * Get the info parser used to show information about selected items in the service info context applet.
      * @return The info parser.
      */
     InfoParserBase * infoParser();
-    
+
     /**
      * Return the Collection used by this service.
      * @return The collection.
      */
     virtual Collection * collection() = 0;
-    
+
     /**
      * Do expensive initialization. This method is called when the service is first shown.
      */
     virtual void polish() = 0;
-    
+
     /**
      * ??????
      * @return 
@@ -275,19 +269,19 @@ signals:
      * Signal emitted when the service wants to be hidden and the service browser list shown instead, for instance when the "Home" button is clicked.
      */
     void home();
-    
+
     /**
      * Signal emitted when the selection in the tree view has changed ( and is only a single item ).
      * @param item The selected item
      */
     void selectionChanged( CollectionTreeItem * );
-    
+
 protected slots:
     /**
      * Slot called when the home button has been clicked
      */
     void homeButtonClicked();
-    
+
     /**
      * Slot called when an intem in the tree view has been activated
      * @param index The index of the activated item
@@ -327,7 +321,7 @@ protected:
      * @param html 
      */
     virtual void generateWidgetInfo( const QString &html = QString() ) const;
-    
+
     static ServiceBase *s_instance;
     ServiceCollectionTreeView *m_contentView;
 

@@ -26,7 +26,7 @@
 class CustomActionsProvider;
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class AMAROK_EXPORT ServiceCustomActionsCapability : public Meta::CustomActionsCapability {
     Q_OBJECT

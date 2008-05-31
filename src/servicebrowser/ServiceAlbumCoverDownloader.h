@@ -16,18 +16,16 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef SERVICEALBUMCOVERDOWNLOADER_H
 #define SERVICEALBUMCOVERDOWNLOADER_H
 
-
 #include "ServiceMetaBase.h"
-
 #include "amarok_export.h"
+
 #include <kio/jobclasses.h>
 #include <kio/job.h>
 #include <KTempDir>
-
 
 #include <QObject>
 
@@ -48,7 +46,7 @@ class AMAROK_EXPORT ServiceAlbumWithCover : public ServiceAlbum
 {
 
 public:
-    
+
     /**
      * Constructor, reimplemented from ServiceAlbum.
      * @param name The name of the album.
@@ -60,12 +58,12 @@ public:
      * @param name The result list used to initialize the album.
      */
     ServiceAlbumWithCover( const QStringList &resultRow );
-    
+
     /**
      * Destructor.
      */
     virtual ~ServiceAlbumWithCover();
-    
+
     /**
      * Get the download prefix used for caching the cover.
      * @return The prefix, most often the name of the parent service.
@@ -77,7 +75,7 @@ public:
      * @param coverUrl The cover url.
      */
     virtual void setCoverUrl( const QString &coverUrl ) = 0;
-    
+
     /**
      * Ger the cover url
      * @return The url of the cover.
@@ -89,7 +87,7 @@ public:
      * @param image The cover image.
      */
     void setImage( const QImage & image );
-    
+
     /**
      * Notify album that the download of the cover has been cancelled.
      */
@@ -136,7 +134,7 @@ class ServiceAlbumCoverDownloader : public QObject
          * Constructor.
          */
         ServiceAlbumCoverDownloader();
-        
+
         /**
          * Destructor.
          */

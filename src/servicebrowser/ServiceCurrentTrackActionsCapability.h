@@ -26,7 +26,7 @@
 class CurrentTrackActionsProvider;
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class AMAROK_EXPORT ServiceCurrentTrackActionsCapability : public Meta::CurrentTrackActionsCapability {
     Q_OBJECT

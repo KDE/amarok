@@ -54,12 +54,7 @@ class AMAROK_EXPORT ServiceSqlRegistry : public QObject
        // YearPtr getYear( const QString &year, int id = -1 );
         Meta::AlbumPtr getAlbum(  const QStringList &rowData ); //TODO fix this
 
-
-    //private slots:
-        //void emptyCache();
-
     private:
-
         //we don't care about the ordering so use the faster QHash
         QHash<int, Meta::TrackPtr > m_trackMap;
         QHash<int, Meta::ArtistPtr > m_artistMap;
