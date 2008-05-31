@@ -105,6 +105,18 @@ FileBrowser::Widget::Widget( const char * name )
 // FIXME
 //  m_cmbPath->listBox()->installEventFilter( this );
 
+  KHBox* filterBox = new KHBox(this);
+  m_btnFilter = new QToolButton( filterBox );
+  m_btnFilter->setIcon( KIcon("view-filter" ) );
+  m_btnFilter->setCheckable( true );
+  m_filter = new KHistoryComboBox( true, filterBox);
+  m_filter->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
+  filterBox->setStretchFactor(m_filter, 2);
+  connect( m_btnFilter, SIGNAL( clicked() ), this, SLOT( btnFilterClick() ) );
+
+  connect( m_filter, SIGNAL( activated(const QString&) ), SLOT( slotFilterChange(const QString&) ) );
+  connect( m_filter, SIGNAL( returnPressed(const QString&) ), m_filter, SLOT( addToHistory(const QString&) ) );
+
   m_dir = new MyDirOperator(KUrl(QDir::home().path()), this);
 //   m_cmbPath->setUrl( KUrl(QDir::home().path()) );
   m_dir->setView( KFile::Simple );
@@ -129,18 +141,6 @@ FileBrowser::Widget::Widget( const char * name )
   m_actionCollection->addAction( "bookmarks", acmBookmarks );
   acmBookmarks->setDelayed( false );
   m_bookmarkHandler = new KBookmarkHandler( this, acmBookmarks->menu() );
-  KHBox* filterBox = new KHBox(this);
-
-  m_btnFilter = new QToolButton( filterBox );
-  m_btnFilter->setIcon( KIcon("view-filter" ) );
-  m_btnFilter->setCheckable( true );
-  m_filter = new KHistoryComboBox( true, filterBox);
-  m_filter->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
-  filterBox->setStretchFactor(m_filter, 2);
-  connect( m_btnFilter, SIGNAL( clicked() ), this, SLOT( btnFilterClick() ) );
-
-  connect( m_filter, SIGNAL( activated(const QString&) ), SLOT( slotFilterChange(const QString&) ) );
-  connect( m_filter, SIGNAL( returnPressed(const QString&) ), m_filter, SLOT( addToHistory(const QString&) ) );
 
   // kaction for the dir sync method
   m_acSyncDir = m_actionCollection->addAction( "sync_dir" );
