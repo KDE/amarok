@@ -205,7 +205,6 @@ DaapCollection::DaapCollection( const QString &host, const QString &ip, quint16 
 
 DaapCollection::~DaapCollection()
 {
-    delete m_reader;
 }
 
 void
