@@ -20,8 +20,6 @@
 #ifndef MP3TUNESSERVICE_H
 #define MP3TUNESSERVICE_H
 
-
-
 #include "../ServiceBase.h"
 #include "Mp3tunesServiceCollection.h"
 
@@ -51,8 +49,8 @@ A service for displaying, previewing and downloading music from Mp3tunes.com
 */
 class Mp3tunesService : public ServiceBase
 {
-
 Q_OBJECT
+
 public:
     explicit Mp3tunesService( const QString &name, const QString &email = QString(), const QString &password = QString() );
 
@@ -63,15 +61,12 @@ public:
     virtual Collection * collection() { return m_collection; }
 
 private:
-
     void authenticate( const QString & uname = "", const QString & passwd = "" );
 
 private slots:
-
     void authenticationComplete(  KJob *job );
 
 private:
-
     QString m_email;
     QString m_password;
     KIO::StoredTransferJob *m_xmlDownloadJob;

@@ -25,17 +25,16 @@
 #include "Debug.h"
 #include "StatusBar.h"
 
-
 #include <KMessageBox>
-#include <kpassworddialog.h>
+#include <KPasswordDialog>
 
 #include <QDomDocument>
+
 
 AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
 
 void Mp3tunesServiceFactory::init()
 {
-
     Mp3tunesConfig config;
     
     ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.email(), config.password() );
@@ -65,8 +64,6 @@ KConfigGroup Mp3tunesServiceFactory::config()
 
 
 
-
-
 Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, const QString &password )
  : ServiceBase( name )
  , m_email( email )
@@ -76,16 +73,14 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
  , m_authenticated( false )
  , m_sessionId ( QString() )
 {
-
     setShortDescription( i18n( "The MP3tunes Locker service. Access your stored music!" ) );
     setIcon( KIcon( "view-services-mp3tunes-amarok" ) );
-
 }
 
 
 Mp3tunesService::~Mp3tunesService()
-{
-}
+{}
+
 
 void Mp3tunesService::polish()
 {
@@ -93,12 +88,10 @@ void Mp3tunesService::polish()
     
     if ( !m_authenticated )
         authenticate( m_email, m_password );
-
 }
 
 void Mp3tunesService::authenticate( const QString & uname, const QString & passwd )
 {
-
     QString username, password;
    
     if ( uname.isEmpty() || passwd.isEmpty() ) {
@@ -109,8 +102,8 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
 
         username = dlg.username();
         password = dlg.password();
-
-    } else {
+    }
+    else {
         username = uname;
         password = passwd;
     }
@@ -131,10 +124,10 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
     The::statusBar()->newProgressOperation( m_xmlDownloadJob ).setDescription( i18n( "Authenticating" ) );
 }
 
+
 void Mp3tunesService::authenticationComplete(KJob * job)
 {
-
-    if ( !job->error() == 0 )
+    if ( job->error() != 0 )
     {
         //TODO: error handling here
         return ;
@@ -142,16 +135,12 @@ void Mp3tunesService::authenticationComplete(KJob * job)
     if ( job != m_xmlDownloadJob )
         return ; //not the right job, so let's ignore it
 
-
-    QString xmlReply = ((KIO::StoredTransferJob* )job)->data();
+    const QString xmlReply = ((KIO::StoredTransferJob* )job)->data();
     debug() << "Authentication reply: " << xmlReply;
-
 
     //so lets figure out what we got here:
     QDomDocument doc( "reply" );
-
     doc.setContent( m_xmlDownloadJob->data() );
-
    
     QDomElement root = doc.firstChildElement("mp3tunes");
 
@@ -164,7 +153,6 @@ void Mp3tunesService::authenticationComplete(KJob * job)
         m_sessionId = element.text();
         m_authenticated = true;
 
-
         m_collection = new Mp3tunesServiceCollection( m_sessionId );
         QList<int> levels;
         levels << CategoryId::Artist << CategoryId::Album;
@@ -173,19 +161,12 @@ void Mp3tunesService::authenticationComplete(KJob * job)
     } else {
 
         element = root.firstChildElement("errorMessage");
-        KMessageBox::error ( this, element.text(), i18n( "Authentication Error!" ) );	
-
+        KMessageBox::error( this, element.text(), i18n( "Authentication Error!" ) );	
     }
-
-
 
     m_xmlDownloadJob->deleteLater();
 }
 
 
-
 #include "Mp3tunesService.moc"
-
-
-
 
