@@ -29,6 +29,7 @@
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
 #include "collection/sqlcollection/SqlCollection.h"
+#include "collection/sqlcollection/SqlCollectionLocation.h"
 #include "context/LyricsManager.h"
 #include "EngineController.h"
 #include "equalizersetup.h"
@@ -848,18 +849,9 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
         Q_UNUSED( path );
         return false;
     }
-    QString DbusCollectionHandler::mainCollectionPath()
+    QStringList DbusCollectionHandler::collectionLocation()
     {
-        /*The main collection path is defined as the first path encountered*/
-        QStringList folders = MountPointManager::instance()->collectionFolders();
-
-        QString firstPath = "NONE";
-
-        if(!folders.isEmpty()) {
-            firstPath = folders[0];
-        }
-
-        return firstPath;
+        return CollectionManager::instance()->primaryCollection()->location()->actualLocation();
     }
     bool DbusCollectionHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
     {

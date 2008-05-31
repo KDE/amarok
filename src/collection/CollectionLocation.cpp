@@ -59,6 +59,12 @@ CollectionLocation::prettyLocation() const
     return QString();
 }
 
+QStringList
+CollectionLocation::actualLocation() const
+{
+    return QStringList();
+}
+
 bool
 CollectionLocation::isWriteable() const
 {

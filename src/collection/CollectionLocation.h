@@ -54,6 +54,9 @@ class QueryMaker;
 
     Implementations which are only readable can reimplement getKIOCopyableUrls( Meta::TrackList )
     if it is necessary, but can use the default implementations if possible.
+
+    Implementations that have a string expressable location(s), such as a URL or path on disk
+    should reimplement actualLocation(). 
  
     Implementations that need additional information provided by the user have to implement
     showSourceDialog() and showDestinationDialog(), depending on whether the information is required
@@ -94,6 +97,15 @@ class AMAROK_EXPORT CollectionLocation : public QObject
             @return a string representation of the collection location
         */
         virtual QString prettyLocation() const;
+
+        /**
+            Returns a list of machine usable strings representingthe collection location. For example,
+            a local collection would return a list of paths where tracks are stored, while an Ampache 
+            collection would return a list with one string containing the URL of an ampache server.
+            An iPod collection and a MTP device collection are examples of collections that do
+            not need to reimplement this method.
+        */
+        virtual QStringList actualLocation() const;
 
         /**
             Returns whether the collection location is writeable or not. For example, a local collection or an ipod

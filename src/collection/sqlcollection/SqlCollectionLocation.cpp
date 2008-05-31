@@ -62,6 +62,11 @@ SqlCollectionLocation::prettyLocation() const
     return i18n( "Local Collection" );
 }
 
+QStringList
+SqlCollectionLocation::actualLocation() const
+{
+    return MountPointManager::instance()->collectionFolders();
+}
 bool
 SqlCollectionLocation::isWriteable() const
 {
