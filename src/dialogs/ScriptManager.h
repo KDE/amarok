@@ -23,7 +23,7 @@
 
 #include "EngineObserver.h"   //baseclass
 #include "MainWindow.h"
-#include "ui_scriptmanagerbase.h"
+#include "ui_ScriptManagerBase.h"
 
 #include <KDialog>      //baseclass
 #include <KUrl>
