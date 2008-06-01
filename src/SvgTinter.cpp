@@ -105,6 +105,10 @@ void SvgTinter::init( )
         //highlight/window mix:
         m_tintMap.insert( "#123456", blendColors( App::instance()->palette().window().color(), App::instance()->palette().highlight().color().name(), 80 ).name() );
 
+        //text color, usefull for adding contrast
+        m_tintMap.insert( "#010101", App::instance()->palette().text().color().name() );
+        
+
 
 
 
