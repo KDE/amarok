@@ -15,9 +15,6 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
-   <string/>
-  </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" colspan="2" >
     <widget class="QGroupBox" name="generalBox" >

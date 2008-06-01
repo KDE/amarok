@@ -15,9 +15,6 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
-   <string/>
-  </property>
   <layout class="QGridLayout" name="gridLayout_4" >
    <item row="0" column="0" >
     <widget class="QGroupBox" name="opt_crossfade" >
