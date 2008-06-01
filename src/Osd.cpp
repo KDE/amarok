@@ -630,11 +630,13 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     if( track && track->album() )
         image = track->album()->image( 100 ).toImage();
 
-    m_track->subscribe( this );
-    if( m_track->artist() )
-        m_track->artist()->subscribe( this );
-    if( m_track->album() )
-        m_track->album()->subscribe( this );
+    if( m_track ) {
+        m_track->subscribe( this );
+        if( m_track->artist() )
+            m_track->artist()->subscribe( this );
+        if( m_track->album() )
+            m_track->album()->subscribe( this );
+    }
 
     OSDWidget::show( text, image );
 }
