@@ -1,6 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
- * copyright   : (C) 2008 Nikolaj Hald Nielsen <nhnFreespitit@gmail.com>   *
+ * copyright   : (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>   *
  **************************************************************************/
 
 /***************************************************************************
