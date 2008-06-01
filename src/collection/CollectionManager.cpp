@@ -280,6 +280,10 @@ CollectionManager::trackForUrl( const KUrl &url )
     //might be a podcast, in that case we'll have additional meta information
     //might be a lastfm track, another stream
     //or a file which is not in any collection
+    if( !url.isValid() )
+    {
+        return Meta::TrackPtr( 0 );
+    }
 
     foreach( TrackProvider *provider, d->trackProviders )
     {
