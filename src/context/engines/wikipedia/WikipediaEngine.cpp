@@ -270,6 +270,8 @@ WikipediaEngine::wikiResult( KJob* job )
     }
     m_wikiHTMLSource.append( "</body></html>\n" );
 
+    //debug() << "wikidata: " << m_wikiHTMLSource;
+
     removeAllData( "wikipedia" );
     setData( "wikipedia", "page", m_wikiHTMLSource );
 
