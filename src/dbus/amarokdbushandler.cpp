@@ -851,8 +851,12 @@ void DbusContextHandler::showLyrics( const QByteArray& lyrics )
     }
     QStringList DbusCollectionHandler::collectionLocation()
     {
-        return CollectionManager::instance()->primaryCollection()->location()->actualLocation();
+        CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
+        QStringList result = location->actualLocation();
+        delete location;
+        return result;
     }
+    
     bool DbusCollectionHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
     {
         Q_UNUSED( oldURL ); Q_UNUSED( newURL ); Q_UNUSED( overwrite );
