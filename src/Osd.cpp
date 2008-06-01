@@ -348,8 +348,10 @@ OSDWidget::paintEvent( QPaintEvent *e )
             }
 
             QPixmap target = QPixmap::fromImage( shadow ); //FIXME slow
-            copyBlt( &target, 0, 0, &m_scaledCover );
+            QPainter painter( &target );
+            painter.drawPixmap( 0, 0, m_scaledCover );
             m_scaledCover = target;
+
             r.setTop( (size.height() - m_scaledCover.height()) / 2 );
             r.setSize( m_scaledCover.size() );
         }
