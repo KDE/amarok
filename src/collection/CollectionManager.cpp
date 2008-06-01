@@ -200,7 +200,7 @@ CollectionManager::slotNewCollection( Collection* newCollection )
 void
 CollectionManager::slotRemoveCollection()
 {
-    Collection* collection = dynamic_cast<Collection*>( sender() );
+    Collection* collection = qobject_cast<Collection*>( sender() );
     if( collection )
     {
         d->collections.removeAll( collection );
