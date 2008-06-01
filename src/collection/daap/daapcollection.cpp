@@ -80,7 +80,8 @@ DaapCollectionFactory::connectToManualServers()
         {
             //adding manual servers to the collectionMap doesn't make sense
             DaapCollection *coll = new DaapCollection( host, ip, port );
-            emit newCollection( coll );
+            connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
+            connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
         }
     }
 }
@@ -172,18 +173,20 @@ DaapCollectionFactory::slotCollectionReady()
 void
 DaapCollectionFactory::slotCollectionDownloadFailed()
 {
-    DaapCollection *collection = dynamic_cast<DaapCollection*>( sender() );
+    DEBUG_BLOCK
+    DaapCollection *collection = qobject_cast<DaapCollection*>( sender() );
     if( !collection )
         return;
+    disconnect( collection, SIGNAL( collectionReady() ), this, SLOT( slotCollectionReady() ) );
     foreach( const QString &key, m_collectionMap.keys() )
     {
         if( m_collectionMap.value( key ) == collection )
         {
             m_collectionMap.remove( key );
-            collection->deleteLater();
             break;
         }
     }
+    collection->deleteLater();
 }
 
 //DaapCollection
@@ -248,7 +251,7 @@ DaapCollection::httpError( const QString &error )
 {
     DEBUG_BLOCK
     debug() << "Http error in DaapReader: " << error;
-    deleteLater();
+    emit remove();
 }
 
 void
