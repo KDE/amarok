@@ -21,6 +21,7 @@
 
 #include "PodcastMeta.h"
 
+
 namespace Meta
 {
 
@@ -52,6 +53,8 @@ class SqlPodcastEpisode : public PodcastEpisode
         //SqlPodcastEpisode specific methods
         int id() const { return m_id; };
 
+        //virtual int podcastType() {  debug() <<"here5"; return ChannelType; }
+
     private:
         void updateInDb();
 
@@ -75,6 +78,8 @@ class SqlPodcastChannel : public PodcastChannel
         //SqlPodcastChannel specific methods
         int id() const { return m_id; };
         virtual void addEpisode( SqlPodcastEpisodePtr episode ) { m_sqlEpisodes << episode; };
+
+        //virtual int podcastType() {  debug() <<"here6"; return ChannelType; }
 
     private:
         void updateInDb();
