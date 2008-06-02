@@ -30,7 +30,6 @@ SvgTinter * SvgTinter::m_instance = 0;
 
 SvgTinter * SvgTinter::instance()
 {
-
     if ( m_instance == 0 )
         m_instance = new SvgTinter();
 
@@ -38,19 +37,18 @@ SvgTinter * SvgTinter::instance()
 }
 
 SvgTinter::SvgTinter()
+    : m_firstRun( true )
 {
-    m_firstRun = true;
     init();
     m_firstRun = false;
 }
 
 
 SvgTinter::~SvgTinter()
-{
-}
+{}
 
-
-QString SvgTinter::tint(QString filename)
+QString
+SvgTinter::tint(QString filename)
 {
     QFile file( filename );
     file.open( QIODevice::ReadOnly );
@@ -80,13 +78,11 @@ QString SvgTinter::tint(QString filename)
     }
 
     return svg_string;
-
 }
 
-
-void SvgTinter::init( )
+void
+SvgTinter::init( )
 {
-
     if ( m_lastPalette != App::instance()->palette() || m_firstRun ) {
         m_tintMap.insert( "#666765", App::instance()->palette().window().color().name() );
         //insert a color for bright ( highlight color )
@@ -107,19 +103,14 @@ void SvgTinter::init( )
 
         //text color, usefull for adding contrast
         m_tintMap.insert( "#010101", App::instance()->palette().text().color().name() );
-        
-
-
-
 
         m_lastPalette = App::instance()->palette();
     }
 }
 
-
-QColor SvgTinter::blendColors( const QColor& color1, const QColor& color2, int percent )
+QColor
+SvgTinter::blendColors( const QColor& color1, const QColor& color2, int percent )
 {
-
     const float factor1 = ( float ) percent / 100;
     const float factor2 = ( 100 - ( float ) percent ) / 100;
 

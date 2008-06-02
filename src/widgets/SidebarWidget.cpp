@@ -272,9 +272,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     QPixmap background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" );
     p.drawPixmap( 0, 0, background );
 
-
-    QColor baseColor = palette().text().color();
-
+    const QColor baseColor = palette().text().color();
 
     QColor c;
     if( isDown() )

@@ -34,17 +34,16 @@ This singleton class is used to tint the svg artwork to attempt to better match 
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class SvgTinter{
-
+class SvgTinter
+{
     public:
+        static AMAROK_EXPORT SvgTinter * instance();
+        ~SvgTinter();
 
-    static AMAROK_EXPORT SvgTinter * instance();
-    ~SvgTinter();
+        QString AMAROK_EXPORT tint( QString filename );
+        void AMAROK_EXPORT init();
 
-    QString AMAROK_EXPORT tint( QString filename );
-    void AMAROK_EXPORT init();
-
-    QColor blendColors( const QColor& color1, const QColor& color2, int percent );
+        QColor blendColors( const QColor& color1, const QColor& color2, int percent );
 
     protected:
         SvgTinter();
@@ -54,7 +53,6 @@ class SvgTinter{
 
         QPalette m_lastPalette;
         bool m_firstRun;
-
 };
 
 #endif
