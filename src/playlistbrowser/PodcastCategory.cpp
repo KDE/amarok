@@ -150,43 +150,16 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
 
-    QPixmap background( width - 4, height - 4 );
-    QString key;
 
-    if (option.state & QStyle::State_Selected)
-    {
-        /*TODO: don't open file every time; it's only this way
-        because I had problems getting it to work as a member
-        variable like it is in the ServiceListDelegate class;
-        I'm not sure why it didn't work, but it crashed every
-        time; I think I was doing it wrong. */
-        iconPadY = 12; //looks bad if too close to border
-        iconPadX = 12;
-        key = QString("service_list_item_selected:%1x%2").arg( width ).arg( height );
-        if (!QPixmapCache::find(key, background))
-        {
-            background.fill( Qt::transparent );
-            QPainter pt( &background );
-            //only opens if selected AND not in cache, see TODO above
-
-            QString file = KStandardDirs::locate( "data","amarok/images/service-browser-element.svg" );
-            QSvgRenderer *svgRenderer = The::svgHandler()->getRenderer( "amarok/images/service-browser-element.svg" );
-
-            svgRenderer->render ( &pt,  QRectF( 0, 0 ,width - 40, height - 4 ) );
-            QPixmapCache::insert(key, background);
-        }
-    } else
-        background.fill( Qt::transparent );
-
-
-    painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
+    painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, The::svgHandler()->renderSvg( "service_list_item", width - 40, height - 4, "service_list_item" ) );
 
     painter->setPen(Qt::black);
 
     painter->setFont(QFont("Arial", 9));
 
-    painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ) ,
-                         index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
+    QIcon icon = index.data( Qt::DecorationRole ).value<QIcon>();
+    QPixmap iconPixmap = icon.pixmap( iconWidth, iconHeight );
+    painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ), iconPixmap );
 
 
     QRectF titleRect;
