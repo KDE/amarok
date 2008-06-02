@@ -1,3 +1,5 @@
+if(CURL_FOUND)
+    if(LIBXML2_FOUND)
         include_directories(
             ../..
             ../../plugin
@@ -5,6 +7,9 @@
             ../../collection
             ../../servicebrowser
             ../../statusbar
+            libmp3tunes
+            ${LIBXML2_INCLUDE_DIR}
+            ${CURL_INCLUDE_DIRS}
             ${CMAKE_CURRENT_BINARY_DIR}/../..
             ${KDE4_INCLUDE_DIR}
             ${STRIGI_INCLUDE_DIR}
@@ -15,16 +20,18 @@
         set(amarok_service_mp3tunes_PART_SRCS
             Mp3tunesService.cpp
             Mp3tunesServiceCollection.cpp
-	    Mp3tunesServiceCollectionLocation.cpp
+            Mp3tunesServiceCollectionLocation.cpp
             Mp3tunesServiceQueryMaker.cpp
             Mp3tunesMeta.cpp
             Mp3tunesConfig.cpp
+
+            libmp3tunes/locker.c
+            #libmp3tunes/harmony.c
         )
 
 
         kde4_add_plugin(amarok_service_mp3tunes ${amarok_service_mp3tunes_PART_SRCS})
-        target_link_libraries(amarok_service_mp3tunes amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
-
+        target_link_libraries(amarok_service_mp3tunes amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES} ${LIBXML2_LIBRARIES} ${CURL_LIBRARIES} )
 
         install(TARGETS amarok_service_mp3tunes DESTINATION ${PLUGIN_INSTALL_DIR} )
 
@@ -50,3 +57,5 @@
 
         install( FILES amarok_service_mp3tunes.desktop DESTINATION ${SERVICES_INSTALL_DIR})
         install( FILES amarok_service_mp3tunes_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        endif(LIBXML2_FOUND)
+endif(CURL_FOUND)

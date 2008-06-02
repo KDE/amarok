@@ -1,0 +1,13 @@
+This is version 1.0 of the libmp3tunes API. It is GPLed, but hasn't been released 
+as of this README's initial commit. The deps are as follows:
+
+libxml2 - locker.c
+curl - locker.c
+glib - harmony.c
+gobject - harmony.c
+loudmouth - harmony.c
+
+Ask Ramblurr (unnamedrambler@gmail.com) for the original src package including 
+build instructions and example code.
+
+Yes, mp3tunes.c is supposed to be blank for now.

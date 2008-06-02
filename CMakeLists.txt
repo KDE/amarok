@@ -64,6 +64,12 @@ macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices
 macro_optional_find_package(OpenGL)
 macro_log_feature( OPENGL_FOUND "opengl" "Support for gl-accellerated visualization rendering" "" FALSE "" "")
 
+find_package(CURL)
+macro_log_feature( CURL_FOUND "curl" "Enable support for mp3tunes" "http://curl.haxx.se" FALSE "" "" )
+
+find_package(LibXml2)
+macro_log_feature( LIBXML2_FOUND "libxml2" "Enable support for mp3tunes" "http://www.xmlsoft.org" FALSE "" "" )
+
 find_package(KdeMultimedia)
 macro_log_feature( KDEMULTIMEDIA_FOUND "kdemultimedia" "Support for playing audio cds" "http://www.kde.org" FALSE "4.0" "")
 
