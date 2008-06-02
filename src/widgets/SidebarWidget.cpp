@@ -25,6 +25,8 @@
 #include "SvgTinter.h"
 #include "TheInstances.h"
 
+#include <KIconEffect>
+
 #include <QAbstractItemDelegate>
 #include <QAction>
 #include <QApplication>
@@ -267,14 +269,10 @@ void SideBarButton::slotAnimTimer()
 void SideBarButton::paintEvent( QPaintEvent* )
 {
     QPainter p( this );
-    p.initFrom( this );
-
-    QPixmap background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" );
-    p.drawPixmap( 0, 0, background );
 
     const QColor baseColor = palette().text().color();
-
     QColor c;
+
     if( isDown() )
         c = blendColors( palette().highlight().color().darker( 150 ), baseColor, static_cast<int>( m_animCount * 3.5 ) );
     else if( isChecked() && underMouse() )
@@ -285,6 +283,10 @@ void SideBarButton::paintEvent( QPaintEvent* )
         c = blendColors( palette().highlight().color().lighter(), baseColor, static_cast<int>( m_animCount * 3.5 ) );
     else
         c = blendColors( baseColor, palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
+
+    QImage background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" ).toImage();
+    KIconEffect::colorize( background, c, 1.0 );
+    p.drawImage( 0, 0, background );
 
     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
     const QString txt = text().replace( "&", "" );
