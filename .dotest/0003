@@ -1,0 +1,524 @@
+From 889d12d30996693688671fd1afb64136ddd59fe2 Mon Sep 17 00:00:00 2001
+From: Mark Kretschmann <mark@hyperion.(none)>
+Date: Mon, 2 Jun 2008 16:26:06 +0200
+Subject: Bringing back the hilighting effect of the sidebar buttons for active/inactive states. The solution I used is a pixmap-based effect, which is not ideal since we could just change the SVG like we do with tinting, but it was nicer to implement and works.
+
+Also the animation needs some more tweaking, but that'll come later.
+---
+ .dotest/0002                  |   46 -------------------------------------
+ .dotest/0003                  |   50 -----------------------------------------
+ .dotest/0004                  |   47 --------------------------------------
+ .dotest/0005                  |   43 -----------------------------------
+ .dotest/0006                  |   45 ------------------------------------
+ .dotest/0007                  |   24 -------------------
+ .dotest/binary                |    1 -
+ .dotest/final-commit          |    1 -
+ .dotest/head-name             |    1 -
+ .dotest/info                  |    5 ----
+ .dotest/keep                  |    1 -
+ .dotest/last                  |    1 -
+ .dotest/next                  |    1 -
+ .dotest/onto                  |    1 -
+ .dotest/orig-head             |    1 -
+ .dotest/patch                 |   41 ---------------------------------
+ .dotest/sign                  |    1 -
+ .dotest/utf8                  |    1 -
+ .dotest/whitespace            |    1 -
+ src/widgets/SidebarWidget.cpp |   12 ++++++---
+ 20 files changed, 8 insertions(+), 316 deletions(-)
+ delete mode 100644 .dotest/0002
+ delete mode 100644 .dotest/0003
+ delete mode 100644 .dotest/0004
+ delete mode 100644 .dotest/0005
+ delete mode 100644 .dotest/0006
+ delete mode 100644 .dotest/0007
+ delete mode 100644 .dotest/binary
+ delete mode 100644 .dotest/final-commit
+ delete mode 100644 .dotest/head-name
+ delete mode 100644 .dotest/info
+ delete mode 100644 .dotest/keep
+ delete mode 100644 .dotest/last
+ delete mode 100644 .dotest/msg
+ delete mode 100644 .dotest/msg-clean
+ delete mode 100644 .dotest/next
+ delete mode 100644 .dotest/onto
+ delete mode 100644 .dotest/orig-head
+ delete mode 100644 .dotest/patch
+ delete mode 100644 .dotest/sign
+ delete mode 100644 .dotest/utf8
+ delete mode 100644 .dotest/whitespace
+
+diff --git a/.dotest/0002 b/.dotest/0002
+deleted file mode 100644
+index fb2cb003c397e57b9f9e19c30e1fbf63009974d4..0000000000000000000000000000000000000000
+--- a/.dotest/0002
++++ /dev/null
+@@ -1,46 +0,0 @@
+-From b38708a62b539d2780f007489fb52c05a2bdc350 Mon Sep 17 00:00:00 2001
+-From: Mark Kretschmann <mark@hyperion.(none)>
+-Date: Tue, 27 May 2008 18:59:51 +0200
+-Subject: warnings--
+-
+----
+- src/widgets/MainToolbar.cpp |    7 -------
+- 1 files changed, 0 insertions(+), 7 deletions(-)
+-
+-diff --git a/src/widgets/MainToolbar.cpp b/src/widgets/MainToolbar.cpp
+-index 573068f95f4163c03b84c7fd03a900add974482c..84ee728adc6b882130c1bc1d2872bd67fc2801fa 100644
+---- a/src/widgets/MainToolbar.cpp
+-+++ b/src/widgets/MainToolbar.cpp
+-@@ -120,20 +120,14 @@ MainToolbar::~MainToolbar()
+- 
+- void MainToolbar::paintEvent( QPaintEvent * )
+- {
+--
+--    int middle = contentsRect().width() / 2;
+--
+-     int controlWidth = m_playerControlsToolbar->width();
+-     int addControlWidth = m_addControlsToolbar->width();
+-     QRect controlRect( m_playerControlsToolbar->x(), m_playerControlsToolbar->y() +2, controlWidth, m_playerControlsToolbar->height() );
+-     QRect addControlRect( m_addControlsToolbar->x(), m_addControlsToolbar->y() +2, addControlWidth, m_addControlsToolbar->height() );
+- 
+--    int width = contentsRect().width();
+--    int height = contentsRect().height();
+-     QPainter painter( this );
+-     //painter.drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( this, 0, 0, width, height, m_ignoreCache ) );
+-     m_ignoreCache = false;
+--
+-     
+-     QPixmap controlArea = The::svgHandler()->renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
+-     painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
+-@@ -143,7 +137,6 @@ void MainToolbar::paintEvent( QPaintEvent * )
+-         QPixmap addControlArea = The::svgHandler()->renderSvg( "buttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
+-         painter.drawPixmap( addControlRect.x(), addControlRect.y(), addControlArea );
+-     }
+--
+- }
+- 
+- void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
+--- 
+-1.5.4.3
+-
+-
+diff --git a/.dotest/0003 b/.dotest/0003
+deleted file mode 100644
+index 109e043eb68bc5d0cbcf85e5e97ecd55e17c6f20..0000000000000000000000000000000000000000
+--- a/.dotest/0003
++++ /dev/null
+@@ -1,50 +0,0 @@
+-From fbce1add2735413c721c0769af9f2dcc52b33f3a Mon Sep 17 00:00:00 2001
+-From: Mark Kretschmann <mark@hyperion.(none)>
+-Date: Wed, 28 May 2008 09:32:06 +0200
+-Subject: minor reformatting
+-
+----
+- src/SvgHandler.cpp |    2 +-
+- src/SvgTinter.cpp  |    5 ++---
+- 2 files changed, 3 insertions(+), 4 deletions(-)
+-
+-diff --git a/src/SvgHandler.cpp b/src/SvgHandler.cpp
+-index 9f7485c345c49ed474596f4ac35fb6993a3bda24..c3b4a1f323721578bbb252bfb98ed93cb82c5a0b 100644
+---- a/src/SvgHandler.cpp
+-+++ b/src/SvgHandler.cpp
+-@@ -160,7 +160,7 @@ QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, co
+-     return renderSvg( d->themeFile, keyname, width, height, element );
+- }
+- 
+--void SvgHandler::reTint( )
+-+void SvgHandler::reTint()
+- {
+-     The::svgTinter()->init();
+-     d->loadSvg( d->themeFile );
+-diff --git a/src/SvgTinter.cpp b/src/SvgTinter.cpp
+-index 3d3cc9a150fe896af6b7be7087a9e26b52ada4c6..5c8622d214d2e31575b570b6c26431c496580840 100644
+---- a/src/SvgTinter.cpp
+-+++ b/src/SvgTinter.cpp
+-@@ -58,8 +58,7 @@ SvgTinter::tint(QString filename)
+-     if (!svg_source.startsWith("<?xml"))
+-     {
+-         QBuffer buf( &svg_source );
+--        QIODevice *flt = KFilterDev::device(
+--                                            &buf, QString::fromLatin1("application/x-gzip"), false);
+-+        QIODevice *flt = KFilterDev::device( &buf, QString::fromLatin1("application/x-gzip"), false );
+-         if (!flt)
+-             return QString();
+-         if (!flt->open(QIODevice::ReadOnly))
+-@@ -81,7 +80,7 @@ SvgTinter::tint(QString filename)
+- }
+- 
+- void
+--SvgTinter::init( )
+-+SvgTinter::init()
+- {
+-     if ( m_lastPalette != App::instance()->palette() || m_firstRun ) {
+-         m_tintMap.insert( "#666765", App::instance()->palette().window().color().name() );
+--- 
+-1.5.4.3
+-
+-
+diff --git a/.dotest/0004 b/.dotest/0004
+deleted file mode 100644
+index ab02a008c3154393dafac6e5a4e5fae914f53190..0000000000000000000000000000000000000000
+--- a/.dotest/0004
++++ /dev/null
+@@ -1,47 +0,0 @@
+-From 11e045ddc5c926a7c9f798a51c3e16b4585d0961 Mon Sep 17 00:00:00 2001
+-From: Mark Kretschmann <mark@hyperion.(none)>
+-Date: Wed, 28 May 2008 12:47:04 +0200
+-Subject: use KIconEffect
+-
+----
+- src/widgets/SidebarWidget.cpp |    9 ++++++---
+- 1 files changed, 6 insertions(+), 3 deletions(-)
+-
+-diff --git a/src/widgets/SidebarWidget.cpp b/src/widgets/SidebarWidget.cpp
+-index 31ea961ac4860c3d902817f59c22c14bf89926bf..63701ce46adaf290a83811615356dcfa83523860 100644
+---- a/src/widgets/SidebarWidget.cpp
+-+++ b/src/widgets/SidebarWidget.cpp
+-@@ -25,6 +25,8 @@
+- #include "SvgTinter.h"
+- #include "TheInstances.h"
+- 
+-+#include <KIconEffect>
+-+
+- #include <QAbstractItemDelegate>
+- #include <QAction>
+- #include <QApplication>
+-@@ -269,9 +271,6 @@ void SideBarButton::paintEvent( QPaintEvent* )
+-     QPainter p( this );
+-     p.initFrom( this );
+- 
+--    QPixmap background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" );
+--    p.drawPixmap( 0, 0, background );
+--
+-     const QColor baseColor = palette().text().color();
+- 
+-     QColor c;
+-@@ -286,6 +285,10 @@ void SideBarButton::paintEvent( QPaintEvent* )
+-     else
+-         c = blendColors( baseColor, palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
+- 
+-+    QImage background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" ).toImage();
+-+    //KIconEffect::colorize( background, c, 0.5 );
+-+    p.drawImage( 0, 0, background );
+-+
+-     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
+-     const QString txt = text().replace( "&", "" );
+- 
+--- 
+-1.5.4.3
+-
+-
+diff --git a/.dotest/0005 b/.dotest/0005
+deleted file mode 100644
+index 851cf8751442b4545a537d9a7e4a4b8885bd8b13..0000000000000000000000000000000000000000
+--- a/.dotest/0005
++++ /dev/null
+@@ -1,43 +0,0 @@
+-From 1ab8e9119d1608110ac3aff7b6b93a334fabb149 Mon Sep 17 00:00:00 2001
+-From: Mark Kretschmann <mark@hyperion.(none)>
+-Date: Wed, 28 May 2008 21:49:10 +0200
+-Subject: more
+-
+----
+- src/widgets/SidebarWidget.cpp |   12 +++++++++---
+- 1 files changed, 9 insertions(+), 3 deletions(-)
+-
+-diff --git a/src/widgets/SidebarWidget.cpp b/src/widgets/SidebarWidget.cpp
+-index 63701ce46adaf290a83811615356dcfa83523860..fc58489dd830c031b5fad5ad919e274eba5b08c2 100644
+---- a/src/widgets/SidebarWidget.cpp
+-+++ b/src/widgets/SidebarWidget.cpp
+-@@ -271,7 +271,8 @@ void SideBarButton::paintEvent( QPaintEvent* )
+-     QPainter p( this );
+-     p.initFrom( this );
+- 
+--    const QColor baseColor = palette().text().color();
+-+    const QColor baseColor = Qt::blue;
+-+    //const QColor baseColor = palette().text().color();
+- 
+-     QColor c;
+-     if( isDown() )
+-@@ -285,8 +286,13 @@ void SideBarButton::paintEvent( QPaintEvent* )
+-     else
+-         c = blendColors( baseColor, palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
+- 
+--    QImage background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" ).toImage();
+--    //KIconEffect::colorize( background, c, 0.5 );
+-+    KIconEffect fx;
+-+    QImage backgroundsrc = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" ).toImage();
+-+    QImage background = fx.apply( backgroundsrc, KIconEffect::Colorize, 0.8, c, false );
+-+    if( background == backgroundsrc )
+-+        warning() << "IMAGES IDENTICAL";
+-+    else
+-+        warning() << "IMAGES DIFFERENT";
+-     p.drawImage( 0, 0, background );
+- 
+-     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
+--- 
+-1.5.4.3
+-
+-
+diff --git a/.dotest/0006 b/.dotest/0006
+deleted file mode 100644
+index 2d2a9e21e6a8bcc28f09f916135611ee168b13ec..0000000000000000000000000000000000000000
+--- a/.dotest/0006
++++ /dev/null
+@@ -1,45 +0,0 @@
+-From cf433bd87ed901b33c7ef17c25ffe1584365bd20 Mon Sep 17 00:00:00 2001
+-From: Mark Kretschmann <mark@hyperion.(none)>
+-Date: Thu, 29 May 2008 21:25:14 +0200
+-Subject: still doesn't work, meh
+-
+----
+- src/widgets/SidebarWidget.cpp |   14 +++++---------
+- 1 files changed, 5 insertions(+), 9 deletions(-)
+-
+-diff --git a/src/widgets/SidebarWidget.cpp b/src/widgets/SidebarWidget.cpp
+-index fc58489dd830c031b5fad5ad919e274eba5b08c2..9a39f3e72204703205a6f4ada08cb2ba952f2948 100644
+---- a/src/widgets/SidebarWidget.cpp
+-+++ b/src/widgets/SidebarWidget.cpp
+-@@ -269,7 +269,7 @@ void SideBarButton::slotAnimTimer()
+- void SideBarButton::paintEvent( QPaintEvent* )
+- {
+-     QPainter p( this );
+--    p.initFrom( this );
+-+    //p.initFrom( this );
+- 
+-     const QColor baseColor = Qt::blue;
+-     //const QColor baseColor = palette().text().color();
+-@@ -286,14 +286,10 @@ void SideBarButton::paintEvent( QPaintEvent* )
+-     else
+-         c = blendColors( baseColor, palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
+- 
+--    KIconEffect fx;
+--    QImage backgroundsrc = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" ).toImage();
+--    QImage background = fx.apply( backgroundsrc, KIconEffect::Colorize, 0.8, c, false );
+--    if( background == backgroundsrc )
+--        warning() << "IMAGES IDENTICAL";
+--    else
+--        warning() << "IMAGES DIFFERENT";
+--    p.drawImage( 0, 0, background );
+-+    QPixmap background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" );
+-+    QImage tmp = background.toImage();
+-+    KIconEffect::colorize( tmp, c, 1.0 );
+-+    p.drawImage( 0, 0, tmp );
+- 
+-     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
+-     const QString txt = text().replace( "&", "" );
+--- 
+-1.5.4.3
+-
+-
+diff --git a/.dotest/0007 b/.dotest/0007
+deleted file mode 100644
+index 36e8028d32e41b060529d8e5f6b07430c2ad3440..0000000000000000000000000000000000000000
+--- a/.dotest/0007
++++ /dev/null
+@@ -1,24 +0,0 @@
+-From 188ee331b29ae8f36bb39ecf8f5ff64c041331df Mon Sep 17 00:00:00 2001
+-From: Mark Kretschmann <mark@hyperion.(none)>
+-Date: Fri, 30 May 2008 10:43:13 +0200
+-Subject: meh
+-
+----
+- src/widgets/SidebarWidget.cpp |    1 +
+- 1 files changed, 1 insertions(+), 0 deletions(-)
+-
+-diff --git a/src/widgets/SidebarWidget.cpp b/src/widgets/SidebarWidget.cpp
+-index 9a39f3e72204703205a6f4ada08cb2ba952f2948..3dd88b579662f2ef50deb6c3fbb373913e138756 100644
+---- a/src/widgets/SidebarWidget.cpp
+-+++ b/src/widgets/SidebarWidget.cpp
+-@@ -288,6 +288,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
+- 
+-     QPixmap background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" );
+-     QImage tmp = background.toImage();
+-+    //tmp.fill( QColor( Qt::blue ).rgb() );
+-     KIconEffect::colorize( tmp, c, 1.0 );
+-     p.drawImage( 0, 0, tmp );
+- 
+--- 
+-1.5.4.3
+-
+diff --git a/.dotest/binary b/.dotest/binary
+deleted file mode 100644
+index 718f4d2ff533cf8ead8d3556cf43912bd245fbc4..0000000000000000000000000000000000000000
+--- a/.dotest/binary
++++ /dev/null
+@@ -1 +0,0 @@
+-t
+diff --git a/.dotest/final-commit b/.dotest/final-commit
+deleted file mode 100644
+index 3c0a50afe4b4a6ff036deeb6870b2e8447cdadff..0000000000000000000000000000000000000000
+--- a/.dotest/final-commit
++++ /dev/null
+@@ -1 +0,0 @@
+-warnings--
+diff --git a/.dotest/head-name b/.dotest/head-name
+deleted file mode 100644
+index 0919aff2c0ccb37faee53f2ad70e747902dfd0f9..0000000000000000000000000000000000000000
+--- a/.dotest/head-name
++++ /dev/null
+@@ -1 +0,0 @@
+-refs/heads/sidebar
+diff --git a/.dotest/info b/.dotest/info
+deleted file mode 100644
+index f11dcb8cc9f60a695837a6f46241bab3bf390751..0000000000000000000000000000000000000000
+--- a/.dotest/info
++++ /dev/null
+@@ -1,5 +0,0 @@
+-Author: Mark Kretschmann
+-Email: mark@hyperion.(none)
+-Subject: warnings--
+-Date: Tue, 27 May 2008 18:59:51 +0200
+-
+diff --git a/.dotest/keep b/.dotest/keep
+deleted file mode 100644
+index 718f4d2ff533cf8ead8d3556cf43912bd245fbc4..0000000000000000000000000000000000000000
+--- a/.dotest/keep
++++ /dev/null
+@@ -1 +0,0 @@
+-t
+diff --git a/.dotest/last b/.dotest/last
+deleted file mode 100644
+index 7f8f011eb73d6043d2e6db9d2c101195ae2801f2..0000000000000000000000000000000000000000
+--- a/.dotest/last
++++ /dev/null
+@@ -1 +0,0 @@
+-7
+diff --git a/.dotest/msg b/.dotest/msg
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+diff --git a/.dotest/msg-clean b/.dotest/msg-clean
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+diff --git a/.dotest/next b/.dotest/next
+deleted file mode 100644
+index 0cfbf08886fca9a91cb753ec8734c84fcbe52c9f..0000000000000000000000000000000000000000
+--- a/.dotest/next
++++ /dev/null
+@@ -1 +0,0 @@
+-2
+diff --git a/.dotest/onto b/.dotest/onto
+deleted file mode 100644
+index aef68b1d59e2bda6fd4aeb3b0b7d376bff344674..0000000000000000000000000000000000000000
+--- a/.dotest/onto
++++ /dev/null
+@@ -1 +0,0 @@
+-78b1ac35a0e0cf20ebb941b09b0177379c3eda70
+diff --git a/.dotest/orig-head b/.dotest/orig-head
+deleted file mode 100644
+index 4f82f277cb862f09c49a0c357b736026c12310f5..0000000000000000000000000000000000000000
+--- a/.dotest/orig-head
++++ /dev/null
+@@ -1 +0,0 @@
+-188ee331b29ae8f36bb39ecf8f5ff64c041331df
+diff --git a/.dotest/patch b/.dotest/patch
+deleted file mode 100644
+index 31aa0056bc187c0853bd815838fa1b78d81800be..0000000000000000000000000000000000000000
+--- a/.dotest/patch
++++ /dev/null
+@@ -1,41 +0,0 @@
+----
+- src/widgets/MainToolbar.cpp |    7 -------
+- 1 files changed, 0 insertions(+), 7 deletions(-)
+-
+-diff --git a/src/widgets/MainToolbar.cpp b/src/widgets/MainToolbar.cpp
+-index 573068f95f4163c03b84c7fd03a900add974482c..84ee728adc6b882130c1bc1d2872bd67fc2801fa 100644
+---- a/src/widgets/MainToolbar.cpp
+-+++ b/src/widgets/MainToolbar.cpp
+-@@ -120,20 +120,14 @@ MainToolbar::~MainToolbar()
+- 
+- void MainToolbar::paintEvent( QPaintEvent * )
+- {
+--
+--    int middle = contentsRect().width() / 2;
+--
+-     int controlWidth = m_playerControlsToolbar->width();
+-     int addControlWidth = m_addControlsToolbar->width();
+-     QRect controlRect( m_playerControlsToolbar->x(), m_playerControlsToolbar->y() +2, controlWidth, m_playerControlsToolbar->height() );
+-     QRect addControlRect( m_addControlsToolbar->x(), m_addControlsToolbar->y() +2, addControlWidth, m_addControlsToolbar->height() );
+- 
+--    int width = contentsRect().width();
+--    int height = contentsRect().height();
+-     QPainter painter( this );
+-     //painter.drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( this, 0, 0, width, height, m_ignoreCache ) );
+-     m_ignoreCache = false;
+--
+-     
+-     QPixmap controlArea = The::svgHandler()->renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
+-     painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
+-@@ -143,7 +137,6 @@ void MainToolbar::paintEvent( QPaintEvent * )
+-         QPixmap addControlArea = The::svgHandler()->renderSvg( "buttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
+-         painter.drawPixmap( addControlRect.x(), addControlRect.y(), addControlArea );
+-     }
+--
+- }
+- 
+- void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
+--- 
+-1.5.4.3
+-
+-
+diff --git a/.dotest/sign b/.dotest/sign
+deleted file mode 100644
+index 8b137891791fe96927ad78e64b0aad7bded08bdc..0000000000000000000000000000000000000000
+--- a/.dotest/sign
++++ /dev/null
+@@ -1 +0,0 @@
+-
+diff --git a/.dotest/utf8 b/.dotest/utf8
+deleted file mode 100644
+index 718f4d2ff533cf8ead8d3556cf43912bd245fbc4..0000000000000000000000000000000000000000
+--- a/.dotest/utf8
++++ /dev/null
+@@ -1 +0,0 @@
+-t
+diff --git a/.dotest/whitespace b/.dotest/whitespace
+deleted file mode 100644
+index 8d1c8b69c3fce7bea45c73efd06983e3c419a92f..0000000000000000000000000000000000000000
+--- a/.dotest/whitespace
++++ /dev/null
+@@ -1 +0,0 @@
+- 
+diff --git a/src/widgets/SidebarWidget.cpp b/src/widgets/SidebarWidget.cpp
+index 31ea961ac4860c3d902817f59c22c14bf89926bf..97fc24221bf6b031c4d5511296f4197789b52a2e 100644
+--- a/src/widgets/SidebarWidget.cpp
++++ b/src/widgets/SidebarWidget.cpp
+@@ -25,6 +25,8 @@
+ #include "SvgTinter.h"
+ #include "TheInstances.h"
+ 
++#include <KIconEffect>
++
+ #include <QAbstractItemDelegate>
+ #include <QAction>
+ #include <QApplication>
+@@ -267,11 +269,9 @@ void SideBarButton::slotAnimTimer()
+ void SideBarButton::paintEvent( QPaintEvent* )
+ {
+     QPainter p( this );
+-    p.initFrom( this );
+-
+-    QPixmap background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" );
+-    p.drawPixmap( 0, 0, background );
++    //p.initFrom( this );
+ 
++    //const QColor baseColor = Qt::blue;
+     const QColor baseColor = palette().text().color();
+ 
+     QColor c;
+@@ -286,6 +286,10 @@ void SideBarButton::paintEvent( QPaintEvent* )
+     else
+         c = blendColors( baseColor, palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
+ 
++    QImage background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" ).toImage();
++    KIconEffect::colorize( background, c, 1.0 );
++    p.drawImage( 0, 0, background );
++
+     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
+     const QString txt = text().replace( "&", "" );
+ 
+-- 
+1.5.4.3
+
+
