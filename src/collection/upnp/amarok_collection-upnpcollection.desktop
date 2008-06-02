@@ -1,0 +1,42 @@
+[Desktop Entry]
+Type=Service
+Name=UPnP Collection
+Name[bg]=UPnP колекция
+Name[el]=Συλλογή UPnP
+Name[et]=UPnP kogu
+Name[fr]=Collection UPnP
+Name[ja]=UPnP コレクション
+Name[nds]=UPnP-Sammeln
+Name[nl]=UPnP-collectie
+Name[pl]=Kolekcja UPnP
+Name[pt]=Colecção de UPnP
+Name[pt_BR]=Coleção UPnP
+Name[sk]=UPnP kolekcia
+Name[sv]=UPnP-samling
+Name[tr]=UPnP Koleksiyonu
+Comment=UPnP collection plugin for Amarok
+Comment[bg]=Приставка за UPnP колекция за Amarok
+Comment[el]=Πρόσθετο συλλογής UPnP για το Amarok
+Comment[et]=Amaroki UPnP kogu plugin
+Comment[fr]=Plugin de collection UPnP pour Amarok
+Comment[ja]=Amarok のための UPnP コレクションプラグイン
+Comment[nds]=UPnP-Sammelnmoduul för Amarok
+Comment[nl]=UPnP-collectieplugin voor Amarok
+Comment[pl]=Wtyczka kolekcji UPnP dla Amaroka
+Comment[pt]=Um 'plugin' de colecção para UPnP no Amarok
+Comment[pt_BR]=Plugin de coleção UPnP para o Amarok
+Comment[sk]=Modul UPnP kolekcie pre Amarok
+Comment[sv]=UPnP-samlingsinsticksprogram för Amarok
+Comment[tr]=Amarok için UPnP koleksiyon eklentisi
+
+ServiceTypes=Amarok/Plugin
+
+X-KDE-Library=libamarok_collection-daapcollection
+
+X-KDE-Amarok-authors=Maximilian Kossick
+X-KDE-Amarok-email=maximilian.kossick@googlemail.com
+X-KDE-Amarok-framework-version=31
+X-KDE-Amarok-name=daap-collection
+X-KDE-Amarok-plugintype=collection
+X-KDE-Amarok-rank=100
+X-KDE-Amarok-version=1
