@@ -6,3 +6,4 @@ add_subdirectory( daap )
 # NYI
 #add_subdirectory(mediadevicecollection)
 add_subdirectory( sqlcollection )
+#add_subdirectory( upnp )
