@@ -160,7 +160,7 @@ QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, co
     return renderSvg( d->themeFile, keyname, width, height, element );
 }
 
-void SvgHandler::reTint( )
+void SvgHandler::reTint()
 {
     The::svgTinter()->init();
     d->loadSvg( d->themeFile );

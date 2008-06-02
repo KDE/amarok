@@ -58,8 +58,7 @@ SvgTinter::tint(QString filename)
     if (!svg_source.startsWith("<?xml"))
     {
         QBuffer buf( &svg_source );
-        QIODevice *flt = KFilterDev::device(
-                                            &buf, QString::fromLatin1("application/x-gzip"), false);
+        QIODevice *flt = KFilterDev::device( &buf, QString::fromLatin1("application/x-gzip"), false );
         if (!flt)
             return QString();
         if (!flt->open(QIODevice::ReadOnly))
@@ -81,7 +80,7 @@ SvgTinter::tint(QString filename)
 }
 
 void
-SvgTinter::init( )
+SvgTinter::init()
 {
     if ( m_lastPalette != App::instance()->palette() || m_firstRun ) {
         m_tintMap.insert( "#666765", App::instance()->palette().window().color().name() );
