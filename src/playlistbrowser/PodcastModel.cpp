@@ -49,6 +49,7 @@ PlaylistBrowserNS::PodcastModel::~PodcastModel()
 QVariant
 PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 {
+            
     if ( !index.isValid() )
         return QVariant();
 
@@ -60,7 +61,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         QString title;
         QString description;
         KIcon icon;
-        if ( pmc->podcastType() == Meta::PodcastMetaCommon::ChannelType )
+        if ( pmc->podcastType() == Meta::ChannelType )
         {
             Meta::PodcastChannel *channel = static_cast<Meta::PodcastChannel *>(index.internalPointer());
             title = channel->title();
@@ -68,9 +69,9 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             isChannel = true;
             icon = KIcon( "x-media-podcast-amarok" );
         }
-        else if ( pmc->podcastType() == Meta::PodcastMetaCommon::EpisodeType )
+        else if ( pmc->podcastType() == Meta::EpisodeType )
         {
-            Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>(index.internalPointer());
+            Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>( index.internalPointer() );
             title = episode->title();
             description = episode->description();
             isChannel = false;
@@ -274,10 +275,10 @@ PlaylistBrowserNS::PodcastModel::loadItems(QModelIndexList list, Playlist::AddOp
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>( item.internalPointer() );
         switch( pmc->podcastType() )
         {
-            case Meta::PodcastMetaCommon::ChannelType:
+            case Meta::ChannelType:
                 channels << Meta::PlaylistPtr( reinterpret_cast<Meta::PodcastChannel *>(pmc) );
                 break;
-            case Meta::PodcastMetaCommon::EpisodeType:
+            case Meta::EpisodeType:
                 episodes << Meta::TrackPtr( reinterpret_cast<Meta::PodcastEpisode *>(pmc) ); break;
                 default: debug() << "error, neither Channel nor Episode";
         }

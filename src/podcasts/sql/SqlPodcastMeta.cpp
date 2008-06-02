@@ -102,6 +102,7 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
 Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     : Meta::PodcastChannel()
 {
+    DEBUG_BLOCK
     m_url = channel->url();
     m_title = channel->title();
     m_webLink = channel->webLink();
