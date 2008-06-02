@@ -24,6 +24,8 @@ if(CURL_FOUND)
             Mp3tunesServiceQueryMaker.cpp
             Mp3tunesMeta.cpp
             Mp3tunesConfig.cpp
+            Mp3tunesLockerMeta.cpp
+            Mp3tunesLocker.cpp
 
             libmp3tunes/locker.c
             #libmp3tunes/harmony.c
