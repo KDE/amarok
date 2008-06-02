@@ -1,0 +1,50 @@
+From 1d836fc87d8cd488b57325779d46ba86925dc138 Mon Sep 17 00:00:00 2001
+From: Mark Kretschmann <mark@hyperion.(none)>
+Date: Wed, 28 May 2008 09:32:06 +0200
+Subject: minor reformatting
+
+---
+ src/SvgHandler.cpp |    2 +-
+ src/SvgTinter.cpp  |    5 ++---
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/src/SvgHandler.cpp b/src/SvgHandler.cpp
+index 9f7485c345c49ed474596f4ac35fb6993a3bda24..c3b4a1f323721578bbb252bfb98ed93cb82c5a0b 100644
+--- a/src/SvgHandler.cpp
++++ b/src/SvgHandler.cpp
+@@ -160,7 +160,7 @@ QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, co
+     return renderSvg( d->themeFile, keyname, width, height, element );
+ }
+ 
+-void SvgHandler::reTint( )
++void SvgHandler::reTint()
+ {
+     The::svgTinter()->init();
+     d->loadSvg( d->themeFile );
+diff --git a/src/SvgTinter.cpp b/src/SvgTinter.cpp
+index 49aaeccb49e917caa3078dc6d7389edc31573401..1b8e9becaa270ba6484d665ef2cb427778484ec8 100644
+--- a/src/SvgTinter.cpp
++++ b/src/SvgTinter.cpp
+@@ -58,8 +58,7 @@ SvgTinter::tint(QString filename)
+     if (!svg_source.startsWith("<?xml"))
+     {
+         QBuffer buf( &svg_source );
+-        QIODevice *flt = KFilterDev::device(
+-                                            &buf, QString::fromLatin1("application/x-gzip"), false);
++        QIODevice *flt = KFilterDev::device( &buf, QString::fromLatin1("application/x-gzip"), false );
+         if (!flt)
+             return QString();
+         if (!flt->open(QIODevice::ReadOnly))
+@@ -81,7 +80,7 @@ SvgTinter::tint(QString filename)
+ }
+ 
+ void
+-SvgTinter::init( )
++SvgTinter::init()
+ {
+     if ( m_lastPalette != App::instance()->palette() || m_firstRun ) {
+         m_tintMap.insert( "#666765", App::instance()->palette().window().color().name() );
+-- 
+1.5.4.3
+
+
