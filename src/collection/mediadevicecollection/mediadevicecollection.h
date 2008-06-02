@@ -24,16 +24,8 @@
 
 #include "Collection.h"
 #include "MemoryCollection.h"
-//#include "reader.h"
 
-//#include <QMap>
 #include <QtGlobal>
-
-//#include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
-
-/*namespace DNSSD {
-    class ServiceBrowser;
-    }*/
 
 class MediaDeviceCollection;
 
@@ -47,16 +39,11 @@ class MediaDeviceCollectionFactory : public CollectionFactory
         virtual void init();
 
     private:
-	//        QString serverKey( const DNSSD::RemoteService *service ) const;
 
     private slots:
     
-      //   void foundMediaDevice( DNSSD::RemoteService::Ptr );
-      //  void resolvedMediaDevice( bool );
-
     private:
 
-    //        QMap<QString, MediaDeviceCollection*> m_collectionMap;
 };
 
 class MediaDeviceCollection : public Collection, public MemoryCollection

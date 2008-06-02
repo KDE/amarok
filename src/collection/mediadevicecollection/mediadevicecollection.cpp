@@ -29,9 +29,6 @@
 #include "MemoryQueryMaker.h"
 
 
-//#include <QStringList>
-
-
 AMAROK_EXPORT_PLUGIN( MediaDeviceCollectionFactory )
 
 MediaDeviceCollectionFactory::MediaDeviceCollectionFactory()
@@ -50,36 +47,6 @@ MediaDeviceCollectionFactory::init()
 {
     DEBUG_BLOCK    
 }
-
-/*
-void
-MediaDeviceCollectionFactory::foundMediaDevice( DNSSD::RemoteService::Ptr service )
-{
-    DEBUG_BLOCK
-
-    connect( service.data(), SIGNAL( resolved( bool ) ), this, SLOT( resolvedMediaDevice( bool ) ) );
-    service->resolveAsync();
-}
-*/
-/*
-void
-MediaDeviceCollectionFactory::resolvedMediaDevice( bool success )
-{
-    DEBUG_BLOCK
-    const DNSSD::RemoteService* service =  dynamic_cast<const DNSSD::RemoteService*>(sender());
-    if( !success || !service ) return;
-    debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type();
-
-    QString ip = resolve( service->hostName() );
-    if( ip == "0" || m_collectionMap.contains(serverKey( service )) ) //same server from multiple interfaces
-        return;
-
-    MediaDeviceCollection *coll = new MediaDeviceCollection( service->hostName(), ip, service->port() );
-    connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
-    connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
-    m_collectionMap.insert( serverKey( service ), coll );
-}
-*/
 
 //MediaDeviceCollection
 
@@ -109,16 +76,12 @@ MediaDeviceCollection::queryMaker()
 QString
 MediaDeviceCollection::collectionId() const
 {
-  // TODO:
-    // this will probably be taken care of by subclasses, due to nature of media devices
-    return "filler";
+     return "filler";
 }
 
 QString
 MediaDeviceCollection::prettyName() const
 {
-  // TODO:
-    // this will probably be taken care of by subclasses, due to nature of media devices
     return "prettyfiller";
 }
 
