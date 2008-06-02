@@ -190,6 +190,8 @@ ContextLayout::itemAt(int at) const
 QSizeF
 ContextLayout::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {
+    Q_UNUSED(which);
+    Q_UNUSED(constraint);
     // TODO A proper algorithm here
     //
     // Idea:  Return a size hint based on the golden ratio to

@@ -146,6 +146,7 @@ VerticalLayout::geometry() const
 QSizeF
 VerticalLayout::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {
+    Q_UNUSED(constraint);
     qreal height = 0.0;
     foreach( QGraphicsLayoutItem* child, d->children )
         height += child->effectiveSizeHint( which ).height();
