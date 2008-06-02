@@ -1,3 +1,0 @@
-Bringing back the hilighting effect of the sidebar buttons for active/inactive states. The solution I used is a pixmap-based effect, which is not ideal since we could just change the SVG like we do with tinting, but it was nicer to implement and works.
-
-Also the animation needs some more tweaking, but that'll come later.
