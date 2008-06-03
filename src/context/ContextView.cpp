@@ -43,18 +43,14 @@ namespace Context
 ContextView* ContextView::s_self = 0;
 
 
-ContextView::ContextView( QWidget* parent )
-    : QGraphicsView( parent )
+ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
+    : Plasma::View( cont, parent )
     , EngineObserver( The::engineController() )
-    , m_columns( 0 )
     , m_curState( Home )
 {
 
     s_self = this;
 
-    PERF_LOG( "Creating contextScene" )
-    setScene( new ContextScene( this ) );
-    PERF_LOG( "Created ContextScene" )
     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
     //setDragMode( QGraphicsView::RubberBandDrag );
@@ -81,16 +77,7 @@ ContextView::ContextView( QWidget* parent )
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
 
-    PERF_LOG( "Loading default contextScene" )
-    contextScene()->loadDefaultSetup();
-    PERF_LOG( "Loaded default contextScene" )
-
-    PERF_LOG( "Creating containment" )
-    createContainment();
-    PERF_LOG( "Created containment" )
-
-    connect(scene(), SIGNAL( appletRemoved( QObject * ) ), m_columns, SLOT( appletRemoved( QObject* ) ) );
-
+    connect( scene(), SIGNAL( appletRemove( QObject * ) ), containment(), SLOT( appletRemoved( QObject * ) ) );
     PERF_LOG( "Showing home in contextview" )
     showHome();
     PERF_LOG( "done showing home in contextview" )
@@ -101,13 +88,9 @@ ContextView::~ContextView()
     clear( m_curState );
 }
 
-void ContextView::clear()
-{
-    delete m_columns;
-}
-
 void ContextView::clear( const ContextState& state )
 {
+    DEBUG_BLOCK
     QString name = "amarok_";
 
     if( state == Home )
@@ -126,6 +109,7 @@ void ContextView::clear( const ContextState& state )
 
     if( contextScene()->containments().size() > 0 )
     {
+        DEBUG_LINE_INFO
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
         if( containment )
             containment->saveToConfig( appletConfig );
@@ -133,6 +117,11 @@ void ContextView::clear( const ContextState& state )
     contextScene()->clearContainments();
 }
 
+//TODO: remove all references to this function
+void ContextView::clear()
+{
+    
+}
 
 void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
@@ -209,12 +198,12 @@ Plasma::Applet* ContextView::addApplet(const QString& name, const QStringList& a
     while( i.hasNext() )
         argList << QVariant( i.next() );
 
-    if( m_columns )
-        return m_columns->addApplet( name, argList );
+    if( containment() )
+        return containment()->addApplet( name, argList );
     else
     {
-        createContainment();
-        return m_columns->addApplet( name, argList );
+        contextScene()->addContainment( "context" );
+        return containment()->addApplet( name, argList );
     }
 }
 
@@ -272,15 +261,6 @@ void ContextView::wheelEvent( QWheelEvent* event )
     }
 }
 
-void ContextView::createContainment()
-{
-    if( contextScene()->containments().size() == 0 ) // haven't created it yet
-    {
-        // yes, this is ugly :(
-        m_columns = dynamic_cast< Containment* >
-            (  contextScene()->addContainment( "context" ) );
-    }
-}
 
 } // Context namespace
 

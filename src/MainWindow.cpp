@@ -35,7 +35,8 @@
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
 #include "collectionbrowser/CollectionWidget.h"
-#include "context/ContextView.h"
+// #include "context/ContextScene.h"
+// #include "context/ContextView.h"
 #include "context/CoverBling.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "filebrowser/FileBrowser.h"
@@ -125,6 +126,8 @@ MainWindow::~MainWindow()
     config.writeEntry( "MainWindow Position", pos() );
 
     delete m_playlistFiles;
+    delete m_contextView;
+    delete m_corona;
 }
 
 
@@ -163,13 +166,21 @@ MainWindow::init()
     m_contextWidget = new ContextWidget( this );
     PERF_LOG( "ContextWidget created" )
     m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
-    PERF_LOG( "Creating ContextView" )
-    (new Context::ContextView( m_contextWidget ))->setFrameShape( QFrame::NoFrame );
-    PERF_LOG( "ContextView created" )
+    PERF_LOG( "Creating ContexScene" )
+
+    m_corona = new Context::ContextScene( this );
+    connect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
+            this, SLOT( createContextView( Plasma::Containment* ) ) );
+
+    PERF_LOG( "ContextScene created" )
     {
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
             new CoverBling( m_contextWidget );
     }
+
+    PERF_LOG( "Loading default contextScene" )
+    m_corona->loadDefaultSetup(); // this method adds our containment to the scene
+    PERF_LOG( "Loaded default contextScene" )
 
     connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
 
@@ -262,6 +273,16 @@ MainWindow::init()
     //</Browsers>
 
     Amarok::MessageQueue::instance()->sendMessages();
+}
+
+void
+MainWindow::createContextView( Plasma::Containment *containment )
+{
+    DEBUG_BLOCK
+    PERF_LOG( "Creating ContexView" )
+    m_contextView = new Context::ContextView( containment, m_contextWidget );
+    m_contextView->setFrameShape( QFrame::NoFrame );
+    PERF_LOG( "ContexView created" )
 }
 
 void

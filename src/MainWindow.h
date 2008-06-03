@@ -17,7 +17,11 @@
 #define MAINWINDOW_H
 
 #include "amarok_export.h"
+#include "context/ContextScene.h"
+#include "context/ContextView.h"
 #include "meta/Meta.h"
+
+#include "context/plasma/plasma.h"
 
 #include <KXmlGuiWindow>
 
@@ -27,6 +31,11 @@ class MediaBrowser;
 class PlaylistFileProvider;
 class SearchWidget;
 class SideBar;
+
+namespace Plasma
+{
+    class Containment;
+} 
 
 class KMenu;
 
@@ -142,6 +151,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         QSplitter     *m_splitter;
 
         ContextWidget *m_contextWidget;
+        Context::ContextScene *m_corona;
+        Context::ContextView *m_contextView;
 
         PlaylistFileProvider *m_playlistFiles;
 
@@ -151,6 +162,9 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         int     m_searchField;
 
         static MainWindow *s_instance;
+
+    private slots:
+        void createContextView( Plasma::Containment *c );
 };
 
 

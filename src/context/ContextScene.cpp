@@ -45,7 +45,6 @@ void ContextScene::loadDefaultSetup()
     Plasma::Containment* c = addContainment( "context" );
     c->setScreen( 0 );
     c->setFormFactor( Plasma::Planar );
-
 }
 
 void ContextScene::dragMoveEvent( QGraphicsSceneDragDropEvent * event )

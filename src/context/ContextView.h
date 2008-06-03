@@ -26,7 +26,10 @@
 #include "EngineController.h"
 #include "Svg.h"
 
-#include <QGraphicsView>
+#include "plasma/view.h"
+
+//TODO: move away, not need anymore
+// #include <QGraphicsView>
 
 class QPixmap;
 
@@ -36,12 +39,12 @@ namespace Context
 class ContextScene;
 class ControlBox;
 
-class AMAROK_EXPORT ContextView : public QGraphicsView, public EngineObserver, public ContextSubject
+class AMAROK_EXPORT ContextView : public Plasma::View, public EngineObserver, public ContextSubject
 {
     Q_OBJECT
 
 public:
-     ContextView( QWidget* parent );
+     ContextView( Plasma::Containment *containment, QWidget* parent );
     ~ContextView();
 
      /**
@@ -84,11 +87,7 @@ private:
     void showHome();
     void showCurrentTrack();
 
-    void createContainment();
-
-    typedef QPointer< Context::Applet > AppletPointer;
-    // internal representation of the columns visible
-    Containment* m_columns;
+    typedef QPointer< Context::Applet > AppletPointer;    
 
     // holds what is currently being shown
     ContextState m_curState;

@@ -289,7 +289,7 @@ ColumnContainment::appletRemoved( Plasma::Applet* applet )
     DEBUG_BLOCK
     QGraphicsLayoutItem* item = dynamic_cast< QGraphicsLayoutItem* >( applet );
     if( item )
-        m_columns->removeItem( item );
+        m_columns->removeItem( item ); 
     else
         debug() << "GOT NON-QGraphicsLayoutItem in APPLETREMOVED";
 
