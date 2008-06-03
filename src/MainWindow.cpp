@@ -35,8 +35,6 @@
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
 #include "collectionbrowser/CollectionWidget.h"
-// #include "context/ContextScene.h"
-// #include "context/ContextView.h"
 #include "context/CoverBling.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "filebrowser/FileBrowser.h"
