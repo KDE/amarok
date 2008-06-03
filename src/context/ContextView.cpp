@@ -77,7 +77,6 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
 
-    connect( scene(), SIGNAL( appletRemoved( QObject * ) ), containment(), SLOT( appletRemoved( QObject * ) ) );
     PERF_LOG( "Showing home in contextview" )
     showHome();
     PERF_LOG( "done showing home in contextview" )
