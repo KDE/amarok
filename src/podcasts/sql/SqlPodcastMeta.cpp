@@ -123,6 +123,7 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
         SqlPodcastEpisode * sqlEpisode = new SqlPodcastEpisode( episode );
 
         m_episodes << PodcastEpisodePtr( sqlEpisode );
+        m_sqlEpisodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
 
     updateInDb();

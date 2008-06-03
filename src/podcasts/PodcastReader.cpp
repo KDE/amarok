@@ -330,7 +330,7 @@ PodcastReader::commitEpisode()
     {
         debug() << "commit episode " << item->title();
 //         m_podcastProvider->acquireReadLock();
-        item = m_podcastProvider->addEpisode( item );
+//         item = m_podcastProvider->addEpisode( item );
 //         m_podcastProvider->releaseLock();
 
         Q_ASSERT( m_channel );
