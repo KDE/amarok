@@ -280,7 +280,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     else if( isChecked() )
         c = blendColors( palette().highlight().color(), palette().highlight().color().lighter(), static_cast<int>( m_animCount * 3.5 ) );
     else if( underMouse() )
-        c = blendColors( palette().highlight().color().lighter(), baseColor, static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( baseColor, palette().highlight().color().lighter(), static_cast<int>( m_animCount * 3.5 ) );
     else
         c = blendColors( baseColor, palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
 
