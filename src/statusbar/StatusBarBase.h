@@ -20,12 +20,12 @@
 #ifndef STATUSBARBASE_H
 #define STATUSBARBASE_H
 
-#include "progressBar.h" //convenience
 #include "amarok_export.h"
+#include "progressBar.h" //convenience
 
+#include <QEvent>
 #include <QMap>        //stack allocated
 #include <QStatusBar>
-#include <QWidget>     //baseclass
 
 class StatusBarMessageLabel;
 class QLabel;
@@ -237,7 +237,28 @@ namespace KDE
 
         QList<QString> m_longMessageQueue;
         bool popupShown;
-
     };
 }
+
+class ShortMessageEvent : public QEvent
+{
+    public:
+        ShortMessageEvent( const QString& text ) : QEvent( QEvent::User ), m_text( text ) {};
+        QString text() const { return m_text; }
+
+    private:
+        QString m_text;
+};
+
+class LongMessageEvent : public QEvent
+{
+    public:
+        LongMessageEvent( const QString& text ) : QEvent( QEvent::User ), m_text( text ) {};
+        QString text() const { return m_text; }
+
+    private:
+        QString m_text;
+};
+
 #endif
+

@@ -94,6 +94,7 @@ namespace SingleShotPool
 //TODO allow for uncertain progress periods
 
 
+
 StatusBar::StatusBar( QWidget *parent, const char *name )
         : QStatusBar( parent )
         , m_logCounter( -1 )
@@ -357,24 +358,19 @@ StatusBar::popupDeleted( )
 void
 StatusBar::longMessageThreadSafe( const QString &text, MessageType /*type*/ )
 {
-    QCustomEvent * e = new QCustomEvent( 1000 );
-    e->setData( new QString( text ) );
+    LongMessageEvent* e = new LongMessageEvent( text );
     QApplication::postEvent( this, e );
 }
 
 void
 StatusBar::customEvent( QEvent *event )
 {
-    if( QCustomEvent *e = dynamic_cast<QCustomEvent*>( event ) ) {
-        QString *s = static_cast<QString*>( e->data() );
-        if( e->type() == 1000 )
-            longMessage( *s );
-        else if( e->type() == 1001 )
-            shortMessage( *s );
-        delete s;
-    }
-}
+    if( LongMessageEvent *e = dynamic_cast<LongMessageEvent*>( event ) )
+        longMessage( e->text() );
 
+    if( ShortMessageEvent *e = dynamic_cast<ShortMessageEvent*>( event ) )
+        shortMessage( e->text() );
+}
 
 /// application wide progress monitor
 
@@ -421,8 +417,7 @@ StatusBar::newProgressOperationInternal( QObject *owner )
 
 void StatusBar::shortMessageThreadSafe( const QString &text )
 {
-    QCustomEvent *e = new QCustomEvent( 1001 );
-    e->setData( new QString( text ) );
+    ShortMessageEvent *e = new ShortMessageEvent( text );
     QApplication::postEvent( this, e );
 }
 
