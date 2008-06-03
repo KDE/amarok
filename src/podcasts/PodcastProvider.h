@@ -42,8 +42,8 @@ class AMAROK_EXPORT PodcastProvider : public TrackProvider, public PlaylistProvi
 
         virtual void addPodcast( const KUrl &url ) = 0;
 
-        virtual void addChannel( Meta::PodcastChannelPtr channel ) = 0;
-        virtual void addEpisode( Meta::PodcastEpisodePtr episode ) = 0;
+        virtual Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel ) = 0;
+        virtual Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode ) = 0;
 
         virtual Meta::PodcastChannelList channels()= 0;
 

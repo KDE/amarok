@@ -118,12 +118,12 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
 
     m_episodes = channel->episodes();
 
-    /*foreach ( Meta::PodcastEpisodePtr episode, channel->episodes() ) {
+    foreach ( Meta::PodcastEpisodePtr episode, channel->episodes() ) {
         episode->setChannel( PodcastChannelPtr( this ) );
         SqlPodcastEpisode * sqlEpisode = new SqlPodcastEpisode( episode );
 
         m_episodes << PodcastEpisodePtr( sqlEpisode );
-    }*/
+    }
 
     updateInDb();
 }

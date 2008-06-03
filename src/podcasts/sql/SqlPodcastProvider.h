@@ -49,8 +49,8 @@ class SqlPodcastProvider : public PodcastProvider
         //PodcastProvider methods
         void addPodcast( const KUrl &url );
 
-        void addChannel( Meta::PodcastChannelPtr channel );
-        void addEpisode( Meta::PodcastEpisodePtr episode );
+        Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel );
+        Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode );
 
         Meta::PodcastChannelList channels();
 

@@ -108,16 +108,18 @@ SqlPodcastProvider::addPodcast(const KUrl & url)
     result = podcastReader->read( kurl );
 }
 
-void
+Meta::PodcastChannelPtr
 SqlPodcastProvider::addChannel( Meta::PodcastChannelPtr channel )
 {
-    m_channels << SqlPodcastChannelPtr( new Meta::SqlPodcastChannel( channel ) );
+    Meta::SqlPodcastChannel * sqlChannel = new Meta::SqlPodcastChannel( channel );
+    m_channels << SqlPodcastChannelPtr( sqlChannel );
+    return Meta::PodcastChannelPtr( sqlChannel );
 }
 
-void
+Meta::PodcastEpisodePtr
 SqlPodcastProvider::addEpisode( Meta::PodcastEpisodePtr episode )
 {
-    new SqlPodcastEpisode( episode );
+    return Meta::PodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
 }
 
 Meta::PodcastChannelList
