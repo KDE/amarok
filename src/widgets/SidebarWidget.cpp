@@ -271,18 +271,19 @@ void SideBarButton::paintEvent( QPaintEvent* )
     QPainter p( this );
 
     const QColor baseColor = palette().text().color();
-    QColor c;
+    const int blendPercent = static_cast<int>( m_animCount * 3.5 );
 
+    QColor c;
     if( isDown() )
-        c = blendColors( palette().highlight().color().darker( 150 ), baseColor, static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().highlight().color().darker( 150 ), baseColor, blendPercent );
     else if( isChecked() && underMouse() )
-        c = blendColors( palette().highlight().color().lighter( 110 ), baseColor, static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().highlight().color().lighter( 110 ), baseColor, blendPercent );
     else if( isChecked() )
-        c = blendColors( palette().highlight().color(), palette().highlight().color().lighter(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( palette().highlight().color(), palette().highlight().color().lighter(), blendPercent );
     else if( underMouse() )
-        c = blendColors( baseColor, palette().highlight().color().lighter(), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( baseColor, palette().highlight().color().lighter(), blendPercent );
     else
-        c = blendColors( baseColor, palette().highlight().color().darker( 150 ), static_cast<int>( m_animCount * 3.5 ) );
+        c = blendColors( baseColor, palette().highlight().color().darker( 150 ), blendPercent );
 
     QImage background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" ).toImage();
     KIconEffect::colorize( background, c, 1.0 );
