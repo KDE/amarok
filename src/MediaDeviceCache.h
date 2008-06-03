@@ -29,7 +29,7 @@ namespace Solid {
     class Device;
 }
 
-class MediaDeviceCache : public QObject
+class AMAROK_EXPORT MediaDeviceCache : public QObject
 {
     Q_OBJECT
 
