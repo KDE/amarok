@@ -72,7 +72,7 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusPlayerHandler::DbusPlayerHandler()
-        : QObject( kapp ), m_tempFileName( QString::null )
+        : QObject( kapp ), m_tempFileName()
     {
         (void)new PlayerAdaptor(this);
         QDBusConnection::sessionBus().registerObject("/Player", this);
