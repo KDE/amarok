@@ -236,7 +236,7 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
         void setLabels( const QStringList &labels ) { m_labels = labels; }
         void addLabel( const QString &label ) { m_labels << label; }
 
-        void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; }
+        void addEpisode( PodcastEpisodePtr episode ) { debug() << "adding episode " << episode->title() << " to channel " << title();  m_episodes << episode; }
         PodcastEpisodeList episodes() { return m_episodes; }
 
         bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }

@@ -50,7 +50,13 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     : Meta::PodcastEpisode()
 {
     m_url = KUrl( episode->url() );
-    //m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
+    m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
+
+    if ( !m_sqlChannel ) {
+        debug() << "invalid m_sqlChannel";
+        debug() <<  episode->channel()->title();
+    }
+    
     m_localUrl = episode->localUrl();
     m_title = episode->title();
     m_guid = episode->guid();
@@ -109,6 +115,17 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     m_description = channel->description();
     m_copyright = channel->copyright();
     m_labels = channel->labels();
+
+    m_episodes = channel->episodes();
+
+    /*foreach ( Meta::PodcastEpisodePtr episode, channel->episodes() ) {
+        episode->setChannel( PodcastChannelPtr( this ) );
+        SqlPodcastEpisode * sqlEpisode = new SqlPodcastEpisode( episode );
+
+        m_episodes << PodcastEpisodePtr( sqlEpisode );
+    }*/
+
+    updateInDb();
 }
 
 void

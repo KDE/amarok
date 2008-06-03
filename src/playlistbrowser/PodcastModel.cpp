@@ -100,7 +100,7 @@ PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & 
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-    Meta::PodcastChannelPtr channel;
+   /*  Meta::PodcastChannelPtr channel;
     Meta::PodcastEpisodePtr episode;
 
     if (!parent.isValid())
@@ -127,7 +127,33 @@ PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & 
         return createIndex( row, column, channel.data() );
     }
     else
-        return QModelIndex();
+        return QModelIndex();*/
+
+    if ( !parent.isValid() )
+    {
+        Meta::PodcastChannelPtr channel = m_channels[row];
+        debug() << "invalid parent! ";
+        return createIndex( row, column, channel.data() );
+    }
+    else
+    {
+        Meta::PodcastMetaCommon *podcastMetaCommon = static_cast<Meta::PodcastMetaCommon *>(parent.internalPointer());
+
+        if ( podcastMetaCommon->podcastType() ==  Meta::ChannelType )
+        {
+            Meta::PodcastChannel *channel = static_cast<Meta::PodcastChannel*>(parent.internalPointer());
+            debug() << "child " << row << " of channel " << channel->title();
+            return createIndex( row, column, channel->episodes()[row].data() );
+        }
+        else if ( podcastMetaCommon->podcastType() ==  Meta::EpisodeType )
+        {
+            return QModelIndex();
+        }
+        else
+        {
+            return QModelIndex();
+        }
+    }
 }
 
 QModelIndex
@@ -158,28 +184,36 @@ PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
 int
 PlaylistBrowserNS::PodcastModel::rowCount(const QModelIndex & parent) const
 {
-    if (parent.column() > 0)
+    //DEBUG_BLOCK
+            
+    if (parent.column() > 0) {
+        //debug () << "0, cause 1";
         return 0;
+    }
 
     if (!parent.isValid())
     {
+        //debug () << m_channels.count();
         return m_channels.count();
     }
     else
     {
         Meta::PodcastMetaCommon *podcastMetaCommon = static_cast<Meta::PodcastMetaCommon *>(parent.internalPointer());
 
-        if ( typeid( * podcastMetaCommon ) == typeid( Meta::PodcastChannel ) )
+        if ( podcastMetaCommon->podcastType() ==  Meta::ChannelType )
         {
             Meta::PodcastChannel *channel = static_cast<Meta::PodcastChannel*>(parent.internalPointer());
+            debug() << "channel " << channel->title() << " has " <<  channel->episodes().count() << "children";
             return channel->episodes().count();
         }
-        else if ( typeid( * podcastMetaCommon ) == typeid( Meta::PodcastEpisode ) )
+        else if ( podcastMetaCommon->podcastType() ==  Meta::EpisodeType )
         {
+            //debug () << "0, cause 2";
             return 0;
         }
         else
         {
+            //debug () << "0, cause 3";
             return 0;
         }
     }
@@ -381,5 +415,9 @@ PlaylistBrowserNS::PodcastModel::emitLayoutChanged()
     DEBUG_BLOCK
     emit( layoutChanged() );
 }
+
+
+
+
 
 #include "PodcastModel.moc"

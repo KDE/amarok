@@ -288,8 +288,8 @@ SqlPodcastProvider::createTables() const
     DEBUG_BLOCK
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    sqlStorage->query( QString( "CREATE TABLE podcastchannels "
-                    "(id " + sqlStorage->idType() +
+    sqlStorage->query( QString( "CREATE TABLE podcastchannels ("
+                    "id " + sqlStorage->idType() +
                     ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
                     ",title " + sqlStorage->textColumnType() +
                     ",weblink " + sqlStorage->exactTextColumnType() +
@@ -297,7 +297,7 @@ SqlPodcastProvider::createTables() const
                     ",description " + sqlStorage->longTextColumnType() +
                     ",copyright "  + sqlStorage->textColumnType() +
                     ",directory "  + sqlStorage->textColumnType() +
-                    ",labels" + sqlStorage->textColumnType() +
+                    ",labels " + sqlStorage->textColumnType() +
                     ",autoscan BOOL, fetchtype INTEGER"
                     ",autotransfer BOOL, haspurge BOOL, purgecount INTEGER );" ) );
 
