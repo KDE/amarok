@@ -72,7 +72,7 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusPlayerHandler::DbusPlayerHandler()
-        : QObject( kapp )
+        : QObject( kapp ), m_tempFileName( 0 )
     {
         (void)new PlayerAdaptor(this);
         QDBusConnection::sessionBus().registerObject("/Player", this);
@@ -222,23 +222,26 @@ namespace Amarok
 
     QString DbusPlayerHandler::coverImage()
     {
-        KTemporaryFile tempFile;
-        tempFile.setSuffix( ".jpg" );
-        tempFile.setAutoRemove( false );  //file stays in filesystem       
-        //TODO Delete old m_tempFileName when coverImage() is run again               
-        if( !tempFile.open() )
-            return QString();
-        QString m_tempFileName = tempFile.fileName();
+        if( m_tempFileName == 0 )
+        {
+            KTemporaryFile tempFile; //TODO delete when we're done
+            tempFile.setSuffix( ".png" );
+            tempFile.setAutoRemove( false );              
+            if( !tempFile.open() )
+                return QString();
+
+            m_tempFileName = tempFile.fileName();
+        }
 
         Meta::TrackPtr track = The::engineController()->currentTrack();
         if( track && track->album() )
         {
             debug() << "Saving album image.";
-            track->album()->image().save( m_tempFileName, "JPG" );
+            track->album()->image().save( m_tempFileName, "PNG" ); // For covers w/ alpha channel
             return m_tempFileName;
         }
         else 
-            return QString("Oh Fiddlesticks. No cover for you.");
+            return QString();
     }
 
     QString DbusPlayerHandler::currentTime()
@@ -583,7 +586,7 @@ namespace Amarok
 
     void DbusPlayerHandler::stop()
     {
-        The::engineController() ->stop();
+        The::engineController()->stop();
     }
 
     void DbusPlayerHandler::transferDeviceFiles()
