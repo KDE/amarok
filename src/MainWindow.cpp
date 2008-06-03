@@ -870,10 +870,10 @@ MainWindow::createMenus()
     actionsMenu->addAction( actionCollection()->action("play_pause") );
     actionsMenu->addAction( actionCollection()->action("stop") );
     actionsMenu->addAction( actionCollection()->action("next") );
+
+
+#ifndef Q_WS_MAC    // Avoid duplicate "Quit" in OS X dock menu
     actionsMenu->addSeparator();
-
-
-#ifndef Q_WS_MAC    // Hide in OS X. Avoids duplicate "Quit" in dock menu
     actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
 #endif
     //END Actions menu
