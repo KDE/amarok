@@ -36,6 +36,7 @@ class DbusPlayerHandler : public QObject
 
    public:
       DbusPlayerHandler();
+      ~DbusPlayerHandler();
 
    public:
       virtual QString version();

@@ -72,10 +72,15 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusPlayerHandler::DbusPlayerHandler()
-        : QObject( kapp ), m_tempFileName( 0 )
+        : QObject( kapp ), m_tempFileName( QString::null )
     {
         (void)new PlayerAdaptor(this);
         QDBusConnection::sessionBus().registerObject("/Player", this);
+    }
+
+    DbusPlayerHandler::~DbusPlayerHandler()
+    {
+        QFile::remove( m_tempFileName );
     }
 
     QString DbusPlayerHandler::version()
@@ -222,7 +227,7 @@ namespace Amarok
 
     QString DbusPlayerHandler::coverImage()
     {
-        if( m_tempFileName == 0 )
+        if( m_tempFileName.isNull() )
         {
             KTemporaryFile tempFile; //TODO delete when we're done
             tempFile.setSuffix( ".png" );
