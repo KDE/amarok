@@ -87,21 +87,20 @@ class PodcastMetaCommon
         QString m_subtitle; //a short description
         QString m_summary;
         QString m_author;
-
 };
 
 class PodcastEpisode : public PodcastMetaCommon, public Track
 {
     public:
         PodcastEpisode()
-            : Track()
-            , PodcastMetaCommon()
+            : PodcastMetaCommon()
+            , Track()
         {}
         
         PodcastEpisode( PodcastChannelPtr channel )
-            : Track()
-            , PodcastMetaCommon()
-            , m_channel( channel ){}
+            : PodcastMetaCommon()
+            , Track()
+            , m_channel( channel ) {}
 
         virtual ~PodcastEpisode() {}
 
@@ -206,8 +205,8 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
         };
 
         PodcastChannel()
-            : Playlist()
-            , PodcastMetaCommon() { DEBUG_BLOCK }
+            : PodcastMetaCommon()
+            , Playlist() { DEBUG_BLOCK }
 
         virtual ~PodcastChannel() {}
 
