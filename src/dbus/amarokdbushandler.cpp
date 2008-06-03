@@ -55,6 +55,7 @@
 
 #include <kactioncollection.h>
 #include <kstartupinfo.h>
+#include <KTemporaryFile>
 
 #include <collectionadaptor.h>
 #include <contextadaptor.h>
@@ -221,8 +222,23 @@ namespace Amarok
 
     QString DbusPlayerHandler::coverImage()
     {
-        //TODO: fix me. oups, Meta:.Album can't actually do this yet:(
-        return QString();
+        KTemporaryFile tempFile;
+        tempFile.setSuffix( ".jpg" );
+        tempFile.setAutoRemove( false );  //file stays in filesystem       
+        //TODO Delete old m_tempFileName when coverImage() is run again               
+        if( !tempFile.open() )
+            return QString();
+        QString m_tempFileName = tempFile.fileName();
+
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        if( track && track->album() )
+        {
+            debug() << "Saving album image.";
+            track->album()->image().save( m_tempFileName, "JPG" );
+            return m_tempFileName;
+        }
+        else 
+            return QString("Oh Fiddlesticks. No cover for you.");
     }
 
     QString DbusPlayerHandler::currentTime()
