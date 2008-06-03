@@ -60,10 +60,27 @@ SqlPodcastProvider::SqlPodcastProvider()
         debug() << "creating Podcast Tables";
         createTables();
     }
+    else /*verion == PODCAST_DB_VERSION */
+    {
+        loadPodcasts();
+    }
 }
 
 SqlPodcastProvider::~SqlPodcastProvider()
 {}
+
+void
+SqlPodcastProvider::loadPodcasts()
+{
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    
+    QStringList values = sqlStorage->query( "SELECT id, url, title, weblink, image, description, copyright, directory, labels,autoscan, fetchtype, autotransfer, haspurge, purgecount FROM podcastchannels;" );
+    int i = 0;
+    foreach(QString string, values)
+    {
+        debug() << "result " << i++ << " : " << string;
+    }
+}
 
 bool
 SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const

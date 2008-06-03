@@ -329,9 +329,6 @@ PodcastReader::commitEpisode()
     if( episodeMatch == item )
     {
         debug() << "commit episode " << item->title();
-//         m_podcastProvider->acquireReadLock();
-//         item = m_podcastProvider->addEpisode( item );
-//         m_podcastProvider->releaseLock();
 
         Q_ASSERT( m_channel );
         //make a copy of the pointer and add that to the channel
