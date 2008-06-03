@@ -34,7 +34,7 @@ public:
     
     Containment(QObject* parent, const QVariantList& args);
     
-//     ~Containment();
+    ~Containment();
     
     virtual void saveToConfig( KConfig& conf ) = 0;
     virtual void loadConfig( KConfig& conf ) = 0;

@@ -32,10 +32,10 @@ Containment::Containment( QObject* parent, const QVariantList& args )
         : Plasma::Containment( parent, args )
 {}
 
-// Containment::~Containment()
-// {
-//     DEBUG_BLOCK
-// }
+Containment::~Containment()
+{
+    DEBUG_BLOCK
+}
 
 } // namespace Context
 #include "Containment.moc"
