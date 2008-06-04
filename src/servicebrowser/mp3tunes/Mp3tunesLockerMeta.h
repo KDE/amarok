@@ -32,12 +32,12 @@ class Mp3tunesLockerPlaylist {
         Mp3tunesLockerPlaylist( mp3tunes_locker_playlist_t *playlist );
         ~Mp3tunesLockerPlaylist();
         
-        QString getPlaylistId() const;
-        QString getPlaylistTitle() const;
-        QString getTitle() const;
-        QString getFileName() const;
-        int getFileCount() const;
-        int getPlaylistSize() const;
+        QString playlistId() const;
+        QString playlistTitle() const;
+        QString title() const;
+        QString fileName() const;
+        int fileCount() const;
+        int playlistSize() const;
     private:
         mp3tunes_locker_playlist_t *m_playlist;
 };
@@ -47,11 +47,11 @@ class Mp3tunesLockerArtist {
         Mp3tunesLockerArtist( mp3tunes_locker_artist_t *artist );
         ~Mp3tunesLockerArtist();
         
-        int getArtistId() const;
-        QString getArtistName() const;
-        int getArtistSize() const;
-        int getAlbumCount() const;
-        int getTrackCount() const;
+        int artistId() const;
+        QString artistName() const;
+        int artistSize() const;
+        int albumCount() const;
+        int trackCount() const;
     private:
         mp3tunes_locker_artist_t *m_artist;
 };
@@ -60,12 +60,12 @@ class Mp3tunesLockerAlbum {
     public:
         Mp3tunesLockerAlbum( mp3tunes_locker_album_t *album );
         ~Mp3tunesLockerAlbum();
-        int getAlbumId() const;
-        QString getAlbumTitle() const;
-        int getArtistId() const;
-        QString getArtistName() const;
-        int getTrackCount() const;
-        int getAlbumSize() const;
+        int albumId() const;
+        QString albumTitle() const;
+        int artistId() const;
+        QString artistName() const;
+        int trackCount() const;
+        int albumSize() const;
         bool hasArt() const;
     private:
         mp3tunes_locker_album_t *m_album;
@@ -76,19 +76,19 @@ class Mp3tunesLockerTrack {
         Mp3tunesLockerTrack( mp3tunes_locker_track_t *track );
         ~Mp3tunesLockerTrack();
         
-        int getTrackId() const;
-        QString getTrackTitle() const;
-        int getTrackNumber() const;
-        float getTrackLength() const;
-        QString getTrackFileName() const;
-        QString getTrackFileKey() const;
-        int getTrackFileSize() const;
-        QString getDownloadUrl() const;
-        QString getPlayUrl() const;
-        int getAlbumId() const;
-        QString getAlbumTitle() const;
-        int getAlbumYear() const;
-        QString getArtistName() const;
+        int trackId() const;
+        QString trackTitle() const;
+        int trackNumber() const;
+        float trackLength() const;
+        QString trackFileName() const;
+        QString trackFileKey() const;
+        int trackFileSize() const;
+        QString downloadUrl() const;
+        QString playUrl() const;
+        int albumId() const;
+        QString albumTitle() const;
+        int albumYear() const;
+        QString artistName() const;
     private:
         mp3tunes_locker_track_t *m_track;
 };

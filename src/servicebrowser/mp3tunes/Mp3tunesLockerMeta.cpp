@@ -30,27 +30,27 @@ Mp3tunesLockerArtist::~Mp3tunesLockerArtist()
     delete m_artist;
 }
 
-int Mp3tunesLockerArtist::getArtistId() const
+int Mp3tunesLockerArtist::artistId() const
 {
     return m_artist->artistId;
 }
 
-QString Mp3tunesLockerArtist::getArtistName() const
+QString Mp3tunesLockerArtist::artistName() const
 {
     return QString( m_artist->artistName );
 }
 
-int Mp3tunesLockerArtist::getArtistSize() const
+int Mp3tunesLockerArtist::artistSize() const
 {
     return m_artist->artistSize;
 }
 
-int Mp3tunesLockerArtist::getAlbumCount() const
+int Mp3tunesLockerArtist::albumCount() const
 {
     return m_artist->albumCount;
 }
 
-int Mp3tunesLockerArtist::getTrackCount() const
+int Mp3tunesLockerArtist::trackCount() const
 {
     return m_artist->trackCount;
 }
@@ -66,32 +66,32 @@ Mp3tunesLockerAlbum::~Mp3tunesLockerAlbum()
     delete m_album;
 }
 
-int Mp3tunesLockerAlbum::getAlbumId() const
+int Mp3tunesLockerAlbum::albumId() const
 {
     return m_album->albumId;
 }
 
-QString Mp3tunesLockerAlbum::getAlbumTitle() const
+QString Mp3tunesLockerAlbum::albumTitle() const
 {
     return QString( m_album->albumTitle );
 }
 
-int Mp3tunesLockerAlbum::getArtistId() const
+int Mp3tunesLockerAlbum::artistId() const
 {
     return m_album->artistId;
 }
 
-QString Mp3tunesLockerAlbum::getArtistName() const
+QString Mp3tunesLockerAlbum::artistName() const
 {
     return QString( m_album->artistName );
 }
 
-int Mp3tunesLockerAlbum::getTrackCount() const
+int Mp3tunesLockerAlbum::trackCount() const
 {
     return m_album->trackCount;
 }
 
-int Mp3tunesLockerAlbum::getAlbumSize() const
+int Mp3tunesLockerAlbum::albumSize() const
 {
     return m_album->albumSize;
 }
@@ -111,67 +111,67 @@ Mp3tunesLockerTrack::~Mp3tunesLockerTrack()
     delete m_track;
 }
 
-int Mp3tunesLockerTrack::getTrackId() const
+int Mp3tunesLockerTrack::trackId() const
 {
     return m_track->trackId;
 }
 
-QString Mp3tunesLockerTrack::getTrackTitle() const
+QString Mp3tunesLockerTrack::trackTitle() const
 {
     return QString( m_track->trackTitle );
 }
 
-int Mp3tunesLockerTrack::getTrackNumber() const
+int Mp3tunesLockerTrack::trackNumber() const
 {
     return m_track->trackNumber;
 }
 
-float Mp3tunesLockerTrack::getTrackLength() const
+float Mp3tunesLockerTrack::trackLength() const
 {
     return m_track->trackLength;
 }
 
-QString Mp3tunesLockerTrack::getTrackFileName() const
+QString Mp3tunesLockerTrack::trackFileName() const
 {
     return QString( m_track->trackFileName );
 }
 
-QString Mp3tunesLockerTrack::getTrackFileKey() const
+QString Mp3tunesLockerTrack::trackFileKey() const
 {
     return QString( m_track->trackFileKey );
 }
 
-int Mp3tunesLockerTrack::getTrackFileSize() const
+int Mp3tunesLockerTrack::trackFileSize() const
 {
     return m_track->trackFileSize;
 }
 
-QString Mp3tunesLockerTrack::getDownloadUrl() const
+QString Mp3tunesLockerTrack::downloadUrl() const
 {
     return QString( m_track->downloadURL );
 }
 
-QString Mp3tunesLockerTrack::getPlayUrl() const
+QString Mp3tunesLockerTrack::playUrl() const
 {
     return QString( m_track->playURL );
 }
 
-int Mp3tunesLockerTrack::getAlbumId() const
+int Mp3tunesLockerTrack::albumId() const
 {
     return m_track->albumId;
 }
 
-QString Mp3tunesLockerTrack::getAlbumTitle() const
+QString Mp3tunesLockerTrack::albumTitle() const
 {
     return QString( m_track->albumTitle );
 }
 
-int Mp3tunesLockerTrack::getAlbumYear() const
+int Mp3tunesLockerTrack::albumYear() const
 {
     return m_track->albumYear;
 }
 
-QString Mp3tunesLockerTrack::getArtistName() const
+QString Mp3tunesLockerTrack::artistName() const
 {
     return QString( m_track->artistName );
 }
@@ -186,31 +186,31 @@ Mp3tunesLockerPlaylist::~Mp3tunesLockerPlaylist()
     delete m_playlist;
 }
 
-QString Mp3tunesLockerPlaylist::getPlaylistId() const
+QString Mp3tunesLockerPlaylist::playlistId() const
 {
     return QString( m_playlist->playlistId );
 }
 
-QString Mp3tunesLockerPlaylist::getPlaylistTitle() const{
+QString Mp3tunesLockerPlaylist::playlistTitle() const{
     return QString( m_playlist->playlistTitle );
 }
 
-QString Mp3tunesLockerPlaylist::getTitle() const
+QString Mp3tunesLockerPlaylist::title() const
 {
     return QString( m_playlist->title );
 }
 
-QString Mp3tunesLockerPlaylist::getFileName() const
+QString Mp3tunesLockerPlaylist::fileName() const
 {
     return QString( m_playlist->fileName );
 }
 
-int Mp3tunesLockerPlaylist::getFileCount() const
+int Mp3tunesLockerPlaylist::fileCount() const
 {
     return m_playlist->fileCount;
 }
 
-int Mp3tunesLockerPlaylist::getPlaylistSize() const
+int Mp3tunesLockerPlaylist::playlistSize() const
 {
     return m_playlist->playlistSize;
 }
