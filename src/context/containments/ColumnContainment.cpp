@@ -58,7 +58,6 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     : Context::Containment( parent, args )
     , m_actions( 0 )
     , m_defaultColumnSize( 350 )
-    , m_appletBrowserHasBeenKicked ( false )
 {
     DEBUG_BLOCK
 
@@ -95,20 +94,16 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     DEBUG_LINE_INFO
 
     m_appletBrowserAction = new QAction(KIcon("list-add-amarok"), i18n("Add Applet..."), this);
-    connect(m_appletBrowserAction, SIGNAL(triggered(bool)), this, SLOT(launchAppletBrowser()));
+    connect( m_appletBrowserAction, SIGNAL( triggered(bool) ), this, SLOT( showAddWidgetsInterface() ) );
     // set up default context menu actions
     m_actions = new QList<QAction*>();
     m_actions->append( m_appletBrowserAction );
 
-    m_appletBrowser = new Plasma::AppletBrowser();
-    m_appletBrowser->setApplication( "amarok" );
-    m_appletBrowser->setContainment( this );
-    m_appletBrowser->hide();
     DEBUG_LINE_INFO
 
     debug() << "Creating ColumnContainment, max size:" << maximumSize();
 
-connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
+    connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
     //connect ( Plasma::Theme::self(), SIGNAL( changed() ), this, SLOT( paletteChange() ) );
     connect( KGlobalSettings::self(), SIGNAL(kdisplayPaletteChanged() ), this, SLOT( paletteChange() ) );
 }
@@ -230,14 +225,6 @@ QList<QAction*> ColumnContainment::contextualActions()
     return *m_actions;
 }
 
-void ColumnContainment::launchAppletBrowser() // SLOT
-{
-    m_appletBrowser->show();
-    if ( !m_appletBrowserHasBeenKicked ) {
-        m_appletBrowser->resize( m_appletBrowser->size() + QSize( 1 , 0 ) );
-        m_appletBrowserHasBeenKicked = true;
-    }
-}
 
 void ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
@@ -254,6 +241,12 @@ void ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent * event )
         if( !insideApplet )
             m_appletBrowserAction->trigger();
     }
+}
+
+void
+ColumnContainment::showAddWidgetsInterface()
+{
+    emit showAddWidgetsInterface( QPointF() );
 }
 
 /*
@@ -294,7 +287,6 @@ ColumnContainment::appletRemoved( Plasma::Applet* applet )
         debug() << "GOT NON-QGraphicsLayoutItem in APPLETREMOVED";
 
 }
-
 
 } // Context namespace
 

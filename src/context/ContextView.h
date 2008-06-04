@@ -26,6 +26,7 @@
 #include "EngineController.h"
 #include "Svg.h"
 
+#include "plasma/appletbrowser.h"
 #include "plasma/view.h"
 
 //TODO: move away, not need anymore
@@ -73,6 +74,8 @@ public slots:
     void zoomOut();
 
     Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
+    void showAppletBrowser();
+
 protected:
     void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
 
@@ -81,6 +84,8 @@ protected:
 
 private:
     static ContextView* s_self;
+
+    void connectContainment();
 
     void loadConfig();
 
@@ -91,8 +96,12 @@ private:
 
     // holds what is currently being shown
     ContextState m_curState;
+    Plasma::AppletBrowser *m_appletBrowser;
 
     //ControlBox* m_controlBox;
+
+private slots:
+    void appletBrowserDestroyed();
 
 };
 

@@ -47,6 +47,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     : Plasma::View( cont, parent )
     , EngineObserver( The::engineController() )
     , m_curState( Home )
+    , m_appletBrowser( 0 )
 {
 
     s_self = this;
@@ -76,6 +77,8 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     Theme::defaultTheme()->setThemeName( "Amarok-Mockup" );
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
+
+    connectContainment();
 
     PERF_LOG( "Showing home in contextview" )
     showHome();
@@ -260,6 +263,45 @@ void ContextView::wheelEvent( QWheelEvent* event )
     }
 }
 
+void
+ContextView::connectContainment()
+{
+    if( containment() )
+    {
+        connect( containment(), SIGNAL( showAddWidgetsInterface( QPointF ) ),
+                this, SLOT( showAppletBrowser() ) );
+    }
+}
+
+void
+ContextView::showAppletBrowser()
+{
+    DEBUG_BLOCK
+    if( !containment() )
+        return;
+
+    if( !m_appletBrowser )
+    {
+        m_appletBrowser = new Plasma::AppletBrowser();
+        m_appletBrowser->setContainment( containment() );
+        m_appletBrowser->setApplication( "amarok" );
+        m_appletBrowser->setAttribute( Qt::WA_DeleteOnClose );
+        m_appletBrowser->setWindowTitle( i18n( "Add Applets" ) );
+        connect( m_appletBrowser, SIGNAL( destroyed() ), this, SLOT( appletBrowserDestroyed() ) );
+    }
+    else
+    {
+        m_appletBrowser->setContainment( containment() );
+    }
+    DEBUG_LINE_INFO
+    m_appletBrowser->show();
+}
+
+void
+ContextView::appletBrowserDestroyed()
+{
+    m_appletBrowser = 0;
+}
 
 } // Context namespace
 

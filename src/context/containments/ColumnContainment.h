@@ -23,7 +23,6 @@
 #include "context/layouts/ContextLayout.h"
 #include "context/Svg.h"
 
-#include "plasma/appletbrowser.h"
 #include "plasma/animator.h"
 #include "SvgHandler.h"
 
@@ -76,7 +75,6 @@ protected:
 //     bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
 
 protected slots:
-    void launchAppletBrowser();
     void recalculate();
     void paletteChange();
 
@@ -84,9 +82,13 @@ private slots:
 
     void appletRemoved( Plasma::Applet * );
     void jobDone();
+    void showAddWidgetsInterface();
+
+signals:
+    void showAddWidgetsInterface( const QPointF &p);
+
 private:
     QAction* m_appletBrowserAction;
-    Plasma::AppletBrowser* m_appletBrowser;
 
     QList<QAction*> *m_actions;
 
@@ -102,9 +104,6 @@ private:
     QPixmapCache m_cache;
 
     SvgRenderJob *m_job;
-
-    //HACK to make the applet browser not be empty untill it has been resized...
-    bool m_appletBrowserHasBeenKicked;
 
     //KSvgRenderer * m_renderer;
 };
