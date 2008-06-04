@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2003-2005 Max Howell <max.howell@methylblue.com>        *
- *             (C) 2003-2007 Mark Kretschmann <kretschmann@kde.org>        *
+ *             (C) 2003-2008 Mark Kretschmann <kretschmann@kde.org>        *
  *             (C) 2005-2007 Alexandre Oliveira <aleprj@gmail.com>         *
  *             (C) 2008 Dan Meltzer <hydrogen@notyetimplemented.com        *
  *                                                                         *
@@ -24,30 +24,23 @@
 
 #include "Amarok.h"
 
-#include <KMD5>
-
 #include <cerrno>
 #include <iostream>
-
 #include <limits.h>    //PATH_MAX
-#include <stdlib.h>    //realpath
-
-#include <fileref.h>
-#include <tag.h>
-#include <tstring.h>
 
 #include <QByteArray>
-#include <QDir>
 #include <QDBusReply>
+#include <QDir>
+#include <qdom.h>
 #include <QFile>
 #include <QTimer>
-#include <qdom.h>
 
 #include <KGlobal>
 #include <KLocale>
 
 //Taglib:
 #include <apetag.h>
+#include <fileref.h>
 #include <flacfile.h>
 #include <id3v1tag.h>
 #include <id3v2tag.h>
@@ -56,6 +49,7 @@
 #include <oggfile.h>
 #include <oggflacfile.h>
 #include <tlist.h>
+#include <tstring.h>
 #include <vorbisfile.h>
 
 #ifdef HAVE_MP4V2
@@ -150,7 +144,6 @@ CollectionScanner::doJob() //SLOT
             if( !dir.endsWith( '/' ) )
                 dir += '/';
 
-            std::cout << dir.ascii() << std::endl;
             readDir( dir, entries );
         }
 

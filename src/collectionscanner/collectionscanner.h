@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2003-2007 Mark Kretschmann <kretschmann@kde.org>        *
+ *   Copyright (C) 2003-2008 Mark Kretschmann <kretschmann@kde.org>        *
  *             (C) 2008 Dan Meltzer <hydrogen@notyetimplemented.com        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,6 +21,7 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
+#include "amarok_collection_interface.h"
 #include "metadata/tfile_helper.h"
 
 #include <sys/types.h>
@@ -32,7 +33,6 @@
 
 #include <KApplication>
 #include <KStandardDirs>
-#include <amarok_collection_interface.h>
 
 //Taglib includes..
 #include <audioproperties.h>
@@ -118,3 +118,4 @@ private:
 
 
 #endif // COLLECTIONSCANNER_H
+
