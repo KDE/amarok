@@ -16,8 +16,8 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   sodipodi:docname="default-theme.svgz"
-   inkscape:output_extension="org.inkscape.output.svgz.inkscape"
+   sodipodi:docname="default-theme.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:docbase="/home/amarok-dev/amarok/src/images">
   <metadata
      id="metadata16896">
@@ -62,7 +62,7 @@
      id="base"
      showgrid="false"
      inkscape:zoom="1.28"
-     inkscape:cx="2430.4272"
+     inkscape:cx="2466.9452"
      inkscape:cy="1112.0519"
      inkscape:window-x="0"
      inkscape:window-y="0"
@@ -76,6 +76,40 @@
   </sodipodi:namedview>
   <defs
      id="defs5">
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       fy="783.16357"
+       fx="375.21439"
+       r="300.5752"
+       cy="783.16357"
+       cx="375.21439"
+       id="radialGradient3983"
+       gradientTransform="matrix(1.1256295,0,0,1.1256295,-41.873391,-39.54673)">
+      <stop
+         id="stop3985"
+         style="stop-color:#eeeeef;stop-opacity:0.94117647;"
+         offset="0.0112" />
+      <stop
+         id="stop3987"
+         style="stop-color:#6193cf;stop-opacity:1;"
+         offset="0.29210001" />
+      <stop
+         id="stop3989"
+         style="stop-color:#2c72c7;stop-opacity:1;"
+         offset="0.45750001" />
+      <stop
+         id="stop3991"
+         style="stop-color:#0057ae;stop-opacity:0.78431374;"
+         offset="0.6767" />
+      <stop
+         id="stop3993"
+         style="stop-color:#004c9a;stop-opacity:0.43137255;"
+         offset="0.8653" />
+      <stop
+         id="stop3995"
+         style="stop-color:#00438a;stop-opacity:0.01960784;"
+         offset="1" />
+    </radialGradient>
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
        inkscape:vp_x="0 : 690.46362 : 1"
@@ -866,7 +900,7 @@
        y2="491.06723" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#radialGradient29545"
+       xlink:href="#radialGradient3983"
        id="linearGradient9258"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(1,0,0,1.0291691,2279.589,-444.80808)"
@@ -2118,7 +2152,7 @@
        d="M 2384.5312,146.4375 C 2376.9497,146.43749 2370.8438,152.49336 2370.8438,160 L 2370.8438,248.84375 L 2370.8438,337.71875 C 2370.8438,345.22539 2376.9498,351.25001 2384.5312,351.25 L 2416.6562,351.25 C 2424.2378,351.25002 2430.3438,345.22536 2430.3438,337.71875 L 2430.3438,248.84375 L 2430.3438,160 C 2430.3437,152.49338 2424.2377,146.43748 2416.6562,146.4375 L 2384.5312,146.4375 z M 2387.1562,147.03125 L 2414,147.03125 C 2421.5814,147.03124 2427.6875,153.0871 2427.6875,160.59375 L 2427.6875,248.84375 L 2427.6875,337.125 C 2427.6875,344.63165 2421.5815,350.65626 2414,350.65625 L 2387.1562,350.65625 C 2379.5748,350.65629 2373.5,344.63161 2373.5,337.125 L 2373.5,248.84375 L 2373.5,160.59375 C 2373.4999,153.08713 2379.5747,147.03121 2387.1562,147.03125 z "
        style="fill:url(#linearGradient9260);fill-opacity:1" />
     <rect
-       style="opacity:0.29999999999999999;fill:url(#linearGradient9258);fill-opacity:1.0"
+       style="opacity:0.304;fill:url(#linearGradient9258);fill-opacity:1"
        id="rect9165"
        y="146.92448"
        x="2373.5608"

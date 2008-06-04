@@ -286,7 +286,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
         c = blendColors( baseColor, palette().highlight().color().darker( 150 ), blendPercent );
 
     QImage background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" ).toImage();
-    KIconEffect::colorize( background, c, 1.0 );
+    KIconEffect::colorize( background, c, 0.7 );
     p.drawImage( 0, 0, background );
 
     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
