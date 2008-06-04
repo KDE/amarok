@@ -143,8 +143,14 @@ CollectionScanner::doJob() //SLOT
                 //which results in a full-system scan! Which we can't allow
                 continue;
 
+            // Make sure that all paths are absolute, not relative
+            if( QDir::isRelativePath( dir ) )
+                dir = QDir::currentPath() + "/" + dir;
+
             if( !dir.endsWith( '/' ) )
                 dir += '/';
+
+            std::cout << dir.ascii() << std::endl;
             readDir( dir, entries );
         }
 
