@@ -139,7 +139,7 @@ CollectionScanner::doJob() //SLOT
 
             // Make sure that all paths are absolute, not relative
             if( QDir::isRelativePath( dir ) )
-                dir = QDir::currentPath() + "/" + dir;
+                dir = QDir::cleanPath( QDir::currentPath() + "/" + dir );
 
             if( !dir.endsWith( '/' ) )
                 dir += '/';
