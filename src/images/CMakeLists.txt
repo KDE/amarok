@@ -14,7 +14,7 @@ install(
         currenttrack_repeat_small.png
         currenttrack_stop.png
         currenttrack_stop_small.png
-        default-theme.svgz
+        default-theme.svg
         emblem-default.png
         emblem-jamendo.png
         emblem-lastfm.png
