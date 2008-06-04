@@ -103,13 +103,12 @@ namespace Amarok
 
             body += "======== DEBUG INFORMATION  =======\n"
                     "Version:    " APP_VERSION "\n"
-                    "Engine:     %1\n"
                     "Build date: " __DATE__ "\n"
                     "CC version: " __VERSION__ "\n" //assuming we're using GCC
                     "KDElibs:    " KDE_VERSION_STRING "\n"
-                    "Qt:         %2\n"
-                    "TagLib:     %3.%4.%5\n"
-                    "CPU count:  %6\n";
+                    "Qt:         %1\n"
+                    "TagLib:     %2.%3.%4\n"
+                    "CPU count:  %5\n";
 
             QString cpucount = "unknown";
 #ifdef __linux__
@@ -128,14 +127,11 @@ namespace Amarok
             cpucount = QString::number( cpuCount );
 #endif
 
-            KConfigGroup config = KGlobal::config()->group( "Playback" );
-            QString soundSystem = config.readEntry( "Sound System", QString() );
-            body = body.arg( soundSystem )
-                    .arg( qVersion() )
-                    .arg( TAGLIB_MAJOR_VERSION )
-                    .arg( TAGLIB_MINOR_VERSION )
-                    .arg( TAGLIB_PATCH_VERSION )
-                    .arg( cpucount );
+            body = body.arg( qVersion() )
+                       .arg( TAGLIB_MAJOR_VERSION )
+                       .arg( TAGLIB_MINOR_VERSION )
+                       .arg( TAGLIB_PATCH_VERSION )
+                       .arg( cpucount );
 
             #ifdef NDEBUG
             body += "NDEBUG:     true";
@@ -208,8 +204,6 @@ namespace Amarok
             }
             else
                 useful = false;
-
-            subject += QString("[%1]").arg( soundSystem.remove( QRegExp("-?engine") ) );
 
             std::cout << subject.toLatin1().constData() << std::endl;
 
