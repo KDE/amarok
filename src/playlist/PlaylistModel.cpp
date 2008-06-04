@@ -201,10 +201,23 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case 3:
             {
+                QString artist;
+                QString album;
+                QString track;
+
+                if ( m_items.at( row )->track() ) {
+
+                    track = m_items.at( row )->track()->name();
+                    if ( m_items.at( row )->track()->artist() )
+                        artist = m_items.at( row )->track()->artist()->name();
+                    if ( m_items.at( row )->track()->artist() )
+                        album = m_items.at( row )->track()->album()->name();
+                }
+                
                 return QString("%1 - %2 - %3")
-                    .arg(m_items.at( row )->track()->artist()->name())
-                    .arg(m_items.at( row )->track()->album()->name())
-                    .arg(m_items.at( row )->track()->name());
+                        .arg( artist )
+                        .arg( album )
+                        .arg( track );
             }
         }
     }
