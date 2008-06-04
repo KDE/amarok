@@ -108,7 +108,7 @@ namespace Amarok
                     "KDElibs:    " KDE_VERSION_STRING "\n"
                     "Qt:         %1\n"
                     "TagLib:     %2.%3.%4\n"
-                    "CPU count:  %5\n";
+                    "CPU cores:  %5\n";
 
             QString cpucount = "unknown";
 #ifdef __linux__
