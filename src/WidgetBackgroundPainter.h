@@ -16,7 +16,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-
  
 #ifndef WIDGETBACKGROUNDPAINTER_H
 #define WIDGETBACKGROUNDPAINTER_H
@@ -38,14 +37,13 @@ public:
 
     static WidgetBackgroundPainter * instance();
 
-
-    ~WidgetBackgroundPainter();
+    ~WidgetBackgroundPainter() {};
 
     QPixmap getBackground( QWidget * parent, int x, int y, int width, int height, bool ignoreCache = false );
     QPixmap getBackground( const QString name, int globalAreaX, int globalAreaY, int x, int y, int width, int height, bool ignoreCache = false );
 
 private:
-    WidgetBackgroundPainter();
+    WidgetBackgroundPainter() {};
 
     static WidgetBackgroundPainter * m_instance;
     

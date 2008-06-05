@@ -31,9 +31,9 @@
 
 WidgetBackgroundPainter * WidgetBackgroundPainter::m_instance = 0;
 
+
 WidgetBackgroundPainter * WidgetBackgroundPainter::instance()
 {
-
     if ( m_instance == 0 )
         m_instance = new WidgetBackgroundPainter();
 
@@ -41,55 +41,42 @@ WidgetBackgroundPainter * WidgetBackgroundPainter::instance()
 }
 
 
-WidgetBackgroundPainter::WidgetBackgroundPainter()
-{
-}
-
-
-WidgetBackgroundPainter::~WidgetBackgroundPainter()
-{
-}
-
 QPixmap WidgetBackgroundPainter::getBackground( QWidget * parent, int x, int y, int width, int height, bool ignoreCache )
 {
-
     //get postion of widget in global coords.
     QPoint globalTopLeft = parent->mapToGlobal( QPoint( 0, 0 ) );
     //QPoint globalBottomRight = parent->mapToGlobal( parent->rect().bottomRight() );
 
-    return getBackground( parent->name(), globalTopLeft.x(), globalTopLeft.y(), x, y, width, height, ignoreCache );
-            
+    return getBackground( parent->objectName(), globalTopLeft.x(), globalTopLeft.y(), x, y, width, height, ignoreCache );
 }
+
 
 QPixmap WidgetBackgroundPainter::getBackground( const QString name, int globalAreaX , int globalAreaY, int x, int y, int width, int height, bool ignoreCache)
 {
+    Q_UNUSED( x )
+    Q_UNUSED( y )
+
     //get global offset of the logical background image
     
     QPoint backgroundGlobalTopLeft = MainWindow::self()->globalBackgroundOffset();
 
-    int globalX = backgroundGlobalTopLeft.x();
-    int globalY = backgroundGlobalTopLeft.y();
+    const int globalX = backgroundGlobalTopLeft.x();
+    const int globalY = backgroundGlobalTopLeft.y();
 
-
-    int cutoutX = globalAreaX - globalX;
-    int cutoutY = globalAreaY - globalY;
-
+    const int cutoutX = globalAreaX - globalX;
+    const int cutoutY = globalAreaY - globalY;
     
-    QString key = QString("%1_bg:%2x%3").arg( name ).arg( width ).arg( height );
+    const QString key = QString("%1_bg:%2x%3").arg( name ).arg( width ).arg( height );
     QPixmap background( width, height );
-
-    //debug() << "key: " << key;
-
 
     if ( ignoreCache || !QPixmapCache::find( key, background ) ) {
 
         debug() << "cutout: " << cutoutX << ", " << cutoutY << ", " << width << ", " << height;
         
-        QSize backgroundSize = MainWindow::self()->backgroundSize();
-        QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
+        const QSize backgroundSize = MainWindow::self()->backgroundSize();
+        const QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
         background = mainBackground.copy( cutoutX, cutoutY, width, height );
         QPixmapCache::insert( key, background );
-
     }
 
     return background;
