@@ -31,7 +31,7 @@ extern "C" {
 
 /**
  * A wrapper class for the libmp3tunes locker object.
- * @author
+ * @author Casey Link <unnamedrambler@gmail.com> 
  */
 class Mp3tunesLocker {
     public:

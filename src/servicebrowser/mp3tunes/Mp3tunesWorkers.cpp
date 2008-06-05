@@ -18,18 +18,14 @@
  ***************************************************************************/
 #include "Mp3tunesWorkers.h"
 
-Mp3tunesWorker::Mp3tunesWorker( Mp3tunesLocker* locker ) : ThreadWeaver::Job()
+#include "Debug.h"
+    
+Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker, QString username, QString password ) : ThreadWeaver::Job()
 {
-    m_locker = locker;
+    DEBUG_BLOCK
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
-}
-
-Mp3tunesWorker::~Mp3tunesWorker()
-{
-}
-
-Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker, QString username, QString password ) : Mp3tunesWorker( locker )
-{
+    m_locker = locker;
+    debug() << "Login Request: " << username << ":" << password;
     m_username = username;
     m_password = password;
     m_sessionId = QString();
@@ -41,13 +37,20 @@ Mp3tunesLoginWorker::~Mp3tunesLoginWorker()
 
 void Mp3tunesLoginWorker::run()
 {
-    if(!m_locker) {
+    DEBUG_BLOCK
+    if(m_locker != 0) {
+        debug() << "Calling Locker login..";
         m_sessionId = m_locker->login(m_username, m_password);
+        debug() << "Login Complete. SessionId = " << m_sessionId;
+    } else {
+        debug() << "Locker is NULL";
     }
 }
 
 void Mp3tunesLoginWorker::completeJob()
 {
+    DEBUG_BLOCK
+    debug() << "Login Job complete";
     emit( finishedLogin( m_sessionId ) );
     deleteLater();
 }

@@ -25,40 +25,23 @@
 
 #include <threadweaver/Job.h>
 
-class Mp3tunesWorker : public ThreadWeaver::Job
-{
-    Q_OBJECT
-    public:
-        Mp3tunesWorker(  Mp3tunesLocker* locker );
-
-        ~Mp3tunesWorker();
-
-        virtual void run() = 0;
-    protected:
-        Mp3tunesLocker* m_locker;
-
-    private slots:
-        virtual void completeJob() = 0;
-
-};
-
-class Mp3tunesLoginWorker :  public Mp3tunesWorker
+class Mp3tunesLoginWorker :  public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
         Mp3tunesLoginWorker( Mp3tunesLocker* locker, QString username, QString password );
         ~Mp3tunesLoginWorker();
 
-        virtual void run();
+        void run();
 
     signals:
         void finishedLogin( QString sessionId );
 
     private slots:
-        virtual void completeJob();
+        void completeJob();
 
     private:
-
+        Mp3tunesLocker* m_locker;
         QString m_sessionId;
         QString m_username;
         QString m_password;

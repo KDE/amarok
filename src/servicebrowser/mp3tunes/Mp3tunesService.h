@@ -22,6 +22,7 @@
 
 #include "../ServiceBase.h"
 #include "Mp3tunesServiceCollection.h"
+#include "Mp3tunesLocker.h"
 
 #include <kio/jobclasses.h>
 #include <kio/job.h>
@@ -64,7 +65,7 @@ private:
     void authenticate( const QString & uname = "", const QString & passwd = "" );
 
 private slots:
-    void authenticationComplete(  KJob *job );
+    void authenticationComplete(  QString sessionId );
 
 private:
     QString m_email;
@@ -77,6 +78,8 @@ private:
     QString m_sessionId;
 
     Mp3tunesServiceCollection *  m_collection;
+
+    Mp3tunesLocker * m_locker;
 };
 
 #endif

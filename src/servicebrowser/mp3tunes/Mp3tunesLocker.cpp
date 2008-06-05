@@ -19,14 +19,19 @@
 
 #include "Mp3tunesLocker.h"
 
+#include "Debug.h"
+
 #include <QByteArray>
 
 ////////////////////////////////////////////////////////////////////////
 //LOCKER
 Mp3tunesLocker::Mp3tunesLocker( QString partnerToken)
 {
+    DEBUG_BLOCK
+    debug() << "New Locker Wrapper";
     QByteArray ba = partnerToken.toLatin1();
     const char *c_tok = ba.data();
+    debug() << "Wrapper Token: " << c_tok;
     mp3tunes_locker_init(&mp3tunes_locker, const_cast<char*>(c_tok) );
 }
 
@@ -45,6 +50,7 @@ Mp3tunesLocker::~Mp3tunesLocker(){
 
 QString Mp3tunesLocker::login(QString userName, QString password)
 {
+    DEBUG_BLOCK
     QByteArray baUser = userName.toLatin1();
     const char *c_user = baUser.data();
     
@@ -53,11 +59,14 @@ QString Mp3tunesLocker::login(QString userName, QString password)
 
     //result = 0 Login successful
     //result != 0 Login failed
+    debug() << "Wrapper Logging on with: " << userName << ":" << password;
     int result = mp3tunes_locker_login(mp3tunes_locker, const_cast<char*>(c_user),  const_cast<char*>(c_pass) );
 
     if(result == 0) { //login successful
+        debug() << "Wrapper Login succeded. result: " << result;
         return this->sessionId();
     }
+    debug() << "Wrapper Login failed. result: " << result;
     return QString(); //login failed
 }
 
