@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                       Casey Link <unnamedrambler@gmail.com>             *
+ *   Copyright (c) 2007  Casey Link <unnamedrambler@gmail.com>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -35,16 +35,14 @@ Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QString &name )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
     , m_coverDownloader( 0 )
-{
-}
+{}
 
 Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QStringList &resultRow )
     : ServiceAlbum( resultRow )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
     , m_coverDownloader( 0 )
-{
-}
+{}
 
 Meta::ServiceAlbumWithCover::~ServiceAlbumWithCover()
 {
@@ -76,8 +74,8 @@ ServiceAlbumWithCover::image(int size, bool withShadow)
     if ( size <= 1 )
         size = AmarokConfig::coverPreviewSize();
     QString sizeKey = QString::number( size ) + '@';
-    QImage img;
 
+    QImage img;
 
     if( QFile::exists( cacheCoverDir.filePath( sizeKey + coverName ) ) ) {
         //debug() << "Image exists in cache";
@@ -111,6 +109,7 @@ ServiceAlbumWithCover::setImage( const QImage & image )
     m_cover = image;
     m_hasFetchedCover = true;
     m_isFetchingCover = false;
+
     notifyObservers();
 }
 
@@ -122,10 +121,13 @@ ServiceAlbumWithCover::imageDownloadCanceled() const
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Class ServiceAlbumCoverDownloader
+///////////////////////////////////////////////////////////////////////////////
 
 ServiceAlbumCoverDownloader::ServiceAlbumCoverDownloader()
     : m_album( 0 )
-        , m_albumDownloadJob( 0 )
+    , m_albumDownloadJob( 0 )
 {
     m_tempDir = new KTempDir();
     m_tempDir->setAutoRemove( false );
@@ -168,10 +170,11 @@ ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 
         return;
     }
+
     if ( downloadJob != m_albumDownloadJob )
         return; //not the right job, so let's ignore it
 
-    QImage cover = QImage( m_coverDownloadPath );
+    const QImage cover = QImage( m_coverDownloadPath );
     if ( cover.isNull() )
     {
         debug() << "file not a valid image";
@@ -188,10 +191,13 @@ ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
     m_tempDir->unlink();
 }
 
-void ServiceAlbumCoverDownloader::coverDownloadCanceled( KJob *downloadJob )
+void
+ServiceAlbumCoverDownloader::coverDownloadCanceled( KJob *downloadJob )
 {
     Q_UNUSED( downloadJob );
-    debug() << "cover download cancelled";
+    DEBUG_BLOCK
+
+    debug() << "Cover download cancelled";
     m_album->imageDownloadCanceled();
 }
 

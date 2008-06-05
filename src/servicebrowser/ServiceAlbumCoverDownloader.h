@@ -23,8 +23,8 @@
 #include "ServiceMetaBase.h"
 #include "amarok_export.h"
 
-#include <kio/jobclasses.h>
 #include <kio/job.h>
+#include <kio/jobclasses.h>
 #include <KTempDir>
 
 #include <QObject>
