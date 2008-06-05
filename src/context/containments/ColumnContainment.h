@@ -84,9 +84,6 @@ private slots:
     void jobDone();
     void showAddWidgetsInterface();
 
-signals:
-    void showAddWidgetsInterface( const QPointF &p);
-
 private:
     QAction* m_appletBrowserAction;
 

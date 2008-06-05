@@ -246,7 +246,7 @@ void ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent * event )
 void
 ColumnContainment::showAddWidgetsInterface()
 {
-    emit showAddWidgetsInterface( QPointF() );
+    emit Plasma::Containment::showAddWidgetsInterface( QPointF() );
 }
 
 /*
