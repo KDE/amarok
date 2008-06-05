@@ -156,14 +156,15 @@ ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover * album )
 void
 ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 {
-
-    debug() << "cover download complete";
+    DEBUG_BLOCK
 
     if( !downloadJob || !downloadJob->error() == 0 )
     {
-        debug() << "error detected";
+        debug() << "Download Job failed!";
+        
         //we could not download, so inform album
-        m_album->imageDownloadCanceled();
+        if( m_album )
+            m_album->imageDownloadCanceled();
 
         return;
     }
