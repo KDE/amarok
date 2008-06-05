@@ -77,6 +77,7 @@ QueryMaker * ScriptableServiceQueryMaker::reset()
     d->callbackString = QString();
     d->parentId = -1;
     d->scriptProcess = 0;
+    d->albumMode = AllAlbums;
     d->filter = QString();
     d->lastFilter = QString();
 
