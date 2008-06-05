@@ -98,8 +98,7 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     m_directory = KUrl( *(iter++) );
     m_labels = QStringList( *(iter++) );
     m_autoScan = SqlPodcastProvider::instance()->sqlStorage()->boolTrue() == *(iter++);
-    m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ?
-        DownloadWhenAvailable : StreamOrDownloadOnDemand;
+    m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ? DownloadWhenAvailable : StreamOrDownloadOnDemand;
     m_autoTransfer = SqlPodcastProvider::instance()->sqlStorage()->boolTrue() == *(iter++);
     m_hasPurge = SqlPodcastProvider::instance()->sqlStorage()->boolTrue() == *(iter++);
     m_purgeCount = (*(iter++)).toInt();

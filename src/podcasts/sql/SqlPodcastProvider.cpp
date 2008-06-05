@@ -74,11 +74,14 @@ SqlPodcastProvider::loadPodcasts()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     
-    QStringList values = sqlStorage->query( "SELECT id, url, title, weblink, image, description, copyright, directory, labels,autoscan, fetchtype, autotransfer, haspurge, purgecount FROM podcastchannels;" );
-    int i = 0;
-    foreach(QString string, values)
+    QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image, description, copyright, directory, labels, autoscan, fetchtype, autotransfer, haspurge, purgecount FROM podcastchannels;" );
+
+    int rowLength = 14;
+    for(int i=0; i < results.size(); i+=rowLength)
     {
-        debug() << "result " << i++ << " : " << string;
+        QStringList channelResult = results.mid( i, rowLength );
+        debug() << "Channel " << i/rowLength << " : " << channelResult;
+        m_channels << SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
     }
 }
 
