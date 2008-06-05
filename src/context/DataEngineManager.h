@@ -15,7 +15,7 @@
 #ifndef AMAROK_DATA_ENGINE_MANAGER_H
 #define AMAROK_DATA_ENGINE_MANAGER_H
 
-#include <plasma/dataenginemanager.h>
+#include "plasma/dataenginemanager.h"
 
 namespace Context
 {
