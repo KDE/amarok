@@ -43,18 +43,25 @@ Mp3tunesLocker::~Mp3tunesLocker(){
     mp3tunes_locker_deinit(&mp3tunes_locker);
 }
 
-void Mp3tunesLocker::login(QString userName, QString password)
+QString Mp3tunesLocker::login(QString userName, QString password)
 {
     QByteArray baUser = userName.toLatin1();
     const char *c_user = baUser.data();
     
     QByteArray baPass = password.toLatin1();
     const char *c_pass = baPass.data();
-    
-    mp3tunes_locker_login(mp3tunes_locker, const_cast<char*>(c_user),  const_cast<char*>(c_pass) );
+
+    //result = 0 Login successful
+    //result != 0 Login failed
+    int result = mp3tunes_locker_login(mp3tunes_locker, const_cast<char*>(c_user),  const_cast<char*>(c_pass) );
+
+    if(result == 0) { //login successful
+        return this->sessionId();
+    }
+    return QString(); //login failed
 }
 
-QList<Mp3tunesLockerArtist> Mp3tunesLocker::artists()
+QList<Mp3tunesLockerArtist> Mp3tunesLocker::artists() const
 {
     QList<Mp3tunesLockerArtist> artistsQList; // to be returned
     mp3tunes_locker_artist_list_t *artists_list;
@@ -81,7 +88,7 @@ QList<Mp3tunesLockerArtist> Mp3tunesLocker::artists()
     return artistsQList;
 }
 
-QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albums()
+QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albums() const
 {
     QList<Mp3tunesLockerAlbum> albumsQList; // to be returned
     mp3tunes_locker_album_list_t *albums_list;
@@ -109,7 +116,7 @@ QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albums()
     return albumsQList;
 }
 
-QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albumsWithArtistId( int artistId )
+QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albumsWithArtistId( int artistId ) const
 {
     QList<Mp3tunesLockerAlbum> albumsQList; // to be returned
     mp3tunes_locker_album_list_t *albums_list;
@@ -137,7 +144,8 @@ QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albumsWithArtistId( int artistId )
     return albumsQList;
 }
 
-QList<Mp3tunesLockerPlaylist> Mp3tunesLocker::playlists() {
+QList<Mp3tunesLockerPlaylist> Mp3tunesLocker::playlists() const
+{
     QList<Mp3tunesLockerPlaylist> playlistsQList; // to be returned
     
     mp3tunes_locker_playlist_list_t *playlist_list;
@@ -160,7 +168,8 @@ QList<Mp3tunesLockerPlaylist> Mp3tunesLocker::playlists() {
     return playlistsQList;
 }
 
-QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracks(){
+QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracks() const
+{
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned
     
     mp3tunes_locker_track_list_t *tracks_list;
@@ -183,7 +192,8 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracks(){
     return tracksQList;
 }
 
-QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithPlaylistId( QString playlistId ){
+QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithPlaylistId( QString playlistId ) const
+{
     //convert the playlist Id to char*
     QByteArray baPlaylist = playlistId.toLatin1();
     const char *cc_playlist = baPlaylist.data();
@@ -210,7 +220,8 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithPlaylistId( QString playlis
     return tracksQList;
 }
 
-QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithAlbumId( int albumId ){
+QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithAlbumId( int albumId ) const
+{
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned
     
     mp3tunes_locker_track_list_t *tracks_list;
@@ -233,7 +244,8 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithAlbumId( int albumId ){
     return tracksQList;
 }
 
-QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithArtistId( int artistId ){
+QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithArtistId( int artistId ) const
+{
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned
     
     mp3tunes_locker_track_list_t *tracks_list;
@@ -256,52 +268,52 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithArtistId( int artistId ){
     return tracksQList;
 }
 
-QString Mp3tunesLocker::getUserName() const
+QString Mp3tunesLocker::userName() const
 {
     return QString( mp3tunes_locker->username );
 }
 
-QString Mp3tunesLocker::getPassword() const
+QString Mp3tunesLocker::password() const
 {
     return QString( mp3tunes_locker->password );
 }
 
-QString Mp3tunesLocker::getSessionId() const
+QString Mp3tunesLocker::sessionId() const
 {
     return QString( mp3tunes_locker->session_id );
 }
 
-QString Mp3tunesLocker::getFirstName() const
+QString Mp3tunesLocker::firstName() const
 {
     return QString( mp3tunes_locker->firstname );
 }
 
-QString Mp3tunesLocker::getLastName() const
+QString Mp3tunesLocker::lastName() const
 {
     return QString( mp3tunes_locker->lastname );
 }
 
-QString Mp3tunesLocker::getNickName() const
+QString Mp3tunesLocker::nickName() const
 {
     return QString( mp3tunes_locker->nickname );
 }
 
-QString Mp3tunesLocker::getPartnerToken() const
+QString Mp3tunesLocker::partnerToken() const
 {
     return QString( mp3tunes_locker->partner_token );
 }
 
-QString Mp3tunesLocker::getServerApi() const
+QString Mp3tunesLocker::serverApi() const
 {
     return QString( mp3tunes_locker->server_api );
 }
 
-QString Mp3tunesLocker::getServerContent() const
+QString Mp3tunesLocker::serverContent() const
 {
     return QString( mp3tunes_locker->server_content );
 }
 
-QString Mp3tunesLocker::getServerLogin() const
+QString Mp3tunesLocker::serverLogin() const
 {
     return QString( mp3tunes_locker->server_login );
 }

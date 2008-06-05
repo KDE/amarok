@@ -57,67 +57,69 @@ class Mp3tunesLocker {
          * for testing use demo@mp3tunes.com:demo
          * @param userName the username
          * @param passowrd username's password
+         * @return if login successful, the sessionId is returned
+         *         if login failed, an empty QString is returned
          */
-        void login(QString userName, QString password);
+        QString login(QString userName, QString password);
 
         /**
          * @return a list of all the artists in the locker
          */
-        QList<Mp3tunesLockerArtist> artists();
+        QList<Mp3tunesLockerArtist> artists() const;
         
         /**
          * @return a list of all the albums in the locker
          */
-        QList<Mp3tunesLockerAlbum> albums();
+        QList<Mp3tunesLockerAlbum> albums() const;
 
         /**
          * @param artistId the id of the artist to list albums for
          * @return a QList of albums belonging to the supplied artist
          */
-        QList<Mp3tunesLockerAlbum> albumsWithArtistId( int artistId);
+        QList<Mp3tunesLockerAlbum> albumsWithArtistId( int artistId) const;
 
         /**
          * @return a list of all the playlists in the locker
          */
-        QList<Mp3tunesLockerPlaylist> playlists();
+        QList<Mp3tunesLockerPlaylist> playlists() const;
 
         /**
          * @return a list of all the tracks in the locker
          */
-        QList<Mp3tunesLockerTrack> tracks();
+        QList<Mp3tunesLockerTrack> tracks() const;
         
          /**
           * @param playlistId a playlist id
           * @return a list of all the tracks with playlistId
           */
-        QList<Mp3tunesLockerTrack> tracksWithPlaylistId( QString playlistId);
+        QList<Mp3tunesLockerTrack> tracksWithPlaylistId( QString playlistId) const;
 
         /**
          * @param albumId an album id
          * @return a list of all the tracks with albumId
          */
-        QList<Mp3tunesLockerTrack> tracksWithAlbumId( int albumId);
+        QList<Mp3tunesLockerTrack> tracksWithAlbumId( int albumId) const;
 
         /**
          * @param artistId an artist Id
          * @return a list of all the tracks with artistId
          */
-        QList<Mp3tunesLockerTrack> tracksWithArtistId( int artistId);
+        QList<Mp3tunesLockerTrack> tracksWithArtistId( int artistId) const;
 
         //TODO wrapper for mp3tunes_locker_generate_download_url_from_file_key
         //TODO wrapper for mp3tunes_locker_generate_download_url_from_file_key_and_bitrate
         //TODO wrapper for mp3tunes_locker_sync_down
         
-        QString getUserName() const;
-        QString getPassword() const;
-        QString getSessionId() const;
-        QString getFirstName() const;
-        QString getLastName() const;
-        QString getNickName() const;
-        QString getPartnerToken() const;
-        QString getServerApi() const;
-        QString getServerContent() const;
-        QString getServerLogin() const;
+        QString userName() const;
+        QString password() const;
+        QString sessionId() const;
+        QString firstName() const;
+        QString lastName() const;
+        QString nickName() const;
+        QString partnerToken() const;
+        QString serverApi() const;
+        QString serverContent() const;
+        QString serverLogin() const;
 
     private:
         mp3tunes_locker_object_t *mp3tunes_locker;
