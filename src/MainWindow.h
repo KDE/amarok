@@ -17,11 +17,7 @@
 #define MAINWINDOW_H
 
 #include "amarok_export.h"
-#include "context/ContextScene.h"
-#include "context/ContextView.h"
 #include "meta/Meta.h"
-
-#include "context/plasma/plasma.h"
 
 #include <KXmlGuiWindow>
 
@@ -35,7 +31,12 @@ class SideBar;
 namespace Plasma
 {
     class Containment;
-} 
+}
+
+namespace Context {
+    class ContextScene;
+    class ContextView;
+}
 
 class KMenu;
 
