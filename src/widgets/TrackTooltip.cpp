@@ -80,12 +80,14 @@ void TrackToolTip::show( const QPoint & bottomRight )
 
 void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 {
-    if( m_track && m_track->artist() )
+    if( track.isNull() )
+        return;
+
+    if( m_track->artist() )
         m_track->artist()->unsubscribe( this );
-    if( m_track && m_track->album() )
+    if( m_track->album() )
         m_track->album()->unsubscribe( this );
-    if( m_track )
-        m_track->unsubscribe( this );
+    m_track->unsubscribe( this );
 
     if( force || m_track != track )
     {
