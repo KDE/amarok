@@ -27,6 +27,7 @@
 #include <QListView>
 #include <QToolButton>
 #include <QTreeView>
+#include <QWebPage>
 
 namespace PlaylistBrowserNS {
 
@@ -40,6 +41,7 @@ class ViewKicker;
 */
 class PodcastCategory : public QWidget
 {
+    Q_OBJECT
     public:
     PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel );
 
@@ -54,6 +56,9 @@ class PodcastCategory : public QWidget
         PodcastModel *m_podcastModel;
         PodcastView *m_podcastTreeView;
         ViewKicker * m_viewKicker;
+
+    private slots:
+        void showInfo( const QModelIndex & index );
 };
 
 
@@ -100,6 +105,7 @@ class PodcastCategoryDelegate : public QItemDelegate
     private:
         QTreeView *m_view;
         mutable int m_lastHeight;
+        QWebPage * m_webPage;
 };
 
 }

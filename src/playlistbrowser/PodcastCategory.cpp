@@ -24,6 +24,7 @@
 #include "Debug.h"
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
+#include "ServiceInfoProxy.h"
 #include "SvgTinter.h"
 #include "SvgHandler.h"
 #include "TheInstances.h"
@@ -43,6 +44,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <qnamespace.h>
+#include <QWebFrame>
 
 #include <KMenu>
 #include <KStandardDirs>
@@ -89,7 +91,7 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
     m_podcastTreeView = new PodcastView( podcastModel, this );
     m_podcastTreeView->setModel( podcastModel );
     m_podcastTreeView->header()->hide();
-    m_podcastTreeView->setItemDelegate( new PodcastCategoryDelegate(m_podcastTreeView) );
+    //m_podcastTreeView->setItemDelegate( new PodcastCategoryDelegate(m_podcastTreeView) );
 
     QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
     sizePolicy1.setHorizontalStretch(0);
@@ -102,7 +104,9 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
     m_viewKicker = new ViewKicker( m_podcastTreeView );
 
     //connect( podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), podcastModel, SLOT( emitLayoutChanged() ) );
-    connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), m_viewKicker, SLOT( kickView() ) );
+    //connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), m_viewKicker, SLOT( kickView() ) );
+    connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( showInfo( const QModelIndex & ) ) );
+
 
 
 }
@@ -110,6 +114,23 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
 PodcastCategory::~PodcastCategory()
 {
 }
+
+
+void PlaylistBrowserNS::PodcastCategory::showInfo( const QModelIndex & index )
+{
+
+    QString description = index.data( ShortDescriptionRole ).toString();
+    description.replace( QRegExp("\n "), "\n" );
+    description.replace( QRegExp("\n+"), "\n" );
+    
+    QVariantMap map;
+    map["service_name"] = "Podcasts";
+    map["main_info"] = description;
+    The::serviceInfoProxy()->setInfo( map );
+}
+
+
+
 
 ViewKicker::ViewKicker( QTreeView * treeView )
 {
@@ -126,6 +147,7 @@ void ViewKicker::kickView()
 PodcastCategoryDelegate::PodcastCategoryDelegate( QTreeView * view ) : QItemDelegate()
         , m_view( view )
 {
+    m_webPage = new QWebPage( view );
 }
 
 PodcastCategoryDelegate::~PodcastCategoryDelegate()
@@ -136,7 +158,7 @@ void
 PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option,
                                 const QModelIndex & index ) const
 {
-//     DEBUG_BLOCK
+    DEBUG_BLOCK
     //debug() << "Option state = " << option.state;
 
     int width = m_view->viewport()->size().width() - 4;
@@ -151,7 +173,9 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
     painter->setRenderHint ( QPainter::Antialiasing );
 
 
-    painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, The::svgHandler()->renderSvg( "service_list_item", width - 40, height - 4, "service_list_item" ) );
+    
+    QPixmap background = The::svgHandler()->renderSvg( "service_list_item", width - 40, height - 4, "service_list_item" );
+    painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
     painter->setPen(Qt::black);
 
@@ -180,7 +204,7 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
 
     painter->setFont(QFont("Arial", 8));
 
-    QRectF textRect;
+    QRect textRect;
     textRect.setLeft( option.rect.topLeft().x() + iconPadX );
     textRect.setTop( option.rect.top() + iconHeight + iconPadY );
     textRect.setWidth( width - ( iconPadX * 2 + m_view->indentation() + 16) );
@@ -220,8 +244,12 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
         painter->setPen(pen);
     }
 
-    if (option.state & QStyle::State_Selected)
-        painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignVCenter | Qt::AlignLeft, description );
+    if (option.state & QStyle::State_Selected) {
+        //painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignVCenter | Qt::AlignLeft, description );
+        m_webPage->setViewportSize( QSize( textRect.width(), textRect.height() ) );
+        m_webPage->mainFrame()->setHtml( description );
+        m_webPage->mainFrame()->render ( painter, QRegion( textRect ) );
+    }
 
     painter->restore();
 
@@ -249,11 +277,12 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     {
         QString description = index.data( ShortDescriptionRole ).toString();
 
-        QFontMetrics fm( QFont( "Arial", 8 ) );
+        /*QFontMetrics fm( QFont( "Arial", 8 ) );
         height = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000,
                                    Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap ,
                                    description ).height() + 40;
-	    debug() << "Option is selected, height = " << height;
+	    debug() << "Option is selected, height = " << height;*/
+
     }
     //else
 	//debug() << "Option is not selected, height = " << height;
@@ -326,5 +355,6 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
         }
     }
 }
+
 
 #include "PodcastCategory.moc"
