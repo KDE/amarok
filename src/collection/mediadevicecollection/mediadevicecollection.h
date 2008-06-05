@@ -22,6 +22,10 @@
 #ifndef MEDIADEVICECOLLECTION_H
 #define MEDIADEVICECOLLECTION_H
 
+extern "C" {
+  #include <gpod/itdb.h>
+}
+
 #include "Collection.h"
 #include "MemoryCollection.h"
 
@@ -68,6 +72,9 @@ class MediaDeviceCollection : public Collection, public MemoryCollection
     private slots:
 
     private:
+    /* test if libgpod works */
+    // ipod database
+    Itdb_iTunesDB    *m_itdb;
 
 
 };

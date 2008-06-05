@@ -46,6 +46,9 @@ macro_log_feature( NJB_FOUND "libnjb" "Support Creative Labs nomad jukebox devic
 macro_optional_find_package(Ifp)
 macro_log_feature( IFP_FOUND "libifp" "Support iRiver iFP audio devices" "http://ifp-driver.sourceforge.net/libifp/" FALSE "1.0.0.2" "")
 
+macro_optional_find_package(GLIB2)
+macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod" "http://www.gtk.org" FALSE "2.x" "")
+
 macro_optional_find_package(Ipod)
 macro_log_feature( IPOD_FOUND "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.6.0" "" )
 

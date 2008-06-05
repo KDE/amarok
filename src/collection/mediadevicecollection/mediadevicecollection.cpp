@@ -26,7 +26,10 @@
 #include "amarokconfig.h"
 #include "mediadevicemeta.h"
 #include "Debug.h"
+#include "MediaDeviceCache.h"
 #include "MemoryQueryMaker.h"
+
+#include <QStringList>
 
 
 AMAROK_EXPORT_PLUGIN( MediaDeviceCollectionFactory )
@@ -46,6 +49,16 @@ void
 MediaDeviceCollectionFactory::init()
 {
     DEBUG_BLOCK    
+      /* Test out using the cache */
+    MediaDeviceCache::instance()->refreshCache();
+    QStringList udiList = MediaDeviceCache::instance()->getAll();
+    debug() << "MediaDeviceCollection found " << udiList;
+
+    /* test mediadevicecollection constructor */
+    MediaDeviceCollection *coll = new MediaDeviceCollection();
+    delete coll;
+
+    return;
 }
 
 //MediaDeviceCollection
@@ -54,6 +67,17 @@ MediaDeviceCollection::MediaDeviceCollection()
     : Collection()
     , MemoryCollection()
 {
+    DEBUG_BLOCK
+
+    /* test out using libgpod */
+    m_itdb = 0;
+    m_itdb = itdb_new();
+    if(m_itdb) {
+      debug() << "Itunes database created!";
+      itdb_free(m_itdb);
+    }
+    else
+      debug() << "Itunes database not created!";
 }
 
 MediaDeviceCollection::~MediaDeviceCollection()

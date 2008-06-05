@@ -23,7 +23,7 @@ else (IPOD_INCLUDE_DIR AND IPOD_LIBRARIES)
     set(IPOD_DEFINITIONS ${_IPODCflags})
   endif(NOT WIN32)
 
-  FIND_PATH(IPOD_INCLUDE_DIR gpod-1.0/gpod/itdb.h
+  FIND_PATH(IPOD_INCLUDE_DIR gpod/itdb.h /usr/include/gpod-1.0
     ${_IPODIncDir}
   )
   
