@@ -75,6 +75,8 @@ CollectionManager::CollectionManager()
 
 CollectionManager::~CollectionManager()
 {
+    DEBUG_BLOCK
+
     d->collections.clear();
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
