@@ -21,7 +21,6 @@
 #include "Amarok.h"
 #include "BlockingQuery.h"
 #include "Debug.h"
-#include "MainWindow.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "mediadevice/CopyToDeviceAction.h"
 #include "meta/CustomActionsCapability.h"
