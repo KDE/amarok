@@ -71,7 +71,7 @@ namespace The {
     AMAROK_EXPORT ScriptableServiceManager * scriptableServiceManager();
     AMAROK_EXPORT SvgHandler *       svgHandler();
     AMAROK_EXPORT SvgTinter *        svgTinter();
-    AMAROK_EXPORT Amarok::StatusBar* statusBar();
+    inline AMAROK_EXPORT Amarok::StatusBar* statusBar();
 
     
 }
