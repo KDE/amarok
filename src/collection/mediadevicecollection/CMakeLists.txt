@@ -1,8 +1,8 @@
 macro_optional_find_package(Ipod)
 
-
-include_directories( ../..
-        ../../plugin
+if (IPOD_FOUND)
+   include_directories( ../..
+   ../../plugin
    ../../meta
    ../../collection
    ${GLIB2_INCLUDE_DIR}
@@ -14,7 +14,7 @@ include_directories( ../..
 
 
 ########### next target ###############
-if (IPOD_FOUND)
+
 	set(amarok_collection-mediadevicecollection_PART_SRCS
 	mediadevicemeta.cpp
 	mediadevicecollection.cpp)
