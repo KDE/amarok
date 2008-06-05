@@ -65,7 +65,7 @@ private:
     void authenticate( const QString & uname = "", const QString & passwd = "" );
 
 private slots:
-    void authenticationComplete(  QString sessionId );
+    void authenticationComplete(  const QString & sessionId );
 
 private:
     QString m_email;

@@ -39,7 +39,7 @@ class Mp3tunesLocker {
          * Initialize the connection, but do not login.
          * @param partnerToken your partnerToken to access the mp3tunes API.
          */
-        Mp3tunesLocker( QString partnerToken );
+        Mp3tunesLocker( const QString & partnerToken );
         
         /**
          * Initialize the connection, and login.
@@ -48,7 +48,7 @@ class Mp3tunesLocker {
          * @param userName the username
          * @param password username's password
          */
-        Mp3tunesLocker( QString partnerToken, QString userName, QString password );
+        Mp3tunesLocker( const QString & partnerToken, const QString & userName, const QString & password );
         
         ~Mp3tunesLocker();
         
@@ -60,7 +60,7 @@ class Mp3tunesLocker {
          * @return if login successful, the sessionId is returned
          *         if login failed, an empty QString is returned
          */
-        QString login(QString userName, QString password);
+        QString login( const QString & userName, const QString & password);
 
         /**
          * @return a list of all the artists in the locker
@@ -92,7 +92,7 @@ class Mp3tunesLocker {
           * @param playlistId a playlist id
           * @return a list of all the tracks with playlistId
           */
-        QList<Mp3tunesLockerTrack> tracksWithPlaylistId( QString playlistId) const;
+        QList<Mp3tunesLockerTrack> tracksWithPlaylistId( const QString & playlistId) const;
 
         /**
          * @param albumId an album id

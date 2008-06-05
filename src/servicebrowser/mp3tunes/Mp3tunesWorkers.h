@@ -29,13 +29,13 @@ class Mp3tunesLoginWorker :  public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
-        Mp3tunesLoginWorker( Mp3tunesLocker* locker, QString username, QString password );
+        Mp3tunesLoginWorker( Mp3tunesLocker* locker, const QString &username, const QString &password );
         ~Mp3tunesLoginWorker();
 
         void run();
 
     signals:
-        void finishedLogin( QString sessionId );
+        void finishedLogin( const QString &sessionId );
 
     private slots:
         void completeJob();

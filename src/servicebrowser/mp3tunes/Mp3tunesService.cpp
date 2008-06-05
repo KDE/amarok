@@ -126,7 +126,7 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
 }
 
 
-void Mp3tunesService::authenticationComplete( QString sessionId )
+void Mp3tunesService::authenticationComplete( const QString & sessionId )
 {
     DEBUG_BLOCK
     debug() << "Authentication reply: " << sessionId;

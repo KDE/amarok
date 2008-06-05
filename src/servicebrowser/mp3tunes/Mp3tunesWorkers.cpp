@@ -20,7 +20,7 @@
 
 #include "Debug.h"
     
-Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker, QString username, QString password ) : ThreadWeaver::Job()
+Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker, const QString & username, const QString & password ) : ThreadWeaver::Job()
 {
     DEBUG_BLOCK
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );

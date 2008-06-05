@@ -25,7 +25,7 @@
 
 ////////////////////////////////////////////////////////////////////////
 //LOCKER
-Mp3tunesLocker::Mp3tunesLocker( QString partnerToken)
+Mp3tunesLocker::Mp3tunesLocker( const QString & partnerToken)
 {
     DEBUG_BLOCK
     debug() << "New Locker Wrapper";
@@ -35,7 +35,7 @@ Mp3tunesLocker::Mp3tunesLocker( QString partnerToken)
     mp3tunes_locker_init(&mp3tunes_locker, const_cast<char*>(c_tok) );
 }
 
-Mp3tunesLocker::Mp3tunesLocker( QString partnerToken, QString userName, QString password)
+Mp3tunesLocker::Mp3tunesLocker( const QString & partnerToken, const QString & userName, const QString & password)
 {
     QByteArray ba = partnerToken.toLatin1();
     const char *c_tok = ba.data();
@@ -48,7 +48,7 @@ Mp3tunesLocker::~Mp3tunesLocker(){
     mp3tunes_locker_deinit(&mp3tunes_locker);
 }
 
-QString Mp3tunesLocker::login(QString userName, QString password)
+QString Mp3tunesLocker::login( const QString & userName, const QString & password )
 {
     DEBUG_BLOCK
     QByteArray baUser = userName.toLatin1();
@@ -201,7 +201,7 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracks() const
     return tracksQList;
 }
 
-QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithPlaylistId( QString playlistId ) const
+QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithPlaylistId( const QString & playlistId ) const
 {
     //convert the playlist Id to char*
     QByteArray baPlaylist = playlistId.toLatin1();
