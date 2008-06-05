@@ -113,7 +113,7 @@ endif(APPLE)
 
 add_definitions(-DMAKE_PLASMA_LIB)
 set_target_properties(amarokplasma PROPERTIES VERSION 1.0.0 SOVERSION 1)
-install(TARGETS amarokplasma DESTINATION                ${LIB_INSTALL_DIR})
+install(TARGETS amarokplasma ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 find_package(Plasma)
 if(NOT PLASMA_FOUND)
