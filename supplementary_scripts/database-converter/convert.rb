@@ -127,7 +127,7 @@ class Converter
 
         # de-dynamic collection
         devices_row    = conn.query( "SELECT id, lastmountpoint FROM devices" )
-        statistics_row = conn.query( "SELECT deviceid, url, createdate, percentage, rating, playcounter FROM statistics" )
+        statistics_row = conn.query( "SELECT deviceid, url, createdate, accessdate, percentage, rating, playcounter FROM statistics" )
 
         puts "Fetched #{statistics_row.num_rows} rows"
 
