@@ -84,6 +84,7 @@ class SqlPodcastChannel : public PodcastChannel
 
     private:
         void updateInDb();
+        void loadEpisodes();
 
         int m_id; //database ID
 

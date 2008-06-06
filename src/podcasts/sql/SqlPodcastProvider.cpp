@@ -50,8 +50,6 @@ SqlPodcastProvider::instance()
 
 SqlPodcastProvider::SqlPodcastProvider()
 {
-    DEBUG_BLOCK
-
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QStringList values = sqlStorage->query( "SELECT version FROM admin WHERE key = 'AMAROK_PODCAST';");
@@ -72,6 +70,7 @@ SqlPodcastProvider::~SqlPodcastProvider()
 void
 SqlPodcastProvider::loadPodcasts()
 {
+    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     
     QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image, description, copyright, directory, labels, autoscan, fetchtype, autotransfer, haspurge, purgecount FROM podcastchannels;" );

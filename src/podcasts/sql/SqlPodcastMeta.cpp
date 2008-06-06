@@ -18,6 +18,7 @@
 
 #include "SqlPodcastMeta.h"
 
+#include "CollectionManager.h"
 #include "Debug.h"
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
@@ -87,6 +88,7 @@ Meta::SqlPodcastEpisode::updateInDb()
 Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     : Meta::PodcastChannel()
 {
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
     m_id = (*(iter++)).toInt();
     m_url = KUrl( *(iter++) );
@@ -97,11 +99,18 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     m_copyright = *(iter++);
     m_directory = KUrl( *(iter++) );
     m_labels = QStringList( *(iter++) );
-    m_autoScan = SqlPodcastProvider::instance()->sqlStorage()->boolTrue() == *(iter++);
+    m_autoScan = sqlStorage->boolTrue() == *(iter++);
     m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ? DownloadWhenAvailable : StreamOrDownloadOnDemand;
-    m_autoTransfer = SqlPodcastProvider::instance()->sqlStorage()->boolTrue() == *(iter++);
-    m_hasPurge = SqlPodcastProvider::instance()->sqlStorage()->boolTrue() == *(iter++);
+    m_autoTransfer = sqlStorage->boolTrue() == *(iter++);
+    m_hasPurge = sqlStorage->boolTrue() == *(iter++);
     m_purgeCount = (*(iter++)).toInt();
+    loadEpisodes();
+}
+
+void
+Meta::SqlPodcastChannel::loadEpisodes()
+{
+
 }
 
 Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
