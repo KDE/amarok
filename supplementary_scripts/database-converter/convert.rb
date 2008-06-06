@@ -129,10 +129,10 @@ class Converter
         conn = getMysqlConnection()
         return if conn.nil?
 
-        new_db = getAmarok2Collection()
-        return if new_db.nil?
+        amarok2_collection = getAmarok2Collection()
+        return if amarok2_collection.nil?
 
-        new_db.results_as_hash = true
+        amarok2_collection.results_as_hash = true
 
         updateCount = 0;
         errorCount = 0;
@@ -158,7 +158,7 @@ class Converter
                 end
             end
 
-            urlid = new_db.get_first_value( "SELECT id FROM urls WHERE rpath=?", url )
+            urlid = amarok2_collection.get_first_value( "SELECT id FROM urls WHERE rpath=?", url )
             if urlid.nil?
                 staleEntries << url
                 next
@@ -168,7 +168,7 @@ class Converter
             query = "INSERT INTO statistics (url, createdate, accessdate, score, rating, playcount ) VALUES ( " +
                     "#{urlid}, #{tag["createdate"]}, #{tag["accessdate"]}, #{tag["percentage"]}, #{tag["rating"]}, #{tag["playcounter"]} );"
 
-            updates = new_db.execute( query );
+            updates = amarok2_collection.execute( query );
             #else
             #    puts "Safe mode!"
             #end
