@@ -1,4 +1,4 @@
-/***************************************************************************
+    /***************************************************************************
  *   Copyright (C) 2005 by Max Howell <max.howell@methylblue.com>          *
  *   Copyright (C) 2005 by Ian Monroe <ian@monroe.nu>                      *
  *   Copyright (C) 2007 by Seb Ruiz <ruiz@kde.org>                         *
@@ -133,12 +133,12 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     mainProgressBarBox->hide();
     addWidget(mainProgressBarBox);
 
-    shortLongButton->setIcon( KIcon( "edit-add" ) );
+    shortLongButton->setIcon( KIcon( "edit-add-amarok" ) );
     shortLongButton->setToolTip( i18n( "Show details" ) );
     connect( shortLongButton, SIGNAL(clicked()), SLOT(showShortLongDetails()) );
 
-    b1->setIcon( KIcon( "cancel" ) );
-    b2->setIcon( KIcon( "2uparrow") );
+    b1->setIcon( KIcon( "dialog-cancel-amarok" ) );
+    b2->setIcon( KIcon( "arrow-up-double-amarok") );
     b2->setCheckable( true );
     b1->setToolTip( i18n( "Abort all background-operations" ) );
     b2->setToolTip( i18n( "Show progress detail" ) );
