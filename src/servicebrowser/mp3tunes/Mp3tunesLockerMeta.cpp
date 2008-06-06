@@ -18,17 +18,20 @@
  ***************************************************************************/
 
 #include "Mp3tunesLockerMeta.h"
+#include "Debug.h"
+
 ////////////////////////////////////////////////////////////////////////
 //ARTIST
 Mp3tunesLockerArtist::Mp3tunesLockerArtist(  mp3tunes_locker_artist_t *artist )
 {
-    m_artist = artist;
+    m_artist = ( mp3tunes_locker_artist_t * ) malloc( sizeof( *artist ) );
+    memcpy( m_artist, artist, sizeof( *artist ) );
+    m_artist->artistName = ( char * ) malloc( strlen( artist->artistName ) );
+    strcpy( m_artist->artistName, artist->artistName );
 }
 
 Mp3tunesLockerArtist::~Mp3tunesLockerArtist()
-{
-    delete m_artist;
-}
+{}
 
 int Mp3tunesLockerArtist::artistId() const
 {

@@ -318,7 +318,7 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete( QList<Mp3tunesLockerArti
     foreach(Mp3tunesLockerArtist artist, artistList) {
         ServiceArtist * serviceArtist = new ServiceArtist( artist.artistName() );
 
-        debug() << "Adding artist: " <<  artist.artistName();
+        //debug() << "Adding artist: " <<  artist.artistName();
         
         serviceArtist->setId( artist.artistId() );
 

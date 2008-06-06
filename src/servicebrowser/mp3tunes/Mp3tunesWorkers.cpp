@@ -29,7 +29,6 @@ Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker, const QString 
     DEBUG_BLOCK
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
     m_locker = locker;
-    debug() << "Login Request: " << username << ":" << password;
     m_username = username;
     m_password = password;
     m_sessionId = QString();
@@ -61,6 +60,7 @@ void Mp3tunesLoginWorker::completeJob()
 
 Mp3tunesArtistFetcher::Mp3tunesArtistFetcher( Mp3tunesLocker * locker )
 {
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
     m_locker = locker;
 }
 
@@ -83,8 +83,6 @@ void Mp3tunesArtistFetcher::run()
 
 void Mp3tunesArtistFetcher::completeJob()
 {
-    DEBUG_BLOCK
-    debug() << "Artist fetch Job complete";
     emit( artistsFetched( m_artists ) );
     deleteLater();
 }
