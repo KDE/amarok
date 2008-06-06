@@ -25,6 +25,8 @@
 #   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         #
 ###########################################################################
 
+require 'cgi'
+
 def amarok_1
     title  = `dcop amarok player title 2> /dev/null`.chomp
     artist = `dcop amarok player artist`.chomp
@@ -71,7 +73,7 @@ def amarok_2
     artist = `qdbus org.kde.amarok /Player artist`.chomp
     album  = `qdbus org.kde.amarok /Player album`.chomp
     year   = `qdbus org.kde.amarok /Player year`.chomp
-    streamName = `qdbus org.kde.amarok /Player streamName`.chomp
+    streamName = CGI.unescape(`qdbus org.kde.amarok /Player streamName`.chomp)
     version = `qdbus org.kde.amarok /Player version`.chomp 
 
     output = ""
