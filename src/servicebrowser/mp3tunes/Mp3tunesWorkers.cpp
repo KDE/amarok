@@ -86,7 +86,7 @@ void Mp3tunesArtistFetcher::completeJob()
     deleteLater();
 }
 
-/*  ALBUM FETCHER */
+/*  ALBUM w/ Artist Id FETCHER */
 Mp3tunesAlbumWithArtistIdFetcher::Mp3tunesAlbumWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId )
 {
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
@@ -106,13 +106,47 @@ void Mp3tunesAlbumWithArtistIdFetcher::run()
         QList<Mp3tunesLockerAlbum> list = m_locker->albumsWithArtistId( m_artistId );
         debug() << "Album Fetch End. Total albums: " << list.count();
         m_albums = list;
-            } else {
+        } else {
                 debug() << "Locker is NULL";
-            }
+        }
 }
 
 void Mp3tunesAlbumWithArtistIdFetcher::completeJob()
 {
     emit( albumsFetched( m_albums ) );
+    deleteLater();
+}
+
+/*  TRACK w/ albumId FETCHER */
+Mp3tunesTrackWithAlbumIdFetcher::Mp3tunesTrackWithAlbumIdFetcher( Mp3tunesLocker * locker, int albumId )
+{
+    DEBUG_BLOCK
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    m_locker = locker;
+    debug() << "Constructor albumId: " << albumId;
+    m_albumId = albumId;
+}
+
+Mp3tunesTrackWithAlbumIdFetcher::~Mp3tunesTrackWithAlbumIdFetcher()
+{
+}
+
+void Mp3tunesTrackWithAlbumIdFetcher::run()
+{
+    DEBUG_BLOCK
+    if(m_locker != 0) {
+        debug() << "Track Fetch Start for album " << m_albumId;
+        QList<Mp3tunesLockerTrack> list = m_locker->tracksWithAlbumId( m_albumId );
+        debug() << "Track Fetch End. Total tracks: " << list.count();
+        m_tracks = list;
+    } else {
+            debug() << "Locker is NULL";
+    }
+}
+
+void Mp3tunesTrackWithAlbumIdFetcher::completeJob()
+{
+    DEBUG_BLOCK
+    emit( tracksFetched( m_tracks ) );
     deleteLater();
 }

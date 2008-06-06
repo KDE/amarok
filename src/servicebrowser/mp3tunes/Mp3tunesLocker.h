@@ -98,13 +98,13 @@ class Mp3tunesLocker {
          * @param albumId an album id
          * @return a list of all the tracks with albumId
          */
-        QList<Mp3tunesLockerTrack> tracksWithAlbumId( int albumId) const;
+        QList<Mp3tunesLockerTrack> tracksWithAlbumId( int albumId ) const;
 
         /**
          * @param artistId an artist Id
          * @return a list of all the tracks with artistId
          */
-        QList<Mp3tunesLockerTrack> tracksWithArtistId( int artistId) const;
+        QList<Mp3tunesLockerTrack> tracksWithArtistId( int artistId ) const;
 
         //TODO wrapper for mp3tunes_locker_generate_download_url_from_file_key
         //TODO wrapper for mp3tunes_locker_generate_download_url_from_file_key_and_bitrate

@@ -158,7 +158,7 @@ ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover * album )
 void
 ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 {
-    DEBUG_BLOCK
+    
 
     if( !downloadJob || !downloadJob->error() == 0 )
     {

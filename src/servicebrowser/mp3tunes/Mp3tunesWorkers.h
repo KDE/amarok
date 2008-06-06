@@ -74,7 +74,7 @@ class Mp3tunesArtistFetcher : public ThreadWeaver::Job
 };
 
 /**
- * Allows for threading the album fetching process
+ * Allows for threading the albumWithArtistId fetching process
  */
 class Mp3tunesAlbumWithArtistIdFetcher : public ThreadWeaver::Job
 {
@@ -95,5 +95,29 @@ class Mp3tunesAlbumWithArtistIdFetcher : public ThreadWeaver::Job
         int m_artistId;
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerAlbum> m_albums;
+};
+
+/**
+ * Allows for threading the trackWithAlbumId fetching process
+ */
+class Mp3tunesTrackWithAlbumIdFetcher : public ThreadWeaver::Job
+{
+    Q_OBJECT
+    public:
+        Mp3tunesTrackWithAlbumIdFetcher( Mp3tunesLocker * locker, int albumId );
+        ~Mp3tunesTrackWithAlbumIdFetcher();
+
+        void run();
+
+    signals:
+        void tracksFetched( QList<Mp3tunesLockerTrack> );
+
+    private slots:
+        void completeJob();
+
+    private:
+        int m_albumId;
+        Mp3tunesLocker* m_locker;
+        QList<Mp3tunesLockerTrack> m_tracks;
 };
 #endif

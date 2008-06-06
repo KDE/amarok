@@ -273,30 +273,22 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
 
     TrackList tracks;
 
-    //debug() << "parent id: " << m_parentId;
+    //debug() << "parent id: " << m_parentAlbumId;
 
     if ( !m_parentAlbumId.isEmpty() ) {
         AlbumMatcher albumMatcher( m_collection->albumById( m_parentAlbumId.toInt() ) );
         tracks = albumMatcher.match( m_collection );
-    } else
+    } else {
+        debug() << "parent id empty";
         return;
+    }
 
     if ( tracks.count() > 0 ) {
         handleResult( tracks );
     } else {
-
-        QString urlString = "http://ws.mp3tunes.com/api/v1/lockerData?sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&output=xml&type=track& album_id=<ALBUM_ID>";
-
-        urlString.replace( "<SESSION_ID>", m_sessionId );
-        urlString.replace( "<PARTNER_TOKEN>", "7359149936" );
-        if(  !m_parentAlbumId.isEmpty() )
-            urlString.replace( "<ALBUM_ID>", m_parentAlbumId );
-        else
-            urlString.replace( "<ALBUM_ID>", m_parentArtistId );
-
-        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
-        connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
-            , this, SLOT( trackDownloadComplete( KJob *) ) );
+        Mp3tunesTrackWithAlbumIdFetcher * trackFetcher = new Mp3tunesTrackWithAlbumIdFetcher( m_locker, m_parentAlbumId.toInt() );
+        connect( trackFetcher, SIGNAL( tracksFetched( QList<Mp3tunesLockerTrack> ) ), this, SLOT( trackDownloadComplete( QList<Mp3tunesLockerTrack> ) ) );
+        ThreadWeaver::Weaver::instance()->enqueue( trackFetcher ); //Go!
     }
 }
 
@@ -386,79 +378,47 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum
 
 }
 
-void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
+void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack> tracksList )
 {
     DEBUG_BLOCK
-
-    if( job->error() )
-    {
-        error() << job->error();
-        m_storedTransferJob->deleteLater();
-        return;
-    }
-
-    //debug() << "Received response: " << m_storedTransferJob->data();
+    //debug() << "Received Tracks";
 
     TrackList tracks;
 
-    //debug() << "received tracks: " <<  m_storedTransferJob->data();
-
      //so lets figure out what we got here:
-    QDomDocument doc( "reply" );
-    doc.setContent( m_storedTransferJob->data() );
-    QDomElement root = doc.firstChildElement("mp3tunes");
 
-
-    QDomElement albumDataElement = root.firstChildElement("albumData");
-    QDomElement trackListElement = root.firstChildElement("trackList");
-
-
-
-
-    QDomNode n = trackListElement.firstChild();
-    while( !n.isNull() )
+    foreach(Mp3tunesLockerTrack track, tracksList)
     {
-        QDomElement e = n.toElement(); // try to convert the node to an element.
-        //if ( ! (e.tagName() == "item") )
-        //    break;
 
-        QDomElement element = n.firstChildElement("trackTitle");
-
-        QString title = element.text();
+        QString title = track.trackTitle();
         if ( title.isEmpty() ) title = "Unknown";
 
-        Mp3TunesTrack * track = new Mp3TunesTrack( title  );
-        TrackPtr trackPtr( track );
+        Mp3TunesTrack * serviceTrack = new Mp3TunesTrack( title  );
+        TrackPtr trackPtr( serviceTrack );
 
-        //debug() << "Adding track: " <<  title;
+      //  debug() << "Adding track: " <<  title;
 
-        element = n.firstChildElement("trackId");
-        track->setId( element.text().toInt() );
+        serviceTrack->setId( track.trackId() );
 
-        element = n.firstChildElement("playURL");
-        track->setUrl( element.text() );
+        serviceTrack->setUrl( track.playUrl() );
 
-        element = n.firstChildElement("trackLength");
-        track->setLength( (int)( element.text().toFloat() / 1000 ) );
+        serviceTrack->setLength( (int)( track.trackLength() / 1000 ) );
 
-        element = n.firstChildElement("trackNumber");
-        track->setTrackNumber( element.text().toInt() );
+        serviceTrack->setTrackNumber( track.trackNumber() );
 
         m_collection->acquireWriteLock();
         m_collection->addTrack( trackPtr );
         m_collection->releaseLock();
 
-        element = n.firstChildElement("albumId");
-        QString albumId = element.text();
-        element = n.firstChildElement("artistId");
-        QString artistId = element.text();
+        QString albumId = QString::number( track.albumId() );
+        QString artistId = QString::number( track.artistId() );
 
 
         ArtistPtr artistPtr = m_collection->artistById( artistId.toInt() );
         if ( artistPtr.data() != 0 ) {
            //debug() << "Found parent artist";
            ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
-           track->setArtist( artistPtr );
+           serviceTrack->setArtist( artistPtr );
            artist->addTrack( trackPtr );
         }
 
@@ -466,16 +426,12 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete(KJob * job)
         if ( albumPtr.data() != 0 ) {
            //debug() << "Found parent album";
            ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
-           track->setAlbum( albumPtr );
+           serviceTrack->setAlbum( albumPtr );
            album->addTrack( trackPtr );
         }
 
         tracks.push_back( trackPtr );
-
-        n = n.nextSibling();
     }
-
-   m_storedTransferJob->deleteLater();
 
    handleResult( tracks );
    emit queryDone();
