@@ -637,6 +637,8 @@ int _mp3tunes_locker_tracks(mp3tunes_locker_object_t *obj, mp3tunes_locker_track
         track->albumTitle = xml_xpath_get_string(xml_xpath_context, "albumTitle");
         track->albumYear = xml_xpath_get_integer(xml_xpath_context, "albumYear");
         track->artistName = xml_xpath_get_string(xml_xpath_context, "artistName");
+        track->artistId = xml_xpath_get_integer(xml_xpath_context, "artistId");
+
 
         mp3tunes_locker_track_list_add(tracks, track);
         xml_xpath_deinit(xml_xpath_context);

@@ -77,6 +77,7 @@ typedef struct {
     char *albumTitle;
     int albumYear;
     char *artistName;
+    int artistId;
 } mp3tunes_locker_track_t;
 
 typedef struct {
