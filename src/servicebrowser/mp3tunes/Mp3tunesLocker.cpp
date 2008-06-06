@@ -72,20 +72,32 @@ QString Mp3tunesLocker::login( const QString & userName, const QString & passwor
 
 QList<Mp3tunesLockerArtist> Mp3tunesLocker::artists() const
 {
+    DEBUG_BLOCK
     QList<Mp3tunesLockerArtist> artistsQList; // to be returned
     mp3tunes_locker_artist_list_t *artists_list;
     mp3tunes_locker_list_item_t *artist_item;
     
+    debug() << "Wrapper getting list";
     //get the list of artists
     mp3tunes_locker_artists(mp3tunes_locker, &artists_list);
 
     mp3tunes_locker_artist_t *artist; // the value holder
     artist_item = artists_list->first; // the current node
-
+    
+    debug() << "Wrapper looping through list";
     //looping through the list of artists
-    while (artist_item != NULL) {
+    while (artist_item != 0) {
         // get the artist from the c lib
         artist = (mp3tunes_locker_artist_t*)artist_item->value;
+        debug() << &artist_item->value;
+        if(artist == 0) {
+            debug() << "Wrapper Artist NULL:" << artist;
+        } else
+        if(artist->artistName == 0) {
+            debug() << "Wrapper Artist NAME NULL:" << artist->artistName;
+        } else {
+           // debug() << "Wrapper Artist: " << &artist << " " << artist->artistName;
+        }
         //wrap it up
         Mp3tunesLockerArtist artistWrapped(artist);
         //and stick it in the QList
@@ -93,7 +105,9 @@ QList<Mp3tunesLockerArtist> Mp3tunesLocker::artists() const
         //advance to next artist
         artist_item = artist_item->next;
     }
+    debug() << "Wrapper loop done. NumArtist: " << artistsQList.count();
     mp3tunes_locker_artist_list_deinit(&artists_list);
+    debug() << "Wrapper deinit Complete";
     return artistsQList;
 }
 

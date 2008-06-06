@@ -20,11 +20,13 @@
 #define MP3TUNESSERVICECOLLECTION_H
 
 #include <ServiceCollectionLocation.h>
+#include "Mp3tunesLocker.h"
 
 class Mp3tunesServiceCollection : public ServiceCollection
 {
 public:
-    Mp3tunesServiceCollection( const QString &sessionId );
+    Mp3tunesServiceCollection( const QString &sessionId, Mp3tunesLocker * locker );
+    
 
     ~Mp3tunesServiceCollection();
 
@@ -36,6 +38,7 @@ public:
 private:
 
     QString m_sessionId;
+    Mp3tunesLocker * m_locker;
 
 };
 

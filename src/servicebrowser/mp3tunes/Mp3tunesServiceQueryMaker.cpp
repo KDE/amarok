@@ -25,12 +25,14 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "Mp3tunesMeta.h"
+#include "Mp3tunesWorkers.h"
 #include "collection/support/MemoryMatcher.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QDomDocument>
+#include <QList>
 
 using namespace Meta;
 
@@ -54,6 +56,18 @@ Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesServiceCollection 
     reset();
 }
 
+Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesLocker * locker, const QString &sessionId, Mp3tunesServiceCollection * collection  )
+    : DynamicServiceQueryMaker()
+    , m_storedTransferJob( 0 )
+    , d( new Private )
+
+{
+    DEBUG_BLOCK
+    m_collection = collection;
+    m_sessionId = sessionId;
+    m_locker = locker;
+    reset();
+}
 
 Mp3tunesServiceQueryMaker::~Mp3tunesServiceQueryMaker()
 {
@@ -222,30 +236,10 @@ void Mp3tunesServiceQueryMaker::handleResult(const TrackList & tracks)
 void Mp3tunesServiceQueryMaker::fetchArtists()
 {
     DEBUG_BLOCK
-    /*if ( m_collection->artistMap().values().count() != 0 && m_artistFilter.isEmpty()) {
-        handleResult( m_collection->artistMap().values() );
-        debug() << "no need to fetch artists again! ";
-    }*/
-    //else {
-
-        QString urlString = "http://ws.mp3tunes.com/api/v1/lockerData?sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&output=xml&type=artist";
-
-        if ( !m_artistFilter.isEmpty() ) {
-            urlString = "http://ws.mp3tunes.com/api/v1/lockerSearch?output=xml&sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&type=artist&s=" + m_artistFilter;
-        }
-
-
-
-        urlString.replace( "<SESSION_ID>", m_sessionId);
-        urlString.replace( "<PARTNER_TOKEN>", "7359149936");
-
-        debug() << "url: " << urlString;
-
-
-        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
-        connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
-            , this, SLOT( artistDownloadComplete( KJob *) ) );
-    //}
+    debug() << "Locker: " << m_locker;
+    Mp3tunesArtistFetcher * artistFetcher = new Mp3tunesArtistFetcher( m_locker );
+    connect( artistFetcher, SIGNAL( artistsFetched( QList<Mp3tunesLockerArtist> ) ), this, SLOT( artistDownloadComplete( QList<Mp3tunesLockerArtist> ) ) );
+    ThreadWeaver::Weaver::instance()->enqueue( artistFetcher );
 }
 
 void Mp3tunesServiceQueryMaker::fetchAlbums()
@@ -314,44 +308,21 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
 
 
 
-void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
+void Mp3tunesServiceQueryMaker::artistDownloadComplete( QList<Mp3tunesLockerArtist> artistList )
 {
     DEBUG_BLOCK
 
-    if( job->error() )
-    {
-        error() << job->error();
-        m_storedTransferJob->deleteLater();
-        return;
-    }
-
     ArtistList artists;
 
-    //debug() << "received artists: " <<  m_storedTransferJob->data();
+    debug() << "Received artists";
+    foreach(Mp3tunesLockerArtist artist, artistList) {
+        ServiceArtist * serviceArtist = new ServiceArtist( artist.artistName() );
 
-     //so lets figure out what we got here:
-    QDomDocument doc( "reply" );
-    doc.setContent( m_storedTransferJob->data() );
-    QDomElement root = doc.firstChildElement( "mp3tunes" );
-    root = root.firstChildElement( "artistList" );
+        debug() << "Adding artist: " <<  artist.artistName();
+        
+        serviceArtist->setId( artist.artistId() );
 
-
-    QDomNode n = root.firstChild();
-    while( !n.isNull() )
-    {
-        QDomElement e = n.toElement(); // try to convert the node to an element.
-        //if ( ! (e.tagName() == "item") )
-        //    break;
-
-        QDomElement element = n.firstChildElement("artistName");
-        ServiceArtist * artist = new ServiceArtist( element.text() );
-
-        //debug() << "Adding artist: " <<  element.text();
-
-        element = n.firstChildElement("artistId");
-        artist->setId( element.text().toInt() );
-
-        ArtistPtr artistPtr( artist );
+        ArtistPtr artistPtr( serviceArtist );
 
         artists.push_back( artistPtr );
 
@@ -359,10 +330,7 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete(KJob * job)
         m_collection->addArtist( artistPtr );
         m_collection->releaseLock();
 
-        n = n.nextSibling();
     }
-
-   m_storedTransferJob->deleteLater();
 
    handleResult( artists );
    emit queryDone();

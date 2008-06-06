@@ -16,10 +16,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+
 #include "Mp3tunesWorkers.h"
 
+#include "Mp3tunesMeta.h"
 #include "Debug.h"
-    
+
+#include <QStringList>
+
 Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker, const QString & username, const QString & password ) : ThreadWeaver::Job()
 {
     DEBUG_BLOCK
@@ -52,5 +56,35 @@ void Mp3tunesLoginWorker::completeJob()
     DEBUG_BLOCK
     debug() << "Login Job complete";
     emit( finishedLogin( m_sessionId ) );
+    deleteLater();
+}
+
+Mp3tunesArtistFetcher::Mp3tunesArtistFetcher( Mp3tunesLocker * locker )
+{
+    m_locker = locker;
+}
+
+Mp3tunesArtistFetcher::~Mp3tunesArtistFetcher()
+{
+}
+
+void Mp3tunesArtistFetcher::run()
+{
+    DEBUG_BLOCK
+    if(m_locker != 0) {
+        debug() << "Artist Fetch Start";
+        QList<Mp3tunesLockerArtist> list = m_locker->artists();
+        debug() << "Artist Fetch End. Total artists: " << list.count();
+        m_artists = list;
+    } else {
+        debug() << "Locker is NULL";
+    }
+}
+
+void Mp3tunesArtistFetcher::completeJob()
+{
+    DEBUG_BLOCK
+    debug() << "Artist fetch Job complete";
+    emit( artistsFetched( m_artists ) );
     deleteLater();
 }

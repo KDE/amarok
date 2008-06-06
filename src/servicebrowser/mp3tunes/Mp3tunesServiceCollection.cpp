@@ -21,9 +21,10 @@
 
 #include "Mp3tunesServiceQueryMaker.h"
 
-Mp3tunesServiceCollection::Mp3tunesServiceCollection( const QString &sessionId )
+Mp3tunesServiceCollection::Mp3tunesServiceCollection( const QString &sessionId, Mp3tunesLocker * locker )
     : ServiceCollection( 0, "Mp3tunesCollection", "Mp3tunesCollection" )
  , m_sessionId( sessionId )
+ , m_locker( locker )
 {
 }
 
@@ -34,7 +35,7 @@ Mp3tunesServiceCollection::~Mp3tunesServiceCollection()
 
 QueryMaker * Mp3tunesServiceCollection::queryMaker()
 {
-    return new Mp3tunesServiceQueryMaker( this, m_sessionId );
+    return new Mp3tunesServiceQueryMaker( m_locker,  m_sessionId, this );
 }
 
 QString Mp3tunesServiceCollection::collectionId() const

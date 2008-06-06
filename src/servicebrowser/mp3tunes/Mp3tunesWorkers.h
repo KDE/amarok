@@ -21,7 +21,7 @@
 
 #include "Mp3tunesLocker.h"
 
-#include <QString>
+#include <QList>
 
 #include <threadweaver/Job.h>
 
@@ -47,4 +47,23 @@ class Mp3tunesLoginWorker :  public ThreadWeaver::Job
         QString m_password;
 };
 
+class Mp3tunesArtistFetcher : public ThreadWeaver::Job
+{
+    Q_OBJECT
+    public:
+        Mp3tunesArtistFetcher( Mp3tunesLocker * locker );
+        ~Mp3tunesArtistFetcher();
+
+        void run();
+
+    signals:
+        void artistsFetched( QList<Mp3tunesLockerArtist> );
+
+    private slots:
+        void completeJob();
+
+    private:
+        Mp3tunesLocker* m_locker;
+        QList<Mp3tunesLockerArtist> m_artists;
+};
 #endif

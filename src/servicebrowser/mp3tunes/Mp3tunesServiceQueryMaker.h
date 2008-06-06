@@ -23,7 +23,7 @@
 #include "DynamicServiceQueryMaker.h"
 
 //#include "Mp3TunesMeta.h"
-
+#include "Mp3tunesLocker.h"
 #include "Mp3tunesServiceCollection.h"
 
 #include <kio/jobclasses.h>
@@ -44,6 +44,7 @@ class Mp3tunesServiceQueryMaker : public DynamicServiceQueryMaker
 Q_OBJECT
 public:
     Mp3tunesServiceQueryMaker( Mp3tunesServiceCollection * collection, const QString &sessionId );
+    Mp3tunesServiceQueryMaker( Mp3tunesLocker * locker, const QString &sessionId, Mp3tunesServiceCollection * collection );
     ~Mp3tunesServiceQueryMaker();
 
     virtual QueryMaker* reset();
@@ -77,6 +78,7 @@ public:
 
 protected:
     Mp3tunesServiceCollection * m_collection;
+    Mp3tunesLocker * m_locker;
     KIO::StoredTransferJob * m_storedTransferJob;
 
     class Private;
@@ -90,7 +92,7 @@ protected:
 
 public slots:
 
-    void artistDownloadComplete(KJob *job );
+    void artistDownloadComplete( QList<Mp3tunesLockerArtist> artists );
     void albumDownloadComplete(KJob *job );
     void trackDownloadComplete(KJob *job );
 
