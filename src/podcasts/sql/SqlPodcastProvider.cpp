@@ -263,19 +263,24 @@ SqlPodcastProvider::downloadResult( KJob * job )
     if( job->error() )
     {
         The::statusBar()->longMessage( job->errorText() );
-        debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText() << endl;
+        debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
+    }
+    else if( ! m_jobMap.contains( job ) )
+    {
+        warning() << "Download is finished for a job that wasn't added to m_jobMap. Waah?";
     }
     else
     {
-        Meta::SqlPodcastEpisodePtr sqlEpisode = m_jobMap[job];
+        Meta::SqlPodcastEpisodePtr sqlEpisode = m_jobMap.value( job );
+        QString title = sqlEpisode->channel()->title();
 
         QDir dir( Amarok::saveLocation("podcasts") );
         //save in directory with channels title
-        if ( !dir.exists( sqlEpisode->channel()->title() ) )
+        if ( !dir.exists( title ) )
         {
-            dir.mkdir( sqlEpisode->channel()->title() );
+            dir.mkdir( title );
         }
-        dir.cd( sqlEpisode->channel()->title() );
+        dir.cd( title );
         KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
         localUrl.addPath( m_fileNameMap[job] );
 
