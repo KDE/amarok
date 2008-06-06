@@ -203,6 +203,11 @@ QString Mp3tunesLockerTrack::artistName() const
 {
     return QString( m_track->artistName );
 }
+
+int Mp3tunesLockerTrack::artistId() const
+{
+    return m_track->artistId;
+}
 ////////////////////////////////////////////////////////////////////////
 //PLAYLIST
 Mp3tunesLockerPlaylist::Mp3tunesLockerPlaylist(  mp3tunes_locker_playlist_t *playlist )

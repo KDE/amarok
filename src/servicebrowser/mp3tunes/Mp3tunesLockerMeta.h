@@ -94,6 +94,7 @@ class Mp3tunesLockerTrack {
         QString albumTitle() const;
         int albumYear() const;
         QString artistName() const;
+        int artistId() const;
     private:
         mp3tunes_locker_track_t *m_track;
 };
