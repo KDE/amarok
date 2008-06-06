@@ -89,15 +89,8 @@ QList<Mp3tunesLockerArtist> Mp3tunesLocker::artists() const
     while (artist_item != 0) {
         // get the artist from the c lib
         artist = (mp3tunes_locker_artist_t*)artist_item->value;
-        debug() << &artist_item->value;
-        if(artist == 0) {
-            debug() << "Wrapper Artist NULL:" << artist;
-        } else
-        if(artist->artistName == 0) {
-            debug() << "Wrapper Artist NAME NULL:" << artist->artistName;
-        } else {
-           // debug() << "Wrapper Artist: " << &artist << " " << artist->artistName;
-        }
+        debug() << "Wrapper Artist: " << &artist << " " << artist->artistName;
+
         //wrap it up
         Mp3tunesLockerArtist artistWrapped(artist);
         //and stick it in the QList
