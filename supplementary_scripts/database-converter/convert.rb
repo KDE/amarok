@@ -106,8 +106,14 @@ class Converter
             puts "Error message: #{e.error}"
             puts "Error SQLSTATE: #{e.sqlstate}" if e.respond_to?("sqlstate")
         elsif
-            puts "Could not connect to MySQL database"
+            puts "Could not connect to Amarok 1.4 MySQL database"
         end
+    end
+
+    def getAmarok2Collection()
+        return SQLite3::Database.new( "collection2.db" );
+    rescue => e
+        puts "Error: #{e}"
     end
 
     def transferStatistics
@@ -118,7 +124,7 @@ class Converter
         # get server version string and display it
         puts "Mysql server version: " + conn.get_server_info if @options.verbose
  
-        new_db = SQLite3::Database.new( "collection2.db" )
+        new_db = getAmarok2Collection()
 
         new_db.results_as_hash = true
 
