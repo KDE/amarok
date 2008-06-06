@@ -98,11 +98,10 @@ class Converter
         puts "#{File.basename(__FILE__)} version #{VERSION}"
     end
 
-    def establishMysqlConnection( server, username, password, database, verbose )
-
-        return conn
+    def getMysqlConnection()
+        return Mysql.real_connect( @options.hostname, @options.username, @options.password, @options.database )
     rescue Mysql::Error => e
-        if verbose
+        if @options.verbose
             puts "Error code: #{e.errno}"
             puts "Error message: #{e.error}"
             puts "Error SQLSTATE: #{e.sqlstate}" if e.respond_to?("sqlstate")
@@ -112,18 +111,19 @@ class Converter
     end
 
     def transferStatistics
+        conn = getMysqlConnection()
+        return if conn.nil?
 
         # connect to the MySQL server
-        conn = Mysql.real_connect( @options.hostname, @options.username, @options.password, @options.database )
         # get server version string and display it
         puts "Mysql server version: " + conn.get_server_info if @options.verbose
-
-        
+ 
         new_db = SQLite3::Database.new( "collection2.db" )
 
         new_db.results_as_hash = true
 
-        update_count = 0;
+        updateCount = 0;
+        errorCount = 0;
 
         # de-dynamic collection
         devices_row    = conn.query( "SELECT id, lastmountpoint FROM devices" )
@@ -134,6 +134,7 @@ class Converter
         staleEntries = Array.new
 
         statistics_row.each_hash do | tag |
+            begin
             url      = tag["url"]
             deviceid = tag["deviceid"]
 
@@ -150,25 +151,37 @@ class Converter
                 staleEntries << url
                 next
             end
-           
+          
             #if not @options.safe_mode
-                updates = new_db.execute( "INSERT INTO statistics (url, createdate, accessdate, score, rating, playcount ) " +
-                                          "VALUES( ?, ?, ?, ?, ?, ? )",
-                                          urlid, tag["createdate"], tag["accessdate"], tag["percentage"], tag["rating"], tag["playcounter"] );
+            query = "INSERT INTO statistics (url, createdate, accessdate, score, rating, playcount ) VALUES ( " +
+                    "#{urlid}, #{tag["createdate"]}, #{tag["accessdate"]}, #{tag["percentage"]}, #{tag["rating"]}, #{tag["playcounter"]} );"
+
+            updates = new_db.execute( query );
             #else
             #    puts "Safe mode!"
             #end
             
-            update_count += 1
+            updateCount += 1
 
-            puts "UPDATE statistics SET createdate=#{tag["createdate"]}, score=#{tag["percentage"]}, rating=#{tag["rating"]}, " +
-                 " playcount=#{tag["playcounter"]} WHERE url=#{urlid}" if @options.verbose
+            #puts "UPDATE statistics SET createdate=#{tag["createdate"]}, score=#{tag["percentage"]}, rating=#{tag["rating"]}, " +
+            #     " playcount=#{tag["playcounter"]} WHERE url=#{urlid}" if @options.verbose
+            rescue SQLite3::SQLException => e
+                if @options.verbose
+                    puts "Insertion error: #{e}"
+                    #puts query
+                end
+                errorCount += 1
+            end
         end
         puts
-        puts "Updated #{update_count} statistics"
+        puts "#{updateCount} statistic updateCount"
+        puts "#{errorCount} errorCount encountered"
+        puts "#{staleEntries.size} stale entries ignored"
 
-        puts "Stale entries: "
-        staleEntries.each {|e| print "    ", e, "\n" }
+        if @options.verbose
+            puts "Stale entries: "
+            staleEntries.each {|e| print "    ", e, "\n" }
+        end
 
         devices_row.free
         statistics_row.free
