@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Version=0.9.4
+Version=1.0
 Name=Amarok
 Name[pa]=ਅਮਰੋਕ
 Name[ru]=Amarok
@@ -73,9 +73,8 @@ Comment[sk]=Amarok - Znova objavte hudbu!
 Comment[sv]=Amarok - Återupptäck din musik!
 Comment[tr]=Amarok - Müziğinizi yeniden keşfedin!
 Icon=amarok
-X-KDE-Protocols=http
-#don't add inode/directory to mimetypes it leads to misbehavior
 MimeType=audio/aac;audio/mp4;audio/mpeg;audio/mpegurl;audio/vnd.rn-realaudio;audio/vorbis;audio/x-flac;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;video/x-ms-asf;
-DocPath=amarok/index.html
+X-KDE-DocPath=amarok/index.html
+X-KDE-Protocols=http
 Terminal=false
 Categories=Qt;KDE;AudioVideo;Audio;Player;

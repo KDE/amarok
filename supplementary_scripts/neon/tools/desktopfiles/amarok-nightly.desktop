@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Version=1.0.0
+Version=1.0
 Name=Amarok Nightly
 Exec=amarok-nightly %U
 TryExec=amarok-nightly
