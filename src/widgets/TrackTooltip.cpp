@@ -80,7 +80,7 @@ void TrackToolTip::show( const QPoint & bottomRight )
 
 void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 {
-    if( track.isNull() )
+    if( m_track.isNull() )
         return;
 
     if( m_track->artist() )
