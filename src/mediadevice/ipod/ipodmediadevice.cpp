@@ -566,7 +566,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 
         track->flag4 = 0x01; // also show description on iPod
         QString plaindesc = podcastInfo->description;
-        plaindesc.replace( QRegExp("<[^>]*>"), "" );
+        plaindesc.remove( QRegExp("<[^>]*>") );
         track->description = g_strdup( plaindesc.toUtf8() );
         track->subtitle = g_strdup( plaindesc.toUtf8() );
         track->podcasturl = g_strdup( podcastInfo->url.toUtf8() );

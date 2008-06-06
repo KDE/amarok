@@ -702,12 +702,12 @@ QString IfpMediaDevice::cleanPath( const QString &component )
 
     result.simplified();
 
-    result.remove( "?" ).replace( "*", " " ).replace( ":", " " );
+    result.remove( '?' ).replace( '*', ' ' ).replace( ':', ' ' );
 
 //     if( m_spacesToUnderscores )
 //         result.replace( QRegExp( "\\s" ), "_" );
 
-    result.replace( "/", "-" );
+    result.replace( '/', '-' );
 
     return result;
 }

@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "MagnatuneSqlCollection.h"
 
 #include "Debug.h"
@@ -46,7 +46,7 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
         debug() << "got redirected url: " << pristineUrl;
 
 
-        pristineUrl.replace( "_nospeech", "" );
+        pristineUrl.remove( "_nospeech" );
         pristineUrl.replace( ".ogg", ".mp3" );
         pristineUrl.replace( "-lofi.mp3", ".mp3" );
 
@@ -69,7 +69,7 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
 
     } else {
 
-        pristineUrl.replace( "_nospeech", "" );
+        pristineUrl.remove( "_nospeech" );
         pristineUrl.replace( ".ogg", ".mp3" );
         pristineUrl.replace( "-lofi.mp3", ".mp3" );
 

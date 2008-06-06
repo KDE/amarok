@@ -290,7 +290,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     p.drawImage( 0, 0, background );
 
     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
-    const QString txt = text().replace( "&", "" );
+    const QString txt = text().remove( '&' );
 
     p.translate( 0, pos );
     p.drawPixmap( width() / 2 - iconSize().width() / 2, 0, icon().pixmap( iconSize() ) );

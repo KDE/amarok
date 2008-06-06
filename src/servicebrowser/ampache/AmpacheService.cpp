@@ -190,7 +190,7 @@ AmpacheService::authenticate()
     if ( !m_username.isEmpty() )
         authenticationString.replace(QString("<username>"), "&user=" + m_username);
     else
-        authenticationString.replace(QString("<username>"), "");
+        authenticationString.remove(QString("<username>"));
     authenticationString.replace(QString("<passphrase>"), passPhrase);
     authenticationString.replace(QString("<timestamp>"), timestamp);
 
