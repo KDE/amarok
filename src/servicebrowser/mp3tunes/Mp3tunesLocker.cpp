@@ -23,8 +23,7 @@
 
 #include <QByteArray>
 
-////////////////////////////////////////////////////////////////////////
-//LOCKER
+
 Mp3tunesLocker::Mp3tunesLocker( const QString & partnerToken)
 {
     DEBUG_BLOCK

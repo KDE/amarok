@@ -93,7 +93,7 @@ protected:
 public slots:
 
     void artistDownloadComplete( QList<Mp3tunesLockerArtist> artists );
-    void albumDownloadComplete(KJob *job );
+    void albumDownloadComplete( QList<Mp3tunesLockerAlbum> albums );
     void trackDownloadComplete(KJob *job );
 
 

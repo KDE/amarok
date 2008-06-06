@@ -26,7 +26,6 @@
 
 Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker, const QString & username, const QString & password ) : ThreadWeaver::Job()
 {
-    DEBUG_BLOCK
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
     m_locker = locker;
     m_username = username;
@@ -57,7 +56,7 @@ void Mp3tunesLoginWorker::completeJob()
     emit( finishedLogin( m_sessionId ) );
     deleteLater();
 }
-
+/* ARTIST FETCHER */
 Mp3tunesArtistFetcher::Mp3tunesArtistFetcher( Mp3tunesLocker * locker )
 {
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
@@ -84,5 +83,36 @@ void Mp3tunesArtistFetcher::run()
 void Mp3tunesArtistFetcher::completeJob()
 {
     emit( artistsFetched( m_artists ) );
+    deleteLater();
+}
+
+/*  ALBUM FETCHER */
+Mp3tunesAlbumWithArtistIdFetcher::Mp3tunesAlbumWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId )
+{
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    m_locker = locker;
+    m_artistId = artistId;
+}
+
+Mp3tunesAlbumWithArtistIdFetcher::~Mp3tunesAlbumWithArtistIdFetcher()
+{
+}
+
+void Mp3tunesAlbumWithArtistIdFetcher::run()
+{
+    DEBUG_BLOCK
+            if(m_locker != 0) {
+        debug() << "Album Fetch Start";
+        QList<Mp3tunesLockerAlbum> list = m_locker->albumsWithArtistId( m_artistId );
+        debug() << "Album Fetch End. Total albums: " << list.count();
+        m_albums = list;
+            } else {
+                debug() << "Locker is NULL";
+            }
+}
+
+void Mp3tunesAlbumWithArtistIdFetcher::completeJob()
+{
+    emit( albumsFetched( m_albums ) );
     deleteLater();
 }

@@ -19,9 +19,14 @@
 #ifndef MP3TUNESLOCKERMETA_H
 #define MP3TUNESLOCKERMETA_H
 
+/**
+ * These are the c++ wrappers for the libmp3tunes meta types:
+ * artist, album, track, playlist
+ */
+
 extern "C" {
-   // Get libmp3tunes declarations
-#include "libmp3tunes/locker.h"
+    // Get libmp3tunes declarations
+    #include "libmp3tunes/locker.h"
 }
 
 #include <QString>
@@ -31,7 +36,7 @@ class Mp3tunesLockerPlaylist {
     public:
         Mp3tunesLockerPlaylist( mp3tunes_locker_playlist_t *playlist );
         ~Mp3tunesLockerPlaylist();
-        
+
         QString playlistId() const;
         QString playlistTitle() const;
         QString title() const;
@@ -46,7 +51,7 @@ class Mp3tunesLockerArtist {
     public:
         Mp3tunesLockerArtist( mp3tunes_locker_artist_t *artist );
         ~Mp3tunesLockerArtist();
-        
+
         int artistId() const;
         QString artistName() const;
         int artistSize() const;

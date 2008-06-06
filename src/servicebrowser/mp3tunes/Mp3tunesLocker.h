@@ -76,7 +76,7 @@ class Mp3tunesLocker {
          * @param artistId the id of the artist to list albums for
          * @return a QList of albums belonging to the supplied artist
          */
-        QList<Mp3tunesLockerAlbum> albumsWithArtistId( int artistId) const;
+        QList<Mp3tunesLockerAlbum> albumsWithArtistId( int artistId ) const;
 
         /**
          * @return a list of all the playlists in the locker

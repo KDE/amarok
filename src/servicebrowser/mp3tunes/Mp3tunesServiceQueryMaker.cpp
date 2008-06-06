@@ -236,7 +236,6 @@ void Mp3tunesServiceQueryMaker::handleResult(const TrackList & tracks)
 void Mp3tunesServiceQueryMaker::fetchArtists()
 {
     DEBUG_BLOCK
-    debug() << "Locker: " << m_locker;
     Mp3tunesArtistFetcher * artistFetcher = new Mp3tunesArtistFetcher( m_locker );
     connect( artistFetcher, SIGNAL( artistsFetched( QList<Mp3tunesLockerArtist> ) ), this, SLOT( artistDownloadComplete( QList<Mp3tunesLockerArtist> ) ) );
     ThreadWeaver::Weaver::instance()->enqueue( artistFetcher );
@@ -248,28 +247,23 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
 
     AlbumList albums;
 
-
-    //debug() << "parent id: " << m_parentId;
+    debug() << "Fetching Albums for parentArtist id: " << m_parentArtistId;
 
     if ( !m_parentArtistId.isEmpty() ) {
         ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
         albums = artistMatcher.matchAlbums( m_collection );
-    } else
+    } else {
         return;
+    }
 
     if ( albums.count() > 0 ) {
         handleResult( albums );
     } else {
-
-        QString urlString = "http://ws.mp3tunes.com/api/v1/lockerData?sid=<SESSION_ID>&partner_token=<PARTNER_TOKEN>&output=xml&type=album& artist_id=<ARTIST_ID>";
-
-        urlString.replace( "<SESSION_ID>", m_sessionId );
-        urlString.replace( "<PARTNER_TOKEN>", "7359149936" );
-        urlString.replace( "<ARTIST_ID>", m_parentArtistId );
-
-        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
-        connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
-            , this, SLOT( albumDownloadComplete( KJob *) ) );
+        
+        Mp3tunesAlbumWithArtistIdFetcher * albumFetcher = new Mp3tunesAlbumWithArtistIdFetcher( m_locker, m_parentArtistId.toInt() );
+        connect( albumFetcher, SIGNAL( albumsFetched( QList<Mp3tunesLockerAlbum> ) ), this, SLOT( albumDownloadComplete( QList<Mp3tunesLockerAlbum> ) ) );
+        
+        ThreadWeaver::Weaver::instance()->enqueue( albumFetcher );
     }
 }
 
@@ -337,87 +331,55 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete( QList<Mp3tunesLockerArti
 
 }
 
-void Mp3tunesServiceQueryMaker::albumDownloadComplete(KJob * job)
+void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum> albumsList )
 {
     DEBUG_BLOCK
-
-    if( job->error() )
-    {
-        error() << job->error();
-        m_storedTransferJob->deleteLater();
-        return;
-    }
-
-    //debug() << "Received response: " << m_storedTransferJob->data();
+            
+    debug() << "Received albums";
 
     AlbumList albums;
+    foreach(Mp3tunesLockerAlbum album, albumsList) {
 
-    //debug() << "received artists: " <<  m_storedTransferJob->data();
-
-     //so lets figure out what we got here:
-    QDomDocument doc( "reply" );
-    doc.setContent( m_storedTransferJob->data() );
-    QDomElement root = doc.firstChildElement("mp3tunes");
-    root = root.firstChildElement( "albumList" );
-
-
-    QDomNode n = root.firstChild();
-    while( !n.isNull() )
-    {
-        QDomElement e = n.toElement(); // try to convert the node to an element.
-        //if ( ! (e.tagName() == "item") )
-        //    break;
-
-        QDomElement element = n.firstChildElement("albumTitle");
-
-        QString title = element.text();
+        QString title = album.albumTitle();
         if ( title.isEmpty() ) title = "Unknown";
+        QString albumIdStr = QString::number( album.albumId() );
+        int albumId = album.albumId();
 
-        element = n.firstChildElement("albumId");
-        QString albumIdStr = element.text();
-        int albumId = element.text().toInt();
+        bool hasArt = album.hasArt();
 
-        element = n.firstChildElement("hasArt");
-        int hasArt = element.text().toInt();
+        Mp3TunesAlbum * serviceAlbum = new Mp3TunesAlbum( title );
 
-        Mp3TunesAlbum * album = new Mp3TunesAlbum( title );
-
-        if ( hasArt > 0 )
+        if ( hasArt )
         {
 
             QString coverUrl = "http://content.mp3tunes.com/storage/albumartget/<ALBUM_ID>?alternative=1&partner_token=<PARTNER_TOKEN>&sid=<SESSION_ID>";
 
-            coverUrl.replace( "<SESSION_ID>", m_sessionId );
-            coverUrl.replace( "<PARTNER_TOKEN>", "7359149936" );
+            coverUrl.replace( "<SESSION_ID>", m_locker->sessionId() );
+            coverUrl.replace( "<PARTNER_TOKEN>", m_locker->partnerToken() );
             coverUrl.replace( "<ALBUM_ID>", albumIdStr );
 
-            album->setCoverUrl(coverUrl);
+            serviceAlbum->setCoverUrl(coverUrl);
         }
 
-        AlbumPtr albumPtr( album );
+        AlbumPtr albumPtr( serviceAlbum );
 
         //debug() << "Adding album: " <<  title;
 
-        album->setId( albumId );
+        serviceAlbum->setId( albumId );
         m_collection->acquireWriteLock();
         m_collection->addAlbum( albumPtr );
         m_collection->releaseLock();
 
-        element = n.firstChildElement("artistId");
-
-        ArtistPtr artistPtr = m_collection->artistById( element.text().toInt() );
+        ArtistPtr artistPtr = m_collection->artistById( album.artistId() );
         if ( artistPtr.data() != 0 )
         {
            //debug() << "Found parent artist";
-           album->setAlbumArtist( artistPtr );
+            serviceAlbum->setAlbumArtist( artistPtr );
         }
 
         albums.push_back( albumPtr );
 
-        n = n.nextSibling();
     }
-
-   m_storedTransferJob->deleteLater();
 
    handleResult( albums );
    emit queryDone();

@@ -25,6 +25,9 @@
 
 #include <threadweaver/Job.h>
 
+/**
+ * Allows for threading the logging in process.
+ */
 class Mp3tunesLoginWorker :  public ThreadWeaver::Job
 {
     Q_OBJECT
@@ -47,6 +50,9 @@ class Mp3tunesLoginWorker :  public ThreadWeaver::Job
         QString m_password;
 };
 
+/**
+ * Allows for threading the artist fetching process
+ */
 class Mp3tunesArtistFetcher : public ThreadWeaver::Job
 {
     Q_OBJECT
@@ -65,5 +71,29 @@ class Mp3tunesArtistFetcher : public ThreadWeaver::Job
     private:
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerArtist> m_artists;
+};
+
+/**
+ * Allows for threading the album fetching process
+ */
+class Mp3tunesAlbumWithArtistIdFetcher : public ThreadWeaver::Job
+{
+    Q_OBJECT
+    public:
+        Mp3tunesAlbumWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId );
+        ~Mp3tunesAlbumWithArtistIdFetcher();
+
+        void run();
+
+    signals:
+        void albumsFetched( QList<Mp3tunesLockerAlbum> );
+
+    private slots:
+        void completeJob();
+
+    private:
+        int m_artistId;
+        Mp3tunesLocker* m_locker;
+        QList<Mp3tunesLockerAlbum> m_albums;
 };
 #endif
