@@ -61,13 +61,18 @@ int Mp3tunesLockerArtist::trackCount() const
 //ALBUM
 Mp3tunesLockerAlbum::Mp3tunesLockerAlbum(  mp3tunes_locker_album_t *album )
 {
-    m_album = album;
+    m_album = ( mp3tunes_locker_album_t * ) malloc( sizeof( *album ) );
+    memcpy( m_album, album, sizeof( *album ) );
+
+    m_album->artistName = ( char * ) malloc( strlen( album->artistName ) );
+    strcpy( m_album->artistName, album->artistName );
+
+    m_album->albumTitle = ( char * ) malloc( strlen( album->albumTitle ) );
+    strcpy( m_album->albumTitle, album->albumTitle );
 }
 
 Mp3tunesLockerAlbum::~Mp3tunesLockerAlbum()
-{
-    delete m_album;
-}
+{}
 
 int Mp3tunesLockerAlbum::albumId() const
 {
@@ -107,12 +112,32 @@ bool Mp3tunesLockerAlbum::hasArt() const
 //TRACK
 Mp3tunesLockerTrack::Mp3tunesLockerTrack(  mp3tunes_locker_track_t *track )
 {
-    m_track = track;
+    m_track = ( mp3tunes_locker_track_t * ) malloc( sizeof( *track ) );
+    memcpy( m_track, track, sizeof( *track ) );
+
+    m_track->artistName = ( char * ) malloc( strlen( track->artistName ) );
+    strcpy( m_track->artistName, track->artistName );
+
+    m_track->albumTitle = ( char * ) malloc( strlen( track->albumTitle ) );
+    strcpy( m_track->albumTitle, track->albumTitle );
+
+    m_track->trackTitle = ( char * ) malloc( strlen( track->trackTitle ) );
+    strcpy( m_track->trackTitle, track->trackTitle );
+
+    m_track->trackFileName = ( char * ) malloc( strlen( track->trackFileName ) );
+    strcpy( m_track->trackFileName, track->trackFileName );
+
+    m_track->trackFileKey = ( char * ) malloc( strlen( track->trackFileKey ) );
+    strcpy( m_track->trackFileKey, track->trackFileKey );
+
+    m_track->downloadURL = ( char * ) malloc( strlen( track->downloadURL ) );
+    strcpy( m_track->downloadURL, track->downloadURL );
+
+    m_track->playURL = ( char * ) malloc( strlen( track->playURL ) );
+    strcpy( m_track->playURL, track->playURL );
 }
 Mp3tunesLockerTrack::~Mp3tunesLockerTrack()
-{
-    delete m_track;
-}
+{}
 
 int Mp3tunesLockerTrack::trackId() const
 {
@@ -182,12 +207,23 @@ QString Mp3tunesLockerTrack::artistName() const
 //PLAYLIST
 Mp3tunesLockerPlaylist::Mp3tunesLockerPlaylist(  mp3tunes_locker_playlist_t *playlist )
 {
-    m_playlist = playlist;
+    m_playlist = ( mp3tunes_locker_playlist_t * ) malloc( sizeof( *playlist ) );
+    memcpy( m_playlist, playlist, sizeof( *playlist ) );
+
+    m_playlist->playlistId = ( char * ) malloc( strlen( playlist->playlistId ) );
+    strcpy( m_playlist->playlistId, playlist->playlistId );
+
+    m_playlist->playlistTitle = ( char * ) malloc( strlen( playlist->playlistTitle ) );
+    strcpy( m_playlist->playlistTitle, playlist->playlistTitle );
+
+    m_playlist->title = ( char * ) malloc( strlen( playlist->title ) );
+    strcpy( m_playlist->title, playlist->title );
+
+    m_playlist->fileName = ( char * ) malloc( strlen( playlist->fileName ) );
+    strcpy( m_playlist->fileName, playlist->fileName );
 }
 Mp3tunesLockerPlaylist::~Mp3tunesLockerPlaylist()
-{
-    delete m_playlist;
-}
+{}
 
 QString Mp3tunesLockerPlaylist::playlistId() const
 {
