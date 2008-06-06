@@ -23,7 +23,7 @@
 require "time"
 require "optparse"
 require "ostruct"
-# require "mysql"
+require "mysql"
 require "rdoc/usage"
 require "sqlite3"
 
@@ -41,10 +41,10 @@ class Converter
         @options.verbose    = false
         @options.quiet      = false
         @options.safe_mode  = false
-        @options.mysql_user = "amarok"
-        @options.mysql_pass = "amarok"
-        @options.mysql_host = "localhost"
-        @options.mysql_db   = "amarok"
+        @options.username   = "amarok"
+        @options.password   = ""
+        @options.hostname   = "localhost"
+        @options.database   = ""
     end
 
     # Parse options, check arguments, then process the command
@@ -53,7 +53,7 @@ class Converter
             start = Time.now
             transferStatistics
             finish = Time.now
-            
+
             puts "\nTime elapsed: #{finish - start}" if @options.verbose
         else
             output_usage
@@ -98,44 +98,46 @@ class Converter
         puts "#{File.basename(__FILE__)} version #{VERSION}"
     end
 
-#     def establishMysqlConnection( server, username, password, database, verbose )
-#         # connect to the MySQL server
-#         conn = Mysql.real_connect( server, username, password, database )
-#         # get server version string and display it
-#         puts "Mysql server version: " + $mysqlConnection.get_server_info if verbose
-#         return conn
-#     rescue Mysql::Error => e
-#         if verbose
-#             puts "Error code: #{e.errno}"
-#             puts "Error message: #{e.error}"
-#             puts "Error SQLSTATE: #{e.sqlstate}" if e.respond_to?("sqlstate")
-#         elsif
-#             puts "Could not connect to MySQL database"
-#         end
-#         return nil
-#     end
+    def establishMysqlConnection( server, username, password, database, verbose )
+
+        return conn
+    rescue Mysql::Error => e
+        if verbose
+            puts "Error code: #{e.errno}"
+            puts "Error message: #{e.error}"
+            puts "Error SQLSTATE: #{e.sqlstate}" if e.respond_to?("sqlstate")
+        elsif
+            puts "Could not connect to MySQL database"
+        end
+    end
 
     def transferStatistics
-        old_db = SQLite3::Database.new( "collection.db" )
+
+        # connect to the MySQL server
+        conn = Mysql.real_connect( @options.hostname, @options.username, @options.password, @options.database )
+        # get server version string and display it
+        puts "Mysql server version: " + conn.get_server_info if @options.verbose
+
+        
         new_db = SQLite3::Database.new( "collection2.db" )
 
-        old_db.results_as_hash = true
         new_db.results_as_hash = true
 
         update_count = 0;
 
         # de-dynamic collection
-        devices_row = old_db.execute( "SELECT id, lastmountpoint FROM devices" )
+        devices_row    = conn.query( "SELECT id, lastmountpoint FROM devices" )
+        statistics_row = conn.query( "SELECT deviceid, url, createdate, percentage, rating, playcounter FROM statistics" )
 
-        statistics_row = old_db.execute( "SELECT deviceid, url, createdate, percentage, rating, playcounter FROM statistics" )
+        puts "Fetched #{statistics_row.num_rows} rows"
 
-        puts "Fetched #{statistics_row.size} rows"
+        staleEntries = Array.new
 
-        statistics_row.each do | tag |
+        statistics_row.each_hash do | tag |
             url      = tag["url"]
             deviceid = tag["deviceid"]
 
-            devices_row.each do | device |
+            devices_row.each_hash do | device |
                 if deviceid == device["id"]
                     url = "." + device["lastmountpoint"] + url.slice(1..url.length)
                     url.sub!( "\/\/", "\/" ) #filter out multiple forward slashes
@@ -144,16 +146,43 @@ class Converter
             end
 
             urlid = new_db.get_first_value( "SELECT id FROM urls WHERE rpath=?", url )
+            if urlid.nil?
+                staleEntries << url
+                next
+            end
+           
+            #if not @options.safe_mode
+                updates = new_db.execute( "INSERT INTO statistics (url, createdate, accessdate, score, rating, playcount ) " +
+                                          "VALUES( ?, ?, ?, ?, ?, ? )",
+                                          urlid, tag["createdate"], tag["accessdate"], tag["percentage"], tag["rating"], tag["playcounter"] );
+            #else
+            #    puts "Safe mode!"
+            #end
+            
+            update_count += 1
 
-            updates = new_db.execute( "UPDATE statistics SET createdate=?, score=?, rating=?, playcount=? WHERE url=?",
-                                       tag["createdate"], tag["percentage"], tag["rating"], tag["playcounter"], urlid );
-
-            update_count += updates.size
-
-            puts "Transferred statistics for: " + url if @options.verbose
+            puts "UPDATE statistics SET createdate=#{tag["createdate"]}, score=#{tag["percentage"]}, rating=#{tag["rating"]}, " +
+                 " playcount=#{tag["playcounter"]} WHERE url=#{urlid}" if @options.verbose
         end
         puts
         puts "Updated #{update_count} statistics"
+
+        puts "Stale entries: "
+        staleEntries.each {|e| print "    ", e, "\n" }
+
+        devices_row.free
+        statistics_row.free
+
+    rescue Mysql::Error => e
+        if @options.verbose
+            puts "Error code: #{e.errno}"
+            puts "Error message: #{e.error}"
+            puts "Error SQLSTATE: #{e.sqlstate}" if e.respond_to?("sqlstate")
+        elsif
+            puts "Could not connect to MySQL database"
+        end
+    ensure
+        conn.close if conn
     end
 
 end
