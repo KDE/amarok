@@ -102,9 +102,7 @@ class Converter
         return Mysql.real_connect( @options.hostname, @options.username, @options.password, @options.database )
     rescue Mysql::Error => e
         if @options.verbose
-            puts "Error code: #{e.errno}"
             puts "Error message: #{e.error}"
-            puts "Error SQLSTATE: #{e.sqlstate}" if e.respond_to?("sqlstate")
         elsif
             puts "Could not connect to Amarok 1.4 MySQL database"
         end
@@ -194,9 +192,7 @@ class Converter
 
     rescue Mysql::Error => e
         if @options.verbose
-            puts "Error code: #{e.errno}"
             puts "Error message: #{e.error}"
-            puts "Error SQLSTATE: #{e.sqlstate}" if e.respond_to?("sqlstate")
         elsif
             puts "Could not connect to MySQL database"
         end
