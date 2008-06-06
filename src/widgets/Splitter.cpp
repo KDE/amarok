@@ -26,46 +26,38 @@
 #include <QPainter>
 
 
-
 namespace Amarok {
-
 
 
 SplitterHandle::SplitterHandle( Qt::Orientation orientation, QSplitter * parent )
     : QSplitterHandle( orientation, parent )
-{
-}
+{}
 
 SplitterHandle::~ SplitterHandle()
-{
-}
+{}
 
 
 void SplitterHandle::paintEvent( QPaintEvent * event )
 {
+    Q_UNUSED( event )
+
     QPixmap handle = The::svgHandler()->renderSvg( "splitter_handle", rect().width(), rect().height(), "splitter_handle" );
     QPainter painter( this );
-    //QPixmap handle( rect().width(), rect().height() );
-    //handle.fill( Qt::blue );
     painter.drawPixmap( 0, 0, handle );
 }
 
 
-
 Splitter::Splitter( QWidget * parent )
     : QSplitter( parent )
-{
-}
+{}
 
 Splitter::Splitter( Qt::Orientation orientation, QWidget * parent )
     : QSplitter( orientation, parent )
-{
-}
+{}
 
 
 Splitter::~Splitter()
-{
-}
+{}
 
 
 QSplitterHandle * Splitter::createHandle()
@@ -74,11 +66,5 @@ QSplitterHandle * Splitter::createHandle()
 }
 
 
-
-}
-
-
-
-
-
+} //namespace Amarok
 
