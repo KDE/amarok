@@ -18,35 +18,35 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef MEDIADEVICEMETA_H
-#define MEDIADEVICEMETA_H
+#ifndef IPODMETA_H
+#define IPODMETA_H
 
 #include "Meta.h"
 
-class MediaDeviceCollection;
+class IpodCollection;
 
 namespace Meta
 {
 
-class MediaDeviceTrack;
-class MediaDeviceAlbum;
-class MediaDeviceArtist;
-class MediaDeviceGenre;
-class MediaDeviceComposer;
-class MediaDeviceYear;
+class IpodTrack;
+class IpodAlbum;
+class IpodArtist;
+class IpodGenre;
+class IpodComposer;
+class IpodYear;
 
-typedef KSharedPtr<MediaDeviceTrack> MediaDeviceTrackPtr;
-typedef KSharedPtr<MediaDeviceArtist> MediaDeviceArtistPtr;
-typedef KSharedPtr<MediaDeviceAlbum> MediaDeviceAlbumPtr;
-typedef KSharedPtr<MediaDeviceGenre> MediaDeviceGenrePtr;
-typedef KSharedPtr<MediaDeviceComposer> MediaDeviceComposerPtr;
-typedef KSharedPtr<MediaDeviceYear> MediaDeviceYearPtr;
+typedef KSharedPtr<IpodTrack> IpodTrackPtr;
+typedef KSharedPtr<IpodArtist> IpodArtistPtr;
+typedef KSharedPtr<IpodAlbum> IpodAlbumPtr;
+typedef KSharedPtr<IpodGenre> IpodGenrePtr;
+typedef KSharedPtr<IpodComposer> IpodComposerPtr;
+typedef KSharedPtr<IpodYear> IpodYearPtr;
 
-class MediaDeviceTrack : public Meta::Track
+class IpodTrack : public Meta::Track
 {
     public:
-        MediaDeviceTrack( MediaDeviceCollection *collection, const QString &format);
-        virtual ~MediaDeviceTrack();
+        IpodTrack( IpodCollection *collection, const QString &format);
+        virtual ~IpodTrack();
 
         virtual QString name() const;
         virtual QString prettyName() const;
@@ -108,23 +108,23 @@ class MediaDeviceTrack : public Meta::Track
         virtual bool inCollection() const;
         virtual Collection* collection() const;
 
-        //MediaDeviceTrack specific methods
-        void setAlbum( MediaDeviceAlbumPtr album );
-        void setArtist( MediaDeviceArtistPtr artist );
-        void setComposer( MediaDeviceComposerPtr composer );
-        void setGenre( MediaDeviceGenrePtr genre );
-        void setYear( MediaDeviceYearPtr year );
+        //IpodTrack specific methods
+        void setAlbum( IpodAlbumPtr album );
+        void setArtist( IpodArtistPtr artist );
+        void setComposer( IpodComposerPtr composer );
+        void setGenre( IpodGenrePtr genre );
+        void setYear( IpodYearPtr year );
 
         void setLength( int length );
 
     private:
-        MediaDeviceCollection *m_collection;
+        IpodCollection *m_collection;
 
-        MediaDeviceArtistPtr m_artist;
-        MediaDeviceAlbumPtr m_album;
-        MediaDeviceGenrePtr m_genre;
-        MediaDeviceComposerPtr m_composer;
-        MediaDeviceYearPtr m_year;
+        IpodArtistPtr m_artist;
+        IpodAlbumPtr m_album;
+        IpodGenrePtr m_genre;
+        IpodComposerPtr m_composer;
+        IpodYearPtr m_year;
 
         QString m_name;
         QString m_type;
@@ -134,11 +134,11 @@ class MediaDeviceTrack : public Meta::Track
         QString m_playableUrl;
 };
 
-class MediaDeviceArtist : public Meta::Artist
+class IpodArtist : public Meta::Artist
 {
     public:
-        MediaDeviceArtist( const QString &name );
-        virtual ~MediaDeviceArtist();
+        IpodArtist( const QString &name );
+        virtual ~IpodArtist();
 
         virtual QString name() const;
         virtual QString prettyName() const;
@@ -147,19 +147,19 @@ class MediaDeviceArtist : public Meta::Artist
 
         virtual AlbumList albums();
 
-        //MediaDeviceArtist specific methods
-        void addTrack( MediaDeviceTrackPtr track );
+        //IpodArtist specific methods
+        void addTrack( IpodTrackPtr track );
 
     private:
         QString m_name;
         TrackList m_tracks;
 };
 
-class MediaDeviceAlbum : public Meta::Album
+class IpodAlbum : public Meta::Album
 {
     public:
-        MediaDeviceAlbum( const QString &name );
-        virtual ~MediaDeviceAlbum();
+        IpodAlbum( const QString &name );
+        virtual ~IpodAlbum();
 
         virtual QString name() const;
         virtual QString prettyName() const;
@@ -173,69 +173,69 @@ class MediaDeviceAlbum : public Meta::Album
         virtual bool canUpdateImage() const;
         virtual void setImage( const QImage &image);
 
-        //MediaDeviceAlbum specific methods
-        void addTrack( MediaDeviceTrackPtr track );
-        void setAlbumArtist( MediaDeviceArtistPtr artist );
+        //IpodAlbum specific methods
+        void addTrack( IpodTrackPtr track );
+        void setAlbumArtist( IpodArtistPtr artist );
         void setIsCompilation( bool compilation );
 
     private:
         QString m_name;
         TrackList m_tracks;
         bool m_isCompilation;
-        MediaDeviceArtistPtr m_albumArtist;
+        IpodArtistPtr m_albumArtist;
 };
 
-class MediaDeviceGenre : public Meta::Genre
+class IpodGenre : public Meta::Genre
 {
     public:
-        MediaDeviceGenre( const QString &name );
-        virtual ~MediaDeviceGenre();
+        IpodGenre( const QString &name );
+        virtual ~IpodGenre();
 
         virtual QString name() const;
         virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
-        //MediaDeviceGenre specific methods
-        void addTrack( MediaDeviceTrackPtr track );
+        //IpodGenre specific methods
+        void addTrack( IpodTrackPtr track );
 
     private:
         QString m_name;
         TrackList m_tracks;
 };
 
-class MediaDeviceComposer : public Meta::Composer
+class IpodComposer : public Meta::Composer
 {
     public:
-        MediaDeviceComposer( const QString &name );
-        virtual ~MediaDeviceComposer();
+        IpodComposer( const QString &name );
+        virtual ~IpodComposer();
 
         virtual QString name() const;
         virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
-        //MediaDeviceComposer specific methods
-        void addTrack( MediaDeviceTrackPtr track );
+        //IpodComposer specific methods
+        void addTrack( IpodTrackPtr track );
 
     private:
         QString m_name;
         TrackList m_tracks;
 };
 
-class MediaDeviceYear : public Meta::Year
+class IpodYear : public Meta::Year
 {
     public:
-        MediaDeviceYear( const QString &name );
-        virtual ~MediaDeviceYear();
+        IpodYear( const QString &name );
+        virtual ~IpodYear();
 
         virtual QString name() const;
         virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
-        //MediaDeviceYear specific methods
-        void addTrack( MediaDeviceTrackPtr track );
+        //IpodYear specific methods
+        void addTrack( IpodTrackPtr track );
 
     private:
         QString m_name;

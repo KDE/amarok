@@ -18,12 +18,12 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "mediadevicemeta.h"
+#include "ipodmeta.h"
 
-#include "mediadevicecollection.h"
+#include "ipodcollection.h"
 
 using namespace Meta;
-MediaDeviceTrack::MediaDeviceTrack( MediaDeviceCollection *collection, const QString &format)
+IpodTrack::IpodTrack( IpodCollection *collection, const QString &format)
     : Meta::Track()
     , m_collection( collection )
     , m_artist( 0 )
@@ -38,291 +38,291 @@ MediaDeviceTrack::MediaDeviceTrack( MediaDeviceCollection *collection, const QSt
     , m_displayUrl()
     , m_playableUrl()
 {
-  //QString url = QString( "mediadevice://%1:%2/%3/%4.%5" )
+  //QString url = QString( "ipod://%1:%2/%3/%4.%5" )
   //                .arg( host, QString::number( port ), dbId, itemId, format );
     m_displayUrl = QString();
     m_playableUrl = QString();
 }
 
-MediaDeviceTrack::~MediaDeviceTrack()
+IpodTrack::~IpodTrack()
 {
     //nothing to do
 }
 
 QString
-MediaDeviceTrack::name() const
+IpodTrack::name() const
 {
     return m_name;
 }
 
 QString
-MediaDeviceTrack::prettyName() const
+IpodTrack::prettyName() const
 {
     return m_name;
 }
 
 KUrl
-MediaDeviceTrack::playableUrl() const
+IpodTrack::playableUrl() const
 {
     KUrl url( m_playableUrl );
     return url;
 }
 
 QString
-MediaDeviceTrack::url() const
+IpodTrack::url() const
 {
     return m_playableUrl;
 }
 
 QString
-MediaDeviceTrack::prettyUrl() const
+IpodTrack::prettyUrl() const
 {
     return m_displayUrl;
 }
 
 bool
-MediaDeviceTrack::isPlayable() const
+IpodTrack::isPlayable() const
 {
     return true;
 }
 
 bool
-MediaDeviceTrack::isEditable() const
+IpodTrack::isEditable() const
 {
     return false;
 }
 
 AlbumPtr
-MediaDeviceTrack::album() const
+IpodTrack::album() const
 {
     return AlbumPtr::staticCast( m_album );
 }
 
 ArtistPtr
-MediaDeviceTrack::artist() const
+IpodTrack::artist() const
 {
     return ArtistPtr::staticCast( m_artist );
 }
 
 GenrePtr
-MediaDeviceTrack::genre() const
+IpodTrack::genre() const
 {
     return GenrePtr::staticCast( m_genre );
 }
 
 ComposerPtr
-MediaDeviceTrack::composer() const
+IpodTrack::composer() const
 {
     return ComposerPtr::staticCast( m_composer );
 }
 
 YearPtr
-MediaDeviceTrack::year() const
+IpodTrack::year() const
 {
     return YearPtr::staticCast( m_year );
 }
 
 void
-MediaDeviceTrack::setAlbum( const QString &newAlbum )
+IpodTrack::setAlbum( const QString &newAlbum )
 {
     Q_UNUSED( newAlbum )
 }
 
 void
-MediaDeviceTrack::setArtist( const QString &newArtist )
+IpodTrack::setArtist( const QString &newArtist )
 {
     Q_UNUSED( newArtist )
 }
 
 void
-MediaDeviceTrack::setComposer( const QString &newComposer )
+IpodTrack::setComposer( const QString &newComposer )
 {
     Q_UNUSED( newComposer )
 }
 
 void
-MediaDeviceTrack::setGenre( const QString &newGenre )
+IpodTrack::setGenre( const QString &newGenre )
 {
     Q_UNUSED( newGenre )
 }
 
 void
-MediaDeviceTrack::setYear( const QString &newYear )
+IpodTrack::setYear( const QString &newYear )
 {
     Q_UNUSED( newYear )
 }
 
 QString
-MediaDeviceTrack::comment() const
+IpodTrack::comment() const
 {
     return QString();
 }
 
 void
-MediaDeviceTrack::setComment( const QString &newComment )
+IpodTrack::setComment( const QString &newComment )
 {
     Q_UNUSED( newComment )
 }
 
 double
-MediaDeviceTrack::score() const
+IpodTrack::score() const
 {
     return 0.0;
 }
 
 void
-MediaDeviceTrack::setScore( double newScore )
+IpodTrack::setScore( double newScore )
 {
     Q_UNUSED( newScore )
 }
 
 int
-MediaDeviceTrack::rating() const
+IpodTrack::rating() const
 {
     return 0;
 }
 
 void
-MediaDeviceTrack::setRating( int newRating )
+IpodTrack::setRating( int newRating )
 {
     Q_UNUSED( newRating )
 }
 
 int
-MediaDeviceTrack::length() const
+IpodTrack::length() const
 {
     return m_length;
 }
 
 int
-MediaDeviceTrack::filesize() const
+IpodTrack::filesize() const
 {
     return 0;
 }
 
 int
-MediaDeviceTrack::sampleRate() const
+IpodTrack::sampleRate() const
 {
     return 0;
 }
 
 int
-MediaDeviceTrack::bitrate() const
+IpodTrack::bitrate() const
 {
     return 0;
 }
 
 int
-MediaDeviceTrack::trackNumber() const
+IpodTrack::trackNumber() const
 {
     return m_trackNumber;
 }
 
 void
-MediaDeviceTrack::setTrackNumber( int newTrackNumber )
+IpodTrack::setTrackNumber( int newTrackNumber )
 {
     m_trackNumber = newTrackNumber;
 }
 
 int
-MediaDeviceTrack::discNumber() const
+IpodTrack::discNumber() const
 {
     return 0;
 }
 
 void
-MediaDeviceTrack::setDiscNumber( int newDiscNumber )
+IpodTrack::setDiscNumber( int newDiscNumber )
 {
     Q_UNUSED( newDiscNumber )
 }
 
 int
-MediaDeviceTrack::playCount() const
+IpodTrack::playCount() const
 {
     return 0;
 }
 
 uint
-MediaDeviceTrack::lastPlayed() const
+IpodTrack::lastPlayed() const
 {
     return 0;
 }
 
 QString
-MediaDeviceTrack::type() const
+IpodTrack::type() const
 {
     return m_type;
 }
 
 void
-MediaDeviceTrack::subscribe( Observer *observer )
+IpodTrack::subscribe( Observer *observer )
 {
     Q_UNUSED( observer )    //read only
 }
 
 void
-MediaDeviceTrack::unsubscribe( Observer *observer )
+IpodTrack::unsubscribe( Observer *observer )
 {
     Q_UNUSED( observer )    //read only
 }
 
 bool
-MediaDeviceTrack::inCollection() const
+IpodTrack::inCollection() const
 {
     return true;
 }
 
 Collection*
-MediaDeviceTrack::collection() const
+IpodTrack::collection() const
 {
     return m_collection;
 }
 
 void
-MediaDeviceTrack::setAlbum( MediaDeviceAlbumPtr album )
+IpodTrack::setAlbum( IpodAlbumPtr album )
 {
     m_album = album;
 }
 
 void
-MediaDeviceTrack::setArtist( MediaDeviceArtistPtr artist )
+IpodTrack::setArtist( IpodArtistPtr artist )
 {
     m_artist = artist;
 }
 
 void
-MediaDeviceTrack::setGenre( MediaDeviceGenrePtr genre )
+IpodTrack::setGenre( IpodGenrePtr genre )
 {
     m_genre = genre;
 }
 
 void
-MediaDeviceTrack::setComposer( MediaDeviceComposerPtr composer )
+IpodTrack::setComposer( IpodComposerPtr composer )
 {
     m_composer = composer;
 }
 
 void
-MediaDeviceTrack::setYear( MediaDeviceYearPtr year )
+IpodTrack::setYear( IpodYearPtr year )
 {
     m_year = year;
 }
 
 void
-MediaDeviceTrack::setTitle( const QString &title )
+IpodTrack::setTitle( const QString &title )
 {
     m_name = title;
 }
 
 void
-MediaDeviceTrack::setLength( int length )
+IpodTrack::setLength( int length )
 {
     m_length = length;
 }
 
-//MediaDeviceArtist
+//IpodArtist
 
-MediaDeviceArtist::MediaDeviceArtist( const QString &name )
+IpodArtist::IpodArtist( const QString &name )
     : Meta::Artist()
     , m_name( name )
     , m_tracks()
@@ -330,43 +330,43 @@ MediaDeviceArtist::MediaDeviceArtist( const QString &name )
     //nothing to do
 }
 
-MediaDeviceArtist::~MediaDeviceArtist()
+IpodArtist::~IpodArtist()
 {
     //nothing to do
 }
 
 QString
-MediaDeviceArtist::name() const
+IpodArtist::name() const
 {
     return m_name;
 }
 
 QString
-MediaDeviceArtist::prettyName() const
+IpodArtist::prettyName() const
 {
     return m_name;
 }
 
 TrackList
-MediaDeviceArtist::tracks()
+IpodArtist::tracks()
 {
     return m_tracks;
 }
 
 AlbumList
-MediaDeviceArtist::albums()
+IpodArtist::albums()
 {
     //TODO
     return AlbumList();
 }
 
 void
-MediaDeviceArtist::addTrack( MediaDeviceTrackPtr track )
+IpodArtist::addTrack( IpodTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
-MediaDeviceAlbum::MediaDeviceAlbum( const QString &name )
+IpodAlbum::IpodAlbum( const QString &name )
     : Meta::Album()
     , m_name( name )
     , m_tracks()
@@ -376,87 +376,87 @@ MediaDeviceAlbum::MediaDeviceAlbum( const QString &name )
     //nothing to do
 }
 
-MediaDeviceAlbum::~MediaDeviceAlbum()
+IpodAlbum::~IpodAlbum()
 {
     //nothing to do
 }
 
 QString
-MediaDeviceAlbum::name() const
+IpodAlbum::name() const
 {
     return m_name;
 }
 
 QString
-MediaDeviceAlbum::prettyName() const
+IpodAlbum::prettyName() const
 {
     return m_name;
 }
 
 bool
-MediaDeviceAlbum::isCompilation() const
+IpodAlbum::isCompilation() const
 {
     return m_isCompilation;
 }
 
 bool
-MediaDeviceAlbum::hasAlbumArtist() const
+IpodAlbum::hasAlbumArtist() const
 {
     return !m_albumArtist.isNull();
 }
 
 ArtistPtr
-MediaDeviceAlbum::albumArtist() const
+IpodAlbum::albumArtist() const
 {
     return ArtistPtr::staticCast( m_albumArtist );
 }
 
 TrackList
-MediaDeviceAlbum::tracks()
+IpodAlbum::tracks()
 {
     return m_tracks;
 }
 
 QPixmap
-MediaDeviceAlbum::image( int size, bool withShadow )
+IpodAlbum::image( int size, bool withShadow )
 {
     return Meta::Album::image( size, withShadow );
 }
 
 bool
-MediaDeviceAlbum::canUpdateImage() const
+IpodAlbum::canUpdateImage() const
 {
     return false;
 }
 
 void
-MediaDeviceAlbum::setImage( const QImage &image )
+IpodAlbum::setImage( const QImage &image )
 {
     Q_UNUSED(image);
     //TODO
 }
 
 void
-MediaDeviceAlbum::addTrack( MediaDeviceTrackPtr track )
+IpodAlbum::addTrack( IpodTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
 void
-MediaDeviceAlbum::setAlbumArtist( MediaDeviceArtistPtr artist )
+IpodAlbum::setAlbumArtist( IpodArtistPtr artist )
 {
     m_albumArtist = artist;
 }
 
 void
-MediaDeviceAlbum::setIsCompilation( bool compilation )
+IpodAlbum::setIsCompilation( bool compilation )
 {
     m_isCompilation = compilation;
 }
 
-//MediaDeviceGenre
+//IpodGenre
 
-MediaDeviceGenre::MediaDeviceGenre( const QString &name )
+IpodGenre::IpodGenre( const QString &name )
     : Meta::Genre()
     , m_name( name )
     , m_tracks()
@@ -464,38 +464,38 @@ MediaDeviceGenre::MediaDeviceGenre( const QString &name )
     //nothing to do
 }
 
-MediaDeviceGenre::~MediaDeviceGenre()
+IpodGenre::~IpodGenre()
 {
     //nothing to do
 }
 
 QString
-MediaDeviceGenre::name() const
+IpodGenre::name() const
 {
     return m_name;
 }
 
 QString
-MediaDeviceGenre::prettyName() const
+IpodGenre::prettyName() const
 {
     return m_name;
 }
 
 TrackList
-MediaDeviceGenre::tracks()
+IpodGenre::tracks()
 {
     return m_tracks;
 }
 
 void
-MediaDeviceGenre::addTrack( MediaDeviceTrackPtr track )
+IpodGenre::addTrack( IpodTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
-//MediaDeviceComposer
+//IpodComposer
 
-MediaDeviceComposer::MediaDeviceComposer( const QString &name )
+IpodComposer::IpodComposer( const QString &name )
     : Meta::Composer()
     , m_name( name )
     , m_tracks()
@@ -503,38 +503,38 @@ MediaDeviceComposer::MediaDeviceComposer( const QString &name )
     //nothing to do
 }
 
-MediaDeviceComposer::~MediaDeviceComposer()
+IpodComposer::~IpodComposer()
 {
     //nothing to do
 }
 
 QString
-MediaDeviceComposer::name() const
+IpodComposer::name() const
 {
     return m_name;
 }
 
 QString
-MediaDeviceComposer::prettyName() const
+IpodComposer::prettyName() const
 {
     return m_name;
 }
 
 TrackList
-MediaDeviceComposer::tracks()
+IpodComposer::tracks()
 {
     return m_tracks;
 }
 
 void
-MediaDeviceComposer::addTrack( MediaDeviceTrackPtr track )
+IpodComposer::addTrack( IpodTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
-//MediaDeviceYear
+//IpodYear
 
-MediaDeviceYear::MediaDeviceYear( const QString &name )
+IpodYear::IpodYear( const QString &name )
     : Meta::Year()
     , m_name( name )
     , m_tracks()
@@ -542,31 +542,31 @@ MediaDeviceYear::MediaDeviceYear( const QString &name )
     //nothing to do
 }
 
-MediaDeviceYear::~MediaDeviceYear()
+IpodYear::~IpodYear()
 {
     //nothing to do
 }
 
 QString
-MediaDeviceYear::name() const
+IpodYear::name() const
 {
     return m_name;
 }
 
 QString
-MediaDeviceYear::prettyName() const
+IpodYear::prettyName() const
 {
     return m_name;
 }
 
 TrackList
-MediaDeviceYear::tracks()
+IpodYear::tracks()
 {
     return m_tracks;
 }
 
 void
-MediaDeviceYear::addTrack( MediaDeviceTrackPtr track )
+IpodYear::addTrack( IpodTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }

@@ -19,12 +19,12 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#define DEBUG_PREFIX "MediaDeviceCollection"
+#define DEBUG_PREFIX "IpodCollection"
 
-#include "mediadevicecollection.h"
+#include "ipodcollection.h"
+#include "ipodmeta.h"
 
 #include "amarokconfig.h"
-#include "mediadevicemeta.h"
 #include "Debug.h"
 #include "MediaDeviceCache.h"
 #include "MemoryQueryMaker.h"
@@ -32,38 +32,38 @@
 #include <QStringList>
 
 
-AMAROK_EXPORT_PLUGIN( MediaDeviceCollectionFactory )
+AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
 
-MediaDeviceCollectionFactory::MediaDeviceCollectionFactory()
+IpodCollectionFactory::IpodCollectionFactory()
     : CollectionFactory()
 {
     //nothing to do
 }
 
-MediaDeviceCollectionFactory::~MediaDeviceCollectionFactory()
+IpodCollectionFactory::~IpodCollectionFactory()
 {
   //    delete m_browser;
 }
 
 void
-MediaDeviceCollectionFactory::init()
+IpodCollectionFactory::init()
 {
     DEBUG_BLOCK    
       /* Test out using the cache */
     MediaDeviceCache::instance()->refreshCache();
     QStringList udiList = MediaDeviceCache::instance()->getAll();
-    debug() << "MediaDeviceCollection found " << udiList;
+    debug() << "IpodCollection found " << udiList;
 
-    /* test mediadevicecollection constructor */
-    MediaDeviceCollection *coll = new MediaDeviceCollection();
+    /* test ipodcollection constructor */
+    IpodCollection *coll = new IpodCollection();
     delete coll;
 
     return;
 }
 
-//MediaDeviceCollection
+//IpodCollection
 
-MediaDeviceCollection::MediaDeviceCollection()
+IpodCollection::IpodCollection()
     : Collection()
     , MemoryCollection()
 {
@@ -80,34 +80,34 @@ MediaDeviceCollection::MediaDeviceCollection()
       debug() << "Itunes database not created!";
 }
 
-MediaDeviceCollection::~MediaDeviceCollection()
+IpodCollection::~IpodCollection()
 {
 
 }
 
 void
-MediaDeviceCollection::startFullScan()
+IpodCollection::startFullScan()
 {
     //ignore
 }
 
 QueryMaker*
-MediaDeviceCollection::queryMaker()
+IpodCollection::queryMaker()
 {
     return new MemoryQueryMaker( this, collectionId() );
 }
 
 QString
-MediaDeviceCollection::collectionId() const
+IpodCollection::collectionId() const
 {
      return "filler";
 }
 
 QString
-MediaDeviceCollection::prettyName() const
+IpodCollection::prettyName() const
 {
     return "prettyfiller";
 }
 
-#include "mediadevicecollection.moc"
+#include "ipodcollection.moc"
 

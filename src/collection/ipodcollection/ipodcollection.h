@@ -19,8 +19,8 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef MEDIADEVICECOLLECTION_H
-#define MEDIADEVICECOLLECTION_H
+#ifndef IPODCOLLECTION_H
+#define IPODCOLLECTION_H
 
 extern "C" {
   #include <gpod/itdb.h>
@@ -31,14 +31,14 @@ extern "C" {
 
 #include <QtGlobal>
 
-class MediaDeviceCollection;
+class IpodCollection;
 
-class MediaDeviceCollectionFactory : public CollectionFactory
+class IpodCollectionFactory : public CollectionFactory
 {
     Q_OBJECT
     public:
-        MediaDeviceCollectionFactory();
-        virtual ~MediaDeviceCollectionFactory();
+        IpodCollectionFactory();
+        virtual ~IpodCollectionFactory();
 
         virtual void init();
 
@@ -50,13 +50,13 @@ class MediaDeviceCollectionFactory : public CollectionFactory
 
 };
 
-class MediaDeviceCollection : public Collection, public MemoryCollection
+class IpodCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
 
-        MediaDeviceCollection();
-        virtual ~MediaDeviceCollection();
+        IpodCollection();
+        virtual ~IpodCollection();
 
         virtual void startFullScan();
         virtual QueryMaker* queryMaker();
