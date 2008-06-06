@@ -98,8 +98,13 @@ class Converter
         puts "#{File.basename(__FILE__)} version #{VERSION}"
     end
 
+    # connect to the MySQL server
+    # get server version string and display it
+ 
     def getMysqlConnection()
-        return Mysql.real_connect( @options.hostname, @options.username, @options.password, @options.database )
+        conn = Mysql.real_connect( @options.hostname, @options.username, @options.password, @options.database )
+        puts "Mysql server version: " + conn.get_server_info if @options.verbose
+        return conn
     rescue Mysql::Error => e
         if @options.verbose
             puts "Error message: #{e.error}"
@@ -109,6 +114,12 @@ class Converter
     end
 
     def getAmarok2Collection()
+        filename = "collection2.db1"
+        if not File.exist?( filename )
+            raise "File #{filename} does not exist"
+        elsif not File.writable?( filename )
+            raise "File #{filename} is not writable"
+        end
         return SQLite3::Database.new( "collection2.db" );
     rescue => e
         puts "Error: #{e}"
@@ -118,11 +129,8 @@ class Converter
         conn = getMysqlConnection()
         return if conn.nil?
 
-        # connect to the MySQL server
-        # get server version string and display it
-        puts "Mysql server version: " + conn.get_server_info if @options.verbose
- 
         new_db = getAmarok2Collection()
+        return if new_db.nil?
 
         new_db.results_as_hash = true
 
@@ -189,7 +197,6 @@ class Converter
 
         devices_row.free
         statistics_row.free
-
     rescue Mysql::Error => e
         if @options.verbose
             puts "Error message: #{e.error}"
