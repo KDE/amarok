@@ -118,7 +118,7 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
 
     Mp3tunesLoginWorker * loginWorker = new Mp3tunesLoginWorker( m_locker, username, password);
     debug() << "Connecting finishedLogin -> authentication complete.";
-    connect( loginWorker, SIGNAL( finishedLogin( QString sessionId ) ), this, SLOT( authenticationComplete( QString sessionId ) ) );
+    connect( loginWorker, SIGNAL( finishedLogin( QString ) ), this, SLOT( authenticationComplete( QString ) ) );
     debug() << "Connection complete. Enqueueing..";
     ThreadWeaver::Weaver::instance()->enqueue( loginWorker );
     debug() << "LoginWorker queue";
