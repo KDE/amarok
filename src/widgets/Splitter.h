@@ -52,7 +52,7 @@ class Splitter : public QSplitter
 {
 public:
     Splitter( QWidget * parent = 0 );
-    Splitter( Qt::Orientation orientation, QWidget * parent = 0 );
+    explicit Splitter( Qt::Orientation orientation, QWidget * parent = 0 );
 
     ~Splitter();
 
