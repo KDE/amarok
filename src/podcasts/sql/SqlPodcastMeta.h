@@ -39,7 +39,7 @@ class SqlPodcastEpisode : public PodcastEpisode
     public:
 //         static SqlPodcastEpisodePtr getEpisode( SqlPodcastProvider *provider );
         
-        SqlPodcastEpisode( const QStringList &queryResult );
+        SqlPodcastEpisode( const QStringList &queryResult, SqlPodcastChannelPtr sqlChannel );
 
         /** Copy from another PodcastEpisode
         */

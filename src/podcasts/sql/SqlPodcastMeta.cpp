@@ -23,15 +23,17 @@
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
 
-Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result )
+Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChannelPtr sqlChannel )
     : Meta::PodcastEpisode()
     , m_batchUpdate( false )
+    , m_sqlChannel( sqlChannel )
 {
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    
     QStringList::ConstIterator iter = result.constBegin();
     m_id = (*(iter++)).toInt();
     m_url = KUrl( *(iter++) );
-    m_sqlChannel = SqlPodcastChannelPtr::dynamicCast(
-        SqlPodcastProvider::instance()->podcastChannelForId( (*(iter++)).toInt() ) );
+    int channelId = (*(iter++)).toInt();
     m_localUrl = KUrl( *(iter++) );
     m_guid = *(iter++);
     m_title = *(iter++);
@@ -42,7 +44,7 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result )
     m_pubDate = *(iter++);
     m_duration = (*(iter++)).toInt();
     m_fileSize = (*(iter++)).toInt();
-    m_isNew = SqlPodcastProvider::instance()->sqlStorage()->boolTrue() == (*(iter++));
+    m_isNew = sqlStorage->boolTrue() == (*(iter++));
 
     Q_ASSERT_X( iter == result.constEnd(), "SqlPodcastEpisode( PodcastCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
 }
@@ -70,19 +72,21 @@ void
 Meta::SqlPodcastEpisode::updateInDb()
 {
     DEBUG_BLOCK
-    QString boolTrue = SqlPodcastProvider::instance()->sqlStorage()->boolTrue();
-    QString boolFalse = SqlPodcastProvider::instance()->sqlStorage()->boolFalse();
-    #define escape(x) SqlPodcastProvider::instance()->sqlStorage()->escape(x)
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    
+    QString boolTrue = sqlStorage->boolTrue();
+    QString boolFalse = sqlStorage->boolFalse();
+    #define escape(x) sqlStorage->escape(x)
     QString insert = "INSERT INTO podcastepisodes(url,channel,localurl,guid,title,subtitle,sequencenumber,description,mimetype,pubdate,duration,filesize,isnew) VALUES ( %1 );";
     QString data = "'%1','%2','%3','%4','%5','%6',%7,'%8','%9','%10',%11,%12,%13";
-    data = data.arg( escape(m_url.url())).arg( /*m_sqlChannel->id()*/ 0 );
+    data = data.arg( escape(m_url.url())).arg( m_sqlChannel->id() );
     data = data.arg( escape(m_localUrl.url()) ).arg( escape(m_guid) ).arg( escape(m_title) ).arg( escape(m_subtitle) );
     data = data.arg( QString::number(m_sequenceNumber) ).arg( escape(m_description) ).arg( escape(m_mimeType) );
     data = data.arg( escape(m_pubDate) ).arg( QString::number(m_duration) ).arg( QString::number(m_fileSize) );
     data = data.arg( m_isNew ? boolTrue : boolFalse );
     insert = insert.arg( data );
 
-    m_id = SqlPodcastProvider::instance()->sqlStorage()->insert( insert, "podcastepisodes" );
+    m_id = sqlStorage->insert( insert, "podcastepisodes" );
 }
 
 Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
@@ -110,7 +114,21 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
 void
 Meta::SqlPodcastChannel::loadEpisodes()
 {
+    DEBUG_BLOCK
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    
+    QStringList results = sqlStorage->query( QString("SELECT id, url, channel, localurl, guid, title, subtitle, sequencenumber, description, mimetype, pubdate, duration, filesize, isnew FROM podcastepisodes WHERE channel = %1;").arg( m_id ) );
 
+    debug() << "Channel id = " << m_id;
+    int rowLength = 14;
+    for(int i=0; i < results.size(); i+=rowLength)
+    {
+        QStringList episodesResult = results.mid( i, rowLength );
+        debug() << "Episode " << i/rowLength << " : " << episodesResult;
+        SqlPodcastEpisode *sqlEpisode = new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) );
+        m_sqlEpisodes << SqlPodcastEpisodePtr( sqlEpisode );
+        m_episodes << PodcastEpisodePtr( sqlEpisode );
+    }
 }
 
 Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
@@ -124,6 +142,8 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     m_copyright = channel->copyright();
     m_labels = channel->labels();
 
+    updateInDb();
+    
     m_episodes = channel->episodes();
 
     foreach ( Meta::PodcastEpisodePtr episode, channel->episodes() ) {
@@ -140,9 +160,11 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
 void
 Meta::SqlPodcastChannel::updateInDb()
 {
-    QString boolTrue = SqlPodcastProvider::instance()->sqlStorage()->boolTrue();
-    QString boolFalse = SqlPodcastProvider::instance()->sqlStorage()->boolFalse();
-    #define escape(x) SqlPodcastProvider::instance()->sqlStorage()->escape(x)
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    
+    QString boolTrue = sqlStorage->boolTrue();
+    QString boolFalse = sqlStorage->boolFalse();
+    #define escape(x) sqlStorage->escape(x)
     QString insert = "INSERT INTO podcastchannels(url,title,weblink,image,description,copyright,labels,autoscan,fetchtype,autotransfer,haspurge,purgecount) VALUES ( %1 );";
     QString data = "'%1','%2','%3','%4','%5','%6','%7',%8,%9,%10,%11,%12";
     data = data.arg( escape(m_url.url()) ).arg( escape(m_title) ).arg( escape(m_webLink.url()) );
@@ -158,7 +180,7 @@ Meta::SqlPodcastChannel::updateInDb()
     data = data.arg( QString::number(m_purgeCount) );
     insert = insert.arg( data );
 
-    m_id = SqlPodcastProvider::instance()->sqlStorage()->insert( insert, "podcastchannels" );
+    m_id = sqlStorage->insert( insert, "podcastchannels" );
 }
 
 #include "SqlPodcastMeta.moc"

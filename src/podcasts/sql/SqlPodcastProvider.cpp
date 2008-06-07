@@ -130,6 +130,7 @@ SqlPodcastProvider::addPodcast(const KUrl & url)
 Meta::PodcastChannelPtr
 SqlPodcastProvider::addChannel( Meta::PodcastChannelPtr channel )
 {
+    DEBUG_BLOCK
     Meta::SqlPodcastChannel * sqlChannel = new Meta::SqlPodcastChannel( channel );
     m_channels << SqlPodcastChannelPtr( sqlChannel );
     return Meta::PodcastChannelPtr( sqlChannel );
@@ -156,10 +157,13 @@ SqlPodcastProvider::channels()
 Meta::SqlPodcastChannelPtr
 SqlPodcastProvider::podcastChannelForId( int podcastChannelId )
 {
+    DEBUG_BLOCK
     QListIterator<Meta::SqlPodcastChannelPtr> i( m_channels );
     while( i.hasNext() )
     {
-        if( i.next()->id() == podcastChannelId )
+        int id = i.next()->id();
+        debug() << "id = " << id;
+        if( id == podcastChannelId )
             return i.previous();
     }
     return Meta::SqlPodcastChannelPtr();
