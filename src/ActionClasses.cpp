@@ -170,11 +170,13 @@ Menu::Menu()
     #endif
 }
 
+
+K_GLOBAL_STATIC( Menu, s_menu )
+
 Menu*
 Menu::instance()
 {
-    static Menu menu;
-    return &menu;
+    return s_menu;
 }
 
 KMenu*

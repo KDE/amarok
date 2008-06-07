@@ -32,12 +32,11 @@ namespace Amarok
     {
         Q_OBJECT
         public:
+            Menu();
             static Menu *instance();
             static KMenu *helpMenu( QWidget *parent = 0 );
 
         private:
-            Menu();
-
             static KHelpMenu  *s_helpMenu;
     };
 
