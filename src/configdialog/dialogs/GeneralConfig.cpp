@@ -134,6 +134,7 @@ GeneralConfig::slotUpdateMoodFrame() //SLOT
         moodbarHelpLabel->show();
         kcfg_ShowMoodbar->setChecked(false);
         moodFrame->setEnabled(false);
+        moodFrame->hide();
       }
 }
 
