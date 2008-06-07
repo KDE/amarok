@@ -25,7 +25,8 @@
 ###########################################################################
 
 
-stations = [ ['Bassdrive [Drum \'n Bass]',                    'http://www.bassdrive.com/v2/streams/BassDrive.m3u'],
+stations = [ ['Afterhours.FM [Trance/Livesets]',              'http://www.ah.fm/192k.m3u'],
+             ['Bassdrive [Drum \'n Bass]',                    'http://www.bassdrive.com/v2/streams/BassDrive.m3u'],
              ['Bluemars [Ambient/Space-Music]',               'http://207.200.96.225:8020/listen.pls'],
              ['Digitally Imported - Chillout [Chill-Out]',    'http://di.fm/mp3/chillout.pls'],
              ['Digitally Imported - Classic Techno [Techno]', 'http://di.fm/mp3/classictechno.pls'],
