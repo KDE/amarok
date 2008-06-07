@@ -702,7 +702,7 @@ MediaView::MediaView( QWidget* parent, MediaDevice *device )
     addColumn( i18n( "Remote Media" ) );
 
     KActionCollection* ac = new KActionCollection( this );
-    KStandardAction::selectAll( this, SLOT( selectAll() ), ac );
+    KStandardAction::selectAll( this, SLOT( slotSelectAll() ), ac );
 
     connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rmbPressed( Q3ListViewItem*, const QPoint&, int ) ) );
@@ -1968,7 +1968,7 @@ MediaQueue::MediaQueue(MediaBrowser *parent)
     itemCountChanged();
 
     KActionCollection* ac = new KActionCollection( this );
-    KStandardAction::selectAll( this, SLOT( selectAll() ), ac );
+    KStandardAction::selectAll( this, SLOT( slotSelectAll() ), ac );
 
     connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
             SLOT( slotShowContextMenu( Q3ListViewItem*, const QPoint&, int ) ) );
