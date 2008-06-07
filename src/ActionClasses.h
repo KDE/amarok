@@ -113,10 +113,8 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            static KMenu *instance();
-
-        private:
             BurnMenu();
+            static KMenu *instance();
 
         private slots:
             void slotBurnCurrentPlaylist();

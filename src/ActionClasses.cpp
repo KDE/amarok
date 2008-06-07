@@ -437,11 +437,12 @@ BurnMenu::BurnMenu()
     //TODO add "album" and "all tracks by artist"
 }
 
+K_GLOBAL_STATIC( BurnMenu, s_burnMenu )
+
 KMenu*
 BurnMenu::instance()
 {
-    static BurnMenu menu;
-    return &menu;
+    return s_burnMenu;
 }
 
 void
