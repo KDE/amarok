@@ -689,6 +689,7 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
                 bool onlyOneCollection = true;
                 foreach( const QModelIndex &index, indices )
                 {
+                    Q_UNUSED( index )
                     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
                     while( item->isDataItem() )
                     {
@@ -824,6 +825,7 @@ bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
         Collection *collection = getCollection( indices );
         foreach( const QModelIndex &index, indices )
         {
+            Q_UNUSED( index )
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
             while( item->isDataItem() )
             {
