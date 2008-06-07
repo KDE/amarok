@@ -123,6 +123,7 @@ namespace Amarok
                         ++cpuCount;
                     }
                 }
+                cpuinfo.close();
             }
             cpucount = QString::number( cpuCount );
 #endif
@@ -240,6 +241,7 @@ namespace Amarok
 
             //_exit() exits immediately, otherwise this
             //function is called repeatedly ad finitum
+            temp.close();
             ::_exit( 255 );
         }
 
