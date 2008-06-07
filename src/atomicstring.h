@@ -52,7 +52,7 @@
 #include "amarok_export.h"
 
 #include <QString>
-#include <QMutex>
+
 
 class AMAROK_EXPORT AtomicString
 {
@@ -188,7 +188,6 @@ private:
     static set_type s_store;    // main string store
     static QList<QString *> s_lazyDeletes;  // strings scheduled for deletion
                                              // by main thread
-    static QMutex s_storeMutex;  // protects the static data above
 };
 
 #endif

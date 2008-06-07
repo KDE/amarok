@@ -18,8 +18,11 @@
 */
 #include "atomicstring.h"
 
-#include <QThread>
+#include <KGlobal>
+
 #include <QCoreApplication>
+#include <QMutex>
+#include <QThread>
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -87,6 +90,9 @@
 
 #endif
 
+
+K_GLOBAL_STATIC( QMutex, s_storeMutex )
+
 class AtomicString::Data: public QString
 {
 public:
@@ -99,10 +105,10 @@ AtomicString::AtomicString(): m_string( 0 ) { }
 
 AtomicString::AtomicString( const AtomicString &other )
 {
-    s_storeMutex.lock();
+    s_storeMutex->lock();
     m_string = other.m_string;
     ref( m_string );
-    s_storeMutex.unlock();
+    s_storeMutex->unlock();
 }
 
 AtomicString::AtomicString( const QString &string ): m_string( 0 )
@@ -111,19 +117,19 @@ AtomicString::AtomicString( const QString &string ): m_string( 0 )
         return;
 
     Data *s = new Data( string );  // note: s is a shallow copy
-    s_storeMutex.lock();
+    s_storeMutex->lock();
     m_string = static_cast<Data*>( *( s_store.insert( s ).first ) );
     ref( m_string );
     uint rc = s->refcount;
-    s_storeMutex.unlock();
+    s_storeMutex->unlock();
     if ( !rc ) delete( s );	// already present
 }
 
 AtomicString::~AtomicString()
 {
-    s_storeMutex.lock();
+    s_storeMutex->lock();
     deref( m_string );
-    s_storeMutex.unlock();
+    s_storeMutex->unlock();
 }
 
 QString AtomicString::string() const
@@ -142,11 +148,11 @@ const QString *AtomicString::ptr() const
 {
     if( !m_string ) {
         Data *s = new Data( QString() );  // note: s is a shallow copy
-        s_storeMutex.lock();
+        s_storeMutex->lock();
         m_string = static_cast<Data*>( *( s_store.insert( s ).first ) );
         ref( m_string );
         uint rc = s->refcount;
-        s_storeMutex.unlock();
+        s_storeMutex->unlock();
         if ( !rc ) delete( s );	// already present
     }
 
@@ -156,9 +162,9 @@ const QString *AtomicString::ptr() const
 uint AtomicString::refcount() const
 {
     if ( m_string ) {
-	s_storeMutex.lock();
+	s_storeMutex->lock();
 	uint rc = m_string->refcount;
-	s_storeMutex.unlock();
+	s_storeMutex->unlock();
 	return rc;
     }
     return 0;
@@ -168,11 +174,11 @@ AtomicString &AtomicString::operator=( const AtomicString &other )
 {
     if( m_string == other.m_string )
         return *this;
-    s_storeMutex.lock();
+    s_storeMutex->lock();
     deref( m_string );
     m_string = other.m_string;
     ref( m_string );
-    s_storeMutex.unlock();
+    s_storeMutex->unlock();
     return *this;
 }
 
@@ -234,4 +240,4 @@ inline void AtomicString::checkLazyDeletes()
 
 AtomicString::set_type AtomicString::s_store;
 QList<QString *> AtomicString::s_lazyDeletes;
-QMutex AtomicString::s_storeMutex;
+
