@@ -41,9 +41,10 @@ class Converter
         @options.verbose    = false
         @options.quiet      = false
         @options.safe_mode  = false
-        @options.username   = "amarok"
+        @options.source     = "mysql"
+        @options.username   = ""
         @options.password   = ""
-        @options.hostname   = "localhost"
+        @options.hostname   = ""
         @options.database   = ""
     end
 
@@ -70,11 +71,24 @@ class Converter
         opts.on('-q', '--quiet')      { @options.quiet = true }
         opts.on('-s', '--safe-mode')  { @options.safe_mode = true }
         # TO DO - add additional options
+        opts.on("-u [USERNAME]", "Database username (mysql/psql)") do |user|
+            @options.username = user 
+        end
+        opts.on("-p [PASSWORD]", "Database password (mysql/psql)") do |pass|
+            @options.password = pass 
+        end
+        opts.on("-h [HOSTNAME]", "Database hostname (mysql/psql)") do |host|
+            @options.hostname = host 
+        end
+        opts.on("-d [DATABASE]", "Database name (mysql/psql)") do |name|
+            @options.database = name 
+        end
 
         opts.parse!(@arguments)
 
         true
-    rescue
+    rescue => e
+        puts "#{e}"
         false
     end
 
