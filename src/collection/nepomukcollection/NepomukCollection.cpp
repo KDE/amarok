@@ -16,10 +16,15 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#define DEBUG_PREFIX "NepomukCollection"
+
 #include "NepomukCollection.h"
 #include "NepomukQueryMaker.h"
 
+#include "Debug.h"
+
 #include <klocale.h>
+#include <Nepomuk/ResourceManager>
 
 
 AMAROK_EXPORT_PLUGIN( NepomukCollectionFactory )
@@ -29,16 +34,21 @@ AMAROK_EXPORT_PLUGIN( NepomukCollectionFactory )
 void
 NepomukCollectionFactory::init()
 {
-	// TODO: Check if Nepomuk is running
-	Collection* collection = new NepomukCollection();
-	emit newCollection( collection );
+    if ( Nepomuk::ResourceManager::instance()->init() == 0 )
+    {
+        Collection* collection = new NepomukCollection();
+        emit newCollection( collection );
+    }
+    else
+        warning() << "Nepomuk is not running, can not init Nepomuk Collection" << endl;
+        
 }
 
 // NepomukCollection
 
 NepomukCollection::NepomukCollection()
 {
-
+	
 }
 
 NepomukCollection::~NepomukCollection()
