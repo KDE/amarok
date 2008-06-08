@@ -100,10 +100,10 @@ CollectionScanner::doJob() //SLOT
     std::cout << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
     std::cout << "<scanner>";
 
-
     QStringList entries;
 
-    if( m_restart ) {
+    if( m_restart )
+    {
         QFile logFile( m_logfile );
         QString lastFile;
         if( logFile.open( QIODevice::ReadOnly ) )
@@ -126,7 +126,6 @@ CollectionScanner::doJob() //SLOT
 
         for( int count = entries.indexOf( lastFile ) + 1; count; --count )
             entries.pop_front();
-
     }
     else
     {
@@ -379,9 +378,8 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
 
                 //FIXME: Port 2.0
-//                 if(images) {
+//                 if( images )
 //                     loadImagesFromTag( *file->ID3v2Tag(), *images );
-//                 }
             }
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
@@ -419,9 +417,8 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 if ( !file->xiphComment()->fieldListMap()[ "COMPILATION" ].isEmpty() )
                     compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).trimmed();
             }
-//             if ( images && file->ID3v2Tag() ) {
+//             if ( images && file->ID3v2Tag() )
 //                 loadImagesFromTag( *file->ID3v2Tag(), *images );
-//             }
         }
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
         {
@@ -434,9 +431,8 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 disc = QString::number( mp4tag->disk() );
                 compilation = QString::number( mp4tag->compilation() );
 
-//                 if ( images && mp4tag->cover().size() ) {
+//                 if ( images && mp4tag->cover().size() )
 //                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
-//                 }
             }
         }
 
@@ -528,7 +524,6 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
     QString text;
     QTextStream stream( &text, QIODevice::WriteOnly );
     element.save( stream, 0 );
-
 
     std::cout << text.toUtf8().data() << std::endl;
 }
