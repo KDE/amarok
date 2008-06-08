@@ -61,7 +61,7 @@ PlaylistCategory::~PlaylistCategory()
 
 void PlaylistBrowserNS::PlaylistCategory::itemActivated(const QModelIndex & index)
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if ( !index.isValid() )
         return;
 
@@ -69,7 +69,9 @@ void PlaylistBrowserNS::PlaylistCategory::itemActivated(const QModelIndex & inde
 
     if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
         Meta::SqlPlaylist * playlist = static_cast< Meta::SqlPlaylist* >( index.internalPointer() );
-        The::playlistModel()->insertOptioned( Meta::PlaylistPtr( playlist ), Playlist::Append );
+        //debug() << "playlist name: " << playlist->name();
+        //The::playlistModel()->insertOptioned( Meta::PlaylistPtr( playlist ), Playlist::Append );
+        The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Append );
     }
 }
 

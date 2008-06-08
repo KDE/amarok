@@ -40,7 +40,7 @@ namespace Meta {
 Meta::Format
 getFormat( const QString &filename )
 {
-
+    //debug() << "filename: " << filename;
     const QString ext = Amarok::extension( filename );
 
     if( ext == "m3u" ) return M3U;

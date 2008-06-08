@@ -257,6 +257,7 @@ Playlist::Model::insertTrack( int row, Meta::TrackPtr track )
 void
 Playlist::Model::insertTracks( int row, Meta::TrackList tracks )
 {
+    DEBUG_BLOCK
     //check if any tracks in this list ha a url that is actuall a playlist
     bool containsPlaylists = false;
     QList<int> playlistIndices;
@@ -555,6 +556,7 @@ Playlist::Model::clear()
 void
 Playlist::Model::insertOptioned( Meta::TrackList list, int options )
 {
+    //DEBUG_BLOCK
     //TODO: we call insertOptioned on resume before the statusbar is fully created... We need a better way to handle this
     if( list.isEmpty() )
     {

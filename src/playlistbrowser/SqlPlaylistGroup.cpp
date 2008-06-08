@@ -55,6 +55,7 @@ SqlPlaylistGroup::SqlPlaylistGroup( const QString & name, SqlPlaylistGroup * par
 
 SqlPlaylistGroup::~SqlPlaylistGroup()
 {
+    DEBUG_BLOCK
     clear();
 }
 
@@ -153,11 +154,13 @@ QString SqlPlaylistGroup::description() const
 
 int SqlPlaylistGroup::childCount()
 {
+    DEBUG_BLOCK
     return childGroups().count() + childPlaylists().count();
 }
 
 void SqlPlaylistGroup::clear()
 {
+    DEBUG_BLOCK
     while( !m_childGroups.isEmpty() )
         delete m_childGroups.takeFirst();
     while( !m_childPlaylists.isEmpty() )

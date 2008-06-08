@@ -33,7 +33,7 @@ class SqlPlaylistViewItem
     public:
         SqlPlaylistViewItem() {}
         
-        virtual  ~SqlPlaylistViewItem() {};
+        virtual  ~SqlPlaylistViewItem() { DEBUG_BLOCK };
     
         virtual SqlPlaylistGroup * parent() = 0;
         virtual int childCount() { return 0; }

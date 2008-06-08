@@ -153,8 +153,9 @@ PlaylistBrowserNS::PlaylistModel::rowCount( const QModelIndex & parent ) const
     }
 
     SqlPlaylistViewItem * item = static_cast< SqlPlaylistViewItem* >( parent.internalPointer() );
-
+    debug() << "row: " << parent.row();
     debug() << "adress: " << item;
+    debug() << "name: " << item->name();
     
     return item->childCount();
 }
