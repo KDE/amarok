@@ -26,6 +26,7 @@
 #include <QHeaderView>
 #include <QVBoxLayout>
 
+#include <typeinfo>
 
 using namespace PlaylistBrowserNS;
 
