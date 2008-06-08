@@ -89,9 +89,7 @@ CollectionManager::~CollectionManager()
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
     qDeleteAll( d->managedCollections );
-
-    foreach( CollectionFactory *fac, d->factories )
-        PluginManager::unload( fac );
+    qDeleteAll( d->factories );
 
     delete d;
 }
