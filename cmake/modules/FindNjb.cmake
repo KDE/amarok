@@ -31,20 +31,10 @@ else (NJB_INCLUDE_DIR AND NJB_LIBRARIES)
     PATHS
     ${_NJBLinkDir}
   )
-  
-  if (NJB_INCLUDE_DIR AND NJB_LIBRARIES)
-     set(NJB_FOUND TRUE)
-  endif (NJB_INCLUDE_DIR AND NJB_LIBRARIES)
-  
-  if (NJB_FOUND)
-    if (NOT Njb_FIND_QUIETLY)
-      message(STATUS "Found NJB: ${NJB_LIBRARIES}")
-    endif (NOT Njb_FIND_QUIETLY)
-  else (NJB_FOUND)
-    if (Njb_FIND_REQUIRED)
-      message(FATAL_ERROR "Could NOT find NJB")
-    endif (Njb_FIND_REQUIRED)
-  endif (NJB_FOUND)
+ 
+
+  include(FindPackageHandleStandardArgs)
+  FIND_PACKAGE_HANDLE_STANDARD_ARGS(Njb DEFAULT_MSG NJB_INCLUDE_DIR NJB_LIBRARIES )
   
   MARK_AS_ADVANCED(NJB_INCLUDE_DIR NJB_LIBRARIES)
   
