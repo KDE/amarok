@@ -391,7 +391,7 @@ CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
 }
 
 void
-CollectionManager::addUnmanagedCollection( Collection *newCollection )
+CollectionManager::addUnmanagedCollection( Collection *newCollection, CollectionStatus defaultStatus )
 {
     if( newCollection && d->unmanagedCollections.indexOf( newCollection ) == -1 )
     {
@@ -400,7 +400,7 @@ CollectionManager::addUnmanagedCollection( Collection *newCollection )
         const QString &value = KGlobal::config()->group( "CollectionManager" ).readEntry( newCollection->collectionId() );
         int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
         CollectionStatus status;
-        enumValue == -1 ? status = Disabled : status = (CollectionStatus) enumValue;
+        enumValue == -1 ? status = defaultStatus : status = (CollectionStatus) enumValue;
         d->unmanagedCollections.append( newCollection );
         CollectionPair pair( newCollection, status );
         d->collections.append( pair );

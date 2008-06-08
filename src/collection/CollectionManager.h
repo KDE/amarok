@@ -72,7 +72,12 @@ class AMAROK_EXPORT CollectionManager : public QObject
         */
         SqlStorage* sqlStorage() const;
 
-        void addUnmanagedCollection( Collection *newCollection );
+        /**
+         * add a collection whose lifecycle is not managed by CollectionManager.
+         * CollectionManger uses the default status passed as the second argument unless a custom
+         * status is stored in Amarok's config file.
+         */
+        void addUnmanagedCollection( Collection *newCollection, CollectionStatus defaultStatus );
         void removeUnmanagedCollection( Collection *collection );
 
         void setCollectionStatus( const QString &collectionId, CollectionStatus status );
