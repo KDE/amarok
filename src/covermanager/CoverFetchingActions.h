@@ -37,21 +37,18 @@ class AMAROK_EXPORT BaseCoverAction : public PopupDropperAction
             : PopupDropperAction( parent )
         {
             m_albums.append( KSharedPtr<Meta::Album>(album) );
-            init();
+            connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
         }
         BaseCoverAction( QObject *parent, Meta::AlbumList albums )
             : PopupDropperAction( parent )
         {
             m_albums = albums;
-            init();
+            connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
         }
 
     protected slots:
         virtual void slotTriggered() = 0;
-
     protected:
-        virtual void init() { connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) ); }
-
         Meta::AlbumList m_albums;
 };
 
@@ -60,9 +57,9 @@ class AMAROK_EXPORT FetchCoverAction : public BaseCoverAction
     Q_OBJECT
     public:
         FetchCoverAction( QObject *parent, Meta::Album *album )
-            : BaseCoverAction( parent, album ) { }
+            : BaseCoverAction( parent, album ) { init(); }
         FetchCoverAction( QObject *parent, Meta::AlbumList albums )
-            : BaseCoverAction( parent, albums ) { }
+            : BaseCoverAction( parent, albums ) { init(); }
 
     protected slots:
         virtual void slotTriggered();
@@ -75,9 +72,9 @@ class AMAROK_EXPORT DisplayCoverAction : public BaseCoverAction
     Q_OBJECT
     public:
         DisplayCoverAction( QObject *parent, Meta::Album *album )
-            : BaseCoverAction( parent, album ) { }
+            : BaseCoverAction( parent, album ) { init(); }
         DisplayCoverAction( QObject *parent, Meta::AlbumList albums )
-            : BaseCoverAction( parent, albums ) { }
+            : BaseCoverAction( parent, albums ) { init(); }
 
     protected slots:
         virtual void slotTriggered();
@@ -90,9 +87,9 @@ class AMAROK_EXPORT UnsetCoverAction : public BaseCoverAction
     Q_OBJECT
     public:
         UnsetCoverAction( QObject *parent, Meta::Album *album )
-            : BaseCoverAction( parent, album ) { }
+            : BaseCoverAction( parent, album ) { init(); }
         UnsetCoverAction( QObject *parent, Meta::AlbumList albums )
-            : BaseCoverAction( parent, albums ) { }
+            : BaseCoverAction( parent, albums ) { init(); }
 
     protected slots:
         virtual void slotTriggered();
@@ -105,9 +102,9 @@ class AMAROK_EXPORT SetCustomCoverAction : public BaseCoverAction
     Q_OBJECT
     public:
         SetCustomCoverAction( QObject *parent, Meta::Album *album )
-            : BaseCoverAction( parent, album ) { }
+            : BaseCoverAction( parent, album ) { init(); }
         SetCustomCoverAction( QObject *parent, Meta::AlbumList albums )
-            : BaseCoverAction( parent, albums ) { }
+            : BaseCoverAction( parent, albums ) { init(); }
 
     protected slots:
         virtual void slotTriggered();

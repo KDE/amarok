@@ -41,7 +41,6 @@ void FetchCoverAction::init()
     setText( i18np("Fetch Cover", "Fetch Covers", m_albums.count()) );
     setIcon( KIcon("list-add") );
     setToolTip( i18np("Fetch the artwork for this album", "Fetch artwork for %1 albums", m_albums.count()) );
-    BaseCoverAction::init();
 }
 
 void FetchCoverAction::slotTriggered()
@@ -59,7 +58,6 @@ void DisplayCoverAction::init()
     setText( i18n("Display Cover") );
     setIcon( KIcon("zoom-original") );
     setToolTip( i18n("Display artwork for this album") );
-    BaseCoverAction::init();
 }
 
 void DisplayCoverAction::slotTriggered()
@@ -77,7 +75,6 @@ void UnsetCoverAction::init()
     setText( i18np("Unset Cover", "Unset Covers", m_albums.count()) );
     setIcon( KIcon("list-remove") );
     setToolTip( i18np("Remove artwork for this album", "Remove artwork for %1 albums", m_albums.count()) );
-    BaseCoverAction::init();
 }
 
 void
@@ -110,7 +107,6 @@ void SetCustomCoverAction::init()
     setText( i18n("Set Custom Cover") );
     setIcon( KIcon("list-remove") );
     setToolTip( i18np("Set custom artwork for this album", "Set custom artwork for these %1 albums", m_albums.count()) );
-    BaseCoverAction::init();
 }
 
 void
