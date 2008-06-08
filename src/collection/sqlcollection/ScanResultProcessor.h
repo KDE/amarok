@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +31,6 @@ class SqlCollection;
 
 class ScanResultProcessor
 {
-
     public:
         enum ScanType
         {
@@ -42,19 +42,20 @@ class ScanResultProcessor
         ~ScanResultProcessor();
 
         void addDirectory( const QString &dir, uint mtime );
+        void addImage( const QString &path, const QList< QPair<QString, QString> > );
         void setScanType( ScanType type );
         void processDirectory( const QList<QVariantMap > &data );
         void commit();
         void rollback();
 
     private:
-
         void addTrack( const QVariantMap &trackData, int albumArtistId );
 
         int artistId( const QString &artist );
         int genreId( const QString &genre );
         int composerId( const QString &composer );
         int yearId( const QString &year );
+        int imageId( const QString &image, int albumId );
         int albumId( const QString &album, int artistId );
         int urlId( const QString &url );
         int directoryId( const QString &dir );
@@ -73,6 +74,7 @@ class ScanResultProcessor
         QMap<QString, int> m_year;
         QMap<QString, int> m_composer;
         QMap<QPair<QString, int>, int> m_albums;
+        QMap<QPair<QString, int>, int> m_images;
         QMap<QString, int> m_directories;
 
         QHash<QString, uint> m_filesInDirs;

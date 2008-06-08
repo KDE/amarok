@@ -115,7 +115,7 @@ void ScanManager::startIncrementalScan()
     *m_scanner << dirs;
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
-    connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
+    connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished() ) );
     connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
     m_scanner->start();
     if( m_parser )
@@ -485,6 +485,21 @@ XmlParseJob::run()
                 else if( localname == "playlist" )
                 {
                     //TODO handle playlist
+                }
+                else if( localname == "image" )
+                {
+                    QXmlStreamAttributes attrs = m_reader.attributes();
+                    debug() << "Received an image tag: " << attrs.value( "list" ).toString() << " : " << attrs.value( "path" ).toString();
+                    // Deserialize CoverBundle list
+                    QStringList list = attrs.value( "list" ).toString().split( "AMAROK_MAGIC" );
+                    QList< QPair<QString, QString> > covers;
+                    
+                    for( int i = 0; i < list.count(); i += 2 )
+                        covers += qMakePair( list[i], list[i + 1] );
+
+                    debug() << "Adding image: " << attrs.value( "path" ).toString();
+                    processor.addImage( attrs.value( "path" ).toString(), covers );
+                    debug() << "Image added!";
                 }
             }
         }
