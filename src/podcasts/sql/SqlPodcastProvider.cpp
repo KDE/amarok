@@ -270,7 +270,7 @@ SqlPodcastProvider::downloadResult( KJob * job )
     }
     else if( ! m_jobMap.contains( job ) )
     {
-        warning() << "Download is finished for a job that wasn't added to m_jobMap. Waah?";
+        warning() << "Download is finished for a job that was not added to m_jobMap. Waah?";
     }
     else
     {

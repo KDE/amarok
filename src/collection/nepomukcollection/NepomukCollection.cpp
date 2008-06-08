@@ -41,21 +41,19 @@ NepomukCollectionFactory::init()
     }
     else
         warning() << "Nepomuk is not running, can not init Nepomuk Collection" << endl;
-        
 }
 
 // NepomukCollection
 
 NepomukCollection::NepomukCollection()
 {
-	
 }
 
 NepomukCollection::~NepomukCollection()
 {
 }
 
-QueryMaker* 
+QueryMaker*
 NepomukCollection::queryMaker()
 {
 	return new NepomukQueryMaker();
