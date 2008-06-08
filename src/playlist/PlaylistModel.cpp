@@ -114,7 +114,7 @@ Playlist::Model::~Model()
         {
             list << item->track();
         }
-        The::playlistManager()->save( list, defaultPlaylistPath() );
+        The::playlistManager()->exportPlaylist( list, defaultPlaylistPath() );
     }
     delete m_advancer;
 }
@@ -682,15 +682,27 @@ Playlist::Model::insertOptioned( QueryMaker *qm, int options )
 }
 
 bool
-Playlist::Model::savePlaylist( const QString &path ) const
+Playlist::Model::exportPlaylist( const QString &path ) const
 {
     Meta::TrackList tl;
     foreach( Item* item, itemList() )
         tl << item->track();
-    if( The::playlistManager()->save( tl, path ) )
+    if( The::playlistManager()->exportPlaylist( tl, path ) )
         return true;
     return false;
 }
+
+bool Playlist::Model::savePlaylist( const QString & name ) const
+{
+    DEBUG_BLOCK
+            
+    Meta::TrackList tl;
+    foreach( Item* item, itemList() )
+        tl << item->track();
+    
+    The::playlistManager()->save( tl, name );
+}
+
 
 void
 Playlist::Model::engineNewTrackPlaying()
@@ -1286,5 +1298,6 @@ Playlist::Model::setCollapsed(int row, bool collapsed)
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
 }
+
 
 #include "PlaylistModel.moc"

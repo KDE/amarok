@@ -201,6 +201,7 @@ set(meta_SRCS
     meta/MultiPlayableCapability.cpp
     meta/OrganiseCapability.cpp
     meta/PLSPlaylist.cpp
+    meta/SqlPlaylist.cpp
     meta/PlaylistFileSupport.cpp
     meta/SourceInfoCapability.cpp
     meta/StreamInfoCapability.cpp
@@ -258,6 +259,9 @@ set(libpodcasts_SRCS
 #####################################################################
 set(libplaylistbrowser_SRCS
     playlistbrowser/PlaylistBrowser.cpp
+    playlistbrowser/PlaylistBrowserModel.cpp
+    playlistbrowser/PlaylistCategory.cpp
+    playlistbrowser/SqlPlaylistGroup.cpp
     playlistbrowser/PodcastModel.cpp
     playlistbrowser/PodcastCategory.cpp
 )

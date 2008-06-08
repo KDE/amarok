@@ -376,12 +376,23 @@ MainWindow::sizeHint() const
 }
 
 void
-MainWindow::savePlaylist() const //SLOT
+MainWindow::exportPlaylist() const //SLOT
 {
     QString playlistName = KFileDialog::getSaveFileName();
     if( !playlistName.isEmpty() )
-        The::playlistModel()->savePlaylist( playlistName );
+        The::playlistModel()->exportPlaylist( playlistName );
 }
+
+void MainWindow::savePlaylist() const
+{
+    DEBUG_BLOCK
+    //TODO make a nice dialog for choosing name and potentially parent group
+    //if( !playlistName.isEmpty() )
+
+    QString playlistName( "Playlist" );
+    The::playlistModel()->savePlaylist( playlistName );
+}
+
 
 void
 MainWindow::slotBurnPlaylist() const //SLOT
@@ -609,9 +620,14 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
     ac->addAction( "stream_add", action );
 
-    action = new KAction( KIcon( "document-save-amarok" ), i18n("&Save Playlist As..."), this );
+    action = new KAction( KIcon( "document-save-amarok" ), i18n("&Export Playlist As..."), this );
+    connect( action, SIGNAL( triggered(bool) ), this, SLOT( exportPlaylist() ) );
+    ac->addAction( "playlist_export", action );
+
+    action = new KAction( KIcon( "document-save-amarok" ), i18n("&Save Playlist"), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
     ac->addAction( "playlist_save", action );
+
 
     action = new KAction( KIcon( "tools-media-optical-burn-amarok" ), i18n( "Burn Current Playlist" ), this );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotBurnPlaylist() ) );
@@ -1028,4 +1044,5 @@ void MainWindow::paintEvent( QPaintEvent * e )
     QPainter painter( this );
     painter.drawPixmap( x, y, backgroundPart );
 }
+
 

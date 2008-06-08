@@ -21,6 +21,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "Playlist.h"
+#include "PlaylistCategory.h"
 #include "PodcastMeta.h"
 #include "PodcastModel.h"
 #include "PodcastCategory.h"
@@ -78,7 +79,7 @@ PlaylistBrowser::addCategory( int category )
         //we don't show the current playlist in the PlaylistBrowser (yet)
         case PlaylistManager::CurrentPlaylist: return;
         //TODO: add the UserPlaylistCategory widget
-        case PlaylistManager::UserPlaylist: widget = new QTreeView( m_toolBox ); break;
+        case PlaylistManager::UserPlaylist: widget = new PlaylistCategory( m_toolBox ); break;
 
         case PlaylistManager::PodcastChannel: widget = loadPodcastCategory(); break;
         //TODO: add the DynamicPlaylistCategory widget

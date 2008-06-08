@@ -30,6 +30,8 @@
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"
+#include "meta/SqlPlaylist.h"
+#include "playlistbrowser/PlaylistBrowserModel.h"
 
 #include <kdirlister.h>
 #include <kio/jobclasses.h>
@@ -217,8 +219,17 @@ PlaylistManager::typeName(int playlistCategory)
         return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
 }
 
+bool PlaylistManager::save( Meta::TrackList tracks, const QString & name)
+{
+    Meta::SqlPlaylist * playlist = new Meta::SqlPlaylist( name, tracks, 0 );
+    delete playlist; // already saved to db....
+
+    //jolt the playlist browser model to reload....
+    PlaylistBrowserNS::PlaylistModel::instance()->reloadFromDb();
+}
+
 bool
-PlaylistManager::save( Meta::TrackList tracks,
+PlaylistManager::exportPlaylist( Meta::TrackList tracks,
                         const QString &location )
 {
     DEBUG_BLOCK
@@ -334,5 +345,7 @@ namespace Amarok
         return urls;
     }
 }
+
+
 
 #include "PlaylistManager.moc"

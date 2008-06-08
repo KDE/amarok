@@ -80,9 +80,9 @@ namespace Meta
 
             virtual Capability* asCapabilityInterface( Capability::Type type ) = 0;
 
-            virtual KUrl retrievableUrl() = 0;
+            virtual KUrl retrievableUrl() { return KUrl(); }
 
-            virtual bool load( QTextStream &stream ) = 0;
+            virtual bool load( QTextStream &stream ) { return false; }
             virtual bool save( const QString &location, bool relative ) { Q_UNUSED( location); Q_UNUSED( relative); return false; };
 
             /**

@@ -102,6 +102,7 @@ Widget::Widget( QWidget* parent )
         plBar->setMovable( false );
         plBar->addAction( new KToolBarSpacerAction( this ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_clear") );
+        plBar->addAction( Amarok::actionCollection()->action( "playlist_export") );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_save") );
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_undo") );

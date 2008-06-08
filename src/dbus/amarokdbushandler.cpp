@@ -640,7 +640,7 @@ namespace Amarok
     QString DbusPlaylistHandler::saveCurrentPlaylist()
     {
         QString savePath = The::playlistModel()->defaultPlaylistPath();
-        The::playlistModel()->savePlaylist( savePath );
+        The::playlistModel()->exportPlaylist( savePath );
         return savePath;
     }
 
@@ -701,7 +701,7 @@ namespace Amarok
     void DbusPlaylistHandler::savePlaylist( const QString& path, bool relativePaths )
     {
         Q_UNUSED( relativePaths );
-        The::playlistModel()->savePlaylist( path );
+        The::playlistModel()->exportPlaylist( path );
     }
 
     void DbusPlaylistHandler::setStopAfterCurrent( bool on )

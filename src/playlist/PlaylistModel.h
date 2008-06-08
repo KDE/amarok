@@ -160,6 +160,8 @@ namespace Playlist
             ///Restore playlist from previous session of Amarok
             void restoreSession() { insertOptioned( Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) ), Append ); }
             ///Save M3U of current playlist to a given location
+            bool exportPlaylist( const QString &path ) const;
+
             bool savePlaylist( const QString &path ) const;
 
             ///Return list of items in playlist

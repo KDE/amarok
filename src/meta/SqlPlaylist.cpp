@@ -1,0 +1,149 @@
+/***************************************************************************
+ *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
+ ***************************************************************************/
+ 
+#include "SqlPlaylist.h"
+
+#include "CollectionManager.h"
+#include "Debug.h"
+#include "SqlStorage.h"
+
+#include "SqlPlaylistGroup.h"
+
+using namespace Meta;
+
+SqlPlaylist::SqlPlaylist( const QString & name, Meta::TrackList tracks, SqlPlaylistGroup * parent )
+    : Playlist()
+    , SqlPlaylistViewItem()
+    , m_dbId( -1 )
+    , m_parent( parent )
+    , m_name( name )
+    , m_tracks( tracks )
+    , m_description( QString() )
+    , m_tracksLoaded( true )
+{
+    saveToDb();
+}
+
+SqlPlaylist::SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroup * parent )
+    : SqlPlaylistViewItem()
+    , Playlist()
+    , m_parent( parent )
+    , m_tracksLoaded( false )
+{
+    m_dbId = resultRow[0].toInt();
+    m_name = resultRow[2];
+    m_description = resultRow[3];
+
+    loadTracks();
+
+    debug() << m_name << " created with pointer " << this << " and parent " << this->parent();
+
+}
+
+
+SqlPlaylist::~SqlPlaylist()
+{
+}
+
+bool SqlPlaylist::saveToDb()
+{
+    int parentId = 0;
+    if ( m_parent )
+        parentId = m_parent->id();
+
+    SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
+    
+    if ( m_dbId != -1 ) {
+        //update existing
+        QString query = "UPDATE playlists SET parent_id=%1, name='%2', description='%3' WHERE id=%4;";
+        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( m_description ) ).arg( QString::number( m_dbId ) );
+        CollectionManager::instance()->sqlStorage()->query( query );
+
+        //delete existing tracks and insert all
+        query = "DELETE FROM TABLE playlists_tracks where playlist_id=%1;";
+        query = query.arg( QString::number( m_dbId ) );
+        CollectionManager::instance()->sqlStorage()->query( query );
+        saveTracks();
+    } else {
+        //insert new
+        QString query = "INSERT INTO playlists ( parent_id, name, description ) VALUES ( %1, '%2', '%3' );";
+        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( m_description ) );
+        m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
+        saveTracks();
+    }
+    
+}
+
+void SqlPlaylist::saveTracks()
+{
+
+    int trackNum = 1;
+    SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
+    
+    foreach( Meta::TrackPtr trackPtr, m_tracks ) {
+
+        QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, album, artist, length ) VALUES ( %1, %2, '%3', '%4', '%5', '%6', %7 );";
+        query = query.arg( QString::number( m_dbId ) );
+        query = query.arg( trackNum );
+        query = query.arg( sql->escape( trackPtr->playableUrl().url() ) );
+        query = query.arg( sql->escape( trackPtr->prettyName() ) );
+        query = query.arg( sql->escape( trackPtr->album()->prettyName() ) );
+        query = query.arg( sql->escape( trackPtr->artist()->prettyName() ) );
+        query = query.arg( QString::number( trackPtr->length() ) );
+        sql->insert( query, NULL );
+
+
+        trackNum++;
+
+    }
+}
+
+TrackList SqlPlaylist::tracks()
+{
+    if ( !m_tracksLoaded )
+        loadTracks();
+
+    return m_tracks;
+}
+
+void SqlPlaylist::loadTracks()
+{
+    QString query = "SELECT playlist_id, track_num, url, title, album, artist, length FROM playlist_tracks WHERE playlist_id=%1 ORDER BY track_num";
+    query = query.arg( QString::number( m_dbId ) );
+
+    QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
+
+
+    int resultRows = result.count() / 7;
+
+    for( int i = 0; i < resultRows; i++ )
+    {
+        QStringList row = result.mid( i*7, 7 );
+        KUrl url = KUrl( row[1] );
+
+        Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( url );
+        m_tracks << trackPtr;
+    }
+
+    m_tracksLoaded = true;
+
+}
+
+
+

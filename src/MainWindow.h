@@ -93,6 +93,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
     private slots:
         void slotShrinkBrowsers( int index ) const;
         void savePlaylist() const;
+        void exportPlaylist() const;
         void slotBurnPlaylist() const;
         void slotShowCoverManager() const;
         void slotPlayMedia();

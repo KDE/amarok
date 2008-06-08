@@ -107,7 +107,9 @@ class PlaylistManager : public QObject
 
         void downloadPlaylist( const KUrl & path, const Meta::PlaylistPtr playlist );
 
-        bool save( Meta::TrackList tracks, const QString &location );
+        bool save( Meta::TrackList tracks, const QString &name );
+
+        bool exportPlaylist( Meta::TrackList tracks, const QString &location );
 
 
         //the next two functions are needed to support some services that have no othe rway of presenting data to the user
