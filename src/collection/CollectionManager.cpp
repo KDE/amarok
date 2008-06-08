@@ -32,17 +32,25 @@
 #include <QtAlgorithms>
 #include <QtGlobal>
 #include <QList>
+#include <QMetaEnum>
+#include <QMetaObject>
+#include <QPair>
 #include <QTimer>
 
 #include <KService>
+#include <KConfigGroup>
+#include <KGlobal>
 #include <KMessageBox>
 #include <KRun>
+#include <KSharedConfig>
 
 #include <cstdlib>
 
+typedef QPair<Collection*, CollectionManager::CollectionStatus> CollectionPair;
+
 struct CollectionManager::Private
 {
-    QList<Collection*> collections;
+    QList<CollectionPair> collections;
     QList<CollectionFactory*> factories;
     SqlStorage *sqlDatabase;
     QList<Collection*> unmanagedCollections;
@@ -142,25 +150,33 @@ CollectionManager::init()
 void
 CollectionManager::startFullScan()
 {
-    foreach( Collection *coll, d->collections )
+    foreach( const CollectionPair &pair, d->collections )
     {
-        coll->startFullScan();
+        pair.first->startFullScan();
     }
 }
 
 void
 CollectionManager::checkCollectionChanges()
 {
-    foreach( Collection *coll, d->collections )
+    foreach( const CollectionPair &pair, d->collections )
     {
-        coll->startIncrementalScan();
+        pair.first->startIncrementalScan();
     }
 }
 
 QueryMaker*
 CollectionManager::queryMaker() const
 {
-    return new MetaQueryMaker( d->collections );
+    QList<Collection*> colls;
+    foreach( const CollectionPair &pair, d->collections )
+    {
+        if( pair.second == Enabled || pair.second == OnlyQueryable )
+        {
+            colls << pair.first;
+        }
+    }
+    return new MetaQueryMaker( colls );
 }
 
 void
@@ -171,8 +187,14 @@ CollectionManager::slotNewCollection( Collection* newCollection )
         debug() << "Warning, newCollection in slotNewCollection is 0";
         return;
     }
-    debug() << "New collection with collectionId: " << newCollection->collectionId();
-    d->collections.append( newCollection );
+    const QMetaObject *mo = metaObject();
+    const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "CollectionStatus" ) );
+    const QString &value = KGlobal::config()->group( "CollectionManager" ).readEntry( newCollection->collectionId() );
+    int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
+    CollectionStatus status;
+    enumValue == -1 ? status = Enabled : status = (CollectionStatus) enumValue;
+    CollectionPair pair( newCollection, status );
+    d->collections.append( pair );
     d->managedCollections.append( newCollection );
     d->trackProviders.append( newCollection );
     connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
@@ -196,7 +218,10 @@ CollectionManager::slotNewCollection( Collection* newCollection )
             d->primaryCollection = newCollection;
         }
     }
-    emit collectionAdded( newCollection );
+    if( status == Enabled || status == OnlyViewable )
+    {
+        emit collectionAdded( newCollection );
+    }
 }
 
 void
@@ -205,16 +230,18 @@ CollectionManager::slotRemoveCollection()
     Collection* collection = qobject_cast<Collection*>( sender() );
     if( collection )
     {
-        d->collections.removeAll( collection );
+        CollectionStatus status = collectionStatus( collection->collectionId() );
+        CollectionPair pair( collection, status );
+        d->collections.removeAll( pair );
         d->managedCollections.removeAll( collection );
         d->trackProviders.removeAll( collection );
         SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( collection );
         if( sqlDb && sqlDb == d->sqlDatabase )
         {
             SqlStorage *newSqlDatabase = 0;
-            foreach( Collection* tmp, d->collections )
+            foreach( const CollectionPair &pair, d->collections )
             {
-                SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( tmp );
+                SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( pair.first );
                 if( sqlDb )
                 {
                     if( newSqlDatabase )
@@ -239,14 +266,26 @@ CollectionManager::slotCollectionChanged()
     Collection *collection = dynamic_cast<Collection*>( sender() );
     if( collection )
     {
-        emit collectionDataChanged( collection );
+        CollectionStatus status = collectionStatus( collection->collectionId() );
+        if( status == Enabled || status == OnlyViewable )
+        {
+            emit collectionDataChanged( collection );
+        }
     }
 }
 
 QList<Collection*>
 CollectionManager::collections() const
 {
-    return d->collections;
+    QList<Collection*> result;
+    foreach( const CollectionPair &pair, d->collections )
+    {
+        if( pair.second == Enabled || pair.second == OnlyViewable )
+        {
+            result << pair.first;
+        }
+    }
+    return result;
 }
 
 Collection*
@@ -354,12 +393,22 @@ CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
 void
 CollectionManager::addUnmanagedCollection( Collection *newCollection )
 {
-    if( newCollection && d->collections.indexOf( newCollection ) == -1 )
+    if( newCollection && d->unmanagedCollections.indexOf( newCollection ) == -1 )
     {
+        const QMetaObject *mo = metaObject();
+        const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "CollectionStatus" ) );
+        const QString &value = KGlobal::config()->group( "CollectionManager" ).readEntry( newCollection->collectionId() );
+        int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
+        CollectionStatus status;
+        enumValue == -1 ? status = Disabled : status = (CollectionStatus) enumValue;
         d->unmanagedCollections.append( newCollection );
-        d->collections.append( newCollection );
+        CollectionPair pair( newCollection, status );
+        d->collections.append( pair );
         d->trackProviders.append( newCollection );
-        emit collectionAdded( newCollection );
+        if( status == Enabled || status == OnlyViewable )
+        {
+            emit collectionAdded( newCollection );
+        }
         emit trackProviderAdded( newCollection );
     }
 }
@@ -370,10 +419,62 @@ CollectionManager::removeUnmanagedCollection( Collection *collection )
     //do not remove it from collection if it is not in unmanagedCollections
     if( collection && d->unmanagedCollections.removeAll( collection ) )
     {
-        d->collections.removeAll( collection );
+        CollectionPair pair( collection, collectionStatus( collection->collectionId() ) );
+        d->collections.removeAll( pair );
         d->trackProviders.removeAll( collection );
         emit collectionRemoved( collection->collectionId() );
     }
+}
+
+void
+CollectionManager::setCollectionStatus( const QString &collectionId, CollectionStatus status )
+{
+    foreach( const CollectionPair &pair, d->collections )
+    {
+        if( pair.first->collectionId() == collectionId )
+        {
+            if( ( pair.second == Enabled || pair.second == OnlyViewable ) &&
+                ( status == Disabled || status == OnlyQueryable ) )
+            {
+                emit collectionRemoved( collectionId );
+            }
+            else if( ( pair.second == Disabled || pair.second == OnlyQueryable ) &&
+                     ( status == Enabled || status == OnlyViewable ) )
+            {
+                emit collectionAdded( pair.first );
+            }
+            CollectionPair &pair2 = const_cast<CollectionPair&>( pair );
+            pair2.second = status;
+            const QMetaObject *mo = metaObject();
+            const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "CollectionStatus" ) );
+            KGlobal::config()->group( "CollectionManager" ).writeEntry( collectionId, me.valueToKey( status ) );
+            break;
+        }
+    }
+}
+
+CollectionManager::CollectionStatus
+CollectionManager::collectionStatus( const QString &collectionId ) const
+{
+    foreach( const CollectionPair &pair, d->collections )
+    {
+        if( pair.first->collectionId() == collectionId )
+        {
+            return pair.second;
+        }
+    }
+    return Disabled;
+}
+
+QHash<Collection*, CollectionManager::CollectionStatus>
+CollectionManager::allCollections() const
+{
+    QHash<Collection*, CollectionManager::CollectionStatus> result;
+    foreach( const CollectionPair &pair, d->collections )
+    {
+        result.insert( pair.first, pair.second );
+    }
+    return result;
 }
 
 void

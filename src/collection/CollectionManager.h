@@ -32,14 +32,28 @@ class CollectionManagerSingleton;
 class AMAROK_EXPORT CollectionManager : public QObject
 {
     Q_OBJECT
+    Q_ENUMS( CollectionStatus )
 
     public:
+
+        /**
+         * defines the status of a collection in respect to global queries (i.e. queries that query all known collections)
+         * or the collection browser.
+         */
+        enum CollectionStatus { Enabled = 0, //Collection viewable in the browser and queryable
+                                Disabled = 1, //Collection neither viewable nor queryable
+                                OnlyViewable, //Collection will not be queried by CollectionManager::queryMaker
+                                OnlyQueryable}; //Collection wil not show up in the browser, but is queryable by global queries
+
         static CollectionManager * instance();
 
         ~CollectionManager();
 
         QueryMaker * queryMaker() const;
 
+        /**
+         * returns all enabled or viewable collections.
+         */
         QList<Collection*> collections() const;
 
         Collection* primaryCollection() const;
@@ -60,6 +74,10 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         void addUnmanagedCollection( Collection *newCollection );
         void removeUnmanagedCollection( Collection *collection );
+
+        void setCollectionStatus( const QString &collectionId, CollectionStatus status );
+        CollectionStatus collectionStatus( const QString &collectionId ) const;
+        QHash<Collection*, CollectionStatus> allCollections() const;
 
         /**
          * adds a TrackProvider to the list of TrackProviders,
