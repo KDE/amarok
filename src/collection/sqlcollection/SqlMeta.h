@@ -246,7 +246,7 @@ class SqlAlbum : public Meta::Album
         QString m_name;
         int m_id;
         int m_artistId;
-        QHash<int, QString> m_images; // Cache mapping size -> path. hash used for O(1) insertion and O(1) lookup
+        mutable QHash<int, QString> m_images; // Cache mapping size -> path. hash used for O(1) insertion and O(1) lookup
         bool m_tracksLoaded;
         Meta::ArtistPtr m_artist;
         Meta::TrackList m_tracks;
