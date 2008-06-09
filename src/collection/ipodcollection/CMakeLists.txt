@@ -16,8 +16,8 @@ if (IPOD_FOUND)
 ########### next target ###############
 
 	set(amarok_collection-ipodcollection_PART_SRCS
-	ipodmeta.cpp
-	ipodcollection.cpp)
+	IpodMeta.cpp
+	IpodCollection.cpp)
 	
 	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
 

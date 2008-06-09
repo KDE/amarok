@@ -1,7 +1,7 @@
-/* 
+/*
    Mostly taken from Daap code:
    Copyright (C) 2006 Ian Monroe <ian@monroe.nu>
-   Copyright (C) 2006 Seb Ruiz <ruiz@kde.org>  
+   Copyright (C) 2006 Seb Ruiz <ruiz@kde.org>
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
@@ -21,14 +21,22 @@
 
 #define DEBUG_PREFIX "IpodCollection"
 
-#include "ipodcollection.h"
-#include "ipodmeta.h"
+#include "IpodCollection.h"
+#include "IpodMeta.h"
 
 #include "amarokconfig.h"
 #include "Debug.h"
+//#include "ipodmediadevice.h"
 #include "MediaDeviceCache.h"
 #include "MemoryQueryMaker.h"
 
+//solid specific includes
+#include <solid/devicenotifier.h>
+#include <solid/device.h>
+#include <solid/storageaccess.h>
+#include <solid/storagedrive.h>
+
+//#include <QDir>
 #include <QStringList>
 
 
@@ -48,36 +56,79 @@ IpodCollectionFactory::~IpodCollectionFactory()
 void
 IpodCollectionFactory::init()
 {
-    DEBUG_BLOCK    
-      /* Test out using the cache */
-    MediaDeviceCache::instance()->refreshCache();
-    QStringList udiList = MediaDeviceCache::instance()->getAll();
-    debug() << "IpodCollection found " << udiList;
+  DEBUG_BLOCK
+
+    /* Cache stuff */
+      MediaDeviceCache::instance()->refreshCache();
+  QStringList udiList = MediaDeviceCache::instance()->getAll();
+
+  /* Solid stuff */
+  Solid::Device device;
+
+  /* Collection stuff */
+
+  IpodCollection *coll = 0;
+
+
+
+  foreach(const QString &udi, udiList )
+      {
+          device = Solid::Device(udi);
+	/* going until we reach a vendor, e.g. Apple */
+          while ( device.isValid() && device.vendor().isEmpty() )
+	  {
+              device = Solid::Device( device.parentUdi() );
+	  }
+
+
+          debug() << "Device udi: " << udi;
+          debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
+          debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
+	if ( device.isValid() )
+        {
+            debug() << "vendor: " << device.vendor() << ", product: " << device.product();
+        }
+
+	if(device.product() == "iPod")
+            coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi));
+
+      }
+
+
+
+    //    debug() << "IpodCollection found " << udiList;
 
     /* test ipodcollection constructor */
-    IpodCollection *coll = new IpodCollection();
-    delete coll;
+    //    coll = new IpodCollection();
+    if(coll)
+        delete coll;
 
     return;
 }
 
 //IpodCollection
 
-IpodCollection::IpodCollection()
+IpodCollection::IpodCollection( const QString &mountPoint )
     : Collection()
     , MemoryCollection()
+    , m_mountPoint(mountPoint)
 {
     DEBUG_BLOCK
 
+
+
     /* test out using libgpod */
+
     m_itdb = 0;
     m_itdb = itdb_new();
     if(m_itdb) {
-      debug() << "Itunes database created!";
-      itdb_free(m_itdb);
+        debug() << "Itunes database created!";
+        itdb_free(m_itdb);
     }
     else
-      debug() << "Itunes database not created!";
+        debug() << "Itunes database not created!";
+
+
 }
 
 IpodCollection::~IpodCollection()
@@ -109,5 +160,5 @@ IpodCollection::prettyName() const
     return "prettyfiller";
 }
 
-#include "ipodcollection.moc"
+#include "IpodCollection.moc"
 

@@ -2,7 +2,7 @@
 
    Note: Mostly taken from Daap code:
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation; either version 2
@@ -18,9 +18,9 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "ipodmeta.h"
+#include "IpodMeta.h"
 
-#include "ipodcollection.h"
+#include "IpodCollection.h"
 
 using namespace Meta;
 IpodTrack::IpodTrack( IpodCollection *collection, const QString &format)

@@ -55,7 +55,7 @@ class IpodCollection : public Collection, public MemoryCollection
     Q_OBJECT
     public:
 
-        IpodCollection();
+        IpodCollection( const QString &mountPoint);
         virtual ~IpodCollection();
 
         virtual void startFullScan();
@@ -75,6 +75,7 @@ class IpodCollection : public Collection, public MemoryCollection
     /* test if libgpod works */
     // ipod database
     Itdb_iTunesDB    *m_itdb;
+    QString           m_mountPoint;
 
 
 };
