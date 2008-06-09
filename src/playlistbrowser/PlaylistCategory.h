@@ -20,7 +20,7 @@
 #ifndef PLAYLISTCATEGORY_H
 #define PLAYLISTCATEGORY_H
 
-#include "PlaylistBrowserModel.h"
+#include "UserPlaylistModel.h"
 
 #include "widgets/Widget.h"
 

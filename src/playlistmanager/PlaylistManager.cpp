@@ -31,7 +31,7 @@
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"
 #include "meta/SqlPlaylist.h"
-#include "playlistbrowser/PlaylistBrowserModel.h"
+#include "playlistbrowser/UserPlaylistModel.h"
 
 #include <kdirlister.h>
 #include <kio/jobclasses.h>

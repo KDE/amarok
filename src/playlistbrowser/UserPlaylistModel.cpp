@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "PlaylistBrowserModel.h"
+#include "UserPlaylistModel.h"
 
 #include "Debug.h"
 #include "CollectionManager.h"
@@ -236,4 +236,4 @@ void PlaylistBrowserNS::PlaylistModel::reloadFromDb()
 
 
 
-#include "PlaylistBrowserModel.moc"
+#include "UserPlaylistModel.moc"

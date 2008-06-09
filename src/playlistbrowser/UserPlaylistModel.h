@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef PLAYLISTBROWSERMODEL_H
-#define PLAYLISTBROWSERMODEL_H
+#ifndef USERPLAYLISTMODEL_H
+#define USERPLAYLISTMODEL_H
 
 #include "SqlPlaylistGroup.h"
 
