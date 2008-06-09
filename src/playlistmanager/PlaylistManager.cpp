@@ -226,6 +226,8 @@ bool PlaylistManager::save( Meta::TrackList tracks, const QString & name)
 
     //jolt the playlist browser model to reload....
     PlaylistBrowserNS::PlaylistModel::instance()->reloadFromDb();
+
+    return true; //FIXME what's this supposed to return?
 }
 
 bool

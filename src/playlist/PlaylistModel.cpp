@@ -689,9 +689,8 @@ Playlist::Model::exportPlaylist( const QString &path ) const
     Meta::TrackList tl;
     foreach( Item* item, itemList() )
         tl << item->track();
-    if( The::playlistManager()->exportPlaylist( tl, path ) )
-        return true;
-    return false;
+
+    return The::playlistManager()->exportPlaylist( tl, path );
 }
 
 bool Playlist::Model::savePlaylist( const QString & name ) const
@@ -702,7 +701,7 @@ bool Playlist::Model::savePlaylist( const QString & name ) const
     foreach( Item* item, itemList() )
         tl << item->track();
     
-    The::playlistManager()->save( tl, name );
+    return The::playlistManager()->save( tl, name );
 }
 
 
