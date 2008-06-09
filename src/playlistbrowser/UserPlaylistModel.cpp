@@ -57,7 +57,7 @@ PlaylistBrowserNS::PlaylistModel::~PlaylistModel()
 QVariant
 PlaylistBrowserNS::PlaylistModel::data(const QModelIndex & index, int role) const
 {
-            
+
     if ( !index.isValid() )
         return QVariant();
 
@@ -85,7 +85,7 @@ PlaylistBrowserNS::PlaylistModel::index(int row, int column, const QModelIndex &
 
     if ( !parent.isValid() )
     {
-        
+
         int noOfGroups = m_root->childGroups().count();
         if ( row < noOfGroups ) {
             debug() << "Root playlist group";
@@ -100,7 +100,7 @@ PlaylistBrowserNS::PlaylistModel::index(int row, int column, const QModelIndex &
 
         SqlPlaylistGroup * playlistGroup = static_cast<SqlPlaylistGroup *>( parent.internalPointer() );
         int noOfGroups = playlistGroup->childGroups().count();
-        
+
         if ( row < noOfGroups )
             return createIndex( row, column, playlistGroup->childGroups()[row] );
         else
@@ -112,14 +112,14 @@ QModelIndex
 PlaylistBrowserNS::PlaylistModel::parent( const QModelIndex & index ) const
 {
     DEBUG_BLOCK
-            
+
     if (!index.isValid())
         return QModelIndex();
 
     SqlPlaylistViewItem * item = static_cast< SqlPlaylistViewItem* >( index.internalPointer() );
 
     //debug() << "row: " << index.row() << ", name " << item->name() << ", pointer: " << index.internalPointer() << " cast pointer: " << item;
-    
+
     SqlPlaylistGroup *parent = item->parent();
 
     debug() << "parent: " << parent;
@@ -131,7 +131,7 @@ PlaylistBrowserNS::PlaylistModel::parent( const QModelIndex & index ) const
         return QModelIndex();
     }
 
-    
+
 
 }
 
@@ -139,7 +139,7 @@ int
 PlaylistBrowserNS::PlaylistModel::rowCount( const QModelIndex & parent ) const
 {
     DEBUG_BLOCK
-            
+
     if (parent.column() > 0) {
         return 0;
     }
@@ -147,16 +147,16 @@ PlaylistBrowserNS::PlaylistModel::rowCount( const QModelIndex & parent ) const
     if (!parent.isValid()) {
 
         //debug() << "top level item has" << m_root->childCount();
-        
+
         return m_root->childCount();
 
     }
 
     SqlPlaylistViewItem * item = static_cast< SqlPlaylistViewItem* >( parent.internalPointer() );
     debug() << "row: " << parent.row();
-    debug() << "adress: " << item;
+    debug() << "address: " << item;
     debug() << "name: " << item->name();
-    
+
     return item->childCount();
 }
 

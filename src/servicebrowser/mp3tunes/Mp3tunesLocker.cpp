@@ -39,7 +39,7 @@ Mp3tunesLocker::Mp3tunesLocker( const QString & partnerToken, const QString & us
     QByteArray ba = partnerToken.toLatin1();
     const char *c_tok = ba.data();
     mp3tunes_locker_init(&mp3tunes_locker, const_cast<char*>(c_tok) );
-    
+
     this->login( userName, password );
 }
 
@@ -52,7 +52,7 @@ QString Mp3tunesLocker::login( const QString & userName, const QString & passwor
     DEBUG_BLOCK
     QByteArray baUser = userName.toLatin1();
     const char *c_user = baUser.data();
-    
+
     QByteArray baPass = password.toLatin1();
     const char *c_pass = baPass.data();
 
@@ -62,7 +62,7 @@ QString Mp3tunesLocker::login( const QString & userName, const QString & passwor
     int result = mp3tunes_locker_login(mp3tunes_locker, const_cast<char*>(c_user),  const_cast<char*>(c_pass) );
 
     if(result == 0) { //login successful
-        debug() << "Wrapper Login succeded. result: " << result;
+        debug() << "Wrapper Login succeeded. result: " << result;
         return this->sessionId();
     }
     debug() << "Wrapper Login failed. result: " << result;
@@ -105,7 +105,7 @@ QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albums() const
     QList<Mp3tunesLockerAlbum> albumsQList; // to be returned
     mp3tunes_locker_album_list_t *albums_list;
     mp3tunes_locker_list_item_t *album_item;
-    
+
     //get the list of albums
     mp3tunes_locker_albums(mp3tunes_locker, &albums_list);
 
@@ -124,7 +124,7 @@ QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albums() const
         album_item = album_item->next;
     }
     mp3tunes_locker_album_list_deinit(&albums_list);
-    
+
     return albumsQList;
 }
 
@@ -133,7 +133,7 @@ QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albumsWithArtistId( int artistId ) co
     QList<Mp3tunesLockerAlbum> albumsQList; // to be returned
     mp3tunes_locker_album_list_t *albums_list;
     mp3tunes_locker_list_item_t *album_item;
-    
+
     //get the list of albums
     mp3tunes_locker_albums_with_artist_id(mp3tunes_locker, &albums_list, artistId);
 
@@ -152,14 +152,14 @@ QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albumsWithArtistId( int artistId ) co
         album_item = album_item->next;
     }
     mp3tunes_locker_album_list_deinit(&albums_list);
-    
+
     return albumsQList;
 }
 
 QList<Mp3tunesLockerPlaylist> Mp3tunesLocker::playlists() const
 {
     QList<Mp3tunesLockerPlaylist> playlistsQList; // to be returned
-    
+
     mp3tunes_locker_playlist_list_t *playlist_list;
     mp3tunes_locker_list_item_t *playlist_item;
     mp3tunes_locker_playlist_t *playlist;
@@ -169,21 +169,21 @@ QList<Mp3tunesLockerPlaylist> Mp3tunesLocker::playlists() const
     playlist_item = playlist_list->first;
     while (playlist_item != NULL) {
         playlist = (mp3tunes_locker_playlist_t*)playlist_item->value;
-        
+
         Mp3tunesLockerPlaylist playlistWrapped(playlist);
         playlistsQList.append(playlistWrapped);
-        
+
         playlist_item = playlist_item->next;
     }
     mp3tunes_locker_playlist_list_deinit(&playlist_list);
-    
+
     return playlistsQList;
 }
 
 QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracks() const
 {
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned
-    
+
     mp3tunes_locker_track_list_t *tracks_list;
     mp3tunes_locker_list_item_t *track_item;
     mp3tunes_locker_track_t *track;
@@ -193,10 +193,10 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracks() const
     track_item = tracks_list->first;
     while (track_item != NULL) {
         track = (mp3tunes_locker_track_t*)track_item->value;
-        
+
         Mp3tunesLockerTrack trackWrapped(track);
         tracksQList.append(trackWrapped);
-        
+
         track_item = track_item->next;
     }
     mp3tunes_locker_track_list_deinit(&tracks_list);
@@ -211,7 +211,7 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithPlaylistId( const QString &
     const char *cc_playlist = baPlaylist.data();
     char* c_playlistid = const_cast<char*>(cc_playlist);
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned
-    
+
     mp3tunes_locker_track_list_t *tracks_list;
     mp3tunes_locker_list_item_t *track_item;
     mp3tunes_locker_track_t *track;
@@ -221,10 +221,10 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithPlaylistId( const QString &
     track_item = tracks_list->first;
     while (track_item != NULL) {
         track = (mp3tunes_locker_track_t*)track_item->value;
-        
+
         Mp3tunesLockerTrack trackWrapped(track);
         tracksQList.append(trackWrapped);
-        
+
         track_item = track_item->next;
     }
     mp3tunes_locker_track_list_deinit(&tracks_list);
@@ -235,7 +235,7 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithPlaylistId( const QString &
 QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithAlbumId( int albumId ) const
 {
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned
-    
+
     mp3tunes_locker_track_list_t *tracks_list;
     mp3tunes_locker_list_item_t *track_item;
     mp3tunes_locker_track_t *track;
@@ -245,10 +245,10 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithAlbumId( int albumId ) cons
     track_item = tracks_list->first;
     while (track_item != NULL) {
         track = (mp3tunes_locker_track_t*)track_item->value;
-        
+
         Mp3tunesLockerTrack trackWrapped(track);
         tracksQList.append(trackWrapped);
-        
+
         track_item = track_item->next;
     }
     mp3tunes_locker_track_list_deinit(&tracks_list);
@@ -259,7 +259,7 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithAlbumId( int albumId ) cons
 QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithArtistId( int artistId ) const
 {
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned
-    
+
     mp3tunes_locker_track_list_t *tracks_list;
     mp3tunes_locker_list_item_t *track_item;
     mp3tunes_locker_track_t *track;
@@ -269,10 +269,10 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithArtistId( int artistId ) co
     track_item = tracks_list->first;
     while (track_item != NULL) {
         track = (mp3tunes_locker_track_t*)track_item->value;
-        
+
         Mp3tunesLockerTrack trackWrapped(track);
         tracksQList.append(trackWrapped);
-        
+
         track_item = track_item->next;
     }
     mp3tunes_locker_track_list_deinit(&tracks_list);
