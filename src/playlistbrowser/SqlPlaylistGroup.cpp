@@ -172,4 +172,8 @@ void SqlPlaylistGroup::clear()
 
 
 
-
+void SqlPlaylistGroup::rename(const QString & name)
+{
+    m_name = name;
+    save();
+}

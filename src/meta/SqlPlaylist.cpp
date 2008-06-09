@@ -61,7 +61,7 @@ SqlPlaylist::~SqlPlaylist()
 {
 }
 
-bool SqlPlaylist::saveToDb()
+bool SqlPlaylist::saveToDb( bool tracks )
 {
     int parentId = 0;
     if ( m_parent )
@@ -75,17 +75,20 @@ bool SqlPlaylist::saveToDb()
         query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( m_description ) ).arg( QString::number( m_dbId ) );
         CollectionManager::instance()->sqlStorage()->query( query );
 
-        //delete existing tracks and insert all
-        query = "DELETE FROM TABLE playlists_tracks where playlist_id=%1;";
-        query = query.arg( QString::number( m_dbId ) );
-        CollectionManager::instance()->sqlStorage()->query( query );
-        saveTracks();
+        if ( tracks ) {
+            //delete existing tracks and insert all
+            query = "DELETE FROM TABLE playlists_tracks where playlist_id=%1;";
+            query = query.arg( QString::number( m_dbId ) );
+            CollectionManager::instance()->sqlStorage()->query( query );
+            saveTracks();
+        }
     } else {
         //insert new
         QString query = "INSERT INTO playlists ( parent_id, name, description ) VALUES ( %1, '%2', '%3' );";
         query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( m_description ) );
         m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
-        saveTracks();
+        if ( tracks )
+            saveTracks();
     }
     
 }
@@ -154,4 +157,8 @@ void SqlPlaylist::loadTracks()
 }
 
 
-
+void Meta::SqlPlaylist::rename(const QString & name)
+{
+    m_name = name;
+    saveToDb( false ); //no need to resave all tracks
+}

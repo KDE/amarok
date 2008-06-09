@@ -57,7 +57,7 @@ PlaylistBrowserNS::PlaylistModel::~PlaylistModel()
 QVariant
 PlaylistBrowserNS::PlaylistModel::data(const QModelIndex & index, int role) const
 {
-
+    
     if ( !index.isValid() )
         return QVariant();
 
@@ -65,7 +65,7 @@ PlaylistBrowserNS::PlaylistModel::data(const QModelIndex & index, int role) cons
     QString name = item->name();
 
 
-    if ( role == Qt::DisplayRole )
+    if ( role == Qt::DisplayRole || role == Qt::EditRole )
         return name;
     else if (role == Qt::DecorationRole )
         return QVariant( KIcon( "x-media-podcast-amarok" ) );
@@ -170,9 +170,9 @@ Qt::ItemFlags
 PlaylistBrowserNS::PlaylistModel::flags(const QModelIndex & index) const
 {
     if (!index.isValid())
-        return 0;
+        return Qt::ItemIsEnabled;
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 QVariant
@@ -187,6 +187,21 @@ PlaylistBrowserNS::PlaylistModel::headerData(int section, Qt::Orientation orient
     }
 
     return QVariant();
+}
+
+bool PlaylistBrowserNS::PlaylistModel::setData(const QModelIndex & index, const QVariant & value, int role)
+{
+    if (role != Qt::EditRole)
+        return false;
+    if ( index.column() != 0 )
+        return false;
+
+    SqlPlaylistViewItem * item = static_cast< SqlPlaylistViewItem* >( index.internalPointer() );
+
+    item->rename( value.toString() );
+
+    return true;
+
 }
 
 void PlaylistBrowserNS::PlaylistModel::createTables()
@@ -236,4 +251,8 @@ void PlaylistBrowserNS::PlaylistModel::reloadFromDb()
 
 
 
+
+
 #include "UserPlaylistModel.moc"
+
+

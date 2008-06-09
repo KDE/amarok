@@ -52,6 +52,7 @@ class PlaylistModel : public QAbstractItemModel
         virtual QModelIndex parent( const QModelIndex &index ) const;
         virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+        virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
         void reloadFromDb();
 

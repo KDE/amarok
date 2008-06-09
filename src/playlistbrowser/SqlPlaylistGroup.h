@@ -59,6 +59,8 @@ class SqlPlaylistGroup : public SqlPlaylistViewItem
 
         virtual SqlPlaylistGroup * parent() { return m_parent; }
 
+        virtual void rename( const QString &name );
+
         void save();
         SqlPlaylistGroupList childGroups();
         SqlPlaylistDirectList childPlaylists();

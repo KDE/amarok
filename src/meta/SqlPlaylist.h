@@ -48,12 +48,13 @@ public:
 
     ~SqlPlaylist();
 
-    bool saveToDb();
+    bool saveToDb( bool tracks = true );
 
     /* Playlist virtual functions */
     virtual QString name() const { return m_name; }
     QString prettyName() const { return m_name; }
     virtual QString description() const { return m_description; }
+    virtual void rename( const QString &name );
     
 
     /** returns all tracks in this playlist */

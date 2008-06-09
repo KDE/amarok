@@ -39,6 +39,7 @@ class SqlPlaylistViewItem
         virtual int childCount() { return 0; }
         virtual QString name() const = 0;
         virtual QString description() const = 0;
+        virtual void rename( const QString &name ) = 0;
 
 };
 

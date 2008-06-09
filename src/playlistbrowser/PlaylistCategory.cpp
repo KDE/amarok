@@ -37,7 +37,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     playlistView->setModel( PlaylistModel::instance() );
     playlistView->header()->hide();
 
-    connect( playlistView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
+    connect( playlistView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
 
     QVBoxLayout *vLayout = new QVBoxLayout( this );
     vLayout->addWidget( playlistView );
