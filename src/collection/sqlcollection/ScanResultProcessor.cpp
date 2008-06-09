@@ -537,11 +537,11 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
     {
         int deviceid = iter.next().toInt();
         QString rpath = iter.next();
-        int albumId = iter.next().toInt();
+        iter.next(); //albumId
         QString albumArtist = iter.next();
         QString currentPath = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
         QFileInfo info( currentPath );
-        uint dirCount = m_filesInDirs.value( info.dir().absolutePath() );
+        //uint dirCount = m_filesInDirs.value( info.dir().absolutePath() ); //FIXME what's the point?
     }
     return 0;
 }
