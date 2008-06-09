@@ -176,9 +176,11 @@ namespace Amarok
         virtual void metadataChanged( Meta::Album *album );
         virtual void metadataChanged( Meta::Artist *artist );
 
-        virtual void metadataChanged( Meta::Genre * ) {}; //prevent compiler warning
-        virtual void metadataChanged( Meta::Composer * ) {}; //prevent compiler warning
-        virtual void metadataChanged( Meta::Year * ) {}; //prevent compiler warning
+        // Don't hide baseclass methods - prevent compiler warnings
+        virtual void show() {};
+        virtual void metadataChanged( Meta::Genre * ) {};
+        virtual void metadataChanged( Meta::Composer * ) {};
+        virtual void metadataChanged( Meta::Year * ) {};
 
     public slots:
         /**

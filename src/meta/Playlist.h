@@ -82,7 +82,7 @@ namespace Meta
 
             virtual KUrl retrievableUrl() { return KUrl(); }
 
-            virtual bool load( QTextStream &stream ) { return false; }
+            virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
             virtual bool save( const QString &location, bool relative ) { Q_UNUSED( location); Q_UNUSED( relative); return false; };
 
             /**
