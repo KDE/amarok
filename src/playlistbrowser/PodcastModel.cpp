@@ -100,7 +100,7 @@ PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & 
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-   /*  Meta::PodcastChannelPtr channel;
+    Meta::PodcastChannelPtr channel;
     Meta::PodcastEpisodePtr episode;
 
     if (!parent.isValid())
@@ -127,7 +127,7 @@ PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & 
         return createIndex( row, column, channel.data() );
     }
     else
-        return QModelIndex();*/
+        return QModelIndex();
 
     if ( !parent.isValid() )
     {
@@ -164,11 +164,11 @@ PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
 
     Meta::PodcastMetaCommon *podcastMetaCommon = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
 
-    if ( typeid( * podcastMetaCommon ) == typeid( Meta::PodcastChannel ) )
+    if ( podcastMetaCommon->podcastType() ==  Meta::ChannelType )
     {
         return QModelIndex();
     }
-    else if ( typeid( * podcastMetaCommon ) == typeid( Meta::PodcastEpisode ) )
+    else if ( podcastMetaCommon->podcastType() ==  Meta::EpisodeType )
     {
         //BUG: using static_cast on podcastMetaCommon returns wrong address (exact offset of 12 bytes)
         Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>( index.internalPointer() );
