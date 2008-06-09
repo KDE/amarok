@@ -50,7 +50,7 @@ SqlPlaylist::SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroup * pare
     m_name = resultRow[2];
     m_description = resultRow[3];
 
-    loadTracks();
+    //loadTracks();
 
     debug() << m_name << " created with pointer " << this << " and parent " << this->parent();
 
@@ -129,7 +129,7 @@ TrackList SqlPlaylist::tracks()
 
 void SqlPlaylist::loadTracks()
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     QString query = "SELECT playlist_id, track_num, url, title, album, artist, length FROM playlist_tracks WHERE playlist_id=%1 ORDER BY track_num";
     query = query.arg( QString::number( m_dbId ) );
 
@@ -148,7 +148,7 @@ void SqlPlaylist::loadTracks()
 
         if ( trackPtr ) {
             m_tracks << trackPtr;
-            //debug() << "added track: " << trackPtr->name();
+            debug() << "added track: " << trackPtr->name();
         }
     }
 
