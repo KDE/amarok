@@ -65,7 +65,10 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
     sizePolicy.setHeightForWidth( this->sizePolicy().hasHeightForWidth());
     setSizePolicy(sizePolicy);
 
+    setContentsMargins(0,0,0,0);
+
     QVBoxLayout *vLayout = new QVBoxLayout( this );
+    vLayout->setContentsMargins(0,0,0,0);
 
     QToolBar *toolBar = new QToolBar( this );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -89,8 +92,18 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
     vLayout->addWidget( toolBar );
 
     m_podcastTreeView = new PodcastView( podcastModel, this );
+    m_podcastTreeView->setFrameShape( QFrame::NoFrame );
+    m_podcastTreeView->setContentsMargins(0,0,0,0);
     m_podcastTreeView->setModel( podcastModel );
     m_podcastTreeView->header()->hide();
+
+
+    QPalette p = m_podcastTreeView->palette();
+    QColor c = p.color( QPalette::Window );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+    m_podcastTreeView->setPalette( p );
+    
     //m_podcastTreeView->setItemDelegate( new PodcastCategoryDelegate(m_podcastTreeView) );
 
     QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);

@@ -33,13 +33,19 @@ using namespace PlaylistBrowserNS;
 PlaylistCategory::PlaylistCategory( QWidget * parent )
     : Amarok::Widget( parent )
 {
+
+    setContentsMargins(0,0,0,0);
+    
     QTreeView * playlistView = new QTreeView( this );
+    playlistView->setFrameShape( QFrame::NoFrame );
+    playlistView->setContentsMargins(0,0,0,0);
     playlistView->setModel( PlaylistModel::instance() );
     playlistView->header()->hide();
 
     connect( playlistView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
 
     QVBoxLayout *vLayout = new QVBoxLayout( this );
+    vLayout->setContentsMargins(0,0,0,0);
     vLayout->addWidget( playlistView );
 
     //make background transparent

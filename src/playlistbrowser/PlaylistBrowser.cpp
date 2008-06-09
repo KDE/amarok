@@ -42,8 +42,23 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 {
     DEBUG_BLOCK
 
+    //setStyleSheet("QToolBox::tab { border-radius: 5px; border-color: red; border-style: solid }");
+
     setObjectName( name );
     m_toolBox = new QToolBox( this );
+    //m_toolBox->setFrameShape( QFrame::NoFrame );
+
+    //m_toolBox->setStyleSheet( "{}" );
+
+    setContentsMargins(0,0,0,0);
+    setFrameShape( QFrame::NoFrame );
+
+    QPalette p = m_toolBox->palette();
+    QColor c = p.color( QPalette::Window );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Window, c );
+    m_toolBox->setPalette( p );
+
 
     QList<int> categories = The::playlistManager()->availableCategories();
     debug() << categories.size() << " categories available";
