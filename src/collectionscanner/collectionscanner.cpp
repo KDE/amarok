@@ -288,7 +288,9 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 QString string;
 
                 for( QList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
-                    string += (*it2).first + "AMAROK_MAGIC" + (*it2).second + "AMAROK_MAGIC";
+                {
+                    string += ( string.isEmpty() ? "" : "AMAROK_MAGIC" ) + (*it2).first + "AMAROK_MAGIC" + (*it2).second;
+                }
 
                 AttributeHash attributes;
                 attributes["path"] = imagePath;
