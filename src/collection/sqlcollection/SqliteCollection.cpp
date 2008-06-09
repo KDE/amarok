@@ -100,7 +100,6 @@ SqliteCollection::type() const
 
 QStringList SqliteCollection::query( const QString& statement )
 {
-
     QStringList values;
     int error;
     int rc = 0;

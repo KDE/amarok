@@ -881,34 +881,54 @@ SqlAlbum::tracks()
     else
         return TrackList();
 }
+
 bool
 SqlAlbum::hasImage( int size ) const
 {
-    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
-    QString album = m_name;
-    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+    Q_UNUSED( size );
 
-    if ( artist.isEmpty() && album.isEmpty() )
+    // TODO: cache the result
+
+    QString query = "SELECT images.path FROM images "
+                    "INNER JOIN albums ON albums.image = images.id " 
+                    "WHERE albums.id = %1";
+    query = query.arg( id() );
+
+    QStringList result = m_collection->query( query );
+    if( result.isEmpty() )
         return false;
 
-    QByteArray key = md5sum( artist, album, QString() );
-
-    QDir imageDir( Amarok::saveLocation( "albumcovers/large/" ) );
-    if ( imageDir.exists( key ) ) {
-        return true;
-    }
-    return false;
+    return QFile::exists( result.first() );
 }
+
 QPixmap
 SqlAlbum::image( int size, bool withShadow )
 {
-    QString amazonImage = findAmazonImage( size );
-    if( !amazonImage.isEmpty() && size < 1000 )
-    {
-        return QPixmap( amazonImage );
-    }
+    //FIXME this cache doesn't differentiate between shadowed/unshadowed
+    if( m_images.contains( size ) )
+        return QPixmap( m_images.value( size ) );
+
+    QString result;
+
+    QString cachedImage = findCachedImage( size );
+    if( !cachedImage.isEmpty() )
+        result = cachedImage;
+
     else
-        return Meta::Album::image( size, withShadow );
+    {
+        QString image = findImage( size );
+        if( !image.isEmpty() && size < 1000 )
+            result = image;
+    }
+
+    if( !result.isEmpty() )
+    {
+        m_images.insert( size, result );
+        return QPixmap( result );
+    }
+
+    // No image found, return the default
+    return Meta::Album::image( size, withShadow );
 }
 
 void
@@ -929,6 +949,7 @@ SqlAlbum::setImage( const QImage &image )
 
     notifyObservers();
 }
+
 void
 SqlAlbum::removeImage()
 {
@@ -995,7 +1016,7 @@ SqlAlbum::md5sum( const QString& artist, const QString& album, const QString& fi
 }
 
 QString
-SqlAlbum::findAmazonImage( int size ) const
+SqlAlbum::findCachedImage( int size ) const
 {
     QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
     QString album = m_name;
@@ -1006,25 +1027,81 @@ SqlAlbum::findAmazonImage( int size ) const
 
     QByteArray key = md5sum( artist, album, QString() );
 
-
     QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     // check cache for existing cover
     if ( cacheCoverDir.exists( widthKey + key ) )
         return cacheCoverDir.filePath( widthKey + key );
+    return QString();
+}
 
-    // we need to create a scaled version of this cover
-    QDir imageDir( Amarok::saveLocation( "albumcovers/large/" ) );
-    if ( imageDir.exists( key ) )
+QString
+SqlAlbum::createScaledImage( QString path, int size ) const
+{
+    if( size <= 1 )
+        return QString();
+
+    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
+    QString album = m_name;
+    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+
+    if( artist.isEmpty() && album.isEmpty() )
+        return QString();
+
+    QByteArray key = md5sum( artist, album, QString() );
+
+    QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    QString cachedImagePath = cacheCoverDir.filePath( widthKey + key );
+
+    if( QFile::exists( path ) )
     {
-        if ( size > 1 )
+        // Don't overwrite if it already exists
+        if( !QFile::exists( cachedImagePath ) )
         {
-            QImage img( imageDir.filePath( key ) );
-            img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cacheCoverDir.filePath( widthKey + key ), "PNG" );
-
-            return cacheCoverDir.filePath( widthKey + key );
+            QImage img( path );
+            debug() << "Loading image from " << path << " (exists ? " << QFile::exists( path ) << ") (isNull ? " << img.isNull() << ")";
+            if( img.isNull() )
+                return QString();
+           
+            // resize and save the image
+            img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cachedImagePath, "JPG" );
         }
-        else
-            return imageDir.filePath( key );
+        return cachedImagePath;
+    }
+
+    return QString();
+}
+
+QString
+SqlAlbum::findImage( int size ) const
+{
+    if( m_images.contains( size ) )
+        return m_images.value( size );
+
+    QString fullsize;
+    
+    // get the full size path from the cache if we have it
+    if( m_images.contains( 0 ) ) 
+    {
+        fullsize = m_images.value( 0 );
+    }
+    // if we don't have it, retrieve it from the database
+    else
+    {
+        QString query = "SELECT path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;";
+        QStringList res = m_collection->query( query.arg( m_id ) );
+        if( !res.isEmpty() )
+        {
+            QString fullSize = res.first();
+            if( !fullsize.isEmpty() )
+                m_images.insert( 0, fullsize ); // store the full size version
+        }
+    }
+
+    if( QFile::exists( fullsize ) )
+    {
+        if( size > 1 )
+            return createScaledImage( fullsize, size );
+        return fullsize;
     }
 
     return QString();

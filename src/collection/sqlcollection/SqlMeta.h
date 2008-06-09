@@ -23,6 +23,7 @@
 #include "Meta.h"
 
 #include <QByteArray>
+#include <QHash>
 #include <QMap>
 #include <QMutex>
 #include <QStringList>
@@ -218,8 +219,8 @@ class SqlAlbum : public Meta::Album
         virtual bool hasAlbumArtist() const;
         virtual Meta::ArtistPtr albumArtist() const;
 
-        //updating album images is possible or local tracks, but let's ignore it for now
-        virtual bool hasImage( int size = 1) const;
+        //updating album images is possible for local tracks, but let's ignore it for now
+        virtual bool hasImage( int size = 1 ) const;
         virtual bool canUpdateImage() const { return true; }
         virtual QPixmap image( int size = 1, bool withShadow = false );
         virtual void setImage( const QImage &image );
@@ -236,13 +237,16 @@ class SqlAlbum : public Meta::Album
 
     private:
         QByteArray md5sum( const QString& artist, const QString& album, const QString& file ) const;
-        QString findAmazonImage( int size ) const;
+        QString createScaledImage( QString path, int size ) const;
+        QString findCachedImage( int size ) const;
+        QString findImage( int size ) const;
 
     private:
         SqlCollection* m_collection;
         QString m_name;
         int m_id;
         int m_artistId;
+        QHash<int, QString> m_images; // Cache mapping size -> path. hash used for O(1) insertion and O(1) lookup
         bool m_tracksLoaded;
         Meta::ArtistPtr m_artist;
         Meta::TrackList m_tracks;
