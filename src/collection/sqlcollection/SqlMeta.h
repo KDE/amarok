@@ -239,7 +239,7 @@ class SqlAlbum : public Meta::Album
         QByteArray md5sum( const QString& artist, const QString& album, const QString& file ) const;
         QString createScaledImage( QString path, int size ) const;
         QString findCachedImage( int size ) const;
-        QString findImage( int size ) const;
+        QString findImage( int size );
 
     private:
         SqlCollection* m_collection;

@@ -885,20 +885,9 @@ SqlAlbum::tracks()
 bool
 SqlAlbum::hasImage( int size ) const
 {
+    AMAROK_NOTIMPLEMENTED
     Q_UNUSED( size );
-
-    // TODO: cache the result
-
-    QString query = "SELECT images.path FROM images "
-                    "INNER JOIN albums ON albums.image = images.id " 
-                    "WHERE albums.id = %1";
-    query = query.arg( id() );
-
-    QStringList result = m_collection->query( query );
-    if( result.isEmpty() )
-        return false;
-
-    return QFile::exists( result.first() );
+    return true;
 }
 
 QPixmap
@@ -1072,7 +1061,7 @@ SqlAlbum::createScaledImage( QString path, int size ) const
 }
 
 QString
-SqlAlbum::findImage( int size ) const
+SqlAlbum::findImage( int size )
 {
     if( m_images.contains( size ) )
         return m_images.value( size );
@@ -1091,7 +1080,7 @@ SqlAlbum::findImage( int size ) const
         QStringList res = m_collection->query( query.arg( m_id ) );
         if( !res.isEmpty() )
         {
-            QString fullSize = res.first();
+            fullsize = res.first();
             if( !fullsize.isEmpty() )
                 m_images.insert( 0, fullsize ); // store the full size version
         }
