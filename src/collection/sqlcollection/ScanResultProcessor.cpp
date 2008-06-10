@@ -95,9 +95,8 @@ ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, 
         int artist = artistId( key.first );
         int album  = albumId( key.second, artist );
        
-        // Will automatically add the image path to the database
-        int image  = imageId( path, album );
-        debug() << "Added image id " << image << " with path: " << path;
+        // Will automatically add the image path to the database if needed
+        imageId( path, album );
     }
 }
 

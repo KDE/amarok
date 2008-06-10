@@ -489,7 +489,6 @@ XmlParseJob::run()
                 else if( localname == "image" )
                 {
                     QXmlStreamAttributes attrs = m_reader.attributes();
-                    debug() << "Received an image tag: " << attrs.value( "list" ).toString() << " : " << attrs.value( "path" ).toString();
                     // Deserialize CoverBundle list
                     QStringList list = attrs.value( "list" ).toString().split( "AMAROK_MAGIC" );
                     QList< QPair<QString, QString> > covers;
@@ -500,9 +499,7 @@ XmlParseJob::run()
                         for( int i = 0; i < list.count(); i += 2 )
                             covers += qMakePair( list[i], list[i + 1] );
 
-                        debug() << "Adding image: " << attrs.value( "path" ).toString();
                         processor.addImage( attrs.value( "path" ).toString(), covers );
-                        debug() << "Image added!";
                     }
                 }
             }
