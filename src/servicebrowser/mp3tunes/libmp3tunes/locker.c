@@ -436,6 +436,58 @@ int mp3tunes_locker_login(mp3tunes_locker_object_t *obj, char* username, char* p
     return 0;
 }
 
+int mp3tunes_locker_session_valid(mp3tunes_locker_object_t *obj) {
+
+    request_t *request;
+    CURLcode res;
+    chunk_t *chunk;
+
+    chunk_init(&chunk);
+
+    request = mp3tunes_locker_api_generate_request_valist(obj, MP3TUNES_SERVER_API, "api/v1/accountData", NULL, NULL);
+
+    curl_easy_setopt( request->curl, CURLOPT_URL, request->url );
+    curl_easy_setopt( request->curl, CURLOPT_WRITEFUNCTION, write_chunk_callback );
+    curl_easy_setopt( request->curl, CURLOPT_WRITEDATA, (void *)chunk );
+    curl_easy_setopt( request->curl, CURLOPT_NOBODY, 1 );
+    curl_easy_setopt( request->curl, CURLOPT_USERAGENT, "liboboe/1.0" );
+    curl_easy_setopt( request->curl, CURLOPT_HEADER, 1 );
+    curl_easy_setopt( request->curl, CURLOPT_NOPROGRESS, 1 );
+
+    res = curl_easy_perform(request->curl);
+    curl_easy_cleanup(request->curl);
+
+    if (res != CURLE_OK) {
+        chunk_deinit(&chunk);
+        return -1;
+    }
+
+    if (chunk->data == NULL) {
+        return -1;
+    }
+
+    char name[] = "X-MP3tunes-ErrorNo";
+    char value[] = "401001";
+    char * result;
+    result = strstr (chunk->data, name);
+    if(result != 0)
+    {
+        int i;
+        i=strcspn(result, "\n");
+        char * result1 = ( char * ) malloc( i+1 );
+        strncpy(result1, result, i);
+        /*printf("Header String: %s\n", result1);*/
+        result = strstr (result1, value);
+        if(result1 != 0) /*i.e., value could not be located hence there is no 404 error.*/
+        {
+            return -1; /* session is invalid*/
+        }
+    }
+
+    /*printf("Fetch result:\n%s\n", chunk->data);*/
+    return 0; /* session is valid*/
+}
+
 int mp3tunes_locker_list_init(struct mp3tunes_locker_list_s **list) {
     struct mp3tunes_locker_list_s *l = *list = (struct mp3tunes_locker_list_s*)malloc(sizeof(struct mp3tunes_locker_list_s));
     l->last_id = 0;

@@ -110,6 +110,7 @@ typedef struct {
 int mp3tunes_locker_init( mp3tunes_locker_object_t **obj, char *partner_token );
 int mp3tunes_locker_deinit( mp3tunes_locker_object_t **obj );
 int mp3tunes_locker_login( mp3tunes_locker_object_t *obj, char* username, char* password );
+int mp3tunes_locker_session_valid( mp3tunes_locker_object_t *obj );
 int mp3tunes_locker_artists( mp3tunes_locker_object_t *obj, mp3tunes_locker_artist_list_t **artists_return);
 int mp3tunes_locker_albums_with_artist_id( mp3tunes_locker_object_t *obj, mp3tunes_locker_album_list_t **albums_return, int artist_id);
 int mp3tunes_locker_albums( mp3tunes_locker_object_t *obj, mp3tunes_locker_album_list_t **albums_return);
