@@ -69,6 +69,18 @@ QString Mp3tunesLocker::login( const QString & userName, const QString & passwor
     return QString(); //login failed
 }
 
+bool Mp3tunesLocker::sessionValid() const
+{
+    //result = 0 session valid
+    //result != 0 session invalid
+    int result = mp3tunes_locker_session_valid(mp3tunes_locker);
+    if(result == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
 QList<Mp3tunesLockerArtist> Mp3tunesLocker::artists() const
 {
     DEBUG_BLOCK
@@ -96,7 +108,7 @@ QList<Mp3tunesLockerArtist> Mp3tunesLocker::artists() const
         artist_item = artist_item->next;
     }
     mp3tunes_locker_artist_list_deinit(&artists_list);
-    debug() << "Wrapper deinit Complete";
+   // debug() << "Wrapper deinit Complete";
     return artistsQList;
 }
 

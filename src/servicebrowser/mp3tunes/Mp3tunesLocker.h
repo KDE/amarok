@@ -63,6 +63,13 @@ class Mp3tunesLocker {
         QString login( const QString & userName, const QString & password);
 
         /**
+         * Detects if a session has timed out.
+         * @return true, if session is still valid.
+         *         false, if session is invalid.
+         */
+        bool sessionValid() const;
+
+        /**
          * @return a list of all the artists in the locker
          */
         QList<Mp3tunesLockerArtist> artists() const;

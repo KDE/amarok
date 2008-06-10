@@ -236,9 +236,11 @@ void Mp3tunesServiceQueryMaker::handleResult(const TrackList & tracks)
 void Mp3tunesServiceQueryMaker::fetchArtists()
 {
     DEBUG_BLOCK
-    Mp3tunesArtistFetcher * artistFetcher = new Mp3tunesArtistFetcher( m_locker );
-    connect( artistFetcher, SIGNAL( artistsFetched( QList<Mp3tunesLockerArtist> ) ), this, SLOT( artistDownloadComplete( QList<Mp3tunesLockerArtist> ) ) );
-    ThreadWeaver::Weaver::instance()->enqueue( artistFetcher );
+    if( m_locker->sessionValid() ) {
+        Mp3tunesArtistFetcher * artistFetcher = new Mp3tunesArtistFetcher( m_locker );
+        connect( artistFetcher, SIGNAL( artistsFetched( QList<Mp3tunesLockerArtist> ) ), this, SLOT( artistDownloadComplete( QList<Mp3tunesLockerArtist> ) ) );
+        ThreadWeaver::Weaver::instance()->enqueue( artistFetcher );
+    }
 }
 
 void Mp3tunesServiceQueryMaker::fetchAlbums()
@@ -255,15 +257,18 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
     } else {
         return;
     }
-
+    
     if ( albums.count() > 0 ) {
         handleResult( albums );
-    } else {
+    } else if ( m_locker->sessionValid() ) {
         
         Mp3tunesAlbumWithArtistIdFetcher * albumFetcher = new Mp3tunesAlbumWithArtistIdFetcher( m_locker, m_parentArtistId.toInt() );
         connect( albumFetcher, SIGNAL( albumsFetched( QList<Mp3tunesLockerAlbum> ) ), this, SLOT( albumDownloadComplete( QList<Mp3tunesLockerAlbum> ) ) );
         
         ThreadWeaver::Weaver::instance()->enqueue( albumFetcher );
+    } else {
+        debug() << "Session Invalud";
+        return;
     }
 }
 
@@ -285,10 +290,13 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
 
     if ( tracks.count() > 0 ) {
         handleResult( tracks );
-    } else {
+    } else if ( m_locker->sessionValid() ) {
         Mp3tunesTrackWithAlbumIdFetcher * trackFetcher = new Mp3tunesTrackWithAlbumIdFetcher( m_locker, m_parentAlbumId.toInt() );
         connect( trackFetcher, SIGNAL( tracksFetched( QList<Mp3tunesLockerTrack> ) ), this, SLOT( trackDownloadComplete( QList<Mp3tunesLockerTrack> ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( trackFetcher ); //Go!
+    } else {
+        debug() << "Session Invalud";
+        return;
     }
 }
 
@@ -457,5 +465,3 @@ int Mp3tunesServiceQueryMaker::validFilterMask()
 }
 
 #include "Mp3tunesServiceQueryMaker.moc"
-
-
