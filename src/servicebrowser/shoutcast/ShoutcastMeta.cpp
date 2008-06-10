@@ -25,15 +25,13 @@
 ShoutcastTrack::ShoutcastTrack( const QString &name, const KUrl & playlistUrl )
     : MetaStream::Track( KUrl() )
     , m_playlistUrl( playlistUrl )
+    , m_title( name )
 {
     DEBUG_BLOCK
-
-    m_title = name;
 }
 
 ShoutcastTrack::~ ShoutcastTrack()
-{
-}
+{}
 
 KUrl ShoutcastTrack::playableUrl() const
 {
@@ -56,9 +54,9 @@ KUrl ShoutcastTrack::playableUrl() const
         //debug() << "returning url: " << m_playlist->tracks()[0]->playableUrl();
         //updateUrl( m_playlist->tracks()[0]->playableUrl() );
         return m_playlist->tracks()[0]->playableUrl();
-    
-    } else
-        return KUrl();
+    }
+
+    return KUrl();
 }
 
 Meta::GenrePtr ShoutcastTrack::genre() const
@@ -73,13 +71,12 @@ void ShoutcastTrack::setGenre( Meta::GenrePtr genre )
 
 QString ShoutcastTrack::name() const
 {
-    QString ancestorName = MetaStream::Track::name();
+    const QString ancestorName = MetaStream::Track::name();
     
-    if ( ancestorName.isEmpty() ) {
+    if ( ancestorName.isEmpty() )
         return m_title;
-    } else {
-        return ancestorName;
-    }
+
+    return ancestorName;
 }
 
 QString ShoutcastTrack::url() const
