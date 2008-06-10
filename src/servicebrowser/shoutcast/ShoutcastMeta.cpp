@@ -61,9 +61,8 @@ KUrl ShoutcastTrack::playableUrl() const
         return KUrl();
 }
 
-Meta::GenrePtr ShoutcastTrack::genre()
+Meta::GenrePtr ShoutcastTrack::genre() const
 {
-
     return m_genre;
 }
 

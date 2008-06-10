@@ -29,6 +29,7 @@ A specialized track inheriting from MetaStream::track that only loads the shoutc
 */
 
 class ShoutcastTrack : public MetaStream::Track {
+
 public:
     ShoutcastTrack( const QString &name, const KUrl &playlistUrl );
     ~ShoutcastTrack();
@@ -40,12 +41,11 @@ public:
     virtual QString url() const;
     
     KUrl playableUrl() const;
-    virtual Meta::GenrePtr genre();
-
+    virtual Meta::GenrePtr genre() const;
+    virtual void setGenre( const QString& ) {}; //Keep the compiler happy
     void setGenre( Meta::GenrePtr genre );
 
 private:
-
     mutable Meta::PlaylistPtr m_playlist;
     KUrl m_playlistUrl;
     Meta::GenrePtr m_genre;
