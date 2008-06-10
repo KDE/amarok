@@ -19,26 +19,22 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef IPODCOLLECTION_H
-#define IPODCOLLECTION_H
-
-extern "C" {
-  #include <gpod/itdb.h>
-}
+#ifndef MEDIADEVICECOLLECTION_H
+#define MEDIADEVICECOLLECTION_H
 
 #include "Collection.h"
 #include "MemoryCollection.h"
 
 #include <QtGlobal>
 
-class IpodCollection;
+class MediaDeviceCollection;
 
-class IpodCollectionFactory : public CollectionFactory
+class MediaDeviceCollectionFactory : public CollectionFactory
 {
     Q_OBJECT
     public:
-        IpodCollectionFactory();
-        virtual ~IpodCollectionFactory();
+        MediaDeviceCollectionFactory();
+        virtual ~MediaDeviceCollectionFactory();
 
         virtual void init();
 
@@ -50,13 +46,13 @@ class IpodCollectionFactory : public CollectionFactory
 
 };
 
-class IpodCollection : public Collection, public MemoryCollection
+class MediaDeviceCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
 
-        IpodCollection( const QString &mountPoint);
-        virtual ~IpodCollection();
+        MediaDeviceCollection( const QString &mountPoint);
+        virtual ~MediaDeviceCollection();
 
         virtual void startFullScan();
         virtual QueryMaker* queryMaker();
@@ -72,10 +68,6 @@ class IpodCollection : public Collection, public MemoryCollection
     private slots:
 
     private:
-    /* test if libgpod works */
-    // ipod database
-    Itdb_iTunesDB    *m_itdb;
-    QString           m_mountPoint;
 
 
 };
