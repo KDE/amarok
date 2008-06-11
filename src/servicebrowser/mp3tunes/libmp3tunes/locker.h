@@ -112,11 +112,15 @@ int mp3tunes_locker_deinit( mp3tunes_locker_object_t **obj );
 int mp3tunes_locker_login( mp3tunes_locker_object_t *obj, char* username, char* password );
 int mp3tunes_locker_session_valid( mp3tunes_locker_object_t *obj );
 int mp3tunes_locker_artists( mp3tunes_locker_object_t *obj, mp3tunes_locker_artist_list_t **artists_return);
+int mp3tunes_locker_artists_search( mp3tunes_locker_object_t *obj, mp3tunes_locker_artist_list_t **artists_return, char *query);
 int mp3tunes_locker_albums_with_artist_id( mp3tunes_locker_object_t *obj, mp3tunes_locker_album_list_t **albums_return, int artist_id);
 int mp3tunes_locker_albums( mp3tunes_locker_object_t *obj, mp3tunes_locker_album_list_t **albums_return);
+int mp3tunes_locker_albums_search(  mp3tunes_locker_object_t *obj, mp3tunes_locker_album_list_t **albums_return, char *query);
 int mp3tunes_locker_playlists(mp3tunes_locker_object_t *obj, mp3tunes_locker_playlist_list_t **playlist_return);
+int mp3tunes_locker_search(mp3tunes_locker_object_t *obj, mp3tunes_locker_artist_list_t **artists_return, mp3tunes_locker_album_list_t **albums_return, mp3tunes_locker_track_list_t **tracks_return, char *query);
 
 int mp3tunes_locker_tracks( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return);
+int mp3tunes_locker_tracks_search( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return, char *query);
 int mp3tunes_locker_tracks_with_playlist_id( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return, char* playlist_id);
 int mp3tunes_locker_tracks_with_album_id( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return, int album_id);
 int mp3tunes_locker_tracks_with_artist_id( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return, int artist_id);
