@@ -115,37 +115,10 @@ QList<Mp3tunesLockerArtist> Mp3tunesLocker::artists() const
 QList<Mp3tunesLockerArtist> Mp3tunesLocker::artistsSearch( const QString &query ) const
 {
     DEBUG_BLOCK
-    QList<Mp3tunesLockerArtist> artistsQList; // to be returned
-    mp3tunes_locker_artist_list_t *artists_list;
-    mp3tunes_locker_list_item_t *artist_item;
-     // the value holder
-
-    //convert the query to char*
-    QByteArray baQuery = query.toLatin1();
-    const char *cc_query = baQuery.data();
-    char* c_query = const_cast<char*>(cc_query);
-
-    //get the list of artists
-    mp3tunes_locker_artists_search(mp3tunes_locker, &artists_list, c_query);
-
-    artist_item = artists_list->first; // the current node
-
-    //looping through the list of artists
-    while (artist_item != 0) {
-        // get the artist from the c lib
-        mp3tunes_locker_artist_t *artist = (mp3tunes_locker_artist_t*)artist_item->value;
-        //debug() << "Wrapper Artist: " << &artist->artistName << " " << artist->artistName;
-
-        //wrap it up
-        Mp3tunesLockerArtist artistWrapped(artist);
-        //and stick it in the QList
-        artistsQList.append( artistWrapped );
-        //advance to next artist
-        artist_item = artist_item->next;
-    }
-    mp3tunes_locker_artist_list_deinit(&artists_list);
-   // debug() << "Wrapper deinit Complete";
-    return artistsQList;
+    Mp3tunesSearchResult container;
+    container.searchFor = Mp3tunesSearchResult::ArtistQuery;
+    search(container, query);
+    return container.artistList;
 }
 
 QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albums() const
@@ -178,35 +151,10 @@ QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albums() const
 
 QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albumsSearch( const QString &query ) const
 {
-    QList<Mp3tunesLockerAlbum> albumsQList; // to be returned
-    mp3tunes_locker_album_list_t *albums_list;
-    mp3tunes_locker_list_item_t *album_item;
-
-    //convert the query to char*
-    QByteArray baQuery = query.toLatin1();
-    const char *cc_query = baQuery.data();
-    char* c_query = const_cast<char*>(cc_query);
-
-    //get the list of albums
-    mp3tunes_locker_albums_search(mp3tunes_locker, &albums_list, c_query);
-
-    mp3tunes_locker_album_t *album; // the value holder
-    album_item = albums_list->first; // the current node
-
-    //looping through the list of albums
-    while (album_item != NULL) {
-        // get the album from the c lib
-        album = (mp3tunes_locker_album_t*)album_item->value;
-        //wrap it up
-        Mp3tunesLockerAlbum albumWrapped(album);
-        //and stick it in the QList
-        albumsQList.append( albumWrapped );
-        //advance to next album
-        album_item = album_item->next;
-    }
-    mp3tunes_locker_album_list_deinit(&albums_list);
-
-    return albumsQList;
+    Mp3tunesSearchResult container;
+    container.searchFor = Mp3tunesSearchResult::AlbumQuery;
+    search(container, query);
+    return container.albumList;
 }
 QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albumsWithArtistId( int artistId ) const
 {
@@ -293,10 +241,11 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksSearch( const QString &query ) 
 }
 QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithPlaylistId( const QString & playlistId ) const
 {
-    //convert the playlist Id to char*
-    QByteArray baPlaylist = playlistId.toLatin1();
-    const char *cc_playlist = baPlaylist.data();
-    char* c_playlistid = const_cast<char*>(cc_playlist);
+    //convert Qstring to char*
+    QByteArray baStr = playlistId.toLatin1();
+    const char *cc_str = baStr.data();
+    char* c_playlistid = const_cast<char*>(cc_str);
+
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned
 
     mp3tunes_locker_track_list_t *tracks_list;
@@ -396,7 +345,10 @@ bool Mp3tunesLocker::search( Mp3tunesSearchResult &container, const QString &que
         tracks_list = 0;
     }
 
-    char* c_query = qstringToChar(query);
+    //convert Qstring to char*
+    QByteArray baStr = query.toLatin1();
+    const char *cc_str = baStr.data();
+    char* c_query = const_cast<char*>(cc_str);
 
     int res = mp3tunes_locker_search(mp3tunes_locker, &artists_list, &albums_list, &tracks_list, c_query);
     if(res != 0)
@@ -495,13 +447,4 @@ QString Mp3tunesLocker::serverContent() const
 QString Mp3tunesLocker::serverLogin() const
 {
     return QString( mp3tunes_locker->server_login );
-}
-
-char* Mp3tunesLocker::qstringToChar( const QString &str ) const
-{
-    //convert the query to char*
-    QByteArray baStr = str.toLatin1();
-    const char *cc_str = baStr.data();
-    char* c_str = const_cast<char*>(cc_str);
-    return c_str;
 }

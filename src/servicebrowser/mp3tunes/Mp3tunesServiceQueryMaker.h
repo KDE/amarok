@@ -49,6 +49,8 @@ public:
 
     virtual QueryMaker* reset();
     virtual void run();
+
+   // virtual void runQuery();
     virtual void abortQuery();
 
     virtual QueryMaker* startArtistQuery();
@@ -75,7 +77,6 @@ public:
     void fetchAlbums();
     void fetchTracks();
 
-
 protected:
     Mp3tunesServiceCollection * m_collection;
     Mp3tunesLocker * m_locker;
@@ -89,7 +90,10 @@ protected:
     QString m_parentArtistId;
 
     QString m_artistFilter;
-
+    QString m_albumFilter;
+    QString m_trackFilter;
+    int m_filterType;
+    
 public slots:
 
     void artistDownloadComplete( QList<Mp3tunesLockerArtist> artists );

@@ -150,3 +150,43 @@ void Mp3tunesTrackWithAlbumIdFetcher::completeJob()
     emit( tracksFetched( m_tracks ) );
     deleteLater();
 }
+
+/*  SEARCH MONKEY */
+Mp3tunesSearchMonkey::Mp3tunesSearchMonkey( Mp3tunesLocker * locker, QString query, int searchFor )
+{
+    DEBUG_BLOCK
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    m_locker = locker;
+    m_searchFor = searchFor;
+    m_query = query;
+}
+
+Mp3tunesSearchMonkey::~Mp3tunesSearchMonkey()
+{}
+
+void Mp3tunesSearchMonkey::run()
+{
+    DEBUG_BLOCK
+    if(m_locker != 0) {
+        Mp3tunesSearchResult container;
+        debug() << "Searching query: " << m_query << "    bitmask: " << m_searchFor;
+        container.searchFor = (Mp3tunesSearchResult::SearchType) m_searchFor;
+        if( !m_locker->search(container, m_query) )
+        {
+            //TODO proper error handling
+            debug() << "!!!Search Failed query: " << m_query << "    bitmask: " << m_searchFor;
+        }
+        m_result = container;
+    } else {
+        debug() << "Locker is NULL";
+    }
+}
+
+void Mp3tunesSearchMonkey::completeJob()
+{
+    DEBUG_BLOCK
+    emit( searchComplete( m_result.artistList ) );
+    emit( searchComplete( m_result.albumList ) );
+    emit( searchComplete( m_result.trackList ) );
+    deleteLater();
+}

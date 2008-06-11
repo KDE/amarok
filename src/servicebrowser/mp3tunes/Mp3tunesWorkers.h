@@ -120,4 +120,30 @@ class Mp3tunesTrackWithAlbumIdFetcher : public ThreadWeaver::Job
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerTrack> m_tracks;
 };
+/**
+ * Allows for threading the searching process
+ */
+class Mp3tunesSearchMonkey : public ThreadWeaver::Job
+{
+    Q_OBJECT
+    public:
+        Mp3tunesSearchMonkey( Mp3tunesLocker * locker, QString query, int searchFor );
+        ~Mp3tunesSearchMonkey();
+
+        void run();
+
+    signals:
+        void searchComplete( QList<Mp3tunesLockerArtist> );
+        void searchComplete( QList<Mp3tunesLockerAlbum> );
+        void searchComplete( QList<Mp3tunesLockerTrack> );
+
+    private slots:
+        void completeJob();
+
+    private:
+        QString m_query;
+        int m_searchFor;
+        Mp3tunesLocker* m_locker;
+        Mp3tunesSearchResult m_result;
+};
 #endif

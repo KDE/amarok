@@ -183,7 +183,6 @@ class Mp3tunesLocker {
         QString serverContent() const;
         QString serverLogin() const;
     private:
-        char* qstringToChar( const QString &str ) const;
         mp3tunes_locker_object_t *mp3tunes_locker;
 };
 #endif
