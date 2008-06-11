@@ -1,6 +1,4 @@
 /***************************************************************************
-                         directorylist.h
-                            -------------------
    begin                : Tue Feb 4 2003
    copyright            : (C) 2003 Scott Wheeler <wheeler@kde.org>
                         : (C) 2004 Max Howell <max.howell@methylblue.com>
@@ -16,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROK_DIRECTORYLIST_H
-#define AMAROK_DIRECTORYLIST_H
+#ifndef AMAROK_COLLECTIONSETUP_H
+#define AMAROK_COLLECTIONSETUP_H
 
 #include <KDirLister> //stack allocated
 #include <KUrl>       //stack allocated

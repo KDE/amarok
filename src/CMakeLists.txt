@@ -383,16 +383,16 @@ set(amaroklib_LIB_SRCS
     cuefile.cpp
     dbsetup.ui.h
     dbus/amarokdbushandler.cpp
+    dialogs/CollectionSetup.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/PixmapViewer.cpp
+    dialogs/ScriptManager.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     dialogs/deletedialog.cpp
     dialogs/deviceconfiguredialog.cpp
-    dialogs/ScriptManager.cpp
     dialogs/trackpickerdialog.cpp
     dialogs/transferdialog.cpp
-    directorylist.cpp
     equalizergraph.cpp
     equalizerpresetmanager.cpp
     equalizersetup.cpp

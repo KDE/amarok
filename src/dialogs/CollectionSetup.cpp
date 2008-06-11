@@ -1,6 +1,4 @@
 /***************************************************************************
-                         directorylist.cpp
-                            -------------------
    begin                : Tue Feb 4 2003
    copyright            : (C) 2003 Scott Wheeler <wheeler@kde.org>
                         : (C) 2004 Max Howell <max.howell@methylblue.com>
@@ -16,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "directorylist.h"
+#include "CollectionSetup.h"
 
 #include "amarokconfig.h"
 #include "mountpointmanager.h"
@@ -330,4 +328,5 @@ Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, in
 
 } //namespace Collection
 
-#include "directorylist.moc"
+#include "CollectionSetup.moc"
+

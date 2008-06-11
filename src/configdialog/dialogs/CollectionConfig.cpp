@@ -18,10 +18,11 @@
  ***************************************************************************/
 
 #include "CollectionConfig.h"
+
 #include "Amarok.h"
+#include "CollectionSetup.h"
 #include "amarokconfig.h"
 #include <config-amarok.h>
-#include "directorylist.h"
 
 
 CollectionConfig::CollectionConfig( QWidget* parent )
