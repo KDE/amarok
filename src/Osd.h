@@ -177,7 +177,7 @@ namespace Amarok
         virtual void metadataChanged( Meta::Artist *artist );
 
         // Don't hide baseclass methods - prevent compiler warnings
-        virtual void show() {};
+        virtual void show() { OSDWidget::show(); }
         virtual void metadataChanged( Meta::Genre * ) {};
         virtual void metadataChanged( Meta::Composer * ) {};
         virtual void metadataChanged( Meta::Year * ) {};
