@@ -240,6 +240,7 @@ class SqlAlbum : public Meta::Album
         QString createScaledImage( QString path, int size ) const;
         QString findCachedImage( int size ) const;
         QString findImage( int size );
+        void updateImage( const QString path ) const; // Updates the database to ensure the album has the correct path
 
     private:
         SqlCollection* m_collection;

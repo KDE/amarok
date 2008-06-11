@@ -934,7 +934,10 @@ SqlAlbum::setImage( const QImage &image )
         return;
 
     QByteArray key = md5sum( artist, album, QString() );
-    image.save( Amarok::saveLocation( "albumcovers/large/" ) + key, "JPG" );
+    QString path = Amarok::saveLocation( "albumcovers/large/" ) + key;
+    image.save( path, "JPG" );
+
+    updateImage( path );
 
     notifyObservers();
 }
@@ -1047,7 +1050,6 @@ SqlAlbum::createScaledImage( QString path, int size ) const
         if( !QFile::exists( cachedImagePath ) )
         {
             QImage img( path );
-            debug() << "Loading image from " << path << " (exists ? " << QFile::exists( path ) << ") (isNull ? " << img.isNull() << ")";
             if( img.isNull() )
                 return QString();
            
@@ -1094,6 +1096,32 @@ SqlAlbum::findImage( int size )
     }
 
     return QString();
+}
+
+void
+SqlAlbum::updateImage( const QString path ) const
+{
+    DEBUG_BLOCK
+    QString query = "SELECT id FROM images WHERE path = '%1'";
+    query = query.arg( m_collection->escape( path ) );
+    QStringList res = m_collection->query( query );
+
+    int imageid = -1;
+
+    if( res.isEmpty() )
+    {
+        QString insert = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
+                            .arg( m_collection->escape( path ) );
+        imageid = m_collection->insert( insert, "images" );
+    }
+    else
+        imageid = res[0].toInt();
+
+    if( imageid >= 0 )
+    {
+        query = QString("UPDATE albums SET image = %1" ).arg( QString::number( imageid ) );
+        m_collection->query( query );
+    }
 }
 
 void
