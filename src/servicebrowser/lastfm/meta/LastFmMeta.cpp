@@ -326,17 +326,21 @@ Track::streamName() const
     QStringList elements = d->lastFmUri.split( "/", QString::SkipEmptyParts );
     if( elements.size() >= 2 && elements[0] == "lastfm:" )
     {
+        QString customPart = elements[2];
+        customPart = customPart.replace( "%20", " " );
+        
+        
         if( elements[1] == "globaltags" )
         {
                 // lastfm://globaltag/<tag>
             if( elements.size() >= 3 )
-                return i18n( "Global Tag Radio: %1", elements[2] );
+                return i18n( "Global Tag Radio: \"%1\"", customPart );
         }
         else if( elements[1] == "usertags" )
         {
                 // lastfm://usertag/<tag>
             if( elements.size() >= 3 )
-                return i18n( "User Tag Radio: %1", elements[2] );
+                return i18n( "User Tag Radio: \"%1\"", customPart );
         }
         else if( elements[1] == "artist" )
         {
@@ -344,10 +348,10 @@ Track::streamName() const
             {
                     // lastfm://artist/<artist>/similarartists
                 if( elements[3] == "similarartists" )
-                    return i18n( "Similar Artists to %1", elements[2] );
+                    return i18n( "Similar Artists to \"%1\"", customPart );
                     // lastfm://artist/<artist>/fans
                 else if( elements[3] == "fans" )
-                    return i18n( "Artist Fan Radio: %1", elements[2] );
+                    return i18n( "Artist Fan Radio: \"%1\"", customPart );
             }
         }
         else if( elements[1] == "user" )
