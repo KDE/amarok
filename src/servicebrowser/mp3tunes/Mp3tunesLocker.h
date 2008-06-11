@@ -34,11 +34,15 @@ extern "C" {
  */
 class Mp3tunesSearchResult {
     public:
-        Mp3tunesSearchResult();
-        QList<Mp3tunesLockerArtist> *artistList;
-        QList<Mp3tunesLockerAlbum> *albumList; 
-        QList<Mp3tunesLockerTrack> *trackList;
-
+        enum SearchType {
+            ArtistQuery = 1,
+            AlbumQuery = 2,
+            TrackQuery = 4
+        };
+        QList<Mp3tunesLockerArtist> artistList;
+        QList<Mp3tunesLockerAlbum> albumList;
+        QList<Mp3tunesLockerTrack> trackList;
+        SearchType searchFor;
 };
 
 /**
@@ -149,24 +153,20 @@ class Mp3tunesLocker {
 
         /**
          * Searches the Locker for tracks, albums, and/or artists.
-         * Which type it searches depends on the Mp3tunesSearchResult
-         * passed to it. If the Mp3tunesSearchResult has it's artistList
-         * field set to NULL, then this method will search tracks and
-         * albums.
+         * Which type it searches depends on the Mp3tunesSearchResult's
+         * searchFor passed to it.
          * @pre Mp3tunesSearchResult's fields are initialized properly 
          *      depending on the types (artist, track album) you want searched.
          *      Properly means: If you want a type searched initalize an empty
-         *      QList. If you do not want a type searched set the QList
-         *      pointer = 0;
+         *      QList and set the appropriate SearchType bit.
          * @post The Mp3tunesSearchResult's fields will filled with the 
          *      search results. If the search returned empty, then the
-         *      QLists will be empty. If a type was not searched
-         *      the QList ptr will be NULL.
+         *      QLists will be empty.
          * @param container contains the QList's to be filled with search results
          * @return true if search succeeded. Note: Zero search results is not failure.
          *         false if search failed.
          */
-        bool search( Mp3tunesSearchResult &container, const QString &query );
+        bool search( Mp3tunesSearchResult &container, const QString &query ) const;
 
         //TODO wrapper for mp3tunes_locker_generate_download_url_from_file_key
         //TODO wrapper for mp3tunes_locker_generate_download_url_from_file_key_and_bitrate
@@ -183,7 +183,7 @@ class Mp3tunesLocker {
         QString serverContent() const;
         QString serverLogin() const;
     private:
-        char* qstringToChar( const QString &str );
+        char* qstringToChar( const QString &str ) const;
         mp3tunes_locker_object_t *mp3tunes_locker;
 };
 #endif
