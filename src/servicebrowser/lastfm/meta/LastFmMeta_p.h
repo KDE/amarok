@@ -28,14 +28,16 @@
 #include "libUnicorn/WebService/Request.h"
 #include "Meta.h"
 
+#include <kio/job.h>
+#include <kio/jobclasses.h>
+#include <KStandardDirs>
 
+#include <QDir>
 #include <QImage>
 #include <QList>
 #include <QPixmap>
 #include <QStringList>
 
-#include <kio/job.h>
-#include <kio/jobclasses.h>
 
 
 namespace LastFm
@@ -74,6 +76,7 @@ class Track::Private : public QObject
             : lastFmUri( 0 )
             , m_webServiceRequest( 0 )
         {
+            artist = QString ( "Last.fm" );
         }
 
         ~Private()
@@ -193,7 +196,7 @@ public:
         if( d )
             return d->artist;
         else
-            return QString();
+            return QString( "Last.fm" );
     }
 
     QString prettyName() const
@@ -201,7 +204,7 @@ public:
         if( d )
             return d->artist;
         else
-            return QString();
+            return QString( "Last.fm" );
     }
 
     Track::Private * const d;
@@ -244,10 +247,32 @@ public:
 
     QPixmap image( int size, bool withShadow )
     {
-        if( !d || d->albumArt.isNull() )
-            return Meta::Album::image( size, withShadow );
-        //TODO implement shadow
-        //TODO improve this
+        DEBUG_BLOCK
+        if( !d || d->albumArt.isNull() ) {
+            //return Meta::Album::image( size, withShadow );
+            //TODO implement shadow
+            //TODO improve this
+
+            if ( size <= 1 )
+                size = AmarokConfig::coverPreviewSize();
+            QString sizeKey = QString::number( size ) + '@';
+
+            QImage img;
+            QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+            if( cacheCoverDir.exists( sizeKey + "lastfm-default-cover.png" ) )
+                img = QImage( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ) );
+            else
+            {
+                QImage orgImage = QImage( KStandardDirs::locate( "data", "amarok/images/lastfm-default-cover.png" ) ); //optimise this!
+                //scaled() does not change the original image but returns a scaled copy
+                img = orgImage.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+                img.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );
+            }
+
+            return QPixmap::fromImage( img );
+        }
+            
+            
         if( d->albumArt.width() != size )
             return d->albumArt.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
         else

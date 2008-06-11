@@ -488,7 +488,10 @@ QString LastFm::Track::sourceDescription()
 
 QPixmap LastFm::Track::emblem()
 {
-    return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-lastfm.png" ) );
+    if (  !d->track.isEmpty() )
+        return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-lastfm.png" ) );
+    else
+        return QPixmap();
 }
 
 QList< PopupDropperAction * > LastFm::Track::nowPlayingActions() const
