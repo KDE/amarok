@@ -112,6 +112,42 @@ QList<Mp3tunesLockerArtist> Mp3tunesLocker::artists() const
     return artistsQList;
 }
 
+QList<Mp3tunesLockerArtist> Mp3tunesLocker::artistsSearch( const QString &query ) const
+{
+    DEBUG_BLOCK
+    QList<Mp3tunesLockerArtist> artistsQList; // to be returned
+    mp3tunes_locker_artist_list_t *artists_list;
+    mp3tunes_locker_list_item_t *artist_item;
+     // the value holder
+
+    //convert the query to char*
+    QByteArray baQuery = query.toLatin1();
+    const char *cc_query = baQuery.data();
+    char* c_query = const_cast<char*>(cc_query);
+
+    //get the list of artists
+    mp3tunes_locker_artists_search(mp3tunes_locker, &artists_list, c_query);
+
+    artist_item = artists_list->first; // the current node
+
+    //looping through the list of artists
+    while (artist_item != 0) {
+        // get the artist from the c lib
+        mp3tunes_locker_artist_t *artist = (mp3tunes_locker_artist_t*)artist_item->value;
+        //debug() << "Wrapper Artist: " << &artist->artistName << " " << artist->artistName;
+
+        //wrap it up
+        Mp3tunesLockerArtist artistWrapped(artist);
+        //and stick it in the QList
+        artistsQList.append( artistWrapped );
+        //advance to next artist
+        artist_item = artist_item->next;
+    }
+    mp3tunes_locker_artist_list_deinit(&artists_list);
+   // debug() << "Wrapper deinit Complete";
+    return artistsQList;
+}
+
 QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albums() const
 {
     QList<Mp3tunesLockerAlbum> albumsQList; // to be returned
@@ -140,6 +176,38 @@ QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albums() const
     return albumsQList;
 }
 
+QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albumsSearch( const QString &query ) const
+{
+    QList<Mp3tunesLockerAlbum> albumsQList; // to be returned
+    mp3tunes_locker_album_list_t *albums_list;
+    mp3tunes_locker_list_item_t *album_item;
+
+    //convert the query to char*
+    QByteArray baQuery = query.toLatin1();
+    const char *cc_query = baQuery.data();
+    char* c_query = const_cast<char*>(cc_query);
+
+    //get the list of albums
+    mp3tunes_locker_albums_search(mp3tunes_locker, &albums_list, c_query);
+
+    mp3tunes_locker_album_t *album; // the value holder
+    album_item = albums_list->first; // the current node
+
+    //looping through the list of albums
+    while (album_item != NULL) {
+        // get the album from the c lib
+        album = (mp3tunes_locker_album_t*)album_item->value;
+        //wrap it up
+        Mp3tunesLockerAlbum albumWrapped(album);
+        //and stick it in the QList
+        albumsQList.append( albumWrapped );
+        //advance to next album
+        album_item = album_item->next;
+    }
+    mp3tunes_locker_album_list_deinit(&albums_list);
+
+    return albumsQList;
+}
 QList<Mp3tunesLockerAlbum> Mp3tunesLocker::albumsWithArtistId( int artistId ) const
 {
     QList<Mp3tunesLockerAlbum> albumsQList; // to be returned
@@ -216,6 +284,34 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracks() const
     return tracksQList;
 }
 
+QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksSearch( const QString &query ) const
+{
+    QList<Mp3tunesLockerTrack> tracksQList; // to be returned
+
+    mp3tunes_locker_track_list_t *tracks_list;
+    mp3tunes_locker_list_item_t *track_item;
+    mp3tunes_locker_track_t *track;
+
+    //convert the query to char*
+    QByteArray baQuery = query.toLatin1();
+    const char *cc_query = baQuery.data();
+    char* c_query = const_cast<char*>(cc_query);
+
+    mp3tunes_locker_tracks_search(mp3tunes_locker, &tracks_list, c_query);
+
+    track_item = tracks_list->first;
+    while (track_item != NULL) {
+        track = (mp3tunes_locker_track_t*)track_item->value;
+
+        Mp3tunesLockerTrack trackWrapped(track);
+        tracksQList.append(trackWrapped);
+
+        track_item = track_item->next;
+    }
+    mp3tunes_locker_track_list_deinit(&tracks_list);
+
+    return tracksQList;
+}
 QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithPlaylistId( const QString & playlistId ) const
 {
     //convert the playlist Id to char*
@@ -292,6 +388,93 @@ QList<Mp3tunesLockerTrack> Mp3tunesLocker::tracksWithArtistId( int artistId ) co
     return tracksQList;
 }
 
+Mp3tunesSearchResult::Mp3tunesSearchResult()
+{
+    artistList = 0;
+    albumList = 0;
+    trackList = 0;
+}
+
+bool Mp3tunesLocker::search( Mp3tunesSearchResult &container, const QString &query )
+{
+
+    // setup vars
+    mp3tunes_locker_artist_list_t *artists_list;
+    mp3tunes_locker_list_item_t *artist_item;
+    mp3tunes_locker_artist_t *artist;
+
+    mp3tunes_locker_album_list_t *albums_list;
+    mp3tunes_locker_list_item_t *album_item;
+    mp3tunes_locker_album_t *album;
+
+    mp3tunes_locker_track_list_t *tracks_list;
+    mp3tunes_locker_list_item_t *track_item;
+    mp3tunes_locker_track_t *track;
+
+    if( container.artistList == 0 )
+    {
+        artists_list = 0;
+    }
+    if( container.albumList == 0 )
+    {
+        albums_list = 0;
+    }
+    if( container.trackList == 0 )
+    {
+        tracks_list = 0;
+    }
+
+    char* c_query = qstringToChar(query);
+
+    int res = mp3tunes_locker_search(mp3tunes_locker, &artists_list, &albums_list, &tracks_list, c_query);
+    if(res != 0)
+    {
+        return false;
+    }
+    if( container.artistList != 0 )
+    {
+        artist_item = artists_list->first;
+        while (artist_item != NULL) {
+            artist = (mp3tunes_locker_artist_t*)artist_item->value;
+
+            Mp3tunesLockerArtist artistWrapped(artist);
+            container.artistList->append(artistWrapped);
+
+            artist_item = artist_item->next;
+        }
+        mp3tunes_locker_artist_list_deinit(&artists_list);
+    }
+
+    if( container.albumList != 0 )
+    {
+        album_item = albums_list->first;
+        while (album_item != NULL) {
+            album = (mp3tunes_locker_album_t*)album_item->value;
+
+            Mp3tunesLockerAlbum albumWrapped(album);
+            container.albumList->append(albumWrapped);
+
+            album_item = album_item->next;
+        }
+        mp3tunes_locker_album_list_deinit(&albums_list);
+    }
+
+    if( container.trackList != 0 )
+    {
+        track_item = tracks_list->first;
+        while (track_item != NULL) {
+            track = (mp3tunes_locker_track_t*)track_item->value;
+
+            Mp3tunesLockerTrack trackWrapped(track);
+            container.trackList->append(trackWrapped);
+
+            track_item = track_item->next;
+        }
+        mp3tunes_locker_track_list_deinit(&tracks_list);
+    }
+    return true;
+}
+
 QString Mp3tunesLocker::userName() const
 {
     return QString( mp3tunes_locker->username );
@@ -340,4 +523,13 @@ QString Mp3tunesLocker::serverContent() const
 QString Mp3tunesLocker::serverLogin() const
 {
     return QString( mp3tunes_locker->server_login );
+}
+
+char* Mp3tunesLocker::qstringToChar( const QString &str )
+{
+    //convert the query to char*
+    QByteArray baStr = str.toLatin1();
+    const char *cc_str = baStr.data();
+    char* c_str = const_cast<char*>(cc_str);
+    return c_str;
 }
