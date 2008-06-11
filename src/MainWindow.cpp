@@ -779,7 +779,7 @@ MainWindow::createActions()
     ac->addAction( "Toggle Main Window", action );
     connect( action, SIGNAL( triggered() ), SLOT( showHide() ) );
 
-    action = new KAction( i18n( "Show OSD" ), this );
+    action = new KAction( i18n( "Show On Screen Display" ), this );
     action->setObjectName( "showOSD" );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
     ac->addAction( "showOsd", action );
