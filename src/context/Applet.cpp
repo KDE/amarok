@@ -29,7 +29,7 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
 QFont Context::Applet::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
 {
     Q_UNUSED( text );
-    int size = 12; // start here, shrink if needed
+    int size = 13; // start here, shrink if needed
     QFont font( QString(), size, QFont::Light );
     font.setStyleHint( QFont::SansSerif );
     font.setStyleStrategy( QFont::PreferAntialias );

@@ -85,7 +85,9 @@ private:
     QPixmap m_bigCover;
     QPixmap m_sourceEmblemPixmap;
 
-    bool resizeCover(QPixmap cover);
+    bool resizeCover( QPixmap cover, qreal margin, qreal width );
+
+    int m_maxTextWidth;
 
 
     //keep this safe as we might need it when resizing

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
+   xmlns:ns="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:cc="http://web.resource.org/cc/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,13 +15,19 @@
    height="161.99736"
    id="svg2581"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.45.1"
    sodipodi:docname="amarok-currenttrack.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:docbase="/home/hydrogen/kde/src/amarok/src/context/applets/currenttrack">
+   sodipodi:docbase="/home/amarok-dev/amarok/src/context/applets/currenttrack">
   <metadata
      id="metadata138">
     <rdf:RDF>
+      <ns:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </ns:Work>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
@@ -41,12 +48,12 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="316.48249"
-     inkscape:cy="87.498918"
-     inkscape:window-x="1467"
-     inkscape:window-y="59"
-     inkscape:current-layer="g5561"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="309.04576"
+     inkscape:cy="40.594689"
+     inkscape:window-x="206"
+     inkscape:window-y="20"
+     inkscape:current-layer="background"
      showgrid="true" />
   <defs
      id="defs2583">
@@ -495,29 +502,29 @@
        id="rect4371"
        style="opacity:0;fill:#ffffff;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0" />
     <g
-       transform="translate(-34,-3)"
+       transform="matrix(1.1617647,0,0,1,-115.38236,-3)"
        id="g5561">
       <rect
          style="opacity:0;fill:#00a700;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="track"
          y="34.99736"
-         x="269"
+         x="305.89874"
          height="30"
-         width="265" />
+         width="228.10124" />
       <rect
          style="opacity:0;fill:#ad0000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="artist"
          y="4.9973602"
-         x="269"
+         x="305.89874"
          height="30"
-         width="265" />
+         width="228.10124" />
       <rect
          style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="album"
          y="64.99736"
-         x="269"
+         x="305.89874"
          height="30"
-         width="265" />
+         width="228.10126" />
       <rect
          style="opacity:0;fill:#e2eb00;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="numplayed"
@@ -540,42 +547,42 @@
          height="30"
          width="115" />
       <rect
-         style="opacity:0;fill:#c18a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none;stroke-opacity:0"
+         style="opacity:0;fill:#c18a85;fill-opacity:1;stroke:none;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke-opacity:0"
          id="artistlabel"
          width="70"
          height="30"
          x="194"
          y="4.9973602" />
       <rect
-         style="opacity:0;fill:#888a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none"
+         style="opacity:0;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
          id="tracklabel"
          width="70"
          height="30"
          x="194"
          y="34.99736" />
       <rect
-         style="opacity:0;fill:#883885;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none"
+         style="opacity:0;fill:#883885;fill-opacity:1;stroke:none;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
          id="albumlabel"
          width="70"
          height="30"
          x="194"
          y="64.99736" />
       <rect
-         style="opacity:0;fill:#888a85;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none"
+         style="opacity:0;fill:#888a85;fill-opacity:1;stroke:none;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
          id="scorelabel"
          width="30"
          height="30"
          x="194"
          y="129.99736" />
       <rect
-         style="opacity:0;fill:#888ae8;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none"
+         style="opacity:0;fill:#888ae8;fill-opacity:1;stroke:none;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
          id="numplayedlabel"
          width="30"
          height="30"
          x="289"
          y="129.99736" />
       <rect
-         style="opacity:0;fill:#881485;fill-opacity:1;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0;stroke:none"
+         style="opacity:0;fill:#881485;fill-opacity:1;stroke:none;stroke-width:3.76300001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.763, 3.763;stroke-dashoffset:0"
          id="playedlastlabel"
          width="30"
          height="30"

@@ -144,51 +144,92 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 {
     prepareGeometryChange();
 
-    if( constraints & Plasma::SizeConstraint )
-        m_theme->resize(size().toSize());
+    /*if( constraints & Plasma::SizeConstraint )
+         m_theme->resize(size().toSize());*/
+
+    //bah! do away with trying to get postions from an svg as this is proving wildly inaccurate
+    qreal margin = 4.0;
+    qreal albumWidth = size().toSize().height() - 2.0 * margin;
+    resizeCover( m_bigCover, margin, albumWidth );
+
+    qreal labelX = albumWidth + 2.0 * margin;
+    qreal labelWidth = size().toSize().width() / 6.0;
+    qreal textX = labelX + labelWidth + margin;
+
+    qreal textHeight = ( ( size().toSize().height() - 6 * margin )  / 5.0 ) ;
+    qreal textWidth = size().toSize().width() - ( textX + margin );
 
     // here we put all of the text items into the correct locations
-    m_titleLabel->setPos( m_theme->elementRect( "tracklabel" ).topLeft() );
-    m_artistLabel->setPos( m_theme->elementRect( "artistlabel" ).topLeft() );
-    m_albumLabel->setPos( m_theme->elementRect( "albumlabel" ).topLeft() );
-    m_scoreLabel->setPos( m_theme->elementRect( "scorelabel" ).topLeft() );
-    m_numPlayedLabel->setPos( m_theme->elementRect( "numplayedlabel" ).topLeft() );
-    m_playedLastLabel->setPos( m_theme->elementRect( "playedlastlabel" ).topLeft() );
+    m_titleLabel->setPos( QPointF( labelX, margin ) );
+    m_artistLabel->setPos( QPointF( labelX, margin * 2 + textHeight ) );
+    m_albumLabel->setPos( QPointF( labelX, margin * 3 + textHeight * 2.0 ) );
+    m_title->setPos( QPointF( textX, margin ) );
+    m_artist->setPos(  QPointF( textX, margin * 2 + textHeight ) );
+    m_album->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 ) );
 
-    m_title->setPos( m_theme->elementRect( "track" ).topLeft() );
-    m_artist->setPos( m_theme->elementRect( "artist" ).topLeft() );
-    m_album->setPos( m_theme->elementRect( "album" ).topLeft() );
-    m_score->setPos( m_theme->elementRect( "score" ).topLeft() );
-    m_numPlayed->setPos( m_theme->elementRect( "numplayed" ).topLeft() );
-    m_playedLast->setPos( m_theme->elementRect( "playedlast" ).topLeft() );
-    m_albumCover->setPos( m_theme->elementRect( "albumart" ).topLeft() );
-    m_sourceEmblem->setPos( m_theme->elementRect( "albumart" ).topLeft() );
+
+
+    int runningX = labelX;
+    
+    m_scoreLabel->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
+    runningX += textHeight + margin;
+    m_score->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
+    runningX += size().toSize().width() / 10.0;
+
+    m_numPlayedLabel->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
+    runningX += textHeight + margin;
+    m_numPlayed->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
+    runningX += size().toSize().width() / 10.0;
+    
+    m_playedLastLabel->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
+    runningX += textHeight + margin;
+    m_playedLast->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
+   
+    m_sourceEmblem->setPos( QPointF( margin, margin ) );
+
 
     QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
-    m_title->setText( truncateTextToFit( title, m_title->font(), m_theme->elementRect( "track" ) ) );
-
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-    m_artist->setText( truncateTextToFit( artist, m_artist->font(), m_theme->elementRect( "artist" ) ) );
-
     QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-    m_album->setText( truncateTextToFit( album, m_album->font(), m_theme->elementRect( "album" ) ) );
+    QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? m_currentInfo[ Meta::Field::LAST_PLAYED ].toString() : QString();
+
+    QFont textFont = shrinkTextSizeToFit( title, QRectF( 0, 0, textWidth, textHeight ) );
+    QFont labeFont = textFont;
+    labeFont.setBold( true );
+    
+    m_maxTextWidth = size().toSize().width() - m_title->pos().x();
+
+    m_titleLabel->setFont( labeFont );
+    m_artistLabel->setFont( labeFont );
+    m_albumLabel->setFont( labeFont );
+    m_title->setFont( textFont );
+    m_artist->setFont( textFont );
+    m_album->setFont( textFont );
+    m_score->setFont( textFont );
+    m_numPlayed->setFont( textFont );
+    m_playedLast->setFont( textFont );
+
+
+    m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );
+    m_artist->setText( truncateTextToFit( artist, m_artist->font(), QRectF( 0, 0, textWidth, 30 ) ) );
+    m_album->setText( truncateTextToFit( album, m_album->font(), QRectF( 0, 0, textWidth, 30 ) ) );
+
+    m_playedLast->setText( truncateTextToFit( lastPlayed, m_playedLast->font(), QRectF( 0, 0, runningX - size().toSize().width(), 30 ) ) );
 
     //calc scale factor..
     m_scoreLabel->resetTransform();
     m_numPlayedLabel->resetTransform();
     m_playedLastLabel->resetTransform();
 
-    float currentHeight = m_scoreLabel->boundingRect().height();
-    float desiredHeight = m_theme->elementRect( "scorelabel" ).height();
-
-    float scaleFactor = desiredHeight / currentHeight;
-    //float scaleFactor = currentHeight / desiredHeight;
+    qreal currentHeight = m_scoreLabel->boundingRect().height();
+    qreal desiredHeight = textHeight;
+    qreal scaleFactor = desiredHeight / currentHeight;
 
     m_scoreLabel->scale( scaleFactor, scaleFactor );
     m_numPlayedLabel->scale( scaleFactor, scaleFactor );
     m_playedLastLabel->scale( scaleFactor, scaleFactor );
 
-    resizeCover( m_bigCover );
+
 
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 }
@@ -220,7 +261,7 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
 
 
-    if(!resizeCover(m_bigCover))
+    if( !resizeCover( m_bigCover, 4.0, size().toSize().height() - 8.0 ) )
     {
         warning() << "album cover of current track is null, did you forget to call Meta::Album::image?";
     }
@@ -288,20 +329,20 @@ void CurrentTrack::configAccepted() // SLOT
 }
 
 
-bool CurrentTrack::resizeCover( QPixmap cover )
+bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
 {
     if( !cover.isNull() )
     {
-        QSizeF rectSize = m_theme->elementRect( "albumart" ).size();
-        QPointF rectPos = m_theme->elementRect( "albumart" ).topLeft();
-        int size = qMin( rectSize.width(), rectSize.height() );
+        //QSizeF rectSize = m_theme->elementRect( "albumart" ).size();
+        //QPointF rectPos = m_theme->elementRect( "albumart" ).topLeft();
+        qreal size = width;
         qreal pixmapRatio = (qreal)cover.width()/size;
 
         qreal moveByX = 0.0;
         qreal moveByY = 0.0;
 
         //center the cover : if the cover is not squared, we get the missing pixels and center
-        if( cover.height()/pixmapRatio > rectSize.height() )
+        if( cover.height()/pixmapRatio > width )
         {
             cover = cover.scaledToHeight( size, Qt::SmoothTransformation );
             moveByX = qAbs( cover.rect().width() - cover.rect().height() ) / 2.0;
@@ -311,8 +352,8 @@ bool CurrentTrack::resizeCover( QPixmap cover )
             cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
             moveByY = qAbs( cover.rect().height() - cover.rect().width() ) / 2.0;
         }
-        m_albumCover->setPos( rectPos.x()+ moveByX, rectPos.y() + moveByY );
-        m_sourceEmblem->setPos( rectPos.x()+ moveByX, rectPos.y() + moveByY );
+        m_albumCover->setPos( margin + moveByX, margin + moveByY );
+        m_sourceEmblem->setPos( margin + moveByX, margin + moveByY );
 
         m_albumCover->setPixmap( cover );
         m_sourceEmblem->setPixmap( m_sourceEmblemPixmap );
