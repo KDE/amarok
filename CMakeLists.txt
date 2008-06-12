@@ -76,6 +76,12 @@ macro_log_feature( LIBXML2_FOUND "libxml2" "LibXML2 is an XML parser required by
 find_package(KdeMultimedia)
 macro_log_feature( KDEMULTIMEDIA_FOUND "kdemultimedia" "Support for playing audio cds" "http://www.kde.org" FALSE "4.0" "")
 
+macro_optional_find_package(Soprano)
+macro_log_feature( Soprano_FOUND "soprano" "Soprano is a RDF framework required by Nepomuk Collection" "http://soprano.sourceforge.net" FALSE "2.0.3" "")
+
+macro_optional_find_package(Nepomuk)
+macro_log_feature( NEPOMUK_FOUND "nepomuk" "Nepomuk Libraries required by Nepomuk Collection (part of kdelibs)" "http://www.kde.org" FALSE "4.1" "")
+
 
 macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
@@ -89,3 +95,9 @@ configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h
 add_subdirectory( src )
 
 macro_display_feature_log()
+
+
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+
+

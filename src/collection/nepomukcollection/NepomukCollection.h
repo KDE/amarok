@@ -24,6 +24,8 @@
 
 #include <QString>
 
+#include <Soprano/Client/DBusClient>
+
 class NepomukCollectionFactory : public CollectionFactory
 {
     Q_OBJECT
@@ -37,13 +39,18 @@ class NepomukCollectionFactory : public CollectionFactory
 class NepomukCollection : public Collection
 {
 public:
-    NepomukCollection();
+    NepomukCollection( Soprano::Client::DBusClient* );
     virtual ~NepomukCollection();
     
     virtual QueryMaker* queryMaker();
     
     virtual QString collectionId() const;
     virtual QString prettyName() const;
+    
+    virtual void lostDBusConnection();
+
+private:
+    Soprano::Client::DBusClient *m_client;
 };
 
 #endif /*NEPOMUKCOLLECTION_H_*/

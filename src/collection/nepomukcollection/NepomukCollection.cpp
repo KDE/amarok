@@ -34,29 +34,40 @@ AMAROK_EXPORT_PLUGIN( NepomukCollectionFactory )
 void
 NepomukCollectionFactory::init()
 {
-    if ( Nepomuk::ResourceManager::instance()->init() == 0 )
+    Soprano::Client::DBusClient* client = new Soprano::Client::DBusClient( "org.kde.NepomukStorage" );
+
+    // TODO: use QLocalSocket 
+    //if ( Nepomuk::ResourceManager::instance()->init() == 0 )
+    if (client->isValid())
     {
-        Collection* collection = new NepomukCollection();
+        Collection* collection = new NepomukCollection(client);
         emit newCollection( collection );
     }
     else
+    {
         warning() << "Nepomuk is not running, can not init Nepomuk Collection" << endl;
+        delete client;
+    }
 }
 
 // NepomukCollection
 
-NepomukCollection::NepomukCollection()
+NepomukCollection::NepomukCollection(Soprano::Client::DBusClient *client)
+    :   Collection() 
+    ,   m_client( client )
 {
+    
 }
 
 NepomukCollection::~NepomukCollection()
 {
+    delete m_client;
 }
 
 QueryMaker*
 NepomukCollection::queryMaker()
 {
-	return new NepomukQueryMaker();
+	return new NepomukQueryMaker(this, m_client);
 }
 
 QString
@@ -70,5 +81,13 @@ NepomukCollection::prettyName() const
 {
 	return i18n("Nepomuk Collection");
 }
+
+void
+NepomukCollection::lostDBusConnection()
+{
+    debug() << "removing NepomukCollection, lost dbus connection" << endl;
+    emit remove();
+}
+
 
 #include "NepomukCollection.moc"

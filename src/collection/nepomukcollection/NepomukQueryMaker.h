@@ -21,16 +21,20 @@
 
 #include "QueryMaker.h"
 
-#include "amarok_export.h"
+#include <QString>
+
+#include <threadweaver/Job.h>
+#include <Soprano/Client/DBusClient>
 
 class NepomukCollection;
+class NepomukWorkerThread;
 
-class /*AMAROK_EXPORT*/ NepomukQueryMaker : public QueryMaker
+class NepomukQueryMaker : public QueryMaker
 {
     Q_OBJECT
     
 	public:
-	    NepomukQueryMaker();
+	    NepomukQueryMaker(NepomukCollection *collection, Soprano::Client::DBusClient *client);
 	    virtual ~NepomukQueryMaker();
 	
 	    virtual QueryMaker* reset();
@@ -77,6 +81,22 @@ class /*AMAROK_EXPORT*/ NepomukQueryMaker : public QueryMaker
 	    virtual QueryMaker* endAndOr();
 	
 	    //virtual int validFilterMask();
+	    
+	    virtual QString buildQuery() const;
+	    virtual void doQuery(const QString& );
+	
+    public slots:
+        void done( ThreadWeaver::Job * job );
+	    
+	private:
+
+        enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
+        QueryType queryType;
+        QString queryMatch;
+        bool resultAsDataPtrs;
+        NepomukWorkerThread *worker;
+        Soprano::Client::DBusClient *client;
+        NepomukCollection *m_collection;
 };
 
 #endif /*NEPOMUKQUERYMAKER_H_*/
