@@ -44,8 +44,7 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &username, co
 
 
 ScrobblerAdapter::~ScrobblerAdapter()
-{
-}
+{}
 
 
 void
@@ -104,6 +103,8 @@ ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
 void
 ScrobblerAdapter::skip()
 {
+    DEBUG_BLOCK
+
     m_current.setRatingFlag( TrackInfo::Skipped );
 }
 
@@ -111,12 +112,16 @@ ScrobblerAdapter::skip()
 void
 ScrobblerAdapter::love()
 {
+    DEBUG_BLOCK
+
     m_current.setRatingFlag( TrackInfo::Loved );
 }
 
 void
 ScrobblerAdapter::slotTrackLoved( Meta::TrackPtr track )
 {
+    DEBUG_BLOCK
+
     TrackInfo trackInfo;
     trackInfo.setTrack( track->name() );
     if( track->artist() )
@@ -130,6 +135,8 @@ ScrobblerAdapter::slotTrackLoved( Meta::TrackPtr track )
 void
 ScrobblerAdapter::ban()
 {
+    DEBUG_BLOCK
+
     m_current.setRatingFlag( TrackInfo::Banned );
 }
 

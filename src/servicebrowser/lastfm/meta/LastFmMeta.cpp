@@ -398,13 +398,20 @@ Track::streamName() const
 void
 Track::love()
 {
-    if( The::lastFmService()->scrobbler() && The::lastFmService()->radio()->currentTrack() == this )
-        The::lastFmService()->scrobbler()->love();
+    DEBUG_BLOCK
+
+    if( The::lastFmService()->radio()->currentTrack() == this )
+    {
+        if( The::lastFmService()->scrobbler() )
+            The::lastFmService()->scrobbler()->love();
+    }
 }
 
 void
 Track::ban()
 {
+    DEBUG_BLOCK
+
     if( The::lastFmService()->radio()->currentTrack() == this )
     {
         if( The::lastFmService()->scrobbler() )
@@ -416,6 +423,8 @@ Track::ban()
 void
 Track::skip()
 {
+    DEBUG_BLOCK
+
     if( The::lastFmService()->radio()->currentTrack() == this )
     {
         if( The::lastFmService()->scrobbler() )

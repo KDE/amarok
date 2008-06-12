@@ -150,6 +150,8 @@ LastFmService::polish()
 void
 LastFmService::love()
 {
+    DEBUG_BLOCK
+
     LastFm::TrackPtr track = radio()->currentTrack();
     if( track )
         track->love();
@@ -159,6 +161,8 @@ LastFmService::love()
 void
 LastFmService::ban()
 {
+    DEBUG_BLOCK
+
     LastFm::TrackPtr track = radio()->currentTrack();
     if( track )
         track->ban();
@@ -168,6 +172,8 @@ LastFmService::ban()
 void
 LastFmService::skip()
 {
+    DEBUG_BLOCK
+
     LastFm::TrackPtr track = radio()->currentTrack();
     if( track )
         track->skip();

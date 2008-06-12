@@ -247,7 +247,9 @@ public:
 
     QPixmap image( int size, bool withShadow )
     {
+        Q_UNUSED( withShadow )
         DEBUG_BLOCK
+
         if( !d || d->albumArt.isNull() ) {
             //return Meta::Album::image( size, withShadow );
             //TODO implement shadow
