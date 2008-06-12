@@ -79,7 +79,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     //transparency
     QPalette p = palette();
     QColor c = p.color( QPalette::Base );
-    c.setAlpha( 77 );
+    c.setAlpha( 0 );
     p.setColor( QPalette::Base, c );
 
     c = p.color( QPalette::AlternateBase );

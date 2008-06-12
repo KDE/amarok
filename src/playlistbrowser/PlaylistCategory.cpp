@@ -48,11 +48,18 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     vLayout->setContentsMargins(0,0,0,0);
     vLayout->addWidget( playlistView );
 
-    //make background transparent
+    playlistView->setAlternatingRowColors( true );
+
+    //transparency
     QPalette p = playlistView->palette();
-    QColor c = p.color( QPalette::Window );
+    QColor c = p.color( QPalette::Base );
     c.setAlpha( 0 );
     p.setColor( QPalette::Base, c );
+
+    c = p.color( QPalette::AlternateBase );
+    c.setAlpha( 77 );
+    p.setColor( QPalette::AlternateBase, c );
+
     playlistView->setPalette( p );
 
 

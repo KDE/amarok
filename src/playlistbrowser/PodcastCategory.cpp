@@ -98,10 +98,18 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
     m_podcastTreeView->header()->hide();
 
 
+    m_podcastTreeView->setAlternatingRowColors( true );
+
+    //transparency
     QPalette p = m_podcastTreeView->palette();
-    QColor c = p.color( QPalette::Window );
+    QColor c = p.color( QPalette::Base );
     c.setAlpha( 0 );
     p.setColor( QPalette::Base, c );
+
+    c = p.color( QPalette::AlternateBase );
+    c.setAlpha( 77 );
+    p.setColor( QPalette::AlternateBase, c );
+
     m_podcastTreeView->setPalette( p );
     
     //m_podcastTreeView->setItemDelegate( new PodcastCategoryDelegate(m_podcastTreeView) );
