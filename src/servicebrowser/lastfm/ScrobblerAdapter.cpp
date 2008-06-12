@@ -115,6 +115,9 @@ ScrobblerAdapter::love()
     DEBUG_BLOCK
 
     m_current.setRatingFlag( TrackInfo::Loved );
+
+    LoveRequest* request = new LoveRequest( m_current );
+    request->start();
 }
 
 void
@@ -128,7 +131,9 @@ ScrobblerAdapter::slotTrackLoved( Meta::TrackPtr track )
         trackInfo.setArtist( track->artist()->name() );
     if( track->album() )
         trackInfo.setAlbum( track->album()->name() );
-    (new LoveRequest(trackInfo))->start();
+
+    LoveRequest* request = new LoveRequest( trackInfo );
+    request->start();
 }
 
 
@@ -138,6 +143,9 @@ ScrobblerAdapter::ban()
     DEBUG_BLOCK
 
     m_current.setRatingFlag( TrackInfo::Banned );
+
+    BanRequest* request = new BanRequest( m_current );
+    request->start();
 }
 
 
