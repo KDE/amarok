@@ -17,6 +17,7 @@
 #include "amarokconfig.h"
 #include "Debug.h"
 #include "plasma/containment.h"
+#include "plasma/theme.h"
 
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsView>
@@ -33,6 +34,7 @@ namespace Context
 ContextScene::ContextScene( QObject * parent )
     : Plasma::Corona( parent )
 {
+    Plasma::Theme::defaultTheme()->setUseGlobalSettings( false );
     setBackgroundBrush( Qt::NoBrush );
 }
 
