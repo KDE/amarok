@@ -514,7 +514,6 @@ WorkerThread::WorkerThread( const QByteArray &data, Reader *reader, DaapCollecti
 {
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), coll, SLOT( loadedDataFromServer() ) );
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), coll, SLOT( parsingFailed() ) );
-// dupe    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
 }
 
