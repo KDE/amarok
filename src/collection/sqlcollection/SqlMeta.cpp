@@ -933,6 +933,11 @@ SqlAlbum::setImage( const QImage &image )
     if( artist.isEmpty() && album.isEmpty() )
         return;
 
+    // removeImage() will destroy all scaled cached versions of the artwork 
+    // and remove references from the database if required.
+    if( hasImage( -1 ) ) // -1 is a dummy
+        removeImage();
+
     QByteArray key = md5sum( artist, album, QString() );
     QString path = Amarok::saveLocation( "albumcovers/large/" ) + key;
     image.save( path, "JPG" );
