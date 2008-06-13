@@ -95,6 +95,7 @@ NepomukQueryMaker::reset()
     queryMatch.clear();
     if( worker && worker->isFinished() )
         delete worker;   //TODO error handling
+    this->resultAsDataPtrs = false;
     return this;
 }
 
@@ -126,7 +127,7 @@ QueryMaker*
 NepomukQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     debug() << "returnResultAsDataPtrs()" << resultAsDataPtrs << endl;
-    resultAsDataPtrs = resultAsDataPtrs;
+    this->resultAsDataPtrs = resultAsDataPtrs;
     return this;
 }
 
@@ -410,12 +411,16 @@ NepomukQueryMaker::buildQuery() const
             break;
         case TRACK:
             
-            if ( queryMatch.isEmpty() )
-                return query;
-            
             query  =   QString( "select ?r where { "  );
-            query += queryMatch;
+            
+            // if there is no match we want all tracks, match against all music
+            if ( queryMatch.isEmpty() )
+                query += QString( "?r a <%1> . ")
+                        .arg( Soprano::Vocabulary::Xesam::Music().toString() );
+            else
+                query += queryMatch;
             query += '}';
+            break;
             
         default:
             debug() << "unknown query type" << endl;        
@@ -424,6 +429,24 @@ NepomukQueryMaker::buildQuery() const
 
     return query;
 }
+
+// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
+// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
+// signal that takes the list of the specific class.
+
+#define emitProperResult( PointerType, list ) { \
+            if ( resultAsDataPtrs ) { \
+                DataList data; \
+                foreach( PointerType p, list ) { \
+                    data << DataPtr::staticCast( p ); \
+                } \
+                emit newResultReady( m_collection->collectionId(), data ); \
+            } \
+            else { \
+                emit newResultReady( m_collection->collectionId(), list ); \
+            } \
+        }
+
 
 void
 NepomukQueryMaker::doQuery(const QString &query)
@@ -460,13 +483,7 @@ NepomukQueryMaker::doQuery(const QString &query)
                 al.append( *(new Meta::ArtistPtr(new NepomukArtist(node.toString()))) );
             }
             
-            DataList data; 
-            foreach( ArtistPtr p, al ) 
-            { 
-                data << DataPtr::staticCast( p ); 
-            } 
-            
-            emit newResultReady( m_collection->collectionId(), data );
+            emitProperResult ( ArtistPtr, al );
             
             break;
         }
@@ -484,13 +501,7 @@ NepomukQueryMaker::doQuery(const QString &query)
                 al.append( *( new Meta::AlbumPtr( new NepomukAlbum( album, artist ) ) ) );
             }
             
-            DataList data; 
-            foreach( AlbumPtr p, al ) 
-            { 
-                data << DataPtr::staticCast( p ); 
-            } 
-            
-            emit newResultReady( m_collection->collectionId(), data );
+            emitProperResult ( AlbumPtr, al );
             
             break;
         }
@@ -501,10 +512,12 @@ NepomukQueryMaker::doQuery(const QString &query)
             Soprano::QueryResultIterator it
                       = model->executeQuery( query, 
                                              Soprano::Query::QueryLanguageSparql );
+            
             while( it.next() ) 
             {
                 Nepomuk::Resource res = Nepomuk::Resource( it.binding( "r" ).uri() );
-                KUrl url = res.resourceUri();
+                KUrl url = res.uri();
+                
                 QString title = res.property( Soprano::Vocabulary::Xesam::title() )
                                         .toString();
                 QString artist = res.property( Soprano::Vocabulary::Xesam::artist() )
@@ -527,13 +540,7 @@ NepomukQueryMaker::doQuery(const QString &query)
                 tl.append( *( new Meta::TrackPtr ( np ) ) );
             }
             
-            DataList data; 
-            foreach( TrackPtr p, tl ) 
-            { 
-                data << DataPtr::staticCast( p ); 
-            } 
-            
-            emit newResultReady( m_collection->collectionId(), data );
+            emitProperResult ( TrackPtr, tl );
             
             
             break;
