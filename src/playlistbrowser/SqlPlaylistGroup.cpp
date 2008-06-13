@@ -48,7 +48,7 @@ SqlPlaylistGroup::SqlPlaylistGroup( const QString & name, SqlPlaylistGroup * par
 
     if ( parent == 0 ) {
         //root item
-        m_dbId = 0;
+        m_dbId = -1;
     }
 }
 
