@@ -63,7 +63,7 @@ SqlPlaylist::~SqlPlaylist()
 
 bool SqlPlaylist::saveToDb( bool tracks )
 {
-    int parentId = 0;
+    int parentId = -1;
     if ( m_parent )
         parentId = m_parent->id();
 
