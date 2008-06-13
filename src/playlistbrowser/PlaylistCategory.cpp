@@ -49,6 +49,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     
     m_playlistView->setContextMenuPolicy( Qt::CustomContextMenu );
+    m_playlistView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
     connect( m_playlistView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
     connect( m_playlistView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
@@ -108,7 +109,9 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
         m_renameAction = new PopupDropperAction( KIcon("media-track-edit-amarok" ), i18n( "rename" ), this  );
 
     menu.addAction( m_deleteAction );
-    //menu.addAction( m_renameAction );
+
+    if ( indices.count() == 1 )
+        menu.addAction( m_renameAction );
 
     PopupDropperAction* result = dynamic_cast< PopupDropperAction* > ( menu.exec( m_playlistView->mapToGlobal( pos ) ) );
     if ( result == 0 ) return;
@@ -122,6 +125,10 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
             item->parent()->deleteChild( item );
         }
         PlaylistModel::instance()->reloadFromDb();
+    }
+
+    if( result == m_renameAction ) {
+        m_playlistView->edit( indices.first() );
     }
 }
 
