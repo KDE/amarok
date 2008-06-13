@@ -292,8 +292,10 @@ void PlaylistBrowserNS::PlaylistModel::createNewGroup()
     int row = 0;
     foreach ( SqlPlaylistGroup * childGroup, m_root->childGroups() ) {
         if ( childGroup->id() == id ) {
+            debug() << "emmiting edit for " << childGroup->name() << " id " << childGroup->id() << " in row " << row;
             emit( editIndex( createIndex( row , 0, childGroup ) ) );
         }
+        row++;
     }
 
 } 
