@@ -102,6 +102,9 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
 
     QModelIndexList indices = m_playlistView->selectionModel()->selectedIndexes();
 
+    if ( indices.count() == 0 )
+        return;
+
     KMenu menu;
 
     if ( m_deleteAction == 0 )
