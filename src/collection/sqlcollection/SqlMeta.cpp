@@ -1000,7 +1000,7 @@ SqlAlbum::removeImage()
         if( references == 0 )
         {
             query = "DELETE FROM images WHERE id = %1";
-            m_colleciton->query( query.arg( QString::number( imageId ) ) );
+            m_collection->query( query.arg( QString::number( imageId ) ) );
         }
     }
 
