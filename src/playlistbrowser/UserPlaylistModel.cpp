@@ -29,6 +29,8 @@
 #include <KIcon>
 #include <QListIterator>
 
+static const int USERPLAYLIST_DB_VERSION = 1;
+static const QString key("AMAROK_USERPLAYLIST");
 
 PlaylistBrowserNS::PlaylistModel * PlaylistBrowserNS::PlaylistModel::s_instance = 0;
 
@@ -44,7 +46,13 @@ PlaylistBrowserNS::PlaylistModel * PlaylistBrowserNS::PlaylistModel::instance()
 PlaylistBrowserNS::PlaylistModel::PlaylistModel()
  : QAbstractItemModel()
 {
-    createTables();
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE key = '%1';").arg(sqlStorage->escape( key ) ) );
+    if( values.isEmpty() )
+    {
+        debug() << "creating Playlist Tables";
+        createTables();
+    }
 
     m_root = new SqlPlaylistGroup( "root", 0 );
 }
@@ -242,7 +250,7 @@ void PlaylistBrowserNS::PlaylistModel::createTables()
 
 
     sqlStorage->query( "INSERT INTO admin(key,version) "
-            "VALUES('AMAROK_PLAYLISTS'," + QString::number( PLAYLIST_DB_VERSION ) + ");" );
+            "VALUES('" + key + "'," + QString::number( USERPLAYLIST_DB_VERSION ) + ");" );
 
 }
 

@@ -36,6 +36,7 @@
 using namespace Meta;
 
 static const int PODCAST_DB_VERSION = 1;
+static const QString key("AMAROK_PODCAST");
 
 SqlPodcastProvider * SqlPodcastProvider::s_instance = 0;
 
@@ -52,7 +53,7 @@ SqlPodcastProvider::SqlPodcastProvider()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QStringList values = sqlStorage->query( "SELECT version FROM admin WHERE key = 'AMAROK_PODCAST';");
+    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE key = '%1';").arg(sqlStorage->escape( key ) ) );
     if( values.isEmpty() )
     {
         debug() << "creating Podcast Tables";
@@ -352,7 +353,7 @@ SqlPodcastProvider::createTables() const
     sqlStorage->query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
 
     sqlStorage->query( "INSERT INTO admin(key,version) "
-                       "VALUES('AMAROK_PODCAST'," + QString::number( PODCAST_DB_VERSION ) + ");" );
+                       "VALUES('" + key + "'," + QString::number( PODCAST_DB_VERSION ) + ");" );
 }
 
 #include "SqlPodcastProvider.moc"
