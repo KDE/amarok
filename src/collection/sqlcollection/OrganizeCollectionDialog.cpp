@@ -328,6 +328,8 @@ void OrganizeCollectionDialog::slotDetails()
         ui->formatLabel->show();
         ui->formatEdit->show();
         ui->formatHelp->show();
+
+        adjustSize();
     }
     else
     {
@@ -337,14 +339,9 @@ void OrganizeCollectionDialog::slotDetails()
         ui->formatLabel->hide();
         ui->formatEdit->hide();
         ui->formatHelp->hide();
+    
+        resize( minimumSize() );
     }
-
-    if( dynamic_cast<QWidget *>(parent()) ) {
-        static_cast<QWidget *>(parent())->adjustSize();
-        static_cast<QWidget *>(parent())->updateGeometry();
-    }
-    //adjustSize();
-    //updateGeometry();
 }
 
 void OrganizeCollectionDialog::init()

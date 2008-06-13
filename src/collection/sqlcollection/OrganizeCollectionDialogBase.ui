@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>494</width>
-    <height>513</height>
+    <width>507</width>
+    <height>539</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -19,8 +19,8 @@
   <property name="windowTitle" >
    <string>Organize Files</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <item>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>5</number>
@@ -62,7 +62,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0" >
     <layout class="QVBoxLayout" >
      <item>
       <widget class="QCheckBox" name="coverCheck" >
@@ -83,23 +83,7 @@
      </item>
     </layout>
    </item>
-   <item>
-    <spacer name="spacer2_5" >
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0" >
-      <size>
-       <width>20</width>
-       <height>16</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
+   <item row="2" column="0" >
     <widget class="QGroupBox" name="groupingGroup" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
@@ -196,31 +180,11 @@
      </layout>
      <zorder>customschemeCheck</zorder>
      <zorder>filetypeCheck</zorder>
-     <zorder>groupingGroup</zorder>
-     <zorder>formatLabel</zorder>
-     <zorder>customschemeCheck</zorder>
-     <zorder>filetypeCheck</zorder>
      <zorder>initialCheck</zorder>
      <zorder></zorder>
     </widget>
    </item>
-   <item>
-    <spacer name="spacer2_4" >
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0" >
-      <size>
-       <width>20</width>
-       <height>16</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
+   <item row="3" column="0" >
     <widget class="QGroupBox" name="replacementGroup" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
@@ -311,27 +275,9 @@
      <zorder>asciiCheck</zorder>
      <zorder>vfatCheck</zorder>
      <zorder></zorder>
-     <zorder>textLabel2</zorder>
-     <zorder>previewBox</zorder>
     </widget>
    </item>
-   <item>
-    <spacer name="spacer2" >
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0" >
-      <size>
-       <width>20</width>
-       <height>16</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
+   <item row="4" column="0" >
     <widget class="QGroupBox" name="previewBox" >
      <property name="title" >
       <string>Destination Preview</string>
@@ -359,7 +305,7 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="5" column="0" >
     <layout class="QHBoxLayout" >
      <item>
       <spacer name="spacer2_2" >
@@ -389,7 +335,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="6" column="0" >
     <spacer name="spacer2_3" >
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
@@ -406,11 +352,8 @@
     </spacer>
    </item>
   </layout>
-  <zorder>replacementGroup</zorder>
-  <zorder>groupingGroup</zorder>
   <zorder>groupingGroup</zorder>
   <zorder>replacementGroup</zorder>
-  <zorder>previewBox</zorder>
   <zorder></zorder>
   <zorder>previewBox</zorder>
  </widget>
@@ -487,184 +430,6 @@
    <signal>toggled(bool)</signal>
    <receiver>initialCheck</receiver>
    <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>formatEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-   <slot>preview(QString)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>customschemeCheck</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-   <slot>update(int)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>filetypeCheck</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-   <slot>update(int)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>initialCheck</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-   <slot>update(int)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spaceCheck</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-   <slot>update(int)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>asciiCheck</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-   <slot>update(int)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>vfatCheck</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-   <slot>update(int)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ignoreTheCheck</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-   <slot>update(int)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>folderCombo</sender>
-   <signal>activated(int)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-   <slot>update(int)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>regexpEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-
-
-   <slot>update(QString)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>replaceEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>OrganizeCollectionDialog</receiver>
-   <slot>update(QString)</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>
