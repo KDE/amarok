@@ -222,10 +222,14 @@ PlaylistManager::typeName(int playlistCategory)
 bool PlaylistManager::save( Meta::TrackList tracks, const QString & name)
 {
     Meta::SqlPlaylist * playlist = new Meta::SqlPlaylist( name, tracks, 0 );
+    int newId = playlist->id();
     delete playlist; // already saved to db....
 
     //jolt the playlist browser model to reload....
     PlaylistBrowserNS::PlaylistModel::instance()->reloadFromDb();
+    
+    //we should really enter edit mode for the new playlist, but how...
+    PlaylistBrowserNS::PlaylistModel::instance()->editPlaylist( newId );
 
     return true; //FIXME what's this supposed to return?
 }

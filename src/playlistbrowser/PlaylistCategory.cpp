@@ -54,6 +54,8 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     connect( m_playlistView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
     connect( m_playlistView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
 
+    connect( PlaylistModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_playlistView, SLOT( edit( const QModelIndex & ) ) );
+
     QVBoxLayout *vLayout = new QVBoxLayout( this );
     vLayout->setContentsMargins(0,0,0,0);
     vLayout->addWidget( m_playlistView );

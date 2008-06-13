@@ -248,6 +248,19 @@ void PlaylistBrowserNS::PlaylistModel::reloadFromDb()
     m_root->clear();
 }
 
+void PlaylistBrowserNS::PlaylistModel::editPlaylist( int id )
+{
+
+    //for now, assume that the newly added playlist is in the top level:
+    int row = m_root->childGroups().count() - 1;
+    foreach ( Meta::SqlPlaylist * playlist, m_root->childPlaylists() ) {
+        row++;
+        if ( playlist->id() == id ) {
+            emit( editIndex( createIndex( row , 0, playlist ) ) );
+        }
+    }
+}
+
 
 
 

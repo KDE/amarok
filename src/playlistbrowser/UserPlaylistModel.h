@@ -55,6 +55,10 @@ class PlaylistModel : public QAbstractItemModel
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
         void reloadFromDb();
+        void editPlaylist( int id );
+
+    signals:
+        void editIndex( const QModelIndex & index );
 
     private:
 

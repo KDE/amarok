@@ -55,6 +55,8 @@ public:
     QString prettyName() const { return m_name; }
     virtual QString description() const { return m_description; }
     virtual void rename( const QString &name );
+
+    int id();
     
 
     /** returns all tracks in this playlist */

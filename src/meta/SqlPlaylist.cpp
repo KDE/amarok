@@ -175,3 +175,8 @@ void Meta::SqlPlaylist::removeFromDb()
     query = query.arg( QString::number( m_dbId ) );
     CollectionManager::instance()->sqlStorage()->query( query );
 }
+
+int Meta::SqlPlaylist::id()
+{
+    return m_dbId;
+}
