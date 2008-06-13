@@ -20,7 +20,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "collectionscanner.h"
+#include "CollectionScanner.h"
 
 #include "Amarok.h"
 
@@ -530,5 +530,5 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
     std::cout << text.toUtf8().data() << std::endl;
 }
 
-#include "collectionscanner.moc"
+#include "CollectionScanner.moc"
 
