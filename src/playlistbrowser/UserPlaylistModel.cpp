@@ -67,9 +67,14 @@ PlaylistBrowserNS::PlaylistModel::data(const QModelIndex & index, int role) cons
 
     if ( role == Qt::DisplayRole || role == Qt::EditRole )
         return name;
-    else if (role == Qt::DecorationRole )
-        return QVariant( KIcon( "x-media-podcast-amarok" ) );
-    else
+    else if (role == Qt::DecorationRole ) {
+
+        if ( typeid( * item ) == typeid( SqlPlaylistGroup ) )
+            return QVariant( KIcon( "folder-amarok" ) );
+        else if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
+            return QVariant( KIcon( "x-media-podcast-amarok" ) );
+            
+    } else
         return QVariant();
 
 }
