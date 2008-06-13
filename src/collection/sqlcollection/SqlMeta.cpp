@@ -972,15 +972,21 @@ SqlAlbum::removeImage()
     
     // Update the database image path
     
-    QString query = "SELECT image FROM albums WHERE id = %1";
+    QString query = "SELECT images.id, count( images.id ) FROM images, albums "
+                    "WHERE albums.image = images.id AND albums.id = %1 "
+                    "GROUP BY images.id";
     QStringList res = m_collection->query( query.arg( QString::number( m_id ) ) );
     if( !res.isEmpty() )
     {
-        int imageId = res[0].toInt();
+        int imageId    = res[0].toInt();
+        int references = res[1].toInt();
 
         // Set the album image to empty
         query = "UPDATE albums SET image = NULL WHERE id = %1";
         m_collection->query( query.arg( QString::number( m_id ) ) );
+
+        // We've just removed a references to that imageid
+        references--;
 
         // From here on we check if there are any remaining references to that particular image in the database
         // If there aren't, then we should remove the image path from the database ( and possibly delete the file? )
@@ -988,16 +994,10 @@ SqlAlbum::removeImage()
         //
         // TODO: Should this cleanup be handled by the Collection at some other point with a DB wide cleanup, with a
         // vaccuum analyze? Since the use case will most likely be a 1:1 mapping of album-image by moving the cleanup
-        // elsewhere we could remove 75% of the queries for this method - ie, it would be just one UPDATE statement.
+        // elsewhere we could remove 2 of the queries for this method - ie, it would be just one UPDATE statement.
 
-        query = "SELECT count( image ) FROM album WHERE image = %1";
-        res = m_collection->query( query.arg( QString::number( imageId ) ) );
-        int references = 0;
-        if( !res.isEmpty() )
-            references = res[0].toInt();
-        
         // If there are no more references to this particular image, then we should clean up
-        if( references == 0 )
+        if( references <= 0 )
         {
             query = "DELETE FROM images WHERE id = %1";
             m_collection->query( query.arg( QString::number( imageId ) ) );
