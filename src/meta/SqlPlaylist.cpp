@@ -161,4 +161,17 @@ void Meta::SqlPlaylist::rename(const QString & name)
 {
     m_name = name;
     saveToDb( false ); //no need to resave all tracks
+
+}
+
+void Meta::SqlPlaylist::removeFromDb()
+{
+    DEBUG_BLOCK
+    QString query = "DELETE FROM playlist_tracks WHERE playlist_id=%1";
+    query = query.arg( QString::number( m_dbId ) );
+    CollectionManager::instance()->sqlStorage()->query( query );
+
+    query = "DELETE FROM playlists WHERE id=%1";
+    query = query.arg( QString::number( m_dbId ) );
+    CollectionManager::instance()->sqlStorage()->query( query );
 }

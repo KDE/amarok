@@ -56,6 +56,7 @@ SqlPlaylistGroup::SqlPlaylistGroup( const QString & name, SqlPlaylistGroup * par
 SqlPlaylistGroup::~SqlPlaylistGroup()
 {
     DEBUG_BLOCK
+    debug() << "deleting " << m_name;
     clear();
 }
 
@@ -176,4 +177,34 @@ void SqlPlaylistGroup::rename(const QString & name)
 {
     m_name = name;
     save();
+}
+
+void SqlPlaylistGroup::deleteChild( SqlPlaylistViewItem * item )
+{
+    
+    if ( typeid( * item ) == typeid( SqlPlaylistGroup ) )  {
+        SqlPlaylistGroup * group = static_cast<SqlPlaylistGroup *>( item );
+        m_childGroups.remove( group );
+        delete group;
+    } else if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) )  {
+        Meta::SqlPlaylist * playlist = static_cast<Meta::SqlPlaylist *>( item );
+        m_childPlaylists.remove( playlist );
+        delete playlist;
+    }
+        
+    
+}
+
+void SqlPlaylistGroup::removeFromDb()
+{
+
+    foreach( SqlPlaylistGroup * group, m_childGroups )
+        group->removeFromDb();
+    foreach( Meta::SqlPlaylist * playlist, m_childPlaylists )
+        playlist->removeFromDb();
+    
+    
+    QString query = "DELETE FROM FROM playlist_groups where id=%1;";
+    query = query.arg( QString::number( m_dbId ) );
+    QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 }

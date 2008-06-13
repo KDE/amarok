@@ -65,6 +65,8 @@ public:
 
     virtual SqlPlaylistGroup * parent() { return m_parent; }
 
+    void removeFromDb();
+
     //bool load();
 
 private:

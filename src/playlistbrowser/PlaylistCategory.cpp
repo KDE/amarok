@@ -23,6 +23,9 @@
 #include "SqlPlaylist.h"
 #include "TheInstances.h"
 
+#include <KIcon>
+#include <KMenu>
+
 #include <QHeaderView>
 #include <QVBoxLayout>
 
@@ -32,26 +35,32 @@ using namespace PlaylistBrowserNS;
 
 PlaylistCategory::PlaylistCategory( QWidget * parent )
     : Amarok::Widget( parent )
+    , m_deleteAction( 0 )
+    , m_renameAction( 0 )
 {
 
     setContentsMargins(0,0,0,0);
     
-    QTreeView * playlistView = new QTreeView( this );
-    playlistView->setFrameShape( QFrame::NoFrame );
-    playlistView->setContentsMargins(0,0,0,0);
-    playlistView->setModel( PlaylistModel::instance() );
-    playlistView->header()->hide();
+    m_playlistView = new QTreeView( this );
+    m_playlistView->setFrameShape( QFrame::NoFrame );
+    m_playlistView->setContentsMargins(0,0,0,0);
+    m_playlistView->setModel( PlaylistModel::instance() );
+    m_playlistView->header()->hide();
 
-    connect( playlistView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
+    
+    m_playlistView->setContextMenuPolicy( Qt::CustomContextMenu );
+
+    connect( m_playlistView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
+    connect( m_playlistView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
 
     QVBoxLayout *vLayout = new QVBoxLayout( this );
     vLayout->setContentsMargins(0,0,0,0);
-    vLayout->addWidget( playlistView );
+    vLayout->addWidget( m_playlistView );
 
-    playlistView->setAlternatingRowColors( true );
+    m_playlistView->setAlternatingRowColors( true );
 
     //transparency
-    QPalette p = playlistView->palette();
+    QPalette p = m_playlistView->palette();
     QColor c = p.color( QPalette::Base );
     c.setAlpha( 0 );
     p.setColor( QPalette::Base, c );
@@ -60,12 +69,8 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     c.setAlpha( 77 );
     p.setColor( QPalette::AlternateBase, c );
 
-    playlistView->setPalette( p );
+    m_playlistView->setPalette( p );
 
-
-    /*QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    playlistView->setSizePolicy(sizePolicy);
-    setSizePolicy(sizePolicy);*/
 }
 
 
@@ -86,6 +91,37 @@ void PlaylistBrowserNS::PlaylistCategory::itemActivated(const QModelIndex & inde
         //debug() << "playlist name: " << playlist->name();
         //The::playlistModel()->insertOptioned( Meta::PlaylistPtr( playlist ), Playlist::Append );
         The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Append );
+    }
+}
+
+void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
+{
+
+    QModelIndexList indices = m_playlistView->selectionModel()->selectedIndexes();
+
+    KMenu menu;
+
+    if ( m_deleteAction == 0 )
+        m_deleteAction = new PopupDropperAction( KIcon("media-track-remove-amarok" ), i18n( "delete" ), this  );
+
+    if ( m_renameAction == 0 )
+        m_renameAction = new PopupDropperAction( KIcon("media-track-edit-amarok" ), i18n( "rename" ), this  );
+
+    menu.addAction( m_deleteAction );
+    //menu.addAction( m_renameAction );
+
+    PopupDropperAction* result = dynamic_cast< PopupDropperAction* > ( menu.exec( m_playlistView->mapToGlobal( pos ) ) );
+    if ( result == 0 ) return;
+
+
+    if( result == m_deleteAction ) {
+        foreach( const QModelIndex &idx, indices )
+        {
+            SqlPlaylistViewItem * item = static_cast<SqlPlaylistViewItem *>( idx.internalPointer() );
+            item->removeFromDb();
+            item->parent()->deleteChild( item );
+        }
+        PlaylistModel::instance()->reloadFromDb();
     }
 }
 

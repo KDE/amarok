@@ -22,6 +22,7 @@
 
 #include "UserPlaylistModel.h"
 
+#include "popupdropper/PopupDropperAction.h"
 #include "widgets/Widget.h"
 
 #include <QTreeView>
@@ -45,6 +46,13 @@ public:
 private slots:
 
     void itemActivated ( const QModelIndex & index );
+    void showContextMenu ( const QPoint & pos );
+
+private:
+
+    QTreeView * m_playlistView;
+    PopupDropperAction * m_deleteAction;
+    PopupDropperAction * m_renameAction;
 
 };
 

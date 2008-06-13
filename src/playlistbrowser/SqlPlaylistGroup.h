@@ -67,6 +67,9 @@ class SqlPlaylistGroup : public SqlPlaylistViewItem
 
         void clear();
 
+        void deleteChild( SqlPlaylistViewItem * item );
+        void removeFromDb();
+
     private:
 
         int m_dbId;
