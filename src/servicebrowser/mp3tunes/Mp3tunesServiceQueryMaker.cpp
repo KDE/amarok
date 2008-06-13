@@ -410,19 +410,23 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
 
         serviceTrack->setId( track.trackId() );
 
-        serviceTrack->setUrl( track.playUrl() );
+        serviceTrack->setUrl( track.downloadUrl() );
 
         serviceTrack->setLength( (int)( track.trackLength() / 1000 ) );
 
         serviceTrack->setTrackNumber( track.trackNumber() );
 
+        serviceTrack->setYear( QString::number( track.albumYear() ) );
+        //debug() << "setting type: "<< Amarok::extension( track.trackFileName() );
+        serviceTrack->setType( Amarok::extension( track.trackFileName() ) );
+        //debug() << "set type";
         m_collection->acquireWriteLock();
+        //debug() << "adding track";
         m_collection->addTrack( trackPtr );
+        //debug() << "added tracktrack";
         m_collection->releaseLock();
-
         QString albumId = QString::number( track.albumId() );
         QString artistId = QString::number( track.artistId() );
-
 
         ArtistPtr artistPtr = m_collection->artistById( artistId.toInt() );
         if ( artistPtr.data() != 0 ) {

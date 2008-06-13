@@ -41,15 +41,15 @@ class Mp3TunesTrack  : public ServiceTrack
 
     public:
 
-        Mp3TunesTrack( const QString& title )
-        : ServiceTrack( title )
-        {
-        }
+        Mp3TunesTrack( const QString& title );
 
-        virtual QString sourceName() { return "MP3tunes.com"; }
-        virtual QString sourceDescription() { return "Online music locker where you can safely store and access your music: http://mp3tunes.com"; }
-        virtual QPixmap emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-mp3tunes.png" );  }
-
+        virtual QString sourceName();
+        virtual QString sourceDescription();
+        virtual QPixmap emblem();
+        virtual QString type() const;
+        QString setType( const QString &type );
+    private:
+        QString m_filetype;
 };
 
 

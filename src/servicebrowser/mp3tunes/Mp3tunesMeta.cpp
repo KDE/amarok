@@ -22,11 +22,30 @@
 #include "popupdropper/PopupDropperAction.h"
 
 #include "Amarok.h"
-#include "Debug.h"
 
 #include <KIcon>
 #include <KLocale>
 using namespace Meta;
+
+Mp3TunesTrack::Mp3TunesTrack( const QString& title )
+    : ServiceTrack( title )
+{
+    m_filetype = QString();
+}
+
+QString Mp3TunesTrack::type() const
+{
+    return "mp3";
+}
+
+QString Mp3TunesTrack::setType( const QString &type )
+{
+   m_filetype = type;
+}
+
+QString Mp3TunesTrack::sourceName() { return "MP3tunes.com"; }
+QString Mp3TunesTrack::sourceDescription() { return "Online music locker where you can safely store and access your music: http://mp3tunes.com"; }
+QPixmap Mp3TunesTrack::emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-mp3tunes.png" );  }
 
 //// Mp3TunesAlbum ////
 
