@@ -845,6 +845,8 @@ SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int 
     ,m_artistId( artist )
     ,m_tracksLoaded( false )
     ,m_artist()
+    ,m_hasImage( false )
+    ,m_hasImageChecked( false )
     ,m_mutex( QMutex::Recursive )
 {
     //nothing to do
@@ -855,6 +857,9 @@ SqlAlbum::invalidateCache()
 {
     m_mutex.lock();
     m_tracksLoaded = false;
+    m_hasImage = false;
+    m_hasImageChecked = false;
+    m_images.clear();
     m_tracks.clear();
     m_mutex.unlock();
 }
@@ -883,26 +888,35 @@ SqlAlbum::tracks()
 }
 
 bool
-SqlAlbum::hasImage( int size ) const
+SqlAlbum::hasImage( int size )
 {
-    AMAROK_NOTIMPLEMENTED
-    Q_UNUSED( size );
-    return true;
+    if( !m_hasImageChecked )
+        m_hasImage = !image( size ).isNull();
+    return m_hasImage;
 }
 
 QPixmap
 SqlAlbum::image( int size, bool withShadow )
 {
+    if( m_hasImageChecked && !m_hasImage )
+        return Meta::Album::image( size, withShadow );
+
+    m_hasImageChecked = true;
+
     //FIXME this cache doesn't differentiate between shadowed/unshadowed
     if( m_images.contains( size ) )
         return QPixmap( m_images.value( size ) );
 
     QString result;
 
+    // findCachedImage looks for a scaled version of the fullsize image
+    // which may have been saved on a previous lookup
     QString cachedImage = findCachedImage( size );
     if( !cachedImage.isEmpty() )
         result = cachedImage;
 
+    // findImage will lookup the original cover and create a scaled version
+    // of the cover if required (returning the path of that scaled image)
     else
     {
         QString image = findImage( size );
@@ -912,11 +926,18 @@ SqlAlbum::image( int size, bool withShadow )
 
     if( !result.isEmpty() )
     {
+        m_hasImage = true;
         m_images.insert( size, result );
         return QPixmap( result );
     }
 
-    // No image found, return the default
+    // If the result image is empty then we didn't find any cached image, nor 
+    // could we find the original cover to scale to the appropriate size. Hence,
+    // the album cannot have a cover, for any size. In this case, we return the
+    // default image
+
+    m_hasImage = false;
+
     return Meta::Album::image( size, withShadow );
 }
 
