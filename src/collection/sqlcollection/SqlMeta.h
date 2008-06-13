@@ -220,7 +220,7 @@ class SqlAlbum : public Meta::Album
         virtual Meta::ArtistPtr albumArtist() const;
 
         //updating album images is possible for local tracks, but let's ignore it for now
-        virtual bool hasImage( int size = 1 );
+        virtual bool hasImage( int size = 1 ) const;
         virtual bool canUpdateImage() const { return true; }
         virtual QPixmap image( int size = 1, bool withShadow = false );
         virtual void setImage( const QImage &image );
@@ -247,8 +247,8 @@ class SqlAlbum : public Meta::Album
         QString m_name;
         int m_id;
         int m_artistId;
-        bool m_hasImage;
-        bool m_hasImageChecked;
+        mutable bool m_hasImage;
+        mutable bool m_hasImageChecked;
         mutable QHash<int, QString> m_images; // Cache mapping size -> path. hash used for O(1) insertion and O(1) lookup
         bool m_tracksLoaded;
         Meta::ArtistPtr m_artist;

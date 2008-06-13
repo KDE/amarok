@@ -843,10 +843,10 @@ SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int 
     ,m_name( name )
     ,m_id( id )
     ,m_artistId( artist )
-    ,m_tracksLoaded( false )
-    ,m_artist()
     ,m_hasImage( false )
     ,m_hasImageChecked( false )
+    ,m_tracksLoaded( false )
+    ,m_artist()
     ,m_mutex( QMutex::Recursive )
 {
     //nothing to do
@@ -888,10 +888,10 @@ SqlAlbum::tracks()
 }
 
 bool
-SqlAlbum::hasImage( int size )
+SqlAlbum::hasImage( int size ) const
 {
     if( !m_hasImageChecked )
-        m_hasImage = !image( size ).isNull();
+        m_hasImage = ! const_cast<SqlAlbum*>( this )->image( size ).isNull();
     return m_hasImage;
 }
 
