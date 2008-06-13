@@ -197,14 +197,15 @@ void SqlPlaylistGroup::deleteChild( SqlPlaylistViewItem * item )
 
 void SqlPlaylistGroup::removeFromDb()
 {
-
+    DEBUG_BLOCK
+    
     foreach( SqlPlaylistGroup * group, m_childGroups )
         group->removeFromDb();
     foreach( Meta::SqlPlaylist * playlist, m_childPlaylists )
         playlist->removeFromDb();
     
     
-    QString query = "DELETE FROM FROM playlist_groups where id=%1;";
+    QString query = "DELETE FROM playlist_groups where id=%1;";
     query = query.arg( QString::number( m_dbId ) );
     QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 }

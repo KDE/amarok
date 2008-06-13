@@ -126,6 +126,7 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
         foreach( const QModelIndex &idx, indices )
         {
             SqlPlaylistViewItem * item = static_cast<SqlPlaylistViewItem *>( idx.internalPointer() );
+            debug() << "deleting " << item->name();
             item->removeFromDb();
             item->parent()->deleteChild( item );
         }
