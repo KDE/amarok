@@ -26,7 +26,7 @@
 #include <QFont>
 
 class QAction;
-class QDropEvent;
+class QGraphicsSceneDragDropEvent;
 class QGraphicsTextItem;
 class QGraphicsView;
 class QSvgRenderer;
@@ -85,7 +85,7 @@ private:
     PopupDropperItemPrivate* const d;
 
 signals:
-    void dropEvent( QDropEvent *event );
+    virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
 };
 
 #endif
