@@ -195,7 +195,7 @@ bool PopupDropperItem::operator<( const PopupDropperItem &other ) const
     return d->text < other.text();
 }
 
-void PopupDropperItem::dropped( QGraphicsSceneDragDropEvent *event ) //virtual SLOT
+void PopupDropperItem::dropped( QDropEvent *event ) //virtual SLOT
 {
     Q_UNUSED( event );
     qDebug() << "PopupDropperItem drop detected";
