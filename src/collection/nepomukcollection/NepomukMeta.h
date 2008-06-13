@@ -124,6 +124,7 @@ class NepomukTrack : public Track
         virtual QString type() const;
         
     private:
+        KUrl m_url;
         QString m_title;
         QString m_artist;
         QString m_album;
@@ -133,7 +134,6 @@ class NepomukTrack : public Track
         QString m_type;
         int m_trackNumber;
         int m_length;
-        KUrl m_url;
     };
 
 

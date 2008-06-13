@@ -30,7 +30,6 @@
 
 #include <Nepomuk/Resource>
 #include <Nepomuk/ResourceManager>
-#include <Nepomuk/ResourceManager>
 #include <Nepomuk/Variant>
 #include <Soprano/Client/DBusClient>
 #include <Soprano/Model>
@@ -407,7 +406,7 @@ NepomukQueryMaker::buildQuery() const
                     .arg( Soprano::Vocabulary::Xesam::album().toString() )
                     .arg( Soprano::Vocabulary::Xesam::artist().toString() );
             query += queryMatch;
-            query += "}";
+            query += '}';
             break;
         case TRACK:
             
@@ -416,10 +415,10 @@ NepomukQueryMaker::buildQuery() const
             
             query  =   QString( "select ?r where { "  );
             query += queryMatch;
-            query += "}";
+            query += '}';
             
         default:
-            debug() << "unkown query type" << endl;        
+            debug() << "unknown query type" << endl;        
        
     }
 
