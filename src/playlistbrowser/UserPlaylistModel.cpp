@@ -237,7 +237,7 @@ void PlaylistBrowserNS::PlaylistModel::createTables()
 
 
     sqlStorage->query( "INSERT INTO admin(key,version) "
-            "VALUES('AMAROK_PODCAST'," + QString::number( PLAYLIST_DB_VERSION ) + ");" );
+            "VALUES('AMAROK_PLAYLISTS'," + QString::number( PLAYLIST_DB_VERSION ) + ");" );
 
 }
 
