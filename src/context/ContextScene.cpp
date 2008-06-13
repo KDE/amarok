@@ -34,7 +34,6 @@ namespace Context
 ContextScene::ContextScene( QObject * parent )
     : Plasma::Corona( parent )
 {
-    Plasma::Theme::defaultTheme()->setUseGlobalSettings( false );
     setBackgroundBrush( Qt::NoBrush );
 }
 
