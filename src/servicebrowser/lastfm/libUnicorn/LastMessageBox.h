@@ -44,7 +44,7 @@ public:
     virtual void setWindowTitle ( const QString& title );
 
     //FIXME wtf? Hardcoded?
-    virtual const QSize sizeHint() { return QSize( 480, 153 ); }
+    virtual QSize sizeHint() const { return QSize( 480, 153 ); }
 
     static QMessageBox::StandardButton
     critical( const QString& title,
