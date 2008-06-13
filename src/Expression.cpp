@@ -100,8 +100,6 @@ void ExpressionParser::handleColon( const QChar &c )
         m_element.field = m_string;
         m_string.clear();
         m_state = ExpectMod;
-
-        //debug() << "got field: " << m_element.field;
     }
     else
         handleChar( c );
@@ -147,17 +145,14 @@ void ExpressionParser::handleChar( const QChar &c )
 
 void ExpressionParser::finishedToken()
 {
-    debug() << "finishedToken got: '" <<  m_string << "'";
     enum { And, Or, Neither };
     int s;
     if( m_haveGroup || !m_element.field.isEmpty() )
         s = Neither;
     else if( m_string == "AND" )
         s = And;
-    else if( m_string == "OR" ) {
+    else if( m_string == "OR" )
         s = Or;
-        debug() << "got OR!";
-    }
     else
         s = Neither;
 
