@@ -1004,6 +1004,8 @@ SqlAlbum::removeImage()
         }
     }
 
+    m_images.clear();
+
     notifyObservers();
 }
 
