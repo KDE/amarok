@@ -684,7 +684,7 @@ void Playlist::GraphicsItem::setRow(int row)
                 break;
             case Head_Collapsed:
                 //debug() << "Collapsed head";
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN * 2 + s_fm->height() + 4;
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN * 2 + s_fm->height() + 16;
                 if ( !m_items )
                 {
                     const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
@@ -1026,19 +1026,9 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
    //painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "tail", (int)trackRect.width(), (int)trackRect.height(), "tail" ) );
 
    if ( alternate )
-       painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "body", (int)trackRect.width(), (int)trackRect.height(), "body" ) );
+       painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "tail", (int)trackRect.width(), (int)trackRect.height(), "tail" ) );
    else
-       painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "alt_body", (int)trackRect.width(), (int)trackRect.height(), "alt_body" ) );
-
-    /*if ( alternate )
-    {
-
-        QRectF tempRect = trackRect;
-        tempRect.setWidth( tempRect.width() - 10 );
-        tempRect.setHeight( tempRect.height() - 4 );
-        painter->drawPixmap( 5, 0, The::svgHandler()->renderSvg( "body_background", (int)tempRect.width(), (int)tempRect.height(), "body_background" ) );
-
-    }*/
+       painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "alt_tail", (int)trackRect.width(), (int)trackRect.height(), "alt_tail" ) );
 
     //draw active track marker if needed
     if ( active ) {
