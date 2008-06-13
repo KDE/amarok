@@ -76,7 +76,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
  , m_sessionId ( QString() )
 {
     DEBUG_BLOCK
-    setShortDescription( i18n( "The MP3tunes Locker service. Access your stored music!" ) );
+    setShortDescription( i18n( "The MP3tunes Locker: Your Music Everywhere!" ) );
     setIcon( KIcon( "view-services-mp3tunes-amarok" ) );
     debug() << "Making new Locker Object";
     m_locker = new Mp3tunesLocker( "7359149936" );
@@ -94,7 +94,9 @@ void Mp3tunesService::polish()
     m_bottomPanel->hide();
     
     if ( !m_authenticated )
+    {
         authenticate( m_email, m_password );
+    }
 }
 
 void Mp3tunesService::authenticate( const QString & uname, const QString & passwd )
@@ -106,23 +108,26 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
         KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to api, but that does not work
         dlg.setPrompt( i18n( "Enter your MP3tunes login and password" ) );
         if( !dlg.exec() )
+        {
             return; //the user canceled
+        }
 
         username = dlg.username();
         password = dlg.password();
     }
-    else {
+    else
+    {
         username = uname;
         password = passwd;
     }
 
     Mp3tunesLoginWorker * loginWorker = new Mp3tunesLoginWorker( m_locker, username, password);
-    debug() << "Connecting finishedLogin -> authentication complete.";
+    //debug() << "Connecting finishedLogin -> authentication complete.";
     connect( loginWorker, SIGNAL( finishedLogin( QString ) ), this, SLOT( authenticationComplete( QString ) ) );
-    debug() << "Connection complete. Enqueueing..";
+    //debug() << "Connection complete. Enqueueing..";
     ThreadWeaver::Weaver::instance()->enqueue( loginWorker );
-    debug() << "LoginWorker queue";
-    //The::statusBar()->newProgressOperation( m_xmlDownloadJob ).setDescription( i18n( "Authenticating" ) );
+    //debug() << "LoginWorker queue";
+    The::statusBar()->shortMessage( i18n( "Authenticating"  ) );
 }
 
 
@@ -133,16 +138,16 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
     if ( sessionId.isEmpty() )
     {
         KMessageBox::error( this, "errorMessage", i18n( "Authentication Error!" ) );
-    } else {
+    }
+    else
+    {
+        m_sessionId = sessionId;
+        m_authenticated = true;
 
-    m_sessionId = sessionId;
-    m_authenticated = true;
-
-    m_collection = new Mp3tunesServiceCollection( m_sessionId, m_locker );
-    QList<int> levels;
-    levels << CategoryId::Artist << CategoryId::Album;
-    setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
-
+        m_collection = new Mp3tunesServiceCollection( m_sessionId, m_locker );
+        QList<int> levels;
+        levels << CategoryId::Artist << CategoryId::Album;
+        setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
     }
 
 }

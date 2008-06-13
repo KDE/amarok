@@ -101,14 +101,14 @@ Mp3tunesAlbumWithArtistIdFetcher::~Mp3tunesAlbumWithArtistIdFetcher()
 void Mp3tunesAlbumWithArtistIdFetcher::run()
 {
     DEBUG_BLOCK
-            if(m_locker != 0) {
+    if(m_locker != 0) {
         debug() << "Album Fetch Start";
         QList<Mp3tunesLockerAlbum> list = m_locker->albumsWithArtistId( m_artistId );
         debug() << "Album Fetch End. Total albums: " << list.count();
         m_albums = list;
-        } else {
+    } else {
                 debug() << "Locker is NULL";
-        }
+    }
 }
 
 void Mp3tunesAlbumWithArtistIdFetcher::completeJob()
