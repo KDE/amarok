@@ -119,12 +119,10 @@ Meta::SqlPodcastChannel::loadEpisodes()
     
     QStringList results = sqlStorage->query( QString("SELECT id, url, channel, localurl, guid, title, subtitle, sequencenumber, description, mimetype, pubdate, duration, filesize, isnew FROM podcastepisodes WHERE channel = %1;").arg( m_id ) );
 
-    debug() << "Channel id = " << m_id;
     int rowLength = 14;
     for(int i=0; i < results.size(); i+=rowLength)
     {
         QStringList episodesResult = results.mid( i, rowLength );
-        debug() << "Episode " << i/rowLength << " : " << episodesResult;
         SqlPodcastEpisode *sqlEpisode = new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) );
         m_sqlEpisodes << SqlPodcastEpisodePtr( sqlEpisode );
         m_episodes << PodcastEpisodePtr( sqlEpisode );

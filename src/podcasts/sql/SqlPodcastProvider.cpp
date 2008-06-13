@@ -80,7 +80,6 @@ SqlPodcastProvider::loadPodcasts()
     for(int i=0; i < results.size(); i+=rowLength)
     {
         QStringList channelResult = results.mid( i, rowLength );
-        debug() << "Channel " << i/rowLength << " : " << channelResult;
         m_channels << SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
     }
 }
@@ -163,7 +162,6 @@ SqlPodcastProvider::podcastChannelForId( int podcastChannelId )
     while( i.hasNext() )
     {
         int id = i.next()->id();
-        debug() << "id = " << id;
         if( id == podcastChannelId )
             return i.previous();
     }
