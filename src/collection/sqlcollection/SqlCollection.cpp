@@ -49,17 +49,17 @@ SqlCollectionFactory::init()
 /*    switch( CollectionDB::instance()->getDbConnectionType() )
     {
         case DbConnection::sqlite :
-            collection = new SqliteCollection( "localCollection", i18n( "Local collection" ) );
+            collection = new SqliteCollection( "localCollection", i18n( "Local Collection" ) );
             break;
 //fix this later
         case DbConnection::mysql :
-            collection = new MySqlCollection( "localCollection", i18n( "Local collection" ) );
+            collection = new MySqlCollection( "localCollection", i18n( "Local Collection" ) );
             break;
         default :
-            collection = new SqlCollection( "localCollection", i18n( "Local collection" ) );
+            collection = new SqlCollection( "localCollection", i18n( "Local Collection" ) );
             break;
     }*/
-    collection = new SqliteCollection( "localCollection", i18n( "Local collection" ) );
+    collection = new SqliteCollection( "localCollection", i18n( "Local Collection" ) );
     emit newCollection( collection );
 }
 
