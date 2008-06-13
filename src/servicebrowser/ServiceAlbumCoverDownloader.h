@@ -98,7 +98,7 @@ public:
      * @param size Unused.
      * @return True.
      */
-    virtual bool hasImage( int size = 1 ) { Q_UNUSED( size ); return true; }
+    virtual bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return true; }
 
     /**
      * Get the image of this album. If the image has not yet been fetched, this call will return a standard

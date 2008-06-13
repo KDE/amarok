@@ -282,7 +282,7 @@ public:
     }
 
     // return true since we handle our own fetching
-    bool hasImage( int size = 1 ) { Q_UNUSED( size ); return true; }
+    bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return true; }
 
     Track::Private * const d;
 
