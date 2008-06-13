@@ -57,6 +57,9 @@ class PlaylistModel : public QAbstractItemModel
         void reloadFromDb();
         void editPlaylist( int id );
 
+
+        void createNewGroup();
+
     signals:
         void editIndex( const QModelIndex & index );
 

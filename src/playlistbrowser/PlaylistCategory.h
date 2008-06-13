@@ -53,6 +53,8 @@ private:
     QTreeView * m_playlistView;
     PopupDropperAction * m_deleteAction;
     PopupDropperAction * m_renameAction;
+    PopupDropperAction * m_addGroupAction;
+    
 
 };
 

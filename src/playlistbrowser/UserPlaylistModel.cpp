@@ -29,6 +29,8 @@
 #include <KIcon>
 #include <QListIterator>
 
+#include <typeinfo>
+
 static const int USERPLAYLIST_DB_VERSION = 1;
 static const QString key("AMAROK_USERPLAYLIST");
 
@@ -264,7 +266,7 @@ void PlaylistBrowserNS::PlaylistModel::reloadFromDb()
 void PlaylistBrowserNS::PlaylistModel::editPlaylist( int id )
 {
 
-    //for now, assume that the newly added playlist is in the top level:
+  //for now, assume that the newly added playlist is in the top level:
     int row = m_root->childGroups().count() - 1;
     foreach ( Meta::SqlPlaylist * playlist, m_root->childPlaylists() ) {
         row++;
@@ -273,6 +275,28 @@ void PlaylistBrowserNS::PlaylistModel::editPlaylist( int id )
         }
     }
 }
+
+void PlaylistBrowserNS::PlaylistModel::createNewGroup()
+{
+    DEBUG_BLOCK
+    
+    SqlPlaylistGroup * group = new SqlPlaylistGroup( "New Group", m_root );
+    group->save();
+    int id = group->id();
+    
+    
+    delete group;
+
+    reloadFromDb();
+
+    int row = 0;
+    foreach ( SqlPlaylistGroup * childGroup, m_root->childGroups() ) {
+        if ( childGroup->id() == id ) {
+            emit( editIndex( createIndex( row , 0, childGroup ) ) );
+        }
+    }
+
+} 
 
 
 

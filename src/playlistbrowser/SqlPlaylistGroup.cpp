@@ -75,7 +75,7 @@ void SqlPlaylistGroup::save()
     } else {
         //insert new
         
-        QString query = "INSERT INTO playlist_groups ( parent_id, name, description) VALUES ( %1, %2, %3 );";
+        QString query = "INSERT INTO playlist_groups ( parent_id, name, description) VALUES ( %1, '%2', '%3' );";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description );
         m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
 

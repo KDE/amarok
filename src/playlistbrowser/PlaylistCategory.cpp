@@ -37,6 +37,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     : Amarok::Widget( parent )
     , m_deleteAction( 0 )
     , m_renameAction( 0 )
+    , m_addGroupAction( 0 )
 {
 
     setContentsMargins(0,0,0,0);
@@ -102,9 +103,6 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
 
     QModelIndexList indices = m_playlistView->selectionModel()->selectedIndexes();
 
-    if ( indices.count() == 0 )
-        return;
-
     KMenu menu;
 
     if ( m_deleteAction == 0 )
@@ -112,11 +110,19 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
 
     if ( m_renameAction == 0 )
         m_renameAction = new PopupDropperAction( KIcon("media-track-edit-amarok" ), i18n( "rename" ), this  );
+    
+    if ( m_addGroupAction == 0 )
+        m_addGroupAction = new PopupDropperAction( KIcon("media-track-add-amarok" ), i18n( "add group" ), this  );
 
-    menu.addAction( m_deleteAction );
+    
+    if ( indices.count() > 0 )
+        menu.addAction( m_deleteAction );
 
     if ( indices.count() == 1 )
         menu.addAction( m_renameAction );
+
+    menu.addAction( m_addGroupAction );
+
 
     PopupDropperAction* result = dynamic_cast< PopupDropperAction* > ( menu.exec( m_playlistView->mapToGlobal( pos ) ) );
     if ( result == 0 ) return;
@@ -131,10 +137,10 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
             item->parent()->deleteChild( item );
         }
         PlaylistModel::instance()->reloadFromDb();
-    }
-
-    if( result == m_renameAction ) {
+    } else if( result == m_renameAction ) {
         m_playlistView->edit( indices.first() );
+    } else if( result == m_addGroupAction ) {
+        PlaylistModel::instance()->createNewGroup();
     }
 }
 
