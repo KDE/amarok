@@ -24,6 +24,8 @@
 #include "meta/SqlPlaylist.h"
 #include "SqlStorage.h"
 
+#include <typeinfo>
+
 SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow, SqlPlaylistGroup * parent )
     : SqlPlaylistViewItem()
     , m_parent( parent )
