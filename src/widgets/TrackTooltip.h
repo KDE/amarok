@@ -30,6 +30,7 @@ class TrackToolTip : public QWidget, public Meta::Observer
 
     public:
     TrackToolTip();
+    ~TrackToolTip();
     static TrackToolTip* instance();
 
     void setTrack( const Meta::TrackPtr track, bool force = false );

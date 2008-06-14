@@ -37,10 +37,12 @@
 #include <QTimer>
 #include <QToolTip>
 
+
+K_GLOBAL_STATIC( TrackToolTip, s_trackToolTip );
+
 TrackToolTip *TrackToolTip::instance()
 {
-    static TrackToolTip tip;
-    return &tip;
+    return s_trackToolTip;
 }
 
 TrackToolTip::TrackToolTip()
@@ -48,6 +50,8 @@ TrackToolTip::TrackToolTip()
     , m_track( 0 )
     , m_haspos( false )
 {
+    DEBUG_BLOCK
+
     setWindowFlags( Qt::ToolTip );
 //     setWindowOpacity( 0.6 ); // This doesn't work that well, the background should be transparent without the foreground, probably.
     QGridLayout *l = new QGridLayout;
@@ -64,6 +68,11 @@ TrackToolTip::TrackToolTip()
     setLayout( l );
     clear();
 
+}
+
+TrackToolTip::~TrackToolTip()
+{
+    DEBUG_BLOCK
 }
 
 void TrackToolTip::show( const QPoint & bottomRight )
