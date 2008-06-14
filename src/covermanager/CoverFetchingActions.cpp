@@ -115,7 +115,8 @@ SetCustomCoverAction::slotTriggered()
     KUrl file = KFileDialog::getImageOpenUrl( startPath, qobject_cast<QWidget*>( parent() ), i18n( "Select Cover Image File" ) );
     if( !file.isEmpty() )
     {
-        QImage image( file.fileName() );
+        QImage image( file.path() );
+
         foreach( Meta::AlbumPtr album, m_albums )
             album->setImage( image );
     }
