@@ -26,6 +26,7 @@
 #include "plasma/animator.h"
 #include "SvgHandler.h"
 
+#include <QGraphicsGridLayout>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QList>
@@ -36,6 +37,8 @@
 #include <threadweaver/Job.h>
 #include <KSvgRenderer>
 
+#define MAX_ROWS 10
+#define MAX_COLUMNS 10
 
 namespace Context
 {
@@ -46,7 +49,7 @@ class /*AMAROK_EXPORT*/ ColumnContainment : public Containment
     Q_OBJECT
 public:
     ColumnContainment( QObject *parent, const QVariantList &args );
-    ~ColumnContainment() {}
+    ~ColumnContainment();
 
     virtual QRectF boundingRect() const;
 
@@ -89,8 +92,17 @@ private:
 
     QList<QAction*> *m_actions;
 
-    ContextLayout* m_columns;
+//     ContextLayout* m_columns;
+    QGraphicsGridLayout* m_grid;
+    int m_rows;
+    int m_cols;
+    
     int m_defaultColumnSize;
+    int m_defaultRowSize;
+    bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];
+
+    QHash< Plasma::Applet*, QList<int> > m_appletsPositions;
+    
     Plasma::Svg* m_background;
     Plasma::Svg* m_logo;
     qreal m_width;

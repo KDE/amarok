@@ -58,15 +58,24 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     : Context::Containment( parent, args )
     , m_actions( 0 )
     , m_defaultColumnSize( 350 )
+    , m_defaultRowSize( 200 )
 {
     DEBUG_BLOCK
 
     setContainmentType( CustomContainment );
 
-    DEBUG_LINE_INFO
-    m_columns = new ContextLayout( this );
-    m_columns->setColumnWidth( m_defaultColumnSize );
-    DEBUG_LINE_INFO
+    m_grid = new QGraphicsGridLayout( this );
+    setLayout( m_grid );
+    m_grid->setSpacing( 3 );
+    m_grid->setContentsMargins( 0, 0, 0, 0 );
+    for( int i = 0; i < MAX_ROWS; i++ )
+        for( int j = 0; j < MAX_COLUMNS; j++ )
+            m_gridFreePositions[i][j] = true;
+        
+//     DEBUG_LINE_INFO
+//     m_columns = new ContextLayout( this );
+//     m_columns->setColumnWidth( m_defaultColumnSize );
+//     DEBUG_LINE_INFO
 //     m_columns->setSpacing( 3 );
 //     m_columns->setContentsMargins(0,0,0,0);
     DEBUG_LINE_INFO
@@ -111,22 +120,22 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
 void ColumnContainment::saveToConfig( KConfig& conf )
 {
 //     debug() << "number of m_columns:" << m_columns->count();
-    for( int i = 0; i < m_columns->count(); i++ )
-    {
-        Applet *applet = 0;
-        //FIXME: Reenable when working, the dynamic_cast causes a crash.
-        QGraphicsLayoutItem *item = m_columns->itemAt( i );
-        //Q_ASSERT(item);
-        applet = dynamic_cast<Plasma::Applet*>( item );
-        debug() << "trying to save an applet";
-        if( applet != 0 )
-        {
-            KConfigGroup cg( &conf, QString::number( applet->id() ) );
-            debug() << "saving applet" << applet->name();
-            cg.writeEntry( "plugin", applet->pluginName() );
-        }
-    }
-    conf.sync();
+//     for( int i = 0; i < m_columns->count(); i++ )
+//     {
+//         Applet *applet = 0;
+//         //FIXME: Reenable when working, the dynamic_cast causes a crash.
+//         QGraphicsLayoutItem *item = m_columns->itemAt( i );
+//         //Q_ASSERT(item);
+//         applet = dynamic_cast<Plasma::Applet*>( item );
+//         debug() << "trying to save an applet";
+//         if( applet != 0 )
+//         {
+//             KConfigGroup cg( &conf, QString::number( applet->id() ) );
+//             debug() << "saving applet" << applet->name();
+//             cg.writeEntry( "plugin", applet->pluginName() );
+//         }
+//     }
+//     conf.sync();
 }
 
 void ColumnContainment::loadConfig( KConfig& conf )
@@ -162,9 +171,14 @@ void ColumnContainment::updateSize() // SLOT
     // HACK HACK HACK i don't know where maximumSize is being set, but SOMETHING is setting it,
     // and is preventing the containment from expanding when it should.
     // so, we manually keep the size high.
+//     setMaximumSize( QSizeF( 100000, 100000 ) );
+//     m_columns->setGeometry( scene()->sceneRect() );
     setMaximumSize( QSizeF( 100000, 100000 ) );
-    m_columns->setGeometry( scene()->sceneRect() );
+    m_grid->setGeometry( scene()->sceneRect() );
     setGeometry( scene()->sceneRect() );
+    m_rows = geometry().height() / m_defaultRowSize;
+    m_cols = qMax( (int)(geometry().width() / m_defaultColumnSize), 1 );
+    
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
@@ -186,7 +200,7 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
 
     QRectF bounds = The::svgHandler()->getRenderer()->boundsOnElement ( "amarok_logo" );
     double aspectRatio = bounds.width() / bounds.height();
-
+    
     int logoWidth = 300;
     int logoHeight = ( int )( ( double ) logoWidth / aspectRatio );
 
@@ -203,11 +217,38 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
     painter->restore();*/
 }
 
-Plasma::Applet* ColumnContainment::addApplet( Applet* applet, const QPointF & )
+Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPointF & )
 {
+    DEBUG_BLOCK
 //     debug() << "m_columns:" << m_columns;
-    m_columns->addItem( applet );
+//     m_columns->addItem( applet );
 
+    /* First calculate where should the applet be in the grid... */
+    int applets = m_grid->count();
+    int row = applets / m_cols;
+    int col = applets % m_cols;
+    /* ...then check if there is enough room for a new applet and that the position is free */
+    if( row < m_rows && col < m_cols && m_gridFreePositions[row][col] )
+    {
+        int height = applet->effectiveSizeHint( Qt::PreferredSize,
+                                                QSizeF( m_defaultColumnSize, -1 ) ).height();
+        int rowSpan = (height / m_defaultRowSize) + 1;
+        int colSpan = 1;
+        m_grid->addItem( applet, row, col, rowSpan, colSpan);
+        debug() << "applet height: " << height;
+        debug() << "applets count:" << applets;
+        debug() << "applet inserted at: " << row << col;
+        debug() << "applet rowSpan :" << rowSpan;
+        QList<int> pos;
+        pos << row << col << rowSpan;
+        m_appletsPositions[applet] = pos;
+        
+        for( int i = 0; i < rowSpan; i++ )
+            m_gridFreePositions[row + i][col] = false;
+    }
+    else
+        debug() << "Send applet to the next free containment";
+    
     recalculate();
     return applet;
 }
@@ -216,7 +257,41 @@ void ColumnContainment::recalculate()
 {
     DEBUG_BLOCK
     debug() << "got child item that wants a recalculation";
-    m_columns->invalidate();
+
+    QRectF rect = geometry().adjusted( 0, 0, 0, 0 );
+    qreal top = 0.0;
+    qreal left = 0.0;
+    qreal height; 
+        
+    int gridRows = m_grid->rowCount();
+    int gridCols = m_grid->columnCount();
+    
+    for( int col = 0; col < gridCols; col++ )
+    {
+        left = (qreal)(col * m_defaultColumnSize);
+        top = 0.0;
+        
+        for( int row = 0; row < gridRows; row++ )
+        {
+            Plasma::Applet *applet = dynamic_cast< Plasma::Applet *>( m_grid->itemAt( row, col ) );
+            if( applet )
+            {
+                height = applet->effectiveSizeHint( Qt::PreferredSize,
+                                                    QSizeF( m_defaultColumnSize, -1 ) ).height();
+                const QRectF newgeom( rect.topLeft().x(),
+                                rect.topLeft().y() + top,
+                                m_defaultColumnSize,
+                                height );
+                top += height;
+                debug() << "setting child geometry to" << newgeom;                
+                applet->setGeometry( newgeom );
+                
+            }
+
+        }
+    
+    }
+//     m_columns->invalidate();
 //    m_columns->relayout();
 }
 
@@ -280,12 +355,24 @@ void
 ColumnContainment::appletRemoved( Plasma::Applet* applet )
 {
     DEBUG_BLOCK
-    QGraphicsLayoutItem* item = dynamic_cast< QGraphicsLayoutItem* >( applet );
-    if( item )
-        m_columns->removeItem( item ); 
-    else
-        debug() << "GOT NON-QGraphicsLayoutItem in APPLETREMOVED";
+    if( m_appletsPositions.contains( applet ) )
+    {
+        QList<int> pos = m_appletsPositions[applet];
+        int row = pos[0];
+        int col = pos[1];
+        int rowSpan = pos[2];
+       
+        for( int i = 0; i < rowSpan; i++ )
+            m_gridFreePositions[row + i][col] = true;
+        m_appletsPositions.remove( applet );
+    }
+//         m_columns->removeItem( item );
+    
+}
 
+ColumnContainment::~ColumnContainment()
+{
+    m_appletsPositions.clear();
 }
 
 } // Context namespace
