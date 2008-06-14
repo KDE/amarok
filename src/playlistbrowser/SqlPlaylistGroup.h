@@ -65,6 +65,8 @@ class SqlPlaylistGroup : public SqlPlaylistViewItem
         SqlPlaylistGroupList childGroups();
         SqlPlaylistDirectList childPlaylists();
 
+        void reparent( SqlPlaylistGroup * parent );
+
         void clear();
 
         void deleteChild( SqlPlaylistViewItem * item );

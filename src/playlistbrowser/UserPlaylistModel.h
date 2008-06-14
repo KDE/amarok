@@ -58,6 +58,10 @@ class PlaylistModel : public QAbstractItemModel
             return Qt::MoveAction;
         }
 
+        virtual QStringList mimeTypes() const;
+        QMimeData* mimeData( const QModelIndexList &indexes ) const;
+        bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
+
         void reloadFromDb();
         void editPlaylist( int id );
 

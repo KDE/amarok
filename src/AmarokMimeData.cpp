@@ -26,6 +26,9 @@
 
 const QString AmarokMimeData::TRACK_MIME = "application/x-amarok-tracks";
 const QString AmarokMimeData::PLAYLIST_MIME = "application/x-amarok-playlists";
+const QString AmarokMimeData::PLAYLISTBROWSERGROUP_MIME = "application/x-amarok-playlistbrowsergroup";
+
+
 
 class AmarokMimeData::Private
 {
@@ -41,6 +44,7 @@ public:
 
     Meta::TrackList tracks;
     Meta::PlaylistList playlists;
+    SqlPlaylistGroupList playlistGroups;
     QList<QueryMaker*> queryMakers;
     QMap<QueryMaker*, Meta::TrackList> trackMap;
     QMap<QueryMaker*, Meta::PlaylistList> playlistMap;
@@ -65,10 +69,12 @@ QStringList
 AmarokMimeData::formats() const
 {
     QStringList formats( QMimeData::formats() );
-    if( !d->tracks.isEmpty() || !d->queryMakers.isEmpty())
+    if( !d->tracks.isEmpty() || !d->queryMakers.isEmpty() || !d->playlistGroups.isEmpty() )
     {
         formats.append( TRACK_MIME );
         formats.append( PLAYLIST_MIME );
+        formats.append( PLAYLISTBROWSERGROUP_MIME );
+        
         if( !formats.contains( "text/uri-list" ) )
             formats.append( "text/uri-list" );
         if( !formats.contains( "text/plain" ) )
@@ -84,6 +90,8 @@ AmarokMimeData::hasFormat( const QString &mimeType ) const
         return !d->tracks.isEmpty() || !d->queryMakers.isEmpty();
     else if( mimeType == PLAYLIST_MIME )
         return !d->playlists.isEmpty() || !d->queryMakers.isEmpty();
+    else if( mimeType == PLAYLISTBROWSERGROUP_MIME )
+        return !d->playlistGroups.isEmpty();
     else if( mimeType == "text/uri-list" || mimeType == "text/plain" )
         return !d->tracks.isEmpty() || !d->playlists.isEmpty() || !d->queryMakers.isEmpty();
     else
@@ -145,6 +153,24 @@ AmarokMimeData::addPlaylists( const Meta::PlaylistList &playlists )
 {
     d->playlists << playlists;
 }
+
+
+SqlPlaylistGroupList AmarokMimeData::sqlPlaylistsGroups() const
+{
+    return d->playlistGroups;
+}
+
+void AmarokMimeData::setPlaylistGroups( const SqlPlaylistGroupList & groups )
+{
+    d->playlistGroups = groups;
+}
+
+void AmarokMimeData::addPlaylistGroups(const SqlPlaylistGroupList & groups)
+{
+    d->playlistGroups << groups;
+}
+
+
 
 QList<QueryMaker*>
 AmarokMimeData::queryMakers()
@@ -239,6 +265,8 @@ AmarokMimeData::queryDone()
 {
     d->completedQueries++;
 }
+
+
 
 #include "AmarokMimeData.moc"
 

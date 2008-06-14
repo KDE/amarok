@@ -206,3 +206,9 @@ void SqlPlaylistGroup::removeFromDb()
     query = query.arg( QString::number( m_dbId ) );
     QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 }
+
+void SqlPlaylistGroup::reparent( SqlPlaylistGroup * parent )
+{
+    m_parent = parent;
+    save();
+}

@@ -54,6 +54,12 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_playlistView->setModel( PlaylistModel::instance() );
     m_playlistView->header()->hide();
 
+
+    m_playlistView->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_playlistView->setDragEnabled(true);
+    m_playlistView->setAcceptDrops(true);
+    m_playlistView->setDropIndicatorShown(true);
+
     m_playlistView->setContextMenuPolicy( Qt::CustomContextMenu );
     m_playlistView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 

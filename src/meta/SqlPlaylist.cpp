@@ -180,3 +180,10 @@ int Meta::SqlPlaylist::id()
 {
     return m_dbId;
 }
+
+
+void Meta::SqlPlaylist::reparent( SqlPlaylistGroup * parent )
+{
+    m_parent = parent;
+    saveToDb( false );
+}

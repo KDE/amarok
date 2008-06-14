@@ -19,6 +19,7 @@
 
 #include "UserPlaylistModel.h"
 
+#include "AmarokMimeData.h"
 #include "Debug.h"
 #include "CollectionManager.h"
 #include "SqlStorage.h"
@@ -27,6 +28,8 @@
 
 
 #include <KIcon>
+
+#include <QAbstractListModel>
 #include <QListIterator>
 
 #include <typeinfo>
@@ -223,6 +226,109 @@ bool PlaylistBrowserNS::PlaylistModel::setData(const QModelIndex & index, const 
     return true;
 
 }
+
+QStringList
+PlaylistBrowserNS::PlaylistModel::mimeTypes() const
+{
+    QStringList ret; // = QAbstractListModel::mimeTypes();
+    ret << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
+    ret << AmarokMimeData::PLAYLIST_MIME;
+    //ret << "text/uri-list"; //we do accept urls
+    return ret;
+}
+
+QMimeData*
+PlaylistBrowserNS::PlaylistModel::mimeData( const QModelIndexList &indexes ) const
+{
+    AmarokMimeData* mime = new AmarokMimeData();
+
+    SqlPlaylistGroupList groups;
+    Meta::PlaylistList playlists;
+
+    foreach( const QModelIndex &index, indexes ) {
+
+        SqlPlaylistViewItem * item = static_cast< SqlPlaylistViewItem* >( index.internalPointer() );
+
+        if ( typeid( * item ) == typeid( SqlPlaylistGroup ) ) {
+            SqlPlaylistGroup * playlistGroup = static_cast<SqlPlaylistGroup *>( item );
+            groups << playlistGroup;
+        } else {
+            Meta::SqlPlaylist* playlist = static_cast< Meta::SqlPlaylist *>( item );
+            playlists << Meta::PlaylistPtr( playlist );
+        }
+    }
+
+    mime->setPlaylistGroups( groups );
+    mime->setPlaylists( playlists );
+    
+    return mime;
+}
+
+
+bool
+PlaylistBrowserNS::PlaylistModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
+{
+    Q_UNUSED( column ); 
+//     DEBUG_BLOCK
+
+    if( action == Qt::IgnoreAction )
+        return true;
+
+    SqlPlaylistGroup * parentGroup;
+    if ( !parent.isValid() ) {
+        parentGroup = m_root;
+    } else {
+        parentGroup = static_cast<SqlPlaylistGroup *>( parent.internalPointer() );
+    }
+    
+
+    if( data->hasFormat( AmarokMimeData::PLAYLISTBROWSERGROUP_MIME ) )
+    {
+        debug() << "Found playlist group mime type";
+
+        const AmarokMimeData* playlistGroupDrag = dynamic_cast<const AmarokMimeData*>( data );
+        if( playlistGroupDrag )
+        {
+
+            SqlPlaylistGroupList groups = playlistGroupDrag->sqlPlaylistsGroups();
+
+            foreach( SqlPlaylistGroup* group, groups ) {
+                group->reparent( parentGroup );
+            }
+
+            reloadFromDb();
+
+            return true;
+        }
+    }
+    else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+    {
+        debug() << "Found playlist mime type";
+
+        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        if( dragList )
+        {
+
+            Meta::PlaylistList playlists = dragList->playlists();
+
+            foreach( Meta::PlaylistPtr playlistPtr, playlists ) {
+
+                Meta::SqlPlaylist * playlist = dynamic_cast<Meta::SqlPlaylist *>( playlistPtr.data() );
+
+                if( playlist ) 
+                    playlist->reparent( parentGroup );
+            }
+
+            reloadFromDb();
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 
 void PlaylistBrowserNS::PlaylistModel::createTables()
 {

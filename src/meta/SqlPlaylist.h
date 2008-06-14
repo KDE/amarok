@@ -56,6 +56,8 @@ public:
     virtual QString description() const { return m_description; }
     virtual void rename( const QString &name );
 
+    void reparent( SqlPlaylistGroup * parent );
+    
     int id();
     
 
