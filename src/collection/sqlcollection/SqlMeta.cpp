@@ -1182,6 +1182,9 @@ SqlAlbum::updateImage( const QString path ) const
     if( imageid >= 0 )
     {
         query = QString("UPDATE albums SET image = %1" ).arg( QString::number( imageid ) );
+        m_hasImage = true;
+        m_hasImageChecked = true;
+        m_images.insert( 0, path );
         m_collection->query( query );
     }
 }
