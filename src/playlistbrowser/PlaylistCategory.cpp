@@ -115,10 +115,10 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
     KMenu menu;
 
     if ( m_deleteAction == 0 )
-        m_deleteAction = new KAction( KIcon("media-track-remove-amarok" ), i18n( "delete" ), this  );
+        m_deleteAction = new KAction( KIcon("media-track-remove-amarok" ), i18n( "Delete" ), this  );
 
     if ( m_renameAction == 0 )
-        m_renameAction = new KAction( KIcon("media-track-edit-amarok" ), i18n( "rename" ), this  );
+        m_renameAction = new KAction( KIcon("media-track-edit-amarok" ), i18n( "Rename" ), this  );
 
     if ( indices.count() > 0 )
         menu.addAction( m_deleteAction );
@@ -126,6 +126,7 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
     if ( indices.count() == 1 )
         menu.addAction( m_renameAction );
 
+    menu.addSeparator();
     menu.addAction( m_addGroupAction );
 
 
