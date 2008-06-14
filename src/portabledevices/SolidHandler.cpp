@@ -45,6 +45,7 @@ SolidHandler::SolidHandler() : QObject()
 
 SolidHandler::~SolidHandler()
 {
+    DEBUG_BLOCK
 }
 
 void
