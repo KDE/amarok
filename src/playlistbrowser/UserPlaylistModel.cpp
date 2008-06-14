@@ -52,7 +52,7 @@ PlaylistBrowserNS::PlaylistModel::PlaylistModel()
     QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE key = '%1';").arg(sqlStorage->escape( key ) ) );
     if( values.isEmpty() )
     {
-        debug() << "creating Playlist Tables";
+        //debug() << "creating Playlist Tables";
         createTables();
     }
 
@@ -91,9 +91,9 @@ PlaylistBrowserNS::PlaylistModel::data(const QModelIndex & index, int role) cons
 QModelIndex
 PlaylistBrowserNS::PlaylistModel::index(int row, int column, const QModelIndex & parent) const
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
-    debug() << "row: " << row << ", column: " <<column;
+    //debug() << "row: " << row << ", column: " <<column;
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
@@ -102,10 +102,10 @@ PlaylistBrowserNS::PlaylistModel::index(int row, int column, const QModelIndex &
 
         int noOfGroups = m_root->childGroups().count();
         if ( row < noOfGroups ) {
-            debug() << "Root playlist group";
+            //debug() << "Root playlist group";
             return createIndex( row, column, m_root->childGroups()[row] );
         } else {
-            debug() << "Root playlist";
+            //debug() << "Root playlist";
             return createIndex( row, column, m_root->childPlaylists()[row - noOfGroups] );
         }
     }
@@ -125,7 +125,7 @@ PlaylistBrowserNS::PlaylistModel::index(int row, int column, const QModelIndex &
 QModelIndex
 PlaylistBrowserNS::PlaylistModel::parent( const QModelIndex & index ) const
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     if (!index.isValid())
         return QModelIndex();
@@ -152,7 +152,7 @@ PlaylistBrowserNS::PlaylistModel::parent( const QModelIndex & index ) const
 int
 PlaylistBrowserNS::PlaylistModel::rowCount( const QModelIndex & parent ) const
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     if (parent.column() > 0) {
         return 0;
@@ -180,13 +180,19 @@ PlaylistBrowserNS::PlaylistModel::columnCount(const QModelIndex & /*parent*/) co
     return 1;
 }
 
+
 Qt::ItemFlags
-PlaylistBrowserNS::PlaylistModel::flags(const QModelIndex & index) const
+PlaylistBrowserNS::PlaylistModel::flags( const QModelIndex & index ) const
 {
     if (!index.isValid())
-        return Qt::ItemIsEnabled;
+        return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 
-    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    SqlPlaylistViewItem * item = static_cast< SqlPlaylistViewItem* >( index.internalPointer() );
+
+    if ( typeid( * item ) == typeid( SqlPlaylistGroup ) )
+        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
+    else
+        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
 QVariant
