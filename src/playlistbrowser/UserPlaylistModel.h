@@ -57,7 +57,7 @@ class PlaylistModel : public QAbstractItemModel
         void reloadFromDb();
         void editPlaylist( int id );
 
-
+    public slots:
         void createNewGroup();
 
     signals:
@@ -71,7 +71,7 @@ class PlaylistModel : public QAbstractItemModel
         void createTables();
 
         static PlaylistModel * s_instance;
-        
+
         SqlPlaylistGroup* m_root;
 
 };

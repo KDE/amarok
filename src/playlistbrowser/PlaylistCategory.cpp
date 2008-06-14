@@ -22,11 +22,15 @@
 #include "playlist/PlaylistModel.h"
 #include "SqlPlaylist.h"
 #include "TheInstances.h"
+#include "UserPlaylistModel.h"
 
+#include <KAction>
 #include <KIcon>
 #include <KMenu>
 
 #include <QHeaderView>
+#include <QToolBar>
+#include <QTreeView>
 #include <QVBoxLayout>
 
 #include <typeinfo>
@@ -41,14 +45,15 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
 {
 
     setContentsMargins(0,0,0,0);
-    
+    m_toolBar = new QToolBar( this );
+    m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+
     m_playlistView = new QTreeView( this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins(0,0,0,0);
     m_playlistView->setModel( PlaylistModel::instance() );
     m_playlistView->header()->hide();
 
-    
     m_playlistView->setContextMenuPolicy( Qt::CustomContextMenu );
     m_playlistView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
@@ -59,6 +64,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     QVBoxLayout *vLayout = new QVBoxLayout( this );
     vLayout->setContentsMargins(0,0,0,0);
+    vLayout->addWidget( m_toolBar );
     vLayout->addWidget( m_playlistView );
 
     m_playlistView->setAlternatingRowColors( true );
@@ -75,6 +81,9 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_playlistView->setPalette( p );
 
+    m_addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
+    m_toolBar->addAction( m_addGroupAction );
+    connect( m_addGroupAction, SIGNAL( triggered( bool ) ), PlaylistModel::instance(), SLOT( createNewGroup() ) );
 }
 
 
@@ -106,15 +115,11 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
     KMenu menu;
 
     if ( m_deleteAction == 0 )
-        m_deleteAction = new PopupDropperAction( KIcon("media-track-remove-amarok" ), i18n( "delete" ), this  );
+        m_deleteAction = new KAction( KIcon("media-track-remove-amarok" ), i18n( "delete" ), this  );
 
     if ( m_renameAction == 0 )
-        m_renameAction = new PopupDropperAction( KIcon("media-track-edit-amarok" ), i18n( "rename" ), this  );
-    
-    if ( m_addGroupAction == 0 )
-        m_addGroupAction = new PopupDropperAction( KIcon("media-track-add-amarok" ), i18n( "add group" ), this  );
+        m_renameAction = new KAction( KIcon("media-track-edit-amarok" ), i18n( "rename" ), this  );
 
-    
     if ( indices.count() > 0 )
         menu.addAction( m_deleteAction );
 
@@ -124,7 +129,7 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
     menu.addAction( m_addGroupAction );
 
 
-    PopupDropperAction* result = dynamic_cast< PopupDropperAction* > ( menu.exec( m_playlistView->mapToGlobal( pos ) ) );
+    KAction* result = dynamic_cast< KAction* > ( menu.exec( m_playlistView->mapToGlobal( pos ) ) );
     if ( result == 0 ) return;
 
 

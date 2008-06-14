@@ -83,10 +83,9 @@ PlaylistBrowserNS::PlaylistModel::data(const QModelIndex & index, int role) cons
             return QVariant( KIcon( "folder-amarok" ) );
         else if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
             return QVariant( KIcon( "x-media-podcast-amarok" ) );
-            
-    } else
-        return QVariant();
+    }
 
+    return QVariant();
 }
 
 QModelIndex
@@ -280,7 +279,7 @@ void PlaylistBrowserNS::PlaylistModel::createNewGroup()
 {
     DEBUG_BLOCK
     
-    SqlPlaylistGroup * group = new SqlPlaylistGroup( "New Group", m_root );
+    SqlPlaylistGroup * group = new SqlPlaylistGroup( i18n("New Group"), m_root );
     group->save();
     int id = group->id();
     

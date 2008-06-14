@@ -20,13 +20,17 @@
 #ifndef PLAYLISTCATEGORY_H
 #define PLAYLISTCATEGORY_H
 
-#include "UserPlaylistModel.h"
-
-#include "popupdropper/PopupDropperAction.h"
 #include "widgets/Widget.h"
 
-#include <QTreeView>
-#include <QWidget>
+#include <QModelIndex>
+#include <QPoint>
+
+class PopupDropperAction;
+
+class QToolBar;
+class QTreeView;
+
+class KAction;
 
 namespace PlaylistBrowserNS {
 
@@ -50,10 +54,11 @@ private slots:
 
 private:
 
+    QToolBar * m_toolBar;
     QTreeView * m_playlistView;
-    PopupDropperAction * m_deleteAction;
-    PopupDropperAction * m_renameAction;
-    PopupDropperAction * m_addGroupAction;
+    KAction * m_deleteAction;
+    KAction * m_renameAction;
+    KAction * m_addGroupAction;
     
 
 };
