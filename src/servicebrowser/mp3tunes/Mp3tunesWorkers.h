@@ -110,7 +110,7 @@ class Mp3tunesTrackWithAlbumIdFetcher : public ThreadWeaver::Job
         void run();
 
     signals:
-        void tracksFetched( QList<Mp3tunesLockerTrack> );
+        void tracksFetched( Mp3tunesTrackWithAlbumIdFetcher * job, QList<Mp3tunesLockerTrack> );
 
     private slots:
         void completeJob();

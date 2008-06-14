@@ -25,6 +25,7 @@
 //#include "Mp3TunesMeta.h"
 #include "Mp3tunesLocker.h"
 #include "Mp3tunesServiceCollection.h"
+#include "Mp3tunesWorkers.h"
 
 #include <kio/jobclasses.h>
 
@@ -98,7 +99,7 @@ public slots:
 
     void artistDownloadComplete( QList<Mp3tunesLockerArtist> artists );
     void albumDownloadComplete( QList<Mp3tunesLockerAlbum> albums );
-    void trackDownloadComplete( QList<Mp3tunesLockerTrack> tracks );
+    void trackDownloadComplete(  Mp3tunesTrackWithAlbumIdFetcher * job, QList<Mp3tunesLockerTrack> tracks );
 
 
 };

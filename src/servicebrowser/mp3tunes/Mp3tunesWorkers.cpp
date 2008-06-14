@@ -147,7 +147,7 @@ void Mp3tunesTrackWithAlbumIdFetcher::run()
 void Mp3tunesTrackWithAlbumIdFetcher::completeJob()
 {
     DEBUG_BLOCK
-    emit( tracksFetched( m_tracks ) );
+    emit( tracksFetched( this, m_tracks ) );
     deleteLater();
 }
 

@@ -294,7 +294,7 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
         handleResult( tracks );
     } else if ( m_locker->sessionValid() ) {
         Mp3tunesTrackWithAlbumIdFetcher * trackFetcher = new Mp3tunesTrackWithAlbumIdFetcher( m_locker, m_parentAlbumId.toInt() );
-        connect( trackFetcher, SIGNAL( tracksFetched( QList<Mp3tunesLockerTrack> ) ), this, SLOT( trackDownloadComplete( QList<Mp3tunesLockerTrack> ) ) );
+        connect( trackFetcher, SIGNAL( tracksFetched( Mp3tunesTrackWithAlbumIdFetcher *, QList<Mp3tunesLockerTrack> ) ), this, SLOT( trackDownloadComplete( Mp3tunesTrackWithAlbumIdFetcher *, QList<Mp3tunesLockerTrack> ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( trackFetcher ); //Go!
     } else {
         debug() << "Session Invalud";
@@ -388,7 +388,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum
 
 }
 
-void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack> tracksList )
+void Mp3tunesServiceQueryMaker::trackDownloadComplete( Mp3tunesTrackWithAlbumIdFetcher * job, QList<Mp3tunesLockerTrack> tracksList )
 {
     DEBUG_BLOCK
     //debug() << "Received Tracks";
@@ -417,8 +417,10 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
         serviceTrack->setTrackNumber( track.trackNumber() );
 
         serviceTrack->setYear( QString::number( track.albumYear() ) );
-        //debug() << "setting type: "<< Amarok::extension( track.trackFileName() );
-        serviceTrack->setType( Amarok::extension( track.trackFileName() ) );
+
+        QString type = Amarok::extension( track.trackFileName() );
+        debug() << "setting type: " << type;
+        serviceTrack->setType( type );
         //debug() << "set type";
         m_collection->acquireWriteLock();
         //debug() << "adding track";
@@ -446,6 +448,9 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
 
         tracks.push_back( trackPtr );
     }
+
+    ThreadWeaver::Weaver::instance()->dequeue( job );
+    job->deleteLater();
 
     handleResult( tracks );
     emit queryDone();
