@@ -52,11 +52,14 @@ namespace Amarok
     class MessageQueue
     {
         public:
+            MessageQueue();
+            ~MessageQueue();
+
             static MessageQueue* instance();
             void addMessage ( const QString & );
             void sendMessages();
+
         private:
-            MessageQueue();
             QStack<QString> m_messages;
             bool m_queueMessages;
     };

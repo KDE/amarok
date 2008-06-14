@@ -153,13 +153,22 @@ StatusBar::engineNewTrackPlaying()
 ///////////////////
 
 MessageQueue::MessageQueue()
-    : m_queueMessages(true)
-{}
+    : m_queueMessages( true )
+{
+     DEBUG_BLOCK
+}
+
+MessageQueue::~MessageQueue()
+{
+     DEBUG_BLOCK
+}
+
+K_GLOBAL_STATIC( MessageQueue, s_messageQueue );
+
 MessageQueue*
 MessageQueue::instance()
 {
-    static MessageQueue mq;
-    return &mq;
+    return s_messageQueue;
 }
 
 void
