@@ -24,13 +24,9 @@
 #include "Amarok.h"
 #include "StatusBar.h"
 
-#include <KTemporaryFile>
-
-
 using namespace Meta;
 
 AMAROK_EXPORT_PLUGIN( ShoutcastServiceFactory )
-
 
 void ShoutcastServiceFactory::init()
 {
@@ -39,12 +35,10 @@ void ShoutcastServiceFactory::init()
     emit newService( service );
 }
 
-
 QString ShoutcastServiceFactory::name()
 {
     return "Shoutcast.com";
 }
-
 
 KPluginInfo ShoutcastServiceFactory::info()
 {
@@ -53,21 +47,18 @@ KPluginInfo ShoutcastServiceFactory::info()
     return pluginInfo;
 }
 
-
 KConfigGroup ShoutcastServiceFactory::config()
 {
     return Amarok::config( "Service_Shoutcast" );
 }
 
-
 ShoutcastService::ShoutcastService( const char *name )
     : ServiceBase( "Shoutcast Directory" )
 {
     setObjectName( name );
-    setShortDescription( i18n( "The biggest damn list of online radio stations on the net :-)" ) );
+    setShortDescription( i18n( "The biggest list of online radio stations on the Internet" ) );
     setIcon( KIcon( "network-wireless" ) );
 }
-
 
 ShoutcastService::~ShoutcastService()
 {}
@@ -86,7 +77,6 @@ void ShoutcastService::polish()
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
     m_polished = true;
 }
-
 
 #include "ShoutcastService.moc"
 
