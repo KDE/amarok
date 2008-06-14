@@ -261,12 +261,12 @@ MainWindow::init()
 
         internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
-        new MediaBrowser( "MediaBrowser" );
+        /*new MediaBrowser( "MediaBrowser" );
         PERF_LOG( "created mediabrowser" )
         if( MediaBrowser::isAvailable() )
         {
             addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), "multimedia-player-amarok" )
-        }
+        }*/
         #undef addBrowserMacro
         #undef addInstBrowserMacro
         PERF_LOG( "finished MainWindow::init" )
