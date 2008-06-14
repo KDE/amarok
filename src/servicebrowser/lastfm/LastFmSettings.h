@@ -27,7 +27,7 @@ class LastFmUserSettings
 {
 public:
     LastFmUserSettings();
-    virtual ~LastFmUserSettings() {}
+    virtual ~LastFmUserSettings();
 
     void setDiscovery( bool discovery );
     bool isDiscovery() const;

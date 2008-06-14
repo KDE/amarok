@@ -24,7 +24,15 @@
 
 LastFmUserSettings::LastFmUserSettings()
 {
+    DEBUG_BLOCK
+
     m_config = KGlobal::config()->group( LastFmServiceConfig::configSectionName() );
+}
+
+
+LastFmUserSettings::~LastFmUserSettings()
+{
+    DEBUG_BLOCK
 }
 
 
@@ -139,9 +147,11 @@ LastFmSettings::getProxyPassword() const
 
 namespace The
 {
+    K_GLOBAL_STATIC( LastFmSettings, s_lastFmSettings );
+
     LastFmSettings &settings()
     {
-        static LastFmSettings settings;
-        return settings;
+        return *s_lastFmSettings;
     }
 }
+
