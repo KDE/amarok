@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "SqlPlaylist.h"
 
 #include "CollectionManager.h"
@@ -68,7 +68,7 @@ bool SqlPlaylist::saveToDb( bool tracks )
         parentId = m_parent->id();
 
     SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
-    
+
     if ( m_dbId != -1 ) {
         //update existing
         QString query = "UPDATE playlists SET parent_id=%1, name='%2', description='%3' WHERE id=%4;";
@@ -90,7 +90,7 @@ bool SqlPlaylist::saveToDb( bool tracks )
         if ( tracks )
             saveTracks();
     }
-    
+
 }
 
 void SqlPlaylist::saveTracks()
@@ -98,7 +98,7 @@ void SqlPlaylist::saveTracks()
 
     int trackNum = 1;
     SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
-    
+
     foreach( Meta::TrackPtr trackPtr, m_tracks ) {
 
         QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, album, artist, length ) VALUES ( %1, %2, '%3', '%4', '%5', '%6', %7 );";

@@ -47,7 +47,7 @@ class Mp3tunesSearchResult {
 
 /**
  * A wrapper class for the libmp3tunes locker object.
- * @author Casey Link <unnamedrambler@gmail.com> 
+ * @author Casey Link <unnamedrambler@gmail.com>
  */
 class Mp3tunesLocker {
     public:
@@ -155,11 +155,11 @@ class Mp3tunesLocker {
          * Searches the Locker for tracks, albums, and/or artists.
          * Which type it searches depends on the Mp3tunesSearchResult's
          * searchFor passed to it.
-         * @pre Mp3tunesSearchResult's fields are initialized properly 
+         * @pre Mp3tunesSearchResult's fields are initialized properly
          *      depending on the types (artist, track album) you want searched.
-         *      Properly means: If you want a type searched initalize an empty
+         *      Properly means: If you want a type searched initialize an empty
          *      QList and set the appropriate SearchType bit.
-         * @post The Mp3tunesSearchResult's fields will filled with the 
+         * @post The Mp3tunesSearchResult's fields will filled with the
          *      search results. If the search returned empty, then the
          *      QLists will be empty.
          * @param container contains the QList's to be filled with search results

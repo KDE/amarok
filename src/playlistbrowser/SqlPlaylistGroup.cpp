@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "SqlPlaylistGroup.h"
 
 #include "CollectionManager.h"
@@ -67,23 +67,22 @@ void SqlPlaylistGroup::save()
     int parentId = 0;
     if ( m_parent )
         parentId = m_parent->id();
-    
+
     if ( m_dbId != -1 ) {
         //update existing
         QString query = "UPDATE playlist_groups SET parent_id=%1, name='%2', description='%3' WHERE id=%4;";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description ).arg( QString::number( m_dbId ) );
         CollectionManager::instance()->sqlStorage()->query( query );
-        
+
     } else {
         //insert new
-        
+
         QString query = "INSERT INTO playlist_groups ( parent_id, name, description) VALUES ( %1, '%2', '%3' );";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description );
         m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
 
     }
 
-    
 }
 
 SqlPlaylistGroupList SqlPlaylistGroup::childGroups()
@@ -109,7 +108,7 @@ SqlPlaylistGroupList SqlPlaylistGroup::childGroups()
     }
 
     return m_childGroups;
-    
+
 }
 
 SqlPlaylistDirectList SqlPlaylistGroup::childPlaylists()
@@ -183,7 +182,6 @@ void SqlPlaylistGroup::rename(const QString & name)
 
 void SqlPlaylistGroup::deleteChild( SqlPlaylistViewItem * item )
 {
-    
     if ( typeid( * item ) == typeid( SqlPlaylistGroup ) )  {
         SqlPlaylistGroup * group = static_cast<SqlPlaylistGroup *>( item );
         m_childGroups.remove( group );
@@ -193,20 +191,17 @@ void SqlPlaylistGroup::deleteChild( SqlPlaylistViewItem * item )
         m_childPlaylists.remove( playlist );
         delete playlist;
     }
-        
-    
 }
 
 void SqlPlaylistGroup::removeFromDb()
 {
     DEBUG_BLOCK
-    
+
     foreach( SqlPlaylistGroup * group, m_childGroups )
         group->removeFromDb();
     foreach( Meta::SqlPlaylist * playlist, m_childPlaylists )
         playlist->removeFromDb();
-    
-    
+
     QString query = "DELETE FROM playlist_groups where id=%1;";
     query = query.arg( QString::number( m_dbId ) );
     QStringList result = CollectionManager::instance()->sqlStorage()->query( query );

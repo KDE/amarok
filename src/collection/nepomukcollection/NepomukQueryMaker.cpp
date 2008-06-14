@@ -226,7 +226,7 @@ QueryMaker*
 NepomukQueryMaker::addMatch( const AlbumPtr &album )
 {
     debug() << "addMatch(album)" << endl;
-	
+
     queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
             .arg( Soprano::Vocabulary::Xesam::album().toString() )
@@ -386,7 +386,7 @@ QString
 NepomukQueryMaker::buildQuery() const
 {
     QString query;
-    
+
     switch( queryType )
     {
         case ARTIST:
@@ -396,10 +396,10 @@ NepomukQueryMaker::buildQuery() const
                     .arg( Soprano::Vocabulary::Xesam::artist().toString() );
             break;
         case ALBUM:
-            
+
             if ( queryMatch.isEmpty() )
                 return query;
-            
+
             query  =   QString(
                     "select distinct ?artist ?album where { "
                     "?r <%1> ?album . "
@@ -410,9 +410,9 @@ NepomukQueryMaker::buildQuery() const
             query += '}';
             break;
         case TRACK:
-            
+
             query  =   QString( "select ?r where { "  );
-            
+
             // if there is no match we want all tracks, match against all music
             if ( queryMatch.isEmpty() )
                 query += QString( "?r a <%1> . ")
@@ -421,10 +421,10 @@ NepomukQueryMaker::buildQuery() const
                 query += queryMatch;
             query += '}';
             break;
-            
+
         default:
-            debug() << "unknown query type" << endl;        
-       
+            debug() << "unknown query type" << endl;
+
     }
 
     return query;
@@ -454,70 +454,70 @@ NepomukQueryMaker::doQuery(const QString &query)
     DEBUG_BLOCK
     if ( query.isEmpty() )
         return;
-    
+
     if (!client->isValid())
     {
         m_collection->lostDBusConnection();
         return;
     }
-    
+
     // some problem with qlocalsocket and threads
     //Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
     // using dbus (slower) for now
-    
+
     //Soprano::Client::DBusClient* client = new Soprano::Client::DBusClient( "org.kde.NepomukStorage" );
 
     Soprano::Model* model = (Soprano::Model*)client->createModel( "main" );
-    
+
     switch ( queryType )
     {
         case ARTIST:
         {
             ArtistList al;
             Soprano::QueryResultIterator it
-                      = model->executeQuery( query, 
+                      = model->executeQuery( query,
                                              Soprano::Query::QueryLanguageSparql );
-            while( it.next() ) 
+            while( it.next() )
             {
                 Soprano::Node node = it.binding( "artist" ) ;
                 al.append( *(new Meta::ArtistPtr(new NepomukArtist(node.toString()))) );
             }
-            
+
             emitProperResult ( ArtistPtr, al );
-            
+
             break;
         }
-        
+
         case ALBUM:
         {
             AlbumList al;
             Soprano::QueryResultIterator it
-                      = model->executeQuery( query, 
+                      = model->executeQuery( query,
                                              Soprano::Query::QueryLanguageSparql );
-            while( it.next() ) 
+            while( it.next() )
             {
                 QString artist =  it.binding( "artist" ).toString();
                 QString album =  it.binding( "album" ).toString();
                 al.append( *( new Meta::AlbumPtr( new NepomukAlbum( album, artist ) ) ) );
             }
-            
+
             emitProperResult ( AlbumPtr, al );
-            
+
             break;
         }
-        
+
         case TRACK:
         {
             TrackList tl;
             Soprano::QueryResultIterator it
-                      = model->executeQuery( query, 
+                      = model->executeQuery( query,
                                              Soprano::Query::QueryLanguageSparql );
-            
-            while( it.next() ) 
+
+            while( it.next() )
             {
                 Nepomuk::Resource res = Nepomuk::Resource( it.binding( "r" ).uri() );
                 KUrl url = res.uri();
-                
+
                 QString title = res.property( Soprano::Vocabulary::Xesam::title() )
                                         .toString();
                 QString artist = res.property( Soprano::Vocabulary::Xesam::artist() )
@@ -535,22 +535,21 @@ NepomukQueryMaker::doQuery(const QString &query)
                                         .toInt();
                 int length = res.property( Soprano::Vocabulary::Xesam::mediaDuration() )
                                         .toInt();
-                NepomukTrack *np = new Meta::NepomukTrack( url, title, artist, album, genre, 
+                NepomukTrack *np = new Meta::NepomukTrack( url, title, artist, album, genre,
                                                     year, composer, type, trackNumber, length );
                 tl.append( *( new Meta::TrackPtr ( np ) ) );
             }
-            
+
             emitProperResult ( TrackPtr, tl );
-            
-            
+
             break;
         }
-            
+
         default:
             return;
     }
-    
-    if ( model ) 
+
+    if ( model )
         delete model;
 
 }
