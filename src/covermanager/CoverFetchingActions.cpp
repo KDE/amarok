@@ -31,7 +31,6 @@
 #include "CoverFetcher.h"
 #include "CoverManager.h"
 
-
 /////////////////////////////////////
 //  FetchCoverAction
 /////////////////////////////////////
@@ -105,7 +104,7 @@ UnsetCoverAction::slotTriggered()
 void SetCustomCoverAction::init()
 {
     setText( i18n("Set Custom Cover") );
-    setIcon( KIcon("list-remove") );
+    setIcon( KIcon("list-add") );
     setToolTip( i18np("Set custom artwork for this album", "Set custom artwork for these %1 albums", m_albums.count()) );
 }
 

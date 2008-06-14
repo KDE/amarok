@@ -1240,6 +1240,7 @@ SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
             actions.append( new CopyToDeviceAction( m_collection, this ) );
             actions.append( new CompilationAction( m_collection, this ) );
             actions.append( new FetchCoverAction( m_collection, this ) );
+            actions.append( new SetCustomCoverAction( m_collection, this ) );
             PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, this );
             PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, this );
             if( !hasImage() )
