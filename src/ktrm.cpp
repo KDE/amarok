@@ -75,6 +75,8 @@ class KTRMRequestHandler
 public:
     static KTRMRequestHandler *instance()
     {
+        DEBUG_BLOCK
+
         static QMutex mutex;
         mutex.lock();
         static KTRMRequestHandler handler;
@@ -202,6 +204,8 @@ protected:
 
     ~KTRMRequestHandler()
     {
+        DEBUG_BLOCK
+
         tp_Delete(m_pimp);
     }
 
