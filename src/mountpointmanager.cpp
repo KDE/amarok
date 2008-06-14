@@ -77,6 +77,8 @@ MountPointManager::MountPointManager()
 
 MountPointManager::~MountPointManager()
 {
+    DEBUG_BLOCK
+
     m_handlerMapMutex.lock();
     foreach( DeviceHandler *dh, m_handlerMap )
     {
@@ -89,10 +91,11 @@ MountPointManager::~MountPointManager()
     m_handlerMapMutex.unlock();
 }
 
-MountPointManager * MountPointManager::instance( )
+K_GLOBAL_STATIC( MountPointManager, s_mountPointManager );
+
+MountPointManager * MountPointManager::instance()
 {
-    static MountPointManager instance;
-    return &instance;
+    return s_mountPointManager;
 }
 
 void
