@@ -102,6 +102,10 @@ FileBrowser::Widget::Widget( const char * name )
   m_filePlacesModel = new KFilePlacesModel( this );
   m_urlNav = new KUrlNavigator( m_filePlacesModel, KUrl(QDir::home().path()), this );
 
+  setContentsMargins(0,0,0,0);
+  setFrameShape( QFrame::NoFrame );
+
+
 // FIXME
 //  m_cmbPath->listBox()->installEventFilter( this );
 
@@ -121,6 +125,18 @@ FileBrowser::Widget::Widget( const char * name )
 //   m_cmbPath->setUrl( KUrl(QDir::home().path()) );
   m_dir->setView( KFile::Simple );
   m_dir->view()->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+
+  m_dir->view()->setContentsMargins(0,0,0,0);
+  m_dir->view()->setFrameShape( QFrame::NoFrame );
+  
+  QPalette p = m_dir->palette();
+  QColor c = p.color( QPalette::Base );
+  c.setAlpha( 0 );
+  p.setColor( QPalette::Base, c );
+  m_dir->setPalette( p );
+
+  
   connect ( m_dir, SIGNAL( viewChanged(QAbstractItemView *) ),
            this, SLOT( selectorViewChanged(QAbstractItemView *) ) );
   setStretchFactor(m_dir, 2);

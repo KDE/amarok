@@ -46,7 +46,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     setObjectName( name );
     m_toolBox = new QToolBox( this );
-    //m_toolBox->setFrameShape( QFrame::NoFrame );
+    m_toolBox->setFrameShape( QFrame::NoFrame );
 
     //m_toolBox->setStyleSheet( "{}" );
 
