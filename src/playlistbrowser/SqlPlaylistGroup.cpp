@@ -57,8 +57,8 @@ SqlPlaylistGroup::SqlPlaylistGroup( const QString & name, SqlPlaylistGroup * par
 
 SqlPlaylistGroup::~SqlPlaylistGroup()
 {
-    DEBUG_BLOCK
-    debug() << "deleting " << m_name;
+    //DEBUG_BLOCK
+    //debug() << "deleting " << m_name;
     clear();
 }
 
@@ -113,15 +113,15 @@ SqlPlaylistGroupList SqlPlaylistGroup::childGroups()
 
 SqlPlaylistDirectList SqlPlaylistGroup::childPlaylists()
 {
-    DEBUG_BLOCK
-    debug() << "my name: " << m_name << " my pointer: " << this;
+    //DEBUG_BLOCK
+    //debug() << "my name: " << m_name << " my pointer: " << this;
     if ( !m_hasFetchedChildPlaylists ) {
 
         QString query = "SELECT id, parent_id, name, description FROM playlists where parent_id=%1;";
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 
-        debug() << "Result: " << result;
+        //debug() << "Result: " << result;
 
 
         int resultRows = result.count() / 4;
@@ -156,13 +156,13 @@ QString SqlPlaylistGroup::description() const
 
 int SqlPlaylistGroup::childCount()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     return childGroups().count() + childPlaylists().count();
 }
 
 void SqlPlaylistGroup::clear()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     while( !m_childGroups.isEmpty() )
         delete m_childGroups.takeFirst();
     while( !m_childPlaylists.isEmpty() )
@@ -195,7 +195,7 @@ void SqlPlaylistGroup::deleteChild( SqlPlaylistViewItem * item )
 
 void SqlPlaylistGroup::removeFromDb()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     foreach( SqlPlaylistGroup * group, m_childGroups )
         group->removeFromDb();

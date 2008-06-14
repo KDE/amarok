@@ -136,7 +136,7 @@ PlaylistBrowserNS::PlaylistModel::parent( const QModelIndex & index ) const
 
     SqlPlaylistGroup *parent = item->parent();
 
-    debug() << "parent: " << parent;
+    //debug() << "parent: " << parent;
 
     if ( parent &&  parent->parent() ){
         int row = parent->parent()->childGroups().indexOf( parent );
@@ -167,9 +167,9 @@ PlaylistBrowserNS::PlaylistModel::rowCount( const QModelIndex & parent ) const
     }
 
     SqlPlaylistViewItem * item = static_cast< SqlPlaylistViewItem* >( parent.internalPointer() );
-    debug() << "row: " << parent.row();
-    debug() << "address: " << item;
-    debug() << "name: " << item->name();
+    //debug() << "row: " << parent.row();
+    //debug() << "address: " << item;
+    //debug() << "name: " << item->name();
 
     return item->childCount();
 }
