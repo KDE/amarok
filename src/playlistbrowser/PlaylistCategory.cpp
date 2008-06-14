@@ -60,6 +60,8 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_playlistView->setAcceptDrops(true);
     m_playlistView->setDropIndicatorShown(true);
 
+
+
     m_playlistView->setContextMenuPolicy( Qt::CustomContextMenu );
     m_playlistView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
@@ -78,6 +80,11 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     //transparency
     QPalette p = m_playlistView->palette();
     QColor c = p.color( QPalette::Base );
+
+    //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
+    //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
+    m_playlistView->setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
+
     c.setAlpha( 0 );
     p.setColor( QPalette::Base, c );
 
