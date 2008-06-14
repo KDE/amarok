@@ -31,15 +31,18 @@
 #include <QPixmap>
 
 
+K_GLOBAL_STATIC( StarManager, s_starManager );
+
 StarManager* StarManager::instance()
 {
-    static StarManager sm;
-    return &sm;
+    return s_starManager;
 }
 
 
 StarManager::StarManager()
 {
+    DEBUG_BLOCK
+
     /*if( AmarokConfig::customRatingsColors() )
         AmarokConfig::setCustomRatingsColors( false );
     m_colors[0] = AmarokConfig::starColorOne();
@@ -53,7 +56,10 @@ StarManager::StarManager()
     reinitStars();
 }
 
-StarManager::~StarManager() {}
+StarManager::~StarManager()
+{
+    DEBUG_BLOCK
+}
 
 void
 StarManager::reinitStars( int height, int margin )
