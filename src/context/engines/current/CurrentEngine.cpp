@@ -111,6 +111,13 @@ void CurrentEngine::update()
 {
     DEBUG_BLOCK
     
+    if( m_currentTrack ) {
+        debug() << "Unsubscribing m_currentTrack.";
+        m_currentTrack->unsubscribe( this );
+        if( m_currentTrack->album() )
+            m_currentTrack->album()->unsubscribe( this );
+    }
+
     m_currentTrack = The::engineController()->currentTrack();
     if( !m_currentTrack )
         return;
