@@ -25,6 +25,8 @@
 
 #include "Debug.h"
 
+#include <QString>
+
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
@@ -81,11 +83,47 @@ NepomukQueryMaker::NepomukQueryMaker(NepomukCollection *collection,Soprano::Clie
     worker = 0;
     this->client = client;
     reset();
+    initNameMap();
 }
 
 NepomukQueryMaker::~NepomukQueryMaker()
 {
     
+}
+
+void
+NepomukQueryMaker::initNameMap()
+{
+    // this "v =" works around a linker error 
+    // (undefined reference to QueryMaker::valXYZ)
+    // does anyone know why?
+    
+    // TODO: Find a better place for this (collection?)
+    // as this gets called for every querymaker
+    
+    qint64 v;
+    
+    nameForValue[ v = valAlbum ] = "album";
+    nameForValue[ v = valArtist ] = "artist";
+    nameForValue[ v = valBitrate ] = "bitrate";
+    nameForValue[ v = valComment ] = "comment";
+    nameForValue[ v = valComposer ] = "composer";
+    nameForValue[ v = valCreateDate ] = "createdate";
+    nameForValue[ v = valDiscNr ] = "discnr";
+    nameForValue[ v = valFilesize ] = "filesize";
+    nameForValue[ v = valFirstPlayed ] = "firstplayed";
+    nameForValue[ v = valFormat ] = "type";
+    nameForValue[ v = valGenre] = "genre";
+    nameForValue[ v = valLastPlayed ] = "lastplayed";
+    nameForValue[ v = valLength ] = "length";
+    nameForValue[ v = valPlaycount ] = "playcount";
+    nameForValue[ v = valRating ] = "rating";
+    nameForValue[ v = valSamplerate ] = "samplerate";
+    nameForValue[ v = valScore] = "score";
+    nameForValue[ v = valTitle ] = "title";
+    nameForValue[ v = valTrackNr ] = "tracknr";
+    nameForValue[ v = valUrl ] = "url";
+    nameForValue[ v = valYear ] = "year";
 }
 
 QueryMaker*
@@ -96,6 +134,7 @@ NepomukQueryMaker::reset()
     if( worker && worker->isFinished() )
         delete worker;   //TODO error handling
     this->resultAsDataPtrs = false;
+    queryOrderBy.clear();
     return this;
 }
 
@@ -138,6 +177,13 @@ NepomukQueryMaker::startTrackQuery()
 {
     debug() << "startTrackQuery()" << endl;
     queryType  = TRACK;
+    
+    // FIXME: This breaks controllable sorting for tracks
+    // but works around collections views assumptions about
+    // the order 
+    // should be fixed there and then removed here
+    orderBy(QueryMaker::valAlbum);
+    orderBy(QueryMaker::valTrackNr);
     return this;
 }
 
@@ -330,9 +376,11 @@ QueryMaker*
 NepomukQueryMaker::orderBy( qint64 value, bool descending )
 {
     debug() << "orderBy()" << endl;
-	Q_UNUSED( value )
-	Q_UNUSED( descending )
-    return this;
+    if ( queryOrderBy.isEmpty() )
+        queryOrderBy = " ORDER BY ";
+    queryOrderBy += descending ? "DESC(?" : "ASC(?" ;
+    queryOrderBy += nameForValue[ value ] + ") ";
+    return this; 
 }
 
 QueryMaker*
@@ -392,8 +440,11 @@ NepomukQueryMaker::buildQuery() const
         case ARTIST:
             query  =   QString(
                     "select distinct ?artist where { "
-                    "?r <%1> ?artist .}")
+                    "?r <%1> ?artist . ")
                     .arg( Soprano::Vocabulary::Xesam::artist().toString() );
+            query += queryMatch + " } ";
+            query += queryOrderBy;
+            
             break;
         case ALBUM:
             
@@ -407,7 +458,9 @@ NepomukQueryMaker::buildQuery() const
                     .arg( Soprano::Vocabulary::Xesam::album().toString() )
                     .arg( Soprano::Vocabulary::Xesam::artist().toString() );
             query += queryMatch;
-            query += '}';
+            query += " } ";
+            query += queryOrderBy;
+            
             break;
         case TRACK:
             // TODO: Find a sane way to generate this query (Map?)
@@ -438,7 +491,9 @@ NepomukQueryMaker::buildQuery() const
                         .arg( Soprano::Vocabulary::Xesam::Music().toString() );
             else
                 query += queryMatch;
-            query += '}';
+            
+            query += "} ";
+            query += queryOrderBy;
             break;
             
         default:

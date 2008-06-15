@@ -21,6 +21,7 @@
 
 #include "QueryMaker.h"
 
+#include <QMap>
 #include <QString>
 
 #include <threadweaver/Job.h>
@@ -89,6 +90,8 @@ class NepomukQueryMaker : public QueryMaker
         void done( ThreadWeaver::Job * job );
 	    
 	private:
+	    
+	    void initNameMap( ); 
 
         enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
         QueryType queryType;
@@ -97,6 +100,8 @@ class NepomukQueryMaker : public QueryMaker
         NepomukWorkerThread *worker;
         Soprano::Client::DBusClient *client;
         NepomukCollection *m_collection;
+        QMap< qint64, QString > nameForValue;
+        QString queryOrderBy;
 };
 
 #endif /*NEPOMUKQUERYMAKER_H_*/
