@@ -17,18 +17,17 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "PopupDropperView.h"
-
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QDragLeaveEvent>
 #include <QDropEvent>
 
-#include <QDebug>
+#include <QtDebug>
 
 #include "PopupDropper.h"
 #include "PopupDropper_p.h"
 #include "PopupDropperItem.h"
+#include "PopupDropperView.h"
 
 class PopupDropperViewPrivate
 {
@@ -37,12 +36,14 @@ public:
         : pd( pd )
         , lastItem( 0 )
         , quitOnDragLeave( false )
+        , entered( false )
         , q( parent )
         {}
 
     PopupDropper *pd;
     PopupDropperItem *lastItem;
     bool quitOnDragLeave;
+    bool entered;
     
 private:
     PopupDropperView* q;
@@ -93,6 +94,7 @@ void PopupDropperView::dragEnterEvent( QDragEnterEvent *event )
 {
     qDebug() << "PopupDropperView::dragEnterEvent";
     event->accept();
+    d->entered = true;
     d->pd->d->dragEntered();
 }
 
@@ -112,6 +114,22 @@ void PopupDropperView::dropEvent( QDropEvent *event )
         pdi->dropped( event );
 }
 
+void PopupDropperView::resetView()
+{
+    d->lastItem = 0;
+    d->entered = false;
+}
+
+bool PopupDropperView::entered() const
+{
+    return d->entered;
+}
+
+void PopupDropperView::setEntered( bool entered )
+{
+    d->entered = entered;
+}
+
 bool PopupDropperView::quitOnDragLeave() const
 {
     return d->quitOnDragLeave;
@@ -122,9 +140,5 @@ void PopupDropperView::setQuitOnDragLeave( bool quit )
     d->quitOnDragLeave = quit;
 }
 
-void PopupDropperView::clearLastItem()
-{
-    d->lastItem = 0;
-}
-
 #include "PopupDropperView.moc"
+

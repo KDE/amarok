@@ -27,7 +27,6 @@
 
 class QAction;
 class QDropEvent;
-class QGraphicsSceneDragDropEvent;
 class QGraphicsTextItem;
 class QGraphicsView;
 class QSvgRenderer;
@@ -45,10 +44,11 @@ class PopupDropperItem : public QGraphicsSvgItem
     Q_PROPERTY( QSvgRenderer* sharedRenderer READ sharedRenderer WRITE setSharedRenderer )
     Q_PROPERTY( QString elementId READ elementId WRITE setElementId )
     Q_PROPERTY( int hoverMsecs READ hoverMsecs WRITE setHoverMsecs )
+    Q_PROPERTY( bool submenuTrigger READ submenuTrigger WRITE setSubmenuTrigger )
 
 public:
     PopupDropperItem( QGraphicsItem *parent = 0 );
-    explicit PopupDropperItem( const QString &file, QGraphicsItem *parent = 0 );
+    PopupDropperItem( const QString &file, QGraphicsItem *parent = 0 );
     virtual ~PopupDropperItem();
 
     void show();
@@ -75,6 +75,9 @@ public:
     void startHoverTimer();
     void stopHoverTimer();
 
+    bool submenuTrigger() const;
+    void setSubmenuTrigger( bool trigger );
+
     bool operator<( const PopupDropperItem &other ) const;
 
 public slots:
@@ -86,8 +89,7 @@ private:
     PopupDropperItemPrivate* const d;
 
 signals:
-    virtual void dropEvent( QDropEvent *event );
-    virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
+    void dropEvent( QDropEvent *event );
 };
 
 #endif

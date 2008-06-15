@@ -17,46 +17,15 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "PopupDropperItem.h"
-
 #include <QtGui>
 #include <QtDebug>
 #include <QtSvg/QSvgRenderer>
 #include <QtSvg/QGraphicsSvgItem>
 #include <QFont>
 
+#include "PopupDropperItem.h"
+#include "PopupDropperItem_p.h"
 #include "PopupDropperAction.h"
-
-class PopupDropperItemPrivate
-{
-public:
-    PopupDropperItemPrivate( PopupDropperItem* parent )
-        : action( 0 )
-        , text( QString() )
-        , hoverTimer( parent )
-        , hoverMsecs( 500 )
-        , elementId( QString() )
-        , textItem( 0 )
-        , font()
-        , q( parent )
-        {     
-            hoverTimer.setSingleShot( true );
-            q->setAcceptDrops( true );
-        }
-
-    ~PopupDropperItemPrivate() {}
-    
-    QAction* action;
-    QString text;
-    QTimer hoverTimer;
-    int hoverMsecs;
-    QString elementId;
-    QGraphicsTextItem* textItem;
-    QFont font;
-
-private:
-    PopupDropperItem* q;
-};
 
 ///////////////////////////////////////////////////////////
 
@@ -82,8 +51,6 @@ PopupDropperItem::~PopupDropperItem()
 
 void PopupDropperItem::show()
 {
-    //qDebug() << "Showing, starting tool tip timer";
-    d->hoverTimer.start( d->hoverMsecs );
     QGraphicsSvgItem::show();
 }
 
@@ -127,6 +94,8 @@ QFont PopupDropperItem::font() const
 void PopupDropperItem::setFont( const QFont &font )
 {
     d->font = font;
+    if( d->textItem )
+        d->textItem->setFont( font );
 }
 
 QGraphicsTextItem* PopupDropperItem::textItem() const
@@ -190,6 +159,16 @@ void PopupDropperItem::stopHoverTimer()
     d->hoverTimer.stop();
 }
 
+bool PopupDropperItem::submenuTrigger() const
+{
+    return d->submenuTrigger;
+}
+
+void PopupDropperItem::setSubmenuTrigger( bool trigger )
+{
+    d->submenuTrigger = trigger;
+}
+
 bool PopupDropperItem::operator<( const PopupDropperItem &other ) const
 {
     return d->text < other.text();
@@ -198,6 +177,7 @@ bool PopupDropperItem::operator<( const PopupDropperItem &other ) const
 void PopupDropperItem::dropped( QDropEvent *event ) //virtual SLOT
 {
     Q_UNUSED( event );
+    d->hoverTimer.stop();
     qDebug() << "PopupDropperItem drop detected";
     if( d->action )
     {
@@ -210,7 +190,7 @@ void PopupDropperItem::dropped( QDropEvent *event ) //virtual SLOT
 
 void PopupDropperItem::hoverTimeout() //SLOT
 {
-    //qDebug() << "PopupDropperItem timeout";
+    qDebug() << "PopupDropperItem timeout";
     if( d->action )
         d->action->activate( QAction::Hover );
 }

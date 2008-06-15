@@ -30,6 +30,7 @@ class QSvgRenderer;
 class QTimeLine;
 class QWidget;
 class PopupDropper;
+class PopupDropperAction;
 class PopupDropperItem;
 class PopupDropperPrivate;
 
@@ -44,6 +45,7 @@ class PopupDropper : public QObject
     Q_PROPERTY( bool quitOnDragLeave READ quitOnDragLeave WRITE setQuitOnDragLeave )
     Q_PROPERTY( QColor windowColor READ windowColor WRITE setWindowColor )
     Q_PROPERTY( QColor textColor READ textColor WRITE setTextColor )
+    Q_PROPERTY( QString windowTitle READ windowTitle WRITE setWindowTitle )
     Q_PROPERTY( QString svgFile READ svgFile WRITE setSvgFile )
     Q_PROPERTY( QSvgRenderer* svgRenderer READ svgRenderer WRITE setSvgRenderer )
     Q_PROPERTY( int horizontalOffset READ horizontalOffset WRITE setHorizontalOffset )
@@ -55,18 +57,19 @@ public:
     Q_ENUMS( Fading )
     enum HideReason { BackgroundChange, DragLeave, SubtractingOverlay, Unknown };
 
-    explicit PopupDropper( QWidget *parent, bool standalone = false );
+    PopupDropper( QWidget *parent, bool standalone = false );
     ~PopupDropper();
 
     int overlayLevel() const;
-    void initOverlay( QWidget* parent );
+    void initOverlay( QWidget* parent, PopupDropperPrivate* priv = 0 );
+
     void addOverlay();
     bool subtractOverlay();
 
+    PopupDropperItem* addSubmenu( PopupDropper** pd, QSvgRenderer* renderer, const QString &elementId, const QString &text );
+
     bool isValid() const;
     bool standalone() const;
-    
-    void setWindowTitle( const QString &title );
     
     void show();
     void hide( PopupDropper::HideReason = PopupDropper::Unknown );
@@ -97,6 +100,9 @@ public:
     void setTextColor( const QColor &text );
     void setColors( const QColor &window, const QColor &text );
     void setPalette( const QColor &window, const QColor &text );
+
+    QString windowTitle() const;
+    void setWindowTitle( const QString &title );
     
     QString svgFile() const;
     void setSvgFile( const QString &file );
@@ -110,10 +116,16 @@ public:
     void setTotalItems( int items );
     void addItem( QGraphicsSvgItem *item, bool useSharedRenderer = true );
 
+private slots:
+    void activateSubmenu();
+
 private:
     friend class PopupDropperView;
     friend class PopupDropperPrivate;
     PopupDropperPrivate* d;
+
+    void addOverlay( PopupDropperPrivate* newD );
+    void addItem( QGraphicsSvgItem *item, bool useSharedRenderer, bool appendToList );
 
     bool closeAtEndOfHide;
     QStack<PopupDropperPrivate*> m_viewStack;

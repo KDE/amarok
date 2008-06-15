@@ -21,6 +21,7 @@
 #define POPUPDROPPER_P_H
 
 #include <QList>
+#include <QMap>
 #include <QObject>
 #include <QTimeLine>
 #include <QTimer>
@@ -39,10 +40,13 @@ public:
     PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget* widget );
     ~PopupDropperPrivate();
 
+    void newSceneView( PopupDropper* pud );
+    void setParent( QObject* parent );
+
     bool standalone;
     QWidget* widget;
-    QGraphicsScene scene;
-    PopupDropperView view;
+    QGraphicsScene* scene;
+    PopupDropperView* view;
     bool success;
     PopupDropper::Fading fade;
     QTimeLine fadeTimer;
@@ -62,6 +66,9 @@ public:
     QList<PopupDropperItem*> pdiItems;
     int overlayLevel;
     bool entered;
+    QMap<PopupDropperAction*, PopupDropperPrivate*> submenuMap;
+    bool submenu;
+    bool doNotClear;
 
     void dragLeft();
     void dragEntered();
