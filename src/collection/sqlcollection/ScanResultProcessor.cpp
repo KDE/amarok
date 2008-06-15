@@ -410,27 +410,28 @@ ScanResultProcessor::imageId( const QString &image, int albumId )
     if( m_images.contains( key ) )
         return m_images.value( key );
 
-    QString query = QString( "SELECT images_temp.id FROM images_temp INNER JOIN albums_temp ON albums_temp.image = images_temp.id WHERE images_temp.path = '%1' AND albums_temp.id = %2;" )
+    QString query = QString( "SELECT images_temp.id FROM images_temp WHERE images_temp.path = '%1'" )
                         .arg( m_collection->escape( image ) ).arg( QString::number( albumId ) );
     QStringList res = m_collection->query( query );
+    int imageId = -1;
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO images_temp( path ) VALUES ('%1');" ).arg( m_collection->escape( image ) );
-        int id = m_collection->insert( insert, "images_temp" );
-        m_images.insert( key, id );
-
-        // Make sure the album table is up to date
-        QString update = QString( "UPDATE albums_temp SET image = %1 WHERE id = %2" )
-                            .arg( QString::number( id ) ).arg( QString::number( albumId ) );
-        m_collection->query( update );
-        return id;
+        imageId = m_collection->insert( insert, "images_temp" );
     }
     else
+        imageId = res[0].toInt();
+
+    if( imageId >= 0 )
     {
-        int id = res[0].toInt();
-        m_images.insert( key, id );
-        return id;
+        // Make sure the album table is up to date
+        QString update = QString( "UPDATE albums_temp SET image = %1 WHERE id = %2" )
+                            .arg( QString::number( imageId ) ).arg( QString::number( albumId ) );
+        m_collection->query( update );
+        m_images.insert( key, imageId );
     }
+
+    return imageId;
 }
 
 int 
