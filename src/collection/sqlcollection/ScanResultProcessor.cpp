@@ -411,7 +411,7 @@ ScanResultProcessor::imageId( const QString &image, int albumId )
         return m_images.value( key );
 
     QString query = QString( "SELECT images_temp.id FROM images_temp WHERE images_temp.path = '%1'" )
-                        .arg( m_collection->escape( image ) ).arg( QString::number( albumId ) );
+                        .arg( m_collection->escape( image ) );
     QStringList res = m_collection->query( query );
     int imageId = -1;
     if( res.isEmpty() )
