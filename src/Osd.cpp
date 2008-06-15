@@ -597,6 +597,8 @@ Amarok::OSD::OSD(): OSDWidget( 0 ), m_track( 0 )
 void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
+    DEBUG_BLOCK
+
     if( m_track && m_track->artist() )
         m_track->artist()->unsubscribe( this );
     if( m_track && m_track->album() )
