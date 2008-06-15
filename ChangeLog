@@ -1,11 +1,11 @@
 Amarok ChangeLog
 ================
-(C) 2002-2007 the Amarok authors.
+(C) 2002-2008 the Amarok authors.
 
 
 VERSION 2.0
   FEATURES:
-  
+    * LastFM: Now using the new and improved 1.2 protocol.
     * New Service Framework: Common framework for integrated services. A new
       framework for adding the content of online services direclt into Amarok
       in a consistent and well integrated way. All services are plugins and can
@@ -43,8 +43,8 @@ VERSION 2.0
 
 
   CHANGES:
-	* The context view was reimplemented with Plasma technology from KDE.
-	* The audio engine system was removed. Amarok now uses Phonon from KDE.
+    * The context view was reimplemented with Plasma technology from KDE.
+    * The audio engine system was removed. Amarok now uses Phonon from KDE.
     * Debugging output is now enabled with a runtime option (--debug). It's no
       longer necessary to rebuild Amarok.
     * Removed the amarok loader application.
