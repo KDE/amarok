@@ -92,9 +92,10 @@ M3UPlaylist::loadM3u( QTextStream &stream )
     {
         line = stream.readLine();
 
-        if( line.startsWith( "#EXTINF" ) ) {
-            const QString extinf = line.section( ':', 1 );
-            const int length = extinf.section( ',', 0, 0 ).toInt();
+        if( line.startsWith( "#EXTINF" ) )
+        {
+            //const QString extinf = line.section( ':', 1 );
+            //const int length = extinf.section( ',', 0, 0 ).toInt();
         }
 
         else if( !line.startsWith( '#' ) && !line.isEmpty() )

@@ -112,6 +112,8 @@ bool
 XSPFPlaylist::save( const QString &location, bool relative )
 {
     DEBUG_BLOCK
+    Q_UNUSED( relative );
+
     QFile file( location );
     if( trackList().isEmpty() )
         return false;

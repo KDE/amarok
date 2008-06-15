@@ -410,6 +410,7 @@ EngineController::trackLength() const
 bool
 EngineController::getAudioCDContents(const QString &device, KUrl::List &urls)
 {
+    Q_UNUSED( device ); Q_UNUSED( urls );
 //since Phonon doesn't know anything about CD listings, there's actually no reason for this functionality to be here
 //kept to keep things compiling, probably should be in its own class.
     return false;

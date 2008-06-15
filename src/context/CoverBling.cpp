@@ -195,8 +195,8 @@ CoverBling::draw( GLuint selected )
     foreach( GLuint id, m_textureIds ) {
         glBindTexture( GL_TEXTURE_2D, id );
         glPushMatrix();
-            const float xsin = sin( xoffset );
-            const float zsin = sin( zoffset );
+            //const float xsin = sin( xoffset );
+            //const float zsin = sin( zoffset );
             xoffset += 1.0;
             zoffset += 0.1;
             glTranslatef( xoffset, yoffset, zoffset );

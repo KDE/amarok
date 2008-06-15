@@ -328,8 +328,9 @@ ServiceBase::messages()
 }
 
 QString
-ServiceBase::sendMessage(const QString & message)
+ServiceBase::sendMessage( const QString & message )
 {
+    Q_UNUSED( message );
     return i18n( "ERROR: unknown message" );
 }
 

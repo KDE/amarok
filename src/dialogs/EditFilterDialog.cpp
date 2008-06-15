@@ -43,6 +43,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
       m_minMaxRadio(0),
       m_filterText(text)
 {
+    Q_UNUSED( metaBundleKeywords );
+
     setCaption( i18n("Edit Filter") );
     setModal( true );
     setButtons( User1|User2|Default|Ok|Cancel );

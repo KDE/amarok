@@ -269,6 +269,7 @@ bool
 PlaylistBrowserNS::PlaylistModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
 {
     Q_UNUSED( column ); 
+    Q_UNUSED( row );
 //     DEBUG_BLOCK
 
     if( action == Qt::IgnoreAction )

@@ -226,6 +226,7 @@ void
 Track::setComposer( const QString& newComposer )
 {
     AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( newComposer );
     #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) ).setValue( newComposer );
     if( !d->batchUpdate )
@@ -346,6 +347,7 @@ void
 Track::setDiscNumber( int newDiscNumber )
 {
     AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( newDiscNumber );
     #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::DISCNUMBER ) ).setValue( newDiscNumber );
     if( !d->batchUpdate )

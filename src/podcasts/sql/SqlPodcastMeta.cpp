@@ -34,6 +34,7 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcas
     m_id = (*(iter++)).toInt();
     m_url = KUrl( *(iter++) );
     int channelId = (*(iter++)).toInt();
+    Q_UNUSED( channelId );
     m_localUrl = KUrl( *(iter++) );
     m_guid = *(iter++);
     m_title = *(iter++);
