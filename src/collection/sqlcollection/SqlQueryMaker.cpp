@@ -455,6 +455,8 @@ SqlQueryMaker::orderBy( qint64 value, bool descending )
 {
     if ( d->queryOrderBy.isEmpty() )
         d->queryOrderBy = " ORDER BY ";
+    else
+        d->queryOrderBy += ',';
     d->queryOrderBy += nameForValue( value );
     d->queryOrderBy += QString( " %1 " ).arg( descending ? "DESC" : "ASC" );
     return this;
