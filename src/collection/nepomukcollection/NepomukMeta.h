@@ -46,6 +46,7 @@ class NepomukArtist : public Artist
 
         virtual QString name() const;
         virtual QString prettyName() const;
+        virtual QString sortableName() const;
 
         virtual TrackList tracks();
 
@@ -53,6 +54,7 @@ class NepomukArtist : public Artist
 
     private:
         QString m_name;
+        mutable QString m_sortName;
 };
 
 class NepomukAlbum : public Album
