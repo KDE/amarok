@@ -90,7 +90,7 @@ SqlPlaylistGroupList SqlPlaylistGroup::childGroups()
     //DEBUG_BLOCK
     if ( !m_hasFetchedChildGroups ) {
 
-        QString query = "SELECT id, parent_id, name, description FROM playlist_groups where parent_id=%1;";
+        QString query = "SELECT id, parent_id, name, description FROM playlist_groups where parent_id=%1 ORDER BY name;";
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 
@@ -117,7 +117,7 @@ SqlPlaylistDirectList SqlPlaylistGroup::childPlaylists()
     //debug() << "my name: " << m_name << " my pointer: " << this;
     if ( !m_hasFetchedChildPlaylists ) {
 
-        QString query = "SELECT id, parent_id, name, description FROM playlists where parent_id=%1;";
+        QString query = "SELECT id, parent_id, name, description FROM playlists where parent_id=%1 ORDER BY name;";
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 
