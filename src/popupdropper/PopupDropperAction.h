@@ -24,6 +24,8 @@
 #include <QIcon>
 #include <QString>
 
+#include "amarok_export.h"
+
 class QSvgRenderer;
 class PopupDropperActionPrivate;
 
