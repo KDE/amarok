@@ -243,10 +243,11 @@ PlaylistManager::exportPlaylist( Meta::TrackList tracks,
     KUrl url( location );
     //TODO: Meta::Format playlistFormat = Meta::getFormat( location );
 //     Meta::M3UPlaylistPtr playlist( new Meta::M3UPlaylist( tracks ) );
-    Meta::Playlist *playlist;
+    Meta::Playlist *playlist = 0;
 
     Meta::Format format = Meta::getFormat( location );
-    switch( format ) {
+    switch( format )
+    {
         case Meta::PLS:
             playlist = new Meta::PLSPlaylist( tracks );
             break;
@@ -271,8 +272,10 @@ PlaylistManager::exportPlaylist( Meta::TrackList tracks,
             break;
     }
 
-    playlist->save( location, AmarokConfig::relativePlaylist() );
+    if( !playlist )
+        return false;
 
+    playlist->save( location, AmarokConfig::relativePlaylist() );
     return true;
 }
 
