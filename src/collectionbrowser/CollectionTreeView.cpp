@@ -677,12 +677,7 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
 
         actions.append( m_loadAction );
 
-        if ( m_editAction == 0 )
-            m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("media-track-edit-amarok" ), i18n( "&Edit Track Information" ), this );
 
-        connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
-        
-        actions.append( m_editAction );
 
         {   //keep the scope of item minimal
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
@@ -691,6 +686,16 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
                 item = item->parent();
             }
             Collection *collection = item->parentCollection();
+
+            if ( collection->isWritable() ) {
+                if ( m_editAction == 0 )
+                    m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("media-track-edit-amarok" ), i18n( "&Edit Track Information" ), this );
+
+                connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
+        
+                actions.append( m_editAction );
+            }
+            
             if( collection->location()->isOrganizable() )
             {
                 bool onlyOneCollection = true;
