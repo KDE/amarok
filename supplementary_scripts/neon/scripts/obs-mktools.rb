@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 #
-# File publisher module for the Neon framework
-#
 # Copyright (C) 2008 Harald Sitter <harald@getamarok.com>
 #
 # This program is free software; you can redistribute it and/or
@@ -20,45 +18,34 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-class PublishFile
-    def initialize()
+require 'fileutils'
 
-        @conf = Config::read(CONFIG)
-        section = "pub-file"
+OBSPROJECT = "home:apachelogger"
 
-        unless @conf.section?(section)
-            CreateConfig(section)
-        end
+tmpdir   = "tmp-tools-obs"
+specfile = "distros/obs/tools.spec"
+thing    = "tools"
+oscthing = "amarok-nightly-#{thing}"
+thingdir = tmpdir + "/" + oscthing
 
-        dir = @conf.value(section, "dir")
-        Move(dir)
-    end
+Dir.chdir("../")
 
-    def CreateConfig(section)
-        #add data section
-        @conf.add_section(section)
-
-        #aggregate data
-        puts "File - Directory:"
-        dir = gets
-
-        #write data to config
-        @conf.add_value(section, "dir", dir.chomp())
-        #write config to file
-        @conf.save(CONFIG)
-    end
-
-    def Move(dir)
-        dest = "#{dir}/#{DATE}"
-
-        Neon.new.BaseDir()
-
-        FileUtils.mkdir(dest)
-        Dir.foreach("."){|file|
-            if file.include?(".tar.bz2")
-                FileUtils.mv(file, dest)
-            end
-        }
-    end
-
+unless File.exists?(tmpdir)
+    system("osc co #{OBSPROJECT} amarok-nightly-tools")
+    FileUtils.mv(OBSPROJECT, tmpdir)
 end
+
+FileUtils.cp_r(thing, thingdir)
+FileUtils.cp_r(specfile, thingdir + "/amarok-nightly-#{thing}.spec")
+
+Dir.chdir(thingdir)
+FileUtils.mv(thing, oscthing)
+system("tar -cf #{oscthing}.tar #{oscthing}")
+if File.exists?("#{oscthing}.tar.bz2")
+    FileUtils.rm_r("#{oscthing}.tar.bz2")
+end
+system("bzip2 #{oscthing}.tar")
+FileUtils.rm_r(oscthing)
+
+system("osc addremove")
+system("osc ci -m 'update'")

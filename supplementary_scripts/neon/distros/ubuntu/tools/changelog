@@ -1,3 +1,51 @@
+amarok-nightly-tools (1.5.4) hardy; urgency=low
+
+  * Remove a-n-tools as dep of k-n-deps
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Fri, 13 Jun 2008 16:28:11 +0200
+
+amarok-nightly-tools (1.5.3) hardy; urgency=low
+
+  * Add all kdepimlibs build-deps
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Sun, 08 Jun 2008 18:35:41 +0200
+
+amarok-nightly-tools (1.5.2) hardy; urgency=low
+
+  * Add libboost-dev to kde-nightly-deps
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Sat, 07 Jun 2008 11:44:15 +0200
+
+amarok-nightly-tools (1.5.1) hardy; urgency=low
+
+  * Fix scripts path in kde-nightly.install
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Sat, 07 Jun 2008 00:41:25 +0200
+
+amarok-nightly-tools (1.5) hardy; urgency=low
+
+  * Add kde-nightly package
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Sat, 07 Jun 2008 00:40:13 +0200
+
+amarok-nightly-tools (1.4.2) hardy; urgency=low
+
+  * Remove -kdepimlibs from kde-nightly-deps
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Tue, 03 Jun 2008 16:33:20 +0200
+
+amarok-nightly-tools (1.4.1) hardy; urgency=low
+
+  * Update kde-nightly-deps
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Tue, 03 Jun 2008 14:36:32 +0200
+
+amarok-nightly-tools (1.4) hardy; urgency=low
+
+  * Add kde-nightly-deps
+
+ -- Harald Sitter <apachelogger@ubuntu.com>  Mon, 02 Jun 2008 12:44:54 +0200
+
 amarok-nightly-tools (1.3) hardy; urgency=low
 
   * Sync with SVN

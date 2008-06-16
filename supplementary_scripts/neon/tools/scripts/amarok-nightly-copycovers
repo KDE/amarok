@@ -3,4 +3,4 @@
 source /opt/amarok-nightly/neon/data/varsrc
 
 mkdir -p $KDEHOME/share/apps/amarok/albumcovers
-cp -ru $HOME/.kde/share/apps/amarok/albumcovers $KDEHOME/share/apps/amarok/albumcovers
+cp -ru $HOME/.kde/share/apps/amarok/albumcovers $KDEHOME/share/apps/amarok/

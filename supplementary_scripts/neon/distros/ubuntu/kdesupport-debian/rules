@@ -1,13 +1,11 @@
 #!/usr/bin/make -f
 
-export DH_VERBOSE=1
+export PATH := /opt/amarok-nightly/bin:$(PATH)
+export LD_LIBRARY_PATH := /opt/kde-nightly/lib:$(LD_LIBRARY_PATH)
 
 -include /usr/share/cdbs/1/class/cmake.mk
 -include /usr/share/cdbs/1/rules/debhelper.mk
 -include /usr/share/cdbs/1/rules/utils.mk
-
-PATH := /opt/amarok-nightly/bin:$(PATH)
-LD_LIBRARY_PATH := /opt/amarok-nightly/lib:$(LD_LIBRARY_PATH)
 
 DEB_CMAKE_EXTRA_FLAGS = -DCMAKE_BUILD_TYPE=debugfull \
 			-DSTRIGI_EXTRA_INC_DIRECTORY=/opt/amarok-nightly/include \

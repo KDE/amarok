@@ -1,4 +1,4 @@
-# Metarequire for publisher modules
+#!/usr/bin/env ruby
 #
 # Copyright (C) 2008 Harald Sitter <harald@getamarok.com>
 #
@@ -18,5 +18,34 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'publishers/file.rb'
-require 'publishers/ftp.rb'
+# advanced file/dir manipulation
+require 'fileutils'
+
+# constant - unchangeable once it got a value
+SVNPATH = "tags/qca/2.0.0"
+
+# create temporary directories
+if File.exists?("tmp")
+    FileUtils.rm_r("tmp")
+end
+Dir.mkdir("tmp")
+Dir.chdir("tmp")
+
+# svn checkout
+system("svn co svn://anonsvn.kde.org/home/kde/#{SVNPATH} qca")
+
+# copy debian dir in
+FileUtils.cp_r("../debian", "qca/")
+
+Dir.chdir("qca")
+
+# edit changelog and copy it back to the base debian dir
+system("dch -i -D hardy")
+FileUtils.cp("debian/changelog", "../../debian/changelog")
+
+# build package and upload to ppa
+system("dpkg-buildpackage -S -sa")
+system("dput ppa ../*changes")
+
+# go away
+exit 0

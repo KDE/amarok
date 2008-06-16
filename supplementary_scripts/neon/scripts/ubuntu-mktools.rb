@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 #
-# File publisher module for the Neon framework
-#
 # Copyright (C) 2008 Harald Sitter <harald@getamarok.com>
 #
 # This program is free software; you can redistribute it and/or
@@ -20,45 +18,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-class PublishFile
-    def initialize()
+require 'fileutils'
 
-        @conf = Config::read(CONFIG)
-        section = "pub-file"
+tmpdir = "tmp-tools-ubuntu"
+debdir = "distros/ubuntu/tools"
+thing  = "tools"
+distro = "hardy"
 
-        unless @conf.section?(section)
-            CreateConfig(section)
-        end
+Dir.chdir("../")
 
-        dir = @conf.value(section, "dir")
-        Move(dir)
-    end
+FileUtils.rm_rf(tmpdir)
+Dir.mkdir(tmpdir)
 
-    def CreateConfig(section)
-        #add data section
-        @conf.add_section(section)
+FileUtils.cp_r(thing, tmpdir)
+FileUtils.cp_r(debdir, tmpdir + "/#{thing}/debian")
 
-        #aggregate data
-        puts "File - Directory:"
-        dir = gets
-
-        #write data to config
-        @conf.add_value(section, "dir", dir.chomp())
-        #write config to file
-        @conf.save(CONFIG)
-    end
-
-    def Move(dir)
-        dest = "#{dir}/#{DATE}"
-
-        Neon.new.BaseDir()
-
-        FileUtils.mkdir(dest)
-        Dir.foreach("."){|file|
-            if file.include?(".tar.bz2")
-                FileUtils.mv(file, dest)
-            end
-        }
-    end
-
+Dir.chdir(tmpdir + "/" + thing)
+system("dch -D'#{distro}' -i")
+if $? != 0
+    puts("leaving")
+    exit 1
 end
+
+Dir.chdir("../../")
+
+FileUtils.cp(tmpdir + "/#{thing}/debian/changelog", debdir + "/changelog")

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=XSession
+Exec=/usr/bin/startneonkde
+TryExec=/usr/bin/startneonkde
+Name=KDE Nightly (Neon)
+Comment=The K Desktop Environment. A powerful Open Source graphical desktop environment

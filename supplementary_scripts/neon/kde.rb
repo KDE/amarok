@@ -1,4 +1,6 @@
-# Metarequire for publisher modules
+#!/usr/bin/env ruby
+#
+# Neon Framework - KDE Nightly Builds
 #
 # Copyright (C) 2008 Harald Sitter <harald@getamarok.com>
 #
@@ -18,5 +20,33 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'publishers/file.rb'
-require 'publishers/ftp.rb'
+require 'libneon.rb'
+
+#make main module accessible
+include Neon
+#make main class accessible
+@neon = Neon::Neon.new()
+#make configurations accessible
+@conf = Config::read(CONFIG)
+
+# TODO: needs new position
+#mrClean()
+
+# Fetch Source
+if $*[0] == "all" or $*[0] == "qt"
+    fetchQtCopy()
+end
+
+fetchKdeSupport()
+fetchKdeLibs()
+fetchKdeBase()
+fetchKdeGraphics()
+fetchKdeNetwork()
+fetchKdeMultimedia()
+
+# Distribution Uploads
+SVNPACKAGES = @packages
+
+UploadUbuntu.new("kde")
+
+mrClean()

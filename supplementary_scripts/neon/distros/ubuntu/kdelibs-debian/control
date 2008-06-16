@@ -1,8 +1,8 @@
 Source: amarok-nightly-kdelibs
 Section: libs
 Priority: optional
-Maintainer: Project Neone <nightly@getamarok.com>
-Build-Depends: amarok-nightly-cdbs, amarok-nightly-strigi, amarok-nightly-qt, amarok-nightly-deps,
+Maintainer: Project Neon <nightly@getamarok.com>
+Build-Depends: amarok-nightly-cdbs, amarok-nightly-kdesupport, amarok-nightly-qt, amarok-nightly-deps,
  shared-mime-info, libcupsys2-dev, libdbus-1-dev, libungif4-dev,
  libasound2-dev, libkeyutils-dev,
  libxml2-dev, libxml2-utils,  libxslt1-dev, libxtst-dev,

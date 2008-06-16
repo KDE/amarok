@@ -1,9 +1,12 @@
 # Copyright (C) 2008 Harald Sitter <harald@getamarok.com>
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of
+# the License or (at your option) version 3 or any later version
+# accepted by the membership of KDE e.V. (or its successor approved
+# by the membership of KDE e.V.), which shall act as a proxy 
+# defined in Section 14 of version 3 of the license.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,101 +16,61 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+DATE           = Time.now.utc.strftime("%Y%m%d")
+DAYOFMONTH     = Time.now.utc.mday()
+DAYOFWEEK      = Time.now.utc.wday()
+REV            = "1"
+NEONPATH       = Dir.pwd()
+ROOTPATH       = "#{NEONPATH}/root"
+TMPPATH        = "#{ROOTPATH}/tmp"
+BASEPATH       = "#{TMPPATH}/#{DATE}"
+SVNPATH        = "#{ROOTPATH}/svn"
+PATHS          = [ROOTPATH,TMPPATH,BASEPATH,SVNPATH]
+AMAROKVERSION  = "2.0-SVN-Neon"
+CONFIG         = "#{ENV['HOME']}/.neonrc"
+
+require 'fileutils'
+require 'fetcher.rb'
+require 'publisher.rb'
+require 'distro.rb'
 require 'config.rb'
 
-  module Neon
-  class Neon
-  def initialize()
-    #create today's basepath
-    unless File.exist?(BASEPATH)
-      FileUtils.mkdir_p(BASEPATH)
+module Neon
+    class Neon
+        def initialize()
+            # create today's basepath
+            for dir in PATHS
+                initDir(dir)
+            end
+
+            # create the configuration file if it doesn't exist
+            unless File.exist?(CONFIG)
+                FileUtils.touch(CONFIG)
+                FileUtils.chmod(0600, CONFIG)
+            end
+        end
     end
 
-    #create the configuration file if it doesn't exist
-    unless File.exist?(CONFIG)
-      FileUtils.touch(CONFIG)
-      FileUtils.chmod(0600, CONFIG)
+    def initDir(dir)
+        unless File.exist?(dir)
+            FileUtils.mkdir_p(dir)
+        end
     end
-  end
-  end
 
-  def ThisMethod()
-    caller[0][/`([^']*)'/, 1]
-  end
-
-  def BaseDir()
-    Dir.chdir(BASEPATH)
-  end
-
-  def CheckOutEval(comp, path, dir, recursive=nil)
-    unless recursive == "no"
-      cmd = "svn co"
-    else
-      cmd = "svn co -N"
+    def thisMethod()
+        caller[0][/`([^']*)'/, 1]
     end
-    count = 0
-    `#{cmd} svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
-    while $? != 0
-      unless count >= 20
-        `svn co svn://anonsvn.kde.org/home/kde/trunk/#{path} #{dir}`
-        count += 1
-      else
-        puts "Neon::CheckOut svn co didn't exit properly in 20 tries, aborting."
-        exit 0
-      end
-    end
-  end
 
-  def GetTarball(comp)
-    puts "#{ThisMethod()} started with component: #{comp}"
-    BaseDir()
-    ftp = Net::FTP.new('ftp.kde.org')
-    ftp.login
-    files = ftp.chdir('pub/kde/snapshots')
-    files = ftp.list(comp + "*.tar.bz2")
-    file  = files[0].to_s.split(' ')[8]
-    ftp.getbinaryfile(comp + ".tar.bz2", file, 1024)
-    ftp.close
-    rev = file.chomp(".tar.bz2").reverse.chomp("-" + comp.reverse).reverse
-    if comp == "qt-copy"
-      comp = "qt"
+    def baseDir()
+        Dir.chdir(BASEPATH)
     end
-    @dir = "amarok-nightly-" + comp + "-" + rev
-    `tar -xf #{file}`
-    FileUtils.rm_f(file)
-    FileUtils.mv(file.chomp(".tar.bz2"), @dir)
-    VarMagic(comp, rev)
-  end
 
-  def CheckOut(comp, path, dir=nil, recursive=nil)
-    puts "#{ThisMethod()} started with component: #{comp}"
-    BaseDir()
-    unless dir
-      dir = "amarok-nightly-" + comp
+    def svnDir()
+        Dir.chdir(SVNPATH)
     end
-    CheckOutEval(comp, path, dir, "#{recursive}")
-    rev = `svn info #{dir}`.split("\n")[4].split(" ")[1]
-    @dir = dir + "-" + rev
-    FileUtils.mv(dir, @dir)
-    VarMagic(comp, rev)
-  end
 
-  def VarMagic(comp, rev)
-    if @packages.nil?
-      @packages = {comp => rev}
-    else
-      @packages[comp] = [rev]
+    def mrClean()
+        puts("Mr. Clean is not yet completely(?) implemented, sorry :-(")
+        FileUtils.rm_rf(Dir.glob(BASEPATH))
     end
-  end
-
-  def CreateTar(comp, dir=nil)
-    if @cofailed
-      return
-    end
-    puts "#{ThisMethod()} started with component: #{comp}"
-    `find '#{@dir}' -name '.svn' | xargs rm -rf`
-    `tar -cf #{@dir}.tar #{@dir}`
-    `bzip2 #{@dir}.tar`
-  end
-
 end

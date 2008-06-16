@@ -1,4 +1,6 @@
-# Metarequire for publisher modules
+#!/usr/bin/env ruby
+#
+# Neon Framework - Amarok Nightly Builds
 #
 # Copyright (C) 2008 Harald Sitter <harald@getamarok.com>
 #
@@ -18,5 +20,50 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'publishers/file.rb'
-require 'publishers/ftp.rb'
+require 'libneon.rb'
+
+#make main module accessible
+include Neon
+#make main class accessible
+@neon = Neon::Neon.new()
+#make configurations accessible
+@conf = Config::read(CONFIG)
+
+# TODO: needs new position
+#mrClean()
+
+###############################
+# Fetch Source
+
+if $*[0] == "all" or $*[0] == "qt"
+    fetcQtCopy()
+end
+
+if DAYOFWEEK == 0 or $*[0] == "all" or $*[0] == "deps"
+    fetchKdeSupportMinimal()
+    fetchKdeLibs()
+    fetchKdeBaseMinimal()
+end
+
+fetchAmarok()
+
+##############################
+# Publish
+
+# PublishFtp.new()
+#
+# PublishFile.new()
+
+##############################
+# Distribution Uploads
+
+SVNPACKAGES = @packages
+
+# UploadUbuntu.new("amarok")
+UploadObs.new()
+
+
+###############################
+# Cleaning man
+
+mrClean()

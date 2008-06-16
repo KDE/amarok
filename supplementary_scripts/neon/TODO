@@ -1,17 +1,8 @@
 apachelogger:
 * [neon] <dirk> how about using the "green" build numbers from http://ktown.kde.org/~dirk/dashboard `
 * [neon] should mr clean mess with remote locations? ... i.e. published stuff
-* [ubuntu] nuke changelog files and generate them on runtime (i.e. cut down the changelog length since they always have the same content anyway)
 * [ubuntu] fix menu icon
 
 #### KDE ####
-* [neon] remove neon.rb -> move constants and stuff to libneon.rb
-* [neon] replace neon.rb with amarok.rb and kde.rb
-* [neon] use svn checkouts
-* [neon] redesign path structure
-  ~/neon/
-  ~/neon/tmp #tarball creation and distro preparation
-  ~/neon/obs #opensuse build service checkout
-  ~/neon/svn #svn checkouts (mainly for KDE)
 * [ubuntu] set binary paths on creation time (/opt/amarok-nightly vs.
   /opt/kde-nightly)

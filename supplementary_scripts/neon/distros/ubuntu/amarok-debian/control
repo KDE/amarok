@@ -1,7 +1,7 @@
 Source: amarok-nightly
 Section: kde
 Priority: optional
-Maintainer: Project Neone <nightly@getamarok.com>
+Maintainer: Project Neon <nightly@getamarok.com>
 Build-Depends: amarok-nightly-cdbs, amarok-nightly-deps,
  ruby, ruby1.8-dev
 Standards-Version: 3.7.3
@@ -42,7 +42,7 @@ Description: PREVIEW of a audio player for KDE (please don't report bugs)
 #Section: libdevel
 #Architecture: any
 #Priority: extra
-#Depends: amarok-nightly-kdebase-runtime-dbg, amarok-nightly-taglib-dbg, amarok-nightly-strigi-dbg
+#Depends: amarok-nightly-kdebase-runtime-dbg, amarok-nightly-kdesupport-dbg
 #Description: debugging symbols for amarok-nightly
 # This package contains the debugging symbols associated with amarok-nightly.
 # They will automatically be used by gdb for debugging amarok-nightly-related
