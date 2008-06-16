@@ -38,9 +38,9 @@ QString Mp3TunesTrack::type() const
     return "mp3";
 }
 
-QString Mp3TunesTrack::setType( const QString &type )
+void  Mp3TunesTrack::setType( const QString &type )
 {
-   m_filetype = type;
+    m_filetype = type;
 }
 
 QString Mp3TunesTrack::sourceName() { return "MP3tunes.com"; }

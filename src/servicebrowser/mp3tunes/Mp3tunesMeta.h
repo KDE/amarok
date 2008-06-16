@@ -47,7 +47,7 @@ class Mp3TunesTrack  : public ServiceTrack
         virtual QString sourceDescription();
         virtual QPixmap emblem();
         virtual QString type() const;
-        QString setType( const QString &type );
+        void setType( const QString &type );
     private:
         QString m_filetype;
 };

@@ -418,9 +418,9 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( Mp3tunesTrackWithAlbumIdF
 
         serviceTrack->setYear( QString::number( track.albumYear() ) );
 
-        QString type = Amarok::extension( track.trackFileName() );
-        debug() << "setting type: " << type;
-        serviceTrack->setType( type );
+        //QString type = Amarok::extension( track.trackFileName() );
+        debug() << "setting type: " << Amarok::extension( track.trackFileName() );
+        serviceTrack->setType( Amarok::extension( track.trackFileName() ) );
         //debug() << "set type";
         m_collection->acquireWriteLock();
         //debug() << "adding track";
