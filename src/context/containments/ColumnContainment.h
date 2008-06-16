@@ -94,13 +94,13 @@ private:
 
 //     ContextLayout* m_columns;
     QGraphicsGridLayout* m_grid;
-    int m_rows;
-    int m_cols;
+    int m_currentRows;
+    int m_currentColumns;
     
     int m_defaultColumnSize;
     int m_defaultRowSize;
     bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];
-
+    
     QHash< Plasma::Applet*, QList<int> > m_appletsPositions;
     
     Plasma::Svg* m_background;

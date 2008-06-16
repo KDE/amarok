@@ -57,8 +57,8 @@ void SvgRenderJob::run()
 ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_actions( 0 )
-    , m_defaultColumnSize( 350 )
-    , m_defaultRowSize( 200 )
+    , m_defaultColumnSize( 500 )
+    , m_defaultRowSize( 150 )
 {
     DEBUG_BLOCK
 
@@ -67,17 +67,12 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     m_grid = new QGraphicsGridLayout( this );
     setLayout( m_grid );
     m_grid->setSpacing( 3 );
-    m_grid->setContentsMargins( 0, 0, 0, 0 );
+//     m_grid->setContentsMargins( 0, 0, 0, 0 );
     for( int i = 0; i < MAX_ROWS; i++ )
         for( int j = 0; j < MAX_COLUMNS; j++ )
             m_gridFreePositions[i][j] = true;
         
-//     DEBUG_LINE_INFO
-//     m_columns = new ContextLayout( this );
-//     m_columns->setColumnWidth( m_defaultColumnSize );
-//     DEBUG_LINE_INFO
-//     m_columns->setSpacing( 3 );
-//     m_columns->setContentsMargins(0,0,0,0);
+
     DEBUG_LINE_INFO
 
     //HACK alert!
@@ -120,22 +115,22 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
 void ColumnContainment::saveToConfig( KConfig& conf )
 {
 //     debug() << "number of m_columns:" << m_columns->count();
-//     for( int i = 0; i < m_columns->count(); i++ )
-//     {
-//         Applet *applet = 0;
-//         //FIXME: Reenable when working, the dynamic_cast causes a crash.
-//         QGraphicsLayoutItem *item = m_columns->itemAt( i );
-//         //Q_ASSERT(item);
-//         applet = dynamic_cast<Plasma::Applet*>( item );
-//         debug() << "trying to save an applet";
-//         if( applet != 0 )
-//         {
-//             KConfigGroup cg( &conf, QString::number( applet->id() ) );
-//             debug() << "saving applet" << applet->name();
-//             cg.writeEntry( "plugin", applet->pluginName() );
-//         }
-//     }
-//     conf.sync();
+    for( int i = 0; i < m_grid->count(); i++ )
+    {
+        Applet *applet = 0;
+        //FIXME: Reenable when working, the dynamic_cast causes a crash.
+        QGraphicsLayoutItem *item = m_grid->itemAt( i );
+        //Q_ASSERT(item);
+        applet = dynamic_cast<Plasma::Applet*>( item );
+        debug() << "trying to save an applet";
+        if( applet != 0 )
+        {
+            KConfigGroup cg( &conf, QString::number( applet->id() ) );
+            debug() << "saving applet" << applet->name();
+            cg.writeEntry( "plugin", applet->pluginName() );
+        }
+    }
+    conf.sync();
 }
 
 void ColumnContainment::loadConfig( KConfig& conf )
@@ -176,8 +171,8 @@ void ColumnContainment::updateSize() // SLOT
     setMaximumSize( QSizeF( 100000, 100000 ) );
     m_grid->setGeometry( scene()->sceneRect() );
     setGeometry( scene()->sceneRect() );
-    m_rows = geometry().height() / m_defaultRowSize;
-    m_cols = qMax( (int)(geometry().width() / m_defaultColumnSize), 1 );
+    m_currentRows = geometry().height() / m_defaultRowSize;
+    m_currentColumns = qMax( (int)(geometry().width() / m_defaultColumnSize), 1 );
     
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
@@ -222,34 +217,80 @@ Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPoi
     DEBUG_BLOCK
 //     debug() << "m_columns:" << m_columns;
 //     m_columns->addItem( applet );
+    
 
-    /* First calculate where should the applet be in the grid... */
-    int applets = m_grid->count();
-    int row = applets / m_cols;
-    int col = applets % m_cols;
-    /* ...then check if there is enough room for a new applet and that the position is free */
-    if( row < m_rows && col < m_cols && m_gridFreePositions[row][col] )
+    int height = applet->effectiveSizeHint( Qt::PreferredSize,
+                                            QSizeF( m_defaultColumnSize, -1 ) ).height();
+                                            
+    int rowSpan = qMin( qMax( ( int )( height )/ m_defaultRowSize , 1 ), 2 );
+    int colSpan = 1;
+//     if( rowSpan == 0 || height % m_defaultRowSize >  m_defaultRowSize / 2.0  )
+//         rowSpan += 1;
+    
+    //traverse the grid matrix to find rowSpan consecutive positions in the same column
+    
+    debug() << "current columns: " << m_currentColumns;
+    debug() << "current rows: " << m_currentRows;
+    
+    int col = 0;
+    int row = 0;
+    bool positionFound = false;
+    int j = 0;
+    
+    while( !positionFound && j < m_currentColumns   )
+    {        
+        int consec = 0;
+        int i = 0;
+        while( i < m_currentRows && consec < rowSpan)
+        {
+            
+            if( m_gridFreePositions[i][j] )
+                consec++;
+            else
+                consec = 0;
+            i++;
+        }
+        if( consec == rowSpan )
+        {
+            positionFound = true;
+            row = i - rowSpan; //get the first of the consecutive rows
+            col = j; 
+        }
+        j++;
+    }
+    
+    if( positionFound )
     {
-        int height = applet->effectiveSizeHint( Qt::PreferredSize,
-                                                QSizeF( m_defaultColumnSize, -1 ) ).height();
-        int rowSpan = (height / m_defaultRowSize) + 1;
-        int colSpan = 1;
-        m_grid->addItem( applet, row, col, rowSpan, colSpan);
+        
+        QRectF rect = geometry();
         debug() << "applet height: " << height;
-        debug() << "applets count:" << applets;
         debug() << "applet inserted at: " << row << col;
         debug() << "applet rowSpan :" << rowSpan;
+
         QList<int> pos;
         pos << row << col << rowSpan;
         m_appletsPositions[applet] = pos;
-        
+
+        m_grid->setColumnMaximumWidth( col, m_defaultColumnSize );
+
         for( int i = 0; i < rowSpan; i++ )
+        {
             m_gridFreePositions[row + i][col] = false;
-    }
+            m_grid->setRowMaximumHeight( row + i, m_defaultRowSize );
+            m_grid->setRowPreferredHeight( row + i, height );
+        }
+        m_grid->addItem( applet, row, col, rowSpan, colSpan );
+    }    
     else
+    {
+        debug() << "[m_currentRows,mcols]: " << m_currentRows << m_currentColumns;
+        debug() << "[row, col]: " << row << col;
+           
         debug() << "Send applet to the next free containment";
-    
+        applet->destroy();
+    }
     recalculate();
+    
     return applet;
 }
 
@@ -258,38 +299,51 @@ void ColumnContainment::recalculate()
     DEBUG_BLOCK
     debug() << "got child item that wants a recalculation";
 
-    QRectF rect = geometry().adjusted( 0, 0, 0, 0 );
+    QRectF rect = geometry();
     qreal top = 0.0;
     qreal left = 0.0;
     qreal height; 
         
     int gridRows = m_grid->rowCount();
     int gridCols = m_grid->columnCount();
-    
+
     for( int col = 0; col < gridCols; col++ )
     {
         left = (qreal)(col * m_defaultColumnSize);
         top = 0.0;
-        
-        for( int row = 0; row < gridRows; row++ )
+
+        int row = 0;
+
+        while( row < gridRows )
         {
             Plasma::Applet *applet = dynamic_cast< Plasma::Applet *>( m_grid->itemAt( row, col ) );
             if( applet )
             {
                 height = applet->effectiveSizeHint( Qt::PreferredSize,
                                                     QSizeF( m_defaultColumnSize, -1 ) ).height();
-                const QRectF newgeom( rect.topLeft().x(),
+                                                    
+                QList<int> pos = m_appletsPositions[applet];
+                int rowSpan = pos[2];
+                height = qMax( height, ( qreal )( rowSpan * m_defaultRowSize ) );
+                const QRectF newgeom( rect.topLeft().x() + left,
                                 rect.topLeft().y() + top,
                                 m_defaultColumnSize,
                                 height );
                 top += height;
-                debug() << "setting child geometry to" << newgeom;                
+                debug() << "setting child geometry to" << newgeom;
                 applet->setGeometry( newgeom );
+                applet->updateConstraints( Plasma::SizeConstraint );
                 
-            }
+                
+                row += rowSpan;
 
+            }
+            else
+            {
+                row++; // ignore it
+            }
         }
-    
+
     }
 //     m_columns->invalidate();
 //    m_columns->relayout();
