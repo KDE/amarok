@@ -141,3 +141,9 @@ def fetchKdeMultimedia()
     checkOut(comp, "KDE/kdemultimedia")
     createTar(comp)
 end
+
+def fetchKdeGraphics()
+    comp = "kdegraphics"
+    checkOut(comp, "KDE/kdegraphics")
+    createTar(comp)
+end
