@@ -323,7 +323,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 copyPud->addItem( pdi2, false );
 
             }
-            subItem = m_pd->addSubmenu( &copyPud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append_playlist_xlarge",  i18n( "Copy to Collection" )  );
+            subItem = m_pd->addSubmenu( &copyPud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Copy to Collection" )  );
             subItem->setFont( font );
         }
 
@@ -336,7 +336,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 pdi3->setFont( font );
                 movePud->addItem( pdi3, false );
             }
-            subItem = m_pd->addSubmenu( &movePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append_playlist_xlarge",  i18n( "Move to Collection" )  );
+            subItem = m_pd->addSubmenu( &movePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Move to Collection" )  );
             subItem->setFont( font );
         }
 
@@ -663,17 +663,19 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
     if( !indices.isEmpty() )
     {
 
-        if ( m_appendAction == 0 )
-            m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append_playlist_xlarge", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+        if ( m_appendAction == 0 ) {
+            m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
 
-        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
+             connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
+        }
 
         actions.append( m_appendAction );
 
-        if ( m_loadAction == 0 )
-            m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+        if ( m_loadAction == 0 ) {
+            m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon("folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
 
-        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotPlayChildTracks() ) );
+            connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotPlayChildTracks() ) );
+        }
 
         actions.append( m_loadAction );
 
@@ -688,10 +690,10 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
             Collection *collection = item->parentCollection();
 
             if ( collection->isWritable() ) {
-                if ( m_editAction == 0 )
-                    m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("media-track-edit-amarok" ), i18n( "&Edit Track Information" ), this );
-
-                connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
+                if ( m_editAction == 0 ) {
+                    m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon("media-track-edit-amarok" ), i18n( "&Edit Track Information" ), this );
+                    connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
+                }
         
                 actions.append( m_editAction );
             }
@@ -714,9 +716,10 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
 
                 if( onlyOneCollection )
                 {
-                    if ( m_organizeAction == 0 )
-                        m_organizeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load_playlist_xlarge", KIcon("folder-open" ), i18nc( "Organize Files", "Organize Files" ), this );
-                    connect( m_organizeAction, SIGNAL( triggered() ), this, SLOT( slotOrganize() ) );
+                    if ( m_organizeAction == 0 ) {
+                        m_organizeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "organize", KIcon("folder-open" ), i18nc( "Organize Files", "Organize Files" ), this );
+                        connect( m_organizeAction, SIGNAL( triggered() ), this, SLOT( slotOrganize() ) );
+                    }
                     actions.append( m_organizeAction );
                 }
             }
@@ -784,7 +787,7 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const
                 foreach( Collection *coll, writableCollections )
                 {
                     debug() << "creating action";
-                    PopupDropperAction *action = new PopupDropperAction(  The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append_playlist_xlarge", QIcon(), coll->prettyName(), 0 );
+                    PopupDropperAction *action = new PopupDropperAction(  The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
 
                     connect( action, SIGNAL( triggered() ), this, SLOT( slotCopyTracks() ) );
                     
@@ -821,7 +824,7 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( cons
                 {
                     foreach( Collection *coll, writableCollections )
                     {
-                        PopupDropperAction *action = new PopupDropperAction(  The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append_playlist_xlarge", QIcon(), coll->prettyName(), 0 );
+                        PopupDropperAction *action = new PopupDropperAction(  The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
 
                         connect( action, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
                         m_currentMoveDestination.insert( action, coll );

@@ -19,6 +19,9 @@
 
 #include "CopyToDeviceAction.h"
 
+#include "SvgHandler.h"
+#include "TheInstances.h"
+
 #include <QAction>
 
 #include <KIcon>
@@ -62,6 +65,8 @@ CopyToDeviceAction::init()
 
     setText( i18n("Copy To Media Device") );
     setIcon( KIcon("multimedia-player") );
+    setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+    setElementId( "device" );
 }
 
 void

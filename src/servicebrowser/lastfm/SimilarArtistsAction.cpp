@@ -20,6 +20,7 @@
 #include "SimilarArtistsAction.h"
 #include "playlist/PlaylistModel.h"
 #include "collection/CollectionManager.h"
+#include "SvgHandler.h"
 #include "TheInstances.h"
 
 #include <KIcon>
@@ -32,6 +33,8 @@ SimilarArtistsAction::SimilarArtistsAction( QObject *parent, Meta::Artist *artis
 
     setIcon( KIcon("view-services-lastfm-amarok") );
     setText( i18n( "Play Similar Artists from Last.fm" ) );
+    setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+    setElementId( "lastfm" );
 }
 
 void SimilarArtistsAction::slotTriggered()

@@ -20,8 +20,11 @@
 #include "JamendoMeta.h"
 
 #include "JamendoService.h"
-
 #include "popupdropper/PopupDropperAction.h"
+#include "SvgHandler.h"
+#include "TheInstances.h"
+
+
 
 #include "Debug.h"
 #include <KStandardDirs>
@@ -131,7 +134,7 @@ Meta::JamendoTrack::customActions()
 
     if ( !m_downloadCustomAction )
     {
-        m_downloadCustomAction = new PopupDropperAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
+        m_downloadCustomAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download",KIcon("download-amarok" ), i18n( "&Download" ), 0 );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
         QObject::connect( m_downloadCustomAction, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
     }
@@ -148,7 +151,7 @@ Meta::JamendoTrack::currentTrackActions()
 
     if ( !m_downloadCurrentTrackAction )
     {
-        m_downloadCurrentTrackAction = new PopupDropperAction( KIcon("download-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
+        m_downloadCurrentTrackAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download", KIcon("download-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
         QObject::connect( m_downloadCurrentTrackAction, SIGNAL( activated() ), jAlbum->service(), SLOT( downloadCurrentTrackAlbum() ) );
     }
@@ -358,7 +361,7 @@ Meta::JamendoAlbum::customActions()
 {
     DEBUG_BLOCK
     QList< PopupDropperAction * > actions;
-    PopupDropperAction * action = new PopupDropperAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
+    PopupDropperAction * action = new PopupDropperAction(  The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download",  KIcon("download-amarok" ), i18n( "&Download" ), 0 );
 
     QObject::connect( action, SIGNAL( activated() ) , m_service, SLOT( download() ) );
 
