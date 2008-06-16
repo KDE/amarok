@@ -76,6 +76,13 @@ class CollectionTreeView: public QTreeView
         void slotExpand( const QModelIndex &index );
         void slotCollapsed( const QModelIndex &index );
 
+        void slotPlayChildTracks();
+        void slotAppendChildTracks();
+        void slotEditTracks();
+        void slotCopyTracks();
+        void slotMoveTracks();
+        void slotOrganize();
+
     private:
         // Utility function to play all items
         // that have this as a parent..
@@ -106,6 +113,12 @@ class CollectionTreeView: public QTreeView
 
         PopupDropperAction * m_caSeperator;
         PopupDropperAction * m_cmSeperator;
+
+
+        QHash<PopupDropperAction*, Collection*> m_currentCopyDestination;
+        QHash<PopupDropperAction*, Collection*> m_currentMoveDestination;
+
+        QSet<CollectionTreeItem*> m_currentItems;
 
     signals:
         void itemSelected( CollectionTreeItem * item );
