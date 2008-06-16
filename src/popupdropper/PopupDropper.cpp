@@ -633,4 +633,5 @@ void PopupDropper::addItem( QGraphicsSvgItem *item, bool useSharedRenderer, bool
 }
 
 #include "PopupDropper.moc"
+#include "PopupDropper_p.moc"
 
