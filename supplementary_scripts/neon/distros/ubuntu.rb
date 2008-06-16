@@ -20,11 +20,11 @@ DEBVERSION   = "hardy"
 DEBPATH      = NEONPATH + "/distros/ubuntu"
 DEBBASEPATH  = TMPPATH + "/#{DATE}-ubuntu"
 GENERICFILES = ["copyright","compat","changelog"]
-ROKPACKAGES  = ["qt","strigi","taglib","kdelibs","kdebase-runtime"]
+ROKPACKAGES  = ["qt","kdesupport","kdelibs","kdebase"]
 KDEPACKAGES  = ["qt","kdesupport","kdelibs","kdepimlibs","kdebase","kdenetwork","kdemultimedia","kdegraphics"]
 
-ENV['DEBEMAIL']    = "apachelogger@ubuntu.com"
-ENV['DEBFULLNAME'] = "Harald Sitter"
+ENV['DEBEMAIL']    = "nightly@getamarok.com"
+ENV['DEBFULLNAME'] = "Project Neon"
 
 class UploadUbuntu
     def initialize(part)
