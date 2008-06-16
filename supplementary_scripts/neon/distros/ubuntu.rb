@@ -32,10 +32,10 @@ class UploadUbuntu
 
         if @part == "amarok"
             @packages = ROKPACKAGES
-            @lppath    = "http://ppa.launchpad.net/project-neon/ubuntu/pool/main/a/amarok-nightly"
+            @lppath   = "http://ppa.launchpad.net/project-neon/ubuntu/pool/main/a/amarok-nightly"
         else
             @packages = KDEPACKAGES
-            @lppath    = "http://ppa.launchpad.net/project-neon/ubuntu/pool/main/k/kde-nightly"
+            @lppath   = "http://ppa.launchpad.net/project-neon/ubuntu/pool/main/k/kde-nightly"
         end
 
         def baseDir()
@@ -105,7 +105,7 @@ class UploadUbuntu
     end
 
     def changeToKde()
-        for file in Dir.entries("./debian") - ['.', '..']
+        for file in Dir.entries("./debian") - ['.', '..', '.svn']
             # TODO: file.kde should contain a list of gsub/sub rules rather than a compelte copy
             if File.exists?("./debian/#{file}.kde")
                 File.mv("./debian/#{file}.kde", "./debian/#{file}")
