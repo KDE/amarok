@@ -40,9 +40,10 @@ end
 fetchKdeSupport()
 fetchKdeLibs()
 fetchKdeBase()
+fetchKdeSdk()
+fetchKdeMultimedia()
 fetchKdeGraphics()
 fetchKdeNetwork()
-fetchKdeMultimedia()
 
 # Distribution Uploads
 SVNPACKAGES = @packages

@@ -130,9 +130,9 @@ def fetchKdeBase()
     createTar(comp)
 end
 
-def fetchKdeNetwork()
-    comp = "kdenetwork"
-    checkOut(comp, "KDE/kdenetwork")
+def fetchKdeSdk()
+    comp = "kdesdk"
+    checkOut(comp, "KDE/kdesdk")
     createTar(comp)
 end
 
@@ -145,5 +145,11 @@ end
 def fetchKdeGraphics()
     comp = "kdegraphics"
     checkOut(comp, "KDE/kdegraphics")
+    createTar(comp)
+end
+
+def fetchKdeNetwork()
+    comp = "kdenetwork"
+    checkOut(comp, "KDE/kdenetwork")
     createTar(comp)
 end

@@ -21,7 +21,7 @@ DEBPATH      = NEONPATH + "/distros/ubuntu"
 DEBBASEPATH  = TMPPATH + "/#{DATE}-ubuntu"
 GENERICFILES = ["copyright","compat","changelog"]
 ROKPACKAGES  = ["qt","kdesupport","kdelibs","kdebase"]
-KDEPACKAGES  = ["qt","kdesupport","kdelibs","kdepimlibs","kdebase","kdenetwork","kdemultimedia","kdegraphics"]
+KDEPACKAGES  = ["qt","kdesupport","kdelibs","kdepimlibs","kdebase","kdesdk","kdemultimedia","kdegraphics","kdenetwork"]
 
 ENV['DEBEMAIL']    = "nightly@getamarok.com"
 ENV['DEBFULLNAME'] = "Project Neon"
