@@ -38,6 +38,8 @@ MagnatunePurchaseDialog::MagnatunePurchaseDialog( QWidget* parent, const char* n
         : QDialog( parent, fl )
 {
     Q_UNUSED( modal );
+    DEBUG_BLOCK
+
     setObjectName( name );
     setupUi( this );
 
@@ -48,7 +50,9 @@ MagnatunePurchaseDialog::MagnatunePurchaseDialog( QWidget* parent, const char* n
 }
 
 MagnatunePurchaseDialog::~MagnatunePurchaseDialog()
-{}
+{
+    DEBUG_BLOCK
+}
 
 
 void MagnatunePurchaseDialog::setAlbum( MagnatuneAlbum * album )
@@ -62,10 +66,9 @@ void MagnatunePurchaseDialog::setAlbum( MagnatuneAlbum * album )
 
     m_albumCode = album->albumCode();
 
-    album->subscribe( this );
+    subscribeTo( album );
 
     coverPixmapLabel->setPixmap( album->image( 200, false ) );
-
 }
 
 void MagnatunePurchaseDialog::purchase( )

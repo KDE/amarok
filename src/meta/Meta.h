@@ -1,5 +1,6 @@
 /* This file is part of the KDE project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org> 
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,27 +46,42 @@ namespace Meta
     class Genre;
     class Composer;
     class Year;
-
+    class MagnatuneAlbum;
 
     typedef KSharedPtr<MetaBase> DataPtr;
-    typedef QList<DataPtr > DataList;
-
+    typedef QList<DataPtr> DataList;
     typedef KSharedPtr<Track> TrackPtr;
-    typedef QList<TrackPtr > TrackList;
+    typedef QList<TrackPtr> TrackList;
     typedef KSharedPtr<Artist> ArtistPtr;
-    typedef QList<ArtistPtr > ArtistList;
+    typedef QList<ArtistPtr> ArtistList;
     typedef KSharedPtr<Album> AlbumPtr;
-    typedef QList<AlbumPtr > AlbumList;
+    typedef QList<AlbumPtr> AlbumList;
     typedef KSharedPtr<Composer> ComposerPtr;
     typedef QList<ComposerPtr> ComposerList;
     typedef KSharedPtr<Genre> GenrePtr;
-    typedef QList<GenrePtr > GenreList;
+    typedef QList<GenrePtr> GenreList;
     typedef KSharedPtr<Year> YearPtr;
-    typedef QList<YearPtr > YearList;
+    typedef QList<YearPtr> YearList;
+    typedef QList<MagnatuneAlbum*> MagnatuneAlbumList;
 
     class AMAROK_EXPORT Observer
     {
         public:
+            void subscribeTo( TrackPtr );
+            void unsubscribeTo( TrackPtr );
+            void subscribeTo( ArtistPtr );
+            void unsubscribeTo( ArtistPtr );
+            void subscribeTo( AlbumPtr );
+            void unsubscribeTo( AlbumPtr );
+            void subscribeTo( ComposerPtr );
+            void unsubscribeTo( ComposerPtr );
+            void subscribeTo( GenrePtr );
+            void unsubscribeTo( GenrePtr );
+            void subscribeTo( YearPtr );
+            void unsubscribeTo( YearPtr );
+            void subscribeTo( MagnatuneAlbum* );
+            void unsubscribeTo( MagnatuneAlbum* );
+            
             /** This method is called when the metadata of a track has changed.
                 The called class may not cache the pointer */
             virtual void metadataChanged( Track *track );
@@ -75,10 +91,21 @@ namespace Meta
             virtual void metadataChanged( Composer *composer );
             virtual void metadataChanged( Year *year );
             virtual ~Observer();
+
+        private:
+            TrackList m_trackSubscriptions;
+            ArtistList m_artistSubscriptions;
+            AlbumList m_albumSubscriptions;
+            ComposerList m_composerSubscriptions;
+            GenreList m_genreSubscriptions;
+            YearList m_yearSubscriptions;
+            MagnatuneAlbumList m_magnatuneAlbumSubscriptions;
     };
 
     class AMAROK_EXPORT MetaBase : public QSharedData
     {
+        friend class Observer;
+
         public:
             MetaBase() {}
             virtual ~MetaBase() {}
@@ -93,9 +120,6 @@ namespace Meta
             virtual QString fixedName() const { return prettyName(); }
 
             virtual void addMatchTo( QueryMaker *qm ) = 0;
-
-            virtual void subscribe( Observer *observer );
-            virtual void unsubscribe( Observer *observer );
 
             virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 
@@ -125,9 +149,11 @@ namespace Meta
             }
 
         protected:
+            virtual void subscribe( Observer *observer );
+            virtual void unsubscribe( Observer *observer );
+
             virtual void notifyObservers() const = 0;
 
-        protected:
             QSet<Meta::Observer*> m_observers;
 
         private: // no copy allowed, since it's not safe with observer list

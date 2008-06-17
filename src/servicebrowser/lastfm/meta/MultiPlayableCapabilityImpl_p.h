@@ -30,13 +30,12 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
             , m_url( track->playableUrl() )
             , m_track( track )
         {
-            m_track->subscribe( this );
+            //FIXME
+            //subscribeTo( m_track );
         }
 
         virtual ~MultiPlayableCapabilityImpl() 
-        {
-            m_track->unsubscribe( this );
-        }
+        {}
 
         virtual void fetchFirst() { m_track->playCurrent(); }
         virtual void fetchNext() { m_track->playNext(); }

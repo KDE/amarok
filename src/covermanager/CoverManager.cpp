@@ -922,7 +922,7 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
         m_artist = i18n( "No Artist" );
     setText( album->prettyName() );
     setIcon( album->image( 100 ) );
-    album->subscribe( qobject_cast<CoverManager*>(parent->parent()->parent()) );
+    qobject_cast<CoverManager*>(parent->parent()->parent())->subscribeTo( album );  // Man this looks sick
 //     setDragEnabled( true );
 //     setDropEnabled( true );
     calcRect();
@@ -930,7 +930,7 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
 
 CoverViewItem::~CoverViewItem()
 {
-    m_albumPtr->unsubscribe(  qobject_cast<CoverManager*>( m_parent->parent()->parent()) );
+    qobject_cast<CoverManager*>(m_parent->parent()->parent())->subscribeTo( m_albumPtr );
 }
 bool CoverViewItem::hasCover() const
 {

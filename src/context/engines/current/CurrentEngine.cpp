@@ -43,14 +43,6 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
 CurrentEngine::~CurrentEngine()
 {
     DEBUG_BLOCK
-    if( m_currentTrack )
-    {
-        m_currentTrack->unsubscribe( this );
-        if( m_currentTrack->album() )
-        {
-            m_currentTrack->album()->unsubscribe( this );
-        }
-    }
 }
 
 QStringList CurrentEngine::sources() const
@@ -83,11 +75,9 @@ void CurrentEngine::message( const ContextState& state )
         if( m_currentTrack )
         {
             debug() << "2";
-            m_currentTrack->unsubscribe( this );
+            unsubscribeTo( m_currentTrack );
             if( m_currentTrack->album() )
-            {
-                m_currentTrack->album()->unsubscribe( this );
-            }
+                unsubscribeTo( m_currentTrack->album() );
         }
         update();
     }
@@ -110,24 +100,17 @@ CurrentEngine::metadataChanged( Meta::Track *track )
 void CurrentEngine::update()
 {
     DEBUG_BLOCK
-    
-    if( m_currentTrack ) {
-        debug() << "Unsubscribing m_currentTrack.";
-        m_currentTrack->unsubscribe( this );
-        if( m_currentTrack->album() )
-            m_currentTrack->album()->unsubscribe( this );
-    }
 
     m_currentTrack = The::engineController()->currentTrack();
     if( !m_currentTrack )
         return;
-    m_currentTrack->subscribe( this );
+    subscribeTo( m_currentTrack );
 
     QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack.data() );
 
     int width = coverWidth();
     if( m_currentTrack->album() )
-        m_currentTrack->album()->subscribe( this );
+        subscribeTo( m_currentTrack->album() );
     removeAllData( "current" );
     if( m_currentTrack->album() ) {
 

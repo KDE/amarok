@@ -93,7 +93,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
                 Meta::TrackPtr track = newTrackProvider->trackForUrl( url );
                 if( track )
                 {
-                    track->subscribe( this );
+                    subscribeTo( track );
                     realTrack = track;
                     notifyObservers();
                     disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( TrackProvider* ) ), this, SLOT( slotNewTrackProvider( TrackProvider* ) ) );

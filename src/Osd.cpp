@@ -600,11 +600,11 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     DEBUG_BLOCK
 
     if( m_track && m_track->artist() )
-        m_track->artist()->unsubscribe( this );
+        unsubscribeTo( m_track->artist() );
     if( m_track && m_track->album() )
-        m_track->album()->unsubscribe( this );
+        unsubscribeTo( m_track->album() );
     if( m_track )
-        m_track->unsubscribe( this );
+        unsubscribeTo( m_track );
 
     m_track = track;
 
@@ -639,11 +639,11 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
         image = track->album()->image( 100 ).toImage();
 
     if( m_track ) {
-        m_track->subscribe( this );
+        subscribeTo( m_track );
         if( m_track->artist() )
-            m_track->artist()->subscribe( this );
+            subscribeTo( m_track->artist() );
         if( m_track->album() )
-            m_track->album()->subscribe( this );
+            subscribeTo( m_track->album() );
     }
 
     OSDWidget::show( text, image );

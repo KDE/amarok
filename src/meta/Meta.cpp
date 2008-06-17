@@ -1,6 +1,7 @@
 /* This file is part of the KDE project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2007 Ian Monroe <ian@monroe.nu>
+   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org> 
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,6 +25,7 @@
 #include "Collection.h"
 #include "Debug.h"
 #include "QueryMaker.h"
+#include "../servicebrowser/magnatunestore/MagnatuneMeta.h"
 
 #include <QDir>
 #include <QImage>
@@ -34,7 +36,155 @@
 
 Meta::Observer::~Observer()
 {
-    //nothing to do
+    // Unsubscribe all stray Meta subscriptions:
+
+    foreach( TrackPtr ptr, m_trackSubscriptions )
+        if( ptr )
+            ptr->unsubscribe( this );
+    foreach( ArtistPtr ptr, m_artistSubscriptions )
+        if( ptr )
+            ptr->unsubscribe( this );
+    foreach( AlbumPtr ptr, m_albumSubscriptions )
+        if( ptr )
+            ptr->unsubscribe( this );
+    foreach( GenrePtr ptr, m_genreSubscriptions )
+        if( ptr )
+            ptr->unsubscribe( this );
+    foreach( ComposerPtr ptr, m_composerSubscriptions )
+        if( ptr )
+            ptr->unsubscribe( this );
+    foreach( YearPtr ptr, m_yearSubscriptions )
+        if( ptr )
+            ptr->unsubscribe( this );
+    foreach( MagnatuneAlbum* ptr, m_magnatuneAlbumSubscriptions )
+        if( ptr )
+            ptr->unsubscribe( this );
+}
+
+void
+Meta::Observer::subscribeTo( TrackPtr ptr )
+{
+    if( ptr ) {
+        ptr->subscribe( this );
+        m_trackSubscriptions.append( ptr );
+    }
+}
+
+void
+Meta::Observer::unsubscribeTo( TrackPtr ptr )
+{
+    if( ptr ) {
+        ptr->unsubscribe( this );
+        m_trackSubscriptions.remove( ptr );
+    }
+}
+
+void
+Meta::Observer::subscribeTo( ArtistPtr ptr )
+{
+    if( ptr ) {
+        ptr->subscribe( this );
+        m_artistSubscriptions.append( ptr );
+    }
+}
+
+void
+Meta::Observer::unsubscribeTo( ArtistPtr ptr )
+{
+    if( ptr ) {
+        ptr->unsubscribe( this );
+        m_artistSubscriptions.remove( ptr );
+    }
+}
+
+void
+Meta::Observer::subscribeTo( AlbumPtr ptr )
+{
+    if( ptr ) {
+        ptr->subscribe( this );
+        m_albumSubscriptions.append( ptr );
+    }
+}
+
+void
+Meta::Observer::unsubscribeTo( AlbumPtr ptr )
+{
+    if( ptr ) {
+        ptr->unsubscribe( this );
+        m_albumSubscriptions.remove( ptr );
+    }
+}
+
+void
+Meta::Observer::subscribeTo( ComposerPtr ptr )
+{
+    if( ptr ) {
+        ptr->subscribe( this );
+        m_composerSubscriptions.append( ptr );
+    }
+}
+
+void
+Meta::Observer::unsubscribeTo( ComposerPtr ptr )
+{
+    if( ptr ) {
+        ptr->unsubscribe( this );
+        m_composerSubscriptions.remove( ptr );
+    }
+}
+
+void
+Meta::Observer::subscribeTo( GenrePtr ptr )
+{
+    if( ptr ) {
+        ptr->subscribe( this );
+        m_genreSubscriptions.append( ptr );
+    }
+}
+
+void
+Meta::Observer::unsubscribeTo( GenrePtr ptr )
+{
+    if( ptr ) {
+        ptr->unsubscribe( this );
+        m_genreSubscriptions.remove( ptr );
+    }
+}
+
+void
+Meta::Observer::subscribeTo( YearPtr ptr )
+{
+    if( ptr ) {
+        ptr->subscribe( this );
+        m_yearSubscriptions.append( ptr );
+    }
+}
+
+void
+Meta::Observer::unsubscribeTo( YearPtr ptr )
+{
+    if( ptr ) {
+        ptr->unsubscribe( this );
+        m_yearSubscriptions.remove( ptr );
+    }
+}
+
+void
+Meta::Observer::subscribeTo( MagnatuneAlbum* ptr )
+{
+    if( ptr ) {
+        ptr->subscribe( this );
+        m_magnatuneAlbumSubscriptions.append( ptr );
+    }
+}
+
+void
+Meta::Observer::unsubscribeTo( MagnatuneAlbum* ptr )
+{
+    if( ptr ) {
+        ptr->unsubscribe( this );
+        m_magnatuneAlbumSubscriptions.remove( ptr );
+    }
 }
 
 void
@@ -144,6 +294,8 @@ Meta::Track::finishedPlaying( double /*playedFraction*/ )
 void
 Meta::Track::notifyObservers() const
 {
+    DEBUG_BLOCK
+
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -174,6 +326,8 @@ Meta::Artist::addMatchTo( QueryMaker *qm )
 void
 Meta::Artist::notifyObservers() const
 {
+    DEBUG_BLOCK
+
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -198,6 +352,8 @@ Meta::Album::addMatchTo( QueryMaker *qm )
 void
 Meta::Album::notifyObservers() const
 {
+    DEBUG_BLOCK
+
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors

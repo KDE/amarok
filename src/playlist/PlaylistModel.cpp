@@ -878,9 +878,9 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
     {
         if( track )
         {
-            track->subscribe( this );
+            subscribeTo( track );
             if( track->album() )
-                track->album()->subscribe( this );
+                subscribeTo( track->album() );
 
             m_items.insert( row + i, new Item( track ) );
             i++;
@@ -920,9 +920,9 @@ Playlist::Model::removeTracksCommand( int position, int rows )
     for( int i = position; i < position + rows; i++ )
     {
         Item* item = m_items.takeAt( position ); //take at position, row times
-        item->track()->unsubscribe( this );
+        unsubscribeTo( item->track() );
         if( item->track()->album() )
-            item->track()->album()->unsubscribe( this );
+            unsubscribeTo( item->track()->album() );
         ret.push_back( item->track() );
         delete item;
     }
