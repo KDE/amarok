@@ -26,9 +26,12 @@
 
 #include <KAction>
 #include <KIcon>
+#include <KLineEdit>
 #include <KMenu>
 
+#include <QGridLayout>
 #include <QHeaderView>
+#include <QLabel>
 #include <QToolBar>
 #include <QTreeView>
 #include <QVBoxLayout>
@@ -97,6 +100,10 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
     m_toolBar->addAction( m_addGroupAction );
     connect( m_addGroupAction, SIGNAL( triggered( bool ) ), PlaylistModel::instance(), SLOT( createNewGroup() ) );
+
+    KAction* addStreamAction = new KAction( KIcon("add-some-stream-icon-here-please"), i18n("Add Radio Stream"), this );
+    m_toolBar->addAction( addStreamAction );
+    connect( addStreamAction, SIGNAL( triggered( bool ) ), this, SLOT( showAddStreamDialog() ) );
 }
 
 
@@ -162,6 +169,56 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
         PlaylistModel::instance()->createNewGroup();
     }
 }
+
+void
+PlaylistBrowserNS::PlaylistCategory::showAddStreamDialog()
+{
+    KDialog *dialog = new PlaylistBrowserNS::StreamEditor( this );
+    connect( dialog, SIGNAL( okClicked() ), this, SLOT( streamDialogConfirmed() ) );
+}
+
+void
+PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
+{
+    PlaylistBrowserNS::StreamEditor* dialog = qobject_cast<PlaylistBrowserNS::StreamEditor*>( sender() );
+    if( !dialog )
+        return;
+    debug() << "should add " << dialog->streamName() << ": " << dialog->streamUrl();
+}
+
+PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
+    : KDialog( parent )
+    , m_mainWidget( new QWidget( this ) )
+    , m_streamName( new KLineEdit( m_mainWidget ) )
+    , m_streamUrl( new KLineEdit( m_mainWidget ) )
+{
+    setCaption( i18n("Add Stream Location") );
+    setButtons( KDialog::Ok | KDialog::Cancel );
+    QGridLayout* layout = new QGridLayout();
+    layout->addWidget( new QLabel( i18n("Name:"), m_mainWidget ), 0, 0 );
+    layout->addWidget( m_streamName, 0, 1 );
+    layout->addWidget( new QLabel( i18n("Stream URL:"), m_mainWidget ), 1, 0 );
+    layout->addWidget( m_streamUrl, 1, 1 );
+    m_mainWidget->setLayout( layout );
+    setMainWidget( m_mainWidget );
+    connect( this, SIGNAL( closeClicked() ), this, SLOT( delayedDestruct() ) );
+    connect( this, SIGNAL( hidden() ), this, SLOT( delayedDestruct() ) );
+    connect( this, SIGNAL( cancelClicked() ), this, SLOT( delayedDestruct() ) );
+    show();
+}
+
+QString 
+PlaylistBrowserNS::StreamEditor::streamName()
+{
+    return m_streamName->text(); 
+}
+
+QString
+PlaylistBrowserNS::StreamEditor::streamUrl() 
+{
+    return m_streamUrl->text();
+}
+
 
 #include "PlaylistCategory.moc"
 

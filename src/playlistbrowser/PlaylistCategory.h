@@ -22,6 +22,8 @@
 
 #include "widgets/Widget.h"
 
+#include <KDialog>
+
 #include <QModelIndex>
 #include <QPoint>
 
@@ -31,7 +33,8 @@ class QToolBar;
 class QTreeView;
 
 class KAction;
-
+class KLineEdit;
+    
 namespace PlaylistBrowserNS {
 
 /**
@@ -49,8 +52,10 @@ public:
 
 private slots:
 
-    void itemActivated ( const QModelIndex & index );
-    void showContextMenu ( const QPoint & pos );
+    void itemActivated( const QModelIndex & index );
+    void showContextMenu( const QPoint & pos );
+    void showAddStreamDialog();
+    void streamDialogConfirmed();
 
 private:
 
@@ -61,6 +66,19 @@ private:
     KAction * m_addGroupAction;
     
 
+};
+
+class StreamEditor : public KDialog
+{
+    Q_OBJECT
+    public:
+        StreamEditor( QWidget* parent );
+        QString streamName();
+        QString streamUrl();
+    private:
+        QWidget   *m_mainWidget;
+        KLineEdit *m_streamName;
+        KLineEdit *m_streamUrl;
 };
 
 }
