@@ -1,3 +1,9 @@
+amarok-nightly-tools (1.5.5) hardy; urgency=low
+
+  * Removing kdelibs from k-n-deps, hopefully this doesn't break kdebase
+
+ -- Project Neon <nightly@getamarok.com>  Tue, 17 Jun 2008 14:39:41 +0200
+
 amarok-nightly-tools (1.5.4build1) hardy; urgency=low
 
   * Neon PPA Build

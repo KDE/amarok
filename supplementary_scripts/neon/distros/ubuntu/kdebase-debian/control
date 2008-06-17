@@ -2,7 +2,7 @@ Source: amarok-nightly-kdebase
 Section: kde
 Priority: optional
 Maintainer: Project Neon <nightly@getamarok.com>
-Build-Depends: amarok-nightly-cdbs, amarok-nightly-deps, amarok-nightly-kdepimlibs,
+Build-Depends: amarok-nightly-cdbs, amarok-nightly-deps, amarok-nightly-kdelibs, amarok-nightly-kdepimlibs,
  libclucene-dev, libbz2-dev, libxtst-dev, libasound2-dev, libxcb1-dev, libxkbfile-dev,
  libxcomposite-dev, libxdamage-dev, network-manager-dev, libxine-dev, libsmbclient-dev,
  libusb-dev

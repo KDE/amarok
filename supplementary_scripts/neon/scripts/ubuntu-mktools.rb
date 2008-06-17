@@ -20,6 +20,9 @@
 
 require 'fileutils'
 
+ENV['DEBEMAIL']    = "nightly@getamarok.com"
+ENV['DEBFULLNAME'] = "Project Neon"
+
 tmpdir = "tmp-tools-ubuntu"
 debdir = "distros/ubuntu/tools"
 thing  = "tools"
@@ -35,10 +38,7 @@ FileUtils.cp_r(debdir, tmpdir + "/#{thing}/debian")
 
 Dir.chdir(tmpdir + "/" + thing)
 system("dch -D'#{distro}' -i")
-if $? != 0
-    puts("leaving")
-    exit 1
-end
+system("find ./ -name '.svn' | xargs rm -rf")
 
 Dir.chdir("../../")
 

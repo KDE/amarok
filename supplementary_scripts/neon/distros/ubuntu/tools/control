@@ -41,7 +41,7 @@ Description: Project Neon (KDE Nightly)
 Package: kde-nightly-deps
 Architecture: all
 Section: devel
-Depends: kde-nightly-qt, kde-nightly-kdesupport, kde-nightly-kdelibs,
+Depends: kde-nightly-qt, kde-nightly-kdesupport,
  libboost-dev, libgpgme11-dev, libldap2-dev, libsasl2-dev,
  libxext-dev, libxrandr-dev, x11proto-core-dev, libsm-dev, libxmu-dev,
  libice-dev, libx11-dev, libxt-dev, libjpeg62-dev, zlib1g-dev, libmng-dev,
