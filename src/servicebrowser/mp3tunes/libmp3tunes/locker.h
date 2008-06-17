@@ -133,5 +133,8 @@ int mp3tunes_locker_playlist_list_deinit( mp3tunes_locker_track_list_t** list );
 char* mp3tunes_locker_generate_download_url_from_file_key(mp3tunes_locker_object_t *obj, char *file_key);
 char* mp3tunes_locker_generate_download_url_from_file_key_and_bitrate(mp3tunes_locker_object_t *obj, char *file_key, char* bitrate);
 
+char* mp3tunes_locker_generate_filekey(const char *filename);
+int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, char *path);
+
 int mp3tunes_locker_sync_down(mp3tunes_locker_object_t *obj, char* type, char* bytes_local, char* files_local, char* keep_local_files, char* playlist_id);
 #endif

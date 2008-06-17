@@ -18,12 +18,16 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <curl/curl.h>
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
 #include <libxml/xmlreader.h>
 #include <libxml/xpath.h>
 #include "locker.h"
+#include "md5.h"
 
 typedef struct {
     char *data;
@@ -1244,5 +1248,80 @@ int mp3tunes_locker_sync_down(mp3tunes_locker_object_t *obj, char* type, char* b
     printf("Sync:\n%s\n", (const char *) buf->content);
 
     xmlBufferFree(buf);
+    return 0;
+}
+
+char* mp3tunes_locker_generate_filekey(const char *filename) {
+  unsigned char sig[MD5_SIZE];
+  char      buffer[4096];
+  md5_t     md5;
+  int       ret;
+  FILE      *stream;
+
+  stream = fopen(filename, "r");
+  if (stream == NULL) {
+    perror(filename);
+    exit(1);
+  }
+  md5_init(&md5);
+
+  /* iterate over file */
+  while (1) {
+    /* read in from our file */
+    ret = fread(buffer, sizeof(char), sizeof(buffer), stream);
+    if (ret <= 0)
+      break;
+    /* process our buffer buffer */
+    md5_process(&md5, buffer, ret);
+  }
+
+  md5_finish(&md5, sig); 
+
+  if (stream != stdin) {
+    (void)fclose(stream);
+  }
+
+  /* convert to string to print */
+  md5_sig_to_string(sig, buffer, sizeof(buffer));
+  /*(void)printf("%25s '%s'\n", "File key:", buffer);*/
+  return &buffer;
+}
+
+int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, char *path) {
+    request_t *request;
+    CURLcode res;
+    chunk_t *chunk;
+    FILE * hd_src ;
+    int hd ;
+    struct stat file_info;
+    char* file_key = malloc(4096*sizeof(char));
+    file_key = mp3tunes_locker_generate_filekey(path);
+
+    /* get the file size of the local file */
+    hd = open(path, O_RDONLY);
+    fstat(hd, &file_info);
+    close(hd);
+    /* get a FILE * of the same file*/
+    hd_src = fopen(path, "rb");
+
+    /* create the request url */
+    char *url = malloc(256*sizeof(char));
+    snprintf(url, 256, "storage/lockerput/%s", file_key);
+    request = mp3tunes_locker_api_generate_request(obj, MP3TUNES_SERVER_CONTENT, url, NULL);
+
+    /*chunk_init(&chunk);*/
+    /*curl_easy_setopt( request->curl, CURLOPT_READFUNCTION, read_callback);*/
+    curl_easy_setopt( request->curl, CURLOPT_UPLOAD, 1L);
+    curl_easy_setopt( request->curl, CURLOPT_PUT, 1L);
+    curl_easy_setopt( request->curl, CURLOPT_URL, request->url);
+    curl_easy_setopt( request->curl, CURLOPT_READDATA, hd_src);
+    curl_easy_setopt( request->curl, CURLOPT_INFILESIZE_LARGE, (curl_off_t)file_info.st_size);
+    curl_easy_setopt( request->curl, CURLOPT_USERAGENT, "liboboe/1.0" );
+    /*printf("uploading...\n");*/
+    res = curl_easy_perform(request->curl);
+    curl_easy_cleanup(request->curl);
+
+    fclose(hd_src); /* close the local file */
+    free(url);
     return 0;
 }

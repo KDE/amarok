@@ -29,6 +29,7 @@ if(CURL_FOUND)
             Mp3tunesWorkers.cpp
 
             libmp3tunes/locker.c
+            libmp3tunes/md5.c
             #libmp3tunes/harmony.c
         )
 
