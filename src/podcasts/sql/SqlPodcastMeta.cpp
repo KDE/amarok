@@ -23,13 +23,13 @@
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
 
-Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChannelPtr sqlChannel )
+Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::SqlPodcastChannelPtr sqlChannel )
     : Meta::PodcastEpisode()
     , m_batchUpdate( false )
     , m_sqlChannel( sqlChannel )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    
+    setChannel( Meta::PodcastChannelPtr::staticCast( m_sqlChannel ) );
     QStringList::ConstIterator iter = result.constBegin();
     m_id = (*(iter++)).toInt();
     m_url = KUrl( *(iter++) );
@@ -115,7 +115,6 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
 void
 Meta::SqlPodcastChannel::loadEpisodes()
 {
-    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     
     QStringList results = sqlStorage->query( QString("SELECT id, url, channel, localurl, guid, title, subtitle, sequencenumber, description, mimetype, pubdate, duration, filesize, isnew FROM podcastepisodes WHERE channel = %1;").arg( m_id ) );
