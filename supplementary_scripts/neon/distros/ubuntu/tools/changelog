@@ -1,3 +1,9 @@
+amarok-nightly-tools (1.5.4build1) hardy; urgency=low
+
+  * Neon PPA Build
+
+ -- Project Neon <nightly@getamarok.com>  Tue, 17 Jun 2008 11:53:42 +0200
+
 amarok-nightly-tools (1.5.4) hardy; urgency=low
 
   * Remove a-n-tools as dep of k-n-deps
