@@ -1,3 +1,9 @@
+amarok-nightly-cdbs (1.3.4build1) hardy; urgency=low
+
+  * Neon PPA Build
+
+ -- Project Neon <nightly@getamarok.com>  Tue, 17 Jun 2008 11:56:13 +0200
+
 amarok-nightly-cdbs (1.3.4) hardy; urgency=low
 
   * Make branch kde from amarok, saves me a lot of headache
