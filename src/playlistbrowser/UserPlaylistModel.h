@@ -20,11 +20,13 @@
 #ifndef USERPLAYLISTMODEL_H
 #define USERPLAYLISTMODEL_H
 
-#include "SqlPlaylistGroup.h"
-
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
+
+#include "Meta.h"
+
+class SqlPlaylistGroup;
 
 
 
@@ -64,6 +66,7 @@ class PlaylistModel : public QAbstractItemModel
 
         void reloadFromDb();
         void editPlaylist( int id );
+        void createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack );
 
     public slots:
         void createNewGroup();

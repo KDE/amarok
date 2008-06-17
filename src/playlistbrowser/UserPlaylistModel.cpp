@@ -24,6 +24,7 @@
 #include "CollectionManager.h"
 #include "SqlStorage.h"
 #include "SqlPlaylist.h"
+#include "SqlPlaylistGroup.h"
 #include "TheInstances.h"
 
 
@@ -106,10 +107,10 @@ PlaylistBrowserNS::PlaylistModel::index(int row, int column, const QModelIndex &
         int noOfGroups = m_root->childGroups().count();
         if ( row < noOfGroups ) {
             //debug() << "Root playlist group";
-            return createIndex( row, column, m_root->childGroups()[row] );
+            return createIndex( row, column, m_root->childGroups().at( row ) );
         } else {
             //debug() << "Root playlist";
-            return createIndex( row, column, m_root->childPlaylists()[row - noOfGroups] );
+            return createIndex( row, column, m_root->childPlaylists().at( row - noOfGroups ) );
         }
     }
     else
@@ -132,24 +133,23 @@ PlaylistBrowserNS::PlaylistModel::parent( const QModelIndex & index ) const
 
     if (!index.isValid())
         return QModelIndex();
-
+    Q_ASSERT( index.internalPointer() );
     SqlPlaylistViewItem * item = static_cast< SqlPlaylistViewItem* >( index.internalPointer() );
-
+    
     //debug() << "row: " << index.row() << ", name " << item->name() << ", pointer: " << index.internalPointer() << " cast pointer: " << item;
 
     SqlPlaylistGroup *parent = item->parent();
 
     //debug() << "parent: " << parent;
 
-    if ( parent &&  parent->parent() ){
+    if ( parent &&  parent->parent() )
+    {
         int row = parent->parent()->childGroups().indexOf( parent );
         return createIndex( row , 0, parent );
-    } else {
+    }
+    else {
         return QModelIndex();
     }
-
-
-
 }
 
 int
@@ -368,14 +368,16 @@ void PlaylistBrowserNS::PlaylistModel::createTables()
 
 }
 
-void PlaylistBrowserNS::PlaylistModel::reloadFromDb()
+void
+PlaylistBrowserNS::PlaylistModel::reloadFromDb()
 {
     DEBUG_BLOCK;
     reset();
     m_root->clear();
 }
 
-void PlaylistBrowserNS::PlaylistModel::editPlaylist( int id )
+void
+PlaylistBrowserNS::PlaylistModel::editPlaylist( int id )
 {
 
   //for now, assume that the newly added playlist is in the top level:
@@ -388,7 +390,8 @@ void PlaylistBrowserNS::PlaylistModel::editPlaylist( int id )
     }
 }
 
-void PlaylistBrowserNS::PlaylistModel::createNewGroup()
+void
+PlaylistBrowserNS::PlaylistModel::createNewGroup()
 {
     DEBUG_BLOCK
     
@@ -412,11 +415,14 @@ void PlaylistBrowserNS::PlaylistModel::createNewGroup()
 
 } 
 
-
-
-
-
+void
+PlaylistBrowserNS::PlaylistModel::createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack )
+{
+    Meta::TrackList list;
+    list.append( streamTrack );
+    Meta::SqlPlaylist *stream = new Meta::SqlPlaylist( streamName, list, m_root );
+    delete stream;
+    reloadFromDb();
+}
 
 #include "UserPlaylistModel.moc"
-
-

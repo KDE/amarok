@@ -19,8 +19,10 @@
  
 #include "PlaylistCategory.h"
 
+#include "CollectionManager.h"
 #include "playlist/PlaylistModel.h"
 #include "SqlPlaylist.h"
+#include "SqlPlaylistGroup.h"
 #include "TheInstances.h"
 #include "UserPlaylistModel.h"
 
@@ -101,7 +103,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_toolBar->addAction( m_addGroupAction );
     connect( m_addGroupAction, SIGNAL( triggered( bool ) ), PlaylistModel::instance(), SLOT( createNewGroup() ) );
 
-    KAction* addStreamAction = new KAction( KIcon("add-some-stream-icon-here-please"), i18n("Add Radio Stream"), this );
+    KAction* addStreamAction = new KAction( KIcon("list-add"), i18n("Add Stream"), this );
     m_toolBar->addAction( addStreamAction );
     connect( addStreamAction, SIGNAL( triggered( bool ) ), this, SLOT( showAddStreamDialog() ) );
 }
@@ -184,6 +186,8 @@ PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
     if( !dialog )
         return;
     debug() << "should add " << dialog->streamName() << ": " << dialog->streamUrl();
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( dialog->streamUrl() );
+    PlaylistModel::instance()->createNewStream(  dialog->streamName(), track );
 }
 
 PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
@@ -210,11 +214,11 @@ PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
 QString 
 PlaylistBrowserNS::StreamEditor::streamName()
 {
-    return m_streamName->text(); 
+    return m_streamName->text();
 }
 
 QString
-PlaylistBrowserNS::StreamEditor::streamUrl() 
+PlaylistBrowserNS::StreamEditor::streamUrl()
 {
     return m_streamUrl->text();
 }
