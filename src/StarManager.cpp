@@ -43,6 +43,8 @@ StarManager::StarManager()
 {
     DEBUG_BLOCK
 
+    qAddPostRoutine( s_starManager.destroy );
+
     /*if( AmarokConfig::customRatingsColors() )
         AmarokConfig::setCustomRatingsColors( false );
     m_colors[0] = AmarokConfig::starColorOne();

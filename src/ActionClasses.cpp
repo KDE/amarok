@@ -117,8 +117,13 @@ MenuAction::plug( QWidget *w, int )
     else return -1;
 }
 
+
+K_GLOBAL_STATIC( Menu, s_menu )
+
 Menu::Menu()
 {
+    qAddPostRoutine( s_menu.destroy );
+    
     KActionCollection *ac = Amarok::actionCollection();
 
     safePlug( ac, "repeat", this );
@@ -169,9 +174,6 @@ Menu::Menu()
     Amarok::actionCollection()->action( "visualizations" )->setEnabled( false );
     #endif
 }
-
-
-K_GLOBAL_STATIC( Menu, s_menu )
 
 Menu*
 Menu::instance()
@@ -430,14 +432,17 @@ BurnMenuAction::createWidget( QWidget *w )
     else return 0;
 }
 
+
+K_GLOBAL_STATIC( BurnMenu, s_burnMenu )
+
 BurnMenu::BurnMenu()
 {
+    qAddPostRoutine( s_burnMenu.destroy );
+
     addAction( i18n("Current Playlist"), this, SLOT( slotBurnCurrentPlaylist() ) );
     addAction( i18n("Selected Tracks"), this, SLOT( slotBurnSelectedTracks() ) );
     //TODO add "album" and "all tracks by artist"
 }
-
-K_GLOBAL_STATIC( BurnMenu, s_burnMenu )
 
 KMenu*
 BurnMenu::instance()
@@ -535,6 +540,8 @@ K_GLOBAL_STATIC( StopMenu, s_stopMenu )
 
 StopMenu::StopMenu()
 {
+    qAddPostRoutine( s_stopMenu.destroy );
+
     addTitle( i18n( "Stop" ) );
 
     m_stopNow        = addAction( i18n( "Now" ), this, SLOT( slotStopNow() ) );
