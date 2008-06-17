@@ -399,6 +399,33 @@ bool Mp3tunesLocker::search( Mp3tunesSearchResult &container, const QString &que
     return true;
 }
 
+bool Mp3tunesLocker::uploadTrack( const QString &path )
+{
+    //convert Qstring to char*
+    QByteArray baStr = path.toLatin1();
+    const char *cc_str = baStr.data();
+    char* c_path = const_cast<char*>(cc_str);
+
+    int res = mp3tunes_locker_upload_track(mp3tunes_locker, c_path);
+    if(res == 0) {
+        return true;
+    }
+    return false;
+}
+
+QString Mp3tunesLocker::fileKey(const QString &path )
+{
+    //convert Qstring to char*
+    QByteArray baStr = path.toLatin1();
+    const char *cc_str = baStr.data();
+    char* c_path = const_cast<char*>(cc_str);
+
+    char* file_key = (char*)malloc(4096*sizeof(char));
+    file_key = mp3tunes_locker_generate_filekey(c_path);
+
+    return QString(file_key);
+}
+
 QString Mp3tunesLocker::userName() const
 {
     return QString( mp3tunes_locker->username );

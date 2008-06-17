@@ -168,6 +168,23 @@ class Mp3tunesLocker {
          */
         bool search( Mp3tunesSearchResult &container, const QString &query ) const;
 
+        /**
+         * Uploads a track to the locker using HTTP Put.
+         * @param path the absolute filename of the track to upload
+         * @return true if upload succeeded
+         *         false if upload failed
+         * @pre The track exists and is a filetype that mp3tunes accepts.
+         */
+        bool uploadTrack( const QString &path );
+
+        /**
+         * Generates the file key identifier for a media file.
+         * @param path the absolute filename of the track
+         * @return the file key
+         * @pre The track exists and is a filetype that mp3tunes accepts.
+         */
+        QString fileKey(const QString &path );
+
         //TODO wrapper for mp3tunes_locker_generate_download_url_from_file_key
         //TODO wrapper for mp3tunes_locker_generate_download_url_from_file_key_and_bitrate
         //TODO wrapper for mp3tunes_locker_sync_down

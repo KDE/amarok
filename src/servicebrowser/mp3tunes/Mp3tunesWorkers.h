@@ -22,6 +22,7 @@
 #include "Mp3tunesLocker.h"
 
 #include <QList>
+#include <QStringList>
 
 #include <threadweaver/Job.h>
 
@@ -145,5 +146,28 @@ class Mp3tunesSearchMonkey : public ThreadWeaver::Job
         int m_searchFor;
         Mp3tunesLocker* m_locker;
         Mp3tunesSearchResult m_result;
+};
+
+/**
+ * Allows for threading a track upload
+ */
+class Mp3tunesSimpleUploader : public ThreadWeaver::Job
+{
+    Q_OBJECT
+    public:
+        Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist );
+        ~Mp3tunesSimpleUploader();
+
+        void run();
+
+    signals:
+        void uploadComplete();
+
+    private slots:
+        void completeJob();
+
+    private:
+        Mp3tunesLocker* m_locker;
+        QStringList m_tracklist;
 };
 #endif

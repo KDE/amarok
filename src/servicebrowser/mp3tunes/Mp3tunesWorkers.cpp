@@ -190,3 +190,42 @@ void Mp3tunesSearchMonkey::completeJob()
     emit( searchComplete( m_result.trackList ) );
     deleteLater();
 }
+
+/*  SIMPLE UPLOADER */
+Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist )
+{
+    DEBUG_BLOCK
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    m_locker = locker;
+    m_tracklist = tracklist;
+}
+
+Mp3tunesSimpleUploader::~Mp3tunesSimpleUploader()
+{}
+
+void Mp3tunesSimpleUploader::run()
+{
+    DEBUG_BLOCK
+    if(m_locker != 0) {
+        debug() << "Starting upload of " << m_tracklist.count() << " tracks.";
+        foreach(QString track, m_tracklist) {
+            debug() << "Uploading: " << track;
+            bool result = m_locker->uploadTrack( track );
+            if(result) {
+                debug() << "Uploaded Succeeded.";
+            } else {
+                debug() << "Uploaded Failed.";
+            }
+        }
+        debug() << "Upload loop complete";
+    } else {
+        debug() << "Locker is NULL";
+    }
+}
+
+void Mp3tunesSimpleUploader::completeJob()
+{
+    DEBUG_BLOCK
+    emit( uploadComplete() );
+    deleteLater();
+}
