@@ -358,7 +358,9 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum
     foreach(Mp3tunesLockerAlbum album, albumsList) {
 
         QString title = album.albumTitle();
+        if ( title.contains("* PlayMix") ) continue;
         if ( title.isEmpty() ) title = "Unknown";
+        
         QString albumIdStr = QString::number( album.albumId() );
         int albumId = album.albumId();
 
