@@ -39,6 +39,7 @@ end
 
 fetchKdeSupport()
 fetchKdeLibs()
+fetchKdePimLibs
 fetchKdeBase()
 fetchKdeSdk()
 fetchKdeMultimedia()
