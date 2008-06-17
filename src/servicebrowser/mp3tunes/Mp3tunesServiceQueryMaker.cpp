@@ -76,6 +76,7 @@ Mp3tunesServiceQueryMaker::~Mp3tunesServiceQueryMaker()
 
 QueryMaker * Mp3tunesServiceQueryMaker::reset()
 {
+    DEBUG_BLOCK
     d->type = Private::NONE;
     d->maxsize = -1;
     d->returnDataPtrs = false;
@@ -149,7 +150,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::addMatch( const ArtistPtr & artist )
     if ( m_parentAlbumId.isEmpty() ) {
         const ServiceArtist * serviceArtist = static_cast< const ServiceArtist * >( artist.data() );
         m_parentArtistId = QString::number( serviceArtist->id() );
-        //debug() << "parent id set to: " << m_parentArtistId;
+        debug() << "artist parent id set to: " << m_parentArtistId;
     }
 
     return this;
@@ -160,7 +161,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
     DEBUG_BLOCK
     const ServiceAlbum * serviceAlbum = static_cast< const ServiceAlbum * >( album.data() );
     m_parentAlbumId = QString::number( serviceAlbum->id() );
-    //debug() << "parent id set to: " << m_parentAlbumId;
+    debug() << "album parent id set to: " << m_parentAlbumId;
     m_parentArtistId = QString();
 
     return this;
@@ -259,6 +260,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
         ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
         albums = artistMatcher.matchAlbums( m_collection );
     } else {
+        debug() << "parent id empty";
         return;
     }
     
@@ -270,7 +272,7 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
         
         ThreadWeaver::Weaver::instance()->enqueue( albumFetcher );
     } else {
-        debug() << "Session Invalud";
+        debug() << "Session Invalid";
     }
 }
 
@@ -278,11 +280,16 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
 {
     DEBUG_BLOCK
 
+    AlbumList albums;
     TrackList tracks;
 
-    //debug() << "parent id: " << m_parentAlbumId;
+    debug() << "album parent id: " << m_parentAlbumId;
+    debug() << "artist parent id: " << m_parentArtistId;
 
-    if ( !m_parentAlbumId.isEmpty() ) {
+    if ( !m_parentArtistId.isEmpty() ) {
+        ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
+        tracks = artistMatcher.match( m_collection );
+    } else if ( !m_parentAlbumId.isEmpty() ) {
         AlbumMatcher albumMatcher( m_collection->albumById( m_parentAlbumId.toInt() ) );
         tracks = albumMatcher.match( m_collection );
     } else {
@@ -291,18 +298,26 @@ void Mp3tunesServiceQueryMaker::fetchTracks()
     }
 
     if ( tracks.count() > 0 ) {
+        debug() << tracks.count() << " Tracks selected";
         handleResult( tracks );
+        emit queryDone();
     } else if ( m_locker->sessionValid() ) {
-        Mp3tunesTrackWithAlbumIdFetcher * trackFetcher = new Mp3tunesTrackWithAlbumIdFetcher( m_locker, m_parentAlbumId.toInt() );
-        connect( trackFetcher, SIGNAL( tracksFetched( Mp3tunesTrackWithAlbumIdFetcher *, QList<Mp3tunesLockerTrack> ) ), this, SLOT( trackDownloadComplete( Mp3tunesTrackWithAlbumIdFetcher *, QList<Mp3tunesLockerTrack> ) ) );
-        ThreadWeaver::Weaver::instance()->enqueue( trackFetcher ); //Go!
+        if( !m_parentArtistId.isEmpty() ) {
+            debug() << "Creating track w/ artist id Fetch Worker";
+            Mp3tunesTrackWithArtistIdFetcher * trackFetcher = new Mp3tunesTrackWithArtistIdFetcher( m_locker, m_parentArtistId.toInt() );
+            connect( trackFetcher, SIGNAL( tracksFetched( QList<Mp3tunesLockerTrack> ) ), this, SLOT( trackDownloadComplete( QList<Mp3tunesLockerTrack> ) ) );
+            ThreadWeaver::Weaver::instance()->enqueue( trackFetcher ); //Go!
+        } else if ( !m_parentAlbumId.isEmpty() ) {
+            debug() << "Creating track w/ album id Fetch Worker";
+            Mp3tunesTrackWithAlbumIdFetcher * trackFetcher = new Mp3tunesTrackWithAlbumIdFetcher( m_locker, m_parentAlbumId.toInt() );
+            connect( trackFetcher, SIGNAL( tracksFetched( QList<Mp3tunesLockerTrack> ) ), this, SLOT( trackDownloadComplete( QList<Mp3tunesLockerTrack> ) ) );
+            ThreadWeaver::Weaver::instance()->enqueue( trackFetcher ); //Go!
+        }
     } else {
-        debug() << "Session Invalud";
+        debug() << "Session Invalid";
         return;
     }
 }
-
-
 
 void Mp3tunesServiceQueryMaker::artistDownloadComplete( QList<Mp3tunesLockerArtist> artistList )
 {
@@ -388,7 +403,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum
 
 }
 
-void Mp3tunesServiceQueryMaker::trackDownloadComplete( Mp3tunesTrackWithAlbumIdFetcher * job, QList<Mp3tunesLockerTrack> tracksList )
+void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack> tracksList )
 {
     DEBUG_BLOCK
     //debug() << "Received Tracks";
@@ -432,7 +447,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( Mp3tunesTrackWithAlbumIdF
 
         ArtistPtr artistPtr = m_collection->artistById( artistId.toInt() );
         if ( artistPtr.data() != 0 ) {
-           //debug() << "Found parent artist";
+            debug() << "Found parent artist";
             ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
             serviceTrack->setArtist( artistPtr );
             artist->addTrack( trackPtr );
@@ -440,7 +455,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( Mp3tunesTrackWithAlbumIdF
 
         AlbumPtr albumPtr = m_collection->albumById( albumId.toInt() );
         if ( albumPtr.data() != 0 ) {
-           //debug() << "Found parent album";
+            debug() << "Found parent album";
             ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
             serviceTrack->setAlbum( albumPtr );
             album->addTrack( trackPtr );
@@ -449,8 +464,8 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( Mp3tunesTrackWithAlbumIdF
         tracks.push_back( trackPtr );
     }
 
-    ThreadWeaver::Weaver::instance()->dequeue( job );
-    job->deleteLater();
+    //ThreadWeaver::Weaver::instance()->dequeue( job );
+    //job->deleteLater();
 
     handleResult( tracks );
     emit queryDone();

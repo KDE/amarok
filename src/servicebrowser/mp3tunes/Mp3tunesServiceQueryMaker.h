@@ -99,7 +99,7 @@ public slots:
 
     void artistDownloadComplete( QList<Mp3tunesLockerArtist> artists );
     void albumDownloadComplete( QList<Mp3tunesLockerAlbum> albums );
-    void trackDownloadComplete(  Mp3tunesTrackWithAlbumIdFetcher * job, QList<Mp3tunesLockerTrack> tracks );
+    void trackDownloadComplete( QList<Mp3tunesLockerTrack> tracks );
 
 
 };

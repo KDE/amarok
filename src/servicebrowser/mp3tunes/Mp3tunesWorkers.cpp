@@ -147,7 +147,41 @@ void Mp3tunesTrackWithAlbumIdFetcher::run()
 void Mp3tunesTrackWithAlbumIdFetcher::completeJob()
 {
     DEBUG_BLOCK
-    emit( tracksFetched( this, m_tracks ) );
+    emit( tracksFetched( m_tracks ) );
+    deleteLater();
+}
+
+/*  TRACK w/ artistId FETCHER */
+Mp3tunesTrackWithArtistIdFetcher::Mp3tunesTrackWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId )
+{
+    DEBUG_BLOCK
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    m_locker = locker;
+    debug() << "Constructor artistId: " << artistId;
+    m_artistId = artistId;
+}
+
+Mp3tunesTrackWithArtistIdFetcher::~Mp3tunesTrackWithArtistIdFetcher()
+{
+}
+
+void Mp3tunesTrackWithArtistIdFetcher::run()
+{
+    DEBUG_BLOCK
+    if(m_locker != 0) {
+        debug() << "Track Fetch Start for artist " << m_artistId;
+        QList<Mp3tunesLockerTrack> list = m_locker->tracksWithArtistId( m_artistId );
+        debug() << "Track Fetch End. Total tracks: " << list.count();
+        m_tracks = list;
+    } else {
+        debug() << "Locker is NULL";
+    }
+}
+
+void Mp3tunesTrackWithArtistIdFetcher::completeJob()
+{
+    DEBUG_BLOCK
+    emit( tracksFetched( m_tracks ) );
     deleteLater();
 }
 
