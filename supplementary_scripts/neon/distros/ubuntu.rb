@@ -131,7 +131,7 @@ class UploadUbuntu
             if SVNPACKAGES.has_key?(package)
                 setVersion(package)
                 puts("Ubuntu: uploading #{package} checkout revision #{@rev}")
-                dir = "#{package}-#{@rev}"
+                dir = "amarok-nightly-#{package}"
                 baseDir()
                 Dir.chdir(dir)
 
@@ -144,7 +144,7 @@ class UploadUbuntu
         if @part == "amarok"
             baseDir()
             setVersion("amarok")
-            Dir.chdir("amarok-nightly-#{@rev}")
+            Dir.chdir("amarok-nightly")
             createDebianSrc("amarok")
             amarokUpload()
         end
