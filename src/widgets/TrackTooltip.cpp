@@ -52,6 +52,8 @@ TrackToolTip::TrackToolTip()
 {
     DEBUG_BLOCK
 
+    qAddPostRoutine( s_trackToolTip.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
+
     setWindowFlags( Qt::ToolTip );
 //     setWindowOpacity( 0.6 ); // This doesn't work that well, the background should be transparent without the foreground, probably.
     QGridLayout *l = new QGridLayout;

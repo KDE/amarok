@@ -78,6 +78,8 @@ CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )
 {
+    qAddPostRoutine( privateInstance.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
+
     init();
 }
 
