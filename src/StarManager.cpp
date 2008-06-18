@@ -43,7 +43,7 @@ StarManager::StarManager()
 {
     DEBUG_BLOCK
 
-    qAddPostRoutine( s_starManager.destroy );
+    qAddPostRoutine( s_starManager.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
 
     /*if( AmarokConfig::customRatingsColors() )
         AmarokConfig::setCustomRatingsColors( false );

@@ -122,7 +122,7 @@ K_GLOBAL_STATIC( Menu, s_menu )
 
 Menu::Menu()
 {
-    qAddPostRoutine( s_menu.destroy );
+    qAddPostRoutine( s_menu.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
     
     KActionCollection *ac = Amarok::actionCollection();
 
@@ -437,7 +437,7 @@ K_GLOBAL_STATIC( BurnMenu, s_burnMenu )
 
 BurnMenu::BurnMenu()
 {
-    qAddPostRoutine( s_burnMenu.destroy );
+    qAddPostRoutine( s_burnMenu.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
 
     addAction( i18n("Current Playlist"), this, SLOT( slotBurnCurrentPlaylist() ) );
     addAction( i18n("Selected Tracks"), this, SLOT( slotBurnSelectedTracks() ) );
@@ -540,7 +540,7 @@ K_GLOBAL_STATIC( StopMenu, s_stopMenu )
 
 StopMenu::StopMenu()
 {
-    qAddPostRoutine( s_stopMenu.destroy );
+    qAddPostRoutine( s_stopMenu.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
 
     addTitle( i18n( "Stop" ) );
 
