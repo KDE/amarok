@@ -17,7 +17,7 @@ Package: amarok-nightly-deps
 Architecture: all
 Section: devel
 Depends: amarok-nightly-tools,
- amarok-nightly-kdebase, amarok-nightly-kdesupport,
+ amarok-nightly-kdesupport,
  libxext-dev, libxrandr-dev, x11proto-core-dev, libsm-dev, libxmu-dev,
  libice-dev, libx11-dev, libxt-dev, libjpeg62-dev, zlib1g-dev, libmng-dev,
  libpng12-dev, libfreetype6-dev, flex, libpq-dev, libaudio-dev, libcupsys2-dev,
