@@ -60,7 +60,6 @@ public:
 
     void setOggUrl( const QString& url );
     QString oggUrl() const;
-    
 
 private:
     QString m_lofiUrl;
@@ -126,8 +125,6 @@ public:
     MagnatuneStore * store();
 
     void setDownloadMembership();
-
-
 };
 
 class MagnatuneGenre  : public ServiceGenre
@@ -136,7 +133,6 @@ class MagnatuneGenre  : public ServiceGenre
 public:
     MagnatuneGenre( const QString &name );
     MagnatuneGenre( const QStringList &resultRow );
-
 };
 
 }
@@ -171,10 +167,7 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
         void setMembershipInfo ( const QString &prefix, const QString &userName, const QString &password );
         void setStreamType( int type );
 
-
-
     private:
-
         QString m_membershipPrefix;
         int m_streamType;
 
@@ -182,7 +175,6 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
         QString m_password;
         MagnatuneStore * m_store;
 };
-
 
 
 #endif

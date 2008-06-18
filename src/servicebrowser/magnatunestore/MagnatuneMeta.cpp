@@ -1,4 +1,3 @@
-
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
@@ -17,8 +16,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
-
-
 
 #include "MagnatuneMeta.h"
 #include "MagnatuneStore.h"
@@ -43,8 +40,7 @@ MagnatuneMetaFactory::MagnatuneMetaFactory( const QString & dbPrefix, MagnatuneS
     , m_userName( QString() )
     , m_password( QString() )
     , m_store( store )
-{
-}
+{}
 
 void MagnatuneMetaFactory::setMembershipInfo( const QString &prefix, const QString &userName, const QString &password )
 {
@@ -57,7 +53,6 @@ void MagnatuneMetaFactory::setStreamType(int type)
 {
     m_streamType = type;
 }
-
 
 
 int MagnatuneMetaFactory::getTrackSqlRowCount()
@@ -77,12 +72,9 @@ QString MagnatuneMetaFactory::getTrackSqlRows()
     return sqlRows;
 }
 
-
 TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
 {
-
     MagnatuneTrack * track = new MagnatuneTrack( rows );
-
 
     if ( m_streamType == OGG ) {
         track->setUrl( track->oggUrl() );
@@ -163,14 +155,15 @@ ArtistPtr MagnatuneMetaFactory::createArtist(const QStringList & rows)
     return ArtistPtr( new MagnatuneArtist( rows ) );
 }
 
-
 GenrePtr MagnatuneMetaFactory::createGenre(const QStringList & rows)
 {
     return GenrePtr( new MagnatuneGenre( rows ) );
 }
 
 
-//// MagnatuneTrack ////
+///////////////////////////////////////////////////////////////////////////////
+// class MagnatuneTrack
+///////////////////////////////////////////////////////////////////////////////
 
 MagnatuneTrack::MagnatuneTrack( const QString &name )
     : ServiceTrack( name )
@@ -178,8 +171,7 @@ MagnatuneTrack::MagnatuneTrack( const QString &name )
     , m_purchaseCustomAction( 0 )
     , m_purchaseCurrentTrackAction( 0 )
     , m_showInServiceAction( 0 )
-{
-}
+{}
 
 MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
     : ServiceTrack( resultRow )
@@ -207,7 +199,6 @@ QString Meta::MagnatuneTrack::oggUrl() const
 {
     return m_oggUrl;
 }
-
 
 void Meta::MagnatuneTrack::setOggUrl( const QString& url )
 {
@@ -270,7 +261,6 @@ QList< PopupDropperAction * > Meta::MagnatuneTrack::currentTrackActions()
 
 }
 
-
 QString Meta::MagnatuneTrack::sourceName()
 {
     return "Magnatune.com";
@@ -298,20 +288,19 @@ void Meta::MagnatuneTrack::setMoods(QList< QString > moods)
 }
 
 
-//// MagnatuneArtist ////
+///////////////////////////////////////////////////////////////////////////////
+// class MagnatuneArtist
+///////////////////////////////////////////////////////////////////////////////
 
 MagnatuneArtist::MagnatuneArtist( const QString &name )
     : ServiceArtist( name )
-{
-}
+{}
 
 MagnatuneArtist::MagnatuneArtist(const QStringList & resultRow)
     : ServiceArtist( resultRow )
 {
     m_photoUrl = resultRow[3];
     m_magnatuneUrl = resultRow[4];
-
-
 }
 
 void MagnatuneArtist::setPhotoUrl( const QString &photoUrl )
@@ -335,20 +324,19 @@ QString MagnatuneArtist::magnatuneUrl() const
 }
 
 
-
-
-//// MagnatuneAlbum ////
+///////////////////////////////////////////////////////////////////////////////
+// class MagnatuneAlbum
+///////////////////////////////////////////////////////////////////////////////
 
 MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     : ServiceAlbumWithCover( name )
     , m_coverUrl()
     , m_launchYear( 0 )
     , m_albumCode()
-    , m_store ( 0 )
-    , m_downloadMembership ( false )
+    , m_store( 0 )
+    , m_downloadMembership( false )
 
-{
-}
+{}
 
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     : ServiceAlbumWithCover( resultRow )
@@ -356,19 +344,15 @@ MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
 {
     debug() << "create album from result row: " << resultRow;
 
-
     m_coverUrl = resultRow[4];
     m_launchYear = resultRow[5].toInt();
     m_albumCode = resultRow[6];
 
     m_store = 0;
-    
-
 }
 
 MagnatuneAlbum::~ MagnatuneAlbum()
-{
-}
+{}
 
 
 void MagnatuneAlbum::setLaunchYear( int launchYear )
@@ -436,17 +420,15 @@ QList< PopupDropperAction * > MagnatuneAlbum::customActions()
 }
 
 
-
-
-
+///////////////////////////////////////////////////////////////////////////////
+// class MagnatuneGenre
+///////////////////////////////////////////////////////////////////////////////
 
 MagnatuneGenre::MagnatuneGenre( const QString & name )
     : ServiceGenre( name )
-{
-}
+{}
 
 MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
-{
-}
+{}
 
