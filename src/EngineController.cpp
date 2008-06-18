@@ -63,6 +63,7 @@ The::engineController()
 EngineController::EngineController()
     : m_media( 0 )
     , m_audio( 0 )
+    , m_fadeoutTimer( new QTimer( this ) )
 {
     DEBUG_BLOCK
 
@@ -77,6 +78,8 @@ EngineController::EngineController()
     m_media->setTickInterval( 100 );
     debug() << "Tick Interval (actual): " << m_media->tickInterval();
     PERF_LOG( "EngineController: loaded phonon objects" )
+
+    m_fadeoutTimer->setSingleShot( true );
 
     //TODO: The xine engine does not support crossfading.
     // I cannot get the gstreamer engine to work, will test this once I do.
@@ -95,6 +98,8 @@ EngineController::EngineController()
     connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
     connect( m_media, SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ),
                        SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
+
+    connect( m_fadeoutTimer, SIGNAL( timeout() ), SLOT( slotStopFadeout() ) );
 }
 
 EngineController::~EngineController()
@@ -260,6 +265,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
 {
     DEBUG_BLOCK
 
+    slotStopFadeout();
+
     debug() << "URL: " << url.url();
     m_media->setCurrentSource( url );
 
@@ -303,7 +310,7 @@ EngineController::stop( bool forceInstant ) //SLOT
         m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
         m_fader->fadeOut( AmarokConfig::fadeoutLength() );
 
-        QTimer::singleShot( AmarokConfig::fadeoutLength() + 1000, this, SLOT( slotReallyStop() ) ); //add 1s for good measure, otherwise seems to cut off early (buffering..)
+        m_fadeoutTimer->start( AmarokConfig::fadeoutLength() + 1000 ); //add 1s for good measure, otherwise seems to cut off early (buffering..)
     }
     else
         m_media->stop();
@@ -592,9 +599,12 @@ EngineController::slotMetaDataChanged()
 }
 
 void
-EngineController::slotReallyStop() //SLOT
+EngineController::slotStopFadeout() //SLOT
 {
     DEBUG_BLOCK
+
+    // Make sure the timer won't call this method again 
+    m_fadeoutTimer->stop();
 
     if ( m_fader ) {
         m_fader->deleteLater();

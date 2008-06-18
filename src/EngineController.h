@@ -107,7 +107,7 @@ private slots:
     void slotTick( qint64 );
     void slotTrackLengthChanged( qint64 );
     void slotMetaDataChanged();
-    void slotReallyStop(); //called after the fade-out has finished
+    void slotStopFadeout(); //called after the fade-out has finished
 
 private:
     static ExtensionCache s_extensionCache;
@@ -122,6 +122,7 @@ private:
     Meta::TrackPtr  m_currentTrack;
     Meta::TrackPtr  m_lastTrack;
     QPointer<Meta::MultiPlayableCapability> m_multi;
+    QTimer* m_fadeoutTimer;
 };
 
 
