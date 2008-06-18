@@ -44,7 +44,12 @@ void FetchCoverAction::init()
 
 void FetchCoverAction::slotTriggered()
 {
-    CoverFetcher::instance()->queueAlbums( m_albums );
+    // Queuing multiple albums causes the fetcher to automatically assign values without asking
+    // Such as case would be the CoverManager's Fetch All Missing feature
+    if( m_albums.size() == 1 )
+        CoverFetcher::instance()->manualFetch( m_albums.first() );
+    else
+        CoverFetcher::instance()->queueAlbums( m_albums );
 }
 
 
