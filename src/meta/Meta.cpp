@@ -66,7 +66,7 @@ Meta::Observer::subscribeTo( TrackPtr ptr )
 {
     if( ptr ) {
         ptr->subscribe( this );
-        m_trackSubscriptions.append( ptr );
+        m_trackSubscriptions.insert( ptr );
     }
 }
 
@@ -84,7 +84,7 @@ Meta::Observer::subscribeTo( ArtistPtr ptr )
 {
     if( ptr ) {
         ptr->subscribe( this );
-        m_artistSubscriptions.append( ptr );
+        m_artistSubscriptions.insert( ptr );
     }
 }
 
@@ -102,7 +102,7 @@ Meta::Observer::subscribeTo( AlbumPtr ptr )
 {
     if( ptr ) {
         ptr->subscribe( this );
-        m_albumSubscriptions.append( ptr );
+        m_albumSubscriptions.insert( ptr );
     }
 }
 
@@ -120,7 +120,7 @@ Meta::Observer::subscribeTo( ComposerPtr ptr )
 {
     if( ptr ) {
         ptr->subscribe( this );
-        m_composerSubscriptions.append( ptr );
+        m_composerSubscriptions.insert( ptr );
     }
 }
 
@@ -138,7 +138,7 @@ Meta::Observer::subscribeTo( GenrePtr ptr )
 {
     if( ptr ) {
         ptr->subscribe( this );
-        m_genreSubscriptions.append( ptr );
+        m_genreSubscriptions.insert( ptr );
     }
 }
 
@@ -156,7 +156,7 @@ Meta::Observer::subscribeTo( YearPtr ptr )
 {
     if( ptr ) {
         ptr->subscribe( this );
-        m_yearSubscriptions.append( ptr );
+        m_yearSubscriptions.insert( ptr );
     }
 }
 
@@ -174,7 +174,7 @@ Meta::Observer::subscribeTo( MagnatuneAlbum* ptr )
 {
     if( ptr ) {
         ptr->subscribe( this );
-        m_magnatuneAlbumSubscriptions.append( ptr );
+        m_magnatuneAlbumSubscriptions.insert( ptr );
     }
 }
 

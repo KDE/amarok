@@ -62,7 +62,6 @@ namespace Meta
     typedef QList<GenrePtr> GenreList;
     typedef KSharedPtr<Year> YearPtr;
     typedef QList<YearPtr> YearList;
-    typedef QList<MagnatuneAlbum*> MagnatuneAlbumList;
 
     class AMAROK_EXPORT Observer
     {
@@ -93,13 +92,13 @@ namespace Meta
             virtual ~Observer();
 
         private:
-            TrackList m_trackSubscriptions;
-            ArtistList m_artistSubscriptions;
-            AlbumList m_albumSubscriptions;
-            ComposerList m_composerSubscriptions;
-            GenreList m_genreSubscriptions;
-            YearList m_yearSubscriptions;
-            MagnatuneAlbumList m_magnatuneAlbumSubscriptions;
+            QSet<TrackPtr> m_trackSubscriptions;
+            QSet<ArtistPtr> m_artistSubscriptions;
+            QSet<AlbumPtr> m_albumSubscriptions;
+            QSet<ComposerPtr> m_composerSubscriptions;
+            QSet<GenrePtr> m_genreSubscriptions;
+            QSet<YearPtr> m_yearSubscriptions;
+            QSet<MagnatuneAlbum*> m_magnatuneAlbumSubscriptions;
     };
 
     class AMAROK_EXPORT MetaBase : public QSharedData
