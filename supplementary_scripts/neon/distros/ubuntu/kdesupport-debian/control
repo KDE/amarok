@@ -13,6 +13,8 @@ Package: amarok-nightly-kdesupport
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, poppler-utils, dbus-x11 | dbus
+Conflicts: amarok-nightly-strigi (<= 20080520+svn810434-0amarok3), amarok-nightly-taglib (<= 20080520+svn810434-0amarok3)
+Replaces: amarok-nightly-strigi (<= 20080520+svn810434-0amarok3), amarok-nightly-taglib (<= 20080520+svn810434-0amarok3)
 Description: KDESupport stuff
  apparently KDE supporting stuff
  .
