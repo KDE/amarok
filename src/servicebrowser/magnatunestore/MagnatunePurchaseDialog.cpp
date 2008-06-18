@@ -54,7 +54,6 @@ MagnatunePurchaseDialog::~MagnatunePurchaseDialog()
     DEBUG_BLOCK
 }
 
-
 void MagnatunePurchaseDialog::setAlbum( MagnatuneAlbum * album )
 {
     //albumEdit->setText("Hello!");
@@ -73,18 +72,14 @@ void MagnatunePurchaseDialog::setAlbum( MagnatuneAlbum * album )
 
 void MagnatunePurchaseDialog::purchase( )
 {
-
     if ( verifyEntries( ) )
     {
-
 	    setEnabled( false ); //to prevent accidental double purchases
 
-        if ( ccRadioButton->isChecked() ) {
+        if ( ccRadioButton->isChecked() )
             emit( makePurchase( ccEdit->text(), expYearEdit->text(), expMonthEdit->text(), nameEdit->text(), emailEdit->text(), m_albumCode, amountComboBox->currentText().toInt() ) );
-        } else {
+        else
             emit( makeGiftCardPurchase( gcEdit->text(), nameEdit->text(), emailEdit->text(), m_albumCode, amountComboBox->currentText().toInt() ) );
-        }
-
     }
 }
 
@@ -93,19 +88,15 @@ void MagnatunePurchaseDialog::reject( )
     cancel();
 }
 
-
 void MagnatunePurchaseDialog::cancel( )
 {
     hide();
     emit ( cancelled() );
-
 }
 
 bool MagnatunePurchaseDialog::verifyEntries( )
 {
-
     // check all the entries for validity
-
 
     //credit card entries
 
@@ -113,7 +104,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
         //cc number:
         QString ccString = ccEdit->text();
-        ccString.trimmed ();
+        ccString.trimmed();
         QRegExp ccExp( "^[\\d]{10,20}$" );
 
         if ( !ccExp.exactMatch( ccString ) )
@@ -162,8 +153,6 @@ bool MagnatunePurchaseDialog::verifyEntries( )
         }
     }
 
-
-
     //email
     QString emailString = emailEdit->text();
     emailString.trimmed ();
@@ -176,21 +165,13 @@ bool MagnatunePurchaseDialog::verifyEntries( )
         return false;
     }
 
-
-
-
-
-
     return true;
-
 }
-
 
 /*void MagnatunePurchaseDialog::setCover( const QString &coverFile )
 {
     coverPixmapLabel->setPixmap( QPixmap( coverFile ) );
 }*/
-
 
 void MagnatunePurchaseDialog::metadataChanged(Album * album)
 {
@@ -210,8 +191,6 @@ void MagnatunePurchaseDialog::useGc()
 {
     paymentWidget->setCurrentIndex( 1 );
 }
-
-
 
 
 #include "MagnatunePurchaseDialog.moc"

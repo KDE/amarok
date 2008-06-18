@@ -29,7 +29,6 @@ class MagnatunePurchaseDialog : public QDialog, public Ui::magnatunePurchaseDial
     Q_OBJECT
 
 public:
-
     /**
      * Overridden constructor.
      * @param parent Pointer to the parent QWidget.
@@ -61,9 +60,7 @@ public:
     using Observer::metadataChanged;
     virtual void metadataChanged( Meta::Album *album ); //reimplemented from Observer
 
-
 signals:
-
     /**
      * Signal emitted when all needed info has been gathered and verified to purchase using
      * a credit card.
@@ -131,7 +128,6 @@ protected slots:
      * Slot called when the dialog is closed without pressing cancel.
      */
     void reject ();
-
 };
 
 #endif
