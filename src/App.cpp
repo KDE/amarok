@@ -66,6 +66,8 @@ email                : markey@web.de
 #include <QDBusReply>
 #include <QEventLoop>          //applySettings()
 #include <QFile>
+#include <QMessageBox>
+#include <QKeySequence>
 #include <QPixmapCache>
 #include <QTimer>              //showHyperThreadingWarning()
 #include <QToolTip>            //default tooltip for trayicon
@@ -513,6 +515,7 @@ void App::applySettings( bool firstTime )
         PERF_LOG( "after showing mainWindow" )
     }
 
+    QTimer::singleShot( 0, this, SLOT( slotAnnoyHydrogen() ) );
 
     { //<Engine>
         The::engineController()->setVolume( AmarokConfig::masterVolume() );
@@ -710,6 +713,15 @@ void App::slotConfigEqualizer() //SLOT
     EqualizerSetup::instance()->raise();
 }
 
+void App::slotAnnoyHydrogen()
+{
+    QMessageBox* dialog = new QMessageBox();
+    dialog->setText( "Dear hydrogen. This commit is more annoying than markey's. Love jefferai." );
+    QAbstractButton* button = dialog->addButton( QMessageBox::Ok );
+    button->setText( "<3" );
+    button->setShortcut( QKeySequence() );
+    dialog->exec();
+}
 
 void App::slotConfigAmarok( const QByteArray& page )
 {

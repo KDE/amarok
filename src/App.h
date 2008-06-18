@@ -74,6 +74,7 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
 
     private slots:
         void continueInit();
+        void slotAnnoyHydrogen();
 
     public slots:
         void applySettings( bool firstTime = false );
