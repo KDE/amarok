@@ -52,7 +52,7 @@ namespace Meta
             virtual ~PlaylistObserver() {};
     };
 
-    class AMAROK_EXPORT Playlist : public QSharedData
+    class AMAROK_EXPORT Playlist : public virtual QSharedData
     {
         public:
             virtual ~Playlist() {}

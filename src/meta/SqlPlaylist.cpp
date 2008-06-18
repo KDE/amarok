@@ -27,7 +27,7 @@
 
 using namespace Meta;
 
-SqlPlaylist::SqlPlaylist( const QString & name, Meta::TrackList tracks, SqlPlaylistGroup * parent )
+SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList & tracks, SqlPlaylistGroupPtr parent )
     : Playlist()
     , SqlPlaylistViewItem()
     , m_dbId( -1 )
@@ -40,7 +40,7 @@ SqlPlaylist::SqlPlaylist( const QString & name, Meta::TrackList tracks, SqlPlayl
     saveToDb();
 }
 
-SqlPlaylist::SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroup * parent )
+SqlPlaylist::SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent )
     : SqlPlaylistViewItem()
     , Playlist()
     , m_parent( parent )
@@ -179,7 +179,7 @@ int Meta::SqlPlaylist::id()
 }
 
 
-void Meta::SqlPlaylist::reparent( SqlPlaylistGroup * parent )
+void Meta::SqlPlaylist::reparent( SqlPlaylistGroupPtr parent )
 {
     m_parent = parent;
     saveToDb( false );

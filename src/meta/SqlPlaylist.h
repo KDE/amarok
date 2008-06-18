@@ -43,8 +43,8 @@ class SqlPlaylist : public SqlPlaylistViewItem, public Playlist
 {
 public:
     //SqlPlaylist( int id );
-    SqlPlaylist( const QString & name, TrackList tracks, SqlPlaylistGroup * parent = 0 );
-    SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroup * parent = 0   );
+    SqlPlaylist( const QString & name, const TrackList& tracks, SqlPlaylistGroupPtr parent );
+    SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent );
 
     ~SqlPlaylist();
 
@@ -56,7 +56,7 @@ public:
     virtual QString description() const { return m_description; }
     virtual void rename( const QString &name );
 
-    void reparent( SqlPlaylistGroup * parent );
+    void reparent( SqlPlaylistGroupPtr parent );
     
     int id();
     
@@ -67,7 +67,7 @@ public:
     bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
     Capability* asCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
-    virtual SqlPlaylistGroup * parent() { return m_parent; }
+    virtual SqlPlaylistGroupPtr parent() const { return m_parent; }
 
     virtual void removeFromDb();
 
@@ -79,7 +79,7 @@ private:
     void saveTracks();
 
     int m_dbId;
-    SqlPlaylistGroup * m_parent;
+    SqlPlaylistGroupPtr m_parent;
     Meta::TrackList m_tracks;
     QString m_name;
     QString m_description;

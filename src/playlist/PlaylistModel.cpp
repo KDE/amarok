@@ -1202,8 +1202,6 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
            group->offsetBetween( offsetFrom, offsetTo, offset);
 
         }
-
-
     }
 
     //debug stuff

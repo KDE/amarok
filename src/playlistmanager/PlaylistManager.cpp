@@ -32,6 +32,7 @@
 #include "meta/XSPFPlaylist.h"
 #include "meta/SqlPlaylist.h"
 #include "playlistbrowser/UserPlaylistModel.h"
+#include "playlistbrowser/SqlPlaylistGroup.h"
 
 #include <kdirlister.h>
 #include <kio/jobclasses.h>
@@ -221,11 +222,14 @@ PlaylistManager::typeName(int playlistCategory)
 
 bool PlaylistManager::save( Meta::TrackList tracks, const QString & name)
 {
-    Meta::SqlPlaylist * playlist = new Meta::SqlPlaylist( name, tracks, 0 );
-    int newId = playlist->id();
-    delete playlist; // already saved to db....
+    int newId;
+    {
+        Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name, tracks, SqlPlaylistGroupPtr() ) );
+        newId = playlist->id();
+    }
 
     //jolt the playlist browser model to reload....
+    //talk about over-coupling... :|
     PlaylistBrowserNS::PlaylistModel::instance()->reloadFromDb();
     
     //we should really enter edit mode for the new playlist, but how...

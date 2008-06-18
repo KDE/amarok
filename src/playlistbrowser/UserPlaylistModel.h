@@ -28,6 +28,12 @@
 
 class SqlPlaylistGroup;
 
+class SqlPlaylistViewItem;
+typedef KSharedPtr<SqlPlaylistViewItem> SqlPlaylistViewItemPtr;
+
+class SqlPlaylistGroup;
+typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
+typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
 
 #define PLAYLIST_DB_VERSION 1
@@ -75,7 +81,6 @@ class PlaylistModel : public QAbstractItemModel
         void editIndex( const QModelIndex & index );
 
     private:
-
         PlaylistModel();
 
         void checkTables();
@@ -83,7 +88,8 @@ class PlaylistModel : public QAbstractItemModel
 
         static PlaylistModel * s_instance;
 
-        SqlPlaylistGroup* m_root;
+        SqlPlaylistGroupPtr m_root;
+        mutable QHash<quint32, SqlPlaylistViewItemPtr> m_viewItems; ///the hash of the pointer mapped to the KSharedPtr
 
 };
 

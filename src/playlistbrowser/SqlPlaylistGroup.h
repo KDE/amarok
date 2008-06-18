@@ -20,21 +20,21 @@
 #ifndef SQLPLAYLISTGROUP_H
 #define SQLPLAYLISTGROUP_H
 
+
+
 #include "meta/Meta.h"
 #include "SqlPlaylistViewItem.h"
 #include "meta/SqlPlaylist.h"
 
+
 #include <QString>
 #include <QStringList>
 
+#include <KSharedPtr>
+
 class SqlPlaylistGroup;
-
-
-typedef QList<SqlPlaylistGroup *> SqlPlaylistGroupList;
-typedef QList<Meta::SqlPlaylist *> SqlPlaylistDirectList;
-
-
-
+typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
+typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
 
 /**
@@ -46,8 +46,8 @@ class SqlPlaylistGroup : public SqlPlaylistViewItem
 {
     public:
 
-        SqlPlaylistGroup ( const QStringList &dbResultRow, SqlPlaylistGroup * parent );
-        SqlPlaylistGroup ( const QString &name, SqlPlaylistGroup * parent = 0 );
+        SqlPlaylistGroup ( const QStringList &dbResultRow, SqlPlaylistGroupPtr parent );
+        SqlPlaylistGroup ( const QString &name, SqlPlaylistGroupPtr parent = SqlPlaylistGroupPtr() );
 
         ~SqlPlaylistGroup();
 
@@ -55,40 +55,37 @@ class SqlPlaylistGroup : public SqlPlaylistViewItem
         QString name() const;
         QString description() const;
 
-        virtual int childCount();
+        virtual int childCount() const;
 
-        virtual SqlPlaylistGroup * parent() { return m_parent; }
+        virtual SqlPlaylistGroupPtr parent() const { return m_parent; }
 
         virtual void rename( const QString &name );
 
         void save();
-        SqlPlaylistGroupList childGroups();
-        SqlPlaylistDirectList childPlaylists();
+        SqlPlaylistGroupList childGroups() const;
+        Meta::SqlPlaylistList childPlaylists() const;
 
-        void reparent( SqlPlaylistGroup * parent );
+        void reparent( SqlPlaylistGroupPtr parent );
 
         void clear();
 
-        void deleteChild( SqlPlaylistViewItem * item );
+        void deleteChild( SqlPlaylistViewItemPtr item );
         virtual void removeFromDb();
 
     private:
 
         int m_dbId;
-        SqlPlaylistGroup * m_parent;
+        SqlPlaylistGroupPtr m_parent;
         QString m_name;
         QString m_description;
 
-        SqlPlaylistGroupList m_childGroups;
-        SqlPlaylistDirectList m_childPlaylists;
+        mutable SqlPlaylistGroupList m_childGroups;
+        mutable Meta::SqlPlaylistList m_childPlaylists;
 
-        bool m_hasFetchedChildGroups;
-        bool m_hasFetchedChildPlaylists;
-
-
-
-
+        mutable bool m_hasFetchedChildGroups;
+        mutable bool m_hasFetchedChildPlaylists;
 
 };
+
 
 #endif

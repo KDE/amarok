@@ -22,26 +22,35 @@
 
 #include "Debug.h"
 
+#include <QSharedData>
+#include <KSharedPtr>
 class SqlPlaylistGroup;
+typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
+typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
 
-class SqlPlaylistViewItem
+class SqlPlaylistViewItem;
+typedef KSharedPtr<SqlPlaylistViewItem> SqlPlaylistViewItemPtr;
+
+class SqlPlaylistViewItem : public virtual QSharedData
 {
     public:
-        SqlPlaylistViewItem() {}
+        SqlPlaylistViewItem() : QSharedData() {}
         
         virtual  ~SqlPlaylistViewItem() { DEBUG_BLOCK };
     
-        virtual SqlPlaylistGroup * parent() = 0;
-        virtual int childCount() { return 0; }
+        virtual SqlPlaylistGroupPtr parent() const = 0;
+        virtual int childCount() const { return 0; }
         virtual QString name() const = 0;
         virtual QString description() const = 0;
         virtual void rename( const QString &name ) = 0;
         virtual void removeFromDb() = 0;
 
 };
+
+Q_DECLARE_METATYPE( SqlPlaylistViewItemPtr )
 
 #endif

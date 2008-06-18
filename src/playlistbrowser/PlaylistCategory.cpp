@@ -119,10 +119,10 @@ void PlaylistBrowserNS::PlaylistCategory::itemActivated(const QModelIndex & inde
     if ( !index.isValid() )
         return;
 
-    SqlPlaylistViewItem * item = static_cast< SqlPlaylistViewItem* >( index.internalPointer() );
+    SqlPlaylistViewItemPtr item =  PlaylistBrowserNS::PlaylistModel::instance()->data( index, 0xf00d ).value<SqlPlaylistViewItemPtr>();
 
     if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
-        Meta::SqlPlaylist * playlist = static_cast< Meta::SqlPlaylist* >( index.internalPointer() );
+        Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
         //debug() << "playlist name: " << playlist->name();
         //The::playlistModel()->insertOptioned( Meta::PlaylistPtr( playlist ), Playlist::Append );
         The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Append );
@@ -156,18 +156,23 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
     if ( result == 0 ) return;
 
 
-    if( result == m_deleteAction ) {
+    if( result == m_deleteAction )
+    {
         foreach( const QModelIndex &idx, indices )
         {
-            SqlPlaylistViewItem * item = static_cast<SqlPlaylistViewItem *>( idx.internalPointer() );
+            SqlPlaylistViewItemPtr item = PlaylistBrowserNS::PlaylistModel::instance()->data( idx, 0xf00d ).value<SqlPlaylistViewItemPtr>();
             debug() << "deleting " << item->name();
             item->removeFromDb();
             item->parent()->deleteChild( item );
         }
         PlaylistModel::instance()->reloadFromDb();
-    } else if( result == m_renameAction ) {
+    }
+    else if( result == m_renameAction )
+    {
         m_playlistView->edit( indices.first() );
-    } else if( result == m_addGroupAction ) {
+    }
+    else if( result == m_addGroupAction )
+    {
         PlaylistModel::instance()->createNewGroup();
     }
 }
