@@ -289,13 +289,14 @@ ContextView::showAppletBrowser()
         m_appletBrowser->setAttribute( Qt::WA_DeleteOnClose );
         m_appletBrowser->setWindowTitle( i18n( "Add Applets" ) );
         connect( m_appletBrowser, SIGNAL( destroyed() ), this, SLOT( appletBrowserDestroyed() ) );
+        m_appletBrowser->show();
     }
     else
     {
         m_appletBrowser->setContainment( containment() );
-    }
-    DEBUG_LINE_INFO
-    m_appletBrowser->show();
+        m_appletBrowser->activateWindow();
+        m_appletBrowser->raise();
+    }    
 }
 
 void

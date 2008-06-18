@@ -328,12 +328,12 @@ void ColumnContainment::recalculate()
                 const QRectF newgeom( rect.topLeft().x() + left,
                                 rect.topLeft().y() + top,
                                 m_defaultColumnSize,
-                                height );
+                                height );                        
                 top += height;
                 debug() << "setting child geometry to" << newgeom;
                 applet->setGeometry( newgeom );
                 applet->updateConstraints( Plasma::SizeConstraint );
-                
+
                 
                 row += rowSpan;
 
