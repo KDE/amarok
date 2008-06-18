@@ -66,6 +66,8 @@ EngineController::EngineController()
 {
     DEBUG_BLOCK
 
+    qAddPostRoutine( privateSelf.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
+
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
