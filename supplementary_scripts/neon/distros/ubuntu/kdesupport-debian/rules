@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 export PATH := /opt/amarok-nightly/bin:$(PATH)
-export LD_LIBRARY_PATH := /opt/kde-nightly/lib:$(LD_LIBRARY_PATH)
+export LD_LIBRARY_PATH := /opt/amarok-nightly/lib:$(LD_LIBRARY_PATH)
 
 -include /usr/share/cdbs/1/class/cmake.mk
 -include /usr/share/cdbs/1/rules/debhelper.mk
