@@ -230,10 +230,10 @@ bool PlaylistManager::save( Meta::TrackList tracks, const QString & name)
 
     //jolt the playlist browser model to reload....
     //talk about over-coupling... :|
-    PlaylistBrowserNS::PlaylistModel::instance()->reloadFromDb();
+    PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
     
     //we should really enter edit mode for the new playlist, but how...
-    PlaylistBrowserNS::PlaylistModel::instance()->editPlaylist( newId );
+    PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
 
     return true; //FIXME what's this supposed to return?
 }

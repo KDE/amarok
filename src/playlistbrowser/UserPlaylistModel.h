@@ -43,13 +43,13 @@ namespace PlaylistBrowserNS {
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class PlaylistModel : public QAbstractItemModel
+class UserModel : public QAbstractItemModel
 {
     Q_OBJECT
     public:
-        static PlaylistModel * instance();
+        static UserModel * instance();
 
-        ~PlaylistModel();
+        ~UserModel();
 
         virtual QVariant data( const QModelIndex &index, int role ) const;
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -73,7 +73,10 @@ class PlaylistModel : public QAbstractItemModel
         void reloadFromDb();
         void editPlaylist( int id );
         void createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack );
-
+        QModelIndex createIndex( int row, int column, SqlPlaylistViewItemPtr item ) const;
+        //only use the above method
+        QModelIndex createIndex( int, int, void * ptr = 0) const { Q_UNUSED( ptr ); Q_ASSERT( 0 );  return QModelIndex(); }
+        QModelIndex createIndex( int, int, quint32 ) const { Q_ASSERT( 0 ); return QModelIndex(); }
     public slots:
         void createNewGroup();
 
@@ -81,12 +84,12 @@ class PlaylistModel : public QAbstractItemModel
         void editIndex( const QModelIndex & index );
 
     private:
-        PlaylistModel();
+        UserModel();
 
         void checkTables();
         void createTables();
 
-        static PlaylistModel * s_instance;
+        static UserModel * s_instance;
 
         SqlPlaylistGroupPtr m_root;
         mutable QHash<quint32, SqlPlaylistViewItemPtr> m_viewItems; ///the hash of the pointer mapped to the KSharedPtr

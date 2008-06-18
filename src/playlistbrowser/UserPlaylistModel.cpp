@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *             (c) 2008  Ian Monroe <imonroe@kde.org>                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -38,18 +39,18 @@
 static const int USERPLAYLIST_DB_VERSION = 1;
 static const QString key("AMAROK_USERPLAYLIST");
 
-PlaylistBrowserNS::PlaylistModel * PlaylistBrowserNS::PlaylistModel::s_instance = 0;
+PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::s_instance = 0;
 
-PlaylistBrowserNS::PlaylistModel * PlaylistBrowserNS::PlaylistModel::instance()
+PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::instance()
 {
     if ( s_instance == 0 )
-        s_instance = new PlaylistModel();
+        s_instance = new UserModel();
 
     return s_instance;
 }
 
 
-PlaylistBrowserNS::PlaylistModel::PlaylistModel()
+PlaylistBrowserNS::UserModel::UserModel()
  : QAbstractItemModel()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -64,12 +65,12 @@ PlaylistBrowserNS::PlaylistModel::PlaylistModel()
 }
 
 
-PlaylistBrowserNS::PlaylistModel::~PlaylistModel()
+PlaylistBrowserNS::UserModel::~UserModel()
 {
 }
 
 QVariant
-PlaylistBrowserNS::PlaylistModel::data(const QModelIndex & index, int role) const
+PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 {
     
     if ( !index.isValid() )
@@ -93,7 +94,15 @@ PlaylistBrowserNS::PlaylistModel::data(const QModelIndex & index, int role) cons
 }
 
 QModelIndex
-PlaylistBrowserNS::PlaylistModel::index(int row, int column, const QModelIndex & parent) const
+PlaylistBrowserNS::UserModel::createIndex( int row, int column, SqlPlaylistViewItemPtr item ) const
+{
+    quint32 index = qHash( & item );
+    m_viewItems[ index ] = item;
+    return QAbstractItemModel::createIndex( row, column, index );
+}
+
+QModelIndex
+PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & parent) const
 {
     //DEBUG_BLOCK
 
@@ -107,18 +116,12 @@ PlaylistBrowserNS::PlaylistModel::index(int row, int column, const QModelIndex &
         int noOfGroups = m_root->childGroups().count();
         if ( row < noOfGroups )
         {
-            //debug() << "Root playlist group";
-            //hash for non-32bit systems
-            #define RET_CREATEINDEX( X ) \
-            quint32 index = qHash( & X );  \
-            m_viewItems[ index ] = SqlPlaylistViewItemPtr::staticCast( X ); \
-            return createIndex( row, column, index );
-            RET_CREATEINDEX( m_root->childGroups().at( row ) )
+            return createIndex( row, column, SqlPlaylistViewItemPtr::staticCast( m_root->childGroups().at( row ) ) );
         }
         else
         {
             //debug() << "Root playlist";
-            RET_CREATEINDEX( m_root->childPlaylists().at( row - noOfGroups ) );
+            return createIndex( row, column, SqlPlaylistViewItemPtr::staticCast( m_root->childPlaylists().at( row - noOfGroups ) ) );
         }
     }
     else
@@ -128,18 +131,17 @@ PlaylistBrowserNS::PlaylistModel::index(int row, int column, const QModelIndex &
 
         if ( row < noOfGroups )
         {
-            RET_CREATEINDEX( playlistGroup->childGroups().at(row) );
+            return createIndex( row, column, SqlPlaylistViewItemPtr::staticCast( playlistGroup->childGroups().at(row) ) );
         }
         else
         {
-            RET_CREATEINDEX( playlistGroup->childPlaylists().at(row - noOfGroups) );
+            return createIndex( row, column, SqlPlaylistViewItemPtr::staticCast( playlistGroup->childPlaylists().at(row - noOfGroups) ) );
         }
-        #undef RET_CREATEINDEX
     }
 }
 
 QModelIndex
-PlaylistBrowserNS::PlaylistModel::parent( const QModelIndex & index ) const
+PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 {
     //DEBUG_BLOCK
 
@@ -154,7 +156,7 @@ PlaylistBrowserNS::PlaylistModel::parent( const QModelIndex & index ) const
     if ( parent &&  parent->parent() )
     {
         int row = parent->parent()->childGroups().indexOf( parent );
-        return createIndex( row , 0, parent );
+        return createIndex( row , 0, SqlPlaylistViewItemPtr::staticCast( parent ) );
     }
     else {
         return QModelIndex();
@@ -162,7 +164,7 @@ PlaylistBrowserNS::PlaylistModel::parent( const QModelIndex & index ) const
 }
 
 int
-PlaylistBrowserNS::PlaylistModel::rowCount( const QModelIndex & parent ) const
+PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
 {
     //DEBUG_BLOCK
 
@@ -177,7 +179,6 @@ PlaylistBrowserNS::PlaylistModel::rowCount( const QModelIndex & parent ) const
         return m_root->childCount();
 
     }
-
     SqlPlaylistViewItemPtr item = m_viewItems.value( parent.internalId() );
     //debug() << "row: " << parent.row();
     //debug() << "address: " << item;
@@ -187,14 +188,14 @@ PlaylistBrowserNS::PlaylistModel::rowCount( const QModelIndex & parent ) const
 }
 
 int
-PlaylistBrowserNS::PlaylistModel::columnCount(const QModelIndex & /*parent*/) const
+PlaylistBrowserNS::UserModel::columnCount(const QModelIndex & /*parent*/) const
 {
     return 1;
 }
 
 
 Qt::ItemFlags
-PlaylistBrowserNS::PlaylistModel::flags( const QModelIndex & index ) const
+PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
 {
     if (!index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
@@ -208,7 +209,7 @@ PlaylistBrowserNS::PlaylistModel::flags( const QModelIndex & index ) const
 }
 
 QVariant
-PlaylistBrowserNS::PlaylistModel::headerData(int section, Qt::Orientation orientation, int role) const
+PlaylistBrowserNS::UserModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
@@ -221,7 +222,7 @@ PlaylistBrowserNS::PlaylistModel::headerData(int section, Qt::Orientation orient
     return QVariant();
 }
 
-bool PlaylistBrowserNS::PlaylistModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
     if (role != Qt::EditRole)
         return false;
@@ -237,7 +238,7 @@ bool PlaylistBrowserNS::PlaylistModel::setData(const QModelIndex & index, const 
 }
 
 QStringList
-PlaylistBrowserNS::PlaylistModel::mimeTypes() const
+PlaylistBrowserNS::UserModel::mimeTypes() const
 {
     QStringList ret; // = QAbstractListModel::mimeTypes();
     ret << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
@@ -247,7 +248,7 @@ PlaylistBrowserNS::PlaylistModel::mimeTypes() const
 }
 
 QMimeData*
-PlaylistBrowserNS::PlaylistModel::mimeData( const QModelIndexList &indexes ) const
+PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indexes ) const
 {
     AmarokMimeData* mime = new AmarokMimeData();
 
@@ -278,7 +279,7 @@ PlaylistBrowserNS::PlaylistModel::mimeData( const QModelIndexList &indexes ) con
 
 
 bool
-PlaylistBrowserNS::PlaylistModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
+PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
 {
     Q_UNUSED( column ); 
     Q_UNUSED( row );
@@ -343,9 +344,7 @@ PlaylistBrowserNS::PlaylistModel::dropMimeData ( const QMimeData * data, Qt::Dro
     return false;
 }
 
-
-
-void PlaylistBrowserNS::PlaylistModel::createTables()
+void PlaylistBrowserNS::UserModel::createTables()
 {
     DEBUG_BLOCK;
 
@@ -383,7 +382,7 @@ void PlaylistBrowserNS::PlaylistModel::createTables()
 }
 
 void
-PlaylistBrowserNS::PlaylistModel::reloadFromDb()
+PlaylistBrowserNS::UserModel::reloadFromDb()
 {
     DEBUG_BLOCK;
     reset();
@@ -391,7 +390,7 @@ PlaylistBrowserNS::PlaylistModel::reloadFromDb()
 }
 
 void
-PlaylistBrowserNS::PlaylistModel::editPlaylist( int id )
+PlaylistBrowserNS::UserModel::editPlaylist( int id )
 {
 
   //for now, assume that the newly added playlist is in the top level:
@@ -399,13 +398,13 @@ PlaylistBrowserNS::PlaylistModel::editPlaylist( int id )
     foreach ( Meta::SqlPlaylistPtr playlist, m_root->childPlaylists() ) {
         row++;
         if ( playlist->id() == id ) {
-            emit( editIndex( createIndex( row , 0, playlist ) ) );
+            emit editIndex( createIndex( row , 0, SqlPlaylistViewItemPtr::staticCast( playlist ) ) );
         }
     }
 }
 
 void
-PlaylistBrowserNS::PlaylistModel::createNewGroup()
+PlaylistBrowserNS::UserModel::createNewGroup()
 {
     DEBUG_BLOCK
     
@@ -423,9 +422,7 @@ PlaylistBrowserNS::PlaylistModel::createNewGroup()
         if ( childGroup->id() == id )
         {
             debug() << "emmiting edit for " << childGroup->name() << " id " << childGroup->id() << " in row " << row;
-            quint32 index = qHash( & childGroup );
-            m_viewItems[ index ] = SqlPlaylistViewItemPtr::staticCast( childGroup );
-            emit( editIndex( createIndex( row , 0, index ) ) );
+            emit editIndex( createIndex( row , 0, SqlPlaylistViewItemPtr::staticCast( childGroup ) ) );
         }
         row++;
     }
@@ -433,7 +430,7 @@ PlaylistBrowserNS::PlaylistModel::createNewGroup()
 } 
 
 void
-PlaylistBrowserNS::PlaylistModel::createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack )
+PlaylistBrowserNS::UserModel::createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack )
 {
     Meta::TrackList list;
     list.append( streamTrack );

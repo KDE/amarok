@@ -40,9 +40,7 @@
 
 #include <typeinfo>
 
-using namespace PlaylistBrowserNS;
-
-PlaylistCategory::PlaylistCategory( QWidget * parent )
+PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     : Amarok::Widget( parent )
     , m_deleteAction( 0 )
     , m_renameAction( 0 )
@@ -56,7 +54,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_playlistView = new QTreeView( this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins(0,0,0,0);
-    m_playlistView->setModel( PlaylistModel::instance() );
+    m_playlistView->setModel( PlaylistBrowserNS::UserModel::instance() );
     m_playlistView->header()->hide();
 
 
@@ -73,7 +71,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     connect( m_playlistView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
     connect( m_playlistView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
 
-    connect( PlaylistModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_playlistView, SLOT( edit( const QModelIndex & ) ) );
+    connect( PlaylistBrowserNS::UserModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_playlistView, SLOT( edit( const QModelIndex & ) ) );
 
     QVBoxLayout *vLayout = new QVBoxLayout( this );
     vLayout->setContentsMargins(0,0,0,0);
@@ -101,7 +99,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
     m_toolBar->addAction( m_addGroupAction );
-    connect( m_addGroupAction, SIGNAL( triggered( bool ) ), PlaylistModel::instance(), SLOT( createNewGroup() ) );
+    connect( m_addGroupAction, SIGNAL( triggered( bool ) ), PlaylistBrowserNS::UserModel::instance(), SLOT( createNewGroup() ) );
 
     KAction* addStreamAction = new KAction( KIcon("list-add"), i18n("Add Stream"), this );
     m_toolBar->addAction( addStreamAction );
@@ -109,7 +107,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
 }
 
 
-PlaylistCategory::~PlaylistCategory()
+PlaylistBrowserNS::PlaylistCategory::~PlaylistCategory()
 {
 }
 
@@ -119,7 +117,7 @@ void PlaylistBrowserNS::PlaylistCategory::itemActivated(const QModelIndex & inde
     if ( !index.isValid() )
         return;
 
-    SqlPlaylistViewItemPtr item =  PlaylistBrowserNS::PlaylistModel::instance()->data( index, 0xf00d ).value<SqlPlaylistViewItemPtr>();
+    SqlPlaylistViewItemPtr item =  PlaylistBrowserNS::UserModel::instance()->data( index, 0xf00d ).value<SqlPlaylistViewItemPtr>();
 
     if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
         Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
@@ -129,7 +127,8 @@ void PlaylistBrowserNS::PlaylistCategory::itemActivated(const QModelIndex & inde
     }
 }
 
-void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
+void
+PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
 {
 
     QModelIndexList indices = m_playlistView->selectionModel()->selectedIndexes();
@@ -160,12 +159,12 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
     {
         foreach( const QModelIndex &idx, indices )
         {
-            SqlPlaylistViewItemPtr item = PlaylistBrowserNS::PlaylistModel::instance()->data( idx, 0xf00d ).value<SqlPlaylistViewItemPtr>();
+            SqlPlaylistViewItemPtr item = PlaylistBrowserNS::UserModel::instance()->data( idx, 0xf00d ).value<SqlPlaylistViewItemPtr>();
             debug() << "deleting " << item->name();
             item->removeFromDb();
             item->parent()->deleteChild( item );
         }
-        PlaylistModel::instance()->reloadFromDb();
+        PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
     }
     else if( result == m_renameAction )
     {
@@ -173,7 +172,7 @@ void PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
     }
     else if( result == m_addGroupAction )
     {
-        PlaylistModel::instance()->createNewGroup();
+        PlaylistBrowserNS::UserModel::instance()->createNewGroup();
     }
 }
 
@@ -190,9 +189,8 @@ PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
     PlaylistBrowserNS::StreamEditor* dialog = qobject_cast<PlaylistBrowserNS::StreamEditor*>( sender() );
     if( !dialog )
         return;
-    debug() << "should add " << dialog->streamName() << ": " << dialog->streamUrl();
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( dialog->streamUrl() );
-    PlaylistModel::instance()->createNewStream(  dialog->streamName(), track );
+    PlaylistBrowserNS::UserModel::instance()->createNewStream(  dialog->streamName(), track );
 }
 
 PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
