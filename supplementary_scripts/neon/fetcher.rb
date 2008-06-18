@@ -119,7 +119,7 @@ def fetchKdeSupport()
 end
 
 def fetchKdePimLibs()
-    comp "kdepimlibs"
+    comp = "kdepimlibs"
     checkOut(comp, "KDE/kdepimlibs")
     createTar(comp)
 end

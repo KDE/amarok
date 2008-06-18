@@ -3,7 +3,7 @@ Section: kde
 Priority: optional
 Maintainer: Project Neon <nightly@getamarok.com>
 Build-Depends: amarok-nightly-cdbs, amarok-nightly-deps,
- ruby, ruby1.8-dev
+ ruby, ruby1.8-dev, libcurl3-dev
 Standards-Version: 3.7.3
 Homepage: http://amarok.kde.org
 

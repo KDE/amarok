@@ -2,7 +2,7 @@ Source: amarok-nightly-kdepimlibs
 Section: libs
 Priority: optional
 Maintainer: Project Neon <nightly@getamarok.com>
-Build-Depends: amarok-nightly-cdbs, amarok-nightly-deps,
+Build-Depends: amarok-nightly-cdbs, amarok-nightly-deps, amarok-nightly-kdelibs,
  libboost-dev, libgpgme11-dev, libldap2-dev, libsasl2-dev
 Standards-Version: 3.7.3
 
