@@ -1,4 +1,4 @@
-/* This file is part of the KDE project
+/* This file is part of the Amarok project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2007 Ian Monroe <ian@monroe.nu>
    Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org> 
