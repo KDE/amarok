@@ -12,6 +12,8 @@
 *                                                                         *
 ***************************************************************************/
 
+#include <limits.h>
+
 #include "ColumnContainment.h"
 
 #include "ContextScene.h"
@@ -57,14 +59,15 @@ void SvgRenderJob::run()
 ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_actions( 0 )
-    , m_defaultColumnSize( 500 )
-    , m_defaultRowSize( 150 )
+    , m_maxColumnWidth( 500 )
+    , m_minColumnWidth( 400 )
+    , m_defaultRowHeight( 150 )
 {
     DEBUG_BLOCK
 
     setContainmentType( CustomContainment );
-
-    m_grid = new QGraphicsGridLayout( this );
+    
+    m_grid = new QGraphicsGridLayout();
     setLayout( m_grid );
     m_grid->setSpacing( 3 );
 //     m_grid->setContentsMargins( 0, 0, 0, 0 );
@@ -166,14 +169,11 @@ void ColumnContainment::updateSize() // SLOT
     // HACK HACK HACK i don't know where maximumSize is being set, but SOMETHING is setting it,
     // and is preventing the containment from expanding when it should.
     // so, we manually keep the size high.
-//     setMaximumSize( QSizeF( 100000, 100000 ) );
-//     m_columns->setGeometry( scene()->sceneRect() );
-    setMaximumSize( QSizeF( 100000, 100000 ) );
+    setMaximumSize( QSizeF( INT_MAX, INT_MAX ) );
     m_grid->setGeometry( scene()->sceneRect() );
     setGeometry( scene()->sceneRect() );
-    m_currentRows = geometry().height() / m_defaultRowSize;
-    m_currentColumns = qMax( (int)(geometry().width() / m_defaultColumnSize), 1 );
-    
+    m_currentRows = geometry().height() / m_defaultRowHeight;
+    m_currentColumns = qMax( (int)(geometry().width() / m_minColumnWidth), 1 );
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
@@ -217,33 +217,35 @@ Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPoi
     DEBUG_BLOCK
 //     debug() << "m_columns:" << m_columns;
 //     m_columns->addItem( applet );
-    
 
     int height = applet->effectiveSizeHint( Qt::PreferredSize,
-                                            QSizeF( m_defaultColumnSize, -1 ) ).height();
-                                            
-    int rowSpan = qMin( qMax( ( int )( height )/ m_defaultRowSize , 1 ), 2 );
+                                            QSizeF( m_maxColumnWidth, -1 ) ).height();
+
+//     int rowSpan = qMin( qMax( ( int )( height )/ m_defaultRowHeight , 1 ), 2 );
+    int rowSpan = height / m_defaultRowHeight;
     int colSpan = 1;
-//     if( rowSpan == 0 || height % m_defaultRowSize >  m_defaultRowSize / 2.0  )
-//         rowSpan += 1;
+    if( rowSpan == 0 || height % m_defaultRowHeight >  m_defaultRowHeight / 2.0  )
+        rowSpan += 1;
+
     
-    //traverse the grid matrix to find rowSpan consecutive positions in the same column
-    
+
     debug() << "current columns: " << m_currentColumns;
     debug() << "current rows: " << m_currentRows;
-    
+
     int col = 0;
     int row = 0;
     bool positionFound = false;
     int j = 0;
     
+    //traverse the grid matrix to find rowSpan consecutive positions in the same column
+    
     while( !positionFound && j < m_currentColumns   )
-    {        
+    {
         int consec = 0;
         int i = 0;
         while( i < m_currentRows && consec < rowSpan)
         {
-            
+
             if( m_gridFreePositions[i][j] )
                 consec++;
             else
@@ -254,11 +256,11 @@ Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPoi
         {
             positionFound = true;
             row = i - rowSpan; //get the first of the consecutive rows
-            col = j; 
+            col = j;
         }
         j++;
     }
-    
+
     if( positionFound )
     {
         
@@ -271,25 +273,27 @@ Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPoi
         pos << row << col << rowSpan;
         m_appletsPositions[applet] = pos;
 
-        m_grid->setColumnMaximumWidth( col, m_defaultColumnSize );
-
+        m_grid->setColumnMaximumWidth( col, m_maxColumnWidth );
+        m_grid->setColumnMinimumWidth( col, m_minColumnWidth );
         for( int i = 0; i < rowSpan; i++ )
         {
             m_gridFreePositions[row + i][col] = false;
-            m_grid->setRowMaximumHeight( row + i, m_defaultRowSize );
+            m_grid->setRowMaximumHeight( row + i, m_defaultRowHeight );
             m_grid->setRowPreferredHeight( row + i, height );
         }
+
         m_grid->addItem( applet, row, col, rowSpan, colSpan );
-    }    
+        updateConstraints( Plasma::SizeConstraint );
+    }
     else
     {
         debug() << "[m_currentRows,mcols]: " << m_currentRows << m_currentColumns;
         debug() << "[row, col]: " << row << col;
-           
+
         debug() << "Send applet to the next free containment";
         applet->destroy();
     }
-    recalculate();
+//     recalculate();
     
     return applet;
 }
@@ -309,7 +313,7 @@ void ColumnContainment::recalculate()
 
     for( int col = 0; col < gridCols; col++ )
     {
-        left = (qreal)(col * m_defaultColumnSize);
+        left = (qreal)(col * m_maxColumnWidth);
         top = 0.0;
 
         int row = 0;
@@ -320,20 +324,18 @@ void ColumnContainment::recalculate()
             if( applet )
             {
                 height = applet->effectiveSizeHint( Qt::PreferredSize,
-                                                    QSizeF( m_defaultColumnSize, -1 ) ).height();
+                                                    QSizeF( m_maxColumnWidth, -1 ) ).height();
                                                     
                 QList<int> pos = m_appletsPositions[applet];
                 int rowSpan = pos[2];
-                height = qMax( height, ( qreal )( rowSpan * m_defaultRowSize ) );
+                height = qMax( height, ( qreal )( rowSpan * m_defaultRowHeight ) );
                 const QRectF newgeom( rect.topLeft().x() + left,
                                 rect.topLeft().y() + top,
-                                m_defaultColumnSize,
+                                m_maxColumnWidth,
                                 height );                        
                 top += height;
                 debug() << "setting child geometry to" << newgeom;
                 applet->setGeometry( newgeom );
-                applet->updateConstraints( Plasma::SizeConstraint );
-
                 
                 row += rowSpan;
 
