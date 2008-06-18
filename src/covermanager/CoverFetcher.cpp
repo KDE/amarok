@@ -298,14 +298,14 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     DEBUG_BLOCK
 
     // NOTE: job can become 0 when this method is called from attemptAnotherFetch()
-
-    if( job && job->error() ) {
+    if( job && job->error() )
+    {
         finishWithError( i18n("There was an error communicating with Amazon."), job );
         return;
     }
 
-    if( m_albums.isEmpty() ) {
-
+    if( m_albums.isEmpty() )
+    {
         finishWithError( i18n("Internal error, no albums in queue"), job );
         return;
     }
@@ -316,7 +316,8 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     }
 
     QDomDocument doc;
-    if( !doc.setContent( m_xml ) ) {
+    if( !doc.setContent( m_xml ) )
+    {
         m_errors += i18n("The XML obtained from Amazon is invalid.");
         buildQueries( m_albums.takeFirst() );
         return;
@@ -456,14 +457,14 @@ CoverFetcher::attemptAnotherFetch()
 {
     DEBUG_BLOCK
 
-    if( !m_coverUrls.isEmpty() ) {
+    if( !m_coverUrls.isEmpty() )
+    {
         // Amazon suggested some more cover URLs to try before we
         // try a different query
         KJob* job = KIO::storedGet( KUrl(m_coverUrls.front()), KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(finishedImageFetch( KJob* )) );
 
         The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Fetching Cover" ) );
-
 
         m_coverUrls.pop_front();
 
@@ -477,7 +478,8 @@ CoverFetcher::attemptAnotherFetch()
         m_coverAsins.pop_front();
     }
 
-    else if( !m_xml.isEmpty() && m_size > 0 ) {
+    else if( !m_xml.isEmpty() && m_size > 0 )
+    {
         // we need to try smaller sizes, this often is
         // fruitless, but does work out sometimes.
         m_size--;
@@ -485,12 +487,12 @@ CoverFetcher::attemptAnotherFetch()
         finishedXmlFetch( 0 );
     }
 
-    else if( !m_queries.isEmpty() ) {
+    else if( !m_queries.isEmpty() )
         // we have some queries left in the pot
         startFetch( m_albumPtr );
-    }
 
-    else if( m_userCanEditQuery ) {
+    else if( m_userCanEditQuery )
+    {
         // we have exhausted all the predetermined queries
         // so lets let the user give it a try
         getUserQuery( i18n("You have seen all the covers Amazon returned using the query below. Perhaps you can refine it:") );
