@@ -397,7 +397,7 @@ ManualDeviceAdder::slotComboChanged( const QString &string )
             MediaBrowser::instance()->getInternalPluginName( string ) == "njb-mediadevice" )
     {
         m_mountPointOldText = m_mdaMountPoint->text();
-        m_mdaMountPoint->setText( "No mount point needed" );
+        m_mdaMountPoint->setText( i18n("No mount point needed") );
         m_mdaMountPoint->setEnabled(false);
     }
     else if( m_mdaMountPoint->isEnabled() == false )

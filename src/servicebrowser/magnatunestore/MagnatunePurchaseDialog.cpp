@@ -109,8 +109,8 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
         if ( !ccExp.exactMatch( ccString ) )
         {
-            KMessageBox::information( this, "Invalid credit card number",
-                                    "The credit card number entered does not appear to be valid\n" );
+            KMessageBox::information( this, i18n("The credit card number entered does not appear to be valid"),
+                                    i18n("Invalid credit card number"));
             return false;
         }
 
@@ -121,8 +121,8 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
         if ( !monthExp.exactMatch( monthString ) )
         {
-            KMessageBox::information( this, "Invalid expiration month",
-                                    "The credit card expiration month does not appear to be valid\n" );
+            KMessageBox::information( this, i18n("The credit card expiration month does not appear to be valid"), 
+                                    i18n("Invalid expiration month"));
             return false;
         }
 
@@ -133,8 +133,8 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
         if ( !yearExp.exactMatch( yearString ) )
         {
-            KMessageBox::information( this, "Invalid expiration year",
-                                    "The credit card expiration year does not appear to be valid\n" );
+            KMessageBox::information( this,i18n("The credit card expiration year does not appear to be valid"), i18n("Invalid expiration year"));
+
             return false;
         }
 
@@ -147,8 +147,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
         if ( !ccExp.exactMatch( ccString ) )
         {
-            KMessageBox::information( this, "Invalid gift card code",
-                                      "The gift card code entered does not appear to be valid\n" );
+            KMessageBox::information( this, i18n("The gift card code entered does not appear to be valid"), i18n("Invalid gift card code"));
             return false;
         }
     }
@@ -160,8 +159,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
     if ( !emailExp.exactMatch( emailString ) )
     {
-        KMessageBox::information( this, "Invalid email",
-                                  "The email address entered does not appear to be valid\n" );
+        KMessageBox::information( this, i18n("The email address entered does not appear to be valid"), i18n("Invalid email"));
         return false;
     }
 
