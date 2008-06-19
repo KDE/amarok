@@ -929,9 +929,7 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
 }
 
 CoverViewItem::~CoverViewItem()
-{
-    CoverManager::instance()->unsubscribeTo( m_albumPtr );
-}
+{}
 
 bool CoverViewItem::hasCover() const
 {
