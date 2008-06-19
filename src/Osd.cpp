@@ -29,7 +29,6 @@
 #include <KApplication>
 #include <KIcon>
 #include <KStandardDirs>   //locate
-#include <KWindowSystem>
 
 #include <QBitmap>
 #include <QDesktopWidget>
@@ -317,13 +316,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
 
     p.setClipRect(e->rect());
-#if 0
-    if( KWindowSystem::compositingActive() )
-    {
-        p.setCompositionMode(QPainter::CompositionMode_Source );
-        p.fillRect( rect, Qt::transparent );
-    }
-#endif
     m_background->paintPanel(&p, e->rect());
 //     p.setPen( palette().color( QPalette::Active, QPalette::HighlightedText ) );
     p.setPen( Qt::white ); // Revert this when the background can be colorized again.

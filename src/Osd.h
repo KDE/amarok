@@ -17,8 +17,8 @@
 
 #include "meta/Meta.h"
 
-#include <QPixmap>
 #include <QImage>
+#include <QPixmap>
 #include <QWidget> //baseclass
 
 namespace Plasma
