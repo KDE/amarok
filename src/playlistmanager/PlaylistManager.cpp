@@ -222,11 +222,9 @@ PlaylistManager::typeName(int playlistCategory)
 
 bool PlaylistManager::save( Meta::TrackList tracks, const QString & name)
 {
-    int newId;
-    {
-        Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name, tracks, SqlPlaylistGroupPtr() ) );
-        newId = playlist->id();
-    }
+    Meta::SqlPlaylist* playlist = new Meta::SqlPlaylist( name, tracks, SqlPlaylistGroupPtr() );
+    int newId = playlist->id();
+    delete playlist;
 
     //jolt the playlist browser model to reload....
     //talk about over-coupling... :|

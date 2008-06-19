@@ -1,0 +1,41 @@
+QPointer
+====================
+QPointer is a guarded pointer for QObjects, so it automatically becomes 0 when
+the data it points to is deleted. If you have a member variable that's a QObject
+and are ever worried that it might be dangling, make it a QPointer. There's
+really no reason not to for variables that stick around, it adds little
+overhead.
+
+KSharedPtr
+====================
+Unlike QPointer, KSharedPtr is dangerous and must be used carefully. 
+
+== Undercounting ==
+KSharedPtr uses reference counting. When a KSharedPtr is in scope, it adds one
+to the reference counter. When a KSharedPtr loses scope, it deletes one from the
+reference count. When the reference count become 0 it deletes the object. So if
+there were any normal pointers to that data and all the KSharedPtrs are deleted,
+then the object is deleted and the normal pointers dangle. Segfaults ensue.
+
+The solution is to just make sure that any normal pointers are temporary and
+everything else is a KSharedPtr (or don't use KSharedPtr at all!) Even
+if the pointer is temporary, but is then handed off to some other class that
+might keep it around, thats a potentional crash now or in the future. 
+
+Two seperate KSharedPtr's pointing to the same data is likely a very bad idea.
+
+== Reference Cycles ==
+One issue with reference counting in general is the creation of a reference
+cycle. If class A has a KSharedPtr<B> property and class B has a KSharedPtr<A>
+property and two objects of A and B point to each other and the KSharedPtrs
+loose scope, a reference cycle is created. Despite not being accessible from
+anywhere in the program, the reference counter of KSharedPtr<A> and
+KSharedPtr<B> will never go to 0. Memory leaks. The solution is to be careful.
+
+== Dreaded Diamonds ==
+Since the objects KSharedPtr point to must derive from QSharedData, it's not
+uncommon for a "dreaded diamond" inheritance issue to arise. Basically if A and
+B both inherit QSharedData and C inherits A and B, then C inherits QSharedData
+twice. The solution is really easy, just add a 'virtual' keyword when A and B
+inherit QSharedData. Eg class A : public virtual QSharedData.  Details at:
+http://www.parashift.com/c++-faq-lite/multiple-inheritance.html#faq-25.8

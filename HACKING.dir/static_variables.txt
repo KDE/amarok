@@ -1,0 +1,58 @@
+Preface:
+======
+You've probably noticed the epic struggle we've had with Amarok 2
+hanging on exit. After _months_ of tinkering I've now been able to
+identify and fix this issue. This document explains how to prevent
+such issues in the future.
+
+What is a static object?
+=================
+A static object is being initialized on program start, and will only
+become instantiated once. It's conveniently used with the singleton
+design pattern, e.g. in Amarok code.
+
+Example:
+
+static AmarokMenu s_menu;
+
+What is so dangerous about static objects?
+================================
+A static object's destructor is called _after_ the QApplication
+destructor has been executed. This is fine for plain old datatypes
+(POD) like int, float, and pointers, as they do not have a destructor.
+It's also fine for objects with a trivial destructor that does not
+interfere with the rest of the program.
+
+The danger lies in using static objects that call other parts of the
+application in their destructor. This is e.g. true for most QObjects,
+which rely on the QApplication being intact. If the QApplication is
+destroyed before the static QObject's destructor is run, _bad_ things
+can happen. To name a few: Crashing, hanging, eating live kitten, or
+forcing you to use XMMS.
+
+How can I prevent these problems?
+==========================
+Use K_GLOBAL_STATIC, and use qAddPostRoutine() to ensure that the
+static object's destructor is called when QCoreApplication destructs.
+
+Example:
+
+class AmarokMenu : public QMenu
+{
+  AmarokMenu();
+};
+K_GLOBAL_STATIC( AmarokMenu, s_menu )
+
+AmarokMenu::AmarokMenu()
+{
+  // K_GLOBAL_STATIC is cleaned up *after* Q(Core)Application is gone
+  // but we have to cleanup before -> use qAddPostRoutine
+  qAddPostRoutine( s_menu.destroy );
+}
+
+Further reading:
+===========
+http://api.kde.org/4.0-api/kdelibs-apidocs/kdecore/html/group__KDEMacros.html
+
+
+Thanks for reading, and happy hacking :)

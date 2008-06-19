@@ -1,0 +1,51 @@
+Usage of Amarok::config()
+-------------------------
+We provide this method for convenience, but it is important to use it properly. By
+inspection, we can see that we may produce very obscure bugs in the wrong case:
+
+ | KConfig
+ | *config( const QString &group )
+ | {
+ |    //Slightly more useful config() that allows setting the group simultaneously
+ |    KGlobal::config()->setGroup( group );
+ |    return KGlobal::config();
+ | }
+
+Take the following example:
+
+ | void
+ | f1()
+ | {
+ |    KConfig *config = Amarok::config( "Group 2" );
+ |    config->writeEntry( "Group 2 Variable", true );
+ | }
+ |
+ | void
+ | doStuff()
+ | {
+ |   KConfig *config = Amarok::config( "Group 1" );
+ |   f1();
+ |   config->writeEntry( "Group 1 Variable", true );
+ | }
+
+We would expect the following results:
+
+ | [Group 1]
+ | Group 1 Variable = true
+ |
+ | [Group 2]
+ | Group 2 Variable = true
+
+However because the config group is changed before writing the entry:
+ | [Group 1]
+ |
+ | [Group 2]
+ | Group 1 Variable = true
+ | Group 2 Variable = true
+
+Which is clearly incorrect. And hard to see when your wondering why f1() is not
+working. So do not store a value of Amarok::config, make it a habit to just 
+always call writeEntry or readEntry directly.
+
+Correct:
+ | amarok::config( "Group 1" )->writeEntry( "Group 1 Variable", true );
