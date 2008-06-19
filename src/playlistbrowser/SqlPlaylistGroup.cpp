@@ -109,7 +109,6 @@ SqlPlaylistGroupList SqlPlaylistGroup::childGroups() const
     }
 
     return m_childGroups;
-
 }
 
 Meta::SqlPlaylistList SqlPlaylistGroup::childPlaylists() const
@@ -135,7 +134,7 @@ Meta::SqlPlaylistList SqlPlaylistGroup::childPlaylists() const
     return m_childPlaylists;
 }
 
-int SqlPlaylistGroup::id()
+int SqlPlaylistGroup::id() const
 {
     return m_dbId;
 }

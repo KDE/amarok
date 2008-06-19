@@ -93,12 +93,20 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
     return QVariant();
 }
 
+
 QModelIndex
 PlaylistBrowserNS::UserModel::createIndex( int row, int column, SqlPlaylistViewItemPtr item ) const
 {
-    quint32 index = qHash( & item );
-    m_viewItems[ index ] = item;
-    return QAbstractItemModel::createIndex( row, column, index );
+    quint32 index = qHash( item.data() );
+    bool debugIt = true;
+    if( m_viewItems.contains( index ) )
+        debugIt = false;
+    else
+        m_viewItems[ index ] = item;
+    QModelIndex ret = QAbstractItemModel::createIndex( row, column, index );
+    if( debugIt )
+        debug() << "created " << ret << " with " << ret.parent().internalId();
+    return ret;
 }
 
 QModelIndex
@@ -199,7 +207,6 @@ PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
 {
     if (!index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-
     SqlPlaylistViewItemPtr item = SqlPlaylistViewItemPtr::staticCast( m_viewItems.value( index.internalId() ) );
 
     if ( typeid( * item ) == typeid( SqlPlaylistGroup ) )
@@ -250,6 +257,7 @@ PlaylistBrowserNS::UserModel::mimeTypes() const
 QMimeData*
 PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indexes ) const
 {
+    DEBUG_BLOCK
     AmarokMimeData* mime = new AmarokMimeData();
 
     SqlPlaylistGroupList groups;
@@ -407,12 +415,10 @@ void
 PlaylistBrowserNS::UserModel::createNewGroup()
 {
     DEBUG_BLOCK
-    
+
     SqlPlaylistGroup * group = new SqlPlaylistGroup( i18n("New Group"), m_root );
     group->save();
     int id = group->id();
-    
-    
     delete group;
 
     reloadFromDb();

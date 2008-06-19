@@ -51,7 +51,7 @@ class SqlPlaylistGroup : public SqlPlaylistViewItem
 
         ~SqlPlaylistGroup();
 
-        int id();
+        int id() const;
         QString name() const;
         QString description() const;
 
