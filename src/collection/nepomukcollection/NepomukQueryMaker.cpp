@@ -83,47 +83,11 @@ NepomukQueryMaker::NepomukQueryMaker(NepomukCollection *collection,Soprano::Clie
     worker = 0;
     this->client = client;
     reset();
-    initNameMap();
 }
 
 NepomukQueryMaker::~NepomukQueryMaker()
 {
     
-}
-
-void
-NepomukQueryMaker::initNameMap()
-{
-    // this "v =" works around a linker error 
-    // (undefined reference to QueryMaker::valXYZ)
-    // does anyone know why?
-    
-    // TODO: Find a better place for this (collection?)
-    // as this gets called for every querymaker
-    
-    qint64 v;
-    
-    nameForValue[ v = valAlbum ] = "album";
-    nameForValue[ v = valArtist ] = "artist";
-    nameForValue[ v = valBitrate ] = "bitrate";
-    nameForValue[ v = valComment ] = "comment";
-    nameForValue[ v = valComposer ] = "composer";
-    nameForValue[ v = valCreateDate ] = "createdate";
-    nameForValue[ v = valDiscNr ] = "discnr";
-    nameForValue[ v = valFilesize ] = "filesize";
-    nameForValue[ v = valFirstPlayed ] = "firstplayed";
-    nameForValue[ v = valFormat ] = "type";
-    nameForValue[ v = valGenre] = "genre";
-    nameForValue[ v = valLastPlayed ] = "lastplayed";
-    nameForValue[ v = valLength ] = "length";
-    nameForValue[ v = valPlaycount ] = "playcount";
-    nameForValue[ v = valRating ] = "rating";
-    nameForValue[ v = valSamplerate ] = "samplerate";
-    nameForValue[ v = valScore] = "score";
-    nameForValue[ v = valTitle ] = "title";
-    nameForValue[ v = valTrackNr ] = "tracknr";
-    nameForValue[ v = valUrl ] = "url";
-    nameForValue[ v = valYear ] = "year";
 }
 
 QueryMaker*
@@ -251,7 +215,11 @@ QueryMaker*
 NepomukQueryMaker::addMatch( const TrackPtr &track )
 {
     debug() << "addMatch(Track)" << endl;
-	Q_UNUSED( track )
+    queryMatch +=  QString(
+            " ?r <%1> \"%2\"^^<%3> . ")
+            .arg( m_collection->getUrlForValue( valUrl ) )
+            .arg( track->url() )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
     return this;
 }
 
@@ -261,7 +229,7 @@ NepomukQueryMaker::addMatch( const ArtistPtr &artist )
     debug() << "addMatch(artist)" << endl;
     queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
-            .arg( Soprano::Vocabulary::Xesam::artist().toString() )
+            .arg( m_collection->getUrlForValue( valArtist) )
             .arg( artist->name() )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
 
@@ -275,7 +243,7 @@ NepomukQueryMaker::addMatch( const AlbumPtr &album )
 
     queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
-            .arg( Soprano::Vocabulary::Xesam::album().toString() )
+            .arg( m_collection->getUrlForValue( valAlbum ) )
             .arg( album->name() )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
     return this;
@@ -285,7 +253,11 @@ QueryMaker*
 NepomukQueryMaker::addMatch( const GenrePtr &genre )
 {
     debug() << "addMatch(genre)" << endl;
-	Q_UNUSED( genre )
+    queryMatch +=  QString(
+            " ?r <%1> \"%2\"^^<%3> . ")
+            .arg( m_collection->getUrlForValue( valGenre ) )
+            .arg( genre->name() )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
     return this;
 }
 
@@ -293,15 +265,25 @@ QueryMaker*
 NepomukQueryMaker::addMatch( const ComposerPtr &composer )
 {
     debug() << "addMatch(composer)" << endl;
-	Q_UNUSED( composer )
-	return this;
+    
+    queryMatch +=  QString(
+            " ?r <%1> \"%2\"^^<%3> . ")
+            .arg( m_collection->getUrlForValue( valComposer ) )
+            .arg( composer->name() )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
+    return this;
 }
 
 QueryMaker*
 NepomukQueryMaker::addMatch( const YearPtr &year )
 {
     debug() << "addMatch(year)" << endl;
-	Q_UNUSED( year )
+
+    queryMatch +=  QString(
+            " ?r <%1> \"%2\"^^<%3> . ")
+            .arg( m_collection->getUrlForValue( valYear ) )
+            .arg( year->name() )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
 	return this;
 }
 
@@ -317,6 +299,9 @@ QueryMaker*
 NepomukQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     debug() << "addFilter()" << endl;
+    debug() << "filter against: " << m_collection->getNameForValue( value ) << endl;
+    debug() << "filter: " << filter << endl;
+    debug() << "matchbegin, match end " << matchBegin << matchEnd << endl;
 	Q_UNUSED( value )
 	Q_UNUSED( filter )
 	Q_UNUSED( matchBegin )
@@ -379,7 +364,7 @@ NepomukQueryMaker::orderBy( qint64 value, bool descending )
     if ( queryOrderBy.isEmpty() )
         queryOrderBy = " ORDER BY ";
     queryOrderBy += descending ? "DESC(?" : "ASC(?" ;
-    queryOrderBy += nameForValue[ value ] + ") ";
+    queryOrderBy += m_collection->getNameForValue( value ) + ") ";
     return this; 
 }
 

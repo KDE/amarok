@@ -23,6 +23,7 @@
 #include "Collection.h"
 
 #include <QString>
+#include <QHash>
 
 #include <Soprano/Client/DBusClient>
 
@@ -48,9 +49,17 @@ public:
     virtual QString prettyName() const;
     
     virtual void lostDBusConnection();
+    
+    QString getNameForValue( const qint64 ) const;
+    QString getUrlForValue( const qint64 ) const;
 
 private:
+    
+    void initHashMaps();
+    
     Soprano::Client::DBusClient *m_client;
+    QHash< qint64, QString > m_nameForValue;
+    QHash< qint64, QString > m_urlForValue;
 };
 
 #endif /*NEPOMUKCOLLECTION_H_*/

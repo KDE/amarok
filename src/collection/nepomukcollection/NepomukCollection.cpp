@@ -22,9 +22,15 @@
 #include "NepomukQueryMaker.h"
 
 #include "Debug.h"
+#include "QueryMaker.h"
+
+#include <QHash>
+#include <QString>
 
 #include <klocale.h>
 #include <Nepomuk/ResourceManager>
+#include <Soprano/Vocabulary/NAO>
+#include <Soprano/Vocabulary/Xesam>
 
 
 AMAROK_EXPORT_PLUGIN( NepomukCollectionFactory )
@@ -56,7 +62,7 @@ NepomukCollection::NepomukCollection(Soprano::Client::DBusClient *client)
     :   Collection() 
     ,   m_client( client )
 {
-    
+    initHashMaps();
 }
 
 NepomukCollection::~NepomukCollection()
@@ -89,5 +95,82 @@ NepomukCollection::lostDBusConnection()
     emit remove();
 }
 
+void 
+NepomukCollection::initHashMaps()
+{
+    // this "v =" works around a linker error 
+    // (undefined reference to QueryMaker::valXYZ)
+    // does anyone know why?
+    
+    // TODO: Find a better place for this (collection?)
+    // as this gets called for every querymaker
+    
+    qint64 v;
+    
+    m_nameForValue[ v = QueryMaker::valAlbum ] = "album";
+    m_nameForValue[ v = QueryMaker::valArtist ] = "artist";
+    m_nameForValue[ v = QueryMaker::valBitrate ] = "bitrate";
+    m_nameForValue[ v = QueryMaker::valComment ] = "comment";
+    m_nameForValue[ v = QueryMaker::valComposer ] = "composer";
+    m_nameForValue[ v = QueryMaker::valCreateDate ] = "createdate";
+    m_nameForValue[ v = QueryMaker::valDiscNr ] = "discnr";
+    m_nameForValue[ v = QueryMaker::valFilesize ] = "filesize";
+    m_nameForValue[ v = QueryMaker::valFirstPlayed ] = "firstplayed";
+    m_nameForValue[ v = QueryMaker::valFormat ] = "type";
+    m_nameForValue[ v = QueryMaker::valGenre] = "genre";
+    m_nameForValue[ v = QueryMaker::valLastPlayed ] = "lastplayed";
+    m_nameForValue[ v = QueryMaker::valLength ] = "length";
+    m_nameForValue[ v = QueryMaker::valPlaycount ] = "playcount";
+    m_nameForValue[ v = QueryMaker::valRating ] = "rating";
+    m_nameForValue[ v = QueryMaker::valSamplerate ] = "samplerate";
+    m_nameForValue[ v = QueryMaker::valScore] = "score";
+    m_nameForValue[ v = QueryMaker::valTitle ] = "title";
+    m_nameForValue[ v = QueryMaker::valTrackNr ] = "tracknr";
+    m_nameForValue[ v = QueryMaker::valUrl ] = "url";
+    m_nameForValue[ v = QueryMaker::valYear ] = "year";   
+    
+    m_urlForValue[ v = QueryMaker::valAlbum ] = Soprano::Vocabulary::Xesam::album().toString();
+    m_urlForValue[ v = QueryMaker::valArtist ] = Soprano::Vocabulary::Xesam::artist().toString();
+    m_urlForValue[ v = QueryMaker::valBitrate ] = Soprano::Vocabulary::Xesam::audioBitrate().toString();
+    m_urlForValue[ v = QueryMaker::valComment ] = Soprano::Vocabulary::Xesam::comment().toString();
+    m_urlForValue[ v = QueryMaker::valComposer ] = Soprano::Vocabulary::Xesam::composer().toString();
+    m_urlForValue[ v = QueryMaker::valCreateDate ] = Soprano::Vocabulary::Xesam::contentCreated().toString();
+    m_urlForValue[ v = QueryMaker::valDiscNr ] = Soprano::Vocabulary::Xesam::discNumber().toString();
+    m_urlForValue[ v = QueryMaker::valFilesize ] = Soprano::Vocabulary::Xesam::size().toString();
+    // FirstUsed = FirstPlayed?
+    m_urlForValue[ v = QueryMaker::valFirstPlayed ] = Soprano::Vocabulary::Xesam::firstUsed().toString();
+    m_urlForValue[ v = QueryMaker::valFormat ] = Soprano::Vocabulary::Xesam::fileExtension().toString();
+    m_urlForValue[ v = QueryMaker::valGenre] = Soprano::Vocabulary::Xesam::genre().toString();
+    // LastUsed = LastPlayed?
+    m_urlForValue[ v = QueryMaker::valLastPlayed ] = Soprano::Vocabulary::Xesam::lastUsed().toString();
+    m_urlForValue[ v = QueryMaker::valLength ] = Soprano::Vocabulary::Xesam::mediaDuration().toString();
+    // useCount = Playcount?
+    m_urlForValue[ v = QueryMaker::valPlaycount ] = Soprano::Vocabulary::Xesam::useCount().toString();
+    
+    // there is a Xesam Value (userRating) but using Nepomuk one as Dolphin uses it (ok?)
+    // nepomuk uses int so we have to divide value by 2 (value 5 is 2.5 in dolphin and amarok)
+    m_urlForValue[ v = QueryMaker::valRating ] = Soprano::Vocabulary::NAO::numericRating().toString();
+    m_urlForValue[ v = QueryMaker::valSamplerate ] = Soprano::Vocabulary::Xesam::audioSampleRate().toString();
+    m_urlForValue[ v = QueryMaker::valScore] = Soprano::Vocabulary::Xesam::autoRating().toString();
+    m_urlForValue[ v = QueryMaker::valTitle ] = Soprano::Vocabulary::Xesam::title().toString();
+    m_urlForValue[ v = QueryMaker::valTrackNr ] = Soprano::Vocabulary::Xesam::trackNumber().toString();
+    m_urlForValue[ v = QueryMaker::valUrl ] = Soprano::Vocabulary::Xesam::url().toString();
+    // TODO: no year in XESAM? i would like to see it added to fd.o draft
+    m_urlForValue[ v = QueryMaker::valYear ] = Soprano::Vocabulary::Xesam::genre().toString();
+    
+    
+}
+
+QString
+NepomukCollection::getNameForValue( const qint64 value ) const
+{
+    return m_nameForValue[value];
+}
+
+QString
+NepomukCollection::getUrlForValue( const qint64 value ) const
+{
+    return m_urlForValue[value];
+}
 
 #include "NepomukCollection.moc"
