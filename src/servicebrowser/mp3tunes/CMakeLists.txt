@@ -36,7 +36,8 @@ if(CURL_FOUND)
 
 
             kde4_add_plugin(amarok_service_mp3tunes ${amarok_service_mp3tunes_PART_SRCS})
-            target_link_libraries(amarok_service_mp3tunes amaroklib
+#${OPENSSL_LIBRARIES} returns -lssl, not -lcrypto. we only need -lcrypto.
+            target_link_libraries(amarok_service_mp3tunes amaroklib crypto
                 ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS}
                 ${KDE4_THREADWEAVER_LIBRARIES} ${OPENSSL_LIBRARIES}  ${LIBXML2_LIBRARIES}
                 ${CURL_LIBRARIES} )
