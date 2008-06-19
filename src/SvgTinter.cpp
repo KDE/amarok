@@ -95,7 +95,7 @@ SvgTinter::init()
     #ifdef Q_WS_MAC 
         m_tintMap.insert( "#f0f0f0", blendColors( App::instance()->palette().window().color(), "#000000", 90 ).name() );
         m_tintMap.insert( "#ffffff", blendColors( App::instance()->palette().window().color(), "#000000", 98 ).name() );
-    #elif
+    #else
        m_tintMap.insert( "#f0f0f0", App::instance()->palette().base().color().name() );
     #endif
 
