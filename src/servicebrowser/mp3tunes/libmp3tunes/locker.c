@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (C) 2008 MP3tunes, LLC
  *
  * This library is free software; you can redistribute it and/or
@@ -22,6 +22,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <curl/curl.h>
+#include <openssl/md5.h>
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
 #include <libxml/xmlreader.h>
@@ -264,7 +265,7 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
     while (name) {
 
         value = va_arg(argp, char*);
-        	
+            
         encoded_name = curl_easy_escape(request->curl, name, 0);
         encoded_value = curl_easy_escape(request->curl, value, 0);
         snprintf(url_part, 256, "%s=%s&", encoded_name, encoded_value);
@@ -1022,7 +1023,7 @@ int mp3tunes_locker_search(mp3tunes_locker_object_t *obj, mp3tunes_locker_artist
     if( tracks != NULL ) {
       strcat( type, "track," );
     }
-    if( type == "" ) {
+    if( strlen(type) == 0 ) {
       return -1;
     }
     /*printf("type: '%s' query: '%s'\n", placeholder, query);*/
@@ -1252,9 +1253,10 @@ int mp3tunes_locker_sync_down(mp3tunes_locker_object_t *obj, char* type, char* b
 }
 
 char* mp3tunes_locker_generate_filekey(const char *filename) {
-  unsigned char sig[MD5_SIZE];
+  unsigned char sig[MD5_DIGEST_LENGTH];
   char      buffer[4096];
-  md5_t     md5;
+  char*    file_key;
+  MD5_CTX     md5;
   int       ret;
   FILE      *stream;
 
@@ -1263,7 +1265,7 @@ char* mp3tunes_locker_generate_filekey(const char *filename) {
     perror(filename);
     exit(1);
   }
-  md5_init(&md5);
+  MD5_Init(&md5);
 
   /* iterate over file */
   while (1) {
@@ -1272,10 +1274,10 @@ char* mp3tunes_locker_generate_filekey(const char *filename) {
     if (ret <= 0)
       break;
     /* process our buffer buffer */
-    md5_process(&md5, buffer, ret);
+    MD5_Update(&md5, buffer, ret);
   }
 
-  md5_finish(&md5, sig); 
+  MD5_Final(sig, &md5); 
 
   if (stream != stdin) {
     (void)fclose(stream);
@@ -1284,13 +1286,14 @@ char* mp3tunes_locker_generate_filekey(const char *filename) {
   /* convert to string to print */
   md5_sig_to_string(sig, buffer, sizeof(buffer));
   /*(void)printf("%25s '%s'\n", "File key:", buffer);*/
-  return &buffer;
+  file_key = (char*)malloc(4096*sizeof(char));
+  strcpy (file_key,buffer);
+  return file_key;
 }
 
 int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, char *path) {
     request_t *request;
     CURLcode res;
-    chunk_t *chunk;
     FILE * hd_src ;
     int hd ;
     struct stat file_info;

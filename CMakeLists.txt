@@ -73,6 +73,9 @@ macro_log_feature( CURL_FOUND "curl" "cURL provides the necessary network librar
 find_package(LibXml2)
 macro_log_feature( LIBXML2_FOUND "libxml2" "LibXML2 is an XML parser required by mp3tunes." "http://www.xmlsoft.org" FALSE "" "" )
 
+find_package(OpenSSL)
+macro_log_feature( OPENSSL_FOUND "openssl" "OpenSSL provides cryptographic functions required by mp3tunes." "http://www.openssl.org/" FALSE "" "" )
+
 find_package(KdeMultimedia)
 macro_log_feature( KDEMULTIMEDIA_FOUND "kdemultimedia" "Support for playing audio cds" "http://www.kde.org" FALSE "4.0" "")
 
