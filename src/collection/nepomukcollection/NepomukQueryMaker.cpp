@@ -25,7 +25,9 @@
 
 #include "Debug.h"
 
+#include <QList>
 #include <QString>
+#include <QStringList>
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
@@ -198,6 +200,7 @@ NepomukQueryMaker::startCustomQuery()
 QueryMaker*
 NepomukQueryMaker::includeCollection( const QString &collectionId )
 {
+    // TODO:  Find out what it is for. Seems to do nothing in SqlCollection
     debug() << "includeCollection()" << endl;
 	Q_UNUSED( collectionId )
     return this;
@@ -206,6 +209,7 @@ NepomukQueryMaker::includeCollection( const QString &collectionId )
 QueryMaker*
 NepomukQueryMaker::excludeCollection( const QString &collectionId )
 {
+    // TODO:  Find out what it is for. Seems to do nothing in SqlCollection
     debug() << "excludeCollection()" << endl;
 	Q_UNUSED( collectionId )
 	return this;
@@ -426,49 +430,40 @@ NepomukQueryMaker::buildQuery() const
             query  =   QString(
                     "select distinct ?artist where { "
                     "?r <%1> ?artist . ")
-                    .arg( Soprano::Vocabulary::Xesam::artist().toString() );
+                    .arg( m_collection->getUrlForValue( valArtist ) );
             query += queryMatch + " } ";
             query += queryOrderBy;
             
             break;
         case ALBUM:
-            
             if ( queryMatch.isEmpty() )
-                return query;
-            
+                            return query;
             query  =   QString(
                     "select distinct ?artist ?album where { "
                     "?r <%1> ?album . "
                     "?r <%2> ?artist . ")
-                    .arg( Soprano::Vocabulary::Xesam::album().toString() )
-                    .arg( Soprano::Vocabulary::Xesam::artist().toString() );
+                    .arg( m_collection->getUrlForValue( valAlbum ) )
+                    .arg( m_collection->getUrlForValue( valArtist ) );
             query += queryMatch;
             query += " } ";
             query += queryOrderBy;
             
             break;
         case TRACK:
-            // TODO: Find a sane way to generate this query (Map?)
-            query  =   QString( 
-                    "SELECT * WHERE { "
-                    "?r <%1> ?url ."
-                    "OPTIONAL {?r <%2> ?artist } . "
-                    "OPTIONAL {?r <%3> ?album } . "
-                    "OPTIONAL {?r <%4> ?genre } . "
-                    "OPTIONAL {?r <%5> ?composer } . "
-                    "OPTIONAL {?r <%6> ?length } . "
-                    "OPTIONAL {?r <%7> ?tracknr } . "
-                    "OPTIONAL {?r <%8> ?type } . "
-                    "OPTIONAL {?r <%9> ?title } . ")
-                    .arg( Soprano::Vocabulary::Xesam::url().toString() )
-                    .arg( Soprano::Vocabulary::Xesam::artist().toString() )
-                    .arg( Soprano::Vocabulary::Xesam::album().toString() )
-                    .arg( Soprano::Vocabulary::Xesam::genre().toString() )
-                    .arg( Soprano::Vocabulary::Xesam::composer().toString() )
-                    .arg( Soprano::Vocabulary::Xesam::mediaDuration().toString() )
-                    .arg( Soprano::Vocabulary::Xesam::trackNumber().toString() )
-                    .arg( Soprano::Vocabulary::Xesam::fileExtension().toString() )
-                    .arg( Soprano::Vocabulary::Xesam::title().toString() );
+        {
+            query  =   QString("SELECT * WHERE { ?r <%1> ?%2. ")
+                           .arg( m_collection->getUrlForValue( valUrl ) )
+                           .arg( m_collection->getNameForValue( valUrl) );
+            
+            const QStringList list = m_collection->getAllNamesAndUrls();
+            QStringList::const_iterator it = list.constBegin();
+            while ( it != list.constEnd() )
+            {
+                query += QString("OPTIONAL { ?r <%1> ?%2 } . ")
+                    .arg( *(it++) )
+                    .arg( *(it++) );
+            }
+
             
             // if there is no match we want all tracks, match against all music
             if ( queryMatch.isEmpty() )
@@ -480,7 +475,7 @@ NepomukQueryMaker::buildQuery() const
             query += "} ";
             query += queryOrderBy;
             break;
-            
+        }
         default:
             debug() << "unknown query type" << endl;        
        
@@ -571,29 +566,16 @@ NepomukQueryMaker::doQuery(const QString &query)
             Soprano::QueryResultIterator it
                       = model->executeQuery( query, 
                                              Soprano::Query::QueryLanguageSparql );
-            
             while( it.next() ) 
             {
-                Nepomuk::Resource res = Nepomuk::Resource( it.binding( "r" ).uri() );
-                KUrl url ( it.binding( "url" ).toString() );
-                QString title = it.binding( "title" ).toString();
-                QString artist = it.binding( "artist" ).toString(); 
-                QString album = it.binding( "album" ).toString();
-                QString genre = it.binding( "genre" ).toString();
-                QString composer = it.binding( "composer" ).toString();
-                QString year;
-                QString type = it.binding( "typ" ).toString();
-                int trackNumber = it.binding( "tracknr" ).literal().toInt();
-                int length = it.binding( "length" ).literal().toInt();
-              
-                NepomukTrack *np = new Meta::NepomukTrack( url, title, artist, album, genre, 
-                                                    year, composer, type, trackNumber, length );
+                Soprano::BindingSet bindingSet = it.currentBindings();
+                
+                NepomukTrack *np = new Meta::NepomukTrack( m_collection, bindingSet );
                 tl.append( *( new Meta::TrackPtr ( np ) ) );
             }
             
             emitProperResult ( TrackPtr, tl );
-            
-            
+
             break;
         }
             

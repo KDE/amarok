@@ -19,7 +19,13 @@
 #ifndef NEPOMUKMETA_H_
 #define NEPOMUKMETA_H_
 
+#include "NepomukCollection.h"
+
 #include "Meta.h"
+
+#include <Nepomuk/Resource>
+#include <Soprano/BindingSet>
+#include <Soprano/Model>
 
 namespace Meta
 {
@@ -82,10 +88,7 @@ class NepomukAlbum : public Album
 class NepomukTrack : public Track
     {
     public:
-        NepomukTrack( const KUrl &url, const QString &title, const QString &artist, 
-                const QString &album, const QString &genre, const QString &year,
-                const QString &composer, const QString &type, const int &trackNumber,
-                const int &length );
+        NepomukTrack( NepomukCollection* collection, const Soprano::BindingSet data );
         
         virtual QString name() const;
         virtual QString prettyName() const;
@@ -126,6 +129,8 @@ class NepomukTrack : public Track
         virtual QString type() const;
         
     private:
+        NepomukCollection *m_collection;
+        Nepomuk::Resource m_nepores;
         KUrl m_url;
         QString m_title;
         QString m_artist;

@@ -102,9 +102,6 @@ NepomukCollection::initHashMaps()
     // (undefined reference to QueryMaker::valXYZ)
     // does anyone know why?
     
-    // TODO: Find a better place for this (collection?)
-    // as this gets called for every querymaker
-    
     qint64 v;
     
     m_nameForValue[ v = QueryMaker::valAlbum ] = "album";
@@ -158,6 +155,13 @@ NepomukCollection::initHashMaps()
     // TODO: no year in XESAM? i would like to see it added to fd.o draft
     m_urlForValue[ v = QueryMaker::valYear ] = Soprano::Vocabulary::Xesam::genre().toString();
     
+    QHashIterator<qint64, QString> it( m_nameForValue );
+    while ( it.hasNext() ) 
+    {
+        it.next();
+        m_allNamesAndUrls.append( it.value() );
+        m_allNamesAndUrls.append( m_urlForValue[ it.key() ] );
+    }
     
 }
 
@@ -172,5 +176,12 @@ NepomukCollection::getUrlForValue( const qint64 value ) const
 {
     return m_urlForValue[value];
 }
+
+const QStringList&
+NepomukCollection::getAllNamesAndUrls() const
+{
+    return m_allNamesAndUrls;
+}
+
 
 #include "NepomukCollection.moc"

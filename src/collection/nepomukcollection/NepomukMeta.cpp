@@ -22,6 +22,9 @@
 
 #include "Debug.h"
 
+#include <Soprano/BindingSet>
+#include <Soprano/Model>
+
 using namespace Meta;
 
 NepomukArtist::NepomukArtist( const QString &name )
@@ -120,23 +123,22 @@ NepomukAlbum::albumArtist() const
 
 // -- TRACK --
 
-NepomukTrack::NepomukTrack( const KUrl &url, const QString &title, const QString &artist, 
-                const QString &album, const QString &genre, const QString &year,
-                const QString &composer, const QString &type, const int &trackNumber,
-                const int &length )
+NepomukTrack::NepomukTrack( NepomukCollection *collection, const Soprano::BindingSet data )
     : Track()
-    , m_url( url )
-    , m_title( title )
-    , m_artist( artist )
-    , m_album( album )
-    , m_genre( genre )
-    , m_year( year )
-    , m_composer ( composer )
-    , m_type ( type )
-    , m_trackNumber ( trackNumber )
-    , m_length( length )
+    , m_collection ( collection )
 {
-     
+    m_nepores = Nepomuk::Resource( data[ "r"].uri() ) ;
+    m_title = data[ collection->getNameForValue( QueryMaker::valTitle ) ].toString();
+    m_url = KUrl( data[ collection->getNameForValue( QueryMaker::valUrl ) ].toString() );
+    m_artist = data[ collection->getNameForValue( QueryMaker::valArtist ) ].toString();
+    m_album = data[ collection->getNameForValue( QueryMaker::valAlbum ) ].toString();
+    m_genre = data[ collection->getNameForValue( QueryMaker::valGenre ) ].toString();
+    m_year = data[ collection->getNameForValue( QueryMaker::valYear ) ].toString();
+    m_type = data[ collection->getNameForValue( QueryMaker::valFormat ) ].toString();
+    m_trackNumber = data[ collection->getNameForValue( QueryMaker::valTrackNr ) ]
+                          .literal().toInt();
+    m_length = data[ collection->getNameForValue( QueryMaker::valLength ) ]
+                     .literal().toInt();
 }
 
 QString
