@@ -23,9 +23,12 @@
 
 #include "Meta.h"
 
+#include <QDateTime>
+
 #include <Nepomuk/Resource>
 #include <Soprano/BindingSet>
 #include <Soprano/Model>
+
 
 namespace Meta
 {
@@ -139,9 +142,19 @@ class NepomukTrack : public Track
         QString m_year;
         QString m_composer;
         QString m_type;
+        QString m_comment;
         int m_trackNumber;
         int m_length;
         int m_rating;
+        int m_bitrate;
+        int m_discNumber;
+        int m_filesize;
+        int m_playCount;
+        int m_sampleRate;
+        int m_score;
+        QDateTime m_createDate;
+        QDateTime m_firstPlayed;
+        QDateTime m_lastPlayed;
     };
 
 

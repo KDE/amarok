@@ -22,6 +22,8 @@
 
 #include "Debug.h"
 
+#include <QDateTime>
+
 #include <Soprano/BindingSet>
 #include <Soprano/Model>
 
@@ -135,12 +137,44 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, const Soprano::Bindin
     m_genre = data[ collection->getNameForValue( QueryMaker::valGenre ) ].toString();
     m_year = data[ collection->getNameForValue( QueryMaker::valYear ) ].toString();
     m_type = data[ collection->getNameForValue( QueryMaker::valFormat ) ].toString();
+    m_comment = data[ collection->getNameForValue( QueryMaker::valComment ) ].toString();
+    m_composer = data[ collection->getNameForValue( QueryMaker::valComposer ) ].toString();
     m_trackNumber = data[ collection->getNameForValue( QueryMaker::valTrackNr ) ]
                           .literal().toInt();
     m_length = data[ collection->getNameForValue( QueryMaker::valLength ) ]
                      .literal().toInt();
     m_rating = data[ collection->getNameForValue( QueryMaker::valRating ) ]
                          .literal().toInt();
+    m_bitrate = data[ collection->getNameForValue( QueryMaker::valBitrate ) ]
+                    .literal().toInt();
+    m_discNumber = data[ collection->getNameForValue( QueryMaker::valDiscNr ) ]
+                             .literal().toInt();
+    m_filesize = data[ collection->getNameForValue( QueryMaker::valFilesize ) ]
+                       .literal().toInt();
+    m_playCount = data[ collection->getNameForValue( QueryMaker::valPlaycount ) ]
+                         .literal().toInt();
+    m_sampleRate = data[ collection->getNameForValue( QueryMaker::valSamplerate ) ]
+                          .literal().toInt();
+    m_score = data[ collection->getNameForValue( QueryMaker::valScore ) ]
+                        .literal().toInt();
+    
+    // Soprano gives a warning when they are empty
+    Soprano::LiteralValue litval;
+    
+    litval = data[ collection->getNameForValue( QueryMaker::valFirstPlayed ) ]
+                   .literal();
+    if ( litval.isDateTime() )
+        m_firstPlayed = litval.toDateTime();
+
+    litval = data[ collection->getNameForValue( QueryMaker::valLastPlayed ) ]
+                   .literal();
+    if ( litval.isDateTime() )
+        m_lastPlayed = litval.toDateTime();
+    
+    litval = data[ collection->getNameForValue( QueryMaker::valCreateDate ) ]
+                   .literal();
+    if ( litval.isDateTime() )
+        m_createDate = litval.toDateTime();
 }
 
 QString
@@ -212,13 +246,14 @@ NepomukTrack::year() const
 QString
 NepomukTrack::comment() const
 {
-    return QString();
+    return m_comment;
 }
 
 double
 NepomukTrack::score() const
 {
-    return 0.0;
+    // TODO: why double? From 0 to 1?
+    return double( m_score );
 }
 
 void
@@ -248,19 +283,19 @@ NepomukTrack::length() const
 int
 NepomukTrack::filesize() const
 {
-    return 0;
+    return m_filesize;
 }
 
 int
 NepomukTrack::sampleRate() const
 {
-    return 0;
+    return m_sampleRate;
 }
 
 int
 NepomukTrack::bitrate() const
 {
-    return 0;
+    return m_bitrate;
 }
 
 int
@@ -272,19 +307,19 @@ NepomukTrack::trackNumber() const
 int
 NepomukTrack::discNumber() const
 {
-    return 0;
+    return m_discNumber;
 }
 
 uint
 NepomukTrack::lastPlayed() const
 {
-    return 0;
+    return m_lastPlayed.toTime_t();
 }
 
 int
 NepomukTrack::playCount() const
 {
-    return 0;
+    return m_playCount;
 }
 
 QString
