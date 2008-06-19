@@ -92,7 +92,12 @@ SvgTinter::init()
         m_tintMap.insert( "#565755", blendColors( App::instance()->palette().window().color(), "#000000", 90 ).name() );
 
         //list background:
-        m_tintMap.insert( "#f0f0f0", App::instance()->palette().base().color().name() );
+    #ifdef Q_WS_MAC 
+        m_tintMap.insert( "#f0f0f0", blendColors( App::instance()->palette().window().color(), "#000000", 90 ).name() );
+        m_tintMap.insert( "#ffffff", blendColors( App::instance()->palette().window().color(), "#000000", 98 ).name() );
+    #elif
+       m_tintMap.insert( "#f0f0f0", App::instance()->palette().base().color().name() );
+    #endif
 
         //alternate list background:
         m_tintMap.insert( "#e0e0e0", App::instance()->palette().alternateBase().color().name() );
