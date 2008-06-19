@@ -139,6 +139,8 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, const Soprano::Bindin
                           .literal().toInt();
     m_length = data[ collection->getNameForValue( QueryMaker::valLength ) ]
                      .literal().toInt();
+    m_rating = data[ collection->getNameForValue( QueryMaker::valRating ) ]
+                         .literal().toInt();
 }
 
 QString
@@ -228,7 +230,7 @@ NepomukTrack::setScore( double newScore )
 int
 NepomukTrack::rating() const
 {
-    return 0;
+    return m_rating;
 }
 
 void

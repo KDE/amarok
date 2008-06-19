@@ -141,6 +141,7 @@ class NepomukTrack : public Track
         QString m_type;
         int m_trackNumber;
         int m_length;
+        int m_rating;
     };
 
 
