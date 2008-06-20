@@ -199,6 +199,7 @@ class Mp3tunesLocker {
         QString serverApi() const;
         QString serverContent() const;
         QString serverLogin() const;
+        QString errorMessage() const;
     private:
         char *convertToChar( const QString &source ) const;
         mp3tunes_locker_object_t *m_locker;

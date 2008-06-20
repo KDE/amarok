@@ -137,8 +137,12 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
     debug() << "Authentication reply: " << sessionId;
     if ( sessionId.isEmpty() )
     {
-      KMessageBox::error( this, i18n( "MP3tunes failed to Authenticate." ), i18n( "Error!"
-) );
+      QString error = i18n("Mp3tunes failed to Authenticate.");
+      if ( m_locker->errorMessage() != QString() )
+      {
+        error = m_locker->errorMessage(); // Not sure how to i18n this
+      }
+      KMessageBox::error( this, error, i18n( "Error!" ) );
     }
     else
     {

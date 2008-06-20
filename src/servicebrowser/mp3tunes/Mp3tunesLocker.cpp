@@ -493,6 +493,16 @@ Mp3tunesLocker::serverLogin() const
     return QString ( m_locker->server_login );
 }
 
+QString
+Mp3tunesLocker::errorMessage() const
+{
+    if( m_locker->error_message != 0 )
+    {
+        return QString ( m_locker->error_message );
+    }
+    return QString();
+}
+
 char *
 Mp3tunesLocker::convertToChar ( const QString &source ) const
 {

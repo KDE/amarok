@@ -41,6 +41,7 @@ typedef struct {
   char *username, *password, *session_id, *firstname, *lastname, *nickname;
   char *partner_token;
   char *server_api, *server_content, *server_login;
+  char *error_message;
 } mp3tunes_locker_object_t;
 
 struct mp3tunes_locker_list_item_s {
