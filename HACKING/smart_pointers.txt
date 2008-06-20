@@ -18,11 +18,10 @@ there were any normal pointers to that data and all the KSharedPtrs are deleted,
 then the object is deleted and the normal pointers dangle. Segfaults ensue.
 
 The solution is to just make sure that any normal pointers are temporary and
-everything else is a KSharedPtr (or don't use KSharedPtr at all!) Even
+everything else is a KSharedPtr if reference counting is required for your class. Even
 if the pointer is temporary, but is then handed off to some other class that
-might keep it around, thats a potentional crash now or in the future. 
+might keep it around, thats a potentional crash now or in the future.
 
-Two seperate KSharedPtr's pointing to the same data is likely a very bad idea.
 
 == Reference Cycles ==
 One issue with reference counting in general is the creation of a reference
