@@ -423,12 +423,16 @@ int mp3tunes_locker_login(mp3tunes_locker_object_t *obj, char* username, char* p
     xml_xpath = mp3tunes_locker_api_simple_fetch(obj, MP3TUNES_SERVER_LOGIN, "api/v1/login/", "username", username, "password", password, NULL);
 
     if (xml_xpath == NULL) {
-        return -1;
+        return -2;
     }
     
     status = xml_xpath_get_string(xml_xpath, "/mp3tunes/status");
 
     if (status[0] != '1') {
+        printf("status is %s\n", status);
+        char* error = xml_xpath_get_string(xml_xpath, "/mp3tunes/errorMessage");
+        printf("error is %s\n", error);
+        free(error);
         free(status);
         xml_xpath_deinit(xml_xpath);
         return -1;
