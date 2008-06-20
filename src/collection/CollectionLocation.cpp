@@ -66,7 +66,7 @@ CollectionLocation::actualLocation() const
 }
 
 bool
-CollectionLocation::isWriteable() const
+CollectionLocation::isWritable() const
 {
     return false;
 }
@@ -89,7 +89,7 @@ CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *desti
 void
 CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination )
 {
-    if( !destination->isWriteable() )
+    if( !destination->isWritable() )
     {
         destination->deleteLater();
         deleteLater();
@@ -103,7 +103,7 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
 void
 CollectionLocation::prepareCopy( QueryMaker *qm, CollectionLocation *destination )
 {
-    if( !destination->isWriteable() )
+    if( !destination->isWritable() )
     {
         destination->deleteLater();
         qm->deleteLater();
@@ -129,7 +129,7 @@ CollectionLocation::prepareMove( Meta::TrackPtr track, CollectionLocation *desti
 void
 CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination )
 {
-    if( !destination->isWriteable() )
+    if( !destination->isWritable() )
     {
         destination->deleteLater();
         deleteLater();
@@ -143,7 +143,7 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
 void
 CollectionLocation::prepareMove( QueryMaker *qm, CollectionLocation *destination )
 {
-    if( !destination->isWriteable() )
+    if( !destination->isWritable() )
     {
         destination->deleteLater();
         qm->deleteLater();

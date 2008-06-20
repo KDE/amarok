@@ -68,7 +68,7 @@ SqlCollectionLocation::actualLocation() const
     return MountPointManager::instance()->collectionFolders();
 }
 bool
-SqlCollectionLocation::isWriteable() const
+SqlCollectionLocation::isWritable() const
 {
     return true;
 }

@@ -35,7 +35,7 @@ QString ServiceCollectionLocation::prettyLocation() const
     return QString();
 }
 
-bool ServiceCollectionLocation::isWriteable() const
+bool ServiceCollectionLocation::isWritable() const
 {
     return false;
 }

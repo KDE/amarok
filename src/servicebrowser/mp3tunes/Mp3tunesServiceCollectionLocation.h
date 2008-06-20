@@ -35,7 +35,7 @@ class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
 
         
         virtual QString prettyLocation() const;
-        virtual bool isWriteable() const;
+        virtual bool isWritable() const;
         virtual bool isOrganizable() const;
         virtual bool remove( const Meta::TrackPtr &track );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );

@@ -37,7 +37,7 @@ QString Mp3tunesServiceCollectionLocation::prettyLocation() const
     return "MP3Tunes Locker";
 }
 
-bool Mp3tunesServiceCollectionLocation::isWriteable() const
+bool Mp3tunesServiceCollectionLocation::isWritable() const
 {
     return true;
 }

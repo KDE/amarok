@@ -596,7 +596,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
     CollectionLocation *dest = destination->location();
     if( removeSources )
     {
-        if( !source->isWriteable() ) //error
+        if( !source->isWritable() ) //error
         {
             delete dest;
             delete source;

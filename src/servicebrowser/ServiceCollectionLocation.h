@@ -36,7 +36,7 @@ class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
 
         //These are service dependant
         virtual QString prettyLocation() const;
-        virtual bool isWriteable() const;
+        virtual bool isWritable() const;
         virtual bool isOrganizable() const;
         //virtual bool remove( const Meta::TrackPtr &track );
     private:
