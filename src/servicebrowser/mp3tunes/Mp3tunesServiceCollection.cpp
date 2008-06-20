@@ -48,4 +48,7 @@ QString Mp3tunesServiceCollection::prettyName() const
     return collectionId();
 }
 
-
+Mp3tunesLocker* Mp3tunesServiceCollection::locker() const
+{
+    return m_locker;
+}

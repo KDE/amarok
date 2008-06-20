@@ -26,7 +26,7 @@ class Mp3tunesServiceCollection : public ServiceCollection
 {
 public:
     Mp3tunesServiceCollection( const QString &sessionId, Mp3tunesLocker * locker );
-    
+
 
     ~Mp3tunesServiceCollection();
 
@@ -34,6 +34,7 @@ public:
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
+    Mp3tunesLocker* locker() const;
 
 private:
 

@@ -16,6 +16,9 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 #include "Mp3tunesServiceCollectionLocation.h"
+#include "Mp3tunesWorkers.h"
+#include <threadweaver/Job.h>
+#include <threadweaver/ThreadWeaver.h>
 #include "Debug.h"
 using namespace Meta;
 
@@ -43,15 +46,29 @@ bool Mp3tunesServiceCollectionLocation::isOrganizable() const
 {
     return false;
 }
-bool Mp3tunesServiceCollectionLocation::remove( const Meta::TrackPtr &track ) 
+bool Mp3tunesServiceCollectionLocation::remove( const Meta::TrackPtr &track )
 {
     //TODO
     return false;
 }
-void Mp3tunesServiceCollectionLocation::copyUrlsToCollection ( 
-        const QMap<Meta::TrackPtr, KUrl> &sources ) 
+void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
+        const QMap<Meta::TrackPtr, KUrl> &sources )
 {
-    //TODO 
-    //do not forget to call slotCopyOperationFinished() when you are done copying
-    //the files.
+    DEBUG_BLOCK
+    QStringList urls;
+    foreach( const Meta::TrackPtr &track, sources.keys() )
+    {
+        debug() << "copying " << sources[ track ] << " to mp3tunes locker";
+        debug() << "file is at " << sources[ track ].pathOrUrl();
+        if( sources[ track ].isLocalFile() ) {
+            urls.push_back( sources[ track ].pathOrUrl() );
+        } else {
+            debug() << "Track is not a local file.";
+        }
+    }
+    Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader(
+            m_collection->locker(), urls );
+    connect( uploadWorker, SIGNAL( uploadComplete() ),
+             this, SLOT( slotCopyOperationFinished() ) );
+    ThreadWeaver::Weaver::instance()->enqueue( uploadWorker );
 }
