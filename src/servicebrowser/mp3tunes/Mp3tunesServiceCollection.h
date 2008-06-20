@@ -35,6 +35,7 @@ public:
     virtual QString collectionId() const;
     virtual QString prettyName() const;
     virtual bool isWritable() const;
+    virtual CollectionLocation* location() const;
     Mp3tunesLocker* locker() const;
 
 private:

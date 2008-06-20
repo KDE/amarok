@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "Mp3tunesServiceCollection.h"
-
+#include "Mp3tunesServiceCollectionLocation.h"
 #include "Mp3tunesServiceQueryMaker.h"
 
 Mp3tunesServiceCollection::Mp3tunesServiceCollection( const QString &sessionId, Mp3tunesLocker * locker )
@@ -55,4 +55,9 @@ Mp3tunesLocker* Mp3tunesServiceCollection::locker() const
 bool Mp3tunesServiceCollection::isWritable() const
 {
   return true;
+}
+CollectionLocation*
+Mp3tunesServiceCollection::location() const
+{
+    return new Mp3tunesServiceCollectionLocation( this );
 }

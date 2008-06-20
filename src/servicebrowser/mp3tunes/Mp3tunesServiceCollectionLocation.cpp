@@ -25,7 +25,9 @@ using namespace Meta;
 Mp3tunesServiceCollectionLocation::Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection const *parentCollection )
     : ServiceCollectionLocation()
     , m_collection( const_cast<Mp3tunesServiceCollection*>(  parentCollection ) )
-{}
+{
+    DEBUG_BLOCK
+}
 
 Mp3tunesServiceCollectionLocation::~Mp3tunesServiceCollectionLocation()
 {
