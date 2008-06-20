@@ -361,7 +361,7 @@ PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
     if( !pd )
         return 0;
     pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
-    pd->setQuitOnDragLeave( true );
+    pd->setQuitOnDragLeave( false );
     pd->setFadeInTime( 500 );
     pd->setFadeOutTime( 300 );
     QColor windowColor( Qt::black );
