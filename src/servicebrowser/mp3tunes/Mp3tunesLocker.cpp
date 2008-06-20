@@ -491,5 +491,9 @@ Mp3tunesLocker::serverLogin() const
 char *
 Mp3tunesLocker::convertToChar( const QString &source ) const
 {
-    return const_cast<char*>( source.toLatin1().data() );
+    QByteArray ba = source.toLatin1();
+    const char *c_tok = ba.constData();
+    char * ret = ( char * ) malloc( strlen( c_tok ) );
+    strcpy( ret, c_tok );
+    return ret;
 }

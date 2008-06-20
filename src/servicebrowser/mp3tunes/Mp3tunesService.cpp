@@ -38,7 +38,7 @@ AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
 void Mp3tunesServiceFactory::init()
 {
     Mp3tunesConfig config;
-    
+
     ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.email(), config.password() );
     m_activeServices << service;
     emit newService( service );
@@ -70,7 +70,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
  : ServiceBase( name )
  , m_email( email )
  , m_password( password )
- , m_partnerToken( "7359149936" )
+, m_partnerToken( "4895500420" )
  , m_apiOutputFormat( "xml")
  , m_authenticated( false )
  , m_sessionId ( QString() )
@@ -79,7 +79,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
     setShortDescription( i18n( "The MP3tunes Locker: Your Music Everywhere!" ) );
     setIcon( KIcon( "view-services-mp3tunes-amarok" ) );
     debug() << "Making new Locker Object";
-    m_locker = new Mp3tunesLocker( "7359149936" );
+    m_locker = new Mp3tunesLocker( "4895500420" );
 }
 
 
@@ -92,7 +92,7 @@ Mp3tunesService::~Mp3tunesService()
 void Mp3tunesService::polish()
 {
     m_bottomPanel->hide();
-    
+
     if ( !m_authenticated )
     {
         authenticate( m_email, m_password );
@@ -103,7 +103,7 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
 {
     DEBUG_BLOCK
     QString username, password;
-   
+
     if ( uname.isEmpty() || passwd.isEmpty() ) {
         KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to api, but that does not work
         dlg.setPrompt( i18n( "Enter your MP3tunes login and password" ) );
@@ -137,7 +137,8 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
     debug() << "Authentication reply: " << sessionId;
     if ( sessionId.isEmpty() )
     {
-        KMessageBox::error( this, "errorMessage", i18n( "Authentication Error!" ) );
+        KMessageBox::error( this, "MP3tunes Authentication Error!", i18n( "Error!"
+) );
     }
     else
     {
