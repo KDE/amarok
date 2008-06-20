@@ -29,8 +29,6 @@ class PopupDropperView : public QGraphicsView
 {
     Q_OBJECT
 
-    Q_PROPERTY( bool quitOnDragLeave READ quitOnDragLeave WRITE setQuitOnDragLeave )
-
 public:
     PopupDropperView( PopupDropper *pd, QGraphicsScene *scene, QWidget *parent );
     ~PopupDropperView();
@@ -45,9 +43,6 @@ public:
     bool entered() const;
     void setEntered( bool entered );
     
-    bool quitOnDragLeave() const;
-    void setQuitOnDragLeave( bool quit );
-
 private:
     friend class PopupDropperViewPrivate;
     PopupDropperViewPrivate* const d;

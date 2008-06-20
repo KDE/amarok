@@ -69,10 +69,14 @@ public:
     QMap<PopupDropperAction*, PopupDropperPrivate*> submenuMap;
     bool submenu;
     bool doNotClear;
+    QList<QGraphicsItem*> allItems;
+    bool quitOnDragLeave;
 
     void dragLeft();
     void dragEntered();
     void startDeleteTimer();
+
+    void reposItems();
  
 private slots:
     void fadeTimerFrameChanged( int frame );

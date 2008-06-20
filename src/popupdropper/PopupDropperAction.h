@@ -22,6 +22,7 @@
 
 #include <QAction>
 #include <QIcon>
+#include <QPen>
 #include <QString>
 
 #include "amarok_export.h"
@@ -37,6 +38,9 @@ class AMAROK_EXPORT PopupDropperAction : public QAction
 
     Q_PROPERTY( QSvgRenderer* renderer READ renderer WRITE setRenderer )
     Q_PROPERTY( QString elementId READ elementId WRITE setElementId )
+    Q_PROPERTY( bool separator READ isSeparator WRITE setSeparator )
+    Q_PROPERTY( bool hasSeparatorPen READ hasSeparatorPen )
+    Q_PROPERTY( QPen separatorPen READ separatorPen WRITE setSeparatorPen )
 
 public:
     PopupDropperAction( QObject *parent );
@@ -56,6 +60,14 @@ public:
     void setRenderer( QSvgRenderer *renderer );
     QString elementId() const;
     void setElementId( const QString &id );
+
+    bool isSeparator() const;
+    void setSeparator( bool separator );
+
+    bool hasSeparatorPen() const;
+    QPen separatorPen() const;
+    void setSeparatorPen( const QPen &pen );
+    void clearSeparatorPen();
 
     //quick and dirty funtion for getting a PopupDropperAction from a QAction.
     //no svg will be set...should only be used to transition to using PopupDropperAction

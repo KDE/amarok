@@ -35,14 +35,12 @@ public:
     PopupDropperViewPrivate( PopupDropperView* parent, PopupDropper* pd )
         : pd( pd )
         , lastItem( 0 )
-        , quitOnDragLeave( false )
         , entered( false )
         , q( parent )
         {}
 
     PopupDropper *pd;
     PopupDropperItem *lastItem;
-    bool quitOnDragLeave;
     bool entered;
     
 private:
@@ -128,16 +126,6 @@ bool PopupDropperView::entered() const
 void PopupDropperView::setEntered( bool entered )
 {
     d->entered = entered;
-}
-
-bool PopupDropperView::quitOnDragLeave() const
-{
-    return d->quitOnDragLeave;
-}
-
-void PopupDropperView::setQuitOnDragLeave( bool quit )
-{
-    d->quitOnDragLeave = quit;
 }
 
 #include "PopupDropperView.moc"

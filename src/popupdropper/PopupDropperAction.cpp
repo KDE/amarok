@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include <QIcon>
+#include <QPen>
 #include <QString>
 #include <QtDebug>
 #include <QtSvg/QSvgRenderer>
@@ -31,6 +32,9 @@ public:
         : renderer( 0 )
         , elementId( QString() )
         , ownRenderer( false )
+        , separator( false )
+        , hasSeparatorPen( false )
+        , separatorPen()
     {}
 
     ~PopupDropperActionPrivate()
@@ -42,6 +46,9 @@ public:
     QSvgRenderer* renderer;
     QString elementId;
     bool ownRenderer;
+    bool separator;
+    bool hasSeparatorPen;
+    QPen separatorPen;
 };
 
 /////////////////////////////////////////////////////////////////////////
@@ -149,6 +156,38 @@ void PopupDropperAction::setElementId( const QString &id )
     if( d->renderer && !d->renderer->elementExists( id ) )
         qWarning() << "Warning: element with id " << id << " does not exist in the SVG";
     d->elementId = id;;
+}
+
+bool PopupDropperAction::isSeparator() const
+{
+    return d->separator;
+}
+
+void PopupDropperAction::setSeparator( bool separator )
+{
+    d->separator = separator;
+}
+
+bool PopupDropperAction::hasSeparatorPen() const
+{
+    return d->hasSeparatorPen;
+}
+
+QPen PopupDropperAction::separatorPen() const
+{
+    return d->separatorPen;
+}
+
+void PopupDropperAction::setSeparatorPen( const QPen &pen )
+{
+    d->hasSeparatorPen = true;
+    d->separatorPen = pen;
+}
+
+void PopupDropperAction::clearSeparatorPen()
+{
+    d->hasSeparatorPen = false;
+    d->separatorPen = QPen();
 }
 
 PopupDropperAction * PopupDropperAction::from( QAction * action )

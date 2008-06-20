@@ -115,6 +115,7 @@ public:
     int totalItems() const;
     void setTotalItems( int items );
     void addItem( QGraphicsSvgItem *item, bool useSharedRenderer = true );
+    void addSeparator( PopupDropperAction *separator = 0 );
 
 private slots:
     void activateSubmenu();

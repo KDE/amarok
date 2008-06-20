@@ -65,6 +65,8 @@ PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget
     , submenuMap()
     , submenu( false )
     , doNotClear( false )
+    , allItems()
+    , quitOnDragLeave( true )
     , q( parent )
 {
     scene = new QGraphicsScene( ( sa ? 0 : parent ) );
@@ -84,6 +86,7 @@ void PopupDropperPrivate::newSceneView( PopupDropper* pud )
 {
     scene->deleteLater();
     scene = new QGraphicsScene( pud );
+    qDebug() << "new scene width in newSceneView = " << scene->width();
     view = new PopupDropperView( pud, scene, widget );
 }
 
@@ -126,11 +129,10 @@ void PopupDropperPrivate::dragEntered()
 
 void PopupDropperPrivate::dragLeft()
 {
-    qDebug() << "PopupDropperPrivate::dragLeft(), will hide PUD: " << (view->entered()?"true":"false");
     qDebug() << "PUD to be hidden or not hidden = " << q;
-    if( view->entered() )
+    if( view->entered() && quitOnDragLeave )
     {
-        qDebug() << "View entered, hiding";
+        qDebug() << "View entered and should leave on drag, hiding";
         q->hide( PopupDropper::DragLeave );
     }
 }
@@ -149,6 +151,36 @@ void PopupDropperPrivate::deleteTimerFinished() //SLOT
     qDebug() << "Delete Timer Finished";
     if( !view->entered() )
         q->hide( PopupDropper::DragLeave );
+}
+
+void PopupDropperPrivate::reposItems()
+{
+    qreal partitionsize, my_min, my_max, vert_center, item_min;
+    qDebug() << "allItems.size() = " << allItems.size();
+    int counter = 0;
+    for( int i = 0; i < allItems.size(); i++ )
+    {
+        qDebug() << "item " << i;
+        if( dynamic_cast<PopupDropperItem*>( allItems.at( i ) ) )
+        {
+            qDebug() << "item " << i << " is a PDI ";
+            partitionsize = scene->height() / pdiItems.size(); //gives partition size...now center in this area
+            my_min = counter * partitionsize;
+            my_max = ( counter + 1 ) * partitionsize;
+            //qDebug() << "my_min = " << my_min << ", my_max = " << my_max;
+            vert_center = ( ( my_max - my_min ) / 2 ) + my_min; //gives us our center line...now center the item around it
+            item_min = vert_center - ( allItems.at( i )->boundingRect().height() / 2 );
+            //qDebug() << "vert_center = " << vert_center << ", ited->min = " << item_min;
+            allItems.at( i )->setPos( horizontalOffset, item_min );
+            dynamic_cast<PopupDropperItem*>( allItems.at( i ) )->reposTextItem();
+            ++counter;
+        }
+        else if( dynamic_cast<QGraphicsLineItem*>( allItems.at( i ) ) )
+        {
+            qDebug() << "item " << i << " is a QGLI";
+            dynamic_cast<QGraphicsLineItem*>( allItems.at( i ) )->setLine( horizontalOffset, my_max, scene->width() - horizontalOffset, my_max );
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////
@@ -187,8 +219,11 @@ void PopupDropper::initOverlay( QWidget* parent, PopupDropperPrivate* priv )
 {
     PopupDropperPrivate *pdp = priv ? priv : d;
     pdp->scene->setSceneRect( QRectF( parent->rect() ) );
+    qDebug() << "Scene width = " << pdp->scene->width();
     pdp->scene->setItemIndexMethod( QGraphicsScene::NoIndex );
     pdp->view->resize( parent->size() );
+    pdp->view->setLineWidth( 0 );
+    pdp->view->setFrameStyle( QFrame::NoFrame );
     pdp->view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     pdp->view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     pdp->view->setWindowTitle( "Drop something here." );
@@ -206,7 +241,7 @@ void PopupDropper::addOverlay()
     initOverlay( old_d->view );
     setColors( d->windowColor, d->textColor );
     d->sharedRenderer = old_d->sharedRenderer;
-    d->view->setQuitOnDragLeave( true );
+    d->quitOnDragLeave = true;
     d->overlayLevel = old_d->overlayLevel + 1;
 }
 
@@ -219,7 +254,6 @@ void PopupDropper::addOverlay( PopupDropperPrivate* newD )
     d = newD;
     setColors( d->windowColor, d->textColor );
     d->sharedRenderer = old_d->sharedRenderer;
-    d->view->setQuitOnDragLeave( true );
     d->overlayLevel = old_d->overlayLevel + 1;
     qDebug() << "new d d->overlayLevel = " << d->overlayLevel;
     qDebug() << "in PopupDropper " << this;
@@ -248,7 +282,8 @@ bool PopupDropper::subtractOverlay()
         old_d->fade = currFadeValue;
         old_d->view->resetView();
     }
-    d->startDeleteTimer();
+    if( d->quitOnDragLeave )
+        d->startDeleteTimer();
     return true;
 }
 
@@ -394,16 +429,23 @@ void PopupDropper::clear()
     {
         if( !d->doNotClear )
         {
-            foreach( PopupDropperItem* item, d->pdiItems )
+            foreach( QGraphicsItem* item, d->allItems )
             {
-                if( item->submenuTrigger() )
+                if( dynamic_cast<PopupDropperItem*>( item ) )
                 {
-                    qDebug() << "Disconnecting action";
-                    disconnect( item->action(), SIGNAL( hovered() ), this, SLOT( activateSubmenu() ) );
+                    PopupDropperItem* pItem = dynamic_cast<PopupDropperItem*>( item );
+                    if( pItem->submenuTrigger() )
+                    {
+                        qDebug() << "Disconnecting action";
+                        disconnect( pItem->action(), SIGNAL( hovered() ), this, SLOT( activateSubmenu() ) );
+                    }
+                    pItem->deleteLater();
                 }
-                item->deleteLater();
+                else if( dynamic_cast<QGraphicsLineItem*>( item ) )
+                    delete item;
             }
             d->pdiItems.clear();
+            d->allItems.clear();
         }
         qDebug() << "Size of pdiItems is now " << d->pdiItems.size();
         d->view->resetView();
@@ -418,12 +460,12 @@ bool PopupDropper::isEmpty() const
 
 bool PopupDropper::quitOnDragLeave() const
 {
-    return d->view->quitOnDragLeave();
+    return d->quitOnDragLeave;
 }
 
 void PopupDropper::setQuitOnDragLeave( bool quit )
 {
-    d->view->setQuitOnDragLeave( quit );
+    d->quitOnDragLeave = quit;
 }
 
 int PopupDropper::fadeInTime() const
@@ -608,6 +650,7 @@ void PopupDropper::addItem( QGraphicsSvgItem *item, bool useSharedRenderer, bool
     if( appendToList )
     {
         d->pdiItems.append( pItem );
+        d->allItems.append( pItem );
         qDebug() << "list is now size " << d->pdiItems.size() << " for " << d;
     }
     if( !pItem->textItem() )
@@ -616,20 +659,35 @@ void PopupDropper::addItem( QGraphicsSvgItem *item, bool useSharedRenderer, bool
         textItem->setDefaultTextColor( d->textColor );
         pItem->setTextItem( textItem );
     }
-    for( int i = 0; i < d->pdiItems.size(); i++ )
-    {
-        //qDebug() << "Adjusting item " << i;
-        qreal partitionsize = d->scene->height() / d->pdiItems.size(); //gives partition size...now center in this area
-        qreal my_min = i * partitionsize;
-        qreal my_max = ( i + 1 ) * partitionsize;
-        //qDebug() << "my_min = " << my_min << ", my_max = " << my_max;
-        qreal vert_center = ( ( my_max - my_min ) / 2 ) + my_min; //gives us our center line...now center the item around it
-        qreal item_min = vert_center - ( d->pdiItems.at( i )->boundingRect().height() / 2 );
-        //qDebug() << "vert_center = " << vert_center << ", ited->min = " << item_min;
-        d->pdiItems.at( i )->setPos( d->horizontalOffset, item_min );
-        d->pdiItems.at( i )->reposTextItem();
-    }
+    d->reposItems();
     d->scene->addItem( pItem );
+}
+
+void PopupDropper::addSeparator( PopupDropperAction* separator )
+{
+    if( separator && !separator->isSeparator() )
+    {
+        qDebug() << "Action is not a separator!";
+        return;
+    }
+    QPen linePen;
+    if( separator && separator->hasSeparatorPen() )
+        linePen = separator->separatorPen();
+    else
+    {
+        linePen.setWidth( 2 );
+        linePen.setCapStyle( Qt::RoundCap );
+        linePen.setStyle( Qt::DotLine );
+        linePen.setColor( QColor( 255, 255, 255 ) );
+    }
+
+    qDebug() << "scene width = " << d->scene->width() << ", horizontalOffset = " << d->horizontalOffset;
+    qDebug() << "right side = " << qreal(d->scene->width() - d->horizontalOffset);
+    QGraphicsLineItem* lineItem = new QGraphicsLineItem( 0, 0, 0, 0 );
+    d->allItems.append( lineItem );
+    lineItem->setPen( linePen );
+    d->reposItems();
+    d->scene->addItem( lineItem );
 }
 
 #include "PopupDropper.moc"
