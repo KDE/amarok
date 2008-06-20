@@ -58,9 +58,9 @@ void SvgRenderJob::run()
 
 ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
-    , m_actions( 0 )
-    , m_maxColumnWidth( 500 )
+    , m_actions( 0 )    
     , m_minColumnWidth( 400 )
+    , m_maxColumnWidth( 500 )
     , m_defaultRowHeight( 150 )
 {
     DEBUG_BLOCK
@@ -174,6 +174,7 @@ void ColumnContainment::updateSize() // SLOT
     setGeometry( scene()->sceneRect() );
     m_currentRows = geometry().height() / m_defaultRowHeight;
     m_currentColumns = qMax( (int)(geometry().width() / m_minColumnWidth), 1 );
+
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
@@ -212,12 +213,9 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
     painter->restore();*/
 }
 
-Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPointF & )
+bool
+ColumnContainment::insertInGrid( Plasma::Applet* applet )
 {
-    DEBUG_BLOCK
-//     debug() << "m_columns:" << m_columns;
-//     m_columns->addItem( applet );
-
     int height = applet->effectiveSizeHint( Qt::PreferredSize,
                                             QSizeF( m_maxColumnWidth, -1 ) ).height();
 
@@ -227,18 +225,19 @@ Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPoi
     if( rowSpan == 0 || height % m_defaultRowHeight >  m_defaultRowHeight / 2.0  )
         rowSpan += 1;
 
-    
+
 
     debug() << "current columns: " << m_currentColumns;
     debug() << "current rows: " << m_currentRows;
+
 
     int col = 0;
     int row = 0;
     bool positionFound = false;
     int j = 0;
-    
+
     //traverse the grid matrix to find rowSpan consecutive positions in the same column
-    
+
     while( !positionFound && j < m_currentColumns   )
     {
         int consec = 0;
@@ -263,7 +262,7 @@ Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPoi
 
     if( positionFound )
     {
-        
+
         QRectF rect = geometry();
         debug() << "applet height: " << height;
         debug() << "applet inserted at: " << row << col;
@@ -272,7 +271,7 @@ Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPoi
         QList<int> pos;
         pos << row << col << rowSpan;
         m_appletsPositions[applet] = pos;
-
+        m_appletsIndexes[applet] = m_grid->count();
         m_grid->setColumnMaximumWidth( col, m_maxColumnWidth );
         m_grid->setColumnMinimumWidth( col, m_minColumnWidth );
         for( int i = 0; i < rowSpan; i++ )
@@ -285,11 +284,19 @@ Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPoi
         m_grid->addItem( applet, row, col, rowSpan, colSpan );
         updateConstraints( Plasma::SizeConstraint );
     }
-    else
+    return positionFound;
+}
+
+Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPointF & )
+{
+    DEBUG_BLOCK
+//     debug() << "m_columns:" << m_columns;
+//     m_columns->addItem( applet );
+
+    
+    if( !insertInGrid( applet ) )
     {
         debug() << "[m_currentRows,mcols]: " << m_currentRows << m_currentColumns;
-        debug() << "[row, col]: " << row << col;
-
         debug() << "Send applet to the next free containment";
         applet->destroy();
     }
@@ -417,17 +424,72 @@ ColumnContainment::appletRemoved( Plasma::Applet* applet )
         int row = pos[0];
         int col = pos[1];
         int rowSpan = pos[2];
-       
         for( int i = 0; i < rowSpan; i++ )
             m_gridFreePositions[row + i][col] = true;
         m_appletsPositions.remove( applet );
+        m_appletsIndexes.remove( applet );
+
+        //keep the indexes updated
+        int idx = m_appletsIndexes[applet];
+        foreach( Plasma::Applet *a, m_appletsIndexes.keys() )
+            if( m_appletsIndexes[a] > idx )
+                m_appletsIndexes[a]--;
+        
+        if( m_grid->count() > 0 )
+            rearrangeApplets( row + rowSpan, col );
     }
 //         m_columns->removeItem( item );
     
 }
 
+void
+ColumnContainment::rearrangeApplets( int startRow, int startColumn )
+{
+    DEBUG_BLOCK
+    int i = startRow;
+    
+    int lastColumn = m_grid->columnCount();
+    debug() << "start row: " << startRow;
+    debug() << "row count: " << m_grid->rowCount();
+
+    for( int j = startColumn; j < lastColumn; j++ )
+    {
+        int lastRow = m_grid->rowCount();
+
+        while( i < lastRow )
+        {
+            Plasma::Applet *applet = static_cast< Plasma::Applet* >( m_grid->itemAt( i, j ) );
+            if( !applet )
+            {
+                debug() << "bad cast";
+                break;
+            }
+            
+            QList<int> pos = m_appletsPositions[applet];
+            int rowSpan = pos[2];
+            int idx = m_appletsIndexes[applet];
+            
+            debug() << "remove applet with index: " << idx;
+            m_grid->removeAt( idx );
+            
+            for( int k = 0; k < rowSpan; k++ )
+                m_gridFreePositions[i + k][j] = true;
+
+            foreach( Plasma::Applet* a, m_appletsIndexes.keys() )
+                if( m_appletsIndexes[a] > idx )
+                    m_appletsIndexes[a]--;
+                
+            insertInGrid( applet );
+            i += rowSpan;
+        }
+        i = 0;
+    }
+    
+}
+
 ColumnContainment::~ColumnContainment()
 {
+    clearApplets();
     m_appletsPositions.clear();
 }
 

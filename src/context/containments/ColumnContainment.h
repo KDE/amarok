@@ -88,6 +88,9 @@ private slots:
     void showAddWidgetsInterface();
 
 private:
+    void rearrangeApplets( int starRow, int startColumn );
+    bool insertInGrid( Plasma::Applet* applet );
+    
     QAction* m_appletBrowserAction;
 
     QList<QAction*> *m_actions;
@@ -104,6 +107,7 @@ private:
     bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];
     
     QHash< Plasma::Applet*, QList<int> > m_appletsPositions;
+    QHash< Plasma::Applet*, int > m_appletsIndexes;
     
     Plasma::Svg* m_background;
     Plasma::Svg* m_logo;
