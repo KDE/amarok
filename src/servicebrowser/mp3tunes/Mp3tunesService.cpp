@@ -146,8 +146,8 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         m_authenticated = true;
 
         m_collection = new Mp3tunesServiceCollection( m_sessionId, m_locker );
-        /*CollectionManager::instance()->addUnmanagedCollection( m_collection,
-                                    CollectionManager::Enabled );*/
+        CollectionManager::instance()->addUnmanagedCollection( m_collection,
+                                    CollectionManager::Enabled );
         QList<int> levels;
         levels << CategoryId::Artist << CategoryId::Album;
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );

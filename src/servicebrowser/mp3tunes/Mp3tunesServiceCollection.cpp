@@ -40,7 +40,7 @@ QueryMaker * Mp3tunesServiceCollection::queryMaker()
 
 QString Mp3tunesServiceCollection::collectionId() const
 {
-    return "Mp3Tunes collection";
+  return i18n( "MP3tunes Locker" );
 }
 
 QString Mp3tunesServiceCollection::prettyName() const
