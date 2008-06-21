@@ -74,11 +74,9 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url )
             return;
         }
 
-        QString contents = QString( file.readAll() );
-        file.close();
+        QTextStream stream( &file );
+        stream.setAutoDetectUnicode( true );
 
-        QTextStream stream;
-        stream.setString( &contents );
         loadXSPF( stream );
     }
     else
@@ -125,10 +123,9 @@ XSPFPlaylist::save( const QString &location, bool relative )
     }
 
     QTextStream stream ( &file );
+    stream.setCodec( "UTF-8" );
 
-    QDomDocument::save( stream, 2 );
-
-    file.close();
+    QDomDocument::save( stream, 2 /*indent*/, QDomNode::EncodingFromTextStream );
 
     return true;
 }
@@ -138,8 +135,9 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
 {
     QString errorMsg;
     int errorLine, errorColumn;
-    stream.setCodec( "UTF8" );
-    if (!setContent(stream.readAll(), &errorMsg, &errorLine, &errorColumn))
+
+    QString rawText = stream.readAll();
+    if ( !setContent( rawText, &errorMsg, &errorLine, &errorColumn ) )
     {
         debug() << "[XSPFPlaylist]: Error loading xml file: " "(" << errorMsg << ")"
                 << " at line " << errorLine << ", column " << errorColumn;
