@@ -7,33 +7,33 @@ VERSION 2.0
   FEATURES:
     * LastFM: Now using the new and improved 1.2 protocol.
     * New Service Framework: Common framework for integrated services. A new
-      framework for adding the content of online services direclt into Amarok
+      framework for adding the content of online services directly into Amarok
       in a consistent and well integrated way. All services are plugins and can
       be enabled or disabled form the new service config screen. Services that
       are not loaded will not degrade performance or increase memory usage.
       The service frameworks also offers for free, or makes it very simple to
       add features such as cached albumcover downloads, searching and filtering
       to the individual services. Services can also be track providers, meaning
-      that if amarok recieves a url that one of the services knows how to 
-      handle, they will be presented with all the metadata that the servie can 
+      that if amarok recieves a url that one of the services knows how to
+      handle, they will be presented with all the metadata that the servie can
       provide.
     * Magnatune.com store: Support for purchases using Magnatune gift cards
-    * Magnatune.com store: Support for the upcomming Magnatune.com stream and
-      download memberships, allowing uninterrupred streaming at higher quality 
+    * Magnatune.com store: Support for the upcoming Magnatune.com stream and
+      download memberships, allowing uninterrupred streaming at higher quality
       and free unlimited downloads respectively.
     * Magnatune.com store: Add stream selection to the Magnatune service config,
       allowing the selection of mp3, ogg or lo-fi mp3 streams, and make ogg the
       default
-    * Jamendo.com service: Add new Jamendo service that allows for direct 
-      streaming and ( using the default bit torrent client ) downloads.
-    * Mp3Tunes.com service: A service for streaming music from a personal 
+    * Jamendo.com service: Add new Jamendo service that allows for direct
+      streaming and (using the default bit torrent client) downloads.
+    * Mp3Tunes.com service: A service for streaming music from a personal
       Mp3Tunes.com locker has been added.
-    * Ampache service: A new ampache has been built on top of the service 
-      framework. Together with a recent version of Ampache, this allows the 
+    * Ampache service: A new ampache plugin has been built on top of the service
+      framework. Together with a recent version of Ampache, this allows the
       seamless integration of content from one or more Ampache servers directly
       into Amarok
     * OPML Directory service: A simple podcast directory service has been added
-    * Shoutcast service: The shoutcast list from previos versions of Amarok has
+    * Shoutcast service: The shoutcast list from previous versions of Amarok has
       been reimplemented as a service.
     * Scriptable Service Manager: Add support for writing simple services using 
       scripts. This allows quick prototyping of services as well as the
