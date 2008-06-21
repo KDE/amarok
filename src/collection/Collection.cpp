@@ -70,13 +70,19 @@ Collection::location() const
 bool
 Collection::isWritable() const
 {
-    return false;
+    CollectionLocation* loc = this->location();
+    bool writable = loc->isWritable();
+    delete loc;
+    return writable;
 }
 
 bool
 Collection::isOrganizable() const
 {
-    return false;
+    CollectionLocation* loc = this->location();
+    bool org = loc->isOrganizable();
+    delete loc;
+    return org;  
 }
 
 #include "Collection.moc"
