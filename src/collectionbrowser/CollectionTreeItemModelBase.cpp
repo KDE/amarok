@@ -533,8 +533,7 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
     switch( m_levelType[level] )
     {
         case CategoryId::Album :
-            return ( CollectionWidget::instance()->view()->showYears() ? i18n("Year") + " - " : ""  ) 
-                        + i18n( "Album" );
+            return CollectionWidget::instance()->view()->showYears() ? i18n("Year - Album") : i18n("Album"); 
 
         case CategoryId::Artist : return i18n( "Artist" );
         case CategoryId::Composer : return i18n( "Composer" );
