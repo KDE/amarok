@@ -54,16 +54,11 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     , m_loading2( QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
     , m_currentAnimPixmap( m_loading1 )
 {
-
-
     m_timeLine = new QTimeLine( 10000, this );
     m_timeLine->setFrameRange( 0, 20 );
     m_timeLine->setLoopCount ( 0 );
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( loadingAnimationTick() ) );
-
-
 }
-
 
 CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 {
@@ -101,11 +96,10 @@ CollectionTreeItemModelBase::index(int row, int column, const QModelIndex & pare
    //if ( parentItem->childrenLoaded() )
    //{
         CollectionTreeItem *childItem = parentItem->child(row);
-        if (childItem) {
+        if( childItem )
             return createIndex(row, column, childItem);
-        } else {
+        else
             return QModelIndex();
-        }
     //}
     //else
     //   return QModelIndex();
@@ -114,7 +108,7 @@ CollectionTreeItemModelBase::index(int row, int column, const QModelIndex & pare
 QModelIndex
 CollectionTreeItemModelBase::parent(const QModelIndex & index) const
 {
-     if (!index.isValid())
+     if( !index.isValid() )
          return QModelIndex();
 
      CollectionTreeItem *childItem = static_cast<CollectionTreeItem*>(index.internalPointer());
@@ -129,15 +123,14 @@ CollectionTreeItemModelBase::parent(const QModelIndex & index) const
 int
 CollectionTreeItemModelBase::rowCount(const QModelIndex & parent) const
 {
-
     CollectionTreeItem *parentItem;
 
-    if (!parent.isValid())
+    if( !parent.isValid() )
         parentItem = m_rootItem;
     else
         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
-    if ( parentItem->childrenLoaded() )
+    if( parentItem->childrenLoaded() )
         return parentItem->childCount();
     else
         return 0;
@@ -166,8 +159,10 @@ QMimeData * CollectionTreeItemModelBase::mimeData(const QModelIndexList & indice
     Meta::TrackList tracks;
     QList<QueryMaker*> queries;
 
-    foreach( const QModelIndex &index, indices ) {
-        if (index.isValid()) {
+    foreach( const QModelIndex &index, indices )
+    {
+        if( index.isValid() )
+        {
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
             if( item->allDescendentTracksLoaded() )
                 tracks << item->descendentTracks();
@@ -175,8 +170,9 @@ QMimeData * CollectionTreeItemModelBase::mimeData(const QModelIndexList & indice
             {
                 QueryMaker *qm = item->queryMaker();
                 CollectionTreeItem *tmpItem = item;
-                while ( tmpItem->isDataItem()  ) {
-                    if ( tmpItem->data() )
+                while( tmpItem->isDataItem() )
+                {
+                    if( tmpItem->data() )
                         qm->addMatch( tmpItem->data() );
                     else
                         qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
@@ -199,7 +195,8 @@ QPixmap
 CollectionTreeItemModelBase::iconForLevel(int level) const
 {
     QString icon;
-        switch( m_levelType[level] ) {
+    switch( m_levelType[level] )
+    {
         case CategoryId::Album :
             icon = "view-media-album-amarok";
             break;
@@ -209,11 +206,9 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
         case CategoryId::Composer :
             icon = "view-media-artist-amarok";
             break;
-
         case CategoryId::Genre :
             icon = "favorite-genres-amarok";
             break;
-
         case CategoryId::Year :
             icon = "clock";
             break;
@@ -224,22 +219,23 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
 void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent) const
 {
     //DEBUG_BLOCK
-    if ( qm && parent ) {
-
+    if ( qm && parent )
+    {
         //this check should not hurt anyone... needs to check if single... needs it
-        for( QMapIterator<QueryMaker*, CollectionTreeItem*> iter( d->m_childQueries ); iter.hasNext(); ) {
-            if( iter.next().value() == parent ) {
-                //debug() << "already querying for item...";
+        for( QMapIterator<QueryMaker*, CollectionTreeItem*> iter( d->m_childQueries ); iter.hasNext(); )
+        {
+            if( iter.next().value() == parent )
                 return;             //we are already querying for children of parent
-            }
         }
         if ( level > m_levelType.count() )
             return;
-        if ( level == m_levelType.count() ) {
+        
+        if ( level == m_levelType.count() )
             qm->startTrackQuery();
-        }
-        else {
-            switch( m_levelType[level] ) {
+        else
+        {
+            switch( m_levelType[level] )
+            {
                 case CategoryId::Album :
                     qm->startAlbumQuery();
                     //restrict query to normal albums if the previous level
@@ -272,12 +268,12 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
             }
         }
         CollectionTreeItem *tmpItem = parent;
-        while ( tmpItem->isDataItem()  ) {
+        while( tmpItem->isDataItem() )
+        {
             //ignore Various artists node (whichh will not have a data pointer
             if( tmpItem->data() )
-            {
                 qm->addMatch( tmpItem->data() );
-            }
+            
             tmpItem = tmpItem->parent();
         }
         addFilters( qm );
@@ -288,7 +284,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         qm->run();
 
        //start animation
-       if ( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) )
+       if( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) )
            m_timeLine->start();
 
     }
@@ -298,9 +294,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
 void
 CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 {
-
     int validFilters = qm->validFilterMask();
-    //debug() << " valid filters " << validFilters;
     
     ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
     foreach( or_list orList, parsed )
@@ -309,12 +303,10 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
         
         foreach ( expression_element elem, orList )
         {
-
             qm->beginOr();
 
             if ( elem.field.isEmpty() )
             {
-
                 foreach ( int level, m_levelType )
                 {
                     qint64 value;
@@ -358,7 +350,6 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
             }
             else
             {
-
                 //get field values based on name
                 QString lcField = elem.field.toLower();
                 QueryMaker::NumberComparison compare = QueryMaker::Equals;
@@ -429,10 +420,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                     qm->addNumberFilter( QueryMaker::valTrackNr, elem.text.toInt(), compare );
                 }
             }
-
             qm->endAndOr();
-
-            
         }
         qm->endAndOr();
     }
@@ -445,12 +433,11 @@ CollectionTreeItemModelBase::queryDone()
     CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
 
     //reset icon for this item
-    if ( item != m_rootItem )
+    if( item != m_rootItem )
         emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
 
     //stop timer if there are no more animations active
-
-    if (d->m_childQueries.count() == 0 /*&& d->m_compilationQueries.count() == 0 */ )
+    if( d->m_childQueries.count() == 0 /*&& d->m_compilationQueries.count() == 0 */ )
         m_timeLine->stop();
     qm->deleteLater();
 }
@@ -464,17 +451,14 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
     //if we are expanding an item, we'll find the sender in m_childQueries
     //otherwise we are filtering all collections
     QueryMaker *qm = static_cast<QueryMaker*>( sender() );
-    if ( d->m_childQueries.contains( qm ) ) {
+    if( d->m_childQueries.contains( qm ) )
+    {
         CollectionTreeItem *parent = d->m_childQueries.value( qm );
         QModelIndex parentIndex;
-        if (parent == m_rootItem ) // will never happen in CollectionTreeItemModel
-        {
+        if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel
             parentIndex = QModelIndex();
-        }
         else
-        {
             parentIndex = createIndex( parent->row(), 0, parent );
-        }
 
         //add new rows after existing ones here (which means all artists nodes
         //will be inserted after the "Various Artists" node
@@ -494,9 +478,7 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
         if ( parent->isDataItem() )
         {
             if ( m_expandedItems.contains( parent->data() ) )
-            {
                 emit expandIndex( parentIndex );
-            }
             else
                 //simply insert the item, nothing will change if it is already in the set
                 m_expandedItems.insert( parent->data() );
@@ -528,9 +510,8 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
 void
 CollectionTreeItemModelBase::populateChildren(const DataList & dataList, CollectionTreeItem * parent) const
 {
-    foreach( Meta::DataPtr data, dataList ) {
+    foreach( Meta::DataPtr data, dataList )
         new CollectionTreeItem( data, parent );
-    }
     parent->setChildrenLoaded( true );
 }
 
@@ -538,16 +519,17 @@ void
 CollectionTreeItemModelBase::updateHeaderText()
 {
     m_headerText.clear();
-    for( int i=0; i< m_levelType.count(); ++i ) {
+    for( int i=0; i< m_levelType.count(); ++i )
         m_headerText += nameForLevel( i ) + " / ";
-    }
+
     m_headerText.chop( 3 );
 }
 
 QString
 CollectionTreeItemModelBase::nameForLevel(int level) const
 {
-    switch( m_levelType[level] ) {
+    switch( m_levelType[level] )
+    {
         case CategoryId::Album : return i18n( "Album" );
         case CategoryId::Artist : return i18n( "Artist" );
         case CategoryId::Composer : return i18n( "Composer" );
@@ -567,12 +549,11 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
     qm->startAlbumQuery();
     CollectionTreeItem *tmpItem = parent;
-    while ( tmpItem->isDataItem()  ) {
+    while( tmpItem->isDataItem()  )
+    {
         //ignore Various artists node (which will not have a data pointer)
         if( tmpItem->data() )
-        {
             qm->addMatch( tmpItem->data() );
-        }
         tmpItem = tmpItem->parent();
     }
     addFilters( qm );
@@ -592,14 +573,11 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
 
     m_animFrame = 1 - m_animFrame;
 
-
     //trigger an update of all items being populated at the moment;
     QList<CollectionTreeItem* > items = d->m_childQueries.values();
 
-    foreach ( CollectionTreeItem* item, items ) {
+    foreach ( CollectionTreeItem* item, items )
         emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
-    }
-
 }
 
 void
