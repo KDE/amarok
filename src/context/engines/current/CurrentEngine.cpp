@@ -75,9 +75,9 @@ void CurrentEngine::message( const ContextState& state )
         if( m_currentTrack )
         {
             debug() << "2";
-            unsubscribeTo( m_currentTrack );
+            unsubscribeFrom( m_currentTrack );
             if( m_currentTrack->album() )
-                unsubscribeTo( m_currentTrack->album() );
+                unsubscribeFrom( m_currentTrack->album() );
         }
         update();
     }

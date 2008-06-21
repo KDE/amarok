@@ -920,9 +920,9 @@ Playlist::Model::removeTracksCommand( int position, int rows )
     for( int i = position; i < position + rows; i++ )
     {
         Item* item = m_items.takeAt( position ); //take at position, row times
-        unsubscribeTo( item->track() );
+        unsubscribeFrom( item->track() );
         if( item->track()->album() )
-            unsubscribeTo( item->track()->album() );
+            unsubscribeFrom( item->track()->album() );
         ret.push_back( item->track() );
         delete item;
     }

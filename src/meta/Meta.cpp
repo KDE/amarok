@@ -67,7 +67,7 @@ Meta::Observer::subscribeTo( TrackPtr ptr )
 }
 
 void
-Meta::Observer::unsubscribeTo( TrackPtr ptr )
+Meta::Observer::unsubscribeFrom( TrackPtr ptr )
 {
     if( ptr ) {
         ptr->unsubscribe( this );
@@ -85,7 +85,7 @@ Meta::Observer::subscribeTo( ArtistPtr ptr )
 }
 
 void
-Meta::Observer::unsubscribeTo( ArtistPtr ptr )
+Meta::Observer::unsubscribeFrom( ArtistPtr ptr )
 {
     if( ptr ) {
         ptr->unsubscribe( this );
@@ -103,7 +103,7 @@ Meta::Observer::subscribeTo( AlbumPtr ptr )
 }
 
 void
-Meta::Observer::unsubscribeTo( AlbumPtr ptr )
+Meta::Observer::unsubscribeFrom( AlbumPtr ptr )
 {
     if( ptr ) {
         ptr->unsubscribe( this );
@@ -121,7 +121,7 @@ Meta::Observer::subscribeTo( ComposerPtr ptr )
 }
 
 void
-Meta::Observer::unsubscribeTo( ComposerPtr ptr )
+Meta::Observer::unsubscribeFrom( ComposerPtr ptr )
 {
     if( ptr ) {
         ptr->unsubscribe( this );
@@ -139,7 +139,7 @@ Meta::Observer::subscribeTo( GenrePtr ptr )
 }
 
 void
-Meta::Observer::unsubscribeTo( GenrePtr ptr )
+Meta::Observer::unsubscribeFrom( GenrePtr ptr )
 {
     if( ptr ) {
         ptr->unsubscribe( this );
@@ -157,7 +157,7 @@ Meta::Observer::subscribeTo( YearPtr ptr )
 }
 
 void
-Meta::Observer::unsubscribeTo( YearPtr ptr )
+Meta::Observer::unsubscribeFrom( YearPtr ptr )
 {
     if( ptr ) {
         ptr->unsubscribe( this );

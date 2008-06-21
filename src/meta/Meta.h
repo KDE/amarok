@@ -67,17 +67,17 @@ namespace Meta
     {
         public:
             void subscribeTo( TrackPtr );
-            void unsubscribeTo( TrackPtr );
+            void unsubscribeFrom( TrackPtr );
             void subscribeTo( ArtistPtr );
-            void unsubscribeTo( ArtistPtr );
+            void unsubscribeFrom( ArtistPtr );
             void subscribeTo( AlbumPtr );
-            void unsubscribeTo( AlbumPtr );
+            void unsubscribeFrom( AlbumPtr );
             void subscribeTo( ComposerPtr );
-            void unsubscribeTo( ComposerPtr );
+            void unsubscribeFrom( ComposerPtr );
             void subscribeTo( GenrePtr );
-            void unsubscribeTo( GenrePtr );
+            void unsubscribeFrom( GenrePtr );
             void subscribeTo( YearPtr );
-            void unsubscribeTo( YearPtr );
+            void unsubscribeFrom( YearPtr );
             
             /** This method is called when the metadata of a track has changed.
                 The called class may not cache the pointer */
