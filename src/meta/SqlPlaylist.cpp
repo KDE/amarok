@@ -28,8 +28,8 @@
 using namespace Meta;
 
 SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList & tracks, SqlPlaylistGroupPtr parent )
-    : Playlist()
-    , SqlPlaylistViewItem()
+    : SqlPlaylistViewItem()
+    , Playlist()
     , m_dbId( -1 )
     , m_parent( parent )
     , m_tracks( tracks )
