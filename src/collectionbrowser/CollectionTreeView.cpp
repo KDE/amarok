@@ -107,15 +107,14 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
     m_filterModel->setSourceModel( model );
 
     QTreeView::setModel( m_filterModel );
-//     QTreeView::setModel( model );
 
     connect( m_treeModel, SIGNAL( expandIndex( const QModelIndex & ) ), SLOT( slotExpand( const QModelIndex & ) ) );
 }
 
 
 
-CollectionTreeView::~CollectionTreeView() {
-
+CollectionTreeView::~CollectionTreeView()
+{
     //we don't know what collection this is as this class is used with many different collections...
     //KConfigGroup config = Amarok::config( "Collection Browser" );
     //config.writeEntry( "TreeCategory", m_treeModel->levels() );
@@ -124,19 +123,23 @@ CollectionTreeView::~CollectionTreeView() {
 }
 
 void
-CollectionTreeView::setLevels( const QList<int> &levels ) {
+CollectionTreeView::setLevels( const QList<int> &levels )
+{
     m_treeModel->setLevels( levels );
 }
 
 
 void
-CollectionTreeView::setLevel( int level, int type ) {
+CollectionTreeView::setLevel( int level, int type )
+{
     QList<int> levels = m_treeModel->levels();
-    if ( type == CategoryId::None ) {
+    if ( type == CategoryId::None )
+    {
         while( levels.count() >= level )
             levels.removeLast();
     }
-    else {
+    else
+    {
         levels.removeAll( type );
         levels[level] = type;
     }

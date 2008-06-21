@@ -90,14 +90,17 @@ CollectionTreeItem::child( int row ) {
 QVariant
 CollectionTreeItem::data( int role ) const {
 
-    if ( !m_data.isNull() ) {
-        if ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) {
+    if( !m_data.isNull() )
+    {
+        if( role == Qt::DisplayRole || role == CustomRoles::FilterRole )
+        {
             QString name = m_data->prettyName();
-            if ( CollectionWidget::instance()->view()->showTrackNumbers() )
+            if( CollectionWidget::instance()->view()->showTrackNumbers() )
             {
                 if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast(m_data ) )
                 {
-                    if( !track.isNull() ) {
+                    if( !track.isNull() )
+                    {
                         if ( track->trackNumber() > 0 )
                             name = QString::number( track->trackNumber() ) + " - " + track->fixedName();
                         else
@@ -105,22 +108,23 @@ CollectionTreeItem::data( int role ) const {
                     }
                 }
             }
-            /*if ( CollectionWidget::instance()->view()->showYears() )
+            /*
+            if ( CollectionWidget::instance()->view()->showYears() )
             {
                 if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
                 {
-                    if ( album->tracks().size() == 0 )
+                    if( album->tracks().size() == 0 )
                         return i18n( "CRASH!!!! :-(" );
 
                     Meta::TrackPtr track = album->tracks()[0];
                     QString year;
-                    if( track )
-                        year = track->year() ? track->year()->prettyName() : QString();
-                    else
+                    track ?
+                        year = track->year() ? track->year()->prettyName() : QString() :
                         year = QString();
-                    name = year + " - " + album->prettyName();
+                    name = ( year.isEmpty() ? "" : year + " - " ) + album->prettyName();
                 }
-            }*/
+            }
+            */
             if ( name.isEmpty() )
                 return i18nc( "The Name is not known", "Unknown" );
             return name;

@@ -45,13 +45,13 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     connect( collMgr, SIGNAL( collectionAdded( Collection* ) ), this, SLOT( collectionAdded( Collection* ) ), Qt::QueuedConnection );
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
     setLevels( levelType );
-    debug() << "Collection root has " << m_rootItem->childCount() << " childrens";
+    debug() << "Collection root has " << m_rootItem->childCount() << " children";
 }
 
 
 void
-CollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
-
+CollectionTreeItemModel::setLevels( const QList<int> &levelType )
+{
     m_levelType = levelType;
     update();
     if ( d->m_collections.count() == 1 )
@@ -68,27 +68,25 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 
     if ( item->isDataItem() )
     {
-        if ( role == Qt::DecorationRole ) {
+        if ( role == Qt::DecorationRole )
+        {
             int level = item->level() -1;
 
-            if ( d->m_childQueries.values().contains( item ) ) {
-                if ( level < m_levelType.count() )
+            if ( d->m_childQueries.values().contains( item ) )
+            {
+                if( level < m_levelType.count() )
                     return m_currentAnimPixmap;
             }
 
             if ( level < m_levelType.count() ) {
-                if (  m_levelType[level] == CategoryId::Album ) {
-//                     const Meta::Album* album = static_cast< const Meta::Album*> ( item->data().data() );
+                if (  m_levelType[level] == CategoryId::Album )
+                {
                     Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                     if( album )
-                    {
                         return album->image( 32, false );
-                    }
-                    else
-                        return iconForLevel( level  );
-                } else {
-                    return iconForLevel( level );
+                    return iconForLevel( level  );
                 }
+                return iconForLevel( level );
             }
         }
     }

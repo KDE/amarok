@@ -24,7 +24,6 @@
 
 #include "meta/Meta.h"
 
-
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QPair>
@@ -52,11 +51,11 @@ namespace CategoryId
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel {
-Q_OBJECT
+class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
+{
+        Q_OBJECT
 
     public:
-
         CollectionTreeItemModelBase( );
         virtual ~CollectionTreeItemModelBase();
 
@@ -87,7 +86,6 @@ Q_OBJECT
         void expandIndex( const QModelIndex &index );
 
     public slots:
-
         virtual void queryDone();
         virtual void newResultReady( const QString &collectionId, Meta::DataList data );
 
@@ -96,7 +94,6 @@ Q_OBJECT
         void slotCollapsed( const QModelIndex &index );
 
     protected:
-
         virtual void populateChildren(const Meta::DataList &dataList, CollectionTreeItem *parent) const;
         virtual void ensureChildrenLoaded( CollectionTreeItem *item ) const = 0;
         virtual void updateHeaderText();
@@ -120,12 +117,10 @@ Q_OBJECT
         QString m_currentFilter;
         QSet<Meta::DataPtr> m_expandedItems;
         QSet<Collection*> m_expandedCollections;
+        
     protected slots:
-
         void loadingAnimationTick();
         void update();
-
-
 };
 
 struct CollectionTreeItemModelBase::Private
