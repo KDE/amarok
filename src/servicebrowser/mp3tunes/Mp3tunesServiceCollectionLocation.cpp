@@ -16,9 +16,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 #include "Mp3tunesServiceCollectionLocation.h"
+
 #include "Mp3tunesWorkers.h"
+#include "StatusBar.h"
+
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
+
 #include "Debug.h"
 using namespace Meta;
 
@@ -58,18 +62,36 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
 {
     DEBUG_BLOCK
     QStringList urls;
+    QString error = QString();
+
     foreach( const Meta::TrackPtr &track, sources.keys() )
     {
         debug() << "copying " << sources[ track ] << " to mp3tunes locker";
         debug() << "file is at " << sources[ track ].pathOrUrl();
-        if( sources[ track ].isLocalFile() ) {
-            urls.push_back( sources[ track ].pathOrUrl() );
-        } else {
-            debug() << "Track is not a local file.";
+
+        QString supported_types = "mp3 mp4 m4a m4p aac wma ogg";
+
+        if( supported_types.contains( track->type() ) )
+        {   
+
+          if( sources[ track ].isLocalFile() ) //TODO Support non local files
+          {
+              urls.push_back( sources[ track ].pathOrUrl() );
+          } 
+          else 
+          {
+              debug() << "Track is not a local file.";
+          }
+        } 
+        else 
+        {
+            error = i18n( "Only tracks of the following type are supported: mp3, mp4, m4a, m4p, aac, wma, and ogg. " );
+            debug() << "File type not supprted " << track->type();
         }
     }
+    The::statusBar()->longMessage( error );
     Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader(
-            m_collection->locker(), urls );
+        m_collection->locker(), urls );
     connect( uploadWorker, SIGNAL( uploadComplete() ),
              this, SLOT( slotCopyOperationFinished() ) );
     ThreadWeaver::Weaver::instance()->enqueue( uploadWorker );

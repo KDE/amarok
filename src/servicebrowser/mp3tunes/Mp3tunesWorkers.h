@@ -174,7 +174,7 @@ class Mp3tunesSearchMonkey : public ThreadWeaver::Job
 };
 
 /**
- * Allows for threading a track upload
+ * Allows for threading a track list upload
  */
 class Mp3tunesSimpleUploader : public ThreadWeaver::Job
 {
@@ -187,6 +187,7 @@ class Mp3tunesSimpleUploader : public ThreadWeaver::Job
 
     signals:
         void uploadComplete();
+        void incrementProgress();
 
     private slots:
         void completeJob();

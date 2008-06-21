@@ -19,14 +19,12 @@
 
 #include "Mp3tunesService.h"
 
+#include "collection/CollectionManager.h"
+#include "Debug.h"
 #include "Mp3tunesWorkers.h"
 #include "Mp3tunesConfig.h"
-#include "collection/CollectionManager.h"
-#include "Amarok.h"
-#include "Debug.h"
 #include "StatusBar.h"
 
-#include <KMessageBox>
 #include <KPasswordDialog>
 #include <threadweaver/ThreadWeaver.h>
 
@@ -94,9 +92,7 @@ void Mp3tunesService::polish()
     m_bottomPanel->hide();
 
     if ( !m_authenticated )
-    {
         authenticate( m_email, m_password );
-    }
 }
 
 void Mp3tunesService::authenticate( const QString & uname, const QString & passwd )
@@ -108,9 +104,7 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
         KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to api, but that does not work
         dlg.setPrompt( i18n( "Enter your MP3tunes login and password" ) );
         if( !dlg.exec() )
-        {
             return; //the user canceled
-        }
 
         username = dlg.username();
         password = dlg.password();
@@ -142,7 +136,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
       {
         error = m_locker->errorMessage(); // Not sure how to i18n this
       }
-      KMessageBox::error( this, error, i18n( "Error!" ) );
+      The::statusBar()->longMessage( error );
     }
     else
     {

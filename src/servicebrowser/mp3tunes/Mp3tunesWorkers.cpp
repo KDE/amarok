@@ -19,8 +19,9 @@
 
 #include "Mp3tunesWorkers.h"
 
-#include "Mp3tunesMeta.h"
 #include "Debug.h"
+#include "Mp3tunesMeta.h"
+#include "StatusBar.h"
 
 #include <QStringList>
 
@@ -229,32 +230,37 @@ void Mp3tunesSearchMonkey::completeJob()
 Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    //    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
     m_locker = locker;
     m_tracklist = tracklist;
+    The::statusBar()->newProgressOperation( this ).setDescription( i18n( "Uploading to MP3tunes Locker" ) );
+    connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
 }
 
 Mp3tunesSimpleUploader::~Mp3tunesSimpleUploader()
-{}
+{
+    The::statusBar()->endProgressOperation( this );
+}
 
 void Mp3tunesSimpleUploader::run()
 {
     DEBUG_BLOCK
-    if(m_locker != 0) {
-        debug() << "Starting upload of " << m_tracklist.count() << " tracks.";
-        foreach(QString track, m_tracklist) {
-            debug() << "Uploading: " << track;
-            bool result = m_locker->uploadTrack( track );
-            if(result) {
-                debug() << "Uploaded Succeeded.";
-            } else {
-                debug() << "Uploaded Failed.";
+    if(m_locker != 0)
+        return;
+    
+    debug() << "Starting upload of " << m_tracklist.count() << " tracks.";
+    The::statusBar()->incrementProgressTotalSteps( this, m_tracklist.count() );
+    foreach(QString track, m_tracklist) {
+        emit( incrementProgress() );
+        debug() << "Uploading: " << track;
+        bool result = m_locker->uploadTrack( track );
+        if(result) {
+            debug() << "Uploaded Succeeded.";
+        } else {
+            debug() << "Uploaded Failed.";
             }
-        }
-        debug() << "Upload loop complete";
-    } else {
-        debug() << "Locker is NULL";
     }
+    debug() << "Upload loop complete";
 }
 
 void Mp3tunesSimpleUploader::completeJob()
