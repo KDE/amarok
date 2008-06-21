@@ -20,6 +20,8 @@
 #define DEBUG_PREFIX "CollectionTreeItemModelBase"
 
 #include "CollectionTreeItemModelBase.h"
+#include "CollectionTreeView.h"
+#include "CollectionWidget.h"
 
 #include "Amarok.h"
 #include "AmarokMimeData.h"
@@ -530,7 +532,10 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
 {
     switch( m_levelType[level] )
     {
-        case CategoryId::Album : return i18n( "Album" );
+        case CategoryId::Album :
+            return ( CollectionWidget::instance()->view()->showYears() ? i18n("Year") + " - " : ""  ) 
+                        + i18n( "Album" );
+
         case CategoryId::Artist : return i18n( "Artist" );
         case CategoryId::Composer : return i18n( "Composer" );
         case CategoryId::Genre : return i18n( "Genre" );
