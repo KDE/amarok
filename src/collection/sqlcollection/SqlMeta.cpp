@@ -21,6 +21,7 @@
 #include "Amarok.h"
 #include "BlockingQuery.h"
 #include "Debug.h"
+#include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "mediadevice/CopyToDeviceAction.h"
 #include "meta/CustomActionsCapability.h"
@@ -930,6 +931,13 @@ SqlAlbum::image( int size, bool withShadow )
         m_images.insert( size, result );
         return QPixmap( result );
     }
+
+    // Cover fetching runs in another thread. If there is a retreived cover 
+    // then updateImage() gets called which updates the cache and alerts the
+    // subscribers. We use queueAlbum() because this runs the fetch as a
+    // background job and doesn't give an intruding popup asking for confirmation
+    if( !m_name.isEmpty() )
+        CoverFetcher::instance()->queueAlbum( KSharedPtr<Meta::Album>(this) );
 
     // If the result image is empty then we didn't find any cached image, nor 
     // could we find the original cover to scale to the appropriate size. Hence,
