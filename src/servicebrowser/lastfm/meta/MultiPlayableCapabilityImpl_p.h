@@ -19,6 +19,7 @@
 #ifndef AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 #define AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 
+#include "Meta.h"
 #include "meta/MultiPlayableCapability.h"
 
 class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public Meta::Observer
@@ -30,8 +31,8 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
             , m_url( track->playableUrl() )
             , m_track( track )
         {
-            //FIXME
-            //subscribeTo( m_track );
+            Meta::TrackPtr trackptr( track );
+            subscribeTo( trackptr );
         }
 
         virtual ~MultiPlayableCapabilityImpl() 
