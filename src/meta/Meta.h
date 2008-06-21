@@ -78,8 +78,6 @@ namespace Meta
             void unsubscribeTo( GenrePtr );
             void subscribeTo( YearPtr );
             void unsubscribeTo( YearPtr );
-            void subscribeTo( MagnatuneAlbum* );
-            void unsubscribeTo( MagnatuneAlbum* );
             
             /** This method is called when the metadata of a track has changed.
                 The called class may not cache the pointer */
@@ -98,7 +96,6 @@ namespace Meta
             QSet<ComposerPtr> m_composerSubscriptions;
             QSet<GenrePtr> m_genreSubscriptions;
             QSet<YearPtr> m_yearSubscriptions;
-            QSet<MagnatuneAlbum*> m_magnatuneAlbumSubscriptions;
     };
 
     class AMAROK_EXPORT MetaBase : public QSharedData

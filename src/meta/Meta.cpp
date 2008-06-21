@@ -25,7 +25,6 @@
 #include "Collection.h"
 #include "Debug.h"
 #include "QueryMaker.h"
-#include "../servicebrowser/magnatunestore/MagnatuneMeta.h"
 
 #include <QDir>
 #include <QImage>
@@ -54,9 +53,6 @@ Meta::Observer::~Observer()
         if( ptr )
             ptr->unsubscribe( this );
     foreach( YearPtr ptr, m_yearSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-    foreach( MagnatuneAlbum* ptr, m_magnatuneAlbumSubscriptions )
         if( ptr )
             ptr->unsubscribe( this );
 }
@@ -166,24 +162,6 @@ Meta::Observer::unsubscribeTo( YearPtr ptr )
     if( ptr ) {
         ptr->unsubscribe( this );
         m_yearSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( MagnatuneAlbum* ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_magnatuneAlbumSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeTo( MagnatuneAlbum* ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_magnatuneAlbumSubscriptions.remove( ptr );
     }
 }
 
