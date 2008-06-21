@@ -416,12 +416,10 @@ XmlParseJob::run()
                 }
                 if( localname == "itemcount" )
                 {
-                    //TODO handle itemcount
                     The::statusBar()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
                 }
                 else if( localname == "tags" )
                 {
-                    emit incrementProgress();
                     //TODO handle tag data
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QVariantMap data;
@@ -446,14 +444,13 @@ XmlParseJob::run()
                     if( !attrs.value( "filesize" ).isEmpty() )
                         data.insert( Meta::Field::FILESIZE, attrs.value( "filesize" ).toString() );
 
+                    KUrl url( data.value( Meta::Field::URL ).toString() );
                     if( firstTrack )
                     {
-                        KUrl url( data.value( Meta::Field::URL ).toString() );
                         currentDir = url.directory();
                         firstTrack = false;
                     }
 
-                    KUrl url( data.value( Meta::Field::URL ).toString() );
                     if( url.directory() == currentDir )
                     {
                         directoryData.append( data );
