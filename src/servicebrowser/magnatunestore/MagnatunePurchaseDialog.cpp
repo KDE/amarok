@@ -22,6 +22,7 @@
 
 #include "Debug.h"
 #include "MagnatuneDatabaseHandler.h"
+#include "Meta.h"
 
 #include <KMessageBox>
 
@@ -65,7 +66,8 @@ void MagnatunePurchaseDialog::setAlbum( MagnatuneAlbum * album )
 
     m_albumCode = album->albumCode();
 
-    subscribeTo( album );
+    Meta::AlbumPtr albumptr( album );
+    subscribeTo( albumptr );
 
     coverPixmapLabel->setPixmap( album->image( 200, false ) );
 }
