@@ -46,8 +46,8 @@ class SqlPlaylistGroup : public SqlPlaylistViewItem
 {
     public:
 
-        SqlPlaylistGroup ( const QStringList &dbResultRow, SqlPlaylistGroupPtr parent );
-        SqlPlaylistGroup ( const QString &name, SqlPlaylistGroupPtr parent = SqlPlaylistGroupPtr() );
+        SqlPlaylistGroup( const QStringList &dbResultRow, SqlPlaylistGroupPtr parent );
+        explicit SqlPlaylistGroup( const QString &name, SqlPlaylistGroupPtr parent = SqlPlaylistGroupPtr() );
 
         ~SqlPlaylistGroup();
 

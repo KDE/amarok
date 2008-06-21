@@ -12,8 +12,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef COLUMN_APPLET_H
-#define COLUMN_APPLET_H
+#ifndef COLUMNCONTAINMENT_H
+#define COLUMNCONTAINMENT_H
 
 #include "TheInstances.h"
 

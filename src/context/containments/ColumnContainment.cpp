@@ -12,8 +12,6 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <limits.h>
-
 #include "ColumnContainment.h"
 
 #include "ContextScene.h"
@@ -43,6 +41,7 @@
 #include <QThread>
 #include <QTimeLine>
 
+#include <limits.h>
 
 
 namespace Context
