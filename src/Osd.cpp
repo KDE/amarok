@@ -594,11 +594,11 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     DEBUG_BLOCK
 
     if( m_track && m_track->artist() )
-        unsubscribeTo( m_track->artist() );
+        unsubscribeFrom( m_track->artist() );
     if( m_track && m_track->album() )
-        unsubscribeTo( m_track->album() );
+        unsubscribeFrom( m_track->album() );
     if( m_track )
-        unsubscribeTo( m_track );
+        unsubscribeFrom( m_track );
 
     m_track = track;
 

@@ -95,10 +95,10 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
         return;
 
     if( m_track->artist() )
-        unsubscribeTo( m_track->artist() );
+        unsubscribeFrom( m_track->artist() );
     if( m_track->album() )
-        unsubscribeTo( m_track->album() );
-    unsubscribeTo( m_track );
+        unsubscribeFrom( m_track->album() );
+    unsubscribeFrom( m_track );
 
     if( force || m_track != track )
     {
