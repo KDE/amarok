@@ -49,7 +49,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     , m_curState( Home )
     , m_appletBrowser( 0 )
 {
-
+    
     s_self = this;
 
     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
@@ -89,6 +89,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
 ContextView::~ContextView()
 {
     clear( m_curState );
+    delete m_appletBrowser;
 }
 
 void ContextView::clear( const ContextState& state )
