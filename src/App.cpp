@@ -18,7 +18,6 @@ email                : markey@web.de
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "amarokdbushandler.h"
 #include "atomicstring.h"
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
@@ -41,6 +40,16 @@ email                : markey@web.de
 #include "TrackTooltip.h"        //engineNewMetaData()
 #include "TheInstances.h"
 #include "metadata/tplugins.h"
+
+#include "amarokCollectionDBusHandler.h" //dbus handlers
+#include "amarokContextDBusHandler.h"
+#include "amarokPlayerDBusHandler.h"
+#include "amarokPlaylistBrowserDBusHandler.h"
+#include "amarokPlaylistDBusHandler.h"
+#include "amarokScriptDBusHandler.h"
+#include "PlayerDBusHandler.h"
+#include "RootDBusHandler.h"
+#include "TracklistDBusHandler.h"
 
 #include <iostream>
 
@@ -180,13 +189,17 @@ App::App()
 
     PERF_LOG( "Creating DBus handlers" )
     //needs to be created before the wizard
-     new Amarok::DbusPlayerHandler(); // Must be created first
-     new Amarok::DbusPlaylistHandler();
-     new Amarok::DbusPlaylistBrowserHandler();
-     new Amarok::DbusContextHandler();
-     new Amarok::DbusCollectionHandler();
+        new Amarok::amarokPlayerDBusHandler(); // Must be created first
+        new Amarok::amarokPlaylistDBusHandler();
+        new Amarok::amarokPlaylistBrowserDBusHandler();
+        new Amarok::amarokContextDBusHandler();
+        new Amarok::amarokCollectionDBusHandler();
 //     new Amarok::DbusMediaBrowserHandler();
-     new Amarok::DbusScriptHandler();
+        new Amarok::amarokScriptDBusHandler();
+        new Amarok::RootDBusHandler();
+        new Amarok::PlayerDBusHandler();
+        new Amarok::TracklistDBusHandler();
+	
      PERF_LOG( "Done creating DBus handlers" )
 
     // tell AtomicString that this is the GUI thread
@@ -197,8 +210,10 @@ App::App()
 #ifdef Q_WS_MAC
     setupEventHandler_mac((long)this);
 #endif
+
+    QDBusConnection::sessionBus().registerService("org.freedesktop.MediaPlayer");
     QDBusConnection::sessionBus().registerService("org.kde.amarok");
-    QTimer::singleShot( 0, this, SLOT( continueInit() ) );
+	QTimer::singleShot( 0, this, SLOT( continueInit() ) );
     PERF_LOG( "Done App ctor" )
 }
 
@@ -246,6 +261,7 @@ App::~App()
     QDBusConnectionInterface* dbusService;
     if (QDBusConnection::sessionBus().isConnected() && (dbusService = QDBusConnection::sessionBus().interface()))
         dbusService->unregisterService("org.kde.amarok");
+        dbusService->unregisterService("org.freedesktop.MediaPlayer");
 #endif
 }
 

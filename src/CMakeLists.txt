@@ -335,6 +335,21 @@ set(popupdropper_SRCS
 )
 
 #####################################################################
+# DBUS
+#####################################################################
+set(dbus_SRCS
+    dbus/amarokPlayerDBusHandler.cpp
+    dbus/amarokPlaylistDBusHandler.cpp
+    dbus/amarokPlaylistBrowserDBusHandler.cpp
+    dbus/amarokCollectionDBusHandler.cpp
+    dbus/amarokContextDBusHandler.cpp
+    dbus/amarokScriptDBusHandler.cpp
+    dbus/RootDBusHandler.cpp
+    dbus/PlayerDBusHandler.cpp
+    dbus/TracklistDBusHandler.cpp
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -357,6 +372,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylistmanager_SRCS}
     ${mediadevice_SRCS}
     ${popupdropper_SRCS}
+    ${dbus_SRCS}
     ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
@@ -382,7 +398,6 @@ set(amaroklib_LIB_SRCS
     CrashHandler.cpp
     cuefile.cpp
     dbsetup.ui.h
-    dbus/amarokdbushandler.cpp
     dialogs/CollectionSetup.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/PixmapViewer.cpp
@@ -428,14 +443,15 @@ set(amaroklib_LIB_SRCS
 #    moodbar.cpp
 )
 
-qt4_add_dbus_adaptor(  amaroklib_LIB_SRCS dbus/org.kde.amarok.collection.xml amarokdbushandler.h Amarok::DbusCollectionHandler)
-#qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.mediabrowser.xml amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.player.xml amarokdbushandler.h Amarok::DbusPlayerHandler)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.playlist.xml amarokdbushandler.h Amarok::DbusPlaylistHandler)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.playlistbrowser.xml amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.script.xml amarokdbushandler.h Amarok::DbusScriptHandler)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.context.xml amarokdbushandler.h Amarok::DbusContextHandler)
-
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.player.xml amarokPlayerDBusHandler.h Amarok::amarokPlayerDBusHandler amarokPlayerAdaptor amarokPlayerAdaptor)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.playlist.xml amarokPlaylistDBusHandler.h Amarok::amarokPlaylistDBusHandler amarokPlaylistAdaptor amarokPlaylistAdaptor)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.playlistbrowser.xml amarokPlaylistBrowserDBusHandler.h Amarok::amarokPlaylistBrowserDBusHandler amarokPlaylistBrowserAdaptor amarokPlaylistBrowserAdaptor)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.collection.xml amarokCollectionDBusHandler.h Amarok::amarokCollectionDBusHandler amarokCollectionAdaptor amarokCollectionAdaptor)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.context.xml amarokContextDBusHandler.h Amarok::amarokContextDBusHandler amarokContextAdaptor amarokContextAdaptor)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.script.xml amarokScriptDBusHandler.h Amarok::amarokScriptDBusHandler amarokScriptAdaptor amarokScriptAdaptor)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.player.xml PlayerDBusHandler.h Amarok::PlayerDBusHandler PlayerAdaptor PlayerAdaptor)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.tracklist.xml TracklistDBusHandler.h Amarok::TracklistDBusHandler TracklistAdaptor TracklistAdaptor)
 
 set( amaroklib_DEPENDS "amarokplasma" )
 
@@ -530,13 +546,15 @@ install(FILES context/servicetypes/amarok_context_applet.desktop
               DESTINATION ${SERVICETYPES_INSTALL_DIR} )
 
 install(FILES  amarok.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
-install(FILES dbus/org.kde.amarok.collection.xml
-              dbus/org.kde.amarok.context.xml
-              dbus/org.kde.amarok.mediabrowser.xml
-              dbus/org.kde.amarok.player.xml
+install(FILES dbus/org.kde.amarok.player.xml
               dbus/org.kde.amarok.playlist.xml
               dbus/org.kde.amarok.playlistbrowser.xml
+              dbus/org.kde.amarok.collection.xml
+              dbus/org.kde.amarok.context.xml
               dbus/org.kde.amarok.script.xml
+              dbus/org.freedesktop.MediaPlayer.root.xml
+              dbus/org.freedesktop.MediaPlayer.player.xml
+              dbus/org.freedesktop.MediaPlayer.tracklist.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
