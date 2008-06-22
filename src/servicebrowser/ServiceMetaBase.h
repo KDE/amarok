@@ -146,6 +146,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         virtual KUrl playableUrl() const;
         virtual QString url() const;
+        virtual KUrl downloadUrl() const;
         virtual QString prettyUrl() const;
 
         virtual bool isPlayable() const;
@@ -236,6 +237,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void setArtistId( int id );
         int artistId() const;
         void setUrl( const QString &url );
+        void setDownloadUrl( const QString &url );
+        void setPlayableUrl( const QString &url );
 
     private:
         ArtistPtr m_artist;
@@ -249,6 +252,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         int m_trackNumber;
         int m_length;
         QString m_displayUrl;
+        QString m_downloadUrl;
         QString m_playableUrl;
         int m_albumId;
         QString m_albumName;
