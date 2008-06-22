@@ -143,7 +143,6 @@ ServiceTrack::ServiceTrack(const QString & name)
     , m_length( 0 )
     , m_displayUrl( 0 )
     , m_playableUrl( 0 )
-    , m_downloadUrl( 0 )
     , m_albumId( 0 )
     , m_albumName( 0 )
     , m_artistId( 0 )
@@ -167,7 +166,6 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     m_trackNumber = resultRow[2].toInt();
     m_length = resultRow[3].toInt();
     m_displayUrl = resultRow[4];
-    m_downloadUrl = resultRow[4];
     m_playableUrl = resultRow[4];
     m_albumId = resultRow[5].toInt();
     //m_albumName = resultRow[6];
@@ -243,13 +241,6 @@ ServiceTrack::url() const
     return m_playableUrl;
 }
 
-KUrl
-ServiceTrack::downloadUrl() const
-{
-    KUrl url( m_downloadUrl );
-    return url;
-}
-
 QString
 ServiceTrack::prettyUrl() const
 {
@@ -260,20 +251,7 @@ void
 ServiceTrack::setUrl(const QString & url)
 {
     m_playableUrl = url;
-    m_downloadUrl = url;
     m_displayUrl = url;
-}
-
-void
-ServiceTrack::setPlayableUrl(const QString & url)
-{
-    m_playableUrl = url;
-}
-
-void
-ServiceTrack::setDownloadUrl(const QString & url)
-{
-    m_downloadUrl = url;
 }
 
 bool

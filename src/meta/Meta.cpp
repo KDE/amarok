@@ -1,7 +1,7 @@
 /* This file is part of the Amarok project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2007 Ian Monroe <ian@monroe.nu>
-   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>
+   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org> 
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -233,12 +233,6 @@ Meta::MetaBase::asCapabilityInterface( Meta::Capability::Type type )
 
 
 //Meta::Track
-
-KUrl
-Meta::Track::downloadUrl() const
-{
-    return playableUrl();
-}
 
 bool
 Meta::Track::inCollection() const

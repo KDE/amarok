@@ -1,6 +1,6 @@
 /* This file is part of the Amarok project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>
+   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org> 
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,7 +78,7 @@ namespace Meta
             void unsubscribeFrom( GenrePtr );
             void subscribeTo( YearPtr );
             void unsubscribeFrom( YearPtr );
-
+            
             /** This method is called when the metadata of a track has changed.
                 The called class may not cache the pointer */
             virtual void metadataChanged( Track *track );
@@ -165,8 +165,6 @@ namespace Meta
             virtual KUrl playableUrl() const = 0;
             /** an url for display purposes */
             virtual QString prettyUrl() const = 0;
-            /** an url to be used for downloading, not playing */
-            virtual KUrl downloadUrl() const;
             /** an url which is unique for this track. Use this if you need a key for the track */
             virtual QString url() const = 0;
 
