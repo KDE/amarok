@@ -34,6 +34,8 @@ class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
         ServiceCollectionLocation();
         virtual ~ServiceCollectionLocation();
 
+        virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
+
         //These are service dependant
         virtual QString prettyLocation() const;
         virtual bool isWritable() const;

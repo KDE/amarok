@@ -178,7 +178,7 @@ CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
     foreach( Meta::TrackPtr track, tracks )
     {
         if( track->isPlayable() )
-            urls.insert( track, track->downloadUrl() );
+            urls.insert( track, track->playableUrl() );
     }
 
     slotGetKIOCopyableUrlsDone( urls );
