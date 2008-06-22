@@ -1,0 +1,57 @@
+/******************************************************************************
+ * Copyright (C) 2008 Ian Monroe <ian@monroe.nu>                              *
+ *           (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or              *
+ * modify it under the terms of the GNU General Public License as             *
+ * published by the Free Software Foundation; either version 2 of             *
+ * the License, or (at your option) any later version.                        *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+ ******************************************************************************/
+
+#include "RootDBusHandler.h"
+
+#include "Amarok.h"
+#include "App.h"
+#include "Debug.h"
+
+#include "RootAdaptor.h"
+
+#define MPRIS_VERSION 1.0
+
+namespace Amarok
+{
+
+	RootDBusHandler::RootDBusHandler()
+		: QObject( kapp )
+	{
+		new RootAdaptor( this );
+		QDBusConnection::sessionBus().registerObject("/", this);
+	}
+
+	QString RootDBusHandler::Identity()
+	{
+		return QString( "%1 %2" ).arg( "Amarok", APP_VERSION );
+	}
+
+	void RootDBusHandler::Quit()
+	{
+		kapp->closeAllWindows();
+	}
+
+	float RootDBusHandler::MprisVersion()
+	{
+		//return type wrong here?
+		return MPRIS_VERSION;
+	}
+
+}
+
+#include "RootDBusHandler.moc"

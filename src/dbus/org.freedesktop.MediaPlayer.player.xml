@@ -1,0 +1,62 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+
+<node>
+  <interface name="org.freedesktop.MediaPlayer">
+
+    <method name="Pause">
+    </method>
+
+    <method name="Stop">
+    </method>
+
+    <method name="Play">
+    </method>
+
+    <method name="PlayPause">
+    </method>
+
+    <method name="GetStatus">
+        <arg type="i" direction="out"/>
+    </method>
+
+    <method name="VolumeSet">
+        <arg type="i" direction="in"/>
+    </method>
+
+    <method name="VolumeGet">
+        <arg type="i" direction="out"/>
+    </method>
+
+    <method name="PositionSet">
+        <arg type="i" direction="in"/>
+    </method>
+
+    <method name="PositionGet">
+        <arg type="i" direction="out"/>
+    </method>
+
+    <method name="GetMetaData">
+        <arg type="a{sv}" direction="out"/>
+        <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
+    </method>
+
+    <method name="GetCaps">
+        <arg type="i" direction="out" />
+    </method>
+
+    <signal name="TrackChange">
+        <arg type="s"/>
+    </signal>
+
+    <signal name="StatusChange">
+        <arg type="i"/>
+    </signal>
+
+    <signal name="CapsChange">
+        <arg type="i" />
+    </signal>
+
+  </interface>
+</node>
