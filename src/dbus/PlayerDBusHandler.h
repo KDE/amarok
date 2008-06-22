@@ -25,41 +25,41 @@
 namespace Amarok
 {
 
-	class PlayerDBusHandler : public QObject
-	{
-		Q_OBJECT
-		public:
-			PlayerDBusHandler();
+    class PlayerDBusHandler : public QObject
+    {
+        Q_OBJECT
+        public:
+            PlayerDBusHandler();
 
-			enum DBusStatus { Playing = 0, Paused = 1, Stopped = 2 };
-			//http://wiki.xmms2.xmms.se/index.php/MPRIS#GetCaps
-			enum DBusCaps {
-				 NONE                  = 0,
-				 CAN_GO_NEXT           = 1 << 0,
-				 CAN_GO_PREV           = 1 << 1,
-				 CAN_PAUSE             = 1 << 2,
-				 CAN_PLAY              = 1 << 3,
-				 CAN_SEEK              = 1 << 4,
-				 CAN_PROVIDE_METADATA  = 1 << 5,
-				 CAN_HAS_TRACKLIST     = 1 << 6
-			 };
-		public slots:
-			int GetStatus();
-			void Pause();
-			void Play();
-			void PlayPause();
-			int PositionGet();
-			void PositionSet(int in0);
-			void Stop();
-			int VolumeGet();
-			void VolumeSet(int in0);
-			int GetCaps();
-			QVariantMap GetMetaData();
-		signals:
-			void CapsChange( int );
-		private slots:
-			void capsChangeSlot();
-	};
+            enum DBusStatus { Playing = 0, Paused = 1, Stopped = 2 };
+            //http://wiki.xmms2.xmms.se/index.php/MPRIS#GetCaps
+            enum DBusCaps {
+                 NONE                  = 0,
+                 CAN_GO_NEXT           = 1 << 0,
+                 CAN_GO_PREV           = 1 << 1,
+                 CAN_PAUSE             = 1 << 2,
+                 CAN_PLAY              = 1 << 3,
+                 CAN_SEEK              = 1 << 4,
+                 CAN_PROVIDE_METADATA  = 1 << 5,
+                 CAN_HAS_TRACKLIST     = 1 << 6
+             };
+        public slots:
+            int GetStatus();
+            void Pause();
+            void Play();
+            void PlayPause();
+            int PositionGet();
+            void PositionSet(int in0);
+            void Stop();
+            int VolumeGet();
+            void VolumeSet(int in0);
+            int GetCaps();
+            QVariantMap GetMetaData();
+        signals:
+            void CapsChange( int );
+        private slots:
+            void capsChangeSlot();
+    };
 
 } // namespace Amarok
 

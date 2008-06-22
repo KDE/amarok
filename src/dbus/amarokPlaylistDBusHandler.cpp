@@ -36,125 +36,123 @@
 namespace Amarok
 {
 
-	amarokPlaylistDBusHandler::amarokPlaylistDBusHandler()
-	: QObject( kapp )
-	{
-		new amarokPlaylistAdaptor(this);
-		QDBusConnection::sessionBus().registerObject("/Playlist", this);
-	}
+    amarokPlaylistDBusHandler::amarokPlaylistDBusHandler()
+    : QObject( kapp )
+    {
+        new amarokPlaylistAdaptor(this);
+        QDBusConnection::sessionBus().registerObject("/Playlist", this);
+    }
 
-	int amarokPlaylistDBusHandler::getActiveIndex()
-	{
-		return The::playlistModel()->activeRow();
-	}
+    int amarokPlaylistDBusHandler::getActiveIndex()
+    {
+        return The::playlistModel()->activeRow();
+    }
 
-	int amarokPlaylistDBusHandler::getTotalTrackCount()
-	{
-		return The::playlistModel()->rowCount();
-	}
+    int amarokPlaylistDBusHandler::getTotalTrackCount()
+    {
+        return The::playlistModel()->rowCount();
+    }
 
-	QString amarokPlaylistDBusHandler::saveCurrentPlaylist()
-	{
-		QString savePath = The::playlistModel()->defaultPlaylistPath();
-		The::playlistModel()->exportPlaylist( savePath );
-		return savePath;
-	}
+    QString amarokPlaylistDBusHandler::saveCurrentPlaylist()
+    {
+        QString savePath = The::playlistModel()->defaultPlaylistPath();
+        The::playlistModel()->exportPlaylist( savePath );
+        return savePath;
+    }
 
-	void amarokPlaylistDBusHandler::addMedia(const KUrl &url)
-	{
-		Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-		The::playlistModel()->insertOptioned( track, Playlist::Append );
-	}
+    void amarokPlaylistDBusHandler::addMedia(const KUrl &url)
+    {
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+        The::playlistModel()->insertOptioned( track, Playlist::Append );
+    }
 
-	void amarokPlaylistDBusHandler::addMediaList(const KUrl::List &urls)
-	{
-		Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
-		The::playlistModel()->insertOptioned( tracks, Playlist::Append );
-	}
+    void amarokPlaylistDBusHandler::addMediaList(const KUrl::List &urls)
+    {
+        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
+        The::playlistModel()->insertOptioned( tracks, Playlist::Append );
+    }
 
-	void amarokPlaylistDBusHandler::clearPlaylist()
-	{
-		The::playlistModel()->clear();
-	}
+    void amarokPlaylistDBusHandler::clearPlaylist()
+    {
+        The::playlistModel()->clear();
+    }
 
-	void amarokPlaylistDBusHandler::playByIndex(int index)
-	{
-		The::playlistModel()->play( index );
-	}
+    void amarokPlaylistDBusHandler::playByIndex(int index)
+    {
+        The::playlistModel()->play( index );
+    }
 
-	void amarokPlaylistDBusHandler::playMedia( const KUrl &url )
-	{
-		Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-		if( track )
-		{
-			The::playlistModel()->insertOptioned( track, Playlist::DirectPlay | Playlist::Unique );
-		}
-	}
+    void amarokPlaylistDBusHandler::playMedia( const KUrl &url )
+    {
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+        if( track )
+            The::playlistModel()->insertOptioned( track, Playlist::DirectPlay | Playlist::Unique );
+    }
 
-	void amarokPlaylistDBusHandler::popupMessage( const QString& msg )
-	{
-		StatusBar::instance()->longMessageThreadSafe( msg );
-	}
+    void amarokPlaylistDBusHandler::popupMessage( const QString& msg )
+    {
+        StatusBar::instance()->longMessageThreadSafe( msg );
+    }
 
-	void amarokPlaylistDBusHandler::removeCurrentTrack()
-	{
-		The::playlistModel()->removeRows( getActiveIndex(), 1 );
-	}
+    void amarokPlaylistDBusHandler::removeCurrentTrack()
+    {
+        The::playlistModel()->removeRows( getActiveIndex(), 1 );
+    }
 
-	void amarokPlaylistDBusHandler::removeByIndex( int index )
-	{
-		if( index < getTotalTrackCount() )
-			The::playlistModel()->removeRows( index, 1 );
-	}
+    void amarokPlaylistDBusHandler::removeByIndex( int index )
+    {
+        if( index < getTotalTrackCount() )
+            The::playlistModel()->removeRows( index, 1 );
+    }
 
-	void amarokPlaylistDBusHandler::repopulate()
-	{
-		AMAROK_NOTIMPLEMENTED
-		//PORT 2.0
-		//         Playlist::instance()->repopulate();
-	}
+    void amarokPlaylistDBusHandler::repopulate()
+    {
+        AMAROK_NOTIMPLEMENTED
+        //PORT 2.0
+        //         Playlist::instance()->repopulate();
+    }
 
-	void amarokPlaylistDBusHandler::savePlaylist( const QString& path, bool relativePaths )
-	{
-		Q_UNUSED( relativePaths );
-		The::playlistModel()->exportPlaylist( path );
-	}
+    void amarokPlaylistDBusHandler::savePlaylist( const QString& path, bool relativePaths )
+    {
+        Q_UNUSED( relativePaths );
+        The::playlistModel()->exportPlaylist( path );
+    }
 
-	void amarokPlaylistDBusHandler::setStopAfterCurrent( bool on )
-	{
-		The::playlistModel()->setStopAfterMode( on ? Playlist::StopAfterCurrent : Playlist::StopNever );
-	}
+    void amarokPlaylistDBusHandler::setStopAfterCurrent( bool on )
+    {
+        The::playlistModel()->setStopAfterMode( on ? Playlist::StopAfterCurrent : Playlist::StopNever );
+    }
 
-	void amarokPlaylistDBusHandler::shortStatusMessage(const QString& msg)
-	{
-		StatusBar::instance()->shortMessage( msg );
-	}
+    void amarokPlaylistDBusHandler::shortStatusMessage(const QString& msg)
+    {
+        StatusBar::instance()->shortMessage( msg );
+    }
 
-	void amarokPlaylistDBusHandler::shufflePlaylist()
-	{
-		AMAROK_NOTIMPLEMENTED
-		//PORT 2.0
-		//         Playlist::instance()->shuffle();
-	}
+    void amarokPlaylistDBusHandler::shufflePlaylist()
+    {
+        AMAROK_NOTIMPLEMENTED
+        //PORT 2.0
+        //         Playlist::instance()->shuffle();
+    }
 
-	void amarokPlaylistDBusHandler::togglePlaylist()
-	{
-		MainWindow::self()->showHide();
-	}
+    void amarokPlaylistDBusHandler::togglePlaylist()
+    {
+        MainWindow::self()->showHide();
+    }
 
-	QStringList amarokPlaylistDBusHandler::filenames()
-	{
-		QStringList fileNames;
-		foreach( Playlist::Item* item, The::playlistModel()->itemList() )
-		fileNames << item->track()->prettyUrl();
-		return fileNames;
-	}
-	//     QString amarokPlaylistDBusHandler::currentTrackUniqueId()
-	//     {
-	//         if( Playlist::instance()->currentItem() )
-	//             return Playlist::instance()->currentItem()->uniqueId();
-	//         return QString();
-	//     }
+    QStringList amarokPlaylistDBusHandler::filenames()
+    {
+        QStringList fileNames;
+        foreach( Playlist::Item* item, The::playlistModel()->itemList() )
+        fileNames << item->track()->prettyUrl();
+        return fileNames;
+    }
+    //     QString amarokPlaylistDBusHandler::currentTrackUniqueId()
+    //     {
+    //         if( Playlist::instance()->currentItem() )
+    //             return Playlist::instance()->currentItem()->uniqueId();
+    //         return QString();
+    //     }
 }
 
 #include "amarokPlaylistDBusHandler.moc"

@@ -25,24 +25,24 @@
 
 namespace Amarok
 {
-	class amarokScriptDBusHandler : public QObject
-		{
-			Q_OBJECT
-			
-		public:
-			amarokScriptDBusHandler();
-			
-			public /* DBus */ slots:
-			virtual bool runScript(const QString&);
-			virtual bool stopScript(const QString&);
-			virtual QStringList listRunningScripts();
-			virtual void addCustomMenuItem(QString submenu, QString itemTitle );
-			virtual void removeCustomMenuItem(QString submenu, QString itemTitle );
-			virtual QString readConfig(const QString& key);
-			virtual QStringList readListConfig(const QString& key);
-			virtual QString proxyForUrl(const QString& url);
-			virtual QString proxyForProtocol(const QString& protocol);
-		};
+    class amarokScriptDBusHandler : public QObject
+    {
+        Q_OBJECT
+
+        public:
+            amarokScriptDBusHandler();
+
+            public /* DBus */ slots:
+            virtual bool runScript(const QString&);
+            virtual bool stopScript(const QString&);
+            virtual QStringList listRunningScripts();
+            virtual void addCustomMenuItem(QString submenu, QString itemTitle );
+            virtual void removeCustomMenuItem(QString submenu, QString itemTitle );
+            virtual QString readConfig(const QString& key);
+            virtual QStringList readListConfig(const QString& key);
+            virtual QString proxyForUrl(const QString& url);
+            virtual QString proxyForProtocol(const QString& protocol);
+        };
 }
 
 #endif

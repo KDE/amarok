@@ -26,33 +26,33 @@
 
 namespace Amarok
 {
-	class amarokPlaylistDBusHandler : public QObject
-		{
-			Q_OBJECT
-		public:
-			amarokPlaylistDBusHandler();
-			
-		public:
-			virtual int     getActiveIndex();
-			virtual int     getTotalTrackCount();
-			virtual QString saveCurrentPlaylist();
-			virtual void    addMedia(const KUrl &);
-			virtual void    addMediaList(const KUrl::List &);
-			virtual void    clearPlaylist();
-			//       virtual QString currentTrackUniqueId();
-			virtual void    playByIndex(int);
-			virtual void    playMedia(const KUrl &);
-			virtual void    popupMessage(const QString&);
-			virtual void    removeCurrentTrack();
-			virtual void    removeByIndex(int);
-			virtual void    repopulate();
-			virtual void    savePlaylist(const QString& path, bool relativePaths);
-			virtual void    setStopAfterCurrent(bool);
-			virtual void    shortStatusMessage(const QString&);
-			virtual void    shufflePlaylist();
-			virtual void    togglePlaylist();
-			virtual QStringList filenames();
-		};
+    class amarokPlaylistDBusHandler : public QObject
+    {
+        Q_OBJECT
+        public:
+            amarokPlaylistDBusHandler();
+
+        public:
+            virtual int     getActiveIndex();
+            virtual int     getTotalTrackCount();
+            virtual QString saveCurrentPlaylist();
+            virtual void    addMedia(const KUrl &);
+            virtual void    addMediaList(const KUrl::List &);
+            virtual void    clearPlaylist();
+            //       virtual QString currentTrackUniqueId();
+            virtual void    playByIndex(int);
+            virtual void    playMedia(const KUrl &);
+            virtual void    popupMessage(const QString&);
+            virtual void    removeCurrentTrack();
+            virtual void    removeByIndex(int);
+            virtual void    repopulate();
+            virtual void    savePlaylist(const QString& path, bool relativePaths);
+            virtual void    setStopAfterCurrent(bool);
+            virtual void    shortStatusMessage(const QString&);
+            virtual void    shufflePlaylist();
+            virtual void    togglePlaylist();
+            virtual QStringList filenames();
+        };
 }
 
 #endif

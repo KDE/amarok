@@ -25,24 +25,24 @@
 
 namespace Amarok
 {
-	// class DbusMediaBrowserHandler : public QObject
-	// {
-	//     Q_OBJECT
-	//
-	//     public:
-	//         DbusMediaBrowserHandler();
-	//
-	//     public /* DBus */ slots:
-	//       virtual void deviceConnect();
-	//       virtual void deviceDisconnect();
-	//       virtual QStringList deviceList();
-	//       virtual void deviceSwitch( QString name );
-	//       virtual void queue( KUrl url );
-	//       virtual void queueList( KUrl::List urls );
-	//       virtual void transfer();
-	//       virtual void transcodingFinished( QString src, QString dest );
-	// };
-	
+    // class DbusMediaBrowserHandler : public QObject
+    // {
+    //     Q_OBJECT
+    //
+    //     public:
+    //         DbusMediaBrowserHandler();
+    //
+    //     public /* DBus */ slots:
+    //       virtual void deviceConnect();
+    //       virtual void deviceDisconnect();
+    //       virtual QStringList deviceList();
+    //       virtual void deviceSwitch( QString name );
+    //       virtual void queue( KUrl url );
+    //       virtual void queueList( KUrl::List urls );
+    //       virtual void transfer();
+    //       virtual void transcodingFinished( QString src, QString dest );
+    // };
+
 } // namespace Amarok
 
 #endif

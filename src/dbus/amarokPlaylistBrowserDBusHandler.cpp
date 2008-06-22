@@ -31,43 +31,43 @@
 namespace Amarok
 {
 
-	amarokPlaylistBrowserDBusHandler::amarokPlaylistBrowserDBusHandler()
-	:QObject( kapp )
-	{
-		new amarokPlaylistBrowserAdaptor(this);
-		QDBusConnection::sessionBus().registerObject("/PlaylistBrowser", this);
-	}
+    amarokPlaylistBrowserDBusHandler::amarokPlaylistBrowserDBusHandler()
+    :QObject( kapp )
+    {
+        new amarokPlaylistBrowserAdaptor(this);
+        QDBusConnection::sessionBus().registerObject("/PlaylistBrowser", this);
+    }
 
-	void amarokPlaylistBrowserDBusHandler::addPodcast( const QString &url )
-	{
-		AMAROK_NOTIMPLEMENTED
-		Q_UNUSED( url );
-		//PORT 2.0
-		//         PlaylistBrowser::instance()->addPodcast( url );
-	}
+    void amarokPlaylistBrowserDBusHandler::addPodcast( const QString &url )
+    {
+        AMAROK_NOTIMPLEMENTED
+        Q_UNUSED( url );
+        //PORT 2.0
+        //         PlaylistBrowser::instance()->addPodcast( url );
+    }
 
-	void amarokPlaylistBrowserDBusHandler::scanPodcasts()
-	{
-		AMAROK_NOTIMPLEMENTED
-		//PORT 2.0
-		//         PlaylistBrowser::instance()->scanPodcasts();
-	}
+    void amarokPlaylistBrowserDBusHandler::scanPodcasts()
+    {
+        AMAROK_NOTIMPLEMENTED
+        //PORT 2.0
+        //         PlaylistBrowser::instance()->scanPodcasts();
+    }
 
-	void amarokPlaylistBrowserDBusHandler::addPlaylist( const QString &url )
-	{
-		AMAROK_NOTIMPLEMENTED
-		Q_UNUSED( url );
-		//PORT 2.0
-		//         PlaylistBrowser::instance()->addPlaylist( url );
-	}
+    void amarokPlaylistBrowserDBusHandler::addPlaylist( const QString &url )
+    {
+        AMAROK_NOTIMPLEMENTED
+        Q_UNUSED( url );
+        //PORT 2.0
+        //         PlaylistBrowser::instance()->addPlaylist( url );
+    }
 
-	int amarokPlaylistBrowserDBusHandler::loadPlaylist( const QString &playlist )
-	{
-		AMAROK_NOTIMPLEMENTED
-		Q_UNUSED( playlist ); return -1;
-		//PORT 2.0
-		//         return PlaylistBrowser::instance()->loadPlaylist( playlist );
-	}
+    int amarokPlaylistBrowserDBusHandler::loadPlaylist( const QString &playlist )
+    {
+        AMAROK_NOTIMPLEMENTED
+        Q_UNUSED( playlist ); return -1;
+        //PORT 2.0
+        //         return PlaylistBrowser::instance()->loadPlaylist( playlist );
+    }
 }
 
 #include "amarokPlaylistBrowserDBusHandler.moc"

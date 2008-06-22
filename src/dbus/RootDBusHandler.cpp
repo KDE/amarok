@@ -29,28 +29,28 @@
 namespace Amarok
 {
 
-	RootDBusHandler::RootDBusHandler()
-		: QObject( kapp )
-	{
-		new RootAdaptor( this );
-		QDBusConnection::sessionBus().registerObject("/", this);
-	}
+    RootDBusHandler::RootDBusHandler()
+        : QObject( kapp )
+    {
+        new RootAdaptor( this );
+        QDBusConnection::sessionBus().registerObject("/", this);
+    }
 
-	QString RootDBusHandler::Identity()
-	{
-		return QString( "%1 %2" ).arg( "Amarok", APP_VERSION );
-	}
+    QString RootDBusHandler::Identity()
+    {
+        return QString( "%1 %2" ).arg( "Amarok", APP_VERSION );
+    }
 
-	void RootDBusHandler::Quit()
-	{
-		kapp->closeAllWindows();
-	}
+    void RootDBusHandler::Quit()
+    {
+        kapp->closeAllWindows();
+    }
 
-	float RootDBusHandler::MprisVersion()
-	{
-		//return type wrong here?
-		return MPRIS_VERSION;
-	}
+    float RootDBusHandler::MprisVersion()
+    {
+        //return type wrong here?
+        return MPRIS_VERSION;
+    }
 
 }
 

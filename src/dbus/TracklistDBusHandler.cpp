@@ -33,61 +33,61 @@ namespace Amarok
 {
 
     TracklistDBusHandler::TracklistDBusHandler()
-	    : QObject( kapp )
+        : QObject( kapp )
     {
         new TracklistAdaptor(this);
         QDBusConnection::sessionBus().registerObject("/TrackList", this);
-	}
+    }
 
     int TracklistDBusHandler::AddTrack(const QString& url, bool playImmediately)
     {
-		Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-		if( track )
-		{
-			if( playImmediately )
-				The::playlistModel()->insertOptioned( track, Playlist::DirectPlay );
-			else
-				The::playlistModel()->insertOptioned( track, Playlist::Append );
-			return 0;
-		}
-		else
-			return -1;
-	}
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+        if( track )
+        {
+            if( playImmediately )
+                The::playlistModel()->insertOptioned( track, Playlist::DirectPlay );
+            else
+                The::playlistModel()->insertOptioned( track, Playlist::Append );
+            return 0;
+        }
+        else
+            return -1;
+    }
 
-	void TracklistDBusHandler::DelTrack( int index )
-	{
-		if( index < GetLength() )
-			The::playlistModel()->removeRows( index, 1 );
-	}
+    void TracklistDBusHandler::DelTrack( int index )
+    {
+        if( index < GetLength() )
+            The::playlistModel()->removeRows( index, 1 );
+    }
 
-	int TracklistDBusHandler::GetCurrentTrack()
-	{
-		return The::playlistModel()->activeRow();
-		//todo: check this function
-	}
+    int TracklistDBusHandler::GetCurrentTrack()
+    {
+        return The::playlistModel()->activeRow();
+        //todo: check this function
+    }
 
-	int TracklistDBusHandler::GetLength()
-	{
-		return The::playlistModel()->rowCount();
-	}
+    int TracklistDBusHandler::GetLength()
+    {
+        return The::playlistModel()->rowCount();
+    }
 
-	QVariantMap TracklistDBusHandler::GetMetadata(int position)
-	{
-		//todo: add function
-		return QVariantMap();
-	}
+    QVariantMap TracklistDBusHandler::GetMetadata(int position)
+    {
+        //todo: add function
+        return QVariantMap();
+    }
 
-	void TracklistDBusHandler::SetLoop(bool enable)
-	{
-		static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
-		->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
-	}
+    void TracklistDBusHandler::SetLoop(bool enable)
+    {
+        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
+        ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
+    }
 
-	void TracklistDBusHandler::SetRandom(bool enable)
-	{
-		static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ))
-		->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
-	}
+    void TracklistDBusHandler::SetRandom(bool enable)
+    {
+        static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ))
+        ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
+    }
 }
 
 #include "TracklistDBusHandler.moc"

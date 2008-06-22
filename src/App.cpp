@@ -198,8 +198,8 @@ App::App()
     new Amarok::RootDBusHandler();
     new Amarok::PlayerDBusHandler();
     new Amarok::TracklistDBusHandler();
-	
-    PERF_LOG( "Done creating DBus handlers" )
+
+     PERF_LOG( "Done creating DBus handlers" )
 
     // tell AtomicString that this is the GUI thread
     if ( !AtomicString::isMainThread() )
@@ -226,8 +226,10 @@ App::~App()
     // Hiding the OSD before exit prevents crash
     Amarok::OSD::instance()->hide();
 
-    if ( AmarokConfig::resumePlayback() ) {
-        if ( The::engineController()->state() != Phonon::StoppedState ) {
+    if ( AmarokConfig::resumePlayback() )
+    {
+        if ( The::engineController()->state() != Phonon::StoppedState )
+        {
             Meta::TrackPtr track = The::engineController()->currentTrack();
             if( track )
             {
@@ -259,8 +261,10 @@ App::~App()
     // work around for KUniqueApplication being not completely implemented on windows
     QDBusConnectionInterface* dbusService;
     if (QDBusConnection::sessionBus().isConnected() && (dbusService = QDBusConnection::sessionBus().interface()))
+    {
         dbusService->unregisterService("org.kde.amarok");
         dbusService->unregisterService("org.freedesktop.MediaPlayer");
+    }
 #endif
 }
 
@@ -276,38 +280,37 @@ namespace
         if (deviceUrl.protocol() == "media" || deviceUrl.protocol() == "system")
         {
             debug() << "WARNING: urlToDevice needs to be reimplemented with KDE4 technology, it is just a stub at the moment";
-           QDBusInterface mediamanager( "org.kde.kded", "/modules/mediamanager", "org.kde.MediaManager" );
-           QDBusReply<QStringList> reply = mediamanager.call( "properties",deviceUrl.fileName() );
-           if (!reply.isValid()) {
-        debug() << "Invalid reply from mediamanager";
-               return QString();
-           }
-       QStringList properties = reply;
-       if( properties.count()< 6 )
-        return QString();
-      debug() << "Reply from mediamanager " << properties[5];
-          return properties[5];
+            QDBusInterface mediamanager( "org.kde.kded", "/modules/mediamanager", "org.kde.MediaManager" );
+            QDBusReply<QStringList> reply = mediamanager.call( "properties",deviceUrl.fileName() );
+            if (!reply.isValid())
+            {
+                debug() << "Invalid reply from mediamanager";
+                return QString();
+            }
+            QStringList properties = reply;
+            if( properties.count()< 6 )
+                return QString();
+            debug() << "Reply from mediamanager " << properties[5];
+            return properties[5];
         }
-
         return device;
     }
 
 }
 
 
-void App::handleCliArgs() //static
+void
+App::handleCliArgs() //static
 {
     DEBUG_BLOCK
 
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
-    if ( args->isSet( "cwd" ) )
-    {
+    if( args->isSet( "cwd" ) )
         KCmdLineArgs::setCwd( args->getOption( "cwd" ).toLocal8Bit() );
-    }
 
     bool haveArgs = false;
-    if ( args->count() > 0 )
+    if( args->count() > 0 )
     {
         haveArgs = true;
 
@@ -320,7 +323,7 @@ void App::handleCliArgs() //static
 //                 PlaylistBrowserNS::instance()->addPodcast( url );
 //             else
                 list << url;
-                debug() << "here!!!!!!!!";
+                DEBUG_LINE_INFO
         }
 
         int options = Playlist::AppendAndPlay;
@@ -378,14 +381,14 @@ void App::handleCliArgs() //static
         haveArgs = true;
         QString device = args->getOption("cdplay");
         KUrl::List urls;
-        if (The::engineController()->getAudioCDContents(device, urls)) {
+        if (The::engineController()->getAudioCDContents(device, urls))
+        {
             Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
-            The::playlistModel()->insertOptioned(
-                tracks, Playlist::Replace|Playlist::DirectPlay);
-        } else { // Default behaviour
-            debug() <<
-                "Sorry, the engine does not support direct play from AudioCD..."
-                   ;
+            The::playlistModel()->insertOptioned( tracks, Playlist::Replace|Playlist::DirectPlay );
+        }
+        else
+        { // Default behaviour
+            debug() << "Sorry, the engine does not support direct play from AudioCD...";
         }
     }
 
@@ -413,16 +416,17 @@ void App::handleCliArgs() //static
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
 
-void App::initCliArgs( int argc, char *argv[] )
+void
+App::initCliArgs( int argc, char *argv[] )
 {
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
     initCliArgs();
 }
 
-void App::initCliArgs() //static
+void
+App::initCliArgs() //static
 {
-
     KCmdLineOptions options;
     options.add("+[URL(s)]", ki18n( "Files/URLs to open" ));
     options.add("r");

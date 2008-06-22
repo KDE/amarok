@@ -25,100 +25,100 @@
 
 namespace Amarok
 {
-	PlayerDBusHandler::PlayerDBusHandler()
-		: QObject(kapp)
-	{
-		QObject* pa = new PlayerAdaptor( this );
-		setObjectName("PlayerDBusHandler");
+    PlayerDBusHandler::PlayerDBusHandler()
+        : QObject(kapp)
+    {
+        QObject* pa = new PlayerAdaptor( this );
+        setObjectName("PlayerDBusHandler");
 //todo: signal: trackchange, statusChange,capChangeSlot
 
-		connect( this, SIGNAL( CapsChange( int ) ), pa, SIGNAL( CapsChange( int ) ) );
+        connect( this, SIGNAL( CapsChange( int ) ), pa, SIGNAL( CapsChange( int ) ) );
 
-		QDBusConnection::sessionBus().registerObject("/Player", this);
-	}
+        QDBusConnection::sessionBus().registerObject("/Player", this);
+    }
 
 
-	//from the first integer of http://wiki.xmms2.xmms.se/index.php/MPRIS#GetStatus
-	//0 = Playing, 1 = Paused, 2 = Stopped.
-	int PlayerDBusHandler::GetStatus()
-	{
-			switch( The::engineController()->state() )
-			{
-			case Phonon::PlayingState:
-			case Phonon::BufferingState:
-				return Playing;
-			case Phonon::PausedState:
-				return Paused;
-			case Phonon::LoadingState:
-			case Phonon::StoppedState:
-				return Stopped;
-			case Phonon::ErrorState:
-				return -1;
-			}
-			return -1;
-	}
+    //from the first integer of http://wiki.xmms2.xmms.se/index.php/MPRIS#GetStatus
+    //0 = Playing, 1 = Paused, 2 = Stopped.
+    int PlayerDBusHandler::GetStatus()
+    {
+            switch( The::engineController()->state() )
+            {
+            case Phonon::PlayingState:
+            case Phonon::BufferingState:
+                return Playing;
+            case Phonon::PausedState:
+                return Paused;
+            case Phonon::LoadingState:
+            case Phonon::StoppedState:
+                return Stopped;
+            case Phonon::ErrorState:
+                return -1;
+            }
+            return -1;
+    }
 
-	void PlayerDBusHandler::PlayPause()
-	{
-		The::engineController() ->playPause();
-	}
+    void PlayerDBusHandler::PlayPause()
+    {
+        The::engineController() ->playPause();
+    }
 
-	void PlayerDBusHandler::Pause()
-	{
-		The::engineController()->pause();
-	}
+    void PlayerDBusHandler::Pause()
+    {
+        The::engineController()->pause();
+    }
 
-	void PlayerDBusHandler::Play()
-	{
-		The::engineController() ->play();
-	}
+    void PlayerDBusHandler::Play()
+    {
+        The::engineController() ->play();
+    }
 
-	//position is specified in milliseconds
-	int PlayerDBusHandler::PositionGet()
-	{
-		return The::engineController()->trackPosition() * 1000;
-	}
+    //position is specified in milliseconds
+    int PlayerDBusHandler::PositionGet()
+    {
+        return The::engineController()->trackPosition() * 1000;
+    }
 
-	void PlayerDBusHandler::PositionSet( int time )
-	{
-		if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
-			The::engineController()->seek( time );
-	}
+    void PlayerDBusHandler::PositionSet( int time )
+    {
+        if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
+            The::engineController()->seek( time );
+    }
 
-	void PlayerDBusHandler::Stop()
-	{
-		The::engineController()->stop();
-	}
+    void PlayerDBusHandler::Stop()
+    {
+        The::engineController()->stop();
+    }
 
-	int PlayerDBusHandler::VolumeGet()
-	{
-		return The::engineController()->volume();
-	}
+    int PlayerDBusHandler::VolumeGet()
+    {
+        return The::engineController()->volume();
+    }
 
-	void PlayerDBusHandler::VolumeSet( int vol )
-	{
-			The::engineController()->setVolume(vol);
-	}
+    void PlayerDBusHandler::VolumeSet( int vol )
+    {
+        The::engineController()->setVolume(vol);
+    }
 
-	QVariantMap PlayerDBusHandler::GetMetaData()
-	{
-		QVariantMap ret;
+    QVariantMap PlayerDBusHandler::GetMetaData()
+    {
+        QVariantMap ret;
 //todo: add function
-		return ret;
-	}
+        return ret;
+    }
 
-	int PlayerDBusHandler::GetCaps()
-	{
-		int caps = NONE;
+    int PlayerDBusHandler::GetCaps()
+    {
+        int caps = NONE;
 //todo: add function
-		caps |= CAN_PROVIDE_METADATA;
-		return caps;
-	}
+        caps |= CAN_PROVIDE_METADATA;
+        return caps;
+    }
 
-	void PlayerDBusHandler::capsChangeSlot()
-	{
-		emit CapsChange( GetCaps() );
-	}
+    void PlayerDBusHandler::capsChangeSlot()
+    {
+        emit CapsChange( GetCaps() );
+    }
 
 } // namespace Amarok
 

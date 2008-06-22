@@ -37,12 +37,12 @@ namespace Amarok
 {
 
     amarokCollectionDBusHandler::amarokCollectionDBusHandler()
-	: QObject( kapp )
+    : QObject( kapp )
     {
-		new amarokCollectionAdaptor(this);
-		QDBusConnection::sessionBus().registerObject("/Collection", this);
+        new amarokCollectionAdaptor(this);
+        QDBusConnection::sessionBus().registerObject("/Collection", this);
     }
-	
+
     int amarokCollectionDBusHandler::totalAlbums()
     {
         SqlStorage *s = CollectionManager::instance()->sqlStorage();
@@ -53,7 +53,7 @@ namespace Amarok
         QString total = albums[0];
         return total.toInt();
     }
-	
+
     int amarokCollectionDBusHandler::totalArtists()
     {
         QStringList artists = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM artists;" );
@@ -62,7 +62,7 @@ namespace Amarok
         QString total = artists[0];
         return total.toInt();
     }
-	
+
     int amarokCollectionDBusHandler::totalComposers()
     {
         QStringList composers = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM composers;" );
@@ -71,7 +71,7 @@ namespace Amarok
         QString total = composers[0];
         return total.toInt();
     }
-	
+
     int amarokCollectionDBusHandler::totalCompilations()
     {
         AMAROK_NOTIMPLEMENTED
@@ -81,7 +81,7 @@ namespace Amarok
         //return total.toInt();
         return -1;
     }
-	
+
     int amarokCollectionDBusHandler::totalGenres()
     {
         //This should really work across multiple collections, but theres no interface for it currently..
@@ -91,7 +91,7 @@ namespace Amarok
         QString total = genres[0];
         return total.toInt();
     }
-	
+
     int amarokCollectionDBusHandler::totalTracks()
     {
         //This should really work across multiple collections, but theres no interface for it currently..
@@ -102,13 +102,14 @@ namespace Amarok
         int final = total.toInt();
         return final;
     }
-	
+
     bool amarokCollectionDBusHandler::isDirInCollection( const QString& path )
     {
         AMAROK_NOTIMPLEMENTED
         Q_UNUSED( path );
         return false;
     }
+
     QStringList amarokCollectionDBusHandler::collectionLocation()
     {
         CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
@@ -116,20 +117,20 @@ namespace Amarok
         delete location;
         return result;
     }
-    
+
     bool amarokCollectionDBusHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
     {
         Q_UNUSED( oldURL ); Q_UNUSED( newURL ); Q_UNUSED( overwrite );
         AMAROK_NOTIMPLEMENTED
         return false;
-		//         return CollectionDB::instance()->moveFile( oldURL, newURL, overwrite );
+        //         return CollectionDB::instance()->moveFile( oldURL, newURL, overwrite );
     }
-	
+
     QStringList amarokCollectionDBusHandler::query( const QString& sql )
     {
         return CollectionManager::instance()->sqlStorage()->query( sql );
     }
-	
+
     QStringList amarokCollectionDBusHandler::similarArtists( int artists )
     {
         AMAROK_NOTIMPLEMENTED
@@ -137,48 +138,48 @@ namespace Amarok
         //TODO: implement
         return QStringList();
     }
-	
+
     void amarokCollectionDBusHandler::migrateFile( const QString &oldURL, const QString &newURL )
     {
         Q_UNUSED( oldURL ); Q_UNUSED( newURL );
         AMAROK_NOTIMPLEMENTED
         return;
-		//         CollectionDB::instance()->migrateFile( oldURL, newURL );
+        //         CollectionDB::instance()->migrateFile( oldURL, newURL );
     }
-	
+
     void amarokCollectionDBusHandler::scanCollection()
     {
         CollectionManager::instance()->startFullScan();
     }
-	
+
     void amarokCollectionDBusHandler::scanCollectionChanges()
     {
         CollectionManager::instance()->checkCollectionChanges();
     }
-	
+
     int amarokCollectionDBusHandler::addLabels( const QString &url, const QStringList &labels )
     {
         Q_UNUSED( url ); Q_UNUSED( labels );
         AMAROK_NOTIMPLEMENTED
         return -1;
-		//         CollectionDB *db = CollectionDB::instance();
-		//         QString uid = db->getUniqueId( url );
-		//         int count = 0;
-		//         oldForeach( labels )
-		//         {
-		//             if( db->addLabel( url, *it, uid , CollectionDB::typeUser ) )
-		//                 count++;
-		//         }
-		//         return count;
+        //         CollectionDB *db = CollectionDB::instance();
+        //         QString uid = db->getUniqueId( url );
+        //         int count = 0;
+        //         oldForeach( labels )
+        //         {
+        //             if( db->addLabel( url, *it, uid , CollectionDB::typeUser ) )
+        //                 count++;
+        //         }
+        //         return count;
     }
-	
+
     void amarokCollectionDBusHandler::removeLabels( const QString &url, const QStringList &oldLabels )
     {
         Q_UNUSED( url ); Q_UNUSED( oldLabels );
         AMAROK_NOTIMPLEMENTED
         return;
     }
-	
+
     void amarokCollectionDBusHandler::disableAutoScoring( bool disable )
     {
         Q_UNUSED( disable );

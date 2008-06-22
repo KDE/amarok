@@ -25,17 +25,17 @@
 
 namespace Amarok
 {
-	
-	class amarokContextDBusHandler: public QObject
-		{
-			Q_OBJECT
-			
-		public:
-			amarokContextDBusHandler();
-			
-		public:
-			virtual void showLyrics( const QByteArray& in );
-		};
+
+    class amarokContextDBusHandler: public QObject
+        {
+            Q_OBJECT
+
+        public:
+            amarokContextDBusHandler();
+
+        public:
+            virtual void showLyrics( const QByteArray& in );
+        };
 }
 
 #endif

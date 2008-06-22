@@ -27,18 +27,18 @@ namespace Amarok
 {
 
 class amarokPlaylistBrowserDBusHandler : public QObject
-	{
-        Q_OBJECT
-		
-	public:
-		amarokPlaylistBrowserDBusHandler();
-		
-	public:
-		virtual void addPodcast( const QString &url );
-		virtual void scanPodcasts();
-		virtual void addPlaylist( const QString &url );
-		virtual int loadPlaylist( const QString &playlist );
-	};
+{
+    Q_OBJECT
+
+    public:
+        amarokPlaylistBrowserDBusHandler();
+
+    public:
+        virtual void addPodcast( const QString &url );
+        virtual void scanPodcasts();
+        virtual void addPlaylist( const QString &url );
+        virtual int loadPlaylist( const QString &playlist );
+    };
 }
 
 #endif

@@ -27,33 +27,33 @@
 
 namespace Amarok
 {
-	
-	class AMAROK_EXPORT amarokCollectionDBusHandler : public QObject
-	{
-		Q_OBJECT
-		
-	public:
-		amarokCollectionDBusHandler();
-		
-		public /* DBus */ slots:
-		virtual int totalAlbums();
-		virtual int totalArtists();
-		virtual int totalComposers();
-		virtual int totalCompilations();
-		virtual int totalGenres();
-		virtual int totalTracks();
-		virtual bool isDirInCollection( const QString &path );
-		virtual QStringList collectionLocation();
-		virtual bool moveFile( const QString &oldURL, const QString &newURL, bool overwrite );
-		virtual QStringList query(const QString& sql);
-		virtual QStringList similarArtists( int artists );
-		virtual void migrateFile( const QString &oldURL, const QString &newURL );
-		virtual void scanCollection();
-		virtual void scanCollectionChanges();
-		virtual void disableAutoScoring( bool disable );
-		virtual int addLabels( const QString &url, const QStringList &labels );
-		virtual void removeLabels( const QString &url, const QStringList &oldLabels );
-	};
+
+    class AMAROK_EXPORT amarokCollectionDBusHandler : public QObject
+    {
+        Q_OBJECT
+
+    public:
+        amarokCollectionDBusHandler();
+
+        public /* DBus */ slots:
+        virtual int totalAlbums();
+        virtual int totalArtists();
+        virtual int totalComposers();
+        virtual int totalCompilations();
+        virtual int totalGenres();
+        virtual int totalTracks();
+        virtual bool isDirInCollection( const QString &path );
+        virtual QStringList collectionLocation();
+        virtual bool moveFile( const QString &oldURL, const QString &newURL, bool overwrite );
+        virtual QStringList query(const QString& sql);
+        virtual QStringList similarArtists( int artists );
+        virtual void migrateFile( const QString &oldURL, const QString &newURL );
+        virtual void scanCollection();
+        virtual void scanCollectionChanges();
+        virtual void disableAutoScoring( bool disable );
+        virtual int addLabels( const QString &url, const QStringList &labels );
+        virtual void removeLabels( const QString &url, const QStringList &oldLabels );
+    };
 }
 
 #endif

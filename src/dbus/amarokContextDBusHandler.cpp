@@ -30,18 +30,18 @@
 
 namespace Amarok
 {
-	
-	amarokContextDBusHandler::amarokContextDBusHandler()
-    : QObject( kapp )
-	{
-		new amarokContextAdaptor(this);
-		QDBusConnection::sessionBus().registerObject("/Context", this);
-	}
-	
-	void amarokContextDBusHandler::showLyrics( const QByteArray& lyrics )
-	{
-		LyricsManager::self()->lyricsResult( lyrics );
-	}
+
+    amarokContextDBusHandler::amarokContextDBusHandler()
+        : QObject( kapp )
+    {
+        new amarokContextAdaptor(this);
+        QDBusConnection::sessionBus().registerObject("/Context", this);
+    }
+
+    void amarokContextDBusHandler::showLyrics( const QByteArray& lyrics )
+    {
+        LyricsManager::self()->lyricsResult( lyrics );
+    }
 }
 
 #include "amarokContextDBusHandler.moc"

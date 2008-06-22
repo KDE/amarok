@@ -23,17 +23,17 @@
 
 namespace Amarok
 {
-	class RootDBusHandler : public QObject
-	{
-		Q_OBJECT
-		
-		public:
-			RootDBusHandler();
-			
-			virtual QString Identity();
-			virtual void Quit();
-			virtual float MprisVersion();
-	};
+    class RootDBusHandler : public QObject
+    {
+        Q_OBJECT
+
+        public:
+            RootDBusHandler();
+
+            virtual QString Identity();
+            virtual void Quit();
+            virtual float MprisVersion();
+    };
 }
 
 #endif

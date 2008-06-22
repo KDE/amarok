@@ -32,43 +32,43 @@
 
 namespace Amarok
 {
-	
+    
     amarokScriptDBusHandler::amarokScriptDBusHandler()
-	: QObject( kapp )
+    : QObject( kapp )
     {
-		new amarokScriptAdaptor(this);
-		QDBusConnection::sessionBus().registerObject("/Script", this);
+        new amarokScriptAdaptor(this);
+        QDBusConnection::sessionBus().registerObject("/Script", this);
     }
-	
+    
     bool amarokScriptDBusHandler::runScript(const QString& name)
     {
         return ScriptManager::instance()->runScript(name);
     }
-	
+    
     bool amarokScriptDBusHandler::stopScript(const QString& name)
     {
         return ScriptManager::instance()->stopScript(name);
     }
-	
+    
     QStringList amarokScriptDBusHandler::listRunningScripts()
     {
         return ScriptManager::instance()->listRunningScripts();
     }
-	
+    
     void amarokScriptDBusHandler::addCustomMenuItem(QString submenu, QString itemTitle )
     {
         Q_UNUSED( submenu ); Q_UNUSED( itemTitle );
         //PORT 2.0
-		//         Playlist::instance()->addCustomMenuItem( submenu, itemTitle );
+        //         Playlist::instance()->addCustomMenuItem( submenu, itemTitle );
     }
-	
+    
     void amarokScriptDBusHandler::removeCustomMenuItem(QString submenu, QString itemTitle )
     {
         Q_UNUSED( submenu ); Q_UNUSED( itemTitle );
         //PORT 2.0
-		//         Playlist::instance()->removeCustomMenuItem( submenu, itemTitle );
+        //         Playlist::instance()->removeCustomMenuItem( submenu, itemTitle );
     }
-	
+    
     QString amarokScriptDBusHandler::readConfig(const QString& key)
     {
         QString cleanKey = key;
@@ -78,7 +78,7 @@ namespace Amarok
         else
             return QString();
     }
-	
+    
     QStringList amarokScriptDBusHandler::readListConfig(const QString& key)
     {
         QString cleanKey = key;
@@ -96,12 +96,12 @@ namespace Amarok
         }
         return stringList;
     }
-	
+    
     QString amarokScriptDBusHandler::proxyForUrl(const QString& url)
     {
         return Amarok::proxyForUrl( url );
     }
-	
+    
     QString amarokScriptDBusHandler::proxyForProtocol(const QString& protocol)
     {
         return Amarok::proxyForProtocol( protocol );

@@ -28,58 +28,58 @@
 
 namespace Amarok
 {
-	
-	//     DbusMediaBrowserHandler::DbusMediaBrowserHandler()
-	//         : QObject( kapp )
-	//     {
-	//          (void)new MediaBrowserAdaptor(this);
-	//          QDBusConnection::sessionBus().registerObject("/MediaBrowser", this);
-	//     }
-	//
-	//     void DbusMediaBrowserHandler::deviceConnect()
-	//     {
-	//         if ( MediaBrowser::instance()->currentDevice() )
-	//             MediaBrowser::instance()->currentDevice()->connectDevice();
-	//     }
-	//
-	//     void DbusMediaBrowserHandler::deviceDisconnect()
-	//     {
-	//         if ( MediaBrowser::instance()->currentDevice() )
-	//             MediaBrowser::instance()->currentDevice()->disconnectDevice();
-	//     }
-	//
-	//     QStringList DbusMediaBrowserHandler::deviceList()
-	//     {
-	//         return MediaBrowser::instance()->deviceNames();
-	//     }
-	//
-	//     void DbusMediaBrowserHandler::deviceSwitch( QString name )
-	//     {
-	//         MediaBrowser::instance()->deviceSwitch( name );
-	//     }
-	//
-	//     void DbusMediaBrowserHandler::queue( KUrl url )
-	//     {
-	//         MediaBrowser::queue()->addUrl( url );
-	//         MediaBrowser::queue()->URLsAdded();
-	//     }
-	//
-	//     void DbusMediaBrowserHandler::queueList( KUrl::List urls )
-	//     {
-	//         MediaBrowser::queue()->addUrls( urls );
-	//     }
-	//
-	//     void DbusMediaBrowserHandler::transfer()
-	//     {
-	//         if ( MediaBrowser::instance()->currentDevice() )
-	//             MediaBrowser::instance()->currentDevice()->transferFiles();
-	//     }
-	//
-	//     void DbusMediaBrowserHandler::transcodingFinished( QString src, QString dest )
-	//     {
-	//         MediaBrowser::instance()->transcodingFinished( src, dest );
-	//     }
-	
+
+    //     DbusMediaBrowserHandler::DbusMediaBrowserHandler()
+    //         : QObject( kapp )
+    //     {
+    //          (void)new MediaBrowserAdaptor(this);
+    //          QDBusConnection::sessionBus().registerObject("/MediaBrowser", this);
+    //     }
+    //
+    //     void DbusMediaBrowserHandler::deviceConnect()
+    //     {
+    //         if ( MediaBrowser::instance()->currentDevice() )
+    //             MediaBrowser::instance()->currentDevice()->connectDevice();
+    //     }
+    //
+    //     void DbusMediaBrowserHandler::deviceDisconnect()
+    //     {
+    //         if ( MediaBrowser::instance()->currentDevice() )
+    //             MediaBrowser::instance()->currentDevice()->disconnectDevice();
+    //     }
+    //
+    //     QStringList DbusMediaBrowserHandler::deviceList()
+    //     {
+    //         return MediaBrowser::instance()->deviceNames();
+    //     }
+    //
+    //     void DbusMediaBrowserHandler::deviceSwitch( QString name )
+    //     {
+    //         MediaBrowser::instance()->deviceSwitch( name );
+    //     }
+    //
+    //     void DbusMediaBrowserHandler::queue( KUrl url )
+    //     {
+    //         MediaBrowser::queue()->addUrl( url );
+    //         MediaBrowser::queue()->URLsAdded();
+    //     }
+    //
+    //     void DbusMediaBrowserHandler::queueList( KUrl::List urls )
+    //     {
+    //         MediaBrowser::queue()->addUrls( urls );
+    //     }
+    //
+    //     void DbusMediaBrowserHandler::transfer()
+    //     {
+    //         if ( MediaBrowser::instance()->currentDevice() )
+    //             MediaBrowser::instance()->currentDevice()->transferFiles();
+    //     }
+    //
+    //     void DbusMediaBrowserHandler::transcodingFinished( QString src, QString dest )
+    //     {
+    //         MediaBrowser::instance()->transcodingFinished( src, dest );
+    //     }
+
 } //namespace Amarok
 
 
