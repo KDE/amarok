@@ -69,7 +69,7 @@ public:
     void setSeparatorPen( const QPen &pen );
     void clearSeparatorPen();
 
-    //quick and dirty funtion for getting a PopupDropperAction from a QAction.
+    //quick and dirty function for getting a PopupDropperAction from a QAction.
     //no svg will be set...should only be used to transition to using PopupDropperAction
     static PopupDropperAction * from( QAction * action );
 
