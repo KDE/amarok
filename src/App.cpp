@@ -17,7 +17,13 @@ email                : markey@web.de
 #include "App.h"
 
 #include "Amarok.h"
+#include "amarokCollectionDBusHandler.h" //dbus handlers
 #include "amarokconfig.h"
+#include "amarokContextDBusHandler.h"
+#include "amarokPlayerDBusHandler.h"
+#include "amarokPlaylistBrowserDBusHandler.h"
+#include "amarokPlaylistDBusHandler.h"
+#include "amarokScriptDBusHandler.h"
 #include "atomicstring.h"
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
@@ -29,55 +35,48 @@ email                : markey@web.de
 #include "mediabrowser.h"
 #include "Meta.h"
 #include "meta/MetaConstants.h"
+#include "metadata/tplugins.h"
 #include "mountpointmanager.h"
 #include "Osd.h"
+#include "PlayerDBusHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "PluginManager.h"
 #include "refreshimages.h"
+#include "RootDBusHandler.h"
 #include "ScriptManager.h"
 #include "StatusBar.h"
 #include "systray.h"
-#include "TrackTooltip.h"        //engineNewMetaData()
 #include "TheInstances.h"
-#include "metadata/tplugins.h"
-
-#include "amarokCollectionDBusHandler.h" //dbus handlers
-#include "amarokContextDBusHandler.h"
-#include "amarokPlayerDBusHandler.h"
-#include "amarokPlaylistBrowserDBusHandler.h"
-#include "amarokPlaylistDBusHandler.h"
-#include "amarokScriptDBusHandler.h"
-#include "PlayerDBusHandler.h"
-#include "RootDBusHandler.h"
 #include "TracklistDBusHandler.h"
+#include "TrackTooltip.h"                //engineNewMetaData()
 
 #include <iostream>
 
 #include <KAboutData>
 #include <KAction>
-#include <KCmdLineArgs>        //initCliArgs()
+#include <KCmdLineArgs>                  //initCliArgs()
 #include <KConfigDialogManager>
-#include <KCursor>             //Amarok::OverrideCursor
-#include <KEditToolBar>        //slotConfigToolbars()
-#include <KGlobalSettings>     //applyColorScheme()
+#include <KCursor>                       //Amarok::OverrideCursor
+#include <KEditToolBar>                  //slotConfigToolbars()
+#include <KGlobalSettings>               //applyColorScheme()
 #include <KIO/CopyJob>
-#include <KIconLoader>         //amarok Icon
+#include <KIconLoader>                   //amarok Icon
 #include <KJob>
 #include <KJobUiDelegate>
 #include <KLocale>
-#include <KRun>                //Amarok::invokeBrowser()
+#include <KRun>                          //Amarok::invokeBrowser()
 #include <KShell>
-#include <KShortcutsDialog>     //slotConfigShortcuts()
+#include <KShortcutsDialog>              //slotConfigShortcuts()
 #include <KSplashScreen>
 #include <KStandardDirs>
 
 #include <QDBusInterface>
 #include <QDBusReply>
-#include <QEventLoop>          //applySettings()
+#include <QEventLoop>                   //applySettings()
 #include <QFile>
 #include <QPixmapCache>
-#include <QTimer>              //showHyperThreadingWarning()
-#include <QToolTip>            //default tooltip for trayicon
+#include <QTimer>                       //showHyperThreadingWarning()
+#include <QToolTip>                     //default tooltip for trayicon
 #include <QtDBus/QtDBus>
 
 QMutex Debug::mutex;
@@ -189,18 +188,18 @@ App::App()
 
     PERF_LOG( "Creating DBus handlers" )
     //needs to be created before the wizard
-        new Amarok::amarokPlayerDBusHandler(); // Must be created first
-        new Amarok::amarokPlaylistDBusHandler();
-        new Amarok::amarokPlaylistBrowserDBusHandler();
-        new Amarok::amarokContextDBusHandler();
-        new Amarok::amarokCollectionDBusHandler();
+    new Amarok::amarokPlayerDBusHandler(); // Must be created first
+    new Amarok::amarokPlaylistDBusHandler();
+    new Amarok::amarokPlaylistBrowserDBusHandler();
+    new Amarok::amarokContextDBusHandler();
+    new Amarok::amarokCollectionDBusHandler();
 //     new Amarok::DbusMediaBrowserHandler();
-        new Amarok::amarokScriptDBusHandler();
-        new Amarok::RootDBusHandler();
-        new Amarok::PlayerDBusHandler();
-        new Amarok::TracklistDBusHandler();
+    new Amarok::amarokScriptDBusHandler();
+    new Amarok::RootDBusHandler();
+    new Amarok::PlayerDBusHandler();
+    new Amarok::TracklistDBusHandler();
 	
-     PERF_LOG( "Done creating DBus handlers" )
+    PERF_LOG( "Done creating DBus handlers" )
 
     // tell AtomicString that this is the GUI thread
     if ( !AtomicString::isMainThread() )
@@ -213,7 +212,7 @@ App::App()
 
     QDBusConnection::sessionBus().registerService("org.freedesktop.MediaPlayer");
     QDBusConnection::sessionBus().registerService("org.kde.amarok");
-	QTimer::singleShot( 0, this, SLOT( continueInit() ) );
+    QTimer::singleShot( 0, this, SLOT( continueInit() ) );
     PERF_LOG( "Done App ctor" )
 }
 

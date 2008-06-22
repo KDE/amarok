@@ -32,15 +32,15 @@
 namespace Amarok
 {
 
-	TracklistDBusHandler::TracklistDBusHandler()
-		: QObject( kapp )
-	{
-		new TracklistAdaptor(this);
-		QDBusConnection::sessionBus().registerObject("/TrackList", this);
+    TracklistDBusHandler::TracklistDBusHandler()
+	    : QObject( kapp )
+    {
+        new TracklistAdaptor(this);
+        QDBusConnection::sessionBus().registerObject("/TrackList", this);
 	}
 
-	int TracklistDBusHandler::AddTrack(const QString& url, bool playImmediately)
-	{
+    int TracklistDBusHandler::AddTrack(const QString& url, bool playImmediately)
+    {
 		Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 		if( track )
 		{
