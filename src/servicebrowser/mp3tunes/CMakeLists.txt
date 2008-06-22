@@ -66,6 +66,6 @@ if(CURL_FOUND)
 
             install( FILES amarok_service_mp3tunes.desktop DESTINATION ${SERVICES_INSTALL_DIR})
             install( FILES amarok_service_mp3tunes_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-            endif(OPENSSL_FOUND)
-        endif(LIBXML2_FOUND)
+        endif(OPENSSL_FOUND)
+    endif(LIBXML2_FOUND)
 endif(CURL_FOUND)

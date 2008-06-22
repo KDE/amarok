@@ -263,13 +263,13 @@ void Mp3tunesServiceQueryMaker::fetchAlbums()
         debug() << "parent id empty";
         return;
     }
-    
+
     if ( albums.count() > 0 ) {
         handleResult( albums );
     } else if ( m_locker->sessionValid() ) {
         Mp3tunesAlbumWithArtistIdFetcher * albumFetcher = new Mp3tunesAlbumWithArtistIdFetcher( m_locker, m_parentArtistId.toInt() );
         connect( albumFetcher, SIGNAL( albumsFetched( QList<Mp3tunesLockerAlbum> ) ), this, SLOT( albumDownloadComplete( QList<Mp3tunesLockerAlbum> ) ) );
-        
+
         ThreadWeaver::Weaver::instance()->enqueue( albumFetcher );
     } else {
         debug() << "Session Invalid";
@@ -360,7 +360,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum
         QString title = album.albumTitle();
         if ( title.contains("* PlayMix") ) continue;
         if ( title.isEmpty() ) title = "Unknown";
-        
+
         QString albumIdStr = QString::number( album.albumId() );
         int albumId = album.albumId();
 

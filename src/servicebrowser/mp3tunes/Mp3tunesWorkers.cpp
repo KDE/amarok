@@ -230,35 +230,51 @@ void Mp3tunesSearchMonkey::completeJob()
 Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist )
 {
     DEBUG_BLOCK
-    //    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+
     m_locker = locker;
     m_tracklist = tracklist;
-    The::statusBar()->newProgressOperation( this ).setDescription( i18n( "Uploading to MP3tunes Locker" ) );
-    connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
+
+    The::statusBar()->newProgressOperation( this ).setDescription(
+        i18n( "Upload to MP3tunes Initiated" ) );
+    connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT(
+incrementProgress() ), Qt::QueuedConnection );
 }
 
 Mp3tunesSimpleUploader::~Mp3tunesSimpleUploader()
 {
+    DEBUG_BLOCK
     The::statusBar()->endProgressOperation( this );
 }
 
 void Mp3tunesSimpleUploader::run()
 {
     DEBUG_BLOCK
-    if(m_locker != 0)
+    if(m_locker == 0)
         return;
-    
+    if(m_tracklist.count() == 0)
+    {
+        debug() << "Track list was empty.";
+        return;
+    }
+
     debug() << "Starting upload of " << m_tracklist.count() << " tracks.";
     The::statusBar()->incrementProgressTotalSteps( this, m_tracklist.count() );
+    int progress = 1;
     foreach(QString track, m_tracklist) {
-        emit( incrementProgress() );
+        QString msg = i18n( "Uploading Track " ) + QString::number( progress ) + "/" +
+                      QString::number( m_tracklist.count() );
+        debug() << msg;
+        The::statusBar()->setProgressStatus( this, msg );
+        emit ( incrementProgress() );
         debug() << "Uploading: " << track;
         bool result = m_locker->uploadTrack( track );
         if(result) {
             debug() << "Uploaded Succeeded.";
         } else {
             debug() << "Uploaded Failed.";
-            }
+        }
+        progress++;
     }
     debug() << "Upload loop complete";
 }

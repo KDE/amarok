@@ -48,12 +48,10 @@ bool ServiceCollectionLocation::isOrganizable() const
 void
 ServiceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
-    DEBUG_BLOCK
     QMap<Meta::TrackPtr, KUrl> urls;
     foreach( Meta::TrackPtr track, tracks )
     {
         ServiceTrack *servtrack = static_cast<ServiceTrack *>( track.data() );
-        debug() << "Got a service track WEE";
         if( servtrack->isPlayable() )
             urls.insert( track, servtrack->downloadableUrl() );
     }

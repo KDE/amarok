@@ -63,19 +63,21 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
     DEBUG_BLOCK
     QStringList urls;
     QString error = QString();
-
+    debug() << "sources has " << sources.count();
     foreach( const Meta::TrackPtr &track, sources.keys() )
     {
         debug() << "copying " << sources[ track ] << " to mp3tunes locker";
         debug() << "file is at " << sources[ track ].pathOrUrl();
 
         QString supported_types = "mp3 mp4 m4a m4p aac wma ogg";
+        
 
         if( supported_types.contains( track->type() ) )
         {   
 
           if( sources[ track ].isLocalFile() ) //TODO Support non local files
           {
+              debug() << "Added " << sources[ track ].pathOrUrl() << " to queue.";
               urls.push_back( sources[ track ].pathOrUrl() );
           } 
           else 
@@ -85,11 +87,12 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         } 
         else 
         {
-            error = i18n( "Only tracks of the following type are supported: mp3, mp4, m4a, m4p, aac, wma, and ogg. " );
+            error = i18n( "Only the following types of tracks can be uploaded to MP3tunes: mp3, mp4, m4a, m4p, aac, wma, and ogg. " );
             debug() << "File type not supprted " << track->type();
         }
     }
-    The::statusBar()->longMessage( error );
+    if( error != QString() )
+        The::statusBar()->longMessage( error );
     Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader(
         m_collection->locker(), urls );
     connect( uploadWorker, SIGNAL( uploadComplete() ),
