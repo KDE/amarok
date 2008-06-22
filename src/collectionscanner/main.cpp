@@ -29,7 +29,7 @@
 
 int main( int argc, char *argv[] )
 {
-    const KAboutData about( "amarokcollectionscanner", 0,
+    const KAboutData about( "amarokcollectionscanner", "amarok",
     ki18n( "Amarok Collection Scanner\n\nNote: For debugging purposes this application can be invoked from the command line, but it will not actually build a collection this way." ), "0.1",
     ki18n( "Collection Scanner for Amarok" ), KAboutData::License_GPL,
     ki18n( "(C) 2003-2008, The Amarok Developers" ),
