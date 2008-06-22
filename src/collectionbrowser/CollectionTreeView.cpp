@@ -304,7 +304,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 m_cmSeperator = new PopupDropperAction( this );
                 m_cmSeperator->setSeparator ( true );
             }
-            
+
         PopupDropperItem* pdi = new PopupDropperItem();
         pdi->setAction( m_cmSeperator );
         pdi->setFont( font );
@@ -695,7 +695,7 @@ PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & i
                 item = item->parent();
             }
             Collection *collection = item->parentCollection();
- 
+
             if( collection->location()->isOrganizable() )
             {
                 bool onlyOneCollection = true;
@@ -772,13 +772,16 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const
         {
             Collection *collection = getCollection( indices );
             QList<Collection*> writableCollections;
-            foreach( Collection *coll, CollectionManager::instance()->collections() )
-            {
-                if( coll->isWritable() && coll != collection )
+            QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->allCollections();
+            QHash<Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+            while ( it != hash.constEnd() ) {
+                Collection *coll = it.key();
+                if( coll && coll->isWritable() && coll != collection )
                 {
                     debug() << "got writable collection";
                     writableCollections.append( coll );
                 }
+                ++it;
             }
             if( !writableCollections.isEmpty() )
             {
@@ -788,7 +791,7 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const
                     PopupDropperAction *action = new PopupDropperAction(  The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
 
                     connect( action, SIGNAL( triggered() ), this, SLOT( slotCopyTracks() ) );
-                    
+
                     m_currentCopyDestination.insert( action, coll );
                 }
 
@@ -809,12 +812,16 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( cons
         {
             Collection *collection = getCollection( indices );
             QList<Collection*> writableCollections;
-            foreach( Collection *coll, CollectionManager::instance()->collections() )
-            {
-                if( coll->isWritable() && coll != collection )
+            QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->allCollections();
+            QHash<Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+            while ( it != hash.constEnd() ) {
+                Collection *coll = it.key();
+                if( coll && coll->isWritable() && coll != collection )
                 {
+                    debug() << "got writable collection";
                     writableCollections.append( coll );
                 }
+                ++it;
             }
             if( !writableCollections.isEmpty() )
             {
