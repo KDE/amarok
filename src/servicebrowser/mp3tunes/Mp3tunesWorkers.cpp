@@ -236,7 +236,7 @@ Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStrin
     m_tracklist = tracklist;
 
     The::statusBar()->newProgressOperation( this ).setDescription(
-        i18n( "Upload to MP3tunes Initiated" ) );
+        i18n( "Upload to MP3tunes Initiated" ) ).setMaximum( m_tracklist.count() );
     connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT(
 incrementProgress() ), Qt::QueuedConnection );
 }
@@ -259,7 +259,6 @@ void Mp3tunesSimpleUploader::run()
     }
 
     debug() << "Starting upload of " << m_tracklist.count() << " tracks.";
-    The::statusBar()->incrementProgressTotalSteps( this, m_tracklist.count() );
     int progress = 1;
     foreach(QString track, m_tracklist) {
         QString msg = i18n( "Uploading Track " ) + QString::number( progress ) + "/" +
