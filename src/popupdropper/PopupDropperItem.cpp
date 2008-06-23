@@ -168,10 +168,10 @@ void PopupDropperItem::setSubmenuTrigger( bool trigger )
     d->submenuTrigger = trigger;
 }
 
-bool PopupDropperItem::operator<( const PopupDropperItem &other ) const
-{
-    return d->text < other.text();
-}
+//bool PopupDropperItem::operator<( const PopupDropperItem &other ) const
+//{
+//    return d->text < other.text();
+//}
 
 void PopupDropperItem::dropped( QDropEvent *event ) //virtual SLOT
 {
@@ -183,8 +183,6 @@ void PopupDropperItem::dropped( QDropEvent *event ) //virtual SLOT
         qDebug() << "Triggering action";
         d->action->activate( QAction::Trigger );
     }
-    qDebug() << "emitting dropEvent";
-    emit dropEvent( event );
 }
 
 void PopupDropperItem::hoverTimeout() //SLOT

@@ -78,7 +78,7 @@ public:
     bool submenuTrigger() const;
     void setSubmenuTrigger( bool trigger );
 
-    bool operator<( const PopupDropperItem &other ) const;
+    //bool operator<( const PopupDropperItem &other ) const;
 
 public slots:
     virtual void dropped( QDropEvent *event );
@@ -88,8 +88,6 @@ private:
     friend class PopupDropperItemPrivate;
     PopupDropperItemPrivate* const d;
 
-signals:
-    void dropEvent( QDropEvent *event );
 };
 
 #endif
