@@ -57,7 +57,7 @@ public:
     Q_ENUMS( Fading )
     enum HideReason { BackgroundChange, DragLeave, SubtractingOverlay, Unknown };
 
-    PopupDropper( QWidget *parent, bool standalone = false );
+    explicit PopupDropper( QWidget *parent, bool standalone = false );
     ~PopupDropper();
 
     int overlayLevel() const;

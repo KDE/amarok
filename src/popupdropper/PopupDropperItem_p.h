@@ -20,7 +20,6 @@
 #ifndef POPUPDROPPER_ITEM_P_H
 #define POPUPDROPPER_ITEM_P_H
 
-#include <QtGui>
 #include <QtDebug>
 #include <QFont>
 
