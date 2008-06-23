@@ -16,6 +16,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#define _GNU_SOURCE
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -224,7 +225,7 @@ int mp3tunes_locker_deinit( mp3tunes_locker_object_t **obj ) {
 void mp3tunes_request_init(request_t **request) {
     request_t *r = *request = malloc(sizeof(request_t));
     r->curl = curl_easy_init();
-    r->url = malloc(256);
+    r->url = NULL;
 }
 
 void mp3tunes_request_deinit(request_t **request) {
@@ -239,8 +240,6 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
     char *server_url;
     char *name, *value;
     char *encoded_name, *encoded_value;
-    char url_part[256];
-    char end_url_part[256];
 
     mp3tunes_request_init(&request);
 
@@ -260,29 +259,34 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
             break;
     }
 
-    snprintf(request->url, 256, "http://%s/%s?", server_url, path);
+    char *url;
+    size_t url_size = asprintf(&url, "http://%s/%s?", server_url, path) +1;
     name = first_name;
     while (name) {
+        char *url_part;
 
         value = va_arg(argp, char*);
 
         encoded_name = curl_easy_escape(request->curl, name, 0);
         encoded_value = curl_easy_escape(request->curl, value, 0);
-        snprintf(url_part, 256, "%s=%s&", encoded_name, encoded_value);
+        size_t url_part_size = asprintf(&url_part, "%s=%s&", encoded_name, encoded_value);
         curl_free(encoded_name);
         curl_free(encoded_value);
 
-        strcat(request->url, url_part);
+	url = realloc(url, url_size += url_part_size);
+        strcat(url, url_part);
 
         name = va_arg(argp, char*);
     }
 
+    char *end_url_part = NULL;
+    size_t end_url_part_size = 0;
     if (server != MP3TUNES_SERVER_LOGIN) {
         if (obj->session_id != NULL) {
             if (server == MP3TUNES_SERVER_API) {
-                snprintf(end_url_part, 256, "output=xml&sid=%s&partner_token=%s", obj->session_id, obj->partner_token);
+                end_url_part_size = asprintf(&end_url_part, "output=xml&sid=%s&partner_token=%s", obj->session_id, obj->partner_token);
             } else {
-                snprintf(end_url_part, 256, "sid=%s&partner_token=%s", obj->session_id, obj->partner_token);
+                end_url_part_size = asprintf(&end_url_part, "sid=%s&partner_token=%s", obj->session_id, obj->partner_token);
             }
         } else {
             printf("Failed because of no session id\n");
@@ -290,9 +294,12 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
             return NULL;
         }
     } else {
-        snprintf(end_url_part, 256, "output=xml&partner_token=%s", obj->partner_token);
+        end_url_part_size = asprintf(&end_url_part, "output=xml&partner_token=%s", obj->partner_token);
     }
-    strcat(request->url, end_url_part);
+    url = realloc(url, url_size += end_url_part_size);
+    strcat(url, end_url_part);
+
+    request->url = url;
     return request;
 
 }
@@ -398,7 +405,7 @@ char* mp3tunes_locker_generate_download_url_from_file_key(mp3tunes_locker_object
     char *ret;
     snprintf(path, 256, "storage/lockerget/%s", file_key);
     request = mp3tunes_locker_api_generate_request(obj, MP3TUNES_SERVER_CONTENT, path, NULL);
-    ret = strdup(request->url);
+    ret = request->url; request->url = NULL;
     free(path);
     mp3tunes_request_deinit(&request);
     return ret;
@@ -410,7 +417,7 @@ char* mp3tunes_locker_generate_download_url_from_file_key_and_bitrate(mp3tunes_l
     char *ret;
     snprintf(path, 256, "storage/lockerget/%s", file_key);
     request = mp3tunes_locker_api_generate_request(obj, MP3TUNES_SERVER_CONTENT, path, "bitrate", bitrate, NULL);
-    ret = strdup(request->url);
+    ret = request->url; request->url = NULL;
     free(path);
     mp3tunes_request_deinit(&request);
     return ret;
