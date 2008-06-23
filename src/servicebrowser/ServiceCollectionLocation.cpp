@@ -24,13 +24,13 @@ ServiceCollectionLocation::ServiceCollectionLocation()
     , m_removeSources( false )
     , m_overwriteFiles( false )
 {}
+
 ServiceCollectionLocation::ServiceCollectionLocation( const ServiceCollection* parentCollection )
     : CollectionLocation()
+    , m_collection( const_cast<ServiceCollection*>( parentCollection ) )
     , m_removeSources( false )
     , m_overwriteFiles( false )
-    , m_collection( const_cast<ServiceCollection*>(  parentCollection ) )
 {}
-
 
 ServiceCollectionLocation::~ServiceCollectionLocation()
 {
