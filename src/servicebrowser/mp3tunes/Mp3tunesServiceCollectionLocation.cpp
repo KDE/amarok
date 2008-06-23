@@ -75,15 +75,9 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         if( supported_types.contains( track->type() ) )
         {   
 
-          if( sources[ track ].isLocalFile() ) //TODO Support non local files
-          {
-              debug() << "Added " << sources[ track ].pathOrUrl() << " to queue.";
-              urls.push_back( sources[ track ].pathOrUrl() );
-          } 
-          else 
-          {
-              debug() << "Track is not a local file.";
-          }
+            debug() << "Added " << sources[ track ].pathOrUrl() << " to queue.";
+            urls.push_back( sources[ track ].pathOrUrl() );
+
         } 
         else 
         {

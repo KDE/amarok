@@ -267,11 +267,22 @@ void Mp3tunesSimpleUploader::run()
         The::statusBar()->setProgressStatus( this, msg );
         emit ( incrementProgress() );
         debug() << "Uploading: " << track;
-        bool result = m_locker->uploadTrack( track );
+        
+        bool result = false;
+        if( track.startsWith( "http" ) )
+        {
+            debug() << "Remote file.";
+            result = m_locker->lockerLoad( track );
+        } else {
+            debug() << "Local file.";
+            result = m_locker->uploadTrack( track );
+        }
+
         if(result) {
             debug() << "Uploaded Succeeded.";
         } else {
             debug() << "Uploaded Failed.";
+            debug() << "Error msg: " << m_locker->errorMessage();
         }
         progress++;
     }
