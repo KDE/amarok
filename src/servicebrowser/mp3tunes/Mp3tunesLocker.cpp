@@ -432,6 +432,16 @@ Mp3tunesLocker::fileKey ( const QString &path )
 
     return QString ( file_key );
 }
+bool 
+Mp3tunesLocker::lockerLoad( const QString &url )
+{
+    char* c_url = convertToChar( url );
+    
+    int res = mp3tunes_locker_load_track ( m_locker, c_url);
+    if ( res == 0)
+        return true;
+    return false;
+}
 
 QString
 Mp3tunesLocker::userName() const

@@ -185,6 +185,20 @@ class Mp3tunesLocker {
          */
         QString fileKey(const QString &path );
 
+        /**
+         * Loads a URL into the locker via the LockerLoad API.
+         * The URL may be password protected, as long as the username 
+         * and password can be transferred in the URL to retrieve the 
+         * file. Any access control based on user sessions cannot be 
+         * used in locker loading.
+         * @param the full URL to the track
+         * @return true if the lockerload succeeded
+         *         false if the lockerload failed.
+         * @pre The URL must be accessible by the MP3tunes servers,
+         *      it is assumed that all the tracks in the file are 
+         *      non-DRM music files.
+         */
+        bool lockerLoad( const QString &url );
         //TODO wrapper for mp3tunes_locker_generate_download_url_from_file_key
         //TODO wrapper for mp3tunes_locker_generate_download_url_from_file_key_and_bitrate
         //TODO wrapper for mp3tunes_locker_sync_down

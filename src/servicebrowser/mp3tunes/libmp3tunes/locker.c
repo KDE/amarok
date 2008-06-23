@@ -261,13 +261,11 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
     }
 
     snprintf(request->url, 256, "http://%s/%s?", server_url, path);
-
     name = first_name;
-
     while (name) {
 
         value = va_arg(argp, char*);
-            
+
         encoded_name = curl_easy_escape(request->curl, name, 0);
         encoded_value = curl_easy_escape(request->curl, value, 0);
         snprintf(url_part, 256, "%s=%s&", encoded_name, encoded_value);
@@ -286,14 +284,14 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
             } else {
                 snprintf(end_url_part, 256, "sid=%s&partner_token=%s", obj->session_id, obj->partner_token);
             }
-        } else { 
+        } else {
             printf("Failed because of no session id\n");
             mp3tunes_request_deinit(&request);
             return NULL;
         }
     } else {
         snprintf(end_url_part, 256, "output=xml&partner_token=%s", obj->partner_token);
-    }        
+    }
     strcat(request->url, end_url_part);
     return request;
 
@@ -317,8 +315,9 @@ static xml_xpath_t* mp3tunes_locker_api_simple_fetch(mp3tunes_locker_object_t *o
     chunk_init(&chunk);
 
     va_start(argp, first_name);
+
     request = mp3tunes_locker_api_generate_request_valist(obj, server, path, first_name, argp);
-    /*printf("%s\n", request->url);*/
+
     va_end(argp);
 
     curl_easy_setopt( request->curl, CURLOPT_URL, request->url );
@@ -421,13 +420,13 @@ char* mp3tunes_locker_generate_download_url_from_file_key_and_bitrate(mp3tunes_l
 int mp3tunes_locker_login(mp3tunes_locker_object_t *obj, char* username, char* password) {
     xml_xpath_t* xml_xpath;
     char *status, *session_id;
-    
+
     xml_xpath = mp3tunes_locker_api_simple_fetch(obj, MP3TUNES_SERVER_LOGIN, "api/v1/login/", "username", username, "password", password, NULL);
 
     if (xml_xpath == NULL) {
         return -2;
     }
-    
+
     status = xml_xpath_get_string(xml_xpath, "/mp3tunes/status");
 
     if (status[0] != '1') {
@@ -442,7 +441,8 @@ int mp3tunes_locker_login(mp3tunes_locker_object_t *obj, char* username, char* p
     free(status);
 
     session_id = xml_xpath_get_string(xml_xpath, "/mp3tunes/session_id");
-
+    obj->username = username;
+    obj->password = password;
     obj->session_id = session_id;
     xml_xpath_deinit(xml_xpath);
 
@@ -720,7 +720,7 @@ int mp3tunes_locker_tracks_search( mp3tunes_locker_object_t *obj, mp3tunes_locke
     int i;
 
     xml_xpath = mp3tunes_locker_api_simple_fetch(obj, MP3TUNES_SERVER_API, "api/v1/lockerSearch", "type", "track", "s", search, NULL);
- 
+
     mp3tunes_locker_track_list_init(tracks);
 
     if (xml_xpath == NULL) {
@@ -1180,7 +1180,7 @@ int mp3tunes_locker_sync_down(mp3tunes_locker_object_t *obj, char* type, char* b
     if (xmlTextWriterStartElement(writer, BAD_CAST "options") < 0) {
         return -1;
     }
-    
+
     if (xmlTextWriterStartElement(writer, BAD_CAST "direction") < 0) {
         return -1;
     }
@@ -1283,7 +1283,7 @@ char* mp3tunes_locker_generate_filekey(const char *filename) {
     MD5_Update(&md5, buffer, ret);
   }
 
-  MD5_Final(sig, &md5); 
+  MD5_Final(sig, &md5);
 
   if (stream != stdin) {
     (void)fclose(stream);
@@ -1333,4 +1333,31 @@ int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, char *path) {
     fclose(hd_src); /* close the local file */
     free(url);
     return 0;
+}
+
+int mp3tunes_locker_load_track(mp3tunes_locker_object_t *obj, char *url) {
+    xml_xpath_t* xml_xpath;
+    char *status;
+    xml_xpath = mp3tunes_locker_api_simple_fetch(obj, MP3TUNES_SERVER_LOGIN, "api/v0/lockerLoad/", "email", obj->username, "url", url, "sid", obj->session_id, NULL);
+
+    if (xml_xpath == NULL) {
+        return -2;
+    }
+
+    status = xml_xpath_get_string(xml_xpath, "/mp3tunes/status");
+
+    if (status[0] != '1') {
+        /*printf("status is %s\n", status);*/
+        char* error = xml_xpath_get_string(xml_xpath, "/mp3tunes/errorMessage");
+        /*printf("error is %s\n", error);*/
+        obj->error_message = error;
+        free(status);
+        xml_xpath_deinit(xml_xpath);
+        return -1;
+    }
+    free(status);
+    xml_xpath_deinit(xml_xpath);
+
+    return 0;
+
 }
