@@ -29,7 +29,7 @@
 
 
 ServiceSqlCollection::ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry )
-    : Collection()
+    : ServiceCollection()
     , m_metaFactory( metaFactory )
     , m_registry( registry )
     , m_collectionId( id )

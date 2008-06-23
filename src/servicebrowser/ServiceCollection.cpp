@@ -22,6 +22,7 @@
 
 #include "ServiceCollection.h"
 
+#include "ServiceCollectionLocation.h"
 #include "amarokconfig.h"
 #include "ServiceMetaBase.h"
 #include "Debug.h"
@@ -79,6 +80,13 @@ ServiceCollection::prettyName() const
 {
     return m_prettyName;
 }
+
+CollectionLocation*
+ServiceCollection::location() const
+{
+    return new ServiceCollectionLocation( this );
+}
+
 
 ServiceBase * ServiceCollection::service()
 {

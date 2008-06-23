@@ -55,6 +55,8 @@ class AMAROK_EXPORT ServiceCollection : public Collection, public MemoryCollecti
         virtual QString collectionId() const;
         virtual QString prettyName() const;
 
+        virtual CollectionLocation* location() const;
+
         void emitUpdated();
 
         virtual QStringList query( const QString &query ) { Q_UNUSED( query ); return QStringList(); }

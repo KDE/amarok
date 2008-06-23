@@ -20,12 +20,12 @@
 #define AMAROK_SERVICESQLCOLLECTION_H
 
 #include "amarok_export.h"
-#include "Collection.h"
+#include "ServiceCollection.h"
 #include "ServiceMetaBase.h"
 #include "ServiceSqlRegistry.h"
 
 
-class AMAROK_EXPORT ServiceSqlCollection : public Collection
+class AMAROK_EXPORT ServiceSqlCollection : public ServiceCollection
 {
     Q_OBJECT
     public:
