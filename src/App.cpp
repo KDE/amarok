@@ -27,7 +27,6 @@ email                : markey@web.de
 #include "atomicstring.h"
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
-#include "context/ContextView.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "equalizersetup.h"
