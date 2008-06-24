@@ -51,7 +51,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     m_width = globalConfig().readEntry( "width", 500 );
 
     m_serviceName = new QGraphicsSimpleTextItem( this );
-    m_serviceName->setText( "Service Info (No service active)" );
+    m_serviceName->setText( i18n("Service Info (No service active)") );
 
     m_webView = new QWebView( 0 );
     m_serviceMainInfo = new QGraphicsProxyWidget( this );

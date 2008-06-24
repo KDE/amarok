@@ -43,14 +43,14 @@ BoomAnalyzer::BoomAnalyzer( QWidget *parent )
     (new QGridLayout( box, 2, 3 ))->setAutoAdd( true );
 
     v = int(K_barHeight*1000);
-    new QLabel( "Bar fall-rate:", box );
+    new QLabel( i18n("Bar fall-rate:"), box );
     o = new QSlider( 100, 2000, 100, v, Qt::Horizontal, box );
    (m = new QSpinBox( 100, 2000, 1, box ))->setValue( v );
     connect( o, SIGNAL(valueChanged(int)), SLOT(changeK_barHeight( int )) );
     connect( o, SIGNAL(valueChanged(int)), m, SLOT(setValue( int )) );
 
     v = int(F_peakSpeed*1000);
-    new QLabel( "Peak acceleration: ", box );
+    new QLabel( i18n("Peak acceleration: "), box );
     o = new QSlider( 1000, 1300, 50, v, Qt::Horizontal, box );
    (m = new QSpinBox( 1000, 1300, 1, box ))->setValue( v );
     connect( o, SIGNAL(valueChanged(int)), SLOT(changeF_peakSpeed( int )) );

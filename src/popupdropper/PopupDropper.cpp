@@ -34,7 +34,7 @@
 #include <QPalette>
 #include <QTimeLine>
 #include <QWidget>
-
+#include <KLocale>
 #include "math.h"
 
 PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget* widget )
@@ -226,7 +226,7 @@ void PopupDropper::initOverlay( QWidget* parent, PopupDropperPrivate* priv )
     pdp->view->setFrameStyle( QFrame::NoFrame );
     pdp->view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     pdp->view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    pdp->view->setWindowTitle( "Drop something here." );
+    pdp->view->setWindowTitle( i18n("Drop something here.") );
     pdp->view->setBackgroundRole( QPalette::Window );
     pdp->view->setAutoFillBackground( true );
     pdp->success = true;
