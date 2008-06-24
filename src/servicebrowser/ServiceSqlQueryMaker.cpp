@@ -116,7 +116,7 @@ ServiceSqlQueryMaker::reset()
     d->linkedTables = 0;
     if( d->worker && d->worker->isFinished() )
         delete d->worker;   //TODO error handling
-    //d->resultAsDataPtrs = false;
+    d->resultAsDataPtrs = false;
     d->withoutDuplicates = false;
     d->maxResultSize = -1;
     d->andStack.clear();
