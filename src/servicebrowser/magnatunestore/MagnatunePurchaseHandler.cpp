@@ -226,15 +226,14 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
             checkInfoMessage = i18n( "check the credit card information" );
 
 
-        KMessageBox::information( m_parent, "Could not process payment",
-            "There seems to be an error in the information entered (" + checkInfoMessage + "), please try again\n" );
+        KMessageBox::information( m_parent, 
+            i18n("There seems to be an error in the information entered (%1), please try again\n", checkInfoMessage) , i18n("Could not process payment"));
 
 
         m_purchaseDialog->setEnabled( true );
     } else {
         
-        KMessageBox::information( m_parent, "Could not process download",
-            "There seems to be an error in the supplied membership information. Please correct this and try again." );
+        KMessageBox::information( m_parent, i18n("There seems to be an error in the supplied membership information. Please correct this and try again."),i18n("Could not process download") );
     }
 }
 
