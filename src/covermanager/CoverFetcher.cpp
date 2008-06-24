@@ -190,9 +190,8 @@ void CoverFetcher::buildQueries( Meta::AlbumPtr album )
     extensions << i18n("disc") << i18n("disk") << i18n("remaster") << i18n("cd") << i18n("single") << i18n("soundtrack") << i18n("part")
             << "disc" << "disk" << "remaster" << "cd" << "single" << "soundtrack" << "part" << "cds" /*cd single*/;
 
-
     m_queries.clear();
-    m_userQueries.clear();
+    m_userQuery.clear();
 
     //we do several queries, one raw ie, without the following modifications
     //the others have the above strings removed with the following regex, as this can increase hit-rate

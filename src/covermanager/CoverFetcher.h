@@ -32,7 +32,8 @@
 class KJob;
 class KLineEdit;
 
-class CoverLabel : public QLabel {
+class CoverLabel : public QLabel
+{
     public:
     explicit CoverLabel ( QWidget * parent, Qt::WindowFlags f = 0 );
 
@@ -42,11 +43,11 @@ class CoverLabel : public QLabel {
     }
 
     protected:
-    virtual void mouseReleaseEvent(QMouseEvent *pEvent);
+        virtual void mouseReleaseEvent(QMouseEvent *pEvent);
 
     private:
-    QString m_artist;
-    QString m_album;
+        QString m_artist;
+        QString m_album;
 };
 
 class CoverFetcherSingleton;
@@ -61,7 +62,6 @@ class CoverFetcher : public QObject
     static const uint MAX_COVERS_CHOICE = 10;
 
 public:
-
     AMAROK_EXPORT static CoverFetcher* instance();
 
    ~CoverFetcher();
@@ -70,7 +70,6 @@ public:
     void setUserCanEditQuery( bool b ) { m_userCanEditQuery = b; }
 
     /// Main Fetch loop
-
     void manualFetch( Meta::AlbumPtr album );
 
     QString amazonURL() const { return m_amazonURL; }
@@ -111,7 +110,6 @@ private:
     int     m_size;
 
     QStringList m_queries;
-    QStringList m_userQueries;
     QStringList m_coverAsins;
     QStringList m_coverAmazonUrls;
     QStringList m_coverUrls;
