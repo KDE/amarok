@@ -577,7 +577,6 @@ SqlTrack::updateStatisticsInDb()
 void
 SqlTrack::finishedPlaying( double playedFraction )
 {
-    Q_UNUSED( playedFraction );
     m_lastPlayed = QDateTime::currentDateTime().toTime_t();
     m_playCount++;
     if( !m_firstPlayed )
