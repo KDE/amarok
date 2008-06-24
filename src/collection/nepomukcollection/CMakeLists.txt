@@ -3,6 +3,7 @@ include_directories( ../..
         ../../plugin
    ../../meta
    ../../collection
+   ../../dialogs
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${KDE4_INCLUDE_DIR}
    ${QT_INCLUDES} 

@@ -131,6 +131,8 @@ class NepomukTrack : public Track
         
         virtual QString type() const;
         
+        virtual void finishedPlaying( double playedFraction );
+        
     private:
         NepomukCollection *m_collection;
         Nepomuk::Resource m_nepores;

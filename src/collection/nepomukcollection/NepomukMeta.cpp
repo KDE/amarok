@@ -21,9 +21,11 @@
 #include "NepomukMeta.h"
 
 #include "Debug.h"
+#include "ScriptManager.h"
 
 #include <QDateTime>
 
+#include <Nepomuk/Variant>
 #include <Soprano/BindingSet>
 #include <Soprano/Model>
 
@@ -259,7 +261,13 @@ NepomukTrack::score() const
 void
 NepomukTrack::setScore( double newScore )
 {
-    Q_UNUSED( newScore )
+    // scores are betweeen 0 and 1?  Xesam wants them to be int so lets
+    // multiply them by 100 (hope that is enough)
+    
+    int tmpScore =  int( newScore*100 );
+    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valScore ) ), Nepomuk::Variant( tmpScore ) );
+    m_score = newScore;
+    notifyObservers();
 }
 
 int
@@ -271,7 +279,9 @@ NepomukTrack::rating() const
 void
 NepomukTrack::setRating( int newRating )
 {
-    Q_UNUSED( newRating )
+    m_nepores.setRating( newRating );
+    m_rating = newRating;
+    notifyObservers();
 }
 
 int
@@ -326,6 +336,25 @@ QString
 NepomukTrack::type() const
 {
     return m_type;
+}
+
+void 
+NepomukTrack::finishedPlaying( double playedFraction )
+{
+    DEBUG_BLOCK
+    m_lastPlayed = QDateTime::currentDateTime();
+    if( m_playCount == 0 )
+    {
+        m_firstPlayed = m_lastPlayed;
+        m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valFirstPlayed) ), Nepomuk::Variant( m_firstPlayed ) );
+    }
+    m_playCount++;
+    ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
+    
+    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valLastPlayed) ), Nepomuk::Variant( m_lastPlayed ) );
+    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valPlaycount) ), Nepomuk::Variant( m_playCount ) );
+    
+    notifyObservers();
 }
 
 // -- GENRE --
