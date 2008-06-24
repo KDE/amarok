@@ -280,6 +280,8 @@ void
 MainWindow::createContextView( Plasma::Containment *containment )
 {
     DEBUG_BLOCK
+    disconnect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
+            this, SLOT( createContextView( Plasma::Containment* ) ) );
     PERF_LOG( "Creating ContexView" )
     m_contextView = new Context::ContextView( containment, m_contextWidget );
     m_contextView->setFrameShape( QFrame::NoFrame );

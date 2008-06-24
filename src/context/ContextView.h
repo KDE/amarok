@@ -70,11 +70,17 @@ public:
     void clear();
 
 public slots:
-    void zoomIn();
-    void zoomOut();
+    void zoom( Plasma::Containment* containment, Plasma::ZoomDirection direction );
+    void zoomIn( Plasma::Containment* containment );
+    void zoomOut( Plasma::Containment* containment );
 
     Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
     void showAppletBrowser();
+
+    void setContainment( Plasma::Containment* containment );
+
+    void nextContainment();
+    void previousContainment();
 
 protected:
     void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
@@ -85,8 +91,23 @@ protected:
 private:
     static ContextView* s_self;
 
-    void connectContainment();
+    /**
+    * Add a new context containment to the view
+    */
+    void addContainment();
 
+    /**
+    * Connect all needed signals to a containment
+    * @arg containment the containment to connect the signals to
+    */
+    void connectContainment( Plasma::Containment* containment );    
+
+    /**
+    * Disconnect all signals set in connectContainment
+    * @arg containment the containment to disconnect the signals
+    */
+    void disconnectContainment( Plasma::Containment* containment );
+    
     void loadConfig();
 
     void showHome();
@@ -96,7 +117,10 @@ private:
 
     // holds what is currently being shown
     ContextState m_curState;
+    
     Plasma::AppletBrowser *m_appletBrowser;
+    
+    Plasma::ZoomLevel m_zoomLevel;
 
     //ControlBox* m_controlBox;
 

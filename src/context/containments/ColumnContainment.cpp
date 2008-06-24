@@ -366,8 +366,7 @@ QList<QAction*> ColumnContainment::contextualActions()
 void ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
     DEBUG_BLOCK
-    Q_UNUSED( event )
-
+    
     // Discoverability: We're also showing the context menu on left-click, when clicking empty space
     if( event->button() == Qt::LeftButton )
     {
@@ -377,8 +376,12 @@ void ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent * event )
 
         if( !insideApplet )
             m_appletBrowserAction->trigger();
+        
+        debug() << "Focus requested by containment";
+        emit focusRequested( this );
     }
 }
+
 
 void
 ColumnContainment::showAddWidgetsInterface()

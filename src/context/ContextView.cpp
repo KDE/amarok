@@ -48,6 +48,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     , EngineObserver( The::engineController() )
     , m_curState( Home )
     , m_appletBrowser( 0 )
+    , m_zoomLevel( Plasma::DesktopZoom )
 {
     
     s_self = this;
@@ -78,8 +79,10 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     Theme::defaultTheme()->setThemeName( "Amarok-Mockup" );
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
+    for( int i = 0; i < 3; i++ )
+        addContainment();
 
-    connectContainment();
+    setContainment( cont );
 
     PERF_LOG( "Showing home in contextview" )
     showHome();
@@ -211,17 +214,72 @@ Plasma::Applet* ContextView::addApplet(const QString& name, const QStringList& a
     }
 }
 
-void ContextView::zoomIn()
+void
+ContextView::zoom( Plasma::Containment* containment, Plasma::ZoomDirection direction )
 {
-    //TODO: Change level of detail when zooming
-    // 10/8 == 1.25
-    scale( 1.25, 1.25 );
+    if ( direction == Plasma::ZoomIn )
+        zoomIn( containment );
+    else if ( direction == Plasma::ZoomOut )
+        zoomOut( containment );
 }
 
-void ContextView::zoomOut()
+void
+ContextView::zoomIn( Plasma::Containment* toContainment )
+{    
+    if ( toContainment && containment() != toContainment )
+    {
+        setContainment( toContainment );
+    }
+    
+    if ( m_zoomLevel == Plasma::GroupZoom )
+    {
+        setDragMode( NoDrag );
+        m_zoomLevel = Plasma::DesktopZoom;
+        qreal factor = Plasma::scalingFactor( m_zoomLevel ) / matrix().m11();
+        scale( factor, factor );
+        if ( containment() )
+        {
+            //disconnect from other containments
+            Plasma::Corona *corona = containment()->corona();
+            if ( corona )
+            {
+                QList<Plasma::Containment*> containments = corona->containments();
+                foreach( Plasma::Containment *c, containments )
+                {
+                    if( c != containment() )
+                        disconnectContainment( c );
+                }
+            }
+            setSceneRect( containment()->geometry() );
+        }
+    }
+}
+
+void
+ContextView::zoomOut( Plasma::Containment* fromContainment )
 {
-    // 8/10 == .8
-    scale( .8, .8 );
+    if ( m_zoomLevel == Plasma::DesktopZoom )
+    {
+        m_zoomLevel = Plasma::GroupZoom;
+        //connect to other containments
+        //FIXME if some other view is zoomed out, a little madness will ensue
+        Plasma::Corona *corona = containment()->corona();
+        if( corona )
+        {
+            QList<Plasma::Containment*> containments = corona->containments();
+            foreach( Plasma::Containment *c, containments )
+            {
+                if( c != fromContainment  )
+                    connectContainment( c );
+            }
+        }
+        setDragMode( ScrollHandDrag );
+        scale( .45, .45 );
+        setSceneRect( QRectF( 0, 0, scene()->sceneRect().right(), scene()->sceneRect().bottom() ) );
+        ensureVisible( fromContainment->sceneBoundingRect() );
+        m_zoomLevel = Plasma::GroupZoom;
+    }
+
 }
 
 ContextScene* ContextView::contextScene()
@@ -245,34 +303,103 @@ void ContextView::resizeEvent( QResizeEvent* event )
         if( containment )
             containment->updateSize();
         else
-            debug() << "ContextView::resizeEvent NO CONTAINMENT TO UPDATE SIZE! BAD!";    
+            debug() << "ContextView::resizeEvent NO CONTAINMENT TO UPDATE SIZE! BAD!";
     }
+
 }
+
 
 void ContextView::wheelEvent( QWheelEvent* event )
 {
-    if ( scene() && scene()->itemAt( event->pos() ) ) {
-        QGraphicsView::wheelEvent( event );
-        return;
+    if ( event->modifiers() & Qt::ControlModifier )
+    {
+        if ( event->delta() < 0 )
+            zoomOut( containment() );
+        else
+            zoomIn( containment() );
+    }
+}
+
+
+void
+ContextView::addContainment()
+{
+    DEBUG_BLOCK
+    Plasma::Corona* corona = containment()->corona();
+    if (corona)
+    {
+        int size = contextScene()->containments().size();
+        Plasma::Containment *c = corona->addContainment( "context" );        
+        //FIXME: find a better way to resize the containment to a proper size based on the
+        //the CV current area size
+        int x = 504 * ( size / 2 );
+        int y = 604 * ( size % 2 );
+        setContainment( c );
+        c->resize( 500, 600 );
+        c->moveBy( x, y );
+        
+        debug() << "Containment added at: " << c->geometry();
+        debug() << "x,y:" << x << y;
     }
 
-    if ( event->modifiers() & Qt::ControlModifier ) {
-        if ( event->delta() < 0 ) {
-            zoomOut();
-        } else {
-            zoomIn();
-        }
+}
+
+
+void
+ContextView::connectContainment( Plasma::Containment* containment )
+{
+    if( containment )
+    {
+        connect( containment, SIGNAL( zoomRequested( Plasma::Containment*, Plasma::ZoomDirection ) ),
+                this, SLOT( zoom( Plasma::Containment*, Plasma::ZoomDirection ) ) );
+        connect( containment, SIGNAL( showAddWidgetsInterface( QPointF ) ),
+                this, SLOT( showAppletBrowser() ) );
+        connect( containment, SIGNAL( focusRequested( Plasma::Containment* ) ),
+                 this, SLOT( setContainment( Plasma::Containment * ) ) );
     }
 }
 
 void
-ContextView::connectContainment()
+ContextView::disconnectContainment( Plasma::Containment* containment )
 {
-    if( containment() )
+    if( containment )
     {
-        connect( containment(), SIGNAL( showAddWidgetsInterface( QPointF ) ),
+        disconnect( containment, SIGNAL( zoomRequested( Plasma::Containment*, Plasma::ZoomDirection ) ),
+                this, SLOT( zoom( Plasma::Containment*, Plasma::ZoomDirection ) ) );
+        disconnect( containment, SIGNAL( showAddWidgetsInterface( QPointF ) ),
                 this, SLOT( showAppletBrowser() ) );
+        disconnect( containment, SIGNAL( focusRequested( Plasma::Containment* ) ),
+                 this, SLOT( setContainment( Plasma::Containment * ) ) );
     }
+}
+
+void
+ContextView::setContainment( Plasma::Containment* containment )
+{
+    if( containment != this->containment() )
+    {
+        disconnectContainment( this->containment() );
+        connectContainment( containment );
+        Plasma::View::setContainment( containment );
+    }    
+}
+
+void
+ContextView::nextContainment()
+{
+    QList<Plasma::Containment*> containments = contextScene()->containments();
+    int index = containments.indexOf( containment() );
+    index = ( index + 1 ) % containments.size();
+    setContainment( containments.at( index ) );
+}
+
+void
+ContextView::previousContainment()
+{
+    QList<Plasma::Containment*> containments = contextScene()->containments();
+    int index = containments.indexOf( containment() );
+    index = ( index - 1 ) % containments.size();
+    setContainment( containments.at( index ) );
 }
 
 void
