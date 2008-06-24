@@ -32,6 +32,8 @@ ContextObserver::ContextObserver( ContextSubject *s )
 
 ContextObserver::~ContextObserver()
 {
+    DEBUG_BLOCK
+
     debug() << "contextobserver dying, trying to detach subject:" << m_subject;
     if( m_subject )
         m_subject->detach( this );
@@ -48,6 +50,8 @@ ContextSubject::ContextSubject()
 
 ContextSubject::~ContextSubject()
 {
+    DEBUG_BLOCK
+
     delete m_observers;
 }
 
@@ -66,6 +70,8 @@ void ContextSubject::attach( ContextObserver *obs )
 
 void ContextSubject::detach( ContextObserver *obs )
 {
+    DEBUG_BLOCK
+
     debug() << "detaching observer:" << obs;
     debug() << "contents of m_observers:" << m_observers;
 
