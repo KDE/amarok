@@ -183,8 +183,10 @@ void CoverFetcher::buildQueries( Meta::AlbumPtr album )
     m_isFetching = true;
     m_fetchMutex.unlock();
     m_albumPtr = album;
-    QString albumName = album->name();
-    QString artistName = album->hasAlbumArtist() ? album->albumArtist()->name() : QString();
+
+    // Amazon doesn't like accents, so we use cleanPath() to remove them
+    QString albumName = Amarok::cleanPath( album->name() );
+    QString artistName = Amarok::cleanPath( album->hasAlbumArtist() ? album->albumArtist()->name() : QString() );
 
     QStringList extensions;
     extensions << i18n("disc") << i18n("disk") << i18n("remaster") << i18n("cd") << i18n("single") << i18n("soundtrack") << i18n("part")
