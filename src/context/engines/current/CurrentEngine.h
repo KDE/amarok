@@ -51,7 +51,9 @@ public:
     virtual ~CurrentEngine();
 
     QStringList sources() const;
-    void message( const Context::ContextState& state );
+
+    // reimplemented from Context::Observer
+    virtual void message( const Context::ContextState& state );
 
     int coverWidth() { return m_coverWidth; }
     void setCoverWidth( const int width ) { m_coverWidth = width; }
