@@ -38,10 +38,12 @@ class WikipediaEngine : public DataEngine, public ContextObserver
         
 public:
     WikipediaEngine( QObject* parent, const QList<QVariant>& args );
+    virtual ~WikipediaEngine();
     
     QStringList sources() const;
     
-    void message( const ContextState& state );
+    // reimplemented from Context::Observer
+    virtual void message( const ContextState& state );
 
     void setSelection( const QString& selection ) { m_currentSelection = selection; }
     QString selection() { return m_currentSelection; }

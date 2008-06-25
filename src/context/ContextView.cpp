@@ -91,6 +91,10 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
 
 ContextView::~ContextView()
 {
+    DEBUG_BLOCK
+
+    debug() << Plasma::DataEngineManager::self()->listAllEngines();
+    
     clear( m_curState );
     delete m_appletBrowser;
 }

@@ -35,6 +35,11 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
     update();
 }
 
+WikipediaEngine::~WikipediaEngine()
+{
+    DEBUG_BLOCK
+}
+
 QStringList WikipediaEngine::sources() const
 {
     return m_sources;

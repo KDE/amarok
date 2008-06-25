@@ -46,7 +46,6 @@ class CurrentEngine : public Context::DataEngine,
     Q_PROPERTY( int coverWidth READ coverWidth WRITE setCoverWidth  )
 
 public:
-
     CurrentEngine( QObject* parent, const QList<QVariant>& args );
     virtual ~CurrentEngine();
 
