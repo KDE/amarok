@@ -466,6 +466,9 @@ Playlist::Model::playlistModeChanged()
     {
         if( options & Playlist::TrackPlayback )
             m_advancer = new RandomTrackNavigator( this );
+        else if( options & Playlist::AlbumPlayback )
+            // TODO: implement RandomAlbumNavigator
+            m_advancer = new StandardTrackNavigator( this ); 
     }
     else
     {
