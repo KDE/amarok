@@ -219,7 +219,10 @@ NepomukTrack::name() const
 QString
 NepomukTrack::prettyName() const
 {
-    return m_title;
+    if (!m_title.isEmpty())
+        return m_title;
+    else
+        return this->m_url.fileName();
 }
 
 KUrl
