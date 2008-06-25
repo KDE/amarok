@@ -104,6 +104,7 @@ class NepomukTrack : public Track
         virtual QString prettyUrl() const;
         
         virtual bool isPlayable() const;
+        virtual bool inCollection() const;
         
         virtual AlbumPtr album() const;
         virtual ArtistPtr artist() const;

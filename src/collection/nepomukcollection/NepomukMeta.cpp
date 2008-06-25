@@ -24,6 +24,7 @@
 #include "ScriptManager.h"
 
 #include <QDateTime>
+#include <QFile>
 #include <QMutexLocker>
 #include <QThread>
 
@@ -245,6 +246,13 @@ NepomukTrack::prettyUrl() const
 
 bool
 NepomukTrack::isPlayable() const
+{
+    //a song is not playable anymore if the collection was removed
+    return m_collection && QFile::exists( m_url.path() );
+}
+
+bool
+NepomukTrack::inCollection() const
 {
     return true;
 }
