@@ -37,6 +37,9 @@ class MySqlCollection : public SqlCollection
         virtual QString type() const;
 
         virtual QString escape( QString text ) const;
+
+        virtual QueryMaker* orderByRandom();
+
     private:
         bool m_initialized;
 

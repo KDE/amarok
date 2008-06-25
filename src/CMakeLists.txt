@@ -43,6 +43,7 @@ include_directories(
     context/widgets
     dbus
     dialogs
+    dynamic
     mediadevice
     meta
     playlistbrowser
@@ -191,7 +192,6 @@ set(meta_SRCS
     meta/Capability.cpp
     meta/CurrentTrackActionsCapability.cpp
     meta/CustomActionsCapability.cpp
-    meta/DynamicPlaylist.cpp
     meta/EditCapability.cpp
     meta/EditablePlaylistCapability.cpp
     meta/LastFmCapability.cpp
@@ -258,6 +258,8 @@ set(libpodcasts_SRCS
 # PLAYLISTBROWSER
 #####################################################################
 set(libplaylistbrowser_SRCS
+    playlistbrowser/DynamicModel.cpp
+    playlistbrowser/DynamicCategory.cpp
     playlistbrowser/PlaylistBrowser.cpp
     playlistbrowser/UserPlaylistModel.cpp
     playlistbrowser/PlaylistCategory.cpp
@@ -303,6 +305,7 @@ set(libplaylist_SRCS
     playlist/RepeatTrackNavigator.cpp
     playlist/StandardTrackNavigator.cpp
     playlist/TrackNavigator.cpp
+    playlist/DynamicTrackNavigator.cpp
     playlist/UndoCommands.cpp
 )
 
@@ -352,6 +355,22 @@ set (scriptengine_SRCS
 )
 
 #####################################################################
+# DYNAMIC
+#####################################################################
+set(libdynamic_SRCS
+    dynamic/DynamicPlaylist.cpp
+    dynamic/RandomPlaylist.cpp
+)
+
+#####################################################################
+# DYNAMIC
+#####################################################################
+set(libdynamic_SRCS
+    dynamic/DynamicPlaylist.cpp
+    dynamic/RandomPlaylist.cpp
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -366,6 +385,7 @@ set(amaroklib_LIB_SRCS
     ${libservicebrowser_SRCS}
     ${libsqlite_SRCS}
     ${libstatusbar_SRCS}
+    ${libdynamic_SRCS}
     ${meta_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}

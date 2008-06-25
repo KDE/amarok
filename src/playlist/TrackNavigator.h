@@ -21,6 +21,7 @@
 #define TRACKNAVIGATOR_H
 
 #include "meta/Meta.h"
+#include "Debug.h"
 
 namespace Playlist {
 
@@ -41,7 +42,9 @@ class Model;
             /** The next track that the engine should play.  This is called a few seconds before the track actually ends */
             virtual Meta::TrackPtr nextTrack() = 0;
             /// The user clicks next.
-            virtual Meta::TrackPtr userNextTrack() { return nextTrack(); }
+            virtual Meta::TrackPtr userNextTrack() {
+                warning() << "Calling nextTrack()";
+                return nextTrack(); }
             ///The user clicks previous. By default it just go to the previous item in the playlist
             virtual Meta::TrackPtr lastTrack();
 

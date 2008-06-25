@@ -68,6 +68,7 @@ public:
     virtual QueryMaker* addReturnValue ( qint64 value );
     virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
     virtual QueryMaker* orderBy ( qint64 value, bool descending = false );
+    virtual QueryMaker* orderByRandom();
 
     virtual QueryMaker* includeCollection ( const QString &collectionId );
     virtual QueryMaker* excludeCollection ( const QString &collectionId );

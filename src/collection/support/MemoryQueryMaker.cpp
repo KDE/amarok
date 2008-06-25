@@ -413,6 +413,13 @@ MemoryQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
+MemoryQueryMaker::orderByRandom()
+{
+    //TODO stub
+    return this;
+}
+
+QueryMaker*
 MemoryQueryMaker::includeCollection( const QString &collectionId )
 {
     Q_UNUSED( collectionId );

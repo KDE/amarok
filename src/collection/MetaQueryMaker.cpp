@@ -181,6 +181,14 @@ MetaQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
+MetaQueryMaker::orderByRandom()
+{
+    foreach( QueryMaker *b, builders )
+        b->orderByRandom();
+    return this;
+}
+
+QueryMaker*
 MetaQueryMaker::includeCollection( const QString &collectionId )
 {
     foreach( QueryMaker *b, builders )

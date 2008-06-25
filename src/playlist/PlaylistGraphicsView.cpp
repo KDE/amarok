@@ -307,7 +307,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
 void
 Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int end )
 {
-//     DEBUG_BLOCK
+    DEBUG_BLOCK
     Q_UNUSED( parent );
     for( int i = end; i >= start; i-- )
         delete m_tracks.takeAt( i );
@@ -368,11 +368,11 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
 
 
 void
-Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
+Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool animate )
 {
-//     DEBUG_BLOCK
+     DEBUG_BLOCK
 
-//     debug() << "number if items: " << m_tracks.count();
+     debug() << "number if items: " << m_tracks.count();
     if( startPosition < 0 )
         return;
 
@@ -407,7 +407,7 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition )
         double visibleBottom = mapToScene( 0, height() ).y();
 
         // Animate the repositioning of the item if it is within the viewable area and this playlist is visible...
-       if ( !( ( desiredY < visibleTop ) || ( desiredY > visibleBottom ) ) &&
+       if ( animate && !( ( desiredY < visibleTop ) || ( desiredY > visibleBottom ) ) &&
               ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) &&
                ( itemHeight != 0 ) && isVisible() )
         {
@@ -469,14 +469,14 @@ Playlist::GraphicsView::dataChanged(const QModelIndex & index)
 void Playlist::GraphicsView::groupingChanged()
 {
     // ouch!!! this is expensive!!
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
 
     int i;
     for ( i = 0; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 
 
-    shuffleTracks( 0, -1 );
+    shuffleTracks( 0, -1, false );
    // update();
 }
 
@@ -490,6 +490,7 @@ void Playlist::GraphicsView::animationComplete()
 
 void Playlist::GraphicsView::rowsChanged( int start )
 {
+    DEBUG_BLOCK
     for ( int i = start; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 }

@@ -45,6 +45,7 @@ public slots:
 
 private:
     QWidget * loadPodcastCategory();
+    QWidget * loadDynamicCategory();
 
     QToolBox *m_toolBox;
     PodcastCollection *m_localPodcasts;

@@ -75,7 +75,7 @@ namespace Playlist
 
             void playTrack();
             void removeSelection();
-            void shuffleTracks( int startPosition, int stopPosition = -1 ); // -1: end of playlist
+            void shuffleTracks( int startPosition, int stopPosition = -1, bool animate = true ); // -1: end of playlist
             void showItemImage();
             void fetchItemImage();
             void unsetItemImage();

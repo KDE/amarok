@@ -28,6 +28,8 @@
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
 #include "Debug.h"
+#include "DynamicModel.h"
+#include "DynamicTrackNavigator.h"
 #include "EngineController.h"
 #include "PlaylistItem.h"
 #include "PlaylistGraphicsView.h"
@@ -359,6 +361,7 @@ Playlist::Model::next()
     {
         activeTrack()->finishedPlaying( (double)ec->trackPosition() / (double)ec->trackLength() * 100 ); //TODO: get correct value for parameter
     }
+
     The::engineController()->play( m_advancer->userNextTrack() );
 }
 
@@ -439,6 +442,23 @@ Playlist::Model::playlistModeChanged()
     debug() << "Track mode:     " << ( Amarok::repeatTrack() || Amarok::randomTracks() );
     debug() << "Album mode:     " << ( Amarok::repeatAlbum() || Amarok::randomAlbums() );
     debug() << "Playlist mode:  " << Amarok::repeatPlaylist();
+    debug() << "Dynamic mode:   " << AmarokConfig::dynamicMode();
+
+    if( AmarokConfig::dynamicMode() )
+    {
+        PlaylistBrowserNS::DynamicModel* dm = PlaylistBrowserNS::DynamicModel::instance();
+
+        Meta::DynamicPlaylistPtr playlist = 
+            dm->retrievePlaylist( AmarokConfig::lastDynamicMode() );
+        if( !playlist ) playlist = dm->retrieveDefaultPlaylist();
+
+        m_advancer = new DynamicTrackNavigator( this, playlist );
+
+        // FIXME: crashes if dynmaic mode is enabled at startup
+        //((DynamicTrackNavigator*)m_advancer)->appendUpcoming();
+        
+        return;
+    }
 
     if( Amarok::repeatEnabled() )
         options |= Playlist::RepeatPlayback;
@@ -480,7 +500,7 @@ Playlist::Model::playlistModeChanged()
 void
 Playlist::Model::setActiveRow( int row )
 {
-//     DEBUG_BLOCK
+    DEBUG_BLOCK
 
     emit dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, 0 ) );
     emit dataChanged( createIndex( row, 0 ), createIndex( row, 0 ) );
@@ -502,6 +522,11 @@ Playlist::Model::setActiveRow( int row )
         emit( playlistGroupingChanged() );
     }
 
+    debug() << "before: (rows,active) = ( " 
+            << m_items.size() << ", " << m_activeRow << ")\n";
+    emit activeRowChanged();
+    debug() << "after: (rows,active) = ( " 
+            << m_items.size() << ", " << m_activeRow << ")\n";
 }
 
 void
@@ -714,11 +739,23 @@ Playlist::Model::engineNewTrackPlaying()
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
-        foreach( Item* item, itemList() )
+        // FIXME: This is a dumb, bad, awful, hack. We have to iterate
+        // this way for dynamic mode to behave at all correctly.
+        int i;
+        for( i = activeRow(); i < m_items.size(); ++i )
         {
-            if( item->track() == track )
+            if( m_items[i]->track() == track )
             {
-                setActiveItem( item );
+                setActiveItem( m_items[i] );
+                return;
+            }
+        }             
+
+        for( i = activeRow()-1; i >= 0; --i )
+        {
+            if( m_items[i]->track() == track )
+            {
+                setActiveItem( m_items[i] );
                 return;
             }
         }
@@ -915,6 +952,10 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
 Meta::TrackList
 Playlist::Model::removeTracksCommand( int position, int rows )
 {
+    DEBUG_BLOCK
+    debug() << "Removing: (pos,rows) = ("
+            << position << ", " << rows << ")";
+
     beginRemoveRows( QModelIndex(), position, position + rows - 1 );
 //     TrackList::iterator start = m_tracks.begin() + position;
 //     TrackList::iterator end = start + rows;
@@ -936,7 +977,7 @@ Playlist::Model::removeTracksCommand( int position, int rows )
     if( m_activeRow >= position && m_activeRow < ( position + rows ) )
         m_activeRow = -1;
     else if( m_activeRow >= position )
-        m_activeRow = m_activeRow - position;
+        m_activeRow = m_activeRow - rows;
     else
         activeRowChanged = false;
     if( activeRowChanged )
@@ -1036,9 +1077,9 @@ Playlist::Model::moveRow(int row, int to)
 void
 Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int offset )
 {
-//     DEBUG_BLOCK
+    DEBUG_BLOCK
 
-     //debug() << "first row: " << firstRow << ", last row: " << lastRow;
+    debug() << "first row: " << firstRow << ", last row: " << lastRow;
 
 
     int area1Start = -1;

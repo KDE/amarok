@@ -463,6 +463,13 @@ SqlQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
+SqlQueryMaker::orderByRandom()
+{
+    d->queryOrderBy = " ORDER BY RANDOM()";
+    return this;
+}
+
+QueryMaker*
 SqlQueryMaker::limitMaxResultSize( int size )
 {
     d->maxResultSize = size;

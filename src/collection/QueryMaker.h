@@ -182,6 +182,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addReturnValue( qint64 value ) = 0;
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value ) = 0;
         virtual QueryMaker* orderBy( qint64 value, bool descending = false ) = 0;
+        virtual QueryMaker* orderByRandom() = 0;
 
         virtual QueryMaker* includeCollection( const QString &collectionId ) = 0;
         virtual QueryMaker* excludeCollection( const QString &collectionId ) = 0;

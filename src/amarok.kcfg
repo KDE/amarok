@@ -84,6 +84,11 @@
         </choices>
         <default>Off</default>
     </entry>
+    <entry key="Dynamic Mode" type="Bool">
+        <label>The status of dynamic mode.</label>
+        <whatsthis>If set, dynamic mode will be on, and tracks will be added according to the dynamic playlist specified.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="Last Dynamic Mode" type="String">
         <label>The most recently used Dynamic Mode</label>
         <whatsthis>The title of the Dynamic Mode that was most recently loaded in the playlist</whatsthis>

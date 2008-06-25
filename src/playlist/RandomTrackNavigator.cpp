@@ -31,6 +31,9 @@ using namespace Playlist;
 Meta::TrackPtr
 RandomTrackNavigator::nextTrack()
 {
+    DEBUG_BLOCK
+    warning() << "We're in nextTrack: SUCCESS!!";
+
     if( playlistChanged() )
     {
         debug() << "Playlist has changed, regenerating unplayed tracks";

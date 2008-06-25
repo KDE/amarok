@@ -385,6 +385,13 @@ NepomukQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
+NepomukQueryMaker::orderByRandom()
+{
+    // TODO
+    return this;
+}
+
+QueryMaker*
 NepomukQueryMaker::limitMaxResultSize( int size )
 {
     debug() << "limitMaxResultSize()" << endl;

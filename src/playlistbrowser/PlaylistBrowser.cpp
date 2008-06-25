@@ -20,6 +20,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
+#include "DynamicCategory.h"
 #include "Playlist.h"
 #include "PlaylistCategory.h"
 #include "PodcastMeta.h"
@@ -68,6 +69,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         addCategory( category );
     }
 
+    addCategory( PlaylistManager::Dynamic );
+
     connect( The::playlistManager(), SIGNAL(categoryAdded(int)), SLOT(addCategory(int)) );
 }
 
@@ -97,8 +100,7 @@ PlaylistBrowser::addCategory( int category )
         case PlaylistManager::UserPlaylist: widget = new PlaylistCategory( m_toolBox ); break;
 
         case PlaylistManager::PodcastChannel: widget = loadPodcastCategory(); break;
-        //TODO: add the DynamicPlaylistCategory widget
-        case PlaylistManager::Dynamic: widget = new QTreeView( m_toolBox ); break;
+        case PlaylistManager::Dynamic: widget = loadDynamicCategory(); break;
         //TODO: add the SmartPlaylistCategory widget
         case PlaylistManager::SmartPlaylist: widget = new QTreeView( m_toolBox ); break;
         //This must be a custom category
@@ -113,6 +115,13 @@ PlaylistBrowser::loadPodcastCategory()
 {
     PodcastModel *podcastModel = new PodcastModel();
     return new PodcastCategory( podcastModel );
+}
+
+
+QWidget*
+PlaylistBrowser::loadDynamicCategory()
+{
+    return new DynamicCategory( m_toolBox );
 }
 
 }
