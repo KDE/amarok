@@ -32,6 +32,7 @@
 #include "AmarokProcess.h"
 #include "StatusBar.h"
 #include "TheInstances.h"
+#include "scriptengine/amarokPlayerScript.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <KAboutApplicationDialog>
@@ -60,6 +61,7 @@
 #include <QSettings>
 #include <QTextCodec>
 #include <QTimer>
+#include <QtScript>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -194,6 +196,9 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
+
+    //load the wrapper classes
+    new Amarok::amarokPlayerScript(&m_engine);
 }
 
 
@@ -543,6 +548,12 @@ ScriptManager::slotRunScript( bool silent )
     connect( script, SIGNAL( receivedStdout( AmarokProcess* ) ), SLOT( slotReceivedStdout( AmarokProcess* ) ) );
     connect( script, SIGNAL( processExited( AmarokProcess* ) ), SLOT( scriptFinished( AmarokProcess* ) ) );
 
+    //load the script
+    QFile scriptFile(url.path());
+    scriptFile.open(QIODevice::ReadOnly);
+    m_engine.evaluate(scriptFile.readAll());
+    scriptFile.close();
+/*
     script->start( );
     if( script->error() != AmarokProcIO::FailedToStart )
     {
@@ -561,7 +572,7 @@ ScriptManager::slotRunScript( bool silent )
         delete script;
         return false;
     }
-
+*/
     li->setIcon( 0, SmallIcon( "media-playback-start-amarok" ) );
 
     m_scripts[name].process = script;

@@ -1,2 +1,0 @@
-name = Default
-type = score

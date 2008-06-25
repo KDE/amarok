@@ -17,13 +17,7 @@ email                : markey@web.de
 #include "App.h"
 
 #include "Amarok.h"
-#include "amarokCollectionDBusHandler.h" //dbus handlers
 #include "amarokconfig.h"
-#include "amarokContextDBusHandler.h"
-#include "amarokPlayerDBusHandler.h"
-#include "amarokPlaylistBrowserDBusHandler.h"
-#include "amarokPlaylistDBusHandler.h"
-#include "amarokScriptDBusHandler.h"
 #include "atomicstring.h"
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
@@ -186,14 +180,6 @@ App::App()
 #endif
 
     PERF_LOG( "Creating DBus handlers" )
-    //needs to be created before the wizard
-    new Amarok::amarokPlayerDBusHandler(); // Must be created first
-    new Amarok::amarokPlaylistDBusHandler();
-    new Amarok::amarokPlaylistBrowserDBusHandler();
-    new Amarok::amarokContextDBusHandler();
-    new Amarok::amarokCollectionDBusHandler();
-//     new Amarok::DbusMediaBrowserHandler();
-    new Amarok::amarokScriptDBusHandler();
     new Amarok::RootDBusHandler();
     new Amarok::PlayerDBusHandler();
     new Amarok::TracklistDBusHandler();
@@ -210,7 +196,6 @@ App::App()
 #endif
 
     QDBusConnection::sessionBus().registerService("org.freedesktop.MediaPlayer");
-    QDBusConnection::sessionBus().registerService("org.kde.amarok");
     QTimer::singleShot( 0, this, SLOT( continueInit() ) );
     PERF_LOG( "Done App ctor" )
 }
@@ -261,7 +246,7 @@ App::~App()
     QDBusConnectionInterface* dbusService;
     if (QDBusConnection::sessionBus().isConnected() && (dbusService = QDBusConnection::sessionBus().interface()))
     {
-        dbusService->unregisterService("org.kde.amarok");
+//        dbusService->unregisterService("org.kde.amarok");
         dbusService->unregisterService("org.freedesktop.MediaPlayer");
     }
 #endif

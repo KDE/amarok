@@ -29,7 +29,7 @@
 #include <KUrl>
 
 #include <QMap>
-
+#include <QtScript>
 
 class KArchiveDirectory;
 class AmarokProcess;
@@ -190,7 +190,10 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         typedef QMap<QString, ScriptItem> ScriptMap;
 
-        ScriptMap m_scripts;
+        ScriptMap      m_scripts;
+        QScriptEngine  m_engine;
+        QScriptValue   m_self;
+        QScriptValue   m_player;
 };
 
 
