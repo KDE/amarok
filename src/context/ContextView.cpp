@@ -93,8 +93,15 @@ ContextView::~ContextView()
 {
     DEBUG_BLOCK
 
-    debug() << Plasma::DataEngineManager::self()->listAllEngines();
-    
+    // Unload and destroy all Amarok plasma-engines
+    const QStringList engines = Plasma::DataEngineManager::self()->listAllEngines();
+    foreach( QString engine, engines ) {
+        if( engine.startsWith( "amarok-" ) ) {
+            debug() << "Unloading plasma engine: " << engine;
+            Plasma::DataEngineManager::self()->unloadEngine( engine );
+        }
+    }
+     
     clear( m_curState );
     delete m_appletBrowser;
 }
