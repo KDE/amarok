@@ -158,7 +158,6 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, const Soprano::Bindin
     m_artist = data[ collection->getNameForValue( QueryMaker::valArtist ) ].toString();
     m_album = data[ collection->getNameForValue( QueryMaker::valAlbum ) ].toString();
     m_genre = data[ collection->getNameForValue( QueryMaker::valGenre ) ].toString();
-    m_year = data[ collection->getNameForValue( QueryMaker::valYear ) ].toString();
     m_type = data[ collection->getNameForValue( QueryMaker::valFormat ) ].toString();
     m_comment = data[ collection->getNameForValue( QueryMaker::valComment ) ].toString();
     m_composer = data[ collection->getNameForValue( QueryMaker::valComposer ) ].toString();
@@ -198,6 +197,11 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, const Soprano::Bindin
                    .literal();
     if ( litval.isDateTime() )
         m_createDate = litval.toDateTime();
+ 
+    // assuming that Xesam content created is a DateTime, we only want the year
+    litval = data[ collection->getNameForValue( QueryMaker::valYear ) ].literal();
+    if ( litval.isDateTime() )
+        m_year = litval.toDateTime().toString( "yyyy");
 }
 
 NepomukTrack::~NepomukTrack()

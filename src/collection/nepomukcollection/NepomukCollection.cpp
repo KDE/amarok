@@ -145,15 +145,14 @@ NepomukCollection::initHashMaps()
     m_urlForValue[ v = QueryMaker::valPlaycount ] = Soprano::Vocabulary::Xesam::useCount().toString();
     
     // there is a Xesam Value (userRating) but using Nepomuk one as Dolphin uses it (ok?)
-    // nepomuk uses int so we have to divide value by 2 (value 5 is 2.5 in dolphin and amarok)
     m_urlForValue[ v = QueryMaker::valRating ] = Soprano::Vocabulary::NAO::numericRating().toString();
     m_urlForValue[ v = QueryMaker::valSamplerate ] = Soprano::Vocabulary::Xesam::audioSampleRate().toString();
     m_urlForValue[ v = QueryMaker::valScore] = Soprano::Vocabulary::Xesam::autoRating().toString();
     m_urlForValue[ v = QueryMaker::valTitle ] = Soprano::Vocabulary::Xesam::title().toString();
     m_urlForValue[ v = QueryMaker::valTrackNr ] = Soprano::Vocabulary::Xesam::trackNumber().toString();
     m_urlForValue[ v = QueryMaker::valUrl ] = Soprano::Vocabulary::Xesam::url().toString();
-    // TODO: no year in XESAM? i would like to see it added to fd.o draft
-    m_urlForValue[ v = QueryMaker::valYear ] = Soprano::Vocabulary::Xesam::genre().toString();
+    // Amarok seems to use Xesam contentCreated for year in SQL-Collection, so I assume it is ok here  
+    m_urlForValue[ v = QueryMaker::valYear ] = Soprano::Vocabulary::Xesam::contentCreated().toString();
     
     QHashIterator<qint64, QString> it( m_nameForValue );
     while ( it.hasNext() ) 
