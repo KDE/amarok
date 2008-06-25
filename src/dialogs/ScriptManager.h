@@ -192,8 +192,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         ScriptMap      m_scripts;
         QScriptEngine  m_engine;
-        QScriptValue   m_self;
-        QScriptValue   m_player;
 };
 
 
