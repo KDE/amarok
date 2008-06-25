@@ -24,6 +24,8 @@
 #include "ScriptManager.h"
 
 #include <QDateTime>
+#include <QMutexLocker>
+#include <QThread>
 
 #include <Nepomuk/Variant>
 #include <Soprano/BindingSet>
@@ -127,10 +129,29 @@ NepomukAlbum::albumArtist() const
 
 // -- TRACK --
 
+class Meta::WriteStatisticsThread : public QThread
+{
+    public:        
+        WriteStatisticsThread( NepomukTrack *track )
+            : QThread()
+            , m_track( track )
+        {
+        }
+
+        void run()
+        {
+            m_track->writeStatistics();
+        }
+    private:
+        NepomukTrack *m_track;
+};
+
 NepomukTrack::NepomukTrack( NepomukCollection *collection, const Soprano::BindingSet data )
     : Track()
     , m_collection ( collection )
 {
+    statsThread =  new WriteStatisticsThread( this );
+
     m_nepores = Nepomuk::Resource( data[ "r"].uri() ) ;
     m_title = data[ collection->getNameForValue( QueryMaker::valTitle ) ].toString();
     m_url = KUrl( data[ collection->getNameForValue( QueryMaker::valUrl ) ].toString() );
@@ -177,6 +198,12 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, const Soprano::Bindin
                    .literal();
     if ( litval.isDateTime() )
         m_createDate = litval.toDateTime();
+}
+
+NepomukTrack::~NepomukTrack()
+{
+    statsThread->wait();
+    delete statsThread;
 }
 
 QString
@@ -263,7 +290,7 @@ NepomukTrack::setScore( double newScore )
 {
     // scores are betweeen 0 and 1?  Xesam wants them to be int so lets
     // multiply them by 100 (hope that is enough)
-    
+    QMutexLocker locker( &statsMutex );
     int tmpScore =  int( newScore*100 );
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valScore ) ), Nepomuk::Variant( tmpScore ) );
     m_score = newScore;
@@ -341,20 +368,25 @@ NepomukTrack::type() const
 void 
 NepomukTrack::finishedPlaying( double playedFraction )
 {
-    DEBUG_BLOCK
+    QMutexLocker locker( &statsMutex );
     m_lastPlayed = QDateTime::currentDateTime();
     if( m_playCount == 0 )
     {
         m_firstPlayed = m_lastPlayed;
-        m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valFirstPlayed) ), Nepomuk::Variant( m_firstPlayed ) );
     }
     m_playCount++;
     ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
-    
+    notifyObservers();
+    statsThread->start( QThread::LowPriority );
+}
+
+void
+NepomukTrack::writeStatistics()
+{
+    QMutexLocker locker( &statsMutex );
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valLastPlayed) ), Nepomuk::Variant( m_lastPlayed ) );
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valPlaycount) ), Nepomuk::Variant( m_playCount ) );
-    
-    notifyObservers();
+    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valFirstPlayed) ), Nepomuk::Variant( m_firstPlayed ) );
 }
 
 // -- GENRE --

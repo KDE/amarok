@@ -24,6 +24,7 @@
 #include "Meta.h"
 
 #include <QDateTime>
+#include <QMutex>
 
 #include <Nepomuk/Resource>
 #include <Soprano/BindingSet>
@@ -88,10 +89,12 @@ class NepomukAlbum : public Album
         QString m_artist;
 };
 
+class WriteStatisticsThread;
 class NepomukTrack : public Track
     {
     public:
         NepomukTrack( NepomukCollection* collection, const Soprano::BindingSet data );
+        ~NepomukTrack();
         
         virtual QString name() const;
         virtual QString prettyName() const;
@@ -133,6 +136,10 @@ class NepomukTrack : public Track
         
         virtual void finishedPlaying( double playedFraction );
         
+        // for use in nepomuk plugin only
+        
+        void writeStatistics( void );
+        
     private:
         NepomukCollection *m_collection;
         Nepomuk::Resource m_nepores;
@@ -157,6 +164,8 @@ class NepomukTrack : public Track
         QDateTime m_createDate;
         QDateTime m_firstPlayed;
         QDateTime m_lastPlayed;
+        WriteStatisticsThread *statsThread;
+        QMutex statsMutex;
     };
 
 
