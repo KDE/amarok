@@ -884,8 +884,10 @@ Collection * CollectionTreeView::getCollection( const QModelIndexList & indices 
     return collection;
 }
 
-void CollectionTreeView::mouseReleaseEvent(QMouseEvent * event)
+void CollectionTreeView::mouseReleaseEvent( QMouseEvent * event )
 {
+    Q_UNUSED( event )
+
     if( m_pd )
         m_pd->deleteLater();
     m_pd = 0;
