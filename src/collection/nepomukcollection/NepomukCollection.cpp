@@ -20,6 +20,7 @@
 
 #include "NepomukCollection.h"
 #include "NepomukQueryMaker.h"
+#include "NepomukMeta.h"
 
 #include "Debug.h"
 #include "QueryMaker.h"
@@ -28,7 +29,11 @@
 #include <QString>
 
 #include <klocale.h>
+#include <KUrl>
+#include <Nepomuk/Resource>
 #include <Nepomuk/ResourceManager>
+#include <Soprano/Model>
+#include <Soprano/QueryResultIterator>
 #include <Soprano/Vocabulary/NAO>
 #include <Soprano/Vocabulary/Xesam>
 
@@ -86,6 +91,41 @@ QString
 NepomukCollection::prettyName() const
 {
 	return i18n("Nepomuk Collection");
+}
+
+bool
+NepomukCollection::possiblyContainsTrack( const KUrl &url ) const
+{
+    return url.protocol() == "file";
+}
+
+Meta::TrackPtr
+NepomukCollection::trackForUrl( const KUrl &url )
+{
+    DEBUG_BLOCK
+    if ( Nepomuk::Resource::Resource( url ).exists() )
+    {
+        debug() << "Track: " << url.prettyUrl() << " is in NepomukCollection" << endl;
+        NepomukQueryMaker qm (this, m_client);
+        qm.startTrackQuery();
+        qm.addMatch( url );
+        QString query = qm.buildQuery();
+        Soprano::Model* model = (Soprano::Model*)m_client->createModel( "main" );
+        Soprano::QueryResultIterator it
+                              = model->executeQuery( query, 
+                                                     Soprano::Query::QueryLanguageSparql );
+        
+        // assuming that there is only one result, should never be more, if so giving
+        // the first is the best to do anyway
+        if ( it.next() )
+        {
+            Soprano::BindingSet bindingSet = it.currentBindings();
+            Meta::TrackPtr tp ( new Meta::NepomukTrack( this, bindingSet ) );
+            delete model;
+            return tp;
+        }
+    }
+    return Meta::TrackPtr();
 }
 
 void

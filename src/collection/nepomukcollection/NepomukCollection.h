@@ -28,6 +28,8 @@
 
 #include <Soprano/Client/DBusClient>
 
+class KUrl;
+
 class NepomukCollectionFactory : public CollectionFactory
 {
     Q_OBJECT
@@ -49,6 +51,10 @@ public:
     virtual QString collectionId() const;
     virtual QString prettyName() const;
     
+    virtual bool possiblyContainsTrack( const KUrl &url ) const;
+    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+    
+    // only for nepomuk collection plugin
     virtual void lostDBusConnection();
     
     QString getNameForValue( const qint64 ) const;

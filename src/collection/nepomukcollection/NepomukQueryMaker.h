@@ -28,6 +28,7 @@
 
 class NepomukCollection;
 class NepomukWorkerThread;
+class Kurl;
 
 class NepomukQueryMaker : public QueryMaker
 {
@@ -82,8 +83,11 @@ class NepomukQueryMaker : public QueryMaker
 	
 	    //virtual int validFilterMask();
 	    
+	    // functions only for use in nepo collection
 	    virtual QString buildQuery() const;
 	    virtual void doQuery(const QString& );
+
+	    virtual QueryMaker* addMatch( const KUrl &url);
 	
     public slots:
         void done( ThreadWeaver::Job * job );

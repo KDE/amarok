@@ -29,6 +29,7 @@
 #include <QString>
 #include <QStringList>
 
+#include <KUrl>
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
@@ -296,6 +297,17 @@ NepomukQueryMaker::addMatch( const DataPtr &data )
 {
     debug() << "addMatch(data)" << endl;
     ( const_cast<DataPtr&>(data) )->addMatchTo( this );
+    return this;
+}
+
+QueryMaker*
+NepomukQueryMaker::addMatch( const KUrl &url)
+{
+    queryMatch +=  QString(
+            " ?r <%1> \"%2\"^^<%3> . ")
+            .arg( m_collection->getUrlForValue( valUrl ) )
+            .arg( url.pathOrUrl() )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
     return this;
 }
 
