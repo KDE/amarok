@@ -109,6 +109,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
 {
+    DEBUG_BLOCK
+
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentIndex() );
     delete ui;
 }
