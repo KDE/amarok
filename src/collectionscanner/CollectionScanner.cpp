@@ -29,10 +29,10 @@
 #include <limits.h>    //PATH_MAX
 
 #include <QByteArray>
-#include <QDBusReply>
 #include <QDir>
 #include <qdom.h>
 #include <QFile>
+#include <qtextstream.h>
 #include <QTimer>
 
 #include <KGlobal>
@@ -64,8 +64,6 @@
 #include <uniquefileidentifierframe.h>
 #include <xiphcomment.h>
 
-#include <amarok_collection_interface.h>
-
 CollectionScanner::CollectionScanner( const QStringList& folders,
                                       bool recursive,
                                       bool incremental,
@@ -79,7 +77,6 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_restart( restart )
         , m_logfile( saveLocation() + "collection_scan.log"  )
 {
-    amarokCollectionInterface = new OrgKdeAmarokCollectionInterface("org.kde.amarok", "/Collection", QDBusConnection::sessionBus());
     kapp->setObjectName( "amarokcollectionscanner" );
     if( !restart )
         QFile::remove( m_logfile );
@@ -90,7 +87,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
 
 CollectionScanner::~CollectionScanner()
 {
-    delete amarokCollectionInterface;
+
 }
 
 

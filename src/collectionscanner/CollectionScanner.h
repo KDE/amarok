@@ -21,7 +21,6 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
-#include "amarok_collection_interface.h"
 #include "metadata/tfile_helper.h"
 
 #include <sys/types.h>
@@ -113,7 +112,6 @@ private:
     const QString m_logfile;
     QStringList   m_scannedFolders;
 
-    OrgKdeAmarokCollectionInterface *amarokCollectionInterface;
 };
 
 
