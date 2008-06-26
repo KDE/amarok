@@ -191,7 +191,18 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         typedef QMap<QString, ScriptItem> ScriptMap;
 
         ScriptMap      m_scripts;
-        QScriptEngine  m_engine;
+        QScriptEngine  m_ScriptEngine;
+        QScriptValue   m_Global;
+
+        QScriptValue   m_Window;
+        QScriptValue   m_Dialog;
+        QScriptValue   m_OSD;
+        QScriptValue   m_MediaDevice;
+        QScriptValue   m_InternetService;
+        QScriptValue   m_Engine;
+        QScriptValue   m_Playlist;
+        QScriptValue   m_Collection;
+
 };
 
 

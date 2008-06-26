@@ -32,7 +32,8 @@
 #include "AmarokProcess.h"
 #include "StatusBar.h"
 #include "TheInstances.h"
-#include "scriptengine/amarokPlayerScript.h"
+#include "scriptengine/amarokScript.h"
+#include "scriptengine/amarokEngineScript.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <KAboutApplicationDialog>
@@ -198,7 +199,13 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
 
     //load the wrapper classes
-    new Amarok::amarokPlayerScript(&m_engine);
+    m_Global = m_ScriptEngine.newQObject(new Amarok::amarokScript(&m_ScriptEngine));
+    m_ScriptEngine.globalObject().setProperty("Amarok", m_Global);
+
+    QScriptValue ScriptObject;
+    ScriptObject = m_ScriptEngine.newQObject(new Amarok::amarokEngineScript(&m_ScriptEngine));
+    m_Global.setProperty("Engine", ScriptObject);
+
 }
 
 
@@ -551,7 +558,7 @@ ScriptManager::slotRunScript( bool silent )
     //load the script
     QFile scriptFile(url.path());
     scriptFile.open(QIODevice::ReadOnly);
-    m_engine.evaluate(scriptFile.readAll());
+    m_ScriptEngine.evaluate(scriptFile.readAll());
     scriptFile.close();
 /*
     script->start( );

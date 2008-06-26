@@ -351,7 +351,8 @@ set(dbus_SRCS
 # SCRIPTING INTERFACE
 #####################################################################
 set (scriptengine_SRCS
-     scriptengine/amarokPlayerScript.cpp
+     scriptengine/amarokScript.cpp
+     scriptengine/amarokEngineScript.cpp
 )
 
 #####################################################################

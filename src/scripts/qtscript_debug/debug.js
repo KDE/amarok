@@ -1,2 +1,5 @@
-var test = player.version;
-print (test);
+var version = Amarok.Version();
+print ("Amarok Version: " + version);
+
+//test engine:
+Amarok.Engine.Stop();
