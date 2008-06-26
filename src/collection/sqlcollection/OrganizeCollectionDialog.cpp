@@ -21,6 +21,7 @@
 #include "OrganizeCollectionDialog.h"
 
 #include "Amarok.h"
+#include "Debug.h"
 #include "amarokconfig.h"
 #include "atomicstring.h"
 #include "collection/BlockingQuery.h"
@@ -51,7 +52,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
                                                     const QString &caption, QFlags<KDialog::ButtonCode> buttonMask )
     : KDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
-    , detailed( true )
+    , m_detailed( true )
 
 {
     Q_UNUSED( name )
@@ -91,7 +92,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->regexpEdit->setText( AmarokConfig::replacementRegexp() );
     ui->replaceEdit->setText( AmarokConfig::replacementString() );
 
-    connect( this, SIGNAL( buttonClicked( KDialog::ButtonCode )), this, SLOT( slotButtonClicked( KDialog::ButtonCode ) ) );
     connect( this, SIGNAL( updatePreview( QString ) ), ui->previewText, SLOT( setText( QString ) ) );
 
     connect( ui->filetypeCheck , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
@@ -102,7 +102,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     if( ui->customschemeCheck->isChecked())
         setDetailsWidgetVisible(true);
     else
-        slotDetails();
+        toggleDetails();
 
     init();
 }
@@ -308,17 +308,21 @@ void OrganizeCollectionDialog::update( const QString & dummy )
     update( 0 );
 }
 
-void OrganizeCollectionDialog::slotButtonClicked(KDialog::ButtonCode button)
+void OrganizeCollectionDialog::slotButtonClicked( int button )
 {
-    if(button == Details)
-        slotDetails();
+    DEBUG_BLOCK
+
+    if( button == KDialog::Details )
+        toggleDetails();
+    else
+        KDialog::slotButtonClicked( button );
 }
 
-void OrganizeCollectionDialog::slotDetails()
+void OrganizeCollectionDialog::toggleDetails()
 {
-    detailed = !detailed;
+    m_detailed = !m_detailed;
 
-    if( detailed )
+    if( m_detailed )
     {
         ui->ignoreTheCheck->show();
         ui->customschemeCheck->show();

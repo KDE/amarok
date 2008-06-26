@@ -51,8 +51,7 @@ class OrganizeCollectionDialog : public KDialog
         void updatePreview(QString);
 
     public slots:
-        void slotDetails();
-        virtual void slotButtonClicked(KDialog::ButtonCode);
+        virtual void slotButtonClicked( int button );
         void slotUpdatePreview();
 
     private:
@@ -60,6 +59,7 @@ class OrganizeCollectionDialog : public KDialog
         QString cleanPath( const QString &component ) const;
         QString buildFormatTip() const;
         QString buildFormatString() const;
+        void toggleDetails();
         void setPreviewTrack( const Meta::TrackPtr track );
         void preview( const QString &format );
         void update( int dummy );
@@ -68,7 +68,7 @@ class OrganizeCollectionDialog : public KDialog
 
         Ui::OrganizeCollectionDialogBase *ui;
         Meta::TrackPtr m_previewTrack;
-        bool detailed;
+        bool m_detailed;
         Meta::TrackList m_allTracks;
 };
 
