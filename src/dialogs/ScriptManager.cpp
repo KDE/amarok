@@ -34,7 +34,6 @@
 #include "TheInstances.h"
 #include "Osd.h"
 #include "scriptengine/amarokScript.h"
-#include "scriptengine/amarokEngineScript.h"
 #include "scriptengine/amarokPlaylistScript.h"
 #include "scriptengine/amarokWindowScript.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
