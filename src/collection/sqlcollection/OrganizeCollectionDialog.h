@@ -32,6 +32,7 @@ namespace Ui
 class OrganizeCollectionDialog : public KDialog
 {
     Q_OBJECT
+
     public:
         explicit OrganizeCollectionDialog( QueryMaker *qm, QWidget *parent=0, const char *name=0, bool modal=true,
                                            const QString &caption=QString(),
@@ -41,16 +42,19 @@ class OrganizeCollectionDialog : public KDialog
                                            bool modal=true, const QString &caption=QString(),
                                            QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel|Details );
 
-    ~OrganizeCollectionDialog();
+        ~OrganizeCollectionDialog();
 
-    QMap<Meta::TrackPtr, QString> getDestinations();
-    bool overwriteDestinations() const;
+        QMap<Meta::TrackPtr, QString> getDestinations();
+        bool overwriteDestinations() const;
+
     signals:
         void updatePreview(QString);
+
     public slots:
         void slotDetails();
         virtual void slotButtonClicked(KDialog::ButtonCode);
         void slotUpdatePreview();
+
     private:
         QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;
         QString cleanPath( const QString &component ) const;

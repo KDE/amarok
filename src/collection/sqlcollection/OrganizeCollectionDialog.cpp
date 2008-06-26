@@ -22,21 +22,19 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "ui_OrganizeCollectionDialogBase.h"
+#include "atomicstring.h"
 #include "collection/BlockingQuery.h"
+#include "file/File.h"
 #include "mountpointmanager.h"
 #include "qstringx.h"
-#include "atomicstring.h"
-#include "file/File.h"
+#include "ui_OrganizeCollectionDialogBase.h"
 
 #include <KVBox>
 
 #include <QDir>
 
-OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *parent,  const char *name, bool modal,
-        const QString &caption,
-        QFlags<KDialog::ButtonCode> buttonMask
-        )
+OrganizeCollectionDialog::OrganizeCollectionDialog( QueryMaker *qm, QWidget *parent,  const char *name, bool modal,
+                                                    const QString &caption, QFlags<KDialog::ButtonCode> buttonMask )
 {
     qm->startTrackQuery();
     BlockingQuery bq( qm );
@@ -49,13 +47,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(QueryMaker *qm, QWidget *pare
     OrganizeCollectionDialog( tracks, parent, name, modal, caption, buttonMask );
 }
 
-OrganizeCollectionDialog::OrganizeCollectionDialog(const Meta::TrackList &tracks, QWidget *parent,  const char *name, bool modal,
-        const QString &caption,
-        QFlags<KDialog::ButtonCode> buttonMask
-        )
+OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &tracks, QWidget *parent,  const char *name, bool modal,
+                                                    const QString &caption, QFlags<KDialog::ButtonCode> buttonMask )
     : KDialog( parent )
-      ,ui(new Ui::OrganizeCollectionDialogBase),
-      detailed(true)
+    , ui( new Ui::OrganizeCollectionDialogBase )
+    , detailed( true )
 
 {
     Q_UNUSED( name )
@@ -65,12 +61,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(const Meta::TrackList &tracks
     setButtons( buttonMask );
     showButtonSeparator( true );
     m_previewTrack = 0;
-    if ( tracks.size() > 0)
-    {
+
+    if ( tracks.size() > 0) {
         m_previewTrack = tracks[0];
         m_allTracks = tracks;
     }
-
 
     KVBox *vbox = new KVBox( this );
     setMainWidget( vbox );
@@ -79,7 +74,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(const Meta::TrackList &tracks
 
     ui->setupUi(widget);
 
-    QStringList folders = MountPointManager::instance()->collectionFolders();
+    const QStringList folders = MountPointManager::instance()->collectionFolders();
+
     ui->folderCombo->insertItems( 0, folders );
     ui->folderCombo->setCurrentIndex( AmarokConfig::organizeDirectory() );
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
@@ -94,17 +90,20 @@ OrganizeCollectionDialog::OrganizeCollectionDialog(const Meta::TrackList &tracks
     ui->formatEdit->setText( AmarokConfig::customScheme() );
     ui->regexpEdit->setText( AmarokConfig::replacementRegexp() );
     ui->replaceEdit->setText( AmarokConfig::replacementString() );
-    connect( this, SIGNAL(buttonClicked(KDialog::ButtonCode)), this, SLOT(slotButtonClicked(KDialog::ButtonCode)));
-    connect( this, SIGNAL(updatePreview(QString)), ui->previewText, SLOT(setText(QString)));
+
+    connect( this, SIGNAL( buttonClicked( KDialog::ButtonCode )), this, SLOT( slotButtonClicked( KDialog::ButtonCode ) ) );
+    connect( this, SIGNAL( updatePreview( QString ) ), ui->previewText, SLOT( setText( QString ) ) );
 
     connect( ui->filetypeCheck , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->initialCheck  , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+
     if( ui->customschemeCheck->isChecked())
         setDetailsWidgetVisible(true);
     else
         slotDetails();
+
     init();
 }
 
@@ -114,8 +113,7 @@ OrganizeCollectionDialog::~OrganizeCollectionDialog()
     delete ui;
 }
 
-QMap<Meta::TrackPtr, QString>
-OrganizeCollectionDialog::getDestinations()
+QMap<Meta::TrackPtr, QString> OrganizeCollectionDialog::getDestinations()
 {
     QString format = buildFormatString();
     QMap<Meta::TrackPtr, QString> destinations;
@@ -126,8 +124,7 @@ OrganizeCollectionDialog::getDestinations()
     return destinations;
 }
 
-bool
-OrganizeCollectionDialog::overwriteDestinations() const
+bool OrganizeCollectionDialog::overwriteDestinations() const
 {
     return ui->overwriteCheck->isChecked();
 }
@@ -153,9 +150,12 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     }
     args["theartist"] = cleanPath( artist );
     args["thealbumartist"] = cleanPath( albumartist );
+
     if(!ui->ignoreTheCheck->isChecked() && artist.startsWith( "The " ) )
         Amarok::manipulateThe( artist, true );
+
     artist = cleanPath( artist );
+
     if(!ui->ignoreTheCheck->isChecked() && albumartist.startsWith( "The " ) )
         Amarok::manipulateThe( albumartist, true );
 
@@ -169,10 +169,11 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     args["composer"] = cleanPath( track->composer()->prettyName() );
     args["year"] = cleanPath( track->year()->prettyName() );
     args["album"] = cleanPath( track->album()->prettyName() );
-    if( track->discNumber() )
-    {
+
+    if( track->discNumber() ) {
         args["discnumber"] = QString::number( track->discNumber() );
     }
+
     args["genre"] = cleanPath( track->genre()->prettyName() );
     args["comment"] = cleanPath( track->comment() );
     args["artist"] = artist;
@@ -182,8 +183,8 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     args["rating"] = track->rating();
     args["filesize"] = track->filesize();
     args["length"] = track->length();
-    if ( track->trackNumber() )
-    {
+
+    if ( track->trackNumber() ) {
         QString trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
         args["track"] = trackNum;
     }
@@ -211,14 +212,11 @@ QString OrganizeCollectionDialog::buildFormatTip() const
     QString tooltip = i18n( "<h3>Custom Format String</h3>" );
     tooltip += i18n( "You can use the following tokens:" );
     tooltip += "<ul>";
-    for( QMap<QString, QString>::iterator it = args.begin();
-            it != args.end();
-            ++it )
-    {
+    
+    for( QMap<QString, QString>::iterator it = args.begin(); it != args.end(); ++it )
         tooltip += QString( "<li>%1 - %2" ).arg( it.value(), '%' + it.key() );
-    }
+    
     tooltip += "</ul>";
-
     tooltip += i18n( "If you surround sections of text that contain a token with curly-braces, "
             "that section will be hidden if the token is empty." );
 
