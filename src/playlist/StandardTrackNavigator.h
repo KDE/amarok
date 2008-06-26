@@ -32,7 +32,7 @@ class Model;
     {
         public:
             StandardTrackNavigator( Model* m ) : TrackNavigator( m ) { }
-            Meta::TrackPtr nextTrack();
+            int nextRow();
     };
 
  }

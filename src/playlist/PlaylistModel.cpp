@@ -77,12 +77,73 @@ namespace Amarok
     }
 }
 
+
+Playlist::RowList::RowList( Model* model )
+    : m_model(model)
+{
+    connect( m_model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInserted( const QModelIndex &, int, int ) ) );
+    connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( rowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( m_model, SIGNAL( rowMoved( int, int ) ), this, SLOT( rowMoved( int, int ) ) );
+}
+
+
+void 
+Playlist::RowList::rowsInserted( const QModelIndex & parent, int start, int end )
+{
+    Q_UNUSED( parent );
+
+    int span = end - start + 1;
+
+    RowList::iterator i;
+    for( i = this->begin(); i != this->end(); ++i )
+    {
+        if( *i >= start ) *i += span;
+    }
+}
+
+void
+Playlist::RowList::rowsRemoved( const QModelIndex & parent, int start, int end )
+{
+    Q_UNUSED( parent );
+
+    int span = end - start + 1;
+    QMutableListIterator<int> i( *this );
+
+
+    while( i.hasNext() )
+    {
+        i.next();
+
+        if( i.value() >= start )
+        {
+            if( i.value() <= end ) i.remove();
+            else                   i.value() -= span;
+        }
+    }
+}
+
+void 
+Playlist::RowList::rowMoved( int from, int to )
+{
+    RowList::iterator i;
+    for( i = begin(); i != end(); ++i )
+    {
+        if( *i == from ) *i = to;
+        else if( from < *i && *i <= to ) *i -= 1;
+        else if( to <= *i && *i < from ) *i += 1;
+    }
+}
+
+
+
+
 Playlist::Model *Playlist::Model::s_instance = 0;
 
 Playlist::Model::Model( QObject* parent )
     : QAbstractListModel( parent )
     , EngineObserver( The::engineController() )
     , m_activeRow( -1 )
+    , m_nextRowCandidate( -1 )
     , m_advancer( 0 )
     , m_undoStack( new QUndoStack( this ) )
     , m_stopAfterMode( StopNever )
@@ -119,6 +180,44 @@ Playlist::Model::~Model()
         The::playlistManager()->exportPlaylist( list, defaultPlaylistPath() );
     }
     delete m_advancer;
+}
+
+
+Meta::TrackPtr
+Playlist::Model::nextTrack()
+{
+    m_nextRowCandidate = m_advancer->nextRow();
+    if( !rowExists( m_nextRowCandidate ) )
+    {
+        m_nextRowCandidate = -1;
+        return Meta::TrackPtr();
+    }
+    else return m_items.at(m_nextRowCandidate)->track();
+}
+
+
+Meta::TrackPtr
+Playlist::Model::userNextTrack()
+{
+    m_nextRowCandidate = m_advancer->userNextRow();
+    if( !rowExists( m_nextRowCandidate ) )
+    {
+        m_nextRowCandidate = -1;
+        return Meta::TrackPtr();
+    }
+    else return m_items.at(m_nextRowCandidate)->track();
+}
+
+Meta::TrackPtr
+Playlist::Model::lastTrack()
+{
+    m_nextRowCandidate = m_advancer->lastRow();
+    if( !rowExists( m_nextRowCandidate ) )
+    {
+        m_nextRowCandidate = -1;
+        return Meta::TrackPtr();
+    }
+    else return m_items.at(m_nextRowCandidate)->track();
 }
 
 int
@@ -362,7 +461,7 @@ Playlist::Model::next()
         activeTrack()->finishedPlaying( (double)ec->trackPosition() / (double)ec->trackLength() * 100 ); //TODO: get correct value for parameter
     }
 
-    The::engineController()->play( m_advancer->userNextTrack() );
+    The::engineController()->play( userNextTrack() );
 }
 
 void
@@ -376,7 +475,7 @@ Playlist::Model::back()
     if( playingTrack && track && playingTrack == track )
         track->finishedPlaying( (double)The::engineController()->trackPosition() /
                                 (double)The::engineController()->trackLength() * 100 );
-    The::engineController()->play( m_advancer->lastTrack() );
+    The::engineController()->play( lastTrack() );
 }
 
 // void
@@ -518,15 +617,10 @@ Playlist::Model::setActiveRow( int row )
     if( m_albumGroups.contains( albumName ) && !albumName.isEmpty() )
     {
         m_albumGroups[ albumName ]->setCollapsed( row,  false );
-//         debug() << "Here";
         emit( playlistGroupingChanged() );
     }
 
-    debug() << "before: (rows,active) = ( " 
-            << m_items.size() << ", " << m_activeRow << ")\n";
     emit activeRowChanged();
-    debug() << "after: (rows,active) = ( " 
-            << m_items.size() << ", " << m_activeRow << ")\n";
 }
 
 void
@@ -595,21 +689,22 @@ Playlist::Model::insertOptioned( Meta::TrackList list, int options )
     if( options & Unique )
     {
         int alreadyOnPlaylist = 0;
-        for( int i = 0; i < list.size(); ++i )
+        QMutableListIterator<Meta::TrackPtr> i( list );
+        while( i.hasNext() )
         {
-
+            i.next();
             Item* item;
             foreach( item, m_items )
             {
-                if( item->track() == list.at( i ) )
+                if( item->track() == i.value() )
                 {
-                    list.removeAt( i );
+                    i.remove();
                     alreadyOnPlaylist++;
                     break;
                 }
             }
-
         }
+
         if ( alreadyOnPlaylist )
             The::statusBar()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%1 tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
     }
@@ -738,34 +833,34 @@ Playlist::Model::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
 
-    //FIXME This doesn't work right when we're resuming playback on startup, because the playlist loading runs in a thread
-    //      and might not be finished when the EngineController starts playing
-
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track && activeRow() >= 0 )
-    {
-        // FIXME: This is a dumb, bad, awful, hack. We have to iterate
-        // this way for dynamic mode to behave at all correctly.
-        int i;
-        for( i = activeRow(); i < m_items.size(); ++i )
-        {
-            if( m_items[i]->track() == track )
-            {
-                setActiveItem( m_items[i] );
-                return;
-            }
-        }             
 
-        for( i = activeRow()-1; i >= 0; --i )
+    if( track )
+    {
+        if( rowExists( m_nextRowCandidate ) &&
+                track == m_items.at( m_nextRowCandidate )->track() )
         {
-            if( m_items[i]->track() == track )
+            debug() << "engineNewTrackPlaying:: HIT";
+            setActiveRow( m_nextRowCandidate );
+        }
+        else
+        {
+            debug() << "engineNewTrackPlaying:: MISS";
+            foreach( Item* item, itemList() )
             {
-                setActiveItem( m_items[i] );
-                return;
+                if( item->track() == track )
+                {
+                    setActiveItem( item );
+                    break;
+                }
             }
         }
     }
+
+    m_nextRowCandidate = -1;
 }
+
+
 
 Qt::ItemFlags
 Playlist::Model::flags(const QModelIndex &index) const
@@ -1074,6 +1169,7 @@ Playlist::Model::moveRow(int row, int to)
     if ( to < row )
         offset = 1;
 
+    emit rowMoved( row, to );
     regroupAlbums( qMin( row, to) , qMax( row, to ), OffsetBetween, offset );
 
 }

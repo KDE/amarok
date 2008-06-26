@@ -23,6 +23,7 @@
 #define DYNAMICTRACKNAVIGATOR_H
 
 #include "DynamicPlaylist.h"
+#include "PlaylistModel.h"
 #include "TrackNavigator.h"
 
 class DynamicPlaylist;
@@ -37,7 +38,7 @@ class Model;
 
         public:
             DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr p ) ;
-            Meta::TrackPtr nextTrack();
+            int nextRow();
             
             void appendUpcoming();
 
@@ -47,8 +48,8 @@ class Model;
         private:
             void popPlayed();
 
-            Meta::TrackList m_upcomingTracks;
-            Meta::TrackList m_playedTracks;
+            RowList m_playedRows;
+
             Meta::DynamicPlaylistPtr m_playlist;
     };
 }

@@ -28,51 +28,53 @@
 
 using namespace Playlist;
 
-Meta::TrackPtr
-RandomTrackNavigator::nextTrack()
+
+int
+RandomTrackNavigator::nextRow()
 {
     DEBUG_BLOCK
-    warning() << "We're in nextTrack: SUCCESS!!";
 
+    // TODO: is any of this necessary? Will RowList take care of it?
+    // later we should try commenting this out and seeing what happens
     if( playlistChanged() )
     {
         debug() << "Playlist has changed, regenerating unplayed tracks";
-        generateUnplayedTracks();
+        generateUnplayedRows();
         TrackNavigator::playlistChangeHandled();
     }
 
-    Meta::TrackPtr lastTrack = m_playlistModel->activeTrack();
-    m_playedTracks.append( lastTrack );
-    m_unplayedTracks.removeAll( lastTrack );
+    int lastRow = m_playlistModel->activeRow();
+    m_playedRows.append( lastRow );
+    m_unplayedRows.removeAll( lastRow );
 
-    if( !m_unplayedTracks.isEmpty() && m_playlistModel->stopAfterMode() != StopAfterCurrent )
+    if( !m_unplayedRows.isEmpty() && m_playlistModel->stopAfterMode() != StopAfterCurrent )
     {
-        int nextRow = KRandom::random() % m_unplayedTracks.count();
-        return m_unplayedTracks.at( nextRow );
+        return m_unplayedRows.at( KRandom::random() % m_unplayedRows.count() );
     }
 
-    m_playedTracks.clear();
+    m_playedRows.clear();
     TrackNavigator::setPlaylistChanged(); // will cause generateUnplayedTracks() to be called
     debug() << "There are no more tracks to play, starting over";
 
     // out of tracks to play or stopAfterMode == Current.
-    return Meta::TrackPtr();
+    return -1;
 }
 
-Meta::TrackPtr
-RandomTrackNavigator::lastTrack()
+int
+RandomTrackNavigator::lastRow()
 {
-    return m_playedTracks.takeAt( m_playedTracks.count() - 1 );
+    if( m_playedRows.isEmpty() ) return -1;
+    else return m_playedRows.takeAt( m_playedRows.count() - 1 );
 }
 
 void
-RandomTrackNavigator::generateUnplayedTracks()
+RandomTrackNavigator::generateUnplayedRows()
 {
-    m_unplayedTracks.clear();
-    foreach( Item *i, m_playlistModel->itemList() )
+    m_unplayedRows.clear();
+    int row;
+    for( row = 0; row < m_playlistModel->rowCount(); ++row )
     {
-        if( i && !m_playedTracks.contains( i->track() ) )
-            m_unplayedTracks.append( i->track() );
+        if( !m_playedRows.contains( row ) ) m_unplayedRows.append( row );
     }
 }
 

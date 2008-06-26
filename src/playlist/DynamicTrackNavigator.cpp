@@ -29,45 +29,29 @@
 using namespace Playlist;
 
 DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr p )
-    : TrackNavigator(m), m_playlist(p)
+    : TrackNavigator(m), m_playedRows(m), m_playlist(p)
 {
     QObject::connect( m_playlistModel, SIGNAL(activeRowChanged()),
             this, SLOT(removePlayed()));
 }
 
-Meta::TrackPtr
-DynamicTrackNavigator::nextTrack()
+
+int
+DynamicTrackNavigator::nextRow()
 {
     DEBUG_BLOCK
 
-
     appendUpcoming();
 
-    Meta::TrackPtr activeTrack = m_playlistModel->activeTrack();
-    for( int i = 0; i < m_upcomingTracks.size(); ++i )
-    {
-        if( m_upcomingTracks[i] == activeTrack )
-        {
-            m_upcomingTracks.removeAt(i);
-            m_playedTracks.push_back( activeTrack );
-            break;
-        }
-    }
-
+    m_playedRows.append( m_playlistModel->activeRow () );
     int updateRow = m_playlistModel->activeRow() + 1;
 
-    if( m_playlistModel->stopAfterMode() == StopAfterCurrent )
-    {
-        return Meta::TrackPtr();
-    }
-    else if( updateRow > m_playlistModel->rowCount() )
+    if( m_playlistModel->stopAfterMode() == StopAfterCurrent ) return -1;
+    else if( m_playlistModel->rowExists( updateRow ) )         return updateRow;
+    else
     {
         warning() << "DynamicPlaylist is not delivering.";
-        return Meta::TrackPtr();
-    }
-    else 
-    {
-        return m_playlistModel->itemList().at(updateRow)->track();
+        return -1;
     }
 }
 
@@ -80,7 +64,6 @@ void DynamicTrackNavigator::appendUpcoming()
     if( upcomingCountLag > 0 ) 
     {
         Meta::TrackList newUpcoming = m_playlist->getTracks( upcomingCountLag );
-        m_upcomingTracks += newUpcoming;
         m_playlistModel->insertOptioned( newUpcoming, Append | Colorize );
     }
 }
@@ -89,22 +72,14 @@ void DynamicTrackNavigator::removePlayed()
 {
     DEBUG_BLOCK
 
-    QList<Item*> items = m_playlistModel->itemList();
-    Meta::TrackPtr poped;
-    while( m_playedTracks.size() > m_playlist->previousCount() )
-    {
-        poped = m_playedTracks.front();
-        m_playedTracks.pop_front();
 
-        for( int i = m_playlistModel->activeRow()-1; i >= 0; --i )
-        {
-            if( items[i]->track() == poped ) 
-            {
-                items.removeAt(i);
-                m_playlistModel->removeRows( i, 1 );
-                break;
-            }
-        }
+    int playedRow;
+    while( m_playedRows.size() > m_playlist->previousCount() )
+    {
+        playedRow = m_playedRows.front();
+        m_playedRows.pop_front();
+
+        m_playlistModel->removeRows( playedRow, 1 );
     }
 }
 

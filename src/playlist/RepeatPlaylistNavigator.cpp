@@ -26,15 +26,16 @@
 
 using namespace Playlist;
 
-Meta::TrackPtr
-RepeatPlaylistNavigator::nextTrack()
+int
+RepeatPlaylistNavigator::nextRow()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
     if( updateRow >= m_playlistModel->rowCount()  || updateRow < 0 )
     {
         updateRow = 0;
     }
-    return updateRow > 0 ? m_playlistModel->itemList().at( updateRow )->track() : Meta::TrackPtr();
+
+    return m_playlistModel->rowExists( updateRow ) ? updateRow : -1;
 }
 
 

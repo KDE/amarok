@@ -19,6 +19,7 @@
 #define REPEATTRACKNAVIGATOR_H
 
 #include "meta/Meta.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist/TrackNavigator.h"
 
 namespace Playlist {
@@ -29,12 +30,13 @@ class Model;
     class RepeatTrackNavigator : public TrackNavigator
     {
         public:
-            RepeatTrackNavigator( Model* m ) : TrackNavigator( m ) { }
-            Meta::TrackPtr nextTrack();
-            Meta::TrackPtr userNextTrack();
+            RepeatTrackNavigator( Model* m ) 
+                : TrackNavigator( m ), m_previousTrack( m ) { }
+            int nextRow();
+            int userNextRow();
 
         private:
-            Meta::TrackPtr m_previousTrack;
+            RowList m_previousTrack; // always only has one or zero elements
     };
 
  }

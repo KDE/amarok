@@ -116,7 +116,7 @@ namespace Playlist
         Unique     = 16,    /// don't insert anything already in the playlist
         StartPlay  = 32,    /// start playback of the first item in the list if nothing else playing
         Colorize   = 64,    /// colorize newly added items
-        AppendAndPlay = Append | Unique | StartPlay
+        AppendAndPlay = Append | StartPlay
     };
 
     enum StopAfterMode
@@ -125,6 +125,30 @@ namespace Playlist
         StopAfterCurrent,
         StopAfterQueue
     };
+
+
+    /**
+     * This is a list of row indexes that stays synced with the playlist model.
+     * (i.e. the indexes change value when rows are added or removed from the
+     * model.)
+     */
+    class RowList : public QObject, public QList<int>
+    {
+        Q_OBJECT
+
+        public:
+            RowList( Model* );
+
+        private slots:
+            void rowsInserted( const QModelIndex & parent, int start, int end );
+            void rowsRemoved( const QModelIndex & parent, int start, int end );
+            void rowMoved( int from, int to );
+
+        private:
+            Model* m_model;
+    };
+
+
 
 
     class Model : public QAbstractListModel, public Meta::Observer, public Meta::PlaylistObserver, public EngineObserver
@@ -196,9 +220,12 @@ namespace Playlist
             void setActiveRow( int row );
             Meta::TrackPtr activeTrack() const { return m_activeRow > -1 ? m_items.at( m_activeRow )->track() : Meta::TrackPtr(); }
             void setActiveItem( Playlist::Item* active) { setActiveRow( m_items.lastIndexOf(active) ); }
+            bool rowExists( int row ) { return 0 <= row && row < rowCount(); }
 
 
-            Meta::TrackPtr nextTrack() { return m_advancer->nextTrack(); }
+            Meta::TrackPtr nextTrack();
+            Meta::TrackPtr userNextTrack();
+            Meta::TrackPtr lastTrack();
 
             void moveRow( int row, int to );
 
@@ -237,6 +264,7 @@ namespace Playlist
             void playlistCountChanged( int newCount );
             void playlistGroupingChanged();
             void rowsChanged( int startRow );
+            void rowMoved( int from, int to );
             void activeRowChanged();
 
         protected:
@@ -283,6 +311,7 @@ namespace Playlist
 
             QList<Item*>    m_items;                    //! list of tracks in order currently in the playlist
             int             m_activeRow;                //! the row being played
+            int             m_nextRowCandidate;         //! proposed next row
             TrackNavigator*  m_advancer;                 //! the strategy of what to do when a track finishes playing
             QUndoStack*     m_undoStack;                //! for pushing on undo commands
             QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted

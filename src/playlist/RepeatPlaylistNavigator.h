@@ -34,7 +34,7 @@ class Model;
     {
         public:
             RepeatPlaylistNavigator( Model* m ) : TrackNavigator( m ) { }
-            Meta::TrackPtr nextTrack();
+            int nextRow();
     };
 
  }

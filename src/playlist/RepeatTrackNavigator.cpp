@@ -22,38 +22,36 @@
 
 using namespace Playlist;
 
-Meta::TrackPtr
-RepeatTrackNavigator::nextTrack()
+int
+RepeatTrackNavigator::nextRow()
 {
-    if( !m_previousTrack || (m_previousTrack != m_playlistModel->activeTrack() ) ) // we need to repeat
+    // we need to repeat
+    if( m_previousTrack.empty() || 
+            (m_previousTrack[0] != m_playlistModel->activeRow() ) )
     {
-        Meta::TrackPtr nextTrack = m_playlistModel->activeTrack();
-        m_previousTrack = nextTrack;
-        return nextTrack;
+        m_previousTrack.append( m_playlistModel->activeRow() );
+        return m_playlistModel->activeRow();
     }
-    else {
-        if( m_previousTrack == m_playlistModel->activeTrack() ) // We already repeated, advance
+    else
+    {
+        // We already repeated, so advance.
+        if( m_previousTrack[0] == m_playlistModel->activeRow() )
         {
             int updateRow = m_playlistModel->activeRow() + 1;
-            if( updateRow < m_playlistModel->rowCount() )
-            {
-                return m_playlistModel->itemList().at( updateRow )->track();
-            }
+            if( m_playlistModel->rowExists( updateRow ) ) return updateRow;
         }
+
     }
 
-	return Meta::TrackPtr();
+    return -1;
 }
 
-Meta::TrackPtr
-RepeatTrackNavigator::userNextTrack()
+int
+RepeatTrackNavigator::userNextRow()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
-    if( updateRow < m_playlistModel->rowCount() )
-    {
-        setCurrentTrack( updateRow );
-    }
-	return Meta::TrackPtr();
+    if( m_playlistModel->rowExists( updateRow ) ) setCurrentTrack( updateRow );
+    return -1;
 }
 
 

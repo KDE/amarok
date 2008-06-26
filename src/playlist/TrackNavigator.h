@@ -39,14 +39,12 @@ class Model;
         public:
             TrackNavigator( Model* model ) : m_playlistModel( model ) { m_playlistChanged = true; }
             virtual ~TrackNavigator() { }
-            /** The next track that the engine should play.  This is called a few seconds before the track actually ends */
-            virtual Meta::TrackPtr nextTrack() = 0;
+            /** The next row that the engine should play.  This is called a few seconds before the track actually ends */
+            virtual int nextRow() = 0;
             /// The user clicks next.
-            virtual Meta::TrackPtr userNextTrack() {
-                warning() << "Calling nextTrack()";
-                return nextTrack(); }
+            virtual int userNextRow() { return nextRow(); }
             ///The user clicks previous. By default it just go to the previous item in the playlist
-            virtual Meta::TrackPtr lastTrack();
+            virtual int lastRow();
 
             void setPlaylistChanged() { m_playlistChanged = true; }
 
