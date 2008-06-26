@@ -137,3 +137,31 @@ install(TARGETS plasma_animator_default DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES animators/default/plasma-animator-default.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
 
 endif(NOT PLASMA_FOUND)
+
+########### next target ###############
+
+set(amarokpud_LIB_SRCS
+    popupdropper/PopupDropper.cpp
+    popupdropper/PopupDropperAction.cpp
+    popupdropper/PopupDropperItem.cpp
+    popupdropper/PopupDropperView.cpp
+)
+
+QT4_AUTOMOC(
+    popupdropper/PopupDropper.cpp
+    popupdropper/PopupDropperAction.cpp
+    popupdropper/PopupDropperItem.cpp
+    popupdropper/PopupDropperView.cpp
+)
+
+ADD_LIBRARY(amarokpud SHARED ${amarokpud_LIB_SRCS})
+
+target_link_libraries(amarokpud
+    ${QT_QTCORE_LIBRARY}
+    ${QT_QTGUI_LIBRARY}
+    ${QT_QTSVG_LIBRARY}
+)
+
+set_target_properties(amarokpud PROPERTIES VERSION 1.0.0 SOVERSION 1)
+install(TARGETS amarokpud ${INSTALL_TARGETS_DEFAULT_ARGS} )
+
