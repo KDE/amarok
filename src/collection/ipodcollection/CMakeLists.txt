@@ -5,6 +5,7 @@ if (IPOD_FOUND)
    ../../plugin
    ../../meta
    ../../collection
+   handler
    ${GLIB2_INCLUDE_DIR}
    ${IPOD_INCLUDE_DIR}
    ${CMAKE_CURRENT_BINARY_DIR}/../..
@@ -17,8 +18,8 @@ if (IPOD_FOUND)
 
 	set(amarok_collection-ipodcollection_PART_SRCS
 	IpodMeta.cpp
-	IpodCollection.cpp)
-	
+	IpodCollection.cpp
+	handler/ipodhandler.cpp)	
 	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
 
 	target_link_libraries(amarok_collection-ipodcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${GLIB2_LIBRARIES} ${IPOD_LIBRARIES} )

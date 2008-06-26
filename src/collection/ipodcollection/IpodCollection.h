@@ -28,6 +28,7 @@ extern "C" {
 
 #include "Collection.h"
 #include "MemoryCollection.h"
+#include "ipodhandler.h"
 
 #include <QtGlobal>
 
@@ -45,6 +46,9 @@ class IpodCollectionFactory : public CollectionFactory
     private:
 
     private slots:
+
+    void deviceAdded( const QString &udi );
+    void deviceRemoved( const QString &udi );
     
     private:
 
@@ -53,30 +57,32 @@ class IpodCollectionFactory : public CollectionFactory
 class IpodCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
-    public:
+	public:
 
-        IpodCollection( const QString &mountPoint);
-        virtual ~IpodCollection();
+    IpodCollection( const QString &mountPoint );
+    virtual ~IpodCollection();
 
-        virtual void startFullScan();
-        virtual QueryMaker* queryMaker();
-
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;        
-
-    signals:
-        void collectionReady();
-
-    public slots:
-
-    private slots:
-
-    private:
+    virtual void startFullScan();
+    virtual QueryMaker* queryMaker();
+    
+    virtual QString collectionId() const;
+    virtual QString prettyName() const;        
+    
+ signals:
+    void collectionReady();
+    
+//    public slots:
+	
+//    private slots:
+	
+ private:
+    
+    Ipod::IpodHandler *m_handler;
     /* test if libgpod works */
     // ipod database
     Itdb_iTunesDB    *m_itdb;
     QString           m_mountPoint;
-
+    
 
 };
 

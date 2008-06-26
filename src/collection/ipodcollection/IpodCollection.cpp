@@ -58,19 +58,14 @@ IpodCollectionFactory::init()
 {
   DEBUG_BLOCK
 
-    /* Cache stuff */
-      MediaDeviceCache::instance()->refreshCache();
-  QStringList udiList = MediaDeviceCache::instance()->getAll();
-
-  /* Solid stuff */
-  Solid::Device device;
-
-  /* Collection stuff */
-
+        Solid::Device device;
   IpodCollection *coll = 0;
 
+  /* Refresh cache */
+  MediaDeviceCache::instance()->refreshCache();
+  QStringList udiList = MediaDeviceCache::instance()->getAll();
 
-
+  /* poll udi list for ipod */
   foreach(const QString &udi, udiList )
       {
           device = Solid::Device(udi);
@@ -80,7 +75,6 @@ IpodCollectionFactory::init()
               device = Solid::Device( device.parentUdi() );
 	  }
 
-
           debug() << "Device udi: " << udi;
           debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
           debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
@@ -89,6 +83,7 @@ IpodCollectionFactory::init()
             debug() << "vendor: " << device.vendor() << ", product: " << device.product();
         }
 
+        /* if iPod found, make collection */
 	if(device.product() == "iPod")
             coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi));
 
@@ -100,9 +95,29 @@ IpodCollectionFactory::init()
 
     /* test ipodcollection constructor */
     //    coll = new IpodCollection();
+
+  /* deleting manually until implementation ready to be handled by manager */
     if(coll)
         delete coll;
 
+    // connect to device cache
+    connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceAdded( const QString& ) ),
+              SLOT(  deviceAdded( const QString& ) ) );
+    connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceRemoved( const QString& ) ),
+              SLOT(  deviceRemoved( const QString& ) ) );
+
+    return;
+}
+
+void
+IpodCollectionFactory::deviceAdded(  const QString &udi )
+{
+    return;
+}
+
+void
+IpodCollectionFactory::deviceRemoved( const QString &udi )
+{
     return;
 }
 
@@ -111,14 +126,17 @@ IpodCollectionFactory::init()
 IpodCollection::IpodCollection( const QString &mountPoint )
     : Collection()
     , MemoryCollection()
-    , m_mountPoint(mountPoint)
+    , m_mountPoint( mountPoint )
+    , m_handler( 0 )
 {
     DEBUG_BLOCK
 
+        m_handler = new Ipod::IpodHandler( this, m_mountPoint, this );
 
+    m_handler->initializeIpod();
 
     /* test out using libgpod */
-
+/*
     m_itdb = 0;
     m_itdb = itdb_new();
     if(m_itdb) {
@@ -127,7 +145,7 @@ IpodCollection::IpodCollection( const QString &mountPoint )
     }
     else
         debug() << "Itunes database not created!";
-
+*/
 
 }
 
