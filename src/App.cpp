@@ -611,14 +611,8 @@ App::continueInit()
     PERF_LOG( "ScriptManager started" )
 
     //load previous playlist in separate thread
-    //FIXME: causes a lot of breakage due to the collection not being properly initialized at startup.
-    //Reenable when fixed.
-
-    //Fixed! I think....
-            if ( restoreSession && AmarokConfig::savePlaylist() )
-    {
+    if ( restoreSession && AmarokConfig::savePlaylist() )
         The::playlistModel()->restoreSession();
-    }
 
     //do after applySettings(), or the OSD will flicker and other wierdness!
     //do before restoreSession()!
