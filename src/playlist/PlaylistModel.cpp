@@ -736,8 +736,13 @@ bool Playlist::Model::savePlaylist( const QString & name ) const
 void
 Playlist::Model::engineNewTrackPlaying()
 {
+    DEBUG_BLOCK
+
+    //FIXME This doesn't work right when we're resuming playback on startup, because the playlist loading runs in a thread
+    //      and might not be finished when the EngineController starts playing
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track )
+    if( track && activeRow() >= 0 )
     {
         // FIXME: This is a dumb, bad, awful, hack. We have to iterate
         // this way for dynamic mode to behave at all correctly.
