@@ -15,24 +15,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "amarokPlaylistScript.h"
+#include "amarokWindowScript.h"
 
+#include "ActionClasses.h"
+#include "Amarok.h"
 #include "App.h"
+#include "Debug.h"
+#include "MainWindow.h"
+
+#include <KAction>
+#include <KActionCollection>
+#include <KLocale>
 
 #include <QtScript>
 
 namespace Amarok
 {
-    amarokPlaylistScript::amarokPlaylistScript( QScriptEngine* ScriptEngine )
+    amarokWindowScript::amarokWindowScript( QScriptEngine *ScriptEngine )
     : QObject( kapp )
     {
-
+        m_ToolMenu = MainWindow::self()->ToolMenu();
     }
 
-    amarokPlaylistScript::~amarokPlaylistScript()
+    amarokWindowScript::~amarokWindowScript()
     {
+    }
+
+    void amarokWindowScript::addMenu( QString MenuTitle )
+    {
+        DEBUG_BLOCK
+
+        KActionCollection* const ac = actionCollection();
+        KAction *action = new KAction( KIcon( "preferences-plugin-script-amarok" ), MenuTitle, MainWindow::self() );
+        ac->addAction( "customized_menu", action );
+        new Amarok::MenuAction( ac );
+        m_ToolMenu->addAction( actionCollection()->action( "customized_menu" ) );
     }
 
 }
 
-#include "amarokPlaylistScript.moc"
+#include "amarokWindowScript.moc"

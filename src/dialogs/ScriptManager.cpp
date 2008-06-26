@@ -34,6 +34,7 @@
 #include "TheInstances.h"
 #include "scriptengine/amarokScript.h"
 #include "scriptengine/amarokEngineScript.h"
+#include "scriptengine/amarokWindowScript.h"
 #include "scriptengine/amarokPlaylistScript.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
@@ -206,6 +207,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     QScriptValue ScriptObject;
     ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokEngineScript( &m_ScriptEngine ) );
     m_Global.setProperty( "Engine", ScriptObject );
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokWindowScript( &m_ScriptEngine ) );
+    m_Global.setProperty( "Window", ScriptObject );
     ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokPlaylistScript( &m_ScriptEngine ) );
     m_Global.setProperty( "Playlist", ScriptObject );
 
