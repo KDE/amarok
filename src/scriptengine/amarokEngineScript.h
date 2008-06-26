@@ -32,9 +32,11 @@ namespace Amarok
             amarokEngineScript( QScriptEngine* ScriptEngine );
             ~amarokEngineScript();
         public slots:
-            virtual void Play();
-            virtual void Stop();
-
+            void Play();
+            void Stop( bool forceInstant = false );
+            void PlayAudioCD();
+            void Pause();
+            void PlayPause();
         private:
 
     };

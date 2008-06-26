@@ -48,9 +48,9 @@ namespace Amarok
         KActionCollection* const ac = actionCollection();
         KAction *action = new KAction( KIcon( "preferences-plugin-script-amarok" ), MenuTitle, MainWindow::self() );
         ac->addAction( MenuTitle, action );
-        new Amarok::MenuAction( ac );
         m_ToolMenu->addAction( actionCollection()->action( MenuTitle ) );
 
+        //todo: menus with the same name will not be allowed
         QScriptValue Global;
         QScriptValue Menu;
         Global = m_ScriptEngine->globalObject();

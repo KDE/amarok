@@ -89,6 +89,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
     public slots:
         void showHide();
         void loveTrack();
+        void playAudioCD();
 
     private slots:
         void slotShrinkBrowsers( int index ) const;
@@ -110,7 +111,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void playLastfmGlobaltag();
         void addLastfmGlobaltag();
 #endif
-        void playAudioCD();
         void showQueueManager();
         void showScriptSelector();
         void showStatistics();

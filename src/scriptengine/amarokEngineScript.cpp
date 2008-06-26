@@ -19,6 +19,7 @@
 
 #include "App.h"
 #include "EngineController.h"
+#include "MainWindow.h"
 #include "TheInstances.h"
 
 #include <QtScript>
@@ -40,9 +41,24 @@ namespace Amarok
         The::engineController()->play();
     }
 
-    void amarokEngineScript::Stop()
+    void amarokEngineScript::Stop( bool forceInstant )
     {
-        The::engineController()->stop();
+        The::engineController()->stop( forceInstant );
+    }
+
+    void amarokEngineScript::Pause()
+    {
+        The::engineController()->pause();
+    }
+
+    void amarokEngineScript::PlayPause()
+    {
+        The::engineController()->playPause();
+    }
+
+    void amarokEngineScript::PlayAudioCD()
+    {
+        MainWindow::self()->playAudioCD();
     }
 
 }
