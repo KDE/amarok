@@ -897,12 +897,12 @@ void CollectionTreeView::slotPlayChildTracks() {
     playChildTracks( m_currentItems, Playlist::Replace );
 }
 
-void CollectionTreeView::CollectionTreeView::slotAppendChildTracks()
+void CollectionTreeView::slotAppendChildTracks()
 {
     playChildTracks( m_currentItems, Playlist::Append );
 }
 
-void CollectionTreeView::CollectionTreeView::slotEditTracks()
+void CollectionTreeView::slotEditTracks()
 {
     editTracks( m_currentItems );
 }
