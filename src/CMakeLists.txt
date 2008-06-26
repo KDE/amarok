@@ -342,9 +342,9 @@ set(dbus_SRCS
 #####################################################################
 set (scriptengine_SRCS
      scriptengine/amarokScript.cpp
-     scriptengine/amarokEngineScript.cpp
-     scriptengine/amarokWindowScript.cpp
      scriptengine/amarokPlaylistScript.cpp
+     scriptengine/amarokWindowScript.cpp
+
 )
 
 #####################################################################

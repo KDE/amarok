@@ -1,10 +1,11 @@
 var version = Amarok.Version();
 print ( "Amarok Version: " + version );
 
-//test engine:
-//Amarok.Engine.Stop();
-//Amarok.Engine.Play();
 
+//test engine:
+Amarok.Engine.stop( true );
+//Amarok.Engine.Play();
+/*
 //test WindowAction
 
 function Menu1Clicked()
@@ -25,6 +26,17 @@ try
 {
     Amarok.Window.testMenu1.triggered.connect(Menu1Clicked);
     Amarok.Window.testMenu2.triggered.connect(Menu2Clicked);
+}
+catch ( e )
+{
+    print ( e );
+}
+*/
+var OSD = Amarok.OSD;
+try
+{
+    OSD.setText( "Hey, fuck OSD!" );
+    OSD.show();
 }
 catch ( e )
 {

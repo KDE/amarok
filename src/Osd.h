@@ -184,7 +184,7 @@ namespace Amarok
 
     public slots:
         /**
-         * When user pushs global shortcut or uses DCOP OSD is toggle
+         * When user pushs global shortcut or uses script to toggle
          * even if it is disabled()
          */
         void forceToggleOSD();
