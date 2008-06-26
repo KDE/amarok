@@ -20,7 +20,7 @@
 #ifndef LASTFMSIMILARARTISTSACTION_H
 #define LASTFMSIMILARARTISTSACTION_H
 
-#include "popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/PopupDropperAction.h"
 
 #include "amarok_export.h"
 #include "meta/Meta.h"

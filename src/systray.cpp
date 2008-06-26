@@ -30,7 +30,7 @@
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "playlist/PlaylistModel.h"
-#include "popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/PopupDropperAction.h"
 
 #include <KAction>
 #include <KApplication>

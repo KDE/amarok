@@ -31,7 +31,7 @@
 #include "VolumeWidget.h"
 #include "WidgetBackgroundPainter.h"
 #include "meta/CurrentTrackActionsCapability.h"
-#include "popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/PopupDropperAction.h"
 #include "toolbar.h"
 
 #include <KAction>

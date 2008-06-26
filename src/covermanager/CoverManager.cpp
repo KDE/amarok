@@ -33,7 +33,7 @@
 #include <config-amarok.h>
 #include "PixmapViewer.h"
 #include "playlist/PlaylistModel.h"
-#include "popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/PopupDropperAction.h"
 
 #include "TheInstances.h"
 

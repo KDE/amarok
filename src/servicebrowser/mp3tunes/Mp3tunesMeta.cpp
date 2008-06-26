@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include "Mp3tunesMeta.h"
-#include "popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/PopupDropperAction.h"
 
 #include "Amarok.h"
 

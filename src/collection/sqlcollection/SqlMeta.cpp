@@ -32,7 +32,7 @@
 #include "servicebrowser/lastfm/SimilarArtistsAction.h"
 #include "SqlRegistry.h"
 #include "SqlCollection.h"
-#include "popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/PopupDropperAction.h"
 
 #include "mountpointmanager.h"
 
