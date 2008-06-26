@@ -33,10 +33,14 @@ namespace Amarok
         public:
             amarokWindowScript( QScriptEngine* ScriptEngine );
             ~amarokWindowScript();
+
         public slots:
             void addMenu( QString MenuTitle );
+            void addSeparator();
+
         private:
-            KMenu* m_ToolMenu;
+            KMenu*          m_ToolMenu;
+            QScriptEngine*  m_ScriptEngine;
 
     };
 }

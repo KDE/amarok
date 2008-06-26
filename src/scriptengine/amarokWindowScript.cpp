@@ -25,7 +25,6 @@
 
 #include <KAction>
 #include <KActionCollection>
-#include <KLocale>
 
 #include <QtScript>
 
@@ -35,6 +34,7 @@ namespace Amarok
     : QObject( kapp )
     {
         m_ToolMenu = MainWindow::self()->ToolMenu();
+        m_ScriptEngine = ScriptEngine;
     }
 
     amarokWindowScript::~amarokWindowScript()
@@ -47,9 +47,20 @@ namespace Amarok
 
         KActionCollection* const ac = actionCollection();
         KAction *action = new KAction( KIcon( "preferences-plugin-script-amarok" ), MenuTitle, MainWindow::self() );
-        ac->addAction( "customized_menu", action );
+        ac->addAction( MenuTitle, action );
         new Amarok::MenuAction( ac );
-        m_ToolMenu->addAction( actionCollection()->action( "customized_menu" ) );
+        m_ToolMenu->addAction( actionCollection()->action( MenuTitle ) );
+
+        QScriptValue Global;
+        QScriptValue Menu;
+        Global = m_ScriptEngine->globalObject();
+        Menu = m_ScriptEngine->newQObject( action );
+        Global.property("Amarok").property("Window").setProperty( MenuTitle, Menu );
+
+    }
+    void amarokWindowScript::addSeparator()
+    {
+        m_ToolMenu->addSeparator();
     }
 
 }
