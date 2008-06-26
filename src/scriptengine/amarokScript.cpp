@@ -24,7 +24,7 @@
 
 namespace Amarok
 {
-    amarokScript::amarokScript(QScriptEngine* ScriptEngine)
+    amarokScript::amarokScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
 

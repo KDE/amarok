@@ -34,6 +34,7 @@
 #include "TheInstances.h"
 #include "scriptengine/amarokScript.h"
 #include "scriptengine/amarokEngineScript.h"
+#include "scriptengine/amarokPlaylistScript.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <KAboutApplicationDialog>
@@ -199,12 +200,14 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
 
     //load the wrapper classes
-    m_Global = m_ScriptEngine.newQObject(new Amarok::amarokScript(&m_ScriptEngine));
-    m_ScriptEngine.globalObject().setProperty("Amarok", m_Global);
+    m_Global = m_ScriptEngine.newQObject( new Amarok::amarokScript( &m_ScriptEngine ) );
+    m_ScriptEngine.globalObject().setProperty( "Amarok", m_Global );
 
     QScriptValue ScriptObject;
-    ScriptObject = m_ScriptEngine.newQObject(new Amarok::amarokEngineScript(&m_ScriptEngine));
-    m_Global.setProperty("Engine", ScriptObject);
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokEngineScript( &m_ScriptEngine ) );
+    m_Global.setProperty( "Engine", ScriptObject );
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokPlaylistScript( &m_ScriptEngine ) );
+    m_Global.setProperty( "Playlist", ScriptObject );
 
 }
 
@@ -556,9 +559,9 @@ ScriptManager::slotRunScript( bool silent )
     connect( script, SIGNAL( processExited( AmarokProcess* ) ), SLOT( scriptFinished( AmarokProcess* ) ) );
 
     //load the script
-    QFile scriptFile(url.path());
-    scriptFile.open(QIODevice::ReadOnly);
-    m_ScriptEngine.evaluate(scriptFile.readAll());
+    QFile scriptFile( url.path() );
+    scriptFile.open( QIODevice::ReadOnly );
+    m_ScriptEngine.evaluate( scriptFile.readAll() );
     scriptFile.close();
 /*
     script->start( );

@@ -353,6 +353,7 @@ set(dbus_SRCS
 set (scriptengine_SRCS
      scriptengine/amarokScript.cpp
      scriptengine/amarokEngineScript.cpp
+     scriptengine/amarokPlaylistScript.cpp
 )
 
 #####################################################################

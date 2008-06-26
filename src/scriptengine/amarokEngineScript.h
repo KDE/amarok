@@ -29,7 +29,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            amarokEngineScript(QScriptEngine* ScriptEngine);
+            amarokEngineScript( QScriptEngine* ScriptEngine );
             ~amarokEngineScript();
         public slots:
             virtual void Play();
