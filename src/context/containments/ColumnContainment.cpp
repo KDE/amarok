@@ -163,17 +163,19 @@ QRectF ColumnContainment::boundingRect() const
 }
 
 // call this when the view changes size: e.g. layout needs to be recalculated
-void ColumnContainment::updateSize() // SLOT
+void ColumnContainment::updateSize( QRectF rect ) 
 {
     // HACK HACK HACK i don't know where maximumSize is being set, but SOMETHING is setting it,
     // and is preventing the containment from expanding when it should.
     // so, we manually keep the size high.
     setMaximumSize( QSizeF( INT_MAX, INT_MAX ) );
-    m_grid->setGeometry( scene()->sceneRect() );
-    setGeometry( scene()->sceneRect() );
-    m_currentRows = geometry().height() / m_defaultRowHeight;
-    m_currentColumns = qMax( (int)(geometry().width() / m_minColumnWidth), 1 );
-
+    
+    m_grid->setGeometry( rect );
+    setGeometry( rect );
+    flushPendingConstraintsEvents();
+    m_currentRows = rect.height() / m_defaultRowHeight;
+    m_currentColumns = qMax( (int)(rect.width() / m_minColumnWidth), 1 );
+    
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
@@ -272,7 +274,7 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
         m_appletsPositions[applet] = pos;
         m_appletsIndexes[applet] = m_grid->count();
         m_grid->setColumnMaximumWidth( col, m_maxColumnWidth );
-        m_grid->setColumnMinimumWidth( col, m_minColumnWidth );
+//         m_grid->setColumnMinimumWidth( col, m_minColumnWidth );
         for( int i = 0; i < rowSpan; i++ )
         {
             m_gridFreePositions[row + i][col] = false;

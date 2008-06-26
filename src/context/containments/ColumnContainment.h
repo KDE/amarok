@@ -56,7 +56,7 @@ public:
     void saveToConfig( KConfig& conf );
     void loadConfig( KConfig& conf );
 
-    void updateSize();
+    void updateSize( QRectF rect );
 
     QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const;
 

@@ -19,6 +19,7 @@
 #include "plasma/containment.h"
 
 #include <QAction>
+#include <QRectF>
 
 namespace Context
 {
@@ -39,7 +40,7 @@ public:
     virtual void saveToConfig( KConfig& conf ) = 0;
     virtual void loadConfig( KConfig& conf ) = 0;
     
-    virtual void updateSize() = 0;
+    virtual void updateSize( QRectF rect ) = 0;
 };
 
 } // Context namespace

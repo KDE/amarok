@@ -264,6 +264,7 @@ ContextView::zoomIn( Plasma::Containment* toContainment )
             setSceneRect( containment()->geometry() );
         }
     }
+    updateContainmentsGeometry();
 }
 
 void
@@ -305,20 +306,38 @@ void ContextView::resizeEvent( QResizeEvent* event )
         if ( testAttribute( Qt::WA_PendingResizeEvent ) ) {
             return; // lets not do this more than necessary, shall we?
         }
-
-    scene()->setSceneRect( rect() );
-
-    if( contextScene()->containments().size() > 0 )
-    {
-        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
-        if( containment )
-            containment->updateSize();
-        else
-            debug() << "ContextView::resizeEvent NO CONTAINMENT TO UPDATE SIZE! BAD!";
-    }
-
+    updateContainmentsGeometry();
 }
 
+
+void
+ContextView::updateContainmentsGeometry()
+{
+    scene()->setSceneRect( rect() );
+    int last = contextScene()->containments().size() - 1;
+    int x,y;
+    int width = rect().width();
+    int height = rect().height();
+
+    if( m_zoomLevel == Plasma::DesktopZoom )
+    {
+        for( int i = last; i >= 0; i-- )
+        {
+            Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
+            
+            x = ( width + 20 ) * ( i % 2 );
+            y = height * ( i / 2 );
+            QRectF newGeom( rect().topLeft().x() + x,
+                                    rect().topLeft().y() + y,
+                                    width,
+                                    height );
+            if( containment )
+                containment->updateSize( newGeom );
+            else
+                debug() << "ContextView::resizeEvent NO CONTAINMENT TO UPDATE SIZE! BAD!";
+        }
+    }
+}
 
 void ContextView::wheelEvent( QWheelEvent* event )
 {
@@ -343,11 +362,22 @@ ContextView::addContainment()
         Plasma::Containment *c = corona->addContainment( "context" );        
         //FIXME: find a better way to resize the containment to a proper size based on the
         //the CV current area size
-        int x = 504 * ( size / 2 );
-        int y = 604 * ( size % 2 );
+        
+        int x = ( rect().width() + 20 ) * ( size % 2 );
+        int y = rect().height() * ( size / 2 );
+
+        Containment* containment = qobject_cast< Containment* >( c );
+
+        QRectF newGeom( rect().topLeft().x() + x,
+                                rect().topLeft().y() + y,
+                                rect().width(),
+                                rect().height() );
+        if( containment )
+            containment->updateSize( newGeom );
+        else
+            debug() << "ContextView::resizeEvent NO CONTAINMENT TO UPDATE SIZE! BAD!";
+        
         setContainment( c );
-        c->resize( 500, 600 );
-        c->moveBy( x, y );
         
         debug() << "Containment added at: " << c->geometry();
         debug() << "x,y:" << x << y;
