@@ -7,12 +7,17 @@ print ( "Amarok Version: " + version );
 
 //test WindowAction
 
+function MenuClicked()
+{
+    print ("hey, fuck!");
+}
+
 Amarok.Window.addSeparator();
 Amarok.Window.addMenu( "testMenu" );
 
 try
 {
-    Amarok.Window.testMenu.setDisabled( true );
+    Amarok.Window.testMenu.triggered.connect(MenuClicked);
 }
 catch ( e )
 {

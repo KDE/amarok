@@ -55,7 +55,7 @@ namespace Amarok
         QScriptValue Menu;
         Global = m_ScriptEngine->globalObject();
         Menu = m_ScriptEngine->newQObject( action );
-        Global.property("Amarok").property("Window").setProperty( MenuTitle, Menu );
+        Global.property( "Amarok" ).property( "Window" ).setProperty( MenuTitle, Menu );
 
     }
     void amarokWindowScript::addSeparator()
