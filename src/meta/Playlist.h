@@ -29,6 +29,7 @@
 #include <QSet>
 #include <QSharedData>
 #include <QString>
+#include <QTextStream>
 
 #include <ksharedptr.h>
 #include <kurl.h>
