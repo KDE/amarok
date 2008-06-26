@@ -87,7 +87,6 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     m_combolist.append( m_sort2 );
     m_combolist.append( m_sort3 );
 
-    KComboBox * comboTemp;
     QListIterator<KComboBox *> it(m_combolist);
     while (it.hasNext()) {
         it.next()->addItem( i18n("None") );
