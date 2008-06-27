@@ -3,6 +3,7 @@ Importer.load("debug.js");
 try
 {
     print ( "this is script.js" );
+    debug ( "debug!" );
 }
 catch ( e )
 {
@@ -10,18 +11,19 @@ catch ( e )
 }
 
 //test engine:
-/*
-    var version = Amarok.Version();
-    debug( ( "Amarok Version: " + version ));
+
+var version = Amarok.Version();
+print ( ( "Amarok Version: " + version ));
+
 var Engine;
 Engine = Amarok.Engine;
 Engine.stop( true );
 Engine.Play();
 Engine.Seek ( 60*1000 );
-*/
+
 
 //test WindowAction
-/*
+
 function Menu1Clicked()
 {
     print ("hey, menu1!");
@@ -45,6 +47,7 @@ catch ( e )
 {
     print ( e );
 }
+
 var OSD = Amarok.OSD;
 OSD.setText( "Hey there!" );
 OSD.show();
@@ -58,4 +61,3 @@ catch ( e )
 {
     print ( e );
 }
-*/
