@@ -31,12 +31,21 @@ namespace Amarok
         public:
             amarokEngineScript( QScriptEngine* ScriptEngine );
             ~amarokEngineScript();
+
         public slots:
             void Play();
             void Stop( bool forceInstant = false );
-            void PlayAudioCD();
             void Pause();
             void PlayPause();
+            void PlayAudioCD();
+            void Seek( int ms );
+            void SeekRelative( int ms );
+            void SeekForward( int ms = 10000 );
+            void SeekBackward( int ms = 10000 );
+            int  increaseVolume( int ticks = 100/25 );
+            int  decreaseVolume( int ticks = 100/25 );
+            int  setVolume( int percent );
+            void Mute();
         private:
 
     };

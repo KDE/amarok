@@ -61,6 +61,46 @@ namespace Amarok
         MainWindow::self()->playAudioCD();
     }
 
+    void amarokEngineScript::Seek( int ms )
+    {
+        The::engineController()->seek( ms );
+    }
+
+    void amarokEngineScript::SeekRelative( int ms )
+    {
+        The::engineController()->seekRelative( ms );
+    }
+
+    void amarokEngineScript::SeekForward( int ms )
+    {
+        The::engineController()->seekForward( ms );
+    }
+
+    void amarokEngineScript::SeekBackward( int ms )
+    {
+        The::engineController()->seekBackward( ms );
+    }
+
+    int amarokEngineScript::increaseVolume( int ticks )
+    {
+        return The::engineController()->increaseVolume( ticks );
+    }
+
+    int amarokEngineScript::decreaseVolume( int ticks )
+    {
+        return The::engineController()->decreaseVolume( ticks );
+    }
+
+    int amarokEngineScript::setVolume( int percent )
+    {
+        return The::engineController()->setVolume( percent );
+    }
+
+    void amarokEngineScript::Mute()
+    {
+        The::engineController()->mute();
+    }
+
 }
 
 #include "amarokEngineScript.moc"

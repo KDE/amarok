@@ -3,8 +3,11 @@ print ( "Amarok Version: " + version );
 
 
 //test engine:
-//Amarok.Engine.stop( true );
-//Amarok.Engine.Play();
+var Engine;
+Engine = Amarok.Engine;
+//Engine.stop( true );
+//Engine.Play();
+Engine.Seek ( 60*1000 );
 /*
 //test WindowAction
 
