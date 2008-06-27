@@ -65,8 +65,8 @@ public:
                                 const QRect& contentsRect);
 
     QList<QAction*> contextualActions();
-
-
+    
+    bool hasPlaceForApplet( int rowSpan );
 
 public slots:
     Applet* addApplet( Plasma::Applet* applet, const QPointF &);

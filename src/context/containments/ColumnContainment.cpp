@@ -58,7 +58,7 @@ void SvgRenderJob::run()
 ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_actions( 0 )    
-    , m_minColumnWidth( 300 )
+    , m_minColumnWidth( 400 )
     , m_maxColumnWidth( 500 )
     , m_defaultRowHeight( 150 )
 {
@@ -165,13 +165,14 @@ QRectF ColumnContainment::boundingRect() const
 // call this when the view changes size: e.g. layout needs to be recalculated
 void ColumnContainment::updateSize( QRectF rect ) 
 {
+    DEBUG_BLOCK
     // HACK HACK HACK i don't know where maximumSize is being set, but SOMETHING is setting it,
     // and is preventing the containment from expanding when it should.
     // so, we manually keep the size high.
     setMaximumSize( QSizeF( INT_MAX, INT_MAX ) );
-    
     m_grid->setGeometry( rect );
     setGeometry( rect );
+    debug() << "Rect: " << rect;
     m_currentRows = rect.height() / m_defaultRowHeight;
     m_currentColumns = qMax( (int)(rect.width() / m_minColumnWidth), 1 );
     
@@ -201,9 +202,7 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
     int logoHeight = ( int )( ( double ) logoWidth / aspectRatio );
 
     painter->drawPixmap(rect.width() - ( logoWidth + 20 ) , rect.height() - ( logoHeight + 20 ) , The::svgHandler()->renderSvg( "amarok_logo", logoWidth, logoHeight, "amarok_logo" ) );
-
     painter->restore();
-
     /*QSize size = m_logo->size();
     QSize pos = rect.size() - size;
     qreal newHeight  = m_aspectRatio * m_width;
@@ -212,6 +211,7 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
     m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
     painter->restore();*/
 }
+
 
 bool
 ColumnContainment::insertInGrid( Plasma::Applet* applet )
@@ -306,12 +306,51 @@ Plasma::Applet* ColumnContainment::addApplet( Plasma::Applet* applet, const QPoi
     {
         debug() << "[m_currentRows,mcols]: " << m_currentRows << m_currentColumns;
         debug() << "Send applet to the next free containment";
+
+        int height = applet->effectiveSizeHint( Qt::PreferredSize,
+                                            QSizeF( m_maxColumnWidth, -1 ) ).height();
+        int rowSpan = height / m_defaultRowHeight;
+        if( rowSpan == 0 || height % m_defaultRowHeight >  m_defaultRowHeight / 2.0  )
+            rowSpan += 1;
+        debug() << "emit appletRejected at containment";
+        emit appletRejected( applet->pluginName(), rowSpan );
         applet->destroy();
+        return 0;
     }
 //     recalculate();
     
     return applet;
 }
+
+bool
+ColumnContainment::hasPlaceForApplet( int rowSpan )
+{
+    bool positionFound = false;
+    int j = 0;
+    //traverse the grid matrix to find rowSpan consecutive positions in the same column
+
+    while( !positionFound && j < m_currentColumns   )
+    {
+        int consec = 0;
+        int i = 0;
+        while( i < m_currentRows && consec < rowSpan)
+        {
+
+            if( m_gridFreePositions[i][j] )
+                consec++;
+            else
+                consec = 0;
+            i++;
+        }
+        if( consec == rowSpan )
+        {
+            positionFound = true;
+        }
+        j++;
+    }
+    return positionFound;
+}
+
 
 void ColumnContainment::recalculate()
 {
@@ -497,6 +536,7 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
     }
     
 }
+
 
 ColumnContainment::~ColumnContainment()
 {

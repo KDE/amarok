@@ -41,6 +41,11 @@ public:
     virtual void loadConfig( KConfig& conf ) = 0;
     
     virtual void updateSize( QRectF rect ) = 0;
+    virtual bool hasPlaceForApplet( int rowSpan ) = 0;
+
+signals:
+    void appletRejected( QString pluginName, int rowSpan );
+        
 };
 
 } // Context namespace

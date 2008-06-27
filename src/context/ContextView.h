@@ -82,6 +82,15 @@ public slots:
     void nextContainment();
     void previousContainment();
 
+    /**
+    * Find a containment with @p rowSpan free rows to add the applet with @p pluginName.
+    * If there is no availiable containment create a new one and add the applet there.
+    * The focus is changed to the containment where the applet has been added.
+    * @arg pluginName the applet pluginName to add.
+    * @arg rowSpan the applet row span
+    */
+    void findContainmentForApplet( QString pluginName, int rowSpan );
+
 protected:
     void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
 

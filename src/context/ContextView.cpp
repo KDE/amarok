@@ -264,7 +264,10 @@ ContextView::zoomIn( Plasma::Containment* toContainment )
             setSceneRect( containment()->geometry() );
         }
     }
-    updateContainmentsGeometry();
+    //HACK: this is the only way that the containments resize correctly after
+    //the CV widget has ben resized while in zoom level Plasma::GroupZoom
+    resize( size().width()+1, size().height() );
+    resize( size().width()-1, size().height() );
 }
 
 void
@@ -274,7 +277,6 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
     {
         m_zoomLevel = Plasma::GroupZoom;
         //connect to other containments
-        //FIXME if some other view is zoomed out, a little madness will ensue
         Plasma::Corona *corona = containment()->corona();
         if( corona )
         {
@@ -288,7 +290,7 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
         setDragMode( ScrollHandDrag );
         scale( .45, .45 );
         setSceneRect( QRectF( 0, 0, scene()->sceneRect().right(), scene()->sceneRect().bottom() ) );
-        ensureVisible( fromContainment->sceneBoundingRect() );
+        ensureVisible( fromContainment->sceneBoundingRect(), 0, 0 );
         m_zoomLevel = Plasma::GroupZoom;
     }
 
@@ -313,7 +315,7 @@ void ContextView::resizeEvent( QResizeEvent* event )
 void
 ContextView::updateContainmentsGeometry()
 {
-    scene()->setSceneRect( rect() );
+    
     int last = contextScene()->containments().size() - 1;
     int x,y;
     int width = rect().width();
@@ -321,11 +323,12 @@ ContextView::updateContainmentsGeometry()
 
     if( m_zoomLevel == Plasma::DesktopZoom )
     {
+        scene()->setSceneRect( rect() );
         for( int i = last; i >= 0; i-- )
         {
             Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
             
-            x = ( width + 20 ) * ( i % 2 );
+            x = ( width + 50 ) * ( i % 2 );
             y = height * ( i / 2 );
             QRectF newGeom( rect().topLeft().x() + x,
                                     rect().topLeft().y() + y,
@@ -363,7 +366,7 @@ ContextView::addContainment()
         c->setScreen( 0 );
         c->setFormFactor( Plasma::Planar );
         
-        int x = ( rect().width() + 20 ) * ( size % 2 );
+        int x = ( rect().width() + 50 ) * ( size % 2 );
         int y = rect().height() * ( size / 2 );
 
         Containment* containment = qobject_cast< Containment* >( c );
@@ -397,6 +400,12 @@ ContextView::connectContainment( Plasma::Containment* containment )
                 this, SLOT( showAppletBrowser() ) );
         connect( containment, SIGNAL( focusRequested( Plasma::Containment* ) ),
                  this, SLOT( setContainment( Plasma::Containment * ) ) );
+        Containment* amarokContainment = qobject_cast<Containment*>( containment );
+        if( amarokContainment )
+        {
+            connect( amarokContainment, SIGNAL( appletRejected( QString, int ) ),
+                     this, SLOT( findContainmentForApplet( QString, int ) ) );
+        }
     }
 }
 
@@ -417,11 +426,26 @@ ContextView::disconnectContainment( Plasma::Containment* containment )
 void
 ContextView::setContainment( Plasma::Containment* containment )
 {
+    DEBUG_BLOCK
     if( containment != this->containment() )
     {
         disconnectContainment( this->containment() );
-        connectContainment( containment );
-        Plasma::View::setContainment( containment );
+        if( containment->isContainment() )
+        {
+            connectContainment( containment );
+
+            //This call will set the containment size to the current screen resolution...
+            Plasma::View::setContainment( containment );            
+
+            //this disconnect prevents from undesired containment's geometry change
+            disconnect( containment, SIGNAL( geometryChanged() ), 0, 0 );
+            debug() << "containment geometry: " << containment->geometry();
+            debug() << "rect size: " << rect().size();
+            //resize the containment to an appropriate size
+            containment->resize( rect().size() );
+
+        }
+        
     }    
 }
 
@@ -441,6 +465,51 @@ ContextView::previousContainment()
     int index = containments.indexOf( containment() );
     index = ( index - 1 ) % containments.size();
     setContainment( containments.at( index ) );
+}
+
+void
+ContextView::findContainmentForApplet( QString pluginName, int rowSpan )
+{
+    DEBUG_BLOCK
+    Plasma::Corona *corona = containment()->corona();
+    if ( corona )
+    {
+        QList<Plasma::Containment*> containments = corona->containments();
+        bool placeFound = false;
+        int count = containments.count();
+        int i = 0;
+        while( !placeFound && i < count )
+        {
+            Containment* amarokContainment = qobject_cast<Containment*>( containments[i] );
+            if( amarokContainment )
+            {
+                if( amarokContainment->hasPlaceForApplet( rowSpan ) )
+                {
+                    
+                    amarokContainment->addApplet( pluginName );
+                    
+                    setContainment( amarokContainment );
+                    if( m_zoomLevel == Plasma::DesktopZoom )
+                    {
+                        setSceneRect( amarokContainment->geometry() );
+                        resize( size().width()+1, size().height() );
+                        resize( size().width()-1, size().height() );
+                        ensureVisible( amarokContainment->geometry(), 0, 0 );
+                    }
+                    
+                    placeFound = true;
+                }
+            }
+            i++;
+        }
+        
+        if( !placeFound )
+        {
+            debug() << "No availiable place to add " << pluginName << " applet";
+            debug() << "Create new containment and add it there";
+        }
+
+    }
 }
 
 void
