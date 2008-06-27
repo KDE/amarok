@@ -184,6 +184,9 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if( role == TrackRole && ( row != -1 ) && m_items.at( row )->track() )
         return QVariant::fromValue( m_items.at( row )->track() );
 
+    else if( role == StateRole && ( row != -1 ) )
+        return m_items.at( row )->state();
+
     else if ( role == GroupRole )
     {
         Meta::TrackPtr track = m_items.at( row )->track();

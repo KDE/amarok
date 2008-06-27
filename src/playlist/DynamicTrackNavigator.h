@@ -48,6 +48,9 @@ class Model;
             void activeRowExplicitlyChanged();
 
         private:
+            void setAsUpcoming( int row );
+            void setAsPlayed( int row );
+
             void removePlayed();
 
             RowList m_upcomingRows;

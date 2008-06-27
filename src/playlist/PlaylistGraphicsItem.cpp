@@ -721,6 +721,45 @@ void Playlist::GraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
        The::playlistModel()->setCollapsed( m_currentRow, false ); */
 }
 
+void Playlist::GraphicsItem::setTextColor( bool active )
+{
+    const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
+    int state = index.data( StateRole ).toInt();
+
+    if( active )
+    {
+        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
+        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
+    }
+    else
+    {
+        switch( state )
+        {
+            // TODO: what should these be really ?
+            case Item::NewlyAdded:
+                m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
+                m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
+                break;
+
+            case Item::DynamicUpcoming:
+                m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().link().color() );
+                m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().link().color() );
+                break;
+
+            case Item::DynamicPlayed:
+                m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().linkVisited().color() );
+                m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().linkVisited().color() );
+                break;
+
+            case Item::Normal:
+            default:
+                m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
+                m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
+        }
+    }
+}
+
+
 void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
 {
     QRectF trackRect = option->rect;
@@ -781,13 +820,9 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
                                         "active_overlay"
                                       )
                            );
-
-        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
-        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
-    } else {
-        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
-        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
     }
+
+    setTextColor( active );
 
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
@@ -858,13 +893,9 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
                                         "active_overlay"
                                       )
                            );
-
-        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
-        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
-    } else {
-        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
-        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
     }
+
+    setTextColor( active );
 
     //and make sure the top text elements are shown
     if( !m_items->topRightText->isVisible() )
@@ -986,13 +1017,9 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
     //draw active track marker if needed
     if ( active ) {
         painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "active_overlay", (int)trackRect.width(), (int)trackRect.height(), "active_overlay" ) );
-
-        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
-        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
-    } else {
-        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
-        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
     }
+
+    setTextColor( active );
 
     //make sure that the top text items are not shown
     m_items->topRightText->hide();
@@ -1043,13 +1070,10 @@ void Playlist::GraphicsItem::paintTail( QPainter * painter, const QStyleOptionGr
                                         "active_overlay"
                                       )
                            );
-
-        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
-        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
-    } else {
-        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
-        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
     }
+
+    setTextColor( active );
+
 
     //make sure that the top text items are not shown
     m_items->topRightText->hide();

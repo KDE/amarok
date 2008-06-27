@@ -101,6 +101,8 @@ namespace Playlist
             void paintTail( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active, bool alternate  );
             void paintCollapsed( );
 
+            void setTextColor( bool active );
+
             void handleActiveOverlay( QRectF rect, bool active );
 
             ActiveItems* m_items;

@@ -23,7 +23,7 @@
 #include "Debug.h"
 
 Playlist::Item::Item( Meta::TrackPtr track )
-    : m_track( track )
+    : m_track( track ), m_state( Normal )
 { }
 
 Playlist::Item::~Item()

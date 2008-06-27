@@ -46,8 +46,7 @@ DynamicTrackNavigator::nextRow()
     int activeRow = m_playlistModel->activeRow();
 
 
-    if( m_upcomingRows.contains( activeRow ) ) m_playedRows.append( activeRow );
-
+    if( m_upcomingRows.contains( activeRow ) ) setAsPlayed( activeRow );
     m_upcomingRows.removeAll( activeRow );
     int updateRow = activeRow + 1;
 
@@ -73,7 +72,7 @@ void DynamicTrackNavigator::appendUpcoming()
 
         for( int row = 1; row <= newUpcoming.size(); ++row )
         {
-            m_upcomingRows.append( m_playlistModel->rowCount() - row );
+            setAsUpcoming( m_playlistModel->rowCount() - row );
         }
     }
 }
@@ -110,7 +109,7 @@ void DynamicTrackNavigator::activeRowExplicitlyChanged()
         i.next();
         if( i.value() >= activeRow )
         {
-            m_upcomingRows.append( i.value() );
+            setAsUpcoming( i.value() );
             i.remove();
         }
     }
@@ -123,12 +122,26 @@ void DynamicTrackNavigator::activeRowExplicitlyChanged()
         j.next();
         if( j.value() < activeRow )
         {
-            m_playedRows.append( j.value() );
+            setAsPlayed( j.value() );
             j.remove();
         }
     }
 
     removePlayed();
     appendUpcoming();
+}
+
+void DynamicTrackNavigator::setAsUpcoming( int row )
+{
+    m_upcomingRows.append( row );
+    QModelIndex i = m_playlistModel->index( row, 0 );
+    i.data( ItemRole ).value< Playlist::Item* >()->setState( Item::DynamicUpcoming );
+}
+
+void DynamicTrackNavigator::setAsPlayed( int row )
+{
+    m_playedRows.append( row );
+    QModelIndex i = m_playlistModel->index( row, 0 );
+    i.data( ItemRole ).value< Playlist::Item* >()->setState( Item::DynamicPlayed );
 }
 

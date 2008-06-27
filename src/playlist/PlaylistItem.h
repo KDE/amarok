@@ -29,13 +29,25 @@ namespace Playlist {
     class Item
     {
         public:
+            enum State
+            {
+                Normal,
+                NewlyAdded,
+                DynamicUpcoming,
+                DynamicPlayed
+            };
+
             Item() { }
             Item( Meta::TrackPtr track );
             ~Item();
             Meta::TrackPtr track() const { return m_track; }
 
+            State state() const { return m_state; }
+            void setState( State s ) { m_state = s; }
+
         private:
             Meta::TrackPtr m_track;
+            State m_state;
     };
 
 }

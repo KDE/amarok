@@ -98,6 +98,7 @@ namespace Playlist
     enum DataRoles
     {
         TrackRole = Qt::UserRole + 1,
+        StateRole,
         ItemRole,
         ActiveTrackRole,
         GroupRole,
