@@ -38,7 +38,10 @@ try
     OSD.setText( "Hey, fuck OSD!" );
     OSD.show();
 }
+
 catch ( e )
 {
     print ( e );
 }
+var StatusBar = Amarok.Statusbar;
+    StatusBar.shortMessage( "Hi there, I'm a script" );

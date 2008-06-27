@@ -213,7 +213,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_Global.setProperty( "OSD", ScriptObject );
     ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokPlaylistScript( &m_ScriptEngine ) );
     m_Global.setProperty( "Playlist", ScriptObject );
-
+    ScriptObject = m_ScriptEngine.newQObject( The::statusBar() );
+    m_Global.setProperty( "Statusbar", ScriptObject );
 }
 
 
