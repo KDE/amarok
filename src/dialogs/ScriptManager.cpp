@@ -40,6 +40,7 @@
 #include "scriptengine/AmarokScript.h"
 #include "scriptengine/AmarokStatusbarScript.h"
 #include "scriptengine/AmarokWindowScript.h"
+#include "scriptengine/ScriptImporter.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <KAboutApplicationDialog>
@@ -57,6 +58,7 @@
 #include <KStandardDirs>
 #include <KTar>
 #include <KTextEdit>
+#include <KUrl>
 #include <KWindowSystem>
 
 #include <QCheckBox>
@@ -204,8 +206,6 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
 
-    //load the wrapper classes
-    StartScriptEngine();
 }
 
 
@@ -274,13 +274,13 @@ ScriptManager::listRunningScripts()
     return runningScripts;
 }
 
-
+/*
 void
 ScriptManager::customMenuClicked( const QString& message )
 {
     notifyScripts( "customMenuClicked: " + message );
 }
-
+*/
 
 QString
 ScriptManager::specForScript( const QString& name )
@@ -298,20 +298,20 @@ void
 ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 {
     const QString args = QUrl::toPercentEncoding( artist ) + ' ' + QUrl::toPercentEncoding( title ); //krazy:exclude=qclasses
-    notifyScripts( "fetchLyrics " + args );
+//    notifyScripts( "fetchLyrics " + args );
 }
 
 
 void
 ScriptManager::notifyFetchLyricsByUrl( const QString& url )
 {
-    notifyScripts( "fetchLyricsByUrl " + url );
+//    notifyScripts( "fetchLyricsByUrl " + url );
 }
 
 
 void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filetype )
 {
-    notifyScripts( "transcode " + srcUrl + ' ' + filetype );
+//    notifyScripts( "transcode " + srcUrl + ' ' + filetype );
 }
 
 
@@ -551,14 +551,17 @@ ScriptManager::slotRunScript( bool silent )
     *script << url.path();
     script->setWorkingDirectory( Amarok::saveLocation( "scripts-data/" ) );
 
-    connect( script, SIGNAL( receivedStderr( AmarokProcess* ) ), SLOT( slotReceivedStderr( AmarokProcess* ) ) );
-    connect( script, SIGNAL( receivedStdout( AmarokProcess* ) ), SLOT( slotReceivedStdout( AmarokProcess* ) ) );
-    connect( script, SIGNAL( processExited( AmarokProcess* ) ), SLOT( scriptFinished( AmarokProcess* ) ) );
+//    connect( script, SIGNAL( receivedStderr( AmarokProcess* ) ), SLOT( slotReceivedStderr( AmarokProcess* ) ) );
+//    connect( script, SIGNAL( receivedStdout( AmarokProcess* ) ), SLOT( slotReceivedStdout( AmarokProcess* ) ) );
+//    connect( script, SIGNAL( processExited( AmarokProcess* ) ), SLOT( scriptFinished( AmarokProcess* ) ) );
 
     //load the script
+        //load the wrapper classes
+    StartScriptEngine( m_scripts[name].engine, url );
+
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
-    m_ScriptEngine.evaluate( scriptFile.readAll() );
+    m_scripts[name].engine->evaluate( scriptFile.readAll() );
     scriptFile.close();
 /*
     script->start( );
@@ -626,7 +629,7 @@ ScriptManager::slotConfigureScript()
     const KUrl url = m_scripts[name].url;
     QDir::setCurrent( url.directory() );
 
-    m_scripts[name].process->writeStdin( QString("configure") );
+//    m_scripts[name].process->writeStdin( QString("configure") );
 }
 
 
@@ -718,12 +721,12 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 
 
 /* This is just a workaround, some scripts crash for some people if stdout is not handled. */
+/*
 void
 ScriptManager::slotReceivedStdout( AmarokProcess *process )
 {
     debug() << QString::fromLatin1( process->readAllStandardOutput() );
 }
-
 
 void
 ScriptManager::slotReceivedStderr( AmarokProcess* process )
@@ -741,7 +744,7 @@ ScriptManager::slotReceivedStderr( AmarokProcess* process )
         it.value().log = "==== LOG TRUNCATED HERE ====\n";
     it.value().log += text;
 }
-
+*/
 
 void
 ScriptManager::scriptFinished( AmarokProcess* process ) //SLOT
@@ -846,7 +849,7 @@ ScriptManager::terminateProcess( AmarokProcIO** proc )
     }
 }
 
-
+/*
 void
 ScriptManager::notifyScripts( const QString& message )
 {
@@ -855,7 +858,7 @@ ScriptManager::notifyScripts( const QString& message )
         if( proc ) proc->writeStdin( message );
     }
 }
-
+*/
 
 void
 ScriptManager::loadScript( const QString& path )
@@ -910,16 +913,16 @@ ScriptManager::loadScript( const QString& path )
         item.type = type;
         item.process = 0;
         item.li = li;
-
+        item.engine = new QScriptEngine;
         m_scripts[name] = item;
 
         slotCurrentChanged( m_gui->treeWidget->currentItem() );
     }
 }
 
-
-void
-ScriptManager::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
+//void
+//ScriptManager::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
+/*
 {
     switch( state )
     {
@@ -944,10 +947,11 @@ ScriptManager::engineStateChanged( Phonon::State state, Phonon::State /*oldState
             return;
     }
 }
+*/
 
-
-void
-ScriptManager::engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool trackChanged )
+//void
+//ScriptManager::engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool trackChanged )
+/*
 {
     if( trackChanged)
     {
@@ -961,29 +965,34 @@ ScriptManager::engineVolumeChanged( int newVolume )
 {
     notifyScripts( "volumeChange: " + QString::number( newVolume ) );
 }
-
+*/
 void
-ScriptManager::StartScriptEngine()
+ScriptManager::StartScriptEngine( QScriptEngine* ScriptEngine, KUrl url )
 {
-    m_Global = m_ScriptEngine.newQObject( new Amarok::AmarokScript( &m_ScriptEngine ) );
-    m_ScriptEngine.globalObject().setProperty( "Amarok", m_Global );
-
     QScriptValue ScriptObject;
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokEngineScript( &m_ScriptEngine ) );
+
+    ScriptObject = ScriptEngine->newQObject( new Amarok::ScriptImporter( ScriptEngine, url ) );
+    ScriptEngine->globalObject().setProperty( "Importer", ScriptObject );
+
+    m_Global = ScriptEngine->newQObject( new Amarok::AmarokScript( ScriptEngine ) );
+    ScriptEngine->globalObject().setProperty( "Amarok", m_Global );
+
+    ScriptObject = ScriptEngine->newQObject( new Amarok::AmarokEngineScript( ScriptEngine ) );
     m_Global.setProperty( "Engine", ScriptObject );
 
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokWindowScript( &m_ScriptEngine ) );
+    ScriptObject = ScriptEngine->newQObject( new Amarok::AmarokWindowScript( ScriptEngine ) );
     m_Global.setProperty( "Window", ScriptObject );
 
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokOSDScript( &m_ScriptEngine ) );
+    ScriptObject = ScriptEngine->newQObject( new Amarok::AmarokOSDScript( ScriptEngine ) );
     m_Global.setProperty( "OSD", ScriptObject );
 
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokPlaylistScript( &m_ScriptEngine ) );
+    ScriptObject = ScriptEngine->newQObject( new Amarok::AmarokPlaylistScript( ScriptEngine ) );
     m_Global.setProperty( "Playlist", ScriptObject );
 
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokStatusbarScript( &m_ScriptEngine ) );
+    ScriptObject = ScriptEngine->newQObject( new Amarok::AmarokStatusbarScript( ScriptEngine ) );
     m_Global.property( "Window" ).setProperty( "Statusbar", ScriptObject );
 }
+
 
 #include "ScriptManager.moc"
 

@@ -82,7 +82,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         QStringList listRunningScripts();
 
        /** Custom Menu Click */
-       void customMenuClicked( const QString& message );
+//       void customMenuClicked( const QString& message );
 
        /** Returns the path of the spec file of the given script */
        QString specForScript( const QString& name );
@@ -134,8 +134,8 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void slotAboutScript();
         void slotShowContextMenu( const QPoint& );
 
-        void slotReceivedStdout( AmarokProcess* );
-        void slotReceivedStderr( AmarokProcess* );
+//        void slotReceivedStdout( AmarokProcess* );
+//        void slotReceivedStderr( AmarokProcess* );
         void scriptFinished( AmarokProcess* process );
 
     private:
@@ -151,7 +151,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void terminateProcess( AmarokProcIO** proc );
 
         /** Sends a string message to all running scripts */
-        void notifyScripts( const QString& message );
+//        void notifyScripts( const QString& message );
 
         /** Adds a script to the listview */
         void loadScript( const QString& path );
@@ -160,11 +160,11 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );
 
         /** EngineObserver reimplementations **/
-        void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-        void engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool /*trackChanged*/ );
-        void engineVolumeChanged( int newVolume );
+//        void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
+//        void engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool /*trackChanged*/ );
+//        void engineVolumeChanged( int newVolume );
 
-        void StartScriptEngine();
+        void StartScriptEngine( QScriptEngine* ScriptEngine, KUrl url);
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
@@ -181,6 +181,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         bool                   m_installSuccess;
 
         struct ScriptItem {
+            QScriptEngine*   engine;
             KUrl             url;
             QString          type;
             AmarokProcIO*    process;
@@ -192,7 +193,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         typedef QMap<QString, ScriptItem> ScriptMap;
 
         ScriptMap      m_scripts;
-        QScriptEngine  m_ScriptEngine;
         QScriptValue   m_Global;
 
 };

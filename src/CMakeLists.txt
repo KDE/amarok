@@ -342,6 +342,7 @@ set(dbus_SRCS
 # SCRIPTING INTERFACE
 #####################################################################
 set (scriptengine_SRCS
+     scriptengine/ScriptImporter.cpp
      scriptengine/AmarokScript.cpp
      scriptengine/AmarokEngineScript.cpp
      scriptengine/AmarokOSDScript.cpp

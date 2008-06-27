@@ -1,53 +1,45 @@
-var version = Amarok.Version();
-print ( "Amarok Version: " + version );
+/*************************************************
+*        Debug functions                         *
+*                                                *
+* (c) 2008   Peter ZHOU <peterzhoulei@gmail.com> *
+**************************************************/
 
-
-//test engine:
-/*
-var Engine;
-Engine = Amarok.Engine;
-Engine.stop( true );
-Engine.Play();
-Engine.Seek ( 60*1000 );
-*/
-
-//test WindowAction
-/*
-function Menu1Clicked()
+function debug( str )
 {
-    print ("hey, menu1!");
+    var prefix;
+    if (debug_prefix != "") prefix = debug_prefix;
+    else prefix = "";
+    var indent = " ";
+    print( app_name + ":" + indent + debug_prefix + str );
 }
 
-function Menu2Clicked()
+function warning( str )
 {
-    print ("hey, menu2!");
+    var prefix;
+    if (debug_prefix != "") prefix = debug_prefix;
+    else prefix = "";
+    var indent = " ";
+    print( app_name + ":" + indent + " WARNING:" + debug_prefix + str );
 }
 
-Amarok.Window.addSeparator();
-Amarok.Window.addMenu( "testMenu1" );
-Amarok.Window.addMenu( "testMenu2" );
-
-try
+function error( str )
 {
-    Amarok.Window.Menu.testMenu1.triggered.connect(Menu1Clicked);
-    Amarok.Window.Menu.testMenu2.triggered.connect(Menu2Clicked);
-}
-catch ( e )
-{
-    print ( e );
-}
-var OSD = Amarok.OSD;
-OSD.setText( "Hey there!" );
-OSD.show();
-*/
-
-try
-{
-    var StatusBar = Amarok.Window.StatusBar;
-    StatusBar.shortMessage( "Hey there!" );
+    var prefix;
+    if (debug_prefix != "") prefix = debug_prefix;
+    else prefix = "";
+    var indent = " ";
+    print( app_name + ":" + indent + " ERROR:" + debug_prefix + str );
 }
 
-catch ( e )
+function fatal( str )
 {
-    print ( e );
+    var prefix;
+    if (debug_prefix != "") prefix = debug_prefix;
+    else prefix = "";
+    var indent = " ";
+    print( app_name + ":" + indent + " FATAL:" + debug_prefix + str );
 }
+
+print ( "this is debug.js" );
+
+
