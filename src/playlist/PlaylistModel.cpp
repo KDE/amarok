@@ -55,6 +55,8 @@
 #include <KIcon>
 #include <KUrl>
 
+#include <typeinfo>
+
 namespace Amarok
 {
     // Sorting of a tracklist.
