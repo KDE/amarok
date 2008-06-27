@@ -78,61 +78,6 @@ namespace Amarok
 }
 
 
-Playlist::RowList::RowList( Model* model )
-    : m_model(model)
-{
-    connect( m_model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInserted( const QModelIndex &, int, int ) ) );
-    connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( rowsRemoved( const QModelIndex&, int, int ) ) );
-    connect( m_model, SIGNAL( rowMoved( int, int ) ), this, SLOT( rowMoved( int, int ) ) );
-}
-
-
-void 
-Playlist::RowList::rowsInserted( const QModelIndex & parent, int start, int end )
-{
-    Q_UNUSED( parent );
-
-    int span = end - start + 1;
-
-    RowList::iterator i;
-    for( i = this->begin(); i != this->end(); ++i )
-    {
-        if( *i >= start ) *i += span;
-    }
-}
-
-void
-Playlist::RowList::rowsRemoved( const QModelIndex & parent, int start, int end )
-{
-    Q_UNUSED( parent );
-
-    int span = end - start + 1;
-    QMutableListIterator<int> i( *this );
-
-
-    while( i.hasNext() )
-    {
-        i.next();
-
-        if( i.value() >= start )
-        {
-            if( i.value() <= end ) i.remove();
-            else                   i.value() -= span;
-        }
-    }
-}
-
-void 
-Playlist::RowList::rowMoved( int from, int to )
-{
-    RowList::iterator i;
-    for( i = begin(); i != end(); ++i )
-    {
-        if( *i == from ) *i = to;
-        else if( from < *i && *i <= to ) *i -= 1;
-        else if( to <= *i && *i < from ) *i += 1;
-    }
-}
 
 
 
@@ -854,6 +799,8 @@ Playlist::Model::engineNewTrackPlaying()
                     break;
                 }
             }
+
+            emit activeRowExplicitlyChanged();
         }
     }
 

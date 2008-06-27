@@ -20,6 +20,7 @@
 
 #include "meta/Meta.h"
 #include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistRowList.h"
 #include "playlist/TrackNavigator.h"
 
 namespace Playlist {
@@ -30,8 +31,7 @@ class Model;
     class RepeatTrackNavigator : public TrackNavigator
     {
         public:
-            RepeatTrackNavigator( Model* m ) 
-                : TrackNavigator( m ), m_previousTrack( m ) { }
+            RepeatTrackNavigator( Model* m ) : TrackNavigator( m ) {}
             int nextRow();
             int userNextRow();
 

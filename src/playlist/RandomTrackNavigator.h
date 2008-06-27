@@ -23,6 +23,7 @@
 
 #include "meta/Meta.h"
 #include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistRowList.h"
 #include "playlist/TrackNavigator.h"
 
 namespace Playlist {
@@ -33,9 +34,8 @@ namespace Playlist {
     class RandomTrackNavigator : public TrackNavigator
     {
         public:
-            RandomTrackNavigator( Model *m )
-                : TrackNavigator( m ),
-                  m_playedRows( m ), m_unplayedRows( m ) {}
+            RandomTrackNavigator( Model *m ) : TrackNavigator( m ) {}
+
             int nextRow();
             int lastRow();
 

@@ -29,22 +29,27 @@
 using namespace Playlist;
 
 DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr p )
-    : TrackNavigator(m), m_playedRows(m), m_playlist(p)
+    : TrackNavigator(m), m_playlist(p)
 {
     QObject::connect( m_playlistModel, SIGNAL(activeRowChanged()),
-            this, SLOT(removePlayed()));
+            this, SLOT(activeRowChanged()));
+    QObject::connect( m_playlistModel, SIGNAL(activeRowExplicitlyChanged()),
+            this, SLOT(activeRowExplicitlyChanged()));
 }
 
 
 int
 DynamicTrackNavigator::nextRow()
 {
-    DEBUG_BLOCK
-
     appendUpcoming();
 
-    m_playedRows.append( m_playlistModel->activeRow () );
-    int updateRow = m_playlistModel->activeRow() + 1;
+    int activeRow = m_playlistModel->activeRow();
+
+
+    if( m_upcomingRows.contains( activeRow ) ) m_playedRows.append( activeRow );
+
+    m_upcomingRows.removeAll( activeRow );
+    int updateRow = activeRow + 1;
 
     if( m_playlistModel->stopAfterMode() == StopAfterCurrent ) return -1;
     else if( m_playlistModel->rowExists( updateRow ) )         return updateRow;
@@ -65,14 +70,16 @@ void DynamicTrackNavigator::appendUpcoming()
     {
         Meta::TrackList newUpcoming = m_playlist->getTracks( upcomingCountLag );
         m_playlistModel->insertOptioned( newUpcoming, Append | Colorize );
+
+        for( int row = 1; row <= newUpcoming.size(); ++row )
+        {
+            m_upcomingRows.append( m_playlistModel->rowCount() - row );
+        }
     }
 }
 
 void DynamicTrackNavigator::removePlayed()
 {
-    DEBUG_BLOCK
-
-
     int playedRow;
     while( m_playedRows.size() > m_playlist->previousCount() )
     {
@@ -81,5 +88,47 @@ void DynamicTrackNavigator::removePlayed()
 
         m_playlistModel->removeRows( playedRow, 1 );
     }
+}
+
+void DynamicTrackNavigator::activeRowChanged()
+{
+    removePlayed();
+}
+
+
+void DynamicTrackNavigator::activeRowExplicitlyChanged()
+{
+    DEBUG_BLOCK
+
+    int activeRow = m_playlistModel->activeRow();
+
+    // move played tracks that follow it into upcomming
+    QMutableListIterator<int> i( m_playedRows );
+    while( i.hasNext() )
+    {
+        debug() << "rearranging played track...";
+        i.next();
+        if( i.value() >= activeRow )
+        {
+            m_upcomingRows.append( i.value() );
+            i.remove();
+        }
+    }
+    
+    // move upcoming that precede it into played
+    QMutableListIterator<int> j( m_upcomingRows );
+    while( j.hasNext() )
+    {
+        debug() << "rearranging upcoming track...";
+        j.next();
+        if( j.value() < activeRow )
+        {
+            m_playedRows.append( j.value() );
+            j.remove();
+        }
+    }
+
+    removePlayed();
+    appendUpcoming();
 }
 

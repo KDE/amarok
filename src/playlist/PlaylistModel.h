@@ -127,30 +127,6 @@ namespace Playlist
     };
 
 
-    /**
-     * This is a list of row indexes that stays synced with the playlist model.
-     * (i.e. the indexes change value when rows are added or removed from the
-     * model.)
-     */
-    class RowList : public QObject, public QList<int>
-    {
-        Q_OBJECT
-
-        public:
-            RowList( Model* );
-
-        private slots:
-            void rowsInserted( const QModelIndex & parent, int start, int end );
-            void rowsRemoved( const QModelIndex & parent, int start, int end );
-            void rowMoved( int from, int to );
-
-        private:
-            Model* m_model;
-    };
-
-
-
-
     class Model : public QAbstractListModel, public Meta::Observer, public Meta::PlaylistObserver, public EngineObserver
     {
         friend class AddTracksCmd;
@@ -266,6 +242,7 @@ namespace Playlist
             void rowsChanged( int startRow );
             void rowMoved( int from, int to );
             void activeRowChanged();
+            void activeRowExplicitlyChanged();
 
         protected:
             virtual void engineNewTrackPlaying();

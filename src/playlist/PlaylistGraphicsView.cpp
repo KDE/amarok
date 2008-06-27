@@ -316,8 +316,10 @@ Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int en
     for ( int i = start; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 
-    shuffleTracks( start );
+    shuffleTracks( start, -1, false );
     scene()->setSceneRect( scene()->itemsBoundingRect() );
+
+    update();
 }
 
 void
@@ -477,7 +479,7 @@ void Playlist::GraphicsView::groupingChanged()
 
 
     shuffleTracks( 0, -1, false );
-   // update();
+    update();
 }
 
 void Playlist::GraphicsView::animationComplete()

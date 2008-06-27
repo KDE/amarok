@@ -297,6 +297,7 @@ set(libplaylist_SRCS
     playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
+    playlist/PlaylistRowList.cpp
     playlist/PlaylistTextItem.cpp
     playlist/PlaylistViewCommon.cpp
     playlist/PlaylistWidget.cpp
