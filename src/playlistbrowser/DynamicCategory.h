@@ -34,7 +34,7 @@ class DynamicCategory : public Amarok::Widget
 {
     Q_OBJECT
     public:
-        DynamicCategory( QWidget* parent );
+        static DynamicCategory* instance();
         ~DynamicCategory();
 
     private slots:
@@ -42,8 +42,12 @@ class DynamicCategory : public Amarok::Widget
 
 
     private:
+        DynamicCategory( QWidget* parent );
+
         void On();
         void Off();
+
+        static DynamicCategory* s_instance;
 
         QPushButton *m_onoffButton;
         QPushButton *m_repopulateButton;

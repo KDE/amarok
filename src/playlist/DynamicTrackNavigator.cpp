@@ -57,24 +57,6 @@ DynamicTrackNavigator::~DynamicTrackNavigator()
 }
 
 
-DynamicTrackNavigator::~DynamicTrackNavigator()
-{
-    QModelIndex index;
-    RowList::iterator i;
-
-    for( i = m_upcomingRows.begin(); i != m_upcomingRows.end(); ++i )
-    {
-        index = m_playlistModel->index( *i, 0 );
-        index.data( ItemRole ).value< Playlist::Item* >()->setState( Item::Normal );
-    }
-
-    for( i = m_playedRows.begin(); i != m_playedRows.end(); ++i )
-    {
-        index = m_playlistModel->index( *i, 0 );
-        index.data( ItemRole ).value< Playlist::Item* >()->setState( Item::Normal );
-    }
-}
-
 
 int
 DynamicTrackNavigator::nextRow()
@@ -125,8 +107,8 @@ void DynamicTrackNavigator::activeRowChanged( int, int )
 
 void DynamicTrackNavigator::activeRowExplicitlyChanged( int from, int to )
 {
-    while( from > to ) setAsPlayed( from-- );
-    while( to > from ) setAsUpcoming( from++ );
+    while( from > to ) setAsUpcoming( from-- );
+    while( from < to ) setAsPlayed( from++ );
 
     removePlayed();
     appendUpcoming();

@@ -30,6 +30,12 @@
 
 namespace PlaylistBrowserNS {
 
+DynamicCategory* DynamicCategory::s_instance = 0;
+
+DynamicCategory* DynamicCategory::instance()
+{
+    if( s_instance == 0 ) s_instance = new DynamicCategory();
+}
 
 DynamicCategory::DynamicCategory( QWidget* parent )
     : Amarok::Widget( parent )
@@ -69,7 +75,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_repopulateButton->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)),
-            The::playlistModel(), SLOT(repopulateSlot()) );
+            this, SIGNAL(repopulate()) );
             
 
     m_presetComboBox = new QComboBox( this );
