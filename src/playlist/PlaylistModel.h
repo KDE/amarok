@@ -159,7 +159,7 @@ namespace Playlist
             //other methods
             void init();
             ///Restore playlist from previous session of Amarok
-            void restoreSession() { insertOptioned( Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) ), Append ); }
+            void restoreSession();
             ///Save M3U of current playlist to a given location
             bool exportPlaylist( const QString &path ) const;
 
@@ -242,8 +242,8 @@ namespace Playlist
             void playlistGroupingChanged();
             void rowsChanged( int startRow );
             void rowMoved( int from, int to );
-            void activeRowChanged();
-            void activeRowExplicitlyChanged();
+            void activeRowChanged( int from, int to );
+            void activeRowExplicitlyChanged( int from, int to );
 
         protected:
             virtual void engineNewTrackPlaying();

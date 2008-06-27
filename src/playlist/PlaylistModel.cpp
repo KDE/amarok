@@ -113,6 +113,15 @@ Playlist::Model::init()
 
 }
 
+void
+Playlist::Model::restoreSession()
+{
+    insertOptioned( Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) ), Append );
+
+    if( typeid(*m_advancer) == typeid(DynamicTrackNavigator) )
+        ((DynamicTrackNavigator*)m_advancer)->appendUpcoming();
+}
+
 Playlist::Model::~Model()
 {
     if( AmarokConfig::savePlaylist() )
@@ -499,11 +508,17 @@ Playlist::Model::playlistModeChanged()
             dm->retrievePlaylist( AmarokConfig::lastDynamicMode() );
         if( !playlist ) playlist = dm->retrieveDefaultPlaylist();
 
+        bool wasNull = m_advancer == 0;
         m_advancer = new DynamicTrackNavigator( this, playlist );
 
-        // FIXME: crashes if dynmaic mode is enabled at startup
-        //((DynamicTrackNavigator*)m_advancer)->appendUpcoming();
-        
+        if( !wasNull )
+        {
+            ((DynamicTrackNavigator*)m_advancer)->appendUpcoming();
+            if( activeRow() < 0 ) play( 0 );
+
+        }
+
+
         return;
     }
 
@@ -567,8 +582,6 @@ Playlist::Model::setActiveRow( int row )
         m_albumGroups[ albumName ]->setCollapsed( row,  false );
         emit( playlistGroupingChanged() );
     }
-
-    emit activeRowChanged();
 }
 
 void
@@ -781,6 +794,8 @@ Playlist::Model::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
 
+    int oldActiveRow = activeRow();
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
     if( track )
@@ -790,6 +805,8 @@ Playlist::Model::engineNewTrackPlaying()
         {
             debug() << "engineNewTrackPlaying:: HIT";
             setActiveRow( m_nextRowCandidate );
+
+            emit activeRowChanged( oldActiveRow, activeRow() );
         }
         else
         {
@@ -803,7 +820,7 @@ Playlist::Model::engineNewTrackPlaying()
                 }
             }
 
-            emit activeRowExplicitlyChanged();
+            emit activeRowExplicitlyChanged( oldActiveRow, activeRow() );
         }
     }
 

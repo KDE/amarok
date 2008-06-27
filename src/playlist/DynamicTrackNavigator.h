@@ -24,7 +24,6 @@
 
 #include "DynamicPlaylist.h"
 #include "PlaylistModel.h"
-#include "PlaylistRowList.h"
 #include "TrackNavigator.h"
 
 class DynamicPlaylist;
@@ -39,22 +38,22 @@ class Model;
 
         public:
             DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr p ) ;
+            ~DynamicTrackNavigator();
             int nextRow();
             
             void appendUpcoming();
 
         private slots:
-            void activeRowChanged();
-            void activeRowExplicitlyChanged();
+            void activeRowChanged( int from, int to );
+            void activeRowExplicitlyChanged( int from, int to );
 
         private:
             void setAsUpcoming( int row );
             void setAsPlayed( int row );
+            void markPlayed();
 
             void removePlayed();
 
-            RowList m_upcomingRows;
-            RowList m_playedRows;
 
             Meta::DynamicPlaylistPtr m_playlist;
     };

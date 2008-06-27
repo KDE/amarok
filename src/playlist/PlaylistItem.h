@@ -33,7 +33,6 @@ namespace Playlist {
             {
                 Normal,
                 NewlyAdded,
-                DynamicUpcoming,
                 DynamicPlayed
             };
 

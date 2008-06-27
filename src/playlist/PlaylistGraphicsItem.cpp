@@ -733,28 +733,28 @@ void Playlist::GraphicsItem::setTextColor( bool active )
     }
     else
     {
+        QColor textColor;
         switch( state )
         {
             // TODO: what should these be really ?
             case Item::NewlyAdded:
-                m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
-                m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
-                break;
-
-            case Item::DynamicUpcoming:
-                m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().link().color() );
-                m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().link().color() );
+                textColor = App::instance()->palette().link().color();
+                m_items->bottomLeftText->setDefaultTextColor( textColor );
+                m_items->bottomRightText->setDefaultTextColor( textColor );
                 break;
 
             case Item::DynamicPlayed:
-                m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().linkVisited().color() );
-                m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().linkVisited().color() );
+                textColor = App::instance()->palette().brush( 
+                        QPalette::Disabled, QPalette::ButtonText ).color();
+                m_items->bottomLeftText->setDefaultTextColor( textColor );
+                m_items->bottomRightText->setDefaultTextColor( textColor );
                 break;
 
             case Item::Normal:
             default:
-                m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().text().color() );
-                m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().text().color() );
+                textColor = App::instance()->palette().text().color();
+                m_items->bottomLeftText->setDefaultTextColor( textColor );
+                m_items->bottomRightText->setDefaultTextColor( textColor );
         }
     }
 }
