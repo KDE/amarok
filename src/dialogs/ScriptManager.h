@@ -164,6 +164,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool /*trackChanged*/ );
         void engineVolumeChanged( int newVolume );
 
+        void StartScriptEngine();
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
@@ -193,15 +194,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         ScriptMap      m_scripts;
         QScriptEngine  m_ScriptEngine;
         QScriptValue   m_Global;
-
-        QScriptValue   m_Window;
-        QScriptValue   m_Dialog;
-        QScriptValue   m_OSD;
-        QScriptValue   m_MediaDevice;
-        QScriptValue   m_InternetService;
-        QScriptValue   m_Engine;
-        QScriptValue   m_Playlist;
-        QScriptValue   m_Collection;
 
 };
 

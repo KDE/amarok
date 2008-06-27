@@ -1,0 +1,94 @@
+/******************************************************************************
+ * Copyright (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or              *
+ * modify it under the terms of the GNU General Public License as             *
+ * published by the Free Software Foundation; either version 2 of             *
+ * the License, or (at your option) any later version.                        *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+ ******************************************************************************/
+
+#include "amarokOSDScript.h"
+
+#include "App.h"
+#include "Osd.h"
+
+#include <QtScript>
+
+namespace Amarok
+{
+    amarokOSDScript::amarokOSDScript( QScriptEngine* ScriptEngine )
+    : QObject( kapp )
+    {
+    }
+
+    amarokOSDScript::~amarokOSDScript()
+    {
+    }
+
+    void amarokOSDScript::showCurrentTrack()
+    {
+        Amarok::OSD::instance()->forceToggleOSD();
+    }
+
+    void amarokOSDScript::show()
+    {
+        Amarok::OSD::instance()->show();
+    }
+
+    void amarokOSDScript::setDuration( int ms )
+    {
+        Amarok::OSD::instance()->setDuration( ms );
+    }
+
+    void amarokOSDScript::setTextColor( const QColor &color )
+    {
+        Amarok::OSD::instance()->setTextColor( color );
+    }
+
+    void amarokOSDScript::setBackgroundColor( const QColor &color )
+    {
+        Amarok::OSD::instance()->setBackgroundColor( color );
+    }
+
+    void amarokOSDScript::setOffset( int y )
+    {
+        Amarok::OSD::instance()->setOffset( y );
+    }
+
+    void amarokOSDScript::setImage( const QImage &image )
+    {
+        Amarok::OSD::instance()->setImage( image );
+    }
+
+    void amarokOSDScript::setScreen( int screen )
+    {
+        Amarok::OSD::instance()->setScreen( screen );
+    }
+
+    void amarokOSDScript::setText( const QString &text )
+    {
+        Amarok::OSD::instance()->setText( text );
+    }
+
+    void amarokOSDScript::setDrawShadow( const bool b )
+    {
+        Amarok::OSD::instance()->setDrawShadow( b );
+    }
+
+    void amarokOSDScript::setRating( const short rating )
+    {
+        Amarok::OSD::instance()->setRating( rating );
+    }
+
+
+}
+
+#include "amarokOSDScript.moc"

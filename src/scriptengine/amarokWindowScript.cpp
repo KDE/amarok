@@ -35,6 +35,15 @@ namespace Amarok
     {
         m_ToolMenu = MainWindow::self()->ToolMenu();
         m_ScriptEngine = ScriptEngine;
+
+        QScriptValue Global;
+        QScriptValue ScriptObject;
+
+        Global = m_ScriptEngine->globalObject();
+        m_Window = Global.property( "Amarok" ).property( "Window" );
+
+        ScriptObject = m_ScriptEngine->newObject();
+        m_Window.setProperty( "Menu", ScriptObject );
     }
 
     amarokWindowScript::~amarokWindowScript()
@@ -51,12 +60,8 @@ namespace Amarok
         m_ToolMenu->addAction( actionCollection()->action( MenuTitle ) );
 
         //todo: menus with the same name will not be allowed
-        QScriptValue Global;
-        QScriptValue Menu;
-        Global = m_ScriptEngine->globalObject();
-        Menu = m_ScriptEngine->newQObject( action );
-        Global.property( "Amarok" ).property( "Window" ).setProperty( MenuTitle, Menu );
-
+        QScriptValue newMenu = m_ScriptEngine->newQObject( action );
+        m_Menu.setProperty( MenuTitle, newMenu );
     }
     void amarokWindowScript::addSeparator()
     {

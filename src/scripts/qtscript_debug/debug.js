@@ -3,7 +3,7 @@ print ( "Amarok Version: " + version );
 
 
 //test engine:
-Amarok.Engine.stop( true );
+//Amarok.Engine.stop( true );
 //Amarok.Engine.Play();
 /*
 //test WindowAction
@@ -24,8 +24,8 @@ Amarok.Window.addMenu( "testMenu2" );
 
 try
 {
-    Amarok.Window.testMenu1.triggered.connect(Menu1Clicked);
-    Amarok.Window.testMenu2.triggered.connect(Menu2Clicked);
+    Amarok.Window.Menu.testMenu1.triggered.connect(Menu1Clicked);
+    Amarok.Window.Menu.testMenu2.triggered.connect(Menu2Clicked);
 }
 catch ( e )
 {
@@ -43,5 +43,3 @@ catch ( e )
 {
     print ( e );
 }
-var StatusBar = Amarok.Statusbar;
-    StatusBar.shortMessage( "Hi there, I'm a script" );

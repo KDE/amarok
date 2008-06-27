@@ -15,34 +15,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_WINDOW_SCRIPT_H
-#define AMAROK_WINDOW_SCRIPT_H
+#ifndef AMAROK_OSD_SCRIPT_H
+#define AMAROK_OSD_SCRIPT_H
 
-#include <KMenu>
-
+#include <QImage>
 #include <QObject>
 #include <QtScript>
 
 namespace Amarok
 {
 
-    class amarokWindowScript : public QObject
+    class amarokOSDScript : public QObject
     {
         Q_OBJECT
 
         public:
-            amarokWindowScript( QScriptEngine* ScriptEngine );
-            ~amarokWindowScript();
+            amarokOSDScript( QScriptEngine* ScriptEngine );
+            ~amarokOSDScript();
 
         public slots:
-            void addMenu( QString MenuTitle );
-            void addSeparator();
-
-        private:
-            KMenu*          m_ToolMenu;
-            QScriptEngine*  m_ScriptEngine;
-            QScriptValue    m_Window;
-            QScriptValue    m_Menu;
+            void showCurrentTrack();
+            void show();
+            void setDuration( int ms );
+            void setTextColor( const QColor &color );
+            void setBackgroundColor( const QColor &color );
+            void setOffset( int y );
+            void setImage( const QImage &image );
+            void setScreen( int screen );
+            void setText( const QString &text );
+            void setDrawShadow( const bool b );
+            void setRating( const short rating ); //what is this?
     };
 }
 

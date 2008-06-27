@@ -33,6 +33,8 @@
 #include "StatusBar.h"
 #include "TheInstances.h"
 #include "Osd.h"
+#include "scriptengine/amarokEngineScript.h"
+#include "scriptengine/amarokOSDScript.h"
 #include "scriptengine/amarokScript.h"
 #include "scriptengine/amarokPlaylistScript.h"
 #include "scriptengine/amarokWindowScript.h"
@@ -201,20 +203,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
 
     //load the wrapper classes
-    m_Global = m_ScriptEngine.newQObject( new Amarok::amarokScript( &m_ScriptEngine ) );
-    m_ScriptEngine.globalObject().setProperty( "Amarok", m_Global );
-
-    QScriptValue ScriptObject;
-    ScriptObject = m_ScriptEngine.newQObject( The::engineController() );
-    m_Global.setProperty( "Engine", ScriptObject );
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokWindowScript( &m_ScriptEngine ) );
-    m_Global.setProperty( "Window", ScriptObject );
-    ScriptObject = m_ScriptEngine.newQObject( Amarok::OSD::instance() );
-    m_Global.setProperty( "OSD", ScriptObject );
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokPlaylistScript( &m_ScriptEngine ) );
-    m_Global.setProperty( "Playlist", ScriptObject );
-    ScriptObject = m_ScriptEngine.newQObject( The::statusBar() );
-    m_Global.setProperty( "Statusbar", ScriptObject );
+    StartScriptEngine();
 }
 
 
@@ -971,6 +960,28 @@ ScriptManager::engineVolumeChanged( int newVolume )
     notifyScripts( "volumeChange: " + QString::number( newVolume ) );
 }
 
+void
+ScriptManager::StartScriptEngine()
+{
+    m_Global = m_ScriptEngine.newQObject( new Amarok::amarokScript( &m_ScriptEngine ) );
+    m_ScriptEngine.globalObject().setProperty( "Amarok", m_Global );
+
+    QScriptValue ScriptObject;
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokEngineScript( &m_ScriptEngine ) );
+    m_Global.setProperty( "Engine", ScriptObject );
+
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokWindowScript( &m_ScriptEngine ) );
+    m_Global.setProperty( "Window", ScriptObject );
+
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokOSDScript( &m_ScriptEngine ) );
+    m_Global.setProperty( "OSD", ScriptObject );
+
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokPlaylistScript( &m_ScriptEngine ) );
+    m_Global.setProperty( "Playlist", ScriptObject );
+
+//    ScriptObject = m_ScriptEngine.newQObject( The::statusBar() );
+//    m_Global.setProperty( "Statusbar", ScriptObject );
+}
 
 #include "ScriptManager.moc"
 

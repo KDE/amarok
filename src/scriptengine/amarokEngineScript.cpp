@@ -15,35 +15,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_WINDOW_SCRIPT_H
-#define AMAROK_WINDOW_SCRIPT_H
+#include "amarokEngineScript.h"
 
-#include <KMenu>
+#include "App.h"
+#include "EngineController.h"
+#include "MainWindow.h"
+#include "TheInstances.h"
 
-#include <QObject>
 #include <QtScript>
 
 namespace Amarok
 {
-
-    class amarokWindowScript : public QObject
+    amarokEngineScript::amarokEngineScript( QScriptEngine* ScriptEngine )
+    : QObject( kapp )
     {
-        Q_OBJECT
 
-        public:
-            amarokWindowScript( QScriptEngine* ScriptEngine );
-            ~amarokWindowScript();
+    }
 
-        public slots:
-            void addMenu( QString MenuTitle );
-            void addSeparator();
+    amarokEngineScript::~amarokEngineScript()
+    {
+    }
 
-        private:
-            KMenu*          m_ToolMenu;
-            QScriptEngine*  m_ScriptEngine;
-            QScriptValue    m_Window;
-            QScriptValue    m_Menu;
-    };
+    void amarokEngineScript::Play()
+    {
+        The::engineController()->play();
+    }
+
+    void amarokEngineScript::Stop( bool forceInstant )
+    {
+        The::engineController()->stop( forceInstant );
+    }
+
+    void amarokEngineScript::Pause()
+    {
+        The::engineController()->pause();
+    }
+
+    void amarokEngineScript::PlayPause()
+    {
+        The::engineController()->playPause();
+    }
+
+    void amarokEngineScript::PlayAudioCD()
+    {
+        MainWindow::self()->playAudioCD();
+    }
+
 }
 
-#endif
+#include "amarokEngineScript.moc"
