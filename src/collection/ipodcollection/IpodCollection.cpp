@@ -26,7 +26,7 @@
 
 #include "amarokconfig.h"
 #include "Debug.h"
-//#include "ipodmediadevice.h"
+
 #include "MediaDeviceCache.h"
 #include "MemoryQueryMaker.h"
 
@@ -36,7 +36,7 @@
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
 
-//#include <QDir>
+
 #include <QStringList>
 
 
@@ -50,62 +50,35 @@ IpodCollectionFactory::IpodCollectionFactory()
 
 IpodCollectionFactory::~IpodCollectionFactory()
 {
-  //    delete m_browser;
+
 }
 
 void
 IpodCollectionFactory::init()
 {
-  DEBUG_BLOCK
+    DEBUG_BLOCK
 
-        Solid::Device device;
-  IpodCollection *coll = 0;
+    IpodCollection *coll = 0;
 
-  /* Refresh cache */
-  MediaDeviceCache::instance()->refreshCache();
-  QStringList udiList = MediaDeviceCache::instance()->getAll();
+    /* Refresh cache */
+    MediaDeviceCache::instance()->refreshCache();
+    QStringList udiList = MediaDeviceCache::instance()->getAll();
 
-  /* poll udi list for ipod */
-  foreach(const QString &udi, udiList )
-      {
-          device = Solid::Device(udi);
-	/* going until we reach a vendor, e.g. Apple */
-          while ( device.isValid() && device.vendor().isEmpty() )
-	  {
-              device = Solid::Device( device.parentUdi() );
-	  }
-
-          debug() << "Device udi: " << udi;
-          debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
-          debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
-	if ( device.isValid() )
+    /* poll udi list for ipod */
+    foreach(const QString &udi, udiList )
         {
-            debug() << "vendor: " << device.vendor() << ", product: " << device.product();
-        }
-
-        /* if iPod found, make collection */
-	if(device.product() == "iPod")
-        {
-            coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi));
-            if ( coll )
+            /* if iPod found, make collection */
+            if( isIpod( udi ) )
             {
-                emit newCollection( coll );
-                debug() << "emitting new ipod collection";
+                coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi));
+                if ( coll )
+                {
+                    emit newCollection( coll );
+                    debug() << "emitting new ipod collection";
+                }
             }
+
         }
-
-      }
-
-
-
-    //    debug() << "IpodCollection found " << udiList;
-
-    /* test ipodcollection constructor */
-    //    coll = new IpodCollection();
-
-  /* deleting manually until implementation ready to be handled by manager */
-//    if(coll)
-//        delete coll;
 
     // connect to device cache
     connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceAdded( const QString& ) ),
@@ -116,9 +89,51 @@ IpodCollectionFactory::init()
     return;
 }
 
+bool
+IpodCollectionFactory::isIpod( const QString &udi )
+{
+
+    Solid::Device device;
+
+    device = Solid::Device(udi);
+    /* going until we reach a vendor, e.g. Apple */
+    while ( device.isValid() && device.vendor().isEmpty() )
+    {
+        device = Solid::Device( device.parentUdi() );
+    }
+
+    debug() << "Device udi: " << udi;
+    debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
+    debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
+    if ( device.isValid() )
+    {
+        debug() << "vendor: " << device.vendor() << ", product: " << device.product();
+    }
+
+    /* if iPod found, return true */
+    return (device.product() == "iPod");
+
+}
+
 void
 IpodCollectionFactory::deviceAdded(  const QString &udi )
 {
+    DEBUG_BLOCK
+
+        debug() << "New device added, testing if Ipod";
+
+    IpodCollection *coll = 0;
+    /* if iPod found, make collection */
+    if( isIpod( udi ) )
+    {
+        coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi));
+        if ( coll )
+        {
+            emit newCollection( coll );
+            debug() << "New Ipod Found, collection created!";
+        }
+    }
+
     return;
 }
 
@@ -150,28 +165,12 @@ IpodCollection::IpodCollection( const QString &mountPoint )
 {
     DEBUG_BLOCK
 
-        m_handler = new Ipod::IpodHandler( this, m_mountPoint, this );
+    m_handler = new Ipod::IpodHandler( this, m_mountPoint, this );
 
     m_handler->printTracks();
     m_handler->parseTracks();
 
     emit collectionReady();
-
-
-
-
-    /* test out using libgpod */
-/*
-    m_itdb = 0;
-    m_itdb = itdb_new();
-    if(m_itdb) {
-        debug() << "Itunes database created!";
-        itdb_free(m_itdb);
-    }
-    else
-        debug() << "Itunes database not created!";
-*/
-
 }
 
 
@@ -196,7 +195,7 @@ IpodCollection::queryMaker()
 QString
 IpodCollection::collectionId() const
 {
-     return "filler";
+     return m_mountPoint;
 }
 
 QString

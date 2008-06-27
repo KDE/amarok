@@ -651,20 +651,20 @@ IpodHandler::parseTracks()
 
         albumPtr->addTrack(  track );
         track->setAlbum(  albumPtr );
-//        debug() << "Track debug 1";
+
         QString artist ( QString::fromUtf8( ipodtrack->artist ) );
         IpodArtistPtr artistPtr;
 
         if (  artistMap.contains(  artist ) )
         {
             artistPtr = IpodArtistPtr::staticCast(  artistMap.value(  artist ) );
-//            debug() << "Track debug 2";
+
         }
         else
         {
             artistPtr = IpodArtistPtr(  new IpodArtist(  artist ) );
             artistMap.insert(  artist,  ArtistPtr::staticCast(  artistPtr ) );
-//            debug() << "Track debug 3";
+
         }
 
         artistPtr->addTrack(  track );
