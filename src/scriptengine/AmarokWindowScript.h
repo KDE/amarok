@@ -41,8 +41,6 @@ namespace Amarok
         private:
             KMenu*          m_ToolMenu;
             QScriptEngine*  m_ScriptEngine;
-            QScriptValue    m_Window;
-            QScriptValue    m_Menu;
     };
 }
 

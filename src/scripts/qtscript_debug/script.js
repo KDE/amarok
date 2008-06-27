@@ -1,14 +1,6 @@
 Importer.load("debug.js");
 
-try
-{
-    print ( "this is script.js" );
-    debug ( "debug!" );
-}
-catch ( e )
-{
-    print ( e );
-}
+print ( "this is script.js" );
 
 //test engine:
 
@@ -17,7 +9,7 @@ print ( ( "Amarok Version: " + version ));
 
 var Engine;
 Engine = Amarok.Engine;
-Engine.stop( true );
+Engine.Stop( true );
 Engine.Play();
 Engine.Seek ( 60*1000 );
 
@@ -38,26 +30,14 @@ Amarok.Window.addSeparator();
 Amarok.Window.addMenu( "testMenu1" );
 Amarok.Window.addMenu( "testMenu2" );
 
-try
-{
-    Amarok.Window.Menu.testMenu1.triggered.connect(Menu1Clicked);
-    Amarok.Window.Menu.testMenu2.triggered.connect(Menu2Clicked);
-}
-catch ( e )
-{
-    print ( e );
-}
+Amarok.Window.testMenu1.triggered.connect(Menu1Clicked);
+Amarok.Window.testMenu2.triggered.connect(Menu2Clicked);
+
 
 var OSD = Amarok.OSD;
 OSD.setText( "Hey there!" );
 OSD.show();
 
-try
-{
-    var StatusBar = Amarok.Window.Statusbar;
-    StatusBar.shortMessage( "Hey there!" );
-}
-catch ( e )
-{
-    print ( e );
-}
+
+var StatusBar = Amarok.Window.Statusbar;
+StatusBar.shortMessage( "Hey there!" );
