@@ -15,24 +15,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "amarokPlaylistScript.h"
+#ifndef AMAROK_WINDOW_SCRIPT_H
+#define AMAROK_WINDOW_SCRIPT_H
 
-#include "App.h"
+#include <KMenu>
 
+#include <QObject>
 #include <QtScript>
 
 namespace Amarok
 {
-    amarokPlaylistScript::amarokPlaylistScript( QScriptEngine* ScriptEngine )
-    : QObject( kapp )
+
+    class AmarokWindowScript : public QObject
     {
+        Q_OBJECT
 
-    }
+        public:
+            AmarokWindowScript( QScriptEngine* ScriptEngine );
+            ~AmarokWindowScript();
 
-    amarokPlaylistScript::~amarokPlaylistScript()
-    {
-    }
+        public slots:
+            void addMenu( QString MenuTitle );
+            void addSeparator();
 
+        private:
+            KMenu*          m_ToolMenu;
+            QScriptEngine*  m_ScriptEngine;
+            QScriptValue    m_Window;
+            QScriptValue    m_Menu;
+    };
 }
 
-#include "amarokPlaylistScript.moc"
+#endif

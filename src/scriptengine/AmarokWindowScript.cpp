@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "amarokWindowScript.h"
+#include "AmarokWindowScript.h"
 
 #include "ActionClasses.h"
 #include "Amarok.h"
@@ -30,7 +30,7 @@
 
 namespace Amarok
 {
-    amarokWindowScript::amarokWindowScript( QScriptEngine *ScriptEngine )
+    AmarokWindowScript::AmarokWindowScript( QScriptEngine *ScriptEngine )
     : QObject( kapp )
     {
         m_ToolMenu = MainWindow::self()->ToolMenu();
@@ -46,11 +46,11 @@ namespace Amarok
         m_Window.setProperty( "Menu", ScriptObject );
     }
 
-    amarokWindowScript::~amarokWindowScript()
+    AmarokWindowScript::~AmarokWindowScript()
     {
     }
 
-    void amarokWindowScript::addMenu( QString MenuTitle )
+    void AmarokWindowScript::addMenu( QString MenuTitle )
     {
         DEBUG_BLOCK
 
@@ -63,11 +63,11 @@ namespace Amarok
         QScriptValue newMenu = m_ScriptEngine->newQObject( action );
         m_Menu.setProperty( MenuTitle, newMenu );
     }
-    void amarokWindowScript::addSeparator()
+    void AmarokWindowScript::addSeparator()
     {
         m_ToolMenu->addSeparator();
     }
 
 }
 
-#include "amarokWindowScript.moc"
+#include "AmarokWindowScript.moc"

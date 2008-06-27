@@ -342,11 +342,11 @@ set(dbus_SRCS
 # SCRIPTING INTERFACE
 #####################################################################
 set (scriptengine_SRCS
-     scriptengine/amarokScript.cpp
-     scriptengine/amarokEngineScript.cpp
-     scriptengine/amarokOSDScript.cpp
-     scriptengine/amarokPlaylistScript.cpp
-     scriptengine/amarokWindowScript.cpp
+     scriptengine/AmarokScript.cpp
+     scriptengine/AmarokEngineScript.cpp
+     scriptengine/AmarokOSDScript.cpp
+     scriptengine/AmarokPlaylistScript.cpp
+     scriptengine/AmarokWindowScript.cpp
 )
 
 #####################################################################

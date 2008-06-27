@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "amarokOSDScript.h"
+#include "AmarokOSDScript.h"
 
 #include "App.h"
 #include "Osd.h"
@@ -24,66 +24,66 @@
 
 namespace Amarok
 {
-    amarokOSDScript::amarokOSDScript( QScriptEngine* ScriptEngine )
+    AmarokOSDScript::AmarokOSDScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
     }
 
-    amarokOSDScript::~amarokOSDScript()
+    AmarokOSDScript::~AmarokOSDScript()
     {
     }
 
-    void amarokOSDScript::showCurrentTrack()
+    void AmarokOSDScript::showCurrentTrack()
     {
         Amarok::OSD::instance()->forceToggleOSD();
     }
 
-    void amarokOSDScript::show()
+    void AmarokOSDScript::show()
     {
         Amarok::OSD::instance()->show();
     }
 
-    void amarokOSDScript::setDuration( int ms )
+    void AmarokOSDScript::setDuration( int ms )
     {
         Amarok::OSD::instance()->setDuration( ms );
     }
 
-    void amarokOSDScript::setTextColor( const QColor &color )
+    void AmarokOSDScript::setTextColor( const QColor &color )
     {
         Amarok::OSD::instance()->setTextColor( color );
     }
 
-    void amarokOSDScript::setBackgroundColor( const QColor &color )
+    void AmarokOSDScript::setBackgroundColor( const QColor &color )
     {
         Amarok::OSD::instance()->setBackgroundColor( color );
     }
 
-    void amarokOSDScript::setOffset( int y )
+    void AmarokOSDScript::setOffset( int y )
     {
         Amarok::OSD::instance()->setOffset( y );
     }
 
-    void amarokOSDScript::setImage( const QImage &image )
+    void AmarokOSDScript::setImage( const QImage &image )
     {
         Amarok::OSD::instance()->setImage( image );
     }
 
-    void amarokOSDScript::setScreen( int screen )
+    void AmarokOSDScript::setScreen( int screen )
     {
         Amarok::OSD::instance()->setScreen( screen );
     }
 
-    void amarokOSDScript::setText( const QString &text )
+    void AmarokOSDScript::setText( const QString &text )
     {
         Amarok::OSD::instance()->setText( text );
     }
 
-    void amarokOSDScript::setDrawShadow( const bool b )
+    void AmarokOSDScript::setDrawShadow( const bool b )
     {
         Amarok::OSD::instance()->setDrawShadow( b );
     }
 
-    void amarokOSDScript::setRating( const short rating )
+    void AmarokOSDScript::setRating( const short rating )
     {
         Amarok::OSD::instance()->setRating( rating );
     }
@@ -91,4 +91,4 @@ namespace Amarok
 
 }
 
-#include "amarokOSDScript.moc"
+#include "AmarokOSDScript.moc"

@@ -4,6 +4,7 @@
  *                      2006 by Alexandre Oliveira <aleprj@gmail.com>      *
  *                      2006 by Martin Ellis <martin.ellis@kdemail.net>    *
  *                      2007 by Leonardo Franchi <lfranchi@gmail.com>      *
+ *                      2008 by Peter ZHOU <peterzhoulei@gmail.com>        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,7 +19,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #define DEBUG_PREFIX "ScriptManager"
@@ -33,11 +34,11 @@
 #include "StatusBar.h"
 #include "TheInstances.h"
 #include "Osd.h"
-#include "scriptengine/amarokEngineScript.h"
-#include "scriptengine/amarokOSDScript.h"
-#include "scriptengine/amarokScript.h"
-#include "scriptengine/amarokPlaylistScript.h"
-#include "scriptengine/amarokWindowScript.h"
+#include "scriptengine/AmarokEngineScript.h"
+#include "scriptengine/AmarokOSDScript.h"
+#include "scriptengine/AmarokScript.h"
+#include "scriptengine/AmarokPlaylistScript.h"
+#include "scriptengine/AmarokWindowScript.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <KAboutApplicationDialog>
@@ -963,20 +964,20 @@ ScriptManager::engineVolumeChanged( int newVolume )
 void
 ScriptManager::StartScriptEngine()
 {
-    m_Global = m_ScriptEngine.newQObject( new Amarok::amarokScript( &m_ScriptEngine ) );
+    m_Global = m_ScriptEngine.newQObject( new Amarok::AmarokScript( &m_ScriptEngine ) );
     m_ScriptEngine.globalObject().setProperty( "Amarok", m_Global );
 
     QScriptValue ScriptObject;
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokEngineScript( &m_ScriptEngine ) );
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokEngineScript( &m_ScriptEngine ) );
     m_Global.setProperty( "Engine", ScriptObject );
 
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokWindowScript( &m_ScriptEngine ) );
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokWindowScript( &m_ScriptEngine ) );
     m_Global.setProperty( "Window", ScriptObject );
 
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokOSDScript( &m_ScriptEngine ) );
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokOSDScript( &m_ScriptEngine ) );
     m_Global.setProperty( "OSD", ScriptObject );
 
-    ScriptObject = m_ScriptEngine.newQObject( new Amarok::amarokPlaylistScript( &m_ScriptEngine ) );
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokPlaylistScript( &m_ScriptEngine ) );
     m_Global.setProperty( "Playlist", ScriptObject );
 
 //    ScriptObject = m_ScriptEngine.newQObject( The::statusBar() );

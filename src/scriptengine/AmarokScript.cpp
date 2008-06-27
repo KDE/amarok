@@ -15,40 +15,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_ENGINE_SCRIPT_H
-#define AMAROK_ENGINE_SCRIPT_H
+#include "AmarokScript.h"
 
-#include <QObject>
+#include "Amarok.h"
+#include "App.h"
+
 #include <QtScript>
 
 namespace Amarok
 {
-
-    class amarokEngineScript : public QObject
+    AmarokScript::AmarokScript( QScriptEngine* ScriptEngine )
+    : QObject( kapp )
     {
-        Q_OBJECT
 
-        public:
-            amarokEngineScript( QScriptEngine* ScriptEngine );
-            ~amarokEngineScript();
+    }
 
-        public slots:
-            void Play();
-            void Stop( bool forceInstant = false );
-            void Pause();
-            void PlayPause();
-            void PlayAudioCD();
-            void Seek( int ms );
-            void SeekRelative( int ms );
-            void SeekForward( int ms = 10000 );
-            void SeekBackward( int ms = 10000 );
-            int  increaseVolume( int ticks = 100/25 );
-            int  decreaseVolume( int ticks = 100/25 );
-            int  setVolume( int percent );
-            void Mute();
-        private:
+    AmarokScript::~AmarokScript()
+    {
+    }
 
-    };
+    QString AmarokScript::Version()
+    {
+        return APP_VERSION;
+    }
+
+    void AmarokScript::Quit()
+    {
+        kapp->closeAllWindows();
+    }
+
+
 }
 
-#endif
+#include "AmarokScript.moc"

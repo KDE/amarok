@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "amarokEngineScript.h"
+#include "AmarokEngineScript.h"
 
 #include "App.h"
 #include "EngineController.h"
@@ -26,81 +26,81 @@
 
 namespace Amarok
 {
-    amarokEngineScript::amarokEngineScript( QScriptEngine* ScriptEngine )
+    AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
 
     }
 
-    amarokEngineScript::~amarokEngineScript()
+    AmarokEngineScript::~AmarokEngineScript()
     {
     }
 
-    void amarokEngineScript::Play()
+    void AmarokEngineScript::Play()
     {
         The::engineController()->play();
     }
 
-    void amarokEngineScript::Stop( bool forceInstant )
+    void AmarokEngineScript::Stop( bool forceInstant )
     {
         The::engineController()->stop( forceInstant );
     }
 
-    void amarokEngineScript::Pause()
+    void AmarokEngineScript::Pause()
     {
         The::engineController()->pause();
     }
 
-    void amarokEngineScript::PlayPause()
+    void AmarokEngineScript::PlayPause()
     {
         The::engineController()->playPause();
     }
 
-    void amarokEngineScript::PlayAudioCD()
+    void AmarokEngineScript::PlayAudioCD()
     {
         MainWindow::self()->playAudioCD();
     }
 
-    void amarokEngineScript::Seek( int ms )
+    void AmarokEngineScript::Seek( int ms )
     {
         The::engineController()->seek( ms );
     }
 
-    void amarokEngineScript::SeekRelative( int ms )
+    void AmarokEngineScript::SeekRelative( int ms )
     {
         The::engineController()->seekRelative( ms );
     }
 
-    void amarokEngineScript::SeekForward( int ms )
+    void AmarokEngineScript::SeekForward( int ms )
     {
         The::engineController()->seekForward( ms );
     }
 
-    void amarokEngineScript::SeekBackward( int ms )
+    void AmarokEngineScript::SeekBackward( int ms )
     {
         The::engineController()->seekBackward( ms );
     }
 
-    int amarokEngineScript::increaseVolume( int ticks )
+    int AmarokEngineScript::increaseVolume( int ticks )
     {
         return The::engineController()->increaseVolume( ticks );
     }
 
-    int amarokEngineScript::decreaseVolume( int ticks )
+    int AmarokEngineScript::decreaseVolume( int ticks )
     {
         return The::engineController()->decreaseVolume( ticks );
     }
 
-    int amarokEngineScript::setVolume( int percent )
+    int AmarokEngineScript::setVolume( int percent )
     {
         return The::engineController()->setVolume( percent );
     }
 
-    void amarokEngineScript::Mute()
+    void AmarokEngineScript::Mute()
     {
         The::engineController()->mute();
     }
 
 }
 
-#include "amarokEngineScript.moc"
+#include "AmarokEngineScript.moc"
