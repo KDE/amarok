@@ -47,6 +47,8 @@ class IpodCollectionFactory : public CollectionFactory
 
     private slots:
 
+    void slotCollectionReady();
+
     void deviceAdded( const QString &udi );
     void deviceRemoved( const QString &udi );
     
@@ -80,7 +82,7 @@ class IpodCollection : public Collection, public MemoryCollection
     Ipod::IpodHandler *m_handler;
     /* test if libgpod works */
     // ipod database
-    Itdb_iTunesDB    *m_itdb;
+//    Itdb_iTunesDB    *m_itdb;
     QString           m_mountPoint;
     
 

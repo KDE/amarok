@@ -85,7 +85,14 @@ IpodCollectionFactory::init()
 
         /* if iPod found, make collection */
 	if(device.product() == "iPod")
+        {
             coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi));
+            if ( coll )
+            {
+                emit newCollection( coll );
+                debug() << "emitting new ipod collection";
+            }
+        }
 
       }
 
@@ -97,8 +104,8 @@ IpodCollectionFactory::init()
     //    coll = new IpodCollection();
 
   /* deleting manually until implementation ready to be handled by manager */
-    if(coll)
-        delete coll;
+//    if(coll)
+//        delete coll;
 
     // connect to device cache
     connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceAdded( const QString& ) ),
@@ -121,6 +128,18 @@ IpodCollectionFactory::deviceRemoved( const QString &udi )
     return;
 }
 
+void
+IpodCollectionFactory::slotCollectionReady()
+{
+    DEBUG_BLOCK
+        IpodCollection *collection = dynamic_cast<IpodCollection*>(  sender() );
+    if (  collection )
+    {
+        debug() << "emitting ipod collection newcollection";
+        emit newCollection(  collection );
+    }
+}
+
 //IpodCollection
 
 IpodCollection::IpodCollection( const QString &mountPoint )
@@ -133,7 +152,13 @@ IpodCollection::IpodCollection( const QString &mountPoint )
 
         m_handler = new Ipod::IpodHandler( this, m_mountPoint, this );
 
-    m_handler->initializeIpod();
+    m_handler->printTracks();
+    m_handler->parseTracks();
+
+    emit collectionReady();
+
+
+
 
     /* test out using libgpod */
 /*
@@ -148,6 +173,8 @@ IpodCollection::IpodCollection( const QString &mountPoint )
 */
 
 }
+
+
 
 IpodCollection::~IpodCollection()
 {
@@ -175,7 +202,7 @@ IpodCollection::collectionId() const
 QString
 IpodCollection::prettyName() const
 {
-    return "prettyfiller";
+    return "Ipod at " + m_mountPoint;
 }
 
 #include "IpodCollection.moc"

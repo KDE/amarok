@@ -22,6 +22,7 @@
 #include <QDir>
 #include <QFile>
 #include <QString>
+#include <QStringList>
 
 using namespace Ipod;
 using namespace Meta;
@@ -32,6 +33,23 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     , m_mountPoint( mountPoint )
 {
 DEBUG_BLOCK
+
+//    initializeIpod();
+
+ GError *err = 0;
+ m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
+ if (  err )
+ {
+     g_error_free( err );
+     if (  m_itdb )
+     {
+         itdb_free(  m_itdb );
+         m_itdb = 0;
+     }
+
+ }
+
+
 }
 
 IpodHandler::~IpodHandler()
@@ -73,6 +91,8 @@ IpodHandler::initializeIpod()
     itdb_playlist_add(m_itdb, podcasts, -1);
     itdb_playlist_add(m_itdb, mpl, 0);
 
+    debug() << "Init 1";
+
     QString realPath;
     if(!pathExists( itunesDir(), &realPath) )
     {
@@ -82,6 +102,8 @@ IpodHandler::initializeIpod()
     if(!dir.exists())
         return false;
 
+    debug() << "Init 2";
+
     if(!pathExists( itunesDir( "Music" ), &realPath) )
     {
         dir.setPath(realPath);
@@ -89,6 +111,8 @@ IpodHandler::initializeIpod()
     }
     if(!dir.exists())
         return false;
+
+    debug() << "Init 3";
 
     if(!pathExists( itunesDir( "iTunes" ), &realPath) )
     {
@@ -98,8 +122,12 @@ IpodHandler::initializeIpod()
     if(!dir.exists())
         return false;
 
+    debug() << "Init 4";
+
     if( !writeITunesDB( false ) )
         return false;
+
+    debug() << "Init 5";
 
 //    The::statusBar()->longMessage(
 //            i18n("Media Device: Initialized iPod mounted at %1", mountPoint() ),
@@ -549,3 +577,137 @@ IpodHandler::openDevice( bool silent )
     return true;
 }
 #endif
+
+/* Currently tests out libgpod capabilities */
+
+void
+IpodHandler::printTracks()
+{
+    DEBUG_BLOCK
+
+        if ( !m_itdb )
+        {
+            debug() << "ITDB NOT INITIALIZED CORRECTLY!";
+            return;
+        }
+
+    debug() << "Musicdir numbers: " << itdb_musicdirs_number( m_itdb );
+
+    GList *cur = m_itdb->tracks;
+    if ( !cur )
+        debug() << "!!WARNING!!: CUR WAS NULL!";
+    int i = 0;
+/* print 5 tracks to debug */
+    for ( i = 0; cur && ( i < 5 ); cur = cur->next, i++ )
+    {
+        Itdb_Track *track = ( Itdb_Track * )cur->data;
+
+        debug() << "track: " << track->artist << " - " << track->album << " - " << track->title;
+        QString path = QString( track->ipod_path ).split( ":" ).join( "/" );
+        path = m_mountPoint + path;
+        debug() << "Path: " << path;
+    }
+}
+
+void
+IpodHandler::parseTracks()
+{
+    DEBUG_BLOCK
+
+    TrackMap trackMap;
+    ArtistMap artistMap;
+    AlbumMap albumMap;
+    GenreMap genreMap;
+    ComposerMap composerMap;
+    YearMap yearMap;
+
+    GList *cur;
+
+    int debugtest = 0;
+/* iterate through tracklist and add to appropriate map */
+    for ( cur = m_itdb->tracks; cur; cur = cur->next )
+    {
+        Itdb_Track *ipodtrack = ( Itdb_Track * )cur->data;
+
+
+
+        QString format( ipodtrack->filetype );
+        IpodTrackPtr track( new IpodTrack( m_memColl, format ) );
+        track->setTitle( QString::fromUtf8( ipodtrack->title ) );
+        track->setLength( ( ipodtrack->tracklen ) / 1000 );
+        track->setTrackNumber( ipodtrack->track_nr );
+        QString album( QString::fromUtf8( ipodtrack->album ) );
+        IpodAlbumPtr albumPtr;
+
+        if ( albumMap.contains( album ) )
+            albumPtr = IpodAlbumPtr::staticCast(  albumMap.value(  album ) );
+
+        else
+        {
+            albumPtr = IpodAlbumPtr(  new IpodAlbum(  album ) );
+            albumMap.insert(  album,  AlbumPtr::staticCast(  albumPtr ) );
+        }
+
+
+        albumPtr->addTrack(  track );
+        track->setAlbum(  albumPtr );
+//        debug() << "Track debug 1";
+        QString artist ( QString::fromUtf8( ipodtrack->artist ) );
+        IpodArtistPtr artistPtr;
+
+        if (  artistMap.contains(  artist ) )
+        {
+            artistPtr = IpodArtistPtr::staticCast(  artistMap.value(  artist ) );
+//            debug() << "Track debug 2";
+        }
+        else
+        {
+            artistPtr = IpodArtistPtr(  new IpodArtist(  artist ) );
+            artistMap.insert(  artist,  ArtistPtr::staticCast(  artistPtr ) );
+//            debug() << "Track debug 3";
+        }
+
+        artistPtr->addTrack(  track );
+        track->setArtist(  artistPtr );
+
+
+        QString year;
+        year = year.setNum( ipodtrack->year );
+        IpodYearPtr yearPtr;
+        if (  yearMap.contains(  year ) )
+            yearPtr = IpodYearPtr::staticCast(  yearMap.value(  year ) );
+        else
+        {
+            yearPtr = IpodYearPtr(  new IpodYear(  year ) );
+            yearMap.insert(  year,  YearPtr::staticCast(  yearPtr ) );
+        }
+        yearPtr->addTrack(  track );
+        track->setYear(  yearPtr );
+
+        QString genre = ipodtrack->genre;
+        IpodGenrePtr genrePtr;
+        if (  genreMap.contains(  genre ) )
+            genrePtr = IpodGenrePtr::staticCast(  genreMap.value(  genre ) );
+        else
+        {
+            genrePtr = IpodGenrePtr(  new IpodGenre(  genre ) );
+            genreMap.insert(  genre,  GenrePtr::staticCast(  genrePtr ) );
+        }
+        genrePtr->addTrack(  track );
+        track->setGenre(  genrePtr );
+
+        QString path = QString( ipodtrack->ipod_path ).split( ":" ).join( "/" );
+        path = m_mountPoint + path;
+        track->setPlayableUrl( path );
+    }
+
+    m_memColl->acquireWriteLock();
+    m_memColl->setTrackMap(  trackMap );
+    m_memColl->setArtistMap(  artistMap );
+    m_memColl->setAlbumMap(  albumMap );
+    m_memColl->setGenreMap(  genreMap );
+    m_memColl->setComposerMap(  composerMap );
+    m_memColl->setYearMap(  yearMap );
+    m_memColl->releaseLock();
+
+}

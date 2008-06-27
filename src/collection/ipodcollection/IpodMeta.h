@@ -116,6 +116,7 @@ class IpodTrack : public Meta::Track
         void setYear( IpodYearPtr year );
 
         void setLength( int length );
+	void setPlayableUrl( QString Url ) { m_playableUrl = Url; }
 
     private:
         IpodCollection *m_collection;

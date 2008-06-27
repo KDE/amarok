@@ -66,6 +66,8 @@ struct PodcastInfo
 	   QString itunesDir( const QString &path = QString() ) const;
 	   QString mountPoint() const { return m_mountPoint; }
 	   bool openDevice( bool silent=false );
+	   void parseTracks();
+	   void printTracks();
 	   void setMountPoint( const QString &mp) { m_mountPoint = mp; }
 	   bool pathExists( const QString &ipodPath, QString *realPath=0 );
 	   bool writeITunesDB( bool threaded=true );
