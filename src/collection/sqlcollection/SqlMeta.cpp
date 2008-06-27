@@ -931,7 +931,7 @@ SqlAlbum::image( int size, bool withShadow )
         return QPixmap( result );
     }
 
-    // Cover fetching runs in another thread. If there is a retreived cover 
+    // Cover fetching runs in another thread. If there is a retrieved cover
     // then updateImage() gets called which updates the cache and alerts the
     // subscribers. We use queueAlbum() because this runs the fetch as a
     // background job and doesn't give an intruding popup asking for confirmation

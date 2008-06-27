@@ -303,7 +303,7 @@ NepomukTrack::score() const
 void
 NepomukTrack::setScore( double newScore )
 {
-    // scores are betweeen 0 and 1?  Xesam wants them to be int so lets
+    // scores are between 0 and 1?  Xesam wants them to be int so lets
     // multiply them by 100 (hope that is enough)
     QMutexLocker locker( &statsMutex );
     int tmpScore =  int( newScore*100 );
