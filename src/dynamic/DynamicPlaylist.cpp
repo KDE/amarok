@@ -51,6 +51,12 @@ DynamicPlaylist::getTracks( int count )
     return tracks;
 }
 
+void
+DynamicPlaylist::recalculate()
+{
+    // do nothing by default
+}
+
 
 // TODO: DynamicModel must know about this, or bad things will happen
 QString DynamicPlaylist::title() const     { return m_title; }

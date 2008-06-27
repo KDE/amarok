@@ -31,10 +31,12 @@ using namespace Meta;
 
 RandomPlaylist::RandomPlaylist() : DynamicPlaylist()
 {
+    m_title = "Random";
 }
 
 RandomPlaylist::RandomPlaylist( Collection* c ) : DynamicPlaylist( c )
 {
+    m_title = "Random";
 }
 
 

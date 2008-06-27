@@ -36,6 +36,8 @@ DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr
             this, SLOT(activeRowChanged(int,int)));
     QObject::connect( m_playlistModel, SIGNAL(activeRowExplicitlyChanged(int,int)),
             this, SLOT(activeRowExplicitlyChanged(int,int)));
+    QObject::connect( m_playlistModel, SIGNAL(repopulateSignal()),
+            this, SLOT(repopulate()) );
 
     markPlayed();
 }
@@ -109,6 +111,19 @@ void DynamicTrackNavigator::activeRowExplicitlyChanged( int from, int to )
 
     removePlayed();
     appendUpcoming();
+}
+
+void DynamicTrackNavigator::repopulate()
+{
+    int start = m_playlistModel->activeRow() + 1;
+    if( start < 0 ) start = 0;
+    int span = m_playlistModel->rowCount() - start;
+
+    m_playlistModel->removeRows( start, span - 1 );
+
+    m_playlist->recalculate();
+    Meta::TrackList newUpcoming = m_playlist->getTracks( span );
+    m_playlistModel->insertOptioned( newUpcoming, Append | Colorize );
 }
 
 void DynamicTrackNavigator::markPlayed()

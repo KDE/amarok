@@ -559,6 +559,13 @@ Playlist::Model::playlistModeChanged()
     }
 }
 
+
+void
+Playlist::Model::repopulateSlot()
+{
+    emit repopulateSignal();
+}
+
 void
 Playlist::Model::setActiveRow( int row )
 {

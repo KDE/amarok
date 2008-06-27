@@ -44,6 +44,8 @@ class DynamicPlaylist : public QSharedData
         virtual Meta::TrackPtr  getTrack() = 0;
         virtual Meta::TrackList getTracks(int);
 
+        virtual void recalculate();
+
         QString title() const;
         int upcomingCount() const;
         int previousCount() const;

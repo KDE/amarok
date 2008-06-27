@@ -17,9 +17,10 @@
 
 #include "DynamicCategory.h"
 
-#include "amarokconfig.h"
 #include "Debug.h"
+#include "DynamicModel.h"
 #include "TheInstances.h"
+#include "amarokconfig.h"
 #include "playlist/PlaylistModel.h"
 
 #include <QVBoxLayout>
@@ -33,6 +34,8 @@ namespace PlaylistBrowserNS {
 DynamicCategory::DynamicCategory( QWidget* parent )
     : Amarok::Widget( parent )
 {
+    bool enabled = AmarokConfig::dynamicMode();
+
     setContentsMargins(0,0,0,0);
 
     QVBoxLayout* vLayout = new QVBoxLayout( this );
@@ -55,18 +58,22 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     
 
     m_onoffButton = new QPushButton( this );
-    m_onoffButton->setText( AmarokConfig::dynamicMode() ? i18n("Off") : i18n("On") );
+    m_onoffButton->setText( enabled ? i18n("Off") : i18n("On") );
     m_onoffButton->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     QObject::connect( m_onoffButton, SIGNAL(clicked(bool)), this, SLOT(OnOff(bool)) );
 
     m_repopulateButton = new QPushButton( this );
     m_repopulateButton->setText( i18n("Repopulate") );
-    m_repopulateButton->setEnabled( false );
+    m_repopulateButton->setEnabled( enabled );
     m_repopulateButton->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
+    QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)),
+            The::playlistModel(), SLOT(repopulateSlot()) );
+            
 
     m_presetComboBox = new QComboBox( this );
+    m_presetComboBox->setModel( DynamicModel::instance() );
     m_presetComboBox->setEnabled( false );
 
     m_dynamicTreeView = new QTreeWidget( this );

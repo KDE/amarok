@@ -76,7 +76,7 @@ PlaylistBrowserNS::DynamicModel::data ( const QModelIndex & i, int role ) const
 {
     if( !i.isValid() ) return QVariant();
 
-    Meta::DynamicPlaylistPtr item = m_playlistList[i.column()];
+    Meta::DynamicPlaylistPtr item = m_playlistList[i.row()];
 
 
     switch( role )

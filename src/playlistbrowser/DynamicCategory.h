@@ -38,7 +38,6 @@ class DynamicCategory : public Amarok::Widget
         ~DynamicCategory();
 
     private slots:
-        // where is the best place for this to live ?
         void OnOff(bool);
 
 
@@ -46,8 +45,6 @@ class DynamicCategory : public Amarok::Widget
         void On();
         void Off();
 
-
-        // Do we need these all to be members ??
         QPushButton *m_onoffButton;
         QPushButton *m_repopulateButton;
 
