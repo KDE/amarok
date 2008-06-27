@@ -36,8 +36,9 @@
 #include "Osd.h"
 #include "scriptengine/AmarokEngineScript.h"
 #include "scriptengine/AmarokOSDScript.h"
-#include "scriptengine/AmarokScript.h"
 #include "scriptengine/AmarokPlaylistScript.h"
+#include "scriptengine/AmarokScript.h"
+#include "scriptengine/AmarokStatusbarScript.h"
 #include "scriptengine/AmarokWindowScript.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
@@ -980,8 +981,8 @@ ScriptManager::StartScriptEngine()
     ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokPlaylistScript( &m_ScriptEngine ) );
     m_Global.setProperty( "Playlist", ScriptObject );
 
-//    ScriptObject = m_ScriptEngine.newQObject( The::statusBar() );
-//    m_Global.setProperty( "Statusbar", ScriptObject );
+    ScriptObject = m_ScriptEngine.newQObject( new Amarok::AmarokStatusbarScript( &m_ScriptEngine ) );
+    m_Global.property( "Window" ).setProperty( "Statusbar", ScriptObject );
 }
 
 #include "ScriptManager.moc"

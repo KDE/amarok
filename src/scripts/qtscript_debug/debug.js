@@ -3,22 +3,24 @@ print ( "Amarok Version: " + version );
 
 
 //test engine:
+/*
 var Engine;
 Engine = Amarok.Engine;
-//Engine.stop( true );
-//Engine.Play();
+Engine.stop( true );
+Engine.Play();
 Engine.Seek ( 60*1000 );
-/*
-//test WindowAction
+*/
 
+//test WindowAction
+/*
 function Menu1Clicked()
 {
-    print ("hey, fuck menu1!");
+    print ("hey, menu1!");
 }
 
 function Menu2Clicked()
 {
-    print ("hey, fuck menu2!");
+    print ("hey, menu2!");
 }
 
 Amarok.Window.addSeparator();
@@ -34,12 +36,15 @@ catch ( e )
 {
     print ( e );
 }
-*/
 var OSD = Amarok.OSD;
+OSD.setText( "Hey there!" );
+OSD.show();
+*/
+
 try
 {
-    OSD.setText( "Hey, fuck OSD!" );
-    OSD.show();
+    var StatusBar = Amarok.Window.StatusBar;
+    StatusBar.shortMessage( "Hey there!" );
 }
 
 catch ( e )
