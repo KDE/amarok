@@ -58,7 +58,7 @@ void SvgRenderJob::run()
 ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_actions( 0 )    
-    , m_minColumnWidth( 400 )
+    , m_minColumnWidth( 300 )
     , m_maxColumnWidth( 500 )
     , m_defaultRowHeight( 150 )
 {
@@ -146,7 +146,7 @@ void ColumnContainment::loadConfig( KConfig& conf )
         if( plugin != QString() )
             Plasma::Containment::addApplet( plugin );
     }
-    recalculate();
+//     recalculate();
 }
 
 QSizeF ColumnContainment::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
@@ -172,7 +172,6 @@ void ColumnContainment::updateSize( QRectF rect )
     
     m_grid->setGeometry( rect );
     setGeometry( rect );
-    flushPendingConstraintsEvents();
     m_currentRows = rect.height() / m_defaultRowHeight;
     m_currentColumns = qMax( (int)(rect.width() / m_minColumnWidth), 1 );
     
@@ -274,14 +273,22 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
         m_appletsPositions[applet] = pos;
         m_appletsIndexes[applet] = m_grid->count();
         m_grid->setColumnMaximumWidth( col, m_maxColumnWidth );
-//         m_grid->setColumnMinimumWidth( col, m_minColumnWidth );
+        m_grid->setColumnMinimumWidth( col, m_minColumnWidth );
+        // HACK: the first applet added isn't created with a appropriate geometry
+        // but after that it is behaving ok 
+        if( m_grid->count() == 0 )
+        {
+           QRect newgeom( 0, 0, m_maxColumnWidth, height );
+           applet->setGeometry( newgeom );
+        }
+        
         for( int i = 0; i < rowSpan; i++ )
         {
             m_gridFreePositions[row + i][col] = false;
             m_grid->setRowMaximumHeight( row + i, m_defaultRowHeight );
             m_grid->setRowPreferredHeight( row + i, height );
         }
-
+        
         m_grid->addItem( applet, row, col, rowSpan, colSpan );
         updateConstraints( Plasma::SizeConstraint );
     }

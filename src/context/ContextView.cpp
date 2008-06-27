@@ -359,9 +359,9 @@ ContextView::addContainment()
     if (corona)
     {
         int size = contextScene()->containments().size();
-        Plasma::Containment *c = corona->addContainment( "context" );        
-        //FIXME: find a better way to resize the containment to a proper size based on the
-        //the CV current area size
+        Plasma::Containment *c = corona->addContainment( "context" );
+        c->setScreen( 0 );
+        c->setFormFactor( Plasma::Planar );
         
         int x = ( rect().width() + 20 ) * ( size % 2 );
         int y = rect().height() * ( size / 2 );
