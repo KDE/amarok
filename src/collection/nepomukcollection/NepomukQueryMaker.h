@@ -103,6 +103,7 @@ class NepomukQueryMaker : public QueryMaker
         Soprano::Client::DBusClient *client;
         NepomukCollection *m_collection;
         QString queryOrderBy;
+        int queryLimit;
 };
 
 #endif /*NEPOMUKQUERYMAKER_H_*/

@@ -103,6 +103,7 @@ NepomukQueryMaker::reset()
         delete worker;   //TODO error handling
     this->resultAsDataPtrs = false;
     queryOrderBy.clear();
+    queryLimit = 0;
     return this;
 }
 
@@ -388,7 +389,8 @@ NepomukQueryMaker::orderBy( qint64 value, bool descending )
 QueryMaker*
 NepomukQueryMaker::orderByRandom()
 {
-    // TODO
+    // lets see if they are random enough
+    queryOrderBy.clear();
     return this;
 }
 
@@ -396,7 +398,7 @@ QueryMaker*
 NepomukQueryMaker::limitMaxResultSize( int size )
 {
     debug() << "limitMaxResultSize()" << endl;
-	Q_UNUSED( size )
+	
     return this;
 }
 
@@ -500,7 +502,8 @@ NepomukQueryMaker::buildQuery() const
             debug() << "unknown query type" << endl;        
        
     }
-
+    if (queryLimit != 0 )
+        query += QString( " LIMIT %1 ").arg( queryLimit );
     return query;
 }
 
@@ -594,7 +597,6 @@ NepomukQueryMaker::doQuery(const QString &query)
                 NepomukTrack *np = new Meta::NepomukTrack( m_collection, bindingSet );
                 tl.append( *( new Meta::TrackPtr ( np ) ) );
             }
-            
             emitProperResult ( TrackPtr, tl );
 
             break;
