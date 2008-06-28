@@ -24,6 +24,8 @@
 
 #include <QObject>
 
+class TrackProvider;
+
 namespace MetaProxy
 {
     class Track : public Meta::Track
@@ -93,8 +95,20 @@ namespace MetaProxy
             virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
             virtual bool operator==( const Meta::Track &track ) const;
+		
+		protected:
+		/**
+		 * allows subclasses to create an instance if trackprovider which will only check the TrackProvider
+		 * passed to lookupTrack(TrackProvider*) for the real track.
+		 */
+		Track( const KUrl &url, bool awaitLookupNotification);
+		/**
+		 * MetaProxy wil check the given trackprovider if it can provide the track for the proxy's url.
+		 */
+		void lookupTrack(TrackProvider *provider);
 
         private:
+			void init( const KUrl &url, bool awaitLookupNotification );
             Private * const d;
     };
 

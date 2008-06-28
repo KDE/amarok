@@ -66,22 +66,37 @@ class EditCapabilityProxy : public Meta::EditCapability
 };
 
 MetaProxy::Track::Track( const KUrl &url )
-    : Meta::Track()
-    , d( new Private() )
+:Meta::Track()
+,d( new Private() )
 {
-    d->url = url;
+	init( url, false );
+}
+
+MetaProxy::Track::Track( const KUrl &url, bool awaitLookupNotification )
+	:Meta::Track()
+	,d( new Private() )
+{
+	init( url, awaitLookupNotification );
+}
+
+void
+MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
+{
+	d->url = url;
     d->proxy = this;
     d->cachedLength = 0;
-
-    QObject::connect( CollectionManager::instance(), SIGNAL( trackProviderAdded( TrackProvider* ) ), d, SLOT( slotNewTrackProvider( TrackProvider* ) ) );
-
+	
+	if( !awaitLookupNotification )
+		QObject::connect( CollectionManager::instance(), SIGNAL( trackProviderAdded( TrackProvider* ) ), d, SLOT( slotNewTrackProvider( TrackProvider* ) ) );
+	
     d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( QPointer<Track::Private>( d ) ) );
     d->artistPtr = Meta::ArtistPtr( new ProxyArtist( QPointer<Track::Private>( d ) ) );
     d->genrePtr = Meta::GenrePtr( new ProxyGenre( QPointer<Track::Private>( d ) ) );
     d->composerPtr = Meta::ComposerPtr( new ProxyComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new ProxyYear( QPointer<Track::Private>( d ) ) );
-
-    QTimer::singleShot( 0, d, SLOT( slotCheckCollectionManager() ) );
+	
+	if( !awaitLookupNotification )
+		QTimer::singleShot( 0, d, SLOT( slotCheckCollectionManager() ) );
 }
 
 MetaProxy::Track::~Track()
@@ -398,6 +413,12 @@ MetaProxy::Track::unsubscribe( Meta::Observer *observer )
 {
     if( observer )
         d->observers.removeAll( observer );
+}
+
+void
+MetaProxy::Track::lookupTrack( TrackProvider *provider )
+{
+	d->slotNewTrackProvider( provider );
 }
 
 bool
