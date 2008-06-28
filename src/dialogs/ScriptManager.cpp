@@ -39,6 +39,7 @@
 #include "scriptengine/AmarokPlaylistScript.h"
 #include "scriptengine/AmarokScript.h"
 #include "scriptengine/AmarokStatusbarScript.h"
+#include "scriptengine/AmarokTrackInfoScript.h"
 #include "scriptengine/AmarokWindowScript.h"
 #include "scriptengine/ScriptImporter.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
@@ -1004,6 +1005,9 @@ ScriptManager::startScriptEngine( QScriptEngine* scriptEngine, KUrl url )
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokEngineScript( scriptEngine ) );
     m_global.setProperty( "Engine", scriptObject );
 
+    scriptObject = scriptEngine->newQObject( new Amarok::AmarokTrackInfoScript( scriptEngine ) );
+    m_global.property("Engine").setProperty( "TrackInfo", scriptObject );
+
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokWindowScript( scriptEngine ) );
     m_global.setProperty( "Window", scriptObject );
 
@@ -1015,6 +1019,9 @@ ScriptManager::startScriptEngine( QScriptEngine* scriptEngine, KUrl url )
 
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokStatusbarScript( scriptEngine ) );
     m_global.property( "Window" ).setProperty( "Statusbar", scriptObject );
+
+    scriptObject = scriptEngine->newQObject( new Amarok::AmarokStatusbarScript( scriptEngine ) );
+    m_global.property( "Window" ).setProperty( "Menu", scriptObject );
 }
 
 

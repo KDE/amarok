@@ -15,41 +15,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_ENGINE_SCRIPT_H
-#define AMAROK_ENGINE_SCRIPT_H
+#include "AmarokTrackInfoScript.h"
 
-#include <QObject>
+#include "App.h"
+#include "EngineController.h"
+#include "TheInstances.h"
+
 #include <QtScript>
 
 namespace Amarok
 {
-
-    class AmarokEngineScript : public QObject
+    AmarokTrackInfoScript::AmarokTrackInfoScript( QScriptEngine* ScriptEngine )
+    : QObject( kapp )
     {
-        Q_OBJECT
+    }
 
-        public:
-            AmarokEngineScript( QScriptEngine* ScriptEngine );
-            ~AmarokEngineScript();
+    AmarokTrackInfoScript::~AmarokTrackInfoScript()
+    {
+    }
 
-        public slots:
-            void Play();
-            void Stop( bool forceInstant = false );
-            void Pause();
-            void PlayPause();
-            void PlayAudioCD();
-            void Seek( int ms );
-            void SeekRelative( int ms );
-            void SeekForward( int ms = 10000 );
-            void SeekBackward( int ms = 10000 );
-            int  increaseVolume( int ticks = 100/25 );
-            int  decreaseVolume( int ticks = 100/25 );
-            int  setVolume( int percent );
-            void Mute();
+    int AmarokTrackInfoScript::getSampleRate()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->sampleRate() : 0;
+    }
 
-        private:
-        //todo: signal needed!
-    };
+    int AmarokTrackInfoScript::getBitrate()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->bitrate() : 0;
+    }
+
+    int AmarokTrackInfoScript::getRating()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->rating() : 0;
+    }
+
+    void AmarokTrackInfoScript::setRating( int Rating )
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        if ( track ) track->setRating( Rating );
+    }
 }
 
-#endif
+#include "AmarokTrackInfoScript.moc"

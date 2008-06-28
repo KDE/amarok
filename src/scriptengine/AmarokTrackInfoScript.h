@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_ENGINE_SCRIPT_H
-#define AMAROK_ENGINE_SCRIPT_H
+#ifndef AMAROK_TRACKINFO_SCRIPT_H
+#define AMAROK_TRACKINFO_SCRIPT_H
 
 #include <QObject>
 #include <QtScript>
@@ -24,31 +24,25 @@
 namespace Amarok
 {
 
-    class AmarokEngineScript : public QObject
+    class AmarokTrackInfoScript : public QObject
     {
         Q_OBJECT
 
         public:
-            AmarokEngineScript( QScriptEngine* ScriptEngine );
-            ~AmarokEngineScript();
+            AmarokTrackInfoScript( QScriptEngine* ScriptEngine );
+            ~AmarokTrackInfoScript();
+
+            Q_PROPERTY( int SampleRate READ getSampleRate );
+            Q_PROPERTY( int Bitrate READ getBitrate );
+            Q_PROPERTY( int Rating WRITE setRating READ getRating );
 
         public slots:
-            void Play();
-            void Stop( bool forceInstant = false );
-            void Pause();
-            void PlayPause();
-            void PlayAudioCD();
-            void Seek( int ms );
-            void SeekRelative( int ms );
-            void SeekForward( int ms = 10000 );
-            void SeekBackward( int ms = 10000 );
-            int  increaseVolume( int ticks = 100/25 );
-            int  decreaseVolume( int ticks = 100/25 );
-            int  setVolume( int percent );
-            void Mute();
 
         private:
-        //todo: signal needed!
+            int getSampleRate();
+            int getBitrate();
+            int getRating();
+            void setRating( int Rating );
     };
 }
 

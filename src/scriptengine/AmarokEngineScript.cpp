@@ -100,7 +100,6 @@ namespace Amarok
     {
         The::engineController()->mute();
     }
-
 }
 
 #include "AmarokEngineScript.moc"
