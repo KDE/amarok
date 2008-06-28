@@ -38,6 +38,7 @@
 #include <Nepomuk/Variant>
 #include <Soprano/Client/DBusClient>
 #include <Soprano/Model>
+#include <Soprano/Util/MutexModel>
 #include <Soprano/QueryResultIterator>
 #include <Soprano/Vocabulary/RDF>
 #include <Soprano/Vocabulary/Xesam>
@@ -541,6 +542,7 @@ NepomukQueryMaker::doQuery(const QString &query)
     //Soprano::Client::DBusClient* client = new Soprano::Client::DBusClient( "org.kde.NepomukStorage" );
 
     Soprano::Model* model = (Soprano::Model*)client->createModel( "main" );
+    model = new Soprano::Util::MutexModel( Soprano::Util::MutexModel::ReadWriteMultiThreading, model );
     
     switch ( queryType )
     {

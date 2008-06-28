@@ -141,7 +141,9 @@ class Meta::WriteStatisticsThread : public QThread
 
         void run()
         {
+            debug() << "about to write statistics" << endl;
             m_track->writeStatistics();
+            debug() << "wrote statistics" <<endl;
         }
     private:
         NepomukTrack *m_track;
@@ -303,13 +305,16 @@ NepomukTrack::score() const
 void
 NepomukTrack::setScore( double newScore )
 {
+    /*
     // scores are between 0 and 1?  Xesam wants them to be int so lets
     // multiply them by 100 (hope that is enough)
+    debug() << "setscore " << endl;
     QMutexLocker locker( &statsMutex );
     int tmpScore =  int( newScore*100 );
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valScore ) ), Nepomuk::Variant( tmpScore ) );
     m_score = newScore;
     notifyObservers();
+    */
 }
 
 int
@@ -383,7 +388,8 @@ NepomukTrack::type() const
 void 
 NepomukTrack::finishedPlaying( double playedFraction )
 {
-    QMutexLocker locker( &statsMutex );
+    debug() << "finshedPlaying " << endl;
+    //QMutexLocker locker( &statsMutex );
     m_lastPlayed = QDateTime::currentDateTime();
     if( m_playCount == 0 )
     {
@@ -398,10 +404,15 @@ NepomukTrack::finishedPlaying( double playedFraction )
 void
 NepomukTrack::writeStatistics()
 {
-    QMutexLocker locker( &statsMutex );
+    DEBUG_BLOCK
+    debug() << "writestatistics " << endl;
+    //QMutexLocker locker( &statsMutex );
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valLastPlayed) ), Nepomuk::Variant( m_lastPlayed ) );
+    debug() << "wrote lastplayed " << endl;
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valPlaycount) ), Nepomuk::Variant( m_playCount ) );
+    debug() << "wrote playcount " << endl;
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valFirstPlayed) ), Nepomuk::Variant( m_firstPlayed ) );
+    debug() << "wrote  firstplayed " << endl;;
 }
 
 // -- GENRE --

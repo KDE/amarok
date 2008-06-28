@@ -27,6 +27,7 @@
 
 #include <QHash>
 #include <QString>
+#include <QTime>
 
 #include <klocale.h>
 #include <KUrl>
@@ -51,7 +52,28 @@ NepomukCollectionFactory::init()
     //if ( Nepomuk::ResourceManager::instance()->init() == 0 )
     if (client->isValid())
     {
-        Collection* collection = new NepomukCollection(client);
+        // find out if Nepomuk is fast enough
+        // (if sesame2 is used or not, it makes no sense to use it with redland
+        // doesn't work and is terrible slow, slows down amarok start when 
+        // songs in playlist)
+        
+        QTime t;
+        t.start();
+        Nepomuk::Resource::Resource( "/home" ).exists();
+        int elapsed = t.elapsed();
+        debug() << "Nepomuk Resource.exists() took " << elapsed <<  " ms" << endl;
+        
+        Collection* collection;
+        if ( elapsed < 50 )
+        {
+            collection = new NepomukCollection( client, true );
+            debug() << "fast  enough full nepomuk collection enabled" << endl;
+        }
+        else
+        {
+            collection = new NepomukCollection( client, false );
+            debug() << "too slow, trackForUrl() disabled" << endl;
+        }
         emit newCollection( collection );
     }
     else
@@ -63,9 +85,10 @@ NepomukCollectionFactory::init()
 
 // NepomukCollection
 
-NepomukCollection::NepomukCollection(Soprano::Client::DBusClient *client)
+NepomukCollection::NepomukCollection(Soprano::Client::DBusClient *client, bool isFast )
     :   Collection() 
     ,   m_client( client )
+    ,   m_isFast( isFast )
 {
     initHashMaps();
 }
@@ -90,7 +113,10 @@ NepomukCollection::collectionId() const
 QString
 NepomukCollection::prettyName() const
 {
-	return i18n("Nepomuk Collection");
+    if ( m_isFast )
+        return i18n("Nepomuk Collection (fast)");
+    else
+        return i18n("Nepomuk Collection (slow, redland?)");
 }
 
 bool
@@ -102,6 +128,12 @@ NepomukCollection::possiblyContainsTrack( const KUrl &url ) const
 Meta::TrackPtr
 NepomukCollection::trackForUrl( const KUrl &url )
 {
+    // it is too slow with redland, makes start of amarok slow
+    // so just return 
+    
+    if ( !m_isFast )
+        return Meta::TrackPtr();
+    
     DEBUG_BLOCK
     if ( Nepomuk::Resource::Resource( url ).exists() )
     {

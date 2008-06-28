@@ -43,7 +43,7 @@ class NepomukCollectionFactory : public CollectionFactory
 class NepomukCollection : public Collection
 {
 public:
-    NepomukCollection( Soprano::Client::DBusClient* );
+    NepomukCollection( Soprano::Client::DBusClient*, bool isFast );
     virtual ~NepomukCollection();
     
     virtual QueryMaker* queryMaker();
@@ -69,6 +69,7 @@ private:
     QHash< qint64, QString > m_nameForValue;
     QHash< qint64, QString > m_urlForValue;
     QStringList m_allNamesAndUrls;
+    bool m_isFast;
 };
 
 #endif /*NEPOMUKCOLLECTION_H_*/
