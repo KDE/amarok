@@ -18,7 +18,6 @@ email                : markey@web.de
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "atomicstring.h"
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
 #include "Debug.h"

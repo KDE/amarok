@@ -23,7 +23,6 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "amarokconfig.h"
-#include "atomicstring.h"
 #include "collection/BlockingQuery.h"
 #include "file/File.h"
 #include "mountpointmanager.h"
