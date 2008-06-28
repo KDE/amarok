@@ -40,10 +40,10 @@ class AMAROK_EXPORT CollectionManager : public QObject
          * defines the status of a collection in respect to global queries (i.e. queries that query all known collections)
          * or the collection browser.
          */
-        enum CollectionStatus { Enabled = 0, //Collection viewable in the browser and queryable
-                                Disabled = 1, //Collection neither viewable nor queryable
-                                OnlyViewable, //Collection will not be queried by CollectionManager::queryMaker
-                                OnlyQueryable}; //Collection wil not show up in the browser, but is queryable by global queries
+        enum CollectionStatus { CollectionEnabled = 0, //Collection viewable in the browser and queryable
+                                CollectionDisabled = 1, //Collection neither viewable nor queryable
+                                CollectionOnlyViewable, //Collection will not be queried by CollectionManager::queryMaker
+                                CollectionOnlyQueryable}; //Collection wil not show up in the browser, but is queryable by global queries
 
         static CollectionManager * instance();
 

@@ -242,7 +242,7 @@ void AmpacheService::authenticationComplete(KJob * job)
         m_authenticated = true;
 
         m_collection = new AmpacheServiceCollection( this, m_server, m_sessionId );
-        CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::Disabled );
+        CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
         QList<int> levels;
         levels << CategoryId::Artist << CategoryId::Album;
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );

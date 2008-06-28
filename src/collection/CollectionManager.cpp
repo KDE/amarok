@@ -171,7 +171,7 @@ CollectionManager::queryMaker() const
     QList<Collection*> colls;
     foreach( const CollectionPair &pair, d->collections )
     {
-        if( pair.second == Enabled || pair.second == OnlyQueryable )
+        if( pair.second == CollectionEnabled || pair.second == CollectionOnlyQueryable )
         {
             colls << pair.first;
         }
@@ -192,7 +192,7 @@ CollectionManager::slotNewCollection( Collection* newCollection )
     const QString &value = KGlobal::config()->group( "CollectionManager" ).readEntry( newCollection->collectionId() );
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     CollectionStatus status;
-    enumValue == -1 ? status = Enabled : status = (CollectionStatus) enumValue;
+    enumValue == -1 ? status = CollectionEnabled : status = (CollectionStatus) enumValue;
     CollectionPair pair( newCollection, status );
     d->collections.append( pair );
     d->managedCollections.append( newCollection );
@@ -218,7 +218,7 @@ CollectionManager::slotNewCollection( Collection* newCollection )
             d->primaryCollection = newCollection;
         }
     }
-    if( status == Enabled || status == OnlyViewable )
+    if( status == CollectionEnabled || status == CollectionOnlyViewable )
     {
         emit collectionAdded( newCollection );
     }
@@ -267,7 +267,7 @@ CollectionManager::slotCollectionChanged()
     if( collection )
     {
         CollectionStatus status = collectionStatus( collection->collectionId() );
-        if( status == Enabled || status == OnlyViewable )
+        if( status == CollectionEnabled || status == CollectionOnlyViewable )
         {
             emit collectionDataChanged( collection );
         }
@@ -280,7 +280,7 @@ CollectionManager::collections() const
     QList<Collection*> result;
     foreach( const CollectionPair &pair, d->collections )
     {
-        if( pair.second == Enabled || pair.second == OnlyViewable )
+        if( pair.second == CollectionEnabled || pair.second == CollectionOnlyViewable )
         {
             result << pair.first;
         }
@@ -405,7 +405,7 @@ CollectionManager::addUnmanagedCollection( Collection *newCollection, Collection
         CollectionPair pair( newCollection, status );
         d->collections.append( pair );
         d->trackProviders.append( newCollection );
-        if( status == Enabled || status == OnlyViewable )
+        if( status == CollectionEnabled || status == CollectionOnlyViewable )
         {
             emit collectionAdded( newCollection );
         }
@@ -433,13 +433,13 @@ CollectionManager::setCollectionStatus( const QString &collectionId, CollectionS
     {
         if( pair.first->collectionId() == collectionId )
         {
-            if( ( pair.second == Enabled || pair.second == OnlyViewable ) &&
-                ( status == Disabled || status == OnlyQueryable ) )
+            if( ( pair.second == CollectionEnabled || pair.second == CollectionOnlyViewable ) &&
+                ( status == CollectionDisabled || status == CollectionOnlyQueryable ) )
             {
                 emit collectionRemoved( collectionId );
             }
-            else if( ( pair.second == Disabled || pair.second == OnlyQueryable ) &&
-                     ( status == Enabled || status == OnlyViewable ) )
+            else if( ( pair.second == CollectionDisabled || pair.second == CollectionOnlyQueryable ) &&
+                     ( status == CollectionEnabled || status == CollectionOnlyViewable ) )
             {
                 emit collectionAdded( pair.first );
             }
@@ -463,7 +463,7 @@ CollectionManager::collectionStatus( const QString &collectionId ) const
             return pair.second;
         }
     }
-    return Disabled;
+    return CollectionDisabled;
 }
 
 QHash<Collection*, CollectionManager::CollectionStatus>
