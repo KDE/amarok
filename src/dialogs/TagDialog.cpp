@@ -730,7 +730,7 @@ void TagDialog::readTags()
 {
     bool local = m_currentTrack->playableUrl().isLocalFile();
 
-    setWindowTitle( KDialog::makeStandardCaption( i18n("Track Information: %1 by %2",
+    setWindowTitle( KDialog::makeStandardCaption( i18n("Track Details: %1 by %2",
                     m_currentTrack->name(),  m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString() ) ) );
 
     QString niceTitle;
