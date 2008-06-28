@@ -334,11 +334,15 @@ EngineController::playPause() //SLOT
 void
 EngineController::seek( int ms ) //SLOT
 {
+    DEBUG_BLOCK
+
     if( m_media->isSeekable() )
     {
         m_media->seek( static_cast<qint64>( ms ) );
         trackPositionChangedNotify( ms, true ); /* User seek */
     }
+    else
+        debug() << "Stream is not seekable.";
 }
 
 
