@@ -120,7 +120,6 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     setDefaultButton( Close );
     showButtonSeparator( true );
 
-
     s_instance = this;
 
     kapp->setTopWidget( this );
@@ -164,7 +163,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_scoreCategory    ->setIcon( 0, SmallIcon( "folder-amarok" ) );
     m_transcodeCategory->setIcon( 0, SmallIcon( "folder-amarok" ) );
     m_contextCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
-    m_servicesCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
+    m_servicesCategory ->setIcon( 0, SmallIcon( "folder-amarok" ) );
 
 
     // Restore the open/closed state of the category items
@@ -214,8 +213,10 @@ ScriptManager::~ScriptManager()
     DEBUG_BLOCK
 
     QStringList runningScripts;
-    foreach( const QString &key, m_scripts.keys() ) {
-        if( m_scripts[key].process ) {
+    foreach( const QString &key, m_scripts.keys() )
+    {
+        if( m_scripts[key].process )
+        {
             terminateProcess( &m_scripts[key].process );
             runningScripts << key;
         }
@@ -274,13 +275,6 @@ ScriptManager::listRunningScripts()
     return runningScripts;
 }
 
-/*
-void
-ScriptManager::customMenuClicked( const QString& message )
-{
-    notifyScripts( "customMenuClicked: " + message );
-}
-*/
 
 QString
 ScriptManager::specForScript( const QString& name )
@@ -360,7 +354,8 @@ ScriptManager::findScripts() //SLOT
     const QStringList runningScripts = config.readEntry( "Running Scripts", QStringList() );
 
     foreach( const QString &str, runningScripts )
-        if( m_scripts.contains( str ) ) {
+        if( m_scripts.contains( str ) )
+        {
             m_gui->treeWidget->setCurrentItem( m_scripts[str].li );
             slotRunScript();
         }
@@ -379,7 +374,8 @@ ScriptManager::slotCurrentChanged( QTreeWidgetItem* item )
                             item == m_transcodeCategory ||
                             item == m_servicesCategory;
 
-    if( item && !isCategory ) {
+    if( item && !isCategory )
+    {
         const QString name = item->text( 0 );
         m_gui->uninstallButton->setEnabled( true );
         m_gui->runButton->setEnabled( !m_scripts[name].process );
@@ -387,7 +383,8 @@ ScriptManager::slotCurrentChanged( QTreeWidgetItem* item )
         m_gui->configureButton->setEnabled( m_scripts[name].process );
         m_gui->aboutButton->setEnabled( true );
     }
-    else {
+    else
+    {
         m_gui->uninstallButton->setEnabled( false );
         m_gui->runButton->setEnabled( false );
         m_gui->stopButton->setEnabled( false );
@@ -402,7 +399,8 @@ ScriptManager::slotInstallScript( const QString& path )
 {
     QString _path = path;
 
-    if( path.isNull() ) {
+    if( path.isNull() )
+    {
         _path = KFileDialog::getOpenFileName( KUrl(),
             "*.amarokscript.tar *.amarokscript.tar.bz2 *.amarokscript.tar.gz|"
             + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)" )
@@ -411,7 +409,8 @@ ScriptManager::slotInstallScript( const QString& path )
     }
 
     KTar archive( _path );
-    if( !archive.open( QIODevice::ReadOnly ) ) {
+    if( !archive.open( QIODevice::ReadOnly ) )
+    {
         KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
         return false;
     }
@@ -421,7 +420,8 @@ ScriptManager::slotInstallScript( const QString& path )
 
     // Prevent installing a script that's already installed
     const QString scriptFolder = destination + archiveDir->entries().first();
-    if( QFile::exists( scriptFolder ) ) {
+    if( QFile::exists( scriptFolder ) )
+    {
         KMessageBox::error( 0, i18n( "A script with the name '%1' is already installed. "
                                      "Please uninstall it first.", archiveDir->entries().first() ) );
         return false;
@@ -431,11 +431,13 @@ ScriptManager::slotInstallScript( const QString& path )
     m_installSuccess = false;
     recurseInstall( archiveDir, destination );
 
-    if( m_installSuccess ) {
+    if( m_installSuccess )
+    {
         KMessageBox::information( 0, i18n( "Script successfully installed." ) );
         return true;
     }
-    else {
+    else
+    {
         KMessageBox::sorry( 0, i18n( "<p>Script installation failed.</p>"
                                      "<p>The package did not contain an executable file. "
                                      "Please inform the package maintainer about this error.</p>" ) );
@@ -453,17 +455,21 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 {
     const QStringList entries = archiveDir->entries();
 
-    foreach( const QString &entry, entries ) {
+    foreach( const QString &entry, entries )
+    {
         const KArchiveEntry* const archEntry = archiveDir->entry( entry );
 
-        if( archEntry->isDirectory() ) {
+        if( archEntry->isDirectory() )
+        {
             const KArchiveDirectory* const dir = static_cast<const KArchiveDirectory*>( archEntry );
             recurseInstall( dir, destination + entry + '/' );
         }
-        else {
+        else
+        {
             ::chmod( QFile::encodeName( destination + entry ), archEntry->permissions() );
 
-            if( QFileInfo( destination + entry ).isExecutable() ) {
+            if( QFileInfo( destination + entry ).isExecutable() )
+            {
                 loadScript( destination + entry );
                 m_installSuccess = true;
             }
@@ -499,7 +505,8 @@ ScriptManager::slotUninstallScript()
 
     // Delete directory recursively
     const KUrl url = KUrl( directory );
-    if( !KIO::NetAccess::del( url, 0 ) ) {
+    if( !KIO::NetAccess::del( url, 0 ) )
+    {
         KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this script.</p><p>The ScriptManager can only uninstall scripts which have been installed as packages.</p>" ) );
         return;
     }
@@ -512,7 +519,8 @@ ScriptManager::slotUninstallScript()
             keys << key;
 
     // Terminate script processes, remove entries from script list
-    foreach( const QString &key, keys ) {
+    foreach( const QString &key, keys )
+    {
         delete m_scripts[key].li;
         terminateProcess( &m_scripts[key].process );
         m_scripts.remove( key );
@@ -523,19 +531,22 @@ ScriptManager::slotUninstallScript()
 bool
 ScriptManager::slotRunScript( bool silent )
 {
-    if( !m_gui->runButton->isEnabled() ) return false;
+    if( !m_gui->runButton->isEnabled() )
+        return false;
 
     QTreeWidgetItem* const li = m_gui->treeWidget->currentItem();
     const QString name = li->text( 0 );
 
-    if( m_scripts[name].type == "lyrics" && lyricsScriptRunning() != QString::null ) {
+    if( m_scripts[name].type == "lyrics" && !lyricsScriptRunning().isEmpty() )
+    {
         if( !silent )
             KMessageBox::sorry( 0, i18n( "Another lyrics script is already running. "
                                          "You may only run one lyrics script at a time." ) );
         return false;
     }
 
-    if( m_scripts[name].type == "transcode" && transcodeScriptRunning() != QString::null ) {
+    if( m_scripts[name].type == "transcode" && !transcodeScriptRunning().isEmpty() )
+    {
         if( !silent )
             KMessageBox::sorry( 0, i18n( "Another transcode script is already running. "
                                          "You may only run one transcode script at a time." ) );
@@ -543,7 +554,8 @@ ScriptManager::slotRunScript( bool silent )
     }
 
     // Don't start a script twice
-    if( m_scripts[name].process ) return false;
+    if( m_scripts[name].process )
+        return false;
 
     AmarokProcIO* script = new AmarokProcIO();
     script->setOutputChannelMode( AmarokProcIO::SeparateChannels );
@@ -556,8 +568,8 @@ ScriptManager::slotRunScript( bool silent )
 //    connect( script, SIGNAL( processExited( AmarokProcess* ) ), SLOT( scriptFinished( AmarokProcess* ) ) );
 
     //load the script
-        //load the wrapper classes
-    StartScriptEngine( m_scripts[name].engine, url );
+    //load the wrapper classes
+    startScriptEngine( m_scripts[name].engine, url );
 
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
@@ -614,9 +626,8 @@ ScriptManager::slotStopScript()
 
     li->setIcon( 0, QPixmap() );
 
-    if( m_scripts.value( name ).type == "service" ) {
+    if( m_scripts.value( name ).type == "service" )
         The::scriptableServiceManager()->removeRunningScript( name );
-    }
 }
 
 
@@ -640,7 +651,8 @@ ScriptManager::slotAboutScript()
     QFile readme( m_scripts[name].url.directory( KUrl::AppendTrailingSlash ) + "README" );
     QFile license( m_scripts[name].url.directory( KUrl::AppendTrailingSlash) + "COPYING" );
 
-    if( !readme.open( QIODevice::ReadOnly ) ) {
+    if( !readme.open( QIODevice::ReadOnly ) )
+    {
         KMessageBox::sorry( 0, i18n( "There is no information available for this script." ) );
         return;
     }
@@ -668,10 +680,11 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
                             item == m_lyricsCategory ||
                             item == m_scoreCategory ||
                             item == m_transcodeCategory ||
-			                item == m_contextCategory ||
+                            item == m_contextCategory ||
                             item == m_servicesCategory;
 
-    if( !item || isCategory ) return;
+    if( !item || isCategory )
+        return;
 
     // Find the script entry in our map
     QString key;
@@ -759,7 +772,8 @@ ScriptManager::scriptFinished( AmarokProcess* process ) //SLOT
 
     // FIXME The logic in this check doesn't make sense
     // Check if there was an error on exit
-    if( process->error() != AmarokProcess::Crashed && process->exitStatus() != 0 ) {
+    if( process->error() != AmarokProcess::Crashed && process->exitStatus() != 0 )
+    {
         KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2", it.key(), process->exitStatus() ),it.value().log );
         warning() << "Script exited with error status: " << process->exitStatus();
     }
@@ -809,11 +823,11 @@ ScriptManager::ensureScoreScriptRunning()
 
     // FIXME this code sometimes causes a crash:
     //
-    //#26 0xb5d91b24 in QTreeWidget::setCurrentItem (this=0x8757538, item=0x8941fe0) at itemviews/qtreewidget.cpp:2749                   
-    //#27 0xb78b78e7 in ScriptManager::runScript (this=0x870bc00, name=@0x8710484, silent=true)                                          
-    //    at /var/tmp/paludis/media-sound-amarok-scm/work/amarok/amarok/src/dialogs/scriptmanager.cpp:236                                
-    //#28 0xb78b7a94 in ScriptManager::ensureScoreScriptRunning (this=0x870bc00)                                                         
-    //    at /var/tmp/paludis/media-sound-amarok-scm/work/amarok/amarok/src/dialogs/scriptmanager.cpp:798                                
+    //#26 0xb5d91b24 in QTreeWidget::setCurrentItem (this=0x8757538, item=0x8941fe0) at itemviews/qtreewidget.cpp:2749
+    //#27 0xb78b78e7 in ScriptManager::runScript (this=0x870bc00, name=@0x8710484, silent=true)
+    //    at /var/tmp/paludis/media-sound-amarok-scm/work/amarok/amarok/src/dialogs/scriptmanager.cpp:236
+    //#28 0xb78b7a94 in ScriptManager::ensureScoreScriptRunning (this=0x870bc00)
+    //    at /var/tmp/paludis/media-sound-amarok-scm/work/amarok/amarok/src/dialogs/scriptmanager.cpp:798
 
 #if 0
     QString s = scoreScriptRunning();
@@ -841,7 +855,8 @@ ScriptManager::ensureScoreScriptRunning()
 void
 ScriptManager::terminateProcess( AmarokProcIO** proc )
 {
-    if( *proc ) {
+    if( *proc )
+    {
         (*proc)->kill(); // Sends SIGTERM
 
         delete *proc;
@@ -863,7 +878,8 @@ ScriptManager::notifyScripts( const QString& message )
 void
 ScriptManager::loadScript( const QString& path )
 {
-    if( !path.isEmpty() ) {
+    if( !path.isEmpty() )
+    {
         const KUrl url = KUrl( path );
         QString name = url.fileName();
         QString type = "generic";
@@ -872,36 +888,44 @@ ScriptManager::loadScript( const QString& path )
         QFileInfo info( path );
         QTreeWidgetItem* li = 0;
         const QString specPath = info.path() + '/' + info.completeBaseName() + ".spec";
-        if( QFile::exists( specPath ) ) {
+        if( QFile::exists( specPath ) )
+        {
             QSettings spec( specPath, QSettings::IniFormat );
             if( spec.contains( "name" ) )
                 name = spec.value( "name" ).toString();
-            if( spec.contains( "type" ) ) {
+            if( spec.contains( "type" ) )
+            {
                 type = spec.value( "type" ).toString();
-                if( type == "lyrics" ) {
+                if( type == "lyrics" )
+                {
                     li = new QTreeWidgetItem( m_lyricsCategory );
                     li->setText( 0, name );
                 }
-                if( type == "transcode" ) {
+                if( type == "transcode" )
+                {
                     li = new QTreeWidgetItem( m_transcodeCategory );
                     li->setText( 0, name );
                 }
-                if( type == "score" ) {
+                if( type == "score" )
+                {
                     li = new QTreeWidgetItem( m_scoreCategory );
                     li->setText( 0, name );
                 }
-                if( type == "service" ) {
+                if( type == "service" )
+                {
                     li = new QTreeWidgetItem( m_servicesCategory );
                     li->setText( 0, name );
                 }
-                if( type == "context" ) {
+                if( type == "context" )
+                {
                     li = new QTreeWidgetItem( m_contextCategory );
                         li->setText( 0, name );
                 }
             }
         }
 
-        if( !li ) {
+        if( !li )
+        {
             li = new QTreeWidgetItem( m_generalCategory );
             li->setText( 0, name );
         }
@@ -967,30 +991,30 @@ ScriptManager::engineVolumeChanged( int newVolume )
 }
 */
 void
-ScriptManager::StartScriptEngine( QScriptEngine* ScriptEngine, KUrl url )
+ScriptManager::startScriptEngine( QScriptEngine* scriptEngine, KUrl url )
 {
-    QScriptValue ScriptObject;
+    QScriptValue scriptObject;
 
-    ScriptObject = ScriptEngine->newQObject( new Amarok::ScriptImporter( ScriptEngine, url ) );
-    ScriptEngine->globalObject().setProperty( "Importer", ScriptObject );
+    scriptObject = scriptEngine->newQObject( new Amarok::ScriptImporter( scriptEngine, url ) );
+    scriptEngine->globalObject().setProperty( "Importer", scriptObject );
 
-    m_Global = ScriptEngine->newQObject( new Amarok::AmarokScript( ScriptEngine ) );
-    ScriptEngine->globalObject().setProperty( "Amarok", m_Global );
+    m_global = scriptEngine->newQObject( new Amarok::AmarokScript( scriptEngine ) );
+    scriptEngine->globalObject().setProperty( "Amarok", m_global );
 
-    ScriptObject = ScriptEngine->newQObject( new Amarok::AmarokEngineScript( ScriptEngine ) );
-    m_Global.setProperty( "Engine", ScriptObject );
+    scriptObject = scriptEngine->newQObject( new Amarok::AmarokEngineScript( scriptEngine ) );
+    m_global.setProperty( "Engine", scriptObject );
 
-    ScriptObject = ScriptEngine->newQObject( new Amarok::AmarokWindowScript( ScriptEngine ) );
-    m_Global.setProperty( "Window", ScriptObject );
+    scriptObject = scriptEngine->newQObject( new Amarok::AmarokWindowScript( scriptEngine ) );
+    m_global.setProperty( "Window", scriptObject );
 
-    ScriptObject = ScriptEngine->newQObject( new Amarok::AmarokOSDScript( ScriptEngine ) );
-    m_Global.setProperty( "OSD", ScriptObject );
+    scriptObject = scriptEngine->newQObject( new Amarok::AmarokOSDScript( scriptEngine ) );
+    m_global.setProperty( "OSD", scriptObject );
 
-    ScriptObject = ScriptEngine->newQObject( new Amarok::AmarokPlaylistScript( ScriptEngine ) );
-    m_Global.setProperty( "Playlist", ScriptObject );
+    scriptObject = scriptEngine->newQObject( new Amarok::AmarokPlaylistScript( scriptEngine ) );
+    m_global.setProperty( "Playlist", scriptObject );
 
-    ScriptObject = ScriptEngine->newQObject( new Amarok::AmarokStatusbarScript( ScriptEngine ) );
-    m_Global.property( "Window" ).setProperty( "Statusbar", ScriptObject );
+    scriptObject = scriptEngine->newQObject( new Amarok::AmarokStatusbarScript( scriptEngine ) );
+    m_global.property( "Window" ).setProperty( "Statusbar", scriptObject );
 }
 
 

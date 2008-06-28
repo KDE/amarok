@@ -56,8 +56,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 {
     Q_OBJECT
 
-//     friend class AmarokScriptNewStuff;
-
     public:
         explicit ScriptManager( QWidget *parent = 0, const char *name = 0 );
         virtual ~ScriptManager();
@@ -80,9 +78,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         /** Returns a list of all currently running scripts. Used by the DCOP handler. */
         QStringList listRunningScripts();
-
-       /** Custom Menu Click */
-//       void customMenuClicked( const QString& message );
 
        /** Returns the path of the spec file of the given script */
        QString specForScript( const QString& name );
@@ -164,7 +159,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 //        void engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool /*trackChanged*/ );
 //        void engineVolumeChanged( int newVolume );
 
-        void StartScriptEngine( QScriptEngine* ScriptEngine, KUrl url);
+        void startScriptEngine( QScriptEngine* scriptEngine, KUrl url);
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
@@ -193,7 +188,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         typedef QMap<QString, ScriptItem> ScriptMap;
 
         ScriptMap      m_scripts;
-        QScriptValue   m_Global;
+        QScriptValue   m_global;
 
 };
 
