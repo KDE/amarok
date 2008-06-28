@@ -333,6 +333,49 @@ Mp3tunesLocker::tracksWithArtistId ( int artistId ) const
     return tracksQList;
 }
 
+QList<Mp3tunesLockerTrack>
+Mp3tunesLocker::tracksWithFileKeys( QStringList filekeys ) const
+{
+    QString keys = QString();
+    foreach( QString key, filekeys )
+    {
+       keys.append(key);
+       keys.append(",");
+    }
+    keys.chop(1);
+    char* c_keys = convertToChar ( keys );
+
+    mp3tunes_locker_track_list_t *tracks_list;
+    mp3tunes_locker_list_item_t *track_item;
+    mp3tunes_locker_track_t *track;
+    QList<Mp3tunesLockerTrack> tracksQList; // to be returned
+
+    mp3tunes_locker_tracks_with_file_key ( m_locker, c_keys, &tracks_list );
+
+     while ( track_item != 0 )
+     {
+         track = ( mp3tunes_locker_track_t* ) track_item->value;
+         Mp3tunesLockerTrack trackWrapped ( track );
+         tracksQList.append ( trackWrapped );
+
+         track_item = track_item->next;
+     }
+     mp3tunes_locker_track_list_deinit ( &tracks_list );
+     return tracksQList;
+}
+
+Mp3tunesLockerTrack
+Mp3tunesLocker::trackWithFileKey( const QString &filekey ) const
+{
+    char* c_key = convertToChar ( filekey );
+
+    mp3tunes_locker_track_t *track;
+    mp3tunes_locker_track_with_file_key ( m_locker, c_key, &track );
+
+    Mp3tunesLockerTrack trackWrapped ( track );
+    return trackWrapped;
+}
+
 bool
 Mp3tunesLocker::search ( Mp3tunesSearchResult &container, const QString &query ) const
 {
@@ -432,11 +475,11 @@ Mp3tunesLocker::fileKey ( const QString &path )
 
     return QString ( file_key );
 }
-bool 
+bool
 Mp3tunesLocker::lockerLoad( const QString &url )
 {
     char* c_url = convertToChar( url );
-    
+
     int res = mp3tunes_locker_load_track ( m_locker, c_url);
     if ( res == 0)
         return true;

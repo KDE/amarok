@@ -152,6 +152,22 @@ class Mp3tunesLocker {
         QList<Mp3tunesLockerTrack> tracksWithArtistId( int artistId ) const;
 
         /**
+         * Get a list of tracks from a list of filekeys.
+         * @param filekeys a list of filekeys
+         * @return a list of tracks that match the supplied filekeys. The returned list
+         *         of tracks be in the same order as the supplied filekeys.
+         *         Might return an empty List.
+         */
+        QList<Mp3tunesLockerTrack> tracksWithFileKeys( QStringList filekeys ) const;
+
+        /**
+         * Get a single track from a single filekey.
+         * @param filekey the filekey to match to a track
+         * @return the track that matches the filekey.
+         */
+        Mp3tunesLockerTrack trackWithFileKey( const QString &filekey ) const;
+
+        /**
          * Searches the Locker for tracks, albums, and/or artists.
          * Which type it searches depends on the Mp3tunesSearchResult's
          * searchFor passed to it.
@@ -187,15 +203,15 @@ class Mp3tunesLocker {
 
         /**
          * Loads a URL into the locker via the LockerLoad API.
-         * The URL may be password protected, as long as the username 
-         * and password can be transferred in the URL to retrieve the 
-         * file. Any access control based on user sessions cannot be 
+         * The URL may be password protected, as long as the username
+         * and password can be transferred in the URL to retrieve the
+         * file. Any access control based on user sessions cannot be
          * used in locker loading.
          * @param the full URL to the track
          * @return true if the lockerload succeeded
          *         false if the lockerload failed.
          * @pre The URL must be accessible by the MP3tunes servers,
-         *      it is assumed that all the tracks in the file are 
+         *      it is assumed that all the tracks in the file are
          *      non-DRM music files.
          */
         bool lockerLoad( const QString &url );
