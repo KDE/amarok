@@ -11,7 +11,7 @@
 #ifndef BROWSER_TOOLBAR_H
 #define BROWSER_TOOLBAR_H
 
-#include "toolbar.h"
+#include "ToolBar.h"
 
 namespace Browser
 {
@@ -19,7 +19,7 @@ namespace Browser
     {
         public:
             ToolBar( QWidget *parent )
-                    : Amarok::ToolBar( parent )
+                : Amarok::ToolBar( parent )
             {
                 setObjectName( "notMainToolBar" );
                 setMovable( false );

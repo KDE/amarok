@@ -32,7 +32,7 @@
 #include "WidgetBackgroundPainter.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "context/popupdropper/PopupDropperAction.h"
-#include "toolbar.h"
+#include "ToolBar.h"
 
 #include <KAction>
 #include <KApplication>

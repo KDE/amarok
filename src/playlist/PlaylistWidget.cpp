@@ -29,7 +29,7 @@
 #include "PlaylistModel.h"
 #include "TheInstances.h"
 #include "statusbar/selectLabel.h"
-#include "toolbar.h"
+#include "ToolBar.h"
 #include "WidgetBackgroundPainter.h"
 #include "widgets/Widget.h"
 
