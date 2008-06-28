@@ -13,9 +13,9 @@ include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 #    MESSAGE(STATUS "libmtp found, including MTP device plugin")
 #    add_subdirectory(mtp)
 #endif(MTP_FOUND)
-
-MESSAGE(STATUS "Including generic device plugin")
-add_subdirectory(generic)
+# Disabled until it's ported to the new collection media device stuff
+#MESSAGE(STATUS "Including generic device plugin")
+#add_subdirectory(generic)
 
 #MESSAGE(STATUS "Read ipod directory")
 #add_subdirectory(ipod)
