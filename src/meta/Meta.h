@@ -1,6 +1,6 @@
 /* This file is part of the Amarok project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org> 
+   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,7 +78,7 @@ namespace Meta
             void unsubscribeFrom( GenrePtr );
             void subscribeTo( YearPtr );
             void unsubscribeFrom( YearPtr );
-            
+
             /** This method is called when the metadata of a track has changed.
                 The called class may not cache the pointer */
             virtual void metadataChanged( Track *track );
@@ -101,6 +101,11 @@ namespace Meta
     class AMAROK_EXPORT MetaBase : public QSharedData
     {
         friend class Observer;
+
+        Q_PROPERTY( QString name READ name )
+        Q_PROPERTY( QString prettyName READ prettyName )
+        Q_PROPERTY( QString fullPrettyName READ fullPrettyName )
+        Q_PROPERTY( QString sortableName READ sortableName )
 
         public:
             MetaBase() {}
@@ -158,6 +163,32 @@ namespace Meta
 
     class AMAROK_EXPORT Track : public MetaBase
     {
+        Q_PROPERTY( KUrl playableUrl READ playableUrl )
+        Q_PROPERTY( QString prettyUrl READ prettyUrl )
+        Q_PROPERTY( QString url READ url )
+        Q_PROPERTY( bool playable READ isPlayable )
+        Q_PROPERTY( AlbumPtr album READ album )
+        Q_PROPERTY( ArtistPtr artist READ artist )
+        Q_PROPERTY( ComposerPtr composer READ composer )
+        Q_PROPERTY( GenrePtr genre READ genre )
+        Q_PROPERTY( YearPtr year READ year )
+        Q_PROPERTY( QString comment READ comment )
+        Q_PROPERTY( double score READ score WRITE setScore )
+        Q_PROPERTY( int rating READ rating write setRating )
+        Q_PROPERTY( int length READ length )
+        Q_PROPERTY( int fileSize READ fileSize )
+        Q_PROPERTY( int sampleRate READ sampleRate )
+        Q_PROPERTY( int bitrate READ bitrate )
+        Q_PROPERTY( int trackNumber READ trackNumber )
+        Q_PROPERTY( int discNumber READ discNumber )
+        Q_PROPERTY( uint lastPlayed READ lastPlayed )
+        Q_PROPERTY( uint firstPlayed READ firstPlayed )
+        Q_PROPERTY( int playCount READ playCount )
+        Q_PROPERTY( QString type READ type )
+        Q_PROPERTY( bool inCollection READ inCollection )
+        Q_PROPERTY( Collection collection READ collection )
+        Q_PROPERTY( QString lyrics READ cachedLyrics WRITE setCachedLyrics )
+
         public:
 
             virtual ~Track() {}
@@ -186,7 +217,7 @@ namespace Meta
             /** Returns the score of this track */
             virtual double score() const = 0;
             virtual void setScore( double newScore ) = 0;
-            /** Returns the ratint of this track */
+            /** Returns the rating of this track */
             virtual int rating() const = 0;
             virtual void setRating( int newRating ) = 0;
             /** Returns the length of this track in seconds, or 0 if unknown */
@@ -241,6 +272,8 @@ namespace Meta
 
     class AMAROK_EXPORT Artist : public MetaBase
     {
+        Q_PROPERTY( TrackList tracks READ tracks )
+        Q_PROPERTY( AlbumList albums READ albums )
         public:
 
             virtual ~Artist() {}
@@ -260,6 +293,12 @@ namespace Meta
 
     class AMAROK_EXPORT Album : public MetaBase
     {
+        Q_PROPERTY( bool compilation READ isCompilation )
+        Q_PROPERTY( bool hasAlbumArtist READ hasAlbumArtist )
+        Q_PROPERTY( ArtistPtr albumArtist READ albumArtist )
+        Q_PROPERTY( TrackList tracks READ tracks )
+        Q_PROPERTY( bool hasImage READ hasImage )
+        Q_PROPERTY( QPixmap image READ image WRITE setImage )
         public:
 
             virtual ~Album() {}
@@ -293,6 +332,7 @@ namespace Meta
 
     class AMAROK_EXPORT Composer : public MetaBase
     {
+        Q_PROPERTY( TrackList tracks READ tracks )
         public:
 
             virtual ~Composer() {}
@@ -309,6 +349,7 @@ namespace Meta
 
     class AMAROK_EXPORT Genre : public MetaBase
     {
+        Q_PROPERTY( TrackList tracks READ tracks )
         public:
 
             virtual ~Genre() {}
@@ -325,6 +366,7 @@ namespace Meta
 
     class AMAROK_EXPORT Year : public MetaBase
     {
+        Q_PROPERTY( TrackList tracks READ tracks )
         public:
 
             virtual ~Year() {}
