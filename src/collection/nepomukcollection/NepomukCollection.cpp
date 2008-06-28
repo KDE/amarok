@@ -59,7 +59,7 @@ NepomukCollectionFactory::init()
         
         QTime t;
         t.start();
-        Nepomuk::Resource::Resource( "/home" ).exists();
+        Nepomuk::Resource::Resource( "file://home/" ).exists();
         int elapsed = t.elapsed();
         debug() << "Nepomuk Resource.exists() took " << elapsed <<  " ms" << endl;
         
