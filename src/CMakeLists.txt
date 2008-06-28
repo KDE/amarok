@@ -410,7 +410,6 @@ set(amaroklib_LIB_SRCS
     StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp
-    atomicstring.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverManager.cpp

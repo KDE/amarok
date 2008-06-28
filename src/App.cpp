@@ -186,11 +186,6 @@ App::App()
 
      PERF_LOG( "Done creating DBus handlers" )
 
-    // tell AtomicString that this is the GUI thread
-    if ( !AtomicString::isMainThread() )
-        qWarning("AtomicString was initialized from a thread other than the GUI "
-                 "thread. This could lead to memory leaks.");
-
 #ifdef Q_WS_MAC
     setupEventHandler_mac((long)this);
 #endif
