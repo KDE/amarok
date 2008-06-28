@@ -1,19 +1,19 @@
 /***************************************************************************
- * copyright            : (C) 2008 Daniel Jones <danielcjones@gmail.com> 
- * 
+ * copyright            : (C) 2008 Daniel Jones <danielcjones@gmail.com>
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License or (at your option) version 3 or any later version
  * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy 
+ * by the membership of KDE e.V.), which shall act as a proxy
  * defined in Section 14 of version 3 of the license.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
@@ -68,9 +68,12 @@ Dynamic::GlobalBias::weight() const
 void
 Dynamic::GlobalBias::setWeight( double weight )
 {
-    if( weight > 1.0 ) m_weight = 1.0;
-    else if( weight < 0.0 ) m_weight = 0.0;
-    else m_weight = weight;
+    if( weight > 1.0 )
+        m_weight = 1.0;
+    else if( weight < 0.0 )
+        m_weight = 0.0;
+    else
+        m_weight = weight;
 }
 
 
@@ -81,7 +84,8 @@ Dynamic::GlobalBias::energy( Meta::TrackList playlist )
    double satisfiedCount = 0;
    foreach( Meta::TrackPtr t, playlist )
    {
-       if( trackSatisfies( t ) ) satisfiedCount++;
+       if( trackSatisfies( t ) )
+           satisfiedCount++;
    }
 
    return qAbs( m_weight - (satisfiedCount / (double)playlist.size()) );
@@ -95,10 +99,13 @@ double Dynamic::GlobalBias::reevaluate( double oldEnergy, Meta::TrackList oldPla
     bool newTrackSatisfies = trackSatisfies( newTrack );
     bool oldTrackSatisfies = trackSatisfies( oldTrack );
 
-    if( newTrackSatisfies == oldTrackSatisfies ) return oldEnergy;
+    if( newTrackSatisfies == oldTrackSatisfies )
+        return oldEnergy;
 
-    if( newTrackSatisfies ) return oldEnergy += (1.0 / (double)oldPlaylist.size());
-    else                    return oldEnergy -= (1.0 / (double)oldPlaylist.size());
+    if( newTrackSatisfies )
+        return oldEnergy += (1.0 / (double)oldPlaylist.size());
+    else
+        return oldEnergy -= (1.0 / (double)oldPlaylist.size());
 }
 
 
@@ -110,7 +117,8 @@ bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t )
 
 void Dynamic::GlobalBias::update()
 {
-    if( !m_needsUpdating ) return;
+    if( !m_needsUpdating )
+        return;
 
     m_propertyQuery->startTrackQuery();
     BlockingQuery bq( m_propertyQuery );
@@ -127,5 +135,3 @@ void Dynamic::GlobalBias::update()
         }
     }
 }
-
-
