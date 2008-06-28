@@ -69,7 +69,7 @@ PrettyPopupMenu::generateSidePixmap()
 QRect
 PrettyPopupMenu::sideImageRect() const
 {
-    QStyleOptionMenuItem *item;
+    QStyleOptionMenuItem *item = new QStyleOptionMenuItem();
     item->initFrom( this );
     int framewidth = style()->pixelMetric(QStyle::PM_MenuPanelWidth, item, this);
     return QStyle::visualRect( layoutDirection(), rect(), QRect( framewidth, framewidth,
@@ -167,7 +167,7 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
 
     QStyleOptionFrame frOpt;
     frOpt.init(this);
-    QStyleOptionMenuItem *item;
+    QStyleOptionMenuItem *item = new QStyleOptionMenuItem();
     item->initFrom( this );
     frOpt.lineWidth = style()->pixelMetric(QStyle::PM_MenuPanelWidth, item, this);
     frOpt.midLineWidth = 0;
