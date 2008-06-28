@@ -27,10 +27,8 @@
 #include "PlaylistGraphicsView.h"
 #include "PlaylistModel.h"
 
-namespace Playlist
-{
 
-DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr p )
+Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr p )
     : TrackNavigator(m), m_playlist(p)
 {
     QObject::connect( m_playlistModel, SIGNAL(activeRowChanged(int,int)),
@@ -44,7 +42,7 @@ DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr
 }
 
 
-DynamicTrackNavigator::~DynamicTrackNavigator()
+Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
 {
     int activeRow = m_playlistModel->activeRow();
     int lim = qMin( m_playlist->previousCount() + 1, m_playlistModel->rowCount() );
@@ -54,13 +52,13 @@ DynamicTrackNavigator::~DynamicTrackNavigator()
     {
         setAsUpcoming( i );
     }
-    GraphicsView::instance()->update();
+    Playlist::GraphicsView::instance()->update();
 }
 
 
 
 int
-DynamicTrackNavigator::nextRow()
+Playlist::DynamicTrackNavigator::nextRow()
 {
     appendUpcoming();
 
@@ -79,14 +77,15 @@ DynamicTrackNavigator::nextRow()
 }
 
 int
-DynamicTrackNavigator::lastRow()
+Playlist::DynamicTrackNavigator::lastRow()
 {
     setAsUpcoming( m_playlistModel->activeRow() );
     int updateRow = m_playlistModel->activeRow() - 1;
     return m_playlistModel->rowExists( updateRow ) ? updateRow : -1;
 }
 
-void DynamicTrackNavigator::appendUpcoming()
+void
+Playlist::DynamicTrackNavigator::appendUpcoming()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
     int rowCount = m_playlistModel->rowCount();
@@ -95,11 +94,12 @@ void DynamicTrackNavigator::appendUpcoming()
     if( upcomingCountLag > 0 ) 
     {
         Meta::TrackList newUpcoming = m_playlist->getTracks( upcomingCountLag );
-        m_playlistModel->insertOptioned( newUpcoming, Append | Colorize );
+        m_playlistModel->insertOptioned( newUpcoming, Append );
     }
 }
 
-void DynamicTrackNavigator::removePlayed()
+void 
+Playlist::DynamicTrackNavigator::removePlayed()
 {
     int activeRow = m_playlistModel->activeRow();
     if( activeRow > m_playlist->previousCount() )
@@ -108,13 +108,15 @@ void DynamicTrackNavigator::removePlayed()
     }
 }
 
-void DynamicTrackNavigator::activeRowChanged( int, int )
+void
+Playlist::DynamicTrackNavigator::activeRowChanged( int, int )
 {
     removePlayed();
 }
 
 
-void DynamicTrackNavigator::activeRowExplicitlyChanged( int from, int to )
+void
+Playlist::DynamicTrackNavigator::activeRowExplicitlyChanged( int from, int to )
 {
     DEBUG_BLOCK
     debug() << "row changed: f,t = " << from << ", " << to;
@@ -129,7 +131,8 @@ void DynamicTrackNavigator::activeRowExplicitlyChanged( int from, int to )
     GraphicsView::instance()->update();
 }
 
-void DynamicTrackNavigator::repopulate()
+void 
+Playlist::DynamicTrackNavigator::repopulate()
 {
     int start = m_playlistModel->activeRow() + 1;
     if( start < 0 ) start = 0;
@@ -138,11 +141,12 @@ void DynamicTrackNavigator::repopulate()
     m_playlistModel->removeRows( start, span - 1 );
 
     m_playlist->recalculate();
-    Meta::TrackList newUpcoming = m_playlist->getTracks( span );
-    m_playlistModel->insertOptioned( newUpcoming, Append | Colorize );
+    Meta::TrackList newUpcoming = m_playlist->getTracks( span - 1 );
+    m_playlistModel->insertOptioned( newUpcoming, Append );
 }
 
-void DynamicTrackNavigator::markPlayed()
+void 
+Playlist::DynamicTrackNavigator::markPlayed()
 {
     int activeRow = m_playlistModel->activeRow();
     int lim = qMin( m_playlist->previousCount() + 1, m_playlistModel->rowCount() );
@@ -154,14 +158,16 @@ void DynamicTrackNavigator::markPlayed()
     }
 }
 
-void DynamicTrackNavigator::setAsUpcoming( int row )
+void 
+Playlist::DynamicTrackNavigator::setAsUpcoming( int row )
 {
     if( !m_playlistModel->rowExists( row ) ) return;
     QModelIndex i = m_playlistModel->index( row, 0 );
     i.data( ItemRole ).value< Playlist::Item* >()->setState( Item::Normal );
 }
 
-void DynamicTrackNavigator::setAsPlayed( int row )
+void
+Playlist::DynamicTrackNavigator::setAsPlayed( int row )
 {
     if( !m_playlistModel->rowExists( row ) ) return;
     QModelIndex i = m_playlistModel->index( row, 0 );
@@ -169,5 +175,4 @@ void DynamicTrackNavigator::setAsPlayed( int row )
 }
 
 
-}
 

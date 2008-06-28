@@ -352,13 +352,6 @@ set (scriptengine_SRCS
      scriptengine/AmarokWindowScript.cpp
 )
 
-#####################################################################
-# DYNAMIC
-#####################################################################
-set(libdynamic_SRCS
-    dynamic/DynamicPlaylist.cpp
-    dynamic/RandomPlaylist.cpp
-)
 
 #####################################################################
 # DYNAMIC
@@ -366,6 +359,7 @@ set(libdynamic_SRCS
 set(libdynamic_SRCS
     dynamic/DynamicPlaylist.cpp
     dynamic/RandomPlaylist.cpp
+    dynamic/Bias.cpp
 )
 
 #####################################################################

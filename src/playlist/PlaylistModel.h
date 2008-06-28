@@ -24,12 +24,13 @@
 
 #include "Debug.h"
 #include "EngineObserver.h"
+#include "PlaylistAlbumGroup.h"
+#include "PlaylistRowList.h"
+#include "TrackNavigator.h"
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
-#include "playlistmanager/PlaylistManager.h"
 #include "meta/PlaylistFileSupport.h"
-#include "PlaylistAlbumGroup.h"
-#include "TrackNavigator.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include "UndoCommands.h"
 
@@ -116,7 +117,6 @@ namespace Playlist
         DirectPlay = 8,     /// start playback of the first item in the list
         Unique     = 16,    /// don't insert anything already in the playlist
         StartPlay  = 32,    /// start playback of the first item in the list if nothing else playing
-        Colorize   = 64,    /// colorize newly added items
         AppendAndPlay = Append | StartPlay
     };
 
@@ -285,14 +285,18 @@ namespace Playlist
 
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
+            void clearNewlyAdded();
+
             QString         m_playlistName;
             bool            m_proposeOverwriting;
 
             QList<Item*>    m_items;                    //! list of tracks in order currently in the playlist
             int             m_activeRow;                //! the row being played
             int             m_nextRowCandidate;         //! proposed next row
-            TrackNavigator*  m_advancer;                 //! the strategy of what to do when a track finishes playing
+            TrackNavigator*  m_advancer;                //! the strategy of what to do when a track finishes playing
             QUndoStack*     m_undoStack;                //! for pushing on undo commands
+            RowList         m_newlyAdded;               //! rows that have newly been added
+
             QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
             QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
 

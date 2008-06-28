@@ -318,6 +318,9 @@ void
 Playlist::Model::insertTracks( int row, Meta::TrackList tracks )
 {
     DEBUG_BLOCK
+
+    clearNewlyAdded();
+
     //check if any tracks in this list ha a url that is actuall a playlist
     bool containsPlaylists = false;
     QList<int> playlistIndices;
@@ -569,6 +572,7 @@ Playlist::Model::setActiveRow( int row )
     emit dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, 0 ) );
     emit dataChanged( createIndex( row, 0 ), createIndex( row, 0 ) );
 
+
     m_activeRow = row;
 
     //make sure that the group containing this track is expanded
@@ -678,11 +682,24 @@ Playlist::Model::insertOptioned( Meta::TrackList list, int options )
         clear();
         firstItemAdded = 0;
         insertTracks( 0, list );
+
+        for( int i = 0; i < list.size(); ++i )
+        {
+            m_newlyAdded.append( i );
+            m_items[i]->setState( Item::NewlyAdded );
+        }
     }
     else if( options & Append )
     {
         firstItemAdded = rowCount();
         insertTracks( firstItemAdded, list );
+
+        for( int i = 0; i < list.size(); ++i )
+        {
+            m_newlyAdded.append( firstItemAdded + i );
+            m_items[firstItemAdded + i]->setState( Item::NewlyAdded );
+        }
+
         // This makes unpolite things happen on startup.. the enginecontroller and us are both trying to play.
         // Is this really necessary or should places that want this behavior use a different set of options.
 /*        if( The::engineController()->state() != Engine::Playing )
@@ -797,6 +814,13 @@ Playlist::Model::engineNewTrackPlaying()
     DEBUG_BLOCK
 
     int oldActiveRow = activeRow();
+
+    if( rowExists(oldActiveRow) &&
+            m_items[oldActiveRow]->state() == Item::NewlyAdded )
+    {
+        m_newlyAdded.removeAll( oldActiveRow );
+        m_items[oldActiveRow]->setState( Item::Normal );
+    }
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
@@ -981,6 +1005,8 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
     if( !list.size() )
         return;
 
+    clearNewlyAdded();
+
     beginInsertRows( QModelIndex(), row, row + list.size() - 1 );
     int i = 0;
     foreach( Meta::TrackPtr track , list )
@@ -1021,9 +1047,7 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
 Meta::TrackList
 Playlist::Model::removeTracksCommand( int position, int rows )
 {
-    DEBUG_BLOCK
-    debug() << "Removing: (pos,rows) = ("
-            << position << ", " << rows << ")";
+    clearNewlyAdded();
 
     beginRemoveRows( QModelIndex(), position, position + rows - 1 );
 //     TrackList::iterator start = m_tracks.begin() + position;
@@ -1131,6 +1155,7 @@ Playlist::Model::headerData(int section, Qt::Orientation orientation, int role) 
 void
 Playlist::Model::moveRow(int row, int to)
 {
+    clearNewlyAdded();
 
     m_items.move( row, to );
 
@@ -1406,6 +1431,21 @@ Playlist::Model::setCollapsed(int row, bool collapsed)
     emit( playlistGroupingChanged() );
 }
 
+
+void
+Playlist::Model::clearNewlyAdded()
+{
+    int row;
+    for( int i = 0; i < m_newlyAdded.size(); ++i )
+    {
+        row = m_newlyAdded[i];
+        if( rowExists(row) && m_items[row]->state() == Item::NewlyAdded )
+        {
+            m_items[row]->setState( Item::Normal );
+        }
+    }
+    m_newlyAdded.clear();
+}
 
 
 namespace The {
