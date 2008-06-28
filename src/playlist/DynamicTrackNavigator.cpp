@@ -27,7 +27,8 @@
 #include "PlaylistGraphicsView.h"
 #include "PlaylistModel.h"
 
-using namespace Playlist;
+namespace Playlist
+{
 
 DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr p )
     : TrackNavigator(m), m_playlist(p)
@@ -36,7 +37,7 @@ DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr
             this, SLOT(activeRowChanged(int,int)));
     QObject::connect( m_playlistModel, SIGNAL(activeRowExplicitlyChanged(int,int)),
             this, SLOT(activeRowExplicitlyChanged(int,int)));
-    QObject::connect( m_playlistModel, SIGNAL(repopulateSignal()),
+    QObject::connect( m_playlistModel, SIGNAL(repopulate()),
             this, SLOT(repopulate()) );
 
     markPlayed();
@@ -77,6 +78,14 @@ DynamicTrackNavigator::nextRow()
     }
 }
 
+int
+DynamicTrackNavigator::lastRow()
+{
+    setAsUpcoming( m_playlistModel->activeRow() );
+    int updateRow = m_playlistModel->activeRow() - 1;
+    return m_playlistModel->rowExists( updateRow ) ? updateRow : -1;
+}
+
 void DynamicTrackNavigator::appendUpcoming()
 {
     int updateRow = m_playlistModel->activeRow() + 1;
@@ -107,11 +116,17 @@ void DynamicTrackNavigator::activeRowChanged( int, int )
 
 void DynamicTrackNavigator::activeRowExplicitlyChanged( int from, int to )
 {
+    DEBUG_BLOCK
+    debug() << "row changed: f,t = " << from << ", " << to;
+
+
     while( from > to ) setAsUpcoming( from-- );
     while( from < to ) setAsPlayed( from++ );
 
-    removePlayed();
     appendUpcoming();
+    removePlayed();
+
+    GraphicsView::instance()->update();
 }
 
 void DynamicTrackNavigator::repopulate()
@@ -141,13 +156,18 @@ void DynamicTrackNavigator::markPlayed()
 
 void DynamicTrackNavigator::setAsUpcoming( int row )
 {
+    if( !m_playlistModel->rowExists( row ) ) return;
     QModelIndex i = m_playlistModel->index( row, 0 );
     i.data( ItemRole ).value< Playlist::Item* >()->setState( Item::Normal );
 }
 
 void DynamicTrackNavigator::setAsPlayed( int row )
 {
+    if( !m_playlistModel->rowExists( row ) ) return;
     QModelIndex i = m_playlistModel->index( row, 0 );
     i.data( ItemRole ).value< Playlist::Item* >()->setState( Item::DynamicPlayed );
+}
+
+
 }
 

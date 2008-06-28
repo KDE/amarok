@@ -32,13 +32,8 @@ using namespace Playlist;
 int
 RandomTrackNavigator::nextRow()
 {
-    DEBUG_BLOCK
-
-    // TODO: is any of this necessary? Will RowList take care of it?
-    // later we should try commenting this out and seeing what happens
     if( playlistChanged() )
     {
-        debug() << "Playlist has changed, regenerating unplayed tracks";
         generateUnplayedRows();
         TrackNavigator::playlistChangeHandled();
     }
@@ -54,7 +49,6 @@ RandomTrackNavigator::nextRow()
 
     m_playedRows.clear();
     TrackNavigator::setPlaylistChanged(); // will cause generateUnplayedTracks() to be called
-    debug() << "There are no more tracks to play, starting over";
 
     // out of tracks to play or stopAfterMode == Current.
     return -1;

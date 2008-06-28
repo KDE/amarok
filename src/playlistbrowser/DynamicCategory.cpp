@@ -69,7 +69,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_repopulateButton->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)),
-            The::playlistModel(), SLOT(repopulateSlot()) );
+            The::playlistModel(), SIGNAL(repopulate()) );
             
 
     m_presetComboBox = new QComboBox( this );

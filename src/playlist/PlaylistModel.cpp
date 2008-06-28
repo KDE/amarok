@@ -403,8 +403,7 @@ Playlist::Model::play( const QModelIndex& index )
 void
 Playlist::Model::play( int row )
 {
-    setActiveRow( row );
-    The::engineController()->play( m_items[ m_activeRow ]->track() );
+    The::engineController()->play( m_items[ row ]->track() );
 }
 
 void
@@ -561,12 +560,6 @@ Playlist::Model::playlistModeChanged()
     }
 }
 
-
-void
-Playlist::Model::repopulateSlot()
-{
-    emit repopulateSignal();
-}
 
 void
 Playlist::Model::setActiveRow( int row )

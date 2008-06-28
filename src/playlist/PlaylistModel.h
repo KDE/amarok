@@ -244,7 +244,7 @@ namespace Playlist
             void rowMoved( int from, int to );
             void activeRowChanged( int from, int to );
             void activeRowExplicitlyChanged( int from, int to );
-            void repopulateSignal();
+            void repopulate();
 
         protected:
             virtual void engineNewTrackPlaying();
@@ -256,7 +256,6 @@ namespace Playlist
             //void playCurrentTrack();    ///connected to EngineController::orderCurrent
             void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list ); //! directory listing, see ListJob
             void notifyAdvancersOnItemChange() { if( m_advancer ) m_advancer->setPlaylistChanged(); }
-            void repopulateSlot();
 
         private:
             /**

@@ -40,6 +40,7 @@ class Model;
             DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr p ) ;
             ~DynamicTrackNavigator();
             int nextRow();
+            int lastRow();
             
             void appendUpcoming();
 
