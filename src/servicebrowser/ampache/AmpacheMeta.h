@@ -42,7 +42,7 @@ class AmpacheTrack  : public ServiceTrack
 {
 
 public:
-        
+
     explicit AmpacheTrack( const QString& title, ServiceBase * service = 0 )
     : ServiceTrack( title )
     , m_service( service )
@@ -52,7 +52,6 @@ public:
     virtual QString sourceName() { return "Ampache"; }
     virtual QString sourceDescription() { return "The Ampache music server project: http://Ampache.org"; }
     virtual QPixmap emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-ampache.png" );  }
-    virtual bool hasSourceInfo() const { return false; }
 
     virtual QList< PopupDropperAction *> currentTrackActions();
 
@@ -74,9 +73,9 @@ public:
     AmpacheAlbum( const QStringList &resultRow );
 
     ~AmpacheAlbum();
-        
+
     virtual QString downloadPrefix() const { return "ampache"; }
-    
+
     virtual void setCoverUrl( const QString &coverURL );
     virtual QString coverUrl() const;
 
