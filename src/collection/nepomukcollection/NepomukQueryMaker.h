@@ -25,17 +25,18 @@
 
 #include <threadweaver/Job.h>
 #include <Soprano/Client/DBusClient>
+#include <Soprano/Model>
 
+class Kurl;
 class NepomukCollection;
 class NepomukWorkerThread;
-class Kurl;
 
 class NepomukQueryMaker : public QueryMaker
 {
     Q_OBJECT
     
 	public:
-	    NepomukQueryMaker(NepomukCollection *collection, Soprano::Client::DBusClient *client);
+	    NepomukQueryMaker(NepomukCollection *collection, Soprano::Client::DBusClient *client, Soprano::Model* model);
 	    virtual ~NepomukQueryMaker();
 	
 	    virtual QueryMaker* reset();
@@ -100,8 +101,9 @@ class NepomukQueryMaker : public QueryMaker
         QString queryMatch;
         bool resultAsDataPtrs;
         NepomukWorkerThread *worker;
-        Soprano::Client::DBusClient *client;
         NepomukCollection *m_collection;
+        Soprano::Client::DBusClient *client;
+        Soprano::Model *m_model;
         QString queryOrderBy;
         int queryLimit;
 };

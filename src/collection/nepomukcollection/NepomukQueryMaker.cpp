@@ -79,9 +79,11 @@ class NepomukWorkerThread : public ThreadWeaver::Job
 
 
 
-NepomukQueryMaker::NepomukQueryMaker(NepomukCollection *collection,Soprano::Client::DBusClient *client )
+NepomukQueryMaker::NepomukQueryMaker(NepomukCollection *collection
+            , Soprano::Client::DBusClient *client, Soprano::Model* model)
     : QueryMaker() 
     , m_collection(collection)
+    , m_model( model )
 
 {
     worker = 0;
@@ -538,47 +540,35 @@ NepomukQueryMaker::doQuery(const QString &query)
         return;
     }
     
-    // some problem with qlocalsocket and threads
-    //Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
-    // using dbus (slower) for now
-    
-    //Soprano::Client::DBusClient* client = new Soprano::Client::DBusClient( "org.kde.NepomukStorage" );
-
-    Soprano::Model* model = (Soprano::Model*)client->createModel( "main" );
-    model = new Soprano::Util::MutexModel( Soprano::Util::MutexModel::ReadWriteMultiThreading, model );
-    
     switch ( queryType )
     {
         case ARTIST:
         {
             ArtistList al;
             Soprano::QueryResultIterator it
-                      = model->executeQuery( query, 
+                      = m_model->executeQuery( query, 
                                              Soprano::Query::QueryLanguageSparql );
             while( it.next() ) 
             {
                 Soprano::Node node = it.binding( "artist" ) ;
                 al.append( *(new Meta::ArtistPtr(new NepomukArtist(node.toString()))) );
             }
-            
             emitProperResult ( ArtistPtr, al );
             
             break;
         }
-        
         case ALBUM:
         {
             AlbumList al;
             Soprano::QueryResultIterator it
-                      = model->executeQuery( query, 
+                      = m_model->executeQuery( query, 
                                              Soprano::Query::QueryLanguageSparql );
             while( it.next() ) 
             {
                 QString artist =  it.binding( "artist" ).toString();
                 QString album =  it.binding( "album" ).toString();
                 al.append( *( new Meta::AlbumPtr( new NepomukAlbum( album, artist ) ) ) );
-            }
-            
+            }         
             emitProperResult ( AlbumPtr, al );
             
             break;
@@ -588,7 +578,7 @@ NepomukQueryMaker::doQuery(const QString &query)
         {
             TrackList tl;
             Soprano::QueryResultIterator it
-                      = model->executeQuery( query, 
+                      = m_model->executeQuery( query, 
                                              Soprano::Query::QueryLanguageSparql );
             while( it.next() ) 
             {
@@ -605,10 +595,5 @@ NepomukQueryMaker::doQuery(const QString &query)
         default:
             return;
     }
-    
-    if ( model ) 
-        delete model;
-
 }
-
 #include "NepomukQueryMaker.moc"

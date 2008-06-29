@@ -27,6 +27,7 @@
 #include <QHash>
 
 #include <Soprano/Client/DBusClient>
+#include <Soprano/Model>
 
 class KUrl;
 
@@ -43,7 +44,7 @@ class NepomukCollectionFactory : public CollectionFactory
 class NepomukCollection : public Collection
 {
 public:
-    NepomukCollection( Soprano::Client::DBusClient*, bool isFast );
+    NepomukCollection( Soprano::Client::DBusClient*, Soprano::Model* model, bool isFast );
     virtual ~NepomukCollection();
     
     virtual QueryMaker* queryMaker();
@@ -66,6 +67,7 @@ private:
     void initHashMaps();
     
     Soprano::Client::DBusClient *m_client;
+    Soprano::Model *m_model;
     QHash< qint64, QString > m_nameForValue;
     QHash< qint64, QString > m_urlForValue;
     QStringList m_allNamesAndUrls;

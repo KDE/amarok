@@ -52,11 +52,13 @@ NepomukCollectionFactory::init()
     //if ( Nepomuk::ResourceManager::instance()->init() == 0 )
     if (client->isValid())
     {
+        Soprano::Model* model = (Soprano::Model*)client->createModel( "main" );
+        Nepomuk::ResourceManager::instance()->setOverrideMainModel( model );
         // find out if Nepomuk is fast enough
         // (if sesame2 is used or not, it makes no sense to use it with redland
         // doesn't work and is terrible slow, slows down amarok start when 
         // songs in playlist)
-        
+         
         QTime t;
         t.start();
         Nepomuk::Resource::Resource( "file://home/" ).exists();
@@ -66,12 +68,12 @@ NepomukCollectionFactory::init()
         Collection* collection;
         if ( elapsed < 50 )
         {
-            collection = new NepomukCollection( client, true );
+            collection = new NepomukCollection( client, model, true );
             debug() << "fast  enough full nepomuk collection enabled" << endl;
         }
         else
         {
-            collection = new NepomukCollection( client, false );
+            collection = new NepomukCollection( client, model, false );
             debug() << "too slow, trackForUrl() disabled" << endl;
         }
         emit newCollection( collection );
@@ -85,9 +87,10 @@ NepomukCollectionFactory::init()
 
 // NepomukCollection
 
-NepomukCollection::NepomukCollection(Soprano::Client::DBusClient *client, bool isFast )
+NepomukCollection::NepomukCollection(Soprano::Client::DBusClient *client, Soprano::Model* model, bool isFast )
     :   Collection() 
     ,   m_client( client )
+    ,   m_model( model )
     ,   m_isFast( isFast )
 {
     initHashMaps();
@@ -95,13 +98,14 @@ NepomukCollection::NepomukCollection(Soprano::Client::DBusClient *client, bool i
 
 NepomukCollection::~NepomukCollection()
 {
+    delete m_model;
     delete m_client;
 }
 
 QueryMaker*
 NepomukCollection::queryMaker()
 {
-	return new NepomukQueryMaker(this, m_client);
+	return new NepomukQueryMaker(this, m_client, m_model);
 }
 
 QString
@@ -135,25 +139,25 @@ NepomukCollection::trackForUrl( const KUrl &url )
         return Meta::TrackPtr();
     
     DEBUG_BLOCK
+    Nepomuk::ResourceManager::instance()->setOverrideMainModel( m_model );
     if ( Nepomuk::Resource::Resource( url ).exists() )
     {
         debug() << "Track: " << url.prettyUrl() << " is in NepomukCollection" << endl;
-        NepomukQueryMaker qm (this, m_client);
+        
+        NepomukQueryMaker qm( this, m_client, m_model );
         qm.startTrackQuery();
         qm.addMatch( url );
         QString query = qm.buildQuery();
-        Soprano::Model* model = (Soprano::Model*)m_client->createModel( "main" );
-        Soprano::QueryResultIterator it
-                              = model->executeQuery( query, 
-                                                     Soprano::Query::QueryLanguageSparql );
         
+        Soprano::QueryResultIterator it
+                              = m_model->executeQuery( query, 
+                                                     Soprano::Query::QueryLanguageSparql );
         // assuming that there is only one result, should never be more, if so giving
         // the first is the best to do anyway
         if ( it.next() )
         {
             Soprano::BindingSet bindingSet = it.currentBindings();
             Meta::TrackPtr tp ( new Meta::NepomukTrack( this, bindingSet ) );
-            delete model;
             return tp;
         }
     }
