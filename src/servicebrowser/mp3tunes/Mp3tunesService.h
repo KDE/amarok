@@ -33,8 +33,10 @@ class Mp3tunesServiceFactory: public ServiceFactory
     Q_OBJECT
 
     public:
-        Mp3tunesServiceFactory() {}
+        explicit Mp3tunesServiceFactory() {}
         virtual ~Mp3tunesServiceFactory() {}
+
+        virtual bool possiblyContainsTrack( const KUrl &url ) const;
 
         virtual void init();
         virtual QString name();
@@ -61,10 +63,8 @@ public:
 
     virtual Collection * collection() { return m_collection; }
 
-private:
-    void authenticate( const QString & uname = "", const QString & passwd = "" );
-
 private slots:
+    void authenticate( const QString & uname = "", const QString & passwd = "" );
     void authenticationComplete(  const QString & sessionId );
 
 private:

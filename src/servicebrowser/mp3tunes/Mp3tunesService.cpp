@@ -29,7 +29,7 @@
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QDomDocument>
-
+#include <QRegExp>
 
 AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
 
@@ -62,6 +62,26 @@ KConfigGroup Mp3tunesServiceFactory::config()
     return Amarok::config( "Service_Mp3tunes" );
 }
 
+
+bool
+Mp3tunesServiceFactory::possiblyContainsTrack(const KUrl & url) const
+{
+    DEBUG_BLOCK
+    QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
+    int matches = rx.indexIn( url.url() );
+    if( matches == -1 ) {
+        debug() << "not a track no match";
+        return false; // not a mp3tunes url
+    }
+    QStringList list = rx.capturedTexts();
+    QString filekey = list[1]; // Because list[0] is the url itself.
+    if ( filekey.isEmpty() ) {
+        debug() << "not a track bad url";
+        return false;
+    }
+    debug() << "is a track!";
+    return true; // for now: if it's a mp3tunes url.. it's likely the track is in the locker
+}
 
 
 Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, const QString &password )
@@ -145,7 +165,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         m_sessionId = sessionId;
         m_authenticated = true;
 
-        m_collection = new Mp3tunesServiceCollection( m_sessionId, m_locker );
+        m_collection = new Mp3tunesServiceCollection( this, m_sessionId, m_locker );
         CollectionManager::instance()->addUnmanagedCollection( m_collection,
                                     CollectionManager::CollectionDisabled );
         QList<int> levels;

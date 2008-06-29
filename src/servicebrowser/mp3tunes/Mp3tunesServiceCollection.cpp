@@ -18,11 +18,18 @@
  ***************************************************************************/
 
 #include "Mp3tunesServiceCollection.h"
+
+#include "Mp3tunesLockerMeta.h"
+#include "Mp3tunesMeta.h"
 #include "Mp3tunesServiceCollectionLocation.h"
 #include "Mp3tunesServiceQueryMaker.h"
+#include "Debug.h"
 
-Mp3tunesServiceCollection::Mp3tunesServiceCollection( const QString &sessionId, Mp3tunesLocker * locker )
-    : ServiceCollection( 0, "Mp3tunesCollection", "Mp3tunesCollection" )
+#include <QRegExp>
+
+Mp3tunesServiceCollection::Mp3tunesServiceCollection( ServiceBase * service, const QString
+&sessionId, Mp3tunesLocker * locker )
+ : ServiceCollection( service, "Mp3tunesCollection", "Mp3tunesCollection" )
  , m_sessionId( sessionId )
  , m_locker( locker )
 {
@@ -46,6 +53,79 @@ QString Mp3tunesServiceCollection::collectionId() const
 QString Mp3tunesServiceCollection::prettyName() const
 {
     return collectionId();
+}
+
+bool
+Mp3tunesServiceCollection::possiblyContainsTrack(const KUrl & url) const
+{
+    DEBUG_BLOCK
+    QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
+    int matches = rx.indexIn( url.url() );
+    if( matches == -1 ) {
+        debug() << "not a track no match";
+        return false; // not a mp3tunes url
+    }
+    QStringList list = rx.capturedTexts();
+    QString filekey = list[1]; // Because list[0] is the url itself.
+    if ( filekey.isEmpty() ) {
+        debug() << "not a track bad url";
+        return false;
+    }
+    debug() << "is a track!";
+    return true; // for now: if it's a mp3tunes url.. it's likely the track is in the locker
+}
+
+Meta::TrackPtr
+Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
+{
+    DEBUG_BLOCK
+    if( !m_locker->authenticated() )
+        m_locker->login();
+    QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
+    rx.indexIn( url.url() );
+    QStringList list = rx.capturedTexts();
+    QString filekey = list[1]; // Because list[0] is the url itself.
+    if ( filekey.isEmpty() ) {
+        debug() << "not a track";
+        return Meta::TrackPtr(); // It's not an mp3tunes track
+    }
+    debug() << "filekey: " << filekey;
+    //Lets get this thing
+    Mp3tunesLockerTrack track =  m_locker->trackWithFileKey( filekey );
+    debug() << "got track: " << track.trackTitle();
+    //Building a Meta::Track
+    QString title = track.trackTitle().isEmpty() ? "Unknown" :  track.trackTitle();
+    Meta::Mp3TunesTrack * serviceTrack = new Meta::Mp3TunesTrack( title );
+    serviceTrack->setId( track.trackId() );
+    serviceTrack->setUrl( track.playUrl() );
+    serviceTrack->setDownloadableUrl( track.downloadUrl() );
+    serviceTrack->setLength( (int)( track.trackLength() / 1000 ) );
+    serviceTrack->setTrackNumber( track.trackNumber() );
+    serviceTrack->setYear( QString::number( track.albumYear() ) );
+
+    //Building a Meta::Album
+    title = track.albumTitle().isEmpty() ? "Unknown" :  track.albumTitle();
+    Meta::Mp3TunesAlbum * serviceAlbum = new Meta::Mp3TunesAlbum( title );
+    QString albumIdStr = QString::number( track.albumId() );
+    serviceAlbum->setId( track.albumId() );
+
+    QString coverUrl = "http://content.mp3tunes.com/storage/albumartget/<ALBUM_ID>?alternative=1&partner_token=<PARTNER_TOKEN>&sid=<SESSION_ID>";
+
+    coverUrl.replace( "<SESSION_ID>", m_locker->sessionId() );
+    coverUrl.replace( "<PARTNER_TOKEN>", m_locker->partnerToken() );
+    coverUrl.replace( "<ALBUM_ID>", albumIdStr );
+
+    serviceAlbum->setCoverUrl(coverUrl);
+    Meta::AlbumPtr albumPtr( serviceAlbum );
+    serviceTrack->setAlbum( albumPtr );
+    // Building a Meta::Artist
+    QString name = track.artistName().isEmpty() ? "Unknown" :  track.artistName();
+    Meta::ServiceArtist * serviceArtist = new Meta::ServiceArtist( name );
+    serviceArtist->setId( track.artistId() );
+    Meta::ArtistPtr artistPtr( serviceArtist );
+    serviceTrack->setArtist( artistPtr );
+
+    return Meta::TrackPtr( serviceTrack );
 }
 
 Mp3tunesLocker* Mp3tunesServiceCollection::locker() const

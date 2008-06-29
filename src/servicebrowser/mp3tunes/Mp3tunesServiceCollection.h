@@ -20,15 +20,18 @@
 #define MP3TUNESSERVICECOLLECTION_H
 
 #include <ServiceCollectionLocation.h>
+#include "Mp3tunesLockerMeta.h"
+#include "Mp3tunesMeta.h"
 #include "Mp3tunesLocker.h"
 
 class Mp3tunesServiceCollection : public ServiceCollection
 {
 public:
-    Mp3tunesServiceCollection( const QString &sessionId, Mp3tunesLocker * locker );
+    Mp3tunesServiceCollection( ServiceBase * service, const QString &sessionId,
+            Mp3tunesLocker * locker );
 
 
-    ~Mp3tunesServiceCollection();
+    virtual ~Mp3tunesServiceCollection();
 
     virtual QueryMaker* queryMaker();
 
@@ -37,11 +40,12 @@ public:
     virtual CollectionLocation* location() const;
     Mp3tunesLocker* locker() const;
 
-private:
+    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+    virtual bool possiblyContainsTrack( const KUrl &url ) const;
 
+private:
     QString m_sessionId;
     Mp3tunesLocker * m_locker;
-
 };
 
 #endif
