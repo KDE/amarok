@@ -26,7 +26,6 @@
 #include "PlaylistModel.h"
 #include "TrackNavigator.h"
 
-class DynamicPlaylist;
 
 namespace Playlist {
 
@@ -37,7 +36,7 @@ class Model;
         Q_OBJECT
 
         public:
-            DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr p ) ;
+            DynamicTrackNavigator( Model* m, Dynamic::DynamicPlaylistPtr p ) ;
             ~DynamicTrackNavigator();
             int nextRow();
             int lastRow();
@@ -57,7 +56,7 @@ class Model;
             void removePlayed();
 
 
-            Meta::DynamicPlaylistPtr m_playlist;
+            Dynamic::DynamicPlaylistPtr m_playlist;
     };
 }
 

@@ -74,7 +74,13 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_presetComboBox = new QComboBox( this );
     m_presetComboBox->setModel( DynamicModel::instance() );
-    m_presetComboBox->setEnabled( false );
+    connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(playlistSelectionChanged(int) ) );
+
+    int index = DynamicModel::instance()->retrievePlaylistIndex( 
+            AmarokConfig::lastDynamicMode() );
+    if( index >= 0 )
+        m_presetComboBox->setCurrentIndex( index );
 
     m_dynamicTreeView = new QTreeWidget( this );
     m_dynamicTreeView->setEnabled( false );
@@ -120,6 +126,8 @@ DynamicCategory::On()
     AmarokConfig::self()->writeConfig();
 
     The::playlistModel()->playlistModeChanged();  
+
+    m_repopulateButton->setEnabled( true );
 }
 
 void
@@ -131,6 +139,20 @@ DynamicCategory::Off()
     AmarokConfig::self()->writeConfig();
 
     The::playlistModel()->playlistModeChanged();  
+
+    m_repopulateButton->setEnabled( false );
+}
+
+void
+DynamicCategory::playlistSelectionChanged( int index )
+{
+    QVariant playlist =
+            DynamicModel::instance()->index( index, 0 ).data( Qt::UserRole );
+    QString title = playlist.value< Dynamic::DynamicPlaylistPtr >()->title();
+    AmarokConfig::setLastDynamicMode( title );
+    AmarokConfig::self()->writeConfig();
+
+    debug() << "Changing biased playlist to: " << title;
 }
 
 }

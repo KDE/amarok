@@ -20,6 +20,7 @@
 
 #include "Bias.h"
 
+#include "Debug.h"
 #include "BlockingQuery.h"
 #include "Collection.h"
 #include "QueryMaker.h"
@@ -88,24 +89,15 @@ Dynamic::GlobalBias::energy( Meta::TrackList playlist )
            satisfiedCount++;
    }
 
-   return qAbs( m_weight - (satisfiedCount / (double)playlist.size()) );
+   return qAbs( m_weight - (satisfiedCount / (double)playlist.size()) ) / m_weight;
 }
 
 
 double Dynamic::GlobalBias::reevaluate( double oldEnergy, Meta::TrackList oldPlaylist,
         Meta::TrackPtr newTrack, int newTrackPos )
 {
-    Meta::TrackPtr oldTrack = oldPlaylist[ newTrackPos ];
-    bool newTrackSatisfies = trackSatisfies( newTrack );
-    bool oldTrackSatisfies = trackSatisfies( oldTrack );
-
-    if( newTrackSatisfies == oldTrackSatisfies )
-        return oldEnergy;
-
-    if( newTrackSatisfies )
-        return oldEnergy += (1.0 / (double)oldPlaylist.size());
-    else
-        return oldEnergy -= (1.0 / (double)oldPlaylist.size());
+    // TODO: how can this be done properly ?
+    return Dynamic::Bias::reevaluate( oldEnergy, oldPlaylist, newTrack, newTrackPos );
 }
 
 
@@ -134,4 +126,6 @@ void Dynamic::GlobalBias::update()
             m_property.insert( t );
         }
     }
+
+    m_needsUpdating = false;
 }

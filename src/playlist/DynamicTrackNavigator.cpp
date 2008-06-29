@@ -28,7 +28,7 @@
 #include "PlaylistModel.h"
 
 
-Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Meta::DynamicPlaylistPtr p )
+Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Dynamic::DynamicPlaylistPtr p )
     : TrackNavigator(m), m_playlist(p)
 {
     QObject::connect( m_playlistModel, SIGNAL(activeRowChanged(int,int)),
