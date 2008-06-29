@@ -61,8 +61,14 @@ ServiceFactory::trackForUrl(const KUrl & url)
 
     foreach( ServiceBase * service, m_activeServices )
     {
-        if (  service->collection() )
+        if( !service->serviceReady() ){
+            debug() << "our service is not ready!";
+            return track;
+        }
+        if (  service->collection() ){
+            debug() << "Collection: " << service->collection();
             track = service->collection()->trackForUrl( url );
+        }
 
         if ( track )
             return track;
@@ -84,6 +90,7 @@ ServiceBase::ServiceBase( const QString &name )
         : KVBox( 0)
         , m_polished( false )
         , m_infoParser( 0 )
+        , m_serviceready( false )
 {
     DEBUG_BLOCK
 
@@ -226,6 +233,13 @@ SingleCollectionTreeItemModel *
 ServiceBase::getModel()
 {
     return m_model;
+}
+
+bool
+ServiceBase::serviceReady() const
+{
+    DEBUG_BLOCK
+    return m_serviceready;
 }
 
 void

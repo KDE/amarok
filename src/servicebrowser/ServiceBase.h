@@ -249,6 +249,11 @@ public:
      */
     virtual QString sendMessage( const QString &message );
 
+    /**
+     * Returns whether the service is ready or not.
+     * @return true if the status is ready, false if it is not ready
+     */
+    bool serviceReady() const;
     //virtual void reset() = 0;
 
 public slots:
@@ -335,6 +340,8 @@ protected:
     QString      m_shortDescription;
     QString      m_longDescription;
     QIcon        m_icon;
+
+    bool m_serviceready;
 
     KUrl::List   m_urlsToInsert;
 

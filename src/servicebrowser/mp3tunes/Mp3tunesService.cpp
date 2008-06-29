@@ -131,12 +131,14 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
     debug() << "Authentication reply: " << sessionId;
     if ( sessionId.isEmpty() )
     {
-      QString error = i18n("Mp3tunes failed to Authenticate.");
-      if ( m_locker->errorMessage() != QString() )
-      {
-        error = m_locker->errorMessage(); // Not sure how to i18n this
-      }
-      The::statusBar()->longMessage( error );
+        QString error = i18n("Mp3tunes failed to Authenticate.");
+        if ( m_locker->errorMessage() != QString() )
+        {
+            error = m_locker->errorMessage(); // Not sure how to i18n this
+        }
+        The::statusBar()->longMessage( error );
+
+        m_serviceready = false;
     }
     else
     {
@@ -149,8 +151,9 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         QList<int> levels;
         levels << CategoryId::Artist << CategoryId::Album;
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
-    }
 
+        m_serviceready = true;
+    }
 }
 
 

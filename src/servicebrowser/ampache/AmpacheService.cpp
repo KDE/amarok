@@ -246,6 +246,7 @@ void AmpacheService::authenticationComplete(KJob * job)
         QList<int> levels;
         levels << CategoryId::Artist << CategoryId::Album;
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
+        m_serviceready = true;
     }
     m_xmlDownloadJob->deleteLater();
 }
