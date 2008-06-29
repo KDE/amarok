@@ -357,11 +357,9 @@ set (scriptengine_SRCS
 # DYNAMIC
 #####################################################################
 set(libdynamic_SRCS
-    dynamic/BiasedPlaylist.cpp
     dynamic/DynamicPlaylist.cpp
     dynamic/RandomPlaylist.cpp
     dynamic/Bias.cpp
-    dynamic/BiasSolver.cpp
 )
 
 #####################################################################

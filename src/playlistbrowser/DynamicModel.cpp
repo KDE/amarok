@@ -15,17 +15,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Debug.h"
 #include "DynamicModel.h"
 #include "DynamicPlaylist.h"
 #include "RandomPlaylist.h"
-
-// All thes are just for initializing the biased test case.
-#include "Bias.h"
-#include "BiasedPlaylist.h"
-#include "Collection.h"
-#include "CollectionManager.h"
-#include "TheInstances.h"
 
 #include <QVariant>
 
@@ -47,59 +39,24 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
     // TODO: Here we will load biased playlists.
     // For now we just have our dummy random mode
     // so it at least does something
-    m_defaultPlaylist = new Dynamic::RandomPlaylist;
+    m_defaultPlaylist = new Meta::RandomPlaylist;
     m_playlistHash[ m_defaultPlaylist->title() ] = m_defaultPlaylist;
     m_playlistList.append( m_defaultPlaylist );
 
-    // DEBUG: temporary test case for biased playlists
-    Collection* coll = CollectionManager::instance()->primaryCollection();
-
-    QueryMaker* property = coll->queryMaker();
-    //property->addFilter( QueryMaker::valArtist, "Radiohead" );
-    property->addFilter( QueryMaker::valYear, "2005" ); 
-    property->startTrackQuery();
-
-    Dynamic::Bias* bias = new Dynamic::GlobalBias( coll, 0.5, property );
-    QList<Dynamic::Bias*> biases;
-
-    biases.append( bias );
-
-    Dynamic::DynamicPlaylistPtr biasTestCase(
-            new Dynamic::BiasedPlaylist( 
-                "Bias Test: 50% 2005",
-                biases,
-                coll ) );
-    m_playlistHash[ biasTestCase->title() ] = biasTestCase;
-    m_playlistList.append( biasTestCase );
 }
 
-
-Dynamic::DynamicPlaylistPtr
+Meta::DynamicPlaylistPtr
 PlaylistBrowserNS::DynamicModel::retrievePlaylist( QString title )
 {
-    Dynamic::DynamicPlaylistPtr p = m_playlistHash[ title ];
-    if( p == Dynamic::DynamicPlaylistPtr() )
-        debug() << "Failed to retrive biased playlist: " << title;
-    return p;
+    return m_playlistHash[ title ];
 }
 
-Dynamic::DynamicPlaylistPtr
+Meta::DynamicPlaylistPtr
 PlaylistBrowserNS::DynamicModel::retrieveDefaultPlaylist()
 {
     return m_defaultPlaylist;
 }
 
-int
-PlaylistBrowserNS::DynamicModel::retrievePlaylistIndex( QString title )
-{
-    for( int i = 0; i < m_playlistList.size(); ++i )
-    {
-        if( m_playlistList[i]->title() == title )
-            return i;
-    }
-
-    return -1;
-}
 
 PlaylistBrowserNS::DynamicModel::~DynamicModel()
 {
@@ -119,7 +76,7 @@ PlaylistBrowserNS::DynamicModel::data ( const QModelIndex & i, int role ) const
 {
     if( !i.isValid() ) return QVariant();
 
-    Dynamic::DynamicPlaylistPtr item = m_playlistList[i.row()];
+    Meta::DynamicPlaylistPtr item = m_playlistList[i.row()];
 
 
     switch( role )

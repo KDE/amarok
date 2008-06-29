@@ -38,9 +38,8 @@ class DynamicModel : public QAbstractItemModel
      
         QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
-        Dynamic::DynamicPlaylistPtr retrievePlaylist( QString );
-        Dynamic::DynamicPlaylistPtr retrieveDefaultPlaylist();
-        int retrievePlaylistIndex( QString );
+        Meta::DynamicPlaylistPtr retrievePlaylist( QString );
+        Meta::DynamicPlaylistPtr retrieveDefaultPlaylist();
 
         QModelIndex index ( int row, int column,
                 const QModelIndex & parent = QModelIndex() ) const;
@@ -56,13 +55,15 @@ class DynamicModel : public QAbstractItemModel
         DynamicModel();
         static DynamicModel* s_instance;
 
-        Dynamic::DynamicPlaylistPtr m_defaultPlaylist;
+        Meta::DynamicPlaylistPtr m_defaultPlaylist;
 
-        QHash< QString, Dynamic::DynamicPlaylistPtr >    m_playlistHash;
-        Dynamic::DynamicPlaylistList                     m_playlistList;
+        QHash<QString,Meta::DynamicPlaylistPtr> m_playlistHash;
+        Meta::DynamicPlaylistList                     m_playlistList;
+
+
+
 };
 
 }
 
 #endif
-

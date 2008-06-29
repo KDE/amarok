@@ -508,7 +508,7 @@ Playlist::Model::playlistModeChanged()
     {
         PlaylistBrowserNS::DynamicModel* dm = PlaylistBrowserNS::DynamicModel::instance();
 
-        Dynamic::DynamicPlaylistPtr playlist = 
+        Meta::DynamicPlaylistPtr playlist = 
             dm->retrievePlaylist( AmarokConfig::lastDynamicMode() );
         if( !playlist ) playlist = dm->retrieveDefaultPlaylist();
 

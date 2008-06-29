@@ -28,26 +28,27 @@
 class Collection;
 class QueryMaker;
 
-namespace Dynamic {
+namespace Meta {
 
-    /**
-     * A temporary random mode; it will be replaced by a biased playlist when it's
-     * ready
-     */
-    class RandomPlaylist : public DynamicPlaylist
-    {
-        public:
-            RandomPlaylist();
-            RandomPlaylist( Collection* );
-            ~RandomPlaylist();
+/**
+ * A temporary random mode; it will be replaced by a biased playlist when it's
+ * ready
+ */
+class RandomPlaylist : public DynamicPlaylist
+{
+    public:
+        RandomPlaylist();
+        RandomPlaylist( Collection* );
+        ~RandomPlaylist();
 
-            Meta::TrackPtr  getTrack();
+        Meta::TrackPtr  getTrack();
 
-        private:
-            void fillCache();
-            static const int CACHE_SIZE = 100;
-            Meta::TrackList m_cache;
-    };
+    private:
+        void fillCache();
+        static const int CACHE_SIZE = 100;
+        TrackList m_cache;
+};
+
 }
 
 #endif

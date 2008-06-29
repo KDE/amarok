@@ -26,27 +26,29 @@
 
 #include <KRandom>
 
+using namespace Meta;
 
-Dynamic::RandomPlaylist::RandomPlaylist()
+
+RandomPlaylist::RandomPlaylist()
     : DynamicPlaylist()
 {
     m_title = "Random";
 }
 
-Dynamic::RandomPlaylist::RandomPlaylist( Collection* c )
+RandomPlaylist::RandomPlaylist( Collection* c )
     : DynamicPlaylist( c )
 {
     m_title = "Random";
 }
 
 
-Dynamic::RandomPlaylist::~RandomPlaylist()
+RandomPlaylist::~RandomPlaylist()
 {
 }
 
 
 Meta::TrackPtr
-Dynamic::RandomPlaylist::getTrack()
+RandomPlaylist::getTrack()
 {
     if( m_cache.empty() )
         fillCache();
@@ -54,11 +56,11 @@ Dynamic::RandomPlaylist::getTrack()
     if( m_cache.empty() )
     {
         warning() << "RandomPlaylist is not delivering.";
-        return Meta::TrackPtr();
+        return TrackPtr();
     }
 
     int i = KRandom::random() % m_cache.size();
-    Meta::TrackPtr tr = m_cache[i];
+    TrackPtr tr = m_cache[i];
     m_cache.removeAt( i );
 
     return tr;
@@ -66,7 +68,7 @@ Dynamic::RandomPlaylist::getTrack()
 
 
 void
-Dynamic::RandomPlaylist::fillCache()
+RandomPlaylist::fillCache()
 {
     QueryMaker* qm = m_collection->queryMaker();
     qm->orderByRandom();
