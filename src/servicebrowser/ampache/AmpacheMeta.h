@@ -51,7 +51,7 @@ public:
 
     virtual QString sourceName() { return "Ampache"; }
     virtual QString sourceDescription() { return "The Ampache music server project: http://Ampache.org"; }
-    virtual QPixmap emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-default.png" );  }
+    virtual QPixmap emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-ampache.png" );  }
     virtual bool hasSourceInfo() const { return false; }
 
     virtual QList< PopupDropperAction *> currentTrackActions();
