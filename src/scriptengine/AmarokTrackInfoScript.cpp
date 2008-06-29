@@ -57,6 +57,82 @@ namespace Amarok
         Meta::TrackPtr track = The::engineController()->currentTrack();
         if ( track ) track->setRating( Rating );
     }
+    double AmarokTrackInfoScript::getScore()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->score() : 0.0;
+    }
+
+    void AmarokTrackInfoScript::setScore( double Score )
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        if ( track ) track->setScore( Score );
+    }
+
+    int AmarokTrackInfoScript::getInCollection()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        if ( track )
+            if ( track->inCollection() ) return 0;
+            else return 1;
+        else return -1;
+    }
+
+    QString AmarokTrackInfoScript::getType()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        QString type = track ? track->type() : QString();
+        if( type == "stream/lastfm" )
+            return "LastFm Stream";
+        else
+            return type;
+    }
+
+    int AmarokTrackInfoScript::getLength()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->length() : 0;
+    }
+
+    int AmarokTrackInfoScript::getFileSize()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->filesize() : 0;
+    }
+
+    int AmarokTrackInfoScript::getTrackNumber()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->trackNumber() : 0;
+    }
+
+    int AmarokTrackInfoScript::getDiscNumber()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->discNumber() : 0;
+    }
+
+    QString AmarokTrackInfoScript::getComment()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->comment() : QString();
+    }
+
+    int AmarokTrackInfoScript::getPlayCount()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->playCount() : 0;
+    }
+
+    int AmarokTrackInfoScript::getPlayable()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        if ( track )
+            if ( track->isPlayable() ) return 0;
+            else return 1;
+        else return -1;
+    }
+
 }
 
 #include "AmarokTrackInfoScript.moc"

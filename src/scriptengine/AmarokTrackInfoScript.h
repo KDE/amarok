@@ -35,7 +35,31 @@ namespace Amarok
             Q_PROPERTY( int SampleRate READ getSampleRate );
             Q_PROPERTY( int Bitrate READ getBitrate );
             Q_PROPERTY( int Rating WRITE setRating READ getRating );
+            Q_PROPERTY( double Score WRITE setScore READ getScore );
+            Q_PROPERTY( bool InCollection READ getInCollection );
+            Q_PROPERTY( QString Type READ getType );
+            Q_PROPERTY( int Length READ getLength );
+            Q_PROPERTY( int FileSize READ getFileSize );
+            Q_PROPERTY( int TrackNumber READ getTrackNumber );
+            Q_PROPERTY( int DiscNumber READ getDiscNumber );
+            Q_PROPERTY( QString Comment READ getComment );
+            Q_PROPERTY( int PlayCount READ getPlayCount );
+            Q_PROPERTY( bool Playable READ getPlayable );
 
+/* todo: implement trackinfo
+            Q_PROPERTY( KUrl playableUrl READ playableUrl );
+            Q_PROPERTY( QString prettyUrl READ prettyUrl );
+            Q_PROPERTY( QString url READ url );
+            Q_PROPERTY( Meta::AlbumPtr album READ album );
+            Q_PROPERTY( Meta::ArtistPtr artist READ artist );
+            Q_PROPERTY( Meta::ComposerPtr composer READ composer );
+            Q_PROPERTY( Meta::GenrePtr genre READ genre );
+            Q_PROPERTY( Meta::YearPtr year READ year );
+            Q_PROPERTY( uint lastPlayed READ lastPlayed );
+            Q_PROPERTY( uint firstPlayed READ firstPlayed );
+            Q_PROPERTY( Collection collection READ collection );
+            Q_PROPERTY( QString lyrics READ cachedLyrics WRITE setCachedLyrics );
+*/
         public slots:
 
         private:
@@ -43,6 +67,17 @@ namespace Amarok
             int getBitrate();
             int getRating();
             void setRating( int Rating );
+            double getScore();
+            void setScore( double Score );
+            int getInCollection();
+            QString getType();
+            int getLength();
+            int getFileSize();
+            int getTrackNumber();
+            int getDiscNumber();
+            QString getComment();
+            int getPlayCount();
+            int getPlayable();
     };
 }
 

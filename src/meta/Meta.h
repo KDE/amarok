@@ -163,32 +163,6 @@ namespace Meta
 
     class AMAROK_EXPORT Track : public MetaBase
     {
-        Q_PROPERTY( KUrl playableUrl READ playableUrl )
-        Q_PROPERTY( QString prettyUrl READ prettyUrl )
-        Q_PROPERTY( QString url READ url )
-        Q_PROPERTY( bool playable READ isPlayable )
-        Q_PROPERTY( AlbumPtr album READ album )
-        Q_PROPERTY( ArtistPtr artist READ artist )
-        Q_PROPERTY( ComposerPtr composer READ composer )
-        Q_PROPERTY( GenrePtr genre READ genre )
-        Q_PROPERTY( YearPtr year READ year )
-        Q_PROPERTY( QString comment READ comment )
-        Q_PROPERTY( double score READ score WRITE setScore )
-        Q_PROPERTY( int rating READ rating write setRating )
-        Q_PROPERTY( int length READ length )
-        Q_PROPERTY( int fileSize READ fileSize )
-        Q_PROPERTY( int sampleRate READ sampleRate )
-        Q_PROPERTY( int bitrate READ bitrate )
-        Q_PROPERTY( int trackNumber READ trackNumber )
-        Q_PROPERTY( int discNumber READ discNumber )
-        Q_PROPERTY( uint lastPlayed READ lastPlayed )
-        Q_PROPERTY( uint firstPlayed READ firstPlayed )
-        Q_PROPERTY( int playCount READ playCount )
-        Q_PROPERTY( QString type READ type )
-        Q_PROPERTY( bool inCollection READ inCollection )
-        Q_PROPERTY( Collection collection READ collection )
-        Q_PROPERTY( QString lyrics READ cachedLyrics WRITE setCachedLyrics )
-
         public:
 
             virtual ~Track() {}
