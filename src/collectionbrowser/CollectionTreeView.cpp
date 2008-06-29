@@ -261,7 +261,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     if( !m_pd )
         m_pd = createPopupDropper( Context::ContextView::self() );
 
-    if( m_pd && m_pd->isValid() && m_pd->isHidden() )
+    if( m_pd && m_pd->isHidden() )
     {
 
         QModelIndexList indices = selectedIndexes();
@@ -352,6 +352,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     if( m_pd )
     {
         debug() << "clearing PUD";
+        m_pd->hideAllOverlays();
         m_pd->clear();
     }
     ongoingDrags = false;
