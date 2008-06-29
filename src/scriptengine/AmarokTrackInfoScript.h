@@ -32,25 +32,25 @@ namespace Amarok
             AmarokTrackInfoScript( QScriptEngine* ScriptEngine );
             ~AmarokTrackInfoScript();
 
-            Q_PROPERTY( int SampleRate READ getSampleRate );
-            Q_PROPERTY( int Bitrate READ getBitrate );
-            Q_PROPERTY( int Rating WRITE setRating READ getRating );
-            Q_PROPERTY( double Score WRITE setScore READ getScore );
-            Q_PROPERTY( bool InCollection READ getInCollection );
-            Q_PROPERTY( QString Type READ getType );
-            Q_PROPERTY( int Length READ getLength );
-            Q_PROPERTY( int FileSize READ getFileSize );
-            Q_PROPERTY( int TrackNumber READ getTrackNumber );
-            Q_PROPERTY( int DiscNumber READ getDiscNumber );
-            Q_PROPERTY( QString Comment READ getComment );
-            Q_PROPERTY( int PlayCount READ getPlayCount );
-            Q_PROPERTY( bool Playable READ getPlayable );
+            Q_PROPERTY( int SampleRate READ sampleRate );
+            Q_PROPERTY( int Bitrate READ bitrate );
+            Q_PROPERTY( int Rating WRITE setRating READ rating );
+            Q_PROPERTY( double Score WRITE setScore READ score );
+            Q_PROPERTY( bool InCollection READ inCollection );
+            Q_PROPERTY( QString Type READ type );
+            Q_PROPERTY( int Length READ length );
+            Q_PROPERTY( int FileSize READ fileSize );
+            Q_PROPERTY( int TrackNumber READ trackNumber );
+            Q_PROPERTY( int DiscNumber READ discNumber );
+            Q_PROPERTY( QString Comment READ comment );
+            Q_PROPERTY( int PlayCount READ playCount );
+            Q_PROPERTY( bool Playable READ playable );
             //todo: good for now, but we'd prefer some more detail info for album, and maybe artist, composer...
-            Q_PROPERTY( QString Album READ getAlbum );
-            Q_PROPERTY( QString Artist READ getArtist );
-            Q_PROPERTY( QString Composer READ getComposer );
-            Q_PROPERTY( QString Genre READ getGenre );
-            Q_PROPERTY( QString Year READ getYear );
+            Q_PROPERTY( QString Album READ album );
+            Q_PROPERTY( QString Artist READ artist );
+            Q_PROPERTY( QString Composer READ composer );
+            Q_PROPERTY( QString Genre READ genre );
+            Q_PROPERTY( QString Year READ year );
 
 /* todo: implement trackinfo
             Q_PROPERTY( KUrl playableUrl READ playableUrl );
@@ -64,26 +64,26 @@ namespace Amarok
         public slots:
 
         private:
-            int getSampleRate();
-            int getBitrate();
-            int getRating();
+            int sampleRate() const;
+            int bitrate() const;
+            int rating() const;
             void setRating( int Rating );
-            double getScore();
+            double score() const;
             void setScore( double Score );
-            int getInCollection();
-            QString getType();
-            int getLength();
-            int getFileSize();
-            int getTrackNumber();
-            int getDiscNumber();
-            QString getComment();
-            int getPlayCount();
-            int getPlayable();
-            QString getAlbum();
-            QString getArtist();
-            QString getComposer();
-            QString getGenre();
-            QString getYear();
+            int inCollection() const;
+            QString type() const;
+            int length() const;
+            int fileSize() const;
+            int trackNumber() const;
+            int discNumber() const;
+            QString comment() const;
+            int playCount() const;
+            int playable() const;
+            QString album() const;
+            QString artist() const;
+            QString composer() const;
+            QString genre() const;
+            QString year() const;
     };
 }
 

@@ -1,4 +1,3 @@
-/*
 Importer.load("debug.js");
 
 print ( "this is script.js" );
@@ -8,12 +7,13 @@ print ( "this is script.js" );
 var version = Amarok.Version();
 print ( ( "Amarok Version: " + version ));
 
+/*
 var Engine;
 Engine = Amarok.Engine;
 Engine.Stop( true );
 Engine.Play();
 Engine.Seek ( 60*1000 );
-
+*/
 
 //test WindowAction
 
@@ -33,7 +33,7 @@ Amarok.Window.addMenu( "testMenu2" );
 
 Amarok.Window.Menu.testMenu1.triggered.connect(Menu1Clicked);
 Amarok.Window.Menu.testMenu2.triggered.connect(Menu2Clicked);
-*/
+
 
 var TrackInfo = Amarok.Engine.TrackInfo;
 var OSD = Amarok.OSD;

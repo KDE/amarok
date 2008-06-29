@@ -34,19 +34,19 @@ namespace Amarok
     {
     }
 
-    int AmarokTrackInfoScript::getSampleRate()
+    int AmarokTrackInfoScript::sampleRate() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->sampleRate() : 0;
     }
 
-    int AmarokTrackInfoScript::getBitrate()
+    int AmarokTrackInfoScript::bitrate() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->bitrate() : 0;
     }
 
-    int AmarokTrackInfoScript::getRating()
+    int AmarokTrackInfoScript::rating() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->rating() : 0;
@@ -57,7 +57,7 @@ namespace Amarok
         Meta::TrackPtr track = The::engineController()->currentTrack();
         if ( track ) track->setRating( Rating );
     }
-    double AmarokTrackInfoScript::getScore()
+    double AmarokTrackInfoScript::score() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->score() : 0.0;
@@ -69,7 +69,7 @@ namespace Amarok
         if ( track ) track->setScore( Score );
     }
 
-    int AmarokTrackInfoScript::getInCollection()
+    int AmarokTrackInfoScript::inCollection() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         if ( track )
@@ -78,7 +78,7 @@ namespace Amarok
         else return -1;
     }
 
-    QString AmarokTrackInfoScript::getType()
+    QString AmarokTrackInfoScript::type() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         QString type = track ? track->type() : QString();
@@ -88,43 +88,43 @@ namespace Amarok
             return type;
     }
 
-    int AmarokTrackInfoScript::getLength()
+    int AmarokTrackInfoScript::length() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->length() : 0;
     }
 
-    int AmarokTrackInfoScript::getFileSize()
+    int AmarokTrackInfoScript::fileSize() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->filesize() : 0;
     }
 
-    int AmarokTrackInfoScript::getTrackNumber()
+    int AmarokTrackInfoScript::trackNumber() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->trackNumber() : 0;
     }
 
-    int AmarokTrackInfoScript::getDiscNumber()
+    int AmarokTrackInfoScript::discNumber() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->discNumber() : 0;
     }
 
-    QString AmarokTrackInfoScript::getComment()
+    QString AmarokTrackInfoScript::comment() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->comment() : QString();
     }
 
-    int AmarokTrackInfoScript::getPlayCount()
+    int AmarokTrackInfoScript::playCount() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->playCount() : 0;
     }
 
-    int AmarokTrackInfoScript::getPlayable()
+    int AmarokTrackInfoScript::playable() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         if ( track )
@@ -132,31 +132,31 @@ namespace Amarok
             else return 1;
         else return -1;
     }
-    QString AmarokTrackInfoScript::getAlbum()
+    QString AmarokTrackInfoScript::album() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->album()->prettyName() : QString();
     }
 
-    QString AmarokTrackInfoScript::getArtist()
+    QString AmarokTrackInfoScript::artist() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->artist()->prettyName() : QString();
     }
 
-    QString AmarokTrackInfoScript::getComposer()
+    QString AmarokTrackInfoScript::composer() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->composer()->prettyName() : QString();
     }
 
-    QString AmarokTrackInfoScript::getGenre()
+    QString AmarokTrackInfoScript::genre() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->genre()->prettyName() : QString();
     }
 
-    QString AmarokTrackInfoScript::getYear()
+    QString AmarokTrackInfoScript::year() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return track ? track->year()->prettyName() : QString();
