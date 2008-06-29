@@ -33,16 +33,16 @@ Amarok.Window.addMenu( "testMenu2" );
 
 Amarok.Window.Menu.testMenu1.triggered.connect(Menu1Clicked);
 Amarok.Window.Menu.testMenu2.triggered.connect(Menu2Clicked);
-
-
-var OSD = Amarok.OSD;
-OSD.setText( "Hey there!" );
-OSD.show();
-
-
-var StatusBar = Amarok.Window.Statusbar;
-StatusBar.shortMessage( "Hey there!" );
 */
 
-Amarok.Engine.TrackInfo.Rating = 3;
-print ( Amarok.Engine.TrackInfo.Rating );
+var TrackInfo = Amarok.Engine.TrackInfo;
+var OSD = Amarok.OSD;
+var StatusBar = Amarok.Window.Statusbar;
+
+if ( TrackInfo.Artist || TrackInfo.Album )
+{
+    OSD.setText( "Hey, this is " + TrackInfo.Artist );
+    OSD.show();
+
+    StatusBar.shortMessage( "You are listening to album: " + TrackInfo.Album );
+}
