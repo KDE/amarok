@@ -171,7 +171,7 @@ CollectionManager::queryMaker() const
     QList<Collection*> colls;
     foreach( const CollectionPair &pair, d->collections )
     {
-        if( pair.second == CollectionEnabled || pair.second == CollectionOnlyQueryable )
+        if( pair.second & CollectionQueryable )
         {
             colls << pair.first;
         }
@@ -218,7 +218,7 @@ CollectionManager::slotNewCollection( Collection* newCollection )
             d->primaryCollection = newCollection;
         }
     }
-    if( status == CollectionEnabled || status == CollectionOnlyViewable )
+    if( status & CollectionViewable )
     {
         emit collectionAdded( newCollection );
     }
@@ -267,7 +267,7 @@ CollectionManager::slotCollectionChanged()
     if( collection )
     {
         CollectionStatus status = collectionStatus( collection->collectionId() );
-        if( status == CollectionEnabled || status == CollectionOnlyViewable )
+        if( status & CollectionViewable )
         {
             emit collectionDataChanged( collection );
         }
@@ -280,7 +280,7 @@ CollectionManager::collections() const
     QList<Collection*> result;
     foreach( const CollectionPair &pair, d->collections )
     {
-        if( pair.second == CollectionEnabled || pair.second == CollectionOnlyViewable )
+        if( pair.second & CollectionViewable )
         {
             result << pair.first;
         }
@@ -405,7 +405,7 @@ CollectionManager::addUnmanagedCollection( Collection *newCollection, Collection
         CollectionPair pair( newCollection, status );
         d->collections.append( pair );
         d->trackProviders.append( newCollection );
-        if( status == CollectionEnabled || status == CollectionOnlyViewable )
+        if( status & CollectionViewable )
         {
             emit collectionAdded( newCollection );
         }
@@ -433,13 +433,13 @@ CollectionManager::setCollectionStatus( const QString &collectionId, CollectionS
     {
         if( pair.first->collectionId() == collectionId )
         {
-            if( ( pair.second == CollectionEnabled || pair.second == CollectionOnlyViewable ) &&
-                ( status == CollectionDisabled || status == CollectionOnlyQueryable ) )
+            if( ( pair.second & CollectionViewable ) &&
+               !( status & CollectionViewable ) )
             {
                 emit collectionRemoved( collectionId );
             }
-            else if( ( pair.second == CollectionDisabled || pair.second == CollectionOnlyQueryable ) &&
-                     ( status == CollectionEnabled || status == CollectionOnlyViewable ) )
+            else if( ( pair.second & CollectionQueryable ) &&
+                    !( status & CollectionViewable ) )
             {
                 emit collectionAdded( pair.first );
             }
