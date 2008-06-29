@@ -130,6 +130,7 @@ class NepomukTrack : public Track
         
         virtual int discNumber() const;
         
+        virtual uint firstPlayed() const;
         virtual uint lastPlayed() const;
         virtual int playCount() const;
         

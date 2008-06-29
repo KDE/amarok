@@ -400,7 +400,7 @@ QueryMaker*
 NepomukQueryMaker::limitMaxResultSize( int size )
 {
     debug() << "limitMaxResultSize()" << endl;
-	
+	queryLimit = size;
     return this;
 }
 

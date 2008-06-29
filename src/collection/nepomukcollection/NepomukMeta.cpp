@@ -367,6 +367,12 @@ NepomukTrack::discNumber() const
 }
 
 uint
+NepomukTrack::firstPlayed() const
+{
+    return m_firstPlayed.toTime_t();
+}
+
+uint
 NepomukTrack::lastPlayed() const
 {
     return m_lastPlayed.toTime_t();
