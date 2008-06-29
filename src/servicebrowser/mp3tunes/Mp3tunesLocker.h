@@ -77,7 +77,15 @@ class Mp3tunesLocker {
          * @return if login successful, the sessionId is returned
          *         if login failed, an empty QString is returned
          */
-        QString login( const QString & userName, const QString & password);
+        QString login( const QString & userName, const QString & password );
+
+        /**
+         * Logs into the locker using stored credentials.
+         * Useful if a session is no longer valid.
+         * @return if login successful, the sessionId is returned
+         *         if login failed, an empty QString is returned
+         */
+         QString login();
 
         /**
          * Detects if a session has timed out.
@@ -230,6 +238,7 @@ class Mp3tunesLocker {
         QString serverContent() const;
         QString serverLogin() const;
         QString errorMessage() const;
+        bool authenticated() const;
     private:
         char *convertToChar( const QString &source ) const;
         mp3tunes_locker_object_t *m_locker;

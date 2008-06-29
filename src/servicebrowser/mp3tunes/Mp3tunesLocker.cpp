@@ -26,10 +26,12 @@
 Mp3tunesLocker::Mp3tunesLocker ( const QString & partnerToken )
 {
     DEBUG_BLOCK
-    debug() << "New Locker Wrapper";
+    m_locker = 0;
+    debug() << "Creating New Locker";
     char *c_tok = convertToChar ( partnerToken );
     debug() << "Wrapper Token: " << c_tok;
     mp3tunes_locker_init ( &m_locker, c_tok );
+    debug() << "New Locker created";
 }
 
 Mp3tunesLocker::Mp3tunesLocker ( const QString & partnerToken, const QString & userName,
@@ -67,6 +69,11 @@ Mp3tunesLocker::login ( const QString &userName, const QString &password )
     return QString(); //login failed
 }
 
+QString
+Mp3tunesLocker::login ()
+{
+    return login( userName(), password() );
+}
 bool
 Mp3tunesLocker::sessionValid() const
 {
@@ -555,7 +562,15 @@ Mp3tunesLocker::errorMessage() const
     }
     return QString();
 }
-
+bool
+Mp3tunesLocker::authenticated() const
+{
+    if( sessionId().isEmpty() )
+        return false;
+    else if( sessionValid() )
+        return true;
+    return false;
+}
 char *
 Mp3tunesLocker::convertToChar ( const QString &source ) const
 {
