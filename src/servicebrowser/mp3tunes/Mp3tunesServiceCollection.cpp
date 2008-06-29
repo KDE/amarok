@@ -124,7 +124,8 @@ Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
     serviceArtist->setId( track.artistId() );
     Meta::ArtistPtr artistPtr( serviceArtist );
     serviceTrack->setArtist( artistPtr );
-
+    serviceAlbum->setArtistName( name );
+    serviceAlbum->setAlbumArtist( artistPtr );
     return Meta::TrackPtr( serviceTrack );
 }
 
