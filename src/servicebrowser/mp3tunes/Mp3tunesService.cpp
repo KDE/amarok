@@ -98,12 +98,20 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
     setIcon( KIcon( "view-services-mp3tunes-amarok" ) );
     debug() << "Making new Locker Object";
     m_locker = new Mp3tunesLocker( "4895500420" );
+    debug() << "MP3tunes running automated authenticate.";
+    QTimer *t = new QTimer(this);
+    connect(t, SIGNAL( timeout() ), SLOT(authenticate( email, password) ) );
+    t->start( 3600000 );
+
+    authenticate( email, password );
 }
 
 
 Mp3tunesService::~Mp3tunesService()
 {
+    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
     delete m_locker;
+    delete m_collection;
 }
 
 
