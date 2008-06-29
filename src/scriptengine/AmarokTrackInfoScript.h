@@ -45,16 +45,17 @@ namespace Amarok
             Q_PROPERTY( QString Comment READ getComment );
             Q_PROPERTY( int PlayCount READ getPlayCount );
             Q_PROPERTY( bool Playable READ getPlayable );
+            //todo: good for now, but we'd prefer some more detail info for album, and maybe artist, composer...
+            Q_PROPERTY( QString Album READ getAlbum );
+            Q_PROPERTY( QString Artist READ getArtist );
+            Q_PROPERTY( QString Composer READ getComposer );
+            Q_PROPERTY( QString Genre READ getGenre );
+            Q_PROPERTY( QString Year READ getYear );
 
 /* todo: implement trackinfo
             Q_PROPERTY( KUrl playableUrl READ playableUrl );
             Q_PROPERTY( QString prettyUrl READ prettyUrl );
             Q_PROPERTY( QString url READ url );
-            Q_PROPERTY( Meta::AlbumPtr album READ album );
-            Q_PROPERTY( Meta::ArtistPtr artist READ artist );
-            Q_PROPERTY( Meta::ComposerPtr composer READ composer );
-            Q_PROPERTY( Meta::GenrePtr genre READ genre );
-            Q_PROPERTY( Meta::YearPtr year READ year );
             Q_PROPERTY( uint lastPlayed READ lastPlayed );
             Q_PROPERTY( uint firstPlayed READ firstPlayed );
             Q_PROPERTY( Collection collection READ collection );
@@ -78,6 +79,11 @@ namespace Amarok
             QString getComment();
             int getPlayCount();
             int getPlayable();
+            QString getAlbum();
+            QString getArtist();
+            QString getComposer();
+            QString getGenre();
+            QString getYear();
     };
 }
 

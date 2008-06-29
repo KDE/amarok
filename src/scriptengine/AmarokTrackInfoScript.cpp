@@ -132,6 +132,35 @@ namespace Amarok
             else return 1;
         else return -1;
     }
+    QString AmarokTrackInfoScript::getAlbum()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->album()->prettyName() : QString();
+    }
+
+    QString AmarokTrackInfoScript::getArtist()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->artist()->prettyName() : QString();
+    }
+
+    QString AmarokTrackInfoScript::getComposer()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->composer()->prettyName() : QString();
+    }
+
+    QString AmarokTrackInfoScript::getGenre()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->genre()->prettyName() : QString();
+    }
+
+    QString AmarokTrackInfoScript::getYear()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->year()->prettyName() : QString();
+    }
 
 }
 
