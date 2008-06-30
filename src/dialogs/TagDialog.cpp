@@ -2,6 +2,7 @@
  * Copyright (C) 2004 Mark Kretschmann <kretschmann@kde.org>                  *
  *           (C) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>               *
  *           (C) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>   *
+ *           (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -25,6 +26,7 @@
 #include "covermanager/CoverFetcher.h"
 #include "Debug.h"
 #include "EditCapability.h"
+#include "FilenameLayoutDialog.h"
 #include "MainWindow.h"
 #include "MetaQueryMaker.h"
 #include "MetaUtility.h"
@@ -32,7 +34,6 @@
 #include "StatusBar.h"       //for status messages
 #include "TagGuesser.h"
 #include "trackpickerdialog.h"
-#include "ui_tagguesserconfigdialog.h"
 #include "ui_tagdialogbase.h"
 
 #include <KApplication>
@@ -355,10 +356,8 @@ TagDialog::loadCover()
 void
 TagDialog::setFileNameSchemes() //SLOT
 {
-    KDialog *kDialog = new KDialog(this);
-    Ui::TagGuesserConfigDialog* dialog = new Ui::TagGuesserConfigDialog();
-    dialog->setupUi(kDialog);
-    kDialog->exec();
+    FilenameLayoutDialog *dialog = new FilenameLayoutDialog(this);
+    dialog->exec();
     delete dialog;
 }
 

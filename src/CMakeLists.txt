@@ -415,6 +415,7 @@ set(amaroklib_LIB_SRCS
     dbsetup.ui.h
     dialogs/CollectionSetup.cpp
     dialogs/EditFilterDialog.cpp
+    dialogs/FilenameLayoutDialog.cpp
     dialogs/PixmapViewer.cpp
     dialogs/ScriptManager.cpp
     dialogs/TagDialog.cpp
@@ -443,11 +444,13 @@ set(amaroklib_LIB_SRCS
     socketserver.cpp
     systray.cpp
     widgets/AnalyzerWidget.cpp
+    widgets/FilenameLayoutWidget.cpp
     widgets/MainToolbar.cpp
     widgets/ProgressSlider.cpp
     widgets/SearchWidget.cpp
     widgets/SidebarWidget.cpp
     widgets/SliderWidget.cpp
+    widgets/TokenListWidget.cpp
     widgets/TrackTooltip.cpp
     widgets/VolumeWidget.cpp
     widgets/hintlineedit.cpp
@@ -475,7 +478,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/deletedialogbase.ui
     dialogs/ScriptManagerBase.ui
     dialogs/tagdialogbase.ui
-    dialogs/tagguesserconfigdialog.ui
+    dialogs/FilenameLayoutDialog.ui
     dialogs/trackpickerdialogbase.ui
     playlistbrowser/PodcastCategoryBase.ui
     podcastsettingsbase.ui
