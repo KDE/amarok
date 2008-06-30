@@ -216,7 +216,7 @@ void CollectionTreeItemModel::update()
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
     d->m_collections.clear();
-    QList<Collection*> collections = CollectionManager::instance()->collections();
+    QList<Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( update() ) ) ;

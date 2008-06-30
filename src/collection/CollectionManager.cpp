@@ -275,7 +275,7 @@ CollectionManager::slotCollectionChanged()
 }
 
 QList<Collection*>
-CollectionManager::collections() const
+CollectionManager::viewableCollections() const
 {
     QList<Collection*> result;
     foreach( const CollectionPair &pair, d->collections )
@@ -286,6 +286,17 @@ CollectionManager::collections() const
         }
     }
     return result;
+}
+
+QList<Collection*>
+CollectionManager::queryableCollections() const
+{
+    QList<Collection*> result;
+    foreach( const CollectionPair &pair, d->collections )
+        if( pair.second & CollectionQueryable )
+            result << pair.first;
+    return result;
+
 }
 
 Collection*
@@ -467,7 +478,7 @@ CollectionManager::collectionStatus( const QString &collectionId ) const
 }
 
 QHash<Collection*, CollectionManager::CollectionStatus>
-CollectionManager::allCollections() const
+CollectionManager::collections() const
 {
     QHash<Collection*, CollectionManager::CollectionStatus> result;
     foreach( const CollectionPair &pair, d->collections )

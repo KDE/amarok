@@ -773,7 +773,7 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const
         {
             Collection *collection = getCollection( indices );
             QList<Collection*> writableCollections;
-            foreach( Collection *coll, CollectionManager::instance()->allCollections().keys() ) {
+            foreach( Collection *coll, CollectionManager::instance()->collections().keys() ) {
                 if( coll && coll->isWritable() && coll != collection )
                 {
                     debug() << "got writable collection";
@@ -809,7 +809,7 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( cons
         {
             Collection *collection = getCollection( indices );
             QList<Collection*> writableCollections;
-            QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->allCollections();
+            QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
             QHash<Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
             while ( it != hash.constEnd() ) {
                 Collection *coll = it.key();

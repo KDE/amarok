@@ -53,9 +53,14 @@ class AMAROK_EXPORT CollectionManager : public QObject
         QueryMaker * queryMaker() const;
 
         /**
-         * returns all enabled or viewable collections.
+         * returns all viewable collections.
          */
-        QList<Collection*> collections() const;
+        QList<Collection*> viewableCollections() const;
+
+        /**
+         * returns all queryable collections.
+         */
+        QList<Collection*> queryableCollections() const;
 
         Collection* primaryCollection() const;
 
@@ -83,7 +88,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         void setCollectionStatus( const QString &collectionId, CollectionStatus status );
         CollectionStatus collectionStatus( const QString &collectionId ) const;
-        QHash<Collection*, CollectionStatus> allCollections() const;
+        QHash<Collection*, CollectionStatus> collections() const;
 
         /**
          * adds a TrackProvider to the list of TrackProviders,
