@@ -80,7 +80,7 @@ IpodCollectionFactory::init()
 
         }
 
-    // connect to device cache
+    // connect to device cache so new devices tested for ipod
     connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceAdded( const QString& ) ),
               SLOT(  deviceAdded( const QString& ) ) );
     connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceRemoved( const QString& ) ),
@@ -140,6 +140,8 @@ IpodCollectionFactory::deviceAdded(  const QString &udi )
 void
 IpodCollectionFactory::deviceRemoved( const QString &udi )
 {
+    // TODO: tell collectionmanager to erase collection
+    Q_UNUSED( udi );
     return;
 }
 

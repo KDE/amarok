@@ -85,7 +85,15 @@ class IpodTrack : public Meta::Track
 
         virtual int filesize() const;
         virtual int sampleRate() const;
+
         virtual int bitrate() const;
+        virtual void setBitrate( int newBitrate );
+
+        virtual int samplerate() const;
+        virtual void setSamplerate( int newSamplerate );
+
+        virtual float bpm() const;
+        virtual void setBpm( float newBpm );
 
         virtual int trackNumber() const;
         virtual void setTrackNumber ( int newTrackNumber );
@@ -127,10 +135,15 @@ class IpodTrack : public Meta::Track
         IpodComposerPtr m_composer;
         IpodYearPtr m_year;
 
+        QString m_comment;
         QString m_name;
         QString m_type;
+        int m_bitrate;
         int m_length;
+        int m_discNumber;
+        int m_samplerate;
         int m_trackNumber;
+        float m_bpm;
         QString m_displayUrl;
         QString m_playableUrl;
 };

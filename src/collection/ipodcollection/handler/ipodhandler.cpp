@@ -629,8 +629,6 @@ IpodHandler::parseTracks()
     {
         Itdb_Track *ipodtrack = ( Itdb_Track * )cur->data;
 
-
-
         QString format( ipodtrack->filetype );
         IpodTrackPtr track( new IpodTrack( m_memColl, format ) );
         track->setTitle( QString::fromUtf8( ipodtrack->title ) );
@@ -648,7 +646,6 @@ IpodHandler::parseTracks()
             albumMap.insert(  album,  AlbumPtr::staticCast(  albumPtr ) );
         }
 
-
         albumPtr->addTrack(  track );
         track->setAlbum(  albumPtr );
 
@@ -665,6 +662,19 @@ IpodHandler::parseTracks()
             artistPtr = IpodArtistPtr(  new IpodArtist(  artist ) );
             artistMap.insert(  artist,  ArtistPtr::staticCast(  artistPtr ) );
 
+        }
+
+        QString composer ( QString::fromUtf8( ipodtrack->composer ) );
+        IpodComposerPtr composerPtr;
+
+        if ( composerMap.contains( composer ) )
+        {
+            composerPtr = IpodComposerPtr::staticCast( composerMap.value( composer ) );
+        }
+        else
+        {
+            composerPtr = IpodComposerPtr( new IpodComposer( composer ) );
+            composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
         }
 
         artistPtr->addTrack(  track );
@@ -693,8 +703,13 @@ IpodHandler::parseTracks()
             genrePtr = IpodGenrePtr(  new IpodGenre(  genre ) );
             genreMap.insert(  genre,  GenrePtr::staticCast(  genrePtr ) );
         }
-        genrePtr->addTrack(  track );
-        track->setGenre(  genrePtr );
+        genrePtr->addTrack( track );
+        track->setGenre( genrePtr );
+        track->setComment( QString::fromUtf8(  ipodtrack->comment ) );
+        track->setDiscNumber( ipodtrack->cd_nr );
+        track->setBitrate( ipodtrack->bitrate );
+        track->setBpm( ipodtrack->BPM );
+
 
         QString path = QString( ipodtrack->ipod_path ).split( ":" ).join( "/" );
         path = m_mountPoint + path;

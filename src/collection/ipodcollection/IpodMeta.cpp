@@ -161,7 +161,7 @@ IpodTrack::comment() const
 void
 IpodTrack::setComment( const QString &newComment )
 {
-    Q_UNUSED( newComment )
+    m_comment = newComment;
 }
 
 double
@@ -209,7 +209,36 @@ IpodTrack::sampleRate() const
 int
 IpodTrack::bitrate() const
 {
-    return 0;
+    return m_bitrate;
+}
+
+void
+IpodTrack::setBitrate( int newBitrate )
+{
+    m_bitrate = newBitrate;
+}
+
+int
+IpodTrack::samplerate() const
+{
+    return m_samplerate;
+}
+
+void
+IpodTrack::setSamplerate( int newSamplerate )
+{
+    m_samplerate = newSamplerate;
+}
+
+float
+IpodTrack::bpm() const
+{
+    return m_bpm;
+}
+void
+IpodTrack::setBpm( float newBpm )
+{
+    m_bpm = newBpm;
 }
 
 int
@@ -227,13 +256,13 @@ IpodTrack::setTrackNumber( int newTrackNumber )
 int
 IpodTrack::discNumber() const
 {
-    return 0;
+    return m_discNumber;
 }
 
 void
 IpodTrack::setDiscNumber( int newDiscNumber )
 {
-    Q_UNUSED( newDiscNumber )
+    m_discNumber = newDiscNumber;
 }
 
 int
