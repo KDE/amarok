@@ -27,7 +27,6 @@
 #include "PlaylistGraphicsView.h"
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
-#include "TheInstances.h"
 #include "statusbar/selectLabel.h"
 #include "ToolBar.h"
 #include "WidgetBackgroundPainter.h"

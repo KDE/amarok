@@ -23,7 +23,6 @@
 #include "collection/CollectionManager.h"
 #include "mediabrowser.h"
 #include "playlist/PlaylistModel.h"
-#include "TheInstances.h"
 
 #include <KUrl>
 

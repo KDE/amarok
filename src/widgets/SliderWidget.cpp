@@ -30,7 +30,6 @@
 #include "EngineController.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
-#include "TheInstances.h"
 
 #include <QContextMenuEvent>
 #include <QFontMetrics>

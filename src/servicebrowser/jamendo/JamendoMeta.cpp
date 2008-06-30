@@ -22,9 +22,6 @@
 #include "JamendoService.h"
 #include "context/popupdropper/PopupDropperAction.h"
 #include "SvgHandler.h"
-#include "TheInstances.h"
-
-
 
 #include "Debug.h"
 #include <KStandardDirs>

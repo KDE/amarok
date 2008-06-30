@@ -16,10 +16,8 @@
 #include "EngineController.h"
 #include "LastFmService.h"
 #include "RadioAdapter.h"
-#include "TheInstances.h"
 
 #include <KLocale>
-
 
 AudioController::AudioController( QObject *parent )
     : QObject( parent ), EngineObserver( The::engineController() )

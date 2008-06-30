@@ -25,7 +25,6 @@
 #include "DataEngineManager.h"
 #include "Debug.h"
 #include "Svg.h"
-#include "TheInstances.h"
 #include "Theme.h"
 
 #include <QFile>

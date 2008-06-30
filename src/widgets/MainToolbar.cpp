@@ -27,7 +27,6 @@
 #include "ProgressSlider.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
-#include "TheInstances.h"
 #include "VolumeWidget.h"
 #include "WidgetBackgroundPainter.h"
 #include "meta/CurrentTrackActionsCapability.h"

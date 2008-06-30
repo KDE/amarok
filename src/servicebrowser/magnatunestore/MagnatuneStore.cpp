@@ -27,7 +27,6 @@
 #include "MagnatuneDatabaseWorker.h"
 #include "ServiceInfoProxy.h"
 #include "ServiceSqlRegistry.h"
-#include "TheInstances.h"
 #include "collection/CollectionManager.h"
 #include "Debug.h"
 #include "magnatuneinfoparser.h"

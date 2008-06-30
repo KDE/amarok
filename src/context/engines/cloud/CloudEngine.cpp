@@ -27,7 +27,6 @@
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "ServiceInfoProxy.h"
-#include "TheInstances.h"
 
 #include <QVariant>
 

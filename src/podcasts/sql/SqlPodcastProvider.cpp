@@ -24,7 +24,6 @@
 #include "Debug.h"
 #include "PodcastReader.h"
 #include "SqlStorage.h"
-#include "TheInstances.h"
 
 #include <KLocale>
 #include <KIO/Job>

@@ -27,42 +27,47 @@
 
 #include "amarok_export.h"
 
+class SvgHandler;
+
+namespace The {
+    AMAROK_EXPORT SvgHandler* svgHandler();
+}
+
 /**
 A class to abstract out some common opperations of users of tinted svgs
-
-	@author 
 */
-class AMAROK_EXPORT SvgHandler{
-public:
+class AMAROK_EXPORT SvgHandler
+{
+    friend SvgHandler* The::svgHandler();
 
-    static SvgHandler * instance();
+    public:
 
-    ~SvgHandler();
+        ~SvgHandler();
 
-    KSvgRenderer* getRenderer( const QString &name );
-    KSvgRenderer* getRenderer();
-    QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
+        KSvgRenderer* getRenderer( const QString &name );
+        KSvgRenderer* getRenderer();
+        QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
 
-    /**
-     * OVerloaded function that uses the current theme
-     * @param keyname the name of the key to save in the cache
-     * @param width Widht of the resulting pixmap
-     * @param height Height of the resulting pixmap
-     * @param element The theme element to render ( if none the entire svg is rendered )
-     * @return The svg element/file rendered into a pixmap
-     */
-    QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString() );
-    void reTint( );
+        /**
+        * OVerloaded function that uses the current theme
+        * @param keyname the name of the key to save in the cache
+        * @param width Widht of the resulting pixmap
+        * @param height Height of the resulting pixmap
+        * @param element The theme element to render ( if none the entire svg is rendered )
+        * @return The svg element/file rendered into a pixmap
+        */
+        QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString() );
+        void reTint( );
 
-    QString themeFile();
-    void setThemeFile( const QString  & themeFile );
+        QString themeFile();
+        void setThemeFile( const QString  & themeFile );
 
-private:
-    friend class SvgHandlerSingleton;
-    SvgHandler();
+    private:
+        friend class SvgHandlerSingleton;
+        SvgHandler();
 
-    class Private;
-    Private * const d;
+        class Private;
+        Private * const d;
 
 };
 

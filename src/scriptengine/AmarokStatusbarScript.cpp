@@ -19,7 +19,6 @@
 
 #include "App.h"
 #include "statusbar/StatusBar.h"
-#include "TheInstances.h"
 
 #include <QtScript>
 

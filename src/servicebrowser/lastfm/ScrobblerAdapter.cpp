@@ -20,7 +20,6 @@
 #include "MainWindow.h"
 #include "MetaConstants.h"
 #include "meta/LastFmMeta.h"
-#include "TheInstances.h"
 #include "libUnicorn/WebService/Request.h"
 
 

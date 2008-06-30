@@ -25,7 +25,6 @@
 #include "BiasedPlaylist.h"
 #include "Collection.h"
 #include "CollectionManager.h"
-#include "TheInstances.h"
 
 #include <QVariant>
 

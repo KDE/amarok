@@ -32,7 +32,6 @@
 #include "EngineController.h"
 #include "AmarokProcess.h"
 #include "StatusBar.h"
-#include "TheInstances.h"
 #include "Osd.h"
 #include "scriptengine/AmarokEngineScript.h"
 #include "scriptengine/AmarokOSDScript.h"

@@ -31,6 +31,10 @@ class PlaylistProvider;
 class PodcastProvider;
 class KJob;
 
+namespace The {
+    AMAROK_EXPORT PlaylistManager* playlistManager();
+}
+
 /**
  * Facility for managing PlaylistProviders registered by other
  * parts of the application, plugins and scripts.
@@ -38,6 +42,8 @@ class KJob;
 class PlaylistManager : public QObject
 {
     Q_OBJECT
+
+    friend PlaylistManager* The::playlistManager();
 
     public:
         //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamically.
@@ -67,8 +73,6 @@ class PlaylistManager : public QObject
         };
 
         static PlaylistFormat getFormat( const KUrl &path );
-
-        static PlaylistManager * instance();
 
         static bool isPlaylist( const KUrl &path );
         static KUrl newPlaylistFilePath( const QString& fileExtension );

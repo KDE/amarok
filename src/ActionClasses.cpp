@@ -22,7 +22,6 @@
 #include "k3bexporter.h"
 #include "MainWindow.h"
 #include "playlist/PlaylistModel.h"
-#include "TheInstances.h"
 //#include "mediumPluginManager.h"
 
 #include "socketserver.h"       //Vis::Selector::showInstance()

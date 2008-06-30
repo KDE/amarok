@@ -27,7 +27,6 @@
 //#include "AmarokStatusBar.h"
 #include "StatusBar.h"
 #include "ui_EditCoverSearchDialog.h"
-#include "TheInstances.h"
 
 #include <KApplication>
 #include <KComboBox>

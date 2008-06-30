@@ -23,7 +23,6 @@
 #include "Debug.h"
 #include "PlaylistDropVis.h"
 #include "PlaylistModel.h"
-#include "TheInstances.h"
 
 #include <QMimeData>
 

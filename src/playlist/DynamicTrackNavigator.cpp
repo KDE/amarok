@@ -53,7 +53,7 @@ Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
     {
         setAsUpcoming( i );
     }
-    Playlist::GraphicsView::instance()->update();
+    The::playlistView()->update();
 }
 
 

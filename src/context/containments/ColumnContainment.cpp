@@ -19,7 +19,6 @@
 #include "MainWindow.h"
 #include "Svg.h"
 #include "SvgTinter.h"
-#include "TheInstances.h"
 #include "WidgetBackgroundPainter.h"
 
 #include "plasma/theme.h"

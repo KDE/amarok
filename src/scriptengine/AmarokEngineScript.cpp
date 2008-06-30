@@ -20,7 +20,6 @@
 #include "App.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "TheInstances.h"
 
 #include <QtScript>
 

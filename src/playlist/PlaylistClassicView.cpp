@@ -22,7 +22,6 @@
 #include "Debug.h"
 #include "PlaylistModel.h"
 #include "PlaylistViewCommon.h"
-#include "TheInstances.h"
 #include "TagDialog.h"
 #include "meta/CurrentTrackActionsCapability.h"
 

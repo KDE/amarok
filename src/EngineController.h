@@ -125,5 +125,9 @@ private:
     QTimer* m_fadeoutTimer;
 };
 
+namespace The {
+    AMAROK_EXPORT EngineController* engineController();
+}
+
 
 #endif

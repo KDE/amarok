@@ -26,8 +26,6 @@
 #include "SqlStorage.h"
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
-#include "TheInstances.h"
-
 
 #include <KIcon>
 

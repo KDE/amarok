@@ -24,7 +24,6 @@
 #include "Debug.h"
 
 #include "collection/Collection.h"
-#include "TheInstances.h"
 #include "SearchWidget.h"
 #include "ServiceInfoProxy.h"
 

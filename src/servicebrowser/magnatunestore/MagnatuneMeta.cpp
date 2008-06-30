@@ -23,7 +23,6 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "SvgHandler.h"
-#include "TheInstances.h"
 
 #include <KIcon>
 #include <KLocale>

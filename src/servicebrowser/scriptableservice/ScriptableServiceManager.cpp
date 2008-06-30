@@ -34,14 +34,6 @@ using namespace Meta;
 
 ScriptableServiceManager * ScriptableServiceManager::s_instance = 0;
 
-ScriptableServiceManager * ScriptableServiceManager::instance()
-{
-    if ( s_instance == 0 )
-        s_instance = new ScriptableServiceManager();
-
-    return s_instance;
-}
-
 ScriptableServiceManager::ScriptableServiceManager( )
 {
     DEBUG_BLOCK
@@ -135,9 +127,13 @@ void ScriptableServiceManager::removeRunningScript(const QString & name)
 
 
 namespace The {
+    ScriptableServiceManager*
+    scriptableServiceManager()
+    {
+        if ( ScriptableServiceManager::s_instance == 0 )
+            ScriptableServiceManager::s_instance = new ScriptableServiceManager();
 
-    ScriptableServiceManager * scriptableServiceManager() {
-        return ScriptableServiceManager::instance();
+        return ScriptableServiceManager::s_instance;
     }
 }
 

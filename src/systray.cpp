@@ -22,7 +22,6 @@
 
 #include "Amarok.h"
 #include "EngineController.h"
-#include "TheInstances.h"
 #include "TrackTooltip.h"
 #include "amarokconfig.h"
 #include "Debug.h"

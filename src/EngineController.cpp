@@ -27,7 +27,6 @@
 #include "meta/MultiPlayableCapability.h"
 #include "playlist/PlaylistModel.h"
 #include "PluginManager.h"
-#include "TheInstances.h"
 
 #include <KApplication>
 #include <KFileItem>

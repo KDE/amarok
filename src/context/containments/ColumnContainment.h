@@ -15,8 +15,6 @@
 #ifndef COLUMNCONTAINMENT_H
 #define COLUMNCONTAINMENT_H
 
-#include "TheInstances.h"
-
 #include "amarok_export.h"
 #include "context/Applet.h"
 #include "context/Containment.h"

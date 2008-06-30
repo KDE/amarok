@@ -18,7 +18,6 @@
 #include "amarokconfig.h"
 #include "EngineController.h"
 #include "SliderWidget.h"
-#include "TheInstances.h"
 
 #include <klocale.h>
 

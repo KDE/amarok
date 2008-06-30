@@ -21,10 +21,8 @@
 
 #include "Debug.h"
 #include "SvgHandler.h"
-#include "TheInstances.h"
 
 #include <QPainter>
-
 
 namespace Amarok {
 

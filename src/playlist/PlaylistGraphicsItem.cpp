@@ -29,7 +29,6 @@
 #include "PlaylistTextItem.h"
 #include "SvgTinter.h"
 #include "TagDialog.h"
-#include "TheInstances.h"
 #include "covermanager/CoverManager.h"
 #include "meta/MetaUtility.h"
 #include "meta/SourceInfoCapability.h"
@@ -475,7 +474,7 @@ Playlist::GraphicsItem::dataChanged()
 void
 Playlist::GraphicsItem::editTrackInformation()
 {
-    TagDialog *dialog = new TagDialog( m_items->track, Playlist::GraphicsView::instance() );
+    TagDialog *dialog = new TagDialog( m_items->track, The::playlistView() );
     dialog->show();
 }
 

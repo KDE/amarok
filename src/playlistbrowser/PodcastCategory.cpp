@@ -27,7 +27,6 @@
 #include "ServiceInfoProxy.h"
 #include "SvgTinter.h"
 #include "SvgHandler.h"
-#include "TheInstances.h"
 
 #include <QAction>
 #include <QFile>

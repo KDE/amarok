@@ -21,8 +21,6 @@
 
 #include "PlaylistRowList.h"
 #include "PlaylistModel.h"
-#include "TheInstances.h"
-
 
 Playlist::RowList::RowList()
 {

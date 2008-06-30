@@ -30,7 +30,6 @@
 #include "PlaylistModel.h"
 #include "PlaylistViewCommon.h"
 #include "SvgTinter.h"
-#include "TheInstances.h"
 #include "WidgetBackgroundPainter.h"
 #include "meta/CurrentTrackActionsCapability.h"
 
@@ -497,13 +496,6 @@ void Playlist::GraphicsView::rowsChanged( int start )
         m_tracks.at( i )->setRow( i );
 }
 
-
-
-
-namespace The {
-    Playlist::GraphicsView* playlistView() { return Playlist::GraphicsView::instance(); }
-}
-
 void Playlist::GraphicsView::paletteChange(const QPalette & oldPalette)
 {
     Q_UNUSED( oldPalette );
@@ -514,6 +506,14 @@ void Playlist::GraphicsView::paletteChange(const QPalette & oldPalette)
     }
 }
 
+namespace The {
+    Playlist::GraphicsView* playlistView()
+    {
+        if( !Playlist::GraphicsView::s_instance )
+            Playlist::GraphicsView::s_instance = new Playlist::GraphicsView();
+        return Playlist::GraphicsView::s_instance;
+    }
+}
 
 #include "PlaylistGraphicsView.moc"
 

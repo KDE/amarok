@@ -22,7 +22,6 @@
 #include "meta/MetaUtility.h"
 #include "StarManager.h"
 #include "SvgHandler.h"
-#include "TheInstances.h"
 
 #include <plasma/panelsvg.h>
 

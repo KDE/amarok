@@ -25,7 +25,6 @@
 #include "meta/MetaUtility.h"
 #include "moodbar.h"
 #include "EngineController.h"
-#include "TheInstances.h"
 
 #include <KCalendarSystem>
 #include <KStandardDirs>

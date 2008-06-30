@@ -21,7 +21,6 @@
 
 #include "Debug.h"
 #include "EngineController.h"
-#include "TheInstances.h"
 
 #include <KGlobal>
 

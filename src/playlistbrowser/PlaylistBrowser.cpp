@@ -26,7 +26,6 @@
 #include "PodcastMeta.h"
 #include "PodcastModel.h"
 #include "PodcastCategory.h"
-#include "TheInstances.h"
 #include "PlaylistManager.h"
 
 #include <kicon.h>

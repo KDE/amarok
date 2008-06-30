@@ -21,7 +21,6 @@
 #include "playlist/PlaylistModel.h"
 #include "querybuilder.h"
 #include "TagDialog.h"         //showContextMenu()
-#include "TheInstances.h"
 
 #include <k3multipledrag.h>
 #include <k3urldrag.h>          //startDrag()

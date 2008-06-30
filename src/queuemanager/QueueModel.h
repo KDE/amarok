@@ -18,11 +18,21 @@
 
 #include <QAbstractListModel>
 
+namespace QueueManagerNS {
+    class Model;
+}
+
+namespace The {
+    QueueManagerNS::Model* queueModel();
+}
+
 namespace QueueManagerNS
 {
     class Model : public QAbstractListModel
     {
         Q_OBJECT
+
+        friend QueueManagerNS::Model* The::queueModel();
 
         public:
             Model( QObject *parent = 0 );
@@ -37,13 +47,12 @@ namespace QueueManagerNS
             QStringList     mimeTypes() const;
             Qt::DropActions supportedDropActions() const;
 
-            static Model *s_instance;
-
         public slots:
             void clear();
 
         private:
             Meta::TrackList m_tracks;   // list of tracks in order of desired queue
+            static Model *s_instance;
     };
 }
 

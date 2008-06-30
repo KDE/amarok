@@ -17,7 +17,6 @@
 
 #include "Debug.h"
 #include "QueueModel.h"
-#include "TheInstances.h"
 
 #include <KApplication>
 #include <KLocale>

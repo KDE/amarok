@@ -39,7 +39,6 @@
 #include "QueryMaker.h"
 #include "SvgHandler.h"
 #include "TagDialog.h"
-#include "TheInstances.h"
 
 #include <QContextMenuEvent>
 #include <QHash>

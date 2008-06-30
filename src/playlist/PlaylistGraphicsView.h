@@ -31,6 +31,15 @@
 class GraphicsItem;
 class QModelIndex;
 
+namespace Playlist {
+    class GraphicsView;
+}
+
+namespace The {
+    Playlist::GraphicsView*  playlistView();
+}
+
+
 namespace Playlist
 {
     class GraphicsItem;
@@ -38,13 +47,10 @@ namespace Playlist
     class GraphicsView : public QGraphicsView
     {
         Q_OBJECT
+
+        friend Playlist::GraphicsView* The::playlistView();
+
         public:
-            static GraphicsView *instance()
-            {
-                if( !s_instance )
-                    s_instance = new GraphicsView();
-                return s_instance;
-            }
             void  setModel( Playlist::Model *model );
 
             const QList<GraphicsItem*> tracks() const { return m_tracks; }

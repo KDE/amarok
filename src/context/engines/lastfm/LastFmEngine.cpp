@@ -23,7 +23,6 @@
 #include "ContextView.h"
 #include "EngineController.h"
 #include "collection/SqlStorage.h"
-#include "TheInstances.h"
 
 #include "kio/job.h"
 #include <KLocale>

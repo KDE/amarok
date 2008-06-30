@@ -20,7 +20,6 @@
 
 #include "Debug.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "TheInstances.h"
 #include "PodcastProvider.h"
 #include "PodcastMeta.h"
 

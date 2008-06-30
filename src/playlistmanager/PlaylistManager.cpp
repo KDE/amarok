@@ -25,7 +25,6 @@
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"
 #include "sql/SqlPodcastProvider.h"
-#include "TheInstances.h"
 #include "Debug.h"
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
@@ -47,7 +46,10 @@ PlaylistManager * PlaylistManager::s_instance = 0;
 PlaylistManager*
 The::playlistManager()
 {
-    return PlaylistManager::instance();
+    if ( PlaylistManager::s_instance == 0 )
+        PlaylistManager::s_instance = new PlaylistManager();
+
+    return PlaylistManager::s_instance;
 }
 
 bool
@@ -90,15 +92,6 @@ PlaylistManager::PlaylistManager()
 PlaylistManager::~PlaylistManager()
 {
     delete m_defaultPodcastProvider;
-}
-
-PlaylistManager *
-PlaylistManager::instance()
-{
-    if ( s_instance == 0 )
-        s_instance = new PlaylistManager();
-
-    return s_instance;
 }
 
 void

@@ -21,7 +21,6 @@
 #include "App.h"
 #include "EngineController.h"
 #include "PlayerAdaptor.h"
-#include "TheInstances.h"
 
 namespace Amarok
 {

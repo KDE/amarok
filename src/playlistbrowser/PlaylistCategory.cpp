@@ -24,7 +24,6 @@
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
 #include "StatusBar.h"
-#include "TheInstances.h"
 #include "UserPlaylistModel.h"
 
 #include <KAction>

@@ -21,7 +21,6 @@
 #include "ActionClasses.h"
 #include "EngineController.h"
 #include "ProgressSlider.h"
-#include "TheInstances.h"
 
 #include <QLabel>
 #include <kglobalsettings.h>

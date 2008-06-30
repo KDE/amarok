@@ -22,7 +22,6 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "meta/default/DefaultMetaTypes.h"
-#include "TheInstances.h"
 
 using namespace Meta;
 

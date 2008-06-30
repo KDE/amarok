@@ -53,6 +53,15 @@ namespace Amarok
     bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right );
 }
 
+namespace Playlist {
+    class Model;
+}
+
+namespace The {
+    AMAROK_EXPORT Playlist::Model*   playlistModel();
+}
+
+
 namespace Playlist
 {
     class TrackNavigator;
@@ -133,6 +142,8 @@ namespace Playlist
         friend class AddTracksCmd;
         friend class AddPlaylistsCmd;
         friend class RemoveTracksCmd;
+        friend Playlist::Model* The::playlistModel();
+
         Q_OBJECT
 
         public:
@@ -227,8 +238,6 @@ namespace Playlist
 
             StopAfterMode stopAfterMode() const { return m_stopAfterMode; }
             void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; }
-            static Model* s_instance; //! instance variable
-
         public slots:
             void play( const QModelIndex& index );
             void next();
@@ -309,9 +318,8 @@ namespace Playlist
 
             Playlist::StopAfterMode m_stopAfterMode;
 
+            static Model* s_instance; //! instance variable
     };
 }
-
-
 
 #endif

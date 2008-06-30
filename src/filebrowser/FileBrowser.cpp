@@ -22,7 +22,6 @@
 //BEGIN Includes
 #include "FileBrowser.h"
 
-#include "TheInstances.h"
 #include "collection/CollectionManager.h"
 #include "filebrowser/MyDirOperator.h"
 #include "filebrowser/kbookmarkhandler.h"

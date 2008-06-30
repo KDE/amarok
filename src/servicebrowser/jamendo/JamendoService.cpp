@@ -25,7 +25,6 @@
 #include "JamendoInfoParser.h"
 #include "JamendoXmlParser.h"
 #include "ServiceSqlRegistry.h"
-#include "TheInstances.h"
 
 #include <KTemporaryFile>
 #include <KRun>

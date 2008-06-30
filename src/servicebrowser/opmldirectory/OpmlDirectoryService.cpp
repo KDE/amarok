@@ -25,7 +25,6 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "podcasts/PodcastProvider.h"
 #include "ServiceSqlRegistry.h"
-#include "TheInstances.h"
 
 #include <KTemporaryFile>
 #include <KRun>

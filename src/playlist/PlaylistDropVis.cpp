@@ -24,7 +24,6 @@
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistGraphicsView.h"
 #include "PlaylistModel.h"
-#include "TheInstances.h"
 
 #include <QPen>
 #include <QGraphicsScene>

@@ -23,7 +23,6 @@
 #include "ServiceBase.h"
 #include "ServiceListModel.h"
 #include "SvgTinter.h"
-#include "TheInstances.h"
 
 #include <QApplication>
 #include <QIcon>

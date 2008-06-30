@@ -45,7 +45,6 @@
 #include "SearchWidget.h"
 #include "StatusBar.h"
 #include "transferdialog.h"
-#include "TheInstances.h"
 
 #include <q3header.h>
 #include <Q3PopupMenu>

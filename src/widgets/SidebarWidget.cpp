@@ -23,7 +23,6 @@
 #include "Debug.h"
 
 #include "SvgTinter.h"
-#include "TheInstances.h"
 
 #include <KIconEffect>
 

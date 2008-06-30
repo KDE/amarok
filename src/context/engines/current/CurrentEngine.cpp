@@ -21,7 +21,6 @@
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "meta/SourceInfoCapability.h"
-#include "TheInstances.h"
 
 #include <QVariant>
 

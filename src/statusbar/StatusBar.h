@@ -30,10 +30,21 @@
 
 class QTimer;
 
+namespace Amarok {
+    class StatusBar;
+}
+
+namespace The {
+    inline AMAROK_EXPORT Amarok::StatusBar* statusBar();
+}
+
+
 namespace Amarok
 {
     class AMAROK_EXPORT StatusBar : public KDE::StatusBar, public EngineObserver
     {
+        friend Amarok::StatusBar* The::statusBar();
+
         static StatusBar* s_instance;
 
         public:
@@ -67,7 +78,11 @@ namespace Amarok
 
 namespace The
 {
-    inline AMAROK_EXPORT Amarok::StatusBar *statusBar() { return Amarok::StatusBar::instance(); }
+    Amarok::StatusBar*
+    statusBar()
+    {
+        return Amarok::StatusBar::instance();
+    }
 }
 
 #endif

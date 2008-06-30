@@ -27,7 +27,6 @@
 #include "meta/MetaUtility.h"
 #include "meta/StreamInfoCapability.h"
 #include "PlaylistManager.h"
-#include "TheInstances.h"
 
 #include <kurl.h>
 #include <KMessageBox>

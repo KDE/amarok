@@ -39,7 +39,6 @@
 #include "RepeatTrackNavigator.h"
 #include "StandardTrackNavigator.h"
 #include "StatusBar.h"
-#include "TheInstances.h"
 #include "UndoCommands.h"
 
 #include "collection/BlockingQuery.h"

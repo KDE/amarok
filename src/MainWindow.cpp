@@ -31,7 +31,6 @@
 #include "Sidebar.moc"
 #include "Statistics.h"
 #include "StatusBar.h"
-#include "TheInstances.h"
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
 #include "collectionbrowser/CollectionWidget.h"

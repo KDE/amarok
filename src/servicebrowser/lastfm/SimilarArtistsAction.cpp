@@ -21,7 +21,6 @@
 #include "playlist/PlaylistModel.h"
 #include "collection/CollectionManager.h"
 #include "SvgHandler.h"
-#include "TheInstances.h"
 
 #include <KIcon>
 

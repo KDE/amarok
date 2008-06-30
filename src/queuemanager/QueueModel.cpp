@@ -16,12 +16,11 @@
 #include "AmarokMimeData.h"
 #include "Debug.h"
 #include "Meta.h"
-#include "TheInstances.h"
 
 using namespace QueueManagerNS;
 using namespace Meta;
 
-Model *Model::s_instance = 0;
+QueueManagerNS::Model* QueueManagerNS::Model::s_instance = 0;
 
 Model::Model( QObject* parent )
     : QAbstractListModel( parent )

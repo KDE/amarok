@@ -26,15 +26,7 @@
 #include <QBuffer>
 #include <KFilterDev>
 
-SvgTinter * SvgTinter::m_instance = 0;
-
-SvgTinter * SvgTinter::instance()
-{
-    if ( m_instance == 0 )
-        m_instance = new SvgTinter();
-
-    return m_instance;
-}
+SvgTinter * SvgTinter::s_instance = 0;
 
 SvgTinter::SvgTinter()
     : m_firstRun( true )
@@ -129,7 +121,14 @@ SvgTinter::blendColors( const QColor& color1, const QColor& color2, int percent 
 }
 
 namespace The {
-    AMAROK_EXPORT SvgTinter* svgTinter() { return SvgTinter::instance(); }
+    SvgTinter*
+    svgTinter()
+    {
+        if ( SvgTinter::s_instance == 0 )
+            SvgTinter::s_instance = new SvgTinter();
+
+        return SvgTinter::s_instance;
+    }
 }
 
 

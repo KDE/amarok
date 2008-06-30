@@ -19,7 +19,6 @@
 
 #include "Debug.h"
 #include "DynamicModel.h"
-#include "TheInstances.h"
 #include "amarokconfig.h"
 #include "playlist/PlaylistModel.h"
 

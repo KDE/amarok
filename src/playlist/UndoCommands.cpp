@@ -20,7 +20,6 @@
 
 #include "UndoCommands.h"
 
-#include "TheInstances.h"
 
 using namespace Playlist;
 using namespace Qt;

@@ -22,7 +22,6 @@
 #include "Debug.h"
 #include "MainWindow.h"
 #include "SvgHandler.h"
-#include "TheInstances.h"
 
 #include <QPixmap>
 #include <QPixmapCache>

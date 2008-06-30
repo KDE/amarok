@@ -19,7 +19,6 @@
 #include "ContextView.h"
 #include "EngineController.h"
 #include "ScriptManager.h"
-#include "TheInstances.h"
 
 #include <QDomDocument>
 

@@ -21,13 +21,10 @@
 #include "meta/LastFmCapability.h"
 #include "playlist/PlaylistModel.h"
 #include "widgets/SearchWidget.h"
-#include "TheInstances.h"
 
 #include <QComboBox>
 
-
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
-
 
 void
 LastFmServiceFactory::init()

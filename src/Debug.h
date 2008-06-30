@@ -134,11 +134,7 @@ namespace Debug
     static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX + " [ERROR!]" ); }
     static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX ); }
 
-    typedef kdbgstream DebugStream;
-
     #undef AMK_PREFIX
-
-    typedef kndbgstream NoDebugStream;
 
     static inline void perfLog( const QString &message, const QString &func )
     {
@@ -157,7 +153,6 @@ using Debug::debug;
 using Debug::warning;
 using Debug::error;
 using Debug::fatal;
-using Debug::DebugStream;
 
 /// Standard function announcer
 #define DEBUG_FUNC_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() ; Debug::mutex.unlock(); }

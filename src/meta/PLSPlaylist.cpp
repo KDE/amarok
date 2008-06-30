@@ -17,11 +17,11 @@
 */
 
 #include "PLSPlaylist.h"
+
 #include "Debug.h"
 #include "Meta.h"
 #include "proxy/MetaProxy.h"
 #include "EditCapability.h"
-#include "TheInstances.h"
 #include "PlaylistManager.h"
 
 #include <KLocale>

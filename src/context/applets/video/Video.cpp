@@ -24,7 +24,6 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "TheInstances.h"
 #include "context/ContextView.h"
 #include "context/Svg.h"
 

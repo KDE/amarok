@@ -19,7 +19,6 @@
 
 #include "App.h"
 #include "EngineController.h"
-#include "TheInstances.h"
 
 #include <QtScript>
 

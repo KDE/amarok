@@ -27,17 +27,20 @@
 #include <QObject>
 #include <QString>
 
+class ScriptableServiceManager;
 
+namespace The {
+    AMAROK_EXPORT ScriptableServiceManager* scriptableServiceManager();
+}
  
 class ScriptableServiceManager : public QObject
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.amarok.ScriptableServiceManager")
 
+    friend ScriptableServiceManager* The::scriptableServiceManager();
+
     public:
-
-        static ScriptableServiceManager * instance();
-
         void addRunningScript( const QString &name, AmarokProcIO* script );
         void removeRunningScript( const QString &name );
 

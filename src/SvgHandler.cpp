@@ -24,7 +24,6 @@
 #include "Debug.h"
 #include "MainWindow.h"
 #include "SvgTinter.h"
-#include "TheInstances.h"
 
 #include <KStandardDirs>
 
@@ -54,10 +53,14 @@ class SvgHandlerSingleton
 
 K_GLOBAL_STATIC( SvgHandlerSingleton, privateInstance )
 
-SvgHandler * SvgHandler::instance()
-{
-    return &privateInstance->instance;
+namespace The {
+    SvgHandler*
+    svgHandler()
+    {
+        return &privateInstance->instance;;
+    }
 }
+
 
 
 SvgHandler::SvgHandler()
@@ -183,14 +186,4 @@ void SvgHandler::setThemeFile( const QString & themeFile )
     QPixmapCache::clear();
     App::instance()->mainWindow()->update();
 }
-
-
-
-namespace The {
-    AMAROK_EXPORT SvgHandler* svgHandler() { return SvgHandler::instance(); }
-}
-
-
-
-
 
