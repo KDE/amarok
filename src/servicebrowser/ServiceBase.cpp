@@ -89,8 +89,8 @@ ServiceBase *ServiceBase::s_instance = 0;
 ServiceBase::ServiceBase( const QString &name )
         : KVBox( 0)
         , m_polished( false )
-        , m_infoParser( 0 )
         , m_serviceready( false )
+        , m_infoParser( 0 )
 {
     DEBUG_BLOCK
 
