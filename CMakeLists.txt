@@ -76,6 +76,9 @@ macro_log_feature( LIBXML2_FOUND "libxml2" "LibXML2 is an XML parser required by
 find_package(OpenSSL)
 macro_log_feature( OPENSSL_FOUND "openssl" "OpenSSL provides cryptographic functions required by mp3tunes." "http://www.openssl.org/" FALSE "" "" )
 
+find_package(GObject)
+macro_log_feature( GOBJECT_FOUND "gobject" "Required by mp3tunes." "http://www.gtk.org" FALSE "2.x" "" )
+
 macro_optional_find_package(Loudmouth)
 macro_log_feature( LOUDMOUTH_FOUND "loudmouth" "Loudmouth is the communication backend needed by mp3tunes for synching." "http://www.loudmouth-project.org" FALSE "" "" )
 
