@@ -558,7 +558,7 @@ ScriptManager::slotRunScript( bool silent )
     const KUrl url = m_scripts[name].url;
 
     //load the wrapper classes
-    startScriptEngine( m_scripts[name].engine, url );
+    startScriptEngine( name );
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
     m_scripts[name].running = true;
@@ -609,8 +609,10 @@ ScriptManager::slotStopScript()
     // Just a sanity check
     if( m_scripts.find( name ) == m_scripts.end() )
         return;
+    m_scripts[name].engine->abortEvaluation();
     m_scripts[name].running = false;
-//todo implement the scriptEngine termination code here
+
+//todo: handle the gui stuff
     m_scripts[name].log = QString::null;
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
 
@@ -627,11 +629,7 @@ ScriptManager::slotConfigureScript()
     //implement a signal
     const QString name = m_gui->treeWidget->currentItem()->text( 0 );
       if( !m_scripts[name].running ) return;
-
-    const KUrl url = m_scripts[name].url;
-    QDir::setCurrent( url.directory() );
-
-//    m_scripts[name].process->writeStdin( QString("configure") );
+    m_scripts[name].globalPtr->slotConfigured();
 }
 
 
@@ -925,22 +923,21 @@ ScriptManager::loadScript( const QString& path )
 */
 
 void
-ScriptManager::startScriptEngine( QScriptEngine* scriptEngine, KUrl url )
+ScriptManager::startScriptEngine( QString name )
 {
     DEBUG_BLOCK
+
+    QScriptEngine* scriptEngine = m_scripts[name].engine;
+
     QScriptValue scriptObject;
-    debug() << "1";
-    debug() << url.path();
-    scriptObject = scriptEngine->newQObject( new Amarok::ScriptImporter( scriptEngine, url ) );
-    debug() << "2";
+    scriptObject = scriptEngine->newQObject( new Amarok::ScriptImporter( scriptEngine, m_scripts[name].url ) );
     scriptEngine->globalObject().setProperty( "Importer", scriptObject );
-    debug() << "3";
-    m_global = scriptEngine->newQObject( new Amarok::AmarokScript( scriptEngine ) );
-    debug() << "4";
+
+    m_scripts[name].globalPtr = new Amarok::AmarokScript( scriptEngine );
+    m_global = scriptEngine->newQObject( m_scripts[name].globalPtr );
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
-    debug() << "5";
+
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokEngineScript( scriptEngine ) );
-    debug() << "6";
     m_global.setProperty( "Engine", scriptObject );
 
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokTrackInfoScript( scriptEngine ) );

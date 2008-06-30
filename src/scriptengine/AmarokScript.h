@@ -35,8 +35,12 @@ namespace Amarok
         public slots:
             virtual QString  Version();
             virtual void     Quit();
+            void slotConfigured();
 
-        private:
+        signals:
+            void configured();
+
+        private slots:
 
     };
 }

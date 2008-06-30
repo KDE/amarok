@@ -23,6 +23,7 @@
 
 #include "EngineObserver.h"   //baseclass
 #include "MainWindow.h"
+#include "scriptengine/AmarokScript.h"
 #include "ui_ScriptManagerBase.h"
 
 #include <KDialog>      //baseclass
@@ -154,7 +155,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 //        void engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool /*trackChanged*/ );
 //        void engineVolumeChanged( int newVolume );
 
-        void startScriptEngine( QScriptEngine* scriptEngine, KUrl url);
+        void startScriptEngine( QString name);
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
@@ -171,15 +172,16 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         bool                   m_installSuccess;
 
         struct ScriptItem {
-            QScriptEngine*   engine;
-            KUrl             url;
-            QString          type;
-            QString          version;
-            QString          AmarokVersion;
-            QTreeWidgetItem* li;
-            bool             running;
-            QString          log;
-            ScriptItem() :   li( 0 ), running( false ){}
+            QScriptEngine*         engine;
+            KUrl                   url;
+            QString                type;
+            QString                version;
+            QString                AmarokVersion;
+            QTreeWidgetItem*       li;
+            bool                   running;
+            Amarok::AmarokScript*  globalPtr;
+            QString                log;
+            ScriptItem() :         li( 0 ), running( false ){}
         };
 
         typedef QMap<QString, ScriptItem> ScriptMap;

@@ -46,3 +46,10 @@ if ( TrackInfo.Artist || TrackInfo.Album )
 
     StatusBar.shortMessage( "You are listening to album: " + TrackInfo.Album );
 }
+
+function Configured()
+{
+    print( "Configure Button Clicked!" );
+}
+
+Amarok.configured.connect( Configured );

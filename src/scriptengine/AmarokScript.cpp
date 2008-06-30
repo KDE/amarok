@@ -44,7 +44,10 @@ namespace Amarok
         kapp->closeAllWindows();
     }
 
-
+    void AmarokScript::slotConfigured()
+    {
+        emit configured();
+    }
 }
 
 #include "AmarokScript.moc"
