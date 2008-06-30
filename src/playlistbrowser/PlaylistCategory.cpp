@@ -190,7 +190,14 @@ PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
     if( !dialog )
         return;
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( dialog->streamUrl() );
-    PlaylistBrowserNS::UserModel::instance()->createNewStream(  dialog->streamName(), track );
+    if( !track.isNull() )
+    {
+        PlaylistBrowserNS::UserModel::instance()->createNewStream(  dialog->streamName(), track );
+    }
+    else
+    {
+        warning() << "No Meta::Track returned for " << dialog->streamUrl();
+    }
 }
 
 PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
