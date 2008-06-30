@@ -22,6 +22,7 @@
 #include "CollectionTreeView.h"
 
 #include "Amarok.h"
+#include "App.h"
 #include "Debug.h"
 #include "CollectionLocation.h"
 #include "CollectionManager.h"
@@ -286,8 +287,6 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             pdi->setAction( action );
             pdi->setFont( font );
             pdi->setHoverMsecs( 800 );
-            pdi->setHoveredTextColor( Qt::cyan );
-            pdi->setHoveredBorderColor( Qt::darkMagenta );
             m_pd->addItem( pdi, false );
         }
 
@@ -326,8 +325,6 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 pdi2->setAction( action );
                 pdi2->setFont( font );
                 pdi2->setHoverMsecs( 800 );
-                pdi2->setHoveredTextColor( Qt::cyan );
-                pdi2->setHoveredBorderColor( Qt::darkMagenta );
                 copyPud->addItem( pdi2, false );
 
             }
@@ -343,8 +340,6 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 pdi3->setAction( action );
                 pdi3->setFont( font );
                 pdi3->setHoverMsecs( 800 );
-                pdi3->setHoveredTextColor( Qt::cyan );
-                pdi3->setHoveredBorderColor( Qt::darkMagenta );
                 movePud->addItem( pdi3, false );
             }
             subItem = m_pd->addSubmenu( &movePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Move to Collection" )  );
@@ -378,8 +373,9 @@ PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
     pd->setFadeOutTime( 300 );
     QColor windowColor( Qt::black );
     windowColor.setAlpha( 128 );
-    QColor textColor( Qt::white );
-    pd->setColors( windowColor, textColor, textColor.lighter( 150 ), textColor.lighter( 150 ) );
+    QColor textColor( App::instance()->palette().color( QPalette::HighlightedText ) );
+    QColor borderColor( App::instance()->palette().color( QPalette::Highlight ) );
+    pd->setColors( windowColor, textColor, borderColor, borderColor );
 
     return pd;
 }
