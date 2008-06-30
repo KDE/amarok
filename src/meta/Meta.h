@@ -46,7 +46,6 @@ namespace Meta
     class Genre;
     class Composer;
     class Year;
-    class MagnatuneAlbum;
 
     typedef KSharedPtr<MetaBase> DataPtr;
     typedef QList<DataPtr> DataList;
