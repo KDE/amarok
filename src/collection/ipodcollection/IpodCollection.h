@@ -31,6 +31,7 @@ extern "C" {
 #include "ipodhandler.h"
 
 #include <QtGlobal>
+#include <QMap>
 
 class IpodCollection;
 
@@ -53,6 +54,7 @@ class IpodCollectionFactory : public CollectionFactory
     void deviceRemoved( const QString &udi );
     
     private:
+    QMap<QString, IpodCollection*> m_collectionMap;
 
 };
 
@@ -63,6 +65,8 @@ class IpodCollection : public Collection, public MemoryCollection
 
     IpodCollection( const QString &mountPoint );
     virtual ~IpodCollection();
+
+    void deviceRemoved( const QString &udi );
 
     virtual void startFullScan();
     virtual QueryMaker* queryMaker();

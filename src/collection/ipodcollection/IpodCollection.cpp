@@ -130,6 +130,7 @@ IpodCollectionFactory::deviceAdded(  const QString &udi )
         if ( coll )
         {
             emit newCollection( coll );
+            m_collectionMap.insert( udi, coll );
             debug() << "New Ipod Found, collection created!";
         }
     }
@@ -140,8 +141,20 @@ IpodCollectionFactory::deviceAdded(  const QString &udi )
 void
 IpodCollectionFactory::deviceRemoved( const QString &udi )
 {
-    // TODO: tell collectionmanager to erase collection
-    Q_UNUSED( udi );
+    if (  m_collectionMap.contains( udi ) )
+    {
+        IpodCollection* coll = m_collectionMap[ udi ];
+                if (  coll )
+                {
+                    m_collectionMap.remove( udi ); // remove from map
+                    coll->deviceRemoved( udi );  //collection will be deleted by collectionmanager
+                }
+                else
+                    warning() << "collection already null";
+    }
+    else
+        warning() << "removing non-existent device";
+
     return;
 }
 
@@ -180,6 +193,12 @@ IpodCollection::IpodCollection( const QString &mountPoint )
 IpodCollection::~IpodCollection()
 {
 
+}
+
+void
+IpodCollection::deviceRemoved( const QString &udi )
+{
+    emit remove();
 }
 
 void
