@@ -285,6 +285,8 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             PopupDropperItem* pdi = new PopupDropperItem();
             pdi->setAction( action );
             pdi->setFont( font );
+            pdi->setHoverMsecs( 800 );
+            pdi->setHoveredTextColor( Qt::cyan );
             m_pd->addItem( pdi, false );
         }
 
@@ -322,6 +324,8 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 PopupDropperItem* pdi2 = new PopupDropperItem();
                 pdi2->setAction( action );
                 pdi2->setFont( font );
+                pdi2->setHoverMsecs( 800 );
+                pdi2->setHoveredTextColor( Qt::cyan );
                 copyPud->addItem( pdi2, false );
 
             }
@@ -336,6 +340,8 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 PopupDropperItem* pdi3 = new PopupDropperItem();
                 pdi3->setAction( action );
                 pdi3->setFont( font );
+                pdi3->setHoverMsecs( 800 );
+                pdi3->setHoveredTextColor( Qt::cyan );
                 movePud->addItem( pdi3, false );
             }
             subItem = m_pd->addSubmenu( &movePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Move to Collection" )  );
@@ -351,8 +357,8 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     if( m_pd )
     {
         debug() << "clearing PUD";
-        m_pd->hideAllOverlays();
-        m_pd->clear();
+        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        m_pd->hide();
     }
     ongoingDrags = false;
 }
@@ -885,7 +891,10 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent * event )
     Q_UNUSED( event )
 
     if( m_pd )
-        m_pd->deleteLater();
+    {
+        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
+        m_pd->hide();
+    }
     m_pd = 0;
 }
 
