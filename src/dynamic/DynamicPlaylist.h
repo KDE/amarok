@@ -27,7 +27,7 @@
 #include <QSharedData>
 
 
-namespace Meta {
+namespace Dynamic {
 
 /**
  * Provides a basis for dynamic playlists which operate like a stream
@@ -60,7 +60,6 @@ class DynamicPlaylist : public QSharedData
         QString m_title;
         int     m_upcoming;
         int     m_previous;
-
 };
 
 
@@ -71,8 +70,8 @@ typedef QList<DynamicPlaylistPtr> DynamicPlaylistList;
 
 }
 
-Q_DECLARE_METATYPE( Meta::DynamicPlaylistPtr )
-Q_DECLARE_METATYPE( Meta::DynamicPlaylistList )
+Q_DECLARE_METATYPE( Dynamic::DynamicPlaylistPtr )
+Q_DECLARE_METATYPE( Dynamic::DynamicPlaylistList )
 
 #endif
 

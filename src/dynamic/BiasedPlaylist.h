@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2008 Daniel Jones <danielcjones@gmail.com>
+ * copyright         : (C) 2008 Daniel Caleb Jones <danielcjones@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,36 +18,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#ifndef AMAROK_BIASEDPLAYLIST_H
+#define AMAROK_BIASEDPLAYLIST_H
 
-#ifndef AMAROK_RANDOMPLAYLIST_H
-#define AMAROK_RANDOMPLAYLIST_H
-
+#include "Bias.h"
+#include "BiasSolver.h"
 #include "DynamicPlaylist.h"
 #include "Meta.h"
+#include "RandomPlaylist.h"
 
-class Collection;
-class QueryMaker;
+#include <QObject>
+#include <QEventLoop>
 
-namespace Dynamic {
-
-    /**
-     * A temporary random mode; it will be replaced by a biased playlist when it's
-     * ready
-     */
-    class RandomPlaylist : public DynamicPlaylist
+namespace Dynamic
+{
+    class BiasedPlaylist : public QObject, public DynamicPlaylist
     {
-        public:
-            RandomPlaylist();
-            RandomPlaylist( Collection* );
-            ~RandomPlaylist();
+        Q_OBJECT
 
-            Meta::TrackPtr  getTrack();
+        public:
+            BiasedPlaylist( QString title, QList<Bias*>, Collection* m_collection );
+            ~BiasedPlaylist();
+
+            Meta::TrackPtr getTrack();
+            void recalculate();
+
+        private slots:
+            void solverFinished( ThreadWeaver::Job* );
+            void collectionUpdated();
 
         private:
-            void fillCache();
-            static const int CACHE_SIZE = 100;
-            Meta::TrackList m_cache;
+            void startSolver();
+
+            Meta::TrackList m_buffer;
+            Meta::TrackList m_backbuffer;
+
+            QList<Bias*> m_biases;
+            Collection* m_collection;
+
+            BiasSolver* m_solver;
+            QEventLoop  m_solverLoop;
+
+            RandomPlaylist m_randomSource;
+
+            static const int BUFFER_SIZE;
     };
 }
 
 #endif
+

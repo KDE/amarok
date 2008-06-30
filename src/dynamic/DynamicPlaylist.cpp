@@ -22,51 +22,51 @@
 #include "DynamicPlaylist.h"
 #include "CollectionManager.h"
 
-using namespace Meta;
 
-DynamicPlaylist::DynamicPlaylist()
+Dynamic::DynamicPlaylist::DynamicPlaylist()
     : m_collection( CollectionManager::instance()->primaryCollection() ),
       m_upcoming(10), m_previous(5)
 
 {
 }
 
-DynamicPlaylist::DynamicPlaylist( Collection* coll )
+Dynamic::DynamicPlaylist::DynamicPlaylist( Collection* coll )
     : m_collection( coll ),
       m_upcoming(10), m_previous(5)
 {
 }
 
-DynamicPlaylist::~DynamicPlaylist()
+Dynamic::DynamicPlaylist::~DynamicPlaylist()
 {
 }
 
 
 Meta::TrackList
-DynamicPlaylist::getTracks( int count )
+Dynamic::DynamicPlaylist::getTracks( int count )
 {
     Meta::TrackList tracks;
     while( count-- )
         tracks.append( getTrack() );
 
+    tracks.removeAll( Meta::TrackPtr() );
+
     return tracks;
 }
 
 void
-DynamicPlaylist::recalculate()
+Dynamic::DynamicPlaylist::recalculate()
 {
     // do nothing by default
 }
 
 
-// TODO: DynamicModel must know about this, or bad things will happen
-QString DynamicPlaylist::title() const     { return m_title; }
+QString Dynamic::DynamicPlaylist::title() const     { return m_title; }
 
-int DynamicPlaylist::upcomingCount() const { return m_upcoming; }
-int DynamicPlaylist::previousCount() const { return m_previous; }
+int Dynamic::DynamicPlaylist::upcomingCount() const { return m_upcoming; }
+int Dynamic::DynamicPlaylist::previousCount() const { return m_previous; }
 
-void DynamicPlaylist::setTitle( QString title )        { m_title = title; }
-void DynamicPlaylist::setUpcomingCount( int upcoming ) { m_upcoming = upcoming; }
-void DynamicPlaylist::setPreviousCount( int previous ) { m_previous = previous; }
+void Dynamic::DynamicPlaylist::setTitle( QString title )        { m_title = title; }
+void Dynamic::DynamicPlaylist::setUpcomingCount( int upcoming ) { m_upcoming = upcoming; }
+void Dynamic::DynamicPlaylist::setPreviousCount( int previous ) { m_previous = previous; }
 
 

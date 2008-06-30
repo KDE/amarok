@@ -39,6 +39,7 @@ class DynamicCategory : public Amarok::Widget
 
     private slots:
         void OnOff(bool);
+        void playlistSelectionChanged( int index ); //TODO
 
 
     private:
