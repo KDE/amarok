@@ -574,7 +574,8 @@ Mp3tunesLocker::authenticated() const
 char *
 Mp3tunesLocker::convertToChar ( const QString &source ) const
 {
-    const char *c_tok = source.toLatin1().constData();
+    QByteArray b = source.toAscii();
+    const char *c_tok = b.constData();
     char * ret = ( char * ) malloc ( strlen ( c_tok ) );
     strcpy ( ret, c_tok );
     return ret;
