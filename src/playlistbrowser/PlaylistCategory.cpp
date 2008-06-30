@@ -23,6 +23,7 @@
 #include "playlist/PlaylistModel.h"
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
+#include "StatusBar.h"
 #include "TheInstances.h"
 #include "UserPlaylistModel.h"
 
@@ -189,14 +190,14 @@ PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
     PlaylistBrowserNS::StreamEditor* dialog = qobject_cast<PlaylistBrowserNS::StreamEditor*>( sender() );
     if( !dialog )
         return;
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( dialog->streamUrl() );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl(  dialog->streamUrl() );
     if( !track.isNull() )
     {
         PlaylistBrowserNS::UserModel::instance()->createNewStream(  dialog->streamName(), track );
     }
     else
     {
-        warning() << "No Meta::Track returned for " << dialog->streamUrl();
+        The::statusBar()->longMessage( i18n("The stream URL provided was not valid.") );
     }
 }
 
@@ -224,13 +225,13 @@ PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
 QString 
 PlaylistBrowserNS::StreamEditor::streamName()
 {
-    return m_streamName->text();
+    return m_streamName->text().trimmed();
 }
 
 QString
 PlaylistBrowserNS::StreamEditor::streamUrl()
 {
-    return m_streamUrl->text();
+    return m_streamUrl->text().trimmed();
 }
 
 
