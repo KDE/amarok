@@ -499,7 +499,14 @@ void Playlist::GraphicsView::rowsChanged( int start )
 void Playlist::GraphicsView::paletteChange(const QPalette & oldPalette)
 {
     Q_UNUSED( oldPalette );
-    setBackgroundBrush( App::instance()->palette().window().color() );
+
+    QPalette p = palette();
+    QColor c = p.color( QPalette::Base );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+    setPalette( p );
+
+    //setBackgroundBrush( App::instance()->palette().window().color() );
     foreach( Playlist::GraphicsItem* it, m_tracks )
     {
         it->paletteChange();
