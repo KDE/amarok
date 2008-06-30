@@ -32,8 +32,6 @@
 #include <QtScript>
 
 class KArchiveDirectory;
-class AmarokProcess;
-class AmarokProcIO;
 
 
 /**
@@ -131,7 +129,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
 //        void slotReceivedStdout( AmarokProcess* );
 //        void slotReceivedStderr( AmarokProcess* );
-        void scriptFinished( AmarokProcess* process );
+        void scriptFinished();
 
     private:
         /** Returns all scripts of the given \p type */
@@ -141,9 +139,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         QString scriptRunningOfType( const QString &type ) const;
 
         QString ensureScoreScriptRunning();
-
-        /** Terminates a process with SIGTERM and deletes the ProcIO object */
-        void terminateProcess( AmarokProcIO** proc );
 
         /** Sends a string message to all running scripts */
 //        void notifyScripts( const QString& message );
@@ -179,10 +174,12 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
             QScriptEngine*   engine;
             KUrl             url;
             QString          type;
-            AmarokProcIO*    process;
+            QString          version;
+            QString          AmarokVersion;
             QTreeWidgetItem* li;
+            bool             running;
             QString          log;
-            ScriptItem() : process( 0 ), li( 0 ) {}
+            ScriptItem() :   li( 0 ), running( false ){}
         };
 
         typedef QMap<QString, ScriptItem> ScriptMap;

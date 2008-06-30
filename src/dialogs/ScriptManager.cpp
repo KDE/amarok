@@ -216,9 +216,10 @@ ScriptManager::~ScriptManager()
     QStringList runningScripts;
     foreach( const QString &key, m_scripts.keys() )
     {
-        if( m_scripts[key].process )
+        if( m_scripts[key].running )
         {
-            terminateProcess( &m_scripts[key].process );
+            m_scripts[key].running = false;
+            delete m_scripts[key].engine;
             runningScripts << key;
         }
     }
@@ -270,7 +271,7 @@ ScriptManager::listRunningScripts()
 {
     QStringList runningScripts;
     foreach( const QString &key, m_scripts.keys() )
-        if( m_scripts[key].process )
+        if( m_scripts[key].running )
             runningScripts << key;
 
     return runningScripts;
@@ -324,7 +325,7 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
 #endif
         return;
     }
-
+/*
     m_scripts[script].process->writeStdin(
         QString( "requestNewScore %6 %1 %2 %3 %4 %5" )
         .arg( prevscore )
@@ -333,6 +334,7 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
         .arg( percentage )
         .arg( reason )
         .arg( QString( QUrl::toPercentEncoding( url ) ) ) ); //last because it might have %s
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -342,12 +344,11 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
 void
 ScriptManager::findScripts() //SLOT
 {
-    const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*",KStandardDirs::Recursive );
+    const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js",KStandardDirs::Recursive );
 
     // Add found scripts to treeWidget:
     foreach( const QString &str, allFiles )
-        if( QFileInfo( str ).isExecutable() )
-            loadScript( str );
+        loadScript( str );
 
     // Handle auto-run:
 
@@ -379,9 +380,9 @@ ScriptManager::slotCurrentChanged( QTreeWidgetItem* item )
     {
         const QString name = item->text( 0 );
         m_gui->uninstallButton->setEnabled( true );
-        m_gui->runButton->setEnabled( !m_scripts[name].process );
-        m_gui->stopButton->setEnabled( m_scripts[name].process );
-        m_gui->configureButton->setEnabled( m_scripts[name].process );
+        m_gui->runButton->setEnabled( !m_scripts[name].running );
+        m_gui->stopButton->setEnabled( m_scripts[name].running );
+        m_gui->configureButton->setEnabled( m_scripts[name].running );
         m_gui->aboutButton->setEnabled( true );
     }
     else
@@ -523,7 +524,7 @@ ScriptManager::slotUninstallScript()
     foreach( const QString &key, keys )
     {
         delete m_scripts[key].li;
-        terminateProcess( &m_scripts[key].process );
+        delete m_scripts[key].engine;
         m_scripts.remove( key );
     }
 }
@@ -532,6 +533,7 @@ ScriptManager::slotUninstallScript()
 bool
 ScriptManager::slotRunScript( bool silent )
 {
+    DEBUG_BLOCK
     if( !m_gui->runButton->isEnabled() )
         return false;
 
@@ -553,29 +555,18 @@ ScriptManager::slotRunScript( bool silent )
                                          "You may only run one transcode script at a time." ) );
         return false;
     }
-
-    // Don't start a script twice
-    if( m_scripts[name].process )
-        return false;
-
-    AmarokProcIO* script = new AmarokProcIO();
-    script->setOutputChannelMode( AmarokProcIO::SeparateChannels );
     const KUrl url = m_scripts[name].url;
-    *script << url.path();
-    script->setWorkingDirectory( Amarok::saveLocation( "scripts-data/" ) );
 
-//    connect( script, SIGNAL( receivedStderr( AmarokProcess* ) ), SLOT( slotReceivedStderr( AmarokProcess* ) ) );
-//    connect( script, SIGNAL( receivedStdout( AmarokProcess* ) ), SLOT( slotReceivedStdout( AmarokProcess* ) ) );
-//    connect( script, SIGNAL( processExited( AmarokProcess* ) ), SLOT( scriptFinished( AmarokProcess* ) ) );
-
-    //load the script
     //load the wrapper classes
     startScriptEngine( m_scripts[name].engine, url );
-
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
+    m_scripts[name].running = true;
+    //todo: setProcessEventsInterval?
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
     scriptFile.close();
+
+//todo: implement the fatal checking code
 /*
     script->start( );
     if( script->error() != AmarokProcIO::FailedToStart )
@@ -597,13 +588,11 @@ ScriptManager::slotRunScript( bool silent )
     }
 */
     li->setIcon( 0, SmallIcon( "media-playback-start-amarok" ) );
-
-    m_scripts[name].process = script;
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
     if( m_scripts[name].type == "lyrics" )
         emit lyricsScriptChanged();
-    else if( m_scripts[name].type == "service" )
-        The::scriptableServiceManager()->addRunningScript( name, script );
+//    else if( m_scripts[name].type == "service" )
+//        The::scriptableServiceManager()->addRunningScript( name, script );
 
     return true;
 }
@@ -620,8 +609,8 @@ ScriptManager::slotStopScript()
     // Just a sanity check
     if( m_scripts.find( name ) == m_scripts.end() )
         return;
-
-    terminateProcess( &m_scripts[name].process );
+    m_scripts[name].running = false;
+//todo implement the scriptEngine termination code here
     m_scripts[name].log = QString::null;
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
 
@@ -635,8 +624,9 @@ ScriptManager::slotStopScript()
 void
 ScriptManager::slotConfigureScript()
 {
+    //implement a signal
     const QString name = m_gui->treeWidget->currentItem()->text( 0 );
-    if( !m_scripts[name].process ) return;
+      if( !m_scripts[name].running ) return;
 
     const KUrl url = m_scripts[name].url;
     QDir::setCurrent( url.directory() );
@@ -648,6 +638,7 @@ ScriptManager::slotConfigureScript()
 void
 ScriptManager::slotAboutScript()
 {
+    //todo: rewrite this
     const QString name = m_gui->treeWidget->currentItem()->text( 0 );
     QFile readme( m_scripts[name].url.directory( KUrl::AppendTrailingSlash ) + "README" );
     QFile license( m_scripts[name].url.directory( KUrl::AppendTrailingSlash) + "COPYING" );
@@ -700,7 +691,7 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
     logAction->setData( SHOW_LOG );
     editAction->setData( EDIT );
 
-    logAction->setEnabled( m_scripts[key].process != 0 );
+    logAction->setEnabled( m_scripts[key].running );
 
     QAction* choice = menu.exec( mapToGlobal( pos ) );
     if( !choice ) return;
@@ -714,9 +705,9 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 
         case SHOW_LOG:
             QString line;
-            while( m_scripts[key].process->readln( line ) != -1 )
-                m_scripts[key].log += line;
-
+//            while( m_scripts[key].process->readln( line ) != -1 )
+//                m_scripts[key].log += line;
+//to do implement log
             KTextEdit* editor = new KTextEdit( m_scripts[key].log );
             kapp->setTopWidget( editor );
             editor->setWindowTitle( KDialog::makeStandardCaption( i18n( "Output Log for %1", key ) ) );
@@ -733,38 +724,12 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
     }
 }
 
-
-/* This is just a workaround, some scripts crash for some people if stdout is not handled. */
-/*
 void
-ScriptManager::slotReceivedStdout( AmarokProcess *process )
-{
-    debug() << QString::fromLatin1( process->readAllStandardOutput() );
-}
-
-void
-ScriptManager::slotReceivedStderr( AmarokProcess* process )
-{
-    // Look up script entry in our map
-    ScriptMap::Iterator it;
-    ScriptMap::Iterator end( m_scripts.end() );
-    for( it = m_scripts.begin(); it != end; ++it )
-        if( it.value().process == process ) break;
-
-    const QString text = QString::fromLatin1( process->readAllStandardError() );
-    error() << it.key() << ":\n" << text;
-
-    if( it.value().log.length() > 20000 )
-        it.value().log = "==== LOG TRUNCATED HERE ====\n";
-    it.value().log += text;
-}
-*/
-
-void
-ScriptManager::scriptFinished( AmarokProcess* process ) //SLOT
+ScriptManager::scriptFinished() //SLOT
 {
     DEBUG_BLOCK
-
+//todo: implement this
+/*
     // Look up script entry in our map
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
@@ -787,6 +752,7 @@ ScriptManager::scriptFinished( AmarokProcess* process ) //SLOT
     it.value().log.clear();
     it.value().li->setIcon( 0, QPixmap() );
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
+*/
 }
 
 
@@ -810,7 +776,7 @@ QString
 ScriptManager::scriptRunningOfType( const QString &type ) const
 {
     foreach( const QString &key, m_scripts.keys() )
-        if( m_scripts[key].process && m_scripts[key].type == type )
+        if( m_scripts[key].running && m_scripts[key].type == type )
             return key;
 
     return QString();
@@ -852,48 +818,41 @@ ScriptManager::ensureScoreScriptRunning()
     return QString();
 }
 
-
-void
-ScriptManager::terminateProcess( AmarokProcIO** proc )
-{
-    if( *proc )
-    {
-        (*proc)->kill(); // Sends SIGTERM
-
-        delete *proc;
-        *proc = 0;
-    }
-}
-
-/*
-void
-ScriptManager::notifyScripts( const QString& message )
-{
-    foreach( const ScriptItem &item, m_scripts ) {
-        AmarokProcIO* const proc = item.process;
-        if( proc ) proc->writeStdin( message );
-    }
-}
-*/
-
 void
 ScriptManager::loadScript( const QString& path )
 {
+    DEBUG_BLOCK
     if( !path.isEmpty() )
     {
-        const KUrl url = KUrl( path );
-        QString name = url.fileName();
-        QString type = "generic";
-
-        // Read and parse .spec file, if exists
         QFileInfo info( path );
         QTreeWidgetItem* li = 0;
-        const QString specPath = info.path() + '/' + info.completeBaseName() + ".spec";
+        QString name, type, version, AmarokVersion;
+        const QString specPath = info.path() + '/' + "script.spec";
         if( QFile::exists( specPath ) )
         {
+            const KUrl url = KUrl( path );
             QSettings spec( specPath, QSettings::IniFormat );
             if( spec.contains( "name" ) )
                 name = spec.value( "name" ).toString();
+            else
+            {
+                error() << "script name missing in "<< path;
+                return;
+            }
+            if( spec.contains( "version" ) )
+                version = spec.value( "verion" ).toString();
+            else
+            {
+                error() << "script version missing in "<< path;
+                return;
+            }
+            if( spec.contains( "AmarokVersion" ) )
+                AmarokVersion = spec.value( "AmarokVersion" ).toString();
+            else
+            {
+                error() << "script Amarok dependency missing in "<< path;
+                return;
+            }
             if( spec.contains( "type" ) )
             {
                 type = spec.value( "type" ).toString();
@@ -922,57 +881,37 @@ ScriptManager::loadScript( const QString& path )
                     li = new QTreeWidgetItem( m_contextCategory );
                         li->setText( 0, name );
                 }
+                if( type == "generic" )
+                {
+                    li = new QTreeWidgetItem( m_generalCategory );
+                        li->setText( 0, name );
+                }
             }
-        }
+            else
+            {
+                error() << "script type missing in "<< path;
+                return;
+            }
+            li->setIcon( 0, QPixmap() );
 
-        if( !li )
+            ScriptItem item;
+            item.url = url;
+            item.type = type;
+            item.version = version;
+            item.AmarokVersion = AmarokVersion;
+            item.li = li;
+            item.engine = new QScriptEngine;
+            item.running = false;
+            m_scripts[name] = item;
+
+            slotCurrentChanged( m_gui->treeWidget->currentItem() );
+        }
+        else
         {
-            li = new QTreeWidgetItem( m_generalCategory );
-            li->setText( 0, name );
+            error() << "script.spec for "<< path << " is missing!";
         }
-
-        li->setIcon( 0, QPixmap() );
-
-        ScriptItem item;
-        item.url = url;
-        item.type = type;
-        item.process = 0;
-        item.li = li;
-        item.engine = new QScriptEngine;
-        m_scripts[name] = item;
-
-        slotCurrentChanged( m_gui->treeWidget->currentItem() );
     }
 }
-
-//void
-//ScriptManager::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
-/*
-{
-    switch( state )
-    {
-        case Phonon::StoppedState:
-        case Phonon::LoadingState:
-            notifyScripts( "engineStateChange: stopped" );
-            break;
-
-        case Phonon::ErrorState:
-            notifyScripts( "engineStateChange: error" );
-            break;
-
-        case Phonon::PausedState:
-            notifyScripts( "engineStateChange: paused" );
-            break;
-
-        case Phonon::PlayingState:
-            notifyScripts( "engineStateChange: playing" );
-            break;
-
-        case Phonon::BufferingState:
-            return;
-    }
-}
-*/
 
 //void
 //ScriptManager::engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool trackChanged )
@@ -983,26 +922,25 @@ ScriptManager::loadScript( const QString& path )
         notifyScripts( "trackChange" );
     }
 }
-
-
-void
-ScriptManager::engineVolumeChanged( int newVolume )
-{
-    notifyScripts( "volumeChange: " + QString::number( newVolume ) );
-}
 */
+
 void
 ScriptManager::startScriptEngine( QScriptEngine* scriptEngine, KUrl url )
 {
+    DEBUG_BLOCK
     QScriptValue scriptObject;
-
+    debug() << "1";
+    debug() << url.path();
     scriptObject = scriptEngine->newQObject( new Amarok::ScriptImporter( scriptEngine, url ) );
+    debug() << "2";
     scriptEngine->globalObject().setProperty( "Importer", scriptObject );
-
+    debug() << "3";
     m_global = scriptEngine->newQObject( new Amarok::AmarokScript( scriptEngine ) );
+    debug() << "4";
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
-
+    debug() << "5";
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokEngineScript( scriptEngine ) );
+    debug() << "6";
     m_global.setProperty( "Engine", scriptObject );
 
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokTrackInfoScript( scriptEngine ) );
@@ -1022,6 +960,7 @@ ScriptManager::startScriptEngine( QScriptEngine* scriptEngine, KUrl url )
 
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokStatusbarScript( scriptEngine ) );
     m_global.property( "Window" ).setProperty( "Menu", scriptObject );
+    debug() << "7";
 }
 
 

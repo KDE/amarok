@@ -1,6 +1,6 @@
 Importer.load("debug.js");
 
-print ( "this is script.js" );
+print ( "this is main.js" );
 
 //test engine:
 
