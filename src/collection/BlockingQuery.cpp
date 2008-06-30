@@ -64,14 +64,14 @@ BlockingQuery::~BlockingQuery()
 void
 BlockingQuery::startQuery()
 {
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( result( QString, Meta::DataList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( result( QString, Meta::TrackList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( result( QString, Meta::AlbumList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( result( QString, Meta::ArtistList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( result( QString, Meta::ComposerList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::YearList ) ), SLOT( result( QString, Meta::YearList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, QStringList ) ), SLOT( result( QString, QStringList ) ), Qt::DirectConnection );
-    connect( d->qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::DirectConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( result( QString, Meta::DataList ) ), Qt::QueuedConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( result( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( result( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( result( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( result( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::YearList ) ), SLOT( result( QString, Meta::YearList ) ), Qt::QueuedConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, QStringList ) ), SLOT( result( QString, QStringList ) ), Qt::QueuedConnection );
+    connect( d->qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
 
     d->qm->run();
     d->loop.exec();
