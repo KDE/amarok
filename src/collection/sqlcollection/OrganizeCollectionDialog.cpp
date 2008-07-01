@@ -103,6 +103,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
 
+    connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
+
     if( ui->customschemeCheck->isChecked())
         setDetailsWidgetVisible(true);
     else
@@ -218,10 +220,10 @@ QString OrganizeCollectionDialog::buildFormatTip() const
     QString tooltip = i18n( "<h3>Custom Format String</h3>" );
     tooltip += i18n( "You can use the following tokens:" );
     tooltip += "<ul>";
-    
+
     for( QMap<QString, QString>::iterator it = args.begin(); it != args.end(); ++it )
         tooltip += QString( "<li>%1 - %2" ).arg( it.value(), '%' + it.key() );
-    
+
     tooltip += "</ul>";
     tooltip += i18n( "If you surround sections of text that contain a token with curly-braces, "
             "that section will be hidden if the token is empty." );
@@ -347,7 +349,7 @@ void OrganizeCollectionDialog::toggleDetails()
         ui->formatLabel->hide();
         ui->formatEdit->hide();
         ui->formatHelp->hide();
-    
+
         resize( minimumSize() );
     }
 }
@@ -364,6 +366,21 @@ void OrganizeCollectionDialog::slotUpdatePreview()
     preview( buildFormatString() );
 }
 
+void OrganizeCollectionDialog::slotDialogAccepted()
+{
+        AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentItem() );
+        AmarokConfig::setGroupByFiletype( ui->filetypeCheck->isChecked() );
+        AmarokConfig::setGroupArtists( ui->initialCheck->isChecked() );
+        AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
+        AmarokConfig::setReplaceSpace( ui->spaceCheck->isChecked() );
+        AmarokConfig::setCoverIcons( ui->coverCheck->isChecked() );
+        AmarokConfig::setVfatCompatible( ui->vfatCheck->isChecked() );
+        AmarokConfig::setAsciiOnly( ui->asciiCheck->isChecked() );
+        AmarokConfig::setUseCustomScheme( ui->customschemeCheck->isChecked() );
+        AmarokConfig::setCustomScheme( ui->formatEdit->text() );
+        AmarokConfig::setReplacementRegexp( ui->regexpEdit->text() );
+        AmarokConfig::setReplacementString( ui->replaceEdit->text() );
+}
 
 /* Code to port
  *
