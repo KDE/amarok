@@ -19,9 +19,8 @@
  
 #include "PlaylistCategory.h"
 
-#include "App.h"
 #include "CollectionManager.h"
-#include "MainWindow.h"
+#include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
@@ -75,7 +74,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     connect( PlaylistBrowserNS::UserModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_playlistView, SLOT( edit( const QModelIndex & ) ) );
 
-    connect( App::instance()->mainWindow(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 
     QVBoxLayout *vLayout = new QVBoxLayout( this );
     vLayout->setContentsMargins(0,0,0,0);
@@ -85,21 +84,14 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_playlistView->setAlternatingRowColors( true );
 
     //transparency
-    QPalette p = m_playlistView->palette();
+    QPalette p = The::paletteHandler()->palette();
     QColor c = p.color( QPalette::Base );
 
     //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
     //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
     m_playlistView->setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-
-    c = p.color( QPalette::AlternateBase );
-    c.setAlpha( 77 );
-    p.setColor( QPalette::AlternateBase, c );
-
-    m_playlistView->setPalette( p );
+    The::paletteHandler()->updateTreeView( m_playlistView );
 
     m_addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
     m_toolBar->addAction( m_addGroupAction );
@@ -239,17 +231,7 @@ PlaylistBrowserNS::StreamEditor::streamUrl()
 
 void PlaylistBrowserNS::PlaylistCategory::newPalette(const QPalette & palette)
 {
-    QPalette p = palette;
-    QColor c = palette.color( QPalette::Base );
-
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-
-    c = p.color( QPalette::AlternateBase );
-    c.setAlpha( 77 );
-    p.setColor( QPalette::AlternateBase, c );
-
-    m_playlistView->setPalette( p );
+    The::paletteHandler()->updateTreeView( m_playlistView );
 }
 
 
