@@ -24,7 +24,6 @@
 #include "DynamicPlaylist.h"
 #include "EngineController.h"
 #include "Meta.h"
-#include "PlaylistGraphicsView.h"
 #include "PlaylistModel.h"
 
 
@@ -53,7 +52,6 @@ Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
     {
         setAsUpcoming( i );
     }
-    The::playlistView()->update();
 }
 
 
@@ -143,7 +141,7 @@ Playlist::DynamicTrackNavigator::repopulate()
     int span = m_playlistModel->rowCount() - start;
 
     if( span > 0 )
-        m_playlistModel->removeRows( start, span - 1 );
+        m_playlistModel->removeRows( start, span );
 
     m_playlist->recalculate();
     appendUpcoming();
@@ -153,9 +151,11 @@ void
 Playlist::DynamicTrackNavigator::markPlayed()
 {
     int activeRow = m_playlistModel->activeRow();
+    if( activeRow < 0 )
+        return;
+
     int lim = qMin( m_playlist->previousCount() + 1, m_playlistModel->rowCount() );
-    if( activeRow >= 0 )
-        lim = qMin( lim, activeRow );
+    lim = qMin( lim, activeRow );
 
     for( int i = 0; i < lim; ++i )
     {
@@ -169,7 +169,7 @@ Playlist::DynamicTrackNavigator::setAsUpcoming( int row )
     if( !m_playlistModel->rowExists( row ) )
         return;
     QModelIndex i = m_playlistModel->index( row, 0 );
-    i.data( ItemRole ).value< Playlist::Item* >()->setState( Item::Normal );
+    m_playlistModel->setData( i, Item::Normal, StateRole );
 }
 
 void
@@ -178,7 +178,7 @@ Playlist::DynamicTrackNavigator::setAsPlayed( int row )
     if( !m_playlistModel->rowExists( row ) )
         return;
     QModelIndex i = m_playlistModel->index( row, 0 );
-    i.data( ItemRole ).value< Playlist::Item* >()->setState( Item::DynamicPlayed );
+    m_playlistModel->setData( i, Item::DynamicPlayed, StateRole );
 }
 
 

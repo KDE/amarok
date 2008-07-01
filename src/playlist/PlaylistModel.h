@@ -156,6 +156,7 @@ namespace Playlist
             QVariant data(const QModelIndex &index, int role) const;
 
             //overriding QAbstractItemModel
+            bool setData( const QModelIndex &index, const QVariant& value, int role );
             bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
             QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
             Qt::DropActions supportedDropActions() const;

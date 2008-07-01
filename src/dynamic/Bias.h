@@ -50,7 +50,7 @@ namespace Dynamic
 
 
             /**
-             * When a track is swaped in the playlist, avoid completely reevaluating
+             * When a track is swapped in the playlist, avoid completely reevaluating
              * the energy function if possible.
              */
             virtual double reevaluate( double oldEnergy, Meta::TrackList oldPlaylist,

@@ -304,6 +304,21 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
         } */
 }
 
+
+bool
+Playlist::Model::setData( const QModelIndex& index, const QVariant& value, int role )
+{
+    if( role == StateRole )
+    {
+        m_items[ index.row() ]->setState( (Item::State)value.toInt() );
+
+        emit dataChanged( index, index );
+
+        return true;
+    }
+    else return false;
+}
+
 void
 Playlist::Model::insertTrack( int row, Meta::TrackPtr track )
 {

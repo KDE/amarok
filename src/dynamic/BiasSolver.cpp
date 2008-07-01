@@ -111,7 +111,7 @@ void Dynamic::BiasSolver::iterate()
     double p = 1.0 / ( 1.0 + exp( (mutationE - m_E)  / m_T ) );
 
     // generate a random number in [0,1]
-    double r = (double)rand() / (((double)RAND_MAX) + 1.0);
+    double r = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
 
     // accept the mutation ?
     if( r <= p )
