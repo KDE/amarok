@@ -401,7 +401,6 @@ ScanResultProcessor::yearId( const QString &year )
 int
 ScanResultProcessor::imageId( const QString &image, int albumId )
 {
-    DEBUG_BLOCK
     // assume the album is valid
     if( albumId < 0 )
         return -1;
