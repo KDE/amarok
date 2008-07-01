@@ -255,9 +255,9 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
         int width = rect.width() * 0.95;
         int offsetX = ( rect.width() - width ) / 2;
         QRectF headerRect( rect.topLeft().x() + offsetX,
-                           rect.topLeft().y() - 50,
+                           rect.topLeft().y() - 55,                           
                            width,
-                           50 );
+                           55 );
         m_header->paint( painter, headerRect );
     }
     painter->restore();

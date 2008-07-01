@@ -83,7 +83,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     
     connectContainment( cont );
     setContainment( cont );
-    Containment* amarokContainment = qobject_cast<Containment* >( cont );
+    Containment* amarokContainment = qobject_cast<Containment* >( cont );    
     if( amarokContainment )
         amarokContainment->setTitle( "Context #0" );
     
@@ -343,12 +343,7 @@ ContextView::updateContainmentsGeometry()
         qreal left, top, right, bottom;
         containment()->getContentsMargins( &left, &top, &right, &bottom );
         QRectF contRect( containment()->geometry() );
-        QRectF visibleRect( contRect.topLeft().x() + left,
-                            contRect.topLeft().y() + top,
-                            contRect.width() - right,
-                            contRect.height() - bottom );
-        setSceneRect( visibleRect );
-        debug() << "Visible Rect: " << visibleRect;
+        setSceneRect( contRect.adjusted( left, top, -right, -bottom ) );
     }
 }
 
@@ -376,8 +371,8 @@ ContextView::addContainment()
         c->setScreen( 0 );
         c->setFormFactor( Plasma::Planar );
         
-        int x = ( rect().width() + 25 ) * ( size % 2 );
-        int y = ( rect().height() + 65 ) * ( size / 2 );
+        int x = ( rect().width() + 30 ) * ( size % 2 );
+        int y = ( rect().height() + 70 ) * ( size / 2 );
 
         Containment* containment = qobject_cast< Containment* >( c );
 
@@ -463,7 +458,7 @@ ContextView::setContainment( Plasma::Containment* containment )
             
             qreal left, top, right, bottom;
             containment->getContentsMargins( &left, &top, &right, &bottom );
-            QSizeF correctSize( rect().size().width() + left, rect().size().height() + top );
+            QSizeF correctSize( rect().size().width() + left - right , rect().size().height() + top - bottom);
             
             if( m_zoomLevel == Plasma::DesktopZoom )
             {                
@@ -523,17 +518,9 @@ ContextView::findContainmentForApplet( QString pluginName, int rowSpan )
                     setContainment( amarokContainment );
                     if( m_zoomLevel == Plasma::DesktopZoom )
                     {
-                        qreal left, top, right, bottom;
-                        amarokContainment->getContentsMargins( &left, &top, &right, &bottom );                        
-                        QRectF contRect( amarokContainment->geometry() );
-                        QRectF visibleRect( contRect.topLeft().x() + left,
-                                            contRect.topLeft().y() + top,
-                                            contRect.width() - right,
-                                            contRect.height() - bottom );
-                        debug() << "left, top: " << left << top;
+                        //HACK alert!
                         resize( size().width()+1, size().height() );
-                        resize( size().width()-1, size().height() );
-                        
+                        resize( size().width()-1, size().height() );                        
                     }
                     
                     placeFound = true;
