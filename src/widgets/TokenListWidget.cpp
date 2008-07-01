@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 #include "TokenListWidget.h"
+#include "Debug.h"
 
 #include <KApplication>
 #include <KDialog>
@@ -42,7 +43,7 @@ TokenListWidget::mouseMoveEvent(QMouseEvent *event)
         int distance = (event->pos() - startPos).manhattanLength();
         if (distance >= KApplication::startDragDistance())
         {
-            performDrag();
+            performDrag(event);
         }
     }
     KListWidget::mouseMoveEvent(event);
@@ -81,15 +82,20 @@ TokenListWidget::dropEvent(QDropEvent *event)
 }
 
 void
-TokenListWidget::performDrag()
+TokenListWidget::performDrag(QMouseEvent *event)
 {
     QListWidgetItem *item = currentItem();
     if (item) {
+        QByteArray itemData;
+        QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+        dataStream << item->text() << QPoint(event->pos() - rect().topLeft());
         QMimeData *mimeData = new QMimeData;
-        mimeData->setText(item->text());
+        mimeData->setData("application/x-amarok-tag-token", itemData);    //setText(item->text());
+        mimeData->setText(item->text());       //We add both the graphic and the text to the mimeData of the drag
 
         QDrag *drag = new QDrag(this);
         drag->setMimeData(mimeData);
+        debug() << "I'm dragging from the token pool";
         //TODO:set a pointer for the drag, like this: drag->setPixmap(QPixmap("foo.png"));
     }
 }

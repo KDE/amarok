@@ -34,7 +34,7 @@ class TokenListWidget : public KListWidget      //all this kinda works when used
         void dropEvent(QDropEvent *event);
     
     private:
-        void performDrag();
+        void performDrag(QMouseEvent *event);
     
         QPoint startPos;
 };

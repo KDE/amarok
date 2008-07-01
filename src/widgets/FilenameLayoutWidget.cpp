@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 #include "FilenameLayoutWidget.h"
+#include "Debug.h"
 
 #include <KApplication>
 #include <KPushButton>
@@ -37,7 +38,7 @@ FilenameLayoutWidget::FilenameLayoutWidget(QWidget *parent) : QFrame(parent)
     backText = new QLabel;
     backText->setText("<i>Drag tokens here to define a filename scheme.</i>");
     layout->addWidget(backText);
-    
+    tokenCount = 0;     //how many tokens have I built, need this to assign unique IDs
 }
 
 void
@@ -52,12 +53,12 @@ FilenameLayoutWidget::addToken(QString text){
     {
         backText->hide();
     }
-    
-    Token *token = new Token(text, this);
-    
+
+    tokenCount++;
+    Token *token = new Token(text + QString::number(tokenCount), this);
+
     layout->addWidget(token);
     token->show();
-    
 }
 
 
@@ -100,10 +101,16 @@ void FilenameLayoutWidget::dropEvent(QDropEvent *event)
         //TODO: transfer the string somehow. It was like this when dragging from KListWidget to KListWidget:
         //addItem(event->mimeData()->text());
         //needs to be     x-amarok-tag-token
+        debug() << "I'm dragging shit from the token pool";
         addToken(tr("TOKEN"));
         event->setDropAction(Qt::CopyAction);
         event->accept();
     }
+}
+
+unsigned int FilenameLayoutWidget::getTokenCount()
+{
+    return tokenCount;
 }
 
 
@@ -112,6 +119,7 @@ void FilenameLayoutWidget::dropEvent(QDropEvent *event)
 
 Token::Token(const QString &text, QWidget *parent) : QLabel(parent)
 {
+    myCount = qobject_cast<FilenameLayoutWidget *>(parent)->getTokenCount();
     QFontMetrics metric(font());
     QSize size = metric.size(Qt::TextSingleLine, text);
 

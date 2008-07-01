@@ -29,6 +29,7 @@ class FilenameLayoutWidget : public QFrame
     public:
         FilenameLayoutWidget(QWidget *parent = 0);
         void addToken(QString text);
+        unsigned int getTokenCount();
     protected:
         void dragEnterEvent(QDragEnterEvent *event);
         void dragMoveEvent(QDragMoveEvent *event);
@@ -38,6 +39,8 @@ class FilenameLayoutWidget : public QFrame
     
         QLabel *backText;
         QHBoxLayout *layout;
+
+        unsigned int tokenCount;
     
     //TODO: This slot is for testing, will probably be a normal method
     public slots:
@@ -56,6 +59,7 @@ class Token : public QLabel
         QString labelText;
         void performDrag(QMouseEvent *event);
         QPoint startPos;
+        unsigned int myCount;
 
 };
 
