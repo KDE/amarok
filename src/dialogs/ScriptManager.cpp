@@ -488,6 +488,7 @@ ScriptManager::slotRetrieveScript()
 
     qDeleteAll( entries );
     delete engine;
+    //todo: upgrade?
 }
 
 
@@ -519,7 +520,7 @@ ScriptManager::slotUninstallScript()
         if( m_scripts[key].url.directory() == directory )
             keys << key;
 
-    // Terminate script processes, remove entries from script list
+    // Terminate script, remove entries from script list
     foreach( const QString &key, keys )
     {
         delete m_scripts[key].li;
@@ -564,10 +565,10 @@ ScriptManager::slotRunScript( bool silent )
     //todo: setProcessEventsInterval?
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
     scriptFile.close();
+    scriptFinished( name );
 
 //todo: implement the fatal checking code
 /*
-    script->start( );
     if( script->error() != AmarokProcIO::FailedToStart )
     {
         if( m_scripts[name].type == "score" && !scoreScriptRunning().isNull() )
@@ -590,6 +591,7 @@ ScriptManager::slotRunScript( bool silent )
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
     if( m_scripts[name].type == "lyrics" )
         emit lyricsScriptChanged();
+//TODO: immigrate scriptable service
 //    else if( m_scripts[name].type == "service" )
 //        The::scriptableServiceManager()->addRunningScript( name, script );
 
@@ -605,17 +607,8 @@ ScriptManager::slotStopScript()
     QTreeWidgetItem* const li = m_gui->treeWidget->currentItem();
     const QString name = li->text( 0 );
 
-    // Just a sanity check
-    if( m_scripts.find( name ) == m_scripts.end() )
-        return;
     m_scripts[name].engine->abortEvaluation();
-    m_scripts[name].running = false;
-
-//todo: handle the gui stuff
-    m_scripts[name].log = QString::null;
-    slotCurrentChanged( m_gui->treeWidget->currentItem() );
-
-    li->setIcon( 0, QPixmap() );
+    scriptFinished( name );
 
     if( m_scripts.value( name ).type == "service" )
         The::scriptableServiceManager()->removeRunningScript( name );
@@ -635,7 +628,7 @@ ScriptManager::slotConfigureScript()
 void
 ScriptManager::slotAboutScript()
 {
-    //todo: rewrite this
+    //TODO: rewrite this
     const QString name = m_gui->treeWidget->currentItem()->text( 0 );
     QFile readme( m_scripts[name].url.directory( KUrl::AppendTrailingSlash ) + "README" );
     QFile license( m_scripts[name].url.directory( KUrl::AppendTrailingSlash) + "COPYING" );
@@ -722,34 +715,17 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 }
 
 void
-ScriptManager::scriptFinished() //SLOT
+ScriptManager::scriptFinished( QString name ) //SLOT
 {
     DEBUG_BLOCK
-//todo: implement this
-/*
-    // Look up script entry in our map
-    ScriptMap::Iterator it;
-    ScriptMap::Iterator end( m_scripts.end() );
-    for( it = m_scripts.begin(); it != end; ++it )
-        if( it.value().process == process ) break;
+//TODO: implement error handling
 
-    // FIXME The logic in this check doesn't make sense
-    // Check if there was an error on exit
-    if( process->error() != AmarokProcess::Crashed && process->exitStatus() != 0 )
-    {
-        KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2", it.key(), process->exitStatus() ),it.value().log );
-        warning() << "Script exited with error status: " << process->exitStatus();
-    }
+    m_scripts[name].running = false;
+    m_scripts[name].log.clear();
 
-    // Destroy script process
-    it.value().process->close();
-    it.value().process->deleteLater();
-
-    it.value().process = 0;
-    it.value().log.clear();
-    it.value().li->setIcon( 0, QPixmap() );
+//probably memory leak here?
+    m_scripts[name].li->setIcon( 0, QPixmap() );
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
-*/
 }
 
 
@@ -909,17 +885,6 @@ ScriptManager::loadScript( const QString& path )
         }
     }
 }
-
-//void
-//ScriptManager::engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool trackChanged )
-/*
-{
-    if( trackChanged)
-    {
-        notifyScripts( "trackChange" );
-    }
-}
-*/
 
 void
 ScriptManager::startScriptEngine( QString name )

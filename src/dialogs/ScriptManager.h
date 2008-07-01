@@ -39,16 +39,6 @@ class KArchiveDirectory;
  * @class ScriptManager
  * @short Script management widget and backend
  * @author Mark Kretschmann <markey@web.de>
- *
- * Script notifications, sent to stdin:
- *   configure
- *   engineStateChange: {empty|idle|paused|playing}
- *   trackChange
- *   volumeChange: newVolume (range: 0-100)
- *   fetchLyrics: artist title
- *   fetchLyricsByUrl: url
- *
- * @see http://amarok.kde.org/amarokwiki/index.php/Script-Writing_HowTo
  */
 
 class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
@@ -128,9 +118,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void slotAboutScript();
         void slotShowContextMenu( const QPoint& );
 
-//        void slotReceivedStdout( AmarokProcess* );
-//        void slotReceivedStderr( AmarokProcess* );
-        void scriptFinished();
+        void scriptFinished( QString name );
 
     private:
         /** Returns all scripts of the given \p type */
@@ -141,21 +129,14 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         QString ensureScoreScriptRunning();
 
-        /** Sends a string message to all running scripts */
-//        void notifyScripts( const QString& message );
-
         /** Adds a script to the listview */
         void loadScript( const QString& path );
 
         /** Copies the file permissions from the tarball and loads the script */
         void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );
 
-        /** EngineObserver reimplementations **/
-//        void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-//        void engineNewMetaData( const QHash< qint64, QString >& /*newMetaData*/, bool /*trackChanged*/ );
-//        void engineVolumeChanged( int newVolume );
-
         void startScriptEngine( QString name);
+
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
