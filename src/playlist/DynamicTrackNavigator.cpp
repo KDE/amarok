@@ -138,14 +138,15 @@ void
 Playlist::DynamicTrackNavigator::repopulate()
 {
     int start = m_playlistModel->activeRow() + 1;
-    if( start < 0 ) start = 0;
+    if( start < 0 )
+        start = 0;
     int span = m_playlistModel->rowCount() - start;
 
-    m_playlistModel->removeRows( start, span - 1 );
+    if( span > 0 )
+        m_playlistModel->removeRows( start, span - 1 );
 
     m_playlist->recalculate();
-    Meta::TrackList newUpcoming = m_playlist->getTracks( span - 1 );
-    m_playlistModel->insertOptioned( newUpcoming, Append );
+    appendUpcoming();
 }
 
 void
