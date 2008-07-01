@@ -19,7 +19,9 @@
  
 #include "PlaylistCategory.h"
 
+#include "App.h"
 #include "CollectionManager.h"
+#include "MainWindow.h"
 #include "playlist/PlaylistModel.h"
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
@@ -72,6 +74,8 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     connect( m_playlistView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
 
     connect( PlaylistBrowserNS::UserModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_playlistView, SLOT( edit( const QModelIndex & ) ) );
+
+    connect( App::instance()->mainWindow(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 
     QVBoxLayout *vLayout = new QVBoxLayout( this );
     vLayout->setContentsMargins(0,0,0,0);
@@ -231,6 +235,21 @@ QString
 PlaylistBrowserNS::StreamEditor::streamUrl()
 {
     return m_streamUrl->text().trimmed();
+}
+
+void PlaylistBrowserNS::PlaylistCategory::newPalette(const QPalette & palette)
+{
+    QPalette p = palette;
+    QColor c = palette.color( QPalette::Base );
+
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+
+    c = p.color( QPalette::AlternateBase );
+    c.setAlpha( 77 );
+    p.setColor( QPalette::AlternateBase, c );
+
+    m_playlistView->setPalette( p );
 }
 
 

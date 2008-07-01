@@ -56,6 +56,7 @@ private slots:
     void showContextMenu( const QPoint & pos );
     void showAddStreamDialog();
     void streamDialogConfirmed();
+    void newPalette( const QPalette & palette );
 
 private:
 
