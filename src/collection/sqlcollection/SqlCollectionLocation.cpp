@@ -27,6 +27,7 @@
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
+#include "../../statusbar/StatusBar.h"
 
 #include <QDir>
 #include <QFile>
@@ -97,7 +98,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
         }
         if( removed && ( !m_tracksRemovedByDestination.contains( track ) || m_tracksRemovedByDestination[ track ] ) )
         {
-            
+
             QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
                                 .arg( QString::number( sqlTrack->deviceid() ), m_collection->escape( sqlTrack->rpath() ) );
             QStringList res = m_collection->query( query );
@@ -221,6 +222,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
             job = KIO::file_copy( sources[ track ], dest, -1, flags );
         }
         connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
+        The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Transferring Tracks" ) );
         m_jobs.insert( job );
         job->start();
     }
