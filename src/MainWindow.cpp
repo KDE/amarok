@@ -975,6 +975,7 @@ MainWindow::paletteChange(const QPalette & oldPalette)
     Q_UNUSED( oldPalette )
 
     QPixmapCache::clear();
+    emit ( newPalette( palette() ) );
 }
 
 QSize

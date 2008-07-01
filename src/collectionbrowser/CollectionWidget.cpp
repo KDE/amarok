@@ -33,6 +33,7 @@
 CollectionWidget *CollectionWidget::s_instance = 0;
 
 CollectionWidget::CollectionWidget( const char* name )
+    : KVBox()
 {
     s_instance = this;
     setObjectName( name );

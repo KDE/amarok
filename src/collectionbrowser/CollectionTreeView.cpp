@@ -28,6 +28,7 @@
 #include "CollectionManager.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
+#include "MainWindow.h"
 #include "mediabrowser.h"
 #include "Meta.h"
 #include "MetaQueryMaker.h"
@@ -89,6 +90,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setPalette( p );
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
+    connect( App::instance()->mainWindow(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 }
 
 
@@ -929,6 +931,52 @@ void CollectionTreeView::slotMoveTracks()
 
 void CollectionTreeView::slotOrganize()
 {
+}
+
+/*void CollectionTreeView::changeEvent( QEvent * event )
+{
+   DEBUG_BLOCK
+   QTreeView::changeEvent( event );
+
+   if ( event->type() == QEvent::PaletteChange ) {
+        debug() << "Palette change!";
+
+        QPalette p = App::palette();
+        QColor c = p.color( QPalette::Base );
+
+        debug() << "new Base: " << c.name();
+        c.setAlpha( 0 );
+        p.setColor( QPalette::Base, c );
+
+        c = p.color( QPalette::AlternateBase );
+        debug() << "new AlternateBase: " << c.name();
+        c.setAlpha( 77 );
+        p.setColor( QPalette::AlternateBase, c );
+
+        setPalette( p );
+
+        event->accept();
+   } else {
+       event->ignore();
+   }
+}*/
+
+
+void CollectionTreeView::newPalette( const QPalette & palette )
+{
+    QPalette p = palette;
+    QColor c = palette.color( QPalette::Base );
+
+    debug() << "new Base: " << c.name();
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+
+    c = p.color( QPalette::AlternateBase );
+    debug() << "new AlternateBase: " << c.name();
+    c.setAlpha( 77 );
+    p.setColor( QPalette::AlternateBase, c );
+
+    setPalette( p );
 }
 
 

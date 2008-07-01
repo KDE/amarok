@@ -71,6 +71,7 @@ class CollectionTreeView: public QTreeView
         void mouseReleaseEvent( QMouseEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
         void startDrag(Qt::DropActions supportedActions);
+        //void changeEvent ( QEvent * event );
     protected slots:
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotExpand( const QModelIndex &index );
@@ -82,6 +83,7 @@ class CollectionTreeView: public QTreeView
         void slotCopyTracks();
         void slotMoveTracks();
         void slotOrganize();
+        void newPalette( const QPalette & palette );
 
     private:
         // Utility function to play all items
