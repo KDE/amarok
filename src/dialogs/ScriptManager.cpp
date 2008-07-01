@@ -563,9 +563,12 @@ ScriptManager::slotRunScript( bool silent )
     scriptFile.open( QIODevice::ReadOnly );
     m_scripts[name].running = true;
     //todo: setProcessEventsInterval?
+    li->setIcon( 0, SmallIcon( "media-playback-start-amarok" ) );
+    slotCurrentChanged( m_gui->treeWidget->currentItem() );
+//TODO: use thread to handle scripts?
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
     scriptFile.close();
-    scriptFinished( name );
+//    scriptFinished( name );
 
 //todo: implement the fatal checking code
 /*
@@ -587,8 +590,6 @@ ScriptManager::slotRunScript( bool silent )
         return false;
     }
 */
-    li->setIcon( 0, SmallIcon( "media-playback-start-amarok" ) );
-    slotCurrentChanged( m_gui->treeWidget->currentItem() );
     if( m_scripts[name].type == "lyrics" )
         emit lyricsScriptChanged();
 //TODO: immigrate scriptable service
@@ -722,6 +723,9 @@ ScriptManager::scriptFinished( QString name ) //SLOT
 
     m_scripts[name].running = false;
     m_scripts[name].log.clear();
+    foreach( const QObject* obj, m_scripts[name].guiPtrList )
+        delete obj;
+    m_scripts[name].guiPtrList.clear();
 
 //probably memory leak here?
     m_scripts[name].li->setIcon( 0, QPixmap() );
@@ -907,7 +911,7 @@ ScriptManager::startScriptEngine( QString name )
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokTrackInfoScript( scriptEngine ) );
     m_global.property("Engine").setProperty( "TrackInfo", scriptObject );
 
-    scriptObject = scriptEngine->newQObject( new Amarok::AmarokWindowScript( scriptEngine ) );
+    scriptObject = scriptEngine->newQObject( new Amarok::AmarokWindowScript( scriptEngine, &m_scripts[name].guiPtrList ) );
     m_global.setProperty( "Window", scriptObject );
 
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokOSDScript( scriptEngine ) );

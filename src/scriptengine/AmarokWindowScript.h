@@ -20,6 +20,7 @@
 
 #include <KMenu>
 
+#include <QList>
 #include <QObject>
 #include <QtScript>
 
@@ -31,16 +32,17 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            AmarokWindowScript( QScriptEngine* ScriptEngine );
+            AmarokWindowScript( QScriptEngine* ScriptEngine, QList<QObject*>* guiPtrList );
             ~AmarokWindowScript();
 
         public slots:
-            void addMenu( QString MenuTitle );
+            bool addMenu( QString MenuTitle );
             void addSeparator();
 
         private:
-            KMenu*          m_ToolMenu;
-            QScriptEngine*  m_ScriptEngine;
+            KMenu*           m_ToolMenu;
+            QScriptEngine*   m_ScriptEngine;
+            QList<QObject*>* m_guiPtrList;
     };
 }
 

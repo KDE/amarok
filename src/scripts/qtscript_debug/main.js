@@ -28,11 +28,16 @@ function Menu2Clicked()
 }
 
 Amarok.Window.addSeparator();
-Amarok.Window.addMenu( "testMenu1" );
-Amarok.Window.addMenu( "testMenu2" );
 
-Amarok.Window.Menu.testMenu1.triggered.connect(Menu1Clicked);
-Amarok.Window.Menu.testMenu2.triggered.connect(Menu2Clicked);
+if ( Amarok.Window.addMenu( "testMenu1" ) )
+    Amarok.Window.Menu.testMenu1.triggered.connect(Menu1Clicked);
+else
+    print ( "Menu1 already exists!" );
+
+if ( Amarok.Window.addMenu( "testMenu2" ) )
+    Amarok.Window.Menu.testMenu2.triggered.connect(Menu2Clicked);
+else
+    print ( "Menu2 already exists!" );
 
 
 var TrackInfo = Amarok.Engine.TrackInfo;

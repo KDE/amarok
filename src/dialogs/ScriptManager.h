@@ -29,6 +29,7 @@
 #include <KDialog>      //baseclass
 #include <KUrl>
 
+#include <QList>
 #include <QMap>
 #include <QtScript>
 
@@ -162,6 +163,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
             bool                   running;
             Amarok::AmarokScript*  globalPtr;
             QString                log;
+            QList<QObject*>        guiPtrList;
             ScriptItem() :         li( 0 ), running( false ){}
         };
 
