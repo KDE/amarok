@@ -36,9 +36,7 @@
 #include <Nepomuk/Resource>
 #include <Nepomuk/ResourceManager>
 #include <Nepomuk/Variant>
-#include <Soprano/Client/DBusClient>
 #include <Soprano/Model>
-#include <Soprano/Util/MutexModel>
 #include <Soprano/QueryResultIterator>
 #include <Soprano/Vocabulary/RDF>
 #include <Soprano/Vocabulary/Xesam>
@@ -80,14 +78,13 @@ class NepomukWorkerThread : public ThreadWeaver::Job
 
 
 NepomukQueryMaker::NepomukQueryMaker(NepomukCollection *collection
-            , Soprano::Client::DBusClient *client, Soprano::Model* model)
+            , Soprano::Model* model)
     : QueryMaker() 
     , m_collection(collection)
     , m_model( model )
 
 {
     worker = 0;
-    this->client = client;
     reset();
 }
 
@@ -318,10 +315,10 @@ NepomukQueryMaker::addMatch( const KUrl &url)
 QueryMaker*
 NepomukQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    debug() << "addFilter()" << endl;
-    debug() << "filter against: " << m_collection->getNameForValue( value ) << endl;
-    debug() << "filter: " << filter << endl;
-    debug() << "matchbegin, match end " << matchBegin << matchEnd << endl;
+    debug() << queryType << " addFilter()" << endl;
+    debug() << queryType << "filter against: " << m_collection->getNameForValue( value ) << endl;
+    debug() <<  queryType <<  "filter: " << filter << endl;
+    debug() <<  queryType << "matchbegin, match end " << matchBegin << matchEnd << endl;
 	Q_UNUSED( value )
 	Q_UNUSED( filter )
 	Q_UNUSED( matchBegin )
@@ -416,21 +413,21 @@ NepomukQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 QueryMaker*
 NepomukQueryMaker::beginAnd()
 {
-    debug() << "beginAnd()" << endl;
+    debug() <<  queryType <<  "beginAnd()" << endl;
     return this;
 }
 
 QueryMaker*
 NepomukQueryMaker::beginOr()
 {
-    debug() << "beginOr()" << endl;
+    debug() <<  queryType <<  "beginOr()" << endl;
     return this;
 }
 
 QueryMaker*
 NepomukQueryMaker::endAndOr()
 {
-    debug() << "endAndOr()" << endl;
+    debug() <<  queryType << "endAndOr()" << endl;
     return this;
 }
 
@@ -533,13 +530,6 @@ NepomukQueryMaker::doQuery(const QString &query)
     DEBUG_BLOCK
     if ( query.isEmpty() )
         return;
-    
-    if (!client->isValid())
-    {
-        m_collection->lostDBusConnection();
-        return;
-    }
-    
     switch ( queryType )
     {
         case ARTIST:

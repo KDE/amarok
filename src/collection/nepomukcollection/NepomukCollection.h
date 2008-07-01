@@ -26,7 +26,6 @@
 #include <QStringList>
 #include <QHash>
 
-#include <Soprano/Client/DBusClient>
 #include <Soprano/Model>
 
 class KUrl;
@@ -44,7 +43,7 @@ class NepomukCollectionFactory : public CollectionFactory
 class NepomukCollection : public Collection
 {
 public:
-    NepomukCollection( Soprano::Client::DBusClient*, Soprano::Model* model, bool isFast );
+    NepomukCollection( Soprano::Model* model, bool isFast );
     virtual ~NepomukCollection();
     
     virtual QueryMaker* queryMaker();
@@ -56,8 +55,7 @@ public:
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );
     
     // only for nepomuk collection plugin
-    virtual void lostDBusConnection();
-    
+
     QString getNameForValue( const qint64 ) const;
     QString getUrlForValue( const qint64 ) const;
     const QStringList& getAllNamesAndUrls( void ) const;
@@ -66,7 +64,6 @@ private:
     
     void initHashMaps();
     
-    Soprano::Client::DBusClient *m_client;
     Soprano::Model *m_model;
     QHash< qint64, QString > m_nameForValue;
     QHash< qint64, QString > m_urlForValue;
