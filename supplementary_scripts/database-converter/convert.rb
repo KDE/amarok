@@ -42,7 +42,7 @@ class Converter
         @options.quiet      = false
         @options.safe_mode  = false
         @options.source     = "mysql"
-        @options.username   = ""
+        @options.username   = "amarok"
         @options.password   = ""
         @options.hostname   = ""
         @options.database   = ""
@@ -128,7 +128,7 @@ class Converter
     end
 
     def getAmarok2Collection()
-        filename = "collection2.db1"
+        filename = "collection2.db"
         if not File.exist?( filename )
             raise "File #{filename} does not exist"
         elsif not File.writable?( filename )
@@ -138,6 +138,7 @@ class Converter
     rescue => e
         puts "Error: #{e}"
     end
+
 
     def transferStatistics
         conn = getMysqlConnection()
@@ -150,12 +151,23 @@ class Converter
 
         updateCount = 0;
         errorCount = 0;
+        updateLyricCount = 0;
+
+        devices_hash  = Hash.new( "/" )
 
         # de-dynamic collection
         devices_row    = conn.query( "SELECT id, lastmountpoint FROM devices" )
+
+        devices_row.each_hash do | device |
+            did   = device["id"]
+            mount = device["lastmountpoint"]
+            devices_hash[did] = mount
+        end
+
+
         statistics_row = conn.query( "SELECT deviceid, url, createdate, accessdate, percentage, rating, playcounter FROM statistics" )
 
-        puts "Fetched #{statistics_row.num_rows} rows"
+        puts "Fetched #{statistics_row.num_rows} statistics rows"
 
         staleEntries = Array.new
 
@@ -163,14 +175,9 @@ class Converter
             begin
             url      = tag["url"]
             deviceid = tag["deviceid"]
-
-            devices_row.each_hash do | device |
-                if deviceid == device["id"]
-                    url = "." + device["lastmountpoint"] + url.slice(1..url.length)
-                    url.sub!( "\/\/", "\/" ) #filter out multiple forward slashes
-                    break
-                end
-            end
+            
+            url = "." + devices_hash[deviceid] + url.slice(1..url.length)
+            url.sub!( "\/\/", "\/" ) #filter out multiple forward slashes
 
             urlid = amarok2_collection.get_first_value( "SELECT id FROM urls WHERE rpath=?", url )
             if urlid.nil?
@@ -182,15 +189,11 @@ class Converter
             query = "INSERT INTO statistics (url, createdate, accessdate, score, rating, playcount ) VALUES ( " +
                     "#{urlid}, #{tag["createdate"]}, #{tag["accessdate"]}, #{tag["percentage"]}, #{tag["rating"]}, #{tag["playcounter"]} );"
 
-            updates = amarok2_collection.execute( query );
-            #else
-            #    puts "Safe mode!"
-            #end
+            rs = amarok2_collection.execute( query );
+            rs.close
             
             updateCount += 1
 
-            #puts "UPDATE statistics SET createdate=#{tag["createdate"]}, score=#{tag["percentage"]}, rating=#{tag["rating"]}, " +
-            #     " playcount=#{tag["playcounter"]} WHERE url=#{urlid}" if @options.verbose
             rescue SQLite3::SQLException => e
                 if @options.verbose
                     puts "Insertion error: #{e}"
@@ -199,18 +202,55 @@ class Converter
                 errorCount += 1
             end
         end
+        
+        lyrics_row = conn.query( "SELECT deviceid, url, lyrics FROM lyrics" )
+
+        puts "Fetched #{lyrics_row.num_rows} lyrics rows"
+
+        staleLyricsEntries = Array.new
+
+        lyrics_row.each_hash do | lyric |
+            begin
+            url      = lyric["url"]
+            deviceid = lyric["deviceid"]
+
+            url = "." + devices_hash[deviceid] + url.slice(1..url.length)
+            url.sub!( "\/\/", "\/" ) #filter out multiple forward slashes
+
+            urlid = amarok2_collection.get_first_value( "SELECT id FROM urls WHERE rpath=?", url )
+            if urlid.nil?
+                staleLyricsEntries << url
+                next
+            end
+          
+            #if not @options.safe_mode
+            query = "INSERT INTO lyrics( url, lyrics ) VALUES ( ?, ? )"
+            rs = amarok2_collection.query( query, urlid, lyric["lyrics"] );
+            rs.close
+
+            updateLyricCount += 1
+
+            rescue SQLite3::SQLException => e
+                puts "Insertion error: #{e}" if @options.verbose
+            end
+        end
         puts
-        puts "#{updateCount} statistic updateCount"
+        puts "#{updateCount} statistics updated"
+        puts "#{updateLyricCount} lyrics updated"
         puts "#{errorCount} errorCount encountered"
         puts "#{staleEntries.size} stale entries ignored"
 
         if @options.verbose
             puts "Stale entries: "
             staleEntries.each {|e| print "    ", e, "\n" }
+            puts
+            puts "Stale lyrics entries: "
+            staleEntries.each {|e| print "    ", e, "\n" }
         end
 
         devices_row.free
         statistics_row.free
+        lyrics_row.free
     rescue Mysql::Error => e
         if @options.verbose
             puts "Error message: #{e.error}"
