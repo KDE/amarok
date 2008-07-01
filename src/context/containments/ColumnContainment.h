@@ -38,9 +38,12 @@
 #define MAX_ROWS 10
 #define MAX_COLUMNS 10
 
+class QGraphicsSimpleTextItem;
+
 namespace Context
-{
-    class SvgRenderJob;
+{    
+    class SvgRenderJob;    
+    
 
 class /*AMAROK_EXPORT*/ ColumnContainment : public Containment
 {
@@ -65,6 +68,10 @@ public:
     QList<QAction*> contextualActions();
     
     bool hasPlaceForApplet( int rowSpan );
+
+    void setTitle( QString title );
+    void showTitle();
+    void hideTitle();
 
 public slots:
     Applet* addApplet( Plasma::Applet* applet, const QPointF &);
@@ -118,6 +125,9 @@ private:
 
     SvgRenderJob *m_job;
 
+    QGraphicsSimpleTextItem* m_title;
+    Context::Svg* m_header;
+    bool m_paintTitle;
     //KSvgRenderer * m_renderer;
 };
 

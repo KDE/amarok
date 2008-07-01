@@ -43,6 +43,10 @@ public:
     virtual void updateSize( QRectF rect ) = 0;
     virtual bool hasPlaceForApplet( int rowSpan ) = 0;
 
+    virtual void setTitle( QString title ) = 0;
+    virtual void showTitle() = 0;
+    virtual void hideTitle() = 0;
+
 signals:
     void appletRejected( QString pluginName, int rowSpan );
         

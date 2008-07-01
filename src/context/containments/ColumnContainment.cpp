@@ -37,6 +37,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QGraphicsScene>
+#include <QGraphicsSimpleTextItem>
 #include <QThread>
 #include <QTimeLine>
 
@@ -57,9 +58,10 @@ void SvgRenderJob::run()
 ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_actions( 0 )    
-    , m_minColumnWidth( 400 )
+    , m_minColumnWidth( 370 )
     , m_maxColumnWidth( 500 )
     , m_defaultRowHeight( 150 )
+    , m_paintTitle( false )
 {
     DEBUG_BLOCK
 
@@ -68,11 +70,28 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     m_grid = new QGraphicsGridLayout();
     setLayout( m_grid );
     m_grid->setSpacing( 3 );
-//     m_grid->setContentsMargins( 0, 0, 0, 0 );
+    m_grid->setContentsMargins( 0, 0, 0, 0 );
+    setContentsMargins( 20, 60, 0, 0 );
+
+    setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored));
     for( int i = 0; i < MAX_ROWS; i++ )
         for( int j = 0; j < MAX_COLUMNS; j++ )
             m_gridFreePositions[i][j] = true;
-        
+
+
+    m_header = new Context::Svg( this );
+    m_header->setImagePath( "widgets/amarok-containment-header" );
+    m_header->setContainsMultipleImages( false );
+
+    m_header->resize();
+    
+    m_title = new QGraphicsSimpleTextItem( this );
+    
+    m_title->hide();
+    QFont labelFont;
+//     labelFont.setBold( true );
+    labelFont.setPointSize( labelFont.pointSize() + 5 );
+    m_title->setFont( labelFont );
 
     DEBUG_LINE_INFO
 
@@ -111,6 +130,31 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
     //connect ( Plasma::Theme::self(), SIGNAL( changed() ), this, SLOT( paletteChange() ) );
     connect( KGlobalSettings::self(), SIGNAL(kdisplayPaletteChanged() ), this, SLOT( paletteChange() ) );
+}
+
+
+void
+ColumnContainment::setTitle( QString title )
+{    
+    m_title->setText( title );
+}
+
+void
+ColumnContainment::showTitle()
+{
+//     m_header->resize( geometry().width(), 40 );
+    m_paintTitle = true;
+    int offSetX = ( geometry().width() - 100 ) / 2;
+    int offSetY = contentsRect().topLeft().y() - 40;
+    m_title->setPos( offSetX , offSetY );
+    m_title->show();
+}
+
+void
+ColumnContainment::hideTitle()
+{
+    m_title->hide();
+    m_paintTitle = false;
 }
 
 void ColumnContainment::saveToConfig( KConfig& conf )
@@ -169,7 +213,12 @@ void ColumnContainment::updateSize( QRectF rect )
     // and is preventing the containment from expanding when it should.
     // so, we manually keep the size high.
     setMaximumSize( QSizeF( INT_MAX, INT_MAX ) );
-    m_grid->setGeometry( rect );
+    QRectF visibleGrid( rect.topLeft().x(),
+                        rect.topLeft().y(),
+                        rect.width(),
+                        rect.height() );
+    
+    m_grid->setGeometry( visibleGrid );
     setGeometry( rect );
     debug() << "Rect: " << rect;
     m_currentRows = rect.height() / m_defaultRowHeight;
@@ -201,7 +250,18 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
     int logoHeight = ( int )( ( double ) logoWidth / aspectRatio );
 
     painter->drawPixmap(rect.width() - ( logoWidth + 20 ) , rect.height() - ( logoHeight + 20 ) , The::svgHandler()->renderSvg( "amarok_logo", logoWidth, logoHeight, "amarok_logo" ) );
+    if( m_paintTitle )
+    {
+        int width = rect.width() * 0.95;
+        int offsetX = ( rect.width() - width ) / 2;
+        QRectF headerRect( rect.topLeft().x() + offsetX,
+                           rect.topLeft().y() - 50,
+                           width,
+                           50 );
+        m_header->paint( painter, headerRect );
+    }
     painter->restore();
+    
     /*QSize size = m_logo->size();
     QSize pos = rect.size() - size;
     qreal newHeight  = m_aspectRatio * m_width;
@@ -413,7 +473,7 @@ QList<QAction*> ColumnContainment::contextualActions()
 void ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
     DEBUG_BLOCK
-    
+
     // Discoverability: We're also showing the context menu on left-click, when clicking empty space
     if( event->button() == Qt::LeftButton )
     {
@@ -423,7 +483,7 @@ void ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent * event )
 
         if( !insideApplet )
             m_appletBrowserAction->trigger();
-        
+
         debug() << "Focus requested by containment";
         emit focusRequested( this );
     }
@@ -535,6 +595,7 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
     }
     
 }
+
 
 
 ColumnContainment::~ColumnContainment()
