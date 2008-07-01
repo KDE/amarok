@@ -6,11 +6,11 @@ add_subdirectory( daap )
 # NYI
 add_subdirectory( ipodcollection )
 
-
-if (Soprano_FOUND AND NEPOMUK_FOUND)
-    MESSAGE(STATUS "soprano and nepomuk found, building optional nepomuk collection")
-    add_subdirectory(nepomukcollection)
-endif (Soprano_FOUND AND NEPOMUK_FOUND)
+# new nepomuk bug? ResourceManager::instance()->init() crashes so disable it until it is fixed
+#if (Soprano_FOUND AND NEPOMUK_FOUND)
+#    MESSAGE(STATUS "soprano and nepomuk found, building optional nepomuk collection")
+#    add_subdirectory(nepomukcollection)
+#endif (Soprano_FOUND AND NEPOMUK_FOUND)
 
 add_subdirectory( sqlcollection )
 #add_subdirectory( upnp )
