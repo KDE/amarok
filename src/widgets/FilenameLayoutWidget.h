@@ -28,10 +28,8 @@ class FilenameLayoutWidget : public QFrame
     
     public:
         FilenameLayoutWidget(QWidget *parent = 0);
+        void addToken(QString text);
     protected:
-        //TODO: not sure if I'm gonna need these events
-        //void mousePressEvent(QMouseEvent *event);
-        void mouseMoveEvent(QMouseEvent *event);
         void dragEnterEvent(QDragEnterEvent *event);
         void dragMoveEvent(QDragMoveEvent *event);
         void dropEvent(QDropEvent *event);
@@ -41,26 +39,24 @@ class FilenameLayoutWidget : public QFrame
         QLabel *backText;
         QHBoxLayout *layout;
     
-        QPoint startPos;
-        QPoint targetPos;
     //TODO: This slot is for testing, will probably be a normal method
     public slots:
-        void addToken();//QPoint insertPos);
-    private slots:
-        void slotMousePressEvent(QMouseEvent *event);
+        void slotAddToken();
 };
 
 class Token : public QLabel
 {
     Q_OBJECT
-    signals:
-        void signalMouseMoveEvent(QMouseEvent *event);            //not sure if this is the right way to do it
-        void signalMousePressEvent(QMouseEvent *event);
     public:
-        Token(QWidget *parent = 0);
+        Token(const QString &text, QWidget *parent = 0);
     protected:
         void mouseMoveEvent(QMouseEvent *event);
         void mousePressEvent(QMouseEvent *event);
+    private:
+        QString labelText;
+        void performDrag(QMouseEvent *event);
+        QPoint startPos;
+
 };
 
 #endif    //FILENAMELAYOUTWIDGET_H

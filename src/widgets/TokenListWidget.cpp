@@ -73,7 +73,8 @@ TokenListWidget::dropEvent(QDropEvent *event)
 {
     QWidget *source = qobject_cast<QWidget *>(event->source());
     if (source && source != this) {
-        addItem(event->mimeData()->text());
+        addItem(event->mimeData()->text());     //TODO:    mimeData->setData("application/x-amarok-tag-token", itemData);
+
         event->setDropAction(Qt::CopyAction);
         event->accept();
     }

@@ -42,7 +42,7 @@ FilenameLayoutDialog::FilenameLayoutDialog(QWidget *parent) : KDialog(parent)
     
     QPushButton *debugButton = new QPushButton("TEST");
     connect(debugButton, SIGNAL(clicked()),
-            frame, SLOT(addToken()));
+            frame, SLOT(slotAddToken()));
     
     dialogLayout->addWidget(debugButton);
     debugButton->show();

@@ -16,12 +16,16 @@
  ******************************************************************************/
 #include "FilenameLayoutWidget.h"
 
+#include <KApplication>
 #include <KPushButton>
 
 #include <QMouseEvent>
+#include <QByteArray>
+#include <QDataStream>
 #include <QDragMoveEvent>
 #include <QDragEnterEvent>
 #include <QDropEvent>
+#include <QMimeData>
 #include <QtGui>
 
 FilenameLayoutWidget::FilenameLayoutWidget(QWidget *parent) : QFrame(parent)
@@ -37,46 +41,25 @@ FilenameLayoutWidget::FilenameLayoutWidget(QWidget *parent) : QFrame(parent)
 }
 
 void
-FilenameLayoutWidget::addToken(){
+FilenameLayoutWidget::slotAddToken()
+{
+    this->addToken("TOKEN");
+}
+
+void
+FilenameLayoutWidget::addToken(QString text){
     if(backText->isVisible())
     {
         backText->hide();
     }
     
-    Token *token = new Token(this);
+    Token *token = new Token(text, this);
     
     layout->addWidget(token);
-    //TODO: something like token->setDragEnabled(true);
     token->show();
     
-    connect(token, SIGNAL(signalMousePressEvent(QMouseEvent *event)),      //why doesn't it pick up my signal declaration?
-            this, SLOT(slotMousePressEvent(QMouseEvent *event)));
 }
 
-void
-FilenameLayoutWidget::slotMousePressEvent(QMouseEvent *event)
-{
-    //TODO: this is when I store the start position to start the drag on mouseMoveEvent when the mouse has moved enough
-              /*something like
-              if (event->button() == Qt::LeftButton)
-              startPos = event->pos();            //store the start position
-              QFrame::mousePressEvent(event);    //feed it to parent's or token's event
-              */
-}
-
-void
-FilenameLayoutWidget::mouseMoveEvent(QMouseEvent *event)
-{
-    //TODO: this has to become a slot of FilenameLayoutWidget that responds to the mouseMoveEvent raised by a Token, like slotMousePressEvent(QMouseEvent *event)
-    /*if (event->buttons() & Qt::LeftButton) {
-        int distance = (event->pos() - startPos).manhattanLength();
-        if (distance >= KApplication::startDragDistance()){
-            performDrag();
-        }
-    }
-    KListWidget::mouseMoveEvent(event);     //feed it to Token's event? not sure
-    */
-}
 
 void
 FilenameLayoutWidget::dragEnterEvent(QDragEnterEvent *event)        //overrides QListWidget's implementation. this is when the drag becomes droppable
@@ -116,7 +99,8 @@ void FilenameLayoutWidget::dropEvent(QDropEvent *event)
     if (source && source != this) {
         //TODO: transfer the string somehow. It was like this when dragging from KListWidget to KListWidget:
         //addItem(event->mimeData()->text());
-        addToken();
+        //needs to be     x-amarok-tag-token
+        addToken(tr("TOKEN"));
         event->setDropAction(Qt::CopyAction);
         event->accept();
     }
@@ -126,19 +110,68 @@ void FilenameLayoutWidget::dropEvent(QDropEvent *event)
 
 //starts implementation of Token : QLabel
 
-Token::Token(QWidget *parent) : QLabel(parent)
+Token::Token(const QString &text, QWidget *parent) : QLabel(parent)
 {
-    this->setText("TOKEN");
+    QFontMetrics metric(font());
+    QSize size = metric.size(Qt::TextSingleLine, text);
+
+    QImage image(size.width() + 12, size.height() + 12, QImage::Format_ARGB32_Premultiplied);
+    image.fill(qRgba(0,0,0,0));
+
+    QFont font;
+    font.setStyleStrategy(QFont::ForceOutline);
+
+    QPainter painter;
+    painter.begin(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setBrush(Qt::white);
+    painter.drawRoundedRect(QRectF(0.5, 0.5, image.width()-1, image.height()-1), 25, 25, Qt::RelativeSize);
+    painter.setFont(font);
+    painter.setBrush(Qt::black);
+    painter.drawText(QRect(QPoint(6, 6), size), Qt::AlignCenter, text);
+    painter.end();
+    setPixmap(QPixmap::fromImage(image));
+    labelText = text;
 }
 
 void
 Token::mouseMoveEvent(QMouseEvent *event)
 {
-    emit signalMouseMoveEvent(event);           //this with the signals that I'm doing, does it make any sense at all?
+    if (event->buttons() & Qt::LeftButton) {
+        int distance = (event->pos() - startPos).manhattanLength();
+        if (distance >= KApplication::startDragDistance())
+        {
+            performDrag(event);
+        }
+    } 
 }
 
 void
 Token::mousePressEvent(QMouseEvent *event)
 {
-    emit signalMousePressEvent(event);
+    if (event->button() == Qt::LeftButton)
+        startPos = event->pos();
+}
+
+void
+Token::performDrag(QMouseEvent *event)
+{
+    //transfer of QByteData, not text --thank you Fridge Magnet example from Qt doc
+    QByteArray itemData;
+    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+    dataStream << labelText << QPoint(event->pos() - rect().topLeft());
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData("application/x-amarok-tag-token", itemData);
+    mimeData->setText(labelText);
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setHotSpot(event->pos() - rect().topLeft());
+    drag->setPixmap(*pixmap());
+
+    hide();
+
+    if(drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction)
+        close();
+    else
+        show();
 }
