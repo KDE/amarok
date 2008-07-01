@@ -437,6 +437,7 @@ set(amaroklib_LIB_SRCS
     mediabrowser.cpp
     medium.cpp
     mountpointmanager.cpp
+    PaletteHandler.cpp
     podcastsettings.cpp
     prettypopupmenu.cpp
     refreshimages.cpp

@@ -22,17 +22,16 @@
 #include "CollectionTreeView.h"
 
 #include "Amarok.h"
-#include "App.h"
 #include "Debug.h"
 #include "CollectionLocation.h"
 #include "CollectionManager.h"
 #include "collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
-#include "MainWindow.h"
 #include "mediabrowser.h"
 #include "Meta.h"
 #include "MetaQueryMaker.h"
 #include "meta/CustomActionsCapability.h"
+#include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistGraphicsView.h"
 #include "context/popupdropper/PopupDropper.h"
@@ -78,7 +77,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
 
     //transparency
-    QPalette p = palette();
+    /*QPalette p = palette();
     QColor c = p.color( QPalette::Base );
     c.setAlpha( 0 );
     p.setColor( QPalette::Base, c );
@@ -87,10 +86,12 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     c.setAlpha( 77 );
     p.setColor( QPalette::AlternateBase, c );
 
-    setPalette( p );
+    setPalette( p );*/
+
+    The::paletteHandler()->updateTreeView( this );
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
-    connect( App::instance()->mainWindow(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 }
 
 
@@ -375,8 +376,8 @@ PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
     pd->setFadeOutTime( 300 );
     QColor windowColor( Qt::black );
     windowColor.setAlpha( 128 );
-    QColor textColor( App::instance()->palette().color( QPalette::HighlightedText ) );
-    QColor borderColor( App::instance()->palette().color( QPalette::Highlight ) );
+    QColor textColor( The::paletteHandler()->palette().color( QPalette::HighlightedText ) );
+    QColor borderColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
     pd->setColors( windowColor, textColor, borderColor, borderColor );
 
     return pd;
@@ -933,50 +934,10 @@ void CollectionTreeView::slotOrganize()
 {
 }
 
-/*void CollectionTreeView::changeEvent( QEvent * event )
-{
-   DEBUG_BLOCK
-   QTreeView::changeEvent( event );
-
-   if ( event->type() == QEvent::PaletteChange ) {
-        debug() << "Palette change!";
-
-        QPalette p = App::palette();
-        QColor c = p.color( QPalette::Base );
-
-        debug() << "new Base: " << c.name();
-        c.setAlpha( 0 );
-        p.setColor( QPalette::Base, c );
-
-        c = p.color( QPalette::AlternateBase );
-        debug() << "new AlternateBase: " << c.name();
-        c.setAlpha( 77 );
-        p.setColor( QPalette::AlternateBase, c );
-
-        setPalette( p );
-
-        event->accept();
-   } else {
-       event->ignore();
-   }
-}*/
-
 
 void CollectionTreeView::newPalette( const QPalette & palette )
 {
-    QPalette p = palette;
-    QColor c = palette.color( QPalette::Base );
-
-    debug() << "new Base: " << c.name();
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-
-    c = p.color( QPalette::AlternateBase );
-    debug() << "new AlternateBase: " << c.name();
-    c.setAlpha( 77 );
-    p.setColor( QPalette::AlternateBase, c );
-
-    setPalette( p );
+    The::paletteHandler()->updateTreeView( this );
 }
 
 

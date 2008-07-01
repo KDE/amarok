@@ -85,7 +85,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 
     signals:
         void loveTrack( Meta::TrackPtr );
-        void newPalette( const QPalette & palette );
 
     public slots:
         void showHide();

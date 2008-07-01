@@ -42,6 +42,7 @@
 #include "filebrowser/FileBrowser.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
+#include "PaletteHandler.h"
 #include "playlist/PlaylistGraphicsView.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
@@ -115,6 +116,8 @@ MainWindow::MainWindow()
         resize( size );
         move( pos );
     }
+
+    The::paletteHandler()->setPalette( palette() );
 }
 
 MainWindow::~MainWindow()
@@ -975,7 +978,7 @@ MainWindow::paletteChange(const QPalette & oldPalette)
     Q_UNUSED( oldPalette )
 
     QPixmapCache::clear();
-    emit ( newPalette( palette() ) );
+    The::paletteHandler()->setPalette( palette() );
 }
 
 QSize
