@@ -97,6 +97,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->initialCheck  , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->asciiCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->customschemeCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->formatEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
+    connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
+    connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
 
     if( ui->customschemeCheck->isChecked())
         setDetailsWidgetVisible(true);
