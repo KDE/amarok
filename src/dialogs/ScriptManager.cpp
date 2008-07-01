@@ -217,10 +217,10 @@ ScriptManager::~ScriptManager()
     {
         if( m_scripts[key].running )
         {
-            m_scripts[key].running = false;
-            delete m_scripts[key].engine;
+            scriptFinished( key );
             runningScripts << key;
         }
+        delete m_scripts[key].engine;
     }
     // Save config
     KConfigGroup config = Amarok::config( "ScriptManager" );
@@ -523,6 +523,7 @@ ScriptManager::slotUninstallScript()
     // Terminate script, remove entries from script list
     foreach( const QString &key, keys )
     {
+        scriptFinished( key );
         delete m_scripts[key].li;
         delete m_scripts[key].engine;
         m_scripts.remove( key );
@@ -556,7 +557,7 @@ ScriptManager::slotRunScript( bool silent )
         return false;
     }
     const KUrl url = m_scripts[name].url;
-
+    QTime time;
     //load the wrapper classes
     startScriptEngine( name );
     QFile scriptFile( url.path() );
@@ -566,32 +567,17 @@ ScriptManager::slotRunScript( bool silent )
     li->setIcon( 0, SmallIcon( "media-playback-start-amarok" ) );
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
 //TODO: use thread to handle scripts?
+    m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
     scriptFile.close();
-//    scriptFinished( name );
-
-//todo: implement the fatal checking code
-/*
-    if( script->error() != AmarokProcIO::FailedToStart )
+    //FIXME: '\n' doesen't work?
+    if ( m_scripts[name].engine->hasUncaughtException() )
     {
-        if( m_scripts[name].type == "score" && !scoreScriptRunning().isNull() )
-        {
-            stopScript( scoreScriptRunning() );
-            m_gui->treeWidget->setCurrentItem( li );
-        }
-        AmarokConfig::setLastScoreScript( name );
+        m_scripts[name].log += time.currentTime().toString() + " " + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() ) + '\n';
+        m_scripts[name].engine->clearExceptions();
+        KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script. Please refer to the log!" ) );
+        scriptFinished( name );
     }
-    else
-    {
-        if( !silent )
-            KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
-                                         "<p>Please make sure that the file has execute (+x) permissions.</p>", name ) );
-        delete script;
-        return false;
-    }
-*/
-    if( m_scripts[name].type == "lyrics" )
-        emit lyricsScriptChanged();
 //TODO: immigrate scriptable service
 //    else if( m_scripts[name].type == "service" )
 //        The::scriptableServiceManager()->addRunningScript( name, script );
@@ -682,8 +668,6 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
     logAction->setData( SHOW_LOG );
     editAction->setData( EDIT );
 
-    logAction->setEnabled( m_scripts[key].running );
-
     QAction* choice = menu.exec( mapToGlobal( pos ) );
     if( !choice ) return;
     const int id = choice->data().toInt();
@@ -695,10 +679,6 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
             break;
 
         case SHOW_LOG:
-            QString line;
-//            while( m_scripts[key].process->readln( line ) != -1 )
-//                m_scripts[key].log += line;
-//to do implement log
             KTextEdit* editor = new KTextEdit( m_scripts[key].log );
             kapp->setTopWidget( editor );
             editor->setWindowTitle( KDialog::makeStandardCaption( i18n( "Output Log for %1", key ) ) );
@@ -709,7 +689,7 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
             font.setStyleHint( QFont::TypeWriter );
             editor->setFont( font );
 
-            editor->resize( 500, 380 );
+            editor->resize( 400, 350 );
             editor->show();
             break;
     }
@@ -721,12 +701,12 @@ ScriptManager::scriptFinished( QString name ) //SLOT
     DEBUG_BLOCK
 //TODO: implement error handling
 
+    QTime time;
     m_scripts[name].running = false;
-    m_scripts[name].log.clear();
     foreach( const QObject* obj, m_scripts[name].guiPtrList )
         delete obj;
     m_scripts[name].guiPtrList.clear();
-
+    m_scripts[name].log += time.currentTime().toString() + " Script ended!" + '\n';
 //probably memory leak here?
     m_scripts[name].li->setIcon( 0, QPixmap() );
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
