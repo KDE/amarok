@@ -24,20 +24,20 @@
 
 namespace Amarok
 {
-
     class TracklistDBusHandler : public QObject
     {
         Q_OBJECT
+
         public:
             TracklistDBusHandler();
 
-            int AddTrack(const QString &, bool);
-            void DelTrack(int index);
+            int AddTrack( const QString &, bool );
+            void DelTrack( int index );
             int GetCurrentTrack();
             int GetLength();
-            QVariantMap GetMetadata(int);
-            void SetLoop(bool enable);
-            void SetRandom(bool enable);
+            QVariantMap GetMetadata( int );
+            void SetLoop( bool enable );
+            void SetRandom( bool enable );
     };
 }
 

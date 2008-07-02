@@ -35,10 +35,10 @@ namespace Amarok
         : QObject( kapp )
     {
         new TracklistAdaptor(this);
-        QDBusConnection::sessionBus().registerObject("/TrackList", this);
+        QDBusConnection::sessionBus().registerObject( "/TrackList", this );
     }
 
-    int TracklistDBusHandler::AddTrack(const QString& url, bool playImmediately)
+    int TracklistDBusHandler::AddTrack( const QString& url, bool playImmediately )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
         if( track )
@@ -70,7 +70,7 @@ namespace Amarok
         return The::playlistModel()->rowCount();
     }
 
-    QVariantMap TracklistDBusHandler::GetMetadata(int position)
+    QVariantMap TracklistDBusHandler::GetMetadata( int position )
     {
         //todo: add function
         return QVariantMap();
@@ -82,9 +82,9 @@ namespace Amarok
         ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
     }
 
-    void TracklistDBusHandler::SetRandom(bool enable)
+    void TracklistDBusHandler::SetRandom( bool enable )
     {
-        static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ))
+        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "random_mode" ) )
         ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
     }
 }
