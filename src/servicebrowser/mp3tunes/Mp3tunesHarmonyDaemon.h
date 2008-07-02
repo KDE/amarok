@@ -50,7 +50,7 @@ class Mp3tunesHarmonyDaemon {
      * and should be displayed to the user and the connection reset by calling
      * mp3tunes_harmony_disconnect and a reconnection user initiated.
      */
-    void signalErrorHandler( MP3tunesHarmony* harmony, gpointer null_pointer );
+    static void signalErrorHandler( MP3tunesHarmony* harmony, gpointer null_pointer );
 
     /* State change signal handler.
      *
@@ -81,14 +81,14 @@ class Mp3tunesHarmonyDaemon {
      *     for them to log into mp3tunes.com and have them add the pin to their
      *     devices tab. Upon receiving the reply to this you will be authenticated.
      */
-    void signalStateChangeHandler( MP3tunesHarmony* harmony, guint32 state,  gpointer null_pointer );
+    static void signalStateChangeHandler( MP3tunesHarmony* harmony, guint32 state,  gpointer null_pointer );
 
     
-    void signalDownloadReady( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
-    void signalDownloadPending( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
+    static void signalDownloadReady( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
+    static void signalDownloadPending( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
 
     MP3tunesHarmony* m_harmony;
-    GMainLoop *m_main_loop;
+    static GMainLoop * m_main_loop;
     GError *m_err;
     char* m_identifier;
 

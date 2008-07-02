@@ -23,7 +23,7 @@
 #include "../ServiceBase.h"
 #include "Mp3tunesServiceCollection.h"
 #include "Mp3tunesLocker.h"
-//#include "Mp3tunesHarmonyDaemon.h"
+#include "Mp3tunesHarmonyDaemon.h"
 
 #include <kio/jobclasses.h>
 #include <kio/job.h>
@@ -47,9 +47,8 @@ class Mp3tunesServiceFactory: public ServiceFactory
 
 
 /**
-A service for displaying, previewing and downloading music from Mp3tunes.com
-
-	@author 
+    A service for displaying, previewing and downloading music from Mp3tunes.com
+	@author
 */
 class Mp3tunesService : public ServiceBase
 {
@@ -81,7 +80,7 @@ private:
     Mp3tunesServiceCollection *  m_collection;
 
     Mp3tunesLocker * m_locker;
-//    Mp3tunesHarmonyDaemon * m_daemon;
+    Mp3tunesHarmonyDaemon * m_daemon;
 };
 
 #endif

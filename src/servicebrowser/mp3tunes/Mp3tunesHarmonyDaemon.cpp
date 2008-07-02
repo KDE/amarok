@@ -19,6 +19,8 @@
 
 #include "Mp3tunesHarmonyDaemon.h"
 
+GMainLoop * Mp3tunesHarmonyDaemon::m_main_loop = g_main_loop_new(0, FALSE);
+
 Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier )
 {
     m_harmony = mp3tunes_harmony_new();
@@ -30,9 +32,9 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier )
     g_type_init();
 
     /* Set the error signal handler. */
-    g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), (gpointer)0);    
+    g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), 0);    
     /* Set the state change signal handler. */
-    g_signal_connect(m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), NULL);
+    g_signal_connect(&m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
     /* Set the download signal handler. */
     g_signal_connect(m_harmony, "download-ready", G_CALLBACK(signalDownloadReady), NULL);
     g_signal_connect(m_harmony, "download-pending", G_CALLBACK(signalDownloadPending), NULL);
@@ -64,7 +66,6 @@ Mp3tunesHarmonyDaemon::init()
     mp3tunes_harmony_set_device_attribute(m_harmony, "available-bytes", &available_bytes);
     
     /* Configure main loop */
-    m_main_loop = g_main_loop_new(0, FALSE);
     
     /* Start the connection */
     mp3tunes_harmony_connect(m_harmony, &m_err);

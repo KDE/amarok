@@ -107,9 +107,9 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
 
     authenticate( email, password );
 
-    //debug() << "Making new Daemon";
-    //m_daemon = new Mp3tunesHarmonyDaemon( "000000000001" );
-    //m_daemon->init();
+    debug() << "Making new Daemon";
+    m_daemon = new Mp3tunesHarmonyDaemon( "000000000001" );
+    m_daemon->init();
 }
 
 
