@@ -19,32 +19,32 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-FilenameLayoutDialog::FilenameLayoutDialog(QWidget *parent) : KDialog(parent)
+FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent ) : KDialog( parent )
 {
-    setupUi(this);
+    setupUi( this );
     
-    setCaption("Filename Layout Chooser");
-    setButtons(0);
+    setCaption( "Filename Layout Chooser" );
+    setButtons( 0 );
     
-    tokenPool->addItem(tr("Track #"));
-    tokenPool->addItem(tr("Track Name"));
-    tokenPool->addItem(tr("Disc #"));
-    tokenPool->addItem(tr("Track Count"));
-    tokenPool->addItem(tr("Disc Count"));
-    tokenPool->addItem(tr("Artist"));
-    tokenPool->addItem(tr("Composer"));
-    tokenPool->addItem(tr("Year"));
-    tokenPool->addItem(tr("Album Name"));
-    tokenPool->addItem(tr("Comment"));
+    tokenPool->addItem( tr( "Track #" ) );
+    tokenPool->addItem( tr( "Track Name" ) );
+    tokenPool->addItem( tr( "Disc #" ) );
+    tokenPool->addItem( tr( "Track Count" ) );
+    tokenPool->addItem( tr( "Disc Count" ) );
+    tokenPool->addItem( tr( "Artist" ) );
+    tokenPool->addItem( tr( "Composer" ) );
+    tokenPool->addItem( tr( "Year" ) );
+    tokenPool->addItem( tr( "Album Name" ) );
+    tokenPool->addItem( tr( "Comment" ) );
     
     QGridLayout *dialogLayout = new QGridLayout;
-    this->setLayout(dialogLayout);
+    this->setLayout( dialogLayout );
     
-    QPushButton *debugButton = new QPushButton("TEST");
-    connect(debugButton, SIGNAL(clicked()),
-            frame, SLOT(slotAddToken()));
+    QPushButton *debugButton = new QPushButton( "TEST" );
+    connect( debugButton, SIGNAL( clicked() ),
+            frame, SLOT( slotAddToken() ) );
     
-    dialogLayout->addWidget(debugButton);
+    dialogLayout->addWidget( debugButton );
     debugButton->show();
 }
 
