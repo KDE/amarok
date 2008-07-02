@@ -295,3 +295,22 @@ void Mp3tunesSimpleUploader::completeJob()
     emit( uploadComplete() );
     deleteLater();
 }
+
+Mp3tunesHarmonizer::Mp3tunesHarmonizer( Mp3tunesHarmonyDaemon * daemon )
+{
+    m_daemon = daemon;
+}
+Mp3tunesHarmonizer::~Mp3tunesHarmonizer()
+{}
+
+void Mp3tunesHarmonizer::run()
+{
+    if( m_daemon != 0 )
+        m_daemon->init();
+}
+
+void Mp3tunesHarmonizer::completeJob()
+{
+    emit( harmonyExited() );
+    deleteLater();
+}

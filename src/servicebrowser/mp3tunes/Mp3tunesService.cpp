@@ -109,7 +109,12 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
 
     debug() << "Making new Daemon";
     m_daemon = new Mp3tunesHarmonyDaemon( "000000000001" );
-    m_daemon->init();
+
+    Mp3tunesHarmonizer * harmonizer = new Mp3tunesHarmonizer( m_daemon );
+    debug() << "connecting harmonizer.";
+    connect( harmonizer, SIGNAL( harmonyExited( QString ) ), this, SLOT( slotHarmonyQuit() ) );
+    debug() << "running harmonizer.";
+    ThreadWeaver::Weaver::instance()->enqueue( harmonizer );
 }
 
 
@@ -117,6 +122,7 @@ Mp3tunesService::~Mp3tunesService()
 {
     CollectionManager::instance()->removeUnmanagedCollection( m_collection );
     delete m_locker;
+    delete m_daemon;
     delete m_collection;
 }
 
@@ -190,6 +196,10 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
     }
 }
 
+void Mp3tunesService::slotHarmonyQuit()
+{
+    DEBUG_BLOCK
+}
 
 #include "Mp3tunesService.moc"
 

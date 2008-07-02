@@ -66,6 +66,7 @@ public:
 private slots:
     void authenticate( const QString & uname = "", const QString & passwd = "" );
     void authenticationComplete(  const QString & sessionId );
+    void slotHarmonyQuit();
 
 private:
     QString m_email;
