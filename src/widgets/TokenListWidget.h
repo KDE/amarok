@@ -24,17 +24,17 @@ class TokenListWidget : public KListWidget      //all this kinda works when used
     Q_OBJECT
     
     public:
-        TokenListWidget(QWidget *parent = 0);
+        TokenListWidget( QWidget *parent = 0 );
     
     protected:
-        void mousePressEvent(QMouseEvent *event);
-        void mouseMoveEvent(QMouseEvent *event);
-        void dragEnterEvent(QDragEnterEvent *event);
-        void dragMoveEvent(QDragMoveEvent *event);
-        void dropEvent(QDropEvent *event);
+        void mousePressEvent( QMouseEvent *event );
+        void mouseMoveEvent( QMouseEvent *event );
+        void dragEnterEvent( QDragEnterEvent *event );
+        void dragMoveEvent( QDragMoveEvent *event );
+        void dropEvent( QDropEvent *event );
     
     private:
-        void performDrag(QMouseEvent *event);
+        void performDrag( QMouseEvent *event );
     
         QPoint startPos;
 };
