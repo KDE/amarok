@@ -1322,8 +1322,8 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
 
     //debug stuff
 //     debug() << "Groups before:";
-    foreach( AlbumGroup * ag, m_albumGroups)
-       ag->printGroupRows();
+//    foreach( AlbumGroup * ag, m_albumGroups)
+//       ag->printGroupRows();
 
 
 
@@ -1359,8 +1359,8 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
 
     //debug stuff
 //     debug() << "Groups after offsetting:";
-    foreach( AlbumGroup * ag, m_albumGroups)
-       ag->printGroupRows();
+//    foreach( AlbumGroup * ag, m_albumGroups)
+//       ag->printGroupRows();
 
 
     int i;
@@ -1394,8 +1394,8 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
     if ( ( area1Start == area2Start ) || area2Start == -1 ) {
 
 //         debug() << "Groups after:";
-        foreach( AlbumGroup * ag, m_albumGroups)
-            ag->printGroupRows();
+//        foreach( AlbumGroup * ag, m_albumGroups)
+//            ag->printGroupRows();
         return;
     }
 
@@ -1419,8 +1419,8 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
     }
 
 //     debug() << "Groups after:";
-    foreach( AlbumGroup *ag, m_albumGroups)
-       ag->printGroupRows();
+//    foreach( AlbumGroup *ag, m_albumGroups)
+//       ag->printGroupRows();
 
 
 
