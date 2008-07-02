@@ -183,3 +183,4 @@ Token::performDrag(QMouseEvent *event)
     else
         show();
 }
+

@@ -99,3 +99,4 @@ TokenListWidget::performDrag(QMouseEvent *event)
         //TODO:set a pointer for the drag, like this: drag->setPixmap(QPixmap("foo.png"));
     }
 }
+

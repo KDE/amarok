@@ -64,3 +64,4 @@ class Token : public QLabel
 };
 
 #endif    //FILENAMELAYOUTWIDGET_H
+
