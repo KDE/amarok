@@ -22,7 +22,9 @@
 
 #include "BlockingQuery.h"
 #include "Collection.h"
+#include "CollectionManager.h"
 #include "Debug.h"
+#include "MetaQueryMaker.h"
 
 #include <KRandom>
 
@@ -68,7 +70,7 @@ Dynamic::RandomPlaylist::getTrack()
 void
 Dynamic::RandomPlaylist::fillCache()
 {
-    QueryMaker* qm = m_collection->queryMaker();
+    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->orderByRandom();
     qm->startTrackQuery();
     qm->limitMaxResultSize( CACHE_SIZE - m_cache.size() );

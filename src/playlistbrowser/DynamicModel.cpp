@@ -15,9 +15,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "CollectionManager.h"
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "DynamicPlaylist.h"
+#include "MetaQueryMaker.h"
 #include "RandomPlaylist.h"
 
 // All thes are just for initializing the biased test case.
@@ -50,14 +52,13 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
     m_playlistHash[ m_defaultPlaylist->title() ] = m_defaultPlaylist;
     m_playlistList.append( m_defaultPlaylist );
 
-    // DEBUG: temporary test case for biased playlists
-    Collection* coll = CollectionManager::instance()->primaryCollection();
 
-    QueryMaker* property = coll->queryMaker();
+    QueryMaker* property = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     //property->addFilter( QueryMaker::valArtist, "Radiohead" );
     property->addFilter( QueryMaker::valYear, "2005" ); 
     property->startTrackQuery();
 
+    Collection *coll = CollectionManager::instance()->primaryCollection();
     Dynamic::Bias* bias = new Dynamic::GlobalBias( coll, 0.5, property );
     QList<Dynamic::Bias*> biases;
 
