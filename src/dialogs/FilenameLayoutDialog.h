@@ -26,7 +26,7 @@ class FilenameLayoutDialog : public KDialog, private Ui::FilenameLayoutDialog
     Q_OBJECT
 
     public:
-        FilenameLayoutDialog(QWidget *parent = 0);
+        FilenameLayoutDialog( QWidget *parent = 0 );
 };
 
 #endif    //FILENAMELAYOUTDIALOG_H
