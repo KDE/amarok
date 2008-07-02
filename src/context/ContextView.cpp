@@ -471,6 +471,9 @@ ContextView::setContainment( Plasma::Containment* containment )
                 setSceneRect( rect() );
             }
 
+            if( m_appletBrowser )
+                m_appletBrowser->setContainment( containment );
+
         }
         
     }    

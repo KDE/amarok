@@ -57,7 +57,9 @@ void SvgRenderJob::run()
 
 ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
-    , m_actions( 0 )    
+    , m_actions( 0 )
+    , m_currentRows( 0 )
+    , m_currentColumns( 1 )
     , m_minColumnWidth( 370 )
     , m_maxColumnWidth( 500 )
     , m_defaultRowHeight( 150 )
@@ -208,21 +210,51 @@ QRectF ColumnContainment::boundingRect() const
 // call this when the view changes size: e.g. layout needs to be recalculated
 void ColumnContainment::updateSize( QRectF rect ) 
 {
-    DEBUG_BLOCK
     // HACK HACK HACK i don't know where maximumSize is being set, but SOMETHING is setting it,
     // and is preventing the containment from expanding when it should.
     // so, we manually keep the size high.
     setMaximumSize( QSizeF( INT_MAX, INT_MAX ) );
-    QRectF visibleGrid( rect.topLeft().x(),
-                        rect.topLeft().y(),
-                        rect.width(),
-                        rect.height() );
     
-    m_grid->setGeometry( visibleGrid );
+    m_grid->setGeometry( rect );
     setGeometry( rect );
-    debug() << "Rect: " << rect;
-    m_currentRows = rect.height() / m_defaultRowHeight;
-    m_currentColumns = qMax( (int)(rect.width() / m_minColumnWidth), 1 );
+    m_currentRows = ( int )( rect.height() ) / m_defaultRowHeight;
+    
+    int columns = ( int )( rect.width() ) / m_minColumnWidth;
+    if( columns != m_currentColumns )
+    {
+        int rowCount = m_grid->rowCount();
+
+        bool hide = columns  < m_currentColumns;
+        int columnsToUpdate = qAbs( m_currentColumns - columns );
+        int col = hide? m_currentColumns - columnsToUpdate: m_currentColumns;
+        
+        for( int j = col; j < col + columnsToUpdate; j++ )
+        {
+            int i = 0;
+            while( i < rowCount )
+            {
+                Plasma::Applet* applet = static_cast< Plasma::Applet* >( m_grid->itemAt( i, j ) );
+
+                if( !applet ) //probably there are no applets left in the column
+                {
+                    debug() << "no applet";
+                    break;
+                }
+
+                if( hide )
+                    applet->hide();
+                else
+                    applet->show();
+
+                QList<int> pos = m_appletsPositions[applet];
+                int rowSpan = pos[2];
+                i += rowSpan;
+
+            }
+        }
+    }
+
+    m_currentColumns = columns;
     
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
