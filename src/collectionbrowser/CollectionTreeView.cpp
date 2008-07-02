@@ -496,6 +496,7 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Pla
 void
 CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) const
 {
+    DEBUG_BLOCK
     if( !items.count() )
     {
         return;
@@ -555,6 +556,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 void
 CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collection *destination, bool removeSources ) const
 {
+    DEBUG_BLOCK
     if( !destination->isWritable() )
     {
         return;
@@ -934,6 +936,10 @@ void CollectionTreeView::slotMoveTracks()
 
 void CollectionTreeView::slotOrganize()
 {
+    if( sender() ) {
+        if( PopupDropperAction * action = dynamic_cast<PopupDropperAction *>( sender() ) )
+            organizeTracks( m_currentItems );
+        }
 }
 
 
