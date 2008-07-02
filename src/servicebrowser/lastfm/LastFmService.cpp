@@ -77,6 +77,7 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
 
     m_collection = new LastFmServiceCollection( m_userName );
+    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
 
     Q_ASSERT( ms_service == 0 );
     ms_service = this;
@@ -197,7 +198,6 @@ namespace The
 
 void LastFmService::playCustomStation()
 {
-    DEBUG_BLOCK
     QString band = m_customStationEdit->text();
 
     if ( !band.isEmpty() ) {
