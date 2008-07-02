@@ -378,7 +378,9 @@ PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
     windowColor.setAlpha( 128 );
     QColor textColor( The::paletteHandler()->palette().color( QPalette::HighlightedText ) );
     QColor borderColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
-    pd->setColors( windowColor, textColor, borderColor, borderColor );
+    QColor fillColor( borderColor );
+    fillColor.setAlpha( 32 );
+    pd->setColors( windowColor, textColor, borderColor, borderColor, fillColor );
 
     return pd;
 }
