@@ -489,7 +489,7 @@ kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 #add_dependencies( amaroklib generator )
 
 #add_custom_command ( TARGET amaroklib PRE_LINK
-#                     COMMAND "cp ${CMAKE_CURRENT_BINARY_DIR}/generator/generator/generator ${CMAKE_CURRENT_SOURCE_DIR}/generator/generator/generator"
+#                     COMMAND "cp ${CMAKE_CURRENT_BINARY_DIR}/scriptengine/generator/generator/generator ${CMAKE_CURRENT_SOURCE_DIR}/scriptengine/generator/generator/generator"
 #)
 
 target_link_libraries(amaroklib
