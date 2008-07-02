@@ -23,6 +23,7 @@
 #include "../ServiceBase.h"
 #include "Mp3tunesServiceCollection.h"
 #include "Mp3tunesLocker.h"
+//#include "Mp3tunesHarmonyDaemon.h"
 
 #include <kio/jobclasses.h>
 #include <kio/job.h>
@@ -80,6 +81,7 @@ private:
     Mp3tunesServiceCollection *  m_collection;
 
     Mp3tunesLocker * m_locker;
+//    Mp3tunesHarmonyDaemon * m_daemon;
 };
 
 #endif

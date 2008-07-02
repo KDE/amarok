@@ -23,6 +23,7 @@
 #include "Debug.h"
 #include "Mp3tunesWorkers.h"
 #include "Mp3tunesConfig.h"
+
 #include "StatusBar.h"
 
 #include <KPasswordDialog>
@@ -30,6 +31,7 @@
 
 #include <QDomDocument>
 #include <QRegExp>
+//#include <QNetworkInterface>
 
 AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
 
@@ -104,6 +106,10 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
     t->start( 3600000 );
 
     authenticate( email, password );
+
+    //debug() << "Making new Daemon";
+    //m_daemon = new Mp3tunesHarmonyDaemon( "000000000001" );
+    //m_daemon->init();
 }
 
 
