@@ -876,6 +876,8 @@ ScriptManager::startScriptEngine( QString name )
     DEBUG_BLOCK
 
     QScriptEngine* scriptEngine = m_scripts[name].engine;
+//    scriptEngine->importExtension( "qt.core" );
+//    scriptEngine->importExtension( "qt.gui" );
 
     QScriptValue scriptObject;
     scriptObject = scriptEngine->newQObject( new Amarok::ScriptImporter( scriptEngine, m_scripts[name].url ) );

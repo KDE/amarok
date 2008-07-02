@@ -2,6 +2,8 @@ project(Amarok)
 
 cmake_minimum_required(VERSION 2.4.5)
 
+add_subdirectory( src/generator )
+
 #We depend on kde4.1 now.. I believe this is the easiest way to do it.
 set(KDE_MIN_VERSION "4.00.61")
 find_package(KDE4)

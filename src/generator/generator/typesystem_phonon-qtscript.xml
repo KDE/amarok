@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<typesystem package="com.trolltech.qt.phonon">
+    
+    <value-type name="Phonon::AudioOutputDevice">
+        <modify-function signature="operator==(Phonon::ObjectDescription)const" remove="all" />
+        <modify-function signature="operator!=(Phonon::ObjectDescription)const" remove="all" />
+        <modify-function signature="fromIndex(int)" remove="all" />
+    </value-type>
+
+    <value-type name="Phonon::EffectDescription">
+        <modify-function signature="operator==(Phonon::ObjectDescription)const" remove="all" />
+        <modify-function signature="operator!=(Phonon::ObjectDescription)const" remove="all" />
+        <modify-function signature="fromIndex(int)" remove="all" />
+    </value-type>
+
+    <value-type name="Phonon::EffectParameter">
+        <modify-function signature="EffectParameter(Phonon::EffectParameter)" remove="all" />
+        <modify-function signature="operator==(Phonon::EffectParameter)const" remove="all" />
+    </value-type>
+
+</typesystem>
