@@ -21,8 +21,14 @@
 #include "DynamicPlaylist.h"
 
 #include <QAbstractItemModel>
+#include <QDomElement>
 #include <QHash>
 #include <QString>
+
+namespace Dynamic
+{
+    class Bias;
+}
 
 
 namespace PlaylistBrowserNS {
@@ -53,6 +59,9 @@ class DynamicModel : public QAbstractItemModel
 
 
     private:
+        Dynamic::Bias* createBias( QDomElement );
+        
+
         DynamicModel();
         static DynamicModel* s_instance;
 

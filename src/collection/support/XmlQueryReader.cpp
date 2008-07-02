@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2007-8 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2008   Daniel Caleb Jones <danielcjones@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -18,7 +19,7 @@
 
 #include "XmlQueryReader.h"
 
-#include "collection/collectionmanager.h"
+#include "collection/CollectionManager.h"
 
 struct XmlQueryReader::Private
 {
@@ -38,10 +39,10 @@ XmlQueryReader::getQueryMaker( const QString &xmlData, ReturnValueEnum flag )
 }
 
 XmlQueryReader::XmlQueryReader( QueryMaker *qm, ReturnValueEnum flag )
-    : QXmlReader()
+    : QXmlStreamReader()
     , d( new Private )
 {
-    d->flag = flag
+    d->flag = flag;
     d->qm = qm;
 }
 
@@ -85,27 +86,66 @@ XmlQueryReader::readQuery()
         readNext();
         if( isEndElement() )
         {
-            if( name() == "and" || name() == "or" )
-            {
-                d->qm->endAndOr();
-                continue;
-            }
-            else
-            {
-                break;
-            }
+            break;
         }
 
         if( isStartElement() )
         {
             if( name() == "filters" )
                 readFilters();
+            else if( name() == "order" )
+            {
+                QXmlStreamAttributes attr = attributes();
+                QStringRef fieldStr =  attr.value( "field" );
+                QStringRef valueStr =  attr.value( "value" );
+
+                if( valueStr == "random" )
+                    d->qm->orderByRandom();
+                else
+                {
+                    qint64 field = fieldVal( fieldStr );
+                    bool descending = valueStr == "descending";
+
+                    if( field != 0 )
+                        d->qm->orderBy( field, descending  );
+                }
+            }
+            else if( name() == "includeCollection" )
+            {
+                QStringRef id =  attributes().value( "id" );
+                if( !name().isEmpty() )
+                {
+                    d->qm->includeCollection( id.toString() );
+                }
+            }
+            else if( name() == "excludeCollection" )
+            {
+                QStringRef id =  attributes().value( "id" );
+                if( !id.isEmpty() )
+                {
+                    d->qm->excludeCollection( id.toString() );
+                }
+            }
+            else if( name() == "returnResultAsDataPtrs" )
+            {
+                d->qm->returnResultAsDataPtrs( true );
+            }
+            else if( name() == "limit" )
+            {
+                QStringRef value = attributes().value( "value" );
+                if( !value.isEmpty() )
+                    d->qm->limitMaxResultSize( value.toString().toInt() );
+            }
+            else if( name() == "onlyCompilations" )
+            {
+                d->qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+            }
+            else if( name() == "onlyNormalAlbums" )
+            {
+                d->qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+            }
             else if( name() == "returnValues" )
                 readReturnValues();
-            else if( name() == "and" )
-                d->qm->beginAnd();
-            else if( name() == "or" )
-                d->qm->beginOr();
             //add more container elements here
             else
                 ignoreElements();
@@ -160,7 +200,7 @@ XmlQueryReader::readReturnValues()
             }
             else if( name() == "composers" )
             {
-                d->qm->startComposerQuery() )
+                d->qm->startComposerQuery();
             }
             else if( name() == "years" )
             {
@@ -170,7 +210,7 @@ XmlQueryReader::readReturnValues()
             {
                 if( !customQueryStarted )
                 {
-                    d->qm->tartCustomQuery();
+                    d->qm->startCustomQuery();
                 }
                 //TODO write a mapping function somewhere
                 if( name() == "title" )
@@ -187,6 +227,15 @@ XmlQueryReader::readReturnValues()
 }
 
 void
+XmlQueryReader::readAndOr()
+{
+    readFilters();
+    ignoreElements();
+    d->qm->endAndOr();
+}
+
+
+void
 XmlQueryReader::readFilters()
 {
     while( !atEnd() )
@@ -194,7 +243,84 @@ XmlQueryReader::readFilters()
         readNext();
         if( isEndElement() )
             break;
+        
+        if( name() == "include" || name() == "exclude" )
+        {
+            QXmlStreamAttributes attr = attributes();
 
+            QStringRef valueStr = attr.value( "value" );
+            qint64 field = fieldVal( attr.value( "field" ) );
+            if( field == 0 )
+                break;
+
+            int compare = compareVal( attr.value( "compare" ) );
+
+            if( compare != -1 )
+            {
+                qint64 value = valueStr.toString().toInt();
+                if( name() == "include" )
+                    d->qm->addNumberFilter( field, value, 
+                            (QueryMaker::NumberComparison)compare );
+                else
+                    d->qm->excludeNumberFilter( field, value, 
+                            (QueryMaker::NumberComparison)compare );
+            }
+            else
+            {
+                if( name() == "include" )
+                    d->qm->addFilter( field, valueStr.toString() );
+                else
+                    d->qm->excludeFilter( field, valueStr.toString() );
+            }
+        }
+        else if( name() == "and" )
+        {
+            d->qm->beginAnd();
+            readAndOr();
+        }
+        else if( name() == "or" )
+        {
+            d->qm->beginOr();
+            readAndOr();
+        }
     }
+}
+
+qint64
+XmlQueryReader::fieldVal( QStringRef field )
+{
+    if     ( field == "url"        ) return QueryMaker::valUrl;
+    else if( field == "title"      ) return QueryMaker::valTitle;
+    else if( field == "artist"     ) return QueryMaker::valArtist;
+    else if( field == "album"      ) return QueryMaker::valAlbum;
+    else if( field == "genre"      ) return QueryMaker::valGenre;
+    else if( field == "composer"   ) return QueryMaker::valComposer;
+    else if( field == "tracknr"    ) return QueryMaker::valTrackNr;
+    else if( field == "discnr"     ) return QueryMaker::valDiscNr;
+    else if( field == "length"     ) return QueryMaker::valLength;
+    else if( field == "bitrate"    ) return QueryMaker::valBitrate;
+    else if( field == "samplerate" ) return QueryMaker::valSamplerate;
+    else if( field == "filesize"   ) return QueryMaker::valFilesize;
+    else if( field == "format"     ) return QueryMaker::valFormat;
+    else if( field == "createdate" ) return QueryMaker::valCreateDate;
+    else if( field == "score"      ) return QueryMaker::valScore;
+    else if( field == "rating"     ) return QueryMaker::valRating;
+    else if( field == "firstplay"  ) return QueryMaker::valFirstPlayed;
+    else if( field == "lastplay"   ) return QueryMaker::valLastPlayed;
+    else if( field == "playcount"  ) return QueryMaker::valPlaycount;
+    else                             return 0;
+}
+
+int
+XmlQueryReader::compareVal( QStringRef compare )
+{
+    if( compare == "less" )
+        return QueryMaker::LessThan;
+    else if( compare == "greater" )
+        return QueryMaker::GreaterThan;
+    else if( compare == "equals" )
+        return QueryMaker::Equals;
+    else
+        return -1;
 }
 

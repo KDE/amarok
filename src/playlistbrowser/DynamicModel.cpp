@@ -15,18 +15,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CollectionManager.h"
-#include "Debug.h"
-#include "DynamicModel.h"
-#include "DynamicPlaylist.h"
-#include "MetaQueryMaker.h"
-#include "RandomPlaylist.h"
-
-// All thes are just for initializing the biased test case.
 #include "Bias.h"
 #include "BiasedPlaylist.h"
 #include "Collection.h"
 #include "CollectionManager.h"
+#include "MetaQueryMaker.h"
+#include "Debug.h"
+#include "DynamicModel.h"
+#include "DynamicPlaylist.h"
+#include "RandomPlaylist.h"
+#include "collection/support/XmlQueryReader.h"
 
 #include <QVariant>
 
@@ -155,3 +153,42 @@ PlaylistBrowserNS::DynamicModel::columnCount( const QModelIndex& ) const
 }
 
 
+Dynamic::Bias*
+PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
+{
+    QString type = e.attribute( "type" );
+
+    if( type == "global" )
+    {
+        Collection* coll = CollectionManager::instance()->primaryCollection();
+        QueryMaker* qm = coll->queryMaker();
+        double weight = 0.0;
+
+        QDomElement queryElement = e.firstChildElement( "query" );
+        if( !queryElement.isNull() )
+        {
+                // FIXME: this is an absolutely retarded way of doing this.
+                // There must be a better way.
+                QString rawXml;
+                QTextStream rawXmlStream( &rawXml );
+                queryElement.save( rawXmlStream, 0 );
+                XmlQueryReader reader( qm, XmlQueryReader::IgnoreReturnValues );
+                reader.read( rawXml );
+        }
+
+        QDomElement weightElement = e.firstChildElement( "weight" );
+        if( !weightElement.isNull() )
+        {
+            weight = weightElement.text().toDouble();
+        }
+
+        return new Dynamic::GlobalBias( coll, weight, qm );
+    }
+    // TODO: other types of biases
+    else
+    {
+        warning() << "Bias with no type.";
+        return 0;
+    }
+
+}

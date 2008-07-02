@@ -19,7 +19,7 @@
 #ifndef AMAROK_XMLQUERYREADER_H
 #define AMAROK_XMLQUERYREADER_H
 
-#include "collection/querymaker.h"
+#include "collection/QueryMaker.h"
 
 #include <QList>
 #include <QXmlStreamReader>
@@ -46,9 +46,13 @@ private:
     void readFilters();
     void readReturnValues();
     void ignoreElements();
+    void readAndOr();
+
+    qint64 fieldVal( QStringRef field );
+    int compareVal( QStringRef compare );
 
     class Private;
-    Private const *d;
+    Private * const d;
 };
 
 #endif
