@@ -40,3 +40,4 @@ class TokenListWidget : public KListWidget      //all this kinda works when used
 };
 
 #endif    //TOKENLISTWIDGET_H
+

@@ -47,3 +47,4 @@ FilenameLayoutDialog::FilenameLayoutDialog(QWidget *parent) : KDialog(parent)
     dialogLayout->addWidget(debugButton);
     debugButton->show();
 }
+
