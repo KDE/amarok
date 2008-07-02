@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License          *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
+
 #include "FilenameLayoutWidget.h"
 #include "Debug.h"
 
@@ -151,7 +152,7 @@ Token::mouseMoveEvent( QMouseEvent *event )
         {
             performDrag( event );
         }
-    } 
+    }
 }
 
 void
@@ -183,4 +184,3 @@ Token::performDrag( QMouseEvent *event )
     else
         show();
 }
-

@@ -39,7 +39,7 @@ class Mp3tunesHarmonyDaemon {
     void init();
 
   private:
-    
+
     /* Error signal handler.
      *
      * This signal is emitted whenever there is a user fixable error from inside the
@@ -83,7 +83,7 @@ class Mp3tunesHarmonyDaemon {
      */
     static void signalStateChangeHandler( MP3tunesHarmony* harmony, guint32 state,  gpointer null_pointer );
 
-    
+
     static void signalDownloadReady( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
     static void signalDownloadPending( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
 
@@ -95,4 +95,3 @@ class Mp3tunesHarmonyDaemon {
 };
 
 #endif
-

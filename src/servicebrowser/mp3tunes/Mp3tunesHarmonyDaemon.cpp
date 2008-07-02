@@ -27,12 +27,12 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier )
     m_err = 0;
     m_identifier = identifier;
 
-    
+
     /* g_type_init required for using the GObjects for Harmony. */
     g_type_init();
 
     /* Set the error signal handler. */
-    g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), 0);    
+    g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), 0);
     /* Set the state change signal handler. */
     g_signal_connect(&m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
     /* Set the download signal handler. */
@@ -40,7 +40,7 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier )
     g_signal_connect(m_harmony, "download-pending", G_CALLBACK(signalDownloadPending), NULL);
 
     mp3tunes_harmony_set_identifier(m_harmony, m_identifier);
-    
+
     mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Example Daemon");
 
 }
@@ -64,9 +64,9 @@ Mp3tunesHarmonyDaemon::init()
     available_bytes = fsstats.f_bsize * fsstats.f_bavail;
     mp3tunes_harmony_set_device_attribute(m_harmony, "total-bytes", &total_bytes);
     mp3tunes_harmony_set_device_attribute(m_harmony, "available-bytes", &available_bytes);
-    
+
     /* Configure main loop */
-    
+
     /* Start the connection */
     mp3tunes_harmony_connect(m_harmony, &m_err);
     /* Check for errors on the connection */

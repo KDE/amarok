@@ -25,7 +25,7 @@
 class FilenameLayoutWidget : public QFrame
 {
     Q_OBJECT
-    
+
     public:
         FilenameLayoutWidget( QWidget *parent = 0 );
         void addToken( QString text );
@@ -36,12 +36,12 @@ class FilenameLayoutWidget : public QFrame
         void dropEvent( QDropEvent *event );
     private:
         void performDrag();
-    
+
         QLabel *backText;
         QHBoxLayout *layout;
 
         unsigned int tokenCount;
-    
+
     //TODO: This slot is for testing, will probably be a normal method
     public slots:
         void slotAddToken();
@@ -64,4 +64,3 @@ class Token : public QLabel
 };
 
 #endif    //FILENAMELAYOUTWIDGET_H
-

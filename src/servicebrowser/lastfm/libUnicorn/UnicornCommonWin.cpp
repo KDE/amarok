@@ -55,7 +55,7 @@ programFilesPath()
     // Need to degrade gracefully. Need to bundle SHFolder.exe with installer
     // and execute it on install for this to work on Win98.
     HRESULT h = SHGetFolderPathA(NULL,
-                                 CSIDL_PROGRAM_FILES, 
+                                 CSIDL_PROGRAM_FILES,
                                  NULL,
                                  0, // current path
                                  acPath);
@@ -144,31 +144,31 @@ findDefaultPlayer()
 
 
 HRESULT
-createShortcut( LPCTSTR lpszFileName, 
-                LPCTSTR lpszDesc, 
+createShortcut( LPCTSTR lpszFileName,
+                LPCTSTR lpszDesc,
                 LPCTSTR lpszShortcutPath )
 {
     HRESULT hRes = E_FAIL;
     //DWORD dwRet = 0;
     //CComPtr<IShellLink> ipShellLink;
-    //    // buffer that receives the null-terminated string 
+    //    // buffer that receives the null-terminated string
     //    // for the drive and path
-    //TCHAR szPath[MAX_PATH];    
-    //    // buffer that receives the address of the final 
+    //TCHAR szPath[MAX_PATH];
+    //    // buffer that receives the address of the final
     //    //file name component in the path
-    //LPTSTR lpszFilePart;    
+    //LPTSTR lpszFilePart;
     //WCHAR wszTemp[MAX_PATH];
-    //    
+    //
     //// Retrieve the full path and file name of a specified file
-    //dwRet = GetFullPathName(lpszFileName, 
-    //                   sizeof(szPath) / sizeof(TCHAR), 
+    //dwRet = GetFullPathName(lpszFileName,
+    //                   sizeof(szPath) / sizeof(TCHAR),
     //                   szPath, &lpszFilePart);
-    //if (!dwRet)                                        
+    //if (!dwRet)
     //    return hRes;
 
     //// Get a pointer to the IShellLink interface
     //hRes = CoCreateInstance(CLSID_ShellLink,
-    //                        NULL, 
+    //                        NULL,
     //                        CLSCTX_INPROC_SERVER,
     //                        IID_IShellLink,
     //                        (void**)&ipShellLink);
@@ -187,10 +187,10 @@ createShortcut( LPCTSTR lpszFileName,
     //    if (FAILED(hRes))
     //        return hRes;
 
-    //    // IPersistFile is using LPCOLESTR, so make sure 
+    //    // IPersistFile is using LPCOLESTR, so make sure
     //    // that the string is Unicode
     //#if !defined _UNICODE
-    //    MultiByteToWideChar(CP_ACP, 0, 
+    //    MultiByteToWideChar(CP_ACP, 0,
     //                   lpszShortcutPath, -1, wszTemp, MAX_PATH);
     //#else
     //    wcsncpy(wszTemp, lpszShortcutPath, MAX_PATH);
