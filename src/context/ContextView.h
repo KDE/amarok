@@ -29,6 +29,8 @@
 #include "plasma/appletbrowser.h"
 #include "plasma/view.h"
 
+#include <QMouseEvent>
+
 //TODO: move away, not need anymore
 // #include <QGraphicsView>
 
@@ -96,6 +98,7 @@ protected:
 
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
+    void mousePressEvent( QMouseEvent* event );
 
 private:
     static ContextView* s_self;

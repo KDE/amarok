@@ -144,6 +144,37 @@ void ContextView::clear()
     
 }
 
+void
+ContextView::mousePressEvent( QMouseEvent* event )
+{
+    DEBUG_BLOCK
+    QPointF pos = mapToScene( event->pos() );
+    debug() << "Event pos: " << event->pos();
+    debug() << "mapFromScene pos: " << mapFromScene( event->pos() );
+    debug() << "mapToScene pos: " << mapToScene( event->pos() );
+    if( scene()->itemAt( pos ) )
+    {
+        Plasma::Applet* a = dynamic_cast<Plasma::Applet* >( scene()->itemAt( pos ) );
+        if( a )
+        {
+            debug() << "cast successful";
+
+            if( a->isContainment() )
+            {
+                Plasma::Containment* c = dynamic_cast<Plasma::Containment* >( a );
+                setContainment( c );
+            }
+            else if( a->containment() )
+                setContainment( a->containment() );
+        }
+    }
+    else
+    {
+        debug() << "OUTside item";
+    }
+    debug() << "scene rect:" << scene()->sceneRect();
+}
+
 void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     Q_UNUSED( oldState );
@@ -278,7 +309,8 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
 
         setDragMode( ScrollHandDrag );
         scale( .45, .45 );
-        setSceneRect( rect() );
+//         setSceneRect( rect() );
+        setSceneRect(QRectF(0, 0, scene()->sceneRect().right(), scene()->sceneRect().bottom()));
         ensureVisible( rect(), 0, 0 );
         m_zoomLevel = Plasma::GroupZoom;
         int count = contextScene()->containments().size();
