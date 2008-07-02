@@ -68,9 +68,9 @@
      pagecolor="#ffffff"
      id="base"
      showgrid="false"
-     inkscape:zoom="2.0387314"
-     inkscape:cx="285.61665"
-     inkscape:cy="133.86965"
+     inkscape:zoom="0.72080039"
+     inkscape:cx="783.34826"
+     inkscape:cy="328.02044"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:current-layer="svg2"
@@ -4425,8 +4425,9 @@
        id="path8568" />
   </g>
   <g
-     id="g6143"
-     transform="matrix(0.3706212,0,0,0.3706212,119.15801,1194.7161)">
+     id="amarok_logo"
+     transform="matrix(0.3706212,0,0,0.3706212,119.15801,1194.7161)"
+     inkscape:label="#g6143">
     <g
        transform="matrix(1.057339,0,0,1.057339,-27.56698,-5.6631554)"
        style="fill:#0057ae;fill-opacity:1"
