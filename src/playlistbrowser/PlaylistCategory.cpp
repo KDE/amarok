@@ -231,6 +231,8 @@ PlaylistBrowserNS::StreamEditor::streamUrl()
 
 void PlaylistBrowserNS::PlaylistCategory::newPalette(const QPalette & palette)
 {
+    Q_UNUSED( palette )
+
     The::paletteHandler()->updateTreeView( m_playlistView );
 }
 
