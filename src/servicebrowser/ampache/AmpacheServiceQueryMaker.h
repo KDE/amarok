@@ -22,8 +22,6 @@
 
 #include "DynamicServiceQueryMaker.h"
 
-//#include "Mp3TunesMeta.h"
-
 #include "AmpacheServiceCollection.h"
 
 #include <kio/jobclasses.h>
@@ -63,7 +61,8 @@ public:
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 
     virtual int validFilterMask();
-    
+    virtual QueryMaker* limitMaxResultSize( int size );
+
     //Methods "borrowed" from MemoryQueryMaker
     void handleResult();
     void handleResult( const Meta::TrackList &tracks );

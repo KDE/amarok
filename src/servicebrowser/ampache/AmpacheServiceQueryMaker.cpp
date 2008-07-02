@@ -63,12 +63,11 @@ QueryMaker *
 AmpacheServiceQueryMaker::reset()
 {
     d->type = Private::NONE;
-    d->maxsize = -1;
+    d->maxsize = 0;
     d->returnDataPtrs = false;
-    m_parentArtistId = QString();
-    m_parentAlbumId = QString();
-
-    m_artistFilter = QString();
+    m_parentArtistId.clear();
+    m_parentAlbumId.clear();
+    m_artistFilter.clear();
     //m_lastArtistFilter = QString(); this one really should survive a reset....
 
     return this;
@@ -98,9 +97,9 @@ AmpacheServiceQueryMaker::run()
         return;
     if (  d->type == Private::ARTIST )
         fetchArtists();
-    else if (  d->type == Private::ALBUM )
+    else if( d->type == Private::ALBUM )
         fetchAlbums();
-    else if (  d->type == Private::TRACK )
+    else if( d->type == Private::TRACK )
         fetchTracks();
 
      m_collection->releaseLock();
@@ -189,12 +188,7 @@ void AmpacheServiceQueryMaker::handleResult( const ArtistList & artists )
 {
     DEBUG_BLOCK
 
-    if ( d->maxsize >= 0 && artists.count() > d->maxsize )
-    {
-        emitProperResult( ArtistPtr, artists.mid( 0, d->maxsize ) );
-    }
-    else
-        emitProperResult( ArtistPtr, artists );
+    emitProperResult( ArtistPtr, artists );
 }
 
 void
@@ -202,12 +196,7 @@ AmpacheServiceQueryMaker::handleResult( const AlbumList &albums )
 {
     DEBUG_BLOCK
 
-    if ( d->maxsize >= 0 && albums.count() > d->maxsize )
-    {
-        emitProperResult( AlbumPtr, albums.mid( 0, d->maxsize ) );
-    }
-    else
-        emitProperResult( AlbumPtr, albums );
+    emitProperResult( AlbumPtr, albums );
 }
 
 void
@@ -215,12 +204,7 @@ AmpacheServiceQueryMaker::handleResult(const TrackList & tracks)
 {
     DEBUG_BLOCK
 
-    if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
-    {
-        emitProperResult( TrackPtr, tracks.mid( 0, d->maxsize ) );
-    }
-    else
-        emitProperResult( TrackPtr, tracks );
+    emitProperResult( TrackPtr, tracks );
 }
 
 void
@@ -245,10 +229,8 @@ AmpacheServiceQueryMaker::fetchArtists()
         urlString.replace( "<SESSION_ID>", m_sessionId);
 
         if ( !m_artistFilter.isEmpty() )
-        {
             urlString += QString( "&filter=" + m_artistFilter );
-        }
-
+        urlString += QString( "&limit=" + QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
         //debug() << "Artist url: " << urlString;
 
 
@@ -269,13 +251,11 @@ AmpacheServiceQueryMaker::fetchAlbums()
 
     //debug() << "parent id: " << m_parentId;
 
-    if ( !m_parentArtistId.isEmpty() )
+    if( !m_parentArtistId.isEmpty() )
     {
         ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
         albums = artistMatcher.matchAlbums( m_collection );
     }
-    else
-        return;
 
     if ( albums.count() > 0 )
     {
@@ -284,13 +264,14 @@ AmpacheServiceQueryMaker::fetchAlbums()
     }
     else
     {
-        QString urlString = "<SERVER>/server/xml.server.php?action=artist_albums&auth=<SESSION_ID>&filter=<FILTER>";
+        QString urlString = "<SERVER>/server/xml.server.php?action=artist_albums&auth=<SESSION_ID>";
 
         urlString.replace( "<SERVER>", m_server);
         urlString.replace( "<SESSION_ID>", m_sessionId);
-        urlString.replace( "<FILTER>", m_parentArtistId );
-
+        if( !m_parentArtistId.isEmpty() )
+            urlString += QString( "&filter=" + m_parentArtistId );
         //debug() << "request url: " << urlString;
+        urlString += QString( "&limit=" + QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
@@ -307,7 +288,7 @@ AmpacheServiceQueryMaker::fetchTracks()
 
     //debug() << "parent album id: " << m_parentAlbumId;
 
-    if ( !m_parentAlbumId.isEmpty() )
+    if( !m_parentAlbumId.isEmpty() )
     {
         AlbumMatcher albumMatcher( m_collection->albumById( m_parentAlbumId.toInt() ) );
         tracks = albumMatcher.match( m_collection );
@@ -317,10 +298,8 @@ AmpacheServiceQueryMaker::fetchTracks()
         ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
         tracks = artistMatcher.match( m_collection );
     }
-    else
-        return;
 
-    if ( tracks.count() > 0 )
+    if( tracks.count() > 0 )
     {
         handleResult( tracks );
         emit queryDone();
@@ -330,17 +309,19 @@ AmpacheServiceQueryMaker::fetchTracks()
         QString urlString;
 
         if( !m_parentAlbumId.isEmpty() )
-            urlString = "<SERVER>/server/xml.server.php?action=album_songs&auth=<SESSION_ID>&filter=<FILTER>";
+            urlString = "<SERVER>/server/xml.server.php?action=album_songs&auth=<SESSION_ID>";
         else if( !m_parentArtistId.isEmpty() )
-            urlString = "<SERVER>/server/xml.server.php?action=artist_songs&auth=<SESSION_ID>&filter=<FILTER>";
-        else return;
+            urlString = "<SERVER>/server/xml.server.php?action=artist_songs&auth=<SESSION_ID>";
+        else
+            urlString = "<SERVER>/server/xml.server.php?action=songs&auth=<SESSION_ID>";
 
         urlString.replace( "<SERVER>", m_server);
         urlString.replace( "<SESSION_ID>", m_sessionId);
-        if(  !m_parentAlbumId.isEmpty() )
-            urlString.replace( "<FILTER>", m_parentAlbumId );
-        else
-            urlString.replace( "<FILTER>", m_parentArtistId );
+        if( !m_parentAlbumId.isEmpty() )
+            urlString += QString( "&filter=" + m_parentAlbumId );
+        else if( !m_parentArtistId.isEmpty() )
+            urlString += QString( "&filter=" + m_parentArtistId );
+        urlString += QString( "&limit=" + QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
@@ -436,20 +417,19 @@ AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
         QDomElement element = n.firstChildElement( "name" );
 
         QString title = element.text();
-        if ( title.isEmpty() ) title = "Unknown";
-
+        if ( title.isEmpty() )
+            title = "Unknown";
 
         int albumId = e.attribute( "id", "0" ).toInt();
 
-
         AmpacheAlbum * album = new AmpacheAlbum( title );
-        //ServiceAlbum * album = new ServiceAlbum( title );
         album->setId( albumId );
 
 
         element = n.firstChildElement("art");
 
         QString coverUrl = element.text();
+        album->setCoverUrl( coverUrl );
 
         AlbumPtr albumPtr( album );
 
@@ -470,8 +450,6 @@ AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
            //ServiceArtist *artist = dynamic_cast< ServiceArtist * > ( artistPtr.data() );
            album->setAlbumArtist( artistPtr );
         }
-
-        album->setCoverUrl( coverUrl );
 
         albums.push_back( albumPtr );
 
@@ -594,6 +572,13 @@ AmpacheServiceQueryMaker::validFilterMask()
 {
     //we only supprt artist filters for now...
     return ArtistFilter;
+}
+
+QueryMaker *
+AmpacheServiceQueryMaker::limitMaxResultSize( int size )
+{
+    d->maxsize = size;
+    return this;
 }
 
 #include "AmpacheServiceQueryMaker.moc"
