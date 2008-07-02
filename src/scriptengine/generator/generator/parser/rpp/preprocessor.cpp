@@ -44,7 +44,7 @@ QHash<QString, QStringList> includedFiles;
 
 void includeFileHook(const std::string &fileName, const std::string &filePath, FILE *)
 {
-    includedFiles[QString::fromStdString(fileName)].append(QString::fromStdString(filePath));
+    includedFiles[QString::fromStdString(fileName)].append( QString( filePath.c_str()  ) );
 }
 
 Preprocessor::Preprocessor()
