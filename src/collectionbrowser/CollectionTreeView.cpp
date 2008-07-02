@@ -945,6 +945,8 @@ void CollectionTreeView::slotOrganize()
 
 void CollectionTreeView::newPalette( const QPalette & palette )
 {
+    Q_UNUSED( palette )
+
     The::paletteHandler()->updateTreeView( this );
 }
 
