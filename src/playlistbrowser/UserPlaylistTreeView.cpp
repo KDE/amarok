@@ -38,6 +38,8 @@
 #include <QModelIndex>
 #include <QPoint>
 
+#include <typeinfo>
+
 PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QWidget *parent )
     : QTreeView( parent )
     , m_pd( 0 )
