@@ -286,12 +286,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         font.setBold( true );
 
         foreach( PopupDropperAction * action, actions ) {
-
-            PopupDropperItem* pdi = new PopupDropperItem();
-            pdi->setAction( action );
-            pdi->setFont( font );
-            pdi->setHoverMsecs( 800 );
-            m_pd->addItem( pdi, false );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
 
         m_currentCopyDestination = getCopyActions( indices );
@@ -324,13 +319,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             //KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
             PopupDropper * copyPud = The::popupDropperFactory()->createPopupDropper( 0 );
             foreach( PopupDropperAction * action, m_currentCopyDestination.keys() ) {
-
-                PopupDropperItem* pdi2 = new PopupDropperItem();
-                pdi2->setAction( action );
-                pdi2->setFont( font );
-                pdi2->setHoverMsecs( 800 );
-                copyPud->addItem( pdi2, false );
-
+                m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
             }
             subItem = m_pd->addSubmenu( &copyPud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Copy to Collection" )  );
             subItem->setFont( font );
@@ -340,11 +329,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             debug() << "got move actions";
             PopupDropper * movePud = The::popupDropperFactory()->createPopupDropper( 0 );
             foreach( PopupDropperAction * action, m_currentCopyDestination.keys() ) {
-                PopupDropperItem* pdi3 = new PopupDropperItem();
-                pdi3->setAction( action );
-                pdi3->setFont( font );
-                pdi3->setHoverMsecs( 800 );
-                movePud->addItem( pdi3, false );
+                m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
             }
             subItem = m_pd->addSubmenu( &movePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Move to Collection" )  );
             subItem->setFont( font );

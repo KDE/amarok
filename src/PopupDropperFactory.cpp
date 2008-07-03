@@ -22,6 +22,8 @@
 #include "Debug.h"
 #include "ContextView.h"
 #include "PaletteHandler.h"
+#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/PopupDropperItem.h"
 #include "SvgHandler.h"
 
 
@@ -79,6 +81,20 @@ PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent )
 PopupDropper * PopupDropperFactory::createPopupDropper()
 {
     return createPopupDropper( Context::ContextView::self() );
+}
+
+PopupDropperItem * PopupDropperFactory::createItem( PopupDropperAction * action )
+{
+    QFont font;
+    font.setPointSize( 16 );
+    font.setBold( true );
+
+    PopupDropperItem* pdi = new PopupDropperItem();
+    pdi->setAction( action );
+    pdi->setFont( font );
+    pdi->setHoverMsecs( 800 );
+
+    return pdi;
 }
 
 

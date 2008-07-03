@@ -54,6 +54,8 @@ friend PopupDropperFactory* The::popupDropperFactory();
          */
         PopupDropper * createPopupDropper( QWidget * parent );
 
+        PopupDropperItem* createItem( PopupDropperAction * action );
+
     private:
         friend class PopupDropperFactorySingleton;
         PopupDropperFactory();
