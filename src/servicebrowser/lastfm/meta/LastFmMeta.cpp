@@ -349,6 +349,7 @@ Track::streamName() const
                     // lastfm://artist/<artist>/similarartists
                 if( elements[3] == "similarartists" )
                     return i18n( "Similar Artists to \"%1\"", customPart );
+
                     // lastfm://artist/<artist>/fans
                 else if( elements[3] == "fans" )
                     return i18n( "Artist Fan Radio: \"%1\"", customPart );
@@ -358,16 +359,19 @@ Track::streamName() const
         {
             if( elements.size() >= 4 )
             {
-                    // lastfm://user/<user>/neighbours
+                // lastfm://user/<user>/neighbours
                 if( elements[3] == "neighbours" )
                     return i18n( "%1's Neighbor Radio", elements[2] );
-                    // lastfm://user/<user>/personal
+                    
+                // lastfm://user/<user>/personal
                 else if( elements[3] == "personal" )
                     return i18n( "%1's Personal Radio", elements[2] );
-                    // lastfm://user/<user>/loved
+                    
+                // lastfm://user/<user>/loved
                 else if( elements[3] == "loved" )
                     return i18n( "%1's Loved Radio", elements[2] );
-                    // lastfm://user/<user>/recommended/<popularity>
+                    
+                // lastfm://user/<user>/recommended/<popularity>
                 else if( elements.size() >= 5 && elements[3] == "recommended" )
                     return i18n( "%1's Recommended Radio (Popularity %2)", elements[2], elements[4] );
             }
@@ -385,6 +389,7 @@ Track::streamName() const
                     // lastfm://play/tracks/<track #s>
                 if ( elements[2] == "tracks" )
                     return i18n( "Track Radio" );
+
                     // lastfm://play/artists/<artist #s>
                 else if ( elements[2] == "artists" )
                     return i18n( "Artist Radio" );
