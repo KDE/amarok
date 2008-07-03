@@ -56,9 +56,16 @@ NepomukCollectionFactory::init()
         // (if sesame2 is used or not, it makes no sense to use it with redland
         // doesn't work and is terrible slow, slows down amarok start when 
         // songs in playlist)
-        
+
+        // FIXME; Find a better wy to do this
+        QTime t;
+        t.start();
+        Nepomuk::Resource::Resource( "file://home/" ).exists();
+        int elapsed = t.elapsed();
+        debug() << "Nepomuk Resource.exists() took " << elapsed <<  " ms" << endl;
+          
         Collection* collection;
-        if (  Soprano::PluginManager::instance()->discoverBackendByName("sesame2") != 0 )
+        if ( elapsed < 50 )
         {
             collection = new NepomukCollection( model, true );
             debug() << "fast  enough full nepomuk collection enabled" << endl;
