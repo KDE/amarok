@@ -26,6 +26,7 @@
 #include "RandomPlaylist.h"
 #include "collection/support/XmlQueryReader.h"
 
+#include <QFile>
 #include <QVariant>
 
 
@@ -40,6 +41,8 @@ PlaylistBrowserNS::DynamicModel::instance()
 }
 
 
+
+
 PlaylistBrowserNS::DynamicModel::DynamicModel()
     : QAbstractItemModel()
 {
@@ -47,8 +50,10 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
     // For now we just have our dummy random mode
     // so it at least does something
     m_defaultPlaylist = new Dynamic::RandomPlaylist;
-    m_playlistHash[ m_defaultPlaylist->title() ] = m_defaultPlaylist;
-    m_playlistList.append( m_defaultPlaylist );
+    insertPlaylist( m_defaultPlaylist );
+
+
+    loadPlaylists();
 
 
     QueryMaker* property = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
@@ -67,10 +72,21 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
                 "Bias Test: 50% 2005",
                 biases,
                 coll ) );
-    m_playlistHash[ biasTestCase->title() ] = biasTestCase;
-    m_playlistList.append( biasTestCase );
+    insertPlaylist( biasTestCase );
 }
 
+PlaylistBrowserNS::DynamicModel::~DynamicModel()
+{
+}
+
+void
+PlaylistBrowserNS::DynamicModel::insertPlaylist( Dynamic::DynamicPlaylistPtr playlist )
+{
+    // TODO: does one already exist with that name ?
+
+    m_playlistHash[ playlist->title() ] = playlist;
+    m_playlistList.append( playlist );
+}
 
 Dynamic::DynamicPlaylistPtr
 PlaylistBrowserNS::DynamicModel::retrievePlaylist( QString title )
@@ -99,9 +115,6 @@ PlaylistBrowserNS::DynamicModel::retrievePlaylistIndex( QString title )
     return -1;
 }
 
-PlaylistBrowserNS::DynamicModel::~DynamicModel()
-{
-}
 
 QModelIndex 
 PlaylistBrowserNS::DynamicModel::index( int row, int column, const QModelIndex& parent ) const
@@ -152,6 +165,42 @@ PlaylistBrowserNS::DynamicModel::columnCount( const QModelIndex& ) const
     return 1;
 }
 
+void
+PlaylistBrowserNS::DynamicModel::loadPlaylists()
+{
+    QFile file( Amarok::saveLocation() + "dynamic.xml" );
+    m_savedPlaylists.setContent( &file );
+
+    for( int i = 0; i < m_savedPlaylists.childNodes().size(); ++ i )
+    {
+        if( !m_savedPlaylists.childNodes().at(i).isElement() )
+            continue;
+
+        QString title;
+        QList<Dynamic::Bias*> biases;
+
+        QDomElement e = m_savedPlaylists.childNodes().at(i).toElement();
+        if( e.tagName() == "dynamicPlaylist" )
+        {
+            title = e.attribute( "title" );
+
+            for( int j = 0; j < e.childNodes().size(); ++j )
+            {
+                if( !e.childNodes().at(j).isElement() )
+                    continue;
+
+                QDomElement e2 = e.childNodes().at(j).toElement();
+                if( e2.tagName() == "bias" )
+                    biases.append( createBias( e2 ) );
+            }
+
+            Dynamic::DynamicPlaylistPtr p( new Dynamic::BiasedPlaylist( title, biases ) );
+            insertPlaylist( p );
+            debug() << "new dynamic playlist: " << title;
+        }
+    }
+}
+
 
 Dynamic::Bias*
 PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
@@ -166,21 +215,20 @@ PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
         QDomElement queryElement = e.firstChildElement( "query" );
         if( !queryElement.isNull() )
         {
-                // FIXME: this is an absolutely retarded way of doing this.
-                // There must be a better way.
-                QString rawXml;
-                QTextStream rawXmlStream( &rawXml );
-                queryElement.save( rawXmlStream, 0 );
-                XmlQueryReader reader( qm, XmlQueryReader::IgnoreReturnValues );
-                reader.read( rawXml );
+            QString rawXml;
+            QTextStream rawXmlStream( &rawXml );
+            queryElement.save( rawXmlStream, 0 );
+            XmlQueryReader reader( qm, XmlQueryReader::IgnoreReturnValues );
+            reader.read( rawXml );
         }
 
         QDomElement weightElement = e.firstChildElement( "weight" );
         if( !weightElement.isNull() )
         {
-            weight = weightElement.text().toDouble();
+            weight = weightElement.attribute("value").toDouble();
         }
 
+        debug() << "global bias read, weight = " << weight;
         return new Dynamic::GlobalBias( weight, qm );
     }
     // TODO: other types of biases

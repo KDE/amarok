@@ -67,7 +67,6 @@ namespace Dynamic
             RandomPlaylist* m_mutationSource;
 
             static const int    ITERATION_LIMIT; //! give up after this many iterations
-            static const double EPSILON;         //! how near to 0 (optimal) E must be to accept 
 
             static const double INITIAL_TEMPERATURE;
             static const double COOLING_RATE;

@@ -21,6 +21,7 @@
 #include "DynamicPlaylist.h"
 
 #include <QAbstractItemModel>
+#include <QDomDocument>
 #include <QDomElement>
 #include <QHash>
 #include <QString>
@@ -40,8 +41,7 @@ class DynamicModel : public QAbstractItemModel
         static DynamicModel* instance();
 
         ~DynamicModel();
-    
-     
+
         QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
         Dynamic::DynamicPlaylistPtr retrievePlaylist( QString );
@@ -59,13 +59,18 @@ class DynamicModel : public QAbstractItemModel
 
 
     private:
+        void loadPlaylists();
         Dynamic::Bias* createBias( QDomElement );
-        
+        void insertPlaylist( Dynamic::DynamicPlaylistPtr );
+
+              
 
         DynamicModel();
         static DynamicModel* s_instance;
 
         Dynamic::DynamicPlaylistPtr m_defaultPlaylist;
+
+        QDomDocument m_savedPlaylists;
 
         QHash< QString, Dynamic::DynamicPlaylistPtr >    m_playlistHash;
         Dynamic::DynamicPlaylistList                     m_playlistList;

@@ -26,16 +26,13 @@
 #include <typeinfo>
 #include <KRandom>
 
-const int    Dynamic::BiasSolver::ITERATION_LIMIT = 50000;
-
-// TODO: Actually, this should be dependant on the playlist size.
-const double Dynamic::BiasSolver::EPSILON = 0.0001;
+const int    Dynamic::BiasSolver::ITERATION_LIMIT = 5000;
 
 /* These number are black magic. The best values can only be obtained through
  * exhaustive trial and error or writing another optimization program to
  * optimize this optimization program. They are very sensitive. Be carefull */
 const double Dynamic::BiasSolver::INITIAL_TEMPERATURE = 0.1;
-const double Dynamic::BiasSolver::COOLING_RATE        = 0.6;
+const double Dynamic::BiasSolver::COOLING_RATE        = 0.8;
 
 
 Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, RandomPlaylist* randomSource )
@@ -56,7 +53,8 @@ void Dynamic::BiasSolver::run()
     if( m_playlist.empty() ) return;
 
     int i = ITERATION_LIMIT;
-    while( i-- && m_E > EPSILON )  
+    double epsilon = 1.0 / (double)m_n;
+    while( i-- && m_E >= epsilon  )  
     {
         iterate();
 

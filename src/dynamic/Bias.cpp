@@ -40,7 +40,7 @@ Dynamic::CollectionDependantBias::CollectionDependantBias()
     : m_needsUpdating( true )
 {
     connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collection*)),
-            this, SLOT(updated()) );
+            this, SLOT(collectionUpdated()) );
 }
 
 Dynamic::CollectionDependantBias::CollectionDependantBias( Collection* coll )
@@ -102,7 +102,7 @@ Dynamic::GlobalBias::energy( Meta::TrackList playlist )
            satisfiedCount++;
    }
 
-   return qAbs( m_weight - (satisfiedCount / (double)playlist.size()) ) / m_weight;
+   return qAbs( m_weight - (satisfiedCount / (double)playlist.size()) );
 }
 
 

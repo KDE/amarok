@@ -19,6 +19,7 @@
 
 #include "XmlQueryReader.h"
 
+#include "Debug.h"
 #include "collection/CollectionManager.h"
 
 struct XmlQueryReader::Private
@@ -85,9 +86,7 @@ XmlQueryReader::readQuery()
     {
         readNext();
         if( isEndElement() )
-        {
             break;
-        }
 
         if( isStartElement() )
         {
@@ -241,7 +240,7 @@ XmlQueryReader::readFilters()
     while( !atEnd() )
     {
         readNext();
-        if( isEndElement() )
+        if( isEndElement() ) 
             break;
         
         if( name() == "include" || name() == "exclude" )
@@ -250,6 +249,7 @@ XmlQueryReader::readFilters()
 
             QStringRef valueStr = attr.value( "value" );
             qint64 field = fieldVal( attr.value( "field" ) );
+
             if( field == 0 )
                 break;
 
@@ -259,18 +259,30 @@ XmlQueryReader::readFilters()
             {
                 qint64 value = valueStr.toString().toInt();
                 if( name() == "include" )
+                {
+                    debug() << "XQR: number include filter:";
                     d->qm->addNumberFilter( field, value, 
                             (QueryMaker::NumberComparison)compare );
+                }
                 else
+                {
+                    debug() << "XQR: number exclude filter: ";
                     d->qm->excludeNumberFilter( field, value, 
                             (QueryMaker::NumberComparison)compare );
+                }
             }
             else
             {
                 if( name() == "include" )
+                {
+                    debug() << "QXR: include filter";
                     d->qm->addFilter( field, valueStr.toString() );
+                }
                 else
+                {
+                    debug() << "QXR: exclude filter";
                     d->qm->excludeFilter( field, valueStr.toString() );
+                }
             }
         }
         else if( name() == "and" )
@@ -295,6 +307,8 @@ XmlQueryReader::fieldVal( QStringRef field )
     else if( field == "album"      ) return QueryMaker::valAlbum;
     else if( field == "genre"      ) return QueryMaker::valGenre;
     else if( field == "composer"   ) return QueryMaker::valComposer;
+    else if( field == "year"       ) return QueryMaker::valYear;
+    else if( field == "comment"    ) return QueryMaker::valComment; 
     else if( field == "tracknr"    ) return QueryMaker::valTrackNr;
     else if( field == "discnr"     ) return QueryMaker::valDiscNr;
     else if( field == "length"     ) return QueryMaker::valLength;
