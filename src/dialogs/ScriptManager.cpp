@@ -597,18 +597,16 @@ ScriptManager::slotStopScript()
     const QString name = li->text( 0 );
 
     m_scripts[name].engine->abortEvaluation();
-    scriptFinished( name );
+    if( m_scripts.value( name ).type == "service" )
+        The::scriptableServiceManager()->removeRunningScript( name );
 
-//TODO: immigrate scriptable service
-//    if( m_scripts.value( name ).type == "service" )
-//        The::scriptableServiceManager()->removeRunningScript( name );
+    scriptFinished( name );
 }
 
 
 void
 ScriptManager::slotConfigureScript()
 {
-    //implement a signal
     const QString name = m_gui->treeWidget->currentItem()->text( 0 );
       if( !m_scripts[name].running ) return;
     m_scripts[name].globalPtr->slotConfigured();
