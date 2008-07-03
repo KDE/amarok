@@ -165,7 +165,7 @@ ServiceBase::~ServiceBase()
 }
 
 QString
-ServiceBase::name( )
+ServiceBase::name( ) const
 {
     return m_name;
 }
@@ -177,7 +177,7 @@ ServiceBase::setShortDescription( const QString &shortDescription )
 }
 
 QString
-ServiceBase::shortDescription( )
+ServiceBase::shortDescription( ) const
 {
     return m_shortDescription;
 }
@@ -189,7 +189,7 @@ ServiceBase::setLongDescription( const QString &longDescription )
 }
 
 QString
-ServiceBase::longDescription( )
+ServiceBase::longDescription( ) const
 {
     return m_longDescription;
 }
@@ -201,7 +201,7 @@ ServiceBase::setIcon( const QIcon &icon )
 }
 
 QIcon
-ServiceBase::icon( )
+ServiceBase::icon( ) const
 {
     return m_icon;
 }

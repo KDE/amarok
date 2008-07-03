@@ -145,7 +145,7 @@ public:
      * Get the name of this service.
      * @return The name of the service.
      */
-    QString name();
+    QString name() const;
 
     /**
      * Set a short description string for this service. This string is used to describe the service in the service browser.
@@ -157,7 +157,7 @@ public:
      * Get the short description of this service.
      * @return The short description.
      */
-    QString shortDescription();
+    QString shortDescription() const;
 
     /**
      * Set a long description of the service. This is for allowing users to get more detailed info a about a service.
@@ -169,7 +169,7 @@ public:
      * Get the long description of this service.
      * @return The long description.
      */
-    QString longDescription();
+    QString longDescription() const;
 
     /**
      * Set the icon that will be used to identify this service.
@@ -181,7 +181,7 @@ public:
      * Get the icon of this service.
      * @return The icon
      */
-    QIcon icon();
+    QIcon icon() const; 
 
     /**
      * Set the SingleCollectionTreeItemModel that will be used to populate the tree view.
