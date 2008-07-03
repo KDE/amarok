@@ -105,7 +105,7 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
 void
 CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 {
-    if( m_albumPtr == album || m_albums.contains(album ) )
+    if( m_albumPtr == album || m_albums.contains( album ) )
         return;
     m_userCanEditQuery = false;
     m_albumsMutex.lock();
@@ -252,7 +252,8 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     m_xml.clear();
     m_size = 2;
 
-    if ( m_queries.isEmpty() ) {
+    if( m_queries.isEmpty() )
+    {
         debug() << "m_queries is empty";
         finishWithError( i18n("No cover found") );
         return;
@@ -365,15 +366,17 @@ void CoverFetcher::parseItemNode( const QDomNode &node )
     }
     size += "Image";
 
-    while ( !it.isNull() ) {
-        if ( it.isElement() ) {
+    while( !it.isNull() )
+    {
+        if( it.isElement() )
+        {
             QDomElement e = it.toElement();
-            if(e.tagName()=="ASIN")
+            if( e.tagName() == "ASIN" )
             {
                 m_asin = e.text();
                 m_coverAsins += m_asin;
             }
-            else if(e.tagName() == "DetailPageURL" )
+            else if( e.tagName() == "DetailPageURL" )
             {
                 m_amazonURL = e.text();
                 m_coverAmazonUrls += m_amazonURL;
@@ -428,16 +431,16 @@ void CoverFetcher::parseItemNode( const QDomNode &node )
 void
 CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
 {
-    if( job->error() ) {
+    if( job->error() )
+    {
         debug() << "finishedImageFetch(): KIO::error(): " << job->error();
-
         m_errors += i18n("The cover could not be retrieved.");
-
         attemptAnotherFetch();
         return;
     }
 
-    if( !m_image.loadFromData( static_cast<KIO::StoredTransferJob*>( job )->data() ) || m_image.width() <= 1 ) {
+    if( !m_image.loadFromData( static_cast<KIO::StoredTransferJob*>( job )->data() ) || m_image.width() <= 1 )
+    {
         //Amazon seems to offer images of size 1x1 sometimes
         //Amazon has nothing to offer us for the requested image size
         m_errors += i18n("The cover-data produced an invalid image.");
@@ -445,10 +448,11 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
     }
 
     else if( m_userCanEditQuery )
+    {
         //yay! image found :)
         //lets see if the user wants it
         showCover();
-
+    }
     else
         //image loaded successfully yay!
         finish();
@@ -491,9 +495,10 @@ CoverFetcher::attemptAnotherFetch()
     }
 
     else if( !m_queries.isEmpty() )
+    {
         // we have some queries left in the pot
         startFetch( m_albumPtr );
-
+    }
     else if( m_userCanEditQuery )
     {
         // we have exhausted all the predetermined queries
@@ -610,8 +615,6 @@ CoverFetcher::getUserQuery( QString explanation )
             finishWithError( i18n( "Aborted." ) );
             break;
     }
-
-
 }
 
     class CoverFoundDialog : public KDialog
