@@ -4,7 +4,7 @@ include_directories( ../..
    ../../meta
    ../../collection
    ../../dialogs
-   ./search-api
+#./search-api
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${KDE4_INCLUDE_DIR}
    ${QT_INCLUDES} 
@@ -18,12 +18,13 @@ set(amarok_collection-nepomukcollection_PART_SRCS
    NepomukCollection.cpp
    NepomukQueryMaker.cpp
    NepomukMeta.cpp
-   ./search-api/query.cpp
-   ./search-api/queryparser.cpp
-   ./search-api/searchcore.cpp
-   ./search-api/searchthread.cpp
-   ./search-api/term.cpp
-   ./search-api/searchresult.cpp)
+   NepomukRegistry.cpp)
+#./search-api/query.cpp
+#   ./search-api/queryparser.cpp
+#   ./search-api/searchcore.cpp
+#   ./search-api/searchthread.cpp
+#  ./search-api/term.cpp
+#   ./search-api/searchresult.cpp
 
 
 kde4_add_plugin(amarok_collection-nepomukcollection WITH_PREFIX ${amarok_collection-nepomukcollection_PART_SRCS})

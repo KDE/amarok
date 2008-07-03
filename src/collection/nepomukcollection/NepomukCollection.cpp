@@ -21,7 +21,9 @@
 #include "NepomukCollection.h"
 #include "NepomukQueryMaker.h"
 #include "NepomukMeta.h"
+#include "NepomukRegistry.h"
 
+#include "BlockingQuery.h"
 #include "Debug.h"
 #include "QueryMaker.h"
 
@@ -83,11 +85,13 @@ NepomukCollection::NepomukCollection( Soprano::Model* model, bool isFast )
     ,   m_isFast( isFast )
 {
     initHashMaps();
+    m_registry = new NepomukRegistry( this, model );
 }
 
 NepomukCollection::~NepomukCollection()
 {
     delete m_model;
+    delete m_registry;
 }
 
 QueryMaker*
@@ -131,22 +135,18 @@ NepomukCollection::trackForUrl( const KUrl &url )
     {
         debug() << "Track: " << url.prettyUrl() << " is in NepomukCollection" << endl;
         
-        NepomukQueryMaker qm( this, m_model );
-        qm.startTrackQuery();
-        qm.addMatch( url );
-        QString query = qm.buildQuery();
-        
-        Soprano::QueryResultIterator it
-                              = m_model->executeQuery( query, 
-                                                     Soprano::Query::QueryLanguageSparql );
-        
+        NepomukQueryMaker *qm = new NepomukQueryMaker( this, m_model );
+        qm->startTrackQuery();
+        qm->addMatch( url );
+        BlockingQuery bq ( qm );
+        bq.startQuery();
+        Meta::TrackList tracks = bq.tracks( this->collectionId() );
+
         // assuming that there is only one result, should never be more, if so giving
         // the first is the best to do anyway
-        if ( it.next() )
+        if ( !tracks.isEmpty() )
         {
-            Soprano::BindingSet bindingSet = it.currentBindings();
-            Meta::TrackPtr tp ( new Meta::NepomukTrack( this, bindingSet ) );
-            return tp;
+            return tracks.first();
         }
     }
     return Meta::TrackPtr();
@@ -218,6 +218,13 @@ NepomukCollection::initHashMaps()
         m_allNamesAndUrls.append( it.value() );
         m_allNamesAndUrls.append( m_urlForValue[ it.key() ] );
     }
+
+    QHashIterator<qint64, QString> it2( m_urlForValue );
+    while ( it2.hasNext() )
+    {
+        it2.next();
+        m_valueForUrl[ it2.value( ) ] = it2.key();
+    }
     
 }
 
@@ -233,11 +240,25 @@ NepomukCollection::getUrlForValue( const qint64 value ) const
     return m_urlForValue[value];
 }
 
+qint64
+NepomukCollection::valueForUrl( const QString& url ) const
+{
+    if ( m_valueForUrl.contains( url ) )
+        return m_valueForUrl[ url ];
+    else
+        return 0;
+}
+
 const QStringList&
 NepomukCollection::getAllNamesAndUrls() const
 {
     return m_allNamesAndUrls;
 }
 
+NepomukRegistry*
+NepomukCollection::registry() const
+{
+    return m_registry;
+}
 
 #include "NepomukCollection.moc"

@@ -20,6 +20,8 @@
 #ifndef NEPOMUKCOLLECTION_H_
 #define NEPOMUKCOLLECTION_H_
 
+#include "NepomukRegistry.h"
+
 #include "Collection.h"
 
 #include <QString>
@@ -58,7 +60,9 @@ public:
 
     QString getNameForValue( const qint64 ) const;
     QString getUrlForValue( const qint64 ) const;
+    qint64 valueForUrl( const QString& ) const;
     const QStringList& getAllNamesAndUrls( void ) const;
+    NepomukRegistry* registry() const;
 
 private:
     
@@ -67,8 +71,10 @@ private:
     Soprano::Model *m_model;
     QHash< qint64, QString > m_nameForValue;
     QHash< qint64, QString > m_urlForValue;
+    QHash< QString, qint64 > m_valueForUrl;
     QStringList m_allNamesAndUrls;
     bool m_isFast;
+    NepomukRegistry *m_registry;
 };
 
 #endif /*NEPOMUKCOLLECTION_H_*/

@@ -19,6 +19,7 @@
 #define DEBUG_PREFIX "NepomukMeta"
 
 #include "NepomukMeta.h"
+#include "NepomukRegistry.h"
 
 #include "Debug.h"
 #include "ScriptManager.h"
@@ -27,10 +28,12 @@
 #include <QFile>
 #include <QMutexLocker>
 #include <QThread>
+#include <QTime>
 
 #include <Nepomuk/Variant>
 #include <Soprano/BindingSet>
 #include <Soprano/Model>
+#include <Soprano/LiteralValue>
 
 using namespace Meta;
 
@@ -149,9 +152,10 @@ class Meta::WriteStatisticsThread : public QThread
         NepomukTrack *m_track;
 };
 
-NepomukTrack::NepomukTrack( NepomukCollection *collection, const Soprano::BindingSet data )
+NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *registry, const Soprano::BindingSet &data )
     : Track()
     , m_collection ( collection )
+    , m_registry ( registry )
 {
     statsThread =  new WriteStatisticsThread( this );
 
@@ -307,8 +311,10 @@ NepomukTrack::setScore( double newScore )
 {
     // scores are between 0 and 1?  Xesam wants them to be int so lets
     // multiply them by 100 (hope that is enough)
+
+    m_lastWrote = QTime::currentTime();
+    
     debug() << "setscore " << endl;
-    QMutexLocker locker( &statsMutex );
     int tmpScore =  int( newScore*100 );
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valScore ) ), Nepomuk::Variant( tmpScore ) );
     m_score = newScore;
@@ -325,6 +331,8 @@ NepomukTrack::rating() const
 void
 NepomukTrack::setRating( int newRating )
 {
+    m_lastWrote = QTime::currentTime();
+    
     m_nepores.setRating( newRating );
     m_rating = newRating;
     notifyObservers();
@@ -395,7 +403,6 @@ NepomukTrack::finishedPlaying( double playedFraction )
 {
     debug() << "finshedPlaying " << endl;
     QMutexLocker locker( &statsMutex );
-    m_lastPlayed = QDateTime::currentDateTime();
     if( m_playCount == 0 )
     {
         m_firstPlayed = m_lastPlayed;
@@ -409,15 +416,46 @@ NepomukTrack::finishedPlaying( double playedFraction )
 void
 NepomukTrack::writeStatistics()
 {
-    DEBUG_BLOCK
-    debug() << "writestatistics " << endl;
     QMutexLocker locker( &statsMutex );
-    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valLastPlayed) ), Nepomuk::Variant( m_lastPlayed ) );
-    debug() << "wrote lastplayed " << endl;
-    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valPlaycount) ), Nepomuk::Variant( m_playCount ) );
-    debug() << "wrote playcount " << endl;
-    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valFirstPlayed) ), Nepomuk::Variant( m_firstPlayed ) );
-    debug() << "wrote  firstplayed " << endl;;
+    
+    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valLastPlayed) )
+            , Nepomuk::Variant( m_lastPlayed ) );
+    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valPlaycount) )
+            , Nepomuk::Variant( m_playCount ) );
+    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valFirstPlayed) )
+            , Nepomuk::Variant( m_firstPlayed ) );
+    
+    m_lastWrote = QTime::currentTime();
+
+}
+
+QUrl
+NepomukTrack::resourceUri() const
+{
+    return m_nepores.resourceUri();
+}
+
+void
+NepomukTrack::valueChangedInNepomuk( qint64 value, const Soprano::LiteralValue &literal )
+{
+    
+    // TODO: find a better way to ignore own writes
+    // ignore if last own write is less than 3 seconds ago
+    // the change will be our own
+    if ( !m_lastWrote.isNull() && m_lastWrote.secsTo( QTime::currentTime() ) < 3 )
+        return;
+
+    debug() << "data changed " << m_collection->getNameForValue( value ) << endl;
+    switch ( value )
+    {
+        case QueryMaker::valUrl:
+            m_url = KUrl ( literal.toString() );
+            break;
+        case QueryMaker::valRating:
+            m_rating = literal.toInt();
+            break;
+    }
+    emit notifyObservers();
 }
 
 // -- GENRE --

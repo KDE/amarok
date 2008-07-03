@@ -19,17 +19,19 @@
 #ifndef NEPOMUKMETA_H_
 #define NEPOMUKMETA_H_
 
-#include "NepomukCollection.h"
-
 #include "Meta.h"
 
 #include <QDateTime>
 #include <QMutex>
+#include <QUrl>
 
 #include <Nepomuk/Resource>
 #include <Soprano/BindingSet>
 #include <Soprano/Model>
+#include <Soprano/LiteralValue>
 
+class NepomukRegistry;
+class NepomukCollection;
 
 namespace Meta
 {
@@ -90,10 +92,12 @@ class NepomukAlbum : public Album
 };
 
 class WriteStatisticsThread;
+
+
 class NepomukTrack : public Track
     {
     public:
-        NepomukTrack( NepomukCollection* collection, const Soprano::BindingSet data );
+        NepomukTrack( NepomukCollection *collection, NepomukRegistry *registry, const Soprano::BindingSet &data );
         ~NepomukTrack();
         
         virtual QString name() const;
@@ -141,6 +145,8 @@ class NepomukTrack : public Track
         // for use in nepomuk plugin only
         
         void writeStatistics( void );
+        QUrl resourceUri() const;
+        void valueChangedInNepomuk( qint64 value, const Soprano::LiteralValue& );
         
     private:
         NepomukCollection *m_collection;
@@ -168,6 +174,8 @@ class NepomukTrack : public Track
         QDateTime m_lastPlayed;
         WriteStatisticsThread *statsThread;
         QMutex statsMutex;
+        NepomukRegistry *m_registry;
+        QTime m_lastWrote;
     };
 
 

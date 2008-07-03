@@ -22,6 +22,7 @@
 #include "NepomukQueryMaker.h"
 #include "NepomukCollection.h"
 #include "NepomukMeta.h"
+#include "NepomukRegistry.h"
 
 #include "Debug.h"
 
@@ -64,7 +65,7 @@ class NepomukWorkerThread : public ThreadWeaver::Job
         virtual void run()
         {
             QString query = m_queryMaker->buildQuery();
-            debug() << "Query:" << query << endl;
+            //debug() << "Query:" << query << endl;
             if( !m_aborted )
                 m_queryMaker->doQuery(query);
             setFinished( !m_aborted );
@@ -574,8 +575,8 @@ NepomukQueryMaker::doQuery(const QString &query)
             {
                 Soprano::BindingSet bindingSet = it.currentBindings();
                 
-                NepomukTrack *np = new Meta::NepomukTrack( m_collection, bindingSet );
-                tl.append( *( new Meta::TrackPtr ( np ) ) );
+                Meta::TrackPtr np = m_collection->registry()->trackForBindingSet( bindingSet );
+                tl.append( np );
             }
             emitProperResult ( TrackPtr, tl );
 
