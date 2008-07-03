@@ -41,14 +41,18 @@ public:
     virtual QueryMaker* queryMaker();
 
 private slots:
+    void slotAddNeighboursLoved( WeightedStringList list );
     void slotAddNeighbours( WeightedStringList list );
+    void slotAddFriendsLoved( QStringList list );
     void slotAddFriends( QStringList list );
     void slotRecentlyLovedTrackResult( Request* );
     void slotRecentTrackResult( Request* );
 
 private:
     QString m_userName;
+    Meta::ServiceGenre *m_neighborsLoved;
     Meta::ServiceGenre *m_neighbors;
+    Meta::ServiceGenre *m_friendsLoved;
     Meta::ServiceGenre *m_friends;
     Meta::ServiceGenre *m_recentlyLoved;
     Meta::ServiceGenre *m_recentlyPlayed;

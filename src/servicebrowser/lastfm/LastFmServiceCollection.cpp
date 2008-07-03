@@ -41,11 +41,19 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     Meta::GenrePtr globalTagsPtr( globalTags );
     addGenre( globalTagsPtr );
 
-    m_neighbors = new Meta::ServiceGenre( i18n( "Neighbors' Radio" ) );
+    m_neighborsLoved = new Meta::ServiceGenre( i18n( "Neighbors' Loved Radio" ) );
+    Meta::GenrePtr neighborsLovedPtr( m_neighborsLoved );
+    addGenre( neighborsLovedPtr );
+
+    m_neighbors = new Meta::ServiceGenre( i18n( "Neighbors' Personal Radio" ) );
     Meta::GenrePtr neighborsPtr( m_neighbors );
     addGenre( neighborsPtr );
 
-    m_friends = new Meta::ServiceGenre( i18n( "Friends' Radio" ) );
+    m_friendsLoved = new Meta::ServiceGenre( i18n( "Friends' Loved Radio" ) );
+    Meta::GenrePtr friendsLovedPtr( m_friendsLoved );
+    addGenre( friendsLovedPtr );
+
+    m_friends = new Meta::ServiceGenre( i18n( "Friends' Personal Radio" ) );
     Meta::GenrePtr friendsPtr( m_friends );
     addGenre( friendsPtr );
 
@@ -84,7 +92,9 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
         addTrack( trackPtr );
     }
 
+    connect( The::webService(), SIGNAL( neighbours( WeightedStringList ) ), SLOT( slotAddNeighboursLoved( WeightedStringList ) ) );
     connect( The::webService(), SIGNAL( neighbours( WeightedStringList ) ), SLOT( slotAddNeighbours( WeightedStringList ) ) );
+    connect( The::webService(), SIGNAL( friends( QStringList ) ), SLOT( slotAddFriendsLoved( QStringList ) ) );
     connect( The::webService(), SIGNAL( friends( QStringList ) ), SLOT( slotAddFriends( QStringList ) ) );
 
     NeighboursRequest *nr = new NeighboursRequest();
@@ -137,6 +147,18 @@ LastFmServiceCollection::prettyName() const
     return i18n( "last.fm" );
 }
 
+void LastFmServiceCollection::slotAddNeighboursLoved( WeightedStringList list )
+{
+    QStringList realList = list;
+    foreach( const QString &string, realList )
+    {
+        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/loved" );
+        Meta::TrackPtr trackPtr( track );
+        m_neighborsLoved->addTrack( trackPtr );
+        addTrack( trackPtr );
+    }
+}
+
 void LastFmServiceCollection::slotAddNeighbours( WeightedStringList list )
 {
     QStringList realList = list;
@@ -145,6 +167,17 @@ void LastFmServiceCollection::slotAddNeighbours( WeightedStringList list )
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/personal" );
         Meta::TrackPtr trackPtr( track );
         m_neighbors->addTrack( trackPtr );
+        addTrack( trackPtr );
+    }
+}
+
+void LastFmServiceCollection::slotAddFriendsLoved( QStringList list )
+{
+    foreach( const QString &string, list )
+    {
+        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/loved" );
+        Meta::TrackPtr trackPtr( track );
+        m_friendsLoved->addTrack( trackPtr );
         addTrack( trackPtr );
     }
 }
