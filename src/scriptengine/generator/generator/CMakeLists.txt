@@ -10,6 +10,7 @@ include_directories(
 )
 
 include(${QT_USE_FILE})
+add_definitions( -DQT_STL )
 
 set(Rpp_SRCS
     parser/rpp/preprocessor.cpp

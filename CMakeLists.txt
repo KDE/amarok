@@ -2,7 +2,8 @@ project(Amarok)
 
 cmake_minimum_required(VERSION 2.4.5)
 
-add_subdirectory( src/scriptengine/generator )
+#the generator is Qt stuff, add before we add a bunch of KDE directives
+add_subdirectory( src/scriptengine/generator ) 
 
 #We depend on kde4.1 now.. I believe this is the easiest way to do it.
 set(KDE_MIN_VERSION "4.00.61")
@@ -20,7 +21,7 @@ macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http
 set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
                           ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
-add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS)
+add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS ${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
 set(TAGLIB_MIN_VERSION "1.5")
 find_package(Taglib)
@@ -38,7 +39,6 @@ endif (WIN32)
 find_package(Strigi REQUIRED)
 macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
 
-add_definitions (${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 include(CheckTagLibFileName)
 

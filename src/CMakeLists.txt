@@ -1,4 +1,4 @@
-ADD_DEFINITIONS(${TAGLIB_CFLAGS} -DQT_STL)
+ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 
 if(MP4V2_FOUND)
     ADD_DEFINITIONS(-DHAVE_MP4V2)
@@ -351,7 +351,6 @@ set (scriptengine_SRCS
      scriptengine/AmarokTrackInfoScript.cpp
      scriptengine/AmarokWindowScript.cpp
 )
-
 
 #####################################################################
 # DYNAMIC
