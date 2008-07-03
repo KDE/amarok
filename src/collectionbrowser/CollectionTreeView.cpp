@@ -365,27 +365,6 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     ongoingDrags = false;
 }
 
-/*PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
-{
-    DEBUG_BLOCK
-    PopupDropper* pd = new PopupDropper( parent );
-    if( !pd )
-        return 0;
-    pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
-    pd->setQuitOnDragLeave( false );
-    pd->setFadeInTime( 500 );
-    pd->setFadeOutTime( 300 );
-    QColor windowColor( Qt::black );
-    windowColor.setAlpha( 128 );
-    QColor textColor( The::paletteHandler()->palette().color( QPalette::HighlightedText ) );
-    QColor borderColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
-    QColor fillColor( borderColor );
-    fillColor.setAlpha( 32 );
-    pd->setColors( windowColor, textColor, borderColor, borderColor, fillColor );
-
-    return pd;
-}*/
-
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
     Q_UNUSED( deselected )
