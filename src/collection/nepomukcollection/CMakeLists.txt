@@ -33,8 +33,7 @@ target_link_libraries(amarok_collection-nepomukcollection
     amaroklib 
     ${KDE4_THREADWEAVER_LIBRARIES} 
     ${NEPOMUK_LIBRARIES}
-    ${SOPRANO_LIBRARIES}
-    ${SOPRANO_CLIENT_LIBRARIES})
+    ${SOPRANO_LIBRARIES})
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-nepomukcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
