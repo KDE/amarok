@@ -17,25 +17,27 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef MAGNATUNESQLCOLLECTION_H
-#define MAGNATUNESQLCOLLECTION_H
+#ifndef MAGNATUNECOLLECTIONLOCATION_H
+#define MAGNATUNECOLLECTIONLOCATION_H
 
-#include "../ServiceSqlCollection.h"
+#include "MagnatuneSqlCollection.h"
+#include "ServiceCollectionLocation.h"
+
+
 
 /**
-A simple ServiceSqlCollection subclass for providing a magnatune membership specific implementaion of trackForUrl
+A ServiceCollectionLocation subclass responsible for showing a small Magnatune specific dialog when copying tracks from Magnatune
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MagnatuneSqlCollection : public ServiceSqlCollection
+class MagnatuneCollectionLocation : public ServiceCollectionLocation
 {
 public:
+    MagnatuneCollectionLocation( MagnatuneSqlCollection const *parentCollection );
 
-    MagnatuneSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry );
-    
-    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+    virtual ~MagnatuneCollectionLocation();
 
-    virtual CollectionLocation* location() const;
+    virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
 
 };
 

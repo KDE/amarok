@@ -20,6 +20,7 @@
 #include "MagnatuneSqlCollection.h"
 
 #include "Debug.h"
+#include "MagnatuneCollectionLocation.h"
 #include "MagnatuneMeta.h"
 
 
@@ -81,6 +82,11 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
 
     }
     
+}
+
+CollectionLocation * MagnatuneSqlCollection::location() const
+{
+    return new MagnatuneCollectionLocation( this );
 }
 
 

@@ -28,6 +28,7 @@
             MagnatuneConfig.cpp
             MagnatuneDatabaseWorker.cpp
             MagnatuneSqlCollection.cpp
+            MagnatuneCollectionLocation.cpp
         )
 
 #kde4_add_ui3_files(amarok_service_magnatune_PART_SRCS

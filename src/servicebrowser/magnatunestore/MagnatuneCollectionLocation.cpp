@@ -17,26 +17,41 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef MAGNATUNESQLCOLLECTION_H
-#define MAGNATUNESQLCOLLECTION_H
+#include "MagnatuneCollectionLocation.h"
 
-#include "../ServiceSqlCollection.h"
+#include <KDialog>
+#include <KLocale>
 
-/**
-A simple ServiceSqlCollection subclass for providing a magnatune membership specific implementaion of trackForUrl
+#include <QLabel>
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class MagnatuneSqlCollection : public ServiceSqlCollection
+MagnatuneCollectionLocation::MagnatuneCollectionLocation( MagnatuneSqlCollection const *parentCollection )
+    : ServiceCollectionLocation( parentCollection )
 {
-public:
+}
 
-    MagnatuneSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry );
+
+MagnatuneCollectionLocation::~MagnatuneCollectionLocation()
+{
+}
+
+void MagnatuneCollectionLocation::showSourceDialog( const Meta::TrackList & tracks, bool removeSources )
+{
+    Q_UNUSED( tracks );
+    Q_UNUSED( removeSources );
+
+    KDialog dialog;
+    dialog.setCaption( "Preview Tracks" );
+    dialog.setButtons( KDialog::Ok );
+
+    QLabel *label = new QLabel( i18n( "The tracks you are about to copy are the Magnatune.com preview streams, for better quality, add free streams, considder buying an abum download. Remember, that when buying from Magnatune, the artist gets 50%, and if you buy using Amarok, you support the Amarok project with 10%" ) );
+
+    label->setWordWrap ( true );
+    label->setMaximumWidth( 400 );
     
-    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+    dialog.setMainWidget( label );
 
-    virtual CollectionLocation* location() const;
+    dialog.exec();
 
-};
 
-#endif
+    return;
+}
