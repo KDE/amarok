@@ -27,7 +27,7 @@ ShowInServiceAction::ShowInServiceAction( ServiceBase * service, Meta::ServiceTr
     , m_service( service )
 {
     setIcon ( KIcon( "system-search" ) );
-    setText( i18n( "Go to artist in %1 service", service->getName() ) );
+    setText( i18n( "Go to artist in %1 service", service->name() ) );
 
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 }
@@ -48,7 +48,7 @@ void ShowInServiceAction::slotTriggered()
     MainWindow::self()->showBrowser( "Internet" );
     m_service->setFilter( QString( "artist:\"%1\"" ).arg( m_track->artist()->prettyName() ) );
     m_service->sortByArtistAlbum();
-    ServiceBrowser::instance()->showService( m_service->getName() );
+    ServiceBrowser::instance()->showService( m_service->name() );
 }
 
 #include "ShowInServiceAction.moc"

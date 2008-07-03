@@ -47,12 +47,14 @@ public:
 public slots:
 
     void slotConfigChanged( bool changed );
+    void slotConfigComitted( const QByteArray & name );
 
 private:
     ServicePluginManager * m_servicePluginManager;
     KPluginSelector * m_serviceSelector;
 
     bool m_configChanged;
+    QStringList m_changedServices;
 };
 
 #endif

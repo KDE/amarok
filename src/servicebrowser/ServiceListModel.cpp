@@ -50,7 +50,7 @@ ServiceListModel::data(const QModelIndex & index, int role) const
          return QVariant();
 
     if ( role == Qt::DisplayRole )
-        return QVariant( m_services[index.row()]->getName() );
+        return QVariant( m_services[index.row()]->name() );
     else if ( role ==  Qt::DecorationRole )
         return QVariant( m_services[index.row()]->getIcon() );
    else if ( role == ShortDescriptionRole )
@@ -72,7 +72,7 @@ ServiceListModel::addService(ServiceBase * service)
 }
 
 void
-ServiceListModel::removeService(ServiceBase * service)
+ServiceListModel::removeService( ServiceBase * service )
 {
     int index = m_services.indexOf( service );
     beginRemoveRows ( QModelIndex(), index, index );

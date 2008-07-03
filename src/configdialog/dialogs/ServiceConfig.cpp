@@ -42,6 +42,7 @@ ServiceConfig::ServiceConfig( QWidget * parent )
     layout->addWidget( m_serviceSelector );
 
     connect( m_serviceSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
+    connect( m_serviceSelector, SIGNAL( configCommitted ( const QByteArray & ) ), SLOT( slotConfigComitted( const QByteArray & ) ) );
 
     QList<ServiceFactory*> serviceFactories = ServicePluginManager::instance()->factories().values();
 
@@ -59,8 +60,16 @@ ServiceConfig::~ServiceConfig()
 
 void ServiceConfig::updateSettings()
 {
-    m_serviceSelector->save();
-    ServicePluginManager::instance()->settingsChanged();
+    if ( m_configChanged ) {
+        m_serviceSelector->save();
+        foreach ( QString name, m_changedServices ) {
+            ServicePluginManager::instance()->settingsChanged( name );
+        }
+
+        //check if any services were disabled and needs to be removed, or any that are hidden needs to be enabled
+        ServicePluginManager::instance()->checkEnabledStates();
+
+    }
 }
 
 
@@ -82,6 +91,14 @@ void ServiceConfig::slotConfigChanged( bool changed )
 {
     DEBUG_BLOCK
     m_configChanged = changed;
+}
+
+void ServiceConfig::slotConfigComitted( const QByteArray & name )
+{
+    DEBUG_BLOCK
+    debug() << "config comitted for: " << name;
+    m_configChanged = true;
+    m_changedServices << QString( name );
 }
 
 #include "ServiceConfig.moc"

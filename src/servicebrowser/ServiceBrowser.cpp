@@ -80,7 +80,7 @@ void
 ServiceBrowser::addService( ServiceBase * service )
 {
     //insert service into service map
-    m_services[service->getName()] = service;
+    m_services[service->name()] = service;
     m_serviceListModel->addService( service );
     connect( service, SIGNAL( home() ), this, SLOT( home() ) );
 }
@@ -98,8 +98,8 @@ ServiceBrowser::serviceActivated( const QModelIndex & index )
 
     if ( service )
     {
-        debug() << "Show service: " <<  service->getName();
-        showService( service->getName() );
+        debug() << "Show service: " <<  service->name();
+        showService( service->name() );
     }
 }
 

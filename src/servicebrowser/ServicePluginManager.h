@@ -57,6 +57,10 @@ public:
      */
     void settingsChanged();
 
+    void settingsChanged( const QString &pluginName );
+
+    void checkEnabledStates();
+
     QMap< QString, ServiceFactory* > factories();
 
 public Q_SLOTS:

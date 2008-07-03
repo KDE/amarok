@@ -173,6 +173,34 @@ ServicePluginManager::settingsChanged()
     }*/
 }
 
+void ServicePluginManager::settingsChanged( const QString & pluginName )
+{
+    ServiceFactory * factory = 0;
+    foreach ( ServiceFactory * currentFactory, m_factories ) {
+        if ( currentFactory->info().pluginName() == pluginName ) {
+            factory = currentFactory;
+        }
+    }
+
+    if ( factory == 0 ) return;
+
+    foreach( ServiceBase * service, factory->activeServices() ) {
+
+        debug() << "removing service: " << service->name();
+        m_serviceBrowser->removeService( service->name() );
+    }
+
+    factory->clearActiveServices();
+
+    debug() << "PLUGIN CHECK: " << pluginName;
+    if ( Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true ) )
+    {
+        factory->init();
+        m_loadedServices << pluginName;
+    }
+}
+
+
 QStringList
 ServicePluginManager::loadedServices()
 {
@@ -226,6 +254,32 @@ QString ServicePluginManager::sendMessage( const QString & serviceName, const QS
 
     return service->sendMessage( message );
 }
+
+void ServicePluginManager::checkEnabledStates()
+{
+    foreach( ServiceFactory* factory,  m_factories.values() ) {
+
+        //check if this service is enabled
+        QString pluginName = factory->info().pluginName();
+
+        debug() << "PLUGIN CHECK: " << pluginName;
+        bool enabledConfig = Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true );
+        bool enabled = factory->activeServices().count() > 0;
+
+        if ( enabledConfig == true && enabled == false ) {
+            factory->init();
+            m_loadedServices << pluginName;
+        } else if ( enabledConfig == false && enabled == true ) {
+            debug() << "Active services: " << factory->activeServices().count();
+            foreach( ServiceBase * service, factory->activeServices() ) {
+                debug() << "removing service: " << service->name();
+                m_serviceBrowser->removeService( service->name() );
+            }
+            factory->clearActiveServices();
+        }
+    }
+}
+
 
 #include "ServicePluginManager.moc"
 

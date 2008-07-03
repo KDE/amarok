@@ -165,7 +165,7 @@ ServiceBase::~ServiceBase()
 }
 
 QString
-ServiceBase::getName( )
+ServiceBase::name( )
 {
     return m_name;
 }

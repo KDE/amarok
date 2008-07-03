@@ -73,7 +73,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
         virtual QString name() = 0;
 
         /**
-         * Get a KConfigGroup object containing the config for this tyoe of service. Reimplemented by subclasses.
+         * Get a KConfigGroup object containing the config for this type of service. Reimplemented by subclasses.
          * @return
          */
         virtual KConfigGroup config() = 0;
@@ -105,6 +105,8 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
          * Clear the list of active services created by this factory. Used when unloading services.
          */
         void clearActiveServices();
+
+        QList<ServiceBase *> activeServices() { return m_activeServices; }
 
     signals:
         /**
@@ -143,7 +145,7 @@ public:
      * Get the name of this service.
      * @return The name of the service.
      */
-    QString getName();
+    QString name();
 
     /**
      * Set a short description string for this service. This string is used to describe the service in the service browser.
