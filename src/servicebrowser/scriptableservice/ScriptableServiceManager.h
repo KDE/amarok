@@ -40,7 +40,7 @@ class ScriptableServiceManager : public QObject
     friend ScriptableServiceManager* The::scriptableServiceManager();
 
     public:
-        void addRunningScript( const QString &name, AmarokProcIO* script );
+        void addRunningScript( const QString &name );
         void removeRunningScript( const QString &name );
 
     signals:

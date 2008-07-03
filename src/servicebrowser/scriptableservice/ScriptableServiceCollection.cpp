@@ -21,10 +21,10 @@
 
 #include "ScriptableServiceQueryMaker.h"
 
-ScriptableServiceCollection::ScriptableServiceCollection( const QString &name,  AmarokProcIO * script )
+ScriptableServiceCollection::ScriptableServiceCollection( const QString &name )
     : ServiceCollection( 0, name, name )
- , m_script( script )
 {
+    m_name = name;
 }
 
 
@@ -34,7 +34,7 @@ ScriptableServiceCollection::~ScriptableServiceCollection()
 
 QueryMaker * ScriptableServiceCollection::queryMaker()
 {
-    return new ScriptableServiceQueryMaker( this, m_script );
+    return new ScriptableServiceQueryMaker( this, m_name );
 }
 
 QString ScriptableServiceCollection::collectionId() const

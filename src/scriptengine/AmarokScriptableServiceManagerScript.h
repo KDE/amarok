@@ -31,7 +31,7 @@ namespace Amarok
             AmarokScriptableServiceManagerScript( QScriptEngine* ScriptEngine );
             ~AmarokScriptableServiceManagerScript();
             void slotInit();
-            void slotPopulate( int level, int parent_id, QString path );
+            void slotPopulate( int level, int parent_id, QString path, QString filter );
 
         public slots:
             bool initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar );
@@ -40,7 +40,7 @@ namespace Amarok
 
         signals:
             void init();
-            void populate( int level, int parent_id, QString path );
+            void populate( int level, int parent_id, QString path, QString filter );
     };
 }
 

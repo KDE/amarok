@@ -55,9 +55,9 @@ namespace Amarok
         emit init();
     }
 
-    void AmarokScriptableServiceManagerScript::slotPopulate( int level, int parent_id, QString path )
+    void AmarokScriptableServiceManagerScript::slotPopulate( int level, int parent_id, QString path, QString filter )
     {
-        emit populate( level, parent_id, path );
+        emit populate( level, parent_id, path, filter );
     }
 
 }

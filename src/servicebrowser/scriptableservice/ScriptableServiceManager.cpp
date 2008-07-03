@@ -24,6 +24,7 @@
 #include "Debug.h"
 #include "ScriptableServiceCollection.h"
 #include "ScriptableServiceMeta.h"
+#include "ScriptManager.h"
 #include "ServiceMetaBase.h"
 #include "ServiceBrowser.h"
 
@@ -88,22 +89,22 @@ void ScriptableServiceManager::donePopulating(const QString & serviceName, int p
 }
 
 
-void ScriptableServiceManager::addRunningScript( const QString & name, AmarokProcIO * script )
+void ScriptableServiceManager::addRunningScript( const QString & name )
 {
     DEBUG_BLOCK
 
     debug() << "adding service script named: " << name;
-    
+
     if ( m_serviceMap.contains( name ) ) {
         debug() << "service already running";
         return;
     }
-    
-    ScriptableService * service = new ScriptableService ( name, script );
+
+    ScriptableService * service = new ScriptableService ( name );
     m_serviceMap[name] = service;
 
-    debug() << "sedning init message to script";
-    script->writeStdin( "init" );
+    debug() << "sending init message to script";
+    ScriptManager::instance()->ServiceScriptInit( name );
 }
 
 void ScriptableServiceManager::removeRunningScript(const QString & name)

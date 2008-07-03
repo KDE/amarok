@@ -37,7 +37,7 @@ class ScriptableServiceQueryMaker : public DynamicServiceQueryMaker
 {
 Q_OBJECT
 public:
-    ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, AmarokProcIO * script );
+    ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name );
     ~ScriptableServiceQueryMaker();
 
     virtual QueryMaker* reset();
@@ -103,6 +103,9 @@ protected:
     void trackInsertionsComplete();
 */
 
+private:
+    QString m_name;
+ 
 };
 
 #endif

@@ -1,6 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2004-2007 by Mark Kretschmann <markey@web.de>           *
  *                      2005 by Seb Ruiz <ruiz@kde.org>                    *
+ *                      2008 by Peter ZHOU <peterzhoulei@gmail.com>        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -24,6 +25,7 @@
 #include "EngineObserver.h"   //baseclass
 #include "MainWindow.h"
 #include "scriptengine/AmarokScript.h"
+#include "scriptengine/AmarokScriptableServiceManagerScript.h"
 #include "ui_ScriptManagerBase.h"
 
 #include <KDialog>      //baseclass
@@ -69,35 +71,38 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         /** Returns a list of all currently running scripts. Used by the DCOP handler. */
         QStringList listRunningScripts();
 
-       /** Returns the path of the spec file of the given script */
-       QString specForScript( const QString& name );
+        /** Returns the path of the spec file of the given script */
+        QString specForScript( const QString& name );
 
-       /** Return name of the lyrics script currently running, or QString::null if none */
-       QString lyricsScriptRunning() const;
+        /** Return name of the lyrics script currently running, or QString::null if none */
+        QString lyricsScriptRunning() const;
 
-       /** Returns a list of all lyrics scripts */
-       QStringList lyricsScripts() const;
+        /** Returns a list of all lyrics scripts */
+        QStringList lyricsScripts() const;
 
-       /** Sends a fetchLyrics notification to all scripts */
-       void notifyFetchLyrics( const QString& artist, const QString& title );
+        /** Sends a fetchLyrics notification to all scripts */
+        void notifyFetchLyrics( const QString& artist, const QString& title );
 
-       /** Sends a fetchLyrics notification to retrieve lyrics from a specific page */
-       void notifyFetchLyricsByUrl( const QString& url );
+        /** Sends a fetchLyrics notification to retrieve lyrics from a specific page */
+        void notifyFetchLyricsByUrl( const QString& url );
 
-       /** Return name of the transcode script currently running, or QString::null if none */
-       QString transcodeScriptRunning() const;
+        /** Return name of the transcode script currently running, or QString::null if none */
+        QString transcodeScriptRunning() const;
 
-       /** Sends a transcode notification to all scripts */
-       void notifyTranscode( const QString& srcUrl, const QString& filetype );
+        /** Sends a transcode notification to all scripts */
+        void notifyTranscode( const QString& srcUrl, const QString& filetype );
 
-       /** Return name of the scoring script currently running, or QString::null if none */
-       QString scoreScriptRunning() const;
+        /** Return name of the scoring script currently running, or QString::null if none */
+        QString scoreScriptRunning() const;
 
-       /** Returns a list of all scoring scripts */
-       QStringList scoreScripts() const;
+        /** Returns a list of all scoring scripts */
+        QStringList scoreScripts() const;
 
         /** Asks the current score script to give a new score based on the parameters. */
-       void requestNewScore( const QString &url, double prevscore, int playcount, int length, float percentage, const QString &reason );
+        void requestNewScore( const QString &url, double prevscore, int playcount, int length, float percentage, const QString &reason );
+
+        void ServiceScriptInit( QString name );
+        void ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter );
 
     signals:
         /** Emitted when the lyrics script changes, so that a lyrics retry can be made */
@@ -109,7 +114,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         /** Enables/disables the buttons */
         void slotCurrentChanged( QTreeWidgetItem* );
-
         bool slotInstallScript( const QString& path = QString() );
         void slotRetrieveScript();
         void slotUninstallScript();
@@ -154,17 +158,18 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         bool                   m_installSuccess;
 
         struct ScriptItem {
-            QScriptEngine*         engine;
-            KUrl                   url;
-            QString                type;
-            QString                version;
-            QString                AmarokVersion;
-            QTreeWidgetItem*       li;
-            bool                   running;
-            Amarok::AmarokScript*  globalPtr;
-            QString                log;
-            QList<QObject*>        guiPtrList;
-            ScriptItem() :         li( 0 ), running( false ){}
+            QScriptEngine*                                  engine;
+            KUrl                                            url;
+            QString                                         type;
+            QString                                         version;
+            QString                                         AmarokVersion;
+            QTreeWidgetItem*                                li;
+            bool                                            running;
+            Amarok::AmarokScript*                           globalPtr;
+            Amarok::AmarokScriptableServiceManagerScript*   servicePtr;
+            QString                                         log;
+            QList<QObject*>                                 guiPtrList;
+            ScriptItem() :                                  li( 0 ), running( false ){}
         };
 
         typedef QMap<QString, ScriptItem> ScriptMap;

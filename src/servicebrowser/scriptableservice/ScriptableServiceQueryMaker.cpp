@@ -19,9 +19,9 @@
 
 #include "ScriptableServiceQueryMaker.h"
 #include "ScriptableServiceMeta.h"
+#include "ScriptManager.h"
 
 #include "collection/support/MemoryMatcher.h"
-#include "AmarokProcess.h"
 
 #include "Debug.h"
 
@@ -38,24 +38,23 @@ struct ScriptableServiceQueryMaker::Private {
     bool returnDataPtrs;
     QString callbackString;
     int parentId;
-    AmarokProcess * scriptProcess;
     AlbumQueryMode albumMode;
     QString filter;
     QString lastFilter;
 };
 
 
-ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, AmarokProcIO * script )
+ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name )
  : DynamicServiceQueryMaker()
  , d( new Private )
 
 {
     DEBUG_BLOCK
     m_collection = collection;
-    m_script = script;
+    m_name = name;
 
     connect( collection, SIGNAL( updateComplete() ), this, SLOT( slotScriptComplete() ) );
-    
+
     reset();
 }
 
@@ -63,7 +62,6 @@ ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceColle
 ScriptableServiceQueryMaker::~ScriptableServiceQueryMaker()
 {
     DEBUG_BLOCK
-    delete d->scriptProcess;
     delete d;
 }
 
@@ -76,7 +74,6 @@ QueryMaker * ScriptableServiceQueryMaker::reset()
     d->returnDataPtrs = false;
     d->callbackString = QString();
     d->parentId = -1;
-    d->scriptProcess = 0;
     d->albumMode = AllAlbums;
     d->filter = QString();
     d->lastFilter = QString();
@@ -278,19 +275,7 @@ void ScriptableServiceQueryMaker::fetchGenre()
     } else {
         //this is where we call the script to get it to add more stuff!
 
-        QString args;
-        args += "populate ";
-        args += "3 ";
-        args += QString::number( d->parentId );
-        args += ' ';
-        args += d->callbackString;
-        if ( !d->filter.isEmpty() ) {
-            args += ' ';
-            args += d->filter;
-        }
-        debug() << "sending: "  << args;
-        m_script->writeStdin( args );
-
+        ScriptManager::instance()->ServiceScriptPopulate( m_name, 3, d->parentId, d->callbackString, d->filter );
     }
 
 }
@@ -324,19 +309,7 @@ void ScriptableServiceQueryMaker::fetchArtists()
     } else {
         //this is where we call the script to get it to add more stuff!
 
-        QString args;
-        args += "populate ";
-        args += "2 ";
-        args += QString::number( d->parentId );
-        args += ' ';
-        args += d->callbackString;
-        if ( !d->filter.isEmpty() ) {
-            args += ' ';
-            args += d->filter;
-        }
-        debug() << "sending: "  << args;
-        m_script->writeStdin( args );
-
+        ScriptManager::instance()->ServiceScriptPopulate( m_name, 2, d->parentId, d->callbackString, d->filter );
     }
 }
 
@@ -363,22 +336,7 @@ void ScriptableServiceQueryMaker::fetchAlbums()
     } else {
         //this is where we call the script to get it to add more stuff!
 
-
-        QString args;
-        args += "populate ";
-        args += "1 ";
-        args += QString::number( d->parentId );
-        args += ' ';
-        args += d->callbackString;
-
-        if ( !d->filter.isEmpty() ) {
-            args += ' ';
-            args += d->filter;
-        }
-        
-        debug() << "sending: "  << args;
-        m_script->writeStdin( args );
-        
+        ScriptManager::instance()->ServiceScriptPopulate( m_name, 1, d->parentId, d->callbackString, d->filter );
     }
 
 }
@@ -403,19 +361,7 @@ void ScriptableServiceQueryMaker::fetchTracks()
     } else {
         //this is where we call the script to get it to add more stuff!
 
-        QString args;
-        args += "populate ";
-        args += "0 ";
-        args += QString::number( d->parentId );
-        args += ' ';
-        args += d->callbackString;
-        if ( !d->filter.isEmpty() ) {
-            args += ' ';
-            args += d->filter;
-        }
-        debug() << "sending: "  << args;
-        m_script->writeStdin( args );
-        
+        ScriptManager::instance()->ServiceScriptPopulate( m_name, 0, d->parentId, d->callbackString, d->filter );
     }
 
 }

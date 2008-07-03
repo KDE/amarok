@@ -51,7 +51,7 @@ public:
      /**
      * Constructor
      */
-    ScriptableService( const QString &name, AmarokProcIO * script );
+    ScriptableService( const QString &name );
     
     /**
      * Destructor
@@ -83,7 +83,6 @@ private:
     
     QString m_name;
     QString m_rootHtml;
-    AmarokProcIO * m_script;
             
     int m_levels;
 

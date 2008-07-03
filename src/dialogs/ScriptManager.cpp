@@ -43,6 +43,7 @@
 #include "scriptengine/AmarokTrackInfoScript.h"
 #include "scriptengine/AmarokWindowScript.h"
 #include "scriptengine/ScriptImporter.h"
+#include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <KAboutApplicationDialog>
 #include <KAboutData>
@@ -557,6 +558,9 @@ ScriptManager::slotRunScript( bool silent )
                                          "You may only run one transcode script at a time." ) );
         return false;
     }
+    if( m_scripts[name].type == "service" )
+        The::scriptableServiceManager()->addRunningScript( name );
+
     const KUrl url = m_scripts[name].url;
     QTime time;
     //load the wrapper classes
@@ -579,9 +583,6 @@ ScriptManager::slotRunScript( bool silent )
         KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script. Please refer to the log!" ) );
         scriptFinished( name );
     }
-//TODO: immigrate scriptable service
-//    else if( m_scripts[name].type == "service" )
-//        The::scriptableServiceManager()->addRunningScript( name, script );
 
     return true;
 }
@@ -613,6 +614,17 @@ ScriptManager::slotConfigureScript()
     m_scripts[name].globalPtr->slotConfigured();
 }
 
+void
+ScriptManager::ServiceScriptInit( QString name )
+{
+    m_scripts[name].servicePtr->slotInit();
+}
+
+void
+ScriptManager::ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter )
+{
+    m_scripts[name].servicePtr->slotPopulate( level, parent_id, path, filter );
+}
 
 void
 ScriptManager::slotAboutScript()
@@ -889,7 +901,8 @@ ScriptManager::startScriptEngine( QString name )
     m_global = scriptEngine->newQObject( m_scripts[name].globalPtr );
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
 
-    scriptObject = scriptEngine->newQObject( new Amarok::AmarokScriptableServiceManagerScript( scriptEngine ) );
+    m_scripts[name].servicePtr = new Amarok::AmarokScriptableServiceManagerScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( m_scripts[name].servicePtr );
     m_global.setProperty( "ScriptableServiceManager", scriptObject );
 
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokServicePluginManagerScript( scriptEngine ) );

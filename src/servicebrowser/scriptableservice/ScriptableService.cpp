@@ -27,11 +27,10 @@
 
 using namespace Meta;
 
-ScriptableService::ScriptableService( const QString & name, AmarokProcIO * script )
+ScriptableService::ScriptableService( const QString & name )
     : ServiceBase( name )
     , m_polished( false )
     , m_name( name )
-    , m_script ( script )
     , m_trackIdCounter( 0 )
     , m_albumIdCounter( 0 )
     , m_artistIdCounter( 0 )
@@ -52,7 +51,7 @@ void ScriptableService::init( int levels, const QString & rootHtml, bool showSea
     m_levels = levels;
     m_rootHtml = rootHtml;
     setInfoParser( new ScriptableServiceInfoParser() );
-    m_collection = new ScriptableServiceCollection( m_name, m_script );
+    m_collection = new ScriptableServiceCollection( m_name );
     m_collection->setLevels( levels );
 
     if ( !showSearchBar )

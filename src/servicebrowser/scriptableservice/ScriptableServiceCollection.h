@@ -31,7 +31,7 @@ class ScriptableServiceCollection : public ServiceCollection
 {
     Q_OBJECT
 public:
-    ScriptableServiceCollection( const QString &name, AmarokProcIO * script );
+    ScriptableServiceCollection( const QString &name );
 
     ~ScriptableServiceCollection();
 
@@ -56,7 +56,7 @@ public:
 
 private:
 
-    AmarokProcIO * m_script;
+    QString m_name;
     int m_levels;
 
 };
