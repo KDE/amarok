@@ -438,6 +438,7 @@ set(amaroklib_LIB_SRCS
     mountpointmanager.cpp
     PaletteHandler.cpp
     podcastsettings.cpp
+    PopupDropperFactory.cpp
     prettypopupmenu.cpp
     refreshimages.cpp
     servicebrowser/lastfm/SimilarArtistsAction.cpp

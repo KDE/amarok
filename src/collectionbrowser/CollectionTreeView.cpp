@@ -34,6 +34,7 @@
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistGraphicsView.h"
+#include "PopupDropperFactory.h"
 #include "context/popupdropper/PopupDropper.h"
 #include "context/popupdropper/PopupDropperAction.h"
 #include "context/popupdropper/PopupDropperItem.h"
@@ -262,7 +263,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     ongoingDrags = true;
 
     if( !m_pd )
-        m_pd = createPopupDropper( Context::ContextView::self() );
+        m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
     if( m_pd && m_pd->isHidden() )
     {
@@ -321,7 +322,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         if ( !m_currentCopyDestination.empty() ) {
             debug() << "got copy actions";
             //KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
-            PopupDropper * copyPud = createPopupDropper( 0 );
+            PopupDropper * copyPud = The::popupDropperFactory()->createPopupDropper( 0 );
             foreach( PopupDropperAction * action, m_currentCopyDestination.keys() ) {
 
                 PopupDropperItem* pdi2 = new PopupDropperItem();
@@ -337,7 +338,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 
         if ( !m_currentMoveDestination.empty() ) {
             debug() << "got move actions";
-            PopupDropper * movePud = createPopupDropper( 0 );
+            PopupDropper * movePud = The::popupDropperFactory()->createPopupDropper( 0 );
             foreach( PopupDropperAction * action, m_currentCopyDestination.keys() ) {
                 PopupDropperItem* pdi3 = new PopupDropperItem();
                 pdi3->setAction( action );
@@ -364,7 +365,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     ongoingDrags = false;
 }
 
-PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
+/*PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
 {
     DEBUG_BLOCK
     PopupDropper* pd = new PopupDropper( parent );
@@ -383,7 +384,7 @@ PopupDropper* CollectionTreeView::createPopupDropper( QWidget *parent )
     pd->setColors( windowColor, textColor, borderColor, borderColor, fillColor );
 
     return pd;
-}
+}*/
 
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
@@ -938,6 +939,7 @@ void CollectionTreeView::slotOrganize()
 {
     if( sender() ) {
         if( PopupDropperAction * action = dynamic_cast<PopupDropperAction *>( sender() ) )
+            Q_UNUSED( action )
             organizeTracks( m_currentItems );
         }
 }
