@@ -22,10 +22,13 @@
 #include "CollectionManager.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
+#include "context/popupdropper/PopupDropperAction.h"
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
+#include "SvgHandler.h"
 #include "StatusBar.h"
 #include "UserPlaylistModel.h"
+
 
 #include <KAction>
 #include <KIcon>
@@ -36,23 +39,19 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QToolBar>
-#include <QTreeView>
 #include <QVBoxLayout>
 
 #include <typeinfo>
 
 PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     : Amarok::Widget( parent )
-    , m_deleteAction( 0 )
-    , m_renameAction( 0 )
-    , m_addGroupAction( 0 )
 {
 
     setContentsMargins(0,0,0,0);
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    m_playlistView = new QTreeView( this );
+    m_playlistView = new UserPlaylistTreeView( this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins(0,0,0,0);
     m_playlistView->setModel( PlaylistBrowserNS::UserModel::instance() );
@@ -64,13 +63,10 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_playlistView->setAcceptDrops(true);
     m_playlistView->setDropIndicatorShown(true);
 
-
-
-    m_playlistView->setContextMenuPolicy( Qt::CustomContextMenu );
     m_playlistView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
-    connect( m_playlistView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
-    connect( m_playlistView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
+    //connect( m_playlistView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
+    //connect( m_playlistView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
 
     connect( PlaylistBrowserNS::UserModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_playlistView, SLOT( edit( const QModelIndex & ) ) );
 
@@ -97,6 +93,8 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_toolBar->addAction( m_addGroupAction );
     connect( m_addGroupAction, SIGNAL( triggered( bool ) ), PlaylistBrowserNS::UserModel::instance(), SLOT( createNewGroup() ) );
 
+    m_playlistView->setNewGroupAction( m_addGroupAction );
+
     KAction* addStreamAction = new KAction( KIcon("list-add"), i18n("Add Stream"), this );
     m_toolBar->addAction( addStreamAction );
     connect( addStreamAction, SIGNAL( triggered( bool ) ), this, SLOT( showAddStreamDialog() ) );
@@ -107,70 +105,6 @@ PlaylistBrowserNS::PlaylistCategory::~PlaylistCategory()
 {
 }
 
-void PlaylistBrowserNS::PlaylistCategory::itemActivated(const QModelIndex & index)
-{
-    //DEBUG_BLOCK
-    if ( !index.isValid() )
-        return;
-
-    SqlPlaylistViewItemPtr item =  PlaylistBrowserNS::UserModel::instance()->data( index, 0xf00d ).value<SqlPlaylistViewItemPtr>();
-
-    if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
-        Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-        //debug() << "playlist name: " << playlist->name();
-        //The::playlistModel()->insertOptioned( Meta::PlaylistPtr( playlist ), Playlist::Append );
-        The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Append );
-    }
-}
-
-void
-PlaylistBrowserNS::PlaylistCategory::showContextMenu( const QPoint & pos )
-{
-
-    QModelIndexList indices = m_playlistView->selectionModel()->selectedIndexes();
-
-    KMenu menu;
-
-    if ( m_deleteAction == 0 )
-        m_deleteAction = new KAction( KIcon("media-track-remove-amarok" ), i18n( "Delete" ), this  );
-
-    if ( m_renameAction == 0 )
-        m_renameAction = new KAction( KIcon("media-track-edit-amarok" ), i18n( "Rename" ), this  );
-
-    if ( indices.count() > 0 )
-        menu.addAction( m_deleteAction );
-
-    if ( indices.count() == 1 )
-        menu.addAction( m_renameAction );
-
-    menu.addSeparator();
-    menu.addAction( m_addGroupAction );
-
-
-    KAction* result = dynamic_cast< KAction* > ( menu.exec( m_playlistView->mapToGlobal( pos ) ) );
-    if ( result == 0 ) return;
-
-
-    if( result == m_deleteAction )
-    {
-        foreach( const QModelIndex &idx, indices )
-        {
-            SqlPlaylistViewItemPtr item = PlaylistBrowserNS::UserModel::instance()->data( idx, 0xf00d ).value<SqlPlaylistViewItemPtr>();
-            debug() << "deleting " << item->name();
-            item->removeFromDb();
-            item->parent()->deleteChild( item );
-        }
-        PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
-    }
-    else if( result == m_renameAction )
-    {
-        m_playlistView->edit( indices.first() );
-    }
-    else if( result == m_addGroupAction )
-    {
-        PlaylistBrowserNS::UserModel::instance()->createNewGroup();
-    }
-}
 
 void
 PlaylistBrowserNS::PlaylistCategory::showAddStreamDialog()
@@ -242,6 +176,11 @@ void PlaylistBrowserNS::StreamEditor::slotTextChanged( const QString & text )
 {
     enableButtonOk( !text.isEmpty() );
 }
+
+
+
+
+
 
 #include "PlaylistCategory.moc"
 

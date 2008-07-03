@@ -261,6 +261,7 @@ set(libplaylistbrowser_SRCS
     playlistbrowser/DynamicCategory.cpp
     playlistbrowser/PlaylistBrowser.cpp
     playlistbrowser/UserPlaylistModel.cpp
+    playlistbrowser/UserPlaylistTreeView.cpp
     playlistbrowser/PlaylistCategory.cpp
     playlistbrowser/SqlPlaylistGroup.cpp
     playlistbrowser/PodcastModel.cpp

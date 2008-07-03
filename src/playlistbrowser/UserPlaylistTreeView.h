@@ -16,73 +16,74 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-
-#ifndef PLAYLISTCATEGORY_H
-#define PLAYLISTCATEGORY_H
+ 
+#ifndef USERPLAYLISTTREEVIEW_H
+#define USERPLAYLISTTREEVIEW_H
 
 #include "SqlPlaylistViewItem.h"
-#include "UserPlaylistTreeView.h"
-#include "widgets/Widget.h"
 
-#include <KDialog>
+#include <qtreeview.h>
 
-#include <QModelIndex>
-#include <QPoint>
-
-
-
-class QToolBar;
-class QTreeView;
+class PopupDropper;
+class PopupDropperAction;
 
 class KAction;
-class KLineEdit;
 
 namespace PlaylistBrowserNS {
 
 /**
-The widget that displays playlists in the playlist browser
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class PlaylistCategory : public Amarok::Widget
+class UserPlaylistTreeView : public QTreeView
 {
 Q_OBJECT
 public:
-    PlaylistCategory( QWidget * parent );
+    UserPlaylistTreeView( QWidget *parent = 0 );
 
-    ~PlaylistCategory();
+    ~UserPlaylistTreeView();
+
+    void setNewGroupAction( KAction * action );
+
+
+
+protected:
+
+    void mousePressEvent( QMouseEvent *event );
+    void mouseReleaseEvent( QMouseEvent *event );
+    void mouseDoubleClickEvent( QMouseEvent *event );
+    void startDrag( Qt::DropActions supportedActions );
+
+    void contextMenuEvent( QContextMenuEvent* event );
+
 
 private slots:
-    
-    void showAddStreamDialog();
-    void streamDialogConfirmed();
-    void newPalette( const QPalette & palette );
 
+    //void itemActivated( const QModelIndex & index );
+
+    void slotLoad();
+    void slotAppend();
+    void slotDelete();
+    void slotRename();
+    
 private:
 
-    QToolBar * m_toolBar;
-    UserPlaylistTreeView * m_playlistView;
+    QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
 
+    PopupDropper* m_pd;
+
+    PopupDropperAction * m_appendAction;
+    PopupDropperAction * m_loadAction;
+    
+    PopupDropperAction * m_deleteAction;
+    PopupDropperAction * m_renameAction;
+    
     KAction * m_addGroupAction;
 
+    QSet<SqlPlaylistViewItemPtr> m_currentItems;
 
-};
+    QPoint m_dragStartPosition;
 
-class StreamEditor : public KDialog
-{
-    Q_OBJECT
-    public:
-        StreamEditor( QWidget* parent );
-        QString streamName();
-        QString streamUrl();
-    private slots:
-        void slotTextChanged( const QString & );
-    private:
-        QWidget   *m_mainWidget;
-        KLineEdit *m_streamName;
-        KLineEdit *m_streamUrl;
 };
 
 }
-
 #endif

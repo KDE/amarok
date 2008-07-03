@@ -3,9 +3,8 @@
 <svg
    xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/"
    xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-   xmlns:ns="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -16,12 +15,117 @@
    height="1052.3622047"
    id="svg9405"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    sodipodi:docname="pud_items.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:docbase="/home/amarok-dev/amarok/src/images">
   <defs
      id="defs9407">
+    <linearGradient
+       id="linearGradient13392">
+      <stop
+         style="stop-color:#9c0f0f;stop-opacity:1;"
+         offset="0"
+         id="stop13394" />
+      <stop
+         style="stop-color:#bf0303;stop-opacity:1;"
+         offset="1"
+         id="stop13396" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13392"
+       id="linearGradient14978"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.563327e-3,0.887982,-0.887982,1.532215e-3,558.3919,954.9619)"
+       x1="175.71587"
+       y1="240.01489"
+       x2="159.3485"
+       y2="239.98607" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient14711">
+      <stop
+         style="stop-color:#ff2744;stop-opacity:1"
+         offset="0"
+         id="stop14713" />
+      <stop
+         style="stop-color:#d60000;stop-opacity:1"
+         offset="1"
+         id="stop14715" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient14711"
+       id="linearGradient14976"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.563327e-3,0.887982,-0.887982,1.532215e-3,558.3919,954.9619)"
+       x1="159.32025"
+       y1="256.35764"
+       x2="175.68762"
+       y2="256.38644" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4198"
+       id="linearGradient14974"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.480783,0,0,1.536549,93.27523,-83.78014)"
+       spreadMethod="reflect"
+       x1="111.33885"
+       y1="44.705486"
+       x2="111.33885"
+       y2="46.731094" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4190"
+       id="radialGradient14972"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.044377,1.047261e-5,-8.549617e-6,1.640387,30.62339,-95.37034)"
+       cx="111.70066"
+       cy="62.211178"
+       fx="111.70066"
+       fy="62.211178"
+       r="8.8008003" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4166"
+       id="linearGradient14970"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.339136,0,0,0.334773,-30.70507,-73.43762)"
+       x1="829.4079"
+       y1="212.95419"
+       x2="829.4079"
+       y2="183.47195" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4182"
+       id="linearGradient14968"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.62008,0,0,1.577605,77.79409,-86.55158)"
+       x1="111.84524"
+       y1="48.367947"
+       x2="111.84524"
+       y2="58.933025" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10909"
+       id="linearGradient14966"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.515861,0,0,1.604454,89.34967,-86.75818)"
+       x1="122.46678"
+       y1="58.964745"
+       x2="122.46678"
+       y2="43.42371" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7682"
+       id="linearGradient14964"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.515861,0,0,1.495984,89.34967,-82.05745)"
+       x1="101.35825"
+       y1="47.461205"
+       x2="101.35667"
+       y2="43.430031" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient10909"
@@ -936,12 +1040,12 @@
   <metadata
      id="metadata9410">
     <rdf:RDF>
-      <ns:Work
+      <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </ns:Work>
+      </cc:Work>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
@@ -1511,6 +1615,82 @@
              style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#0018ce;stroke-width:0.25647929;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         </g>
       </g>
+    </g>
+    <g
+       style="display:inline"
+       id="delete"
+       transform="translate(144.50868,38.018638)">
+      <g
+         inkscape:export-ydpi="90.000092"
+         inkscape:export-xdpi="90.000092"
+         inkscape:export-filename="/home/lando/Projects/Amarok/icons/64/amarok_remove_from_playlist.png"
+         transform="matrix(2.023001,0,0,2.023001,-358.09591,-1706.8405)"
+         id="g14940">
+        <g
+           transform="translate(79.2766,1106.067)"
+           id="g14942">
+          <path
+             id="path14944"
+             d="M 247.4797,-16.724353 C 245.19536,-16.724353 243.35958,-15.912221 243.35958,-13.541697 L 243.35958,5.629258 C 243.48998,6.484086 244.44578,7.32465 245.01941,7.485528 L 272.7463,7.485528 C 273.32442,7.323387 274.49871,6.49376 274.625,5.629258 L 274.625,-13.541697 C 274.625,-15.912221 272.78922,-16.724353 270.50489,-16.724353 L 247.4797,-16.724353 z"
+             style="fill:url(#linearGradient14964);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient14966);stroke-width:0.3707363;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             sodipodi:nodetypes="ccccccccc" />
+          <path
+             style="fill:url(#linearGradient14968);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient14970);stroke-width:0.45800543;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1"
+             d="M 245.7032,-11.106549 L 272.28145,-11.106549 C 273.12286,-11.106549 273.80023,-10.446932 273.80023,-9.627587 L 273.80023,5.2979 C 273.80023,6.117245 273.12286,6.776862 272.28145,6.776862 L 245.7032,6.776862 C 244.86179,6.776862 244.18442,6.117245 244.18442,5.2979 L 244.18442,-9.627587 C 244.18442,-10.446932 244.86179,-11.106549 245.7032,-11.106549 z"
+             id="path14946" />
+          <path
+             id="path14948"
+             d="M 245.66479,-10.727742 L 272.29777,-10.727742 C 273.14089,-10.727742 273.81967,-10.085626 273.81967,-9.288015 L 273.81967,5.241504 C 273.81967,6.039111 273.14089,6.681231 272.29777,6.681231 L 245.66479,6.681231 C 244.82175,6.681231 244.14295,6.039111 244.14295,5.241504 L 244.14295,-9.288015 C 244.14295,-10.085626 244.82175,-10.727742 245.66479,-10.727742 z"
+             style="opacity:0.99578091;fill:url(#radialGradient14972);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.57956129;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1" />
+          <path
+             sodipodi:nodetypes="ccccccccc"
+             style="opacity:0.15189873;fill:url(#linearGradient14974);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.71897209;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             d="M 247.74611,-16.675395 C 245.51463,-16.675395 243.72133,-15.841241 243.72133,-13.406434 L 243.72133,-13.042257 C 243.84869,-12.164248 244.78239,-11.300888 245.34273,-11.135649 L 272.42802,-11.135649 C 272.99275,-11.302188 274.13988,-12.154312 274.26325,-13.042257 L 274.26325,-13.406434 C 274.26325,-15.841241 272.46995,-16.675395 270.23846,-16.675395 L 247.74611,-16.675395 z"
+             id="path14950" />
+        </g>
+        <g
+           transform="matrix(1.584275,0,0,1.524619,-11.2611,787.9135)"
+           id="g14952">
+          <g
+             id="g14954">
+            <path
+               id="path14956"
+               d="M 216.59388,201.58154 L 216.59388,213.16264"
+               style="opacity:0.39183673;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#264a9e;stroke-width:0.14312236;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               sodipodi:nodetypes="cc" />
+            <path
+               style="opacity:0.39183673;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#264a9e;stroke-width:0.14312236;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               d="M 223.52993,201.58154 L 223.52993,213.17716"
+               id="path14958"
+               sodipodi:nodetypes="cc" />
+          </g>
+          <rect
+             style="opacity:0.56734691;fill:#6785ed;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.28953668;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="rect14960"
+             width="18.826923"
+             height="3.4617176"
+             x="211.13826"
+             y="205.69659" />
+        </g>
+        <path
+           inkscape:export-ydpi="90"
+           inkscape:export-xdpi="90"
+           inkscape:export-filename="/home/lando/Projects/Amarok/Context-browse-icons/amarok_add_lyrics.png"
+           sodipodi:nodetypes="ccccccccccccc"
+           style="fill:url(#linearGradient14976);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient14978);stroke-width:0.2995837;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           d="M 345.23467,1107.8779 L 341.41222,1104.0687 L 345.15525,1100.2575 L 342.01805,1097.1312 L 338.27502,1100.9424 L 334.47325,1097.2087 L 331.30303,1100.39 L 335.10479,1104.1237 L 331.32173,1107.8649 L 334.45893,1110.9912 L 338.24198,1107.25 L 342.06445,1111.0592 L 345.23467,1107.8779 z"
+           id="path14962" />
+      </g>
+      <rect
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/theobroma/PROJECTS/Amarok/icons/hicolor/64x64/actions/amarok_remove_from_playlist.png"
+         y="489.3891"
+         x="294.22241"
+         height="64"
+         width="64"
+         id="rect11674"
+         style="fill:#b9cff9;fill-opacity:0;stroke:none;stroke-width:2.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0" />
     </g>
   </g>
 </svg>

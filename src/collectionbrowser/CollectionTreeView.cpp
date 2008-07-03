@@ -652,7 +652,7 @@ PopupDropperActionList CollectionTreeView::createActions( const QModelIndexList 
         actions.append( m_appendAction );
 
         if ( m_loadAction == 0 ) {
-            m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon("folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+            m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
 
             connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotPlayChildTracks() ) );
         }
@@ -660,7 +660,7 @@ PopupDropperActionList CollectionTreeView::createActions( const QModelIndexList 
         actions.append( m_loadAction );
 
         if ( m_editAction == 0 ) {
-            m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon("media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
+            m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
             connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
         }
         actions.append( m_editAction );
