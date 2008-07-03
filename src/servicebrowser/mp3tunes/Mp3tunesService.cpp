@@ -29,9 +29,9 @@
 #include <KPasswordDialog>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QByteArray>
 #include <QDomDocument>
 #include <QRegExp>
-//#include <QNetworkInterface>
 
 AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
 
@@ -39,7 +39,7 @@ void Mp3tunesServiceFactory::init()
 {
     Mp3tunesConfig config;
 
-    ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.email(), config.password() );
+    ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.email(), config.password(), config.harmonyEnabled(), config.hardwareAddress() );
     m_activeServices << service;
     emit newService( service );
 }
@@ -86,11 +86,13 @@ Mp3tunesServiceFactory::possiblyContainsTrack(const KUrl & url) const
 }
 
 
-Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, const QString &password )
+Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, const QString &password, bool harmonyEnabled, const QString &hardwareAddress )
  : ServiceBase( name )
  , m_email( email )
  , m_password( password )
-, m_partnerToken( "4895500420" )
+ , m_harmonyEnabled( harmonyEnabled )
+ , m_hardwareAddress( hardwareAddress )
+ , m_partnerToken( "4895500420" )
  , m_apiOutputFormat( "xml")
  , m_authenticated( false )
  , m_sessionId ( QString() )
@@ -107,14 +109,25 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
 
     authenticate( email, password );
 
-    debug() << "Making new Daemon";
-    m_daemon = new Mp3tunesHarmonyDaemon( "000000000001" );
+    if( harmonyEnabled ) {
+        debug() << "Making new Daemon";
 
-    Mp3tunesHarmonizer * harmonizer = new Mp3tunesHarmonizer( m_daemon );
-    debug() << "connecting harmonizer.";
-    connect( harmonizer, SIGNAL( harmonyExited( QString ) ), this, SLOT( slotHarmonyQuit() ) );
-    debug() << "running harmonizer.";
-    ThreadWeaver::Weaver::instance()->enqueue( harmonizer );
+        //Create the device identifier from the mac address and partnerToken
+        //It has to be converted into a char*
+        QString identifier = hardwareAddress + "-" + m_locker->partnerToken();
+        QByteArray b = identifier.toAscii();
+        const char *c_tok = b.constData();
+        char * ret = ( char * ) malloc ( strlen ( c_tok ) );
+        strcpy ( ret, c_tok );
+
+        debug () << "Using identifier: " << ret;
+        m_daemon = new Mp3tunesHarmonyDaemon( ret );
+
+        Mp3tunesHarmonizer * harmonizer = new Mp3tunesHarmonizer( m_daemon );
+        connect( harmonizer, SIGNAL( harmonyExited( QString ) ), this, SLOT( slotHarmonyQuit() ) );
+        debug() << "running harmonizer.";
+        ThreadWeaver::Weaver::instance()->enqueue( harmonizer );
+    }
 }
 
 

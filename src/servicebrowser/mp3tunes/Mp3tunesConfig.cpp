@@ -19,11 +19,12 @@
  
 #include "Mp3tunesConfig.h"
 
-
 #include <kdebug.h>
 #include <KConfig>
 #include <KConfigGroup>
 #include <KGlobal>
+
+#include <QNetworkInterface>
 
 Mp3tunesConfig::Mp3tunesConfig()
 {
@@ -42,6 +43,22 @@ void Mp3tunesConfig::load()
     KConfigGroup config = KGlobal::config()->group( "Service_Mp3tunes" );
     m_email = config.readEntry( "email", QString() );
     m_password = config.readEntry( "password", QString() );
+    m_hardwareAddress = config.readEntry( "hardwareAddress", QString() );
+    m_harmonyEnabled = config.readEntry( "harmonyEnabled", false );
+
+    if( m_hardwareAddress == QString() )
+    {
+        foreach( QNetworkInterface iface, QNetworkInterface::allInterfaces() )
+        {
+            QString addr = iface.hardwareAddress();
+            if( addr != "00:00:00:00:00:00" ) {
+                kDebug( 14310 ) << "Using iface \"" << iface.name() << " addr: " << iface.hardwareAddress();
+                setHardwareAddress( addr );
+                save();
+                break;
+            }
+        }
+    }
 }
 
 void Mp3tunesConfig::save()
@@ -51,6 +68,8 @@ void Mp3tunesConfig::save()
         KConfigGroup config = KGlobal::config()->group( "Service_Mp3tunes" );
         config.writeEntry( "email", m_email );
         config.writeEntry( "password", m_password );
+        config.writeEntry( "hardwareAddress", m_hardwareAddress );
+        config.writeEntry( "harmonyEnabled", m_harmonyEnabled );
     }
 }
 
@@ -64,7 +83,35 @@ QString Mp3tunesConfig::password()
     return m_password;
 }
 
-void Mp3tunesConfig::setEmail(const QString & email)
+QString Mp3tunesConfig::hardwareAddress()
+{
+    return m_hardwareAddress;
+}
+
+bool Mp3tunesConfig::harmonyEnabled()
+{
+   return m_harmonyEnabled;
+}
+
+void Mp3tunesConfig::setHarmonyEnabled( bool enabled )
+{    
+    kDebug( 14310 ) << "set harmony";
+    if ( enabled != m_harmonyEnabled ) {
+        m_harmonyEnabled = enabled;
+        m_hasChanged = true;
+    }
+}
+
+void Mp3tunesConfig::setHardwareAddress( const QString &address )
+{
+    kDebug( 14310 ) << "set hwaddress";
+    if ( address != m_hardwareAddress ) {
+        m_hardwareAddress = address;
+        m_hasChanged = true;
+    }
+}
+
+void Mp3tunesConfig::setEmail( const QString &email )
 {
     kDebug( 14310 ) << "set email";
     if ( email != m_email ) {
@@ -73,7 +120,7 @@ void Mp3tunesConfig::setEmail(const QString & email)
     }
 }
 
-void Mp3tunesConfig::setPassword(const QString & password)
+void Mp3tunesConfig::setPassword( const QString &password )
 {
     kDebug( 14310 ) << "set Password";
     if( password != m_password ) {

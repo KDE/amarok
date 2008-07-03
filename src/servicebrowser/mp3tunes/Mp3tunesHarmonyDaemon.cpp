@@ -44,7 +44,10 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier )
     mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Example Daemon");
 
 }
+Mp3tunesHarmonyDaemon::~Mp3tunesHarmonyDaemon()
+{
 
+}
 void
 Mp3tunesHarmonyDaemon::init()
 {

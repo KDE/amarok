@@ -39,15 +39,21 @@ public:
 
     QString email();
     QString password();
+    QString hardwareAddress();
+    bool harmonyEnabled();
 
     void setEmail( const QString &email );
     void setPassword( const QString &password );
+    void setHardwareAddress( const QString &address );
+    void setHarmonyEnabled( bool enabled );
 
 private:
 
     bool m_hasChanged;
+    bool m_harmonyEnabled;
     QString m_email;
     QString m_password;
+    QString m_hardwareAddress;
 
 };
 
