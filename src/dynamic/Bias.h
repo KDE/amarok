@@ -67,6 +67,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
+            CollectionDependantBias();
             CollectionDependantBias( Collection* );
 
             /**
@@ -91,6 +92,7 @@ namespace Dynamic
     class GlobalBias : public CollectionDependantBias
     {
         public:
+            GlobalBias( double weigt, QueryMaker* propertyQuery );
             GlobalBias( Collection* coll, double weight, QueryMaker* propertyQuery );
 
             double energy( Meta::TrackList playlist );

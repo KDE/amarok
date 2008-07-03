@@ -32,11 +32,12 @@
 
 namespace Dynamic
 {
-    class BiasedPlaylist : public QObject, public DynamicPlaylist
+    class BiasedPlaylist : public DynamicPlaylist
     {
         Q_OBJECT
 
         public:
+            BiasedPlaylist( QString title, QList<Bias*> );
             BiasedPlaylist( QString title, QList<Bias*>, Collection* m_collection );
             ~BiasedPlaylist();
 
@@ -45,7 +46,6 @@ namespace Dynamic
 
         private slots:
             void solverFinished( ThreadWeaver::Job* );
-            void collectionUpdated();
 
         private:
             void startSolver();

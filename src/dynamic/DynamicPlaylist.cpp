@@ -24,16 +24,16 @@
 
 
 Dynamic::DynamicPlaylist::DynamicPlaylist()
-    : m_collection( CollectionManager::instance()->primaryCollection() ),
-      m_upcoming(10), m_previous(5)
-
+    : m_upcoming(10), m_previous(5)
 {
+    connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collection*)),
+            this, SLOT(recalculate()) );
 }
 
 Dynamic::DynamicPlaylist::DynamicPlaylist( Collection* coll )
-    : m_collection( coll ),
-      m_upcoming(10), m_previous(5)
+     : m_upcoming(10), m_previous(5)
 {
+    connect( coll, SIGNAL(updated()), this, SLOT(recalculate()) );
 }
 
 Dynamic::DynamicPlaylist::~DynamicPlaylist()

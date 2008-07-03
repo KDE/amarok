@@ -23,6 +23,7 @@
 #include "Debug.h"
 #include "BlockingQuery.h"
 #include "Collection.h"
+#include "CollectionManager.h"
 #include "QueryMaker.h"
 
 double
@@ -33,6 +34,13 @@ Dynamic::Bias::reevaluate( double oldEnergy, Meta::TrackList oldPlaylist,
     // completely reevaluate by default
     oldPlaylist[newTrackPos] = newTrack;
     return energy( oldPlaylist );
+}
+
+Dynamic::CollectionDependantBias::CollectionDependantBias()
+    : m_needsUpdating( true )
+{
+    connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collection*)),
+            this, SLOT(updated()) );
 }
 
 Dynamic::CollectionDependantBias::CollectionDependantBias( Collection* coll )
@@ -53,6 +61,11 @@ Dynamic::CollectionDependantBias::collectionUpdated()
     m_needsUpdating = true;
 }
 
+Dynamic::GlobalBias::GlobalBias( double weight, QueryMaker* propertyQuery )
+    : m_propertyQuery( propertyQuery )
+{
+    setWeight( weight );
+}
 
 Dynamic::GlobalBias::GlobalBias( Collection* coll, double weight, QueryMaker* propertyQuery )
     : CollectionDependantBias(coll), m_propertyQuery( propertyQuery )

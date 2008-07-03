@@ -33,8 +33,10 @@ namespace Dynamic {
  * Provides a basis for dynamic playlists which operate like a stream
  * of tracks, rather than a list.
  **/
-class DynamicPlaylist : public QSharedData
+class DynamicPlaylist : public QObject, public QSharedData
 {
+    Q_OBJECT
+
     public:
         DynamicPlaylist();
         DynamicPlaylist( Collection* );
@@ -44,8 +46,6 @@ class DynamicPlaylist : public QSharedData
         virtual Meta::TrackPtr  getTrack() = 0;
         virtual Meta::TrackList getTracks(int);
 
-        virtual void recalculate();
-
         QString title() const;
         int upcomingCount() const;
         int previousCount() const;
@@ -54,6 +54,8 @@ class DynamicPlaylist : public QSharedData
         void setUpcomingCount( int );
         void setPreviousCount( int );
 
+    public slots:
+        virtual void recalculate();
 
     protected:
         Collection* m_collection;

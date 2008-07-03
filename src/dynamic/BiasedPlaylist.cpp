@@ -30,6 +30,11 @@
 const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 100;
 
 
+Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases )
+    : m_biases(biases), m_solver(0)
+{
+    setTitle( title );
+}
 
 Dynamic::BiasedPlaylist::BiasedPlaylist( 
         QString title,
@@ -38,8 +43,6 @@ Dynamic::BiasedPlaylist::BiasedPlaylist(
     : m_biases(biases), m_collection(collection), m_solver(0), m_randomSource(collection)
 {
     setTitle( title );
-
-    connect( collection, SIGNAL(updated()), this, SLOT(collectionUpdated()) );
 }
 
 
@@ -114,14 +117,4 @@ Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
     m_solver = 0;
     m_solverLoop.exit();
 }
-
-void 
-Dynamic::BiasedPlaylist::collectionUpdated()
-{
-    DEBUG_BLOCK
-
-    // TODO: I'm not sure how safe this is yet.
-    //recalculate();
-}
-
 

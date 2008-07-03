@@ -160,8 +160,7 @@ PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
 
     if( type == "global" )
     {
-        Collection* coll = CollectionManager::instance()->primaryCollection();
-        QueryMaker* qm = coll->queryMaker();
+        QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
         double weight = 0.0;
 
         QDomElement queryElement = e.firstChildElement( "query" );
@@ -182,7 +181,7 @@ PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
             weight = weightElement.text().toDouble();
         }
 
-        return new Dynamic::GlobalBias( coll, weight, qm );
+        return new Dynamic::GlobalBias( weight, qm );
     }
     // TODO: other types of biases
     else
