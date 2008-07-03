@@ -43,17 +43,18 @@ void Mp3tunesConfig::load()
     KConfigGroup config = KGlobal::config()->group( "Service_Mp3tunes" );
     m_email = config.readEntry( "email", QString() );
     m_password = config.readEntry( "password", QString() );
-    m_hardwareAddress = config.readEntry( "hardwareAddress", QString() );
+    m_identifier = config.readEntry( "identifier", QString() );
+    m_partnerToken = config.readEntry( "partnerToken", QString( "4895500420" ) );
     m_harmonyEnabled = config.readEntry( "harmonyEnabled", false );
 
-    if( m_hardwareAddress == QString() )
+    if( m_identifier == QString() )
     {
         foreach( QNetworkInterface iface, QNetworkInterface::allInterfaces() )
         {
             QString addr = iface.hardwareAddress();
             if( addr != "00:00:00:00:00:00" ) {
-                kDebug( 14310 ) << "Using iface \"" << iface.name() << " addr: " << iface.hardwareAddress();
-                setHardwareAddress( addr );
+                kDebug( 14310 ) << "Using iface \"" << iface.name() << " addr: " << addr;
+                setIdentifier( addr + "-" + m_partnerToken );
                 save();
                 break;
             }
@@ -68,8 +69,9 @@ void Mp3tunesConfig::save()
         KConfigGroup config = KGlobal::config()->group( "Service_Mp3tunes" );
         config.writeEntry( "email", m_email );
         config.writeEntry( "password", m_password );
-        config.writeEntry( "hardwareAddress", m_hardwareAddress );
+        config.writeEntry( "identifier", m_identifier );
         config.writeEntry( "harmonyEnabled", m_harmonyEnabled );
+        config.writeEntry( "partnerToken", m_partnerToken );
     }
 }
 
@@ -83,9 +85,14 @@ QString Mp3tunesConfig::password()
     return m_password;
 }
 
-QString Mp3tunesConfig::hardwareAddress()
+QString Mp3tunesConfig::partnerToken()
 {
-    return m_hardwareAddress;
+    return m_partnerToken;
+}
+
+QString Mp3tunesConfig::identifier()
+{
+    return m_identifier;
 }
 
 bool Mp3tunesConfig::harmonyEnabled()
@@ -102,11 +109,11 @@ void Mp3tunesConfig::setHarmonyEnabled( bool enabled )
     }
 }
 
-void Mp3tunesConfig::setHardwareAddress( const QString &address )
+void Mp3tunesConfig::setIdentifier( const QString &ident )
 {
     kDebug( 14310 ) << "set hwaddress";
-    if ( address != m_hardwareAddress ) {
-        m_hardwareAddress = address;
+    if ( ident != m_identifier ) {
+        m_identifier = ident;
         m_hasChanged = true;
     }
 }
@@ -125,6 +132,15 @@ void Mp3tunesConfig::setPassword( const QString &password )
     kDebug( 14310 ) << "set Password";
     if( password != m_password ) {
         m_password = password;
+        m_hasChanged = true;
+    }
+}
+
+void Mp3tunesConfig::setPartnerToken( const QString &token )
+{
+    kDebug( 14310 ) << "set token";
+    if( token != m_partnerToken ) {
+        m_partnerToken = token;
         m_hasChanged = true;
     }
 }

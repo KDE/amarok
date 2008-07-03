@@ -38,10 +38,12 @@ Mp3tunesSettingsModule::Mp3tunesSettingsModule( QWidget *parent, const QVariantL
     QWidget *w = new QWidget;
     m_configDialog = new Ui::Mp3tunesConfigWidget;
     m_configDialog->setupUi( w );
+    m_configDialog->identifier->setReadOnly( true );
     l->addWidget( w );
 
     connect ( m_configDialog->emailEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->passwordEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
+    connect ( m_configDialog->enableHarmony, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
 
     load();
 
@@ -57,6 +59,8 @@ void Mp3tunesSettingsModule::save()
 {
     m_config.setEmail( m_configDialog->emailEdit->text() );
     m_config.setPassword( m_configDialog->passwordEdit->text() );
+    m_config.setIdentifier( m_configDialog->identifier->text() );
+    m_config.setHarmonyEnabled( m_configDialog->enableHarmony->isChecked() );
 
     m_config.save();
     KCModule::save();
@@ -66,6 +70,8 @@ void Mp3tunesSettingsModule::load()
 {
     m_configDialog->emailEdit->setText( m_config.email() );
     m_configDialog->passwordEdit->setText( m_config.password() );
+    m_configDialog->enableHarmony->setChecked( m_config.harmonyEnabled() );
+    m_configDialog->identifier->setText( m_config.identifier() );
     
     KCModule::load();
 }
@@ -74,6 +80,7 @@ void Mp3tunesSettingsModule::defaults()
 {
     m_config.setEmail( QString() );
     m_config.setPassword( QString() );
+    m_config.setHarmonyEnabled( false );
     load();
 }
 

@@ -39,7 +39,7 @@ void Mp3tunesServiceFactory::init()
 {
     Mp3tunesConfig config;
 
-    ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.email(), config.password(), config.harmonyEnabled(), config.hardwareAddress() );
+    ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled(), config.identifier() );
     m_activeServices << service;
     emit newService( service );
 }
@@ -86,13 +86,13 @@ Mp3tunesServiceFactory::possiblyContainsTrack(const KUrl & url) const
 }
 
 
-Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, const QString &password, bool harmonyEnabled, const QString &hardwareAddress )
+Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, const QString &email, const QString &password, bool harmonyEnabled, const QString &identifier )
  : ServiceBase( name )
+ , m_partnerToken( token )
  , m_email( email )
  , m_password( password )
  , m_harmonyEnabled( harmonyEnabled )
- , m_hardwareAddress( hardwareAddress )
- , m_partnerToken( "4895500420" )
+ , m_identifier( identifier )
  , m_apiOutputFormat( "xml")
  , m_authenticated( false )
  , m_sessionId ( QString() )
@@ -112,10 +112,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &email, con
     if( harmonyEnabled ) {
         debug() << "Making new Daemon";
 
-        //Create the device identifier from the mac address and partnerToken
-        //It has to be converted into a char*
-        QString identifier = hardwareAddress + "-" + m_locker->partnerToken();
-        QByteArray b = identifier.toAscii();
+        QByteArray b = m_identifier.toAscii();
         const char *c_tok = b.constData();
         char * ret = ( char * ) malloc ( strlen ( c_tok ) );
         strcpy ( ret, c_tok );

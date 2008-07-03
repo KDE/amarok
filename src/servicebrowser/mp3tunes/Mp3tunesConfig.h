@@ -39,13 +39,15 @@ public:
 
     QString email();
     QString password();
-    QString hardwareAddress();
+    QString identifier();
+    QString partnerToken();
     bool harmonyEnabled();
 
     void setEmail( const QString &email );
     void setPassword( const QString &password );
-    void setHardwareAddress( const QString &address );
+    void setIdentifier( const QString &ident );
     void setHarmonyEnabled( bool enabled );
+    void setPartnerToken( const QString &token );
 
 private:
 
@@ -53,7 +55,8 @@ private:
     bool m_harmonyEnabled;
     QString m_email;
     QString m_password;
-    QString m_hardwareAddress;
+    QString m_identifier;
+    QString m_partnerToken;
 
 };
 

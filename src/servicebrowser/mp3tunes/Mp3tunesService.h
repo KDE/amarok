@@ -55,7 +55,7 @@ class Mp3tunesService : public ServiceBase
 Q_OBJECT
 
 public:
-    explicit Mp3tunesService( const QString &name, const QString &email = QString(), const QString &password = QString(), bool harmonyEnabled = false, const QString &hardwareAddress = QString() );
+    explicit Mp3tunesService( const QString &name, const QString &partnerToken, const QString &email = QString(), const QString &password = QString(), bool harmonyEnabled = false, const QString &identifier = QString() );
 
     ~Mp3tunesService();
 
@@ -72,7 +72,7 @@ private:
     QString m_email;
     QString m_password;
     bool m_harmonyEnabled;
-    QString m_hardwareAddress;
+    QString m_identifier;
     KIO::StoredTransferJob *m_xmlDownloadJob;
     QString m_partnerToken;
     QString m_apiOutputFormat;
