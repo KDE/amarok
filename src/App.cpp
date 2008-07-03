@@ -239,7 +239,6 @@ App::~App()
     QDBusConnectionInterface* dbusService;
     if (QDBusConnection::sessionBus().isConnected() && (dbusService = QDBusConnection::sessionBus().interface()))
     {
-//        dbusService->unregisterService("org.kde.amarok");
         dbusService->unregisterService("org.freedesktop.MediaPlayer");
     }
 #endif

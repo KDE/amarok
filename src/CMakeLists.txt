@@ -98,8 +98,6 @@ set(libservicebrowser_SRCS
     servicebrowser/ShowInServiceAction.cpp
 )
 
-qt4_add_dbus_adaptor( libservicebrowser_SRCS servicebrowser/org.kde.amarok.ServicePluginManager.xml servicebrowser/ServicePluginManager.h ServicePluginManager)
-
 #####################################################################
 # SCRIPTABLESERVICE
 #####################################################################
@@ -111,9 +109,6 @@ set(libscriptableservice_SRCS
     servicebrowser/scriptableservice/ScriptableServiceMeta.cpp
     servicebrowser/scriptableservice/ScriptableServiceQueryMaker.cpp
 )
-
-
-qt4_add_dbus_adaptor( libscriptableservice_SRCS servicebrowser/scriptableservice/org.kde.amarok.ScriptableServiceManager.xml servicebrowser/scriptableservice/ScriptableServiceManager.h ScriptableServiceManager)
 
 #####################################################################
 # CONFIGDIALOG
@@ -344,6 +339,8 @@ set(dbus_SRCS
 set (scriptengine_SRCS
      scriptengine/ScriptImporter.cpp
      scriptengine/AmarokScript.cpp
+     scriptengine/AmarokScriptableServiceManagerScript.cpp
+     scriptengine/AmarokServicePluginManagerScript.cpp
      scriptengine/AmarokEngineScript.cpp
      scriptengine/AmarokOSDScript.cpp
      scriptengine/AmarokPlaylistScript.cpp

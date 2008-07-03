@@ -37,11 +37,12 @@
 #include "scriptengine/AmarokOSDScript.h"
 #include "scriptengine/AmarokPlaylistScript.h"
 #include "scriptengine/AmarokScript.h"
+#include "scriptengine/AmarokScriptableServiceManagerScript.h"
+#include "scriptengine/AmarokServicePluginManagerScript.h"
 #include "scriptengine/AmarokStatusbarScript.h"
 #include "scriptengine/AmarokTrackInfoScript.h"
 #include "scriptengine/AmarokWindowScript.h"
 #include "scriptengine/ScriptImporter.h"
-#include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <KAboutApplicationDialog>
 #include <KAboutData>
@@ -597,8 +598,9 @@ ScriptManager::slotStopScript()
     m_scripts[name].engine->abortEvaluation();
     scriptFinished( name );
 
-    if( m_scripts.value( name ).type == "service" )
-        The::scriptableServiceManager()->removeRunningScript( name );
+//TODO: immigrate scriptable service
+//    if( m_scripts.value( name ).type == "service" )
+//        The::scriptableServiceManager()->removeRunningScript( name );
 }
 
 
@@ -887,6 +889,12 @@ ScriptManager::startScriptEngine( QString name )
     m_global = scriptEngine->newQObject( m_scripts[name].globalPtr );
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
 
+    scriptObject = scriptEngine->newQObject( new Amarok::AmarokScriptableServiceManagerScript( scriptEngine ) );
+    m_global.setProperty( "ScriptableServiceManager", scriptObject );
+
+    scriptObject = scriptEngine->newQObject( new Amarok::AmarokServicePluginManagerScript( scriptEngine ) );
+    m_global.setProperty( "ServicePluginManager", scriptObject );
+
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokEngineScript( scriptEngine ) );
     m_global.setProperty( "Engine", scriptObject );
 
@@ -907,7 +915,6 @@ ScriptManager::startScriptEngine( QString name )
 
     scriptObject = scriptEngine->newQObject( new Amarok::AmarokStatusbarScript( scriptEngine ) );
     m_global.property( "Window" ).setProperty( "Menu", scriptObject );
-    debug() << "7";
 }
 
 

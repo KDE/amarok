@@ -15,34 +15,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_SCRIPT_H
-#define AMAROK_SCRIPT_H
+#include "AmarokServicePluginManagerScript.h"
 
-#include <QObject>
+#include "servicebrowser/ServicePluginManager.h"
+
+#include "App.h"
+
 #include <QtScript>
 
 namespace Amarok
 {
-
-    class AmarokScript : public QObject
+    AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngine* ScriptEngine )
+    : QObject( kapp )
     {
-        Q_OBJECT
+    }
 
-        public:
-            AmarokScript( QScriptEngine* ScriptEngine );
-            ~AmarokScript();
-            void slotConfigured();
+    AmarokServicePluginManagerScript::~AmarokServicePluginManagerScript()
+    {
+    }
 
-        public slots:
-            virtual QString  Version();
-            virtual void     Quit();
+    QStringList AmarokServicePluginManagerScript::loadedServices()
+    {
+        return ServicePluginManager::instance()->loadedServices();
+    }
 
-        signals:
-            void configured();
+    QStringList AmarokServicePluginManagerScript::loadedServiceNames()
+    {
+        return ServicePluginManager::instance()->loadedServiceNames();
+    }
 
-        private slots:
+    QString AmarokServicePluginManagerScript::serviceDescription( const QString &service )
+    {
+        return ServicePluginManager::instance()->serviceDescription( service );
+    }
 
-    };
+    QString AmarokServicePluginManagerScript::serviceMessages( const QString &service )
+    {
+        return ServicePluginManager::instance()->serviceMessages( service );
+    }
+
+    QString AmarokServicePluginManagerScript::sendMessage( const QString &service, const QString &message )
+    {
+        return ServicePluginManager::instance()->sendMessage( service, message );
+    }
+
 }
 
-#endif
+#include "AmarokServicePluginManagerScript.moc"

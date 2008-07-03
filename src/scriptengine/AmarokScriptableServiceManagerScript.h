@@ -15,33 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_SCRIPT_H
-#define AMAROK_SCRIPT_H
+#ifndef AMAROK_SCRIPTABLE_SERVICE_MANAGER_SCRIPT_H
+#define AMAROK_SCRIPTABLE_SERVICE_MANAGER_SCRIPT_H
 
 #include <QObject>
 #include <QtScript>
 
 namespace Amarok
 {
-
-    class AmarokScript : public QObject
+    class AmarokScriptableServiceManagerScript : public QObject
     {
         Q_OBJECT
 
         public:
-            AmarokScript( QScriptEngine* ScriptEngine );
-            ~AmarokScript();
-            void slotConfigured();
+            AmarokScriptableServiceManagerScript( QScriptEngine* ScriptEngine );
+            ~AmarokScriptableServiceManagerScript();
+            void slotInit();
+            void slotPopulate( int level, int parent_id, QString path );
 
         public slots:
-            virtual QString  Version();
-            virtual void     Quit();
+            bool initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar );
+            int insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl);
+            void donePopulating( const QString &serviceName, int parentId );
 
         signals:
-            void configured();
-
-        private slots:
-
+            void init();
+            void populate( int level, int parent_id, QString path );
     };
 }
 

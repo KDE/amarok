@@ -21,7 +21,6 @@
 
 #include "Amarok.h"
 #include "PluginManager.h"
-#include <servicepluginmanageradaptor.h>
 
 #include <KService>
 
@@ -42,10 +41,6 @@ ServicePluginManager::ServicePluginManager( )
     , m_serviceBrowser( 0 )
 {
     collect();
-
-    new ServicePluginManagerAdaptor( this );
-    QDBusConnection dbus = QDBusConnection::sessionBus();
-    dbus.registerObject("/ServicePluginManager", this);
 }
 
 

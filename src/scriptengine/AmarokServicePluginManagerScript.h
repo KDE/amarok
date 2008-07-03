@@ -15,32 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_SCRIPT_H
-#define AMAROK_SCRIPT_H
+#ifndef AMAROK_SERVICE_PLUGIN_MANAGER_SCRIPT_H
+#define AMAROK_SERVICE_PLUGIN_MANAGER_SCRIPT_H
 
 #include <QObject>
 #include <QtScript>
 
 namespace Amarok
 {
-
-    class AmarokScript : public QObject
+    class AmarokServicePluginManagerScript : public QObject
     {
         Q_OBJECT
 
         public:
-            AmarokScript( QScriptEngine* ScriptEngine );
-            ~AmarokScript();
-            void slotConfigured();
+            AmarokServicePluginManagerScript( QScriptEngine* ScriptEngine );
+            ~AmarokServicePluginManagerScript();
 
         public slots:
-            virtual QString  Version();
-            virtual void     Quit();
+            QStringList loadedServices();
+            QStringList loadedServiceNames();
+            QString serviceDescription( const QString &service );
+            QString serviceMessages( const QString &service );
+            QString sendMessage( const QString &service, const QString &message );
 
-        signals:
-            void configured();
-
-        private slots:
+        private:
 
     };
 }

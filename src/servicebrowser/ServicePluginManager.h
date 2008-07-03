@@ -34,7 +34,7 @@ class ServicePluginManager : public QObject
 {
 
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.amarok.ServicePluginManager")
+
 public:
     static ServicePluginManager * instance();
 
@@ -63,13 +63,13 @@ public:
 
     QMap< QString, ServiceFactory* > factories();
 
-public Q_SLOTS:
+public slots:
 
-    Q_SCRIPTABLE QStringList loadedServices();
-    Q_SCRIPTABLE QStringList loadedServiceNames();
-    Q_SCRIPTABLE QString serviceDescription( const QString &service );
-    Q_SCRIPTABLE QString serviceMessages( const QString &service );
-    Q_SCRIPTABLE QString sendMessage( const QString &service, const QString &message );
+    QStringList loadedServices();
+    QStringList loadedServiceNames();
+    QString serviceDescription( const QString &service );
+    QString serviceMessages( const QString &service );
+    QString sendMessage( const QString &service, const QString &message );
 
 private:
     ServicePluginManager();

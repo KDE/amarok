@@ -24,7 +24,6 @@
 #include "Debug.h"
 #include "ScriptableServiceCollection.h"
 #include "ScriptableServiceMeta.h"
-#include <scriptableservicemanageradaptor.h>
 #include "ServiceMetaBase.h"
 #include "ServiceBrowser.h"
 
@@ -36,11 +35,6 @@ ScriptableServiceManager * ScriptableServiceManager::s_instance = 0;
 
 ScriptableServiceManager::ScriptableServiceManager( )
 {
-    DEBUG_BLOCK
-
-    new ScriptableServiceManagerAdaptor( this );
-    QDBusConnection dbus = QDBusConnection::sessionBus();
-    dbus.registerObject("/ScriptableServiceManager", this);
 }
 
 

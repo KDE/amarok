@@ -36,7 +36,6 @@ namespace The {
 class ScriptableServiceManager : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.amarok.ScriptableServiceManager")
 
     friend ScriptableServiceManager* The::scriptableServiceManager();
 
@@ -44,14 +43,14 @@ class ScriptableServiceManager : public QObject
         void addRunningScript( const QString &name, AmarokProcIO* script );
         void removeRunningScript( const QString &name );
 
-    Q_SIGNALS:
+    signals:
         /**
          * Signal emitted whenever a new service is ready to be added
          * @param service The service to add
          */
         void addService( ServiceBase * service );
 
-    public Q_SLOTS:
+    public slots:
 
         /**
          * Initialzises a new service. This method is exported to DBUS
@@ -60,7 +59,7 @@ class ScriptableServiceManager : public QObject
          * @param rootHtml The html to display when the service is selected
          * @return returns true if successful and false otherwise
          */
-        Q_SCRIPTABLE bool initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar );
+        bool initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar );
 
         /**
          * Add a new item to a service
@@ -73,7 +72,7 @@ class ScriptableServiceManager : public QObject
          * @param playableUrl The url to play if added to the playlist ( Empty string if not leaf node )
          * @return the id of the created item ( or -1 on failure )
          */
-        Q_SCRIPTABLE int insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl);
+        int insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl);
 
         
         /**
@@ -81,7 +80,7 @@ class ScriptableServiceManager : public QObject
          * @param serviceName The service we have been adding items to
          * @param parentId The id of the parent node
          */
-        Q_SCRIPTABLE void donePopulating( const QString &serviceName, int parentId );
+        void donePopulating( const QString &serviceName, int parentId );
 
     private:
 
