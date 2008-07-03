@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef PLAYLISTCATEGORY_H
 #define PLAYLISTCATEGORY_H
 
@@ -34,7 +34,7 @@ class QTreeView;
 
 class KAction;
 class KLineEdit;
-    
+
 namespace PlaylistBrowserNS {
 
 /**
@@ -65,7 +65,7 @@ private:
     KAction * m_deleteAction;
     KAction * m_renameAction;
     KAction * m_addGroupAction;
-    
+
 
 };
 
@@ -76,6 +76,8 @@ class StreamEditor : public KDialog
         StreamEditor( QWidget* parent );
         QString streamName();
         QString streamUrl();
+    private slots:
+        void slotTextChanged( const QString & );
     private:
         QWidget   *m_mainWidget;
         KLineEdit *m_streamName;

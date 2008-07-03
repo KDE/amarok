@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "PlaylistCategory.h"
 
 #include "CollectionManager.h"
@@ -214,10 +214,12 @@ PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
     connect( this, SIGNAL( closeClicked() ), this, SLOT( delayedDestruct() ) );
     connect( this, SIGNAL( hidden() ), this, SLOT( delayedDestruct() ) );
     connect( this, SIGNAL( cancelClicked() ), this, SLOT( delayedDestruct() ) );
+    connect( m_streamUrl, SIGNAL( textChanged(const QString &) ), this, SLOT( slotTextChanged( const QString& )));
+    enableButtonOk( false );
     show();
 }
 
-QString 
+QString
 PlaylistBrowserNS::StreamEditor::streamName()
 {
     return m_streamName->text().trimmed();
@@ -236,6 +238,10 @@ void PlaylistBrowserNS::PlaylistCategory::newPalette(const QPalette & palette)
     The::paletteHandler()->updateTreeView( m_playlistView );
 }
 
+void PlaylistBrowserNS::StreamEditor::slotTextChanged( const QString & text )
+{
+    enableButtonOk( !text.isEmpty() );
+}
 
 #include "PlaylistCategory.moc"
 
