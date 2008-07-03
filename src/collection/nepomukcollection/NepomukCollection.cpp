@@ -110,9 +110,9 @@ QString
 NepomukCollection::prettyName() const
 {
     if ( m_isFast )
-        return i18n("Nepomuk Collection (fast)");
+        return i18n("Nepomuk Collection");
     else
-        return i18n("Nepomuk Collection (slow, redland?)");
+        return i18n("Nepomuk Collection (slow, Redland)");
 }
 
 bool
