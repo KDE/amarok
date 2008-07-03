@@ -30,14 +30,15 @@
 #include <QMimeData>
 #include <QtGui>
 
-FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent ) : QFrame( parent )
+FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
+    : QFrame( parent )
 {
     setAcceptDrops( true );
     layout = new QHBoxLayout;
     layout->setSpacing( 1 );
     setLayout( layout );
     backText = new QLabel;
-    backText->setText( "<i>Drag tokens here to define a filename scheme.</i>" );
+    backText->setText( i18n( "<i>Drag tokens here to define a filename scheme.</i>" ) );
     layout->addWidget( backText );
     tokenCount = 0;     //how many tokens have I built, need this to assign unique IDs
 }
@@ -45,7 +46,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent ) : QFrame( parent )
 void
 FilenameLayoutWidget::slotAddToken()
 {
-    this->addToken( "TOKEN" );
+    this->addToken( i18n( "TOKEN" ) );
 }
 
 void

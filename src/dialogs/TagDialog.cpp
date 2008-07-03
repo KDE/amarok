@@ -1455,72 +1455,72 @@ TagDialog::applyToAllTracks()
 
         int changed = 0;
         QString artist = data.contains( Meta::Field::ARTIST ) ? data.value( Meta::Field::ARTIST ).toString() : QString();
-        if( !ui->kComboBox_artist->currentText().isEmpty() && ui->kComboBox_artist->currentText() != artist ||
-             ui->kComboBox_artist->currentText().isEmpty() && !artist.isEmpty() )
+        if( (!ui->kComboBox_artist->currentText().isEmpty() && ui->kComboBox_artist->currentText() != artist )
+            || ( ui->kComboBox_artist->currentText().isEmpty() && !artist.isEmpty() ) )
         {
             data.insert( Meta::Field::ARTIST, ui->kComboBox_artist->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         QString album = data.contains( Meta::Field::ALBUM ) ? data.value( Meta::Field::ALBUM ).toString() : QString();
-        if( !ui->kComboBox_album->currentText().isEmpty() && ui->kComboBox_album->currentText() != album ||
-             ui->kComboBox_album->currentText().isEmpty() && !album.isEmpty() )
+        if( ( !ui->kComboBox_album->currentText().isEmpty() && ui->kComboBox_album->currentText() != album )
+            || ( ui->kComboBox_album->currentText().isEmpty() && !album.isEmpty() ) )
         {
             data.insert( Meta::Field::ALBUM, ui->kComboBox_album->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         QString genre = data.contains( Meta::Field::GENRE ) ? data.value( Meta::Field::GENRE ).toString() : QString();
-        if( !ui->kComboBox_genre->currentText().isEmpty() && ui->kComboBox_genre->currentText() != genre ||
-             ui->kComboBox_genre->currentText().isEmpty() && !genre.isEmpty() )
+        if( ( !ui->kComboBox_genre->currentText().isEmpty() && ui->kComboBox_genre->currentText() != genre )
+            || ( ui->kComboBox_genre->currentText().isEmpty() && !genre.isEmpty() ) )
         {
             data.insert( Meta::Field::GENRE, ui->kComboBox_genre->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         QString comment = data.contains( Meta::Field::COMMENT ) ? data.value( Meta::Field::COMMENT ).toString() : QString();
-        if( !ui->kTextEdit_comment->toPlainText().isEmpty() && ui->kTextEdit_comment->toPlainText() != comment ||
-             ui->kTextEdit_comment->toPlainText().isEmpty() && !comment.isEmpty() )
+        if( ( !ui->kTextEdit_comment->toPlainText().isEmpty() && ui->kTextEdit_comment->toPlainText() != comment )
+            || ( ui->kTextEdit_comment->toPlainText().isEmpty() && !comment.isEmpty() ) )
         {
             data.insert( Meta::Field::COMMENT, ui->kTextEdit_comment->toPlainText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         QString composer = data.contains( Meta::Field::COMPOSER ) ? data.value( Meta::Field::COMPOSER ).toString() : QString();
-        if( !ui->kComboBox_composer->currentText().isEmpty() && ui->kComboBox_composer->currentText() != composer ||
-             ui->kComboBox_composer->currentText().isEmpty() && !composer.isEmpty() )
+        if( ( !ui->kComboBox_composer->currentText().isEmpty() && ui->kComboBox_composer->currentText() != composer )
+            || ( ui->kComboBox_composer->currentText().isEmpty() && !composer.isEmpty() ) )
         {
             data.insert( Meta::Field::COMPOSER, ui->kComboBox_composer->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         int year = data.contains( Meta::Field::YEAR ) ? data.value( Meta::Field::YEAR ).toInt() : 0;
-        if( ui->qSpinBox_year->value() && ui->qSpinBox_year->value() != year ||
-                ! ui->qSpinBox_year->value() && year )
+        if( ( ui->qSpinBox_year->value() && ui->qSpinBox_year->value() != year )
+            || ( ! ui->qSpinBox_year->value() && year ) )
         {
             data.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         int discnumber = data.contains( Meta::Field::DISCNUMBER ) ? data.value( Meta::Field::DISCNUMBER ).toInt() : 0;
-        if( ui->qSpinBox_discNumber->value() && ui->qSpinBox_discNumber->value() != discnumber ||
-                ! ui->qSpinBox_discNumber->value() && discnumber )
+        if( ( ui->qSpinBox_discNumber->value() && ui->qSpinBox_discNumber->value() != discnumber )
+            || ( ! ui->qSpinBox_discNumber->value() && discnumber ) )
         {
             data.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
         int score = data.contains( Meta::Field::SCORE ) ? data.value( Meta::Field::SCORE ).toInt() : 0;
-        if( ui->qSpinBox_score->value() && ui->qSpinBox_score->value() != score ||
-                ! ui->qSpinBox_score->value() && score )
+        if( ( ui->qSpinBox_score->value() && ui->qSpinBox_score->value() != score )
+            || ( ! ui->qSpinBox_score->value() && score ) )
         {
             data.insert( Meta::Field::SCORE, ui->qSpinBox_score->value() );
             changed |= TagDialog::SCORECHANGED;
         }
 
         int rating = data.contains( Meta::Field::RATING ) ? data.value( Meta::Field::RATING ).toInt() : 0;
-        if( ui->kComboBox_rating->currentIndex() && ui->kComboBox_rating->currentIndex() != rating - 1 ||
-                !ui->kComboBox_rating->currentIndex() && rating )
+        if( ( ui->kComboBox_rating->currentIndex() && ui->kComboBox_rating->currentIndex() != rating - 1 )
+            || ( !ui->kComboBox_rating->currentIndex() && rating ) )
         {
             data.insert( Meta::Field::RATING, ui->kComboBox_rating->currentIndex() ? ui->kComboBox_rating->currentIndex() + 1 : 0 );
             changed |= TagDialog::RATINGCHANGED;

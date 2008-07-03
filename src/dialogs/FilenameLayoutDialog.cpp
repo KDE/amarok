@@ -1,12 +1,12 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
  *                                                                            *
- * This program is free software; you can redistribute it and/or              *
+ * This program is free software; you can redisi18nibute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
  * published by the Free Software Foundation; either version 2 of             *
  * the License, or (at your option) any later version.                        *
  *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
+ * This program is disi18nibuted in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * GNU General Public License for more details.                               *
@@ -19,31 +19,33 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent ) : KDialog( parent )
+FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
+    : KDialog( parent )
 {
     setupUi( this );
 
-    setCaption( "Filename Layout Chooser" );
+    setCaption( i18n( "Filename Layout Chooser" ) );
     setButtons( 0 );
 
-    tokenPool->addItem( tr( "Track #" ) );
-    tokenPool->addItem( tr( "Track Name" ) );
-    tokenPool->addItem( tr( "Disc #" ) );
-    tokenPool->addItem( tr( "Track Count" ) );
-    tokenPool->addItem( tr( "Disc Count" ) );
-    tokenPool->addItem( tr( "Artist" ) );
-    tokenPool->addItem( tr( "Composer" ) );
-    tokenPool->addItem( tr( "Year" ) );
-    tokenPool->addItem( tr( "Album Name" ) );
-    tokenPool->addItem( tr( "Comment" ) );
+    tokenPool->addItem( i18n( "Track #" ) );
+    tokenPool->addItem( i18n( "Track Name" ) );
+    tokenPool->addItem( i18n( "Disc #" ) );
+    tokenPool->addItem( i18n( "Track Count" ) );
+    tokenPool->addItem( i18n( "Disc Count" ) );
+    tokenPool->addItem( i18n( "Artist" ) );
+    tokenPool->addItem( i18n( "Composer" ) );
+    tokenPool->addItem( i18n( "Year" ) );
+    tokenPool->addItem( i18n( "Album Name" ) );
+    tokenPool->addItem( i18n( "Comment" ) );
 
-    QGridLayout *dialogLayout = new QGridLayout;
-    this->setLayout( dialogLayout );
+    //QGridLayout *dialogLayout = new QGridLayout;
+    setLayout( verticalLayout );    //see verticalLayout in FilenameLayoutDialog.ui
 
-    QPushButton *debugButton = new QPushButton( "TEST" );
+    QPushButton *debugButton = new QPushButton( "TEST" );       //no need for i18n()
     connect( debugButton, SIGNAL( clicked() ),
-            frame, SLOT( slotAddToken() ) );
-
-    dialogLayout->addWidget( debugButton );
+            filenameLayout, SLOT( slotAddToken() ) );
+    
+    verticalLayout->addWidget( debugButton );
+    optionsFrame->setTitle( i18n( "Options" ) );
     debugButton->show();
 }

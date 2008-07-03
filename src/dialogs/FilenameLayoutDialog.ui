@@ -15,37 +15,75 @@
   <property name="windowTitle" >
    <string>Dialog</string>
   </property>
-  <widget class="TokenListWidget" name="tokenPool" >
-   <property name="geometry" >
-    <rect>
-     <x>400</x>
-     <y>110</y>
-     <width>256</width>
-     <height>192</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="FilenameLayoutWidget" name="frame" >
+  <widget class="QWidget" name="" >
    <property name="geometry" >
     <rect>
      <x>50</x>
      <y>20</y>
-     <width>581</width>
-     <height>31</height>
+     <width>631</width>
+     <height>411</height>
     </rect>
    </property>
-   <property name="frameShape" >
-    <enum>QFrame::StyledPanel</enum>
-   </property>
-   <property name="frameShadow" >
-    <enum>QFrame::Raised</enum>
-   </property>
+   <layout class="QVBoxLayout" name="verticalLayout" >
+    <item>
+     <widget class="FilenameLayoutWidget" name="filenameLayout" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize" >
+       <size>
+        <width>600</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize" >
+       <size>
+        <width>300</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="frameShape" >
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow" >
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout" >
+      <item>
+       <widget class="KButtonGroup" name="optionsFrame" />
+      </item>
+      <item>
+       <widget class="TokenListWidget" name="tokenPool" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Maximum" hsizetype="Fixed" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+   <zorder></zorder>
   </widget>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>KButtonGroup</class>
+   <extends></extends>
+   <header>kbuttongroup.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>KDialog</class>
-   <extends>QDialog</extends>
+   <extends></extends>
    <header>kdialog.h</header>
    <container>1</container>
   </customwidget>
