@@ -216,7 +216,7 @@ JamendoService::doneParsing()
 {
     debug() << "JamendoService: done parsing";
     m_updateListButton->setEnabled( true );
-    // getModel->setGenre("All");
+    // model->setGenre("All");
     //delete sender
     sender()->deleteLater();
     m_collection->emitUpdated();

@@ -52,11 +52,11 @@ ServiceListModel::data(const QModelIndex & index, int role) const
     if ( role == Qt::DisplayRole )
         return QVariant( m_services[index.row()]->name() );
     else if ( role ==  Qt::DecorationRole )
-        return QVariant( m_services[index.row()]->getIcon() );
+        return QVariant( m_services[index.row()]->icon() );
    else if ( role == ShortDescriptionRole )
-       return QVariant( m_services[index.row()]->getShortDescription() );
+       return QVariant( m_services[index.row()]->shortDescription() );
    else if ( role == LongDescriptionRole )
-       return QVariant( m_services[index.row()]->getLongDescription() );
+       return QVariant( m_services[index.row()]->longDescription() );
    else if ( role == ServiceRole )
        return qVariantFromValue( m_services[index.row()] );
     else

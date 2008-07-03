@@ -225,7 +225,7 @@ ServicePluginManager::serviceDescription( const QString & serviceName )
 
     ServiceBase * service = m_serviceBrowser->services().value( serviceName );
 
-    return service->getShortDescription();
+    return service->shortDescription();
 }
 
 QString

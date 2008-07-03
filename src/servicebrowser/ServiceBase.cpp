@@ -177,7 +177,7 @@ ServiceBase::setShortDescription( const QString &shortDescription )
 }
 
 QString
-ServiceBase::getShortDescription( )
+ServiceBase::shortDescription( )
 {
     return m_shortDescription;
 }
@@ -189,7 +189,7 @@ ServiceBase::setLongDescription( const QString &longDescription )
 }
 
 QString
-ServiceBase::getLongDescription( )
+ServiceBase::longDescription( )
 {
     return m_longDescription;
 }
@@ -201,7 +201,7 @@ ServiceBase::setIcon( const QIcon &icon )
 }
 
 QIcon
-ServiceBase::getIcon( )
+ServiceBase::icon( )
 {
     return m_icon;
 }
@@ -229,7 +229,7 @@ ServiceBase::setModel( SingleCollectionTreeItemModel * model )
 }
 
 SingleCollectionTreeItemModel *
-ServiceBase::getModel()
+ServiceBase::model()
 {
     return m_model;
 }

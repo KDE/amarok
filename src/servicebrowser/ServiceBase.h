@@ -157,7 +157,7 @@ public:
      * Get the short description of this service.
      * @return The short description.
      */
-    QString getShortDescription();
+    QString shortDescription();
 
     /**
      * Set a long description of the service. This is for allowing users to get more detailed info a about a service.
@@ -169,7 +169,7 @@ public:
      * Get the long description of this service.
      * @return The long description.
      */
-    QString getLongDescription();
+    QString longDescription();
 
     /**
      * Set the icon that will be used to identify this service.
@@ -181,7 +181,7 @@ public:
      * Get the icon of this service.
      * @return The icon
      */
-    QIcon getIcon();
+    QIcon icon();
 
     /**
      * Set the SingleCollectionTreeItemModel that will be used to populate the tree view.
@@ -193,7 +193,7 @@ public:
      * Get the model that is used for displaying items in the tree view.
      * @return The model.
      */
-    SingleCollectionTreeItemModel * getModel();
+    SingleCollectionTreeItemModel * model();
 
     /**
      * Set if it should be possible to add the tracks shown in the tree view to the playlist. This method is a bit of a hack and might be removed!
