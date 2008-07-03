@@ -447,19 +447,19 @@ BlockAnalyzer::contextMenuEvent( QContextMenuEvent * )
     KMenu *menu = new KMenu( this );
     menu->setTitle( i18n( "Framerate" ) );
 
-    QAction *a = menu->addAction( "50 fps", this, SLOT( set50fps() ) );
+    QAction *a = menu->addAction( i18n("50 fps"), this, SLOT( set50fps() ) );
     if( timeout() == 50 ) a->setChecked( true );
 
-    a = menu->addAction( "33 fps", this, SLOT( set33fps() ) );
+    a = menu->addAction( i18n("33 fps"), this, SLOT( set33fps() ) );
     if( timeout() == 33 ) a->setChecked( true );
     
-    a = menu->addAction( "25 fps", this, SLOT( set25fps() ) );
+    a = menu->addAction( i18n("25 fps"), this, SLOT( set25fps() ) );
     if( timeout() == 25 ) a->setChecked( true );
     
-    a = menu->addAction( "20 fps", this, SLOT( set20fps() ) );
+    a = menu->addAction( i18n("20 fps"), this, SLOT( set20fps() ) );
     if( timeout() == 20 ) a->setChecked( true );
     
-    a = menu->addAction( "10 fps", this, SLOT( set10fps() ) );
+    a = menu->addAction( i18n("10 fps"), this, SLOT( set10fps() ) );
     if( timeout() == 10 ) a->setChecked( true );
 
 #if defined HAVE_LIBVISUAL

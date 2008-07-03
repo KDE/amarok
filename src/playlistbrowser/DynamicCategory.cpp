@@ -119,7 +119,7 @@ DynamicCategory::OnOff(bool)
 void
 DynamicCategory::On()
 {
-    m_onoffButton->setText( "Off" );
+    m_onoffButton->setText( i18n("Off") );
     AmarokConfig::setDynamicMode( true );
     // TODO: turn off other incompatible modes
     AmarokConfig::self()->writeConfig();
@@ -132,7 +132,7 @@ DynamicCategory::On()
 void
 DynamicCategory::Off()
 {
-    m_onoffButton->setText( "On" );
+    m_onoffButton->setText( i18n("On") );
     AmarokConfig::setDynamicMode( false );
     // TODO: should we restore the state of other modes?
     AmarokConfig::self()->writeConfig();
