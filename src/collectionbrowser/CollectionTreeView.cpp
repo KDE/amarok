@@ -172,7 +172,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
         indices = tmp;
     }
 
-    PopupDropperActionList actions = getActions( indices );
+    PopupDropperActionList actions = createActions( indices );
 
     KMenu menu;
 
@@ -279,7 +279,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             indices = tmp;
         }
 
-        PopupDropperActionList actions = getActions( indices );
+        PopupDropperActionList actions = createActions( indices );
 
         QFont font;
         font.setPointSize( 16 );
@@ -636,7 +636,7 @@ void CollectionTreeView::slotFilterNow()
     m_treeModel->slotFilter();
 }
 
-PopupDropperActionList CollectionTreeView::getActions( const QModelIndexList & indices )
+PopupDropperActionList CollectionTreeView::createActions( const QModelIndexList & indices )
 {
     PopupDropperActionList actions;
 
