@@ -74,7 +74,7 @@ Mp3tunesHarmonyDaemon::init()
     mp3tunes_harmony_connect(m_harmony, &m_err);
     /* Check for errors on the connection */
     if (m_err) {
-        g_error("Error: %s\n", m_err->message);
+        g_print("Error: %s\n", m_err->message);
     }
 
     /* Run the main loop */
@@ -88,10 +88,10 @@ Mp3tunesHarmonyDaemon::signalErrorHandler(MP3tunesHarmony* harmony, gpointer nul
 {
       GError *err;
       null_pointer = null_pointer;
-      g_error("Error: %s\n", harmony->error->message);
+      g_print("Fatal Error: %s\n", harmony->error->message);
       mp3tunes_harmony_disconnect(harmony, &err);
       if (err) {
-          g_error("Error disconnecting: %s\n", err->message);
+          g_print("Error disconnecting: %s\n", err->message);
           /* If there is an error disconnecting something has probably gone
            * very wrong and reconnection should not be attempted till the user
            * re-initiates it */
