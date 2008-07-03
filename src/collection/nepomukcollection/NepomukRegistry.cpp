@@ -18,6 +18,7 @@
 
 #include "NepomukCollection.h"
 #include "NepomukRegistry.h"
+#include "NepomukTrack.h"
 
 #include "Debug.h"
 #include "QueryMaker.h"

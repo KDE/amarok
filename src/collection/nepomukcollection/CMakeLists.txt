@@ -15,10 +15,15 @@ include_directories( ../..
 ########### next target ###############
 
 set(amarok_collection-nepomukcollection_PART_SRCS
+   NepomukAlbum.cpp
    NepomukCollection.cpp
+   NepomukComposer.cpp
+   NepomukGenre.cpp
    NepomukQueryMaker.cpp
-   NepomukMeta.cpp
-   NepomukRegistry.cpp)
+   NepomukRegistry.cpp
+   NepomukArtist.cpp
+   NepomukTrack.cpp
+   NepomukYear.cpp)
 #./search-api/query.cpp
 #   ./search-api/queryparser.cpp
 #   ./search-api/searchcore.cpp

@@ -15,42 +15,30 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
-#ifndef NEPOMUKREGISTRY_H
-#define NEPOMUKREGISTRY_H
 
-#include "NepomukCollection.h"
-#include "NepomukTrack.h"
+#ifndef NEPOMUGENRE_H_
+#define NEPOMUGENRE_H_
 
 #include "Meta.h"
 
-#include <QHash>
-#include <QTimer>
+#include "QString"
 
-#include <Soprano/BindingSet>
-#include <Soprano/Model>
-
-class QUrl;
-
-class NepomukRegistry : public QObject
+namespace Meta
 {
-    Q_OBJECT
-            
+
+class NepomukGenre : public Genre
+{
     public:
-        NepomukRegistry( NepomukCollection *collection, Soprano::Model *model );
-
-        ~NepomukRegistry();
+        NepomukGenre( const QString &name );
         
-        Meta::TrackPtr  trackForBindingSet( const Soprano::BindingSet &set );
-
-    private slots:
-        void cleanHash();
-        void nepomukUpdate( const Soprano::Statement &statement);
-    
+        virtual QString name() const;
+        virtual QString prettyName() const;
+        
+        virtual TrackList tracks();
+        
     private:
-        QHash< QString, Meta::NepomukTrackPtr > m_tracks;
-        NepomukCollection* m_collection;
-        QTimer *m_timer;
-        Soprano::Model *m_model;
+        QString m_name;
 };
 
-#endif
+}
+#endif /*NEPOMUGENRE_H_*/

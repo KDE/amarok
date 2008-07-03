@@ -16,149 +16,52 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#define DEBUG_PREFIX "NepomukMeta"
-
-#include "NepomukMeta.h"
+#include "NepomukAlbum.h"
+#include "NepomukArtist.h"
+#include "NepomukCollection.h"
+#include "NepomukComposer.h"
+#include "NepomukGenre.h"
 #include "NepomukRegistry.h"
+#include "NepomukTrack.h"
+#include "NepomukYear.h"
 
 #include "Debug.h"
+#include "Meta.h"
 #include "ScriptManager.h"
 
 #include <QDateTime>
 #include <QFile>
-#include <QMutexLocker>
+#include <QMutex>
+#include <QString>
 #include <QThread>
-#include <QTime>
+#include <QUrl>
 
+#include <Nepomuk/Resource>
 #include <Nepomuk/Variant>
-#include <Soprano/BindingSet>
-#include <Soprano/Model>
-#include <Soprano/LiteralValue>
 
 using namespace Meta;
 
-NepomukArtist::NepomukArtist( const QString &name )
-    : Artist()
-    , m_name( name )
-{
-
-}
-
-QString
-NepomukArtist::name() const
-{
-    return m_name;
-}
-
-QString
-NepomukArtist::prettyName() const
-{
-    return m_name;
-}
-
-QString
-NepomukArtist::sortableName() const
-{
-    if ( m_sortName.isEmpty() && !m_name.isEmpty() )
-    {
-        if ( m_name.startsWith( "the ", Qt::CaseInsensitive ) )
-        {
-            QString begin = m_name.left( 3 );
-            m_sortName = QString( "%1, %2" ).arg( m_name, begin );
-            m_sortName = m_sortName.mid( 4 );
-        }
-        else
-        {
-            m_sortName = m_name;
-        }
-    }
-    return m_sortName;
-}
-
-TrackList
-NepomukArtist::tracks()
-{
-    return TrackList();
-}
-
-AlbumList
-NepomukArtist::albums()
-{
-    return AlbumList();
-}
-
-// --- ALBUM ----
-
-NepomukAlbum::NepomukAlbum( const QString &name, const QString &artist )
-    : Album()
-    , m_name( name )
-    , m_artist( artist )
-{
-
-}
-
-QString
-NepomukAlbum::name() const
-{
-    return m_name;
-}
-
-QString
-NepomukAlbum::prettyName() const
-{
-    return m_name;
-}
-
-TrackList
-NepomukAlbum::tracks()
-{
-    return TrackList();
-}
-
-bool
-NepomukAlbum::isCompilation() const
-{
-    return false;
-}
-
-bool
-NepomukAlbum::hasAlbumArtist() const
-{
-    return true;
-}
-
-ArtistPtr
-NepomukAlbum::albumArtist() const
-{
-    return ArtistPtr( new NepomukArtist( m_artist ) );
-}
-
-
-// -- TRACK --
-
 class Meta::WriteStatisticsThread : public QThread
 {
-    public:        
+    public:
         WriteStatisticsThread( NepomukTrack *track )
-            : QThread()
-            , m_track( track )
-        {
-        }
+    : QThread()
+                , m_track( track )
+                {
+                }
 
-        void run()
-        {
-            debug() << "about to write statistics" << endl;
-            m_track->writeStatistics();
-            debug() << "wrote statistics" <<endl;
-        }
+                void run()
+                {
+                    m_track->writeStatistics();
+                }
     private:
         NepomukTrack *m_track;
 };
 
 NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *registry, const Soprano::BindingSet &data )
-    : Track()
-    , m_collection ( collection )
-    , m_registry ( registry )
+        : Track()
+        , m_collection ( collection )
+        , m_registry ( registry )
 {
     statsThread =  new WriteStatisticsThread( this );
 
@@ -172,39 +75,39 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *regi
     m_comment = data[ collection->getNameForValue( QueryMaker::valComment ) ].toString();
     m_composer = data[ collection->getNameForValue( QueryMaker::valComposer ) ].toString();
     m_trackNumber = data[ collection->getNameForValue( QueryMaker::valTrackNr ) ]
-                          .literal().toInt();
+            .literal().toInt();
     m_length = data[ collection->getNameForValue( QueryMaker::valLength ) ]
-                     .literal().toInt();
+            .literal().toInt();
     m_rating = data[ collection->getNameForValue( QueryMaker::valRating ) ]
-                         .literal().toInt();
+            .literal().toInt();
     m_bitrate = data[ collection->getNameForValue( QueryMaker::valBitrate ) ]
-                    .literal().toInt();
+            .literal().toInt();
     m_discNumber = data[ collection->getNameForValue( QueryMaker::valDiscNr ) ]
-                             .literal().toInt();
+            .literal().toInt();
     m_filesize = data[ collection->getNameForValue( QueryMaker::valFilesize ) ]
-                       .literal().toInt();
+            .literal().toInt();
     m_playCount = data[ collection->getNameForValue( QueryMaker::valPlaycount ) ]
-                         .literal().toInt();
+            .literal().toInt();
     m_sampleRate = data[ collection->getNameForValue( QueryMaker::valSamplerate ) ]
-                          .literal().toInt();
+            .literal().toInt();
     m_score = data[ collection->getNameForValue( QueryMaker::valScore ) ]
-                        .literal().toInt();
+            .literal().toInt();
     
     // Soprano gives a warning when they are empty
     Soprano::LiteralValue litval;
     
     litval = data[ collection->getNameForValue( QueryMaker::valFirstPlayed ) ]
-                   .literal();
+            .literal();
     if ( litval.isDateTime() )
         m_firstPlayed = litval.toDateTime();
 
     litval = data[ collection->getNameForValue( QueryMaker::valLastPlayed ) ]
-                   .literal();
+            .literal();
     if ( litval.isDateTime() )
         m_lastPlayed = litval.toDateTime();
     
     litval = data[ collection->getNameForValue( QueryMaker::valCreateDate ) ]
-                   .literal();
+            .literal();
     if ( litval.isDateTime() )
         m_createDate = litval.toDateTime();
  
@@ -460,88 +363,3 @@ NepomukTrack::valueChangedInNepomuk( qint64 value, const Soprano::LiteralValue &
     }
     emit notifyObservers();
 }
-
-// -- GENRE --
-
-NepomukGenre::NepomukGenre( const QString &name )
-    : Meta::Genre()
-    , m_name( name )
-{
-
-}
-
-QString
-NepomukGenre::name() const
-{
-    return m_name;
-}
-
-QString
-NepomukGenre::prettyName() const
-{
-    return m_name;
-}
-
-TrackList
-NepomukGenre::tracks()
-{
-    return TrackList();
-}
-
-// -- COMPOSER --
-
-NepomukComposer::NepomukComposer( const QString &name )
-    : Meta::Composer()
-    , m_name( name )
-{
-
-}
-
-QString
-NepomukComposer::name() const
-{
-    return m_name;
-}
-
-QString
-NepomukComposer::prettyName() const
-{
-    return m_name;
-}
-
-TrackList
-NepomukComposer::tracks()
-{
-    return TrackList();
-}
-
-// -- YEAR --
-
-NepomukYear::NepomukYear( const QString &name )
-    : Meta::Year()
-    , m_name( name )
-{
-
-}
-
-QString
-NepomukYear::name() const
-{
-    return m_name;
-}
-
-QString
-NepomukYear::prettyName() const
-{
-    return m_name;
-}
-
-TrackList
-NepomukYear::tracks()
-{
-    return TrackList();
-}
-
-
-
-

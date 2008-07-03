@@ -19,6 +19,8 @@
 #ifndef NEPOMUKQUERYMAKER_H_
 #define NEPOMUKQUERYMAKER_H_
 
+#include "NepomukArtist.h"
+
 #include "QueryMaker.h"
 
 #include <QString>

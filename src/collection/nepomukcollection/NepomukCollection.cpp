@@ -20,7 +20,6 @@
 
 #include "NepomukCollection.h"
 #include "NepomukQueryMaker.h"
-#include "NepomukMeta.h"
 #include "NepomukRegistry.h"
 
 #include "BlockingQuery.h"
