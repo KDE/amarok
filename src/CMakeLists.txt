@@ -440,7 +440,7 @@ set(amaroklib_LIB_SRCS
     refreshimages.cpp
     servicebrowser/lastfm/SimilarArtistsAction.cpp
     socketserver.cpp
-    systray.cpp
+    Systray.cpp
     widgets/AnalyzerWidget.cpp
     widgets/FilenameLayoutWidget.cpp
     widgets/MainToolbar.cpp

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "systray.h"
+#include "Systray.h"
 
 #include "Amarok.h"
 #include "EngineController.h"
@@ -78,7 +78,7 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     PERF_LOG( "Before adding actions" );
     contextMenu()->addAction( ac->action( "prev"       ) );
     contextMenu()->addAction( ac->action( "play_pause" ) );
-    contextMenu()->addAction( ac->action( "stop" ) );
+    contextMenu()->addAction( ac->action( "stop"       ) );
     contextMenu()->addAction( ac->action( "next"       ) );
 
     baseIcon     = KSystemTrayIcon::loadIcon( "amarok" );

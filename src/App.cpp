@@ -37,7 +37,7 @@ email                : markey@web.de
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
 #include "StatusBar.h"
-#include "systray.h"
+#include "Systray.h"
 #include "TracklistDBusHandler.h"
 #include "TrackTooltip.h"                //engineNewMetaData()
 
