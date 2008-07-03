@@ -86,6 +86,7 @@ LastFmService::LastFmService( const QString &name, const QString &username, cons
 
 LastFmService::~LastFmService()
 {
+    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
     ms_service = 0;
     delete m_collection;
 }

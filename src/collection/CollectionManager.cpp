@@ -469,6 +469,8 @@ CollectionManager::collectionStatus( const QString &collectionId ) const
 {
     foreach( const CollectionPair &pair, d->collections )
     {
+        debug() << "current id: " << collectionId;
+        debug() << "current collection: " << pair.first->collectionId();
         if( pair.first->collectionId() == collectionId )
         {
             return pair.second;
