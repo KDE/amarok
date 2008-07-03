@@ -105,7 +105,7 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
 void
 CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 {
-    if( m_albums.contains(album ) )
+    if( m_albumPtr == album || m_albums.contains(album ) )
         return;
     m_userCanEditQuery = false;
     m_albumsMutex.lock();
@@ -141,7 +141,7 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
     m_albumsMutex.lock();
     foreach( Meta::AlbumPtr album, albums )
     {
-        if( m_albums.contains( album ) )
+        if( m_albumPtr == album || m_albums.contains( album ) )
             continue;
         m_albums << album;
     }
