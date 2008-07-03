@@ -59,13 +59,16 @@ NepomukArtist::prettyName() const
 QString
 NepomukArtist::sortableName() const
 {
-    if ( m_sortName.isEmpty() && !m_name.isEmpty() ) {
-        if ( m_name.startsWith( "the ", Qt::CaseInsensitive ) ) {
+    if ( m_sortName.isEmpty() && !m_name.isEmpty() )
+    {
+        if ( m_name.startsWith( "the ", Qt::CaseInsensitive ) )
+        {
             QString begin = m_name.left( 3 );
             m_sortName = QString( "%1, %2" ).arg( m_name, begin );
             m_sortName = m_sortName.mid( 4 );
         }
-        else {
+        else
+        {
             m_sortName = m_name;
         }
     }
