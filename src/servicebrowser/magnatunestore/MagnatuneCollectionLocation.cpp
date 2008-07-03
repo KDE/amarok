@@ -41,7 +41,7 @@ void MagnatuneCollectionLocation::showSourceDialog( const Meta::TrackList & trac
 
     KDialog dialog;
     dialog.setCaption( "Preview Tracks" );
-    dialog.setButtons( KDialog::Ok );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
 
     QLabel *label = new QLabel( i18n( "The tracks you are about to copy are the Magnatune.com preview streams, for better quality, add free streams, considder buying an abum download. Remember, that when buying from Magnatune, the artist gets 50%, and if you buy using Amarok, you support the Amarok project with 10%" ) );
 
@@ -52,6 +52,8 @@ void MagnatuneCollectionLocation::showSourceDialog( const Meta::TrackList & trac
 
     dialog.exec();
 
+    if ( dialog.result() == QDialog::Rejected )
+        abort();
 
     return;
 }
