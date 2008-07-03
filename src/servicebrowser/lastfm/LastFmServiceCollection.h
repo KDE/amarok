@@ -42,18 +42,18 @@ public:
 
 private slots:
     void slotAddNeighboursLoved( WeightedStringList list );
-    void slotAddNeighbours( WeightedStringList list );
+    void slotAddNeighboursPersonal( WeightedStringList list );
     void slotAddFriendsLoved( QStringList list );
-    void slotAddFriends( QStringList list );
+    void slotAddFriendsPersonal( QStringList list );
     void slotRecentlyLovedTrackResult( Request* );
     void slotRecentTrackResult( Request* );
 
 private:
     QString m_userName;
     Meta::ServiceGenre *m_neighborsLoved;
-    Meta::ServiceGenre *m_neighbors;
+    Meta::ServiceGenre *m_neighborsPersonal;
     Meta::ServiceGenre *m_friendsLoved;
-    Meta::ServiceGenre *m_friends;
+    Meta::ServiceGenre *m_friendsPersonal;
     Meta::ServiceGenre *m_recentlyLoved;
     Meta::ServiceGenre *m_recentlyPlayed;
 };
