@@ -67,13 +67,19 @@ PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent )
     pd->setQuitOnDragLeave( false );
     pd->setFadeInTime( 500 );
     pd->setFadeOutTime( 300 );
-    QColor windowColor( Qt::black );
+    //QColor origWindowColor( The::paletteHandler()->palette().color( QPalette::Window ) );
+    //QColor windowColor;
+    //windowColor.setRed( 255 - origWindowColor.red() );
+    //windowColor.setBlue( 255 - origWindowColor.blue() );
+    //windowColor.setGreen( 255 - origWindowColor.green() );
+    QColor windowColor( The::paletteHandler()->palette().color( QPalette::Text ) );
     windowColor.setAlpha( 128 );
-    QColor textColor( The::paletteHandler()->palette().color( QPalette::HighlightedText ) );
+    QColor textColor( The::paletteHandler()->palette().color( QPalette::Base ) );
+    QColor highlightedTextColor( The::paletteHandler()->palette().color( QPalette::HighlightedText ) );
     QColor borderColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
     QColor fillColor( borderColor );
-    fillColor.setAlpha( 32 );
-    pd->setColors( windowColor, textColor, borderColor, borderColor, fillColor );
+    fillColor.setAlpha( 48 );
+    pd->setColors( windowColor, textColor, highlightedTextColor, borderColor, fillColor );
 
     return pd;
 }
