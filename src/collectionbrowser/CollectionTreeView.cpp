@@ -721,8 +721,8 @@ PopupDropperActionList CollectionTreeView::createActions( const QModelIndexList 
 
                         PopupDropperActionList cActions = cac->customActions();
 
-                        foreach( PopupDropperAction *action, cActions ) {
-
+                        foreach( PopupDropperAction *action, cActions )
+                        {
                             actions.append( action );
                             debug() << "Got custom action: " << action->text();
                         }

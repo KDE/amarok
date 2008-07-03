@@ -63,9 +63,10 @@ CollectionWidget::CollectionWidget( const char* name )
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
     filterMenu->addAction( action );
 
-    action = new QAction( i18n( "Artist / Year - Album" ), menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT( sortByArtistYearAlbum() ) );
-    filterMenu->addAction( action );
+    // FIXME Comment out until we can safely call SqlAlbum::year() from the paint method
+    // action = new QAction( i18n( "Artist / Year - Album" ), menubar );
+    // connect( action, SIGNAL(triggered(bool)), SLOT( sortByArtistYearAlbum() ) );
+    // filterMenu->addAction( action );
 
     action = new QAction( i18n( "Album" ), menubar );
     connect( action, SIGNAL(triggered(bool)), SLOT( sortByAlbum() ) );
