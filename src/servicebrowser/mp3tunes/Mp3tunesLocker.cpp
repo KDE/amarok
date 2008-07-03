@@ -92,7 +92,6 @@ Mp3tunesLocker::artists() const
     QList<Mp3tunesLockerArtist> artistsQList; // to be returned
     mp3tunes_locker_artist_list_t *artists_list;
     mp3tunes_locker_list_item_t *artist_item;
-    // the value holder
 
     //get the list of artists
     mp3tunes_locker_artists ( m_locker, &artists_list );
@@ -148,11 +147,10 @@ Mp3tunesLocker::albums() const
     {
         // get the album from the c lib
         album = ( mp3tunes_locker_album_t* ) album_item->value;
-        //wrap it up
+        //wrap it up and stick it in the QList
         Mp3tunesLockerAlbum albumWrapped ( album );
-        //and stick it in the QList
         albumsQList.append ( albumWrapped );
-        //advance to next album
+
         album_item = album_item->next;
     }
     mp3tunes_locker_album_list_deinit ( &albums_list );
@@ -189,9 +187,8 @@ Mp3tunesLocker::albumsWithArtistId ( int artistId ) const
         album = ( mp3tunes_locker_album_t* ) album_item->value;
         //wrap it up
         Mp3tunesLockerAlbum albumWrapped ( album );
-        //and stick it in the QList
         albumsQList.append ( albumWrapped );
-        //advance to next album
+
         album_item = album_item->next;
     }
     mp3tunes_locker_album_list_deinit ( &albums_list );
@@ -401,15 +398,17 @@ Mp3tunesLocker::search ( Mp3tunesSearchResult &container, const QString &query )
 
     if ( container.searchFor & Mp3tunesSearchResult::ArtistQuery )
         artists_list = 0;
+
     if ( container.searchFor & Mp3tunesSearchResult::AlbumQuery )
         albums_list = 0;
+
     if ( container.searchFor & Mp3tunesSearchResult::TrackQuery )
         tracks_list = 0;
 
     char* c_query = convertToChar ( query );
 
     int res = mp3tunes_locker_search ( m_locker, &artists_list, &albums_list,
-&tracks_list, c_query );
+                                       &tracks_list, c_query );
     if ( res != 0 )
         return false;
     if ( container.searchFor & Mp3tunesSearchResult::ArtistQuery )
@@ -462,7 +461,6 @@ Mp3tunesLocker::search ( Mp3tunesSearchResult &container, const QString &query )
 bool
 Mp3tunesLocker::uploadTrack ( const QString &path )
 {
-    //convert Qstring to char*
     char* c_path = convertToChar ( path );
 
     int res = mp3tunes_locker_upload_track ( m_locker, c_path );
@@ -474,7 +472,6 @@ Mp3tunesLocker::uploadTrack ( const QString &path )
 QString
 Mp3tunesLocker::fileKey ( const QString &path )
 {
-    //convert Qstring to char*
     char* c_path = convertToChar ( path );
 
     char* file_key = ( char* ) malloc ( 4096 * sizeof ( char ) );
@@ -482,6 +479,7 @@ Mp3tunesLocker::fileKey ( const QString &path )
 
     return QString ( file_key );
 }
+
 bool
 Mp3tunesLocker::lockerLoad( const QString &url )
 {
@@ -565,6 +563,7 @@ Mp3tunesLocker::errorMessage() const
 bool
 Mp3tunesLocker::authenticated() const
 {
+    // do it in this order to avoid making an extra http request
     if( sessionId().isEmpty() )
         return false;
     else if( sessionValid() )

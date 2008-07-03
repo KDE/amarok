@@ -21,8 +21,8 @@
 #include <ServiceCollectionLocation.h>
 #include "Mp3tunesServiceCollection.h"
 
-#include <QSet>
 #include <QMap>
+#include <QSet>
 #include <QString>
 
 
@@ -36,7 +36,6 @@ class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
         
         virtual QString prettyLocation() const;
         virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
         virtual bool remove( const Meta::TrackPtr &track );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
         

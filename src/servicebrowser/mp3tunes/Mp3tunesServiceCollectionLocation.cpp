@@ -35,12 +35,11 @@ Mp3tunesServiceCollectionLocation::Mp3tunesServiceCollectionLocation( Mp3tunesSe
 
 Mp3tunesServiceCollectionLocation::~Mp3tunesServiceCollectionLocation()
 {
-    DEBUG_BLOCK
 }
 
 QString Mp3tunesServiceCollectionLocation::prettyLocation() const
 {
-    return "MP3Tunes Locker";
+    return "MP3tunes Locker";
 }
 
 bool Mp3tunesServiceCollectionLocation::isWritable() const
@@ -48,10 +47,6 @@ bool Mp3tunesServiceCollectionLocation::isWritable() const
     return true;
 }
 
-bool Mp3tunesServiceCollectionLocation::isOrganizable() const
-{
-    return false;
-}
 bool Mp3tunesServiceCollectionLocation::remove( const Meta::TrackPtr &track )
 {
     //TODO
@@ -71,7 +66,6 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
 
         QString supported_types = "mp3 mp4 m4a m4p aac wma ogg";
         
-
         if( supported_types.contains( track->type() ) )
         {   
 

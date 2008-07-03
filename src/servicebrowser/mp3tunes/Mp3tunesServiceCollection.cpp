@@ -65,13 +65,7 @@ Mp3tunesServiceCollection::possiblyContainsTrack(const KUrl & url) const
         debug() << "not a track no match";
         return false; // not a mp3tunes url
     }
-    QStringList list = rx.capturedTexts();
-    QString filekey = list[1]; // Because list[0] is the url itself.
-    if ( filekey.isEmpty() ) {
-        debug() << "not a track bad url";
-        return false;
-    }
-    debug() << "is a track!";
+    debug() << "probably is a track!";
     return true; // for now: if it's a mp3tunes url.. it's likely the track is in the locker
 }
 
@@ -93,6 +87,7 @@ Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
     //Lets get this thing
     Mp3tunesLockerTrack track =  m_locker->trackWithFileKey( filekey );
     debug() << "got track: " << track.trackTitle();
+
     //Building a Meta::Track
     QString title = track.trackTitle().isEmpty() ? "Unknown" :  track.trackTitle();
     Meta::Mp3TunesTrack * serviceTrack = new Meta::Mp3TunesTrack( title );
@@ -118,14 +113,17 @@ Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
     serviceAlbum->setCoverUrl(coverUrl);
     Meta::AlbumPtr albumPtr( serviceAlbum );
     serviceTrack->setAlbum( albumPtr );
+
     // Building a Meta::Artist
     QString name = track.artistName().isEmpty() ? "Unknown" :  track.artistName();
     Meta::ServiceArtist * serviceArtist = new Meta::ServiceArtist( name );
     serviceArtist->setId( track.artistId() );
     Meta::ArtistPtr artistPtr( serviceArtist );
+
     serviceTrack->setArtist( artistPtr );
     serviceAlbum->setArtistName( name );
     serviceAlbum->setAlbumArtist( artistPtr );
+
     return Meta::TrackPtr( serviceTrack );
 }
 
