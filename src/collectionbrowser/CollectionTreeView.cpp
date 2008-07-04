@@ -321,7 +321,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             PopupDropper * copyPud = The::popupDropperFactory()->createPopupDropper( 0 );
             foreach( PopupDropperAction * action, m_currentCopyDestination.keys() ) {
                 debug() << "2 adding action " << action->name();
-                m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
+                copyPud->addItem( The::popupDropperFactory()->createItem( action ), false );
             }
             subItem = m_pd->addSubmenu( &copyPud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Copy to Collection" )  );
             subItem->setFont( font );
@@ -332,7 +332,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             PopupDropper * movePud = The::popupDropperFactory()->createPopupDropper( 0 );
             foreach( PopupDropperAction * action, m_currentCopyDestination.keys() ) {
                 debug() << "3 adding action " << action->name();
-                m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
+                movePud->addItem( The::popupDropperFactory()->createItem( action ), false );
             }
             subItem = m_pd->addSubmenu( &movePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Move to Collection" )  );
             subItem->setFont( font );
