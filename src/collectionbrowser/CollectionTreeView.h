@@ -103,7 +103,6 @@ class CollectionTreeView: public QTreeView
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModelBase *m_treeModel;
         QTimer m_filterTimer;
-        QPoint m_dragStartPosition;
         bool m_showTrackNumbers;
         bool m_showYears;
         PopupDropper* m_pd;

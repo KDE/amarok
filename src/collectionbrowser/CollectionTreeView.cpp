@@ -54,7 +54,6 @@
 
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : QTreeView( parent )
-    , m_dragStartPosition()
     , m_pd( 0 )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
@@ -245,9 +244,6 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *e )
 {
-    if( e->button() == Qt::LeftButton )
-        m_dragStartPosition = e->pos();
-
     QTreeView::mousePressEvent( e );
 }
 
@@ -255,12 +251,6 @@ void
 CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 {
     DEBUG_BLOCK
-
-    //Waah? when a parent item is dragged, startDrag is called a bunch of times
-    static bool ongoingDrags = false;
-    if( ongoingDrags )
-        return;
-    ongoingDrags = true;
 
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
@@ -350,7 +340,6 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
         m_pd->hide();
     }
-    ongoingDrags = false;
 }
 
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
