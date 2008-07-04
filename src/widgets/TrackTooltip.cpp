@@ -246,5 +246,14 @@ void TrackToolTip::metadataChanged( Meta::Artist * /*artist*/ )
     setTrack( The::engineController()->currentTrack(), true );
 }
 
+void TrackToolTip::mousePressEvent( QMouseEvent* )
+{
+    //FIXME Sometimes the event doesn't get triggered when clicking the tooltip. Why?
+
+    DEBUG_BLOCK
+
+    hide();
+}
+
 #include "TrackTooltip.moc"
 

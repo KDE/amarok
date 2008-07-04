@@ -47,6 +47,9 @@ class TrackToolTip : public QWidget, public Meta::Observer
         virtual void metadataChanged( Meta::Composer * ) {}; //prevent compiler warning
         virtual void metadataChanged( Meta::Year * ) {}; //prevent compiler warning
 
+    protected:
+        virtual void mousePressEvent( QMouseEvent* );
+
     private:
         QString tooltip() const;
         void updateWidgets();
