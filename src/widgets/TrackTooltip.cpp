@@ -200,7 +200,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
     }
 }
 
-void TrackToolTip::setPos( int pos )
+void TrackToolTip::setTrackPosition( int pos )
 {
     if( isHidden() )
         return;

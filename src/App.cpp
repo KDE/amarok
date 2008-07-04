@@ -685,7 +685,7 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool tra
 
 void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
-    TrackToolTip::instance()->setPos( position );
+    TrackToolTip::instance()->setTrackPosition( position );
 }
 
 void App::engineVolumeChanged( int newVolume )
