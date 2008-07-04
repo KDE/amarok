@@ -113,7 +113,7 @@ function onPopulate( level, parent_id, path, filter )
         Amarok.ScriptableServiceManager.donePopulating( "Cool Streams", -1 );
         print( "... done" );
     }
-    else if (level == 0 && filter == "get_stations")
+    else if (level == 0 )//&& filter == "get_stations")
     {
         print( " Populating station level..." );
 
