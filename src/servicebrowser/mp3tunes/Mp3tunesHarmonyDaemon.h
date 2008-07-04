@@ -39,12 +39,26 @@ class Mp3tunesHarmonyDaemon: public QObject
   public:
     Mp3tunesHarmonyDaemon( char* identifier);
     ~Mp3tunesHarmonyDaemon();
-
+    
+    /**
+     * Stats the daemon by intiating the connection Harmony connection.
+     */
     void init();
-
+    
+    /**
+     * Returns the pin
+     */
     QString pin() const;
+
+    /**
+     * Returns the latest error message.
+     */
     QString error() const;
 
+    /**
+     * The possible states the daemon can be in.
+     * Before init() it is DISONNECTED
+     */
     enum HarmonyState {
         DISCONNECTED,
         CONNECTED,
@@ -52,9 +66,17 @@ class Mp3tunesHarmonyDaemon: public QObject
         WAITING_FOR_EMAIL
     };
 
+    /**
+     * Used by the static callbacks
+     * DO NOT CALL THESE METHODS
+     */
     void setState( HarmonyState state );
     void setError( const QString &error );
 
+    /**
+     * Used by the static callbacks
+     * DO NOT CALL THESE METHODS
+     */
     void emitError();
     void emitWaitingForEmail();
     void emitWaitingForPin();
@@ -128,6 +150,15 @@ class Mp3tunesHarmonyDaemon: public QObject
 };
 
 
+/*
+ * The global variable used by the static callbacks.
+ * G_CALLBACK() requires a pointer to a member function, 
+ * and because this is c++ that member function must be static. 
+ * However, since I want to edit non-static members in those
+ * callbacks I created a workaround by defining a global variable,
+ * 'theDaemon', which is an instantiation of a Mp3tunesHarmonyDaemon
+ * and call mutators on it from the static callbacks.
+ */
 #ifdef DEFINE_HARMONY
 #define HARMONY
 #else
