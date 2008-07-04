@@ -2,12 +2,12 @@
 install( FILES
     COPYING
     README
-        file_browser_service_script.spec
+        script.spec
         DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/file_browser_demo_service
 )
 
 install( PROGRAMS
-        file_browser_service_script.rb
+        main.js
         DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/file_browser_demo_service
 
 )

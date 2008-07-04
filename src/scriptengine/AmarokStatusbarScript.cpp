@@ -60,6 +60,11 @@ namespace Amarok
         StatusBar::instance()->longMessage( text, type );
     }
 
+    void AmarokStatusbarScript::longMessageThreadSafe( const QString &text )
+    {
+        StatusBar::instance()->longMessageThreadSafe( text );
+    }
+
     void AmarokStatusbarScript::shortLongMessage( const QString &_short, const QString &_long, Amarok::StatusBar::MessageType type )
     {
         StatusBar::instance()->shortLongMessage( _short, _long, type );
