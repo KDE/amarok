@@ -191,7 +191,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-    QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? m_currentInfo[ Meta::Field::LAST_PLAYED ].toString() : QString();
+    QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) : QString();
 
     QFont textFont = shrinkTextSizeToFit( title, QRectF( 0, 0, textWidth, textHeight ) );
     QFont labeFont = textFont;
@@ -214,8 +214,8 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), QRectF( 0, 0, textWidth, 30 ) ) );
     m_album->setText( truncateTextToFit( album, m_album->font(), QRectF( 0, 0, textWidth, 30 ) ) );
 
-    m_playedLast->setText( truncateTextToFit( lastPlayed, m_playedLast->font(), QRectF( 0, 0, runningX - size().toSize().width(), 30 ) ) );
-
+    m_playedLast->setText( truncateTextToFit( lastPlayed, m_playedLast->font(), QRectF( 0, 0, size().toSize().width() - runningX, 30 ) ) );
+   
     //calc scale factor..
     m_scoreLabel->resetTransform();
     m_numPlayedLabel->resetTransform();
