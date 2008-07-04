@@ -205,7 +205,7 @@ void TrackToolTip::setPos( int pos )
 void TrackToolTip::clear()
 {
     m_pos     = 0;
-    m_tooltip = i18n( "Amarok - rediscover your music" );
+    m_tooltip = i18n( "Amarok - No track playing." );
     m_track = Meta::TrackPtr();
     m_title.clear();
     m_image = QPixmap();
