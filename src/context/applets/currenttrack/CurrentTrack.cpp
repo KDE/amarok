@@ -265,6 +265,8 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     {
         warning() << "album cover of current track is null, did you forget to call Meta::Album::image?";
     }
+    // without that the rating doesn't get update for a playing track
+    update();
 }
 
 
