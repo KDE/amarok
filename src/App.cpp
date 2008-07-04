@@ -188,7 +188,7 @@ App::App()
     setupEventHandler_mac((long)this);
 #endif
 
-    QDBusConnection::sessionBus().registerService("org.freedesktop.MediaPlayer");
+    QDBusConnection::sessionBus().registerService("org.mpris.amarok");
     QTimer::singleShot( 0, this, SLOT( continueInit() ) );
     PERF_LOG( "Done App ctor" )
 }
@@ -239,7 +239,7 @@ App::~App()
     QDBusConnectionInterface* dbusService;
     if (QDBusConnection::sessionBus().isConnected() && (dbusService = QDBusConnection::sessionBus().interface()))
     {
-        dbusService->unregisterService("org.freedesktop.MediaPlayer");
+        dbusService->unregisterService("org.mpris.amarok");
     }
 #endif
 }

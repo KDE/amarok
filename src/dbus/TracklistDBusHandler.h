@@ -27,6 +27,7 @@ namespace Amarok
     class TracklistDBusHandler : public QObject
     {
         Q_OBJECT
+        Q_CLASSINFO("D-Bus Interface", "org.freedesktop.MediaPlayer.tracklist")
 
         public:
             TracklistDBusHandler();
