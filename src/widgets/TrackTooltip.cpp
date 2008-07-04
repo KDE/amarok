@@ -32,6 +32,7 @@
 #include <QApplication>
 #include <QGridLayout>
 #include <QLabel>
+#include <QMouseEvent>
 #include <QPixmap>
 #include <QTimer>
 #include <QToolTip>
@@ -68,6 +69,10 @@ TrackToolTip::TrackToolTip()
     l->addWidget( m_otherInfoLabel, 1, 1 );
     setLayout( l );
     clear();
+
+    m_titleLabel->installEventFilter( this );
+    m_imageLabel-> installEventFilter( this );
+    m_otherInfoLabel-> installEventFilter( this );
 }
 
 TrackToolTip::~TrackToolTip()
@@ -246,10 +251,18 @@ void TrackToolTip::metadataChanged( Meta::Artist * /*artist*/ )
     setTrack( The::engineController()->currentTrack(), true );
 }
 
+bool TrackToolTip::eventFilter( QObject* obj, QEvent* event )
+{
+    if( event->type() == QEvent::MouseButtonPress ) {
+        mousePressEvent( dynamic_cast<QMouseEvent*>( event ) );
+        return true;
+    }
+
+    return QObject::eventFilter( obj, event );
+}
+
 void TrackToolTip::mousePressEvent( QMouseEvent* )
 {
-    //FIXME Sometimes the event doesn't get triggered when clicking the tooltip. Why?
-
     DEBUG_BLOCK
 
     hide();
