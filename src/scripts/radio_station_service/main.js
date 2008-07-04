@@ -52,8 +52,8 @@ var stationName = new Array( "Afterhours.FM [Trance/Livesets]",
                              "Secret Agent [Downtempo/Lounge]",
                              "SLAY Radio [C64 Remixes]",
                              "Virgin Radio [Rock/Pop]",
-                             "X T C Radio [Techno/Trance]" )
-        
+                             "X T C Radio [Techno/Trance]" );
+
 var stationURL = new Array( "http://www.ah.fm/192k.m3u",
                             "http://www.bassdrive.com/v2/streams/BassDrive.m3u']",
                             "http://207.200.96.225:8020/listen.pls",
@@ -80,9 +80,9 @@ var stationURL = new Array( "http://www.ah.fm/192k.m3u",
                             "http://somafm.com/secretagent.pls",
                             "http://sc.slayradio.org:8000/listen.pls",
                             "http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb",
-                            "http://stream.xtcradio.com:8069/listen.pls" )
+                            "http://stream.xtcradio.com:8069/listen.pls" );
 
-service_name = "Cool Streams"
+service_name = "Cool Streams";
 
 
 function onConfigure()
@@ -92,7 +92,7 @@ function onConfigure()
 
 function onInit()
 {
-    levels = "2";
+    levels = 2;
     short_description = "List of some really cool radio streams";
     root_html = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers";
     Amarok.ScriptableServiceManager.initService( service_name, levels, short_description, root_html, false );
