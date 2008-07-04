@@ -286,7 +286,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         font.setBold( true );
 
         foreach( PopupDropperAction * action, actions ) {
-            debug() << "1 adding action " << action->name();
+            debug() << "1 adding action " << action->objectName();
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
 
@@ -320,7 +320,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             //KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
             PopupDropper * copyPud = The::popupDropperFactory()->createPopupDropper( 0 );
             foreach( PopupDropperAction * action, m_currentCopyDestination.keys() ) {
-                debug() << "2 adding action " << action->name();
+                debug() << "2 adding action " << action->objectName();
                 copyPud->addItem( The::popupDropperFactory()->createItem( action ), false );
             }
             subItem = m_pd->addSubmenu( &copyPud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Copy to Collection" )  );
@@ -331,7 +331,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             debug() << "got move actions";
             PopupDropper * movePud = The::popupDropperFactory()->createPopupDropper( 0 );
             foreach( PopupDropperAction * action, m_currentCopyDestination.keys() ) {
-                debug() << "3 adding action " << action->name();
+                debug() << "3 adding action " << action->objectName();
                 movePud->addItem( The::popupDropperFactory()->createItem( action ), false );
             }
             subItem = m_pd->addSubmenu( &movePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Move to Collection" )  );
