@@ -82,6 +82,8 @@ var stationURL = new Array( "http://www.ah.fm/192k.m3u",
                             "http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb",
                             "http://stream.xtcradio.com:8069/listen.pls" );
 
+var total = 27;
+
 service_name = "Cool Streams";
 
 
@@ -104,10 +106,10 @@ function onPopulate( level, parent_id, path, filter )
     {
         print( "Populating main level..." );
 
-        #add top level item
+        //add top level item
         Amarok.ScriptableServiceManager.insertItem( service_name, 1, -1, "The Amarok Crew\'s Top Streams", "Just a parent item to show how nesting works", "get_stations", "" );
 
-        #tell service that all items has been added ( no parent since these are top level items )
+        //tell service that all items has been added ( no parent since these are top level items )
         Amarok.ScriptableServiceManager.donePopulating( "Cool Streams", -1 );
         print( "... done" );
     }
@@ -115,21 +117,22 @@ function onPopulate( level, parent_id, path, filter )
     {
         print( " Populating station level..." );
 
-        #no callback string needed for leaf nodes
+        //no callback string needed for leaf nodes
         callback_string = "";
 
-        #add the station streams as leaf nodes
-//        stations.each() do |station|
-//            html_info = "A cool stream called" + station[0];
-//            Amarok.ScriptableServiceManager.insertItem( service_name, 0, parent_id, station[0], html_info, callback_string, station[1] );
-//        end
+        //add the station streams as leaf nodes
+        for (i = 0; i<total; i++)
+        {
+            html_info = "A cool stream called " + stationName[i];
+            Amarok.ScriptableServiceManager.insertItem( service_name, 0, parent_id,  stationName[i], html_info, callback_string,  stationURL[i] );
+        }
 
-        #tell service that all items has been added to a parent item
+        //tell service that all items has been added to a parent item
         Amarok.ScriptableServiceManager.donePopulating( "Cool Streams", parent_id );
     }
 }
 
-Amarok.configured.connect( conConfigure );
+Amarok.configured.connect( onConfigure );
 Amarok.ScriptableServiceManager.init.connect( onInit );
 Amarok.ScriptableServiceManager.populate.connect( onPopulate );
 

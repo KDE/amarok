@@ -18,7 +18,7 @@
 #include "AmarokScriptableServiceManagerScript.h"
 
 #include "App.h"
-
+#include "Debug.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <QtScript>
@@ -37,26 +37,31 @@ namespace Amarok
 
     bool AmarokScriptableServiceManagerScript::initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar )
     {
+        DEBUG_BLOCK
         return The::scriptableServiceManager()->initService( name, levels, shortDescription, rootHtml, showSearchBar );
     }
 
     int AmarokScriptableServiceManagerScript::insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl)
     {
+        DEBUG_BLOCK
         return The::scriptableServiceManager()->insertItem( serviceName, level, parentId, name, infoHtml, callbackData, playableUrl );
     }
 
     void AmarokScriptableServiceManagerScript::donePopulating( const QString &serviceName, int parentId )
     {
+        DEBUG_BLOCK
         The::scriptableServiceManager()->donePopulating( serviceName, parentId );
     }
 
     void AmarokScriptableServiceManagerScript::slotInit()
     {
+        DEBUG_BLOCK
         emit init();
     }
 
     void AmarokScriptableServiceManagerScript::slotPopulate( int level, int parent_id, QString path, QString filter )
     {
+        DEBUG_BLOCK
         emit populate( level, parent_id, path, filter );
     }
 

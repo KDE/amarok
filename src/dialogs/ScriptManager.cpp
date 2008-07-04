@@ -558,9 +558,6 @@ ScriptManager::slotRunScript( bool silent )
                                          "You may only run one transcode script at a time." ) );
         return false;
     }
-    if( m_scripts[name].type == "service" )
-        The::scriptableServiceManager()->addRunningScript( name );
-
     const KUrl url = m_scripts[name].url;
     QTime time;
     //load the wrapper classes
@@ -576,6 +573,8 @@ ScriptManager::slotRunScript( bool silent )
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
     scriptFile.close();
     //FIXME: '\n' doesen't work?
+    if( m_scripts[name].type == "service" )
+        The::scriptableServiceManager()->addRunningScript( name );
     if ( m_scripts[name].engine->hasUncaughtException() )
     {
         m_scripts[name].log += time.currentTime().toString() + " " + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() ) + '\n';
