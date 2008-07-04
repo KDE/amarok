@@ -22,7 +22,8 @@
 #include <QLabel>
 
 
-class FilenameLayoutWidget : public QFrame
+class FilenameLayoutWidget
+    : public QFrame
 {
     Q_OBJECT
 
@@ -47,7 +48,8 @@ class FilenameLayoutWidget : public QFrame
         void slotAddToken();
 };
 
-class Token : public QLabel
+class Token
+    : public QLabel
 {
     Q_OBJECT
     public:

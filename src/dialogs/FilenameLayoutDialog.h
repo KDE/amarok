@@ -21,7 +21,9 @@
 
 #include <KDialog>
 
-class FilenameLayoutDialog : public KDialog, private Ui::FilenameLayoutDialog
+class FilenameLayoutDialog
+    : public KDialog
+    , private Ui::FilenameLayoutDialog
 {
     Q_OBJECT
 

@@ -23,7 +23,8 @@
 #include <QMouseEvent>
 
 
-TokenListWidget::TokenListWidget( QWidget *parent ) : KListWidget( parent )
+TokenListWidget::TokenListWidget( QWidget *parent )
+    : KListWidget( parent )
 {
     setAcceptDrops( true );
 }
@@ -39,7 +40,8 @@ TokenListWidget::mousePressEvent( QMouseEvent *event )
 void
 TokenListWidget::mouseMoveEvent( QMouseEvent *event )
 {
-    if ( event->buttons() & Qt::LeftButton ) {
+    if ( event->buttons() & Qt::LeftButton )
+    {
         int distance = ( event->pos() - startPos ).manhattanLength();
         if ( distance >= KApplication::startDragDistance() )
         {
@@ -53,7 +55,8 @@ void
 TokenListWidget::dragEnterEvent( QDragEnterEvent *event )
 {
     QWidget *source = qobject_cast<QWidget *>( event->source() );
-    if ( source && source != this ) {
+    if ( source && source != this )
+    {
         event->setDropAction( Qt::CopyAction );
         event->accept();
     }
@@ -63,7 +66,8 @@ void
 TokenListWidget::dragMoveEvent( QDragMoveEvent *event )        //overrides QListWidget's implementation
 {
     QWidget *source = qobject_cast<QWidget *>( event->source() );
-    if ( source && source != this ) {
+    if ( source && source != this )
+    {
         event->setDropAction( Qt::CopyAction );
         event->accept();
     }
@@ -73,8 +77,9 @@ void
 TokenListWidget::dropEvent( QDropEvent *event )
 {
     QWidget *source = qobject_cast<QWidget *>( event->source() );
-    if ( source && source != this ) {
-        addItem( event->mimeData()->text() );     //TODO:    mimeData->setData( "application/x-amarok-tag-token", itemData );
+    if ( source && source != this )
+    {
+        addItem( event->mimeData()->text() );     //TODO: mimeData->setData( "application/x-amarok-tag-token", itemData );
 
         event->setDropAction( Qt::CopyAction );
         event->accept();
@@ -85,18 +90,19 @@ void
 TokenListWidget::performDrag( QMouseEvent *event )
 {
     QListWidgetItem *item = currentItem();
-    if ( item ) {
+    if ( item )
+    {
         QByteArray itemData;
         QDataStream dataStream( &itemData, QIODevice::WriteOnly );
         dataStream << item->text() << QPoint( event->pos() - rect().topLeft() );
         QMimeData *mimeData = new QMimeData;
         mimeData->setData( "application/x-amarok-tag-token", itemData );    //setText( item->text() );
         mimeData->setText( item->text() );       //We add both the graphic and the text to the mimeData of the drag
-
         QDrag *drag = new QDrag( this );
         drag->setMimeData( mimeData );
         debug() << "I'm dragging from the token pool";
-        //TODO:set a pointer for the drag, like this: drag->setPixmap( QPixmap("foo.png" ) );
+        //TODO: set a pointer for the drag, like this: drag->setPixmap( QPixmap("foo.png" ) );
+        drag->exec( Qt::MoveAction | Qt::CopyAction, Qt::CopyAction );
     }
 }
 

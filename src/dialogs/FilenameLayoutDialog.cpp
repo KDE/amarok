@@ -38,7 +38,6 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
     tokenPool->addItem( i18n( "Album Name" ) );
     tokenPool->addItem( i18n( "Comment" ) );
 
-    //QGridLayout *dialogLayout = new QGridLayout;
     setLayout( verticalLayout );    //see verticalLayout in FilenameLayoutDialog.ui
 
     QPushButton *debugButton = new QPushButton( "TEST" );       //no need for i18n()

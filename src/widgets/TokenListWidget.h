@@ -19,7 +19,8 @@
 
 #include <KListWidget>
 
-class TokenListWidget : public KListWidget      //all this kinda works when used with another TokenListWidget, now I have to make it work with FilenameLayoutWidget
+class TokenListWidget
+    : public KListWidget      //all this kinda works when used with another TokenListWidget, now I have to make it work with FilenameLayoutWidget
 {
     Q_OBJECT
     

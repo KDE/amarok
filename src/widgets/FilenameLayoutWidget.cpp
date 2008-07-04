@@ -99,12 +99,13 @@ FilenameLayoutWidget::dragMoveEvent( QDragMoveEvent *event )          //need to 
 void FilenameLayoutWidget::dropEvent( QDropEvent *event )
 {
     QWidget *source = qobject_cast<QWidget *>( event->source() );     //not sure how to handle this
-    if ( source && source != this ) {
+    if ( source && source != this )
+    {
         //TODO: transfer the string somehow. It was like this when dragging from KListWidget to KListWidget:
         //addItem( event->mimeData()->text() );
         //needs to be     x-amarok-tag-token
-        debug() << "I'm dragging shit from the token pool";
-        addToken( tr( "TOKEN" ) );
+        debug() << "I'm dragging from the token pool";
+        addToken( "TOKEN" );
         event->setDropAction( Qt::CopyAction );
         event->accept();
     }
@@ -119,7 +120,8 @@ unsigned int FilenameLayoutWidget::getTokenCount()
 
 //starts implementation of Token : QLabel
 
-Token::Token( const QString &text, QWidget *parent ) : QLabel( parent )
+Token::Token( const QString &text, QWidget *parent )
+    : QLabel( parent )
 {
     myCount = qobject_cast<FilenameLayoutWidget *>( parent )->getTokenCount();
     QFontMetrics metric( font() );
@@ -147,7 +149,8 @@ Token::Token( const QString &text, QWidget *parent ) : QLabel( parent )
 void
 Token::mouseMoveEvent( QMouseEvent *event )
 {
-    if ( event->buttons() & Qt::LeftButton ) {
+    if ( event->buttons() & Qt::LeftButton )
+    {
         int distance = ( event->pos() - startPos ).manhattanLength();
         if ( distance >= KApplication::startDragDistance() )
         {
