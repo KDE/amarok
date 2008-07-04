@@ -15,7 +15,7 @@
   <property name="windowTitle" >
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="" >
+  <widget class="QWidget" name="layoutWidget" >
    <property name="geometry" >
     <rect>
      <x>50</x>
@@ -36,13 +36,13 @@
       <property name="minimumSize" >
        <size>
         <width>600</width>
-        <height>30</height>
+        <height>36</height>
        </size>
       </property>
       <property name="maximumSize" >
        <size>
         <width>300</width>
-        <height>30</height>
+        <height>36</height>
        </size>
       </property>
       <property name="frameShape" >
@@ -71,6 +71,7 @@
      </layout>
     </item>
    </layout>
+   <zorder>filenameLayout</zorder>
    <zorder></zorder>
   </widget>
  </widget>

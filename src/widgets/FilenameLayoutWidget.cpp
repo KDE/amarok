@@ -38,7 +38,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     layout->setSpacing( 1 );
     setLayout( layout );
     backText = new QLabel;
-    backText->setText( i18n( "<i>Drag tokens here to define a filename scheme.</i>" ) );
+    backText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );
     layout->addWidget( backText );
     tokenCount = 0;     //how many tokens have I built, need this to assign unique IDs
 }
@@ -57,9 +57,11 @@ FilenameLayoutWidget::addToken( QString text ){
     }
 
     tokenCount++;
-    Token *token = new Token( text + QString::number( tokenCount ), this );
+    Token *token = new Token( text, this );
 
     layout->addWidget( token );
+    token->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);       //TODO: fix this to expand the tokens
+                                                                            //apparently the widget itself is expanded but the drawing is not. look into it
     token->show();
 }
 
@@ -105,7 +107,7 @@ void FilenameLayoutWidget::dropEvent( QDropEvent *event )
         //addItem( event->mimeData()->text() );
         //needs to be     x-amarok-tag-token
         debug() << "I'm dragging from the token pool";
-        addToken( "TOKEN" );
+        addToken( event->mimeData()->text() );
         event->setDropAction( Qt::CopyAction );
         event->accept();
     }
@@ -183,8 +185,9 @@ Token::performDrag( QMouseEvent *event )
 
     hide();     //note to self: where does this come from?
 
-    if( drag->exec( Qt::MoveAction | Qt::CopyAction, Qt::CopyAction ) == Qt::MoveAction )
+    drag->exec(Qt::MoveAction | Qt::CopyAction, Qt:: CopyAction);
+    /*if( drag->exec( Qt::MoveAction | Qt::CopyAction, Qt::CopyAction ) == Qt::MoveAction )
         close();
     else
-        show();
+        show();*/
 }
