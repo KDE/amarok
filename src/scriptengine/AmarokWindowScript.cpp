@@ -63,7 +63,8 @@ namespace Amarok
 
     void AmarokWindowScript::addSeparator()
     {
-        m_ToolMenu->addSeparator();
+        QAction* action = m_ToolMenu->addSeparator();
+        m_guiPtrList->append( action );
     }
 
 }
