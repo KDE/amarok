@@ -90,12 +90,11 @@ void TrackToolTip::show( const QPoint & bottomRight )
 
 void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 {
-    if( m_track.isNull() )
-        return;
+    DEBUG_BLOCK
 
-    if( m_track->artist() )
+    if( m_track && m_track->artist() )
         unsubscribeFrom( m_track->artist() );
-    if( m_track->album() )
+    if( m_track && m_track->album() )
         unsubscribeFrom( m_track->album() );
     unsubscribeFrom( m_track );
 
@@ -249,3 +248,4 @@ void TrackToolTip::metadataChanged( Meta::Artist * /*artist*/ )
 }
 
 #include "TrackTooltip.moc"
+
