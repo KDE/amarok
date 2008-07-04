@@ -68,7 +68,6 @@ TrackToolTip::TrackToolTip()
     l->addWidget( m_otherInfoLabel, 1, 1 );
     setLayout( l );
     clear();
-
 }
 
 TrackToolTip::~TrackToolTip()
