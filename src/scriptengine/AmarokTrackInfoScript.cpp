@@ -27,6 +27,7 @@ namespace Amarok
     AmarokTrackInfoScript::AmarokTrackInfoScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
+        Q_UNUSED( ScriptEngine );
     }
 
     AmarokTrackInfoScript::~AmarokTrackInfoScript()

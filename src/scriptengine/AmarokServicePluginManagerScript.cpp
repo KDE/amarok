@@ -28,6 +28,7 @@ namespace Amarok
     AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
+        Q_UNUSED( ScriptEngine );
     }
 
     AmarokServicePluginManagerScript::~AmarokServicePluginManagerScript()

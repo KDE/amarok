@@ -28,7 +28,7 @@ namespace Amarok
     AmarokScriptableServiceManagerScript::AmarokScriptableServiceManagerScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
-
+        Q_UNUSED( ScriptEngine );
     }
 
     AmarokScriptableServiceManagerScript::~AmarokScriptableServiceManagerScript()

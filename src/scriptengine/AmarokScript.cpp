@@ -27,7 +27,7 @@ namespace Amarok
     AmarokScript::AmarokScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
-
+        Q_UNUSED( ScriptEngine );
     }
 
     AmarokScript::~AmarokScript()

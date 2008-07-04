@@ -26,7 +26,7 @@ namespace Amarok
     AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
-
+        Q_UNUSED( ScriptEngine );
     }
 
     AmarokPlaylistScript::~AmarokPlaylistScript()
