@@ -118,9 +118,9 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
         strcpy ( ret, c_tok );
 
         debug () << "Using identifier: " << ret;
-        m_daemon = new Mp3tunesHarmonyDaemon( ret );
+        theDaemon = new Mp3tunesHarmonyDaemon( ret );
 
-        Mp3tunesHarmonizer * harmonizer = new Mp3tunesHarmonizer( m_daemon );
+        Mp3tunesHarmonizer * harmonizer = new Mp3tunesHarmonizer( theDaemon );
         connect( harmonizer, SIGNAL( harmonyExited( QString ) ), this, SLOT( slotHarmonyQuit() ) );
         debug() << "running harmonizer.";
         ThreadWeaver::Weaver::instance()->enqueue( harmonizer );
@@ -132,7 +132,7 @@ Mp3tunesService::~Mp3tunesService()
 {
     CollectionManager::instance()->removeUnmanagedCollection( m_collection );
     delete m_locker;
-    delete m_daemon;
+//    delete m_daemon;
     delete m_collection;
 }
 

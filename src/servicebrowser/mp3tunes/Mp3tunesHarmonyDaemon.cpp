@@ -21,12 +21,13 @@
 
 GMainLoop * Mp3tunesHarmonyDaemon::m_main_loop = g_main_loop_new(0, FALSE);
 
-Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier )
+Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier ) :
+    m_identifier( identifier )
+   , m_gerr( 0 )
+   , m_error( QString() )
+   , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
 {
     m_harmony = mp3tunes_harmony_new();
-    m_err = 0;
-    m_identifier = identifier;
-
 
     /* g_type_init required for using the GObjects for Harmony. */
     g_type_init();
@@ -34,7 +35,7 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier )
     /* Set the error signal handler. */
     g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), 0);
     /* Set the state change signal handler. */
-    g_signal_connect(&m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
+    g_signal_connect(m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
     /* Set the download signal handler. */
     g_signal_connect(m_harmony, "download-ready", G_CALLBACK(signalDownloadReady), NULL);
     g_signal_connect(m_harmony, "download-pending", G_CALLBACK(signalDownloadPending), NULL);
@@ -71,10 +72,10 @@ Mp3tunesHarmonyDaemon::init()
     /* Configure main loop */
 
     /* Start the connection */
-    mp3tunes_harmony_connect(m_harmony, &m_err);
+    mp3tunes_harmony_connect(m_harmony, &m_gerr);
     /* Check for errors on the connection */
-    if (m_err) {
-        g_print("Error: %s\n", m_err->message);
+    if (m_gerr) {
+        g_print("Error: %s\n", m_gerr->message);
     }
 
     /* Run the main loop */
@@ -82,6 +83,58 @@ Mp3tunesHarmonyDaemon::init()
 
 }
 
+QString
+Mp3tunesHarmonyDaemon::pin() const
+{
+    return QString( mp3tunes_harmony_get_pin( m_harmony ) );
+}
+
+QString
+Mp3tunesHarmonyDaemon::error() const
+{
+    return m_error;
+}
+
+void
+Mp3tunesHarmonyDaemon::setState( HarmonyState state )
+{
+    m_state = state;
+}
+
+void
+Mp3tunesHarmonyDaemon::setError( const QString &error )
+{
+    m_error = error;
+}
+void
+Mp3tunesHarmonyDaemon::emitError()
+{
+   emit( signalError( m_error ) );
+}
+
+void
+Mp3tunesHarmonyDaemon::emitWaitingForEmail()
+{
+    emit( signalWaitingForEmail() );
+}
+
+void
+Mp3tunesHarmonyDaemon::emitWaitingForPin()
+{
+    emit( signalWaitingForPin() );
+}
+
+void
+Mp3tunesHarmonyDaemon::emitConnected()
+{
+    emit( signalConnected() );
+}
+
+void
+Mp3tunesHarmonyDaemon::emitDisconnected()
+{
+    emit( signalDisconnected() );
+}
 
 void
 Mp3tunesHarmonyDaemon::signalErrorHandler(MP3tunesHarmony* harmony, gpointer null_pointer )
@@ -89,6 +142,8 @@ Mp3tunesHarmonyDaemon::signalErrorHandler(MP3tunesHarmony* harmony, gpointer nul
       GError *err;
       null_pointer = null_pointer;
       g_print("Fatal Error: %s\n", harmony->error->message);
+      theDaemon->setError( QString( harmony->error->message ) );
+      theDaemon->emitError();
       mp3tunes_harmony_disconnect(harmony, &err);
       if (err) {
           g_print("Error disconnecting: %s\n", err->message);
@@ -105,10 +160,14 @@ Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint
     switch (state) {
         case MP3TUNES_HARMONY_STATE_DISCONNECTED:
             g_print("Disconnected.\n");
+            theDaemon->setState( Mp3tunesHarmonyDaemon::DISCONNECTED );
+            theDaemon->emitDisconnected();
             /* Do nothing here */
             break;
         case MP3TUNES_HARMONY_STATE_CONNECTED:
             g_print("Connected! Waiting for download requests!\n");
+            theDaemon->setState( Mp3tunesHarmonyDaemon::CONNECTED );
+            theDaemon->emitConnected();
             /* At this point, it would be best to store the pin, if you haven't
                * already, and the email in some somewhat permenant storage for
                * when reauthenticating.
@@ -116,10 +175,14 @@ Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint
             break;
         case MP3TUNES_HARMONY_STATE_WAITING_FOR_PIN:
             g_print("Connection in process!\n");
+            theDaemon->setState( Mp3tunesHarmonyDaemon::WAITING_FOR_PIN );
+            theDaemon->emitWaitingForPin();
             /* At this point, just update the user status. */
             break;
         case MP3TUNES_HARMONY_STATE_WAITING_FOR_EMAIL:
             g_print("Please login to mp3tunes.com and add the pin '%s' to your devices.\n", mp3tunes_harmony_get_pin(harmony));
+            theDaemon->setState( Mp3tunesHarmonyDaemon::WAITING_FOR_EMAIL );
+            theDaemon->emitWaitingForEmail();
             /* At this point, it would be best to store the pin in case the
              * network connection drops. As well, display to the user a status
              * message to have them perform the website authentication action.

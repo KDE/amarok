@@ -23,6 +23,9 @@
 #include "../ServiceBase.h"
 #include "Mp3tunesServiceCollection.h"
 #include "Mp3tunesLocker.h"
+#ifndef DEFINE_HARMONY
+#define DEFINE_HARMONY
+#endif
 #include "Mp3tunesHarmonyDaemon.h"
 
 #include <kio/jobclasses.h>

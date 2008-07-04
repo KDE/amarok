@@ -19,6 +19,8 @@
 #ifndef MP3TUNESHARMONYDAEMON_H
 #define MP3TUNESHARMONYDAEMON_H
 
+#include <QObject>
+#include <QString>
 extern "C" {
    // Get libmp3tunes declarations
     #include "libmp3tunes/harmony.h"
@@ -30,13 +32,41 @@ extern "C" {
     #include <string.h>
 }
 
-class Mp3tunesHarmonyDaemon {
+class Mp3tunesHarmonyDaemon: public QObject
+{
+    Q_OBJECT
 
   public:
     Mp3tunesHarmonyDaemon( char* identifier);
     ~Mp3tunesHarmonyDaemon();
 
     void init();
+
+    QString pin() const;
+    QString error() const;
+
+    enum HarmonyState {
+        DISCONNECTED,
+        CONNECTED,
+        WAITING_FOR_PIN,
+        WAITING_FOR_EMAIL
+    };
+
+    void setState( HarmonyState state );
+    void setError( const QString &error );
+
+    void emitError();
+    void emitWaitingForEmail();
+    void emitWaitingForPin();
+    void emitConnected();
+    void emitDisconnected();
+
+  signals:
+      void signalWaitingForEmail();
+      void signalWaitingForPin();
+      void signalConnected();
+      void signalDisconnected();
+      void signalError( const QString &error );
 
   private:
 
@@ -89,9 +119,22 @@ class Mp3tunesHarmonyDaemon {
 
     MP3tunesHarmony* m_harmony;
     static GMainLoop * m_main_loop;
-    GError *m_err;
     char* m_identifier;
+    GError *m_gerr;
 
+    QString m_error;
+    
+    HarmonyState m_state;
 };
 
+
+#ifdef DEFINE_HARMONY
+#define HARMONY
+#else
+#define HARMONY extern
 #endif
+
+HARMONY Mp3tunesHarmonyDaemon* theDaemon;
+
+#endif
+
