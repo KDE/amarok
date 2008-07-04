@@ -1,16 +1,21 @@
-/*
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-*/
-
-/*
-  tracktooltip.h  -  Provides an interface to a plain QWidget, which is independent of KDE (bypassed to X11)
-  begin:     Tue 10 Feb 2004
-  copyright: (C) 2004 by Christian Muehlhaeuser
-  email:     chris@chris.de
-*/
+/******************************************************************************
+ * Copyright (C) 2004 Christian Muehlhaeuser <chris@chris.de>                 *
+ * Copyright (C) 2005 Gábor Lehel <illissius@gmail.com>                       *
+ * Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>                  *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or              *
+ * modify it under the terms of the GNU General Public License as             *
+ * published by the Free Software Foundation; either version 2 of             *
+ * the License, or (at your option) any later version.                        *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+ ******************************************************************************/
 
 #ifndef TRACKTOOLTIP_H
 #define TRACKTOOLTIP_H
