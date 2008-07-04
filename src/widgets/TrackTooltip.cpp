@@ -57,16 +57,19 @@ TrackToolTip::TrackToolTip()
     setWindowFlags( Qt::ToolTip );
 //     setWindowOpacity( 0.6 ); // This doesn't work that well, the background should be transparent without the foreground, probably.
     QGridLayout *l = new QGridLayout;
+
     m_titleLabel = new QLabel( this );
     QFont f;
     f.setBold( true );
     m_titleLabel->setFont( f );
     l->addWidget( m_titleLabel, 0, 0, 1, 2 );
+
     m_imageLabel = new QLabel( this );
     l->addWidget( m_imageLabel, 1, 0 );
 
     m_otherInfoLabel = new QLabel( this );
     l->addWidget( m_otherInfoLabel, 1, 1 );
+
     setLayout( l );
     clear();
 
@@ -199,16 +202,16 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 
 void TrackToolTip::setPos( int pos )
 {
-    if( m_pos != pos )
+    if( m_trackPosition != pos )
     {
-        m_pos = pos;
+        m_trackPosition = pos;
         updateWidgets();
     }
 }
 
 void TrackToolTip::clear()
 {
-    m_pos     = 0;
+    m_trackPosition = 0;
     m_tooltip = i18n( "Amarok - No track playing." );
     m_track = Meta::TrackPtr();
     m_title.clear();
@@ -219,19 +222,14 @@ void TrackToolTip::clear()
 
 QString TrackToolTip::tooltip() const
 {
-    QString tip = m_tooltip;
-    if( m_track )
-    {
-        if( m_haspos )
-            tip = tip.arg( Meta::msToPrettyTime( m_pos ) );
-    }
-    return tip;
+    return ( m_track && m_haspos ) ? m_tooltip.arg( Meta::msToPrettyTime( m_trackPosition ) ) : m_tooltip;
 }
 
 void TrackToolTip::updateWidgets()
 {
     if( !m_image.isNull() )
         m_imageLabel->setPixmap( m_image );
+
     m_titleLabel->setText( m_title );
     m_otherInfoLabel->setText( tooltip() );
 }

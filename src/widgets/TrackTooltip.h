@@ -56,13 +56,14 @@ class TrackToolTip : public QWidget, public Meta::Observer
         void updateWidgets();
     
         static TrackToolTip *s_instance;
+
         QList<QWidget> m_widgets;
         Meta::TrackPtr m_track;
-        int        m_pos;
-        QString    m_tooltip;
-        bool       m_haspos;
-        QString    m_moodbarURL;
-        QString m_title;
+        int            m_trackPosition;
+        QString        m_tooltip;
+        bool           m_haspos;
+        QString        m_moodbarURL;
+        QString        m_title;
     
         QLabel *m_imageLabel;
         QPixmap m_image;
