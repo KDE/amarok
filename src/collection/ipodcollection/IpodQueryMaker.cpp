@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,14 +15,14 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#include "SqlQueryMaker.h"
+#include "IpodQueryMaker.h"
 
-#define DEBUG_PREFIX "SqlQueryMaker"
+#define DEBUG_PREFIX "IpodQueryMaker"
 
 #include "Debug.h"
 
 #include "mountpointmanager.h"
-#include "SqlCollection.h"
+#include "IpodCollection.h"
 
 #include <QStack>
 
@@ -31,10 +31,10 @@
 
 using namespace Meta;
 
-class SqlWorkerThread : public ThreadWeaver::Job
+class IpodWorkerThread : public ThreadWeaver::Job
 {
     public:
-        SqlWorkerThread( SqlQueryMaker *queryMaker )
+        IpodWorkerThread( IpodQueryMaker *queryMaker )
             : ThreadWeaver::Job()
             , m_queryMaker( queryMaker )
             , m_aborted( false )
@@ -57,12 +57,12 @@ class SqlWorkerThread : public ThreadWeaver::Job
             setFinished( !m_aborted );
         }
     private:
-        SqlQueryMaker *m_queryMaker;
+        IpodQueryMaker *m_queryMaker;
 
         bool m_aborted;
 };
 
-struct SqlQueryMaker::Private
+struct IpodQueryMaker::Private
 {
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64, URLS_TAB = 128, ALBUMARTIST_TAB = 256 };
@@ -80,12 +80,12 @@ struct SqlQueryMaker::Private
     bool withoutDuplicates;
     int maxResultSize;
     AlbumQueryMode albumMode;
-    SqlWorkerThread *worker;
+    IpodWorkerThread *worker;
 
     QStack<bool> andStack;
 };
 
-SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
+IpodQueryMaker::IpodQueryMaker( IpodCollection* collection )
     : QueryMaker()
     , m_collection( collection )
     , d( new Private )
@@ -96,13 +96,13 @@ SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
     reset();
 }
 
-SqlQueryMaker::~SqlQueryMaker()
+IpodQueryMaker::~IpodQueryMaker()
 {
     delete d;
 }
 
 QueryMaker*
-SqlQueryMaker::reset()
+IpodQueryMaker::reset()
 {
     d->query.clear();
     d->queryType = Private::NONE;
@@ -124,21 +124,21 @@ SqlQueryMaker::reset()
 }
 
 void
-SqlQueryMaker::abortQuery()
+IpodQueryMaker::abortQuery()
 {
     if( d->worker )
         d->worker->requestAbort();
 }
 
 QueryMaker*
-SqlQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+IpodQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     d->resultAsDataPtrs = resultAsDataPtrs;
     return this;
 }
 
 void
-SqlQueryMaker::run()
+IpodQueryMaker::run()
 {
     if( d->queryType == Private::NONE )
         return; //better error handling?
@@ -151,14 +151,14 @@ SqlQueryMaker::run()
     else
     {
         //debug() << "Query is " << query();
-        d->worker = new SqlWorkerThread( this );
+        d->worker = new IpodWorkerThread( this );
         connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
     }
 }
 
 void
-SqlQueryMaker::done( ThreadWeaver::Job *job )
+IpodQueryMaker::done( ThreadWeaver::Job *job )
 {
     ThreadWeaver::Weaver::instance()->dequeue( job );
     job->deleteLater();
@@ -167,9 +167,9 @@ SqlQueryMaker::done( ThreadWeaver::Job *job )
 }
 
 QueryMaker*
-SqlQueryMaker::startTrackQuery()
+IpodQueryMaker::startTrackQuery()
 {
-    //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
+    //make sure to keep this method in sync with handleTracks(QStringList) and the IpodTrack ctor
     if( d->queryType == Private::NONE )
     {
         d->queryType = Private::TRACK;
@@ -181,13 +181,13 @@ SqlQueryMaker::startTrackQuery()
         d->linkedTables |= Private::COMPOSER_TAB;
         d->linkedTables |= Private::YEAR_TAB;
         d->linkedTables |= Private::STATISTICS_TAB;
-        d->queryReturnValues = SqlTrack::getTrackReturnValues();
+        d->queryReturnValues = IpodTrack::getTrackReturnValues();
     }
     return this;
 }
 
 QueryMaker*
-SqlQueryMaker::startArtistQuery()
+IpodQueryMaker::startArtistQuery()
 {
     if( d->queryType == Private::NONE )
     {
@@ -201,7 +201,7 @@ SqlQueryMaker::startArtistQuery()
 }
 
 QueryMaker*
-SqlQueryMaker::startAlbumQuery()
+IpodQueryMaker::startAlbumQuery()
 {
     if( d->queryType == Private::NONE )
     {
@@ -215,7 +215,7 @@ SqlQueryMaker::startAlbumQuery()
 }
 
 QueryMaker*
-SqlQueryMaker::startComposerQuery()
+IpodQueryMaker::startComposerQuery()
 {
     if( d->queryType == Private::NONE )
     {
@@ -228,7 +228,7 @@ SqlQueryMaker::startComposerQuery()
 }
 
 QueryMaker*
-SqlQueryMaker::startGenreQuery()
+IpodQueryMaker::startGenreQuery()
 {
     if( d->queryType == Private::NONE )
     {
@@ -241,7 +241,7 @@ SqlQueryMaker::startGenreQuery()
 }
 
 QueryMaker*
-SqlQueryMaker::startYearQuery()
+IpodQueryMaker::startYearQuery()
 {
     if( d->queryType == Private::NONE )
     {
@@ -254,7 +254,7 @@ SqlQueryMaker::startYearQuery()
 }
 
 QueryMaker*
-SqlQueryMaker::startCustomQuery()
+IpodQueryMaker::startCustomQuery()
 {
     if( d->queryType == Private::NONE )
         d->queryType = Private::CUSTOM;
@@ -262,7 +262,7 @@ SqlQueryMaker::startCustomQuery()
 }
 
 QueryMaker*
-SqlQueryMaker::includeCollection( const QString &collectionId )
+IpodQueryMaker::includeCollection( const QString &collectionId )
 {
     if( !d->collectionRestriction )
     {
@@ -275,7 +275,7 @@ SqlQueryMaker::includeCollection( const QString &collectionId )
 }
 
 QueryMaker*
-SqlQueryMaker::excludeCollection( const QString &collectionId )
+IpodQueryMaker::excludeCollection( const QString &collectionId )
 {
     d->collectionRestriction = true;
     if( m_collection->collectionId() == collectionId )
@@ -284,7 +284,7 @@ SqlQueryMaker::excludeCollection( const QString &collectionId )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const TrackPtr &track )
+IpodQueryMaker::addMatch( const TrackPtr &track )
 {
     QString url = track->url();
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
@@ -295,7 +295,7 @@ SqlQueryMaker::addMatch( const TrackPtr &track )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const ArtistPtr &artist )
+IpodQueryMaker::addMatch( const ArtistPtr &artist )
 {
     d->linkedTables |= Private::ARTIST_TAB;
     d->queryMatch += QString( " AND artists.name = '%1'" ).arg( escape( artist->name() ) );
@@ -303,7 +303,7 @@ SqlQueryMaker::addMatch( const ArtistPtr &artist )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const AlbumPtr &album )
+IpodQueryMaker::addMatch( const AlbumPtr &album )
 {
     d->linkedTables |= Private::ALBUM_TAB;
     //handle compilations
@@ -322,7 +322,7 @@ SqlQueryMaker::addMatch( const AlbumPtr &album )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const GenrePtr &genre )
+IpodQueryMaker::addMatch( const GenrePtr &genre )
 {
     d->linkedTables |= Private::GENRE_TAB;
     d->queryMatch += QString( " AND genres.name = '%1'" ).arg( escape( genre->name() ) );
@@ -330,7 +330,7 @@ SqlQueryMaker::addMatch( const GenrePtr &genre )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const ComposerPtr &composer )
+IpodQueryMaker::addMatch( const ComposerPtr &composer )
 {
     d->linkedTables |= Private::COMPOSER_TAB;
     d->queryMatch += QString( " AND composers.name = '%1'" ).arg( escape( composer->name() ) );
@@ -338,7 +338,7 @@ SqlQueryMaker::addMatch( const ComposerPtr &composer )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const YearPtr &year )
+IpodQueryMaker::addMatch( const YearPtr &year )
 {
     d->linkedTables |= Private::YEAR_TAB;
     d->queryMatch += QString( " AND years.name = '%1'" ).arg( escape( year->name() ) );
@@ -346,14 +346,14 @@ SqlQueryMaker::addMatch( const YearPtr &year )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const DataPtr &data )
+IpodQueryMaker::addMatch( const DataPtr &data )
 {
     ( const_cast<DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 
 QueryMaker*
-SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
+IpodQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
@@ -361,7 +361,7 @@ SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, 
 }
 
 QueryMaker*
-SqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
+IpodQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
@@ -369,7 +369,7 @@ SqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBeg
 }
 
 QueryMaker*
-SqlQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+IpodQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
     QString comparison;
     switch( compare )
@@ -389,7 +389,7 @@ SqlQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberC
 }
 
 QueryMaker*
-SqlQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+IpodQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
     QString comparison;
     switch( compare )
@@ -409,7 +409,7 @@ SqlQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::Num
 }
 
 QueryMaker*
-SqlQueryMaker::addReturnValue( qint64 value )
+IpodQueryMaker::addReturnValue( qint64 value )
 {
     if( d->queryType == Private::CUSTOM )
     {
@@ -421,7 +421,7 @@ SqlQueryMaker::addReturnValue( qint64 value )
 }
 
 QueryMaker*
-SqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
+IpodQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 {
     if( d->queryType == Private::CUSTOM )
     {
@@ -443,7 +443,7 @@ SqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
                 sqlfunction = "MIN";
                 break;
             default:
-                sqlfunction = "Unknown function in SqlQueryMaker::addReturnFunction, function was: " + function;
+                sqlfunction = "Unknown function in IpodQueryMaker::addReturnFunction, function was: " + function;
         }
         d->queryReturnValues += QString( "%1(%2)" ).arg( sqlfunction, nameForValue( value ) );
     }
@@ -451,7 +451,7 @@ SqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 }
 
 QueryMaker*
-SqlQueryMaker::orderBy( qint64 value, bool descending )
+IpodQueryMaker::orderBy( qint64 value, bool descending )
 {
     if ( d->queryOrderBy.isEmpty() )
         d->queryOrderBy = " ORDER BY ";
@@ -463,21 +463,21 @@ SqlQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-SqlQueryMaker::orderByRandom()
+IpodQueryMaker::orderByRandom()
 {
     d->queryOrderBy = " ORDER BY RANDOM()";
     return this;
 }
 
 QueryMaker*
-SqlQueryMaker::limitMaxResultSize( int size )
+IpodQueryMaker::limitMaxResultSize( int size )
 {
     d->maxResultSize = size;
     return this;
 }
 
 QueryMaker*
-SqlQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
+IpodQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     if( mode != AllAlbums )
     {
@@ -488,7 +488,7 @@ SqlQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 }
 
 QueryMaker*
-SqlQueryMaker::beginAnd()
+IpodQueryMaker::beginAnd()
 {
     d->queryFilter += andOr();
     d->queryFilter += " ( 1 ";
@@ -497,7 +497,7 @@ SqlQueryMaker::beginAnd()
 }
 
 QueryMaker*
-SqlQueryMaker::beginOr()
+IpodQueryMaker::beginOr()
 {
     d->queryFilter += andOr();
     d->queryFilter += " ( 0 ";
@@ -506,7 +506,7 @@ SqlQueryMaker::beginOr()
 }
 
 QueryMaker*
-SqlQueryMaker::endAndOr()
+IpodQueryMaker::endAndOr()
 {
     d->queryFilter += ')';
     d->andStack.pop();
@@ -514,7 +514,7 @@ SqlQueryMaker::endAndOr()
 }
 
 void
-SqlQueryMaker::linkTables()
+IpodQueryMaker::linkTables()
 {
     d->linkedTables |= Private::TAGS_TAB; //HACK!!!
     //assuming that tracks is always included for now
@@ -552,7 +552,7 @@ SqlQueryMaker::linkTables()
 }
 
 void
-SqlQueryMaker::buildQuery()
+IpodQueryMaker::buildQuery()
 {
     linkTables();
     QString query = "SELECT ";
@@ -589,7 +589,7 @@ SqlQueryMaker::buildQuery()
 }
 
 QString
-SqlQueryMaker::query()
+IpodQueryMaker::query()
 {
     if ( d->query.isEmpty() )
         buildQuery();
@@ -597,13 +597,13 @@ SqlQueryMaker::query()
 }
 
 QStringList
-SqlQueryMaker::runQuery( const QString &query )
+IpodQueryMaker::runQuery( const QString &query )
 {
     return m_collection->query( query );
 }
 
 void
-SqlQueryMaker::handleResult( const QStringList &result )
+IpodQueryMaker::handleResult( const QStringList &result )
 {
     if( !result.isEmpty() )
     {
@@ -639,7 +639,7 @@ SqlQueryMaker::handleResult( const QStringList &result )
 }
 
 QString
-SqlQueryMaker::nameForValue( qint64 value )
+IpodQueryMaker::nameForValue( qint64 value )
 {
     switch( value )
     {
@@ -704,12 +704,12 @@ SqlQueryMaker::nameForValue( qint64 value )
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.playcount";
         default:
-            return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
+            return "ERROR: unknown value in IpodQueryMaker::nameForValue(qint64): value=" + value;
     }
 }
 
 QString
-SqlQueryMaker::andOr() const
+IpodQueryMaker::andOr() const
 {
     return d->andStack.top() ? " AND " : " OR ";
 }
@@ -733,12 +733,12 @@ SqlQueryMaker::andOr() const
         }
 
 void
-SqlQueryMaker::handleTracks( const QStringList &result )
+IpodQueryMaker::handleTracks( const QStringList &result )
 {
     TrackList tracks;
-    SqlRegistry* reg = m_collection->registry();
+    IpodRegistry* reg = m_collection->registry();
     //there are 29 columns in the result set as generated by startTrackQuery()
-    int returnCount = SqlTrack::getTrackReturnValueCount();
+    int returnCount = IpodTrack::getTrackReturnValueCount();
     int resultRows = result.size() / returnCount;
     for( int i = 0; i < resultRows; i++ )
     {
@@ -749,10 +749,10 @@ SqlQueryMaker::handleTracks( const QStringList &result )
 }
 
 void
-SqlQueryMaker::handleArtists( const QStringList &result )
+IpodQueryMaker::handleArtists( const QStringList &result )
 {
     ArtistList artists;
-    SqlRegistry* reg = m_collection->registry();
+    IpodRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString name = iter.next();
@@ -763,10 +763,10 @@ SqlQueryMaker::handleArtists( const QStringList &result )
 }
 
 void
-SqlQueryMaker::handleAlbums( const QStringList &result )
+IpodQueryMaker::handleAlbums( const QStringList &result )
 {
     AlbumList albums;
-    SqlRegistry* reg = m_collection->registry();
+    IpodRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString name = iter.next();
@@ -778,10 +778,10 @@ SqlQueryMaker::handleAlbums( const QStringList &result )
 }
 
 void
-SqlQueryMaker::handleGenres( const QStringList &result )
+IpodQueryMaker::handleGenres( const QStringList &result )
 {
     GenreList genres;
-    SqlRegistry* reg = m_collection->registry();
+    IpodRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString name = iter.next();
@@ -792,10 +792,10 @@ SqlQueryMaker::handleGenres( const QStringList &result )
 }
 
 void
-SqlQueryMaker::handleComposers( const QStringList &result )
+IpodQueryMaker::handleComposers( const QStringList &result )
 {
     ComposerList composers;
-    SqlRegistry* reg = m_collection->registry();
+    IpodRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString name = iter.next();
@@ -806,10 +806,10 @@ SqlQueryMaker::handleComposers( const QStringList &result )
 }
 
 void
-SqlQueryMaker::handleYears( const QStringList &result )
+IpodQueryMaker::handleYears( const QStringList &result )
 {
     YearList years;
-    SqlRegistry* reg = m_collection->registry();
+    IpodRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
     {
         QString name = iter.next();
@@ -820,13 +820,13 @@ SqlQueryMaker::handleYears( const QStringList &result )
 }
 
 QString
-SqlQueryMaker::escape( QString text ) const           //krazy:exclude=constref
+IpodQueryMaker::escape( QString text ) const           //krazy:exclude=constref
 {
     return text.replace( '\'', "''" );;
 }
 
 QString
-SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const
+IpodQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const
 {
     if( anyBegin || anyEnd )
     {
@@ -855,5 +855,5 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
     }
 }
 
-#include "SqlQueryMaker.moc"
+#include "IpodQueryMaker.moc"
 

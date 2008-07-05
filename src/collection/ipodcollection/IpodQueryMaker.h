@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,8 +15,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef AMAROK_COLLECTION_SQLQUERYMAKER_H
-#define AMAROK_COLLECTION_SQLQUERYMAKER_H
+#ifndef AMAROK_COLLECTION_IPODQUERYMAKER_H
+#define AMAROK_COLLECTION_IPODQUERYMAKER_H
 
 #include "QueryMaker.h"
 
@@ -24,15 +24,15 @@
 
 #include <threadweaver/Job.h>
 
-class SqlCollection;
+class IpodCollection;
 
-class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
+class /*AMAROK_EXPORT*/ IpodQueryMaker : public QueryMaker
 {
     Q_OBJECT
 
     public:
-        SqlQueryMaker( SqlCollection* collection );
-        virtual ~SqlQueryMaker();
+        IpodQueryMaker( IpodCollection* collection );
+        virtual ~IpodQueryMaker();
 
         virtual QueryMaker* reset();
         virtual void abortQuery();
@@ -104,11 +104,11 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
         void handleComposers( const QStringList &result );
         void handleYears( const QStringList &result );
 
-        SqlCollection *m_collection;
+        IpodCollection *m_collection;
 
         class Private;
         Private * const d;
 
 };
 
-#endif /* AMAROK_COLLECTION_SQLQUERYMAKER_H */
+#endif /* AMAROK_COLLECTION_IPODQUERYMAKER_H */
