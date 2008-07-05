@@ -204,10 +204,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
 
 void TrackToolTip::setTrackPosition( int pos )
 {
-    if( isHidden() )
-        return;
-
-    if( m_trackPosition != pos ) {
+    if( !isHidden() && m_trackPosition != pos ) {
         m_trackPosition = pos;
         updateWidgets();
     }
