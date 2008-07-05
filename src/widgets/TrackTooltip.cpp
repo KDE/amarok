@@ -97,7 +97,7 @@ void TrackToolTip::show( const QPoint & bottomRight )
 
 #define MOODBAR_WIDTH 150
 
-void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
+void TrackToolTip::setTrack( const Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
@@ -107,7 +107,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
         unsubscribeFrom( m_track->album() );
     unsubscribeFrom( m_track );
 
-    if( force || m_track != track )
+    if( track )
     {
         m_haspos = false;
         m_tooltip.clear();
@@ -200,6 +200,10 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track, bool force )
         if( m_track->album() )
             subscribeTo( m_track->album() );
     }
+    else
+    {
+        debug() << "track = null. Aborting.";
+    }
 }
 
 void TrackToolTip::setTrackPosition( int pos )
@@ -237,17 +241,17 @@ void TrackToolTip::updateWidgets()
 
 void TrackToolTip::metadataChanged( Meta::Track * /*track*/ )
 {
-    setTrack( The::engineController()->currentTrack(), true );
+    setTrack( The::engineController()->currentTrack() );
 }
 
 void TrackToolTip::metadataChanged( Meta::Album * /*album*/ )
 {
-    setTrack( The::engineController()->currentTrack(), true );
+    setTrack( The::engineController()->currentTrack() );
 }
 
 void TrackToolTip::metadataChanged( Meta::Artist * /*artist*/ )
 {
-    setTrack( The::engineController()->currentTrack(), true );
+    setTrack( The::engineController()->currentTrack() );
 }
 
 bool TrackToolTip::eventFilter( QObject* obj, QEvent* event )

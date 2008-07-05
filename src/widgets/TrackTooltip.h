@@ -38,7 +38,7 @@ class TrackToolTip : public QWidget, public Meta::Observer
         ~TrackToolTip();
         static TrackToolTip* instance();
     
-        void setTrack( const Meta::TrackPtr track, bool force = false );
+        void setTrack( const Meta::TrackPtr track );
         void setTrackPosition( int pos );
         void clear();
         void show( const QPoint &bottomRight );
