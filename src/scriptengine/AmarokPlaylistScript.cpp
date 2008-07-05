@@ -18,6 +18,9 @@
 #include "AmarokPlaylistScript.h"
 
 #include "App.h"
+#include "collection/CollectionManager.h"
+#include "MainWindow.h"
+#include "playlist/PlaylistModel.h"
 
 #include <QtScript>
 
@@ -31,6 +34,85 @@ namespace Amarok
 
     AmarokPlaylistScript::~AmarokPlaylistScript()
     {
+    }
+    int AmarokPlaylistScript::getActiveIndex()
+    {
+        return The::playlistModel()->activeRow();
+    }
+
+    int AmarokPlaylistScript::getTotalTrackCount()
+    {
+        return The::playlistModel()->rowCount();
+    }
+
+    QString AmarokPlaylistScript::saveCurrentPlaylist()
+    {
+        QString savePath = The::playlistModel()->defaultPlaylistPath();
+        The::playlistModel()->exportPlaylist( savePath );
+        return savePath;
+    }
+
+    void AmarokPlaylistScript::addMedia( const KUrl &url )
+    {
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+        The::playlistModel()->insertOptioned( track, Playlist::Append );
+    }
+
+    void AmarokPlaylistScript::addMediaList( const KUrl::List &urls )
+    {
+        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
+        The::playlistModel()->insertOptioned( tracks, Playlist::Append );
+    }
+
+    void AmarokPlaylistScript::clearPlaylist()
+    {
+        The::playlistModel()->clear();
+    }
+
+    void AmarokPlaylistScript::playByIndex( int index )
+    {
+        The::playlistModel()->play( index );
+    }
+
+    void AmarokPlaylistScript::playMedia( const KUrl &url )
+    {
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+        if( track )
+            The::playlistModel()->insertOptioned( track, Playlist::DirectPlay | Playlist::Unique );
+    }
+
+    void AmarokPlaylistScript::removeCurrentTrack()
+    {
+        The::playlistModel()->removeRows( getActiveIndex(), 1 );
+    }
+
+    void AmarokPlaylistScript::removeByIndex( int index )
+    {
+        if( index < getTotalTrackCount() )
+            The::playlistModel()->removeRows( index, 1 );
+    }
+
+    void AmarokPlaylistScript::savePlaylist( const QString& path )
+    {
+        The::playlistModel()->exportPlaylist( path );
+    }
+
+    void AmarokPlaylistScript::setStopAfterCurrent( bool on )
+    {
+        The::playlistModel()->setStopAfterMode( on ? Playlist::StopAfterCurrent : Playlist::StopNever );
+    }
+
+    void AmarokPlaylistScript::togglePlaylist()
+    {
+        MainWindow::self()->showHide();
+    }
+
+    QStringList AmarokPlaylistScript::filenames()
+    {
+        QStringList fileNames;
+        foreach( Playlist::Item* item, The::playlistModel()->itemList() )
+        fileNames << item->track()->prettyUrl();
+        return fileNames;
     }
 
 }

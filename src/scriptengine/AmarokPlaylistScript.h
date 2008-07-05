@@ -18,6 +18,8 @@
 #ifndef AMAROK_PLAYLIST_SCRIPT_H
 #define AMAROK_PLAYLIST_SCRIPT_H
 
+#include <KUrl>
+
 #include <QObject>
 #include <QtScript>
 
@@ -32,7 +34,20 @@ namespace Amarok
             AmarokPlaylistScript( QScriptEngine* ScriptEngine );
             ~AmarokPlaylistScript();
         public slots:
-
+            int getActiveIndex();
+            int getTotalTrackCount();
+            QString saveCurrentPlaylist();
+            void addMedia( const KUrl &url );
+            void addMediaList( const KUrl::List &urls );
+            void clearPlaylist();
+            void playByIndex( int index );
+            void playMedia( const KUrl &url );
+            void removeCurrentTrack();
+            void removeByIndex( int index );
+            void savePlaylist( const QString& path );
+            void setStopAfterCurrent( bool on );
+            void togglePlaylist();
+            QStringList filenames();
         private:
 
     };
