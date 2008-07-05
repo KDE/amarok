@@ -716,11 +716,12 @@ ScriptManager::scriptFinished( QString name ) //SLOT
     m_scripts[name].running = false;
     foreach( const QObject* obj, m_scripts[name].guiPtrList )
         delete obj;
+    m_scripts[name].guiPtrList.clear();
     foreach( const QObject* obj, m_scripts[name].wrapperList )
         delete obj;
-    m_scripts[name].guiPtrList.clear();
+    m_scripts[name].wrapperList.clear();
     m_scripts[name].log += time.currentTime().toString() + " Script ended!" + '\n';
-//probably memory leak here?
+
     m_scripts[name].li->setIcon( 0, QPixmap() );
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
 }
