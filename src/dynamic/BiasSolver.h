@@ -38,7 +38,8 @@ namespace Dynamic
     class BiasSolver : public ThreadWeaver::Job
     {
         public:
-            BiasSolver( int n, QList<Bias*> biases, RandomPlaylist* randomSource );
+            BiasSolver( int n, QList<Bias*> biases, RandomPlaylist* randomSource,
+                    Meta::TrackList context = Meta::TrackList() );
 
             Meta::TrackList solution();
 
@@ -53,6 +54,8 @@ namespace Dynamic
             double energy();
             double recalculateEnergy( Meta::TrackPtr mutation, int mutationPos );
 
+            double calcDomainSize();
+
             void generateInitialPlaylist();
             Meta::TrackPtr getMutation();
 
@@ -63,6 +66,7 @@ namespace Dynamic
             double m_T;                 //! temperature
             double m_E;                 //! energy
             Meta::TrackList m_playlist; //! playlist being generated
+            Meta::TrackList m_context;  //! tracks that precede the playlist
 
             RandomPlaylist* m_mutationSource;
 

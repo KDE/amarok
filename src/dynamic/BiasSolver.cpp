@@ -20,7 +20,10 @@
 
 
 #include "BiasSolver.h"
+#include "BlockingQuery.h"
+#include "CollectionManager.h"
 #include "Debug.h"
+#include "MetaQueryMaker.h"
 
 #include <cmath>
 #include <typeinfo>
@@ -35,8 +38,9 @@ const double Dynamic::BiasSolver::INITIAL_TEMPERATURE = 0.1;
 const double Dynamic::BiasSolver::COOLING_RATE        = 0.8;
 
 
-Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, RandomPlaylist* randomSource )
-    : m_biases(biases), m_n(n), m_mutationSource( randomSource )
+Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, RandomPlaylist* randomSource,
+        Meta::TrackList context )
+    : m_biases(biases), m_n(n), m_context(context), m_mutationSource( randomSource )
 {
     int i = m_biases.size();
     while( i-- )
@@ -129,7 +133,7 @@ double Dynamic::BiasSolver::energy()
     double sum = 0.0;
     for( int i = 0; i < m_biases.size(); ++i )
     {
-       sum += (m_biasEnergy[i] = m_biases[i]->energy( m_playlist ));
+       sum += qAbs( (m_biasEnergy[i] = m_biases[i]->energy( m_playlist, m_context )) );
     }
 
     return sum / (double)m_biases.size();
@@ -141,8 +145,8 @@ double Dynamic::BiasSolver::recalculateEnergy( Meta::TrackPtr mutation, int muta
     double sum = 0.0;
     for( int i = 0; i < m_biases.size(); ++i )
     {
-        m_biasEnergy[i] = m_biases[i]->reevaluate( m_E, m_playlist, mutation, mutationPos );
-        sum += m_biasEnergy[i];
+        m_biasEnergy[i] = m_biases[i]->reevaluate( m_E, m_playlist, mutation, mutationPos, m_context );
+        sum += qAbs( m_biasEnergy[i] );
     }
 
     return sum / (double)m_biases.size();
@@ -151,10 +155,70 @@ double Dynamic::BiasSolver::recalculateEnergy( Meta::TrackPtr mutation, int muta
 
 void Dynamic::BiasSolver::generateInitialPlaylist()
 {
-    // TODO: implement a greedy heuristic that prefers tracks that are rare but
-    // in high demand by global biases.
-   
-    m_playlist = m_mutationSource->getTracks( m_n );
+    // This confusing bit of code is a greedy heuristic that tries to choose
+    // tracks that are rare but in high demand by global biases. That way we
+    // don't eat up a lot of iterations looking for them.
+
+    // FIXME: this will break if all the gb's are unsatisfiable.
+
+    QList<Dynamic::GlobalBias*> globalBiases;
+    QList<double> weights;
+    double totalWeight = 0.0;
+    double domainSize = calcDomainSize();
+
+    foreach( Dynamic::Bias* b, m_biases )
+    {
+        Dynamic::GlobalBias* gb = dynamic_cast<Dynamic::GlobalBias*>( b );
+        if( gb )
+        {
+            globalBiases.append( gb );
+            weights.append( (gb->weight() - (double)gb->propertySet().size()/domainSize) );
+            totalWeight += weights.last();
+        }
+    }
+
+    // whatever, we'll just use a random sample
+    if( globalBiases.isEmpty() )
+        m_playlist = m_mutationSource->getTracks( m_n );
+
+    // we need these as lists to get random value from
+    QList< Meta::TrackList > propertySets;
+    foreach( Dynamic::GlobalBias* gb, globalBiases )
+    {
+        propertySets.append( gb->propertySet().toList() );
+    }
+
+    m_playlist.clear();
+    int n = m_n;
+    int active;
+    double activeDecider;
+    while( n-- )
+    {
+        // choose the active bias
+        activeDecider = totalWeight * (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
+
+        active = 0;
+        while( activeDecider > 0.0 && active < globalBiases.size()-1 )
+        {
+            if( activeDecider > weights[active] )
+            {
+                activeDecider -= weights[active];
+                active++;
+            }
+            else break;
+        }
+
+        if( weights[active] < 0.0 )
+        {
+            // TODO: choose a random track from the set's complement
+            m_playlist.append( m_mutationSource->getTrack() );
+        }
+        else
+        {
+            int choice = KRandom::random() % propertySets[active].size();
+            m_playlist.append( propertySets[active][choice] );
+        }
+    }
 }
 
 
@@ -163,3 +227,26 @@ Meta::TrackPtr Dynamic::BiasSolver::getMutation()
     return m_mutationSource->getTrack();
 }
 
+
+double
+Dynamic::BiasSolver::calcDomainSize()
+{
+    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+    qm->startCustomQuery();
+    qm->addReturnFunction( QueryMaker::Count, QueryMaker::valUrl );
+    BlockingQuery bq( qm );
+    
+    bq.startQuery();
+
+    double domainSize = 0.0;
+    foreach( QStringList sl, bq.customData() )
+    {
+        foreach( QString s, sl )
+        {
+            domainSize += s.toDouble();
+        }
+    }
+
+    return domainSize;
+
+}

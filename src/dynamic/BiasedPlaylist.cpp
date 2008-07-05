@@ -19,9 +19,10 @@
  **************************************************************************/
 
 
-#include "Debug.h"
 #include "BiasedPlaylist.h"
 #include "Collection.h"
+#include "Debug.h"
+#include "playlist/PlaylistModel.h"
 
 #include <threadweaver/ThreadWeaver.h>
 
@@ -40,11 +41,20 @@ Dynamic::BiasedPlaylist::BiasedPlaylist(
         QString title,
         QList<Bias*> biases, 
         Collection* collection )
-    : m_biases(biases), m_collection(collection), m_solver(0), m_randomSource(collection)
+    : DynamicPlaylist(collection)
+    , m_biases(biases)
+    , m_solver(0)
+    , m_randomSource(collection)
 {
     setTitle( title );
 }
 
+
+void
+Dynamic::BiasedPlaylist::setContext( Meta::TrackList context )
+{
+    m_context = context;
+}
 
 void
 Dynamic::BiasedPlaylist::startSolver()
@@ -53,7 +63,7 @@ Dynamic::BiasedPlaylist::startSolver()
 
     if( m_solver ) return;
 
-    m_solver = new BiasSolver( BUFFER_SIZE, m_biases, &m_randomSource );
+    m_solver = new BiasSolver( BUFFER_SIZE, m_biases, &m_randomSource, m_context );
     connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
             this, SLOT(solverFinished(ThreadWeaver::Job*)),
             Qt::DirectConnection );
@@ -78,10 +88,12 @@ Dynamic::BiasedPlaylist::getTrack()
         if( m_backbuffer.isEmpty() )
         {
             // we need it now !
+            if( m_context.isEmpty() ) getContext();
             startSolver();
             m_solverLoop.exec();
         }
 
+        m_context = m_buffer;
         m_buffer = m_backbuffer;
         m_backbuffer.clear();
         // start working on the backbuffer again
@@ -100,10 +112,10 @@ Dynamic::BiasedPlaylist::getTrack()
 void
 Dynamic::BiasedPlaylist::recalculate()
 {
-    // dump everything in buffer
     m_buffer.clear();
     m_backbuffer.clear();
 
+    getContext();
     startSolver();
 }
 
@@ -116,5 +128,19 @@ Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
     job->deleteLater();
     m_solver = 0;
     m_solverLoop.exit();
+}
+
+void
+Dynamic::BiasedPlaylist::getContext()
+{
+    m_context.clear();
+
+    QList<Playlist::Item*> items = The::playlistModel()->itemList();
+    int i = qMax( 0, The::playlistModel()->activeRow() );
+
+    for( ; i < items.size(); ++i )
+    {
+        m_context.append( items[i]->track() );
+    }
 }
 

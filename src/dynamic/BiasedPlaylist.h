@@ -39,7 +39,10 @@ namespace Dynamic
         public:
             BiasedPlaylist( QString title, QList<Bias*> );
             BiasedPlaylist( QString title, QList<Bias*>, Collection* m_collection );
+
             ~BiasedPlaylist();
+
+            void setContext( Meta::TrackList );
 
             Meta::TrackPtr getTrack();
             void recalculate();
@@ -49,12 +52,13 @@ namespace Dynamic
 
         private:
             void startSolver();
+            void getContext();
 
+            Meta::TrackList m_context;
             Meta::TrackList m_buffer;
             Meta::TrackList m_backbuffer;
 
             QList<Bias*> m_biases;
-            Collection* m_collection;
 
             BiasSolver* m_solver;
             QEventLoop  m_solverLoop;

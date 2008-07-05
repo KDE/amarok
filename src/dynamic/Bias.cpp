@@ -26,15 +26,19 @@
 #include "CollectionManager.h"
 #include "QueryMaker.h"
 
+
+
 double
-Dynamic::Bias::reevaluate( double oldEnergy, Meta::TrackList oldPlaylist,
-        Meta::TrackPtr newTrack, int newTrackPos )
+Dynamic::Bias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
+        Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context )
 {
     Q_UNUSED( oldEnergy );
     // completely reevaluate by default
-    oldPlaylist[newTrackPos] = newTrack;
-    return energy( oldPlaylist );
+    Meta::TrackList oldPlaylistCopy( oldPlaylist );
+    oldPlaylistCopy[newTrackPos] = newTrack;
+    return energy( oldPlaylist, context );
 }
+
 
 Dynamic::CollectionDependantBias::CollectionDependantBias()
     : m_needsUpdating( true )
@@ -93,24 +97,34 @@ Dynamic::GlobalBias::setWeight( double weight )
 
 
 double
-Dynamic::GlobalBias::energy( Meta::TrackList playlist )
+Dynamic::GlobalBias::energy( const Meta::TrackList& playlist, const Meta::TrackList& context )
 {
-   double satisfiedCount = 0;
-   foreach( Meta::TrackPtr t, playlist )
-   {
-       if( trackSatisfies( t ) )
-           satisfiedCount++;
-   }
+    Q_UNUSED( context );
 
-   return qAbs( m_weight - (satisfiedCount / (double)playlist.size()) );
+    double satisfiedCount = 0;
+    foreach( Meta::TrackPtr t, playlist )
+    {
+        if( trackSatisfies( t ) )
+            satisfiedCount++;
+    }
+
+    return  m_weight - (satisfiedCount / (double)playlist.size());
 }
 
 
-double Dynamic::GlobalBias::reevaluate( double oldEnergy, Meta::TrackList oldPlaylist,
-        Meta::TrackPtr newTrack, int newTrackPos )
+double Dynamic::GlobalBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
+        Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context )
 {
-    // TODO: how can this be done properly ?
-    return Dynamic::Bias::reevaluate( oldEnergy, oldPlaylist, newTrack, newTrackPos );
+    Q_UNUSED( newTrackPos );
+    Q_UNUSED( oldPlaylist );
+    Q_UNUSED( context );
+
+    double offset = 1.0 / (double)oldPlaylist.size();
+
+    if( trackSatisfies( newTrack ) )
+        return oldEnergy + offset;
+    else
+        return oldEnergy - offset;
 }
 
 

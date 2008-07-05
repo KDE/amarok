@@ -42,19 +42,22 @@ namespace Dynamic
             virtual ~Bias() {}
 
             /**
-             * Returns a value in the range [0,1]. Playlist generation is being
+             * Returns a value in the range [-1,1]. (The sign is not considered,
+             * but it may be usefull to return negative numbers for
+             * implementing reevaluate.) Playlist generation is being
              * treated as a minimization problem, so 0 means the bias is completely
-             * satisfied, 1 that it is not satisfied at all.
+             * satisfied, (+/-)1 that it is not satisfied at all. The tracks that
+             * precede the playlist are passed as 'context'.
              */
-            virtual double energy( Meta::TrackList playlist ) = 0;
+            virtual double energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) = 0;
 
 
             /**
              * When a track is swapped in the playlist, avoid completely reevaluating
              * the energy function if possible.
              */
-            virtual double reevaluate( double oldEnergy, Meta::TrackList oldPlaylist,
-                    Meta::TrackPtr newTrack, int newTrackPos );
+            virtual double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
+                    Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context );
     };
 
 
@@ -95,9 +98,11 @@ namespace Dynamic
             GlobalBias( double weigt, QueryMaker* propertyQuery );
             GlobalBias( Collection* coll, double weight, QueryMaker* propertyQuery );
 
-            double energy( Meta::TrackList playlist );
-            double reevaluate( double oldEnergy, Meta::TrackList oldPlaylist,
-                    Meta::TrackPtr newTrack, int newTrackPos );
+            double energy( const Meta::TrackList& playlist, const Meta::TrackList& context );
+            double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
+                    Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context );
+
+            const QSet<Meta::TrackPtr>& propertySet() { return m_property; }
             bool trackSatisfies( Meta::TrackPtr );
             void update();
 
@@ -112,3 +117,4 @@ namespace Dynamic
 }
 
 #endif
+
