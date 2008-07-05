@@ -339,6 +339,7 @@ set(dbus_SRCS
 set (scriptengine_SRCS
      scriptengine/ScriptImporter.cpp
      scriptengine/AmarokScript.cpp
+     scriptengine/AmarokCollectionScript.cpp
      scriptengine/AmarokScriptableServiceManagerScript.cpp
      scriptengine/AmarokServicePluginManagerScript.cpp
      scriptengine/AmarokEngineScript.cpp

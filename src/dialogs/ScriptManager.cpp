@@ -33,6 +33,7 @@
 #include "AmarokProcess.h"
 #include "StatusBar.h"
 #include "Osd.h"
+#include "scriptengine/AmarokCollectionScript.h"
 #include "scriptengine/AmarokEngineScript.h"
 #include "scriptengine/AmarokOSDScript.h"
 #include "scriptengine/AmarokPlaylistScript.h"
@@ -914,6 +915,11 @@ ScriptManager::startScriptEngine( QString name )
     objectPtr = new Amarok::AmarokServicePluginManagerScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "ServicePluginManager", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
+
+    objectPtr = new Amarok::AmarokCollectionScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr );
+    m_global.setProperty( "Collection", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
     objectPtr = new Amarok::AmarokEngineScript( scriptEngine );
