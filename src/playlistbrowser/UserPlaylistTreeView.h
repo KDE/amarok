@@ -44,7 +44,7 @@ public:
 
     void setNewGroupAction( KAction * action );
 
-
+    PopupDropper* m_pd;
 
 protected:
 
@@ -64,19 +64,17 @@ private slots:
     void slotAppend();
     void slotDelete();
     void slotRename();
-    
+
 private:
 
     QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
 
-    PopupDropper* m_pd;
-
     PopupDropperAction * m_appendAction;
     PopupDropperAction * m_loadAction;
-    
+
     PopupDropperAction * m_deleteAction;
     PopupDropperAction * m_renameAction;
-    
+
     KAction * m_addGroupAction;
 
     QSet<SqlPlaylistViewItemPtr> m_currentItems;

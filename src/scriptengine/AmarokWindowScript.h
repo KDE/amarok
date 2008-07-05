@@ -36,8 +36,8 @@ namespace Amarok
             ~AmarokWindowScript();
 
         public slots:
-            bool addMenu( QString MenuTitle );
-            void addSeparator();
+            bool addToolMenu( QString MenuTitle );
+            void addToolSeparator();
 
         private:
             KMenu*           m_ToolMenu;

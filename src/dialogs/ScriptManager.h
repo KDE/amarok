@@ -169,6 +169,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
             Amarok::AmarokScriptableServiceManagerScript*   servicePtr;
             QString                                         log;
             QList<QObject*>                                 guiPtrList;
+            QList<QObject*>                                 wrapperList;
             ScriptItem() :                                  li( 0 ), running( false ){}
         };
 

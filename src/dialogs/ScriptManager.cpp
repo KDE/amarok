@@ -716,6 +716,8 @@ ScriptManager::scriptFinished( QString name ) //SLOT
     m_scripts[name].running = false;
     foreach( const QObject* obj, m_scripts[name].guiPtrList )
         delete obj;
+    foreach( const QObject* obj, m_scripts[name].wrapperList )
+        delete obj;
     m_scripts[name].guiPtrList.clear();
     m_scripts[name].log += time.currentTime().toString() + " Script ended!" + '\n';
 //probably memory leak here?
@@ -890,41 +892,65 @@ ScriptManager::startScriptEngine( QString name )
 //    scriptEngine->importExtension( "qt.core" );
 //    scriptEngine->importExtension( "qt.gui" );
 
+    QObject* objectPtr;
     QScriptValue scriptObject;
-    scriptObject = scriptEngine->newQObject( new Amarok::ScriptImporter( scriptEngine, m_scripts[name].url ) );
+
+    objectPtr = new Amarok::ScriptImporter( scriptEngine, m_scripts[name].url );
+    scriptObject = scriptEngine->newQObject( objectPtr );
     scriptEngine->globalObject().setProperty( "Importer", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
 
     m_scripts[name].globalPtr = new Amarok::AmarokScript( scriptEngine );
     m_global = scriptEngine->newQObject( m_scripts[name].globalPtr );
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
+    m_scripts[name].wrapperList.append( m_scripts[name].globalPtr );
 
     m_scripts[name].servicePtr = new Amarok::AmarokScriptableServiceManagerScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( m_scripts[name].servicePtr );
     m_global.setProperty( "ScriptableServiceManager", scriptObject );
+    m_scripts[name].wrapperList.append( m_scripts[name].servicePtr );
 
-    scriptObject = scriptEngine->newQObject( new Amarok::AmarokServicePluginManagerScript( scriptEngine ) );
+    objectPtr = new Amarok::AmarokServicePluginManagerScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "ServicePluginManager", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
 
-    scriptObject = scriptEngine->newQObject( new Amarok::AmarokEngineScript( scriptEngine ) );
+    objectPtr = new Amarok::AmarokEngineScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Engine", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
 
-    scriptObject = scriptEngine->newQObject( new Amarok::AmarokTrackInfoScript( scriptEngine ) );
+    objectPtr = new Amarok::AmarokTrackInfoScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.property("Engine").setProperty( "TrackInfo", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
 
-    scriptObject = scriptEngine->newQObject( new Amarok::AmarokWindowScript( scriptEngine, &m_scripts[name].guiPtrList ) );
+    objectPtr = new Amarok::AmarokWindowScript( scriptEngine, &m_scripts[name].guiPtrList );
+    scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Window", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
 
-    scriptObject = scriptEngine->newQObject( new Amarok::AmarokOSDScript( scriptEngine ) );
+    objectPtr = new Amarok::AmarokOSDScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "OSD", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
 
-    scriptObject = scriptEngine->newQObject( new Amarok::AmarokPlaylistScript( scriptEngine ) );
+    objectPtr = new Amarok::AmarokPlaylistScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Playlist", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
 
-    scriptObject = scriptEngine->newQObject( new Amarok::AmarokStatusbarScript( scriptEngine ) );
+    objectPtr = new Amarok::AmarokStatusbarScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.property( "Window" ).setProperty( "Statusbar", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
 
-    scriptObject = scriptEngine->newQObject( new Amarok::AmarokStatusbarScript( scriptEngine ) );
-    m_global.property( "Window" ).setProperty( "Menu", scriptObject );
+    scriptObject = scriptEngine->newObject();
+    m_global.property( "Window" ).setProperty( "ToolMenu", scriptObject );
+
+    scriptObject = scriptEngine->newObject();
+    m_global.property( "Window" ).setProperty( "PlaylistMenu", scriptObject );
+
 }
 
 
