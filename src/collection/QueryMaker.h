@@ -180,8 +180,21 @@ class AMAROK_EXPORT QueryMaker : public QObject
             @return this
           */
         virtual QueryMaker* addReturnValue( qint64 value ) = 0;
+        /**
+         * Returns the output of the function specified by function.
+         * Only works after starting a custom query
+         * @return this
+         */
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value ) = 0;
+        /**
+         * returned results ordered by the field defined by value.
+         * @return this
+         */
         virtual QueryMaker* orderBy( qint64 value, bool descending = false ) = 0;
+        /**
+         * return results in a random order.
+         * @return this
+         */
         virtual QueryMaker* orderByRandom() = 0;
 
         virtual QueryMaker* includeCollection( const QString &collectionId ) = 0;
