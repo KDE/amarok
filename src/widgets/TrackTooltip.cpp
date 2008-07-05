@@ -87,8 +87,10 @@ TrackToolTip::~TrackToolTip()
 
 void TrackToolTip::show( const QPoint & bottomRight )
 {
-    const int x = bottomRight.x() - width();
-    const int y = bottomRight.y() - height();
+    DEBUG_BLOCK
+
+    const int x = bottomRight.x() - sizeHint().width();
+    const int y = bottomRight.y() - sizeHint().height();
 
     move( x, y );
     QWidget::show();
