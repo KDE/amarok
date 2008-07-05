@@ -727,7 +727,7 @@ const QStringList TagDialog::statisticsData()
 
 void TagDialog::readTags()
 {
-    bool local = m_currentTrack->playableUrl().isLocalFile();
+    const bool local = m_currentTrack->playableUrl().isLocalFile();
 
     setWindowTitle( KDialog::makeStandardCaption( i18n("Track Details: %1 by %2",
                     m_currentTrack->name(),  m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString() ) ) );
@@ -805,8 +805,7 @@ void TagDialog::readTags()
     statisticsText += "</table>";
 
     ui->statisticsLabel->setText( statisticsText );
-
-    ui->kLineEdit_location->setText( local ? m_currentTrack->playableUrl().path() : m_currentTrack->playableUrl().url() );
+    ui->kLineEdit_location->setText( m_currentTrack->prettyUrl() );
 
     //lyrics
     ui->kTextEdit_lyrics->setText( m_lyrics );
