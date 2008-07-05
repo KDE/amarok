@@ -182,7 +182,6 @@ IpodCollection::IpodCollection( const QString &mountPoint )
 
     m_handler = new Ipod::IpodHandler( this, m_mountPoint, this );
 
-    m_handler->printTracks();
     m_handler->parseTracks();
 
     emit collectionReady();

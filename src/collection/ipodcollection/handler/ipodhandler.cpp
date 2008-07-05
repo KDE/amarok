@@ -578,37 +578,6 @@ IpodHandler::openDevice( bool silent )
 }
 #endif
 
-/* Currently tests out libgpod capabilities */
-
-void
-IpodHandler::printTracks()
-{
-    DEBUG_BLOCK
-
-        if ( !m_itdb )
-        {
-            debug() << "ITDB NOT INITIALIZED CORRECTLY!";
-            return;
-        }
-
-    debug() << "Musicdir numbers: " << itdb_musicdirs_number( m_itdb );
-
-    GList *cur = m_itdb->tracks;
-    if ( !cur )
-        debug() << "!!WARNING!!: CUR WAS NULL!";
-    int i = 0;
-/* print 5 tracks to debug */
-    for ( i = 0; cur && ( i < 5 ); cur = cur->next, i++ )
-    {
-        Itdb_Track *track = ( Itdb_Track * )cur->data;
-
-        debug() << "track: " << track->artist << " - " << track->album << " - " << track->title;
-        QString path = QString( track->ipod_path ).split( ":" ).join( "/" );
-        path = m_mountPoint + path;
-        debug() << "Path: " << path;
-    }
-}
-
 void
 IpodHandler::parseTracks()
 {
@@ -627,13 +596,27 @@ IpodHandler::parseTracks()
 /* iterate through tracklist and add to appropriate map */
     for ( cur = m_itdb->tracks; cur; cur = cur->next )
     {
+        /* ipodtrack - provides libgpod itdb info */
+        /* track - the new track whose data is being set up */
         Itdb_Track *ipodtrack = ( Itdb_Track * )cur->data;
-
         QString format( ipodtrack->filetype );
         IpodTrackPtr track( new IpodTrack( m_memColl, format ) );
+
+        /* 1-liner info retrieval */
+
         track->setTitle( QString::fromUtf8( ipodtrack->title ) );
         track->setLength( ( ipodtrack->tracklen ) / 1000 );
         track->setTrackNumber( ipodtrack->track_nr );
+        track->setComment( QString::fromUtf8(  ipodtrack->comment ) );
+        track->setDiscNumber( ipodtrack->cd_nr );
+        track->setBitrate( ipodtrack->bitrate );
+        track->setBpm( ipodtrack->BPM );
+
+        QString path = QString( ipodtrack->ipod_path ).split( ":" ).join( "/" );
+        path = m_mountPoint + path;
+        track->setPlayableUrl( path );
+
+        /* map-related info retrieval */
         QString album( QString::fromUtf8( ipodtrack->album ) );
         IpodAlbumPtr albumPtr;
 
@@ -655,14 +638,15 @@ IpodHandler::parseTracks()
         if (  artistMap.contains(  artist ) )
         {
             artistPtr = IpodArtistPtr::staticCast(  artistMap.value(  artist ) );
-
         }
         else
         {
             artistPtr = IpodArtistPtr(  new IpodArtist(  artist ) );
             artistMap.insert(  artist,  ArtistPtr::staticCast(  artistPtr ) );
-
         }
+
+        artistPtr->addTrack(  track );
+        track->setArtist(  artistPtr );
 
         QString composer ( QString::fromUtf8( ipodtrack->composer ) );
         IpodComposerPtr composerPtr;
@@ -676,10 +660,6 @@ IpodHandler::parseTracks()
             composerPtr = IpodComposerPtr( new IpodComposer( composer ) );
             composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
         }
-
-        artistPtr->addTrack(  track );
-        track->setArtist(  artistPtr );
-
 
         QString year;
         year = year.setNum( ipodtrack->year );
@@ -696,24 +676,20 @@ IpodHandler::parseTracks()
 
         QString genre = ipodtrack->genre;
         IpodGenrePtr genrePtr;
+
         if (  genreMap.contains(  genre ) )
             genrePtr = IpodGenrePtr::staticCast(  genreMap.value(  genre ) );
+
         else
         {
             genrePtr = IpodGenrePtr(  new IpodGenre(  genre ) );
             genreMap.insert(  genre,  GenrePtr::staticCast(  genrePtr ) );
         }
+
         genrePtr->addTrack( track );
         track->setGenre( genrePtr );
-        track->setComment( QString::fromUtf8(  ipodtrack->comment ) );
-        track->setDiscNumber( ipodtrack->cd_nr );
-        track->setBitrate( ipodtrack->bitrate );
-        track->setBpm( ipodtrack->BPM );
 
 
-        QString path = QString( ipodtrack->ipod_path ).split( ":" ).join( "/" );
-        path = m_mountPoint + path;
-        track->setPlayableUrl( path );
     }
 
     m_memColl->acquireWriteLock();
