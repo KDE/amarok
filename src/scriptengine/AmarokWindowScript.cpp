@@ -33,7 +33,8 @@ namespace Amarok
     AmarokWindowScript::AmarokWindowScript( QScriptEngine* ScriptEngine, QList<QObject*>* guiPtrList  )
     : QObject( kapp )
     {
-        m_ToolMenu = MainWindow::self()->ToolMenu();
+        m_ToolsMenu = MainWindow::self()->ToolsMenu();
+        m_SettingsMenu = MainWindow::self()->SettingsMenu();
         m_ScriptEngine = ScriptEngine;
         m_guiPtrList = guiPtrList;
     }
@@ -42,18 +43,19 @@ namespace Amarok
     {
     }
 
-    bool AmarokWindowScript::addToolMenu( QString MenuTitle )
+    bool AmarokWindowScript::addToolsMenu( QString MenuTitle )
     {
         DEBUG_BLOCK
+        QString title = "Tools_" + MenuTitle;
         KActionCollection* const ac = actionCollection();
-        if ( !ac->action( MenuTitle ) )
+        if ( !ac->action( title ) )
         {
             KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, MainWindow::self() );
-            ac->addAction( MenuTitle, action );
-            m_ToolMenu->addAction( ac->action( MenuTitle ) );
-            m_ToolMenu->addAction( action );
+            ac->addAction( title, action );
+            m_ToolsMenu->addAction( ac->action( title ) );
+            m_ToolsMenu->addAction( action );
             QScriptValue newMenu = m_ScriptEngine->newQObject( action );
-            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( "ToolMenu" ).setProperty( MenuTitle, newMenu );
+            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( "ToolsMenu" ).setProperty( MenuTitle, newMenu );
             m_guiPtrList->append( action );
         }
         else
@@ -61,12 +63,37 @@ namespace Amarok
         return true;
     }
 
-    void AmarokWindowScript::addToolSeparator()
+    void AmarokWindowScript::addToolsSeparator()
     {
-        QAction* action = m_ToolMenu->addSeparator();
+        QAction* action = m_ToolsMenu->addSeparator();
         m_guiPtrList->append( action );
     }
 
+    bool AmarokWindowScript::addSettingsMenu( QString MenuTitle )
+    {
+        DEBUG_BLOCK
+        QString title = "Settings_" + MenuTitle;
+        KActionCollection* const ac = actionCollection();
+        if ( !ac->action( title ) )
+        {
+            KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, MainWindow::self() );
+            ac->addAction( title, action );
+            m_SettingsMenu->addAction( ac->action( title ) );
+            m_SettingsMenu->addAction( action );
+            QScriptValue newMenu = m_ScriptEngine->newQObject( action );
+            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( "SettingsMenu" ).setProperty( MenuTitle, newMenu );
+            m_guiPtrList->append( action );
+        }
+        else
+            return false;
+        return true;
+    }
+
+    void AmarokWindowScript::addSettingsSeparator()
+    {
+        QAction* action = m_SettingsMenu->addSeparator();
+        m_guiPtrList->append( action );
+    }
 }
 
 #include "AmarokWindowScript.moc"

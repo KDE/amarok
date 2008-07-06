@@ -27,15 +27,15 @@ function Menu2Clicked()
     print ("hey, menu2!");
 }
 
-Amarok.Window.addToolSeparator();
+Amarok.Window.addToolsSeparator();
 
-if ( Amarok.Window.addToolMenu( "testMenu1" ) )
-    Amarok.Window.ToolMenu.testMenu1.triggered.connect(Menu1Clicked);
+if ( Amarok.Window.addToolsMenu( "testMenu1" ) )
+    Amarok.Window.ToolsMenu.testMenu1.triggered.connect(Menu1Clicked);
 else
     print ( "Menu1 already exists!" );
 
-if ( Amarok.Window.addToolMenu( "testMenu2" ) )
-    Amarok.Window.ToolMenu.testMenu2.triggered.connect(Menu2Clicked);
+if ( Amarok.Window.addToolsMenu( "testMenu2" ) )
+    Amarok.Window.ToolsMenu.testMenu2.triggered.connect(Menu2Clicked);
 else
     print ( "Menu2 already exists!" );
 

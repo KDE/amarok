@@ -20,7 +20,9 @@
 
 #include "App.h"
 #include "EngineController.h"
+#include "meta/Meta.h"
 #include "PlayerAdaptor.h"
+#include "playlist/PlaylistModel.h"
 
 namespace Amarok
 {
@@ -41,20 +43,20 @@ namespace Amarok
     //0 = Playing, 1 = Paused, 2 = Stopped.
     int PlayerDBusHandler::GetStatus()
     {
-            switch( The::engineController()->state() )
-            {
-            case Phonon::PlayingState:
-            case Phonon::BufferingState:
-                return Playing;
-            case Phonon::PausedState:
-                return Paused;
-            case Phonon::LoadingState:
-            case Phonon::StoppedState:
-                return Stopped;
-            case Phonon::ErrorState:
-                return -1;
-            }
+        switch( The::engineController()->state() )
+        {
+        case Phonon::PlayingState:
+        case Phonon::BufferingState:
+            return Playing;
+        case Phonon::PausedState:
+            return Paused;
+        case Phonon::LoadingState:
+        case Phonon::StoppedState:
+            return Stopped;
+        case Phonon::ErrorState:
             return -1;
+        }
+        return -1;
     }
 
     void PlayerDBusHandler::PlayPause()
@@ -103,8 +105,8 @@ namespace Amarok
     {
         QVariantMap map;
         Meta::TrackPtr track = The::engineController()->currentTrack();
-
         if( track ) {
+            //general meta info:
             map["title"] = track->name(); 
             if( track->artist() )
                 map["artist"] = track->artist()->name();
@@ -116,9 +118,15 @@ namespace Amarok
             if( track->genre() )
                 map["genre"] = track->genre()->name();
             map["comment"] = track->comment();
-            map["rating"] = track->rating();  // TODO Are we using the same scale?
+            map["rating"] = track->rating()/2;  //out of 5, not 10.
             if( track->year() )
                 map["year"] = track->year()->name();
+            //TODO: external service meta info:
+
+            //technical meta info:
+            map["audio-bitrate"] = track->bitrate();
+            map["audio-samplerate"] = track->sampleRate();
+            //amarok has no video-bitrate
         }
 
         return map;
@@ -127,8 +135,17 @@ namespace Amarok
     int PlayerDBusHandler::GetCaps()
     {
         int caps = NONE;
-//todo: add function
-        caps |= CAN_PROVIDE_METADATA;
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        caps |= CAN_HAS_TRACKLIST;
+        if ( track ) caps |= CAN_PROVIDE_METADATA;
+        if ( GetStatus() == Playing ) caps |= CAN_PAUSE;
+        if ( ( GetStatus() == Paused ) || ( GetStatus() == Stopped ) ) caps |= CAN_PLAY;
+        if ( ( GetStatus() == Playing ) || ( GetStatus() == Paused ) ) caps |= CAN_SEEK;
+        if ( ( The::playlistModel()->activeRow() >= 0 ) && ( The::playlistModel()->activeRow() <= The::playlistModel()->rowCount() ) )
+        {
+            caps |= CAN_GO_NEXT;
+            caps |= CAN_GO_PREV;
+        }
         return caps;
     }
 

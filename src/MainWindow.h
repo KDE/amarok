@@ -73,7 +73,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void activate();
 
         SideBar *sideBar() const { return m_browsers; }
-        KMenu   *ToolMenu() const { return m_toolsMenu; }
+        KMenu   *ToolsMenu() const { return m_toolsMenu; }
+        KMenu   *SettingsMenu() const { return m_settingsMenu; }
         void deleteBrowsers();
 
         //will return the size of the rect defined top, right and left by the main toolbar and bottom by the context view.

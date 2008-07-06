@@ -220,6 +220,7 @@ ScriptManager::~ScriptManager()
     {
         if( m_scripts[key].running )
         {
+            //FIXME: sometime crashes amarok
             scriptFinished( key );
             runningScripts << key;
         }
@@ -953,7 +954,10 @@ ScriptManager::startScriptEngine( QString name )
     m_scripts[name].wrapperList.append( objectPtr );
 
     scriptObject = scriptEngine->newObject();
-    m_global.property( "Window" ).setProperty( "ToolMenu", scriptObject );
+    m_global.property( "Window" ).setProperty( "ToolsMenu", scriptObject );
+
+    scriptObject = scriptEngine->newObject();
+    m_global.property( "Window" ).setProperty( "SettingsMenu", scriptObject );
 
     scriptObject = scriptEngine->newObject();
     m_global.property( "Window" ).setProperty( "PlaylistMenu", scriptObject );

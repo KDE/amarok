@@ -44,8 +44,6 @@ public:
 
     void setNewGroupAction( KAction * action );
 
-    PopupDropper* m_pd;
-
 protected:
 
     void mousePressEvent( QMouseEvent *event );
@@ -54,7 +52,6 @@ protected:
     void startDrag( Qt::DropActions supportedActions );
 
     void contextMenuEvent( QContextMenuEvent* event );
-
 
 private slots:
 
@@ -68,6 +65,8 @@ private slots:
 private:
 
     QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
+
+    PopupDropper* m_pd;
 
     PopupDropperAction * m_appendAction;
     PopupDropperAction * m_loadAction;
