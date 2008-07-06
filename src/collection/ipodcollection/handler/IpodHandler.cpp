@@ -13,7 +13,7 @@
 
 #define DEBUG_PREFIX "IpodHandler"
 
-#include "ipodhandler.h"
+#include "IpodHandler.h"
 
 #include "IpodCollection.h"
 #include "IpodMeta.h"

@@ -25,7 +25,7 @@ extern "C" {
 
 #include "Collection.h"
 #include "MemoryCollection.h"
-#include "ipodhandler.h"
+#include "IpodHandler.h"
 
 #include <QtGlobal>
 #include <QMap>
