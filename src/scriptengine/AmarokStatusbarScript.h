@@ -40,7 +40,7 @@ namespace Amarok
             void hideMainTextIcon();
             void resetMainText();
             void longMessage( const QString &text, Amarok::StatusBar::MessageType type = Amarok::StatusBar::Information );
-            void longMessageThreadSafe( const QString &text );
+            void longMessageThreadSafe( const QString &text ); //TODO:this function should be renamed and be moved to AmarokWindowScript
             void shortLongMessage( const QString &_short, const QString &_long, Amarok::StatusBar::MessageType type = Amarok::StatusBar::Information );
             void shortMessage( const QString &text, bool longShort = false );
 //            void shortMessageThreadSafe( const QString &text ); //what's this?
