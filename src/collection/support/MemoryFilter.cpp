@@ -214,7 +214,7 @@ StringMemoryFilter::setFilter( const QString &filter, bool matchBegin, bool matc
 bool
 StringMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
 {
-    QString str = value( track );
+    const QString &str = value( track );
     if( m_matchBegin && m_matchEnd )
     {
         return QString::compare( str, m_filter, Qt::CaseInsensitive ) == 0;

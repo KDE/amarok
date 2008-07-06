@@ -147,9 +147,13 @@ MemoryQueryMaker::runQuery()
     {
         TrackList tracks = m_memCollection->trackMap().values();
         TrackList filtered;
-        foreach( TrackPtr track, tracks )
+        foreach( const TrackPtr &track, tracks )
+        {
             if ( d->containerFilters.first()->filterMatches( track ) )
+            {
                 filtered.append( track );
+            }
+        }
         handleResult( filtered );
     }
     else
