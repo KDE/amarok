@@ -215,8 +215,9 @@ void Dynamic::BiasSolver::generateInitialPlaylist()
         }
         else
         {
-            int choice = KRandom::random() % propertySets[active].size();
-            m_playlist.append( propertySets[active][choice] );
+            //TODO: the following lines cause runtime errors as in http://pastebin.com/m561a20b9, please fix
+            //int choice = KRandom::random() % propertySets[active].size();
+            //m_playlist.append( propertySets[active][choice] );
         }
     }
 }

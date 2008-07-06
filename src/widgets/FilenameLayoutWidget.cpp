@@ -126,9 +126,10 @@ Token::Token( const QString &text, QWidget *parent )
     : QLabel( parent )
 {
     myCount = qobject_cast<FilenameLayoutWidget *>( parent )->getTokenCount();
-    QFontMetrics metric( font() );
-    QSize size = metric.size( Qt::TextSingleLine, text );
+    //QFontMetrics metric( font() );
+    //QSize size = metric.size( Qt::TextSingleLine, text );
 
+    QSize size = QSize(30,100);
     QImage image( size.width() + 12, size.height() + 12, QImage::Format_ARGB32_Premultiplied );
     image.fill( qRgba( 0,0,0,0 ) );
 
