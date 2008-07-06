@@ -69,17 +69,17 @@ end
 
 
 def amarok_2
-    title  = `qdbus org.kde.amarok /Player title 2> /dev/null`.chomp
-    artist = `qdbus org.kde.amarok /Player artist`.chomp
-    album  = `qdbus org.kde.amarok /Player album`.chomp
-    year   = `qdbus org.kde.amarok /Player year`.chomp
-    streamName = CGI.unescape(`qdbus org.kde.amarok /Player streamName`.chomp)
-    version = `qdbus org.kde.amarok /Player version`.chomp 
+    title  = `qdbus org.mpris.amarok /Player title 2> /dev/null`.chomp
+    artist = `qdbus org.mpris.amarok /Player artist`.chomp
+    album  = `qdbus org.mpris.amarok /Player album`.chomp
+    year   = `qdbus org.mpris.amarok /Player year`.chomp
+    streamName = CGI.unescape(`qdbus org.mpris.amarok /Player streamName`.chomp)
+    version = `qdbus org.mpris.amarok /Player version`.chomp 
 
     output = ""
 
     if title.empty?
-        output += `qdbus org.kde.amarok /Player nowPlaying`.chomp
+        output += `qdbus org.mpris.amarok /Player nowPlaying`.chomp
     else
         # Strip file extension
         extensions = ".ogg", ".mp3", ".wav", ".flac", ".fla", ".wma", ".mpc", ".oga"
@@ -114,7 +114,7 @@ def amarok_2
 end
 
 
-test = `qdbus org.kde.amarok /Player title 2> /dev/null`.chomp
+test = `qdbus org.mpris.amarok /Player title 2> /dev/null`.chomp
 if $?.success?
   amarok_2
   exit
