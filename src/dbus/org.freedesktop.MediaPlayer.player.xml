@@ -37,7 +37,7 @@
         <arg type="i" direction="out"/>
     </method>
 
-    <method name="GetMetaData">
+    <method name="GetMetadata">
         <arg type="a{sv}" direction="out"/>
         <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
     </method>

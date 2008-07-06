@@ -54,7 +54,7 @@ namespace Amarok
             int VolumeGet();
             void VolumeSet(int in0);
             int GetCaps();
-            QVariantMap GetMetaData();
+            QVariantMap GetMetadata();
         signals:
             void CapsChange( int );
         private slots:

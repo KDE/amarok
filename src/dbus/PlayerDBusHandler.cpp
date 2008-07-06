@@ -99,7 +99,7 @@ namespace Amarok
         The::engineController()->setVolume(vol);
     }
 
-    QVariantMap PlayerDBusHandler::GetMetaData()
+    QVariantMap PlayerDBusHandler::GetMetadata()
     {
         QVariantMap map;
         Meta::TrackPtr track = The::engineController()->currentTrack();
