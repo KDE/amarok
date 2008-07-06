@@ -101,9 +101,27 @@ namespace Amarok
 
     QVariantMap PlayerDBusHandler::GetMetaData()
     {
-        QVariantMap ret;
-//todo: add function
-        return ret;
+        QVariantMap map;
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+
+        if( track ) {
+            map["title"] = track->name(); 
+            if( track->artist() )
+                map["artist"] = track->artist()->name();
+            if( track->album() )
+                map["album"] = track->album()->name();
+            map["tracknumber"] = track->trackNumber();
+            map["time"] = track->length();
+            map["mtime"] = track->length() * 1000;
+            if( track->genre() )
+                map["genre"] = track->genre()->name();
+            map["comment"] = track->comment();
+            map["rating"] = track->rating();  // TODO Are we using the same scale?
+            if( track->year() )
+                map["year"] = track->year()->name();
+        }
+
+        return map;
     }
 
     int PlayerDBusHandler::GetCaps()
