@@ -47,6 +47,8 @@ namespace Dynamic
             Meta::TrackPtr getTrack();
             void recalculate();
 
+            QList<Bias*>& biases();
+
         private slots:
             void solverFinished( ThreadWeaver::Job* );
 

@@ -20,10 +20,11 @@
 
 #include "widgets/Widget.h"
 
-#include <QComboBox>
 #include <QPushButton>
-#include <QTreeView>
+#include <QListView>
 #include <QVBoxLayout>
+
+#include <KComboBox>
 
 namespace PlaylistBrowserNS {
 
@@ -39,10 +40,11 @@ class DynamicCategory : public Amarok::Widget
 
     private slots:
         void OnOff(bool);
-        void playlistSelectionChanged( int index ); //TODO
+        void playlistSelectionChanged( int index );
 
 
     private:
+        void initOnOffButton();
 
         void On();
         void Off();
@@ -50,11 +52,11 @@ class DynamicCategory : public Amarok::Widget
         QPushButton *m_onoffButton;
         QPushButton *m_repopulateButton;
 
-        QComboBox *m_presetComboBox;
+        KComboBox *m_presetComboBox;
         
         QPushButton *m_saveButton;
         QPushButton *m_deleteButton;
-        QTreeView   *m_dynamicTreeView;
+        QListView   *m_biasListView;
 };
 
 

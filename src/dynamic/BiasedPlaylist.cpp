@@ -119,6 +119,12 @@ Dynamic::BiasedPlaylist::recalculate()
     startSolver();
 }
 
+QList<Dynamic::Bias*>&
+Dynamic::BiasedPlaylist::biases()
+{
+    return m_biases;
+}
+
 
 void
 Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )

@@ -22,9 +22,12 @@
 #include "amarokconfig.h"
 #include "playlist/PlaylistModel.h"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QLabel>
 #include <QTreeWidget>
+
+#include <KHBox>
+#include <KVBox>
+#include <KIcon>
 
 
 namespace PlaylistBrowserNS {
@@ -39,40 +42,39 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     QVBoxLayout* vLayout = new QVBoxLayout( this );
 
-    QHBoxLayout *hSaveLoadLayout = new QHBoxLayout( this );
-    
-    m_saveButton   = new QPushButton( this );
-    m_saveButton->setText( i18n("Save") );
-    m_saveButton->setEnabled( false );
-    m_saveButton->setSizePolicy(
-            QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    hSaveLoadLayout->addWidget( m_saveButton );
-
-    m_deleteButton = new QPushButton( this );
-    m_deleteButton->setText( i18n("Delete") );
-    m_deleteButton->setEnabled( false );
-    m_deleteButton->setSizePolicy(
-            QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    hSaveLoadLayout->addWidget( m_deleteButton );
-    
+    //vLayout->setSizePolicy( 
+            //QSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored ) );
 
     m_onoffButton = new QPushButton( this );
-    m_onoffButton->setText( enabled ? i18n("Off") : i18n("On") );
+    m_onoffButton->setIcon( KIcon( "amarok_dynamic" ) );
     m_onoffButton->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     QObject::connect( m_onoffButton, SIGNAL(clicked(bool)), this, SLOT(OnOff(bool)) );
 
+
     m_repopulateButton = new QPushButton( this );
     m_repopulateButton->setText( i18n("Repopulate") );
+    m_repopulateButton->setToolTip( i18n("Replace the upcoming tracks with fresh ones.") );
+    m_repopulateButton->setIcon( KIcon( "view-refresh-amarok" ) );
     m_repopulateButton->setEnabled( enabled );
     m_repopulateButton->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)),
             The::playlistModel(), SIGNAL(repopulate()) );
             
+    initOnOffButton();
 
-    m_presetComboBox = new QComboBox( this );
+
+    KHBox* comboLayout = new KHBox( this );
+    comboLayout->setSpacing( 10 );
+
+    QLabel* presetLabel = new QLabel( "Preset:", comboLayout );
+
+    m_presetComboBox = new KComboBox( comboLayout );
     m_presetComboBox->setModel( DynamicModel::instance() );
+    presetLabel->setBuddy( m_presetComboBox );
+    comboLayout->setStretchFactor( m_presetComboBox, 1 );
+
     connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(playlistSelectionChanged(int) ) );
 
@@ -81,30 +83,68 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     if( index >= 0 )
         m_presetComboBox->setCurrentIndex( index );
 
-    m_dynamicTreeView = new QTreeWidget( this );
-    m_dynamicTreeView->setEnabled( false );
-    m_dynamicTreeView->setFrameShape( QFrame::NoFrame );
+
+
+    KHBox *hSaveDeleteLayout = new KHBox( this );
+    
+    m_saveButton   = new QPushButton( hSaveDeleteLayout );
+    m_saveButton->setText( i18n("Save") );
+    m_saveButton->setEnabled( false );
+    m_saveButton->setIcon( KIcon( "document-save-amarok" ) );
+    m_saveButton->setToolTip( i18n( "Save the preset." ) );
+
+    m_deleteButton = new QPushButton( hSaveDeleteLayout );
+    m_deleteButton->setText( i18n("Delete") );
+    m_deleteButton->setEnabled( false );
+    m_deleteButton->setIcon( KIcon( "edit-delete-amarok" ) );
+    m_deleteButton->setToolTip( i18n( "Delete the preset.") );
+
+    
 
 
 
-    QStringList warning;
-    warning += "Abandon all hope!\nThis is a work in progress.\nExpect nothing!";
-    ((QTreeWidget*)m_dynamicTreeView)->setCurrentItem(
-        new QTreeWidgetItem( (QTreeWidget*)m_dynamicTreeView, warning ) );
+    m_biasListView = new QListView( this );
+    m_biasListView->setEnabled( false );
+    m_biasListView->setFrameShape( QFrame::NoFrame );
 
+    // transparentcy
+    QPalette p = m_biasListView->palette();
+    QColor c = p.color( QPalette::Base );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+    m_biasListView->setPalette( p );
 
     vLayout->addWidget( m_onoffButton );
     vLayout->addWidget( m_repopulateButton );
-    vLayout->addWidget( m_presetComboBox );
-    vLayout->addWidget( m_saveButton );
-    vLayout->addWidget( m_deleteButton );
-    vLayout->addWidget( m_dynamicTreeView );
+    vLayout->addWidget( comboLayout );
+    vLayout->addWidget( hSaveDeleteLayout );
+    vLayout->addWidget( m_biasListView );
+
+    this->setLayout( vLayout );
 }
 
 
 DynamicCategory::~DynamicCategory() 
 {
 
+}
+
+
+void
+DynamicCategory::initOnOffButton()
+{
+    if( AmarokConfig::dynamicMode() )
+    {
+        m_onoffButton->setText( i18n( "Off" ) );
+        m_onoffButton->setToolTip( i18n( "Turn dynamic mode off." ) );
+        m_repopulateButton->setEnabled( true );
+    }
+    else
+    {
+        m_onoffButton->setText( i18n( "On" ) );
+        m_onoffButton->setToolTip( i18n( "Turn dynamic mode on." ) );
+        m_repopulateButton->setEnabled( false );
+    }
 }
 
 
@@ -124,22 +164,22 @@ DynamicCategory::On()
     // TODO: turn off other incompatible modes
     AmarokConfig::self()->writeConfig();
 
+    initOnOffButton();
+
     The::playlistModel()->playlistModeChanged();  
 
-    m_repopulateButton->setEnabled( true );
 }
 
 void
 DynamicCategory::Off()
 {
-    m_onoffButton->setText( i18n("On") );
     AmarokConfig::setDynamicMode( false );
     // TODO: should we restore the state of other modes?
     AmarokConfig::self()->writeConfig();
 
-    The::playlistModel()->playlistModeChanged();  
+    initOnOffButton();
 
-    m_repopulateButton->setEnabled( false );
+    The::playlistModel()->playlistModeChanged();  
 }
 
 void
