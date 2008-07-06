@@ -688,6 +688,7 @@ IpodHandler::parseTracks()
 
         genrePtr->addTrack( track );
         track->setGenre( genrePtr );
+        trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
 
 
     }
