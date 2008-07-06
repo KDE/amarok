@@ -217,15 +217,8 @@ ScriptManager::~ScriptManager()
 
     QStringList runningScripts;
     foreach( const QString &key, m_scripts.keys() )
-    {
         if( m_scripts[key].running )
-        {
-            //FIXME: sometime crashes amarok
-            scriptFinished( key );
             runningScripts << key;
-        }
-        delete m_scripts[key].engine;
-    }
     // Save config
     KConfigGroup config = Amarok::config( "ScriptManager" );
     config.writeEntry( "Running Scripts", runningScripts );
@@ -712,7 +705,6 @@ void
 ScriptManager::scriptFinished( QString name ) //SLOT
 {
     DEBUG_BLOCK
-//TODO: implement error handling
 
     QTime time;
     m_scripts[name].running = false;
@@ -938,10 +930,7 @@ ScriptManager::startScriptEngine( QString name )
     m_global.setProperty( "Window", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
-    objectPtr = new Amarok::AmarokOSDScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
-    m_global.setProperty( "OSD", scriptObject );
-    m_scripts[name].wrapperList.append( objectPtr );
+
 
     objectPtr = new Amarok::AmarokPlaylistScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
@@ -951,6 +940,11 @@ ScriptManager::startScriptEngine( QString name )
     objectPtr = new Amarok::AmarokStatusbarScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.property( "Window" ).setProperty( "Statusbar", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
+
+    objectPtr = new Amarok::AmarokOSDScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr );
+    m_global.property( "Window" ).setProperty( "OSD", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
     scriptObject = scriptEngine->newObject();

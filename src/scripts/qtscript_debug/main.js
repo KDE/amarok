@@ -41,7 +41,7 @@ else
 
 
 var TrackInfo = Amarok.Engine.TrackInfo;
-var OSD = Amarok.OSD;
+var OSD = Amarok.Window.OSD;
 var StatusBar = Amarok.Window.Statusbar;
 
 if ( TrackInfo.Artist || TrackInfo.Album )
