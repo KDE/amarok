@@ -35,7 +35,7 @@ endif (USE_SYSTEM_SQLITE)
 
 
 include_directories(
-    analyzers
+#    analyzers
     collection
     configdialog
     configdialog/dialogs
@@ -151,18 +151,18 @@ set(libcollectionbrowser_SRCS
 #####################################################################
 # ANALYZERS
 #####################################################################
-set(libanalyzers_SRCS
-    analyzers/analyzerbase.cpp
-    analyzers/analyzerfactory.cpp
-    analyzers/baranalyzer.cpp
-    analyzers/blockanalyzer.cpp
-    analyzers/glanalyzer.cpp
-    analyzers/glanalyzer2.cpp
-    analyzers/glanalyzer3.cpp
-    analyzers/sonogram.cpp
+#set(libanalyzers_SRCS
+#    analyzers/analyzerbase.cpp
+#    analyzers/analyzerfactory.cpp
+#    analyzers/baranalyzer.cpp
+#    analyzers/blockanalyzer.cpp
+#    analyzers/glanalyzer.cpp
+#    analyzers/glanalyzer2.cpp
+#    analyzers/glanalyzer3.cpp
+#    analyzers/sonogram.cpp
 #    analyzers/turbine.cpp
-#analyzers/boomanalyzer.cpp
-)
+#    analyzers/boomanalyzer.cpp
+#)
 
 #####################################################################
 # STATUSBAR
@@ -421,10 +421,10 @@ set(amaroklib_LIB_SRCS
     dialogs/deviceconfiguredialog.cpp
     dialogs/trackpickerdialog.cpp
     dialogs/transferdialog.cpp
-    equalizergraph.cpp
-    equalizerpresetmanager.cpp
-    equalizersetup.cpp
-    fht.cpp
+#    equalizergraph.cpp
+#    equalizerpresetmanager.cpp
+#    equalizersetup.cpp
+#    fht.cpp
     filebrowser/FileBrowser.cpp
     filebrowser/MyDirLister.cpp
     filebrowser/MyDirOperator.cpp
@@ -442,7 +442,7 @@ set(amaroklib_LIB_SRCS
     servicebrowser/lastfm/SimilarArtistsAction.cpp
     socketserver.cpp
     Systray.cpp
-    widgets/AnalyzerWidget.cpp
+#    widgets/AnalyzerWidget.cpp
     widgets/FilenameLayoutWidget.cpp
     widgets/MainToolbar.cpp
     widgets/ProgressSlider.cpp

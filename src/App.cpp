@@ -22,7 +22,7 @@ email                : markey@web.de
 #include "ConfigDialog.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "equalizersetup.h"
+//#include "equalizersetup.h"
 #include "MainWindow.h"
 #include "mediabrowser.h"
 #include "Meta.h"
@@ -695,8 +695,9 @@ void App::engineVolumeChanged( int newVolume )
 
 void App::slotConfigEqualizer() //SLOT
 {
-    EqualizerSetup::instance()->show();
-    EqualizerSetup::instance()->raise();
+//    PORT 2.0
+//    EqualizerSetup::instance()->show();
+//    EqualizerSetup::instance()->raise();
 }
 
 
