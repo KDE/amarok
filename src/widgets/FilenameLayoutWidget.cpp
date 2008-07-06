@@ -130,24 +130,20 @@ Token::Token( const QString &text, QWidget *parent )
     //QFontMetrics metric( font() );
     //QSize size = metric.size( Qt::TextSingleLine, text );
 
-    QSize size = this->size();
-    QImage image( size.width() + 12, size.height() + 12, QImage::Format_ARGB32_Premultiplied );
-    image.fill( qRgba( 0,0,0,0 ) );
-
-    QFont font;
-    font.setStyleStrategy( QFont::ForceOutline );
-
-    QPainter painter;
-    painter.begin( &image );
-    painter.setRenderHint( QPainter::Antialiasing );
-    painter.setBrush( Qt::white );
-    painter.drawRoundedRect( QRectF( 0.5, 0.5, image.width()-1, image.height()-1 ), 25, 25, Qt::RelativeSize );
-    painter.setFont( font );
-    painter.setBrush( Qt::black );
-    painter.drawText( QRect( QPoint( 6, 6 ), size ), Qt::AlignCenter, text );
-    painter.end();
-    setPixmap( QPixmap::fromImage( image ) );
     labelText = text;
+    setText( text );
+    setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
+    setStyleSheet( "Token {\
+        color: palette( Base );\
+        background-color: qlineargradient( x1: 0,\
+                                           y1: 0,\
+                                           x2: 1,\
+                                           y2: 1,\
+                                           stop: 0 white,\
+                                           stop: 0.4 gray,\
+                                           stop: 1 blue );\
+    }" );
+
 }
 
 void
@@ -183,7 +179,22 @@ Token::performDrag( QMouseEvent *event )
     QDrag *drag = new QDrag( this );
     drag->setMimeData( mimeData );
     drag->setHotSpot( event->pos() - rect().topLeft() );
-    drag->setPixmap( *pixmap() );
+    //TODO: grab a pixmap from the Token to feed to the drag object, something like this:
+    /*QSize size = this->size();
+    QImage image( size.width(), size.height(), QImage::Format_ARGB32_Premultiplied );
+
+    QPainter painter( &image );
+    painter.initFrom(this);
+    painter.setBackgroundMode( Qt::TransparentMode );
+    painter.setRenderHint( QPainter::Antialiasing, true );
+    painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
+    painter.eraseRect( rect() );
+    painter.drawText( QRect( QPoint( 6, 6 ), size ), Qt::AlignCenter, text );
+
+    painter.end();
+    setPixmap( QPixmap::fromImage( image ) );*/
+    
+    //drag->setPixmap( *pixmap() );       //need to get pixmap from stylesheet
 
     hide();     //note to self: where does this come from?
 
