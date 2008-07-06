@@ -137,27 +137,6 @@ namespace Amarok
             virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
     };
 
-    class StopMenu : public KMenu
-    {
-        Q_OBJECT
-
-        public:
-            StopMenu();
-            static KMenu *instance();
-
-        private slots:
-            void slotAboutToShow();
-            void slotStopNow();
-            void slotStopAfterTrack();
-            void slotStopAfterQueue();
-            void slotActivated( QAction *);
-
-        private:
-            QAction *m_stopNow;
-            QAction *m_stopAfterTrack;
-            QAction *m_stopAfterQueue;
-    };
-
 } /* namespace Amarok */
 
 

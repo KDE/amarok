@@ -474,7 +474,6 @@ StopAction::StopAction( KActionCollection *ac )
     setIcon( KIcon("media-playback-stop-amarok") );
     setObjectName( "stop" );
     setGlobalShortcut( KShortcut( Qt::META + Qt::Key_V ) );
-    setMenu( Amarok::StopMenu::instance() );
     connect( this, SIGNAL( triggered() ), The::engineController(), SLOT( stop() ) );
     ac->addAction( "stop", this );
     setEnabled( false );  // Disable action at startup
@@ -529,88 +528,6 @@ StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/
     case Phonon::BufferingState:
         break;
     }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// StopMenuAction
-//////////////////////////////////////////////////////////////////////////////////////////
-
-K_GLOBAL_STATIC( StopMenu, s_stopMenu )
-
-StopMenu::StopMenu()
-{
-    qAddPostRoutine( s_stopMenu.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
-
-    addTitle( i18n( "Stop" ) );
-
-    m_stopNow        = addAction( i18n( "Now" ), this, SLOT( slotStopNow() ) );
-    m_stopNow->setCheckable( true );
-    m_stopAfterTrack = addAction( i18n( "After Current Track" ), this, SLOT( slotStopAfterTrack() ) );
-    m_stopAfterTrack->setCheckable( true );
-//     m_stopAfterQueue = addAction( i18n( "After Queue" ), this, SLOT( slotStopAfterQueue() ) );
-
-    connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
-    connect( this, SIGNAL( triggered(QAction*) ), SLOT( slotActivated(QAction*) ) );
-}
-
-KMenu*
-StopMenu::instance()
-{
-    return s_stopMenu;
-}
-
-void
-StopMenu::slotAboutToShow()
-{
-    Playlist::Model *pl = The::playlistModel();
-
-    m_stopNow->setEnabled( Amarok::actionCollection()->action( "stop" )->isEnabled() );
-
-    m_stopAfterTrack->setEnabled( The::engineController()->loaded() );
-    m_stopAfterTrack->setChecked( pl->stopAfterMode() == Playlist::StopAfterCurrent );
-
-    //FIXME: REENABLE
-//     m_stopAfterQueue->setEnabled( pl->nextTracks().count() );
-//     m_stopAfterQueue->setChecked( pl->stopAfterMode() == Playlist::StopAfterQueue );
-}
-
-void
-StopMenu::slotStopNow() //SLOT
-{
-    Playlist::Model* pl = The::playlistModel();
-    const int mode = pl->stopAfterMode();
-
-    Amarok::actionCollection()->action( "stop" )->trigger();
-    if( mode == Playlist::StopAfterCurrent || mode == Playlist::StopAfterQueue )
-        pl->setStopAfterMode( Playlist::StopNever );
-}
-
-void
-StopMenu::slotStopAfterTrack() //SLOT
-{
-    Playlist::Model* pl = The::playlistModel();
-    const int mode = pl->stopAfterMode();
-
-    pl->setStopAfterMode( mode == Playlist::StopAfterCurrent
-                                ? Playlist::StopNever
-                                : Playlist::StopAfterCurrent );
-}
-
-void
-StopMenu::slotStopAfterQueue() //SLOT
-{
-    //PORT 2.0
-//     Playlist* pl = Playlist::instance();
-//     const int mode = pl->stopAfterMode();
-
-//     pl->setStopAfterMode( mode == Playlist::StopAfterQueue
-//                                 ? Playlist::DoNotStop
-//                                 : Playlist::StopAfterQueue );
-}
-
-void StopMenu::slotActivated( QAction *action )
-{
-    action->setChecked( !action->isChecked() );
 }
 
 
