@@ -69,6 +69,7 @@ end
 
 
 def amarok_2
+    system("export DBUS_SESSION_BUS_ADDRESS=")  # Necessary for making qdbus work in a screen session
     metadata  = `qdbus org.mpris.amarok /Player GetMetadata 2> /dev/null`.chomp
 
     hash = Hash.new
