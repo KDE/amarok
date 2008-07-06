@@ -69,12 +69,25 @@ end
 
 
 def amarok_2
-    title  = `qdbus org.mpris.amarok /Player title 2> /dev/null`.chomp
-    artist = `qdbus org.mpris.amarok /Player artist`.chomp
-    album  = `qdbus org.mpris.amarok /Player album`.chomp
-    year   = `qdbus org.mpris.amarok /Player year`.chomp
-    streamName = CGI.unescape(`qdbus org.mpris.amarok /Player streamName`.chomp)
-    version = `qdbus org.mpris.amarok /Player version`.chomp 
+    metadata  = `qdbus org.mpris.amarok /Player GetMetadata 2> /dev/null`.chomp
+
+    hash = Hash.new
+    metadata = metadata.split("\n")
+    metadata.each do |line|
+      key = line.split(": ")[0]
+      value = line.split(": ")[1]
+      if value.nil?
+        value = ""
+      end
+      hash[key] = value 
+    end
+
+    title  = hash["title"]
+    artist = hash["artist"] 
+    album  = hash["album"] 
+    year   = hash["year"] 
+    streamName = "" #CGI.unescape(`qdbus org.mpris.amarok /Player streamName`.chomp)
+    version = "" #`qdbus org.mpris.amarok /Player version`.chomp 
 
     output = ""
 
@@ -114,7 +127,7 @@ def amarok_2
 end
 
 
-test = `qdbus org.mpris.amarok /Player title 2> /dev/null`.chomp
+test = `qdbus org.mpris.amarok /Player GetStatus 2> /dev/null`.chomp
 if $?.success?
   amarok_2
   exit
