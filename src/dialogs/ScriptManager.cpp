@@ -930,8 +930,6 @@ ScriptManager::startScriptEngine( QString name )
     m_global.setProperty( "Window", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
-
-
     objectPtr = new Amarok::AmarokPlaylistScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Playlist", scriptObject );
@@ -952,9 +950,6 @@ ScriptManager::startScriptEngine( QString name )
 
     scriptObject = scriptEngine->newObject();
     m_global.property( "Window" ).setProperty( "SettingsMenu", scriptObject );
-
-    scriptObject = scriptEngine->newObject();
-    m_global.property( "Window" ).setProperty( "PlaylistMenu", scriptObject );
 
 }
 
