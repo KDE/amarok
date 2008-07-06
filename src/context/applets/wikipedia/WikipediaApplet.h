@@ -21,9 +21,6 @@
 #include <QGraphicsProxyWidget>
 #include <qwebview.h>
 
-#include "context/plasma/widgets/webcontent.h"
-
-
 class QGraphicsSimpleTextItem;
 class QGraphicsTextItem;
 
@@ -59,8 +56,8 @@ private:
     //QGraphicsSimpleTextItem* m_currentLabel;
     //QGraphicsSimpleTextItem* m_currentTitle;
 
-    //QGraphicsProxyWidget* m_wikiPage;
-    Plasma::WebContent * m_webView;
+    QGraphicsProxyWidget* m_wikiPage;
+    QWebView * m_webView;
 
     QString m_label;
     QString m_title;
