@@ -554,6 +554,10 @@ void TagDialog::init()
         ui->scoreLabel->hide();
     }
 
+    for( int i = 0; i <= 10; i++ )
+    {
+        ui->kComboBox_rating->insertItem( i, Meta::prettyRating( i ) );
+    }
 
     // Connects for modification check
     connect( ui->kLineEdit_title,     SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
@@ -758,7 +762,7 @@ void TagDialog::readTags()
     selectOrInsertText( m_currentTrack->album()->name(), ui->kComboBox_album );
     selectOrInsertText( m_currentTrack->genre()->name(), ui->kComboBox_genre );
     selectOrInsertText( m_currentTrack->composer()->name(), ui->kComboBox_composer );
-    ui->kComboBox_rating->setCurrentIndex( m_currentTrack->rating() ? m_currentTrack->rating() - 1 : 0 );
+    ui->kComboBox_rating->setCurrentIndex( m_currentTrack->rating() );
     ui->qSpinBox_track->setValue( m_currentTrack->trackNumber() );
     ui->qSpinBox_year->setValue( m_currentTrack->year()->name().toInt() );
     ui->qSpinBox_score->setValue( static_cast<int>(m_currentTrack->score()) );
@@ -1039,7 +1043,7 @@ TagDialog::readMultipleTracks()
     if( rating )
     {
         m_currentData.insert( Meta::Field::RATING, first.value( Meta::Field::RATING ) );
-        ui->kComboBox_rating->setCurrentIndex( first.value( Meta::Field::RATING ).toInt() ? first.value( Meta::Field::RATING ).toInt() - 1 : 0 );
+        ui->kComboBox_rating->setCurrentIndex( first.value( Meta::Field::RATING ).toInt() );
     }
 
     m_trackIterator.toFront();
@@ -1151,7 +1155,7 @@ TagDialog::changes()
     if( ui->qSpinBox_score->value() != m_currentData.value( Meta::Field::SCORE ).toInt() )
         result |= TagDialog::SCORECHANGED;
     int currentRating = m_currentData.value( Meta::Field::RATING ).toInt();
-    if( ui->kComboBox_rating->currentIndex() != ( currentRating ? currentRating - 1 : 0 ) )
+    if( ui->kComboBox_rating->currentIndex() != currentRating )
         result |= TagDialog::RATINGCHANGED;
 
     if( !m_tracks.count() || m_perTrack )
@@ -1201,7 +1205,7 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
     if( result & TagDialog::RATINGCHANGED )
     {
         storedRatings.remove( track );
-        storedRatings.insert( track, ui->kComboBox_rating->currentIndex() ? ui->kComboBox_rating->currentIndex() : 0 );
+        storedRatings.insert( track, ui->kComboBox_rating->currentIndex() );
     }
 
     if( result & TagDialog::LYRICSCHANGED )
@@ -1518,10 +1522,10 @@ TagDialog::applyToAllTracks()
         }
 
         int rating = data.contains( Meta::Field::RATING ) ? data.value( Meta::Field::RATING ).toInt() : 0;
-        if( ( ui->kComboBox_rating->currentIndex() && ui->kComboBox_rating->currentIndex() != rating - 1 )
+        if( ( ui->kComboBox_rating->currentIndex() && ui->kComboBox_rating->currentIndex() != rating )
             || ( !ui->kComboBox_rating->currentIndex() && rating ) )
         {
-            data.insert( Meta::Field::RATING, ui->kComboBox_rating->currentIndex() ? ui->kComboBox_rating->currentIndex() + 1 : 0 );
+            data.insert( Meta::Field::RATING, ui->kComboBox_rating->currentIndex() );
             changed |= TagDialog::RATINGCHANGED;
         }
         storeTags( track, changed, data );
