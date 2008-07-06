@@ -128,7 +128,6 @@ MemoryQueryMaker::runQuery()
 {
     m_memCollection->acquireReadLock();
     //naive implementation, fix this
-    //note: we are not handling filtering yet
     if ( d->matcher )
     {
         TrackList result = d->matcher->match( m_memCollection );
