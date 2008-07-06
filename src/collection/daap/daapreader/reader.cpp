@@ -378,6 +378,7 @@ Reader::parseSongList( const QByteArray &data )
         }
         genrePtr->addTrack( track );
         track->setGenre( genrePtr );
+        trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
     }
 
     m_memColl->acquireWriteLock();
