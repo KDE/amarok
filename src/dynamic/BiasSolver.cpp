@@ -61,16 +61,9 @@ void Dynamic::BiasSolver::run()
     while( i-- && m_E >= epsilon  )  
     {
         iterate();
-
-        if( i % 100 == 0 )
-        {
-            debug() 
-                << "BiasSolver: (i, E, T) = (" 
-                << ITERATION_LIMIT - i << ", "
-                << m_E << ", " 
-                << m_T << ")";
-        }
     }
+
+    debug() << "BiasSolver: System solved in " << (ITERATION_LIMIT - i) << " iterations.";
 
     setFinished( true );
 }
@@ -166,6 +159,11 @@ void Dynamic::BiasSolver::generateInitialPlaylist()
     double totalWeight = 0.0;
     double domainSize = calcDomainSize();
 
+    // Ahhh...empty collection!
+    if( domainSize == 0.0 ) 
+        return;
+
+
     foreach( Dynamic::Bias* b, m_biases )
     {
         Dynamic::GlobalBias* gb = dynamic_cast<Dynamic::GlobalBias*>( b );
@@ -215,9 +213,8 @@ void Dynamic::BiasSolver::generateInitialPlaylist()
         }
         else
         {
-            //TODO: the following lines cause runtime errors as in http://pastebin.com/m561a20b9, please fix
-            //int choice = KRandom::random() % propertySets[active].size();
-            //m_playlist.append( propertySets[active][choice] );
+            int choice = KRandom::random() % propertySets[active].size();
+            m_playlist.append( propertySets[active][choice] );
         }
     }
 }

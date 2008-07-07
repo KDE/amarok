@@ -539,7 +539,7 @@ Playlist::Model::playlistModeChanged()
         if( !wasNull )
         {
             ((DynamicTrackNavigator*)m_advancer)->appendUpcoming();
-            if( activeRow() < 0 ) play( 0 );
+            if( activeRow() < 0 && rowCount() > 0 ) play( 0 );
 
         }
 
