@@ -44,7 +44,6 @@ namespace Amarok
     {
         public:
             MenuAction( KActionCollection* );
-            virtual int plug( QWidget*, int index = -1 );
     };
 
     class PlayPauseAction : public KToggleAction, public EngineObserver
@@ -133,7 +132,6 @@ namespace Amarok
     {
         public:
             StopAction( KActionCollection* );
-            virtual int plug( QWidget*, int index = -1 );
             virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
     };
 

@@ -87,35 +87,6 @@ MenuAction::MenuAction( KActionCollection *ac )
     setShortcutConfigurable ( false ); //FIXME disabled as it doesn't work, should use QCursor::pos()
 }
 
-int
-MenuAction::plug( QWidget *w, int )
-{
-    KToolBar *bar = dynamic_cast<KToolBar*>(w);
-
-    if( bar && KAuthorized::authorizeKAction( objectName() ) )
-    {
-        //const int id = KAction::getToolButtonID();
-
-        //addContainer( bar, id );
-        w->addAction( this );
-        connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
-
-        //TODO create menu on demand
-        //TODO create menu above and aligned within window
-        //TODO make the arrow point upwards!
-        //bar->insertButton( QString::null, id, true, i18n( "Menu" ), index );
-        //bar->alignItemRight( id );
-
-        //KToolBarButton* button = bar->getButton( id );
-        //button->setPopup( Amarok::Menu::instance() );
-        //button->setObjectName( "toolbutton_amarok_menu" );
-        //button->setIcon( "amarok" );
-
-        return associatedWidgets().count() - 1;
-    }
-    else return -1;
-}
-
 
 K_GLOBAL_STATIC( Menu, s_menu )
 
@@ -477,39 +448,6 @@ StopAction::StopAction( KActionCollection *ac )
     connect( this, SIGNAL( triggered() ), The::engineController(), SLOT( stop() ) );
     ac->addAction( "stop", this );
     setEnabled( false );  // Disable action at startup
-}
-
-int
-StopAction::plug( QWidget *w, int )
-{
-    Q_UNUSED( w );
-#if 0
-    KToolBar *bar = dynamic_cast<KToolBar*>(w);
-    w->addAction( this );
-
-    if( bar && KAuthorized::authorizeKAction( name() ) )
-    {
-        const int id = KAction::getToolButtonID();
-
-        addContainer( bar, id );
-
-        w->addAction( this );
-        connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
-
-        bar->insertButton( QString::null, id, SIGNAL( clicked() ), The::engineController(), SLOT( stop() ),
-                          true, i18n( "Stop" ), index );
-
-        KToolBarButton* button = bar->getButton( id );
-
-        button->setObjectName( "toolbutton_stop_menu" );
-        button->setIcon( "media-playback-stop-amarok" );
-        button->setEnabled( The::engineController()->engine()->loaded() );  // Disable button at startup
-
-        return associatedWidgets().count() - 1;
-    }
-    else return QAction::plug( w, index );
-#endif
-    return 1;
 }
 
 void
