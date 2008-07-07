@@ -125,6 +125,8 @@ Playlist::Model::restoreSession()
 
 Playlist::Model::~Model()
 {
+    DEBUG_BLOCK
+
     if( AmarokConfig::savePlaylist() )
     {
         Meta::TrackList list;
@@ -141,6 +143,8 @@ Playlist::Model::~Model()
 Meta::TrackPtr
 Playlist::Model::nextTrack()
 {
+    DEBUG_BLOCK
+
     m_nextRowCandidate = m_advancer->nextRow();
     if( !rowExists( m_nextRowCandidate ) )
     {
@@ -507,7 +511,10 @@ Playlist::Model::prettyColumnName( Column index ) //static
 void
 Playlist::Model::playlistModeChanged()
 {
+    DEBUG_BLOCK
+
     delete m_advancer;
+    m_advancer = 0;
 
     int options = Playlist::StandardPlayback;
 
@@ -557,20 +564,22 @@ Playlist::Model::playlistModeChanged()
     }
     else if( options & Playlist::RepeatPlayback )
     {
+    // TODO: implement RepeatAlbumNavigator
         if( options & Playlist::TrackPlayback )
             m_advancer = new RepeatTrackNavigator( this );
         else if( options & Playlist::PlaylistPlayback )
             m_advancer = new RepeatPlaylistNavigator( this );
     }
     else if( options & Playlist::RandomPlayback )
+    // TODO: implement RandomAlbumNavigator
     {
         if( options & Playlist::TrackPlayback )
             m_advancer = new RandomTrackNavigator( this );
         else if( options & Playlist::AlbumPlayback )
-            // TODO: implement RandomAlbumNavigator
             m_advancer = new StandardTrackNavigator( this ); 
     }
-    else
+
+    if( m_advancer == 0 )
     {
         debug() << "Play mode not implemented, defaulting to Standard Playback";
         m_advancer = new StandardTrackNavigator( this );
