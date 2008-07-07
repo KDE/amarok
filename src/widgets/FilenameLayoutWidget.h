@@ -29,7 +29,8 @@ class FilenameLayoutWidget
 
     public:
         FilenameLayoutWidget( QWidget *parent = 0 );
-        void addToken( QString text );
+        void addToken( QString text, int index = 99);
+
         unsigned int getTokenCount();
     protected:
         void mouseMoveEvent( QMouseEvent *event );

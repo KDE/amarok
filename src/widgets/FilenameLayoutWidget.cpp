@@ -46,11 +46,12 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 void
 FilenameLayoutWidget::slotAddToken()
 {
-    this->addToken( i18n( "TOKEN" ) );
+    this->addToken( i18n( "TOKEN" ), 999 );
 }
 
 void
-FilenameLayoutWidget::addToken( QString text ){
+FilenameLayoutWidget::addToken( QString text, int index )
+{
     if( backText->isVisible() )
     {
         backText->hide();
@@ -59,10 +60,22 @@ FilenameLayoutWidget::addToken( QString text ){
     tokenCount++;
     Token *token = new Token( text, this );
 
-    layout->addWidget( token );
+    if( index == 999)
+    {
+        layout->addWidget( token );
+    }
+    else
+    {
+        layout->insertWidget( index, token );
+    }
+    
     token->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     token->show();
+
+    //testing, remove when done
+    token->setText( token->text() + " " + QString::number( layout->indexOf( token ) ) );
+    //end testing block
 }
 
 
@@ -109,18 +122,35 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     if ( source && source != this )
     {
         debug() << "I'm dragging from the token pool";
-
-        addToken( textFromMimeData );
         event->setDropAction( Qt::CopyAction );
-        event->accept();
     }
     else if ( source && source == this )
     {
         debug() << "I'm dragging from the layout widget";
-        addToken( textFromMimeData );
         event->setDropAction( Qt::MoveAction );
-        event->accept();
     }
+
+    Token *childUnder = qobject_cast< Token * >( childAt( event->pos() ) );
+    if( childUnder == 0 )
+    {
+        addToken( textFromMimeData );   //TODO: handle the cases where no child is under the drop (either between the items or before and after)
+    }
+    else
+    {
+        int index = layout->indexOf( childUnder );
+        if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )
+        {
+            addToken( textFromMimeData, index );
+        }
+        else
+        {
+            addToken( textFromMimeData, index + 1 );
+        }
+    }
+
+    
+    event->accept();
+    
 }
 
 unsigned int
@@ -170,8 +200,9 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     
     drag->setPixmap( QPixmap::grabWidget( child ) );       //need to get pixmap from widget
 
-    child->hide();
-
+    //child->close();
+    delete child;
+    
     drag->exec(Qt::MoveAction | Qt::CopyAction, Qt:: CopyAction);
 }
 
