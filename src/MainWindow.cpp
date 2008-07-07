@@ -36,7 +36,7 @@
 #include "collectionbrowser/CollectionWidget.h"
 #include "context/ContextScene.h"
 #include "context/ContextView.h"
-#include "context/CoverBling.h"
+//#include "context/CoverBling.h"
 #include "context/plasma/plasma.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "filebrowser/FileBrowser.h"
@@ -176,10 +176,12 @@ MainWindow::init()
             this, SLOT( createContextView( Plasma::Containment* ) ) );
 
     PERF_LOG( "ContextScene created" )
+#if 0
     {
         if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
             new CoverBling( m_contextWidget );
     }
+#endif
 
     PERF_LOG( "Loading default contextScene" )
     m_corona->loadDefaultSetup(); // this method adds our containment to the scene

@@ -232,7 +232,7 @@ set( libcontextview_SRCS
     context/ContextObserver.cpp
     context/ContextScene.cpp
     context/ContextView.cpp
-    context/CoverBling.cpp
+#    context/CoverBling.cpp
     context/DataEngineManager.cpp
     context/LyricsManager.cpp
     context/layouts/ContextLayout.cpp
