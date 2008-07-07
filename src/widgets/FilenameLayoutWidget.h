@@ -58,6 +58,7 @@ class Token
     Q_OBJECT
     public:
         Token( const QString &string, QWidget *parent = 0 );
+        QString getTokenString();
     private:
         void setTokenString(const QString &string );
         unsigned int myCount;

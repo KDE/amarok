@@ -98,26 +98,33 @@ FilenameLayoutWidget::dragMoveEvent( QDragMoveEvent *event )          //need to 
     }
 }
 
-void FilenameLayoutWidget::dropEvent( QDropEvent *event )
+void
+FilenameLayoutWidget::dropEvent( QDropEvent *event )
 {
     QWidget *source = qobject_cast<QWidget *>( event->source() );     //not sure how to handle this
+    QByteArray itemData = event->mimeData()->data( "application/x-amarok-tag-token" );
+    QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+    QString textFromMimeData;
+    dataStream >> textFromMimeData;
     if ( source && source != this )
     {
         debug() << "I'm dragging from the token pool";
-        addToken( event->mimeData()->text() );      //TODO: eliminate the mimeData->setText and ->text calls in favor of grabbing the text from mimeData
+
+        addToken( textFromMimeData );
         event->setDropAction( Qt::CopyAction );
         event->accept();
     }
     else if ( source && source == this )
     {
         debug() << "I'm dragging from the layout widget";
-        addToken( event->mimeData()->text() );
+        addToken( textFromMimeData );
         event->setDropAction( Qt::MoveAction );
         event->accept();
     }
 }
 
-unsigned int FilenameLayoutWidget::getTokenCount()
+unsigned int
+FilenameLayoutWidget::getTokenCount()
 {
     return tokenCount;
 }
@@ -156,7 +163,7 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     dataStream << child->text(); // << QPoint( event->pos() - child->rect().topLeft() -child.pos() );       //I may need the QPoint of the start sooner or later
     QMimeData *mimeData = new QMimeData;
     mimeData->setData( "application/x-amarok-tag-token", itemData );
-    mimeData->setText( child->text() );
+    //mimeData->setText( child->text() );
     QDrag *drag = new QDrag( this );
     drag->setMimeData( mimeData );
     drag->setHotSpot( event->pos() - child->rect().topLeft() - child->pos() );        //I grab the initial position of the item I'm dragging
@@ -192,11 +199,17 @@ Token::Token( const QString &string, QWidget *parent )
 
     QFontMetrics metric( font() );
     QSize size = metric.size( Qt::TextSingleLine, text() );
-    setMinimumSize( size );
+    setMinimumSize( size + QSize( 4, 0 ) );
 }
 
 void
 Token::setTokenString( const QString &string )
 {
     tokenString = string;
+}
+
+QString
+Token::getTokenString()
+{
+    return tokenString;
 }

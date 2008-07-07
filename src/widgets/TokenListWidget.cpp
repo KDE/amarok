@@ -93,7 +93,6 @@ TokenListWidget::performDrag( QMouseEvent *event )
         dataStream << item->text() << QPoint( event->pos() - rect().topLeft() );
         QMimeData *mimeData = new QMimeData;
         mimeData->setData( "application/x-amarok-tag-token", itemData );    //setText( item->text() );
-        mimeData->setText( item->text() );       //We add both the graphic and the text to the mimeData of the drag
         QDrag *drag = new QDrag( this );
         drag->setMimeData( mimeData );
         debug() << "I'm dragging from the token pool";
