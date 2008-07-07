@@ -22,10 +22,13 @@
 #include "Debug.h"
 #include "collection/CollectionManager.h"
 
+#include <QString>
+
 struct XmlQueryReader::Private
 {
     ReturnValueEnum flag;
     QueryMaker *qm;
+    QList<Filter> filters;
 };
 
 QueryMaker*
@@ -50,6 +53,12 @@ XmlQueryReader::XmlQueryReader( QueryMaker *qm, ReturnValueEnum flag )
 XmlQueryReader::~XmlQueryReader()
 {
     delete d;
+}
+
+const QList<XmlQueryReader::Filter>&
+XmlQueryReader::getFilters() const
+{
+    return d->filters;
 }
 
 bool
@@ -245,30 +254,32 @@ XmlQueryReader::readFilters()
         
         if( name() == "include" || name() == "exclude" )
         {
+            Filter filter;
+
             QXmlStreamAttributes attr = attributes();
 
-            QStringRef valueStr = attr.value( "value" );
-            qint64 field = fieldVal( attr.value( "field" ) );
+            filter.value = attr.value( "value" ).toString();
+            filter.field = fieldVal( attr.value( "field" ) );
 
-            if( field == 0 )
+            if( filter.field == 0 )
                 break;
 
-            int compare = compareVal( attr.value( "compare" ) );
+            filter.compare = compareVal( attr.value( "compare" ) );
 
-            if( compare != -1 )
+            if( filter.compare != -1 )
             {
-                qint64 value = valueStr.toString().toInt();
+                qint64 numValue = filter.value.toInt();
                 if( name() == "include" )
                 {
                     debug() << "XQR: number include filter:";
-                    d->qm->addNumberFilter( field, value, 
-                            (QueryMaker::NumberComparison)compare );
+                    d->qm->addNumberFilter( filter.field, numValue,
+                            (QueryMaker::NumberComparison)filter.compare );
                 }
                 else
                 {
                     debug() << "XQR: number exclude filter: ";
-                    d->qm->excludeNumberFilter( field, value, 
-                            (QueryMaker::NumberComparison)compare );
+                    d->qm->excludeNumberFilter( filter.field, numValue,
+                            (QueryMaker::NumberComparison)filter.compare );
                 }
             }
             else
@@ -276,14 +287,16 @@ XmlQueryReader::readFilters()
                 if( name() == "include" )
                 {
                     debug() << "QXR: include filter";
-                    d->qm->addFilter( field, valueStr.toString() );
+                    d->qm->addFilter( filter.field, filter.value );
                 }
                 else
                 {
                     debug() << "QXR: exclude filter";
-                    d->qm->excludeFilter( field, valueStr.toString() );
+                    d->qm->excludeFilter( filter.field, filter.value );
                 }
             }
+
+            d->filters.append( filter );
         }
         else if( name() == "and" )
         {

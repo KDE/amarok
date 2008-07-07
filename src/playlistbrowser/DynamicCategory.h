@@ -28,40 +28,40 @@
 
 namespace PlaylistBrowserNS {
 
+    class DynamicBiasModel;
+    class DynamicBiasDelegate;
 
-/**
-*/
-class DynamicCategory : public Amarok::Widget
-{
-    Q_OBJECT
-    public:
-        DynamicCategory( QWidget* parent );
-        ~DynamicCategory();
+    /**
+    */
+    class DynamicCategory : public Amarok::Widget
+    {
+        Q_OBJECT
+        public:
+            DynamicCategory( QWidget* parent );
+            ~DynamicCategory();
 
-    private slots:
-        void OnOff(bool);
-        void playlistSelectionChanged( int index );
-
-
-    private:
-        void initOnOffButton();
-
-        void On();
-        void Off();
-
-        QPushButton *m_onoffButton;
-        QPushButton *m_repopulateButton;
-
-        KComboBox *m_presetComboBox;
-        
-        QPushButton *m_saveButton;
-        QPushButton *m_deleteButton;
-        QListView   *m_biasListView;
-};
+            private slots:
+                void OnOff(bool);
+            void playlistSelectionChanged( int index );
 
 
+        private:
+            void initOnOffButton();
 
+            void On();
+            void Off();
 
+            QPushButton *m_onoffButton;
+            QPushButton *m_repopulateButton;
+
+            KComboBox *m_presetComboBox;
+
+            QPushButton *m_saveButton;
+            QPushButton *m_deleteButton;
+            QListView   *m_biasListView;
+            DynamicBiasModel *m_biasModel;
+            DynamicBiasDelegate *m_biasDelegate;
+    };
 
 }
 

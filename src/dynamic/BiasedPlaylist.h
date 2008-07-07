@@ -48,6 +48,7 @@ namespace Dynamic
             void recalculate();
 
             QList<Bias*>& biases();
+            const QList<Bias*>& biases() const;
 
         private slots:
             void solverFinished( ThreadWeaver::Job* );
@@ -69,7 +70,11 @@ namespace Dynamic
 
             static const int BUFFER_SIZE;
     };
+
+    typedef KSharedPtr<BiasedPlaylist> BiasedPlaylistPtr;
 }
+
+Q_DECLARE_METATYPE( Dynamic::BiasedPlaylistPtr )
 
 #endif
 

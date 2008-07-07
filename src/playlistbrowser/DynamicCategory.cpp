@@ -19,6 +19,8 @@
 
 #include "Debug.h"
 #include "DynamicModel.h"
+#include "DynamicBiasDelegate.h"
+#include "DynamicBiasModel.h"
 #include "amarokconfig.h"
 #include "playlist/PlaylistModel.h"
 
@@ -34,7 +36,7 @@ namespace PlaylistBrowserNS {
 
 
 DynamicCategory::DynamicCategory( QWidget* parent )
-    : Amarok::Widget( parent )
+    : Amarok::Widget( parent ), m_biasModel(0)
 {
     bool enabled = AmarokConfig::dynamicMode();
 
@@ -75,13 +77,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     presetLabel->setBuddy( m_presetComboBox );
     comboLayout->setStretchFactor( m_presetComboBox, 1 );
 
-    connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(playlistSelectionChanged(int) ) );
-
-    int index = DynamicModel::instance()->retrievePlaylistIndex( 
-            AmarokConfig::lastDynamicMode() );
-    if( index >= 0 )
-        m_presetComboBox->setCurrentIndex( index );
 
 
 
@@ -104,8 +99,11 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
 
     m_biasListView = new QListView( this );
-    m_biasListView->setEnabled( false );
+    //m_biasListView->setEnabled( false );
     m_biasListView->setFrameShape( QFrame::NoFrame );
+
+    m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
+    m_biasListView->setItemDelegate( m_biasDelegate );
 
     // transparentcy
     QPalette p = m_biasListView->palette();
@@ -121,6 +119,14 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     vLayout->addWidget( m_biasListView );
 
     this->setLayout( vLayout );
+
+    connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(playlistSelectionChanged(int) ) );
+
+    int index = DynamicModel::instance()->retrievePlaylistIndex( 
+            AmarokConfig::lastDynamicMode() );
+    if( index >= 0 )
+        m_presetComboBox->setCurrentIndex( index );
 }
 
 
@@ -185,11 +191,17 @@ DynamicCategory::Off()
 void
 DynamicCategory::playlistSelectionChanged( int index )
 {
-    QVariant playlist =
+    QVariant playlistV =
             DynamicModel::instance()->index( index, 0 ).data( Qt::UserRole );
-    QString title = playlist.value< Dynamic::DynamicPlaylistPtr >()->title();
+    Dynamic::DynamicPlaylistPtr playlist =
+        playlistV.value< Dynamic::DynamicPlaylistPtr >();
+    QString title = playlist->title();
     AmarokConfig::setLastDynamicMode( title );
     AmarokConfig::self()->writeConfig();
+
+    delete m_biasModel;
+    m_biasModel = new DynamicBiasModel( m_biasListView, playlist );
+    m_biasListView->setModel( m_biasModel );
 
     debug() << "Changing biased playlist to: " << title;
 }
@@ -198,3 +210,4 @@ DynamicCategory::playlistSelectionChanged( int index )
 
 
 #include "DynamicCategory.moc"
+

@@ -254,6 +254,9 @@ set(libpodcasts_SRCS
 set(libplaylistbrowser_SRCS
     playlistbrowser/DynamicModel.cpp
     playlistbrowser/DynamicCategory.cpp
+    playlistbrowser/DynamicBiasDelegate.cpp
+    playlistbrowser/DynamicBiasModel.cpp
+    playlistbrowser/DynamicBiasWidgets.cpp
     playlistbrowser/PlaylistBrowser.cpp
     playlistbrowser/UserPlaylistModel.cpp
     playlistbrowser/UserPlaylistTreeView.cpp

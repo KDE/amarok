@@ -125,6 +125,12 @@ Dynamic::BiasedPlaylist::biases()
     return m_biases;
 }
 
+const QList<Dynamic::Bias*>&
+Dynamic::BiasedPlaylist::biases() const
+{
+    return m_biases;
+}
+
 
 void
 Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )

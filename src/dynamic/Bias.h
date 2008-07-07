@@ -22,12 +22,19 @@
 #define AMAROK_BIAS_H
 
 #include "Meta.h"
+#include "collection/support/XmlQueryReader.h"
 
 #include <QObject>
 #include <QSet>
 
 class Collection;
 class QueryMaker;
+
+namespace PlaylistBrowserNS
+{
+    class BiasWidget;
+}
+
 
 namespace Dynamic
 {
@@ -40,6 +47,12 @@ namespace Dynamic
     {
         public:
             virtual ~Bias() {}
+
+            QString description() const;
+            void setDescription( const QString& );
+
+            virtual PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
+
 
             /**
              * Returns a value in the range [-1,1]. (The sign is not considered,
@@ -58,6 +71,9 @@ namespace Dynamic
              */
             virtual double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
                     Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context );
+
+        protected:
+            QString m_description;
     };
 
 
@@ -95,8 +111,13 @@ namespace Dynamic
     class GlobalBias : public CollectionDependantBias
     {
         public:
-            GlobalBias( double weigt, QueryMaker* propertyQuery );
-            GlobalBias( Collection* coll, double weight, QueryMaker* propertyQuery );
+            GlobalBias( double weight, QueryMaker* propertyQuery,
+                    XmlQueryReader::Filter filter = XmlQueryReader::Filter() );
+            GlobalBias( Collection* coll, double weight, QueryMaker* propertyQuery,
+                    XmlQueryReader::Filter filter = XmlQueryReader::Filter() );
+
+            PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
+            XmlQueryReader::Filter& filter();
 
             double energy( const Meta::TrackList& playlist, const Meta::TrackList& context );
             double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
@@ -113,8 +134,11 @@ namespace Dynamic
             double m_weight; /// range: [0,1]
             QSet<Meta::TrackPtr> m_property;
             QueryMaker* m_propertyQuery;
+            XmlQueryReader::Filter m_filter;
     };
 }
+
+Q_DECLARE_METATYPE( Dynamic::Bias* )
 
 #endif
 

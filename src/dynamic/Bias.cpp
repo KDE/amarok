@@ -20,12 +20,31 @@
 
 #include "Bias.h"
 
-#include "Debug.h"
 #include "BlockingQuery.h"
 #include "Collection.h"
 #include "CollectionManager.h"
+#include "Debug.h"
+#include "DynamicBiasWidgets.h"
 #include "QueryMaker.h"
 
+
+QString
+Dynamic::Bias::description() const
+{
+    return m_description;
+}
+
+void
+Dynamic::Bias::setDescription( const QString& description )
+{
+    m_description = description;
+}
+
+PlaylistBrowserNS::BiasWidget*
+Dynamic::Bias::widget( QWidget* parent )
+{
+    return new PlaylistBrowserNS::BiasWidget( this, parent );
+}
 
 
 double
@@ -65,16 +84,33 @@ Dynamic::CollectionDependantBias::collectionUpdated()
     m_needsUpdating = true;
 }
 
-Dynamic::GlobalBias::GlobalBias( double weight, QueryMaker* propertyQuery )
+Dynamic::GlobalBias::GlobalBias( double weight, QueryMaker* propertyQuery,
+        XmlQueryReader::Filter filter )
     : m_propertyQuery( propertyQuery )
+    , m_filter( filter )
 {
     setWeight( weight );
 }
 
-Dynamic::GlobalBias::GlobalBias( Collection* coll, double weight, QueryMaker* propertyQuery )
-    : CollectionDependantBias(coll), m_propertyQuery( propertyQuery )
+Dynamic::GlobalBias::GlobalBias( Collection* coll, double weight, QueryMaker* propertyQuery,
+        XmlQueryReader::Filter filter )
+    : CollectionDependantBias( coll )
+    , m_propertyQuery( propertyQuery )
+    , m_filter(filter)
 {
     setWeight( weight );
+}
+
+PlaylistBrowserNS::BiasWidget*
+Dynamic::GlobalBias::widget( QWidget* parent )
+{
+    return new PlaylistBrowserNS::BiasGlobalWidget( this, parent );
+}
+
+XmlQueryReader::Filter&
+Dynamic::GlobalBias::filter()
+{
+    return m_filter;
 }
 
 double

@@ -41,6 +41,19 @@ public:
 
     bool read( const QString &xmlData );
 
+    struct Filter
+    {
+        Filter() : exclude(false), field(0), compare(0) {}
+
+        bool     exclude;
+        qint64   field;
+        QString  value;        
+        int      compare; /* -1 => not a numerical comparison */
+    };
+
+    const QList<Filter>& getFilters() const;
+
+
 private:
     void readQuery();
     void readFilters();
