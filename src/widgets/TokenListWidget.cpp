@@ -57,7 +57,7 @@ TokenListWidget::dragEnterEvent( QDragEnterEvent *event )
     QWidget *source = qobject_cast<QWidget *>( event->source() );
     if ( source && source != this )
     {
-        event->setDropAction( Qt::CopyAction );
+        event->setDropAction( Qt::MoveAction );
         event->accept();
     }
 }
@@ -68,7 +68,7 @@ TokenListWidget::dragMoveEvent( QDragMoveEvent *event )        //overrides QList
     QWidget *source = qobject_cast<QWidget *>( event->source() );
     if ( source && source != this )
     {
-        event->setDropAction( Qt::CopyAction );
+        event->setDropAction( Qt::MoveAction );
         event->accept();
     }
 }
@@ -76,15 +76,11 @@ TokenListWidget::dragMoveEvent( QDragMoveEvent *event )        //overrides QList
 void
 TokenListWidget::dropEvent( QDropEvent *event )
 {
-    /*QWidget *source = qobject_cast<QWidget *>( event->source() );
-    if ( source && source != this )
-    {
-        addItem( event->mimeData()->text() );     //TODO: mimeData->setData( "application/x-amarok-tag-token", itemData );
-
-        event->setDropAction( Qt::CopyAction );
-        event->accept();
-    }*/
+    //does nothing, I want the item to be deleted and not dragged here
 }
+
+
+
 
 void
 TokenListWidget::performDrag( QMouseEvent *event )
