@@ -48,6 +48,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     , m_curState( Home )
     , m_appletBrowser( 0 )
     , m_zoomLevel( Plasma::DesktopZoom )
+    , m_factor( 1 )
 {
     
     s_self = this;
@@ -55,7 +56,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
     //setDragMode( QGraphicsView::RubberBandDrag );
-    setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
+    setTransformationAnchor( QGraphicsView::NoAnchor );
     setCacheMode( QGraphicsView::CacheBackground );
     setInteractive( true );
     setAcceptDrops( true );
@@ -154,7 +155,7 @@ ContextView::mousePressEvent( QMouseEvent* event )
     debug() << "mapToScene pos: " << mapToScene( event->pos() );
     if( scene()->itemAt( pos ) )
     {
-        Plasma::Applet* a = dynamic_cast<Plasma::Applet* >( scene()->itemAt( pos ) );
+        Plasma::Applet* a = dynamic_cast<Plasma::Applet* >( scene()->itemAt( event->pos() ) );
         if( a )
         {
             debug() << "cast successful";
@@ -278,20 +279,9 @@ ContextView::zoomIn( Plasma::Containment* toContainment )
     
     if ( m_zoomLevel == Plasma::GroupZoom )
     {
-        setDragMode( NoDrag );
-        m_zoomLevel = Plasma::DesktopZoom;
-        qreal factor = Plasma::scalingFactor( m_zoomLevel ) / matrix().m11();
-        scale( factor, factor );
-        int count = contextScene()->containments().size();
-        for( int i = 0; i < count; i++ )
-        {
-            Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
-            if( containment )
-            {
-                containment->hideTitle();
-            }
-        }
-
+        connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
+                 this, SLOT( zoomInFinished( int ) ) );
+        Plasma::Animator::self()->customAnimation( 35, 1000, Plasma::Animator::LinearCurve, this, "animateZoomIn" );
     }
     //HACK: this is the only way that the containments resize correctly after
     //the CV widget has ben resized while in zoom level Plasma::GroupZoom
@@ -305,14 +295,8 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
     Q_UNUSED( fromContainment )
     if ( m_zoomLevel == Plasma::DesktopZoom )
     {
-        m_zoomLevel = Plasma::GroupZoom;
 
-        setDragMode( ScrollHandDrag );
-        scale( .45, .45 );
-//         setSceneRect( rect() );
-        setSceneRect(QRectF(0, 0, scene()->sceneRect().right(), scene()->sceneRect().bottom()));
-        ensureVisible( rect(), 0, 0 );
-        m_zoomLevel = Plasma::GroupZoom;
+        m_factor = 1;
         int count = contextScene()->containments().size();
         for( int i = 0; i < count; i++ )
         {
@@ -322,8 +306,123 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
                 containment->showTitle();
             }
         }
+        
+        connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
+                 this, SLOT( zoomOutFinished( int ) ) );
+        Plasma::Animator::self()->customAnimation( 35, 1000, Plasma::Animator::EaseInCurve, this, "animateZoomOut" );
+
     }
 
+}
+
+void
+ContextView::animateZoomIn( qreal progress, int id )
+{
+    Q_UNUSED( progress )
+    if( m_factor < 1 )
+    {
+        m_factor += 0.08;
+        qreal s = m_factor / matrix().m11();
+        centerOnZoom( s, Plasma::ZoomIn );
+    }
+    else
+    {
+        Plasma::Animator::self()->stopCustomAnimation( id );
+        zoomInFinished( id );
+    }
+}
+
+void
+ContextView::zoomInFinished( int id )
+{
+    Q_UNUSED( id )
+    int count = contextScene()->containments().size();
+    for( int i = 0; i < count; i++ )
+    {
+        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
+        if( containment )
+        {
+            containment->hideTitle();
+        }
+    }
+    m_zoomLevel = Plasma::DesktopZoom;
+    setDragMode( NoDrag );
+    disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
+                 this, SLOT( zoomInFinished( int ) ) );
+    resize( size().width()+1, size().height() );
+    resize( size().width()-1, size().height() );
+    m_factor = 1;
+}
+
+void
+ContextView::animateZoomOut( qreal progress, int id )
+{
+    Q_UNUSED( progress )
+  
+    if( m_factor > 0.45 )
+    {
+        m_factor -= 0.08;
+        qreal s = m_factor / matrix().m11();
+        centerOnZoom( s, Plasma::ZoomOut );
+
+    }
+    else
+    {
+        Plasma::Animator::self()->stopCustomAnimation( id );
+        zoomOutFinished( id );
+    }
+}
+
+void
+ContextView::zoomOutFinished( int id )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( id )
+    m_zoomLevel = Plasma::GroupZoom;
+    setDragMode( ScrollHandDrag );
+    
+    setSceneRect( mapToScene( rect() ).boundingRect() );
+    ensureVisible( rect(), 0, 0 );
+    
+    disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
+                 this, SLOT( zoomOutFinished( int ) ) );
+    m_factor = 0.45;
+}
+
+
+void
+ContextView::centerOnZoom( qreal sFactor, Plasma::ZoomDirection direction )
+{
+
+    qreal left, top, right, bottom;
+    
+    qreal width = sceneRect().width();
+    qreal height = sceneRect().height();
+    
+    QPointF topLeft = containment()->geometry().topLeft();
+    QPointF topRight = containment()->geometry().topRight();
+    QPointF bottomLeft = containment()->geometry().bottomLeft();
+
+    qreal x = qMax( 0.0, sceneRect().topRight().x() - ( width * 1/sFactor ) );
+    qreal y = qMax( 0.0, sceneRect().bottomLeft().y() - ( height * 1/sFactor ) );
+
+    left = qMin(  topLeft.x(), x ) ;
+    top = qMin( topLeft.y() , y  );
+    right = qMax( topRight.x(), 25 + width * 1/sFactor );
+    bottom = qMax( bottomLeft.y(), 65 + height * 1/sFactor );
+
+    QRectF visibleRect( QPoint( left, top ), QPoint( right, bottom ) );
+    scale( sFactor, sFactor );
+    if( direction == Plasma::ZoomIn )
+    {
+        containment()->getContentsMargins( &left, &top, &right, &bottom );
+        setSceneRect( visibleRect.adjusted( left, top, -right, -bottom )  );
+    }
+    else
+    {
+        setSceneRect( visibleRect );
+    }
+        
 }
 
 ContextScene* ContextView::contextScene()
@@ -381,7 +480,7 @@ ContextView::updateContainmentsGeometry()
 
 void ContextView::wheelEvent( QWheelEvent* event )
 {
-    if ( event->modifiers() & Qt::ControlModifier )
+    if ( event->modifiers() & Qt::ControlModifier && !Plasma::Animator::self()->isAnimating() )
     {
         if ( event->delta() < 0 )
             zoomOut( containment() );
@@ -500,7 +599,12 @@ ContextView::setContainment( Plasma::Containment* containment )
             else
             {
                 containment->resize( correctSize );
-                setSceneRect( rect() );
+                debug() << "correct size: " << correctSize;
+                QRectF correctRect( 0, 0,
+                                    mapToScene( rect() ).boundingRect().width(),
+                                    mapToScene( rect() ).boundingRect().height() );
+                setSceneRect( correctRect );
+                debug() << "setSceneRect: " <<  mapToScene( rect() ).boundingRect() ;
             }
 
             if( m_appletBrowser )

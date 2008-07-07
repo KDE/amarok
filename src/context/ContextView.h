@@ -124,6 +124,8 @@ private:
     * Set all containments geometry in the scene with the same geometry as the Context View widget 
     */
     void updateContainmentsGeometry();
+
+    void centerOnZoom( qreal factor, Plasma::ZoomDirection direction );
     
     void loadConfig();
 
@@ -139,10 +141,16 @@ private:
     
     Plasma::ZoomLevel m_zoomLevel;
 
+    qreal m_factor;
+
     //ControlBox* m_controlBox;
 
 private slots:
     void appletBrowserDestroyed();
+    void animateZoomOut( qreal progress, int id );
+    void animateZoomIn( qreal progress, int id );
+    void zoomInFinished( int id );
+    void zoomOutFinished( int id );
 
 };
 
