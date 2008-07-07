@@ -52,9 +52,10 @@ FilenameLayoutWidget::slotAddToken()
 void
 FilenameLayoutWidget::addToken( QString text, int index )
 {
-    if( backText->isVisible() )
+    if( !isEmpty() )
     {
         backText->hide();
+        setEmpty( false );
     }
 
     tokenCount++;
@@ -133,7 +134,12 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     Token *childUnder = qobject_cast< Token * >( childAt( event->pos() ) );
     if( childUnder == 0 )
     {
-        addToken( textFromMimeData );   //TODO: handle the cases where no child is under the drop (either between the items or before and after)
+        if( isEmpty() )
+        {
+            addToken( textFromMimeData );
+        }
+        //addToken( textFromMimeData );   //TODO: handle the cases where no child is under the drop (either between the items or before and after)
+        
     }
     else
     {
@@ -202,9 +208,28 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
 
     //child->close();
     delete child;
+
+    if( !childAt( QPoint( size().width() / 2, size().height() / 2 ) ) )     //stinks of hack
+    {
+        setEmpty( true );       //TODO: FIX THIS; WONT DELETE THE BACKTEXT WHEN IT SHOULD
+        backText->show();
+    }
     
     drag->exec(Qt::MoveAction | Qt::CopyAction, Qt:: CopyAction);
 }
+
+bool
+FilenameLayoutWidget::isEmpty()
+{
+    return empty;
+}
+
+void
+FilenameLayoutWidget::setEmpty( bool state )
+{
+    empty = state;
+}
+
 
 //starts implementation of Token : QLabel
 

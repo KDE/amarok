@@ -41,10 +41,14 @@ class FilenameLayoutWidget
     private:
         //void performDrag();
         void performDrag( QMouseEvent *event );
+        bool isEmpty();
+        void setEmpty( bool state);
 
         QLabel *backText;
         QHBoxLayout *layout;
         QPoint startPos;
+        bool empty;
+
 
         unsigned int tokenCount;
 
@@ -62,8 +66,10 @@ class Token
         QString getTokenString();
     private:
         void setTokenString(const QString &string );
+
         unsigned int myCount;
         QString tokenString;
+        
 
 };
 
