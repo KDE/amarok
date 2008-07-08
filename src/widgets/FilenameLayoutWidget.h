@@ -44,17 +44,11 @@ class FilenameLayoutWidget
         void performDrag( QMouseEvent *event );
         void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
 
-
         QLabel *backText;
         QHBoxLayout *layout;
         QPoint startPos;
 
-
         unsigned int tokenCount;
-
-    //TODO: This slot is for testing, will probably be a normal method
-    public slots:
-        void slotAddToken();
 };
 
 class Token

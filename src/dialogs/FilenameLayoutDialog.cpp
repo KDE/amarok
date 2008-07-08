@@ -40,11 +40,5 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
 
     setLayout( verticalLayout );    //see verticalLayout in FilenameLayoutDialog.ui
 
-    QPushButton *debugButton = new QPushButton( "TEST" );       //no need for i18n()
-    connect( debugButton, SIGNAL( clicked() ),
-            filenameLayout, SLOT( slotAddToken() ) );
-    
-    verticalLayout->addWidget( debugButton );
     optionsFrame->setTitle( i18n( "Options" ) );
-    debugButton->show();
 }

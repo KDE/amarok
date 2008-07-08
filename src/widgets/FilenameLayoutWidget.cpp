@@ -44,12 +44,6 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 }
 
 void
-FilenameLayoutWidget::slotAddToken()
-{
-    this->addToken( i18n( "TOKEN" ), 999 );
-}
-
-void
 FilenameLayoutWidget::addToken( QString text, int index )
 {
     if( !tokenCount )
@@ -175,17 +169,12 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
                 insertOverChild( childUnder, textFromMimeData, event );
             }
         }
-        //addToken( textFromMimeData );   //TODO: handle the cases where no child is under the drop (either between the items or before and after)
-        
     }
     else                    //I'm dropping on an existing token, that's easy
     {
         insertOverChild( childUnder, textFromMimeData, event );
     }
-
-    
     event->accept();
-    
 }
 
 unsigned int
