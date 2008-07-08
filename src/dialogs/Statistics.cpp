@@ -89,7 +89,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
         connect( m_lineEdit, SIGNAL( returnPressed() )              , SLOT( slotSetFilter() ) );
     } //</Search LineEdit>
 
-    m_listView = new StatisticsList( box );
+    m_listView = new StatisticsList( box );    
 }
 
 Statistics::~Statistics()

@@ -119,6 +119,48 @@ namespace Amarok {
         dt.setTime_t( time_t );
         return verboseTimeSince( dt );
     }
+
+    QString conciseTimeSince( uint time_t )
+    {
+        if( !time_t )
+            return i18nc( "The amount of time since last played", "0" );
+
+        QDateTime datetime;
+        datetime.setTime_t( time_t );
+        
+        const QDateTime now = QDateTime::currentDateTime();
+        const int datediff = datetime.daysTo( now );
+
+        if( datediff >= 6*7 /*six weeks*/ ) {  // return difference in months
+            return i18nc( "number of months ago", "%1M", datediff/7/4 );
+        }
+
+        if( datediff >= 7 )  // return difference in weeks
+            return i18np( "One week ago", "%1W", (datediff+3)/7 );
+
+        if( datediff == -1 )
+            return i18nc( "When this track was last played", "Tomorrow" );
+
+        const int timediff = datetime.secsTo( now );
+
+        if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
+            return datediff == 1 ?
+                    i18n( "Yesterday" ) :
+                    i18np( "One day ago", "%1d", (timediff+12*60*60)/(24*60*60) );
+
+        if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
+            return i18np( "One hour ago", "%1h", (timediff+30*60)/(60*60) );
+
+        //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
+
+        if( timediff >= 60 )  // return difference in minutes
+            return QString("%1'").arg( ( timediff + 30 )/60 );
+        if( timediff >= 0 )  // return difference in seconds
+            return QString("%1\"").arg( ( timediff + 1 )/60 );
+
+        return i18n( "0" );
+
+    }
 }
 
 

@@ -15,8 +15,10 @@
 
 #include "Amarok.h"
 #include "Debug.h"
+#include "EngineController.h"
 #include "context/Svg.h"
 #include "meta/MetaUtility.h"
+
 
 #include <plasma/theme.h>
 
@@ -48,17 +50,19 @@ CurrentTrack::~CurrentTrack()
 
 void CurrentTrack::init()
 {
-    setBackgroundHints( Plasma::Applet::DefaultBackground );
+    setBackgroundHints( Plasma::Applet::NoBackground );
     createMenu();
 
     m_theme = new Context::Svg( this );
     m_theme->setImagePath( "widgets/amarok-currenttrack" );
-    m_theme->setContainsMultipleImages( false );
+    m_theme->setContainsMultipleImages( true );
+ 
     m_width = globalConfig().readEntry( "width", 500 );
 
     KIconLoader *iconLoader = KIconLoader::global();
 
-    const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
+//     const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
+    const QColor textColor( Qt::white );
     QFont labelFont;
     labelFont.setBold( true );
     labelFont.setPointSize( labelFont.pointSize() + 1  );
@@ -68,31 +72,6 @@ void CurrentTrack::init()
     QFont textFont = QFont( labelFont );
     textFont.setBold( false );
 
-    m_titleLabel = new QGraphicsSimpleTextItem( i18nc( "The name of the playing song", "Track:" ) , this );
-    m_titleLabel->setBrush( textColor );
-    m_titleLabel->setFont( labelFont );
-
-    m_artistLabel = new QGraphicsSimpleTextItem( i18n( "Artist:" ), this );
-    m_artistLabel->setBrush( textColor );
-    m_artistLabel->setFont( labelFont );
-
-    m_albumLabel = new QGraphicsSimpleTextItem( i18n( "Album:" ), this );
-    m_albumLabel->setBrush( textColor );
-    m_albumLabel->setFont( labelFont );
-
-    m_scoreLabel = new QGraphicsPixmapItem( QPixmap(iconLoader->loadIcon( "emblem-favorite", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
-    m_scoreLabel->setToolTip( i18n( "Score" ) );
-
-    m_numPlayedLabel = new QGraphicsPixmapItem( QPixmap(iconLoader->loadIcon( "view-refresh", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
-    m_numPlayedLabel->setToolTip( i18n( "Play Count" ) );
-
-    m_playedLastLabel = new QGraphicsPixmapItem( QPixmap(iconLoader->loadIcon( "user-away-extended", KIconLoader::Toolbar, KIconLoader::SizeMedium ) ), this );
-    m_playedLastLabel->setToolTip( i18n( "Last Played") );
-
-    m_scoreLabel->setTransformationMode( Qt::SmoothTransformation );
-    m_numPlayedLabel->setTransformationMode( Qt::SmoothTransformation );
-    m_playedLastLabel->setTransformationMode( Qt::SmoothTransformation );
-
     m_title        = new QGraphicsSimpleTextItem( this );
     m_artist       = new QGraphicsSimpleTextItem( this );
     m_album        = new QGraphicsSimpleTextItem( this );
@@ -100,14 +79,19 @@ void CurrentTrack::init()
     m_numPlayed    = new QGraphicsSimpleTextItem( this );
     m_playedLast   = new QGraphicsSimpleTextItem( this );
     m_albumCover   = new QGraphicsPixmapItem( this );
-    m_sourceEmblem = new QGraphicsPixmapItem( this );
+//     m_sourceEmblem = new QGraphicsPixmapItem( this );
 
+    QFont tinyFont( textFont );
+    tinyFont.setPointSize( tinyFont.pointSize() - 5 );
+    tinyFont.setBold( true );
+    
     m_title->setFont( textFont );
     m_artist->setFont( textFont );
     m_album->setFont( textFont );
-    m_score->setFont( textFont );
-    m_numPlayed->setFont( textFont );
-    m_playedLast->setFont( textFont );
+    
+    m_score->setFont( tinyFont );
+    m_numPlayed->setFont( tinyFont );
+    m_playedLast->setFont( tinyFont );
 
     m_title->setBrush( textColor );
     m_artist->setBrush( textColor );
@@ -148,88 +132,56 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
          m_theme->resize(size().toSize());*/
 
     //bah! do away with trying to get postions from an svg as this is proving wildly inaccurate
-    qreal margin = 4.0;
+    qreal margin = 14.0;
     qreal albumWidth = size().toSize().height() - 2.0 * margin;
     resizeCover( m_bigCover, margin, albumWidth );
 
-    qreal labelX = albumWidth + 2.0 * margin;
-    qreal labelWidth = size().toSize().width() / 6.0;
+    qreal labelX = albumWidth + margin + 14.0;
+    qreal labelWidth = 15;
     qreal textX = labelX + labelWidth + margin;
 
-    qreal textHeight = ( ( size().toSize().height() - 6 * margin )  / 5.0 ) ;
+    qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 ) ;
     qreal textWidth = size().toSize().width() - ( textX + margin );
 
     // here we put all of the text items into the correct locations
-    m_titleLabel->setPos( QPointF( labelX, margin ) );
-    m_artistLabel->setPos( QPointF( labelX, margin * 2 + textHeight ) );
-    m_albumLabel->setPos( QPointF( labelX, margin * 3 + textHeight * 2.0 ) );
-    m_title->setPos( QPointF( textX, margin ) );
-    m_artist->setPos(  QPointF( textX, margin * 2 + textHeight ) );
+    m_artist->setPos( QPointF( textX, margin ) );
+    m_title->setPos(  QPointF( textX, margin * 2 + textHeight ) );
     m_album->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 ) );
 
 
 
-    int runningX = labelX;
-    
-    m_scoreLabel->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
-    runningX += textHeight + margin;
-    m_score->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
-    runningX += size().toSize().width() / 10.0;
+    int runningX = labelX;    
 
-    m_numPlayedLabel->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
-    runningX += textHeight + margin;
-    m_numPlayed->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
-    runningX += size().toSize().width() / 10.0;
-    
-    m_playedLastLabel->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
-    runningX += textHeight + margin;
-    m_playedLast->setPos( QPointF( runningX, margin * 5 + textHeight * 4.0 ) );
-   
-    m_sourceEmblem->setPos( QPointF( margin, margin ) );
-
+    m_score->setPos( QPointF( contentsRect().width() - 6, margin + 4 ) );
+    m_numPlayed->setPos( QPointF( contentsRect().width() - 5, margin + 31 ) );
+    m_playedLast->setPos( QPointF( contentsRect().width() - 6, margin + 58 ) );
 
     QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-    QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) : QString();
+    QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) : QString();
 
     QFont textFont = shrinkTextSizeToFit( title, QRectF( 0, 0, textWidth, textHeight ) );
     QFont labeFont = textFont;
+    QFont tinyFont( textFont );
+    tinyFont.setPointSize( tinyFont.pointSize() - 5 );
+    tinyFont.setBold( true );
     labeFont.setBold( true );
     
-    m_maxTextWidth = size().toSize().width() - m_title->pos().x();
+    m_maxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
 
-    m_titleLabel->setFont( labeFont );
-    m_artistLabel->setFont( labeFont );
-    m_albumLabel->setFont( labeFont );
+
     m_title->setFont( textFont );
     m_artist->setFont( textFont );
     m_album->setFont( textFont );
-    m_score->setFont( textFont );
-    m_numPlayed->setFont( textFont );
-    m_playedLast->setFont( textFont );
+    
+    m_score->setFont( tinyFont );
+    m_numPlayed->setFont( tinyFont );
+    m_playedLast->setFont( tinyFont );
 
-
-    m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), QRectF( 0, 0, textWidth, 30 ) ) );
+    m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );    
     m_album->setText( truncateTextToFit( album, m_album->font(), QRectF( 0, 0, textWidth, 30 ) ) );
-
-    m_playedLast->setText( truncateTextToFit( lastPlayed, m_playedLast->font(), QRectF( 0, 0, size().toSize().width() - runningX, 30 ) ) );
-   
-    //calc scale factor..
-    m_scoreLabel->resetTransform();
-    m_numPlayedLabel->resetTransform();
-    m_playedLastLabel->resetTransform();
-
-    qreal currentHeight = m_scoreLabel->boundingRect().height();
-    qreal desiredHeight = textHeight;
-    qreal scaleFactor = desiredHeight / currentHeight;
-
-    m_scoreLabel->scale( scaleFactor, scaleFactor );
-    m_numPlayedLabel->scale( scaleFactor, scaleFactor );
-    m_playedLastLabel->scale( scaleFactor, scaleFactor );
-
-
 
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 }
@@ -243,25 +195,29 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     if( data.size() == 0 ) return;
 
+    QRect textRect( 0, 0, m_maxTextWidth, 30 );
+
     m_currentInfo = data[ "current" ].toMap();
-    m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), m_theme->elementRect( "track" ) ) );
+    m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), textRect ) );
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-    m_artist->setText( truncateTextToFit( artist, m_artist->font(), m_theme->elementRect( "artist" ) ) );
+    
+    
+    m_artist->setText( truncateTextToFit( artist, m_artist->font(), textRect ) );
     QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-    m_album->setText( truncateTextToFit( album, m_album->font(), m_theme->elementRect( "album" ) ) );
+    m_album->setText( truncateTextToFit( album, m_album->font(), textRect ) );
     m_rating = m_currentInfo[ Meta::Field::RATING ].toInt();
     m_score->setText( QString::number( m_currentInfo[ Meta::Field::SCORE ].toInt() ) );
     m_trackLength = m_currentInfo[ Meta::Field::LENGTH ].toInt();
-    m_playedLast->setText( Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
+    m_playedLast->setText( Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
     m_numPlayed->setText( m_currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
 
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
     m_bigCover = data[ "albumart" ].value<QPixmap>();
-    m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
+//     m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
 
 
-    if( !resizeCover( m_bigCover, 4.0, size().toSize().height() - 8.0 ) )
+    if( !resizeCover( m_bigCover, 14.0, size().toSize().height() - 28.0 ) )
     {
         warning() << "album cover of current track is null, did you forget to call Meta::Album::image?";
     }
@@ -301,19 +257,50 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     }
 
     p->save();
-    m_theme->paint( p, contentsRect, "background" );
+    m_theme->paint( p, contentsRect.adjusted( 0, -10, 0, 10 ) , "background" );
+    QRect leftBorder( 0, 0, 14, contentsRect.height() + 20 );
+    m_theme->paint( p, leftBorder, "left-border" );
+    QRect rightBorder( contentsRect.width() + 5, 0, 14, contentsRect.height() + 20 );
+    m_theme->paint( p, rightBorder, "right-border" );
     p->restore();
 
+    qreal margin = 14.0;
+    qreal albumWidth = size().toSize().height() - 2.0 * margin;
+
+    qreal labelX = albumWidth + margin + 14.0;
+    qreal labelWidth = size().toSize().width() / 6.0;
+    qreal textX = labelX + labelWidth + margin;
+
+    qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 );
+    qreal textWidth = size().toSize().width() - ( textX + margin );
+
+    p->save();
+    
+    
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( track && track->album()->hasImage() )
+        m_theme->paint( p, QRect( margin - 5, margin, albumWidth + 12, albumWidth ), "cd-box" );
+
+    m_theme->paint( p, QRectF( labelX, margin + 1, 16, 16 ), "artist" );
+    m_theme->paint( p, QRectF( labelX, margin * 2.0 + textHeight + 1 , 16, 16 ), "track" );
+    m_theme->paint( p, QRectF( labelX, margin * 3.0 + textHeight * 2.0 + 1, 16, 16 ), "album" );
+
+    m_theme->paint( p, QRectF( contentsRect.width() - 12, margin, 23, 23 ), "score" );
+    m_theme->paint( p, QRectF( contentsRect.width() - 12, margin + 26, 23, 23 ), "times-played" );
+    m_theme->paint( p, QRectF( contentsRect.width() - 12, margin + 54, 23, 23 ), "last-time" );
+
+    p->restore();
+
+    // Let the stars for convenience for now before setting up a proper rating widget
     p->save();
     int stars = m_rating / 2;
-    for( int i = 1; i <= stars; i++ )
+    for( int i = 0; i < stars; i++ )
     {
-        p->translate( m_theme->elementSize( "star" ).width(), 0 );
-        m_theme->paint( p, m_theme->elementRect( "star" ), "star" );
-    } //
-    if( m_rating % 2 != 0 )
-    { // paint a half star too
-        m_theme->paint( p, m_theme->elementRect( "half-star" ), "half-star" );
+        m_theme->paint( p, QRectF( labelX + 25 + i * 20.0, margin * 4.0 + textHeight * 3.0 - 5.0, 18, 18 ), "star-white" );
+    }
+    for( int i = stars; i < 5; i++ )
+    {
+        m_theme->paint( p, QRectF( labelX + 25 + i * 20.0, margin * 4.0 + textHeight * 3.0 - 5.0, 18, 18 ), "star-dark" );
     }
     p->restore();
 
@@ -354,11 +341,11 @@ bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
             cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
             moveByY = qAbs( cover.rect().height() - cover.rect().width() ) / 2.0;
         }
-        m_albumCover->setPos( margin + moveByX, margin + moveByY );
-        m_sourceEmblem->setPos( margin + moveByX, margin + moveByY );
+        m_albumCover->setPos( margin + moveByX + 7.0, margin + moveByY );
+//         m_sourceEmblem->setPos( margin + moveByX, margin + moveByY );
 
         m_albumCover->setPixmap( cover );
-        m_sourceEmblem->setPixmap( m_sourceEmblemPixmap );
+//         m_sourceEmblem->setPixmap( m_sourceEmblemPixmap );
         return true;
     }
     return false;

@@ -408,8 +408,8 @@ ContextView::centerOnZoom( qreal sFactor, Plasma::ZoomDirection direction )
 
     left = qMin(  topLeft.x(), x ) ;
     top = qMin( topLeft.y() , y  );
-    right = qMax( topRight.x(), 25 + width * 1/sFactor );
-    bottom = qMax( bottomLeft.y(), 65 + height * 1/sFactor );
+    right = qMax( topRight.x(), width * 1/sFactor );
+    bottom = qMax( bottomLeft.y(), height * 1/sFactor );
 
     QRectF visibleRect( QPoint( left, top ), QPoint( right, bottom ) );
     scale( sFactor, sFactor );

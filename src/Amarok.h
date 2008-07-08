@@ -122,6 +122,8 @@ namespace Amarok
 
     AMAROK_EXPORT QString verboseTimeSince( uint time_t );
 
+    AMAROK_EXPORT QString conciseTimeSince( uint time_t );
+
     /**
      * Function that must be used when separating contextBrowser escaped urls
      */
