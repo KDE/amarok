@@ -39,7 +39,7 @@ TokenListWidget::TokenListWidget( QWidget *parent )
     addItem( " _ " );
     addItem( " - " );
     addItem( " . " );
-    addItem( "   " );
+    addItem( "<space>" );
 }
 
 void
