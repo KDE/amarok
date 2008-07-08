@@ -112,6 +112,22 @@ FilenameLayoutWidget::dragMoveEvent( QDragMoveEvent *event )          //need to 
 }
 
 void
+FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event )
+{
+    int index = layout->indexOf( childUnder );
+    if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )
+    {
+        addToken( textFromMimeData, index );
+    }
+    else
+    {
+        addToken( textFromMimeData, index + 1 );
+    }
+}
+
+
+
+void
 FilenameLayoutWidget::dropEvent( QDropEvent *event )
 {
     QWidget *source = qobject_cast<QWidget *>( event->source() );     //not sure how to handle this
@@ -131,26 +147,40 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     }
 
     Token *childUnder = qobject_cast< Token * >( childAt( event->pos() ) );
-    if( childUnder == 0 )
+    if( childUnder == 0 )   //if I'm not dropping on an existing token
     {
-        if( !tokenCount )
+        if( !tokenCount )   //if the bar is empty
         {
             addToken( textFromMimeData );
+        }
+        else                //if the bar is not empty and I'm still not dropping on an existing token
+        {
+            QPoint fixedPos = QPoint( event->pos().x(), size().height() / 2 );      //first I lower the y coordinate of the drop, this should handle the drops higher and lower than the tokens
+            childUnder = qobject_cast< Token * >( childAt( fixedPos ) );            //and I look for a child (token) on these new coordinates
+            if( childUnder == 0 )                                                   //if there's none, then I'm either at the beginning or at the end of the bar
+            {
+                if( fixedPos.x() < childrenRect().topLeft().x() )                   //if I'm dropping before all the tokens
+                {
+                    fixedPos = QPoint( fixedPos.x() + 10, fixedPos.y() );
+                }
+                else                                                                //this covers if I'm dropping after all the tokens or in between
+                {
+                    fixedPos = QPoint( fixedPos.x() - 10, fixedPos.y() );
+                }
+                childUnder = qobject_cast< Token * >( childAt( fixedPos ) );
+                insertOverChild( childUnder, textFromMimeData, event );
+            }
+            else                                                                    //if I find a token, I'm done
+            {
+                insertOverChild( childUnder, textFromMimeData, event );
+            }
         }
         //addToken( textFromMimeData );   //TODO: handle the cases where no child is under the drop (either between the items or before and after)
         
     }
-    else
+    else                    //I'm dropping on an existing token, that's easy
     {
-        int index = layout->indexOf( childUnder );
-        if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )
-        {
-            addToken( textFromMimeData, index );
-        }
-        else
-        {
-            addToken( textFromMimeData, index + 1 );
-        }
+        insertOverChild( childUnder, textFromMimeData, event );
     }
 
     

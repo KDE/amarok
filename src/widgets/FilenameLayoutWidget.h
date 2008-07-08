@@ -21,6 +21,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+class Token;
 
 class FilenameLayoutWidget
     : public QFrame
@@ -41,6 +42,7 @@ class FilenameLayoutWidget
     private:
         //void performDrag();
         void performDrag( QMouseEvent *event );
+        void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
 
 
         QLabel *backText;
