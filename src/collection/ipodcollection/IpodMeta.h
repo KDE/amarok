@@ -70,6 +70,7 @@ class IpodTrack : public Meta::Track
         virtual void setComposer ( const QString &newComposer );
         virtual void setYear ( const QString &newYear );
 
+        virtual QString title() const;
         virtual void setTitle( const QString &newTitle );
 
         virtual QString comment() const;

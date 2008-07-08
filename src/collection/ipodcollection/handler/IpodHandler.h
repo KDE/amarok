@@ -25,6 +25,8 @@ extern "C" {
   #include <gpod/itdb.h>
 }
 
+#include "Meta.h"
+
 #include <QObject>
 
 class QString;
@@ -66,8 +68,15 @@ struct PodcastInfo
 	   QString itunesDir( const QString &path = QString() ) const;
 	   QString mountPoint() const { return m_mountPoint; }
 	   bool openDevice( bool silent=false );
+       void copyTrackToDevice( const Meta::TrackPtr &track );
+       bool kioCopyTrack( const KUrl &src, const KUrl &dst );
+       void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
+       void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track );
+       QString           ipodPath( const QString &realPath );
+       KUrl determineURLOnDevice( const Meta::TrackPtr &track );
 	   void parseTracks();
 	   void setMountPoint( const QString &mp) { m_mountPoint = mp; }
+       QString           realPath( const char *ipodPath );
 	   bool pathExists( const QString &ipodPath, QString *realPath=0 );
 	   bool writeITunesDB( bool threaded=true );
            
@@ -78,8 +87,6 @@ struct PodcastInfo
 
         private:
             IpodCollection *m_memColl;
-	    
-
 	    
         // ipod database
         Itdb_iTunesDB    *m_itdb;
@@ -120,6 +127,12 @@ struct PodcastInfo
 
 //        KAction          *m_customAction;
 //        enum              { CHECK_INTEGRITY, UPDATE_ARTWORK, SET_IPOD_MODEL };
+
+        // KIO-related Vars (to be moved elsewhere eventually)
+
+        bool m_copyFailed;
+        bool m_isCanceled;
+        bool m_wait;
 
 
 

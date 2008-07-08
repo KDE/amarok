@@ -63,7 +63,7 @@ class IpodCollection : public Collection, public MemoryCollection
     IpodCollection( const QString &mountPoint );
     virtual ~IpodCollection();
 
-    void deviceRemoved( const QString &udi );
+    void deviceRemoved();
 
     virtual void startFullScan();
     virtual QueryMaker* queryMaker();
@@ -79,9 +79,11 @@ class IpodCollection : public Collection, public MemoryCollection
 //    private slots:
 	
  private:
-    
+
+    QString           m_mountPoint;    
     Ipod::IpodHandler *m_handler;
-    QString           m_mountPoint;
+
+
     
 
 };

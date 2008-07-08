@@ -4,7 +4,9 @@ if (IPOD_FOUND)
    include_directories( ../..
    ../../plugin
    ../../meta
+   ../../meta/file
    ../../collection
+   ../../metadata/audible
    handler
    ${GLIB2_INCLUDE_DIR}
    ${IPOD_INCLUDE_DIR}

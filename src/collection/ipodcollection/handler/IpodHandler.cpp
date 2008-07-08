@@ -19,8 +19,16 @@
 #include "IpodMeta.h"
 #include "Debug.h"
 
+#include "File.h" // for KIO file handling
+#include "taglib_audiblefile.h"
+
+#include <KIO/Job>
+#include <KUniqueApplication> // needed for KIO processes
+#include <KUrl>
+
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QString>
 #include <QStringList>
 
@@ -278,7 +286,7 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 {
     QDir curDir( mountPoint() );
     QString curPath = mountPoint();
-    QStringList components = QStringList::split( ":", ipodPath );
+    QStringList components = ipodPath.split( ":" );
 
     bool found = false;
     QStringList::iterator it = components.begin();
@@ -400,183 +408,444 @@ IpodHandler::itunesDir(const QString &p) const
     return base + p;
 }
 
-#ifdef JUST_TESTING
-bool
-IpodHandler::openDevice( bool silent )
+// Currently Porting copyTrackToDevice
+void
+IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 {
-    m_isShuffle = false;
-    m_isMobile = false;
-    m_supportsArtwork = false;
-    m_supportsVideo = false;
-    m_needsFirewireGuid = false;
-    m_rockboxFirmware = false;
-    m_dbChanged = false;
-//    m_files.clear();
+    
+    KUrl url = determineURLOnDevice(track);
 
-    if( m_itdb )
+    // check if path exists and make it if needed
+    QFileInfo finfo( url.path() );
+    QDir dir = finfo.dir();
+    while ( !dir.exists() )
     {
-//        The::statusBar()->longMessage(
-//                i18n("Media Device: iPod at %1 already opened", mountPoint() ),
-//                KDE::StatusBar::Sorry );
-        return false;
+        QString path = dir.absolutePath();
+        QDir parentdir;
+        QDir create;
+        do
+        {
+            create.setPath(path);
+            path = path.section("/", 0, path.indexOf('/')-1);
+            parentdir.setPath(path);
+        }
+        while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );
+        debug() << "trying to create \"" << path << "\"";
+        if(!create.mkdir( create.absolutePath() ))
+        {
+            break;
+        }
+    }
+    if ( !dir.exists() )
+    {
+        debug() << "Creating directory failed";
+        return;
     }
 
-    // try to find a mounted ipod
-    bool ipodFound = false;
-    bool canInitialize = false;
-//    KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
-    for( KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
-        mountiter != currentmountpoints.end();
-        ++mountiter )
+    if( !kioCopyTrack( KUrl::fromPath( track->url() ), url ) )
     {
-        canInitialize = false;
-        QString devicenode = (*mountiter)->mountedFrom();
-        QString mountpoint = (*mountiter)->mountPoint();
-
-        if( mountpoint.startsWith( "/proc" ) ||
-            mountpoint.startsWith( "/sys" )  ||
-            mountpoint.startsWith( "/dev" )  ||
-            mountpoint.startsWith( "/boot" ) )
-            continue;
-
-        if( !mountPoint().isEmpty() )
-        {
-            if( mountpoint != mountPoint() )
-                continue;
-            canInitialize = true;
-        }
-
-        else if( !deviceNode().isEmpty() )
-        {
-            if( devicenode != deviceNode() )
-                continue;
-            canInitialize = true;
-        }
-
-        GError *err = 0;
-        m_itdb = itdb_parse(QFile::encodeName(mountpoint), &err);
-        if( err )
-        {
-            g_error_free(err);
-            if( m_itdb )
-            {
-                itdb_free( m_itdb );
-                m_itdb = 0;
-            }
-
-            if( !canInitialize )
-                continue;
-        }
-
-        if( mountPoint().isEmpty() )
-            m_medium.setMountPoint( mountpoint );
-        ipodFound = true;
-        break;
+        return;
     }
 
-    if( !ipodFound && !canInitialize )
+    // PODCASTS NOT YET PORTED
+    
+//    PodcastInfo *podcastInfo = 0;
+
+    
+    /*
+    if( bundle.podcastBundle() )
     {
-        if( !silent )
-        {
-            The::statusBar()->longMessage(
-                    i18n("Media Device: No mounted iPod found" ),
-                    KDE::StatusBar::Sorry );
-        }
-        return false;
+        PodcastEpisodeBundle *peb = bundle.podcastBundle();
+        podcastInfo = new PodcastInfo;
+        podcastInfo->url = peb->url().url();
+        podcastInfo->description = peb->description();
+        podcastInfo->author = peb->author();
+        podcastInfo->rss = peb->parent().url();
+        podcastInfo->date = peb->dateTime();
+        podcastInfo->listened = !peb->isNew();
+    }
+*/
+    insertTrackIntoDB( url, track );
+    //delete podcastInfo;
+    return;
+}
+
+void
+IpodHandler::insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track )
+{
+    updateTrackInDB( url, track );
+}
+
+void
+IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
+{
+    if( !m_itdb )
+        return;
+
+    QString pathname = url.path();
+
+    Itdb_Track *ipodtrack = 0;
+//    if( item )
+//        ipodtrack = item->m_track;
+    if( !ipodtrack )
+        ipodtrack = itdb_track_new();
+    /*
+    if( !ipodtrack )
+    {
+        delete item;
+        return 0;
+    }
+    */
+    QString type = pathname.section('.', -1).toLower();
+
+    ipodtrack->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
+    //debug() << "on iPod: " << ipodtrack->ipod_path << ", podcast=" << podcastInfo;
+    debug() << "on iPod: " << ipodtrack->ipod_path;
+
+    if( !track->name().isEmpty() )
+        ipodtrack->title = g_strdup( track->name().toUtf8() );
+    else
+        ipodtrack->title = g_strdup( KUrl::fromPath( track->url() ).fileName().toUtf8() );
+    ipodtrack->album = g_strdup( track->album()->name().toUtf8() );
+    ipodtrack->artist = g_strdup( track->artist()->name().toUtf8() );
+    ipodtrack->genre = g_strdup( track->genre()->name().toUtf8() );
+
+    ipodtrack->mediatype = ITDB_MEDIATYPE_AUDIO;
+    bool audiobook = false;
+    if(type=="wav")
+    {
+        ipodtrack->filetype = g_strdup( "wav" );
+    }
+    else if(type=="mp3" || type=="mpeg")
+    {
+        ipodtrack->filetype = g_strdup( "mpeg" );
+    }
+    else if(type=="aac" || type=="m4a" || (!m_supportsVideo && type=="mp4"))
+    {
+        ipodtrack->filetype = g_strdup( "mp4" );
+    }
+    else if(type=="m4b")
+    {
+        audiobook = true;
+        ipodtrack->filetype = g_strdup( "mp4" );
+    }
+    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
+    {
+        ipodtrack->filetype = g_strdup( "m4v video" );
+        ipodtrack->movie_flag = 0x01; // for videos
+        ipodtrack->mediatype = ITDB_MEDIATYPE_MOVIE;
+    }
+    // TODO: NYI, TagLib calls need to be ported
+    /*
+    else if(type=="aa")
+    {
+        audiobook = true;
+        ipodtrack->filetype = g_strdup( "audible" );
+
+        TagLib::Audible::File f( QFile::encodeName( url.path() ) );
+        TagLib::Audible::Tag *t = f.getAudibleTag();
+        if( t )
+            ipodtrack->drm_userid = t->userID();
+        // libgpod also tries to set those, but this won't work
+        ipodtrack->unk126 = 0x01;
+        ipodtrack->unk144 = 0x0029;
+
+    }
+    */
+    else
+    {
+        ipodtrack->filetype = g_strdup( type.toUtf8() );
     }
 
-    if( !m_itdb && canInitialize )
+
+    QString genre = track->genre()->name();
+    if( genre.startsWith("audiobook", Qt::CaseInsensitive) )
+        audiobook = true;
+    if( audiobook )
     {
-        QString msg = i18n( "Media Device: could not find iTunesDB on device mounted at %1. "
-                "Should I try to initialize your iPod?", mountPoint() );
+        ipodtrack->remember_playback_position |= 0x01;
+        ipodtrack->skip_when_shuffling |= 0x01;
+        ipodtrack->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
+    }
 
-        if( !silent
-                && KMessageBox::warningContinueCancel( m_parent, msg, i18n( "Initialize iPod?" ),
-                    KGuiItem(i18n("&Initialize"), "new") ) == KMessageBox::Continue )
+    ipodtrack->composer = g_strdup( track->composer()->name().toUtf8() );
+    ipodtrack->comment = g_strdup( track->comment().toUtf8() );
+    ipodtrack->track_nr = track->trackNumber();
+    ipodtrack->cd_nr = track->discNumber();
+// BPM isn't present in Amarok 2 at this time Jul. 8 2008
+//    ipodtrack->BPM = static_cast<int>( track->bpm() );
+    bool ok;
+    int year = track->year()->name().toInt( &ok, 10 );
+    if(ok)
+        ipodtrack->year = year;
+    ipodtrack->size = track->filesize();
+    if( ipodtrack->size == 0 )
+    {
+        debug() << "filesize is zero for " << ipodtrack->ipod_path << ", expect strange problems with your ipod";
+    }
+    ipodtrack->bitrate = track->bitrate();
+    ipodtrack->samplerate = track->sampleRate();
+    ipodtrack->tracklen = track->length()*1000;
+
+// In Amarok 2, tracks come from many places, no such reliable info
+/*
+    //Get the createdate from database
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valCreateDate );
+    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valURL, metaBundle.url().path() );
+    QStringList values = qb.run();
+
+    //Add to track info if present
+    if ( values.count() ) {
+        uint createdate = values.first().toUInt();
+        ipodtrack->time_added = itdb_time_host_to_mac( createdate );
+        ipodtrack->time_modified = itdb_time_host_to_mac( createdate );
+    }
+*/
+// TODO: podcasts/compilations NYI
+    /*
+    if(podcastInfo)
+    {
+        ipodtrack->skip_when_shuffling = 0x01; // skip  when shuffling
+        ipodtrack->remember_playback_position = 0x01; // remember playback position
+        // FIXME: ipodtrack->unk176 = 0x00020000; // for podcasts
+        ipodtrack->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
+        ipodtrack->mediatype =
+                ipodtrack->mediatype==ITDB_MEDIATYPE_MOVIE
+                ?  ITDB_MEDIATYPE_PODCAST | ITDB_MEDIATYPE_MOVIE
+            : ITDB_MEDIATYPE_PODCAST;
+
+        ipodtrack->flag4 = 0x01; // also show description on iPod
+        QString plaindesc = podcastInfo->description;
+        plaindesc.remove( QRegExp("<[^>]*>") );
+        ipodtrack->description = g_strdup( plaindesc.toUtf8() );
+        ipodtrack->subtitle = g_strdup( plaindesc.toUtf8() );
+        ipodtrack->podcasturl = g_strdup( podcastInfo->url.toUtf8() );
+        ipodtrack->podcastrss = g_strdup( podcastInfo->rss.toUtf8() );
+        //ipodtrack->category = g_strdup( i18n( "Unknown" ) );
+        ipodtrack->time_released = itdb_time_host_to_mac( podcastInfo->date.toTime_t() );
+        //ipodtrack->compilation = 0x01; // this should have made the ipod play a sequence of podcasts
+    }
+    else
+    {
+        if( metaBundle.compilation() == MetaBundle::CompilationYes )
         {
-            if( !initializeIpod() )
-            {
-                if( m_itdb )
-                {
-                    itdb_free( m_itdb );
-                    m_itdb = 0;
-                }
-
-                The::statusBar()->longMessage(
-                        i18n("Media Device: Failed to initialize iPod mounted at %1", mountPoint() ),
-                        KDE::StatusBar::Sorry );
-
-                return false;
-            }
+            ipodtrack->compilation = 0x01;
         }
         else
-           return false;
-    }
-
-    detectModel();
-
-    if( !createLockFile( silent ) )
-    {
-        if( m_itdb )
         {
-            itdb_free( m_itdb );
-            m_itdb = 0;
+            ipodtrack->compilation = 0x00;
         }
-        return false;
     }
+    */
 
-    for( int i=0; i < itdb_musicdirs_number(m_itdb); i++)
+    m_dbChanged = true;
+// TODO: artwork NYI
+/*
+    if( m_supportsArtwork )
     {
-        QString real;
-        QString ipod;
-        ipod.sprintf( itunesDir( "Music:f%02d" ).toLatin1(), i );
-        if(!pathExists( ipod, &real ) )
+        QString image;
+        if( metaBundle.podcastBundle() )
         {
-            QDir dir( real );
-            dir.mkdir( real );
-            dir.setPath( real );
-            if( !dir.exists() )
+            PodcastChannelBundle pcb;
+            if( CollectionDB::instance()->getPodcastChannelBundle( metaBundle.podcastBundle()->parent(), &pcb ) )
+                image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 0 );
+        }
+        if( image.isEmpty() )
+            image  = CollectionDB::instance()->albumImage(metaBundle.artist(), metaBundle.album(), false, 0);
+        if( !image.endsWith( "@nocover.png" ) )
+        {
+            debug() << "adding image " << image << " to " << metaBundle.artist() << ":" << metaBundle.album();
+            itdb_track_set_thumbnails( ipodtrack, g_strdup( QFile::encodeName(image) ) );
+        }
+    }
+*/
+
+    // NOTE: legacy code
+    /*
+    if( item )
+    {
+        MediaItem *parent = dynamic_cast<MediaItem *>(item->parent());
+        if( parent )
+        {
+            parent->takeItem( item );
+            if( parent->childCount() == 0 && !isSpecialItem( parent ) )
             {
-                debug() << "failed to create hash dir " << real;
-                The::statusBar()->longMessage(
-                        i18n( "Media device: Failed to create directory %1", real ),
-                        KDE::StatusBar::Error );
-                return false;
+                MediaItem *pp = dynamic_cast<MediaItem *>(parent->parent());
+                delete parent;
+                if( pp && pp->childCount() == 0 && !isSpecialItem( pp ) )
+                    delete pp;
+            }
+        }
+    }
+    */
+        itdb_track_add(m_itdb, ipodtrack, -1);
+
+        // TODO: podcasts NYI
+        // if(podcastInfo)
+        if( false )
+        {
+            Itdb_Playlist *podcasts = itdb_playlist_podcasts(m_itdb);
+            if(!podcasts)
+            {
+                podcasts = itdb_playlist_new("Podcasts", false);
+                itdb_playlist_add(m_itdb, podcasts, -1);
+                itdb_playlist_set_podcasts(podcasts);
+            //    addPlaylistToView( podcasts );
+            }
+            itdb_playlist_add_track(podcasts, ipodtrack, -1);
+        }
+        else
+        {
+            // gtkpod 0.94 does not like if not all songs in the db are on the master playlist
+            // but we try anyway
+            Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
+            if( !mpl )
+            {
+                mpl = itdb_playlist_new( "iPod", false );
+                itdb_playlist_add( m_itdb, mpl, -1 );
+                itdb_playlist_set_mpl( mpl );
+                //addPlaylistToView( mpl );
+            }
+            itdb_playlist_add_track(mpl, ipodtrack, -1);
+        }
+    
+
+//    return addTrackToView( ipodtrack, item );
+}
+
+bool
+IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
+{
+    m_wait = true;
+
+    KIO::FileCopyJob *job = KIO::file_copy( src, dst,
+                                            -1 /* permissions */,
+                                            KIO::HideProgressInfo );
+    connect( job, SIGNAL( result( KIO::Job * ) ),
+             this,  SLOT( fileTransferred( KIO::Job * ) ) );
+
+    bool tryToRemove = false;
+    
+    while ( m_wait )
+    {
+        // TODO: this isn't implemented yet
+        
+        if( m_isCanceled )
+        {
+            job->kill( KJob::EmitResult );
+            tryToRemove = true;
+            m_wait = false;
+        }
+        else
+        {
+            usleep(10000);
+            KApplication::kApplication()->processEvents( QEventLoop::ExcludeUserInputEvents );
+        }
+        
+    }
+    
+
+    if( !tryToRemove )
+    {
+        if(m_copyFailed)
+        {
+            tryToRemove = true;
+            // TODO: make debug more verbose like statusbar
+            debug() << "Copying file failed";
+        }
+        else
+        {
+            MetaFile::Track track2(dst);
+            if( !track2.isPlayable() && track2.filesize()==0 )
+            {
+                tryToRemove = true;
+                // probably s.th. went wrong
+                // TODO: make debug more verbose like statusbar
+                debug() << "Reading tags during file copy failed";
+
             }
         }
     }
 
-    if( !silent )
-        kapp->processEvents( 100 );
-
-    initView();
-    GList *cur = m_itdb->playlists;
-    for( ; cur; cur = cur->next )
+    if( tryToRemove )
     {
-        Itdb_Playlist *playlist = (Itdb_Playlist *)cur->data;
-        addPlaylistToView( playlist );
+        QFile::remove( dst.path() );
+        return false;
     }
-
-    if( !silent )
-        kapp->processEvents( 100 );
-
-    for( cur = m_itdb->tracks; cur; cur = cur->next )
-    {
-        Itdb_Track *track = (Itdb_Track *)cur->data;
-        addTrackToView( track, 0 /*parent*/, false /*checkintegrity*/, true /*batchmode*/ );
-    }
-
-    if( !silent )
-        kapp->processEvents( 100 );
-
-    updateRootItems();
-    m_customAction->setEnabled( true );
-
-    m_dbChanged = true; // write at least once for synchronising new stats
 
     return true;
 }
-#endif
+
+KUrl
+IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
+{
+    if( !m_itdb )
+    {
+        debug() << "m_itdb is NULL";
+        return KUrl();
+    }
+
+    QString local = KUrl::fromPath( track->url() ).fileName();
+    QString type = local.section('.', -1).toLower();
+
+    QString trackpath;
+    QString realpath;
+    do
+    {
+        int num = std::rand() % 1000000;
+        int music_dirs = itdb_musicdirs_number(m_itdb) > 1 ? itdb_musicdirs_number(m_itdb) : 20;
+        int dir = num % music_dirs;
+        QString dirname;
+        // NOTE: unsure if the sprintf replacement works as intended
+       // dirname.sprintf( "%s:Music:f%02d", itunesDir().toLatin1(), dir );
+        dirname = QString( "%1:Music:f%2" ).arg( itunesDir() ).arg( dir, 2, QLatin1Char( '0' ) );
+        if( !pathExists( dirname ) )
+        {
+            QString realdir = realPath(dirname.toLatin1());
+            QDir qdir( realdir );
+            qdir.mkdir( realdir );
+        }
+        QString filename;
+        //filename.sprintf( ":kpod%07d.%s", num, type.toLatin1() );
+        filename = QString( ":kpod%1.%2" ).arg( QString::number( num, 10 ), 7, QLatin1Char( '0' ) ).arg(type);
+        trackpath = dirname + filename;
+    }
+    while( pathExists( trackpath, &realpath ) );
+
+    return realpath;
+}
+
+QString
+IpodHandler::ipodPath(const QString &realPath)
+{
+    if(m_itdb)
+    {
+        QString mp = QFile::decodeName(itdb_get_mountpoint(m_itdb));
+        if(realPath.startsWith(mp))
+        {
+            QString path = realPath;
+            path = path.mid(mp.length());
+            path = path.replace('/', ":");
+            return path;
+        }
+    }
+
+    return QString();
+}
+
+QString
+IpodHandler::realPath(const char *ipodPath)
+{
+    QString path;
+    if(m_itdb)
+    {
+        path = QFile::decodeName(itdb_get_mountpoint(m_itdb));
+        path.append(QString(ipodPath).replace(':', "/"));
+    }
+
+    return path;
+}
 
 void
 IpodHandler::parseTracks()
@@ -592,7 +861,7 @@ IpodHandler::parseTracks()
 
     GList *cur;
 
-    int debugtest = 0;
+//    int debugtest = 0;
 /* iterate through tracklist and add to appropriate map */
     for ( cur = m_itdb->tracks; cur; cur = cur->next )
     {

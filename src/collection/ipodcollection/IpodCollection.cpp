@@ -144,7 +144,7 @@ IpodCollectionFactory::deviceRemoved( const QString &udi )
                 if (  coll )
                 {
                     m_collectionMap.remove( udi ); // remove from map
-                    coll->deviceRemoved( udi );  //collection will be deleted by collectionmanager
+                    coll->deviceRemoved();  //collection will be deleted by collectionmanager
                 }
                 else
                     warning() << "collection already null";
@@ -192,7 +192,7 @@ IpodCollection::~IpodCollection()
 }
 
 void
-IpodCollection::deviceRemoved( const QString &udi )
+IpodCollection::deviceRemoved()
 {
     emit remove();
 }

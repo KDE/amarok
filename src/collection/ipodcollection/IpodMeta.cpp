@@ -337,6 +337,12 @@ IpodTrack::setYear( IpodYearPtr year )
     m_year = year;
 }
 
+QString
+IpodTrack::title() const
+{
+    return m_name;
+}
+
 void
 IpodTrack::setTitle( const QString &title )
 {
