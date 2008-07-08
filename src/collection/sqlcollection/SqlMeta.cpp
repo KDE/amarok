@@ -1251,9 +1251,9 @@ SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
             QList<PopupDropperAction*> actions;
             actions.append( new CopyToDeviceAction( m_collection, this ) );
             actions.append( new CompilationAction( m_collection, this ) );
-            QAction* separator = new QAction( m_collection );
+            PopupDropperAction* separator = new PopupDropperAction( m_collection );
             separator->setSeparator( true );
-            actions.append( static_cast<PopupDropperAction*>( separator ) );
+            actions.append( separator );
             actions.append( new FetchCoverAction( m_collection, this ) );
             actions.append( new SetCustomCoverAction( m_collection, this ) );
             PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, this );
