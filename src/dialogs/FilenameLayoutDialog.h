@@ -29,6 +29,13 @@ class FilenameLayoutDialog
 
     public:
         FilenameLayoutDialog( QWidget *parent = 0 );
+
+    private:
+        QList< QRadioButton * > caseEditRadioButtons;
+
+    private slots:
+        void editStateEnable( bool checked );
 };
 
 #endif    //FILENAMELAYOUTDIALOG_H
+

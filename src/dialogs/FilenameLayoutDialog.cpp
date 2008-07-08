@@ -28,18 +28,28 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
     setButtons( KDialog::Ok | KDialog::Cancel );
     setMainWidget( widget );
 
-    tokenPool->addItem( i18n( "Track #" ) );
-    tokenPool->addItem( i18n( "Track Name" ) );
-    tokenPool->addItem( i18n( "Disc #" ) );
-    tokenPool->addItem( i18n( "Track Count" ) );
-    tokenPool->addItem( i18n( "Disc Count" ) );
-    tokenPool->addItem( i18n( "Artist" ) );
-    tokenPool->addItem( i18n( "Composer" ) );
-    tokenPool->addItem( i18n( "Year" ) );
-    tokenPool->addItem( i18n( "Album Name" ) );
-    tokenPool->addItem( i18n( "Comment" ) );
+    caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
-    //widget->setLayout( verticalLayout );    //see verticalLayout in FilenameLayoutDialog.ui
+    connect( cbCase, SIGNAL( toggled( bool ) ),
+             this, SLOT( editStateEnable( bool ) ) );
 
-    optionsFrame->setTitle( i18n( "Options" ) );
+}
+
+void
+FilenameLayoutDialog::editStateEnable( bool checked )      //SLOT
+{
+    if( !checked )
+    {
+        foreach( QRadioButton *rb, caseEditRadioButtons )
+        {
+            rb->setEnabled( false );
+        }
+    }
+    else
+    {
+        foreach( QRadioButton *rb, caseEditRadioButtons )
+        {
+            rb->setEnabled( true );
+        }
+    }
 }

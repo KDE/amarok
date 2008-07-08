@@ -27,6 +27,15 @@ TokenListWidget::TokenListWidget( QWidget *parent )
     : KListWidget( parent )
 {
     setAcceptDrops( true );
+
+    addItem( i18n( "Track" ) );
+    addItem( i18n( "Title" ) );
+    addItem( i18n( "Artist" ) );
+    addItem( i18n( "Composer" ) );
+    addItem( i18n( "Year" ) );
+    addItem( i18n( "Album" ) );
+    addItem( i18n( "Comment" ) );
+    addItem( i18n( "Genre" ) );
 }
 
 void
@@ -78,9 +87,6 @@ TokenListWidget::dropEvent( QDropEvent *event )
 {
     //does nothing, I want the item to be deleted and not dragged here
 }
-
-
-
 
 void
 TokenListWidget::performDrag( QMouseEvent *event )
