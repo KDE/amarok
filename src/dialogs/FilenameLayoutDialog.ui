@@ -13,22 +13,31 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle" >
-   <string>Dialog</string>
+   <string>Filename Scheme</string>
   </property>
-  <widget class="QWidget" name="layoutWidget" >
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" native="1" name="widget" >
    <property name="geometry" >
     <rect>
-     <x>50</x>
-     <y>20</y>
-     <width>631</width>
-     <height>411</height>
+     <x>0</x>
+     <y>0</y>
+     <width>701</width>
+     <height>501</height>
     </rect>
+   </property>
+   <property name="sizePolicy" >
+    <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout" >
     <item>
      <widget class="FilenameLayoutWidget" name="filenameLayout" >
       <property name="sizePolicy" >
-       <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -41,7 +50,7 @@
       </property>
       <property name="maximumSize" >
        <size>
-        <width>300</width>
+        <width>30000</width>
         <height>36</height>
        </size>
       </property>
@@ -55,13 +64,23 @@
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" >
+      <property name="sizeConstraint" >
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
       <item>
-       <widget class="KButtonGroup" name="optionsFrame" />
+       <widget class="KButtonGroup" name="optionsFrame" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="TokenListWidget" name="tokenPool" >
         <property name="sizePolicy" >
-         <sizepolicy vsizetype="Maximum" hsizetype="Fixed" >
+         <sizepolicy vsizetype="MinimumExpanding" hsizetype="Fixed" >
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -71,8 +90,6 @@
      </layout>
     </item>
    </layout>
-   <zorder>filenameLayout</zorder>
-   <zorder></zorder>
   </widget>
  </widget>
  <customwidgets>

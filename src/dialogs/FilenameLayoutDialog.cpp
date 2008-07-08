@@ -25,7 +25,8 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
     setupUi( this );
 
     setCaption( i18n( "Filename Layout Chooser" ) );
-    setButtons( 0 );
+    setButtons( KDialog::Ok | KDialog::Cancel );
+    setMainWidget( widget );
 
     tokenPool->addItem( i18n( "Track #" ) );
     tokenPool->addItem( i18n( "Track Name" ) );
@@ -38,7 +39,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
     tokenPool->addItem( i18n( "Album Name" ) );
     tokenPool->addItem( i18n( "Comment" ) );
 
-    setLayout( verticalLayout );    //see verticalLayout in FilenameLayoutDialog.ui
+    //widget->setLayout( verticalLayout );    //see verticalLayout in FilenameLayoutDialog.ui
 
     optionsFrame->setTitle( i18n( "Options" ) );
 }
