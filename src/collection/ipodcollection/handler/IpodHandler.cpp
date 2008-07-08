@@ -31,8 +31,7 @@
 #include <QFileInfo>
 #include <QString>
 #include <QStringList>
-
-#include <cstdlib>
+#include <QTime>
 
 using namespace Ipod;
 using namespace Meta;
@@ -58,6 +57,8 @@ DEBUG_BLOCK
      }
 
  }
+
+ qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
 
 }
@@ -795,7 +796,8 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
     QString realpath;
     do
     {
-        int num = std::rand() % 1000000;
+        //int num = std::rand() % 1000000;
+        int num = qrand() % 1000000;
         int music_dirs = itdb_musicdirs_number(m_itdb) > 1 ? itdb_musicdirs_number(m_itdb) : 20;
         int dir = num % music_dirs;
         QString dirname;
