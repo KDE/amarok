@@ -52,10 +52,9 @@ FilenameLayoutWidget::slotAddToken()
 void
 FilenameLayoutWidget::addToken( QString text, int index )
 {
-    if( !isEmpty() )
+    if( !tokenCount )
     {
         backText->hide();
-        setEmpty( false );
     }
 
     tokenCount++;
@@ -134,7 +133,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     Token *childUnder = qobject_cast< Token * >( childAt( event->pos() ) );
     if( childUnder == 0 )
     {
-        if( isEmpty() )
+        if( !tokenCount )
         {
             addToken( textFromMimeData );
         }
@@ -199,7 +198,6 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     dataStream << child->text(); // << QPoint( event->pos() - child->rect().topLeft() -child.pos() );       //I may need the QPoint of the start sooner or later
     QMimeData *mimeData = new QMimeData;
     mimeData->setData( "application/x-amarok-tag-token", itemData );
-    //mimeData->setText( child->text() );
     QDrag *drag = new QDrag( this );
     drag->setMimeData( mimeData );
     drag->setHotSpot( event->pos() - child->rect().topLeft() - child->pos() );        //I grab the initial position of the item I'm dragging
@@ -208,28 +206,15 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
 
     //child->close();
     delete child;
+    tokenCount--;
 
-    if( !childAt( QPoint( size().width() / 2, size().height() / 2 ) ) )     //stinks of hack
+    if( !tokenCount )
     {
-        setEmpty( true );       //TODO: FIX THIS; WONT DELETE THE BACKTEXT WHEN IT SHOULD
         backText->show();
     }
     
     drag->exec(Qt::MoveAction | Qt::CopyAction, Qt:: CopyAction);
 }
-
-bool
-FilenameLayoutWidget::isEmpty()
-{
-    return empty;
-}
-
-void
-FilenameLayoutWidget::setEmpty( bool state )
-{
-    empty = state;
-}
-
 
 //starts implementation of Token : QLabel
 
