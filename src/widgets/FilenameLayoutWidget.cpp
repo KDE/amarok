@@ -68,7 +68,7 @@ FilenameLayoutWidget::addToken( QString text, int index )
     token->show();
 
     //testing, remove when done
-    token->setText( token->text() + " " + QString::number( layout->indexOf( token ) ) );
+   // token->setText( token->text() + " " + QString::number( layout->indexOf( token ) ) );
     //end testing block
 }
 

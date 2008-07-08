@@ -36,6 +36,10 @@ TokenListWidget::TokenListWidget( QWidget *parent )
     addItem( i18n( "Album" ) );
     addItem( i18n( "Comment" ) );
     addItem( i18n( "Genre" ) );
+    addItem( " _ " );
+    addItem( " - " );
+    addItem( " . " );
+    addItem( "   " );
 }
 
 void
