@@ -533,16 +533,14 @@ Playlist::Model::playlistModeChanged()
             dm->retrievePlaylist( AmarokConfig::lastDynamicMode() );
         if( !playlist ) playlist = dm->retrieveDefaultPlaylist();
 
-        bool wasNull = m_advancer == 0;
+        const bool wasNull = m_advancer == 0;
         m_advancer = new DynamicTrackNavigator( this, playlist );
 
         if( !wasNull )
         {
-            ((DynamicTrackNavigator*)m_advancer)->appendUpcoming();
+            ( (DynamicTrackNavigator*) m_advancer)->appendUpcoming();
             if( activeRow() < 0 && rowCount() > 0 ) play( 0 );
-
         }
-
 
         return;
     }
