@@ -63,6 +63,12 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *regi
         , m_collection ( collection )
         , m_registry ( registry )
 {
+    // init all dates to "0" (because amarok defines that date as "never"
+
+    m_firstPlayed = QDateTime::fromTime_t( 0 );
+    m_lastPlayed =  QDateTime::fromTime_t( 0 );
+    m_createDate = QDateTime::fromTime_t( 0 );
+
     statsThread =  new WriteStatisticsThread( this );
 
     m_nepores = Nepomuk::Resource( data[ "r"].uri() ) ;
@@ -308,8 +314,9 @@ void
 NepomukTrack::finishedPlaying( double playedFraction )
 {
     debug() << "finshedPlaying " << endl;
+    m_lastPlayed = QDateTime::currentDateTime();
     QMutexLocker locker( &statsMutex );
-    if( m_playCount == 0 )
+    if( m_playCount == 0 || m_firstPlayed == QDateTime::fromTime_t( 0 ) )
     {
         m_firstPlayed = m_lastPlayed;
     }
@@ -323,7 +330,7 @@ void
 NepomukTrack::writeStatistics()
 {
     QMutexLocker locker( &statsMutex );
-    
+
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valLastPlayed) )
             , Nepomuk::Variant( m_lastPlayed ) );
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valPlaycount) )
