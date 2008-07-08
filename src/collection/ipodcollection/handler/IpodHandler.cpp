@@ -32,6 +32,8 @@
 #include <QString>
 #include <QStringList>
 
+#include <cstdlib>
+
 using namespace Ipod;
 using namespace Meta;
 
