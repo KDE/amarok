@@ -59,7 +59,7 @@ fetchAmarok()
 
 SVNPACKAGES = @packages
 
-# UploadUbuntu.new("amarok")
+UploadUbuntu.new("amarok")
 UploadObs.new()
 
 
