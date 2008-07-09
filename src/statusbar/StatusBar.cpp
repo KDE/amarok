@@ -3,6 +3,7 @@
  *             (C) 2004 Frederik Holljen <fh@ez.no>                        *
  *             (C) 2005 Gábor Lehel <illissius@gmail.com>                  *
  *             (C) 2007 Seb Ruiz <ruiz@kde.org>                            *
+ *             (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,7 +18,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #include "StatusBar.h"
@@ -60,10 +61,15 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 void
 StatusBar::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
+    DEBUG_BLOCK
     switch ( state ) {
     case Phonon::StoppedState:
     case Phonon::LoadingState:
-        setMainText( QString() );
+        debug() << "LoadingState: clear text";
+        if ( m_currentTrack )
+            updateInfo( m_currentTrack );
+        else
+            setMainText( QString() );
         break;
 
     case Phonon::PausedState:
@@ -71,7 +77,11 @@ StatusBar::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
         break;
 
     case Phonon::PlayingState:
-        resetMainText(); // if we were paused, this is necessary
+        debug() << "PlayingState: clear text";
+        if ( m_currentTrack )
+            updateInfo( m_currentTrack );
+        else
+            resetMainText(); // if we were paused, this is necessary
         break;
 
     case Phonon::ErrorState:
@@ -84,10 +94,80 @@ StatusBar::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 void
 StatusBar::engineNewTrackPlaying()
 {
-    Meta::TrackPtr track = The::engineController()->currentTrack();
 
-    if( !track )
+    DEBUG_BLOCK
+
+    if( m_currentTrack )
+        unsubscribeFrom( m_currentTrack );
+
+    m_currentTrack = The::engineController()->currentTrack();
+    
+    if( !m_currentTrack ) {
+        m_currentTrack = Meta::TrackPtr();
+        debug() << "no track";
         return;
+    }
+
+    subscribeTo( m_currentTrack );
+
+    updateInfo( m_currentTrack );
+
+
+
+}
+
+///////////////////
+//MessageQueue
+///////////////////
+
+MessageQueue::MessageQueue()
+    : m_queueMessages( true )
+{
+     DEBUG_BLOCK
+}
+
+MessageQueue::~MessageQueue()
+{
+     DEBUG_BLOCK
+}
+
+K_GLOBAL_STATIC( MessageQueue, s_messageQueue );
+
+MessageQueue*
+MessageQueue::instance()
+{
+    return s_messageQueue;
+}
+
+void
+MessageQueue::addMessage(const QString& message)
+{
+    if(m_queueMessages)
+        m_messages.push(message);
+    else
+        StatusBar::instance()->longMessage(message);
+}
+
+void
+MessageQueue::sendMessages()
+{
+     m_queueMessages = false;
+     while(! m_messages.isEmpty())
+     {
+        StatusBar::instance()->longMessage(m_messages.pop());
+     }
+}
+
+void Amarok::StatusBar::metadataChanged( Meta::Track * track )
+{
+    if ( m_currentTrack )
+        updateInfo( m_currentTrack );
+    else
+        engineNewTrackPlaying();
+}
+
+void Amarok::StatusBar::updateInfo( Meta::TrackPtr track )
+{
 
     QString title       = Qt::escape( track->name() );
     QString prettyTitle = Qt::escape( track->prettyName() );
@@ -97,7 +177,7 @@ StatusBar::engineNewTrackPlaying()
 
     if ( artist == "Mike Oldfield" && title == "Amarok" ) {
         longMessage( i18n(
-                "<p>One of Mike Oldfield's best pieces of work, Amarok, inspired the name behind "
+                     "<p>One of Mike Oldfield's best pieces of work, Amarok, inspired the name behind "
                 "the audio-player you are currently using. Thanks for choosing Amarok!</p>"
                 "<p align=right>Mark Kretschmann<br/>Max Howell<br/>Chris Muehlhaeuser<br/>"
                 "The many other people who have helped make Amarok what it is</p>" ), KDE::StatusBar::Information );
@@ -145,46 +225,4 @@ StatusBar::engineNewTrackPlaying()
     }
 
     setMainText( i18n( "Playing: %1", title ) );
-}
-
-///////////////////
-//MessageQueue
-///////////////////
-
-MessageQueue::MessageQueue()
-    : m_queueMessages( true )
-{
-     DEBUG_BLOCK
-}
-
-MessageQueue::~MessageQueue()
-{
-     DEBUG_BLOCK
-}
-
-K_GLOBAL_STATIC( MessageQueue, s_messageQueue );
-
-MessageQueue*
-MessageQueue::instance()
-{
-    return s_messageQueue;
-}
-
-void
-MessageQueue::addMessage(const QString& message)
-{
-    if(m_queueMessages)
-        m_messages.push(message);
-    else
-        StatusBar::instance()->longMessage(message);
-}
-
-void
-MessageQueue::sendMessages()
-{
-     m_queueMessages = false;
-     while(! m_messages.isEmpty())
-     {
-        StatusBar::instance()->longMessage(m_messages.pop());
-     }
 }

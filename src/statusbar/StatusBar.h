@@ -22,6 +22,7 @@
 #define AMAROK_StatusBar_H
 
 #include "EngineObserver.h" //baseclass
+#include "meta/Meta.h" // album observer
 #include "StatusBarBase.h"  //baseclass
 
 #include <QStack>
@@ -41,7 +42,7 @@ namespace The {
 
 namespace Amarok
 {
-    class AMAROK_EXPORT StatusBar : public KDE::StatusBar, public EngineObserver
+    class AMAROK_EXPORT StatusBar : public KDE::StatusBar, public EngineObserver, public Meta::Observer
     {
         friend Amarok::StatusBar* The::statusBar();
 
@@ -51,9 +52,18 @@ namespace Amarok
             explicit StatusBar( QWidget *parent, const char *name = 0 );
             static   StatusBar* instance() { return s_instance; }
 
+             // reimplemented from Meta::Observer
+            using Observer::metadataChanged;
+            void metadataChanged( Meta::Track *track );
+
         protected:  /* reimpl from engineobserver */
             virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
             virtual void engineNewTrackPlaying();
+
+        private:
+            void updateInfo( Meta::TrackPtr track );
+            Meta::TrackPtr m_currentTrack;
+            
     };
 
     /**
