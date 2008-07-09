@@ -20,7 +20,8 @@ SECTION 2: Creating and Testing the Tarball
 
 SECTION 3: Once Happy with the Tarball
 
- * SFtp the tarball to ftpamarok@ktown.kde.org/stable/amarok/VERSION/src
+ * SFtp the tarball to ftpamarok@ktown.kde.org/stable/amarok/VERSION/src or
+   ftpamarok@ktown.kde.org/unstable/amarok/VERSION/src
    (If you don't have access, mail sysadmin@kde.org)
  * Update the amarok.kde.org front-page before anything else!
  * Update kde-apps.org and freshmeat.net
