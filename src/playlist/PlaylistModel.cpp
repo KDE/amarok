@@ -988,6 +988,18 @@ Playlist::Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, i
     return false;
 }
 
+Meta::TrackPtr
+Playlist::Model::trackForRow( int row ) const
+{
+    if( row >= 0 && row < itemList().size() )
+    {
+        return itemList().at( row )->track();
+    }
+    else
+        return Meta::TrackPtr( 0 );
+}
+
+
 ////////////
 //Private Methods
 ///////////

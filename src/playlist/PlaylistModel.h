@@ -177,8 +177,10 @@ namespace Playlist
 
             bool savePlaylist( const QString &path ) const;
 
-            ///Return list of items in playlist
+            //Return list of items in playlist
             QList<Item*> itemList() const { return m_items; }
+            //Return TrackPtr for a given row in the playlist
+            Meta::TrackPtr trackForRow( int row ) const;
 
             inline const QString defaultPlaylistPath() const { return Amarok::saveLocation() + "current.xspf"; }
 
