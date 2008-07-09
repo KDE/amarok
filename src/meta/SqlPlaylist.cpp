@@ -106,7 +106,7 @@ void SqlPlaylist::saveTracks()
         QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, album, artist, length ) VALUES ( %1, %2, '%3', '%4', '%5', '%6', %7 );";
         query = query.arg( QString::number( m_dbId ) );
         query = query.arg( trackNum );
-        query = query.arg( sql->escape( trackPtr->playableUrl().url() ) );
+        query = query.arg( sql->escape( trackPtr->url() ) );
         query = query.arg( sql->escape( trackPtr->prettyName() ) );
         query = query.arg( sql->escape( trackPtr->album()->prettyName() ) );
         query = query.arg( sql->escape( trackPtr->artist()->prettyName() ) );
