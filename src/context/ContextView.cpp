@@ -1,11 +1,11 @@
-/***************************************************************************
-* copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
-*                                                                         *
-*                        Significant parts of this code is inspired       *
-*                        and/or copied from KDE Plasma sources, available *
-*                        at kdebase/workspace/plasma                      *
+/*****************************************************************************
+* copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>           *
+*                      : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
+*                        Significant parts of this code is inspired          *
+*                        and/or copied from KDE Plasma sources, available    *
+*                        at kdebase/workspace/plasma                         *
 *
-**************************************************************************/
+******************************************************************************/
 
 /***************************************************************************
 *                                                                         *
