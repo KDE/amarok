@@ -29,8 +29,7 @@ SECTION 3: Once Happy with the Tarball
 
      To:  kde-announce@kde.org
      CC:  amarok@kde.org, amarok-promo@kde.org
-     BCC: kde-extra-gear@kde.org, libvisual-devel@lists.sourceforge.net,
-          kde-multimedia@kde.org, nmm-dev@graphics.cs.uni-sb.de,
+     BCC: kde-extra-gear@kde.org, kde-multimedia@kde.org
 --------------------------------------------------------------------------------
 
 SECTION 4: After the Release
