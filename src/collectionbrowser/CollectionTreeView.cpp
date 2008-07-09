@@ -61,6 +61,8 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_organizeAction( 0 )
     , m_caSeperator( 0 )
     , m_cmSeperator( 0 )
+    , m_dragMutex()
+    , m_ongoingDrag( false )
 {
     setRootIsDecorated( true );
     setSortingEnabled( true );
@@ -261,10 +263,14 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     DEBUG_BLOCK
 
     // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
-    static bool ongoingDrags = false;
-    if( ongoingDrags )
-        return;
-    ongoingDrags = true;
+    m_dragMutex.lock();
+        if( m_ongoingDrag )
+        {
+            m_dragMutex.unlock();
+            return;
+        }
+        m_ongoingDrag = true;
+    m_dragMutex.unlock();
 
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
@@ -355,7 +361,9 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         m_pd->hide();
     }
 
-    ongoingDrags = false;
+    m_dragMutex.lock();
+        m_ongoingDrag = false;
+    m_dragMutex.unlock();
 }
 
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)

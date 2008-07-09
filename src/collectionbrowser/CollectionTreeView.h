@@ -120,6 +120,9 @@ class CollectionTreeView: public QTreeView
 
         QSet<CollectionTreeItem*> m_currentItems;
 
+        QMutex m_dragMutex;
+        bool m_ongoingDrag;
+
     signals:
         void itemSelected( CollectionTreeItem * item );
 };
