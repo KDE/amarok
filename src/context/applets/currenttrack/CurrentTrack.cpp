@@ -165,7 +165,12 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     QFont textFont = shrinkTextSizeToFit( title, QRectF( 0, 0, textWidth, textHeight ) );
     QFont labeFont = textFont;
     QFont tinyFont( textFont );
-    tinyFont.setPointSize( tinyFont.pointSize() - 5 );
+
+    if ( tinyFont.pointSize() > 5 ) 
+        tinyFont.setPointSize( tinyFont.pointSize() - 5 );
+    else
+        tinyFont.setPointSize( 1 );
+    
     tinyFont.setBold( true );
     labeFont.setBold( true );
     
