@@ -294,7 +294,7 @@ IpodTrack::unsubscribe( Observer *observer )
 {
     Q_UNUSED( observer )    //read only
 }
-
+// TODO: implement this for IpodCollectionLocation
 bool
 IpodTrack::inCollection() const
 {

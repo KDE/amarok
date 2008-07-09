@@ -27,6 +27,8 @@ extern "C" {
 
 #include "Meta.h"
 
+#include "kjob.h"
+
 #include <QObject>
 
 class QString;
@@ -70,6 +72,7 @@ struct PodcastInfo
 	   bool openDevice( bool silent=false );
        void copyTrackToDevice( const Meta::TrackPtr &track );
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
+
        void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
        void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track );
        QString           ipodPath( const QString &realPath );
@@ -82,6 +85,7 @@ struct PodcastInfo
            
         public slots:
 	    bool initializeIpod();
+	void fileTransferred( KJob *job );
 
         signals:
 

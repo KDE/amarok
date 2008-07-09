@@ -19,6 +19,7 @@
 #define DEBUG_PREFIX "IpodCollection"
 
 #include "IpodCollection.h"
+#include "IpodCollectionLocation.h"
 #include "IpodMeta.h"
 
 #include "amarokconfig.h"
@@ -67,7 +68,7 @@ IpodCollectionFactory::init()
             /* if iPod found, make collection */
             if( isIpod( udi ) )
             {
-                coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi));
+                coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
                 if ( coll )
                 {
                     emit newCollection( coll );
@@ -123,7 +124,7 @@ IpodCollectionFactory::deviceAdded(  const QString &udi )
     /* if iPod found, make collection */
     if( isIpod( udi ) )
     {
-        coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi));
+        coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
         if ( coll )
         {
             emit newCollection( coll );
@@ -169,10 +170,11 @@ IpodCollectionFactory::slotCollectionReady()
 
 //IpodCollection
 
-IpodCollection::IpodCollection( const QString &mountPoint )
+IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )
     : Collection()
     , MemoryCollection()
     , m_mountPoint( mountPoint )
+    , m_udi( udi )
     , m_handler( 0 )
 {
     DEBUG_BLOCK
@@ -182,6 +184,13 @@ IpodCollection::IpodCollection( const QString &mountPoint )
     m_handler->parseTracks();
 
     emit collectionReady();
+}
+
+void
+IpodCollection::copyTrackToDevice( const Meta::TrackPtr &track )
+{
+    m_handler->copyTrackToDevice( track );
+    return;
 }
 
 
@@ -215,10 +224,22 @@ IpodCollection::collectionId() const
      return m_mountPoint;
 }
 
+CollectionLocation*
+IpodCollection::location() const
+{
+    return new IpodCollectionLocation( this );
+}
+
 QString
 IpodCollection::prettyName() const
 {
     return "Ipod at " + m_mountPoint;
+}
+
+QString
+IpodCollection::udi() const
+{
+    return m_udi;
 }
 
 #include "IpodCollection.moc"

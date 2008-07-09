@@ -60,14 +60,20 @@ class IpodCollection : public Collection, public MemoryCollection
     Q_OBJECT
 	public:
 
-    IpodCollection( const QString &mountPoint );
+    IpodCollection( const QString &mountPoint, const QString &udi );
     virtual ~IpodCollection();
+
+    void copyTrackToDevice( const Meta::TrackPtr &track );
 
     void deviceRemoved();
 
     virtual void startFullScan();
     virtual QueryMaker* queryMaker();
+
+    QString udi() const;
     
+    virtual CollectionLocation* location() const;
+
     virtual QString collectionId() const;
     virtual QString prettyName() const;        
     
@@ -80,7 +86,8 @@ class IpodCollection : public Collection, public MemoryCollection
 	
  private:
 
-    QString           m_mountPoint;    
+    QString           m_mountPoint;
+    QString           m_udi;
     Ipod::IpodHandler *m_handler;
 
 

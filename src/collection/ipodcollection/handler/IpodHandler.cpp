@@ -23,6 +23,7 @@
 #include "taglib_audiblefile.h"
 
 #include <KIO/Job>
+#include "kjob.h"
 #include <KUniqueApplication> // needed for KIO processes
 #include <KUrl>
 
@@ -324,7 +325,7 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 bool
 IpodHandler::writeITunesDB( bool threaded )
 {
-    return false; // TODO: implement this function correctly
+
     if(!m_itdb)
         return false;
 
@@ -389,6 +390,7 @@ IpodHandler::writeITunesDB( bool threaded )
         }
         else
         {
+            debug() << "Failed to write iPod database";
 //            The::statusBar()->longMessage(
 //                    i18n("Media device: failed to write iPod database"),
 //                    KDE::StatusBar::Error );
@@ -415,7 +417,8 @@ IpodHandler::itunesDir(const QString &p) const
 void
 IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 {
-    
+    DEBUG_BLOCK
+
     KUrl url = determineURLOnDevice(track);
 
     // check if path exists and make it if needed
@@ -451,10 +454,10 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
     }
 
     // PODCASTS NOT YET PORTED
-    
+
 //    PodcastInfo *podcastInfo = 0;
 
-    
+
     /*
     if( bundle.podcastBundle() )
     {
@@ -469,6 +472,8 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
     }
 */
     insertTrackIntoDB( url, track );
+    debug() << "Trying to write iTunes database";
+    writeITunesDB( false ); // false, since not threaded, implement later
     //delete podcastInfo;
     return;
 }
@@ -712,7 +717,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
             }
             itdb_playlist_add_track(mpl, ipodtrack, -1);
         }
-    
+
 
 //    return addTrackToView( ipodtrack, item );
 }
@@ -720,20 +725,23 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
 bool
 IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 {
+    DEBUG_BLOCK
     m_wait = true;
 
     KIO::FileCopyJob *job = KIO::file_copy( src, dst,
                                             -1 /* permissions */,
                                             KIO::HideProgressInfo );
-    connect( job, SIGNAL( result( KIO::Job * ) ),
-             this,  SLOT( fileTransferred( KIO::Job * ) ) );
+//    connect( job, SIGNAL( result( KIO::Job * ) ),
+//
+    connect( job, SIGNAL( result( KJob * ) ),
+             this,  SLOT( fileTransferred( KJob * ) ) );
 
     bool tryToRemove = false;
-    
+
     while ( m_wait )
     {
         // TODO: this isn't implemented yet
-        
+
         if( m_isCanceled )
         {
             job->kill( KJob::EmitResult );
@@ -745,9 +753,9 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
             usleep(10000);
             KApplication::kApplication()->processEvents( QEventLoop::ExcludeUserInputEvents );
         }
-        
+
     }
-    
+
 
     if( !tryToRemove )
     {
@@ -778,6 +786,22 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     }
 
     return true;
+}
+
+void
+IpodHandler::fileTransferred( KJob *job )  //SLOT
+{
+        if ( job->error() )
+        {
+            m_copyFailed = true;
+            debug() << "file transfer failed: " << job->errorText();
+        }
+        else
+        {
+            m_copyFailed = false;
+        }
+
+        m_wait = false;
 }
 
 KUrl
