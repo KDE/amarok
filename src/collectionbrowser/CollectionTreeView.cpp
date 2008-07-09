@@ -260,6 +260,12 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 {
     DEBUG_BLOCK
 
+    // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
+    static bool ongoingDrags = false;
+    if( ongoingDrags )
+        return;
+    ongoingDrags = true;
+
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
@@ -348,6 +354,8 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
         m_pd->hide();
     }
+
+    ongoingDrags = false;
 }
 
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
