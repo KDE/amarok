@@ -66,7 +66,7 @@ IpodCollectionLocation::isWritable() const
     return true;
 }
 
-// TODO: implement (use IpodHandler ported method for removing a track
+// TODO: implement (use IpodHandler ported method for removing a track)
 bool
 IpodCollectionLocation::remove( const Meta::TrackPtr &track )
 {

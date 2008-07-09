@@ -46,7 +46,10 @@ DEBUG_BLOCK
 
 //    initializeIpod();
 
+
+
  GError *err = 0;
+ 
  m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
  if (  err )
  {
@@ -288,6 +291,7 @@ IpodHandler::detectModel()
 bool
 IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 {
+    DEBUG_BLOCK
     QDir curDir( mountPoint() );
     QString curPath = mountPoint();
     QStringList components = ipodPath.split( ":" );
@@ -312,7 +316,11 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
     }
 
     for( ; it != components.end(); ++it )
+    {
+        debug() << "curPath before concat: " << curPath;
         curPath += '/' + *it;
+        debug() << "curPath after concat: " << curPath;
+    }
 
     //debug() << ipodPath << ( found ? "" : " not" ) << " found, actually " << curPath;
 
@@ -419,7 +427,11 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
 
+            debug() << "Mountpoint is: " << mountPoint();
+
     KUrl url = determineURLOnDevice(track);
+
+    debug() << "Url's path is: " << url.path();
 
     // check if path exists and make it if needed
     QFileInfo finfo( url.path() );
@@ -487,6 +499,7 @@ IpodHandler::insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track )
 void
 IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
 {
+    DEBUG_BLOCK
     if( !m_itdb )
         return;
 
@@ -497,14 +510,15 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
 //        ipodtrack = item->m_track;
     if( !ipodtrack )
         ipodtrack = itdb_track_new();
-    /*
+    
     if( !ipodtrack )
     {
-        delete item;
-        return 0;
+        return;
     }
-    */
+    
     QString type = pathname.section('.', -1).toLower();
+
+    debug() << "Path before put in ipod_path: " << pathname;
 
     ipodtrack->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
     //debug() << "on iPod: " << ipodtrack->ipod_path << ", podcast=" << podcastInfo;
@@ -807,6 +821,7 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
 KUrl
 IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
 {
+    DEBUG_BLOCK
     if( !m_itdb )
     {
         debug() << "m_itdb is NULL";
@@ -814,6 +829,7 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
     }
 
     QString local = KUrl::fromPath( track->url() ).fileName();
+    debug() << "local: " << local;
     QString type = local.section('.', -1).toLower();
 
     QString trackpath;
@@ -827,7 +843,12 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
         QString dirname;
         // NOTE: unsure if the sprintf replacement works as intended
        // dirname.sprintf( "%s:Music:f%02d", itunesDir().toLatin1(), dir );
-        dirname = QString( "%1:Music:f%2" ).arg( itunesDir() ).arg( dir, 2, QLatin1Char( '0' ) );
+        debug() << "itunesDir(): " << itunesDir();
+        // NOTE: hack employed due to // turning to ::
+       // dirname = QString( "%1Music:F%2" ).arg( itunesDir() ).arg( QString::number( dir, 10 ), 2, QLatin1Char( '0' ) );
+        dirname = QString( "%1Music:F%2" ).arg(  "iPod_Control:" ).arg( QString::number( dir, 10 ), 2, QLatin1Char( '0' ) );
+        
+        debug() << "Copying to dirname: " << dirname;
         if( !pathExists( dirname ) )
         {
             QString realdir = realPath(dirname.toLatin1());
