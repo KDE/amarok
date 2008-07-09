@@ -99,6 +99,9 @@ PopupDropperItem * PopupDropperFactory::createItem( PopupDropperAction * action 
     pdi->setAction( action );
     pdi->setFont( font );
     pdi->setHoverMsecs( 800 );
+    QColor hoverIndicatorFillColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
+    hoverIndicatorFillColor.setAlpha( 96 );
+    pdi->setHoverIndicatorFillColor( hoverIndicatorFillColor );
 
     return pdi;
 }
