@@ -300,6 +300,7 @@ set(libplaylist_SRCS
     playlist/PlaylistViewCommon.cpp
     playlist/PlaylistWidget.cpp
     playlist/RandomTrackNavigator.cpp
+    playlist/RepeatAlbumNavigator.cpp
     playlist/RepeatPlaylistNavigator.cpp
     playlist/RepeatTrackNavigator.cpp
     playlist/StandardTrackNavigator.cpp

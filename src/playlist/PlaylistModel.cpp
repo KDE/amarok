@@ -35,6 +35,7 @@
 #include "PlaylistGraphicsView.h"
 #include "PlaylistFileSupport.h"
 #include "RandomTrackNavigator.h"
+#include "RepeatAlbumNavigator.h"
 #include "RepeatPlaylistNavigator.h"
 #include "RepeatTrackNavigator.h"
 #include "StandardTrackNavigator.h"
@@ -567,6 +568,8 @@ Playlist::Model::playlistModeChanged()
             m_advancer = new RepeatTrackNavigator( this );
         else if( options & Playlist::PlaylistPlayback )
             m_advancer = new RepeatPlaylistNavigator( this );
+        else if( options & Playlist::AlbumPlayback )
+            m_advancer = new RepeatAlbumNavigator( this );
     }
     else if( options & Playlist::RandomPlayback )
     // TODO: implement RandomAlbumNavigator
