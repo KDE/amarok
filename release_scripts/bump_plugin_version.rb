@@ -37,7 +37,7 @@ end
 
 
 # Bump FrameworkVersion in pluginmanager.h
-file = File.new( "src/pluginmanager.h", File::RDWR )
+file = File.new( "src/PluginManager.h", File::RDWR )
 str = file.read()
 file.rewind()
 file.truncate( 0 )
