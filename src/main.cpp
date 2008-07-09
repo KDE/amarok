@@ -114,7 +114,10 @@ int main( int argc, char *argv[] )
     App::initCliArgs();
     KUniqueApplication::addCmdLineOptions();
 
-    if (!KUniqueApplication::start()) {
+    #warning "REMOVE NonUniqueInstance FLAG BEFORE RELEASE!"
+    #warning "It's a convenience hack for developing, so that we can start multiple Amarok instances."
+    //if (!KUniqueApplication::start()) {
+    if ( !KUniqueApplication::start( KUniqueApplication::NonUniqueInstance ) ) {
         fprintf(stderr, "Amarok is already running!\n");
         return 0;
     }
