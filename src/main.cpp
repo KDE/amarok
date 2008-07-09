@@ -117,8 +117,8 @@ int main( int argc, char *argv[] )
     #warning "REMOVE NonUniqueInstance FLAG BEFORE RELEASE!"
     #warning "It's a convenience hack for developing, so that we can start multiple Amarok instances."
 #endif
-    //if (!KUniqueApplication::start()) {
-    if ( !KUniqueApplication::start( KUniqueApplication::NonUniqueInstance ) ) {
+	//if ( !KUniqueApplication::start( KUniqueApplication::NonUniqueInstance ) ) {
+    if (!KUniqueApplication::start()) {
         fprintf(stderr, "Amarok is already running!\n");
         return 0;
     }
