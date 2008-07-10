@@ -32,6 +32,7 @@
 
 FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     : QFrame( parent )
+    , m_tokenCount( 0 )   //how many tokens have I built, need this to assign unique IDs
 {
     setAcceptDrops( true );
     layout = new QHBoxLayout;
@@ -40,18 +41,17 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     backText = new QLabel;
     backText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );
     layout->addWidget( backText );
-    tokenCount = 0;     //how many tokens have I built, need this to assign unique IDs
 }
 
 void
 FilenameLayoutWidget::addToken( QString text, int index )
 {
-    if( !tokenCount )
+    if( !m_tokenCount )
     {
         backText->hide();
     }
 
-    tokenCount++;
+    m_tokenCount++;
     Token *token = new Token( text, this );
 
     if( index == 999)
@@ -148,7 +148,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     Token *childUnder = qobject_cast< Token * >( childAt( event->pos() ) );
     if( childUnder == 0 )   //if I'm not dropping on an existing token
     {
-        if( !tokenCount )   //if the bar is empty
+        if( !m_tokenCount )   //if the bar is empty
         {
             addToken( textFromMimeData );
         }
@@ -185,7 +185,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
 unsigned int
 FilenameLayoutWidget::getTokenCount()
 {
-    return tokenCount;
+    return m_tokenCount;
 }
 
 
@@ -230,9 +230,9 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
 
     //child->close();
     delete child;
-    tokenCount--;
+    m_tokenCount--;
 
-    if( !tokenCount )
+    if( !m_tokenCount )
     {
         backText->show();
     }

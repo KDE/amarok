@@ -30,8 +30,8 @@
 #include <KMacroExpanderBase>
 
 FileNameScheme::FileNameScheme( const QString &s )
-    : m_cod( s )
-    , m_titleField( -1 )
+    : m_cod( s )                    
+    , m_titleField( -1 )               
     , m_artistField( -1 )
     , m_albumField( -1 )
     , m_trackField( -1 )

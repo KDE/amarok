@@ -32,7 +32,7 @@ class FilenameLayoutWidget
         FilenameLayoutWidget( QWidget *parent = 0 );
         void addToken( QString text, int index = 99);
 
-        unsigned int getTokenCount();
+        unsigned int getTokenCount();   //access for uint m_tokenCount
     protected:
         void mouseMoveEvent( QMouseEvent *event );
         void mousePressEvent( QMouseEvent *event );
@@ -48,7 +48,7 @@ class FilenameLayoutWidget
         QHBoxLayout *layout;
         QPoint startPos;
 
-        unsigned int tokenCount;
+        unsigned int m_tokenCount;
 };
 
 class Token
