@@ -81,8 +81,9 @@ Meta::Field::mapFromTrack( const Meta::Track *track )
     chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
     QString track_encoding = encoding;
     chardet_destroy( det );
-    
-    
+
+    debug() << "encoding" << encoding << endl;
+
     if( track->name().isEmpty() )
         map.insert( Meta::Field::TITLE, QVariant( track->prettyName() ) );
     else

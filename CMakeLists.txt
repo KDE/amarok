@@ -2,8 +2,9 @@ project(Amarok)
 
 cmake_minimum_required(VERSION 2.4.5)
 
-#the generator is Qt stuff, add before we add a bunch of KDE directives
+#the generator and charset-detector are Qt stuff, add before we add a bunch of KDE directives
 add_subdirectory( src/scriptengine/generator ) 
+add_subdirectory( src/charset-detector )
 
 #We depend on kde4.1 now.. I believe this is the easiest way to do it.
 set(KDE_MIN_VERSION "4.00.61")
