@@ -136,9 +136,8 @@ PlaylistBrowserNS::BiasAddWidget::addBias()
 
 
 PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
-    : BiasBoxWidget( parent )
+    : BiasBoxWidget( parent ), m_bias(b)
 {
-    // TODO: what are we planning on doing with b ?
 
     QHBoxLayout* hLayout = new QHBoxLayout( this );
 
@@ -156,6 +155,8 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
 
     QToolButton* removeButton = new QToolButton( m_removeToolbar );
     removeButton->setIcon( KIcon( "list-remove-amarok" ) );
+    connect( removeButton, SIGNAL(clicked()),
+            SLOT(biasRemoved()) );
     m_removeToolbar->addWidget( removeButton );
     m_removeToolbar->adjustSize();
 
@@ -171,6 +172,12 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
     setLayout( hLayout );
 }
 
+void
+PlaylistBrowserNS::BiasWidget::biasRemoved()
+{
+    emit biasRemoved( m_bias );
+}
+
 
 PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
         Dynamic::GlobalBias* bias, QWidget* parent )
@@ -178,7 +185,7 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
     , m_withLabel(0)
     , m_valueSelection(0)
     , m_compareSelection(0)
-    , m_bias( bias )
+    , m_gbias( bias )
 {
     m_controlLayout = new QGridLayout( m_mainLayout );
     m_controlFrame = new QFrame( m_mainLayout );
@@ -216,7 +223,7 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
 {
     DEBUG_BLOCK
-    const XmlQueryReader::Filter& f = m_bias->filter();
+    const XmlQueryReader::Filter& f = m_gbias->filter();
     
     if( f.field == 0 )
         return;
@@ -237,14 +244,14 @@ PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
     debug() << "f.comare = " << f.compare;
     debug() << "f.exclude = " << f.exclude;
 
-    m_bias->setQuery( qm );
-    m_bias->setActive( true );
+    m_gbias->setQuery( qm );
+    m_gbias->setActive( true );
 }
 
 void
 PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
 {
-    XmlQueryReader::Filter& f = m_bias->filter();
+    XmlQueryReader::Filter& f = m_gbias->filter();
     debug() << "field: " << f.field;
     debug() << "value: " << f.value;
 
@@ -271,7 +278,7 @@ PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
     double fval = (double)ival;
     m_weightLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
 
-    m_bias->setWeight( fval / 100.0 );
+    m_gbias->setWeight( fval / 100.0 );
 }
 
 void
@@ -280,7 +287,7 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
     DEBUG_BLOCK
 
     qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
-    m_bias->filter().field = field;
+    m_gbias->filter().field = field;
 
     if( field == 0 )
     {
@@ -308,10 +315,10 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::compareChanged( int index )
 {
     if( index < 0 )
-        m_bias->filter().compare = -1;
+        m_gbias->filter().compare = -1;
     else if( index < m_compareSelection->count() )
     {
-        m_bias->filter().compare = 
+        m_gbias->filter().compare = 
             qvariant_cast<int>(
                     m_compareSelection->itemData( index ) );
     }
@@ -341,7 +348,7 @@ PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QString& value )
 {
     DEBUG_BLOCK
     debug() << "new value: " << value;
-    m_bias->filter().value = value;
+    m_gbias->filter().value = value;
     syncBiasToControls();
 }
 
@@ -368,7 +375,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
     connect( artistCombo, SIGNAL(currentIndexChanged( const QString& )),
             this, SLOT(valueChanged(const QString&)) );
 
-    artistCombo->setEditText( m_bias->filter().value );
+    artistCombo->setEditText( m_gbias->filter().value );
 
     artistCombo->setAutoCompletion( true );
     setValueSection( artistCombo );
@@ -398,7 +405,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
     connect( albumCombo, SIGNAL(currentIndexChanged( const QString& )),
             this, SLOT(valueChanged(const QString&)) );
 
-    albumCombo->setEditText( m_bias->filter().value );
+    albumCombo->setEditText( m_gbias->filter().value );
     albumCombo->setAutoCompletion( true );
     setValueSection( albumCombo );
 }
@@ -416,7 +423,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeTitleSelection()
     // we're not going to populate this combobox. It takes to long to query
     // every track name.
 
-    titleLine->setEditText( m_bias->filter().value );
+    titleLine->setEditText( m_gbias->filter().value );
     setValueSection( titleLine );
 }
 
@@ -444,7 +451,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
         }
     }
 
-    genreCombo->setEditText( m_bias->filter().value );
+    genreCombo->setEditText( m_gbias->filter().value );
     genreCombo->setCurrentIndex( 0 );
     genreCombo->setAutoCompletion( true );
     setValueSection( genreCombo );
@@ -474,7 +481,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeYearSelection()
     connect( yearSpin, SIGNAL(valueChanged( const QString& )),
             this, SLOT(valueChanged(const QString&)) );
 
-    yearSpin->setValue( m_bias->filter().value.toInt() );
+    yearSpin->setValue( m_gbias->filter().value.toInt() );
     setValueSection( hLayout );
 }
 

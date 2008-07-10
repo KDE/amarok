@@ -85,11 +85,17 @@ namespace PlaylistBrowserNS
         public:
             BiasWidget( Dynamic::Bias*, QWidget* parent = 0 );
 
+
         signals:
             void biasRemoved( Dynamic::Bias* );
 
+        private slots:
+            void biasRemoved();
+
         protected:
             KVBox* m_mainLayout;
+            Dynamic::Bias* m_bias;
+
 
         private:
             KToolBar* m_removeToolbar;
@@ -133,7 +139,7 @@ namespace PlaylistBrowserNS
             QWidget*        m_valueSelection;
             KComboBox*      m_compareSelection;
 
-            Dynamic::GlobalBias* m_bias;
+            Dynamic::GlobalBias* m_gbias;
     };
 
 

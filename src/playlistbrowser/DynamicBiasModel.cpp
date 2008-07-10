@@ -52,9 +52,14 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
         foreach( Dynamic::Bias* b, bp->biases() )
         {
             debug() << "BIAS ADDED";
-            m_widgets.append( b->widget( m_listView ) );
-            connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
-                    this, SLOT(widgetChanged(QWidget*)) );
+            PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView );
+
+            connect( widget, SIGNAL(widgetChanged(QWidget*)),
+                    SLOT(widgetChanged(QWidget*)) );
+            connect( widget, SIGNAL(biasRemoved(Dynamic::Bias*)),
+                    SLOT(removeBias(Dynamic::Bias*)) );
+
+            m_widgets.append( widget );
         }
 
         PlaylistBrowserNS::BiasAddWidget* adder =
@@ -78,11 +83,31 @@ PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
     {
         beginInsertRows( QModelIndex(), rowCount()-1, rowCount()-1 );
         m_playlist->biases().append( b );
-        m_widgets.insert( rowCount()-1, b->widget( m_listView ) );
-        connect( m_widgets[rowCount()-1], SIGNAL(widgetChanged(QWidget*)),
-                this, SLOT(widgetChanged(QWidget*)) );
+
+        PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView );
+
+        connect( widget, SIGNAL(widgetChanged(QWidget*)),
+                SLOT(widgetChanged(QWidget*)) );
+        connect( widget, SIGNAL(biasRemoved(Dynamic::Bias*)),
+                SLOT(removeBias(Dynamic::Bias*)) );
+
+        m_widgets.insert( rowCount()-1, widget );
         endInsertRows();
     }
+}
+
+void
+PlaylistBrowserNS::DynamicBiasModel::removeBias( Dynamic::Bias* b )
+{
+    int index = m_playlist->biases().indexOf( b );
+    if( index == -1 )
+        return;
+
+    beginRemoveRows( QModelIndex(), index, index );
+    delete m_widgets[index];
+    m_widgets.removeAt( index );
+    m_playlist->biases().removeAt( index );
+    endRemoveRows();
 }
 
 
