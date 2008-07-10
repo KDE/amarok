@@ -55,7 +55,7 @@ private slots:
 
 private:
     void createMenu();
-    QList<QAction*> contextualActions() const { return m_contextActions; }
+    QList<QAction*> contextualActions() { return m_contextActions; }
     QList<QAction*> m_contextActions;
 
     QHBoxLayout* m_configLayout;

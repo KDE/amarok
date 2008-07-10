@@ -149,12 +149,12 @@ class AMAROK_EXPORT RatingWidget : public QGraphicsWidget
     void setPixmapSize( int size );
 
  protected:
-    void mousePressEvent( QGraphicsSceneMouseEvent* e );
-    void hoverMoveEvent( QGraphicsSceneHoverEvent* e );
-    void hoverEnterEvent( QGraphicsSceneHoverEvent* e );
-    void hoverLeaveEvent( QGraphicsSceneHoverEvent* e );
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
-    void resizeEvent( QGraphicsSceneResizeEvent* e );
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent* e );
+    virtual void hoverMoveEvent( QGraphicsSceneHoverEvent* e );
+    virtual void hoverEnterEvent( QGraphicsSceneHoverEvent* e );
+    virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent* e );
+    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
+    virtual void resizeEvent( QGraphicsSceneResizeEvent* e );
 
  private:
     class Private;
