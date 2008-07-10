@@ -27,6 +27,7 @@
 #include "StatusBar.h"
 
 #include <KPasswordDialog>
+#include <KMessageBox>
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QByteArray>
@@ -121,7 +122,15 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
         theDaemon = new Mp3tunesHarmonyDaemon( ret );
 
         Mp3tunesHarmonizer * harmonizer = new Mp3tunesHarmonizer( theDaemon );
-        connect( harmonizer, SIGNAL( harmonyExited( QString ) ), this, SLOT( slotHarmonyQuit() ) );
+        connect( theDaemon, SIGNAL( signalDisconnected() ), this, SLOT( harmonyDisconnected() ) );
+        connect( theDaemon, SIGNAL( signalWaitingForEmail() ), this, SLOT( harmonyWaitingForEmail() ) );
+        connect( theDaemon, SIGNAL( signalConnected() ), this, SLOT( harmonyConnected() ) );
+        connect( theDaemon, SIGNAL( signalError( QString ) ), this, SLOT( harmonyError( QString ) ) );
+        connect( theDaemon, SIGNAL( signalDownloadReady( Mp3tunesHarmonyDownload ) ),
+                 this, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload ) ) );
+        connect( theDaemon, SIGNAL( signalDownloadPending( Mp3tunesHarmonyDownload ) ),
+                 this, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload ) ) );
+
         debug() << "running harmonizer.";
         ThreadWeaver::Weaver::instance()->enqueue( harmonizer );
     }
@@ -206,10 +215,44 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
     }
 }
 
-void Mp3tunesService::slotHarmonyQuit()
+void Mp3tunesService::harmonyDisconnected()
 {
     DEBUG_BLOCK
+    debug() << "Harmony Disconnected!";
+    The::statusBar()->shortMessage( i18n( "MP3Tunes Harmony: Disconnected"  ) );
 }
 
-#include "Mp3tunesService.moc"
+void Mp3tunesService::harmonyWaitingForEmail()
+{
+    debug() << "Waiting for user to input PIN: " << theDaemon->pin();
+    The::statusBar()->shortMessage( i18n( "MP3Tunes Harmony: Waiting for PIN Input"  ) );
+    KMessageBox::information( this,
+                              "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + theDaemon->pin(),
+                              "MP3tunes Harmony",
+                              QString(),
+                              KMessageBox::AllowLink );
+}
 
+void Mp3tunesService::harmonyConnected()
+{
+    debug() << "Harmony Connected!";
+    The::statusBar()->shortMessage( i18n( "MP3Tunes Harmony: Successfully Connected"  ) );
+}
+
+void Mp3tunesService::harmonyError( const QString &error )
+{
+    DEBUG_BLOCK
+    debug() << "Harmony Error: " << error;
+    The::statusBar()->longMessage( "Mp3tunes Harmony Error\n" + error );
+}
+
+void Mp3tunesService::harmonyDownloadReady( Mp3tunesHarmonyDownload download )
+{
+    debug() << "Got message about " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+}
+
+void Mp3tunesService::harmonyDownloadPending( Mp3tunesHarmonyDownload download )
+{
+    debug() << "Got message about " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+}
+#include "Mp3tunesService.moc"

@@ -32,6 +32,42 @@ extern "C" {
     #include <string.h>
 }
 
+/**
+ * A wrapper class for the libmp3tunes harmony download object.
+ * It contains metadata for new tracks.
+ * @author Casey Link <unnamedrambler@gmail.com>
+ */
+class Mp3tunesHarmonyDownload {
+    public:
+        Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download );
+        ~Mp3tunesHarmonyDownload();
+
+        QString fileKey() const;
+        QString fileName() const;
+        QString fileFormat() const;
+        unsigned int fileSize() const;
+        QString artistName() const;
+        QString albumTitle() const;
+        QString trackTitle() const;
+        int trackNumber() const;
+        QString deviceBitrate() const;
+        QString fileBitrate() const;
+        QString url() const;
+    private:
+        mp3tunes_harmony_download_t *m_harmony_download_t;
+};
+/**
+ * A daemon that receives notfications from mp3tunes'
+ * servers about new/changed tracks that can be synced.
+ *
+ * Because this classes implements libmp3tunes which uses
+ * GLIB's c-style callbacks, all the callbacks must be static.
+ * This requires some black magic on my part to keep the OO
+ * facade intact. The solution is a global variable: theDaemon
+ * delcared after this class. Your code must #define DEFINE_HARMONY
+ * and instantiate a new Mp3tunesHarmonyDaemon for theDaemon.
+ * @author Casey Link <unnamedrambler@gmail.com>
+ */
 class Mp3tunesHarmonyDaemon: public QObject
 {
     Q_OBJECT
@@ -39,12 +75,12 @@ class Mp3tunesHarmonyDaemon: public QObject
   public:
     Mp3tunesHarmonyDaemon( char* identifier);
     ~Mp3tunesHarmonyDaemon();
-    
+
     /**
      * Stats the daemon by intiating the connection Harmony connection.
      */
     void init();
-    
+
     /**
      * Returns the pin
      */
@@ -66,14 +102,14 @@ class Mp3tunesHarmonyDaemon: public QObject
         WAITING_FOR_EMAIL
     };
 
-    /**
+    /*
      * Used by the static callbacks
      * DO NOT CALL THESE METHODS
      */
     void setState( HarmonyState state );
     void setError( const QString &error );
 
-    /**
+    /*
      * Used by the static callbacks
      * DO NOT CALL THESE METHODS
      */
@@ -82,13 +118,18 @@ class Mp3tunesHarmonyDaemon: public QObject
     void emitWaitingForPin();
     void emitConnected();
     void emitDisconnected();
+    void emitDownloadReady( Mp3tunesHarmonyDownload download );
+    void emitDownloadPending( Mp3tunesHarmonyDownload download );
 
   signals:
+      /* The actual signals that get emitted */
       void signalWaitingForEmail();
       void signalWaitingForPin();
       void signalConnected();
       void signalDisconnected();
       void signalError( const QString &error );
+      void signalDownloadReady( Mp3tunesHarmonyDownload download );
+      void signalDownloadPending( Mp3tunesHarmonyDownload download );
 
   private:
 
@@ -136,8 +177,8 @@ class Mp3tunesHarmonyDaemon: public QObject
     static void signalStateChangeHandler( MP3tunesHarmony* harmony, guint32 state,  gpointer null_pointer );
 
 
-    static void signalDownloadReady( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
-    static void signalDownloadPending( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
+    static void signalDownloadReadyHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
+    static void signalDownloadPendingHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
 
     MP3tunesHarmony* m_harmony;
     static GMainLoop * m_main_loop;
@@ -145,15 +186,15 @@ class Mp3tunesHarmonyDaemon: public QObject
     GError *m_gerr;
 
     QString m_error;
-    
+
     HarmonyState m_state;
 };
 
 
 /*
  * The global variable used by the static callbacks.
- * G_CALLBACK() requires a pointer to a member function, 
- * and because this is c++ that member function must be static. 
+ * G_CALLBACK() requires a pointer to a member function,
+ * and because this is c++ that member function must be static.
  * However, since I want to edit non-static members in those
  * callbacks I created a workaround by defining a global variable,
  * 'theDaemon', which is an instantiation of a Mp3tunesHarmonyDaemon

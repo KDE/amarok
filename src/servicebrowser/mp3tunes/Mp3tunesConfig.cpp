@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "Mp3tunesConfig.h"
 
 #include <kdebug.h>
@@ -55,7 +55,7 @@ void Mp3tunesConfig::load()
             if( addr != "00:00:00:00:00:00" ) {
                 addr.remove( ":" );
                 kDebug( 14310 ) << "Using iface \"" << iface.name() << " addr: " << addr;
-                setIdentifier( addr + "-" + m_partnerToken );
+                setIdentifier( addr + m_partnerToken );
                 save();
                 break;
             }
@@ -102,7 +102,7 @@ bool Mp3tunesConfig::harmonyEnabled()
 }
 
 void Mp3tunesConfig::setHarmonyEnabled( bool enabled )
-{    
+{
     kDebug( 14310 ) << "set harmony";
     if ( enabled != m_harmonyEnabled ) {
         m_harmonyEnabled = enabled;

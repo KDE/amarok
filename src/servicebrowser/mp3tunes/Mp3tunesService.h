@@ -69,7 +69,18 @@ public:
 private slots:
     void authenticate( const QString & uname = "", const QString & passwd = "" );
     void authenticationComplete(  const QString & sessionId );
-    void slotHarmonyQuit();
+
+    /**
+     * the daemon received the PIN. now that pin has to be presented to the user,
+     * so he/she (comments must be gender neutral) can add it to his/her mp3tunes
+     * account.
+     */
+    void harmonyWaitingForEmail();
+    void harmonyConnected();
+    void harmonyDisconnected();
+    void harmonyError( const QString &error );
+    void harmonyDownloadReady( Mp3tunesHarmonyDownload download );
+    void harmonyDownloadPending( Mp3tunesHarmonyDownload download );
 
 private:
     QString m_email;

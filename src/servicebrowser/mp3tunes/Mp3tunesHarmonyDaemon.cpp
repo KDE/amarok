@@ -19,6 +19,8 @@
 
 #include "Mp3tunesHarmonyDaemon.h"
 
+#include "Debug.h"
+
 GMainLoop * Mp3tunesHarmonyDaemon::m_main_loop = g_main_loop_new(0, FALSE);
 
 Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier ) :
@@ -27,22 +29,22 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier ) :
    , m_error( QString() )
    , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
 {
-    m_harmony = mp3tunes_harmony_new();
-
     /* g_type_init required for using the GObjects for Harmony. */
     g_type_init();
+
+    m_harmony = mp3tunes_harmony_new();
 
     /* Set the error signal handler. */
     g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), 0);
     /* Set the state change signal handler. */
     g_signal_connect(m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
     /* Set the download signal handler. */
-    g_signal_connect(m_harmony, "download-ready", G_CALLBACK(signalDownloadReady), NULL);
-    g_signal_connect(m_harmony, "download-pending", G_CALLBACK(signalDownloadPending), NULL);
+    g_signal_connect(m_harmony, "download-ready", G_CALLBACK(signalDownloadReadyHandler), 0);
+    g_signal_connect(m_harmony, "download-pending", G_CALLBACK(signalDownloadPendingHandler), 0);
 
     mp3tunes_harmony_set_identifier(m_harmony, m_identifier);
 
-    mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Example Daemon");
+    mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Amarok 2");
 
 }
 Mp3tunesHarmonyDaemon::~Mp3tunesHarmonyDaemon()
@@ -137,25 +139,38 @@ Mp3tunesHarmonyDaemon::emitDisconnected()
 }
 
 void
+Mp3tunesHarmonyDaemon::emitDownloadReady( Mp3tunesHarmonyDownload download )
+{
+    emit( signalDownloadReady( download ) );
+}
+void
+Mp3tunesHarmonyDaemon::emitDownloadPending( Mp3tunesHarmonyDownload download )
+{
+    emit( signalDownloadPending( download ) );
+}
+
+void
 Mp3tunesHarmonyDaemon::signalErrorHandler(MP3tunesHarmony* harmony, gpointer null_pointer )
 {
-      GError *err;
-      null_pointer = null_pointer;
-      g_print("Fatal Error: %s\n", harmony->error->message);
-      theDaemon->setError( QString( harmony->error->message ) );
-      theDaemon->emitError();
-      mp3tunes_harmony_disconnect(harmony, &err);
-      if (err) {
-          g_print("Error disconnecting: %s\n", err->message);
-          /* If there is an error disconnecting something has probably gone
-           * very wrong and reconnection should not be attempted till the user
-           * re-initiates it */
-          return;
-      }
+    DEBUG_BLOCK
+    GError *err;
+    null_pointer = null_pointer;
+    g_print("Fatal Error: %s\n", harmony->error->message);
+    theDaemon->setError( QString( harmony->error->message ) );
+    theDaemon->emitError();
+    mp3tunes_harmony_disconnect(harmony, &err);
+    if (err) {
+        g_print("Error disconnecting: %s\n", err->message);
+        /* If there is an error disconnecting something has probably gone
+        * very wrong and reconnection should not be attempted till the user
+        * re-initiates it */
+        return;
+    }
 }
 void
 Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint32 state,  gpointer null_pointer )
 {
+    DEBUG_BLOCK
     null_pointer = null_pointer;
     switch (state) {
         case MP3TUNES_HARMONY_STATE_DISCONNECTED:
@@ -192,23 +207,105 @@ Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint
 }
 
 void
-Mp3tunesHarmonyDaemon::signalDownloadReady( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer )
+Mp3tunesHarmonyDaemon::signalDownloadReadyHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer )
 {
+    DEBUG_BLOCK
     mp3tunes_harmony_download_t *download = (mp3tunes_harmony_download_t*)void_mp3tunes_harmony_download;
+    Mp3tunesHarmonyDownload wrappedDownload( download );
+    theDaemon->emitDownloadReady( wrappedDownload );
     harmony = harmony;
     null_pointer = null_pointer;
-    g_print("Got message about %s by %s on %s\n", download->track_title, download->artist_name, download->album_title);
 }
 
 void
-Mp3tunesHarmonyDaemon::signalDownloadPending( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer )
+Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer )
 {
+    DEBUG_BLOCK
     mp3tunes_harmony_download_t *download = (mp3tunes_harmony_download_t*)void_mp3tunes_harmony_download;
+    Mp3tunesHarmonyDownload wrappedDownload( download );
+    theDaemon->emitDownloadPending( wrappedDownload );
     harmony = harmony;
     null_pointer = null_pointer;
-    g_print("Downloading %s by %s on %s from URL: %s.\n", download->track_title, download->artist_name, download->album_title, download->url);
-    if (strcmp(download->file_key, "dummy_file_key_5") == 0) {
+    /*if (strcmp(download->file_key, "dummy_file_key_5") == 0) {
         g_main_loop_quit(m_main_loop);
-    }
-    mp3tunes_harmony_download_deinit(&download);
+    }*/
+    /*mp3tunes_harmony_download_deinit(&download);*/
+}
+
+
+/* Harmony Download Type Wrapper */
+Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download )
+{
+    m_harmony_download_t = download;
+}
+
+Mp3tunesHarmonyDownload::~Mp3tunesHarmonyDownload()
+{
+    mp3tunes_harmony_download_deinit( &m_harmony_download_t );
+}
+
+QString
+Mp3tunesHarmonyDownload::fileKey() const
+{
+    return QString( m_harmony_download_t->file_key );
+}
+
+QString
+Mp3tunesHarmonyDownload::fileName() const
+{
+    return QString( m_harmony_download_t->file_name );
+}
+
+QString
+Mp3tunesHarmonyDownload::fileFormat() const
+{
+    return QString( m_harmony_download_t->file_format );
+}
+
+unsigned int
+Mp3tunesHarmonyDownload::fileSize() const
+{
+    return m_harmony_download_t->file_size;
+}
+
+QString
+Mp3tunesHarmonyDownload::artistName() const
+{
+    return QString( m_harmony_download_t->artist_name );
+}
+
+QString
+Mp3tunesHarmonyDownload::albumTitle() const
+{
+    return QString( m_harmony_download_t->album_title );
+}
+
+QString
+Mp3tunesHarmonyDownload::trackTitle() const
+{
+    return QString( m_harmony_download_t->track_title );
+}
+
+int
+Mp3tunesHarmonyDownload::trackNumber() const
+{
+    return m_harmony_download_t->track_number;
+}
+
+QString
+Mp3tunesHarmonyDownload::deviceBitrate() const
+{
+    return QString( m_harmony_download_t->device_bitrate );
+}
+
+QString
+Mp3tunesHarmonyDownload::fileBitrate() const
+{
+    return QString( m_harmony_download_t->file_bitrate );
+}
+
+QString
+Mp3tunesHarmonyDownload::url() const
+{
+    return QString( m_harmony_download_t->url );
 }

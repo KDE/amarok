@@ -267,7 +267,7 @@ void Mp3tunesSimpleUploader::run()
         The::statusBar()->setProgressStatus( this, msg );
         emit ( incrementProgress() );
         debug() << "Uploading: " << track;
-        
+
         bool result = false;
         if( track.startsWith( "http" ) )
         {
@@ -311,6 +311,5 @@ void Mp3tunesHarmonizer::run()
 
 void Mp3tunesHarmonizer::completeJob()
 {
-    emit( harmonyExited() );
     deleteLater();
 }
