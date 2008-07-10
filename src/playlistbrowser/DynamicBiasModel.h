@@ -44,7 +44,8 @@ namespace PlaylistBrowserNS
                 WidgetRole
             };
 
-            DynamicBiasModel( QListView* listView, Dynamic::DynamicPlaylistPtr playlist );
+            DynamicBiasModel( QListView* listView );
+            void setPlaylist( Dynamic::DynamicPlaylistPtr playlist );
 
             ~DynamicBiasModel();
 
@@ -53,12 +54,19 @@ namespace PlaylistBrowserNS
                     const QModelIndex & parent = QModelIndex() ) const;
 
 
+
             QModelIndex parent ( const QModelIndex & index ) const;
 
             int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
             int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
 
+        public slots:
+            void widgetChanged( QWidget* w = 0 );
+            void appendBias( Dynamic::Bias* );
+
         private:
+            void clearWidgets();
+
             QListView* m_listView;
 
             Dynamic::BiasedPlaylistPtr m_playlist;

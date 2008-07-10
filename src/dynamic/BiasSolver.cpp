@@ -51,10 +51,13 @@ void Dynamic::BiasSolver::run()
 {
     initialize();
 
-
     // test for the empty collection case
     m_playlist.removeAll( Meta::TrackPtr() );
-    if( m_playlist.empty() ) return;
+    if( m_playlist.empty() )
+    {
+        debug() << "Empty collection, aborting BiasSolver.";
+        return;
+    }
 
     int i = ITERATION_LIMIT;
     double epsilon = 1.0 / (double)m_n;
@@ -64,6 +67,7 @@ void Dynamic::BiasSolver::run()
     }
 
     debug() << "BiasSolver: System solved in " << (ITERATION_LIMIT - i) << " iterations.";
+    debug() << "with E = " << m_E;
 
     setFinished( true );
 }
@@ -76,6 +80,8 @@ Meta::TrackList Dynamic::BiasSolver::solution()
 
 void Dynamic::BiasSolver::initialize()
 {
+    DEBUG_BLOCK
+
     // TODO:
     // - filter out absolute global biases (those with weights of 0.0 or 1.0
     // - filter out infeasible biases
@@ -113,36 +119,49 @@ void Dynamic::BiasSolver::iterate()
 
 double Dynamic::BiasSolver::energy()
 {
+    int activeBiases = 0;
     double sum = 0.0;
     for( int i = 0; i < m_biases.size(); ++i )
     {
-       sum += qAbs( (m_biasEnergy[i] = m_biases[i]->energy( m_playlist, m_context )) );
+        if( m_biases[i]->active() )
+        {
+            m_biasEnergy[i] = m_biases[i]->energy( m_playlist, m_context );
+            sum += qAbs( m_biasEnergy[i]  );
+            activeBiases++;
+        }
     }
 
-    return sum / (double)m_biases.size();
+    return sum / (double)activeBiases;
 }
 
 
 double Dynamic::BiasSolver::recalculateEnergy( Meta::TrackPtr mutation, int mutationPos )
 {
+    int activeBiases = 0;
     double sum = 0.0;
     for( int i = 0; i < m_biases.size(); ++i )
     {
-        m_biasEnergy[i] = m_biases[i]->reevaluate( m_E, m_playlist, mutation, mutationPos, m_context );
-        sum += qAbs( m_biasEnergy[i] );
+        if( m_biases[i]->active() )
+        {
+            m_biasEnergy[i] = 
+                m_biases[i]->reevaluate( 
+                        m_E, m_playlist, mutation, 
+                        mutationPos, m_context );
+            sum += qAbs( m_biasEnergy[i] );
+            activeBiases++;
+        }
     }
 
-    return sum / (double)m_biases.size();
+    return sum / (double)activeBiases;
 }
 
 
 void Dynamic::BiasSolver::generateInitialPlaylist()
 {
+    DEBUG_BLOCK
     // This confusing bit of code is a greedy heuristic that tries to choose
     // tracks that are rare but in high demand by global biases. That way we
     // don't eat up a lot of iterations looking for them.
-
-    // FIXME: this will break if all the gb's are unsatisfiable.
 
     QList<Dynamic::GlobalBias*> globalBiases;
     QList<double> weights;
@@ -157,12 +176,36 @@ void Dynamic::BiasSolver::generateInitialPlaylist()
     foreach( Dynamic::Bias* b, m_biases )
     {
         Dynamic::GlobalBias* gb = dynamic_cast<Dynamic::GlobalBias*>( b );
+
         if( gb )
         {
-            globalBiases.append( gb );
-            weights.append( (gb->weight() - (double)gb->propertySet().size()/domainSize) );
-            totalWeight += weights.last();
+            debug() << "property size: " << gb->propertySet().size();
+
+            // if the bias in unsatisfiable (i.e. size = 0), just ignore it
+            if( gb->propertySet().size() == 0 )
+            {
+                debug() << "unsitisfiable bias detected";
+                gb->setActive(false);
+            }
+            else
+            {
+                globalBiases.append( gb );
+                // this is the the difference between the desired proportion and
+                // the actual probability a track with that propery is chosen.
+                double deviance =
+                    gb->weight() - (double)gb->propertySet().size()/domainSize;
+
+                debug() << "deviance = " << deviance;
+                weights.append( deviance );
+                totalWeight += qAbs( weights.last() );
+            }
         }
+    }
+
+    if( globalBiases.isEmpty() )
+    {
+        m_playlist = m_mutationSource->getTracks( m_n );
+        return;
     }
 
     // whatever, we'll just use a random sample

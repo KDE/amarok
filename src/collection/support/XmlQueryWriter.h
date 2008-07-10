@@ -34,6 +34,7 @@ class XmlQueryWriter : public QueryMaker
 {
     public:
         XmlQueryWriter( QueryMaker* );
+        ~XmlQueryWriter();
 
         QString     getXml( int indent = 0 );
         QDomElement getDomElement();

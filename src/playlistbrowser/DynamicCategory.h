@@ -40,16 +40,17 @@ namespace PlaylistBrowserNS {
             DynamicCategory( QWidget* parent );
             ~DynamicCategory();
 
-            private slots:
-                void OnOff(bool);
+        private slots:
+            void OnOff(bool);
             void playlistSelectionChanged( int index );
-
 
         private:
             void initOnOffButton();
 
             void On();
             void Off();
+
+            QVBoxLayout* m_vLayout;
 
             QPushButton *m_onoffButton;
             QPushButton *m_repopulateButton;

@@ -43,7 +43,7 @@ public:
 
     struct Filter
     {
-        Filter() : exclude(false), field(0), compare(0) {}
+        Filter() : exclude(false), field(0), compare(-1) {}
 
         bool     exclude;
         qint64   field;

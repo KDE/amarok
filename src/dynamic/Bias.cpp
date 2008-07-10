@@ -28,6 +28,11 @@
 #include "QueryMaker.h"
 
 
+Dynamic::Bias::Bias()
+    : m_active(true)
+{
+}
+
 QString
 Dynamic::Bias::description() const
 {
@@ -46,6 +51,18 @@ Dynamic::Bias::widget( QWidget* parent )
     return new PlaylistBrowserNS::BiasWidget( this, parent );
 }
 
+
+void
+Dynamic::Bias::setActive( bool active )
+{
+    m_active = active;    
+}
+
+bool
+Dynamic::Bias::active()
+{
+    return m_active;
+}
 
 double
 Dynamic::Bias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
@@ -84,21 +101,23 @@ Dynamic::CollectionDependantBias::collectionUpdated()
     m_needsUpdating = true;
 }
 
-Dynamic::GlobalBias::GlobalBias( double weight, QueryMaker* propertyQuery,
+Dynamic::GlobalBias::GlobalBias( double weight, QueryMaker* qm,
         XmlQueryReader::Filter filter )
-    : m_propertyQuery( propertyQuery )
+    : m_propertyQuery(0)
     , m_filter( filter )
 {
     setWeight( weight );
+    setQuery( qm );
 }
 
-Dynamic::GlobalBias::GlobalBias( Collection* coll, double weight, QueryMaker* propertyQuery,
+Dynamic::GlobalBias::GlobalBias( Collection* coll, double weight, QueryMaker* qm,
         XmlQueryReader::Filter filter )
     : CollectionDependantBias( coll )
-    , m_propertyQuery( propertyQuery )
+    , m_propertyQuery(0)
     , m_filter(filter)
 {
     setWeight( weight );
+    setQuery( qm );
 }
 
 PlaylistBrowserNS::BiasWidget*
@@ -130,6 +149,15 @@ Dynamic::GlobalBias::setWeight( double weight )
         m_weight = weight;
 }
 
+void
+Dynamic::GlobalBias::setQuery( QueryMaker* qm )
+{
+    DEBUG_BLOCK
+    qm->startTrackQuery();
+    delete m_propertyQuery;
+    m_propertyQuery = new BlockingQuery( qm );
+    collectionUpdated();
+}
 
 
 double
@@ -172,16 +200,15 @@ bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t )
 
 void Dynamic::GlobalBias::update()
 {
+    DEBUG_BLOCK
     if( !m_needsUpdating )
         return;
 
-    m_propertyQuery->startTrackQuery();
-    BlockingQuery bq( m_propertyQuery );
-
-    bq.startQuery();
+    m_propertyQuery->resetResults();
+    m_propertyQuery->startQuery();
 
     m_property.clear();
-    QList<Meta::TrackList> trackLists = bq.tracks().values();
+    QList<Meta::TrackList> trackLists = m_propertyQuery->tracks().values();
     foreach( Meta::TrackList ts, trackLists )
     {
         foreach( Meta::TrackPtr t, ts )
@@ -192,3 +219,4 @@ void Dynamic::GlobalBias::update()
 
     m_needsUpdating = false;
 }
+

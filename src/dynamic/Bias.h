@@ -29,6 +29,7 @@
 
 class Collection;
 class QueryMaker;
+class BlockingQuery;
 
 namespace PlaylistBrowserNS
 {
@@ -46,12 +47,22 @@ namespace Dynamic
     class Bias
     {
         public:
+            Bias();
             virtual ~Bias() {}
 
             QString description() const;
             void setDescription( const QString& );
 
+            /**
+             * Create a widget appropriate for editing the bias.
+             */
             virtual PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
+
+            /**
+             * Should the bias be considered or ignored by the playlist?
+             */
+            void setActive( bool );
+            bool active();
 
 
             /**
@@ -73,6 +84,7 @@ namespace Dynamic
                     Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context );
 
         protected:
+            bool m_active;
             QString m_description;
     };
 
@@ -116,6 +128,8 @@ namespace Dynamic
             GlobalBias( Collection* coll, double weight, QueryMaker* propertyQuery,
                     XmlQueryReader::Filter filter = XmlQueryReader::Filter() );
 
+            void setQuery( QueryMaker* );
+
             PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
             XmlQueryReader::Filter& filter();
 
@@ -133,7 +147,7 @@ namespace Dynamic
         private:
             double m_weight; /// range: [0,1]
             QSet<Meta::TrackPtr> m_property;
-            QueryMaker* m_propertyQuery;
+            BlockingQuery* m_propertyQuery;
             XmlQueryReader::Filter m_filter;
     };
 }

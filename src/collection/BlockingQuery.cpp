@@ -68,6 +68,7 @@ BlockingQuery::startQuery()
     connect( d->qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( result( QString, Meta::TrackList ) ), Qt::QueuedConnection );
     connect( d->qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( result( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
     connect( d->qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( result( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( result( QString, Meta::GenreList ) ), Qt::QueuedConnection );
     connect( d->qm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( result( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
     connect( d->qm, SIGNAL( newResultReady( QString, Meta::YearList ) ), SLOT( result( QString, Meta::YearList ) ), Qt::QueuedConnection );
     connect( d->qm, SIGNAL( newResultReady( QString, QStringList ) ), SLOT( result( QString, QStringList ) ), Qt::QueuedConnection );
@@ -75,6 +76,20 @@ BlockingQuery::startQuery()
 
     d->qm->run();
     d->loop.exec();
+}
+
+void
+BlockingQuery::resetResults()
+{
+    QMutexLocker locker( &d->dataMutex );
+
+    d->data.clear();
+    d->track.clear();
+    d->artist.clear();
+    d->genre.clear();
+    d->composer.clear();
+    d->year.clear();
+    d->custom.clear();
 }
 
 QStringList

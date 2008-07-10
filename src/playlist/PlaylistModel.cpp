@@ -515,7 +515,6 @@ Playlist::Model::playlistModeChanged()
     DEBUG_BLOCK
 
     delete m_advancer;
-    m_advancer = 0;
 
     int options = Playlist::StandardPlayback;
 
@@ -528,23 +527,32 @@ Playlist::Model::playlistModeChanged()
 
     if( AmarokConfig::dynamicMode() )
     {
-        PlaylistBrowserNS::DynamicModel* dm = PlaylistBrowserNS::DynamicModel::instance();
+        PlaylistBrowserNS::DynamicModel* dm =
+            PlaylistBrowserNS::DynamicModel::instance();
 
-        Dynamic::DynamicPlaylistPtr playlist = 
-            dm->retrievePlaylist( AmarokConfig::lastDynamicMode() );
-        if( !playlist ) playlist = dm->retrieveDefaultPlaylist();
+        Dynamic::DynamicPlaylistPtr playlist = dm->activePlaylist();
 
-        const bool wasNull = m_advancer == 0;
+        if( !playlist )
+            playlist = dm->retrieveDefaultPlaylist();
+
+        const bool wasNull = m_advancer == 0; 
+
         m_advancer = new DynamicTrackNavigator( this, playlist );
 
+        // wasNull == true indicates that Amarok is just starting up.
+        // Because of some quirk in the construction order it
+        // will crash if we if try adding tracks now.
         if( !wasNull )
         {
-            ( (DynamicTrackNavigator*) m_advancer)->appendUpcoming();
-            if( activeRow() < 0 && rowCount() > 0 ) play( 0 );
+            ((DynamicTrackNavigator*) m_advancer)->appendUpcoming();
+            if( activeRow() < 0 && rowCount() > 0 )
+                play( 0 );
         }
 
         return;
     }
+
+    m_advancer = 0;
 
     if( Amarok::repeatEnabled() )
         options |= Playlist::RepeatPlayback;

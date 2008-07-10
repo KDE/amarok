@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#include "Debug.h"
 #include "DynamicBiasModel.h"
 #include "DynamicBiasWidgets.h"
 #include "BiasedPlaylist.h"
@@ -26,32 +27,79 @@
 
 #include <typeinfo>
 
-PlaylistBrowserNS::DynamicBiasModel::DynamicBiasModel( QListView* listView,
-        Dynamic::DynamicPlaylistPtr playlist )
+PlaylistBrowserNS::DynamicBiasModel::DynamicBiasModel( QListView* listView )
     : m_listView( listView )
 {
+}
+
+PlaylistBrowserNS::DynamicBiasModel::~DynamicBiasModel()
+{
+    clearWidgets();
+}
+
+void
+PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr playlist )
+{
+    clearWidgets();
+
     Dynamic::BiasedPlaylist* bp = 
         dynamic_cast<Dynamic::BiasedPlaylist*>( playlist.data() );
 
     if( bp )
     {
+        beginInsertRows( QModelIndex(), 0, bp->biases().size() );
         m_playlist = bp;
         foreach( Dynamic::Bias* b, bp->biases() )
         {
+            debug() << "BIAS ADDED";
             m_widgets.append( b->widget( m_listView ) );
+            connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
+                    this, SLOT(widgetChanged(QWidget*)) );
         }
 
-        m_widgets.append( new PlaylistBrowserNS::BiasAddWidget( m_listView ) );
+        PlaylistBrowserNS::BiasAddWidget* adder =
+            new PlaylistBrowserNS::BiasAddWidget( m_listView );
+        connect( adder, SIGNAL(addBias(Dynamic::Bias*)),
+                SLOT(appendBias(Dynamic::Bias*)) );
+
+        m_widgets.append( adder );
+        connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
+                this, SLOT(widgetChanged(QWidget*)) );
+        endInsertRows();
     }
     // TODO: else add the "Unknown Playlist Type" box.
 }
 
-PlaylistBrowserNS::DynamicBiasModel::~DynamicBiasModel()
+
+void
+PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
 {
+    if( m_playlist )
+    {
+        beginInsertRows( QModelIndex(), rowCount()-1, rowCount()-1 );
+        m_playlist->biases().append( b );
+        m_widgets.insert( rowCount()-1, b->widget( m_listView ) );
+        connect( m_widgets[rowCount()-1], SIGNAL(widgetChanged(QWidget*)),
+                this, SLOT(widgetChanged(QWidget*)) );
+        endInsertRows();
+    }
+}
+
+
+void
+PlaylistBrowserNS::DynamicBiasModel::clearWidgets()
+{
+    if( rowCount() <= 0 ) return;
+
+    beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
+
     foreach( PlaylistBrowserNS::BiasBoxWidget* b, m_widgets )
     {
         delete b;
     }
+    m_widgets.clear();
+
+    endRemoveRows();
 }
 
 
@@ -84,8 +132,9 @@ PlaylistBrowserNS::DynamicBiasModel::index( int row, int column,
     Q_UNUSED(parent)
     if( rowCount() <= row ) return QModelIndex();
 
-    return createIndex( row, column, 
-            reinterpret_cast<void*>(m_widgets.at( row )) );
+    //return createIndex( row, column, 
+            //reinterpret_cast<void*>(m_widgets.at( row )) );
+    return createIndex( row, column, 0 );
 }
 
 QModelIndex
@@ -107,5 +156,27 @@ PlaylistBrowserNS::DynamicBiasModel::columnCount( const QModelIndex& parent ) co
 {
     Q_UNUSED(parent)
     return 1;
+}
+
+void
+PlaylistBrowserNS::DynamicBiasModel::widgetChanged( QWidget* w )
+{
+    DEBUG_BLOCK
+    // more or less a hack to get the delegate to redraw the list correctly when
+    // the size of one of the widgets changes.
+
+    //int i;
+    //if( w )
+    //{
+        //for( i = 0; i < m_widgets.size(); ++i )
+        //{
+            //if( m_widgets[i] == w )
+                //break;
+        //}
+    //}
+    //else i = 0;
+
+    beginInsertRows( QModelIndex(), 0, 0 );
+    endInsertRows();
 }
 

@@ -32,6 +32,7 @@ class AMAROK_EXPORT BlockingQuery : private QObject
         virtual ~BlockingQuery();
 
         void startQuery();
+        void resetResults();
 
         QStringList collectionIds();
 

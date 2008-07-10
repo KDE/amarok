@@ -89,7 +89,9 @@ Dynamic::BiasedPlaylist::getTrack()
         if( m_backbuffer.isEmpty() )
         {
             // we need it now !
-            if( m_context.isEmpty() ) getContext();
+            debug() << "BiasedPlaylist: waiting for results.";
+            if( m_context.isEmpty() )
+                getContext();
             startSolver();
             m_solverLoop.exec();
         }

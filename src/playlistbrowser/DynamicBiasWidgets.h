@@ -25,6 +25,7 @@
 
 #include <QWidget>
 
+class QFrame;
 class QGridLayout;
 class QHBoxLayout;
 class QLabel;
@@ -42,9 +43,14 @@ namespace PlaylistBrowserNS
 {
     class BiasBoxWidget : public QWidget
     {
+        Q_OBJECT
+
         public:
             BiasBoxWidget(QWidget* parent = 0 );
             virtual ~BiasBoxWidget() {}
+
+        signals:
+            void widgetChanged( QWidget* );
 
 
         private:
@@ -59,8 +65,11 @@ namespace PlaylistBrowserNS
         public:
             BiasAddWidget( QWidget* parent = 0 );
             
+        private slots:
+            void addBias();
+
         signals:
-            void addBias( /*TODO: type*/ );
+            void addBias( Dynamic::Bias* );
 
         private:
             KToolBar*    m_addToolbar;
@@ -96,13 +105,30 @@ namespace PlaylistBrowserNS
 
         private slots:
             void weightChanged( int );
+            void fieldChanged( int );
+            void compareChanged( int );
+            void valueChanged( const QString& );
+
 
         private:
+            void syncControlsToBias();
+            void syncBiasToControls();
+
             void popuplateFieldSection();
 
+            void setValueSection( QWidget* );
+            void makeArtistSelection();
+            void makeAlbumSelection();
+            void makeTitleSelection();
+            void makeGenreSelection();
+            void makeYearSelection();
+
+            QFrame*      m_controlFrame;
+            QGridLayout* m_controlLayout;
 
             Amarok::Slider* m_weightSelection;
             QLabel*         m_weightLabel;
+            QLabel*         m_withLabel;
             KComboBox*      m_fieldSelection;
             QWidget*        m_valueSelection;
             KComboBox*      m_compareSelection;

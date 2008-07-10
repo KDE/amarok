@@ -40,6 +40,13 @@ XmlQueryWriter::XmlQueryWriter( QueryMaker* qm )
     connect( m_qm, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SIGNAL( newResultReady( QString, Meta::YearList ) ), Qt::DirectConnection );
     connect( m_qm, SIGNAL( newResultReady( QString, QStringList ) ), this, SIGNAL( newResultReady( QString, QStringList ) ), Qt::DirectConnection );
     connect( m_qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), this, SIGNAL( newResultReady( QString, Meta::DataList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( queryDone() ), this, SIGNAL( queryDone() ) );
+}
+
+
+XmlQueryWriter::~XmlQueryWriter()
+{
+    delete m_qm;
 }
 
 

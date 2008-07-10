@@ -23,6 +23,8 @@
 #include "DynamicBiasWidgets.h"
 #include "DynamicBiasModel.h"
 
+#include <QPainter>
+
 PlaylistBrowserNS::DynamicBiasDelegate::DynamicBiasDelegate( QWidget* parent )
     : QAbstractItemDelegate( parent )
 {
@@ -34,8 +36,6 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint (
         const QStyleOptionViewItem & option,
         const QModelIndex & index ) const
 {
-    // just resize the widgets, they will take care of themselves
-
     QRect rect( option.rect );
     rect.adjust( 5, 3, -5, -3 );
 
@@ -45,6 +45,7 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint (
         index.data( DynamicBiasModel::WidgetRole ) );
 
     widget->setGeometry( rect );
+    widget->show();
 }
 
 

@@ -36,15 +36,15 @@ namespace PlaylistBrowserNS {
 
 
 DynamicCategory::DynamicCategory( QWidget* parent )
-    : Amarok::Widget( parent ), m_biasModel(0)
+    : Amarok::Widget( parent ), m_biasListView(0), m_biasModel(0), m_biasDelegate(0)
 {
     bool enabled = AmarokConfig::dynamicMode();
 
     setContentsMargins(0,0,0,0);
 
-    QVBoxLayout* vLayout = new QVBoxLayout( this );
+    m_vLayout = new QVBoxLayout( this );
 
-    //vLayout->setSizePolicy( 
+    //m_vLayout->setSizePolicy( 
             //QSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored ) );
 
     m_onoffButton = new QPushButton( this );
@@ -74,10 +74,12 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_presetComboBox = new KComboBox( comboLayout );
     m_presetComboBox->setModel( DynamicModel::instance() );
+
+    connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(playlistSelectionChanged(int) ) );
+
     presetLabel->setBuddy( m_presetComboBox );
     comboLayout->setStretchFactor( m_presetComboBox, 1 );
-
-
 
 
     KHBox *hSaveDeleteLayout = new KHBox( this );
@@ -94,16 +96,8 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_deleteButton->setIcon( KIcon( "edit-delete-amarok" ) );
     m_deleteButton->setToolTip( i18n( "Delete the preset.") );
 
-    
-
-
-
     m_biasListView = new QListView( this );
-    //m_biasListView->setEnabled( false );
     m_biasListView->setFrameShape( QFrame::NoFrame );
-
-    m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
-    m_biasListView->setItemDelegate( m_biasDelegate );
 
     // transparentcy
     QPalette p = m_biasListView->palette();
@@ -112,21 +106,31 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     p.setColor( QPalette::Base, c );
     m_biasListView->setPalette( p );
 
-    vLayout->addWidget( m_onoffButton );
-    vLayout->addWidget( m_repopulateButton );
-    vLayout->addWidget( comboLayout );
-    vLayout->addWidget( hSaveDeleteLayout );
-    vLayout->addWidget( m_biasListView );
+    m_biasModel = new DynamicBiasModel( m_biasListView );
+    m_biasListView->setModel( m_biasModel );
 
-    this->setLayout( vLayout );
+    m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
+    m_biasListView->setItemDelegate( m_biasDelegate );
 
-    connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(playlistSelectionChanged(int) ) );
+    m_vLayout->addWidget( m_onoffButton );
+    m_vLayout->addWidget( m_repopulateButton );
+    m_vLayout->addWidget( comboLayout );
+    m_vLayout->addWidget( m_biasListView );
+    m_vLayout->addWidget( hSaveDeleteLayout );
+
+    this->setLayout( m_vLayout );
+
 
     int index = DynamicModel::instance()->retrievePlaylistIndex( 
             AmarokConfig::lastDynamicMode() );
+
+    debug() << "Setting index: " << index;
     if( index >= 0 )
+    {
         m_presetComboBox->setCurrentIndex( index );
+        playlistSelectionChanged( 0 );
+    }
+
 }
 
 
@@ -191,17 +195,14 @@ DynamicCategory::Off()
 void
 DynamicCategory::playlistSelectionChanged( int index )
 {
-    QVariant playlistV =
-            DynamicModel::instance()->index( index, 0 ).data( Qt::UserRole );
     Dynamic::DynamicPlaylistPtr playlist =
-        playlistV.value< Dynamic::DynamicPlaylistPtr >();
+        DynamicModel::instance()->setActivePlaylist( index );
     QString title = playlist->title();
     AmarokConfig::setLastDynamicMode( title );
     AmarokConfig::self()->writeConfig();
 
-    delete m_biasModel;
-    m_biasModel = new DynamicBiasModel( m_biasListView, playlist );
-    m_biasListView->setModel( m_biasModel );
+
+    m_biasModel->setPlaylist( playlist );
 
     debug() << "Changing biased playlist to: " << title;
 }

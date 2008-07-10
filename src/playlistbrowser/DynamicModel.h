@@ -44,7 +44,6 @@ class DynamicModel : public QAbstractItemModel
 
         QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
-        Dynamic::DynamicPlaylistPtr retrievePlaylist( QString );
         Dynamic::DynamicPlaylistPtr retrieveDefaultPlaylist();
         int retrievePlaylistIndex( QString );
 
@@ -57,17 +56,21 @@ class DynamicModel : public QAbstractItemModel
         int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
         int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
 
+        /// find the playlist with name, make it active and return it
+        Dynamic::DynamicPlaylistPtr setActivePlaylist( const QString& name );
+        Dynamic::DynamicPlaylistPtr setActivePlaylist( int );
+        Dynamic::DynamicPlaylistPtr activePlaylist();
+
 
     private:
         void loadPlaylists();
         Dynamic::Bias* createBias( QDomElement );
         void insertPlaylist( Dynamic::DynamicPlaylistPtr );
 
-              
-
         DynamicModel();
         static DynamicModel* s_instance;
 
+        Dynamic::DynamicPlaylistPtr m_activePlaylist;
         Dynamic::DynamicPlaylistPtr m_defaultPlaylist;
 
         QDomDocument m_savedPlaylists;

@@ -25,6 +25,7 @@
 #include "DynamicPlaylist.h"
 #include "RandomPlaylist.h"
 #include "collection/support/XmlQueryReader.h"
+#include "collection/support/XmlQueryWriter.h"
 
 #include <QFile>
 #include <QVariant>
@@ -46,33 +47,24 @@ PlaylistBrowserNS::DynamicModel::instance()
 PlaylistBrowserNS::DynamicModel::DynamicModel()
     : QAbstractItemModel()
 {
-    // TODO: Here we will load biased playlists.
-    // For now we just have our dummy random mode
-    // so it at least does something
-    m_defaultPlaylist = new Dynamic::RandomPlaylist;
+
+    // this is random mode imlpmented as BiasedPlaylist
+    QueryMaker* qm = 
+        new XmlQueryWriter( new MetaQueryMaker( CollectionManager::instance()->queryableCollections() ) );
+    Dynamic::GlobalBias* gb = new Dynamic::GlobalBias( 0.0, qm );
+    gb->setActive( false );
+    
+    QList<Dynamic::Bias*> biases;
+    biases.append( gb );
+    Dynamic::DynamicPlaylistPtr randomPlaylist(
+        new Dynamic::BiasedPlaylist( "Random Playlist", biases ) );
+
+    m_defaultPlaylist = randomPlaylist;
     insertPlaylist( m_defaultPlaylist );
+    m_activePlaylist = m_defaultPlaylist;
 
 
     loadPlaylists();
-
-
-    QueryMaker* property = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    //property->addFilter( QueryMaker::valArtist, "Radiohead" );
-    property->addFilter( QueryMaker::valYear, "2005" ); 
-    property->startTrackQuery();
-
-    Collection *coll = CollectionManager::instance()->primaryCollection();
-    Dynamic::Bias* bias = new Dynamic::GlobalBias( coll, 0.5, property );
-    QList<Dynamic::Bias*> biases;
-
-    biases.append( bias );
-
-    Dynamic::DynamicPlaylistPtr biasTestCase(
-            new Dynamic::BiasedPlaylist( 
-                "Bias Test: 50% 2005",
-                biases,
-                coll ) );
-    insertPlaylist( biasTestCase );
 }
 
 PlaylistBrowserNS::DynamicModel::~DynamicModel()
@@ -89,13 +81,32 @@ PlaylistBrowserNS::DynamicModel::insertPlaylist( Dynamic::DynamicPlaylistPtr pla
 }
 
 Dynamic::DynamicPlaylistPtr
-PlaylistBrowserNS::DynamicModel::retrievePlaylist( QString title )
+PlaylistBrowserNS::DynamicModel::setActivePlaylist( const QString& name )
 {
-    Dynamic::DynamicPlaylistPtr p = m_playlistHash[ title ];
+    Dynamic::DynamicPlaylistPtr p = m_playlistHash[ name ];
     if( p == Dynamic::DynamicPlaylistPtr() )
-        debug() << "Failed to retrive biased playlist: " << title;
+        debug() << "Failed to retrive biased playlist: " << name;
+    m_activePlaylist = p;
     return p;
 }
+
+Dynamic::DynamicPlaylistPtr
+PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
+{
+    Dynamic::DynamicPlaylistPtr p = m_playlistList[ index ];
+    if( p == Dynamic::DynamicPlaylistPtr() )
+        debug() << "Failed to retrive biased playlist: " << index;
+    m_activePlaylist = p;
+    return p;
+}
+
+Dynamic::DynamicPlaylistPtr
+PlaylistBrowserNS::DynamicModel::activePlaylist()
+{
+    return m_activePlaylist;
+}
+
+
 
 Dynamic::DynamicPlaylistPtr
 PlaylistBrowserNS::DynamicModel::retrieveDefaultPlaylist()
@@ -124,6 +135,7 @@ PlaylistBrowserNS::DynamicModel::index( int row, int column, const QModelIndex& 
 
     return createIndex( row, column, (void*)m_playlistList[row].data() );
 }
+
 
 QVariant 
 PlaylistBrowserNS::DynamicModel::data ( const QModelIndex & i, int role ) const
@@ -209,8 +221,15 @@ PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
 
     if( type == "global" )
     {
-        QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+        // So for those watching at home, what we are doing here is parsing an xml
+        // file (with XmlQueryReader) simultaneusly into a QueryMaker and into
+        // a QDomElement (with XmlQueryWriter) so it can be written back.
+        QueryMaker* qm = 
+            new XmlQueryWriter( new MetaQueryMaker( CollectionManager::instance()->queryableCollections() ) );
+
+
         double weight = 0.0;
+        XmlQueryReader::Filter filter;
 
         QDomElement queryElement = e.firstChildElement( "query" );
         if( !queryElement.isNull() )
@@ -220,6 +239,7 @@ PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
             queryElement.save( rawXmlStream, 0 );
             XmlQueryReader reader( qm, XmlQueryReader::IgnoreReturnValues );
             reader.read( rawXml );
+            filter = reader.getFilters().first();
         }
 
         QDomElement weightElement = e.firstChildElement( "weight" );
@@ -229,7 +249,10 @@ PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
         }
 
         debug() << "global bias read, weight = " << weight;
-        return new Dynamic::GlobalBias( weight, qm );
+        debug() << "filter.field = " << filter.field;
+        debug() << "filter.value = " << filter.value;
+        debug() << "filter.compare = " << filter.compare;
+        return new Dynamic::GlobalBias( weight, qm, filter );
     }
     // TODO: other types of biases
     else
