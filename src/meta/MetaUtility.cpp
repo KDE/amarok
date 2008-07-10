@@ -18,7 +18,6 @@
 
 #include "MetaUtility.h"
 
-//#include "charset-detector/include/chardet.h"
 #include "Debug.h"
 #include "Meta.h"
 #include "meta/Capability.h"
@@ -67,26 +66,7 @@ Meta::Field::mapFromTrack( const Meta::Track *track )
     QVariantMap map;
     if( !track )
         return map;
-/*
-    QString metaData = track->name();// + track->artist()->name() + track->album()->name() + track->genre()->name() + track->comment() + track->composer()->name();
-    char* buf = metaData.toLatin1().data();
-    size_t len = strlen( buf );
-    int res = 0;
-    chardet_t det = NULL;
-    char encoding[CHARDET_MAX_ENCODING_NAME];
-    do
-    {
-        res = chardet_handle_data( det, buf, len );
-    } while ( res == CHARDET_RESULT_OK );
-    chardet_data_end( det );
-    chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
-    QString track_encoding = encoding;
-    chardet_destroy( det );
 
-    QTextCodec *codec = QTextCodec::codecForName( encoding );
-    QString t_name = codec->toUnicode( track->name().latin1() );
-    debug() << "encoding" << t_name << endl;
-*/
     if( track->name().isEmpty() )
         map.insert( Meta::Field::TITLE, QVariant( track->prettyName() ) );
     else

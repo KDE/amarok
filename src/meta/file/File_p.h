@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2008 Peter ZHOU         <peterzhoulei@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -19,6 +20,7 @@
 #ifndef AMAROK_META_FILE_P_H
 #define AMAROK_META_FILE_P_H
 
+#include "charset-detector/include/chardet.h"
 #include "Debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
@@ -113,12 +115,38 @@ void Track::Private::readMetaData()
     #define strip( x ) TStringToQString( x ).trimmed()
     if( tag )
     {
+        TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
+        const char* buf = metaData.toCString();
+        size_t len = strlen( buf );
+        int res = 0;
+        chardet_t det = NULL;
+        char encoding[CHARDET_MAX_ENCODING_NAME];
+        chardet_create( &det );
+        res = chardet_handle_data( det, buf, len );
+        chardet_data_end( det );
+        res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
+        QString track_encoding = encoding;
+        chardet_destroy( det );
+
+        debug() << "Data:" << buf <<endl;
+        debug() << "Charset: " << encoding <<endl;
+
         m_data.title = strip( tag->title() );
         m_data.artist = strip( tag->artist() );
         m_data.album = strip( tag->album() );
         m_data.comment = strip( tag->comment() );
         m_data.trackNumber = tag->track();
         m_data.year = tag->year();
+        //Start to decode non-utf8 tags
+        QTextCodec *codec;
+        if ( ( encoding !="" ) && ( res == CHARDET_RESULT_OK ) )
+        {
+            codec = QTextCodec::codecForName( encoding );
+            m_data.title = codec->toUnicode( m_data.title.toLatin1() );
+            m_data.artist = codec->toUnicode( m_data.artist.toLatin1() );
+            m_data.album = codec->toUnicode( m_data.album.toLatin1() );
+            m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
+        }
     }
     if( !fileRef.isNull() )
     {
