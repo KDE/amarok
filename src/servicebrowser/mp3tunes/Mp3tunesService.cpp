@@ -104,9 +104,6 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
     debug() << "Making new Locker Object";
     m_locker = new Mp3tunesLocker( "4895500420" );
     debug() << "MP3tunes running automated authenticate.";
-    QTimer *t = new QTimer(this);
-    connect(t, SIGNAL( timeout() ), SLOT(authenticate( email, password) ) );
-    t->start( 3600000 );
 
     authenticate( email, password );
 
@@ -248,11 +245,32 @@ void Mp3tunesService::harmonyError( const QString &error )
 
 void Mp3tunesService::harmonyDownloadReady( Mp3tunesHarmonyDownload download )
 {
+    DEBUG_BLOCK
     debug() << "Got message about " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+    foreach( Collection *coll, CollectionManager::instance()->collections().keys() ) {
+        if( coll && coll->isWritable())
+        {
+            debug() << "got collection" << coll->prettyName();
+            if ( coll->prettyName() == "Local Collection") //TODO Allow user to choose which collection to sync down to.
+            {
+                debug() << "got local collection";
+                CollectionLocation *dest = coll->location();
+                CollectionLocation *source = m_collection->location();
+                if( !m_collection->possiblyContainsTrack( download.url() ) )
+                    return; //TODO some sort of error handling
+                Meta::TrackPtr track( m_collection->trackForUrl( download.url() ) );
+                source->prepareCopy( track, dest );
+                break;
+            }
+
+        }
+    }
+
 }
 
 void Mp3tunesService::harmonyDownloadPending( Mp3tunesHarmonyDownload download )
 {
     debug() << "Got message about " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
 }
+
 #include "Mp3tunesService.moc"
