@@ -306,17 +306,23 @@ MainWindow::slotSetFilter( const QString &filter ) //SLOT
 }
 
 void
-MainWindow::slotShrinkBrowsers( int index ) const
+MainWindow::slotShrinkBrowsers( int index )
 {
+    DEBUG_BLOCK
+
     // Because QSplitter sucks and will not recompute sizes if a pane is shrunk and not hidden.
     if( index == -1 )
     {
+        m_splitterState = m_splitter->saveState();
+
         QList<int> sizes;
         sizes << m_browsers->sideBarWidget()->width() // browser bar
               << m_splitter->sizes()[1] + m_splitter->sizes()[0] - m_browsers->sideBarWidget()->width() // context view
               << m_splitter->sizes()[2]; // playlist
         m_splitter->setSizes( sizes );
     }
+    else
+        m_splitter->restoreState( m_splitterState );
 }
 
 void

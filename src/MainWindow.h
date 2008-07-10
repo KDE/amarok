@@ -93,7 +93,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void playAudioCD();
 
     private slots:
-        void slotShrinkBrowsers( int index ) const;
+        void slotShrinkBrowsers( int index );
         void savePlaylist() const;
         void exportPlaylist() const;
         void slotBurnPlaylist() const;
@@ -152,6 +152,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         QStringList    m_lastfmTags;
         MediaBrowser  *m_currMediaBrowser;
         QSplitter     *m_splitter;
+        QByteArray     m_splitterState;
 
         ContextWidget *m_contextWidget;
         Context::ContextScene *m_corona;
