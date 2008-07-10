@@ -45,8 +45,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
 }
 
 CurrentTrack::~CurrentTrack()
-{
-}
+{}
 
 void CurrentTrack::init()
 {
@@ -59,8 +58,6 @@ void CurrentTrack::init()
  
     m_width = globalConfig().readEntry( "width", 500 );
 
-    KIconLoader *iconLoader = KIconLoader::global();
-
 //     const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
     const QColor textColor( Qt::white );
     QFont labelFont;
@@ -71,8 +68,7 @@ void CurrentTrack::init()
 
     m_ratingWidget = new RatingWidget( this );
 
-    connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ),
-             this, SLOT( changeTrackRating( int ) ) );
+    connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
     
 
     m_title        = new QGraphicsSimpleTextItem( this );
@@ -140,22 +136,24 @@ void CurrentTrack::createMenu()
 
 void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 {
+    Q_UNUSED( constraints )
+
     prepareGeometryChange();
 
     /*if( constraints & Plasma::SizeConstraint )
          m_theme->resize(size().toSize());*/
 
     //bah! do away with trying to get postions from an svg as this is proving wildly inaccurate
-    qreal margin = 14.0;
-    qreal albumWidth = size().toSize().height() - 2.0 * margin;
+    const qreal margin = 14.0;
+    const qreal albumWidth = size().toSize().height() - 2.0 * margin;
     resizeCover( m_bigCover, margin, albumWidth );
 
-    qreal labelX = albumWidth + margin + 14.0;
-    qreal labelWidth = 15;
-    qreal textX = labelX + labelWidth + margin;
+    const qreal labelX = albumWidth + margin + 14.0;
+    const qreal labelWidth = 15;
+    const qreal textX = labelX + labelWidth + margin;
 
-    qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 ) ;
-    qreal textWidth = size().toSize().width() - ( textX + margin );
+    const qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 ) ;
+    const qreal textWidth = size().toSize().width() - ( textX + margin );
 
     // here we put all of the text items into the correct locations
     m_artist->setPos( QPointF( textX, margin ) );
@@ -254,13 +252,12 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
 QSizeF 
 CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
+    Q_UNUSED( which )
+
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-    {
         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-    } else
-    {
-        return constraint;
-    }
+
+    return constraint;
 }
 
 void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -289,15 +286,13 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     m_theme->paint( p, rightBorder, "right-border" );
     p->restore();
 
-    qreal margin = 14.0;
-    qreal albumWidth = size().toSize().height() - 2.0 * margin;
+    const qreal margin = 14.0;
+    const qreal albumWidth = size().toSize().height() - 2.0 * margin;
 
-    qreal labelX = albumWidth + margin + 14.0;
-    qreal labelWidth = size().toSize().width() / 6.0;
-    qreal textX = labelX + labelWidth + margin;
+    const qreal labelX = albumWidth + margin + 14.0;
+    const qreal labelWidth = size().toSize().width() / 6.0;
 
-    qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 );
-    qreal textWidth = size().toSize().width() - ( textX + margin );
+    const qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 );
 
     p->save();
     
@@ -322,12 +317,10 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 }
 
 void CurrentTrack::showConfigurationInterface()
-{
-}
+{}
 
 void CurrentTrack::configAccepted() // SLOT
-{
-}
+{}
 
 
 bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
