@@ -38,7 +38,7 @@
 #include "scriptengine/AmarokOSDScript.h"
 #include "scriptengine/AmarokPlaylistScript.h"
 #include "scriptengine/AmarokScript.h"
-#include "scriptengine/AmarokScriptableServiceManagerScript.h"
+#include "scriptengine/AmarokScriptableServiceScript.h"
 #include "scriptengine/AmarokServicePluginManagerScript.h"
 #include "scriptengine/AmarokStatusbarScript.h"
 #include "scriptengine/AmarokTrackInfoScript.h"
@@ -563,7 +563,7 @@ ScriptManager::slotRunScript( bool silent )
     //todo: setProcessEventsInterval?
     li->setIcon( 0, SmallIcon( "media-playback-start-amarok" ) );
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
-//TODO: use thread to handle scripts?
+
     m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
     scriptFile.close();
@@ -900,9 +900,9 @@ ScriptManager::startScriptEngine( QString name )
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
     m_scripts[name].wrapperList.append( m_scripts[name].globalPtr );
 
-    m_scripts[name].servicePtr = new Amarok::AmarokScriptableServiceManagerScript( scriptEngine );
+    m_scripts[name].servicePtr = new Amarok::AmarokScriptableServiceScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( m_scripts[name].servicePtr );
-    m_global.setProperty( "ScriptableServiceManager", scriptObject );
+    m_global.setProperty( "ScriptableService", scriptObject );
     m_scripts[name].wrapperList.append( m_scripts[name].servicePtr );
 
     objectPtr = new Amarok::AmarokServicePluginManagerScript( scriptEngine );

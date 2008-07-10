@@ -92,7 +92,15 @@ function onConfigure()
     Amarok.Statusbar.longMessageThreadSafe( "This script does not require any configuration." );
 }
 
-function onInit()
+function CoolStreams()
+{
+    Amarok.ScriptableService.call(this);
+}
+
+CoolStreams.prototype = new Amarok.ScriptableService();
+
+
+function Init()
 {
     levels = 2;
     short_description = "List of some really cool radio streams";
@@ -100,7 +108,7 @@ function onInit()
     Amarok.ScriptableServiceManager.initService( service_name, levels, short_description, root_html, false );
 }
 
-function onPopulate( level, parent_id, callback, filter )
+function Populate( level, parent_id, callback, filter )
 {
     if (level == 1)
     {
@@ -133,8 +141,8 @@ function onPopulate( level, parent_id, callback, filter )
 }
 
 Amarok.configured.connect( onConfigure );
-Amarok.ScriptableServiceManager.init.connect( onInit );
-Amarok.ScriptableServiceManager.populate.connect( onPopulate );
+//Amarok.ScriptableServiceManager.init.connect( onInit );
+//Amarok.ScriptableServiceManager.populate.connect( onPopulate );
 
 
 

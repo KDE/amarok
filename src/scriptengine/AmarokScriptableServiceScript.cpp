@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "AmarokScriptableServiceManagerScript.h"
+#include "AmarokScriptableServiceScript.h"
 
 #include "App.h"
 #include "Debug.h"
@@ -25,41 +25,41 @@
 
 namespace Amarok
 {
-    AmarokScriptableServiceManagerScript::AmarokScriptableServiceManagerScript( QScriptEngine* ScriptEngine )
+    AmarokScriptableServiceScript::AmarokScriptableServiceScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
         Q_UNUSED( ScriptEngine );
     }
 
-    AmarokScriptableServiceManagerScript::~AmarokScriptableServiceManagerScript()
+    AmarokScriptableServiceScript::~AmarokScriptableServiceScript()
     {
     }
 
-    bool AmarokScriptableServiceManagerScript::initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar )
+    bool AmarokScriptableServiceScript::initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar )
     {
         DEBUG_BLOCK
         return The::scriptableServiceManager()->initService( name, levels, shortDescription, rootHtml, showSearchBar );
     }
 
-    int AmarokScriptableServiceManagerScript::insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl)
+    int AmarokScriptableServiceScript::insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl)
     {
         DEBUG_BLOCK
         return The::scriptableServiceManager()->insertItem( serviceName, level, parentId, name, infoHtml, callbackData, playableUrl );
     }
 
-    void AmarokScriptableServiceManagerScript::donePopulating( const QString &serviceName, int parentId )
+    void AmarokScriptableServiceScript::donePopulating( const QString &serviceName, int parentId )
     {
         DEBUG_BLOCK
         The::scriptableServiceManager()->donePopulating( serviceName, parentId );
     }
 
-    void AmarokScriptableServiceManagerScript::slotInit()
+    void AmarokScriptableServiceScript::slotInit()
     {
         DEBUG_BLOCK
         emit init();
     }
 
-    void AmarokScriptableServiceManagerScript::slotPopulate( int level, int parent_id, QString path, QString filter )
+    void AmarokScriptableServiceScript::slotPopulate( int level, int parent_id, QString path, QString filter )
     {
         DEBUG_BLOCK
         emit populate( level, parent_id, path, filter );
@@ -67,4 +67,4 @@ namespace Amarok
 
 }
 
-#include "AmarokScriptableServiceManagerScript.moc"
+#include "AmarokScriptableServiceScript.moc"
