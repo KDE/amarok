@@ -53,12 +53,6 @@ namespace Amarok
         The::scriptableServiceManager()->donePopulating( serviceName, parentId );
     }
 
-    void AmarokScriptableServiceScript::slotInit()
-    {
-        DEBUG_BLOCK
-        emit init();
-    }
-
     void AmarokScriptableServiceScript::slotPopulate( int level, int parent_id, QString path, QString filter )
     {
         DEBUG_BLOCK

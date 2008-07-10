@@ -84,41 +84,22 @@ var stationURL = new Array( "http://www.ah.fm/192k.m3u",
 
 var total = 27;
 
-service_name = "Cool Streams";
-
-
 function onConfigure()
 {
     Amarok.Statusbar.longMessageThreadSafe( "This script does not require any configuration." );
 }
 
-function CoolStreams()
-{
-    Amarok.ScriptableService.call(this);
-}
-
-CoolStreams.prototype = new Amarok.ScriptableService();
-
-
-function Init()
-{
-    levels = 2;
-    short_description = "List of some really cool radio streams";
-    root_html = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers";
-    Amarok.ScriptableServiceManager.initService( service_name, levels, short_description, root_html, false );
-}
-
-function Populate( level, parent_id, callback, filter )
+function onPopulate( level, parent_id, callback, filter )
 {
     if (level == 1)
     {
         print( "Populating main level..." );
 
         //add top level item
-        Amarok.ScriptableServiceManager.insertItem( service_name, 1, -1, "The Amarok Crew\'s Top Streams", "Just a parent item to show how nesting works", "get_stations", "" );
+        Amarok.ScriptableService.insertItem( service_name, 1, -1, "The Amarok Crew\'s Top Streams", "Just a parent item to show how nesting works", "get_stations", "" );
 
         //tell service that all items has been added ( no parent since these are top level items )
-        Amarok.ScriptableServiceManager.donePopulating( "Cool Streams", -1 );
+        Amarok.ScriptableService.donePopulating( "Cool Streams", -1 );
         print( "... done" );
     }
     else if ( (level == 0 ) && ( callback == "get_stations" ) )
@@ -132,17 +113,22 @@ function Populate( level, parent_id, callback, filter )
         for (i = 0; i<total; i++)
         {
             html_info = "A cool stream called " + stationName[i];
-            Amarok.ScriptableServiceManager.insertItem( service_name, 0, parent_id,  stationName[i], html_info, callback_string,  stationURL[i] );
+            Amarok.ScriptableService.insertItem( service_name, 0, parent_id,  stationName[i], html_info, callback_string,  stationURL[i] );
         }
 
         //tell service that all items has been added to a parent item
-        Amarok.ScriptableServiceManager.donePopulating( "Cool Streams", parent_id );
+        Amarok.ScriptableService.donePopulating( "Cool Streams", parent_id );
     }
 }
 
+service_name = "Cool Streams";
+levels = 2;
+short_description = "List of some really cool radio streams";
+root_html = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers";
+Amarok.ScriptableService.initService( service_name, levels, short_description, root_html, false );
+
 Amarok.configured.connect( onConfigure );
-//Amarok.ScriptableServiceManager.init.connect( onInit );
-//Amarok.ScriptableServiceManager.populate.connect( onPopulate );
+Amarok.ScriptableService.populate.connect( onPopulate );
 
 
 

@@ -568,8 +568,6 @@ ScriptManager::slotRunScript( bool silent )
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
     scriptFile.close();
     //FIXME: '\n' doesen't work?
-    if( m_scripts[name].type == "service" )
-        The::scriptableServiceManager()->addRunningScript( name );
     if ( m_scripts[name].engine->hasUncaughtException() )
     {
         m_scripts[name].log += time.currentTime().toString() + " " + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() ) + '\n';
@@ -604,12 +602,6 @@ ScriptManager::slotConfigureScript()
     const QString name = m_gui->treeWidget->currentItem()->text( 0 );
       if( !m_scripts[name].running ) return;
     m_scripts[name].globalPtr->slotConfigured();
-}
-
-void
-ScriptManager::ServiceScriptInit( QString name )
-{
-    m_scripts[name].servicePtr->slotInit();
 }
 
 void

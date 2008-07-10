@@ -40,7 +40,6 @@ namespace Amarok
         public:
             AmarokScriptableServiceScript( QScriptEngine* ScriptEngine );
             ~AmarokScriptableServiceScript();
-            void slotInit();
             void slotPopulate( int level, int parent_id, QString path, QString filter );
 
         public slots:
@@ -49,7 +48,6 @@ namespace Amarok
             void donePopulating( const QString &serviceName, int parentId );
 
         signals:
-            void init();
             void populate( int level, int parent_id, QString path, QString filter );
     };
 }

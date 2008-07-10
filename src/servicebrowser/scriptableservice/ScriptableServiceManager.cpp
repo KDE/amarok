@@ -45,12 +45,9 @@ bool ScriptableServiceManager::initService( const QString &name, int levels, con
 
     debug() << "initializing scripted service: " << name;
 
-    if ( !m_serviceMap.contains( name ) ) {
-        debug() << "no such service script found";
-        return false;
-    }
+    ScriptableService * service = new ScriptableService ( name );
+    m_serviceMap[name] = service;
 
-    ScriptableService * service = m_serviceMap.value( name );
     service->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     service->setShortDescription( shortDescription );
     service->init( levels, rootHtml, showSearchBar );
@@ -86,25 +83,6 @@ void ScriptableServiceManager::donePopulating(const QString & serviceName, int p
     }
 
     m_serviceMap[serviceName]->donePopulating( parentId );
-}
-
-
-void ScriptableServiceManager::addRunningScript( const QString & name )
-{
-    DEBUG_BLOCK
-
-    debug() << "adding service script named: " << name;
-
-    if ( m_serviceMap.contains( name ) ) {
-        debug() << "service already running";
-        return;
-    }
-
-    ScriptableService * service = new ScriptableService ( name );
-    m_serviceMap[name] = service;
-
-    debug() << "sending init message to script";
-    ScriptManager::instance()->ServiceScriptInit( name );
 }
 
 void ScriptableServiceManager::removeRunningScript(const QString & name)

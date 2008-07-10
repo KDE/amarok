@@ -101,7 +101,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         /** Asks the current score script to give a new score based on the parameters. */
         void requestNewScore( const QString &url, double prevscore, int playcount, int length, float percentage, const QString &reason );
 
-        void ServiceScriptInit( QString name );
         void ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter );
 
     signals:
