@@ -63,6 +63,7 @@ Dynamic::BiasedPlaylist::startSolver()
 
     if( m_solver ) return;
 
+    updateBiases();
     m_solver = new BiasSolver( BUFFER_SIZE, m_biases, &m_randomSource, m_context );
     connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
             this, SLOT(solverFinished(ThreadWeaver::Job*)),
@@ -140,6 +141,20 @@ Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
     job->deleteLater();
     m_solver = 0;
     m_solverLoop.exit();
+}
+
+void
+Dynamic::BiasedPlaylist::updateBiases()
+{
+    CollectionDependantBias* cb;
+    foreach( Bias* b, m_biases )
+    {
+        if( (cb = dynamic_cast<CollectionDependantBias*>( b ) ) )
+        {
+            if( cb->needsUpdating() )
+                cb->update();
+        }
+    }
 }
 
 void

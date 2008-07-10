@@ -54,6 +54,7 @@ namespace Dynamic
             void solverFinished( ThreadWeaver::Job* );
 
         private:
+            void updateBiases();
             void startSolver();
             void getContext();
 

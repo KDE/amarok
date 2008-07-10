@@ -45,6 +45,7 @@ set(plasma_LIB_SRCS
     plasma/desktoptoolbox.cpp
     plasma/dialog.cpp
     plasma/packages.cpp
+    plasma/paintutils.cpp
     plasma/panelsvg.cpp
     plasma/paneltoolbox.cpp
     plasma/plasma.cpp

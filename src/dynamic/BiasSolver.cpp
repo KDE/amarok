@@ -76,16 +76,6 @@ Meta::TrackList Dynamic::BiasSolver::solution()
 
 void Dynamic::BiasSolver::initialize()
 {
-    CollectionDependantBias* cb;
-    foreach( Bias* b, m_biases )
-    {
-        if( (cb = dynamic_cast<CollectionDependantBias*>( b ) ) )
-        {
-            if( cb->needsUpdating() )
-                cb->update();
-        }
-    }
-
     // TODO:
     // - filter out absolute global biases (those with weights of 0.0 or 1.0
     // - filter out infeasible biases
