@@ -24,6 +24,7 @@
 #include "QueryMaker.h"
 
 #include <QString>
+#include <QUuid>
 
 #include <threadweaver/Job.h>
 #include <Soprano/Model>
@@ -91,6 +92,7 @@ class NepomukQueryMaker : public QueryMaker
 	    virtual void doQuery(const QString& );
 
 	    virtual QueryMaker* addMatch( const KUrl &url);
+        virtual QueryMaker* addMatchId( const QString &uid);
 	
     public slots:
         void done( ThreadWeaver::Job * job );

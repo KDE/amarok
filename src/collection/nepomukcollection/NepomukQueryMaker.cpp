@@ -29,6 +29,7 @@
 #include <QList>
 #include <QString>
 #include <QStringList>
+#include <QUuid>
 
 #include <KUrl>
 #include <threadweaver/Job.h>
@@ -303,12 +304,23 @@ NepomukQueryMaker::addMatch( const DataPtr &data )
 }
 
 QueryMaker*
-NepomukQueryMaker::addMatch( const KUrl &url)
+NepomukQueryMaker::addMatch( const KUrl &url )
 {
     queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
             .arg( m_collection->getUrlForValue( valUrl ) )
             .arg( url.pathOrUrl() )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
+    return this;
+}
+
+QueryMaker*
+NepomukQueryMaker::addMatchId( const QString &uid )
+{
+    queryMatch +=  QString(
+                           " ?r <%1> \"%2\"^^<%3> . ")
+            .arg( "http://amarok.kde.org/metadata/1.0/track#uid" )
+            .arg( uid )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
     return this;
 }
@@ -477,16 +489,6 @@ NepomukQueryMaker::buildQuery() const
                            .arg( m_collection->getUrlForValue( valUrl ) )
                            .arg( m_collection->getNameForValue( valUrl) );
             
-            const QStringList list = m_collection->getAllNamesAndUrls();
-            QStringList::const_iterator it = list.constBegin();
-            while ( it != list.constEnd() )
-            {
-                query += QString("OPTIONAL { ?r <%1> ?%2 } . ")
-                    .arg( *(it++) )
-                    .arg( *(it++) );
-            }
-
-            
             // if there is no match we want all tracks, match against all music
             if ( queryMatch.isEmpty() )
                 query += QString( "?r a <%1> . ")
@@ -494,6 +496,14 @@ NepomukQueryMaker::buildQuery() const
             else
                 query += queryMatch;
             
+            const QStringList list = m_collection->getAllNamesAndUrls();
+            QStringList::const_iterator it = list.constBegin();
+            while ( it != list.constEnd() )
+            {
+                query += QString("OPTIONAL { ?r <%1> ?%2 } . ")
+                        .arg( *(it++) )
+                        .arg( *(it++) );
+            }
             query += "} ";
             query += queryOrderBy;
             break;

@@ -28,6 +28,7 @@
 
 #include <Soprano/BindingSet>
 #include <Soprano/Model>
+#include <threadweaver/ThreadWeaver.h>
 
 class QUrl;
 
@@ -45,12 +46,15 @@ class NepomukRegistry : public QObject
     private slots:
         void cleanHash();
         void nepomukUpdate( const Soprano::Statement &statement);
+        void jobDone( ThreadWeaver::Job *job );
     
     private:
         QHash< QString, Meta::NepomukTrackPtr > m_tracks;
+        QHash< QString, Meta::NepomukTrackPtr > m_tracksFromId;
         NepomukCollection* m_collection;
         QTimer *m_timer;
         Soprano::Model *m_model;
+        ThreadWeaver::Weaver *m_weaver;
 };
 
 #endif

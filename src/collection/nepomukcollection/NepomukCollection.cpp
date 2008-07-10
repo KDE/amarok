@@ -24,11 +24,13 @@
 
 #include "BlockingQuery.h"
 #include "Debug.h"
+#include "proxy/MetaProxy.h"
 #include "QueryMaker.h"
 
 #include <QHash>
 #include <QString>
 #include <QTime>
+#include <QUuid>
 
 #include <klocale.h>
 #include <KUrl>
@@ -124,37 +126,49 @@ NepomukCollection::prettyName() const
 bool
 NepomukCollection::possiblyContainsTrack( const KUrl &url ) const
 {
-    return url.protocol() == "file";
+    QString proto = url.protocol();
+    if ( proto == "file" || proto == "amarokcollnepomukuid" )
+        return true;
+    else
+        return false;
 }
 
 Meta::TrackPtr
 NepomukCollection::trackForUrl( const KUrl &url )
 {
+    DEBUG_BLOCK
     // it is too slow with redland, makes start of amarok slow
     // so just return 
-    
+    QString proto = url.protocol();
     if ( !m_isFast )
         return Meta::TrackPtr();
-    
-    DEBUG_BLOCK
-    if ( Nepomuk::Resource::Resource( url ).exists() )
-    {
-        debug() << "Track: " << url.prettyUrl() << " is in NepomukCollection" << endl;
-        
-        NepomukQueryMaker *qm = new NepomukQueryMaker( this, m_model );
-        qm->startTrackQuery();
-        qm->addMatch( url );
-        BlockingQuery bq ( qm );
-        bq.startQuery();
-        Meta::TrackList tracks = bq.tracks( this->collectionId() );
 
-        // assuming that there is only one result, should never be more, if so giving
-        // the first is the best to do anyway
-        if ( !tracks.isEmpty() )
-        {
-            return tracks.first();
-        }
+    if ( proto == "file" && !Nepomuk::Resource::Resource( url ).exists() )
+        return Meta::TrackPtr();
+
+    NepomukQueryMaker *qm = new NepomukQueryMaker( this, m_model );
+    qm->startTrackQuery();
+    if ( proto == "file" )
+    {
+        qm->addMatch( url );
     }
+    else
+    {
+        QString uid ( url.url().right( 36 ) );
+        qm->addMatchId ( uid );
+    }
+    
+    BlockingQuery bq ( qm );
+    bq.startQuery();
+    Meta::TrackList tracks = bq.tracks( this->collectionId() );
+
+    // assuming that there is only one result, should never be more, if so giving
+    // the first is the best to do anyway
+    if ( !tracks.isEmpty() )
+    {
+        return tracks.first();
+    }
+    
     return Meta::TrackPtr();
 }
 
@@ -224,6 +238,8 @@ NepomukCollection::initHashMaps()
         m_allNamesAndUrls.append( it.value() );
         m_allNamesAndUrls.append( m_urlForValue[ it.key() ] );
     }
+    m_allNamesAndUrls.append( "trackuid" );
+    m_allNamesAndUrls.append( "http://amarok.kde.org/metadata/1.0/track#uid" );
 
     QHashIterator<qint64, QString> it2( m_urlForValue );
     while ( it2.hasNext() )

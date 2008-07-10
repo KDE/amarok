@@ -22,14 +22,47 @@
 
 #include "Debug.h"
 #include "QueryMaker.h"
-
 #include <QHash>
 #include <QUrl>
+#include <QUuid>
 
 #include <KSharedPtr>
+#include <Nepomuk/Resource>
+#include <Nepomuk/Variant>
 #include <Soprano/BindingSet>
 #include <Soprano/Model>
 #include <Soprano/Statement>
+#include <threadweaver/Job.h>
+#include <threadweaver/ThreadWeaver.h>
+
+class NepomukWriteJob : public ThreadWeaver::Job
+{
+    public:
+        NepomukWriteJob( Nepomuk::Resource &resource, const QUrl property,  const Nepomuk::Variant value )
+    : ThreadWeaver::Job()
+                , m_resource( resource )
+                , m_property( property )
+                , m_value( value )
+                {
+            //nothing to do
+                }
+    protected:
+        virtual void run()
+        {
+            if (m_resource.isValid() )
+            {
+                    m_resource.setProperty( m_property, m_value );
+            }
+            else
+                debug() << "m_resource is not not valid" << endl;
+        }
+    
+    private:
+        Nepomuk::Resource &m_resource;
+        const QUrl m_property;
+        const Nepomuk::Variant m_value;
+};
+
 
 NepomukRegistry::NepomukRegistry( NepomukCollection *collection, Soprano::Model *model )
     : m_collection( collection )
@@ -44,11 +77,19 @@ NepomukRegistry::NepomukRegistry( NepomukCollection *collection, Soprano::Model 
     connect ( model, SIGNAL( statementAdded(const Soprano::Statement& ) ),
                       this, SLOT ( nepomukUpdate( const Soprano::Statement& ) ) );
 
+    m_weaver = new ThreadWeaver::Weaver();
+    m_weaver->setMaximumNumberOfThreads( 1 );
+
+    connect ( m_weaver, SIGNAL( jobDone (ThreadWeaver::Job* ) ),
+                        this, SLOT ( jobDone (ThreadWeaver::Job* ) ) );
+
 }
 
 
 NepomukRegistry::~NepomukRegistry()
 {
+    m_weaver->finish();
+    delete m_weaver;
 }
 
 
@@ -58,10 +99,18 @@ NepomukRegistry::trackForBindingSet( const Soprano::BindingSet &set )
     QString url = set[ "r"].uri().toString();
     if ( m_tracks.contains( url ) )
         return (Meta::TrackPtr) m_tracks[ url ].data();
-    else
+    else 
     {
         Meta::NepomukTrackPtr tp ( new Meta::NepomukTrack( m_collection, this, set ) );
-        m_tracks[ url ] = tp;
+        if ( tp->uid().isEmpty() )
+        {
+            tp->setUid( QUuid::createUuid().toString().mid( 1, 36 ) );
+            ThreadWeaver::Job *job =
+                    new NepomukWriteJob( tp->resource() , QUrl( "http://amarok.kde.org/metadata/1.0/track#uid" ), Nepomuk::Variant( tp->uid() ) );
+            m_weaver->enqueue( job );
+        }
+        m_tracks[ tp->resource().resourceUri().toString() ] = tp;
+        m_tracksFromId[ tp->uid() ] = tp;
         
         return (Meta::TrackPtr)tp.data();
     }
@@ -71,6 +120,14 @@ void
 NepomukRegistry::cleanHash()
 {
     for( QMutableHashIterator< QString , KSharedPtr<Meta::NepomukTrack> > it( m_tracks); it.hasNext(); )
+    {
+        Meta::NepomukTrackPtr track = it.next().value();
+        if( track.count() == 3 )
+        {
+            it.remove();
+        }
+    }
+    for( QMutableHashIterator< QString , KSharedPtr<Meta::NepomukTrack> > it( m_tracksFromId); it.hasNext(); )
     {
         Meta::NepomukTrackPtr track = it.next().value();
         if( track.count() == 2 )
@@ -89,7 +146,7 @@ NepomukRegistry::nepomukUpdate( const Soprano::Statement &statement )
         QString uri = node.uri().toString();
         if ( m_tracks.contains( uri ) )
         {
-            QString uriProperty = statement.predicate().uri();
+            QString uriProperty = statement.predicate().uri().toString();
             qint64 value = m_collection->valueForUrl( uriProperty );
             if ( value != 0)
             {
@@ -98,7 +155,35 @@ NepomukRegistry::nepomukUpdate( const Soprano::Statement &statement )
                     m_tracks[ uri ].data()->valueChangedInNepomuk( value, object.literal() );
             }
         }
+        else if ( statement.predicate().uri().toString() == "http://amarok.kde.org/metadata/1.0/track#uid" )
+        {
+            Soprano::Node object = statement.object();
+            QString uid = object.literal().toString();
+            
+            debug() << "nepomuk resource moved uid: " << uid << endl;
+            if ( m_tracksFromId.contains( uid ) )
+            {
+                Meta::NepomukTrackPtr tp = m_tracksFromId[ uid ];
+                QString oldurl = tp->resource().resourceUri().toString();
+                debug() << "nepo old uld: " << oldurl << " new url" << uri << endl;
+                tp->setResource( Nepomuk::Resource( uri ) );
+                tp->valueChangedInNepomuk( QueryMaker::valUrl, uri );
+
+                // update hash
+                debug() << "nepo length before " << m_tracks.count() << endl;
+                m_tracks[ uri ] = tp;
+                m_tracks.remove( oldurl );
+                debug() << "nepo length aftere " << m_tracks.count() << endl;
+            }
+        }
+        
     }
+}
+
+void
+NepomukRegistry::jobDone( ThreadWeaver::Job *job )
+{
+    job->deleteLater();
 }
 
 #include "NepomukRegistry.moc"

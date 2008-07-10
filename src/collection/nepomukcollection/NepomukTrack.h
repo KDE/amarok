@@ -96,6 +96,15 @@ class NepomukTrack : public Track
         QUrl resourceUri() const;
         void valueChangedInNepomuk( qint64 value, const Soprano::LiteralValue& );
 
+        void setUid ( const QString& value );
+        QString uid() const;
+
+         Nepomuk::Resource& resource();
+         void setResource ( const Nepomuk::Resource& value );
+    
+    
+    
+
     private:
         NepomukCollection *m_collection;
         Nepomuk::Resource m_nepores;
@@ -124,6 +133,7 @@ class NepomukTrack : public Track
         QMutex statsMutex;
         NepomukRegistry *m_registry;
         QTime m_lastWrote;
+        QString m_uid;
 };
 
 }

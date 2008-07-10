@@ -72,6 +72,7 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *regi
     statsThread =  new WriteStatisticsThread( this );
 
     m_nepores = Nepomuk::Resource( data[ "r"].uri() ) ;
+    m_uid = data[ "trackuid" ].toString();
     m_title = data[ collection->getNameForValue( QueryMaker::valTitle ) ].toString();
     m_url = KUrl( data[ collection->getNameForValue( QueryMaker::valUrl ) ].toString() );
     m_artist = data[ collection->getNameForValue( QueryMaker::valArtist ) ].toString();
@@ -153,13 +154,13 @@ NepomukTrack::playableUrl() const
 QString
 NepomukTrack::url() const
 {
-    return m_url.url();
+    return "amarokcollnepomukuid://" + m_uid;
 }
 
 QString
 NepomukTrack::prettyUrl() const
 {
-    return m_url.prettyUrl();
+    return m_url.path();
 }
 
 bool
@@ -330,7 +331,8 @@ void
 NepomukTrack::writeStatistics()
 {
     QMutexLocker locker( &statsMutex );
-
+    
+    m_lastWrote = QTime::currentTime();
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valLastPlayed) )
             , Nepomuk::Variant( m_lastPlayed ) );
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valPlaycount) )
@@ -338,7 +340,7 @@ NepomukTrack::writeStatistics()
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valFirstPlayed) )
             , Nepomuk::Variant( m_firstPlayed ) );
     
-    m_lastWrote = QTime::currentTime();
+
 
 }
 
@@ -358,7 +360,7 @@ NepomukTrack::valueChangedInNepomuk( qint64 value, const Soprano::LiteralValue &
     if ( !m_lastWrote.isNull() && m_lastWrote.secsTo( QTime::currentTime() ) < 3 )
         return;
 
-    debug() << "data changed " << m_collection->getNameForValue( value ) << endl;
+    debug() << "nepo data changed " << m_collection->getNameForValue( value ) << " last wrote " << m_lastWrote.secsTo( QTime::currentTime() ) << endl;
     switch ( value )
     {
         case QueryMaker::valUrl:
@@ -369,4 +371,29 @@ NepomukTrack::valueChangedInNepomuk( qint64 value, const Soprano::LiteralValue &
             break;
     }
     emit notifyObservers();
+}
+
+QString
+NepomukTrack::uid() const
+{
+    return m_uid;
+}
+
+void
+NepomukTrack::setUid ( const QString& value )
+{
+    // do not write it to nepomuk, it's nepomukregistrys job
+    m_uid = value;
+}
+
+Nepomuk::Resource&
+NepomukTrack::resource()
+{
+    return m_nepores;
+}
+
+void
+NepomukTrack::setResource ( const Nepomuk::Resource& value )
+{
+    m_nepores = value;
 }
