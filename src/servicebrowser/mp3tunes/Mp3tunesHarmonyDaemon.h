@@ -128,7 +128,17 @@ class Mp3tunesHarmonyDaemon: public QObject
       void signalConnected();
       void signalDisconnected();
       void signalError( const QString &error );
+
+     /* signalDownloadReady
+      * this signal is emitted when a track is ready to be downloaded.
+      */
       void signalDownloadReady( Mp3tunesHarmonyDownload download );
+
+      /* signalDownloadPending
+       * this signal is emitted as soon as a download message is received.
+       * it may or may not be ready. the library sends this signal before
+       * adding the download to its own queue
+       */
       void signalDownloadPending( Mp3tunesHarmonyDownload download );
 
   private:
@@ -177,7 +187,16 @@ class Mp3tunesHarmonyDaemon: public QObject
     static void signalStateChangeHandler( MP3tunesHarmony* harmony, guint32 state,  gpointer null_pointer );
 
 
+    /* signalDownloadReadyHandler
+     * this signal is emitted when a track is ready to be downloaded.
+     */
     static void signalDownloadReadyHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
+
+    /* signalDownloadPendingHandler
+     * this signal is emitted as soon as a download message is received.
+     * it may or may not be ready. the library sends this signal before
+     * adding the download to its own queue
+     */
     static void signalDownloadPendingHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
 
     MP3tunesHarmony* m_harmony;

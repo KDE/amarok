@@ -39,12 +39,12 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier ) :
     /* Set the state change signal handler. */
     g_signal_connect(m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
     /* Set the download signal handler. */
-    g_signal_connect(m_harmony, "download-ready", G_CALLBACK(signalDownloadReadyHandler), 0);
-    g_signal_connect(m_harmony, "download-pending", G_CALLBACK(signalDownloadPendingHandler), 0);
+    g_signal_connect(m_harmony, "download_ready", G_CALLBACK(signalDownloadReadyHandler), 0);
+    g_signal_connect(m_harmony, "download_pending", G_CALLBACK(signalDownloadPendingHandler), 0);
 
     mp3tunes_harmony_set_identifier(m_harmony, m_identifier);
 
-    mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Amarok 2");
+    mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Amarok 2 Test Daemon");
 
 }
 Mp3tunesHarmonyDaemon::~Mp3tunesHarmonyDaemon()
