@@ -67,9 +67,8 @@ Meta::Field::mapFromTrack( const Meta::Track *track )
     QVariantMap map;
     if( !track )
         return map;
-    QString metaData = track->name();
-//    + track->artist()->name() + track->album()->name() + track->genre()->name + track->composer()->name() + track->comment();
-    char buf[4096];// = metaData.toLatin1().data();
+    QString metaData = track->name() + track->artist()->name() + track->album()->name() + track->genre()->name() + track->comment() + track->composer()->name();
+    char* buf = metaData.toLatin1().data();
     size_t len = strlen( buf );
     int res = 0;
     chardet_t det = NULL;

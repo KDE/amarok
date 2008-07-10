@@ -27,8 +27,7 @@ set(chardet_SRCS
   nsUniversalDetector.cpp
   nsUTF8Prober.cpp
 )  
-add_definitions(-O2 -fno-rtti -fno-exceptions -nostdinc++ -D_REENTRANT
-	-fvisibility=hidden -fvisibility-inlines-hidden)
+
 add_library(chardet ${chardet_SRCS})
 
 

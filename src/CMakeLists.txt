@@ -22,7 +22,7 @@ add_subdirectory( strigi )
 add_subdirectory( context )
 # add_subdirectory( playlistmanager )
 add_subdirectory( servicebrowser )
-add_subdirectory( charset-detector )
+#add_subdirectory( charset-detector )
 
 
 OPTION(USE_SYSTEM_SQLITE "Use system sqlite instead of amarok's own copy" OFF)
@@ -513,7 +513,7 @@ target_link_libraries(amaroklib
     amarok_taglib
     amarokplasma
     amarokpud
-    chardet
+#    chardet
 )
 
 if(APPLE)
