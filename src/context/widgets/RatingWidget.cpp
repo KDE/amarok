@@ -17,6 +17,7 @@
 
 #include "Debug.h"
 
+#include "kratingpainter.h"
 #include "RatingWidget.h"
 
 #include <QtGui/QPainter>
@@ -31,7 +32,6 @@
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
-#include <nepomuk/kratingpainter.h>
 
 class RatingWidget::Private
 {
