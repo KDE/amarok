@@ -29,8 +29,6 @@ set(chardet_SRCS
 )  
 add_definitions(-O2 -fno-rtti -fno-exceptions -nostdinc++ -D_REENTRANT
 	-fvisibility=hidden -fvisibility-inlines-hidden)
-add_library(chardet STATIC ${chardet_SRCS})
-install(TARGETS chardet ARCHIVE DESTINATION lib)
-install(FILES ${CMAKE_SOURCE_DIR}/include/chardet.h DESTINATION include)
+add_library(chardet ${chardet_SRCS})
 
 
