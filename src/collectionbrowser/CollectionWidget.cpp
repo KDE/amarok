@@ -32,8 +32,8 @@
 
 CollectionWidget *CollectionWidget::s_instance = 0;
 
-CollectionWidget::CollectionWidget( const char* name )
-    : KVBox()
+CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
+    : KVBox(parent)
 {
     s_instance = this;
     setObjectName( name );

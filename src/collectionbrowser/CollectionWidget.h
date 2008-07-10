@@ -29,7 +29,7 @@ class CollectionWidget : public KVBox
 {
     Q_OBJECT
     public:
-        CollectionWidget( const char* name );
+        CollectionWidget( const char* name , QWidget *parent );
         static CollectionWidget *instance() { return s_instance; }
         CollectionTreeView *view() const { return m_treeView; }
     public slots:

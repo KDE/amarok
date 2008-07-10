@@ -517,7 +517,7 @@ namespace The {
     Playlist::GraphicsView* playlistView()
     {
         if( !Playlist::GraphicsView::s_instance )
-            Playlist::GraphicsView::s_instance = new Playlist::GraphicsView();
+            Playlist::GraphicsView::s_instance = new Playlist::GraphicsView(Amarok::mainWindow());
         return Playlist::GraphicsView::s_instance;
     }
 }

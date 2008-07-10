@@ -36,7 +36,7 @@ class PodcastCategory;
 class PlaylistBrowser : public KVBox
 {
 public:
-    PlaylistBrowser( const char *name );
+    PlaylistBrowser( const char *name, QWidget *parent );
 
     ~PlaylistBrowser();
 

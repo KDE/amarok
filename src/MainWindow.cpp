@@ -227,7 +227,7 @@ MainWindow::init()
 
         #define addBrowserMacro( Type, name, text, icon ) { \
             Debug::Block block( name ); \
-             m_browsers->addWidget( KIcon( icon ), text, new Type( name ) ); \
+             m_browsers->addWidget( KIcon( icon ), text, new Type( name , m_browsers ) ); \
              m_browserNames.append( name ); }
 
         #define addInstBrowserMacro( Type, name, text, icon ) { \

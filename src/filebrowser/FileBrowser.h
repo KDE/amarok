@@ -70,7 +70,7 @@ namespace FileBrowser {
       Q_OBJECT
 
     public:
-      explicit Widget( const char * name = 0 );
+      explicit Widget( const char * name, QWidget *parent );
       ~Widget();
 
       virtual void readSessionConfig( KConfigBase *, const QString & );

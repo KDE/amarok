@@ -71,8 +71,8 @@ FileBrowser::ToolBar::~ToolBar()
 
 //BEGIN Constructor/destructor
 
-FileBrowser::Widget::Widget( const char * name )
-    : KVBox ( 0 ),
+FileBrowser::Widget::Widget( const char * name , QWidget *parent )
+    : KVBox ( parent ),
       m_toolbar( 0 ),
       m_actionCollection( 0 ),
       m_bookmarkHandler( 0 ),

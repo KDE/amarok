@@ -37,8 +37,8 @@
 
 namespace PlaylistBrowserNS {
 
-PlaylistBrowser::PlaylistBrowser( const char *name )
- : KVBox()
+PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
+ : KVBox(parent)
 {
     DEBUG_BLOCK
 
