@@ -18,6 +18,7 @@
 #include <context/Applet.h>
 #include <context/DataEngine.h>
 #include <context/Svg.h>
+#include <context/widgets/RatingWidget.h>
 
 #include <KDialog>
 
@@ -50,6 +51,7 @@ public slots:
 
 private slots:
     void configAccepted();
+    void changeTrackRating( int rating );
 
 private:
     void createMenu();
@@ -85,6 +87,8 @@ private:
     QGraphicsPixmapItem* m_sourceEmblem;
     QPixmap m_bigCover;
     QPixmap m_sourceEmblemPixmap;
+
+    RatingWidget* m_ratingWidget;
 
     bool resizeCover( QPixmap cover, qreal margin, qreal width );
 

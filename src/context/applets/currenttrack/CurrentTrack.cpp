@@ -20,7 +20,6 @@
 #include "context/Svg.h"
 #include "meta/MetaUtility.h"
 
-
 #include <plasma/theme.h>
 
 #include <KIconLoader>
@@ -70,8 +69,11 @@ void CurrentTrack::init()
     labelFont.setStyleHint( QFont::Times );
     labelFont.setStyleStrategy( QFont::PreferAntialias );
 
-    QFont textFont = QFont( labelFont );
-    textFont.setBold( false );
+    m_ratingWidget = new RatingWidget( this );
+
+    connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ),
+             this, SLOT( changeTrackRating( int ) ) );
+    
 
     m_title        = new QGraphicsSimpleTextItem( this );
     m_artist       = new QGraphicsSimpleTextItem( this );
@@ -81,6 +83,9 @@ void CurrentTrack::init()
     m_playedLast   = new QGraphicsSimpleTextItem( this );
     m_albumCover   = new QGraphicsPixmapItem( this );
 //     m_sourceEmblem = new QGraphicsPixmapItem( this );
+
+    QFont textFont = QFont( labelFont );
+    textFont.setBold( false );
 
     QFont tinyFont( textFont );
     tinyFont.setPointSize( tinyFont.pointSize() - 5 );
@@ -108,6 +113,14 @@ void CurrentTrack::init()
 
     dataEngine( "amarok-current" )->connectSource( "current", this );
     dataUpdated( "current", dataEngine("amarok-current" )->query( "current" ) ); // get data initally
+}
+
+void CurrentTrack::changeTrackRating( int rating )
+{
+    DEBUG_BLOCK
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    track->setRating( rating );
+    debug() << "change rating to: " << rating;
 }
 
 void CurrentTrack::createMenu()
@@ -149,10 +162,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_title->setPos(  QPointF( textX, margin * 2 + textHeight ) );
     m_album->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 ) );
 
-
-
-    int runningX = labelX;    
-
+    
     m_score->setPos( QPointF( contentsRect().width() - 6, margin + 4 ) );
     m_numPlayed->setPos( QPointF( contentsRect().width() - 5, margin + 31 ) );
     m_playedLast->setPos( QPointF( contentsRect().width() - 6, margin + 58 ) );
@@ -189,6 +199,13 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );    
     m_album->setText( truncateTextToFit( album, m_album->font(), QRectF( 0, 0, textWidth, 30 ) ) );
 
+
+    m_ratingWidget->setPos( labelX + 25, margin * 4.0 + textHeight * 3.0 - 5.0 );
+    m_ratingWidget->setMinimumSize( contentsRect().width() / 5, textHeight );
+    m_ratingWidget->setMaximumSize( contentsRect().width() / 5, textHeight );
+    m_ratingWidget->setSpacing( 2 );
+    m_ratingWidget->show();
+
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 }
 
@@ -216,6 +233,8 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     m_trackLength = m_currentInfo[ Meta::Field::LENGTH ].toInt();
     m_playedLast->setText( Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
     m_numPlayed->setText( m_currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
+
+    m_ratingWidget->setRating( m_rating );
 
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
@@ -295,19 +314,6 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     m_theme->paint( p, QRectF( contentsRect.width() - 12, margin + 26, 23, 23 ), "times-played" );
     m_theme->paint( p, QRectF( contentsRect.width() - 12, margin + 54, 23, 23 ), "last-time" );
 
-    p->restore();
-
-    // Let the stars for convenience for now before setting up a proper rating widget
-    p->save();
-    int stars = m_rating / 2;
-    for( int i = 0; i < stars; i++ )
-    {
-        m_theme->paint( p, QRectF( labelX + 25 + i * 20.0, margin * 4.0 + textHeight * 3.0 - 5.0, 18, 18 ), "star-white" );
-    }
-    for( int i = stars; i < 5; i++ )
-    {
-        m_theme->paint( p, QRectF( labelX + 25 + i * 20.0, margin * 4.0 + textHeight * 3.0 - 5.0, 18, 18 ), "star-dark" );
-    }
     p->restore();
 
     // TODO get, and then paint, album pixmap

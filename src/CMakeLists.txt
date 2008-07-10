@@ -237,6 +237,7 @@ set( libcontextview_SRCS
     context/LyricsManager.cpp
     context/layouts/ContextLayout.cpp
     context/layouts/VerticalLayout.cpp
+    context/widgets/RatingWidget.cpp
 )
 
 #####################################################################
@@ -502,6 +503,7 @@ target_link_libraries(amaroklib
     ${KDE4_KDE3SUPPORT_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KNEWSTUFF2_LIBS}
+    ${NEPOMUK_LIBRARIES}
     ${QT_QTOPENGL_LIBRARY}
     ${OPENGL_gl_LIBRARY}
     ${OPENGL_glu_LIBRARY}

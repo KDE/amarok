@@ -99,7 +99,7 @@ protected:
 
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
-    void mousePressEvent( QMouseEvent* event );
+//     void mousePressEvent( QMouseEvent* event );
 
 private:
     static ContextView* s_self;
