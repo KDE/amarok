@@ -31,7 +31,7 @@ MagnatuneSqlCollection::MagnatuneSqlCollection(const QString & id, const QString
 
 Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
 
 
     QString pristineUrl = url.url();
@@ -45,7 +45,7 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
 
         pristineUrl = pristineUrl.mid( 47, endIndex - 47 );
 
-        //debug() << "got redirected url: " << pristineUrl;
+        debug() << "got redirected url: " << pristineUrl;
 
 
         pristineUrl.remove( "_nospeech" );
@@ -55,7 +55,7 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
         pristineUrl.replace( QRegExp( "http://download" ), "http://he3" );
         pristineUrl.replace( QRegExp( "http://stream" ), "http://he3" );
 
-        //debug() << "after a quick makeover: " << pristineUrl;
+        debug() << "after a quick makeover: " << pristineUrl;
 
         Meta::TrackPtr trackPtr = ServiceSqlCollection::trackForUrl( KUrl( pristineUrl ) );
 

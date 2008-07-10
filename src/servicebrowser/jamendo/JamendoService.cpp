@@ -76,6 +76,8 @@ JamendoService::JamendoService(const QString & name)
     ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
+
+    m_serviceready = true;
 }
 
 JamendoService::~JamendoService()
