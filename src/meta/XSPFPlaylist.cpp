@@ -160,7 +160,12 @@ XSPFPlaylist::tracks()
         TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( track.location );
         if ( trackPtr ){
             tracks << trackPtr;
-        } else {
+        }
+        // why do we need this? sqlplaylist is not doing this
+        // we don't want (probably) unplayable tracks
+        // and it causes problems for me (DanielW) as long
+        // amarok not respects Track::isPlayable()
+        /*else {
         
             MetaProxy::Track *proxyTrack = new MetaProxy::Track( track.location );
             {
@@ -176,7 +181,7 @@ XSPFPlaylist::tracks()
             }
             tracks << Meta::TrackPtr( proxyTrack );
     //         tracks << CollectionManager::instance()->trackForUrl( track.location );
-        }
+        }*/
         
     }
     debug() << "returning " <<  tracks.size() << "tracks!";
