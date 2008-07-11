@@ -545,7 +545,7 @@ install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 #####################################################################
 
 set(amarok_SRCS main.cpp )
-s
+
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
 if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
