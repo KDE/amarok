@@ -29,4 +29,4 @@ set( chardet_SRCS
   nsUTF8Prober.cpp
 )
 add_library( chardet SHARED ${chardet_SRCS} )
-install(TARGETS chardet LIBRARY DESTINATION lib)
+#install(TARGETS chardet LIBRARY DESTINATION lib)

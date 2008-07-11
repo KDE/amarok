@@ -20,7 +20,7 @@
 #ifndef AMAROK_META_FILE_P_H
 #define AMAROK_META_FILE_P_H
 
-//#include "charset-detector/include/chardet.h"
+#include "charset-detector/include/chardet.h"
 #include "Debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
@@ -115,7 +115,6 @@ void Track::Private::readMetaData()
     #define strip( x ) TStringToQString( x ).trimmed()
     if( tag )
     {
-        /*
         TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
         const char* buf = metaData.toCString();
         size_t len = strlen( buf );
@@ -130,24 +129,24 @@ void Track::Private::readMetaData()
 
         debug() << "Data:" << buf <<endl;
         debug() << "Charset: " << encoding <<endl;
-*/
+
         m_data.title = strip( tag->title() );
         m_data.artist = strip( tag->artist() );
         m_data.album = strip( tag->album() );
         m_data.comment = strip( tag->comment() );
         m_data.trackNumber = tag->track();
         m_data.year = tag->year();
-/*
+
         //Start to decode non-utf8 tags
         QString track_encoding = encoding;
         if ( res == CHARDET_RESULT_OK )
         {
             //http://doc.trolltech.com/4.4/qtextcodec.html
             //http://www.mozilla.org/projects/intl/chardet.html
-            if ( track_encoding == "x-euc-tw" ) track_encoding = "Big5-HKSCS"; //is the match right?
-            if ( track_encoding == "HZ-GB2312" ) track_encoding = "GB2312";
+            if ( track_encoding == "x-euc-tw" ) track_encoding = "";
+            if ( track_encoding == "HZ-GB2312" ) track_encoding = "GB2312"; //is the match right?
             if ( track_encoding == "ISO-2022-CN" ) track_encoding = "GB2312";
-            if ( track_encoding == "ISO-2022-KR" ) track_encoding = "EUC-KR";  //is the match right?
+            if ( track_encoding == "ISO-2022-KR" ) track_encoding = "EUC-KR"; 
             if ( track_encoding == "ISO-2022-JP" ) track_encoding = "ISO 2022-JP";
             if ( track_encoding == "x-mac-cyrillic" ) track_encoding = ""; //no match
             if ( track_encoding == "IBM855" ) track_encoding =""; //no match
@@ -155,6 +154,7 @@ void Track::Private::readMetaData()
             if ( track_encoding == "TIS-620" ) track_encoding = ""; //ISO-8859-11, no match
             if ( track_encoding != "" )
             {
+                debug () << "Final Codec Name:" << track_encoding.toUtf8() <<endl;
                 QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
                 m_data.title = codec->toUnicode( m_data.title.toLatin1() );
                 m_data.artist = codec->toUnicode( m_data.artist.toLatin1() );
@@ -162,7 +162,6 @@ void Track::Private::readMetaData()
                 m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
             }
         }
-        */
     }
     if( !fileRef.isNull() )
     {

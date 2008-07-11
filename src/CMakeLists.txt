@@ -512,7 +512,6 @@ target_link_libraries(amaroklib
     amarok_taglib
     amarokplasma
     amarokpud
-#    chardet
 )
 
 if(APPLE)
@@ -550,7 +549,7 @@ set(amarok_SRCS main.cpp )
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
 if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
-    target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
+    target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib chardet )
     SET_TARGET_PROPERTIES(Amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
