@@ -595,15 +595,16 @@ void CoverManager::slotSetFilterTimeout() //SLOT
 
 void CoverManager::changeView( int id  ) //SLOT
 {
+    DEBUG_BLOCK
+    
     if( m_currentView == id ) return;
 
     //clear the iconview without deleting items
     m_coverView->clearSelection();
-    QListWidgetItem *item = m_coverView->item( 0 );
-    uint i = 0;
-    while ( item ) {
-        m_coverView->takeItem( i );
-        i++;
+    //QListWidgetItem *item = m_coverView->item( 0 );
+
+    while ( m_coverView->count() > 0 ) {
+       m_coverView->takeItem( 0 );
     }
 
 //     m_coverView->setAutoArrange(false );
@@ -618,12 +619,14 @@ void CoverManager::changeView( int id  ) //SLOT
 
         if( id == AllAlbums )    //show all albums
             show = true;
-        else if( id == AlbumsWithCover && coverItem->hasCover() )    //show only albums with cover
+        else if( id == AlbumsWithCover && coverItem->hasCover() ) {    //show only albums with cover
             show = true;
-        else if( id == AlbumsWithoutCover && !coverItem->hasCover() )   //show only albums without cover
+        } else if( id == AlbumsWithoutCover && !coverItem->hasCover() ) {   //show only albums without cover
             show = true;
-
-        if( show )    m_coverView->insertItem( m_coverView->count() - 1, item );
+        }
+        if( show ) {
+            m_coverView->insertItem( m_coverView->count() - 1, item );
+        }
     }
 //     m_coverView->setAutoArrange( true );
 
