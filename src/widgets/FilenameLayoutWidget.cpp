@@ -278,3 +278,4 @@ Token::getTokenString()
 {
     return tokenString;
 }
+
