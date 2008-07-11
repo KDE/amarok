@@ -33,12 +33,14 @@ class FilenameLayoutWidget
         void addToken( QString text, int index = 99);
 
         unsigned int getTokenCount();   //access for uint m_tokenCount
+
     protected:
         void mouseMoveEvent( QMouseEvent *event );
         void mousePressEvent( QMouseEvent *event );
         void dragEnterEvent( QDragEnterEvent *event );
         void dragMoveEvent( QDragMoveEvent *event );
         void dropEvent( QDropEvent *event );
+
     private:
         //void performDrag();
         void performDrag( QMouseEvent *event );
@@ -56,8 +58,9 @@ class Token
 {
     Q_OBJECT
     public:
-        Token( const QString &string, QWidget *parent = 0 );
+        explicit Token( const QString &string, QWidget *parent = 0 );
         QString getTokenString();
+
     private:
         void setTokenString(const QString &string );
 
