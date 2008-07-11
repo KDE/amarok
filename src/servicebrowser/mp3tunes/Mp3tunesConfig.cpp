@@ -44,6 +44,8 @@ void Mp3tunesConfig::load()
     m_email = config.readEntry( "email", QString() );
     m_password = config.readEntry( "password", QString() );
     m_identifier = config.readEntry( "identifier", QString() );
+    m_pin = config.readEntry( "pin", QString() );
+    m_harmonyEmail = config.readEntry( "harmonyEmail", QString() );
     m_partnerToken = config.readEntry( "partnerToken", QString( "4895500420" ) );
     m_harmonyEnabled = config.readEntry( "harmonyEnabled", false );
 
@@ -73,6 +75,8 @@ void Mp3tunesConfig::save()
         config.writeEntry( "identifier", m_identifier );
         config.writeEntry( "harmonyEnabled", m_harmonyEnabled );
         config.writeEntry( "partnerToken", m_partnerToken );
+        config.writeEntry( "harmonyEmail", m_harmonyEmail );
+        config.writeEntry( "pin", m_pin );
     }
 }
 
@@ -94,6 +98,16 @@ QString Mp3tunesConfig::partnerToken()
 QString Mp3tunesConfig::identifier()
 {
     return m_identifier;
+}
+
+QString Mp3tunesConfig::pin()
+{
+    return m_pin;
+}
+
+QString Mp3tunesConfig::harmonyEmail()
+{
+    return m_harmonyEmail;
 }
 
 bool Mp3tunesConfig::harmonyEnabled()
@@ -146,4 +160,20 @@ void Mp3tunesConfig::setPartnerToken( const QString &token )
     }
 }
 
+void Mp3tunesConfig::setPin( const QString &pin )
+{
+    kDebug( 14310 ) << "set pin";
+    if( pin != m_pin ) {
+        m_pin = pin;
+        m_hasChanged = true;
+    }
+}
 
+void Mp3tunesConfig::setHarmonyEmail( const QString &harmonyEmail )
+{
+    kDebug( 14310 ) << "set harmonyEmail";
+    if( harmonyEmail != m_harmonyEmail ) {
+        m_harmonyEmail = harmonyEmail;
+        m_hasChanged = true;
+    }
+}

@@ -234,6 +234,14 @@ void Mp3tunesService::harmonyConnected()
 {
     debug() << "Harmony Connected!";
     The::statusBar()->shortMessage( i18n( "MP3Tunes Harmony: Successfully Connected"  ) );
+
+    /* at this point since the user has input the pin, we will save the info
+       for later authentication */
+    Mp3tunesConfig config;
+    config.setHarmonyEmail( theDaemon->email() );
+    config.setPin( theDaemon->pin() );
+    config.save();
+
 }
 
 void Mp3tunesService::harmonyError( const QString &error )

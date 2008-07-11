@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef MP3TUNESCONFIG_H
 #define MP3TUNESCONFIG_H
 
@@ -25,11 +25,11 @@
 /**
 A wrapper class for Mp3tunes service configuration
 
-	@author 
+	@author
 */
 class Mp3tunesConfig{
 public:
-    
+
     Mp3tunesConfig();
 
     ~Mp3tunesConfig();
@@ -41,6 +41,8 @@ public:
     QString password();
     QString identifier();
     QString partnerToken();
+    QString pin();
+    QString harmonyEmail();
     bool harmonyEnabled();
 
     void setEmail( const QString &email );
@@ -48,6 +50,8 @@ public:
     void setIdentifier( const QString &ident );
     void setHarmonyEnabled( bool enabled );
     void setPartnerToken( const QString &token );
+    void setPin( const QString &pin );
+    void setHarmonyEmail( const QString &harmonyEmail );
 
 private:
 
@@ -57,6 +61,8 @@ private:
     QString m_password;
     QString m_identifier;
     QString m_partnerToken;
+    QString m_pin;
+    QString m_harmonyEmail;
 
 };
 
