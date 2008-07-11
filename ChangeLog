@@ -3,11 +3,13 @@ Amarok ChangeLog
 (C) 2002-2008 the Amarok authors.
 
 
-VERSION 2.0-beta1:
+VERSION 2.0-alpha2:
   FEATURES:
     * Automatic detection of non-UTF-8 charsets for metadata.
   CHANGES:
   BUGFIXES:
+    * Mp3tunes would load for users who had never used it before
+	  and prompt them with an annoying login box. (BR 166332)
   
 
 VERSION 2.0
