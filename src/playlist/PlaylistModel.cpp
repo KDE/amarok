@@ -622,6 +622,15 @@ Playlist::Model::setActiveRow( int row )
     }
 }
 
+Meta::TrackPtr
+Playlist::Model::activeTrack() const
+{
+    if( m_activeRow > -1 )
+        return m_items.at( m_activeRow )->track();
+    else if( rowCount() > 1 )
+        return m_items.at( 0 )->track();
+}
+
 void
 Playlist::Model::metadataChanged( Meta::Track *track )
 {
