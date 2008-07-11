@@ -73,6 +73,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     QLabel* presetLabel = new QLabel( "Preset:", comboLayout );
 
     m_presetComboBox = new KComboBox( comboLayout );
+    m_presetComboBox->setPalette( QApplication::palette() );
     m_presetComboBox->setModel( DynamicModel::instance() );
 
     connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),

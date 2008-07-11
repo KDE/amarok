@@ -20,10 +20,7 @@
 
 
 #include "BiasSolver.h"
-#include "BlockingQuery.h"
-#include "CollectionManager.h"
 #include "Debug.h"
-#include "MetaQueryMaker.h"
 
 #include <cmath>
 #include <typeinfo>
@@ -38,9 +35,15 @@ const double Dynamic::BiasSolver::INITIAL_TEMPERATURE = 0.1;
 const double Dynamic::BiasSolver::COOLING_RATE        = 0.8;
 
 
-Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, RandomPlaylist* randomSource,
+Dynamic::BiasSolver::BiasSolver(
+        int n, int domainSize,
+        QList<Bias*> biases, RandomPlaylist* randomSource,
         Meta::TrackList context )
-    : m_biases(biases), m_n(n), m_context(context), m_mutationSource( randomSource )
+    : m_biases(biases)
+    , m_n(n)
+    , m_context(context)
+    , m_mutationSource( randomSource )
+    , m_domainSize((double)domainSize)
 {
     int i = m_biases.size();
     while( i-- )
@@ -166,10 +169,9 @@ void Dynamic::BiasSolver::generateInitialPlaylist()
     QList<Dynamic::GlobalBias*> globalBiases;
     QList<double> weights;
     double totalWeight = 0.0;
-    double domainSize = calcDomainSize();
 
     // Ahhh...empty collection!
-    if( domainSize == 0.0 ) 
+    if( m_domainSize == 0.0 ) 
         return;
 
 
@@ -193,7 +195,7 @@ void Dynamic::BiasSolver::generateInitialPlaylist()
                 // this is the the difference between the desired proportion and
                 // the actual probability a track with that propery is chosen.
                 double deviance =
-                    gb->weight() - (double)gb->propertySet().size()/domainSize;
+                    gb->weight() - (double)gb->propertySet().size()/m_domainSize;
 
                 debug() << "deviance = " << deviance;
                 weights.append( deviance );
@@ -258,26 +260,3 @@ Meta::TrackPtr Dynamic::BiasSolver::getMutation()
     return m_mutationSource->getTrack();
 }
 
-
-double
-Dynamic::BiasSolver::calcDomainSize()
-{
-    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->startCustomQuery();
-    qm->addReturnFunction( QueryMaker::Count, QueryMaker::valUrl );
-    BlockingQuery bq( qm );
-    
-    bq.startQuery();
-
-    double domainSize = 0.0;
-    foreach( QStringList sl, bq.customData() )
-    {
-        foreach( QString s, sl )
-        {
-            domainSize += s.toDouble();
-        }
-    }
-
-    return domainSize;
-
-}

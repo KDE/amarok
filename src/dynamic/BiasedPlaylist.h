@@ -45,10 +45,12 @@ namespace Dynamic
             void setContext( Meta::TrackList );
 
             Meta::TrackPtr getTrack();
-            void recalculate();
 
             QList<Bias*>& biases();
             const QList<Bias*>& biases() const;
+
+        public slots:
+            virtual void recalculate();
 
         private slots:
             void solverFinished( ThreadWeaver::Job* );
@@ -57,6 +59,8 @@ namespace Dynamic
             void updateBiases();
             void startSolver();
             void getContext();
+
+            void updateDomainSize();
 
             Meta::TrackList m_context;
             Meta::TrackList m_buffer;
@@ -68,6 +72,8 @@ namespace Dynamic
             QEventLoop  m_solverLoop;
 
             RandomPlaylist m_randomSource;
+
+            int m_domainSize;
 
             static const int BUFFER_SIZE;
     };

@@ -42,6 +42,7 @@
 #include <QToolButton>
 
 #include <KComboBox>
+#include <KHistoryComboBox>
 #include <KIcon>
 #include <KToolBar>
 #include <KVBox>
@@ -99,6 +100,7 @@ PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( QWidget* parent )
 
     m_addButton = new QToolButton( m_addToolbar );
     m_addButton->setIcon( KIcon( "list-add-amarok" ) );
+    m_addButton->setToolTip( i18n( "Add a new bias." ) );
     m_addToolbar->addWidget( m_addButton );
     m_addToolbar->adjustSize();
     connect( m_addButton, SIGNAL(clicked()), SLOT(addBias()) );
@@ -155,6 +157,7 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
 
     QToolButton* removeButton = new QToolButton( m_removeToolbar );
     removeButton->setIcon( KIcon( "list-remove-amarok" ) );
+    removeButton->setToolTip( i18n( "Remove this bias." ) );
     connect( removeButton, SIGNAL(clicked()),
             SLOT(biasRemoved()) );
     m_removeToolbar->addWidget( removeButton );
@@ -196,10 +199,13 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
 
     m_weightLabel = new QLabel( " 0%", m_controlFrame );
     m_weightSelection = new Amarok::Slider( Qt::Horizontal, m_controlFrame, 100 );
+    m_weightSelection->setToolTip(
+            i18n( "This controls what portion of the playlist should match the criteria" ) );
     connect( m_weightSelection, SIGNAL(valueChanged(int)),
             this, SLOT(weightChanged(int)) );
 
     m_fieldSelection = new KComboBox( m_controlFrame );
+    m_fieldSelection->setPalette( QApplication::palette() );
 
     m_controlLayout->addWidget( new QLabel( "Proportion:", m_controlFrame ), 0, 0 );
     m_controlLayout->addWidget( new QLabel( "Match:", m_controlFrame ), 1, 0 );
@@ -356,6 +362,7 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
 {
     KComboBox* artistCombo = new KComboBox( m_controlFrame );
+    artistCombo->setPalette( QApplication::palette() );
     artistCombo->setEditable( true );
 
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
@@ -373,7 +380,9 @@ PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
     }
 
     connect( artistCombo, SIGNAL(currentIndexChanged( const QString& )),
-            this, SLOT(valueChanged(const QString&)) );
+            SLOT(valueChanged(const QString&)) );
+    connect( artistCombo, SIGNAL(editTextChanged( const QString& ) ),
+            SLOT(valueChanged(const QString&)) );
 
     artistCombo->setEditText( m_gbias->filter().value );
 
@@ -386,6 +395,7 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
 {
     KComboBox* albumCombo = new KComboBox( m_controlFrame );
+    albumCombo->setPalette( QApplication::palette() );
     albumCombo->setEditable( true );
 
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
@@ -403,7 +413,9 @@ PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
     }
 
     connect( albumCombo, SIGNAL(currentIndexChanged( const QString& )),
-            this, SLOT(valueChanged(const QString&)) );
+            SLOT(valueChanged(const QString&)) );
+    connect( albumCombo, SIGNAL(editTextChanged( const QString& ) ),
+            SLOT(valueChanged(const QString&)) );
 
     albumCombo->setEditText( m_gbias->filter().value );
     albumCombo->setAutoCompletion( true );
@@ -414,11 +426,14 @@ PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeTitleSelection()
 {
-    KComboBox* titleLine = new KComboBox( m_controlFrame );
+    KComboBox* titleLine = new KHistoryComboBox( true, m_controlFrame );
+    titleLine->setPalette( QApplication::palette() );
     titleLine->setEditable( true );
 
     connect( titleLine, SIGNAL(currentIndexChanged( const QString& )),
             this, SLOT(valueChanged(const QString&)) );
+    connect( titleLine, SIGNAL(editTextChanged( const QString& ) ),
+            SLOT(valueChanged(const QString&)) );
 
     // we're not going to populate this combobox. It takes to long to query
     // every track name.
@@ -432,10 +447,9 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
 {
     KComboBox* genreCombo = new KComboBox( m_controlFrame );
+    genreCombo->setPalette( QApplication::palette() );
     genreCombo->setEditable( true );
 
-    connect( genreCombo, SIGNAL(currentIndexChanged( const QString& )),
-            this, SLOT(valueChanged(const QString&)) );
 
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->startGenreQuery();
@@ -451,6 +465,11 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
         }
     }
 
+    connect( genreCombo, SIGNAL(currentIndexChanged( const QString& )),
+            SLOT(valueChanged(const QString&)) );
+    connect( genreCombo, SIGNAL(editTextChanged( const QString& ) ),
+            SLOT(valueChanged(const QString&)) );
+
     genreCombo->setEditText( m_gbias->filter().value );
     genreCombo->setCurrentIndex( 0 );
     genreCombo->setAutoCompletion( true );
@@ -463,6 +482,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeYearSelection()
     KHBox* hLayout = new KHBox( m_controlFrame );
 
     m_compareSelection = new KComboBox( hLayout );
+    m_compareSelection->setPalette( QApplication::palette() );
     m_compareSelection->addItem( "", -1 ); // TODO: figure out what this does
     m_compareSelection->addItem( "less than",    (int)QueryMaker::LessThan );
     m_compareSelection->addItem( "equal to",     (int)QueryMaker::Equals );

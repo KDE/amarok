@@ -24,7 +24,7 @@
 
 
 Dynamic::DynamicPlaylist::DynamicPlaylist()
-    : m_upcoming(10), m_previous(5)
+    : m_upcoming(10), m_previous(5), m_collection(0)
 {
     connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collection*)),
             this, SLOT(recalculate()) );

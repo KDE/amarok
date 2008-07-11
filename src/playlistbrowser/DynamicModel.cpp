@@ -47,17 +47,8 @@ PlaylistBrowserNS::DynamicModel::instance()
 PlaylistBrowserNS::DynamicModel::DynamicModel()
     : QAbstractItemModel()
 {
-
-    // this is random mode imlpmented as BiasedPlaylist
-    QueryMaker* qm = 
-        new XmlQueryWriter( new MetaQueryMaker( CollectionManager::instance()->queryableCollections() ) );
-    Dynamic::GlobalBias* gb = new Dynamic::GlobalBias( 0.0, qm );
-    gb->setActive( false );
-    
-    QList<Dynamic::Bias*> biases;
-    biases.append( gb );
     Dynamic::DynamicPlaylistPtr randomPlaylist(
-        new Dynamic::BiasedPlaylist( "Random Playlist", biases ) );
+        new Dynamic::BiasedPlaylist( "Random Playlist", QList<Dynamic::Bias*>() ) );
 
     m_defaultPlaylist = randomPlaylist;
     insertPlaylist( m_defaultPlaylist );
@@ -260,5 +251,5 @@ PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
         warning() << "Bias with no type.";
         return 0;
     }
-
 }
+

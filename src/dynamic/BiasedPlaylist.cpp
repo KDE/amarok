@@ -20,8 +20,11 @@
 
 
 #include "BiasedPlaylist.h"
+#include "BlockingQuery.h"
 #include "Collection.h"
+#include "CollectionManager.h"
 #include "Debug.h"
+#include "MetaQueryMaker.h"
 #include "playlist/PlaylistModel.h"
 
 #include <threadweaver/ThreadWeaver.h>
@@ -47,6 +50,7 @@ Dynamic::BiasedPlaylist::BiasedPlaylist(
     , m_randomSource(collection)
 {
     setTitle( title );
+    updateDomainSize();
 }
 
 
@@ -64,7 +68,8 @@ Dynamic::BiasedPlaylist::startSolver()
     if( m_solver ) return;
 
     updateBiases();
-    m_solver = new BiasSolver( BUFFER_SIZE, m_biases, &m_randomSource, m_context );
+    m_solver = new BiasSolver( 
+            BUFFER_SIZE, m_domainSize, m_biases, &m_randomSource, m_context );
     connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
             this, SLOT(solverFinished(ThreadWeaver::Job*)),
             Qt::DirectConnection );
@@ -115,12 +120,14 @@ Dynamic::BiasedPlaylist::getTrack()
 void
 Dynamic::BiasedPlaylist::recalculate()
 {
+    updateDomainSize();
     m_buffer.clear();
     m_backbuffer.clear();
 
     getContext();
     startSolver();
 }
+
 
 QList<Dynamic::Bias*>&
 Dynamic::BiasedPlaylist::biases()
@@ -170,6 +177,32 @@ Dynamic::BiasedPlaylist::getContext()
     for( ; i < items.size(); ++i )
     {
         m_context.append( items[i]->track() );
+    }
+}
+
+void
+Dynamic::BiasedPlaylist::updateDomainSize()
+{
+    QueryMaker* qm;
+
+    if( m_collection )
+        qm = m_collection->queryMaker();
+    else
+        qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+
+    qm->startCustomQuery();
+    qm->addReturnFunction( QueryMaker::Count, QueryMaker::valUrl );
+    BlockingQuery bq( qm );
+    
+    bq.startQuery();
+
+    m_domainSize = 0;
+    foreach( QStringList sl, bq.customData() )
+    {
+        foreach( QString s, sl )
+        {
+            m_domainSize += s.toInt();
+        }
     }
 }
 
