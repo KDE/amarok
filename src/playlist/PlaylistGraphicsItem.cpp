@@ -606,8 +606,11 @@ Playlist::GraphicsItem::dropEvent( QGraphicsSceneDragDropEvent * event )
 void
 Playlist::GraphicsItem::refresh()
 {
-    if( m_items && m_items->track )
+
+    if( m_items && m_items->track ) {
+        debug() << "refreshing " << m_items->track->name();
         resize( m_items->track,m_items->lastWidth );
+    }
 }
 
 void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
@@ -682,7 +685,7 @@ void Playlist::GraphicsItem::setRow(int row)
                 m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height() + 6;
                 break;
             case Head_Collapsed:
-                //debug() << "Collapsed head";
+                debug() << "Collapsed head";
                 m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN * 2 + s_fm->height() + 16;
                 if ( !m_items )
                 {
@@ -692,6 +695,7 @@ void Playlist::GraphicsItem::setRow(int row)
                     init( track );
                 }
                 m_items->groupedTracks = index.data( GroupedTracksRole ).toInt();
+                debug() << "I have this many hidden tracks: " << m_items->groupedTracks;
                 break;
             case Body:
                 //debug() << "Body";

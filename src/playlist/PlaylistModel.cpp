@@ -1122,7 +1122,7 @@ Playlist::Model::removeTracksCommand( int position, int rows )
         dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
         dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
-    dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
+    //dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
 
 
     //we need to regroup everything below this point as all the index changes
