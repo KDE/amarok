@@ -36,7 +36,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#pragma GCC visibility push(hidden)
+// NOTE: commented out to fix compilation with gcc-4.3
+// (also a corresponding "pop" in the end)
+//#pragma GCC visibility push(hidden)
 
 #include "chardet.h"
 #include "nscore.h"
@@ -191,5 +193,5 @@ int chardet_get_charset(chardet_t det, char* namebuf, unsigned int buflen)
 #pragma managed(pop)
 #endif
 
-#pragma GCC visibility pop
+//#pragma GCC visibility pop
 
