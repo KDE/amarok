@@ -25,7 +25,6 @@
 #include "App.h"
 #include "Debug.h"
 #include "meta/MetaUtility.h"
-#include "moodbar.h"
 #include "EngineController.h"
 
 #include <KCalendarSystem>
@@ -96,8 +95,6 @@ void TrackToolTip::show( const QPoint & bottomRight )
     QWidget::show();
     QTimer::singleShot( 8000, this, SLOT( hide() ) ); // HACK: The system tray icon doesn't get mouse leave events, since it's not a QWidget.
 }
-
-#define MOODBAR_WIDTH 150
 
 void TrackToolTip::setTrack( const Meta::TrackPtr track )
 {
