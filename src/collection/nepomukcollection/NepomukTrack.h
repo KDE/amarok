@@ -16,8 +16,8 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef NEPOMUTACK_H_
-#define NEPOMUTACK_H_
+#ifndef NEPOMUKTRACK_H_
+#define NEPOMUKTRACK_H_
 
 #include "Meta.h"
 
@@ -137,4 +137,5 @@ class NepomukTrack : public Track
 };
 
 }
-#endif /*NEPOMUTACK_H_*/
+#endif /*NEPOMUKTRACK_H_*/
+
