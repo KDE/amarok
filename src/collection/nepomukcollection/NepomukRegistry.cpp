@@ -19,10 +19,10 @@
 #include "NepomukRegistry.h"
 
 #include "NepomukCollection.h"
-#include "NepomukTrack.h"
 
 #include "Debug.h"
 #include "QueryMaker.h"
+
 #include <QHash>
 #include <QUrl>
 #include <QUuid>

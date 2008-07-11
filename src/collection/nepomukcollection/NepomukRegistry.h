@@ -18,7 +18,6 @@
 #ifndef NEPOMUKREGISTRY_H
 #define NEPOMUKREGISTRY_H
 
-#include "NepomukCollection.h"
 #include "NepomukTrack.h"
 
 #include "Meta.h"
@@ -30,6 +29,7 @@
 #include <Soprano/Model>
 #include <threadweaver/ThreadWeaver.h>
 
+class NepomukCollection;
 class QUrl;
 
 class NepomukRegistry : public QObject
