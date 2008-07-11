@@ -130,8 +130,8 @@ class Mp3tunesHarmonyDaemon: public QObject
     void emitWaitingForPin();
     void emitConnected();
     void emitDisconnected();
-    void emitDownloadReady( Mp3tunesHarmonyDownload download );
-    void emitDownloadPending( Mp3tunesHarmonyDownload download );
+    void emitDownloadReady( Mp3tunesHarmonyDownload* download );
+    void emitDownloadPending( Mp3tunesHarmonyDownload* download );
 
   signals:
       /* The actual signals that get emitted */
@@ -144,14 +144,14 @@ class Mp3tunesHarmonyDaemon: public QObject
      /* signalDownloadReady
       * this signal is emitted when a track is ready to be downloaded.
       */
-      void signalDownloadReady( Mp3tunesHarmonyDownload download );
+      void signalDownloadReady( Mp3tunesHarmonyDownload* download );
 
       /* signalDownloadPending
        * this signal is emitted as soon as a download message is received.
        * it may or may not be ready. the library sends this signal before
        * adding the download to its own queue
        */
-      void signalDownloadPending( Mp3tunesHarmonyDownload download );
+      void signalDownloadPending( Mp3tunesHarmonyDownload* download );
 
   private:
 

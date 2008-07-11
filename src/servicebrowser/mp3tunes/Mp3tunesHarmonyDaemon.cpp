@@ -54,6 +54,7 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( char* identifier, char* email, cha
    , m_error( QString() )
    , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
 {
+    DEBUG_BLOCK
     /* g_type_init required for using the GObjects for Harmony. */
     g_type_init();
 
@@ -175,13 +176,15 @@ Mp3tunesHarmonyDaemon::emitDisconnected()
 }
 
 void
-Mp3tunesHarmonyDaemon::emitDownloadReady( Mp3tunesHarmonyDownload download )
+Mp3tunesHarmonyDaemon::emitDownloadReady( Mp3tunesHarmonyDownload *download )
 {
+    DEBUG_BLOCK
     emit( signalDownloadReady( download ) );
 }
 void
-Mp3tunesHarmonyDaemon::emitDownloadPending( Mp3tunesHarmonyDownload download )
+Mp3tunesHarmonyDaemon::emitDownloadPending( Mp3tunesHarmonyDownload *download )
 {
+    DEBUG_BLOCK
     emit( signalDownloadPending( download ) );
 }
 
@@ -248,7 +251,7 @@ Mp3tunesHarmonyDaemon::signalDownloadReadyHandler( MP3tunesHarmony* harmony, gpo
     DEBUG_BLOCK
     mp3tunes_harmony_download_t *download = (mp3tunes_harmony_download_t*)void_mp3tunes_harmony_download;
     Mp3tunesHarmonyDownload wrappedDownload( download );
-    theDaemon->emitDownloadReady( wrappedDownload );
+    theDaemon->emitDownloadReady( &wrappedDownload );
     harmony = harmony;
     null_pointer = null_pointer;
 }
@@ -259,7 +262,7 @@ Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony, g
     DEBUG_BLOCK
     mp3tunes_harmony_download_t *download = (mp3tunes_harmony_download_t*)void_mp3tunes_harmony_download;
     Mp3tunesHarmonyDownload wrappedDownload( download );
-    theDaemon->emitDownloadPending( wrappedDownload );
+    theDaemon->emitDownloadPending( &wrappedDownload );
     harmony = harmony;
     null_pointer = null_pointer;
     /*if (strcmp(download->file_key, "dummy_file_key_5") == 0) {
@@ -272,11 +275,44 @@ Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony, g
 /* Harmony Download Type Wrapper */
 Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download )
 {
-    m_harmony_download_t = download;
+    DEBUG_BLOCK
+    m_harmony_download_t = ( mp3tunes_harmony_download_t * ) malloc( sizeof( *download ) );
+    memcpy( m_harmony_download_t, download, sizeof( *download ) );
+
+    m_harmony_download_t->artist_name = ( char * ) malloc( strlen( download->artist_name ) );
+    strcpy( m_harmony_download_t->artist_name, download->artist_name );
+
+    m_harmony_download_t->album_title = ( char * ) malloc( strlen( download->album_title ) );
+    strcpy( m_harmony_download_t->album_title, download->album_title );
+
+    m_harmony_download_t->track_title = ( char * ) malloc( strlen( download->track_title ) );
+    strcpy( m_harmony_download_t->track_title, download->track_title );
+
+    m_harmony_download_t->file_name = ( char * ) malloc( strlen( download->file_name ) );
+    strcpy( m_harmony_download_t->file_name, download->file_name );
+
+    m_harmony_download_t->file_key = ( char * ) malloc( strlen( download->file_key ) );
+    strcpy( m_harmony_download_t->file_key, download->file_key );
+
+    m_harmony_download_t->file_format = ( char * ) malloc( strlen( download->file_format ) );
+    strcpy( m_harmony_download_t->file_format, download->file_format );
+
+     m_harmony_download_t->device_bitrate = ( char * ) malloc( strlen( download->device_bitrate ) );
+    strcpy( m_harmony_download_t->device_bitrate, download->device_bitrate );
+
+    m_harmony_download_t->file_bitrate = ( char * ) malloc( strlen( download->file_bitrate ) );
+    strcpy( m_harmony_download_t->file_bitrate, download->file_bitrate );
+
+    if( download->url ) {
+        m_harmony_download_t->url = ( char * ) malloc( strlen( download->url ) );
+        strcpy( m_harmony_download_t->url, download->url );
+    }
+
 }
 
 Mp3tunesHarmonyDownload::~Mp3tunesHarmonyDownload()
 {
+    DEBUG_BLOCK
     mp3tunes_harmony_download_deinit( &m_harmony_download_t );
 }
 

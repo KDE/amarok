@@ -371,12 +371,14 @@ Mp3tunesLocker::tracksWithFileKeys( QStringList filekeys ) const
 Mp3tunesLockerTrack
 Mp3tunesLocker::trackWithFileKey( const QString &filekey ) const
 {
+    DEBUG_BLOCK
     char* c_key = convertToChar ( filekey );
 
     mp3tunes_locker_track_t *track;
     mp3tunes_locker_track_with_file_key ( m_locker, c_key, &track );
-
+    debug() << "Got track: " << track->trackTitle << "  from filekey: " << c_key;
     Mp3tunesLockerTrack trackWrapped ( track );
+    debug() << "returning";
     return trackWrapped;
 }
 
