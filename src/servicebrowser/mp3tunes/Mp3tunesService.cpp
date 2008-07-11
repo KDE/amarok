@@ -102,38 +102,41 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
     setIcon( KIcon( "view-services-mp3tunes-amarok" ) );
     debug() << "Making new Locker Object";
     m_locker = new Mp3tunesLocker( "4895500420" );
-    debug() << "MP3tunes running automated authenticate.";
 
-    authenticate( email, password );
+    if( !email.isEmpty() && !password.isEmpty() )
+    {
+        debug() << "MP3tunes running automated authenticate.";
+        authenticate( email, password );
 
-    if( harmonyEnabled ) {
-        debug() << "Making new Daemon";
-        Mp3tunesConfig config;
-        char* ident = convertToChar( config.identifier() );
-        debug () << "Using identifier: " << ident;
+        if( harmonyEnabled ) {
+            debug() << "Making new Daemon";
+            Mp3tunesConfig config;
+            char* ident = convertToChar( config.identifier() );
+            debug () << "Using identifier: " << ident;
 
-        if( config.pin() == QString() )
-            theDaemon = new Mp3tunesHarmonyDaemon( ident ); //first time harmony login
-        else
-            theDaemon = new Mp3tunesHarmonyDaemon( ident, //they're not harmony virgins
-                                                   convertToChar( config.email() ),
-                                                   convertToChar( config.pin() ) );
+            if( config.pin() == QString() )
+                theDaemon = new Mp3tunesHarmonyDaemon( ident ); //first time harmony login
+            else
+                theDaemon = new Mp3tunesHarmonyDaemon( ident, //they're not harmony virgins
+                                                    convertToChar( config.email() ),
+                                                    convertToChar( config.pin() ) );
 
-        Mp3tunesHarmonizer * harmonizer = new Mp3tunesHarmonizer( theDaemon );
-        connect( theDaemon, SIGNAL( signalDisconnected() ), this, SLOT( harmonyDisconnected() ) );
-        connect( theDaemon, SIGNAL( signalWaitingForEmail() ), this, SLOT( harmonyWaitingForEmail() ) );
-        connect( theDaemon, SIGNAL( signalConnected() ), this, SLOT( harmonyConnected() ) );
-        connect( theDaemon, SIGNAL( signalError( QString ) ), this, SLOT( harmonyError( QString ) ) );
-        connect( theDaemon, SIGNAL( signalDownloadReady( Mp3tunesHarmonyDownload* ) ),
-                 this, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload* ) ) );
-        connect( theDaemon, SIGNAL( signalDownloadPending( Mp3tunesHarmonyDownload* ) ),
-                 this, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload* ) ) );
+            Mp3tunesHarmonizer * harmonizer = new Mp3tunesHarmonizer( theDaemon );
+            connect( theDaemon, SIGNAL( signalDisconnected() ), this, SLOT( harmonyDisconnected() ) );
+            connect( theDaemon, SIGNAL( signalWaitingForEmail() ), this, SLOT( harmonyWaitingForEmail() ) );
+            connect( theDaemon, SIGNAL( signalConnected() ), this, SLOT( harmonyConnected() ) );
+            connect( theDaemon, SIGNAL( signalError( QString ) ), this, SLOT( harmonyError( QString ) ) );
+            connect( theDaemon, SIGNAL( signalDownloadReady( Mp3tunesHarmonyDownload* ) ),
+                    this, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload* ) ) );
+            connect( theDaemon, SIGNAL( signalDownloadPending( Mp3tunesHarmonyDownload* ) ),
+                    this, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload* ) ) );
 
-        debug() << "running harmonizer.";
-        ThreadWeaver::Weaver::instance()->enqueue( harmonizer );
+            debug() << "running harmonizer.";
+            ThreadWeaver::Weaver::instance()->enqueue( harmonizer );
 
-        //Close your eyes. Cross your legs. Touch middle fingers to thumbs. Extend your arms.
-        //OOOooommmmm
+            //Close your eyes. Cross your legs. Touch middle fingers to thumbs. Extend your arms.
+            //OOOooommmmm
+        }
     }
 }
 
