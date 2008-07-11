@@ -28,8 +28,6 @@
 #endif
 #include "Mp3tunesHarmonyDaemon.h"
 
-#include <kio/jobclasses.h>
-#include <kio/job.h>
 
 
 class Mp3tunesServiceFactory: public ServiceFactory
@@ -58,7 +56,7 @@ class Mp3tunesService : public ServiceBase
 Q_OBJECT
 
 public:
-    explicit Mp3tunesService( const QString &name, const QString &partnerToken, const QString &email = QString(), const QString &password = QString(), bool harmonyEnabled = false, const QString &identifier = QString() );
+    explicit Mp3tunesService( const QString &name, const QString &partnerToken, const QString &email = QString(), const QString &password = QString(), bool harmonyEnabled = false);
 
     ~Mp3tunesService();
 
@@ -87,10 +85,7 @@ private:
     QString m_email;
     QString m_password;
     bool m_harmonyEnabled;
-    QString m_identifier;
-    KIO::StoredTransferJob *m_xmlDownloadJob;
     QString m_partnerToken;
-    QString m_apiOutputFormat;
 
     bool m_authenticated;
     QString m_sessionId;

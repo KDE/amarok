@@ -40,7 +40,7 @@ void Mp3tunesServiceFactory::init()
 {
     Mp3tunesConfig config;
 
-    ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled(), config.identifier() );
+    ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled() );
     m_activeServices << service;
     emit newService( service );
 }
@@ -87,14 +87,12 @@ Mp3tunesServiceFactory::possiblyContainsTrack(const KUrl & url) const
 }
 
 
-Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, const QString &email, const QString &password, bool harmonyEnabled, const QString &identifier )
+Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, const QString &email, const QString &password, bool harmonyEnabled )
  : ServiceBase( name )
- , m_partnerToken( token )
  , m_email( email )
  , m_password( password )
  , m_harmonyEnabled( harmonyEnabled )
- , m_identifier( identifier )
- , m_apiOutputFormat( "xml")
+ , m_partnerToken( token )
  , m_authenticated( false )
  , m_sessionId ( QString() )
 {
@@ -109,11 +107,10 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
 
     if( harmonyEnabled ) {
         debug() << "Making new Daemon";
-
-        char* ident = convertToChar( m_identifier );
+        Mp3tunesConfig config;
+        char* ident = convertToChar( config.identifier() );
         debug () << "Using identifier: " << ident;
 
-        Mp3tunesConfig config;
         if( config.pin() == QString() )
             theDaemon = new Mp3tunesHarmonyDaemon( ident ); //first time harmony login
         else
