@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta1:
   FEATURES:
+    * Automatic detection of non-UTF-8 charsets for metadata.
   CHANGES:
   BUGFIXES:
   
