@@ -73,7 +73,14 @@ class Mp3tunesHarmonyDaemon: public QObject
     Q_OBJECT
 
   public:
-    Mp3tunesHarmonyDaemon( char* identifier);
+    /**
+     * For the first time run, before we have an email and pin to authenticate
+     */
+    Mp3tunesHarmonyDaemon( char* identifier );
+    /**
+     * For subsequent logins
+     */
+    Mp3tunesHarmonyDaemon( char* identifier, char* email, char* pin );
     ~Mp3tunesHarmonyDaemon();
 
     /**
@@ -85,6 +92,11 @@ class Mp3tunesHarmonyDaemon: public QObject
      * Returns the pin
      */
     QString pin() const;
+
+    /**
+     * Returns the Harmony Email used for authentication
+     */
+    QString email() const;
 
     /**
      * Returns the latest error message.

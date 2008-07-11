@@ -110,13 +110,16 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
     if( harmonyEnabled ) {
         debug() << "Making new Daemon";
 
-        QByteArray b = m_identifier.toAscii();
-        const char *c_tok = b.constData();
-        char * ret = ( char * ) malloc ( strlen ( c_tok ) );
-        strcpy ( ret, c_tok );
+        char* ident = convertToChar( m_identifier );
+        debug () << "Using identifier: " << ident;
 
-        debug () << "Using identifier: " << ret;
-        theDaemon = new Mp3tunesHarmonyDaemon( ret );
+        Mp3tunesConfig config;
+        if( config.pin() == QString() )
+            theDaemon = new Mp3tunesHarmonyDaemon( ident ); //first time harmony login
+        else
+            theDaemon = new Mp3tunesHarmonyDaemon( ident, //they're not harmony virgins
+                                                   convertToChar( config.email() ),
+                                                   convertToChar( config.pin() ) );
 
         Mp3tunesHarmonizer * harmonizer = new Mp3tunesHarmonizer( theDaemon );
         connect( theDaemon, SIGNAL( signalDisconnected() ), this, SLOT( harmonyDisconnected() ) );
@@ -130,6 +133,9 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
 
         debug() << "running harmonizer.";
         ThreadWeaver::Weaver::instance()->enqueue( harmonizer );
+
+        //Close your eyes. Cross your legs. Touch middle fingers to thumbs. Extend your arms.
+        //OOOooommmmm
     }
 }
 
@@ -279,6 +285,16 @@ void Mp3tunesService::harmonyDownloadReady( Mp3tunesHarmonyDownload download )
 void Mp3tunesService::harmonyDownloadPending( Mp3tunesHarmonyDownload download )
 {
     debug() << "Got message about " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+}
+
+char *
+Mp3tunesService::convertToChar ( const QString &source ) const
+{
+    QByteArray b = source.toAscii();
+    const char *c_tok = b.constData();
+    char * ret = ( char * ) malloc ( strlen ( c_tok ) );
+    strcpy ( ret, c_tok );
+    return ret;
 }
 
 #include "Mp3tunesService.moc"

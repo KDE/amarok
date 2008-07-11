@@ -47,6 +47,35 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier ) :
     mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Amarok 2 Test Daemon");
 
 }
+
+Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( char* identifier, char* email, char* pin ) :
+    m_identifier( identifier )
+   , m_gerr( 0 )
+   , m_error( QString() )
+   , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
+{
+    /* g_type_init required for using the GObjects for Harmony. */
+    g_type_init();
+
+    m_harmony = mp3tunes_harmony_new();
+
+    /* Set the error signal handler. */
+    g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), 0);
+    /* Set the state change signal handler. */
+    g_signal_connect(m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
+    /* Set the download signal handler. */
+    g_signal_connect(m_harmony, "download_ready", G_CALLBACK(signalDownloadReadyHandler), 0);
+    g_signal_connect(m_harmony, "download_pending", G_CALLBACK(signalDownloadPendingHandler), 0);
+
+    mp3tunes_harmony_set_identifier(m_harmony, m_identifier);
+    mp3tunes_harmony_set_email( m_harmony, email );
+    mp3tunes_harmony_set_pin( m_harmony, pin );
+
+    mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Amarok 2 Test Daemon");
+
+}
+
+
 Mp3tunesHarmonyDaemon::~Mp3tunesHarmonyDaemon()
 {
 
@@ -90,6 +119,13 @@ Mp3tunesHarmonyDaemon::pin() const
 {
     return QString( mp3tunes_harmony_get_pin( m_harmony ) );
 }
+
+QString
+Mp3tunesHarmonyDaemon::email() const
+{
+    return QString( mp3tunes_harmony_get_email( m_harmony ) );
+}
+
 
 QString
 Mp3tunesHarmonyDaemon::error() const

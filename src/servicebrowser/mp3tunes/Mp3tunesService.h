@@ -83,6 +83,7 @@ private slots:
     void harmonyDownloadPending( Mp3tunesHarmonyDownload download );
 
 private:
+    char *convertToChar( const QString &source ) const;
     QString m_email;
     QString m_password;
     bool m_harmonyEnabled;
