@@ -30,3 +30,4 @@ set( chardet_SRCS
 )
 
 add_library( chardet SHARED ${chardet_SRCS} )
+install(TARGETS chardet LIBRARY DESTINATION lib)

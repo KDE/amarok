@@ -512,7 +512,7 @@ target_link_libraries(amaroklib
     amarok_taglib
     amarokplasma
     amarokpud
-#    chardet
+    chardet
 )
 
 if(APPLE)
@@ -561,7 +561,6 @@ endif(Q_WS_MAC)
 
 ########### install files ###############
 
-#install(TARGETS chardet DESTINATION lib)
 install(FILES amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_append.desktop DESTINATION
