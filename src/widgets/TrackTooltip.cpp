@@ -37,6 +37,9 @@
 #include <QPixmap>
 #include <QTimer>
 #include <QToolTip>
+#include <QRect>
+#include <QPoint>
+#include <QDesktopWidget>
 
 
 K_GLOBAL_STATIC( TrackToolTip, s_trackToolTip );
@@ -87,11 +90,32 @@ TrackToolTip::~TrackToolTip()
 void TrackToolTip::show( const QPoint & bottomRight )
 {
     DEBUG_BLOCK
+    QRect rect = QApplication::desktop()->screenGeometry( bottomRight );
 
     const int x = bottomRight.x() - sizeHint().width();
     const int y = bottomRight.y() - sizeHint().height();
 
-    move( x, y );
+    if( rect.contains( x, y ) ) {
+        //widget is on the top-left of the icon
+        move( x, y );
+    } else {
+        //so we don't have to keep calling sizeHint()
+        const int w = sizeHint().width();
+        const int h = sizeHint().height();
+        //widget is on the bottom-right of the icon
+        if( rect.contains( bottomRight.x() + w, bottomRight.y() + h ) ) {
+            move( bottomRight.x(), bottomRight.y() );
+        //widget is on the bottom-left of the icon
+        } else if( rect.contains( bottomRight.x() - w, bottomRight.y() + h ) ) {
+            move( bottomRight.x() - w, bottomRight.y() );
+        //widget is on the top-right of the icon
+        } else if( rect.contains( bottomRight.x() + w, bottomRight.y() - h ) ) {
+            move( bottomRight.x(), bottomRight.y() - h );
+        } else {
+            //this shouldn't happen, because it's covered in the first case...
+            move( x, y );
+        }
+    }
     QWidget::show();
     QTimer::singleShot( 8000, this, SLOT( hide() ) ); // HACK: The system tray icon doesn't get mouse leave events, since it's not a QWidget.
 }
