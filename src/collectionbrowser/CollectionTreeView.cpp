@@ -68,6 +68,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setSelectionBehavior( QAbstractItemView::SelectRows );
 
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
 
@@ -254,6 +255,7 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *e )
 {
+    DEBUG_BLOCK
     QTreeView::mousePressEvent( e );
 }
 
@@ -261,6 +263,8 @@ void
 CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 {
     DEBUG_BLOCK
+
+    //setSelectionMode( QAbstractItemView::NoSelection );
 
     // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
     m_dragMutex.lock();
@@ -353,6 +357,8 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 
     QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";
+
+    //setSelectionMode( QAbstractItemView::ExtendedSelection );
 
     if( m_pd )
     {
@@ -875,7 +881,6 @@ Collection * CollectionTreeView::getCollection( const QModelIndexList & indices 
 
 void CollectionTreeView::mouseReleaseEvent( QMouseEvent * event )
 {
-    Q_UNUSED( event )
 
     if( m_pd )
     {
@@ -883,6 +888,8 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent * event )
         m_pd->hide();
     }
     m_pd = 0;
+
+    QTreeView::mouseReleaseEvent( event );
 }
 
 void CollectionTreeView::slotPlayChildTracks() {
