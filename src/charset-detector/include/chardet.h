@@ -38,16 +38,6 @@
 #ifndef ___CHARDET_H___
 #define ___CHARDET_H___
 
-#ifdef _WIN32
-#   ifdef DLL_EXPORTS
-#	define CHARDET_IMEXPORT extern _declspec(dllexport)
-#   else
-#	define CHARDET_IMEXPORT extern _declspec(dllimport)
-#   endif
-#else
-#   define CHARDET_IMEXPORT extern __attribute__ ((visibility("default")))
-#endif
-
 #include <stddef.h>
 
 #define CHARDET_RESULT_OK		    0
@@ -69,13 +59,13 @@ extern "C" {
  *             the encoding detector handle.
  * @return CHARDET_RESULT_OK if succeeded. CHARDET_RESULT_NOMEMORY otherwise.
  */
-CHARDET_IMEXPORT int chardet_create(chardet_t* pdet);
+int chardet_create(chardet_t* pdet);
 
 /**
  * Destroy an encoding detector.
  * @param det [in] the encoding detector handle to be destroyed.
  */
-CHARDET_IMEXPORT void chardet_destroy(chardet_t det);
+void chardet_destroy(chardet_t det);
 
 /**
  * Feed data to an encoding detector.
@@ -86,7 +76,7 @@ CHARDET_IMEXPORT void chardet_destroy(chardet_t det);
  *         CHARSET_RESULT_NOMEMORY if running out of memory.
  *         CHARDET_RESULT_INVALID_DETECTOR if det was invalid.
  */
-CHARDET_IMEXPORT int chardet_handle_data(chardet_t det, const char* data, unsigned int len);
+int chardet_handle_data(chardet_t det, const char* data, unsigned int len);
 
 /**
  * Notify an end of data to an encoding detctor.
@@ -94,7 +84,7 @@ CHARDET_IMEXPORT int chardet_handle_data(chardet_t det, const char* data, unsign
  * @return CHARDET_RESULT_OK if succeeded.
  *         CHARDET_RESULT_INVALID_DETECTOR if det was invalid.
  */
-CHARDET_IMEXPORT int chardet_data_end(chardet_t det);
+int chardet_data_end(chardet_t det);
 
 /**
  * Reset an encoding detector.
@@ -102,7 +92,7 @@ CHARDET_IMEXPORT int chardet_data_end(chardet_t det);
  * @return CHARDET_RESULT_OK if succeeded.
  *         CHARDET_RESULT_INVALID_DETECTOR if det was invalid.
  */
-CHARDET_IMEXPORT int chardet_reset(chardet_t det);
+int chardet_reset(chardet_t det);
 
 /**
  * Get the name of encoding that was detected.
@@ -118,7 +108,7 @@ CHARDET_IMEXPORT int chardet_reset(chardet_t det);
  *         the entire encoding name.
  *         CHARDET_RESULT_INVALID_DETECTOR if det was invalid.
  */
-CHARDET_IMEXPORT int chardet_get_charset(chardet_t det, char* namebuf, unsigned int buflen);
+int chardet_get_charset(chardet_t det, char* namebuf, unsigned int buflen);
 
 
 #ifdef __cplusplus

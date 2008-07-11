@@ -20,7 +20,7 @@
 #ifndef AMAROK_META_FILE_P_H
 #define AMAROK_META_FILE_P_H
 
-//#include "charset-detector/include/chardet.h"
+#include "charset-detector/include/chardet.h"
 #include "Debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
@@ -115,7 +115,6 @@ void Track::Private::readMetaData()
     #define strip( x ) TStringToQString( x ).trimmed()
     if( tag )
     {
-        /*
         TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
         const char* buf = metaData.toCString();
         size_t len = strlen( buf );
@@ -130,14 +129,14 @@ void Track::Private::readMetaData()
 
         debug() << "Data:" << buf <<endl;
         debug() << "Charset: " << encoding <<endl;
-*/
+
         m_data.title = strip( tag->title() );
         m_data.artist = strip( tag->artist() );
         m_data.album = strip( tag->album() );
         m_data.comment = strip( tag->comment() );
         m_data.trackNumber = tag->track();
         m_data.year = tag->year();
-/*
+
         //Start to decode non-utf8 tags
         QString track_encoding = encoding;
         if ( res == CHARDET_RESULT_OK )
@@ -163,7 +162,6 @@ void Track::Private::readMetaData()
                 m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
             }
         }
-        */
     }
     if( !fileRef.isNull() )
     {
