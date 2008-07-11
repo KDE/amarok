@@ -1,5 +1,3 @@
-#ifndef README
-#define README
 
  Amarok - the audio player for KDE
 ===================================
@@ -15,9 +13,9 @@ interface that really makes playlist handling easy.
 ==========
 
     * Quick and simple drag and drop playlist creation
-    * Music library (built-in SQLite or MySQL)
+    * Music library
+    * Cross platform. Support for Unix, MacOS X and Windows.
     * Plays all audio formats known to man
-    * 10 band equalizer
     * Cover art download using Amazon services
     * Automatic play-statistics generation (iRate style)
     * Full lyrics download
@@ -47,21 +45,8 @@ Required
       (metadata tagging library)
       http://freshmeat.net/projects/taglib
 
-    * Ruby 1.8
-      (programming language, used for scoring, lyrics, last.fm streams)
-      http://www.ruby-lang.org
-
-    * MySQL 4 or 5
-      (faster database support)
-      http://www.mysql.com
-
     * OpenGL accelerated X-Server
       (visualization rendering)
-
-    * Libvisual 0.4.0 + SDL 1.2
-      (visualization framework)
-      http://localhost.nl/~synap/libvisual/
-      http://www.libsdl.org
 
     * ProjectM 0.96 (or newer)
       (visualization plugins for Libvisual or XMMS)
