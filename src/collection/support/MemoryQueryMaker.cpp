@@ -54,8 +54,7 @@ class QueryJob : public ThreadWeaver::Job
 };
 
 struct MemoryQueryMaker::Private {
-    enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
-    QueryType type;
+    QueryMaker::QueryType type;
     bool returnDataPtrs;
     MemoryMatcher* matcher;
     QueryJob *job;
@@ -85,7 +84,7 @@ MemoryQueryMaker::~MemoryQueryMaker()
 QueryMaker*
 MemoryQueryMaker::reset()
 {
-    d->type = Private::NONE;
+    d->type = QueryMaker::None;
     d->returnDataPtrs = false;
     delete d->matcher;
     delete d->job;
@@ -101,7 +100,7 @@ MemoryQueryMaker::reset()
 void
 MemoryQueryMaker::run()
 {
-    if ( d->type == Private::NONE )
+    if ( d->type == QueryMaker::None )
         //TODO error handling
         return;
     else if( d->job && !d->job->isFinished() )
@@ -185,7 +184,7 @@ MemoryQueryMaker::handleResult()
     //this gets called when we want to return all values for the given query type
     switch( d->type )
     {
-        case Private::TRACK :
+        case QueryMaker::Track :
         {
             TrackList tracks = m_memCollection->trackMap().values();
             if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
@@ -193,7 +192,7 @@ MemoryQueryMaker::handleResult()
             emitProperResult( TrackPtr, tracks );
             break;
         }
-        case Private::ALBUM :
+        case QueryMaker::Album :
         {
             AlbumList albums = m_memCollection->albumMap().values();
             if ( d->maxsize >= 0 && albums.count() > d->maxsize )
@@ -201,7 +200,7 @@ MemoryQueryMaker::handleResult()
             emitProperResult( AlbumPtr, albums );
             break;
         }
-        case Private::ARTIST :
+        case QueryMaker::Artist :
         {
             ArtistList artists = m_memCollection->artistMap().values();
             if ( d->maxsize >= 0 && artists.count() > d->maxsize )
@@ -209,7 +208,7 @@ MemoryQueryMaker::handleResult()
             emitProperResult( ArtistPtr, artists );
             break;
         }
-        case Private::COMPOSER :
+        case QueryMaker::Composer :
         {
             ComposerList composers = m_memCollection->composerMap().values();
             if ( d->maxsize >= 0 && composers.count() > d->maxsize )
@@ -217,7 +216,7 @@ MemoryQueryMaker::handleResult()
             emitProperResult( ComposerPtr, m_memCollection->composerMap().values() );
             break;
         }
-        case Private::GENRE :
+        case QueryMaker::Genre :
         {
             GenreList genres = m_memCollection->genreMap().values();
             if ( d->maxsize >= 0 && genres.count() > d->maxsize )
@@ -225,7 +224,7 @@ MemoryQueryMaker::handleResult()
             emitProperResult( GenrePtr, genres );
             break;
         }
-        case Private::YEAR :
+        case QueryMaker::Year :
         {
             YearList years = m_memCollection->yearMap().values();
             if ( d->maxsize >= 0 && years.count() > d->maxsize )
@@ -233,10 +232,10 @@ MemoryQueryMaker::handleResult()
             emitProperResult( YearPtr, years );
             break;
         }
-        case Private::CUSTOM :
+        case QueryMaker::Custom :
             //TODO stub, fix this
             break;
-        case Private::NONE :
+        case QueryMaker::None :
             //nothing to do
             break;
     }
@@ -247,7 +246,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
 {
     switch( d->type )
     {
-        case Private::TRACK :
+        case QueryMaker::Track :
             if ( d->maxsize < 0 || tracks.count() <= d->maxsize )
             {
                 emitProperResult( TrackPtr, tracks );
@@ -258,7 +257,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 emitProperResult( TrackPtr, newResult );
             }
             break;
-        case Private::ALBUM :
+        case QueryMaker::Album :
         {
             QSet<AlbumPtr> albumSet;
             foreach( TrackPtr track, tracks )
@@ -270,7 +269,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             emitProperResult( AlbumPtr, albumSet.toList() );
             break;
         }
-        case Private::ARTIST :
+        case QueryMaker::Artist :
         {
             QSet<ArtistPtr> artistSet;
             foreach( TrackPtr track, tracks )
@@ -282,7 +281,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             emitProperResult( ArtistPtr, artistSet.toList() );
             break;
         }
-        case Private::GENRE :
+        case QueryMaker::Genre :
         {
             QSet<GenrePtr> genreSet;
             foreach( TrackPtr track, tracks )
@@ -294,7 +293,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             emitProperResult( GenrePtr, genreSet.toList() );
             break;
         }
-        case Private::COMPOSER :
+        case QueryMaker::Composer :
         {
             QSet<ComposerPtr> composerSet;
             foreach( TrackPtr track, tracks )
@@ -306,7 +305,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             emitProperResult( ComposerPtr, composerSet.toList() );
             break;
         }
-        case Private::YEAR :
+        case QueryMaker::Year :
         {
             QSet<YearPtr> yearSet;
             foreach( TrackPtr track, tracks )
@@ -318,10 +317,10 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             emitProperResult( YearPtr, yearSet.toList() );
             break;
         }
-        case Private::CUSTOM :
+        case QueryMaker::Custom :
             //hmm, not sure if this makes sense
             break;
-        case Private::NONE:
+        case QueryMaker::None:
             //should never happen, but handle error anyway
             break;
     }
@@ -332,38 +331,38 @@ MemoryQueryMaker::setQueryType( QueryType type )
 {
     switch( type ) {
     case QueryMaker::Track:
-        if ( d->type == Private::NONE )
-            d->type = Private::TRACK;
+        if ( d->type == QueryMaker::None )
+            d->type = QueryMaker::Track;
         return this;
 
     case QueryMaker::Artist:
-        if ( d->type == Private::NONE )
-            d->type = Private::ARTIST;
+        if ( d->type == QueryMaker::None )
+            d->type = QueryMaker::Artist;
         return this;
 
     case QueryMaker::Album:
-        if ( d->type == Private::NONE )
-            d->type = Private::ALBUM;
+        if ( d->type == QueryMaker::None )
+            d->type = QueryMaker::Album;
         return this;
 
     case QueryMaker::Composer:
-        if ( d->type == Private::NONE )
-            d->type = Private::COMPOSER;
+        if ( d->type == QueryMaker::None )
+            d->type = QueryMaker::Composer;
         return this;
 
     case QueryMaker::Genre:
-        if ( d->type == Private::NONE )
-            d->type = Private::GENRE;
+        if ( d->type == QueryMaker::None )
+            d->type = QueryMaker::Genre;
         return this;
 
     case QueryMaker::Year:
-        if ( d->type == Private::NONE )
-            d->type = Private::YEAR;
+        if ( d->type == QueryMaker::None )
+            d->type = QueryMaker::Year;
         return this;
 
     case QueryMaker::Custom:
-        if ( d->type == Private::CUSTOM )
-            d->type = Private::CUSTOM;
+        if ( d->type == QueryMaker::Custom )
+            d->type = QueryMaker::Custom;
         return this;
     }
 }
@@ -387,8 +386,21 @@ QueryMaker*
 MemoryQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 {
     Q_UNUSED( value )
-    Q_UNUSED( function )
-    //TODO stub
+    switch( function )
+    {
+        case QueryMaker::Count:
+            //TODO
+            break;
+        case QueryMaker::Sum:
+            //TODO
+            break;
+        case QueryMaker::Min:
+            //TODO
+            break;
+        case QueryMaker::Max:
+            //TODO
+            break;
+    }
     return this;
 }
 
