@@ -28,7 +28,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMimeData>
-#include <QtGui>
+
 
 FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     : QFrame( parent )
