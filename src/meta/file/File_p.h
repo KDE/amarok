@@ -20,7 +20,7 @@
 #ifndef AMAROK_META_FILE_P_H
 #define AMAROK_META_FILE_P_H
 
-#include "charset-detector/include/chardet.h"
+//#include "charset-detector/include/chardet.h"
 #include "Debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
@@ -115,6 +115,7 @@ void Track::Private::readMetaData()
     #define strip( x ) TStringToQString( x ).trimmed()
     if( tag )
     {
+        /*
         TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
         const char* buf = metaData.toCString();
         size_t len = strlen( buf );
@@ -125,28 +126,41 @@ void Track::Private::readMetaData()
         res = chardet_handle_data( det, buf, len );
         chardet_data_end( det );
         res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
-        QString track_encoding = encoding;
         chardet_destroy( det );
 
         debug() << "Data:" << buf <<endl;
         debug() << "Charset: " << encoding <<endl;
-
+*/
         m_data.title = strip( tag->title() );
         m_data.artist = strip( tag->artist() );
         m_data.album = strip( tag->album() );
         m_data.comment = strip( tag->comment() );
         m_data.trackNumber = tag->track();
         m_data.year = tag->year();
+        /*
         //Start to decode non-utf8 tags
         QTextCodec *codec;
-        if ( ( encoding !="" ) && ( res == CHARDET_RESULT_OK ) )
+        QString track_encoding = encoding;
+        if ( res == CHARDET_RESULT_OK )
         {
-            codec = QTextCodec::codecForName( encoding );
-            m_data.title = codec->toUnicode( m_data.title.toLatin1() );
-            m_data.artist = codec->toUnicode( m_data.artist.toLatin1() );
-            m_data.album = codec->toUnicode( m_data.album.toLatin1() );
-            m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
+            if ( track_encoding == "x-euc-tw" ) track_encoding = "Big5-HKSCS"; //is the match right?
+            if ( track_encoding == "HZ-GB2312" ) track_encoding = "GB2312";
+            if ( track_encoding == "ISO-2022-CN" ) track_encoding = "GB2312";
+            if ( track_encoding == "ISO-2022-KR" ) track_encoding = "EUC-KR";  //is the match right?
+            if ( track_encoding == "ISO-2022-JP" ) track_encoding = "ISO 2022-JP";
+            //"x-mac-cyrillic": //no match
+            //"IBM855": //no match
+            if ( track_encoding == "IBM866" ) track_encoding = "IBM 866";
+            //"TIS-620": //ISO-8859-11, no match
+            if ( codec->codecForName( track_encoding.toLatin1() ) )
+            {
+                m_data.title = codec->toUnicode( m_data.title.toLatin1() );
+                m_data.artist = codec->toUnicode( m_data.artist.toLatin1() );
+                m_data.album = codec->toUnicode( m_data.album.toLatin1() );
+                m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
+            }
         }
+        */
     }
     if( !fileRef.isNull() )
     {

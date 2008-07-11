@@ -1,5 +1,6 @@
-include_directories(tables)
-set(chardet_SRCS
+include_directories( tables )
+
+set( chardet_SRCS
   impl.cpp
   CharDistribution.cpp
   JpCntx.cpp
@@ -26,8 +27,6 @@ set(chardet_SRCS
   nsSJISProber.cpp
   nsUniversalDetector.cpp
   nsUTF8Prober.cpp
-)  
+)
 
-add_library(chardet ${chardet_SRCS})
-
-
+add_library( chardet SHARED ${chardet_SRCS} )
