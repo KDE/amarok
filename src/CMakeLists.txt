@@ -512,7 +512,7 @@ target_link_libraries(amaroklib
     amarok_taglib
     amarokplasma
     amarokpud
-    chardet
+#    chardet
 )
 
 if(APPLE)

@@ -28,6 +28,5 @@ set( chardet_SRCS
   nsUniversalDetector.cpp
   nsUTF8Prober.cpp
 )
-
 add_library( chardet SHARED ${chardet_SRCS} )
 install(TARGETS chardet LIBRARY DESTINATION lib)
