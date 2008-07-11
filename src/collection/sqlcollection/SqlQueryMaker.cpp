@@ -64,10 +64,9 @@ class SqlWorkerThread : public ThreadWeaver::Job
 
 struct SqlQueryMaker::Private
 {
-    enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64, URLS_TAB = 128, ALBUMARTIST_TAB = 256 };
     int linkedTables;
-    QueryType queryType;
+    QueryMaker::QueryType queryType;
     QString query;
     QString queryReturnValues;
     QString queryFrom;
@@ -105,7 +104,7 @@ QueryMaker*
 SqlQueryMaker::reset()
 {
     d->query.clear();
-    d->queryType = Private::NONE;
+    d->queryType = QueryMaker::None;
     d->queryReturnValues.clear();
     d->queryFrom.clear();
     d->queryMatch.clear();
@@ -140,7 +139,7 @@ SqlQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 void
 SqlQueryMaker::run()
 {
-    if( d->queryType == Private::NONE )
+    if( d->queryType == QueryMaker::None )
         return; //better error handling?
     if( d->worker && !d->worker->isFinished() )
     {
@@ -172,9 +171,9 @@ SqlQueryMaker::setQueryType( QueryType type )
     switch( type ) {
     case QueryMaker::Track:
         //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
-            d->queryType = Private::TRACK;
+            d->queryType = QueryMaker::Track;
             d->linkedTables |= Private::URLS_TAB;
             d->linkedTables |= Private::TAGS_TAB;
             d->linkedTables |= Private::GENRE_TAB;
@@ -188,9 +187,9 @@ SqlQueryMaker::setQueryType( QueryType type )
         return this;
 
     case QueryMaker::Artist:
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
-            d->queryType = Private::ARTIST;
+            d->queryType = QueryMaker::Artist;
             d->withoutDuplicates = true;
             d->linkedTables |= Private::ARTIST_TAB;
             //reading the ids from the database means we don't have to query for them later
@@ -199,9 +198,9 @@ SqlQueryMaker::setQueryType( QueryType type )
         return this;
         
     case QueryMaker::Album:
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
-            d->queryType = Private::ALBUM;
+            d->queryType = QueryMaker::Album;
             d->withoutDuplicates = true;
             d->linkedTables |= Private::ALBUM_TAB;
             //add whatever is necessary to identify compilations
@@ -210,9 +209,9 @@ SqlQueryMaker::setQueryType( QueryType type )
         return this;
 
     case QueryMaker::Composer:
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
-            d->queryType = Private::COMPOSER;
+            d->queryType = QueryMaker::Composer;
             d->withoutDuplicates = true;
             d->linkedTables |= Private::COMPOSER_TAB;
             d->queryReturnValues = "composers.name, composers.id";
@@ -220,9 +219,9 @@ SqlQueryMaker::setQueryType( QueryType type )
         return this;
 
     case QueryMaker::Genre:
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
-            d->queryType = Private::GENRE;
+            d->queryType = QueryMaker::Genre;
             d->withoutDuplicates = true;
             d->linkedTables |= Private::GENRE_TAB;
             d->queryReturnValues = "genres.name, genres.id";
@@ -230,9 +229,9 @@ SqlQueryMaker::setQueryType( QueryType type )
         return this;
 
     case QueryMaker::Year:
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
-            d->queryType = Private::YEAR;
+            d->queryType = QueryMaker::Year;
             d->withoutDuplicates = true;
             d->linkedTables |= Private::YEAR_TAB;
             d->queryReturnValues = "years.name, years.id";
@@ -240,10 +239,14 @@ SqlQueryMaker::setQueryType( QueryType type )
         return this;
 
     case QueryMaker::Custom:
-        if( d->queryType == Private::NONE )
-            d->queryType = Private::CUSTOM;
+        if( d->queryType == QueryMaker::None )
+            d->queryType = QueryMaker::Custom;
         return this;
+
+        case QueryMaker::None:
+            return this;
     }
+    return this;
 }
 
 QueryMaker*
@@ -396,7 +399,7 @@ SqlQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::Num
 QueryMaker*
 SqlQueryMaker::addReturnValue( qint64 value )
 {
-    if( d->queryType == Private::CUSTOM )
+    if( d->queryType == QueryMaker::Custom )
     {
         if ( !d->queryReturnValues.isEmpty() )
             d->queryReturnValues += ',';
@@ -408,7 +411,7 @@ SqlQueryMaker::addReturnValue( qint64 value )
 QueryMaker*
 SqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 {
-    if( d->queryType == Private::CUSTOM )
+    if( d->queryType == QueryMaker::Custom )
     {
         if( !d->queryReturnValues.isEmpty() )
             d->queryReturnValues += ',';
@@ -593,29 +596,29 @@ SqlQueryMaker::handleResult( const QStringList &result )
     if( !result.isEmpty() )
     {
         switch( d->queryType ) {
-        case Private::CUSTOM:
+        case QueryMaker::Custom:
             emit newResultReady( m_collection->collectionId(), result );
             break;
-        case Private::TRACK:
+        case QueryMaker::Track:
             handleTracks( result );
             break;
-        case Private::ARTIST:
+        case QueryMaker::Artist:
             handleArtists( result );
             break;
-        case Private::ALBUM:
+        case QueryMaker::Album:
             handleAlbums( result );
             break;
-        case Private::GENRE:
+        case QueryMaker::Genre:
             handleGenres( result );
             break;
-        case Private::COMPOSER:
+        case QueryMaker::Composer:
             handleComposers( result );
             break;
-        case Private::YEAR:
+        case QueryMaker::Year:
             handleYears( result );
             break;
 
-        case Private::NONE:
+        case QueryMaker::None:
             debug() << "Warning: queryResult with queryType == NONE";
         }
     }
