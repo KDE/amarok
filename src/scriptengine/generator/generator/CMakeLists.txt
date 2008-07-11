@@ -1,6 +1,8 @@
 find_package(Qt4)
 
 set ( QT_USE_QTXML TRUE )
+set ( QT_DONT_USE_QTGUI TRUE )
+include(${QT_USE_FILE})
 
 include_directories(
     ${QT_INCLUDES}
@@ -9,15 +11,12 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/parser/rpp
 )
 
-include(${QT_USE_FILE})
-add_definitions( -DQT_STL )
-
 set(Rpp_SRCS
     parser/rpp/preprocessor.cpp
 )
 
 set(Parser_SRCS
-    parser/ast.cpp
+    parser/ast.cpp                                
     parser/lexer.cpp
     parser/list.cpp
     parser/parser.cpp
@@ -89,3 +88,8 @@ include_directories( ${CMAKE_BINARY_DIR} )
 add_executable(generator ${Generator_SRCS} ${Generator_MOC_SRCS} ${Generator_RCC_SRCS})
 
 target_link_libraries(generator ${QT_LIBRARIES})
+
+#add_custom_command(TARGET generator
+#                     POST_BUILD 
+#                     COMMAND ${CMAKE_CURRENT_BINARY_DIR}/generator --output-directory=${CMAKE_CURRENT_BINARY_DIR}
+#                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
