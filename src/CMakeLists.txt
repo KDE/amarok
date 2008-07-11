@@ -545,6 +545,8 @@ target_link_libraries(amaroklib
     ${OPENGL_gl_LIBRARY}
     ${OPENGL_glu_LIBRARY}
     ${QT_QTSCRIPT_LIBRARY}
+    ${KDE4_PHONON_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
     amarok_taglib
     amarokplasma
     amarokpud
