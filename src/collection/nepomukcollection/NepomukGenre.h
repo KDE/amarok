@@ -16,8 +16,8 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef NEPOMUGENRE_H_
-#define NEPOMUGENRE_H_
+#ifndef NEPOMUKENRE_H_
+#define NEPOMUKENRE_H_
 
 #include "Meta.h"
 
@@ -41,4 +41,4 @@ class NepomukGenre : public Genre
 };
 
 }
-#endif /*NEPOMUGENRE_H_*/
+#endif /*NEPOMUKENRE_H_*/
