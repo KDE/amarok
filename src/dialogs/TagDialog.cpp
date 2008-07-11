@@ -131,7 +131,17 @@ TagDialog::~TagDialog()
     DEBUG_BLOCK
 
     Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", ui->kTabWidget->currentIndex() );
-    delete m_labelCloud;
+
+    // NOTE: temporary crash prevention.  TreeView should _always_ be updated
+    // if tags have changed.
+
+    if ( !m_tracks.isEmpty() )
+    {
+        delete m_labelCloud;
+    }
+    else
+        debug() << "Empty tracklist?  Must mean TreeView hasn't been updated!";
+
     delete ui;
 }
 
@@ -149,8 +159,14 @@ TagDialog::setTab( int id )
 void
 TagDialog::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
+    DEBUG_BLOCK
     Q_UNUSED( collectionId )
     m_tracks << tracks;
+    foreach( Meta::TrackPtr d_track, tracks )
+        {
+            if ( d_track )
+                debug() << "Artist is: " << d_track->artist()->name();
+        }
 }
 
 void
