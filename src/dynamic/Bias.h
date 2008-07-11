@@ -67,7 +67,7 @@ namespace Dynamic
 
             /**
              * Returns a value in the range [-1,1]. (The sign is not considered,
-             * but it may be usefull to return negative numbers for
+             * but it may be useful to return negative numbers for
              * implementing reevaluate.) Playlist generation is being
              * treated as a minimization problem, so 0 means the bias is completely
              * satisfied, (+/-)1 that it is not satisfied at all. The tracks that
