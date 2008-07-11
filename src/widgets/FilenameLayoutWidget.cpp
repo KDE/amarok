@@ -41,6 +41,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     backText = new QLabel;
     backText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );
     layout->addWidget( backText );
+    tokenList = new QList< Token * >();
 }
 
 void
@@ -54,13 +55,18 @@ FilenameLayoutWidget::addToken( QString text, int index )
     m_tokenCount++;
     Token *token = new Token( text, this );
 
-    if( index == 999)
+    debug()<< "I'm adding a token, the index I got is " << index << ".";
+    if( index == 0)
     {
         layout->addWidget( token );
+        tokenList->append( token );
+        debug() << "\t\ttokenList action: append";
     }
     else
     {
         layout->insertWidget( index, token );
+        tokenList->insert( index - 1, token );
+        debug()<< "\t\ttokenList action: inserted at " << index - 1 << ".";
     }
     
     token->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -73,8 +79,14 @@ FilenameLayoutWidget::addToken( QString text, int index )
     }
 
     //testing, remove when done
-   // token->setText( token->text() + " " + QString::number( layout->indexOf( token ) ) );
+    token->setText( token->text() + " " + QString::number( layout->indexOf( token ) ) );
     //end testing block
+
+    //debug stuff follows
+    foreach(Token *temp, *tokenList)
+    {
+        debug() << tokenList->indexOf( temp ) << " .......... " << layout->indexOf( temp ) << " .......... " << temp->text();
+    }
 }
 
 
@@ -124,8 +136,6 @@ FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeD
     }
 }
 
-
-
 void
 FilenameLayoutWidget::dropEvent( QDropEvent *event )
 {
@@ -136,12 +146,12 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     dataStream >> textFromMimeData;
     if ( source && source != this )
     {
-        debug() << "I'm dragging from the token pool";
+        debug() << "I am dragging from the token pool";
         event->setDropAction( Qt::CopyAction );
     }
     else if ( source && source == this )
     {
-        debug() << "I'm dragging from the layout widget";
+        debug() << "I am dragging from the layout widget";
         event->setDropAction( Qt::MoveAction );
     }
 
@@ -180,6 +190,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
         insertOverChild( childUnder, textFromMimeData, event );
     }
     event->accept();
+    generateParsableScheme();
 }
 
 unsigned int
@@ -238,14 +249,22 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     }
     
     drag->exec(Qt::MoveAction | Qt::CopyAction, Qt:: CopyAction);
+    generateParsableScheme();
 }
+
+void
+FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of the layout
+{
+    
+}
+
 
 //starts implementation of Token : QLabel
 
 Token::Token( const QString &string, QWidget *parent )
     : QLabel( parent )
 {
-    m_myCount = qobject_cast<FilenameLayoutWidget *>( parent )->getTokenCount();
+    m_myCount = qobject_cast< FilenameLayoutWidget * >( parent )->getTokenCount();
 
     setText( string );
     setTokenString( string );
@@ -277,4 +296,5 @@ Token::getTokenString()
 {
     return m_tokenString;
 }
+
 

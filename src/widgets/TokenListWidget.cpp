@@ -105,7 +105,7 @@ TokenListWidget::performDrag( QMouseEvent *event )
         mimeData->setData( "application/x-amarok-tag-token", itemData );    //setText( item->text() );
         QDrag *drag = new QDrag( this );
         drag->setMimeData( mimeData );
-        debug() << "I'm dragging from the token pool";
+        debug() << "I am dragging from the token pool";
         //TODO: set a pointer for the drag, like this: drag->setPixmap( QPixmap("foo.png" ) );
         drag->exec( Qt::MoveAction | Qt::CopyAction, Qt::CopyAction );
     }

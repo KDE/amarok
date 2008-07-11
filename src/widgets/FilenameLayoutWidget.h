@@ -30,7 +30,7 @@ class FilenameLayoutWidget
 
     public:
         FilenameLayoutWidget( QWidget *parent = 0 );
-        void addToken( QString text, int index = 99);
+        void addToken( QString text, int index = 0);
 
         unsigned int getTokenCount();   //access for uint m_tokenCount
 
@@ -45,12 +45,15 @@ class FilenameLayoutWidget
         //void performDrag();
         void performDrag( QMouseEvent *event );
         void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
+        void generateParsableScheme();
 
+        QList< Token * > *tokenList;
         QLabel *backText;
         QHBoxLayout *layout;
         
         QPoint m_startPos;
         unsigned int m_tokenCount;
+        QString m_parsableScheme;
 };
 
 class Token
