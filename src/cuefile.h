@@ -65,9 +65,11 @@ class CueFile : public QObject, public QMap<long, CueFileItem>, public EngineObs
 
     public:
         static CueFile *instance();
+        static CueFile *findCueForUrl( const QString &url, int mediaLength );
 
         void setCueFileName( QString name ) { m_cueFileName = name; }
         bool load(int mediaLength);
+        bool isValid();
 
         // EngineObserver
         virtual void engineTrackPositionChanged( long /*position*/ , bool /*userSeek*/ );
@@ -79,13 +81,14 @@ class CueFile : public QObject, public QMap<long, CueFileItem>, public EngineObs
         void newCuePoint( long currentPos, long startPos, long endPos );
 
     protected:
-        CueFile() : EngineObserver(), m_lastSeekPos(-1) { }
-        CueFile(EngineSubject *s) : EngineObserver(s), m_lastSeekPos(-1) { }
+        CueFile() : EngineObserver(), m_lastSeekPos(-1), m_valid(false) { }
+        CueFile(EngineSubject *s) : EngineObserver(s), m_lastSeekPos(-1), m_valid(false) { }
         ~CueFile();
 
     private:
         QString m_cueFileName;
         int m_lastSeekPos; // in seconds
+        bool m_valid;
 };
 
 

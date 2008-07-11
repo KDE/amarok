@@ -23,7 +23,9 @@
 #include "EngineController.h"
 
 #include <KGlobal>
+#include <KUrl>
 
+#include <QDir>
 #include <QFile>
 #include <QMap>
 #include <QStringList>
@@ -36,7 +38,7 @@ CueFile *CueFile::instance()
 
     if(!s_instance)
     {
-        s_instance = new CueFile(The::engineController()); // FIXME berkus: le grand borkage (if engine is changed, e.g.)?
+        s_instance = new CueFile(The::engineController());
     }
 
     return s_instance;
@@ -136,6 +138,7 @@ bool CueFile::load(int mediaLength)
                         // not valid, because we have to have an index for the previous track
                         file.close();
                         debug() << "Mode is TRACK_FOUND, abort.";
+                        m_valid = false;
                         return false;
                     }
                     if( mode == INDEX_FOUND )
@@ -207,6 +210,7 @@ bool CueFile::load(int mediaLength)
                         // not valid, because we don't have an associated track
                         file.close();
                         debug() << "Mode is not TRACK_FOUND but encountered INDEX, abort.";
+                        m_valid = false;
                         return false;
                     }
                     debug() << "index: " << index;
@@ -230,19 +234,19 @@ bool CueFile::load(int mediaLength)
 
         (*this)[index].setLength(mediaLength*1000 - index);
         debug() << "Setting length of track " << (*this)[index].getTitle() << " to " << mediaLength*1000 - index << " msecs.";
-
+        m_valid = true;
         return true;
-    }
-
-    else
+    } else {
+        m_valid = true;
         return false;
+    }
 }
 
 void CueFile::engineTrackPositionChanged( long position, bool userSeek )
 {
     Q_UNUSED( position ); Q_UNUSED( userSeek );
     //TODO: port 2.0 reimplement this
-    /*position /= 1000;
+   /* position /= 1000;
     if(userSeek || position > m_lastSeekPos)
     {
         CueFile::Iterator it = end();
@@ -252,19 +256,20 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
 //            debug() << "Checking " << position << " against pos " << it.key()/1000 << " title " << it.data().getTitle();
             if(it.key()/1000 <= position)
             {
-                MetaBundle bundle = The::engineController()->bundle(); // take current one and modify it
-                if(it.data().getTitle() != bundle.title()
-                   || it.data().getArtist() != bundle.artist()
-                   || it.data().getAlbum() != bundle.album()
-                   || it.data().getTrackNumber() != bundle.track())
+                Meta::TrackPtr currenttrack = The::engineController()->currentTrack();
+
+                if(it.value().getTitle() != currenttrack->name()
+                   || it.value().getArtist() != currenttrack->artist()->name()
+                   || it.value().getAlbum() != currenttrack->album()->name()
+                   || it.value().getTrackNumber() != currenttrack->trackNumber())
                 {
-                    bundle.setTitle(it.data().getTitle());
-                    bundle.setArtist(it.data().getArtist());
-                    bundle.setAlbum(it.data().getAlbum());
-                    bundle.setTrack(it.data().getTrackNumber());
+                    bundle.setTitle(it.value().getTitle());
+                    bundle.setArtist(it.value().getArtist());
+                    bundle.setAlbum(it.value().getAlbum());
+                    bundle.setTrack(it.value().getTrackNumber());
                     emit metaData(bundle);
 
-                    long length = it.data().getLength();
+                    long length = it.value().getLength();
                     if ( length == -1 ) // need to calculate
                     {
                         ++it;
@@ -282,6 +287,91 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
     m_lastSeekPos = position;*/
 }
 
+CueFile* CueFile::findCueForUrl( const QString &url, int mediaLength )
+{
+    KUrl kurl( url );
+    CueFile *cue = CueFile::instance();
+    if ( kurl.isLocalFile() )
+        {
+
+            /** The cue file that is provided with the media might have different name than the
+             * media file itself, hence simply cutting the media extension and adding ".cue"
+             * is not always enough to find the matching cue file. In such cases we have
+             * to search for all the cue files in the directory and have a look inside them for
+             * the matching FILE="" stanza. However the FILE="" stanza does not always
+             * point at the corresponding media file (e.g. it is quite often set to the misleading
+             * FILE="audio.wav" WAV). Therfore we also have to check blindly if there is a cue
+             * file having the same name as the media file played, as described above.
+             */
+
+            // look for the cue file that matches the media file played first
+            QString path    = kurl.path();
+            QString cueFile = path.left( path.lastIndexOf( '.' ) ) + ".cue";
+
+
+            cue->setCueFileName( cueFile );
+
+            if( cue->load( mediaLength ) )
+                debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly, found and loaded. " << endl;
+
+            // if unlucky, let's have a look inside cue files, if any
+            else
+            {
+                debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly and missed, searching for other cue files." << endl;
+
+                bool foundCueFile = false;
+                QDir dir ( kurl.directory() );
+                dir.setFilter( QDir::Files ) ;
+                QStringList filters;
+                filters << "*.cue" << "*.CUE";
+                dir.setNameFilters( filters ) ;
+
+                QStringList cueFilesList = dir.entryList();
+
+                if ( !cueFilesList.empty() )
+                    for ( QStringList::Iterator it = cueFilesList.begin(); it != cueFilesList.end() && !foundCueFile; ++it )
+                    {
+                        QFile file ( dir.filePath(*it) );
+                        if( file.open( IO_ReadOnly ) )
+                        {
+                            debug() << "[CUEFILE]: " << *it << " - Opened, looking for the matching FILE stanza." << endl;
+                            QTextStream stream( &file );
+                            QString line;
+
+                            while ( !stream.atEnd() && !foundCueFile)
+                            {
+                                line = stream.readLine().simplified();
+
+                                if( line.startsWith( "file", Qt::CaseInsensitive ) )
+                                {
+                                    line = line.mid( 5 ).remove( '"' );
+
+                                    if ( line.contains( path, Qt::CaseInsensitive ) )
+                                    {
+                                        cueFile = dir.filePath(*it);
+                                        foundCueFile = true;
+                                        cue->setCueFileName( cueFile );
+                                        if( cue->load( mediaLength ) )
+                                            debug() << "[CUEFILE]: " << cueFile << " - Looked inside cue files, found and loaded proper one" << endl;
+                                    }
+                                }
+                            }
+
+                            file.close();
+                        }
+                    }
+
+                if ( !foundCueFile )
+                    debug() << "[CUEFILE]: - Didn't find any matching cue file." << endl;
+            }
+        }
+        return cue;
+}
+
+bool CueFile::isValid()
+{
+    return m_valid;
+}
 
 #include "cuefile.moc"
 
