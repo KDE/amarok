@@ -94,7 +94,7 @@ void TrackToolTip::show( const QPoint & bottomRight )
 
     move( x, y );
     QWidget::show();
-    QTimer::singleShot( 5000, this, SLOT( hide() ) ); // HACK: The system tray doesn't get mouse leave messages properly..
+    QTimer::singleShot( 8000, this, SLOT( hide() ) ); // HACK: The system tray icon doesn't get mouse leave events, since it's not a QWidget.
 }
 
 #define MOODBAR_WIDTH 150
