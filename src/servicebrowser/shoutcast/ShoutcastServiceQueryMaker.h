@@ -50,8 +50,7 @@ public:
     virtual void run();
     virtual void abortQuery();
 
-    virtual QueryMaker* startTrackQuery();
-    virtual QueryMaker* startGenreQuery();
+    virtual QueryMaker* setQueryType( QueryType type );
 
     using DynamicServiceQueryMaker::addMatch;
     virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );

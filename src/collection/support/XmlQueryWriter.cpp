@@ -82,7 +82,7 @@ XmlQueryWriter::reset()
         m_element.removeChild( child );
         child = m_element.firstChild();
     }
-    
+
     m_qm->reset();
     return this;
 }
@@ -108,59 +108,44 @@ XmlQueryWriter::resultCount() const
 }
 
 QueryMaker*
-XmlQueryWriter::startTrackQuery()
+XmlQueryWriter::setQueryType( QueryType type )
 {
-    insertRetValue( "track" );
-    m_qm->startTrackQuery();
-    return this;
-}
+    switch( type ) {
+    case QueryMaker::Track:
+        insertRetValue( "track" );
+        m_qm->setQueryType( QueryMaker::Track );
+        return this;
+            
+    case QueryMaker::Artist:
+        insertRetValue( "artist" );
+        m_qm->setQueryType( QueryMaker::Artist );
+        return this;
 
-QueryMaker*
-XmlQueryWriter::startArtistQuery()
-{
-    insertRetValue( "artist" );
-    m_qm->startArtistQuery();
-    return this;
-}
+    case QueryMaker::Album:
+        insertRetValue( "album" );
+        m_qm->setQueryType( QueryMaker::Album );
+        return this;
 
-QueryMaker*
-XmlQueryWriter::startAlbumQuery()
-{
-    insertRetValue( "album" );
-    m_qm->startAlbumQuery();
-    return this;
-}
+    case QueryMaker::Genre:
+        insertRetValue( "genre" );
+        m_qm->setQueryType( QueryMaker::Genre );
+        return this;
 
-QueryMaker*
-XmlQueryWriter::startGenreQuery()
-{
-    insertRetValue( "genre" );
-    m_qm->startGenreQuery();
-    return this;
-}
+    case QueryMaker::Composer:
+        insertRetValue( "composer" );
+        m_qm->setQueryType( QueryMaker::Composer );
+        return this;
 
-QueryMaker*
-XmlQueryWriter::startComposerQuery()
-{
-    insertRetValue( "composer" );
-    m_qm->startComposerQuery();
-    return this;
-}
+    case QueryMaker::Year:
+        insertRetValue( "year" );
+        m_qm->setQueryType( QueryMaker::Year );
+        return this;
 
-QueryMaker*
-XmlQueryWriter::startYearQuery()
-{
-    insertRetValue( "year" );
-    m_qm->startYearQuery();
-    return this;
-}
-
-QueryMaker*
-XmlQueryWriter::startCustomQuery()
-{
-    // TODO
-    m_qm->startCustomQuery();
-    return this;
+    case QueryMaker::Custom:
+        // TODO
+        m_qm->setQueryType( QueryMaker::Custom );
+        return this;
+    }
 }
 
 QueryMaker*

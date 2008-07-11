@@ -259,4 +259,3 @@ Meta::TrackPtr Dynamic::BiasSolver::getMutation()
 {
     return m_mutationSource->getTrack();
 }
-

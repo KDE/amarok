@@ -114,7 +114,7 @@ CollectionLocation::prepareCopy( QueryMaker *qm, CollectionLocation *destination
     m_removeSources = false;
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    qm->startTrackQuery();
+    qm->setQueryType( QueryMaker::Track );
     qm->run();
 }
 
@@ -154,7 +154,7 @@ CollectionLocation::prepareMove( QueryMaker *qm, CollectionLocation *destination
     m_removeSources = true;
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    qm->startTrackQuery();
+    qm->setQueryType( QueryMaker::Track );
     qm->run();
 }
 

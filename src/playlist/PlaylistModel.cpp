@@ -393,7 +393,7 @@ Playlist::Model::removeRows( int position, int rows, const QModelIndex& /*parent
 void
 Playlist::Model::insertTracks( int row, QueryMaker *qm )
 {
-    qm->startTrackQuery();
+    qm->setQueryType( QueryMaker::Track );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
     m_queryMap.insert( qm, row );
@@ -811,7 +811,7 @@ Playlist::Model::insertOptioned( QueryMaker *qm, int options )
     {
         return;
     }
-    qm->startTrackQuery();
+    qm->setQueryType( QueryMaker::Track );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
     m_optionedQueryMap.insert( qm, options );

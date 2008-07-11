@@ -53,7 +53,7 @@ CoverBling::CoverBling( QWidget* parent )
 
     Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
-    qm->startAlbumQuery();
+    qm->setQueryType( QueryMaker::Album );
     qm->limitMaxResultSize( 10 );
     BlockingQuery bq( qm );
     bq.startQuery();

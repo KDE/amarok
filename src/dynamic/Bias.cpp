@@ -153,7 +153,7 @@ void
 Dynamic::GlobalBias::setQuery( QueryMaker* qm )
 {
     DEBUG_BLOCK
-    qm->startTrackQuery();
+    qm->setQueryType( QueryMaker::Track );
     delete m_propertyQuery;
     m_propertyQuery = new BlockingQuery( qm );
     collectionUpdated();

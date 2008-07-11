@@ -190,7 +190,7 @@ Dynamic::BiasedPlaylist::updateDomainSize()
     else
         qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
 
-    qm->startCustomQuery();
+    qm->setQueryType( QueryMaker::Custom );
     qm->addReturnFunction( QueryMaker::Count, QueryMaker::valUrl );
     BlockingQuery bq( qm );
     

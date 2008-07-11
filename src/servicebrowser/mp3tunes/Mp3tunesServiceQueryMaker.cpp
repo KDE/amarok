@@ -121,25 +121,31 @@ void Mp3tunesServiceQueryMaker::run()
 void Mp3tunesServiceQueryMaker::abortQuery()
 {}
 
-QueryMaker * Mp3tunesServiceQueryMaker::startArtistQuery()
+QueryMaker * Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
 {
-    DEBUG_BLOCK
-    d->type = Private::ARTIST;
-    return this;
-}
+    switch( type ) {
+    case QueryMaker::Artist:
+        DEBUG_BLOCK
+        d->type = Private::ARTIST;
+        return this;
 
-QueryMaker * Mp3tunesServiceQueryMaker::startAlbumQuery()
-{
-    DEBUG_BLOCK
-    d->type = Private::ALBUM;
-    return this;
-}
+    case QueryMaker::Album:
+        DEBUG_BLOCK
+        d->type = Private::ALBUM;
+        return this;
 
-QueryMaker * Mp3tunesServiceQueryMaker::startTrackQuery()
-{
-    DEBUG_BLOCK
-    d->type = Private::TRACK;
-    return this;
+    case QueryMaker::Track:
+        DEBUG_BLOCK
+        d->type = Private::TRACK;
+        return this;
+
+    case QueryMaker::Genre:
+    case QueryMaker::Composer:
+    case QueryMaker::Year:
+    case QueryMaker::Custom:
+        //TODO: Implement.
+        return this;
+    }
 }
 
 

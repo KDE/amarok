@@ -367,7 +367,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
     artistCombo->setEditable( true );
 
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->startArtistQuery();
+    qm->setQueryType( QueryMaker::Artist );
     BlockingQuery bq( qm );
 
     bq.startQuery();
@@ -400,7 +400,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
     albumCombo->setEditable( true );
 
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->startAlbumQuery();
+    qm->setQueryType( QueryMaker::Album );
     BlockingQuery bq( qm );
 
     bq.startQuery();
@@ -453,7 +453,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
 
 
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->startGenreQuery();
+    qm->setQueryType( QueryMaker::Genre );
     BlockingQuery bq( qm );
 
     bq.startQuery();

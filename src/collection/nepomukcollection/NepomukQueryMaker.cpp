@@ -99,7 +99,7 @@ NepomukQueryMaker::~NepomukQueryMaker()
 QueryMaker*
 NepomukQueryMaker::reset()
 {
-    queryType = NONE;
+    queryType = None;
     queryMatch.clear();
     if( worker && worker->isFinished() )
         delete worker;   //TODO error handling
@@ -118,7 +118,7 @@ void
 NepomukQueryMaker::run()
 {
     debug() << "run()" << endl;
-    if( queryType == NONE )
+    if( queryType == None )
             return; //better error handling?
     if( worker && !worker->isFinished() )
     {
@@ -144,62 +144,42 @@ NepomukQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 
 
 QueryMaker*
-NepomukQueryMaker::startTrackQuery()
+NepomukQueryMaker::setQueryType( QueryType type )
 {
-    debug() << "startTrackQuery()" << endl;
-    queryType  = TRACK;
+    queryType = type;
+    switch( type ) {
+    case QueryMaker::Track:    
+        debug() << "startTrackQuery()" << endl;
+        queryType  = Track;
     
-    // FIXME: This breaks controllable sorting for tracks
-    // but works around collections views assumptions about
-    // the order 
-    // should be fixed there and then removed here
-    orderBy(QueryMaker::valAlbum);
-    orderBy(QueryMaker::valTrackNr);
-    return this;
-}
-
-QueryMaker*
-NepomukQueryMaker::startArtistQuery()
-{
-    queryType = ARTIST;
-    debug() << "startArtistQuery()" << endl;
-    return this;
-}
-
-QueryMaker*
-NepomukQueryMaker::startAlbumQuery()
-{
-    queryType = ALBUM;
-    debug() << "starAlbumQuery()" << endl;
-    return this;
-}
-
-QueryMaker*
-NepomukQueryMaker::startGenreQuery()
-{
-    debug() << "startGenreQuery()" << endl;
-    return this;
-}
-
-QueryMaker*
-NepomukQueryMaker::startComposerQuery()
-{
-    debug() << "startComposerQuery()" << endl;
-    return this;
-}
-
-QueryMaker*
-NepomukQueryMaker::startYearQuery()
-{
-    debug() << "startYearQuery()" << endl;
-    return this;
-}
-
-QueryMaker*
-NepomukQueryMaker::startCustomQuery()
-{
-    debug() << "startCustomQuery()" << endl;
-    return this;
+        // FIXME: This breaks controllable sorting for tracks
+        // but works around collections views assumptions about
+        // the order 
+        // should be fixed there and then removed here
+        orderBy(QueryMaker::valAlbum);
+        orderBy(QueryMaker::valTrackNr);
+        return this;
+    case QueryMaker::Artist:
+        queryType = Artist;
+        debug() << "startArtistQuery()" << endl;
+        return this;
+    case QueryMaker::Album:
+        queryType = Album;
+        debug() << "starAlbumQuery()" << endl;
+        return this;
+    case QueryMaker::Genre:
+        debug() << "startGenreQuery()" << endl;
+        return this;
+    case QueryMaker::Composer:
+        debug() << "startComposerQuery()" << endl;
+        return this;
+    case QueryMaker::Year:
+        debug() << "startYearQuery()" << endl;
+        return this;
+    case QueryMaker::Custom:
+        debug() << "startCustomQuery()" << endl;
+        return this;
+    }
 }
 
 QueryMaker*
@@ -461,7 +441,7 @@ NepomukQueryMaker::buildQuery() const
     
     switch( queryType )
     {
-        case ARTIST:
+        case Artist:
             query  =   QString(
                     "select distinct ?artist where { "
                     "?r <%1> ?artist . ")
@@ -470,7 +450,7 @@ NepomukQueryMaker::buildQuery() const
             query += queryOrderBy;
             
             break;
-        case ALBUM:
+        case Album:
             if ( queryMatch.isEmpty() )
                             return query;
             query  =   QString(
@@ -484,7 +464,7 @@ NepomukQueryMaker::buildQuery() const
             query += queryOrderBy;
             
             break;
-        case TRACK:
+        case Track:
         {
             query  =   QString("SELECT * WHERE { ?r <%1> ?%2. ")
                            .arg( m_collection->getUrlForValue( valUrl ) )
@@ -544,7 +524,7 @@ NepomukQueryMaker::doQuery(const QString &query)
         return;
     switch ( queryType )
     {
-        case ARTIST:
+        case Artist:
         {
             ArtistList al;
             Soprano::QueryResultIterator it
@@ -559,7 +539,7 @@ NepomukQueryMaker::doQuery(const QString &query)
             
             break;
         }
-        case ALBUM:
+        case Album:
         {
             AlbumList al;
             Soprano::QueryResultIterator it
@@ -576,7 +556,7 @@ NepomukQueryMaker::doQuery(const QString &query)
             break;
         }
         
-        case TRACK:
+        case Track:
         {
             TrackList tl;
             Soprano::QueryResultIterator it
@@ -588,8 +568,7 @@ NepomukQueryMaker::doQuery(const QString &query)
                 
                 Meta::TrackPtr np = m_collection->registry()->trackForBindingSet( bindingSet );
                 tl.append( np );
-            }
-            emitProperResult ( TrackPtr, tl );
+            } emitProperResult ( TrackPtr, tl );
 
             break;
         }

@@ -118,18 +118,25 @@ void ShoutcastServiceQueryMaker::abortQuery()
 {
 }
 
-QueryMaker * ShoutcastServiceQueryMaker::startTrackQuery()
+QueryMaker * ShoutcastServiceQueryMaker::setQueryType( QueryType type )
 {
     DEBUG_BLOCK
-    d->type = Private::TRACK;
-    return this;
-}
+    switch( type ) {
+    case QueryMaker::Track:
+        d->type = Private::TRACK;
+        return this;
 
-QueryMaker * ShoutcastServiceQueryMaker::startGenreQuery()
-{
-    DEBUG_BLOCK
-    d->type = Private::GENRE;
-    return this;
+    case QueryMaker::Genre:
+        d->type = Private::GENRE;
+        return this;
+
+    case QueryMaker::Artist:
+    case QueryMaker::Album:
+    case QueryMaker::Composer:
+    case QueryMaker::Year:
+    case QueryMaker::Custom:
+        return this;
+    }
 }
 
 QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)

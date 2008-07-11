@@ -115,30 +115,33 @@ void ScriptableServiceQueryMaker::abortQuery()
 {
 }
 
-QueryMaker * ScriptableServiceQueryMaker::startGenreQuery()
+QueryMaker * ScriptableServiceQueryMaker::setQueryType( QueryType type )
 {
-    d->type = Private::GENRE;
-    return this;
-}
+    DEBUG_BLOCK
+    switch( type ) {
+    case QueryMaker::Artist:
+        d->type = Private::ARTIST;
+        return this;
 
-QueryMaker * ScriptableServiceQueryMaker::startArtistQuery()
-{
-    d->type = Private::ARTIST;
-    return this;
-}
+    case QueryMaker::Album:
+        d->type = Private::ALBUM;
+        return this;
 
-QueryMaker * ScriptableServiceQueryMaker::startAlbumQuery()
-{
-    d->type = Private::ALBUM;
-    return this;
-}
+    case QueryMaker::Track:
+        d->type = Private::TRACK;
+        return this;
 
-QueryMaker * ScriptableServiceQueryMaker::startTrackQuery()
-{
-    d->type = Private::TRACK;
-    return this;
-}
+    case QueryMaker::Genre:
+        d->type = Private::GENRE;
+        return this;
 
+    case QueryMaker::Composer:
+    case QueryMaker::Year:
+    case QueryMaker::Custom:
+        //TODO: Implement.
+        return this;
+    }
+}
 
 QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {

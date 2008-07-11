@@ -167,98 +167,83 @@ SqlQueryMaker::done( ThreadWeaver::Job *job )
 }
 
 QueryMaker*
-SqlQueryMaker::startTrackQuery()
+SqlQueryMaker::setQueryType( QueryType type )
 {
-    //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
-    if( d->queryType == Private::NONE )
-    {
-        d->queryType = Private::TRACK;
-        d->linkedTables |= Private::URLS_TAB;
-        d->linkedTables |= Private::TAGS_TAB;
-        d->linkedTables |= Private::GENRE_TAB;
-        d->linkedTables |= Private::ARTIST_TAB;
-        d->linkedTables |= Private::ALBUM_TAB;
-        d->linkedTables |= Private::COMPOSER_TAB;
-        d->linkedTables |= Private::YEAR_TAB;
-        d->linkedTables |= Private::STATISTICS_TAB;
-        d->queryReturnValues = SqlTrack::getTrackReturnValues();
-    }
-    return this;
-}
+    switch( type ) {
+    case QueryMaker::Track:
+        //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
+        if( d->queryType == Private::NONE )
+        {
+            d->queryType = Private::TRACK;
+            d->linkedTables |= Private::URLS_TAB;
+            d->linkedTables |= Private::TAGS_TAB;
+            d->linkedTables |= Private::GENRE_TAB;
+            d->linkedTables |= Private::ARTIST_TAB;
+            d->linkedTables |= Private::ALBUM_TAB;
+            d->linkedTables |= Private::COMPOSER_TAB;
+            d->linkedTables |= Private::YEAR_TAB;
+            d->linkedTables |= Private::STATISTICS_TAB;
+            d->queryReturnValues = SqlTrack::getTrackReturnValues();
+        }
+        return this;
 
-QueryMaker*
-SqlQueryMaker::startArtistQuery()
-{
-    if( d->queryType == Private::NONE )
-    {
-        d->queryType = Private::ARTIST;
-        d->withoutDuplicates = true;
-        d->linkedTables |= Private::ARTIST_TAB;
-        //reading the ids from the database means we don't have to query for them later
-        d->queryReturnValues = "artists.name, artists.id";
-    }
-    return this;
-}
+    case QueryMaker::Artist:
+        if( d->queryType == Private::NONE )
+        {
+            d->queryType = Private::ARTIST;
+            d->withoutDuplicates = true;
+            d->linkedTables |= Private::ARTIST_TAB;
+            //reading the ids from the database means we don't have to query for them later
+            d->queryReturnValues = "artists.name, artists.id";
+        }
+        return this;
+        
+    case QueryMaker::Album:
+        if( d->queryType == Private::NONE )
+        {
+            d->queryType = Private::ALBUM;
+            d->withoutDuplicates = true;
+            d->linkedTables |= Private::ALBUM_TAB;
+            //add whatever is necessary to identify compilations
+            d->queryReturnValues = "albums.name, albums.id, albums.artist";
+        }
+        return this;
 
-QueryMaker*
-SqlQueryMaker::startAlbumQuery()
-{
-    if( d->queryType == Private::NONE )
-    {
-        d->queryType = Private::ALBUM;
-        d->withoutDuplicates = true;
-        d->linkedTables |= Private::ALBUM_TAB;
-        //add whatever is necessary to identify compilations
-        d->queryReturnValues = "albums.name, albums.id, albums.artist";
-    }
-    return this;
-}
+    case QueryMaker::Composer:
+        if( d->queryType == Private::NONE )
+        {
+            d->queryType = Private::COMPOSER;
+            d->withoutDuplicates = true;
+            d->linkedTables |= Private::COMPOSER_TAB;
+            d->queryReturnValues = "composers.name, composers.id";
+        }
+        return this;
 
-QueryMaker*
-SqlQueryMaker::startComposerQuery()
-{
-    if( d->queryType == Private::NONE )
-    {
-        d->queryType = Private::COMPOSER;
-        d->withoutDuplicates = true;
-        d->linkedTables |= Private::COMPOSER_TAB;
-        d->queryReturnValues = "composers.name, composers.id";
-    }
-    return this;
-}
+    case QueryMaker::Genre:
+        if( d->queryType == Private::NONE )
+        {
+            d->queryType = Private::GENRE;
+            d->withoutDuplicates = true;
+            d->linkedTables |= Private::GENRE_TAB;
+            d->queryReturnValues = "genres.name, genres.id";
+        }
+        return this;
 
-QueryMaker*
-SqlQueryMaker::startGenreQuery()
-{
-    if( d->queryType == Private::NONE )
-    {
-        d->queryType = Private::GENRE;
-        d->withoutDuplicates = true;
-        d->linkedTables |= Private::GENRE_TAB;
-        d->queryReturnValues = "genres.name, genres.id";
-    }
-    return this;
-}
+    case QueryMaker::Year:
+        if( d->queryType == Private::NONE )
+        {
+            d->queryType = Private::YEAR;
+            d->withoutDuplicates = true;
+            d->linkedTables |= Private::YEAR_TAB;
+            d->queryReturnValues = "years.name, years.id";
+        }
+        return this;
 
-QueryMaker*
-SqlQueryMaker::startYearQuery()
-{
-    if( d->queryType == Private::NONE )
-    {
-        d->queryType = Private::YEAR;
-        d->withoutDuplicates = true;
-        d->linkedTables |= Private::YEAR_TAB;
-        d->queryReturnValues = "years.name, years.id";
+    case QueryMaker::Custom:
+        if( d->queryType == Private::NONE )
+            d->queryType = Private::CUSTOM;
+        return this;
     }
-    return this;
-}
-
-QueryMaker*
-SqlQueryMaker::startCustomQuery()
-{
-    if( d->queryType == Private::NONE )
-        d->queryType = Private::CUSTOM;
-    return this;
 }
 
 QueryMaker*

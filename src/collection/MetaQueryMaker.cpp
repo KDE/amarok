@@ -101,59 +101,50 @@ MetaQueryMaker::resultCount() const
 }
 
 QueryMaker*
-MetaQueryMaker::startTrackQuery()
+MetaQueryMaker::setQueryType( QueryType type )
 {
-    foreach( QueryMaker *b, builders )
-        b->startTrackQuery();
-    return this;
-}
-
-QueryMaker*
-MetaQueryMaker::startArtistQuery()
-{
-    foreach( QueryMaker *b, builders )
-        b->startArtistQuery();
-    return this;
-}
-
-QueryMaker*
-MetaQueryMaker::startAlbumQuery()
-{
-    foreach( QueryMaker *b, builders )
-        b->startAlbumQuery();
-    return this;
-}
-
-QueryMaker*
-MetaQueryMaker::startGenreQuery()
-{
-    foreach( QueryMaker *b, builders )
-        b->startGenreQuery();
-    return this;
-}
-
-QueryMaker*
-MetaQueryMaker::startComposerQuery()
-{
-    foreach( QueryMaker *b, builders )
-        b->startComposerQuery();
-    return this;
-}
-
-QueryMaker*
-MetaQueryMaker::startYearQuery()
-{
-    foreach( QueryMaker *b, builders )
-        b->startYearQuery();
-    return this;
-}
-
-QueryMaker*
-MetaQueryMaker::startCustomQuery()
-{
-    foreach( QueryMaker *b, builders )
-        b->startCustomQuery();
-    return this;
+    if( type == QueryMaker::Track )
+    {
+        foreach( QueryMaker *b, builders )
+            b->setQueryType( QueryMaker::Track );
+        return this;
+    }
+    else if( type == QueryMaker::Artist )
+    {
+        foreach( QueryMaker *b, builders )
+            b->setQueryType( QueryMaker::Artist );
+        return this;
+    }
+    else if( type == QueryMaker::Album )
+    {
+        foreach( QueryMaker *b, builders )
+            b->setQueryType( QueryMaker::Album );
+        return this;
+    }
+    else if( type == QueryMaker::Genre )
+    {
+        foreach( QueryMaker *b, builders )
+            b->setQueryType( QueryMaker::Genre );
+        return this;
+    }
+    else if( type == QueryMaker::Composer )
+    {
+        foreach( QueryMaker *b, builders )
+            b->setQueryType( QueryMaker::Composer );
+        return this;
+    }
+    else if( type == QueryMaker::Year )
+    {
+        foreach( QueryMaker *b, builders )
+            b->setQueryType( QueryMaker::Year );
+        return this;
+    }
+    else
+    {
+        foreach( QueryMaker *b, builders )
+            b->setQueryType( QueryMaker::Custom );
+        return this;
+    }
 }
 
 QueryMaker*

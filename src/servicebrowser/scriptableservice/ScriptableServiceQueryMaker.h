@@ -44,10 +44,7 @@ public:
     virtual void run();
     virtual void abortQuery();
 
-    virtual QueryMaker* startGenreQuery();
-    virtual QueryMaker* startArtistQuery();
-    virtual QueryMaker* startAlbumQuery();
-    virtual QueryMaker* startTrackQuery();
+    virtual QueryMaker* setQueryType( QueryType type );
 
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 

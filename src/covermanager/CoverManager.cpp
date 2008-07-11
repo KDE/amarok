@@ -140,7 +140,7 @@ CoverManager::CoverManager()
 
     Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
-    qm->startArtistQuery();
+    qm->setQueryType( QueryMaker::Artist );
     BlockingQuery bq( qm );
     bq.startQuery();
 
@@ -466,7 +466,7 @@ void CoverManager::slotArtistSelected() //SLOT
     Collection *coll = CollectionManager::instance()->primaryCollection();
 
     QueryMaker *qm = coll->queryMaker();
-    qm->startAlbumQuery();
+    qm->setQueryType( QueryMaker::Album );
     if( item != m_artistView->invisibleRootItem()->child( 0 ) )
         qm->addMatch( artist );
     else

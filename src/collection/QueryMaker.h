@@ -78,6 +78,15 @@ class AMAROK_EXPORT QueryMaker : public QObject
                                GreaterThan = 1,
                                LessThan = 2 };
 
+        enum QueryType { None = 0, // Set to faciliate using this in subclasses 
+                         Track,
+                         Artist,
+                         Album,
+                         Genre,
+                         Composer,
+                         Year,
+                         Custom
+        };
         QueryMaker();
         virtual ~QueryMaker();
 
@@ -107,62 +116,20 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual int resultCount() const;
 
         /**
-            starts a query for Meta::Track objects. The results of the query will be returned as
-            Meta::Track objects, so you have to connect your client to the
-            newResultReady( QString, Meta::TrackList ) signal (unless you want the results as
-            Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            @return this
-        */
-        virtual QueryMaker* startTrackQuery() = 0;
-        /**
-            starts a query for Meta::Artist objects. The results of the query will be returned as
-            Meta::Artist objects, so you have to connect your client to the
-            newResultReady( QString, Meta::ArtistList ) signal (unless you want the results as
-            Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            @return this
-        */
-        virtual QueryMaker* startArtistQuery() = 0;
-        /**
-            starts a query for Meta::Album objects. The results of the query will be returned as
-            Meta::Album objects, so you have to connect your client to the
-            newResultReady( QString, Meta::AlbumList ) signal (unless you want the results as
-            Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            @return this
-        */
-        virtual QueryMaker* startAlbumQuery() = 0;
-        /**
-            starts a query for Meta::Genre objects. The results of the query will be returned as
-            Meta::Genre objects, so you have to connect your client to the
-            newResultReady( QString, Meta::GenreList ) signal (unless you want the results as
-            Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            @return this
-        */
-        virtual QueryMaker* startGenreQuery() = 0;
-        /**
-            starts a query for Meta::Composer objects. The results of the query will be returned as
-            Meta::Composer objects, so you have to connect your client to the
-            newResultReady( QString, Meta::ComposerList ) signal (unless you want the results as
-            Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            @return this
-        */
-        virtual QueryMaker* startComposerQuery() = 0;
-        /**
-            starts a query for Meta::Year objects. The results of the query will be returned as
-            Meta::Year objects, so you have to connect your client to the
-            newResultReady( QString, Meta::YearList ) signal (unless you want the results as
-            Meta::Data pointers, see returnResultAsDataPtrs( bool ) for details.
-            @return this
-        */
-        virtual QueryMaker* startYearQuery() = 0;
-        /**
-            starts a custom query. unlike the other startX methods, you have to set up the return
-            values yourself using addReturnValue( qint64 ) and addReturnFunction(). The results will
-            be returned as a QStringList. Threfore you have to connect to the
-            newResultReady( QString, QStringList ) signal to receive the results. Calling
-            returnResultsAsDataPtrs( bool ) has no effect when using a custom query.
-            @return this
-        */
-        virtual QueryMaker* startCustomQuery() = 0;
+         * Sets the type of objects the querymaker will query for.  These are mutually
+         * exclusive.  The results of the query will be returned as objects of the
+         * appropriate type, therefore it is necessary to connect the client to the
+         * newResultReady( QString, Meta::Type ) signal (unless you are after Meta::Data
+         * pointers, see returnResultAsDataPtrs( bool ) for details.
+         *
+         * if you set QueryType custom, this starts a custom query. unlike the other startX methods, you have to set up the return
+         * values yourself using addReturnValue( qint64 ) and addReturnFunction(). The results will
+         * be returned as a QStringList. Threfore you have to connect to the
+         * newResultReady( QString, QStringList ) signal to receive the results. Calling
+         * returnResultsAsDataPtrs( bool ) has no effect when using a custom query.
+         * @return this
+         */
+        virtual QueryMaker* setQueryType( QueryType type ) = 0;
         /**
             sets the QueryMaker instance to return Meta::Data objects instead of the actual type.
             In some cases it can be useful to ignore the actual type of the result and just work with

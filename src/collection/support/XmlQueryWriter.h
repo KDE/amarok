@@ -44,13 +44,8 @@ class XmlQueryWriter : public QueryMaker
         void run();
         void abortQuery();
         int resultCount() const;
-        QueryMaker* startTrackQuery();
-        QueryMaker* startArtistQuery();
-        QueryMaker* startAlbumQuery();
-        QueryMaker* startGenreQuery();
-        QueryMaker* startComposerQuery();
-        QueryMaker* startYearQuery();
-        QueryMaker* startCustomQuery();
+
+        QueryMaker* setQueryType( QueryType type );
         QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs );
 
         QueryMaker* addReturnValue( qint64 value );

@@ -120,7 +120,7 @@ TagDialog::TagDialog( QueryMaker *qm )
 {
     ui->setupUi( this );
     startDataQuery();
-    qm->startTrackQuery();
+    qm->setQueryType( QueryMaker::Track );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ), Qt::QueuedConnection );
     qm->run();
@@ -654,10 +654,10 @@ TagDialog::startDataQuery()
     {
         return;
     }
-    QueryMaker *artist = coll->queryMaker()->startArtistQuery();
-    QueryMaker *album = coll->queryMaker()->startAlbumQuery();
-    QueryMaker *composer = coll->queryMaker()->startComposerQuery();
-    QueryMaker *genre = coll->queryMaker()->startGenreQuery();
+    QueryMaker *artist = coll->queryMaker()->setQueryType( QueryMaker::Artist );
+    QueryMaker *album = coll->queryMaker()->setQueryType( QueryMaker::Album );
+    QueryMaker *composer = coll->queryMaker()->setQueryType( QueryMaker::Composer );
+    QueryMaker *genre = coll->queryMaker()->setQueryType( QueryMaker::Genre );
     QList<QueryMaker*> queries;
     queries << artist << album << composer << genre;
     //MetaQueryMaker will run multiple different queries just fine as long as we do not use it

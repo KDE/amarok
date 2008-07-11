@@ -233,13 +233,13 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
             return;
         
         if ( level == m_levelType.count() )
-            qm->startTrackQuery();
+            qm->setQueryType( QueryMaker::Track );
         else
         {
             switch( m_levelType[level] )
             {
                 case CategoryId::Album :
-                    qm->startAlbumQuery();
+                    qm->setQueryType( QueryMaker::Album );
                     //restrict query to normal albums if the previous level
                     //was the artist category. in that case we handle compilations below
                     if( level > 0 && m_levelType[level-1] == CategoryId::Artist )
@@ -248,7 +248,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
                     }
                     break;
                 case CategoryId::Artist :
-                    qm->startArtistQuery();
+                    qm->setQueryType( QueryMaker::Artist );
                     //handle compilations only if the next level ist CategoryId::Album
                     if( level + 1 < m_levelType.count() && m_levelType[level+1] == CategoryId::Album )
                     {
@@ -256,14 +256,14 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
                         qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
                     }
                     break;
-                case CategoryId::Composer :
-                    qm->startComposerQuery();
+                case CategoryId::Composer:
+                    qm->setQueryType( QueryMaker::Composer );
                     break;
-                case CategoryId::Genre :
-                    qm->startGenreQuery();
+                case CategoryId::Genre:
+                    qm->setQueryType( QueryMaker::Genre );
                     break;
-                case CategoryId::Year :
-                    qm->startYearQuery();
+                case CategoryId::Year:
+                    qm->setQueryType( QueryMaker::Year );
                     break;
                 default : //TODO handle error condition. return tracks?
                     break;
@@ -551,7 +551,7 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     //one compilation exists
     QueryMaker *qm = parent->queryMaker();
     qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
-    qm->startAlbumQuery();
+    qm->setQueryType( QueryMaker::Album );
     CollectionTreeItem *tmpItem = parent;
     while( tmpItem->isDataItem()  )
     {

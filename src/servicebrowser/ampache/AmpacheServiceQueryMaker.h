@@ -48,9 +48,7 @@ public:
     virtual void run();
     virtual void abortQuery();
 
-    virtual QueryMaker* startArtistQuery();
-    virtual QueryMaker* startAlbumQuery();
-    virtual QueryMaker* startTrackQuery();
+    virtual QueryMaker* setQueryType( QueryType type );
 
     using DynamicServiceQueryMaker::addMatch;
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );

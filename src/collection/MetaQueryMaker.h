@@ -38,13 +38,7 @@ class MetaQueryMaker : public QueryMaker
         virtual void abortQuery();
         virtual int resultCount() const;
 
-        virtual QueryMaker* startTrackQuery();
-        virtual QueryMaker* startArtistQuery();
-        virtual QueryMaker* startAlbumQuery();
-        virtual QueryMaker* startGenreQuery();
-        virtual QueryMaker* startComposerQuery();
-        virtual QueryMaker* startYearQuery();
-        virtual QueryMaker* startCustomQuery();
+        virtual QueryMaker* setQueryType( QueryType type );
 
         virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs );
 

@@ -47,14 +47,7 @@ class NepomukQueryMaker : public QueryMaker
 	
 	    virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs );
 	    
-	    virtual QueryMaker* startTrackQuery();
-	    virtual QueryMaker* startArtistQuery();
-	    virtual QueryMaker* startAlbumQuery();
-	    virtual QueryMaker* startGenreQuery();
-	    virtual QueryMaker* startComposerQuery();
-	    virtual QueryMaker* startYearQuery();
-	    virtual QueryMaker* startCustomQuery();
-	
+        virtual QueryMaker* setQueryType( QueryType type );	
 	    virtual QueryMaker* includeCollection( const QString &collectionId );
 	    virtual QueryMaker* excludeCollection( const QString &collectionId );
 	
@@ -99,7 +92,6 @@ class NepomukQueryMaker : public QueryMaker
 	    
 	private:
 	    
-        enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
         QueryType queryType;
         QString queryMatch;
         bool resultAsDataPtrs;

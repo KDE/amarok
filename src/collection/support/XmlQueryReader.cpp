@@ -192,33 +192,33 @@ XmlQueryReader::readReturnValues()
             readNext();
             if( name() == "tracks" )
             {
-                d->qm->startTrackQuery();
+                d->qm->setQueryType( QueryMaker::Track );
             }
             else if( name() == "artists" )
             {
-                d->qm->startArtistQuery();
+                d->qm->setQueryType( QueryMaker::Artist );
             }
             else if( name() == "albums" )
             {
-                d->qm->startAlbumQuery();
+                d->qm->setQueryType( QueryMaker::Album );
             }
             else if( name() == "genres" )
             {
-                d->qm->startGenreQuery();
+                d->qm->setQueryType( QueryMaker::Genre );
             }
             else if( name() == "composers" )
             {
-                d->qm->startComposerQuery();
+                d->qm->setQueryType( QueryMaker::Composer );
             }
             else if( name() == "years" )
             {
-                d->qm->startYearQuery();
+                d->qm->setQueryType( QueryMaker::Year );
             }
             else
             {
                 if( !customQueryStarted )
                 {
-                    d->qm->startCustomQuery();
+                    d->qm->setQueryType( QueryMaker::Custom );
                 }
                 //TODO write a mapping function somewhere
                 if( name() == "title" )

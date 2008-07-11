@@ -57,13 +57,7 @@ public:
     //below here is the stuf that each dynamic querymaker will most likely only need
     //Some of, hense they are all stubbed out:
 
-    virtual QueryMaker* startTrackQuery()  { return this; }
-    virtual QueryMaker* startComposerQuery() { return this; }
-    virtual QueryMaker* startArtistQuery() { return this; }
-    virtual QueryMaker* startAlbumQuery() { return this; }
-    virtual QueryMaker* startGenreQuery() { return this; };
-    virtual QueryMaker* startYearQuery() { return this; }
-    virtual QueryMaker* startCustomQuery() { return this; }
+    virtual QueryMaker* setQueryType( QueryType type ) { Q_UNUSED( type); return this; }
 
     virtual QueryMaker* addReturnValue ( qint64 value );
     virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );

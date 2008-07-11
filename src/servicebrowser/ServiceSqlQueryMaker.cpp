@@ -168,129 +168,108 @@ ServiceSqlQueryMaker::done( ThreadWeaver::Job *job )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::startTrackQuery()
+ServiceSqlQueryMaker::setQueryType( QueryType type)
 {
     DEBUG_BLOCK
-    //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
-    if( d->queryType == Private::NONE )
-    {
-        QString prefix = m_metaFactory->tablePrefix();
-        //d->queryFrom = ' ' + prefix + "_tracks";
-
-        d->withoutDuplicates = true;
-        d->queryFrom = ' ' + prefix + "_tracks";
-        d->queryType = Private::TRACK;
-        d->queryReturnValues =  m_metaFactory->getTrackSqlRows() + ',' +
-        m_metaFactory->getAlbumSqlRows() + ',' +
-        m_metaFactory->getArtistSqlRows() + ',' +
-        m_metaFactory->getGenreSqlRows();
-
-        d->linkedTables |= Private::GENRE_TABLE;
-        d->linkedTables |= Private::ARTISTS_TABLE;
-        d->linkedTables |= Private::ALBUMS_TABLE;
-
-        d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
-
-        if ( d->linkedTables & Private::ARTISTS_TABLE )
+    switch( type ) {
+    case QueryMaker::Track:
+        //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
+        if( d->queryType == Private::NONE )
         {
-            d->queryOrderBy += " ORDER BY " + prefix + "_tracks.album_id"; //make sure items are added as album groups
+            QString prefix = m_metaFactory->tablePrefix();
+            //d->queryFrom = ' ' + prefix + "_tracks";
+
+            d->withoutDuplicates = true;
+            d->queryFrom = ' ' + prefix + "_tracks";
+            d->queryType = Private::TRACK;
+            d->queryReturnValues =  m_metaFactory->getTrackSqlRows() + ',' +
+            m_metaFactory->getAlbumSqlRows() + ',' +
+            m_metaFactory->getArtistSqlRows() + ',' +
+            m_metaFactory->getGenreSqlRows();
+
+            d->linkedTables |= Private::GENRE_TABLE;
+            d->linkedTables |= Private::ARTISTS_TABLE;
+            d->linkedTables |= Private::ALBUMS_TABLE;
+
+            d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
+
+            if ( d->linkedTables & Private::ARTISTS_TABLE )
+            {
+                d->queryOrderBy += " ORDER BY " + prefix + "_tracks.album_id"; //make sure items are added as album groups
+            }
         }
-    }
-    return this;
-}
+        return this;
 
-QueryMaker*
-ServiceSqlQueryMaker::startArtistQuery()
-{
-    DEBUG_BLOCK
-    if( d->queryType == Private::NONE )
-    {
-        QString prefix = m_metaFactory->tablePrefix();
-        d->queryFrom = ' ' + prefix + "_tracks";
-        d->linkedTables |= Private::ARTISTS_TABLE;
-        d->linkedTables |= Private::ALBUMS_TABLE;
-        d->queryType = Private::ARTIST;
-        d->withoutDuplicates = true;
-        d->queryReturnValues = m_metaFactory->getArtistSqlRows();
+    case QueryMaker::Artist:
+        if( d->queryType == Private::NONE )
+        {
+            QString prefix = m_metaFactory->tablePrefix();
+            d->queryFrom = ' ' + prefix + "_tracks";
+            d->linkedTables |= Private::ARTISTS_TABLE;
+            d->linkedTables |= Private::ALBUMS_TABLE;
+            d->queryType = Private::ARTIST;
+            d->withoutDuplicates = true;
+            d->queryReturnValues = m_metaFactory->getArtistSqlRows();
 
-        d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
-    }
-    return this;
-}
+            d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
+        }
+        return this;
 
-QueryMaker*
-ServiceSqlQueryMaker::startAlbumQuery()
-{
-    DEBUG_BLOCK
-    if( d->queryType == Private::NONE )
-    {
-        QString prefix = m_metaFactory->tablePrefix();
-        d->queryFrom = ' ' + prefix + "_tracks";
-        d->queryType = Private::ALBUM;
-        d->linkedTables |= Private::ALBUMS_TABLE;
-        d->linkedTables |= Private::ARTISTS_TABLE;
-        d->withoutDuplicates = true;
-        d->queryReturnValues = m_metaFactory->getAlbumSqlRows() + ',' +
-        m_metaFactory->getArtistSqlRows();
+    case QueryMaker::Album:
+        if( d->queryType == Private::NONE )
+        {
+            QString prefix = m_metaFactory->tablePrefix();
+            d->queryFrom = ' ' + prefix + "_tracks";
+            d->queryType = Private::ALBUM;
+            d->linkedTables |= Private::ALBUMS_TABLE;
+            d->linkedTables |= Private::ARTISTS_TABLE;
+            d->withoutDuplicates = true;
+            d->queryReturnValues = m_metaFactory->getAlbumSqlRows() + ',' +
+            m_metaFactory->getArtistSqlRows();
 
-        d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
-    }
-    return this;
-}
+            d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
+        }
+        return this;
 
-QueryMaker*
-ServiceSqlQueryMaker::startComposerQuery()
-{
-    DEBUG_BLOCK
-   /* if( d->queryType == Private::NONE )
-    {
-        d->queryType = Private::COMPOSER;
-        d->withoutDuplicates = true;
-        d->linkedTables |= Private::COMPOSER_TAB;
-        d->queryReturnValues = "composer.name, composer.id";
-    }*/
-    return this;
-}
+    case QueryMaker::Composer:
+        /* if( d->queryType == Private::NONE )
+            {
+                d->queryType = Private::COMPOSER;
+                d->withoutDuplicates = true;
+                d->linkedTables |= Private::COMPOSER_TAB;
+                d->queryReturnValues = "composer.name, composer.id";
+            }*/
+        return this;
 
-QueryMaker*
-ServiceSqlQueryMaker::startGenreQuery()
-{
-    DEBUG_BLOCK
-    if( d->queryType == Private::NONE )
-    {
-        QString prefix = m_metaFactory->tablePrefix();
-        d->queryFrom = ' ' + prefix + "_genre";
-        d->queryType = Private::GENRE;
-        //d->linkedTables |= Private::ALBUMS_TABLE;
-        //d->linkedTables |= Private::GENRE_TABLE;
-        d->withoutDuplicates = true;
-        d->queryReturnValues = m_metaFactory->getGenreSqlRows();
-        d->queryOrderBy = " GROUP BY " + prefix +"_genre.name"; // HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
-    }
-    return this;
-}
+    case QueryMaker::Genre:
+        if( d->queryType == Private::NONE )
+        {
+            QString prefix = m_metaFactory->tablePrefix();
+            d->queryFrom = ' ' + prefix + "_genre";
+            d->queryType = Private::GENRE;
+            //d->linkedTables |= Private::ALBUMS_TABLE;
+            //d->linkedTables |= Private::GENRE_TABLE;
+            d->withoutDuplicates = true;
+            d->queryReturnValues = m_metaFactory->getGenreSqlRows();
+            d->queryOrderBy = " GROUP BY " + prefix +"_genre.name"; // HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
+        }
+        return this;
 
-QueryMaker*
-ServiceSqlQueryMaker::startYearQuery()
-{
-    //DEBUG_BLOCK
-    /*if( d->queryType == Private::NONE )
-    {
-        d->queryType = Private::YEAR;
-        d->withoutDuplicates = true;
-        d->linkedTables |= Private::YEAR_TAB;
-        d->queryReturnValues = "year.name, year.id";
-    }*/
-    return this;
-}
+    case QueryMaker::Year:
+        /*if( d->queryType == Private::NONE )
+        {
+            d->queryType = Private::YEAR;
+            d->withoutDuplicates = true;
+            d->linkedTables |= Private::YEAR_TAB;
+            d->queryReturnValues = "year.name, year.id";
+        }*/
+        return this;
 
-QueryMaker*
-ServiceSqlQueryMaker::startCustomQuery()
-{
-   DEBUG_BLOCK
-    /* if( d->queryType == Private::NONE )
+    case QueryMaker::Custom:
+        /* if( d->queryType == Private::NONE )
         d->queryType = Private::CUSTOM;*/
-    return this;
+        return this;
+    }
 }
 
 QueryMaker*

@@ -713,7 +713,7 @@ SqlArtist::tracks()
     else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
-        qm->startTrackQuery();
+        qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
         BlockingQuery bq( qm );
         bq.startQuery();
@@ -736,7 +736,7 @@ SqlArtist::albums()
     else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
-        qm->startAlbumQuery();
+        qm->setQueryType( QueryMaker::Album );
         addMatchTo( qm );
         BlockingQuery bq( qm );
         bq.startQuery();
@@ -875,7 +875,7 @@ SqlAlbum::tracks()
     else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
-        qm->startTrackQuery();
+        qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
         BlockingQuery bq( qm );
         bq.startQuery();
@@ -1305,7 +1305,7 @@ SqlComposer::tracks()
     else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
-        qm->startTrackQuery();
+        qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
         BlockingQuery bq( qm );
         bq.startQuery();
@@ -1349,7 +1349,7 @@ SqlGenre::tracks()
     else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
-        qm->startTrackQuery();
+        qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
         BlockingQuery bq( qm );
         bq.startQuery();
@@ -1393,7 +1393,7 @@ SqlYear::tracks()
     else if( m_collection )
     {
         QueryMaker *qm = m_collection->queryMaker();
-        qm->startTrackQuery();
+        qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
         BlockingQuery bq( qm );
         bq.startQuery();

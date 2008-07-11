@@ -328,59 +328,44 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
 }
 
 QueryMaker*
-MemoryQueryMaker::startTrackQuery()
+MemoryQueryMaker::setQueryType( QueryType type )
 {
-    if ( d->type == Private::NONE )
-        d->type = Private::TRACK;
-    return this;
-}
+    switch( type ) {
+    case QueryMaker::Track:
+        if ( d->type == Private::NONE )
+            d->type = Private::TRACK;
+        return this;
 
-QueryMaker*
-MemoryQueryMaker::startArtistQuery()
-{
-    if ( d->type == Private::NONE )
-        d->type = Private::ARTIST;
-    return this;
-}
+    case QueryMaker::Artist:
+        if ( d->type == Private::NONE )
+            d->type = Private::ARTIST;
+        return this;
 
-QueryMaker*
-MemoryQueryMaker::startAlbumQuery()
-{
-    if ( d->type == Private::NONE )
-        d->type = Private::ALBUM;
-    return this;
-}
+    case QueryMaker::Album:
+        if ( d->type == Private::NONE )
+            d->type = Private::ALBUM;
+        return this;
 
-QueryMaker*
-MemoryQueryMaker::startComposerQuery()
-{
-    if ( d->type == Private::NONE )
-        d->type = Private::COMPOSER;
-    return this;
-}
+    case QueryMaker::Composer:
+        if ( d->type == Private::NONE )
+            d->type = Private::COMPOSER;
+        return this;
 
-QueryMaker*
-MemoryQueryMaker::startGenreQuery()
-{
-    if ( d->type == Private::NONE )
-        d->type = Private::GENRE;
-    return this;
-}
+    case QueryMaker::Genre:
+        if ( d->type == Private::NONE )
+            d->type = Private::GENRE;
+        return this;
 
-QueryMaker*
-MemoryQueryMaker::startYearQuery()
-{
-    if ( d->type == Private::NONE )
-        d->type = Private::YEAR;
-    return this;
-}
+    case QueryMaker::Year:
+        if ( d->type == Private::NONE )
+            d->type = Private::YEAR;
+        return this;
 
-QueryMaker*
-MemoryQueryMaker::startCustomQuery()
-{
-    if ( d->type == Private::CUSTOM )
-        d->type = Private::CUSTOM;
-    return this;
+    case QueryMaker::Custom:
+        if ( d->type == Private::CUSTOM )
+            d->type = Private::CUSTOM;
+        return this;
+    }
 }
 
 QueryMaker*

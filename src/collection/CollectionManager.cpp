@@ -374,7 +374,7 @@ CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
     {
         qm->addFilter( QueryMaker::valArtist, artist, true, true );
     }
-    qm->startArtistQuery();
+    qm->setQueryType( QueryMaker::Artist );
     qm->limitMaxResultSize( maxArtists );
     BlockingQuery bq( qm );
     bq.startQuery();

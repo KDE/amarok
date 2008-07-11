@@ -36,7 +36,7 @@
 OrganizeCollectionDialog::OrganizeCollectionDialog( QueryMaker *qm, QWidget *parent,  const char *name, bool modal,
                                                     const QString &caption, QFlags<KDialog::ButtonCode> buttonMask )
 {
-    qm->startTrackQuery();
+    qm->setQueryType( QueryMaker::Track );
     BlockingQuery bq( qm );
     bq.startQuery();
     Meta::TrackList tracks;

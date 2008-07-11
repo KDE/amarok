@@ -42,13 +42,7 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         virtual void run();
         virtual void abortQuery();
 
-        virtual QueryMaker* startTrackQuery();
-        virtual QueryMaker* startArtistQuery();
-        virtual QueryMaker* startAlbumQuery();
-        virtual QueryMaker* startComposerQuery();
-        virtual QueryMaker* startGenreQuery();
-        virtual QueryMaker* startYearQuery();
-        virtual QueryMaker* startCustomQuery();
+        virtual QueryMaker* setQueryType( QueryType type );
 
         virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs );
 

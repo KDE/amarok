@@ -240,7 +240,7 @@ AmarokMimeData::startQueries()
     DEBUG_BLOCK
     foreach( QueryMaker *qm, d->queryMakers )
     {
-        qm->startTrackQuery();
+        qm->setQueryType( QueryMaker::Track );
         connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( newResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ), Qt::QueuedConnection );
         qm->run();

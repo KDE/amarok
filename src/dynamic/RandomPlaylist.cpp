@@ -72,7 +72,7 @@ Dynamic::RandomPlaylist::fillCache()
 {
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->orderByRandom();
-    qm->startTrackQuery();
+    qm->setQueryType( QueryMaker::Track );
     qm->limitMaxResultSize( CACHE_SIZE - m_cache.size() );
 
     BlockingQuery bq( qm );

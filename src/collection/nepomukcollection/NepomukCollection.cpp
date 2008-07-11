@@ -146,7 +146,7 @@ NepomukCollection::trackForUrl( const KUrl &url )
         return Meta::TrackPtr();
 
     NepomukQueryMaker *qm = new NepomukQueryMaker( this, m_model );
-    qm->startTrackQuery();
+    qm->setQueryType( QueryMaker::Track );
     if ( proto == "file" )
     {
         qm->addMatch( url );

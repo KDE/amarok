@@ -111,27 +111,30 @@ AmpacheServiceQueryMaker::abortQuery()
 }
 
 QueryMaker *
-AmpacheServiceQueryMaker::startArtistQuery()
+AmpacheServiceQueryMaker::setQueryType( QueryType type )
 {
     DEBUG_BLOCK
-    d->type = Private::ARTIST;
-    return this;
-}
+    switch( type ) {
 
-QueryMaker *
-AmpacheServiceQueryMaker::startAlbumQuery()
-{
-    DEBUG_BLOCK
-    d->type = Private::ALBUM;
-    return this;
-}
+    case QueryMaker::Artist:
+        d->type = Private::ARTIST;
+        return this;
 
-QueryMaker *
-AmpacheServiceQueryMaker::startTrackQuery()
-{
-    DEBUG_BLOCK
-    d->type = Private::TRACK;
-    return this;
+    case QueryMaker::Album:
+        d->type = Private::ALBUM;
+        return this;
+
+    case QueryMaker::Track:
+        d->type = Private::TRACK;
+        return this;
+
+    case QueryMaker::Genre:
+    case QueryMaker::Composer:
+    case QueryMaker::Year:
+    case QueryMaker::Custom:
+        //TODO: Implement.
+        return this;
+    }
 }
 
 QueryMaker *

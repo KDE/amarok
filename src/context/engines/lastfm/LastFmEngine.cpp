@@ -112,7 +112,7 @@ void LastFmEngine::updateCurrent()
 
         Collection *coll = CollectionManager::instance()->primaryCollection();
         QueryMaker *qm = coll->queryMaker();
-        qm->startTrackQuery();
+        qm->setQueryType( QueryMaker::Track );
         qm->limitMaxResultSize( 10 );
         foreach( Meta::ArtistPtr artist, artists )
             qm->addFilter( QueryMaker::valArtist, artist->name() );
