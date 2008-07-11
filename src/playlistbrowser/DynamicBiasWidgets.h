@@ -83,8 +83,7 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            BiasWidget( Dynamic::Bias*, QWidget* parent = 0 );
-
+            explicit BiasWidget( Dynamic::Bias*, QWidget* parent = 0 );
 
         signals:
             void biasRemoved( Dynamic::Bias* );
@@ -107,14 +106,13 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            BiasGlobalWidget( Dynamic::GlobalBias* bias, QWidget* parent = 0 );
+            explicit BiasGlobalWidget( Dynamic::GlobalBias* bias, QWidget* parent = 0 );
 
         private slots:
             void weightChanged( int );
             void fieldChanged( int );
             void compareChanged( int );
             void valueChanged( const QString& );
-
 
         private:
             void syncControlsToBias();
