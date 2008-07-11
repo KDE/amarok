@@ -52,6 +52,9 @@ public slots:
 private slots:
     void configAccepted();
     void changeTrackRating( int rating );
+    void showItemImage();
+    void fetchItemImage();
+    void unsetItemImage();
 
 private:
     void createMenu();

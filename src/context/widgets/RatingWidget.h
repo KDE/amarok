@@ -154,7 +154,7 @@ class AMAROK_EXPORT RatingWidget : public QGraphicsWidget
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent* e );
     virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent* e );
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
-    virtual void resizeEvent( QGraphicsSceneResizeEvent* e );
+//     virtual void resizeEvent( QGraphicsSceneResizeEvent* e );
 
  private:
     class Private;

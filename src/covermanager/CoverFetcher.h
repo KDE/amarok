@@ -70,7 +70,7 @@ public:
     void setUserCanEditQuery( bool b ) { m_userCanEditQuery = b; }
 
     /// Main Fetch loop
-    void manualFetch( Meta::AlbumPtr album );
+    AMAROK_EXPORT void manualFetch( Meta::AlbumPtr album );
 
     QString amazonURL() const { return m_amazonURL; }
     QString asin() const { return m_asin; }

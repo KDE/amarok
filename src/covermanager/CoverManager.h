@@ -189,7 +189,7 @@ class CoverViewItem : public QListWidgetItem
 };
 
 
-class CoverViewDialog : public QDialog
+class AMAROK_EXPORT CoverViewDialog : public QDialog
 {
         Q_OBJECT
 

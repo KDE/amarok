@@ -255,15 +255,15 @@ RatingWidget::sizeHint( Qt::SizeHint hint, const QSizeF& size ) const
 }
 
 
-void
-RatingWidget::resizeEvent( QGraphicsSceneResizeEvent* e )
-{
-    DEBUG_BLOCK
-
-//     QFrame::resizeEvent( e );
-
-    // FIXME: Disabled because this causes infinite recursion
-    //updateGeometry();
-}
+// void
+// RatingWidget::resizeEvent( QGraphicsSceneResizeEvent* e )
+// {
+//     DEBUG_BLOCK
+// 
+// //     QFrame::resizeEvent( e );
+// 
+//     // FIXME: Disabled because this causes infinite recursion
+//     //updateGeometry();
+// }
 
 #include "RatingWidget.moc"
