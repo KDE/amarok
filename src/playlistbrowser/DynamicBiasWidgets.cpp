@@ -18,13 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#include "DynamicBiasWidgets.h"
+
 #include "App.h"
 #include "Bias.h"
 #include "BiasedPlaylist.h"
 #include "BlockingQuery.h"
 #include "CollectionManager.h"
 #include "Debug.h"
-#include "DynamicBiasWidgets.h"
 #include "DynamicPlaylist.h"
 #include "DynamicModel.h"
 #include "MetaQueryMaker.h"

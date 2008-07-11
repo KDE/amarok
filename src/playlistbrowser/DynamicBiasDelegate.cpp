@@ -18,8 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#include "Debug.h"
 #include "DynamicBiasDelegate.h"
+
+#include "Debug.h"
 #include "DynamicBiasWidgets.h"
 #include "DynamicBiasModel.h"
 
