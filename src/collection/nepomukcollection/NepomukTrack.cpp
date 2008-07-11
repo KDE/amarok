@@ -16,13 +16,14 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
+#include "NepomukTrack.h"
+
 #include "NepomukAlbum.h"
 #include "NepomukArtist.h"
 #include "NepomukCollection.h"
 #include "NepomukComposer.h"
 #include "NepomukGenre.h"
 #include "NepomukRegistry.h"
-#include "NepomukTrack.h"
 #include "NepomukYear.h"
 
 #include "Debug.h"
