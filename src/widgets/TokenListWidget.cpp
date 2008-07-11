@@ -46,7 +46,7 @@ void
 TokenListWidget::mousePressEvent( QMouseEvent *event )
 {
     if ( event->button() == Qt::LeftButton )
-        startPos = event->pos();            //store the start position
+        m_startPos = event->pos();            //store the start position
     KListWidget::mousePressEvent( event );    //feed it to parent's event
 }
 
@@ -55,7 +55,7 @@ TokenListWidget::mouseMoveEvent( QMouseEvent *event )
 {
     if ( event->buttons() & Qt::LeftButton )
     {
-        int distance = ( event->pos() - startPos ).manhattanLength();
+        int distance = ( event->pos() - m_startPos ).manhattanLength();
         if ( distance >= KApplication::startDragDistance() )
         {
             performDrag( event );

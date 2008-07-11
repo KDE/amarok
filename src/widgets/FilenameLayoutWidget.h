@@ -48,8 +48,8 @@ class FilenameLayoutWidget
 
         QLabel *backText;
         QHBoxLayout *layout;
-        QPoint startPos;
-
+        
+        QPoint m_startPos;
         unsigned int m_tokenCount;
 };
 
@@ -64,8 +64,8 @@ class Token
     private:
         void setTokenString(const QString &string );
 
-        unsigned int myCount;
-        QString tokenString;
+        unsigned int m_myCount;
+        QString m_tokenString;
         
 
 };

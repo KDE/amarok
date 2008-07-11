@@ -37,7 +37,7 @@ class TokenListWidget
     private:
         void performDrag( QMouseEvent *event );
     
-        QPoint startPos;
+        QPoint m_startPos;
 };
 
 #endif    //TOKENLISTWIDGET_H

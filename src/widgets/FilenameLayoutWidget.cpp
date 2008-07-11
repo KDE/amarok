@@ -195,7 +195,7 @@ FilenameLayoutWidget::mouseMoveEvent( QMouseEvent *event )
 {
     if ( event->buttons() & Qt::LeftButton )
     {
-        int distance = ( event->pos() - startPos ).manhattanLength();
+        int distance = ( event->pos() - m_startPos ).manhattanLength();
         if ( distance >= KApplication::startDragDistance() )
         {
             performDrag( event );
@@ -207,7 +207,7 @@ void
 FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
 {
     if ( event->button() == Qt::LeftButton )
-        startPos = event->pos();
+        m_startPos = event->pos();
 }
 
 void
@@ -245,8 +245,7 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
 Token::Token( const QString &string, QWidget *parent )
     : QLabel( parent )
 {
-    myCount = qobject_cast<FilenameLayoutWidget *>( parent )->getTokenCount();
-    //TODO: resize the labels according to the text size, smth like this:
+    m_myCount = qobject_cast<FilenameLayoutWidget *>( parent )->getTokenCount();
 
     setText( string );
     setTokenString( string );
@@ -270,12 +269,12 @@ Token::Token( const QString &string, QWidget *parent )
 void
 Token::setTokenString( const QString &string )
 {
-    tokenString = string;
+    m_tokenString = string;
 }
 
 QString
 Token::getTokenString()
 {
-    return tokenString;
+    return m_tokenString;
 }
 
