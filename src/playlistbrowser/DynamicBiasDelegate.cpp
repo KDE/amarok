@@ -28,23 +28,16 @@
 
 PlaylistBrowserNS::DynamicBiasDelegate::DynamicBiasDelegate( QWidget* parent )
     : QAbstractItemDelegate( parent )
-{
-}
+{}
 
 void
-PlaylistBrowserNS::DynamicBiasDelegate::paint ( 
-        QPainter * painter,
-        const QStyleOptionViewItem & option,
-        const QModelIndex & index ) const
+PlaylistBrowserNS::DynamicBiasDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     QRect rect( option.rect );
     rect.adjust( 5, 3, -5, -3 );
 
     // TODO: tell it if it's selected or not
-    BiasBoxWidget* widget = 
-        qvariant_cast<BiasBoxWidget*>(
-        index.data( DynamicBiasModel::WidgetRole ) );
-
+    BiasBoxWidget* widget = qvariant_cast<BiasBoxWidget*>( index.data( DynamicBiasModel::WidgetRole ) ); 
     widget->setGeometry( rect );
     widget->show();
 }
@@ -52,13 +45,11 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint (
 
 
 QSize
-PlaylistBrowserNS::DynamicBiasDelegate::sizeHint( 
-        const QStyleOptionViewItem & option,
-        const QModelIndex & index ) const
+PlaylistBrowserNS::DynamicBiasDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-    BiasBoxWidget* widget = 
-        qvariant_cast<BiasBoxWidget*>(
-        index.data( DynamicBiasModel::WidgetRole ) );
+    Q_UNUSED( option )
+
+    BiasBoxWidget* widget = qvariant_cast<BiasBoxWidget*>( index.data( DynamicBiasModel::WidgetRole ) );
     return widget->sizeHint() + QSize( 10, 6 );
 }
 
