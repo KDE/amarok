@@ -23,6 +23,10 @@
 
 #include "Meta.h"
 
+extern "C" {
+#include <gpod/itdb.h>
+}
+
 class IpodCollection;
 
 namespace Meta
@@ -63,6 +67,9 @@ class IpodTrack : public Meta::Track
         virtual GenrePtr genre() const;
         virtual ComposerPtr composer() const;
         virtual YearPtr year() const;
+
+        Itdb_Track* getIpodTrack();
+        void setIpodTrack ( Itdb_Track *ipodtrack );
 
         virtual void setAlbum ( const QString &newAlbum );
         virtual void setArtist ( const QString &newArtist );
@@ -135,6 +142,8 @@ class IpodTrack : public Meta::Track
         IpodGenrePtr m_genre;
         IpodComposerPtr m_composer;
         IpodYearPtr m_year;
+
+        Itdb_Track *m_ipodtrack;
 
         QString m_comment;
         QString m_name;

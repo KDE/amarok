@@ -92,6 +92,18 @@ IpodTrack::isEditable() const
     return false;
 }
 
+Itdb_Track*
+IpodTrack::getIpodTrack()
+{
+    return m_ipodtrack;
+}
+
+void
+IpodTrack::setIpodTrack ( Itdb_Track *ipodtrack )
+{
+    m_ipodtrack = ipodtrack;
+}
+
 AlbumPtr
 IpodTrack::album() const
 {

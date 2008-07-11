@@ -49,7 +49,7 @@ DEBUG_BLOCK
 
 
  GError *err = 0;
- 
+
  m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
  if (  err )
  {
@@ -510,12 +510,12 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
 //        ipodtrack = item->m_track;
     if( !ipodtrack )
         ipodtrack = itdb_track_new();
-    
+
     if( !ipodtrack )
     {
         return;
     }
-    
+
     QString type = pathname.section('.', -1).toLower();
 
     debug() << "Path before put in ipod_path: " << pathname;
@@ -847,7 +847,7 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
         // NOTE: hack employed due to // turning to ::
        // dirname = QString( "%1Music:F%2" ).arg( itunesDir() ).arg( QString::number( dir, 10 ), 2, QLatin1Char( '0' ) );
         dirname = QString( "%1Music:F%2" ).arg(  "iPod_Control:" ).arg( QString::number( dir, 10 ), 2, QLatin1Char( '0' ) );
-        
+
         debug() << "Copying to dirname: " << dirname;
         if( !pathExists( dirname ) )
         {
@@ -917,6 +917,7 @@ IpodHandler::parseTracks()
         /* ipodtrack - provides libgpod itdb info */
         /* track - the new track whose data is being set up */
         Itdb_Track *ipodtrack = ( Itdb_Track * )cur->data;
+
         QString format( ipodtrack->filetype );
         IpodTrackPtr track( new IpodTrack( m_memColl, format ) );
 
@@ -1007,6 +1008,8 @@ IpodHandler::parseTracks()
         genrePtr->addTrack( track );
         track->setGenre( genrePtr );
         trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
+
+        track->setIpodTrack( ipodtrack ); // convenience pointer
 
 
     }
