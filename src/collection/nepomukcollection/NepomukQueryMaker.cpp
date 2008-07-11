@@ -19,8 +19,9 @@
 
 #define DEBUG_PREFIX "NepomukCollection"
 
-#include "NepomukAlbum.h"
 #include "NepomukQueryMaker.h"
+
+#include "NepomukAlbum.h"
 #include "NepomukCollection.h"
 #include "NepomukRegistry.h"
 
