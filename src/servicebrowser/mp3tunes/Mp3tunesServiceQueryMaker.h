@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Casey Link <unnamedrambler@gmail.com>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -94,7 +95,7 @@ protected:
     QString m_albumFilter;
     QString m_trackFilter;
     int m_filterType;
-    
+
 public slots:
 
     void artistDownloadComplete( QList<Mp3tunesLockerArtist> artists );

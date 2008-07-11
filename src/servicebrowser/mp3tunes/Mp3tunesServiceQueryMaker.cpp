@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *             (c) 2007  Adam Pigg <adam@piggz.co.uk>                      *
- *             (c) 2007  Casey Link <unnamedrambler@gmail.com>             *
+ *             (c) 2008  Casey Link <unnamedrambler@gmail.com>             *
  *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

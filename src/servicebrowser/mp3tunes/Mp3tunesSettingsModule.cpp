@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Casey Link <unnamedrambler@gmail.com>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "Mp3tunesSettingsModule.h"
 
 #include "ui_Mp3tunesConfigWidget.h"
@@ -75,7 +76,7 @@ void Mp3tunesSettingsModule::load()
     m_configDialog->enableHarmony->setChecked( m_config.harmonyEnabled() );
     m_configDialog->identifier->setText( m_config.identifier() );
     m_configDialog->pinEdit->setText( m_config.pin() );
-    
+
     KCModule::load();
 }
 

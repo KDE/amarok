@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007  Casey Link <unnamedrambler@gmail.com>             *
+ *   Copyright (c) 2008  Casey Link <unnamedrambler@gmail.com>             *
  *                 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -64,9 +64,9 @@ public:
     Mp3TunesAlbum( const QStringList &resultRow );
 
     ~Mp3TunesAlbum();
-        
+
     virtual QString downloadPrefix() const { return "mp3tunes"; }
-    
+
     virtual void setCoverUrl( const QString &coverURL );
     virtual QString coverUrl() const;
 

@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Casey Link <unnamedrambler@gmail.com>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef MP3TUNESSETTINGSMODULE_H
 #define MP3TUNESSETTINGSMODULE_H
 
@@ -29,7 +30,7 @@ namespace Ui { class Mp3tunesConfigWidget; }
 /**
 A KCM module for configuring the Mp3tunes service
 
-	@author 
+	@author
 */
 class Mp3tunesSettingsModule : public KCModule
 {
@@ -47,7 +48,7 @@ public:
 private slots:
 
     void settingsChanged();
-    
+
 private:
 
     Mp3tunesConfig m_config;
