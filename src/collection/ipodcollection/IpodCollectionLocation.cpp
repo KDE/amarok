@@ -147,17 +147,17 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &
     {
 
         debug() << "copying from " << sources[ track ];
-        
         m_collection->copyTrackToDevice( track );
 
-        
     }
 
     // hack to refresh the collection with new tracks, will fix later
+    /*
     QString udi = m_collection->udi();
     m_collection->deviceRemoved();
     connect( this, SIGNAL( addDevice( const QString& ) ), MediaDeviceCache::instance(), SIGNAL(  deviceAdded( const QString& ) ) );
     emit addDevice( udi );
+    */
     
 
     slotCopyOperationFinished();

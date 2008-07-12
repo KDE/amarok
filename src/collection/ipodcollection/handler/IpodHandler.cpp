@@ -43,32 +43,34 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     , m_memColl( mc )
     , m_mountPoint( mountPoint )
 {
-DEBUG_BLOCK
+    DEBUG_BLOCK
 
 //    initializeIpod();
 
- GError *err = 0;
+        GError *err = 0;
 
- m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
- if (  err )
- {
-     g_error_free( err );
-     if (  m_itdb )
-     {
-         itdb_free(  m_itdb );
-         m_itdb = 0;
-     }
+    // Assuming database exists for now, later will port init db code
+    m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
 
- }
+    if ( err )
+    {
+        g_error_free( err );
+        if ( m_itdb )
+        {
+            itdb_free( m_itdb );
+            m_itdb = 0;
+        }
 
- qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
+    }
+
+    qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
 
 }
 
 IpodHandler::~IpodHandler()
 {
-        if (  m_itdb )
+        if ( m_itdb )
             itdb_free( m_itdb );
 }
 
@@ -466,6 +468,8 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
     debug() << "Trying to write iTunes database";
     writeITunesDB( false ); // false, since not threaded, implement later
     //delete podcastInfo;
+
+
     return;
 }
 
@@ -687,6 +691,9 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
             }
             itdb_playlist_add_track(mpl, ipodtrack, -1);
         }
+
+    // add track to collection
+    addIpodTrackToCollection( ipodtrack );
 }
 
 bool
@@ -793,6 +800,127 @@ IpodHandler::realPath(const char *ipodPath)
     }
 
     return path;
+}
+
+void
+IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
+{
+    TrackMap trackMap = m_memColl->trackMap();
+    ArtistMap artistMap = m_memColl->artistMap();
+    AlbumMap albumMap = m_memColl->albumMap();
+    GenreMap genreMap = m_memColl->genreMap();
+    ComposerMap composerMap = m_memColl->composerMap();
+    YearMap yearMap = m_memColl->yearMap();
+    
+    
+    QString format( ipodtrack->filetype );
+    IpodTrackPtr track( new IpodTrack( m_memColl, format ) );
+
+    /* 1-liner info retrieval */
+
+    track->setTitle( QString::fromUtf8( ipodtrack->title ) );
+    track->setLength( ( ipodtrack->tracklen ) / 1000 );
+    track->setTrackNumber( ipodtrack->track_nr );
+    track->setComment( QString::fromUtf8(  ipodtrack->comment ) );
+    track->setDiscNumber( ipodtrack->cd_nr );
+    track->setBitrate( ipodtrack->bitrate );
+    track->setBpm( ipodtrack->BPM );
+
+    QString path = QString( ipodtrack->ipod_path ).split( ":" ).join( "/" );
+    path = m_mountPoint + path;
+    track->setPlayableUrl( path );
+
+    /* map-related info retrieval */
+    QString album( QString::fromUtf8( ipodtrack->album ) );
+    IpodAlbumPtr albumPtr;
+
+    if ( albumMap.contains( album ) )
+        albumPtr = IpodAlbumPtr::staticCast(  albumMap.value(  album ) );
+
+    else
+    {
+        albumPtr = IpodAlbumPtr(  new IpodAlbum(  album ) );
+        albumMap.insert(  album,  AlbumPtr::staticCast(  albumPtr ) );
+    }
+
+    albumPtr->addTrack(  track );
+    track->setAlbum(  albumPtr );
+
+    QString artist ( QString::fromUtf8( ipodtrack->artist ) );
+    IpodArtistPtr artistPtr;
+
+    if (  artistMap.contains(  artist ) )
+    {
+        artistPtr = IpodArtistPtr::staticCast(  artistMap.value(  artist ) );
+    }
+    else
+    {
+        artistPtr = IpodArtistPtr(  new IpodArtist(  artist ) );
+        artistMap.insert(  artist,  ArtistPtr::staticCast(  artistPtr ) );
+    }
+
+    artistPtr->addTrack(  track );
+    track->setArtist(  artistPtr );
+
+    QString composer ( QString::fromUtf8( ipodtrack->composer ) );
+    IpodComposerPtr composerPtr;
+
+    if ( composerMap.contains( composer ) )
+    {
+        composerPtr = IpodComposerPtr::staticCast( composerMap.value( composer ) );
+    }
+    else
+    {
+        composerPtr = IpodComposerPtr( new IpodComposer( composer ) );
+        composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
+    }
+
+    QString year;
+    year = year.setNum( ipodtrack->year );
+    IpodYearPtr yearPtr;
+    if (  yearMap.contains(  year ) )
+        yearPtr = IpodYearPtr::staticCast(  yearMap.value(  year ) );
+    else
+    {
+        yearPtr = IpodYearPtr(  new IpodYear(  year ) );
+        yearMap.insert(  year,  YearPtr::staticCast(  yearPtr ) );
+    }
+    yearPtr->addTrack(  track );
+    track->setYear(  yearPtr );
+
+    QString genre = ipodtrack->genre;
+    IpodGenrePtr genrePtr;
+
+    if (  genreMap.contains(  genre ) )
+        genrePtr = IpodGenrePtr::staticCast(  genreMap.value(  genre ) );
+
+    else
+    {
+        genrePtr = IpodGenrePtr(  new IpodGenre(  genre ) );
+        genreMap.insert(  genre,  GenrePtr::staticCast(  genrePtr ) );
+    }
+
+    genrePtr->addTrack( track );
+    track->setGenre( genrePtr );
+    trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
+
+    track->setIpodTrack( ipodtrack ); // convenience pointer
+    // NOTE: not supporting adding track that's already on a playlist
+    //ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation
+
+    // Finally, assign the created maps to the collection
+
+    m_memColl->acquireWriteLock();
+    m_memColl->setTrackMap(  trackMap );
+    m_memColl->setArtistMap(  artistMap );
+    m_memColl->setAlbumMap(  albumMap );
+    m_memColl->setGenreMap(  genreMap );
+    m_memColl->setComposerMap(  composerMap );
+    m_memColl->setYearMap(  yearMap );
+    m_memColl->releaseLock();
+
+    return;
+    
 }
 
 void
@@ -910,7 +1038,7 @@ IpodHandler::parseTracks()
         trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
 
         track->setIpodTrack( ipodtrack ); // convenience pointer
-        ipodTrackMap.insert( ipodtrack, track ); // convenience map
+        ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation
     }
 
     // Iterate through ipod's playlists to set track's playlists
@@ -927,6 +1055,8 @@ IpodHandler::parseTracks()
             track->setIpodPlaylist( ipodplaylist );
         }
     }
+
+    // Finally, assign the created maps to the collection
 
     m_memColl->acquireWriteLock();
     m_memColl->setTrackMap(  trackMap );

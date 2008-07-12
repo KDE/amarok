@@ -78,6 +78,7 @@ struct PodcastInfo
        QString           ipodPath( const QString &realPath );
        KUrl determineURLOnDevice( const Meta::TrackPtr &track );
 	   void parseTracks();
+       void addIpodTrackToCollection( Itdb_Track *ipodtrack );
 	   void setMountPoint( const QString &mp) { m_mountPoint = mp; }
        QString           realPath( const char *ipodPath );
 	   bool pathExists( const QString &ipodPath, QString *realPath=0 );

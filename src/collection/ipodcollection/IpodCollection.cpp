@@ -190,6 +190,7 @@ void
 IpodCollection::copyTrackToDevice( const Meta::TrackPtr &track )
 {
     m_handler->copyTrackToDevice( track );
+    emit updated();
     return;
 }
 
