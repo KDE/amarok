@@ -4,6 +4,8 @@ set ( QT_USE_QTXML TRUE )
 set ( QT_DONT_USE_QTGUI TRUE )
 include(${QT_USE_FILE})
 
+add_definitions( -DRXX_ALLOCATOR_INIT_0 )
+
 include_directories(
     ${QT_INCLUDES}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -89,7 +91,7 @@ add_executable(generator ${Generator_SRCS} ${Generator_MOC_SRCS} ${Generator_RCC
 
 target_link_libraries(generator ${QT_LIBRARIES})
 
-#add_custom_command(TARGET generator
-#                     POST_BUILD 
-#                     COMMAND ${CMAKE_CURRENT_BINARY_DIR}/generator --output-directory=${CMAKE_CURRENT_BINARY_DIR}
-#                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+add_custom_command(TARGET generator
+                     POST_BUILD
+                     COMMAND ${CMAKE_CURRENT_BINARY_DIR}/generator --output-directory=${CMAKE_CURRENT_BINARY_DIR}
+                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
