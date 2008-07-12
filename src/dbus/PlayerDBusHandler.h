@@ -19,6 +19,8 @@
 #ifndef PLAYER_DBUS_HANDLER_H
 #define PLAYER_DBUS_HANDLER_H
 
+#include "meta/Meta.h"
+
 #include <QObject>
 #include <QVariantMap>
 
@@ -66,7 +68,8 @@ namespace Amarok
             void TrackChange( QVariantMap );
             void StatusChange( int );
         private slots:
-            void capsChangeSlot();
+            void slotCapsChanged();
+            void slotTrackChanged( Meta::TrackPtr );
     };
 
 } // namespace Amarok

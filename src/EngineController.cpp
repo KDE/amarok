@@ -233,7 +233,11 @@ EngineController::play() //SLOT
     {
         m_media->play();
     }
-    else play( The::playlistModel()->activeTrack() );
+    else
+    {
+        play( The::playlistModel()->activeTrack() );
+        emit trackChanged( The::playlistModel()->activeTrack() );
+    }
 }
 
 void
@@ -256,6 +260,7 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     else
     {
         playUrl( track->playableUrl(), offset );
+        emit trackChanged( track );
     }
 }
 
@@ -339,6 +344,7 @@ EngineController::seek( int ms ) //SLOT
     {
         m_media->seek( static_cast<qint64>( ms ) );
         trackPositionChangedNotify( ms, true ); /* User seek */
+        emit trackSeeked( ms );
     }
     else
         debug() << "Stream is not seekable.";

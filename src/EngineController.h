@@ -93,6 +93,8 @@ public slots:
 signals:
     void statusText( const QString& );
     void trackFinished();
+    void trackChanged( Meta::TrackPtr );
+    void trackSeeked( int ); //return relative time in million second
 
 protected:
     void playUrl( const KUrl &url, uint offset );

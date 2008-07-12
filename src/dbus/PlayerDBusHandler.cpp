@@ -32,12 +32,11 @@ namespace Amarok
     {
         new PlayerAdaptor( this );
         setObjectName("PlayerDBusHandler");
-//TODO: signal: trackchange, statusChange,capChangeSlot
-
+//TODO: signal: statusChange,capChangeSlot
+        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SIGNAL( sloTrackChange( Meta::TrackPtr ) ) );
         QDBusConnection::sessionBus().registerObject("/Player", this);
     }
 
-    //0 = Playing, 1 = Paused, 2 = Stopped.
     DBusStatus PlayerDBusHandler::GetStatus()
     {
         DBusStatus status;
@@ -158,9 +157,14 @@ namespace Amarok
         return caps;
     }
 
-    void PlayerDBusHandler::capsChangeSlot()
+    void PlayerDBusHandler::slotCapsChanged()
     {
         emit CapsChange( GetCaps() );
+    }
+
+    void PlayerDBusHandler::slotTrackChanged( Meta::TrackPtr )
+    {
+        emit TrackChange( GetMetadata() );
     }
 
 } // namespace Amarok
