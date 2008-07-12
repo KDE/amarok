@@ -205,7 +205,15 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist )
     {
         if( id == -1 )
         {
-            QString query = QString( "SELECT id FROM albums WHERE name = '%1';" ).arg( m_collection->escape( name ) );
+            QString query = QString( "SELECT id FROM albums WHERE name = '%1' AND " ).arg( m_collection->escape( name ) );
+            if( artist >= 1)
+            {
+                query += QString( "artist = %1" ).arg( artist );
+            }
+            else
+            {
+                query += QString( "(artist = %1 OR artist IS NULL)" ).arg( artist );
+            }
             QStringList res = m_collection->query( query );
             if( res.isEmpty() )
             {
