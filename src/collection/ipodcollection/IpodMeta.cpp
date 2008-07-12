@@ -104,6 +104,20 @@ IpodTrack::setIpodTrack ( Itdb_Track *ipodtrack )
     m_ipodtrack = ipodtrack;
 }
 
+Itdb_Playlist*
+IpodTrack::getIpodPlaylist()
+{
+    return m_ipodplaylist;
+}
+
+void
+IpodTrack::setIpodPlaylist ( Itdb_Playlist *ipodplaylist )
+{
+    m_ipodplaylist = ipodplaylist;
+}
+
+
+
 AlbumPtr
 IpodTrack::album() const
 {

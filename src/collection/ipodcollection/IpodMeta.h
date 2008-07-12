@@ -71,6 +71,9 @@ class IpodTrack : public Meta::Track
         Itdb_Track* getIpodTrack();
         void setIpodTrack ( Itdb_Track *ipodtrack );
 
+	Itdb_Playlist* getIpodPlaylist();
+	void setIpodPlaylist ( Itdb_Playlist *ipodplaylist );
+
         virtual void setAlbum ( const QString &newAlbum );
         virtual void setArtist ( const QString &newArtist );
         virtual void setGenre ( const QString &newGenre );
@@ -144,6 +147,7 @@ class IpodTrack : public Meta::Track
         IpodYearPtr m_year;
 
         Itdb_Track *m_ipodtrack;
+	Itdb_Playlist *m_ipodplaylist;
 
         QString m_comment;
         QString m_name;

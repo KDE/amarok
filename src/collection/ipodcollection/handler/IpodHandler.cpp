@@ -659,24 +659,6 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
     }
 */
 
-    // NOTE: legacy code
-    /*
-    if( item )
-    {
-        MediaItem *parent = dynamic_cast<MediaItem *>(item->parent());
-        if( parent )
-        {
-            parent->takeItem( item );
-            if( parent->childCount() == 0 && !isSpecialItem( parent ) )
-            {
-                MediaItem *pp = dynamic_cast<MediaItem *>(parent->parent());
-                delete parent;
-                if( pp && pp->childCount() == 0 && !isSpecialItem( pp ) )
-                    delete pp;
-            }
-        }
-    }
-    */
         itdb_track_add(m_itdb, ipodtrack, -1);
 
         // TODO: podcasts NYI
@@ -825,6 +807,8 @@ IpodHandler::parseTracks()
     ComposerMap composerMap;
     YearMap yearMap;
 
+    QMap<Itdb_Track*, IpodTrackPtr> ipodTrackMap;
+
     GList *cur;
 
 /* iterate through tracklist and add to appropriate map */
@@ -926,7 +910,22 @@ IpodHandler::parseTracks()
         trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
 
         track->setIpodTrack( ipodtrack ); // convenience pointer
+        ipodTrackMap.insert( ipodtrack, track ); // convenience map
+    }
 
+    // Iterate through ipod's playlists to set track's playlists
+
+    GList *member = 0;
+
+    for ( cur = m_itdb->playlists; cur; cur = cur->next )
+    {
+        Itdb_Playlist *ipodplaylist = ( Itdb_Playlist * ) cur->data;
+        for ( member = ipodplaylist->members; member; member = member->next )
+        {
+            Itdb_Track *ipodtrack = ( Itdb_Track * )member->data;
+            IpodTrackPtr track = ipodTrackMap.value( ipodtrack );
+            track->setIpodPlaylist( ipodplaylist );
+        }
     }
 
     m_memColl->acquireWriteLock();
