@@ -135,6 +135,7 @@ QueryMaker * ShoutcastServiceQueryMaker::setQueryType( QueryType type )
     case QueryMaker::Composer:
     case QueryMaker::Year:
     case QueryMaker::Custom:
+    case QueryMaker::None:
         return this;
     }
 }
