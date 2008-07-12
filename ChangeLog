@@ -8,6 +8,8 @@ VERSION 2.0-alpha2:
     * Automatic detection of non-UTF-8 charsets for metadata.
   CHANGES:
   BUGFIXES:
+    * Add a path separator if required when constructing relative urls from M3U 
+      playlists. (BR 166346)
     * Rescan collection if the version is higher than we currently use
       (downgrades). (BR 142712)
     * Play the first track in the playlist if there is no active track.
