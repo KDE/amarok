@@ -113,33 +113,15 @@ struct PodcastInfo
 	QString           m_mountPoint;
 	QString           m_name;
 
-//        IpodMediaItem    *getArtist( const QString &artist );
-//        IpodMediaItem    *getAlbum( const QString &artist, const QString &album );
-//        IpodMediaItem    *getTrack( const QString &artist, const QString &album,
-//                                    const QString &title,
-//                                    int discNumber = -1, int trackNumber = -1 );
-//        IpodMediaItem    *getTrack( const Itdb_Track *itrack );
-
-//        bool              removeDBTrack( Itdb_Track *track );
-
         bool              m_dbChanged;
 
-//        QCheckBox        *m_syncStatsCheck;
-//        QCheckBox        *m_autoDeletePodcastsCheck;
         QFile            *m_lockFile;
-//        QMutex            m_mutex;
-
-//        KAction          *m_customAction;
-//        enum              { CHECK_INTEGRITY, UPDATE_ARTWORK, SET_IPOD_MODEL };
 
         // KIO-related Vars (to be moved elsewhere eventually)
 
         bool m_copyFailed;
         bool m_isCanceled;
         bool m_wait;
-
-
-
     };
 }
 #endif
