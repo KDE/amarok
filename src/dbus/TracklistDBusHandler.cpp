@@ -23,6 +23,8 @@
 #include "collection/CollectionManager.h"
 #include "mediabrowser.h"
 #include "playlist/PlaylistModel.h"
+#include "dbus/PlayerDBusHandler.h"
+
 
 #include <KUrl>
 
@@ -34,8 +36,10 @@ namespace Amarok
     TracklistDBusHandler::TracklistDBusHandler()
         : QObject( kapp )
     {
-        new TracklistAdaptor(this);
+        QObject* pa = new TracklistAdaptor(this);
         QDBusConnection::sessionBus().registerObject( "/TrackList", this );
+        connect( The::playlistModel(), SIGNAL( playlistCountChanged( int ) ), pa, SLOT( slotTrackListChange() ) );
+        connect( The::playlistModel(), SIGNAL( rowMoved( int, int ) ), pa, SLOT( slotTrackListChange() ) );
     }
 
     int TracklistDBusHandler::AddTrack( const QString& url, bool playImmediately )
@@ -62,7 +66,6 @@ namespace Amarok
     int TracklistDBusHandler::GetCurrentTrack()
     {
         return The::playlistModel()->activeRow();
-        //todo: check this function
     }
 
     int TracklistDBusHandler::GetLength()
@@ -72,8 +75,7 @@ namespace Amarok
 
     QVariantMap TracklistDBusHandler::GetMetadata( int position )
     {
-        //todo: add function
-        return QVariantMap();
+        return The::playerDBusHandler()->GetTrackMetadata( The::playlistModel()->trackForRow( position ) );
     }
 
     void TracklistDBusHandler::SetLoop(bool enable)
@@ -86,6 +88,11 @@ namespace Amarok
     {
         static_cast<KSelectAction*>( Amarok::actionCollection()->action( "random_mode" ) )
         ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
+    }
+
+    void TracklistDBusHandler::slotTrackListChange()
+    {
+        emit TrackListChange( The::playlistModel()->rowCount() );
     }
 }
 

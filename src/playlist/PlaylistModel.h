@@ -209,7 +209,7 @@ namespace Playlist
 
             int activeRow() const { return m_activeRow; }
             void setActiveRow( int row );
-            Meta::TrackPtr activeTrack() const;  
+            Meta::TrackPtr activeTrack() const;
             void setActiveItem( Playlist::Item* active) { setActiveRow( m_items.lastIndexOf(active) ); }
             bool rowExists( int row ) { return 0 <= row && row < rowCount(); }
 

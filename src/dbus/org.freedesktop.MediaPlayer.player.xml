@@ -48,11 +48,13 @@
     </method>
 
     <signal name="TrackChange">
-        <arg type="s"/>
+        <arg type="a{sv}"/>
+        <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QVariantMap"/>
     </signal>
 
     <signal name="StatusChange">
-        <arg type="i"/>
+        <arg type="(iiii)"/>
+        <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="DBusStatus"/>
     </signal>
 
     <signal name="CapsChange">

@@ -27,13 +27,22 @@
 
 namespace Amarok
 {
+
+    PlayerDBusHandler *PlayerDBusHandler::s_instance = 0;
+
     PlayerDBusHandler::PlayerDBusHandler()
         : QObject(kapp)
     {
-        new PlayerAdaptor( this );
+        s_instance = this;
+        QObject* pa = new PlayerAdaptor( this );
         setObjectName("PlayerDBusHandler");
-//TODO: signal: statusChange,capChangeSlot
-        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SIGNAL( slotTrackChanged() ) );
+
+        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), pa, SLOT( slotTrackChange() ) );
+        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), pa, SLOT( slotStatusChange() ) );
+        connect( The::engineController(), SIGNAL( trackFinished() ), pa, SLOT( slotStatusChange() ) );
+        connect( The::engineController(), SIGNAL( trackPlayPause( int ) ), pa, SLOT( slotStatusChange() ) );
+        connect( this, SIGNAL( statusChange( DBusStatus ) ), pa, SLOT( slotCapsChange() ) );
+
         QDBusConnection::sessionBus().registerObject("/Player", this);
     }
 
@@ -111,8 +120,45 @@ namespace Amarok
 
     QVariantMap PlayerDBusHandler::GetMetadata()
     {
-        QVariantMap map;
+        GetTrackMetadata( The::engineController()->currentTrack() );
+    }
+
+    int PlayerDBusHandler::GetCaps()
+    {
+        int caps = NONE;
         Meta::TrackPtr track = The::engineController()->currentTrack();
+        caps |= CAN_HAS_TRACKLIST;
+        if ( track ) caps |= CAN_PROVIDE_METADATA;
+        if ( GetStatus().Play == 0 /*playing*/ ) caps |= CAN_PAUSE;
+        if ( ( GetStatus().Play == 1 /*paused*/ ) || ( GetStatus().Play == 2 /*stoped*/ ) ) caps |= CAN_PLAY;
+        if ( ( GetStatus().Play == 0 /*playing*/ ) || ( GetStatus().Play == 1 /*paused*/ ) ) caps |= CAN_SEEK;
+        if ( ( The::playlistModel()->activeRow() >= 0 ) && ( The::playlistModel()->activeRow() <= The::playlistModel()->rowCount() ) )
+        {
+            caps |= CAN_GO_NEXT;
+            caps |= CAN_GO_PREV;
+        }
+        return caps;
+    }
+
+    void PlayerDBusHandler::slotCapsChange()
+    {
+        emit CapsChange( GetCaps() );
+    }
+
+    void PlayerDBusHandler::PlayerDBusHandler::slotTrackChange()
+    {
+        emit TrackChange( GetMetadata() );
+    }
+
+    void PlayerDBusHandler::slotStatusChange()
+    {
+        DBusStatus status = GetStatus();
+        emit StatusChange( status );
+    }
+
+    QVariantMap PlayerDBusHandler::GetTrackMetadata( Meta::TrackPtr track )
+    {
+        QVariantMap map;
         if( track ) {
             //general meta info:
             map["title"] = track->name(); 
@@ -136,37 +182,12 @@ namespace Amarok
             map["audio-samplerate"] = track->sampleRate();
             //amarok has no video-bitrate
         }
-
         return map;
     }
-
-    int PlayerDBusHandler::GetCaps()
-    {
-        int caps = NONE;
-        Meta::TrackPtr track = The::engineController()->currentTrack();
-        caps |= CAN_HAS_TRACKLIST;
-        if ( track ) caps |= CAN_PROVIDE_METADATA;
-        if ( GetStatus().Play == 0 /*playing*/ ) caps |= CAN_PAUSE;
-        if ( ( GetStatus().Play == 1 /*paused*/ ) || ( GetStatus().Play == 2 /*stoped*/ ) ) caps |= CAN_PLAY;
-        if ( ( GetStatus().Play == 0 /*playing*/ ) || ( GetStatus().Play == 1 /*paused*/ ) ) caps |= CAN_SEEK;
-        if ( ( The::playlistModel()->activeRow() >= 0 ) && ( The::playlistModel()->activeRow() <= The::playlistModel()->rowCount() ) )
-        {
-            caps |= CAN_GO_NEXT;
-            caps |= CAN_GO_PREV;
-        }
-        return caps;
-    }
-
-    void PlayerDBusHandler::slotCapsChanged()
-    {
-        emit CapsChange( GetCaps() );
-    }
-
-    void PlayerDBusHandler::slotTrackChanged()
-    {
-        emit TrackChange( GetMetadata() );
-    }
-
 } // namespace Amarok
+
+namespace The {
+    Amarok::PlayerDBusHandler* playerDBusHandler() { return Amarok::PlayerDBusHandler::s_instance; }
+}
 
 #include "PlayerDBusHandler.moc"

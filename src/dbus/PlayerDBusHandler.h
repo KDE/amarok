@@ -24,6 +24,14 @@
 #include <QObject>
 #include <QVariantMap>
 
+namespace Amarok {
+    class PlayerDBusHandler;
+}
+
+namespace The {
+    AMAROK_EXPORT Amarok::PlayerDBusHandler* playerDBusHandler();
+}
+
 struct DBusStatus
 {
     int Play; //Playing = 0, Paused = 1, Stopped = 2
@@ -36,6 +44,8 @@ namespace Amarok
 {
     class PlayerDBusHandler : public QObject
     {
+        friend Amarok::PlayerDBusHandler* The::playerDBusHandler();
+
         Q_OBJECT
         public:
             PlayerDBusHandler();
@@ -66,10 +76,15 @@ namespace Amarok
         signals:
             void CapsChange( int );
             void TrackChange( QVariantMap );
-            void StatusChange( int );
+            void StatusChange( DBusStatus );
         private slots:
-            void slotCapsChanged();
-            void slotTrackChanged();
+            void slotCapsChange();
+            void slotTrackChange();
+            void slotStatusChange();
+        public:
+            QVariantMap GetTrackMetadata( Meta::TrackPtr track );
+        private:
+            static PlayerDBusHandler* s_instance;
     };
 
 } // namespace Amarok

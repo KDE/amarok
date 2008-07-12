@@ -330,9 +330,13 @@ EngineController::playPause() //SLOT
     if( m_media->state() == Phonon::PlayingState )
     {
         pause();
+        emit trackPlayPause( Paused );
     }
     else
+    {
         play();
+        emit trackPlayPause( Playing );
+    }
 }
 
 void

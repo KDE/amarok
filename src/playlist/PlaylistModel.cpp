@@ -81,10 +81,6 @@ namespace Amarok
 }
 
 
-
-
-
-
 Playlist::Model *Playlist::Model::s_instance = 0;
 
 Playlist::Model::Model( QObject* parent )

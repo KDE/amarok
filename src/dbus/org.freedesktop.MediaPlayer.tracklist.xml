@@ -36,5 +36,9 @@
         <arg type="b" />
     </method>
 
+    <signal name="TrackListChange">
+        <arg type="i" />
+    </signal>
+
   </interface>
 </node>

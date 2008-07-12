@@ -71,6 +71,13 @@ public:
     bool loaded() { return phononMediaObject()->state() != Phonon::StoppedState; }
     bool getAudioCDContents(const QString &device, KUrl::List &urls);
     bool isStream();
+    enum PlayerStatus
+    {
+        Playing  = 0,
+        Paused   = 1,
+        Stopped  = 2,
+        Error   = -1
+    };
 
 public slots:
     void play();
@@ -91,7 +98,7 @@ public slots:
     void mute();
 
 signals:
-    void statusText( const QString& );
+    void trackPlayPause( int );
     void trackFinished();
     void trackChanged( Meta::TrackPtr );
     void trackSeeked( int ); //return relative time in million second
