@@ -17,6 +17,7 @@
 
 #include "Bias.h"
 #include "BiasedPlaylist.h"
+#include "BlockingQuery.h"
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "MetaQueryMaker.h"
@@ -56,6 +57,12 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
 
 
     loadPlaylists();
+
+    connect( CollectionManager::instance(),
+            SIGNAL(collectionDataChanged(Collection*)),
+            SLOT(computeUniverse()) );
+
+    computeUniverse();
 }
 
 PlaylistBrowserNS::DynamicModel::~DynamicModel()
@@ -250,6 +257,37 @@ PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
     {
         warning() << "Bias with no type.";
         return 0;
+    }
+}
+
+const QSet<Meta::TrackPtr>&
+PlaylistBrowserNS::DynamicModel::universe()
+{
+    return m_universe;
+}
+
+
+void
+PlaylistBrowserNS::DynamicModel::computeUniverse()
+{
+    DEBUG_BLOCK
+
+    m_universe.clear();
+
+    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+    qm->orderByRandom();
+    qm->setQueryType( QueryMaker::Track );
+
+    BlockingQuery bq( qm );
+    bq.startQuery();
+
+    QList<Meta::TrackList> trackLists = bq.tracks().values();
+    foreach( Meta::TrackList ts, trackLists )
+    {
+        foreach( Meta::TrackPtr t, ts )
+        {
+            m_universe.insert( t );
+        }
     }
 }
 

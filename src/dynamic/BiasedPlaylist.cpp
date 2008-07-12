@@ -26,6 +26,7 @@
 #include "Debug.h"
 #include "MetaQueryMaker.h"
 #include "playlist/PlaylistModel.h"
+#include "StatusBar.h"
 
 #include <threadweaver/ThreadWeaver.h>
 
@@ -50,7 +51,6 @@ Dynamic::BiasedPlaylist::BiasedPlaylist(
     , m_randomSource(collection)
 {
     setTitle( title );
-    updateDomainSize();
 }
 
 
@@ -61,19 +61,35 @@ Dynamic::BiasedPlaylist::setContext( Meta::TrackList context )
 }
 
 void
-Dynamic::BiasedPlaylist::startSolver()
+Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 {
     DEBUG_BLOCK
 
-    if( m_solver ) return;
+    if( !m_solver )
+    {
+        updateBiases();
+        m_solver = new BiasSolver( 
+                BUFFER_SIZE, m_biases, &m_randomSource, m_context );
+        connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
+                this, SLOT(solverFinished(ThreadWeaver::Job*)),
+                Qt::DirectConnection );
 
-    updateBiases();
-    m_solver = new BiasSolver( 
-            BUFFER_SIZE, m_domainSize, m_biases, &m_randomSource, m_context );
-    connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
-            this, SLOT(solverFinished(ThreadWeaver::Job*)),
-            Qt::DirectConnection );
-    ThreadWeaver::Weaver::instance()->enqueue( m_solver );
+        ThreadWeaver::Weaver::instance()->enqueue( m_solver );
+    }
+
+    if( withStatusBar )
+    {
+        The::statusBar()->newProgressOperation( m_solver );
+        The::statusBar()->shortMessage( i18n("Generating playlist...") );
+
+        connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
+    }
+}
+
+void
+Dynamic::BiasedPlaylist::updateStatus( int progress )
+{
+    The::statusBar()->setProgress( m_solver, progress );
 }
 
 
@@ -97,7 +113,7 @@ Dynamic::BiasedPlaylist::getTrack()
             debug() << "BiasedPlaylist: waiting for results.";
             if( m_context.isEmpty() )
                 getContext();
-            startSolver();
+            startSolver( true );
             m_solverLoop.exec();
         }
 
@@ -120,7 +136,6 @@ Dynamic::BiasedPlaylist::getTrack()
 void
 Dynamic::BiasedPlaylist::recalculate()
 {
-    updateDomainSize();
     m_buffer.clear();
     m_backbuffer.clear();
 
@@ -145,6 +160,7 @@ Dynamic::BiasedPlaylist::biases() const
 void
 Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
 {
+    The::statusBar()->endProgressOperation( m_solver );
     m_backbuffer = m_solver->solution();
     ThreadWeaver::Weaver::instance()->dequeue( job );
     job->deleteLater();
@@ -177,32 +193,6 @@ Dynamic::BiasedPlaylist::getContext()
     for( ; i < items.size(); ++i )
     {
         m_context.append( items[i]->track() );
-    }
-}
-
-void
-Dynamic::BiasedPlaylist::updateDomainSize()
-{
-    QueryMaker* qm;
-
-    if( m_collection )
-        qm = m_collection->queryMaker();
-    else
-        qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-
-    qm->setQueryType( QueryMaker::Custom );
-    qm->addReturnFunction( QueryMaker::Count, QueryMaker::valUrl );
-    BlockingQuery bq( qm );
-    
-    bq.startQuery();
-
-    m_domainSize = 0;
-    foreach( QStringList sl, bq.customData() )
-    {
-        foreach( QString s, sl )
-        {
-            m_domainSize += s.toInt();
-        }
     }
 }
 

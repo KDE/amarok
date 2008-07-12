@@ -45,7 +45,7 @@ namespace Dynamic {
 
         private:
             void fillCache();
-            static const int CACHE_SIZE = 100;
+            static const int CACHE_SIZE;
             Meta::TrackList m_cache;
     };
 }

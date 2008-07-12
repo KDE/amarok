@@ -33,6 +33,8 @@ PlaylistBrowserNS::DynamicBiasDelegate::DynamicBiasDelegate( QWidget* parent )
 void
 PlaylistBrowserNS::DynamicBiasDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
+    Q_UNUSED(painter)
+
     QRect rect( option.rect );
     rect.adjust( 5, 3, -5, -3 );
 

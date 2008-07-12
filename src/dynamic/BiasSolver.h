@@ -37,16 +37,20 @@ namespace Dynamic
      */
     class BiasSolver : public ThreadWeaver::Job
     {
+        Q_OBJECT
+
         public:
             BiasSolver( 
-                    int n, int domainSize,
-                    QList<Bias*> biases, RandomPlaylist* randomSource,
+                    int n, QList<Bias*> biases, RandomPlaylist* randomSource,
                     Meta::TrackList context = Meta::TrackList() );
 
             Meta::TrackList solution();
 
         protected:
             void run();
+
+        signals:
+            void statusUpdate( int progress );
 
 
         private:
@@ -71,10 +75,7 @@ namespace Dynamic
 
             RandomPlaylist* m_mutationSource;
 
-            double m_domainSize; //! how many tracks in the collection
-
             static const int    ITERATION_LIMIT; //! give up after this many iterations
-
             static const double INITIAL_TEMPERATURE;
             static const double COOLING_RATE;
     };

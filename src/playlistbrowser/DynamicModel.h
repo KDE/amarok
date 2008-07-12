@@ -24,6 +24,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QHash>
+#include <QSet>
 #include <QString>
 
 namespace Dynamic
@@ -61,6 +62,10 @@ class DynamicModel : public QAbstractItemModel
         Dynamic::DynamicPlaylistPtr setActivePlaylist( int );
         Dynamic::DynamicPlaylistPtr activePlaylist();
 
+        const QSet<Meta::TrackPtr>& universe();
+
+    private slots:
+        void computeUniverse();
 
     private:
         void loadPlaylists();
@@ -77,6 +82,8 @@ class DynamicModel : public QAbstractItemModel
 
         QHash< QString, Dynamic::DynamicPlaylistPtr >    m_playlistHash;
         Dynamic::DynamicPlaylistList                     m_playlistList;
+
+        QSet<Meta::TrackPtr> m_universe;
 };
 
 }

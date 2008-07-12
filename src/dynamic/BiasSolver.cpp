@@ -21,12 +21,17 @@
 
 #include "BiasSolver.h"
 #include "Debug.h"
+#include "DynamicModel.h"
 
 #include <cmath>
 #include <typeinfo>
+
+#include <QBitArray>
+#include <QHash>
+
 #include <KRandom>
 
-const int    Dynamic::BiasSolver::ITERATION_LIMIT = 5000;
+const int    Dynamic::BiasSolver::ITERATION_LIMIT = 10000;
 
 /* These number are black magic. The best values can only be obtained through
  * exhaustive trial and error or writing another optimization program to
@@ -35,15 +40,17 @@ const double Dynamic::BiasSolver::INITIAL_TEMPERATURE = 0.1;
 const double Dynamic::BiasSolver::COOLING_RATE        = 0.8;
 
 
-Dynamic::BiasSolver::BiasSolver(
-        int n, int domainSize,
-        QList<Bias*> biases, RandomPlaylist* randomSource,
-        Meta::TrackList context )
+// Logical xor. It comes in handy.
+static bool LXOR( bool a, bool b )
+{
+    return (a && !b) || (!a && b);
+}
+
+Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, RandomPlaylist* randomSource, Meta::TrackList context )
     : m_biases(biases)
     , m_n(n)
     , m_context(context)
     , m_mutationSource( randomSource )
-    , m_domainSize((double)domainSize)
 {
     int i = m_biases.size();
     while( i-- )
@@ -62,17 +69,24 @@ void Dynamic::BiasSolver::run()
         return;
     }
 
+    const double E_0 = m_E;
+
     int i = ITERATION_LIMIT;
     double epsilon = 1.0 / (double)m_n;
     while( i-- && m_E >= epsilon  )  
     {
         iterate();
+
+        if( i % 250 == 0 )
+        {
+            debug() << "E = " << m_E;
+            int progress = (int)(100.0 * (1.0 - m_E/E_0));
+            emit statusUpdate( progress >= 0 ? progress : 0 );
+        }
     }
 
     debug() << "BiasSolver: System solved in " << (ITERATION_LIMIT - i) << " iterations.";
     debug() << "with E = " << m_E;
-
-    setFinished( true );
 }
 
 Meta::TrackList Dynamic::BiasSolver::solution()
@@ -83,12 +97,6 @@ Meta::TrackList Dynamic::BiasSolver::solution()
 
 void Dynamic::BiasSolver::initialize()
 {
-    DEBUG_BLOCK
-
-    // TODO:
-    // - filter out absolute global biases (those with weights of 0.0 or 1.0
-    // - filter out infeasible biases
-
     generateInitialPlaylist();
 
     m_E = energy();
@@ -148,7 +156,7 @@ double Dynamic::BiasSolver::recalculateEnergy( Meta::TrackPtr mutation, int muta
         {
             m_biasEnergy[i] = 
                 m_biases[i]->reevaluate( 
-                        m_E, m_playlist, mutation, 
+                        m_biasEnergy[i], m_playlist, mutation, 
                         mutationPos, m_context );
             sum += qAbs( m_biasEnergy[i] );
             activeBiases++;
@@ -159,22 +167,22 @@ double Dynamic::BiasSolver::recalculateEnergy( Meta::TrackPtr mutation, int muta
 }
 
 
-void Dynamic::BiasSolver::generateInitialPlaylist()
+void
+Dynamic::BiasSolver::generateInitialPlaylist()
 {
     DEBUG_BLOCK
-    // This confusing bit of code is a greedy heuristic that tries to choose
-    // tracks that are rare but in high demand by global biases. That way we
-    // don't eat up a lot of iterations looking for them.
+    // Playlist generation is NP-Hard, but the subset of playlist generation
+    // that consists of just global, proportional biases can be solved in linear
+    // time (to be precise, O(m*n), where m is the number of biases, and n is
+    // the size of the playlist to generate.  Here we do that. Solving it
+    // otherwise could be potentially very slow.
 
+    // Note that this is just a heuristic for the system as whole. We cross our
+    // fingers a bit and assume it is mostly composed of global biases.
+
+
+    // First we make a list of all the global biases which are feasible.
     QList<Dynamic::GlobalBias*> globalBiases;
-    QList<double> weights;
-    double totalWeight = 0.0;
-
-    // Ahhh...empty collection!
-    if( m_domainSize == 0.0 ) 
-        return;
-
-
     foreach( Dynamic::Bias* b, m_biases )
     {
         Dynamic::GlobalBias* gb = dynamic_cast<Dynamic::GlobalBias*>( b );
@@ -190,67 +198,105 @@ void Dynamic::BiasSolver::generateInitialPlaylist()
                 gb->setActive(false);
             }
             else
-            {
                 globalBiases.append( gb );
-                // this is the the difference between the desired proportion and
-                // the actual probability a track with that propery is chosen.
-                double deviance =
-                    gb->weight() - (double)gb->propertySet().size()/m_domainSize;
-
-                debug() << "deviance = " << deviance;
-                weights.append( deviance );
-                totalWeight += qAbs( weights.last() );
-            }
         }
     }
 
-    if( globalBiases.isEmpty() )
+    // Empty collection
+    if( PlaylistBrowserNS::DynamicModel::instance()->universe().size() == 0 )
+        return;
+
+    // No feasible global biases
+    if( globalBiases.size() == 0 )
     {
         m_playlist = m_mutationSource->getTracks( m_n );
         return;
     }
 
-    // whatever, we'll just use a random sample
-    if( globalBiases.isEmpty() )
-        m_playlist = m_mutationSource->getTracks( m_n );
 
-    // we need these as lists to get random value from
-    QList< Meta::TrackList > propertySets;
-    foreach( Dynamic::GlobalBias* gb, globalBiases )
-    {
-        propertySets.append( gb->propertySet().toList() );
-    }
+    // We are going to be computing a lot of track set intersections so we will
+    // memoize to try and save time (if not memory).
+    QHash< QBitArray, QSet<Meta::TrackPtr> > memoizedIntersections;
 
-    m_playlist.clear();
+
+    // As we build up the playlist the weights for each bias will change to
+    // reflect what proportion of the tracks that remain to be chosen should
+    // have the property in question.
+    double* movingWeights = new double[globalBiases.size()];
+    for( int i = 0; i < globalBiases.size(); ++i )
+        movingWeights[i] = globalBiases[i]->weight();
+
+
+    double decider;
     int n = m_n;
-    int active;
-    double activeDecider;
-    while( n-- )
+    while( --n )
     {
-        // choose the active bias
-        activeDecider = totalWeight * (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
+        // For each bias, we must make a decision whether the track being chosen
+        // should belong to it or not. This is simply a probabalistic choice
+        // based on the current weight. 
 
-        active = 0;
-        while( activeDecider > 0.0 && active < globalBiases.size()-1 )
+        // The bit array represents the choice made at each branch. (1 = accept
+        // the bias, 0 = reject the bias).
+        QBitArray intersect;
+        QSet<Meta::TrackPtr> S = PlaylistBrowserNS::DynamicModel::instance()->universe();
+        for( int i = 0; i < globalBiases.size(); ++i )
         {
-            if( activeDecider > weights[active] )
+
+            // Decide whether we should 'accept' or 'reject' a bias.
+            intersect.resize( intersect.size() + 1 );
+            decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
+            if( decider < movingWeights[i] )
             {
-                activeDecider -= weights[active];
-                active++;
+                //debug() << "+?";
+                intersect.setBit( intersect.size()-1, true );
+                if( !memoizedIntersections.contains(intersect) )
+                    memoizedIntersections[intersect] = S.intersect( globalBiases[i]->propertySet() );
             }
-            else break;
+            else
+            {
+                //debug() << "-?";
+                intersect.setBit( intersect.size()-1, false );
+                if( !memoizedIntersections.contains(intersect) )
+                    memoizedIntersections[intersect] = S.subtract( globalBiases[i]->propertySet() );
+            }
+
+            int newSize = memoizedIntersections[intersect].size();
+
+            // Now we have to make sure our decision doesn't land us with an
+            // empty set. If that's the case, we have to choose the other
+            // branch, even if it does defy the probability. (This is how we
+            // deal with infeasible systems.)
+
+            // the 'accept' branch
+            if( LXOR( intersect.testBit(intersect.size()-1), newSize == 0 ) )
+            {
+                //debug() << "+";
+                movingWeights[i] = (movingWeights[i]*(double)(n+1)-1.0)/(double)n;
+                intersect.setBit( intersect.size()-1, true );
+                if( !memoizedIntersections.contains(intersect) )
+                    memoizedIntersections[intersect] = S.intersect( globalBiases[i]->propertySet() );
+            }
+            // the 'reject' branch
+            else
+            {
+                //debug() << "-";
+                movingWeights[i] = (movingWeights[i]*(double)(n+1))/(double)n;
+                intersect.setBit( intersect.size()-1, false );
+                if( !memoizedIntersections.contains(intersect) )
+                    memoizedIntersections[intersect] = S.subtract( globalBiases[i]->propertySet() );
+            }
+
+            //debug() << "i now has weight: " << movingWeights[i];
+
+            S = memoizedIntersections[intersect];
+            //debug() << "S.size = " << S.size();
         }
 
-        if( weights[active] < 0.0 )
-        {
-            // TODO: choose a random track from the set's complement
-            m_playlist.append( m_mutationSource->getTrack() );
-        }
-        else
-        {
-            int choice = KRandom::random() % propertySets[active].size();
-            m_playlist.append( propertySets[active][choice] );
-        }
+        // Now just convert the set we are left with into a list and choose a
+        // random track from it.
+        QList<Meta::TrackPtr> SList = S.toList();
+        int choice = KRandom::random() % S.size();
+        m_playlist.append( SList[choice] );
     }
 }
 
@@ -259,3 +305,4 @@ Meta::TrackPtr Dynamic::BiasSolver::getMutation()
 {
     return m_mutationSource->getTrack();
 }
+

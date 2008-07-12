@@ -113,19 +113,24 @@ namespace PlaylistBrowserNS
             void fieldChanged( int );
             void compareChanged( int );
             void valueChanged( const QString& );
+            void valueChanged( const QTime& );
 
         private:
             void syncControlsToBias();
             void syncBiasToControls();
 
             void popuplateFieldSection();
-
             void setValueSection( QWidget* );
+
+            void makeCompareSelection( QWidget* parent );
+
             void makeArtistSelection();
             void makeAlbumSelection();
             void makeTitleSelection();
             void makeGenreSelection();
             void makeYearSelection();
+            void makePlaycountSelection();
+            void makeLengthSelection();
 
             QFrame*      m_controlFrame;
             QGridLayout* m_controlLayout;

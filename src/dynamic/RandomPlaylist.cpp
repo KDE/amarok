@@ -28,6 +28,7 @@
 
 #include <KRandom>
 
+const int Dynamic::RandomPlaylist::CACHE_SIZE = 200;
 
 Dynamic::RandomPlaylist::RandomPlaylist()
     : DynamicPlaylist()

@@ -40,6 +40,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QSpinBox>
+#include <QTimeEdit>
 #include <QToolButton>
 
 #include <KComboBox>
@@ -276,6 +277,8 @@ PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
     m_fieldSelection->addItem( "Title",  QueryMaker::valTitle );
     m_fieldSelection->addItem( "Genre",  QueryMaker::valGenre );
     m_fieldSelection->addItem( "Year",   QueryMaker::valYear );
+    m_fieldSelection->addItem( "Play Count", QueryMaker::valPlaycount );
+    m_fieldSelection->addItem( "Length", QueryMaker::valLength );
         
 }
 
@@ -315,6 +318,11 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
         makeGenreSelection();
     else if( field == QueryMaker::valYear )
         makeYearSelection();
+    else if( field == QueryMaker::valPlaycount )
+        makePlaycountSelection();
+    else if( field == QueryMaker::valLength )
+        makeLengthSelection();
+        
     //etc
 }
 
@@ -357,6 +365,30 @@ PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QString& value )
     debug() << "new value: " << value;
     m_gbias->filter().value = value;
     syncBiasToControls();
+}
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QTime& value )
+{
+    DEBUG_BLOCK
+    m_gbias->filter().value = QString::number( qAbs( value.secsTo( QTime(0,0,0) ) ) );
+    debug() << "new value: " << m_gbias->filter().value;
+    syncBiasToControls();
+}
+
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection( QWidget* parent )
+{
+    m_compareSelection = new KComboBox( parent );
+    m_compareSelection->setPalette( QApplication::palette() );
+    m_compareSelection->addItem( "", -1 ); // TODO: figure out what this does
+    m_compareSelection->addItem( "less than",    (int)QueryMaker::LessThan );
+    m_compareSelection->addItem( "equal to",     (int)QueryMaker::Equals );
+    m_compareSelection->addItem( "greater than", (int)QueryMaker::GreaterThan );
+
+    connect( m_compareSelection, SIGNAL(currentIndexChanged(int)),
+            SLOT(compareChanged(int)) );
 }
 
 void
@@ -482,18 +514,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeYearSelection()
 {
     KHBox* hLayout = new KHBox( m_controlFrame );
 
-    m_compareSelection = new KComboBox( hLayout );
-    m_compareSelection->setPalette( QApplication::palette() );
-    m_compareSelection->addItem( "", -1 ); // TODO: figure out what this does
-    m_compareSelection->addItem( "less than",    (int)QueryMaker::LessThan );
-    m_compareSelection->addItem( "equal to",     (int)QueryMaker::Equals );
-    m_compareSelection->addItem( "greater than", (int)QueryMaker::GreaterThan );
-
-    // TODO: select the right compare index
-
-    connect( m_compareSelection, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(compareChanged(int)) );
-
+    makeCompareSelection( hLayout );
 
     QSpinBox* yearSpin = new QSpinBox( hLayout );
     yearSpin->setMinimum( 0 );
@@ -503,6 +524,45 @@ PlaylistBrowserNS::BiasGlobalWidget::makeYearSelection()
             this, SLOT(valueChanged(const QString&)) );
 
     yearSpin->setValue( m_gbias->filter().value.toInt() );
+    setValueSection( hLayout );
+}
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::makePlaycountSelection()
+{
+    KHBox* hLayout = new KHBox( m_controlFrame );
+
+    makeCompareSelection( hLayout );
+
+    QSpinBox* countSpin = new QSpinBox( hLayout );
+    countSpin->setMinimum( 0 );
+
+    connect( countSpin, SIGNAL(valueChanged( const QString& )),
+            this, SLOT(valueChanged(const QString&)) );
+
+    countSpin->setValue( m_gbias->filter().value.toInt() );
+    setValueSection( hLayout );
+}
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::makeLengthSelection()
+{
+    KHBox* hLayout = new KHBox( m_controlFrame );
+
+    makeCompareSelection( hLayout );
+
+    QTimeEdit* timeSpin = new QTimeEdit( hLayout );
+    timeSpin->setDisplayFormat( "m:ss" );
+    QTime min( 0, 0, 0 );
+    QTime max( 0, 60, 59 );
+    timeSpin->setMinimumTime( min );
+    timeSpin->setMaximumTime( max );
+
+    connect( timeSpin, SIGNAL(timeChanged(const QTime&)),
+            SLOT(valueChanged(const QTime&)) );
+
+    QTime current;
+    current.addSecs( m_gbias->filter().value.toInt() );
     setValueSection( hLayout );
 }
 

@@ -54,13 +54,12 @@ namespace Dynamic
 
         private slots:
             void solverFinished( ThreadWeaver::Job* );
+            void updateStatus( int progress );
 
         private:
             void updateBiases();
-            void startSolver();
+            void startSolver( bool withStatusBar = false );
             void getContext();
-
-            void updateDomainSize();
 
             Meta::TrackList m_context;
             Meta::TrackList m_buffer;
@@ -72,8 +71,6 @@ namespace Dynamic
             QEventLoop  m_solverLoop;
 
             RandomPlaylist m_randomSource;
-
-            int m_domainSize;
 
             static const int BUFFER_SIZE;
     };

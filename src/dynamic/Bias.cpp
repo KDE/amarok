@@ -179,16 +179,18 @@ Dynamic::GlobalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 double Dynamic::GlobalBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
         Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context )
 {
-    Q_UNUSED( newTrackPos );
-    Q_UNUSED( oldPlaylist );
     Q_UNUSED( context );
 
     double offset = 1.0 / (double)oldPlaylist.size();
 
-    if( trackSatisfies( newTrack ) )
+    bool prevSatisfied = trackSatisfies( oldPlaylist[newTrackPos] );
+
+    if( trackSatisfies( newTrack ) && !prevSatisfied )
+        return oldEnergy - offset;
+    else if( !trackSatisfies( newTrack ) && prevSatisfied )
         return oldEnergy + offset;
     else
-        return oldEnergy - offset;
+        return oldEnergy;
 }
 
 
