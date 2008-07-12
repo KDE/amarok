@@ -9,16 +9,16 @@ VERSION 2.0-alpha2:
   CHANGES:
   BUGFIXES:
     * Rescan collection if the version is higher than we currently use
-	 (downgrades) (BR 142712)
-	* Play the first track in the playlist if there is no active track 
-	  (BR 166336)
-    * Do not use 100% cpu in the cover manager when changing view modes 
+      (downgrades). (BR 142712)
+    * Play the first track in the playlist if there is no active track.
+      (BR 166336)
+    * Do not use 100% cpu in the cover manager when changing view modes.
       (BR 164112)
-    * Fix build on Debian. Patch by David Palacio <dpalacio@uninorte.edu.co> 
+    * Fix build on Debian. Patch by David Palacio <dpalacio@uninorte.edu.co>.
       (BR 166321)
     * Fix bug with selection getting stuck in collection browser when selecting
-      multiple items when dragging over them (BR 164960)
-    * Fix crash when removing collpsed album from the playlist (BR 163653)
+      multiple items when dragging over them. (BR 164960)
+    * Fix crash when removing collpsed album from the playlist. (BR 163653)
     * Mp3tunes would load for users who had never used it before and prompt 
       them with an annoying login box. (BR 166332)
   
