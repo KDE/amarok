@@ -47,8 +47,6 @@ DEBUG_BLOCK
 
 //    initializeIpod();
 
-
-
  GError *err = 0;
 
  m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
@@ -72,8 +70,6 @@ IpodHandler::~IpodHandler()
 {
         if (  m_itdb )
             itdb_free( m_itdb );
-
-//        m_files.clear();
 }
 
 
@@ -144,10 +140,6 @@ IpodHandler::initializeIpod()
         return false;
 
     debug() << "Init 5";
-
-//    The::statusBar()->longMessage(
-//            i18n("Media Device: Initialized iPod mounted at %1", mountPoint() ),
-//            KDE::StatusBar::Information );
 
     return true;
 }
@@ -247,8 +239,7 @@ IpodHandler::detectModel()
             gchar *fwid = itdb_device_get_sysinfo( m_itdb->device, "FirewireGuid" );
             if( !fwid )
             {
-//                The::statusBar()->longMessage(
-//                                            i18n("Your iPod's Firewire GUID is required for correctly updating its music database, but it is not known. See http://amarok.kde.org/wiki/Media_Device:IPod for more information." ) );
+
             }
             else
                g_free( fwid );
@@ -257,8 +248,6 @@ IpodHandler::detectModel()
     else
     {
         debug() << "iPod type detection failed, no video support";
-//        The::statusBar()->longMessage(
-//                i18n("iPod type detection failed: no support for iPod Shuffle, for artwork or video") );
         guess = true;
     }
 
@@ -323,8 +312,6 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
         debug() << "curPath after concat: " << curPath;
     }
 
-    //debug() << ipodPath << ( found ? "" : " not" ) << " found, actually " << curPath;
-
     if( realPath )
         *realPath = curPath;
 
@@ -341,7 +328,6 @@ IpodHandler::writeITunesDB( bool threaded )
     if(m_dbChanged)
     {
         bool ok = false;
-//         if( !threaded || MediaBrowser::instance()->isQuitting() )
         if( !threaded )
         {
             if( !m_itdb )
@@ -385,12 +371,7 @@ IpodHandler::writeITunesDB( bool threaded )
         }
         else
         {
-//            ThreadManager::instance()->queueJob( new IpodWriteDBJob( this, m_itdb, m_isShuffle, &ok ) );
-//            while( ThreadManager::instance()->isJobPending( "IpodWriteDBJob" ) )
-//            {
-//                kapp->processEvents();
-//                usleep( 10000 );
-//            }
+
         }
 
         if( ok )
@@ -400,9 +381,6 @@ IpodHandler::writeITunesDB( bool threaded )
         else
         {
             debug() << "Failed to write iPod database";
-//            The::statusBar()->longMessage(
-//                    i18n("Media device: failed to write iPod database"),
-//                    KDE::StatusBar::Error );
         }
 
         return ok;
@@ -507,8 +485,6 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
     QString pathname = url.path();
 
     Itdb_Track *ipodtrack = 0;
-//    if( item )
-//        ipodtrack = item->m_track;
     if( !ipodtrack )
         ipodtrack = itdb_track_new();
 
@@ -522,7 +498,6 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
     debug() << "Path before put in ipod_path: " << pathname;
 
     ipodtrack->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
-    //debug() << "on iPod: " << ipodtrack->ipod_path << ", podcast=" << podcastInfo;
     debug() << "on iPod: " << ipodtrack->ipod_path;
 
     if( !track->name().isEmpty() )
@@ -714,7 +689,6 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
                 podcasts = itdb_playlist_new("Podcasts", false);
                 itdb_playlist_add(m_itdb, podcasts, -1);
                 itdb_playlist_set_podcasts(podcasts);
-            //    addPlaylistToView( podcasts );
             }
             itdb_playlist_add_track(podcasts, ipodtrack, -1);
         }
@@ -728,87 +702,25 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
                 mpl = itdb_playlist_new( "iPod", false );
                 itdb_playlist_add( m_itdb, mpl, -1 );
                 itdb_playlist_set_mpl( mpl );
-                //addPlaylistToView( mpl );
             }
             itdb_playlist_add_track(mpl, ipodtrack, -1);
         }
-
-
-//    return addTrackToView( ipodtrack, item );
 }
 
 bool
 IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 {
     DEBUG_BLOCK
-    m_wait = true;
 
     KIO::FileCopyJob *job = KIO::file_copy( src, dst,
                                             -1 /* permissions */,
                                             KIO::HideProgressInfo );
-//    connect( job, SIGNAL( result( KIO::Job * ) ),
-//
+
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
 
-    bool tryToRemove = false;
-
-    The::statusBar()->newProgressOperation(  job ).setDescription(  i18n(  "Transferring Track to iPod" )  );
-//    m_jobs.insert(  job );
+    The::statusBar()->newProgressOperation( job ).setDescription(  i18n(  "Transferring Tracks to iPod" )  );
     job->start();
-
-    /*
-
-    while ( m_wait )
-    {
-        debug() << "Running m_wait while loop";
-
-        // TODO: this isn't implemented yet
-
-        if( m_isCanceled )
-        {
-            job->kill( KJob::EmitResult );
-            tryToRemove = true;
-            m_wait = false;
-        }
-        else
-        {
-            usleep(10000);
-            KApplication::kApplication()->processEvents( QEventLoop::ExcludeUserInputEvents );
-        }
-
-    }
-
-    */
-
-
-    if( !tryToRemove )
-    {
-        if(m_copyFailed)
-        {
-            tryToRemove = true;
-            // TODO: make debug more verbose like statusbar
-            debug() << "Copying file failed";
-        }
-        else
-        {
-            MetaFile::Track track2(dst);
-            if( !track2.isPlayable() && track2.filesize()==0 )
-            {
-                tryToRemove = true;
-                // probably s.th. went wrong
-                // TODO: make debug more verbose like statusbar
-                debug() << "Reading tags during file copy failed";
-
-            }
-        }
-    }
-
-    if( tryToRemove )
-    {
-        QFile::remove( dst.path() );
-        return false;
-    }
 
     return true;
 }
@@ -847,16 +759,11 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
     QString realpath;
     do
     {
-        //int num = std::rand() % 1000000;
         int num = qrand() % 1000000;
         int music_dirs = itdb_musicdirs_number(m_itdb) > 1 ? itdb_musicdirs_number(m_itdb) : 20;
         int dir = num % music_dirs;
         QString dirname;
-        // NOTE: unsure if the sprintf replacement works as intended
-       // dirname.sprintf( "%s:Music:f%02d", itunesDir().toLatin1(), dir );
         debug() << "itunesDir(): " << itunesDir();
-        // NOTE: hack employed due to // turning to ::
-       // dirname = QString( "%1Music:F%2" ).arg( itunesDir() ).arg( QString::number( dir, 10 ), 2, QLatin1Char( '0' ) );
         dirname = QString( "%1Music:F%2" ).arg(  "iPod_Control:" ).arg( QString::number( dir, 10 ), 2, QLatin1Char( '0' ) );
 
         debug() << "Copying to dirname: " << dirname;
@@ -867,7 +774,6 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
             qdir.mkdir( realdir );
         }
         QString filename;
-        //filename.sprintf( ":kpod%07d.%s", num, type.toLatin1() );
         filename = QString( ":kpod%1.%2" ).arg( QString::number( num, 10 ), 7, QLatin1Char( '0' ) ).arg(type);
         trackpath = dirname + filename;
     }
@@ -921,7 +827,6 @@ IpodHandler::parseTracks()
 
     GList *cur;
 
-//    int debugtest = 0;
 /* iterate through tracklist and add to appropriate map */
     for ( cur = m_itdb->tracks; cur; cur = cur->next )
     {
@@ -1021,7 +926,6 @@ IpodHandler::parseTracks()
         trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
 
         track->setIpodTrack( ipodtrack ); // convenience pointer
-
 
     }
 
