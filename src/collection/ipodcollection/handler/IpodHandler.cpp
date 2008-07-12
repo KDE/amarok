@@ -1,6 +1,11 @@
-/******************************************************************************************
- * copyright            : (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>          *
- ******************************************************************************************/
+/**************************************************************************
+ * Ported to Collection Framework: *
+ * copyright            : (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
+ *
+ * Original Work: *
+ * copyright            : (C) 2005, 2006 by Martin Aumueller <aumuell@reserv.at>
+ * copyright            : (C) 2004 by Christian Muehlhaeuser <chris@chris.de>
+ *******************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -418,7 +423,7 @@ IpodHandler::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
         return false;
 
     return true;
-    
+
 }
 
 // Currently Porting copyTrackToDevice
@@ -893,8 +898,8 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
     GenreMap genreMap = m_memColl->genreMap();
     ComposerMap composerMap = m_memColl->composerMap();
     YearMap yearMap = m_memColl->yearMap();
-    
-    
+
+
     QString format( ipodtrack->filetype );
     IpodTrackPtr track( new IpodTrack( m_memColl, format ) );
 
@@ -1002,7 +1007,7 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
     m_memColl->releaseLock();
 
     return;
-    
+
 }
 
 void

@@ -1,5 +1,10 @@
 /***************************************************************************
+ * Ported to Collection Framework: *
  * copyright            : (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com> 
+
+ * Original Work: *
+ * copyright            : (C) 2005, 2006 by Martin Aumueller <aumuell@reserv.at>
+ * copyright            : (C) 2004 by Christian Muehlhaeuser <chris@chris.de>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
