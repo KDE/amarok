@@ -52,14 +52,9 @@ public slots:
 private slots:
     void configAccepted();
     void changeTrackRating( int rating );
-    void showItemImage();
-    void fetchItemImage();
-    void unsetItemImage();
 
 private:
-    void createMenu();
-    QList<QAction*> contextualActions() { return m_contextActions; }
-    QList<QAction*> m_contextActions;
+    QList<QAction*> contextualActions();
 
     QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;

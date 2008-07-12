@@ -15,11 +15,11 @@
 #include "CurrentTrack.h"
 
 #include "Amarok.h"
-#include "covermanager/CoverFetcher.h"
-#include "covermanager/CoverManager.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "context/Svg.h"
+#include "context/popupdropper/PopupDropperAction.h"
+#include "meta/CurrentTrackActionsCapability.h"
 #include "meta/MetaUtility.h"
 
 #include <plasma/theme.h>
@@ -54,7 +54,6 @@ CurrentTrack::~CurrentTrack()
 void CurrentTrack::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
-    createMenu();
 
     m_theme = new Context::Svg( this );
     m_theme->setImagePath( "widgets/amarok-currenttrack" );
@@ -123,27 +122,26 @@ void CurrentTrack::changeTrackRating( int rating )
     debug() << "change rating to: " << rating;
 }
 
-void CurrentTrack::createMenu()
+QList<QAction*>
+CurrentTrack::contextualActions()
 {
-    QAction *showCoverAction  = new QAction( i18n( "Show Fullsize" ), this );
-    showCoverAction->setIcon( KIcon( "zoom-original" ) );
-    showCoverAction->setToolTip( i18n( "Display artwork for this album" ) );
-    
-    QAction *fetchCoverAction = new QAction( i18n( "Fetch Cover" ), this );
-    fetchCoverAction->setIcon( KIcon( "list-add" ) );
-    fetchCoverAction->setToolTip( i18n( "Fetch the artwork for this album" ) );
-    
-    QAction *unsetCoverAction = new QAction( i18n( "Unset Cover" ), this );
-    unsetCoverAction->setIcon( KIcon( "list-remove" ) );
-    unsetCoverAction->setToolTip( i18n( "Remove artwork for this album" ) );
+    QList<QAction*> actions;
 
-    connect( showCoverAction,  SIGNAL( triggered() ), this, SLOT( showItemImage() ) );
-    connect( fetchCoverAction, SIGNAL( triggered() ), this, SLOT( fetchItemImage() ) );
-    connect( unsetCoverAction, SIGNAL( triggered() ), this, SLOT( unsetItemImage() ) );
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    Meta::AlbumPtr album = track->album();
 
-    m_contextActions.append( showCoverAction );
-    m_contextActions.append( fetchCoverAction );
-    m_contextActions.append( unsetCoverAction );
+    if( album )
+    {
+        Meta::CustomActionsCapability *cac = album->as<Meta::CustomActionsCapability>();
+        if( cac )
+        {
+            QList<PopupDropperAction *> pudActions = cac->customActions();
+             
+            foreach( PopupDropperAction *action, pudActions )
+                actions.append( action );
+        }
+    }
+    return actions;
 }
 
 void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
@@ -302,7 +300,7 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     const qreal albumWidth = size().toSize().height() - 2.0 * margin;
 
     const qreal labelX = albumWidth + margin + 14.0;
-    const qreal labelWidth = size().toSize().width() / 6.0;
+    //const qreal labelWidth = size().toSize().width() / 6.0;
 
     const qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 );
 
@@ -324,8 +322,7 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     p->restore();
 
     // TODO get, and then paint, album pixmap
-//     constraintsEvent();
-
+    // constraintsEvent();
 }
 
 void CurrentTrack::showConfigurationInterface()
@@ -366,42 +363,6 @@ bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
         return true;
     }
     return false;
-}
-
-void
-CurrentTrack::showItemImage()
-{
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track != Meta::TrackPtr() )
-        ( new CoverViewDialog( track->album(), qobject_cast<QWidget*>( parent() ) ) )->show();
-}
-
-void
-CurrentTrack::fetchItemImage()
-{
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track != Meta::TrackPtr() )
-        CoverFetcher::instance()->manualFetch( track->album() );
-}
-
-void
-CurrentTrack::unsetItemImage()
-{
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track != Meta::TrackPtr() )
-    {
-        int button = KMessageBox::warningContinueCancel( qobject_cast<QWidget*>( parent() ),
-                                i18n( "Are you sure you want to remove this cover from the Collection?" ),
-                                QString(),
-                                KStandardGuiItem::del() );
-
-        if ( button == KMessageBox::Continue )
-        {
-            kapp->processEvents();
-            if( track->album()->canUpdateImage() )
-                track->album()->removeImage();
-        }
-    }
 }
 
 #include "CurrentTrack.moc"
