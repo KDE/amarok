@@ -38,7 +38,7 @@
 void FetchCoverAction::init()
 {
     setText( i18np("Fetch Cover", "Fetch Covers", m_albums.count()) );
-    setIcon( KIcon("list-add") );
+    setIcon( KIcon("insert-image") );
     setToolTip( i18np("Fetch the artwork for this album", "Fetch artwork for %1 albums", m_albums.count()) );
 }
 
@@ -109,7 +109,7 @@ UnsetCoverAction::slotTriggered()
 void SetCustomCoverAction::init()
 {
     setText( i18n("Set Custom Cover") );
-    setIcon( KIcon("list-add") );
+    setIcon( KIcon("insert-image") );
     setToolTip( i18np("Set custom artwork for this album", "Set custom artwork for these %1 albums", m_albums.count()) );
 }
 
