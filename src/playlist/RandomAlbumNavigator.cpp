@@ -65,7 +65,7 @@ int RandomAlbumNavigator::lastRow()
 
 void RandomAlbumNavigator::generateAlbumHeaders()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     m_albumHeaders.clear();
     int row;
     QString currentAlbum = QString();
@@ -74,21 +74,21 @@ void RandomAlbumNavigator::generateAlbumHeaders()
         if( currentAlbum != m_playlistModel->trackForRow( row )->album()->name() ) {
             m_albumHeaders.append( row );
             currentAlbum = m_playlistModel->trackForRow( row )->album()->name();
-            debug() << "Album starting at: " << row;
+            //debug() << "Album starting at: " << row;
         }
     }
 }
 
 void RandomAlbumNavigator::generateUnplayedAlbums()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     m_unplayedAlbums.clear();
     //int albumHeadRow;
     for( int row = 0; row < m_albumHeaders.count(); ++row ) {
-        debug() << "Album starting at: " << m_albumHeaders[row];
+        //debug() << "Album starting at: " << m_albumHeaders[row];
         if ( !m_playedRows.contains( m_albumHeaders[row] ) ) {
             m_unplayedAlbums.append( m_albumHeaders[row] );
-            debug() << "Unplayed album starting at: " << m_albumHeaders[row];
+            //debug() << "Unplayed album starting at: " << m_albumHeaders[row];
         }
     }
 }
