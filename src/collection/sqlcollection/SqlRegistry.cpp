@@ -209,7 +209,7 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist )
             QStringList res = m_collection->query( query );
             if( res.isEmpty() )
             {
-                QString insert = QString( "INSERT INTO albums( name ) VALUES ('%1');" ).arg( m_collection->escape( name ) );
+                QString insert = QString( "INSERT INTO albums( name,artist ) VALUES ('%1',%2);" ).arg( m_collection->escape( name ), QString::number( artist ) );
                 id = m_collection->insert( insert, "albums" );
             }
             else
