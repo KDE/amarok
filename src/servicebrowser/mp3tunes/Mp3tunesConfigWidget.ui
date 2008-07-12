@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>273</width>
-    <height>212</height>
+    <width>366</width>
+    <height>196</height>
    </rect>
   </property>
   <layout class="QGridLayout" >
@@ -15,127 +15,66 @@
      <property name="title" >
       <string>Mp3tunes login</string>
      </property>
-     <widget class="QLabel" name="label" >
-      <property name="geometry" >
-       <rect>
-        <x>9</x>
-        <y>34</y>
-        <width>94</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string comment="The e-mail address for Mp3Tunes logins" >E-Mail:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="emailEdit" >
-      <property name="geometry" >
-       <rect>
-        <x>107</x>
-        <y>34</y>
-        <width>149</width>
-        <height>28</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2" >
-      <property name="geometry" >
-       <rect>
-        <x>9</x>
-        <y>67</y>
-        <width>94</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string comment="The Mp3Tunes password" >Password:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="passwordEdit" >
-      <property name="geometry" >
-       <rect>
-        <x>107</x>
-        <y>67</y>
-        <width>149</width>
-        <height>28</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_3" >
-      <property name="geometry" >
-       <rect>
-        <x>9</x>
-        <y>100</y>
-        <width>94</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string comment="Enable harmony" >Enable Harmony </string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="enableHarmony" >
-      <property name="geometry" >
-       <rect>
-        <x>107</x>
-        <y>100</y>
-        <width>149</width>
-        <height>23</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_3" >
-      <property name="geometry" >
-       <rect>
-        <x>9</x>
-        <y>128</y>
-        <width>94</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string comment="Identifier" >Device Identifier:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="identifier" >
-      <property name="geometry" >
-       <rect>
-        <x>107</x>
-        <y>128</y>
-        <width>149</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="readOnly" >
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="pinEdit" >
-      <property name="geometry" >
-       <rect>
-        <x>107</x>
-        <y>161</y>
-        <width>149</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="readOnly" >
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_4" >
-      <property name="geometry" >
-       <rect>
-        <x>9</x>
-        <y>161</y>
-        <width>94</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string> PIN Code:</string>
-      </property>
-     </widget>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string comment="The e-mail address for Mp3Tunes logins" >E-Mail:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QLineEdit" name="emailEdit" />
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string comment="The Mp3Tunes password" >Password:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QLineEdit" name="passwordEdit" />
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string comment="Enable harmony" >Enable Harmony </string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QCheckBox" name="enableHarmony" />
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string comment="Identifier" >Device Identifier:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" >
+       <widget class="QLineEdit" name="identifier" >
+        <property name="readOnly" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <widget class="QLabel" name="label_4" >
+        <property name="text" >
+         <string> PIN Code:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" >
+       <widget class="QLineEdit" name="pinEdit" >
+        <property name="readOnly" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
