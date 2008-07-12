@@ -132,9 +132,12 @@ AmpacheServiceQueryMaker::setQueryType( QueryType type )
     case QueryMaker::Composer:
     case QueryMaker::Year:
     case QueryMaker::Custom:
+    case QueryMaker::None:
         //TODO: Implement.
         return this;
     }
+
+    return this;
 }
 
 QueryMaker *

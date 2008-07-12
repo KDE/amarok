@@ -89,6 +89,7 @@ TokenListWidget::dragMoveEvent( QDragMoveEvent *event )        //overrides QList
 void
 TokenListWidget::dropEvent( QDropEvent *event )
 {
+    Q_UNUSED( event )
     //does nothing, I want the item to be deleted and not dragged here
 }
 
