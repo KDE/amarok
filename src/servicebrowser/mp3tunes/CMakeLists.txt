@@ -61,7 +61,7 @@ if(CURL_FOUND)
             kde4_add_plugin( kcm_amarok_service_mp3tunes ${kcm_amarok_service_mp3tunes_PART_SRCSS} )
 
 
-            target_link_libraries( kcm_amarok_service_mp3tunes  ${KDE4_KUTILS_LIBS} )
+            target_link_libraries( kcm_amarok_service_mp3tunes  ${QT_QTNETWORK_LIBRARY} ${KDE4_KDEUI_LIBS} ${KDE4_KUTILS_LIBS} )
 
             install(TARGETS kcm_amarok_service_mp3tunes  DESTINATION ${PLUGIN_INSTALL_DIR})
 
