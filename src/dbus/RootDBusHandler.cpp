@@ -24,8 +24,6 @@
 
 #include "RootAdaptor.h"
 
-#define MPRIS_VERSION 1.0
-
 namespace Amarok
 {
 
@@ -46,10 +44,12 @@ namespace Amarok
         kapp->closeAllWindows();
     }
 
-    float RootDBusHandler::MprisVersion()
+    Version RootDBusHandler::MprisVersion()
     {
-        //return type wrong here?
-        return MPRIS_VERSION;
+        struct Version version;
+        version.major = 1;
+        version.minor = 0;
+        return version;
     }
 
 }

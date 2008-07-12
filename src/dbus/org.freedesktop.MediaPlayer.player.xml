@@ -18,7 +18,8 @@
     </method>
 
     <method name="GetStatus">
-        <arg type="i" direction="out"/>
+        <arg type="(iiii)" direction="out"/>
+        <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="DBusStatus"/>
     </method>
 
     <method name="VolumeSet">

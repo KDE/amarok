@@ -18,6 +18,7 @@
 
 #include "PlayerDBusHandler.h"
 
+#include "amarokconfig.h"
 #include "App.h"
 #include "EngineController.h"
 #include "meta/Meta.h"
@@ -29,34 +30,42 @@ namespace Amarok
     PlayerDBusHandler::PlayerDBusHandler()
         : QObject(kapp)
     {
-        QObject* pa = new PlayerAdaptor( this );
+        new PlayerAdaptor( this );
         setObjectName("PlayerDBusHandler");
-//todo: signal: trackchange, statusChange,capChangeSlot
-
-        connect( this, SIGNAL( CapsChange( int ) ), pa, SIGNAL( CapsChange( int ) ) );
+//TODO: signal: trackchange, statusChange,capChangeSlot
 
         QDBusConnection::sessionBus().registerObject("/Player", this);
     }
 
-
-    //from the first integer of http://wiki.xmms2.xmms.se/index.php/MPRIS#GetStatus
     //0 = Playing, 1 = Paused, 2 = Stopped.
-    int PlayerDBusHandler::GetStatus()
+    DBusStatus PlayerDBusHandler::GetStatus()
     {
+        DBusStatus status;
         switch( The::engineController()->state() )
         {
-        case Phonon::PlayingState:
-        case Phonon::BufferingState:
-            return Playing;
-        case Phonon::PausedState:
-            return Paused;
-        case Phonon::LoadingState:
-        case Phonon::StoppedState:
-            return Stopped;
-        case Phonon::ErrorState:
-            return -1;
-        }
-        return -1;
+            case Phonon::PlayingState:
+            case Phonon::BufferingState:
+                status.Play = 0; //Playing
+            case Phonon::PausedState:
+                status.Play = 1; //Paused
+            case Phonon::LoadingState:
+            case Phonon::StoppedState:
+            case Phonon::ErrorState:
+                status.Play = 2; //Stopped
+        };
+        if ( AmarokConfig::randomMode() )
+            status.Random = 1;
+        else
+            status.Random = 0;
+        if ( Amarok::repeatTrack() )
+            status.Repeat = 1;
+        else
+            status.Repeat = 0;
+        if ( Amarok::repeatPlaylist() || AmarokConfig::randomMode() )
+            status.RepeatPlaylist = 1;
+        else
+            status.RepeatPlaylist = 0; //the music will not end if we play random
+        return status;
     }
 
     void PlayerDBusHandler::PlayPause()
@@ -138,9 +147,9 @@ namespace Amarok
         Meta::TrackPtr track = The::engineController()->currentTrack();
         caps |= CAN_HAS_TRACKLIST;
         if ( track ) caps |= CAN_PROVIDE_METADATA;
-        if ( GetStatus() == Playing ) caps |= CAN_PAUSE;
-        if ( ( GetStatus() == Paused ) || ( GetStatus() == Stopped ) ) caps |= CAN_PLAY;
-        if ( ( GetStatus() == Playing ) || ( GetStatus() == Paused ) ) caps |= CAN_SEEK;
+        if ( GetStatus().Play == 0 /*playing*/ ) caps |= CAN_PAUSE;
+        if ( ( GetStatus().Play == 1 /*paused*/ ) || ( GetStatus().Play == 2 /*stoped*/ ) ) caps |= CAN_PLAY;
+        if ( ( GetStatus().Play == 0 /*playing*/ ) || ( GetStatus().Play == 1 /*paused*/ ) ) caps |= CAN_SEEK;
         if ( ( The::playlistModel()->activeRow() >= 0 ) && ( The::playlistModel()->activeRow() <= The::playlistModel()->rowCount() ) )
         {
             caps |= CAN_GO_NEXT;

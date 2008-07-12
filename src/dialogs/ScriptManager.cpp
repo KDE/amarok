@@ -55,6 +55,7 @@
 #include <KMenu>
 #include <KMessageBox>
 #include <knewstuff2/engine.h>
+#include <knewstuff2/core/entry.h>
 #include <KProtocolManager>
 #include <KPushButton>
 #include <KRun>
@@ -482,10 +483,13 @@ ScriptManager::slotRetrieveScript()
     KNS::Engine *engine = new KNS::Engine();
     engine->init( "amarok.knsrc" );
     KNS::Entry::List entries = engine->downloadDialogModal();
-
-    qDeleteAll( entries );
+    debug() << "scripts status:" << endl;
+    foreach ( KNS::Entry* entry, entries )
+    {
+//        if ( entry->status() == KNS::Entry::Downloadable )
+            debug() << "script downloadable!" << endl;
+    }
     delete engine;
-    //todo: upgrade?
 }
 
 

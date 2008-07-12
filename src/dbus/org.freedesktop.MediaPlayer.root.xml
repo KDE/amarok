@@ -7,13 +7,14 @@
         <method name="Identity">
             <arg type="s" direction="out"/>
         </method>
-        
+
         <method name="Quit">
         </method>
-        
+
         <method name="MprisVersion">
-            <arg type="f" direction="out"/>
+            <arg type="(ii)" direction="out"/>
+            <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="Version"/>
         </method>
-        
+
     </interface>
 </node>

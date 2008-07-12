@@ -21,6 +21,12 @@
 
 #include <QObject>
 
+struct Version
+{
+    int major;
+    int minor;
+};
+
 namespace Amarok
 {
     class RootDBusHandler : public QObject
@@ -29,10 +35,9 @@ namespace Amarok
 
         public:
             RootDBusHandler();
-
-            virtual QString Identity();
-            virtual void Quit();
-            virtual float MprisVersion();
+            QString Identity();
+            void Quit();
+            Version MprisVersion();
     };
 }
 

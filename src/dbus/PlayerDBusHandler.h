@@ -22,17 +22,22 @@
 #include <QObject>
 #include <QVariantMap>
 
+struct DBusStatus
+{
+    int Play; //Playing = 0, Paused = 1, Stopped = 2
+    int Random; //Linearly = 0, Randomly = 1
+    int Repeat; //Go_To_Next = 0, Repeat_Current = 1
+    int RepeatPlaylist; //Stop_When_Finished = 0, Never_Give_Up_Playing = 1
+};
+
 namespace Amarok
 {
-
     class PlayerDBusHandler : public QObject
     {
         Q_OBJECT
         public:
             PlayerDBusHandler();
 
-            enum DBusStatus { Playing = 0, Paused = 1, Stopped = 2 };
-            //http://wiki.xmms2.xmms.se/index.php/MPRIS#GetCaps
             enum DBusCaps {
                  NONE                  = 0,
                  CAN_GO_NEXT           = 1 << 0,
@@ -43,8 +48,9 @@ namespace Amarok
                  CAN_PROVIDE_METADATA  = 1 << 5,
                  CAN_HAS_TRACKLIST     = 1 << 6
              };
+
         public slots:
-            int GetStatus();
+            DBusStatus GetStatus();
             void Pause();
             void Play();
             void PlayPause();
@@ -57,6 +63,8 @@ namespace Amarok
             QVariantMap GetMetadata();
         signals:
             void CapsChange( int );
+            void TrackChange( QVariantMap );
+            void StatusChange( int );
         private slots:
             void capsChangeSlot();
     };
