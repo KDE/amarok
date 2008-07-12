@@ -176,13 +176,13 @@ Mp3tunesHarmonyDaemon::emitDisconnected()
 }
 
 void
-Mp3tunesHarmonyDaemon::emitDownloadReady( Mp3tunesHarmonyDownload *download )
+Mp3tunesHarmonyDaemon::emitDownloadReady( Mp3tunesHarmonyDownload download )
 {
     DEBUG_BLOCK
     emit( signalDownloadReady( download ) );
 }
 void
-Mp3tunesHarmonyDaemon::emitDownloadPending( Mp3tunesHarmonyDownload *download )
+Mp3tunesHarmonyDaemon::emitDownloadPending( Mp3tunesHarmonyDownload download )
 {
     DEBUG_BLOCK
     emit( signalDownloadPending( download ) );
@@ -251,9 +251,10 @@ Mp3tunesHarmonyDaemon::signalDownloadReadyHandler( MP3tunesHarmony* harmony, gpo
     DEBUG_BLOCK
     mp3tunes_harmony_download_t *download = (mp3tunes_harmony_download_t*)void_mp3tunes_harmony_download;
     Mp3tunesHarmonyDownload wrappedDownload( download );
-    theDaemon->emitDownloadReady( &wrappedDownload );
+    theDaemon->emitDownloadReady( wrappedDownload );
     harmony = harmony;
     null_pointer = null_pointer;
+    mp3tunes_harmony_download_deinit(&download);
 }
 
 void
@@ -262,7 +263,7 @@ Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony, g
     DEBUG_BLOCK
     mp3tunes_harmony_download_t *download = (mp3tunes_harmony_download_t*)void_mp3tunes_harmony_download;
     Mp3tunesHarmonyDownload wrappedDownload( download );
-    theDaemon->emitDownloadPending( &wrappedDownload );
+    theDaemon->emitDownloadPending( wrappedDownload );
     harmony = harmony;
     null_pointer = null_pointer;
     /*if (strcmp(download->file_key, "dummy_file_key_5") == 0) {
@@ -312,8 +313,7 @@ Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *d
 
 Mp3tunesHarmonyDownload::~Mp3tunesHarmonyDownload()
 {
-    DEBUG_BLOCK
-    mp3tunes_harmony_download_deinit( &m_harmony_download_t );
+    //mp3tunes_harmony_download_deinit( &m_harmony_download_t );
 }
 
 QString
