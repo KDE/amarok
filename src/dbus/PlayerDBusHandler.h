@@ -69,7 +69,7 @@ namespace Amarok
             void StatusChange( int );
         private slots:
             void slotCapsChanged();
-            void slotTrackChanged( Meta::TrackPtr );
+            void slotTrackChanged();
     };
 
 } // namespace Amarok

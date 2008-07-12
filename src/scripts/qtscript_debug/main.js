@@ -57,4 +57,22 @@ function Configured()
     print( "Configure Button Clicked!" );
 }
 
+function TrackChanged()
+{
+    print( "Track Changed!" );
+}
+
+function TrackSeeked()
+{
+    print( "Track Seeked!" );
+}
+
+function TrackFinished()
+{
+    print( "Track Finished!" );
+}
+
 Amarok.configured.connect( Configured );
+Amarok.Engine.trackChanged.connect( TrackChanged );
+Amarok.Engine.trackSeeked.connect( TrackSeeked );
+Amarok.Engine.trackFinished.connect( TrackFinished );

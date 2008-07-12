@@ -46,9 +46,12 @@ namespace Amarok
             int  decreaseVolume( int ticks = 100/25 );
             int  setVolume( int percent );
             void Mute();
-
+        signals:
+            void trackFinished();
+            void trackChanged();
+            void trackSeeked( int ); //return relative time in million second
         private:
-        //todo: signal needed!
+
     };
 }
 

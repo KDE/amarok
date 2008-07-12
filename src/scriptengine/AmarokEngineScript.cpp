@@ -29,6 +29,9 @@ namespace Amarok
     : QObject( kapp )
     {
         Q_UNUSED( ScriptEngine );
+        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SIGNAL( trackChanged() ) );
+        connect( The::engineController(), SIGNAL( trackFinished() ), this, SIGNAL( trackFinished() ) );
+        connect( The::engineController(), SIGNAL( trackSeeked( int ) ), this, SIGNAL( trackSeeked( int ) ) );
     }
 
     AmarokEngineScript::~AmarokEngineScript()
