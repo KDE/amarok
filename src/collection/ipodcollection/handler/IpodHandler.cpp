@@ -17,6 +17,7 @@
 
 #include "IpodCollection.h"
 #include "IpodMeta.h"
+#include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
 
 #include "File.h" // for KIO file handling
@@ -752,8 +753,16 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 
     bool tryToRemove = false;
 
+    The::statusBar()->newProgressOperation(  job ).setDescription(  i18n(  "Transferring Track to iPod" )  );
+//    m_jobs.insert(  job );
+    job->start();
+
+    /*
+
     while ( m_wait )
     {
+        debug() << "Running m_wait while loop";
+
         // TODO: this isn't implemented yet
 
         if( m_isCanceled )
@@ -769,6 +778,8 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
         }
 
     }
+
+    */
 
 
     if( !tryToRemove )
