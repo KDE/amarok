@@ -240,6 +240,8 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     drag->setPixmap( QPixmap::grabWidget( child ) );       //need to get pixmap from widget
 
     //child->close();
+    tokenList->removeAt( layout->indexOf( child ) - 1 );
+    debug() << "Deleting at " << layout->indexOf( child ) - 1;
     delete child;
     m_tokenCount--;
 
