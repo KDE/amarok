@@ -68,17 +68,14 @@ public:
     void fetchStations();
     void fetchGenres();
 
-
 signals:
     void dynamicQueryComplete();
-
 
 protected:
     ShoutcastServiceCollection * m_collection;
     KIO::StoredTransferJob * m_storedTransferJob;
 
     QString m_genreMatch;
-
 
     class Private;
     Private * const d;
@@ -88,11 +85,8 @@ protected:
     QString m_filter;
 
 public slots:
-
     void genreDownloadComplete(KJob *job );
     void stationDownloadComplete(KJob *job );
-
-
 };
 
 #endif

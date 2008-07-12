@@ -24,8 +24,8 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "ServiceMetaBase.h"
-#include "collection/support/MemoryMatcher.h"
 #include "ShoutcastMeta.h"
+#include "collection/support/MemoryMatcher.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
@@ -94,7 +94,6 @@ void ShoutcastServiceQueryMaker::run()
 
 void ShoutcastServiceQueryMaker::runQuery()
 {
-
     DEBUG_BLOCK
 
     if ( m_storedTransferJob != 0 )
@@ -115,29 +114,28 @@ void ShoutcastServiceQueryMaker::runQuery()
 
 
 void ShoutcastServiceQueryMaker::abortQuery()
-{
-}
+{}
 
 QueryMaker * ShoutcastServiceQueryMaker::setQueryType( QueryType type )
 {
     DEBUG_BLOCK
 
     switch( type ) {
-    case QueryMaker::Track:
-        d->type = Private::TRACK;
-        return this;
+        case QueryMaker::Track:
+            d->type = Private::TRACK;
+            return this;
 
-    case QueryMaker::Genre:
-        d->type = Private::GENRE;
-        return this;
+        case QueryMaker::Genre:
+            d->type = Private::GENRE;
+            return this;
 
-    case QueryMaker::Artist:
-    case QueryMaker::Album:
-    case QueryMaker::Composer:
-    case QueryMaker::Year:
-    case QueryMaker::Custom:
-    case QueryMaker::None:
-        return this;
+        case QueryMaker::Artist:
+        case QueryMaker::Album:
+        case QueryMaker::Composer:
+        case QueryMaker::Year:
+        case QueryMaker::Custom:
+        case QueryMaker::None:
+            return this;
     }
 
     return this;
@@ -196,7 +194,7 @@ void ShoutcastServiceQueryMaker::handleResult()
             break;
     }
 
- }
+}
 
 void ShoutcastServiceQueryMaker::fetchGenres()
 {
@@ -420,14 +418,12 @@ QueryMaker * ShoutcastServiceQueryMaker::addFilter(qint64 value, const QString &
         debug() << "Filter: " << filter;
         m_filter = filter;
     }
-        return this;
+
+    return this;
 }
 
 
 #include "ShoutcastServiceQueryMaker.moc"
-
-
-
 
 
 
