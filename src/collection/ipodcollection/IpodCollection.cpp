@@ -194,6 +194,16 @@ IpodCollection::copyTrackToDevice( const Meta::TrackPtr &track )
     return;
 }
 
+bool
+IpodCollection::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
+{
+    if ( !m_handler->deleteTrackFromDevice( track ) )
+        return false;
+
+    emit updated();
+    return true;
+}
+
 
 
 IpodCollection::~IpodCollection()

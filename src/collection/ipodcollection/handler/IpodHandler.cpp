@@ -402,6 +402,25 @@ IpodHandler::itunesDir(const QString &p) const
     return base + p;
 }
 
+bool
+IpodHandler::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
+{
+    Itdb_Track *ipodtrack = track->getIpodTrack();
+
+    // delete file
+    KUrl url;
+    url.setPath( realPath( ipodtrack->ipod_path ) );
+    deleteFile( url );
+
+    // remove it from the ipod database, ipod playlists and all
+
+    if( !removeDBTrack( ipodtrack ) )
+        return false;
+
+    return true;
+    
+}
+
 // Currently Porting copyTrackToDevice
 void
 IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
@@ -697,6 +716,45 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
 }
 
 bool
+IpodHandler::removeDBTrack( Itdb_Track *track )
+{
+    if(!m_itdb)
+        return false;
+
+    if(!track)
+        return false;
+
+    if(track->itdb != m_itdb)
+    {
+        return false;
+    }
+
+    m_dbChanged = true;
+
+    Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
+    while(itdb_playlist_contains_track(mpl, track))
+    {
+        itdb_playlist_remove_track(mpl, track);
+    }
+
+    GList *cur = m_itdb->playlists;
+    while(cur)
+    {
+        Itdb_Playlist *pl = (Itdb_Playlist *)cur->data;
+        while(itdb_playlist_contains_track(pl, track))
+        {
+            itdb_playlist_remove_track(pl, track);
+        }
+        cur = cur->next;
+    }
+
+    // also frees track's memory
+    itdb_track_remove(track);
+
+    return true;
+}
+
+bool
 IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 {
     DEBUG_BLOCK
@@ -728,6 +786,30 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         }
 
         m_wait = false;
+}
+
+void
+IpodHandler::deleteFile( const KUrl &url )
+{
+    debug() << "deleting " << url.prettyUrl();
+
+    KIO::Job *job = KIO::file_delete( url, KIO::HideProgressInfo );
+    connect( job, SIGNAL( result( KIO::Job * ) ),
+             this,  SLOT( fileDeleted( KIO::Job * ) ) );
+
+    The::statusBar()->newProgressOperation( job ).setDescription(  i18n(  "Deleting Tracks from iPod" ) );
+    job->start();
+
+    return;
+}
+
+void
+IpodHandler::fileDeleted( KJob *job )  //SLOT
+{
+    if(job->error())
+    {
+        debug() << "file deletion failed: " << job->errorText();
+    }
 }
 
 KUrl
@@ -1052,7 +1134,7 @@ IpodHandler::parseTracks()
         {
             Itdb_Track *ipodtrack = ( Itdb_Track * )member->data;
             IpodTrackPtr track = ipodTrackMap.value( ipodtrack );
-            track->setIpodPlaylist( ipodplaylist );
+            track->addIpodPlaylist( ipodplaylist );
         }
     }
 

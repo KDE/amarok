@@ -93,7 +93,7 @@ IpodTrack::isEditable() const
 }
 
 Itdb_Track*
-IpodTrack::getIpodTrack()
+IpodTrack::getIpodTrack() const
 {
     return m_ipodtrack;
 }
@@ -104,16 +104,16 @@ IpodTrack::setIpodTrack ( Itdb_Track *ipodtrack )
     m_ipodtrack = ipodtrack;
 }
 
-Itdb_Playlist*
-IpodTrack::getIpodPlaylist()
+QList<Itdb_Playlist*>
+IpodTrack::getIpodPlaylists() const
 {
-    return m_ipodplaylist;
+    return m_ipodplaylists;
 }
 
 void
-IpodTrack::setIpodPlaylist ( Itdb_Playlist *ipodplaylist )
+IpodTrack::addIpodPlaylist ( Itdb_Playlist *ipodplaylist )
 {
-    m_ipodplaylist = ipodplaylist;
+    m_ipodplaylists << ipodplaylist;
 }
 
 

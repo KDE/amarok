@@ -68,11 +68,11 @@ class IpodTrack : public Meta::Track
         virtual ComposerPtr composer() const;
         virtual YearPtr year() const;
 
-        Itdb_Track* getIpodTrack();
+        Itdb_Track* getIpodTrack() const;
         void setIpodTrack ( Itdb_Track *ipodtrack );
 
-	Itdb_Playlist* getIpodPlaylist();
-	void setIpodPlaylist ( Itdb_Playlist *ipodplaylist );
+	QList<Itdb_Playlist*> getIpodPlaylists() const;
+	void addIpodPlaylist ( Itdb_Playlist *ipodplaylist );
 
         virtual void setAlbum ( const QString &newAlbum );
         virtual void setArtist ( const QString &newArtist );
@@ -147,7 +147,7 @@ class IpodTrack : public Meta::Track
         IpodYearPtr m_year;
 
         Itdb_Track *m_ipodtrack;
-	Itdb_Playlist *m_ipodplaylist;
+	QList<Itdb_Playlist*> m_ipodplaylists;
 
         QString m_comment;
         QString m_name;

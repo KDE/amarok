@@ -64,6 +64,7 @@ class IpodCollection : public Collection, public MemoryCollection
     virtual ~IpodCollection();
 
     void copyTrackToDevice( const Meta::TrackPtr &track );
+    bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
 
     void deviceRemoved();
 

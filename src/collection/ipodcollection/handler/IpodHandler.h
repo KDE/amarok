@@ -26,6 +26,7 @@ extern "C" {
 }
 
 #include "Meta.h"
+#include "IpodMeta.h"
 
 #include "kjob.h"
 
@@ -71,10 +72,14 @@ struct PodcastInfo
 	   QString mountPoint() const { return m_mountPoint; }
 	   bool openDevice( bool silent=false );
        void copyTrackToDevice( const Meta::TrackPtr &track );
+       bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
+       void deleteFile( const KUrl &url );
+       
 
        void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
        void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track );
+       bool removeDBTrack( Itdb_Track *track );
        QString           ipodPath( const QString &realPath );
        KUrl determineURLOnDevice( const Meta::TrackPtr &track );
 	   void parseTracks();
@@ -87,6 +92,7 @@ struct PodcastInfo
         public slots:
 	    bool initializeIpod();
 	void fileTransferred( KJob *job );
+    void fileDeleted( KJob *job );
 
         signals:
 

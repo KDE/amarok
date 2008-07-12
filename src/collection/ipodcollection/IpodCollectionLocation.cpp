@@ -71,46 +71,14 @@ bool
 IpodCollectionLocation::remove( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
-    Q_UNUSED(track);
-            /*
-    KSharedPtr<IpodTrack> ipodTrack = KSharedPtr<IpodTrack>::dynamicCast( track );
-    if( ipodTrack && ipodTrack->inCollection() && ipodTrack->collection()->collectionId() == m_collection->collectionId() )
-    {
-        bool removed;
-        if( m_tracksRemovedByDestination.contains( track ) )
-        {
-            removed = true;
-        }
-        else
-        {
-            removed = QFile::remove( ipodTrack->playableUrl().path() );
-        }
-        if( removed && ( !m_tracksRemovedByDestination.contains( track ) || m_tracksRemovedByDestination[ track ] ) )
-        {
 
-            QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
-                                .arg( QString::number( ipodTrack->deviceid() ), m_collection->escape( ipodTrack->rpath() ) );
-            QStringList res = m_collection->query( query );
-            if( res.isEmpty() )
-            {
-                warning() << "Tried to remove a track from IpodCollection which is not in the collection";
-            }
-            else
-            {
-                int id = res[0].toInt();
-                QString query = QString( "DELETE FROM tracks where id = %1;" ).arg( id );
-                m_collection->query( query );
-            }
-        }
-        return removed;
-    }
-    else
-    {
-        return false;
-    }
-            */
+    IpodTrackPtr ipodTrack = IpodTrackPtr::dynamicCast( track );
 
-            return false; // this goes away after this is implemented
+    if( track )
+        return m_collection->deleteTrackFromDevice( ipodTrack );
+
+    return false;
+    
 }
 
 void
@@ -150,16 +118,7 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &
         m_collection->copyTrackToDevice( track );
 
     }
-
-    // hack to refresh the collection with new tracks, will fix later
-    /*
-    QString udi = m_collection->udi();
-    m_collection->deviceRemoved();
-    connect( this, SIGNAL( addDevice( const QString& ) ), MediaDeviceCache::instance(), SIGNAL(  deviceAdded( const QString& ) ) );
-    emit addDevice( udi );
-    */
     
-
     slotCopyOperationFinished();
 }
 
