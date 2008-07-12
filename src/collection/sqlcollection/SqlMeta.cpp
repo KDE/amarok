@@ -23,7 +23,7 @@
 #include "Debug.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
-#include "mediadevice/CopyToDeviceAction.h"
+//#include "mediadevice/CopyToDeviceAction.h"
 #include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
 #include "meta/OrganiseCapability.h"
@@ -666,7 +666,7 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
             QList<PopupDropperAction*> actions;
             //TODO These actions will hang around until m_collection is destructed.
             // Find a better parent to avoid this memory leak.
-            actions.append( new CopyToDeviceAction( m_collection, this ) );
+            //actions.append( new CopyToDeviceAction( m_collection, this ) );
 
             return new CustomActionsCapability( actions );
         }
@@ -787,7 +787,7 @@ SqlArtist::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::CustomActions:
         {
             QList<PopupDropperAction *> actions;
-            actions.append( new CopyToDeviceAction( m_collection, this ) );
+            //actions.append( new CopyToDeviceAction( m_collection, this ) );
             actions.append( new SimilarArtistsAction( m_collection, this ) );
             return new CustomActionsCapability( actions );
         }
@@ -1249,7 +1249,7 @@ SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::CustomActions:
         {
             QList<PopupDropperAction*> actions;
-            actions.append( new CopyToDeviceAction( m_collection, this ) );
+            //actions.append( new CopyToDeviceAction( m_collection, this ) );
             actions.append( new CompilationAction( m_collection, this ) );
             PopupDropperAction* separator = new PopupDropperAction( m_collection );
             separator->setSeparator( true );
