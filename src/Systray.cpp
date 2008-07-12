@@ -53,6 +53,8 @@ namespace Amarok
         return QImage( KStandardDirs::locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" )
                                                       .scaled( 10, 10, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     }
+
+    TrayIcon* TrayIcon::s_instance = 0;
 }
 
 
@@ -66,6 +68,8 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         , overlayVisible( false )
 {
     DEBUG_BLOCK
+
+    s_instance = this;
 
     PERF_LOG( "Beginning TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();

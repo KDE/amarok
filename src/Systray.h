@@ -26,18 +26,19 @@
 #include <QPixmap>
 
 class QEvent;
-
 class App;
-
 class PopupDropperAction;
 
 namespace Amarok {
 
+
 class TrayIcon : public KSystemTrayIcon, public EngineObserver
 {
 public:
-    TrayIcon( QWidget* );
+    TrayIcon( QWidget* widget);
     friend class ::App;
+
+    static TrayIcon* instance() { return s_instance; }  // Only needed for the TrackTooltip widget
 
 protected:
     // reimpl from engineobserver
@@ -56,6 +57,8 @@ private:
     void paintIcon( int mergePixels = -1, bool force = false );
     // blend an overlay icon over 'sourcePixmap' and repaint trayIcon
     void blendOverlay( QPixmap &sourcePixmap );
+
+    static TrayIcon* s_instance;
 
     long trackLength, mergeLevel;
     QIcon baseIcon;

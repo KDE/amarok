@@ -23,6 +23,7 @@
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "Systray.h"
 #include "amarok_export.h"
 #include "amarokconfig.h"
 #include "meta/MetaUtility.h"
@@ -129,7 +130,7 @@ void TrackToolTip::show( const QPoint & bottomRight )
     m_timer->start( 200 );
 
     QWidget::show();
-    QTimer::singleShot( 8000, this, SLOT( hide() ) ); // HACK: The system tray icon doesn't get mouse leave events, since it's not a QWidget.
+    QTimer::singleShot( 10000, this, SLOT( hide() ) );
 }
 
 void TrackToolTip::setTrack( const Meta::TrackPtr track )
@@ -306,14 +307,18 @@ void TrackToolTip::mousePressEvent( QMouseEvent* )
     hide();
 }
 
-void hide()  // SLOT
+void TrackToolTip::hide()  // SLOT
 {
-    DEBUG_BLOCK
+    QWidget::hide();
 }
 
-void slotTimer()  // SLOT
+void TrackToolTip::slotTimer()  // SLOT
 {
-
+    if( !Amarok::TrayIcon::instance()->geometry().contains( QCursor::pos() ) ) {
+        debug() << "Mouse pointer is leaving systray area. Hiding tooltip.";
+        m_timer->stop();
+        QTimer::singleShot( 1000, this, SLOT( hide() ) );
+    }        
 }
 
 #include "TrackTooltip.moc"
