@@ -7,8 +7,10 @@ VERSION 2.0-alpha2:
   FEATURES:
     * Automatic detection of non-UTF-8 charsets for metadata.
   CHANGES:
+    * Update the DBus APIs.
+    * Update the QtScript APIs.
   BUGFIXES:
-	* In the Wikipedia applet scrolling works properly now.
+    * In the Wikipedia applet scrolling works properly now.
     * Context menu separators are no longer shown as empty items.
     * Make the filebrowser filter instantaneously display results for files
     * Add a path separator if required when constructing relative urls from M3U 
