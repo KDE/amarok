@@ -121,6 +121,7 @@ void ShoutcastServiceQueryMaker::abortQuery()
 QueryMaker * ShoutcastServiceQueryMaker::setQueryType( QueryType type )
 {
     DEBUG_BLOCK
+
     switch( type ) {
     case QueryMaker::Track:
         d->type = Private::TRACK;
@@ -138,6 +139,8 @@ QueryMaker * ShoutcastServiceQueryMaker::setQueryType( QueryType type )
     case QueryMaker::None:
         return this;
     }
+
+    return this;
 }
 
 QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
