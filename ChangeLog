@@ -26,6 +26,7 @@ VERSION 2.0-alpha2:
     * Fix crash when removing collpsed album from the playlist. (BR 163653)
     * Mp3tunes would load for users who had never used it before and prompt 
       them with an annoying login box. (BR 166332)
+    * Random album playback mode implemented (BR 164623)
   
 
 VERSION 2.0
