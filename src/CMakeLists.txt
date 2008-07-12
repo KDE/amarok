@@ -305,6 +305,7 @@ set(libplaylist_SRCS
     playlist/PlaylistTextItem.cpp
     playlist/PlaylistViewCommon.cpp
     playlist/PlaylistWidget.cpp
+    playlist/RandomAlbumNavigator.cpp
     playlist/RandomTrackNavigator.cpp
     playlist/RepeatAlbumNavigator.cpp
     playlist/RepeatPlaylistNavigator.cpp
