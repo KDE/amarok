@@ -19,22 +19,26 @@
 
 #include "TrackTooltip.h"
 
-#include "amarokconfig.h"
 #include "Amarok.h"
-#include "amarok_export.h"
 #include "App.h"
 #include "Debug.h"
-#include "meta/MetaUtility.h"
 #include "EngineController.h"
+#include "amarok_export.h"
+#include "amarokconfig.h"
+#include "meta/MetaUtility.h"
 
 #include <KCalendarSystem>
 #include <KStandardDirs>
 
 #include <QApplication>
+#include <QCursor>
+#include <QDesktopWidget>
 #include <QGridLayout>
 #include <QLabel>
 #include <QMouseEvent>
 #include <QPixmap>
+#include <QPoint>
+#include <QRect>
 #include <QTimer>
 #include <QToolTip>
 #include <QRect>
@@ -53,6 +57,7 @@ TrackToolTip::TrackToolTip()
     : QWidget( 0 )
     , m_track( 0 )
     , m_haspos( false )
+    , m_timer( new QTimer( this ) )
 {
     DEBUG_BLOCK
 
@@ -80,6 +85,9 @@ TrackToolTip::TrackToolTip()
     m_titleLabel->installEventFilter( this );
     m_imageLabel-> installEventFilter( this );
     m_otherInfoLabel-> installEventFilter( this );
+
+    // Timer for checking the mouse position
+    connect( m_timer, SIGNAL( timeout() ), SLOT( slotTimer() ) );
 }
 
 TrackToolTip::~TrackToolTip()
@@ -116,6 +124,10 @@ void TrackToolTip::show( const QPoint & bottomRight )
             move( x, y );
         }
     }
+
+    // Start monitoring the mouse position
+    m_timer->start( 200 );
+
     QWidget::show();
     QTimer::singleShot( 8000, this, SLOT( hide() ) ); // HACK: The system tray icon doesn't get mouse leave events, since it's not a QWidget.
 }
@@ -292,6 +304,16 @@ void TrackToolTip::mousePressEvent( QMouseEvent* )
     DEBUG_BLOCK
 
     hide();
+}
+
+void hide()  // SLOT
+{
+    DEBUG_BLOCK
+}
+
+void slotTimer()  // SLOT
+{
+
 }
 
 #include "TrackTooltip.moc"

@@ -52,9 +52,15 @@ class TrackToolTip : public QWidget, public Meta::Observer
         virtual void metadataChanged( Meta::Composer * ) {}; //prevent compiler warning
         virtual void metadataChanged( Meta::Year * ) {}; //prevent compiler warning
 
+    public slots:
+       void hide(); 
+
     protected:
         bool eventFilter( QObject* obj, QEvent* event );
         virtual void mousePressEvent( QMouseEvent* );
+
+    private slots:
+       void slotTimer();
 
     private:
         QString tooltip() const;
@@ -69,7 +75,8 @@ class TrackToolTip : public QWidget, public Meta::Observer
         bool           m_haspos;
         QString        m_moodbarURL;
         QString        m_title;
-    
+        QTimer*        m_timer;
+            
         QLabel *m_imageLabel;
         QPixmap m_image;
         QLabel *m_titleLabel;
