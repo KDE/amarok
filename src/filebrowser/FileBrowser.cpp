@@ -118,6 +118,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
   connect( m_btnFilter, SIGNAL( clicked() ), this, SLOT( btnFilterClick() ) );
 
   connect( m_filter, SIGNAL( activated(const QString&) ), SLOT( slotFilterChange(const QString&) ) );
+  connect( m_filter, SIGNAL( editTextChanged(const QString&) ), SLOT( slotFilterChange(const QString&) ) );
   connect( m_filter, SIGNAL( returnPressed(const QString&) ), m_filter, SLOT( addToHistory(const QString&) ) );
 
   m_dir = new MyDirOperator(KUrl(QDir::home().path()), this);
@@ -329,6 +330,7 @@ void FileBrowser::Widget::slotFilterChange( const QString & nf )
   }
   else
   {
+    f = "*" + f + "*"; // add regexp matches surrounding the filter
     m_dir->setNameFilter( f );
     lastFilter = f;
     m_btnFilter->setToolTip( i18n("Clear filter") );

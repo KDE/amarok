@@ -8,6 +8,7 @@ VERSION 2.0-alpha2:
     * Automatic detection of non-UTF-8 charsets for metadata.
   CHANGES:
   BUGFIXES:
+    * Make the filebrowser filter instantaneously display results for files
     * Add a path separator if required when constructing relative urls from M3U 
       playlists. (BR 166346)
     * Rescan collection if the version is higher than we currently use
