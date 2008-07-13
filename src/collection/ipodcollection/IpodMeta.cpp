@@ -23,12 +23,13 @@
 #include "IpodMeta.h"
 
 #include "meta/EditCapability.h"
+#include "Debug.h"
 
 #include "IpodCollection.h"
 
 using namespace Meta;
 // Currently complaining about some vtable issue
-/*
+
 class EditCapabilityIpod : public Meta::EditCapability
 {
     Q_OBJECT
@@ -55,7 +56,7 @@ class EditCapabilityIpod : public Meta::EditCapability
         KSharedPtr<IpodTrack> m_track;
 };
 
-*/
+
 IpodTrack::IpodTrack( IpodCollection *collection, const QString &format)
     : Meta::Track()
     , m_collection( collection )
@@ -340,10 +341,11 @@ IpodTrack::collection() const
 bool
 IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
+    DEBUG_BLOCK
         switch(  type )
         {
-        //case Meta::Capability::Editable:
-         //   return true;
+        case Meta::Capability::Editable:
+            return true;
 
         default:
             return false;
@@ -353,10 +355,11 @@ IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 Meta::Capability*
 IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
 {
+        DEBUG_BLOCK
         switch( type )
         {
-        //case Meta::Capability::Editable:
-          //  return new EditCapabilityIpod( this );
+        case Meta::Capability::Editable:
+            return new EditCapabilityIpod( this );
 
         default:
             return 0;
@@ -907,3 +910,4 @@ IpodYear::remTrack( IpodTrackPtr track )
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }
 
+#include "ipodmeta.moc"

@@ -962,6 +962,9 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
         composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
     }
 
+    composerPtr->addTrack( track );
+    track->setComposer( composerPtr );
+
     QString year;
     year = year.setNum( ipodtrack->year );
     IpodYearPtr yearPtr;
@@ -1094,6 +1097,9 @@ IpodHandler::parseTracks()
             composerPtr = IpodComposerPtr( new IpodComposer( composer ) );
             composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
         }
+
+        composerPtr->addTrack( track );
+        track->setComposer( composerPtr );
 
         QString year;
         year = year.setNum( ipodtrack->year );
