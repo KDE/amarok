@@ -76,7 +76,9 @@ class IpodCollection : public Collection, public MemoryCollection
     virtual CollectionLocation* location() const;
 
     virtual QString collectionId() const;
-    virtual QString prettyName() const;        
+    virtual QString prettyName() const;
+
+    void collectionUpdated() { emit updated(); }
     
  signals:
     void collectionReady();

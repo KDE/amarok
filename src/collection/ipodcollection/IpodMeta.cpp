@@ -407,6 +407,9 @@ IpodTrack::setAlbum( const QString &newAlbum )
     m_collection->setAlbumMap(  albumMap );
     m_collection->releaseLock();
 
+        // hack to force refresh of collection in treeview
+    m_collection->collectionUpdated();
+
 }
 
 void
@@ -449,6 +452,9 @@ IpodTrack::setArtist( const QString &newArtist )
     m_collection->acquireWriteLock();
     m_collection->setArtistMap(  artistMap );
     m_collection->releaseLock();
+
+    // hack to force refresh of collection in treeview
+    m_collection->collectionUpdated();
 
 }
 
@@ -493,6 +499,9 @@ IpodTrack::setGenre( const QString &newGenre )
     m_collection->setGenreMap(  genreMap );
     m_collection->releaseLock();
 
+        // hack to force refresh of collection in treeview
+    m_collection->collectionUpdated();
+
 }
 
 void
@@ -536,6 +545,9 @@ IpodTrack::setComposer( const QString &newComposer )
     m_collection->setComposerMap(  composerMap );
     m_collection->releaseLock();
 
+        // hack to force refresh of collection in treeview
+    m_collection->collectionUpdated();
+
 }
 
 void
@@ -578,6 +590,9 @@ IpodTrack::setYear( const QString &newYear )
     m_collection->acquireWriteLock();
     m_collection->setYearMap(  yearMap );
     m_collection->releaseLock();
+
+        // hack to force refresh of collection in treeview
+    m_collection->collectionUpdated();
 
 }
 
