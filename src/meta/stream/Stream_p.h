@@ -74,7 +74,9 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
             }
         }
 
-        void engineStateChanged( Phonon::State state, Phonon::State oldState ) {
+        void engineStateChanged( Phonon::State state, Phonon::State oldState )
+        {
+            Q_UNUSED( oldState )
 
             if ( state ==  Phonon::PlayingState ) {
                 Meta::TrackPtr track = The::engineController()->currentTrack();
