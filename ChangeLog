@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-alpha2:
   FEATURES:
+    * Context view applet to view albums. (BR 164005)
     * Automatic detection of non-UTF-8 charsets for metadata.
   CHANGES:
     * Update the DBus APIs.
