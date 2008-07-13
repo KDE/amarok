@@ -93,7 +93,8 @@ class CollectionTreeView: public QTreeView
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
         void copyTracks( const QSet<CollectionTreeItem*> &items, Collection *destination, bool removeSources ) const;
-        PopupDropperActionList createActions( const QModelIndexList &indcies );
+        PopupDropperActionList createBasicActions( const QModelIndexList &indcies );
+        PopupDropperActionList createExtendedActions( const QModelIndexList &indcies );
 
         bool onlyOneCollection(  const QModelIndexList &indcies );
         Collection * getCollection( const QModelIndexList &indcies );

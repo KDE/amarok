@@ -176,7 +176,8 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
         indices = tmp;
     }
 
-    PopupDropperActionList actions = createActions( indices );
+    PopupDropperActionList actions = createBasicActions( indices );
+    actions += createExtendedActions( indices );
 
     KMenu menu;
 
@@ -293,7 +294,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             indices = tmp;
         }
 
-        PopupDropperActionList actions = createActions( indices );
+        PopupDropperActionList actions = createBasicActions( indices );
 
         QFont font;
         font.setPointSize( 16 );
@@ -314,7 +315,24 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
         }
 
-       /* if ( !( m_currentCopyDestination.empty() && m_currentMoveDestination.empty() ) ) {
+        PopupDropperItem* subItem;
+        
+        PopupDropper * morePud = The::popupDropperFactory()->createPopupDropper( 0 );
+
+        debug() << "Created morePud at address " << morePud;
+
+
+        actions = createExtendedActions( indices );
+
+
+        foreach( PopupDropperAction * action, actions ) {
+            debug() << "1 adding action " << action->objectName();
+            morePud->addItem( The::popupDropperFactory()->createItem( action ), false );
+        }
+
+
+        
+       /*if ( !( m_currentCopyDestination.empty() && m_currentMoveDestination.empty() ) ) {
             if ( m_cmSeperator == 0 ) {
                 m_cmSeperator = new PopupDropperAction( this );
                 m_cmSeperator->setSeparator ( true );
@@ -326,10 +344,10 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         m_pd->addItem( pdi, false );
         }*/
 
-        PopupDropperItem* subItem;
 
 
-        if ( !m_currentCopyDestination.empty() ) {
+
+       /* if ( !m_currentCopyDestination.empty() ) {
             debug() << "got copy actions";
             //KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
             PopupDropper * copyPud = The::popupDropperFactory()->createPopupDropper( 0 );
@@ -337,7 +355,8 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 debug() << "2 adding action " << action->objectName();
                 copyPud->addItem( The::popupDropperFactory()->createItem( action ), false );
             }
-            subItem = m_pd->addSubmenu( &copyPud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Copy to Collection" )  );
+            debug() << "Using morePud at address " << morePud;
+            subItem = morePud->addSubmenu( &copyPud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Copy to Collection" )  );
             subItem->setFont( font );
         }
 
@@ -348,10 +367,13 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 debug() << "3 adding action " << action->objectName();
                 movePud->addItem( The::popupDropperFactory()->createItem( action ), false );
             }
-            subItem = m_pd->addSubmenu( &movePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Move to Collection" )  );
+            subItem = morePud->addSubmenu( &movePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Move to Collection" )  );
             subItem->setFont( font );
-        }
+        }*/
 
+        subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More..." )  );
+        subItem->setFont( font );
+        
         m_pd->show();
     }
 
@@ -658,17 +680,19 @@ void CollectionTreeView::slotFilterNow()
     m_treeModel->slotFilter();
 }
 
-PopupDropperActionList CollectionTreeView::createActions( const QModelIndexList & indices )
+PopupDropperActionList CollectionTreeView::createBasicActions( const QModelIndexList & indices )
 {
+    
     PopupDropperActionList actions;
 
     if( !indices.isEmpty() )
     {
 
+        
         if ( m_appendAction == 0 ) {
             m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
 
-             connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
+            connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
         }
 
         actions.append( m_appendAction );
@@ -680,6 +704,20 @@ PopupDropperActionList CollectionTreeView::createActions( const QModelIndexList 
         }
 
         actions.append( m_loadAction );
+
+    }
+
+    return actions;
+
+}
+
+PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIndexList & indices )
+{
+    PopupDropperActionList actions;
+
+    if( !indices.isEmpty() )
+    {
+
 
         if ( m_editAction == 0 ) {
             m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
