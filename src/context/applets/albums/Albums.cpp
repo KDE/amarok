@@ -142,7 +142,7 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
     const qreal labelWidth = 15;
     const qreal textX = labelX + labelWidth + margin;
 
-    const qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 ) ;
+    const qreal textHeight = 22;
     const qreal textWidth = size().toSize().width() - ( textX + margin );
 
     // here we put all of the text items into the correct locations
@@ -157,7 +157,7 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
         const qreal yPos = i * ( m_albumWidth + margin ) + margin;
 
         album->setPos( QPointF( textX, yPos ) );
-        cover->setPos( QPointF( margin, yPos ) );
+        cover->setPos( QPointF( margin + 2, yPos ) );
         trackCount->setPos( QPointF( textX, yPos + textHeight ) );
 
         QString albumText = album->text();
@@ -247,7 +247,7 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
     
     const qreal margin = 14.0;
     const qreal labelX = m_albumWidth + margin;
-    const qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 ) ;
+    const qreal textHeight = 22;
     
     const qreal iconX = labelX + margin;
 
@@ -255,7 +255,7 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
     {
         const qreal yPos = i * ( m_albumWidth + margin ) + margin;
 
-        m_theme->paint( p, QRect( margin - 5, yPos, m_albumWidth + 12, m_albumWidth ), "cd-box" );
+        m_theme->paint( p, QRect( margin - 5, yPos - 1, m_albumWidth + 12, m_albumWidth + 2), "cd-box" );
         m_theme->paint( p, QRectF( iconX, yPos, 16, 16 ), "album" );
         m_theme->paint( p, QRectF( iconX, yPos + textHeight, 16, 16 ), "track" );
     }
