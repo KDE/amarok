@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>366</width>
-    <height>196</height>
+    <width>284</width>
+    <height>154</height>
    </rect>
   </property>
   <layout class="QGridLayout" >
@@ -38,36 +38,32 @@
       </item>
       <item row="2" column="0" >
        <widget class="QLabel" name="label_3" >
+        <property name="toolTip" >
+         <string>AutoSync is a feature from MP3tunes which allows you to automatically move your music between computers and devices.</string>
+        </property>
+        <property name="whatsThis" >
+         <string>AutoSync is a feature from MP3tunes which allows you to automatically move your music between computers and devices. You can upload music from one location and have it download instantly to other locations.</string>
+        </property>
         <property name="text" >
-         <string comment="Enable harmony" >Enable Harmony </string>
+         <string comment="Enable harmony" >Enable Auto Sync</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1" >
-       <widget class="QCheckBox" name="enableHarmony" />
+       <widget class="QCheckBox" name="enableHarmony" >
+        <property name="toolTip" >
+         <string>AutoSync is a feature from MP3tunes which allows you to automatically move your music between computers and devices.</string>
+        </property>
+       </widget>
       </item>
       <item row="3" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="text" >
-         <string comment="Identifier" >Device Identifier:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" >
-       <widget class="QLineEdit" name="identifier" >
-        <property name="readOnly" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" >
        <widget class="QLabel" name="label_4" >
         <property name="text" >
          <string> PIN Code:</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" >
+      <item row="3" column="1" >
        <widget class="QLineEdit" name="pinEdit" >
         <property name="readOnly" >
          <bool>true</bool>
@@ -75,6 +71,21 @@
        </widget>
       </item>
      </layout>
+     <zorder>label</zorder>
+     <zorder>emailEdit</zorder>
+     <zorder>label_2</zorder>
+     <zorder>passwordEdit</zorder>
+     <zorder>label_3</zorder>
+     <zorder>enableHarmony</zorder>
+     <zorder>label_3</zorder>
+     <zorder>identifier</zorder>
+     <zorder>label_4</zorder>
+     <zorder>label_5</zorder>
+     <zorder>textBrowser</zorder>
+     <zorder>textBrowser</zorder>
+     <zorder>label_5</zorder>
+     <zorder>label_5</zorder>
+     <zorder>pinEdit</zorder>
     </widget>
    </item>
   </layout>
