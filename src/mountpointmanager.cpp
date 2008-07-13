@@ -37,6 +37,8 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QDesktopServices>
+#include <QDir>
 #include <QFile>
 #include <QList>
 #include <QStringList>
@@ -422,13 +424,33 @@ MountPointManager::collectionFolders( )
                 result.append( absPath );
         }
     }
+    if( result.isEmpty() )
+    {
+        QDesktopServices ds;
+        const QString musicDir = ds.storageLocation( QDesktopServices::MusicLocation );
+        if( !musicDir.isEmpty() )
+        {
+            QDir dir( musicDir );
+            if( dir.exists() )
+            {
+                result << musicDir;
+            }
+        }
+    }
     return result;
 }
 
 void
 MountPointManager::setCollectionFolders( const QStringList &folders )
 {
-    //TODO max: cache data
+    if( folders.size() == 1 )
+    {
+        QDesktopServices ds;
+        if( folders[0] == ds.storageLocation( QDesktopServices::MusicLocation ) )
+        {
+            return;
+        }
+    }
     typedef QMap<int, QStringList> FolderMap;
     KConfigGroup folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
