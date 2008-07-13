@@ -688,6 +688,7 @@ SqlArtist::SqlArtist( SqlCollection* collection, int id, const QString &name ) :
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
+    ,m_albumsLoaded( false )
     ,m_mutex( QMutex::Recursive )
 {
     //nothing to do (yet)
