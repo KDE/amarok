@@ -30,7 +30,7 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     , m_headerAspectRatio( 0.0 )
     , m_size( QSizeF() )
     , m_wikipediaLabel( 0 )
-    , m_wikiPage( 0 )
+    , m_webView( 0 )
 {
 
     setHasConfigurationInterface( false );
@@ -40,9 +40,10 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
 WikipediaApplet::~ WikipediaApplet()
 {
     //hacky stuff to keep QWebView from causing a crash
-    m_wikiPage->setWidget( 0 );
+   /* m_wikiPage->setWidget( 0 );
     delete m_wikiPage;
     m_wikiPage = 0;
+    delete m_webView;*/
     delete m_webView;
 }
 
@@ -60,9 +61,23 @@ void WikipediaApplet::init()
 
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
 
-    m_webView = new QWebView();
-    m_wikiPage = new QGraphicsProxyWidget( this );
-    m_wikiPage->setWidget( m_webView );
+    m_webView = new Plasma::WebContent( this );
+
+
+    //make background transparent
+
+    QPalette p = m_webView->palette();
+    p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
+    m_webView->setPalette( p );
+
+    
+    p = m_webView->page()->palette();
+    p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
+    m_webView->page()->setPalette( p );
+
+
+    //m_wikiPage = new QGraphicsProxyWidget( this );
+    //m_wikiPage->setWidget( m_webView );
 
     QFont labelFont;
     labelFont.setBold( true );
@@ -92,17 +107,16 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     m_wikipediaLabel->setPos( offsetX, m_header->elementRect( "wikipedialabel" ).topLeft().y() );
     m_wikipediaLabel->setFont( shrinkTextSizeToFit( "Wikipedia", m_header->elementRect( "wikipedialabel" ) ) );
 
-    m_wikiPage->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
+    m_webView->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
 
     QSizeF infoSize( m_header->elementRect( "wikipediainformation" ).bottomRight().x() - m_header->elementRect( "wikipediainformation" ).topLeft().x(), m_header->elementRect( "wikipediainformation" ).bottomRight().y() - m_header->elementRect( "wikipediainformation" ).topLeft().y() );
 
     if ( infoSize.isValid() ) {
-        m_wikiPage->setMinimumSize( infoSize );
-        m_wikiPage->setMaximumSize( infoSize );
+        m_webView->resize( infoSize );
     }
 
-    m_wikiPage->show();
-}
+        //m_webView->show();
+    }
 
 bool WikipediaApplet::hasHeightForWidth() const
 {
@@ -124,9 +138,10 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     if( data.size() == 0 ) return;
 
     if( data.contains( "page" ) ) {
-        m_webView->setHtml( data[ "page" ].toString() );
+        m_webView->setHtml( data[ "page" ].toString().toUtf8(), KUrl( QString() ) );
     } else {
-        m_webView->setHtml( data[ data.keys()[ 0 ] ].toString() ); // set data
+        m_webView->setHtml( data[ data.keys()[ 0 ] ].toString().toUtf8(), KUrl( QString() ) ); // set data
+
     }
 
     if( data.contains( "label" ) )
