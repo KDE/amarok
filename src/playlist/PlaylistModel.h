@@ -137,7 +137,7 @@ namespace Playlist
     };
 
 
-    class Model : public QAbstractListModel, public Meta::Observer, public Meta::PlaylistObserver, public EngineObserver
+    class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, public Meta::PlaylistObserver, public EngineObserver
     {
         friend class AddTracksCmd;
         friend class AddPlaylistsCmd;
