@@ -21,6 +21,7 @@
 #include "widgets/Widget.h"
 
 #include <QPushButton>
+#include <QToolButton>
 #include <QListView>
 #include <QVBoxLayout>
 
@@ -57,8 +58,8 @@ namespace PlaylistBrowserNS {
 
             KComboBox *m_presetComboBox;
 
-            QPushButton *m_saveButton;
-            QPushButton *m_deleteButton;
+            QToolButton *m_saveButton;
+            QToolButton *m_deleteButton;
             QListView   *m_biasListView;
             DynamicBiasModel *m_biasModel;
             DynamicBiasDelegate *m_biasDelegate;

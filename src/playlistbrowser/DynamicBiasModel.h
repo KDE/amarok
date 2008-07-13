@@ -53,6 +53,7 @@ namespace PlaylistBrowserNS
             QModelIndex index ( int row, int column,
                     const QModelIndex & parent = QModelIndex() ) const;
 
+            QModelIndex indexOf( BiasBoxWidget* );
 
 
             QModelIndex parent ( const QModelIndex & index ) const;

@@ -52,7 +52,7 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
         foreach( Dynamic::Bias* b, bp->biases() )
         {
             debug() << "BIAS ADDED";
-            PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView );
+            PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView->viewport() );
 
             connect( widget, SIGNAL(widgetChanged(QWidget*)),
                     SLOT(widgetChanged(QWidget*)) );
@@ -63,7 +63,7 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
         }
 
         PlaylistBrowserNS::BiasAddWidget* adder =
-            new PlaylistBrowserNS::BiasAddWidget( m_listView );
+            new PlaylistBrowserNS::BiasAddWidget( m_listView->viewport() );
         connect( adder, SIGNAL(addBias(Dynamic::Bias*)),
                 SLOT(appendBias(Dynamic::Bias*)) );
 
@@ -84,7 +84,7 @@ PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
         beginInsertRows( QModelIndex(), rowCount()-1, rowCount()-1 );
         m_playlist->biases().append( b );
 
-        PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView );
+        PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView->viewport() );
 
         connect( widget, SIGNAL(widgetChanged(QWidget*)),
                 SLOT(widgetChanged(QWidget*)) );
@@ -160,6 +160,12 @@ PlaylistBrowserNS::DynamicBiasModel::index( int row, int column,
     //return createIndex( row, column, 
             //reinterpret_cast<void*>(m_widgets.at( row )) );
     return createIndex( row, column, 0 );
+}
+
+QModelIndex
+PlaylistBrowserNS::DynamicBiasModel::indexOf( PlaylistBrowserNS::BiasBoxWidget* widget )
+{
+    return index( m_widgets.indexOf( widget ), 0 );
 }
 
 QModelIndex

@@ -27,6 +27,7 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "DynamicPlaylist.h"
+#include "DynamicBiasModel.h"
 #include "DynamicModel.h"
 #include "MetaQueryMaker.h"
 #include "QueryMaker.h"
@@ -34,9 +35,12 @@
 #include "SvgTinter.h"
 #include "collection/support/XmlQueryWriter.h"
 
+#include <typeinfo>
+
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QListView>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QSpinBox>
@@ -59,6 +63,23 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
 {
     Q_UNUSED(e)
 
+    // is it showing ?
+    QListView* parentList = dynamic_cast<QListView*>(parent());
+    if( parentList )
+    {
+        PlaylistBrowserNS::DynamicBiasModel* model =
+            dynamic_cast<PlaylistBrowserNS::DynamicBiasModel*>( parentList->model() );
+        if( model )
+        {
+            QRect rect = parentList->visualRect( model->indexOf( this ) );
+            if( rect.x() < 0 || rect.y() < 0 || rect.height() < height() )
+            {
+                hide();
+                return;
+            }
+        }
+    }
+
     QPainter painter(this);
     painter.setRenderHint( QPainter::Antialiasing, true );
 
@@ -79,6 +100,12 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
     painter.drawRect( QRect( QPoint(0,0), size() ) );
 
     painter.end();
+}
+
+void
+PlaylistBrowserNS::BiasBoxWidget::resizeEvent( QResizeEvent* )
+{
+    emit widgetChanged( this );
 }
 
 
@@ -355,7 +382,6 @@ PlaylistBrowserNS::BiasGlobalWidget::setValueSection( QWidget* w )
     m_valueSelection = w;
     m_controlLayout->addWidget( m_valueSelection, 2, 1 );
 
-    emit widgetChanged( this );
 }
 
 void
@@ -396,6 +422,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
 {
     KComboBox* artistCombo = new KComboBox( m_controlFrame );
     artistCombo->setPalette( QApplication::palette() );
+    artistCombo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     artistCombo->setEditable( true );
 
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
@@ -429,6 +456,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
 {
     KComboBox* albumCombo = new KComboBox( m_controlFrame );
     albumCombo->setPalette( QApplication::palette() );
+    albumCombo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     albumCombo->setEditable( true );
 
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
@@ -461,6 +489,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeTitleSelection()
 {
     KComboBox* titleLine = new KHistoryComboBox( true, m_controlFrame );
     titleLine->setPalette( QApplication::palette() );
+    titleLine->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     titleLine->setEditable( true );
 
     connect( titleLine, SIGNAL(currentIndexChanged( const QString& )),
@@ -481,6 +510,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
 {
     KComboBox* genreCombo = new KComboBox( m_controlFrame );
     genreCombo->setPalette( QApplication::palette() );
+    genreCombo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     genreCombo->setEditable( true );
 
 

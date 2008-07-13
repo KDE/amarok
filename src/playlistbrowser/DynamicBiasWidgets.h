@@ -52,6 +52,8 @@ namespace PlaylistBrowserNS
         signals:
             void widgetChanged( QWidget* );
 
+        protected:
+            void resizeEvent( QResizeEvent* );
 
         private:
             void paintEvent( QPaintEvent* );

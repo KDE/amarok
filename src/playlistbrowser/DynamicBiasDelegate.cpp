@@ -38,7 +38,6 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint ( QPainter * painter, const QStyle
     QRect rect( option.rect );
     rect.adjust( 5, 3, -5, -3 );
 
-    // TODO: tell it if it's selected or not
     BiasBoxWidget* widget = qvariant_cast<BiasBoxWidget*>( index.data( DynamicBiasModel::WidgetRole ) ); 
     widget->setGeometry( rect );
     widget->show();

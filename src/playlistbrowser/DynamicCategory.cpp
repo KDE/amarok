@@ -28,8 +28,9 @@
 #include <QTreeWidget>
 
 #include <KHBox>
-#include <KVBox>
 #include <KIcon>
+#include <KToolBar>
+#include <KVBox>
 
 
 namespace PlaylistBrowserNS {
@@ -65,37 +66,45 @@ DynamicCategory::DynamicCategory( QWidget* parent )
             The::playlistModel(), SIGNAL(repopulate()) );
             
     initOnOffButton();
+    
+
+    KHBox* presetLayout = new KHBox( this );
 
 
-    KHBox* comboLayout = new KHBox( this );
-    comboLayout->setSpacing( 10 );
+    QLabel* presetLabel = new QLabel( "Preset:", presetLayout );
 
-    QLabel* presetLabel = new QLabel( "Preset:", comboLayout );
-
-    m_presetComboBox = new KComboBox( comboLayout );
+    m_presetComboBox = new KComboBox( presetLayout );
     m_presetComboBox->setPalette( QApplication::palette() );
     m_presetComboBox->setModel( DynamicModel::instance() );
 
     connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(playlistSelectionChanged(int) ) );
-
     presetLabel->setBuddy( m_presetComboBox );
-    comboLayout->setStretchFactor( m_presetComboBox, 1 );
+
+    presetLayout->setStretchFactor( m_presetComboBox, 1 );
 
 
-    KHBox *hSaveDeleteLayout = new KHBox( this );
-    
-    m_saveButton   = new QPushButton( hSaveDeleteLayout );
-    m_saveButton->setText( i18n("Save") );
+
+
+    KToolBar* presetToolbar = new KToolBar( presetLayout );
+    presetToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+    presetToolbar->setMovable( false );
+    presetToolbar->setFloatable( false );
+    presetToolbar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
+    m_saveButton   = new QToolButton( presetToolbar );
+    //m_saveButton->setText( i18n("Save") );
     m_saveButton->setEnabled( false );
     m_saveButton->setIcon( KIcon( "document-save-amarok" ) );
     m_saveButton->setToolTip( i18n( "Save the preset." ) );
+    presetToolbar->addWidget( m_saveButton );
 
-    m_deleteButton = new QPushButton( hSaveDeleteLayout );
-    m_deleteButton->setText( i18n("Delete") );
+
+    m_deleteButton = new QToolButton( presetToolbar );
+    //m_deleteButton->setText( i18n("Delete") );
     m_deleteButton->setEnabled( false );
     m_deleteButton->setIcon( KIcon( "edit-delete-amarok" ) );
     m_deleteButton->setToolTip( i18n( "Delete the preset.") );
+    presetToolbar->addWidget( m_deleteButton );
 
     m_biasListView = new QListView( this );
     m_biasListView->setFrameShape( QFrame::NoFrame );
@@ -115,9 +124,8 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_vLayout->addWidget( m_onoffButton );
     m_vLayout->addWidget( m_repopulateButton );
-    m_vLayout->addWidget( comboLayout );
+    m_vLayout->addWidget( presetLayout );
     m_vLayout->addWidget( m_biasListView );
-    m_vLayout->addWidget( hSaveDeleteLayout );
 
     this->setLayout( m_vLayout );
 

@@ -59,6 +59,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
     p.setColor( QPalette::Window, c );
     m_toolBox->setPalette( p );
 
+    addCategory( PlaylistManager::Dynamic );
 
     QList<int> categories = The::playlistManager()->availableCategories();
     debug() << categories.size() << " categories available";
@@ -68,7 +69,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
         addCategory( category );
     }
 
-    addCategory( PlaylistManager::Dynamic );
 
     connect( The::playlistManager(), SIGNAL(categoryAdded(int)), SLOT(addCategory(int)) );
 }
