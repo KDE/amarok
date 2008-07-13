@@ -33,6 +33,7 @@
 FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     : QFrame( parent )
     , m_tokenCount( 0 )   //how many tokens have I built, need this to assign unique IDs
+    , m_parsableScheme( "" )
 {
     setAcceptDrops( true );
     layout = new QHBoxLayout;
@@ -75,11 +76,11 @@ FilenameLayoutWidget::addToken( QString text, int index )
 
     if( token->text() == "<space>" )
     {
-        token->setText( "   " );
+        token->setText( " " );
     }
 
     //testing, remove when done
-    token->setText( token->text() + " " + QString::number( layout->indexOf( token ) ) );
+    //token->setText( token->text() + " " + QString::number( layout->indexOf( token ) ) );
     //end testing block
 
     //debug stuff follows
@@ -257,7 +258,55 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
 void
 FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of the layout
 {
-    
+    //with m_parsableScheme
+    m_parsableScheme = "";
+    foreach( Token *token, *tokenList)
+    {
+        QString current = token->text();
+        if( current == "Track" )
+        {
+            m_parsableScheme += "%track";
+        }
+        else if( current == "Title" )
+        {
+            m_parsableScheme += "%title";
+        }
+        else if( current == "Artist" )
+        {
+            m_parsableScheme += "%artist";
+        }
+        else if( current == "Composer" )
+        {
+            m_parsableScheme += "%composer";
+        }
+        else if( current == "Year" )
+        {
+            m_parsableScheme += "%year";
+        }
+        else if( current == "Album" )
+        {
+            m_parsableScheme += "%album";
+        }
+        else if( current == "Comment" )
+        {
+            m_parsableScheme += "%comment";
+        }
+        else if( current == "Genre" )
+        {
+            m_parsableScheme += "%genre";
+        }
+        else
+        {
+            m_parsableScheme += current;
+        }
+    }
+    debug() << "||| PARSABLE SCHEME ||| >>  " << m_parsableScheme;
+}
+
+QString
+FilenameLayoutWidget::getParsableScheme()
+{
+    return m_parsableScheme;
 }
 
 

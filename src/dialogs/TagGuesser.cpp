@@ -212,7 +212,7 @@ void TagGuesser::setSchemeStrings( const QStringList &schemes )
 
 TagGuesser::TagGuesser()
 {
-    loadSchemes();
+    loadSchemes(); 
 }
 
 TagGuesser::TagGuesser( const QString &absFileName )
@@ -221,7 +221,7 @@ TagGuesser::TagGuesser( const QString &absFileName )
     guess( absFileName );
 }
 
-void TagGuesser::loadSchemes()
+void TagGuesser::loadSchemes()      //note to self: this method should get its scheme from FilenameLayoutDialog, ideally instantiating it here and storing the result on accept()
 {
     const QStringList schemes = schemeStrings();
     QStringList::ConstIterator it = schemes.constBegin();

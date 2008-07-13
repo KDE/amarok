@@ -33,6 +33,7 @@ class FilenameLayoutWidget
         void addToken( QString text, int index = 0);
 
         unsigned int getTokenCount();   //access for uint m_tokenCount
+        QString getParsableScheme();    //access for QString m_parsableScheme
 
     protected:
         void mouseMoveEvent( QMouseEvent *event );

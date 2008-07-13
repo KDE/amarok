@@ -373,7 +373,12 @@ void
 TagDialog::setFileNameSchemes() //SLOT
 {
     FilenameLayoutDialog *dialog = new FilenameLayoutDialog(this);
-    dialog->exec();
+    int dcode = dialog->exec();
+    QString schemeFromDialog = QString();       //note to self: see where to put it from an old revision
+    if( dcode == KDialog::Accepted )
+    {
+        schemeFromDialog = dialog->getParsableScheme();
+    }
     delete dialog;
 }
 

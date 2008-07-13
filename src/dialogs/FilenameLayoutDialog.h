@@ -29,6 +29,7 @@ class FilenameLayoutDialog
 
     public:
         FilenameLayoutDialog( QWidget *parent = 0 );
+        QString getParsableScheme();
 
     private:
         QList< QRadioButton * > caseEditRadioButtons;

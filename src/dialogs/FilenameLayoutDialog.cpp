@@ -35,6 +35,12 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
 
 }
 
+QString
+FilenameLayoutDialog::getParsableScheme()
+{
+    return filenameLayout->getParsableScheme();
+}
+
 void
 FilenameLayoutDialog::editStateEnable( bool checked )      //SLOT
 {
