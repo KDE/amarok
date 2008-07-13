@@ -53,7 +53,7 @@ namespace Meta
             
             /**
              * Constructor
-             * @param actions A list of actions that to use.
+             * @param actions A list of actions to use.
              */
             CustomActionsCapability( const QList< PopupDropperAction* > &actions );
             /**
@@ -63,7 +63,7 @@ namespace Meta
 
             /**
              * Get the custom actions for this capablility
-             * @return Teh list of custom actions
+             * @return The list of custom actions
              */
             virtual QList<PopupDropperAction *> customActions() const;
 
