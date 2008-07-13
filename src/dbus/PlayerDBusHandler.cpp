@@ -34,6 +34,9 @@ namespace Amarok
         : QObject(kapp)
     {
         s_instance = this;
+
+        // NOTE disabled because it caused a crash on startup
+#if 0
         QObject* pa = new PlayerAdaptor( this );
         setObjectName("PlayerDBusHandler");
 
@@ -42,6 +45,7 @@ namespace Amarok
         connect( The::engineController(), SIGNAL( trackFinished() ), pa, SLOT( slotStatusChange() ) );
         connect( The::engineController(), SIGNAL( trackPlayPause( int ) ), pa, SLOT( slotStatusChange() ) );
         connect( this, SIGNAL( statusChange( DBusStatus ) ), pa, SLOT( slotCapsChange() ) );
+#endif
 
         QDBusConnection::sessionBus().registerObject("/Player", this);
     }
