@@ -14,130 +14,6 @@
     <number>0</number>
    </property>
    <item row="0" column="0" >
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="title" >
-      <string>Transition &amp;Options</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_5" >
-      <item row="0" column="0" >
-       <widget class="QCheckBox" name="kcfg_Crossfade" >
-        <property name="text" >
-         <string>&amp;Crossfade</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="crossfadeDropdownText" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Crossfa&amp;de:</string>
-        </property>
-        <property name="buddy" >
-         <cstring>kcfg_CrossfadeType</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QComboBox" name="kcfg_CrossfadeType" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="toolTip" >
-         <string>Select when you want crossfading to occur</string>
-        </property>
-        <property name="whatsThis" >
-         <string>Select when you want crossfading to occur</string>
-        </property>
-        <property name="duplicatesEnabled" >
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text" >
-          <string>Always</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>On Automatic Track Change</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>On Manual Track Change</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="crossfadeLengthLabel" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Crosso&amp;ver duration:</string>
-        </property>
-        <property name="buddy" >
-         <cstring>kcfg_CrossfadeLength</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" >
-       <widget class="QSpinBox" name="kcfg_CrossfadeLength" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="toolTip" >
-         <string>The length of the crossfade between tracks, in milliseconds.</string>
-        </property>
-        <property name="suffix" >
-         <string> ms</string>
-        </property>
-        <property name="minimum" >
-         <number>100</number>
-        </property>
-        <property name="maximum" >
-         <number>99999999</number>
-        </property>
-        <property name="singleStep" >
-         <number>100</number>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="trackDelayLengthLabel" >
-        <property name="text" >
-         <string>Insert &amp;gap:</string>
-        </property>
-        <property name="buddy" >
-         <cstring>kcfg_TrackDelayLength</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" >
-       <widget class="QSpinBox" name="kcfg_TrackDelayLength" >
-        <property name="toolTip" >
-         <string>Silence between tracks, in milliseconds.</string>
-        </property>
-        <property name="frame" >
-         <bool>true</bool>
-        </property>
-        <property name="suffix" >
-         <string> ms</string>
-        </property>
-        <property name="maximum" >
-         <number>10000</number>
-        </property>
-        <property name="singleStep" >
-         <number>100</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0" >
     <widget class="QGroupBox" name="opt_crossfade_2" >
      <property name="whatsThis" >
       <string>&lt;b>Quit Behavior&lt;/b>
@@ -195,7 +71,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
+   <item row="1" column="0" >
     <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
       <string>Miscellaneous</string>
@@ -224,7 +100,7 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" >
+   <item row="2" column="0" >
     <spacer name="verticalSpacer" >
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
@@ -244,102 +120,6 @@
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>kcfg_Crossfade</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>kcfg_CrossfadeType</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>58</x>
-     <y>52</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>293</x>
-     <y>58</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>kcfg_Crossfade</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>crossfadeDropdownText</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>99</x>
-     <y>53</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>184</x>
-     <y>58</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>kcfg_Crossfade</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>crossfadeLengthLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>103</x>
-     <y>41</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>217</x>
-     <y>86</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>kcfg_Crossfade</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>kcfg_CrossfadeLength</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>39</x>
-     <y>47</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>376</x>
-     <y>92</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>kcfg_Crossfade</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>trackDelayLengthLabel</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>22</x>
-     <y>42</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>161</x>
-     <y>135</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>kcfg_Crossfade</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>kcfg_TrackDelayLength</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>13</x>
-     <y>52</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>339</x>
-     <y>127</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>kcfg_Fadeout</sender>
    <signal>toggled(bool)</signal>
