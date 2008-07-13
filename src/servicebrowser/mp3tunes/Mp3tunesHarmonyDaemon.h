@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QThread>
 extern "C" {
    // Get libmp3tunes declarations
     #include "libmp3tunes/harmony.h"
@@ -39,6 +40,10 @@ extern "C" {
  */
 class Mp3tunesHarmonyDownload {
     public:
+        /**
+         * Default constructor does nothing.
+         */
+        Mp3tunesHarmonyDownload();
         Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download );
         ~Mp3tunesHarmonyDownload();
 
@@ -54,7 +59,17 @@ class Mp3tunesHarmonyDownload {
         QString fileBitrate() const;
         QString url() const;
     private:
-        mp3tunes_harmony_download_t *m_harmony_download_t;
+        QString m_fileKey;
+        QString m_fileName;
+        QString m_fileFormat;
+        unsigned int m_fileSize;
+        QString m_artistName;
+        QString m_albumTitle;
+        QString m_trackTitle;
+        int m_trackNumber;
+        QString m_deviceBitrate;
+        QString m_fileBitrate;
+        QString m_url;
 };
 /**
  * A daemon that receives notfications from mp3tunes'
@@ -68,7 +83,7 @@ class Mp3tunesHarmonyDownload {
  * and instantiate a new Mp3tunesHarmonyDaemon for theDaemon.
  * @author Casey Link <unnamedrambler@gmail.com>
  */
-class Mp3tunesHarmonyDaemon: public QObject
+class Mp3tunesHarmonyDaemon: public QThread
 {
     Q_OBJECT
 
@@ -86,7 +101,7 @@ class Mp3tunesHarmonyDaemon: public QObject
     /**
      * Stats the daemon by intiating the connection Harmony connection.
      */
-    void init();
+    virtual void run();
 
     /**
      * Returns the pin

@@ -82,7 +82,7 @@ Mp3tunesHarmonyDaemon::~Mp3tunesHarmonyDaemon()
 
 }
 void
-Mp3tunesHarmonyDaemon::init()
+Mp3tunesHarmonyDaemon::run()
 {
     /* Linux specific variable for getting total and available sizes for the
      * file system
@@ -274,6 +274,8 @@ Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony, g
 
 
 /* Harmony Download Type Wrapper */
+Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload()
+{}
 Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download )
 {
     DEBUG_BLOCK
