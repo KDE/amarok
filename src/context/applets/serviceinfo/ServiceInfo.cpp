@@ -17,6 +17,8 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "context/Svg.h"
+#include "playlist/PlaylistModel.h"
+#include "meta/XSPFPlaylist.h"
 
 #include <plasma/theme.h>
 
@@ -211,14 +213,15 @@ ServiceInfo::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 
 void ServiceInfo::linkClicked( const QUrl & url )
 {
-    kDebug() << "Link clicked: " << url.toString();
+    debug() << "Link clicked: " << url.toString();
 
     //for now, just handle xspf playlist files
 
     if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) ) {
 
-        QDBusInterface amarokPlaylist( "org.kde.amarok", "/Playlist" );
-        amarokPlaylist.call( "addMedia", url.toString() );
+        Meta::PlaylistPtr playlistPtr( new Meta::XSPFPlaylist( url ) );
+        The::playlistModel()->insertPlaylist( The::playlistModel()->rowCount(), playlistPtr );
+
     }
 }
 
