@@ -269,7 +269,12 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
         /* if( d->queryType == Private::NONE )
         d->queryType = Private::CUSTOM;*/
         return this;
+    
+    case QueryMaker::None:
+        return this;
     }
+
+    return this;
 }
 
 QueryMaker*
