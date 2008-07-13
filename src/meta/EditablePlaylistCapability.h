@@ -19,8 +19,8 @@
 #ifndef METAEDITABLEPLAYLISTCAPABILITY_H
 #define METAEDITABLEPLAYLISTCAPABILITY_H
 
-#include <Capability.h>
-#include <Meta.h>
+#include "Capability.h"
+#include "Meta.h"
 
 #include <QDateTime>
 
