@@ -57,11 +57,11 @@ class SqlRegistry : public QObject
 
         //we don't care about the ordering so use the faster QHash
         QHash<TrackId, Meta::TrackPtr > m_trackMap;
-        QHash<QString, Meta::ArtistPtr > m_artistMap;
-        QHash<QString, Meta::ComposerPtr > m_composerMap;
-        QHash<QString, Meta::GenrePtr > m_genreMap;
-        QHash<QString, Meta::YearPtr > m_yearMap;
-        QHash<QString, Meta::AlbumPtr > m_albumMap;        //TODO: needs improvement
+        QHash<int, Meta::ArtistPtr > m_artistMap;
+        QHash<int, Meta::ComposerPtr > m_composerMap;
+        QHash<int, Meta::GenrePtr > m_genreMap;
+        QHash<int, Meta::YearPtr > m_yearMap;
+        QHash<int, Meta::AlbumPtr > m_albumMap;        //TODO: needs improvement
 
         QMutex m_trackMutex;
         QMutex m_artistMutex;

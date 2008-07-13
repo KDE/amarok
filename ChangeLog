@@ -13,6 +13,7 @@ VERSION 2.0-alpha2:
     * Update the QtScript APIs.
 
   BUGFIXES:
+    * Correctly handle albums with the same name (BR 164173)
     * Various bugfixes for the systray tooltip.
     * In the Wikipedia applet scrolling works properly now.
     * Context menu separators are no longer shown as empty items.

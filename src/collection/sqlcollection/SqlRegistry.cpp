@@ -87,8 +87,8 @@ ArtistPtr
 SqlRegistry::getArtist( const QString &name, int id )
 {
     QMutexLocker locker( &m_artistMutex );
-    if( m_artistMap.contains( name ) )
-        return m_artistMap.value( name );
+    if( m_artistMap.contains( id ) )
+        return m_artistMap.value( id );
     else
     {
         if( id == -1 )
@@ -106,7 +106,7 @@ SqlRegistry::getArtist( const QString &name, int id )
             }
         }
         ArtistPtr artist( new SqlArtist( m_collection, id, name ) );
-        m_artistMap.insert( name, artist );
+        m_artistMap.insert( id, artist );
         return artist;
     }
 }
@@ -115,8 +115,8 @@ GenrePtr
 SqlRegistry::getGenre( const QString &name, int id )
 {
     QMutexLocker locker( &m_genreMutex );
-    if( m_genreMap.contains( name ) )
-        return m_genreMap.value( name );
+    if( m_genreMap.contains( id ) )
+        return m_genreMap.value( id );
     else
     {
         if( id == -1 )
@@ -134,7 +134,7 @@ SqlRegistry::getGenre( const QString &name, int id )
             }
         }
         GenrePtr genre( new SqlGenre( m_collection, id, name ) );
-        m_genreMap.insert( name, genre );
+        m_genreMap.insert( id, genre );
         return genre;
     }
 }
@@ -143,8 +143,8 @@ ComposerPtr
 SqlRegistry::getComposer( const QString &name, int id )
 {
     QMutexLocker locker( &m_composerMutex );
-    if( m_composerMap.contains( name ) )
-        return m_composerMap.value( name );
+    if( m_composerMap.contains( id ) )
+        return m_composerMap.value( id );
     else
     {
         if( id == -1 )
@@ -162,7 +162,7 @@ SqlRegistry::getComposer( const QString &name, int id )
             }
         }
         ComposerPtr composer( new SqlComposer( m_collection, id, name ) );
-        m_composerMap.insert( name, composer );
+        m_composerMap.insert( id, composer );
         return composer;
     }
 }
@@ -171,8 +171,8 @@ YearPtr
 SqlRegistry::getYear( const QString &name, int id )
 {
     QMutexLocker locker( &m_yearMutex );
-    if( m_yearMap.contains( name ) )
-        return m_yearMap.value( name );
+    if( m_yearMap.contains( id ) )
+        return m_yearMap.value( id );
     else
     {
         if( id == -1 )
@@ -190,7 +190,7 @@ SqlRegistry::getYear( const QString &name, int id )
             }
         }
         YearPtr year( new SqlYear( m_collection, id, name ) );
-        m_yearMap.insert( name, year );
+        m_yearMap.insert( id, year );
         return year;
     }
 }
@@ -199,8 +199,8 @@ AlbumPtr
 SqlRegistry::getAlbum( const QString &name, int id, int artist )
 {
     QMutexLocker locker( &m_albumMutex );
-    if( m_albumMap.contains( name ) )
-        return m_albumMap.value( name );
+    if( m_albumMap.contains( id ) )
+        return m_albumMap.value( id );
     else
     {
         if( id == -1 )
@@ -226,7 +226,7 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist )
             }
         }
         AlbumPtr album( new SqlAlbum( m_collection, id, name, artist ) );
-        m_albumMap.insert( name, album );
+        m_albumMap.insert( id, album );
         return album;
     }
 }
@@ -249,7 +249,7 @@ SqlRegistry::emptyCache()
         //so care has to be taken to make sure that we are not dealing with a cyclic graph
         //by invalidating the tracks cache on all objects
         #define foreachInvalidateCache( Type, RealType, x ) \
-        for( QMutableHashIterator<QString,Type > iter(x); iter.hasNext(); ) \
+        for( QMutableHashIterator<int,Type > iter(x); iter.hasNext(); ) \
             RealType::staticCast( iter.next().value() )->invalidateCache()
 
         foreachInvalidateCache( AlbumPtr, KSharedPtr<SqlAlbum>, m_albumMap );
@@ -270,11 +270,11 @@ SqlRegistry::emptyCache()
 
         foreachCollectGarbage( TrackId, TrackPtr, m_trackMap )
         //run before artist so that album artist pointers can be garbage collected
-        foreachCollectGarbage( QString, AlbumPtr, m_albumMap )
-        foreachCollectGarbage( QString, ArtistPtr, m_artistMap )
-        foreachCollectGarbage( QString, GenrePtr, m_genreMap )
-        foreachCollectGarbage( QString, ComposerPtr, m_composerMap )
-        foreachCollectGarbage( QString, YearPtr, m_yearMap )
+        foreachCollectGarbage( int, AlbumPtr, m_albumMap )
+        foreachCollectGarbage( int, ArtistPtr, m_artistMap )
+        foreachCollectGarbage( int, GenrePtr, m_genreMap )
+        foreachCollectGarbage( int, ComposerPtr, m_composerMap )
+        foreachCollectGarbage( int, YearPtr, m_yearMap )
     }
 
     //make sure to unlock all necessary locks
