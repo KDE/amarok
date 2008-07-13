@@ -124,7 +124,7 @@ namespace Amarok
 
     QVariantMap PlayerDBusHandler::GetMetadata()
     {
-        GetTrackMetadata( The::engineController()->currentTrack() );
+        return GetTrackMetadata( The::engineController()->currentTrack() );
     }
 
     int PlayerDBusHandler::GetCaps()
