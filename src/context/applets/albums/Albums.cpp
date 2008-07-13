@@ -105,7 +105,8 @@ void Albums::prepareElements()
         QGraphicsSimpleTextItem *trackCount = new QGraphicsSimpleTextItem( this );
         QGraphicsPixmapItem     *cover = new QGraphicsPixmapItem( this );
         
-        album->setText( albumPtr->name() );
+        QString albumName = albumPtr->name();
+        album->setText( albumName.isEmpty() ? i18n("Unknown") : albumName );
         album->setFont( textFont );
         album->setBrush( textColor );
 
