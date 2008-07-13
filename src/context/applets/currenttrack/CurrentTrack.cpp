@@ -163,7 +163,8 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     const qreal textX = labelX + labelWidth + margin;
 
     const qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 ) ;
-    const qreal textWidth = size().toSize().width() - ( textX + margin );
+    const qreal textWidth = size().toSize().width() - ( textX + margin + 23 ); // add 23 to ensure that we do not paint into the small labels
+    
 
     // here we put all of the text items into the correct locations
     m_artist->setPos( QPointF( textX, margin ) );
