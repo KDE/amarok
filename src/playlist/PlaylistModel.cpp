@@ -623,8 +623,10 @@ Playlist::Model::activeTrack() const
 {
     if( m_activeRow > -1 )
         return m_items.at( m_activeRow )->track();
-    else if( rowCount() > 1 )
+    else if( rowCount() > 0 )
         return m_items.at( 0 )->track();
+
+    return Meta::TrackPtr( 0 );
 }
 
 void
