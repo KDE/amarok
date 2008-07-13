@@ -78,8 +78,8 @@ private slots:
     void harmonyConnected();
     void harmonyDisconnected();
     void harmonyError( const QString &error );
-    void harmonyDownloadReady( Mp3tunesHarmonyDownload download );
-    void harmonyDownloadPending( Mp3tunesHarmonyDownload download );
+    void harmonyDownloadReady( const Mp3tunesHarmonyDownload &download );
+    void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );
 
 private:
     char *convertToChar( const QString &source ) const;

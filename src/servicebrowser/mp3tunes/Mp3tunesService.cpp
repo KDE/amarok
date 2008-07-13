@@ -120,19 +120,18 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
                 theDaemon = new Mp3tunesHarmonyDaemon( ident, //they're not harmony virgins
                                                     convertToChar( config.email() ),
                                                     convertToChar( config.pin() ) );
-
-            Mp3tunesHarmonizer * harmonizer = new Mp3tunesHarmonizer( theDaemon );
+            qRegisterMetaType<Mp3tunesHarmonyDownload>("Mp3tunesHarmonyDownload");
             connect( theDaemon, SIGNAL( signalDisconnected() ), this, SLOT( harmonyDisconnected() ) );
             connect( theDaemon, SIGNAL( signalWaitingForEmail() ), this, SLOT( harmonyWaitingForEmail() ) );
             connect( theDaemon, SIGNAL( signalConnected() ), this, SLOT( harmonyConnected() ) );
             connect( theDaemon, SIGNAL( signalError( QString ) ), this, SLOT( harmonyError( QString ) ) );
-            connect( theDaemon, SIGNAL( signalDownloadReady( Mp3tunesHarmonyDownload* ) ),
-                    this, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload* ) ) );
-            connect( theDaemon, SIGNAL( signalDownloadPending( Mp3tunesHarmonyDownload* ) ),
-                    this, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload* ) ) );
+            connect( theDaemon, SIGNAL( signalDownloadReady( Mp3tunesHarmonyDownload ) ),
+                    this, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload ) ) );
+            connect( theDaemon, SIGNAL( signalDownloadPending( Mp3tunesHarmonyDownload ) ),
+                    this, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload ) ) );
 
-            debug() << "running harmonizer.";
-            ThreadWeaver::Weaver::instance()->enqueue( harmonizer );
+            debug() << "spawning daemon thread.";
+            theDaemon->start();
 
             //Close your eyes. Cross your legs. Touch middle fingers to thumbs. Extend your arms.
             //OOOooommmmm
@@ -260,7 +259,7 @@ void Mp3tunesService::harmonyError( const QString &error )
     The::statusBar()->longMessage( "Mp3tunes Harmony Error\n" + error );
 }
 
-void Mp3tunesService::harmonyDownloadReady( Mp3tunesHarmonyDownload download )
+void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &download )
 {
     DEBUG_BLOCK
     debug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
@@ -285,7 +284,7 @@ void Mp3tunesService::harmonyDownloadReady( Mp3tunesHarmonyDownload download )
 
 }
 
-void Mp3tunesService::harmonyDownloadPending( Mp3tunesHarmonyDownload download )
+void Mp3tunesService::harmonyDownloadPending( const Mp3tunesHarmonyDownload &download )
 {
     DEBUG_BLOCK
     debug() << "Got message about pending: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();

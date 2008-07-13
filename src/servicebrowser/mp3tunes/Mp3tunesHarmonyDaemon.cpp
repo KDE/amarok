@@ -176,13 +176,13 @@ Mp3tunesHarmonyDaemon::emitDisconnected()
 }
 
 void
-Mp3tunesHarmonyDaemon::emitDownloadReady( Mp3tunesHarmonyDownload download )
+Mp3tunesHarmonyDaemon::emitDownloadReady( const Mp3tunesHarmonyDownload &download )
 {
     DEBUG_BLOCK
     emit( signalDownloadReady( download ) );
 }
 void
-Mp3tunesHarmonyDaemon::emitDownloadPending( Mp3tunesHarmonyDownload download )
+Mp3tunesHarmonyDaemon::emitDownloadPending( const Mp3tunesHarmonyDownload &download )
 {
     DEBUG_BLOCK
     emit( signalDownloadPending( download ) );
@@ -193,7 +193,7 @@ Mp3tunesHarmonyDaemon::signalErrorHandler(MP3tunesHarmony* harmony, gpointer nul
 {
     DEBUG_BLOCK
     GError *err;
-    null_pointer = null_pointer;
+    Q_UNUSED( null_pointer )
     g_print("Fatal Error: %s\n", harmony->error->message);
     theDaemon->setError( QString( harmony->error->message ) );
     theDaemon->emitError();
@@ -210,7 +210,7 @@ void
 Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint32 state,  gpointer null_pointer )
 {
     DEBUG_BLOCK
-    null_pointer = null_pointer;
+    Q_UNUSED( null_pointer )
     switch (state) {
         case MP3TUNES_HARMONY_STATE_DISCONNECTED:
             g_print("Disconnected.\n");
@@ -249,11 +249,11 @@ void
 Mp3tunesHarmonyDaemon::signalDownloadReadyHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer )
 {
     DEBUG_BLOCK
+    Q_UNUSED( harmony )
+    Q_UNUSED( null_pointer )
     mp3tunes_harmony_download_t *download = (mp3tunes_harmony_download_t*)void_mp3tunes_harmony_download;
     Mp3tunesHarmonyDownload wrappedDownload( download );
     theDaemon->emitDownloadReady( wrappedDownload );
-    harmony = harmony;
-    null_pointer = null_pointer;
     mp3tunes_harmony_download_deinit(&download);
 }
 
@@ -261,11 +261,11 @@ void
 Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer )
 {
     DEBUG_BLOCK
+    Q_UNUSED( harmony )
+    Q_UNUSED( null_pointer )
     mp3tunes_harmony_download_t *download = (mp3tunes_harmony_download_t*)void_mp3tunes_harmony_download;
     Mp3tunesHarmonyDownload wrappedDownload( download );
     theDaemon->emitDownloadPending( wrappedDownload );
-    harmony = harmony;
-    null_pointer = null_pointer;
     /*if (strcmp(download->file_key, "dummy_file_key_5") == 0) {
         g_main_loop_quit(m_main_loop);
     }*/
@@ -277,107 +277,90 @@ Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony, g
 Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download )
 {
     DEBUG_BLOCK
-    m_harmony_download_t = ( mp3tunes_harmony_download_t * ) malloc( sizeof( *download ) );
-    memcpy( m_harmony_download_t, download, sizeof( *download ) );
-
-    m_harmony_download_t->artist_name = ( char * ) malloc( strlen( download->artist_name ) );
-    strcpy( m_harmony_download_t->artist_name, download->artist_name );
-
-    m_harmony_download_t->album_title = ( char * ) malloc( strlen( download->album_title ) );
-    strcpy( m_harmony_download_t->album_title, download->album_title );
-
-    m_harmony_download_t->track_title = ( char * ) malloc( strlen( download->track_title ) );
-    strcpy( m_harmony_download_t->track_title, download->track_title );
-
-    m_harmony_download_t->file_name = ( char * ) malloc( strlen( download->file_name ) );
-    strcpy( m_harmony_download_t->file_name, download->file_name );
-
-    m_harmony_download_t->file_key = ( char * ) malloc( strlen( download->file_key ) );
-    strcpy( m_harmony_download_t->file_key, download->file_key );
-
-    m_harmony_download_t->file_format = ( char * ) malloc( strlen( download->file_format ) );
-    strcpy( m_harmony_download_t->file_format, download->file_format );
-
-     m_harmony_download_t->device_bitrate = ( char * ) malloc( strlen( download->device_bitrate ) );
-    strcpy( m_harmony_download_t->device_bitrate, download->device_bitrate );
-
-    m_harmony_download_t->file_bitrate = ( char * ) malloc( strlen( download->file_bitrate ) );
-    strcpy( m_harmony_download_t->file_bitrate, download->file_bitrate );
-
-    if( download->url ) {
-        m_harmony_download_t->url = ( char * ) malloc( strlen( download->url ) );
-        strcpy( m_harmony_download_t->url, download->url );
-    }
-
+    m_fileKey = download->file_key;
+    m_fileName = download->file_name;
+    m_fileFormat = download->file_format;
+    m_fileSize = download->file_size;
+    m_artistName = download->artist_name ;
+    if( download->album_title )
+        m_albumTitle = download->album_title;
+    else
+        m_albumTitle = QString();
+    m_trackTitle = download->track_title;
+    m_trackNumber = download->track_number;
+    m_deviceBitrate = download->device_bitrate;
+    m_fileBitrate = download->file_bitrate;
+    if( download->url )
+        m_url = download->url;
+    else
+        m_url = QString();
 }
 
 Mp3tunesHarmonyDownload::~Mp3tunesHarmonyDownload()
-{
-    //mp3tunes_harmony_download_deinit( &m_harmony_download_t );
-}
+{}
 
 QString
 Mp3tunesHarmonyDownload::fileKey() const
 {
-    return QString( m_harmony_download_t->file_key );
+    return m_fileKey;
 }
 
 QString
 Mp3tunesHarmonyDownload::fileName() const
 {
-    return QString( m_harmony_download_t->file_name );
+    return m_fileName;
 }
 
 QString
 Mp3tunesHarmonyDownload::fileFormat() const
 {
-    return QString( m_harmony_download_t->file_format );
+    return m_fileFormat;
 }
 
 unsigned int
 Mp3tunesHarmonyDownload::fileSize() const
 {
-    return m_harmony_download_t->file_size;
+    return m_fileSize;
 }
 
 QString
 Mp3tunesHarmonyDownload::artistName() const
 {
-    return QString( m_harmony_download_t->artist_name );
+    return m_artistName;
 }
 
 QString
 Mp3tunesHarmonyDownload::albumTitle() const
 {
-    return QString( m_harmony_download_t->album_title );
+    return m_albumTitle;
 }
 
 QString
 Mp3tunesHarmonyDownload::trackTitle() const
 {
-    return QString( m_harmony_download_t->track_title );
+    return m_trackTitle;
 }
 
 int
 Mp3tunesHarmonyDownload::trackNumber() const
 {
-    return m_harmony_download_t->track_number;
+    return m_trackNumber;
 }
 
 QString
 Mp3tunesHarmonyDownload::deviceBitrate() const
 {
-    return QString( m_harmony_download_t->device_bitrate );
+    return m_deviceBitrate;
 }
 
 QString
 Mp3tunesHarmonyDownload::fileBitrate() const
 {
-    return QString( m_harmony_download_t->file_bitrate );
+    return m_fileBitrate;
 }
 
 QString
 Mp3tunesHarmonyDownload::url() const
 {
-    return QString( m_harmony_download_t->url );
+    return m_url;
 }

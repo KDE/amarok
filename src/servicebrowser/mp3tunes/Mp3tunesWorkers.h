@@ -197,25 +197,6 @@ class Mp3tunesSimpleUploader : public ThreadWeaver::Job
         Mp3tunesLocker* m_locker;
         QStringList m_tracklist;
 };
-/**
- * Wraps a harmony obj for async goodness.
- */
-class Mp3tunesHarmonizer : public ThreadWeaver::Job
-{
-    Q_OBJECT
-    public:
-        Mp3tunesHarmonizer( Mp3tunesHarmonyDaemon * daemon );
-        ~Mp3tunesHarmonizer();
 
-        void run();
-
-    signals:
-        void harmonyExited();
-
-    private slots:
-           void completeJob();
-    private:
-        Mp3tunesHarmonyDaemon* m_daemon;
-};
 #endif
 
