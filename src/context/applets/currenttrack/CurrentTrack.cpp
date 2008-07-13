@@ -192,8 +192,9 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     
     tinyFont.setBold( true );
     labeFont.setBold( true );
-    
-    m_maxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
+
+    m_maxTextWidth = textWidth;
+    //m_maxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
 
 
     m_title->setFont( textFont );
