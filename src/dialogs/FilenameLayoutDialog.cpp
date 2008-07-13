@@ -32,7 +32,6 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
 
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
-
 }
 
 QString

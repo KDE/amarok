@@ -375,10 +375,32 @@ TagDialog::setFileNameSchemes() //SLOT
     FilenameLayoutDialog *dialog = new FilenameLayoutDialog(this);
     int dcode = dialog->exec();
     QString schemeFromDialog = QString();       //note to self: see where to put it from an old revision
+    debug() << "FilenameLayoutDialog finished.";
+    schemeFromDialog = "";
     if( dcode == KDialog::Accepted )
     {
         schemeFromDialog = dialog->getParsableScheme();
     }
+    else
+    {
+        debug() << "WARNING: Have not received a new scheme from FilenameLayoutDialog";
+    }
+    debug() << "I have " << schemeFromDialog << " as filename scheme to use.";
+    //legacy tagguesserconfigdialog code follows, needed to make everything hackishly work
+    //probably not the best solution
+    QStringList schemes;
+    schemes += schemeFromDialog;
+    if( schemeFromDialog == "" )
+    {
+        QMessageBox::warning(this, "No filename scheme to extract tags from", "Please choose a filename scheme to describe the layout of the filename(s) to extract the tags.");
+    }
+    else
+    {
+        TagGuesser::setSchemeStrings( schemes );
+        debug() << "Sent scheme to TagGuesser, let's see what he does with it...";
+    }
+    
+    
     delete dialog;
 }
 
