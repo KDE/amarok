@@ -626,7 +626,7 @@ Playlist::Model::activeTrack() const
     else if( rowCount() > 0 )
         return m_items.at( 0 )->track();
 
-    return Meta::TrackPtr( 0 );
+    return Meta::TrackPtr();
 }
 
 void
@@ -1091,6 +1091,7 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
     The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
+    Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 
     emit playlistCountChanged( rowCount() );
 }
@@ -1141,6 +1142,7 @@ Playlist::Model::removeTracksCommand( int position, int rows )
     The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
+    Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 
     emit playlistCountChanged( rowCount() );
 
