@@ -20,8 +20,8 @@
 #ifndef XSPFPLAYLIST_H
 #define XSPFPLAYLIST_H
 
-#include <Playlist.h>
-#include <EditablePlaylistCapability.h>
+#include "Playlist.h"
+#include "EditablePlaylistCapability.h"
 
 #include <QDomDocument>
 #include <QTextStream>
@@ -56,7 +56,7 @@ typedef QList<XSPFTrack> XSPFTrackList;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class XSPFPlaylist : public Playlist, public QDomDocument, public EditablePlaylistCapability
+class AMAROK_EXPORT XSPFPlaylist : public Playlist, public QDomDocument, public EditablePlaylistCapability
 {
 public:
     XSPFPlaylist();
