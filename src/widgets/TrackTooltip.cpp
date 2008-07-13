@@ -99,6 +99,10 @@ TrackToolTip::~TrackToolTip()
 void TrackToolTip::show( const QPoint & bottomRight )
 {
     DEBUG_BLOCK
+
+    if( !isHidden() )
+        return; 
+
     QRect rect = QApplication::desktop()->screenGeometry( bottomRight );
 
     const int x = bottomRight.x() - sizeHint().width();
