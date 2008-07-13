@@ -27,6 +27,8 @@ extern "C" {
 #include <gpod/itdb.h>
 }
 
+#include <QMultiMap>
+
 class IpodCollection;
 
 namespace Meta
@@ -45,6 +47,14 @@ typedef KSharedPtr<IpodAlbum> IpodAlbumPtr;
 typedef KSharedPtr<IpodGenre> IpodGenrePtr;
 typedef KSharedPtr<IpodComposer> IpodComposerPtr;
 typedef KSharedPtr<IpodYear> IpodYearPtr;
+
+typedef QMultiMap<IpodArtistPtr, IpodTrackPtr> IpodArtistMap;
+typedef QMultiMap<IpodAlbumPtr, IpodTrackPtr> IpodAlbumMap;
+typedef QMultiMap<IpodGenrePtr, IpodTrackPtr> IpodGenreMap;
+typedef QMultiMap<IpodComposerPtr, IpodTrackPtr> IpodComposerMap;
+typedef QMultiMap<IpodYearPtr, IpodTrackPtr> IpodYearMap;
+
+
 
 class IpodTrack : public Meta::Track
 {
@@ -127,12 +137,34 @@ class IpodTrack : public Meta::Track
         virtual bool inCollection() const;
         virtual Collection* collection() const;
 
+	virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+	virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+
         //IpodTrack specific methods
+
+    // These methods are for MemoryMatcher to use
         void setAlbum( IpodAlbumPtr album );
         void setArtist( IpodArtistPtr artist );
         void setComposer( IpodComposerPtr composer );
         void setGenre( IpodGenrePtr genre );
         void setYear( IpodYearPtr year );
+
+    // These methods are for IpodTrack-specific usage
+    // NOTE: these methods/data may turn out to be unneeded
+
+        IpodArtistMap getIpodArtistMap() const { return m_ipodArtistMap; }
+        IpodAlbumMap getIpodAlbumMap() const { return m_ipodAlbumMap; }
+        IpodGenreMap getIpodGenreMap() const { return m_ipodGenreMap; }
+        IpodComposerMap getIpodComposerMap() const { return m_ipodComposerMap; }
+        IpodYearMap getIpodYearMap() const { return m_ipodYearMap; }
+
+        void setIpodArtistMap( const IpodArtistMap &ipodArtistMap ) { m_ipodArtistMap = ipodArtistMap; }
+        void setIpodAlbumMap( const IpodAlbumMap &ipodAlbumMap ) { m_ipodAlbumMap = ipodAlbumMap; }
+        void setIpodGenreMap( const IpodGenreMap &ipodGenreMap ) { m_ipodGenreMap = ipodGenreMap; }
+        void setIpodComposerMap( const IpodComposerMap &ipodComposerMap ) { m_ipodComposerMap = ipodComposerMap; }
+        void setIpodYearMap( const IpodYearMap &ipodYearMap ) { m_ipodYearMap = ipodYearMap; }
+
+        
 
         void setLength( int length );
 	void setPlayableUrl( QString Url ) { m_playableUrl = Url; }
@@ -145,6 +177,14 @@ class IpodTrack : public Meta::Track
         IpodGenrePtr m_genre;
         IpodComposerPtr m_composer;
         IpodYearPtr m_year;
+
+        // For IpodTrack-specific use
+
+        IpodArtistMap m_ipodArtistMap;
+        IpodAlbumMap m_ipodAlbumMap;
+        IpodGenreMap m_ipodGenreMap;
+        IpodComposerMap m_ipodComposerMap;
+        IpodYearMap m_ipodYearMap;
 
         Itdb_Track *m_ipodtrack;
 	QList<Itdb_Playlist*> m_ipodplaylists;
@@ -177,6 +217,7 @@ class IpodArtist : public Meta::Artist
 
         //IpodArtist specific methods
         void addTrack( IpodTrackPtr track );
+        void remTrack( IpodTrackPtr track );
 
     private:
         QString m_name;
@@ -203,6 +244,7 @@ class IpodAlbum : public Meta::Album
 
         //IpodAlbum specific methods
         void addTrack( IpodTrackPtr track );
+        void remTrack( IpodTrackPtr track );
         void setAlbumArtist( IpodArtistPtr artist );
         void setIsCompilation( bool compilation );
 
@@ -226,7 +268,7 @@ class IpodGenre : public Meta::Genre
 
         //IpodGenre specific methods
         void addTrack( IpodTrackPtr track );
-
+        void remTrack( IpodTrackPtr track );
     private:
         QString m_name;
         TrackList m_tracks;
@@ -245,6 +287,7 @@ class IpodComposer : public Meta::Composer
 
         //IpodComposer specific methods
         void addTrack( IpodTrackPtr track );
+        void remTrack( IpodTrackPtr track );
 
     private:
         QString m_name;
@@ -264,6 +307,7 @@ class IpodYear : public Meta::Year
 
         //IpodYear specific methods
         void addTrack( IpodTrackPtr track );
+        void remTrack( IpodTrackPtr track );
 
     private:
         QString m_name;
