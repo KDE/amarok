@@ -138,9 +138,9 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     if( data.size() == 0 ) return;
 
     if( data.contains( "page" ) ) {
-        m_webView->setHtml( data[ "page" ].toString().toUtf8(), KUrl( QString() ) );
+        m_webView->setHtml( data[ "page" ].toString(), KUrl( QString() ) );
     } else {
-        m_webView->setHtml( data[ data.keys()[ 0 ] ].toString().toUtf8(), KUrl( QString() ) ); // set data
+        m_webView->setHtml( data[ data.keys()[ 0 ] ].toString(), KUrl( QString() ) ); // set data
 
     }
 
