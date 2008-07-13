@@ -7,13 +7,16 @@ VERSION 2.0-alpha2:
   FEATURES:
     * Context view applet to view albums. (BR 164005)
     * Automatic detection of non-UTF-8 charsets for metadata.
+
   CHANGES:
     * Update the DBus APIs.
     * Update the QtScript APIs.
+
   BUGFIXES:
+	* Various bugfixes for the systray tooltip.
     * In the Wikipedia applet scrolling works properly now.
     * Context menu separators are no longer shown as empty items.
-    * Make the filebrowser filter instantaneously display results for files
+    * Make the filebrowser filter instantaneously display results for files.
     * Add a path separator if required when constructing relative urls from M3U 
       playlists. (BR 166346)
     * Rescan collection if the version is higher than we currently use
@@ -26,10 +29,10 @@ VERSION 2.0-alpha2:
       (BR 166321)
     * Fix bug with selection getting stuck in collection browser when selecting
       multiple items when dragging over them. (BR 164960)
-    * Fix crash when removing collpsed album from the playlist. (BR 163653)
+    * Fix crash when removing collapsed album from the playlist. (BR 163653)
     * Mp3tunes would load for users who had never used it before and prompt 
       them with an annoying login box. (BR 166332)
-    * Random album playback mode implemented (BR 164623)
+    * Random album playback mode implemented. (BR 164623)
   
 
 VERSION 2.0
@@ -70,7 +73,6 @@ VERSION 2.0
       service can be started and stopped from the service manager. Also add 2 
       simple demo scripts.
 
-
   CHANGES:
     * The context view was reimplemented with Plasma technology from KDE.
     * The audio engine system was removed. Amarok now uses Phonon from KDE.
@@ -86,8 +88,6 @@ VERSION 2.0
       seamlessly integrated with the rest of Amarok, and offering a number of
       benefits such as propper filtering and sorting, automatic downloads and
       caching of albums cover.
-
-  BUGFIXES:
 
 
 ==BEGIN Qt 4.4 / KDE 4.1 DEPENDENCY==
