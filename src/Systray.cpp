@@ -111,11 +111,6 @@ Amarok::TrayIcon::event( QEvent *e )
         TrackToolTip::instance()->show( static_cast<QHelpEvent*>(e)->globalPos() );
         return true;
 
-    case QEvent::Leave:
-        DEBUG_LINE_INFO
-        TrackToolTip::instance()->hide();
-        return false;
-
     case QEvent::Drop:
         #define e static_cast<QDropEvent*>(e)
         {
