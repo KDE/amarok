@@ -74,6 +74,32 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
             }
         }
 
+        void engineStateChanged( Phonon::State state, Phonon::State oldState ) {
+
+            if ( state ==  Phonon::PlayingState ) {
+                Meta::TrackPtr track = The::engineController()->currentTrack();
+                if ( track->playableUrl().url() == url.url() ) { 
+
+                    if( track->artist() )
+                        artist = track->artist()->name();
+                    title = track->name();
+                    if( track->album() )
+                        album = track->album()->name();
+
+                        // Special demangling of artist/title for Shoutcast streams, which usually have "Artist - Title" in the title tag:
+                    if( !track->artist() && title.contains( " - " ) ) {
+                        const QStringList artist_title = title.split( " - " );
+                        if( artist_title.size() >= 2 ) {
+                            artist = artist_title[0];
+                            title  = artist_title[1];
+                        }
+                    }
+
+                    notify();
+                }
+            }
+        }
+
     public:
         QSet<Meta::Observer*> observers;
         KUrl url;
