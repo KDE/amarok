@@ -1,0 +1,73 @@
+/***************************************************************************
+ * copyright            : (C) 2008 Seb Ruiz <ruiz@kde.org>                 *
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef CURRENT_TRACK_APPLET_H
+#define CURRENT_TRACK_APPLET_H
+
+#include <context/Applet.h>
+#include <context/DataEngine.h>
+#include <context/Svg.h>
+
+#include <KDialog>
+
+#include <QList>
+#include <QAction>
+
+class QGraphicsPixmapItem;
+class QLabel;
+class QHBoxLayout;
+
+class Albums : public Context::Applet
+{
+    Q_OBJECT
+public:
+    Albums( QObject* parent, const QVariantList& args );
+    ~Albums();
+
+    void init();
+
+    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
+
+    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
+    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
+
+public slots:
+    void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
+    void showConfigurationInterface();
+
+private slots:
+    void configAccepted();
+
+private:
+    void prepareElements();
+    QList<QAction*> contextualActions();
+
+    QHBoxLayout* m_configLayout;
+    int m_width;
+    qreal m_albumWidth;
+
+    qreal m_aspectRatio;
+
+    Context::Svg* m_theme;
+
+    QGraphicsSimpleTextItem*        m_artistLabel;
+    QList<QGraphicsSimpleTextItem*> m_albumLabels;
+    QList<QGraphicsSimpleTextItem*> m_albumTracks;
+    QList<QGraphicsPixmapItem*>     m_albumCovers;
+
+    int m_maxTextWidth;
+};
+
+K_EXPORT_AMAROK_APPLET( albums, Albums )
+
+#endif
