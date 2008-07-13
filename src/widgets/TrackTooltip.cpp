@@ -134,7 +134,7 @@ void TrackToolTip::show( const QPoint & bottomRight )
     m_timer->start( 200 );
 
     QWidget::show();
-    QTimer::singleShot( 10000, this, SLOT( hide() ) );
+    QTimer::singleShot( 15000, this, SLOT( hide() ) );
 }
 
 void TrackToolTip::setTrack( const Meta::TrackPtr track )
