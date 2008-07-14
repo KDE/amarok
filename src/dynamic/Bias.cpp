@@ -27,6 +27,7 @@
 #include "DynamicBiasWidgets.h"
 #include "QueryMaker.h"
 
+#include <QMutexLocker>
 
 Dynamic::Bias::Bias()
     : m_active(true)
@@ -153,6 +154,8 @@ void
 Dynamic::GlobalBias::setQuery( QueryMaker* qm )
 {
     DEBUG_BLOCK
+    QMutexLocker locker( &m_mutex );
+
     qm->setQueryType( QueryMaker::Track );
     delete m_propertyQuery;
     m_propertyQuery = new BlockingQuery( qm );
@@ -196,6 +199,7 @@ double Dynamic::GlobalBias::reevaluate( double oldEnergy, const Meta::TrackList&
 
 bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t )
 {
+    QMutexLocker locker( &m_mutex );
     return m_property.contains( t );
 }
 
@@ -203,6 +207,9 @@ bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t )
 void Dynamic::GlobalBias::update()
 {
     DEBUG_BLOCK
+
+    QMutexLocker locker( &m_mutex );
+
     if( !m_needsUpdating )
         return;
 
@@ -210,7 +217,17 @@ void Dynamic::GlobalBias::update()
     m_propertyQuery->startQuery();
 
     m_property.clear();
-    QList<Meta::TrackList> trackLists = m_propertyQuery->tracks().values();
+
+    QHash<QString,Meta::TrackList> trackLists = m_propertyQuery->tracks();
+
+    int size = 0;
+    foreach( Meta::TrackList ts, trackLists )
+    {
+        size += ts.size();
+    }
+
+    m_property.reserve( size );
+
     foreach( Meta::TrackList ts, trackLists )
     {
         foreach( Meta::TrackPtr t, ts )

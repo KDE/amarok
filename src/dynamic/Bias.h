@@ -24,6 +24,7 @@
 #include "Meta.h"
 #include "collection/support/XmlQueryReader.h"
 
+#include <QMutex>
 #include <QObject>
 #include <QSet>
 
@@ -112,6 +113,7 @@ namespace Dynamic
 
         protected:
             bool m_needsUpdating;
+            QMutex m_mutex;
     };
 
 

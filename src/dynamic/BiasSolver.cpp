@@ -31,7 +31,7 @@
 
 #include <KRandom>
 
-const int    Dynamic::BiasSolver::ITERATION_LIMIT = 10000;
+const int    Dynamic::BiasSolver::ITERATION_LIMIT = 5000;
 
 /* These number are black magic. The best values can only be obtained through
  * exhaustive trial and error or writing another optimization program to
@@ -69,7 +69,7 @@ void Dynamic::BiasSolver::run()
         return;
     }
 
-    const double E_0 = m_E;
+    //const double E_0 = m_E;
 
     int i = ITERATION_LIMIT;
     double epsilon = 1.0 / (double)m_n;
@@ -80,7 +80,8 @@ void Dynamic::BiasSolver::run()
         if( i % 250 == 0 )
         {
             debug() << "E = " << m_E;
-            int progress = (int)(100.0 * (1.0 - m_E/E_0));
+            //int progress = (int)(100.0 * (1.0 - m_E/E_0));
+            int progress = (int)(100.0 * (1.0 - m_E));
             emit statusUpdate( progress >= 0 ? progress : 0 );
         }
     }
@@ -226,6 +227,9 @@ Dynamic::BiasSolver::generateInitialPlaylist()
     for( int i = 0; i < globalBiases.size(); ++i )
         movingWeights[i] = globalBiases[i]->weight();
 
+    const QSet<Meta::TrackPtr> U = PlaylistBrowserNS::DynamicModel::instance()->universe();
+
+    m_playlist.clear();
 
     double decider;
     int n = m_n;
@@ -238,7 +242,7 @@ Dynamic::BiasSolver::generateInitialPlaylist()
         // The bit array represents the choice made at each branch. (1 = accept
         // the bias, 0 = reject the bias).
         QBitArray intersect;
-        QSet<Meta::TrackPtr> S = PlaylistBrowserNS::DynamicModel::instance()->universe();
+        QSet<Meta::TrackPtr> S = U;
         for( int i = 0; i < globalBiases.size(); ++i )
         {
 
@@ -290,6 +294,15 @@ Dynamic::BiasSolver::generateInitialPlaylist()
 
             S = memoizedIntersections[intersect];
             //debug() << "S.size = " << S.size();
+        }
+
+
+        // this should never happen
+        if( S.size() == 0 )
+        {
+            warning() << "BiasSolver assumption failed.";
+            m_playlist.append( m_mutationSource->getTrack() );
+            continue;
         }
 
         // Now just convert the set we are left with into a list and choose a

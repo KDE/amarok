@@ -29,6 +29,7 @@
 #include "collection/support/XmlQueryWriter.h"
 
 #include <QFile>
+#include <QMutexLocker>
 #include <QVariant>
 
 
@@ -46,7 +47,7 @@ PlaylistBrowserNS::DynamicModel::instance()
 
 
 PlaylistBrowserNS::DynamicModel::DynamicModel()
-    : QAbstractItemModel()
+    : QAbstractItemModel(), m_universeCurrent(false)
 {
     Dynamic::DynamicPlaylistPtr randomPlaylist(
         new Dynamic::BiasedPlaylist( "Random Playlist", QList<Dynamic::Bias*>() ) );
@@ -60,9 +61,7 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
 
     connect( CollectionManager::instance(),
             SIGNAL(collectionDataChanged(Collection*)),
-            SLOT(computeUniverse()) );
-
-    computeUniverse();
+            SLOT(universeNeedsUpdate()) );
 }
 
 PlaylistBrowserNS::DynamicModel::~DynamicModel()
@@ -263,14 +262,27 @@ PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
 const QSet<Meta::TrackPtr>&
 PlaylistBrowserNS::DynamicModel::universe()
 {
+    if( !m_universeCurrent )
+        computeUniverseSet();
+
+    QMutexLocker locker(&m_universeMutex);
     return m_universe;
 }
 
 
 void
-PlaylistBrowserNS::DynamicModel::computeUniverse()
+PlaylistBrowserNS::DynamicModel::universeNeedsUpdate()
+{
+    m_universeCurrent = false;
+}
+
+
+void
+PlaylistBrowserNS::DynamicModel::computeUniverseSet()
 {
     DEBUG_BLOCK
+    if( !m_universeMutex.tryLock() )
+        return;
 
     m_universe.clear();
 
@@ -279,9 +291,25 @@ PlaylistBrowserNS::DynamicModel::computeUniverse()
     qm->setQueryType( QueryMaker::Track );
 
     BlockingQuery bq( qm );
+
+    debug() << "Starting query for universe.";
+
     bq.startQuery();
 
-    QList<Meta::TrackList> trackLists = bq.tracks().values();
+    debug() << "Finished query for universe.";
+
+    QHash<QString, Meta::TrackList> trackLists = bq.tracks();
+
+    int size = 0;
+    foreach( Meta::TrackList ts, trackLists )
+    {
+        size += ts.size();
+    }
+
+    m_universe.reserve( size );
+
+    debug() << "Results from: " << trackLists.keys();
+
     foreach( Meta::TrackList ts, trackLists )
     {
         foreach( Meta::TrackPtr t, ts )
@@ -289,5 +317,8 @@ PlaylistBrowserNS::DynamicModel::computeUniverse()
             m_universe.insert( t );
         }
     }
+
+    m_universeCurrent = true;
+    m_universeMutex.unlock();
 }
 

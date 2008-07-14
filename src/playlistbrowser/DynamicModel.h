@@ -24,6 +24,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QHash>
+#include <QMutex>
 #include <QSet>
 #include <QString>
 
@@ -65,12 +66,13 @@ class DynamicModel : public QAbstractItemModel
         const QSet<Meta::TrackPtr>& universe();
 
     private slots:
-        void computeUniverse();
+        void universeNeedsUpdate();
 
     private:
         void loadPlaylists();
         Dynamic::Bias* createBias( QDomElement );
         void insertPlaylist( Dynamic::DynamicPlaylistPtr );
+        void computeUniverseSet();
 
         DynamicModel();
         static DynamicModel* s_instance;
@@ -83,7 +85,9 @@ class DynamicModel : public QAbstractItemModel
         QHash< QString, Dynamic::DynamicPlaylistPtr >    m_playlistHash;
         Dynamic::DynamicPlaylistList                     m_playlistList;
 
+        QMutex m_universeMutex;
         QSet<Meta::TrackPtr> m_universe;
+        bool m_universeCurrent;
 };
 
 }
