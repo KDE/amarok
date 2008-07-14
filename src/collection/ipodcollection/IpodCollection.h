@@ -49,6 +49,8 @@ class IpodCollectionFactory : public CollectionFactory
     bool isIpod( const QString &udi);
     void deviceAdded( const QString &udi );
     void deviceRemoved( const QString &udi );
+    void slotCollectionDisconnected( const QString & udi);
+    void slotAccessibilityChanged( bool accessible, const QString & udi);
     
     private:
     QMap<QString, IpodCollection*> m_collectionMap;
@@ -85,6 +87,7 @@ class IpodCollection : public Collection, public MemoryCollection
     
  signals:
     void collectionReady();
+    void collectionDisconnected( const QString &udi );
     
     public slots:
 	void deleteTrackToDelete();

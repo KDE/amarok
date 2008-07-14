@@ -71,6 +71,8 @@ IpodCollectionFactory::init()
                 coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
                 if ( coll )
                 {
+                    connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
+                             SLOT( slotCollectionDisconnected( const QString & ) ) );
                     emit newCollection( coll );
                     debug() << "emitting new ipod collection";
                 }
@@ -83,6 +85,9 @@ IpodCollectionFactory::init()
               SLOT(  deviceAdded( const QString& ) ) );
     connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceRemoved( const QString& ) ),
               SLOT(  deviceRemoved( const QString& ) ) );
+    connect(  MediaDeviceCache::instance(), SIGNAL( accessibilityChanged( bool, const QString & ) ),
+              SLOT(  slotAccessibilityChanged( bool, const QString & ) ) );
+
 
     return;
 }
@@ -121,12 +126,20 @@ IpodCollectionFactory::deviceAdded(  const QString &udi )
         debug() << "New device added, testing if Ipod";
 
     IpodCollection *coll = 0;
-    /* if iPod found, make collection */
+    /* if iPod found, make collection if udi is new */
     if( isIpod( udi ) )
     {
+        if ( m_collectionMap.contains( udi ) )
+        {
+            debug() << "Ipod collection for this iPod already made!";
+            return;
+        }
+
         coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
         if ( coll )
         {
+            connect( coll, SIGNAL( collectionDisconnected( const QString & ) ),
+                     SLOT( slotCollectionDisconnected( const QString & ) ) );
             emit newCollection( coll );
             m_collectionMap.insert( udi, coll );
             debug() << "New Ipod Found, collection created!";
@@ -139,6 +152,7 @@ IpodCollectionFactory::deviceAdded(  const QString &udi )
 void
 IpodCollectionFactory::deviceRemoved( const QString &udi )
 {
+    DEBUG_BLOCK
     if (  m_collectionMap.contains( udi ) )
     {
         IpodCollection* coll = m_collectionMap[ udi ];
@@ -157,6 +171,24 @@ IpodCollectionFactory::deviceRemoved( const QString &udi )
 }
 
 void
+IpodCollectionFactory::slotCollectionDisconnected( const QString & udi)
+{
+    m_collectionMap.remove( udi ); // remove from map
+}
+
+void
+IpodCollectionFactory::slotAccessibilityChanged( bool accessible, const QString & udi)
+{
+    DEBUG_BLOCK
+        debug() << "Accessibility changed to: " << ( accessible ? "true":"false" );
+    if ( !accessible )
+        deviceRemoved( udi );
+    else
+        deviceAdded( udi );
+
+}
+
+void
 IpodCollectionFactory::slotCollectionReady()
 {
     DEBUG_BLOCK
@@ -167,6 +199,8 @@ IpodCollectionFactory::slotCollectionReady()
         emit newCollection(  collection );
     }
 }
+
+
 
 //IpodCollection
 
@@ -292,7 +326,8 @@ IpodCollection::deleteTrackSlot( Meta::IpodTrackPtr track)
 void
 IpodCollection::slotDisconnect()
 {
-    deviceRemoved();
+    emit collectionDisconnected( m_udi );
+    emit remove();
 }
 
 #include "IpodCollection.moc"
