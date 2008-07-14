@@ -912,93 +912,17 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
 
     /* 1-liner info retrieval */
 
-    track->setTitle( QString::fromUtf8( ipodtrack->title ) );
-    track->setLength( ( ipodtrack->tracklen ) / 1000 );
-    track->setTrackNumber( ipodtrack->track_nr );
-    track->setComment( QString::fromUtf8(  ipodtrack->comment ) );
-    track->setDiscNumber( ipodtrack->cd_nr );
-    track->setBitrate( ipodtrack->bitrate );
-    track->setBpm( ipodtrack->BPM );
-
-    QString path = QString( ipodtrack->ipod_path ).split( ":" ).join( "/" );
-    path = m_mountPoint + path;
-    track->setPlayableUrl( path );
+    getBasicIpodTrackInfo( ipodtrack, track );
 
     /* map-related info retrieval */
-    QString album( QString::fromUtf8( ipodtrack->album ) );
-    IpodAlbumPtr albumPtr;
+    setupArtistMap( ipodtrack, track, artistMap );
+    setupAlbumMap( ipodtrack, track, albumMap );
+    setupGenreMap( ipodtrack, track, genreMap );
+    setupComposerMap( ipodtrack, track, composerMap );
+    setupYearMap( ipodtrack, track, yearMap );
 
-    if ( albumMap.contains( album ) )
-        albumPtr = IpodAlbumPtr::staticCast(  albumMap.value(  album ) );
-
-    else
-    {
-        albumPtr = IpodAlbumPtr(  new IpodAlbum(  album ) );
-        albumMap.insert(  album,  AlbumPtr::staticCast(  albumPtr ) );
-    }
-
-    albumPtr->addTrack(  track );
-    track->setAlbum(  albumPtr );
-
-    QString artist ( QString::fromUtf8( ipodtrack->artist ) );
-    IpodArtistPtr artistPtr;
-
-    if (  artistMap.contains(  artist ) )
-    {
-        artistPtr = IpodArtistPtr::staticCast(  artistMap.value(  artist ) );
-    }
-    else
-    {
-        artistPtr = IpodArtistPtr(  new IpodArtist(  artist ) );
-        artistMap.insert(  artist,  ArtistPtr::staticCast(  artistPtr ) );
-    }
-
-    artistPtr->addTrack(  track );
-    track->setArtist(  artistPtr );
-
-    QString composer ( QString::fromUtf8( ipodtrack->composer ) );
-    IpodComposerPtr composerPtr;
-
-    if ( composerMap.contains( composer ) )
-    {
-        composerPtr = IpodComposerPtr::staticCast( composerMap.value( composer ) );
-    }
-    else
-    {
-        composerPtr = IpodComposerPtr( new IpodComposer( composer ) );
-        composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
-    }
-
-    composerPtr->addTrack( track );
-    track->setComposer( composerPtr );
-
-    QString year;
-    year = year.setNum( ipodtrack->year );
-    IpodYearPtr yearPtr;
-    if (  yearMap.contains(  year ) )
-        yearPtr = IpodYearPtr::staticCast(  yearMap.value(  year ) );
-    else
-    {
-        yearPtr = IpodYearPtr(  new IpodYear(  year ) );
-        yearMap.insert(  year,  YearPtr::staticCast(  yearPtr ) );
-    }
-    yearPtr->addTrack(  track );
-    track->setYear(  yearPtr );
-
-    QString genre = ipodtrack->genre;
-    IpodGenrePtr genrePtr;
-
-    if (  genreMap.contains(  genre ) )
-        genrePtr = IpodGenrePtr::staticCast(  genreMap.value(  genre ) );
-
-    else
-    {
-        genrePtr = IpodGenrePtr(  new IpodGenre(  genre ) );
-        genreMap.insert(  genre,  GenrePtr::staticCast(  genrePtr ) );
-    }
-
-    genrePtr->addTrack( track );
-    track->setGenre( genrePtr );
+    /* trackmap also soon to be subordinated */
+    
     trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
 
     track->setIpodTrack( ipodtrack ); // convenience pointer
@@ -1019,6 +943,160 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
     return;
 
 }
+
+void
+IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
+{
+    /* 1-liner info retrieval */
+
+    track->setTitle( QString::fromUtf8( ipodtrack->title ) );
+    track->setLength( ( ipodtrack->tracklen ) / 1000 );
+    track->setTrackNumber( ipodtrack->track_nr );
+    track->setComment( QString::fromUtf8(  ipodtrack->comment ) );
+    track->setDiscNumber( ipodtrack->cd_nr );
+    track->setBitrate( ipodtrack->bitrate );
+    track->setBpm( ipodtrack->BPM );
+
+    QString path = QString( ipodtrack->ipod_path ).split( ":" ).join( "/" );
+    path = m_mountPoint + path;
+    track->setPlayableUrl( path );
+
+    return;
+}
+
+void
+IpodHandler::setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ArtistMap &artistMap )
+{
+    QString artist ( QString::fromUtf8( ipodtrack->artist ) );
+    IpodArtistPtr artistPtr;
+
+    if (  artistMap.contains(  artist ) )
+    {
+        artistPtr = IpodArtistPtr::staticCast(  artistMap.value(  artist ) );
+    }
+    else
+    {
+        artistPtr = IpodArtistPtr(  new IpodArtist(  artist ) );
+        artistMap.insert(  artist,  ArtistPtr::staticCast(  artistPtr ) );
+    }
+
+    artistPtr->addTrack(  track );
+    track->setArtist(  artistPtr );
+}
+
+void
+IpodHandler::setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, AlbumMap &albumMap )
+{
+    QString album( QString::fromUtf8( ipodtrack->album ) );
+    IpodAlbumPtr albumPtr;
+
+    if ( albumMap.contains( album ) )
+        albumPtr = IpodAlbumPtr::staticCast(  albumMap.value(  album ) );
+
+    else
+    {
+        albumPtr = IpodAlbumPtr(  new IpodAlbum(  album ) );
+        albumMap.insert(  album,  AlbumPtr::staticCast(  albumPtr ) );
+    }
+
+    albumPtr->addTrack(  track );
+    track->setAlbum(  albumPtr );
+}
+
+void
+IpodHandler::setupGenreMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, GenreMap &genreMap )
+{
+    QString genre = ipodtrack->genre;
+    IpodGenrePtr genrePtr;
+
+    if (  genreMap.contains(  genre ) )
+        genrePtr = IpodGenrePtr::staticCast(  genreMap.value(  genre ) );
+
+    else
+    {
+        genrePtr = IpodGenrePtr(  new IpodGenre(  genre ) );
+        genreMap.insert(  genre,  GenrePtr::staticCast(  genrePtr ) );
+    }
+
+    genrePtr->addTrack( track );
+    track->setGenre( genrePtr );
+}
+
+void
+IpodHandler::setupComposerMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ComposerMap &composerMap )
+{
+    QString composer ( QString::fromUtf8( ipodtrack->composer ) );
+    IpodComposerPtr composerPtr;
+
+    if ( composerMap.contains( composer ) )
+    {
+        composerPtr = IpodComposerPtr::staticCast( composerMap.value( composer ) );
+    }
+    else
+    {
+        composerPtr = IpodComposerPtr( new IpodComposer( composer ) );
+        composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
+    }
+
+    composerPtr->addTrack( track );
+    track->setComposer( composerPtr );
+}
+
+void
+IpodHandler::setupYearMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, YearMap &yearMap )
+{
+    QString year;
+    year = year.setNum( ipodtrack->year );
+    IpodYearPtr yearPtr;
+    if (  yearMap.contains(  year ) )
+        yearPtr = IpodYearPtr::staticCast(  yearMap.value(  year ) );
+    else
+    {
+        yearPtr = IpodYearPtr(  new IpodYear(  year ) );
+        yearMap.insert(  year,  YearPtr::staticCast(  yearPtr ) );
+    }
+    yearPtr->addTrack(  track );
+    track->setYear(  yearPtr );
+}
+/*
+void
+IpodHandler::setupMetadataMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, DataMapPtr datamap, Metadata metadata)
+{
+    switch( metadata )
+    {
+        case Artist:
+            return;
+        case Album:
+            AlbumMapPtr albumMap = AlbumMapPtr::dynamicCast( datamap );
+            QString album( QString::fromUtf8( ipodtrack->album ) );
+            IpodAlbumPtr albumPtr;
+
+            if ( albumMap->contains( album ) )
+                albumPtr = IpodAlbumPtr::staticCast(  albumMap->value(  album ) );
+
+            else
+            {
+                albumPtr = IpodAlbumPtr(  new IpodAlbum(  album ) );
+                albumMap->insert(  album,  AlbumPtr::staticCast(  albumPtr ) );
+            }
+
+            albumPtr->addTrack(  track );
+            track->setAlbum(  albumPtr );
+            return;
+        case Genre:
+            return;
+        case Composer:
+            return;
+        case Year:
+            return;
+
+        default:
+            return;
+    }
+}
+*/
+
+
 
 void
 IpodHandler::parseTracks()
@@ -1046,95 +1124,18 @@ IpodHandler::parseTracks()
         QString format( ipodtrack->filetype );
         IpodTrackPtr track( new IpodTrack( m_memColl, format ) );
 
-        /* 1-liner info retrieval */
-
-        track->setTitle( QString::fromUtf8( ipodtrack->title ) );
-        track->setLength( ( ipodtrack->tracklen ) / 1000 );
-        track->setTrackNumber( ipodtrack->track_nr );
-        track->setComment( QString::fromUtf8(  ipodtrack->comment ) );
-        track->setDiscNumber( ipodtrack->cd_nr );
-        track->setBitrate( ipodtrack->bitrate );
-        track->setBpm( ipodtrack->BPM );
-
-        QString path = QString( ipodtrack->ipod_path ).split( ":" ).join( "/" );
-        path = m_mountPoint + path;
-        track->setPlayableUrl( path );
+        getBasicIpodTrackInfo( ipodtrack, track );
 
         /* map-related info retrieval */
-        QString album( QString::fromUtf8( ipodtrack->album ) );
-        IpodAlbumPtr albumPtr;
 
-        if ( albumMap.contains( album ) )
-            albumPtr = IpodAlbumPtr::staticCast(  albumMap.value(  album ) );
+        setupArtistMap( ipodtrack, track, artistMap );
+        setupAlbumMap( ipodtrack, track, albumMap );
+        setupGenreMap( ipodtrack, track, genreMap );
+        setupComposerMap( ipodtrack, track, composerMap );
+        setupYearMap( ipodtrack, track, yearMap );
 
-        else
-        {
-            albumPtr = IpodAlbumPtr(  new IpodAlbum(  album ) );
-            albumMap.insert(  album,  AlbumPtr::staticCast(  albumPtr ) );
-        }
+        /* TrackMap stuff to be subordinated later */
 
-        albumPtr->addTrack(  track );
-        track->setAlbum(  albumPtr );
-
-        QString artist ( QString::fromUtf8( ipodtrack->artist ) );
-        IpodArtistPtr artistPtr;
-
-        if (  artistMap.contains(  artist ) )
-        {
-            artistPtr = IpodArtistPtr::staticCast(  artistMap.value(  artist ) );
-        }
-        else
-        {
-            artistPtr = IpodArtistPtr(  new IpodArtist(  artist ) );
-            artistMap.insert(  artist,  ArtistPtr::staticCast(  artistPtr ) );
-        }
-
-        artistPtr->addTrack(  track );
-        track->setArtist(  artistPtr );
-
-        QString composer ( QString::fromUtf8( ipodtrack->composer ) );
-        IpodComposerPtr composerPtr;
-
-        if ( composerMap.contains( composer ) )
-        {
-            composerPtr = IpodComposerPtr::staticCast( composerMap.value( composer ) );
-        }
-        else
-        {
-            composerPtr = IpodComposerPtr( new IpodComposer( composer ) );
-            composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
-        }
-
-        composerPtr->addTrack( track );
-        track->setComposer( composerPtr );
-
-        QString year;
-        year = year.setNum( ipodtrack->year );
-        IpodYearPtr yearPtr;
-        if (  yearMap.contains(  year ) )
-            yearPtr = IpodYearPtr::staticCast(  yearMap.value(  year ) );
-        else
-        {
-            yearPtr = IpodYearPtr(  new IpodYear(  year ) );
-            yearMap.insert(  year,  YearPtr::staticCast(  yearPtr ) );
-        }
-        yearPtr->addTrack(  track );
-        track->setYear(  yearPtr );
-
-        QString genre = ipodtrack->genre;
-        IpodGenrePtr genrePtr;
-
-        if (  genreMap.contains(  genre ) )
-            genrePtr = IpodGenrePtr::staticCast(  genreMap.value(  genre ) );
-
-        else
-        {
-            genrePtr = IpodGenrePtr(  new IpodGenre(  genre ) );
-            genreMap.insert(  genre,  GenrePtr::staticCast(  genrePtr ) );
-        }
-
-        genrePtr->addTrack( track );
-        track->setGenre( genrePtr );
         trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
 
         track->setIpodTrack( ipodtrack ); // convenience pointer

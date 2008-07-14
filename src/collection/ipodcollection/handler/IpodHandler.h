@@ -31,6 +31,7 @@ extern "C" {
 }
 
 #include "Meta.h"
+#include "MemoryCollection.h"
 #include "IpodMeta.h"
 
 #include "kjob.h"
@@ -66,11 +67,17 @@ struct PodcastInfo
 /* The libgpod backend for all Ipod calls */
     class IpodHandler : public QObject
     {
+        // enum to simplify map-building
+
+//        typedef enum { Artist, Album, Genre, Composer, Year } Metadata;
+        
         Q_OBJECT
 
         public:
             IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject* parent );
            ~IpodHandler();
+
+          
 
 	   void detectModel();
 	   QString itunesDir( const QString &path = QString() ) const;
@@ -89,10 +96,22 @@ struct PodcastInfo
        KUrl determineURLOnDevice( const Meta::TrackPtr &track );
 	   void parseTracks();
        void addIpodTrackToCollection( Itdb_Track *ipodtrack );
+       void getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
 	   void setMountPoint( const QString &mp) { m_mountPoint = mp; }
        QString           realPath( const char *ipodPath );
 	   bool pathExists( const QString &ipodPath, QString *realPath=0 );
 	   bool writeITunesDB( bool threaded=true );
+
+        
+
+       // convenience method to avoid repetitive code
+ //      void setupMetadataMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, DataMapPtr datamap, Metadata metadata);
+
+       void setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ArtistMap &artistMap );
+       void setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, AlbumMap &albumMap );
+       void setupGenreMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, GenreMap &genreMap );
+       void setupComposerMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ComposerMap &composerMap );
+       void setupYearMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, YearMap &yearMap );
            
         public slots:
 	    bool initializeIpod();
@@ -134,6 +153,8 @@ struct PodcastInfo
         bool m_copyFailed;
         bool m_isCanceled;
         bool m_wait;
+
+
     };
 }
 #endif
