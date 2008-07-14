@@ -364,7 +364,10 @@ MemoryQueryMaker::setQueryType( QueryType type )
         if ( d->type == QueryMaker::Custom )
             d->type = QueryMaker::Custom;
         return this;
+    case QueryMaker::None:
+        return this;
     }
+    return this;
 }
 
 QueryMaker*

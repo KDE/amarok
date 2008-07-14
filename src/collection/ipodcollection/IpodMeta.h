@@ -55,8 +55,6 @@ typedef QMultiMap<IpodGenrePtr, IpodTrackPtr> IpodGenreMap;
 typedef QMultiMap<IpodComposerPtr, IpodTrackPtr> IpodComposerMap;
 typedef QMultiMap<IpodYearPtr, IpodTrackPtr> IpodYearMap;
 
-
-
 class IpodTrack : public Meta::Track
 {
 
@@ -143,23 +141,17 @@ class IpodTrack : public Meta::Track
 	virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         //IpodTrack specific methods
-
-
-
+    
     public:
-
-        
-
-    // These methods are for MemoryMatcher to use
+        // These methods are for MemoryMatcher to use
         void setAlbum( IpodAlbumPtr album );
         void setArtist( IpodArtistPtr artist );
         void setComposer( IpodComposerPtr composer );
         void setGenre( IpodGenrePtr genre );
         void setYear( IpodYearPtr year );
 
-    // These methods are for IpodTrack-specific usage
-    // NOTE: these methods/data may turn out to be unneeded
-
+        // These methods are for IpodTrack-specific usage
+        // NOTE: these methods/data may turn out to be unneeded
         IpodArtistMap getIpodArtistMap() const { return m_ipodArtistMap; }
         IpodAlbumMap getIpodAlbumMap() const { return m_ipodAlbumMap; }
         IpodGenreMap getIpodGenreMap() const { return m_ipodGenreMap; }
@@ -172,8 +164,7 @@ class IpodTrack : public Meta::Track
         void setIpodComposerMap( const IpodComposerMap &ipodComposerMap ) { m_ipodComposerMap = ipodComposerMap; }
         void setIpodYearMap( const IpodYearMap &ipodYearMap ) { m_ipodYearMap = ipodYearMap; }
 
-        
-
+    
         void setLength( int length );
 	void setPlayableUrl( QString Url ) { m_playableUrl = Url; }
 

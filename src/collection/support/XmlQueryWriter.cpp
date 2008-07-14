@@ -145,7 +145,11 @@ XmlQueryWriter::setQueryType( QueryType type )
         // TODO
         m_qm->setQueryType( QueryMaker::Custom );
         return this;
+    
+    case QueryMaker::None:
+        return this;
     }
+    return this;
 }
 
 QueryMaker*
