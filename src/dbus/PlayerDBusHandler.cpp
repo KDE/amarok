@@ -34,20 +34,16 @@ namespace Amarok
         : QObject(kapp)
     {
         s_instance = this;
-
-        // NOTE disabled because it caused a crash on startup
-#if 0
-        QObject* pa = new PlayerAdaptor( this );
         setObjectName("PlayerDBusHandler");
 
-        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), pa, SLOT( slotTrackChange() ) );
-        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), pa, SLOT( slotStatusChange() ) );
-        connect( The::engineController(), SIGNAL( trackFinished() ), pa, SLOT( slotStatusChange() ) );
-        connect( The::engineController(), SIGNAL( trackPlayPause( int ) ), pa, SLOT( slotStatusChange() ) );
-        connect( this, SIGNAL( statusChange( DBusStatus ) ), pa, SLOT( slotCapsChange() ) );
-#endif
-
+        new PlayerAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/Player", this);
+
+        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( slotTrackChange() ) );
+        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( slotStatusChange() ) );
+        connect( The::engineController(), SIGNAL( trackFinished() ), this, SLOT( slotStatusChange() ) );
+        connect( The::engineController(), SIGNAL( trackPlayPause( int ) ), this, SLOT( slotStatusChange() ) );
+        connect( this, SIGNAL( StatusChange( DBusStatus ) ), this, SLOT( slotCapsChange() ) );
     }
 
     DBusStatus PlayerDBusHandler::GetStatus()

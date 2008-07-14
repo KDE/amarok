@@ -36,10 +36,12 @@ namespace Amarok
     TracklistDBusHandler::TracklistDBusHandler()
         : QObject( kapp )
     {
-        QObject* pa = new TracklistAdaptor(this);
+        new TracklistAdaptor(this);
         QDBusConnection::sessionBus().registerObject( "/TrackList", this );
-        connect( The::playlistModel(), SIGNAL( playlistCountChanged( int ) ), pa, SLOT( slotTrackListChange() ) );
-        connect( The::playlistModel(), SIGNAL( rowMoved( int, int ) ), pa, SLOT( slotTrackListChange() ) );
+        // FIXME: currently The::playlistModel() returns null at this point
+        //        so the signals don't get connected
+        connect( The::playlistModel(), SIGNAL( playlistCountChanged( int ) ), this, SLOT( slotTrackListChange() ) );
+        connect( The::playlistModel(), SIGNAL( rowMoved( int, int ) ), this, SLOT( slotTrackListChange() ) );
     }
 
     int TracklistDBusHandler::AddTrack( const QString& url, bool playImmediately )
