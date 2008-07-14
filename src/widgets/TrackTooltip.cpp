@@ -34,6 +34,7 @@
 #include <QApplication>
 #include <QCursor>
 #include <QDesktopWidget>
+#include <QFontMetrics>
 #include <QGridLayout>
 #include <QLabel>
 #include <QMouseEvent>
@@ -223,11 +224,14 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track )
             if ( !right[x].isEmpty() )
                 m_tooltip += tableRow.arg( left[x] ).arg( right[x] );
 
-        m_title = m_track->prettyName();
+        const QFontMetrics fontMetrics( font() );
+        const int elideWidth = 200;
+
+        m_title = fontMetrics.elidedText( m_track->prettyName(), Qt::ElideRight, elideWidth );
         if( m_track->artist() )
-            m_title += i18n( " by " ) + m_track->artist()->prettyName();
+            m_title += i18n( " by " ) + fontMetrics.elidedText( m_track->artist()->prettyName(), Qt::ElideRight, elideWidth );
         if( m_track->album() )
-            m_title += i18n( " on " ) + m_track->album()->prettyName();
+            m_title += i18n( " on " ) + fontMetrics.elidedText( m_track->album()->prettyName(), Qt::ElideRight, elideWidth );
 
         m_tooltip += "</table></td>";
         m_tooltip += "</tr></table></center>";
