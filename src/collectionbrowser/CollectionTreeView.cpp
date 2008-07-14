@@ -371,7 +371,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             subItem->setFont( font );
         }*/
 
-        subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More..." )  );
+        subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More.." )  );
         subItem->setFont( font );
         
         m_pd->show();
