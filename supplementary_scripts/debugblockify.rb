@@ -1,10 +1,7 @@
 #!/usr/bin/ruby
 ###########################################################################
 #   This script puts a DEBUG_BLOCK in every method of a given C++ file.   #
-#                                                                         #
-#   Use with the "/exec -out" command of your client.                     #
-#   You can bind an alias like this (tested with irssi):                  #
-#   /alias np exec -out /home/myself/amaroknowplaying.rb                  #
+#   Use with caution.                                                     #
 #                                                                         #
 #   Copyright                                                             #
 #   (C) 2008 Casey Link <unnamedrambler@gmail.com>                        #
