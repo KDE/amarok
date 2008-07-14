@@ -71,7 +71,6 @@ TrackToolTip::TrackToolTip()
 
     m_titleLabel = new QLabel( this );
     QFont f;
-    f.setBold( true );
     m_titleLabel->setFont( f );
     l->addWidget( m_titleLabel, 0, 0, 1, 2 );
 
@@ -226,12 +225,16 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track )
 
         const QFontMetrics fontMetrics( font() );
         const int elideWidth = 200;
-
-        m_title = fontMetrics.elidedText( m_track->prettyName(), Qt::ElideRight, elideWidth );
-        if( m_track->artist() )
-            m_title += " " + i18n( "by" ) + " " + fontMetrics.elidedText( m_track->artist()->prettyName(), Qt::ElideRight, elideWidth );
-        if( m_track->album() )
-            m_title += " " + i18n( "on" ) + " " + fontMetrics.elidedText( m_track->album()->prettyName(), Qt::ElideRight, elideWidth );
+       
+        m_title = "<b>" + fontMetrics.elidedText( m_track->prettyName(), Qt::ElideRight, elideWidth ) + "</b>";
+        if( m_track->artist() ) {
+            const QString artist = fontMetrics.elidedText( m_track->artist()->prettyName(), Qt::ElideRight, elideWidth );
+            m_title += i18n( " by <b>%1</b>", artist );
+        }
+        if( m_track->album() ) {
+            const QString album = fontMetrics.elidedText( m_track->album()->prettyName(), Qt::ElideRight, elideWidth );
+            m_title += i18n( " on <b>%1</b>", album );
+        }
 
         m_tooltip += "</table></td>";
         m_tooltip += "</tr></table></center>";
