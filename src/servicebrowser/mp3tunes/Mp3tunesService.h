@@ -28,6 +28,7 @@
 #define DEFINE_HARMONY
 #endif
 #include "Mp3tunesHarmonyDaemon.h"
+#include "Mp3tunesWorkers.h"
 
 
 
@@ -66,6 +67,8 @@ public:
     virtual Collection * collection() { return m_collection; }
 
 private slots:
+    void enableHarmony();
+    void disableHarmony();
     void authenticate( const QString & uname = "", const QString & passwd = "" );
     void authenticationComplete(  const QString & sessionId );
 
@@ -82,6 +85,8 @@ private slots:
     void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );
 
 private:
+    void initTopPanel();
+    void initBottomPanel();
     char *convertToChar( const QString &source ) const;
     QString m_email;
     QString m_password;
@@ -92,7 +97,7 @@ private:
     QString m_sessionId;
 
     Mp3tunesServiceCollection *  m_collection;
-
+    Mp3tunesLoginWorker * m_loginWorker;
     Mp3tunesLocker * m_locker;
     Mp3tunesHarmonyDaemon * m_daemon;
 };

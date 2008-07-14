@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QString>
 #include <QThread>
+
 extern "C" {
    // Get libmp3tunes declarations
     #include "libmp3tunes/harmony.h"
@@ -97,6 +98,10 @@ class Mp3tunesHarmonyDaemon: public QThread
      */
     Mp3tunesHarmonyDaemon( char* identifier, char* email, char* pin );
     ~Mp3tunesHarmonyDaemon();
+
+    bool daemonRunning();
+
+    bool stopDaemon();
 
     /**
      * Stats the daemon by intiating the connection Harmony connection.
@@ -232,7 +237,7 @@ class Mp3tunesHarmonyDaemon: public QThread
     GError *m_gerr;
 
     QString m_error;
-
+    bool m_started;
     HarmonyState m_state;
 };
 

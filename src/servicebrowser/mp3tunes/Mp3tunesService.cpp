@@ -22,13 +22,13 @@
 
 #include "collection/CollectionManager.h"
 #include "Debug.h"
-#include "Mp3tunesWorkers.h"
 #include "Mp3tunesConfig.h"
 
 #include "StatusBar.h"
 
-#include <KPasswordDialog>
+#include <KMenuBar>
 #include <KMessageBox>
+#include <KPasswordDialog>
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QByteArray>
@@ -96,6 +96,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
  , m_partnerToken( token )
  , m_authenticated( false )
  , m_sessionId ( QString() )
+ , m_loginWorker( 0 )
 {
     DEBUG_BLOCK
     setShortDescription( i18n( "The MP3tunes Locker: Your Music Everywhere!" ) );
@@ -108,35 +109,12 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
         debug() << "MP3tunes running automated authenticate.";
         authenticate( email, password );
 
-        if( harmonyEnabled ) {
-            debug() << "Making new Daemon";
-            Mp3tunesConfig config;
-            char* ident = convertToChar( config.identifier() );
-            debug () << "Using identifier: " << ident;
-
-            if( config.pin() == QString() )
-                theDaemon = new Mp3tunesHarmonyDaemon( ident ); //first time harmony login
-            else
-                theDaemon = new Mp3tunesHarmonyDaemon( ident, //they're not harmony virgins
-                                                    convertToChar( config.email() ),
-                                                    convertToChar( config.pin() ) );
-            qRegisterMetaType<Mp3tunesHarmonyDownload>("Mp3tunesHarmonyDownload");
-            connect( theDaemon, SIGNAL( signalDisconnected() ), this, SLOT( harmonyDisconnected() ) );
-            connect( theDaemon, SIGNAL( signalWaitingForEmail() ), this, SLOT( harmonyWaitingForEmail() ) );
-            connect( theDaemon, SIGNAL( signalConnected() ), this, SLOT( harmonyConnected() ) );
-            connect( theDaemon, SIGNAL( signalError( QString ) ), this, SLOT( harmonyError( QString ) ) );
-            connect( theDaemon, SIGNAL( signalDownloadReady( Mp3tunesHarmonyDownload ) ),
-                    this, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload ) ) );
-            connect( theDaemon, SIGNAL( signalDownloadPending( Mp3tunesHarmonyDownload ) ),
-                    this, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload ) ) );
-
-            debug() << "spawning daemon thread.";
-            theDaemon->start();
-
-            //Close your eyes. Cross your legs. Touch middle fingers to thumbs. Extend your arms.
-            //OOOooommmmm
+        if( m_harmonyEnabled ) {
+            enableHarmony();
         }
     }
+
+    polish();
 }
 
 
@@ -151,16 +129,107 @@ Mp3tunesService::~Mp3tunesService()
 
 void Mp3tunesService::polish()
 {
-    m_bottomPanel->hide();
+    initTopPanel();
+    initBottomPanel();
 
     if ( !m_authenticated )
         authenticate( m_email, m_password );
 }
 
+void Mp3tunesService::initTopPanel()
+{
+    m_menubar->clear();
+    QMenu * actionsMenu = m_menubar->addMenu( i18n( "AutoSync" ) );
+    if( m_harmonyEnabled )
+    {
+        QAction * action = new QAction( i18n( "Disable AutoSync" ), m_menubar );
+        connect( action, SIGNAL( triggered( bool) ), SLOT( disableHarmony() ) );
+        actionsMenu->addAction( action );
+    } else {
+        QAction * action = new QAction( i18n( "Enable AutoSync" ), m_menubar );
+        connect( action, SIGNAL( triggered( bool) ), SLOT( enableHarmony() ) );
+        actionsMenu->addAction( action );
+    }
+
+    m_menubar->show();
+}
+
+void Mp3tunesService::initBottomPanel()
+{
+    m_bottomPanel->hide();
+}
+
+void Mp3tunesService::enableHarmony()
+ {
+    DEBUG_BLOCK
+    if( !theDaemon->daemonRunning() )
+    {
+        debug() << "Making new Daemon";
+        Mp3tunesConfig config;
+        char* ident = convertToChar( config.identifier() );
+        debug () << "Using identifier: " << ident;
+
+        if( config.pin().isEmpty() )
+            theDaemon = new Mp3tunesHarmonyDaemon( ident ); //first time harmony login
+        else
+            theDaemon = new Mp3tunesHarmonyDaemon( ident, //they're not harmony virgins
+                                                convertToChar( config.email() ),
+                                                convertToChar( config.pin() ) );
+        qRegisterMetaType<Mp3tunesHarmonyDownload>("Mp3tunesHarmonyDownload");
+
+        connect( theDaemon, SIGNAL( signalDisconnected() ),
+                this, SLOT( harmonyDisconnected() ));
+        connect( theDaemon, SIGNAL( signalWaitingForEmail() ),
+                this, SLOT( harmonyWaitingForEmail() ) );
+        connect( theDaemon, SIGNAL( signalConnected() ),
+                this, SLOT( harmonyConnected() ) );
+        connect( theDaemon, SIGNAL( signalError( QString ) ),
+                this, SLOT( harmonyError( QString ) ) );
+        connect( theDaemon, SIGNAL( signalDownloadReady( Mp3tunesHarmonyDownload ) ),
+                this, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload ) ) );
+        connect( theDaemon, SIGNAL( signalDownloadPending( Mp3tunesHarmonyDownload ) ),
+                this, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload ) ) );
+
+        debug() << "spawning daemon thread.";
+        theDaemon->start();
+
+        //Close your eyes. Cross your legs. Touch middle fingers to thumbs. Extend your arms.
+        //OOOooommmmm
+    }
+
+    debug() << "Daemon running";
+    m_harmonyEnabled = true;
+    The::statusBar()->shortMessage( i18n( "MP3Tunes AutoSync Enabled"  ) );
+    polish();
+ }
+
+ void Mp3tunesService::disableHarmony()
+ {
+    DEBUG_BLOCK
+    if( !theDaemon->daemonRunning() ) {
+        m_harmonyEnabled = false;
+        polish();
+        return;
+    }
+
+    debug()  << "stopping daemon";
+    if( theDaemon->stopDaemon() ) {
+        debug() << "daemon stopped";
+        m_harmonyEnabled = false;
+    } else {
+        debug() << "daemon NOT stopped";
+        m_harmonyEnabled = true;
+    }
+    The::statusBar()->shortMessage( i18n( "MP3Tunes AutoSync Disabled"  ) );
+    polish();
+ }
+
 void Mp3tunesService::authenticate( const QString & uname, const QString & passwd )
 {
     DEBUG_BLOCK
     QString username, password;
+    if( m_loginWorker )
+        return;
 
     if ( uname.isEmpty() || passwd.isEmpty() ) {
         KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to api, but that does not work
@@ -177,11 +246,12 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
         password = passwd;
     }
 
-    Mp3tunesLoginWorker * loginWorker = new Mp3tunesLoginWorker( m_locker, username, password);
+    m_loginWorker = new Mp3tunesLoginWorker( m_locker, username, password);
     //debug() << "Connecting finishedLogin -> authentication complete.";
-    connect( loginWorker, SIGNAL( finishedLogin( QString ) ), this, SLOT( authenticationComplete( QString ) ) );
+
+    connect( m_loginWorker, SIGNAL( finishedLogin( QString ) ), this, SLOT( authenticationComplete( QString ) ) );
     //debug() << "Connection complete. Enqueueing..";
-    ThreadWeaver::Weaver::instance()->enqueue( loginWorker );
+    ThreadWeaver::Weaver::instance()->enqueue( m_loginWorker );
     //debug() << "LoginWorker queue";
     The::statusBar()->shortMessage( i18n( "Authenticating"  ) );
 }
@@ -190,6 +260,7 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
 void Mp3tunesService::authenticationComplete( const QString & sessionId )
 {
     DEBUG_BLOCK
+    m_loginWorker = 0;
     debug() << "Authentication reply: " << sessionId;
     if ( sessionId.isEmpty() )
     {
@@ -216,6 +287,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
 
         m_serviceready = true;
     }
+    polish();
 }
 
 void Mp3tunesService::harmonyDisconnected()

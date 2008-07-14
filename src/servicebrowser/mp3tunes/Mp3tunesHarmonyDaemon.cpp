@@ -27,6 +27,7 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier ) :
     m_identifier( identifier )
    , m_gerr( 0 )
    , m_error( QString() )
+   , m_started( false )
    , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
 {
     /* g_type_init required for using the GObjects for Harmony. */
@@ -52,6 +53,7 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( char* identifier, char* email, cha
     m_identifier( identifier )
    , m_gerr( 0 )
    , m_error( QString() )
+   , m_started( false )
    , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
 {
     DEBUG_BLOCK
@@ -81,6 +83,39 @@ Mp3tunesHarmonyDaemon::~Mp3tunesHarmonyDaemon()
 {
 
 }
+bool
+Mp3tunesHarmonyDaemon::daemonRunning()
+{
+    DEBUG_BLOCK
+    debug() << "Daemon Running. GLIB SAYS: " << g_main_loop_is_running( m_main_loop );
+   /* if( m_started )
+        debug () << "Daemon Running. VAR SAYS: yes";
+    else
+        debug () << "Daemon Running. VAR SAYS: no";*/
+    return g_main_loop_is_running( m_main_loop );
+}
+
+bool
+Mp3tunesHarmonyDaemon::stopDaemon()
+{
+    if( !daemonRunning() ) {
+        debug() << "Daemon not running, but var says" << m_started;
+        return true;
+    }
+    debug() << "Disconnecting Harmony";
+    GError *err;
+    mp3tunes_harmony_disconnect(m_harmony, &err);
+    if (err) {
+        debug() << "Error disconnecting:  " << err->message;
+        /* If there is an error disconnecting something has probably gone
+        * very wrong and reconnection should not be attempted till the user
+        * re-initiates it */
+    }
+    g_main_loop_quit( m_main_loop );
+    m_started = false;
+    return true;
+}
+
 void
 Mp3tunesHarmonyDaemon::run()
 {
@@ -111,7 +146,9 @@ Mp3tunesHarmonyDaemon::run()
     }
 
     /* Run the main loop */
-    g_main_loop_run(m_main_loop);
+    m_started = true;
+    g_main_loop_run( m_main_loop );
+    m_started = false;
 
 }
 
