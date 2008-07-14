@@ -23,7 +23,7 @@
 
 GMainLoop * Mp3tunesHarmonyDaemon::m_main_loop = g_main_loop_new(0, FALSE);
 
-Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(QString identifier ) :
+Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier ) :
      m_identifier( identifier )
    , m_email( QString() )
    , m_pin( QString() )
@@ -94,21 +94,26 @@ Mp3tunesHarmonyDaemon::run()
     m_harmony = mp3tunes_harmony_new();
 
     /* Set the error signal handler. */
-    g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), 0);
+    g_signal_connect( m_harmony, "error",
+                      G_CALLBACK( signalErrorHandler ), 0 );
     /* Set the state change signal handler. */
-    g_signal_connect(m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
+    g_signal_connect( m_harmony, "state_change",
+                      G_CALLBACK(signalStateChangeHandler ), 0 );
     /* Set the download signal handler. */
-    g_signal_connect(m_harmony, "download_ready", G_CALLBACK(signalDownloadReadyHandler), 0);
-    g_signal_connect(m_harmony, "download_pending", G_CALLBACK(signalDownloadPendingHandler), 0);
+    g_signal_connect( m_harmony, "download_ready",
+                      G_CALLBACK(signalDownloadReadyHandler ), 0 );
+    g_signal_connect( m_harmony, "download_pending",
+                      G_CALLBACK(signalDownloadPendingHandler ), 0 );
 
-    mp3tunes_harmony_set_identifier(m_harmony, convertToChar( m_identifier ) );
+    mp3tunes_harmony_set_identifier( m_harmony, convertToChar( m_identifier ) );
 
     if( !m_email.isEmpty() )
         mp3tunes_harmony_set_email( m_harmony, convertToChar( m_email ) );
     if( !m_pin.isEmpty() )
         mp3tunes_harmony_set_pin( m_harmony, convertToChar( m_pin ) );
 
-    mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Amarok 2 Test Daemon");
+    mp3tunes_harmony_set_device_attribute( m_harmony, "device-description",
+                                           "Amarok 2 Test Daemon");
 
 
     /* Linux specific variable for getting total and available sizes for the
@@ -118,23 +123,24 @@ Mp3tunesHarmonyDaemon::run()
     unsigned long long total_bytes;
     unsigned long long available_bytes;
 
-    if (statfs(".", &fsstats) != 0) {
-        perror("statfs failed");
+    if ( statfs( ".", &fsstats ) != 0 ) {
+        perror( "statfs failed" );
         return;
     }
 
     total_bytes = fsstats.f_bsize * fsstats.f_blocks;
     available_bytes = fsstats.f_bsize * fsstats.f_bavail;
-    mp3tunes_harmony_set_device_attribute(m_harmony, "total-bytes", &total_bytes);
-    mp3tunes_harmony_set_device_attribute(m_harmony, "available-bytes", &available_bytes);
+    mp3tunes_harmony_set_device_attribute( m_harmony, "total-bytes", &total_bytes );
+    mp3tunes_harmony_set_device_attribute( m_harmony, "available-bytes",
+                                           &available_bytes );
 
     /* Configure main loop */
 
     /* Start the connection */
-    mp3tunes_harmony_connect(m_harmony, &m_gerr);
+    mp3tunes_harmony_connect( m_harmony, &m_gerr );
     /* Check for errors on the connection */
-    if (m_gerr) {
-        g_print("Error: %s\n", m_gerr->message);
+    if ( m_gerr ) {
+        g_print( "Error: %s\n", m_gerr->message );
     }
 
     /* Run the main loop */
@@ -223,12 +229,12 @@ Mp3tunesHarmonyDaemon::signalErrorHandler(MP3tunesHarmony* harmony, gpointer nul
     DEBUG_BLOCK
     GError *err;
     Q_UNUSED( null_pointer )
-    g_print("Fatal Error: %s\n", harmony->error->message);
+    g_print("Fatal Error: %s\n", harmony->error->message );
     theDaemon->setError( QString( harmony->error->message ) );
     theDaemon->emitError();
     mp3tunes_harmony_disconnect(harmony, &err);
-    if (err) {
-        g_print("Error disconnecting: %s\n", err->message);
+    if( err ) {
+        g_print( "Error disconnecting: %s\n", err->message );
         /* If there is an error disconnecting something has probably gone
         * very wrong and reconnection should not be attempted till the user
         * re-initiates it */
@@ -236,19 +242,20 @@ Mp3tunesHarmonyDaemon::signalErrorHandler(MP3tunesHarmony* harmony, gpointer nul
     }
 }
 void
-Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint32 state,  gpointer null_pointer )
+Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint32 state,
+                                                 gpointer null_pointer )
 {
     DEBUG_BLOCK
     Q_UNUSED( null_pointer )
-    switch (state) {
+    switch ( state ) {
         case MP3TUNES_HARMONY_STATE_DISCONNECTED:
-            g_print("Disconnected.\n");
+            g_print( "Disconnected.\n" );
             theDaemon->setState( Mp3tunesHarmonyDaemon::DISCONNECTED );
             theDaemon->emitDisconnected();
             /* Do nothing here */
             break;
         case MP3TUNES_HARMONY_STATE_CONNECTED:
-            g_print("Connected! Waiting for download requests!\n");
+            g_print( "Connected! Waiting for download requests!\n" );
             theDaemon->setState( Mp3tunesHarmonyDaemon::CONNECTED );
             theDaemon->emitConnected();
             /* At this point, it would be best to store the pin, if you haven't
@@ -257,13 +264,14 @@ Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint
                */
             break;
         case MP3TUNES_HARMONY_STATE_WAITING_FOR_PIN:
-            g_print("Connection in process!\n");
+            g_print( "Connection in process!\n" );
             theDaemon->setState( Mp3tunesHarmonyDaemon::WAITING_FOR_PIN );
             theDaemon->emitWaitingForPin();
             /* At this point, just update the user status. */
             break;
         case MP3TUNES_HARMONY_STATE_WAITING_FOR_EMAIL:
-            g_print("Please login to mp3tunes.com and add the pin '%s' to your devices.\n", mp3tunes_harmony_get_pin(harmony));
+            g_print( "Please login to mp3tunes.com and add the pin '%s' to your devices.\n",
+                     mp3tunes_harmony_get_pin( harmony ) );
             theDaemon->setState( Mp3tunesHarmonyDaemon::WAITING_FOR_EMAIL );
             theDaemon->emitWaitingForEmail();
             /* At this point, it would be best to store the pin in case the
@@ -275,24 +283,30 @@ Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint
 }
 
 void
-Mp3tunesHarmonyDaemon::signalDownloadReadyHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer )
+Mp3tunesHarmonyDaemon::signalDownloadReadyHandler( MP3tunesHarmony* harmony,
+                                                   gpointer void_mp3tunes_harmony_download,
+                                                   gpointer null_pointer )
 {
     DEBUG_BLOCK
     Q_UNUSED( harmony )
     Q_UNUSED( null_pointer )
-    mp3tunes_harmony_download_t *download = (mp3tunes_harmony_download_t*)void_mp3tunes_harmony_download;
+    mp3tunes_harmony_download_t *download = ( mp3tunes_harmony_download_t* )
+                                            void_mp3tunes_harmony_download;
     Mp3tunesHarmonyDownload wrappedDownload( download );
     theDaemon->emitDownloadReady( wrappedDownload );
-    mp3tunes_harmony_download_deinit(&download);
+    mp3tunes_harmony_download_deinit( &download );
 }
 
 void
-Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer )
+Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony,
+                                                     gpointer void_mp3tunes_harmony_download,
+                                                     gpointer null_pointer )
 {
     DEBUG_BLOCK
     Q_UNUSED( harmony )
     Q_UNUSED( null_pointer )
-    mp3tunes_harmony_download_t *download = (mp3tunes_harmony_download_t*)void_mp3tunes_harmony_download;
+    mp3tunes_harmony_download_t *download = ( mp3tunes_harmony_download_t* )
+                                            void_mp3tunes_harmony_download;
     Mp3tunesHarmonyDownload wrappedDownload( download );
     theDaemon->emitDownloadPending( wrappedDownload );
     /*if (strcmp(download->file_key, "dummy_file_key_5") == 0) {

@@ -58,18 +58,40 @@ class Mp3tunesService : public ServiceBase
 Q_OBJECT
 
 public:
-    explicit Mp3tunesService( const QString &name, const QString &partnerToken, const QString &email = QString(), const QString &password = QString(), bool harmonyEnabled = false);
+    explicit Mp3tunesService( const QString &name,
+                              const QString &partnerToken,
+                              const QString &email = QString(),
+                              const QString &password = QString(),
+                              bool harmonyEnabled = false);
 
     ~Mp3tunesService();
 
+    /**
+     * Helper function to redraw the service's ui elements
+     */
     void polish();
 
     virtual Collection * collection() { return m_collection; }
 
 private slots:
+    /**
+     * Enables harmony
+     */
     void enableHarmony();
+
+    /**
+     * Disables harmony
+     */
     void disableHarmony();
+
+    /**
+     * Logs the user into the locker, prompts them for a user/pass if not supplied
+     */
     void authenticate( const QString & uname = "", const QString & passwd = "" );
+
+    /**
+     * Handles authentication reply.
+     */
     void authenticationComplete(  const QString & sessionId );
 
     /**
@@ -85,20 +107,28 @@ private slots:
     void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );
 
 private:
+    /**
+     * Helper function that draws the menu bar above the tree view
+     */
     void initTopPanel();
+
+    /**
+     * Helper function that draws the ui elements below the tree view
+     */
     void initBottomPanel();
+
     QString m_email;
     QString m_password;
-    bool m_harmonyEnabled;
+    bool m_harmonyEnabled; // if the user has enabled harmony
     QString m_partnerToken;
 
-    bool m_authenticated;
-    QString m_sessionId;
+    bool m_authenticated; // true if mp3tunes has authenticated successfully
+    QString m_sessionId; // the mp3tunes sid
 
     Mp3tunesServiceCollection *  m_collection;
-    Mp3tunesLoginWorker * m_loginWorker;
-    Mp3tunesLocker * m_locker;
-    Mp3tunesHarmonyDaemon * m_daemon;
+    Mp3tunesLoginWorker * m_loginWorker; // used to see if logging in has completed
+    Mp3tunesLocker * m_locker; // the actual locker
+    Mp3tunesHarmonyDaemon * m_daemon; // the autosync daemon
 };
 
 #endif

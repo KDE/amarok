@@ -248,7 +248,8 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
     m_loginWorker = new Mp3tunesLoginWorker( m_locker, username, password);
     //debug() << "Connecting finishedLogin -> authentication complete.";
 
-    connect( m_loginWorker, SIGNAL( finishedLogin( QString ) ), this, SLOT( authenticationComplete( QString ) ) );
+    connect( m_loginWorker, SIGNAL( finishedLogin( QString ) ), this,
+             SLOT( authenticationComplete( QString ) ) );
     //debug() << "Connection complete. Enqueueing..";
     ThreadWeaver::Weaver::instance()->enqueue( m_loginWorker );
     //debug() << "LoginWorker queue";
@@ -338,8 +339,8 @@ void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &downl
         if( coll && coll->isWritable())
         {
             debug() << "got collection" << coll->prettyName();
-            if ( coll->prettyName() == "Local Collection") //TODO Allow user to choose which collection to sync down to.
-            {
+            if ( coll->prettyName() == "Local Collection")
+            { //TODO Allow user to choose which collection to sync down to.
                 debug() << "got local collection";
                 CollectionLocation *dest = coll->location();
                 CollectionLocation *source = m_collection->location();

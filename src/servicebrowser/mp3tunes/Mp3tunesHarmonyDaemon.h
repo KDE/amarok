@@ -99,8 +99,18 @@ class Mp3tunesHarmonyDaemon: public QThread
     Mp3tunesHarmonyDaemon( QString identifier, QString email, QString pin );
     ~Mp3tunesHarmonyDaemon();
 
+    /**
+     * Determines if the daemon is currently running.
+     * @return true if the daemon is running.
+     *         false if the daemon is not running.
+     */
     bool daemonRunning();
 
+    /**
+     * Stops the daemon if it is running.
+     * @return true if the daemon is stopped OR if the daemon was stopped
+     *         false if the stopping the daemon failed
+     */
     bool stopDaemon();
 
     /**
@@ -231,17 +241,20 @@ class Mp3tunesHarmonyDaemon: public QThread
      */
     static void signalDownloadPendingHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
 
+    /**
+     * Converts a QString into a char*
+     */
     char *convertToChar( const QString &source ) const;
     MP3tunesHarmony* m_harmony;
-    static GMainLoop * m_main_loop;
-    QString m_identifier;
-    QString m_email;
-    QString m_pin;
-    GError *m_gerr;
+    static GMainLoop * m_main_loop; // the gobject main event loop
+    QString m_identifier; // the initial identifier used for authentication
+    QString m_email; //used for repeat authentication
+    QString m_pin; //used for repeat authentication
+    GError *m_gerr; // master GError
 
-    QString m_error;
-    bool m_started;
-    HarmonyState m_state;
+    QString m_error; // error message to display to user
+    bool m_started; // true if g_main_loop has been started
+    HarmonyState m_state; //current state of the harmony daemon
 };
 
 
