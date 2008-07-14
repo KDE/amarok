@@ -289,7 +289,6 @@ IpodHandler::detectModel()
 bool
 IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 {
-    DEBUG_BLOCK
     QDir curDir( mountPoint() );
     QString curPath = mountPoint();
     QStringList components = ipodPath.split( ":" );
@@ -315,9 +314,7 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 
     for( ; it != components.end(); ++it )
     {
-        debug() << "curPath before concat: " << curPath;
         curPath += '/' + *it;
-        debug() << "curPath after concat: " << curPath;
     }
 
     if( realPath )
@@ -426,8 +423,6 @@ IpodHandler::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
     if( removeDBTrack( ipodtrack ) )
         if( writeITunesDB( false ) )
             return true;
-
-    debug() << "returning false";
 
     return false;
 

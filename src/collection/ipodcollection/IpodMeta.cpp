@@ -61,16 +61,18 @@ class EditCapabilityIpod : public Meta::EditCapability
         KSharedPtr<IpodTrack> m_track;
 };
 
-class RemoveCapabilityIpod : public Meta::CustomActionsCapability {
+class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability {
     Q_OBJECT
     public:
-        RemoveCapabilityIpod( IpodTrack* track )
+        CustomActionsCapabilityIpod( IpodTrack* track )
     : Meta::CustomActionsCapability()
     , m_track( track )
     {
             DEBUG_BLOCK
 
             //TODO: wrong svg stuff, don't know labels of remove stuff
+
+            // Setup the remove action
             
             PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Remove from iPod" ), 0 );
 
@@ -91,11 +93,29 @@ class RemoveCapabilityIpod : public Meta::CustomActionsCapability {
             
             m_actions.append( removeAction );
 
-            debug() << "Remove action appended to local QList";
+            //TODO: this should only be available in the top-level
+            // node of the tree, not every individual track
+
+            // Setup the disconnect action
+            
+            PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Disconnect the iPod" ), 0 );
+
+            debug() << "Disconnect-action created";
+
+            // when action is selected, collection emits remove()
+
+            connect( disconnectAction, SIGNAL( triggered() ),
+                     coll, SLOT( slotDisconnect() ) );
+
+            // Add the action to the list of custom actions
+
+            m_actions.append( disconnectAction );
+
+            debug() << "Disconnect action appended to local QList";
 
     }
     
-        virtual ~RemoveCapabilityIpod() {}
+        virtual ~CustomActionsCapabilityIpod() {}
 
         virtual QList< PopupDropperAction *> customActions() const {
             return m_actions;
@@ -414,7 +434,7 @@ IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::Editable:
             return new EditCapabilityIpod( this );
         case Meta::Capability::CustomActions:
-            return new RemoveCapabilityIpod( this );
+            return new CustomActionsCapabilityIpod( this );
 
         default:
             return 0;

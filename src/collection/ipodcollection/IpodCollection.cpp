@@ -289,5 +289,11 @@ IpodCollection::deleteTrackSlot( Meta::IpodTrackPtr track)
     deleteTrackFromDevice( track );
 }
 
+void
+IpodCollection::slotDisconnect()
+{
+    deviceRemoved();
+}
+
 #include "IpodCollection.moc"
 

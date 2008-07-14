@@ -89,6 +89,8 @@ class IpodCollection : public Collection, public MemoryCollection
     public slots:
 	void deleteTrackToDelete();
 	void deleteTrackSlot( Meta::IpodTrackPtr track);
+
+	void slotDisconnect();
 	
 //    private slots:
 	

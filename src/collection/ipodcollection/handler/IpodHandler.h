@@ -104,8 +104,10 @@ struct PodcastInfo
 
         
 
-       // convenience method to avoid repetitive code
+       
  //      void setupMetadataMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, DataMapPtr datamap, Metadata metadata);
+
+       // convenience methods to avoid repetitive code
 
        void setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ArtistMap &artistMap );
        void setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, AlbumMap &albumMap );
