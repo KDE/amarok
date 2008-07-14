@@ -5,9 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.0-alpha2:
   FEATURES:
+    * New interface for extracting tags from filenames, now fully working.
     * Context view applet to view albums. (BR 164005)
     * Automatic detection of non-UTF-8 charsets for metadata.
-    * New interface for extracting tags from filenames, now fully working.
 
   CHANGES:
     * Update the DBus APIs.
