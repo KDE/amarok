@@ -936,7 +936,7 @@ void CollectionTreeView::slotPlayChildTracks() {
 
 void CollectionTreeView::slotAppendChildTracks()
 {
-    playChildTracks( m_currentItems, Playlist::Append );
+    playChildTracks( m_currentItems, Playlist::AppendAndPlay );
 }
 
 void CollectionTreeView::slotEditTracks()
