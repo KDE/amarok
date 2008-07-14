@@ -229,9 +229,9 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track )
 
         m_title = fontMetrics.elidedText( m_track->prettyName(), Qt::ElideRight, elideWidth );
         if( m_track->artist() )
-            m_title += i18n( " by " ) + fontMetrics.elidedText( m_track->artist()->prettyName(), Qt::ElideRight, elideWidth );
+            m_title += " " + i18n( "by" ) + " " + fontMetrics.elidedText( m_track->artist()->prettyName(), Qt::ElideRight, elideWidth );
         if( m_track->album() )
-            m_title += i18n( " on " ) + fontMetrics.elidedText( m_track->album()->prettyName(), Qt::ElideRight, elideWidth );
+            m_title += " " + i18n( "on" ) + " " + fontMetrics.elidedText( m_track->album()->prettyName(), Qt::ElideRight, elideWidth );
 
         m_tooltip += "</table></td>";
         m_tooltip += "</tr></table></center>";
