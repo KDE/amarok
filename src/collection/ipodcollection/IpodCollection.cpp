@@ -197,11 +197,29 @@ IpodCollection::copyTrackToDevice( const Meta::TrackPtr &track )
 bool
 IpodCollection::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
 {
+    DEBUG_BLOCK
+
+        // remove the track from the device
     if ( !m_handler->deleteTrackFromDevice( track ) )
         return false;
 
+    // remove the track from the collection maps too
+    removeTrack ( track );
+
+    // inform treeview collection has updated
     emit updated();
+    debug() << "deleteTrackFromDevice returning true";
     return true;
+}
+
+void
+IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
+{
+    Meta::IpodArtistPtr::dynamicCast( track->artist() )->remTrack( track );
+    Meta::IpodAlbumPtr::dynamicCast( track->album() )->remTrack( track );
+    Meta::IpodGenrePtr::dynamicCast( track->genre() )->remTrack( track );
+    Meta::IpodComposerPtr::dynamicCast( track->composer() )->remTrack( track );
+    Meta::IpodYearPtr::dynamicCast( track->year() )->remTrack( track );
 }
 
 
@@ -251,6 +269,24 @@ QString
 IpodCollection::udi() const
 {
     return m_udi;
+}
+
+void
+IpodCollection::setTrackToDelete( const Meta::IpodTrackPtr &track )
+{
+    m_trackToDelete = track;
+}
+
+void
+IpodCollection::deleteTrackToDelete()
+{
+    deleteTrackFromDevice( m_trackToDelete );
+}
+
+void
+IpodCollection::deleteTrackSlot( Meta::IpodTrackPtr track)
+{
+    deleteTrackFromDevice( track );
 }
 
 #include "IpodCollection.moc"

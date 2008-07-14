@@ -29,6 +29,7 @@
 #include "taglib_audiblefile.h"
 
 #include <KIO/Job>
+#include <KIO/DeleteJob>
 #include "kjob.h"
 #include <KUniqueApplication> // needed for KIO processes
 #include <KUrl>
@@ -392,6 +393,8 @@ IpodHandler::writeITunesDB( bool threaded )
 
         return ok;
     }
+
+    debug() << "writeItunesDB is returning true";
     return true;
 }
 
@@ -410,6 +413,7 @@ IpodHandler::itunesDir(const QString &p) const
 bool
 IpodHandler::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
 {
+    DEBUG_BLOCK
     Itdb_Track *ipodtrack = track->getIpodTrack();
 
     // delete file
@@ -419,10 +423,13 @@ IpodHandler::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
 
     // remove it from the ipod database, ipod playlists and all
 
-    if( !removeDBTrack( ipodtrack ) )
-        return false;
+    if( removeDBTrack( ipodtrack ) )
+        if( writeITunesDB( false ) )
+            return true;
 
-    return true;
+    debug() << "returning false";
+
+    return false;
 
 }
 
@@ -798,9 +805,9 @@ IpodHandler::deleteFile( const KUrl &url )
 {
     debug() << "deleting " << url.prettyUrl();
 
-    KIO::Job *job = KIO::file_delete( url, KIO::HideProgressInfo );
-    connect( job, SIGNAL( result( KIO::Job * ) ),
-             this,  SLOT( fileDeleted( KIO::Job * ) ) );
+    KIO::DeleteJob *job = KIO::del( url, KIO::HideProgressInfo );
+    connect( job, SIGNAL( result( KJob * ) ),
+             this,  SLOT( fileDeleted( KJob * ) ) );
 
     The::statusBar()->newProgressOperation( job ).setDescription(  i18n(  "Deleting Tracks from iPod" ) );
     job->start();

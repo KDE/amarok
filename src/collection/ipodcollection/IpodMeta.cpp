@@ -21,11 +21,16 @@
 
 
 #include "IpodMeta.h"
-
-#include "meta/EditCapability.h"
-#include "Debug.h"
-
 #include "IpodCollection.h"
+
+#include "Debug.h"
+#include "SvgHandler.h"
+#include "meta/EditCapability.h"
+#include "meta/CustomActionsCapability.h"
+
+#include "context/popupdropper/PopupDropperAction.h"
+
+#include <KIcon>
 
 using namespace Meta;
 // Currently complaining about some vtable issue
@@ -54,6 +59,53 @@ class EditCapabilityIpod : public Meta::EditCapability
 
     private:
         KSharedPtr<IpodTrack> m_track;
+};
+
+class RemoveCapabilityIpod : public Meta::CustomActionsCapability {
+    Q_OBJECT
+    public:
+        RemoveCapabilityIpod( IpodTrack* track )
+    : Meta::CustomActionsCapability()
+    , m_track( track )
+    {
+            DEBUG_BLOCK
+
+            //TODO: wrong svg stuff, don't know labels of remove stuff
+            
+            PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Remove from iPod" ), 0 );
+
+            debug() << "Remove action created";
+
+            IpodCollection *coll = dynamic_cast<IpodCollection*>( m_track->collection() );
+
+            // set track to be deleted
+
+            coll->setTrackToDelete( m_track );
+
+            connect( removeAction, SIGNAL( triggered() ),
+                     coll, SLOT(deleteTrackToDelete()) );
+
+            
+
+            
+           
+            
+            m_actions.append( removeAction );
+
+            debug() << "Remove action appended to local QList";
+
+    }
+    
+        virtual ~RemoveCapabilityIpod() {}
+
+        virtual QList< PopupDropperAction *> customActions() const {
+            return m_actions;
+        }
+
+    private:
+        QList< PopupDropperAction* > m_actions;
+        IpodTrackPtr m_track;
+
 };
 
 
@@ -346,6 +398,8 @@ IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
         {
         case Meta::Capability::Editable:
             return true;
+        case Meta::Capability::CustomActions:
+            return true;
 
         default:
             return false;
@@ -360,6 +414,8 @@ IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
         {
         case Meta::Capability::Editable:
             return new EditCapabilityIpod( this );
+        case Meta::Capability::CustomActions:
+            return new RemoveCapabilityIpod( this );
 
         default:
             return 0;

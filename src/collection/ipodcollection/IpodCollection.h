@@ -65,6 +65,9 @@ class IpodCollection : public Collection, public MemoryCollection
 
     void copyTrackToDevice( const Meta::TrackPtr &track );
     bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
+    void removeTrack( const Meta::IpodTrackPtr &track );
+
+    void setTrackToDelete( const Meta::IpodTrackPtr &track );
 
     void deviceRemoved();
 
@@ -83,12 +86,15 @@ class IpodCollection : public Collection, public MemoryCollection
  signals:
     void collectionReady();
     
-//    public slots:
+    public slots:
+	void deleteTrackToDelete();
+	void deleteTrackSlot( Meta::IpodTrackPtr track);
 	
 //    private slots:
 	
  private:
 
+    Meta::IpodTrackPtr m_trackToDelete;
     QString           m_mountPoint;
     QString           m_udi;
     Ipod::IpodHandler *m_handler;

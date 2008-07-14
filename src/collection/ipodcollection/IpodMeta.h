@@ -30,6 +30,7 @@ extern "C" {
 #include <QMultiMap>
 
 class IpodCollection;
+class PopupDropperAction;
 
 namespace Meta
 {
@@ -58,6 +59,7 @@ typedef QMultiMap<IpodYearPtr, IpodTrackPtr> IpodYearMap;
 
 class IpodTrack : public Meta::Track
 {
+
     public:
         IpodTrack( IpodCollection *collection, const QString &format);
         virtual ~IpodTrack();
@@ -141,6 +143,12 @@ class IpodTrack : public Meta::Track
 	virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         //IpodTrack specific methods
+
+
+
+    public:
+
+        
 
     // These methods are for MemoryMatcher to use
         void setAlbum( IpodAlbumPtr album );
