@@ -28,7 +28,6 @@
 
 #include <KMenuBar>
 #include <KMessageBox>
-#include <KPasswordDialog>
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QByteArray>
@@ -105,14 +104,11 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
     debug() << "Making new Locker Object";
     m_locker = new Mp3tunesLocker( "4895500420" );
 
-    if( !email.isEmpty() && !password.isEmpty() )
-    {
-        debug() << "MP3tunes running automated authenticate.";
-        authenticate( email, password );
+    debug() << "MP3tunes running automated authenticate.  email: " << email << "  pass: " << password;
+    authenticate( email, password );
 
-        if( m_harmonyEnabled ) {
-            enableHarmony();
-        }
+    if( m_harmonyEnabled ) {
+        enableHarmony();
     }
 
     polish();
@@ -231,23 +227,12 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
 {
     DEBUG_BLOCK
     QString username, password;
+
     if( m_loginWorker )
         return;
 
-    if ( uname.isEmpty() || passwd.isEmpty() ) {
-        KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to api, but that does not work
-        dlg.setPrompt( i18n( "Enter your MP3tunes login and password" ) );
-        if( !dlg.exec() )
-            return; //the user canceled
-
-        username = dlg.username();
-        password = dlg.password();
-    }
-    else
-    {
-        username = uname;
-        password = passwd;
-    }
+    if ( uname.isEmpty() || passwd.isEmpty() )
+       return;
 
     m_loginWorker = new Mp3tunesLoginWorker( m_locker, username, password);
     //debug() << "Connecting finishedLogin -> authentication complete.";
@@ -258,6 +243,7 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
     ThreadWeaver::Weaver::instance()->enqueue( m_loginWorker );
     //debug() << "LoginWorker queue";
     The::statusBar()->shortMessage( i18n( "Authenticating"  ) );
+
 }
 
 
