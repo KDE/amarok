@@ -96,6 +96,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
  , m_partnerToken( token )
  , m_authenticated( false )
  , m_sessionId ( QString() )
+ , m_collection( 0 )
  , m_loginWorker( 0 )
 {
     DEBUG_BLOCK
@@ -120,10 +121,13 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
 
 Mp3tunesService::~Mp3tunesService()
 {
-    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+
     delete m_locker;
 //    delete m_daemon;
-    delete m_collection;
+    if( m_collection ) {
+        CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+        delete m_collection;
+    }
 }
 
 
@@ -336,7 +340,7 @@ void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &downl
     DEBUG_BLOCK
     debug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
     foreach( Collection *coll, CollectionManager::instance()->collections().keys() ) {
-        if( coll && coll->isWritable())
+        if( coll && coll->isWritable() && m_collection )
         {
             debug() << "got collection" << coll->prettyName();
             if ( coll->prettyName() == "Local Collection")
