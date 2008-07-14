@@ -212,7 +212,9 @@ MediaDeviceCache::slotAccessibilityChanged( bool accessible, const QString &udi 
             return;
         }
         debug() << "Got accessibility changed to false but was not there in the first place...";
-    }            
+    }
+
+    emit accessibilityChanged( accessible, udi );
 }
 
 const MediaDeviceCache::DeviceType
