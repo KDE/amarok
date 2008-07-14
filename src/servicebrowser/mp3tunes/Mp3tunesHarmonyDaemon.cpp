@@ -23,59 +23,28 @@
 
 GMainLoop * Mp3tunesHarmonyDaemon::m_main_loop = g_main_loop_new(0, FALSE);
 
-Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(char* identifier ) :
-    m_identifier( identifier )
-   , m_gerr( 0 )
-   , m_error( QString() )
-   , m_started( false )
-   , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
-{
-    /* g_type_init required for using the GObjects for Harmony. */
-    g_type_init();
-
-    m_harmony = mp3tunes_harmony_new();
-
-    /* Set the error signal handler. */
-    g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), 0);
-    /* Set the state change signal handler. */
-    g_signal_connect(m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
-    /* Set the download signal handler. */
-    g_signal_connect(m_harmony, "download_ready", G_CALLBACK(signalDownloadReadyHandler), 0);
-    g_signal_connect(m_harmony, "download_pending", G_CALLBACK(signalDownloadPendingHandler), 0);
-
-    mp3tunes_harmony_set_identifier(m_harmony, m_identifier);
-
-    mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Amarok 2 Test Daemon");
-
-}
-
-Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( char* identifier, char* email, char* pin ) :
-    m_identifier( identifier )
+Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon(QString identifier ) :
+     m_identifier( identifier )
+   , m_email( QString() )
+   , m_pin( QString() )
    , m_gerr( 0 )
    , m_error( QString() )
    , m_started( false )
    , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
 {
     DEBUG_BLOCK
-    /* g_type_init required for using the GObjects for Harmony. */
-    g_type_init();
+}
 
-    m_harmony = mp3tunes_harmony_new();
-
-    /* Set the error signal handler. */
-    g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), 0);
-    /* Set the state change signal handler. */
-    g_signal_connect(m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
-    /* Set the download signal handler. */
-    g_signal_connect(m_harmony, "download_ready", G_CALLBACK(signalDownloadReadyHandler), 0);
-    g_signal_connect(m_harmony, "download_pending", G_CALLBACK(signalDownloadPendingHandler), 0);
-
-    mp3tunes_harmony_set_identifier(m_harmony, m_identifier);
-    mp3tunes_harmony_set_email( m_harmony, email );
-    mp3tunes_harmony_set_pin( m_harmony, pin );
-
-    mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Amarok 2 Test Daemon");
-
+Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier, QString email, QString pin ) :
+     m_identifier( identifier )
+   , m_email( email )
+   , m_pin( pin )
+   , m_gerr( 0 )
+   , m_error( QString() )
+   , m_started( false )
+   , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
+{
+    DEBUG_BLOCK
 }
 
 
@@ -119,6 +88,29 @@ Mp3tunesHarmonyDaemon::stopDaemon()
 void
 Mp3tunesHarmonyDaemon::run()
 {
+        /* g_type_init required for using the GObjects for Harmony. */
+    g_type_init();
+
+    m_harmony = mp3tunes_harmony_new();
+
+    /* Set the error signal handler. */
+    g_signal_connect(m_harmony, "error", G_CALLBACK(signalErrorHandler), 0);
+    /* Set the state change signal handler. */
+    g_signal_connect(m_harmony, "state_change", G_CALLBACK(signalStateChangeHandler), 0);
+    /* Set the download signal handler. */
+    g_signal_connect(m_harmony, "download_ready", G_CALLBACK(signalDownloadReadyHandler), 0);
+    g_signal_connect(m_harmony, "download_pending", G_CALLBACK(signalDownloadPendingHandler), 0);
+
+    mp3tunes_harmony_set_identifier(m_harmony, convertToChar( m_identifier ) );
+
+    if( !m_email.isEmpty() )
+        mp3tunes_harmony_set_email( m_harmony, convertToChar( m_email ) );
+    if( !m_pin.isEmpty() )
+        mp3tunes_harmony_set_pin( m_harmony, convertToChar( m_pin ) );
+
+    mp3tunes_harmony_set_device_attribute(m_harmony, "device-description", "Amarok 2 Test Daemon");
+
+
     /* Linux specific variable for getting total and available sizes for the
      * file system
      */
@@ -309,6 +301,15 @@ Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony, g
     /*mp3tunes_harmony_download_deinit(&download);*/
 }
 
+char *
+Mp3tunesHarmonyDaemon::convertToChar ( const QString &source ) const
+{
+    QByteArray b = source.toAscii();
+    const char *c_tok = b.constData();
+    char * ret = ( char * ) malloc ( strlen ( c_tok ) );
+    strcpy ( ret, c_tok );
+    return ret;
+}
 
 /* Harmony Download Type Wrapper */
 Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload()

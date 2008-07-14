@@ -166,15 +166,14 @@ void Mp3tunesService::enableHarmony()
     {
         debug() << "Making new Daemon";
         Mp3tunesConfig config;
-        char* ident = convertToChar( config.identifier() );
-        debug () << "Using identifier: " << ident;
+        debug () << "Using identifier: " << config.identifier();
 
         if( config.pin().isEmpty() )
-            theDaemon = new Mp3tunesHarmonyDaemon( ident ); //first time harmony login
+            theDaemon = new Mp3tunesHarmonyDaemon( config.identifier() ); //first time harmony login
         else
-            theDaemon = new Mp3tunesHarmonyDaemon( ident, //they're not harmony virgins
-                                                convertToChar( config.email() ),
-                                                convertToChar( config.pin() ) );
+            theDaemon = new Mp3tunesHarmonyDaemon( config.identifier(), //they're not harmony virgins
+                                                config.email(),
+                                                config.pin() );
         qRegisterMetaType<Mp3tunesHarmonyDownload>("Mp3tunesHarmonyDownload");
 
         connect( theDaemon, SIGNAL( signalDisconnected() ),
@@ -360,16 +359,6 @@ void Mp3tunesService::harmonyDownloadPending( const Mp3tunesHarmonyDownload &dow
 {
     DEBUG_BLOCK
     debug() << "Got message about pending: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
-}
-
-char *
-Mp3tunesService::convertToChar ( const QString &source ) const
-{
-    QByteArray b = source.toAscii();
-    const char *c_tok = b.constData();
-    char * ret = ( char * ) malloc ( strlen ( c_tok ) );
-    strcpy ( ret, c_tok );
-    return ret;
 }
 
 #include "Mp3tunesService.moc"

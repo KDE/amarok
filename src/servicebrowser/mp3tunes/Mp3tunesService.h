@@ -87,7 +87,6 @@ private slots:
 private:
     void initTopPanel();
     void initBottomPanel();
-    char *convertToChar( const QString &source ) const;
     QString m_email;
     QString m_password;
     bool m_harmonyEnabled;

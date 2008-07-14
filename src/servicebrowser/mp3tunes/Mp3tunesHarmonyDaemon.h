@@ -92,11 +92,11 @@ class Mp3tunesHarmonyDaemon: public QThread
     /**
      * For the first time run, before we have an email and pin to authenticate
      */
-    Mp3tunesHarmonyDaemon( char* identifier );
+    Mp3tunesHarmonyDaemon( QString identifier );
     /**
      * For subsequent logins
      */
-    Mp3tunesHarmonyDaemon( char* identifier, char* email, char* pin );
+    Mp3tunesHarmonyDaemon( QString identifier, QString email, QString pin );
     ~Mp3tunesHarmonyDaemon();
 
     bool daemonRunning();
@@ -231,9 +231,12 @@ class Mp3tunesHarmonyDaemon: public QThread
      */
     static void signalDownloadPendingHandler( MP3tunesHarmony* harmony, gpointer void_mp3tunes_harmony_download, gpointer null_pointer );
 
+    char *convertToChar( const QString &source ) const;
     MP3tunesHarmony* m_harmony;
     static GMainLoop * m_main_loop;
-    char* m_identifier;
+    QString m_identifier;
+    QString m_email;
+    QString m_pin;
     GError *m_gerr;
 
     QString m_error;
