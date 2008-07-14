@@ -40,6 +40,8 @@ PlaylistBrowserNS::DynamicBiasModel::~DynamicBiasModel()
 void
 PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr playlist )
 {
+    DEBUG_BLOCK
+
     clearWidgets();
 
     Dynamic::BiasedPlaylist* bp = 

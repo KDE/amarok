@@ -137,6 +137,11 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     if( index >= 0 )
     {
         m_presetComboBox->setCurrentIndex( index );
+        playlistSelectionChanged( index );
+    }
+    else
+    {
+        m_presetComboBox->setCurrentIndex( 0 );
         playlistSelectionChanged( 0 );
     }
 

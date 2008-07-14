@@ -113,6 +113,8 @@ PlaylistBrowserNS::BiasBoxWidget::resizeEvent( QResizeEvent* )
 PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( QWidget* parent )
     : BiasBoxWidget( parent )
 {
+    DEBUG_BLOCK
+
     QHBoxLayout* mainLayout = new QHBoxLayout( this );
 
     QWidget* m_addToolbarWidget = new QWidget( this );
@@ -169,6 +171,7 @@ PlaylistBrowserNS::BiasAddWidget::addBias()
 PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
     : BiasBoxWidget( parent ), m_bias(b)
 {
+    DEBUG_BLOCK
 
     QHBoxLayout* hLayout = new QHBoxLayout( this );
 
@@ -219,11 +222,13 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
     , m_compareSelection(0)
     , m_gbias( bias )
 {
-    m_controlLayout = new QGridLayout( m_mainLayout );
+    DEBUG_BLOCK
+
     m_controlFrame = new QFrame( m_mainLayout );
+    m_controlLayout = new QGridLayout( m_controlFrame );
     m_controlFrame->setLayout( m_controlLayout );
 
-    QHBoxLayout* sliderLayout = new QHBoxLayout( m_controlFrame );
+    QHBoxLayout* sliderLayout = new QHBoxLayout();
     m_controlLayout->addLayout( sliderLayout, 0, 1 );
 
     m_weightLabel = new QLabel( " 0%", m_controlFrame );
@@ -300,6 +305,7 @@ PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
 {
     m_fieldSelection->addItem( "", (qint64)0 );
     m_fieldSelection->addItem( "Artist", QueryMaker::valArtist );
+    m_fieldSelection->addItem( "Composer", QueryMaker::valComposer );
     m_fieldSelection->addItem( "Album",  QueryMaker::valAlbum );
     m_fieldSelection->addItem( "Title",  QueryMaker::valTitle );
     m_fieldSelection->addItem( "Genre",  QueryMaker::valGenre );
@@ -337,6 +343,8 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
     }
     else if( field == QueryMaker::valArtist )
         makeArtistSelection();
+    else if( field == QueryMaker::valComposer )
+        makeComposerSelection();
     else if( field == QueryMaker::valAlbum )
         makeAlbumSelection();
     else if( field == QueryMaker::valTitle )
@@ -418,125 +426,81 @@ PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection( QWidget* parent )
 }
 
 void
-PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
+PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, QueryMaker* populateQuery )
 {
-    KComboBox* artistCombo = new KComboBox( m_controlFrame );
-    artistCombo->setPalette( QApplication::palette() );
-    artistCombo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
-    artistCombo->setEditable( true );
+    KComboBox* combo = new KComboBox( m_controlFrame );
+    combo->setPalette( QApplication::palette() );
+    combo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
+    combo->setEditable( editable );
 
-    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->setQueryType( QueryMaker::Artist );
-    BlockingQuery bq( qm );
-
-    bq.startQuery();
-
-    foreach( Meta::ArtistList as, bq.artists() )
+    if( populateQuery != 0 )
     {
-        foreach( Meta::ArtistPtr a, as )
+        populateQuery->returnResultAsDataPtrs( true );
+        BlockingQuery bq( populateQuery );
+
+        bq.startQuery();
+
+        foreach( Meta::DataList as, bq.data() )
         {
-            artistCombo->addItem( a->name() );
+            foreach( Meta::DataPtr a, as )
+            {
+                combo->addItem( a->name() );
+            }
         }
     }
 
-    connect( artistCombo, SIGNAL(currentIndexChanged( const QString& )),
+    connect( combo, SIGNAL(currentIndexChanged( const QString& )),
             SLOT(valueChanged(const QString&)) );
-    connect( artistCombo, SIGNAL(editTextChanged( const QString& ) ),
+    connect( combo, SIGNAL(editTextChanged( const QString& ) ),
             SLOT(valueChanged(const QString&)) );
 
-    artistCombo->setEditText( m_gbias->filter().value );
+    combo->setEditText( m_gbias->filter().value );
 
-    artistCombo->setAutoCompletion( true );
-    setValueSection( artistCombo );
+    combo->setAutoCompletion( true );
+    setValueSection( combo );
+}
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
+{
+    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+    qm->setQueryType( QueryMaker::Artist );
+    makeGenericComboSelection( true, qm );
+}
+
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::makeComposerSelection()
+{
+    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+    qm->setQueryType( QueryMaker::Composer );
+    makeGenericComboSelection( true, qm );
 }
 
 
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
 {
-    KComboBox* albumCombo = new KComboBox( m_controlFrame );
-    albumCombo->setPalette( QApplication::palette() );
-    albumCombo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
-    albumCombo->setEditable( true );
-
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Album );
-    BlockingQuery bq( qm );
-
-    bq.startQuery();
-
-    foreach( Meta::AlbumList as, bq.albums() )
-    {
-        foreach( Meta::AlbumPtr a, as )
-        {
-            albumCombo->addItem( a->name() );
-        }
-    }
-
-    connect( albumCombo, SIGNAL(currentIndexChanged( const QString& )),
-            SLOT(valueChanged(const QString&)) );
-    connect( albumCombo, SIGNAL(editTextChanged( const QString& ) ),
-            SLOT(valueChanged(const QString&)) );
-
-    albumCombo->setEditText( m_gbias->filter().value );
-    albumCombo->setAutoCompletion( true );
-    setValueSection( albumCombo );
+    makeGenericComboSelection( true, qm );
 }
 
 
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeTitleSelection()
 {
-    KComboBox* titleLine = new KHistoryComboBox( true, m_controlFrame );
-    titleLine->setPalette( QApplication::palette() );
-    titleLine->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
-    titleLine->setEditable( true );
-
-    connect( titleLine, SIGNAL(currentIndexChanged( const QString& )),
-            this, SLOT(valueChanged(const QString&)) );
-    connect( titleLine, SIGNAL(editTextChanged( const QString& ) ),
-            SLOT(valueChanged(const QString&)) );
-
-    // we're not going to populate this combobox. It takes to long to query
-    // every track name.
-
-    titleLine->setEditText( m_gbias->filter().value );
-    setValueSection( titleLine );
+    // We,re not going to populate this. There tends to be too many titles.
+    makeGenericComboSelection( true, 0 );
 }
 
 
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
 {
-    KComboBox* genreCombo = new KComboBox( m_controlFrame );
-    genreCombo->setPalette( QApplication::palette() );
-    genreCombo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
-    genreCombo->setEditable( true );
-
-
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Genre );
-    BlockingQuery bq( qm );
-
-    bq.startQuery();
-
-    foreach( Meta::GenreList ts, bq.genres() )
-    {
-        foreach( Meta::GenrePtr t, ts )
-        {
-            genreCombo->addItem( t->name() );
-        }
-    }
-
-    connect( genreCombo, SIGNAL(currentIndexChanged( const QString& )),
-            SLOT(valueChanged(const QString&)) );
-    connect( genreCombo, SIGNAL(editTextChanged( const QString& ) ),
-            SLOT(valueChanged(const QString&)) );
-
-    genreCombo->setEditText( m_gbias->filter().value );
-    genreCombo->setCurrentIndex( 0 );
-    genreCombo->setAutoCompletion( true );
-    setValueSection( genreCombo );
+    makeGenericComboSelection( true, qm );
 }
 
 void
@@ -548,7 +512,6 @@ PlaylistBrowserNS::BiasGlobalWidget::makeYearSelection()
 
     QSpinBox* yearSpin = new QSpinBox( hLayout );
     yearSpin->setMinimum( 0 );
-    yearSpin->setMaximum( 3000 ); // TODO: update this next millenium.
 
     connect( yearSpin, SIGNAL(valueChanged( const QString& )),
             this, SLOT(valueChanged(const QString&)) );

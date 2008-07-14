@@ -126,7 +126,10 @@ namespace PlaylistBrowserNS
 
             void makeCompareSelection( QWidget* parent );
 
+            void makeGenericComboSelection( bool editable, QueryMaker* populateQuery );
+
             void makeArtistSelection();
+            void makeComposerSelection();
             void makeAlbumSelection();
             void makeTitleSelection();
             void makeGenreSelection();
