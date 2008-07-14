@@ -236,7 +236,6 @@ EngineController::play() //SLOT
     else
     {
         play( The::playlistModel()->activeTrack() );
-        emit trackChanged( The::playlistModel()->activeTrack() );
     }
 }
 
@@ -515,6 +514,7 @@ EngineController::slotTrackEnded()
             }
             m_media->setCurrentSource( m_currentTrack->playableUrl() );
             m_media->play();
+            emit trackChanged( m_currentTrack );
         }
     }
 }
