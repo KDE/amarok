@@ -226,15 +226,13 @@ void Mp3tunesService::enableHarmony()
 void Mp3tunesService::authenticate( const QString & uname, const QString & passwd )
 {
     DEBUG_BLOCK
-    QString username, password;
-
     if( m_loginWorker )
         return;
 
     if ( uname.isEmpty() || passwd.isEmpty() )
        return;
 
-    m_loginWorker = new Mp3tunesLoginWorker( m_locker, username, password);
+    m_loginWorker = new Mp3tunesLoginWorker( m_locker, uname, passwd);
     //debug() << "Connecting finishedLogin -> authentication complete.";
 
     connect( m_loginWorker, SIGNAL( finishedLogin( QString ) ), this,
