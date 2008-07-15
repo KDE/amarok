@@ -368,10 +368,10 @@ TagDialog::loadCover()
     ui->pixmap_cover->setMaximumSize( s, s );
 }
 
-
 void
-TagDialog::setFileNameSchemes() //SLOT
+TagDialog::guessFromFilename() //SLOT
 {
+    //was: setFilenameSchemes()
     FilenameLayoutDialog *dialog = new FilenameLayoutDialog(this);
     int dcode = dialog->exec();
     QString schemeFromDialog = QString();       //note to self: see where to put it from an old revision
@@ -390,6 +390,8 @@ TagDialog::setFileNameSchemes() //SLOT
     //probably not the best solution
     QStringList schemes;
     schemes += schemeFromDialog;
+    delete dialog;
+    
     if( schemeFromDialog == "" )
     {
         QMessageBox::warning(this, "No filename scheme to extract tags from", "Please choose a filename scheme to describe the layout of the filename(s) to extract the tags.");
@@ -398,51 +400,46 @@ TagDialog::setFileNameSchemes() //SLOT
     {
         TagGuesser::setSchemeStrings( schemes );
         debug() << "Sent scheme to TagGuesser, let's see what he does with it...";
-    }
     
+
     
-    delete dialog;
-}
+    //here starts the old guessFromFilename() code
+        int cur = 0;
 
+        TagGuesser guesser( m_currentTrack->playableUrl().path() );
+        if( !guesser.title().isNull() )
+            ui->kLineEdit_title->setText( guesser.title() );
 
-void
-TagDialog::guessFromFilename() //SLOT
-{
-     int cur = 0;
+        if( !guesser.artist().isNull() )
+        {
+            cur = ui->kComboBox_artist->currentIndex();
+            ui->kComboBox_artist->setItemText( cur, guesser.artist() );
+        }
 
-    TagGuesser guesser( m_currentTrack->playableUrl().path() );
-    if( !guesser.title().isNull() )
-        ui->kLineEdit_title->setText( guesser.title() );
+        if( !guesser.album().isNull() )
+        {
+            cur = ui->kComboBox_album->currentIndex();
+            ui->kComboBox_album->setItemText( cur, guesser.album() );
+        }
 
-    if( !guesser.artist().isNull() )
-    {
-        cur = ui->kComboBox_artist->currentIndex();
-        ui->kComboBox_artist->setItemText( cur, guesser.artist() );
-    }
+        if( !guesser.track().isNull() )
+            ui->qSpinBox_track->setValue( guesser.track().toInt() );
+        if( !guesser.comment().isNull() )
+            ui->kTextEdit_comment->setText( guesser.comment() );
+        if( !guesser.year().isNull() )
+            ui->qSpinBox_year->setValue( guesser.year().toInt() );
 
-    if( !guesser.album().isNull() )
-    {
-        cur = ui->kComboBox_album->currentIndex();
-        ui->kComboBox_album->setItemText( cur, guesser.album() );
-    }
+        if( !guesser.composer().isNull() )
+        {
+            cur = ui->kComboBox_composer->currentIndex();
+            ui->kComboBox_composer->setItemText( cur, guesser.composer() );
+        }
 
-    if( !guesser.track().isNull() )
-        ui->qSpinBox_track->setValue( guesser.track().toInt() );
-    if( !guesser.comment().isNull() )
-        ui->kTextEdit_comment->setText( guesser.comment() );
-    if( !guesser.year().isNull() )
-        ui->qSpinBox_year->setValue( guesser.year().toInt() );
-
-    if( !guesser.composer().isNull() )
-    {
-        cur = ui->kComboBox_composer->currentIndex();
-        ui->kComboBox_composer->setItemText( cur, guesser.composer() );
-    }
-
-    if( !guesser.genre().isNull() )
-    {
-        cur = ui->kComboBox_genre->currentIndex();
-        ui->kComboBox_genre->setItemText( cur, guesser.genre() );
+        if( !guesser.genre().isNull() )
+        {
+            cur = ui->kComboBox_genre->currentIndex();
+            ui->kComboBox_genre->setItemText( cur, guesser.genre() );
+        }
     }
 }
 
@@ -651,7 +648,6 @@ void TagDialog::init()
 #endif
 
     connect( ui->pushButton_guessTags, SIGNAL(clicked()), SLOT( guessFromFilename() ) );
-    connect( ui->pushButton_setFilenameSchemes, SIGNAL(clicked()), SLOT( setFileNameSchemes() ) );
 
     if( m_tracks.count() > 1 )
     {   //editing multiple tracks
@@ -891,13 +887,11 @@ void TagDialog::readTags()
     {
         ui->pushButton_musicbrainz->show();
         ui->pushButton_guessTags->show();
-        ui->pushButton_setFilenameSchemes->show();
     }
     else
     {
        ui->pushButton_musicbrainz->hide();
        ui->pushButton_guessTags->hide();
-       ui->pushButton_setFilenameSchemes->hide();
     }
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
@@ -950,7 +944,6 @@ TagDialog::setMultipleTracksMode()
 
     ui->pushButton_musicbrainz->hide();
     ui->pushButton_guessTags->hide();
-    ui->pushButton_setFilenameSchemes->hide();
 
     ui->locationLabel->hide();
     ui->kLineEdit_location->hide();
@@ -970,7 +963,6 @@ TagDialog::setSingleTrackMode()
 
     ui->pushButton_musicbrainz->show();
     ui->pushButton_guessTags->show();
-    ui->pushButton_setFilenameSchemes->show();
 
     ui->locationLabel->show();
     ui->kLineEdit_location->show();

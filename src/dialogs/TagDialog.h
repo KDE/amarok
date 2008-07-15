@@ -82,7 +82,6 @@ class TagDialog : public KDialog
 
         void musicbrainzQuery();
         void guessFromFilename();
-        void setFileNameSchemes();
         void queryDone( KTRMResultList results, QString error );
         void fillSelected( KTRMResult selected );
         void resetMusicbrainz();

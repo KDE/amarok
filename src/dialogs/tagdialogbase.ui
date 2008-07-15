@@ -18,7 +18,7 @@
      <item>
       <widget class="KTabWidget" name="kTabWidget" >
        <property name="currentIndex" >
-        <number>0</number>
+        <number>2</number>
        </property>
        <property name="currentPage" stdset="0" >
         <number>4</number>
@@ -28,12 +28,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>660</width>
-          <height>340</height>
+          <width>664</width>
+          <height>350</height>
          </rect>
         </property>
         <attribute name="title" >
-         <string>S&amp;&amp;ummary</string>
+         <string>S&amp;&amp;&amp;&amp;ummary</string>
         </attribute>
         <widget class="QWidget" name="layoutWidget" >
          <property name="geometry" >
@@ -138,12 +138,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>660</width>
-          <height>340</height>
+          <width>664</width>
+          <height>350</height>
          </rect>
         </property>
         <attribute name="title" >
-         <string>Ta&amp;&amp;gs</string>
+         <string>Ta&amp;&amp;&amp;&amp;gs</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_6" >
          <item>
@@ -422,29 +422,19 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="1" >
-            <widget class="QPushButton" name="pushButton_musicbrainz" >
-             <property name="text" >
-              <string>Fill-In Tags Using MusicBrain&amp;z</string>
-             </property>
-            </widget>
-           </item>
            <item row="8" column="1" >
             <layout class="QHBoxLayout" >
              <item>
-              <widget class="QPushButton" name="pushButton_guessTags" >
+              <widget class="QPushButton" name="pushButton_musicbrainz" >
                <property name="text" >
-                <string>Guess Tags From &amp;Filename</string>
+                <string>Fill-In Tags Using MusicBrain&amp;z</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_setFilenameSchemes" >
+              <widget class="QPushButton" name="pushButton_guessTags" >
                <property name="text" >
-                <string>Filename &amp;Schemes</string>
-               </property>
-               <property name="autoDefault" >
-                <bool>false</bool>
+                <string>Guess Tags From &amp;Filename</string>
                </property>
               </widget>
              </item>
@@ -459,12 +449,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>660</width>
-          <height>340</height>
+          <width>664</width>
+          <height>350</height>
          </rect>
         </property>
         <attribute name="title" >
-         <string>L&amp;&amp;yrics</string>
+         <string>L&amp;&amp;&amp;&amp;yrics</string>
         </attribute>
         <layout class="QHBoxLayout" >
          <item>
@@ -484,12 +474,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>660</width>
-          <height>340</height>
+          <width>664</width>
+          <height>350</height>
          </rect>
         </property>
         <attribute name="title" >
-         <string>St&amp;&amp;atistics</string>
+         <string>St&amp;&amp;&amp;&amp;atistics</string>
         </attribute>
         <widget class="QWidget" name="layoutWidget" >
          <property name="geometry" >
@@ -627,12 +617,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>660</width>
-          <height>340</height>
+          <width>664</width>
+          <height>350</height>
          </rect>
         </property>
         <attribute name="title" >
-         <string>La&amp;&amp;bels</string>
+         <string>La&amp;&amp;&amp;&amp;bels</string>
         </attribute>
         <widget class="QWidget" name="layoutWidget" >
          <property name="geometry" >
@@ -801,23 +791,23 @@
  <customwidgets>
   <customwidget>
    <class>KComboBox</class>
-   <extends>QComboBox</extends>
+   <extends></extends>
    <header>kcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
+   <extends></extends>
    <header>klineedit.h</header>
   </customwidget>
   <customwidget>
    <class>KTabWidget</class>
-   <extends>QTabWidget</extends>
+   <extends></extends>
    <header>ktabwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>KTextEdit</class>
-   <extends>QTextEdit</extends>
+   <extends></extends>
    <header>ktextedit.h</header>
   </customwidget>
   <customwidget>
@@ -837,9 +827,7 @@
   <tabstop>qSpinBox_track</tabstop>
   <tabstop>qSpinBox_year</tabstop>
   <tabstop>kTextEdit_comment</tabstop>
-  <tabstop>pushButton_musicbrainz</tabstop>
   <tabstop>pushButton_guessTags</tabstop>
-  <tabstop>pushButton_setFilenameSchemes</tabstop>
   <tabstop>kTextEdit_lyrics</tabstop>
   <tabstop>qSpinBox_score</tabstop>
   <tabstop>kComboBox_rating</tabstop>
