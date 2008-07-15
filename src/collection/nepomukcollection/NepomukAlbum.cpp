@@ -17,18 +17,23 @@
 */
 
 #include "NepomukAlbum.h"
-#include "NepomukArtist.h"
 
+#include "NepomukArtist.h"
+#include "NepomukCollection.h"
+
+#include "BlockingQuery.h"
 #include "Meta.h"
 
 #include <QString>
 
 using namespace Meta;
 
-NepomukAlbum::NepomukAlbum( const QString &name, const QString &artist )
+NepomukAlbum::NepomukAlbum( NepomukCollection *collection, const QString &name, const QString &artist )
         : Album()
+        , m_collection( collection )
         , m_name( name )
         , m_artist( artist )
+        , m_tracksLoaded( false )
 {
 }
 
@@ -47,7 +52,23 @@ NepomukAlbum::prettyName() const
 TrackList
 NepomukAlbum::tracks()
 {
-    return TrackList();
+    if( m_tracksLoaded )
+    {
+        return m_tracks;
+    }
+    else if( m_collection )
+    {
+        QueryMaker *qm = m_collection->queryMaker();
+        qm->setQueryType( QueryMaker::Track );
+        addMatchTo( qm );
+        BlockingQuery bq( qm );
+        bq.startQuery();
+        m_tracks = bq.tracks( m_collection->collectionId() );
+        m_tracksLoaded = true;
+        return m_tracks;
+    }
+    else
+        return TrackList(); 
 }
 
 bool
@@ -65,5 +86,5 @@ NepomukAlbum::hasAlbumArtist() const
 ArtistPtr
 NepomukAlbum::albumArtist() const
 {
-    return ArtistPtr( new NepomukArtist( m_artist ) );
+    return ArtistPtr( new NepomukArtist( m_collection, m_artist ) );
 }

@@ -19,16 +19,19 @@
 #ifndef NEPOMUKALBUM_H_
 #define NEPOMUKALBUM_H_
 
+#include "NepomukCollection.h"
+
 #include "Meta.h"
 
 #include <QString>
 
 namespace Meta
 {
+
 class NepomukAlbum : public Album
 {
     public:
-        NepomukAlbum( const QString &name, const QString &artist );
+        NepomukAlbum( NepomukCollection *collection, const QString &name, const QString &artist );
         virtual ~NepomukAlbum() {};
 
         virtual QString name() const;
@@ -43,8 +46,11 @@ class NepomukAlbum : public Album
 
 
     private:
+        NepomukCollection *m_collection;
+        TrackList m_tracks;
         QString m_name;
         QString m_artist;
+        bool m_tracksLoaded;
 };
 
 }

@@ -19,6 +19,8 @@
 #ifndef NEPOMUKARTIST_H_
 #define NEPOMUKARTIST_H_
 
+#include "NepomukCollection.h"
+
 #include "Meta.h"
 
 namespace Meta
@@ -27,7 +29,7 @@ namespace Meta
 class NepomukArtist : public Artist
 {
     public:
-        NepomukArtist( const QString &name );
+        NepomukArtist( NepomukCollection *collection, const QString &name );
         virtual ~NepomukArtist() {};
 
         virtual QString name() const;
@@ -39,7 +41,10 @@ class NepomukArtist : public Artist
         virtual AlbumList albums();
 
     private:
+        NepomukCollection *m_collection;
         QString m_name;
+        AlbumList m_albums;
+        bool m_albumsLoaded;
         mutable QString m_sortName;
 };
 

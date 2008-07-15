@@ -147,8 +147,9 @@ QueryMaker*
 NepomukQueryMaker::setQueryType( QueryType type )
 {
     queryType = type;
-    switch( type ) {
-    case QueryMaker::Track:    
+    switch( type )
+    {
+    case QueryMaker::Track:
         debug() << "startTrackQuery()" << endl;
         queryType  = Track;
     
@@ -179,6 +180,8 @@ NepomukQueryMaker::setQueryType( QueryType type )
     case QueryMaker::Custom:
         debug() << "startCustomQuery()" << endl;
         return this;
+     default:
+        return this;       
     }
 }
 
@@ -533,7 +536,7 @@ NepomukQueryMaker::doQuery(const QString &query)
             while( it.next() ) 
             {
                 Soprano::Node node = it.binding( "artist" ) ;
-                al.append( *(new Meta::ArtistPtr(new NepomukArtist(node.toString()))) );
+                al.append( *(new Meta::ArtistPtr(new NepomukArtist( m_collection, node.toString()))) );
             }
             emitProperResult ( ArtistPtr, al );
             
@@ -549,7 +552,7 @@ NepomukQueryMaker::doQuery(const QString &query)
             {
                 QString artist =  it.binding( "artist" ).toString();
                 QString album =  it.binding( "album" ).toString();
-                al.append( *( new Meta::AlbumPtr( new NepomukAlbum( album, artist ) ) ) );
+                al.append( *( new Meta::AlbumPtr( new NepomukAlbum( m_collection, album, artist ) ) ) );
             }         
             emitProperResult ( AlbumPtr, al );
             

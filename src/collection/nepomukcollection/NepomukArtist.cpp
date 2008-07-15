@@ -18,6 +18,9 @@
 
 #include "NepomukArtist.h"
 
+#include "NepomukCollection.h"
+
+#include "BlockingQuery.h"
 #include "Meta.h"
 
 #include <QString>
@@ -25,9 +28,11 @@
 
 using namespace Meta;
 
-NepomukArtist::NepomukArtist( const QString &name )
+NepomukArtist::NepomukArtist( NepomukCollection *collection, const QString &name )
         : Artist()
+        , m_collection( collection )
         , m_name( name )
+        , m_albumsLoaded( false )
 {
 }
 
@@ -71,5 +76,23 @@ NepomukArtist::tracks()
 AlbumList
 NepomukArtist::albums()
 {
-    return AlbumList();
+    if( m_albumsLoaded )
+    {
+        return m_albums;
+    }
+    else if( m_collection )
+    {
+        QueryMaker *qm = m_collection->queryMaker();
+        qm->setQueryType( QueryMaker::Album );
+        addMatchTo( qm );
+        BlockingQuery bq( qm );
+        bq.startQuery();
+        m_albums = bq.albums( m_collection->collectionId() );
+        m_albumsLoaded = true;
+        return m_albums;
+    }
+    else
+    {
+        return AlbumList();
+    }
 }
