@@ -88,6 +88,7 @@ class IpodCollection : public Collection, public MemoryCollection
     Ipod::IpodHandler* handler() { return m_handler; }
 
     void updateTags( Meta::IpodTrack *track);
+    void writeDatabase();
     
  signals:
     void collectionReady();

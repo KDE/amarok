@@ -21,6 +21,7 @@
 #ifndef IPODMETA_H
 #define IPODMETA_H
 
+#include "Debug.h"
 #include "Meta.h"
 
 extern "C" {
@@ -104,6 +105,7 @@ class IpodTrack : public Meta::Track
 
         virtual int length() const;
 
+        void setFileSize( int newFileSize );
         virtual int filesize() const;
         virtual int sampleRate() const;
 
@@ -127,9 +129,9 @@ class IpodTrack : public Meta::Track
 
         virtual QString type() const;
 
-        virtual void beginMetaDataUpdate() {}    //read only
-        virtual void endMetaDataUpdate() {}      //read only
-        virtual void abortMetaDataUpdate() {}    //read only
+        virtual void beginMetaDataUpdate() { DEBUG_BLOCK }    //read only
+        virtual void endMetaDataUpdate();
+        virtual void abortMetaDataUpdate() { DEBUG_BLOCK }    //read only
 
         virtual void subscribe ( Observer *observer );
         virtual void unsubscribe ( Observer *observer );

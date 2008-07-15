@@ -748,6 +748,12 @@ IpodTrack::setLength( int length )
     m_length = length;
 }
 
+void
+IpodTrack::endMetaDataUpdate()
+{
+    m_collection->writeDatabase();
+}
+
 //IpodArtist
 
 IpodArtist::IpodArtist( const QString &name )

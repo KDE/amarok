@@ -267,9 +267,13 @@ IpodCollection::updateTags( Meta::IpodTrack *track)
     debug() << "Running updateTrackInDB...";
 
     m_handler->updateTrackInDB( trackUrl, Meta::TrackPtr::staticCast( trackPtr ), track->getIpodTrack() );
+    
+}
+
+void
+IpodCollection::writeDatabase()
+{
     m_handler->writeITunesDB( false );
-    
-    
 }
 
 IpodCollection::~IpodCollection()
