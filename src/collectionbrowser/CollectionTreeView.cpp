@@ -54,6 +54,8 @@
 
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : QTreeView( parent )
+    , m_filterModel( 0 )
+    , m_treeModel( 0 )
     , m_pd( 0 )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
@@ -74,10 +76,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     //setAnimated( true );
     setAlternatingRowColors( true );
-
-    m_treeModel = 0;
-    m_filterModel = 0;
-
 
     //transparency
     /*QPalette p = palette();
@@ -123,6 +121,8 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
 
 CollectionTreeView::~CollectionTreeView()
 {
+    DEBUG_BLOCK
+
     //we don't know what collection this is as this class is used with many different collections...
     //KConfigGroup config = Amarok::config( "Collection Browser" );
     //config.writeEntry( "TreeCategory", m_treeModel->levels() );
