@@ -328,6 +328,19 @@ NepomukTrack::finishedPlaying( double playedFraction )
     statsThread->start( QThread::LowPriority );
 }
 
+
+QString
+NepomukTrack::cachedLyrics() const
+{
+    return m_nepores.property( QUrl( "http://amarok.kde.org/metadata/1.0/track#lyrics" ) ).toString();
+}
+
+void
+NepomukTrack::setCachedLyrics ( const QString& value )
+{
+    m_nepores.setProperty( QUrl( "http://amarok.kde.org/metadata/1.0/track#lyrics" ), value );
+}
+
 void
 NepomukTrack::writeStatistics()
 {
@@ -398,3 +411,4 @@ NepomukTrack::setResource ( const Nepomuk::Resource& value )
 {
     m_nepores = value;
 }
+

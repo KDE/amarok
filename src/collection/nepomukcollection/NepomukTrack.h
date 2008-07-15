@@ -89,6 +89,8 @@ class NepomukTrack : public Track
         virtual QString type() const;
 
         virtual void finishedPlaying( double playedFraction );
+        virtual void setCachedLyrics ( const QString& value );
+        virtual QString cachedLyrics() const;
 
     // for use in nepomuk plugin only
 
@@ -101,9 +103,6 @@ class NepomukTrack : public Track
 
          Nepomuk::Resource& resource();
          void setResource ( const Nepomuk::Resource& value );
-    
-    
-    
 
     private:
         NepomukCollection *m_collection;
