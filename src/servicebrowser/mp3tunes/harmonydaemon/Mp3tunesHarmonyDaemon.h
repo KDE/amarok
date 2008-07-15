@@ -102,20 +102,6 @@ class Mp3tunesHarmonyDaemon : public KApplication
     ~Mp3tunesHarmonyDaemon();
 
     /**
-     * Determines if the daemon is currently running.
-     * @return true if the daemon is running.
-     *         false if the daemon is not running.
-     */
-    bool daemonRunning();
-
-    /**
-     * Stops the daemon if it is running.
-     * @return true if the daemon is stopped OR if the daemon was stopped
-     *         false if the stopping the daemon failed
-     */
-    bool stopDaemon();
-
-    /**
      * Stats the daemon by intiating the connection Harmony connection.
      */
     int run();
@@ -141,14 +127,14 @@ class Mp3tunesHarmonyDaemon : public KApplication
     /*
      * Used by the static callbacks
      * DO NOT CALL THESE METHODS
-     *
+     */
     void emitError();
     void emitWaitingForEmail();
     void emitWaitingForPin();
     void emitConnected();
     void emitDisconnected();
     void emitDownloadReady( const Mp3tunesHarmonyDownload &download );
-    void emitDownloadPending( const Mp3tunesHarmonyDownload &download );*/
+    void emitDownloadPending( const Mp3tunesHarmonyDownload &download );
 
   signals:
       /* The actual signals that get emitted */
@@ -184,6 +170,20 @@ class Mp3tunesHarmonyDaemon : public KApplication
      * Returns the latest error message.
      */
     QString error() const;
+
+    /**
+     * Determines if the daemon is currently running.
+     * @return true if the daemon is running.
+     *         false if the daemon is not running.
+     */
+    bool daemonRunning();
+
+    /**
+     * Stops the daemon if it is running.
+     * @return true if the daemon is stopped OR if the daemon was stopped
+     *         false if the stopping the daemon failed
+     */
+    bool stopDaemon();
 
   private:
 

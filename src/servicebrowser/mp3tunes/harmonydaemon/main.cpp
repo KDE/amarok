@@ -17,8 +17,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#ifndef DEFINE_HARMONY
+#define DEFINE_HARMONY
+#endif
 #include "Mp3tunesHarmonyDaemon.h"
-
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
@@ -58,13 +60,10 @@ int main( int argc, char *argv[] )
     }
 
     if( email.isEmpty() && pin.isEmpty() )
-    {
-        Mp3tunesHarmonyDaemon daemon( ident );
-        return daemon.run();
-    } else {
-        Mp3tunesHarmonyDaemon daemon( ident, email, pin );
-        return daemon.run();
-    }
+        theDaemon = new Mp3tunesHarmonyDaemon( ident );
+    else
+        theDaemon = new Mp3tunesHarmonyDaemon( ident, email, pin );
+    return theDaemon->run();
 }
 
 
