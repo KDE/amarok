@@ -27,6 +27,7 @@
 #include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
 #include "meta/OrganiseCapability.h"
+#include "meta/UpdateCapability.h"
 #include "MetaUtility.h"
 #include "ScriptManager.h"
 #include "servicebrowser/lastfm/SimilarArtistsAction.h"
@@ -93,6 +94,21 @@ class OrganiseCapabilityImpl : public Meta::OrganiseCapability
                 m_track->sqlCollection()->query( sql );
             }
         }
+
+    private:
+        KSharedPtr<SqlTrack> m_track;
+};
+
+class UpdateCapabilitySql : public Meta::UpdateCapability
+{
+    Q_OBJECT
+    public:
+        UpdateCapabilitySql( SqlTrack *track )
+    : Meta::UpdateCapability()
+                , m_track( track ) {}
+
+        virtual void collectionUpdated() const { m_track->collection()->collectionUpdated(); }
+
 
     private:
         KSharedPtr<SqlTrack> m_track;
@@ -647,6 +663,8 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
         case Meta::Capability::CustomActions:
         case Meta::Capability::Organisable:
             return true;
+        case Meta::Capability::Updatable:
+            return true;
 
         default:
             return false;
@@ -675,6 +693,9 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
         {
             return new OrganiseCapabilityImpl( this );
         }
+
+        case Meta::Capability::Updatable:
+            return new UpdateCapabilitySql( this );
 
         default:
             return 0;
