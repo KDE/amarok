@@ -91,6 +91,8 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     setPalette( p );*/
 
+    setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
+
     The::paletteHandler()->updateTreeView( this );
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
