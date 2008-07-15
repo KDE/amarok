@@ -76,6 +76,10 @@ VERSION 2.0
       integration and distribution of community created services. The scripted
       service can be started and stopped from the service manager. Also add 2 
       simple demo scripts.
+    * Playlist Framework: The Playlist Browser can now contain
+      Playlists/Podcasts/Streams from any mediadevice/service/collection in
+      addition to local files. Playlists are accessible by any Amarok subsystem
+      and scripts.
 
   CHANGES:
     * The context view was reimplemented with Plasma technology from KDE.
@@ -92,6 +96,7 @@ VERSION 2.0
       seamlessly integrated with the rest of Amarok, and offering a number of
       benefits such as propper filtering and sorting, automatic downloads and
       caching of albums cover.
+    * Podcast fetching uses the new QXmlStreamReader with incremental parsing.
 
 
 ==BEGIN Qt 4.4 / KDE 4.1 DEPENDENCY==
