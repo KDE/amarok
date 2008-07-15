@@ -494,9 +494,6 @@ IpodTrack::setAlbum( const QString &newAlbum )
 
     m_collection->updateTags( this );
 
-    // hack to force refresh of collection in treeview
-    m_collection->collectionUpdated();
-
 }
 
 void
@@ -545,9 +542,6 @@ IpodTrack::setArtist( const QString &newArtist )
 
     m_collection->updateTags( this );
 
-    // hack to force refresh of collection in treeview
-    m_collection->collectionUpdated();
-
 }
 
 void
@@ -594,9 +588,6 @@ IpodTrack::setGenre( const QString &newGenre )
     // Also update info in ipod's database
 
     m_collection->updateTags( this );
-
-    // hack to force refresh of collection in treeview
-    m_collection->collectionUpdated();
 
 }
 
@@ -645,9 +636,6 @@ IpodTrack::setComposer( const QString &newComposer )
 
     m_collection->updateTags( this );
 
-    // hack to force refresh of collection in treeview
-    m_collection->collectionUpdated();
-
 }
 
 void
@@ -694,9 +682,6 @@ IpodTrack::setYear( const QString &newYear )
     // Also update info in ipod's database
 
     m_collection->updateTags( this );
-
-    // hack to force refresh of collection in treeview
-    m_collection->collectionUpdated();
 
 }
 
@@ -752,6 +737,8 @@ void
 IpodTrack::endMetaDataUpdate()
 {
     m_collection->writeDatabase();
+    // hack to force refresh of collection in treeview
+    m_collection->collectionUpdated();
 }
 
 //IpodArtist
