@@ -53,6 +53,14 @@ Dynamic::BiasedPlaylist::BiasedPlaylist(
     setTitle( title );
 }
 
+void
+Dynamic::BiasedPlaylist::requestAbort()
+{
+    if( m_solver )
+        m_solver->requestAbort();
+    m_solverLoop.exit( -1 );
+}
+
 
 void
 Dynamic::BiasedPlaylist::setContext( Meta::TrackList context )
@@ -114,7 +122,9 @@ Dynamic::BiasedPlaylist::getTrack()
             if( m_context.isEmpty() )
                 getContext();
             startSolver( true );
-            m_solverLoop.exec();
+            int r = m_solverLoop.exec();
+            if( r == -1 )
+                return Meta::TrackPtr();
         }
 
         m_context = m_buffer;
@@ -160,12 +170,17 @@ Dynamic::BiasedPlaylist::biases() const
 void
 Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
 {
+    bool success;
     The::statusBar()->endProgressOperation( m_solver );
     m_backbuffer = m_solver->solution();
+    success = m_solver->success();
     ThreadWeaver::Weaver::instance()->dequeue( job );
     job->deleteLater();
     m_solver = 0;
-    m_solverLoop.exit();
+    if( success )
+        m_solverLoop.exit(0);
+    else
+        m_solverLoop.exit(-1);
 }
 
 void

@@ -23,6 +23,8 @@
 #include "meta/Meta.h"
 #include "Debug.h"
 
+#include <QObject>
+
 namespace Playlist {
 
 class Model;
@@ -34,7 +36,7 @@ class Model;
  * became very confusing due to random mode and dynamic playlists requiring complicated
  * nested if statements. This should prevent that.
  */
-    class TrackNavigator
+    class TrackNavigator : public QObject
     {
         public:
             TrackNavigator( Model* model ) : m_playlistModel( model ) { m_playlistChanged = true; }

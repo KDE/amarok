@@ -26,6 +26,8 @@
 #include "Meta.h"
 #include "PlaylistModel.h"
 
+#include <QMutexLocker>
+
 
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Dynamic::DynamicPlaylistPtr p )
     : TrackNavigator(m), m_playlist(p)
@@ -43,6 +45,9 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Dynamic::Dynam
 
 Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
 {
+    m_playlist->requestAbort();
+    QMutexLocker locker( &m_mutex );
+
     int activeRow = m_playlistModel->activeRow();
     int lim = qMin( m_playlist->previousCount() + 1, m_playlistModel->rowCount() );
     if( activeRow >= 0 )
@@ -135,6 +140,9 @@ Playlist::DynamicTrackNavigator::activeRowExplicitlyChanged( int from, int to )
 void
 Playlist::DynamicTrackNavigator::repopulate()
 {
+    if( !m_mutex.tryLock() )
+        return;
+
     int start = m_playlistModel->activeRow() + 1;
     if( start < 0 )
         start = 0;
@@ -145,6 +153,8 @@ Playlist::DynamicTrackNavigator::repopulate()
 
     m_playlist->recalculate();
     appendUpcoming();
+
+    m_mutex.unlock();
 }
 
 void

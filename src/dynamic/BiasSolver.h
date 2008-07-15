@@ -45,6 +45,8 @@ namespace Dynamic
                     Meta::TrackList context = Meta::TrackList() );
 
             Meta::TrackList solution();
+            void requestAbort();
+            bool success() const;
 
         protected:
             void run();
@@ -54,14 +56,13 @@ namespace Dynamic
 
 
         private:
-            void initialize();
             void iterate();
 
             double energy();
             double recalculateEnergy( Meta::TrackPtr mutation, int mutationPos );
 
 
-            void generateInitialPlaylist();
+            bool generateInitialPlaylist(); //! returns true if the initial is known to be optimal
             Meta::TrackPtr getMutation();
 
             QList<Bias*>  m_biases;     //! current energy for the whole system
@@ -74,6 +75,8 @@ namespace Dynamic
             Meta::TrackList m_context;  //! tracks that precede the playlist
 
             RandomPlaylist* m_mutationSource;
+            
+            bool m_abortRequested;
 
             static const int    ITERATION_LIMIT; //! give up after this many iterations
             static const double INITIAL_TEMPERATURE;

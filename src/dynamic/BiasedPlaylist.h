@@ -49,6 +49,8 @@ namespace Dynamic
             QList<Bias*>& biases();
             const QList<Bias*>& biases() const;
 
+            void requestAbort();
+
         public slots:
             virtual void recalculate();
 

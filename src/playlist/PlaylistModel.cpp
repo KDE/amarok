@@ -134,7 +134,8 @@ Playlist::Model::~Model()
         }
         The::playlistManager()->exportPlaylist( list, defaultPlaylistPath() );
     }
-    delete m_advancer;
+
+    m_advancer->deleteLater();
 }
 
 
@@ -511,7 +512,7 @@ Playlist::Model::playlistModeChanged()
 {
     DEBUG_BLOCK
 
-    delete m_advancer;
+    m_advancer->deleteLater();
 
     int options = Playlist::StandardPlayback;
 

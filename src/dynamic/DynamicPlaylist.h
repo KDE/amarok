@@ -54,6 +54,8 @@ class DynamicPlaylist : public QObject, public QSharedData
         void setUpcomingCount( int );
         void setPreviousCount( int );
 
+        virtual void requestAbort() {}
+
     public slots:
         virtual void recalculate();
 

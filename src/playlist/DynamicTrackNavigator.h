@@ -26,12 +26,14 @@
 #include "PlaylistModel.h"
 #include "TrackNavigator.h"
 
+#include <QMutex>
+
 
 namespace Playlist {
 
 class Model;
 
-    class DynamicTrackNavigator : public QObject, public TrackNavigator
+    class DynamicTrackNavigator : public TrackNavigator
     {
         Q_OBJECT
 
@@ -54,9 +56,12 @@ class Model;
             void markPlayed();
 
             void removePlayed();
-
+            
+            bool m_abortRequested;
 
             Dynamic::DynamicPlaylistPtr m_playlist;
+
+            QMutex m_mutex;
     };
 }
 
