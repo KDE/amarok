@@ -60,7 +60,7 @@ namespace Amarok
 
     void AmarokEngineScript::PlayAudioCD()
     {
-        MainWindow::self()->playAudioCD();
+        The::mainWindow()->playAudioCD();
     }
 
     void AmarokEngineScript::Seek( int ms )

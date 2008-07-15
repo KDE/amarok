@@ -110,7 +110,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
 }
 
 TagDialog::TagDialog( QueryMaker *qm )
-    :KDialog( MainWindow::self() )
+    :KDialog( The::mainWindow() )
     , m_currentCover()
     , m_tracks()
     , m_currentTrack()

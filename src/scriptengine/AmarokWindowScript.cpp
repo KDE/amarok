@@ -33,8 +33,8 @@ namespace Amarok
     AmarokWindowScript::AmarokWindowScript( QScriptEngine* ScriptEngine, QList<QObject*>* guiPtrList  )
     : QObject( kapp )
     {
-        m_ToolsMenu = MainWindow::self()->ToolsMenu();
-        m_SettingsMenu = MainWindow::self()->SettingsMenu();
+        m_ToolsMenu = The::mainWindow()->ToolsMenu();
+        m_SettingsMenu = The::mainWindow()->SettingsMenu();
         m_ScriptEngine = ScriptEngine;
         m_guiPtrList = guiPtrList;
     }
@@ -50,7 +50,7 @@ namespace Amarok
         KActionCollection* const ac = actionCollection();
         if ( !ac->action( title ) )
         {
-            KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, MainWindow::self() );
+            KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, The::mainWindow() );
             ac->addAction( title, action );
             m_ToolsMenu->addAction( ac->action( title ) );
             m_ToolsMenu->addAction( action );
@@ -76,7 +76,7 @@ namespace Amarok
         KActionCollection* const ac = actionCollection();
         if ( !ac->action( title ) )
         {
-            KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, MainWindow::self() );
+            KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, The::mainWindow() );
             ac->addAction( title, action );
             m_SettingsMenu->addAction( ac->action( title ) );
             m_SettingsMenu->addAction( action );

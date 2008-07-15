@@ -45,7 +45,7 @@ void ShowInServiceAction::slotTriggered()
     if ( m_service == 0 )
         return;
 
-    MainWindow::self()->showBrowser( "Internet" );
+    The::mainWindow()->showBrowser( "Internet" );
     m_service->setFilter( QString( "artist:\"%1\"" ).arg( m_track->artist()->prettyName() ) );
     m_service->sortByArtistAlbum();
     ServiceBrowser::instance()->showService( m_service->name() );

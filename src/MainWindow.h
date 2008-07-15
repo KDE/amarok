@@ -23,6 +23,7 @@
 
 class ContextWidget;
 class MainToolbar;
+class MainWindow;
 class MediaBrowser;
 class PlaylistFileProvider;
 class SearchWidget;
@@ -39,10 +40,13 @@ namespace Context {
 }
 
 class KMenu;
-
 class QMenuBar;
 class QSplitter;
 class QTimer;
+
+namespace The {
+        AMAROK_EXPORT MainWindow* mainWindow();
+}
 
 /**
   * @class MainWindow
@@ -52,6 +56,8 @@ class QTimer;
   */
 class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 {
+    friend MainWindow* The::mainWindow();
+
     Q_OBJECT
 
     public:
@@ -66,9 +72,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 
         //takes into account minimized, multiple desktops, etc.
         bool isReallyShown() const;
-
-        //instance is declared in KXMLGUI
-        static MainWindow *self() { return s_instance; }
 
         void activate();
 
@@ -173,3 +176,4 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 
 
 #endif //AMAROK_PLAYLISTWINDOW_H
+

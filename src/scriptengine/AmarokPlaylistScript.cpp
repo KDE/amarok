@@ -104,7 +104,7 @@ namespace Amarok
 
     void AmarokPlaylistScript::togglePlaylist()
     {
-        MainWindow::self()->showHide();
+        The::mainWindow()->showHide();
     }
 
     QStringList AmarokPlaylistScript::filenames()

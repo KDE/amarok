@@ -60,7 +60,7 @@ WidgetBackgroundPainter::getBackground( const QString name, int globalAreaX , in
 
     //get global offset of the logical background image
 
-    QPoint backgroundGlobalTopLeft = MainWindow::self()->globalBackgroundOffset();
+    QPoint backgroundGlobalTopLeft = The::mainWindow()->globalBackgroundOffset();
 
     const int globalX = backgroundGlobalTopLeft.x();
     const int globalY = backgroundGlobalTopLeft.y();
@@ -75,7 +75,7 @@ WidgetBackgroundPainter::getBackground( const QString name, int globalAreaX , in
     {
         debug() << "cutout: " << cutoutX << ", " << cutoutY << ", " << width << ", " << height;
 
-        const QSize backgroundSize = MainWindow::self()->backgroundSize();
+        const QSize backgroundSize = The::mainWindow()->backgroundSize();
         const QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
         background = mainBackground.copy( cutoutX, cutoutY, width, height );
         QPixmapCache::insert( key, background );

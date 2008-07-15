@@ -32,7 +32,7 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &username, co
     resetVariables();
 
     connect( m_manager, SIGNAL( status( int, QVariant ) ), this, SLOT( statusChanged( int, QVariant ) ) );
-    connect( MainWindow::self(), SIGNAL(loveTrack(Meta::TrackPtr)), SLOT(slotTrackLoved(Meta::TrackPtr)));
+    connect( The::mainWindow(), SIGNAL(loveTrack(Meta::TrackPtr)), SLOT(slotTrackLoved(Meta::TrackPtr)));
 
     Scrobbler::Init init;
     init.username = username;

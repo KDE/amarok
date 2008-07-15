@@ -1059,3 +1059,8 @@ void MainWindow::paintEvent( QPaintEvent * e )
 }
 
 
+namespace The {
+    MainWindow* mainWindow() { return MainWindow::s_instance; }
+}
+
+

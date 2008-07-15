@@ -119,7 +119,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     addWidget(shortLongButton);
 
     KHBox *mainProgressBarBox = new KHBox( this );
-    mainProgressBarBox->setMaximumSize( MainWindow::self()->width(), height() );
+    mainProgressBarBox->setMaximumSize( The::mainWindow()->width(), height() );
     mainProgressBarBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     mainProgressBarBox->setObjectName( "progressBox" );
 

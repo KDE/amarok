@@ -27,7 +27,7 @@ MyDirOperator::MyDirOperator ( const KUrl &url, QWidget *parent )
     : KDirOperator( url, parent )
 {
      MyDirLister* dirlister = new MyDirLister( true );
-     dirlister->setMainWindow( MainWindow::self() );
+     dirlister->setMainWindow( The::mainWindow() );
      setDirLister( dirlister );
 }
 

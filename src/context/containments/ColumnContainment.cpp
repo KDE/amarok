@@ -268,8 +268,8 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
     /*int height = rect.height(); //?
     int width = rect.width();
 
-    int offsetX = MainWindow::self()->contextRectGlobal().x();
-    int offsetY = MainWindow::self()->contextRectGlobal().topLeft().y();
+    int offsetX = The::mainWindow()->contextRectGlobal().x();
+    int offsetY = The::mainWindow()->contextRectGlobal().topLeft().y();
 
     //debug() << "offset: " << offsetX << " x " << offsetY;
 
