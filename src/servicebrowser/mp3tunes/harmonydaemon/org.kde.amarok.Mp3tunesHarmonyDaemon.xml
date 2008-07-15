@@ -1,0 +1,25 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.kde.amarok.Mp3tunesHarmonyDaemon">
+    <signal name="waitingForEmail">
+    </signal>
+    <signal name="waitingForPin">
+    </signal>
+    <signal name="connected">
+    </signal>
+    <signal name="disconnected">
+    </signal>
+    <signal name="errorSignal">
+      <arg name="error" type="s" direction="out"/>
+    </signal>
+    <method name="pin">
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="email">
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="error">
+      <arg type="s" direction="out"/>
+    </method>
+  </interface>
+</node>

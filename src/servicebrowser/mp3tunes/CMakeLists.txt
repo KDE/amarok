@@ -1,6 +1,6 @@
 if(CURL_FOUND)
     if(LIBXML2_FOUND)
-        if(OPENSSL_FOUND)
+        if(OPENSSL_FOUND AND LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND)
             include_directories(
                 ../..
                 ../../plugin
@@ -9,15 +9,46 @@ if(CURL_FOUND)
                 ../../servicebrowser
                 ../../statusbar
                 ./libmp3tunes
-                #./harmonydaemon
+                ./harmonydaemon
                 ${OPENSSL_INCLUDE_DIR}
                 ${LIBXML2_INCLUDE_DIR}
                 ${CURL_INCLUDE_DIRS}
                 ${CMAKE_CURRENT_BINARY_DIR}/../..
                 ${KDE4_INCLUDE_DIR}
                 ${STRIGI_INCLUDE_DIR}
-                ${QT_INCLUDES} )
+                ${QT_INCLUDES}
+                ${GLIB2_INCLUDE_DIR}
+                ${GOBJECT_INCLUDE_DIR}
+                ${LOUDMOUTH_INCLUDE_DIR}
+            )
 
+########### next target ###############
+            set(amarok_service_mp3tunes_harmony_PART_SRCS
+                harmonydaemon/main.cpp
+                harmonydaemon/Mp3tunesHarmonyDaemon.cpp
+                libmp3tunes/locker.c
+                libmp3tunes/harmony.c
+            )
+            QT4_ADD_DBUS_ADAPTOR(amarok_service_mp3tunes_harmony_PART_SRCS
+                harmonydaemon/org.kde.amarok.Mp3tunesHarmonyDaemon.xml
+                harmonydaemon/Mp3tunesHarmonyDaemon.h
+                Mp3tunesHarmonyDaemon
+            )
+
+            kde4_add_executable(amarokmp3tunesharmonydaemon NOGUI
+                ${amarok_service_mp3tunes_harmony_PART_SRCS}
+            )
+
+            target_link_libraries(amarokmp3tunesharmonydaemon amaroklib crypto
+                ${KDE4_KDECORE_LIBS}
+                ${GLIB2_LIBRARIES}
+                ${GOBJECT_LIBRARIES}
+                ${LOUDMOUTH_LIBRARIES}
+                ${OPENSSL_LIBRARIES}
+                ${LIBXML2_LIBRARIES}
+                ${CURL_LIBRARIES}
+            )
+            install(TARGETS amarokmp3tunesharmonydaemon ${INSTALL_TARGETS_DEFAULT_ARGS} )
 ########### next target ###############
 
             set(amarok_service_mp3tunes_PART_SRCS
@@ -33,14 +64,17 @@ if(CURL_FOUND)
 
                 libmp3tunes/locker.c
             )
-            
 
             kde4_add_plugin(amarok_service_mp3tunes ${amarok_service_mp3tunes_PART_SRCS})
-#${OPENSSL_LIBRARIES} returns -lssl, not -lcrypto. we only need -lcrypto.
+            #${OPENSSL_LIBRARIES} returns -lssl, not -lcrypto. we only need -lcrypto.
             target_link_libraries(amarok_service_mp3tunes amaroklib crypto
-                ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS}
-                ${KDE4_THREADWEAVER_LIBRARIES} ${OPENSSL_LIBRARIES} ${LIBXML2_LIBRARIES}
-                ${CURL_LIBRARIES})
+                ${KDE4_KDECORE_LIBS}
+                ${KDE4_KDEUI_LIBS}
+                ${KDE4_THREADWEAVER_LIBRARIES}
+                ${OPENSSL_LIBRARIES}
+                ${LIBXML2_LIBRARIES}
+                ${CURL_LIBRARIES}
+            )
 
             install(TARGETS amarok_service_mp3tunes DESTINATION ${PLUGIN_INSTALL_DIR} )
 
@@ -67,7 +101,7 @@ if(CURL_FOUND)
             install( FILES amarok_service_mp3tunes.desktop DESTINATION ${SERVICES_INSTALL_DIR})
             install( FILES amarok_service_mp3tunes_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-        endif(OPENSSL_FOUND)
+        endif(OPENSSL_FOUND AND LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND)
     endif(LIBXML2_FOUND)
 endif(CURL_FOUND)
 
