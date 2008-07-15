@@ -22,6 +22,7 @@
 
 #include "IpodMeta.h"
 #include "IpodCollection.h"
+#include "handler/IpodHandler.h"
 
 #include "Debug.h"
 #include "SvgHandler.h"
@@ -31,6 +32,7 @@
 #include "context/popupdropper/PopupDropperAction.h"
 
 #include <KIcon>
+#include <KUrl>
 
 using namespace Meta;
 // Currently complaining about some vtable issue
@@ -296,10 +298,16 @@ IpodTrack::length() const
     return m_length;
 }
 
+void
+IpodTrack::setFileSize( int newFileSize )
+{
+    m_filesize = newFileSize;
+}
+
 int
 IpodTrack::filesize() const
 {
-    return 0;
+    return m_filesize;
 }
 
 int
@@ -482,7 +490,11 @@ IpodTrack::setAlbum( const QString &newAlbum )
     m_collection->setAlbumMap(  albumMap );
     m_collection->releaseLock();
 
-        // hack to force refresh of collection in treeview
+    // Also update info in ipod's database
+
+    m_collection->updateTags( this );
+
+    // hack to force refresh of collection in treeview
     m_collection->collectionUpdated();
 
 }
@@ -490,6 +502,7 @@ IpodTrack::setAlbum( const QString &newAlbum )
 void
 IpodTrack::setArtist( const QString &newArtist )
 {
+    DEBUG_BLOCK
 
     IpodArtistPtr artistPtr;
     IpodTrackPtr track( this );
@@ -527,6 +540,10 @@ IpodTrack::setArtist( const QString &newArtist )
     m_collection->acquireWriteLock();
     m_collection->setArtistMap(  artistMap );
     m_collection->releaseLock();
+
+    // Also update info in ipod's database
+
+    m_collection->updateTags( this );
 
     // hack to force refresh of collection in treeview
     m_collection->collectionUpdated();
@@ -574,7 +591,11 @@ IpodTrack::setGenre( const QString &newGenre )
     m_collection->setGenreMap(  genreMap );
     m_collection->releaseLock();
 
-        // hack to force refresh of collection in treeview
+    // Also update info in ipod's database
+
+    m_collection->updateTags( this );
+
+    // hack to force refresh of collection in treeview
     m_collection->collectionUpdated();
 
 }
@@ -620,7 +641,11 @@ IpodTrack::setComposer( const QString &newComposer )
     m_collection->setComposerMap(  composerMap );
     m_collection->releaseLock();
 
-        // hack to force refresh of collection in treeview
+    // Also update info in ipod's database
+
+    m_collection->updateTags( this );
+
+    // hack to force refresh of collection in treeview
     m_collection->collectionUpdated();
 
 }
@@ -666,7 +691,11 @@ IpodTrack::setYear( const QString &newYear )
     m_collection->setYearMap(  yearMap );
     m_collection->releaseLock();
 
-        // hack to force refresh of collection in treeview
+    // Also update info in ipod's database
+
+    m_collection->updateTags( this );
+
+    // hack to force refresh of collection in treeview
     m_collection->collectionUpdated();
 
 }

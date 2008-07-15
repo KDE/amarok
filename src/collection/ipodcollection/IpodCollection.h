@@ -84,6 +84,10 @@ class IpodCollection : public Collection, public MemoryCollection
     virtual QString prettyName() const;
 
     void collectionUpdated() { emit updated(); }
+
+    Ipod::IpodHandler* handler() { return m_handler; }
+
+    void updateTags( Meta::IpodTrack *track);
     
  signals:
     void collectionReady();

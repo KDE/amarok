@@ -34,6 +34,8 @@
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
 
+#include <KUrl>
+
 
 #include <QStringList>
 
@@ -256,7 +258,19 @@ IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
     Meta::IpodYearPtr::dynamicCast( track->year() )->remTrack( track );
 }
 
+void
+IpodCollection::updateTags( Meta::IpodTrack *track)
+{
+    Meta::IpodTrackPtr trackPtr( track );
+    KUrl trackUrl = KUrl::fromPath( trackPtr->url() );
 
+    debug() << "Running updateTrackInDB...";
+
+    m_handler->updateTrackInDB( trackUrl, Meta::TrackPtr::staticCast( trackPtr ), track->getIpodTrack() );
+    m_handler->writeITunesDB( false );
+    
+    
+}
 
 IpodCollection::~IpodCollection()
 {

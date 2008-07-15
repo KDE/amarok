@@ -90,7 +90,8 @@ struct PodcastInfo
        
 
        void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
-       void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track );
+       void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
+       void addTrackInDB( Itdb_Track *ipodtrack );
        bool removeDBTrack( Itdb_Track *track );
        QString           ipodPath( const QString &realPath );
        KUrl determineURLOnDevice( const Meta::TrackPtr &track );

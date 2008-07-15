@@ -326,7 +326,7 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 bool
 IpodHandler::writeITunesDB( bool threaded )
 {
-
+DEBUG_BLOCK
     if(!m_itdb)
         return false;
 
@@ -502,11 +502,17 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 void
 IpodHandler::insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track )
 {
-    updateTrackInDB( url, track );
+    Itdb_Track *ipodtrack = 0; // no track yet
+    updateTrackInDB( url, track, ipodtrack ); // get information from track
+
+    addTrackInDB( ipodtrack );
+
+        // add track to collection
+    addIpodTrackToCollection( ipodtrack );
 }
 
 void
-IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
+IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack )
 {
     DEBUG_BLOCK
     if( !m_itdb )
@@ -515,8 +521,10 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
     QString pathname = url.path();
 
     Itdb_Track *ipodtrack = 0;
-    if( !ipodtrack )
+    if( !existingIpodTrack )
         ipodtrack = itdb_track_new();
+    else
+        ipodtrack = existingIpodTrack;
 
     if( !ipodtrack )
     {
@@ -689,37 +697,42 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track )
     }
 */
 
-        itdb_track_add(m_itdb, ipodtrack, -1);
+
+
+
+}
+
+void
+IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
+{
+    itdb_track_add(m_itdb, ipodtrack, -1);
 
         // TODO: podcasts NYI
         // if(podcastInfo)
-        if( false )
+    if( false )
+    {
+        Itdb_Playlist *podcasts = itdb_playlist_podcasts(m_itdb);
+        if(!podcasts)
         {
-            Itdb_Playlist *podcasts = itdb_playlist_podcasts(m_itdb);
-            if(!podcasts)
-            {
-                podcasts = itdb_playlist_new("Podcasts", false);
-                itdb_playlist_add(m_itdb, podcasts, -1);
-                itdb_playlist_set_podcasts(podcasts);
-            }
-            itdb_playlist_add_track(podcasts, ipodtrack, -1);
+            podcasts = itdb_playlist_new("Podcasts", false);
+            itdb_playlist_add(m_itdb, podcasts, -1);
+            itdb_playlist_set_podcasts(podcasts);
         }
-        else
-        {
+        itdb_playlist_add_track(podcasts, ipodtrack, -1);
+    }
+    else
+    {
             // gtkpod 0.94 does not like if not all songs in the db are on the master playlist
             // but we try anyway
-            Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
-            if( !mpl )
-            {
-                mpl = itdb_playlist_new( "iPod", false );
-                itdb_playlist_add( m_itdb, mpl, -1 );
-                itdb_playlist_set_mpl( mpl );
-            }
-            itdb_playlist_add_track(mpl, ipodtrack, -1);
+        Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
+        if( !mpl )
+        {
+            mpl = itdb_playlist_new( "iPod", false );
+            itdb_playlist_add( m_itdb, mpl, -1 );
+            itdb_playlist_set_mpl( mpl );
         }
-
-    // add track to collection
-    addIpodTrackToCollection( ipodtrack );
+        itdb_playlist_add_track(mpl, ipodtrack, -1);
+    }
 }
 
 bool
@@ -951,6 +964,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     track->setDiscNumber( ipodtrack->cd_nr );
     track->setBitrate( ipodtrack->bitrate );
     track->setBpm( ipodtrack->BPM );
+    track->setFileSize( ipodtrack->size );
 
     QString path = QString( ipodtrack->ipod_path ).split( ":" ).join( "/" );
     path = m_mountPoint + path;

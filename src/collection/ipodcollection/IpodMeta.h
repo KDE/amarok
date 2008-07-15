@@ -192,6 +192,7 @@ class IpodTrack : public Meta::Track
         QString m_name;
         QString m_type;
         int m_bitrate;
+        int m_filesize;
         int m_length;
         int m_discNumber;
         int m_samplerate;
