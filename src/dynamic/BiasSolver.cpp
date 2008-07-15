@@ -229,7 +229,7 @@ Dynamic::BiasSolver::generateInitialPlaylist()
 
     // We are going to be computing a lot of track set intersections so we will
     // memoize to try and save time (if not memory).
-    QHash< QByteArray, QSet<Meta::TrackPtr> > memoizedIntersections;
+    QHash< QByteArray, QList<Meta::TrackPtr> > memoizedIntersections;
 
 
     const char REJECTED = 0xf;
@@ -273,82 +273,130 @@ Dynamic::BiasSolver::generateInitialPlaylist()
             indexes.swap( m, k );
         }
 
-        // The bit array represents the choice made at each branch.
-        QByteArray intersect( globalBiases.size(), 0x0 );
 
-        QSet<Meta::TrackPtr> S = U;
+        // The bit array represents the choice made at each branch.
+        QByteArray branches( globalBiases.size(), 0x0 );
+
+        QSet<Meta::TrackPtr> subtractions;
+        QSet<Meta::TrackPtr> S;
+
 
         for( int _i = 0; _i < globalBiases.size(); ++_i )
         {
             int i = indexes[_i];
 
-            // Decide whether we should 'accept' or 'reject' a bias.
+            const QSet<Meta::TrackPtr>& A = globalBiases[i]->propertySet();
+
             decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
+
+            // acceptance proposed
             if( decider < movingWeights[i] )
             {
-                intersect[i] = ACCEPTED;
-                if( !memoizedIntersections.contains(intersect) )
+                QSet<Meta::TrackPtr> A_ = A;
+                A_.subtract( subtractions );
+
+
+                // reject
+                if( A_.isEmpty() )
                 {
-                    memoizedIntersections[intersect] = S;
-                    memoizedIntersections[intersect].intersect( globalBiases[i]->propertySet() );
+                    debug() << "-";
+                    branches[i] = REJECTED;
+                    // A - subtractions = 0  =>  A & subtractions = subtractions
+                }
+                // accept
+                else
+                {
+                    debug() << "+";
+                    branches[i] = ACCEPTED;
+                    if( S.isEmpty() )
+                    {
+                        S = A_;
+                    }
+                    else
+                    {
+                        S.intersect( A_ );
+                    }
+
                 }
             }
+            // rejection proposed
             else
             {
-                intersect[i] = REJECTED;
-                if( !memoizedIntersections.contains(intersect) )
+                // there are no intersections so we have to test against U.
+                if( S.isEmpty() )
                 {
-                    memoizedIntersections[intersect] = S;
-                        memoizedIntersections[intersect].subtract( globalBiases[i]->propertySet() );
+                    QSet<Meta::TrackPtr> subtractions_ = subtractions;
+                    subtractions_.unite( A );
+                    // accept
+                    if( subtractions_.size() == U.size() )
+                    {
+                        branches[i] = ACCEPTED;
+                        S = A;
+                        S.subtract( subtractions );
+                    }
+                    // reject
+                    else
+                    {
+                        branches[i] = REJECTED;
+                        subtractions = subtractions_;
+                    }
+                }
+                else
+                {
+                    QSet<Meta::TrackPtr> S_ = S;
+                    S_.subtract( A );
+
+                    // accept
+                    if( S_.isEmpty() )
+                    {
+                        // S - A = 0  => S & A = S
+                        branches[i] = ACCEPTED;
+                    }
+                    // reject
+                    else
+                    {
+                        branches[i] = REJECTED;
+                        S = S_;
+                        subtractions.unite( A );
+                    }
                 }
             }
 
-            int newSize = memoizedIntersections[intersect].size();
-
-
-            // Now we have to make sure our decision doesn't land us with an
-            // empty set. If that's the case, we have to choose the other
-            // branch, even if it does defy the probability. (This is how we
-            // deal with infeasible systems.)
-
-            if( newSize == 0 )
-            {
-                if( intersect[i] == ACCEPTED )
-                    intersect[i] = REJECTED;
-                else
-                    intersect[i] = ACCEPTED;
-
-                // S intersect B = 0  =>      S - B = S
-                // and,
-                //      S - B = 0     =>  S intersect B = S
-                // thus...
-                if( !memoizedIntersections.contains(intersect) )
-                    memoizedIntersections[intersect] = S;
-            }
-
-            if( intersect[i] == ACCEPTED )
+            if( branches[i] == ACCEPTED )
                 movingWeights[i] = (movingWeights[i]*(double)(n+1)-1.0)/(double)n;
             else
                 movingWeights[i] = (movingWeights[i]*(double)(n+1))/(double)n;
-
-
-            S = memoizedIntersections[intersect];
         }
 
+        // Memoize to avoid touching U as much as possible, and to avoid
+        // duplicate toList conversions.
+        if( !memoizedIntersections.contains( branches ) )
+        {
+            if( S.isEmpty() )
+            {
+                S = U;
+                S.subtract( subtractions );
+            }
+
+            memoizedIntersections[branches] = S.toList();
+        }
+
+        const QList<Meta::TrackPtr>& R = memoizedIntersections[branches];
 
         // this should never happen
-        if( S.size() == 0 )
+        if( R.size() == 0 )
         {
             warning() << "BiasSolver assumption failed.";
             m_playlist.append( m_mutationSource->getTrack() );
             continue;
         }
 
+        //debug() << "|R| = " << R.size();
+
         // Now just convert the set we are left with into a list and choose a
         // random track from it.
-        QList<Meta::TrackPtr> SList = S.toList();
-        int choice = KRandom::random() % S.size();
-        m_playlist.append( SList[choice] );
+        int choice = KRandom::random() % R.size();
+        m_playlist.append( R[choice] );
     }
 
     return optimal;
