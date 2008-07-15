@@ -577,7 +577,7 @@ Mp3tunesLocker::convertToChar ( const QString &source ) const
 {
     QByteArray b = source.toAscii();
     const char *c_tok = b.constData();
-    char * ret = ( char * ) malloc ( strlen ( c_tok ) );
+    char * ret = ( char * ) malloc ( strlen ( c_tok ) + 1 );
     strcpy ( ret, c_tok );
     return ret;
 }
