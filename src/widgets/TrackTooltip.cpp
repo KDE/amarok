@@ -326,7 +326,6 @@ void TrackToolTip::hide()  // SLOT
 void TrackToolTip::slotTimer()  // SLOT
 {
     if( !Amarok::TrayIcon::instance()->geometry().contains( QCursor::pos() ) ) {
-        debug() << "Mouse pointer is leaving systray area. Hiding tooltip.";
         m_timer->stop();
         QTimer::singleShot( 1000, this, SLOT( hide() ) );
     }        
