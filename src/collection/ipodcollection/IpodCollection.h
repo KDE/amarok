@@ -23,6 +23,8 @@ extern "C" {
   #include <gpod/itdb.h>
 }
 
+#include "Debug.h"
+
 #include "Collection.h"
 #include "MemoryCollection.h"
 #include "IpodHandler.h"
@@ -83,7 +85,7 @@ class IpodCollection : public Collection, public MemoryCollection
     virtual QString collectionId() const;
     virtual QString prettyName() const;
 
-    void collectionUpdated() { emit updated(); }
+    virtual void collectionUpdated() { DEBUG_BLOCK emit updated(); }
 
     Ipod::IpodHandler* handler() { return m_handler; }
 

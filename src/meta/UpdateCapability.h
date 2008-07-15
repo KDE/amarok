@@ -1,5 +1,5 @@
 /* This file is part of the KDE project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2007 Alejandro Wainzinger <aikawarazuni@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -16,39 +16,25 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef AMAROK_CAPABILITY_H
-#define AMAROK_CAPABILITY_H
+#ifndef AMAROK_UPDATECAPABILITY_H
+#define AMAROK_UPDATECAPABILITY_H
 
 #include "amarok_export.h"
-
-#include <QObject>
+#include "meta/Capability.h"
 
 namespace Meta
 {
-    class AMAROK_EXPORT Capability : public QObject
+    class AMAROK_EXPORT UpdateCapability : public Meta::Capability
     {
         Q_OBJECT
-        Q_ENUMS( Type )
-
         public:
-            //add additional capabilities here
-            enum Type { Unknown = 0
-                        , Editable = 1
-                        , LastFm = 2
-                        , Buyable = 3
-                        , CustomActions = 4
-                        , EditablePlaylist = 5
-                        , MultiPlayable = 6
-                        , Organisable = 7
-                        , SourceInfo = 8
-                        , CurrentTrackActions = 9
-                        , StreamInfo = 10
-                        , Updatable = 11};
+            virtual ~UpdateCapability();
 
-            virtual ~Capability();
+            static Type capabilityInterfaceType() { return Meta::Capability::Updatable; }
+        // simply should emit track's collection's updated signal
+            virtual void collectionUpdated() const = 0;
 
     };
 }
-
 
 #endif

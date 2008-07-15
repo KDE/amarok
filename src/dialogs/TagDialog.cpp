@@ -35,6 +35,7 @@
 #include "TagGuesser.h"
 #include "trackpickerdialog.h"
 #include "ui_tagdialogbase.h"
+#include "UpdateCapability.h"
 
 #include <KApplication>
 #include <KComboBox>
@@ -55,6 +56,7 @@
 #include <QFile>
 #include <QLabel>
 #include <QLayout>
+#include <QMap>
 #include <QPair>
 #include <QPushButton>
 #include <QTimer>
@@ -1455,6 +1457,34 @@ TagDialog::saveTags()
             ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
         ec->endMetaDataUpdate();
     }
+
+    // build a map, such that at least one track represents a unique collection
+
+    QMap<QString, Meta::TrackPtr> collectionsToUpdateMap;
+
+    foreach( Meta::TrackPtr track, m_tracks )
+    {
+        Meta::UpdateCapability *uc = track->as<Meta::UpdateCapability>();
+        if( !uc )
+        {
+            continue;
+        }
+
+        QString collId = track->collection()->collectionId();
+        
+        if( !collectionsToUpdateMap.contains( collId ) )
+            collectionsToUpdateMap.insert( collId, track );
+    }
+
+    // use the representative tracks to send updated signals
+
+    foreach( Meta::TrackPtr track, collectionsToUpdateMap.values() )
+    {
+        Meta::UpdateCapability *uc = track->as<Meta::UpdateCapability>();
+
+        uc->collectionUpdated();
+    }
+    
     //TODO: port 2.0
     /*
     QMap<QString, QStringList>::ConstIterator endLabels( newLabels.constEnd() );

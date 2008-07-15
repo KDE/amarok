@@ -261,6 +261,7 @@ IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
 void
 IpodCollection::updateTags( Meta::IpodTrack *track)
 {
+    DEBUG_BLOCK
     Meta::IpodTrackPtr trackPtr( track );
     KUrl trackUrl = KUrl::fromPath( trackPtr->url() );
 

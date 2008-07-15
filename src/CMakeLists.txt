@@ -201,6 +201,7 @@ set(meta_SRCS
     meta/PlaylistFileSupport.cpp
     meta/SourceInfoCapability.cpp
     meta/StreamInfoCapability.cpp
+    meta/UpdateCapability.cpp
     meta/XSPFPlaylist.cpp
     meta/file/File.cpp
     meta/proxy/MetaProxy.cpp

@@ -28,6 +28,7 @@
 #include "SvgHandler.h"
 #include "meta/EditCapability.h"
 #include "meta/CustomActionsCapability.h"
+#include "meta/UpdateCapability.h"
 
 #include "context/popupdropper/PopupDropperAction.h"
 
@@ -127,6 +128,21 @@ class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability {
         QList< PopupDropperAction* > m_actions;
         IpodTrackPtr m_track;
 
+};
+
+class UpdateCapabilityIpod : public Meta::UpdateCapability
+{
+    Q_OBJECT
+    public:
+        UpdateCapabilityIpod( IpodTrack *track )
+    : Meta::UpdateCapability()
+                , m_track( track ) {}
+
+        virtual void collectionUpdated() const { m_track->collection()->collectionUpdated(); }
+
+
+    private:
+        KSharedPtr<IpodTrack> m_track;
 };
 
 
@@ -427,6 +443,8 @@ IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
             return true;
         case Meta::Capability::CustomActions:
             return true;
+        case Meta::Capability::Updatable:
+            return true;
 
         default:
             return false;
@@ -443,6 +461,8 @@ IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
             return new EditCapabilityIpod( this );
         case Meta::Capability::CustomActions:
             return new CustomActionsCapabilityIpod( this );
+        case Meta::Capability::Updatable:
+            return new UpdateCapabilityIpod( this );
 
         default:
             return 0;
@@ -490,10 +510,6 @@ IpodTrack::setAlbum( const QString &newAlbum )
     m_collection->setAlbumMap(  albumMap );
     m_collection->releaseLock();
 
-    // Also update info in ipod's database
-
-    m_collection->updateTags( this );
-
 }
 
 void
@@ -538,15 +554,12 @@ IpodTrack::setArtist( const QString &newArtist )
     m_collection->setArtistMap(  artistMap );
     m_collection->releaseLock();
 
-    // Also update info in ipod's database
-
-    m_collection->updateTags( this );
-
 }
 
 void
 IpodTrack::setGenre( const QString &newGenre )
 {
+    DEBUG_BLOCK
 
     IpodGenrePtr genrePtr;
     IpodTrackPtr track( this );
@@ -585,15 +598,12 @@ IpodTrack::setGenre( const QString &newGenre )
     m_collection->setGenreMap(  genreMap );
     m_collection->releaseLock();
 
-    // Also update info in ipod's database
-
-    m_collection->updateTags( this );
-
 }
 
 void
 IpodTrack::setComposer( const QString &newComposer )
 {
+    DEBUG_BLOCK
 
     IpodComposerPtr composerPtr;
     IpodTrackPtr track( this );
@@ -632,15 +642,12 @@ IpodTrack::setComposer( const QString &newComposer )
     m_collection->setComposerMap(  composerMap );
     m_collection->releaseLock();
 
-    // Also update info in ipod's database
-
-    m_collection->updateTags( this );
-
 }
 
 void
 IpodTrack::setYear( const QString &newYear )
 {
+    DEBUG_BLOCK
 
     IpodYearPtr yearPtr;
     IpodTrackPtr track( this );
@@ -678,10 +685,6 @@ IpodTrack::setYear( const QString &newYear )
     m_collection->acquireWriteLock();
     m_collection->setYearMap(  yearMap );
     m_collection->releaseLock();
-
-    // Also update info in ipod's database
-
-    m_collection->updateTags( this );
 
 }
 
@@ -736,9 +739,16 @@ IpodTrack::setLength( int length )
 void
 IpodTrack::endMetaDataUpdate()
 {
+    // Update info in ipod's database
+
+    m_collection->updateTags( this );
     m_collection->writeDatabase();
+    
     // hack to force refresh of collection in treeview
-    m_collection->collectionUpdated();
+    
+//    m_collection->collectionUpdated();
+
+    notifyObservers();
 }
 
 //IpodArtist
