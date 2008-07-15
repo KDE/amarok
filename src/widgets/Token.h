@@ -14,49 +14,28 @@
  * You should have received a copy of the GNU General Public License          *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
-#ifndef FILENAMELAYOUTWIDGET_H
-#define FILENAMELAYOUTWIDGET_H
+#ifndef TOKEN_H
+#define TOKEN_H
 
-#include "Token.h"
-
-#include <QFrame>
-#include <QHBoxLayout>
 #include <QLabel>
 
-class Token;
+#include "FilenameLayoutWidget.h"
 
-class FilenameLayoutWidget
-    : public QFrame
+class Token
+    : public QLabel
 {
     Q_OBJECT
-
     public:
-        FilenameLayoutWidget( QWidget *parent = 0 );
-        void addToken( QString text, int index = 0);
-
-        unsigned int getTokenCount();   //access for uint m_tokenCount
-        QString getParsableScheme();    //access for QString m_parsableScheme
-
-    protected:
-        void mouseMoveEvent( QMouseEvent *event );
-        void mousePressEvent( QMouseEvent *event );
-        void dragEnterEvent( QDragEnterEvent *event );
-        void dragMoveEvent( QDragMoveEvent *event );
-        void dropEvent( QDropEvent *event );
+        explicit Token( const QString &string, QWidget *parent = 0 );
+        QString getTokenString();
 
     private:
-        //void performDrag();
-        void performDrag( QMouseEvent *event );
-        void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
-        void generateParsableScheme();
+        void setTokenString(const QString &string );
 
-        QList< Token * > *tokenList;
-        QLabel *backText;
-        QHBoxLayout *layout;
-        
-        QPoint m_startPos;
-        unsigned int m_tokenCount;
-        QString m_parsableScheme;
+        unsigned int m_myCount;
+        QString m_tokenString;
+
+
 };
 
-#endif    //FILENAMELAYOUTWIDGET_H
+#endif //TOKEN_H

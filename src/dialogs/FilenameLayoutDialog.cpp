@@ -16,6 +16,12 @@
  ******************************************************************************/
 #include "FilenameLayoutDialog.h"
 
+#include "Amarok.h"
+#include "Debug.h"
+
+#include <KConfig>
+#include <KConfigGroup>
+
 #include <QGridLayout>
 #include <QPushButton>
 
@@ -32,6 +38,39 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
 
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
+    connect( this, SIGNAL( accepted() ),
+             this, SLOT( onAccept() ) );
+
+    //KConfig stuff:
+    int caseOptions = Amarok::config( "TagGuesser" ).readEntry( "Case options" ).toInt();
+    if( !caseOptions )
+        cbCase->setChecked( false );
+    else
+    {
+        cbCase->setChecked( true );
+        if( caseOptions == 1 )
+            rbAllLower->setChecked( true );
+        else if( caseOptions == 2 )
+            rbAllUpper->setChecked( true );
+        else if( caseOptions == 3 )
+            rbFirstLetter->setChecked( true );
+        else if( caseOptions == 4 )
+            rbTitleCase->setChecked( true );
+        else
+            debug() << "OUCH";
+    }
+    int whitespaceOptions = Amarok::config( "TagGuesser" ).readEntry( "Eliminate trailing spaces" ).toInt();
+    cbEliminateSpaces->setChecked( whitespaceOptions );
+    int underscoreOptions = Amarok::config( "TagGuesser" ).readEntry( "Replace underscores" ).toInt();
+    cbReplaceUnderscores->setChecked( underscoreOptions );
+}
+
+void
+FilenameLayoutDialog::onAccept()    //SLOT
+{
+    Amarok::config( "TagGuesser" ).writeEntry( "Case options", getCaseOptions() );
+    Amarok::config( "TagGuesser" ).writeEntry( "Eliminate trailing spaces", getWhitespaceOptions() );
+    Amarok::config( "TagGuesser" ).writeEntry( "Replace underscores", getUnderscoreOptions() );
 }
 
 QString
@@ -58,3 +97,46 @@ FilenameLayoutDialog::editStateEnable( bool checked )      //SLOT
         }
     }
 }
+
+int
+FilenameLayoutDialog::getCaseOptions()
+{
+    //Amarok::config( "TagGuesser" ).readEntry( "Filename schemes", QStringList() );
+    if( !cbCase->isChecked() )
+        return 0;
+    else
+    {
+        if( rbAllLower->isChecked() )
+            return 1;
+        else if( rbAllUpper->isChecked() )
+            return 2;
+        else if( rbFirstLetter->isChecked() )
+            return 3;
+        else if( rbTitleCase->isChecked() )
+            return 4;
+        else
+        {
+            debug() << "OUCH!";
+            return 99;
+        }
+    }
+}
+
+int
+FilenameLayoutDialog::getWhitespaceOptions()
+{
+    if( !cbEliminateSpaces->isChecked() )
+        return 0;
+    else
+        return 1;
+}
+
+int
+FilenameLayoutDialog::getUnderscoreOptions()
+{
+    if( !cbReplaceUnderscores->isChecked() )
+        return 0;
+    else
+        return 1;
+}
+

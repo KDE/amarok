@@ -392,7 +392,7 @@ TagDialog::guessFromFilename() //SLOT
     //probably not the best solution
     QStringList schemes;
     schemes += schemeFromDialog;
-    delete dialog;
+    
     
     if( schemeFromDialog == "" )
     {
@@ -402,13 +402,11 @@ TagDialog::guessFromFilename() //SLOT
     {
         TagGuesser::setSchemeStrings( schemes );
         debug() << "Sent scheme to TagGuesser, let's see what he does with it...";
-    
 
-    
     //here starts the old guessFromFilename() code
         int cur = 0;
 
-        TagGuesser guesser( m_currentTrack->playableUrl().path() );
+        TagGuesser guesser( m_currentTrack->playableUrl().path(), dialog );
         if( !guesser.title().isNull() )
             ui->kLineEdit_title->setText( guesser.title() );
 
@@ -443,6 +441,7 @@ TagDialog::guessFromFilename() //SLOT
             ui->kComboBox_genre->setItemText( cur, guesser.genre() );
         }
     }
+    delete dialog;
 }
 
 void

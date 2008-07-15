@@ -14,49 +14,43 @@
  * You should have received a copy of the GNU General Public License          *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
-#ifndef FILENAMELAYOUTWIDGET_H
-#define FILENAMELAYOUTWIDGET_H
-
 #include "Token.h"
+#include "Debug.h"
 
-#include <QFrame>
-#include <QHBoxLayout>
-#include <QLabel>
-
-class Token;
-
-class FilenameLayoutWidget
-    : public QFrame
+Token::Token( const QString &string, QWidget *parent )
+    : QLabel( parent )
 {
-    Q_OBJECT
+    m_myCount = qobject_cast< FilenameLayoutWidget * >( parent )->getTokenCount();
 
-    public:
-        FilenameLayoutWidget( QWidget *parent = 0 );
-        void addToken( QString text, int index = 0);
+    setText( string );
+    setTokenString( string );
+    setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
+    setStyleSheet( "Token {\
+        color: palette( Base );\
+        background-color: qlineargradient( x1: 0,\
+                                           y1: 0,\
+                                           x2: 1,\
+                                           y2: 1,\
+                                           stop: 0 white,\
+                                           stop: 0.4 gray,\
+                                           stop: 1 blue );\
+    }" );
 
-        unsigned int getTokenCount();   //access for uint m_tokenCount
-        QString getParsableScheme();    //access for QString m_parsableScheme
+    QFontMetrics metric( font() );
+    QSize size = metric.size( Qt::TextSingleLine, text() );
+    setMinimumSize( size + QSize( 4, 0 ) );
+}
 
-    protected:
-        void mouseMoveEvent( QMouseEvent *event );
-        void mousePressEvent( QMouseEvent *event );
-        void dragEnterEvent( QDragEnterEvent *event );
-        void dragMoveEvent( QDragMoveEvent *event );
-        void dropEvent( QDropEvent *event );
+void
+Token::setTokenString( const QString &string )
+{
+    m_tokenString = string;
+}
 
-    private:
-        //void performDrag();
-        void performDrag( QMouseEvent *event );
-        void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
-        void generateParsableScheme();
+QString
+Token::getTokenString()
+{
+    return m_tokenString;
+}
 
-        QList< Token * > *tokenList;
-        QLabel *backText;
-        QHBoxLayout *layout;
-        
-        QPoint m_startPos;
-        unsigned int m_tokenCount;
-        QString m_parsableScheme;
-};
 
-#endif    //FILENAMELAYOUTWIDGET_H

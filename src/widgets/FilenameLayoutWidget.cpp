@@ -310,42 +310,4 @@ FilenameLayoutWidget::getParsableScheme()
 }
 
 
-//starts implementation of Token : QLabel
-
-Token::Token( const QString &string, QWidget *parent )
-    : QLabel( parent )
-{
-    m_myCount = qobject_cast< FilenameLayoutWidget * >( parent )->getTokenCount();
-
-    setText( string );
-    setTokenString( string );
-    setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
-    setStyleSheet( "Token {\
-        color: palette( Base );\
-        background-color: qlineargradient( x1: 0,\
-                                           y1: 0,\
-                                           x2: 1,\
-                                           y2: 1,\
-                                           stop: 0 white,\
-                                           stop: 0.4 gray,\
-                                           stop: 1 blue );\
-    }" );
-
-    QFontMetrics metric( font() );
-    QSize size = metric.size( Qt::TextSingleLine, text() );
-    setMinimumSize( size + QSize( 4, 0 ) );
-}
-
-void
-Token::setTokenString( const QString &string )
-{
-    m_tokenString = string;
-}
-
-QString
-Token::getTokenString()
-{
-    return m_tokenString;
-}
-
 

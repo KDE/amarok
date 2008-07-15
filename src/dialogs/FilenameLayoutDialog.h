@@ -30,12 +30,17 @@ class FilenameLayoutDialog
     public:
         FilenameLayoutDialog( QWidget *parent = 0 );
         QString getParsableScheme();
+        int getCaseOptions();
+        int getWhitespaceOptions();
+        int getUnderscoreOptions();
 
     private:
         QList< QRadioButton * > caseEditRadioButtons;
+        
 
     private slots:
         void editStateEnable( bool checked );
+        void onAccept();
 };
 
 #endif    //FILENAMELAYOUTDIALOG_H

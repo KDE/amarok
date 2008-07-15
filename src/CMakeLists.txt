@@ -494,6 +494,7 @@ set(amaroklib_LIB_SRCS
     widgets/SidebarWidget.cpp
     widgets/SliderWidget.cpp
     widgets/TokenListWidget.cpp
+    widgets/Token.cpp
     widgets/TrackTooltip.cpp
     widgets/VolumeWidget.cpp
     widgets/hintlineedit.cpp

@@ -1,6 +1,7 @@
 /******************************************************************************
  * Copyright (c) 2003 Frerich Raabe <raabe@kde.org>                           *
  *           (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>        *
+ *           (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -215,10 +216,10 @@ TagGuesser::TagGuesser()
     loadSchemes(); 
 }
 
-TagGuesser::TagGuesser( const QString &absFileName )
+TagGuesser::TagGuesser( const QString &absFileName, FilenameLayoutDialog *dialog)
 {
     loadSchemes();
-    guess( absFileName );
+    guess( absFileName, dialog );
 }
 
 void TagGuesser::loadSchemes()      //note to self: this method should get its scheme from FilenameLayoutDialog, ideally instantiating it here and storing the result on accept()
@@ -230,9 +231,15 @@ void TagGuesser::loadSchemes()      //note to self: this method should get its s
         m_schemes += FileNameScheme( *it );
 }
 
-void TagGuesser::guess( const QString &absFileName )
+void TagGuesser::guess( const QString &absFileName, FilenameLayoutDialog *dialog )
 {
     m_title = m_artist = m_album = m_track = m_comment = m_year = m_composer = m_genre = QString();
+
+    int caseOptions = dialog->getCaseOptions();
+    int whitespaceOptions = dialog->getWhitespaceOptions();
+    int underscoreOptions = dialog->getUnderscoreOptions();
+
+    QString title, artist, album, track, comment, year, composer, genre;
 
     FileNameScheme::List::ConstIterator it = m_schemes.constBegin();
     FileNameScheme::List::ConstIterator end = m_schemes.constEnd();
@@ -240,20 +247,63 @@ void TagGuesser::guess( const QString &absFileName )
         const FileNameScheme schema( *it );
         if( schema.matches( absFileName ) ) {
             debug() <<"Schema used: " << " " << schema.pattern();
-            m_title = capitalizeWords( schema.title().replace( '_', " " ) ).trimmed();
-            m_artist = capitalizeWords( schema.artist().replace( '_', " " ) ).trimmed();
-            m_album = capitalizeWords( schema.album().replace( '_', " " ) ).trimmed();
-            m_track = schema.track().trimmed();
-            m_comment = schema.comment().replace( '_', " " ).trimmed();
-            m_year = schema.year().trimmed();
-            m_composer = capitalizeWords( schema.composer().replace( '_', " " ) ).trimmed();
-            m_genre = capitalizeWords( schema.genre().replace( '_', " " ) ).trimmed();
+            title = schema.title();
+            artist = schema.artist();
+            album = schema.album();
+            track = schema.track();
+            comment = schema.comment();
+            year = schema.year();
+            composer = schema.composer();
+            genre = schema.genre();
+
+            if( underscoreOptions )
+            {
+                title = title.replace( '_', " " );
+                artist = artist.replace( '_', " " );
+                album = album.replace( '_', " " );
+                comment = comment.replace( '_', " " );
+                composer = composer.replace( '_', " " );
+                genre = genre.replace( '_', " " );
+            }
+            if( whitespaceOptions )
+            {
+                title = title.trimmed();
+                artist = artist.trimmed();
+                album = album.trimmed();
+                track = track.trimmed();
+                comment = comment.trimmed();
+                year = year.trimmed();
+                composer = composer.trimmed();
+                genre = genre.trimmed();
+            }
+
+            //capitalizeWords stuff:
+            if( caseOptions )
+            {
+                title = capitalizeWords( title, caseOptions);
+                artist = capitalizeWords( artist, caseOptions);
+                album = capitalizeWords( album, caseOptions);
+                track = capitalizeWords( track, caseOptions);
+                comment = capitalizeWords( comment, caseOptions);
+                year = capitalizeWords( year, caseOptions);
+                composer = capitalizeWords( composer, caseOptions);
+                genre = capitalizeWords( genre, caseOptions);
+            }
+            
+            m_title = title;
+            m_artist = artist;
+            m_album = album;
+            m_track = track;
+            m_comment = comment;
+            m_year = year;
+            m_composer = composer;
+            m_genre = genre;
             break;
         }
     }
 }
 
-QString TagGuesser::capitalizeWords( const QString &s )
+QString TagGuesser::capitalizeWords( const QString &s, const int &caseOptions )     //TODO: implement different caseOptions
 {
     if( s.isEmpty() )
         return s;

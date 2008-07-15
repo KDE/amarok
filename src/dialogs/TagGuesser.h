@@ -1,6 +1,7 @@
 /******************************************************************************
  * Copyright (c) 2003 Frerich Raabe <raabe@kde.org>                           *
  *           (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>        *
+ *           (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -18,6 +19,8 @@
  
 #ifndef TAGGUESSER_H
 #define TAGGUESSER_H
+
+#include "FilenameLayoutDialog.h"
 
 #include <QRegExp>
 #include <QList>
@@ -69,9 +72,9 @@ class TagGuesser
         static void setSchemeStrings( const QStringList &schemes );
 
         TagGuesser();
-        TagGuesser( const QString &absFileName );
+        TagGuesser( const QString &absFileName, FilenameLayoutDialog *dialog );
 
-        void guess( const QString &absFileName );
+        void guess( const QString &absFileName, FilenameLayoutDialog *dialog );
 
         QString title() const { return m_title; }
         QString artist() const { return m_artist; }
@@ -84,7 +87,7 @@ class TagGuesser
 
     private:
         void loadSchemes();
-        QString capitalizeWords( const QString &s );
+        QString capitalizeWords( const QString &s, const int &caseOptions );
 
         FileNameScheme::List m_schemes;
         QString m_title;
