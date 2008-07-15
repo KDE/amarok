@@ -203,6 +203,11 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     setMinimumSize( qMax( 350, sz.width() ), qMax( 250, sz.height() ) );
     resize( sizeHint() );
 
+    // Center the dialog in the middle of the mainwindow
+    const int x = parentWidget()->width() / 2 - width() / 2;
+    const int y = parentWidget()->height() / 2 - height() / 2;
+    move( x, y );
+
 //FIXME: contex tbrowser changes
 //     connect( this, SIGNAL(lyricsScriptChanged()), ContextBrowser::instance(), SLOT( lyricsScriptChanged() ) );
 
