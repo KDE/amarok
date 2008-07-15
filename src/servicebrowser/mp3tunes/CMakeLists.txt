@@ -1,6 +1,6 @@
 if(CURL_FOUND)
     if(LIBXML2_FOUND)
-        if(OPENSSL_FOUND AND LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND)
+        if(OPENSSL_FOUND)
             include_directories(
                 ../..
                 ../../plugin
@@ -9,9 +9,7 @@ if(CURL_FOUND)
                 ../../servicebrowser
                 ../../statusbar
                 ./libmp3tunes
-                ${GLIB2_INCLUDE_DIR}
-                ${GOBJECT_INCLUDE_DIR}
-                ${LOUDMOUTH_INCLUDE_DIR}
+                #./harmonydaemon
                 ${OPENSSL_INCLUDE_DIR}
                 ${LIBXML2_INCLUDE_DIR}
                 ${CURL_INCLUDE_DIRS}
@@ -31,20 +29,18 @@ if(CURL_FOUND)
                 Mp3tunesConfig.cpp
                 Mp3tunesLockerMeta.cpp
                 Mp3tunesLocker.cpp
-                Mp3tunesHarmonyDaemon.cpp
                 Mp3tunesWorkers.cpp
 
                 libmp3tunes/locker.c
-                libmp3tunes/harmony.c
             )
             
 
             kde4_add_plugin(amarok_service_mp3tunes ${amarok_service_mp3tunes_PART_SRCS})
 #${OPENSSL_LIBRARIES} returns -lssl, not -lcrypto. we only need -lcrypto.
             target_link_libraries(amarok_service_mp3tunes amaroklib crypto
-                ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${GLIB2_LIBRARIES} ${GOBJECT_LIBRARIES}
+                ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS}
                 ${KDE4_THREADWEAVER_LIBRARIES} ${OPENSSL_LIBRARIES} ${LIBXML2_LIBRARIES}
-                ${CURL_LIBRARIES} ${LOUDMOUTH_LIBRARIES} )
+                ${CURL_LIBRARIES})
 
             install(TARGETS amarok_service_mp3tunes DESTINATION ${PLUGIN_INSTALL_DIR} )
 
@@ -71,7 +67,7 @@ if(CURL_FOUND)
             install( FILES amarok_service_mp3tunes.desktop DESTINATION ${SERVICES_INSTALL_DIR})
             install( FILES amarok_service_mp3tunes_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-        endif(OPENSSL_FOUND AND LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND)
+        endif(OPENSSL_FOUND)
     endif(LIBXML2_FOUND)
 endif(CURL_FOUND)
 

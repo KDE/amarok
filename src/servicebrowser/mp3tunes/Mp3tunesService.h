@@ -27,7 +27,6 @@
 #ifndef DEFINE_HARMONY
 #define DEFINE_HARMONY
 #endif
-#include "Mp3tunesHarmonyDaemon.h"
 #include "Mp3tunesWorkers.h"
 
 
@@ -103,8 +102,8 @@ private slots:
     void harmonyConnected();
     void harmonyDisconnected();
     void harmonyError( const QString &error );
-    void harmonyDownloadReady( const Mp3tunesHarmonyDownload &download );
-    void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );
+    /*void harmonyDownloadReady( const Mp3tunesHarmonyDownload &download );
+    void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );*/
 
 private:
     /**
@@ -128,7 +127,6 @@ private:
     Mp3tunesServiceCollection *  m_collection;
     Mp3tunesLoginWorker * m_loginWorker; // used to see if logging in has completed
     Mp3tunesLocker * m_locker; // the actual locker
-    Mp3tunesHarmonyDaemon * m_daemon; // the autosync daemon
 };
 
 #endif

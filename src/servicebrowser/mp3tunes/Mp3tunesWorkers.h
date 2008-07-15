@@ -20,7 +20,6 @@
 #define MP3TUNESWORKERS_H
 
 #include "Mp3tunesLocker.h"
-#include "Mp3tunesHarmonyDaemon.h"
 
 #include <QList>
 #include <QStringList>
