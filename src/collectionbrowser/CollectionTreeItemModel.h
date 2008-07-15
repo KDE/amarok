@@ -36,6 +36,7 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
 
     public:
         CollectionTreeItemModel( const QList<int> &levelType );
+        ~CollectionTreeItemModel();
 
         virtual QVariant data(const QModelIndex &index, int role) const;
         virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;

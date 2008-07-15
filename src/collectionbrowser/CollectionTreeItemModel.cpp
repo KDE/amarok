@@ -48,6 +48,13 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     debug() << "Collection root has " << m_rootItem->childCount() << " children";
 }
 
+CollectionTreeItemModel::~CollectionTreeItemModel()
+{
+    DEBUG_BLOCK
+
+    KConfigGroup config = Amarok::config( "Collection Browser" );
+    config.writeEntry( "TreeCategory", levels() );
+}
 
 void
 CollectionTreeItemModel::setLevels( const QList<int> &levelType )
