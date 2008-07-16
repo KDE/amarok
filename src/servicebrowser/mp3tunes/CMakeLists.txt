@@ -1,6 +1,6 @@
 if(CURL_FOUND)
     if(LIBXML2_FOUND)
-        if(OPENSSL_FOUND AND LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND)
+        if(OPENSSL_FOUND AND LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND AND QT4_GLIB_SUPPORT)
             include_directories(
                 ../..
                 ../../plugin
@@ -101,7 +101,7 @@ if(CURL_FOUND)
             install( FILES amarok_service_mp3tunes.desktop DESTINATION ${SERVICES_INSTALL_DIR})
             install( FILES amarok_service_mp3tunes_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-        endif(OPENSSL_FOUND AND LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND)
+        endif(OPENSSL_FOUND AND LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND AND QT4_GLIB_SUPPORT)
     endif(LIBXML2_FOUND)
 endif(CURL_FOUND)
 

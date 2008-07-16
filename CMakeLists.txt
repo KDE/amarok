@@ -9,7 +9,6 @@ cmake_minimum_required(VERSION 2.4.5)
 #We depend on kde4.1 now.. I believe this is the easiest way to do it.
 set(KDE_MIN_VERSION "4.00.61")
 find_package(KDE4)
-
 include (KDE4Defaults)
 include (MacroLibrary)
 
@@ -94,6 +93,8 @@ macro_log_feature( Soprano_FOUND "soprano" "Soprano is a RDF framework required 
 macro_optional_find_package(Nepomuk)
 macro_log_feature( NEPOMUK_FOUND "nepomuk" "Nepomuk Libraries required by Nepomuk Collection (part of kdelibs)" "http://www.kde.org" FALSE "4.1" "")
 
+include(CheckQtGlib)
+macro_log_feature(QT4_GLIB_SUPPORT "Qt4 Glib support" "Qt4 must be compiled with glib support for mp3tunes" "http://www.trolltech.com" FALSE "" "")
 
 macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
