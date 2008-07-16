@@ -100,3 +100,9 @@ add_custom_command( TARGET generator
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../qtbindings/qtscript_core/ )
 
 include( "qtscript_core.cmake" )
+include( "qtscript_gui.cmake" )
+include( "qtscript_network.cmake" )
+include( "qtscript_sql.cmake" )
+include( "qtscript_webkit.cmake" )
+include( "qtscript_xmlpatterns.cmake" )
+include( "qtscript_xml.cmake" )

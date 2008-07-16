@@ -97,10 +97,10 @@ set( Generated_QtCore_SRCS
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QXmlStreamAttributes.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QXmlStreamEntityResolver.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/main.cpp
-        )
-set_source_files_properties(${Generated_QtCore_SRCS} PROPERTIES GENERATED true)
+)
+set_source_files_properties( ${Generated_QtCore_SRCS} PROPERTIES GENERATED true )
 #qtscript bindings don't use moc
 add_library( qtscript_core MODULE ${Generated_QtCore_SRCS} )
 add_dependencies( qtscript_core generator )
-target_link_libraries(qtscript_core ${QT_LIBRARIES})
-install(TARGETS qtscript_core DESTINATION lib/kde4/plugins/script )
+target_link_libraries( qtscript_core ${QT_LIBRARIES})
+install( TARGETS qtscript_core DESTINATION lib/kde4/plugins/script )

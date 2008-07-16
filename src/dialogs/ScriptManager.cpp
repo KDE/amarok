@@ -887,7 +887,12 @@ ScriptManager::startScriptEngine( QString name )
     QScriptEngine* scriptEngine = m_scripts[name].engine;
     debug() << "importing qt bindings...";
     scriptEngine->importExtension( "qt.core" );
-//    scriptEngine->importExtension( "qt.gui" );
+    scriptEngine->importExtension( "qt.gui" );
+    scriptEngine->importExtension( "qt.network" );
+    scriptEngine->importExtension( "qt.sql" );
+    scriptEngine->importExtension( "qt.webkit" );
+    scriptEngine->importExtension( "qt.xmlpatterns" );
+    scriptEngine->importExtension( "qt.xml" );
     QStringList db = scriptEngine->availableExtensions();
     foreach( const QString &extensions, db )
         debug() << extensions << " ";
