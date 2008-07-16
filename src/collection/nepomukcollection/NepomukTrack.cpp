@@ -180,13 +180,13 @@ NepomukTrack::inCollection() const
 AlbumPtr
 NepomukTrack::album() const
 {
-    return AlbumPtr( new NepomukAlbum( m_collection, m_album, m_artist ) );
+    return m_collection->registry()->albumForArtistAlbum( m_artist, m_album );
 }
 
 ArtistPtr
 NepomukTrack::artist() const
 {
-    return ArtistPtr( new NepomukArtist( m_collection, m_artist ) );
+    return m_collection->registry()->artistForArtistName( m_artist );
 }
 
 GenrePtr

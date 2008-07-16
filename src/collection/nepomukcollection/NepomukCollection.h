@@ -20,8 +20,6 @@
 #ifndef NEPOMUKCOLLECTION_H_
 #define NEPOMUKCOLLECTION_H_
 
-#include "NepomukRegistry.h"
-
 #include "Collection.h"
 
 #include <QString>
@@ -31,6 +29,7 @@
 #include <Soprano/Model>
 
 class KUrl;
+class NepomukRegistry;
 
 class NepomukCollectionFactory : public CollectionFactory
 {

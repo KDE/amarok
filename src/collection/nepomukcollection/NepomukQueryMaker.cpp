@@ -536,7 +536,8 @@ NepomukQueryMaker::doQuery(const QString &query)
             while( it.next() ) 
             {
                 Soprano::Node node = it.binding( "artist" ) ;
-                al.append( *(new Meta::ArtistPtr(new NepomukArtist( m_collection, node.toString()))) );
+                Meta::ArtistPtr ap = m_collection->registry()->artistForArtistName( node.toString() );
+                al.append( ap );
             }
             emitProperResult ( ArtistPtr, al );
             
@@ -552,7 +553,8 @@ NepomukQueryMaker::doQuery(const QString &query)
             {
                 QString artist =  it.binding( "artist" ).toString();
                 QString album =  it.binding( "album" ).toString();
-                al.append( *( new Meta::AlbumPtr( new NepomukAlbum( m_collection, album, artist ) ) ) );
+                Meta::AlbumPtr ap = m_collection->registry()->albumForArtistAlbum( artist, album );
+                al.append( ap );
             }         
             emitProperResult ( AlbumPtr, al );
             

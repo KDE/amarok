@@ -102,7 +102,7 @@ NepomukRegistry::trackForBindingSet( const Soprano::BindingSet &set )
         return (Meta::TrackPtr) m_tracks[ url ].data();
     else 
     {
-        Meta::NepomukTrackPtr tp ( new Meta::NepomukTrack( m_collection, this, set ) );
+        Meta::NepomukTrackPtr tp( new Meta::NepomukTrack( m_collection, this, set ) );
         if ( tp->uid().isEmpty() )
         {
             tp->setUid( QUuid::createUuid().toString().mid( 1, 36 ) );
@@ -110,32 +110,89 @@ NepomukRegistry::trackForBindingSet( const Soprano::BindingSet &set )
                     new NepomukWriteJob( tp->resource() , QUrl( "http://amarok.kde.org/metadata/1.0/track#uid" ), Nepomuk::Variant( tp->uid() ) );
             m_weaver->enqueue( job );
         }
-        m_tracks[ tp->resource().resourceUri().toString() ] = tp;
-        m_tracksFromId[ tp->uid() ] = tp;
+        m_tracks[ tp->resource().resourceUri().toString() ] = Meta::TrackPtr( tp.data() );
+        m_tracksFromId[ tp->uid() ] = Meta::TrackPtr( tp.data() );
         
         return (Meta::TrackPtr)tp.data();
     }
 }
 
+Meta::AlbumPtr
+NepomukRegistry::albumForArtistAlbum( const QString &artist, const QString &album )
+{
+    QString id = albumId( artist, album );
+    if ( m_albums.contains( id ) )
+        return m_albums[ id ];
+    else
+    {
+        Meta::AlbumPtr ap( new Meta::NepomukAlbum( m_collection, album, artist ) );
+        m_albums[ id ] = ap;
+        return ap;
+    }
+}
+
+Meta::ArtistPtr
+NepomukRegistry::artistForArtistName( const QString &artist )
+{
+    if ( m_artists.contains( artist ) )
+        return m_artists[ artist ];
+    else
+    {
+        Meta::ArtistPtr ap ( new Meta::NepomukArtist( m_collection, artist ) );
+        m_artists[ artist ] = ap;
+        return ap;
+    }
+}
+
+QString
+NepomukRegistry::albumId( QString artist, QString album ) const
+{
+    // this returns a string which should be unique for every pair of artist / album
+
+    // "escape" | because it is used to seperate artist and album
+    if ( !artist.isEmpty() )
+    {
+        artist.replace( '|', "||" );
+    }
+    album.replace( '|', "||" );
+
+    return artist + '|' + album;
+}
+
 void
 NepomukRegistry::cleanHash()
 {
-    for( QMutableHashIterator< QString , KSharedPtr<Meta::NepomukTrack> > it( m_tracks); it.hasNext(); )
+    #define foreachInvalidateCache( Type, RealType, x ) \
+        for( QMutableHashIterator<QString,Type > iter(x); iter.hasNext(); ) \
+            RealType::staticCast( iter.next().value() )->emptyCache()
+
+    // are these needed? they will get deleted if not needed anymore. 
+    //foreachInvalidateCache( Meta::AlbumPtr, KSharedPtr<Meta::NepomukAlbum>, m_albums );
+    //foreachInvalidateCache( Meta::ArtistPtr, KSharedPtr<Meta::NepomukArtist>, m_artists );
+
+    for( QMutableHashIterator< QString , KSharedPtr<Meta::Track> > it( m_tracks); it.hasNext(); )
     {
-        Meta::NepomukTrackPtr track = it.next().value();
+        Meta::TrackPtr track = it.next().value();
         if( track.count() == 3 )
         {
             it.remove();
         }
     }
-    for( QMutableHashIterator< QString , KSharedPtr<Meta::NepomukTrack> > it( m_tracksFromId); it.hasNext(); )
-    {
-        Meta::NepomukTrackPtr track = it.next().value();
-        if( track.count() == 2 )
-        {
-            it.remove();
+
+    //elem.count() == 2 is correct because elem is one pointer to the object
+    //and the other is stored in the hash map
+    #define foreachCollectGarbage( Key, Type, x ) \
+        for( QMutableHashIterator<Key,Type > iter(x); iter.hasNext(); ) \
+        { \
+            Type elem = iter.next().value(); \
+            if( elem.count() == 2 ) \
+                iter.remove(); \
         }
-    }
+
+    foreachCollectGarbage( QString, Meta::TrackPtr, m_tracks )
+    //run before artist so that album artist pointers can be garbage collected
+    foreachCollectGarbage( QString, Meta::AlbumPtr, m_albums )
+    foreachCollectGarbage( QString, Meta::ArtistPtr, m_artists )
 }
 
 void
@@ -153,7 +210,7 @@ NepomukRegistry::nepomukUpdate( const Soprano::Statement &statement )
             {
                 Soprano::Node object = statement.object();
                 if ( object.isLiteral() )
-                    m_tracks[ uri ].data()->valueChangedInNepomuk( value, object.literal() );
+                    KSharedPtr<Meta::NepomukTrack>::staticCast( m_tracks[ uri ] )->valueChangedInNepomuk( value, object.literal() );
             }
         }
         else if ( statement.predicate().uri().toString() == "http://amarok.kde.org/metadata/1.0/track#uid" )
@@ -164,7 +221,7 @@ NepomukRegistry::nepomukUpdate( const Soprano::Statement &statement )
             debug() << "nepomuk resource moved uid: " << uid << endl;
             if ( m_tracksFromId.contains( uid ) )
             {
-                Meta::NepomukTrackPtr tp = m_tracksFromId[ uid ];
+                Meta::NepomukTrackPtr tp = Meta::NepomukTrackPtr::staticCast( m_tracksFromId[ uid ] );
                 QString oldurl = tp->resource().resourceUri().toString();
                 debug() << "nepo old uld: " << oldurl << " new url" << uri << endl;
                 tp->setResource( Nepomuk::Resource( uri ) );
@@ -172,7 +229,7 @@ NepomukRegistry::nepomukUpdate( const Soprano::Statement &statement )
 
                 // update hash
                 debug() << "nepo length before " << m_tracks.count() << endl;
-                m_tracks[ uri ] = tp;
+                m_tracks[ uri ] = Meta::TrackPtr::staticCast( tp );
                 m_tracks.remove( oldurl );
                 debug() << "nepo length aftere " << m_tracks.count() << endl;
             }

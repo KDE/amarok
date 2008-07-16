@@ -25,6 +25,8 @@
 
 #include <QString>
 
+class NepomukCollection;
+
 namespace Meta
 {
 
@@ -44,6 +46,9 @@ class NepomukAlbum : public Album
         virtual bool hasAlbumArtist() const;
         virtual ArtistPtr albumArtist() const;
 
+        // for plugin internal use only
+
+        void emptyCache();
 
     private:
         NepomukCollection *m_collection;

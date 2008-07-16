@@ -1,5 +1,6 @@
 /* 
    Copyright (C) 2008 Daniel Winter <dw@danielwinter.de>
+   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -18,6 +19,8 @@
 #ifndef NEPOMUKREGISTRY_H
 #define NEPOMUKREGISTRY_H
 
+#include "NepomukAlbum.h"
+#include "NepomukArtist.h"
 #include "NepomukTrack.h"
 
 #include "Meta.h"
@@ -42,15 +45,23 @@ class NepomukRegistry : public QObject
         ~NepomukRegistry();
         
         Meta::TrackPtr  trackForBindingSet( const Soprano::BindingSet &set );
+        Meta::AlbumPtr albumForArtistAlbum( const QString &artist, const QString &album );
+        Meta::ArtistPtr artistForArtistName( const QString &artist );
 
+    private:
+        QString albumId( QString artist, QString album ) const;
+        
     private slots:
         void cleanHash();
         void nepomukUpdate( const Soprano::Statement &statement);
         void jobDone( ThreadWeaver::Job *job );
     
     private:
-        QHash< QString, Meta::NepomukTrackPtr > m_tracks;
-        QHash< QString, Meta::NepomukTrackPtr > m_tracksFromId;
+        QHash< QString, Meta::TrackPtr > m_tracks; // nepomukresource uri -> TrackPtr
+        QHash< QString, Meta::TrackPtr > m_tracksFromId; // track uuid -> TrackPtr
+        QHash< QString, Meta::AlbumPtr > m_albums; // albumId string -> AlbumPtr
+        QHash< QString, Meta::ArtistPtr > m_artists; // artist name -> ArtistPtr
+        
         NepomukCollection* m_collection;
         QTimer *m_timer;
         Soprano::Model *m_model;

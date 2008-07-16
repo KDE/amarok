@@ -20,8 +20,10 @@
 
 #include "NepomukArtist.h"
 #include "NepomukCollection.h"
+#include "NepomukRegistry.h"
 
 #include "BlockingQuery.h"
+#include "Debug.h"
 #include "Meta.h"
 
 #include <QString>
@@ -86,5 +88,14 @@ NepomukAlbum::hasAlbumArtist() const
 ArtistPtr
 NepomukAlbum::albumArtist() const
 {
-    return ArtistPtr( new NepomukArtist( m_collection, m_artist ) );
+    return m_collection->registry()->artistForArtistName( m_artist );
+}
+
+void
+NepomukAlbum::emptyCache()
+{
+    // FIXME: Add proper locks
+
+    m_tracks.clear();
+    m_tracksLoaded = false;
 }

@@ -23,6 +23,8 @@
 
 #include "Meta.h"
 
+class NepomukCollection;
+
 namespace Meta
 {
 
@@ -39,6 +41,10 @@ class NepomukArtist : public Artist
         virtual TrackList tracks();
 
         virtual AlbumList albums();
+
+        // for plugin internal use only
+
+        void emptyCache();
 
     private:
         NepomukCollection *m_collection;

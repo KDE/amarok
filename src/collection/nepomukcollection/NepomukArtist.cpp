@@ -21,6 +21,7 @@
 #include "NepomukCollection.h"
 
 #include "BlockingQuery.h"
+#include "Debug.h"
 #include "Meta.h"
 
 #include <QString>
@@ -95,4 +96,12 @@ NepomukArtist::albums()
     {
         return AlbumList();
     }
+}
+
+void
+NepomukArtist::emptyCache()
+{
+    // FIXME: add lock
+    m_albums.clear();
+    m_albumsLoaded = false;
 }
