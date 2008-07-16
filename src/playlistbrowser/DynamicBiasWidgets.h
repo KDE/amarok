@@ -72,6 +72,10 @@ namespace PlaylistBrowserNS
 
         signals:
             void addBias( Dynamic::Bias* );
+            void clicked();
+
+        protected:
+            virtual void mouseReleaseEvent( QMouseEvent* );
 
         private:
             KToolBar*    m_addToolbar;

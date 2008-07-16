@@ -134,7 +134,7 @@ PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( QWidget* parent )
     m_addButton->setToolTip( i18n( "Add a new bias." ) );
     m_addToolbar->addWidget( m_addButton );
     m_addToolbar->adjustSize();
-    connect( m_addButton, SIGNAL(clicked()), SLOT(addBias()) );
+    connect( m_addButton, SIGNAL( clicked() ), SLOT( addBias() ) );
 
     m_addLabel = new QLabel( "New Bias", this );
     m_addLabel->setAlignment( Qt::AlignCenter | Qt::AlignVCenter );
@@ -148,7 +148,15 @@ PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( QWidget* parent )
     mainLayout->addWidget( m_addLabel );
     mainLayout->setStretchFactor( m_addLabel, 1 );
 
+    connect( this, SIGNAL( clicked() ), SLOT( addBias() ) );
+
     setLayout( mainLayout );
+}
+
+void
+PlaylistBrowserNS::BiasAddWidget::mouseReleaseEvent( QMouseEvent* )
+{
+    emit clicked();
 }
 
 void
