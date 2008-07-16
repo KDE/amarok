@@ -25,6 +25,7 @@
 #include <kcmdlineargs.h>
 #include <klocale.h>
 #include <kapplication.h>
+#include "kdebug.h"
 
 int main( int argc, char *argv[] )
 {
@@ -63,7 +64,12 @@ int main( int argc, char *argv[] )
         theDaemon = new Mp3tunesHarmonyDaemon( ident );
     else
         theDaemon = new Mp3tunesHarmonyDaemon( ident, email, pin );
-    return theDaemon->run();
+
+    kDebug()  << "Starting main event loop";
+    QCoreApplication::exec();
 }
+
+
+
 
 

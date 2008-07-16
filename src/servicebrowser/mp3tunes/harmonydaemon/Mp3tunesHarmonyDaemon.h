@@ -104,7 +104,7 @@ class Mp3tunesHarmonyDaemon : public KApplication
     /**
      * Stats the daemon by intiating the connection Harmony connection.
      */
-    int run();
+    int init();
 
     /**
      * The possible states the daemon can be in.
@@ -184,6 +184,8 @@ class Mp3tunesHarmonyDaemon : public KApplication
      *         false if the stopping the daemon failed
      */
     bool stopDaemon();
+
+    QString makeConnection();
 
   private:
 

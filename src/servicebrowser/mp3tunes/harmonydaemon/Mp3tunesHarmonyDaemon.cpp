@@ -21,7 +21,7 @@
 #include "mp3tunesharmonydaemonadaptor.h"
 
 #include "kdebug.h"
-GMainLoop * Mp3tunesHarmonyDaemon::m_main_loop = g_main_loop_new(0, FALSE);
+//GMainLoop * Mp3tunesHarmonyDaemon::m_main_loop = g_main_loop_new(0, FALSE);
 
 Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier )
    : KApplication( /*GUIenabled*/ false )
@@ -39,6 +39,8 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier )
         kDebug()  << "Dbus registered";
     else
         kDebug()  << "Dbus not registered";
+
+    init();
 }
 
 Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier, QString email, QString pin )
@@ -57,6 +59,8 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier, QString email,
         kDebug() << "Dbus registered";
     else
         kDebug() << "Dbus not registered";
+
+    init();
 }
 
 
@@ -68,12 +72,14 @@ bool
 Mp3tunesHarmonyDaemon::daemonRunning()
 {
 
-    kDebug()  << "Daemon Running. GLIB SAYS: " << g_main_loop_is_running( m_main_loop );
+    //kDebug()  << "Daemon Running. GLIB SAYS: " << g_main_loop_is_running( m_main_loop );
    /* if( m_started )
         debug () << "Daemon Running. VAR SAYS: yes";
     else
         debug () << "Daemon Running. VAR SAYS: no";*/
-    return g_main_loop_is_running( m_main_loop );
+    //return g_main_loop_is_running( m_main_loop );
+
+    return true;
 }
 
 bool
@@ -92,14 +98,16 @@ Mp3tunesHarmonyDaemon::stopDaemon()
         * very wrong and reconnection should not be attempted till the user
         * re-initiates it */
     }
-    g_main_loop_quit( m_main_loop );
-    m_started = false;
+    //g_main_loop_quit( m_main_loop );
+    //m_started = false;
     return true;
 }
 
 int
-Mp3tunesHarmonyDaemon::run()
+Mp3tunesHarmonyDaemon::init()
 {
+
+    kDebug()  << "Begin initing";
         /* g_type_init required for using the GObjects for Harmony. */
     g_type_init();
 
@@ -107,15 +115,17 @@ Mp3tunesHarmonyDaemon::run()
 
     /* Set the error signal handler. */
     g_signal_connect( m_harmony, "error",
-                      G_CALLBACK( signalErrorHandler ), 0 );
+                      G_CALLBACK( signalErrorHandler ), this );
     /* Set the state change signal handler. */
     g_signal_connect( m_harmony, "state_change",
-                      G_CALLBACK(signalStateChangeHandler ), 0 );
+                      G_CALLBACK(signalStateChangeHandler ), this );
     /* Set the download signal handler. */
     g_signal_connect( m_harmony, "download_ready",
-                      G_CALLBACK(signalDownloadReadyHandler ), 0 );
+                      G_CALLBACK(signalDownloadReadyHandler ), this );
     g_signal_connect( m_harmony, "download_pending",
-                      G_CALLBACK(signalDownloadPendingHandler ), 0 );
+                      G_CALLBACK(signalDownloadPendingHandler ), this );
+
+    kDebug()  << "Initing 1";
 
     mp3tunes_harmony_set_identifier( m_harmony, convertToChar( m_identifier ) );
 
@@ -131,6 +141,8 @@ Mp3tunesHarmonyDaemon::run()
     /* Linux specific variable for getting total and available sizes for the
      * file system
      */
+    kDebug()  << "Initing 2";
+    
     struct statfs fsstats;
     unsigned long long total_bytes;
     unsigned long long available_bytes;
@@ -148,18 +160,20 @@ Mp3tunesHarmonyDaemon::run()
 
     /* Configure main loop */
 
+    kDebug()  << "Initing 3";
+    
     /* Start the connection */
-    mp3tunes_harmony_connect( m_harmony, &m_gerr );
-    /* Check for errors on the connection */
-    if ( m_gerr ) {
-        g_print( "Error: %s\n", m_gerr->message );
-    }
+
 
     /* Run the main loop */
-    m_started = true;
-    g_main_loop_run( m_main_loop );
-    m_started = false;
+    //m_started = true;
+    //g_main_loop_run( m_main_loop );
+    //m_started = false;
+
+    kDebug()  << "Done initing";
     return 0;
+
+
 }
 
 QString
@@ -240,7 +254,7 @@ void
 Mp3tunesHarmonyDaemon::signalErrorHandler(MP3tunesHarmony* harmony, gpointer null_pointer )
 {
 
-    GError *err;
+    GError *err = 0;
     Q_UNUSED( null_pointer )
     g_print("Fatal Error: %s\n", harmony->error->message );
     theDaemon->setError( QString( harmony->error->message ) );
@@ -430,4 +444,19 @@ QString
 Mp3tunesHarmonyDownload::url() const
 {
     return m_url;
+}
+
+QString Mp3tunesHarmonyDaemon::makeConnection()
+{
+    m_gerr = 0;
+    mp3tunes_harmony_connect( m_harmony, &m_gerr );
+    /* Check for errors on the connection */
+    if ( m_gerr ) {
+        g_print( "Error: %s\n", m_gerr->message );
+    }
+
+    if ( m_gerr ) 
+        return "Error: " + QString( m_gerr->message );
+    else
+        return "All good!";
 }
