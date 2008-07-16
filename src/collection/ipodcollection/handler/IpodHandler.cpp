@@ -495,8 +495,8 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
     {
         debug() << "Track failed to create, aborting database write!";
     }
-    debug() << "Trying to write iTunes database";
-    writeITunesDB( false ); // false, since not threaded, implement later
+//    debug() << "Trying to write iTunes database";
+//    writeITunesDB( false ); // false, since not threaded, implement later
     //delete podcastInfo;
 
 

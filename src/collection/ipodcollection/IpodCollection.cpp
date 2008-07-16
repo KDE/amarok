@@ -405,5 +405,14 @@ IpodCollection::slotDisconnect()
     emit remove();
 }
 
+void
+IpodCollection::copyTracksCompleted()
+{
+    DEBUG_BLOCK
+        debug() << "Trying to write iTunes database";
+    m_handler->writeITunesDB( false ); // false, since not threaded, implement later
+    
+}
+
 #include "IpodCollection.moc"
 

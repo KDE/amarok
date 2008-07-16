@@ -73,6 +73,8 @@ class IpodCollection : public Collection, public MemoryCollection
 
     void setTrackToDelete( const Meta::IpodTrackPtr &track );
 
+    void copyTracksCompleted();
+
     void deviceRemoved();
 
     virtual void startFullScan();
