@@ -198,8 +198,7 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
     QToolButton* removeButton = new QToolButton( m_removeToolbar );
     removeButton->setIcon( KIcon( "list-remove-amarok" ) );
     removeButton->setToolTip( i18n( "Remove this bias." ) );
-    connect( removeButton, SIGNAL(clicked()),
-            SLOT(biasRemoved()) );
+    connect( removeButton, SIGNAL( clicked() ), SLOT( biasRemoved() ), Qt::QueuedConnection );
     m_removeToolbar->addWidget( removeButton );
     m_removeToolbar->adjustSize();
 
