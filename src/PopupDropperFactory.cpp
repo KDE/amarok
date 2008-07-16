@@ -35,25 +35,27 @@ class PopupDropperFactorySingleton
         PopupDropperFactory instance;
 };
 
-K_GLOBAL_STATIC( PopupDropperFactorySingleton, privateInstance )
+K_GLOBAL_STATIC( PopupDropperFactorySingleton, s_privateInstance )
 
 namespace The {
 
     PopupDropperFactory*
             popupDropperFactory()
     {
-        return &privateInstance->instance;
+        return &s_privateInstance->instance;
     }
 }
 
 
 PopupDropperFactory::PopupDropperFactory()
 {
+    qAddPostRoutine( s_privateInstance.destroy );  // Ensures that the dtor gets called when QApplication destructs
 }
 
 
 PopupDropperFactory::~PopupDropperFactory()
 {
+    DEBUG_BLOCK
 }
 
 

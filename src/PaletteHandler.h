@@ -57,7 +57,6 @@ private:
     PaletteHandler();
 
     QPalette m_palette;
-
 };
 
 #endif

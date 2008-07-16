@@ -19,7 +19,10 @@
  
 #include "PaletteHandler.h"
 
+#include "Debug.h"
+
 #include <kglobal.h>
+
 
 class PaletteHandlerSingleton
 {
@@ -27,14 +30,14 @@ class PaletteHandlerSingleton
         PaletteHandler instance;
 };
 
-K_GLOBAL_STATIC( PaletteHandlerSingleton, privateInstance )
+K_GLOBAL_STATIC( PaletteHandlerSingleton, s_privateInstance )
 
 namespace The {
 
     PaletteHandler*
             paletteHandler()
     {
-        return &privateInstance->instance;
+        return &s_privateInstance->instance;
     }
 }
 
@@ -42,11 +45,13 @@ namespace The {
 PaletteHandler::PaletteHandler()
     : QObject()
 {
+    qAddPostRoutine( s_privateInstance.destroy );  // Ensures that the dtor gets called when QApplication destructs
 }
 
 
 PaletteHandler::~PaletteHandler()
 {
+    DEBUG_BLOCK
 }
 
 void PaletteHandler::setPalette( const QPalette & palette )

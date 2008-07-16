@@ -59,9 +59,7 @@ friend PopupDropperFactory* The::popupDropperFactory();
     private:
         friend class PopupDropperFactorySingleton;
         PopupDropperFactory();
-
  };
-
 
 
 #endif

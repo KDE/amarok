@@ -71,12 +71,12 @@ class CoverFetcherSingleton
         CoverFetcher instance;
 };
 
-K_GLOBAL_STATIC( CoverFetcherSingleton, privateInstance )
+K_GLOBAL_STATIC( CoverFetcherSingleton, s_privateInstance )
 
 CoverFetcher*
 CoverFetcher::instance()
 {
-    return &privateInstance->instance;
+    return &s_privateInstance->instance;
 }
 
 CoverFetcher::CoverFetcher()
@@ -87,6 +87,8 @@ CoverFetcher::CoverFetcher()
 {
     DEBUG_FUNC_INFO
     setObjectName( "CoverFetcher" );
+
+    qAddPostRoutine( s_privateInstance.destroy ); //Ensures that the dtor gets called when QApplication destructs
 }
 
 CoverFetcher::~CoverFetcher()
