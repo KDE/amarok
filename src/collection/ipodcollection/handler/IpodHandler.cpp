@@ -491,6 +491,10 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
     }
 */
     insertTrackIntoDB( url, track );
+    if( !m_trackCreated )
+    {
+        debug() << "Track failed to create, aborting database write!";
+    }
     debug() << "Trying to write iTunes database";
     writeITunesDB( false ); // false, since not threaded, implement later
     //delete podcastInfo;
@@ -502,13 +506,23 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 void
 IpodHandler::insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track )
 {
-    Itdb_Track *ipodtrack = 0; // no track yet
+    DEBUG_BLOCK
+    Itdb_Track *ipodtrack = itdb_track_new();
+
     updateTrackInDB( url, track, ipodtrack ); // get information from track
+
+    if( m_trackCreated )
+    {
+
+    debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
 
     addTrackInDB( ipodtrack );
 
         // add track to collection
     addIpodTrackToCollection( ipodtrack );
+    }
+    else
+        debug() << "Failed to create track, aborting insertion!";
 }
 
 void
@@ -518,11 +532,18 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
     if( !m_itdb )
         return;
 
+    m_trackCreated = true;
+
     QString pathname = url.path();
 
     Itdb_Track *ipodtrack = 0;
     if( !existingIpodTrack )
-        ipodtrack = itdb_track_new();
+    {
+        // NOTE: This should never happen!
+        debug() << "No track passed in, failure!";
+        m_trackCreated = false;
+        return;
+    }
     else
         ipodtrack = existingIpodTrack;
 
@@ -697,7 +718,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
     }
 */
 
-
+    debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
 
 
 }
@@ -705,6 +726,9 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
 void
 IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
 {
+    DEBUG_BLOCK
+
+            debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
     itdb_track_add(m_itdb, ipodtrack, -1);
 
         // TODO: podcasts NYI

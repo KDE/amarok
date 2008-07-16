@@ -134,15 +134,18 @@ class UpdateCapabilityIpod : public Meta::UpdateCapability
 {
     Q_OBJECT
     public:
-        UpdateCapabilityIpod( IpodTrack *track )
+        UpdateCapabilityIpod( IpodCollection *coll )
     : Meta::UpdateCapability()
-                , m_track( track ) {}
+                , m_coll( coll ) {}
 
-        virtual void collectionUpdated() const { m_track->collection()->collectionUpdated(); }
+        virtual void collectionUpdated() const {
+            m_coll->collectionUpdated();
+            m_coll->writeDatabase();
+        }
 
 
     private:
-        KSharedPtr<IpodTrack> m_track;
+        IpodCollection *m_coll;
 };
 
 
@@ -323,7 +326,8 @@ IpodTrack::setFileSize( int newFileSize )
 int
 IpodTrack::filesize() const
 {
-    return m_filesize;
+    // TODO: NYI, seems to cause crashing on transferring tracks to ipod
+    return 0;
 }
 
 int
@@ -462,7 +466,7 @@ IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::CustomActions:
             return new CustomActionsCapabilityIpod( this );
         case Meta::Capability::Updatable:
-            return new UpdateCapabilityIpod( this );
+            return new UpdateCapabilityIpod( m_collection );
 
         default:
             return 0;
@@ -739,14 +743,10 @@ IpodTrack::setLength( int length )
 void
 IpodTrack::endMetaDataUpdate()
 {
-    // Update info in ipod's database
+    // Update info in local ipod database struct
 
     m_collection->updateTags( this );
-    m_collection->writeDatabase();
     
-    // hack to force refresh of collection in treeview
-    
-//    m_collection->collectionUpdated();
 
     notifyObservers();
 }

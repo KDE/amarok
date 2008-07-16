@@ -131,6 +131,8 @@ struct PodcastInfo
         Itdb_Playlist    *m_masterPlaylist;
 //        Q3Dict<Itdb_Track> m_files;
 
+        bool             m_trackCreated;
+
         // podcasts
         Itdb_Playlist*    m_podcastPlaylist;
 
