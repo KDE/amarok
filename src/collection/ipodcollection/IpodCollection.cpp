@@ -226,7 +226,6 @@ void
 IpodCollection::copyTrackToDevice( const Meta::TrackPtr &track )
 {
     m_handler->copyTrackToDevice( track );
-    emit updated();
     return;
 }
 
@@ -251,11 +250,68 @@ IpodCollection::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
 void
 IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
 {
-    Meta::IpodArtistPtr::dynamicCast( track->artist() )->remTrack( track );
-    Meta::IpodAlbumPtr::dynamicCast( track->album() )->remTrack( track );
-    Meta::IpodGenrePtr::dynamicCast( track->genre() )->remTrack( track );
-    Meta::IpodComposerPtr::dynamicCast( track->composer() )->remTrack( track );
-    Meta::IpodYearPtr::dynamicCast( track->year() )->remTrack( track );
+    DEBUG_BLOCK
+
+    // get pointers
+    
+    Meta::IpodArtistPtr artist = Meta::IpodArtistPtr::dynamicCast( track->artist() );
+    Meta::IpodAlbumPtr album = Meta::IpodAlbumPtr::dynamicCast( track->album() );
+    Meta::IpodGenrePtr genre = Meta::IpodGenrePtr::dynamicCast( track->genre() );
+    Meta::IpodComposerPtr composer = Meta::IpodComposerPtr::dynamicCast( track->composer() );
+    Meta::IpodYearPtr year = Meta::IpodYearPtr::dynamicCast( track->year() );
+
+    // remove track from metadata's tracklists
+
+    debug() << "Artist name: " << artist->name();
+    
+    artist->remTrack( track );
+    album->remTrack( track );
+    genre->remTrack( track );
+    composer->remTrack( track );
+    year->remTrack( track );
+
+    // if empty, get rid of metadata in general
+
+    if( artist->tracks().isEmpty() )
+    {
+        m_artistMap.remove( artist->name() );
+        debug() << "Artist still in artist map: " << ( m_artistMap.contains( artist->name() ) ? "yes" : "no");
+        acquireWriteLock();
+        setArtistMap( m_artistMap );
+        releaseLock();
+    }
+    if( album->tracks().isEmpty() )
+    {
+        m_albumMap.remove( album->name() );
+        acquireWriteLock();
+        setAlbumMap( m_albumMap );
+        releaseLock();
+    }
+    if( genre->tracks().isEmpty() )
+    {
+        m_genreMap.remove( genre->name() );
+        acquireWriteLock();
+        setGenreMap( m_genreMap );
+        releaseLock();
+    }
+    if( composer->tracks().isEmpty() )
+    {
+        m_composerMap.remove( composer->name() );
+        acquireWriteLock();
+        setComposerMap( m_composerMap );
+        releaseLock();
+    }
+    if( year->tracks().isEmpty() )
+    {
+        m_yearMap.remove( year->name() );
+        acquireWriteLock();
+        setYearMap( m_yearMap );
+        releaseLock();
+    }
+
+    // remove from trackmap
+
+    m_trackMap.remove( track->name() );
 }
 
 void

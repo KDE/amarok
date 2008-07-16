@@ -118,6 +118,8 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &
         m_collection->copyTrackToDevice( track );
 
     }
+
+    m_collection->collectionUpdated();
     
     slotCopyOperationFinished();
 }
