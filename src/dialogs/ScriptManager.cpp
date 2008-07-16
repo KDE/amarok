@@ -885,8 +885,12 @@ ScriptManager::startScriptEngine( QString name )
     DEBUG_BLOCK
 
     QScriptEngine* scriptEngine = m_scripts[name].engine;
-//    scriptEngine->importExtension( "qt.core" );
+    debug() << "importing qt bindings...";
+    scriptEngine->importExtension( "qt.core" );
 //    scriptEngine->importExtension( "qt.gui" );
+    QStringList db = scriptEngine->availableExtensions();
+    foreach( const QString &extensions, db )
+        debug() << extensions << " ";
 
     QObject* objectPtr;
     QScriptValue scriptObject;

@@ -530,12 +530,6 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
 
 kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 
-#add_dependencies( amaroklib generator )
-
-#add_custom_command ( TARGET amaroklib PRE_LINK
-#                     COMMAND "cp ${CMAKE_CURRENT_BINARY_DIR}/scriptengine/generator/generator/generator ${CMAKE_CURRENT_SOURCE_DIR}/scriptengine/generator/generator/generator"
-#)
-
 target_link_libraries(amaroklib
     ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS}
     ${TAGLIB_LIBRARIES}
