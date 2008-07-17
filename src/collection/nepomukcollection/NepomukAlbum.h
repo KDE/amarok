@@ -23,6 +23,7 @@
 
 #include "Meta.h"
 
+#include <QPixmap>
 #include <QString>
 
 class NepomukCollection;
@@ -46,9 +47,17 @@ class NepomukAlbum : public Album
         virtual bool hasAlbumArtist() const;
         virtual ArtistPtr albumArtist() const;
 
+        virtual bool hasImage( int size = 1 ) const;
+        //virtual bool canUpdateImage() const { return true; }
+        virtual QPixmap image( int size = 1, bool withShadow = false );
+        //virtual void setImage( const QImage &image );
+        //virtual void removeImage();
+
         // for plugin internal use only
 
         void emptyCache();
+        QString findImage() const;
+        QString findImageInDir() const;
 
     private:
         NepomukCollection *m_collection;
@@ -56,6 +65,9 @@ class NepomukAlbum : public Album
         QString m_name;
         QString m_artist;
         bool m_tracksLoaded;
+        mutable bool m_hasImage;
+        mutable bool m_hasImageChecked;
+        mutable QString m_imagePath;
 };
 
 }
