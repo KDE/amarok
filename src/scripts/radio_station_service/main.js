@@ -80,7 +80,7 @@ var stationURL = new Array( "http://www.ah.fm/192k.m3u",
                             "http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb",
                             "http://stream.xtcradio.com:8069/listen.pls" );
 
-var total = 27;
+var total = stationName.length;
 
 function onConfigure()
 {
