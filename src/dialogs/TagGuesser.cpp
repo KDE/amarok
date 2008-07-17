@@ -308,16 +308,62 @@ QString TagGuesser::capitalizeWords( const QString &s, const int &caseOptions ) 
     if( s.isEmpty() )
         return s;
 
-    QString result = s;
-    result[ 0 ] = result[ 0 ].toUpper();
-
-    const QRegExp wordRegExp( "\\s\\w" );
-    int i = result.indexOf( wordRegExp );
-    while ( i > -1 ) {
-        result[ i + 1 ] = result[ i + 1 ].toUpper();
-        i = result.indexOf( wordRegExp, ++i );
+    if( !caseOptions )
+    {
+        debug() << "UPPER/LOWER CASE OPTIONS: 0 - Not applying modifications to the string";
+        return s;
     }
+    else if( caseOptions == 1 )
+    {
+        debug() << "UPPER/LOWER CASE OPTIONS: 1 - All lowercase";
+        return s.toLower();
+    }
+    else if( caseOptions == 2 )
+    {
+        debug() << "UPPER/LOWER CASE OPTIONS: 2 - All uppercase";
+        return s.toUpper();
+    }
+    else if( caseOptions == 3 )
+    {
+        debug() << "UPPER/LOWER CASE OPTIONS: 3 - First letter of every word uppercase";
+        QString result = s;
+        result[ 0 ] = result[ 0 ].toUpper();
 
-    return result;
+        const QRegExp wordRegExp( "\\s\\w" );
+        int i = result.indexOf( wordRegExp );
+        while ( i > -1 ) {
+            result[ i + 1 ] = result[ i + 1 ].toUpper();
+            i = result.indexOf( wordRegExp, ++i );
+        }
+        return result;
+    }
+    else if( caseOptions == 4 )
+    {
+        debug() << "UPPER/LOWER CASE OPTIONS: 4 - Title case.";
+        QString result = s;
+        result[ 0 ] = result[ 0 ].toUpper();
+
+        const QRegExp wordRegExp( "\\s\\w" );
+        int i = result.indexOf( wordRegExp );
+        const QRegExp littleWordRegExp( "(a|an|as|at|by|for|if|and|of|or|to|the|in)" ); //a an and as at but by en for if in of on or the to v[.]? via vs[.]?
+        while ( i > -1 ) {
+            if( result.mid( i + 1, 20).section( " ", 0, 0 ) == result.mid( i + 1, 20).section( " ", 0, 0 ).toLower() )        //if the word has some capitalization we suppose it's capitalized correctly. This solves issues with proper nouns and acronyms
+            {
+                if( !result.mid( i + 1, 20).section( " ", 0, 0 ).contains( littleWordRegExp ) )
+                {
+                    result[ i + 1 ] = result[ i + 1 ].toUpper();
+                    i = result.indexOf( wordRegExp, ++i );
+                }
+                else    //we have a little word
+                    i = result.indexOf( wordRegExp, ++i );
+            }
+        }
+        return result;   
+    }
+    else
+    {
+        debug() << "OUCH!";
+        return s;
+    }
 }
 
