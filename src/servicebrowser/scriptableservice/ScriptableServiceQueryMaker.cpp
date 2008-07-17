@@ -339,8 +339,10 @@ void ScriptableServiceQueryMaker::fetchTracks()
         AlbumMatcher albumMatcher( m_collection->albumById( d->parentId ) );
         tracks = albumMatcher.match( m_collection );
     }
-    else
-        return;
+    else {
+        tracks = m_collection->trackMap().values();
+    }
+
     if ( tracks.count() > 0 ) {
         handleResult( tracks );
         emit( queryDone() );
