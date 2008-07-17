@@ -25,7 +25,7 @@
 
 #include "CollectionConfig.h"
 #include "GeneralConfig.h"
-#include "MediadeviceConfig.h"
+//#include "MediadeviceConfig.h"
 #include "OsdConfig.h"
 #include "PlaybackConfig.h"
 #include "ServiceConfig.h"
@@ -43,7 +43,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
 
     ConfigDialogBase* collection  = new CollectionConfig( this );
     ConfigDialogBase* general     = new GeneralConfig( this );
-    ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
+//    ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
     ConfigDialogBase* osd         = new OsdConfig( this );
     ConfigDialogBase* playback    = new PlaybackConfig( this );
     ConfigDialogBase* services    = new ServiceConfig( this );
@@ -53,7 +53,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( osd,         i18n( "On Screen Display" ), "preferences-indicator-amarok", i18n( "Configure On-Screen-Display" ) );
     addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
     addPage( services,    i18n( "Internet Services" ), "services-amarok", i18n( "Configure Services" ) );
-    addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
+//    addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
     setButtons( Help | Ok | Apply | Cancel );
 }
