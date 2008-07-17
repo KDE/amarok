@@ -19,6 +19,8 @@
 #ifndef MP3TUNESHARMONYDAEMON_H
 #define MP3TUNESHARMONYDAEMON_H
 
+#include "Mp3tunesHarmonyDownload.h"
+#include "Mp3tunesHarmonyClient.h"
 #include <QCoreApplication>
 
 #include <QObject>
@@ -35,44 +37,6 @@ extern "C" {
     #include <string.h>
 }
 
-/**
- * A wrapper class for the libmp3tunes harmony download object.
- * It contains metadata for new tracks.
- * @author Casey Link <unnamedrambler@gmail.com>
- */
-class Mp3tunesHarmonyDownload {
-    public:
-        /**
-         * Default constructor does nothing.
-         */
-        Mp3tunesHarmonyDownload();
-        Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download );
-        ~Mp3tunesHarmonyDownload();
-
-        QString fileKey() const;
-        QString fileName() const;
-        QString fileFormat() const;
-        unsigned int fileSize() const;
-        QString artistName() const;
-        QString albumTitle() const;
-        QString trackTitle() const;
-        int trackNumber() const;
-        QString deviceBitrate() const;
-        QString fileBitrate() const;
-        QString url() const;
-    private:
-        QString m_fileKey;
-        QString m_fileName;
-        QString m_fileFormat;
-        unsigned int m_fileSize;
-        QString m_artistName;
-        QString m_albumTitle;
-        QString m_trackTitle;
-        int m_trackNumber;
-        QString m_deviceBitrate;
-        QString m_fileBitrate;
-        QString m_url;
-};
 /**
  * A daemon that receives notfications from mp3tunes'
  * servers about new/changed tracks that can be synced.
@@ -105,6 +69,11 @@ class Mp3tunesHarmonyDaemon : public QCoreApplication
      * Stats the daemon by intiating the connection Harmony connection.
      */
     int init();
+
+    /**
+     * Sets the client type that the daemon will send signals to.
+     */
+    void setClient( Mp3tunesHarmonyClient *client );
 
     /**
      * The possible states the daemon can be in.
@@ -254,8 +223,7 @@ class Mp3tunesHarmonyDaemon : public QCoreApplication
      */
     bool allAboardTheDBus();
 
-    MP3tunesHarmony* m_harmony;
-    static GMainLoop * m_main_loop; // the gobject main event loop
+    MP3tunesHarmony * m_harmony;
     QString m_identifier; // the initial identifier used for authentication
     QString m_email; //used for repeat authentication
     QString m_pin; //used for repeat authentication
@@ -265,6 +233,7 @@ class Mp3tunesHarmonyDaemon : public QCoreApplication
     bool m_started; // true if the connection has been established
     bool m_inited; // true if the daemon is ready to connect
     HarmonyState m_state; //current state of the harmony daemon
+    Mp3tunesHarmonyClient *m_client; // the daemon client
 };
 
 

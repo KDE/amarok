@@ -55,7 +55,29 @@ Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier, QString email,
 
 
 Mp3tunesHarmonyDaemon::~Mp3tunesHarmonyDaemon()
-{}
+{
+    breakConnection();
+    delete m_harmony;
+    delete m_gerr;
+}
+
+void
+Mp3tunesHarmonyDaemon::setClient( Mp3tunesHarmonyClient *client )
+{
+    m_client = client;
+    connect( this, SIGNAL( disconnected() ),
+            m_client, SLOT( harmonyDisconnected() ));
+    connect( this, SIGNAL( waitingForEmail() ),
+            m_client, SLOT( harmonyWaitingForEmail() ) );
+    connect( this, SIGNAL( connected() ),
+            m_client, SLOT( harmonyConnected() ) );
+    connect( this, SIGNAL( errorSignal( QString ) ),
+            m_client, SLOT( harmonyError( QString ) ) );
+    connect( this, SIGNAL( downloadReady( Mp3tunesHarmonyDownload ) ),
+            m_client, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload ) ) );
+    connect( this, SIGNAL( downloadPending( Mp3tunesHarmonyDownload ) ),
+            m_client, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload ) ) );
+}
 
 bool
 Mp3tunesHarmonyDaemon::allAboardTheDBus()
@@ -273,13 +295,11 @@ Mp3tunesHarmonyDaemon::emitDisconnected()
 void
 Mp3tunesHarmonyDaemon::emitDownloadReady( const Mp3tunesHarmonyDownload &download )
 {
-    qDebug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
     emit( downloadReady( download ) );
 }
 void
 Mp3tunesHarmonyDaemon::emitDownloadPending( const Mp3tunesHarmonyDownload &download )
 {
-    qDebug() << "Got message about pending: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
     emit( downloadPending( download ) );
 }
 
@@ -380,98 +400,4 @@ Mp3tunesHarmonyDaemon::convertToChar ( const QString &source ) const
     char * ret = ( char * ) malloc ( strlen ( c_tok ) + 1 );
     strcpy ( ret, c_tok );
     return ret;
-}
-
-/* Harmony Download Type Wrapper */
-Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload()
-{}
-Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download )
-{
-
-    m_fileKey = download->file_key;
-    m_fileName = download->file_name;
-    m_fileFormat = download->file_format;
-    m_fileSize = download->file_size;
-    m_artistName = download->artist_name ;
-    if( download->album_title )
-        m_albumTitle = download->album_title;
-    else
-        m_albumTitle = QString();
-    m_trackTitle = download->track_title;
-    m_trackNumber = download->track_number;
-    m_deviceBitrate = download->device_bitrate;
-    m_fileBitrate = download->file_bitrate;
-    if( download->url )
-        m_url = download->url;
-    else
-        m_url = QString();
-}
-
-Mp3tunesHarmonyDownload::~Mp3tunesHarmonyDownload()
-{}
-
-QString
-Mp3tunesHarmonyDownload::fileKey() const
-{
-    return m_fileKey;
-}
-
-QString
-Mp3tunesHarmonyDownload::fileName() const
-{
-    return m_fileName;
-}
-
-QString
-Mp3tunesHarmonyDownload::fileFormat() const
-{
-    return m_fileFormat;
-}
-
-unsigned int
-Mp3tunesHarmonyDownload::fileSize() const
-{
-    return m_fileSize;
-}
-
-QString
-Mp3tunesHarmonyDownload::artistName() const
-{
-    return m_artistName;
-}
-
-QString
-Mp3tunesHarmonyDownload::albumTitle() const
-{
-    return m_albumTitle;
-}
-
-QString
-Mp3tunesHarmonyDownload::trackTitle() const
-{
-    return m_trackTitle;
-}
-
-int
-Mp3tunesHarmonyDownload::trackNumber() const
-{
-    return m_trackNumber;
-}
-
-QString
-Mp3tunesHarmonyDownload::deviceBitrate() const
-{
-    return m_deviceBitrate;
-}
-
-QString
-Mp3tunesHarmonyDownload::fileBitrate() const
-{
-    return m_fileBitrate;
-}
-
-QString
-Mp3tunesHarmonyDownload::url() const
-{
-    return m_url;
 }

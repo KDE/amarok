@@ -1,0 +1,39 @@
+/***************************************************************************
+ *   Copyright (c) 2008  Casey Link <unnamedrambler@gmail.com>             *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
+ ***************************************************************************/
+
+#ifndef MP3TUNESAMAROKCLIENT_H
+#define MP3TUNESAMAROKCLIENT_H
+
+#include "Mp3tunesHarmonyClient.h"
+
+class Mp3tunesAmarokClient : public Mp3tunesHarmonyClient {
+    public:
+        Mp3tunesAmarokClient();
+
+    /*public slots:
+        virtual void harmonyError();
+        virtual void harmonyWaitingForEmail();
+        virtual void harmonyWaitingForPin();
+        virtual void harmonyConnected();
+        virtual void harmonyDisconnected();
+        virtual void harmonyDownloadReady( const Mp3tunesHarmonyDownload &download );
+        virtual void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );*/
+};
+
+#endif

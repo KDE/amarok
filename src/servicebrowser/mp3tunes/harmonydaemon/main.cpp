@@ -21,6 +21,7 @@
 #define DEFINE_HARMONY
 #endif
 #include "Mp3tunesHarmonyDaemon.h"
+#include "AmarokClient.h"
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
@@ -65,6 +66,8 @@ int main( int argc, char *argv[] )
     else
         theDaemon = new Mp3tunesHarmonyDaemon( ident, email, pin );
 
+    Mp3tunesAmarokClient *client = new Mp3tunesAmarokClient();
+    theDaemon->setClient( client );
     qDebug()  << "Starting main event loop";
     QCoreApplication::exec();
 }
