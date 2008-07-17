@@ -82,6 +82,7 @@ var stationURL = new Array( "http://www.ah.fm/192k.m3u",
 
 var total = stationName.length;
 
+
 function onConfigure()
 {
     Amarok.Statusbar.longMessageThreadSafe( "This script does not require any configuration." );
@@ -89,38 +90,26 @@ function onConfigure()
 
 function onPopulate( level, parent_id, callback, filter )
 {
-    if (level == 1)
+
+    print( " Populating station level..." );
+
+    //no callback string needed for leaf nodes
+    callback_string = "";
+    html_info = ""
+    //add the station streams as leaf nodes
+    for (i = 0; i<total; i++)
     {
-        print( "Populating main level..." );
-
-        //add top level item
-        Amarok.ScriptableService.insertItem( service_name, 1, -1, "The Amarok Crew\'s Top Streams", "Just a parent item to show how nesting works", "get_stations", "" );
-
-        //tell service that all items has been added ( no parent since these are top level items )
-        Amarok.ScriptableService.donePopulating( "Cool Streams", -1 );
-        print( "... done" );
+        html_info = "A cool stream called " + stationName[i];
+        Amarok.ScriptableService.insertItem( service_name, 0, -1,  stationName[i], html_info, callback_string,  stationURL[i] );
     }
-    else if ( (level == 0 ) && ( callback == "get_stations" ) )
-    {
-        print( " Populating station level..." );
 
-        //no callback string needed for leaf nodes
-        callback_string = "";
+    //tell service that all items has been added to a parent item
+    Amarok.ScriptableService.donePopulating( "Cool Streams", parent_id );
 
-        //add the station streams as leaf nodes
-        for (i = 0; i<total; i++)
-        {
-            html_info = "A cool stream called " + stationName[i];
-            Amarok.ScriptableService.insertItem( service_name, 0, parent_id,  stationName[i], html_info, callback_string,  stationURL[i] );
-        }
-
-        //tell service that all items has been added to a parent item
-        Amarok.ScriptableService.donePopulating( "Cool Streams", parent_id );
-    }
 }
 
 service_name = "Cool Streams";
-levels = 2;
+levels = 1;
 short_description = "List of some really cool radio streams";
 root_html = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers";
 Amarok.ScriptableService.initService( service_name, levels, short_description, root_html, false );
