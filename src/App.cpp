@@ -24,7 +24,7 @@ email                : markey@web.de
 #include "EngineController.h"
 //#include "equalizersetup.h"
 #include "MainWindow.h"
-#include "mediabrowser.h"
+//#include "mediabrowser.h"
 #include "Meta.h"
 #include "meta/MetaConstants.h"
 #include "metadata/tplugins.h"
@@ -785,12 +785,14 @@ void App::slotTrashResult( KJob *job )
 void App::quit()
 {
     emit prepareToQuit();
+    /*
     if( MediaBrowser::instance() && MediaBrowser::instance()->blockQuit() )
     {
         // don't quit yet, as some media devices still have to finish transferring data
         QTimer::singleShot( 100, this, SLOT( quit() ) );
         return;
     }
+    */
     KApplication::quit();
 }
 

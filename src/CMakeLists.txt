@@ -14,7 +14,7 @@ add_subdirectory( images )
 add_subdirectory( scripts )
 add_subdirectory( themes )
 add_subdirectory( metadata )
-add_subdirectory( mediadevice )
+#add_subdirectory( mediadevice )
 add_subdirectory( collectionscanner )
 add_subdirectory( collection )
 add_subdirectory( strigi )
@@ -47,7 +47,7 @@ include_directories(
     dbus
     dialogs
     dynamic
-    mediadevice
+#    mediadevice
     meta
     playlistbrowser
     playlistmanager
@@ -121,7 +121,7 @@ set(libconfigdialog_SRCS
     configdialog/ConfigDialogBase.cpp
     configdialog/dialogs/CollectionConfig.cpp
     configdialog/dialogs/GeneralConfig.cpp
-    configdialog/dialogs/MediadeviceConfig.cpp
+#    configdialog/dialogs/MediadeviceConfig.cpp
     configdialog/dialogs/OsdConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
     configdialog/dialogs/ServiceConfig.cpp
@@ -330,9 +330,9 @@ endif(KDEMULTIMEDIA_FOUND)
 #####################################################################
 # MEDIADEVICE
 #####################################################################
-set(mediadevice_SRCS
-    mediadevice/CopyToDeviceAction.cpp
-)
+#set(mediadevice_SRCS
+#    mediadevice/CopyToDeviceAction.cpp
+#)
 
 #####################################################################
 # DBUS
@@ -427,7 +427,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylistbrowser_SRCS}
     ${libqueuemanager_SRCS}
     ${libplaylistmanager_SRCS}
-    ${mediadevice_SRCS}
+#    ${mediadevice_SRCS}
     ${dbus_SRCS}
     ${scriptengine_SRCS}
     ActionClasses.cpp
@@ -438,10 +438,10 @@ set(amaroklib_LIB_SRCS
     EngineObserver.cpp
     Expression.cpp
     MainWindow.cpp
-    MediaDevice.cpp
+#    MediaDevice.cpp
     MediaDeviceCache.cpp
-    MediaDevicePluginManager.cpp
-    MediaItem.cpp
+#    MediaDevicePluginManager.cpp
+#    MediaItem.cpp
     Osd.cpp
     PluginManager.cpp
     Sidebar.h
@@ -462,9 +462,9 @@ set(amaroklib_LIB_SRCS
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     dialogs/deletedialog.cpp
-    dialogs/deviceconfiguredialog.cpp
+#    dialogs/deviceconfiguredialog.cpp
     dialogs/trackpickerdialog.cpp
-    dialogs/transferdialog.cpp
+#    dialogs/transferdialog.cpp
 #    equalizergraph.cpp
 #    equalizerpresetmanager.cpp
 #    equalizersetup.cpp
@@ -475,7 +475,7 @@ set(amaroklib_LIB_SRCS
     filebrowser/kbookmarkhandler.cpp
     k3bexporter.cpp
     ktrm.cpp
-    mediabrowser.cpp
+#    mediabrowser.cpp
     medium.cpp
     mountpointmanager.cpp
     PaletteHandler.cpp

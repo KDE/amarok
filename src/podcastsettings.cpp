@@ -122,7 +122,7 @@ PodcastSettingsDialog::init()
         setMainWidget(m_ps);
         m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
 
-        m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
+        //m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
 
         enableButtonOk( false );
 
