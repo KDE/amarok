@@ -33,12 +33,20 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
             harmonydaemon/main.cpp
             libmp3tunes/locker.c
             libmp3tunes/harmony.c
+            Mp3tunesHarmonyHandler.cpp
         )
         QT4_ADD_DBUS_ADAPTOR(amarok_service_mp3tunes_harmony_PART_SRCS
             harmonydaemon/org.kde.amarok.Mp3tunesHarmonyDaemon.xml
             harmonydaemon/Mp3tunesHarmonyDaemon.h
             Mp3tunesHarmonyDaemon
         )
+
+        QT4_ADD_DBUS_ADAPTOR(amarok_service_mp3tunes_harmony_PART_SRCS
+            org.kde.amarok.Mp3tunesHarmonyHandler.xml
+            Mp3tunesHarmonyHandler.h
+            Mp3tunesHarmonyHandler
+        )
+        
 
         kde4_add_executable(amarokmp3tunesharmonydaemon NOGUI
             ${amarok_service_mp3tunes_harmony_PART_SRCS}

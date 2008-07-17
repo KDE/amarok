@@ -1,0 +1,16 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="local.Mp3tunesHarmonyHandler">
+    <method name="emitError">
+      <arg name="error" type="s" direction="in"/>
+    </method>
+    <method name="emitWaitingForEmail">
+    </method>
+    <method name="emitWaitingForPin">
+    </method>
+    <method name="emitConnected">
+    </method>
+    <method name="emitDisconnected">
+    </method>
+  </interface>
+</node>
