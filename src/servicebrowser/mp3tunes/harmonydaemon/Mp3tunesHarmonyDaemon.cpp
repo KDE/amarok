@@ -20,86 +20,110 @@
 #include "Mp3tunesHarmonyDaemon.h"
 #include "mp3tunesharmonydaemonadaptor.h"
 
-#include "kdebug.h"
-//GMainLoop * Mp3tunesHarmonyDaemon::m_main_loop = g_main_loop_new(0, FALSE);
+#include <kcmdlineargs.h>
+#include <QtDebug>
 
 Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier )
-   : KApplication( /*GUIenabled*/ false )
+   : QCoreApplication( KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() )
    , m_identifier( identifier )
    , m_email( QString() )
    , m_pin( QString() )
    , m_gerr( 0 )
    , m_error( QString() )
    , m_started( false )
+   , m_inited( false )
    , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
 {
-
-    new Mp3tunesHarmonyDaemonAdaptor( this );
-    if ( QDBusConnection::sessionBus().registerObject( "/Mp3tunesHarmonyDaemon", this ) )
-        kDebug()  << "Dbus registered";
-    else
-        kDebug()  << "Dbus not registered";
-
+    allAboardTheDBus();
     init();
 }
 
 Mp3tunesHarmonyDaemon::Mp3tunesHarmonyDaemon( QString identifier, QString email, QString pin )
-   : KApplication( /*GUIenabled*/ false )
+   : QCoreApplication( KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() )
    , m_identifier( identifier )
    , m_email( email )
    , m_pin( pin )
    , m_gerr( 0 )
    , m_error( QString() )
    , m_started( false )
+   , m_inited( false )
    , m_state( Mp3tunesHarmonyDaemon::DISCONNECTED )
 {
-
-    new Mp3tunesHarmonyDaemonAdaptor( this );
-    if ( QDBusConnection::sessionBus().registerObject( "/Mp3tunesHarmonyDaemon", this ) )
-        kDebug() << "Dbus registered";
-    else
-        kDebug() << "Dbus not registered";
-
+    allAboardTheDBus();
     init();
 }
 
 
 Mp3tunesHarmonyDaemon::~Mp3tunesHarmonyDaemon()
-{
+{}
 
-}
 bool
-Mp3tunesHarmonyDaemon::daemonRunning()
+Mp3tunesHarmonyDaemon::allAboardTheDBus()
 {
 
-    //kDebug()  << "Daemon Running. GLIB SAYS: " << g_main_loop_is_running( m_main_loop );
-   /* if( m_started )
-        debug () << "Daemon Running. VAR SAYS: yes";
+    setOrganizationName( "Amarok" );
+    setOrganizationDomain( "amarok.kde.org" );
+    setApplicationName( "Mp3tunes Harmony Daemon" );
+
+    QDBusConnectionInterface *bus = 0;
+    bus = QDBusConnection::sessionBus().interface();
+    if( !bus ) {
+        qFatal("No dbus!!");
+        ::exit(126);
+        return false;
+    }
+    QStringList parts = this->organizationDomain().split(QLatin1Char('.'), QString::SkipEmptyParts);
+    QString reversedDomain;
+    if (parts.isEmpty())
+        reversedDomain = QLatin1String("local.");
     else
-        debug () << "Daemon Running. VAR SAYS: no";*/
-    //return g_main_loop_is_running( m_main_loop );
+        foreach (const QString& s, parts)
+        {
+            reversedDomain.prepend(QLatin1Char('.'));
+            reversedDomain.prepend(s);
+        }
+    const QString pidSuffix = QString::number( applicationPid() ).prepend( QLatin1String("-") );
+    const QString serviceName = reversedDomain + this->applicationName().remove( " " ) + pidSuffix;
+    if ( bus->registerService(serviceName) == QDBusConnectionInterface::ServiceNotRegistered ) {
+        qDebug() << "FATAL: Couldn't register   name '" << serviceName << "' with DBUS - another process owns it already!" << endl;;
+        ::exit(126);
+        return false;
+    }
+    qDebug() << "Registered service: " << serviceName;
+    new Mp3tunesHarmonyDaemonAdaptor( this );
+    if ( QDBusConnection::sessionBus().registerObject( QLatin1String("/Mp3tunesHarmonyDaemon"), this ) )
+    {
+        qDebug()  << "Dbus registered";
+        return true;
+    } else {
+        qDebug()  << "Dbus not registered";
+        return false;
+    }
 
-    return true;
 }
 
 bool
-Mp3tunesHarmonyDaemon::stopDaemon()
+Mp3tunesHarmonyDaemon::daemonConnected()
 {
-    if( !daemonRunning() ) {
-        kDebug()  << "Daemon not running, but var says" << m_started;
+    return m_started;
+}
+
+bool
+Mp3tunesHarmonyDaemon::breakConnection()
+{
+    if( !daemonConnected() ) {
+        qDebug()  << "Daemon not connected";
         return true;
     }
-    kDebug()  << "Disconnecting Harmony";
+    qDebug()  << "Disconnecting Harmony";
     GError *err;
     mp3tunes_harmony_disconnect(m_harmony, &err);
     if (err) {
-        kDebug()  << "Error disconnecting:  " << err->message;
+        qDebug()  << "Error disconnecting:  " << err->message;
         /* If there is an error disconnecting something has probably gone
         * very wrong and reconnection should not be attempted till the user
         * re-initiates it */
     }
-    //g_main_loop_quit( m_main_loop );
-    //m_started = false;
     return true;
 }
 
@@ -107,7 +131,7 @@ int
 Mp3tunesHarmonyDaemon::init()
 {
 
-    kDebug()  << "Begin initing";
+    qDebug()  << "Begin initing";
         /* g_type_init required for using the GObjects for Harmony. */
     g_type_init();
 
@@ -125,7 +149,7 @@ Mp3tunesHarmonyDaemon::init()
     g_signal_connect( m_harmony, "download_pending",
                       G_CALLBACK(signalDownloadPendingHandler ), this );
 
-    kDebug()  << "Initing 1";
+    qDebug()  << "Initing 1";
 
     mp3tunes_harmony_set_identifier( m_harmony, convertToChar( m_identifier ) );
 
@@ -141,8 +165,8 @@ Mp3tunesHarmonyDaemon::init()
     /* Linux specific variable for getting total and available sizes for the
      * file system
      */
-    kDebug()  << "Initing 2";
-    
+    qDebug()  << "Initing 2";
+
     struct statfs fsstats;
     unsigned long long total_bytes;
     unsigned long long available_bytes;
@@ -158,22 +182,31 @@ Mp3tunesHarmonyDaemon::init()
     mp3tunes_harmony_set_device_attribute( m_harmony, "available-bytes",
                                            &available_bytes );
 
-    /* Configure main loop */
-
-    kDebug()  << "Initing 3";
-    
-    /* Start the connection */
-
-
-    /* Run the main loop */
-    //m_started = true;
-    //g_main_loop_run( m_main_loop );
-    //m_started = false;
-
-    kDebug()  << "Done initing";
+    qDebug()  << "Done initing";
+    m_inited = true;
     return 0;
+}
 
+QString
+Mp3tunesHarmonyDaemon::makeConnection()
+{
+    if( !m_inited )
+        return "Daemon not init()ed yet. Connection not attempted.";
 
+    m_gerr = 0;
+    mp3tunes_harmony_connect( m_harmony, &m_gerr );
+    /* Check for errors on the connection */
+    if ( m_gerr ) {
+        g_print( "Error: %s\n", m_gerr->message );
+    }
+
+    if ( m_gerr ) {
+        m_started = false;
+        return "Error: " + QString( m_gerr->message );
+    } else {
+        m_started = true;
+        return "All good!";
+    }
 }
 
 QString
@@ -240,13 +273,13 @@ Mp3tunesHarmonyDaemon::emitDisconnected()
 void
 Mp3tunesHarmonyDaemon::emitDownloadReady( const Mp3tunesHarmonyDownload &download )
 {
-    kDebug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+    qDebug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
     emit( downloadReady( download ) );
 }
 void
 Mp3tunesHarmonyDaemon::emitDownloadPending( const Mp3tunesHarmonyDownload &download )
 {
-    kDebug() << "Got message about pending: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+    qDebug() << "Got message about pending: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
     emit( downloadPending( download ) );
 }
 
@@ -336,10 +369,7 @@ Mp3tunesHarmonyDaemon::signalDownloadPendingHandler( MP3tunesHarmony* harmony,
                                             void_mp3tunes_harmony_download;
     Mp3tunesHarmonyDownload wrappedDownload( download );
     theDaemon->emitDownloadPending( wrappedDownload );
-    /*if (strcmp(download->file_key, "dummy_file_key_5") == 0) {
-        g_main_loop_quit(m_main_loop);
-    }*/
-    /*mp3tunes_harmony_download_deinit(&download);*/
+
 }
 
 char *
@@ -444,19 +474,4 @@ QString
 Mp3tunesHarmonyDownload::url() const
 {
     return m_url;
-}
-
-QString Mp3tunesHarmonyDaemon::makeConnection()
-{
-    m_gerr = 0;
-    mp3tunes_harmony_connect( m_harmony, &m_gerr );
-    /* Check for errors on the connection */
-    if ( m_gerr ) {
-        g_print( "Error: %s\n", m_gerr->message );
-    }
-
-    if ( m_gerr ) 
-        return "Error: " + QString( m_gerr->message );
-    else
-        return "All good!";
 }

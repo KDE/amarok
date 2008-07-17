@@ -10,10 +10,10 @@
     <method name="error">
       <arg type="s" direction="out"/>
     </method>
-    <method name="daemonRunning">
+    <method name="daemonConnected">
       <arg type="b" direction="out"/>
     </method>
-    <method name="stopDaemon">
+    <method name="breakConnection">
       <arg type="b" direction="out"/>
     </method>
     <method name="makeConnection">

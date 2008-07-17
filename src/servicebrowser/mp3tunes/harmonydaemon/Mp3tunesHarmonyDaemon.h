@@ -19,7 +19,7 @@
 #ifndef MP3TUNESHARMONYDAEMON_H
 #define MP3TUNESHARMONYDAEMON_H
 
-#include <KApplication>
+#include <QCoreApplication>
 
 #include <QObject>
 #include <QString>
@@ -85,7 +85,7 @@ class Mp3tunesHarmonyDownload {
  * and instantiate a new Mp3tunesHarmonyDaemon for theDaemon.
  * @author Casey Link <unnamedrambler@gmail.com>
  */
-class Mp3tunesHarmonyDaemon : public KApplication
+class Mp3tunesHarmonyDaemon : public QCoreApplication
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.amarok.Mp3tunesHarmonyDaemon")
@@ -172,18 +172,18 @@ class Mp3tunesHarmonyDaemon : public KApplication
     QString error() const;
 
     /**
-     * Determines if the daemon is currently running.
-     * @return true if the daemon is running.
-     *         false if the daemon is not running.
+     * Determines if the daemon is currently connected to the harmony servers.
+     * @return true if the daemon is connected.
+     *         false if the daemon is not connected.
      */
-    bool daemonRunning();
+    bool daemonConnected();
 
     /**
-     * Stops the daemon if it is running.
-     * @return true if the daemon is stopped OR if the daemon was stopped
-     *         false if the stopping the daemon failed
+     * Disconnects the daemon if it is connected.
+     * @return true if the daemon is disconnected OR if the daemon was disconnected
+     *         false if the breaking the connect failed
      */
-    bool stopDaemon();
+    bool breakConnection();
 
     QString makeConnection();
 
@@ -248,7 +248,12 @@ class Mp3tunesHarmonyDaemon : public KApplication
     /**
      * Converts a QString into a char*
      */
-    char *convertToChar( const QString &source ) const;
+    char* convertToChar( const QString &source ) const;
+    /**
+     * Inits the D-Dbus interface.
+     */
+    bool allAboardTheDBus();
+
     MP3tunesHarmony* m_harmony;
     static GMainLoop * m_main_loop; // the gobject main event loop
     QString m_identifier; // the initial identifier used for authentication
@@ -257,7 +262,8 @@ class Mp3tunesHarmonyDaemon : public KApplication
     GError *m_gerr; // master GError
 
     QString m_error; // error message to display to user
-    bool m_started; // true if g_main_loop has been started
+    bool m_started; // true if the connection has been established
+    bool m_inited; // true if the daemon is ready to connect
     HarmonyState m_state; //current state of the harmony daemon
 };
 

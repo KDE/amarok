@@ -24,8 +24,8 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
-#include <kapplication.h>
-#include "kdebug.h"
+#include <qapplication.h>
+#include <QtDebug>
 
 int main( int argc, char *argv[] )
 {
@@ -65,7 +65,7 @@ int main( int argc, char *argv[] )
     else
         theDaemon = new Mp3tunesHarmonyDaemon( ident, email, pin );
 
-    kDebug()  << "Starting main event loop";
+    qDebug()  << "Starting main event loop";
     QCoreApplication::exec();
 }
 
