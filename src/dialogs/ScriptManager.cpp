@@ -226,6 +226,7 @@ ScriptManager::~ScriptManager()
     foreach( const QString &key, m_scripts.keys() )
         if( m_scripts[key].running )
             runningScripts << key;
+
     // Save config
     KConfigGroup config = Amarok::config( "ScriptManager" );
     config.writeEntry( "Running Scripts", runningScripts );
@@ -237,6 +238,9 @@ ScriptManager::~ScriptManager()
     config.writeEntry( "Transcode category open", m_transcodeCategory->isExpanded() );
     config.writeEntry( "Context category open", m_contextCategory->isExpanded() );
     config.writeEntry( "Service category open", m_servicesCategory->isExpanded() );
+
+    config.sync();
+
     s_instance = 0;
 }
 

@@ -50,6 +50,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
     public:
         static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( The::mainWindow() ); }
+        virtual ~ScriptManager();
 
         /**
          * Runs the script with the given name. Used by the DCOP handler.
@@ -123,7 +124,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
     private:
         explicit ScriptManager( QWidget* parent );
-        virtual ~ScriptManager();
 
         /** Returns all scripts of the given \p type */
         QStringList scriptsOfType( const QString &type ) const;
