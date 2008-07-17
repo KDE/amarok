@@ -33,19 +33,16 @@ namespace Phonon { class AudioOutput; class MediaObject; class VolumeFaderEffect
 /**
  * This class captures Amarok specific behaviour for some common features.
  * Accessing the engine directly is perfectly legal but on your own risk.
- * TODO: Hide proxy stuff!
  */
 
 class AMAROK_EXPORT EngineController : public QObject, public EngineSubject
 {
     Q_OBJECT
 
+    friend class EngineControllerSingleton;
+
 public:
     typedef QMap<QString, bool>  ExtensionCache;
-
-    //NOTE: Use The::EngineController, this just exists to make the static work properly.
-    EngineController();
-    ~EngineController();
 
     static bool              canDecode( const KUrl& );
     static ExtensionCache&   extensionCache() { return s_extensionCache; }
@@ -119,6 +116,9 @@ private slots:
     void slotStopFadeout(); //called after the fade-out has finished
 
 private:
+    EngineController();
+    ~EngineController();
+
     static ExtensionCache s_extensionCache;
 
     Q_DISABLE_COPY( EngineController );
