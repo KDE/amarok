@@ -18,7 +18,7 @@
 
 #include "podcastsettings.h"
 
-#include "mediabrowser.h"
+#include "Amarok.h"
 
 #include <KLineEdit>
 #include <KLocale>
