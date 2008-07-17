@@ -2,7 +2,7 @@
 #                                                                         #
 #   Simple script for testing the scriptable service browser              #
 #   by creating a simple static browser with some cool radio              #
-#   streams. URLs shamelessly stolen Cool-Streams.xml                     #
+#   streams. URLs shamelessly stolen from Cool-Streams.xml.               #
 #                                                                         #
 #   Copyright                                                             #
 #   (C) 2007, 2008 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>        #
@@ -34,7 +34,6 @@ var stationName = new Array( "Afterhours.FM [Trance/Livesets]",
                              "Digitally Imported - Trance [Trance]",
                              "Electronic Culture [Minimal Techno]",
                              "Frequence 3 [Pop]",
-                             "Gaming FM [Computer-Music]",
                              "Groove Salad [Chill-Out]",
                              "Drone Zone [Ambient]",
                              "Tags Trance Trip [Trance]",
@@ -62,7 +61,6 @@ var stationURL = new Array( "http://www.ah.fm/192k.m3u",
                             "http://di.fm/mp3/trance.pls",
                             "http://www.shouted.fm/tunein/electro-dsl.m3u",
                             "http://streams.frequence3.net/hd-mp3.m3u",
-                            "http://208.64.81.140:7500/listen.pls",
                             "http://www.somafm.com/groovesalad.pls",
                             "http://somafm.com/dronezone.pls",
                             "http://somafm.com/tagstrance.pls",
