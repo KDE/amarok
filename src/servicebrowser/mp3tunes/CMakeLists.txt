@@ -15,10 +15,8 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES}
-        ${GLIB2_INCLUDE_DIR}
-        ${GOBJECT_INCLUDE_DIR}
     )
-
+########### next target ###############
     if(LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND AND QT4_GLIB_SUPPORT)
         include_directories(
             ./harmonydaemon
@@ -26,7 +24,7 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
             ${GOBJECT_INCLUDE_DIR}
             ${LOUDMOUTH_INCLUDE_DIR}
         )
-########### next target ###############
+
         set(amarok_service_mp3tunes_harmony_PART_SRCS
             harmonydaemon/Mp3tunesHarmonyDownload.cpp
             harmonydaemon/Mp3tunesHarmonyDaemon.cpp
