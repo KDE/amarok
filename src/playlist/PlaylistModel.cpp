@@ -373,10 +373,12 @@ Playlist::Model::insertTracks( int row, Meta::TrackList tracks )
             }
 
             Meta::PlaylistPtr playlist =  The::playlistManager()->expand( tracks.at( playlistIndex ) );
-            m_undoStack->push( new AddTracksCmd( 0, row + playlistIndex + offset, playlist->tracks() ) );
-            offset += playlist->tracks().size();
+            if( playlist ) {
+                m_undoStack->push( new AddTracksCmd( 0, row + playlistIndex + offset, playlist->tracks() ) );
+                offset += playlist->tracks().size();
 
-            lastIndex = playlistIndex + 1;
+                lastIndex = playlistIndex + 1;
+            }
         }
     }
 }
@@ -423,7 +425,8 @@ Playlist::Model::play( const QModelIndex& index )
 void
 Playlist::Model::play( int row )
 {
-    The::engineController()->play( m_items[ row ]->track() );
+    if( m_items.size() > row )
+        The::engineController()->play( m_items[ row ]->track() );
 }
 
 void
@@ -723,7 +726,7 @@ Playlist::Model::insertOptioned( Meta::TrackList list, int options )
         firstItemAdded = 0;
         insertTracks( 0, list );
 
-        for( int i = 0; i < list.size(); ++i )
+        for( int i = 0; i < list.size() && m_items.size() > i; ++i )
         {
             m_newlyAdded.append( i );
             m_items[i]->setState( Item::NewlyAdded );
@@ -734,7 +737,7 @@ Playlist::Model::insertOptioned( Meta::TrackList list, int options )
         firstItemAdded = rowCount();
         insertTracks( firstItemAdded, list );
 
-        for( int i = 0; i < list.size(); ++i )
+        for( int i = 0; i < list.size() && ( m_items.size() > firstItemAdded + i ); ++i )
         {
             m_newlyAdded.append( firstItemAdded + i );
             m_items[firstItemAdded + i]->setState( Item::NewlyAdded );
