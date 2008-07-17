@@ -41,9 +41,6 @@ class AMAROK_EXPORT SvgHandler
     friend SvgHandler* The::svgHandler();
 
     public:
-
-        ~SvgHandler();
-
         KSvgRenderer* getRenderer( const QString &name );
         KSvgRenderer* getRenderer();
         QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
@@ -65,10 +62,10 @@ class AMAROK_EXPORT SvgHandler
     private:
         friend class SvgHandlerSingleton;
         SvgHandler();
+        ~SvgHandler();
 
         class Private;
         Private * const d;
-
 };
 
 #endif
