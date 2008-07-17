@@ -104,5 +104,7 @@ include( "qtscript_gui.cmake" )
 include( "qtscript_network.cmake" )
 include( "qtscript_sql.cmake" )
 include( "qtscript_webkit.cmake" )
-include( "qtscript_xmlpatterns.cmake" )
 include( "qtscript_xml.cmake" )
+#XML Patterns requires Qt to be compiled with exception support
+#so Qt is often missing this feature
+#include( "qtscript_xmlpatterns.cmake" )
