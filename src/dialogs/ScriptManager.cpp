@@ -112,13 +112,14 @@ namespace Amarok {
 ScriptManager* ScriptManager::s_instance = 0;
 
 
-ScriptManager::ScriptManager( QWidget *parent, const char *name )
+ScriptManager::ScriptManager( QWidget* parent )
         : KDialog( parent )
         , EngineObserver( The::engineController() )
         , m_gui( new Ui::ScriptManagerBase() )
 {
     DEBUG_BLOCK
-    setObjectName( name );
+
+    setObjectName( "ScriptManager" );
     setModal( false );
     setButtons( Close );
     setDefaultButton( Close );

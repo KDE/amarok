@@ -49,9 +49,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
     Q_OBJECT
 
     public:
-        explicit ScriptManager( QWidget *parent = 0, const char *name = 0 );
-        virtual ~ScriptManager();
-
         static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( The::mainWindow() ); }
 
         /**
@@ -125,6 +122,9 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void scriptFinished( QString name );
 
     private:
+        explicit ScriptManager( QWidget* parent );
+        virtual ~ScriptManager();
+
         /** Returns all scripts of the given \p type */
         QStringList scriptsOfType( const QString &type ) const;
 
