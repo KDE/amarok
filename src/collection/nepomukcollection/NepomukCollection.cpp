@@ -154,8 +154,7 @@ NepomukCollection::trackForUrl( const KUrl &url )
     }
     else
     {
-        QString uid ( url.url().right( 36 ) );
-        qm->addMatchId ( uid );
+        qm->addMatchId ( url.host() );
     }
     
     BlockingQuery bq ( qm );

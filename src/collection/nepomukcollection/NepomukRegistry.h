@@ -50,6 +50,7 @@ class NepomukRegistry : public QObject
 
     private:
         QString albumId( QString artist, QString album ) const;
+        QString createUuid() const;  // create real uuid  the qt one doesn't work (not on linux)
         
     private slots:
         void cleanHash();

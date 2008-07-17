@@ -23,10 +23,12 @@
 #include "Debug.h"
 #include "QueryMaker.h"
 
+#include <QDateTime>
 #include <QHash>
 #include <QUrl>
 #include <QUuid>
 
+#include <KMD5>
 #include <KSharedPtr>
 #include <Nepomuk/Resource>
 #include <Nepomuk/Variant>
@@ -105,15 +107,15 @@ NepomukRegistry::trackForBindingSet( const Soprano::BindingSet &set )
         Meta::NepomukTrackPtr tp( new Meta::NepomukTrack( m_collection, this, set ) );
         if ( tp->uid().isEmpty() )
         {
-            tp->setUid( QUuid::createUuid().toString().mid( 1, 36 ) );
+            tp->setUid( createUuid() );
             ThreadWeaver::Job *job =
                     new NepomukWriteJob( tp->resource() , QUrl( "http://amarok.kde.org/metadata/1.0/track#uid" ), Nepomuk::Variant( tp->uid() ) );
             m_weaver->enqueue( job );
         }
-        m_tracks[ tp->resource().resourceUri().toString() ] = Meta::TrackPtr( tp.data() );
-        m_tracksFromId[ tp->uid() ] = Meta::TrackPtr( tp.data() );
+        m_tracks[ tp->resource().resourceUri().toString() ] =  Meta::TrackPtr::staticCast( tp );
+        m_tracksFromId[ tp->uid() ] = Meta::TrackPtr::staticCast( tp );
         
-        return (Meta::TrackPtr)tp.data();
+        return  Meta::TrackPtr::staticCast( tp );
     }
 }
 
@@ -157,6 +159,15 @@ NepomukRegistry::albumId( QString artist, QString album ) const
     album.replace( '|', "||" );
 
     return artist + '|' + album;
+}
+
+QString
+NepomukRegistry::createUuid() const
+{
+    KMD5 context;
+    context.update( QUuid::createUuid().toString().toLocal8Bit() );
+    context.update( QString::number( QDateTime::currentDateTime().toTime_t() ).toLocal8Bit() );
+    return context.hexDigest();
 }
 
 void

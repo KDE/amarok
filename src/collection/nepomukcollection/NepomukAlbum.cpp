@@ -132,7 +132,6 @@ NepomukAlbum::image( int size, bool withShadow )
    QPixmap img( m_imagePath );
     if ( !img.isNull() )
     {
-       // debug() << "nepo image size " << img.size() << endl;
        return img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
     }
     
