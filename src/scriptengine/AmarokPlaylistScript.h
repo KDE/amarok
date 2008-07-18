@@ -48,7 +48,12 @@ namespace Amarok
             void setStopAfterCurrent( bool on );
             void togglePlaylist();
             QStringList filenames();
-        private:
+        signals:
+            void CountChanged( int newCount );
+            void GroupingChanged();
+            void rowMoved( int from, int to );
+            void activeRowChanged( int from, int to );
+            void activeRowExplicitlyChanged( int from, int to );
 
     };
 }

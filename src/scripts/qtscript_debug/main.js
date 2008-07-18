@@ -73,10 +73,17 @@ function TrackFinished()
     print( "Track Finished!" );
 }
 
+function PlaylistCountChanged( count )
+{
+    print( count );
+}
+
 Amarok.configured.connect( Configured );
 Amarok.Engine.trackChanged.connect( TrackChanged );
 Amarok.Engine.trackSeeked.connect( TrackSeeked );
 Amarok.Engine.trackFinished.connect( TrackFinished );
+Amarok.Playlist.CountChanged.connect( PlaylistCountChanged );
+
 
 var time = QTime.currentTime();
 print( time.hour() );
