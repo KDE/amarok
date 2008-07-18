@@ -36,6 +36,8 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
 
     caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
+    //filenameLayoutWidget = filenameLayout;
+
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
     connect( this, SIGNAL( accepted() ),

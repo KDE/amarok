@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 #include "TokenListWidget.h"
+#include "FilenameLayoutDialog.h"
 #include "Debug.h"
 
 #include <KApplication>
@@ -28,6 +29,8 @@ TokenListWidget::TokenListWidget( QWidget *parent )
 {
     setAcceptDrops( true );
 
+    //filenameLayoutWidget = qobject_cast< FilenameLayoutDialog * >( parent )->filenameLayoutWidget;
+
     addItem( i18n( "Track" ) );
     addItem( i18n( "Title" ) );
     addItem( i18n( "Artist" ) );
@@ -40,6 +43,14 @@ TokenListWidget::TokenListWidget( QWidget *parent )
     addItem( " - " );
     addItem( " . " );
     addItem( "<space>" );
+}
+
+void
+TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
+{
+    QListWidgetItem *token = itemAt( event->pos() );
+    //filenameLayoutWidget->addToken( token->text() );
+    //TODO: get a pointer to the filenameLayoutWidget and add a token!
 }
 
 void

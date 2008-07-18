@@ -303,7 +303,7 @@ void TagGuesser::guess( const QString &absFileName, FilenameLayoutDialog *dialog
     }
 }
 
-QString TagGuesser::capitalizeWords( const QString &s, const int &caseOptions )     //TODO: implement different caseOptions
+QString TagGuesser::capitalizeWords( const QString &s, const int &caseOptions )
 {
     if( s.isEmpty() )
         return s;

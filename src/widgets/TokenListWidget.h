@@ -17,6 +17,8 @@
 #ifndef TOKENLISTWIDGET_H
 #define TOKENLISTWIDGET_H
 
+#include "FilenameLayoutWidget.h"
+
 #include <KListWidget>
 
 class TokenListWidget
@@ -28,6 +30,7 @@ class TokenListWidget
         TokenListWidget( QWidget *parent = 0 );
     
     protected:
+        void mouseDoubleClickEvent( QMouseEvent *event );
         void mousePressEvent( QMouseEvent *event );
         void mouseMoveEvent( QMouseEvent *event );
         void dragEnterEvent( QDragEnterEvent *event );
@@ -36,6 +39,7 @@ class TokenListWidget
     
     private:
         void performDrag( QMouseEvent *event );
+        //FilenameLayoutWidget * filenameLayoutWidget;
     
         QPoint m_startPos;
 };
