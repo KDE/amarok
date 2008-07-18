@@ -52,11 +52,10 @@ Optional
       http://www.sf.net/projects/mpeg4ip
       http://www.audiocoding.com
 
-    * Basic Mp3tunes.com integration requires;
+    * Mp3tunes.com integration (including syncronization) requires;
       * OpenSSL http://www.openssl.org
       * libxml2 http://xmlsoft.org
       * libcurl http://curl.haxx.se
-    * Full Mp3tunes.com syncronization support requires:
       * Glib2 http://www.gtk.org
       * Loudmouth, the Jabber library, http://www.loudmouth-project.org/
       * Qt must be compiled with Glib enabled
