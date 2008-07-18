@@ -15,6 +15,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "DynamicModel.h"
+
 #include "Bias.h"
 #include "BiasedPlaylist.h"
 #include "BlockingQuery.h"
@@ -22,7 +24,6 @@
 #include "CollectionManager.h"
 #include "MetaQueryMaker.h"
 #include "Debug.h"
-#include "DynamicModel.h"
 #include "DynamicPlaylist.h"
 #include "RandomPlaylist.h"
 #include "collection/support/XmlQueryReader.h"
