@@ -53,6 +53,7 @@ CurrentTrack::~CurrentTrack()
 
 void CurrentTrack::init()
 {
+    DEBUG_BLOCK
     setBackgroundHints( Plasma::Applet::NoBackground );
 
     m_theme = new Context::Svg( this );
@@ -109,9 +110,19 @@ void CurrentTrack::init()
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
     resize( m_width, m_aspectRatio );
+    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
+             this, SLOT( connectSource( const QString& ) ) );
 
-    dataEngine( "amarok-current" )->connectSource( "current", this );
-    dataUpdated( "current", dataEngine("amarok-current" )->query( "current" ) ); // get data initally
+}
+
+void
+CurrentTrack::connectSource( const QString &source )
+{
+    if( source == "current" )
+    {
+        dataEngine( "amarok-current" )->connectSource( source, this );
+        dataUpdated( source, dataEngine("amarok-current" )->query( "current" ) ); // get data initally
+    }
 }
 
 void CurrentTrack::changeTrackRating( int rating )

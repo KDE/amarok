@@ -52,7 +52,7 @@ public slots:
 private slots:
     void configAccepted();
     void changeTrackRating( int rating );
-
+    void connectSource( const QString &source );
 private:
     QList<QAction*> contextualActions();
 

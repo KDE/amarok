@@ -88,6 +88,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     if( amarokContainment )
         amarokContainment->setTitle( "Context #0" );
     
+    amarokContainment->addCurrentTrack();    
     PERF_LOG( "Showing home in contextview" )
     showHome();
     PERF_LOG( "done showing home in contextview" )
@@ -113,16 +114,8 @@ ContextView::~ContextView()
 void ContextView::clear( const ContextState& state )
 {
     DEBUG_BLOCK
-    QString name = "amarok_";
 
-    if( state == Home )
-        name += "home";
-    else if( state == Current )
-        name += "current";
-    else
-        return; // startup, or some other weird case
-    name += "rc";
-
+    QString name = "amarok_homerc";
     // now we save the state, remembering the column info etc
     KConfig appletConfig( name );
     // erase previous config
@@ -182,30 +175,13 @@ void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldStat
     Q_UNUSED( state );
     
     messageNotify( Current );
-
-   switch( state )
-    {
-        // Note: This is not as accurate as it should be.  When the user manually changes tracks,
-        // the engine sends a StoppedState followed by a PlayingState, causing the view to change.
-        // Unfortunately, there is no easy way to fix this.
-    case Phonon::PlayingState:
-        showCurrentTrack();
-        break;
-
-    case Phonon::StoppedState:
-        showHome();
-        break;
-
-    default:
-        ;
-    }
 }
 
 void ContextView::showHome()
 {
 //     DEBUG_BLOCK
-    if( m_curState == Home)
-        return;
+//     if( m_curState == Home)
+//         return;
     clear( m_curState );
     m_curState = Home;
     loadConfig();
@@ -226,21 +202,15 @@ void ContextView::showCurrentTrack()
 // loads applets onto the ContextScene from saved data, using m_curState
 void ContextView::loadConfig()
 {
-//     DEBUG_BLOCK
-    QString cur = "amarok_";
-    if( m_curState == Home )
-        cur += QString( "home" );
-    else if( m_curState == Current )
-        cur += QString( "current" );
-    cur += "rc";
-
-    contextScene()->clearContainments();
-    KConfig appletConfig( cur, KConfig::SimpleConfig );
+    contextScene()->clearContainments();    
     if( contextScene()->containments().size() > 0 )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
         if( containment )
-            containment->loadConfig( appletConfig );
+        {
+            containment->loadConfig();
+            DEBUG_LINE_INFO
+        }
     }
 }
 
@@ -444,7 +414,8 @@ void ContextView::resizeEvent( QResizeEvent* event )
 void
 ContextView::updateContainmentsGeometry()
 {
-    
+    DEBUG_BLOCK
+    debug() << "cv rect: " << rect();
     int last = contextScene()->containments().size() - 1;
     int x,y;
     int width = rect().width();

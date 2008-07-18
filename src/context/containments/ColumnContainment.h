@@ -54,9 +54,10 @@ public:
     ~ColumnContainment();
 
     virtual QRectF boundingRect() const;
+    virtual void init();
 
     void saveToConfig( KConfig& conf );
-    void loadConfig( KConfig& conf );
+    void loadConfig();
 
     void updateSize( QRectF rect );
 
@@ -73,6 +74,7 @@ public:
     void setTitle( QString title );
     void showTitle();
     void hideTitle();
+    void addCurrentTrack();
 
 public slots:
     Applet* addApplet( Plasma::Applet* applet, const QPointF &);
@@ -96,6 +98,7 @@ private slots:
 private:
     void rearrangeApplets( int starRow, int startColumn );
     bool insertInGrid( Plasma::Applet* applet );
+    void loadInitialConfig();
     
     QAction* m_appletBrowserAction;
 
@@ -129,6 +132,10 @@ private:
     QGraphicsSimpleTextItem* m_title;
     Context::Svg* m_header;
     bool m_paintTitle;
+    bool m_manageCurrentTrack;
+    bool m_configLoadPending;
+    bool m_ctHasBeenKicked;
+
     //KSvgRenderer * m_renderer;
 };
 
