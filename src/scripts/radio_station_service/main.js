@@ -6,7 +6,8 @@
 #                                                                         #
 #   Copyright                                                             #
 #   (C) 2007, 2008 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>        #
-#   (C)       2008 Peter ZHOU            <peterzhoulei@gmail.com>         #
+#   (C)       2008 Peter ZHOU <peterzhoulei@gmail.com>                    #
+#   (C)       2008 Mark Kretschmann <kretschmann@kde.org>                 #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -24,63 +25,40 @@
 #   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         #
 ##########################################################################*/
 
-//we don't have map in QtScript
+function Station( name, url )
+{
+    this.name = name;
+    this.url = url;
+}
 
-var stationName = new Array( "Afterhours.FM [Trance/Livesets]",
-                             "Bassdrive [Drum \'n Bass]",
-                             "Bluemars [Ambient/Space-Music]",
-                             "Digitally Imported - Chillout [Chill-Out]",
-                             "Digitally Imported - Classic Techno [Techno]",
-                             "Digitally Imported - Trance [Trance]",
-                             "Electronic Culture [Minimal Techno]",
-                             "Frequence 3 [Pop]",
-                             "Groove Salad [Chill-Out]",
-                             "Drone Zone [Ambient]",
-                             "Tags Trance Trip [Trance]",
-                             "Indie Pop Rocks [Indie]",
-                             "Kohina [Computer-Music]",
-                             "Mostly Classical [Classical]",
-                             "MTH.House [House]",
-                             "Nectarine Demoscene Radio [Computer-Music]",
-                             "Philosomatika [Psytrance]",
-                             "Proton Radio [House/Dance]",
-                             "Pure DJ [Trance]",
-                             "Radio.BMJ.net [Trance/Livesets]",
-                             "Radio Paradise [Rock/Pop/Alternative]",
-                             "Raggakings [Reggae]",
-                             "Secret Agent [Downtempo/Lounge]",
-                             "SLAY Radio [C64 Remixes]",
-                             "Virgin Radio [Rock/Pop]",
-                             "X T C Radio [Techno/Trance]" );
-
-var stationURL = new Array( "http://www.ah.fm/192k.m3u",
-                            "http://www.bassdrive.com/v2/streams/BassDrive.m3u']",
-                            "http://207.200.96.225:8020/listen.pls",
-                            "http://di.fm/mp3/chillout.pls",
-                            "http://di.fm/mp3/classictechno.pls",
-                            "http://di.fm/mp3/trance.pls",
-                            "http://www.shouted.fm/tunein/electro-dsl.m3u",
-                            "http://streams.frequence3.net/hd-mp3.m3u",
-                            "http://www.somafm.com/groovesalad.pls",
-                            "http://somafm.com/dronezone.pls",
-                            "http://somafm.com/tagstrance.pls",
-                            "http://www.somafm.com/indiepop.pls",
-                            "http://la.campus.ltu.se:8000/stream.ogg.m3u",
-                            "http://www.sky.fm/mp3/classical.pls",
-                            "http://stream.mth-house.de:8500/listen.pls",
-                            "http://nectarine.sik.fi:8002/live.mp3.m3u",
-                            "http://philosomatika.com/Philosomatika.pls",
-                            "http://protonradio.com/proton.m3u",
-                            "http://www.puredj.com/etc/pls/128K.pls",
-                            "http://radio.bmj.net:8000/listen.pls",
-                            "http://www.radioparadise.com/musiclinks/rp_128.m3u",
-                            "http://www.raggakings.net/listen.m3u",
-                            "http://somafm.com/secretagent.pls",
-                            "http://sc.slayradio.org:8000/listen.pls",
-                            "http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb",
-                            "http://stream.xtcradio.com:8069/listen.pls" );
-
-var total = stationName.length;
+var stationArray = new Array (
+    new Station( "Afterhours.FM [Trance/Livesets]",                     "http://www.ah.fm/192k.m3u" ),
+    new Station( "Bassdrive [Drum \'n Bass]",                           "http://www.bassdrive.com/v2/streams/BassDrive.m3u" ),
+    new Station( "Bluemars [Ambient/Space-Music]",                      "http://207.200.96.225:8020/listen.pls" ),
+    new Station( "Digitally Imported - Chillout [Chill-Out]",           "http://di.fm/mp3/classictechno.pls" ),
+    new Station( "Digitally Imported - Classic Techno [Techno]",        "http://di.fm/mp3/classictechno.pls" ),
+    new Station( "Digitally Imported - Trance [Trance]",                "http://di.fm/mp3/trance.pls" ),
+    new Station( "Electronic Culture [Minimal Techno]",                 "http://www.shouted.fm/tunein/electro-dsl.m3u" ),
+    new Station( "Frequence 3 [Pop]",                                   "http://streams.frequence3.net/hd-mp3.m3u" ),
+    new Station( "Groove Salad [Chill-Out]",                            "http://www.somafm.com/groovesalad.pls" ),
+    new Station( "Drone Zone [Ambient]",                                "http://somafm.com/dronezone.pls" ),
+    new Station( "Tags Trance Trip [Trance]",                           "http://somafm.com/tagstrance.pls" ),
+    new Station( "Indie Pop Rocks [Indie]",                             "http://www.somafm.com/indiepop.pls" ),
+    new Station( "Kohina [Computer-Music]",                             "http://la.campus.ltu.se:8000/stream.ogg.m3u" ),
+    new Station( "Mostly Classical [Classical]",                        "http://www.sky.fm/mp3/classical.pls" ),
+    new Station( "MTH.House [House]",                                   "http://stream.mth-house.de:8500/listen.pls" ),
+    new Station( "Nectarine Demoscene Radio [Computer-Music]",          "http://nectarine.sik.fi:8002/live.mp3.m3u" ),
+    new Station( "Philosomatika [Psytrance]",                           "http://philosomatika.com/Philosomatika.pls" ),
+    new Station( "Proton Radio [House/Dance]",                          "http://protonradio.com/proton.m3u" ),
+    new Station( "Pure DJ [Trance]",                                    "http://www.puredj.com/etc/pls/128K.pls" ),
+    new Station( "Radio.BMJ.net [Trance/Livesets]",                     "http://radio.bmj.net:8000/listen.pls" ),
+    new Station( "Radio Paradise [Rock/Pop/Alternative]",               "http://www.radioparadise.com/musiclinks/rp_128.m3u" ),
+    new Station( "Raggakings [Reggae]",                                 "http://www.raggakings.net/listen.m3u" ),
+    new Station( "Secret Agent [Downtempo/Lounge]",                     "http://somafm.com/secretagent.pls" ),
+    new Station( "SLAY Radio [C64 Remixes]",                            "http://sc.slayradio.org:8000/listen.pls" ),
+    new Station( "Virgin Radio [Rock/Pop]",                             "http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb" ),
+    new Station( "X T C Radio [Techno/Trance]",                         "http://stream.xtcradio.com:8069/listen.pls" )
+);
 
 
 function onConfigure()
@@ -90,33 +68,31 @@ function onConfigure()
 
 function onPopulate( level, parent_id, callback, filter )
 {
-
     print( " Populating station level..." );
 
     //no callback string needed for leaf nodes
     callback_string = "";
     html_info = ""
     //add the station streams as leaf nodes
-    for (i = 0; i<total; i++)
+    for ( i = 0; i < stationArray.length; i++ )
     {
-        html_info = "A cool stream called " + stationName[i];
-        Amarok.ScriptableService.insertItem( service_name, 0, -1,  stationName[i], html_info, callback_string,  stationURL[i] );
+        name = stationArray[i].name;
+        url = stationArray[i].url;
+        html_info = "A cool stream called " + name;
+
+        Amarok.ScriptableService.insertItem( service_name, 0, -1,  name, html_info, callback_string, url );
     }
 
     //tell service that all items has been added to a parent item
     Amarok.ScriptableService.donePopulating( "Cool Streams", parent_id );
-
 }
 
 service_name = "Cool Streams";
 levels = 1;
-short_description = "List of some really cool radio streams";
+short_description = "List of some high quality radio streams";
 root_html = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers";
 Amarok.ScriptableService.initService( service_name, levels, short_description, root_html, false );
 
 Amarok.configured.connect( onConfigure );
 Amarok.ScriptableService.populate.connect( onPopulate );
-
-
-
 
