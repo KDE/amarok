@@ -440,6 +440,7 @@ set(amaroklib_LIB_SRCS
     MainWindow.cpp
 #    MediaDevice.cpp
     MediaDeviceCache.cpp
+    MediaDeviceMonitor.cpp
 #    MediaDevicePluginManager.cpp
 #    MediaItem.cpp
     Osd.cpp

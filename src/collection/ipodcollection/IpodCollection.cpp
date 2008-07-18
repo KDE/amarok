@@ -25,14 +25,15 @@
 #include "amarokconfig.h"
 #include "Debug.h"
 
-#include "MediaDeviceCache.h"
+//#include "MediaDeviceCache.h"
+#include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
 
 //solid specific includes
-#include <solid/devicenotifier.h>
-#include <solid/device.h>
-#include <solid/storageaccess.h>
-#include <solid/storagedrive.h>
+//#include <solid/devicenotifier.h>
+//#include <solid/device.h>
+//#include <solid/storageaccess.h>
+//#include <solid/storagedrive.h>
 
 #include <KUrl>
 
@@ -58,97 +59,34 @@ IpodCollectionFactory::init()
 {
     DEBUG_BLOCK
 
-    IpodCollection *coll = 0;
+            // connect to the monitor
 
-    /* Refresh cache */
-    MediaDeviceCache::instance()->refreshCache();
-    QStringList udiList = MediaDeviceCache::instance()->getAll();
+        connect( MediaDeviceMonitor::instance(), SIGNAL( ipodDetected( const QString &, const QString & ) ),
+                 SLOT( ipodDetected( const QString &, const QString & ) ) );
 
-    /* poll udi list for ipod */
-    foreach(const QString &udi, udiList )
-        {
-            /* if iPod found, make collection */
-            if( isIpod( udi ) )
-            {
-                coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
-                if ( coll )
-                {
-                    connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
-                             SLOT( slotCollectionDisconnected( const QString & ) ) );
-                    emit newCollection( coll );
-                    debug() << "emitting new ipod collection";
-                }
-            }
-
-        }
-
-    // connect to device cache so new devices tested for ipod
-    connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceAdded( const QString& ) ),
-              SLOT(  deviceAdded( const QString& ) ) );
-    connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceRemoved( const QString& ) ),
-              SLOT(  deviceRemoved( const QString& ) ) );
-    connect(  MediaDeviceCache::instance(), SIGNAL( accessibilityChanged( bool, const QString & ) ),
-              SLOT(  slotAccessibilityChanged( bool, const QString & ) ) );
+    // force refresh to scan for ipod
+    // NOTE: perhaps a signal/slot mechanism would make more sense
+    MediaDeviceMonitor::instance()->refreshDevices();
 
 
     return;
-}
-
-bool
-IpodCollectionFactory::isIpod( const QString &udi )
-{
-
-    Solid::Device device;
-
-    device = Solid::Device(udi);
-    /* going until we reach a vendor, e.g. Apple */
-    while ( device.isValid() && device.vendor().isEmpty() )
-    {
-        device = Solid::Device( device.parentUdi() );
-    }
-
-    debug() << "Device udi: " << udi;
-    debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
-    debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
-    if ( device.isValid() )
-    {
-        debug() << "vendor: " << device.vendor() << ", product: " << device.product();
-    }
-
-    /* if iPod found, return true */
-    return (device.product() == "iPod");
-
 }
 
 void
-IpodCollectionFactory::deviceAdded(  const QString &udi )
+IpodCollectionFactory::ipodDetected( const QString &mountPoint, const QString &udi )
 {
-    DEBUG_BLOCK
+    IpodCollection* coll = 0;
 
-        debug() << "New device added, testing if Ipod";
-
-    IpodCollection *coll = 0;
-    /* if iPod found, make collection if udi is new */
-    if( isIpod( udi ) )
-    {
-        if ( m_collectionMap.contains( udi ) )
-        {
-            debug() << "Ipod collection for this iPod already made!";
-            return;
-        }
-
-        coll = new IpodCollection(MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
+    coll = new IpodCollection( mountPoint, udi );
         if ( coll )
         {
-            connect( coll, SIGNAL( collectionDisconnected( const QString & ) ),
-                     SLOT( slotCollectionDisconnected( const QString & ) ) );
+            // TODO: connect to MediaDeviceMonitor signals
+         //   connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
+           //          SLOT( slotCollectionDisconnected( const QString & ) ) );
             emit newCollection( coll );
-            m_collectionMap.insert( udi, coll );
-            debug() << "New Ipod Found, collection created!";
+            debug() << "emitting new ipod collection";
         }
-    }
 
-    return;
 }
 
 void
@@ -176,18 +114,6 @@ void
 IpodCollectionFactory::slotCollectionDisconnected( const QString & udi)
 {
     m_collectionMap.remove( udi ); // remove from map
-}
-
-void
-IpodCollectionFactory::slotAccessibilityChanged( bool accessible, const QString & udi)
-{
-    DEBUG_BLOCK
-        debug() << "Accessibility changed to: " << ( accessible ? "true":"false" );
-    if ( !accessible )
-        deviceRemoved( udi );
-    else
-        deviceAdded( udi );
-
 }
 
 void

@@ -47,15 +47,17 @@ class IpodCollectionFactory : public CollectionFactory
 
     private slots:
 
-    void slotCollectionReady();
-    bool isIpod( const QString &udi);
-    void deviceAdded( const QString &udi );
+    void ipodDetected( const QString &mountPoint, const QString &udi );
     void deviceRemoved( const QString &udi );
-    void slotCollectionDisconnected( const QString & udi);
-    void slotAccessibilityChanged( bool accessible, const QString & udi);
+    void slotCollectionReady();
+    void slotCollectionDisconnected( const QString & udi );
     
     private:
+
+        
+        
     QMap<QString, IpodCollection*> m_collectionMap;
+    
 
 };
 
