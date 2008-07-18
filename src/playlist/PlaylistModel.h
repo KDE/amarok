@@ -190,9 +190,9 @@ namespace Playlist
              * @param list tracks to add
              * @param options valid values are Unique || (Append xor Queue xor Replace) || ( DirectPlay xor StartPlay )
              **/
-            AMAROK_EXPORT void insertOptioned( Meta::TrackList list, int options );
-            AMAROK_EXPORT void insertOptioned( Meta::TrackPtr track, int options ); //convenience method
-            AMAROK_EXPORT void insertOptioned( QueryMaker *qm, int options );
+            void insertOptioned( Meta::TrackList list, int options );
+            void insertOptioned( Meta::TrackPtr track, int options ); //convenience method
+            void insertOptioned( QueryMaker *qm, int options );
             void insertTrack( int row, Meta::TrackPtr track ); //convenience method
             void insertTracks( int row, Meta::TrackList list );
             void insertTracks( int row, QueryMaker *qm );
@@ -202,8 +202,8 @@ namespace Playlist
              * @param list Playlist to add
              * @param options valid values are Unique || (Append xor Queue xor Replace) || ( DirectPlay xor StartPlay )
              **/
-            AMAROK_EXPORT void insertOptioned( Meta::PlaylistList list, int options );
-            AMAROK_EXPORT void insertOptioned( Meta::PlaylistPtr playlist, int options ); //convenience method
+            void insertOptioned( Meta::PlaylistList list, int options );
+            void insertOptioned( Meta::PlaylistPtr playlist, int options ); //convenience method
             void insertPlaylist( int row, Meta::PlaylistPtr playlist ); //convenience method
             void insertPlaylists( int row, Meta::PlaylistList playlists );
 
