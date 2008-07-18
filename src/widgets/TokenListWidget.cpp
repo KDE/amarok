@@ -29,7 +29,7 @@ TokenListWidget::TokenListWidget( QWidget *parent )
 {
     setAcceptDrops( true );
 
-    //filenameLayoutWidget = qobject_cast< FilenameLayoutDialog * >( parent )->filenameLayoutWidget;
+    //filenameLayoutWidget = qobject_cast< FilenameLayoutDialog * >( parent )->filenameLayout;    //omg filenameLayoutDialog is NOT a parent of filenameLayoutWidget, the parent is a stupid QWidget
 
     addItem( i18n( "Track" ) );
     addItem( i18n( "Title" ) );
@@ -49,6 +49,7 @@ void
 TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QListWidgetItem *token = itemAt( event->pos() );
+    emit onDoubleClick( token->text() );
     //filenameLayoutWidget->addToken( token->text() );
     //TODO: get a pointer to the filenameLayoutWidget and add a token!
 }

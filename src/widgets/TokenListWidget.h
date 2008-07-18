@@ -40,8 +40,9 @@ class TokenListWidget
     private:
         void performDrag( QMouseEvent *event );
         //FilenameLayoutWidget * filenameLayoutWidget;
-    
         QPoint m_startPos;
+    signals:
+        void onDoubleClick( QString text );
 };
 
 #endif    //TOKENLISTWIDGET_H

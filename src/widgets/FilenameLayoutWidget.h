@@ -32,7 +32,6 @@ class FilenameLayoutWidget
 
     public:
         FilenameLayoutWidget( QWidget *parent = 0 );
-        void addToken( QString text, int index = 0);
 
         unsigned int getTokenCount();   //access for uint m_tokenCount
         QString getParsableScheme();    //access for QString m_parsableScheme
@@ -57,6 +56,9 @@ class FilenameLayoutWidget
         QPoint m_startPos;
         unsigned int m_tokenCount;
         QString m_parsableScheme;
+
+    public slots:
+        void addToken( QString text, int index = 0);
 };
 
 #endif    //FILENAMELAYOUTWIDGET_H

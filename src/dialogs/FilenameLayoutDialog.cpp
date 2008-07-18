@@ -42,6 +42,8 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
              this, SLOT( editStateEnable( bool ) ) );
     connect( this, SIGNAL( accepted() ),
              this, SLOT( onAccept() ) );
+    connect( tokenPool, SIGNAL( onDoubleClick( QString ) ),
+             filenameLayout, SLOT( addToken( QString ) ) );
 
     //KConfig stuff:
     int caseOptions = Amarok::config( "TagGuesser" ).readEntry( "Case options" ).toInt();

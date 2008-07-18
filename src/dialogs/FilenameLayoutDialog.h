@@ -33,7 +33,8 @@ class FilenameLayoutDialog
         int getCaseOptions();
         int getWhitespaceOptions();
         int getUnderscoreOptions();
-        FilenameLayoutWidget * filenameLayoutWidget;
+        //FilenameLayoutWidget * filenameLayout;
+        //TokenListWidget * tokenPool;
 
     private:
         QList< QRadioButton * > caseEditRadioButtons;
