@@ -25,8 +25,8 @@
 #include "Mp3tunesServiceCollection.h"
 #include "Mp3tunesLocker.h"
 #include "Mp3tunesWorkers.h"
-
-
+#include "harmonydaemon/Mp3tunesHarmonyDownload.h"
+#include "Mp3tunesHarmonyHandler.h"
 
 class Mp3tunesServiceFactory: public ServiceFactory
 {
@@ -51,6 +51,7 @@ class Mp3tunesServiceFactory: public ServiceFactory
 */
 class Mp3tunesService : public ServiceBase
 {
+
 Q_OBJECT
 
 public:
@@ -58,7 +59,7 @@ public:
                               const QString &partnerToken,
                               const QString &email = QString(),
                               const QString &password = QString(),
-                              bool harmonyEnabled = false);
+                              bool harmonyEnabled = false );
 
     ~Mp3tunesService();
 
@@ -96,11 +97,12 @@ private slots:
      * account.
      */
     void harmonyWaitingForEmail();
+    void harmonyWaitingForPin();
     void harmonyConnected();
     void harmonyDisconnected();
     void harmonyError( const QString &error );
-    /*void harmonyDownloadReady( const Mp3tunesHarmonyDownload &download );
-    void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );*/
+    void harmonyDownloadReady( const Mp3tunesHarmonyDownload &download );
+    void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );
 
 private:
     /**
@@ -124,6 +126,7 @@ private:
     Mp3tunesServiceCollection *  m_collection;
     Mp3tunesLoginWorker * m_loginWorker; // used to see if logging in has completed
     Mp3tunesLocker * m_locker; // the actual locker
+    Mp3tunesHarmonyHandler * m_harmony;
 };
 
 #endif

@@ -30,9 +30,13 @@ class Mp3tunesHarmonyHandler : public QObject {
     Q_OBJECT
     Q_CLASSINFO("Amarok Harmony D-Bus Interface", "org.kde.amarok.Mp3tunesHarmonyHandler")
     public:
-        Mp3tunesHarmonyHandler( QString identifier, QString email, QString pin);
+        Mp3tunesHarmonyHandler( QString identifier,
+                                QString email = QString(),
+                                QString pin  = QString() );
+        ~Mp3tunesHarmonyHandler();
 
-        void startDaemon();
+        bool startDaemon();
+        void stopDaemon();
         bool daemonRunning();
         bool daemonConnected();
         void makeConnection();
@@ -43,7 +47,7 @@ class Mp3tunesHarmonyHandler : public QObject {
       void waitingForPin();
       void connected();
       void disconnected();
-      void errorSignal( const QString &error );
+      void signalError( const QString &error );
       void downloadReady( const Mp3tunesHarmonyDownload &download );
       void downloadPending( const Mp3tunesHarmonyDownload &download );
 
@@ -53,8 +57,8 @@ class Mp3tunesHarmonyHandler : public QObject {
         virtual void emitWaitingForPin();
         virtual void emitConnected();
         virtual void emitDisconnected();
-        virtual void emitDownloadReady( const Mp3tunesHarmonyDownload &download );
-        virtual void emitDownloadPending( const Mp3tunesHarmonyDownload &download );
+        virtual void emitDownloadReady( QString download[11] );
+        virtual void emitDownloadPending( QString download[11] );
 
     private slots:
         void slotFinished();

@@ -26,8 +26,8 @@
 #include <QVariant>
 
 Mp3tunesHarmonyHandler::Mp3tunesHarmonyHandler( QString identifier,
-                                                QString email = QString(),
-                                                QString pin = QString() )
+                                                QString email,
+                                                QString pin )
     : QObject( kapp )
     , m_daemon( 0 )
     , m_identifier( identifier )
@@ -36,9 +36,16 @@ Mp3tunesHarmonyHandler::Mp3tunesHarmonyHandler( QString identifier,
 {
     new Mp3tunesHarmonyHandlerAdaptor( this );
     QDBusConnection::sessionBus().registerObject("/Mp3tunesHarmonyHandler", this);
+    debug() << "All aboard the DBUS!";
+}
+Mp3tunesHarmonyHandler::~Mp3tunesHarmonyHandler()
+{
+    stopDaemon();
+    if( m_daemon )
+        delete m_daemon;
 }
 
-void Mp3tunesHarmonyHandler::startDaemon()
+bool Mp3tunesHarmonyHandler::startDaemon()
 {
     m_daemon = new AmarokProcess( this );
     if( m_email.isEmpty() && m_pin.isEmpty() )
@@ -49,6 +56,14 @@ void Mp3tunesHarmonyHandler::startDaemon()
     connect( m_daemon, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
     connect( m_daemon, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
     m_daemon->start();
+    sleep(3); // sleep for 3 seconds to allow the process to start and register.
+    return m_daemon->waitForStarted( -1 );
+}
+
+void Mp3tunesHarmonyHandler::stopDaemon()
+{
+    if( daemonRunning() )
+        m_daemon->close();
 }
 
 void
@@ -72,6 +87,7 @@ bool Mp3tunesHarmonyHandler::daemonRunning()
     if( !m_daemon )
         return false;
     debug() << "Daemon process is running";
+    return true;
 }
 
 bool Mp3tunesHarmonyHandler::daemonConnected()
@@ -80,20 +96,33 @@ bool Mp3tunesHarmonyHandler::daemonConnected()
     if( !daemonRunning() )
         return false;
     QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon-" + QString::number( m_daemon->pid() );
-    debug() << "Making Dbus call about daemonConnected";
+    //QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon";
+    debug() << "Making Dbus call about daemonConnected to: " << name;
     QDBusMessage m = QDBusMessage::createMethodCall( name,
                                                "/Mp3tunesHarmonyDaemon",
                                                "",
                                                "daemonConnected" );
     QDBusMessage response = QDBusConnection::sessionBus().call( m );
+    if( response.type() == QDBusMessage::ErrorMessage )
+    {
+            debug() << "Got ERROR response";
+            debug() << response.errorName() << ":  " << response.errorMessage();
+    }
     QList<QVariant> args = response.arguments();
-    debug() << "Got response  #args: " << args.count();
-    int i = 0;
+    if( args.count() == 1)
+    {
+        if( args[0].toString() == "true" )
+            return true;
+    }
+    debug() << "Unexpected DBUS return.";
+    //debug() << "response has #args: " << args.count();
+    /*int i = 0;
     foreach( QVariant q, args )
     {
         debug() << QString::number(i) << ": " << q.toString();
         i++;
-    }
+    }*/
+    return false;
 }
 
 void Mp3tunesHarmonyHandler::makeConnection()
@@ -107,7 +136,7 @@ void Mp3tunesHarmonyHandler::breakConnection()
 void
 Mp3tunesHarmonyHandler::emitError( const QString &error )
 {
-   emit( errorSignal( error ) );
+   emit( signalError( error ) );
 }
 
 void
@@ -135,13 +164,13 @@ Mp3tunesHarmonyHandler::emitDisconnected()
 }
 
 void
-Mp3tunesHarmonyHandler::emitDownloadReady( const Mp3tunesHarmonyDownload &download )
+Mp3tunesHarmonyHandler::emitDownloadReady( QString download[11]  )
 {
-    emit( downloadReady( download ) );
+   /// emit( downloadReady( download ) );
 }
 
 void
-Mp3tunesHarmonyHandler::emitDownloadPending( const Mp3tunesHarmonyDownload &download )
+Mp3tunesHarmonyHandler::emitDownloadPending( QString download[11]  )
 {
-    emit( downloadPending( download ) );
+   // emit( downloadPending( download ) );
 }

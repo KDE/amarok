@@ -97,6 +97,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
  , m_sessionId ( QString() )
  , m_collection( 0 )
  , m_loginWorker( 0 )
+ , m_harmony( 0 )
 {
     DEBUG_BLOCK
     setShortDescription( i18n( "The MP3tunes Locker: Your Music Everywhere!" ) );
@@ -138,7 +139,7 @@ void Mp3tunesService::polish()
 
 void Mp3tunesService::initTopPanel()
 {
-    /*m_menubar->clear();
+    m_menubar->clear();
     QMenu * actionsMenu = m_menubar->addMenu( i18n( "AutoSync" ) );
     if( m_harmonyEnabled )
     {
@@ -151,7 +152,7 @@ void Mp3tunesService::initTopPanel()
         actionsMenu->addAction( action );
     }
 
-    m_menubar->show();*/
+    m_menubar->show();
 }
 
 void Mp3tunesService::initBottomPanel()
@@ -162,35 +163,47 @@ void Mp3tunesService::initBottomPanel()
 void Mp3tunesService::enableHarmony()
  {
     DEBUG_BLOCK
-    /*if( !theDaemon->daemonRunning() )
+
+    if( !m_harmony )
     {
         debug() << "Making new Daemon";
         Mp3tunesConfig config;
         debug () << "Using identifier: " << config.identifier();
 
         if( config.pin().isEmpty() )
-            theDaemon = new Mp3tunesHarmonyDaemon( config.identifier() ); //first time harmony login
+            m_harmony = new Mp3tunesHarmonyHandler( config.identifier() ); //first time harmony login
         else
-            theDaemon = new Mp3tunesHarmonyDaemon( config.identifier(), //they're not harmony virgins
+            m_harmony = new Mp3tunesHarmonyHandler( config.identifier(), //they're not harmony virgins
                                                 config.email(),
                                                 config.pin() );
-        qRegisterMetaType<Mp3tunesHarmonyDownload>("Mp3tunesHarmonyDownload");
+//        qRegisterMetaType<Mp3tunesHarmonyDownload>("Mp3tunesHarmonyDownload");
 
-        connect( theDaemon, SIGNAL( signalDisconnected() ),
+        connect( m_harmony, SIGNAL( disconnected() ),
                 this, SLOT( harmonyDisconnected() ));
-        connect( theDaemon, SIGNAL( signalWaitingForEmail() ),
+        connect( m_harmony, SIGNAL( waitingForEmail() ),
                 this, SLOT( harmonyWaitingForEmail() ) );
-        connect( theDaemon, SIGNAL( signalConnected() ),
+        connect( m_harmony, SIGNAL( waitingForPin() ),
+                 this, SLOT( harmonyWaitingForPin() ) );
+        connect( m_harmony, SIGNAL( connected() ),
                 this, SLOT( harmonyConnected() ) );
-        connect( theDaemon, SIGNAL( signalError( QString ) ),
+        connect( m_harmony, SIGNAL( signalError( QString ) ),
                 this, SLOT( harmonyError( QString ) ) );
-        connect( theDaemon, SIGNAL( signalDownloadReady( Mp3tunesHarmonyDownload ) ),
+        connect( m_harmony, SIGNAL( downloadReady( Mp3tunesHarmonyDownload ) ),
                 this, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload ) ) );
-        connect( theDaemon, SIGNAL( signalDownloadPending( Mp3tunesHarmonyDownload ) ),
+        connect( m_harmony, SIGNAL( downloadPending( Mp3tunesHarmonyDownload ) ),
                 this, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload ) ) );
 
-        debug() << "spawning daemon thread.";
-        theDaemon->start();
+        debug() << "starting harmony";
+        m_harmony->startDaemon();
+        if( m_harmony->daemonRunning() )
+        {
+            debug() << "harmony started.. making connection";
+            m_harmony->makeConnection();
+        }
+        if( m_harmony->daemonConnected() )
+            debug() << "harmony connected";
+        else
+            debug() << "harmony failed to connected";
 
         //Close your eyes. Cross your legs. Touch middle fingers to thumbs. Extend your arms.
         //OOOooommmmm
@@ -199,28 +212,22 @@ void Mp3tunesService::enableHarmony()
     debug() << "Daemon running";
     m_harmonyEnabled = true;
     The::statusBar()->shortMessage( i18n( "MP3Tunes AutoSync Enabled"  ) );
-    polish();*/
+    polish();
  }
 
  void Mp3tunesService::disableHarmony()
  {
     DEBUG_BLOCK
-    /*if( !theDaemon->daemonRunning() ) {
-        m_harmonyEnabled = false;
-        polish();
+    if( !m_harmony )
         return;
-    }
 
     debug()  << "stopping daemon";
-    if( theDaemon->stopDaemon() ) {
-        debug() << "daemon stopped";
-        m_harmonyEnabled = false;
-    } else {
-        debug() << "daemon NOT stopped";
-        m_harmonyEnabled = true;
-    }*/
-    The::statusBar()->shortMessage( i18n( "MP3Tunes AutoSync Disabled"  ) );
+    m_harmony->stopDaemon();
+    m_harmony = 0;
+    m_harmonyEnabled = false;
     polish();
+
+    The::statusBar()->shortMessage( i18n( "MP3Tunes AutoSync Disabled"  ) );
  }
 
 void Mp3tunesService::authenticate( const QString & uname, const QString & passwd )
@@ -296,6 +303,17 @@ void Mp3tunesService::harmonyWaitingForEmail()
                               KMessageBox::AllowLink );*/
 }
 
+void Mp3tunesService::harmonyWaitingForPin()
+{
+   /* debug() << "Waiting for user to input PIN: " << theDaemon->pin();
+    The::statusBar()->shortMessage( i18n( "MP3Tunes Harmony: Waiting for PIN Input"  ) );
+    KMessageBox::information( this,
+                              "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + theDaemon->pin(),
+                              "MP3tunes Harmony",
+                              QString(),
+                              KMessageBox::AllowLink );*/
+}
+
 void Mp3tunesService::harmonyConnected()
 {
     /*DEBUG_BLOCK
@@ -319,10 +337,10 @@ void Mp3tunesService::harmonyError( const QString &error )
     The::statusBar()->longMessage( "Mp3tunes Harmony Error\n" + error );
 }
 
-/*void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &download )
+void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &download )
 {
     DEBUG_BLOCK
-    debug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+    /*debug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
     foreach( Collection *coll, CollectionManager::instance()->collections().keys() ) {
         if( coll && coll->isWritable() && m_collection )
         {
@@ -340,14 +358,14 @@ void Mp3tunesService::harmonyError( const QString &error )
             }
 
         }
-    }
+    }*/
 
 }
 
 void Mp3tunesService::harmonyDownloadPending( const Mp3tunesHarmonyDownload &download )
 {
     DEBUG_BLOCK
-    debug() << "Got message about pending: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
-}*/
+    /*debug() << "Got message about pending: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();*/
+}
 
 #include "Mp3tunesService.moc"
