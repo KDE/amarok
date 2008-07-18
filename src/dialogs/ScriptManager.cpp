@@ -917,6 +917,10 @@ ScriptManager::startScriptEngine( QString name )
             Debug::Block blockie("qt.xml");
             scriptEngine->importExtension( "qt.xml" );
         }
+        {
+            Debug::Block blockie("qt.uitools");
+            scriptEngine->importExtension( "qt.uitools" );
+        }
     }
 
     QObject* objectPtr;
