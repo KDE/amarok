@@ -32,7 +32,6 @@ namespace Amarok
         Q_UNUSED( ScriptEngine );
         connect( The::playlistModel(), SIGNAL( playlistCountChanged( int ) ), this, SIGNAL( CountChanged( int ) ) );
         connect( The::playlistModel(), SIGNAL( playlistGroupingChanged() ), this, SIGNAL( GroupingChanged() ) );
-        connect( The::playlistModel(), SIGNAL( rowsChanged( int ) ), this, SIGNAL( rowsChanged( int ) ) );
         connect( The::playlistModel(), SIGNAL( rowMoved( int, int ) ), this, SIGNAL( rowMoved( int, int ) ) );
         connect( The::playlistModel(), SIGNAL( activeRowChanged( int, int ) ), this, SIGNAL( activeRowChanged( int, int ) ) );
         connect( The::playlistModel(), SIGNAL( activeRowExplicitlyChanged( int, int ) ), this, SIGNAL( activeRowExplicitlyChanged( int, int ) ) );

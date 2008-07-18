@@ -70,7 +70,7 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider
         virtual QString collectionId() const = 0;
         virtual QString prettyName() const = 0;
 
-	virtual void collectionUpdated() { emit updated(); }
+        virtual void collectionUpdated() { emit updated(); }
 
         virtual CollectionLocation* location() const;
 
