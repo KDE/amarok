@@ -19,6 +19,7 @@
 #ifndef METAEDITABLEPLAYLISTCAPABILITY_H
 #define METAEDITABLEPLAYLISTCAPABILITY_H
 
+#include "amarok_export.h"
 #include "Capability.h"
 #include "Meta.h"
 
@@ -32,7 +33,7 @@ namespace Meta {
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class EditablePlaylistCapability : public Capability
+class AMAROK_EXPORT EditablePlaylistCapability : public Capability
 {
     Q_OBJECT
 

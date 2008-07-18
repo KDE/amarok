@@ -145,7 +145,7 @@ namespace Amarok
         emit CapsChange( GetCaps() );
     }
 
-    void PlayerDBusHandler::PlayerDBusHandler::slotTrackChange()
+    void PlayerDBusHandler::slotTrackChange()
     {
         emit TrackChange( GetMetadata() );
     }

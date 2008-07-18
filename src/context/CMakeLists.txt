@@ -158,6 +158,8 @@ QT4_AUTOMOC(
 
 ADD_LIBRARY(amarokpud SHARED ${amarokpud_LIB_SRCS})
 
+SET_TARGET_PROPERTIES( amarokpud PROPERTIES DEFINE_SYMBOL MAKE_AMAROKPUD_LIB )
+
 target_link_libraries(amarokpud
     ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY}
