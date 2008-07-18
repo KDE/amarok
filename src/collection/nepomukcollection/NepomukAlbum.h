@@ -57,6 +57,7 @@ class NepomukAlbum : public Album
 
         void emptyCache();
         QString findImage() const;
+        QString findOrCreateScaledImage( QString path, int size ) const;
         QString findImageInDir() const;
 
     private:

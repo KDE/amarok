@@ -26,10 +26,12 @@
 #include "Debug.h"
 #include "Meta.h"
 
+#include <QDir>
 #include <QFile>
 #include <QPixmap>
 #include <QString>
 
+#include <KMD5>
 #include <KUrl>
 #include <Nepomuk/ResourceManager>
 #include <Soprano/Model>
@@ -129,13 +131,11 @@ NepomukAlbum::image( int size, bool withShadow )
     if( !hasImage( size) )
         return Meta::Album::image( size, withShadow );
    DEBUG_BLOCK
-   QPixmap img( m_imagePath );
-    if ( !img.isNull() )
-    {
-       return img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-    }
-    
 
+    QString path = findOrCreateScaledImage( m_imagePath, size );
+    if ( !path.isEmpty() )
+        return QPixmap( path );
+    
     return Meta::Album::image( size, withShadow );
 }
 
@@ -153,6 +153,41 @@ NepomukAlbum::findImage() const
 {
     // TODO: Query for Image set in Nepomuk
     return findImageInDir();
+}
+
+QString
+NepomukAlbum::findOrCreateScaledImage( QString path, int size ) const
+{
+    if( size <= 1 )
+        return QString();
+
+    QByteArray widthKey = QString::number( size ).toLocal8Bit() + "@nepo@"; // nepo 
+    QString album = m_name;
+    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+
+    if( artist.isEmpty() && album.isEmpty() )
+        return QString();
+
+    KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() );
+    QByteArray key = context.hexDigest();
+
+    QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    QString cachedImagePath = cacheCoverDir.filePath( widthKey + key );
+
+    // create if it not already there
+    if ( !QFile::exists( cachedImagePath ) )
+    {
+         if( QFile::exists( path ) )
+        {
+            QImage img( path );
+            if( img.isNull() )
+                return QString();
+            
+            // resize and save the image
+            img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cachedImagePath, "JPG" );
+        }
+    }
+    return cachedImagePath;
 }
 
 QString
