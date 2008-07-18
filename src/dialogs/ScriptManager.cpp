@@ -890,39 +890,6 @@ ScriptManager::startScriptEngine( QString name )
     DEBUG_BLOCK
 
     QScriptEngine* scriptEngine = m_scripts[name].engine;
-    debug() << "importing qt bindings...";
-    {
-        Debug::Block blockie("All extensions");
-        {
-            Debug::Block blockie("qt.core");
-            scriptEngine->importExtension( "qt.core" );
-        }
-        {
-            Debug::Block blockie("qt.gui");
-            scriptEngine->importExtension( "qt.gui" );
-        }
-        {
-            Debug::Block blockie("qt.network");
-            scriptEngine->importExtension( "qt.network" );
-        }
-        {
-            Debug::Block blockie("qt.sql");
-            scriptEngine->importExtension( "qt.sql" );
-        }
-        {
-            Debug::Block blockie("qt.webkit");
-            scriptEngine->importExtension( "qt.webkit" );
-        }
-        {
-            Debug::Block blockie("qt.xml");
-            scriptEngine->importExtension( "qt.xml" );
-        }
-        {
-            Debug::Block blockie("qt.uitools");
-            scriptEngine->importExtension( "qt.uitools" );
-        }
-    }
-
     QObject* objectPtr;
     QScriptValue scriptObject;
 

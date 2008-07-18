@@ -1,4 +1,5 @@
-Importer.load("debug.js");
+Importer.loadQtBinding( "qt.core" );
+Importer.load( "debug.js" );
 
 print ( "this is main.js" );
 

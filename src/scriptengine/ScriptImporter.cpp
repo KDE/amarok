@@ -51,6 +51,25 @@ namespace Amarok
         scriptFile.close();
     }
 
+    void ScriptImporter::loadQtBinding( QString binding )
+    {
+        DEBUG_BLOCK
+        debug() << "importing qt bindings...";
+        if ( binding == "qt.core" )
+            m_ScriptEngine->importExtension( "qt.core" );
+        else if ( binding == "qt.gui" )
+            m_ScriptEngine->importExtension( "qt.gui" );
+        else if ( binding == "qt.sql" )
+            m_ScriptEngine->importExtension( "qt.sql" );
+        else if ( binding == "qt.webkit" )
+            m_ScriptEngine->importExtension( "qt.webkit" );
+        else if ( binding == "qt.xml" )
+            m_ScriptEngine->importExtension( "qt.xml" );
+        else if ( binding == "qt.uitools" )
+            m_ScriptEngine->importExtension( "qt.uitools" );
+        else
+            warning() <<"Qt Binding: "<<binding<<" not found!";
+    }
 }
 
 #include "ScriptImporter.moc"

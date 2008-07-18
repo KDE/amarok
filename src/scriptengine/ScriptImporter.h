@@ -36,6 +36,7 @@ namespace Amarok
 
         public slots:
             void load( QString src );
+            void loadQtBinding( QString binding );
 
         private:
             KUrl m_URL;
