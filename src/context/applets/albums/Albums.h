@@ -11,8 +11,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CURRENT_TRACK_APPLET_H
-#define CURRENT_TRACK_APPLET_H
+#ifndef ALBUMS_APPLET_H
+#define ALBUMS_APPLET_H
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>
