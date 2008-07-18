@@ -143,11 +143,11 @@ void Track::Private::readMetaData()
         {
             //http://doc.trolltech.com/4.4/qtextcodec.html
             //http://www.mozilla.org/projects/intl/chardet.html
-            if ( track_encoding == "x-euc-tw" ) track_encoding = "";
-            if ( track_encoding == "HZ-GB2312" ) track_encoding = "GB2312"; //is the match right?
-            if ( track_encoding == "ISO-2022-CN" ) track_encoding = "GB2312";
-            if ( track_encoding == "ISO-2022-KR" ) track_encoding = "EUC-KR"; 
-            if ( track_encoding == "ISO-2022-JP" ) track_encoding = "ISO 2022-JP";
+            if ( track_encoding == "x-euc-tw" ) track_encoding = ""; //no match
+            if ( track_encoding == "HZ-GB2312" ) track_encoding = ""; //no match
+            if ( track_encoding == "ISO-2022-CN" ) track_encoding = ""; //no match
+            if ( track_encoding == "ISO-2022-KR" ) track_encoding = ""; //no match
+            if ( track_encoding == "ISO-2022-JP" ) track_encoding = ""; //no match
             if ( track_encoding == "x-mac-cyrillic" ) track_encoding = ""; //no match
             if ( track_encoding == "IBM855" ) track_encoding =""; //no match
             if ( track_encoding == "IBM866" ) track_encoding = "IBM 866";
