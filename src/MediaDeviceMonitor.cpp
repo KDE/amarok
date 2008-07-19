@@ -29,6 +29,7 @@
 #include <solid/device.h>
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
+#include <solid/portablemediaplayer.h>
 
 MediaDeviceMonitor* MediaDeviceMonitor::s_instance = 0;
 
@@ -63,7 +64,7 @@ MediaDeviceMonitor::init()
     connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceAdded( const QString& ) ),
               SLOT(  deviceAdded( const QString& ) ) );
     connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceRemoved( const QString& ) ),
-              SLOT(  deviceRemoved( const QString& ) ) );
+              SLOT(  slotDeviceRemoved( const QString& ) ) );
     connect(  MediaDeviceCache::instance(), SIGNAL( accessibilityChanged( bool, const QString & ) ),
               SLOT(  slotAccessibilityChanged( bool, const QString & ) ) );
 
@@ -96,6 +97,10 @@ MediaDeviceMonitor::checkDevices( const QStringList &udiList )
         {
             emit ipodDetected( MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
         }
+        if( isMtp( udi ) )
+        {
+            emit mtpDetected();
+        }
 
     }
 }
@@ -121,7 +126,7 @@ MediaDeviceMonitor::deviceAdded(  const QString &udi )
 }
 
 void
-MediaDeviceMonitor::deviceRemoved( const QString &udi )
+MediaDeviceMonitor::slotDeviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
 
@@ -172,5 +177,30 @@ MediaDeviceMonitor::isIpod( const QString &udi )
     /* if iPod found, return true */
     return (device.product() == "iPod");
 
+}
+
+bool
+MediaDeviceMonitor::isMtp( const QString &udi )
+{
+    DEBUG_BLOCK
+
+    Solid::Device device;
+
+    device = Solid::Device( udi );
+    if( !device.is<Solid::PortableMediaPlayer>() )
+        return false;
+
+    Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
+    
+    foreach( QString protocol, pmp->supportedProtocols() )
+    {
+        if( protocol == "mtp" )
+        {
+            debug() << "MTP device detected!";
+            return true;
+        }
+    }
+
+    return false;
 }
 
