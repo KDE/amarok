@@ -412,11 +412,12 @@ Playlist::GraphicsItem::findArtistForCurrentAlbum() const
         //that means we have to execute the loop at least once
         QModelIndex idx;
         int row = m_currentRow + 1;
+
         do
         {
             idx = The::playlistModel()->index( row++, 0 );
             Meta::TrackPtr track = idx.data( TrackRole ).value< Meta::TrackPtr >();
-            if( track->artist() )
+            if( track && track->artist() )
             {
                 if( artist != track->artist()->name() )
                     return QString();
