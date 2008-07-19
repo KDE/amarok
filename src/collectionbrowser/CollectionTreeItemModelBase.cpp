@@ -448,8 +448,11 @@ void
 CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::DataList data)
 {
     Q_UNUSED( collectionId )
+    DEBUG_BLOCK
+
     if ( data.count() == 0 )
         return;
+    
     //if we are expanding an item, we'll find the sender in m_childQueries
     //otherwise we are filtering all collections
     QueryMaker *qm = static_cast<QueryMaker*>( sender() );
@@ -457,55 +460,59 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
     {
         CollectionTreeItem *parent = d->m_childQueries.value( qm );
         QModelIndex parentIndex;
-        if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel
-            parentIndex = QModelIndex();
-        else
-            parentIndex = createIndex( parent->row(), 0, parent );
-
-        //add new rows after existing ones here (which means all artists nodes
-        //will be inserted after the "Various Artists" node
-        beginInsertRows( parentIndex, parent->childCount(), parent->childCount() + data.count()-1 );
-        populateChildren( data, parent );
-        endInsertRows();
-
-        for( int count = parent->childCount(), i = 0; i < count; i++ )
-        {
-            CollectionTreeItem *item = parent->child( i );
-            if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
-            {
-                listForLevel( item->level(), item->queryMaker(), item );
-            }
-        }
-
-        if ( parent->isDataItem() )
-        {
-            if ( m_expandedItems.contains( parent->data() ) )
-                emit expandIndex( parentIndex );
+        if( parent ) {
+            if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel
+                parentIndex = QModelIndex();
             else
-                //simply insert the item, nothing will change if it is already in the set
-                m_expandedItems.insert( parent->data() );
-        }
-        else
-        {
-            m_expandedCollections.insert( parent->parentCollection() );
+                parentIndex = createIndex( parent->row(), 0, parent );
+
+            //add new rows after existing ones here (which means all artists nodes
+            //will be inserted after the "Various Artists" node
+            beginInsertRows( parentIndex, parent->childCount(), parent->childCount() + data.count()-1 );
+            populateChildren( data, parent );
+            endInsertRows();
+
+            for( int count = parent->childCount(), i = 0; i < count; i++ )
+            {
+                CollectionTreeItem *item = parent->child( i );
+                if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
+                {
+                    listForLevel( item->level(), item->queryMaker(), item );
+                }
+            }
+
+            if ( parent->isDataItem() )
+            {
+                if ( m_expandedItems.contains( parent->data() ) )
+                    emit expandIndex( parentIndex );
+                else
+                    //simply insert the item, nothing will change if it is already in the set
+                    m_expandedItems.insert( parent->data() );
+            }
+            else
+            {
+                m_expandedCollections.insert( parent->parentCollection() );
+            }
         }
     }
     else if( d->m_compilationQueries.contains( qm ) )
     {
         CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
         QModelIndex parentIndex;
-        if (parent == m_rootItem ) // will never happen in CollectionTreeItemModel
-        {
-            parentIndex = QModelIndex();
+        if( parent ) {
+            if (parent == m_rootItem ) // will never happen in CollectionTreeItemModel
+            {
+                parentIndex = QModelIndex();
+            }
+            else
+            {
+                parentIndex = createIndex( parent->row(), 0, parent );
+            }
+            //we only insert the "Various Artists" node
+            beginInsertRows( parentIndex, 0, 0 );
+            new CollectionTreeItem( data, parent );
+            endInsertRows();
         }
-        else
-        {
-            parentIndex = createIndex( parent->row(), 0, parent );
-        }
-        //we only insert the "Various Artists" node
-        beginInsertRows( parentIndex, 0, 0 );
-        new CollectionTreeItem( data, parent );
-        endInsertRows();
     }
 }
 
