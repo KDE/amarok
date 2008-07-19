@@ -145,30 +145,18 @@ ScriptManager::ScriptManager( QWidget* parent )
     /// Category items
     m_generalCategory    = new QTreeWidgetItem( m_gui->treeWidget );
     m_lyricsCategory     = new QTreeWidgetItem( m_gui->treeWidget );
-    m_scoreCategory      = new QTreeWidgetItem( m_gui->treeWidget );
-    m_transcodeCategory  = new QTreeWidgetItem( m_gui->treeWidget );
-    m_contextCategory    = new QTreeWidgetItem( m_gui->treeWidget );
     m_servicesCategory   = new QTreeWidgetItem( m_gui->treeWidget );
 
     m_generalCategory  ->setText( 0, i18n( "General" ) );
     m_lyricsCategory   ->setText( 0, i18n( "Lyrics" ) );
-    m_scoreCategory    ->setText( 0, i18n( "Score" ) );
-    m_transcodeCategory->setText( 0, i18n( "Transcoding" ) );
-    m_contextCategory  ->setText( 0, i18n( "Context Browser" ) );
     m_servicesCategory ->setText( 0, i18n( "Scripted Services" ) );
 
     m_generalCategory  ->setFlags( Qt::ItemIsEnabled );
     m_lyricsCategory   ->setFlags( Qt::ItemIsEnabled );
-    m_scoreCategory    ->setFlags( Qt::ItemIsEnabled );
-    m_transcodeCategory->setFlags( Qt::ItemIsEnabled );
-    m_contextCategory  ->setFlags( Qt::ItemIsEnabled );
     m_servicesCategory ->setFlags( Qt::ItemIsEnabled );
 
     m_generalCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
     m_lyricsCategory   ->setIcon( 0, SmallIcon( "folder-amarok" ) );
-    m_scoreCategory    ->setIcon( 0, SmallIcon( "folder-amarok" ) );
-    m_transcodeCategory->setIcon( 0, SmallIcon( "folder-amarok" ) );
-    m_contextCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
     m_servicesCategory ->setIcon( 0, SmallIcon( "folder-amarok" ) );
 
 
@@ -176,9 +164,6 @@ ScriptManager::ScriptManager( QWidget* parent )
     KConfigGroup config = Amarok::config( "ScriptManager" );
     m_generalCategory  ->setExpanded( config.readEntry( "General category open", false ) );
     m_lyricsCategory   ->setExpanded( config.readEntry( "Lyrics category open", false ) );
-    m_scoreCategory    ->setExpanded( config.readEntry( "Score category State", false ) );
-    m_transcodeCategory->setExpanded( config.readEntry( "Transcode category open", false ) );
-    m_contextCategory  ->setExpanded( config.readEntry( "Context category open", false ) );
     m_servicesCategory ->setExpanded( config.readEntry( "Service category open", false ) );
 
     connect( m_gui->treeWidget, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), SLOT( slotCurrentChanged( QTreeWidgetItem* ) ) );
@@ -235,9 +220,6 @@ ScriptManager::~ScriptManager()
     // Save the open/closed state of the category items
     config.writeEntry( "General category open", m_generalCategory->isExpanded() );
     config.writeEntry( "Lyrics category open", m_lyricsCategory->isExpanded() );
-    config.writeEntry( "Score category open", m_scoreCategory->isExpanded() );
-    config.writeEntry( "Transcode category open", m_transcodeCategory->isExpanded() );
-    config.writeEntry( "Context category open", m_contextCategory->isExpanded() );
     config.writeEntry( "Service category open", m_servicesCategory->isExpanded() );
 
     config.sync();
@@ -312,39 +294,6 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& url )
 //    notifyScripts( "fetchLyricsByUrl " + url );
 }
 
-
-void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filetype )
-{
-//    notifyScripts( "transcode " + srcUrl + ' ' + filetype );
-}
-
-
-void
-ScriptManager::requestNewScore( const QString &url, double prevscore, int playcount, int length, float percentage, const QString &reason )
-{
-    const QString script = ensureScoreScriptRunning();
-    if( script.isNull() )
-    {
-    // Scoring is currently disabled, so don't show warning
-#if 0
-        The::statusBar()->longMessage(
-            i18n( "No score scripts were found, or none of them worked. Automatic scoring will be disabled. Sorry." ),
-            KDE::StatusBar::Sorry );
-#endif
-        return;
-    }
-/*
-    m_scripts[script].process->writeStdin(
-        QString( "requestNewScore %6 %1 %2 %3 %4 %5" )
-        .arg( prevscore )
-        .arg( playcount )
-        .arg( length )
-        .arg( percentage )
-        .arg( reason )
-        .arg( QString( QUrl::toPercentEncoding( url ) ) ) ); //last because it might have %s
-*/
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // private slots
 ////////////////////////////////////////////////////////////////////////////////
@@ -380,8 +329,6 @@ ScriptManager::slotCurrentChanged( QTreeWidgetItem* item )
 {
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
-                            item == m_scoreCategory ||
-                            item == m_transcodeCategory ||
                             item == m_servicesCategory;
 
     if( item && !isCategory )
@@ -560,14 +507,6 @@ ScriptManager::slotRunScript( bool silent )
                                          "You may only run one lyrics script at a time." ) );
         return false;
     }
-
-    if( m_scripts[name].type == "transcode" && !transcodeScriptRunning().isEmpty() )
-    {
-        if( !silent )
-            KMessageBox::sorry( 0, i18n( "Another transcode script is already running. "
-                                         "You may only run one transcode script at a time." ) );
-        return false;
-    }
     const KUrl url = m_scripts[name].url;
     QTime time;
     //load the wrapper classes
@@ -660,9 +599,6 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
-                            item == m_scoreCategory ||
-                            item == m_transcodeCategory ||
-                            item == m_contextCategory ||
                             item == m_servicesCategory;
 
     if( !item || isCategory )
@@ -754,42 +690,6 @@ ScriptManager::scriptRunningOfType( const QString &type ) const
     return QString();
 }
 
-
-QString
-ScriptManager::ensureScoreScriptRunning()
-{
-    AMAROK_NOTIMPLEMENTED
-
-    // FIXME this code sometimes causes a crash:
-    //
-    //#26 0xb5d91b24 in QTreeWidget::setCurrentItem (this=0x8757538, item=0x8941fe0) at itemviews/qtreewidget.cpp:2749
-    //#27 0xb78b78e7 in ScriptManager::runScript (this=0x870bc00, name=@0x8710484, silent=true)
-    //    at /var/tmp/paludis/media-sound-amarok-scm/work/amarok/amarok/src/dialogs/scriptmanager.cpp:236
-    //#28 0xb78b7a94 in ScriptManager::ensureScoreScriptRunning (this=0x870bc00)
-    //    at /var/tmp/paludis/media-sound-amarok-scm/work/amarok/amarok/src/dialogs/scriptmanager.cpp:798
-
-#if 0
-    QString s = scoreScriptRunning();
-    if( !s.isNull() )
-        return s;
-
-    if( runScript( AmarokConfig::lastScoreScript(), true /*silent*/ ) )
-        return AmarokConfig::lastScoreScript();
-
-    const QString def = i18n( "Score" ) + ": " + "Default";
-    if( runScript( def, true ) )
-        return def;
-
-    const QStringList scripts = scoreScripts();
-    QStringList::ConstIterator end = scripts.constEnd();
-    for( QStringList::ConstIterator it = scripts.constBegin(); it != end; ++it )
-        if( runScript( *it, true ) )
-            return *it;
-
-#endif
-    return QString();
-}
-
 void
 ScriptManager::loadScript( const QString& path )
 {
@@ -833,25 +733,10 @@ ScriptManager::loadScript( const QString& path )
                     li = new QTreeWidgetItem( m_lyricsCategory );
                     li->setText( 0, name );
                 }
-                if( type == "transcode" )
-                {
-                    li = new QTreeWidgetItem( m_transcodeCategory );
-                    li->setText( 0, name );
-                }
-                if( type == "score" )
-                {
-                    li = new QTreeWidgetItem( m_scoreCategory );
-                    li->setText( 0, name );
-                }
                 if( type == "service" )
                 {
                     li = new QTreeWidgetItem( m_servicesCategory );
                     li->setText( 0, name );
-                }
-                if( type == "context" )
-                {
-                    li = new QTreeWidgetItem( m_contextCategory );
-                        li->setText( 0, name );
                 }
                 if( type == "generic" )
                 {

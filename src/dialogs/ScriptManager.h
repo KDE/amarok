@@ -84,18 +84,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         /** Sends a fetchLyrics notification to retrieve lyrics from a specific page */
         void notifyFetchLyricsByUrl( const QString& url );
 
-        /** Return name of the transcode script currently running, or QString::null if none */
-        QString transcodeScriptRunning() const;
-
-        /** Sends a transcode notification to all scripts */
-        void notifyTranscode( const QString& srcUrl, const QString& filetype );
-
-        /** Return name of the scoring script currently running, or QString::null if none */
-        QString scoreScriptRunning() const;
-
-        /** Returns a list of all scoring scripts */
-        QStringList scoreScripts() const;
-
         /** Asks the current score script to give a new score based on the parameters. */
         void requestNewScore( const QString &url, double prevscore, int playcount, int length, float percentage, const QString &reason );
 
@@ -149,9 +137,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         QTreeWidgetItem*       m_generalCategory;
         QTreeWidgetItem*       m_lyricsCategory;
-        QTreeWidgetItem*       m_scoreCategory;
-        QTreeWidgetItem*       m_transcodeCategory;
-        QTreeWidgetItem*       m_contextCategory;
         QTreeWidgetItem*       m_servicesCategory;
 
         bool                   m_installSuccess;
@@ -183,12 +168,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 inline QStringList ScriptManager::lyricsScripts() const { return scriptsOfType( "lyrics" ); }
 
 inline QString ScriptManager::lyricsScriptRunning() const { return scriptRunningOfType( "lyrics" ); }
-
-inline QString ScriptManager::transcodeScriptRunning() const { return scriptRunningOfType( "transcode" ); }
-
-inline QStringList ScriptManager::scoreScripts() const { return scriptsOfType( "score" ); }
-
-inline QString ScriptManager::scoreScriptRunning() const { return scriptRunningOfType( "score" ); }
 
 #endif /* AMAROK_SCRIPTMANAGER_H */
 

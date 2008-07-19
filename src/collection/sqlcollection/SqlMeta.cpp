@@ -29,7 +29,7 @@
 #include "meta/OrganiseCapability.h"
 #include "meta/UpdateCapability.h"
 #include "MetaUtility.h"
-#include "ScriptManager.h"
+//#include "ScriptManager.h"
 #include "servicebrowser/lastfm/SimilarArtistsAction.h"
 #include "SqlRegistry.h"
 #include "SqlCollection.h"
@@ -599,7 +599,7 @@ SqlTrack::finishedPlaying( double playedFraction )
     {
         m_firstPlayed = m_lastPlayed;
     }
-    ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
+//    ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
     updateStatisticsInDb();
     notifyObservers();
 }
