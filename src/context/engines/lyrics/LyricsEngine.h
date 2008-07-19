@@ -34,18 +34,19 @@ using namespace Context;
 class LyricsEngine : public DataEngine, public ContextObserver, public LyricsObserver
 {
     Q_OBJECT
+
 public:
     LyricsEngine( QObject* parent, const QList<QVariant>& args );
     
     QStringList sources() const;
     
-    void message( const ContextState& state );
+    // reimplemented from Context::Observer
+    virtual void message( const ContextState& state );
     
     void newLyrics( QStringList& lyrics );
     void lyricsMessage( QString& message );
     
 protected:
-    
     bool sourceRequested( const QString& name );
     
 private:

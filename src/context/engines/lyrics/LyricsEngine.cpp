@@ -36,28 +36,33 @@ QStringList LyricsEngine::sources() const
 {
     QStringList sourcesList;
     sourcesList << "lyrics";
-    return sourcesList; // we don't have pre-set sources, as there is only
-    // one source---lyrics.
+
+    return sourcesList; // we don't have pre-set sources, as there is only one source: lyrics.
 }
 
 bool LyricsEngine::sourceRequested( const QString& name )
 {
     Q_UNUSED( name )
+
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     removeAllData( name );
     setData( name, QVariant());
     update();
+
     return true;
 }
 
 void LyricsEngine::message( const ContextState& state )
 {
+    DEBUG_BLOCK
+
     if( state == Current && m_requested )
         update();
 }
 
 void LyricsEngine::update()
 {
+    DEBUG_BLOCK
 
     Meta::TrackPtr curtrack = The::engineController()->currentTrack();
     if( !curtrack )
@@ -111,17 +116,20 @@ void LyricsEngine::update()
         ScriptManager::instance()->notifyFetchLyrics( artist, title );
 
     }
-
 }
 
 void LyricsEngine::newLyrics( QStringList& lyrics )
 {
+    DEBUG_BLOCK
+
     removeAllData( "lyrics" );
     setData( "lyrics", "lyrics", lyrics );
 }
 
 void LyricsEngine::lyricsMessage( QString& msg )
 {
+    DEBUG_BLOCK
+
     removeAllData( "lyrics" );
     setData( "lyrics", msg, msg );
 }
