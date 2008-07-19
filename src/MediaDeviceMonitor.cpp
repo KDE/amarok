@@ -97,7 +97,7 @@ MediaDeviceMonitor::checkDevices( const QStringList &udiList )
         {
             emit ipodDetected( MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
         }
-        if( isMtp( udi ) )
+        else if( isMtp( udi ) )
         {
             emit mtpDetected();
         }
