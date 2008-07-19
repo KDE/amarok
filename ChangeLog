@@ -14,8 +14,9 @@ VERSION 2.0-alpha2:
     * Update the QtScript APIs.
 
   BUGFIXES:
-	* Fix crash when trying to download a playlist from unreachable server.
-	* Script Manager now automatically restarts scripts on next startup.
+    * Fix crash when switching tracks in the playlist. (BR 166964)
+    * Fix crash when trying to download a playlist from unreachable server.
+    * Script Manager now automatically restarts scripts on next startup.
     * Correctly handle albums with the same name. (BR 164173)
     * Various bugfixes for the systray tooltip.
     * In the Wikipedia applet scrolling works properly now.
