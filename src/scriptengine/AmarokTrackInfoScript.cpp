@@ -162,6 +162,11 @@ namespace Amarok
         return track ? track->year()->prettyName() : QString();
     }
 
+    QString AmarokTrackInfoScript::playableUrl() const
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return track ? track->playableUrl().path() : QString();
+    }
 }
 
 #include "AmarokTrackInfoScript.moc"

@@ -44,23 +44,15 @@ namespace Amarok
             Q_PROPERTY( int DiscNumber READ discNumber );
             Q_PROPERTY( QString Comment READ comment );
             Q_PROPERTY( int PlayCount READ playCount );
-            Q_PROPERTY( bool Playable READ playable );
-            //todo: good for now, but we'd prefer some more detail info for album, and maybe artist, composer...
+            Q_PROPERTY( int Playable READ playable ); //-1 for trackerror
             Q_PROPERTY( QString Album READ album );
             Q_PROPERTY( QString Artist READ artist );
             Q_PROPERTY( QString Composer READ composer );
             Q_PROPERTY( QString Genre READ genre );
             Q_PROPERTY( QString Year READ year );
+            Q_PROPERTY( QString Path READ playableUrl );
+//TODO: good for now, but we'd prefer some more detail info for album, and maybe artist, composer...
 
-/* todo: implement trackinfo
-            Q_PROPERTY( KUrl playableUrl READ playableUrl );
-            Q_PROPERTY( QString prettyUrl READ prettyUrl );
-            Q_PROPERTY( QString url READ url );
-            Q_PROPERTY( uint lastPlayed READ lastPlayed );
-            Q_PROPERTY( uint firstPlayed READ firstPlayed );
-            Q_PROPERTY( Collection collection READ collection );
-            Q_PROPERTY( QString lyrics READ cachedLyrics WRITE setCachedLyrics );
-*/
         public slots:
 
         private:
@@ -84,6 +76,7 @@ namespace Amarok
             QString composer() const;
             QString genre() const;
             QString year() const;
+            QString playableUrl() const;
     };
 }
 

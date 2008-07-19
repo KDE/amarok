@@ -15,35 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_SCRIPT_H
-#define AMAROK_SCRIPT_H
+#include "AmarokLyricsScript.h"
 
-#include <QObject>
+#include "App.h"
+
 #include <QtScript>
 
 namespace Amarok
 {
-
-    class AmarokScript : public QObject
+    AmarokLyricsScript::AmarokLyricsScript( QScriptEngine* ScriptEngine )
+    : QObject( kapp )
     {
-        Q_OBJECT
+        Q_UNUSED( ScriptEngine );
+    }
 
-        public:
-            AmarokScript( QScriptEngine* ScriptEngine );
-            ~AmarokScript();
-            void slotConfigured();
+    AmarokLyricsScript::~AmarokLyricsScript()
+    {
+    }
 
-        public slots:
-            QString  Version();
-            void     Quit();
-            int      alert( QString type, QString text );
-
-        signals:
-            void configured();
-
-        private slots:
-
-    };
 }
 
-#endif
+#include "AmarokLyricsScript.moc"

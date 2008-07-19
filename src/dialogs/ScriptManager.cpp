@@ -35,6 +35,7 @@
 #include "Osd.h"
 #include "scriptengine/AmarokCollectionScript.h"
 #include "scriptengine/AmarokEngineScript.h"
+#include "scriptengine/AmarokLyricsScript.h"
 #include "scriptengine/AmarokOSDScript.h"
 #include "scriptengine/AmarokPlaylistScript.h"
 #include "scriptengine/AmarokScript.h"
@@ -936,6 +937,11 @@ ScriptManager::startScriptEngine( QString name )
     objectPtr = new Amarok::AmarokPlaylistScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Playlist", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
+
+    objectPtr = new Amarok::AmarokLyricsScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr );
+    m_global.setProperty( "Lyrics", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
     objectPtr = new Amarok::AmarokStatusbarScript( scriptEngine );

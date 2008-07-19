@@ -50,12 +50,12 @@ if ( TrackInfo.Artist || TrackInfo.Album )
     OSD.setText( "Hey, this is " + TrackInfo.Artist );
     OSD.show();
 
-    StatusBar.shortMessage( "You are listening to album: " + TrackInfo.Album );
+    StatusBar.longMessage( "You are listening to album: " + TrackInfo.Album );
 }
 
 function Configured()
 {
-    print( "Configure Button Clicked!" );
+    Amarok.alert( "error", "No configuration content!" );
 }
 
 function TrackChanged()

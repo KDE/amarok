@@ -55,19 +55,14 @@ namespace Amarok
         StatusBar::instance()->resetMainText();
     }
 
-    void AmarokStatusbarScript::longMessage( const QString &text, Amarok::StatusBar::MessageType type )
+    void AmarokStatusbarScript::longMessage( const QString &text )
     {
-        StatusBar::instance()->longMessage( text, type );
+        StatusBar::instance()->longMessage( text );
     }
 
-    void AmarokStatusbarScript::longMessageThreadSafe( const QString &text )
+    void AmarokStatusbarScript::shortLongMessage( const QString &_short, const QString &_long )
     {
-        StatusBar::instance()->longMessageThreadSafe( text );
-    }
-
-    void AmarokStatusbarScript::shortLongMessage( const QString &_short, const QString &_long, Amarok::StatusBar::MessageType type )
-    {
-        StatusBar::instance()->shortLongMessage( _short, _long, type );
+        StatusBar::instance()->shortLongMessage( _short, _long );
     }
 
     void AmarokStatusbarScript::shortMessage( const QString &text, bool longShort )
