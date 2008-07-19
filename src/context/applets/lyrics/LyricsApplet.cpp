@@ -41,8 +41,6 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
-
-
     m_lyricsProxy = new QGraphicsProxyWidget( this );
     m_lyrics = new QTextEdit;
     m_lyrics->setReadOnly( true );
@@ -65,8 +63,9 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
-    kDebug() << "LyricsApplet::dataUpdated";
     Q_UNUSED( name )
+    DEBUG_BLOCK
+
     if( data.size() == 0 ) return;
 
     if( data.contains( "noscriptrunning" ) )
