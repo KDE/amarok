@@ -113,6 +113,7 @@ ContextView::~ContextView()
 
 void ContextView::clear( const ContextState& state )
 {
+    Q_UNUSED( state )
     DEBUG_BLOCK
 
     QString name = "amarok_homerc";
