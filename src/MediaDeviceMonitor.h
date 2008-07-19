@@ -42,11 +42,11 @@ class QStringList;
 class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 {
     Q_OBJECT
-            
+
     public:
 
     static MediaDeviceMonitor* instance() { return s_instance ? s_instance : new MediaDeviceMonitor(); }
-        
+
     MediaDeviceMonitor();
     ~MediaDeviceMonitor();
 
@@ -59,21 +59,21 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
         void mtpDetected();
 
     public slots:
-        
+
 
     private slots:
-        
+
 
         void deviceAdded( const QString &udi );
         void deviceRemoved( const QString &udi );
         void slotAccessibilityChanged( bool accessible, const QString & udi );
-        
+
 
     private:
 
         bool isIpod( const QString &udi );
         bool isMtp( const QString &udi );
-        
+
         void checkDevices( const QStringList &udiList); // scans for supported devices
 
         static MediaDeviceMonitor* s_instance;

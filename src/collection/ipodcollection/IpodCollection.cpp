@@ -80,11 +80,15 @@ IpodCollectionFactory::ipodDetected( const QString &mountPoint, const QString &u
     coll = new IpodCollection( mountPoint, udi );
         if ( coll )
         {
+            if( !m_collectionMap.contains( udi ) )
+            {
+            
             // TODO: connect to MediaDeviceMonitor signals
          //   connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
            //          SLOT( slotCollectionDisconnected( const QString & ) ) );
             emit newCollection( coll );
             debug() << "emitting new ipod collection";
+            }
         }
 
 }

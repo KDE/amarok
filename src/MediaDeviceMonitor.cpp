@@ -36,6 +36,7 @@ MediaDeviceMonitor::MediaDeviceMonitor() : QObject()
 {
     DEBUG_BLOCK
     s_instance = this;
+    init();
 }
 
 MediaDeviceMonitor::~MediaDeviceMonitor()
@@ -73,6 +74,7 @@ MediaDeviceMonitor::init()
 void
 MediaDeviceMonitor::refreshDevices()
 {
+    DEBUG_BLOCK
     /* Refresh cache */
     MediaDeviceCache::instance()->refreshCache();
     QStringList udiList = MediaDeviceCache::instance()->getAll();
@@ -85,6 +87,7 @@ MediaDeviceMonitor::refreshDevices()
 void
 MediaDeviceMonitor::checkDevices( const QStringList &udiList )
 {
+    DEBUG_BLOCK
     /* poll udi list for supported devices */
     foreach(const QString &udi, udiList )
     {
@@ -147,6 +150,7 @@ MediaDeviceMonitor::slotAccessibilityChanged( bool accessible, const QString & u
 bool
 MediaDeviceMonitor::isIpod( const QString &udi )
 {
+    DEBUG_BLOCK
 
     Solid::Device device;
 
