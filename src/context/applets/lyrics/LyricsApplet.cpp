@@ -48,9 +48,19 @@ void LyricsApplet::init()
     m_lyricsProxy->setWidget( m_lyrics );
     m_lyrics->setPlainText( i18n( "Hello, World" ) );
 
-    dataEngine( "amarok-lyrics" )->connectSource( "lyrics", this );
+    connect( dataEngine( "amarok-lyrics" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
 
     constraintsEvent();
+}
+
+void LyricsApplet::connectSource( const QString& source )
+{
+    DEBUG_BLOCK
+
+    if( source == "lyrics" ) {
+        dataEngine( "amarok-lyrics" )->connectSource( source, this );
+        dataUpdated( source, dataEngine("amarok-lyrics" )->query( "lyrics" ) ); // get data initally
+    }
 }
 
 void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
