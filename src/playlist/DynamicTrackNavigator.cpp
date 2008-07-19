@@ -115,27 +115,20 @@ Playlist::DynamicTrackNavigator::removePlayed()
 }
 
 void
-Playlist::DynamicTrackNavigator::activeRowChanged( int, int )
+Playlist::DynamicTrackNavigator::activeRowChanged( int from, int to )
 {
-    removePlayed();
-}
-
-
-void
-Playlist::DynamicTrackNavigator::activeRowExplicitlyChanged( int from, int to )
-{
-    DEBUG_BLOCK
-    debug() << "row changed: f,t = " << from << ", " << to;
-
+    if( from == -1 )
+        from = 0;
 
     while( from > to )
         setAsUpcoming( from-- );
     while( from < to )
         setAsPlayed( from++ );
 
-    removePlayed();
     appendUpcoming();
+    removePlayed();
 }
+
 
 void
 Playlist::DynamicTrackNavigator::repopulate()

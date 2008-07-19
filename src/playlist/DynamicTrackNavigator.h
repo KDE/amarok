@@ -47,7 +47,6 @@ class Model;
 
         private slots:
             void activeRowChanged( int from, int to );
-            void activeRowExplicitlyChanged( int from, int to );
             void repopulate();
 
         private:

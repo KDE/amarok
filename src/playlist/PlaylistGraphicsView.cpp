@@ -44,13 +44,15 @@
 #include <QVariant>
 #include <QScrollBar>
 
+#include <typeinfo>
+
+
 Playlist::GraphicsView *Playlist::GraphicsView::s_instance = 0;
 
 Playlist::GraphicsView::GraphicsView( QWidget *parent )
     : QGraphicsView( parent )
     , m_model( 0 )
     , m_contextMenuItem( 0 )
-    , m_isAnimating( false )
 {
     setAcceptDrops( true );
     setAlignment( Qt::AlignLeft | Qt::AlignTop );
@@ -73,16 +75,12 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     setBackgroundBrush ( QBrush( Qt::transparent ) );
     setAutoFillBackground ( true );
 
-    m_timer = 0;
-
     setObjectName( "PlaylistGraphicsView" );
 }
 
 void
 Playlist::GraphicsView::setModel( Playlist::Model *model )
 {
-//     DEBUG_BLOCK
-
     m_model = model;
 
     rowsInserted( QModelIndex(), 0, m_model->rowCount() - 1);
@@ -164,7 +162,6 @@ Playlist::GraphicsView::editTrackInformation()
 void
 Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
-//     DEBUG_BLOCK
     event->accept();
     foreach( const QString &mime, The::playlistModel()->mimeTypes() )
     {
@@ -259,15 +256,14 @@ Playlist::GraphicsView::removeSelection()
             int i = index + 1;
             while( in.data( GroupRole ).toInt() == Body || in.data( GroupRole ).toInt() == Collapsed || in.data( GroupRole ).toInt() == End )
             {
-                debug() << "here!";
-                 ++count;
-                 in = The::playlistModel()->index( i++, 0 );
+                ++count;
+                in = The::playlistModel()->index( i++, 0 );
             }
             count--;
         }
         //count = modelIndex.data( GroupRole ).toInt() == Head ? count - 1 : count;
         //if ( modelIndex.data( GroupRole ).toInt() == Head ||  modelIndex.data( GroupRole ).toInt() == Head_Collapsed ) count = count - 1;
-        
+
         m_model->removeRows( index, count );
     }
 
@@ -280,7 +276,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
 {
     Q_UNUSED( parent );
 
-     //call setRow on track imidiately preceding the insertion as this might have to change its
+    //call setRow on track imidiately preceding the insertion as this might have to change its
     // look and height if it has been grouped by the model.
     if ( start > 0 )
         m_tracks[ start-1 ]->setRow( start-1 );
@@ -289,7 +285,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
     for ( int j = 0; j < start; j++ )
         cumulativeHeight += m_tracks.at( j )->boundingRect().height();
 
-//     debug() << "start: " << start << " ,end: " << end;
+    //     debug() << "start: " << start << " ,end: " << end;
     for( int i = start; i <= end; i++ )
     {
 
@@ -308,25 +304,35 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
     shuffleTracks( end + 1 );
 }
 
-void
+    void
 Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int end )
 {
-    DEBUG_BLOCK
     Q_UNUSED( parent );
-    for( int i = end; i >= start; i-- )
-        delete m_tracks.takeAt( i );
 
-    // make sure all following tracks has their colors updated correctly
+    for( int i = end; i >= start; i-- )
+    {
+        QGraphicsItem* item = m_tracks[i];
+
+        // kill the animator if three is one
+        if( m_animatorsByItem.contains( item ) )
+        {
+            QGraphicsItemAnimation* oldAnimator = m_animatorsByItem[item];
+            m_animatorsByTimeline.remove( oldAnimator->timeLine(), oldAnimator );
+            delete oldAnimator;
+            m_animatorsByItem.remove( item );
+        }
+
+        delete m_tracks.takeAt( i );
+    }
+
     for ( int i = start; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 
-    shuffleTracks( start, -1, false );
-    scene()->setSceneRect( scene()->itemsBoundingRect() );
 
-    //update();
+    shuffleTracks( start, -1 );
 }
 
-void
+    void
 Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::GraphicsItem *above )
 {
     int moveMeIndex = m_tracks.indexOf( moveMe );
@@ -373,26 +379,16 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
 }
 
 
-void
+    void
 Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool animate )
 {
-     DEBUG_BLOCK
-
-     debug() << "number if items: " << m_tracks.count();
     if( startPosition < 0 )
         return;
 
     if( stopPosition < 0 || stopPosition > m_tracks.size() )
         stopPosition = m_tracks.size();
 
-    if ( m_timer == 0 ) {
-        m_timer = new QTimeLine( 300 ); // 0.3 second duration
-        m_timer->setCurveShape( QTimeLine::EaseInCurve );
-        m_timer->setUpdateInterval( 30 ); // make sure that there is no leftover time
-                                    //that results in items not moving all the way
-        connect( m_timer, SIGNAL( finished () ), this, SLOT( animationComplete() ) );
-
-    }
+    QTimeLine* timeline = 0;
 
     double cumulativeHeight = 0;
 
@@ -409,35 +405,52 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool
         double itemHeight = item->boundingRect().height();
         cumulativeHeight += itemHeight;
 
+        if( currentY == desiredY )
+            continue;
+
+
+        // If this item already being animated, stop that animation.
+        if( m_animatorsByItem.contains( item ) )
+        {
+            QGraphicsItemAnimation* oldAnimator = m_animatorsByItem[item];
+            m_animatorsByTimeline.remove( oldAnimator->timeLine(), oldAnimator );
+            delete oldAnimator;
+            m_animatorsByItem.remove( item );
+        }
+
         double visibleTop = mapToScene( 0,0 ).y();
         double visibleBottom = mapToScene( 0, height() ).y();
 
         // Animate the repositioning of the item if it is within the viewable area and this playlist is visible...
-       if ( animate && !( ( desiredY < visibleTop ) || ( desiredY > visibleBottom ) ) &&
-              ( ( currentY >= visibleTop ) && ( currentY <= visibleBottom ) ) &&
-               ( itemHeight != 0 ) && isVisible() )
-        {
+       if ( animate &&
+            (visibleTop <= desiredY && desiredY <= visibleBottom || 
+            visibleTop <= currentY && currentY <= visibleBottom) &&
+            itemHeight != 0 && isVisible() )
+       {
+            if ( timeline == 0 )
+            {
+                timeline = new QTimeLine( 300 ); // 0.3 second duration
+                timeline->setCurveShape( QTimeLine::EaseInCurve );
+                timeline->setUpdateInterval( 30 ); // make sure that there is no leftover time
+                //that results in items not moving all the way
+                connect( timeline, SIGNAL( finished () ), this, SLOT( animationComplete() ) );
+            }
 
-            m_isAnimating = true;
-            bool moveUp = false;
-            if( desiredY > currentY )
-                moveUp = true;
-
-            qreal distanceMoved = moveUp ? ( desiredY - currentY ) : ( currentY - desiredY );
 
             QGraphicsItemAnimation *animator = new QGraphicsItemAnimation;
             animator->setItem( item );
-            animator->setTimeLine( m_timer );
+            animator->setTimeLine( timeline );
+            m_animatorsByTimeline.insert( timeline, animator );
+            m_animatorsByItem.insert( item, animator );
 
-            // if distanceMoved is negative, then we are moving the object towards the bottom of the screen
-            for( qreal i = 0; i < distanceMoved; ++i )
+            qreal distanceMoved = qAbs( desiredY - currentY );
+            bool moveUp = desiredY > currentY ? true : false;
+
+            for( qreal i = 0; i <= distanceMoved; ++i )
             {
                 qreal newY = moveUp ? ( currentY + i ) : ( currentY - i );
                 animator->setPosAt( i / distanceMoved, QPointF( 0.0, newY ) );
             }
-            animator->setPosAt( 1, QPointF( 0.0, desiredY ) );
-
-            m_animators.append( animator );
         }
         else
         {
@@ -447,7 +460,9 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool
         }
 
     }
-    m_timer->start();
+
+    if( timeline )
+        timeline->start();
 }
 
 void
@@ -463,40 +478,48 @@ Playlist::GraphicsView::modelReset()
 void
 Playlist::GraphicsView::dataChanged(const QModelIndex & index)
 {
-     if( !index.isValid() )
+    if( !index.isValid() )
         return;
 
-     if( m_tracks.count() > index.row() )
-     {
+    if( m_tracks.count() > index.row() )
+    {
         m_tracks.at( index.row() )->dataChanged();
-     }
+    }
 }
 
 void Playlist::GraphicsView::groupingChanged()
 {
     // ouch!!! this is expensive!!
-    DEBUG_BLOCK
 
     int i;
     for ( i = 0; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 
-
-    shuffleTracks( 0, -1, false );
-    //update();
+    shuffleTracks( 0, -1 );
 }
 
 void Playlist::GraphicsView::animationComplete()
 {
-    while( !m_animators.empty () ) {
-        delete m_animators.takeFirst();
+    QTimeLine* timeline = dynamic_cast<QTimeLine*>( sender() );
+    if( timeline )
+    {
+        foreach( QGraphicsItemAnimation* animator, m_animatorsByTimeline.values( timeline ) )
+        {
+            m_animatorsByItem.remove( animator->item() );
+            delete animator;
+        }
+
+        m_animatorsByTimeline.remove( timeline );
+
+        timeline->deleteLater();
     }
-    m_isAnimating = false;
+
+    if( m_animatorsByItem.isEmpty() )
+        scene()->setSceneRect( scene()->itemsBoundingRect() );
 }
 
 void Playlist::GraphicsView::rowsChanged( int start )
 {
-    DEBUG_BLOCK
     for ( int i = start; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 }

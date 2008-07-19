@@ -519,6 +519,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeYearSelection()
 
     QSpinBox* yearSpin = new QSpinBox( hLayout );
     yearSpin->setMinimum( 0 );
+    yearSpin->setMaximum( 3000 );
 
     connect( yearSpin, SIGNAL(valueChanged( const QString& )),
             this, SLOT(valueChanged(const QString&)) );

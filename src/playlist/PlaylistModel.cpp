@@ -32,7 +32,6 @@
 #include "DynamicTrackNavigator.h"
 #include "EngineController.h"
 #include "PlaylistItem.h"
-#include "PlaylistGraphicsView.h"
 #include "PlaylistFileSupport.h"
 #include "RandomAlbumNavigator.h"
 #include "RandomTrackNavigator.h"
@@ -426,7 +425,10 @@ void
 Playlist::Model::play( int row )
 {
     if( m_items.size() > row )
+    {
+        m_nextRowCandidate = row;
         The::engineController()->play( m_items[ row ]->track() );
+    }
 }
 
 void
@@ -681,7 +683,6 @@ Playlist::Model::clear()
     removeRows( 0, m_items.size() );
     m_albumGroups.clear();
     m_lastAddedTrackAlbum = Meta::AlbumPtr();
-    The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 //    m_activeRow = -1;
 }
 
@@ -869,17 +870,17 @@ Playlist::Model::engineNewTrackPlaying()
 
     if( track )
     {
-        if( rowExists( m_nextRowCandidate ) &&
+        if( rowExists( m_nextRowCandidate  ) &&
                 track == m_items.at( m_nextRowCandidate )->track() )
         {
-            debug() << "engineNewTrackPlaying:: HIT";
             setActiveRow( m_nextRowCandidate );
 
             emit activeRowChanged( oldActiveRow, activeRow() );
         }
         else
         {
-            debug() << "engineNewTrackPlaying:: MISS";
+            warning() << "engineNewTrackPlaying:: MISS";
+
             foreach( Item* item, itemList() )
             {
                 if( item->track() == track )
@@ -889,7 +890,7 @@ Playlist::Model::engineNewTrackPlaying()
                 }
             }
 
-            emit activeRowExplicitlyChanged( oldActiveRow, activeRow() );
+            emit activeRowChanged( oldActiveRow, activeRow() );
         }
     }
 
@@ -1092,8 +1093,6 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
     }
     dataChanged( createIndex( row, 0 ), createIndex( rowCount() - 1, 0 ) );
 
-    The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
-
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 
@@ -1142,8 +1141,6 @@ Playlist::Model::removeTracksCommand( int position, int rows )
     regroupAlbums( position, rows, OffsetAfter, 0 - rows );
 
     endRemoveRows();
-
-    The::playlistView()->scene()->setSceneRect( The::playlistView()->scene()->itemsBoundingRect() );
 
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
@@ -1229,11 +1226,6 @@ Playlist::Model::moveRow(int row, int to)
 void
 Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode, int offset )
 {
-    DEBUG_BLOCK
-
-    debug() << "first row: " << firstRow << ", last row: " << lastRow;
-
-
     int area1Start = -1;
     int area1End = -1;
     int area2Start = -1;

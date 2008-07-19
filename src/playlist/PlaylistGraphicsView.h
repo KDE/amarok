@@ -95,9 +95,9 @@ namespace Playlist
             QList<GraphicsItem*>  m_tracks;
             Model                *m_model;
             Playlist::GraphicsItem *m_contextMenuItem;
-            QTimeLine * m_timer;
-            QList<QGraphicsItemAnimation *> m_animators;
-            bool m_isAnimating;
+
+            QMultiHash< QTimeLine*, QGraphicsItemAnimation* > m_animatorsByTimeline;
+            QHash< QGraphicsItem*, QGraphicsItemAnimation* > m_animatorsByItem;
     };
 
 }

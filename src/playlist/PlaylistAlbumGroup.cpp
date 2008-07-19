@@ -67,12 +67,8 @@ void Playlist::AlbumGroup::addRow(int row)
 
 int Playlist::AlbumGroup::groupMode( int row )
 {
-    //DEBUG_BLOCK
-
     foreach( const Group &group, m_groups ) {
         if ( group.rows.contains( row ) ) {
-
-            //debug() << "row " << row << " is collapsed= " << group.collapsed;
 
             if ( group.rows.count() < 2 )
                 return None;

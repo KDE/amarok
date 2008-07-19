@@ -255,7 +255,6 @@ namespace Playlist
             void rowsChanged( int startRow );
             void rowMoved( int from, int to );
             void activeRowChanged( int from, int to );
-            void activeRowExplicitlyChanged( int from, int to );
             void repopulate();
 
         protected:
