@@ -28,6 +28,7 @@ ShoutcastTrack::ShoutcastTrack( const QString &name, const KUrl & playlistUrl )
     , m_title( name )
 {
     DEBUG_BLOCK
+    setTitle( name );
 }
 
 ShoutcastTrack::~ ShoutcastTrack()

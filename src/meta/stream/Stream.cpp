@@ -170,7 +170,9 @@ Track::setYear( const QString& newYear )
 void
 Track::setTitle( const QString &newTitle )
 {
-    Q_UNUSED( newTitle )
+    //it is sometimes usefull to set a title for a stream so it has a nice name
+    //before we actually start playing it
+    d->title = newTitle;
 }
 
 QString
