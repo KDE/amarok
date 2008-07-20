@@ -25,6 +25,31 @@
 #include "PlayerAdaptor.h"
 #include "playlist/PlaylistModel.h"
 
+// Marshall the DBusStatus data into a D-BUS argument
+QDBusArgument &operator<<(QDBusArgument &argument, const DBusStatus &status)
+{
+    argument.beginStructure();
+    argument << status.Play;
+    argument << status.Random;
+    argument << status.Repeat;
+    argument << status.RepeatPlaylist;
+    argument.endStructure();
+    return argument;
+}
+
+// Retrieve the DBusStatus data from the D-BUS argument
+const QDBusArgument &operator>>(const QDBusArgument &argument, DBusStatus &status)
+{
+    argument.beginStructure();
+    argument >> status.Play;
+    argument >> status.Random;
+    argument >> status.Repeat;
+    argument >> status.RepeatPlaylist;
+    argument.endStructure();
+    return argument;
+}
+
+
 namespace Amarok
 {
 
@@ -33,6 +58,8 @@ namespace Amarok
     PlayerDBusHandler::PlayerDBusHandler()
         : QObject(kapp)
     {
+        qDBusRegisterMetaType<DBusStatus>();
+
         s_instance = this;
         setObjectName("PlayerDBusHandler");
 

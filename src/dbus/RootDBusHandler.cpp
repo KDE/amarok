@@ -24,12 +24,33 @@
 
 #include "RootAdaptor.h"
 
+// Marshall the DBusVersion data into a D-BUS argument
+QDBusArgument &operator<<(QDBusArgument &argument, const Version &version)
+{
+    argument.beginStructure();
+    argument << version.major << version.minor;
+    argument.endStructure();
+    return argument;
+}
+
+// Retrieve the DBusVersion data from the D-BUS argument
+const QDBusArgument &operator>>(const QDBusArgument &argument, Version &version)
+{
+    argument.beginStructure();
+    argument >> version.major >> version.minor;
+    argument.endStructure();
+    return argument;
+}
+
+
 namespace Amarok
 {
 
     RootDBusHandler::RootDBusHandler()
         : QObject( kapp )
     {
+        qDBusRegisterMetaType<Version>();
+
         new RootAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/", this);
     }

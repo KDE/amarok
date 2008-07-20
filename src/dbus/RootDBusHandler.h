@@ -20,12 +20,20 @@
 #define ROOT_DBUS_HANDLER_H
 
 #include <QObject>
+#include <QDBusArgument>
 
 struct Version
 {
     int major;
     int minor;
 };
+
+Q_DECLARE_METATYPE(Version);
+
+// Marshall the DBusVersion data into a D-BUS argument
+QDBusArgument &operator<<(QDBusArgument &argument, const Version &version);
+// Retrieve the DBusVersion data from the D-BUS argument
+const QDBusArgument &operator>>(const QDBusArgument &argument, Version &version);
 
 namespace Amarok
 {
