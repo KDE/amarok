@@ -323,7 +323,7 @@ NepomukTrack::finishedPlaying( double playedFraction )
         m_firstPlayed = m_lastPlayed;
     }
     m_playCount++;
-    ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
+    //ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
     notifyObservers();
     statsThread->start( QThread::LowPriority );
 }
