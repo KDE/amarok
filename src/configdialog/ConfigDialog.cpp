@@ -41,18 +41,18 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
 {
     setAttribute( Qt::WA_DeleteOnClose );
 
-    ConfigDialogBase* collection  = new CollectionConfig( this );
     ConfigDialogBase* general     = new GeneralConfig( this );
-//    ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
-    ConfigDialogBase* osd         = new OsdConfig( this );
-    ConfigDialogBase* playback    = new PlaybackConfig( this );
+    ConfigDialogBase* collection  = new CollectionConfig( this );
     ConfigDialogBase* services    = new ServiceConfig( this );
+    ConfigDialogBase* playback    = new PlaybackConfig( this );
+    ConfigDialogBase* osd         = new OsdConfig( this );
+//    ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
     addPage( general,     i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
-    addPage( playback,    i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
-    addPage( osd,         i18n( "On Screen Display" ), "preferences-indicator-amarok", i18n( "Configure On-Screen-Display" ) );
     addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
     addPage( services,    i18n( "Internet Services" ), "services-amarok", i18n( "Configure Services" ) );
+    addPage( playback,    i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
+    addPage( osd,         i18n( "On Screen Display" ), "preferences-indicator-amarok", i18n( "Configure On-Screen-Display" ) );
 //    addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
     setButtons( Help | Ok | Apply | Cancel );
