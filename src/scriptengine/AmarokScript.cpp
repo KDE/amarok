@@ -70,10 +70,12 @@ namespace Amarok
             return KMessageBox::warningContinueCancel( 0, text );
         else if ( type == "warningYesNoCancel" )
             return KMessageBox::warningYesNoCancel( 0, text );
-        else
-            warning() << "alert type not found!";
+        
+        warning() << "alert type not found!";
         //TODO: write to error log since it's a script error
+        return -1;
     }
+
     void AmarokScript::slotConfigured()
     {
         emit configured();
