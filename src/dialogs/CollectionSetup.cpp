@@ -159,6 +159,9 @@ void
 Item::init()
 {
     setText( 0, m_url.fileName() );
+
+    // if we don't explicitly set the state to unchecked then QTreeWidgetItem doesn't render the checkbox
+    QTreeWidgetItem::setCheckState( 0, Qt::Unchecked ); // bypass this implementation
     
     m_lister.setDelayedMimeTypes( true );
     m_lister.setDirOnlyMode( true );
@@ -197,11 +200,12 @@ Item::setCheckState( int column, Qt::CheckState state )
 
     QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
 
-    QTreeWidgetItem::setCheckState( column, state );
-    
+    // this forbids disabled items from having their checkState changed
     if( isFullyDisabled() )
         return;
-
+    
+    QTreeWidgetItem::setCheckState( column, state );
+    
     if( CollectionSetup::instance()->recursive() )
     {
         for( int i = 0; i < childCount(); ++i )
@@ -293,8 +297,6 @@ Item::newItems( const KFileItemList &list ) //SLOT
 
         Item *item = new Item( this, (*it).url() , disable );
         
-        // if we don't explicitly set the state to unchecked then QTreeWidgetItem doesn't render the checkbox
-        item->setCheckState( 0, Qt::Unchecked );
         item->setIcon( 0, (*it).pixmap( KIconLoader::SizeSmall ) );
 
         if( !item->isFullyDisabled() )
