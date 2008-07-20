@@ -31,48 +31,9 @@ GeneralConfig::GeneralConfig( QWidget* parent )
 {
     setupUi( this ); 
 
-    QStringList browsers;
-    browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany" << "safari" << "mozilla";
+    kcfg_ExternalBrowser->setText( AmarokConfig::externalBrowser() );
 
-#if 0
-    // Remove browsers which are not actually installed
-    for( QStringList::Iterator it = browsers.begin(), end = browsers.end(); it != end; ) {
-        if( KStandardDirs::findExe( *it ).isEmpty() )
-            it = browsers.erase( it );
-        else
-            ++it;
-    }
-#endif
-#ifdef Q_WS_MAC
-    if ( !KStandardDirs::findExe( "open" ).isEmpty() )
-        browsers.prepend( i18n( "Default Browser" ) );
-#else
-    if ( !KStandardDirs::findExe( "kfmclient" ).isEmpty() )
-        browsers.prepend( i18n( "Default KDE Browser" ) );
-#endif
-
-    kComboBox_browser->insertItems( -1, browsers );
-    kLineEdit_customBrowser->setText( AmarokConfig::externalBrowser() );
-    int index = browsers.indexOf( AmarokConfig::externalBrowser() );
-    if( index >= 0 )
-        kComboBox_browser->setCurrentItem( AmarokConfig::externalBrowser() );
-    else if( AmarokConfig::externalBrowser() ==
-#ifdef Q_WS_MAC
-            "open"
-#else
-            "xdg-open"
-#endif
-      )
-    {
-        kComboBox_browser->setCurrentItem( 0 );
-    }
-    else
-    {
-        checkBox_customBrowser->setChecked( true );
-    }
-
-    connect( kComboBox_browser, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
-    connect( kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
+    connect( kcfg_ExternalBrowser, SIGNAL( textChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
 }
 
 GeneralConfig::~GeneralConfig()
