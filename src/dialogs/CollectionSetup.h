@@ -28,72 +28,77 @@
 
 namespace CollectionFolder { class Item; }
 
-class QFixedListView : public Q3ListView
 // Reimplement sizeHint to have directorylist not being too big for "low" (1024x768 is not exactly low) resolutions
+class QFixedListView : public Q3ListView
 {
-public:
-    explicit QFixedListView ( QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 )
-                   :Q3ListView(parent, name, f) {}
-    QSize sizeHint() const
-    {
-        return QSize(400, 100);
-    }
+    public:
+        explicit QFixedListView ( QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 )
+            :Q3ListView( parent, name, f )
+        { }
 
+        QSize sizeHint() const
+        {
+            return QSize( 400, 100 );
+        }
 };
 
 class CollectionSetup : public KVBox
 {
     friend class CollectionFolder::Item;
 
-public:
-    static CollectionSetup* instance() { return s_instance; }
+    public:
+        static CollectionSetup* instance() { return s_instance; }
 
-    CollectionSetup( QWidget* );
-    void writeConfig();
+        CollectionSetup( QWidget* );
+        void writeConfig();
+    
+        QStringList dirs() const { return m_dirs; }
+        bool recursive() const { return m_recursive->isChecked(); }
+        bool monitor() const { return m_monitor->isChecked(); }
 
-    QStringList dirs() const { return m_dirs; }
-    bool recursive() const { return m_recursive->isChecked(); }
-    bool monitor() const { return m_monitor->isChecked(); }
+    private:
+        static CollectionSetup* s_instance;
 
-private:
-    static CollectionSetup* s_instance;
-
-    QFixedListView *m_view;
-    QStringList m_dirs;
-    QCheckBox *m_recursive;
-    QCheckBox *m_monitor;
+        QFixedListView *m_view;
+        QStringList m_dirs;
+        QCheckBox *m_recursive;
+        QCheckBox *m_monitor;
 };
 
 
-namespace CollectionFolder { //just to keep it out of the global namespace
+namespace CollectionFolder //just to keep it out of the global namespace
+{
 
 class Item : public QObject, public Q3CheckListItem
 {
-Q_OBJECT
-public:
-    Item( Q3ListView *parent, const QString &root );
-    Item( Q3ListViewItem *parent, const KUrl &url , bool full_disable=false );
+        Q_OBJECT
 
-    Q3CheckListItem *parent() const { return static_cast<Q3CheckListItem*>( Q3ListViewItem::parent() ); }
-    bool isFullyDisabled() const { return m_fullyDisabled; }
-    bool isDisabled() const { return isFullyDisabled() || ( CollectionSetup::instance()->recursive() && parent() && parent()->isOn() ); }
-    QString fullPath() const;
+    public:
+        Item( Q3ListView *parent, const QString &root );
+        Item( Q3ListViewItem *parent, const KUrl &url , bool full_disable=false );
 
-    void setOpen( bool b ); // reimpl.
-    void stateChange( bool ); // reimpl.
-    void activate(); // reimpl.
-    void paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align ); // reimpl.
+        Q3CheckListItem *parent() const { return static_cast<Q3CheckListItem*>( Q3ListViewItem::parent() ); }
+        bool isFullyDisabled() const { return m_fullyDisabled; }
+        bool isDisabled() const { return isFullyDisabled() || ( CollectionSetup::instance()->recursive() && parent() && parent()->isOn() ); }
+        QString fullPath() const;
 
-public slots:
-    void newItems( const KFileItemList& );
-    void completed() { if( childCount() == 0 ) { setExpandable( false ); repaint(); } }
+        void setOpen( bool b ); // reimpl.
+        void stateChange( bool ); // reimpl.
+        void activate(); // reimpl.
+        void paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align ); // reimpl.
 
-private:
-    KDirLister m_lister;
-    KUrl       m_url;
-    bool       m_listed;
-    bool       m_fullyDisabled;
+    public slots:
+        void newItems( const KFileItemList& );
+        void completed() { if( childCount() == 0 ) { setExpandable( false ); repaint(); } }
+
+    private:
+        KDirLister m_lister;
+        KUrl       m_url;
+        bool       m_listed;
+        bool       m_fullyDisabled;
 };
-}
+
+} // end namespace CollectionFolder
 
 #endif
+
