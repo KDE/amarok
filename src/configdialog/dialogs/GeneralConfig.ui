@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
-    <height>487</height>
+    <width>398</width>
+    <height>369</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout" >
@@ -232,95 +232,6 @@
     </layout>
    </item>
    <item row="2" column="0" >
-    <widget class="QGroupBox" name="moodFrame" >
-     <property name="title" >
-      <string>Moodbar</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_4" >
-      <item row="0" column="0" colspan="2" >
-       <widget class="QLabel" name="moodbarHelpLabel" >
-        <property name="text" >
-         <string>You need the moodbar package installed to enable the moodbar feature.</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QCheckBox" name="kcfg_ShowMoodbar" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="toolTip" >
-         <string>Displays a visual representation of the current track in the column of the playlist window.</string>
-        </property>
-        <property name="whatsThis" >
-         <string>Displays a visual representation of the current track in the column of the playlist window.</string>
-        </property>
-        <property name="text" >
-         <string>Use &amp;moods</string>
-        </property>
-        <property name="checked" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" >
-       <widget class="QCheckBox" name="kcfg_MakeMoodier" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="toolTip" >
-         <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
-        </property>
-        <property name="whatsThis" >
-         <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
-        </property>
-        <property name="text" >
-         <string>Make m&amp;oodier:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" >
-       <widget class="QComboBox" name="kcfg_AlterMood" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text" >
-          <string>Happy Like a Rainbow</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Angry as Hell</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Frozen in the Arctic</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="2" >
-       <widget class="QCheckBox" name="kcfg_MoodsWithMusic" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="toolTip" >
-         <string>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</string>
-        </property>
-        <property name="whatsThis" >
-         <string>Enabling this option stores Mood data files with the music files. Namely, the mood file for /music/file.mp3 will be /music/file.mood.  Disabling stores them in your home folder.</string>
-        </property>
-        <property name="text" >
-         <string>Stor&amp;e mood data files with music</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0" >
     <spacer name="verticalSpacer" >
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
@@ -377,38 +288,6 @@
    <signal>toggled(bool)</signal>
    <receiver>kComboBox_browser</receiver>
    <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>kcfg_ShowMoodbar</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>GeneralConfig</receiver>
-   <slot>slotUpdateMoodFrame()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>kcfg_MakeMoodier</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>GeneralConfig</receiver>
-   <slot>slotUpdateMoodFrame()</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>
