@@ -463,6 +463,10 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool
 
     if( timeline )
         timeline->start();
+
+    // if there are animators, it will get updated when they are finished
+    if( m_animatorsByItem.isEmpty() )
+        scene()->setSceneRect( scene()->itemsBoundingRect() );
 }
 
 void
