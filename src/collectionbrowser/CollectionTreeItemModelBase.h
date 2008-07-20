@@ -107,7 +107,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         CollectionTreeItem *m_rootItem;
         QList<int> m_levelType;
 
-        struct Private;
+        class Private;
         Private * const d;
 
         QTimeLine *m_timeLine;
@@ -123,8 +123,9 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void update();
 };
 
-struct CollectionTreeItemModelBase::Private
+class CollectionTreeItemModelBase::Private
 {
+ public:
     QMap<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
     QMap<QueryMaker* , CollectionTreeItem* > m_childQueries;
     QMap<QueryMaker* , CollectionTreeItem* > m_compilationQueries;
