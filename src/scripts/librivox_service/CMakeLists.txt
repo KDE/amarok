@@ -2,12 +2,12 @@
 install( FILES
     COPYING
     README
-        librivox_service_script.spec
+        script.spec
         DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/librivox_service
 )
 
 install( PROGRAMS
-        librivox_service_script.rb
+        main.js
         DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/librivox_service
 
 )
