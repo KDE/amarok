@@ -426,7 +426,6 @@ App::initCliArgs() //static
     options.add("debug", ki18n("Print verbose debugging information"));
     options.add("m");
     options.add("toggle-playlist-window", ki18n("Toggle the Playlist-window"));
-    options.add("wizard", ki18n( "Run first-run wizard" ));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
     options.add("cdplay <device>", ki18n("Play an AudioCD from <device> or system:/media/<device>"));
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
@@ -561,22 +560,11 @@ App::continueInit()
     bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
-    // Remember old folder setup, so we can detect changes after the wizard was used
-    //const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
-
-    // Is this needed in Amarok 2?
-    if( Amarok::config().readEntry( "First Run", true ) || args->isSet( "wizard" ) )
-    {
-        std::cout << "STARTUP\n" << std::flush; //hide the splashscreen
-        Amarok::config().writeEntry( "First Run", false );
-        Amarok::config().sync();
-    }
-
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();
     PERF_LOG( "Done creating MainWindow" )
 
-    m_tray           = new Amarok::TrayIcon( mainWindow() );
+    m_tray = new Amarok::TrayIcon( mainWindow() );
 
     PERF_LOG( "Start init of MainWindow" )
     mainWindow()->init(); //creates the playlist, browsers, etc.
