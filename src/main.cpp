@@ -17,11 +17,9 @@
 
 #include "Amarok.h"
 #include "App.h"
-#include "CrashHandler.h"
 #include "metadata/tplugins.h"
 
 #include <KAboutData>
-#include <KCrash>
 #include <KCmdLineArgs>
 #include <KDebug>
 
@@ -125,12 +123,6 @@ int main( int argc, char *argv[] )
     }
 
     App app;
-
-#ifdef Q_WS_X11
-    #ifndef AMAROK_USE_DRKONQI
-    KCrash::setCrashHandler( Amarok::Crash::crashHandler );
-    #endif
-#endif
-
     return app.exec();
 }
+
