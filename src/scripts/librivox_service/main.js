@@ -26,7 +26,7 @@ Importer.loadQtBinding( "qt.network" );
 
 function onConfigure()
 {
-    Amarok.alert( "error", "This script does not require any configuration." );
+    Amarok.alert( "sorry", "This script does not require any configuration." );
 }
 
 function onPopulate( level, parent_id, callback, filter )
@@ -130,8 +130,6 @@ function onPopulate( level, parent_id, callback, filter )
                 Amarok.ScriptableService.donePopulating( service_name, parent_id );
             }
 }
-
-Amarok.configured.connect( Configured );
 
 service_name = "Librivox.org";
 //3 levels, query, books and episodes

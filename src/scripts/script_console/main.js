@@ -19,12 +19,18 @@ function executeLine()
   }
 }
 
+function onConfigure()
+{
+    Amarok.alert( "sorry", "This script does not require any configuration." );
+}
+
 var mainWindow = new QMainWindow();
 var mainWidget = new QWidget( mainWindow );
 var historyList = new QListWidget( mainWidget );
 var inputLine = new QTextEdit( mainWidget );
 var executeButton = new QPushButton( mainWidget );
 executeButton.clicked.connect( this, this.executeLine );
+Amarok.configured.connect( onConfigure );
 
 var layout = new QGridLayout( mainWidget );
 layout.addWidget( this.historyList, 0, 0, 1, 2 );

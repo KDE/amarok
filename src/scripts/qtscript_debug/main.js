@@ -53,9 +53,9 @@ if ( TrackInfo.Artist || TrackInfo.Album )
     StatusBar.longMessage( "You are listening to album: " + TrackInfo.Album );
 }
 
-function Configured()
+function onConfigure()
 {
-    Amarok.alert( "error", "No configuration content!" );
+    Amarok.alert( "sorry", "This script does not require any configuration." );
 }
 
 function TrackChanged()
@@ -78,7 +78,7 @@ function PlaylistCountChanged( count )
     print( count );
 }
 
-Amarok.configured.connect( Configured );
+Amarok.configured.connect( onConfigure );
 Amarok.Engine.trackChanged.connect( TrackChanged );
 Amarok.Engine.trackSeeked.connect( TrackSeeked );
 Amarok.Engine.trackFinished.connect( TrackFinished );
