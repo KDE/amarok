@@ -102,7 +102,7 @@
       <item row="4" column="0" >
        <widget class="QLabel" name="textLabel1_2" >
         <property name="text" >
-         <string>External web &amp;browser:</string>
+         <string>External web browser:</string>
         </property>
         <property name="wordWrap" >
          <bool>false</bool>
@@ -110,24 +110,12 @@
        </widget>
       </item>
       <item row="4" column="1" >
-       <widget class="KLineEdit" name="kcfg_ExternalBrowser" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>150</width>
-          <height>0</height>
-         </size>
-        </property>
+       <widget class="QComboBox" name="kcfg_ExternalBrowser" >
         <property name="toolTip" >
-         <string>Enter filename of external web browser. Leave blank for default.</string>
+         <string>Select browser from the list or type in filename of custom browser</string>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -228,13 +216,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
- </customwidgets>
  <includes>
   <include location="local" >kcombobox.h</include>
   <include location="local" >klineedit.h</include>
