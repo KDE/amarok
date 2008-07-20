@@ -22,7 +22,6 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include <config-amarok.h>  
-#include "moodbar.h"
 
 #include <KStandardDirs>
 
@@ -31,8 +30,6 @@ GeneralConfig::GeneralConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
     setupUi( this ); 
-
-    slotUpdateMoodFrame();
 
     QStringList browsers;
     browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany" << "safari" << "mozilla";
@@ -103,40 +100,8 @@ GeneralConfig::updateSettings() //SLOT
 {
     Amarok::setUseScores( kcfg_UseScores->isChecked() );
     Amarok::setUseRatings( kcfg_UseRatings->isChecked() );
-
-    // The following makes everything with a moodbar redraw itself.
-    Amarok::setMoodbarPrefs( kcfg_ShowMoodbar->isChecked(),
-                             kcfg_MakeMoodier->isChecked(),
-                             kcfg_AlterMood->currentIndex(),
-                             kcfg_MoodsWithMusic->isChecked() );
 }
 
-
-///////////////////////////////////////////////////////////////
-// SLOTS 
-///////////////////////////////////////////////////////////////
-
-void
-GeneralConfig::slotUpdateMoodFrame() //SLOT
-{
-    if( /*Moodbar::executableExists()*/ false /*FIXME: PORT 2.0*/)
-      {
-        moodbarHelpLabel->hide();
-        moodFrame->setEnabled(true);
-
-        kcfg_MakeMoodier->setEnabled(kcfg_ShowMoodbar->isChecked());
-        kcfg_AlterMood->setEnabled(kcfg_ShowMoodbar->isChecked() && kcfg_MakeMoodier->isChecked());
-        kcfg_MoodsWithMusic->setEnabled(kcfg_ShowMoodbar->isChecked());
-      }
-
-    else
-      {
-        moodbarHelpLabel->show();
-        kcfg_ShowMoodbar->setChecked(false);
-        moodFrame->setEnabled(false);
-        moodFrame->hide();
-      }
-}
 
 #include "GeneralConfig.moc"
 

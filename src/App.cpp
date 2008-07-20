@@ -561,15 +561,8 @@ App::continueInit()
     bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
-    PERF_LOG( "Starting moodserver" )
-    // Make this instance so it can start receiving signals
-            //FIXME: REENABLE When the moodserver is ported.
-//     MoodServer::instance();
-    PERF_LOG( "Done starting mood server" )
-
     // Remember old folder setup, so we can detect changes after the wizard was used
     //const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
-
 
     // Is this needed in Amarok 2?
     if( Amarok::config().readEntry( "First Run", true ) || args->isSet( "wizard" ) )
@@ -757,15 +750,6 @@ void App::setUseRatings( bool use )
 {
     AmarokConfig::setUseRatings( use );
     emit useRatings( use );
-}
-
-void App::setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
-{
-    AmarokConfig::setShowMoodbar( show );
-    AmarokConfig::setMakeMoodier( moodier );
-    AmarokConfig::setAlterMood( alter );
-    AmarokConfig::setMoodsWithMusic( withMusic );
-    emit moodbarPrefs( show, moodier, alter, withMusic );
 }
 
 KIO::Job *App::trashFiles( const KUrl::List &files )
@@ -996,8 +980,6 @@ namespace Amarok
 
     void setUseScores( bool use ) { App::instance()->setUseScores( use ); }
     void setUseRatings( bool use ) { App::instance()->setUseRatings( use ); }
-    void setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
-    { App::instance()->setMoodbarPrefs( show, moodier, alter, withMusic ); }
     KIO::Job *trashFiles( const KUrl::List &files ) { return App::instance()->trashFiles( files ); }
 }
 

@@ -73,7 +73,6 @@ class TrackToolTip : public QWidget, public Meta::Observer
         int            m_trackPosition;
         QString        m_tooltip;
         bool           m_haspos;
-        QString        m_moodbarURL;
         QString        m_title;
         QTimer*        m_timer;
             

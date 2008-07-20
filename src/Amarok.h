@@ -160,7 +160,6 @@ namespace Amarok
 
     void setUseScores( bool use ); //defined in app.cpp
     void setUseRatings( bool use );
-    void setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
 
     bool repeatNone(); //defined in actionclasses.cpp
     bool repeatTrack();

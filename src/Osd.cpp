@@ -48,8 +48,6 @@ namespace Amarok
     QImage icon() { return QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ); }
 }
 
-#define MOODBAR_HEIGHT 20
-
 
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
         : QWidget( parent, Qt::Window | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint )
@@ -228,9 +226,6 @@ OSDWidget::determineMetrics( const uint M )
         rect.setHeight( rect.height() + star->height() + M ); //changes bottom edge pos
     }
 
-    if( useMoodbar() )
-        rect.setHeight( rect.height() + MOODBAR_HEIGHT + M );
-
     if( !m_cover.isNull() )
     {
         const int availableWidth = max.width() - rect.width() - M; //WILL be >= (minImageSize.width() - M)
@@ -361,21 +356,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
     QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
     int graphicsHeight = 0;
 
-    if( useMoodbar() )
-    {
-#if 0 // Moodbar needs to be ported.
-        QPixmap moodbar
-          = m_moodbarBundle.moodbar().draw( rect.width(), MOODBAR_HEIGHT );
-        QRect r( rect );
-        r.setTop( rect.bottom() - moodbar.height()
-                  - (m_rating ? star->height() + M : 0) );
-        graphicsHeight += moodbar.height() + M;
-
-        p.drawPixmap( r.left(), r.top(), moodbar );
-        m_moodbarBundle = MetaBundle();
-#endif
-    }
-
     if( m_rating > 0 )
     {
         QRect r( rect );
@@ -470,14 +450,6 @@ OSDWidget::setScreen( int screen )
 {
     const int n = QApplication::desktop()->numScreens();
     m_screen = (screen >= n) ? n-1 : screen;
-}
-
-bool
-OSDWidget::useMoodbar( void )
-{
-    // TODO: Port 2.0
-    // return (m_moodbarBundle.moodbar().state() == Moodbar::Loaded && AmarokConfig::showMoodbar() );
-    return false;
 }
 
 //////  OSDPreviewWidget below /////////////////////

@@ -86,8 +86,6 @@ class OSDWidget : public QWidget
         void resizeEvent( QResizeEvent *e );
         virtual bool event( QEvent* );
 
-        bool useMoodbar( void );
-
         /** distance from screen edge */
         static const int MARGIN = 15;
 

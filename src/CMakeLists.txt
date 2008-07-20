@@ -503,7 +503,6 @@ set(amaroklib_LIB_SRCS
     WidgetBackgroundPainter.cpp
 #    SmartPlaylistEditor.cpp
 #    Statistics.cpp
-#    moodbar.cpp
 )
 
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)

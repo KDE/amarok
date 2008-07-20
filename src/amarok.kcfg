@@ -109,26 +109,6 @@
         <whatsthis>Enable/Disable tray icon animation.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Show Moodbar" type="Bool">
-        <label>Whether to show moodbars in track sliders and in a column in the playlist window</label>
-        <whatsthis>Displays a visual representation of the current track in the slider bar of the player window, the playlist window, and in a column of the playlist window.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Moods With Music" type="Bool">
-        <label>Store Mood data files with music</label>
-        <whatsthis>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Make Moodier" type="Bool">
-        <label>Maximize color spread of Moodbar</label>
-        <whatsthis>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="AlterMood" type="Int">
-        <label>Alter Mood data according to theme</label>
-        <whatsthis>The hues are distributed according to a colour theme, giving a customisable look.</whatsthis>
-        <default>0</default>
-    </entry>
     <entry key="Cover Preview Size" type="Int">
         <label>Size of the cover previews in Contextbrowser and Covermanager</label>
         <whatsthis>Size of the cover previews in Contextbrowser and Covermanager</whatsthis>

@@ -23,7 +23,6 @@
 #include "ui_GeneralConfig.h"
 #include "ConfigDialogBase.h"
 
-
 class GeneralConfig : public ConfigDialogBase, public Ui_GeneralConfig
 {
     Q_OBJECT
@@ -35,12 +34,7 @@ class GeneralConfig : public ConfigDialogBase, public Ui_GeneralConfig
         virtual bool hasChanged();
         virtual bool isDefault();
         virtual void updateSettings();
-
-    private slots:
-        void slotUpdateMoodFrame();
 };
 
-
 #endif
-
 
