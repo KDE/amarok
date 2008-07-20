@@ -36,11 +36,9 @@
 #include "collectionbrowser/CollectionWidget.h"
 #include "context/ContextScene.h"
 #include "context/ContextView.h"
-//#include "context/CoverBling.h"
 #include "context/plasma/plasma.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "filebrowser/FileBrowser.h"
-#include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistGraphicsView.h"
@@ -410,7 +408,7 @@ void MainWindow::savePlaylist() const
 void
 MainWindow::slotBurnPlaylist() const //SLOT
 {
-    K3bExporter::instance()->exportCurrentPlaylist();
+    //K3bExporter::instance()->exportCurrentPlaylist();
 }
 
 void
@@ -641,11 +639,12 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
     ac->addAction( "playlist_save", action );
 
-
+    /*
     action = new KAction( KIcon( "tools-media-optical-burn-amarok" ), i18n( "Burn Current Playlist" ), this );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotBurnPlaylist() ) );
     action->setEnabled( K3bExporter::isAvailable() );
     ac->addAction( "playlist_burn", action );
+    */
 
     action = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
@@ -848,9 +847,11 @@ MainWindow::createActions()
     new Amarok::RandomAction( ac );
     new Amarok::FavorAction( ac );
 
+    /*
     PERF_LOG( "MainWindow::createActions 9" )
     if( K3bExporter::isAvailable() )
         new Amarok::BurnMenuAction( ac );
+    */
 
     ac->addAssociatedWidget( this );
     foreach (QAction* action, ac->actions())

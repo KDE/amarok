@@ -474,7 +474,6 @@ set(amaroklib_LIB_SRCS
     filebrowser/MyDirLister.cpp
     filebrowser/MyDirOperator.cpp
     filebrowser/kbookmarkhandler.cpp
-    k3bexporter.cpp
     ktrm.cpp
 #    mediabrowser.cpp
     medium.cpp

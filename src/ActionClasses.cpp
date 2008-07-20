@@ -19,7 +19,6 @@
 #include "Debug.h"
 #include "covermanager/CoverManager.h"
 #include "EngineController.h"
-#include "k3bexporter.h"
 #include "MainWindow.h"
 #include "playlist/PlaylistModel.h"
 //#include "mediumPluginManager.h"
@@ -423,13 +422,13 @@ BurnMenu::instance()
 void
 BurnMenu::slotBurnCurrentPlaylist() //SLOT
 {
-    K3bExporter::instance()->exportCurrentPlaylist();
+    //K3bExporter::instance()->exportCurrentPlaylist();
 }
 
 void
 BurnMenu::slotBurnSelectedTracks() //SLOT
 {
-    K3bExporter::instance()->exportSelectedTracks();
+    //K3bExporter::instance()->exportSelectedTracks();
 }
 
 
