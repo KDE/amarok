@@ -1,6 +1,5 @@
 add_subdirectory( qtscript_debug )
 add_subdirectory( radio_station_service )
-add_subdirectory( file_browser_demo_service )
 add_subdirectory( seeqpod_service )
 add_subdirectory( librivox_service )
 add_subdirectory( script_console )

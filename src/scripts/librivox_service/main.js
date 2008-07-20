@@ -70,12 +70,12 @@ function onPopulate( level, parent_id, callback, filter )
                 elt = doc.firstChildElement( "results/book/title" );
                 for ( ; !elt.isNull(); elt = nextSiblingElement( "results/book/title" ) )
                 {
-                    titles += ele.toText().data();
+                    titles += elt.toText().data();
                 }
                 elt = doc.firstChildElement( "results/book/url" );
                 for ( ; !elt.isNull(); elt = nextSiblingElement( "results/book/url" ) )
                 {
-                    links += ele.toText().data();
+                    links += elt.toText().data();
                 }
 
                 count = 0
@@ -103,13 +103,14 @@ function onPopulate( level, parent_id, callback, filter )
                 doc.setContent(data);
                 data.close();
 
+                elt = doc.firstChildElement( "<ul id=\"chapters\">" );
                 #cut result down to size a little
-                startIndex = doc.index( "<ul id=\"chapters\">" )
-                data = data.slice!(startIndex..data.length-1)
+                startIndex = doc.index( "<ul id=\"chapters\">" );
+                data = data.slice(startIndex.data.length-1);
 
                 #remove all <em> and </em> as they screw up simple parsing if present
-                data = data.replace("<em>", "")
-                data = data.replace("</em>", "")
+                data = data.replace("<em>", "");
+                data = data.replace("</em>", "");
 
                 #get stuff we need
                 data.scan(/<li>(.*?)<br\s\/>\n.*\n.*\n.*href=\"(.*?\.ogg)\">ogg\svorbis/) do |a|
@@ -137,4 +138,3 @@ doc = new QDomDocument("doc");
 elt = new QDomElement;
 Amarok.configured.connect( onConfigure );
 Amarok.ScriptableService.populate.connect( onPopulate );
-//app = Qt::Application.new(ARGV)
