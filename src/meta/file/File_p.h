@@ -154,6 +154,7 @@ void Track::Private::readMetaData()
             if ( track_encoding == "TIS-620" ) track_encoding = ""; //ISO-8859-11, no match
             if ( track_encoding != "" )
             {
+                //FIXME:about 10% tracks cannot be decoded well. It shows blank for now.
                 debug () << "Final Codec Name:" << track_encoding.toUtf8() <<endl;
                 QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
                 m_data.title = codec->toUnicode( m_data.title.toLatin1() );
