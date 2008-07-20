@@ -21,6 +21,7 @@
 #   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         #
 ###########################################################################
 
+Importer.loadQtBinding( "qt.core" );
 Importer.loadQtBinding( "qt.xml" );
 Importer.loadQtBinding( "qt.network" );
 
@@ -59,18 +60,13 @@ function onPopulate( level, parent_id, callback, filter )
                 url = "http://librivox.org/newcatalog/search_xml.php?simple=" + filter;
 
                 #fetch results
-                http = new QHttp;
                 http.setHost( "librivox.org" );
-                data = new QIODevice;
                 http.get( url, data );
                 http.close();
 
-                #some brute force parsing....
-                doc = new QDomDocument("doc");
                 doc.setContent(data);
                 data.close();
 
-                elt = new QDomElement;
                 elt = doc.firstChildElement( "results/book/title" );
                 for ( ; !elt.isNull(); elt = nextSiblingElement( "results/book/title" ) )
                 {
@@ -100,13 +96,10 @@ function onPopulate( level, parent_id, callback, filter )
                 print( " url: " +  callback );
 
                 #fetch results
-                http = new QHttp;
                 http.setHost( "librivox.org" );\
-                data = new QIODevice;
                 http.get( callback, data );
                 http.close();
 
-                doc = new QDomDocument("doc");
                 doc.setContent(data);
                 data.close();
 
@@ -138,7 +131,10 @@ short_description = "Search for books from Librivox";
 root_html = "Librivox service script";
 Amarok.ScriptableService.initService( service_name, levels, short_description, root_html, true );
 
+http = new QHttp;
+data = new QIODevice;
+doc = new QDomDocument("doc");
+elt = new QDomElement;
 Amarok.configured.connect( onConfigure );
 Amarok.ScriptableService.populate.connect( onPopulate );
-
 //app = Qt::Application.new(ARGV)
