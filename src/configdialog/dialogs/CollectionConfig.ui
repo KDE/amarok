@@ -32,18 +32,6 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="Q3GroupBox" name="databaseBox" >
-     <property name="title" >
-      <string>Collection Database</string>
-     </property>
-     <layout class="QVBoxLayout" >
-      <item>
-       <widget class="DbSetup" native="1" name="dbSetupFrame" />
-      </item>
-     </layout>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
@@ -57,7 +45,6 @@
   <customwidget>
    <class>DbSetup</class>
    <extends>QWidget</extends>
-   <header>dbsetup.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

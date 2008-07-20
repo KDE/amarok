@@ -455,7 +455,6 @@ set(amaroklib_LIB_SRCS
     covermanager/CoverManager.cpp
     CrashHandler.cpp
     cuefile.cpp
-    dbsetup.ui.h
     dialogs/CollectionSetup.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
@@ -514,10 +513,6 @@ qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.trackl
 set( amaroklib_DEPENDS "amarokplasma" "amarokpud" )
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
-
-kde4_add_ui3_files(amaroklib_LIB_SRCS
-   dbsetup.ui
-)
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/EditCoverSearchDialog.ui

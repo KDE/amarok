@@ -30,23 +30,9 @@ CollectionConfig::CollectionConfig( QWidget* parent )
 {
     setupUi( this );
 
-#if !defined(USE_MYSQL)
-    databaseBox->hide();
-#endif
-
-#ifndef USE_MYSQL
-    //FIXME we do this because this widget breaks the Apply button (always enabled).
-    //It breaks because it is set to type="password" in the .kcfg file. Setting to
-    //type="string" also fixes this bug, but means the password is stored in plain
-    //text. This is a temporary fix so that the majority of users get a fixed Apply
-    //button.
-    delete dbSetupFrame->kcfg_MySqlPassword2;
-#endif
     collectionFoldersBox->setColumns( 1 );
     m_collectionSetup = new CollectionSetup( collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
     m_collectionSetup->setMaximumSize( QSize( 3500000, 600 ) );
-
-    connect( dbSetupFrame->databaseEngine, SIGNAL( activated( int ) ), parent, SLOT( updateButtons() ) );
 }
 
 CollectionConfig::~CollectionConfig()
@@ -60,7 +46,7 @@ CollectionConfig::~CollectionConfig()
 bool
 CollectionConfig::hasChanged()
 {
-    return databaseTypeCode( dbSetupFrame->databaseEngine->currentText() ) != AmarokConfig::databaseEngine().toInt();
+    return false;
 }
 
 bool
@@ -73,30 +59,7 @@ void
 CollectionConfig::updateSettings()
 {
     m_collectionSetup->writeConfig();
-
-    const int dbType = databaseTypeCode( dbSetupFrame->databaseEngine->currentText() );
-    if ( dbType != AmarokConfig::databaseEngine().toInt() ) {
-        AmarokConfig::setDatabaseEngine( QString::number( dbType ) );
-        emit settingsChanged( parent()->objectName() );
-    }
 }
-
-
-///////////////////////////////////////////////////////////////
-// PRIVATE METHODS
-///////////////////////////////////////////////////////////////
-
-int
-CollectionConfig::databaseTypeCode( const QString& type ) const
-{
-    Q_UNUSED( type );
-    // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
-//     int dbType = DbConnection::sqlite;
-//     if ( type == "MySQL")
-//         dbType = DbConnection::mysql;
-    return 0; //Hardcode sqlite for now
-}
-
 
 #include "CollectionConfig.moc"
 
