@@ -132,21 +132,15 @@ Item::Item( QTreeWidget *parent, const QString &root )
     , m_listed( false )
     , m_fullyDisabled( false )
 {
-    setText( 0, root );
-
-    m_lister.setDelayedMimeTypes( true );
     //Since we create the "/" checklistitem here, we need to enable it if needed
     if( CollectionSetup::instance()->m_dirs.contains( root ) )
-        static_cast<QTreeWidgetItem*>( this )->setCheckState( 0, Qt::Checked );
-    m_lister.setDirOnlyMode( true );
-    connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
-    
+        setCheckState( 0, Qt::Checked );
+
+    // we always want the root node expanded by default
     setExpanded( true );
-    setChildIndicatorPolicy( QTreeWidgetItem::ShowIndicator );
 
-    setDisabled( isDisabled() );
+    init();
 }
-
 
 Item::Item( QTreeWidgetItem *parent, const KUrl &url , bool full_disable /* default=false */ )
     : QTreeWidgetItem( parent )
@@ -155,25 +149,31 @@ Item::Item( QTreeWidgetItem *parent, const KUrl &url , bool full_disable /* defa
     , m_listed( false )
     , m_fullyDisabled( full_disable )
 {
-    setText( 0, url.fileName() );
-
-    m_lister.setDelayedMimeTypes( true );
-    m_lister.setDirOnlyMode( true );
-    connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
     connect( &m_lister, SIGNAL(completed()), SLOT(completed()) );
     connect( &m_lister, SIGNAL(canceled()), SLOT(completed()) );
     
-    setChildIndicatorPolicy( QTreeWidgetItem::ShowIndicator );
-    setDisabled( isDisabled() );
+    init();
 }
 
+void
+Item::init()
+{
+    setText( 0, m_url.fileName() );
+    
+    m_lister.setDelayedMimeTypes( true );
+    m_lister.setDirOnlyMode( true );
+
+    setChildIndicatorPolicy( QTreeWidgetItem::ShowIndicator );
+    setDisabled( isDisabled() );
+
+    connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
+}
 
 QString
 Item::fullPath() const
 {
     return m_url.path();
 }
-
 
 void
 Item::setExpanded( bool b )
@@ -197,10 +197,10 @@ Item::setCheckState( int column, Qt::CheckState state )
 
     QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
 
+    QTreeWidgetItem::setCheckState( column, state );
+    
     if( isFullyDisabled() )
         return;
-
-    QTreeWidgetItem::setCheckState( column, state );
 
     if( CollectionSetup::instance()->recursive() )
     {
@@ -281,18 +281,23 @@ Item::newItems( const KFileItemList &list ) //SLOT
         //"/dev" or one of their children. This is because we will never scan them, so we
         //might as well show that.
         //These match up with the skipped dirs in CollectionScanner::readDir.
-        bool fully_disable=false;
+        bool disable = false;
 
         if ( this->m_url.fileName().isEmpty() && ( (*it).url().fileName()=="proc"
              || (*it).url().fileName()=="dev" || (*it).url().fileName()=="sys" ) )
         {
-            fully_disable=true;
+            disable = true;
         }
 
-        Item *item = new Item( this, (*it).url() , fully_disable || this->isFullyDisabled() );
-        item->setCheckState( 0, Qt::Unchecked );
+        disable |= this->isFullyDisabled();
 
-        if ( !item->isFullyDisabled() )
+        Item *item = new Item( this, (*it).url() , disable );
+        
+        // if we don't explicitly set the state to unchecked then QTreeWidgetItem doesn't render the checkbox
+        item->setCheckState( 0, Qt::Unchecked );
+        item->setIcon( 0, (*it).pixmap( KIconLoader::SizeSmall ) );
+
+        if( !item->isFullyDisabled() )
         {
             if( CollectionSetup::instance()->recursive() && checkState(0) == Qt::Checked ||
                 CollectionSetup::instance()->m_dirs.contains( item->fullPath() ) )
@@ -300,41 +305,8 @@ Item::newItems( const KFileItemList &list ) //SLOT
                 item->setCheckState( 0, Qt::Checked );
             }
         }
-
-        item->setIcon( 0, (*it).pixmap( KIconLoader::SizeSmall ) );
     }
 }
-
-/*
-void
-Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
-{
-    bool dirty = false;
-    QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
-
-    // Figure out if a child folder is activated
-    for ( QStringList::ConstIterator iter = cs_m_dirs.constBegin(), end = cs_m_dirs.constEnd();
-            iter != end;
-            ++iter )
-        if ( ( *iter ).startsWith( m_url.path( KUrl::AddTrailingSlash ) ) )
-            if ( *iter != "/" ) // "/" should not match as a child of "/"
-                dirty = true;
-
-    // Use a different color if this folder has an activated child folder
-    const QFont f = p->font();
-    QColorGroup _cg = cg;
-    if ( dirty )
-    {
-        _cg.setColor( QColorGroup::Text, listView()->colorGroup().link() );
-        QFont font = p->font();
-        font.setBold( !font.bold() );
-        p->setFont( font );
-    }
-
-    Q3CheckListItem::paintCell( p, isDisabled() ? listView()->palette().disabled() : _cg, column, width, align );
-    p->setFont( f );
-}
-*/
 
 } //namespace Collection
 

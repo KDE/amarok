@@ -86,13 +86,14 @@ class Item : public QObject, public QTreeWidgetItem
 
         void setExpanded( bool b ); // reimpl.
         void setCheckState( int column, Qt::CheckState state ); // reimpl.
-        //void paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align ); // reimpl.
 
     public slots:
         void newItems( const KFileItemList& );
         void completed() { }
 
     private:
+        void       init();
+
         KDirLister m_lister;
         KUrl       m_url;
         bool       m_listed;
