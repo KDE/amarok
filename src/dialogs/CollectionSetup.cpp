@@ -128,9 +128,9 @@ namespace CollectionFolder {
     Model::flags( const QModelIndex &index ) const
     {
         Qt::ItemFlags flags = QFileSystemModel::flags( index );
-        
-        if( recursive() && ancestorChecked( filePath( index ) ) )
-            flags = Qt::NoItemFlags; //disabled!
+        const QString path = filePath( index );
+        if( ( recursive() && ancestorChecked( path ) ) || isForbiddenPath( path ) )
+            flags ^= Qt::ItemIsEnabled; //disabled!
        
         flags |= Qt::ItemIsUserCheckable;
 
@@ -142,9 +142,11 @@ namespace CollectionFolder {
     {
         if( index.isValid() && index.column() == 0 && role == Qt::CheckStateRole )
         {
-            QString path = filePath( index );
+            const QString path = filePath( index );
             if( recursive() && ancestorChecked( path ) )
                 return Qt::Checked; // always set children of recursively checked parents to checked
+            if( isForbiddenPath( path ) )
+                return Qt::Unchecked; // forbidden paths can never be checked
             return m_checked.contains( path ) ? Qt::Checked : Qt::Unchecked;
         }
         return QFileSystemModel::data( index, role );
@@ -158,16 +160,20 @@ namespace CollectionFolder {
             QString path = filePath( index );
             // store checked paths, remove unchecked paths
             if( value.toInt() == Qt::Checked )
-            {
                 m_checked.insert( path );
-            }
             else
-            {
                 m_checked.remove( path );
-            }
             return true;
         }
         return QFileSystemModel::setData( index, value, role );
+    }
+
+    inline bool
+    Model::isForbiddenPath( const QString &path ) const
+    {
+        // we need the trailing slash otherwise we could forbid "/dev-music" for example
+        QString _path = path.endsWith( "/" ) ? path : path + "/";
+        return _path.startsWith( "/proc/" ) || _path.startsWith( "/dev/" ) || _path.startsWith( "/sys/" );
     }
 
     bool

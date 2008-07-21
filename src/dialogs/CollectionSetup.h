@@ -82,6 +82,7 @@ namespace CollectionFolder //just to keep it out of the global namespace
 
         private:
             bool ancestorChecked( const QString &path ) const;
+            bool isForbiddenPath( const QString &path ) const;
             bool recursive() const { return CollectionSetup::instance()->recursive(); } // simply for convenience
             QSet<QString> m_checked;
     };
