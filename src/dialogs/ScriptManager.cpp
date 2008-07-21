@@ -607,6 +607,7 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 
     QAction* configureAction = menu.addAction( KIcon( "configure-amarok" ), i18n( "&Configure" ) );
     QAction* aboutAction = menu.addAction( KIcon( "help-about-amarok" ), i18n( "&About" ) );
+    menu.addSeparator();
     QAction* logAction = menu.addAction( KIcon( "view-history-amarok" ), i18n( "Show Output &Log" ) );
     QAction* editAction = menu.addAction( KIcon( "document-properties-amarok" ), i18n( "&Edit" ) );
 
