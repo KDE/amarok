@@ -161,7 +161,20 @@ namespace CollectionFolder {
     Model::directories() const
     {
         QStringList dirs = m_checked.toList();
+
         qSort( dirs.begin(), dirs.end() );
+
+        // we need to remove any children of selected items as 
+        // they are redundant when recursive mode is chosen
+        if( recursive() )
+        {
+            foreach( QString dir, dirs )
+            {
+                if( ancestorChecked( dir ) )
+                    dirs.removeAll( dir );
+            }
+        }
+
         return dirs;
     }
 
