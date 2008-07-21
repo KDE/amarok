@@ -9,6 +9,7 @@ VERSION 2.0-alpha2:
     * Context view applet to view albums. (BR 164005)
     * Automatic detection of non-UTF-8 charsets for metadata.
     * Dynamic/Biased playlists.
+    * QtBindings support for the scripts. Also add a GUI console demo script.
 
   CHANGES:
     * Collection scanner now picks up bmp images too. (BR 167122)

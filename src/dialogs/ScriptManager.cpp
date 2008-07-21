@@ -175,16 +175,12 @@ ScriptManager::ScriptManager( QWidget* parent )
     connect( m_gui->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
     connect( m_gui->runButton,       SIGNAL( clicked() ), SLOT( slotRunScript() ) );
     connect( m_gui->stopButton,      SIGNAL( clicked() ), SLOT( slotStopScript() ) );
-    connect( m_gui->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
-    connect( m_gui->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
     m_gui->installButton  ->setIcon( KIcon( "folder-amarok" ) );
     m_gui->retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     m_gui->uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
     m_gui->runButton      ->setIcon( KIcon( "media-playback-start-amarok" ) );
     m_gui->stopButton     ->setIcon( KIcon( "media-playback-stop-amarok" ) );
-    m_gui->configureButton->setIcon( KIcon( "configure-amarok" ) );
-    m_gui->aboutButton    ->setIcon( KIcon( "help-about-amarok" ) );
 
     QSize sz = sizeHint();
     setMinimumSize( qMax( 350, sz.width() ), qMax( 250, sz.height() ) );
@@ -337,16 +333,12 @@ ScriptManager::slotCurrentChanged( QTreeWidgetItem* item )
         m_gui->uninstallButton->setEnabled( true );
         m_gui->runButton->setEnabled( !m_scripts[name].running );
         m_gui->stopButton->setEnabled( m_scripts[name].running );
-        m_gui->configureButton->setEnabled( m_scripts[name].running );
-        m_gui->aboutButton->setEnabled( true );
     }
     else
     {
         m_gui->uninstallButton->setEnabled( false );
         m_gui->runButton->setEnabled( false );
         m_gui->stopButton->setEnabled( false );
-        m_gui->configureButton->setEnabled( false );
-        m_gui->aboutButton->setEnabled( false );
     }
 }
 
@@ -609,13 +601,21 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
     foreach( key, m_scripts.keys() )
         if( m_scripts[key].li == item ) break;
 
-    enum { SHOW_LOG, EDIT };
+    enum { CONFIGURE, ABOUT, SHOW_LOG, EDIT };
     KMenu menu;
-    menu.addTitle( i18n( "Debugging" ) );
+    menu.addTitle( i18n( "Properties" ) );
+
+    QAction* configureAction = menu.addAction( KIcon( "configure-amarok" ), i18n( "&Configure" ) );
+    QAction* aboutAction = menu.addAction( KIcon( "help-about-amarok" ), i18n( "&About" ) );
     QAction* logAction = menu.addAction( KIcon( "view-history-amarok" ), i18n( "Show Output &Log" ) );
     QAction* editAction = menu.addAction( KIcon( "document-properties-amarok" ), i18n( "&Edit" ) );
+
+
+    configureAction->setData( CONFIGURE );
+    aboutAction->setData( ABOUT );
     logAction->setData( SHOW_LOG );
     editAction->setData( EDIT );
+
 
     QAction* choice = menu.exec( mapToGlobal( pos ) );
     if( !choice ) return;
@@ -623,6 +623,14 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
 
     switch( id )
     {
+        case CONFIGURE:
+            slotConfigureScript();
+            break;
+
+        case ABOUT:
+            slotAboutScript();
+            break;
+
         case EDIT:
             KRun::runCommand( "kwrite " + m_scripts[key].url.path(), 0 );
             break;
