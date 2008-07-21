@@ -108,34 +108,36 @@ bool
 NepomukAlbum::hasImage( int size ) const
 {
     DEBUG_BLOCK
-    Q_UNUSED( size )
-    if ( m_hasImageChecked )
-        return m_hasImage;
-    else
-    {
-        m_hasImageChecked = true;
-        m_imagePath = findImage();
-        if ( !m_imagePath.isEmpty() )
-        {
-            m_hasImage = true;
-            return true;
-        }
-        else
-            return false;
-    }
+    if( !m_hasImageChecked )
+        m_hasImage = ! const_cast<NepomukAlbum*>( this )->image( size ).isNull();
+    debug() << "nepo has image: returning :" << m_hasImageChecked << endl;
+    return m_hasImage;
 }
 
 QPixmap
 NepomukAlbum::image( int size, bool withShadow )
 {
-    if( !hasImage( size) )
+    DEBUG_BLOCK
+    if ( !m_hasImageChecked )
+    {
+        m_hasImageChecked = true;
+        m_imagePath = findImage();
+        if ( !m_imagePath.isEmpty() )
+            m_hasImage = true;
+    }
+    if( !m_hasImage )
         return Meta::Album::image( size, withShadow );
-   DEBUG_BLOCK
 
+    if( m_images.contains( size ) )
+        return QPixmap( m_images.value( size ) );
+    
     QString path = findOrCreateScaledImage( m_imagePath, size );
     if ( !path.isEmpty() )
+    {
+        m_images.insert( size, path );
         return QPixmap( path );
-    
+    }
+ 
     return Meta::Album::image( size, withShadow );
 }
 
@@ -151,6 +153,7 @@ NepomukAlbum::emptyCache()
 QString
 NepomukAlbum::findImage() const
 {
+    DEBUG_BLOCK
     // TODO: Query for Image set in Nepomuk
     return findImageInDir();
 }
@@ -158,6 +161,7 @@ NepomukAlbum::findImage() const
 QString
 NepomukAlbum::findOrCreateScaledImage( QString path, int size ) const
 {
+    DEBUG_BLOCK
     if( size <= 1 )
         return QString();
 

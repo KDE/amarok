@@ -69,6 +69,7 @@ class NepomukAlbum : public Album
         mutable bool m_hasImage;
         mutable bool m_hasImageChecked;
         mutable QString m_imagePath;
+        QHash<int, QString> m_images;
 };
 
 }
