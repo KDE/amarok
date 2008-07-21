@@ -17,7 +17,7 @@
 
 #include <config-amarok.h>  
 
-#if HAVE_TUNEPIMP
+#ifdef HAVE_TUNEPIMP
 
 #include <KApplication>
 #include <k3listview.h>
