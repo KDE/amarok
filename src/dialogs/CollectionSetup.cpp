@@ -128,8 +128,12 @@ namespace CollectionFolder {
     Model::flags( const QModelIndex &index ) const
     {
         Qt::ItemFlags flags = QFileSystemModel::flags( index );
-        if( index.column() == 0 ) // make the first column checkable (we only have one column)
-            flags |= Qt::ItemIsUserCheckable;
+        
+        if( recursive() && ancestorChecked( filePath( index ) ) )
+            flags = Qt::NoItemFlags; //disabled!
+       
+        flags |= Qt::ItemIsUserCheckable;
+
         return flags;
     }
 
@@ -137,7 +141,12 @@ namespace CollectionFolder {
     Model::data( const QModelIndex& index, int role ) const
     {
         if( index.isValid() && index.column() == 0 && role == Qt::CheckStateRole )
-            return m_checked.contains( filePath( index ) ) ? Qt::Checked : Qt::Unchecked;
+        {
+            QString path = filePath( index );
+            if( recursive() && ancestorChecked( path ) )
+                return Qt::Checked; // always set children of recursively checked parents to checked
+            return m_checked.contains( path ) ? Qt::Checked : Qt::Unchecked;
+        }
         return QFileSystemModel::data( index, role );
     }
 
@@ -151,16 +160,25 @@ namespace CollectionFolder {
             if( value.toInt() == Qt::Checked )
             {
                 m_checked.insert( path );
-                //selectDirectory( path );
             }
             else
             {
                 m_checked.remove( path );
-                //deselectDirectory( path );
             }
             return true;
         }
         return QFileSystemModel::setData( index, value, role );
+    }
+
+    bool
+    Model::ancestorChecked( const QString &path ) const
+    {
+        foreach( QString element, m_checked )
+        {
+            if( path.startsWith( element ) )
+                return true;
+        }
+        return false;
     }
 
 } //namespace Collection
