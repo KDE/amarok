@@ -188,7 +188,7 @@ namespace Amarok
         QVariantMap map;
         if( track ) {
             //general meta info:
-            map["title"] = track->name(); 
+            map["title"] = track->prettyName();
             if( track->artist() )
                 map["artist"] = track->artist()->name();
             if( track->album() )
