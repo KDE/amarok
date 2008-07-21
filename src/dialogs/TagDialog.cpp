@@ -142,7 +142,7 @@ TagDialog::~TagDialog()
         delete m_labelCloud;
     }
     else
-        debug() << "Empty tracklist?  Must mean TreeView has nott been updated!";
+        debug() << "Empty tracklist?  Must mean TreeView has not been updated!";
 
     delete ui;
 }
