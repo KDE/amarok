@@ -327,7 +327,7 @@ void TrackToolTip::slotTimer()  // SLOT
 {
     if( !Amarok::TrayIcon::instance()->geometry().contains( QCursor::pos() ) ) {
         m_timer->stop();
-        QTimer::singleShot( 1000, this, SLOT( hide() ) );
+        QTimer::singleShot( 500, this, SLOT( hide() ) );
     }        
 }
 
