@@ -57,11 +57,14 @@ public:
     
     // only for nepomuk collection plugin
 
+    bool isEmpty() const;
+    
     QString getNameForValue( const qint64 ) const;
     QString getUrlForValue( const qint64 ) const;
     qint64 valueForUrl( const QString& ) const;
     const QStringList& getAllNamesAndUrls( void ) const;
     NepomukRegistry* registry() const;
+   
 
 private:
     

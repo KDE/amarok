@@ -36,10 +36,13 @@
 #include <KUrl>
 #include <Nepomuk/Resource>
 #include <Nepomuk/ResourceManager>
+#include <Soprano/LiteralValue>
 #include <Soprano/Model>
 #include <Soprano/PluginManager>
 #include <Soprano/QueryResultIterator>
+#include <Soprano/Statement>
 #include <Soprano/Vocabulary/NAO>
+#include <Soprano/Vocabulary/RDF>
 #include <Soprano/Vocabulary/Xesam>
 
 
@@ -77,7 +80,10 @@ NepomukCollectionFactory::init()
             collection = new NepomukCollection( model, false );
             debug() << "too slow, trackForUrl() disabled" << endl;
         }
-        emit newCollection( collection );
+        if ( !static_cast<NepomukCollection*>(collection)->isEmpty() )
+            emit newCollection( collection );
+        else
+            delete collection;
     }
     else
     {
@@ -169,6 +175,16 @@ NepomukCollection::trackForUrl( const KUrl &url )
     }
     
     return Meta::TrackPtr();
+}
+
+bool
+NepomukCollection::isEmpty() const
+{
+   // FIXME: why doesn't it work with the first one?
+   // Soprano::Node predicate( Soprano::Vocabulary::RDF::type() );
+    Soprano::Node object ( Soprano::LiteralValue( Soprano::Vocabulary::Xesam::Music().toString() ) );
+    Soprano::Statement statement( Soprano::Node(), Soprano::Node() , object );
+    return !m_model->containsAnyStatement( statement );
 }
 
 void
