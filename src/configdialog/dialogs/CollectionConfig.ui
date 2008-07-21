@@ -35,16 +35,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <customwidgets>
-  <customwidget>
-   <extends>QGroupBox</extends>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <extends>QWidget</extends>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <includes>
   <include location="local" >klineedit.h</include>
   <include location="local" >kpushbutton.h</include>
