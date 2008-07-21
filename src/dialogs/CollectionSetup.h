@@ -23,19 +23,20 @@
 #include <KVBox>      //baseclass
 
 #include <QCheckBox>
-#include <QTreeWidget>
+#include <QFileSystemModel>
+#include <QTreeView>
 #include <QTreeWidgetItem>
 
 #include "Debug.h"
 
-namespace CollectionFolder { class Item; }
+namespace CollectionFolder { class Model; }
 
 // Reimplement sizeHint to have directorylist not being too big for "low" (1024x768 is not exactly low) resolutions
-class CollectionView : public QTreeWidget
+class CollectionView : public QTreeView
 {
     public:
         explicit CollectionView( QWidget * parent = 0 )
-            : QTreeWidget( parent )
+            : QTreeView( parent )
         { }
 
         QSize sizeHint() const
@@ -46,7 +47,7 @@ class CollectionView : public QTreeWidget
 
 class CollectionSetup : public KVBox
 {
-    friend class CollectionFolder::Item;
+    friend class CollectionFolder::Model;
 
     public:
         static CollectionSetup* instance() { return s_instance; }
@@ -70,35 +71,20 @@ class CollectionSetup : public KVBox
 
 namespace CollectionFolder //just to keep it out of the global namespace
 {
+    class Model : public QFileSystemModel
+    {
+        public:
+            Model();
+        
+            virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+            QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
+            bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
 
-class Item : public QObject, public QTreeWidgetItem
-{
-        Q_OBJECT
+            virtual int columnCount( const QModelIndex& ) const { return 1; }
 
-    public:
-        Item( QTreeWidget *parent, const QString &root );
-        Item( QTreeWidgetItem *parent, const KUrl &url , bool full_disable=false );
-
-        QTreeWidgetItem *parent() const { return static_cast<QTreeWidgetItem*>( QTreeWidgetItem::parent() ); }
-        bool isFullyDisabled() const { return m_fullyDisabled; }
-        bool isDisabled() const { return isFullyDisabled() || ( CollectionSetup::instance()->recursive() && parent() && parent()->checkState(0) == Qt::Checked ); }
-        QString fullPath() const;
-
-        void setExpanded( bool b ); // reimpl.
-        void setCheckState( int column, Qt::CheckState state ); // reimpl.
-
-    public slots:
-        void newItems( const KFileItemList& );
-        void completed() { }
-
-    private:
-        void       init();
-
-        KDirLister m_lister;
-        KUrl       m_url;
-        bool       m_listed;
-        bool       m_fullyDisabled;
-};
+        private:
+            QSet<QString> m_checked;
+    };
 
 } // end namespace CollectionFolder
 
