@@ -24,7 +24,7 @@
 class ContextWidget;
 class MainToolbar;
 class MainWindow;
-class MediaBrowser;
+//class MediaBrowser;
 class PlaylistFileProvider;
 class SearchWidget;
 class SideBar;
@@ -153,7 +153,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         MainToolbar   *m_controlBar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;
-        MediaBrowser  *m_currMediaBrowser;
+        //MediaBrowser  *m_currMediaBrowser;
         QSplitter     *m_splitter;
         QByteArray     m_splitterState;
 

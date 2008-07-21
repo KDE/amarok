@@ -20,6 +20,7 @@
 
 #include <config-amarok.h>    //HAVE_LIBVISUAL definition
 
+#include "ActionClasses.h"
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h" //for actions in ctor
@@ -39,7 +40,7 @@
 #include "context/plasma/plasma.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "filebrowser/FileBrowser.h"
-#include "mediabrowser.h"
+//#include "mediabrowser.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistGraphicsView.h"
 #include "playlist/PlaylistModel.h"
