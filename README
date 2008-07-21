@@ -52,7 +52,7 @@ Optional
       http://www.sf.net/projects/mpeg4ip
       http://www.audiocoding.com
 
-    * Mp3tunes.com integration (including syncronization) requires;
+    * Mp3tunes.com integration (including syncronization) requires:
       * OpenSSL http://www.openssl.org
       * libxml2 http://xmlsoft.org
       * libcurl http://curl.haxx.se
