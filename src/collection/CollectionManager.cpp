@@ -159,6 +159,8 @@ CollectionManager::startFullScan()
 void
 CollectionManager::checkCollectionChanges()
 {
+    DEBUG_BLOCK
+
     foreach( const CollectionPair &pair, d->collections )
     {
         pair.first->startIncrementalScan();

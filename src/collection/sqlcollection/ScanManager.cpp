@@ -227,7 +227,9 @@ ScanManager::slotError( QProcess::ProcessError error )
 QStringList
 ScanManager::getDirsToScan() const
 {
-    IdList list = MountPointManager::instance()->getMountedDeviceIds();
+    DEBUG_BLOCK
+
+    const IdList list = MountPointManager::instance()->getMountedDeviceIds();
     QString deviceIds;
     foreach( int id, list )
     {
@@ -273,7 +275,7 @@ ScanManager::getDirsToScan() const
         {
             if( !ids.isEmpty() )
                 ids += ',';
-            ids += id;
+            ids += QString::number( id );
         }
         QString query = QString( "SELECT id FROM urls WHERE directory IN ( %1 );" ).arg( ids );
         QStringList urlIds = m_collection->query( query );
