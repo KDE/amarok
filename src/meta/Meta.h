@@ -165,6 +165,8 @@ namespace Meta
         public:
 
             virtual ~Track() {}
+            /** used to display the trackname, should never be empty, returns prettyUrl() by default if name() is empty */
+            virtual QString prettyName() const = 0;
             /** an url which can be played by the engine backends */
             virtual KUrl playableUrl() const = 0;
             /** an url for display purposes */

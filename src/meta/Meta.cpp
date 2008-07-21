@@ -234,6 +234,15 @@ Meta::MetaBase::asCapabilityInterface( Meta::Capability::Type type )
 
 //Meta::Track
 
+QString
+Meta::Track::prettyName() const
+{
+    if ( !name().isEmpty() )
+        return name();
+    else
+        return prettyUrl();
+}
+
 bool
 Meta::Track::inCollection() const
 {

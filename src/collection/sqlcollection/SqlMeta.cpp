@@ -263,8 +263,10 @@ SqlTrack::prettyTitle( const QString &filename ) //static
 QString
 SqlTrack::prettyName() const
 {
-    //FIXME: This should handle cases when name() is empty!
-    return name();
+    if ( !name().isEmpty() )
+        return name();
+    else
+        return  prettyTitle( m_url.fileName() );
 }
 
 void
