@@ -56,7 +56,7 @@ FilenameLayoutWidget::addToken( QString text, int index )
     m_tokenCount++;
     Token *token = new Token( text, this );
 
-    debug()<< "I'm adding a token, the index I got is " << index << ".";
+    debug()<< "I am adding a token, the index I got is " << index << ".";
     if( index == 0)
     {
         layout->addWidget( token );

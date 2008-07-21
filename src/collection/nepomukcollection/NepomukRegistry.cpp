@@ -151,7 +151,7 @@ NepomukRegistry::albumId( QString artist, QString album ) const
 {
     // this returns a string which should be unique for every pair of artist / album
 
-    // "escape" | because it is used to seperate artist and album
+    // "escape" | because it is used to separate artist and album
     if ( !artist.isEmpty() )
     {
         artist.replace( '|', "||" );

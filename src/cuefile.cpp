@@ -362,7 +362,7 @@ CueFile* CueFile::findCueForUrl( const QString &url, int mediaLength )
                     }
 
                 if ( !foundCueFile )
-                    debug() << "[CUEFILE]: - Didn't find any matching cue file." << endl;
+                    debug() << "[CUEFILE]: - Did not find any matching cue file." << endl;
             }
         }
         return cue;
