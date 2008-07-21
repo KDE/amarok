@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>682</width>
+    <width>683</width>
     <height>461</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
      <item>
       <widget class="KTabWidget" name="kTabWidget" >
        <property name="currentIndex" >
-        <number>2</number>
+        <number>1</number>
        </property>
        <property name="currentPage" stdset="0" >
         <number>4</number>
@@ -28,12 +28,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>664</width>
-          <height>350</height>
+          <width>655</width>
+          <height>337</height>
          </rect>
         </property>
         <attribute name="title" >
-         <string>S&amp;&amp;&amp;&amp;ummary</string>
+         <string>S&amp;ummary</string>
         </attribute>
         <widget class="QWidget" name="layoutWidget" >
          <property name="geometry" >
@@ -138,12 +138,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>664</width>
-          <height>350</height>
+          <width>655</width>
+          <height>337</height>
          </rect>
         </property>
         <attribute name="title" >
-         <string>Ta&amp;&amp;&amp;&amp;gs</string>
+         <string>Ta&amp;gs</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_6" >
          <item>
@@ -449,12 +449,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>664</width>
-          <height>350</height>
+          <width>655</width>
+          <height>337</height>
          </rect>
         </property>
         <attribute name="title" >
-         <string>L&amp;&amp;&amp;&amp;yrics</string>
+         <string>L&amp;yrics</string>
         </attribute>
         <layout class="QHBoxLayout" >
          <item>
@@ -474,12 +474,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>664</width>
-          <height>350</height>
+          <width>655</width>
+          <height>337</height>
          </rect>
         </property>
         <attribute name="title" >
-         <string>St&amp;&amp;&amp;&amp;atistics</string>
+         <string>St&amp;atistics</string>
         </attribute>
         <widget class="QWidget" name="layoutWidget" >
          <property name="geometry" >
@@ -617,12 +617,12 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>664</width>
-          <height>350</height>
+          <width>655</width>
+          <height>337</height>
          </rect>
         </property>
         <attribute name="title" >
-         <string>La&amp;&amp;&amp;&amp;bels</string>
+         <string>La&amp;bels</string>
         </attribute>
         <widget class="QWidget" name="layoutWidget" >
          <property name="geometry" >
