@@ -18,8 +18,6 @@
 #ifndef AMAROK_COLLECTIONSETUP_H
 #define AMAROK_COLLECTIONSETUP_H
 
-#include <KDirLister> //stack allocated
-#include <KUrl>       //stack allocated
 #include <KVBox>      //baseclass
 
 #include <QCheckBox>
@@ -56,8 +54,8 @@ class CollectionSetup : public KVBox
         void writeConfig();
     
         QStringList dirs() const { return m_dirs; }
-        bool recursive() const { return m_recursive->isChecked(); }
-        bool monitor() const { return m_monitor->isChecked(); }
+        bool recursive() const { return m_recursive && m_recursive->isChecked(); }
+        bool monitor() const { return m_monitor && m_monitor->isChecked(); }
 
     private:
         static CollectionSetup* s_instance;
@@ -83,6 +81,8 @@ namespace CollectionFolder //just to keep it out of the global namespace
             virtual int columnCount( const QModelIndex& ) const { return 1; }
 
         private:
+            bool ancestorChecked( const QString &path ) const;
+            bool recursive() const { return CollectionSetup::instance()->recursive(); } // simply for convenience
             QSet<QString> m_checked;
     };
 
