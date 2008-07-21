@@ -2,10 +2,9 @@ project(Amarok)
 
 cmake_minimum_required(VERSION 2.4.5)
 
-#commenting out the Generator: it depends on qt-copy/Qt 4.4.1
-##the generator is Qt stuff, add before we add a bunch of KDE directives
-#add_subdirectory( src/scriptengine/generator )
-
+#The generator depends on qt-copy/Qt 4.4.1
+#checking if we have QT_COPY; get rid of all this when 4.4.1 is released
+add_subdirectory( src/scriptengine/generator )
 #We depend on kde4.1 now.. I believe this is the easiest way to do it.
 set(KDE_MIN_VERSION "4.00.61")
 find_package(KDE4)
@@ -95,6 +94,8 @@ macro_log_feature( NEPOMUK_FOUND "nepomuk" "Nepomuk Libraries required by Nepomu
 
 include(CheckQtGlib)
 macro_log_feature(QT4_GLIB_SUPPORT "Qt4 Glib support" "Qt4 must be compiled with glib support for mp3tunes" "http://www.trolltech.com" FALSE "" "")
+
+macro_log_feature(QT_KDE_QT_COPY "KDE's qt-copy" "Qt 4.4.0 vanilla doesn't support Qt Script Generator, qt-copy from KDE must be used" "http://www.kde.org" FALSE "" "")
 
 macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 

@@ -1,5 +1,3 @@
-find_package(Qt4)
-
 set ( QT_USE_QTXML TRUE )
 set ( QT_USE_QTSCRIPT TRUE ) #generator doesn't need this, just the qtscript libs
 set ( QT_DONT_USE_QTGUI TRUE )
