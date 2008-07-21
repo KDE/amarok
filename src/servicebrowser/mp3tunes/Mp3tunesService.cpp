@@ -109,7 +109,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
     authenticate( email, password );
 
     if( m_harmonyEnabled ) {
-        enableHarmony();
+//        enableHarmony();
     }
 
     polish();
@@ -130,7 +130,7 @@ Mp3tunesService::~Mp3tunesService()
 
 void Mp3tunesService::polish()
 {
-    initTopPanel();
+//    initTopPanel();
     initBottomPanel();
 
     if ( !m_authenticated )
