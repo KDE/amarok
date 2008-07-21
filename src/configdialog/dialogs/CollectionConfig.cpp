@@ -30,8 +30,13 @@ CollectionConfig::CollectionConfig( QWidget* parent )
 {
     setupUi( this );
 
+    QVBoxLayout *layout = new QVBoxLayout();
+
     m_collectionSetup = new CollectionSetup( collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
-    m_collectionSetup->setMaximumSize( QSize( 3500000, 600 ) );
+
+    layout->addWidget( m_collectionSetup );
+    
+    collectionFoldersBox->setLayout( layout );
 }
 
 CollectionConfig::~CollectionConfig()
