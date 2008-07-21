@@ -17,6 +17,8 @@
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "meta/Meta.h" // album observer
+
+#include <QTimer>
 /**
     This class provides context information on the currently playing track. This includes info such as the artist, trackname, album of the current song, etc.
 
@@ -72,6 +74,10 @@ private:
     QStringList m_sources;
     bool m_requested;
     Meta::TrackPtr m_currentTrack;
+    QTimer *m_timer;
+    
+private slots:
+    void stoppedState();
 };
 
 K_EXPORT_AMAROK_DATAENGINE( current, CurrentEngine )

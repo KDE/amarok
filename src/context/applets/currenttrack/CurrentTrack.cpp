@@ -81,16 +81,22 @@ void CurrentTrack::init()
     m_score        = new QGraphicsSimpleTextItem( this );
     m_numPlayed    = new QGraphicsSimpleTextItem( this );
     m_playedLast   = new QGraphicsSimpleTextItem( this );
-    m_albumCover   = new QGraphicsPixmapItem( this );
+    m_noTrack      = new QGraphicsSimpleTextItem( this );
+    m_albumCover   = new QGraphicsPixmapItem( this ); 
+
 //     m_sourceEmblem = new QGraphicsPixmapItem( this );
 
-    QFont textFont = QFont( labelFont );
+    QFont bigFont = QFont( labelFont );
+    bigFont.setPointSize( bigFont.pointSize() +  3 );
+    
+    QFont textFont = QFont( labelFont );    
     textFont.setBold( false );
-
+    
     QFont tinyFont( textFont );
     tinyFont.setPointSize( tinyFont.pointSize() - 5 );
     tinyFont.setBold( true );
-    
+
+    m_noTrack->setFont( bigFont );
     m_title->setFont( textFont );
     m_artist->setFont( textFont );
     m_album->setFont( textFont );
@@ -99,6 +105,7 @@ void CurrentTrack::init()
     m_numPlayed->setFont( tinyFont );
     m_playedLast->setFont( tinyFont );
 
+    m_noTrack->setBrush( textColor );
     m_title->setBrush( textColor );
     m_artist->setBrush( textColor );
     m_album->setBrush( textColor );
@@ -110,8 +117,12 @@ void CurrentTrack::init()
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
     resize( m_width, m_aspectRatio );
+    
+    m_noTrackText = "No track playing";
+    m_noTrack->setText( m_noTrackText );
+    
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
-             this, SLOT( connectSource( const QString& ) ) );
+            this, SLOT( connectSource( const QString& ) ) );
 
 }
 
@@ -178,9 +189,14 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     
 
     // here we put all of the text items into the correct locations
+
+    m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2,
+                       size().toSize().height() / 2  - 30 );
+    
     m_artist->setPos( QPointF( textX, margin ) );
     m_album->setPos(  QPointF( textX, margin * 2 + textHeight ) );
     m_title->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 ) );
+    
 
     
     m_score->setPos( QPointF( contentsRect().width() - 6, margin + 4 ) );
@@ -219,7 +235,9 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), QRectF( 0, 0, textWidth, 30 ) ) );
     m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );    
     m_album->setText( truncateTextToFit( album, m_album->font(), QRectF( 0, 0, textWidth, 30 ) ) );
-
+    
+    if( m_noTrackText != QString() )
+        m_noTrack->setText( truncateTextToFit( m_noTrackText, m_noTrack->font(), QRectF( 0, 0, textWidth, 30 ) ) );
 
     m_ratingWidget->setPos( labelX + 25, margin * 4.0 + textHeight * 3.0 - 5.0 );
     m_ratingWidget->setMinimumSize( contentsRect().width() / 5, textHeight );
@@ -241,6 +259,20 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     QRect textRect( 0, 0, m_maxTextWidth, 30 );
 
+    m_noTrackText = data[ "notrack" ].toString();
+
+    if( m_noTrackText != QString() )
+    {
+        QRect rect( 0, 0, size().toSize().width(), 30 );
+        m_noTrack->setText( truncateTextToFit( m_noTrackText, m_noTrack->font(), rect ) );
+        m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2,
+                       size().toSize().height() / 2  - 30 );
+        update();
+        return;
+    }
+
+    m_noTrack->setText( QString() );
+    
     m_currentInfo = data[ "current" ].toMap();
     m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), textRect ) );
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
@@ -298,9 +330,9 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     else
     {
         foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
-            childItem->show();
+            childItem->show();        
     }
-
+    
     p->save();
     m_theme->paint( p, contentsRect.adjusted( 0, -10, 0, 10 ) , "background" );
     QRect leftBorder( 0, 0, 14, contentsRect.height() + 20 );
@@ -308,7 +340,18 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     QRect rightBorder( contentsRect.width() + 5, 0, 14, contentsRect.height() + 20 );
     m_theme->paint( p, rightBorder, "right-border" );
     p->restore();
+    
+    if( m_noTrack->text() != QString() )
+    {
+        DEBUG_LINE_INFO
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
+            childItem->hide();
+        m_noTrack->show();
+        return;
+    }
 
+    m_noTrack->hide();
+    
     const qreal margin = 14.0;
     const qreal albumWidth = size().toSize().height() - 2.0 * margin;
 

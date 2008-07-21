@@ -77,6 +77,7 @@ private:
     QGraphicsSimpleTextItem* m_score;
     QGraphicsSimpleTextItem* m_numPlayed;
     QGraphicsSimpleTextItem* m_playedLast;
+    QGraphicsSimpleTextItem* m_noTrack;
 
     int m_rating;
     int m_trackLength;
@@ -87,6 +88,8 @@ private:
     QPixmap m_sourceEmblemPixmap;
 
     RatingWidget* m_ratingWidget;
+
+    QString m_noTrackText;
 
     bool resizeCover( QPixmap cover, qreal margin, qreal width );
 

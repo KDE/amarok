@@ -39,12 +39,15 @@ public:
     Private()
         : rating(0),
           hoverRating(-1),
-          pixSize( 16 ) {
+          pixSize( 16 ),
+          showing( true ){
     }
 
     int rating;
     int hoverRating;
     int pixSize;
+
+    bool showing;
 
     KRatingPainter ratingPainter;
 };
@@ -61,6 +64,18 @@ RatingWidget::RatingWidget( QGraphicsItem* parent )
 RatingWidget::~RatingWidget()
 {
     delete d;
+}
+
+void
+RatingWidget::show()
+{
+    d->showing = true;
+}
+
+void
+RatingWidget::hide()
+{
+    d->showing = false;
 }
 
 void
@@ -229,11 +244,13 @@ RatingWidget::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, 
 {
     Q_UNUSED( option )
     Q_UNUSED( widget )
-    
-    d->ratingPainter.setEnabled( isEnabled() );
-    QRect rect( contentsRect().topLeft().x(), contentsRect().topLeft().y(),
+    if( d->showing )
+    {
+        d->ratingPainter.setEnabled( isEnabled() );
+        QRect rect( contentsRect().topLeft().x(), contentsRect().topLeft().y(),
                     contentsRect().width(), contentsRect().height() );
-    d->ratingPainter.paint( painter, rect, d->rating, d->hoverRating );
+        d->ratingPainter.paint( painter, rect, d->rating, d->hoverRating );
+    }
 }
 
 QSizeF

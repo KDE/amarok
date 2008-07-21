@@ -88,6 +88,10 @@ class AMAROK_EXPORT RatingWidget : public QGraphicsWidget
      */
     QIcon icon() const;
 
+    void show();
+    
+    void hide();
+
  Q_SIGNALS:
     /**
      * Emitted if the rating is changed by user interaction (ie. mouse click).

@@ -174,8 +174,13 @@ void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldStat
 {
     Q_UNUSED( oldState );
     Q_UNUSED( state );
+
+    if( state == Phonon::PlayingState )
+        messageNotify( Current );
+    else if( state == Phonon::StoppedState )
+        messageNotify( Home );
+        
     
-    messageNotify( Current );
 }
 
 void ContextView::showHome()

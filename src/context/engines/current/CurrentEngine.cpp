@@ -36,6 +36,7 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     Q_UNUSED( args )
     m_sources = QStringList();
     m_sources << "current";
+    m_timer = new QTimer(this);
     update();
 }
 
@@ -71,15 +72,31 @@ void CurrentEngine::message( const ContextState& state )
     if( state == Current /*&& m_requested*/ )
     {
         debug() << "1";
+        if( m_timer->isActive() )
+            m_timer->stop();
+        
         if( m_currentTrack )
         {
             debug() << "2";
             unsubscribeFrom( m_currentTrack );
             if( m_currentTrack->album() )
                 unsubscribeFrom( m_currentTrack->album() );
-        }
+        }        
         update();
     }
+    else if( state == Home )
+    {
+        connect( m_timer, SIGNAL( timeout() ), this, SLOT( stoppedState() ) );
+        m_timer->start( 1000 );
+    }
+}
+
+void
+CurrentEngine::stoppedState()
+{
+    DEBUG_BLOCK
+    m_timer->stop();
+    setData( "current", "notrack", "No track playing" );
 }
 
 void CurrentEngine::metadataChanged( Meta::Album* album )
@@ -104,6 +121,8 @@ void CurrentEngine::update()
     if( !m_currentTrack )
         return;
     subscribeTo( m_currentTrack );
+
+    setData( "current", "notrack" , QString() );
 
     QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack.data() );
 
