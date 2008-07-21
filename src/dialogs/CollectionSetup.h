@@ -29,20 +29,6 @@
 
 namespace CollectionFolder { class Model; }
 
-// Reimplement sizeHint to have directorylist not being too big for "low" (1024x768 is not exactly low) resolutions
-class CollectionView : public QTreeView
-{
-    public:
-        explicit CollectionView( QWidget * parent = 0 )
-            : QTreeView( parent )
-        { }
-
-        QSize sizeHint() const
-        {
-            return QSize( 400, 150 );
-        }
-};
-
 class CollectionSetup : public KVBox
 {
     friend class CollectionFolder::Model;
@@ -60,7 +46,7 @@ class CollectionSetup : public KVBox
     private:
         static CollectionSetup* s_instance;
 
-        CollectionView *m_view;
+        QTreeView *m_view;
         CollectionFolder::Model *m_model;
         QStringList m_dirs;
         QCheckBox *m_recursive;

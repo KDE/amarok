@@ -39,6 +39,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 {
     DEBUG_BLOCK
 
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
     setObjectName( "CollectionSetup" );
     s_instance = this;
 
@@ -46,7 +48,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
         "These folders will be scanned for "
         "media to make up your collection:"), this ))->setAlignment( Qt::AlignJustify );
 
-    m_view  = new CollectionView( this );
+    m_view  = new QTreeView( this );
     m_view->setHeaderHidden( true );
     m_view->setRootIsDecorated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -76,7 +78,6 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     setSpacing( 6 );
 }
-
 
 void
 CollectionSetup::writeConfig()
