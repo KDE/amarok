@@ -64,7 +64,9 @@ private:
 
     QString m_label;
     QString m_title;
-
+    
+private slots:
+    void connectSource( const QString &source );
 };
 
 K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )

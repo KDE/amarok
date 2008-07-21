@@ -246,7 +246,7 @@ void ColumnContainment::updateSize( QRectF rect )
     // It's a very ugly hack and should be fixed.
     if( m_manageCurrentTrack && m_grid->count() > 0 && !m_ctHasBeenKicked )
     {
-        Plasma::Applet *applet = Plasma::Containment::addApplet( "currenttrack" );
+        Plasma::Applet *applet = Plasma::Containment::addApplet( "wikipedia" );
         applet->destroy();
         m_ctHasBeenKicked = true;
     }

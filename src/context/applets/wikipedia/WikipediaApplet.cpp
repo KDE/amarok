@@ -16,6 +16,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "context/Svg.h"
+#include "EngineController.h"
 #include <plasma/theme.h>
 
 #include <QGraphicsTextItem>
@@ -49,7 +50,6 @@ WikipediaApplet::~ WikipediaApplet()
 
 void WikipediaApplet::init()
 {
-
     m_header = new Context::Svg( this );
     m_header->setImagePath( "widgets/amarok-wikipedia" );
     m_header->setContainsMultipleImages( false );
@@ -86,10 +86,22 @@ void WikipediaApplet::init()
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
 
-    dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
+    if( The::engineController()->state() == Phonon::PlayingState  )
+        dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
+    else
+        connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ),
+                 this, SLOT( connectSource( const QString & ) ) );
     
     constraintsEvent();
 
+}
+
+
+void
+WikipediaApplet::connectSource( const QString &source )
+{
+    if( source == "wikipedia" )
+        dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
 }
 
 void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
