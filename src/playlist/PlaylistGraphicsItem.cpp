@@ -263,11 +263,17 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     {
         m_items->bottomLeftText->setFont( m_items->bottomRightText->font() );
 
+	QString trackName = track->name();
+	if( trackName.isEmpty() )
+	{
+		trackName = track->prettyUrl(); 
+	}
+
         if ( track->trackNumber() > 0 )
             m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg(
-                QString::number( track->trackNumber() ), track->name() ) , spaceForBottomLeft );
+                QString::number( track->trackNumber() ), trackName ) , spaceForBottomLeft );
         else
-            m_items->bottomLeftText->setEditableText( track->name() , spaceForBottomLeft );
+            m_items->bottomLeftText->setEditableText( trackName , spaceForBottomLeft );
 
         m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
     } //ELSE HEAD_COLLAPSED
