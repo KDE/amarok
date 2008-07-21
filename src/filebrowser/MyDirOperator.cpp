@@ -16,6 +16,8 @@
 */
 
 #include "MyDirOperator.h"
+
+#include "Debug.h"
 #include "MainWindow.h"
 
 #include <KActionCollection>
@@ -23,7 +25,7 @@
 
 #include <QDir>
 
-MyDirOperator::MyDirOperator ( const KUrl &url, QWidget *parent )
+MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
     : KDirOperator( url, parent )
 {
      MyDirLister* dirlister = new MyDirLister( true );
@@ -31,4 +33,12 @@ MyDirOperator::MyDirOperator ( const KUrl &url, QWidget *parent )
      setDirLister( dirlister );
 }
 
+
+MyDirOperator::~MyDirOperator()
+{
+    DEBUG_BLOCK
+}
+
+
 #include "MyDirOperator.moc"
+

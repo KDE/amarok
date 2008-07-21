@@ -26,10 +26,13 @@
 #include <kdirlister.h>
 #include <kfileitem.h>
 
-class MyDirLister : public KDirLister {
+class MyDirLister : public KDirLister
+{
     Q_OBJECT
+
 public:
     MyDirLister( bool delayedMimeTypes ) : KDirLister() { setDelayedMimeTypes( delayedMimeTypes ); setAutoUpdate( true ); }
+    ~MyDirLister();
 
 protected:
     virtual bool matchesFilter( const KFileItem &item ) const;

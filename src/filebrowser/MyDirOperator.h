@@ -26,13 +26,13 @@
 
 class Medium;
 
-class MyDirOperator : public KDirOperator {
-
+class MyDirOperator : public KDirOperator
+{
     Q_OBJECT
 
     public:
         MyDirOperator( const KUrl &url, QWidget *parent );
-
+        ~MyDirOperator();
 };
 
 #endif

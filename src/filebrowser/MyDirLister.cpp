@@ -15,8 +15,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "Debug.h"
 #include "MyDirLister.h"
 #include "PlaylistManager.h"
+
+
+MyDirLister::~MyDirLister()
+{
+    DEBUG_BLOCK
+}
 
 bool
 MyDirLister::matchesFilter( const KFileItem &item ) const

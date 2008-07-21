@@ -22,6 +22,7 @@
 //BEGIN Includes
 #include "FileBrowser.h"
 
+#include "Debug.h"
 #include "collection/CollectionManager.h"
 #include "filebrowser/MyDirOperator.h"
 #include "filebrowser/kbookmarkhandler.h"
@@ -84,6 +85,8 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
       m_filter( 0 ),
       m_btnFilter( 0 )
 {
+  DEBUG_BLOCK
+
   setObjectName(name);
   m_actionCollection = new KActionCollection( this );
 
@@ -205,7 +208,10 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
 }
 
 FileBrowser::Widget::~Widget()
-{}
+{
+    DEBUG_BLOCK
+}
+
 //END Constroctor/Destrctor
 
 //BEGIN Public Methods
