@@ -80,6 +80,7 @@ namespace CollectionFolder //just to keep it out of the global namespace
             bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
 
             void setDirectories( QStringList &dirs ); // will clear m_checked before inserting new directories
+            QStringList directories() const;
 
             virtual int columnCount( const QModelIndex& ) const { return 1; }
 

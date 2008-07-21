@@ -47,6 +47,9 @@ CollectionSetup::CollectionSetup( QWidget *parent )
         "media to make up your collection:"), this ))->setAlignment( Qt::AlignJustify );
 
     m_view  = new CollectionView( this );
+    m_view->setHeaderHidden( true );
+    m_view->setRootIsDecorated( true );
+    m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
@@ -56,10 +59,6 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
-
-    m_view->setHeaderHidden( true );
-    m_view->setRootIsDecorated( true );
-    m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     // set the model _after_ constructing the checkboxes
     m_model = new CollectionFolder::Model();
@@ -82,34 +81,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 void
 CollectionSetup::writeConfig()
 {
-    //If we are in recursive mode then we don't need to store the names of the
-    //subdirectories of the selected directories
-    if ( recursive() )
-    {
-        for ( QStringList::ConstIterator it=m_dirs.constBegin(), end = m_dirs.constEnd(); it!=end; ++it )
-        {
-            QStringList::Iterator jt=m_dirs.begin();
-            QStringList::ConstIterator dirsEnd = m_dirs.constEnd();
-            while ( jt!=dirsEnd )
-            {
-                if ( it==jt )
-                {
-                    ++jt;
-                    continue;
-                }
-                //Note: all directories except "/" lack a trailing '/'.
-                //If (*jt) is a subdirectory of (*it) it is redundant.
-                //As all directories are subdirectories of "/", if "/" is selected, we
-                //can delete everything else.
-                if ( ( *jt ).startsWith( *it + '/' ) || *it=="/" )
-                    jt = m_dirs.erase( jt );
-                else
-                    ++jt;
-            }
-        }
-    }
+    DEBUG_BLOCK
 
-    MountPointManager::instance()->setCollectionFolders( m_dirs );
+    QStringList dirs = m_model->directories();
+    debug() << "collection dirs:" << dirs;
+    MountPointManager::instance()->setCollectionFolders( dirs );
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
 }
@@ -179,6 +155,14 @@ namespace CollectionFolder {
         {
             m_checked.insert( dir );
         }
+    }
+
+    QStringList
+    Model::directories() const
+    {
+        QStringList dirs = m_checked.toList();
+        qSort( dirs.begin(), dirs.end() );
+        return dirs;
     }
 
     inline bool
