@@ -834,6 +834,8 @@ void TagDialog::readTags()
                    m_currentTrack->playCount() ? KGlobal::locale()->formatDate( firstPlayed, KLocale::ShortDate ) : i18nc( "When this track was first played", "Never") );
     summaryText += body2cols.arg( i18nc("a single item (singular)", "Last Played:"),
                    m_currentTrack->playCount() ? KGlobal::locale()->formatDate( lastPlayed, KLocale::ShortDate ) : i18nc( "When this track was last played", "Never") );
+    summaryText += body2cols.arg( i18n("Collection:"),
+                                  m_currentTrack->inCollection() ? m_currentTrack->collection()->prettyName() : i18nc( "The collection this track is part of", "None") );
 
     summaryText += "</table></td></tr></table>";
     ui->summaryLabel->setText( summaryText );
