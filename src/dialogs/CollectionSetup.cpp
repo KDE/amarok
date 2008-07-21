@@ -46,10 +46,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
         "These folders will be scanned for "
         "media to make up your collection:"), this ))->setAlignment( Qt::AlignJustify );
 
-    m_view      = new CollectionView( this );
-    CollectionFolder::Model *model = new CollectionFolder::Model();
-    m_view->setModel( model );
-    m_view->setRootIndex( model->setRootPath( QDir::rootPath() ) );
+    m_view  = new CollectionView( this );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
@@ -57,20 +54,26 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
     m_monitor->setToolTip(   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
 
-    // Read config values
-    //we have to detect if this is the actual first run and not get the collectionFolders in that case
-    //there won't be any anyway and accessing them creates a Sqlite database, even if the user wants to
-    //use another database
-    //bug 131719 131724
-    if( !Amarok::config().readEntry( "First Run", true ) )
-        m_dirs = MountPointManager::instance()->collectionFolders();
-
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
 
     m_view->setHeaderHidden( true );
     m_view->setRootIsDecorated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+    // set the model _after_ constructing the checkboxes
+    m_model = new CollectionFolder::Model();
+    m_view->setModel( m_model );
+    m_view->setRootIndex( m_model->setRootPath( QDir::rootPath() ) );
+    
+    // Read config values
+    //we have to detect if this is the actual first run and not get the collectionFolders in that case
+    //there won't be any anyway and accessing them creates a Sqlite database, even if the user wants to
+    //use another database
+    //bug 131719 131724
+    //if( !Amarok::config().readEntry( "First Run", true ) )
+    QStringList dirs = MountPointManager::instance()->collectionFolders();
+    m_model->setDirectories( dirs );
 
     setSpacing( 6 );
 }
@@ -113,7 +116,7 @@ CollectionSetup::writeConfig()
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// CLASS Item
+// CLASS Model
 //////////////////////////////////////////////////////////////////////////////////////////
 
 namespace CollectionFolder {
@@ -166,6 +169,16 @@ namespace CollectionFolder {
             return true;
         }
         return QFileSystemModel::setData( index, value, role );
+    }
+
+    void
+    Model::setDirectories( QStringList &dirs )
+    {
+        m_checked.clear();
+        foreach( QString dir, dirs )
+        {
+            m_checked.insert( dir );
+        }
     }
 
     inline bool

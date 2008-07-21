@@ -61,6 +61,7 @@ class CollectionSetup : public KVBox
         static CollectionSetup* s_instance;
 
         CollectionView *m_view;
+        CollectionFolder::Model *m_model;
         QStringList m_dirs;
         QCheckBox *m_recursive;
         QCheckBox *m_monitor;
@@ -78,12 +79,14 @@ namespace CollectionFolder //just to keep it out of the global namespace
             QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
             bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
 
+            void setDirectories( QStringList &dirs ); // will clear m_checked before inserting new directories
+
             virtual int columnCount( const QModelIndex& ) const { return 1; }
 
         private:
             bool ancestorChecked( const QString &path ) const;
             bool isForbiddenPath( const QString &path ) const;
-            bool recursive() const { return CollectionSetup::instance()->recursive(); } // simply for convenience
+            bool recursive() const { return CollectionSetup::instance() && CollectionSetup::instance()->recursive(); } // simply for convenience
             QSet<QString> m_checked;
     };
 
