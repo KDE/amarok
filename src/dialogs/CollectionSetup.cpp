@@ -75,6 +75,13 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     //if( !Amarok::config().readEntry( "First Run", true ) )
     QStringList dirs = MountPointManager::instance()->collectionFolders();
     m_model->setDirectories( dirs );
+    
+    // make sure that the tree is expanded to show all selected items
+    foreach( QString dir, dirs )
+    {
+        QModelIndex index = m_model->index( dir );
+        m_view->scrollTo( index, QAbstractItemView::EnsureVisible );
+    }
 
     setSpacing( 6 );
 }
