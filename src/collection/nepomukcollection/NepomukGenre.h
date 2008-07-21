@@ -16,8 +16,8 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef NEPOMUKENRE_H_
-#define NEPOMUKENRE_H_
+#ifndef NEPOMUKGENRE_H_
+#define NEPOMUKGENRE_H_
 
 #include "Meta.h"
 
