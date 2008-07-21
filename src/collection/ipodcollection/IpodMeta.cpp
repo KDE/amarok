@@ -43,8 +43,8 @@ class EditCapabilityIpod : public Meta::EditCapability
     Q_OBJECT
     public:
         EditCapabilityIpod( IpodTrack *track )
-    : Meta::EditCapability()
-    , m_track( track ) {}
+            : Meta::EditCapability()
+            , m_track( track ) {}
 
         virtual bool isEditable() const { return m_track->isEditable(); }
         virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
@@ -64,59 +64,51 @@ class EditCapabilityIpod : public Meta::EditCapability
         KSharedPtr<IpodTrack> m_track;
 };
 
-class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability {
+class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
+{
     Q_OBJECT
     public:
         CustomActionsCapabilityIpod( IpodTrack* track )
-    : Meta::CustomActionsCapability()
-    , m_track( track )
-    {
+            : Meta::CustomActionsCapability()
+            , m_track( track )
+        {
             DEBUG_BLOCK
 
             //TODO: wrong svg stuff, don't know labels of remove stuff
 
             // Setup the remove action
             
-            PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "amarok_remove" ), i18n( "&Remove from iPod" ), 0 );
-
+            PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
+                                                                    "delete", KIcon( "amarok_remove" ), i18n( "&Remove from iPod" ), 0 );
             debug() << "Remove-action created";
 
             IpodCollection *coll = dynamic_cast<IpodCollection*>( m_track->collection() );
 
             // set track to be deleted
-
             coll->setTrackToDelete( m_track );
 
             // when action is selected, collection deletes track
-
-            connect( removeAction, SIGNAL( triggered() ),
-                     coll, SLOT(deleteTrackToDelete()) );
+            connect( removeAction, SIGNAL( triggered() ), coll, SLOT(deleteTrackToDelete()) );
 
             // Add the action to the list of custom actions
-            
             m_actions.append( removeAction );
 
             //TODO: this should only be available in the top-level
             // node of the tree, not every individual track
 
             // Setup the disconnect action
-            
-            PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Disconnect the iPod" ), 0 );
-
+            PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
+                                                        "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Disconnect the iPod" ), 0 );
             debug() << "Disconnect-action created";
 
             // when action is selected, collection emits remove()
-
             connect( disconnectAction, SIGNAL( triggered() ),
                      coll, SLOT( slotDisconnect() ) );
 
             // Add the action to the list of custom actions
-
             m_actions.append( disconnectAction );
-
             debug() << "Disconnect action appended to local QList";
-
-    }
+        }
     
         virtual ~CustomActionsCapabilityIpod() {}
 
