@@ -51,6 +51,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view  = new QTreeView( this );
     m_view->setHeaderHidden( true );
     m_view->setRootIsDecorated( true );
+    m_view->setAnimated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
