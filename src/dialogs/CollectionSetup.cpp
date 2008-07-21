@@ -175,7 +175,7 @@ namespace CollectionFolder {
     {
         foreach( QString element, m_checked )
         {
-            if( path.startsWith( element ) )
+            if( path.startsWith( element ) && element != path )
                 return true;
         }
         return false;
