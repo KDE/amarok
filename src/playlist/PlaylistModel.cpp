@@ -1102,6 +1102,8 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
 Meta::TrackList
 Playlist::Model::removeTracksCommand( int position, int rows )
 {
+    DEBUG_BLOCK
+
     clearNewlyAdded();
 
     beginRemoveRows( QModelIndex(), position, position + rows - 1 );
@@ -1121,13 +1123,15 @@ Playlist::Model::removeTracksCommand( int position, int rows )
 
     //update m_activeRow
     bool activeRowChanged = true;
-    bool oldActiveRow = m_activeRow;
+    const bool oldActiveRow = m_activeRow;
+
     if( m_activeRow >= position && m_activeRow < ( position + rows ) )
         m_activeRow = -1;
     else if( m_activeRow >= position )
         m_activeRow = m_activeRow - rows;
     else
         activeRowChanged = false;
+
     if( activeRowChanged )
     {
         dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
