@@ -107,17 +107,14 @@ NepomukAlbum::albumArtist() const
 bool
 NepomukAlbum::hasImage( int size ) const
 {
-    DEBUG_BLOCK
     if( !m_hasImageChecked )
         m_hasImage = ! const_cast<NepomukAlbum*>( this )->image( size ).isNull();
-    debug() << "nepo has image: returning :" << m_hasImageChecked << endl;
     return m_hasImage;
 }
 
 QPixmap
 NepomukAlbum::image( int size, bool withShadow )
 {
-    DEBUG_BLOCK
     if ( !m_hasImageChecked )
     {
         m_hasImageChecked = true;
@@ -153,7 +150,6 @@ NepomukAlbum::emptyCache()
 QString
 NepomukAlbum::findImage() const
 {
-    DEBUG_BLOCK
     // TODO: Query for Image set in Nepomuk
     return findImageInDir();
 }
@@ -161,7 +157,6 @@ NepomukAlbum::findImage() const
 QString
 NepomukAlbum::findOrCreateScaledImage( QString path, int size ) const
 {
-    DEBUG_BLOCK
     if( size <= 1 )
         return QString();
 
@@ -227,7 +222,6 @@ NepomukAlbum::findImageInDir() const
         // should not happen
         return QString();
     }
-
     query = QString("SELECT ?r WHERE {"
                   "?r <http://strigi.sf.net/ontologies/0.9#parentUrl> \"%1\"^^<%2> . " // only from path
                   "?r <%3> ?mime  FILTER regex(STR(?mime), '^image') } "  // only images
