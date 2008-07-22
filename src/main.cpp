@@ -115,7 +115,7 @@ int main( int argc, char *argv[] )
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
     KUniqueApplication::StartFlag startFlag;
-    startFlag = args->isSet( "--multipleinstances" ) ? KUniqueApplication::NonUniqueInstance : KUniqueApplication::StartFlag( 0 );
+    startFlag = args->isSet( "multipleinstances" ) ? KUniqueApplication::NonUniqueInstance : KUniqueApplication::StartFlag( 0 );
 
     if( !KUniqueApplication::start( startFlag ) ) {
         fprintf( stderr, "Amarok is already running!\n" );
