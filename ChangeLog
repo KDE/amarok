@@ -7,6 +7,7 @@ VERSION 2.0-beta1
     * Trigger play/pause when middle-clicking systray icon. (BR 167162)
     * New start flag --multipleinstances allows to run multiple instances of
       Amarok.
+    * full cover support for Nepomuk collection
 
   CHANGES:
     * Show url in the playlist if track has no name. patch by Edward Hades 
