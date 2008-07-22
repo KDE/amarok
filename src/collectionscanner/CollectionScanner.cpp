@@ -87,7 +87,6 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
 
 CollectionScanner::~CollectionScanner()
 {
-
 }
 
 
@@ -194,7 +193,17 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
         if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
         {
-            readDir( f.absoluteFilePath() + '/', entries );
+            bool isInCollection = false;
+            if( m_incremental )
+            {
+                // TODO: Check whether the directory is in the collection
+                // use dbus or other similar method to query Amarok core
+                // @see http://websvn.kde.org/trunk/extragear/multimedia/amarok/src/collectionscanner/CollectionScanner.cpp?revision=631604&view=markup
+                // isInCollection = ???;
+            }
+
+            if( !m_incremental || !isInCollection )
+                readDir( f.absoluteFilePath() + '/', entries );
         }
         else if( f.isFile() )
             entries.append( f.absoluteFilePath() );

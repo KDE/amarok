@@ -111,7 +111,6 @@ private:
     const bool    m_restart;
     const QString m_logfile;
     QStringList   m_scannedFolders;
-
 };
 
 
