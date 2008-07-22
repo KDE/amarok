@@ -32,32 +32,13 @@
 
 #include <QDateTime>
 #include <QFile>
-#include <QMutex>
 #include <QString>
-#include <QThread>
 #include <QUrl>
 
 #include <Nepomuk/Resource>
 #include <Nepomuk/Variant>
 
 using namespace Meta;
-
-class Meta::WriteStatisticsThread : public QThread
-{
-    public:
-        WriteStatisticsThread( NepomukTrack *track )
-    : QThread()
-                , m_track( track )
-                {
-                }
-
-                void run()
-                {
-                    m_track->writeStatistics();
-                }
-    private:
-        NepomukTrack *m_track;
-};
 
 NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *registry, const Soprano::BindingSet &data )
         : Track()
@@ -69,8 +50,6 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *regi
     m_firstPlayed = QDateTime::fromTime_t( 0 );
     m_lastPlayed =  QDateTime::fromTime_t( 0 );
     m_createDate = QDateTime::fromTime_t( 0 );
-
-    statsThread =  new WriteStatisticsThread( this );
 
     m_nepores = Nepomuk::Resource( data[ "r"].uri() ) ;
     m_uid = data[ "trackuid" ].toString();
@@ -127,8 +106,6 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *regi
 
 NepomukTrack::~NepomukTrack()
 {
-    statsThread->wait();
-    delete statsThread;
 }
 
 QString
@@ -317,15 +294,14 @@ NepomukTrack::finishedPlaying( double playedFraction )
 {
     debug() << "finshedPlaying " << endl;
     m_lastPlayed = QDateTime::currentDateTime();
-    QMutexLocker locker( &statsMutex );
     if( m_playCount == 0 || m_firstPlayed == QDateTime::fromTime_t( 0 ) )
     {
         m_firstPlayed = m_lastPlayed;
     }
     m_playCount++;
     //ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
+    writeStatistics();
     notifyObservers();
-    statsThread->start( QThread::LowPriority );
 }
 
 
@@ -344,18 +320,10 @@ NepomukTrack::setCachedLyrics ( const QString& value )
 void
 NepomukTrack::writeStatistics()
 {
-    QMutexLocker locker( &statsMutex );
-    
     m_lastWrote = QTime::currentTime();
-    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valLastPlayed) )
-            , Nepomuk::Variant( m_lastPlayed ) );
-    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valPlaycount) )
-            , Nepomuk::Variant( m_playCount ) );
-    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valFirstPlayed) )
-            , Nepomuk::Variant( m_firstPlayed ) );
-    
-
-
+    m_registry->writeToNepomukAsync( m_nepores, QUrl( m_collection->getUrlForValue( QueryMaker::valLastPlayed ) ), Nepomuk::Variant( m_lastPlayed ) );
+    m_registry->writeToNepomukAsync( m_nepores, QUrl( m_collection->getUrlForValue( QueryMaker::valPlaycount) ), Nepomuk::Variant( m_playCount ) );
+    m_registry->writeToNepomukAsync( m_nepores, QUrl( m_collection->getUrlForValue( QueryMaker::valFirstPlayed) ), Nepomuk::Variant( m_firstPlayed) );
 }
 
 QUrl

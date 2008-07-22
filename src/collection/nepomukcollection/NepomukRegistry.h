@@ -48,6 +48,9 @@ class NepomukRegistry : public QObject
         Meta::AlbumPtr albumForArtistAlbum( const QString &artist, const QString &album );
         Meta::ArtistPtr artistForArtistName( const QString &artist );
 
+        // can be used to write no blocking to Nepomuk (should not be used for large jobs)
+        void writeToNepomukAsync( Nepomuk::Resource &resource, const QUrl property,  const Nepomuk::Variant value ) const;
+
     private:
         QString albumId( QString artist, QString album ) const;
         QString createUuid() const;  // create real uuid  the qt one doesn't work (not on linux)
@@ -66,7 +69,7 @@ class NepomukRegistry : public QObject
         NepomukCollection* m_collection;
         QTimer *m_timer;
         Soprano::Model *m_model;
-        ThreadWeaver::Weaver *m_weaver;
+        mutable ThreadWeaver::Weaver *m_weaver;
 };
 
 #endif

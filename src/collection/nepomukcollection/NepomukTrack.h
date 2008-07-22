@@ -21,7 +21,6 @@
 
 #include "Meta.h"
 
-#include <QMutex>
 #include <QDateTime>
 
 #include <Nepomuk/Resource>
@@ -128,8 +127,6 @@ class NepomukTrack : public Track
         QDateTime m_createDate;
         QDateTime m_firstPlayed;
         QDateTime m_lastPlayed;
-        WriteStatisticsThread *statsThread;
-        QMutex statsMutex;
         NepomukRegistry *m_registry;
         QTime m_lastWrote;
         QString m_uid;

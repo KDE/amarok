@@ -146,6 +146,15 @@ NepomukRegistry::artistForArtistName( const QString &artist )
     }
 }
 
+void
+NepomukRegistry::writeToNepomukAsync( Nepomuk::Resource &resource, const QUrl property,  const Nepomuk::Variant value ) const
+{
+    // TODO: Find a way to block when the queue is already very long (more than 100 jobs?)
+    ThreadWeaver::Job *job =
+            new NepomukWriteJob( resource , property , value );
+    m_weaver->enqueue( job );
+}
+
 QString
 NepomukRegistry::albumId( QString artist, QString album ) const
 {
