@@ -502,6 +502,7 @@ ScriptManager::slotRunScript( bool silent )
     const KUrl url = m_scripts[name].url;
     QTime time;
     //load the wrapper classes
+    m_scripts[name].engine = new QScriptEngine;
     startScriptEngine( name );
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
@@ -668,6 +669,8 @@ ScriptManager::scriptFinished( QString name ) //SLOT
     m_scripts[name].wrapperList.clear();
     m_scripts[name].log += time.currentTime().toString() + " Script ended!" + '\n';
 
+    delete m_scripts[name].engine;
+
     m_scripts[name].li->setIcon( 0, QPixmap() );
     slotCurrentChanged( m_gui->treeWidget->currentItem() );
 }
@@ -766,7 +769,6 @@ ScriptManager::loadScript( const QString& path )
             item.version = version;
             item.AmarokVersion = AmarokVersion;
             item.li = li;
-            item.engine = new QScriptEngine;
             item.running = false;
             m_scripts[name] = item;
 
