@@ -37,7 +37,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 {
     setAcceptDrops( true );
     layout = new QHBoxLayout;
-    layout->setSpacing( 1 );
+    layout->setSpacing( 0 );    //this should be coherent when using separators
     setLayout( layout );
     backText = new QLabel;
     backText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );
@@ -263,35 +263,35 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
     foreach( Token *token, *tokenList)
     {
         QString current = token->text();
-        if( current == "Track" )
+        if( current == i18n( "Track" ) )
         {
             m_parsableScheme += "%track";
         }
-        else if( current == "Title" )
+        else if( current == i18n( "Title" ) )
         {
             m_parsableScheme += "%title";
         }
-        else if( current == "Artist" )
+        else if( current == i18n( "Artist" ) )
         {
             m_parsableScheme += "%artist";
         }
-        else if( current == "Composer" )
+        else if( current == i18n( "Composer" ) )
         {
             m_parsableScheme += "%composer";
         }
-        else if( current == "Year" )
+        else if( current == i18n( "Year" ) )
         {
             m_parsableScheme += "%year";
         }
-        else if( current == "Album" )
+        else if( current == i18n( "Album" ) )
         {
             m_parsableScheme += "%album";
         }
-        else if( current == "Comment" )
+        else if( current == i18n( "Comment" ) )
         {
             m_parsableScheme += "%comment";
         }
-        else if( current == "Genre" )
+        else if( current == i18n( "Genre" ) )
         {
             m_parsableScheme += "%genre";
         }
