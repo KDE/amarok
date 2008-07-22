@@ -110,7 +110,7 @@ void ScanManager::startIncrementalScan()
         return;
     }
     m_scanner = new AmarokProcess( this );
-    *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "--i";
+    *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "-i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << dirs;
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
