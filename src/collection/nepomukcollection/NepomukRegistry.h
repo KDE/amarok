@@ -50,6 +50,7 @@ class NepomukRegistry : public QObject
 
         // can be used to write no blocking to Nepomuk (should not be used for large jobs)
         void writeToNepomukAsync( Nepomuk::Resource &resource, const QUrl property,  const Nepomuk::Variant value ) const;
+        void writeToNepomukAsync( const QString &resourceUri, const QUrl property,  const Nepomuk::Variant value ) const;
 
     private:
         QString albumId( QString artist, QString album ) const;

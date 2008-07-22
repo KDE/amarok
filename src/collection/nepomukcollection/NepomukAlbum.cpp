@@ -38,6 +38,7 @@
 #include <KUrl>
 #include <Nepomuk/ResourceManager>
 #include <Nepomuk/Variant>
+#include <Soprano/BindingSet>
 #include <Soprano/Model>
 #include <Soprano/QueryResultIterator>
 #include <Soprano/Vocabulary/Xesam>
@@ -163,7 +164,7 @@ NepomukAlbum::setImage( const QImage &image )
 
     KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() );
     QByteArray key = context.hexDigest();
-    QString path = Amarok::saveLocation( "albumcovers/large/" ) + "nepo@" + key;
+    QString path = Amarok::saveLocation( "albumcovers/large/" ) + "nepo" + key;
     image.save( path, "JPG" );
 
     QString query = QString("SELECT ?r WHERE {"
@@ -207,16 +208,17 @@ NepomukAlbum::removeImage()
     KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() );
     QByteArray key = context.hexDigest();
 
+    // remove fullsize image if in amarok dir
+    QFile::remove( Amarok::saveLocation( "albumcovers/large/" ) + "nepo" + key );
     // remove all cache images
     QDir        cacheDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     QStringList cacheFilter;
-    cacheFilter << QString( '*' + "@nepo@" + key );
+    cacheFilter << QString( "*nepo" + key );
     QStringList cachedImages = cacheDir.entryList( cacheFilter );
 
     foreach( const QString &image, cachedImages )
     {
         bool r = QFile::remove( cacheDir.filePath( image ) );
-        debug() << "deleting cached image: " << image << " : " + ( r ? QString("ok") : QString("fail") );
     }
 
     // TODO: remove directory image ??
@@ -237,11 +239,14 @@ NepomukAlbum::removeImage()
     Soprano::QueryResultIterator it
             = model->executeQuery( query,
                                    Soprano::Query::QueryLanguageSparql );
-    while( it.next() )
+    
+    QList<Soprano::BindingSet> bindings = it.allBindings();
+
+    foreach( const Soprano::BindingSet &binding, bindings )
     {
-        Soprano::Node node =  it.binding( "r" );
-        Soprano::Node coverNode( QUrl("http://amarok.kde.org/metadata/1.0/track#coverUrl") );
-        model->removeStatement( node, coverNode , Soprano::Node() );
+        Nepomuk::Resource res( binding.value( "r" ).uri() );
+        QUrl url( "http://amarok.kde.org/metadata/1.0/track#coverUrl" );
+        res.removeProperty( url );
     }
 
     m_hasImageChecked = true;
@@ -321,7 +326,7 @@ NepomukAlbum::findOrCreateScaledImage( QString path, int size ) const
     if( size <= 1 )
         return QString();
 
-    QByteArray widthKey = QString::number( size ).toLocal8Bit() + "@nepo@"; // nepo 
+    QByteArray widthKey = QString::number( size ).toLocal8Bit() + "@nepo"; // nepo
     QString album = m_name;
     QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
 
@@ -354,7 +359,7 @@ QString
 NepomukAlbum::findImageInNepomuk() const
 {
     QString path;
-    QString query = QString("SELECT DISTINCT ?path WHERE {"
+    QString query = QString("SELECT DISTINCT ?r ?path WHERE {"
             "?r <%1> \"%2\"^^<%3> ."  // only for current artist
             "?r <%4> \"%5\"^^<%6> ." // only for current album
             "?r <http://amarok.kde.org/metadata/1.0/track#coverUrl> ?path . " // we want to know the coverUrl
@@ -373,6 +378,8 @@ NepomukAlbum::findImageInNepomuk() const
     if ( it.next() )
     {
         path = it.binding( "path" ).toString();
+        if ( !QFile::exists( path ) )
+            path.clear();
     }
     return path;
 }

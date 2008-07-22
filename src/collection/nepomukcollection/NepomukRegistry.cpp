@@ -42,13 +42,20 @@ class NepomukWriteJob : public ThreadWeaver::Job
 {
     public:
         NepomukWriteJob( Nepomuk::Resource &resource, const QUrl property,  const Nepomuk::Variant value )
-    : ThreadWeaver::Job()
+             : ThreadWeaver::Job()
                 , m_resource( resource )
                 , m_property( property )
                 , m_value( value )
                 {
             //nothing to do
                 }
+       NepomukWriteJob( const QString &resourceUri, const QUrl property,  const Nepomuk::Variant value )
+                   : ThreadWeaver::Job()
+                        , m_property( property )
+                        , m_value( value )
+        {
+            m_resource =  Nepomuk::Resource( QUrl( resourceUri ) );
+        }
     protected:
         virtual void run()
         {
@@ -61,7 +68,7 @@ class NepomukWriteJob : public ThreadWeaver::Job
         }
     
     private:
-        Nepomuk::Resource &m_resource;
+        Nepomuk::Resource m_resource;
         const QUrl m_property;
         const Nepomuk::Variant m_value;
 };
@@ -155,6 +162,15 @@ NepomukRegistry::writeToNepomukAsync( Nepomuk::Resource &resource, const QUrl pr
     m_weaver->enqueue( job );
 }
 
+void
+NepomukRegistry::writeToNepomukAsync( const QString &resourceUri, const QUrl property,  const Nepomuk::Variant value ) const
+{
+    // TODO: Find a way to block when the queue is already very long (more than 100 jobs?)
+    ThreadWeaver::Job *job =
+            new NepomukWriteJob( resourceUri , property , value );
+    m_weaver->enqueue( job );
+}
+
 QString
 NepomukRegistry::albumId( QString artist, QString album ) const
 {
@@ -186,7 +202,7 @@ NepomukRegistry::cleanHash()
         for( QMutableHashIterator<QString,Type > iter(x); iter.hasNext(); ) \
             RealType::staticCast( iter.next().value() )->emptyCache()
 
-    // are these needed? they will get deleted if not needed anymore. 
+    // are these needed? they ( they (the albums and artist object, will get deleted if not needed anymore anyway
     //foreachInvalidateCache( Meta::AlbumPtr, KSharedPtr<Meta::NepomukAlbum>, m_albums );
     //foreachInvalidateCache( Meta::ArtistPtr, KSharedPtr<Meta::NepomukArtist>, m_artists );
 
