@@ -14,7 +14,7 @@ VERSION 2.0-beta1
 
   BUGFIXES:
     * Script manager now could stop scripts which use qt bindings.
-
+    * Fix crash when calling GetCaps from the DBus Player interface
 
 VERSION 2.0-alpha2:
   FEATURES:

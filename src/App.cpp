@@ -175,20 +175,11 @@ App::App()
             CFRelease(urlRef);
         }
     }
-#endif
 
-    PERF_LOG( "Creating DBus handlers" )
-    new Amarok::RootDBusHandler();
-    new Amarok::PlayerDBusHandler();
-    new Amarok::TracklistDBusHandler();
-
-     PERF_LOG( "Done creating DBus handlers" )
-
-#ifdef Q_WS_MAC
     setupEventHandler_mac((long)this);
 #endif
 
-    QDBusConnection::sessionBus().registerService("org.mpris.amarok");
+
     QTimer::singleShot( 0, this, SLOT( continueInit() ) );
     PERF_LOG( "Done App ctor" )
 }
@@ -562,6 +553,13 @@ App::continueInit()
     PERF_LOG( "Start init of MainWindow" )
     mainWindow()->init(); //creates the playlist, browsers, etc.
     PERF_LOG( "Init of MainWindow done" )
+
+    PERF_LOG( "Creating DBus handlers" )
+    new Amarok::RootDBusHandler();
+    new Amarok::PlayerDBusHandler();
+    new Amarok::TracklistDBusHandler();
+    QDBusConnection::sessionBus().registerService("org.mpris.amarok");
+    PERF_LOG( "Done creating DBus handlers" )
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
     //Reason: in ~App we have to call the deleteBrowsers method or else we run afoul of refcount foobar in KHTMLPart
     //But if you click the X (not Action->Quit) it automatically kills MainWindow because KMainWindow sets this
