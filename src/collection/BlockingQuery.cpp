@@ -61,15 +61,15 @@ BlockingQuery::~BlockingQuery()
 void
 BlockingQuery::startQuery()
 {
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( result( QString, Meta::DataList ) ), Qt::QueuedConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( result( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( result( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( result( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( result( QString, Meta::GenreList ) ), Qt::QueuedConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( result( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, Meta::YearList ) ), SLOT( result( QString, Meta::YearList ) ), Qt::QueuedConnection );
-    connect( d->qm, SIGNAL( newResultReady( QString, QStringList ) ), SLOT( result( QString, QStringList ) ), Qt::QueuedConnection );
-    connect( d->qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( result( QString, Meta::DataList ) ) );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( result( QString, Meta::TrackList ) ) );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( result( QString, Meta::AlbumList ) ) );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( result( QString, Meta::ArtistList ) ) );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( result( QString, Meta::GenreList ) ) );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( result( QString, Meta::ComposerList ) ) );
+    connect( d->qm, SIGNAL( newResultReady( QString, Meta::YearList ) ), SLOT( result( QString, Meta::YearList ) ) );
+    connect( d->qm, SIGNAL( newResultReady( QString, QStringList ) ), SLOT( result( QString, QStringList ) ) );
+    connect( d->qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
 
     d->qm->run();
 }
