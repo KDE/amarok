@@ -99,7 +99,7 @@ void LyricsEngine::update()
 
         }
     }
-
+/*
     if( ( !cached ) && ScriptManager::instance()->lyricsScriptRunning().isEmpty() ) // no lyrics, and no lyrics script!
     {
         removeAllData( "lyrics" );
@@ -116,6 +116,7 @@ void LyricsEngine::update()
         ScriptManager::instance()->notifyFetchLyrics( artist, title );
 
     }
+*/
 }
 
 void LyricsEngine::newLyrics( QStringList& lyrics )

@@ -121,10 +121,7 @@ ScriptManager::ScriptManager( QWidget* parent )
     DEBUG_BLOCK
 
     setObjectName( "ScriptManager" );
-    setModal( false );
-    setButtons( Close );
-    setDefaultButton( Close );
-    showButtonSeparator( true );
+    setButtons( None );
 
     s_instance = this;
 
@@ -142,57 +139,25 @@ ScriptManager::ScriptManager( QWidget* parent )
 
     setMainWidget( main );
 
-    /// Category items
-    m_generalCategory    = new QTreeWidgetItem( m_gui->treeWidget );
-    m_lyricsCategory     = new QTreeWidgetItem( m_gui->treeWidget );
-    m_servicesCategory   = new QTreeWidgetItem( m_gui->treeWidget );
-
-    m_generalCategory  ->setText( 0, i18n( "General" ) );
-    m_lyricsCategory   ->setText( 0, i18n( "Lyrics" ) );
-    m_servicesCategory ->setText( 0, i18n( "Scripted Services" ) );
-
-    m_generalCategory  ->setFlags( Qt::ItemIsEnabled );
-    m_lyricsCategory   ->setFlags( Qt::ItemIsEnabled );
-    m_servicesCategory ->setFlags( Qt::ItemIsEnabled );
-
-    m_generalCategory  ->setIcon( 0, SmallIcon( "folder-amarok" ) );
-    m_lyricsCategory   ->setIcon( 0, SmallIcon( "folder-amarok" ) );
-    m_servicesCategory ->setIcon( 0, SmallIcon( "folder-amarok" ) );
-
-
-    // Restore the open/closed state of the category items
-    KConfigGroup config = Amarok::config( "ScriptManager" );
-    m_generalCategory  ->setExpanded( config.readEntry( "General category open", false ) );
-    m_lyricsCategory   ->setExpanded( config.readEntry( "Lyrics category open", false ) );
-    m_servicesCategory ->setExpanded( config.readEntry( "Service category open", false ) );
-
-    connect( m_gui->treeWidget, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), SLOT( slotCurrentChanged( QTreeWidgetItem* ) ) );
-    connect( m_gui->treeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), SLOT( slotRunScript() ) );
-    connect( m_gui->treeWidget, SIGNAL( customContextMenuRequested ( const QPoint& ) ), SLOT( slotShowContextMenu( const QPoint& ) ) );
+    m_scriptSelector = new KPluginSelector( m_gui->pluginWidget );
+    m_scriptSelector->resize ( 600, 300 );
 
     connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( m_gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
     connect( m_gui->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
-    connect( m_gui->runButton,       SIGNAL( clicked() ), SLOT( slotRunScript() ) );
-    connect( m_gui->stopButton,      SIGNAL( clicked() ), SLOT( slotStopScript() ) );
 
     m_gui->installButton  ->setIcon( KIcon( "folder-amarok" ) );
     m_gui->retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     m_gui->uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
-    m_gui->runButton      ->setIcon( KIcon( "media-playback-start-amarok" ) );
-    m_gui->stopButton     ->setIcon( KIcon( "media-playback-stop-amarok" ) );
 
     QSize sz = sizeHint();
-    setMinimumSize( qMax( 350, sz.width() ), qMax( 250, sz.height() ) );
+    setMinimumSize( qMax( 630, sz.width() ), qMax( 415, sz.height() ) );
     resize( sizeHint() );
 
     // Center the dialog in the middle of the mainwindow
     const int x = parentWidget()->width() / 2 - width() / 2;
     const int y = parentWidget()->height() / 2 - height() / 2;
     move( x, y );
-
-//FIXME: contex tbrowser changes
-//     connect( this, SIGNAL(lyricsScriptChanged()), ContextBrowser::instance(), SLOT( lyricsScriptChanged() ) );
 
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
@@ -213,11 +178,6 @@ ScriptManager::~ScriptManager()
     KConfigGroup config = Amarok::config( "ScriptManager" );
     config.writeEntry( "Running Scripts", runningScripts );
 
-    // Save the open/closed state of the category items
-    config.writeEntry( "General category open", m_generalCategory->isExpanded() );
-    config.writeEntry( "Lyrics category open", m_lyricsCategory->isExpanded() );
-    config.writeEntry( "Service category open", m_servicesCategory->isExpanded() );
-
     config.sync();
 
     s_instance = 0;
@@ -234,7 +194,6 @@ ScriptManager::runScript( const QString& name, bool silent )
     if( !m_scripts.contains( name ) )
         return false;
 
-    m_gui->treeWidget->setCurrentItem( m_scripts[name].li );
     return slotRunScript( silent );
 }
 
@@ -245,7 +204,6 @@ ScriptManager::stopScript( const QString& name )
     if( !m_scripts.contains( name ) )
         return false;
 
-    m_gui->treeWidget->setCurrentItem( m_scripts[name].li );
     slotStopScript();
 
     return true;
@@ -276,20 +234,6 @@ ScriptManager::specForScript( const QString& name )
 }
 
 
-void
-ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
-{
-    const QString args = QUrl::toPercentEncoding( artist ) + ' ' + QUrl::toPercentEncoding( title ); //krazy:exclude=qclasses
-//    notifyScripts( "fetchLyrics " + args );
-}
-
-
-void
-ScriptManager::notifyFetchLyricsByUrl( const QString& url )
-{
-//    notifyScripts( "fetchLyricsByUrl " + url );
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // private slots
 ////////////////////////////////////////////////////////////////////////////////
@@ -311,37 +255,9 @@ ScriptManager::findScripts() //SLOT
     foreach( const QString &str, runningScripts )
         if( m_scripts.contains( str ) )
         {
-            m_gui->treeWidget->setCurrentItem( m_scripts[str].li );
             slotRunScript();
         }
-
-//FIXME    m_gui->treeWidget->setCurrentItem( m_gui->treeWidget->firstChild() );
-    slotCurrentChanged( m_gui->treeWidget->currentItem() );
 }
-
-
-void
-ScriptManager::slotCurrentChanged( QTreeWidgetItem* item )
-{
-    const bool isCategory = item == m_generalCategory ||
-                            item == m_lyricsCategory ||
-                            item == m_servicesCategory;
-
-    if( item && !isCategory )
-    {
-        const QString name = item->text( 0 );
-        m_gui->uninstallButton->setEnabled( true );
-        m_gui->runButton->setEnabled( !m_scripts[name].running );
-        m_gui->stopButton->setEnabled( m_scripts[name].running );
-    }
-    else
-    {
-        m_gui->uninstallButton->setEnabled( false );
-        m_gui->runButton->setEnabled( false );
-        m_gui->stopButton->setEnabled( false );
-    }
-}
-
 
 bool
 ScriptManager::slotInstallScript( const QString& path )
@@ -446,7 +362,7 @@ ScriptManager::slotRetrieveScript()
 void
 ScriptManager::slotUninstallScript()
 {
-    const QString name = m_gui->treeWidget->currentItem()->text( 0 );
+    const QString name = "";
 
     if( KMessageBox::warningContinueCancel( this, i18n( "Are you sure you want to uninstall the script '%1'?", name ), i18n("Uninstall Script"), KGuiItem( i18n("Uninstall") ) ) == KMessageBox::Cancel )
         return;
@@ -475,8 +391,6 @@ ScriptManager::slotUninstallScript()
     foreach( const QString &key, keys )
     {
         scriptFinished( key );
-        delete m_scripts[key].li;
-        delete m_scripts[key].engine;
         m_scripts.remove( key );
     }
 }
@@ -486,19 +400,9 @@ bool
 ScriptManager::slotRunScript( bool silent )
 {
     DEBUG_BLOCK
-    if( !m_gui->runButton->isEnabled() )
-        return false;
 
-    QTreeWidgetItem* const li = m_gui->treeWidget->currentItem();
-    const QString name = li->text( 0 );
+    const QString name = "";
 
-    if( m_scripts[name].type == "lyrics" && !lyricsScriptRunning().isEmpty() )
-    {
-        if( !silent )
-            KMessageBox::sorry( 0, i18n( "Another lyrics script is already running. "
-                                         "You may only run one lyrics script at a time." ) );
-        return false;
-    }
     const KUrl url = m_scripts[name].url;
     QTime time;
     //load the wrapper classes
@@ -508,8 +412,6 @@ ScriptManager::slotRunScript( bool silent )
     scriptFile.open( QIODevice::ReadOnly );
     m_scripts[name].running = true;
     //todo: setProcessEventsInterval?
-    li->setIcon( 0, SmallIcon( "media-playback-start-amarok" ) );
-    slotCurrentChanged( m_gui->treeWidget->currentItem() );
 
     m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
@@ -532,8 +434,7 @@ ScriptManager::slotStopScript()
 {
     DEBUG_BLOCK
 
-    QTreeWidgetItem* const li = m_gui->treeWidget->currentItem();
-    const QString name = li->text( 0 );
+    const QString name = "";
 
     m_scripts[name].engine->abortEvaluation();
     if( m_scripts.value( name ).type == "service" )
@@ -546,8 +447,7 @@ ScriptManager::slotStopScript()
 void
 ScriptManager::slotConfigureScript()
 {
-    const QString name = m_gui->treeWidget->currentItem()->text( 0 );
-      if( !m_scripts[name].running ) return;
+    const QString name = "";
     m_scripts[name].globalPtr->slotConfigured();
 }
 
@@ -561,7 +461,7 @@ void
 ScriptManager::slotAboutScript()
 {
     //TODO: rewrite this
-    const QString name = m_gui->treeWidget->currentItem()->text( 0 );
+    const QString name = "";
     QFile readme( m_scripts[name].url.directory( KUrl::AppendTrailingSlash ) + "README" );
     QFile license( m_scripts[name].url.directory( KUrl::AppendTrailingSlash) + "COPYING" );
 
@@ -583,56 +483,7 @@ ScriptManager::slotAboutScript()
     about->setInitialSize( QSize( 500, 350 ) );
     about->show();
 }
-
-
-void
-ScriptManager::slotShowContextMenu( const QPoint& pos )
-{
-    QTreeWidgetItem* item = m_gui->treeWidget->itemAt( pos );
-
-    const bool isCategory = item == m_generalCategory ||
-                            item == m_lyricsCategory ||
-                            item == m_servicesCategory;
-
-    if( !item || isCategory )
-        return;
-
-    // Find the script entry in our map
-    QString key;
-    foreach( key, m_scripts.keys() )
-        if( m_scripts[key].li == item ) break;
-
-    enum { CONFIGURE, ABOUT, SHOW_LOG, EDIT };
-    KMenu menu;
-    menu.addTitle( i18n( "Properties" ) );
-
-    QAction* configureAction = menu.addAction( KIcon( "configure-amarok" ), i18n( "&Configure" ) );
-    QAction* aboutAction = menu.addAction( KIcon( "help-about-amarok" ), i18n( "&About" ) );
-    menu.addSeparator();
-    QAction* logAction = menu.addAction( KIcon( "view-history-amarok" ), i18n( "Show Output &Log" ) );
-    QAction* editAction = menu.addAction( KIcon( "document-properties-amarok" ), i18n( "&Edit" ) );
-
-
-    configureAction->setData( CONFIGURE );
-    aboutAction->setData( ABOUT );
-    logAction->setData( SHOW_LOG );
-    editAction->setData( EDIT );
-
-
-    QAction* choice = menu.exec( mapToGlobal( pos ) );
-    if( !choice ) return;
-    const int id = choice->data().toInt();
-
-    switch( id )
-    {
-        case CONFIGURE:
-            slotConfigureScript();
-            break;
-
-        case ABOUT:
-            slotAboutScript();
-            break;
-
+/*
         case EDIT:
             KRun::runCommand( "kwrite " + m_scripts[key].url.path(), 0 );
             break;
@@ -651,8 +502,7 @@ ScriptManager::slotShowContextMenu( const QPoint& pos )
             editor->resize( 400, 350 );
             editor->show();
             break;
-    }
-}
+*/
 
 void
 ScriptManager::scriptFinished( QString name ) //SLOT
@@ -670,9 +520,6 @@ ScriptManager::scriptFinished( QString name ) //SLOT
     m_scripts[name].log += time.currentTime().toString() + " Script ended!" + '\n';
 
     delete m_scripts[name].engine;
-
-    m_scripts[name].li->setIcon( 0, QPixmap() );
-    slotCurrentChanged( m_gui->treeWidget->currentItem() );
 }
 
 
@@ -709,7 +556,7 @@ ScriptManager::loadScript( const QString& path )
     if( !path.isEmpty() )
     {
         QFileInfo info( path );
-        QTreeWidgetItem* li = 0;
+
         QString name, type, version, AmarokVersion;
         const QString specPath = info.path() + '/' + "script.spec";
         if( QFile::exists( specPath ) )
@@ -742,18 +589,15 @@ ScriptManager::loadScript( const QString& path )
                 type = spec.value( "type" ).toString();
                 if( type == "lyrics" )
                 {
-                    li = new QTreeWidgetItem( m_lyricsCategory );
-                    li->setText( 0, name );
+
                 }
                 if( type == "service" )
                 {
-                    li = new QTreeWidgetItem( m_servicesCategory );
-                    li->setText( 0, name );
+
                 }
                 if( type == "generic" )
                 {
-                    li = new QTreeWidgetItem( m_generalCategory );
-                        li->setText( 0, name );
+
                 }
             }
             else
@@ -761,18 +605,14 @@ ScriptManager::loadScript( const QString& path )
                 error() << "script type missing in "<< path;
                 return;
             }
-            li->setIcon( 0, QPixmap() );
 
             ScriptItem item;
             item.url = url;
             item.type = type;
             item.version = version;
             item.AmarokVersion = AmarokVersion;
-            item.li = li;
             item.running = false;
             m_scripts[name] = item;
-
-            slotCurrentChanged( m_gui->treeWidget->currentItem() );
         }
         else
         {

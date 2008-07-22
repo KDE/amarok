@@ -29,6 +29,7 @@
 #include "ui_ScriptManagerBase.h"
 
 #include <KDialog>      //baseclass
+#include <KPluginSelector>
 #include <KUrl>
 
 #include <QList>
@@ -36,13 +37,6 @@
 #include <QtScript>
 
 class KArchiveDirectory;
-
-
-/**
- * @class ScriptManager
- * @short Script management widget and backend
- * @author Mark Kretschmann <markey@web.de>
- */
 
 class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 {
@@ -53,14 +47,14 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         virtual ~ScriptManager();
 
         /**
-         * Runs the script with the given name. Used by the DCOP handler.
+         * Runs the script with the given name.
          * @param name The name of the script.
          * @return True if successful.
          */
         bool runScript( const QString& name, bool silent = false );
 
         /**
-         * Stops the script with the given name. Used by the DCOP handler.
+         * Stops the script with the given name.
          * @param name The name of the script.
          * @return True if successful.
          */
@@ -72,33 +66,12 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         /** Returns the path of the spec file of the given script */
         QString specForScript( const QString& name );
 
-        /** Return name of the lyrics script currently running, or QString::null if none */
-        QString lyricsScriptRunning() const;
-
-        /** Returns a list of all lyrics scripts */
-        QStringList lyricsScripts() const;
-
-        /** Sends a fetchLyrics notification to all scripts */
-        void notifyFetchLyrics( const QString& artist, const QString& title );
-
-        /** Sends a fetchLyrics notification to retrieve lyrics from a specific page */
-        void notifyFetchLyricsByUrl( const QString& url );
-
-        /** Asks the current score script to give a new score based on the parameters. */
-        void requestNewScore( const QString &url, double prevscore, int playcount, int length, float percentage, const QString &reason );
-
         void ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter );
-
-    signals:
-        /** Emitted when the lyrics script changes, so that a lyrics retry can be made */
-        void lyricsScriptChanged();
 
     private slots:
         /** Finds all installed scripts and adds them to the listview */
         void findScripts();
 
-        /** Enables/disables the buttons */
-        void slotCurrentChanged( QTreeWidgetItem* );
         bool slotInstallScript( const QString& path = QString() );
         void slotRetrieveScript();
         void slotUninstallScript();
@@ -106,7 +79,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void slotStopScript();
         void slotConfigureScript();
         void slotAboutScript();
-        void slotShowContextMenu( const QPoint& );
 
         void scriptFinished( QString name );
 
@@ -118,8 +90,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         /** Returns the first running script found of \p type */
         QString scriptRunningOfType( const QString &type ) const;
-
-        QString ensureScoreScriptRunning();
 
         /** Adds a script to the listview */
         void loadScript( const QString& path );
@@ -134,11 +104,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         /////////////////////////////////////////////////////////////////////////////////////
         static ScriptManager*  s_instance;
         Ui::ScriptManagerBase* m_gui;
-
-        QTreeWidgetItem*       m_generalCategory;
-        QTreeWidgetItem*       m_lyricsCategory;
-        QTreeWidgetItem*       m_servicesCategory;
-
+        KPluginSelector*       m_scriptSelector;
         bool                   m_installSuccess;
 
         struct ScriptItem {
@@ -147,14 +113,13 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
             QString                                         type;
             QString                                         version;
             QString                                         AmarokVersion;
-            QTreeWidgetItem*                                li;
             bool                                            running;
             Amarok::AmarokScript*                           globalPtr;
             Amarok::AmarokScriptableServiceScript*          servicePtr;
             QString                                         log;
             QList<QObject*>                                 guiPtrList;
             QList<QObject*>                                 wrapperList;
-            ScriptItem() :                                  li( 0 ), running( false ){}
+            ScriptItem() :                                  running( false ){}
         };
 
         typedef QMap<QString, ScriptItem> ScriptMap;
@@ -163,11 +128,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         QScriptValue   m_global;
 
 };
-
-
-inline QStringList ScriptManager::lyricsScripts() const { return scriptsOfType( "lyrics" ); }
-
-inline QString ScriptManager::lyricsScriptRunning() const { return scriptRunningOfType( "lyrics" ); }
 
 #endif /* AMAROK_SCRIPTMANAGER_H */
 
