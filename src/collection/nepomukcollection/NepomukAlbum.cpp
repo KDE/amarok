@@ -163,7 +163,7 @@ NepomukAlbum::setImage( const QImage &image )
 
     KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() );
     QByteArray key = context.hexDigest();
-    QString path = Amarok::saveLocation( "albumcovers/large/" ) + "nepo@key";
+    QString path = Amarok::saveLocation( "albumcovers/large/" ) + "nepo@" + key;
     image.save( path, "JPG" );
 
     QString query = QString("SELECT ?r WHERE {"
