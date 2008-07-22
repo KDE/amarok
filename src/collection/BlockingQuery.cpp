@@ -72,6 +72,8 @@ BlockingQuery::startQuery()
     connect( d->qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
 
     d->qm->run();
+
+    while( true ) {}; //Loop until query is done
 }
 
 void
