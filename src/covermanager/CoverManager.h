@@ -76,6 +76,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         void init();
 
         void slotArtistSelected();
+        void slotArtistSelectedContinue();
         void coverItemExecuted( QListWidgetItem *item );
         void slotSetFilter();
         void slotSetFilterTimeout();

@@ -435,10 +435,6 @@ void CoverManager::showOnce( const QString &artist )
 
 void CoverManager::slotArtistSelected() //SLOT
 {
-    QTreeWidgetItem *item = m_artistView->selectedItems().first();
-    ArtistItem *artistItem = static_cast< ArtistItem* >(item);
-    Meta::ArtistPtr artist = artistItem->artist();
-
     //TODO: port?
 //     if( artist->prettyName().endsWith( ", The" ) )
 //        Amarok::manipulateThe( artist->prettyName(), false );
@@ -451,13 +447,20 @@ void CoverManager::slotArtistSelected() //SLOT
     m_selectAllAlbums->trigger();
     m_selectAllAlbums->setChecked( true );
 
+    //Extra time for the sake of init() and aesthetics
+    QTimer::singleShot( 0, this, SLOT( slotArtistSelectedContinue() ) );
+}
+
+
+void CoverManager::slotArtistSelectedContinue() //SLOT
+{
+    QTreeWidgetItem *item = m_artistView->selectedItems().first();
+    ArtistItem *artistItem = static_cast< ArtistItem* >(item);
+    Meta::ArtistPtr artist = artistItem->artist();
+
     QProgressDialog progress( this );
     progress.setLabelText( i18n("Loading Thumbnails...") );
     progress.setWindowModality( Qt::WindowModal );
-
-    //this is an extra processEvent call for the sake of init() and aesthetics
-    //it isn't necessary
-    kapp->processEvents();
 
     //this can be a bit slow
     QApplication::setOverrideCursor( Qt::WaitCursor );
