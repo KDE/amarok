@@ -424,6 +424,8 @@ App::initCliArgs() //static
     options.add("load", ki18n("Load URLs, replacing current playlist"));
     options.add("d");
     options.add("debug", ki18n("Print verbose debugging information"));
+    options.add("i");
+    options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("m");
     options.add("toggle-playlist-window", ki18n("Toggle the Playlist-window"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
@@ -982,7 +984,6 @@ int App::newInstance()
 
     first = false;
 
-    //initCliArgs();
     handleCliArgs();
     return 0;
 }
