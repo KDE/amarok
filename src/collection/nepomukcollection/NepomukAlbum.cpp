@@ -23,8 +23,11 @@
 #include "NepomukRegistry.h"
 
 #include "BlockingQuery.h"
+#include "covermanager/CoverFetchingActions.h"
+#include "meta/CustomActionsCapability.h"
 #include "Debug.h"
 #include "Meta.h"
+#include "context/popupdropper/PopupDropperAction.h"
 
 #include <QDir>
 #include <QFile>
@@ -34,6 +37,7 @@
 #include <KMD5>
 #include <KUrl>
 #include <Nepomuk/ResourceManager>
+#include <Nepomuk/Variant>
 #include <Soprano/Model>
 #include <Soprano/QueryResultIterator>
 #include <Soprano/Vocabulary/Xesam>
@@ -125,6 +129,8 @@ NepomukAlbum::image( int size, bool withShadow )
     if( !m_hasImage )
         return Meta::Album::image( size, withShadow );
 
+    if( size == 0) // fullsize image
+        return QPixmap( m_imagePath );
     if( m_images.contains( size ) )
         return QPixmap( m_images.value( size ) );
     
@@ -139,6 +145,158 @@ NepomukAlbum::image( int size, bool withShadow )
 }
 
 void
+NepomukAlbum::setImage( const QImage &image )
+{
+    if( image.isNull() )
+        return;
+
+    QString album = m_name;
+    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+
+    if( artist.isEmpty() && album.isEmpty() )
+        return;
+
+    // removeImage() will destroy all scaled cached versions of the artwork 
+    // and remove references from the database if required.
+    if( hasImage( 0 ) ) 
+        removeImage();
+
+    KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() );
+    QByteArray key = context.hexDigest();
+    QString path = Amarok::saveLocation( "albumcovers/large/" ) + "nepo@key";
+    image.save( path, "JPG" );
+
+    QString query = QString("SELECT ?r WHERE {"
+            "?r <%1> \"%2\"^^<%3> ."  // only for current artist
+            "?r <%4> \"%5\"^^<%6> . }" ) // only for current album
+            .arg( m_collection->getUrlForValue( QueryMaker::valArtist ) )
+            .arg( m_artist )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() )
+            .arg( m_collection->getUrlForValue( QueryMaker::valAlbum ) )
+            .arg( m_name )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
+
+    Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
+    Soprano::QueryResultIterator it
+            = model->executeQuery( query,
+                                   Soprano::Query::QueryLanguageSparql );
+    while( it.next() )
+    {
+        Nepomuk::Resource res( it.binding( "r" ).uri() );
+        
+        m_collection->registry()->writeToNepomukAsync( res 
+                                , QUrl("http://amarok.kde.org/metadata/1.0/track#coverUrl")
+                                , Nepomuk::Variant( path ) );
+    }
+
+    m_hasImage = true;
+    m_hasImageChecked = true;
+    m_imagePath = path;
+    notifyObservers();
+}
+
+void
+NepomukAlbum::removeImage()
+{
+    QString album = m_name;
+    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+
+    if( artist.isEmpty() && album.isEmpty() )
+        return;
+
+    KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() );
+    QByteArray key = context.hexDigest();
+
+    // remove all cache images
+    QDir        cacheDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    QStringList cacheFilter;
+    cacheFilter << QString( '*' + "@nepo@" + key );
+    QStringList cachedImages = cacheDir.entryList( cacheFilter );
+
+    foreach( const QString &image, cachedImages )
+    {
+        bool r = QFile::remove( cacheDir.filePath( image ) );
+        debug() << "deleting cached image: " << image << " : " + ( r ? QString("ok") : QString("fail") );
+    }
+
+    // TODO: remove directory image ??
+
+    // Update the image path in Nepomuk
+
+    QString query = QString("SELECT ?r WHERE {"
+            "?r <%1> \"%2\"^^<%3> ."  // only for current artist
+            "?r <%4> \"%5\"^^<%6> . }" ) // only for current album
+            .arg( m_collection->getUrlForValue( QueryMaker::valArtist ) )
+            .arg( m_artist )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() )
+            .arg( m_collection->getUrlForValue( QueryMaker::valAlbum ) )
+            .arg( m_name )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
+
+    Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
+    Soprano::QueryResultIterator it
+            = model->executeQuery( query,
+                                   Soprano::Query::QueryLanguageSparql );
+    while( it.next() )
+    {
+        Soprano::Node node =  it.binding( "r" );
+        Soprano::Node coverNode( QUrl("http://amarok.kde.org/metadata/1.0/track#coverUrl") );
+        model->removeStatement( node, coverNode , Soprano::Node() );
+    }
+
+    m_hasImageChecked = true;
+    m_hasImage = false;
+    m_imagePath.clear();
+    m_images.clear();
+    notifyObservers();
+}
+
+bool
+NepomukAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    switch( type )
+    {
+        case Meta::Capability::CustomActions:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+Meta::Capability*
+NepomukAlbum::asCapabilityInterface( Meta::Capability::Type type )
+{
+    switch( type )
+    {
+        case Meta::Capability::CustomActions:
+        {
+            QList<PopupDropperAction*> actions;
+            //actions.append( new CopyToDeviceAction( m_collection, this ) );
+            //actions.append( new CompilationAction( m_collection, this ) );
+            //PopupDropperAction* separator = new PopupDropperAction( m_collection );
+            //separator->setSeparator( true );
+            //actions.append( separator );
+            actions.append( new FetchCoverAction( m_collection, this ) );
+            actions.append( new SetCustomCoverAction( m_collection, this ) );
+            PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, this );
+            PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, this );
+            if( !hasImage() )
+            {
+                displayCoverAction->setEnabled( false );
+                unsetCoverAction->setEnabled( false );
+            }
+            actions.append( displayCoverAction );
+            actions.append( unsetCoverAction );
+            return new CustomActionsCapability( actions );
+        }
+
+        default:
+            return 0;
+    }
+}
+
+void
 NepomukAlbum::emptyCache()
 {
     // FIXME: Add proper locks
@@ -150,8 +308,11 @@ NepomukAlbum::emptyCache()
 QString
 NepomukAlbum::findImage() const
 {
-    // TODO: Query for Image set in Nepomuk
-    return findImageInDir();
+    // first look for an cover set in Nepomuk, if that fails look for an image in the dir of the files
+    QString path = findImageInNepomuk();
+    if ( path.isEmpty() )
+        path = findImageInDir();
+    return path;
 }
 
 QString
@@ -187,6 +348,33 @@ NepomukAlbum::findOrCreateScaledImage( QString path, int size ) const
         }
     }
     return cachedImagePath;
+}
+
+QString
+NepomukAlbum::findImageInNepomuk() const
+{
+    QString path;
+    QString query = QString("SELECT DISTINCT ?path WHERE {"
+            "?r <%1> \"%2\"^^<%3> ."  // only for current artist
+            "?r <%4> \"%5\"^^<%6> ." // only for current album
+            "?r <http://amarok.kde.org/metadata/1.0/track#coverUrl> ?path . " // we want to know the coverUrl
+            "} LIMIT 1") // we need not more than 2
+            .arg( m_collection->getUrlForValue( QueryMaker::valArtist ) )
+            .arg( m_artist )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() )
+            .arg( m_collection->getUrlForValue( QueryMaker::valAlbum ) )
+            .arg( m_name )
+            .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
+                        
+    Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
+    Soprano::QueryResultIterator it
+            = model->executeQuery( query,
+                                   Soprano::Query::QueryLanguageSparql );
+    if ( it.next() )
+    {
+        path = it.binding( "path" ).toString();
+    }
+    return path;
 }
 
 QString

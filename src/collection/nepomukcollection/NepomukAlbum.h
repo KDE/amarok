@@ -48,10 +48,14 @@ class NepomukAlbum : public Album
         virtual ArtistPtr albumArtist() const;
 
         virtual bool hasImage( int size = 1 ) const;
-        //virtual bool canUpdateImage() const { return true; }
+        virtual bool canUpdateImage() const { return true; }
         virtual QPixmap image( int size = 1, bool withShadow = false );
-        //virtual void setImage( const QImage &image );
-        //virtual void removeImage();
+        virtual void setImage( const QImage &image );
+        virtual void removeImage();
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         // for plugin internal use only
 
@@ -59,6 +63,7 @@ class NepomukAlbum : public Album
         QString findImage() const;
         QString findOrCreateScaledImage( QString path, int size ) const;
         QString findImageInDir() const;
+        QString findImageInNepomuk() const;
 
     private:
         NepomukCollection *m_collection;
