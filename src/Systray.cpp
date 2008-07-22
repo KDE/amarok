@@ -93,6 +93,8 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     //paintIcon();
     PERF_LOG("Adding Icon");
     setIcon( baseIcon );
+
+    connect( this, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ), SLOT( slotActivated( QSystemTrayIcon::ActivationReason ) ) );
 }
 
 bool
@@ -164,13 +166,6 @@ Amarok::TrayIcon::event( QEvent *e )
         }
 
         break;
-
-    case QEvent::MouseButtonPress:
-        if( static_cast<QMouseEvent*>(e)->button() == Qt::MidButton )
-        {
-            The::engineController()->playPause();
-            return true;
-        }
 
         //else FALL THROUGH
 
@@ -386,4 +381,14 @@ Amarok::TrayIcon::setupMenu()
         }
     }
 }
+
+void
+Amarok::TrayIcon::slotActivated( QSystemTrayIcon::ActivationReason reason )
+{
+    if( reason == QSystemTrayIcon::MiddleClick )
+        The::engineController()->playPause();
+}
+
+
+#include "Systray.moc"
 

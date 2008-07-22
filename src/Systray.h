@@ -34,6 +34,8 @@ namespace Amarok {
 
 class TrayIcon : public KSystemTrayIcon, public EngineObserver
 {
+    Q_OBJECT
+
 public:
     TrayIcon( QWidget* widget);
     friend class ::App;
@@ -47,6 +49,9 @@ protected:
     virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
     // get notified of 'highlight' color change
     virtual void paletteChange( const QPalette & oldPalette );
+
+private slots:
+    void slotActivated( QSystemTrayIcon::ActivationReason reason );
 
 private:
     virtual bool event( QEvent *e );

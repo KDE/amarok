@@ -326,6 +326,8 @@ EngineController::playPause() //SLOT
 {
     //this is used by the TrayIcon, PlayPauseAction and DCOP
 
+    DEBUG_BLOCK
+
     if( m_media->state() == Phonon::PlayingState )
     {
         pause();
