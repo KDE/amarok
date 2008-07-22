@@ -368,12 +368,6 @@ App::handleCliArgs() //static
         }
     }
 
-    if ( args->isSet( "toggle-playlist-window" ) )
-    {
-        haveArgs = true;
-        pApp->mainWindow()->showHide();
-    }
-
     //FIXME Debug output always enabled for now. MUST BE REVERTED BEFORE RELEASE.
     Amarok::config().writeEntry( "Debug Enabled", true );
     //Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
@@ -404,6 +398,7 @@ void
 App::initCliArgs() //static
 {
     KCmdLineOptions options;
+
     options.add("+[URL(s)]", ki18n( "Files/URLs to open" ));
     options.add("r");
     options.add("previous", ki18n( "Skip backwards in playlist" ));
@@ -424,14 +419,12 @@ App::initCliArgs() //static
     options.add("load", ki18n("Load URLs, replacing current playlist"));
     options.add("d");
     options.add("debug", ki18n("Print verbose debugging information"));
-    options.add("i");
-    options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("m");
-    options.add("toggle-playlist-window", ki18n("Toggle the Playlist-window"));
+    options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
     options.add("cdplay <device>", ki18n("Play an AudioCD from <device> or system:/media/<device>"));
-    KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 
+    KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
 
 
@@ -989,8 +982,5 @@ int App::newInstance()
 }
 
 
-
-
-
-
 #include "App.moc"
+
