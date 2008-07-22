@@ -165,9 +165,7 @@ PlaylistBrowserNS::BiasAddWidget::addBias()
     // TODO: different types of biases
     DEBUG_BLOCK
 
-    QueryMaker* qm = 
-        new XmlQueryWriter( new MetaQueryMaker( CollectionManager::instance()->queryableCollections() ) );
-    Dynamic::GlobalBias* gb = new Dynamic::GlobalBias( 0.0, qm );
+    Dynamic::GlobalBias* gb = new Dynamic::GlobalBias( 0.0, XmlQueryReader::Filter() );
     gb->setActive( false );
 
     emit addBias( gb );
@@ -269,40 +267,14 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
 void
 PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
 {
-    DEBUG_BLOCK
-    const XmlQueryReader::Filter& f = m_gbias->filter();
-    
-    if( f.field == 0 )
-        return;
-
-    QueryMaker* qm = 
-        new XmlQueryWriter( new MetaQueryMaker( CollectionManager::instance()->queryableCollections() ) );
-
-
-    if( f.compare == -1 )
-        qm->addFilter( f.field, f.value );
-    else
-        qm->addNumberFilter( f.field, f.value.toLongLong(), 
-                (QueryMaker::NumberComparison)f.compare );
-
-    debug() << "Filter:";
-    debug() << "f.field = " << f.field;
-    debug() << "f.value = " << f.value;
-    debug() << "f.comare = " << f.compare;
-    debug() << "f.exclude = " << f.exclude;
-
-    m_gbias->setQuery( qm );
+    m_gbias->setQuery( m_filter );
     m_gbias->setActive( true );
 }
 
 void
 PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
 {
-    XmlQueryReader::Filter& f = m_gbias->filter();
-    debug() << "field: " << f.field;
-    debug() << "value: " << f.value;
-
-    int index = m_fieldSelection->findData( f.field );
+    int index = m_fieldSelection->findData( m_filter.field );
     m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
 }
 
@@ -337,7 +309,7 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
     DEBUG_BLOCK
 
     qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
-    m_gbias->filter().field = field;
+    m_filter.field = field;
 
     if( field == 0 )
     {
@@ -372,10 +344,10 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::compareChanged( int index )
 {
     if( index < 0 )
-        m_gbias->filter().compare = -1;
+        m_filter.compare = -1;
     else if( index < m_compareSelection->count() )
     {
-        m_gbias->filter().compare = 
+        m_filter.compare = 
             qvariant_cast<int>(
                     m_compareSelection->itemData( index ) );
     }
@@ -404,7 +376,7 @@ PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QString& value )
 {
     DEBUG_BLOCK
     debug() << "new value: " << value;
-    m_gbias->filter().value = value;
+    m_filter.value = value;
     syncBiasToControls();
 }
 
@@ -412,7 +384,7 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QTime& value )
 {
     DEBUG_BLOCK
-    m_gbias->filter().value = QString::number( qAbs( value.secsTo( QTime(0,0,0) ) ) );
+    m_filter.value = QString::number( qAbs( value.secsTo( QTime(0,0,0) ) ) );
     debug() << "new value: " << m_gbias->filter().value;
     syncBiasToControls();
 }

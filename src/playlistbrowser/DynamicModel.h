@@ -70,7 +70,6 @@ class DynamicModel : public QAbstractItemModel
 
     private:
         void loadPlaylists();
-        Dynamic::Bias* createBias( QDomElement );
         void insertPlaylist( Dynamic::DynamicPlaylistPtr );
         void computeUniverseSet();
 

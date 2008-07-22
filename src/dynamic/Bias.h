@@ -24,6 +24,7 @@
 #include "Meta.h"
 #include "collection/support/XmlQueryReader.h"
 
+#include <QDomElement>
 #include <QMutex>
 #include <QObject>
 #include <QSet>
@@ -31,6 +32,7 @@
 class Collection;
 class QueryMaker;
 class BlockingQuery;
+class XmlQueryWriter;
 
 namespace PlaylistBrowserNS
 {
@@ -48,6 +50,8 @@ namespace Dynamic
     class Bias
     {
         public:
+            static Bias* fromXml( QDomElement );
+
             Bias();
             virtual ~Bias() {}
 
@@ -58,6 +62,11 @@ namespace Dynamic
              * Create a widget appropriate for editing the bias.
              */
             virtual PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
+
+            /**
+             * Returns xml suitable to be loaded with fromXml.
+             */
+            virtual QDomElement xml() const = 0;
 
             /**
              * Should the bias be considered or ignored by the playlist?
@@ -112,6 +121,7 @@ namespace Dynamic
             void collectionUpdated();
 
         protected:
+            Collection* m_collection; // null => all queryable collections
             bool m_needsUpdating;
             QMutex m_mutex;
     };
@@ -125,15 +135,15 @@ namespace Dynamic
     class GlobalBias : public CollectionDependantBias
     {
         public:
-            GlobalBias( double weight, QueryMaker* propertyQuery,
-                    XmlQueryReader::Filter filter = XmlQueryReader::Filter() );
-            GlobalBias( Collection* coll, double weight, QueryMaker* propertyQuery,
-                    XmlQueryReader::Filter filter = XmlQueryReader::Filter() );
+            GlobalBias( double weight, XmlQueryReader::Filter );
+            GlobalBias( Collection* coll, double weight, XmlQueryReader::Filter query );
 
-            void setQuery( QueryMaker* );
+            void setQuery( XmlQueryReader::Filter );
+
+            QDomElement xml() const;
 
             PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
-            XmlQueryReader::Filter& filter();
+            const XmlQueryReader::Filter& filter() const;
 
             double energy( const Meta::TrackList& playlist, const Meta::TrackList& context );
             double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
@@ -149,6 +159,7 @@ namespace Dynamic
         private:
             double m_weight; /// range: [0,1]
             QSet<Meta::TrackPtr> m_property;
+            XmlQueryWriter* m_qm;
             BlockingQuery* m_propertyQuery;
             XmlQueryReader::Filter m_filter;
     };

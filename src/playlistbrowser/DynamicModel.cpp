@@ -201,7 +201,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 
                 QDomElement e2 = e.childNodes().at(j).toElement();
                 if( e2.tagName() == "bias" )
-                    biases.append( createBias( e2 ) );
+                    biases.append( Dynamic::Bias::fromXml( e2 ) );
             }
 
             Dynamic::DynamicPlaylistPtr p( new Dynamic::BiasedPlaylist( title, biases ) );
@@ -211,54 +211,6 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
     }
 }
 
-
-Dynamic::Bias*
-PlaylistBrowserNS::DynamicModel::createBias( QDomElement e )
-{
-    QString type = e.attribute( "type" );
-
-    if( type == "global" )
-    {
-        // So for those watching at home, what we are doing here is parsing an xml
-        // file (with XmlQueryReader) simultaneusly into a QueryMaker and into
-        // a QDomElement (with XmlQueryWriter) so it can be written back.
-        QueryMaker* qm = 
-            new XmlQueryWriter( new MetaQueryMaker( CollectionManager::instance()->queryableCollections() ) );
-
-
-        double weight = 0.0;
-        XmlQueryReader::Filter filter;
-
-        QDomElement queryElement = e.firstChildElement( "query" );
-        if( !queryElement.isNull() )
-        {
-            QString rawXml;
-            QTextStream rawXmlStream( &rawXml );
-            queryElement.save( rawXmlStream, 0 );
-            XmlQueryReader reader( qm, XmlQueryReader::IgnoreReturnValues );
-            reader.read( rawXml );
-            filter = reader.getFilters().first();
-        }
-
-        QDomElement weightElement = e.firstChildElement( "weight" );
-        if( !weightElement.isNull() )
-        {
-            weight = weightElement.attribute("value").toDouble();
-        }
-
-        debug() << "global bias read, weight = " << weight;
-        debug() << "filter.field = " << filter.field;
-        debug() << "filter.value = " << filter.value;
-        debug() << "filter.compare = " << filter.compare;
-        return new Dynamic::GlobalBias( weight, qm, filter );
-    }
-    // TODO: other types of biases
-    else
-    {
-        warning() << "Bias with no type.";
-        return 0;
-    }
-}
 
 const QSet<Meta::TrackPtr>&
 PlaylistBrowserNS::DynamicModel::universe()

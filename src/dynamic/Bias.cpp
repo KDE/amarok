@@ -25,9 +25,64 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "DynamicBiasWidgets.h"
+#include "MetaQueryMaker.h"
 #include "QueryMaker.h"
+#include "collection/support/XmlQueryWriter.h"
 
 #include <QMutexLocker>
+
+
+
+
+Dynamic::Bias*
+Dynamic::Bias::fromXml( QDomElement e )
+{
+    if( e.tagName() != "bias" )
+        return 0;
+
+    QString type = e.attribute( "type" );
+
+    if( type == "global" )
+    {
+        double weight = 0.0;
+        XmlQueryReader::Filter filter;
+
+
+        QDomElement queryElement = e.firstChildElement( "query" );
+        if( !queryElement.isNull() )
+        {
+            // I don't actually need a qm from XmlQueryReader, I just want the filters.
+            QueryMaker* dummyQM = new MetaQueryMaker( QList<QueryMaker*>() );
+
+            QString rawXml;
+            QTextStream rawXmlStream( &rawXml );
+            queryElement.save( rawXmlStream, 0 );
+            XmlQueryReader reader( dummyQM, XmlQueryReader::IgnoreReturnValues );
+            reader.read( rawXml );
+            filter = reader.getFilters().first();
+
+            delete dummyQM;
+        }
+
+        QDomElement weightElement = e.firstChildElement( "weight" );
+        if( !weightElement.isNull() )
+        {
+            weight = weightElement.attribute("value").toDouble();
+        }
+
+        return new Dynamic::GlobalBias( weight, filter );
+    }
+
+    // TODO: other types of biases
+    else
+    {
+        error() << "Unknown bias type.";
+        return 0;
+    }
+}
+
+
+
 
 Dynamic::Bias::Bias()
     : m_active(true)
@@ -45,6 +100,8 @@ Dynamic::Bias::setDescription( const QString& description )
 {
     m_description = description;
 }
+
+
 
 PlaylistBrowserNS::BiasWidget*
 Dynamic::Bias::widget( QWidget* parent )
@@ -78,14 +135,16 @@ Dynamic::Bias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
 
 
 Dynamic::CollectionDependantBias::CollectionDependantBias()
-    : m_needsUpdating( true )
+    : m_collection(0)
+    , m_needsUpdating( true )
 {
     connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collection*)),
             this, SLOT(collectionUpdated()) );
 }
 
 Dynamic::CollectionDependantBias::CollectionDependantBias( Collection* coll )
-    : m_needsUpdating( true )
+    : m_collection(coll)
+    , m_needsUpdating( true )
 {
     connect( coll, SIGNAL(updated()), this, SLOT(collectionUpdated()) );
 }
@@ -102,24 +161,40 @@ Dynamic::CollectionDependantBias::collectionUpdated()
     m_needsUpdating = true;
 }
 
-Dynamic::GlobalBias::GlobalBias( double weight, QueryMaker* qm,
-        XmlQueryReader::Filter filter )
-    : m_propertyQuery(0)
-    , m_filter( filter )
+Dynamic::GlobalBias::GlobalBias( double weight, XmlQueryReader::Filter filter )
+    : m_qm(0)
+    , m_propertyQuery(0)
 {
     setWeight( weight );
-    setQuery( qm );
+    setQuery( filter );
 }
 
-Dynamic::GlobalBias::GlobalBias( Collection* coll, double weight, QueryMaker* qm,
-        XmlQueryReader::Filter filter )
+Dynamic::GlobalBias::GlobalBias( Collection* coll, double weight, XmlQueryReader::Filter filter )
     : CollectionDependantBias( coll )
+    , m_qm(0)
     , m_propertyQuery(0)
-    , m_filter(filter)
 {
     setWeight( weight );
-    setQuery( qm );
+    setQuery( filter );
 }
+
+QDomElement
+Dynamic::GlobalBias::xml() const
+{
+    QDomElement e;
+    e.setTagName( "bias" );
+    e.setAttribute( "type", "global" );
+
+    QDomElement weight;
+    weight.setTagName( "weight" );
+    weight.setAttribute( "value", m_weight );
+
+    e.appendChild( weight );
+    e.appendChild( m_qm->getDomElement().cloneNode() );
+
+    return e;
+}
+
 
 PlaylistBrowserNS::BiasWidget*
 Dynamic::GlobalBias::widget( QWidget* parent )
@@ -127,8 +202,8 @@ Dynamic::GlobalBias::widget( QWidget* parent )
     return new PlaylistBrowserNS::BiasGlobalWidget( this, parent );
 }
 
-XmlQueryReader::Filter&
-Dynamic::GlobalBias::filter()
+const XmlQueryReader::Filter&
+Dynamic::GlobalBias::filter() const
 {
     return m_filter;
 }
@@ -151,16 +226,38 @@ Dynamic::GlobalBias::setWeight( double weight )
 }
 
 void
-Dynamic::GlobalBias::setQuery( QueryMaker* qm )
+Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
 {
     DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
 
-    qm->setQueryType( QueryMaker::Track );
+    QueryMaker* qm;
+    if( m_collection )
+        qm = m_collection->queryMaker();
+    else
+        qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+
+    m_qm = new XmlQueryWriter( qm );
+
+    if( filter.field != 0 )
+    {
+        if( filter.compare == -1 )
+            m_qm->addFilter( filter.field, filter.value );
+        else
+            m_qm->addNumberFilter( filter.field, filter.value.toLongLong(),
+                    (QueryMaker::NumberComparison)filter.compare );
+    }
+
+    m_qm->setQueryType( QueryMaker::Track );
+    m_qm->orderByRandom(); // as to not affect the amortized time
+
     delete m_propertyQuery;
     m_propertyQuery = new BlockingQuery( qm );
-    collectionUpdated();
+
+    m_filter = filter;
+    collectionUpdated(); // force an update
 }
+
 
 
 double

@@ -152,6 +152,7 @@ namespace PlaylistBrowserNS
             KComboBox*      m_compareSelection;
 
             Dynamic::GlobalBias* m_gbias;
+            XmlQueryReader::Filter m_filter;
     };
 
 
