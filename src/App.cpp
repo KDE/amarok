@@ -271,7 +271,6 @@ namespace
         }
         return device;
     }
-
 }
 
 
@@ -378,7 +377,6 @@ App::handleCliArgs() //static
     firstTime = false;
 
     args->clear();    //free up memory
-
 }
 
 
