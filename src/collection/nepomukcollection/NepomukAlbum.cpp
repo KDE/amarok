@@ -197,34 +197,45 @@ NepomukAlbum::findOrCreateScaledImage( QString path, int size ) const
 QString
 NepomukAlbum::findImageInDir() const
 {
-    if ( !m_tracksLoaded )
-        const_cast<NepomukAlbum*>(this)-> tracks();
-    
-    // test if all files are in one directory ( we could ask nepomuk that, but I believe that will not be faster )
+    // test if all files are in one directory
     QString path;
-    foreach( Meta::TrackPtr tp, m_tracks )
+    QString query = QString("SELECT DISTINCT ?path WHERE {"
+                "?r <%1> \"%2\"^^<%3> ."  // only for current artist
+                "?r <%4> \"%5\"^^<%6> ." // only for current album
+                "?r <http://strigi.sf.net/ontologies/0.9#parentUrl> ?path . " // we want to know the parenturl
+                "} LIMIT 2") // we need not more than 2
+                .arg( m_collection->getUrlForValue( QueryMaker::valArtist ) )
+                .arg( m_artist )
+                .arg( Soprano::Vocabulary::XMLSchema::string().toString() )
+                .arg( m_collection->getUrlForValue( QueryMaker::valAlbum ) )
+                .arg( m_name )
+                .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
+                        
+    Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
+    Soprano::QueryResultIterator it
+            = model->executeQuery( query,
+                                    Soprano::Query::QueryLanguageSparql );
+    if ( it.next() )
     {
-        Meta::NepomukTrackPtr ntp = Meta::NepomukTrackPtr::staticCast( tp );
-        KUrl url( ntp->resourceUri() );
-        if ( path.isEmpty() )
-            path = url.directory();
-        else if ( path != url.directory() )
-        {
-            // files are in different dirs
+        path = it.binding( "path" ).toString();
+        // if we have another result the files are in more than one dir 
+        if ( it.next() )
             return QString();
-        }
     }
-    
-    QString query = QString("SELECT ?r WHERE {"
+    else
+    {
+        // should not happen
+        return QString();
+    }
+
+    query = QString("SELECT ?r WHERE {"
                   "?r <http://strigi.sf.net/ontologies/0.9#parentUrl> \"%1\"^^<%2> . " // only from path
                   "?r <%3> ?mime  FILTER regex(STR(?mime), '^image') } "  // only images
                   "LIMIT 1") // only one
                   .arg( path )
                   .arg( Soprano::Vocabulary::XMLSchema::string().toString() )
-                  .arg( Soprano::Vocabulary::Xesam::mimeType() );
-    Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
-    Soprano::QueryResultIterator it
-            = model->executeQuery( query,
+                  .arg( Soprano::Vocabulary::Xesam::mimeType().toString() );
+    it = model->executeQuery( query,
                                      Soprano::Query::QueryLanguageSparql );
     if( it.next() )
     {
