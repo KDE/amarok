@@ -34,25 +34,28 @@ class QCheckBox;
 class CurrentTrack : public Context::Applet
 {
     Q_OBJECT
+
 public:
     CurrentTrack( QObject* parent, const QVariantList& args );
     ~CurrentTrack();
 
-    void init();
+    virtual void init();
 
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
-    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
+    virtual void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();
 
+protected:
+    virtual void constraintsEvent( Plasma::Constraints constraints );
+
 private slots:
     void configAccepted();
     void changeTrackRating( int rating );
     void connectSource( const QString &source );
+
 private:
     QList<QAction*> contextualActions();
 

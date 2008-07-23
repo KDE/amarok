@@ -169,6 +169,7 @@ CurrentTrack::contextualActions()
 void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
+    DEBUG_BLOCK
 
     prepareGeometryChange();
 

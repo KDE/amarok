@@ -247,21 +247,20 @@ void ColumnContainment::updateSize( QRectF rect )
     
     m_currentRows = ( int )( rect.height() ) / m_defaultRowHeight;
     
-    int columns = ( int )( rect.width() ) / m_minColumnWidth;
+    const int columns = ( int )( rect.width() ) / m_minColumnWidth;
 
     if( columns != m_currentColumns )
     {
-        int rowCount = m_grid->rowCount();
-
-        bool hide = columns  < m_currentColumns;
-        int columnsToUpdate = qAbs( m_currentColumns - columns );
-        int col = hide? m_currentColumns - columnsToUpdate: m_currentColumns;
+        const int rowCount = m_grid->rowCount();
+        const bool hide = columns  < m_currentColumns;
+        const int columnsToUpdate = qAbs( m_currentColumns - columns );
+        const int col = hide? m_currentColumns - columnsToUpdate: m_currentColumns;
             
         for( int j = col; j < col + columnsToUpdate; j++ )
         {
-            int i = 0;
-            while( i < rowCount )
+            for( int i = 0; i < rowCount; )
             {
+                debug() << "Column: " << j << " Row: " << i;
                 Plasma::Applet* applet = static_cast< Plasma::Applet* >( m_grid->itemAt( i, j ) );
 
                 if( !applet ) //probably there are no applets left in the column
@@ -276,12 +275,10 @@ void ColumnContainment::updateSize( QRectF rect )
                     applet->show();
 
                 QList<int> pos = m_appletsPositions[applet];
-                int rowSpan = pos[2];
+                const int rowSpan = pos[2];
                 i += rowSpan;
-
             }
         }
-
     }
 
     m_currentColumns = columns;
