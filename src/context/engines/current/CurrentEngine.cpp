@@ -158,9 +158,6 @@ void CurrentEngine::update()
         setData( "current", "source_emblem",  QVariant( QPixmap() ) );
     }
 
-
-
-
     //generate data for album applet
     Meta::ArtistPtr artist = m_currentTrack->artist();
     Meta::AlbumList albums = artist->albums();
@@ -181,25 +178,16 @@ void CurrentEngine::update()
 
     }
 
-
-
-
-    
-
     debug() << "We got " << albums.count() << " albums for artist " << artist->name();
-
-
 
     QVariantList names;
     QVariantList trackCounts;
     QVariantList covers;
-    
 
     foreach( Meta::AlbumPtr albumPtr, albums )
     {
         debug() << "adding album " << albumPtr->name();
 
-        
         QString albumName = albumPtr->name();
         albumName =  albumName.isEmpty() ? i18n("Unknown") : albumName;
         names << albumName;
