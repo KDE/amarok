@@ -16,6 +16,7 @@ VERSION 2.0-beta1
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
+    * Fixed the "Toggle Main Window" shortcut. (BR 167218)
     * Script manager now could stop scripts which use qt bindings.
     * Fix crash when calling GetCaps from the DBus Player interface
     * Update album applet on track change (BR 167256)
