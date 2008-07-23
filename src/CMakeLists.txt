@@ -458,6 +458,7 @@ set(amaroklib_LIB_SRCS
     dialogs/EditFilterDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
     dialogs/PixmapViewer.cpp
+    dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp

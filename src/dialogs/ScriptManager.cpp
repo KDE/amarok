@@ -45,6 +45,7 @@
 #include "scriptengine/AmarokTrackInfoScript.h"
 #include "scriptengine/AmarokWindowScript.h"
 #include "scriptengine/ScriptImporter.h"
+#include "ScriptSelector.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <KAboutApplicationDialog>
@@ -140,7 +141,7 @@ ScriptManager::ScriptManager( QWidget* parent )
 
     setMainWidget( main );
 
-    m_scriptSelector = new KPluginSelector( m_gui->pluginWidget );
+    m_scriptSelector = new ScriptSelector( m_gui->pluginWidget );
     m_scriptSelector->resize ( 600, 300 );
 
     connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
