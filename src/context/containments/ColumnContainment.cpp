@@ -248,13 +248,14 @@ void ColumnContainment::updateSize( QRectF rect )
     m_currentRows = ( int )( rect.height() ) / m_defaultRowHeight;
     
     const int columns = ( int )( rect.width() ) / m_minColumnWidth;
+    debug() << "columns: " << columns;
 
     if( columns != m_currentColumns )
     {
         const int rowCount = m_grid->rowCount();
         const bool hide = columns  < m_currentColumns;
         const int columnsToUpdate = qAbs( m_currentColumns - columns );
-        const int col = hide? m_currentColumns - columnsToUpdate: m_currentColumns;
+        const int col = hide ? m_currentColumns - columnsToUpdate : m_currentColumns;
             
         for( int j = col; j < col + columnsToUpdate; j++ )
         {
