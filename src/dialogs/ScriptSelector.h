@@ -22,17 +22,31 @@
 
 #include "ScriptSelector.h"
 
+#include <KCategorizedView>
 #include <KPluginSelector>
+#include <ksharedconfig.h>
+#include <KPluginInfo>
 
 class ScriptSelector : public KPluginSelector
 {
     Q_OBJECT
 
-public:
-    ScriptSelector( QWidget * parent );
+    public:
+        ScriptSelector( QWidget * parent );
 
-    ~ScriptSelector();
+        ~ScriptSelector();
+        QString currentItem();
 
+        void addScripts(const QList<KPluginInfo> &pluginInfoList,
+                     PluginLoadMethod pluginLoadMethod = ReadConfigFile,
+                     const QString &categoryName = QString(),
+                     const QString &categoryKey = QString(),
+                     const KSharedConfig::Ptr &config = KSharedConfig::Ptr());
+
+    private:
+        KCategorizedView*          m_listView;
+        QMap<int, QString>         m_scripts;
+        int                        scriptCount;
 
 };
 

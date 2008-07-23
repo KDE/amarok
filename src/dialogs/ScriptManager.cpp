@@ -194,7 +194,6 @@ ScriptManager::runScript( const QString& name, bool silent )
 {
     if( !m_scripts.contains( name ) )
         return false;
-
     return slotRunScript( name, silent );
 }
 
@@ -204,9 +203,7 @@ ScriptManager::stopScript( const QString& name )
 {
     if( !m_scripts.contains( name ) )
         return false;
-
     slotStopScript( name );
-
     return true;
 }
 
@@ -218,7 +215,6 @@ ScriptManager::listRunningScripts()
     foreach( const QString &key, m_scripts.keys() )
         if( m_scripts[key].running )
             runningScripts << key;
-
     return runningScripts;
 }
 
@@ -230,7 +226,6 @@ ScriptManager::specForScript( const QString& name )
         return QString();
     QFileInfo info( m_scripts[name].url.path() );
     const QString specPath = info.path() + '/' + info.completeBaseName() + ".spec";
-
     return specPath;
 }
 
@@ -263,19 +258,11 @@ ScriptManager::findScripts() //SLOT
         else if ( m_scripts[key].info->category() == "Scriptable Service" )
             ServiceInfoList.append( *m_scripts[key].info );
     }
-    m_scriptSelector->addPlugins( LyricsInfoList, KPluginSelector::ReadConfigFile, "Lyrics" );
-    m_scriptSelector->addPlugins( GenericInfoList, KPluginSelector::ReadConfigFile, "Generic" );
-    m_scriptSelector->addPlugins( ServiceInfoList, KPluginSelector::ReadConfigFile, "Scriptable Service" );
+    m_scriptSelector->addScripts( LyricsInfoList, KPluginSelector::ReadConfigFile, "Lyrics" );
+    m_scriptSelector->addScripts( GenericInfoList, KPluginSelector::ReadConfigFile, "Generic" );
+    m_scriptSelector->addScripts( ServiceInfoList, KPluginSelector::ReadConfigFile, "Scriptable Service" );
     // Handle auto-run:
-
-    KConfigGroup config = Amarok::config( "ScriptManager" );
-    const QStringList runningScripts = config.readEntry( "Running Scripts", QStringList() );
-
-    foreach( const QString &str, runningScripts )
-        if( m_scripts.contains( str ) )
-        {
-//            slotRunScript();
-        }
+    slotConfigChanged( true );
 }
 
 bool
@@ -329,7 +316,6 @@ ScriptManager::slotInstallScript( const QString& path )
         // Delete directory recursively
         KIO::NetAccess::del( KUrl( scriptFolder ), 0 );
     }
-
     return false;
 }
 
@@ -383,7 +369,7 @@ ScriptManager::slotRetrieveScript()
 void
 ScriptManager::slotUninstallScript()
 {
-    const QString name = "";
+    const QString name = m_scriptSelector->currentItem();
 
     if( KMessageBox::warningContinueCancel( this, i18n( "Are you sure you want to uninstall the script '%1'?", name ), i18n("Uninstall Script"), KGuiItem( i18n("Uninstall") ) ) == KMessageBox::Cancel )
         return;
@@ -577,6 +563,9 @@ ScriptManager::startScriptEngine( QString name )
     QScriptEngine* scriptEngine = m_scripts[name].engine;
     QObject* objectPtr;
     QScriptValue scriptObject;
+
+//    scriptObject = scriptEngine->newFunction( ScriptExit );
+//    scriptEngine->globalObject().setProperty( "Exit", scriptObject );
 
     objectPtr = new Amarok::ScriptImporter( scriptEngine, m_scripts[name].url );
     scriptObject = scriptEngine->newQObject( objectPtr );

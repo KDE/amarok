@@ -19,10 +19,10 @@
  
 #include "ScriptSelector.h"
 
+#include "Debug.h"
+
 #include <KLocale>
 #include <KLineEdit>
-
-#include <QLineEdit>
 
 ScriptSelector::ScriptSelector( QWidget * parent )
  : KPluginSelector( parent )
@@ -31,10 +31,33 @@ ScriptSelector::ScriptSelector( QWidget * parent )
     lineEdit = this->findChild<KLineEdit*>();
     if ( lineEdit != 0 )
         lineEdit->setClickMessage( i18n("Search Scripts") );
+    m_listView = this->findChild<KCategorizedView*>();
+    scriptCount = 0;
 }
 
 ScriptSelector::~ScriptSelector()
 {}
 
+void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList, PluginLoadMethod pluginLoadMethod, const QString &categoryName, const QString &categoryKey, const KSharedConfig::Ptr &config )
+{
+    DEBUG_BLOCK
+    addPlugins( pluginInfoList, pluginLoadMethod, categoryName, categoryKey, config );
+    foreach( const KPluginInfo &plugin, pluginInfoList )
+    {
+        scriptCount++;
+        m_scripts[scriptCount] = plugin.name();
+    }
+
+}
+
+QString ScriptSelector::currentItem()
+{
+    DEBUG_BLOCK
+
+    QModelIndex currentIndex = m_listView->currentIndex();
+    debug() << "row: " << currentIndex.row() + 1; //the index start from 1
+    debug() << "name: "<< m_scripts[currentIndex.row() + 1];
+    return m_scripts[currentIndex.row() + 1];
+}
 
 #include "ScriptSelector.moc"
