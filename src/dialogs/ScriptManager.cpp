@@ -369,12 +369,11 @@ ScriptManager::slotRetrieveScript()
 void
 ScriptManager::slotUninstallScript()
 {
+    DEBUG_BLOCK
+
     const QString name = m_scriptSelector->currentItem();
 
     if( KMessageBox::warningContinueCancel( this, i18n( "Are you sure you want to uninstall the script '%1'?", name ), i18n("Uninstall Script"), KGuiItem( i18n("Uninstall") ) ) == KMessageBox::Cancel )
-        return;
-
-    if( m_scripts.find( name ) == m_scripts.end() )
         return;
 
     const QString directory = m_scripts[name].url.directory();
@@ -386,19 +385,11 @@ ScriptManager::slotUninstallScript()
         KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this script.</p><p>The ScriptManager can only uninstall scripts which have been installed as packages.</p>" ) );
         return;
     }
-
-    QStringList keys;
-
-    // Find all scripts that were in the uninstalled folder
-    foreach( const QString &key, m_scripts.keys() )
-        if( m_scripts[key].url.directory() == directory )
-            keys << key;
-
-    // Terminate script, remove entries from script list
-    foreach( const QString &key, keys )
+    else
     {
-        scriptFinished( key );
-        m_scripts.remove( key );
+        if ( m_scripts[name].running )
+            slotStopScript( name );
+        m_scripts.remove( name );
     }
 }
 
@@ -443,9 +434,10 @@ ScriptManager::slotStopScript( QString name )
     DEBUG_BLOCK
 
     m_scripts[name].engine->abortEvaluation();
-    if( m_scripts.value( name ).info->category() == "Scriptable Service" )
+    if( m_scripts[name].info->category() == "Scriptable Service" )
         The::scriptableServiceManager()->removeRunningScript( name );
-
+    if ( m_scripts[name].info->isPluginEnabled() )
+        m_scripts[name].info->setPluginEnabled( false );
     scriptFinished( name );
 }
 

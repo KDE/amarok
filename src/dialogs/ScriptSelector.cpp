@@ -47,7 +47,6 @@ void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList, Plugi
         scriptCount++;
         m_scripts[scriptCount] = plugin.name();
     }
-
 }
 
 QString ScriptSelector::currentItem()
