@@ -248,6 +248,8 @@ void ColumnContainment::updateSize( QRectF rect )
     m_currentRows = ( int )( rect.height() ) / m_defaultRowHeight;
     
     const int columns = ( int )( rect.width() ) / m_minColumnWidth;
+    debug() << "rect.width(): " << rect.width();
+    debug() << "m_minColumnWidth(): " << m_minColumnWidth;
     debug() << "columns: " << columns;
 
     if( columns != m_currentColumns )
