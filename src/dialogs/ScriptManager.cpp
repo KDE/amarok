@@ -45,7 +45,6 @@
 #include "scriptengine/AmarokTrackInfoScript.h"
 #include "scriptengine/AmarokWindowScript.h"
 #include "scriptengine/ScriptImporter.h"
-#include "ScriptSelector.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
 #include "StatusBar.h"
 #include "ui_ScriptManagerBase.h"
@@ -60,7 +59,6 @@
 #include <KMessageBox>
 #include <knewstuff2/engine.h>
 #include <knewstuff2/core/entry.h>
-#include <KPluginSelector>
 #include <KProtocolManager>
 #include <KPushButton>
 #include <KRun>

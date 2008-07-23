@@ -27,8 +27,10 @@
 ScriptSelector::ScriptSelector( QWidget * parent )
  : KPluginSelector( parent )
 {
-    if ( this->findChild<KLineEdit*>() != NULL )
-        this->findChild<KLineEdit*>()->setClickMessage( i18n("Search Scripts") );
+    KLineEdit* lineEdit;
+    lineEdit = this->findChild<KLineEdit*>();
+    if ( lineEdit != 0 )
+        lineEdit->setClickMessage( i18n("Search Scripts") );
 }
 
 ScriptSelector::~ScriptSelector()

@@ -23,6 +23,7 @@
 #define AMAROK_SCRIPTMANAGER_H
 
 #include "EngineObserver.h"   //baseclass
+#include "ScriptSelector.h"
 
 #include <KDialog>      //baseclass
 
@@ -98,7 +99,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
         static ScriptManager*  s_instance;
-        KPluginSelector*       m_scriptSelector;
+        ScriptSelector*        m_scriptSelector;
         bool                   m_installSuccess;
 
         struct ScriptItem {

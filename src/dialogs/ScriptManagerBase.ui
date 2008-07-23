@@ -13,7 +13,7 @@
   <property name="windowTitle" >
    <string>DirectoryListBase</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" >
    <item>
     <widget class="QLabel" name="label" >
      <property name="font" >
@@ -27,7 +27,7 @@
     </widget>
    </item>
    <item>
-    <widget class="KPluginSelector" native="1" name="pluginWidget" >
+    <widget class="ScriptSelector" native="1" name="pluginWidget" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
        <horstretch>0</horstretch>
@@ -37,7 +37,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" >
      <item>
       <widget class="QPushButton" name="installButton" >
        <property name="text" >
@@ -62,24 +62,18 @@
     </layout>
    </item>
   </layout>
-  <zorder>uninstallButton</zorder>
-  <zorder>installButton</zorder>
-  <zorder>retrieveButton</zorder>
-  <zorder>label</zorder>
-  <zorder>pluginWidget</zorder>
  </widget>
  <layoutdefault spacing="6" margin="0" />
  <layoutfunction spacing="KDialog::spacingHint" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>KPluginSelector</class>
+   <class>ScriptSelector</class>
    <extends>QWidget</extends>
-   <header>KPluginSelector</header>
+   <header>ScriptSelector.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <includes/>
  <resources/>
  <connections/>
 </ui>
