@@ -28,10 +28,10 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
+#include "AmarokProcess.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "AmarokProcess.h"
-#include "StatusBar.h"
+#include "MainWindow.h"
 #include "Osd.h"
 #include "scriptengine/AmarokCollectionScript.h"
 #include "scriptengine/AmarokEngineScript.h"
@@ -47,6 +47,8 @@
 #include "scriptengine/ScriptImporter.h"
 #include "ScriptSelector.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
+#include "StatusBar.h"
+#include "ui_ScriptManagerBase.h"
 
 #include <KAboutApplicationDialog>
 #include <KAboutData>
@@ -77,7 +79,7 @@
 #include <QSettings>
 #include <QTextCodec>
 #include <QTimer>
-#include <QtScript>
+#include <QScriptEngine>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -118,10 +120,9 @@ ScriptManager* ScriptManager::s_instance = 0;
 ScriptManager::ScriptManager( QWidget* parent )
         : KDialog( parent )
         , EngineObserver( The::engineController() )
-        , m_gui( new Ui::ScriptManagerBase() )
 {
     DEBUG_BLOCK
-
+    Ui::ScriptManagerBase* gui =  new Ui::ScriptManagerBase();
     setObjectName( "ScriptManager" );
     setButtons( None );
 
@@ -137,24 +138,18 @@ ScriptManager::ScriptManager( QWidget* parent )
 #endif
 
     QWidget* main = new QWidget( this );
-    m_gui->setupUi( main );
-
+    gui->setupUi( main );
     setMainWidget( main );
 
-    m_scriptSelector = new ScriptSelector( m_gui->pluginWidget );
-    m_scriptSelector->resize ( 600, 300 );
+    m_scriptSelector = gui->pluginWidget;
 
-    connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
-    connect( m_gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
-    connect( m_gui->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
+    connect( gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
+    connect( gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
+    connect( gui->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
 
-    m_gui->installButton  ->setIcon( KIcon( "folder-amarok" ) );
-    m_gui->retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
-    m_gui->uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
-
-    QSize sz = sizeHint();
-    setMinimumSize( qMax( 630, sz.width() ), qMax( 415, sz.height() ) );
-    resize( sizeHint() );
+    gui->installButton  ->setIcon( KIcon( "folder-amarok" ) );
+    gui->retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    gui->uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
 
     // Center the dialog in the middle of the mainwindow
     const int x = parentWidget()->width() / 2 - width() / 2;
@@ -163,7 +158,6 @@ ScriptManager::ScriptManager( QWidget* parent )
 
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
-
 }
 
 
@@ -185,6 +179,11 @@ ScriptManager::~ScriptManager()
     s_instance = 0;
 }
 
+ScriptManager*
+ScriptManager::instance()
+{
+    return s_instance ? s_instance : new ScriptManager( The::mainWindow() );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // public

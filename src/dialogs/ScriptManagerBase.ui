@@ -1,4 +1,5 @@
 <ui version="4.0" >
+ <author>Peter Zhou and Ian Monroe</author>
  <class>ScriptManagerBase</class>
  <widget class="QWidget" name="ScriptManagerBase" >
   <property name="geometry" >
@@ -12,80 +13,73 @@
   <property name="windowTitle" >
    <string>DirectoryListBase</string>
   </property>
-  <widget class="QPushButton" name="uninstallButton" >
-   <property name="geometry" >
-    <rect>
-     <x>240</x>
-     <y>360</y>
-     <width>141</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Uninstall</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="installButton" >
-   <property name="geometry" >
-    <rect>
-     <x>40</x>
-     <y>360</y>
-     <width>141</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Install Script</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="retrieveButton" >
-   <property name="geometry" >
-    <rect>
-     <x>440</x>
-     <y>360</y>
-     <width>141</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Get More Scripts</string>
-   </property>
-  </widget>
-  <widget class="QWidget" native="1" name="pluginWidget" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>50</y>
-     <width>591</width>
-     <height>291</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>211</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="text" >
-    <string>Installed Amarok Scripts:</string>
-   </property>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QLabel" name="label" >
+     <property name="font" >
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text" >
+      <string>Installed Amarok Scripts:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="KPluginSelector" native="1" name="pluginWidget" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="QPushButton" name="installButton" >
+       <property name="text" >
+        <string>&amp;Install Script</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="uninstallButton" >
+       <property name="text" >
+        <string>&amp;Uninstall</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="retrieveButton" >
+       <property name="text" >
+        <string>&amp;Get More Scripts</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <zorder>uninstallButton</zorder>
+  <zorder>installButton</zorder>
+  <zorder>retrieveButton</zorder>
+  <zorder>label</zorder>
+  <zorder>pluginWidget</zorder>
  </widget>
  <layoutdefault spacing="6" margin="0" />
  <layoutfunction spacing="KDialog::spacingHint" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <includes>
-  <include location="local" >k3listview.h</include>
- </includes>
+ <customwidgets>
+  <customwidget>
+   <class>KPluginSelector</class>
+   <extends>QWidget</extends>
+   <header>KPluginSelector</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <includes/>
  <resources/>
  <connections/>
 </ui>

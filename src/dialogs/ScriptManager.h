@@ -23,27 +23,30 @@
 #define AMAROK_SCRIPTMANAGER_H
 
 #include "EngineObserver.h"   //baseclass
-#include "MainWindow.h"
-#include "scriptengine/AmarokScript.h"
-#include "scriptengine/AmarokScriptableServiceScript.h"
-#include "ui_ScriptManagerBase.h"
 
 #include <KDialog>      //baseclass
-#include <KPluginSelector>
+
 #include <KUrl>
 
 #include <QList>
 #include <QMap>
-#include <QtScript>
+#include <QScriptValue>
 
 class KArchiveDirectory;
+class KPluginInfo;
+class KPluginSelector;
+class QScriptEngine;
+namespace Amarok {
+    class AmarokScript;
+    class AmarokScriptableServiceScript;
+};
 
 class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 {
     Q_OBJECT
 
     public:
-        static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( The::mainWindow() ); }
+        static ScriptManager* instance();
         virtual ~ScriptManager();
 
         /**
@@ -95,7 +98,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
         static ScriptManager*  s_instance;
-        Ui::ScriptManagerBase* m_gui;
         KPluginSelector*       m_scriptSelector;
         bool                   m_installSuccess;
 
