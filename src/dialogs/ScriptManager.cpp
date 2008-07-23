@@ -241,7 +241,9 @@ ScriptManager::specForScript( const QString& name )
 void
 ScriptManager::findScripts() //SLOT
 {
-    const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js",KStandardDirs::Recursive );
+    DEBUG_BLOCK
+
+    const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js", KStandardDirs::Recursive );
 
     // Add found scripts to treeWidget:
     foreach( const QString &str, allFiles )
@@ -553,6 +555,7 @@ void
 ScriptManager::loadScript( const QString& path )
 {
     DEBUG_BLOCK
+
     if( !path.isEmpty() )
     {
         QFileInfo info( path );
