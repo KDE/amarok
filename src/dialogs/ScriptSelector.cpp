@@ -27,7 +27,6 @@
 ScriptSelector::ScriptSelector( QWidget * parent )
  : KPluginSelector( parent )
 {
-    //FIXME: not compatible with MSVC 6
     this->findChild<KLineEdit*>()->setClickMessage( i18n("Search Scripts") );
 }
 

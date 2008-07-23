@@ -63,7 +63,7 @@ var stationArray = new Array (
 
 function onConfigure()
 {
-    Amarok.alert( "sorry", "This script does not require any configuration." );
+    Amarok.alert( "This script does not require any configuration." );
 }
 
 function onPopulate( level, parent_id, callback, filter )

@@ -248,14 +248,25 @@ ScriptManager::findScripts() //SLOT
     const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js", KStandardDirs::Recursive );
 
     // Add found scripts to treeWidget:
-    QList<KPluginInfo> pluginInfoList;
+    QList<KPluginInfo> LyricsInfoList;
+    QList<KPluginInfo> GenericInfoList;
+    QList<KPluginInfo> ServiceInfoList;
     foreach( const QString &str, allFiles )
     {
         loadScript( str );
     }
     foreach( const QString &key, m_scripts.keys() )
-        pluginInfoList.append( *m_scripts[key].info );
-    m_scriptSelector->addPlugins( pluginInfoList, KPluginSelector::ReadConfigFile, "Scripts" );
+    {
+        if ( m_scripts[key].info->category() == "Generic" )
+            GenericInfoList.append( *m_scripts[key].info );
+        else if ( m_scripts[key].info->category() == "Lyrics" )
+            LyricsInfoList.append( *m_scripts[key].info );
+        else if ( m_scripts[key].info->category() == "Scriptable Service" )
+            ServiceInfoList.append( *m_scripts[key].info );
+    }
+    m_scriptSelector->addPlugins( LyricsInfoList, KPluginSelector::ReadConfigFile, "Lyrics" );
+    m_scriptSelector->addPlugins( GenericInfoList, KPluginSelector::ReadConfigFile, "Generic" );
+    m_scriptSelector->addPlugins( ServiceInfoList, KPluginSelector::ReadConfigFile, "Scriptable Service" );
     // Handle auto-run:
 
     KConfigGroup config = Amarok::config( "ScriptManager" );

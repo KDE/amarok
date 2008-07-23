@@ -21,7 +21,7 @@ function executeLine()
 
 function onConfigure()
 {
-    Amarok.alert( "sorry", "This script does not require any configuration." );
+    Amarok.alert( "This script does not require any configuration." );
 }
 
 var mainWindow = new QMainWindow();

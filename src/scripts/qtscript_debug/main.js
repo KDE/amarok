@@ -55,7 +55,7 @@ if ( TrackInfo.Artist || TrackInfo.Album )
 
 function onConfigure()
 {
-    Amarok.alert( "sorry", "This script does not require any configuration." );
+    Amarok.alert( "This script does not require any configuration." );
 }
 
 function TrackChanged()

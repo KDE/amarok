@@ -20,6 +20,7 @@
 #include "Amarok.h"
 #include "App.h"
 #include "Debug.h"
+#include "ScriptManager.h"
 
 #include <KMessageBox>
 
@@ -47,7 +48,7 @@ namespace Amarok
         kapp->closeAllWindows();
     }
 
-    int AmarokScript::alert( QString type, QString text )
+    int AmarokScript::alert(  QString text, QString type )
     {
         //Ok = 1, Cancel = 2, Yes = 3, No = 4, Continue = 5
         if ( type == "error" )
@@ -70,10 +71,25 @@ namespace Amarok
             return KMessageBox::warningContinueCancel( 0, text );
         else if ( type == "warningYesNoCancel" )
             return KMessageBox::warningYesNoCancel( 0, text );
-        
+
         warning() << "alert type not found!";
         //TODO: write to error log since it's a script error
         return -1;
+    }
+
+    bool AmarokScript::runScript( QString name )
+    {
+        return ScriptManager::instance()->runScript( name );
+    }
+
+    bool AmarokScript::stopScript( QString name )
+    {
+        return ScriptManager::instance()->stopScript( name );
+    }
+
+    QStringList AmarokScript::listRunningScripts()
+    {
+        return ScriptManager::instance()->listRunningScripts();
     }
 
     void AmarokScript::slotConfigured()

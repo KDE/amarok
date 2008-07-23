@@ -34,10 +34,12 @@ namespace Amarok
             void slotConfigured();
 
         public slots:
-            QString  Version();
-            void     Quit();
-            int      alert( QString type, QString text );
-
+            QString     Version();
+            void        Quit();
+            int         alert( QString text, QString type = "sorry" );
+            bool        runScript( QString name );
+            bool        stopScript( QString name );
+            QStringList listRunningScripts();
         signals:
             void configured();
 
