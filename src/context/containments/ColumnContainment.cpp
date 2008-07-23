@@ -13,8 +13,8 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "Amarok.h"
 #include "ColumnContainment.h"
-
 #include "ContextScene.h"
 #include "Debug.h"
 #include "MainWindow.h"
@@ -59,15 +59,11 @@ void SvgRenderJob::run()
 ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_actions( 0 )
-    , m_currentRows( 1 )
-    , m_currentColumns( 1 )
     , m_minColumnWidth( 370 )
     , m_maxColumnWidth( 500 )
     , m_defaultRowHeight( 150 )
     , m_paintTitle( 0 )
     , m_manageCurrentTrack( 0 )
-    , m_configLoadPending( 0 )
-    , m_ctHasBeenKicked( 0 )
 {
     DEBUG_BLOCK
 
@@ -83,12 +79,9 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     for( int i = 0; i < MAX_ROWS; i++ )
         for( int j = 0; j < MAX_COLUMNS; j++ )
             m_gridFreePositions[i][j] = true;
-
-}
-
-void
-ColumnContainment::init()
-{
+        
+    loadInitialConfig();
+    
     m_header = new Context::Svg( this );
     m_header->setImagePath( "widgets/amarok-containment-header" );
     m_header->setContainsMultipleImages( false );
@@ -167,50 +160,60 @@ ColumnContainment::hideTitle()
     m_paintTitle = false;
 }
 
-void ColumnContainment::saveToConfig( KConfig& conf )
+void ColumnContainment::saveToConfig( KConfigGroup& conf )
 {
-//     debug() << "number of m_columns:" << m_columns->count();
+    QStringList plugins;
     for( int i = 0; i < m_grid->count(); i++ )
     {
         Applet *applet = 0;
-        //FIXME: Reenable when working, the dynamic_cast causes a crash.
         QGraphicsLayoutItem *item = m_grid->itemAt( i );
-        //Q_ASSERT(item);
         applet = dynamic_cast<Plasma::Applet*>( item );
         debug() << "trying to save an applet";
         if( applet != 0 && applet->pluginName() != "currenttrack" ) //don't save the current track applet
         {
-            KConfigGroup cg( &conf, QString::number( applet->id() ) );
             debug() << "saving applet" << applet->name();
-            cg.writeEntry( "plugin", applet->pluginName() );
+            plugins << applet->pluginName();
         }
+        conf.writeEntry( "plugins", plugins );
     }
-    conf.sync();
 }
 
 void
-ColumnContainment::loadConfig()
+ColumnContainment::loadConfig( const KConfigGroup& conf )
 {
-    m_configLoadPending = true;
+    DEBUG_BLOCK
+    if( m_manageCurrentTrack )
+    {
+        Plasma::Containment::addApplet( "currenttrack" );
+    }
+    QStringList plugins = conf.readEntry( "plugins", QStringList() );
+    foreach( const QString& plugin, plugins )
+    {
+        debug() << "Adding applet: " << plugin;
+        if( m_currentColumns == 0 || m_currentRows == 0 )
+            m_pendingApplets.enqueue( plugin );
+        else
+            Plasma::Containment::addApplet( plugin );        
+    }
+
 }
 
 void ColumnContainment::loadInitialConfig()
 {
     DEBUG_BLOCK
-    if( m_manageCurrentTrack )
+
+    QSize cvSize = Amarok::config( "ContextView" ).readEntry( "ContextView size", QSize() );
+
+    if( cvSize.isValid() )
     {
-        DEBUG_LINE_INFO
-        Plasma::Containment::addApplet( "currenttrack" );
+        m_currentColumns = cvSize.width() / m_minColumnWidth;
+        m_currentRows = cvSize.height() / m_defaultRowHeight;
     }
-    KConfig conf( "amarok_homerc", KConfig::SimpleConfig );
-    foreach( const QString& group, conf.groupList() )
+    else
     {
-        KConfigGroup cg( &conf, group );
-        QString plugin = cg.readEntry( "plugin", QString() );
-//         debug() << "loading applet:" << plugin
-//             << QStringList() << group.toUInt();
-        if( plugin != QString() )
-            Plasma::Containment::addApplet( plugin );
+        //FIXME: get these values based on the current application size
+        m_currentColumns = 1;
+        m_currentRows = 4;
     }
 }
 
@@ -228,46 +231,22 @@ QRectF ColumnContainment::boundingRect() const
 }
 
 // call this when the view changes size: e.g. layout needs to be recalculated
-void ColumnContainment::updateSize( QRectF rect ) 
+void ColumnContainment::updateSize( QRectF rect )
 {
     // HACK HACK HACK i don't know where maximumSize is being set, but SOMETHING is setting it,
     // and is preventing the containment from expanding when it should.
     // so, we manually keep the size high.
     prepareGeometryChange();
+    
     setMaximumSize( QSizeF( INT_MAX, INT_MAX ) );
     
     m_grid->setGeometry( rect );
     setGeometry( rect );
+    
     m_currentRows = ( int )( rect.height() ) / m_defaultRowHeight;
     
     int columns = ( int )( rect.width() ) / m_minColumnWidth;
 
-    // HACK: the current track applet isn't created with an appropriate geometry.
-    // It's a very ugly hack and should be fixed.
-    if( m_manageCurrentTrack && m_grid->count() > 0 && !m_ctHasBeenKicked )
-    {
-        Plasma::Applet *applet = Plasma::Containment::addApplet( "wikipedia" );
-        applet->destroy();
-        m_ctHasBeenKicked = true;
-    }
-
-    if( m_manageCurrentTrack )
-    {
-        m_grid->setColumnMaximumWidth( 0, m_maxColumnWidth );
-        m_grid->setColumnMinimumWidth( 0, m_minColumnWidth );
-        m_grid->setRowMaximumHeight( 0, m_defaultRowHeight );
-        m_grid->setRowPreferredHeight( 0, m_defaultRowHeight );
-        
-        if( m_grid->count() > 0 )
-        {
-            QRect newgeom( 0, 0, m_maxColumnWidth, m_defaultRowHeight );
-            Plasma::Applet *applet = static_cast<Plasma::Applet *>( m_grid->itemAt( 0, 0 ) );
-            applet->setGeometry( newgeom );
-            applet->updateConstraints( Plasma::SizeConstraint );
-        }
-        updateConstraints( Plasma::SizeConstraint );
-    }
-    
     if( columns != m_currentColumns )
     {
         int rowCount = m_grid->rowCount();
@@ -300,15 +279,20 @@ void ColumnContainment::updateSize( QRectF rect )
 
             }
         }
+
     }
 
     m_currentColumns = columns;
-    
-    if( m_configLoadPending )
-    {
-        m_configLoadPending = false;
-        loadInitialConfig();        
+
+    if( !m_pendingApplets.isEmpty() &&  m_currentColumns > 0 && m_currentRows > 0 )
+    {        
+        while( !m_pendingApplets.isEmpty() )
+        {
+            Plasma::Containment::addApplet( m_pendingApplets.dequeue() );
+        }
     }
+ 
+    m_grid->updateGeometry();
     
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
@@ -345,7 +329,7 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
                            width,
                            55 );
         m_header->paint( painter, headerRect );
-    }
+    }    
     painter->restore();
     
     /*QSize size = m_logo->size();
@@ -379,7 +363,7 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
 
     debug() << "current columns: " << m_currentColumns;
     debug() << "current rows: " << m_currentRows;
-
+    debug() << "applet: " << applet->pluginName();
 
     int col = 0;
     int row = 0;
@@ -433,8 +417,7 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
         }
         
         m_grid->addItem( applet, row, col, rowSpan, colSpan );
-        if( colSpan > 1 )
-            m_grid->setRowAlignment( row, Qt::AlignHCenter );
+
         updateConstraints( Plasma::SizeConstraint );
     }
     return positionFound;
@@ -685,6 +668,7 @@ ColumnContainment::~ColumnContainment()
 {
     clearApplets();
     m_appletsPositions.clear();
+    Amarok::config( "ContextView" ).writeEntry( "ContextView size", size() );
 }
 
 void

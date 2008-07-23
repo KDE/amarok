@@ -31,6 +31,7 @@
 #include <QList>
 #include <QImage>
 #include <QPixmapCache>
+#include <QQueue>
 
 #include <KTemporaryFile>
 #include <threadweaver/Job.h>
@@ -54,10 +55,9 @@ public:
     ~ColumnContainment();
 
     virtual QRectF boundingRect() const;
-    virtual void init();
 
-    void saveToConfig( KConfig& conf );
-    void loadConfig();
+    void saveToConfig( KConfigGroup& conf );
+    void loadConfig( const KConfigGroup& conf );
 
     void updateSize( QRectF rect );
 
@@ -133,8 +133,8 @@ private:
     Context::Svg* m_header;
     bool m_paintTitle;
     bool m_manageCurrentTrack;
-    bool m_configLoadPending;
-    bool m_ctHasBeenKicked;
+
+    QQueue<QString> m_pendingApplets;
 
     //KSvgRenderer * m_renderer;
 };

@@ -37,8 +37,8 @@ public:
     
     ~Containment();
     
-    virtual void saveToConfig( KConfig& conf ) = 0;
-    virtual void loadConfig() = 0;
+    virtual void saveToConfig( KConfigGroup &conf ) = 0;
+    virtual void loadConfig( const KConfigGroup &conf ) = 0;
     
     virtual void updateSize( QRectF rect ) = 0;
     virtual bool hasPlaceForApplet( int rowSpan ) = 0;

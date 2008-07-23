@@ -86,9 +86,10 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     setContainment( cont );
     Containment* amarokContainment = qobject_cast<Containment* >( cont );    
     if( amarokContainment )
-        amarokContainment->setTitle( "Context #0" );
-    
-    amarokContainment->addCurrentTrack();    
+    {
+        amarokContainment->setTitle( "Context #0" );    
+        amarokContainment->addCurrentTrack();
+    }
     PERF_LOG( "Showing home in contextview" )
     showHome();
     PERF_LOG( "done showing home in contextview" )
@@ -122,13 +123,14 @@ void ContextView::clear( const ContextState& state )
     // erase previous config
     foreach( const QString& group, appletConfig.groupList() )
         appletConfig.deleteGroup( group );
-
-    if( contextScene()->containments().size() > 0 )
+    int numContainments = contextScene()->containments().size();
+    for(int i = 0; i < numContainments; i++ )
     {
         DEBUG_LINE_INFO
-        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
-        if( containment )
-            containment->saveToConfig( appletConfig );
+        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
+        KConfigGroup cg( &appletConfig, QString( "Containment %1" ).arg( i ) );
+       if( containment )
+           containment->saveToConfig( cg );
     }
     contextScene()->clearContainments();
 }
@@ -186,9 +188,6 @@ void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldStat
 void ContextView::showHome()
 {
 //     DEBUG_BLOCK
-//     if( m_curState == Home)
-//         return;
-    clear( m_curState );
     m_curState = Home;
     loadConfig();
     messageNotify( m_curState );
@@ -208,15 +207,20 @@ void ContextView::showCurrentTrack()
 // loads applets onto the ContextScene from saved data, using m_curState
 void ContextView::loadConfig()
 {
+
     contextScene()->clearContainments();    
-    if( contextScene()->containments().size() > 0 )
+
+    int numContainments = contextScene()->containments().size();
+    KConfig conf( "amarok_homerc", KConfig::SimpleConfig );
+    for( int i = 0; i < numContainments; i++ )
     {
-        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[0] );
+        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
         if( containment )
         {
-            containment->loadConfig();
-            DEBUG_LINE_INFO
+            KConfigGroup cg( &conf, QString( "Containment %1" ).arg( i ) );
+            containment->loadConfig( cg );
         }
+
     }
 }
 
@@ -438,12 +442,12 @@ ContextView::updateContainmentsGeometry()
             y = ( height + 65 )* ( i / 2 );
             QRectF newGeom( rect().topLeft().x() + x,
                                     rect().topLeft().y() + y,
-                                    width + 20,
+                                    width + 20 ,
                                     height + 60 );
+
             if( containment )
             {
                 containment->updateSize( newGeom );
-
             }
             else
                 debug() << "ContextView::resizeEvent NO CONTAINMENT TO UPDATE SIZE! BAD!";
@@ -479,8 +483,8 @@ ContextView::addContainment()
         c->setScreen( 0 );
         c->setFormFactor( Plasma::Planar );
         
-        int x = ( rect().width() + 30 ) * ( size % 2 );
-        int y = ( rect().height() + 70 ) * ( size / 2 );
+        int x = ( rect().width() + 25 ) * ( size % 2 );
+        int y = ( rect().height() + 65 ) * ( size / 2 );
 
         Containment* containment = qobject_cast< Containment* >( c );
 
