@@ -20,7 +20,7 @@
 
 #include "amarok_export.h"
 #include "Collection.h"
-#include "Meta.h"
+#include "meta/Meta.h"
 #include "QueryMaker.h"
 
 #include <QList>

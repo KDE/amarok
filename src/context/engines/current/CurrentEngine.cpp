@@ -15,6 +15,9 @@
 
 #include "Amarok.h"
 #include "Debug.h"
+#include "collection/BlockingQuery.h"
+#include "collection/Collection.h"
+#include "collection/CollectionManager.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "EngineController.h"
@@ -161,6 +164,27 @@ void CurrentEngine::update()
     //generate data for album applet
     Meta::ArtistPtr artist = m_currentTrack->artist();
     Meta::AlbumList albums = artist->albums();
+
+
+    if( albums.count() == 0 ) {
+
+        //try searching the collection as we might be dealing with a non local track
+
+        Collection *coll = CollectionManager::instance()->primaryCollection();
+        QueryMaker *qm = coll->queryMaker();
+        qm->setQueryType( QueryMaker::Album );
+        qm->addMatch( artist );
+        BlockingQuery bq( qm );
+        bq.startQuery();
+
+        albums = bq.albums( coll->collectionId() );
+
+    }
+
+
+
+
+    
 
     debug() << "We got " << albums.count() << " albums for artist " << artist->name();
 

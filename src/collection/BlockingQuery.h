@@ -19,7 +19,7 @@
 #define AMAROK_COLLECTION_BLOCKINGQUERY_H
 
 #include "amarok_export.h"
-#include "Meta.h"
+#include "meta/Meta.h"
 #include "QueryMaker.h"
 
 #include <QHash>
