@@ -45,8 +45,10 @@ public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
     void showConfigurationInterface();
 
+
 private slots:
     void configAccepted();
+    void connectSource( const QString &source );
 
 private:
     void prepareElements();
@@ -64,6 +66,11 @@ private:
     QList<QGraphicsSimpleTextItem*> m_albumLabels;
     QList<QGraphicsSimpleTextItem*> m_albumTracks;
     QList<QGraphicsPixmapItem*>     m_albumCovers;
+
+    int m_albumCount;
+    QVariantList m_names;
+    QVariantList m_trackCounts;
+    QVariantList m_covers;
 
     int m_maxTextWidth;
 };

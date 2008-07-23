@@ -35,7 +35,7 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     DEBUG_BLOCK
     Q_UNUSED( args )
     m_sources = QStringList();
-    m_sources << "current";
+    m_sources << "current" << "albums";
     m_timer = new QTimer(this);
     update();
 }
@@ -154,6 +154,45 @@ void CurrentEngine::update()
     } else {
         setData( "current", "source_emblem",  QVariant( QPixmap() ) );
     }
+
+
+
+
+    //generate data for album applet
+    Meta::ArtistPtr artist = m_currentTrack->artist();
+    Meta::AlbumList albums = artist->albums();
+
+    debug() << "We got " << albums.count() << " albums for artist " << artist->name();
+
+
+
+    QVariantList names;
+    QVariantList trackCounts;
+    QVariantList covers;
+    
+
+    foreach( Meta::AlbumPtr albumPtr, albums )
+    {
+        debug() << "adding album " << albumPtr->name();
+
+        
+        QString albumName = albumPtr->name();
+        albumName =  albumName.isEmpty() ? i18n("Unknown") : albumName;
+        names << albumName;
+
+        QString trackCount = i18np( "%1 track", "%1 tracks", albumPtr->tracks().size() );
+        trackCounts << trackCount;
+
+        QPixmap image = albumPtr->image( 50 );
+        covers << image;
+
+    }
+
+    setData( "albums", "names",  QVariant( names ) );
+    setData( "albums", "trackCounts",  QVariant( trackCounts) );
+    setData( "albums", "covers",  QVariant( covers ) );
+    setData( "albums", "count",  QVariant( albums.count() ) );
+
 }
 
 #include "CurrentEngine.moc"

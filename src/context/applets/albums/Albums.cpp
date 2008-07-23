@@ -40,6 +40,7 @@ Albums::Albums( QObject* parent, const QVariantList& args )
     , m_width( 0 )
     , m_albumWidth( 50 )
     , m_aspectRatio( 0.0 )
+    , m_albumCount( 0 )
 {
     setHasConfigurationInterface( false );
     prepareElements();
@@ -65,16 +66,26 @@ void Albums::init()
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
     resize( m_width, m_aspectRatio );
 
-    dataEngine( "amarok-albums" )->connectSource( "albums", this );
+    dataEngine( "amarok-current" )->connectSource( "albums", this );
+
+    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
+             this, SLOT( connectSource( const QString& ) ) );
+
 }
 
 void Albums::prepareElements()
 {
     DEBUG_BLOCK
 
-    m_albumLabels.clear();
+    /*m_albumLabels.clear();
     m_albumCovers.clear();
-    m_albumTracks.clear();
+    m_albumTracks.clear();*/
+
+    while ( m_albumLabels.count() > 0 ) delete m_albumLabels.takeFirst();
+    while ( m_albumCovers.count() > 0 ) delete m_albumCovers.takeFirst();
+    while ( m_albumTracks.count() > 0 ) delete m_albumTracks.takeFirst();
+
+    
 
     const QColor textColor( Qt::white );
     QFont labelFont;
@@ -89,32 +100,29 @@ void Albums::prepareElements()
     QFont tinyFont( textFont );
     tinyFont.setPointSize( tinyFont.pointSize() - 5 );
     tinyFont.setBold( true );
+
+    debug() << "Going to add " << m_albumCount << " elements";
     
-    Meta::TrackPtr  track  = The::engineController()->currentTrack();
-    Meta::ArtistPtr artist = track->artist();
-    Meta::AlbumList albums = artist->albums();
-
-    debug() << "current track: " << track->name();
-    debug() << "current artist: " << artist->name();
-    debug() << "artist albums: " << albums.size();
-
-    foreach( Meta::AlbumPtr albumPtr, albums )
+    for ( int i = 0; i < m_albumCount; i++ )
     {
-        debug() << "Creating elements for " << albumPtr->name();
+        debug() << i;
+        QString albumName = m_names[i].toString();
+        QString trackCountString = m_trackCounts[i].toString();
+        QPixmap image = m_covers[i].value<QPixmap>();
+
+        
         QGraphicsSimpleTextItem *album = new QGraphicsSimpleTextItem( this );
         QGraphicsSimpleTextItem *trackCount = new QGraphicsSimpleTextItem( this );
         QGraphicsPixmapItem     *cover = new QGraphicsPixmapItem( this );
         
-        QString albumName = albumPtr->name();
         album->setText( albumName.isEmpty() ? i18n("Unknown") : albumName );
         album->setFont( textFont );
         album->setBrush( textColor );
 
-        trackCount->setText( i18np( "%1 track", "%1 tracks", albumPtr->tracks().size() ) );
+        trackCount->setText( trackCountString );
         trackCount->setFont( textFont );
         trackCount->setBrush( textColor );
 
-        QPixmap image = albumPtr->image( m_albumWidth );
         cover->setPixmap( image );
 
         m_albumLabels.append( album );
@@ -188,12 +196,18 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
 void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK
-    Q_UNUSED( name );
     Q_UNUSED( data );
 
-    kDebug() << "Albums::dataUpdated";
+
+    m_albumCount = data[ "count" ].toInt();
+    m_names = data[ "names" ].toList();
+    m_trackCounts = data[ "trackCounts" ].toList();;
+    m_covers = data[ "covers" ].toList();;
+
+    kDebug() << "Albums::dataUpdated. count: " << m_albumCount << " names " << m_names.count();
 
     prepareElements();
+    constraintsEvent( Plasma::Constraints() );
 
     update();
 }
@@ -268,5 +282,14 @@ void Albums::showConfigurationInterface()
 
 void Albums::configAccepted() // SLOT
 {}
+
+void Albums::connectSource( const QString &source )
+{
+    if( source == "albums" )
+    {
+        dataEngine( "amarok-current" )->connectSource( source, this );
+        dataUpdated( source, dataEngine("amarok-current" )->query( "albums" ) ); // get data initally
+    }
+}
 
 #include "Albums.moc"
