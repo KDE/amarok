@@ -78,21 +78,13 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         bool slotRunScript( bool silent = false );
         void slotStopScript();
         void slotConfigureScript();
-        void slotAboutScript();
 
         void scriptFinished( QString name );
 
     private:
         explicit ScriptManager( QWidget* parent );
 
-        /** Returns all scripts of the given \p type */
-        QStringList scriptsOfType( const QString &type ) const;
-
-        /** Returns the first running script found of \p type */
-        QString scriptRunningOfType( const QString &type ) const;
-
-        /** Adds a script to the listview */
-        void loadScript( const QString& path );
+        bool loadScript( const QString& path ); //return false if loadScript failed.
 
         /** Copies the file permissions from the tarball and loads the script */
         void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );
@@ -108,11 +100,9 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         bool                   m_installSuccess;
 
         struct ScriptItem {
+            KPluginInfo*                                    info;
             QScriptEngine*                                  engine;
             KUrl                                            url;
-            QString                                         type;
-            QString                                         version;
-            QString                                         AmarokVersion;
             bool                                            running;
             Amarok::AmarokScript*                           globalPtr;
             Amarok::AmarokScriptableServiceScript*          servicePtr;

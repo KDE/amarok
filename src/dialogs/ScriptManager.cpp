@@ -57,6 +57,7 @@
 #include <KMessageBox>
 #include <knewstuff2/engine.h>
 #include <knewstuff2/core/entry.h>
+#include <KPluginSelector>
 #include <KProtocolManager>
 #include <KPushButton>
 #include <KRun>
@@ -246,9 +247,14 @@ ScriptManager::findScripts() //SLOT
     const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js", KStandardDirs::Recursive );
 
     // Add found scripts to treeWidget:
+    QList<KPluginInfo> pluginInfoList;
     foreach( const QString &str, allFiles )
+    {
         loadScript( str );
-
+    }
+    foreach( const QString &key, m_scripts.keys() )
+        pluginInfoList.append( *m_scripts[key].info );
+    m_scriptSelector->addPlugins( pluginInfoList, KPluginSelector::ReadConfigFile, "Scripts" );
     // Handle auto-run:
 
     KConfigGroup config = Amarok::config( "ScriptManager" );
@@ -439,7 +445,7 @@ ScriptManager::slotStopScript()
     const QString name = "";
 
     m_scripts[name].engine->abortEvaluation();
-    if( m_scripts.value( name ).type == "service" )
+    if( m_scripts.value( name ).info->category() == "service" )
         The::scriptableServiceManager()->removeRunningScript( name );
 
     scriptFinished( name );
@@ -459,32 +465,6 @@ ScriptManager::ServiceScriptPopulate( QString name, int level, int parent_id, QS
     m_scripts[name].servicePtr->slotPopulate( level, parent_id, path, filter );
 }
 
-void
-ScriptManager::slotAboutScript()
-{
-    //TODO: rewrite this
-    const QString name = "";
-    QFile readme( m_scripts[name].url.directory( KUrl::AppendTrailingSlash ) + "README" );
-    QFile license( m_scripts[name].url.directory( KUrl::AppendTrailingSlash) + "COPYING" );
-
-    if( !readme.open( QIODevice::ReadOnly ) )
-    {
-        KMessageBox::sorry( 0, i18n( "There is no information available for this script." ) );
-        return;
-    }
-
-    KAboutData aboutData( name.toLatin1(), 0, ki18n(name.toLatin1()), "1.0", ki18n(readme.readAll()) );
-
-    KAboutApplicationDialog* about = new KAboutApplicationDialog( &aboutData, this );
-    about->setButtons( KDialog::Ok );
-    about->setDefaultButton( KDialog::Ok );
-
-    kapp->setTopWidget( about );
-    about->setCaption( KDialog::makeStandardCaption( i18n( "About %1", name ) ) );
-
-    about->setInitialSize( QSize( 500, 350 ) );
-    about->show();
-}
 /*
         case EDIT:
             KRun::runCommand( "kwrite " + m_scripts[key].url.path(), 0 );
@@ -529,29 +509,7 @@ ScriptManager::scriptFinished( QString name ) //SLOT
 // private
 ////////////////////////////////////////////////////////////////////////////////
 
-QStringList
-ScriptManager::scriptsOfType( const QString &type ) const
-{
-    QStringList scripts;
-    foreach( const QString &key, m_scripts.keys() )
-        if( m_scripts[key].type == type )
-            scripts += key;
-
-    return scripts;
-}
-
-
-QString
-ScriptManager::scriptRunningOfType( const QString &type ) const
-{
-    foreach( const QString &key, m_scripts.keys() )
-        if( m_scripts[key].running && m_scripts[key].type == type )
-            return key;
-
-    return QString();
-}
-
-void
+bool
 ScriptManager::loadScript( const QString& path )
 {
     DEBUG_BLOCK
@@ -560,68 +518,26 @@ ScriptManager::loadScript( const QString& path )
     {
         QFileInfo info( path );
 
-        QString name, type, version, AmarokVersion;
         const QString specPath = info.path() + '/' + "script.spec";
         if( QFile::exists( specPath ) )
         {
             const KUrl url = KUrl( path );
-            QSettings spec( specPath, QSettings::IniFormat );
-            if( spec.contains( "name" ) )
-                name = spec.value( "name" ).toString();
-            else
-            {
-                error() << "script name missing in "<< path;
-                return;
-            }
-            if( spec.contains( "version" ) )
-                version = spec.value( "verion" ).toString();
-            else
-            {
-                error() << "script version missing in "<< path;
-                return;
-            }
-            if( spec.contains( "AmarokVersion" ) )
-                AmarokVersion = spec.value( "AmarokVersion" ).toString();
-            else
-            {
-                error() << "script Amarok dependency missing in "<< path;
-                return;
-            }
-            if( spec.contains( "type" ) )
-            {
-                type = spec.value( "type" ).toString();
-                if( type == "lyrics" )
-                {
-
-                }
-                if( type == "service" )
-                {
-
-                }
-                if( type == "generic" )
-                {
-
-                }
-            }
-            else
-            {
-                error() << "script type missing in "<< path;
-                return;
-            }
-
             ScriptItem item;
+            item.info = new KPluginInfo( specPath );
+            if ( !item.info->isValid() ) return false;
+            if ( ( item.info->name() == "" ) || ( item.info->version() == "" ) || ( item.info->category() == "" ) ) return false;
+            debug() << "script info:" << item.info->name() << " " << item.info->version() << " " << item.info->category();
             item.url = url;
-            item.type = type;
-            item.version = version;
-            item.AmarokVersion = AmarokVersion;
             item.running = false;
-            m_scripts[name] = item;
+            m_scripts[item.info->name()] = item;
         }
         else
         {
             error() << "script.spec for "<< path << " is missing!";
+            return false;
         }
     }
+    return true;
 }
 
 void
