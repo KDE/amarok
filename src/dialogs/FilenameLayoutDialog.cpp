@@ -45,7 +45,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
              this, SLOT( onAccept() ) );
     connect( tokenPool, SIGNAL( onDoubleClick( QString ) ),
              filenameLayout, SLOT( addToken( QString ) ) );
-    connect( pbAdvanced, SIGNAL( clicked() ),
+    connect( kpbAdvanced, SIGNAL( clicked() ),
              this, SLOT( toAdvancedMode() ) );
 
     //KConfig stuff:
@@ -83,6 +83,10 @@ FilenameLayoutDialog::onAccept()    //SLOT
 QString
 FilenameLayoutDialog::getParsableScheme()
 {
+    if( kpbAdvanced->text() == i18n( "&Basic..." ) )
+    {
+        return filenameLayoutEdit->text();
+    }
     return filenameLayout->getParsableScheme();
 }
 
@@ -150,15 +154,16 @@ FilenameLayoutDialog::getUnderscoreOptions()
 void
 FilenameLayoutDialog::toAdvancedMode()
 {
-    if( pbAdvanced->text() == i18n( "&Advanced..." ) )
+    if( kpbAdvanced->text() == i18n( "&Advanced..." ) )
     {
-        pbAdvanced->setText( i18n( "&Basic..." ) );
+        kpbAdvanced->setText( i18n( "&Basic..." ) );
         filenameLayout->hide();
         filenameLayoutEdit->show();
+        filenameLayoutEdit->setText( filenameLayout->getParsableScheme() );
     }
     else
     {
-        pbAdvanced->setText( i18n( "&Advanced..." ) );
+        kpbAdvanced->setText( i18n( "&Advanced..." ) );
         filenameLayoutEdit->hide();
         filenameLayout->show();
     }

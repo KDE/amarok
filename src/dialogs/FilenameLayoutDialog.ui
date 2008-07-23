@@ -65,10 +65,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="filenameLayoutEdit" />
+       <widget class="KLineEdit" name="filenameLayoutEdit" />
       </item>
       <item>
-       <widget class="QPushButton" name="pbAdvanced" >
+       <widget class="KPushButton" name="kpbAdvanced" >
         <property name="text" >
          <string>&amp;Advanced...</string>
         </property>
@@ -284,6 +284,16 @@
    <extends></extends>
    <header>kdialog.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends></extends>
+   <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KPushButton</class>
+   <extends></extends>
+   <header>kpushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>TokenListWidget</class>
