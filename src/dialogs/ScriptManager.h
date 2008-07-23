@@ -79,10 +79,11 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         bool slotInstallScript( const QString& path = QString() );
         void slotRetrieveScript();
         void slotUninstallScript();
-        bool slotRunScript( bool silent = false );
-        void slotStopScript();
-        void slotConfigureScript();
+        bool slotRunScript( QString name, bool silent = false );
+        void slotStopScript( QString name );
+        //emmit when start/stop button is clicked
         void slotConfigChanged( bool changed );
+        //emmit when configuration button is clicked
         void slotConfigComitted( const QByteArray & name );
         void scriptFinished( QString name );
 

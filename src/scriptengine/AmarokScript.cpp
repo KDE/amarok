@@ -79,7 +79,7 @@ namespace Amarok
 
     bool AmarokScript::runScript( QString name )
     {
-        return ScriptManager::instance()->runScript( name );
+        return ScriptManager::instance()->runScript( name, true );
     }
 
     bool AmarokScript::stopScript( QString name )

@@ -195,7 +195,7 @@ ScriptManager::runScript( const QString& name, bool silent )
     if( !m_scripts.contains( name ) )
         return false;
 
-    return slotRunScript( silent );
+    return slotRunScript( name, silent );
 }
 
 
@@ -205,7 +205,7 @@ ScriptManager::stopScript( const QString& name )
     if( !m_scripts.contains( name ) )
         return false;
 
-    slotStopScript();
+    slotStopScript( name );
 
     return true;
 }
@@ -274,7 +274,7 @@ ScriptManager::findScripts() //SLOT
     foreach( const QString &str, runningScripts )
         if( m_scripts.contains( str ) )
         {
-            slotRunScript();
+//            slotRunScript();
         }
 }
 
@@ -418,11 +418,9 @@ ScriptManager::slotUninstallScript()
 
 
 bool
-ScriptManager::slotRunScript( bool silent )
+ScriptManager::slotRunScript( QString name, bool silent )
 {
     DEBUG_BLOCK
-
-    const QString name = "";
 
     const KUrl url = m_scripts[name].url;
     QTime time;
@@ -442,8 +440,11 @@ ScriptManager::slotRunScript( bool silent )
     {
         m_scripts[name].log += time.currentTime().toString() + " " + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() ) + '\n';
         m_scripts[name].engine->clearExceptions();
-        KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script. Please refer to the log!" ) );
         scriptFinished( name );
+        if ( !silent )
+            KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script. Please refer to the log!" ) );
+        else
+            return false;
     }
 
     return true;
@@ -451,25 +452,15 @@ ScriptManager::slotRunScript( bool silent )
 
 
 void
-ScriptManager::slotStopScript()
+ScriptManager::slotStopScript( QString name )
 {
     DEBUG_BLOCK
 
-    const QString name = "";
-
     m_scripts[name].engine->abortEvaluation();
-    if( m_scripts.value( name ).info->category() == "service" )
+    if( m_scripts.value( name ).info->category() == "Scriptable Service" )
         The::scriptableServiceManager()->removeRunningScript( name );
 
     scriptFinished( name );
-}
-
-
-void
-ScriptManager::slotConfigureScript()
-{
-    const QString name = "";
-    m_scripts[name].globalPtr->slotConfigured();
 }
 
 void
@@ -502,8 +493,17 @@ ScriptManager::ServiceScriptPopulate( QString name, int level, int parent_id, QS
 void
 ScriptManager::slotConfigChanged( bool changed )
 {
-    DEBUG_BLOCK
-    m_configChanged = changed;
+    if ( changed )
+    {
+        m_scriptSelector->save();
+        foreach( const QString &key, m_scripts.keys() )
+        {
+            if( !m_scripts[key].running && m_scripts[key].info->isPluginEnabled() )
+                slotRunScript( m_scripts[key].info->name() );
+            if( m_scripts[key].running && !m_scripts[key].info->isPluginEnabled() )
+                slotStopScript( m_scripts[key].info->name() );
+        }
+    }
 }
 
 void
