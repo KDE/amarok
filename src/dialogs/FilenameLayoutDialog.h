@@ -43,6 +43,7 @@ class FilenameLayoutDialog
     private slots:
         void editStateEnable( bool checked );
         void onAccept();
+        void toAdvancedMode();
 };
 
 #endif    //FILENAMELAYOUTDIALOG_H

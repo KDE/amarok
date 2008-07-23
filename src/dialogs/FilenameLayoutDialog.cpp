@@ -37,6 +37,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
     caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
     //filenameLayoutWidget = filenameLayout;
+    filenameLayoutEdit->hide();
 
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
@@ -44,6 +45,8 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
              this, SLOT( onAccept() ) );
     connect( tokenPool, SIGNAL( onDoubleClick( QString ) ),
              filenameLayout, SLOT( addToken( QString ) ) );
+    connect( pbAdvanced, SIGNAL( clicked() ),
+             this, SLOT( toAdvancedMode() ) );
 
     //KConfig stuff:
     int caseOptions = Amarok::config( "TagGuesser" ).readEntry( "Case options" ).toInt();
@@ -144,3 +147,19 @@ FilenameLayoutDialog::getUnderscoreOptions()
         return 1;
 }
 
+void
+FilenameLayoutDialog::toAdvancedMode()
+{
+    if( pbAdvanced->text() == i18n( "&Advanced..." ) )
+    {
+        pbAdvanced->setText( i18n( "&Basic..." ) );
+        filenameLayout->hide();
+        filenameLayoutEdit->show();
+    }
+    else
+    {
+        pbAdvanced->setText( i18n( "&Advanced..." ) );
+        filenameLayoutEdit->hide();
+        filenameLayout->show();
+    }
+}

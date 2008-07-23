@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>681</width>
-     <height>481</height>
+     <height>471</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -35,32 +35,46 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout" >
     <item>
-     <widget class="FilenameLayoutWidget" name="filenameLayout" >
-      <property name="sizePolicy" >
-       <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize" >
-       <size>
-        <width>600</width>
-        <height>36</height>
-       </size>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>30000</width>
-        <height>36</height>
-       </size>
-      </property>
-      <property name="frameShape" >
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow" >
-       <enum>QFrame::Sunken</enum>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout_2" >
+      <item>
+       <widget class="FilenameLayoutWidget" name="filenameLayout" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>400</width>
+          <height>36</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>30000</width>
+          <height>36</height>
+         </size>
+        </property>
+        <property name="frameShape" >
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Sunken</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="filenameLayoutEdit" />
+      </item>
+      <item>
+       <widget class="QPushButton" name="pbAdvanced" >
+        <property name="text" >
+         <string>&amp;Advanced...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" >
