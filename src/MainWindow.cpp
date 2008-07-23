@@ -529,44 +529,14 @@ MainWindow::toolsMenuAboutToShow() //SLOT
 }
 
 /**
- * Show/hide playlist global shortcut and PlayerWindow PlaylistButton connect to this slot
- * RULES:
- * 1. hidden & iconified -> deiconify & show @n
- * 2. hidden & deiconified -> show @n
- * 3. shown & iconified -> deiconify @n
- * 4. shown & deiconified -> hide @n
- * 5. don't hide if there is no tray icon or playerWindow. todo (I can't be arsed) @n
- *
- * @note isMinimized() can only be true if the window isVisible()
- * this has taken me hours to get right, change at your peril!
- * there are more contingencies than you can believe
+ * "Toggle Main Window" global shortcut connects to this slot
  */
 void
 MainWindow::showHide() //SLOT
 {
-#ifdef Q_WS_X11
-    const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
-    const uint desktop = KWindowSystem::currentDesktop();
-    const bool isOnThisDesktop = info.isOnDesktop( desktop );
-    const bool isShaded = false;
+    DEBUG_BLOCK
 
-    if( isShaded )
-    {
-        KWindowSystem::clearState( winId(), NET::Shaded );
-        setVisible( true );
-    }
-
-    if( !isOnThisDesktop )
-    {
-        KWindowSystem::setOnDesktop( winId(), desktop );
-        setVisible( true );
-    }
-    else if( !info.isMinimized() && !isShaded ) setVisible( !isVisible() );
-
-    if( isVisible() ) KWindowSystem::unminimizeWindow( winId() );
-#else
     setVisible( !isVisible() );
-#endif
 }
 
 void
