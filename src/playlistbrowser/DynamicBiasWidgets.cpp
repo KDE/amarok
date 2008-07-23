@@ -419,13 +419,19 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, Q
 
         bq.startQuery();
 
+        QSet<QString> dataSet;
         foreach( Meta::DataList as, bq.data() )
         {
             foreach( Meta::DataPtr a, as )
             {
-                combo->addItem( a->name() );
+                dataSet.insert( a->name() );
             }
         }
+
+        QStringList dataList = dataSet.toList();
+        dataList.sort();
+        foreach( QString item, dataList )
+            combo->addItem( item );
     }
 
     connect( combo, SIGNAL(currentIndexChanged( const QString& )),
