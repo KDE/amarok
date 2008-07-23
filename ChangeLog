@@ -18,7 +18,7 @@ VERSION 2.0-beta1
 
   BUGFIXES:
     * Fixed playlist bias drop-down box showing multiple empty and duplicate
-	  entries. (BR 167153)
+      entries. (BR 167153)
     * Fixed the "Toggle Main Window" shortcut. (BR 167218)
     * Script manager now could stop scripts which use qt bindings.
     * Fix crash when calling GetCaps from the DBus Player interface
