@@ -2,6 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2008 the Amarok authors.
 
+
 VERSION 2.0-beta1
   FEATURES:
     * Trigger play/pause when middle-clicking systray icon. (BR 167162)
@@ -20,6 +21,7 @@ VERSION 2.0-beta1
     * Script manager now could stop scripts which use qt bindings.
     * Fix crash when calling GetCaps from the DBus Player interface
     * Update album applet on track change (BR 167256)
+
 
 VERSION 2.0-alpha2:
   FEATURES:
