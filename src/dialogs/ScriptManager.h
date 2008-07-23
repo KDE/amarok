@@ -82,7 +82,8 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         bool slotRunScript( bool silent = false );
         void slotStopScript();
         void slotConfigureScript();
-
+        void slotConfigChanged( bool changed );
+        void slotConfigComitted( const QByteArray & name );
         void scriptFinished( QString name );
 
     private:
@@ -119,7 +120,8 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         ScriptMap      m_scripts;
         QScriptValue   m_global;
-
+        bool           m_configChanged;
+        QStringList    m_changedScripts;
 };
 
 #endif /* AMAROK_SCRIPTMANAGER_H */

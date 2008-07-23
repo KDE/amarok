@@ -144,6 +144,8 @@ ScriptManager::ScriptManager( QWidget* parent )
     connect( gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
     connect( gui->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
+    connect( m_scriptSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
+    connect( m_scriptSelector, SIGNAL( configCommitted ( const QByteArray & ) ), SLOT( slotConfigComitted( const QByteArray & ) ) );
 
     gui->installButton  ->setIcon( KIcon( "folder-amarok" ) );
     gui->retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
@@ -366,12 +368,14 @@ ScriptManager::slotRetrieveScript()
     KNS::Engine *engine = new KNS::Engine();
     engine->init( "amarok.knsrc" );
     KNS::Entry::List entries = engine->downloadDialogModal();
+/*
     debug() << "scripts status:" << endl;
     foreach ( KNS::Entry* entry, entries )
     {
 //        if ( entry->status() == KNS::Entry::Downloadable )
             debug() << "script downloadable!" << endl;
     }
+*/
     delete engine;
 }
 
@@ -494,6 +498,22 @@ ScriptManager::ServiceScriptPopulate( QString name, int level, int parent_id, QS
             editor->show();
             break;
 */
+
+void
+ScriptManager::slotConfigChanged( bool changed )
+{
+    DEBUG_BLOCK
+    m_configChanged = changed;
+}
+
+void
+ScriptManager::slotConfigComitted( const QByteArray & name )
+{
+    DEBUG_BLOCK
+    debug() << "config comitted for: " << name;
+    m_configChanged = true;
+    m_changedScripts << QString( name );
+}
 
 void
 ScriptManager::scriptFinished( QString name ) //SLOT
