@@ -22,7 +22,6 @@
 #include "NepomukQueryMaker.h"
 #include "NepomukRegistry.h"
 
-#include "BlockingQuery.h"
 #include "Debug.h"
 #include "proxy/MetaProxy.h"
 #include "QueryMaker.h"
@@ -163,9 +162,9 @@ NepomukCollection::trackForUrl( const KUrl &url )
         qm->addMatchId ( url.host() );
     }
     
-    BlockingQuery bq ( qm );
-    bq.startQuery();
-    Meta::TrackList tracks = bq.tracks( this->collectionId() );
+    qm->blocking( true );
+    qm->run();
+    Meta::TrackList tracks = qm->tracks( this->collectionId() );
 
     // assuming that there is only one result, should never be more, if so giving
     // the first is the best to do anyway

@@ -19,8 +19,8 @@
 #include "NepomukArtist.h"
 
 #include "NepomukCollection.h"
+#include "NepomukQueryMaker.h"
 
-#include "BlockingQuery.h"
 #include "Debug.h"
 #include "Meta.h"
 
@@ -83,12 +83,12 @@ NepomukArtist::albums()
     }
     else if( m_collection )
     {
-        QueryMaker *qm = m_collection->queryMaker();
+        NepomukQueryMaker *qm = static_cast<NepomukQueryMaker*>( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Album );
         addMatchTo( qm );
-        BlockingQuery bq( qm );
-        bq.startQuery();
-        m_albums = bq.albums( m_collection->collectionId() );
+        qm->blocking( true );
+        qm->run();
+        m_albums = qm->albums( m_collection->collectionId() );
         m_albumsLoaded = true;
         return m_albums;
     }

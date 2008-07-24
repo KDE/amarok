@@ -20,9 +20,9 @@
 
 #include "NepomukArtist.h"
 #include "NepomukCollection.h"
+#include "NepomukQueryMaker.h"
 #include "NepomukRegistry.h"
 
-#include "BlockingQuery.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/CustomActionsCapability.h"
 #include "Debug.h"
@@ -78,12 +78,12 @@ NepomukAlbum::tracks()
     }
     else if( m_collection )
     {
-        QueryMaker *qm = m_collection->queryMaker();
+        NepomukQueryMaker *qm = static_cast<NepomukQueryMaker*>( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
-        BlockingQuery bq( qm );
-        bq.startQuery();
-        m_tracks = bq.tracks( m_collection->collectionId() );
+        qm->blocking( true );
+        qm->run();
+        m_tracks = qm->tracks( m_collection->collectionId() );
         m_tracksLoaded = true;
         return m_tracks;
     }
@@ -218,7 +218,7 @@ NepomukAlbum::removeImage()
 
     foreach( const QString &image, cachedImages )
     {
-        bool r = QFile::remove( cacheDir.filePath( image ) );
+        QFile::remove( cacheDir.filePath( image ) );
     }
 
     // TODO: remove directory image ??
