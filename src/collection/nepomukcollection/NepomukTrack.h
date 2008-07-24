@@ -56,6 +56,7 @@ class NepomukTrack : public Track
 
         virtual bool isPlayable() const;
         virtual bool inCollection() const;
+        virtual Collection* collection() const;
 
         virtual AlbumPtr album() const;
         virtual ArtistPtr artist() const;

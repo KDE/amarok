@@ -154,6 +154,12 @@ NepomukTrack::inCollection() const
     return true;
 }
 
+Collection*
+NepomukTrack::collection() const
+{
+    return m_collection;
+}
+
 AlbumPtr
 NepomukTrack::album() const
 {
