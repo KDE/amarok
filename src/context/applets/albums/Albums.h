@@ -27,6 +27,22 @@ class QGraphicsPixmapItem;
 class QLabel;
 class QHBoxLayout;
 
+/**
+ * An album text item that responds to being clicked
+ */
+class AlbumTextItem : public QObject, public QGraphicsSimpleTextItem
+{
+    Q_OBJECT
+public:
+    explicit AlbumTextItem( QGraphicsItem *parent = 0 );
+
+protected:
+    virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
+
+signals:
+    void clicked( const QString &text );
+};
+
 class Albums : public Context::Applet
 {
     Q_OBJECT
@@ -49,6 +65,7 @@ public slots:
 private slots:
     void configAccepted();
     void connectSource( const QString &source );
+    void enqueueAlbum( const QString &name );
 
 private:
     void prepareElements();
@@ -63,7 +80,7 @@ private:
     Context::Svg* m_theme;
 
     QGraphicsSimpleTextItem*        m_artistLabel;
-    QList<QGraphicsSimpleTextItem*> m_albumLabels;
+    QList<AlbumTextItem*>           m_albumLabels;
     QList<QGraphicsSimpleTextItem*> m_albumTracks;
     QList<QGraphicsPixmapItem*>     m_albumCovers;
 

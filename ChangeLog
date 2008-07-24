@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta1
   FEATURES:
+    * Album is now added to the playlist when clicked in Albums applet.
     * Trigger play/pause when middle-clicking systray icon. (BR 167162)
     * New start flag --multipleinstances allows to run multiple instances of
       Amarok.

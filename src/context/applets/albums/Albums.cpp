@@ -20,6 +20,7 @@
 #include "context/popupdropper/PopupDropperAction.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
+#include "playlist/PlaylistModel.h"
 
 #include <plasma/theme.h>
 
@@ -111,13 +112,15 @@ void Albums::prepareElements()
         QPixmap image = m_covers[i].value<QPixmap>();
 
         
-        QGraphicsSimpleTextItem *album = new QGraphicsSimpleTextItem( this );
+        AlbumTextItem           *album = new AlbumTextItem( this );
         QGraphicsSimpleTextItem *trackCount = new QGraphicsSimpleTextItem( this );
         QGraphicsPixmapItem     *cover = new QGraphicsPixmapItem( this );
         
         album->setText( albumName.isEmpty() ? i18n("Unknown") : albumName );
         album->setFont( textFont );
         album->setBrush( textColor );
+
+        connect( album, SIGNAL( clicked( const QString& ) ), this, SLOT( enqueueAlbum( const QString& ) ) );
 
         trackCount->setText( trackCountString );
         trackCount->setFont( textFont );
@@ -196,7 +199,7 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
 void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK
-    Q_UNUSED( data );
+    Q_UNUSED( name );
 
 
     m_albumCount = data[ "count" ].toInt();
@@ -290,6 +293,26 @@ void Albums::connectSource( const QString &source )
         dataEngine( "amarok-current" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-current" )->query( "albums" ) ); // get data initally
     }
+}
+
+void Albums::enqueueAlbum( const QString &name )
+{
+    foreach( Meta::AlbumPtr aptr, The::engineController()->currentTrack()->artist()->albums() )
+    {
+        if( aptr->name() == name )
+            The::playlistModel()->insertOptioned( aptr->tracks(), Playlist::Append );
+    }
+}
+
+AlbumTextItem::AlbumTextItem( QGraphicsItem * parent )
+    : QGraphicsSimpleTextItem( parent )
+{
+}
+
+void AlbumTextItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
+{
+    Q_UNUSED( event )
+    emit( clicked( text() ) );
 }
 
 #include "Albums.moc"
