@@ -81,6 +81,21 @@ class NepomukQueryMaker : public QueryMaker
 	    //virtual int validFilterMask();
 	    
 	    // functions only for use in nepo collection
+
+        // for using blocking, defaults to non blocking
+        void blocking( bool enabled );
+        
+        QStringList collectionIds() const;
+
+        Meta::DataList data( const QString &id ) const;
+        Meta::TrackList tracks( const QString &id ) const;
+        Meta::AlbumList albums( const QString &id ) const;
+        Meta::ArtistList artists( const QString &id ) const;
+        Meta::GenreList genres( const QString &id ) const;
+        Meta::ComposerList composers( const QString &id ) const;
+        Meta::YearList years( const QString &id ) const;
+        QStringList customData( const QString &id ) const;
+        
 	    virtual QString buildQuery() const;
 	    virtual void doQuery(const QString& );
 
@@ -91,7 +106,8 @@ class NepomukQueryMaker : public QueryMaker
         void done( ThreadWeaver::Job * job );
 	    
 	private:
-	    
+
+        Meta::DataList m_data;
         QueryType queryType;
         QString queryMatch;
         bool resultAsDataPtrs;
@@ -99,7 +115,10 @@ class NepomukQueryMaker : public QueryMaker
         NepomukCollection *m_collection;
         Soprano::Model *m_model;
         QString queryOrderBy;
+        bool m_blocking;
         int queryLimit;
+        // used to prevend double use without reseting
+        bool m_used;
 };
 
 #endif /*NEPOMUKQUERYMAKER_H_*/

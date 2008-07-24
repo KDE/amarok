@@ -85,7 +85,6 @@ NepomukQueryMaker::NepomukQueryMaker(NepomukCollection *collection
     : QueryMaker() 
     , m_collection(collection)
     , m_model( model )
-
 {
     worker = 0;
     reset();
@@ -99,6 +98,8 @@ NepomukQueryMaker::~NepomukQueryMaker()
 QueryMaker*
 NepomukQueryMaker::reset()
 {
+    m_used=false;
+    m_data.clear();
     queryType = None;
     queryMatch.clear();
     if( worker && worker->isFinished() )
@@ -106,6 +107,7 @@ NepomukQueryMaker::reset()
     this->resultAsDataPtrs = false;
     queryOrderBy.clear();
     queryLimit = 0;
+    m_blocking = false;
     return this;
 }
 
@@ -118,34 +120,54 @@ void
 NepomukQueryMaker::run()
 {
     debug() << "run()" << endl;
-    if( queryType == None )
-            return; //better error handling?
+    if( queryType == None || m_used )
+    {
+        debug() << "nepomuk querymaker used without rest or initialization" << endl;
+        return; //better error handling?
+    } 
+    
     if( worker && !worker->isFinished() )
     {
         //the worker thread seems to be running
-        //TODO: wait or job to complete
+        //TODO: wait for job to complete
     }
-    else
+    else if ( !m_blocking )
     {
         worker = new NepomukWorkerThread(this);
         connect( worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( worker );
     }
+    else
+    {
+        QString query = buildQuery();
+        doQuery( query );
+
+    }
+    m_used = true;
 }
 
 QueryMaker*
 NepomukQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     debug() << "returnResultAsDataPtrs()" << resultAsDataPtrs << endl;
+
+    // we need the unchanged resulttype in the non blocking result methods so prevent
+    // reseting result type without reseting the QM
+    if ( m_used )
+        return this;
+    
     this->resultAsDataPtrs = resultAsDataPtrs;
     return this;
 }
 
-
-
 QueryMaker*
 NepomukQueryMaker::setQueryType( QueryType type )
 {
+    // we need the unchanged queryType in the non blocking result methods so prevent
+    // reseting queryType without reseting the QM
+    if ( m_used )
+        return this;
+    
     queryType = type;
     switch( type )
     {
@@ -437,6 +459,109 @@ NepomukQueryMaker::done( ThreadWeaver::Job *job )
     emit queryDone();
 }
 
+void
+NepomukQueryMaker::blocking( bool enabled )
+{
+    m_blocking = enabled;
+}
+
+QStringList
+ NepomukQueryMaker::collectionIds() const
+{
+    QStringList list;
+    list << m_collection->collectionId();
+    return list;
+}
+
+Meta::DataList
+NepomukQueryMaker::data( const QString &id ) const
+{
+    if ( m_blocking && m_used && resultAsDataPtrs && m_collection->collectionId() == id )
+        return m_data;
+    else
+        return Meta::DataList();
+}
+
+Meta::TrackList
+NepomukQueryMaker::tracks( const QString &id ) const
+{
+    if ( m_blocking && m_used && queryType == QueryMaker::Track && m_collection->collectionId() == id  )
+    {
+        Meta::TrackList list;
+        foreach( DataPtr p, m_data )
+        { 
+            list << Meta::TrackPtr::staticCast( p ); \
+        } 
+        return list;
+    }
+    else
+        return Meta::TrackList();
+}
+
+Meta::AlbumList
+NepomukQueryMaker::albums( const QString &id ) const
+{
+    if ( m_blocking && m_used && queryType == QueryMaker::Album && m_collection->collectionId() == id  )
+    {
+        Meta::AlbumList list;
+        foreach( DataPtr p, m_data )
+        {
+            list << Meta::AlbumPtr::staticCast( p ); \
+        }
+        return list;
+    }
+    else
+        return Meta::AlbumList();
+}
+
+Meta::ArtistList
+NepomukQueryMaker::artists( const QString &id ) const
+{
+    if ( m_blocking && m_used && queryType == QueryMaker::Artist && m_collection->collectionId() == id  )
+    {
+        Meta::ArtistList list;
+        foreach( DataPtr p, m_data )
+        {
+            list << Meta::ArtistPtr::staticCast( p ); \
+        }
+        return list;
+    }
+    else
+        return Meta::ArtistList();
+}
+
+Meta::GenreList
+NepomukQueryMaker::genres( const QString &id ) const
+{
+    Q_UNUSED( id )
+    // not implemented yet
+    return Meta::GenreList();
+}
+
+Meta::ComposerList
+NepomukQueryMaker::composers( const QString &id ) const
+{
+    Q_UNUSED( id )
+    // not implemented yet
+    return Meta::ComposerList();
+}
+
+Meta::YearList
+NepomukQueryMaker::years( const QString &id ) const
+{
+    Q_UNUSED( id )
+    // not implemented yet
+    return Meta::YearList();
+}
+
+QStringList
+NepomukQueryMaker::customData( const QString &id ) const
+{
+    Q_UNUSED( id )
+    // not implemented yet
+    return QStringList();
+}
+
 QString
 NepomukQueryMaker::buildQuery() const
 {
@@ -505,13 +630,13 @@ NepomukQueryMaker::buildQuery() const
 // it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
 // signal that takes the list of the specific class.
 
-#define emitProperResult( PointerType, list ) { \
-            if ( resultAsDataPtrs ) { \
-                DataList data; \
+#define emitOrStoreProperResult( PointerType, list ) { \
+            if ( resultAsDataPtrs || m_blocking ) { \
                 foreach( PointerType p, list ) { \
-                    data << DataPtr::staticCast( p ); \
+                    m_data << DataPtr::staticCast( p ); \
                 } \
-                emit newResultReady( m_collection->collectionId(), data ); \
+                if ( !m_blocking ) \
+                    emit newResultReady( m_collection->collectionId(), m_data ); \
             } \
             else { \
                 emit newResultReady( m_collection->collectionId(), list ); \
@@ -539,7 +664,7 @@ NepomukQueryMaker::doQuery(const QString &query)
                 Meta::ArtistPtr ap = m_collection->registry()->artistForArtistName( node.toString() );
                 al.append( ap );
             }
-            emitProperResult ( ArtistPtr, al );
+            emitOrStoreProperResult ( ArtistPtr, al );
             
             break;
         }
@@ -556,7 +681,7 @@ NepomukQueryMaker::doQuery(const QString &query)
                 Meta::AlbumPtr ap = m_collection->registry()->albumForArtistAlbum( artist, album );
                 al.append( ap );
             }         
-            emitProperResult ( AlbumPtr, al );
+            emitOrStoreProperResult ( AlbumPtr, al );
             
             break;
         }
@@ -573,7 +698,7 @@ NepomukQueryMaker::doQuery(const QString &query)
                 
                 Meta::TrackPtr np = m_collection->registry()->trackForBindingSet( bindingSet );
                 tl.append( np );
-            } emitProperResult ( TrackPtr, tl );
+            } emitOrStoreProperResult ( TrackPtr, tl );
 
             break;
         }
