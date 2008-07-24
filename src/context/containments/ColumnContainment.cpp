@@ -64,6 +64,7 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     , m_defaultRowHeight( 150 )
     , m_paintTitle( 0 )
     , m_manageCurrentTrack( 0 )
+    , m_appletsFromConfigCount( 0 )
 {
     DEBUG_BLOCK
 
@@ -187,6 +188,7 @@ ColumnContainment::loadConfig( const KConfigGroup& conf )
         Plasma::Containment::addApplet( "currenttrack" );
     }
     QStringList plugins = conf.readEntry( "plugins", QStringList() );
+    m_appletsFromConfigCount = 1 + plugins.size();
     foreach( const QString& plugin, plugins )
     {
         debug() << "Adding applet: " << plugin;
@@ -195,7 +197,6 @@ ColumnContainment::loadConfig( const KConfigGroup& conf )
         else
             Plasma::Containment::addApplet( plugin );        
     }
-
 }
 
 void ColumnContainment::loadInitialConfig()
@@ -208,12 +209,14 @@ void ColumnContainment::loadInitialConfig()
     {
         m_currentColumns = cvSize.width() / m_minColumnWidth;
         m_currentRows = cvSize.height() / m_defaultRowHeight;
+        m_width = cvSize.width();
     }
     else
     {
         //FIXME: get these values based on the current application size
         m_currentColumns = 1;
         m_currentRows = 4;
+        m_width = 500.0;
     }
 }
 
@@ -251,6 +254,7 @@ void ColumnContainment::updateSize( QRectF rect )
     debug() << "rect.width(): " << rect.width();
     debug() << "m_minColumnWidth(): " << m_minColumnWidth;
     debug() << "columns: " << columns;
+    
 
     if( columns != m_currentColumns )
     {
@@ -271,7 +275,7 @@ void ColumnContainment::updateSize( QRectF rect )
                     debug() << "no applet";
                     break;
                 }
-
+                
                 if( hide )
                     applet->hide();
                 else
@@ -295,6 +299,10 @@ void ColumnContainment::updateSize( QRectF rect )
     }
  
     m_grid->updateGeometry();
+    m_maxColumnWidth = rect.width();
+    
+    if( m_currentColumns > 0 )
+        recalculate();
     
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
@@ -347,25 +355,34 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
 bool
 ColumnContainment::insertInGrid( Plasma::Applet* applet )
 {
-    int height = applet->effectiveSizeHint( Qt::PreferredSize,
-                                            QSizeF( m_maxColumnWidth, -1 ) ).height();
+    DEBUG_BLOCK
+    int width;
 
+    // this is done beucause of the CV small startup width. We use the width read from config file, may be not safe
+    // in some cases.
+    if( m_appletsFromConfigCount )
+    {
+        DEBUG_LINE_INFO
+        width = m_currentColumns ? m_width / m_currentColumns : m_width;
+        m_appletsFromConfigCount--;
+    }
+    else
+        width = m_currentColumns ? m_maxColumnWidth / m_currentColumns : m_maxColumnWidth;
+    int height = applet->effectiveSizeHint( Qt::PreferredSize, QSizeF( width, -1 ) ).height();
 //     int rowSpan = qMin( qMax( ( int )( height )/ m_defaultRowHeight , 1 ), 2 );
     int rowSpan = height / m_defaultRowHeight;
+    
     int colSpan = 1;
 
-    if( applet->pluginName() == "currenttrack" )
-    {
-        colSpan = m_currentColumns;        
-    }
     if( rowSpan == 0 || height % m_defaultRowHeight >  m_defaultRowHeight / 2.0  )
         rowSpan += 1;
-
-
-
+    
+    rowSpan = qMin( rowSpan, m_currentRows );
+    
     debug() << "current columns: " << m_currentColumns;
     debug() << "current rows: " << m_currentRows;
     debug() << "applet: " << applet->pluginName();
+    debug() << "width: " << width;
 
     int col = 0;
     int row = 0;
@@ -380,7 +397,6 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
         int i = 0;
         while( i < m_currentRows && consec < rowSpan)
         {
-
             if( m_gridFreePositions[i][j] )
                 consec++;
             else
@@ -408,7 +424,7 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
         pos << row << col << rowSpan;
         m_appletsPositions[applet] = pos;
         m_appletsIndexes[applet] = m_grid->count();
-        m_grid->setColumnMaximumWidth( col, m_maxColumnWidth );
+//         m_grid->setColumnMaximumWidth( col, m_maxColumnWidth/m_currentColumns );
         m_grid->setColumnMinimumWidth( col, m_minColumnWidth );        
         
         for( int i = 0; i < rowSpan; i++ )
@@ -417,10 +433,15 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
             m_grid->setRowMaximumHeight( row + i, m_defaultRowHeight );
             m_grid->setRowPreferredHeight( row + i, height );
         }
-        
+        if( m_grid->columnCount() > 0 ) 
+            applet->resize( m_maxColumnWidth / m_grid->columnCount(), rowSpan * m_defaultRowHeight );
+        else
+            applet->resize( m_maxColumnWidth, rowSpan * m_defaultRowHeight );
         m_grid->addItem( applet, row, col, rowSpan, colSpan );
 
         updateConstraints( Plasma::SizeConstraint );
+        recalculate();
+        m_grid->updateGeometry();
     }
     return positionFound;
 }
@@ -487,41 +508,44 @@ void ColumnContainment::recalculate()
     debug() << "got child item that wants a recalculation";
 
     QRectF rect = geometry();
-    qreal top = 0.0;
-    qreal left = 0.0;
-    qreal height; 
-        
+    
+    qreal left, top, right, bottom;
+    qreal marginTop;
+    qreal height;
+    qreal width; 
+    
     int gridRows = m_grid->rowCount();
     int gridCols = m_grid->columnCount();
+    getContentsMargins( &left, &marginTop, &right, &bottom );
+    width = m_grid->columnCount() ? m_maxColumnWidth / m_grid->columnCount() : m_maxColumnWidth;
 
     for( int col = 0; col < gridCols; col++ )
-    {
-        left = (qreal)(col * m_maxColumnWidth);
-        top = 0.0;
-
+    {                
+        
+        left += (qreal)( col * width );
         int row = 0;
+        top = marginTop;
 
         while( row < gridRows )
         {
             Plasma::Applet *applet = dynamic_cast< Plasma::Applet *>( m_grid->itemAt( row, col ) );
             if( applet )
-            {
+            {                               
                 height = applet->effectiveSizeHint( Qt::PreferredSize,
-                                                    QSizeF( m_maxColumnWidth, -1 ) ).height();
+                                                        QSizeF( width, -1 ) ).height();
                                                     
                 QList<int> pos = m_appletsPositions[applet];
                 int rowSpan = pos[2];
-                height = qMax( height, ( qreal )( rowSpan * m_defaultRowHeight ) );
-                const QRectF newgeom( rect.topLeft().x() + left,
-                                rect.topLeft().y() + top,
-                                m_maxColumnWidth,
-                                height );                        
-                top += height;
-                debug() << "setting child geometry to" << newgeom;
-                applet->setGeometry( newgeom );
                 
-                row += rowSpan;
+                height = rowSpan * m_defaultRowHeight;
 
+                //add 25 pixels offSet to the right only if its the last column
+                int offSet = col == gridCols - 1 ? 25 : 3;
+                
+                applet->resize( width - offSet, height );
+                applet->setPos( left, top );
+                row += rowSpan;
+                top += height; 
             }
             else
             {
@@ -616,6 +640,7 @@ ColumnContainment::appletRemoved( Plasma::Applet* applet )
         
         if( m_grid->count() > 0 )
             rearrangeApplets( row + rowSpan, col );
+        
     }
 //         m_columns->removeItem( item );
     

@@ -133,6 +133,7 @@ private:
     Context::Svg* m_header;
     bool m_paintTitle;
     bool m_manageCurrentTrack;
+    int m_appletsFromConfigCount;
 
     QQueue<QString> m_pendingApplets;
 
