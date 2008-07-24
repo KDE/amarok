@@ -61,6 +61,11 @@ namespace Amarok
             KMessageBox::sorry( 0, text );
             return -1;
         }
+        else if ( type == "information" )
+        {
+            KMessageBox::information( 0, text );
+            return -1;
+        }
         else if ( type == "questionYesNo" )
             return KMessageBox::questionYesNo( 0, text );
         else if ( type == "questionYesNoCancel" )

@@ -304,7 +304,8 @@ ScriptManager::slotInstallScript( const QString& path )
 
     if( m_installSuccess )
     {
-        KMessageBox::information( 0, i18n( "Script successfully installed." ) );
+        KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>"
+                                           "<p>Please restart Amarok to start the script!</p>" ) );
         return true;
     }
     else
@@ -390,6 +391,8 @@ ScriptManager::slotUninstallScript()
         if ( m_scripts[name].running )
             slotStopScript( name );
         m_scripts.remove( name );
+        KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
+                                           "<p>Please restart Amarok to totally remove the script!</p>" ) );
     }
 }
 

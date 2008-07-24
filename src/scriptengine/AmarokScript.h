@@ -36,7 +36,7 @@ namespace Amarok
         public slots:
             QString     Version();
             void        Quit();
-            int         alert( QString text, QString type = "sorry" );
+            int         alert( QString text, QString type = "information" );
             bool        runScript( QString name );
             bool        stopScript( QString name );
             QStringList listRunningScripts();
