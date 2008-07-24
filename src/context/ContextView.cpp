@@ -383,8 +383,8 @@ ContextView::centerOnZoom( qreal sFactor, Plasma::ZoomDirection direction )
     QPointF topRight = containment()->geometry().topRight();
     QPointF bottomLeft = containment()->geometry().bottomLeft();
 
-    qreal x = qMax( 0.0, sceneRect().topRight().x() - ( width * 1/sFactor ) );
-    qreal y = qMax( 0.0, sceneRect().bottomLeft().y() - ( height * 1/sFactor ) );
+    qreal x = qMax( qreal(0.0), sceneRect().topRight().x() - ( width * 1/sFactor ) );
+    qreal y = qMax( qreal(0.0), sceneRect().bottomLeft().y() - ( height * 1/sFactor ) );
 
     left = qMin(  topLeft.x(), x ) ;
     top = qMin( topLeft.y() , y  );
