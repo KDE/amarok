@@ -46,6 +46,7 @@ class Model;
             void appendUpcoming();
 
         private slots:
+            void activePlaylistChanged();
             void activeRowChanged( int from, int to );
             void repopulate();
 

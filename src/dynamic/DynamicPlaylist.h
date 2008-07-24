@@ -24,6 +24,7 @@
 
 #include "Meta.h"
 
+#include <QDomElement>
 #include <QSharedData>
 
 
@@ -42,6 +43,8 @@ class DynamicPlaylist : public QObject, public QSharedData
         DynamicPlaylist( Collection* );
 
         virtual ~DynamicPlaylist();
+
+        virtual QDomElement xml() const;
 
         virtual Meta::TrackPtr  getTrack() = 0;
         virtual Meta::TrackList getTracks(int);

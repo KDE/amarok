@@ -23,6 +23,7 @@
 
 #include "QueryMaker.h"
 
+#include <QDomDocument>
 #include <QDomElement>
 
 /**
@@ -33,7 +34,7 @@
 class XmlQueryWriter : public QueryMaker
 {
     public:
-        XmlQueryWriter( QueryMaker* );
+        XmlQueryWriter( QueryMaker*, QDomDocument );
         ~XmlQueryWriter();
 
         QString     getXml( int indent = 0 );
@@ -88,6 +89,7 @@ class XmlQueryWriter : public QueryMaker
 
 
         QueryMaker* m_qm;
+        QDomDocument m_doc;
         QDomElement m_element;
         QDomElement m_filterElement;
         QDomElement m_retvalElement;

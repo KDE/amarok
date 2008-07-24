@@ -226,6 +226,7 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
     , m_valueSelection(0)
     , m_compareSelection(0)
     , m_gbias( bias )
+    , m_filter( bias->filter() )
 {
     DEBUG_BLOCK
 
@@ -267,8 +268,12 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
 void
 PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
 {
+    DEBUG_BLOCK
+
     m_gbias->setQuery( m_filter );
     m_gbias->setActive( true );
+
+    emit biasChanged( m_bias );
 }
 
 void
@@ -276,6 +281,8 @@ PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
 {
     int index = m_fieldSelection->findData( m_filter.field );
     m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
+
+    m_weightSelection->setValue( (int)(m_gbias->weight() * 100.0) );
 }
 
 
@@ -297,10 +304,14 @@ PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
 void
 PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
 {
+    DEBUG_BLOCK
+
     double fval = (double)ival;
     m_weightLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
 
     m_gbias->setWeight( fval / 100.0 );
+
+    emit biasChanged( m_bias );
 }
 
 void

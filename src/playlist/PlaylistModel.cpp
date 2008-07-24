@@ -536,7 +536,7 @@ Playlist::Model::playlistModeChanged()
         Dynamic::DynamicPlaylistPtr playlist = dm->activePlaylist();
 
         if( !playlist )
-            playlist = dm->retrieveDefaultPlaylist();
+            playlist = dm->defaultPlaylist();
 
         const bool wasNull = m_advancer == 0; 
 

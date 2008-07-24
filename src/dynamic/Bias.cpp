@@ -25,6 +25,7 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "DynamicBiasWidgets.h"
+#include "DynamicModel.h"
 #include "MetaQueryMaker.h"
 #include "QueryMaker.h"
 #include "collection/support/XmlQueryWriter.h"
@@ -37,6 +38,8 @@
 Dynamic::Bias*
 Dynamic::Bias::fromXml( QDomElement e )
 {
+    DEBUG_BLOCK
+
     if( e.tagName() != "bias" )
         return 0;
 
@@ -59,7 +62,8 @@ Dynamic::Bias::fromXml( QDomElement e )
             queryElement.save( rawXmlStream, 0 );
             XmlQueryReader reader( dummyQM, XmlQueryReader::IgnoreReturnValues );
             reader.read( rawXml );
-            filter = reader.getFilters().first();
+            if( reader.getFilters().size() > 0 )
+                filter = reader.getFilters().first();
 
             delete dummyQM;
         }
@@ -181,16 +185,17 @@ Dynamic::GlobalBias::GlobalBias( Collection* coll, double weight, XmlQueryReader
 QDomElement
 Dynamic::GlobalBias::xml() const
 {
-    QDomElement e;
-    e.setTagName( "bias" );
+    QDomDocument doc =
+        PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc();
+
+    QDomElement e = doc.createElement( "bias" );
     e.setAttribute( "type", "global" );
 
-    QDomElement weight;
-    weight.setTagName( "weight" );
+    QDomElement weight = doc.createElement( "weight" );
     weight.setAttribute( "value", m_weight );
 
     e.appendChild( weight );
-    e.appendChild( m_qm->getDomElement().cloneNode() );
+    e.appendChild( m_qm->getDomElement() );
 
     return e;
 }
@@ -237,7 +242,8 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     else
         qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
 
-    m_qm = new XmlQueryWriter( qm );
+    m_qm = new XmlQueryWriter( qm,
+            PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc() );
 
     if( filter.field != 0 )
     {

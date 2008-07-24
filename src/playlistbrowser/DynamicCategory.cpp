@@ -24,6 +24,8 @@
 #include "amarokconfig.h"
 #include "playlist/PlaylistModel.h"
 
+#include <QInputDialog>
+#include <QMessageBox>
 #include <QLabel>
 #include <QTreeWidget>
 
@@ -75,10 +77,15 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_presetComboBox = new KComboBox( presetLayout );
     m_presetComboBox->setPalette( QApplication::palette() );
+    DynamicModel::instance()->loadPlaylists();
     m_presetComboBox->setModel( DynamicModel::instance() );
+    
+    connect( DynamicModel::instance(), SIGNAL(changeActive(int)),
+            m_presetComboBox, SLOT(setCurrentIndex(int)) );
 
     connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(playlistSelectionChanged(int) ) );
+
     presetLabel->setBuddy( m_presetComboBox );
 
     presetLayout->setStretchFactor( m_presetComboBox, 1 );
@@ -93,10 +100,11 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     presetToolbar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
     m_saveButton   = new QToolButton( presetToolbar );
     //m_saveButton->setText( i18n("Save") );
-    m_saveButton->setEnabled( false );
     m_saveButton->setIcon( KIcon( "document-save-amarok" ) );
     m_saveButton->setToolTip( i18n( "Save the preset." ) );
     presetToolbar->addWidget( m_saveButton );
+
+    connect( m_saveButton, SIGNAL(clicked(bool)), SLOT(save()) );
 
 
     m_deleteButton = new QToolButton( presetToolbar );
@@ -119,6 +127,9 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_biasModel = new DynamicBiasModel( m_biasListView );
     m_biasListView->setModel( m_biasModel );
 
+    connect( m_biasModel, SIGNAL(playlistModified(Dynamic::BiasedPlaylistPtr)),
+             DynamicModel::instance(), SLOT(playlistModified(Dynamic::BiasedPlaylistPtr)) );
+
     m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
     m_biasListView->setItemDelegate( m_biasDelegate );
 
@@ -130,7 +141,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     this->setLayout( m_vLayout );
 
 
-    int index = DynamicModel::instance()->retrievePlaylistIndex( 
+    int index = DynamicModel::instance()->playlistIndex( 
             AmarokConfig::lastDynamicMode() );
 
     debug() << "Setting index: " << index;
@@ -211,14 +222,46 @@ DynamicCategory::playlistSelectionChanged( int index )
 {
     Dynamic::DynamicPlaylistPtr playlist =
         DynamicModel::instance()->setActivePlaylist( index );
-    QString title = playlist->title();
-    AmarokConfig::setLastDynamicMode( title );
-    AmarokConfig::self()->writeConfig();
+
+    if( DynamicModel::instance()->isActiveDefault() )
+        m_deleteButton->setEnabled( false );
+    else
+        m_deleteButton->setEnabled( true );
+
+
+    if( !DynamicModel::instance()->isActiveUnsaved() )
+    {
+        AmarokConfig::setLastDynamicMode( playlist->title() );
+        AmarokConfig::self()->writeConfig();
+    }
 
 
     m_biasModel->setPlaylist( playlist );
 
-    debug() << "Changing biased playlist to: " << title;
+    debug() << "Changing biased playlist to: " << playlist->title();
+}
+
+void
+DynamicCategory::save()
+{
+    bool ok;
+    QString title =
+        QInputDialog::getText( this, i18n("Preset Name"),
+                               i18n("Enter a name for the preset:"),
+                               QLineEdit::Normal,
+                               DynamicModel::instance()->activePlaylist()->title(),
+                               &ok );
+    if( !ok ) return;
+
+    // TODO: write a custom dialog to prevent this from happening in the first
+    // place
+    if( title == DynamicModel::instance()->defaultPlaylist()->title() )
+    {
+        QMessageBox::warning( this, "Warning!", "Can't overwrite the random playlist." );
+        return;
+    }
+
+    DynamicModel::instance()->saveActive( title );
 }
 
 }

@@ -21,6 +21,7 @@
 #include "DynamicTrackNavigator.h"
 
 #include "Debug.h"
+#include "DynamicModel.h"
 #include "DynamicPlaylist.h"
 #include "EngineController.h"
 #include "Meta.h"
@@ -32,12 +33,14 @@
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Dynamic::DynamicPlaylistPtr p )
     : TrackNavigator(m), m_playlist(p)
 {
-    QObject::connect( m_playlistModel, SIGNAL(activeRowChanged(int,int)),
-            this, SLOT(activeRowChanged(int,int)));
-    QObject::connect( m_playlistModel, SIGNAL(activeRowExplicitlyChanged(int,int)),
-            this, SLOT(activeRowExplicitlyChanged(int,int)));
-    QObject::connect( m_playlistModel, SIGNAL(repopulate()),
-            this, SLOT(repopulate()) );
+    connect( m_playlistModel, SIGNAL(activeRowChanged(int,int)),
+             SLOT(activeRowChanged(int,int)));
+    connect( m_playlistModel, SIGNAL(activeRowExplicitlyChanged(int,int)),
+             SLOT(activeRowExplicitlyChanged(int,int)));
+    connect( m_playlistModel, SIGNAL(repopulate()),
+             SLOT(repopulate()) );
+    connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL(activeChanged()),
+             SLOT(activePlaylistChanged()) );
 
     markPlayed();
 }
@@ -112,6 +115,23 @@ Playlist::DynamicTrackNavigator::removePlayed()
     {
         m_playlistModel->removeRows( 0, activeRow - m_playlist->previousCount() );
     }
+}
+
+void
+Playlist::DynamicTrackNavigator::activePlaylistChanged()
+{
+    DEBUG_BLOCK
+
+    Dynamic::DynamicPlaylistPtr newPlaylist =
+        PlaylistBrowserNS::DynamicModel::instance()->activePlaylist();
+
+    if( newPlaylist == m_playlist )
+        return;
+
+    m_playlist->requestAbort();
+    QMutexLocker locker( &m_mutex );
+
+    m_playlist = newPlaylist;
 }
 
 void

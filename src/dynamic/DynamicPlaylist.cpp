@@ -40,6 +40,13 @@ Dynamic::DynamicPlaylist::~DynamicPlaylist()
 {
 }
 
+QDomElement
+Dynamic::DynamicPlaylist::xml() const
+{
+    // unsaveable by default.
+    return QDomElement();
+}
+
 
 Meta::TrackList
 Dynamic::DynamicPlaylist::getTracks( int count )

@@ -24,6 +24,7 @@
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "Debug.h"
+#include "DynamicModel.h"
 #include "MetaQueryMaker.h"
 #include "playlist/PlaylistModel.h"
 #include "StatusBar.h"
@@ -33,6 +34,29 @@
 
 // The bigger this is, the more accurate the result will be. Big is good.
 const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 100;
+
+
+Dynamic::BiasedPlaylist*
+Dynamic::BiasedPlaylist::fromXml( QDomElement e )
+{
+    if( e.tagName() != "biasedPlaylist" )
+        return 0;
+
+    QString title = e.attribute( "title" );
+    QList<Dynamic::Bias*> biases;
+
+    for( int j = 0; j < e.childNodes().size(); ++j )
+    {
+        if( !e.childNodes().at(j).isElement() )
+            continue;
+
+        QDomElement e2 = e.childNodes().at(j).toElement();
+        if( e2.tagName() == "bias" )
+            biases.append( Dynamic::Bias::fromXml( e2 ) );
+    }
+
+    return new Dynamic::BiasedPlaylist( title, biases );
+}
 
 
 Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases )
@@ -51,6 +75,22 @@ Dynamic::BiasedPlaylist::BiasedPlaylist(
     , m_randomSource(collection)
 {
     setTitle( title );
+}
+
+QDomElement
+Dynamic::BiasedPlaylist::xml() const
+{
+    QDomDocument doc =
+        PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc();
+    QDomElement e = doc.createElement( "biasedPlaylist" );
+    e.setAttribute( "title", m_title );
+
+    foreach( Bias* b, m_biases )
+    {
+        e.appendChild( b->xml() );
+    }
+
+    return e;
 }
 
 void

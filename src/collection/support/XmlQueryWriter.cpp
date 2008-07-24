@@ -18,17 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#include "Debug.h"
 #include "XmlQueryWriter.h"
 
 #include <QTextStream>
 
-XmlQueryWriter::XmlQueryWriter( QueryMaker* qm )
-    : m_qm( qm ), m_andorLevel( 0 )
+XmlQueryWriter::XmlQueryWriter( QueryMaker* qm, QDomDocument doc )
+    : m_qm( qm ), m_doc( doc ), m_andorLevel( 0 )
 {
-    m_element.setTagName( "query" );
+    m_element = m_doc.createElement( "query" );
     m_element.setAttribute( "version", "1.0" );
 
-    m_filterElement.setTagName( "filters" );
+    m_filterElement = m_doc.createElement( "filters" );
     m_element.appendChild( m_filterElement );
 
     // connect up the signals
@@ -155,8 +156,7 @@ XmlQueryWriter::setQueryType( QueryType type )
 QueryMaker*
 XmlQueryWriter::returnResultAsDataPtrs( bool resultAsDataPtrs )
 {
-    QDomElement e;
-    e.setTagName( "returnResultAsDataPtrs" );
+    QDomElement e = m_doc.createElement( "returnResultsAsDataPairs" );
     m_element.appendChild( e );
 
     m_qm->returnResultAsDataPtrs( resultAsDataPtrs );
@@ -183,8 +183,7 @@ XmlQueryWriter::addReturnFunction( ReturnFunction function, qint64 value )
 QueryMaker*
 XmlQueryWriter::orderBy( qint64 value, bool descending )
 {
-    QDomElement e;
-    e.setTagName( "order" );
+    QDomElement e = m_doc.createElement( "order" );
     e.setAttribute( "field", fieldName( value ) );
     e.setAttribute( "value", descending ? "descending" : "ascending" );
     m_element.appendChild( e );
@@ -196,8 +195,7 @@ XmlQueryWriter::orderBy( qint64 value, bool descending )
 QueryMaker*
 XmlQueryWriter::orderByRandom()
 {
-    QDomElement e;
-    e.setTagName( "order" );
+    QDomElement e = m_doc.createElement( "order" );
     e.setAttribute( "value", "random" );
     m_element.appendChild( e );
 
@@ -209,8 +207,7 @@ XmlQueryWriter::orderByRandom()
 QueryMaker*
 XmlQueryWriter::includeCollection( const QString &collectionId )
 {
-    QDomElement e;
-    e.setTagName( "includeCollection" );
+    QDomElement e = m_doc.createElement( "includeCollection" );
     e.setAttribute( "id", collectionId );
     m_element.appendChild( e );
 
@@ -222,8 +219,7 @@ XmlQueryWriter::includeCollection( const QString &collectionId )
 QueryMaker*
 XmlQueryWriter::excludeCollection( const QString &collectionId )
 {
-    QDomElement e;
-    e.setTagName( "excludeCollection" );
+    QDomElement e = m_doc.createElement( "excludeElement" );
     e.setAttribute( "id", collectionId );
     m_element.appendChild( e );
 
@@ -283,8 +279,9 @@ XmlQueryWriter::addMatch( const Meta::DataPtr &data )
 QueryMaker*
 XmlQueryWriter::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    QDomElement e;
-    e.setTagName( "include" );
+    DEBUG_BLOCK
+
+    QDomElement e = m_doc.createElement( "include" );
     e.setAttribute( "field", fieldName( value ) );
     e.setAttribute( "value", filter );
     m_filterElement.appendChild( e );
@@ -296,8 +293,7 @@ XmlQueryWriter::addFilter( qint64 value, const QString &filter, bool matchBegin,
 QueryMaker*
 XmlQueryWriter::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    QDomElement e;
-    e.setTagName( "exclude" );
+    QDomElement e = m_doc.createElement( "exclude" );
     e.setAttribute( "field", fieldName( value ) );
     e.setAttribute( "value", filter );
     m_filterElement.appendChild( e );
@@ -309,8 +305,7 @@ XmlQueryWriter::excludeFilter( qint64 value, const QString &filter, bool matchBe
 QueryMaker*
 XmlQueryWriter::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
-    QDomElement e;
-    e.setTagName( "include" );
+    QDomElement e = m_doc.createElement( "include" );
     e.setAttribute( "field", fieldName( value ) );
     e.setAttribute( "value", filter );
     e.setAttribute( "compare", compareName( compare ) );
@@ -323,8 +318,7 @@ XmlQueryWriter::addNumberFilter( qint64 value, qint64 filter, QueryMaker::Number
 QueryMaker*
 XmlQueryWriter::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
-    QDomElement e;
-    e.setTagName( "exclude" );
+    QDomElement e = m_doc.createElement( "exclude" );
     e.setAttribute( "field", fieldName( value ) );
     e.setAttribute( "value", filter );
     e.setAttribute( "compare", compareName( compare ) );
@@ -338,8 +332,7 @@ XmlQueryWriter::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::Nu
 QueryMaker*
 XmlQueryWriter::limitMaxResultSize( int size )
 {
-    QDomElement e;
-    e.setTagName( "limit" );
+    QDomElement e = m_doc.createElement( "limit" );
     e.setAttribute( "value", size );
     m_element.appendChild( e );
 
@@ -356,14 +349,12 @@ XmlQueryWriter::setAlbumQueryMode( AlbumQueryMode mode )
 
     if( mode == OnlyCompilations )
     {
-        QDomElement e;
-        e.setTagName( "onlyCompilations" );
+        QDomElement e = m_doc.createElement( "onlyCompilations" );
         m_element.appendChild( e );
     }
     if( mode == OnlyNormalAlbums )
     {
-        QDomElement e;
-        e.setTagName( "onlyNormalAlbums" );
+        QDomElement e = m_doc.createElement( "onlyNormalAlbums" );
         m_element.appendChild( e );
     }
 
@@ -374,8 +365,7 @@ XmlQueryWriter::setAlbumQueryMode( AlbumQueryMode mode )
 QueryMaker*
 XmlQueryWriter::beginAnd()
 {
-    QDomElement e;
-    e.setTagName( "and" );
+    QDomElement e = m_doc.createElement( "and" );
     m_filterElement.appendChild( e );
     m_filterElement = e;
     m_andorLevel++;
@@ -387,8 +377,7 @@ XmlQueryWriter::beginAnd()
 QueryMaker*
 XmlQueryWriter::beginOr()
 {
-    QDomElement e;
-    e.setTagName( "or" );
+    QDomElement e = m_doc.createElement( "or" );
     m_filterElement.appendChild( e );
     m_filterElement = e;
     m_andorLevel++;
@@ -422,12 +411,11 @@ XmlQueryWriter::insertRetValue( QString val )
 {
     if( m_retvalElement.isNull() )
     {
-        m_retvalElement.setTagName( "returnValues" );
+        m_retvalElement = m_doc.createElement( "returnValues" );
         m_element.appendChild( m_retvalElement );
     }
 
-    QDomElement retval;
-    retval.setTagName( val );
+    QDomElement retval = m_doc.createElement( val );
     m_retvalElement.appendChild( retval );
 }
 

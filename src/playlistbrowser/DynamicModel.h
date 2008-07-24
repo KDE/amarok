@@ -18,7 +18,9 @@
 #ifndef DYNAMICMODEL_H
 #define DYNAMICMODEL_H
 
+#include "BiasedPlaylist.h"
 #include "DynamicPlaylist.h"
+
 
 #include <QAbstractItemModel>
 #include <QDomDocument>
@@ -44,13 +46,20 @@ class DynamicModel : public QAbstractItemModel
 
         ~DynamicModel();
 
+        void loadPlaylists();
+
         QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
-        Dynamic::DynamicPlaylistPtr retrieveDefaultPlaylist();
-        int retrievePlaylistIndex( QString );
+        Dynamic::DynamicPlaylistPtr defaultPlaylist();
+        Dynamic::DynamicPlaylistPtr activePlaylist();
+
+        int playlistIndex( const QString& ) const;
 
         QModelIndex index ( int row, int column,
                 const QModelIndex & parent = QModelIndex() ) const;
+
+        bool isActiveUnsaved() const;
+        bool isActiveDefault() const;
 
 
         QModelIndex parent ( const QModelIndex & index ) const;
@@ -61,28 +70,42 @@ class DynamicModel : public QAbstractItemModel
         /// find the playlist with name, make it active and return it
         Dynamic::DynamicPlaylistPtr setActivePlaylist( const QString& name );
         Dynamic::DynamicPlaylistPtr setActivePlaylist( int );
-        Dynamic::DynamicPlaylistPtr activePlaylist();
+
+        QDomDocument savedPlaylistDoc() { return m_savedPlaylists; }
 
         const QSet<Meta::TrackPtr>& universe();
+
+    signals:
+        void activeChanged(); // active row changed
+        void changeActive( int );  // request that active change
+
+    public slots:
+        void playlistModified( Dynamic::BiasedPlaylistPtr );
+        void saveActive( const QString& newTitle );
+        // TODO:
+        //void removeActive();
 
     private slots:
         void universeNeedsUpdate();
 
     private:
-        void loadPlaylists();
+        Dynamic::DynamicPlaylistPtr createDefaultPlaylist();
         void insertPlaylist( Dynamic::DynamicPlaylistPtr );
         void computeUniverseSet();
 
         DynamicModel();
         static DynamicModel* s_instance;
 
-        Dynamic::DynamicPlaylistPtr m_activePlaylist;
-        Dynamic::DynamicPlaylistPtr m_defaultPlaylist;
+        int m_activePlaylist;
+        int m_defaultPlaylist;
+
+        bool m_activeUnsaved;
 
         QDomDocument m_savedPlaylists;
 
         QHash< QString, Dynamic::DynamicPlaylistPtr >    m_playlistHash;
         Dynamic::DynamicPlaylistList                     m_playlistList;
+        QList<QDomElement>                               m_playlistElements;
 
         QMutex m_universeMutex;
         QSet<Meta::TrackPtr> m_universe;

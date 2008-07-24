@@ -44,6 +44,7 @@ namespace PlaylistBrowserNS {
         private slots:
             void OnOff(bool);
             void playlistSelectionChanged( int index );
+            void save();
 
         private:
             void initOnOffButton();

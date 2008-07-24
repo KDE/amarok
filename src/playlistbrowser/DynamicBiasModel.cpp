@@ -43,6 +43,9 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
 {
     DEBUG_BLOCK
 
+    if( playlist.data() == m_playlist.data() )
+        return;
+
     clearWidgets();
 
     Dynamic::BiasedPlaylist* bp = 
@@ -61,6 +64,8 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
                     SLOT(widgetChanged(QWidget*)) );
             connect( widget, SIGNAL(biasRemoved(Dynamic::Bias*)),
                     SLOT(removeBias(Dynamic::Bias*)) );
+            connect( widget, SIGNAL(biasChanged(Dynamic::Bias*)),
+                    SLOT(biasChanged(Dynamic::Bias*)) );
 
             m_widgets.append( widget );
         }
@@ -82,21 +87,25 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
 void
 PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
 {
-    if( m_playlist )
-    {
-        beginInsertRows( QModelIndex(), rowCount()-1, rowCount()-1 );
-        m_playlist->biases().append( b );
+    if( !m_playlist )
+        return;
 
-        PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView->viewport() );
+    beginInsertRows( QModelIndex(), rowCount()-1, rowCount()-1 );
+    m_playlist->biases().append( b );
 
-        connect( widget, SIGNAL(widgetChanged(QWidget*)),
-                SLOT(widgetChanged(QWidget*)) );
-        connect( widget, SIGNAL(biasRemoved(Dynamic::Bias*)),
-                SLOT(removeBias(Dynamic::Bias*)) );
+    PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView->viewport() );
 
-        m_widgets.insert( rowCount()-1, widget );
-        endInsertRows();
-    }
+    connect( widget, SIGNAL(widgetChanged(QWidget*)),
+            SLOT(widgetChanged(QWidget*)) );
+    connect( widget, SIGNAL(biasRemoved(Dynamic::Bias*)),
+            SLOT(removeBias(Dynamic::Bias*)) );
+    connect( widget, SIGNAL(biasChanged(Dynamic::Bias*)),
+            SLOT(biasChanged(Dynamic::Bias*)) );
+
+    m_widgets.insert( rowCount()-1, widget );
+    endInsertRows();
+
+    emit playlistModified( m_playlist );
 }
 
 void
@@ -111,6 +120,16 @@ PlaylistBrowserNS::DynamicBiasModel::removeBias( Dynamic::Bias* b )
     m_widgets.removeAt( index );
     m_playlist->biases().removeAt( index );
     endRemoveRows();
+
+    emit playlistModified( m_playlist );
+}
+
+void
+PlaylistBrowserNS::DynamicBiasModel::biasChanged( Dynamic::Bias* b )
+{
+    DEBUG_BLOCK
+    Q_UNUSED(b);
+    emit playlistModified( m_playlist );
 }
 
 
@@ -196,6 +215,7 @@ void
 PlaylistBrowserNS::DynamicBiasModel::widgetChanged( QWidget* w )
 {
     DEBUG_BLOCK
+    Q_UNUSED(w)
     // more or less a hack to get the delegate to redraw the list correctly when
     // the size of one of the widgets changes.
 

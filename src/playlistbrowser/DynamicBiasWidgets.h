@@ -93,6 +93,7 @@ namespace PlaylistBrowserNS
 
         signals:
             void biasRemoved( Dynamic::Bias* );
+            void biasChanged( Dynamic::Bias* );
 
         private slots:
             void biasRemoved();

@@ -27,6 +27,7 @@
 #include "Meta.h"
 #include "RandomPlaylist.h"
 
+#include <QDomElement>
 #include <QObject>
 #include <QEventLoop>
 
@@ -37,10 +38,14 @@ namespace Dynamic
         Q_OBJECT
 
         public:
+            static BiasedPlaylist* fromXml( QDomElement );
+
             BiasedPlaylist( QString title, QList<Bias*> );
             BiasedPlaylist( QString title, QList<Bias*>, Collection* m_collection );
 
             ~BiasedPlaylist();
+
+            QDomElement xml() const;
 
             void setContext( Meta::TrackList );
 

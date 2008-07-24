@@ -61,10 +61,14 @@ namespace PlaylistBrowserNS
             int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
             int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
 
+        signals:
+            void playlistModified( Dynamic::BiasedPlaylistPtr );
+
         public slots:
             void widgetChanged( QWidget* w = 0 );
             void appendBias( Dynamic::Bias* );
             void removeBias( Dynamic::Bias* );
+            void biasChanged( Dynamic::Bias* );
 
         private:
             void clearWidgets();
