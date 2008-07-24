@@ -1,5 +1,5 @@
 [Desktop Entry]
-Icon=mypluginicon
+Icon=amarok
 Type=script
 ServiceTypes=KPluginInfo
 
