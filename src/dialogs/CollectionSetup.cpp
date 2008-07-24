@@ -4,6 +4,7 @@
                         : (C) 2004 Max Howell <max.howell@methylblue.com>
                         : (C) 2004 Mark Kretschmann <markey@web.de>
                         : (C) 2008 Seb Ruiz <ruiz@kde.org>
+                        : (C) 2008 Sebastian Trueg <trueg@kde.org>
 ***************************************************************************/
 
 /***************************************************************************
@@ -135,6 +136,8 @@ namespace CollectionFolder {
                 return Qt::Checked; // always set children of recursively checked parents to checked
             if( isForbiddenPath( path ) )
                 return Qt::Unchecked; // forbidden paths can never be checked
+            if( !m_checked.contains( path ) && descendantChecked( path ) )
+                return Qt::PartiallyChecked;
             return m_checked.contains( path ) ? Qt::Checked : Qt::Unchecked;
         }
         return QFileSystemModel::data( index, role );
@@ -201,6 +204,16 @@ namespace CollectionFolder {
         foreach( QString element, m_checked )
         {
             if( path.startsWith( element ) && element != path )
+                return true;
+        }
+        return false;
+    }
+
+    bool Model::descendantChecked( const QString& path ) const
+    {
+        foreach( const QString& element, m_checked )
+        {
+            if( element.startsWith( path ) && element != path )
                 return true;
         }
         return false;
