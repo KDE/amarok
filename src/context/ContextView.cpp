@@ -261,7 +261,7 @@ ContextView::zoomIn( Plasma::Containment* toContainment )
     {
         connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
                  this, SLOT( zoomInFinished( int ) ) );
-        Plasma::Animator::self()->customAnimation( 35, 1000, Plasma::Animator::LinearCurve, this, "animateZoomIn" );
+        Plasma::Animator::self()->customAnimation( 40, 1100, Plasma::Animator::EaseInOutCurve, this, "animateZoomIn" );
     }
     //HACK: this is the only way that the containments resize correctly after
     //the CV widget has ben resized while in zoom level Plasma::GroupZoom
@@ -289,7 +289,7 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
         
         connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
                  this, SLOT( zoomOutFinished( int ) ) );
-        Plasma::Animator::self()->customAnimation( 35, 1000, Plasma::Animator::EaseInCurve, this, "animateZoomOut" );
+        Plasma::Animator::self()->customAnimation( 40, 1100, Plasma::Animator::EaseInOutCurve, this, "animateZoomOut" );
 
     }
 
@@ -298,18 +298,12 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
 void
 ContextView::animateZoomIn( qreal progress, int id )
 {
-    Q_UNUSED( progress )
-    if( m_factor < 1 )
+    if( progress > 0 )
     {
-        m_factor += 0.08;
-        qreal s = m_factor / matrix().m11();
-        centerOnZoom( s, Plasma::ZoomIn );
+        qreal s = ( progress / 2.0 + 0.5 ) / matrix().m11();
+        centerOnZoom( s, Plasma::ZoomIn );        
     }
-    else
-    {
-        Plasma::Animator::self()->stopCustomAnimation( id );
-        zoomInFinished( id );
-    }
+
 }
 
 void
@@ -337,20 +331,8 @@ ContextView::zoomInFinished( int id )
 void
 ContextView::animateZoomOut( qreal progress, int id )
 {
-    Q_UNUSED( progress )
-  
-    if( m_factor > 0.45 )
-    {
-        m_factor -= 0.08;
-        qreal s = m_factor / matrix().m11();
-        centerOnZoom( s, Plasma::ZoomOut );
-
-    }
-    else
-    {
-        Plasma::Animator::self()->stopCustomAnimation( id );
-        zoomOutFinished( id );
-    }
+    qreal s =  ( 1.0 - progress / 1.8 ) / matrix().m11();
+    centerOnZoom( s, Plasma::ZoomOut );
 }
 
 void
