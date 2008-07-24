@@ -687,10 +687,14 @@ Playlist::Model::clear()
 }
 
 void
-Playlist::Model::insertOptionedTrackListSlot( Meta::TrackList list ) //slot
+Playlist::Model::insertTrackListSlot( Meta::TrackList list ) //slot
 {
-    disconnect( this, SLOT( insertOptionedTrackListSlot( Meta::TrackList ) ) );
-    insertOptioned( list, m_insertAction );
+    disconnect( this, SLOT( insertTrackListSlot( Meta::TrackList ) ) );
+    int row = m_dragHash[sender()];
+    if( row < 0 )
+        insertOptioned( list, Playlist::AppendAndPlay );
+    else
+        insertTracks( row, list );
 }
 
 void
@@ -955,19 +959,10 @@ Playlist::Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, i
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
-            if( row < 0 )
-            {
-                debug() << "Inserting at row: " << row << " so we are appending to the list.";
-                connect( trackListDrag, SIGNAL( trackListSignal( Meta::TrackList ) ),
-                       this, SLOT( insertOptionedTrackListSlot( Meta::TrackList ) ) ); 
-                m_insertAction = Playlist::AppendAndPlay;
-                trackListDrag->getTrackListSignal();
-            }
-            else
-            {
-                debug() << "Inserting at row: " << row <<" so its inserted correctly.";
-                insertTracks( row, trackListDrag->tracks() );
-            }
+            m_dragHash[const_cast<AmarokMimeData*>(trackListDrag)] = row;
+            connect( trackListDrag, SIGNAL( trackListSignal( Meta::TrackList ) ),
+                   this, SLOT( insertTrackListSlot( Meta::TrackList ) ) ); 
+            trackListDrag->getTrackListSignal();
             return true;
         }
     }

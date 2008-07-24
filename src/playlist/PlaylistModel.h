@@ -42,6 +42,8 @@
 #include <kdemacros.h>
 #include "PlaylistItem.h"
 
+class AmarokMimeData;
+
 class QMimeData;
 class QModelIndex;
 class QueryMaker;
@@ -249,7 +251,7 @@ namespace Playlist
 
             void playlistModeChanged(); //! Changes the trackadvancer
 
-            void insertOptionedTrackListSlot( Meta::TrackList list );
+            void insertTrackListSlot( Meta::TrackList list );
 
         signals:
             void playlistCountChanged( int newCount );
@@ -313,7 +315,7 @@ namespace Playlist
             QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
             QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
 
-            Playlist::AddOptions m_insertAction;
+            QHash<QObject*, int> m_dragHash;
 
             Meta::PlaylistList m_registeredPlaylists;
 
