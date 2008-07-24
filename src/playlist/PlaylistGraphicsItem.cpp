@@ -20,7 +20,6 @@
 
 #include "PlaylistGraphicsItem.h"
 
-#include "AmarokMimeData.h"
 #include "App.h"
 #include "Debug.h"
 #include "PlaylistDropVis.h"

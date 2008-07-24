@@ -22,6 +22,7 @@
 
 #include <QCoreApplication>
 #include <QList>
+#include <QTimer>
 #include <QUrl>
 
 const QString AmarokMimeData::TRACK_MIME = "application/x-amarok-tracks";
@@ -124,6 +125,26 @@ void
 AmarokMimeData::addTracks( const Meta::TrackList &tracks )
 {
     d->tracks << tracks;
+}
+
+void
+AmarokMimeData::getTrackListSignal() const
+{
+    if( d->completedQueries < d->queryMakers.count() )
+    {
+        QTimer::singleShot( 0, const_cast<AmarokMimeData*>( this ), SLOT( getTrackListSignal() ) );
+        return;
+    }
+    else
+    {
+        Meta::TrackList result = d->tracks;
+        foreach( QueryMaker *qm, d->queryMakers )
+        {
+            if( d->trackMap.contains( qm ) )
+                result << d->trackMap.value( qm );
+        }
+        emit trackListSignal( result );
+    }
 }
 
 Meta::PlaylistList

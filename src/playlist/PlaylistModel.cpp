@@ -687,6 +687,13 @@ Playlist::Model::clear()
 }
 
 void
+Playlist::Model::insertOptionedTrackListSlot( Meta::TrackList list ) //slot
+{
+    disconnect( this, SLOT( insertOptionedTrackListSlot( Meta::TrackList ) ) );
+    insertOptioned( list, m_insertAction );
+}
+
+void
 Playlist::Model::insertOptioned( Meta::TrackList list, int options )
 {
     //DEBUG_BLOCK
@@ -951,7 +958,10 @@ Playlist::Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, i
             if( row < 0 )
             {
                 debug() << "Inserting at row: " << row << " so we are appending to the list.";
-                insertOptioned( trackListDrag->tracks(), Playlist::AppendAndPlay );
+                connect( trackListDrag, SIGNAL( trackListSignal( Meta::TrackList ) ),
+                       this, SLOT( insertOptionedTrackListSlot( Meta::TrackList ) ) ); 
+                m_insertAction = Playlist::AppendAndPlay;
+                trackListDrag->getTrackListSignal();
             }
             else
             {

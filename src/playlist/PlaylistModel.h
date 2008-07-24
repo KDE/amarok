@@ -249,6 +249,8 @@ namespace Playlist
 
             void playlistModeChanged(); //! Changes the trackadvancer
 
+            void insertOptionedTrackListSlot( Meta::TrackList list );
+
         signals:
             void playlistCountChanged( int newCount );
             void playlistGroupingChanged();
@@ -310,6 +312,8 @@ namespace Playlist
 
             QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
             QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
+
+            Playlist::AddOptions m_insertAction;
 
             Meta::PlaylistList m_registeredPlaylists;
 
