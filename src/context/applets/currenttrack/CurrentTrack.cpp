@@ -150,6 +150,10 @@ CurrentTrack::contextualActions()
     QList<QAction*> actions;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
+    
+    if( !track )
+        return actions;
+    
     Meta::AlbumPtr album = track->album();
 
     if( album )
