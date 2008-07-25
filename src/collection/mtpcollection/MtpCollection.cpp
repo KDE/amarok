@@ -87,8 +87,8 @@ MtpCollectionFactory::mtpDetected( const QString & udi, const QString &serial )
                     return;
             
             // TODO: connect to MediaDeviceMonitor signals
-         //   connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
-           //          SLOT( slotCollectionDisconnected( const QString & ) ) );
+            connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
+                     SLOT( slotCollectionDisconnected( const QString & ) ) );
            m_collectionMap.insert( udi, coll );
             emit newCollection( coll );
             debug() << "emitting new mtp collection";
@@ -121,7 +121,7 @@ MtpCollectionFactory::deviceRemoved( const QString &udi )
 void
 MtpCollectionFactory::slotCollectionDisconnected( const QString & udi)
 {
-    m_collectionMap.remove( udi ); // remove from map
+    deviceRemoved( udi );
 }
 
 void
@@ -343,7 +343,7 @@ void
 MtpCollection::slotDisconnect()
 {
     emit collectionDisconnected( m_udi );
-    emit remove();
+    //emit remove();
 }
 
 void
