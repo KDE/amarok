@@ -16,11 +16,11 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#define DEBUG_PREFIX "IpodCollection"
+#define DEBUG_PREFIX "MtpCollection"
 
-#include "IpodCollection.h"
-#include "IpodCollectionLocation.h"
-#include "IpodMeta.h"
+#include "MtpCollection.h"
+#include "MtpCollectionLocation.h"
+#include "MtpMeta.h"
 
 #include "amarokconfig.h"
 #include "Debug.h"
@@ -41,30 +41,30 @@
 #include <QStringList>
 
 
-AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
+AMAROK_EXPORT_PLUGIN( MtpCollectionFactory )
 
-IpodCollectionFactory::IpodCollectionFactory()
+MtpCollectionFactory::MtpCollectionFactory()
     : CollectionFactory()
 {
     //nothing to do
 }
 
-IpodCollectionFactory::~IpodCollectionFactory()
+MtpCollectionFactory::~MtpCollectionFactory()
 {
 
 }
 
 void
-IpodCollectionFactory::init()
+MtpCollectionFactory::init()
 {
     DEBUG_BLOCK
 
             // connect to the monitor
 
-        connect( MediaDeviceMonitor::instance(), SIGNAL( ipodDetected( const QString &, const QString & ) ),
-                 SLOT( ipodDetected( const QString &, const QString & ) ) );
+        connect( MediaDeviceMonitor::instance(), SIGNAL( mtpDetected( const QString & ) ),
+                 SLOT( mtpDetected( const QString & ) ) );
 
-    // force refresh to scan for ipod
+    // force refresh to scan for mtp
     // NOTE: perhaps a signal/slot mechanism would make more sense
     MediaDeviceMonitor::instance()->refreshDevices();
 
@@ -73,34 +73,34 @@ IpodCollectionFactory::init()
 }
 
 void
-IpodCollectionFactory::ipodDetected( const QString &mountPoint, const QString &udi )
+MtpCollectionFactory::mtpDetected( const QString &udi )
 {
-    IpodCollection* coll = 0;
-    if( !m_collectionMap.contains( udi ) )
-    
+    MtpCollection* coll = 0;
+
+     if( !m_collectionMap.contains( udi ) )
         {
-            coll = new IpodCollection( mountPoint, udi );
+               coll = new MtpCollection( udi );
             if ( coll )
             {
             
             // TODO: connect to MediaDeviceMonitor signals
          //   connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
            //          SLOT( slotCollectionDisconnected( const QString & ) ) );
-                m_collectionMap.insert( udi, coll );
+           m_collectionMap.insert( udi, coll );
             emit newCollection( coll );
-            debug() << "emitting new ipod collection";
+            debug() << "emitting new mtp collection";
             }
         }
 
 }
 
 void
-IpodCollectionFactory::deviceRemoved( const QString &udi )
+MtpCollectionFactory::deviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
     if (  m_collectionMap.contains( udi ) )
     {
-        IpodCollection* coll = m_collectionMap[ udi ];
+        MtpCollection* coll = m_collectionMap[ udi ];
                 if (  coll )
                 {
                     m_collectionMap.remove( udi ); // remove from map
@@ -116,54 +116,56 @@ IpodCollectionFactory::deviceRemoved( const QString &udi )
 }
 
 void
-IpodCollectionFactory::slotCollectionDisconnected( const QString & udi)
+MtpCollectionFactory::slotCollectionDisconnected( const QString & udi)
 {
     m_collectionMap.remove( udi ); // remove from map
 }
 
 void
-IpodCollectionFactory::slotCollectionReady()
+MtpCollectionFactory::slotCollectionReady()
 {
     DEBUG_BLOCK
-        IpodCollection *collection = dynamic_cast<IpodCollection*>(  sender() );
+        MtpCollection *collection = dynamic_cast<MtpCollection*>(  sender() );
     if (  collection )
     {
-        debug() << "emitting ipod collection newcollection";
+        debug() << "emitting mtp collection newcollection";
         emit newCollection(  collection );
     }
 }
 
 
 
-//IpodCollection
+//MtpCollection
 
-IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )
+MtpCollection::MtpCollection( const QString &udi )
     : Collection()
     , MemoryCollection()
-    , m_mountPoint( mountPoint )
     , m_udi( udi )
     , m_handler( 0 )
 {
     DEBUG_BLOCK
 
-    m_handler = new Ipod::IpodHandler( this, m_mountPoint, this );
+    m_handler = new Mtp::MtpHandler( this, this );
 
     m_handler->parseTracks();
-
-    emit collectionReady();
+    
 }
 
 void
-IpodCollection::copyTrackToDevice( const Meta::TrackPtr &track )
+MtpCollection::copyTrackToDevice( const Meta::TrackPtr &track )
 {
-    m_handler->copyTrackToDevice( track );
+    Q_UNUSED( track );
+    // TODO: NYI
+    //m_handler->copyTrackToDevice( track );
     return;
 }
 
 bool
-IpodCollection::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
+MtpCollection::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 {
     DEBUG_BLOCK
+    return false; // TODO: NYI
+    
 
         // remove the track from the device
     if ( !m_handler->deleteTrackFromDevice( track ) )
@@ -179,17 +181,17 @@ IpodCollection::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
 }
 
 void
-IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
+MtpCollection::removeTrack( const Meta::MtpTrackPtr &track )
 {
     DEBUG_BLOCK
 
     // get pointers
     
-    Meta::IpodArtistPtr artist = Meta::IpodArtistPtr::dynamicCast( track->artist() );
-    Meta::IpodAlbumPtr album = Meta::IpodAlbumPtr::dynamicCast( track->album() );
-    Meta::IpodGenrePtr genre = Meta::IpodGenrePtr::dynamicCast( track->genre() );
-    Meta::IpodComposerPtr composer = Meta::IpodComposerPtr::dynamicCast( track->composer() );
-    Meta::IpodYearPtr year = Meta::IpodYearPtr::dynamicCast( track->year() );
+    Meta::MtpArtistPtr artist = Meta::MtpArtistPtr::dynamicCast( track->artist() );
+    Meta::MtpAlbumPtr album = Meta::MtpAlbumPtr::dynamicCast( track->album() );
+    Meta::MtpGenrePtr genre = Meta::MtpGenrePtr::dynamicCast( track->genre() );
+    Meta::MtpComposerPtr composer = Meta::MtpComposerPtr::dynamicCast( track->composer() );
+    Meta::MtpYearPtr year = Meta::MtpYearPtr::dynamicCast( track->year() );
 
     // remove track from metadata's tracklists
 
@@ -246,104 +248,107 @@ IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
 }
 
 void
-IpodCollection::updateTags( Meta::IpodTrack *track)
+MtpCollection::updateTags( Meta::MtpTrack *track)
 {
     DEBUG_BLOCK
-    Meta::IpodTrackPtr trackPtr( track );
+    Meta::MtpTrackPtr trackPtr( track );
     KUrl trackUrl = KUrl::fromPath( trackPtr->url() );
 
     debug() << "Running updateTrackInDB...";
-
-    m_handler->updateTrackInDB( trackUrl, Meta::TrackPtr::staticCast( trackPtr ), track->getIpodTrack() );
+// TODO: NYI
+//    m_handler->updateTrackInDB( trackUrl, Meta::TrackPtr::staticCast( trackPtr ), track->getMtpTrack() );
     
 }
 
 void
-IpodCollection::writeDatabase()
+MtpCollection::writeDatabase()
 {
-    m_handler->writeITunesDB( false );
+    // NOTE: NYI, possibly unnecessary or different implementation required
+//    m_handler->writeITunesDB( false );
 }
 
-IpodCollection::~IpodCollection()
+MtpCollection::~MtpCollection()
 {
 
 }
 
 void
-IpodCollection::deviceRemoved()
+MtpCollection::deviceRemoved()
 {
     emit remove();
 }
 
 void
-IpodCollection::startFullScan()
+MtpCollection::startFullScan()
 {
     //ignore
 }
 
 QueryMaker*
-IpodCollection::queryMaker()
+MtpCollection::queryMaker()
 {
     return new MemoryQueryMaker( this, collectionId() );
 }
 
 QString
-IpodCollection::collectionId() const
+MtpCollection::collectionId() const
 {
-     return m_mountPoint;
+    // TODO: get a real identifier
+     return "MTP Device";
 }
 
 CollectionLocation*
-IpodCollection::location() const
+MtpCollection::location() const
 {
-    return new IpodCollectionLocation( this );
+    return new MtpCollectionLocation( this );
 }
 
 QString
-IpodCollection::prettyName() const
+MtpCollection::prettyName() const
 {
-    return "Ipod at " + m_mountPoint;
+    // TODO: there's nothing pretty about this name, get a prettier one
+    return "MTP Device";
 }
 
 QString
-IpodCollection::udi() const
+MtpCollection::udi() const
 {
     return m_udi;
 }
 
 void
-IpodCollection::setTrackToDelete( const Meta::IpodTrackPtr &track )
+MtpCollection::setTrackToDelete( const Meta::MtpTrackPtr &track )
 {
     m_trackToDelete = track;
 }
 
 void
-IpodCollection::deleteTrackToDelete()
+MtpCollection::deleteTrackToDelete()
 {
     deleteTrackFromDevice( m_trackToDelete );
 }
 
 void
-IpodCollection::deleteTrackSlot( Meta::IpodTrackPtr track)
+MtpCollection::deleteTrackSlot( Meta::MtpTrackPtr track)
 {
     deleteTrackFromDevice( track );
 }
 
 void
-IpodCollection::slotDisconnect()
+MtpCollection::slotDisconnect()
 {
     emit collectionDisconnected( m_udi );
     emit remove();
 }
 
 void
-IpodCollection::copyTracksCompleted()
+MtpCollection::copyTracksCompleted()
 {
     DEBUG_BLOCK
-        debug() << "Trying to write iTunes database";
-    m_handler->writeITunesDB( false ); // false, since not threaded, implement later
+//        debug() << "Trying to write iTunes database";
+//    m_handler->writeITunesDB( false ); // false, since not threaded, implement later
     
 }
 
-#include "IpodCollection.moc"
+#include "MtpCollection.moc"
 
