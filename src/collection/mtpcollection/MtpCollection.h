@@ -45,7 +45,7 @@ class MtpCollectionFactory : public CollectionFactory
 
     private slots:
 
-    void mtpDetected( const QString &udi );
+    void mtpDetected( const QString &udi, const QString &serial );
     void deviceRemoved( const QString &udi );
     void slotCollectionReady();
     void slotCollectionDisconnected( const QString & udi );
@@ -64,7 +64,7 @@ class MtpCollection : public Collection, public MemoryCollection
     Q_OBJECT
 	public:
 
-    MtpCollection( const QString &udi );
+    MtpCollection( const QString &udi, const QString &serial );
     virtual ~MtpCollection();
 
     void copyTrackToDevice( const Meta::TrackPtr &track );
@@ -111,6 +111,7 @@ class MtpCollection : public Collection, public MemoryCollection
     Meta::MtpTrackPtr m_trackToDelete;
 //    QString           m_mountPoint;
     QString           m_udi;
+    QString           m_serial;
     Mtp::MtpHandler *m_handler;
 
 

@@ -61,8 +61,9 @@ MtpCollectionFactory::init()
 
             // connect to the monitor
 
-        connect( MediaDeviceMonitor::instance(), SIGNAL( mtpDetected( const QString & ) ),
-                 SLOT( mtpDetected( const QString & ) ) );
+        connect( MediaDeviceMonitor::instance(), SIGNAL( mtpDetected( const QString &, const QString & ) ),
+                 SLOT( mtpDetected( const QString &, const QString & ) ) );
+        connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
 
     // force refresh to scan for mtp
     // NOTE: perhaps a signal/slot mechanism would make more sense
@@ -73,13 +74,13 @@ MtpCollectionFactory::init()
 }
 
 void
-MtpCollectionFactory::mtpDetected( const QString &udi )
+MtpCollectionFactory::mtpDetected( const QString & udi, const QString &serial )
 {
     MtpCollection* coll = 0;
 
      if( !m_collectionMap.contains( udi ) )
         {
-               coll = new MtpCollection( udi );
+               coll = new MtpCollection( udi, serial );
             if ( coll )
             {
                 if( !coll->handler()->succeeded() ) // if couldn't connect
@@ -139,15 +140,16 @@ MtpCollectionFactory::slotCollectionReady()
 
 //MtpCollection
 
-MtpCollection::MtpCollection( const QString &udi )
+MtpCollection::MtpCollection( const QString &udi, const QString &serial )
     : Collection()
     , MemoryCollection()
     , m_udi( udi )
+    , m_serial( serial )
     , m_handler( 0 )
 {
     DEBUG_BLOCK
 
-    m_handler = new Mtp::MtpHandler( this, this );
+    m_handler = new Mtp::MtpHandler( this, this, serial );
     if( m_handler->succeeded() )
         m_handler->parseTracks();
     

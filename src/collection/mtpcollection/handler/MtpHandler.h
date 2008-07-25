@@ -55,7 +55,7 @@ namespace Mtp
         Q_OBJECT
 
         public:
-            MtpHandler( MtpCollection *mc, QObject* parent );
+            MtpHandler( MtpCollection *mc, QObject* parent, const QString &serial );
            ~MtpHandler();
 
           

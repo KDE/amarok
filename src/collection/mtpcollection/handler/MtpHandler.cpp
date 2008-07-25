@@ -49,7 +49,7 @@
 using namespace Mtp;
 using namespace Meta;
 
-MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
+MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &serial )
     : QObject( parent )
     , m_memColl( mc )
 {
@@ -102,6 +102,12 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
                     debug() << "Unable to open raw device: " << i;
                     continue;
                 }
+
+                if( serial != QString::fromUtf8( LIBMTP_Get_Serialnumber( device ) ) )
+                {
+                    debug() << "Wrong device, going to next";
+                    continue;
+                }
             }
     
     m_device = device;
@@ -111,6 +117,10 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
         m_success = false;
         break;
     }
+
+    //QString serial = QString::fromUtf8( LIBMTP_Get_Serialnumber( m_device ) );
+
+    debug() << "Serial is: " << serial;
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
     QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );

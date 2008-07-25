@@ -99,7 +99,10 @@ MediaDeviceMonitor::checkDevices( const QStringList &udiList )
         }
         else if( isMtp( udi ) )
         {
-            emit mtpDetected( udi );
+            Solid::PortableMediaPlayer* pmp = Solid::Device( udi ).as<Solid::PortableMediaPlayer>();
+            QString serial = pmp->driverHandle( "mtp" ).toString();
+            debug() << "Serial is: " << serial;
+            emit mtpDetected( udi, serial );
         }
 
     }

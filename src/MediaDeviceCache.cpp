@@ -187,6 +187,7 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
         return;
     }
     debug() << "Odd, got a deviceRemoved at udi " << udi << " but it did not seem to exist in the first place...";
+    emit deviceRemoved( udi );
 }
 
 void
