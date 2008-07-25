@@ -103,7 +103,9 @@ PopupDropperItem * PopupDropperFactory::createItem( PopupDropperAction * action 
     pdi->setHoverMsecs( 800 );
     QColor hoverIndicatorFillColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
     hoverIndicatorFillColor.setAlpha( 96 );
-    pdi->setHoverIndicatorFillColor( hoverIndicatorFillColor );
+    QBrush brush = pdi->hoverIndicatorFillBrush();
+    brush.setColor( hoverIndicatorFillColor );
+    pdi->setHoverIndicatorFillBrush( brush );
 
     return pdi;
 }
