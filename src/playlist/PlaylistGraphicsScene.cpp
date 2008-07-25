@@ -24,14 +24,141 @@
 #include "PlaylistDropVis.h"
 #include "PlaylistModel.h"
 
+#include <QGraphicsView>
 #include <QMimeData>
+
+#include <typeinfo>
+
 
 using namespace Playlist;
 
 GraphicsScene::GraphicsScene( QObject* parent )
-    : QGraphicsScene( parent )
+    : QGraphicsScene( parent ), m_selectionAxis(0)
 {
 }
+
+void
+GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
+{
+    QList<QGraphicsItem*> clickedItems = items( event->scenePos() );
+    QList<QGraphicsItem*> prevSelected = selectedItems();
+
+    Qt::KeyboardModifiers modifiers = event->modifiers();
+    const bool shiftKeyPressed = modifiers & Qt::ShiftModifier;
+    const bool controlKeyPressed = modifiers & Qt::ControlModifier;
+
+    if( clickedItems.isEmpty() )
+        return QGraphicsScene::mousePressEvent( event );
+
+    if( !(shiftKeyPressed || controlKeyPressed) )
+    {
+        Playlist::GraphicsItem* axis =
+            dynamic_cast<Playlist::GraphicsItem*>( clickedItems.last() );
+        if( axis )
+        {
+            m_selectionAxis = axis;
+            connect( axis, SIGNAL(destroyed(QObject*)), SLOT(axisDeleted()) );
+        }
+        return QGraphicsScene::mousePressEvent( event );
+    }
+
+
+    if( prevSelected.isEmpty() && controlKeyPressed && !shiftKeyPressed )
+        return QGraphicsScene::mousePressEvent( event );
+
+
+
+    // we assume that playlist items are never overlapping
+    QGraphicsItem* clicked = clickedItems.last();
+
+    const bool clickedAlreadySelected = prevSelected.contains( clicked );
+
+    if( shiftKeyPressed )
+    {
+        QRectF boundingRect;
+
+        QRectF clickedArea = clicked->boundingRect();
+        clickedArea.moveTo( clicked->pos() );
+
+        if( m_selectionAxis )
+        {
+            QRectF axisArea = m_selectionAxis->boundingRect();
+            axisArea.moveTo( m_selectionAxis->pos() );
+
+            // is clicked above or below ?
+            if( clickedArea.top() >= axisArea.top() )
+            {
+                boundingRect.setTopLeft( axisArea.topLeft() );
+                boundingRect.setBottomRight( clickedArea.bottomRight() );
+            }
+            else
+            {
+                boundingRect.setTopLeft( clickedArea.topLeft() );
+                boundingRect.setBottomRight( axisArea.bottomRight() );
+            }
+        }
+        else
+        {
+            boundingRect.setTopLeft( QPointF( 0.0, 0.0 ) );
+            boundingRect.setBottomRight( clickedArea.bottomRight() );
+        }
+
+        boundingRect.adjust( -1, -1, 1, 1 );
+
+        QPainterPath path;
+        path.addRect( boundingRect );
+        setSelectionArea( path, Qt::ContainsItemBoundingRect );
+    }
+    else if( controlKeyPressed )
+    {
+        QPainterPath path;
+        QRectF rect;
+        foreach( QGraphicsItem* item, prevSelected )
+        {
+            if( item == clicked )
+                continue;
+            rect = item->boundingRect();
+            rect.moveTo( item->pos() );
+            rect.adjust( 1, 1, -1, -1 );
+            path.addRect( rect );
+        }
+
+        if( !clickedAlreadySelected )
+        {
+            rect = clicked->boundingRect();
+            rect.moveTo( clicked->pos() );
+            rect.adjust( 1, 1, -1, -1 );
+            path.addRect( rect );
+        }
+
+        setSelectionArea( path, Qt::IntersectsItemBoundingRect );
+    }
+}
+
+void
+GraphicsScene::axisDeleted()
+{
+    QList<QGraphicsItem*> selected = selectedItems();
+
+    QGraphicsItem* newAxis = 0;
+    foreach( QGraphicsItem* item, selected )
+    {
+        if( item != m_selectionAxis &&
+            (newAxis == 0 || item->pos().y() < newAxis->pos().y() ) )
+        {
+            newAxis = item;
+        }
+    }
+
+    Playlist::GraphicsItem* axis = dynamic_cast<Playlist::GraphicsItem*>( newAxis );
+    if( axis )
+    {
+        m_selectionAxis = newAxis;
+        connect( axis, SIGNAL(destroyed(QObject*)), SLOT(axisDeleted()) );
+    }
+}
+
+
 
 void
 GraphicsScene::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )

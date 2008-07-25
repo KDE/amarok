@@ -32,9 +32,17 @@ namespace Playlist
             GraphicsScene( QObject *parent = 0 );
 
         protected:
+            virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
             virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
             virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
             virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
+
+        private slots:
+            void axisDeleted();
+
+        private:
+            // what item shift-click selections are centered arround
+            QGraphicsItem* m_selectionAxis;
     };
 }
 
