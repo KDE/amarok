@@ -70,10 +70,11 @@ void CurrentEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK
 
-    m_currentTrack = The::engineController()->currentTrack();
+    
     
     if( state == Current /*&& m_requested*/ )
     {
+        m_currentTrack = The::engineController()->currentTrack();
         debug() << "1";
         if( m_timer->isActive() )
             m_timer->stop();
@@ -89,6 +90,12 @@ void CurrentEngine::message( const ContextState& state )
     }
     else if( state == Home )
     {
+        if( m_currentTrack )
+        {
+            unsubscribeFrom( m_currentTrack );
+            if( m_currentTrack->album() )
+                unsubscribeFrom( m_currentTrack->album() );
+        }
         connect( m_timer, SIGNAL( timeout() ), this, SLOT( stoppedState() ) );
         m_timer->start( 1000 );
     }
