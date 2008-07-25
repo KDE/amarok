@@ -25,6 +25,7 @@
 #include "playlist/PlaylistModel.h"
 
 #include <KActionCollection>
+#include <KActionMenu>
 
 #include <QAbstractItemView>
 #include <QMenu>
@@ -65,10 +66,21 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
     connect( this, SIGNAL( fileSelected( const KFileItem& ) ),
              this,   SLOT( fileSelected( const KFileItem& ) ) );
     
-    //WARNING: This signal is only available under KDE4.2 libraries, so the functionality
-    //won't exist for any users on KDE4.1.
-    connect( this, SIGNAL( contextMenuAboutToShow( const KFileItem &item, QMenu *menu ) ),
-             this,   SLOT( contextMenuAboutToShow( const KFileItem &item, QMenu *menu ) ) );
+    //FIXME: This signal is only available under KDE4.2 libraries, so remove the ActionCollection hack
+    //when we bump kdelibs dep.
+    //connect( this, SIGNAL( contextMenuAboutToShow( const KFileItem &item, QMenu *menu ) ),
+    //         this,   SLOT( contextMenuAboutToShow( const KFileItem &item, QMenu *menu ) ) );
+
+    //HACK: crafty method to hijack the context menu
+    KActionMenu *actionMenu = static_cast<KActionMenu*>( actionCollection()->action( "popupMenu" ) );
+    if( actionMenu )
+    {
+        KMenu *menu = actionMenu->menu();
+        connect( menu, SIGNAL( aboutToShowContextMenu( KMenu *menu, QAction *menuAction, QMenu *ctxMenu ) ),
+                 this,   SLOT( aboutToShowContextMenu( KMenu *menu, QAction *menuAction, QMenu *ctxMenu ) ) );
+
+        connect( menu, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowContextMenu() ) );
+    }
 }
 
 MyDirOperator::~MyDirOperator()
@@ -78,23 +90,26 @@ MyDirOperator::~MyDirOperator()
 
 void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
 {
-  const KFileItemList list = selectedItems();
+    const KFileItemList list = selectedItems();
 
-  KUrl::List urlList;
-  foreach( const KFileItem& item, list )
-  {
-      urlList << item.url();
-  }
+    KUrl::List urlList;
+    foreach( const KFileItem& item, list )
+    {
+        urlList << item.url();
+    }
 
-  Meta::TrackList trackList = CollectionManager::instance()->tracksForUrls( urlList );
-  The::playlistModel()->insertOptioned( trackList, Playlist::AppendAndPlay );
-  view()->selectionModel()->clear();
+    Meta::TrackList trackList = CollectionManager::instance()->tracksForUrls( urlList );
+    The::playlistModel()->insertOptioned( trackList, Playlist::AppendAndPlay );
+    view()->selectionModel()->clear();
 }
 
-void MyDirOperator::contextMenuAboutToShow( const KFileItem &item, QMenu *menu )
+void MyDirOperator::aboutToShowContextMenu()
 {
     DEBUG_BLOCK
-    Q_UNUSED( item );
+    QMenu *menu = dynamic_cast<QMenu*>( sender() );
+    if( !menu )
+        return;
+
     const KFileItemList list = selectedItems();
 
     KUrl::List urlList;
@@ -120,7 +135,7 @@ void MyDirOperator::contextMenuAboutToShow( const KFileItem &item, QMenu *menu )
     }
     if( !writableCollections.isEmpty() )
     {
-        QMenu *copyMenu = new QMenu( i18n( "Move to Collection" ), menu );
+        QMenu *copyMenu = new QMenu( i18n( "Move to Collection" ), this );
         foreach( Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, this );

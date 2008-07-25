@@ -24,6 +24,7 @@
 #include <KAction>
 #include <KDirOperator>
 #include <KFileItem>
+#include <KMenu>
 #include <KUrl>
 
 class MyDirOperator : public KDirOperator
@@ -35,7 +36,7 @@ class MyDirOperator : public KDirOperator
         ~MyDirOperator();
 
     private slots:
-        void contextMenuAboutToShow( const KFileItem &item, QMenu *menu );
+        void aboutToShowContextMenu();
         void fileSelected( const KFileItem & /*file*/ );
 };
 
