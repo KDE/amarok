@@ -45,21 +45,21 @@ GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
     QList<QGraphicsItem*> clickedItems = items( event->scenePos() );
     QList<QGraphicsItem*> prevSelected = selectedItems();
 
+    QGraphicsScene::mousePressEvent( event );
+
+    if( clickedItems.isEmpty() )
+        return;
+
     Qt::KeyboardModifiers modifiers = event->modifiers();
     const bool shiftKeyPressed = modifiers & Qt::ShiftModifier;
     const bool controlKeyPressed = modifiers & Qt::ControlModifier;
-
-    if( clickedItems.isEmpty() )
-        return QGraphicsScene::mousePressEvent( event );
-
 
     // we assume that playlist items are never overlapping
     Playlist::GraphicsItem* clicked = 
         dynamic_cast<Playlist::GraphicsItem*>( clickedItems.last() );
 
     if( !clicked )
-        return QGraphicsScene::mousePressEvent( event );
-
+        return;
 
     // are we clicking an album header?
     bool headerClick = false;

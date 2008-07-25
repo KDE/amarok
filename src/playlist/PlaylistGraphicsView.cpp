@@ -167,9 +167,19 @@ Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
     {
         if( event->mimeData()->hasFormat( mime ) )
         {
+            Playlist::GraphicsItem* aboveItem = 0;
+            QList<QGraphicsItem*> aboveItems = items( event->pos() );
+            if( !aboveItems.isEmpty() )
+                aboveItem = dynamic_cast<Playlist::GraphicsItem*>( aboveItems.last() );
+
             QGraphicsView::dragEnterEvent( event );
             event->acceptProposedAction();
-            Playlist::DropVis::instance()->show( event->pos().y() );
+
+            if( aboveItem )
+                Playlist::DropVis::instance()->show( aboveItem );
+            else
+                Playlist::DropVis::instance()->show( event->pos().y() );
+
             return;
         }
     }
@@ -182,8 +192,16 @@ Playlist::GraphicsView::dragMoveEvent( QDragMoveEvent *event )
     {
         if( event->mimeData()->hasFormat( mime ) )
         {
+            Playlist::GraphicsItem* aboveItem = 0;
+            QList<QGraphicsItem*> aboveItems = items( event->pos() );
+            if( !aboveItems.isEmpty() )
+                aboveItem = dynamic_cast<Playlist::GraphicsItem*>( aboveItems.last() );
+
             QGraphicsView::dragMoveEvent( event );
-            Playlist::DropVis::instance()->show( event->pos().y() );
+            if( aboveItem )
+                Playlist::DropVis::instance()->show( aboveItem );
+            else
+                Playlist::DropVis::instance()->show( event->pos().y() );
             event->acceptProposedAction();
             return;
         }
@@ -202,7 +220,15 @@ Playlist::GraphicsView::dropEvent( QDropEvent *event )
 {
     DEBUG_BLOCK
     event->accept();
-    The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
+
+    QList<QGraphicsItem*> aboveItems = items( event->pos() );
+    int row;
+    if( aboveItems.isEmpty() )
+        row = -1;
+    else
+        row = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(aboveItems.last() ) );
+
+    The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, row, 0, QModelIndex() );
     Playlist::DropVis::instance()->hide();
 }
 
