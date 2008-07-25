@@ -57,10 +57,53 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
 
     QString genericError = i18n( "Could not connect to MTP Device" );
 
-    m_critical_mutex.lock();
+    
+
+    // begin checking connected devices
+
+    LIBMTP_raw_device_t * rawdevices;
+    int numrawdevices;
+    LIBMTP_error_number_t err;
+    int i;
+
     LIBMTP_Init();
-    m_device = LIBMTP_Get_First_Device();
-    m_critical_mutex.unlock();
+
+    // get list of raw devices
+
+    err = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
+
+    debug() << "Error is: " << err;
+
+    switch(err) {
+        case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
+            fprintf(stdout, "   No raw devices found.\n");
+            break;
+            
+        case LIBMTP_ERROR_CONNECTING:
+            fprintf(stderr, "Detect: There has been an error connecting. Exiting\n");
+            break;
+            
+        case LIBMTP_ERROR_MEMORY_ALLOCATION:
+            fprintf(stderr, "Detect: Encountered a Memory Allocation Error. Exiting\n");
+            break;
+            
+        case LIBMTP_ERROR_NONE:
+        {
+            LIBMTP_mtpdevice_t *device;
+            // test raw device for connectability
+            for(i = 0; i < numrawdevices; i++)
+            {
+                
+
+                device = LIBMTP_Open_Raw_Device(&rawdevices[i]);
+                if (device == NULL) {
+                    debug() << "Unable to open raw device: " << i;
+                    continue;
+                }
+            }
+    
+    m_device = device;
+    
     if( m_device == 0 ) {
         // TODO: error protection
     }
@@ -74,7 +117,7 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
     m_default_parent_folder = m_device->default_music_folder;
     debug() << "setting default parent : " << m_default_parent_folder;
 
-    m_critical_mutex.lock();
+    
     m_folders = LIBMTP_Get_Folder_List( m_device );
     uint16_t *filetypes;
     uint16_t filetypes_len;
@@ -93,8 +136,14 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
     else if( m_supportedFiles.indexOf( "gif" ) )
         m_format = "GIF";
     free( filetypes );
-    m_critical_mutex.unlock();
+    break;
+        }
 
+        default:
+            debug() << "Unhandled mtp error";
+    }
+    
+    free( rawdevices );
     
 
 }
@@ -102,6 +151,8 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
 MtpHandler::~MtpHandler()
 {
     // TODO: free used memory
+    LIBMTP_Release_Device( m_device );
+    
 }
 
 void
@@ -371,5 +422,11 @@ MtpHandler::fileDeleted( KJob *job )  //SLOT
     {
         debug() << "file deletion failed: " << job->errorText();
     }
+}
+
+QString
+MtpHandler::prettyName() const
+{
+    return m_name;
 }
 

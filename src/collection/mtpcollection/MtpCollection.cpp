@@ -293,8 +293,7 @@ MtpCollection::queryMaker()
 QString
 MtpCollection::collectionId() const
 {
-    // TODO: get a real identifier
-     return "MTP Device";
+     return m_udi;
 }
 
 CollectionLocation*
@@ -307,7 +306,7 @@ QString
 MtpCollection::prettyName() const
 {
     // TODO: there's nothing pretty about this name, get a prettier one
-    return "MTP Device";
+    return m_handler->prettyName();
 }
 
 QString
