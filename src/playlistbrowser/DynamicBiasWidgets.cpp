@@ -34,9 +34,11 @@
 #include "SliderWidget.h"
 #include "SvgTinter.h"
 #include "collection/support/XmlQueryWriter.h"
+#include "widgets/kratingwidget.h"
 
 #include <typeinfo>
 
+#include <QDateTimeEdit>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -162,7 +164,6 @@ PlaylistBrowserNS::BiasAddWidget::mouseReleaseEvent( QMouseEvent* )
 void
 PlaylistBrowserNS::BiasAddWidget::addBias()
 {
-    // TODO: different types of biases
     DEBUG_BLOCK
 
     Dynamic::GlobalBias* gb = new Dynamic::GlobalBias( 0.0, XmlQueryReader::Filter() );
@@ -270,13 +271,13 @@ PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
 {
     DEBUG_BLOCK
 
-    m_gbias->setQuery( m_filter );
+        m_gbias->setQuery( m_filter );
     m_gbias->setActive( true );
 
     emit biasChanged( m_bias );
 }
 
-void
+    void
 PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
 {
     int index = m_fieldSelection->findData( m_filter.field );
@@ -286,7 +287,7 @@ PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
 }
 
 
-void
+    void
 PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
 {
     m_fieldSelection->addItem( "", (qint64)0 );
@@ -297,16 +298,22 @@ PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
     m_fieldSelection->addItem( "Genre",  QueryMaker::valGenre );
     m_fieldSelection->addItem( "Year",   QueryMaker::valYear );
     m_fieldSelection->addItem( "Play Count", QueryMaker::valPlaycount );
+    m_fieldSelection->addItem( "Rating", QueryMaker::valRating );
+    m_fieldSelection->addItem( "Score", QueryMaker::valScore );
     m_fieldSelection->addItem( "Length", QueryMaker::valLength );
-        
+    m_fieldSelection->addItem( "Track #", QueryMaker::valTrackNr );
+    m_fieldSelection->addItem( "Disc #", QueryMaker::valDiscNr );
+    m_fieldSelection->addItem( "First Played", QueryMaker::valFirstPlayed );
+    m_fieldSelection->addItem( "Last Played", QueryMaker::valLastPlayed );
+    m_fieldSelection->addItem( "Comment", QueryMaker::valComment );
 }
 
-void
+    void
 PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
 {
     DEBUG_BLOCK
 
-    double fval = (double)ival;
+        double fval = (double)ival;
     m_weightLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
 
     m_gbias->setWeight( fval / 100.0 );
@@ -314,12 +321,12 @@ PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
     emit biasChanged( m_bias );
 }
 
-void
+    void
 PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
 {
     DEBUG_BLOCK
 
-    qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
+        qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
     m_filter.field = field;
 
     if( field == 0 )
@@ -342,16 +349,30 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
     else if( field == QueryMaker::valGenre )
         makeGenreSelection();
     else if( field == QueryMaker::valYear )
-        makeYearSelection();
+        makeGenericNumberSelection( 0, 3000, 0 );
     else if( field == QueryMaker::valPlaycount )
-        makePlaycountSelection();
+        makeGenericNumberSelection( 0, 10000, 0 );
+    else if( field == QueryMaker::valRating )
+        makeRatingSelection();
+    else if( field == QueryMaker::valScore )
+        makeGenericNumberSelection( 0, 100, 0 );
     else if( field == QueryMaker::valLength )
         makeLengthSelection();
-        
+    else if( field == QueryMaker::valTrackNr )
+        makeGenericNumberSelection( 0, 1000, 0 );
+    else if( field == QueryMaker::valDiscNr )
+        makeGenericNumberSelection( 0, 1000, 0 );
+    else if( field == QueryMaker::valFirstPlayed )
+        makeDateTimeSelection();
+    else if( field == QueryMaker::valLastPlayed )
+        makeDateTimeSelection();
+    else if( field == QueryMaker::valComment )
+        makeGenericComboSelection( true, 0 );
+
     //etc
 }
 
-void
+    void
 PlaylistBrowserNS::BiasGlobalWidget::compareChanged( int index )
 {
     if( index < 0 )
@@ -383,11 +404,25 @@ PlaylistBrowserNS::BiasGlobalWidget::setValueSection( QWidget* w )
 }
 
 void
+PlaylistBrowserNS::BiasGlobalWidget::valueChanged( int value )
+{
+    m_filter.value = QString::number( value );
+    syncBiasToControls();
+}
+
+void
 PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QString& value )
 {
     DEBUG_BLOCK
     debug() << "new value: " << value;
     m_filter.value = value;
+    syncBiasToControls();
+}
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QDateTime& value )
+{
+    m_filter.value = QString::number( value.toTime_t() );
     syncBiasToControls();
 }
 
@@ -406,13 +441,25 @@ PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection( QWidget* parent )
 {
     m_compareSelection = new KComboBox( parent );
     m_compareSelection->setPalette( QApplication::palette() );
-    m_compareSelection->addItem( "", -1 ); // TODO: figure out what this does
+    m_compareSelection->addItem( "", -1 );
     m_compareSelection->addItem( "less than",    (int)QueryMaker::LessThan );
     m_compareSelection->addItem( "equal to",     (int)QueryMaker::Equals );
     m_compareSelection->addItem( "greater than", (int)QueryMaker::GreaterThan );
 
     connect( m_compareSelection, SIGNAL(currentIndexChanged(int)),
             SLOT(compareChanged(int)) );
+
+    int val = m_gbias->filter().compare;
+
+    if( val == -1 )
+        m_compareSelection->setCurrentIndex( 0 );
+    if( val == (int)QueryMaker::LessThan )
+        m_compareSelection->setCurrentIndex( 1 );
+    else if( val == (int)QueryMaker::Equals )
+        m_compareSelection->setCurrentIndex( 2 );
+    else if( val == (int)QueryMaker::GreaterThan )
+        m_compareSelection->setCurrentIndex( 3 );
+
 }
 
 void
@@ -499,40 +546,23 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
     makeGenericComboSelection( true, qm );
 }
 
+
 void
-PlaylistBrowserNS::BiasGlobalWidget::makeYearSelection()
+PlaylistBrowserNS::BiasGlobalWidget::makeRatingSelection()
 {
     KHBox* hLayout = new KHBox( m_controlFrame );
 
     makeCompareSelection( hLayout );
 
-    QSpinBox* yearSpin = new QSpinBox( hLayout );
-    yearSpin->setMinimum( 0 );
-    yearSpin->setMaximum( 3000 );
+    KRatingWidget* ratingWidget = new KRatingWidget( hLayout );
 
-    connect( yearSpin, SIGNAL(valueChanged( const QString& )),
-            this, SLOT(valueChanged(const QString&)) );
-
-    yearSpin->setValue( m_gbias->filter().value.toInt() );
+    connect( ratingWidget, SIGNAL(ratingChanged(int)),
+             this, SLOT(valueChanged(int)) );
+    
+    ratingWidget->setRating( m_gbias->filter().value.toInt() );
     setValueSection( hLayout );
 }
 
-void
-PlaylistBrowserNS::BiasGlobalWidget::makePlaycountSelection()
-{
-    KHBox* hLayout = new KHBox( m_controlFrame );
-
-    makeCompareSelection( hLayout );
-
-    QSpinBox* countSpin = new QSpinBox( hLayout );
-    countSpin->setMinimum( 0 );
-
-    connect( countSpin, SIGNAL(valueChanged( const QString& )),
-            this, SLOT(valueChanged(const QString&)) );
-
-    countSpin->setValue( m_gbias->filter().value.toInt() );
-    setValueSection( hLayout );
-}
 
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeLengthSelection()
@@ -553,6 +583,54 @@ PlaylistBrowserNS::BiasGlobalWidget::makeLengthSelection()
 
     QTime current;
     current.addSecs( m_gbias->filter().value.toInt() );
+    timeSpin->setTime( current );
+
+    setValueSection( hLayout );
+}
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::makeGenericNumberSelection( int min, int max, int def )
+{
+    KHBox* hLayout = new KHBox( m_controlFrame );
+
+    makeCompareSelection( hLayout );
+
+    QSpinBox* spin = new QSpinBox( hLayout );
+    spin->setMinimum( min );
+    spin->setMaximum( max );
+
+    connect( spin, SIGNAL(valueChanged( const QString& )),
+            this, SLOT(valueChanged(const QString&)) );
+
+    if( m_gbias->filter().value.isEmpty() )
+        spin->setValue( def );
+    else
+        spin->setValue( m_gbias->filter().value.toInt() );
+
+    setValueSection( hLayout );
+}
+
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::makeDateTimeSelection()
+{
+    KHBox* hLayout = new KHBox( m_controlFrame );
+
+    makeCompareSelection( hLayout );
+
+    QDateTimeEdit* dateTimeSpin = new QDateTimeEdit( hLayout );
+
+    connect( dateTimeSpin, SIGNAL(dateTimeChanged(const QDateTime&)),
+             SLOT(valueChanged(const QDateTime&)) );
+
+    QDateTime dt;
+    if( m_gbias->filter().value.isEmpty() )
+        dt = QDateTime::currentDateTime();
+    else
+        dt.setTime_t( m_gbias->filter().value.toUInt() );
+
+    dateTimeSpin->setDateTime( dt );
+
     setValueSection( hLayout );
 }
 

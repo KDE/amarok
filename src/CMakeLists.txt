@@ -241,7 +241,6 @@ set( libcontextview_SRCS
     context/LyricsManager.cpp
     context/layouts/ContextLayout.cpp
     context/layouts/VerticalLayout.cpp
-    context/widgets/kratingpainter.cpp
     context/widgets/RatingWidget.cpp
 )
 
@@ -490,6 +489,8 @@ set(amaroklib_LIB_SRCS
     widgets/FilenameLayoutWidget.cpp
     widgets/MainToolbar.cpp
     widgets/ProgressSlider.cpp
+    widgets/kratingpainter.cpp
+    widgets/kratingwidget.cpp
     widgets/SearchWidget.cpp
     widgets/SidebarWidget.cpp
     widgets/SliderWidget.cpp

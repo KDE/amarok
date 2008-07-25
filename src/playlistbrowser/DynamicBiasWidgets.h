@@ -119,7 +119,9 @@ namespace PlaylistBrowserNS
             void weightChanged( int );
             void fieldChanged( int );
             void compareChanged( int );
+            void valueChanged( int );
             void valueChanged( const QString& );
+            void valueChanged( const QDateTime& );
             void valueChanged( const QTime& );
 
         private:
@@ -139,8 +141,12 @@ namespace PlaylistBrowserNS
             void makeTitleSelection();
             void makeGenreSelection();
             void makeYearSelection();
+            void makeGenericNumberSelection( int min, int max, int def );
             void makePlaycountSelection();
+            void makeRatingSelection();
+            void makeScoreSelection();
             void makeLengthSelection();
+            void makeDateTimeSelection();
 
             QFrame*      m_controlFrame;
             QGridLayout* m_controlLayout;
