@@ -1,5 +1,6 @@
 /*
     Copyright (c) 2008 Dan Meltzer <hydrogen@notyetimplemented.com>
+              (c) 2008 Seb Ruiz <ruiz@kde.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,11 +21,10 @@
 
 #include "MyDirLister.h"
 
-#include <kaction.h>
-#include <kdiroperator.h>
-#include <kmenu.h>
-
-class Medium;
+#include <KAction>
+#include <KDirOperator>
+#include <KFileItem>
+#include <KUrl>
 
 class MyDirOperator : public KDirOperator
 {
@@ -33,6 +33,9 @@ class MyDirOperator : public KDirOperator
     public:
         MyDirOperator( const KUrl &url, QWidget *parent );
         ~MyDirOperator();
+
+    private slots:
+        void contextMenuAboutToShow( const KFileItem &item, QMenu *menu );
 };
 
 #endif
