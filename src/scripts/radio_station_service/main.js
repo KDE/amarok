@@ -48,7 +48,7 @@ var stationArray = new Array (
     new Station( "Mostly Classical [Classical]",                        "http://www.sky.fm/mp3/classical.pls" ),
     new Station( "MTH.House [House]",                                   "http://stream.mth-house.de:8500/listen.pls" ),
     new Station( "Nectarine Demoscene Radio [Computer-Music]",          "http://nectarine.sik.fi:8002/live.mp3.m3u" ),
-    new Station( "Philosomatika [Psytrance]",                           "http://philosomatika.com/Philosomatika.pls" ),
+    new Station( "Philosomatika [Psytrance]",                           "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2933&file=filename.pls" ),
     new Station( "Proton Radio [House/Dance]",                          "http://protonradio.com/proton.m3u" ),
     new Station( "Pure DJ [Trance]",                                    "http://www.puredj.com/etc/pls/128K.pls" ),
     new Station( "Radio.BMJ.net [Trance/Livesets]",                     "http://radio.bmj.net:8000/listen.pls" ),
