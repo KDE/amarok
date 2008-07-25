@@ -122,7 +122,7 @@ NepomukQueryMaker::run()
     debug() << "run()" << endl;
     if( queryType == None || m_used )
     {
-        debug() << "nepomuk querymaker used without rest or initialization" << endl;
+        debug() << "nepomuk querymaker used without reset or initialization" << endl;
         return; //better error handling?
     } 
     
@@ -151,7 +151,7 @@ NepomukQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     debug() << "returnResultAsDataPtrs()" << resultAsDataPtrs << endl;
 
-    // we need the unchanged resulttype in the non blocking result methods so prevent
+    // we need the unchanged resulttype in the blocking result methods so prevent
     // reseting result type without reseting the QM
     if ( m_used )
         return this;
@@ -163,7 +163,7 @@ NepomukQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 QueryMaker*
 NepomukQueryMaker::setQueryType( QueryType type )
 {
-    // we need the unchanged queryType in the non blocking result methods so prevent
+    // we need the unchanged queryType in the blocking result methods so prevent
     // reseting queryType without reseting the QM
     if ( m_used )
         return this;
