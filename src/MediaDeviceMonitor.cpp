@@ -99,7 +99,7 @@ MediaDeviceMonitor::checkDevices( const QStringList &udiList )
         }
         else if( isMtp( udi ) )
         {
-            emit mtpDetected();
+            emit mtpDetected( udi );
         }
 
     }

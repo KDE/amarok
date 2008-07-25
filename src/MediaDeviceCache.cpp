@@ -177,6 +177,7 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
         disconnect( device.as<Solid::StorageAccess>(), SIGNAL( accessibilityChanged(bool, const QString&) ),
                     this, SLOT( slotAccessibilityChanged(bool, const QString&) ) );
         m_volumes.removeAll( udi );
+        emit deviceRemoved( udi );
     }
     if( m_type.contains( udi ) )
     {
