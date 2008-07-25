@@ -55,7 +55,7 @@ class Model;
             ///@param position position in Model of track to start playing
             void setCurrentTrack( int position );
 
-            const bool playlistChanged() const { return m_playlistChanged; }
+            bool playlistChanged() const { return m_playlistChanged; }
             void playlistChangeHandled() { m_playlistChanged = false; }
 
             Model* m_playlistModel; //! needed to manipulate the playlist

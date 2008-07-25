@@ -53,10 +53,10 @@ class CollectionTreeView: public QTreeView
         void contextMenuEvent(QContextMenuEvent* event);
 
         void setShowYears( bool show ) { m_showYears = show; }
-        const bool showYears() const { return m_showYears; }
+        bool showYears() const { return m_showYears; }
 
         void setShowTrackNumbers( bool show ) { m_showTrackNumbers = show; }
-        const bool showTrackNumbers() const { return m_showTrackNumbers; }
+        bool showTrackNumbers() const { return m_showTrackNumbers; }
 
     public slots:
         void slotSetFilterTimeout();
