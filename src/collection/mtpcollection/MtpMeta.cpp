@@ -439,17 +439,20 @@ bool
 MtpTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     DEBUG_BLOCK
+// TODO: NYI
+            return false;
+        
         switch(  type )
         {
-            // TODO: NYI
-            /*
+            
+            
         case Meta::Capability::Editable:
             return true;
         case Meta::Capability::CustomActions:
             return true;
         case Meta::Capability::Updatable:
             return true;
-            */
+            
 
         default:
             return false;
@@ -464,11 +467,12 @@ MtpTrack::asCapabilityInterface( Meta::Capability::Type type )
         {
         case Meta::Capability::Editable:
             return new EditCapabilityMtp( this );
+            /*
         case Meta::Capability::CustomActions:
             return new CustomActionsCapabilityMtp( this );
         case Meta::Capability::Updatable:
             return new UpdateCapabilityMtp( m_collection );
-
+*/
         default:
             return 0;
         }
