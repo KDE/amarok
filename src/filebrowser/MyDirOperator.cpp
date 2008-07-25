@@ -112,6 +112,9 @@ void MyDirOperator::aboutToShowContextMenu()
 
     const KFileItemList list = selectedItems();
 
+    if( list.isEmpty() ) // or not file?
+        return;
+
     KUrl::List urlList;
     foreach( const KFileItem &item, list )
     {
