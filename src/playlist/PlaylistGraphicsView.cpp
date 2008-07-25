@@ -244,28 +244,7 @@ Playlist::GraphicsView::removeSelection()
     if ( firstIndex > 0) firstIndex -= 1;
 
     foreach( QGraphicsItem *i, selection )
-    {
-        int count = 1;
-        int index = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(i) );
-        QModelIndex modelIndex = The::playlistModel()->index( index, 0 );
-        QModelIndex nextIndex = The::playlistModel()->index( index + 1 , 0 );
-        if( ( modelIndex.data( GroupRole ).toInt() == Head ||  modelIndex.data( GroupRole ).toInt() == Head_Collapsed ) &&
-           !( nextIndex.data( GroupRole ).toInt() == Head || nextIndex.data( GroupRole ).toInt() == Head_Collapsed ) ) // If a selected item is the head of a group, and the item after it is not the head of a group, then we remove all of the group.
-        {
-            QModelIndex in = nextIndex;
-            int i = index + 1;
-            while( in.data( GroupRole ).toInt() == Body || in.data( GroupRole ).toInt() == Collapsed || in.data( GroupRole ).toInt() == End )
-            {
-                ++count;
-                in = The::playlistModel()->index( i++, 0 );
-            }
-            count--;
-        }
-        //count = modelIndex.data( GroupRole ).toInt() == Head ? count - 1 : count;
-        //if ( modelIndex.data( GroupRole ).toInt() == Head ||  modelIndex.data( GroupRole ).toInt() == Head_Collapsed ) count = count - 1;
-
-        m_model->removeRows( index, count );
-    }
+        m_model->removeRows( m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(i) ), 1 );
 
     for ( int i = firstIndex ; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );

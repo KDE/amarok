@@ -58,6 +58,8 @@ namespace Playlist
             void play();
 
             void setRow( int row );
+
+            qreal albumHeaderHeight() const;
             const QRectF imageLocation() const { return QRectF( MARGINH, MARGIN, ALBUM_WIDTH, ALBUM_WIDTH ); }
             const QRectF imageLocationSingleTrack() const { return QRectF( MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH ); }
 

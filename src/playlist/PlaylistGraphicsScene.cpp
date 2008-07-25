@@ -1,5 +1,6 @@
 /***************************************************************************
- * Copyright 2007  Seb Ruiz <ruiz@kde.org>                                 *
+ * Copyright      : (c) 2007  Seb Ruiz <ruiz@kde.org>                      *
+ *                  (c) 2008  Daniel Caleb Jones <danielcjones@gmail.com>  *
  *                                                                         *
  * This program is free software; you can redistribute it and/or           *
  * modify it under the terms of the GNU General Public License as          *
@@ -22,6 +23,7 @@
 
 #include "Debug.h"
 #include "PlaylistDropVis.h"
+#include "PlaylistGraphicsView.h"
 #include "PlaylistModel.h"
 
 #include <QGraphicsView>
@@ -50,26 +52,38 @@ GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
     if( clickedItems.isEmpty() )
         return QGraphicsScene::mousePressEvent( event );
 
-    if( !(shiftKeyPressed || controlKeyPressed) )
-    {
-        Playlist::GraphicsItem* axis =
-            dynamic_cast<Playlist::GraphicsItem*>( clickedItems.last() );
-        if( axis )
-        {
-            m_selectionAxis = axis;
-            connect( axis, SIGNAL(destroyed(QObject*)), SLOT(axisDeleted()) );
-        }
+
+    // we assume that playlist items are never overlapping
+    Playlist::GraphicsItem* clicked = 
+        dynamic_cast<Playlist::GraphicsItem*>( clickedItems.last() );
+
+    if( !clicked )
         return QGraphicsScene::mousePressEvent( event );
+
+
+    // are we clicking an album header?
+    bool headerClick = false;
+    if( clicked->groupMode() == Playlist::Head ||
+        clicked->groupMode() == Playlist::Head_Collapsed )
+    {
+        QPointF itemClickPos = clicked->mapFromScene( event->scenePos() );
+        QRectF headerRect;
+        headerRect.setTopLeft( QPointF( 0.0, 0.0 ) );
+        headerRect.setBottom( clicked->albumHeaderHeight() );
+        headerRect.setRight( clicked->boundingRect().right() );
+
+        headerClick = headerRect.contains( itemClickPos );
     }
 
 
-    if( prevSelected.isEmpty() && controlKeyPressed && !shiftKeyPressed )
-        return QGraphicsScene::mousePressEvent( event );
+    if( !(shiftKeyPressed || controlKeyPressed) )
+    {
+        m_selectionAxis = clicked;
+        connect( clicked, SIGNAL(destroyed(QObject*)), SLOT(axisDeleted()) );
 
+        prevSelected.clear();
+    }
 
-
-    // we assume that playlist items are never overlapping
-    QGraphicsItem* clicked = clickedItems.last();
 
     const bool clickedAlreadySelected = prevSelected.contains( clicked );
 
@@ -109,24 +123,28 @@ GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
         path.addRect( boundingRect );
         setSelectionArea( path, Qt::ContainsItemBoundingRect );
     }
-    else if( controlKeyPressed )
+    else
     {
+        if( headerClick )
+        {
+            int row = The::playlistView()->tracks().indexOf( clicked );
+            QModelIndex index = The::playlistModel()->index( row, 0 );
+            int span = index.data( Playlist::GroupedTracksRole ).toInt();
+
+            while( span-- )
+                prevSelected.append( The::playlistView()->tracks()[row + span] );
+        }
+        else
+            prevSelected.append( clicked );
+
         QPainterPath path;
         QRectF rect;
         foreach( QGraphicsItem* item, prevSelected )
         {
-            if( item == clicked )
+            if( item == clicked && clickedAlreadySelected && !headerClick )
                 continue;
             rect = item->boundingRect();
             rect.moveTo( item->pos() );
-            rect.adjust( 1, 1, -1, -1 );
-            path.addRect( rect );
-        }
-
-        if( !clickedAlreadySelected )
-        {
-            rect = clicked->boundingRect();
-            rect.moveTo( clicked->pos() );
             rect.adjust( 1, 1, -1, -1 );
             path.addRect( rect );
         }

@@ -124,6 +124,12 @@ Playlist::GraphicsItem::~GraphicsItem()
     delete m_items;
 }
 
+qreal
+Playlist::GraphicsItem::albumHeaderHeight() const
+{
+    return qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN;
+}
+
 void
 Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
