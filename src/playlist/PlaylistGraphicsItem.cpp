@@ -163,15 +163,16 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
     // call paint method based on type
     if ( m_groupMode == None )
-        paintSingleTrack( painter, option, isActiveTrack );
+        paintSingleTrack( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
     else if ( m_groupMode == Head )
-        paintHead( painter, option, isActiveTrack );
+        paintHead( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
     else if ( m_groupMode == Head_Collapsed )
-        paintCollapsedHead( painter, option, isActiveTrack );
+        paintCollapsedHead( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool()  );
     else if ( m_groupMode == Body )
         paintBody( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
     else if ( m_groupMode == End )
-        paintTail( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
+        paintBody( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
+        //paintTail( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
     else if ( m_groupMode == Collapsed )
         paintCollapsed( );
 
@@ -344,7 +345,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             m_items->topLeftText->setPos( offsetX, firstLineYOffset );
         }
 
-        int underImageY = (int)( MARGIN + ALBUM_WIDTH + 6 );
+        int underImageY = (int)( MARGIN + ALBUM_WIDTH + 4 );
 
         m_items->bottomLeftText->setPos( MARGIN, underImageY );
         m_items->bottomRightText->setPos( bottomRightAlignX, underImageY );
@@ -683,12 +684,12 @@ void Playlist::GraphicsItem::setRow(int row)
         {
             case None:
                 //debug() << "None";
-                m_height =  qMax( SINGLE_TRACK_ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN + 2;
+                m_height =  qMax( SINGLE_TRACK_ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
                 //debug() << "Height for single track: " << m_height;
                 break;
             case Head:
                 //debug() << "Head";
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height() + 6;
+                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height() + 4;
                 break;
             case Head_Collapsed:
                 debug() << "Collapsed head";
@@ -709,7 +710,7 @@ void Playlist::GraphicsItem::setRow(int row)
                 break;
             case End:
                 //debug() << "End";
-                m_height =  s_fm->height() + 6 /*+ 2 * MARGIN*/;
+                m_height =  s_fm->height() /*+ 6*/ /*+ 2 * MARGIN*/;
                 break;
             case Collapsed:
                 //debug() << "Collapsed";
@@ -769,12 +770,16 @@ void Playlist::GraphicsItem::setTextColor( bool active )
 }
 
 
-void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
+void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate  )
 {
     QRectF trackRect = option->rect;
-    trackRect.setHeight( trackRect.height() - 2 );
-    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "track", (int)trackRect.width(), (int)trackRect.height(), "track" ) );
+    trackRect.setHeight( trackRect.height() );
 
+    if ( !alternate )
+        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", (int)trackRect.width(), (int)trackRect.height(), "track" ) );
+    else
+        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "alt_track", (int)trackRect.width(), (int)trackRect.height(), "alt_track" ) );
+    
     //paint cover
     QPixmap albumPixmap;
     if( m_items->track->album() )
@@ -850,12 +855,24 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
 
 }
 
-void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
+void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate  )
 {
-    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN+ 2, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
+    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + MARGIN + 4, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
     QRectF headRect = option->rect;
 
-    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "head", (int)headRect.width(), (int)headRect.height(), "head" ) );
+    if ( alternate )
+        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "alt_head", (int)headRect.width(), (int)headRect.height(), "alt_head" ) );
+    else
+        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "head", (int)headRect.width(), (int)headRect.height(), "head" ) );
+
+    //draw divider between head and 1st track
+    int dividerOffset = headRect.width() / 20;
+    
+    painter->drawPixmap( dividerOffset, trackRect.top() -1, The::svgHandler()->renderSvg( "divider_bottom", (int)headRect.width() - 2 * dividerOffset, 1, "divider_bottom" ) );
+    painter->drawPixmap( dividerOffset, trackRect.top(), The::svgHandler()->renderSvg( "divider_top", (int)headRect.width() - 2 * dividerOffset, 1, "divider_top" ) );
+    
+
+    
 
     //paint collapse button
     QString collapseString;
@@ -894,11 +911,11 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     if ( active ) {
         painter->drawPixmap(
                              (int)trackRect.x(),
-                             (int)trackRect.y() + 2,
+                             (int)trackRect.y(),
                              The::svgHandler()->renderSvg(
                                         "active_overlay",
                                         (int)trackRect.width(),
-                                        (int)trackRect.height() - 1,
+                                        (int)trackRect.height() -1 ,
                                         "active_overlay"
                                       )
                            );
@@ -936,19 +953,19 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     {
         painter->drawPixmap(
                              static_cast<int>(trackRect.x()),
-                             static_cast<int>(trackRect.top() + 2),
+                             static_cast<int>(trackRect.top() ),
                              The::svgHandler()->renderSvg(
                                              
                                         "selection",
                                         static_cast<int>( trackRect.width()),
-                                        static_cast<int>(trackRect.height() - 1),
+                                        static_cast<int>(trackRect.height() -1 ),
                                         "selection"
                                       )
                            );
     }
 }
 
-void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active )
+void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate  )
 {
     Q_UNUSED( active ); // Do we want to paint a selected collapsed head differently?
     QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN * 2, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
@@ -1010,14 +1027,14 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
 
 }
 
-void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate  )
+void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate )
 {
     QRectF trackRect = option->rect;
 
-    if ( alternate )
-        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "body", (int)trackRect.width(), (int)trackRect.height(), "body" ) );
+    if ( !alternate )
+        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "body", (int)trackRect.width(), (int)trackRect.height(), "body" ) );
     else
-        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "alt_body", (int)trackRect.width(), (int)trackRect.height(), "alt_body" ) );
+        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "alt_body", (int)trackRect.width(), (int)trackRect.height(), "alt_body" ) );
 
     //draw alternate background if needed
     /*if ( alternate )
@@ -1025,7 +1042,7 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
 */
     //draw active track marker if needed
     if ( active ) {
-        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "active_overlay", (int)trackRect.width(), (int)trackRect.height(), "active_overlay" ) );
+        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "active_overlay", (int)trackRect.width(), (int)trackRect.height() -1, "active_overlay" ) );
     }
 
     setTextColor( active );
@@ -1047,7 +1064,7 @@ void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGr
                                         
                                         "selection",
                                         static_cast<int>( trackRect.width() ),
-                                        (int)trackRect.height(),
+                                        (int)trackRect.height() - 1,
                                         "selection"
                                       )
                            );

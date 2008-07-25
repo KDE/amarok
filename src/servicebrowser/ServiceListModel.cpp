@@ -59,6 +59,8 @@ ServiceListModel::data(const QModelIndex & index, int role) const
        return QVariant( m_services[index.row()]->longDescription() );
    else if ( role == ServiceRole )
        return qVariantFromValue( m_services[index.row()] );
+   else if ( role == AlternateRowRole )
+       return ( index.row() % 2 == 1 );
     else
         return QVariant();
 }

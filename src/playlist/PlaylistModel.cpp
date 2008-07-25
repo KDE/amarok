@@ -228,11 +228,13 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
 
     else if ( role == GroupedAlternateRole )
     {
-        Meta::TrackPtr track = m_items.at( row )->track();
+        /*Meta::TrackPtr track = m_items.at( row )->track();
         AlbumGroup * albumGroup = m_albumGroups.value( track->album()->prettyName() );
         if( albumGroup )
             return albumGroup->alternate( row );
-        return true;
+        return true;*/
+
+        return ( row % 2 == 1 );
     }
 
     else if ( role == GroupedCollapsibleRole )

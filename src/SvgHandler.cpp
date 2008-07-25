@@ -168,6 +168,53 @@ QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, co
     return renderSvg( d->themeFile, keyname, width, height, element );
 }
 
+QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, int height, const QString & element)
+{
+
+    QString name = d->themeFile;
+    
+    QPixmap pixmap( width, height );
+    pixmap.fill( Qt::transparent );
+
+    QReadLocker readLocker( &d->lock );
+    if( ! d->renderers[name] )
+    {
+        readLocker.unlock();
+        if( ! d->loadSvg( name ) )
+            return pixmap;
+        readLocker.relock();
+    }
+
+    const QString key = QString("%1:%2x%3-div")
+            .arg( keyname )
+            .arg( width )
+            .arg( height );
+
+
+    if ( !QPixmapCache::find( key, pixmap ) ) {
+//         debug() << QString("svg %1 not in cache...").arg( key );
+
+        QPainter pt( &pixmap );
+        if ( element.isEmpty() )
+            d->renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
+        else
+            d->renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
+
+
+        //add dividers. 5% spacing on each side
+        int margin = width / 20;
+        
+        d->renderers[name]->render( &pt, "divider_top", QRectF( margin, 0 , width - 1 * margin, 1 ) );
+        d->renderers[name]->render( &pt, "divider_bottom", QRectF( margin, height - 1 , width - 2 * margin, 1 ) );
+    
+        QPixmapCache::insert( key, pixmap );
+    }
+
+    return pixmap;
+
+}
+
+
 void SvgHandler::reTint()
 {
     The::svgTinter()->init();
@@ -191,4 +238,5 @@ void SvgHandler::setThemeFile( const QString & themeFile )
     QPixmapCache::clear();
     App::instance()->mainWindow()->update();
 }
+
 

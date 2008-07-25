@@ -47,7 +47,7 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     //DEBUG_BLOCK
 
     const int width = m_view->viewport()->size().width() - 4;
-    const int height = 76;
+    const int height = 72;
     const int iconWidth = 32;
     const int iconHeight = 32;
     const int iconPadX = 8;
@@ -56,9 +56,15 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
 
-    QPixmap background = The::svgHandler()->renderSvg( "service_list_item", width, height - 4, "service_list_item" );
 
-    painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
+    QPixmap background;
+
+    if ( !index.data( AlternateRowRole ).toBool() )
+        background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
+    else
+        background = The::svgHandler()->renderSvgWithDividers( "alt_service_list_item", width, height, "alt_service_list_item" );
+
+    painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y(), background );
 
 
     painter->setFont(QFont("Arial", 14));
@@ -99,7 +105,7 @@ ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelI
     //DEBUG_BLOCK
 
     int width = m_view->viewport()->size().width() - 4;
-    int height = 76;
+    int height = 72;
 
     return QSize ( width, height );
 }

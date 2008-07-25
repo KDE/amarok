@@ -1001,7 +1001,7 @@ QRect MainWindow::contextRectGlobal()
     return QRect( contextPos.x(), contextPos.y(), m_contextWidget->width(), m_contextWidget->height() );
 }
 
-void MainWindow::paintEvent( QPaintEvent * e )
+/*void MainWindow::paintEvent( QPaintEvent * e )
 {
     //DEBUG_BLOCK
 
@@ -1029,7 +1029,7 @@ void MainWindow::paintEvent( QPaintEvent * e )
     
     QPainter painter( this );
     painter.drawPixmap( x, y, backgroundPart );
-}
+}*/
 
 
 namespace The {

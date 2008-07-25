@@ -96,9 +96,9 @@ namespace Playlist
              */
             QPointF centerImage( QPixmap pixmap, QRectF rect );
 
-            void paintSingleTrack ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
-            void paintHead ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
-            void paintCollapsedHead ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active );
+            void paintSingleTrack ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active, bool alternate );
+            void paintHead ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active, bool alternate  );
+            void paintCollapsedHead ( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active, bool alternate  );
             void paintBody( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active, bool alternate );
             void paintTail( QPainter* painter, const QStyleOptionGraphicsItem* option, bool active, bool alternate  );
             void paintCollapsed( );

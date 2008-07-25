@@ -54,7 +54,7 @@ CurrentTrack::~CurrentTrack()
 void CurrentTrack::init()
 {
     DEBUG_BLOCK
-    setBackgroundHints( Plasma::Applet::NoBackground );
+    //setBackgroundHints( Plasma::Applet::NoBackground );
 
     m_theme = new Context::Svg( this );
     m_theme->setImagePath( "widgets/amarok-currenttrack" );
@@ -63,7 +63,7 @@ void CurrentTrack::init()
     m_width = globalConfig().readEntry( "width", 500 );
 
 //     const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
-    const QColor textColor( Qt::white );
+    const QColor textColor( Qt::black );
     QFont labelFont;
     labelFont.setBold( true );
     labelFont.setPointSize( labelFont.pointSize() + 1  );
@@ -340,11 +340,11 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     }
     
     p->save();
-    m_theme->paint( p, contentsRect.adjusted( 0, -10, 0, 10 ) , "background" );
+    //m_theme->paint( p, contentsRect.adjusted( 0, -10, 0, 10 ) , "background" );
     QRect leftBorder( 0, 0, 14, contentsRect.height() + 20 );
-    m_theme->paint( p, leftBorder, "left-border" );
+    //m_theme->paint( p, leftBorder, "left-border" );
     QRect rightBorder( contentsRect.width() + 5, 0, 14, contentsRect.height() + 20 );
-    m_theme->paint( p, rightBorder, "right-border" );
+    //m_theme->paint( p, rightBorder, "right-border" );
     p->restore();
     
     if( m_noTrack->text() != QString() )

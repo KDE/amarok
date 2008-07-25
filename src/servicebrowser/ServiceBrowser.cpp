@@ -51,7 +51,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     p.setColor( QPalette::Base, c );
     m_serviceListView->setPalette( p );
 
-    m_serviceListView->setFrameShape( QFrame::NoFrame );
+    //m_serviceListView->setFrameShape( QFrame::NoFrame );
 
     m_delegate = new ServiceListDelegate( m_serviceListView );
     m_serviceListView->setItemDelegate( m_delegate );

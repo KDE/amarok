@@ -31,7 +31,8 @@ Q_DECLARE_METATYPE(ServiceBase *)
 enum {
     ShortDescriptionRole = Qt::UserRole + 1,
     LongDescriptionRole,
-    ServiceRole
+    ServiceRole,
+    AlternateRowRole
 };
 
 /**

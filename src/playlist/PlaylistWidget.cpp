@@ -43,10 +43,13 @@ using namespace Playlist;
 
 
 Widget::Widget( QWidget* parent )
-    : QWidget( parent )
+    : QFrame( parent )
 {
     QVBoxLayout* layout = new QVBoxLayout( this );
-    layout->setContentsMargins(0,0,0,0);
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    
+    setContentsMargins( 4, 4, 4, 4 );
+    //setFrameShape( QFrame::Box );
 
     Amarok::Widget * layoutHolder = new Amarok::Widget( this );
 
@@ -64,7 +67,7 @@ Widget::Widget( QWidget* parent )
 
 
     Playlist::GraphicsView* playView = The::playlistView();
-    playView->setFrameShape( QFrame::NoFrame );  // Get rid of the redundant border
+    //playView->setFrameShape( QFrame::NoFrame );  // Get rid of the redundant border
     playView->setModel( playModel );
 
 

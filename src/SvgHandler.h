@@ -46,7 +46,7 @@ class AMAROK_EXPORT SvgHandler
         QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
 
         /**
-        * OVerloaded function that uses the current theme
+        * Overloaded function that uses the current theme
         * @param keyname the name of the key to save in the cache
         * @param width Widht of the resulting pixmap
         * @param height Height of the resulting pixmap
@@ -54,6 +54,19 @@ class AMAROK_EXPORT SvgHandler
         * @return The svg element/file rendered into a pixmap
         */
         QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString() );
+
+        
+        /**
+         * Yet another oveloaded function. This one renders the svg element and adds half a divider element to the top and the bottom
+         * so it looks sane when multiple elements with the same widh are stacked.
+         * @param keyname the name of the key to save in the cache
+         * @param width Widht of the resulting pixmap
+         * @param height Height of the resulting pixmap
+         * @param element The theme element to render ( if none the entire svg is rendered )
+         * @return The svg element/file rendered into a pixmap
+         */
+        QPixmap renderSvgWithDividers( const QString& keyname, int width, int height, const QString& element = QString() );
+        
         void reTint( );
 
         QString themeFile();
