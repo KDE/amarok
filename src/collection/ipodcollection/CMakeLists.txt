@@ -1,15 +1,14 @@
-macro_optional_find_package(Ipod)
+macro_optional_find_package(Mtp)
 
-if (IPOD_FOUND)
+if (MTP_FOUND)
    include_directories( ../..
    ../../plugin
    ../../meta
    ../../meta/file
    ../../collection
-   ../../metadata/audible
    handler
    ${GLIB2_INCLUDE_DIR}
-   ${IPOD_INCLUDE_DIR}
+   ${MTP_INCLUDE_DIR}
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
    ${KDE4_INCLUDE_DIR}
@@ -18,20 +17,20 @@ if (IPOD_FOUND)
 
 ########### next target ###############
 
-	set(amarok_collection-ipodcollection_PART_SRCS
-	IpodMeta.cpp
-	IpodCollection.cpp
-	IpodCollectionLocation.cpp
-	handler/IpodHandler.cpp)	
-	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
+	set(amarok_collection-mtpcollection_PART_SRCS
+	MtpMeta.cpp
+	MtpCollection.cpp
+	MtpCollectionLocation.cpp
+	handler/MtpHandler.cpp)	
+	kde4_add_plugin(amarok_collection-mtpcollection WITH_PREFIX ${amarok_collection-mtpcollection_PART_SRCS})
 
-	target_link_libraries(amarok_collection-ipodcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${GLIB2_LIBRARIES} ${IPOD_LIBRARIES} )
+	target_link_libraries(amarok_collection-mtpcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${GLIB2_LIBRARIES} ${MTP_LIBRARIES} )
 
-	install(TARGETS amarok_collection-ipodcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
+	install(TARGETS amarok_collection-mtpcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 	########### install files ###############
 
-	install( FILES amarok_collection-ipodcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+	install( FILES amarok_collection-mtpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-endif (IPOD_FOUND)
+endif (MTP_FOUND)

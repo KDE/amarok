@@ -5,6 +5,7 @@ set(AMAROK_COLLECTION_SUPPORT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/support)
 add_subdirectory( daap )
 # NYI
 add_subdirectory( ipodcollection )
+add_subdirectory( mtpcollection )
 
 if (Soprano_FOUND AND NEPOMUK_FOUND)
     MESSAGE(STATUS "soprano and nepomuk found, building optional nepomuk collection")
