@@ -57,6 +57,8 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
 
     QString genericError = i18n( "Could not connect to MTP Device" );
 
+    m_success = false;
+
     
 
     // begin checking connected devices
@@ -106,6 +108,8 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
     
     if( m_device == 0 ) {
         // TODO: error protection
+        m_success = false;
+        break;
     }
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
@@ -136,6 +140,8 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
     else if( m_supportedFiles.indexOf( "gif" ) )
         m_format = "GIF";
     free( filetypes );
+
+    m_success = true;
     break;
         }
 

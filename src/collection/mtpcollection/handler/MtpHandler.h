@@ -66,6 +66,8 @@ namespace Mtp
        void parseTracks();
        QString prettyName() const;
 
+       bool succeeded() const { return m_success; }
+
        // file io functions
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
        void deleteFile( const KUrl &url );
@@ -74,7 +76,7 @@ namespace Mtp
 
        int                     readMtpMusic( void );
        void getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track );
-       
+
        
        // miscellaneous internal functions
        void addMtpTrackToCollection( LIBMTP_track_t *mtptrack );
@@ -114,6 +116,7 @@ namespace Mtp
 
         QMutex                  m_critical_mutex;
 
+        bool m_success; // tells if connecting worked or not
         bool             m_trackCreated;
 
         // KIO-related Vars (to be moved elsewhere eventually)

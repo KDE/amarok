@@ -82,6 +82,8 @@ MtpCollectionFactory::mtpDetected( const QString &udi )
                coll = new MtpCollection( udi );
             if ( coll )
             {
+                if( !coll->handler()->succeeded() ) // if couldn't connect
+                    return;
             
             // TODO: connect to MediaDeviceMonitor signals
          //   connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
@@ -146,8 +148,10 @@ MtpCollection::MtpCollection( const QString &udi )
     DEBUG_BLOCK
 
     m_handler = new Mtp::MtpHandler( this, this );
-
-    m_handler->parseTracks();
+    if( m_handler->succeeded() )
+        m_handler->parseTracks();
+    
+        
     
 }
 
