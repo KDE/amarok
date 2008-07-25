@@ -1,6 +1,18 @@
-set ( QT_USE_QTXML TRUE )
-set ( QT_USE_QTSCRIPT TRUE ) #generator doesn't need this, just the qtscript libs
-set ( QT_DONT_USE_QTGUI TRUE )
+set ( QT_USE_QTXML                 TRUE )
+set ( QT_USE_QTSCRIPT              TRUE )
+set ( QT_USE_QTMAIN                TRUE )
+set ( QT_USE_QTNETWORK             TRUE )
+set ( QT_USE_QTNSPLUGIN            TRUE )
+set ( QT_USE_QTOPENGL              TRUE )
+set ( QT_USE_QTSQL                 TRUE )
+set ( QT_USE_QTXML                 TRUE )
+set ( QT_USE_QTSVG                 TRUE )
+set ( QT_USE_QTTEST                TRUE )
+set ( QT_USE_QTUITOOLS             TRUE )
+set ( QT_USE_QTDBUS                TRUE )
+set ( QT_USE_QTSCRIPT              TRUE )
+set ( QT_USE_QTWEBKIT              TRUE )
+
 include(${QT_USE_FILE})
 
 add_definitions( -DRXX_ALLOCATOR_INIT_0 )

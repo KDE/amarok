@@ -24,6 +24,7 @@
 
 #include <QFileInfo>
 #include <QtScript>
+#include <QSet>
 
 namespace Amarok
 {
@@ -55,20 +56,12 @@ namespace Amarok
     {
         DEBUG_BLOCK
         debug() << "importing qt bindings...";
-        if ( binding == "qt.core" )
-            m_ScriptEngine->importExtension( "qt.core" );
-        else if ( binding == "qt.gui" )
-            m_ScriptEngine->importExtension( "qt.gui" );
-        else if ( binding == "qt.sql" )
-            m_ScriptEngine->importExtension( "qt.sql" );
-        else if ( binding == "qt.webkit" )
-            m_ScriptEngine->importExtension( "qt.webkit" );
-        else if ( binding == "qt.xml" )
-            m_ScriptEngine->importExtension( "qt.xml" );
-        else if ( binding == "qt.uitools" )
-            m_ScriptEngine->importExtension( "qt.uitools" );
+        QSet<QString> allowedBindings;
+        allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
+        if( allowedBindings.contains( binding ) )
+            m_ScriptEngine->importExtension( binding );
         else
-            warning() <<"Qt Binding: "<<binding<<" not found!";
+            warning() <<"Qt Binding: " << binding << " not found!";
     }
 }
 
