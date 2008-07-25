@@ -90,6 +90,7 @@ Playlist::Model::Model( QObject* parent )
     , m_advancer( 0 )
     , m_undoStack( new QUndoStack( this ) )
     , m_stopAfterMode( StopNever )
+    , m_stopPlaying( false )
 {
     s_instance = this;
     playlistModeChanged(); // sets m_advancer.
@@ -145,12 +146,14 @@ Playlist::Model::nextTrack()
     DEBUG_BLOCK
 
     m_nextRowCandidate = m_advancer->nextRow();
-    if( !rowExists( m_nextRowCandidate ) )
+    if( m_stopPlaying || !rowExists( m_nextRowCandidate ) )
     {
         m_nextRowCandidate = -1;
         return Meta::TrackPtr();
     }
-    else return m_items.at(m_nextRowCandidate)->track();
+
+    m_stopPlaying = false;
+    return m_items.at(m_nextRowCandidate)->track();
 }
 
 
@@ -163,7 +166,8 @@ Playlist::Model::userNextTrack()
         m_nextRowCandidate = -1;
         return Meta::TrackPtr();
     }
-    else return m_items.at(m_nextRowCandidate)->track();
+    
+   return m_items.at(m_nextRowCandidate)->track();
 }
 
 Meta::TrackPtr
@@ -175,7 +179,8 @@ Playlist::Model::lastTrack()
         m_nextRowCandidate = -1;
         return Meta::TrackPtr();
     }
-    else return m_items.at(m_nextRowCandidate)->track();
+
+    return m_items.at(m_nextRowCandidate)->track();
 }
 
 int
@@ -425,6 +430,8 @@ Playlist::Model::play( const QModelIndex& index )
 void
 Playlist::Model::play( int row )
 {
+    m_stopPlaying = false;
+
     if( m_items.size() > row )
     {
         m_nextRowCandidate = row;
@@ -861,6 +868,35 @@ bool Playlist::Model::savePlaylist( const QString & name ) const
         tl << item->track();
     
     return The::playlistManager()->save( tl, name );
+}
+
+
+void
+Playlist::Model::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
+{
+    DEBUG_BLOCK
+
+    static int failures = 0;
+    const int maxFailures = 4;
+
+    debug() << "Phonon currentState: " << currentState;
+    debug() << "Phonon oldState: " << oldState;
+
+    if( currentState == Phonon::ErrorState ) {
+        failures++;
+        debug() << "Error, can't play this track.";
+        debug() << "Failure count: " << failures;
+        if( failures >= maxFailures ) {
+            debug() << "Stopping playlist.";
+            failures = 0;
+            m_stopPlaying = true;
+        }
+    }
+    else if( currentState == Phonon::PlayingState ) {
+        failures = 0;
+        m_stopPlaying = false;
+        debug() << "Successfully played track. Resetting failure count.";
+    }
 }
 
 

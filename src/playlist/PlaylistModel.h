@@ -243,6 +243,7 @@ namespace Playlist
 
             StopAfterMode stopAfterMode() const { return m_stopAfterMode; }
             void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; }
+
         public slots:
             void play( const QModelIndex& index );
             void next();
@@ -262,7 +263,8 @@ namespace Playlist
             void repopulate();
 
         protected:
-            virtual void engineNewTrackPlaying();
+            virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState); //reimpl. from EngineObserver
+            virtual void engineNewTrackPlaying(); //reimpl. from EngineObserver
 
         private slots:
             //void trackFinished(); //! what to do when a track finishes
@@ -325,6 +327,7 @@ namespace Playlist
             Meta::PlaylistPtr m_observedPlaylist;   //! This is used for observing a dynamic or random playlist.
 
             Playlist::StopAfterMode m_stopAfterMode;
+            bool m_stopPlaying;
 
             static Model* s_instance; //! instance variable
     };
