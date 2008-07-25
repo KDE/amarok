@@ -126,7 +126,10 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &seria
     QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );
     m_name = modelname;
     if(! ownername.isEmpty() )
-        m_name += " (" + ownername + ')';
+        if( modelname != ownername )
+            m_name += " (" + ownername + ')';
+        else
+            m_name += " (No Owner Name)";
 
     m_default_parent_folder = m_device->default_music_folder;
     debug() << "setting default parent : " << m_default_parent_folder;
