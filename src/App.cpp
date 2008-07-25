@@ -66,6 +66,7 @@ email                : markey@web.de
 #include <QEventLoop>                   //applySettings()
 #include <QFile>
 #include <QPixmapCache>
+#include <QStringList>
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QToolTip>                     //default tooltip for trayicon
 #include <QtDBus/QtDBus>
@@ -234,36 +235,6 @@ App::~App()
     }
 #endif
 }
-
-
-#include <QStringList>
-
-namespace
-{
-    // grabbed from KsCD source, kompatctdisk.cpp
-    QString urlToDevice(const QString& device)
-    {
-        KUrl deviceUrl(device);
-        if (deviceUrl.protocol() == "media" || deviceUrl.protocol() == "system")
-        {
-            debug() << "WARNING: urlToDevice needs to be reimplemented with KDE4 technology, it is just a stub at the moment";
-            QDBusInterface mediamanager( "org.kde.kded", "/modules/mediamanager", "org.kde.MediaManager" );
-            QDBusReply<QStringList> reply = mediamanager.call( "properties",deviceUrl.fileName() );
-            if (!reply.isValid())
-            {
-                debug() << "Invalid reply from mediamanager";
-                return QString();
-            }
-            QStringList properties = reply;
-            if( properties.count()< 6 )
-                return QString();
-            debug() << "Reply from mediamanager " << properties[5];
-            return properties[5];
-        }
-        return device;
-    }
-}
-
 
 void
 App::handleCliArgs() //static
