@@ -18,13 +18,15 @@
 
 #include "MyDirOperator.h"
 
-#include "collection/Collection.h"
-#include "collection/CollectionManager.h"
 #include "Debug.h"
 #include "MainWindow.h"
+#include "collection/Collection.h"
+#include "collection/CollectionManager.h"
+#include "playlist/PlaylistModel.h"
 
 #include <KActionCollection>
 
+#include <QAbstractItemView>
 #include <QMenu>
 
 /**
@@ -56,6 +58,13 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
     setDirLister( dirlister );
     setView( KFile::Simple );
 
+    view()->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    view()->setContentsMargins(0,0,0,0);
+    view()->setFrameShape( QFrame::NoFrame );
+
+    connect( this, SIGNAL( fileSelected( const KFileItem& ) ),
+             this,   SLOT( fileSelected( const KFileItem& ) ) );
+    
     //WARNING: This signal is only available under KDE4.2 libraries, so the functionality
     //won't exist for any users on KDE4.1.
     connect( this, SIGNAL( contextMenuAboutToShow( const KFileItem &item, QMenu *menu ) ),
@@ -67,6 +76,20 @@ MyDirOperator::~MyDirOperator()
     DEBUG_BLOCK
 }
 
+void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
+{
+  const KFileItemList list = selectedItems();
+
+  KUrl::List urlList;
+  foreach( const KFileItem& item, list )
+  {
+      urlList << item.url();
+  }
+
+  Meta::TrackList trackList = CollectionManager::instance()->tracksForUrls( urlList );
+  The::playlistModel()->insertOptioned( trackList, Playlist::AppendAndPlay );
+  view()->selectionModel()->clear();
+}
 
 void MyDirOperator::contextMenuAboutToShow( const KFileItem &item, QMenu *menu )
 {

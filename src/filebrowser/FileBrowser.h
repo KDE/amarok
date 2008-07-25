@@ -29,6 +29,8 @@
 #include <KUrl>
 #include <KVBox>
 
+#include <QMenu>
+
 // class KUrlComboBox;
 class KActionCollection;
 class KActionSelector;
@@ -98,7 +100,6 @@ namespace FileBrowser {
       void selectorViewChanged( QAbstractItemView * );
 
     private Q_SLOTS:
-      void fileSelected(const KFileItem & /*file*/);
       void cmbPathActivated( const KUrl& u );
       void cmbPathReturnPressed( const QString& u );
       void dirUrlEntered( const KUrl& u );

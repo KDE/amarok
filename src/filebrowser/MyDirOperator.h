@@ -36,6 +36,7 @@ class MyDirOperator : public KDirOperator
 
     private slots:
         void contextMenuAboutToShow( const KFileItem &item, QMenu *menu );
+        void fileSelected( const KFileItem & /*file*/ );
 };
 
 #endif

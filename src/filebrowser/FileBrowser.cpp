@@ -26,7 +26,6 @@
 #include "collection/CollectionManager.h"
 #include "filebrowser/MyDirOperator.h"
 #include "filebrowser/kbookmarkhandler.h"
-#include "playlist/PlaylistModel.h"
 
 #include <QCheckBox>
 #include <QDir>
@@ -125,14 +124,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
   connect( m_filter, SIGNAL( returnPressed(const QString&) ), m_filter, SLOT( addToHistory(const QString&) ) );
 
   m_dir = new MyDirOperator(KUrl(QDir::home().path()), this);
-//   m_cmbPath->setUrl( KUrl(QDir::home().path()) );
-  m_dir->setView( KFile::Simple );
-  m_dir->view()->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-
-  m_dir->view()->setContentsMargins(0,0,0,0);
-  m_dir->view()->setFrameShape( QFrame::NoFrame );
-  
   QPalette p = m_dir->palette();
   QColor c = p.color( QPalette::Base );
   c.setAlpha( 0 );
@@ -146,14 +138,8 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
   m_dir->setSizePolicy (QSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
 
   KActionCollection *coll = m_dir->actionCollection();
-  // some shortcuts of diroperator that clashes with Kate
+  // some shortcuts of diroperator that clash with Kate
   coll->action( "delete" )->setShortcut( Qt::ALT + Qt::Key_Delete );
-  //coll->action( "reload" )->setShortcut( Qt::ALT + Qt::Key_F5 );
-  //coll->action( "back" )->setShortcut( Qt::ALT + Qt::SHIFT + Qt::Key_Left );
-  //coll->action( "forward" )->setShortcut( Qt::ALT + Qt::SHIFT + Qt::Key_Right );
-  // some consistency - reset up for dir too
-  //coll->action( "up" )->setShortcut( Qt::ALT + Qt::SHIFT + Qt::Key_Up );
-  //coll->action( "home" )->setShortcut( Qt::CTRL + Qt::ALT + Qt::Key_Home );
 
   // bookmarks action!
   KActionMenu *acmBookmarks = new KActionMenu( KIcon("bookmarks"), i18n("Bookmarks"), this );
@@ -197,8 +183,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
                                     "<p>To reapply the last filter used, toggle on the filter button.</p>" ) );
   m_btnFilter->setWhatsThis(        i18n("<p>This button clears the name filter when toggled off, or "
                                        "reapplies the last filter used when toggled on.</p>") );
-
-  connect(m_dir, SIGNAL(fileSelected(const KFileItem&)), this, SLOT(fileSelected(const KFileItem&)));
 
   readConfig();
 
@@ -384,21 +368,6 @@ void FileBrowser::Widget::setDir( KUrl u )
 
 //BEGIN Private Slots
 
-void FileBrowser::Widget::fileSelected(const KFileItem & /*file*/)
-{
-  const KFileItemList list = m_dir->selectedItems();
-
-  KUrl::List urlList;
-  foreach (const KFileItem& item, list)
-  {
-      urlList << item.url();
-  }
-
-  Meta::TrackList trackList = CollectionManager::instance()->tracksForUrls( urlList );
-  The::playlistModel()->insertOptioned( trackList, Playlist::AppendAndPlay );
-  m_dir->view()->selectionModel()->clear();
-}
-
 void FileBrowser::Widget::cmbPathActivated( const KUrl& u )
 {
   cmbPathReturnPressed( u.url() );
@@ -486,29 +455,6 @@ bool FileBrowser::Widget::eventFilter( QObject* o, QEvent *e )
 
 //END Protected
 
-//BEGIN ACtionLBItem
-/*
-   QListboxItem that can store and return a string,
-   used for the toolbar action selector.
-*/
-class ActionLBItem : public QListWidgetItem
-{
-  public:
-    ActionLBItem( QListWidget *lb = 0,
-                  const QIcon &pm = QIcon(),
-                  const QString &text = QString(),
-                  const QString &str = QString() ) :
-        QListWidgetItem(pm, text, lb, 0 ),
-        _str(str)
-    {}
-    QString idstring()
-    {
-      return _str;
-    }
-  private:
-    QString _str;
-};
-//END ActionLBItem
 
 // kate: space-indent on; indent-width 4; replace-tabs on;
 
