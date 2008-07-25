@@ -170,8 +170,32 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &seria
 MtpHandler::~MtpHandler()
 {
     // TODO: free used memory
-    LIBMTP_Release_Device( m_device );
+    terminate();
+
     
+}
+
+void
+MtpHandler::terminate()
+{
+    // clear folder structure
+    if( m_folders != 0 )
+    {
+        m_critical_mutex.lock();
+        LIBMTP_destroy_folder_t( m_folders );
+        m_critical_mutex.unlock();
+        m_folders = 0;
+        debug() << "Folders destroyed";
+    }
+
+    // release device
+    if( m_device != 0 )
+    {
+        m_critical_mutex.lock();
+        LIBMTP_Release_Device( m_device );
+        m_critical_mutex.unlock();
+        debug() << "Device released";
+    }
 }
 
 void

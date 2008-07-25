@@ -73,13 +73,15 @@ class CustomActionsCapabilityMtp : public Meta::CustomActionsCapability {
     {
             DEBUG_BLOCK
 
+            MtpCollection *coll = dynamic_cast<MtpCollection*>( m_track->collection() );
+
             // Setup the remove action
-            
+            /*
             PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "amarok_remove" ), i18n( "&Remove from MTP" ), 0 );
 
             debug() << "Remove-action created";
 
-            MtpCollection *coll = dynamic_cast<MtpCollection*>( m_track->collection() );
+            
 
             // set track to be deleted
 
@@ -93,6 +95,8 @@ class CustomActionsCapabilityMtp : public Meta::CustomActionsCapability {
             // Add the action to the list of custom actions
             
             m_actions.append( removeAction );
+
+                    */
 
             //TODO: this should only be available in the top-level
             // node of the tree, not every individual track
@@ -440,14 +444,14 @@ MtpTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     DEBUG_BLOCK
 // TODO: NYI
-            return false;
+            
         
         switch(  type )
         {
             
             
         case Meta::Capability::Editable:
-            return true;
+            return false;
         case Meta::Capability::CustomActions:
             return true;
         case Meta::Capability::Updatable:
@@ -467,12 +471,12 @@ MtpTrack::asCapabilityInterface( Meta::Capability::Type type )
         {
         case Meta::Capability::Editable:
             return new EditCapabilityMtp( this );
-            /*
+            
         case Meta::Capability::CustomActions:
             return new CustomActionsCapabilityMtp( this );
         case Meta::Capability::Updatable:
             return new UpdateCapabilityMtp( m_collection );
-*/
+
         default:
             return 0;
         }

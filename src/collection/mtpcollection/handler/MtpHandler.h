@@ -65,6 +65,7 @@ namespace Mtp
        bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
        void parseTracks();
        QString prettyName() const;
+       void terminate();
 
        bool succeeded() const { return m_success; }
 
