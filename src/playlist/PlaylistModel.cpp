@@ -114,7 +114,8 @@ Playlist::Model::init()
 void
 Playlist::Model::restoreSession()
 {
-    insertOptioned( Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) ), Append );
+    if( QFile::exists( defaultPlaylistPath() ) )
+        insertOptioned( Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) ), Append );
 
     if( typeid(*m_advancer) == typeid(DynamicTrackNavigator) )
         ((DynamicTrackNavigator*)m_advancer)->appendUpcoming();

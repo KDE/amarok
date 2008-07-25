@@ -20,6 +20,8 @@ VERSION 2.0-beta1
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
+    * Missing default playlist does not produce error message now. 
+      (BR 167385)
     * Fixed playlist bias drop-down box showing multiple empty and duplicate
       entries. (BR 167153)
     * Fixed the "Toggle Main Window" shortcut. (BR 167218)
