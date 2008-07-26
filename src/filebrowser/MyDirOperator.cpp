@@ -142,11 +142,27 @@ void MyDirOperator::aboutToShowContextMenu()
         foreach( Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, this );
-            connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
+            connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotCopyTracks( false /*don't move*/) ) );
             copyMenu->addAction( moveAction );
         }
         menu->addMenu( copyMenu );
     }
+}
+
+void
+MyDirOperator::slotCopyTracks( bool move )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( move );
+
+    CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
+    if( !action )
+        return;
+
+    const KFileItemList list = selectedItems();
+    if( list.isEmpty() )
+        return;
+
 }
 
 

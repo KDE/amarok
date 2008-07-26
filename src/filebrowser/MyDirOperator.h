@@ -38,6 +38,7 @@ class MyDirOperator : public KDirOperator
     private slots:
         void aboutToShowContextMenu();
         void fileSelected( const KFileItem & /*file*/ );
+        void slotCopyTracks( bool move );
 };
 
 #endif
