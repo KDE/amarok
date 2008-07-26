@@ -1,6 +1,8 @@
 macro_optional_find_package(Mtp)
+INCLUDE(FindPkgConfig)
+pkg_check_modules(Mtp libmtp>=0.3.0)
 
-if (MTP_FOUND)
+if (MTP_FOUND AND Mtp_VERSION>=0.3.0)
    include_directories( ../..
    ../../plugin
    ../../meta
@@ -33,4 +35,4 @@ if (MTP_FOUND)
 
 	install( FILES amarok_collection-mtpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-endif (MTP_FOUND)
+endif (MTP_FOUND AND Mtp_VERSION>=0.3.0)
