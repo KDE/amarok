@@ -30,7 +30,7 @@ namespace AmarokScript
     AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
-//        qScriptRegisterMetaType<TrackMeta>( ScriptEngine, toScriptValue, fromScriptValue );
+        Q_UNUSED( ScriptEngine );
         connect( The::playlistModel(), SIGNAL( playlistCountChanged( int ) ), this, SIGNAL( CountChanged( int ) ) );
         connect( The::playlistModel(), SIGNAL( playlistGroupingChanged() ), this, SIGNAL( GroupingChanged() ) );
         connect( The::playlistModel(), SIGNAL( rowMoved( int, int ) ), this, SIGNAL( rowMoved( int, int ) ) );
@@ -121,74 +121,41 @@ namespace AmarokScript
         return fileNames;
     }
 
-    TrackMeta AmarokPlaylistScript::TrackInfo( int row )
+    QVariantMap AmarokPlaylistScript::TrackInfo( int row )
     {
-        TrackMeta info;
+        QVariantMap info;
         Meta::TrackPtr track;
-        if ( index == 0 ) //current playing
+        if ( row == -1 ) //current playing
             track = The::engineController()->currentTrack();
         else
             track = The::playlistModel()->trackForRow( row );
         if ( track )
         {
-            info.isValid = true;
-            info.sampleRate = track->sampleRate();
-            info.bitrate = track->bitrate();
-            info.score = track->score();
-            info.rating = track->rating();
-            info.inCollection = track->inCollection();
-            info.type = track->type();
-            info.length = track->length();
-            info.fileSize = track->filesize();
-            info.trackNumber = track->trackNumber();
-            info.discNumber = track->discNumber();
-            info.playCount = track->playCount();
-            info.playable = track->isPlayable();
-            info.album = track->album()->prettyName();
-            info.artist = track->artist()->prettyName();
-            info.composer = track->composer()->prettyName();
-            info.genre = track->genre()->prettyName();
-            info.year = track->year()->prettyName();
-            info.comment = track->comment();
-            info.path = track->playableUrl().path();
+            info["isValid"] = true;
+            info["sampleRate"] = track->sampleRate();
+            info["bitrate"] = track->bitrate();
+            info["score"] = track->score();
+            info["rating"] = track->rating();
+            info["inCollection"] = track->inCollection();
+            info["type"] = track->type();
+            info["length"] = track->length();
+            info["fileSize"] = track->filesize();
+            info["trackNumber"] = track->trackNumber();
+            info["discNumber"] = track->discNumber();
+            info["playCount"] = track->playCount();
+            info["playable"] = track->isPlayable();
+            info["album"] = track->album()->prettyName();
+            info["artist"] = track->artist()->prettyName();
+            info["composer"] = track->composer()->prettyName();
+            info["genre"] = track->genre()->prettyName();
+            info["year"] = track->year()->prettyName();
+            info["comment"] = track->comment();
+            info["path"] = track->playableUrl().path();
         }
         else
-            info.isValid = false;
+            info["isValid"] = false;
         return info;
     }
-
-    QScriptValue AmarokPlaylistScript::toScriptValue(QScriptEngine *engine, const TrackMeta &in)
-    {
-        QScriptValue obj = engine->newObject();
-        obj.setProperty( "isValid", QScriptValue( engine, in.isValid ) );
-        obj.setProperty( "sampleRate", QScriptValue( engine, in.sampleRate ) );
-        obj.setProperty( "bitrate", QScriptValue( engine, in.bitrate ) );
-        obj.setProperty( "score", QScriptValue( engine, in.score ) );
-        obj.setProperty( "rating", QScriptValue( engine, in.rating ) );
-        obj.setProperty( "inCollection", QScriptValue( engine, in.inCollection ) );
-        obj.setProperty( "type", QScriptValue( engine, in.type ) );
-        obj.setProperty( "length", QScriptValue( engine, in.length ) );
-        obj.setProperty( "fileSize", QScriptValue( engine, in.fileSize ) );
-        obj.setProperty( "trackNumber", QScriptValue( engine, in.trackNumber ) );
-        obj.setProperty( "discNumber", QScriptValue( engine, in.discNumber ) );
-        obj.setProperty( "playCount", QScriptValue( engine, in.playCount ) );
-        obj.setProperty( "playable", QScriptValue( engine, in.playable ) );
-        obj.setProperty( "album", QScriptValue( engine, in.album ) );
-        obj.setProperty( "artist", QScriptValue( engine, in.artist ) );
-        obj.setProperty( "composer", QScriptValue( engine, in.composer ) );
-        obj.setProperty( "genre", QScriptValue( engine, in.genre ) );
-        obj.setProperty( "year", QScriptValue( engine, in.year ) );
-        obj.setProperty( "comment", QScriptValue( engine, in.comment ) );
-        obj.setProperty( "path", QScriptValue( engine, in.path ) );
-        return obj;
-    }
-
-    void AmarokPlaylistScript::fromScriptValue(const QScriptValue &value, TrackMeta &out)
-    {
-        Q_UNUSED( value );
-        Q_UNUSED( out );
-    }
-
 }
 
 #include "AmarokPlaylistScript.moc"

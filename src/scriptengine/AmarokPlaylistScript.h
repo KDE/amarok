@@ -25,31 +25,6 @@
 
 namespace AmarokScript
 {
-
-    struct TrackMeta
-    {
-        int sampleRate;
-        int bitrate;
-        double score;
-        int rating;
-        bool inCollection;
-        QString type;
-        int length;
-        int fileSize;
-        int trackNumber;
-        int discNumber;
-        int playCount;
-        int playable;
-        QString album;
-        QString artist;
-        QString composer;
-        QString genre;
-        QString year;
-        QString comment;
-        QString path;
-        bool isValid;
-    };
-
     class AmarokPlaylistScript : public QObject
     {
         Q_OBJECT
@@ -72,19 +47,14 @@ namespace AmarokScript
             void setStopAfterCurrent( bool on );
             void togglePlaylist();
             QStringList filenames();
-            TrackMeta TrackInfo( int row );
+            QVariantMap TrackInfo( int row );
         signals:
             void CountChanged( int newCount );
             void GroupingChanged();
             void rowMoved( int from, int to );
             void activeRowChanged( int from, int to );
             void activeRowExplicitlyChanged( int from, int to );
-        public:
-            QScriptValue   toScriptValue(QScriptEngine *engine, const TrackMeta &in);
-            void           fromScriptValue(const QScriptValue &value, TrackMeta &out);
-
     };
 }
 
-Q_DECLARE_METATYPE( AmarokScript::TrackMeta )
 #endif
