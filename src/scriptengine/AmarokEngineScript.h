@@ -28,6 +28,11 @@ namespace AmarokScript
     {
         Q_OBJECT
 
+        Q_PROPERTY ( bool randomMode READ randomMode WRITE setRandomMode )
+        Q_PROPERTY ( bool dynamicMode READ dynamicMode WRITE setDynamicMode )
+        Q_PROPERTY ( bool repeatPlaylist READ repeatPlaylist WRITE setRepeatPlaylist )
+        Q_PROPERTY ( bool repeatTrack READ repeatTrack WRITE setRepeatTrack )
+        Q_PROPERTY ( int volume READ volume WRITE setVolume );
         public:
             AmarokEngineScript( QScriptEngine* ScriptEngine );
             ~AmarokEngineScript();
@@ -36,6 +41,8 @@ namespace AmarokScript
             void Play();
             void Stop( bool forceInstant = false );
             void Pause();
+            void Next();
+            void Prev();
             void PlayPause();
             void PlayAudioCD();
             void Seek( int ms );
@@ -44,16 +51,25 @@ namespace AmarokScript
             void SeekBackward( int ms = 10000 );
             int  increaseVolume( int ticks = 100/25 );
             int  decreaseVolume( int ticks = 100/25 );
-            int  setVolume( int percent );
             void Mute();
-//dynamicMode, randomMode, repeatPlaylist, repeatTrack, currentTime, next, prev
+            int  trackPosition();
 
         signals:
             void trackFinished();
             void trackChanged();
             void trackSeeked( int ); //return relative time in million second
-        private:
 
+        private:
+            bool randomMode();
+            bool dynamicMode();
+            bool repeatPlaylist();
+            bool repeatTrack();
+            void setRandomMode( bool enable );
+            void setDynamicMode( bool enable );
+            void setRepeatPlaylist( bool enable );
+            void setRepeatTrack( bool enable );
+            int volume();
+            void setVolume( int percent );
     };
 }
 

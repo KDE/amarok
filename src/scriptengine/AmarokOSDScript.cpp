@@ -90,10 +90,10 @@ namespace AmarokScript
         Amarok::OSD::instance()->setRating( rating );
     }
 
-    void AmarokOSDScript::setOsdEnabled( bool enabled )
+    void AmarokOSDScript::setOsdEnabled( bool enable )
     {
-        Amarok::OSD::instance()->setEnabled( enabled );
-        AmarokConfig::setOsdEnabled( enabled );
+        Amarok::OSD::instance()->setEnabled( enable );
+        AmarokConfig::setOsdEnabled( enable );
     }
 
     bool AmarokOSDScript::osdEnabled()

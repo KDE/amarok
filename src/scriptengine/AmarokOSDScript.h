@@ -48,7 +48,7 @@ namespace AmarokScript
             void setDrawShadow( const bool b );
             void setRating( const short rating ); //what is this?
         private:
-            void setOsdEnabled( bool enabled );
+            void setOsdEnabled( bool enable );
             bool osdEnabled();
     };
 }

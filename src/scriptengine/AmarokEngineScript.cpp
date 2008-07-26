@@ -17,9 +17,12 @@
 
 #include "AmarokEngineScript.h"
 
+#include "amarokconfig.h"
 #include "App.h"
 #include "EngineController.h"
 #include "MainWindow.h"
+#include "mediabrowser.h"
+#include "playlist/PlaylistModel.h"
 
 #include <QtScript>
 
@@ -51,6 +54,15 @@ namespace AmarokScript
     void AmarokEngineScript::Pause()
     {
         The::engineController()->pause();
+    }
+
+    void AmarokEngineScript::Next()
+    {
+        The::playlistModel()->next();
+    }
+    void AmarokEngineScript::Prev()
+    {
+        The::playlistModel()->back();
     }
 
     void AmarokEngineScript::PlayPause()
@@ -93,14 +105,62 @@ namespace AmarokScript
         return The::engineController()->decreaseVolume( ticks );
     }
 
-    int AmarokEngineScript::setVolume( int percent )
-    {
-        return The::engineController()->setVolume( percent );
-    }
-
     void AmarokEngineScript::Mute()
     {
         The::engineController()->mute();
+    }
+
+    int AmarokEngineScript::trackPosition()
+    {
+        return The::engineController()->trackPosition();
+    }
+
+    bool AmarokEngineScript::randomMode()
+    {
+        return AmarokConfig::randomMode();
+    }
+
+    bool AmarokEngineScript::dynamicMode()
+    {
+    }
+
+    bool AmarokEngineScript::repeatPlaylist()
+    {
+        return Amarok::repeatPlaylist();
+    }
+
+    bool AmarokEngineScript::repeatTrack()
+    {
+        return Amarok::repeatTrack();
+    }
+
+    void AmarokEngineScript::setRandomMode( bool enable )
+    {
+        static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ) )->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
+    }
+
+    void AmarokEngineScript::setDynamicMode( bool enable )
+    {
+    }
+
+    void AmarokEngineScript::setRepeatPlaylist( bool enable )
+    {
+        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
+    }
+
+    void AmarokEngineScript::setRepeatTrack( bool enable )
+    {
+        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Track : AmarokConfig::EnumRepeat::Off );
+    }
+
+    int AmarokEngineScript::volume()
+    {
+        return The::engineController()->volume();
+    }
+
+    void AmarokEngineScript::setVolume( int percent )
+    {
+        The::engineController()->setVolume( percent );
     }
 }
 
