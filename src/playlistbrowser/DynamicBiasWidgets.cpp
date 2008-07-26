@@ -32,7 +32,7 @@
 #include "MetaQueryMaker.h"
 #include "QueryMaker.h"
 #include "SliderWidget.h"
-#include "SvgTinter.h"
+#include "SvgHandler.h"
 #include "collection/support/XmlQueryWriter.h"
 #include "widgets/kratingwidget.h"
 
@@ -56,7 +56,7 @@
 #include <KVBox>
 
 PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( QWidget* parent )
-    : QWidget( parent )
+    : QWidget( parent ), m_alternate(false)
 {
 }
 
@@ -64,6 +64,7 @@ void
 PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
 {
     Q_UNUSED(e)
+
 
     // is it showing ?
     QListView* parentList = dynamic_cast<QListView*>(parent());
@@ -85,21 +86,14 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
     QPainter painter(this);
     painter.setRenderHint( QPainter::Antialiasing, true );
 
-    QColor fill = App::instance()->palette().base().color();
-    fill.setAlpha( 96 );
+    QPixmap body;
 
-    QColor border = 
-        The::svgTinter()->blendColors(
-                App::instance()->palette().window().color(), "#000000", 90 );
+    if( alternate() )
+        body = The::svgHandler()->renderSvgWithDividers( "alt_body", width(), height(), "alt_body" );
+    else
+        body = The::svgHandler()->renderSvgWithDividers( "body", width(), height(), "body" );
 
-    painter.setBrush( QBrush(fill) );
-    painter.setPen( QPen( QBrush(border), 1 ) );
-
-    //int ry = height() / 10;
-    //int rx = width() / 10;
-    //painter.drawRoundRect( QRect( QPoint(0,0), size() ), ry, rx );
-
-    painter.drawRect( QRect( QPoint(0,0), size() ) );
+    painter.drawPixmap( 0, 0, body );
 
     painter.end();
 }

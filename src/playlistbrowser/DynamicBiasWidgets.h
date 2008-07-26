@@ -49,6 +49,10 @@ namespace PlaylistBrowserNS
             BiasBoxWidget(QWidget* parent = 0 );
             virtual ~BiasBoxWidget() {}
 
+            bool alternate() { return m_alternate; }
+            void setAlternate( bool alternate ) { m_alternate = alternate; }
+            void toggleAlternate() { m_alternate = !m_alternate; }
+
         signals:
             void widgetChanged( QWidget* );
 
@@ -57,6 +61,7 @@ namespace PlaylistBrowserNS
 
         private:
             void paintEvent( QPaintEvent* );
+            bool m_alternate;
 
     };
 

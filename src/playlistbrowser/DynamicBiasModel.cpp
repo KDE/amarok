@@ -102,8 +102,17 @@ PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
     connect( widget, SIGNAL(biasChanged(Dynamic::Bias*)),
             SLOT(biasChanged(Dynamic::Bias*)) );
 
+    widget->setAlternate( m_widgets.back()->alternate() );
+
+    // toggle the 'add bias' dialog background
+    m_widgets.back()->toggleAlternate();
+
     m_widgets.insert( rowCount()-1, widget );
     endInsertRows();
+
+    // fix a render bug
+    m_widgets.back()->hide();
+
 
     emit playlistModified( m_playlist );
 }
@@ -120,6 +129,9 @@ PlaylistBrowserNS::DynamicBiasModel::removeBias( Dynamic::Bias* b )
     m_widgets.removeAt( index );
     m_playlist->biases().removeAt( index );
     endRemoveRows();
+
+    for( int i = index; i < m_widgets.size(); ++i )
+        m_widgets[i]->toggleAlternate();
 
     emit playlistModified( m_playlist );
 }

@@ -36,7 +36,6 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint ( QPainter * painter, const QStyle
     Q_UNUSED(painter)
 
     QRect rect( option.rect );
-    rect.adjust( 5, 3, -5, -3 );
 
     BiasBoxWidget* widget = qvariant_cast<BiasBoxWidget*>( index.data( DynamicBiasModel::WidgetRole ) ); 
     widget->setGeometry( rect );
@@ -51,6 +50,6 @@ PlaylistBrowserNS::DynamicBiasDelegate::sizeHint( const QStyleOptionViewItem & o
     Q_UNUSED( option )
 
     BiasBoxWidget* widget = qvariant_cast<BiasBoxWidget*>( index.data( DynamicBiasModel::WidgetRole ) );
-    return widget->sizeHint() + QSize( 10, 6 );
+    return widget->sizeHint();
 }
 
