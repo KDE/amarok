@@ -67,11 +67,17 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
             connect( widget, SIGNAL(biasChanged(Dynamic::Bias*)),
                     SLOT(biasChanged(Dynamic::Bias*)) );
 
+            if( !m_widgets.isEmpty() )
+                widget->setAlternate( !m_widgets.back()->alternate() );
+
             m_widgets.append( widget );
         }
 
         PlaylistBrowserNS::BiasAddWidget* adder =
             new PlaylistBrowserNS::BiasAddWidget( m_listView->viewport() );
+        if( !m_widgets.isEmpty() )
+            adder->setAlternate( !m_widgets.back()->alternate() );
+
         connect( adder, SIGNAL(addBias(Dynamic::Bias*)),
                 SLOT(appendBias(Dynamic::Bias*)) );
 
@@ -191,8 +197,6 @@ PlaylistBrowserNS::DynamicBiasModel::index( int row, int column,
     Q_UNUSED(parent)
     if( rowCount() <= row ) return QModelIndex();
 
-    //return createIndex( row, column, 
-            //reinterpret_cast<void*>(m_widgets.at( row )) );
     return createIndex( row, column, 0 );
 }
 
@@ -226,23 +230,26 @@ PlaylistBrowserNS::DynamicBiasModel::columnCount( const QModelIndex& parent ) co
 void
 PlaylistBrowserNS::DynamicBiasModel::widgetChanged( QWidget* w )
 {
-    DEBUG_BLOCK
     Q_UNUSED(w)
+
     // more or less a hack to get the delegate to redraw the list correctly when
     // the size of one of the widgets changes.
 
-    //int i;
-    //if( w )
-    //{
-        //for( i = 0; i < m_widgets.size(); ++i )
-        //{
-            //if( m_widgets[i] == w )
-                //break;
-        //}
-    //}
-    //else i = 0;
+    int i;
+    if( w )
+    {
+        for( i = 0; i < m_widgets.size(); ++i )
+        {
+            if( m_widgets[i] == w )
+                break;
+        }
+    }
+    else i = 0;
 
-    beginInsertRows( QModelIndex(), 0, 0 );
+    for( int j = 0; j < m_widgets.size(); ++j )
+        m_widgets[i]->hide();
+
+    beginInsertRows( QModelIndex(), i, i );
     endInsertRows();
 }
 

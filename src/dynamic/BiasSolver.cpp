@@ -22,6 +22,7 @@
 #include "BiasSolver.h"
 #include "Debug.h"
 #include "DynamicModel.h"
+#include "TrackSet.h"
 
 #include <cmath>
 #include <typeinfo>
@@ -226,14 +227,15 @@ Dynamic::BiasSolver::generateInitialPlaylist()
         return false;
     }
 
+    // convert all the property sets to TrackSets.
+    QList<TrackSet> propertySets;
+    foreach( Dynamic::GlobalBias* b, globalBiases )
+        propertySets.append( Dynamic::TrackSet( b->propertySet() ) );
+
 
     // We are going to be computing a lot of track set intersections so we will
     // memoize to try and save time (if not memory).
-    QHash< QByteArray, QList<Meta::TrackPtr> > memoizedIntersections;
-
-
-    const char REJECTED = 0xf;
-    const char ACCEPTED = 0x1;
+    QHash< QBitArray, QList<Meta::TrackPtr> > memoizedIntersections;
 
 
 
@@ -244,7 +246,8 @@ Dynamic::BiasSolver::generateInitialPlaylist()
     for( int i = 0; i < globalBiases.size(); ++i )
         movingWeights[i] = globalBiases[i]->weight();
 
-    const QSet<Meta::TrackPtr> U = PlaylistBrowserNS::DynamicModel::instance()->universe();
+    //const QSet<Meta::TrackPtr>& U = PlaylistBrowserNS::DynamicModel::instance()->universe();
+    //
 
     m_playlist.clear();
 
@@ -254,6 +257,8 @@ Dynamic::BiasSolver::generateInitialPlaylist()
     for( int i = 0; i < globalBiases.size(); ++i )
         indexes.append( i );
 
+
+    Dynamic::TrackSet S, R;
 
     double decider;
     int n = m_n;
@@ -275,94 +280,40 @@ Dynamic::BiasSolver::generateInitialPlaylist()
 
 
         // The bit array represents the choice made at each branch.
-        QByteArray branches( globalBiases.size(), 0x0 );
+        QBitArray branches( globalBiases.size(), 0x0 );
 
-        QSet<Meta::TrackPtr> subtractions;
-        QSet<Meta::TrackPtr> S;
-
+        S.setUniverseSet();
 
         for( int _i = 0; _i < globalBiases.size(); ++_i )
         {
             int i = indexes[_i];
 
-            const QSet<Meta::TrackPtr>& A = globalBiases[i]->propertySet();
+            R = S;
+            bool accepted;
 
+            // Decide whether we should 'accept' or 'reject' a bias.
             decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
-
-            // acceptance proposed
             if( decider < movingWeights[i] )
             {
-                QSet<Meta::TrackPtr> A_ = A;
-                A_.subtract( subtractions );
-
-
-                // reject
-                if( A_.isEmpty() )
-                {
-                    debug() << "-";
-                    branches[i] = REJECTED;
-                    // A - subtractions = 0  =>  A & subtractions = subtractions
-                }
-                // accept
-                else
-                {
-                    debug() << "+";
-                    branches[i] = ACCEPTED;
-                    if( S.isEmpty() )
-                    {
-                        S = A_;
-                    }
-                    else
-                    {
-                        S.intersect( A_ );
-                    }
-
-                }
+                branches.setBit( i, true );
+                R.intersect( propertySets[i] );
             }
-            // rejection proposed
             else
             {
-                // there are no intersections so we have to test against U.
-                if( S.isEmpty() )
-                {
-                    QSet<Meta::TrackPtr> subtractions_ = subtractions;
-                    subtractions_.unite( A );
-                    // accept
-                    if( subtractions_.size() == U.size() )
-                    {
-                        branches[i] = ACCEPTED;
-                        S = A;
-                        S.subtract( subtractions );
-                    }
-                    // reject
-                    else
-                    {
-                        branches[i] = REJECTED;
-                        subtractions = subtractions_;
-                    }
-                }
-                else
-                {
-                    QSet<Meta::TrackPtr> S_ = S;
-                    S_.subtract( A );
-
-                    // accept
-                    if( S_.isEmpty() )
-                    {
-                        // S - A = 0  => S & A = S
-                        branches[i] = ACCEPTED;
-                    }
-                    // reject
-                    else
-                    {
-                        branches[i] = REJECTED;
-                        S = S_;
-                        subtractions.unite( A );
-                    }
-                }
+                branches.setBit( i, false );
+                R.subtract( propertySets[i] );
             }
 
-            if( branches[i] == ACCEPTED )
+            // Now we have to make sure our decision doesn't land us with an
+            // empty set. If that's the case, we have to choose the other
+            // branch, even if it does defy the probability. (This is how we
+            // deal with infeasible systems.)
+            if( R.size() == 0 )
+                branches.toggleBit( i );
+            else
+                S = R;
+
+            if( branches[i] )
                 movingWeights[i] = (movingWeights[i]*(double)(n+1)-1.0)/(double)n;
             else
                 movingWeights[i] = (movingWeights[i]*(double)(n+1))/(double)n;
@@ -372,31 +323,22 @@ Dynamic::BiasSolver::generateInitialPlaylist()
         // duplicate toList conversions.
         if( !memoizedIntersections.contains( branches ) )
         {
-            if( S.isEmpty() )
-            {
-                S = U;
-                S.subtract( subtractions );
-            }
-
-            memoizedIntersections[branches] = S.toList();
+            memoizedIntersections[branches] = S.trackList();
         }
 
-        const QList<Meta::TrackPtr>& R = memoizedIntersections[branches];
+        const Meta::TrackList& finalSubset = memoizedIntersections[branches];
 
         // this should never happen
-        if( R.size() == 0 )
+        if( finalSubset.size() == 0 )
         {
             warning() << "BiasSolver assumption failed.";
             m_playlist.append( m_mutationSource->getTrack() );
             continue;
         }
 
-        //debug() << "|R| = " << R.size();
-
-        // Now just convert the set we are left with into a list and choose a
-        // random track from it.
-        int choice = KRandom::random() % R.size();
-        m_playlist.append( R[choice] );
+        // choose a track at random from our final subset
+        int choice = KRandom::random() % finalSubset.size();
+        m_playlist.append( finalSubset[choice] );
     }
 
     return optimal;

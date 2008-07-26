@@ -73,7 +73,7 @@ class DynamicModel : public QAbstractItemModel
 
         QDomDocument savedPlaylistDoc() { return m_savedPlaylists; }
 
-        const QSet<Meta::TrackPtr>& universe();
+        const Meta::TrackList& universe();
 
     signals:
         void activeChanged(); // active row changed
@@ -108,7 +108,7 @@ class DynamicModel : public QAbstractItemModel
         QList<QDomElement>                               m_playlistElements;
 
         QMutex m_universeMutex;
-        QSet<Meta::TrackPtr> m_universe;
+        Meta::TrackList m_universe;
         bool m_universeCurrent;
 };
 

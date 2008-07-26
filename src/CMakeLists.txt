@@ -369,6 +369,7 @@ set(libdynamic_SRCS
     dynamic/RandomPlaylist.cpp
     dynamic/Bias.cpp
     dynamic/BiasSolver.cpp
+    dynamic/TrackSet.cpp
 )
 
 #####################################################################

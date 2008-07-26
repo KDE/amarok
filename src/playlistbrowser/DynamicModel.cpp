@@ -248,7 +248,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 }
 
 
-const QSet<Meta::TrackPtr>&
+const Meta::TrackList&
 PlaylistBrowserNS::DynamicModel::universe()
 {
     if( !m_universeCurrent )
@@ -418,17 +418,10 @@ PlaylistBrowserNS::DynamicModel::computeUniverseSet()
         size += ts.size();
     }
 
-    m_universe.reserve( size );
-
     debug() << "Results from: " << trackLists.keys();
 
     foreach( Meta::TrackList ts, trackLists )
-    {
-        foreach( Meta::TrackPtr t, ts )
-        {
-            m_universe.insert( t );
-        }
-    }
+        m_universe += ts;
 
     m_universeCurrent = true;
     m_universeMutex.unlock();

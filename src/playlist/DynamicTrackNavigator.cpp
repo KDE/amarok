@@ -35,8 +35,6 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Dynamic::Dynam
 {
     connect( m_playlistModel, SIGNAL(activeRowChanged(int,int)),
              SLOT(activeRowChanged(int,int)));
-    connect( m_playlistModel, SIGNAL(activeRowExplicitlyChanged(int,int)),
-             SLOT(activeRowExplicitlyChanged(int,int)));
     connect( m_playlistModel, SIGNAL(repopulate()),
              SLOT(repopulate()) );
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL(activeChanged()),
