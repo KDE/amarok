@@ -42,7 +42,6 @@
 #include "scriptengine/AmarokScriptableServiceScript.h"
 #include "scriptengine/AmarokServicePluginManagerScript.h"
 #include "scriptengine/AmarokStatusbarScript.h"
-#include "scriptengine/AmarokTrackInfoScript.h"
 #include "scriptengine/AmarokWindowScript.h"
 #include "scriptengine/ScriptImporter.h"
 #include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
@@ -590,11 +589,6 @@ ScriptManager::startScriptEngine( QString name )
     objectPtr = new AmarokScript::AmarokEngineScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Engine", scriptObject );
-    m_scripts[name].wrapperList.append( objectPtr );
-
-    objectPtr = new AmarokScript::AmarokTrackInfoScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
-    m_global.property("Engine").setProperty( "TrackInfo", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
     objectPtr = new AmarokScript::AmarokWindowScript( scriptEngine, &m_scripts[name].guiPtrList );

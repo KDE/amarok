@@ -19,6 +19,7 @@
 
 #include "App.h"
 #include "collection/CollectionManager.h"
+#include "EngineController.h"
 #include "MainWindow.h"
 #include "playlist/PlaylistModel.h"
 
@@ -40,12 +41,12 @@ namespace AmarokScript
     AmarokPlaylistScript::~AmarokPlaylistScript()
     {
     }
-    int AmarokPlaylistScript::getActiveIndex()
+    int AmarokPlaylistScript::activeIndex()
     {
         return The::playlistModel()->activeRow();
     }
 
-    int AmarokPlaylistScript::getTotalTrackCount()
+    int AmarokPlaylistScript::totalTrackCount()
     {
         return The::playlistModel()->rowCount();
     }
@@ -88,12 +89,12 @@ namespace AmarokScript
 
     void AmarokPlaylistScript::removeCurrentTrack()
     {
-        The::playlistModel()->removeRows( getActiveIndex(), 1 );
+        The::playlistModel()->removeRows( activeIndex(), 1 );
     }
 
     void AmarokPlaylistScript::removeByIndex( int index )
     {
-        if( index < getTotalTrackCount() )
+        if( index < totalTrackCount() )
             The::playlistModel()->removeRows( index, 1 );
     }
 
@@ -120,9 +121,40 @@ namespace AmarokScript
         return fileNames;
     }
 
-    TrackMeta AmarokPlaylistScript::TrackInfo( int index )
+    TrackMeta AmarokPlaylistScript::TrackInfo( int row )
     {
-
+        TrackMeta info;
+        Meta::TrackPtr track;
+        if ( index == 0 ) //current playing
+            track = The::engineController()->currentTrack();
+        else
+            track = The::playlistModel()->trackForRow( row );
+        if ( track )
+        {
+            info.isValid = true;
+            info.sampleRate = track->sampleRate();
+            info.bitrate = track->bitrate();
+            info.score = track->score();
+            info.rating = track->rating();
+            info.inCollection = track->inCollection();
+            info.type = track->type();
+            info.Length = track->length();
+            info.fileSize = track->filesize();
+            info.trackNumber = track->trackNumber();
+            info.discNumber = track->discNumber();
+            info.playCount = track->playCount();
+            info.playable = track->isPlayable();
+            info.album = track->album()->prettyName();
+            info.artist = track->artist()->prettyName();
+            info.composer = track->composer()->prettyName();
+            info.genre = track->genre()->prettyName();
+            info.year = track->year()->prettyName();
+            info.comment = track->comment();
+            info.path = track->playableUrl().path();
+        }
+        else
+            info.isValid = false;
+        return info;
     }
 
 }

@@ -47,6 +47,7 @@ namespace AmarokScript
         QString year;
         QString comment;
         QString path;
+        bool isValid;
     };
 
     class AmarokPlaylistScript : public QObject
@@ -57,8 +58,8 @@ namespace AmarokScript
             AmarokPlaylistScript( QScriptEngine* ScriptEngine );
             ~AmarokPlaylistScript();
         public slots:
-            int getActiveIndex();
-            int getTotalTrackCount();
+            int activeIndex();
+            int totalTrackCount();
             QString saveCurrentPlaylist();
             void addMedia( const KUrl &url );
             void addMediaList( const KUrl::List &urls );
@@ -71,7 +72,7 @@ namespace AmarokScript
             void setStopAfterCurrent( bool on );
             void togglePlaylist();
             QStringList filenames();
-            TrackMeta TrackInfo( int index );
+            TrackMeta TrackInfo( int row );
         signals:
             void CountChanged( int newCount );
             void GroupingChanged();

@@ -357,7 +357,6 @@ set (scriptengine_SRCS
      scriptengine/AmarokOSDScript.cpp
      scriptengine/AmarokPlaylistScript.cpp
      scriptengine/AmarokStatusbarScript.cpp
-     scriptengine/AmarokTrackInfoScript.cpp
      scriptengine/AmarokWindowScript.cpp
 )
 
