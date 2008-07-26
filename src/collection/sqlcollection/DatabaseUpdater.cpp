@@ -422,7 +422,7 @@ DatabaseUpdater::createTables() const
 
         QStringList indices;
         indices << "artist" << "album" << "genre" << "composer" << "year" << "title";
-        indices << "track" << "discnumber" << "createdate" << "length" << "bitrate" << "filesize";
+        indices << "discnumber" << "createdate" << "length" << "bitrate" << "filesize";
         foreach( const QString &index, indices )
         {
             QString query = QString( "CREATE INDEX tracks_%1 ON tracks(%2);" ).arg( index, index );

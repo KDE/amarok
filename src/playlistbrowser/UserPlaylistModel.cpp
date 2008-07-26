@@ -379,7 +379,7 @@ void PlaylistBrowserNS::UserModel::createTables()
             ", album " + sqlStorage->textColumnType() +
             ", artist " + sqlStorage->textColumnType() +
             ", length INTEGER );" ) );
-    sqlStorage->query( "CREATE INDEX parent_playlists_tracks ON playlists_tracks( playlist_id );" );
+    sqlStorage->query( "CREATE INDEX parent_playlists_tracks ON playlist_tracks( playlist_id );" );
 
 
     sqlStorage->query( "INSERT INTO admin(key,version) "
