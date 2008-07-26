@@ -41,16 +41,16 @@ else
     print ( "Menu2 already exists!" );
 
 
-var TrackInfo = Amarok.Engine.TrackInfo;
+var TrackInfo = Amarok.Playlist.TrackInfo( 0 );
 var OSD = Amarok.Window.OSD;
 var StatusBar = Amarok.Window.Statusbar;
 
-if ( TrackInfo.Artist || TrackInfo.Album )
+if ( TrackInfo.isValid )
 {
-    OSD.setText( "Hey, this is " + TrackInfo.Artist );
+    OSD.setText( "Hey, this is " + TrackInfo.artist );
     OSD.show();
 
-    StatusBar.longMessage( "You are listening to album: " + TrackInfo.Album );
+    StatusBar.longMessage( "You are listening to album: " + TrackInfo.album );
 }
 
 function onConfigure()

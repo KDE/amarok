@@ -34,7 +34,7 @@ namespace AmarokScript
         int rating;
         bool inCollection;
         QString type;
-        int Length;
+        int length;
         int fileSize;
         int trackNumber;
         int discNumber;
@@ -79,6 +79,9 @@ namespace AmarokScript
             void rowMoved( int from, int to );
             void activeRowChanged( int from, int to );
             void activeRowExplicitlyChanged( int from, int to );
+        public:
+            QScriptValue   toScriptValue(QScriptEngine *engine, const TrackMeta &in);
+            void           fromScriptValue(const QScriptValue &value, TrackMeta &out);
 
     };
 }

@@ -417,6 +417,7 @@ ScriptManager::slotRunScript( QString name, bool silent )
     //FIXME: '\n' doesen't work?
     if ( m_scripts[name].engine->hasUncaughtException() )
     {
+        error() << "Script Error:" << time.currentTime().toString() + " " + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() );
         m_scripts[name].log += time.currentTime().toString() + " " + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() ) + '\n';
         m_scripts[name].engine->clearExceptions();
         scriptFinished( name );
