@@ -78,12 +78,17 @@ function PlaylistCountChanged( count )
     print( count );
 }
 
+function VolumeChanged( volume )
+{
+    print( "Volume changed to: " + volume );
+}
+
 Amarok.configured.connect( onConfigure );
 Amarok.Engine.trackChanged.connect( TrackChanged );
 Amarok.Engine.trackSeeked.connect( TrackSeeked );
 Amarok.Engine.trackFinished.connect( TrackFinished );
 Amarok.Playlist.CountChanged.connect( PlaylistCountChanged );
-
+Amarok.Engine.volumeChanged.connect( VolumeChanged );
 
 var time = QTime.currentTime();
 print( time.hour() );

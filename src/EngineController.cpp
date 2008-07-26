@@ -398,6 +398,7 @@ EngineController::setVolume( int percent ) //SLOT
     AmarokConfig::setMasterVolume( percent );
     volumeChangedNotify( percent );
 
+    emit volumeChanged( percent );
     return percent;
 }
 

@@ -35,6 +35,8 @@ namespace AmarokScript
         connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SIGNAL( trackChanged() ) );
         connect( The::engineController(), SIGNAL( trackFinished() ), this, SIGNAL( trackFinished() ) );
         connect( The::engineController(), SIGNAL( trackSeeked( int ) ), this, SIGNAL( trackSeeked( int ) ) );
+        connect( The::engineController(), SIGNAL( volumeChanged( int ) ), this, SIGNAL( volumeChanged( int ) ) );
+        connect( The::engineController(), SIGNAL( trackPlayPause( int ) ), this, SIGNAL( trackPlayPause( int ) ) );
     }
 
     AmarokEngineScript::~AmarokEngineScript()
@@ -95,12 +97,12 @@ namespace AmarokScript
         The::engineController()->seekBackward( ms );
     }
 
-    int AmarokEngineScript::increaseVolume( int ticks )
+    int AmarokEngineScript::IncreaseVolume( int ticks )
     {
         return The::engineController()->increaseVolume( ticks );
     }
 
-    int AmarokEngineScript::decreaseVolume( int ticks )
+    int AmarokEngineScript::DecreaseVolume( int ticks )
     {
         return The::engineController()->decreaseVolume( ticks );
     }
@@ -113,6 +115,23 @@ namespace AmarokScript
     int AmarokEngineScript::trackPosition()
     {
         return The::engineController()->trackPosition();
+    }
+
+    int AmarokEngineScript::engineState()
+    {
+        switch( The::engineController()->state() )
+        {
+            case Phonon::PlayingState:
+            case Phonon::BufferingState:
+                return 0; //Playing
+            case Phonon::PausedState:
+                return 1; //Paused
+            case Phonon::LoadingState:
+            case Phonon::StoppedState:
+                return 2; //Stopped
+            case Phonon::ErrorState:
+                return -1;
+        };
     }
 
     bool AmarokEngineScript::randomMode()

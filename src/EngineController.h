@@ -95,10 +95,11 @@ public slots:
     void mute();
 
 signals:
-    void trackPlayPause( int );
+    void trackPlayPause( int ); //Playing: 0, Paused: 1
     void trackFinished();
     void trackChanged( Meta::TrackPtr );
     void trackSeeked( int ); //return relative time in million second
+    void volumeChanged( int );
 
 protected:
     void playUrl( const KUrl &url, uint offset );
