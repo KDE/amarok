@@ -154,6 +154,11 @@ class MtpTrack : public Meta::Track
         void setGenre( MtpGenrePtr genre );
         void setYear( MtpYearPtr year );
 
+        u_int32_t               id() const { return m_id; }
+        uint32_t                folderId() const { return m_folder_id; }
+        void                    setId( int id ) { m_id = id; }
+        void                    setFolderId( const uint32_t folder_id ) { m_folder_id = folder_id; }
+
         // These methods are for MtpTrack-specific usage
         // NOTE: these methods/data may turn out to be unneeded
         MtpArtistMap getMtpArtistMap() const { return m_mtpArtistMap; }
@@ -191,6 +196,9 @@ class MtpTrack : public Meta::Track
 
         LIBMTP_track_t *m_mtptrack;
 //	QList<MTP_Playlist*> m_mtpplaylists;
+
+        u_int32_t               m_id;
+        uint32_t                m_folder_id;
 
         QString m_comment;
         QString m_name;

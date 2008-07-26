@@ -119,8 +119,6 @@ MtpCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 
     }
 
-    m_collection->copyTracksCompleted();
-
     m_collection->collectionUpdated();
     
     slotCopyOperationFinished();

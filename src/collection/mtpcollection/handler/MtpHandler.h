@@ -66,8 +66,22 @@ namespace Mtp
        void parseTracks();
        QString prettyName() const;
        void terminate();
-
        bool succeeded() const { return m_success; }
+       
+
+        private:
+            // file-copying related functions
+            uint32_t checkFolderStructure( const Meta::TrackPtr track, bool create );
+            uint32_t getDefaultParentId( void );
+            uint32_t folderNameToID( char *name, LIBMTP_folder_t *folderlist );
+            uint32_t subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, uint32_t parent_id );
+            uint32_t createFolder( const char *name, uint32_t parent_id );
+            void updateFolders( void );
+            int progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
+       
+
+
+       
 
        // file io functions
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
@@ -81,6 +95,8 @@ namespace Mtp
        
        // miscellaneous internal functions
        void addMtpTrackToCollection( LIBMTP_track_t *mtptrack );
+
+       
 
        // convenience methods to avoid repetitive code
 
@@ -110,6 +126,7 @@ namespace Mtp
 
         uint32_t                m_default_parent_folder;
         LIBMTP_folder_t        *m_folders;
+        QString                 m_folderStructure;
         QString                 m_format;
         QString                 m_name;
         QStringList             m_supportedFiles;

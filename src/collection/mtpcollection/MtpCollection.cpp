@@ -160,9 +160,9 @@ MtpCollection::MtpCollection( const QString &udi, const QString &serial )
 void
 MtpCollection::copyTrackToDevice( const Meta::TrackPtr &track )
 {
-    Q_UNUSED( track );
-    // TODO: NYI
-    //m_handler->copyTrackToDevice( track );
+    
+    
+    m_handler->copyTrackToDevice( track );
     return;
 }
 
@@ -350,8 +350,8 @@ void
 MtpCollection::copyTracksCompleted()
 {
     DEBUG_BLOCK
-//        debug() << "Trying to write iTunes database";
-//    m_handler->writeITunesDB( false ); // false, since not threaded, implement later
+
+    // nothing to do
     
 }
 
