@@ -117,9 +117,13 @@ void CurrentTrack::init()
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
     resize( m_width, m_aspectRatio );
+ 
+
     
     m_noTrackText = "No track playing";
     m_noTrack->setText( m_noTrackText );
+    
+    connectSource( "current" );
     
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
             this, SLOT( connectSource( const QString& ) ) );

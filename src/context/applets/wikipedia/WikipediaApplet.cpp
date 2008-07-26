@@ -86,11 +86,9 @@ void WikipediaApplet::init()
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
 
-    if( The::engineController()->state() == Phonon::PlayingState  )
-        dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
-    else
-        connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ),
-                 this, SLOT( connectSource( const QString & ) ) );
+    connectSource( "wikipedia" );
+    connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ),
+            this, SLOT( connectSource( const QString & ) ) );
     
     constraintsEvent();
 
