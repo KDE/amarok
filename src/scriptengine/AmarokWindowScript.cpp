@@ -28,7 +28,7 @@
 
 #include <QtScript>
 
-namespace Amarok
+namespace AmarokScript
 {
     AmarokWindowScript::AmarokWindowScript( QScriptEngine* ScriptEngine, QList<QObject*>* guiPtrList  )
     : QObject( kapp )
@@ -47,7 +47,7 @@ namespace Amarok
     {
         DEBUG_BLOCK
         QString title = "Tools_" + MenuTitle;
-        KActionCollection* const ac = actionCollection();
+        KActionCollection* const ac = Amarok::actionCollection();
         if ( !ac->action( title ) )
         {
             KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, The::mainWindow() );
@@ -73,7 +73,7 @@ namespace Amarok
     {
         DEBUG_BLOCK
         QString title = "Settings_" + MenuTitle;
-        KActionCollection* const ac = actionCollection();
+        KActionCollection* const ac = Amarok::actionCollection();
         if ( !ac->action( title ) )
         {
             KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, The::mainWindow() );

@@ -21,7 +21,7 @@
 #include <QObject>
 #include <QtScript>
 
-namespace Amarok
+namespace AmarokScript
 {
 
     class AmarokCollectionScript : public QObject

@@ -22,7 +22,7 @@
 
 #include <QtScript>
 
-namespace Amarok
+namespace AmarokScript
 {
     AmarokTrackInfoScript::AmarokTrackInfoScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )

@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QtScript>
 
-namespace Amarok
+namespace AmarokScript
 {
 
     class AmarokOSDScript : public QObject

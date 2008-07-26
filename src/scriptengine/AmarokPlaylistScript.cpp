@@ -24,7 +24,7 @@
 
 #include <QtScript>
 
-namespace Amarok
+namespace AmarokScript
 {
     AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
@@ -118,6 +118,11 @@ namespace Amarok
         foreach( Playlist::Item* item, The::playlistModel()->itemList() )
         fileNames << item->track()->prettyUrl();
         return fileNames;
+    }
+
+    TrackMeta AmarokPlaylistScript::TrackInfo( int index )
+    {
+
     }
 
 }

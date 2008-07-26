@@ -21,7 +21,7 @@
 
 #include <QtScript>
 
-namespace Amarok
+namespace AmarokScript
 {
     AmarokLyricsScript::AmarokLyricsScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )

@@ -20,12 +20,11 @@
 #include "App.h"
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
-//#include "collection/sqlcollection/SqlCollection.h"
 #include "collection/sqlcollection/SqlCollectionLocation.h"
 
 #include <QtScript>
 
-namespace Amarok
+namespace AmarokScript
 {
     AmarokCollectionScript::AmarokCollectionScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )

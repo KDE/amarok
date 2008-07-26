@@ -26,7 +26,7 @@
 #include <QtScript>
 #include <QSet>
 
-namespace Amarok
+namespace AmarokScript
 {
     ScriptImporter::ScriptImporter( QScriptEngine* ScriptEngine, KUrl url )
     : QObject( kapp )

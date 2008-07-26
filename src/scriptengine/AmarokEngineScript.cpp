@@ -23,7 +23,7 @@
 
 #include <QtScript>
 
-namespace Amarok
+namespace AmarokScript
 {
     AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )

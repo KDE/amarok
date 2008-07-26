@@ -23,8 +23,31 @@
 #include <QObject>
 #include <QtScript>
 
-namespace Amarok
+namespace AmarokScript
 {
+
+    struct TrackMeta
+    {
+        int sampleRate;
+        int bitrate;
+        double score;
+        int rating;
+        bool inCollection;
+        QString type;
+        int Length;
+        int fileSize;
+        int trackNumber;
+        int discNumber;
+        int playCount;
+        int playable;
+        QString album;
+        QString artist;
+        QString composer;
+        QString genre;
+        QString year;
+        QString comment;
+        QString path;
+    };
 
     class AmarokPlaylistScript : public QObject
     {
@@ -48,6 +71,7 @@ namespace Amarok
             void setStopAfterCurrent( bool on );
             void togglePlaylist();
             QStringList filenames();
+            TrackMeta TrackInfo( int index );
         signals:
             void CountChanged( int newCount );
             void GroupingChanged();
@@ -58,4 +82,5 @@ namespace Amarok
     };
 }
 
+Q_DECLARE_METATYPE( AmarokScript::TrackMeta )
 #endif

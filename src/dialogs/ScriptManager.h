@@ -22,6 +22,8 @@
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
+#include "scriptengine/AmarokScript.h"
+#include "scriptengine/AmarokScriptableServiceScript.h"
 #include "EngineObserver.h"   //baseclass
 #include "ScriptSelector.h"
 
@@ -37,10 +39,6 @@ class KArchiveDirectory;
 class KPluginInfo;
 class KPluginSelector;
 class QScriptEngine;
-namespace Amarok {
-    class AmarokScript;
-    class AmarokScriptableServiceScript;
-};
 
 class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 {
@@ -109,8 +107,8 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
             QScriptEngine*                                  engine;
             KUrl                                            url;
             bool                                            running;
-            Amarok::AmarokScript*                           globalPtr;
-            Amarok::AmarokScriptableServiceScript*          servicePtr;
+            AmarokScript::AmarokScript*                           globalPtr;
+            AmarokScript::AmarokScriptableServiceScript*          servicePtr;
             QString                                         log;
             QList<QObject*>                                 guiPtrList;
             QList<QObject*>                                 wrapperList;

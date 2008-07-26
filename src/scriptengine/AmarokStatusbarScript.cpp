@@ -22,7 +22,7 @@
 
 #include <QtScript>
 
-namespace Amarok
+namespace AmarokScript
 {
     AmarokStatusbarScript::AmarokStatusbarScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
@@ -37,37 +37,37 @@ namespace Amarok
 
     void AmarokStatusbarScript::setMainText( const QString &text )
     {
-        StatusBar::instance()->setMainText( text );
+        Amarok::StatusBar::instance()->setMainText( text );
     }
 
     void AmarokStatusbarScript::setMainTextIcon( QPixmap icon )
     {
-        StatusBar::instance()->setMainTextIcon( icon );
+        Amarok::StatusBar::instance()->setMainTextIcon( icon );
     }
 
     void AmarokStatusbarScript::hideMainTextIcon()
     {
-        StatusBar::instance()->hideMainTextIcon();
+        Amarok::StatusBar::instance()->hideMainTextIcon();
     }
 
     void AmarokStatusbarScript::resetMainText()
     {
-        StatusBar::instance()->resetMainText();
+        Amarok::StatusBar::instance()->resetMainText();
     }
 
     void AmarokStatusbarScript::longMessage( const QString &text )
     {
-        StatusBar::instance()->longMessage( text );
+        Amarok::StatusBar::instance()->longMessage( text );
     }
 
     void AmarokStatusbarScript::shortLongMessage( const QString &_short, const QString &_long )
     {
-        StatusBar::instance()->shortLongMessage( _short, _long );
+        Amarok::StatusBar::instance()->shortLongMessage( _short, _long );
     }
 
     void AmarokStatusbarScript::shortMessage( const QString &text, bool longShort )
     {
-        StatusBar::instance()->shortMessage( text, longShort );
+        Amarok::StatusBar::instance()->shortMessage( text, longShort );
     }
 }
 
