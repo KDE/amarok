@@ -253,6 +253,22 @@ MtpCollection::removeTrack( const Meta::MtpTrackPtr &track )
     m_trackMap.remove( track->name() );
 }
 
+QString
+MtpCollection::getTempFileName( const Meta::MtpTrackPtr track, const QString &tempDir )
+{
+    QString trackFileName = QString::fromUtf8( track->getMtpTrack()->filename );
+
+    QString filename = tempDir + trackFileName;
+
+    return filename;
+}
+
+int
+MtpCollection::getTrackToFile( const Meta::MtpTrackPtr track, const QString & filename )
+{
+    return m_handler->getTrackToFile( track->id(), filename );
+}
+
 void
 MtpCollection::updateTags( Meta::MtpTrack *track)
 {

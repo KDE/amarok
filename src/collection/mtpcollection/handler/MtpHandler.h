@@ -63,6 +63,7 @@ namespace Mtp
        // external functions
        void copyTrackToDevice( const Meta::TrackPtr &track );
        bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
+       int getTrackToFile( const uint32_t id, const QString & filename );
        void parseTracks();
        QString prettyName() const;
        void terminate();
@@ -86,6 +87,7 @@ namespace Mtp
        // file io functions
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
        void deleteFile( const KUrl &url );
+       
 
        // internal mtp functions
 

@@ -71,6 +71,9 @@ class MtpCollection : public Collection, public MemoryCollection
     bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
     void removeTrack( const Meta::MtpTrackPtr &track );
 
+    QString getTempFileName( const Meta::MtpTrackPtr track, const QString &tempDir );
+    int getTrackToFile( const Meta::MtpTrackPtr track, const QString & filename );
+
     void setTrackToDelete( const Meta::MtpTrackPtr &track );
 
     void copyTracksCompleted();

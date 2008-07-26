@@ -351,13 +351,19 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
     debug() << "Parent id : " << parent_id;
 
     trackmeta->parent_id = parent_id; // api change, set id here
-    debug() << "Sending track... " << track->prettyUrl();
+    trackmeta->storage_id = 0; // default storage id
+    debug() << "Sending track... " << track->url();
+    debug() << "Filename is: " << QString::fromUtf8( trackmeta->filename );
+
+    
+
 
     // TODO: implement callback correctly, not 0
     
     int ret = LIBMTP_Send_Track_From_File(
-                                          m_device, qstrdup( track->prettyUrl().toUtf8() ), trackmeta,
+                                          m_device, qstrdup( track->url().toUtf8() ), trackmeta,
             0, this );
+
     
 
     if( ret < 0 )
@@ -565,6 +571,12 @@ MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 }
 
 int
+MtpHandler::getTrackToFile( const uint32_t id, const QString & filename )
+{
+    return LIBMTP_Get_Track_To_File( m_device, id, filename.toUtf8(), 0, 0 );
+}
+
+int
 MtpHandler::readMtpMusic()
 {
     DEBUG_BLOCK
@@ -588,11 +600,19 @@ MtpHandler::getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr tr
     track->setBitrate( mtptrack->bitrate );
     track->setFileSize( mtptrack->filesize );
 
+    debug() << "Title is: " << track->title();
+
     // NOTE: libmtp has no access to the filesystem, no url for playing, must find way around
 //    track->setPlayableUrl( path );
-    track->setPlayableUrl( "" ); // defaulting, since not provided
+    
 
     track->setFolderId( mtptrack->parent_id );
+    track->setId( mtptrack->item_id );
+
+    debug() << "Id is: " << track->id();
+
+    track->setPlayableUrl( "" ); // defaulting, since not provided
+    track->setUrl( QString::number( track->id(), 10 ) ); // for map key
 }
 
 void

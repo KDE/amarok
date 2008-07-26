@@ -197,7 +197,7 @@ MtpTrack::playableUrl() const
 QString
 MtpTrack::url() const
 {
-    return m_playableUrl;
+    return m_url;
 }
 
 QString
@@ -209,7 +209,8 @@ MtpTrack::prettyUrl() const
 bool
 MtpTrack::isPlayable() const
 {
-    return true;
+    // TODO: somehow temporarily copy file to local disk to play
+    return false;
 }
 
 bool

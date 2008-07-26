@@ -33,6 +33,7 @@
 #include <kjob.h>
 #include <KLocale>
 #include <KSharedPtr>
+#include <KTempDir>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
@@ -122,6 +123,50 @@ MtpCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
     m_collection->collectionUpdated();
     
     slotCopyOperationFinished();
+}
+
+// pull tracks from device into a KTempDir
+void
+MtpCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+
+    QMap<Meta::TrackPtr, KUrl> urls;
+    
+    m_tempdir.setAutoRemove( true );
+    
+    QString genericError = i18n( "Could not copy track from device." );
+
+    foreach( Meta::TrackPtr trackptr, tracks )
+    {
+        Meta::MtpTrackPtr track = Meta::MtpTrackPtr::staticCast( trackptr );
+        if( !track )
+            break;
+
+        QString filename = m_collection->getTempFileName( track, m_tempdir.name() );
+
+        debug() << "Temp Filename: " << filename;
+
+        int ret = m_collection->getTrackToFile( track, filename );
+            if( ret != 0 )
+            {
+                debug() << "Get Track failed: " << ret;
+                /*The::statusBar()->shortLongMessage(
+                               genericError,
+                               i18n( "Could not copy track from device." ),
+                                     KDE::StatusBar::Error
+                                                  );*/
+            }
+            else
+            {
+                urls.insert( trackptr, filename );
+            }
+
+    }
+
+    slotGetKIOCopyableUrlsDone( urls );
+
+    
 }
 
 void

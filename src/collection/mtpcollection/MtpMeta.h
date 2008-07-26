@@ -175,7 +175,8 @@ class MtpTrack : public Meta::Track
 
     
         void setLength( int length );
-	void setPlayableUrl( QString Url ) { m_playableUrl = Url; }
+	void setPlayableUrl( const QString & url ) { m_playableUrl = url; }
+    void setUrl ( const QString & url ) { m_url = url; }
 
     private:
         MtpCollection *m_collection;
@@ -212,6 +213,7 @@ class MtpTrack : public Meta::Track
         float m_bpm;
         QString m_displayUrl;
         QString m_playableUrl;
+        QString m_url;
 };
 
 class MtpArtist : public Meta::Artist

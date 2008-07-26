@@ -21,6 +21,8 @@
 
 #include "CollectionLocation.h"
 
+#include <KTempDir>
+
 #include <QSet>
 #include <QMap>
 #include <QString>
@@ -41,6 +43,7 @@ class MtpCollectionLocation : public CollectionLocation
 
     protected:
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
+        virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
 
     signals:
         void addDevice( const QString &udi );
@@ -65,6 +68,7 @@ class MtpCollectionLocation : public CollectionLocation
         QSet<KJob*> m_jobs;
         QStringList m_ignoredDestinations;  //these tracks were not copied/moved because source and destination url were the same
         QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;    //used in the source when organizing the collection
+        KTempDir m_tempdir;
 };
 
 #endif
