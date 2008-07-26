@@ -134,21 +134,22 @@ namespace AmarokScript
         };
     }
 
-    bool AmarokEngineScript::randomMode()
+    bool AmarokEngineScript::randomMode() const
     {
         return AmarokConfig::randomMode();
     }
 
-    bool AmarokEngineScript::dynamicMode()
+    bool AmarokEngineScript::dynamicMode() const
     {
+        return AmarokConfig::dynamicMode();
     }
 
-    bool AmarokEngineScript::repeatPlaylist()
+    bool AmarokEngineScript::repeatPlaylist() const
     {
         return Amarok::repeatPlaylist();
     }
 
-    bool AmarokEngineScript::repeatTrack()
+    bool AmarokEngineScript::repeatTrack() const
     {
         return Amarok::repeatTrack();
     }
@@ -160,6 +161,7 @@ namespace AmarokScript
 
     void AmarokEngineScript::setDynamicMode( bool enable )
     {
+        
     }
 
     void AmarokEngineScript::setRepeatPlaylist( bool enable )
@@ -172,7 +174,7 @@ namespace AmarokScript
         static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Track : AmarokConfig::EnumRepeat::Off );
     }
 
-    int AmarokEngineScript::volume()
+    int AmarokEngineScript::volume() const
     {
         return The::engineController()->volume();
     }
@@ -180,6 +182,16 @@ namespace AmarokScript
     void AmarokEngineScript::setVolume( int percent )
     {
         The::engineController()->setVolume( percent );
+    }
+
+    int AmarokEngineScript::fadeoutLength() const
+    {
+        return AmarokConfig::fadeoutLength();
+    }
+
+    void AmarokEngineScript::setFadeoutLength( int length )
+    {
+        
     }
 }
 

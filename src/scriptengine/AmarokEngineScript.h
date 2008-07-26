@@ -33,6 +33,7 @@ namespace AmarokScript
         Q_PROPERTY ( bool repeatPlaylist READ repeatPlaylist WRITE setRepeatPlaylist )
         Q_PROPERTY ( bool repeatTrack READ repeatTrack WRITE setRepeatTrack )
         Q_PROPERTY ( int volume READ volume WRITE setVolume );
+        Q_PROPERTY ( int fadeoutLength READ fadeoutLength WRITE setFadeoutLength );
 
         public:
             AmarokEngineScript( QScriptEngine* ScriptEngine );
@@ -64,16 +65,18 @@ namespace AmarokScript
             void trackPlayPause( int );  //Playing: 0, Paused: 1
 
         private:
-            bool randomMode();
-            bool dynamicMode();
-            bool repeatPlaylist();
-            bool repeatTrack();
+            bool randomMode() const;
+            bool dynamicMode() const;
+            bool repeatPlaylist() const;
+            bool repeatTrack() const;
             void setRandomMode( bool enable );
-            void setDynamicMode( bool enable );
+            void setDynamicMode( bool enable ); //TODO: implement
             void setRepeatPlaylist( bool enable );
             void setRepeatTrack( bool enable );
-            int  volume();
+            int  volume() const;
             void setVolume( int percent );
+            int  fadeoutLength() const;
+            void setFadeoutLength( int length ); //TODO:implement
     };
 }
 

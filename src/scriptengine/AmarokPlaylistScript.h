@@ -47,7 +47,7 @@ namespace AmarokScript
             void setStopAfterCurrent( bool on );
             void togglePlaylist();
             QStringList filenames();
-            QVariantMap TrackInfo( int row );
+            QVariantMap TrackInfo( int row ); //TODO: implement
         signals:
             void CountChanged( int newCount );
             void GroupingChanged();

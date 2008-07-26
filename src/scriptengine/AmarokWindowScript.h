@@ -41,7 +41,7 @@ namespace AmarokScript
             bool addSettingsMenu( QString MenuTitle );
             void addSettingsSeparator();
             void showBrowser( QString browser );
-
+//TODO: show Tray Icon, Show Splash Screen
         private:
             KMenu*           m_ToolsMenu;
             KMenu*           m_SettingsMenu;
