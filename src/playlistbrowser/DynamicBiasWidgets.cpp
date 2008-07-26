@@ -322,6 +322,7 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
 
         qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
     m_filter.field = field;
+    m_filter.value.clear();
 
     if( field == 0 )
     {

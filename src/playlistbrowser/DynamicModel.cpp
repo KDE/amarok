@@ -34,6 +34,20 @@
 #include <QVariant>
 
 
+void
+Amarok::setDynamicPlaylist( const QString& title )
+{
+    PlaylistBrowserNS::DynamicModel::instance()->changePlaylist(
+            PlaylistBrowserNS::DynamicModel::instance()->playlistIndex( title ) );
+}
+
+void
+Amarok::enableDynamicMode( bool enable )
+{
+    PlaylistBrowserNS::DynamicModel::instance()->enable( enable );
+}
+
+
 PlaylistBrowserNS::DynamicModel* PlaylistBrowserNS::DynamicModel::s_instance = 0;
 
 PlaylistBrowserNS::DynamicModel*
@@ -66,6 +80,19 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
 PlaylistBrowserNS::DynamicModel::~DynamicModel()
 {
 }
+
+void
+PlaylistBrowserNS::DynamicModel::enable( bool enable )
+{
+    emit enableDynamicMode( enable );    
+}
+
+void
+PlaylistBrowserNS::DynamicModel::changePlaylist( int i )
+{
+    emit changeActive( qMax( 0, i ) );
+}
+
 
 Dynamic::DynamicPlaylistPtr
 PlaylistBrowserNS::DynamicModel::createDefaultPlaylist()

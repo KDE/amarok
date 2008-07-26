@@ -48,6 +48,9 @@ class DynamicModel : public QAbstractItemModel
 
         void loadPlaylists();
 
+        void enable( bool enable );
+        void changePlaylist( int i );
+
         QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
         Dynamic::DynamicPlaylistPtr defaultPlaylist();
@@ -78,6 +81,7 @@ class DynamicModel : public QAbstractItemModel
     signals:
         void activeChanged(); // active row changed
         void changeActive( int );  // request that active change
+        void enableDynamicMode( bool );
 
     public slots:
         void playlistModified( Dynamic::BiasedPlaylistPtr );

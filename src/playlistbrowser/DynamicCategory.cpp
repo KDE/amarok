@@ -83,6 +83,9 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     connect( DynamicModel::instance(), SIGNAL(changeActive(int)),
             m_presetComboBox, SLOT(setCurrentIndex(int)) );
 
+    connect( DynamicModel::instance(), SIGNAL(enableDynamicMode(bool)),
+            SLOT(enableDynamicMode(bool)) );
+
     connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(playlistSelectionChanged(int) ) );
 
@@ -182,6 +185,17 @@ DynamicCategory::initOnOffButton()
     }
 }
 
+void
+DynamicCategory::enableDynamicMode( bool enable )
+{
+    if( AmarokConfig::dynamicMode() == enable )
+        return;
+
+    if( enable )
+        On();
+    else
+        Off();
+}
 
 void
 DynamicCategory::OnOff(bool)

@@ -289,7 +289,6 @@ Dynamic::BiasSolver::generateInitialPlaylist()
             int i = indexes[_i];
 
             R = S;
-            bool accepted;
 
             // Decide whether we should 'accept' or 'reject' a bias.
             decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
@@ -339,6 +338,9 @@ Dynamic::BiasSolver::generateInitialPlaylist()
         // choose a track at random from our final subset
         int choice = KRandom::random() % finalSubset.size();
         m_playlist.append( finalSubset[choice] );
+
+        if( optimal )
+            emit statusUpdate( (int)(100.0 * (double)(m_n - n) / (double)n) );
     }
 
     return optimal;

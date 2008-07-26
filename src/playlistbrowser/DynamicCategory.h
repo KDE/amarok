@@ -43,6 +43,7 @@ namespace PlaylistBrowserNS {
 
         private slots:
             void OnOff(bool);
+            void enableDynamicMode( bool enable );
             void playlistSelectionChanged( int index );
             void save();
 

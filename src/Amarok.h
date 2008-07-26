@@ -176,8 +176,10 @@ namespace Amarok
     bool repeatEnabled();
     bool randomEnabled();
 
-// Port 2.0: Reenable when we have a new dynamic mode
-//     const DynamicMode *dynamicMode(); //defined in playlist.cpp
+
+    void setDynamicPlaylist( const QString& title );  // defined in dynamicmodel.cpp
+    void enableDynamicMode( bool enable );
+
 
     QStringList splitPath( QString path ); //defined in playlistbrowser.cpp
 
