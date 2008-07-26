@@ -40,12 +40,14 @@ namespace AmarokScript
             void addToolsSeparator();
             bool addSettingsMenu( QString MenuTitle );
             void addSettingsSeparator();
+            void showBrowser( QString browser );
 
         private:
             KMenu*           m_ToolsMenu;
             KMenu*           m_SettingsMenu;
             QScriptEngine*   m_ScriptEngine;
             QList<QObject*>* m_guiPtrList;
+
     };
 }
 

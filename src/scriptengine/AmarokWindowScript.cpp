@@ -94,6 +94,18 @@ namespace AmarokScript
         QAction* action = m_SettingsMenu->addSeparator();
         m_guiPtrList->append( action );
     }
+
+    void AmarokWindowScript::showBrowser( QString browser )
+    {
+        if ( browser == "collection" )
+            The::mainWindow()->showBrowser( "CollectionBrowser" );
+        if ( browser == "playlist" )
+            The::mainWindow()->showBrowser( "PlaylistBrowser" );
+        if ( browser == "internet" )
+            The::mainWindow()->showBrowser( "Internet" );
+        if ( browser == "file" )
+            The::mainWindow()->showBrowser( "FileBrowser" );
+    }
 }
 
 #include "AmarokWindowScript.moc"

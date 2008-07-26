@@ -29,6 +29,8 @@ namespace AmarokScript
     {
         Q_OBJECT
 
+        Q_PROPERTY ( bool osdEnabled READ osdEnabled WRITE setOsdEnabled )
+
         public:
             AmarokOSDScript( QScriptEngine* ScriptEngine );
             ~AmarokOSDScript();
@@ -45,6 +47,9 @@ namespace AmarokScript
             void setText( const QString &text );
             void setDrawShadow( const bool b );
             void setRating( const short rating ); //what is this?
+        private:
+            void setOsdEnabled( bool enabled );
+            bool osdEnabled();
     };
 }
 

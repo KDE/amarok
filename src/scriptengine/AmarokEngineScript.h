@@ -46,6 +46,8 @@ namespace AmarokScript
             int  decreaseVolume( int ticks = 100/25 );
             int  setVolume( int percent );
             void Mute();
+//dynamicMode, randomMode, repeatPlaylist, repeatTrack, currentTime, next, prev
+
         signals:
             void trackFinished();
             void trackChanged();

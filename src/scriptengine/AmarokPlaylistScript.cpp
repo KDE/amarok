@@ -129,6 +129,7 @@ namespace AmarokScript
             track = The::engineController()->currentTrack();
         else
             track = The::playlistModel()->trackForRow( row );
+        //coverImage, lyrics
         if ( track )
         {
             info["isValid"] = true;

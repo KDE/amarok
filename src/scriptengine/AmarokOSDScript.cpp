@@ -17,6 +17,7 @@
 
 #include "AmarokOSDScript.h"
 
+#include "amarokconfig.h"
 #include "App.h"
 #include "Osd.h"
 
@@ -89,7 +90,16 @@ namespace AmarokScript
         Amarok::OSD::instance()->setRating( rating );
     }
 
+    void AmarokOSDScript::setOsdEnabled( bool enabled )
+    {
+        Amarok::OSD::instance()->setEnabled( enabled );
+        AmarokConfig::setOsdEnabled( enabled );
+    }
 
+    bool AmarokOSDScript::osdEnabled()
+    {
+        return AmarokConfig::osdEnabled();
+    }
 }
 
 #include "AmarokOSDScript.moc"
