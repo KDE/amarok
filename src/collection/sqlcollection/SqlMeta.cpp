@@ -662,12 +662,13 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     switch( type )
     {
-        case Meta::Capability::Editable:
         case Meta::Capability::CustomActions:
         case Meta::Capability::Organisable:
             return true;
         case Meta::Capability::Updatable:
             return true;
+        case Meta::Capability::Editable:
+            return QFile::permissions( playableUrl().path() ) & QFile::WriteUser;
 
         default:
             return false;
