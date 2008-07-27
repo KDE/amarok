@@ -262,7 +262,7 @@ SqlCollection::longTextColumnType() const
 QString
 SqlCollection::randomFunc() const
 {
-    return "RAND()";
+    return "RANDOM()";
 }
 
 void

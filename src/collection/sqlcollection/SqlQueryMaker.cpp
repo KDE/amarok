@@ -453,7 +453,7 @@ SqlQueryMaker::orderBy( qint64 value, bool descending )
 QueryMaker*
 SqlQueryMaker::orderByRandom()
 {
-    d->queryOrderBy = " ORDER BY RANDOM()";
+    d->queryOrderBy = " ORDER BY " + m_collection->randomFunc();
     return this;
 }
 
@@ -810,7 +810,7 @@ SqlQueryMaker::handleYears( const QStringList &result )
 QString
 SqlQueryMaker::escape( QString text ) const           //krazy:exclude=constref
 {
-    return text.replace( '\'', "''" );;
+    return m_collection->escape( text );;
 }
 
 QString
