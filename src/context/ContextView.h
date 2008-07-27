@@ -131,7 +131,6 @@ private:
     void loadConfig();
 
     void showHome();
-    void showCurrentTrack();
 
     typedef QPointer< Context::Applet > AppletPointer;    
 

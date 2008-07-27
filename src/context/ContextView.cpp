@@ -193,16 +193,6 @@ void ContextView::showHome()
     messageNotify( m_curState );
 }
 
-void ContextView::showCurrentTrack()
-{
-//     DEBUG_BLOCK
-    if( m_curState == Current )
-        return;
-    clear( m_curState );
-    m_curState = Current;
-    loadConfig();
-    messageNotify( Current );
-}
 
 // loads applets onto the ContextScene from saved data, using m_curState
 void ContextView::loadConfig()
