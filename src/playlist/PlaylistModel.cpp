@@ -889,6 +889,9 @@ Playlist::Model::engineStateChanged( Phonon::State currentState, Phonon::State o
         debug() << "Error, can't play this track.";
         debug() << "Failure count: " << failures;
         if( failures >= maxFailures ) {
+            The::statusBar()->longMessageThreadSafe( 
+                i18n( "Too many errors encountered in playlist. Playback stopped." ),
+                KDE::StatusBar::Warning );
             debug() << "Stopping playlist.";
             failures = 0;
             m_stopPlaying = true;
