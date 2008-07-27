@@ -18,6 +18,8 @@
 #ifndef AMAROK_PLAYLIST_SCRIPT_H
 #define AMAROK_PLAYLIST_SCRIPT_H
 
+#include "MetaTypeExporter.h"
+
 #include <KUrl>
 
 #include <QObject>
@@ -47,7 +49,7 @@ namespace AmarokScript
             void setStopAfterCurrent( bool on );
             void togglePlaylist();
             QStringList filenames();
-            QVariantMap TrackInfo( int row ); //TODO: implement
+            TrackMeta* TrackInfo( int row );
         signals:
             void CountChanged( int newCount );
             void GroupingChanged();

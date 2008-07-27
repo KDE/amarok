@@ -18,6 +18,8 @@
 #ifndef AMAROK_ENGINE_SCRIPT_H
 #define AMAROK_ENGINE_SCRIPT_H
 
+#include "MetaTypeExporter.h"
+
 #include <QObject>
 #include <QtScript>
 
@@ -56,6 +58,7 @@ namespace AmarokScript
             void Mute();
             int  trackPosition();
             int  engineState();
+            TrackMeta* currentTrack();
 
         signals:
             void trackFinished();

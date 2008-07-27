@@ -121,41 +121,10 @@ namespace AmarokScript
         return fileNames;
     }
 
-    QVariantMap AmarokPlaylistScript::TrackInfo( int row )
+    TrackMeta* AmarokPlaylistScript::TrackInfo( int row )
     {
-        QVariantMap info;
-        Meta::TrackPtr track;
-        if ( row == -1 ) //current playing
-            track = The::engineController()->currentTrack();
-        else
-            track = The::playlistModel()->trackForRow( row );
-        //coverImage, lyrics
-        if ( track )
-        {
-            info["isValid"] = true;
-            info["sampleRate"] = track->sampleRate();
-            info["bitrate"] = track->bitrate();
-            info["score"] = track->score();
-            info["rating"] = track->rating();
-            info["inCollection"] = track->inCollection();
-            info["type"] = track->type();
-            info["length"] = track->length();
-            info["fileSize"] = track->filesize();
-            info["trackNumber"] = track->trackNumber();
-            info["discNumber"] = track->discNumber();
-            info["playCount"] = track->playCount();
-            info["playable"] = track->isPlayable();
-            info["album"] = track->album()->prettyName();
-            info["artist"] = track->artist()->prettyName();
-            info["composer"] = track->composer()->prettyName();
-            info["genre"] = track->genre()->prettyName();
-            info["year"] = track->year()->prettyName();
-            info["comment"] = track->comment();
-            info["path"] = track->playableUrl().path();
-        }
-        else
-            info["isValid"] = false;
-        return info;
+        Meta::TrackPtr track = The::playlistModel()->trackForRow( row );
+        return ( new TrackMeta( track ) );
     }
 }
 

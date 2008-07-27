@@ -560,8 +560,7 @@ ScriptManager::startScriptEngine( QString name )
     QObject* objectPtr;
     QScriptValue scriptObject;
 
-    AmarokScript::MetaTypeExporter* exporter;
-    exporter = new AmarokScript::MetaTypeExporter( scriptEngine );
+    AmarokScript::MetaTypeExporter* exporter = new AmarokScript::MetaTypeExporter( scriptEngine );
     exporter->TrackMeta_Register();
 //    scriptObject = scriptEngine->newFunction( ScriptExit );
 //    scriptEngine->globalObject().setProperty( "Exit", scriptObject );

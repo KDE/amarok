@@ -18,36 +18,89 @@
 #ifndef METATYPE_EXPORTER_H
 #define METATYPE_EXPORTER_H
 
+#include "Meta.h"
+#include "EditCapability.h"
+
 #include <QObject>
 #include <QtScript>
 
+
+class TrackMeta : public QObject, public QScriptable
+{
+    Q_OBJECT
+
+    Q_PROPERTY( int sampleRate READ sampleRate )
+    Q_PROPERTY( int bitrate READ bitrate )
+    Q_PROPERTY( double score WRITE setScore READ score )
+    Q_PROPERTY( int rating WRITE setRating READ rating )
+    Q_PROPERTY( bool inCollection READ inCollection )
+    Q_PROPERTY( QString type READ type )
+    Q_PROPERTY( int length READ length )
+    Q_PROPERTY( int fileSize READ fileSize )
+    Q_PROPERTY( int trackNumber WRITE setTrackNumber READ trackNumber )
+    Q_PROPERTY( int discNumber WRITE setDiscNumber READ discNumber )
+    Q_PROPERTY( int playCount READ playCount )
+    Q_PROPERTY( bool playable READ playable )
+    Q_PROPERTY( QString album WRITE setAlbum READ album )
+    Q_PROPERTY( QString artist WRITE setArtist READ artist )
+    Q_PROPERTY( QString composer WRITE setComposer READ composer )
+    Q_PROPERTY( QString genre WRITE setGenre READ genre )
+    Q_PROPERTY( QString year WRITE setYear READ year )
+    Q_PROPERTY( QString comment WRITE setComment READ comment )
+    Q_PROPERTY( QString path READ path )
+    Q_PROPERTY( bool isValid READ isValid )
+    Q_PROPERTY( bool isEditable READ isEditable )
+    Q_PROPERTY( QString lyrics WRITE setLyrics READ lyrics )
+
+    public:
+        TrackMeta( Meta::TrackPtr track = Meta::TrackPtr() );
+        ~TrackMeta();
+
+    private:
+        int sampleRate() const;
+        int bitrate() const;
+        double score() const;
+        int rating() const;
+        bool inCollection() const;
+        QString type() const;
+        int length() const;
+        int fileSize() const;
+        int trackNumber() const;
+        int discNumber() const;
+        int playCount() const;
+        bool playable() const;
+        QString album() const;
+        QString artist() const;
+        QString composer() const;
+        QString genre() const;
+        QString year() const;
+        QString comment() const;
+        QString path() const;
+        bool isValid() const;
+        bool isEditable() const;
+        QString lyrics() const;
+    //coverImage
+        void setScore( double score );
+        void setRating( int rating );
+        void setTrackNumber( int number );
+        void setDiscNumber( int number );
+        void setAlbum( QString album );
+        void setArtist( QString artist );
+        void setComposer( QString composer );
+        void setGenre( QString genre );
+        void setYear( QString year );
+        void setComment( QString comment );
+        void setLyrics( QString lyrics );
+
+        void setTrack( Meta::TrackPtr track );
+
+    private:
+        Meta::TrackPtr m_track;
+        Meta::EditCapability* ec;
+};
+
 namespace AmarokScript
 {
-
-    struct TrackMeta
-    {
-        int sampleRate;
-        int bitrate;
-        double score;
-        int rating;
-        bool inCollection;
-        QString type;
-        int length;
-        int fileSize;
-        int trackNumber;
-        int discNumber;
-        int playCount;
-        int playable;
-        QString album;
-        QString artist;
-        QString composer;
-        QString genre;
-        QString year;
-        QString comment;
-        QString path;
-        bool isValid;
-    };
-
     class MetaTypeExporter : public QObject
     {
         Q_OBJECT
@@ -57,13 +110,13 @@ namespace AmarokScript
             ~MetaTypeExporter();
         private:
             QScriptEngine*        m_scriptEngine;
-            static QScriptValue   TrackMeta_toScriptValue(QScriptEngine *engine, const TrackMeta &in);
-            static void           TrackMeta_fromScriptValue(const QScriptValue &value, TrackMeta &out);
+            static QScriptValue   TrackMeta_toScriptValue(QScriptEngine *engine, TrackMeta* const &in);
+            static void           TrackMeta_fromScriptValue(const QScriptValue &value, TrackMeta* &out);
         public:
             void                  TrackMeta_Register();
     };
 }
 
-Q_DECLARE_METATYPE( AmarokScript::TrackMeta )
+Q_DECLARE_METATYPE( TrackMeta* )
 
 #endif

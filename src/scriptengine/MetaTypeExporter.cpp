@@ -18,11 +18,197 @@
 #include "MetaTypeExporter.h"
 
 #include "App.h"
+#include "EditCapability.h"
 
 #include <QtScript>
 
+TrackMeta::TrackMeta( Meta::TrackPtr track )
+{
+    setTrack( track );
+}
+
+TrackMeta::~TrackMeta()
+{
+}
+
+int TrackMeta::sampleRate() const
+{
+    return m_track ? m_track->sampleRate() : 0;
+}
+
+int TrackMeta::bitrate() const
+{
+    return m_track ? m_track->bitrate() : 0;
+}
+
+double TrackMeta::score() const
+{
+    return m_track ? m_track->score() : 0.0;
+}
+
+int TrackMeta::rating() const
+{
+    return m_track ? m_track->rating() : 0;
+}
+
+bool TrackMeta::inCollection() const
+{
+    return m_track ? m_track->inCollection() : false;
+}
+
+QString TrackMeta::type() const
+{
+    return m_track ? m_track->type() : QString();
+}
+
+int TrackMeta::length() const
+{
+    return m_track ? m_track->length() : 0;
+}
+
+int TrackMeta::fileSize() const
+{
+    return m_track ? m_track->filesize() : 0;
+}
+
+int TrackMeta::trackNumber() const
+{
+    return m_track ? m_track->trackNumber() : 0;
+}
+
+int TrackMeta::discNumber() const
+{
+    return m_track ? m_track->discNumber() : 0;
+}
+
+int TrackMeta::playCount() const
+{
+    return m_track ? m_track->playCount() : 0;
+}
+
+bool TrackMeta::playable() const
+{
+    return m_track ? m_track->isPlayable() : false;
+}
+
+QString TrackMeta::album() const
+{
+    return m_track ? m_track->album()->prettyName() : QString();
+}
+
+QString TrackMeta::artist() const
+{
+    return m_track ? m_track->artist()->prettyName() : QString();
+}
+
+QString TrackMeta::composer() const
+{
+    return m_track ? m_track->composer()->prettyName() : QString();
+}
+
+QString TrackMeta::genre() const
+{
+    return m_track ? m_track->genre()->prettyName() : QString();
+}
+
+QString TrackMeta::year() const
+{
+    return m_track ? m_track->year()->prettyName() : QString();
+}
+
+QString TrackMeta::comment() const
+{
+    return m_track ? m_track->comment() : QString();
+}
+
+QString TrackMeta::path() const
+{
+    return m_track ? m_track->playableUrl().path() : QString();
+}
+
+bool TrackMeta::isValid() const
+{
+    if ( m_track ) return true;
+    return false;
+}
+bool TrackMeta::isEditable() const
+{
+    if( ec )
+        return ( ec->isEditable() );
+    else
+        return false;
+}
+
+QString TrackMeta::lyrics() const
+{
+    return m_track ? m_track->cachedLyrics() : QString();
+}
+
+void TrackMeta::setScore( double score )
+{
+    if ( m_track ) m_track->setScore( score );
+}
+
+void TrackMeta::setRating( int rating )
+{
+    if ( m_track ) m_track->setRating( rating );
+}
+
+void TrackMeta::setTrackNumber( int number )
+{
+    if ( isEditable() ) ec->setTrackNumber( number );
+}
+
+void TrackMeta::setDiscNumber( int number )
+{
+    if ( isEditable() ) ec->setDiscNumber( number );
+}
+
+void TrackMeta::setAlbum( QString album )
+{
+    if ( isEditable() ) ec->setAlbum( album );
+}
+
+void TrackMeta::setArtist( QString artist )
+{
+    if ( isEditable() ) ec->setArtist( artist );
+}
+
+void TrackMeta::setComposer( QString composer )
+{
+    if ( isEditable() ) ec->setComposer( composer );
+}
+
+void TrackMeta::setGenre( QString genre )
+{
+    if ( isEditable() ) ec->setGenre( genre );
+}
+
+void TrackMeta::setYear( QString year )
+{
+    if ( isEditable() ) ec->setYear( year );
+}
+
+void TrackMeta::setComment( QString comment )
+{
+    if ( isEditable() ) ec->setComment( comment );
+}
+
+void TrackMeta::setLyrics( QString lyrics )
+{
+    if ( m_track ) m_track->setCachedLyrics( lyrics );
+}
+
+void TrackMeta::setTrack( Meta::TrackPtr track )
+{
+    m_track = track;
+    if ( track )
+        ec = m_track->as<Meta::EditCapability>();
+}
+
 namespace AmarokScript
 {
+
     MetaTypeExporter::MetaTypeExporter( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
@@ -33,41 +219,19 @@ namespace AmarokScript
     {
     }
 
-    QScriptValue MetaTypeExporter::TrackMeta_toScriptValue(QScriptEngine *engine, const TrackMeta &in)
+    QScriptValue MetaTypeExporter::TrackMeta_toScriptValue( QScriptEngine *engine, TrackMeta* const &in )
     {
-        QScriptValue obj = engine->newObject();
-        obj.setProperty( "isValid", QScriptValue( engine, in.isValid ) );
-        obj.setProperty( "sampleRate", QScriptValue( engine, in.sampleRate ) );
-        obj.setProperty( "bitrate", QScriptValue( engine, in.bitrate ) );
-        obj.setProperty( "score", QScriptValue( engine, in.score ) );
-        obj.setProperty( "rating", QScriptValue( engine, in.rating ) );
-        obj.setProperty( "inCollection", QScriptValue( engine, in.inCollection ) );
-        obj.setProperty( "type", QScriptValue( engine, in.type ) );
-        obj.setProperty( "length", QScriptValue( engine, in.length ) );
-        obj.setProperty( "fileSize", QScriptValue( engine, in.fileSize ) );
-        obj.setProperty( "trackNumber", QScriptValue( engine, in.trackNumber ) );
-        obj.setProperty( "discNumber", QScriptValue( engine, in.discNumber ) );
-        obj.setProperty( "playCount", QScriptValue( engine, in.playCount ) );
-        obj.setProperty( "playable", QScriptValue( engine, in.playable ) );
-        obj.setProperty( "album", QScriptValue( engine, in.album ) );
-        obj.setProperty( "artist", QScriptValue( engine, in.artist ) );
-        obj.setProperty( "composer", QScriptValue( engine, in.composer ) );
-        obj.setProperty( "genre", QScriptValue( engine, in.genre ) );
-        obj.setProperty( "year", QScriptValue( engine, in.year ) );
-        obj.setProperty( "comment", QScriptValue( engine, in.comment ) );
-        obj.setProperty( "path", QScriptValue( engine, in.path ) );
-        return obj;
+        return engine->newQObject( in );
     }
 
-    void MetaTypeExporter::TrackMeta_fromScriptValue(const QScriptValue &value, TrackMeta &out)
+    void MetaTypeExporter::TrackMeta_fromScriptValue( const QScriptValue &value, TrackMeta* &out )
     {
-        Q_UNUSED( value );
-        Q_UNUSED( out );
+        out = qobject_cast<TrackMeta*>( value.toQObject() );
     }
 
     void MetaTypeExporter::TrackMeta_Register()
     {
-        qScriptRegisterMetaType<TrackMeta>( m_scriptEngine, TrackMeta_toScriptValue, TrackMeta_fromScriptValue );
+        qScriptRegisterMetaType<TrackMeta*>( m_scriptEngine, TrackMeta_toScriptValue, TrackMeta_fromScriptValue );
     }
 }
 

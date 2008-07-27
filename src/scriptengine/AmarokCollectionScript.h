@@ -44,6 +44,8 @@ namespace AmarokScript
             void scanCollectionChanges();
        //TODO: make this a more object oriented way, could make a wrapper class for both the Collection and Collection Manager class.
        //TODO: probably leave this to Amarok 2.1
+        signals:
+            void newFileAdded();  //TODO: implement me
     };
 }
 

@@ -134,6 +134,12 @@ namespace AmarokScript
         };
     }
 
+    TrackMeta* AmarokEngineScript::currentTrack()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        return ( new TrackMeta( track ) );
+    }
+
     bool AmarokEngineScript::randomMode() const
     {
         return AmarokConfig::randomMode();

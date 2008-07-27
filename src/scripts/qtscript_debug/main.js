@@ -41,16 +41,20 @@ else
     print ( "Menu2 already exists!" );
 
 
-var TrackInfo = Amarok.Playlist.TrackInfo( -1 );
+var TrackInfo = Amarok.Engine.currentTrack();
 var OSD = Amarok.Window.OSD;
 var StatusBar = Amarok.Window.Statusbar;
 
-if ( TrackInfo["isValid"] )
+if ( TrackInfo.isValid )
 {
-    OSD.setText( "Hey, this is " + TrackInfo["artist"] );
+    OSD.setText( "Hey, this is " + TrackInfo.artist );
     OSD.show();
 
-    StatusBar.longMessage( "You are listening to album: " + TrackInfo["album"] );
+    StatusBar.longMessage( "You are listening to album: " + TrackInfo.album );
+}
+else
+{
+    print (" Track is not valid! ");
 }
 
 function onConfigure()
