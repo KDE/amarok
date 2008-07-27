@@ -43,13 +43,8 @@ namespace AmarokScript
     {
         DEBUG_BLOCK
 
-        QFileInfo info( m_URL.path() );
-        src = info.path() + '/' + src;
-        debug() << src ;
-        QFile scriptFile( src );
-        scriptFile.open( QIODevice::ReadOnly );
-        m_ScriptEngine->evaluate( scriptFile.readAll() );
-        scriptFile.close();
+        m_ScriptEngine->importExtension( "amarok/" + src );
+
     }
 
     void ScriptImporter::loadQtBinding( QString binding )
