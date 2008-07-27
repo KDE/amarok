@@ -5,11 +5,13 @@ Amarok ChangeLog
 
 VERSION 2.0-beta1
   FEATURES:
+    * Collection Setup automatically expands to show selected directories.
+      (BR 123637)
     * Album is now added to the playlist when clicked in Albums applet.
     * Trigger play/pause when middle-clicking systray icon. (BR 167162)
     * New start flag --multipleinstances allows to run multiple instances of
       Amarok.
-    * full cover support for Nepomuk collection
+    * Full cover support for Nepomuk collection
     * Search local collection for albums to show in the album applet when 
       playing non local content
     * Context view state is saved on exit and restored on start up.
