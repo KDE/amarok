@@ -81,6 +81,21 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     // read device info
     m_device = m_itdb->device;
     itdb_device_read_sysinfo( m_device );
+/*
+    debug() << "WARNING: Forcing model into sysinfo, to fix filesystem";
+
+    err = 0;
+
+    itdb_device_set_sysinfo( m_device, "ModelNumStr", "B147" );
+    itdb_device_write_sysinfo( m_device, &err );
+
+    if ( err )
+    {
+        g_error_free( err );
+        debug() << "ERROR: There was an error writing sysinfo";
+
+    }
+    */
 
     detectModel(); // get relevant info about device
 
@@ -1107,18 +1122,18 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
         debug() << "Artist: " << track->artist()->name() << " Track: " << track->name();
 
         // try small first
+
+        debug() << "Attempting to get small cover";
         thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_SMALL );
 
         // then large if needed
         if( thumb == NULL)
         {
-            debug() << "Failed to small cover, trying large";
+            debug() << "Failed to get small cover, trying large";
             thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_LARGE );
         }
 
-        //thumbPath = QString::fromUtf8( itdb_thumb_get_filename( m_device, thumb ) );
 
-        //debug() << "Path to thumb is: " << thumbPath;
 
         if( thumb != NULL)
         {
@@ -1126,7 +1141,76 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
             gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
         }
         else
+        {
             debug() << "No valid thumb gotten, not fetching pixbuf";
+            debug() << "Attempting to fetch artwork via a thumb";
+            debug() << "Iterating through thumbs";
+
+            GList *thumbs = ipodtrack->artwork->thumbnails;
+
+            for(; thumbs; thumbs = thumbs->next)
+            {
+                Itdb_Thumb *curThumb = ( Itdb_Thumb * )thumbs->data;
+                if( curThumb == NULL)
+                    continue;
+                
+                debug() << "Found valid thumb while iterating";
+                debug() << "Cover probably set by iTunes";
+                debug() << "Type is the following:";
+
+                switch( curThumb->type )
+                {
+                    case ITDB_THUMB_PHOTO_SMALL:
+                        debug() << "ITDB_THUMB_PHOTO_SMALL";
+                        break;
+                    case ITDB_THUMB_PHOTO_LARGE:
+                        debug() << "ITDB_THUMB_PHOTO_LARGE";
+                        break;
+                    case ITDB_THUMB_PHOTO_FULL_SCREEN:
+                        debug() << "ITDB_THUMB_PHOTO_FULL_SCREEN";
+                        break;
+                    case ITDB_THUMB_PHOTO_TV_SCREEN:
+                        debug() << "ITDB_THUMB_PHOTO_TV_SCREEN";
+                        break;
+                    case ITDB_THUMB_COVER_XLARGE:
+                        debug() << "ITDB_THUMB_COVER_XLARGE";
+                        break;
+                    case ITDB_THUMB_COVER_MEDIUM:
+                        debug() << "ITDB_THUMB_COVER_MEDIUM";
+                        break;
+                    case ITDB_THUMB_COVER_SMEDIUM:
+                        debug() << "ITDB_THUMB_COVER_SMEDIUM";
+                        break;
+                    case ITDB_THUMB_COVER_XSMALL:
+                        debug() << "ITDB_THUMB_COVER_XSMALL";
+                        break;
+
+                    default:
+                        debug() << "Unknown Thumb Type";
+                        break;
+                }
+                //debug() << "Type is: " << curThumb->type;
+
+                thumb = curThumb;
+                break;
+                
+            }
+
+            
+            if( thumb != NULL)
+            {
+                thumbPath = QString::fromUtf8( itdb_thumb_get_filename( m_device, thumb ) );
+
+                
+
+                debug() << "Path to thumb is: " << thumbPath;
+                debug() << "Setting gpixbuf to this thumb";
+
+                gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
+                
+            }
+
+        }
     }
 
     
@@ -1140,7 +1224,7 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
         
 
         // temporarily save to file
-        gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "jpeg", 0 );
+        gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "jpeg", 0, 0 );
 
         // pull temporary file's image out as QImage
     
@@ -1382,14 +1466,14 @@ IpodHandler::parseTracks()
         /* cover art */
 
         //debug() << "Supports artwork: " << ( m_supportsArtwork ? "true" : "false" );
-/*
+
         if( m_supportsArtwork )
         {
           //  debug() << "Fetching cover art";
             getCoverArt( ipodtrack, track );
         }
-*/
-        getCoverArt( ipodtrack, track );
+
+        //getCoverArt( ipodtrack, track );
         
         /* TrackMap stuff to be subordinated later */
 
