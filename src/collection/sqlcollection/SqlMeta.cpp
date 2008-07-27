@@ -596,7 +596,8 @@ void
 SqlTrack::finishedPlaying( double playedFraction )
 {
     m_lastPlayed = QDateTime::currentDateTime().toTime_t();
-    m_playCount++;
+    if( playedFraction > 0.5 ) // Only increment playcount if we've played more than half of the song... It seems like the sanest comprimise.
+        m_playCount++;
     if( !m_firstPlayed )
     {
         m_firstPlayed = m_lastPlayed;

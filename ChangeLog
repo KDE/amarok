@@ -20,6 +20,7 @@ VERSION 2.0-beta1
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
+    * Only increment playcount if we've played more than half of the song (BR 121587)
     * Added protection against endless looping when a playlist contains only
       unplayable tracks.
     * Missing default playlist does not produce error message now. 
