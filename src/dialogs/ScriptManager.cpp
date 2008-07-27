@@ -151,8 +151,8 @@ ScriptManager::ScriptManager( QWidget* parent )
     gui->uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
 
     // Center the dialog in the middle of the mainwindow
-    const int x = parentWidget()->width() / 2 - width() / 2;
-    const int y = parentWidget()->height() / 2 - height() / 2;
+    const int x = parentWidget()->width() / 2 - sizeHint().width() / 2;
+    const int y = parentWidget()->height() / 2 - sizeHint().height() / 2;
     move( x, y );
 
     // Delay this call via eventloop, because it's a bit slow and would block
