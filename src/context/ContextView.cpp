@@ -187,7 +187,8 @@ void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldStat
 
 void ContextView::showHome()
 {
-//     DEBUG_BLOCK
+    DEBUG_BLOCK
+
     m_curState = Home;
     loadConfig();
     messageNotify( m_curState );
@@ -197,7 +198,6 @@ void ContextView::showHome()
 // loads applets onto the ContextScene from saved data, using m_curState
 void ContextView::loadConfig()
 {
-
     contextScene()->clearContainments();    
 
     int numContainments = contextScene()->containments().size();
@@ -210,7 +210,6 @@ void ContextView::loadConfig()
             KConfigGroup cg( &conf, QString( "Containment %1" ).arg( i ) );
             containment->loadConfig( cg );
         }
-
     }
 }
 
