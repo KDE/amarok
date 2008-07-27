@@ -39,6 +39,7 @@ ContextScene::ContextScene( QObject * parent )
 
 ContextScene::~ContextScene()
 {
+    DEBUG_BLOCK
 }
 
 void ContextScene::loadDefaultSetup()
