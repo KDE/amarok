@@ -857,7 +857,7 @@ IpodAlbum::image( int size, bool withShadow )
 {
     //DEBUG_BLOCK
     if( m_hasCover )
-        return QPixmap( m_coverPath );
+        return QPixmap::fromImage( m_image );
     else
         return Meta::Album::image( size, withShadow );
 }
@@ -871,7 +871,8 @@ IpodAlbum::canUpdateImage() const
 void
 IpodAlbum::setImage( const QImage &image )
 {
-    Q_UNUSED( image );
+    m_image = image;
+    m_hasCover = true;
 }
 
 void

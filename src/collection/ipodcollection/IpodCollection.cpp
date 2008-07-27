@@ -343,6 +343,8 @@ IpodCollection::copyTracksCompleted()
         debug() << "Trying to write iTunes database";
     m_handler->writeITunesDB( false ); // false, since not threaded, implement later
     
+    
+    
 }
 
 #include "IpodCollection.moc"

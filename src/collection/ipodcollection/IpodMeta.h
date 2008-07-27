@@ -195,6 +195,8 @@ class IpodTrack : public Meta::Track
         Itdb_Track *m_ipodtrack;
 	QList<Itdb_Playlist*> m_ipodplaylists;
 
+        QImage m_image;
+
         QString m_comment;
         QString m_name;
         QString m_type;
@@ -265,6 +267,7 @@ class IpodAlbum : public Meta::Album
         TrackList m_tracks;
         bool m_isCompilation;
         bool m_hasCover;
+        QImage m_image;
         IpodArtistPtr m_albumArtist;
 };
 

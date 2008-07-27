@@ -1,6 +1,8 @@
 macro_optional_find_package(Ipod)
+#macro_optional_find_package(Gtk2)
+macro_optional_find_package(Gdk)
 
-if (IPOD_FOUND)
+if (IPOD_FOUND AND GDK_FOUND)
    include_directories( ../..
    ../../plugin
    ../../meta
@@ -9,6 +11,7 @@ if (IPOD_FOUND)
    ../../metadata/audible
    handler
    ${GLIB2_INCLUDE_DIR}
+   ${GDK_INCLUDE_DIR}
    ${IPOD_INCLUDE_DIR}
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
@@ -25,7 +28,7 @@ if (IPOD_FOUND)
 	handler/IpodHandler.cpp)	
 	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
 
-	target_link_libraries(amarok_collection-ipodcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${GLIB2_LIBRARIES} ${IPOD_LIBRARIES} )
+	target_link_libraries(amarok_collection-ipodcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${GLIB2_LIBRARIES} ${GDK_LIBRARIES} ${IPOD_LIBRARIES} )
 
 	install(TARGETS amarok_collection-ipodcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
@@ -34,4 +37,4 @@ if (IPOD_FOUND)
 
 	install( FILES amarok_collection-ipodcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-endif (IPOD_FOUND)
+endif (IPOD_FOUND AND GDK_FOUND)

@@ -25,18 +25,25 @@
 #include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
 
+extern "C" {
+#include <gdk-pixbuf/gdk-pixbuf.h>
+}
+
+
 #include "File.h" // for KIO file handling
 #include "taglib_audiblefile.h"
 
 #include <KIO/Job>
 #include <KIO/DeleteJob>
 #include "kjob.h"
+#include <KTemporaryFile>
 #include <KUniqueApplication> // needed for KIO processes
 #include <KUrl>
 
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QPixmap>
 #include <QString>
 #include <QStringList>
 #include <QTime>
@@ -77,6 +84,12 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 
     detectModel(); // get relevant info about device
 
+    // set tempdir up
+
+    m_tempdir = new KTempDir();
+
+    m_tempdir->setAutoRemove( false );
+
     qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
 
@@ -88,6 +101,8 @@ IpodHandler::~IpodHandler()
             itdb_free( m_itdb );
         if ( m_device )
             itdb_device_free( m_device );
+        if ( m_tempdir )
+            m_tempdir->setAutoRemove( true );
 }
 
 
@@ -415,6 +430,17 @@ DEBUG_BLOCK
     }
 
     debug() << "writeItunesDB is returning true";
+/*
+    debug() << "Removing temporary files";
+
+    // Clear the tempdir, make a new one
+    m_tempdir->unlink();
+    delete m_tempdir;
+    m_tempdir = new KTempDir();
+*/
+
+    
+    
     return true;
 }
 
@@ -740,6 +766,12 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
         }
     }
 */
+    
+    QPixmap image = track->album()->image( 50, false );
+    debug() << "Got image of height: " << image.height() << "and width: " << image.width();
+    setCoverArt( ipodtrack, image );
+
+    
 
     debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
 
@@ -1031,7 +1063,7 @@ void
 IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 {
     DEBUG_BLOCK
-    Itdb_Artwork *artwork = ipodtrack->artwork;
+/*    Itdb_Artwork *artwork = ipodtrack->artwork;
     GList *thumbs = artwork->thumbnails; // Itdb_Thumb
 
     QString thumbPath;
@@ -1045,14 +1077,136 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
             break;
     }
 
-    debug() << "Album: " << track->album()->name();
+//    debug() << "Album: " << track->album()->name();
 
-    debug() << "Thumb Path: " << thumbPath;
+//    debug() << "Thumb Path: " << thumbPath;
 
     if( !thumbPath.isEmpty() )
         track->ipodAlbum()->setImagePath( thumbPath );
+    */
+
+    
+
+    KTemporaryFile tempImageFile;
+
+    tempImageFile.setSuffix( ".jpeg" ); // default suffix jpeg
+    QFileInfo tempImageFileInfo( tempImageFile ); // get info for path
+    QString tempImagePath = tempImageFileInfo.absoluteFilePath(); // path
+
+    Itdb_Thumb *thumb = NULL;
+    GdkPixbuf *gpixbuf = NULL;
+    QString thumbPath;
+
+    // pull image out of ipod
+
+    debug() << "Track has artwork: " << (ipodtrack->has_artwork==0x01 ? "true" : "false");
+
+    if( ipodtrack->has_artwork == 0x01 )
+    {
+        debug() << "Ipod claims track has artwork";
+        debug() << "Artist: " << track->artist()->name() << " Track: " << track->name();
+
+        // try small first
+        thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_SMALL );
+
+        // then large if needed
+        if( thumb == NULL)
+        {
+            debug() << "Failed to small cover, trying large";
+            thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_LARGE );
+        }
+
+        //thumbPath = QString::fromUtf8( itdb_thumb_get_filename( m_device, thumb ) );
+
+        //debug() << "Path to thumb is: " << thumbPath;
+
+        if( thumb != NULL)
+        {
+            debug() << "Got a valid thumb, attempting to fetch pixbuf";
+            gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
+        }
+        else
+            debug() << "No valid thumb gotten, not fetching pixbuf";
+    }
+
+    
+
+    
+
+    if(gpixbuf != NULL)
+    {
+
+        debug() << "Succeeded in getting pixbuf, attempting to save";
+        
+
+        // temporarily save to file
+        gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "jpeg", 0 );
+
+        // pull temporary file's image out as QImage
+    
+        QImage image( tempImagePath );
+        
+        track->album()->setImage( image );
+        
+    
+    }
 
     return;
+}
+
+void
+IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
+{
+    DEBUG_BLOCK
+    KTemporaryFile tempImageFile; // create a temp file to save pixmap
+    // use tempdir's path
+    tempImageFile.setPrefix( m_tempdir->name() );
+    tempImageFile.setSuffix( ".jpeg" ); // default suffix jpeg
+    // temdpir will nuke the file afterward anyway
+    tempImageFile.setAutoRemove( false);
+
+    if( !tempImageFile.open() )
+    {
+        debug() << "Failed to create temp file";
+        return;
+    }
+
+    QFileInfo tempImageFileInfo( tempImageFile ); // get info for path
+    QString tempImagePath = tempImageFileInfo.absoluteFilePath(); // path
+    image.save( tempImagePath ); // temporarily save pixmap
+    
+    bool success = false;
+
+    
+    debug() << "Adding image that's temporarily at: " << tempImagePath;
+
+    if( itdb_artwork_add_thumbnail( ipodtrack->artwork, ITDB_THUMB_COVER_SMALL, QFile::encodeName( tempImagePath ), 0, 0 ) )
+        success = true;
+    else
+        success = false;
+    
+    if( itdb_artwork_add_thumbnail( ipodtrack->artwork, ITDB_THUMB_COVER_LARGE, QFile::encodeName( tempImagePath ), 0, 0 ) )
+        success = true;
+    else
+        success = false;
+
+    if( success )
+    {
+        debug() << "Image added successfully!";
+        ipodtrack->has_artwork = 0x01;
+    }
+    else
+    {
+        debug() << "Image failed to add!";
+        ipodtrack->has_artwork = 0x02;
+    }
+    
+    /*
+    if( itdb_track_set_thumbnails( ipodtrack, g_strdup( QFile::encodeName( tempImagePath ) ) ) )
+        debug() << "Image added successfully!";
+    else
+        debug() << "Image failed to add!";
+    */
 }
 
 void
@@ -1235,6 +1389,8 @@ IpodHandler::parseTracks()
             getCoverArt( ipodtrack, track );
         }
 */
+        getCoverArt( ipodtrack, track );
+        
         /* TrackMap stuff to be subordinated later */
 
         trackMap.insert( track->url(), TrackPtr::staticCast( track ) );

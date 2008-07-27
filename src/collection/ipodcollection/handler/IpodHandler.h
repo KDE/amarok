@@ -35,6 +35,7 @@ extern "C" {
 #include "IpodMeta.h"
 
 #include "kjob.h"
+#include <KTempDir>
 
 #include <QObject>
 
@@ -99,6 +100,7 @@ struct PodcastInfo
        void addIpodTrackToCollection( Itdb_Track *ipodtrack );
        void getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
        void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
+       void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
 	   void setMountPoint( const QString &mp) { m_mountPoint = mp; }
        QString           realPath( const char *ipodPath );
 	   bool pathExists( const QString &ipodPath, QString *realPath=0 );
@@ -131,6 +133,9 @@ struct PodcastInfo
         Itdb_iTunesDB    *m_itdb;
         Itdb_Device      *m_device;
         Itdb_Playlist    *m_masterPlaylist;
+
+        // cover handling
+        KTempDir *m_tempdir;
 //        Q3Dict<Itdb_Track> m_files;
 
         bool             m_trackCreated;
