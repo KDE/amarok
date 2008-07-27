@@ -69,6 +69,14 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 
     }
 
+    
+
+    // read device info
+    m_device = m_itdb->device;
+    itdb_device_read_sysinfo( m_device );
+
+    detectModel(); // get relevant info about device
+
     qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
 
@@ -78,6 +86,8 @@ IpodHandler::~IpodHandler()
 {
         if ( m_itdb )
             itdb_free( m_itdb );
+        if ( m_device )
+            itdb_device_free( m_device );
 }
 
 
@@ -155,6 +165,7 @@ IpodHandler::initializeIpod()
 void
 IpodHandler::detectModel()
 {
+    DEBUG_BLOCK
     // set some sane default values
     m_isShuffle = false;
     m_supportsArtwork = true;
@@ -165,30 +176,40 @@ IpodHandler::detectModel()
 
     // needs recent libgpod-0.3.3 from cvs
     bool guess = false;
-    if( m_itdb && m_itdb->device )
+    if( m_itdb && m_device )
     {
-        const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
+        debug() << "Attempting to get info...";
+        const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_device );
+        debug() << "Got ipodinfo";
         const gchar *modelString = 0;
-        m_supportsArtwork = itdb_device_supports_artwork( m_itdb->device );
+        m_supportsArtwork = itdb_device_supports_artwork( m_device );
+        debug() << "Supports Artwork: " << ( m_supportsArtwork ? "true" : "false" );
+        QString musicdirs;
+        musicdirs.setNum( itdb_musicdirs_number(m_itdb) );
+        debug() << "Musicdirs: " << musicdirs;
 
         if( ipodInfo )
         {
+            debug() << "Checking info...";
+            debug() << "Capacity is: " << ipodInfo->capacity;
             modelString = itdb_info_get_ipod_model_name_string ( ipodInfo->ipod_model );
+
+            debug() << "Ipod model: " << QString::fromUtf8( modelString );
 
             switch( ipodInfo->ipod_model )
             {
             case ITDB_IPOD_MODEL_SHUFFLE:
-#ifdef HAVE_LIBGPOD_060
+
             case ITDB_IPOD_MODEL_SHUFFLE_SILVER:
             case ITDB_IPOD_MODEL_SHUFFLE_PINK:
             case ITDB_IPOD_MODEL_SHUFFLE_BLUE:
             case ITDB_IPOD_MODEL_SHUFFLE_GREEN:
             case ITDB_IPOD_MODEL_SHUFFLE_ORANGE:
             case ITDB_IPOD_MODEL_SHUFFLE_PURPLE:
-#endif
+
                 m_isShuffle = true;
                 break;
-#ifdef HAVE_LIBGPOD_060
+
             case ITDB_IPOD_MODEL_IPHONE_1:
             case ITDB_IPOD_MODEL_TOUCH_BLACK:
                 m_isIPhone = true;
@@ -196,7 +217,8 @@ IpodHandler::detectModel()
                 break;
             case ITDB_IPOD_MODEL_CLASSIC_SILVER:
             case ITDB_IPOD_MODEL_CLASSIC_BLACK:
-#endif
+                debug() << "detected iPod classic";
+
             case ITDB_IPOD_MODEL_VIDEO_WHITE:
             case ITDB_IPOD_MODEL_VIDEO_BLACK:
             case ITDB_IPOD_MODEL_VIDEO_U2:
@@ -216,7 +238,8 @@ IpodHandler::detectModel()
                 break;
             }
 
-#ifdef HAVE_LIBGPOD_060
+
+            debug() << "Generation is: " << ipodInfo->ipod_generation;
             switch( ipodInfo->ipod_generation )
             {
                case ITDB_IPOD_GENERATION_CLASSIC_1:
@@ -237,14 +260,14 @@ IpodHandler::detectModel()
                default:
                   break;
             }
-#endif
+
         }
         if( modelString )
             m_name = QString( "iPod %1" ).arg( QString::fromUtf8( modelString ) );
 
         if( m_needsFirewireGuid )
         {
-            gchar *fwid = itdb_device_get_sysinfo( m_itdb->device, "FirewireGuid" );
+            gchar *fwid = itdb_device_get_sysinfo( m_device, "FirewireGuid" );
             if( !fwid )
             {
 
@@ -866,9 +889,7 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
         return KUrl();
     }
 
-    QString local = KUrl::fromPath( track->url() ).fileName();
-    debug() << "local: " << local;
-    QString type = local.section('.', -1).toLower();
+    QString type = track->type();
 
     QString trackpath;
     QString realpath;
@@ -993,6 +1014,43 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     QString path = QString( ipodtrack->ipod_path ).split( ":" ).join( "/" );
     path = m_mountPoint + path;
     track->setPlayableUrl( path );
+
+    QString filetype = QString::fromUtf8( ipodtrack->filetype );
+
+
+    if(filetype=="mpeg")
+    {
+        track->setType( "mp3" );
+    }
+
+
+    return;
+}
+
+void
+IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
+{
+    DEBUG_BLOCK
+    Itdb_Artwork *artwork = ipodtrack->artwork;
+    GList *thumbs = artwork->thumbnails; // Itdb_Thumb
+
+    QString thumbPath;
+    
+    // take the first thumb that's found
+    for ( thumbs = artwork->thumbnails; thumbs; thumbs = thumbs->next )
+    {
+        Itdb_Thumb *thumb = (Itdb_Thumb*) thumbs->data;
+        thumbPath = itdb_thumb_get_filename( m_device, thumb );
+        if( !thumbPath.isEmpty() )
+            break;
+    }
+
+    debug() << "Album: " << track->album()->name();
+
+    debug() << "Thumb Path: " << thumbPath;
+
+    if( !thumbPath.isEmpty() )
+        track->ipodAlbum()->setImagePath( thumbPath );
 
     return;
 }
@@ -1167,6 +1225,16 @@ IpodHandler::parseTracks()
         setupComposerMap( ipodtrack, track, composerMap );
         setupYearMap( ipodtrack, track, yearMap );
 
+        /* cover art */
+
+        //debug() << "Supports artwork: " << ( m_supportsArtwork ? "true" : "false" );
+/*
+        if( m_supportsArtwork )
+        {
+          //  debug() << "Fetching cover art";
+            getCoverArt( ipodtrack, track );
+        }
+*/
         /* TrackMap stuff to be subordinated later */
 
         trackMap.insert( track->url(), TrackPtr::staticCast( track ) );

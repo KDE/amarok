@@ -145,12 +145,17 @@ class IpodTrack : public Meta::Track
         //IpodTrack specific methods
     
     public:
+
+        IpodAlbumPtr ipodAlbum() const { return m_album; }
+        
         // These methods are for MemoryMatcher to use
         void setAlbum( IpodAlbumPtr album );
         void setArtist( IpodArtistPtr artist );
         void setComposer( IpodComposerPtr composer );
         void setGenre( IpodGenrePtr genre );
         void setYear( IpodYearPtr year );
+
+        void setType( const QString & type );
 
         // These methods are for IpodTrack-specific usage
         // NOTE: these methods/data may turn out to be unneeded
@@ -243,17 +248,23 @@ class IpodAlbum : public Meta::Album
         virtual QPixmap image( int size = 1, bool withShadow = false );
         virtual bool canUpdateImage() const;
         virtual void setImage( const QImage &image);
+        virtual bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return m_hasCover; }
 
         //IpodAlbum specific methods
+        
         void addTrack( IpodTrackPtr track );
         void remTrack( IpodTrackPtr track );
         void setAlbumArtist( IpodArtistPtr artist );
         void setIsCompilation( bool compilation );
 
+        void setImagePath( const QString &path );
+
     private:
         QString m_name;
+        QString m_coverPath;
         TrackList m_tracks;
         bool m_isCompilation;
+        bool m_hasCover;
         IpodArtistPtr m_albumArtist;
 };
 

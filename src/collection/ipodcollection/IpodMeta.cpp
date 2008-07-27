@@ -406,6 +406,12 @@ IpodTrack::type() const
 }
 
 void
+IpodTrack::setType( const QString & type )
+{
+    m_type = type;
+}
+
+void
 IpodTrack::subscribe( Observer *observer )
 {
     Q_UNUSED( observer )    //read only
@@ -849,7 +855,11 @@ IpodAlbum::tracks()
 QPixmap
 IpodAlbum::image( int size, bool withShadow )
 {
-    return Meta::Album::image( size, withShadow );
+    //DEBUG_BLOCK
+    if( m_hasCover )
+        return QPixmap( m_coverPath );
+    else
+        return Meta::Album::image( size, withShadow );
 }
 
 bool
@@ -861,8 +871,14 @@ IpodAlbum::canUpdateImage() const
 void
 IpodAlbum::setImage( const QImage &image )
 {
-    Q_UNUSED(image);
-    //TODO
+    Q_UNUSED( image );
+}
+
+void
+IpodAlbum::setImagePath( const QString &path )
+{
+    m_coverPath = path;
+    m_hasCover = true;
 }
 
 void

@@ -98,6 +98,7 @@ struct PodcastInfo
 	   void parseTracks();
        void addIpodTrackToCollection( Itdb_Track *ipodtrack );
        void getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
+       void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
 	   void setMountPoint( const QString &mp) { m_mountPoint = mp; }
        QString           realPath( const char *ipodPath );
 	   bool pathExists( const QString &ipodPath, QString *realPath=0 );
@@ -128,6 +129,7 @@ struct PodcastInfo
 	    
         // ipod database
         Itdb_iTunesDB    *m_itdb;
+        Itdb_Device      *m_device;
         Itdb_Playlist    *m_masterPlaylist;
 //        Q3Dict<Itdb_Track> m_files;
 
