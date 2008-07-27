@@ -45,6 +45,7 @@
 #include "scriptengine/AmarokServicePluginManagerScript.h"
 #include "scriptengine/AmarokStatusbarScript.h"
 #include "scriptengine/AmarokWindowScript.h"
+#include "scriptengine/MetaTypeExporter.h"
 #include "scriptengine/ScriptImporter.h"
 #include "ui_ScriptManagerBase.h"
 
@@ -559,6 +560,9 @@ ScriptManager::startScriptEngine( QString name )
     QObject* objectPtr;
     QScriptValue scriptObject;
 
+    AmarokScript::MetaTypeExporter* exporter;
+    exporter = new AmarokScript::MetaTypeExporter( scriptEngine );
+    exporter->TrackMeta_Register();
 //    scriptObject = scriptEngine->newFunction( ScriptExit );
 //    scriptEngine->globalObject().setProperty( "Exit", scriptObject );
 

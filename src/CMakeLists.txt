@@ -349,7 +349,6 @@ set(dbus_SRCS
 # SCRIPTING INTERFACE
 #####################################################################
 set (scriptengine_SRCS
-     scriptengine/ScriptImporter.cpp
      scriptengine/AmarokScript.cpp
      scriptengine/AmarokCollectionScript.cpp
      scriptengine/AmarokLyricsScript.cpp
@@ -360,6 +359,8 @@ set (scriptengine_SRCS
      scriptengine/AmarokPlaylistScript.cpp
      scriptengine/AmarokStatusbarScript.cpp
      scriptengine/AmarokWindowScript.cpp
+     scriptengine/MetaTypeExporter.cpp
+     scriptengine/ScriptImporter.cpp
 )
 
 #####################################################################
