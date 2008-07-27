@@ -19,7 +19,7 @@
 
 #include "App.h"
 #include "Debug.h"
-#include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
+#include "browsers/servicebrowser/scriptableservice/ScriptableServiceManager.h"
 
 #include <QtScript>
 

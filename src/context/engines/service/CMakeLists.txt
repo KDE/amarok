@@ -1,6 +1,6 @@
 include_directories( ../../..
                      ../../../context
-                     ../../../servicebrowser
+                     ../../../browsers/servicebrowser
                      ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
 )
 

@@ -22,9 +22,8 @@
 
 
 
-#include "../ServiceBase.h"
+#include "ServiceBase.h"
 #include "JamendoDatabaseHandler.h"
-//#include "../ServiceCollection.h"
 #include "ServiceSqlCollection.h"
 
 #include "Amarok.h"

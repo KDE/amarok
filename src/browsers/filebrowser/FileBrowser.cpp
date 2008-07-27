@@ -24,8 +24,8 @@
 
 #include "Debug.h"
 #include "collection/CollectionManager.h"
-#include "filebrowser/MyDirOperator.h"
-#include "filebrowser/kbookmarkhandler.h"
+#include "browsers/filebrowser/MyDirOperator.h"
+#include "browsers/filebrowser/kbookmarkhandler.h"
 
 #include <QCheckBox>
 #include <QDir>

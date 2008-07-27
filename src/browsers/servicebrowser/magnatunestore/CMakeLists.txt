@@ -1,11 +1,12 @@
         include_directories( 
-            ../..
-            ../../plugin
-            ../../meta
-            ../../collection
-            ../../servicebrowser
-            ../../statusbar
-            ${CMAKE_CURRENT_BINARY_DIR}/../..
+            ../
+            ../../..
+            ../../../plugin
+            ../../../meta
+            ../../../collection
+            ../../../servicebrowser
+            ../../../statusbar
+            ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}
             ${STRIGI_INCLUDE_DIR}
             ${QT_INCLUDES} )
@@ -30,12 +31,6 @@
             MagnatuneSqlCollection.cpp
             MagnatuneCollectionLocation.cpp
         )
-
-#kde4_add_ui3_files(amarok_service_magnatune_PART_SRCS
-#           MagnatuneDownloadDialogBase.ui
-#           MagnatuneRedownloadDialogBase.ui
-#           MagnatunePurchaseDialogBase.ui
-#       )
 
         kde4_add_ui_files( amarok_service_magnatune_PART_SRCS
             MagnatuneDownloadDialogBase.ui

@@ -17,7 +17,7 @@
 
 #include "AmarokServicePluginManagerScript.h"
 
-#include "servicebrowser/ServicePluginManager.h"
+#include "browsers/servicebrowser/ServicePluginManager.h"
 
 #include "App.h"
 

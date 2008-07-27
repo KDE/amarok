@@ -27,12 +27,14 @@
 #include "ScriptManager.h"
 
 #include "Amarok.h"
-#include "amarokconfig.h"
 #include "AmarokProcess.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "Osd.h"
+#include "StatusBar.h"
+#include "amarokconfig.h"
+#include "browsers/servicebrowser/scriptableservice/ScriptableServiceManager.h"
 #include "scriptengine/AmarokCollectionScript.h"
 #include "scriptengine/AmarokEngineScript.h"
 #include "scriptengine/AmarokLyricsScript.h"
@@ -44,8 +46,6 @@
 #include "scriptengine/AmarokStatusbarScript.h"
 #include "scriptengine/AmarokWindowScript.h"
 #include "scriptengine/ScriptImporter.h"
-#include "servicebrowser/scriptableservice/ScriptableServiceManager.h"
-#include "StatusBar.h"
 #include "ui_ScriptManagerBase.h"
 
 #include <KAboutApplicationDialog>

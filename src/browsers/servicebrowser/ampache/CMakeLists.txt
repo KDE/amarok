@@ -1,11 +1,13 @@
         include_directories( 
+            ../
             ../..
-            ../../plugin
-            ../../meta
-            ../../collection
-            ../../servicebrowser
-            ../../statusbar
-            ${CMAKE_CURRENT_BINARY_DIR}/../..
+            ../../..
+            ../../../plugin
+            ../../../meta
+            ../../../collection
+            ../../../servicebrowser
+            ../../../statusbar
+            ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}
             ${STRIGI_INCLUDE_DIR}
             ${QT_INCLUDES} )

@@ -1,10 +1,11 @@
         include_directories(
         ..
         ../..
-        ../../collection
-        ../../meta
+        ../../..
+        ../../../collection
+        ../../../meta
         libUnicorn
-        ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
+        ${CMAKE_CURRENT_BINARY_DIR}/../../.. #for amarokconfig.h
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES} )

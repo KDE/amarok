@@ -18,7 +18,7 @@
 #ifndef MP3TUNESSERVICECOLLECTIONLOCATION_H
 #define MP3TUNESSERVICECOLLECTIONLOCATION_H
 
-#include <ServiceCollectionLocation.h>
+#include "ServiceCollectionLocation.h"
 #include "Mp3tunesServiceCollection.h"
 
 #include <QMap>

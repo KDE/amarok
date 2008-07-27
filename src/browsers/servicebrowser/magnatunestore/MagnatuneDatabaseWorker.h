@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,58 +14,63 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef MAGNATUNEINFOPARSER_H
-#define MAGNATUNEINFOPARSER_H
-
-#include "InfoParserBase.h"
+#ifndef MAGNATUNEDATABASEWORKER_H
+#define MAGNATUNEDATABASEWORKER_H
 
 #include "MagnatuneMeta.h"
 
-#include <kio/job.h>
-#include <kio/jobclasses.h>
+#include "../ServiceSqlRegistry.h"
 
-
+#include <threadweaver/Job.h>
 
 /**
-Handles the fetching and processing of Jamendo specific information for meta items
+A small helper class to do some simple asynchroneous database queries
 
-	@author
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>   
 */
-class MagnatuneInfoParser : public InfoParserBase
+
+class MagnatuneDatabaseWorker : public ThreadWeaver::Job
 {
-Q_OBJECT
-
+    Q_OBJECT
 public:
-    MagnatuneInfoParser() {}
+    MagnatuneDatabaseWorker();
 
-    ~MagnatuneInfoParser() {}
+    ~MagnatuneDatabaseWorker();
 
+    void run();
 
-    
-    virtual void getInfo( Meta::ArtistPtr artist );
-    virtual void getInfo( Meta::AlbumPtr album );
-    virtual void getInfo( Meta::TrackPtr track );
-
-    void getFrontPage();
-
-private:
-
-    KJob * m_infoDownloadJob;
-    KJob * m_frontPageDownloadJob;
-    
-    QString extractArtistInfo( const QString &artistPage );
-private slots:
-
-    void artistInfoDownloadComplete( KJob *downLoadJob );
-    void frontPageDownloadComplete( KJob *downLoadJob );
+    void fetchMoodMap();
+    void fetchTrackswithMood( const QString &mood, int noOfTracks, ServiceSqlRegistry * registry );
 
 signals:
 
-    void info( QString );
+    void gotMoodMap( QMap<QString, int> map );
+    void gotMoodyTracks( Meta::TrackList tracks );
+
+private slots:
+    void completeJob();
+
+private:
+
+    void doFetchMoodMap();
+    void doFetchTrackswithMood();
+    
+    enum taskType { FETCH_MODS, FETCH_MOODY_TRACKS };
+
+    int m_task;
+
+    QMap<QString, int> m_moodMap;
+    Meta::TrackList m_moodyTracks;
+
+    QString m_mood;
+    int m_noOfTracks;
+
+    ServiceSqlRegistry * m_registry;
+    
+
 };
 
 #endif
-

@@ -20,7 +20,7 @@
 #ifndef SERVICECOLLECTIONTREEVIEW_H
 #define SERVICECOLLECTIONTREEVIEW_H
 
-#include <collectionbrowser/CollectionTreeView.h>
+#include "browsers/collectionbrowser/CollectionTreeView.h"
 
 /**
 A simple extension of the CollectionTreeView class that allows optional support for specifying that tracks are not playable and thus should not be added to the playlist on activation and does not have the add and load options in the context menu.

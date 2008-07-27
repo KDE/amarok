@@ -20,7 +20,7 @@
 
 #include "CollectionWidget.h"
 #include "CollectionTreeView.h"
-#include "collectionbrowser/CollectionTreeItemModel.h"
+#include "browsers/collectionbrowser/CollectionTreeItemModel.h"
 #include "SearchWidget.h"
 
 #include <KConfigGroup>

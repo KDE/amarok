@@ -25,7 +25,7 @@
 #include "Debug.h"
 #include "CollectionLocation.h"
 #include "CollectionManager.h"
-#include "collectionbrowser/CollectionTreeItemModel.h"
+#include "browsers/collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
 #include "mediabrowser.h"
 #include "Meta.h"

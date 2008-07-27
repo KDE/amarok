@@ -19,8 +19,8 @@
 
 #include "ServiceCollectionTreeView.h"
 
-#include "meta/CustomActionsCapability.h"
-#include "context/popupdropper/PopupDropperAction.h"
+#include "../meta/CustomActionsCapability.h"
+#include "../context/popupdropper/PopupDropperAction.h"
 
 #include <KMenu>
 

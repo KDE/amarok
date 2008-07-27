@@ -21,21 +21,20 @@
 #include "Amarok.h"
 #include "BlockingQuery.h"
 #include "Debug.h"
+#include "MetaUtility.h"
+#include "SqlCollection.h"
+#include "SqlRegistry.h"
+#include "browsers/servicebrowser/lastfm/SimilarArtistsAction.h"
+#include "context/popupdropper/PopupDropperAction.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
-//#include "mediadevice/CopyToDeviceAction.h"
 #include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
 #include "meta/OrganiseCapability.h"
 #include "meta/UpdateCapability.h"
-#include "MetaUtility.h"
-//#include "ScriptManager.h"
-#include "servicebrowser/lastfm/SimilarArtistsAction.h"
-#include "SqlRegistry.h"
-#include "SqlCollection.h"
-#include "context/popupdropper/PopupDropperAction.h"
-
 #include "mountpointmanager.h"
+//#include "ScriptManager.h"
+//#include "mediadevice/CopyToDeviceAction.h"
 
 #include <QDateTime>
 #include <QDir>

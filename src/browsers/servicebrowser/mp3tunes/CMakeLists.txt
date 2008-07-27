@@ -1,18 +1,19 @@
 if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
     if(LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND AND QT4_GLIB_SUPPORT)
         include_directories(
-            ../..
-            ../../plugin
-            ../../meta
-            ../../collection
-            ../../servicebrowser
-            ../../statusbar
+            ../
+            ../../..
+            ../../../plugin
+            ../../../meta
+            ../../../collection
+            ../../../servicebrowser
+            ../../../statusbar
             ./libmp3tunes
             ./harmonydaemon
             ${OPENSSL_INCLUDE_DIR}
             ${LIBXML2_INCLUDE_DIR}
             ${CURL_INCLUDE_DIRS}
-            ${CMAKE_CURRENT_BINARY_DIR}/../..
+            ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}
             ${STRIGI_INCLUDE_DIR}
             ${QT_INCLUDES}

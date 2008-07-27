@@ -23,7 +23,7 @@
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 #include "collection/QueryMaker.h"
-#include "playlistbrowser/SqlPlaylistGroup.h"
+#include "browsers/playlistbrowser/SqlPlaylistGroup.h"
 
 #include <QList>
 #include <QMap>

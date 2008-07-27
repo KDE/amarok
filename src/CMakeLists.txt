@@ -9,18 +9,19 @@ if(APPLE)
     set(mac_SRCS app_mac.cpp)
 endif(APPLE)
 
+# add_subdirectory( playlistmanager )
+#add_subdirectory( mediadevice )
+add_subdirectory( browsers/collectionbrowser )
+add_subdirectory( browsers/servicebrowser )
+add_subdirectory( collection )
+add_subdirectory( collectionscanner )
+add_subdirectory( context )
 add_subdirectory( data )
 add_subdirectory( images )
-add_subdirectory( scripts )
-add_subdirectory( themes )
 add_subdirectory( metadata )
-#add_subdirectory( mediadevice )
-add_subdirectory( collectionscanner )
-add_subdirectory( collection )
+add_subdirectory( scripts )
 add_subdirectory( strigi )
-add_subdirectory( context )
-# add_subdirectory( playlistmanager )
-add_subdirectory( servicebrowser )
+add_subdirectory( themes )
 
 
 OPTION(USE_SYSTEM_SQLITE "Use system sqlite instead of amarok's own copy" OFF)
@@ -36,6 +37,9 @@ endif (USE_SYSTEM_SQLITE)
 
 include_directories(
 #    analyzers
+    browsers/playlistbrowser
+    browsers/servicebrowser
+    browsers/servicebrowser/scriptableservice
     charset-detector/include
     charset-detector/src
     charset-detector/src/tables/
@@ -49,11 +53,9 @@ include_directories(
     dynamic
 #    mediadevice
     meta
-    playlistbrowser
     playlistmanager
     plugin
     podcasts
-    servicebrowser
     statusbar
     widgets
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
@@ -79,38 +81,38 @@ set(libplugin_SRCS
 # SERVICEBROWSER
 #####################################################################
 set(libservicebrowser_SRCS
-    servicebrowser/DynamicServiceQueryMaker.cpp
-    servicebrowser/InfoParserBase.cpp
-    servicebrowser/ServiceAlbumCoverDownloader.cpp
-    servicebrowser/ServiceBase.cpp
-    servicebrowser/ServiceBrowser.cpp
-    servicebrowser/ServiceCollection.cpp
-    servicebrowser/ServiceCollectionLocation.cpp
-    servicebrowser/ServiceCollectionTreeView.cpp
-    servicebrowser/ServiceCurrentTrackActionsCapability.cpp
-    servicebrowser/ServiceCustomActionsCapability.cpp
-    servicebrowser/ServiceInfoProxy.cpp
-    servicebrowser/ServiceListDelegate.cpp
-    servicebrowser/ServiceListModel.cpp
-    servicebrowser/ServiceMetaBase.cpp
-    servicebrowser/ServicePluginManager.cpp
-    servicebrowser/ServiceSourceInfoCapability.cpp
-    servicebrowser/ServiceSqlCollection.cpp
-    servicebrowser/ServiceSqlQueryMaker.cpp
-    servicebrowser/ServiceSqlRegistry.cpp
-    servicebrowser/ShowInServiceAction.cpp
+    browsers/servicebrowser/DynamicServiceQueryMaker.cpp
+    browsers/servicebrowser/InfoParserBase.cpp
+    browsers/servicebrowser/ServiceAlbumCoverDownloader.cpp
+    browsers/servicebrowser/ServiceBase.cpp
+    browsers/servicebrowser/ServiceBrowser.cpp
+    browsers/servicebrowser/ServiceCollection.cpp
+    browsers/servicebrowser/ServiceCollectionLocation.cpp
+    browsers/servicebrowser/ServiceCollectionTreeView.cpp
+    browsers/servicebrowser/ServiceCurrentTrackActionsCapability.cpp
+    browsers/servicebrowser/ServiceCustomActionsCapability.cpp
+    browsers/servicebrowser/ServiceInfoProxy.cpp
+    browsers/servicebrowser/ServiceListDelegate.cpp
+    browsers/servicebrowser/ServiceListModel.cpp
+    browsers/servicebrowser/ServiceMetaBase.cpp
+    browsers/servicebrowser/ServicePluginManager.cpp
+    browsers/servicebrowser/ServiceSourceInfoCapability.cpp
+    browsers/servicebrowser/ServiceSqlCollection.cpp
+    browsers/servicebrowser/ServiceSqlQueryMaker.cpp
+    browsers/servicebrowser/ServiceSqlRegistry.cpp
+    browsers/servicebrowser/ShowInServiceAction.cpp
 )
 
 #####################################################################
 # SCRIPTABLESERVICE
 #####################################################################
 set(libscriptableservice_SRCS
-    servicebrowser/scriptableservice/ScriptableService.cpp
-    servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
-    servicebrowser/scriptableservice/ScriptableServiceInfoParser.cpp
-    servicebrowser/scriptableservice/ScriptableServiceManager.cpp
-    servicebrowser/scriptableservice/ScriptableServiceMeta.cpp
-    servicebrowser/scriptableservice/ScriptableServiceQueryMaker.cpp
+    browsers/servicebrowser/scriptableservice/ScriptableService.cpp
+    browsers/servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
+    browsers/servicebrowser/scriptableservice/ScriptableServiceInfoParser.cpp
+    browsers/servicebrowser/scriptableservice/ScriptableServiceManager.cpp
+    browsers/servicebrowser/scriptableservice/ScriptableServiceMeta.cpp
+    browsers/servicebrowser/scriptableservice/ScriptableServiceQueryMaker.cpp
 )
 
 #####################################################################
@@ -135,20 +137,20 @@ kde4_add_ui_files(libconfigdialog_SRCS
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
-    servicebrowser/magnatunestore/MagnatunePurchaseDialogBase.ui
+    browsers/servicebrowser/magnatunestore/MagnatunePurchaseDialogBase.ui
 )
 
 #####################################################################
 # COLLECTIONBROWSER
 #####################################################################
 set(libcollectionbrowser_SRCS
-    collectionbrowser/CollectionSortFilterProxyModel.cpp
-    collectionbrowser/CollectionTreeItem.cpp
-    collectionbrowser/CollectionTreeItemModel.cpp
-    collectionbrowser/CollectionTreeItemModelBase.cpp
-    collectionbrowser/CollectionTreeView.cpp
-    collectionbrowser/CollectionWidget.cpp
-    collectionbrowser/SingleCollectionTreeItemModel.cpp
+    browsers/collectionbrowser/CollectionSortFilterProxyModel.cpp
+    browsers/collectionbrowser/CollectionTreeItem.cpp
+    browsers/collectionbrowser/CollectionTreeItemModel.cpp
+    browsers/collectionbrowser/CollectionTreeItemModelBase.cpp
+    browsers/collectionbrowser/CollectionTreeView.cpp
+    browsers/collectionbrowser/CollectionWidget.cpp
+    browsers/collectionbrowser/SingleCollectionTreeItemModel.cpp
 )
 
 #####################################################################
@@ -257,18 +259,18 @@ set(libpodcasts_SRCS
 # PLAYLISTBROWSER
 #####################################################################
 set(libplaylistbrowser_SRCS
-    playlistbrowser/DynamicModel.cpp
-    playlistbrowser/DynamicCategory.cpp
-    playlistbrowser/DynamicBiasDelegate.cpp
-    playlistbrowser/DynamicBiasModel.cpp
-    playlistbrowser/DynamicBiasWidgets.cpp
-    playlistbrowser/PlaylistBrowser.cpp
-    playlistbrowser/UserPlaylistModel.cpp
-    playlistbrowser/UserPlaylistTreeView.cpp
-    playlistbrowser/PlaylistCategory.cpp
-    playlistbrowser/SqlPlaylistGroup.cpp
-    playlistbrowser/PodcastModel.cpp
-    playlistbrowser/PodcastCategory.cpp
+    browsers/playlistbrowser/DynamicModel.cpp
+    browsers/playlistbrowser/DynamicCategory.cpp
+    browsers/playlistbrowser/DynamicBiasDelegate.cpp
+    browsers/playlistbrowser/DynamicBiasModel.cpp
+    browsers/playlistbrowser/DynamicBiasWidgets.cpp
+    browsers/playlistbrowser/PlaylistBrowser.cpp
+    browsers/playlistbrowser/UserPlaylistModel.cpp
+    browsers/playlistbrowser/UserPlaylistTreeView.cpp
+    browsers/playlistbrowser/PlaylistCategory.cpp
+    browsers/playlistbrowser/SqlPlaylistGroup.cpp
+    browsers/playlistbrowser/PodcastModel.cpp
+    browsers/playlistbrowser/PodcastCategory.cpp
 )
 
 #####################################################################
@@ -469,10 +471,10 @@ set(amaroklib_LIB_SRCS
 #    equalizerpresetmanager.cpp
 #    equalizersetup.cpp
 #    fht.cpp
-    filebrowser/FileBrowser.cpp
-    filebrowser/MyDirLister.cpp
-    filebrowser/MyDirOperator.cpp
-    filebrowser/kbookmarkhandler.cpp
+    browsers/filebrowser/FileBrowser.cpp
+    browsers/filebrowser/MyDirLister.cpp
+    browsers/filebrowser/MyDirOperator.cpp
+    browsers/filebrowser/kbookmarkhandler.cpp
     ktrm.cpp
 #    mediabrowser.cpp
     medium.cpp
@@ -482,7 +484,7 @@ set(amaroklib_LIB_SRCS
     PopupDropperFactory.cpp
     prettypopupmenu.cpp
     refreshimages.cpp
-    servicebrowser/lastfm/SimilarArtistsAction.cpp
+    browsers/servicebrowser/lastfm/SimilarArtistsAction.cpp
     socketserver.cpp
     Systray.cpp
 #    widgets/AnalyzerWidget.cpp
@@ -520,7 +522,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/tagdialogbase.ui
     dialogs/FilenameLayoutDialog.ui
     dialogs/trackpickerdialogbase.ui
-    playlistbrowser/PodcastCategoryBase.ui
+    browsers/playlistbrowser/PodcastCategoryBase.ui
     podcastsettingsbase.ui
 )
 
