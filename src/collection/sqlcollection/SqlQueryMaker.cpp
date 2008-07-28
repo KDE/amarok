@@ -531,12 +531,20 @@ SqlQueryMaker::linkTables()
     if( d->linkedTables & Private::YEAR_TAB )
         d->queryFrom += " LEFT JOIN years ON tracks.year = years.id";
     if( d->linkedTables & Private::STATISTICS_TAB )
+    {
         if( d->linkedTables & Private::URLS_TAB )
+        {
             d->queryFrom += " LEFT JOIN statistics ON urls.id = statistics.url";
+        }
         else if( d->linkedTables & Private::TAGS_TAB )
+        {
             d->queryFrom += " LEFT JOIN statistics ON tracks.url = statistics.url";
+        }
         else
+        {
             d->queryFrom += " statistics";
+        }
+    }
 }
 
 void

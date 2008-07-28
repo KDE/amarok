@@ -50,7 +50,7 @@ namespace AmarokScript
     void ScriptImporter::loadQtBinding( QString binding )
     {
         DEBUG_BLOCK
-        debug() << "importing qt bindings...";
+        debug() << "importing qt bindings " << binding;
         QSet<QString> allowedBindings;
         allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
         if( allowedBindings.contains( binding ) )
