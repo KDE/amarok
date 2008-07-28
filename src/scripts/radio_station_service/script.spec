@@ -4,7 +4,7 @@ Type=script
 ServiceTypes=KPluginInfo
 
 Name=Cool Streams
-Comment=A script that sets tup a service that lists a few cool internet radio stations
+Comment=A script that sets up a service with a few cool internet radio stations
 
 X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen
 X-KDE-PluginInfo-Email=nhnFreespirit@gmail.com
