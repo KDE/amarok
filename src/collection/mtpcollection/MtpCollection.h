@@ -115,7 +115,9 @@ class MtpCollection : public Collection, public MemoryCollection
 
 	void slotDisconnect();
 	
-//    private slots:
+    private slots:
+        void handlerSucceeded();
+        void handlerFailed();
 	
  private:
 

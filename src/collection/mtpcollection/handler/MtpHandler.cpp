@@ -36,6 +36,7 @@
 #include <KIO/Job>
 #include <KIO/DeleteJob>
 #include "kjob.h"
+#include <threadweaver/ThreadWeaver.h>
 #include <KUniqueApplication> // needed for KIO processes
 #include <KUrl>
 
@@ -49,24 +50,31 @@
 using namespace Mtp;
 using namespace Meta;
 
-MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &serial )
+MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
     : QObject( parent )
     , m_memColl( mc )
 {
     DEBUG_BLOCK
+}
 
+MtpHandler::~MtpHandler()
+{
+    // TODO: free used memory
+    terminate();
+}
+
+void
+MtpHandler::init( const QString &serial )
+{
     QString genericError = i18n( "Could not connect to MTP Device" );
 
     m_success = false;
-
-    
 
     // begin checking connected devices
 
     LIBMTP_raw_device_t * rawdevices;
     int numrawdevices;
     LIBMTP_error_number_t err;
-    int i;
     
     debug() << "Initializing MTP stuff";
     LIBMTP_Init();
@@ -80,53 +88,97 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &seria
     switch(err) {
         case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
             fprintf(stdout, "   No raw devices found.\n");
+            m_success = false;
             break;
             
         case LIBMTP_ERROR_CONNECTING:
             fprintf(stderr, "Detect: There has been an error connecting. Exiting\n");
+            m_success = false;
             break;
             
         case LIBMTP_ERROR_MEMORY_ALLOCATION:
             fprintf(stderr, "Detect: Encountered a Memory Allocation Error. Exiting\n");
+            m_success = false;
             break;
             
         case LIBMTP_ERROR_NONE:
         {
-            LIBMTP_mtpdevice_t *device;
+            m_success = true;
+            break;
+        }
+
+        default:
+            debug() << "Unhandled mtp error";
+            m_success = false;
+            break;
+    }
+    
+    
+
+    if( m_success )
+    {
+        ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, serial, this ) );
+    }
+    else
+    {
+        free( rawdevices );
+        emit failed();
+    }
+    
+}
+
+
+// this function is threaded
+bool
+MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial )
+{
+    DEBUG_BLOCK
+
+    bool success;
+            
+    LIBMTP_mtpdevice_t *device;
             // test raw device for connectability
-            for(i = 0; i < numrawdevices; i++)
-            {
+    for(int i = 0; i < numrawdevices; i++)
+    {
                 
-                debug() << "Opening raw device number: " << (i+1);
-                device = LIBMTP_Open_Raw_Device(&rawdevices[i]);
-                if (device == NULL) {
-                    debug() << "Unable to open raw device: " << i;
-                    continue;
-                }
+        debug() << "Opening raw device number: " << (i+1);
+        device = LIBMTP_Open_Raw_Device(&rawdevices[i]);
+        if (device == NULL) {
+            debug() << "Unable to open raw device: " << i;
+            continue;
+        }
 
-                debug() << "Testing serial number";
-                if( serial != QString::fromUtf8( LIBMTP_Get_Serialnumber( device ) ) )
-                {
-                    debug() << "Wrong device, going to next";
-                    continue;
-                }
+        debug() << "Testing serial number";
+        if( serial != QString::fromUtf8( LIBMTP_Get_Serialnumber( device ) ) )
+        {
+            debug() << "Wrong device, going to next";
+            continue;
+        }
 
-                debug() << "Correct device found";
-                break;
-            }
+        debug() << "Correct device found";
+        success = true;
+        break;
+    }
     
     m_device = device;
     
     if( m_device == 0 ) {
         // TODO: error protection
-        m_success = false;
-        break;
+        success = false;
+        free( rawdevices );
+
     }
 
     //QString serial = QString::fromUtf8( LIBMTP_Get_Serialnumber( m_device ) );
 
     debug() << "Serial is: " << serial;
 
+    return m_success;
+}
+
+void
+MtpHandler::getDeviceInfo()
+{
     // Get information for device
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
@@ -135,8 +187,8 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &seria
     if(! ownername.isEmpty() )
         if( modelname != ownername )
             m_name += " (" + ownername + ')';
-        else
-            m_name += " (No Owner Name)";
+    else
+        m_name += " (No Owner Name)";
 
     m_default_parent_folder = m_device->default_music_folder;
     debug() << "setting default parent : " << m_default_parent_folder;
@@ -160,28 +212,6 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &seria
     else if( m_supportedFiles.indexOf( "gif" ) )
         m_format = "GIF";
     free( filetypes );
-
-    m_success = true;
-    break;
-        }
-
-        default:
-            debug() << "Unhandled mtp error";
-    }
-    
-    free( rawdevices );
-    
-
-}
-
-
-
-MtpHandler::~MtpHandler()
-{
-    // TODO: free used memory
-    terminate();
-
-    
 }
 
 void
@@ -911,15 +941,29 @@ MtpHandler::prettyName() const
 {
     return m_name;
 }
-/*
-WorkerThread::WorkerThread( const QByteArray &data, Reader *reader, DaapCollection *coll )
-    : ThreadWeaver::Job()
-        , m_success( false )
-        , m_data( data )
-                , m_reader( reader )
+
+void
+MtpHandler::slotDeviceMatchSucceeded()
 {
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), coll, SLOT( loadedDataFromServer() ) );
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), coll, SLOT( parsingFailed() ) );
+    getDeviceInfo();
+    emit succeeded();
+}
+void
+MtpHandler::slotDeviceMatchFailed()
+{
+    emit failed();
+}
+
+WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_numrawdevices( numrawdevices )
+    , m_rawdevices( rawdevices )
+    , m_serial( serial )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchSucceeded() ) );
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchFailed() ) );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
 }
 
@@ -929,16 +973,16 @@ WorkerThread::~WorkerThread()
 }
 
 bool
-        WorkerThread::success() const
+WorkerThread::success() const
 {
     return m_success;
 }
 
 void
-        WorkerThread::run()
+WorkerThread::run()
 {
-    m_success = m_reader->parseSongList( m_data );
+    m_success = m_handler->iterateRawDevices( m_numrawdevices, m_rawdevices, m_serial );
 }
 
-*/
+
 

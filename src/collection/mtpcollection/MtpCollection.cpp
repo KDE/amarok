@@ -178,14 +178,14 @@ void
 MtpCollection::init()
 {
     DEBUG_BLOCK
-    m_handler = new Mtp::MtpHandler( this, this, m_serial );
-    if( m_handler->succeeded() )
-    {
-        m_handler->parseTracks();
-        emit collectionSucceeded( this );
-    }
-    else
-        emit collectionFailed( this );
+    m_handler = new Mtp::MtpHandler( this, this );
+
+    connect( m_handler, SIGNAL( succeeded() ),
+             this, SLOT( handlerSucceeded() ) );
+    connect( m_handler, SIGNAL( failed() ),
+             this, SLOT( handlerFailed() ) );
+
+    m_handler->init( m_serial );
 }
 
 void
@@ -395,6 +395,19 @@ MtpCollection::copyTracksCompleted()
 
     // nothing to do
     
+}
+
+void
+MtpCollection::handlerSucceeded()
+{
+    m_handler->parseTracks();
+    emit collectionSucceeded( this );
+}
+
+void
+MtpCollection::handlerFailed()
+{
+    emit collectionFailed( this );
 }
 
 #include "MtpCollection.moc"

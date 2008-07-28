@@ -32,6 +32,7 @@
 #include "MtpMeta.h"
 
 #include "kjob.h"
+#include <threadweaver/Job.h>
 
 #include <QObject>
 #include <QMap>
@@ -55,8 +56,14 @@ namespace Mtp
         Q_OBJECT
 
         public:
-            MtpHandler( MtpCollection *mc, QObject* parent, const QString &serial );
+            MtpHandler( MtpCollection *mc, QObject* parent );
            ~MtpHandler();
+
+           void init( const QString &serial ); // called by collection
+           void getDeviceInfo();
+
+           // thread-related functions
+           bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial );
 
           
 
@@ -79,6 +86,8 @@ namespace Mtp
             uint32_t createFolder( const char *name, uint32_t parent_id );
             void updateFolders( void );
             int progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
+
+
        
 
 
@@ -116,6 +125,12 @@ namespace Mtp
     void fileDeleted( KJob *job );
 
         signals:
+           void succeeded();
+           void failed();
+
+        private slots:
+            void slotDeviceMatchSucceeded();
+            void slotDeviceMatchFailed();
 
         private:
             MtpCollection *m_memColl;
@@ -147,12 +162,12 @@ namespace Mtp
 
 
     };
-/*
+
     class WorkerThread : public ThreadWeaver::Job
     {
         Q_OBJECT
         public:
-            WorkerThread( const QByteArray &data, MtpHandler* handler, DaapCollection *coll );
+            WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpHandler* handler );
             virtual ~WorkerThread();
 
             virtual bool success() const;
@@ -162,9 +177,11 @@ namespace Mtp
 
         private:
             bool m_success;
-            QByteArray m_data;
-            Reader *m_reader;
+            int m_numrawdevices;
+            LIBMTP_raw_device_t* m_rawdevices;
+            QString m_serial;
+            MtpHandler *m_handler;
     };
-    */
+    
 }
 #endif
