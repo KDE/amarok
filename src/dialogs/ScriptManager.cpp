@@ -105,7 +105,6 @@ namespace Amarok {
         return KProtocolManager::proxyFor( protocol );
     }
 
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +139,7 @@ ScriptManager::ScriptManager( QWidget* parent )
     setMainWidget( main );
 
     m_scriptSelector = gui->pluginWidget;
+    gui->pluginWidget->setSizePolicy(QSizePolicy::Preferred ,QSizePolicy::Expanding);
 
     connect( gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
@@ -159,7 +159,6 @@ ScriptManager::ScriptManager( QWidget* parent )
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
 }
-
 
 ScriptManager::~ScriptManager()
 {
@@ -197,7 +196,6 @@ ScriptManager::runScript( const QString& name, bool silent )
     return slotRunScript( name, silent );
 }
 
-
 bool
 ScriptManager::stopScript( const QString& name )
 {
@@ -206,7 +204,6 @@ ScriptManager::stopScript( const QString& name )
     slotStopScript( name );
     return true;
 }
-
 
 QStringList
 ScriptManager::listRunningScripts()
@@ -218,7 +215,6 @@ ScriptManager::listRunningScripts()
     return runningScripts;
 }
 
-
 QString
 ScriptManager::specForScript( const QString& name )
 {
@@ -228,7 +224,6 @@ ScriptManager::specForScript( const QString& name )
     const QString specPath = info.path() + '/' + info.completeBaseName() + ".spec";
     return specPath;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // private slots
@@ -320,7 +315,6 @@ ScriptManager::slotInstallScript( const QString& path )
     return false;
 }
 
-
 void
 ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
 {
@@ -348,7 +342,6 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
     }
 }
 
-
 void
 ScriptManager::slotRetrieveScript()
 {
@@ -365,7 +358,6 @@ ScriptManager::slotRetrieveScript()
 */
     delete engine;
 }
-
 
 void
 ScriptManager::slotUninstallScript()
@@ -392,10 +384,9 @@ ScriptManager::slotUninstallScript()
             slotStopScript( name );
         m_scripts.remove( name );
         KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
-                                           "<p>Please restart Amarok to totally remove the script!</p>" ) );
+        "<p>Please restart Amarok to totally remove the script!</p>" ) );
     }
 }
-
 
 bool
 ScriptManager::slotRunScript( QString name, bool silent )
@@ -431,7 +422,6 @@ ScriptManager::slotRunScript( QString name, bool silent )
     return true;
 }
 
-
 void
 ScriptManager::slotStopScript( QString name )
 {
@@ -450,27 +440,6 @@ ScriptManager::ServiceScriptPopulate( QString name, int level, int parent_id, QS
 {
     m_scripts[name].servicePtr->slotPopulate( level, parent_id, path, filter );
 }
-
-/*
-        case EDIT:
-            KRun::runCommand( "kwrite " + m_scripts[key].url.path(), 0 );
-            break;
-
-        case SHOW_LOG:
-            KTextEdit* editor = new KTextEdit( m_scripts[key].log );
-            kapp->setTopWidget( editor );
-            editor->setWindowTitle( KDialog::makeStandardCaption( i18n( "Output Log for %1", key ) ) );
-            editor->setReadOnly( true );
-
-            QFont font( "fixed" );
-            font.setFixedPitch( true );
-            font.setStyleHint( QFont::TypeWriter );
-            editor->setFont( font );
-
-            editor->resize( 400, 350 );
-            editor->show();
-            break;
-*/
 
 void
 ScriptManager::slotConfigChanged( bool changed )
@@ -514,7 +483,6 @@ ScriptManager::scriptFinished( QString name ) //SLOT
 
     delete m_scripts[name].engine;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // private
@@ -628,6 +596,4 @@ ScriptManager::startScriptEngine( QString name )
 
 }
 
-
 #include "ScriptManager.moc"
-
