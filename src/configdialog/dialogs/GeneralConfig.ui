@@ -127,7 +127,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox2" >
        <property name="title" >
-        <string>Playlist-Window Options</string>
+        <string>Playlist Options</string>
        </property>
        <layout class="QGridLayout" >
         <item row="0" column="0" >
@@ -204,7 +204,7 @@
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0" >
       <size>
        <width>20</width>
        <height>0</height>
