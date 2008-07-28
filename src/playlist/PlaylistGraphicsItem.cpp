@@ -289,7 +289,8 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             QString artist;
             if( track->artist() )
                 artist = track->artist()->name();
-            m_items->topLeftText->setEditableText( artist + ":", spaceForTopLeft );
+            artist += ':';
+            m_items->topLeftText->setEditableText( artist, spaceForTopLeft );
             m_items->topLeftText->setPos( leftAlignX, MARGIN );
         }
 
@@ -332,12 +333,13 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
                 if( artist.isEmpty() )
                     artist = i18n( "Various Artists" );
             }
+            artist += ':';
 
             font = m_items->topLeftText->font();
             font.setBold( true );
             m_items->topLeftText->setFont( font );
 
-            artist = s_fm->elidedText ( artist + ":", Qt::ElideRight, headTextWidth );
+            artist = s_fm->elidedText ( artist, Qt::ElideRight, headTextWidth );
             int artistWidth = (int)s_fm->width( artist );
             offsetX = static_cast<int>( MARGIN + ALBUM_WIDTH + ( ( headTextWidth - artistWidth ) / 2) );
 
