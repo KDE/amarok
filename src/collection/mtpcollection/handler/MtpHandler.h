@@ -65,8 +65,6 @@ namespace Mtp
            // thread-related functions
            bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial );
 
-          
-
        // external functions
        void copyTrackToDevice( const Meta::TrackPtr &track );
        bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
@@ -75,7 +73,6 @@ namespace Mtp
        QString prettyName() const;
        void terminate();
        bool succeeded() const { return m_success; }
-       
 
         private:
             // file-copying related functions
@@ -87,27 +84,17 @@ namespace Mtp
             void updateFolders( void );
             int progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
 
-
-       
-
-
-       
-
        // file io functions
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
        void deleteFile( const KUrl &url );
-       
 
        // internal mtp functions
 
        int                     readMtpMusic( void );
        void getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track );
 
-       
        // miscellaneous internal functions
        void addMtpTrackToCollection( LIBMTP_track_t *mtptrack );
-
-       
 
        // convenience methods to avoid repetitive code
 
@@ -116,10 +103,7 @@ namespace Mtp
        void setupGenreMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, GenreMap &genreMap );
        void setupComposerMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, ComposerMap &composerMap );
        void setupYearMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, YearMap &yearMap );
-        
 
-      
-           
         public slots:
 	void fileTransferred( KJob *job );
     void fileDeleted( KJob *job );
@@ -134,7 +118,7 @@ namespace Mtp
 
         private:
             MtpCollection *m_memColl;
-	    
+
         // mtp database
 
         LIBMTP_mtpdevice_t      *m_device;

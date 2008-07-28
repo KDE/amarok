@@ -401,7 +401,7 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 
     debug() << "Playable Url is: " << track->playableUrl().fileName();
     
-    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->playableUrl().url().toUtf8() ), trackmeta,
+    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->url().toUtf8() ), trackmeta,
             0, this );
 
     
@@ -779,7 +779,7 @@ MtpHandler::parseTracks()
 {
     // NOTE: look at ReadMtpMusic function in MTPMediaDevice
 
-        DEBUG_BLOCK
+        
 
     TrackMap trackMap;
     ArtistMap artistMap;
@@ -792,11 +792,10 @@ MtpHandler::parseTracks()
 
     LIBMTP_track_t *tracks = LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this );
 
-    debug() << "Got tracks from device";
+    
 
     if( tracks == 0 )
     {
-        debug() << "0 tracks returned. Empty device...";
         return;
     }
 
