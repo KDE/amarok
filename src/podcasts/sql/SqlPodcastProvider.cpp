@@ -52,7 +52,7 @@ SqlPodcastProvider::SqlPodcastProvider()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE key = '%1';").arg(sqlStorage->escape( key ) ) );
+    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
     if( values.isEmpty() )
     {
         debug() << "creating Podcast Tables";
@@ -349,7 +349,7 @@ SqlPodcastProvider::createTables() const
     sqlStorage->query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
     sqlStorage->query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
 
-    sqlStorage->query( "INSERT INTO admin(key,version) "
+    sqlStorage->query( "INSERT INTO admin(component,version) "
                        "VALUES('" + key + "'," + QString::number( PODCAST_DB_VERSION ) + ");" );
 }
 

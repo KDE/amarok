@@ -48,13 +48,13 @@ DatabaseUpdater::update()
     if( dbVersion == 0 )
     {
         createTables();
-        m_collection->query( "INSERT INTO admin(key, version) VALUES ('DB_VERSION', 1);" );
+        m_collection->query( "INSERT INTO admin(component, version) VALUES ('DB_VERSION', 1);" );
     }
     else if( dbVersion > DB_VERSION )
     {
         cleanPermanentTables();
         createTables();
-        m_collection->query( "INSERT INTO admin(key, version) VALUES( 'DB_VERSION', 1);" );
+        m_collection->query( "INSERT INTO admin(component, version) VALUES( 'DB_VERSION', 1);" );
     }
 }
 
@@ -310,7 +310,7 @@ DatabaseUpdater::createTables() const
     DEBUG_BLOCK
     // see docs/database/amarokTables.svg for documentation about database layout
     {
-        QString c = "CREATE TABLE admin (key " + m_collection->textColumnType() + ", version INTEGER);";
+        QString c = "CREATE TABLE admin (component " + m_collection->textColumnType() + ", version INTEGER);";
         m_collection->query( c );
     }
     {
@@ -479,7 +479,7 @@ DatabaseUpdater::createTables() const
         m_collection->query( q );
         m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
     }
-    m_collection->query( "INSERT INTO admin(key,version) "
+    m_collection->query( "INSERT INTO admin(component,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );
 }
 
@@ -487,7 +487,7 @@ int
 DatabaseUpdater::adminValue( const QString &key ) const
 {
     QStringList values;
-    values = m_collection->query( QString( "SELECT version FROM admin WHERE key = '%1';").arg(m_collection->escape( key ) ) );
+    values = m_collection->query( QString( "SELECT version FROM admin WHERE component = '%1';").arg(m_collection->escape( key ) ) );
     return values.isEmpty() ? 0 : values.first().toInt();
 }
 

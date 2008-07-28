@@ -52,7 +52,7 @@ PlaylistBrowserNS::UserModel::UserModel()
  : QAbstractItemModel()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE key = '%1';").arg(sqlStorage->escape( key ) ) );
+    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
     if( values.isEmpty() )
     {
         //debug() << "creating Playlist Tables";
@@ -382,7 +382,7 @@ void PlaylistBrowserNS::UserModel::createTables()
     sqlStorage->query( "CREATE INDEX parent_playlists_tracks ON playlist_tracks( playlist_id );" );
 
 
-    sqlStorage->query( "INSERT INTO admin(key,version) "
+    sqlStorage->query( "INSERT INTO admin(component,version) "
             "VALUES('" + key + "'," + QString::number( USERPLAYLIST_DB_VERSION ) + ");" );
 
 }
