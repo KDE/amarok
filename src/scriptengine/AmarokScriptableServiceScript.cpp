@@ -23,38 +23,65 @@
 
 #include <QtScript>
 
-    ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* ScriptEngine )
-    : QObject( kapp )
-    {
-        ScriptEngine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QScriptValue() );
-    }
+StreamItem::StreamItem()
+{
+}
 
-    ScriptableServiceScript::~ScriptableServiceScript()
-    {
-    }
+StreamItem::~StreamItem()
+{
+}
 
-    bool ScriptableServiceScript::initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar )
-    {
-        DEBUG_BLOCK
-        return The::scriptableServiceManager()->initService( name, levels, shortDescription, rootHtml, showSearchBar );
-    }
+ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* ScriptEngine )
+: QObject( kapp )
+{
+    ScriptEngine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QScriptValue() );
+    QScriptValue ctor = ScriptEngine->newFunction( ScriptableServiceScript_ctor );
+    ctor.property( "prototype" ).setProperty( "populate", ScriptEngine->newFunction( ScriptableServiceScript_prototype_populate ) );
+    ScriptEngine->globalObject().setProperty( "ScriptableServiceScript", ctor );
+}
 
-    int ScriptableServiceScript::insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl)
-    {
-        DEBUG_BLOCK
-        return The::scriptableServiceManager()->insertItem( serviceName, level, parentId, name, infoHtml, callbackData, playableUrl );
-    }
+ScriptableServiceScript::~ScriptableServiceScript()
+{
+}
 
-    void ScriptableServiceScript::donePopulating( const QString &serviceName, int parentId )
-    {
-        DEBUG_BLOCK
-        The::scriptableServiceManager()->donePopulating( serviceName, parentId );
-    }
+QScriptValue ScriptableServiceScript::ScriptableServiceScript_ctor( QScriptContext *context, QScriptEngine *engine )
+{
+    QString name = context->argument( 0 ).toString();
+    context->thisObject().setProperty( "name", QScriptValue( engine, name ) );
+    int levels = context->argument( 1 ).toInt32();
+    context->thisObject().setProperty( "levels", QScriptValue( engine, levels ) );
+    QString shortDescription = context->argument( 2 ).toString();
+    context->thisObject().setProperty( "shortDescription", QScriptValue( engine, shortDescription ) );
+    QString rootHtml = context->argument( 3 ).toString();
+    context->thisObject().setProperty( "rootHtml", QScriptValue( engine, rootHtml ) );
+    bool showSearchBar = context->argument( 4 ).toBoolean();
+    context->thisObject().setProperty( "showSearchBar", QScriptValue( engine, showSearchBar ) );
+    The::scriptableServiceManager()->initService( name, levels, shortDescription, rootHtml, showSearchBar );
 
-    void ScriptableServiceScript::slotPopulate( int level, int parent_id, QString path, QString filter )
-    {
-        DEBUG_BLOCK
-        emit populate( level, parent_id, path, filter );
-    }
+    return engine->undefinedValue();
+}
+
+QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine )
+{
+    DEBUG_BLOCK
+}
+
+int ScriptableServiceScript::insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl)
+{
+    DEBUG_BLOCK
+    return The::scriptableServiceManager()->insertItem( serviceName, level, parentId, name, infoHtml, callbackData, playableUrl );
+}
+
+void ScriptableServiceScript::donePopulating( const QString &serviceName, int parentId )
+{
+    DEBUG_BLOCK
+    The::scriptableServiceManager()->donePopulating( serviceName, parentId );
+}
+
+void ScriptableServiceScript::slotPopulate( int level, int parent_id, QString path, QString filter )
+{
+    DEBUG_BLOCK
+    debug() << "populating...";
+}
 
 #include "AmarokScriptableServiceScript.moc"

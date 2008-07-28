@@ -25,7 +25,7 @@
 #include <QtScript>
 
 
-class TrackMeta : public QObject, public QScriptable
+class TrackMeta : public QObject
 {
     Q_OBJECT
 

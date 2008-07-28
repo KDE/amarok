@@ -541,10 +541,11 @@ ScriptManager::startScriptEngine( QString name )
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
     m_scripts[name].wrapperList.append( m_scripts[name].globalPtr );
 
-    m_scripts[name].servicePtr = new ScriptableServiceScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( m_scripts[name].servicePtr );
-    m_global.setProperty( "ScriptableService", scriptObject );
-    m_scripts[name].wrapperList.append( m_scripts[name].servicePtr );
+//    m_scripts[name].servicePtr = new ScriptableServiceScript( scriptEngine );
+//    scriptObject = scriptEngine->newQObject( m_scripts[name].servicePtr );
+//    m_global.setProperty( "ScriptableService", scriptObject );
+//    m_scripts[name].wrapperList.append( m_scripts[name].servicePtr );
+    objectPtr = new ScriptableServiceScript( scriptEngine );
 
     objectPtr = new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
