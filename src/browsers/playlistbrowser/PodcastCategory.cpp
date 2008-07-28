@@ -334,7 +334,7 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
     {
 
         KMenu menu;
-        QAction* loadAction = new QAction( KIcon("file_open" ), i18nc( "Replace the cuurent playlist with these tracks", "&Load" ), &menu );
+        QAction* loadAction = new QAction( KIcon("folder-open" ), i18nc( "Replace the current playlist with these tracks", "&Load" ), &menu );
         QAction* appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), &menu);
 
         menu.addAction( loadAction );
@@ -349,7 +349,7 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
         menu.addAction( refreshAction );
 
         //TODO: only for Episodes
-        QAction* downloadAction = new QAction( KIcon("action-download-amarok"), i18n("&Download"), &menu );
+        QAction* downloadAction = new QAction( KIcon("download-amarok"), i18n("&Download"), &menu );
         menu.addAction( downloadAction );
 
         QAction *result = menu.exec( event->globalPos(), at );
