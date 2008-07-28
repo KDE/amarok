@@ -1263,7 +1263,7 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
 
     
     debug() << "Adding image that's temporarily at: " << tempImagePath;
-
+/*
     if( itdb_artwork_add_thumbnail( ipodtrack->artwork, ITDB_THUMB_COVER_SMALL, QFile::encodeName( tempImagePath ), 0, 0 ) )
         success = true;
     else
@@ -1273,7 +1273,13 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
         success = true;
     else
         success = false;
+*/
 
+    if( itdb_track_set_thumbnails( ipodtrack, QFile::encodeName( tempImagePath ) ) )
+        success = true;
+    else
+        success = false;
+    
     if( success )
     {
         debug() << "Image added successfully!";
