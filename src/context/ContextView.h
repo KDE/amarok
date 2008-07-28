@@ -141,7 +141,10 @@ private:
     
     Plasma::ZoomLevel m_zoomLevel;
 
-    qreal m_factor;
+    bool m_startupFinished;
+
+    QRectF m_startPos;
+    QRectF m_destinationPos;
 
     //ControlBox* m_controlBox;
 
@@ -151,6 +154,7 @@ private slots:
     void animateZoomIn( qreal progress, int id );
     void zoomInFinished( int id );
     void zoomOutFinished( int id );
+    void animateContainmentChange( qreal progress, int id );
 
 };
 

@@ -136,7 +136,7 @@ namespace Amarok {
         }
 
         if( datediff >= 7 )  // return difference in weeks
-            return i18np( "One week ago", "%1w", (datediff+3)/7 );
+            return i18nc( "w for weeks", "%1w", (datediff+3)/7 );
 
         if( datediff == -1 )
             return i18nc( "When this track was last played", "Tomorrow" );
@@ -144,10 +144,10 @@ namespace Amarok {
         const int timediff = datetime.secsTo( now );
 
         if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
-            return i18np( "One day ago", "%1d", (timediff+12*60*60)/(24*60*60) );
+            return i18nc( "d for days", "%1d", (timediff+12*60*60)/(24*60*60) );
 
         if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
-            return i18np( "One hour ago", "%1h", (timediff+30*60)/(60*60) );
+            return i18nc( "h for hours", "%1h", (timediff+30*60)/(60*60) );
 
         //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
 

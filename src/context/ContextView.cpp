@@ -48,7 +48,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     , m_curState( Home )
     , m_appletBrowser( 0 )
     , m_zoomLevel( Plasma::DesktopZoom )
-    , m_factor( 1 )
+    , m_startupFinished( false )
 {
     
     s_self = this;
@@ -90,9 +90,11 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
         amarokContainment->setTitle( "Context #0" );    
         amarokContainment->addCurrentTrack();
     }
+    
     PERF_LOG( "Showing home in contextview" )
     showHome();
     PERF_LOG( "done showing home in contextview" )
+    m_startupFinished = true;
 }
 
 ContextView::~ContextView()
@@ -240,17 +242,19 @@ ContextView::zoom( Plasma::Containment* containment, Plasma::ZoomDirection direc
 
 void
 ContextView::zoomIn( Plasma::Containment* toContainment )
-{    
+{
+    DEBUG_BLOCK
     if ( toContainment && containment() != toContainment )
     {
         setContainment( toContainment );
     }
     
     if ( m_zoomLevel == Plasma::GroupZoom )
-    {
+    {        
         connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
                  this, SLOT( zoomInFinished( int ) ) );
-        Plasma::Animator::self()->customAnimation( 40, 1100, Plasma::Animator::EaseInOutCurve, this, "animateZoomIn" );
+        Plasma::Animator::self()->customAnimation( 120, 800, Plasma::Animator::EaseInOutCurve,
+                                                              this, "animateZoomIn" );
     }
     //HACK: this is the only way that the containments resize correctly after
     //the CV widget has ben resized while in zoom level Plasma::GroupZoom
@@ -265,7 +269,6 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
     if ( m_zoomLevel == Plasma::DesktopZoom )
     {
 
-        m_factor = 1;
         int count = contextScene()->containments().size();
         for( int i = 0; i < count; i++ )
         {
@@ -278,7 +281,8 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
         
         connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
                  this, SLOT( zoomOutFinished( int ) ) );
-        Plasma::Animator::self()->customAnimation( 40, 1100, Plasma::Animator::EaseInOutCurve, this, "animateZoomOut" );
+        Plasma::Animator::self()->customAnimation( 120, 800, Plasma::Animator::EaseInOutCurve,
+                                                              this, "animateZoomOut" );
 
     }
 
@@ -314,7 +318,6 @@ ContextView::zoomInFinished( int id )
                  this, SLOT( zoomInFinished( int ) ) );
     resize( size().width()+1, size().height() );
     resize( size().width()-1, size().height() );
-    m_factor = 1;
 }
 
 void
@@ -337,14 +340,13 @@ ContextView::zoomOutFinished( int id )
     
     disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
                  this, SLOT( zoomOutFinished( int ) ) );
-    m_factor = 0.45;
+                 
 }
 
 
 void
 ContextView::centerOnZoom( qreal sFactor, Plasma::ZoomDirection direction )
-{
-
+{ 
     qreal left, top, right, bottom;
     
     qreal width = sceneRect().width();
@@ -373,7 +375,6 @@ ContextView::centerOnZoom( qreal sFactor, Plasma::ZoomDirection direction )
     {
         setSceneRect( visibleRect );
     }
-        
 }
 
 ContextScene* ContextView::contextScene()
@@ -530,7 +531,10 @@ ContextView::setContainment( Plasma::Containment* containment )
 //         disconnectContainment( this->containment() );
         if( containment->isContainment() )
         {
+            if( m_startupFinished )
+                m_startPos = this->containment()->geometry();
 
+                                                              
             //This call will mess with the current scene geometry
             Plasma::View::setContainment( containment );            
 
@@ -538,15 +542,14 @@ ContextView::setContainment( Plasma::Containment* containment )
             disconnect( containment, SIGNAL( geometryChanged() ), 0, 0 );
             
             //resize the containment and the scene to an appropriate size
-            
             qreal left, top, right, bottom;
             containment->getContentsMargins( &left, &top, &right, &bottom );
-            QSizeF correctSize( rect().size().width() + left - right , rect().size().height() + top - bottom);
-            
+
+            QSizeF correctSize( rect().size().width() + left - right , rect().size().height() + top - bottom );
             if( m_zoomLevel == Plasma::DesktopZoom )
             {                
                 containment->resize( correctSize );
-                setSceneRect( containment->contentsRect() );                
+                setSceneRect( containment->contentsRect() );
             }
             else
             {
@@ -561,6 +564,17 @@ ContextView::setContainment( Plasma::Containment* containment )
 
             if( m_appletBrowser )
                 m_appletBrowser->setContainment( containment );
+            
+            if( m_startupFinished && m_zoomLevel == Plasma::DesktopZoom )
+            {                
+                m_destinationPos = containment->geometry();                               
+
+                Plasma::Animator::self()->customAnimation( m_startPos.width() / 8, 800,
+                                                            Plasma::Animator::EaseInOutCurve,                                                           
+                                                            this, "animateContainmentChange" );
+                debug() << "startPos: " << m_startPos;
+                debug() << "destinationPos: " << m_destinationPos;
+            }
 
         }
         
@@ -583,6 +597,47 @@ ContextView::previousContainment()
     int index = containments.indexOf( containment() );
     index = ( index - 1 ) % containments.size();
     setContainment( containments.at( index ) );
+}
+
+void
+ContextView::animateContainmentChange( qreal progress, int id )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( id )
+
+    qreal incrementX;
+    qreal incrementY;
+    
+    qreal left, top, right, bottom;
+    
+    containment()->getContentsMargins( &left, &top, &right, &bottom );
+    
+    qreal x = m_destinationPos.left() + left;    
+    qreal y = m_destinationPos.top() + top;
+        
+    if( m_startPos.left() < m_destinationPos.left() )
+    {
+        incrementX = progress * ( m_destinationPos.width() + left + 5 );
+        x = m_startPos.left() + incrementX;
+    }
+    else if ( m_startPos.left() > m_destinationPos.left() )
+    {
+        incrementX = progress * ( m_destinationPos.width() + 5 );
+        x = m_startPos.left() - incrementX;
+    }
+    if( m_startPos.top() < m_destinationPos.top() )
+    {
+        incrementY = progress * ( m_destinationPos.height() + top + 5 );
+        y = m_startPos.top() + incrementY;
+    }
+    else if( m_startPos.top() > m_destinationPos.top() )
+    {
+        incrementY = progress * ( m_destinationPos.height() + 5 );
+        y = m_startPos.top() - incrementY;
+    }
+    
+    QRectF visibleRect( QPointF( x, y ), m_destinationPos.size() );
+    setSceneRect( visibleRect );
 }
 
 void

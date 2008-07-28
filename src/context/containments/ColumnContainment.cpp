@@ -383,6 +383,8 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
     debug() << "current rows: " << m_currentRows;
     debug() << "applet: " << applet->pluginName();
     debug() << "width: " << width;
+    debug() << "height: " << height;
+    debug() << "rowspan: " << rowSpan;
 
     int col = 0;
     int row = 0;
