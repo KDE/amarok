@@ -101,12 +101,11 @@ In order to limit the dependencies the Amarok package demands we suggest
 splitting Amarok into the following packages:
 
    1. Amarok + Phonon Engine
-   2. amarok_libvisual
-   3. ipod media device
-   4. ifp media device
-   5. njb media device
-   6. mtp media device
-   7. rio karma media device
+   2. ipod media device
+   3. ifp media device
+   4. njb media device
+   5. mtp media device
+   6. rio karma media device
 
 Amarok is modular and will be fully functional as long as one of 2 or 3 is
 also installed. Hence we suggest Amarok + one backend.

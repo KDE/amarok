@@ -59,9 +59,6 @@ macro_log_feature( IPOD_FOUND "libgpod" "Support Apple iPod audio devices" "http
 macro_optional_find_package(MySQL)
 macro_log_feature( MYSQL_FOUND "mysql" "Store Collection in a mysql database instead of a sqlite one" "http://www.mysql.com" FALSE "4.1.0" "" )
 
-macro_optional_find_package(Libvisual)
-macro_log_feature( LIBVISUAL_FOUND "libvisual" "Enable support for visualizations" "http://localhost.nl/~synap/libvisual/jj" FALSE "0.4.0" "")
-
 macro_optional_find_package(Mp4v2)
 macro_log_feature( MP4V2_FOUND "libmp4v2" "Enable tagging of mp4 files from within amarok" "http://www.sf.net/projects/mpeg4ip" FALSE "" "" )
 
