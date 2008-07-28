@@ -594,14 +594,18 @@ SqlTrack::updateStatisticsInDb()
 void
 SqlTrack::finishedPlaying( double playedFraction )
 {
-    m_lastPlayed = QDateTime::currentDateTime().toTime_t();
-    if( playedFraction > 0.5 ) // Only increment playcount if we've played more than half of the song... It seems like the sanest comprimise.
-        m_playCount++;
-    if( !m_firstPlayed )
+    // Only increment playcount if we've played more than half of the song... It seems like the sanest comprimise.
+    // and only update the other stats (if we did assume that is not played we should not update the last played date
+    if ( playedFraction >= 0.5 )
     {
-        m_firstPlayed = m_lastPlayed;
+        m_lastPlayed = QDateTime::currentDateTime().toTime_t();
+        m_playCount++;
+        if( !m_firstPlayed )
+        {
+            m_firstPlayed = m_lastPlayed;
+        }
     }
-//    ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
+    //    ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
     updateStatisticsInDb();
     notifyObservers();
 }
