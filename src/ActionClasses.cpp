@@ -11,20 +11,17 @@
 
 #include "ActionClasses.h"
 
-#include <config-amarok.h>               //HAVE_LIBVISUAL definition
+#include <config-amarok.h>
 
 #include "Amarok.h"
-#include "amarokconfig.h"
 #include "App.h"
 #include "Debug.h"
-#include "covermanager/CoverManager.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "playlist/PlaylistModel.h"
-//#include "mediumPluginManager.h"
-
-#include "socketserver.h"       //Vis::Selector::showInstance()
 #include "StatusBar.h"
+#include "amarokconfig.h"
+#include "covermanager/CoverManager.h"
+#include "playlist/PlaylistModel.h"
 
 #include <KAuthorized>
 #include <KHBox>
@@ -108,7 +105,6 @@ Menu::Menu()
 
     safePlug( ac, "cover_manager", this );
     safePlug( ac, "queue_manager", this );
-    safePlug( ac, "visualizations", this );
     safePlug( ac, "equalizer", this );
     safePlug( ac, "script_manager", this );
     safePlug( ac, "statistics", this );
@@ -138,10 +134,6 @@ Menu::Menu()
     addSeparator();
 
     safePlug( ac, KStandardAction::name(KStandardAction::Quit), this );
-
-    #ifdef HAVE_LIBVISUAL
-    Amarok::actionCollection()->action( "visualizations" )->setEnabled( false );
-    #endif
 }
 
 Menu*
