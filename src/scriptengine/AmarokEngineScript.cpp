@@ -28,10 +28,11 @@
 
 namespace AmarokScript
 {
-    AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine )
+    AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList )
     : QObject( kapp )
     {
         Q_UNUSED( ScriptEngine );
+        m_wrapperList = wrapperList;
         connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SIGNAL( trackChanged() ) );
         connect( The::engineController(), SIGNAL( trackFinished() ), this, SIGNAL( trackFinished() ) );
         connect( The::engineController(), SIGNAL( trackSeeked( int ) ), this, SIGNAL( trackSeeked( int ) ) );
@@ -137,7 +138,9 @@ namespace AmarokScript
     TrackMeta* AmarokEngineScript::currentTrack()
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
-        return ( new TrackMeta( track ) );
+        TrackMeta* info = new TrackMeta( track );
+        m_wrapperList->append( info );
+        return ( info );
     }
 
     bool AmarokEngineScript::randomMode() const

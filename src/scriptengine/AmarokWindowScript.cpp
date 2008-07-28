@@ -30,7 +30,7 @@
 
 namespace AmarokScript
 {
-    AmarokWindowScript::AmarokWindowScript( QScriptEngine* ScriptEngine, QList<QObject*>* guiPtrList  )
+    AmarokWindowScript::AmarokWindowScript( QScriptEngine* ScriptEngine, QList<QObject*>* guiPtrList )
     : QObject( kapp )
     {
         m_ToolsMenu = The::mainWindow()->ToolsMenu();

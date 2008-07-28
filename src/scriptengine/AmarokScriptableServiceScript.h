@@ -21,8 +21,6 @@
 #include <QObject>
 #include <QtScript>
 
-namespace AmarokScript
-{
 /*
     class StreamRootItem
     {
@@ -33,13 +31,13 @@ namespace AmarokScript
         Q_PROPERTY( int showSearchBar READ showSearchBar WRITE setShowSearchBar );
     }
 */    
-    class AmarokScriptableServiceScript : public QObject
+    class ScriptableServiceScript : public QObject
     {
         Q_OBJECT
 
         public:
-            AmarokScriptableServiceScript( QScriptEngine* ScriptEngine );
-            ~AmarokScriptableServiceScript();
+            ScriptableServiceScript( QScriptEngine* ScriptEngine );
+            ~ScriptableServiceScript();
             void slotPopulate( int level, int parent_id, QString path, QString filter );
 
         public slots:
@@ -50,6 +48,7 @@ namespace AmarokScript
         signals:
             void populate( int level, int parent_id, QString path, QString filter );
     };
-}
+
+Q_DECLARE_METATYPE( ScriptableServiceScript* )
 
 #endif

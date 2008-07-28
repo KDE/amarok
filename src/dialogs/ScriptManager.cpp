@@ -543,7 +543,7 @@ ScriptManager::startScriptEngine( QString name )
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
     m_scripts[name].wrapperList.append( m_scripts[name].globalPtr );
 
-    m_scripts[name].servicePtr = new AmarokScript::AmarokScriptableServiceScript( scriptEngine );
+    m_scripts[name].servicePtr = new ScriptableServiceScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( m_scripts[name].servicePtr );
     m_global.setProperty( "ScriptableService", scriptObject );
     m_scripts[name].wrapperList.append( m_scripts[name].servicePtr );
@@ -558,7 +558,7 @@ ScriptManager::startScriptEngine( QString name )
     m_global.setProperty( "Collection", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
-    objectPtr = new AmarokScript::AmarokEngineScript( scriptEngine );
+    objectPtr = new AmarokScript::AmarokEngineScript( scriptEngine, &m_scripts[name].wrapperList );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Engine", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
@@ -568,7 +568,7 @@ ScriptManager::startScriptEngine( QString name )
     m_global.setProperty( "Window", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
-    objectPtr = new AmarokScript::AmarokPlaylistScript( scriptEngine );
+    objectPtr = new AmarokScript::AmarokPlaylistScript( scriptEngine, &m_scripts[name].wrapperList );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Playlist", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );

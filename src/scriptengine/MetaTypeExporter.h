@@ -96,7 +96,7 @@ class TrackMeta : public QObject, public QScriptable
 
     private:
         Meta::TrackPtr m_track;
-        Meta::EditCapability* ec;
+        Meta::EditCapability* m_ec;
 };
 
 namespace AmarokScript

@@ -133,8 +133,8 @@ bool TrackMeta::isValid() const
 }
 bool TrackMeta::isEditable() const
 {
-    if( ec )
-        return ( ec->isEditable() );
+    if( m_ec )
+        return ( m_ec->isEditable() );
     else
         return false;
 }
@@ -156,42 +156,42 @@ void TrackMeta::setRating( int rating )
 
 void TrackMeta::setTrackNumber( int number )
 {
-    if ( isEditable() ) ec->setTrackNumber( number );
+    if ( isEditable() ) m_ec->setTrackNumber( number );
 }
 
 void TrackMeta::setDiscNumber( int number )
 {
-    if ( isEditable() ) ec->setDiscNumber( number );
+    if ( isEditable() ) m_ec->setDiscNumber( number );
 }
 
 void TrackMeta::setAlbum( QString album )
 {
-    if ( isEditable() ) ec->setAlbum( album );
+    if ( isEditable() ) m_ec->setAlbum( album );
 }
 
 void TrackMeta::setArtist( QString artist )
 {
-    if ( isEditable() ) ec->setArtist( artist );
+    if ( isEditable() ) m_ec->setArtist( artist );
 }
 
 void TrackMeta::setComposer( QString composer )
 {
-    if ( isEditable() ) ec->setComposer( composer );
+    if ( isEditable() ) m_ec->setComposer( composer );
 }
 
 void TrackMeta::setGenre( QString genre )
 {
-    if ( isEditable() ) ec->setGenre( genre );
+    if ( isEditable() ) m_ec->setGenre( genre );
 }
 
 void TrackMeta::setYear( QString year )
 {
-    if ( isEditable() ) ec->setYear( year );
+    if ( isEditable() ) m_ec->setYear( year );
 }
 
 void TrackMeta::setComment( QString comment )
 {
-    if ( isEditable() ) ec->setComment( comment );
+    if ( isEditable() ) m_ec->setComment( comment );
 }
 
 void TrackMeta::setLyrics( QString lyrics )
@@ -203,7 +203,7 @@ void TrackMeta::setTrack( Meta::TrackPtr track )
 {
     m_track = track;
     if ( track )
-        ec = m_track->as<Meta::EditCapability>();
+        m_ec = m_track->as<Meta::EditCapability>();
 }
 
 namespace AmarokScript

@@ -32,7 +32,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokPlaylistScript( QScriptEngine* ScriptEngine );
+            AmarokPlaylistScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList );
             ~AmarokPlaylistScript();
         public slots:
             int activeIndex();
@@ -56,6 +56,8 @@ namespace AmarokScript
             void rowMoved( int from, int to );
             void activeRowChanged( int from, int to );
             void activeRowExplicitlyChanged( int from, int to );
+        private:
+            QList<QObject*>* m_wrapperList;
     };
 }
 

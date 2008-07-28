@@ -27,10 +27,11 @@
 
 namespace AmarokScript
 {
-    AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* ScriptEngine )
+    AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList )
     : QObject( kapp )
     {
         Q_UNUSED( ScriptEngine );
+        m_wrapperList = wrapperList;
         connect( The::playlistModel(), SIGNAL( playlistCountChanged( int ) ), this, SIGNAL( CountChanged( int ) ) );
         connect( The::playlistModel(), SIGNAL( playlistGroupingChanged() ), this, SIGNAL( GroupingChanged() ) );
         connect( The::playlistModel(), SIGNAL( rowMoved( int, int ) ), this, SIGNAL( rowMoved( int, int ) ) );
@@ -124,7 +125,9 @@ namespace AmarokScript
     TrackMeta* AmarokPlaylistScript::TrackInfo( int row )
     {
         Meta::TrackPtr track = The::playlistModel()->trackForRow( row );
-        return ( new TrackMeta( track ) );
+        TrackMeta* info = new TrackMeta( track );
+        m_wrapperList->append( info );
+        return ( info );
     }
 }
 

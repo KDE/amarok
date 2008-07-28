@@ -38,7 +38,7 @@ namespace AmarokScript
         Q_PROPERTY ( int fadeoutLength READ fadeoutLength WRITE setFadeoutLength );
 
         public:
-            AmarokEngineScript( QScriptEngine* ScriptEngine );
+            AmarokEngineScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList );
             ~AmarokEngineScript();
 
         public slots:
@@ -80,6 +80,7 @@ namespace AmarokScript
             void setVolume( int percent );
             int  fadeoutLength() const;
             void setFadeoutLength( int length ); //TODO:implement
+            QList<QObject*>* m_wrapperList;
     };
 }
 
