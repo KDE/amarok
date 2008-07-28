@@ -202,17 +202,14 @@ PlaylistBrowserNS::PodcastModel::rowCount(const QModelIndex & parent) const
         if ( podcastMetaCommon->podcastType() ==  Meta::ChannelType )
         {
             Meta::PodcastChannel *channel = static_cast<Meta::PodcastChannel*>(parent.internalPointer());
-            debug() << "channel " << channel->title() << " has " <<  channel->episodes().count() << "children";
             return channel->episodes().count();
         }
         else if ( podcastMetaCommon->podcastType() ==  Meta::EpisodeType )
         {
-            //debug () << "0, cause 2";
             return 0;
         }
         else
         {
-            //debug () << "0, cause 3";
             return 0;
         }
     }
