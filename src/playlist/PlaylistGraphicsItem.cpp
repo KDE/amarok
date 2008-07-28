@@ -304,7 +304,8 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             QString artist;
             if( track->artist() )
                 artist = track->artist()->name();
-            artist += ':';
+            if( !artist.isEmpty() )
+                artist += ':';
             m_items->topLeftText->setEditableText( artist, spaceForTopLeft );
             m_items->topLeftText->setPos( leftAlignX, MARGIN );
         }
@@ -348,7 +349,8 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
                 if( artist.isEmpty() )
                     artist = i18n( "Various Artists" );
             }
-            artist += ':';
+            if( !artist.isEmpty() )
+                artist += ':';
 
             font = m_items->topLeftText->font();
             font.setBold( true );
