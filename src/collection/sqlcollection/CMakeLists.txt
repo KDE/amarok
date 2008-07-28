@@ -3,6 +3,9 @@ macro_optional_find_package(MySQL)
 #build-time only dependency in XesamDbus.h
 #remove at some point
 
+### uncomment three lines to get mysql-embedded: 18, 48, 60
+### don't forget to alter src/collection/sqlcollection/SqlCollection.cpp
+
 include_directories( ../..
         ../../plugin
         ../../meta
@@ -11,7 +14,9 @@ include_directories( ../..
         ${CMAKE_CURRENT_BINARY_DIR}/../..
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
-        ${QT_INCLUDES} )
+        ${QT_INCLUDES}
+###        ${MYSQL_INCLUDE_DIR}
+        )
 
 ########### next target ###############
 
@@ -40,6 +45,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     SqlRegistry.cpp
     SqlMeta.cpp 
     SqliteCollection.cpp
+###    MySqlEmbeddedCollection.cpp
    ${extra_src}
  )
 
@@ -49,7 +55,10 @@ kde4_add_ui_files(amarok_collection-sqlcollection_PART_SRCS
 
 kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-sqlcollection_PART_SRCS})
 
-target_link_libraries(amarok_collection-sqlcollection amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
+target_link_libraries(amarok_collection-sqlcollection amaroklib
+${KDE4_KDECORE_LIBS} ${KDE4_THREADWEAVER_LIBRARIES}
+### ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl
+)
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-sqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")

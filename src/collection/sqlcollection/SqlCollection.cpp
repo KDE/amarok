@@ -20,6 +20,7 @@
 #include "SqlCollection.h"
 
 #include "DatabaseUpdater.h"
+//#include "MySqlEmbeddedCollection.h"
 #include "ScanManager.h"
 #include "SqlQueryMaker.h"
 #include "SqliteCollection.h"
@@ -59,6 +60,8 @@ SqlCollectionFactory::init()
             collection = new SqlCollection( "localCollection", i18n( "Local Collection" ) );
             break;
     }*/
+// uncomment next to test MySQLe (and comment the next to next)
+//    collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
     collection = new SqliteCollection( "localCollection", i18n( "Local Collection" ) );
     emit newCollection( collection );
 }

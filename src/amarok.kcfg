@@ -447,6 +447,9 @@
     </entry>
 </group>
 
+<group name="MySQLe">
+</group>
+
 <group name="Scrobbler">
         <entry key="SubmitPlayedSongs" type="Bool">
             <label>Submit played songs</label>
