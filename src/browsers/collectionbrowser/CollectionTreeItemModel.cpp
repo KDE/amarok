@@ -95,7 +95,8 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
                 }
                 return iconForLevel( level );
             }
-        }
+        } else if ( role == AlternateCollectionRowRole )
+            return ( index.row() % 2 == 1 );
     }
 
     return item->data( role );

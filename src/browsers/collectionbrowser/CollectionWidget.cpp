@@ -81,6 +81,9 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     filterMenu->addAction( action );
 
     m_treeView->setShowTrackNumbers( true );
+
+    setFrameShape( QFrame::StyledPanel );
+    setFrameShadow( QFrame::Raised );
 }
 
 void

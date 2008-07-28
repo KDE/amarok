@@ -104,7 +104,9 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
   m_urlNav = new KUrlNavigator( m_filePlacesModel, KUrl(QDir::home().path()), this );
 
   setContentsMargins(0,0,0,0);
-  setFrameShape( QFrame::NoFrame );
+  
+  setFrameShape( QFrame::StyledPanel );
+  setFrameShadow( QFrame::Raised );
 
 
 // FIXME

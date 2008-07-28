@@ -43,13 +43,10 @@ using namespace Playlist;
 
 
 Widget::Widget( QWidget* parent )
-    : QFrame( parent )
+    : KVBox( parent )
 {
-    QVBoxLayout* layout = new QVBoxLayout( this );
-    layout->setContentsMargins( 0, 0, 0, 0 );
     
     setContentsMargins( 4, 4, 4, 4 );
-    //setFrameShape( QFrame::Box );
 
     Amarok::Widget * layoutHolder = new Amarok::Widget( this );
 
@@ -67,7 +64,7 @@ Widget::Widget( QWidget* parent )
 
 
     Playlist::GraphicsView* playView = The::playlistView();
-    //playView->setFrameShape( QFrame::NoFrame );  // Get rid of the redundant border
+    playView->setFrameShape( QFrame::NoFrame );  // Get rid of the redundant border
     playView->setModel( playModel );
 
 
@@ -85,11 +82,7 @@ Widget::Widget( QWidget* parent )
 
     m_stackedWidget->setCurrentIndex( 0 );
 
-    layout->setSpacing( 0 );
-    layout->addWidget( m_stackedWidget );
-
     KToolBar *plBar = new Amarok::ToolBar( this );
-    layout->addWidget( plBar );
     plBar->setObjectName( "PlaylistToolBar" );
 
     KAction * action = new KAction( KIcon( "view-media-playlist-amarok" ), i18nc( "switch view", "Switch Playlist &View" ), this );
@@ -119,6 +112,9 @@ Widget::Widget( QWidget* parent )
         plBar->addAction( new KToolBarSpacerAction( this ) );
 
     } //END Playlist Toolbar
+
+    setFrameShape( QFrame::StyledPanel );
+    setFrameShadow( QFrame::Raised );
 
 }
 

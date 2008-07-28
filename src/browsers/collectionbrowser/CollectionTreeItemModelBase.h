@@ -47,6 +47,11 @@ namespace CategoryId
     };
 }
 
+enum {
+    AlternateCollectionRowRole = Qt::UserRole + 20
+};
+
+
 
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>

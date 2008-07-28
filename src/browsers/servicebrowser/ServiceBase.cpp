@@ -123,7 +123,7 @@ ServiceBase::ServiceBase( const QString &name )
     m_contentView = new ServiceCollectionTreeView( this );
     m_contentView->setFrameShape( QFrame::NoFrame );
 
-    m_contentView->setAlternatingRowColors ( true );
+    //m_contentView->setAlternatingRowColors ( true );
     //m_contentView->setAnimated( true );
     m_contentView->setSortingEnabled( true );
     m_contentView->sortByColumn ( 0, Qt::AscendingOrder );
@@ -157,6 +157,9 @@ ServiceBase::ServiceBase( const QString &name )
 
     m_searchWidget = new SearchWidget( m_topPanel );
     m_searchWidget->setup( m_contentView );
+
+    setFrameShape( QFrame::StyledPanel );
+    setFrameShadow( QFrame::Raised );
 }
 
 ServiceBase::~ServiceBase()

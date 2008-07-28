@@ -72,6 +72,7 @@ class CollectionTreeView: public QTreeView
         void mouseDoubleClickEvent( QMouseEvent *event );
         void startDrag(Qt::DropActions supportedActions);
         //void changeEvent ( QEvent * event );
+        virtual void drawRow ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
     protected slots:
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotExpand( const QModelIndex &index );

@@ -24,11 +24,11 @@
 
 #include "widgets/StackedWidget.h"
 
-#include <QFrame>
+#include <KVBox>
 
 namespace Playlist {
 
-    class Widget : public QFrame
+    class Widget : public KVBox
     {
         Q_OBJECT
         public:

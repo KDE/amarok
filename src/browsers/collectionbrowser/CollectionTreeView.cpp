@@ -35,6 +35,7 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistGraphicsView.h"
 #include "PopupDropperFactory.h"
+#include "SvgHandler.h"
 #include "context/popupdropper/PopupDropper.h"
 #include "context/popupdropper/PopupDropperAction.h"
 #include "context/popupdropper/PopupDropperItem.h"
@@ -74,7 +75,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
 
     //setAnimated( true );
-    setAlternatingRowColors( true );
+    setAlternatingRowColors( false );
 
     //transparency
     /*QPalette p = palette();
@@ -87,6 +88,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     p.setColor( QPalette::AlternateBase, c );
 
     setPalette( p );*/
+
 
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
 
@@ -974,6 +976,31 @@ void CollectionTreeView::newPalette( const QPalette & palette )
     The::paletteHandler()->updateTreeView( this );
 }
 
+void CollectionTreeView::drawRow(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+    
+
+    const int width = option.rect.width();
+    const int height = option.rect.height();
+
+    if ( height > 0 ) {
+        painter->save();
+        QPixmap background;
+
+        if ( !index.data( AlternateCollectionRowRole ).toBool() )
+            background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
+        else
+            background = The::svgHandler()->renderSvgWithDividers( "alt_service_list_item", width, height, "alt_service_list_item" );
+
+        painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
+
+        painter->restore();
+
+    }
+    
+    QTreeView::drawRow( painter, option, index );
+    
+}
 
 #include "CollectionTreeView.moc"
 
