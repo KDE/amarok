@@ -24,6 +24,7 @@
 
 #include "amarokconfig.h"
 #include "Debug.h"
+#include "../../../statusbar/StatusBar.h"
 
 //#include "MediaDeviceCache.h"
 #include "MediaDeviceMonitor.h"
@@ -401,6 +402,8 @@ void
 MtpCollection::handlerSucceeded()
 {
     m_handler->parseTracks();
+    The::statusBar()->longMessage(
+                   i18n( "The MTP device %1 is connected", m_handler->prettyName() ), KDE::StatusBar::Information );
     emit collectionSucceeded( this );
 }
 

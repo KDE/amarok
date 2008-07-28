@@ -232,7 +232,8 @@ MtpHandler::terminate()
     {
         
         LIBMTP_Release_Device( m_device );
-        
+        The::statusBar()->longMessage(
+                       i18n( "The MTP device %1 has been disconnected", prettyName() ), KDE::StatusBar::Information );
         debug() << "Device released";
     }
 }
