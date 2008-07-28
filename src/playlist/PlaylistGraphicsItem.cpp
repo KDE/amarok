@@ -94,7 +94,9 @@ const qreal Playlist::GraphicsItem::ALBUM_WIDTH = 50.0;
 const qreal Playlist::GraphicsItem::SINGLE_TRACK_ALBUM_WIDTH = 40.0;
 const qreal Playlist::GraphicsItem::MARGIN = 3.0;
 const qreal Playlist::GraphicsItem::MARGINH = 6;
-QFontMetricsF* Playlist::GraphicsItem::s_fm = 0;
+QFontMetricsF* Playlist::GraphicsItem::s_nfm = 0;
+QFontMetricsF* Playlist::GraphicsItem::s_bfm = 0;
+QFontMetricsF* Playlist::GraphicsItem::s_ifm = 0;
 
 
 Playlist::GraphicsItem::GraphicsItem()
@@ -107,12 +109,25 @@ Playlist::GraphicsItem::GraphicsItem()
     , m_dataChanged( false )
 {
     setZValue( 1.0 );
-    if( !s_fm )
+    QFont font;
+    if( !s_nfm )
     {
-        s_fm = new QFontMetricsF( QFont() );
-        m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
+        s_nfm = new QFontMetricsF( font );
+        m_height =  qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + 2 * MARGIN;
+    if( !s_bfm )
+    {
+        font.setBold( true );
+        s_bfm = new QFontMetricsF( font );
+        font.setBold( false );
+    }
+    if( !s_ifm )
+    {
+        font.setItalic( true );
+        s_bfm = new QFontMetricsF( font );
+        font.setItalic( false );
     }
 
+   }
     setFlag( QGraphicsItem::ItemIsSelectable );
     setFlag( QGraphicsItem::ItemIsMovable );
     setAcceptDrops( true );
@@ -127,7 +142,7 @@ Playlist::GraphicsItem::~GraphicsItem()
 qreal
 Playlist::GraphicsItem::albumHeaderHeight() const
 {
-    return qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN;
+    return qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + MARGIN;
 }
 
 void
@@ -245,11 +260,11 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
     {
         const qreal middle = textWidth + ALBUM_WIDTH + ( MARGIN * 2.0 );
-        topRightAlignX = qMax( middle, totalWidth - ( s_fm->width( album ) + MARGIN * 2 ) );
+        topRightAlignX = qMax( middle, totalWidth - ( s_nfm->width( album ) + MARGIN * 2 ) );
     }
 
     //lets use all the horizontal space we can get for now..
-    int lengthStringWidth = (int)(s_fm->width( prettyLength ));
+    int lengthStringWidth = (int)(s_nfm->width( prettyLength ));
     bottomRightAlignX = ( totalWidth - 2 * MARGIN ) - lengthStringWidth ;
 
 
@@ -280,7 +295,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
     if ( m_groupMode == None )
     {
-        const qreal lineTwoYSingle = s_fm->height() + MARGIN;
+        const qreal lineTwoYSingle = s_nfm->height() + MARGIN;
 
         m_items->topRightText->setPos( topRightAlignX, MARGIN );
         m_items->topRightText->setEditableText( album, totalWidth - topRightAlignX );
@@ -304,21 +319,21 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         //make the artist and album lines two lines
 
-        int firstLineYOffset = (int)( ( MARGIN + ALBUM_WIDTH ) - s_fm->height() * 2 ) / 2;
+        int firstLineYOffset = (int)( ( MARGIN + ALBUM_WIDTH ) - s_nfm->height() * 2 ) / 2;
         int headTextWidth = static_cast<int>(qreal( totalWidth ) - ( ALBUM_WIDTH + MARGIN * 4 ));
 
         font = m_items->topRightText->font();
         font.setBold( true );
         m_items->topRightText->setFont( font );
 
-        album = s_fm->elidedText ( album, Qt::ElideRight, headTextWidth );
+        album = s_bfm->elidedText ( album, Qt::ElideRight, headTextWidth );
 
-        int albumWidth = (int)s_fm->width( album );
+        int albumWidth = (int)s_bfm->width( album );
 
         int offsetX = static_cast<int>(MARGIN + ALBUM_WIDTH + ( ( headTextWidth - albumWidth ) / 2 ) );
 
         //album goes at the bottom
-        m_items->topRightText->setPos( offsetX , firstLineYOffset + MARGIN + s_fm->height() );
+        m_items->topRightText->setPos( offsetX , firstLineYOffset + MARGIN + s_bfm->height() );
         m_items->topRightText->setEditableText( album, albumWidth );
 
         {
@@ -339,8 +354,8 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
             font.setBold( true );
             m_items->topLeftText->setFont( font );
 
-            artist = s_fm->elidedText ( artist, Qt::ElideRight, headTextWidth );
-            int artistWidth = (int)s_fm->width( artist );
+            artist = s_bfm->elidedText ( artist, Qt::ElideRight, headTextWidth );
+            int artistWidth = (int)s_bfm->width( artist );
             offsetX = static_cast<int>( MARGIN + ALBUM_WIDTH + ( ( headTextWidth - artistWidth ) / 2) );
 
             m_items->topLeftText->setEditableText( artist, artistWidth );
@@ -367,7 +382,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         QRectF trackRect;
         if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) )
         {
-            trackRect = QRectF( 0, ALBUM_WIDTH + 2 * MARGIN, totalWidth, s_fm->height() );
+            trackRect = QRectF( 0, ALBUM_WIDTH + 2 * MARGIN, totalWidth, s_nfm->height() );
         }
         else
         {
@@ -686,16 +701,16 @@ void Playlist::GraphicsItem::setRow(int row)
         {
             case None:
                 //debug() << "None";
-                m_height =  qMax( SINGLE_TRACK_ALBUM_WIDTH, s_fm->height() * 2 ) + 2 * MARGIN;
+                m_height =  qMax( SINGLE_TRACK_ALBUM_WIDTH, s_nfm->height() * 2 ) + 2 * MARGIN;
                 //debug() << "Height for single track: " << m_height;
                 break;
             case Head:
                 //debug() << "Head";
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN + s_fm->height() + 4;
+                m_height =  qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + MARGIN + s_nfm->height() + 4;
                 break;
             case Head_Collapsed:
                 debug() << "Collapsed head";
-                m_height =  qMax( ALBUM_WIDTH, s_fm->height() * 2 ) + MARGIN * 2 + s_fm->height() + 16;
+                m_height =  qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + MARGIN * 2 + s_nfm->height() + 16;
                 if ( !m_items )
                 {
                     const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
@@ -708,11 +723,11 @@ void Playlist::GraphicsItem::setRow(int row)
                 break;
             case Body:
                 //debug() << "Body";
-                m_height =  s_fm->height()/*+ 2 * MARGIN*/;
+                m_height =  s_nfm->height()/*+ 2 * MARGIN*/;
                 break;
             case End:
                 //debug() << "End";
-                m_height =  s_fm->height() /*+ 6*/ /*+ 2 * MARGIN*/;
+                m_height =  s_nfm->height() /*+ 6*/ /*+ 2 * MARGIN*/;
                 break;
             case Collapsed:
                 //debug() << "Collapsed";
@@ -822,7 +837,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     //set overlay if item is active:
     //handleActiveOverlay( trackRect, active );
 
-    const qreal lineTwoY = s_fm->height() + MARGIN;
+    const qreal lineTwoY = s_nfm->height() + MARGIN;
 
     if ( active )
     {
@@ -832,7 +847,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
                              The::svgHandler()->renderSvg(
                                         "active_overlay",
                                         static_cast<int>( trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 8 ) ),
-                                        (int)s_fm->height(),
+                                        (int)s_nfm->height(),
                                         "active_overlay"
                                       )
                            );
@@ -848,8 +863,8 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
                              (int)lineTwoY,
                              The::svgHandler()->renderSvg(
                                         "selection",
-                                        trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 8 ),
-                                        (int)s_fm->height(),
+                                        (int)(trackRect.width() - ( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 8 )),
+                                        (int)s_nfm->height(),
                                         "selection"
                                       )
                            );
@@ -859,7 +874,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
 
 void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate  )
 {
-    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + MARGIN + 4, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
+    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + MARGIN + 4, option->rect.width(), s_nfm->height() /*+ MARGIN*/ );
     QRectF headRect = option->rect;
 
     if ( alternate )
@@ -868,10 +883,10 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
         painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "head", (int)headRect.width(), (int)headRect.height(), "head" ) );
 
     //draw divider between head and 1st track
-    int dividerOffset = headRect.width() / 20;
+    int dividerOffset = (int)(headRect.width() / 20);
     
-    painter->drawPixmap( dividerOffset, trackRect.top() -1, The::svgHandler()->renderSvg( "divider_bottom", (int)headRect.width() - 2 * dividerOffset, 1, "divider_bottom" ) );
-    painter->drawPixmap( dividerOffset, trackRect.top(), The::svgHandler()->renderSvg( "divider_top", (int)headRect.width() - 2 * dividerOffset, 1, "divider_top" ) );
+    painter->drawPixmap( dividerOffset, (int)trackRect.top() - 1, The::svgHandler()->renderSvg( "divider_bottom", (int)headRect.width() - 2 * dividerOffset, 1, "divider_bottom" ) );
+    painter->drawPixmap( dividerOffset, (int)trackRect.top(), The::svgHandler()->renderSvg( "divider_top", (int)headRect.width() - 2 * dividerOffset, 1, "divider_top" ) );
     
 
     
@@ -967,10 +982,10 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     }
 }
 
-void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate  )
+void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool /*alternate*/  )
 {
     Q_UNUSED( active ); // Do we want to paint a selected collapsed head differently?
-    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN * 2, option->rect.width(), s_fm->height() /*+ MARGIN*/ );
+    QRectF trackRect = QRectF( option->rect.x(), ALBUM_WIDTH + 2 * MARGIN * 2, option->rect.width(), s_nfm->height() /*+ MARGIN*/ );
     QRectF headRect = QRectF( option->rect.x(), option->rect.y(), option->rect.width(), option->rect.height() - 2 );
 
     //paint background
@@ -1210,6 +1225,4 @@ void Playlist::GraphicsItem::paletteChange()
 
     refresh();
 }
-
-
 

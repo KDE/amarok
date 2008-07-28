@@ -119,7 +119,9 @@ namespace Playlist
             static const qreal SINGLE_TRACK_ALBUM_WIDTH;
             static const qreal MARGIN;
             static const qreal MARGINH;
-            static QFontMetricsF* s_fm;
+            static QFontMetricsF* s_nfm; //normal
+            static QFontMetricsF* s_ifm; //italic
+            static QFontMetricsF* s_bfm; //bold
     };
 
 }
