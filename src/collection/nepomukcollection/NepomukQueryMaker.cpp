@@ -67,7 +67,7 @@ class NepomukWorkerThread : public ThreadWeaver::Job
         virtual void run()
         {
             QString query = m_queryMaker->buildQuery();
-            //debug() << "Query:" << query << endl;
+            debug() << "Query:" << query << endl;
             if( !m_aborted )
                 m_queryMaker->doQuery(query);
             setFinished( !m_aborted );
@@ -102,12 +102,15 @@ NepomukQueryMaker::reset()
     m_data.clear();
     queryType = None;
     queryMatch.clear();
+    m_queryFilter.clear();
     if( worker && worker->isFinished() )
         delete worker;   //TODO error handling
     this->resultAsDataPtrs = false;
     queryOrderBy.clear();
     queryLimit = 0;
     m_blocking = false;
+    m_andStack.clear();
+    m_andStack.push( true );   //and is default
     return this;
 }
 
@@ -338,11 +341,11 @@ NepomukQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBeg
     debug() << queryType << "filter against: " << m_collection->getNameForValue( value ) << endl;
     debug() <<  queryType <<  "filter: " << filter << endl;
     debug() <<  queryType << "matchbegin, match end " << matchBegin << matchEnd << endl;
-	Q_UNUSED( value )
-	Q_UNUSED( filter )
-	Q_UNUSED( matchBegin )
-	Q_UNUSED( matchEnd )
-	return this;
+
+    QString like = likeCondition( filter, matchBegin, matchEnd );
+    m_queryFilter += QString( " %1 REGEX ( STR( ?%2 ) , \"%3\" , \"i\" ) " ).arg( andOr(), m_collection->getNameForValue( value ), like );
+    addEmptyMatch( value );
+    return this;
 }
 
 QueryMaker*
@@ -433,6 +436,9 @@ QueryMaker*
 NepomukQueryMaker::beginAnd()
 {
     debug() <<  queryType <<  "beginAnd()" << endl;
+    m_queryFilter += andOr();
+    m_queryFilter += " ( 1 ";
+    m_andStack.push( true );
     return this;
 }
 
@@ -440,6 +446,9 @@ QueryMaker*
 NepomukQueryMaker::beginOr()
 {
     debug() <<  queryType <<  "beginOr()" << endl;
+    m_queryFilter += andOr();
+    m_queryFilter += " ( 0 ";
+    m_andStack.push( false );
     return this;
 }
 
@@ -447,6 +456,8 @@ QueryMaker*
 NepomukQueryMaker::endAndOr()
 {
     debug() <<  queryType << "endAndOr()" << endl;
+    m_queryFilter += ')';
+    m_andStack.pop();
     return this;
 }
 
@@ -457,6 +468,31 @@ NepomukQueryMaker::done( ThreadWeaver::Job *job )
     job->deleteLater();
     worker = 0;
     emit queryDone();
+}
+
+QString
+NepomukQueryMaker::likeCondition( const QString &text, bool matchBegin, bool matchEnd ) const
+{
+    QString ret = text;
+    if ( matchBegin )
+        ret = '^' + ret;
+    if ( matchEnd )
+        ret +=  '$';
+    
+    return ret;
+}
+
+QString
+NepomukQueryMaker::andOr() const
+{
+    return m_andStack.top() ? " && " : " || ";
+}
+
+void
+NepomukQueryMaker::addEmptyMatch( const qint64 value )
+{
+    // TODO: only add values which are not already part of the query
+    queryMatch += QString( " ?r <%1> ?%2 . " ).arg( m_collection->getUrlForValue( value ), m_collection->getNameForValue( value ) );
 }
 
 void
@@ -574,12 +610,11 @@ NepomukQueryMaker::buildQuery() const
                     "select distinct ?artist where { "
                     "?r <%1> ?artist . ")
                     .arg( m_collection->getUrlForValue( valArtist ) );
-            query += queryMatch + " } ";
-            query += queryOrderBy;
-            
+            query += queryMatch;
+
             break;
         case Album:
-            if ( queryMatch.isEmpty() )
+            if ( queryMatch.isEmpty() && m_queryFilter.isEmpty() )
                             return query;
             query  =   QString(
                     "select distinct ?artist ?album where { "
@@ -588,9 +623,7 @@ NepomukQueryMaker::buildQuery() const
                     .arg( m_collection->getUrlForValue( valAlbum ) )
                     .arg( m_collection->getUrlForValue( valArtist ) );
             query += queryMatch;
-            query += " } ";
-            query += queryOrderBy;
-            
+
             break;
         case Track:
         {
@@ -613,14 +646,16 @@ NepomukQueryMaker::buildQuery() const
                         .arg( *(it++) )
                         .arg( *(it++) );
             }
-            query += "} ";
-            query += queryOrderBy;
             break;
         }
         default:
             debug() << "unknown query type" << endl;        
-       
     }
+    
+    if ( !m_queryFilter.isEmpty() )
+        query += QString( " FILTER( 1 %1 ) " ).arg(  m_queryFilter );
+    query += " } ";
+    query += queryOrderBy;
     if (queryLimit != 0 )
         query += QString( " LIMIT %1 ").arg( queryLimit );
     return query;

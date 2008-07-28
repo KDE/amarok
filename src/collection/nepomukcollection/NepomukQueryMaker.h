@@ -1,5 +1,6 @@
 /* 
    Copyright (C) 2008 Daniel Winter <dw@danielwinter.de>
+   Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +24,7 @@
 
 #include "QueryMaker.h"
 
+#include <QStack>
 #include <QString>
 #include <QUuid>
 
@@ -107,9 +109,15 @@ class NepomukQueryMaker : public QueryMaker
 	    
 	private:
 
+        QString likeCondition( const QString &text, bool matchBegin, bool matchEnd ) const;
+        QString andOr() const;
+
+        void addEmptyMatch( const qint64 value );
+
         Meta::DataList m_data;
         QueryType queryType;
         QString queryMatch;
+        QString m_queryFilter;
         bool resultAsDataPtrs;
         NepomukWorkerThread *worker;
         NepomukCollection *m_collection;
@@ -119,6 +127,7 @@ class NepomukQueryMaker : public QueryMaker
         int queryLimit;
         // used to prevend double use without reseting
         bool m_used;
+        QStack<bool> m_andStack;
 };
 
 #endif /*NEPOMUKQUERYMAKER_H_*/
