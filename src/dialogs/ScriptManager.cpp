@@ -401,12 +401,12 @@ ScriptManager::slotRunScript( QString name, bool silent )
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
     m_scripts[name].running = true;
-    //todo: setProcessEventsInterval?
 
     m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
+    m_scripts[name].engine->setProcessEventsInterval( 1000 );
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
     scriptFile.close();
-    //FIXME: '\n' doesen't work?
+
     if ( m_scripts[name].engine->hasUncaughtException() )
     {
         error() << "Script Error:" << time.currentTime().toString() + " " + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() );
@@ -470,14 +470,12 @@ void
 ScriptManager::scriptFinished( QString name ) //SLOT
 {
     DEBUG_BLOCK
-
+    //FIXME: probably can cause crash if you stop a script from evaluating. eg. if a deadlock is introduced in a menu_click_slot.
     QTime time;
     m_scripts[name].running = false;
-    foreach( const QObject* obj, m_scripts[name].guiPtrList )
-        delete obj;
+    qDeleteAll( m_scripts[name].guiPtrList.begin(), m_scripts[name].guiPtrList.end() );
     m_scripts[name].guiPtrList.clear();
-    foreach( const QObject* obj, m_scripts[name].wrapperList )
-        delete obj;
+    qDeleteAll( m_scripts[name].wrapperList.begin(), m_scripts[name].wrapperList.end() );
     m_scripts[name].wrapperList.clear();
     m_scripts[name].log += time.currentTime().toString() + " Script ended!" + '\n';
 
