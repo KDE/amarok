@@ -381,9 +381,9 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     m_theme->paint( p, QRectF( labelX, margin * 2.0 + textHeight + 1 , 16, 16 ), "album" );
     m_theme->paint( p, QRectF( labelX, margin * 3.0 + textHeight * 2.0 + 1, 16, 16 ), "track" );
 
-    m_theme->paint( p, QRectF( contentsRect.width() - 12, margin, 23, 23 ), "score" );
-    m_theme->paint( p, QRectF( contentsRect.width() - 12, margin + 26, 23, 23 ), "times-played" );
-    m_theme->paint( p, QRectF( contentsRect.width() - 12, margin + 54, 23, 23 ), "last-time" );
+    m_theme->paint( p, QRectF( contentsRect.width() - 21, margin, 23, 23 ), "score" );
+    m_theme->paint( p, QRectF( contentsRect.width() - 21, margin + 26, 23, 23 ), "times-played" );
+    m_theme->paint( p, QRectF( contentsRect.width() - 21, margin + 54, 23, 23 ), "last-time" );
 
     p->restore();
 
