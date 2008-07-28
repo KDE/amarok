@@ -221,7 +221,7 @@ namespace AmarokScript
 
     QScriptValue MetaTypeExporter::TrackMeta_toScriptValue( QScriptEngine *engine, TrackMeta* const &in )
     {
-        return engine->newQObject( in );
+        return engine->newQObject( in, QScriptEngine::ScriptOwnership, QScriptEngine::PreferExistingWrapperObject );
     }
 
     void MetaTypeExporter::TrackMeta_fromScriptValue( const QScriptValue &value, TrackMeta* &out )
