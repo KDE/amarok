@@ -208,9 +208,9 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     
 
     
-    m_score->setPos( QPointF( contentsRect().width() - 6, margin + 4 ) );
-    m_numPlayed->setPos( QPointF( contentsRect().width() - 5, margin + 31 ) );
-    m_playedLast->setPos( QPointF( contentsRect().width() - 6, margin + 58 ) );
+    m_score->setPos( QPointF( contentsRect().width() - 15, margin + 4 ) );
+    m_numPlayed->setPos( QPointF( contentsRect().width() - 14, margin + 31 ) );
+    m_playedLast->setPos( QPointF( contentsRect().width() - 15, margin + 58 ) );
 
     QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
