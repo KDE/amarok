@@ -41,7 +41,10 @@ class MtpCollectionFactory : public CollectionFactory
 
         virtual void init();
 
-    private:
+    public slots:
+
+        void slotCollectionSucceeded( MtpCollection *coll );
+        void slotCollectionFailed( MtpCollection *coll );
 
     private slots:
 
@@ -67,6 +70,8 @@ class MtpCollection : public Collection, public MemoryCollection
     MtpCollection( const QString &udi, const QString &serial );
     virtual ~MtpCollection();
 
+    void init(); // called by factory
+
     void copyTrackToDevice( const Meta::TrackPtr &track );
     bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
     void removeTrack( const Meta::MtpTrackPtr &track );
@@ -84,6 +89,7 @@ class MtpCollection : public Collection, public MemoryCollection
     virtual QueryMaker* queryMaker();
 
     QString udi() const;
+    QString serial() const { return m_serial; }
     
     virtual CollectionLocation* location() const;
 
@@ -98,6 +104,8 @@ class MtpCollection : public Collection, public MemoryCollection
     void writeDatabase();
     
  signals:
+    void collectionSucceeded( MtpCollection *coll );
+    void collectionFailed( MtpCollection *coll );
     void collectionReady();
     void collectionDisconnected( const QString &udi );
     

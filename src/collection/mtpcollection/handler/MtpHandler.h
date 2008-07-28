@@ -147,5 +147,24 @@ namespace Mtp
 
 
     };
+/*
+    class WorkerThread : public ThreadWeaver::Job
+    {
+        Q_OBJECT
+        public:
+            WorkerThread( const QByteArray &data, MtpHandler* handler, DaapCollection *coll );
+            virtual ~WorkerThread();
+
+            virtual bool success() const;
+
+        protected:
+            virtual void run();
+
+        private:
+            bool m_success;
+            QByteArray m_data;
+            Reader *m_reader;
+    };
+    */
 }
 #endif

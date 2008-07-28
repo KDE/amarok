@@ -67,11 +67,12 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &seria
     int numrawdevices;
     LIBMTP_error_number_t err;
     int i;
-
+    
+    debug() << "Initializing MTP stuff";
     LIBMTP_Init();
 
     // get list of raw devices
-
+    debug() << "Getting list of raw devices";
     err = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
 
     debug() << "Error is: " << err;
@@ -96,18 +97,22 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &seria
             for(i = 0; i < numrawdevices; i++)
             {
                 
-
+                debug() << "Opening raw device number: " << (i+1);
                 device = LIBMTP_Open_Raw_Device(&rawdevices[i]);
                 if (device == NULL) {
                     debug() << "Unable to open raw device: " << i;
                     continue;
                 }
 
+                debug() << "Testing serial number";
                 if( serial != QString::fromUtf8( LIBMTP_Get_Serialnumber( device ) ) )
                 {
                     debug() << "Wrong device, going to next";
                     continue;
                 }
+
+                debug() << "Correct device found";
+                break;
             }
     
     m_device = device;
@@ -121,6 +126,8 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &seria
     //QString serial = QString::fromUtf8( LIBMTP_Get_Serialnumber( m_device ) );
 
     debug() << "Serial is: " << serial;
+
+    // Get information for device
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
     QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );
@@ -166,6 +173,8 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent, const QString &seria
     
 
 }
+
+
 
 MtpHandler::~MtpHandler()
 {
@@ -359,9 +368,10 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 
 
     // TODO: implement callback correctly, not 0
+
+    debug() << "Playable Url is: " << track->playableUrl().fileName();
     
-    int ret = LIBMTP_Send_Track_From_File(
-                                          m_device, qstrdup( track->url().toUtf8() ), trackmeta,
+    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->playableUrl().url().toUtf8() ), trackmeta,
             0, this );
 
     
@@ -901,4 +911,34 @@ MtpHandler::prettyName() const
 {
     return m_name;
 }
+/*
+WorkerThread::WorkerThread( const QByteArray &data, Reader *reader, DaapCollection *coll )
+    : ThreadWeaver::Job()
+        , m_success( false )
+        , m_data( data )
+                , m_reader( reader )
+{
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), coll, SLOT( loadedDataFromServer() ) );
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), coll, SLOT( parsingFailed() ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+}
+
+WorkerThread::~WorkerThread()
+{
+    //nothing to do
+}
+
+bool
+        WorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+        WorkerThread::run()
+{
+    m_success = m_reader->parseSongList( m_data );
+}
+
+*/
 

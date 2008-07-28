@@ -65,8 +65,8 @@ MtpCollectionFactory::init()
                  SLOT( mtpDetected( const QString &, const QString & ) ) );
         connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
 
-    // force refresh to scan for mtp
-    // NOTE: perhaps a signal/slot mechanism would make more sense
+    // force refresh to scan for mtp, begin signal/slot process
+
     MediaDeviceMonitor::instance()->refreshDevices();
 
 
@@ -80,21 +80,36 @@ MtpCollectionFactory::mtpDetected( const QString & udi, const QString &serial )
 
      if( !m_collectionMap.contains( udi ) )
         {
+            // create new collection
                coll = new MtpCollection( udi, serial );
-            if ( coll )
-            {
-                if( !coll->handler()->succeeded() ) // if couldn't connect
-                    return;
-            
-            // TODO: connect to MediaDeviceMonitor signals
-            connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
-                     SLOT( slotCollectionDisconnected( const QString & ) ) );
-           m_collectionMap.insert( udi, coll );
-            emit newCollection( coll );
-            debug() << "emitting new mtp collection";
-            }
+            // connect appropriate signals
+               connect( coll, SIGNAL( collectionSucceeded( MtpCollection * ) ),
+                        this, SLOT( slotCollectionSucceeded( MtpCollection * ) ) );
+               connect( coll, SIGNAL( collectionFailed( MtpCollection * ) ),
+                        this, SLOT( slotCollectionFailed( MtpCollection * ) ) );
+
+               // begin signal/slot construction process
+               coll->init();
         }
 
+}
+
+void
+MtpCollectionFactory::slotCollectionSucceeded( MtpCollection *coll )
+{
+    connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
+             SLOT( slotCollectionDisconnected( const QString & ) ) );
+    m_collectionMap.insert( coll->udi(), coll );
+    emit newCollection( coll );
+    debug() << "emitting new mtp collection";
+}
+
+void
+MtpCollectionFactory::slotCollectionFailed( MtpCollection *coll )
+{
+    Q_UNUSED( coll );
+    // TODO: deal with failure by triggering appropriate removal
+    
 }
 
 void
@@ -148,13 +163,29 @@ MtpCollection::MtpCollection( const QString &udi, const QString &serial )
     , m_handler( 0 )
 {
     DEBUG_BLOCK
+// nothing to do
+}
 
-    m_handler = new Mtp::MtpHandler( this, this, serial );
+MtpCollection::~MtpCollection()
+{
+    DEBUG_BLOCK
+    debug() << "Freeing handler";
+    if( m_handler )
+        delete m_handler;
+}
+
+void
+MtpCollection::init()
+{
+    DEBUG_BLOCK
+    m_handler = new Mtp::MtpHandler( this, this, m_serial );
     if( m_handler->succeeded() )
+    {
         m_handler->parseTracks();
-    
-        
-    
+        emit collectionSucceeded( this );
+    }
+    else
+        emit collectionFailed( this );
 }
 
 void
@@ -287,11 +318,6 @@ MtpCollection::writeDatabase()
 {
     // NOTE: NYI, possibly unnecessary or different implementation required
 //    m_handler->writeITunesDB( false );
-}
-
-MtpCollection::~MtpCollection()
-{
-
 }
 
 void
