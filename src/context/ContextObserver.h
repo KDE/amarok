@@ -48,7 +48,7 @@ protected:
     void messageNotify( const Context::ContextState& message );
     
 private:
-    QSet<ContextObserver*>* m_observers;
+    QSet<ContextObserver*> m_observers;
 };
 
 #endif

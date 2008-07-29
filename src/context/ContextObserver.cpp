@@ -44,19 +44,17 @@ ContextObserver::~ContextObserver()
 
 ContextSubject::ContextSubject()
 {
-    m_observers = new QSet< ContextObserver* >();
+    DEBUG_BLOCK
 }
 
 ContextSubject::~ContextSubject()
 {
     DEBUG_BLOCK
-
-    delete m_observers;
 }
 
 void ContextSubject::messageNotify( const Context::ContextState& message )
 {
-    foreach( ContextObserver* obs, *m_observers )
+    foreach( ContextObserver* obs, m_observers )
         obs->message( message );
 }
 
@@ -65,7 +63,7 @@ void ContextSubject::attach( ContextObserver *obs )
     if( !obs  )
         return;
 
-    m_observers->insert( obs );
+    m_observers.insert( obs );
 }
 
 void ContextSubject::detach( ContextObserver *obs )
@@ -73,6 +71,6 @@ void ContextSubject::detach( ContextObserver *obs )
     DEBUG_BLOCK
 
     if( obs )
-        m_observers->remove( obs );
+        m_observers.remove( obs );
 }
 
