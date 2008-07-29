@@ -263,9 +263,7 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
 void
 PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
 {
-    DEBUG_BLOCK
-
-        m_gbias->setQuery( m_filter );
+    m_gbias->setQuery( m_filter );
     m_gbias->setActive( true );
 
     emit biasChanged( m_bias );
@@ -305,9 +303,7 @@ PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
     void
 PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
 {
-    DEBUG_BLOCK
-
-        double fval = (double)ival;
+    double fval = (double)ival;
     m_weightLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
 
     m_gbias->setWeight( fval / 100.0 );
@@ -318,11 +314,10 @@ PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
     void
 PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
 {
-    DEBUG_BLOCK
-
-        qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
+    qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
     m_filter.field = field;
-    m_filter.value.clear();
+    if( field != m_gbias->filter().field )
+        m_filter.value.clear();
 
     if( field == 0 )
     {
@@ -408,8 +403,6 @@ PlaylistBrowserNS::BiasGlobalWidget::valueChanged( int value )
 void
 PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QString& value )
 {
-    DEBUG_BLOCK
-    debug() << "new value: " << value;
     m_filter.value = value;
     syncBiasToControls();
 }
@@ -424,9 +417,7 @@ PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QDateTime& value )
 void
 PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QTime& value )
 {
-    DEBUG_BLOCK
     m_filter.value = QString::number( qAbs( value.secsTo( QTime(0,0,0) ) ) );
-    debug() << "new value: " << m_gbias->filter().value;
     syncBiasToControls();
 }
 
@@ -576,9 +567,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeLengthSelection()
     connect( timeSpin, SIGNAL(timeChanged(const QTime&)),
             SLOT(valueChanged(const QTime&)) );
 
-    QTime current;
-    current.addSecs( m_gbias->filter().value.toInt() );
-    timeSpin->setTime( current );
+    timeSpin->setTime( QTime().addSecs( m_gbias->filter().value.toInt() ) );
 
     setValueSection( hLayout );
 }

@@ -210,7 +210,7 @@ XmlQueryReader::readReturnValues()
             {
                 d->qm->setQueryType( QueryMaker::Composer );
             }
-            else if( name() == "years" )
+            else if( name() == "year" )
             {
                 d->qm->setQueryType( QueryMaker::Year );
             }

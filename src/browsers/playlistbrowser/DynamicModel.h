@@ -86,8 +86,7 @@ class DynamicModel : public QAbstractItemModel
     public slots:
         void playlistModified( Dynamic::BiasedPlaylistPtr );
         void saveActive( const QString& newTitle );
-        // TODO:
-        //void removeActive();
+        void removeActive();
 
     private slots:
         void universeNeedsUpdate();
@@ -96,6 +95,7 @@ class DynamicModel : public QAbstractItemModel
         Dynamic::DynamicPlaylistPtr createDefaultPlaylist();
         void insertPlaylist( Dynamic::DynamicPlaylistPtr );
         void computeUniverseSet();
+        void savePlaylists();
 
         DynamicModel();
         static DynamicModel* s_instance;
@@ -106,6 +106,7 @@ class DynamicModel : public QAbstractItemModel
         bool m_activeUnsaved;
 
         QDomDocument m_savedPlaylists;
+        QDomElement m_savedPlaylistsRoot;
 
         QHash< QString, Dynamic::DynamicPlaylistPtr >    m_playlistHash;
         Dynamic::DynamicPlaylistList                     m_playlistList;

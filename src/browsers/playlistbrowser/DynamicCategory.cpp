@@ -117,6 +117,10 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_deleteButton->setToolTip( i18n( "Delete the preset.") );
     presetToolbar->addWidget( m_deleteButton );
 
+    connect( m_deleteButton, SIGNAL(clicked(bool)),
+            DynamicModel::instance(), SLOT(removeActive()) );
+        
+
     m_biasListView = new QListView( this );
     m_biasListView->setFrameShape( QFrame::NoFrame );
 

@@ -39,7 +39,7 @@ const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 100;
 Dynamic::BiasedPlaylist*
 Dynamic::BiasedPlaylist::fromXml( QDomElement e )
 {
-    if( e.tagName() != "biasedPlaylist" )
+    if( e.tagName() != "playlist" )
         return 0;
 
     QString title = e.attribute( "title" );
@@ -82,7 +82,7 @@ Dynamic::BiasedPlaylist::xml() const
 {
     QDomDocument doc =
         PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc();
-    QDomElement e = doc.createElement( "biasedPlaylist" );
+    QDomElement e = doc.createElement( "playlist" );
     e.setAttribute( "title", m_title );
 
     foreach( Bias* b, m_biases )

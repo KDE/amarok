@@ -252,25 +252,55 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
         return;
     }
 
+    QTextStream stream( &file );
+    stream.setAutoDetectUnicode( true );
+    QString raw = stream.readAll();
+
+
     QString errorMsg;
-    if( !m_savedPlaylists.setContent( &file, &errorMsg ) )
+    int errorLine, errorColumn;
+    if( !m_savedPlaylists.setContent( raw, &errorMsg, &errorLine, &errorColumn ) )
     {
         error() << "Can't parse dynamic.xml";
         error() << errorMsg;
+        error() << QString().sprintf( "Line: %d, Column %d", errorLine, errorColumn );
+
+        m_savedPlaylistsRoot = m_savedPlaylists.createElement( "biasedPlaylists" );
+        m_savedPlaylists.appendChild( m_savedPlaylistsRoot );
         return;
     }
 
-    for( int i = 0; i < m_savedPlaylists.childNodes().size(); ++ i )
+
+    // get the root node
+    m_savedPlaylistsRoot = m_savedPlaylists.firstChildElement( "biasedPlaylists" );
+    if( m_savedPlaylistsRoot.isNull() )
     {
-        if( !m_savedPlaylists.childNodes().at(i).isElement() )
+        // dynamic.xml must be empty
+        m_savedPlaylistsRoot = m_savedPlaylists.createElement( "biasedPlaylists" );
+        m_savedPlaylists.appendChild( m_savedPlaylistsRoot );
+        return;
+    }
+
+    for( int i = 0; i < m_savedPlaylistsRoot.childNodes().size(); ++ i )
+    {
+        if( !m_savedPlaylistsRoot.childNodes().at(i).isElement() )
             continue;
 
-        QDomElement e = m_savedPlaylists.childNodes().at(i).toElement();
-        if( e.tagName() == "biasedPlaylist" )
+        QDomElement e = m_savedPlaylistsRoot.childNodes().at(i).toElement();
+        if( e.tagName() == "playlist" )
         {
-            insertPlaylist( Dynamic::DynamicPlaylistPtr( Dynamic::BiasedPlaylist::fromXml(e) ) );
-            m_playlistElements.append( e );
+            Dynamic::DynamicPlaylistPtr newPlaylist( Dynamic::BiasedPlaylist::fromXml(e) );
+            if( newPlaylist )
+            {
+                insertPlaylist( newPlaylist );
+                m_playlistElements.append( e );
+            }
+            else
+                m_savedPlaylistsRoot.removeChild( e );
         }
+        // otherwise it shouldn't exist
+        else
+            m_savedPlaylistsRoot.removeChild( e );
     }
 }
 
@@ -309,6 +339,12 @@ PlaylistBrowserNS::DynamicModel::playlistModified( Dynamic::BiasedPlaylistPtr p 
     else
         unmodified = Dynamic::BiasedPlaylist::fromXml( m_playlistElements[m_activePlaylist] );
 
+    if( !unmodified )
+    {
+        error() << "Can't parse biased playlist xml.";
+        return;
+    }
+
 
     Dynamic::DynamicPlaylistPtr modified = m_playlistList[m_activePlaylist];
 
@@ -337,7 +373,7 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
         m_playlistList.back()->setTitle( newTitle );
 
         QDomElement e = m_playlistList[m_activePlaylist]->xml();
-        m_savedPlaylists.appendChild( e );
+        m_savedPlaylistsRoot.appendChild( e );
 
         // REPLACE PLAYLIST
         if( m_playlistHash.contains( newTitle ) )
@@ -345,7 +381,7 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
             int index = m_playlistList.indexOf( m_playlistHash[ newTitle ] );
             m_playlistList[index] = m_playlistList.last();
             m_playlistHash[newTitle]  = m_playlistList.last();
-            m_savedPlaylists.removeChild( m_playlistElements[index] );
+            m_savedPlaylistsRoot.removeChild( m_playlistElements[index] );
             m_playlistElements[index] = e;
 
             m_activeUnsaved = false;
@@ -389,13 +425,24 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
 
             copy->setTitle( newTitle );
 
+            beginInsertRows( QModelIndex(), m_playlistList.size(), m_playlistList.size() );
+
             insertPlaylist( copy );
             m_playlistElements.append( copy->xml() );
-            m_savedPlaylists.appendChild( m_playlistElements.back() );
+            m_savedPlaylistsRoot.appendChild( m_playlistElements.back() );
+
+            endInsertRows();
 
             emit changeActive( m_playlistList.size()-1 );
         }
     }
+
+    savePlaylists();
+}
+
+void
+PlaylistBrowserNS::DynamicModel::savePlaylists()
+{
 
     QFile file( Amarok::saveLocation() + "dynamic.xml" );
     if( !file.open( QIODevice::WriteOnly ) )
@@ -405,7 +452,30 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
     }
 
     QTextStream stream( &file );
-    m_savedPlaylists.save( stream, 0 );
+    stream.setCodec( "UTF-8" );
+    m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
+}
+
+void
+PlaylistBrowserNS::DynamicModel::removeActive()
+{
+    DEBUG_BLOCK
+
+    if( m_activePlaylist == m_defaultPlaylist )
+        return;
+
+    beginRemoveRows( QModelIndex(), m_activePlaylist, m_activePlaylist );
+        
+    m_playlistHash.remove( m_playlistList.takeAt( m_activePlaylist )->title() );
+    if( !m_activeUnsaved )
+    {
+        m_savedPlaylistsRoot.removeChild( m_playlistElements.takeAt( m_activePlaylist ) );
+        savePlaylists();
+    }
+
+    endRemoveRows();
+
+    m_activeUnsaved = false;
 }
 
 
