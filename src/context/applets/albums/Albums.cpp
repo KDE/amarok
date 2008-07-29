@@ -65,12 +65,14 @@ void Albums::init()
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
-    resize( m_width, m_aspectRatio );
+    resize( m_width, m_width * m_aspectRatio );
 
     dataEngine( "amarok-current" )->connectSource( "albums", this );
 
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
              this, SLOT( connectSource( const QString& ) ) );
+
+    constraintsEvent( Plasma::Constraints() );
 
 }
 
@@ -88,7 +90,7 @@ void Albums::prepareElements()
 
     
 
-    const QColor textColor( Qt::white );
+    //const QColor textColor( Qt::white );
     QFont labelFont;
     labelFont.setBold( true );
     labelFont.setPointSize( labelFont.pointSize() + 1  );
@@ -118,20 +120,22 @@ void Albums::prepareElements()
         
         album->setText( albumName.isEmpty() ? i18n("Unknown") : albumName );
         album->setFont( textFont );
-        album->setBrush( textColor );
+        //album->setBrush( textColor );
 
         connect( album, SIGNAL( clicked( const QString& ) ), this, SLOT( enqueueAlbum( const QString& ) ) );
 
         trackCount->setText( trackCountString );
         trackCount->setFont( textFont );
-        trackCount->setBrush( textColor );
+        //trackCount->setBrush( textColor );
 
         cover->setPixmap( image );
 
         m_albumLabels.append( album );
         m_albumCovers.append( cover );
         m_albumTracks.append( trackCount );
+
     }
+
 }
 
 QList<QAction*>
@@ -194,6 +198,9 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
         trackCount->setFont( textFont );
         trackCount->setText( truncateTextToFit( trackText, trackCount->font(), rect ) );
     }
+
+    const qreal height = m_albumLabels.size() * ( m_albumWidth + margin ) + margin;
+    resize( size().toSize().width(), height );
 }
 
 void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -210,9 +217,15 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     kDebug() << "Albums::dataUpdated. count: " << m_albumCount << " names " << m_names.count();
 
     prepareElements();
-    constraintsEvent( Plasma::Constraints() );
+
+
+    const qreal margin = 14;
+    const qreal height = m_albumLabels.size() * ( m_albumWidth + margin ) + margin;
+    resize( size().toSize().width(), height );
 
     update();
+
+    //constraintsEvent( Plasma::Constraints() );
 }
 
 
@@ -221,15 +234,15 @@ Albums::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
     Q_UNUSED( which )
 
-    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-    {
+    //if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
+    //{
         //return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
         const qreal margin = 14;
         const qreal height = m_albumLabels.size() * ( m_albumWidth + margin ) + margin;
         return QSizeF( constraint.width(), height );
-    }
+    //}
 
-    return constraint;
+    //return constraint;
 }
 
 void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -250,13 +263,13 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
             childItem->show();
     }
 
-    p->save();
+    /*p->save();
     m_theme->paint( p, contentsRect.adjusted( 0, -10, 0, 10 ) , "background" );
     QRect leftBorder( 0, 0, 14, contentsRect.height() + 20 );
     m_theme->paint( p, leftBorder, "left-border" );
     QRect rightBorder( contentsRect.width() + 5, 0, 14, contentsRect.height() + 20 );
     m_theme->paint( p, rightBorder, "right-border" );
-    p->restore();
+    p->restore();*/
 
     p->save();
     
