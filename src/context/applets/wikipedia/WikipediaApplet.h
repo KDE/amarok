@@ -16,6 +16,7 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
+#include "context/plasma/panelsvg.h"
 #include "context/Svg.h"
 
 #include <QGraphicsProxyWidget>
@@ -49,7 +50,7 @@ public slots:
 
 private:
 
-    Context::Svg* m_theme;
+    Plasma::PanelSvg* m_theme;
     Context::Svg* m_header;
     qreal m_aspectRatio;
     qreal m_headerAspectRatio;
@@ -64,7 +65,7 @@ private:
 
     QString m_label;
     QString m_title;
-    
+
 private slots:
     void connectSource( const QString &source );
 };

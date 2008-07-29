@@ -19,6 +19,8 @@
 #include "EngineController.h"
 #include <plasma/theme.h>
 
+#include "KStandardDirs"
+
 #include <QGraphicsTextItem>
 #include <QGraphicsSimpleTextItem>
 #include <QPainter>
@@ -35,6 +37,7 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
 {
 
     setHasConfigurationInterface( false );
+    setBackgroundHints( Plasma::Applet::NoBackground );
 
 }
 
@@ -50,14 +53,25 @@ WikipediaApplet::~ WikipediaApplet()
 
 void WikipediaApplet::init()
 {
+
+    m_theme = new Plasma::PanelSvg( this );
+    QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
+
+    kDebug() << "Loading theme file: " << imagePath;
+    
+    m_theme->setImagePath( imagePath );
+    m_theme->setContainsMultipleImages( true );
+    m_theme->setEnabledBorders( Plasma::PanelSvg::AllBorders );
+
     m_header = new Context::Svg( this );
     m_header->setImagePath( "widgets/amarok-wikipedia" );
     m_header->setContainsMultipleImages( false );
-
+    
     m_header->resize();
     m_aspectRatio = (qreal)m_header->size().height()
-        / (qreal)m_header->size().width();
+                / (qreal)m_header->size().width();
     m_size = m_header->size();
+
 
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
 
@@ -109,6 +123,8 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     {
         m_header->resize(size().toSize());
     }
+
+    m_theme->resizePanel(size().toSize());
 
     float textWidth = m_wikipediaLabel->boundingRect().width();
     float totalWidth = m_header->elementRect( "wikipedialabel" ).width();
@@ -165,14 +181,18 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         m_title = QString();
 }
 
-void WikipediaApplet::paintInterface(  QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
+void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
+    DEBUG_BLOCK
     Q_UNUSED( option );
 
     m_header->resize(size().toSize());
-
+    m_theme->resizePanel(size().toSize());
     p->save();
-    m_header->paint( p, contentsRect/*, "header" */);
+
+    kDebug() << "painting theme file " << m_theme->imagePath();
+    m_theme->paintPanel( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() )/*, "header" */);
+
     p->restore();
 }
 
