@@ -197,6 +197,15 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* beginOr() = 0;
         virtual QueryMaker* endAndOr() = 0;
 
+        /**
+         * If 'enabled' is true, when the run function is called, it will return
+         * when the query has finished (i.e. after queryDone has been emitted).
+         * If 'enabled' is false, run will return immediately, which is the
+         * default behavior.
+         */
+        // TODO: make this pure virtual when it has been implemented everywhere.
+        virtual void blocking( bool enabled ) { Q_UNUSED(enabled) }
+
 
         virtual int validFilterMask();
 

@@ -42,7 +42,6 @@ class QueryJob : public ThreadWeaver::Job
             //nothing to do
         }
 
-    protected:
         void run()
         {
             m_queryMaker->runQuery();
@@ -61,6 +60,7 @@ struct MemoryQueryMaker::Private {
     int maxsize;
     QStack<ContainerMemoryFilter*> containerFilters;
     bool usingFilters;
+    bool blocking;
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
@@ -71,6 +71,7 @@ MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collect
 {
     d->matcher = 0;
     d->job = 0;
+    d->blocking = false;
     reset();
 }
 
@@ -112,8 +113,16 @@ MemoryQueryMaker::run()
     else
     {
         d->job = new QueryJob( this );
-        connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );
-        ThreadWeaver::Weaver::instance()->enqueue( d->job );
+        if( d->blocking )
+        {
+            d->job->run();
+            done( d->job );
+        }
+        else
+        {
+            connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );
+            ThreadWeaver::Weaver::instance()->enqueue( d->job );
+        }
     }
 }
 
@@ -605,6 +614,12 @@ MemoryQueryMaker::endAndOr()
 {
     d->containerFilters.pop();
     return this;
+}
+
+void
+MemoryQueryMaker::blocking( bool enabled )
+{
+    d->blocking = enabled;
 }
 
 void

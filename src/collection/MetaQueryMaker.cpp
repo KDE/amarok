@@ -325,6 +325,13 @@ MetaQueryMaker::endAndOr()
 }
 
 void
+MetaQueryMaker::blocking( bool enabled )
+{
+    foreach( QueryMaker *b, builders )
+        b->blocking( enabled );
+}
+
+void
 MetaQueryMaker::slotQueryDone()
 {
     m_queryDoneCountMutex.lock();

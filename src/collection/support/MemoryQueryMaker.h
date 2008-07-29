@@ -74,6 +74,8 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* beginOr();
         virtual QueryMaker* endAndOr();
 
+        void blocking( bool enabled );
+
         //MemoryQueryMaker specific methods
         void runQuery();
         void handleResult();
