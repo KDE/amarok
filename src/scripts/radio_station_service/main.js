@@ -77,7 +77,7 @@ function onConfigure()
     Amarok.alert( "This script does not require any configuration." );
 }
 
-CoolStream.prototype.populate = function( parent_label )
+CoolStream.prototype.populate = function( level, callbackData, filter )
 {
     print( " Populating station level..." );
 /*
@@ -97,9 +97,6 @@ CoolStream.prototype.populate = function( parent_label )
     //tell service that all items has been added to a parent item
 //    Amarok.ScriptableService.donePopulating( "Cool Streams", parent_id );
 }
-
-
-//Amarok.ScriptableService.initService( service_name, levels, short_description, root_html, false );
 
 Amarok.configured.connect( onConfigure );
 
