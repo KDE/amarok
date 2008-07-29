@@ -467,7 +467,7 @@ Playlist::Model::back()
     // Sanity check.
     if( playingTrack && track && playingTrack == track )
         track->finishedPlaying( (double)The::engineController()->trackPosition() /
-                                (double)The::engineController()->trackLength() * 100 );
+                                (double)The::engineController()->trackLength() );
     The::engineController()->play( lastTrack() );
 }
 
