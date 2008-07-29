@@ -71,12 +71,10 @@ void StreamItem::setCallbackData( QString callbackData )
     m_callbackData = callbackData;
 }
 
-
-QString ScriptableServiceScript::m_serviceName;
-
 ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* ScriptEngine )
 : QObject( kapp )
 {
+    m_scriptEngine = ScriptEngine;
     ScriptEngine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QScriptValue() );
     QScriptValue ctor = ScriptEngine->newFunction( ScriptableServiceScript_ctor );
     QScriptValue populate = ScriptEngine->newFunction( ScriptableServiceScript_prototype_populate );
@@ -91,7 +89,7 @@ ScriptableServiceScript::~ScriptableServiceScript()
 QScriptValue ScriptableServiceScript::ScriptableServiceScript_ctor( QScriptContext *context, QScriptEngine *engine )
 {
     QString name = context->argument( 0 ).toString();
-    context->thisObject().setProperty( "name", QScriptValue( engine, name ) );
+    context->thisObject().setProperty( "serviceName", QScriptValue( engine, name ) );
     int levels = context->argument( 1 ).toInt32();
     context->thisObject().setProperty( "levels", QScriptValue( engine, levels ) );
     QString shortDescription = context->argument( 2 ).toString();
@@ -100,9 +98,7 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_ctor( QScriptConte
     context->thisObject().setProperty( "rootHtml", QScriptValue( engine, rootHtml ) );
     bool showSearchBar = context->argument( 4 ).toBoolean();
     context->thisObject().setProperty( "showSearchBar", QScriptValue( engine, showSearchBar ) );
-    m_serviceName = name;
     The::scriptableServiceManager()->initService( name, levels, shortDescription, rootHtml, showSearchBar );
-
     return engine->undefinedValue();
 }
 
@@ -111,7 +107,7 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_populate
     DEBUG_BLOCK
 }
 
-int ScriptableServiceScript::insertItem( int level, const QString &name, const QString &infoHtml, const QString &playableUrl, const QString &callbackData )
+int ScriptableServiceScript::insertItem( int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData )
 {
     DEBUG_BLOCK
 
@@ -119,16 +115,20 @@ int ScriptableServiceScript::insertItem( int level, const QString &name, const Q
     return The::scriptableServiceManager()->insertItem( m_serviceName, level, m_currentId, name, infoHtml, callbackData, playableUrl );
 }
 
-void ScriptableServiceScript::slotPopulate( int level, int parent_id, QString callbackData, QString filter )
+void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter )
 {
     DEBUG_BLOCK
 
-    debug() << "service name = " << m_serviceName;
+    debug() << "service name = " << name;
     debug() << "populating...";
+    debug() << level << parent_id << callbackData << filter;
+    m_serviceName = name;
     m_currentId = parent_id;
-    emit populate( level, callbackData, filter );
+    QScriptValueList args;
+    args << QScriptValue( m_scriptEngine, level ) << QScriptValue( m_scriptEngine, callbackData ) << QScriptValue( m_scriptEngine, filter );
+    thisObject().property( "prototype" ).property( "populate" ).call( QScriptValue(), args );
 
-//    The::scriptableServiceManager()->donePopulating( m_serviceName, m_currentId );
+    The::scriptableServiceManager()->donePopulating( m_serviceName, m_currentId );
 }
 
 #include "AmarokScriptableServiceScript.moc"

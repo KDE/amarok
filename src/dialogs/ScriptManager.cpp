@@ -438,7 +438,7 @@ ScriptManager::slotStopScript( QString name )
 void
 ScriptManager::ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter )
 {
-    m_scripts[name].servicePtr->slotPopulate( level, parent_id, path, filter );
+    m_scripts[name].servicePtr->slotPopulate( name, level, parent_id, path, filter );
 }
 
 void

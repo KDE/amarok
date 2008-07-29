@@ -50,26 +50,26 @@ class StreamItem : public QObject
         QString m_callbackData;
 };
 
-class ScriptableServiceScript : public QObject
+class ScriptableServiceScript : public QObject, public QScriptable
 {
     Q_OBJECT
 
     public:
         ScriptableServiceScript( QScriptEngine* ScriptEngine );
         ~ScriptableServiceScript();
-        void slotPopulate( int level, int parent_id, QString callbackData, QString filter );
+        void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
 
     public slots:
-        int insertItem( int level, const QString &name, const QString &infoHtml, const QString &playableUrl, const QString &callbackData );
+        int insertItem( int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData );
+
+    private:
+        int m_currentId;
+        QScriptEngine* m_scriptEngine;
+        QString m_serviceName;
 
     private:
         static QScriptValue ScriptableServiceScript_ctor( QScriptContext *context, QScriptEngine *engine );
         static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
-        static QString m_serviceName;
-        int m_currentId;
-
-    signals:
-        void populate( int level, QString callbackData, QString filter );
 
 };
 
