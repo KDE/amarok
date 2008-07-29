@@ -489,10 +489,12 @@ NepomukQueryMaker::andOr() const
 }
 
 void
-NepomukQueryMaker::addEmptyMatch( const qint64 value )
+NepomukQueryMaker::addEmptyMatch( const qint64 value, bool optional )
 {
     // TODO: only add values which are not already part of the query
     queryMatch += QString( " ?r <%1> ?%2 . " ).arg( m_collection->getUrlForValue( value ), m_collection->getNameForValue( value ) );
+    if ( optional )
+        queryMatch += QString( " OPTIONAL {%1} . " ).arg( queryMatch );
 }
 
 void
@@ -599,37 +601,31 @@ NepomukQueryMaker::customData( const QString &id ) const
 }
 
 QString
-NepomukQueryMaker::buildQuery() const
+NepomukQueryMaker::buildQuery()
 {
     QString query;
     
     switch( queryType )
     {
         case Artist:
-            query  =   QString(
-                    "select distinct ?artist where { "
-                    "?r <%1> ?artist . ")
-                    .arg( m_collection->getUrlForValue( valArtist ) );
+            query  =  "select distinct ?artist where { ";
+            addEmptyMatch( valArtist );
             query += queryMatch;
 
             break;
         case Album:
             if ( queryMatch.isEmpty() && m_queryFilter.isEmpty() )
                             return query;
-            query  =   QString(
-                    "select distinct ?artist ?album where { "
-                    "?r <%1> ?album . "
-                    "?r <%2> ?artist . ")
-                    .arg( m_collection->getUrlForValue( valAlbum ) )
-                    .arg( m_collection->getUrlForValue( valArtist ) );
+            query  =  "select distinct ?artist ?album where { ";
+            addEmptyMatch( valAlbum );
+            addEmptyMatch( valArtist );
             query += queryMatch;
 
             break;
         case Track:
         {
-            query  =   QString("SELECT * WHERE { ?r <%1> ?%2. ")
-                           .arg( m_collection->getUrlForValue( valUrl ) )
-                           .arg( m_collection->getNameForValue( valUrl) );
+            query  = "SELECT * WHERE { ";
+            addEmptyMatch( valUrl );
             
             // if there is no match we want all tracks, match against all music
             if ( queryMatch.isEmpty() )

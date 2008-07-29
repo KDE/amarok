@@ -98,7 +98,7 @@ class NepomukQueryMaker : public QueryMaker
         Meta::YearList years( const QString &id ) const;
         QStringList customData( const QString &id ) const;
         
-	    virtual QString buildQuery() const;
+	    virtual QString buildQuery();
 	    virtual void doQuery(const QString& );
 
 	    virtual QueryMaker* addMatch( const KUrl &url);
@@ -112,7 +112,7 @@ class NepomukQueryMaker : public QueryMaker
         QString likeCondition( const QString &text, bool matchBegin, bool matchEnd ) const;
         QString andOr() const;
 
-        void addEmptyMatch( const qint64 value );
+        void addEmptyMatch( const qint64 value, bool optional = false );
 
         Meta::DataList m_data;
         QueryType queryType;
