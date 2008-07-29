@@ -80,12 +80,18 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
     : SqlCollection( id, prettyName )
     , m_db( 0 )
 {
-    QString defaultsLine = QString( "--defaults-file=%1" ).arg(
-                    Amarok::config( "MySQLe" ).readEntry( "config",
-                    Amarok::saveLocation() + "my.cnf" ) );
+    QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config",
+                    Amarok::saveLocation() + "my.cnf" ); 
+    QString defaultsLine = QString( "--defaults-file=%1" ).arg( defaultsFile );
     QString databaseLine = QString( "--datadir=%1" ).arg(
                     Amarok::config( "MySQLe" ).readEntry( "config",
                     Amarok::saveLocation() + "mysqle" ) );
+
+    if( !QFile::exists( defaultsFile ) )
+    {
+        QFile df( defaultsFile );
+        df.open( QIODevice::WriteOnly );
+    }
 
     const int num_elements = 3;
     char *server_options[ num_elements + 1 ] = {
