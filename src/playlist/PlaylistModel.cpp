@@ -451,7 +451,7 @@ Playlist::Model::next()
     // Sanity check.
     if( playingTrack && activeTrack() && playingTrack == activeTrack() )
     {
-        activeTrack()->finishedPlaying( (double)ec->trackPosition() / (double)ec->trackLength() * 100 ); //TODO: get correct value for parameter
+        activeTrack()->finishedPlaying( (double)ec->trackPosition() / (double)ec->trackLength() ); //TODO: get correct value for parameter
     }
 
     The::engineController()->play( userNextTrack() );
