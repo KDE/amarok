@@ -303,7 +303,6 @@ NepomukTrack::finishedPlaying( double playedFraction )
     // following sql collection only count as play when at least half of the song is played
     // also do not update the other stats (if we assume the track is not played, we should not update the
     // last played date
-    
     if ( playedFraction >= 0.5 )
     {
         m_lastPlayed = QDateTime::currentDateTime();
@@ -312,11 +311,10 @@ NepomukTrack::finishedPlaying( double playedFraction )
             m_firstPlayed = m_lastPlayed;
         }
         m_playCount++;
-        writeStatistics();
-        notifyObservers();
     }
     //ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
-
+    writeStatistics();
+    notifyObservers();
 }
 
 
