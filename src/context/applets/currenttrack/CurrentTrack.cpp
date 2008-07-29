@@ -63,7 +63,7 @@ void CurrentTrack::init()
     m_width = globalConfig().readEntry( "width", 500 );
 
 //     const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
-    const QColor textColor( Qt::black );
+    //const QColor textColor( Qt::black );
     QFont labelFont;
     labelFont.setBold( true );
     labelFont.setPointSize( labelFont.pointSize() + 1  );
@@ -105,14 +105,14 @@ void CurrentTrack::init()
     m_numPlayed->setFont( tinyFont );
     m_playedLast->setFont( tinyFont );
 
-    m_noTrack->setBrush( textColor );
+    /*m_noTrack->setBrush( textColor );
     m_title->setBrush( textColor );
     m_artist->setBrush( textColor );
     m_album->setBrush( textColor );
     m_score->setBrush( textColor );
     m_numPlayed->setBrush( textColor );
     m_playedLast->setBrush( textColor );
-
+*/
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
