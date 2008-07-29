@@ -86,7 +86,7 @@ NepomukQueryMaker::NepomukQueryMaker(NepomukCollection *collection
     , m_collection(collection)
     , m_model( model )
 {
-    worker = 0;
+    m_worker = 0;
     reset();
 }
 
@@ -100,14 +100,14 @@ NepomukQueryMaker::reset()
 {
     m_used=false;
     m_data.clear();
-    queryType = None;
-    queryMatch.clear();
+    m_queryType = None;
+    m_queryMatch.clear();
     m_queryFilter.clear();
-    if( worker && worker->isFinished() )
-        delete worker;   //TODO error handling
-    this->resultAsDataPtrs = false;
-    queryOrderBy.clear();
-    queryLimit = 0;
+    if( m_worker && m_worker->isFinished() )
+        delete m_worker;   //TODO error handling
+    this->m_resultAsDataPtrs = false;
+    m_queryOrderBy.clear();
+    m_queryLimit = 0;
     m_blocking = false;
     m_andStack.clear();
     m_andStack.push( true );   //and is default
@@ -123,22 +123,22 @@ void
 NepomukQueryMaker::run()
 {
     debug() << "run()" << endl;
-    if( queryType == None || m_used )
+    if( m_queryType == None || m_used )
     {
         debug() << "nepomuk querymaker used without reset or initialization" << endl;
         return; //better error handling?
     } 
     
-    if( worker && !worker->isFinished() )
+    if( m_worker && !m_worker->isFinished() )
     {
         //the worker thread seems to be running
         //TODO: wait for job to complete
     }
     else if ( !m_blocking )
     {
-        worker = new NepomukWorkerThread(this);
-        connect( worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
-        ThreadWeaver::Weaver::instance()->enqueue( worker );
+        m_worker = new NepomukWorkerThread(this);
+        connect( m_worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
+        ThreadWeaver::Weaver::instance()->enqueue( m_worker );
     }
     else
     {
@@ -159,24 +159,24 @@ NepomukQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
     if ( m_used )
         return this;
     
-    this->resultAsDataPtrs = resultAsDataPtrs;
+    this->m_resultAsDataPtrs = resultAsDataPtrs;
     return this;
 }
 
 QueryMaker*
 NepomukQueryMaker::setQueryType( QueryType type )
 {
-    // we need the unchanged queryType in the blocking result methods so prevent
-    // reseting queryType without reseting the QM
+    // we need the unchanged m_queryType in the blocking result methods so prevent
+    // reseting m_queryType without reseting the QM
     if ( m_used )
         return this;
     
-    queryType = type;
+    m_queryType = type;
     switch( type )
     {
     case QueryMaker::Track:
         debug() << "startTrackQuery()" << endl;
-        queryType  = Track;
+        m_queryType  = Track;
     
         // FIXME: This breaks controllable sorting for tracks
         // but works around collections views assumptions about
@@ -186,11 +186,11 @@ NepomukQueryMaker::setQueryType( QueryType type )
         orderBy(QueryMaker::valTrackNr);
         return this;
     case QueryMaker::Artist:
-        queryType = Artist;
+        m_queryType = Artist;
         debug() << "startArtistQuery()" << endl;
         return this;
     case QueryMaker::Album:
-        queryType = Album;
+        m_queryType = Album;
         debug() << "starAlbumQuery()" << endl;
         return this;
     case QueryMaker::Genre:
@@ -232,7 +232,7 @@ QueryMaker*
 NepomukQueryMaker::addMatch( const TrackPtr &track )
 {
     debug() << "addMatch(Track)" << endl;
-    queryMatch +=  QString(
+    m_queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
             .arg( m_collection->getUrlForValue( valUrl ) )
             .arg( track->url() )
@@ -244,7 +244,7 @@ QueryMaker*
 NepomukQueryMaker::addMatch( const ArtistPtr &artist )
 {
     debug() << "addMatch(artist)" << endl;
-    queryMatch +=  QString(
+    m_queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
             .arg( m_collection->getUrlForValue( valArtist) )
             .arg( artist->name() )
@@ -258,7 +258,7 @@ NepomukQueryMaker::addMatch( const AlbumPtr &album )
 {
     debug() << "addMatch(album)" << endl;
 
-    queryMatch +=  QString(
+    m_queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
             .arg( m_collection->getUrlForValue( valAlbum ) )
             .arg( album->name() )
@@ -270,7 +270,7 @@ QueryMaker*
 NepomukQueryMaker::addMatch( const GenrePtr &genre )
 {
     debug() << "addMatch(genre)" << endl;
-    queryMatch +=  QString(
+    m_queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
             .arg( m_collection->getUrlForValue( valGenre ) )
             .arg( genre->name() )
@@ -283,7 +283,7 @@ NepomukQueryMaker::addMatch( const ComposerPtr &composer )
 {
     debug() << "addMatch(composer)" << endl;
     
-    queryMatch +=  QString(
+    m_queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
             .arg( m_collection->getUrlForValue( valComposer ) )
             .arg( composer->name() )
@@ -296,7 +296,7 @@ NepomukQueryMaker::addMatch( const YearPtr &year )
 {
     debug() << "addMatch(year)" << endl;
 
-    queryMatch +=  QString(
+    m_queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
             .arg( m_collection->getUrlForValue( valYear ) )
             .arg( year->name() )
@@ -315,7 +315,7 @@ NepomukQueryMaker::addMatch( const DataPtr &data )
 QueryMaker*
 NepomukQueryMaker::addMatch( const KUrl &url )
 {
-    queryMatch +=  QString(
+    m_queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
             .arg( m_collection->getUrlForValue( valUrl ) )
             .arg( url.pathOrUrl() )
@@ -326,7 +326,7 @@ NepomukQueryMaker::addMatch( const KUrl &url )
 QueryMaker*
 NepomukQueryMaker::addMatchId( const QString &uid )
 {
-    queryMatch +=  QString(
+    m_queryMatch +=  QString(
                            " ?r <%1> \"%2\"^^<%3> . ")
             .arg( "http://amarok.kde.org/metadata/1.0/track#uid" )
             .arg( uid )
@@ -337,10 +337,10 @@ NepomukQueryMaker::addMatchId( const QString &uid )
 QueryMaker*
 NepomukQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    debug() << queryType << " addFilter()" << endl;
-    debug() << queryType << "filter against: " << m_collection->getNameForValue( value ) << endl;
-    debug() <<  queryType <<  "filter: " << filter << endl;
-    debug() <<  queryType << "matchbegin, match end " << matchBegin << matchEnd << endl;
+    debug() << m_queryType << " addFilter()" << endl;
+    debug() << m_queryType << "filter against: " << m_collection->getNameForValue( value ) << endl;
+    debug() <<  m_queryType <<  "filter: " << filter << endl;
+    debug() <<  m_queryType << "matchbegin, match end " << matchBegin << matchEnd << endl;
 
     QString like = likeCondition( filter, matchBegin, matchEnd );
     m_queryFilter += QString( " %1 REGEX ( STR( ?%2 ) , \"%3\" , \"i\" ) " ).arg( andOr(), m_collection->getNameForValue( value ), like );
@@ -400,10 +400,10 @@ QueryMaker*
 NepomukQueryMaker::orderBy( qint64 value, bool descending )
 {
     debug() << "orderBy()" << endl;
-    if ( queryOrderBy.isEmpty() )
-        queryOrderBy = " ORDER BY ";
-    queryOrderBy += descending ? "DESC(?" : "ASC(?" ;
-    queryOrderBy += m_collection->getNameForValue( value ) + ") ";
+    if ( m_queryOrderBy.isEmpty() )
+        m_queryOrderBy = " ORDER BY ";
+    m_queryOrderBy += descending ? "DESC(?" : "ASC(?" ;
+    m_queryOrderBy += m_collection->getNameForValue( value ) + ") ";
     return this; 
 }
 
@@ -411,7 +411,7 @@ QueryMaker*
 NepomukQueryMaker::orderByRandom()
 {
     // lets see if they are random enough
-    queryOrderBy.clear();
+    m_queryOrderBy.clear();
     return this;
 }
 
@@ -419,7 +419,7 @@ QueryMaker*
 NepomukQueryMaker::limitMaxResultSize( int size )
 {
     debug() << "limitMaxResultSize()" << endl;
-	queryLimit = size;
+	m_queryLimit = size;
     return this;
 }
 
@@ -435,7 +435,7 @@ NepomukQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 QueryMaker*
 NepomukQueryMaker::beginAnd()
 {
-    debug() <<  queryType <<  "beginAnd()" << endl;
+    debug() <<  m_queryType <<  "beginAnd()" << endl;
     m_queryFilter += andOr();
     m_queryFilter += " ( 1 ";
     m_andStack.push( true );
@@ -445,7 +445,7 @@ NepomukQueryMaker::beginAnd()
 QueryMaker*
 NepomukQueryMaker::beginOr()
 {
-    debug() <<  queryType <<  "beginOr()" << endl;
+    debug() <<  m_queryType <<  "beginOr()" << endl;
     m_queryFilter += andOr();
     m_queryFilter += " ( 0 ";
     m_andStack.push( false );
@@ -455,7 +455,7 @@ NepomukQueryMaker::beginOr()
 QueryMaker*
 NepomukQueryMaker::endAndOr()
 {
-    debug() <<  queryType << "endAndOr()" << endl;
+    debug() <<  m_queryType << "endAndOr()" << endl;
     m_queryFilter += ')';
     m_andStack.pop();
     return this;
@@ -466,7 +466,7 @@ NepomukQueryMaker::done( ThreadWeaver::Job *job )
 {
     ThreadWeaver::Weaver::instance()->dequeue( job );
     job->deleteLater();
-    worker = 0;
+    m_worker = 0;
     emit queryDone();
 }
 
@@ -492,9 +492,9 @@ void
 NepomukQueryMaker::addEmptyMatch( const qint64 value, bool optional )
 {
     // TODO: only add values which are not already part of the query
-    queryMatch += QString( " ?r <%1> ?%2 . " ).arg( m_collection->getUrlForValue( value ), m_collection->getNameForValue( value ) );
+    m_queryMatch += QString( " ?r <%1> ?%2 . " ).arg( m_collection->getUrlForValue( value ), m_collection->getNameForValue( value ) );
     if ( optional )
-        queryMatch += QString( " OPTIONAL {%1} . " ).arg( queryMatch );
+        m_queryMatch += QString( " OPTIONAL {%1} . " ).arg( m_queryMatch );
 }
 
 void
@@ -514,7 +514,7 @@ QStringList
 Meta::DataList
 NepomukQueryMaker::data( const QString &id ) const
 {
-    if ( m_blocking && m_used && resultAsDataPtrs && m_collection->collectionId() == id )
+    if ( m_blocking && m_used && m_resultAsDataPtrs && m_collection->collectionId() == id )
         return m_data;
     else
         return Meta::DataList();
@@ -523,7 +523,7 @@ NepomukQueryMaker::data( const QString &id ) const
 Meta::TrackList
 NepomukQueryMaker::tracks( const QString &id ) const
 {
-    if ( m_blocking && m_used && queryType == QueryMaker::Track && m_collection->collectionId() == id  )
+    if ( m_blocking && m_used && m_queryType == QueryMaker::Track && m_collection->collectionId() == id  )
     {
         Meta::TrackList list;
         foreach( DataPtr p, m_data )
@@ -539,7 +539,7 @@ NepomukQueryMaker::tracks( const QString &id ) const
 Meta::AlbumList
 NepomukQueryMaker::albums( const QString &id ) const
 {
-    if ( m_blocking && m_used && queryType == QueryMaker::Album && m_collection->collectionId() == id  )
+    if ( m_blocking && m_used && m_queryType == QueryMaker::Album && m_collection->collectionId() == id  )
     {
         Meta::AlbumList list;
         foreach( DataPtr p, m_data )
@@ -555,7 +555,7 @@ NepomukQueryMaker::albums( const QString &id ) const
 Meta::ArtistList
 NepomukQueryMaker::artists( const QString &id ) const
 {
-    if ( m_blocking && m_used && queryType == QueryMaker::Artist && m_collection->collectionId() == id  )
+    if ( m_blocking && m_used && m_queryType == QueryMaker::Artist && m_collection->collectionId() == id  )
     {
         Meta::ArtistList list;
         foreach( DataPtr p, m_data )
@@ -605,21 +605,21 @@ NepomukQueryMaker::buildQuery()
 {
     QString query;
     
-    switch( queryType )
+    switch( m_queryType )
     {
         case Artist:
             query  =  "select distinct ?artist where { ";
             addEmptyMatch( valArtist );
-            query += queryMatch;
+            query += m_queryMatch;
 
             break;
         case Album:
-            if ( queryMatch.isEmpty() && m_queryFilter.isEmpty() )
+            if ( m_queryMatch.isEmpty() && m_queryFilter.isEmpty() )
                             return query;
             query  =  "select distinct ?artist ?album where { ";
             addEmptyMatch( valAlbum );
             addEmptyMatch( valArtist );
-            query += queryMatch;
+            query += m_queryMatch;
 
             break;
         case Track:
@@ -628,11 +628,11 @@ NepomukQueryMaker::buildQuery()
             addEmptyMatch( valUrl );
             
             // if there is no match we want all tracks, match against all music
-            if ( queryMatch.isEmpty() )
+            if ( m_queryMatch.isEmpty() )
                 query += QString( "?r a <%1> . ")
                         .arg( Soprano::Vocabulary::Xesam::Music().toString() );
             else
-                query += queryMatch;
+                query += m_queryMatch;
             
             const QStringList list = m_collection->getAllNamesAndUrls();
             QStringList::const_iterator it = list.constBegin();
@@ -651,9 +651,9 @@ NepomukQueryMaker::buildQuery()
     if ( !m_queryFilter.isEmpty() )
         query += QString( " FILTER( 1 %1 ) " ).arg(  m_queryFilter );
     query += " } ";
-    query += queryOrderBy;
-    if (queryLimit != 0 )
-        query += QString( " LIMIT %1 ").arg( queryLimit );
+    query += m_queryOrderBy;
+    if (m_queryLimit != 0 )
+        query += QString( " LIMIT %1 ").arg( m_queryLimit );
     return query;
 }
 
@@ -662,7 +662,7 @@ NepomukQueryMaker::buildQuery()
 // signal that takes the list of the specific class.
 
 #define emitOrStoreProperResult( PointerType, list ) { \
-            if ( resultAsDataPtrs || m_blocking ) { \
+            if ( m_resultAsDataPtrs || m_blocking ) { \
                 foreach( PointerType p, list ) { \
                     m_data << DataPtr::staticCast( p ); \
                 } \
@@ -681,7 +681,7 @@ NepomukQueryMaker::doQuery(const QString &query)
     DEBUG_BLOCK
     if ( query.isEmpty() )
         return;
-    switch ( queryType )
+    switch ( m_queryType )
     {
         case Artist:
         {

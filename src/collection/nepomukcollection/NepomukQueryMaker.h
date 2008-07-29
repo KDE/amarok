@@ -115,16 +115,16 @@ class NepomukQueryMaker : public QueryMaker
         void addEmptyMatch( const qint64 value, bool optional = false );
 
         Meta::DataList m_data;
-        QueryType queryType;
-        QString queryMatch;
+        QueryType m_queryType;
+        QString m_queryMatch;
         QString m_queryFilter;
-        bool resultAsDataPtrs;
-        NepomukWorkerThread *worker;
+        bool m_resultAsDataPtrs;
+        NepomukWorkerThread *m_worker;
         NepomukCollection *m_collection;
         Soprano::Model *m_model;
-        QString queryOrderBy;
+        QString m_queryOrderBy;
         bool m_blocking;
-        int queryLimit;
+        int m_queryLimit;
         // used to prevend double use without reseting
         bool m_used;
         QStack<bool> m_andStack;
