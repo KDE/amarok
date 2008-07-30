@@ -133,6 +133,8 @@ MessageQueue::MessageQueue()
 MessageQueue::~MessageQueue()
 {
     DEBUG_BLOCK
+
+    qRemovePostRoutine( s_messageQueue.destroy );
 }
 
 MessageQueue*

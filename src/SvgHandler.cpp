@@ -77,6 +77,7 @@ SvgHandler::~SvgHandler()
 {
     DEBUG_BLOCK
 
+    qRemovePostRoutine( s_privateInstance.destroy );
     delete d;
 }
 

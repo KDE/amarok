@@ -86,6 +86,8 @@ MountPointManager::~MountPointManager()
 {
     DEBUG_BLOCK
 
+    qRemovePostRoutine( s_mountPointManager.destroy );
+
     m_handlerMapMutex.lock();
     foreach( DeviceHandler *dh, m_handlerMap )
     {

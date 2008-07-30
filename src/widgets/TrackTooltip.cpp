@@ -94,6 +94,8 @@ TrackToolTip::TrackToolTip()
 TrackToolTip::~TrackToolTip()
 {
     DEBUG_BLOCK
+
+    qRemovePostRoutine( s_trackToolTip.destroy );
 }
 
 void TrackToolTip::show( const QPoint & bottomRight )

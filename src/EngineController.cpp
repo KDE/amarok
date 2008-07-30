@@ -104,6 +104,9 @@ EngineController::EngineController()
 EngineController::~EngineController()
 {
     DEBUG_BLOCK //we like to know when singletons are destroyed
+
+    qRemovePostRoutine( privateSelf.destroy );
+
     m_media->stop();
 
     delete m_media;

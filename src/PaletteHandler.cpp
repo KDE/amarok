@@ -52,6 +52,8 @@ PaletteHandler::PaletteHandler()
 PaletteHandler::~PaletteHandler()
 {
     DEBUG_BLOCK
+
+    qRemovePostRoutine( s_privateInstance.destroy );
 }
 
 void PaletteHandler::setPalette( const QPalette & palette )
