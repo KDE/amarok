@@ -49,6 +49,8 @@ ScrobblerAdapter::~ScrobblerAdapter()
 void
 ScrobblerAdapter::engineNewTrackPlaying()
 {
+    DEBUG_BLOCK
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
@@ -75,6 +77,12 @@ ScrobblerAdapter::engineNewTrackPlaying()
         {
             debug() << "nowPlaying: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
             m_manager->nowPlaying( m_current );
+
+            // When playing Last.fm Radio, we need to submit twice, once in Radio mode and once in Player mode
+            if( isRadio ) {
+                m_current.setSource( TrackInfo::Player );
+                m_manager->nowPlaying( m_current );
+            }
         }
     }
 }

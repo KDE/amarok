@@ -22,7 +22,9 @@ VERSION 2.0-beta1
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
-    * Check if the file is writable before allowing the tags to be edited in SqlMeta ( BR 122797 )
+    * Submit tracks to Last.fm also when playing Last.fm Radio. (BR 164156)
+    * Check if the file is writable before allowing the tags to be edited in
+      SqlMeta ( BR 122797 )
     * Only increment playcount if we've played more than half of the song (BR 121587)
     * Added protection against endless looping when a playlist contains only
       unplayable tracks.
