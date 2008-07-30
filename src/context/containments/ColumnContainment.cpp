@@ -695,6 +695,8 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
 
 ColumnContainment::~ColumnContainment()
 {
+    DEBUG_BLOCK
+
     clearApplets();
     m_appletsPositions.clear();
     Amarok::config( "ContextView" ).writeEntry( "ContextView size", size() );
