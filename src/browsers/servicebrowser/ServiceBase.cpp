@@ -100,10 +100,10 @@ ServiceBase::ServiceBase( const QString &name )
 
     m_topPanel = new KVBox( this );
 
-    m_topPanel->setFrameStyle( QFrame::StyledPanel | QFrame::Plain );
     m_topPanel->setLineWidth( 2 );
     m_topPanel->setSpacing( 2 );
     m_topPanel->setMargin( 2 );
+    
     //m_topPanel->setFixedHeight( 50 );
 
     KHBox * commonPanel = new KHBox ( m_topPanel );
@@ -140,7 +140,7 @@ ServiceBase::ServiceBase( const QString &name )
 
     m_bottomPanel = new KVBox( this );
     m_bottomPanel->setFixedHeight( 50 );
-    m_bottomPanel->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+    m_bottomPanel->setFrameStyle( QFrame::NoFrame );
     m_bottomPanel->setLineWidth(2);
     m_bottomPanel->setSpacing( 2 );
     m_bottomPanel->setMargin( 2 );
@@ -158,8 +158,8 @@ ServiceBase::ServiceBase( const QString &name )
     m_searchWidget = new SearchWidget( m_topPanel );
     m_searchWidget->setup( m_contentView );
 
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Raised );
+    //setFrameShape( QFrame::StyledPanel );
+    //setFrameShadow( QFrame::Raised );
 }
 
 ServiceBase::~ServiceBase()

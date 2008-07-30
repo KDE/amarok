@@ -46,10 +46,10 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
 
     setObjectName( name );
     m_toolBox = new QToolBox( this );
-    m_toolBox->setFrameShape( QFrame::NoFrame );
 
     //m_toolBox->setStyleSheet( "{}" );
 
+    setMargin( 0 );
     setContentsMargins(0,0,0,0);
     setFrameShape( QFrame::NoFrame );
 
