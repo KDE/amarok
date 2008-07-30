@@ -29,6 +29,7 @@
 #include "MainWindow.h"
 #include "Sidebar.h"
 #include "StatusBarMessageLabel.h"
+#include "SvgHandler.h"
 
 #include <KIcon>
 #include <KIconLoader>
@@ -206,8 +207,17 @@ StatusBar::polish()
 void
 StatusBar::paintEvent( QPaintEvent* )
 {
-    QList<QWidget*> list = qFindChildren<QWidget *>( this );
+
     QPainter p( this );
+
+    //paint divider
+    int dividerOffset = width() / 20;
+    p.drawPixmap( dividerOffset, 0, The::svgHandler()->renderSvg( "divider_bottom", width() - 2 * dividerOffset, 1, "divider_bottom" ) );
+    p.drawPixmap( dividerOffset, 1, The::svgHandler()->renderSvg( "divider_top", width() - 2 * dividerOffset, 1, "divider_top" ) );
+
+    
+    QList<QWidget*> list = qFindChildren<QWidget *>( this );
+
 
     for( QList<QWidget*>::iterator it = list.begin(); it != list.end(); it++ )
     {
