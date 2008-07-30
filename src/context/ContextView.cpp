@@ -106,7 +106,10 @@ ContextView::~ContextView()
     foreach( QString engine, engines ) {
         if( engine.startsWith( "amarok-" ) ) {
             debug() << "Unloading plasma engine: " << engine;
-            Plasma::DataEngineManager::self()->unloadEngine( engine );
+
+            // PlasmaDataEngineManager uses refcounting for the engines, so we need to unload until the refcount reaches 0
+            while( Plasma::DataEngineManager::self()->engine( engine )->isValid() )
+                Plasma::DataEngineManager::self()->unloadEngine( engine );
         }
     }
      
