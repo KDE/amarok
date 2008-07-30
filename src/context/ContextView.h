@@ -146,12 +146,14 @@ private:
     QRectF m_startPos;
     QRectF m_destinationPos;
 
+    bool m_toolBoxAdded;
+
     //ControlBox* m_controlBox;
 
 private slots:
-    void appletBrowserDestroyed();
-    void animateZoomOut( qreal progress, int id );
+    void appletBrowserDestroyed();    
     void animateZoomIn( qreal progress, int id );
+    void animateZoomOut( qreal progress, int id );
     void zoomInFinished( int id );
     void zoomOutFinished( int id );
     void animateContainmentChange( qreal progress, int id );

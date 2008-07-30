@@ -47,6 +47,7 @@ public:
     virtual void showTitle() = 0;
     virtual void hideTitle() = 0;
     virtual void addCurrentTrack() = 0;
+    virtual void addToolBox() = 0;
 
 signals:
     void appletRejected( QString pluginName, int rowSpan );

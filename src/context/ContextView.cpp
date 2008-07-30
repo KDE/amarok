@@ -49,6 +49,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     , m_appletBrowser( 0 )
     , m_zoomLevel( Plasma::DesktopZoom )
     , m_startupFinished( false )
+    , m_toolBoxAdded( false )
 {
     
     s_self = this;
@@ -90,11 +91,12 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
         amarokContainment->setTitle( "Context #0" );    
         amarokContainment->addCurrentTrack();
     }
-    
+
     PERF_LOG( "Showing home in contextview" )
     showHome();
     PERF_LOG( "done showing home in contextview" )
-    m_startupFinished = true;
+    
+    m_startupFinished = true;    
 }
 
 ContextView::~ContextView()
@@ -116,6 +118,7 @@ ContextView::~ContextView()
     clear( m_curState );
     delete m_appletBrowser;
 }
+
 
 void ContextView::clear( const ContextState& state )
 {
@@ -253,16 +256,13 @@ ContextView::zoomIn( Plasma::Containment* toContainment )
     }
     
     if ( m_zoomLevel == Plasma::GroupZoom )
-    {        
+    {
         connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
                  this, SLOT( zoomInFinished( int ) ) );
         Plasma::Animator::self()->customAnimation( 120, 800, Plasma::Animator::EaseInOutCurve,
-                                                              this, "animateZoomIn" );
+                                                    this, "animateZoomIn" );
     }
-    //HACK: this is the only way that the containments resize correctly after
-    //the CV widget has ben resized while in zoom level Plasma::GroupZoom
-    resize( size().width()+1, size().height() );
-    resize( size().width()-1, size().height() );
+
 }
 
 void
@@ -270,8 +270,7 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
 {
     Q_UNUSED( fromContainment )
     if ( m_zoomLevel == Plasma::DesktopZoom )
-    {
-
+    {        
         int count = contextScene()->containments().size();
         for( int i = 0; i < count; i++ )
         {
@@ -281,15 +280,15 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
                 containment->showTitle();
             }
         }
-        
+
         connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
                  this, SLOT( zoomOutFinished( int ) ) );
         Plasma::Animator::self()->customAnimation( 120, 800, Plasma::Animator::EaseInOutCurve,
-                                                              this, "animateZoomOut" );
-
+                                                            this, "animateZoomOut" );                                                                    
     }
 
 }
+
 
 void
 ContextView::animateZoomIn( qreal progress, int id )
@@ -395,7 +394,19 @@ void ContextView::resizeEvent( QResizeEvent* event )
     if ( testAttribute( Qt::WA_PendingResizeEvent ) ) {
         return; // lets not do this more than necessary, shall we?
     }
+
     updateContainmentsGeometry();
+    if( !m_toolBoxAdded )
+    {
+        m_toolBoxAdded = true;
+        int numContainments = contextScene()->containments().size();
+        for( int i = 0; i < numContainments; i++ )
+        {
+            Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
+            if( containment )
+                containment->addToolBox();
+        }
+    }
 }
 
 

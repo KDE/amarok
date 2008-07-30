@@ -17,6 +17,7 @@
 #define COLUMNCONTAINMENT_H
 
 #include "amarok_export.h"
+#include "context/AmarokToolBox.h"
 #include "context/Applet.h"
 #include "context/Containment.h"
 #include "context/layouts/ContextLayout.h"
@@ -78,7 +79,7 @@ public:
 
 public slots:
     Applet* addApplet( Plasma::Applet* applet, const QPointF &);
-
+    void addToolBox();
 
 protected:
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
@@ -98,7 +99,7 @@ private slots:
 private:
     void rearrangeApplets( int starRow, int startColumn );
     bool insertInGrid( Plasma::Applet* applet );
-    void loadInitialConfig();
+    void loadInitialConfig();    
     
     QAction* m_appletBrowserAction;
 
@@ -136,6 +137,8 @@ private:
     int m_appletsFromConfigCount;
 
     QQueue<QString> m_pendingApplets;
+
+    AmarokToolBox *m_toolBox;
 
     //KSvgRenderer * m_renderer;
 };

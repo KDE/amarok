@@ -65,6 +65,7 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     , m_paintTitle( 0 )
     , m_manageCurrentTrack( 0 )
     , m_appletsFromConfigCount( 0 )
+    , m_toolBox( 0 )
 {
     DEBUG_BLOCK
 
@@ -545,7 +546,7 @@ void ColumnContainment::recalculate()
                 int offSet = col == gridCols - 1 ? 25 : 3;
                 
                 applet->resize( width - offSet, height );
-                applet->setPos( left, top );
+                applet->setPos( left, top + 6 );
                 row += rowSpan;
                 top += height; 
             }
@@ -692,6 +693,24 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
     }
     
 }
+
+void
+ColumnContainment::addToolBox()
+{
+    DEBUG_BLOCK
+    if( m_toolBox )
+        return;
+    m_toolBox = new AmarokToolBox( this );
+    debug() << geometry().width();
+    debug() << geometry().height();
+    m_toolBox->setPos( geometry().width() / 2, geometry().height() - 30 );
+    m_toolBox->show();
+    m_toolBox->addAction( action( "add widgets") );
+    m_toolBox->addAction( action( "zoom in" ) );
+    m_toolBox->addAction( action( "zoom out" ) );
+    
+}
+
 
 ColumnContainment::~ColumnContainment()
 {
