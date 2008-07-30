@@ -37,9 +37,9 @@ public:
     SplitterHandle( Qt::Orientation orientation, QSplitter * parent );
     ~SplitterHandle();
     
-
-protected:
-    virtual void paintEvent ( QPaintEvent * event );
+//commented out as for now, we just use the default one. If we decide to use a customone again, just comment in this code.
+//protected:
+    //virtual void paintEvent ( QPaintEvent * event );
             
 };
     

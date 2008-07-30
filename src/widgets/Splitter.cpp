@@ -34,15 +34,15 @@ SplitterHandle::SplitterHandle( Qt::Orientation orientation, QSplitter * parent 
 SplitterHandle::~ SplitterHandle()
 {}
 
-
-void SplitterHandle::paintEvent( QPaintEvent * event )
+//commented out as for now, we just use the default one. If we decide to use a customone again, just comment in this code.
+/*void SplitterHandle::paintEvent( QPaintEvent * event )
 {
     Q_UNUSED( event )
 
     QPixmap handle = The::svgHandler()->renderSvg( "splitter_handle", rect().width(), rect().height(), "splitter_handle" );
     QPainter painter( this );
     painter.drawPixmap( 0, 0, handle );
-}
+}*/
 
 
 Splitter::Splitter( QWidget * parent )
