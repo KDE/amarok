@@ -83,13 +83,12 @@ NepomukArtist::albums()
     }
     else if( m_collection )
     {
-        QueryMaker *qm = m_collection->queryMaker();
+        NepomukQueryMaker *qm = static_cast<NepomukQueryMaker*>( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Album );
         addMatchTo( qm );
-        qm->setBlocking( true );
+        qm->blocking( true );
         qm->run();
         m_albums = qm->albums( m_collection->collectionId() );
-        delete qm;
         m_albumsLoaded = true;
         return m_albums;
     }

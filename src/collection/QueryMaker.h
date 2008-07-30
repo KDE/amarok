@@ -197,36 +197,6 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* beginOr() = 0;
         virtual QueryMaker* endAndOr() = 0;
 
-        /** If 'enabled' is true, the run function will perform the query in the
-         * calling thread and return when it is finished, rather than launching
-         * a new thread and returning immediatly.
-         *
-         * No signals are emitted from a blocking query, the results are accessed
-         * through the 'data', 'tracks', 'albums', etc, functions,
-         */
-        // TODO: make this pure virtual when it has been implemented everywhere.
-        virtual void setBlocking( bool enabled ) { Q_UNUSED(enabled) }
-
-        /**
-         * Return a list of the collection id of which this QueryMaker quering.
-         */
-        // TODO: make this pure virtual when it has been implemented everywhere.
-        virtual QStringList collectionIds() const { return QStringList(); }
-
-        /**
-         * Return the results of the last query made with blocking enabled.
-         */
-        // TODO: make this pure virtual when it has been implemented everywhere.
-        virtual Meta::DataList data( const QString &id ) const { Q_UNUSED(id); return Meta::DataList(); }
-        Meta::TrackList tracks( const QString &id ) const;
-        Meta::AlbumList albums( const QString &id ) const;
-        Meta::ArtistList artists( const QString &id ) const;
-        Meta::GenreList genres( const QString &id ) const;
-        Meta::ComposerList composers( const QString &id ) const;
-        Meta::YearList years( const QString &id ) const;
-        // TODO: make this pure virtual when it has been implemented everywhere.
-        virtual QStringList customData( const QString &id ) const
-            { Q_UNUSED(id); return QStringList(); }
 
         virtual int validFilterMask();
 

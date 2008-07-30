@@ -162,10 +162,10 @@ NepomukCollection::trackForUrl( const KUrl &url )
         qm->addMatchId ( url.host() );
     }
     
-    qm->setBlocking( true );
+    qm->blocking( true );
     qm->run();
     Meta::TrackList tracks = qm->tracks( this->collectionId() );
-    delete qm;
+
     // assuming that there is only one result, should never be more, if so giving
     // the first is the best to do anyway
     if ( !tracks.isEmpty() )

@@ -1,6 +1,5 @@
 /*
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *  Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -83,10 +82,6 @@ struct SqlQueryMaker::Private
     SqlWorkerThread *worker;
 
     QStack<bool> andStack;
-
-    Meta::DataList data;
-    bool blocking;
-    bool used;
 };
 
 SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
@@ -124,9 +119,6 @@ SqlQueryMaker::reset()
     d->maxResultSize = -1;
     d->andStack.clear();
     d->andStack.push( true );   //and is default
-    d->blocking = false;
-    d->used = false;
-    d->data.clear();
     return this;
 }
 
@@ -140,11 +132,6 @@ SqlQueryMaker::abortQuery()
 QueryMaker*
 SqlQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 {
-    // we need the unchanged resulttype in the blocking result methods so prevent
-    // reseting result type without reseting the QM
-    if ( d->used )
-        return this;
-    
     d->resultAsDataPtrs = resultAsDataPtrs;
     return this;
 }
@@ -152,31 +139,21 @@ SqlQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
 void
 SqlQueryMaker::run()
 {
-    if( d->queryType == QueryMaker::None || d->used )
-    {
-        debug() << "sql querymaker used without reset or initialization" << endl;
+    if( d->queryType == QueryMaker::None )
         return; //better error handling?
-    }
     if( d->worker && !d->worker->isFinished() )
     {
         //the worker thread seems to be running
         //TODO: wait or job to complete
 
     }
-    else if ( ! d->blocking )
+    else
     {
         //debug() << "Query is " << query();
         d->worker = new SqlWorkerThread( this );
         connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
     }
-    else //use it blocking 
-    {
-        QString query = this->query();
-        QStringList result = runQuery( query );
-        handleResult( result );
-    }
-    d->used = true;
 }
 
 void
@@ -191,11 +168,6 @@ SqlQueryMaker::done( ThreadWeaver::Job *job )
 QueryMaker*
 SqlQueryMaker::setQueryType( QueryType type )
 {
-    // we need the unchanged m_queryType in the blocking result methods so prevent
-    // reseting queryType without reseting the QM
-    if ( d->used )
-        return this;
-    
     switch( type ) {
     case QueryMaker::Track:
         //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
@@ -662,37 +634,6 @@ SqlQueryMaker::handleResult( const QStringList &result )
     //queryDone will be emitted in done(Job*)
 }
 
-void
-SqlQueryMaker::setBlocking( bool enabled )
-{
-    d->blocking = enabled;
-}
-
-QStringList
-SqlQueryMaker::collectionIds() const
-{
-    QStringList list;
-    list << m_collection->collectionId();
-    return list;
-}
-
-Meta::DataList
-SqlQueryMaker::data( const QString &id ) const
-{
-    if ( d->blocking && d->used && m_collection->collectionId() == id )
-        return d->data;
-    else
-        return Meta::DataList();
-}
-
-QStringList
-SqlQueryMaker::customData( const QString &id ) const
-{
-    Q_UNUSED( id )
-    // not implemented yet
-            return QStringList();
-}
-
 QString
 SqlQueryMaker::nameForValue( qint64 value )
 {
@@ -773,20 +714,19 @@ SqlQueryMaker::andOr() const
 // The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
 // it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
 // signal that takes the list of the specific class.
-// If qm is used blocking it only stores the result ptrs into data as DataPtrs
 
-#define emitOrStoreProperResult( PointerType, list ) { \
-            if ( d->resultAsDataPtrs || d->blocking ) { \
+#define emitProperResult( PointerType, list ) { \
+            if ( d->resultAsDataPtrs ) { \
+                DataList data; \
                 foreach( PointerType p, list ) { \
-                    d->data << DataPtr::staticCast( p ); \
+                    data << DataPtr::staticCast( p ); \
                 } \
-                if ( !d->blocking ) \
-                emit newResultReady( m_collection->collectionId(), d->data ); \
+                emit newResultReady( m_collection->collectionId(), data ); \
             } \
             else { \
                 emit newResultReady( m_collection->collectionId(), list ); \
             } \
-       }
+        }
 
 void
 SqlQueryMaker::handleTracks( const QStringList &result )
@@ -801,7 +741,7 @@ SqlQueryMaker::handleTracks( const QStringList &result )
         QStringList row = result.mid( i*returnCount, returnCount );
         tracks.append( reg->getTrack( row ) );
     }
-    emitOrStoreProperResult( TrackPtr, tracks );
+    emitProperResult( TrackPtr, tracks );
 }
 
 void
@@ -815,7 +755,7 @@ SqlQueryMaker::handleArtists( const QStringList &result )
         QString id = iter.next();
         artists.append( reg->getArtist( name, id.toInt() ) );
     }
-    emitOrStoreProperResult( ArtistPtr, artists );
+    emitProperResult( ArtistPtr, artists );
 }
 
 void
@@ -830,7 +770,7 @@ SqlQueryMaker::handleAlbums( const QStringList &result )
         QString artist = iter.next();
         albums.append( reg->getAlbum( name, id.toInt(), artist.toInt() ) );
     }
-    emitOrStoreProperResult( AlbumPtr, albums );
+    emitProperResult( AlbumPtr, albums );
 }
 
 void
@@ -844,7 +784,7 @@ SqlQueryMaker::handleGenres( const QStringList &result )
         QString id = iter.next();
         genres.append( reg->getGenre( name, id.toInt() ) );
     }
-    emitOrStoreProperResult( GenrePtr, genres );
+    emitProperResult( GenrePtr, genres );
 }
 
 void
@@ -858,7 +798,7 @@ SqlQueryMaker::handleComposers( const QStringList &result )
         QString id = iter.next();
         composers.append( reg->getComposer( name, id.toInt() ) );
     }
-    emitOrStoreProperResult( ComposerPtr, composers );
+    emitProperResult( ComposerPtr, composers );
 }
 
 void
@@ -872,7 +812,7 @@ SqlQueryMaker::handleYears( const QStringList &result )
         QString id = iter.next();
         years.append( reg->getYear( name, id.toInt() ) );
     }
-    emitOrStoreProperResult( YearPtr, years );
+    emitProperResult( YearPtr, years );
 }
 
 QString

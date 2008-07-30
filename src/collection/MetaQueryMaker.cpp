@@ -83,26 +83,8 @@ MetaQueryMaker::reset()
 void
 MetaQueryMaker::run()
 {
-    if( !m_blocking )
-    {
-        foreach( QueryMaker *b, builders )
-            b->run();
-    }
-    else
-    {
-        m_data.clear();
-        m_customData.clear();
-        foreach( QueryMaker *b, builders )
-        {
-            b->run();
-            foreach( QString id, b->collectionIds() )
-            {
-                m_data[id] = b->data( id );
-                m_customData[id] = b->customData( id );
-            }
-        }
-        
-    }
+    foreach( QueryMaker *b, builders )
+        b->run();
 }
 
 void
@@ -340,36 +322,6 @@ MetaQueryMaker::endAndOr()
     foreach( QueryMaker *b, builders )
         b->endAndOr();
     return this;
-}
-
-void
-MetaQueryMaker::setBlocking( bool enabled )
-{
-    m_blocking = enabled;
-    foreach( QueryMaker *b, builders )
-        b->setBlocking( enabled );
-}
-
-QStringList
-MetaQueryMaker::collectionIds() const
-{
-    QStringList list;
-    foreach( QueryMaker *b, builders )
-        list += b->collectionIds();
-
-    return list;
-}
-
-Meta::DataList
-MetaQueryMaker::data( const QString& id ) const
-{
-    return m_data[id];
-}
-
-QStringList
-MetaQueryMaker::customData( const QString& id ) const
-{
-    return m_customData[id];
 }
 
 void

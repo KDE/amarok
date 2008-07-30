@@ -76,15 +76,6 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
         QStringList runQuery( const QString &query );
         void handleResult( const QStringList &result );
 
-        // for using it blocking (defaults to non blocking, use it only very really needed
-
-        virtual void setBlocking( bool enabled );
-        
-        virtual QStringList collectionIds() const;
-
-        virtual Meta::DataList data( const QString &id ) const;
-        virtual QStringList customData( const QString &id ) const;
-
     protected:
         virtual QString escape( QString text ) const;
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;

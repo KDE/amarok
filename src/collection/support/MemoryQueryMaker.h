@@ -74,13 +74,6 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* beginOr();
         virtual QueryMaker* endAndOr();
 
-        virtual void setBlocking( bool enabled );
-
-        virtual QStringList collectionIds() const;
-
-        virtual Meta::DataList data( const QString &id ) const;
-        virtual QStringList customData( const QString &id ) const;
-
         //MemoryQueryMaker specific methods
         void runQuery();
         void handleResult();

@@ -399,23 +399,6 @@ XmlQueryWriter::endAndOr()
     return this;
 }
 
-QStringList
-XmlQueryWriter::collectionIds() const
-{
-    return m_qm->collectionIds();
-}
-
-Meta::DataList
-XmlQueryWriter::data( const QString &id ) const
-{
-    return m_qm->data( id );
-}
-
-QStringList
-XmlQueryWriter::customData( const QString &id ) const
-{
-    return m_qm->customData( id );
-}
 
 int
 XmlQueryWriter::validFilterMask()

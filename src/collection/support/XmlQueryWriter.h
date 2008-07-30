@@ -79,12 +79,6 @@ class XmlQueryWriter : public QueryMaker
         QueryMaker* beginOr();
         QueryMaker* endAndOr();
 
-        void setBlocking( bool enabled );
-
-        QStringList collectionIds() const;
-
-        Meta::DataList data( const QString &id ) const;
-        QStringList customData( const QString &id ) const;
 
         int validFilterMask();
 
