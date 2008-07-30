@@ -294,18 +294,20 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
 void
 ContextView::animateZoomIn( qreal progress, int id )
 {
+    Q_UNUSED( id )
+
     if( progress > 0 )
     {
         qreal s = ( progress / 2.0 + 0.5 ) / matrix().m11();
         centerOnZoom( s, Plasma::ZoomIn );        
     }
-
 }
 
 void
 ContextView::zoomInFinished( int id )
 {
     Q_UNUSED( id )
+
     int count = contextScene()->containments().size();
     for( int i = 0; i < count; i++ )
     {
@@ -326,6 +328,8 @@ ContextView::zoomInFinished( int id )
 void
 ContextView::animateZoomOut( qreal progress, int id )
 {
+    Q_UNUSED( id )
+
     qreal s =  ( 1.0 - progress / 1.8 ) / matrix().m11();
     centerOnZoom( s, Plasma::ZoomOut );
 }
@@ -333,19 +337,17 @@ ContextView::animateZoomOut( qreal progress, int id )
 void
 ContextView::zoomOutFinished( int id )
 {
-    DEBUG_BLOCK
     Q_UNUSED( id )
+    DEBUG_BLOCK
+
     m_zoomLevel = Plasma::GroupZoom;
     setDragMode( ScrollHandDrag );
     
     setSceneRect( mapToScene( rect() ).boundingRect() );
     ensureVisible( rect(), 0, 0 );
     
-    disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
-                 this, SLOT( zoomOutFinished( int ) ) );
-                 
+    disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ), this, SLOT( zoomOutFinished( int ) ) );
 }
-
 
 void
 ContextView::centerOnZoom( qreal sFactor, Plasma::ZoomDirection direction )
@@ -355,12 +357,12 @@ ContextView::centerOnZoom( qreal sFactor, Plasma::ZoomDirection direction )
     qreal width = sceneRect().width();
     qreal height = sceneRect().height();
     
-    QPointF topLeft = containment()->geometry().topLeft();
-    QPointF topRight = containment()->geometry().topRight();
-    QPointF bottomLeft = containment()->geometry().bottomLeft();
+    const QPointF topLeft = containment()->geometry().topLeft();
+    const QPointF topRight = containment()->geometry().topRight();
+    const QPointF bottomLeft = containment()->geometry().bottomLeft();
 
-    qreal x = qMax( qreal(0.0), sceneRect().topRight().x() - ( width * 1/sFactor ) );
-    qreal y = qMax( qreal(0.0), sceneRect().bottomLeft().y() - ( height * 1/sFactor ) );
+    const qreal x = qMax( qreal(0.0), sceneRect().topRight().x() - ( width * 1/sFactor ) );
+    const qreal y = qMax( qreal(0.0), sceneRect().bottomLeft().y() - ( height * 1/sFactor ) );
 
     left = qMin(  topLeft.x(), x ) ;
     top = qMin( topLeft.y() , y  );
@@ -389,9 +391,10 @@ ContextScene* ContextView::contextScene()
 void ContextView::resizeEvent( QResizeEvent* event )
 {
     Q_UNUSED( event )
-        if ( testAttribute( Qt::WA_PendingResizeEvent ) ) {
-            return; // lets not do this more than necessary, shall we?
-        }
+       
+    if ( testAttribute( Qt::WA_PendingResizeEvent ) ) {
+        return; // lets not do this more than necessary, shall we?
+    }
     updateContainmentsGeometry();
 }
 
@@ -400,15 +403,15 @@ void
 ContextView::updateContainmentsGeometry()
 {
     DEBUG_BLOCK
+
     debug() << "cv rect: " << rect();
-    int last = contextScene()->containments().size() - 1;
     int x,y;
-    int width = rect().width();
-    int height = rect().height();
+    const int last = contextScene()->containments().size() - 1;
+    const int width = rect().width();
+    const int height = rect().height();
 
     if( m_zoomLevel == Plasma::DesktopZoom )
     {
-        
         for( int i = last; i >= 0; i-- )
         {
             Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
@@ -450,16 +453,17 @@ void
 ContextView::addContainment()
 {
     DEBUG_BLOCK
+
     Plasma::Corona* corona = containment()->corona();
     if (corona)
     {
-        int size = contextScene()->containments().size();
+        const int size = contextScene()->containments().size();
         Plasma::Containment *c = corona->addContainment( "context" );
         c->setScreen( 0 );
         c->setFormFactor( Plasma::Planar );
         
-        int x = ( rect().width() + 25 ) * ( size % 2 );
-        int y = ( rect().height() + 65 ) * ( size / 2 );
+        const int x = ( rect().width() + 25 ) * ( size % 2 );
+        const int y = ( rect().height() + 65 ) * ( size / 2 );
 
         Containment* containment = qobject_cast< Containment* >( c );
 
@@ -481,7 +485,6 @@ ContextView::addContainment()
         debug() << "Containment added at: " << c->geometry();
         debug() << "x,y:" << x << y;
     }
-
 }
 
 
@@ -578,27 +581,27 @@ ContextView::setContainment( Plasma::Containment* containment )
                 debug() << "startPos: " << m_startPos;
                 debug() << "destinationPos: " << m_destinationPos;
             }
-
         }
-        
     }    
 }
 
 void
 ContextView::nextContainment()
 {
-    QList<Plasma::Containment*> containments = contextScene()->containments();
+    const QList<Plasma::Containment*> containments = contextScene()->containments();
     int index = containments.indexOf( containment() );
     index = ( index + 1 ) % containments.size();
+
     setContainment( containments.at( index ) );
 }
 
 void
 ContextView::previousContainment()
 {
-    QList<Plasma::Containment*> containments = contextScene()->containments();
+    const QList<Plasma::Containment*> containments = contextScene()->containments();
     int index = containments.indexOf( containment() );
     index = ( index - 1 ) % containments.size();
+
     setContainment( containments.at( index ) );
 }
 
@@ -647,6 +650,7 @@ void
 ContextView::findContainmentForApplet( QString pluginName, int rowSpan )
 {
     DEBUG_BLOCK
+
     Plasma::Corona *corona = containment()->corona();
     if ( corona )
     {
