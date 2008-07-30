@@ -22,9 +22,22 @@
 #include <QLocale>
 
 
+namespace The
+{
+    K_GLOBAL_STATIC( LastFmSettings, s_lastFmSettings );
+
+    LastFmSettings &settings()
+    {
+        return *s_lastFmSettings;
+    }
+}
+
+
 LastFmUserSettings::LastFmUserSettings()
 {
     DEBUG_BLOCK
+
+    qAddPostRoutine( The::s_lastFmSettings.destroy ); //Ensures that the dtor gets called when QApplication destructs
 
     m_config = KGlobal::config()->group( LastFmServiceConfig::configSectionName() );
 }
@@ -144,14 +157,4 @@ LastFmSettings::getProxyPassword() const
     return ""; // TODO
 }
 
-
-namespace The
-{
-    K_GLOBAL_STATIC( LastFmSettings, s_lastFmSettings );
-
-    LastFmSettings &settings()
-    {
-        return *s_lastFmSettings;
-    }
-}
 
