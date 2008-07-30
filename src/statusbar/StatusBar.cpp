@@ -120,18 +120,20 @@ StatusBar::engineNewTrackPlaying()
 //MessageQueue
 ///////////////////
 
+K_GLOBAL_STATIC( MessageQueue, s_messageQueue );
+
 MessageQueue::MessageQueue()
     : m_queueMessages( true )
 {
-     DEBUG_BLOCK
+    DEBUG_BLOCK
+
+    qAddPostRoutine( s_messageQueue.destroy );  // Ensures that the dtor gets called when QApplication destructs
 }
 
 MessageQueue::~MessageQueue()
 {
-     DEBUG_BLOCK
+    DEBUG_BLOCK
 }
-
-K_GLOBAL_STATIC( MessageQueue, s_messageQueue );
 
 MessageQueue*
 MessageQueue::instance()
