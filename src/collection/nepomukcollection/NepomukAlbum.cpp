@@ -78,12 +78,13 @@ NepomukAlbum::tracks()
     }
     else if( m_collection )
     {
-        NepomukQueryMaker *qm = static_cast<NepomukQueryMaker*>( m_collection->queryMaker() );
+        QueryMaker *qm = m_collection->queryMaker();
         qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
-        qm->blocking( true );
+        qm->setBlocking( true );
         qm->run();
         m_tracks = qm->tracks( m_collection->collectionId() );
+        delete qm;
         m_tracksLoaded = true;
         return m_tracks;
     }
