@@ -78,18 +78,12 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
 
         // for using it blocking (defaults to non blocking, use it only very really needed
 
-        void blocking( bool enabled );
+        virtual void setBlocking( bool enabled );
         
-        QStringList collectionIds() const;
+        virtual QStringList collectionIds() const;
 
-        Meta::DataList data( const QString &id ) const;
-        Meta::TrackList tracks( const QString &id ) const;
-        Meta::AlbumList albums( const QString &id ) const;
-        Meta::ArtistList artists( const QString &id ) const;
-        Meta::GenreList genres( const QString &id ) const;
-        Meta::ComposerList composers( const QString &id ) const;
-        Meta::YearList years( const QString &id ) const;
-        QStringList customData( const QString &id ) const;
+        virtual Meta::DataList data( const QString &id ) const;
+        virtual QStringList customData( const QString &id ) const;
 
     protected:
         virtual QString escape( QString text ) const;

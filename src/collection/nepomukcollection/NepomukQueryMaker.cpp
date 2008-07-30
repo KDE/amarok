@@ -498,7 +498,7 @@ NepomukQueryMaker::addEmptyMatch( const qint64 value, bool optional )
 }
 
 void
-NepomukQueryMaker::blocking( bool enabled )
+NepomukQueryMaker::setBlocking( bool enabled )
 {
     m_blocking = enabled;
 }
@@ -514,82 +514,10 @@ QStringList
 Meta::DataList
 NepomukQueryMaker::data( const QString &id ) const
 {
-    if ( m_blocking && m_used && m_resultAsDataPtrs && m_collection->collectionId() == id )
+    if ( m_blocking && m_used && m_collection->collectionId() == id )
         return m_data;
     else
         return Meta::DataList();
-}
-
-Meta::TrackList
-NepomukQueryMaker::tracks( const QString &id ) const
-{
-    if ( m_blocking && m_used && m_queryType == QueryMaker::Track && m_collection->collectionId() == id  )
-    {
-        Meta::TrackList list;
-        foreach( DataPtr p, m_data )
-        { 
-            list << Meta::TrackPtr::staticCast( p ); \
-        } 
-        return list;
-    }
-    else
-        return Meta::TrackList();
-}
-
-Meta::AlbumList
-NepomukQueryMaker::albums( const QString &id ) const
-{
-    if ( m_blocking && m_used && m_queryType == QueryMaker::Album && m_collection->collectionId() == id  )
-    {
-        Meta::AlbumList list;
-        foreach( DataPtr p, m_data )
-        {
-            list << Meta::AlbumPtr::staticCast( p ); \
-        }
-        return list;
-    }
-    else
-        return Meta::AlbumList();
-}
-
-Meta::ArtistList
-NepomukQueryMaker::artists( const QString &id ) const
-{
-    if ( m_blocking && m_used && m_queryType == QueryMaker::Artist && m_collection->collectionId() == id  )
-    {
-        Meta::ArtistList list;
-        foreach( DataPtr p, m_data )
-        {
-            list << Meta::ArtistPtr::staticCast( p ); \
-        }
-        return list;
-    }
-    else
-        return Meta::ArtistList();
-}
-
-Meta::GenreList
-NepomukQueryMaker::genres( const QString &id ) const
-{
-    Q_UNUSED( id )
-    // not implemented yet
-    return Meta::GenreList();
-}
-
-Meta::ComposerList
-NepomukQueryMaker::composers( const QString &id ) const
-{
-    Q_UNUSED( id )
-    // not implemented yet
-    return Meta::ComposerList();
-}
-
-Meta::YearList
-NepomukQueryMaker::years( const QString &id ) const
-{
-    Q_UNUSED( id )
-    // not implemented yet
-    return Meta::YearList();
 }
 
 QStringList
@@ -597,7 +525,7 @@ NepomukQueryMaker::customData( const QString &id ) const
 {
     Q_UNUSED( id )
     // not implemented yet
-    return QStringList();
+            return QStringList();
 }
 
 QString

@@ -85,19 +85,13 @@ class NepomukQueryMaker : public QueryMaker
 	    // functions only for use in nepo collection
 
         // for using blocking, defaults to non blocking
-        void blocking( bool enabled );
+        virtual void setBlocking( bool enabled );
         
-        QStringList collectionIds() const;
+        virtual QStringList collectionIds() const;
 
-        Meta::DataList data( const QString &id ) const;
-        Meta::TrackList tracks( const QString &id ) const;
-        Meta::AlbumList albums( const QString &id ) const;
-        Meta::ArtistList artists( const QString &id ) const;
-        Meta::GenreList genres( const QString &id ) const;
-        Meta::ComposerList composers( const QString &id ) const;
-        Meta::YearList years( const QString &id ) const;
-        QStringList customData( const QString &id ) const;
-        
+        virtual Meta::DataList data( const QString &id ) const;
+        virtual QStringList customData( const QString &id ) const;
+
 	    virtual QString buildQuery();
 	    virtual void doQuery(const QString& );
 

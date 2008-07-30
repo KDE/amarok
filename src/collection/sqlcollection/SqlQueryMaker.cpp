@@ -663,7 +663,7 @@ SqlQueryMaker::handleResult( const QStringList &result )
 }
 
 void
-SqlQueryMaker::blocking( bool enabled )
+SqlQueryMaker::setBlocking( bool enabled )
 {
     d->blocking = enabled;
 }
@@ -679,106 +679,10 @@ SqlQueryMaker::collectionIds() const
 Meta::DataList
 SqlQueryMaker::data( const QString &id ) const
 {
-    if ( d->blocking && d->used && d->resultAsDataPtrs && m_collection->collectionId() == id )
+    if ( d->blocking && d->used && m_collection->collectionId() == id )
         return d->data;
     else
         return Meta::DataList();
-}
-
-Meta::TrackList
-SqlQueryMaker::tracks( const QString &id ) const
-{
-    if ( d->blocking && d->used && d->queryType == QueryMaker::Track && m_collection->collectionId() == id  )
-    {
-        Meta::TrackList list;
-        foreach( DataPtr p, d->data )
-        {
-            list << Meta::TrackPtr::staticCast( p ); \
-        }
-        return list;
-    }
-    else
-        return Meta::TrackList();
-}
-
-Meta::AlbumList
-SqlQueryMaker::albums( const QString &id ) const
-{
-    if ( d->blocking && d->used && d->queryType == QueryMaker::Album && m_collection->collectionId() == id  )
-    {
-        Meta::AlbumList list;
-        foreach( DataPtr p, d->data )
-        {
-            list << Meta::AlbumPtr::staticCast( p ); \
-        }
-        return list;
-    }
-    else
-        return Meta::AlbumList();
-}
-
-Meta::ArtistList
-SqlQueryMaker::artists( const QString &id ) const
-{
-    if ( d->blocking && d->used && d->queryType == QueryMaker::Artist && m_collection->collectionId() == id  )
-    {
-        Meta::ArtistList list;
-        foreach( DataPtr p, d->data )
-        {
-            list << Meta::ArtistPtr::staticCast( p ); \
-        }
-        return list;
-    }
-    else
-        return Meta::ArtistList();
-}
-
-Meta::GenreList
-SqlQueryMaker::genres( const QString &id ) const
-{
-    if ( d->blocking && d->used && d->queryType == QueryMaker::Genre && m_collection->collectionId() == id  )
-    {
-        Meta::GenreList list;
-        foreach( DataPtr p, d->data )
-        {
-            list << Meta::GenrePtr::staticCast( p ); \
-        }
-        return list;
-    }
-    else
-        return Meta::GenreList();
-}
-
-Meta::ComposerList
-SqlQueryMaker::composers( const QString &id ) const
-{
-    if ( d->blocking && d->used && d->queryType == QueryMaker::Composer && m_collection->collectionId() == id  )
-    {
-        Meta::ComposerList list;
-        foreach( DataPtr p, d->data )
-        {
-            list << Meta::ComposerPtr::staticCast( p ); \
-        }
-        return list;
-    }
-    else
-        return Meta::ComposerList();
-}
-
-Meta::YearList
-SqlQueryMaker::years( const QString &id ) const
-{
-    if ( d->blocking && d->used && d->queryType == QueryMaker::Year && m_collection->collectionId() == id  )
-    {
-        Meta::YearList list;
-        foreach( DataPtr p, d->data )
-        {
-            list << Meta::YearPtr::staticCast( p ); \
-        }
-        return list;
-    }
-    else
-        return Meta::YearList();
 }
 
 QStringList
