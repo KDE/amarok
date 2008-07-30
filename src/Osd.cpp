@@ -87,6 +87,12 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     kapp->setTopWidget( this );
 }
 
+OSDWidget::~OSDWidget()
+{
+    DEBUG_BLOCK
+}
+
+
 void
 OSDWidget::show( const QString &text, QImage newImage )
 {

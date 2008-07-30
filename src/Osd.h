@@ -77,6 +77,8 @@ class OSDWidget : public QWidget
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
 
     protected:
+        virtual ~OSDWidget();
+
         /** determine new size and position */
         QRect determineMetrics( const uint marginMetric );
 
