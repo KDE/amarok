@@ -399,12 +399,6 @@ XmlQueryWriter::endAndOr()
     return this;
 }
 
-void
-XmlQueryWriter::blocking( bool enabled )
-{
-    m_qm->blocking( enabled );
-}
-
 
 int
 XmlQueryWriter::validFilterMask()

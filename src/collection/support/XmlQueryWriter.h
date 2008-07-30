@@ -79,9 +79,6 @@ class XmlQueryWriter : public QueryMaker
         QueryMaker* beginOr();
         QueryMaker* endAndOr();
 
-        void blocking( bool enabled );
-
-
         int validFilterMask();
 
     private:

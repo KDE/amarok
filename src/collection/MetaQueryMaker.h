@@ -70,8 +70,6 @@ class MetaQueryMaker : public QueryMaker
         virtual QueryMaker* beginOr();
         virtual QueryMaker* endAndOr();
 
-        virtual void blocking( bool enabled );
-
     private slots:
         void slotQueryDone();
 
