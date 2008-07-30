@@ -39,7 +39,6 @@ namespace Playlist {
 
         protected:
             QSize sizeHint() const;
-            virtual void paintEvent( QPaintEvent * );
             
         private:
             Amarok::StackedWidget *m_stackedWidget;

@@ -46,7 +46,7 @@ Widget::Widget( QWidget* parent )
     : KVBox( parent )
 {
     
-    setContentsMargins( 4, 4, 4, 4 );
+    setContentsMargins( 1, 1, 1, 1 );
 
     Amarok::Widget * layoutHolder = new Amarok::Widget( this );
 
@@ -126,9 +126,6 @@ void Widget::switchView()
 {
     m_stackedWidget->setCurrentIndex( ( m_stackedWidget->currentIndex() + 1 ) % 2 );
 }
-
-void Widget::paintEvent( QPaintEvent * )
-{}
 
 
 
