@@ -166,6 +166,12 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
 }
 
+StatusBar::~StatusBar()
+{
+    DEBUG_BLOCK
+}
+
+
 /// reimplemented functions
 
 void

@@ -188,11 +188,12 @@ namespace KDE
         void popupDeleted();
 
     protected:
+        virtual ~StatusBar();
+
         virtual void polish();
         virtual void customEvent( QEvent* );
         virtual void paintEvent( QPaintEvent* );
         virtual bool event( QEvent* );
-
 
         QLabel *m_mainTextLabel;
         QLabel *m_iconLabel;
