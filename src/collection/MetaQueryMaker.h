@@ -70,6 +70,14 @@ class MetaQueryMaker : public QueryMaker
         virtual QueryMaker* beginOr();
         virtual QueryMaker* endAndOr();
 
+        virtual void setBlocking( bool enabled );
+
+        virtual QStringList collectionIds() const;
+
+        virtual Meta::DataList data( const QString &id ) const;
+        virtual QStringList customData( const QString &id ) const;
+
+
     private slots:
         void slotQueryDone();
 
@@ -78,6 +86,9 @@ class MetaQueryMaker : public QueryMaker
         int m_queryDoneCount;
         QMutex m_queryDoneCountMutex;
 
+        bool m_blocking;
+        QHash<QString, Meta::DataList> m_data;
+        QHash<QString, QStringList>    m_customData;
 };
 
 #endif /* COLLECTION_METAQUERYMAKER_H */
