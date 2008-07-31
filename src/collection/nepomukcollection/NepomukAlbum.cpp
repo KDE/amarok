@@ -84,6 +84,7 @@ NepomukAlbum::tracks()
         qm->blocking( true );
         qm->run();
         m_tracks = qm->tracks( m_collection->collectionId() );
+        delete qm;
         m_tracksLoaded = true;
         return m_tracks;
     }

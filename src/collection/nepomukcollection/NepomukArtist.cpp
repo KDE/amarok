@@ -89,6 +89,7 @@ NepomukArtist::albums()
         qm->blocking( true );
         qm->run();
         m_albums = qm->albums( m_collection->collectionId() );
+        delete qm;
         m_albumsLoaded = true;
         return m_albums;
     }

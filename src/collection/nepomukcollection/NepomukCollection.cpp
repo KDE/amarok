@@ -144,10 +144,11 @@ NepomukCollection::trackForUrl( const KUrl &url )
     DEBUG_BLOCK
     // it is too slow with redland, makes start of amarok slow
     // so just return 
-    QString proto = url.protocol();
     if ( !m_isFast )
         return Meta::TrackPtr();
 
+    QString proto = url.protocol();
+    
     if ( proto == "file" && !Nepomuk::Resource::Resource( url ).exists() )
         return Meta::TrackPtr();
 
@@ -165,7 +166,8 @@ NepomukCollection::trackForUrl( const KUrl &url )
     qm->blocking( true );
     qm->run();
     Meta::TrackList tracks = qm->tracks( this->collectionId() );
-
+    delete qm;
+    
     // assuming that there is only one result, should never be more, if so giving
     // the first is the best to do anyway
     if ( !tracks.isEmpty() )
