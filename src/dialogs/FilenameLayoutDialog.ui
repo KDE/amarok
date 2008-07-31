@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>654</width>
-    <height>376</height>
+    <height>546</height>
    </rect>
   </property>
   <property name="acceptDrops" >
@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>339</height>
+     <height>511</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -34,6 +34,25 @@
     </sizepolicy>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3" >
+    <item>
+     <widget class="TokenListWidget" name="tokenPool" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="gridSize" >
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="viewMode" >
+       <enum>QListView::IconMode</enum>
+      </property>
+     </widget>
+    </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2" >
       <item>
@@ -78,25 +97,6 @@
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" >
-      <item>
-       <widget class="TokenListWidget" name="tokenPool" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="gridSize" >
-         <size>
-          <width>40</width>
-          <height>40</height>
-         </size>
-        </property>
-        <property name="viewMode" >
-         <enum>QListView::IconMode</enum>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="KButtonGroup" name="optionsFrame" >
         <property name="sizePolicy" >
