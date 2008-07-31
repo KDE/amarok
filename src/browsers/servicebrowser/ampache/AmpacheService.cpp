@@ -141,6 +141,8 @@ AmpacheService::polish()
 void
 AmpacheService::authenticate()
 {
+    DEBUG_BLOCK
+
     //lets keep this around for now if we want to allow pwople to add a service that prompts for stuff
     if ( m_server.isEmpty() || m_password.isEmpty() )
     {
@@ -156,7 +158,6 @@ AmpacheService::authenticate()
         }
         m_server = kurl.url();
         m_password = dlg.password();
-
     }
     else
     {
