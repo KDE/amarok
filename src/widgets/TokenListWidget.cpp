@@ -43,6 +43,10 @@ TokenListWidget::TokenListWidget( QWidget *parent )
     addItem( " - " );
     addItem( " . " );
     addItem( "<space>" );
+    addItem( new QListWidgetItem( KIcon("placeholder.svg"), QString( "Track" ) ) );
+
+    setViewMode( QListView::IconMode );
+    setFlow( QListView::LeftToRight );
 }
 
 void
@@ -50,8 +54,6 @@ TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QListWidgetItem *token = itemAt( event->pos() );
     emit onDoubleClick( token->text() );
-    //filenameLayoutWidget->addToken( token->text() );
-    //TODO: get a pointer to the filenameLayoutWidget and add a token!
 }
 
 void

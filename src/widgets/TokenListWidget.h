@@ -22,7 +22,7 @@
 #include <KListWidget>
 
 class TokenListWidget
-    : public KListWidget      //all this kinda works when used with another TokenListWidget, now I have to make it work with FilenameLayoutWidget
+    : public KListWidget
 {
     Q_OBJECT
     
@@ -39,7 +39,6 @@ class TokenListWidget
     
     private:
         void performDrag( QMouseEvent *event );
-        //FilenameLayoutWidget * filenameLayoutWidget;
         QPoint m_startPos;
     signals:
         void onDoubleClick( QString text );

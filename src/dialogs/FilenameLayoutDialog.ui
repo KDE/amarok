@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>723</width>
-    <height>599</height>
+    <width>654</width>
+    <height>376</height>
    </rect>
   </property>
   <property name="acceptDrops" >
@@ -85,6 +85,15 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="gridSize" >
+         <size>
+          <width>40</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="viewMode" >
+         <enum>QListView::IconMode</enum>
         </property>
        </widget>
       </item>

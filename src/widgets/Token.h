@@ -34,8 +34,6 @@ class Token
 
         unsigned int m_myCount;
         QString m_tokenString;
-
-
 };
 
 #endif //TOKEN_H
