@@ -70,6 +70,7 @@ namespace Mtp
        bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
        int getTrackToFile( const uint32_t id, const QString & filename );
        void parseTracks();
+       void updateTrackInDB( const Meta::MtpTrackPtr track );
        QString prettyName() const;
        void terminate();
        bool succeeded() const { return m_success; }
@@ -92,6 +93,7 @@ namespace Mtp
 
        int                     readMtpMusic( void );
        void getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track );
+       void setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr track );
 
        // miscellaneous internal functions
        void addMtpTrackToCollection( LIBMTP_track_t *mtptrack );

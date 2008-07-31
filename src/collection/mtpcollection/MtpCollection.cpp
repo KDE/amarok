@@ -306,12 +306,12 @@ MtpCollection::updateTags( Meta::MtpTrack *track)
 {
     DEBUG_BLOCK
     Meta::MtpTrackPtr trackPtr( track );
-    KUrl trackUrl = KUrl::fromPath( trackPtr->url() );
+    //KUrl trackUrl = KUrl::fromPath( trackPtr->url() );
 
     debug() << "Running updateTrackInDB...";
-// TODO: NYI
-//    m_handler->updateTrackInDB( trackUrl, Meta::TrackPtr::staticCast( trackPtr ), track->getMtpTrack() );
-    
+
+    m_handler->updateTrackInDB( trackPtr );
+
 }
 
 void

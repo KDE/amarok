@@ -142,7 +142,6 @@ class UpdateCapabilityMtp : public Meta::UpdateCapability
 
         virtual void collectionUpdated() const {
             m_coll->collectionUpdated();
-            m_coll->writeDatabase();
         }
 
 
@@ -452,7 +451,7 @@ MtpTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
             
             
         case Meta::Capability::Editable:
-            return false;
+            return true;
         case Meta::Capability::CustomActions:
             return true;
         case Meta::Capability::Updatable:
