@@ -30,6 +30,7 @@
 class StatusBarMessageLabel;
 class QLabel;
 class QProgressBar;
+class KSqueezedTextLabel;
 class KJob;
 
 namespace KDE
@@ -195,7 +196,7 @@ namespace KDE
         virtual void paintEvent( QPaintEvent* );
         virtual bool event( QEvent* );
 
-        QLabel *m_mainTextLabel;
+        KSqueezedTextLabel *m_mainTextLabel;
         QLabel *m_iconLabel;
 
     private:

@@ -41,6 +41,7 @@
 #include <QTimer>
 
 #include "timeLabel.h"
+#include <KSqueezedTextLabel>
 
 
 using namespace Amarok;

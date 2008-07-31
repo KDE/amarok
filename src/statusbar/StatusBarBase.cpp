@@ -37,6 +37,7 @@
 #include <KLocale>
 #include <KStandardDirs>
 #include <KStandardGuiItem>
+#include <KSqueezedTextLabel>
 #include <KVBox>
 
 #include <QDateTime>      //writeLogFile()
@@ -103,8 +104,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 {
     setObjectName( name );;
 
-    m_mainTextLabel = new QLabel();
+    m_mainTextLabel = new KSqueezedTextLabel();
     m_mainTextLabel->setObjectName( "mainTextLabel" );
+    m_mainTextLabel->setTextElideMode(Qt::ElideRight);
+    m_mainTextLabel->setAlignment( Qt::AlignRight );
     addPermanentWidget( m_mainTextLabel );
 
     m_iconLabel = new QLabel();
