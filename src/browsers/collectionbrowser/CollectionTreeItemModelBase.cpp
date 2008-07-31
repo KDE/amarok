@@ -435,7 +435,7 @@ CollectionTreeItemModelBase::queryDone()
     CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
 
     //reset icon for this item
-    if( item != m_rootItem )
+    if( item && item != m_rootItem )
         emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
 
     //stop timer if there are no more animations active

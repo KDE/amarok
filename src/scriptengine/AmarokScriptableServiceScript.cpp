@@ -127,7 +127,6 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
     DEBUG_BLOCK
 
     debug() << "service name = " << name;
-    debug() << "scriptEngine = " << m_scriptEngine;
     debug() << "populating...";
     debug() << level << parent_id << callbackData << filter;
 
