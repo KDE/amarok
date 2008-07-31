@@ -101,6 +101,7 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_ctor( QScriptConte
     context->thisObject().setProperty( "rootHtml", QScriptValue( engine, rootHtml ) );
     bool showSearchBar = context->argument( 4 ).toBoolean();
     context->thisObject().setProperty( "showSearchBar", QScriptValue( engine, showSearchBar ) );
+
     The::scriptableServiceManager()->initService( name, levels, shortDescription, rootHtml, showSearchBar );
 
     return engine->undefinedValue();
