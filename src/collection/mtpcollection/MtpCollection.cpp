@@ -202,7 +202,7 @@ bool
 MtpCollection::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 {
     DEBUG_BLOCK
-    return false; // TODO: NYI
+
     
 
         // remove the track from the device

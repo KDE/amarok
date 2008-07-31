@@ -76,7 +76,7 @@ class CustomActionsCapabilityMtp : public Meta::CustomActionsCapability {
             MtpCollection *coll = dynamic_cast<MtpCollection*>( m_track->collection() );
 
             // Setup the remove action
-            /*
+            
             PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "amarok_remove" ), i18n( "&Remove from MTP" ), 0 );
 
             debug() << "Remove-action created";
@@ -96,7 +96,7 @@ class CustomActionsCapabilityMtp : public Meta::CustomActionsCapability {
             
             m_actions.append( removeAction );
 
-                    */
+
 
             //TODO: this should only be available in the top-level
             // node of the tree, not every individual track

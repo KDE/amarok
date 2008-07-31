@@ -606,9 +606,32 @@ MtpHandler::updateFolders( void )
 bool
 MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 {
-    // TODO: NYI
-        Q_UNUSED( track );
-    return false;
+    DEBUG_BLOCK
+    
+    //If nothing is left in a folder, delete the folder
+    u_int32_t object_id = track->id();
+
+    QString genericError = i18n( "Could not delete item" );
+
+    debug() << "delete this id : " << object_id;
+
+
+    int status = LIBMTP_Delete_Object( m_device, object_id );
+
+    if( status != 0 )
+    {
+        debug() << "delete object failed";
+        The::statusBar()->shortLongMessage(
+                       genericError,
+                       i18n( "Delete failed" ),
+                             KDE::StatusBar::Error
+                                          );
+        return false;
+    }
+    debug() << "object deleted";
+
+    return true;
+    
 }
 
 int
