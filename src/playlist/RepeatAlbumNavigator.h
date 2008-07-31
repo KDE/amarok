@@ -22,7 +22,7 @@
 #define REPEATALBUMNAVIGATOR_H
 
 #include "meta/Meta.h"
-#include "playlist/TrackNavigator.h"
+#include "playlist/SimpleTrackNavigator.h"
 
 
 namespace Playlist
@@ -32,10 +32,12 @@ class Model;
 /**
  * Plays the next album in the playlist.
  */
-    class RepeatAlbumNavigator : public TrackNavigator
+    class RepeatAlbumNavigator : public SimpleTrackNavigator
     {
         public:
-            RepeatAlbumNavigator( Model* m ) : TrackNavigator( m ) { }
+            RepeatAlbumNavigator( Model* m ) : SimpleTrackNavigator( m ) { }
+
+        private:
             int nextRow();
     };
 

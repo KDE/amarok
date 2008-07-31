@@ -215,10 +215,32 @@ namespace Playlist
             void setActiveItem( Playlist::Item* active) { setActiveRow( m_items.lastIndexOf(active) ); }
             bool rowExists( int row ) { return 0 <= row && row < rowCount(); }
 
+            /**
+             * This is called by the engine before the current track ends. It
+             * will figure out the next track and enqueue it. This won't
+             * actually change the track. That happens in the engine when the
+             * current track ends.
+             */
+            void requestNextTrack();
+            
+            /**
+             * Figure out the next track, and start playing it immediately.
+             */
+            void requestUserNextTrack();
 
-            Meta::TrackPtr nextTrack();
-            Meta::TrackPtr userNextTrack();
-            Meta::TrackPtr lastTrack();
+            /**
+             * Figure out the previous track and start playling it immediatly.
+             */
+            void requestPrevTrack();
+
+            /*
+             * When requestXTrack functions are called, they will call back with
+             * these functions.
+             */
+            void setNextRow( int row );
+            void setUserNextRow( int row );
+            void setPrevRow( int row );
+
 
             void moveRow( int row, int to );
 
@@ -328,6 +350,8 @@ namespace Playlist
 
             Playlist::StopAfterMode m_stopAfterMode;
             bool m_stopPlaying;
+
+            QMutex m_waitingForNextTrack;
 
             static Model* s_instance; //! instance variable
     };

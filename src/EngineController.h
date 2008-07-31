@@ -52,6 +52,11 @@ public:
     Meta::TrackPtr currentTrack() const;
     int trackLength() const;
 
+    /**
+     * Used to enqueue a track before it starts to play, for gapless playback.
+     */
+    void setNextTrack( Meta::TrackPtr );
+
     void restoreSession();
     void endSession();
 
@@ -107,7 +112,6 @@ protected:
 
 private slots:
     void slotAboutToFinish();
-    void slotTrackEnded();
     void slotNewTrackPlaying( const Phonon::MediaSource &source);
     void slotStateChanged( Phonon::State newState, Phonon::State oldState);
     void slotPlayableUrlFetched(const KUrl&);
@@ -131,6 +135,7 @@ private:
 
     Meta::TrackPtr  m_currentTrack;
     Meta::TrackPtr  m_lastTrack;
+    Meta::TrackPtr  m_nextTrack;
     QPointer<Meta::MultiPlayableCapability> m_multi;
     QTimer* m_fadeoutTimer;
 };

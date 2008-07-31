@@ -140,48 +140,73 @@ Playlist::Model::~Model()
 }
 
 
-Meta::TrackPtr
-Playlist::Model::nextTrack()
+void
+Playlist::Model::requestNextTrack()
+{
+    DEBUG_BLOCK
+    if( m_waitingForNextTrack.tryLock() )
+        m_advancer->requestNextRow();
+}
+
+void
+Playlist::Model::requestUserNextTrack()
+{
+    DEBUG_BLOCK
+    if( m_waitingForNextTrack.tryLock() )
+        m_advancer->requestUserNextRow();
+}
+
+void
+Playlist::Model::requestPrevTrack()
+{
+    DEBUG_BLOCK
+    if( m_waitingForNextTrack.tryLock() )
+        m_advancer->requestLastRow();
+}
+
+
+void
+Playlist::Model::setNextRow( int row )
 {
     DEBUG_BLOCK
 
-    m_nextRowCandidate = m_advancer->nextRow();
-    if( m_stopPlaying || !rowExists( m_nextRowCandidate ) )
+    if( !m_stopPlaying && rowExists( row ) )
     {
-        m_nextRowCandidate = -1;
-        return Meta::TrackPtr();
+        m_nextRowCandidate = row;
+        The::engineController()->setNextTrack( m_items.at(row)->track() );
     }
 
-    m_stopPlaying = false;
-    return m_items.at(m_nextRowCandidate)->track();
+    m_waitingForNextTrack.unlock();
 }
 
-
-Meta::TrackPtr
-Playlist::Model::userNextTrack()
+void
+Playlist::Model::setUserNextRow( int row )
 {
-    m_nextRowCandidate = m_advancer->userNextRow();
-    if( !rowExists( m_nextRowCandidate ) )
+    DEBUG_BLOCK
+
+    if( !m_stopPlaying && rowExists( row ) )
     {
-        m_nextRowCandidate = -1;
-        return Meta::TrackPtr();
+        m_nextRowCandidate = row;
+        play( row );
     }
-    
-   return m_items.at(m_nextRowCandidate)->track();
+
+    m_waitingForNextTrack.unlock();
 }
 
-Meta::TrackPtr
-Playlist::Model::lastTrack()
+void
+Playlist::Model::setPrevRow( int row )
 {
-    m_nextRowCandidate = m_advancer->lastRow();
-    if( !rowExists( m_nextRowCandidate ) )
+    DEBUG_BLOCK
+
+    if( !m_stopPlaying && rowExists( row ) )
     {
-        m_nextRowCandidate = -1;
-        return Meta::TrackPtr();
+        m_nextRowCandidate = row;
+        play( row );
     }
 
-    return m_items.at(m_nextRowCandidate)->track();
+    m_waitingForNextTrack.unlock();
 }
+
 
 int
 Playlist::Model::rowCount( const QModelIndex& ) const
@@ -444,31 +469,13 @@ Playlist::Model::play( int row )
 void
 Playlist::Model::next()
 {
-    if( m_activeRow < 0 || m_activeRow >= m_items.size() )
-        return;
-    EngineController *ec = The::engineController();
-    Meta::TrackPtr playingTrack = ec->currentTrack();
-    // Sanity check.
-    if( playingTrack && activeTrack() && playingTrack == activeTrack() )
-    {
-        activeTrack()->finishedPlaying( (double)ec->trackPosition() / (double)ec->trackLength() ); //TODO: get correct value for parameter
-    }
-
-    The::engineController()->play( userNextTrack() );
+    requestUserNextTrack();
 }
 
 void
 Playlist::Model::back()
 {
-    if( m_activeRow < 0 || m_activeRow >= m_items.size() )
-        return;
-    Meta::TrackPtr track = m_items.at( m_activeRow )->track();
-    Meta::TrackPtr playingTrack = The::engineController()->currentTrack();
-    // Sanity check.
-    if( playingTrack && track && playingTrack == track )
-        track->finishedPlaying( (double)The::engineController()->trackPosition() /
-                                (double)The::engineController()->trackLength() );
-    The::engineController()->play( lastTrack() );
+    requestPrevTrack();
 }
 
 // void
@@ -551,6 +558,7 @@ Playlist::Model::playlistModeChanged()
         const bool wasNull = m_advancer == 0; 
 
         m_advancer = new DynamicTrackNavigator( this, playlist );
+
 
         // wasNull == true indicates that Amarok is just starting up.
         // Because of some quirk in the construction order it

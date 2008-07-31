@@ -24,7 +24,7 @@
 
 #include "DynamicPlaylist.h"
 #include "PlaylistModel.h"
-#include "TrackNavigator.h"
+#include "SimpleTrackNavigator.h"
 
 #include <QMutex>
 
@@ -33,16 +33,19 @@ namespace Playlist {
 
 class Model;
 
-    class DynamicTrackNavigator : public TrackNavigator
+    /**
+     * A navigator that implements 'dynamic mode', which is a sort of never
+     * ending queue of tracks.
+     */
+    // TODO: this should inherit TrackNavigator and do it's work asynchronously.
+    class DynamicTrackNavigator : public SimpleTrackNavigator
     {
         Q_OBJECT
 
         public:
             DynamicTrackNavigator( Model* m, Dynamic::DynamicPlaylistPtr p ) ;
             ~DynamicTrackNavigator();
-            int nextRow();
-            int lastRow();
-            
+
             void appendUpcoming();
 
         private slots:
@@ -51,6 +54,9 @@ class Model;
             void repopulate();
 
         private:
+            int nextRow();
+            int lastRow();
+
             void setAsUpcoming( int row );
             void setAsPlayed( int row );
             void markPlayed();

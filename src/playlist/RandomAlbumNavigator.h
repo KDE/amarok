@@ -24,7 +24,7 @@
 #include "meta/Meta.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistRowList.h"
-#include "playlist/TrackNavigator.h"
+#include "playlist/SimpleTrackNavigator.h"
 
 namespace Playlist {
     class Model;
@@ -34,15 +34,15 @@ Navigator for playing back albums in random order
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class RandomAlbumNavigator : public TrackNavigator
+class RandomAlbumNavigator : public SimpleTrackNavigator
 {
-public:
-    RandomAlbumNavigator( Model *m ) : TrackNavigator( m ) { generateAlbumHeaders(); }
-
-    int nextRow();
-    int lastRow();
+    public:
+        RandomAlbumNavigator( Model *m ) : SimpleTrackNavigator( m ) { generateAlbumHeaders(); }
 
     private:
+        int nextRow();
+        int lastRow();
+
         void generateAlbumHeaders();
         void generateUnplayedAlbums();
         RowList m_albumHeaders;

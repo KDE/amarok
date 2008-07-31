@@ -22,7 +22,7 @@
 #define REPEATPLAYLISTNAVIGATOR_H
 
 #include "meta/Meta.h"
-#include "playlist/TrackNavigator.h"
+#include "playlist/SimpleTrackNavigator.h"
 
 
 namespace Playlist {
@@ -30,10 +30,12 @@ class Model;
 /**
  * Simply plays the next track and starts over from the top when the playlist is finished.
  */
-    class RepeatPlaylistNavigator : public TrackNavigator
+    class RepeatPlaylistNavigator : public SimpleTrackNavigator
     {
         public:
-            RepeatPlaylistNavigator( Model* m ) : TrackNavigator( m ) { }
+            RepeatPlaylistNavigator( Model* m ) : SimpleTrackNavigator( m ) { }
+
+        private:
             int nextRow();
     };
 

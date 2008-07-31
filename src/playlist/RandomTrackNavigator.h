@@ -24,22 +24,22 @@
 #include "meta/Meta.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistRowList.h"
-#include "playlist/TrackNavigator.h"
+#include "playlist/SimpleTrackNavigator.h"
 
 namespace Playlist {
     class Model;
     /**
      * Plays a random track in the playlist
      */
-    class RandomTrackNavigator : public TrackNavigator
+    class RandomTrackNavigator : public SimpleTrackNavigator
     {
         public:
-            RandomTrackNavigator( Model *m ) : TrackNavigator( m ) {}
+            RandomTrackNavigator( Model *m ) : SimpleTrackNavigator( m ) {}
 
+        private:
             int nextRow();
             int lastRow();
 
-        private:
             void generateUnplayedRows();
             RowList m_playedRows;
             RowList m_unplayedRows;

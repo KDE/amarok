@@ -21,21 +21,22 @@
 #include "meta/Meta.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistRowList.h"
-#include "playlist/TrackNavigator.h"
+#include "playlist/SimpleTrackNavigator.h"
 
 namespace Playlist {
 class Model;
 /**
  * Simply plays the next track and stops playing when the playlist is finished.
  */
-    class RepeatTrackNavigator : public TrackNavigator
+    class RepeatTrackNavigator : public SimpleTrackNavigator
     {
         public:
-            RepeatTrackNavigator( Model* m ) : TrackNavigator( m ) {}
+            RepeatTrackNavigator( Model* m ) : SimpleTrackNavigator( m ) {}
+
+        private:
             int nextRow();
             int userNextRow();
 
-        private:
             RowList m_previousTrack; // always only has one or zero elements
     };
 

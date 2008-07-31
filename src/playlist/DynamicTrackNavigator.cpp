@@ -31,7 +31,7 @@
 
 
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Dynamic::DynamicPlaylistPtr p )
-    : TrackNavigator(m), m_playlist(p)
+    : SimpleTrackNavigator(m), m_playlist(p)
 {
     connect( m_playlistModel, SIGNAL(activeRowChanged(int,int)),
              SLOT(activeRowChanged(int,int)));
