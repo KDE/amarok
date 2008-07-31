@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2007 by Mark Kretschmann <markey@web.de>           *
+ *   Copyright (C) 2004-2007 by Mark Kretschmann <kretschmann@kde.org>     *
  *                 2005-2007 by Seb Ruiz <ruiz@kde.org>                    *
  *                      2006 by Alexandre Oliveira <aleprj@gmail.com>      *
  *                      2006 by Martin Ellis <martin.ellis@kdemail.net>    *
@@ -65,7 +65,6 @@
 #include <KStandardDirs>
 #include <KTar>
 #include <KTextEdit>
-#include <KUrl>
 #include <KWindowSystem>
 
 #include <QCheckBox>
@@ -82,8 +81,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-namespace Amarok {
-
+namespace Amarok
+{
     QString
     proxyForUrl(const QString& url)
     {
@@ -104,7 +103,6 @@ namespace Amarok {
     {
         return KProtocolManager::proxyFor( protocol );
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,6 +191,7 @@ ScriptManager::runScript( const QString& name, bool silent )
 {
     if( !m_scripts.contains( name ) )
         return false;
+
     return slotRunScript( name, silent );
 }
 
@@ -202,6 +201,7 @@ ScriptManager::stopScript( const QString& name )
     if( !m_scripts.contains( name ) )
         return false;
     slotStopScript( name );
+
     return true;
 }
 
@@ -212,6 +212,7 @@ ScriptManager::listRunningScripts()
     foreach( const QString &key, m_scripts.keys() )
         if( m_scripts[key].running )
             runningScripts << key;
+
     return runningScripts;
 }
 
@@ -222,6 +223,7 @@ ScriptManager::specForScript( const QString& name )
         return QString();
     QFileInfo info( m_scripts[name].url.path() );
     const QString specPath = info.path() + '/' + info.completeBaseName() + ".spec";
+
     return specPath;
 }
 
@@ -396,7 +398,7 @@ ScriptManager::slotRunScript( QString name, bool silent )
     const KUrl url = m_scripts[name].url;
     QTime time;
     //load the wrapper classes
-    m_scripts[name].engine = new QScriptEngine;
+    m_scripts[name].engine = new QScriptEngine();
     startScriptEngine( name );
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
@@ -432,6 +434,7 @@ ScriptManager::slotStopScript( QString name )
         The::scriptableServiceManager()->removeRunningScript( name );
     if ( m_scripts[name].info->isPluginEnabled() )
         m_scripts[name].info->setPluginEnabled( false );
+
     scriptFinished( name );
 }
 
@@ -461,6 +464,7 @@ void
 ScriptManager::slotConfigComitted( const QByteArray & name )
 {
     DEBUG_BLOCK
+
     debug() << "config comitted for: " << name;
     m_configChanged = true;
     m_changedScripts << QString( name );
@@ -470,8 +474,9 @@ void
 ScriptManager::scriptFinished( QString name ) //SLOT
 {
     DEBUG_BLOCK
+
     //FIXME: probably can cause crash if you stop a script from evaluating. eg. if a deadlock is introduced in a menu_click_slot.
-    QTime time;
+    const QTime time;
     m_scripts[name].running = false;
     qDeleteAll( m_scripts[name].guiPtrList.begin(), m_scripts[name].guiPtrList.end() );
     m_scripts[name].guiPtrList.clear();
@@ -592,7 +597,7 @@ ScriptManager::startScriptEngine( QString name )
 
     scriptObject = scriptEngine->newObject();
     m_global.property( "Window" ).setProperty( "SettingsMenu", scriptObject );
-
 }
 
 #include "ScriptManager.moc"
+

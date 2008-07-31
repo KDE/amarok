@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2007 by Mark Kretschmann <markey@web.de>           *
+ *   Copyright (C) 2004-2007 by Mark Kretschmann <kretschmann@kde.org>     *
  *                      2005 by Seb Ruiz <ruiz@kde.org>                    *
  *                      2008 by Peter ZHOU <peterzhoulei@gmail.com>        *
  *                                                                         *
