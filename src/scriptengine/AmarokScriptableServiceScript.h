@@ -55,7 +55,7 @@ class ScriptableServiceScript : public QObject, public QScriptable
     Q_OBJECT
 
     public:
-        ScriptableServiceScript( QScriptEngine* ScriptEngine );
+        ScriptableServiceScript( QScriptEngine* engine );
         ~ScriptableServiceScript();
         void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
 
