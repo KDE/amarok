@@ -90,7 +90,16 @@ AmpacheServiceCollection::trackForUrl( const KUrl & url )
     m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo );
     if ( !m_storedTransferJob->exec() )
     {
-      return TrackPtr();
+        if( m_storedTransferJob->error() == 401 ) {
+            debug() << "Trying to re-authenticate Ampache..";
+            emit authenticationNeeded();
+
+            m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo ); //Second try..
+            if( !m_storedTransferJob->exec() )
+                return TrackPtr();
+        }
+        else
+            return TrackPtr();
     }
 
     parseTrack( m_storedTransferJob->data() );

@@ -31,8 +31,9 @@ A collection that dynamically fetches data from a remote location as needed
 */
 class AmpacheServiceCollection : public ServiceCollection
 {
-public:
+    Q_OBJECT
 
+public:
     AmpacheServiceCollection( ServiceBase * service, const QString &server, const QString &sessionId );
 
     virtual ~AmpacheServiceCollection();
@@ -45,8 +46,10 @@ public:
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );
     virtual bool possiblyContainsTrack( const KUrl &url ) const;
 
-private:
+signals:
+    void authenticationNeeded();
 
+private:
     void parseTrack( const QString &xml );
     /*void parseAlbum( const QString &xml );
     void parseArtist( const QString &xml );*/
@@ -63,7 +66,6 @@ private:
     int m_urlArtistId;
 
     KIO::StoredTransferJob * m_storedTransferJob;
-
 };
 
 #endif

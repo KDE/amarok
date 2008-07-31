@@ -120,16 +120,7 @@ AmpacheService::AmpacheService(const QString & name, const QString &url, const Q
     m_username = username;
     m_password = password;
 
-    //FIXME: HACK:  Force a reauthentication every hour to prevent the session from timing out.
-    // This should really be fixed by parsing a pretty error code from ampache
-     // and reauthenticating when it tells us the session is over
-    // However, vollmer needs to break out the error code for us to do that.
-    // ~hydrogen
-    QTimer *t = new QTimer(this);
-    connect(t, SIGNAL( timeout() ), SLOT(authenticate() ) );
-    t->start( 3600000 );
-
-    authenticate( );
+    authenticate();
 }
 
 AmpacheService::~AmpacheService()
@@ -242,6 +233,8 @@ void AmpacheService::authenticationComplete(KJob * job)
         m_authenticated = true;
 
         m_collection = new AmpacheServiceCollection( this, m_server, m_sessionId );
+        connect( m_collection, SIGNAL( authenticationNeeded() ), SLOT( authenticate() ) );
+
         CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
         QList<int> levels;
         levels << CategoryId::Artist << CategoryId::Album;

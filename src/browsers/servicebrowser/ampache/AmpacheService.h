@@ -65,12 +65,10 @@ public:
     virtual Collection * collection() { return m_collection; }
 
 private slots:
-
-    void authenticate(/* const QString & server, const QString & username, const QString & password */);
+    void authenticate();
     void authenticationComplete(  KJob *job );
 
 private:
-
     KIO::StoredTransferJob *m_xmlDownloadJob;
 
     bool m_authenticated;
