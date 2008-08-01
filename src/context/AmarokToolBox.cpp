@@ -17,6 +17,7 @@
 #include "widgets/ToolBoxIcon.h"
 
 #include <KColorScheme>
+#include <KStandardDirs>
 
 #include <plasma/applet.h>
 #include <plasma/theme.h>
@@ -42,6 +43,7 @@ AmarokToolBox::AmarokToolBox( QGraphicsItem *parent )
     , m_actionsCount( 0 )
     , m_animCircleFrame( 0 )
     , m_animCircleId( 0 )
+    , m_icon( KStandardDirs::locate( "data", "amarok/images/toolbox_icon.png" ) )
 {
     DEBUG_BLOCK
 //     connect( Plasma::Animator::self(), SIGNAL(movementFinished(QGraphicsItem*)), this, SLOT(toolMoved(QGraphicsItem*)));
@@ -52,7 +54,7 @@ AmarokToolBox::AmarokToolBox( QGraphicsItem *parent )
     setFlag( ItemClipsChildrenToShape, false );
     setFlag( ItemIgnoresTransformations, true );
     setAcceptsHoverEvents( true );
-    m_timer = new QTimer(this);
+    m_timer = new QTimer( this );
 }
 
 AmarokToolBox::~AmarokToolBox()
@@ -140,9 +142,19 @@ AmarokToolBox::paint( QPainter *painter, const QStyleOptionGraphicsItem *option,
     
     painter->save();
     if( m_animHighlightFrame > 0.5 )
+    {        
         painter->setOpacity( m_animHighlightFrame );
+        m_icon.paint( painter, QRect( QPoint( (int)boundingRect().width()/2 - 15,
+                                              (int)boundingRect().height()/2  + 15), QSize( 30, 34 ) ) );
+    }
     else
+    {
         painter->setOpacity( 0.5 );
+        m_icon.paint( painter, QRect( QPoint( (int)boundingRect().width()/2 - 15,
+                                              (int)boundingRect().height()/2 + 15), QSize( 30, 34 ) ),
+                      Qt::AlignCenter, QIcon::Disabled, QIcon::Off );
+    }
+    
     painter->setPen( Qt::NoPen );
     painter->setRenderHint( QPainter::Antialiasing, true );
     painter->setBrush( gradient );

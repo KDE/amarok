@@ -73,7 +73,8 @@ private:
 
     qreal m_animCircleFrame;
     int m_animCircleId;
- 
+
+    KIcon m_icon;
 private slots:
     void timeToHide();
     void animateCircle( qreal progress );
