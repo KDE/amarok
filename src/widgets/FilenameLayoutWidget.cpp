@@ -191,6 +191,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
         insertOverChild( childUnder, textFromMimeData, event );
     }
     event->accept();
+    debug() << "Accepted drop event";
     generateParsableScheme();
 }
 
