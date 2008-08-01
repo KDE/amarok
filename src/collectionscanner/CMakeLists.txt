@@ -11,7 +11,7 @@ set(amarokcollectionscanner_SRCS main.cpp CollectionScanner.cpp)
 
 kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS})
 
-target_link_libraries(amarokcollectionscanner amarok_taglib ${KDE4_KDEUI_LIBS} )
+target_link_libraries(amarokcollectionscanner amarok_taglib ${KDE4_KDEUI_LIBS} ${QT_QTXML_LIBRARY})
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarokcollectionscanner PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
