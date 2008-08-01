@@ -113,7 +113,10 @@ include( "qtscript_core.cmake" )
 include( "qtscript_gui.cmake" )
 include( "qtscript_network.cmake" )
 include( "qtscript_sql.cmake" )
-include( "qtscript_webkit.cmake" )
+#see https://bugzilla.novell.com/show_bug.cgi?id=413829
+#many distros have trouble with webkit because its seperate
+#we should really fix this though, I want my scripts to browse the web. ;)
+#include( "qtscript_webkit.cmake" )
 include( "qtscript_xml.cmake" )
 include( "qtscript_uitools.cmake" )
 #XML Patterns requires Qt to be compiled with exception support
