@@ -61,8 +61,10 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 //    initializeIpod();
 
         GError *err = 0;
+    m_success = false;
 
     // Assuming database exists for now, later will port init db code
+    debug() << "Calling the db parser";
     m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
 
     if ( err )
@@ -70,16 +72,22 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
         g_error_free( err );
         if ( m_itdb )
         {
+            debug() << "There was an error, attempting to free db";
             itdb_free( m_itdb );
             m_itdb = 0;
         }
 
+        
     }
 
-    
+    else
+    {
+        
 
     // read device info
+    debug() << "Grabbing device struct";
     m_device = m_itdb->device;
+    debug() << "Reading device info";
     itdb_device_read_sysinfo( m_device );
 /*
     debug() << "WARNING: Forcing model into sysinfo, to fix filesystem";
@@ -96,7 +104,7 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 
     }
     */
-
+    debug() << "Getting model information";
     detectModel(); // get relevant info about device
 
     // set tempdir up
@@ -107,7 +115,9 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 
     qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
+    m_success = true;
 
+    }
 }
 
 IpodHandler::~IpodHandler()
@@ -781,10 +791,14 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
         }
     }
 */
-    
-    QPixmap image = track->album()->image( 50, false );
-    debug() << "Got image of height: " << image.height() << "and width: " << image.width();
-    setCoverArt( ipodtrack, image );
+    if( track->album()->hasImage( 50 ) )
+    {
+        QPixmap image = track->album()->image( 50, false );
+        debug() << "Got image of height: " << image.height() << "and width: " << image.width();
+        setCoverArt( ipodtrack, image );
+    }
+    else
+        debug() << "No image available";
 
     
 
@@ -1077,7 +1091,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
 void
 IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 {
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
 /*    Itdb_Artwork *artwork = ipodtrack->artwork;
     GList *thumbs = artwork->thumbnails; // Itdb_Thumb
 
@@ -1092,9 +1106,9 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
             break;
     }
 
-//    debug() << "Album: " << track->album()->name();
+//    //debug() << "Album: " << track->album()->name();
 
-//    debug() << "Thumb Path: " << thumbPath;
+//    //debug() << "Thumb Path: " << thumbPath;
 
     if( !thumbPath.isEmpty() )
         track->ipodAlbum()->setImagePath( thumbPath );
@@ -1114,22 +1128,22 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 
     // pull image out of ipod
 
-    debug() << "Track has artwork: " << (ipodtrack->has_artwork==0x01 ? "true" : "false");
+//    //debug() << "Track has artwork: " << (ipodtrack->has_artwork==0x01 ? "true" : "false");
 
     if( ipodtrack->has_artwork == 0x01 )
     {
-        debug() << "Ipod claims track has artwork";
-        debug() << "Artist: " << track->artist()->name() << " Track: " << track->name();
+//        //debug() << "Ipod claims track has artwork";
+//        //debug() << "Artist: " << track->artist()->name() << " Track: " << track->name();
 
         // try small first
 
-        debug() << "Attempting to get small cover";
+//        //debug() << "Attempting to get small cover";
         thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_SMALL );
 
         // then large if needed
         if( thumb == NULL)
         {
-            debug() << "Failed to get small cover, trying large";
+//            //debug() << "Failed to get small cover, trying large";
             thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_LARGE );
         }
 
@@ -1137,14 +1151,14 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 
         if( thumb != NULL)
         {
-            debug() << "Got a valid thumb, attempting to fetch pixbuf";
+//            //debug() << "Got a valid thumb, attempting to fetch pixbuf";
             gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
         }
         else
         {
-            debug() << "No valid thumb gotten, not fetching pixbuf";
-            debug() << "Attempting to fetch artwork via a thumb";
-            debug() << "Iterating through thumbs";
+//            //debug() << "No valid thumb gotten, not fetching pixbuf";
+//            //debug() << "Attempting to fetch artwork via a thumb";
+//            //debug() << "Iterating through thumbs";
 
             GList *thumbs = ipodtrack->artwork->thumbnails;
 
@@ -1154,42 +1168,42 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
                 if( curThumb == NULL)
                     continue;
                 
-                debug() << "Found valid thumb while iterating";
-                debug() << "Cover probably set by iTunes";
-                debug() << "Type is the following:";
+//                //debug() << "Found valid thumb while iterating";
+//                //debug() << "Cover probably set by iTunes";
+//                //debug() << "Type is the following:";
 
                 switch( curThumb->type )
                 {
                     case ITDB_THUMB_PHOTO_SMALL:
-                        debug() << "ITDB_THUMB_PHOTO_SMALL";
+                        //debug() << "ITDB_THUMB_PHOTO_SMALL";
                         break;
                     case ITDB_THUMB_PHOTO_LARGE:
-                        debug() << "ITDB_THUMB_PHOTO_LARGE";
+                        //debug() << "ITDB_THUMB_PHOTO_LARGE";
                         break;
                     case ITDB_THUMB_PHOTO_FULL_SCREEN:
-                        debug() << "ITDB_THUMB_PHOTO_FULL_SCREEN";
+                        //debug() << "ITDB_THUMB_PHOTO_FULL_SCREEN";
                         break;
                     case ITDB_THUMB_PHOTO_TV_SCREEN:
-                        debug() << "ITDB_THUMB_PHOTO_TV_SCREEN";
+                        //debug() << "ITDB_THUMB_PHOTO_TV_SCREEN";
                         break;
                     case ITDB_THUMB_COVER_XLARGE:
-                        debug() << "ITDB_THUMB_COVER_XLARGE";
+                        //debug() << "ITDB_THUMB_COVER_XLARGE";
                         break;
                     case ITDB_THUMB_COVER_MEDIUM:
-                        debug() << "ITDB_THUMB_COVER_MEDIUM";
+                        //debug() << "ITDB_THUMB_COVER_MEDIUM";
                         break;
                     case ITDB_THUMB_COVER_SMEDIUM:
-                        debug() << "ITDB_THUMB_COVER_SMEDIUM";
+                        //debug() << "ITDB_THUMB_COVER_SMEDIUM";
                         break;
                     case ITDB_THUMB_COVER_XSMALL:
-                        debug() << "ITDB_THUMB_COVER_XSMALL";
+                        //debug() << "ITDB_THUMB_COVER_XSMALL";
                         break;
 
                     default:
-                        debug() << "Unknown Thumb Type";
+                        //debug() << "Unknown Thumb Type";
                         break;
                 }
-                //debug() << "Type is: " << curThumb->type;
+                ////debug() << "Type is: " << curThumb->type;
 
                 thumb = curThumb;
                 break;
@@ -1203,8 +1217,8 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 
                 
 
-                debug() << "Path to thumb is: " << thumbPath;
-                debug() << "Setting gpixbuf to this thumb";
+                //debug() << "Path to thumb is: " << thumbPath;
+                //debug() << "Setting gpixbuf to this thumb";
 
                 gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
                 
@@ -1220,7 +1234,7 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
     if(gpixbuf != NULL)
     {
 
-        debug() << "Succeeded in getting pixbuf, attempting to save";
+        //debug() << "Succeeded in getting pixbuf, attempting to save";
         
 
         // temporarily save to file
@@ -1275,10 +1289,7 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
         success = false;
 */
 
-    if( itdb_track_set_thumbnails( ipodtrack, QFile::encodeName( tempImagePath ) ) )
-        success = true;
-    else
-        success = false;
+    success = itdb_track_set_thumbnails( ipodtrack, QFile::encodeName( tempImagePath ) );
     
     if( success )
     {

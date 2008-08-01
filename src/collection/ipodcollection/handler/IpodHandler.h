@@ -78,6 +78,8 @@ struct PodcastInfo
             IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject* parent );
            ~IpodHandler();
 
+           bool succeeded() const { return m_success; }
+
           
 
 	   void detectModel();
@@ -139,6 +141,7 @@ struct PodcastInfo
 //        Q3Dict<Itdb_Track> m_files;
 
         bool             m_trackCreated;
+        bool             m_success;
 
         // podcasts
         Itdb_Playlist*    m_podcastPlaylist;

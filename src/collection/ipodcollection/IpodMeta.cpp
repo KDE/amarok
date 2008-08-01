@@ -319,7 +319,7 @@ int
 IpodTrack::filesize() const
 {
     // TODO: NYI, seems to cause crashing on transferring tracks to ipod
-    return 0;
+    return m_filesize;
 }
 
 int

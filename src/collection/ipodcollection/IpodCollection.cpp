@@ -84,8 +84,8 @@ IpodCollectionFactory::ipodDetected( const QString &mountPoint, const QString &u
             {
             
             // TODO: connect to MediaDeviceMonitor signals
-         //   connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
-           //          SLOT( slotCollectionDisconnected( const QString & ) ) );
+            connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
+                     SLOT( slotCollectionDisconnected( const QString & ) ) );
                 m_collectionMap.insert( udi, coll );
             emit newCollection( coll );
             debug() << "emitting new ipod collection";
@@ -148,9 +148,12 @@ IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )
 
     m_handler = new Ipod::IpodHandler( this, m_mountPoint, this );
 
-    m_handler->parseTracks();
+    if( m_handler->succeeded() )
+    {
+        m_handler->parseTracks();
 
-    emit collectionReady();
+        emit collectionReady();
+    }
 }
 
 void
