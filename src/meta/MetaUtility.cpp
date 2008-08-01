@@ -57,6 +57,7 @@
         static const QString XESAM_FIRST_PLAYED   = "http://freedesktop.org/standards/xesam/1.0/core#firstUsed";
         static const QString XESAM_LAST_PLAYED    = "http://freedesktop.org/standards/xesam/1.0/core#lastUsed";
 
+        static const QString XESAM_ID             = "http://freedesktop.org/standards/xesam/1.0/core#id";
         //static bool conversionMapsInitialised = false;
 
 QVariantMap
@@ -96,6 +97,7 @@ Meta::Field::mapFromTrack( const Meta::Track *track )
     if( track->sampleRate() )
         map.insert( Meta::Field::SAMPLERATE, QVariant( track->sampleRate() ) );
 
+    map.insert( Meta::Field::UNIQUEID, QVariant( track->uidUrl() ) );
     map.insert( Meta::Field::URL, QVariant( track->prettyUrl() ) );
     map.insert( Meta::Field::RATING, QVariant( track->rating() ) );
     map.insert( Meta::Field::SCORE, QVariant( track->score() ) );
@@ -256,6 +258,8 @@ Meta::Field::xesamPrettyToFullFieldName( const QString &name )
         return XESAM_FIRST_PLAYED;
     else if( name==Meta::Field::LAST_PLAYED )
         return XESAM_LAST_PLAYED;
+    else if( name==Meta::Field::UNIQUEID )
+        return XESAM_ID;
     else
         return "xesamPrettyToFullName: unknown name " + name;
 }
@@ -305,6 +309,8 @@ Meta::Field::xesamFullToPrettyFieldName( const QString &name )
         return Meta::Field::FIRST_PLAYED;
     else if( name == XESAM_LAST_PLAYED )
         return Meta::Field::LAST_PLAYED;
+    else if( name == XESAM_ID )
+        return Meta::Field::UNIQUEID;
     else
         return "xesamFullToPrettyName: unknown name " + name;
 }

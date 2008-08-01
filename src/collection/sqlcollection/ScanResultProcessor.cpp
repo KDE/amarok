@@ -308,6 +308,9 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     insert += insert2;
 
     m_collection->insert( insert, "tracks_temp" );
+
+    //Do AFT stuff here?
+
 }
 
 int

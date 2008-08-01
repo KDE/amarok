@@ -80,7 +80,14 @@ private:
      * @fileref TagLib reference to the file.
      * @return TagLib::ByteVector that contains the tag's render, if possible, and empty otherwise.
      */
-    const TagLib::ByteVector readUniqueIdHelper( TagLib::FileRef fileref ) const;
+    static const TagLib::ByteVector readUniqueIdHelper( const TagLib::FileRef &fileref );
+
+    /**
+     * Get the render() of a tag from TagLib, if possible, to assist in AFT UID generation.
+     * @path Path of the file.
+     * @return QString contains the uniqueID, an MD5 hash (but not a hash of the entire file!).
+     */
+    static const QString readUniqueId( const QString &path );
 
     /**
      * Read metadata tags of a given file.

@@ -160,6 +160,17 @@ DatabaseUpdater::createTemporaryTables()
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX tracks_temp_url ON tracks_temp(url);" );
     }
+    {
+        QString create = "CREATE TEMPORARY TABLE uniqueid_temp "
+                    "(url " + m_collection->exactTextColumnType() +
+                    ",deviceid INTEGER"
+                    ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE,"
+                    ",dir " + m_collection->exactTextColumnType() + 
+                    ");";
+        m_collection->query( create );
+        m_collection->query( "CREATE INDEX uniqueid_uniqueid ON uniqueid_temp(uniqueid);" );
+        m_collection->query( "CREATE INDEX uniqueid_url ON uniqueid_temp(url);" );
+    }
 }
 
 void
@@ -175,6 +186,7 @@ DatabaseUpdater::prepareTemporaryTables()
     m_collection->query( "INSERT INTO genres_temp SELECT * FROM genres;" );
     m_collection->query( "INSERT INTO composers_temp SELECT * FROM composers;" );
     m_collection->query( "INSERT INTO tracks_temp SELECT * FROM tracks;" );
+    m_collection->query( "INSERT INTO uniqueid_temp SELECT * FROM uniqueid;" );
 }
 
 void
@@ -196,6 +208,7 @@ DatabaseUpdater::cleanPermanentTables()
     m_collection->query( "DELETE FROM tracks;" );
     m_collection->query( "DELETE FROM urls;" );
     m_collection->query( "DELETE FROM directories" );
+    m_collection->query( "DELETE FROM uniqueid" );
 }
 
 void
@@ -211,6 +224,7 @@ DatabaseUpdater::removeTemporaryTables()
     m_collection->query( "DROP TABLE artists_temp;" );
     m_collection->query( "DROP TABLE urls_temp;" );
     m_collection->query( "DROP TABLE directories_temp" );
+    m_collection->query( "DROP TABLE unique_temp" );
 }
 
 void
@@ -300,6 +314,8 @@ DatabaseUpdater::copyToPermanentTables()
         trackIds += trackId;
     }
     m_collection->insert( QString( "INSERT INTO tracks SELECT * FROM tracks_temp WHERE tracks_temp.id NOT IN (%1);" ).arg( trackIds ), QString() );
+
+    m_collection->insert( QString( "INSERT INTO uniqueid SELECT * FROM uniqueid_temp;" ), QString() );
 
     m_collection->sendChangedSignal();
 }
@@ -438,11 +454,13 @@ DatabaseUpdater::createTables() const
                     ",score FLOAT"
                     ",rating INTEGER DEFAULT 0"
                     ",playcount INTEGER"
+                    ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE"
+                    ",deleted BOOL DEFAULT " + m_collection->boolFalse() + 
                     ");";
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );
         QStringList indices;
-        indices << "createdate" << "accessdate" << "score" << "rating" << "playcount";
+        indices << "createdate" << "accessdate" << "score" << "rating" << "playcount" << "uniqueid";
         foreach( const QString &index, indices )
         {
             QString q = QString( "CREATE INDEX statistics_%1 ON statistics(%2);" ).arg( index, index );
@@ -475,9 +493,23 @@ DatabaseUpdater::createTables() const
         QString q = "CREATE TABLE lyrics ("
                     "id " + m_collection->idType() +
                     ",url INTEGER"
-                    ",lyrics " + m_collection->longTextColumnType() + ");";
+                    ",lyrics " + m_collection->longTextColumnType() +
+                    ",uniqueid " + m_collection->exactTextColumnType(128) +
+                    ");";
         m_collection->query( q );
         m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
+        m_collection->query( "CREATE UNIQUE INDEX lyrics_uniqueid ON lyrics(uniqueid);" );
+    }
+    {
+        QString create = "CREATE TABLE uniqueid "
+                    "(url " + m_collection->exactTextColumnType() +
+                    ",deviceid INTEGER"
+                    ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE,"
+                    ",dir " + m_collection->exactTextColumnType() +
+                    ");";
+        m_collection->query( create );
+        m_collection->query( "CREATE INDEX uniqueid_uniqueid ON uniqueid(uniqueid);" );
+        m_collection->query( "CREATE INDEX uniqueid_url ON uniqueid(url);" );
     }
     m_collection->query( "INSERT INTO admin(component,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );
@@ -517,6 +549,9 @@ DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
         QString drop = QString( "DELETE FROM tracks WHERE id IN (%1);" ).arg( ids );
         m_collection->query( drop );
     }
+    QString query = QString( "DELETE FROM uniqueid WHERE uniqueid.deviceid = '%1' AND uniqueid.dir = '%2';" )
+                                .arg( deviceid )
+                                .arg( m_collection->escape( rdir ) );
 }
 
 void
@@ -538,5 +573,8 @@ DatabaseUpdater::removeFilesInDirFromTemporaryTables( int deviceid, const QStrin
         QString drop = QString( "DELETE FROM tracks_temp WHERE id IN (%1);" ).arg( ids );
         m_collection->query( drop );
     }
+    QString query = QString( "DELETE FROM uniqueid WHERE uniqueid.deviceid = '%1' AND uniqueid.dir = '%2';" )
+                                .arg( deviceid )
+                                .arg( m_collection->escape( rdir ) );
 }
 

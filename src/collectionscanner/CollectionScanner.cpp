@@ -37,6 +37,7 @@
 
 #include <KGlobal>
 #include <KLocale>
+#include <KCodecs>
 
 //Taglib:
 #include <apetag.h>
@@ -316,7 +317,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
 }
 
 const TagLib::ByteVector
-CollectionScanner::readUniqueIdHelper( TagLib::FileRef fileref ) const
+CollectionScanner::readUniqueIdHelper( const TagLib::FileRef &fileref )
 {
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
@@ -357,6 +358,46 @@ CollectionScanner::readUniqueIdHelper( TagLib::FileRef fileref ) const
     return bv;
 }
 
+const QString
+CollectionScanner::readUniqueId( const QString &path )
+{
+#ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
+#else
+    QByteArray fileName = QFile::encodeName( path );
+    const char * encodedName = fileName.constData(); // valid as long as fileName exists
+#endif
+
+    TagLib::FileRef fileref = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
+
+    if( fileref.isNull() )
+        return QString();
+
+    TagLib::ByteVector bv = CollectionScanner::readUniqueIdHelper( fileref );
+
+    KMD5 md5( bv.data(), bv.size() );
+
+    QFile qfile( path );
+
+    char databuf[16384];
+    int readlen = 0;
+    QByteArray size;
+    QString returnval;
+
+    if( qfile.open( QIODevice::ReadOnly ) )
+    {
+        if( ( readlen = qfile.read( databuf, 16384 ) ) > 0 )
+        {
+            md5.update( databuf, readlen );
+            md5.update( size.setNum( qfile.size() ) );
+            return QString( md5.hexDigest().data() );
+        }
+        else
+            return QString();
+    }
+
+    return QString();
+}
 
 AttributeHash
 CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle )
@@ -535,6 +576,8 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     const int size = QFile( path ).size();
     if( size >= 0 )
         attributes["filesize"] =  QString::number( size );
+
+    attributes["uniqueid"] = readUniqueId( path  );
 
     return attributes;
 }

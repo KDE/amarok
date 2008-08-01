@@ -60,6 +60,8 @@ namespace Meta
         static const QString FIRST_PLAYED   = "xesam:firstUsed";
         static const QString LAST_PLAYED    = "xesam:lastUsed";
 
+        static const QString UNIQUEID       = "xesam:id";
+
 
         AMAROK_EXPORT QVariantMap mapFromTrack( const Meta::Track *track );
         AMAROK_EXPORT void updateTrack( Meta::Track *track, const QVariantMap &metadata );
