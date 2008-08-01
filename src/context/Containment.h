@@ -48,6 +48,7 @@ public:
     virtual void hideTitle() = 0;
     virtual void addCurrentTrack() = 0;
     virtual void addToolBox() = 0;
+    virtual void correctToolBoxPos( Plasma::ZoomDirection direction ) = 0;
 
 signals:
     void appletRejected( QString pluginName, int rowSpan );

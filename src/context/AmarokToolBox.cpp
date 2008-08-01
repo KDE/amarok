@@ -48,7 +48,7 @@ AmarokToolBox::AmarokToolBox( QGraphicsItem *parent )
 //     connect(this, SIGNAL(toggled()), this, SLOT(toggle()));
 
     setZValue( 10000000 );
-    setFlag( ItemClipsToShape, true );
+    setFlag( ItemClipsToShape, false );
     setFlag( ItemClipsChildrenToShape, false );
     setFlag( ItemIgnoresTransformations, true );
     setAcceptsHoverEvents( true );
@@ -58,9 +58,10 @@ AmarokToolBox::AmarokToolBox( QGraphicsItem *parent )
 AmarokToolBox::~AmarokToolBox()
 {}
 
-QRectF AmarokToolBox::boundingRect() const
+QRectF
+AmarokToolBox::boundingRect() const
 {
-    return QRectF( 0, 0, -this->size() * 2, -this->size()*2 );
+    return QRectF( 0, 0, this->size() * 3, this->size() * 3 );
 }
 
 void
@@ -86,20 +87,24 @@ AmarokToolBox::shape() const
 {
     DEBUG_BLOCK
     QPainterPath path;
-    int toolSize = size() + ( int ) m_animCircleFrame;
+    int toolSize = ( size() * 2 )+ ( int ) m_animCircleFrame;
 
-    debug() << "animCircleFrame: " << m_animCircleFrame;
-    debug() << "rect: " << QRectF( boundingRect().left() - toolSize, boundingRect().top() - toolSize,
-                       toolSize*2, toolSize*2);
+    debug() << "animCircleFrame: " << m_animCircleFrame;    
     debug() << "boundingRect: " << boundingRect();
-    path.arcTo( QRectF( boundingRect().left() - toolSize, boundingRect().top() - toolSize,
-                       toolSize * 2, toolSize * 2 ), 0, 180);
+    
+    QPointF center( boundingRect().width()/2, boundingRect().height() );
+    debug() << "center: " << center;
+    path.moveTo( center );
 
+    path.arcTo( QRectF( boundingRect().width()/2.0 - toolSize/2.0,
+                        boundingRect().bottom() - toolSize/2.0 ,
+                        toolSize, toolSize ), 0, 180 );
+//     path.arcTo( boundingRect(), 0, -180 );
     return path;
 }
 
 void
-AmarokToolBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+AmarokToolBox::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
     DEBUG_BLOCK
     Q_UNUSED( option )
@@ -122,8 +127,9 @@ AmarokToolBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     QPainterPath p = shape();
     
-    QRadialGradient gradient( boundingRect().topLeft(), size() + m_animCircleFrame );
-    gradient.setFocalPoint( boundingRect().topLeft() );
+    QRadialGradient gradient( QPointF( boundingRect().width() / 2.0, boundingRect().height() ),
+                              size() * 2 + m_animCircleFrame );
+    gradient.setFocalPoint( QPointF( boundingRect().width() / 2.0, boundingRect().height() ) );
     gradient.setColorAt( 0, color1 );
     gradient.setColorAt( .87, color1 );
     gradient.setColorAt( .97, color2 );
@@ -172,13 +178,17 @@ AmarokToolBox::showTools()
 void
 AmarokToolBox::hideTools()
 {
-    foreach( QGraphicsItem *c, QGraphicsItem::children() )
-        c->hide();
-    if( m_animCircleId )
-        Plasma::Animator::self()->stopCustomAnimation( m_animCircleId );
-    m_showingTools = false;
-    m_animCircleId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve,
-                                                                this, "animateCircle" );    
+    if( m_showingTools )
+    {
+        foreach( QGraphicsItem *c, QGraphicsItem::children() )
+            c->hide();
+        if( m_animCircleId )
+            Plasma::Animator::self()->stopCustomAnimation( m_animCircleId );
+
+        m_showingTools = false;
+        m_animCircleId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve,
+                                                                this, "animateCircle" );
+    }
 }
 
 void
@@ -201,7 +211,7 @@ AmarokToolBox::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
     if( m_animHighlightId )
         Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
     m_hovering = false;
-    
+
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( timeToHide() ) );
     m_timer->start( 2000 );
     
@@ -235,7 +245,7 @@ void
 AmarokToolBox::addAction( QAction *action )
 {
     DEBUG_BLOCK
-    if (!action) {
+    if ( !action ) {
         return;
     }
 
@@ -255,12 +265,13 @@ AmarokToolBox::addAction( QAction *action )
     
     tool->hide();
     tool->setZValue( zValue() + 1 );
-    qreal rad = size() + 30;
-    qreal x = rad - ( ( tool->size().width() + 5 ) * m_actionsCount  );
-    tool->setPos( x - 15 , - sqrt( rad * rad - x * x ) );
+    qreal rad = size()*3 + 15;
+    qreal x = rad - ( ( tool->size().width() + 5 ) * m_actionsCount  ) ;
+    qreal y = -sqrt( rad * rad - x * x ) + size()*4;
+    tool->setPos( x + 5, y );
     //make enabled/disabled tools appear/disappear instantly
 //     connect(tool, SIGNAL(changed()), this, SLOT(updateToolBox()));
-    debug() << "x,y: " << x << sqrt( rad* rad - x * x ) - rad * 2;
+    debug() << "x,y: " << x << sqrt( rad* rad - x * x );
 }
 
 void

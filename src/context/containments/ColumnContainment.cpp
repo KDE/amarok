@@ -703,7 +703,7 @@ ColumnContainment::addToolBox()
     m_toolBox = new AmarokToolBox( this );
     debug() << geometry().width();
     debug() << geometry().height();
-    m_toolBox->setPos( geometry().width() / 2, geometry().height() - 30 );
+    m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size(), geometry().height() - m_toolBox->size() *4 );
     m_toolBox->show();
     m_toolBox->addAction( action( "add widgets") );
     m_toolBox->addAction( action( "zoom in" ) );
@@ -711,6 +711,21 @@ ColumnContainment::addToolBox()
     
 }
 
+
+void
+ColumnContainment::correctToolBoxPos( Plasma::ZoomDirection direction )
+{
+    if( direction == Plasma::ZoomOut )
+    {
+        m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size()*3,
+                           geometry().height() - m_toolBox->size() * 7 );
+    }
+    else
+    {
+        m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size(),
+                           geometry().height() - m_toolBox->size() * 3 );
+    }
+}
 
 ColumnContainment::~ColumnContainment()
 {

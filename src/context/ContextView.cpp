@@ -317,6 +317,14 @@ ContextView::zoomInFinished( int id )
                  this, SLOT( zoomInFinished( int ) ) );
     resize( size().width()+1, size().height() );
     resize( size().width()-1, size().height() );
+    
+    int numContainments = contextScene()->containments().size();
+    for( int i = 0; i < numContainments; i++ )
+    {
+        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
+        if( containment )
+            containment->correctToolBoxPos( Plasma::ZoomIn );
+    }
 }
 
 void
@@ -341,6 +349,13 @@ ContextView::zoomOutFinished( int id )
     ensureVisible( rect(), 0, 0 );
     
     disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ), this, SLOT( zoomOutFinished( int ) ) );
+    int numContainments = contextScene()->containments().size();
+    for( int i = 0; i < numContainments; i++ )
+    {
+        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
+        if( containment )
+            containment->correctToolBoxPos( Plasma::ZoomOut );
+    }
 }
 
 void

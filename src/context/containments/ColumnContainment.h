@@ -80,6 +80,7 @@ public:
 public slots:
     Applet* addApplet( Plasma::Applet* applet, const QPointF &);
     void addToolBox();
+    void correctToolBoxPos( Plasma::ZoomDirection direction );
 
 protected:
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
