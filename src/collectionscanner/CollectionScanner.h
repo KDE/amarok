@@ -35,6 +35,7 @@
 
 //Taglib includes..
 #include <audioproperties.h>
+#include <fileref.h>
 
 typedef QHash<QString, QString> AttributeHash;
 
@@ -73,6 +74,13 @@ private:
 
     void readDir( const QString& dir, QStringList& entries );
     void scanFiles( const QStringList& entries );
+
+    /**
+     * Get the render() of a tag from TagLib, if possible, to assist in AFT UID generation.
+     * @fileref TagLib reference to the file.
+     * @return TagLib::ByteVector that contains the tag's render, if possible, and empty otherwise.
+     */
+    const TagLib::ByteVector readUniqueIdHelper( TagLib::FileRef fileref ) const;
 
     /**
      * Read metadata tags of a given file.

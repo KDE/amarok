@@ -315,6 +315,48 @@ CollectionScanner::scanFiles( const QStringList& entries )
     }
 }
 
+const TagLib::ByteVector
+CollectionScanner::readUniqueIdHelper( TagLib::FileRef fileref ) const
+{
+    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    {
+        if( file->ID3v2Tag() )
+            return file->ID3v2Tag()->render();
+        else if( file->ID3v1Tag() )
+            return file->ID3v1Tag()->render();
+        else if( file->APETag() )
+            return file->APETag()->render();
+    }
+    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+    {
+        if( file->tag() )
+            return file->tag()->render();
+    }
+    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+    {
+        if( file->ID3v2Tag() )
+            return file->ID3v2Tag()->render();
+        else if( file->ID3v1Tag() )
+            return file->ID3v1Tag()->render();
+        else if( file->xiphComment() )
+            return file->xiphComment()->render();
+    }
+    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
+    {
+        if( file->tag() )
+            return file->tag()->render();
+    }
+    else if ( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
+    {
+        if( file->ID3v1Tag() )
+            return file->ID3v1Tag()->render();
+        else if( file->APETag() )
+            return file->APETag()->render();
+    }
+    TagLib::ByteVector bv;
+    return bv;
+}
+
 
 AttributeHash
 CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle )
