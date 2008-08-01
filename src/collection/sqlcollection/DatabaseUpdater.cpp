@@ -164,12 +164,12 @@ DatabaseUpdater::createTemporaryTables()
         QString create = "CREATE TEMPORARY TABLE uniqueid_temp "
                     "(url " + m_collection->exactTextColumnType() +
                     ",deviceid INTEGER"
-                    ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE,"
+                    ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE"
                     ",dir " + m_collection->exactTextColumnType() + 
                     ");";
         m_collection->query( create );
-        m_collection->query( "CREATE INDEX uniqueid_uniqueid ON uniqueid_temp(uniqueid);" );
-        m_collection->query( "CREATE INDEX uniqueid_url ON uniqueid_temp(url);" );
+        m_collection->query( "CREATE INDEX uniqueid_temp_uniqueid ON uniqueid_temp(uniqueid);" );
+        m_collection->query( "CREATE INDEX uniqueid_temp_url ON uniqueid_temp(url);" );
     }
 }
 
@@ -224,7 +224,7 @@ DatabaseUpdater::removeTemporaryTables()
     m_collection->query( "DROP TABLE artists_temp;" );
     m_collection->query( "DROP TABLE urls_temp;" );
     m_collection->query( "DROP TABLE directories_temp" );
-    m_collection->query( "DROP TABLE unique_temp" );
+    m_collection->query( "DROP TABLE uniqueid_temp" );
 }
 
 void
@@ -504,7 +504,7 @@ DatabaseUpdater::createTables() const
         QString create = "CREATE TABLE uniqueid "
                     "(url " + m_collection->exactTextColumnType() +
                     ",deviceid INTEGER"
-                    ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE,"
+                    ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE"
                     ",dir " + m_collection->exactTextColumnType() +
                     ");";
         m_collection->query( create );
@@ -573,7 +573,7 @@ DatabaseUpdater::removeFilesInDirFromTemporaryTables( int deviceid, const QStrin
         QString drop = QString( "DELETE FROM tracks_temp WHERE id IN (%1);" ).arg( ids );
         m_collection->query( drop );
     }
-    QString query = QString( "DELETE FROM uniqueid WHERE uniqueid.deviceid = '%1' AND uniqueid.dir = '%2';" )
+    QString query = QString( "DELETE FROM uniqueid_temp WHERE uniqueid_temp.deviceid = '%1' AND uniqueid_temp.dir = '%2';" )
                                 .arg( deviceid )
                                 .arg( m_collection->escape( rdir ) );
 }
