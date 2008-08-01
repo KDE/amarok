@@ -19,6 +19,7 @@
 #include "DatabaseUpdater.h"
 
 #include "Debug.h"
+#include "mountpointmanager.h"
 #include "SqlCollection.h"
 
 static const int DB_VERSION = 1;
@@ -165,7 +166,6 @@ DatabaseUpdater::createTemporaryTables()
                     "(url " + m_collection->exactTextColumnType() +
                     ",deviceid INTEGER"
                     ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE"
-                    ",dir " + m_collection->exactTextColumnType() + 
                     ");";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX uniqueid_temp_uniqueid ON uniqueid_temp(uniqueid);" );
@@ -505,7 +505,6 @@ DatabaseUpdater::createTables() const
                     "(url " + m_collection->exactTextColumnType() +
                     ",deviceid INTEGER"
                     ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE"
-                    ",dir " + m_collection->exactTextColumnType() +
                     ");";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX uniqueid_uniqueid ON uniqueid(uniqueid);" );
@@ -531,27 +530,42 @@ DatabaseUpdater::deleteAllRedundant( const QString &type )
 }
 
 void
-DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
+DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir, QHash<QString, QString> *filesRemoved )
 {
-    QString select = QString( "SELECT urls.id FROM urls LEFT JOIN directories ON urls.directory = directories.id "
+    QString select = QString( "SELECT urls.id, urls.rpath, uniqueid.uniqueid LEFT JOIN directories ON urls.directory = directories.id "
+                              "LEFT JOIN uniqueid ON uniqueid.url = urls.rpath AND uniqueid.deviceid = urls.deviceid "
                               "WHERE directories.deviceid = %1 AND directories.dir = '%2';" )
                                 .arg( QString::number( deviceid ), m_collection->escape( rdir ) );
     QStringList idResult = m_collection->query( select );
     if( !idResult.isEmpty() )
     {
+        QString id;
         QString ids;
-        foreach( const QString &id, idResult )
+        QString url;
+        QString uniqueid;
+        QString uniqueids;
+        QStringList::ConstIterator it = idResult.begin(), end = idResult.end();
+        while( it != end )
         {
+            id = (*(it++));
+            url = (*(it++));
+            uniqueid = (*(it++));
             if( !ids.isEmpty() )
                 ids += ',';
             ids += id;
+            if( !uniqueid.isEmpty() )
+            {
+                (*filesRemoved)[uniqueid] = MountPointManager::instance()->getAbsolutePath( deviceid, url );
+                if( !uniqueids.isEmpty() )
+                    uniqueids += ',';
+                uniqueids += uniqueid;
+            }
         }
         QString drop = QString( "DELETE FROM tracks WHERE id IN (%1);" ).arg( ids );
         m_collection->query( drop );
+        drop = QString( "DELETE FROM uniqueid WHERE uniqueid IN (%1);" ).arg( uniqueids );
+        m_collection->query( drop );
     }
-    QString query = QString( "DELETE FROM uniqueid WHERE uniqueid.deviceid = '%1' AND uniqueid.dir = '%2';" )
-                                .arg( deviceid )
-                                .arg( m_collection->escape( rdir ) );
 }
 
 void

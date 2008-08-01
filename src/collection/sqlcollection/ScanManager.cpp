@@ -338,6 +338,8 @@ ScanManager::handleRestart()
         m_scanner->start();
         m_parser = new XmlParseJob( this, m_collection );
         m_parser->setIsIncremental( m_isIncremental );
+        m_parser->setFilesAddedHash( &m_filesAdded );
+        m_parser->setFilesDeletedHash( &m_filesDeleted );
         connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
         ThreadWeaver::Weaver::instance()->enqueue( m_parser );
     }
@@ -360,6 +362,8 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     : ThreadWeaver::Job( parent )
     , m_collection( collection )
     , m_isIncremental( false )
+    , m_filesAdded( 0 )
+    , m_filesDeleted( 0 )
 {
     The::statusBar()->newProgressOperation( this )
             .setDescription( i18n( "Scanning music" ) );
@@ -378,6 +382,18 @@ XmlParseJob::setIsIncremental( bool incremental )
 }
 
 void
+XmlParseJob::setFilesAddedHash( QHash<QString, QString>* hash )
+{
+    m_filesAdded = hash;
+}
+
+void
+XmlParseJob::setFilesDeletedHash( QHash<QString, QString>* hash )
+{
+    m_filesDeleted = hash;
+}
+
+void
 XmlParseJob::run()
 {
     DEBUG_BLOCK
@@ -386,6 +402,7 @@ XmlParseJob::run()
     QString currentDir;
 
     ScanResultProcessor processor( m_collection );
+    processor.setFilesDeletedHash( m_filesDeleted );
     if( m_isIncremental )
     {
         processor.setScanType( ScanResultProcessor::IncrementalScan );
@@ -437,7 +454,6 @@ XmlParseJob::run()
                     data.insert( Meta::Field::TRACKNUMBER, attrs.value( "track" ).toString() );
                     data.insert( Meta::Field::DISCNUMBER, attrs.value( "discnumber" ).toString() );
                     data.insert( Meta::Field::BPM, attrs.value( "bpm" ).toString() );
-                    data.insert( Meta::Field::UNIQUEID, attrs.value( "uniqueid" ).toString() );
                     //filetype and uniqueid are missing in the fields, compilation is not used here
                     if( attrs.value( "audioproperties" ) == "true" )
                     {
@@ -447,6 +463,9 @@ XmlParseJob::run()
                     }
                     if( !attrs.value( "filesize" ).isEmpty() )
                         data.insert( Meta::Field::FILESIZE, attrs.value( "filesize" ).toString() );
+
+                    data.insert( Meta::Field::UNIQUEID, attrs.value( "uniqueid" ).toString() );
+                    (*m_filesAdded)[attrs.value( "uniqueid ").toString()] = attrs.value( "path" ).toString();
 
                     KUrl url( data.value( Meta::Field::URL ).toString() );
                     if( firstTrack )
@@ -522,6 +541,24 @@ XmlParseJob::run()
         }
         processor.commit();
     }
+    if( !m_isIncremental )
+    {
+        m_collection->emitFilesDeleted( *m_filesDeleted );
+        m_collection->emitFilesAdded( *m_filesAdded );
+    }
+    else
+    {
+        QHash<QString, QString>::Iterator it;
+        for( it = m_filesAdded->begin(); it != m_filesAdded->end(); ++it )
+        {
+            if( m_filesDeleted->contains( it.key() ) )
+                m_filesDeleted->remove( it.key() );
+        }
+        for( it = m_filesAdded->begin(); it != m_filesAdded->end(); ++it )
+            m_collection->emitFileAdded( it.value(), it.key() );
+        for( it = m_filesDeleted->begin(); it != m_filesDeleted->end(); ++it )
+            m_collection->emitFileDeleted( it.value(), it.key() );
+    } 
 }
 
 void

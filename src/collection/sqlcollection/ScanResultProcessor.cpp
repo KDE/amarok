@@ -36,6 +36,7 @@ using namespace Meta;
 ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     : m_collection( collection )
     , m_setupComplete( false )
+    , m_filesDeleted( 0 )
     , m_type( FullScan )
 {
     DEBUG_BLOCK
@@ -50,6 +51,12 @@ void
 ScanResultProcessor::setScanType( ScanType type )
 {
     m_type = type;
+}
+
+void
+ScanResultProcessor::setFilesDeletedHash( QHash<QString, QString>* hash )
+{
+    m_filesDeleted = hash;
 }
 
 void
@@ -110,7 +117,7 @@ ScanResultProcessor::commit()
             debug() << "removing " << dir << " from database";
             int deviceid = MountPointManager::instance()->getIdForUrl( dir );
             const QString rpath = MountPointManager::instance()->getRelativePath( deviceid, dir );
-            m_collection->dbUpdater()->removeFilesInDir( deviceid, rpath );
+            m_collection->dbUpdater()->removeFilesInDir( deviceid, rpath, m_filesDeleted );
         }
     }
     else
@@ -309,6 +316,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     m_collection->insert( insert, "tracks_temp" );
 
+    qDebug() << "AFT ID: " << trackData.value( Field::UNIQUEID ).toString();
     //Do AFT stuff here?
 
 }

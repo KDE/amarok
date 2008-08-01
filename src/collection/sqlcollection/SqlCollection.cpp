@@ -207,6 +207,30 @@ SqlCollection::sendChangedSignal()
     emit updated();
 }
 
+void
+SqlCollection::emitFilesAdded( const QHash<QString, QString> &files )
+{
+
+}
+
+void
+SqlCollection::emitFilesDeleted( const QHash<QString, QString> &files )
+{
+
+}
+
+void
+SqlCollection::emitFileAdded( const QString& path, const QString &id )
+{
+
+}
+
+void
+SqlCollection::emitFileDeleted( const QString& path, const QString &id )
+{
+
+}
+
 QString
 SqlCollection::escape( QString text ) const           //krazy:exclude=constref
 {

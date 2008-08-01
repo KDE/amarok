@@ -19,6 +19,7 @@
 #ifndef AMAROK_DATABASEUPDATER_H
 #define AMAROK_DATABASEUPDATER_H
 
+#include <QHash>
 #include <QString>
 
 class SqlCollection;
@@ -40,7 +41,7 @@ public:
 
     void deleteAllRedundant( const QString &type ); //type is artist,album,genre,composer or year
 
-    void removeFilesInDir( int deviceid, const QString &rdir );
+    void removeFilesInDir( int deviceid, const QString &rdir, QHash<QString, QString> *filesDeleted );
     void removeFilesInDirFromTemporaryTables( int deviceid, const QString &rdir );
 
 private:

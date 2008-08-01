@@ -72,6 +72,10 @@ class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
 
         //sqlcollection internal methods
         void sendChangedSignal();
+        void emitFilesAdded( const QHash<QString, QString> &files );
+        void emitFilesDeleted( const QHash<QString, QString> &files );
+        void emitFileAdded( const QString &path, const QString &id );
+        void emitFileDeleted( const QString &path, const QString &id );
 
         //methods defined in SqlStorage
         virtual int sqlDatabasePriority() const;

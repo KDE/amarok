@@ -23,6 +23,7 @@
 
 #include "AmarokProcess.h"
 
+#include <QHash>
 #include <QMutex>
 #include <QObject>
 #include <QWaitCondition>
@@ -36,6 +37,7 @@ class XmlParseJob;
 class ScanManager : public QObject
 {
     Q_OBJECT
+
     public:
         ScanManager( SqlCollection *parent );
 
@@ -63,7 +65,11 @@ class ScanManager : public QObject
         SqlCollection *m_collection;
 
         AmarokProcess *m_scanner;
+
         XmlParseJob *m_parser;
+
+        QHash<QString, QString> m_filesAdded;
+        QHash<QString, QString> m_filesDeleted;
 
         int m_restartCount;
         bool m_isIncremental;
@@ -82,13 +88,18 @@ class XmlParseJob : public ThreadWeaver::Job
         void addNewXmlData( const QString &data );
 
         void setIsIncremental( bool incremental );
+        void setFilesAddedHash( QHash<QString, QString>* hash );
+        void setFilesDeletedHash( QHash<QString, QString>* hash );
 
     signals:
         void incrementProgress();
 
     private:
+        ScanManager *m_scanManager;
         SqlCollection *m_collection;
         bool m_isIncremental;
+        QHash<QString, QString> *m_filesAdded;
+        QHash<QString, QString> *m_filesDeleted;
         QXmlStreamReader m_reader;
         QString m_nextData;
         QWaitCondition m_wait;
