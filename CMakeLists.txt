@@ -93,8 +93,6 @@ macro_log_feature( NEPOMUK_FOUND "nepomuk" "Nepomuk Libraries required by Nepomu
 include(CheckQtGlib)
 macro_log_feature(QT4_GLIB_SUPPORT "Qt4 Glib support" "Qt4 must be compiled with glib support for mp3tunes" "http://www.trolltech.com" FALSE "" "")
 
-macro_log_feature(QT_KDE_QT_COPY "KDE's qt-copy" "Qt 4.4.0 vanilla doesn't support Qt Script Generator, qt-copy from KDE must be used" "http://www.kde.org" FALSE "" "")
-
 macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
 check_type_size("int" SIZEOF_INT)
