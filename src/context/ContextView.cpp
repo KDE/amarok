@@ -189,8 +189,6 @@ void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldStat
         messageNotify( Current );
     else if( state == Phonon::StoppedState )
         messageNotify( Home );
-        
-    
 }
 
 void ContextView::showHome()
@@ -221,20 +219,17 @@ void ContextView::loadConfig()
     }
 }
 
-Plasma::Applet* ContextView::addApplet(const QString& name, const QStringList& args)
+Plasma::Applet* ContextView::addApplet( const QString& name, const QStringList& args )
 {
     QVariantList argList;
     QStringListIterator i(args);
     while( i.hasNext() )
         argList << QVariant( i.next() );
 
-    if( containment() )
-        return containment()->addApplet( name, argList );
-    else
-    {
+    if( !containment() )
         contextScene()->addContainment( "context" );
-        return containment()->addApplet( name, argList );
-    }
+
+    return containment()->addApplet( name, argList );
 }
 
 void
@@ -497,7 +492,6 @@ ContextView::addContainment()
         debug() << "x,y:" << x << y;
     }
 }
-
 
 void
 ContextView::connectContainment( Plasma::Containment* containment )
