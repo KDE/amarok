@@ -62,6 +62,7 @@ The::engineController()
 EngineController::EngineController()
     : m_media( 0 )
     , m_audio( 0 )
+    , m_playWhenFetched(true)
     , m_fadeoutTimer( new QTimer( this ) )
 {
     DEBUG_BLOCK
@@ -93,6 +94,7 @@ EngineController::EngineController()
     // Get the next track when there is 2 seconds left on the current one.
     m_media->setPrefinishMark( 2000 );
     connect( m_media, SIGNAL( prefinishMarkReached(qint32) ), SLOT( slotAboutToFinish() ) );
+    connect( m_media, SIGNAL(aboutToFinish()), SLOT(slotAboutToFinish()) );
 
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
     connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ),
@@ -233,17 +235,15 @@ void
 EngineController::play() //SLOT
 {
     DEBUG_BLOCK
+
+    if( m_media->state() == Phonon::PlayingState )
+        return;
+
     if( m_fader )
         m_fader->deleteLater();
 
     if ( m_media->state() == Phonon::PausedState )
     {
-        m_media->play();
-    }
-    else if( !m_media->queue().isEmpty() )
-    {
-        m_currentTrack = m_nextTrack;
-        m_nextTrack.clear();
         m_media->play();
     }
     else
@@ -260,22 +260,24 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     if( !track ) // Guard
         return;
 
-    m_nextTrack.clear();
-    m_media->clearQueue();
-
-    delete m_multi;
     m_currentTrack = track;
+    delete m_multi;
     m_multi = m_currentTrack->as<Meta::MultiPlayableCapability>();
+
+    m_nextTrack.clear();
+    m_nextUrl.clear();
+    m_media->clearQueue();
 
     if( m_multi )
     {
+        m_media->stop();
         connect( m_multi, SIGNAL( playableUrlFetched( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
         m_multi->fetchFirst();
     }
     else
     {
-        playUrl( track->playableUrl(), offset );
-        emit trackChanged( track );
+        playUrl( m_currentTrack->playableUrl(), offset );
+        emit trackChanged( m_currentTrack );
     }
 }
 
@@ -286,11 +288,12 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
     slotStopFadeout();
 
-    m_nextTrack.clear();
-    m_media->clearQueue();
-
     debug() << "URL: " << url.url();
     m_media->setCurrentSource( url );
+
+    m_nextTrack.clear();
+    m_nextUrl.clear();
+    m_media->clearQueue();
 
     if( offset )
     {
@@ -315,6 +318,7 @@ EngineController::stop( bool forceInstant ) //SLOT
     delete m_multi;
 
     m_nextTrack.clear();
+    m_nextUrl.clear();
     m_media->clearQueue();
 
     //let Amarok know that the previous track is no longer playing
@@ -322,7 +326,6 @@ EngineController::stop( bool forceInstant ) //SLOT
         debug() << "m_currentTrack != 0";
         m_currentTrack->finishedPlaying( 1.0 );
         trackEnded( trackPosition(), m_currentTrack->length() * 1000, "stop" );
-        m_currentTrack.clear();
     }
 
     if( m_fader )
@@ -457,29 +460,22 @@ EngineController::trackLength() const
 void
 EngineController::setNextTrack( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
-    if( !track )
+    if( !track || track->playableUrl().isEmpty() )
         return;
 
-    m_media->clearQueue();
-
-    if( track->playableUrl().isEmpty() )
+    if( m_media->state() == Phonon::PlayingState ||
+        m_media->state() == Phonon::BufferingState )
     {
-        m_currentTrack.clear();
-        m_nextTrack.clear();
-        m_media->stop();
-        return;
+        m_media->clearQueue();
+        if( track->playableUrl().isLocalFile() )
+            m_media->enqueue( track->playableUrl() );
+        m_nextTrack = track;
+        m_nextUrl = track->playableUrl();
     }
-
-    m_media->enqueue( track->playableUrl() );
-    m_nextTrack = track;
-
-    if( m_media->state() != Phonon::PlayingState )
+    else
     {
-        play();
+        play( track );
     }
-
 }
 
 
@@ -527,33 +523,52 @@ EngineController::slotTick( qint64 position )
 void
 EngineController::slotAboutToFinish()
 {
-    DEBUG_BLOCK
+    // For some reason, phonon emits this when it's done buffering.
+    if( m_media->state() == Phonon::BufferingState )
+        return;
 
     if( m_multi )
+    {
+        m_playWhenFetched = false;
         m_multi->fetchNext();
+    }
     else if( m_media->queue().isEmpty() )
         The::playlistModel()->requestNextTrack();
 }
 
 void
-EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
+EngineController::slotTrackEnded()
 {
-    DEBUG_BLOCK
-
-    Q_UNUSED( source );
     if( m_currentTrack )
     {
         emit trackFinished();
-        // FIXME: This isn't necessarily true...
         m_currentTrack->finishedPlaying( 1.0 );
     }
 
-    // the new track was taken from the queue
+    // Non-local urls are not enqueued so we must play them explicitly.
+    if( m_nextTrack )
+        play( m_nextTrack );
+    else if( !m_nextUrl.isEmpty() )
+        playUrl( m_nextUrl, 0 );
+    else
+        // possibly we are waiting for a fetch
+        m_playWhenFetched = true;
+}
+
+void
+EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
+{
+    Q_UNUSED( source );
+
+    // the new track was taken from the queue, so clear these fields
     if( m_nextTrack )
     {
         m_currentTrack = m_nextTrack;
         m_nextTrack.clear();
     }
+
+    if( !m_nextUrl.isEmpty() )
+        m_nextUrl.clear();
 
     newTrackPlaying();
 }
@@ -576,13 +591,20 @@ void
 EngineController::slotPlayableUrlFetched( const KUrl &url )
 {
     if( url.isEmpty() )
+    {
         The::playlistModel()->requestNextTrack();
+        return;
+    }
 
-    if( m_media->state() == Phonon::PlayingState )
+    if( !m_playWhenFetched )
     {
         m_media->clearQueue();
-        m_media->enqueue( url );
+        if( url.isLocalFile() )
+            m_media->enqueue( url );
         m_nextTrack.clear();
+        m_nextUrl = url;
+        // reset this flag each time
+        m_playWhenFetched = true;
     }
     else
         playUrl( url, 0 );

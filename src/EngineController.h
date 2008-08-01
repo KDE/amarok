@@ -111,6 +111,7 @@ protected:
     void trackDone();
 
 private slots:
+    void slotTrackEnded();
     void slotAboutToFinish();
     void slotNewTrackPlaying( const Phonon::MediaSource &source);
     void slotStateChanged( Phonon::State newState, Phonon::State oldState);
@@ -136,7 +137,9 @@ private:
     Meta::TrackPtr  m_currentTrack;
     Meta::TrackPtr  m_lastTrack;
     Meta::TrackPtr  m_nextTrack;
+    KUrl            m_nextUrl;
     QPointer<Meta::MultiPlayableCapability> m_multi;
+    bool m_playWhenFetched;
     QTimer* m_fadeoutTimer;
 };
 
