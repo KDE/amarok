@@ -440,7 +440,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
 
         serviceTrack->setId( track.trackId() );
 
-        serviceTrack->setUrl( track.playUrl() );
+        serviceTrack->setUidUrl( track.playUrl() );
         serviceTrack->setDownloadableUrl( track.downloadUrl() );
 
         serviceTrack->setLength( (int)( track.trackLength() / 1000 ) );
