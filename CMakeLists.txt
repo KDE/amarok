@@ -2,8 +2,6 @@ project(Amarok)
 
 cmake_minimum_required(VERSION 2.4.5)
 
-#The generator depends on qt-copy/Qt 4.4.1
-#checking if we have QT_COPY; get rid of all this when 4.4.1 is released
 add_subdirectory( src/scriptengine/generator )
 #We depend on kde4.1 now.. I believe this is the easiest way to do it.
 set(KDE_MIN_VERSION "4.00.61")

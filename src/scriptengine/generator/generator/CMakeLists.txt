@@ -15,7 +15,7 @@ set ( QT_USE_QTWEBKIT              TRUE )
 
 include(${QT_USE_FILE})
 
-add_definitions( -DRXX_ALLOCATOR_INIT_0 )
+add_definitions( -DRXX_ALLOCATOR_INIT_0 -DQT_WEBKIT )
 
 include_directories(
     ${QT_INCLUDES}
@@ -105,7 +105,7 @@ target_link_libraries(generator ${QT_LIBRARIES})
 get_target_property( GENERATOR_EXE generator LOCATION )
 add_custom_command( TARGET generator
                     POST_BUILD
-                    COMMAND ${GENERATOR_EXE} --output-directory=${CMAKE_CURRENT_BINARY_DIR}
+                    COMMAND ${GENERATOR_EXE} --output-directory=${CMAKE_CURRENT_BINARY_DIR} --include-paths=${QT_INCLUDE_DIR}
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../qtbindings/qtscript_core/ )
 
