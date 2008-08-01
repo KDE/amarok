@@ -159,8 +159,8 @@ WikipediaEngine::wikiResult( KJob* job )
     
     if( !m_wikiJob ) return; //track changed while we were fetching
 
-    if( !job->error() == 0 && job == m_wikiJob )
-    { // make sure its not the wrong job (e.g. wiki request for now changed song
+    if( job->error() != KJob::NoError && job == m_wikiJob )
+    { //It's the correct job but it errored out
         setData( "wikipedia", "error" );
         m_wikiJob = 0; // clear job
         return;
