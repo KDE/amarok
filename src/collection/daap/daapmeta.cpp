@@ -68,7 +68,7 @@ DaapTrack::playableUrl() const
 }
 
 QString
-DaapTrack::url() const
+DaapTrack::uidUrl() const
 {
     return m_playableUrl;
 }

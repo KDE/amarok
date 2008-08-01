@@ -89,7 +89,7 @@ Track::prettyUrl() const
 }
 
 QString
-Track::url() const
+Track::uidUrl() const
 {
     return playableUrl().url();
 }

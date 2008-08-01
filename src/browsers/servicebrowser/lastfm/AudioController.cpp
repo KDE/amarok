@@ -99,7 +99,7 @@ QString
 AudioController::currentTrackUrl() const
 {
     LastFm::TrackPtr track = The::lastFmService()->radio()->currentTrack();
-    return track ? track->url() : "";
+    return track ? track->uidUrl() : "";
 }
 
 

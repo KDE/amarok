@@ -243,7 +243,7 @@ void OpmlDirectoryService::subscribe()
     {
         if ( m_currentFeed != 0 ) {
             PodcastProvider * podcastProvider = The::playlistManager()->defaultPodcasts();
-            podcastProvider->addPodcast( m_currentFeed->url() );
+            podcastProvider->addPodcast( m_currentFeed->uidUrl() );
         }
     }
     else

@@ -216,7 +216,7 @@ PodcastReader::read()
                 else if( QXmlStreamReader::name() == "enclosure" )
                 {
                     debug() << "enclosure: url = " << m_urlString;
-                    static_cast<PodcastEpisode *>(m_current)->setUrl( KUrl( m_urlString ) );
+                    static_cast<PodcastEpisode *>(m_current)->setUidUrl( KUrl( m_urlString ) );
                     m_urlString.clear();
                 }
                 else if( QXmlStreamReader::name() == "link" )
@@ -358,7 +358,7 @@ PodcastReader::podcastEpisodeCheck(Meta::PodcastEpisodePtr episode)
         int score = 0;
         if( !episode->title().isEmpty() && episode->title() == match->title() )
             score += 1;
-        if( !episode->url().isEmpty() && episode->url() == match->url() )
+        if( !episode->uidUrl().isEmpty() && episode->uidUrl() == match->uidUrl() )
             score += 3;
         if( !episode->guid().isEmpty() && episode->guid() == match->guid() )
             score += 3;

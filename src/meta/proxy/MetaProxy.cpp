@@ -166,10 +166,10 @@ MetaProxy::Track::prettyUrl() const
 }
 
 QString
-MetaProxy::Track::url() const
+MetaProxy::Track::uidUrl() const
 {
     if( d->realTrack )
-        return d->realTrack->url();
+        return d->realTrack->uidUrl();
     else
         return d->url.url();
 }

@@ -134,7 +134,7 @@ OpmlDirectoryDatabaseHandler::insertTrack( ServiceTrack *track )
                           + QString::number( 0 ) + ", "
                           + QString::number( track->albumId() ) + ", "
                           + QString::number( 1 ) + ", '"
-                          + sqlDb->escape( track->url() ) + "' );";
+                          + sqlDb->escape( track->uidUrl() ) + "' );";
 
    // debug() << "Adding opmldirectory_track " << queryString;
     int trackId = sqlDb->insert( queryString, NULL );

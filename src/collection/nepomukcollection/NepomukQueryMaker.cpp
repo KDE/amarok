@@ -235,7 +235,7 @@ NepomukQueryMaker::addMatch( const TrackPtr &track )
     m_queryMatch +=  QString(
             " ?r <%1> \"%2\"^^<%3> . ")
             .arg( m_collection->getUrlForValue( valUrl ) )
-            .arg( track->url() )
+            .arg( track->uidUrl() )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
     return this;
 }

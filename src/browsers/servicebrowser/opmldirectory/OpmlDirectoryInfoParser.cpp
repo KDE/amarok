@@ -59,9 +59,9 @@ void OpmlDirectoryInfoParser::getInfo(TrackPtr track)
 
     if ( feed == 0) return;
 
-    debug() << "OpmlDirectoryInfoParser: getInfo about feed: " << feed->url();
+    debug() << "OpmlDirectoryInfoParser: getInfo about feed: " << feed->uidUrl();
 
-    m_rssDownloadJob = KIO::storedGet( feed->url(), KIO::Reload, KIO::HideProgressInfo );
+    m_rssDownloadJob = KIO::storedGet( feed->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
     The::statusBar()->newProgressOperation( m_rssDownloadJob ).setDescription( i18n( "Fetching Podcast Info" ) );
     connect( m_rssDownloadJob, SIGNAL(result(KJob *)), SLOT( rssDownloadComplete( KJob*) ) );
 }

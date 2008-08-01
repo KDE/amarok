@@ -88,7 +88,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             
             ScriptableServiceTrack * track = new ScriptableServiceTrack( name );
             track->setAlbumId( parentId );
-            track->setUrl( playableUrl );
+            track->setUidUrl( playableUrl );
             return addTrack( track );
             break;
             

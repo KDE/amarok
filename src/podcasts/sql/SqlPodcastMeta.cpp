@@ -53,7 +53,7 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::Sql
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     : Meta::PodcastEpisode()
 {
-    m_url = KUrl( episode->url() );
+    m_url = KUrl( episode->uidUrl() );
     m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
 
     if ( !m_sqlChannel ) {

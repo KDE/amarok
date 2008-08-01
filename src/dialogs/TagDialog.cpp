@@ -1429,7 +1429,7 @@ TagDialog::saveTags()
         if( storedLyrics.contains( track ) )
         {
             track->setCachedLyrics( storedLyrics[ track ] );
-            emit lyricsChanged( track->url() );
+            emit lyricsChanged( track->uidUrl() );
         }
         Meta::EditCapability *ec = track->as<Meta::EditCapability>();
         if( !ec || !ec->isEditable() )

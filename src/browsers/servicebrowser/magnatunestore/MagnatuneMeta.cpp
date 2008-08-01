@@ -76,13 +76,13 @@ TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
     MagnatuneTrack * track = new MagnatuneTrack( rows );
 
     if ( m_streamType == OGG ) {
-        track->setUrl( track->oggUrl() );
+        track->setUidUrl( track->oggUrl() );
     } else if (  m_streamType == LOFI ) {
-        track->setUrl( track->lofiUrl() );
+        track->setUidUrl( track->lofiUrl() );
     }
 
     if ( !m_membershipPrefix.isEmpty() ) {
-        QString url = track->url();
+        QString url = track->uidUrl();
         url.replace( "http://he3.", "http://" + m_userName + ":" + m_password + "@" + m_membershipPrefix + "." );
         
         if ( m_streamType == MP3 ) {
@@ -91,7 +91,7 @@ TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
             url.replace( ".ogg", "_nospeech.ogg" );
         }
         
-        track->setUrl( url );
+        track->setUidUrl( url );
 
         debug()  << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!PREFIX: " << m_membershipPrefix;
         

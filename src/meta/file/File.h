@@ -38,7 +38,7 @@ namespace MetaFile
         //methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
-            virtual QString url() const;
+            virtual QString uidUrl() const;
 
             virtual bool isPlayable() const;
             virtual bool isEditable() const;

@@ -244,7 +244,7 @@ ServiceTrack::downloadableUrl() const
 }
 
 QString
-ServiceTrack::url() const
+ServiceTrack::uidUrl() const
 {
     return m_playableUrl;
 }
@@ -256,7 +256,7 @@ ServiceTrack::prettyUrl() const
 }
 
 void
-ServiceTrack::setUrl(const QString & url)
+ServiceTrack::setUidUrl(const QString & url)
 {
     m_playableUrl = url;
     m_displayUrl = url;
@@ -457,7 +457,7 @@ QString
 ServiceTrack::type() const
 {
 //     return m_type;
-    return Amarok::extension( url() );
+    return Amarok::extension( uidUrl() );
 }
 
 void

@@ -172,7 +172,7 @@ namespace Meta
             /** an url for display purposes */
             virtual QString prettyUrl() const = 0;
             /** an url which is unique for this track. Use this if you need a key for the track */
-            virtual QString url() const = 0;
+            virtual QString uidUrl() const = 0;
 
             /** Returns whether playableUrl() will return a playable Url */
             virtual bool isPlayable() const = 0;

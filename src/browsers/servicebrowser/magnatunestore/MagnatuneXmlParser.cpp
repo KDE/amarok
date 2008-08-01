@@ -344,7 +344,7 @@ MagnatuneXmlParser::parseTrack( const QDomElement &e )
             }
             else if ( sElementName == "url" )
             {
-                pCurrentTrack->setUrl( childElement.text() );
+                pCurrentTrack->setUidUrl( childElement.text() );
             }
             else if ( sElementName == "oggurl" )
             {

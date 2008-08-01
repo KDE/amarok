@@ -125,7 +125,7 @@ void LastFmEngine::updateCurrent()
             foreach( Meta::TrackPtr track, tracks ) // we iterate through each song + song info
             {
                 QVariantList song;
-                song << track->url() << track->name() << track->prettyName() << track->score() << track->rating();
+                song << track->uidUrl() << track->name() << track->prettyName() << track->score() << track->rating();
                 setData( "suggestedsongs", track->prettyName(), song ); // data keyed  by song title
             }
         }

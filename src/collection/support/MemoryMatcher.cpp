@@ -61,17 +61,17 @@ TrackList TrackMatcher::match( MemoryCollection *memColl )
 {
     TrackMap trackMap = memColl->trackMap();
     TrackList result;
-    if ( trackMap.contains( m_track->url()  ) )
-        result.append( trackMap.value( m_track->url() ) );
+    if ( trackMap.contains( m_track->uidUrl()  ) )
+        result.append( trackMap.value( m_track->uidUrl() ) );
     return result; //checking for another matcher is not necessary
 }
 
 TrackList TrackMatcher::match( const TrackList &tracks )
 {
     TrackList result;
-    QString url = m_track->url();
+    QString url = m_track->uidUrl();
     foreach( TrackPtr track, tracks )
-        if ( track->url() == url )
+        if ( track->uidUrl() == url )
         {
             result.append( track );
             break;

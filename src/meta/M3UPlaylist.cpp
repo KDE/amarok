@@ -146,7 +146,7 @@ M3UPlaylist::save( const QString &location, bool relative )
     QList<int> lengths;
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        urls << track->url();
+        urls << track->uidUrl();
         titles << track->name();
         lengths << track->length();
     }

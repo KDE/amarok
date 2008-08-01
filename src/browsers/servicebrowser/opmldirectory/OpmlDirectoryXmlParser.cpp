@@ -175,7 +175,7 @@ void OpmlDirectoryXmlParser::parseFeed( const  QDomElement &e)
     OpmlDirectoryFeed currentFeed ( name );
 
     currentFeed.setAlbumId( m_currentCategoryId );
-    currentFeed.setUrl( url );
+    currentFeed.setUidUrl( url );
 
     m_dbHandler->insertTrack( &currentFeed );
     

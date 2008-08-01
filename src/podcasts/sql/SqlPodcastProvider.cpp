@@ -200,10 +200,10 @@ SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
     SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
     DEBUG_BLOCK
 
-    KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( sqlEpisode->url(), KIO::Reload, KIO::HideProgressInfo );
+    KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
 
     m_jobMap[storedTransferJob] = sqlEpisode;
-    m_fileNameMap[storedTransferJob] = KUrl( sqlEpisode->url() ).fileName();
+    m_fileNameMap[storedTransferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
 
     debug() << "starting download for " << sqlEpisode->title() << " url: " << sqlEpisode->prettyUrl();
     The::statusBar()->newProgressOperation( storedTransferJob )

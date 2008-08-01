@@ -538,8 +538,8 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
         subNode.appendChild( X ); \
     }
 
-        if ( !track->url().isEmpty() )
-            APPENDNODE(location, track->url() )
+        if ( !track->uidUrl().isEmpty() )
+            APPENDNODE(location, track->uidUrl() )
         Meta::StreamInfoCapability *streamInfo = track->as<Meta::StreamInfoCapability>();
         if( streamInfo ) // We have a stream, use it's metadata instead of the tracks.
         {

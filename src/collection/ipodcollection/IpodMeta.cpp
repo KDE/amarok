@@ -187,7 +187,7 @@ IpodTrack::playableUrl() const
 }
 
 QString
-IpodTrack::url() const
+IpodTrack::uidUrl() const
 {
     return m_playableUrl;
 }

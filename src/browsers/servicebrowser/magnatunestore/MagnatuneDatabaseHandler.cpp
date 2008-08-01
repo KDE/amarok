@@ -175,7 +175,7 @@ MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
                           + QString::number( mTrack->artistId() ) + ", '"
                           + sqlDb->escape( mTrack->lofiUrl() ) + "', '"
                           + sqlDb->escape( mTrack->oggUrl() ) + "', '"
-                          + sqlDb->escape( mTrack->url() ) + "' );";
+                          + sqlDb->escape( mTrack->uidUrl() ) + "' );";
 
 
     // debug() << "Adding Magnatune track " << queryString;

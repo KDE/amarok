@@ -111,7 +111,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         //Track Methods
         virtual KUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
         virtual QString prettyUrl() const { return m_url.prettyUrl(); }
-        virtual QString url() const { return m_url.url(); }
+        virtual QString uidUrl() const { return m_url.url(); }
         virtual bool isPlayable() const { return true; }
         virtual bool isEditable() const { return false; }
 
@@ -167,7 +167,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         int duration() const { return m_duration; }
         QString guid() const { return m_guid; }
 
-        void setUrl( const KUrl &url ) { m_url = url; }
+        void setUidUrl( const KUrl &url ) { m_url = url; }
         void setPubDate( const QString &pubDate ) { m_pubDate = pubDate; }
         void setDuration( int duration ) { m_duration = duration; }
         void setGuid( const QString &guid ) { m_guid = guid; }

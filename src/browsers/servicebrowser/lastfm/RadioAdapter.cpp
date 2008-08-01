@@ -41,11 +41,11 @@ RadioAdapter::play( const LastFm::TrackPtr &track )
 {
     if( track != m_currentTrack )
     {
-        bool newStation = The::currentUser().resumeStation() != track->url();
+        bool newStation = The::currentUser().resumeStation() != track->uidUrl();
         m_currentTrack = track;
         emit haveTrack( true );
         if( newStation || The::radio().state() != State_Stopped && The::radio().state() != State_Handshaken )
-            The::radio().playStation( track->url() );
+            The::radio().playStation( track->uidUrl() );
         else
             The::radio().resumeStation();
     }

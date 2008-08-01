@@ -135,7 +135,7 @@ void AmpacheServiceCollection::parseTrack( const QString &xml )
     m_urlTrack->setId( m_urlTrackId );
 
     element = song.firstChildElement("url");
-    m_urlTrack->setUrl( element.text() );
+    m_urlTrack->setUidUrl( element.text() );
 
     element = song.firstChildElement("time");
     m_urlTrack->setLength( element.text().toInt() );

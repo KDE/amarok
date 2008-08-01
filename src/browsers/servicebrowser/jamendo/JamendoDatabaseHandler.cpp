@@ -159,7 +159,7 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
                           + QString::number( jTrack->length() ) + ", "
                           + QString::number( jTrack->albumId() ) + ", "
                           + QString::number( jTrack->artistId() ) + ", '"
-                          + db->escape( jTrack->url() ) + "' );";
+                          + db->escape( jTrack->uidUrl() ) + "' );";
 
     // debug() << "Adding Jamendo track " << queryString;
     int trackId = db->insert( queryString, NULL );

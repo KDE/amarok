@@ -130,7 +130,7 @@ NepomukTrack::playableUrl() const
 }
 
 QString
-NepomukTrack::url() const
+NepomukTrack::uidUrl() const
 {
     return "amarokcollnepomukuid://" + m_uid;
 }

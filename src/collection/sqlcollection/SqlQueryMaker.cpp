@@ -274,7 +274,7 @@ SqlQueryMaker::excludeCollection( const QString &collectionId )
 QueryMaker*
 SqlQueryMaker::addMatch( const TrackPtr &track )
 {
-    QString url = track->url();
+    QString url = track->uidUrl();
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
     d->queryMatch += QString( " AND urls.deviceid = %1 AND urls.rpath = '%2'" )

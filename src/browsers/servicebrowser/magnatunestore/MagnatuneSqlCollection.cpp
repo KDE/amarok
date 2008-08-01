@@ -62,7 +62,7 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
             Meta::ServiceTrack * mTrack = dynamic_cast< Meta::ServiceTrack * >( trackPtr.data() );
             if ( mTrack ) {
 
-                mTrack->setUrl( orgUrl );
+                mTrack->setUidUrl( orgUrl );
             }
         }
 

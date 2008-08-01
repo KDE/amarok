@@ -48,7 +48,7 @@ class MemoryCollection
         YearMap yearMap() { return m_yearMap; }
 
         void setTrackMap( const TrackMap &map ) { m_trackMap = map; }
-        void addTrack( Meta::TrackPtr trackPtr ) { m_trackMap.insert( trackPtr->url(), trackPtr ); }
+        void addTrack( Meta::TrackPtr trackPtr ) { m_trackMap.insert( trackPtr->uidUrl(), trackPtr ); }
         void setArtistMap( const ArtistMap &map ) { m_artistMap = map; }
         void addArtist( Meta::ArtistPtr artistPtr) { m_artistMap.insert( artistPtr->name(), artistPtr ); }
         void setAlbumMap( const AlbumMap &map ) { m_albumMap = map; }

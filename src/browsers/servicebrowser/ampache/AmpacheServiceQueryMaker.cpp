@@ -510,7 +510,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
 
         track->setId( trackId );
         element = n.firstChildElement("url");
-        track->setUrl( element.text() );
+        track->setUidUrl( element.text() );
 
         element = n.firstChildElement("time");
         track->setLength( element.text().toInt() );

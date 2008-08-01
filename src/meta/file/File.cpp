@@ -136,7 +136,7 @@ Track::prettyUrl() const
 }
 
 QString
-Track::url() const
+Track::uidUrl() const
 {
     return d->url.url();
 }

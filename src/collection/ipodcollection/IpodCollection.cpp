@@ -250,7 +250,7 @@ IpodCollection::updateTags( Meta::IpodTrack *track)
 {
     DEBUG_BLOCK
     Meta::IpodTrackPtr trackPtr( track );
-    KUrl trackUrl = KUrl::fromPath( trackPtr->url() );
+    KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
 
     debug() << "Running updateTrackInDB...";
 

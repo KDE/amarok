@@ -531,7 +531,7 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
         return;
     }
 
-    if( !kioCopyTrack( KUrl::fromPath( track->url() ), url ) )
+    if( !kioCopyTrack( KUrl::fromPath( track->uidUrl() ), url ) )
     {
         return;
     }
@@ -626,7 +626,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
     if( !track->name().isEmpty() )
         ipodtrack->title = g_strdup( track->name().toUtf8() );
     else
-        ipodtrack->title = g_strdup( KUrl::fromPath( track->url() ).fileName().toUtf8() );
+        ipodtrack->title = g_strdup( KUrl::fromPath( track->uidUrl() ).fileName().toUtf8() );
     ipodtrack->album = g_strdup( track->album()->name().toUtf8() );
     ipodtrack->artist = g_strdup( track->artist()->name().toUtf8() );
     ipodtrack->genre = g_strdup( track->genre()->name().toUtf8() );
@@ -1023,7 +1023,7 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
 
     /* trackmap also soon to be subordinated */
     
-    trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
+    trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
 
     track->setIpodTrack( ipodtrack ); // convenience pointer
     // NOTE: not supporting adding track that's already on a playlist
@@ -1483,7 +1483,7 @@ IpodHandler::parseTracks()
         
         /* TrackMap stuff to be subordinated later */
 
-        trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
+        trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
 
         track->setIpodTrack( ipodtrack ); // convenience pointer
         ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation

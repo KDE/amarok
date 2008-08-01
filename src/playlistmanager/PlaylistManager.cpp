@@ -280,14 +280,14 @@ PlaylistManager::canExpand( Meta::TrackPtr track )
     //DEBUG_BLOCK
     //debug() << "name: " <<  track->name();
     //debug() << "url: " << track->url();
-    return Meta::getFormat( track->url() ) != Meta::NotPlaylist;
+    return Meta::getFormat( track->uidUrl() ) != Meta::NotPlaylist;
 }
 
 Meta::PlaylistPtr
 PlaylistManager::expand( Meta::TrackPtr track )
 {
    //this should really be made asyncrhonous
-   return Meta::loadPlaylist( track->url() );
+   return Meta::loadPlaylist( track->uidUrl() );
 }
 
 PlaylistManager::PlaylistFormat
