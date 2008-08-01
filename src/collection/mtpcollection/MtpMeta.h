@@ -65,7 +65,7 @@ class MtpTrack : public Meta::Track
         virtual QString prettyName() const;
 
         virtual KUrl playableUrl() const;
-        virtual QString url() const;
+        virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
 
         virtual bool isPlayable() const;

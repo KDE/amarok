@@ -194,7 +194,7 @@ MtpTrack::playableUrl() const
 }
 
 QString
-MtpTrack::url() const
+MtpTrack::uidUrl() const
 {
     return m_url;
 }

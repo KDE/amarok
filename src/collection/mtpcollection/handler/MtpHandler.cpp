@@ -392,7 +392,7 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 
     trackmeta->parent_id = parent_id; // api change, set id here
     trackmeta->storage_id = 0; // default storage id
-    debug() << "Sending track... " << track->url();
+    debug() << "Sending track... " << track->uidUrl();
     debug() << "Filename is: " << QString::fromUtf8( trackmeta->filename );
 
 
@@ -402,7 +402,7 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 
     debug() << "Playable Url is: " << track->playableUrl().fileName();
 
-    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->url().toUtf8() ), trackmeta,
+    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->uidUrl().toUtf8() ), trackmeta,
             0, this );
 
 
@@ -922,7 +922,7 @@ MtpHandler::parseTracks()
 
         /* TrackMap stuff to be subordinated later */
 
-        trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
+        trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
 
         track->setMtpTrack( mtptrack ); // convenience pointer
         mtpTrackMap.insert( mtptrack, track ); // map for playlist formation
@@ -1005,7 +1005,7 @@ MtpHandler::addMtpTrackToCollection( LIBMTP_track_t *mtptrack )
 
     /* trackmap also soon to be subordinated */
 
-    trackMap.insert( track->url(), TrackPtr::staticCast( track ) );
+    trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
 
     track->setMtpTrack( mtptrack ); // convenience pointer
     // NOTE: not supporting adding track that's already on a playlist
