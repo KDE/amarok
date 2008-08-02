@@ -159,6 +159,15 @@ CollectionManager::startFullScan()
 }
 
 void
+CollectionManager::stopScan()
+{
+    foreach( const CollectionPair &pair, d->collections )
+    {
+        pair.first->stopScan();
+    }
+}
+
+void
 CollectionManager::checkCollectionChanges()
 {
     DEBUG_BLOCK

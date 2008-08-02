@@ -115,6 +115,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
     public slots:
         void startFullScan();
+        void stopScan();
         void checkCollectionChanges();
 
     signals:

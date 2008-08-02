@@ -49,6 +49,7 @@ class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
 
         virtual void startFullScan();
         virtual void startIncrementalScan();
+        virtual void stopScan();
         virtual QueryMaker* queryMaker();
 
         virtual QString collectionId() const;

@@ -20,12 +20,13 @@
 #include "SqlCollection.h"
 
 #include "DatabaseUpdater.h"
-//#include "MySqlEmbeddedCollection.h"
+#include "Debug.h"
 #include "ScanManager.h"
+#include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
 #include "SqliteCollection.h"
+//#include "MySqlEmbeddedCollection.h"
 //#include "mysqlcollection.h"
-#include "SqlCollectionLocation.h"
 
 #ifdef Q_OS_WIN32
 class XesamCollectionBuilder
@@ -115,6 +116,14 @@ void
 SqlCollection::startIncrementalScan()
 {
     m_scanManager->startIncrementalScan();
+}
+
+void
+SqlCollection::stopScan()
+{
+    DEBUG_BLOCK
+
+    delete m_scanManager;
 }
 
 QString
