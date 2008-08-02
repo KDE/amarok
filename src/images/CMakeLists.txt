@@ -38,7 +38,6 @@ install(
         smallstar.png
         splash_screen.jpg
         star.png
-	toolbox_icon.png
         web_applet_background.svg
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )

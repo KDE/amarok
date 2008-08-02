@@ -43,7 +43,7 @@ AmarokToolBox::AmarokToolBox( QGraphicsItem *parent )
     , m_actionsCount( 0 )
     , m_animCircleFrame( 0 )
     , m_animCircleId( 0 )
-    , m_icon( KStandardDirs::locate( "data", "amarok/images/toolbox_icon.png" ) )
+    , m_icon( "configure" )
 {
     DEBUG_BLOCK
     connect( Plasma::Animator::self(), SIGNAL( movementFinished( QGraphicsItem* ) ),
