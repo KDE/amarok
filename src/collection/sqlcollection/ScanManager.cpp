@@ -470,7 +470,7 @@ XmlParseJob::run()
 
                     data.insert( Meta::Field::UNIQUEID, attrs.value( "uniqueid" ).toString() );
                     if( m_filesAdded )
-                        (*m_filesAdded)[attrs.value( "uniqueid ").toString()] = attrs.value( "path" ).toString();
+                        m_filesAdded->insert( attrs.value( "uniqueid").toString(), attrs.value( "path" ).toString() );
 
                     KUrl url( data.value( Meta::Field::URL ).toString() );
                     if( firstTrack )
@@ -533,6 +533,7 @@ XmlParseJob::run()
     while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError );
     if( m_reader.error() != QXmlStreamReader::NoError )
     {
+        debug() << "do-while done with error";
         //the error cannot be PrematureEndOfDocumentError, so handle
         //an unrecoverable error here
         //TODO implement
@@ -540,12 +541,17 @@ XmlParseJob::run()
     }
     else
     {
+        debug() << "no reader error, processing directory or commit";
         if( !directoryData.isEmpty() )
         {
+            debug() << "processing directory";
             processor.processDirectory( directoryData );
         }
+        debug() << "processor being committed";
         processor.commit();
     }
+    debug() << "m_filesDeleted size is " << m_filesDeleted->size();
+    debug() << "m_filesAdded size is " << m_filesAdded->size();
     if( !m_isIncremental )
     {
         m_collection->emitFilesDeleted( *m_filesDeleted );

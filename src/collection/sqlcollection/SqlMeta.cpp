@@ -129,19 +129,19 @@ SqlTrack::getTrackReturnValues()
            "albums.name, albums.id, albums.artist, "
            "genres.name, genres.id, "
            "composers.name, composers.id, "
-           "years.name, years.id, "
-           "uniqueid.uniqueid";
+           "years.name, years.id";
 }
 
 int
 SqlTrack::getTrackReturnValueCount()
 {
-    return 30;
+    return 29;
 }
 
 TrackPtr
 SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collection )
 {
+    DEBUG_BLOCK
     QString query = "SELECT %1 FROM urls "
                     "LEFT JOIN tracks ON urls.id = tracks.url "
                     "LEFT JOIN statistics ON urls.id = statistics.url "
@@ -150,7 +150,6 @@ SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collectio
                     "LEFT JOIN genres ON tracks.genre = genres.id "
                     "LEFT JOIN composers ON tracks.composer = composers.id "
                     "LEFT JOIN years ON tracks.year = years.id "
-                    "LEFT JOIN uniqueid.uniqueid ON uniqueid.deviceid = %2 AND uniqueid.rpath = '%3' "
                     "WHERE urls.deviceid = %2 AND urls.rpath = '%3';";
     query = query.arg( SqlTrack::getTrackReturnValues(), QString::number( deviceid ), collection->escape( rpath ) );
     QStringList result = collection->query( query );
@@ -178,6 +177,7 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     , m_collection( QPointer<SqlCollection>( collection ) )
     , m_batchUpdate( false )
 {
+    DEBUG_BLOCK
     QStringList::ConstIterator iter = result.constBegin();
     m_deviceid = (*(iter++)).toInt();
     m_rpath = *(iter++);
@@ -216,8 +216,15 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     QString year = *(iter++);
     int yearId = (*(iter++)).toInt();
     m_year = registry->getYear( year, yearId );
-    m_uid = *(iter++);
     Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
+
+    QString query = "SELECT uniqueid FROM uniqueid WHERE uniqueid.deviceid = %1 AND uniqueid.rpath = '%2';";
+    query = query.arg( m_deviceid ).arg( collection->escape( m_rpath ) );
+    QStringList uidresult = collection->query( query );
+    if( uidresult.isEmpty() )
+        m_uid = QString();
+    else
+        m_uid = uidresult[0];
 }
 
 bool
@@ -526,6 +533,8 @@ SqlTrack::commitMetaDataChanges()
             m_trackNumber = m_cache.value( Meta::Field::TRACKNUMBER ).toInt();
         if( m_cache.contains( Meta::Field::DISCNUMBER ) )
             m_discNumber = m_cache.value( Meta::Field::DISCNUMBER ).toInt();
+        if( m_cache.contains( Meta::Field::UNIQUEID ) )
+            m_uid = m_cache.value( Meta::Field::UNIQUEID ).toString();
 
         //invalidate the cache of both the old and the new object
         if( m_cache.contains( Meta::Field::ARTIST ) )

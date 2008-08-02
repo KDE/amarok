@@ -110,6 +110,7 @@ ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, 
 void
 ScanResultProcessor::commit()
 {
+    DEBUG_BLOCK
     if( m_type == ScanResultProcessor::IncrementalScan )
     {
         foreach( const QString &dir, m_directories.keys() )
@@ -134,6 +135,7 @@ ScanResultProcessor::commit()
         m_collection->dbUpdater()->deleteAllRedundant( "composer" );
         m_collection->dbUpdater()->deleteAllRedundant( "year" );
     }
+    debug() << "Sending changed signal";
     m_collection->sendChangedSignal();
 }
 
@@ -316,8 +318,13 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     m_collection->insert( insert, "tracks_temp" );
 
-    qDebug() << "AFT ID: " << trackData.value( Field::UNIQUEID ).toString();
-    //Do AFT stuff here?
+    //Do AFT stuff here?  For now just put into database
+    int deviceid = MountPointManager::instance()->getIdForUrl( trackData.value( Field::URL ).toString() );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, trackData.value( Field::URL ).toString() );
+    
+    insert = "INSERT INTO uniqueid_temp(deviceid,rpath,uniqueid) VALUES (%1,'%2','%3');";
+    insert = insert.arg( deviceid ).arg( m_collection->escape( rpath ) ).arg( trackData.value( Field::UNIQUEID ).toString() );
+    m_collection->insert( insert, "uniqueid_temp" );
 
 }
 

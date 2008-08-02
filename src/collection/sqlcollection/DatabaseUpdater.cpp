@@ -558,7 +558,7 @@ DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir, QHash<QStr
                 (*filesRemoved)[uniqueid] = MountPointManager::instance()->getAbsolutePath( deviceid, url );
                 if( !uniqueids.isEmpty() )
                     uniqueids += ',';
-                uniqueids += uniqueid;
+                uniqueids += "'" + uniqueid + "'";
             }
         }
         QString drop = QString( "DELETE FROM tracks WHERE id IN (%1);" ).arg( ids );
