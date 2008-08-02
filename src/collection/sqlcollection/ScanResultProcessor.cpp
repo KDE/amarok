@@ -322,8 +322,9 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     int deviceid = MountPointManager::instance()->getIdForUrl( trackData.value( Field::URL ).toString() );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, trackData.value( Field::URL ).toString() );
     
-    insert = "INSERT INTO uniqueid_temp(deviceid,rpath,uniqueid) VALUES (%1,'%2','%3');";
-    insert = insert.arg( deviceid ).arg( m_collection->escape( rpath ) ).arg( trackData.value( Field::UNIQUEID ).toString() );
+    insert = QString( "INSERT INTO uniqueid_temp(deviceid,rpath,uniqueid) VALUES (" ) + 
+                QString::number( deviceid ) + ",'" + m_collection->escape( rpath ) + "','" + 
+                trackData.value( Field::UNIQUEID ).toString() + "' );";
     m_collection->insert( insert, "uniqueid_temp" );
 
 }
