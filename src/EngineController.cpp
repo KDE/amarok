@@ -570,6 +570,9 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     if( !m_nextUrl.isEmpty() )
         m_nextUrl.clear();
 
+    // state never changes if tracks are queued, but we need this to update the caption
+    stateChangedNotify( m_media->state(), m_media->state() );
+
     newTrackPlaying();
 }
 
