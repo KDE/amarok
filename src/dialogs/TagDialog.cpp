@@ -163,12 +163,13 @@ TagDialog::resultReady( const QString &collectionId, const Meta::TrackList &trac
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId )
+
     m_tracks << tracks;
     foreach( Meta::TrackPtr d_track, tracks )
-        {
-            if ( d_track )
-                debug() << "Artist is: " << d_track->artist()->name();
-        }
+    {
+        if ( d_track )
+            debug() << "Artist is: " << d_track->artist()->name();
+    }
 }
 
 void
