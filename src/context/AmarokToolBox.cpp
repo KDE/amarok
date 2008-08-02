@@ -46,8 +46,8 @@ AmarokToolBox::AmarokToolBox( QGraphicsItem *parent )
     , m_icon( KStandardDirs::locate( "data", "amarok/images/toolbox_icon.png" ) )
 {
     DEBUG_BLOCK
-//     connect( Plasma::Animator::self(), SIGNAL(movementFinished(QGraphicsItem*)), this, SLOT(toolMoved(QGraphicsItem*)));
-//     connect(this, SIGNAL(toggled()), this, SLOT(toggle()));
+    connect( Plasma::Animator::self(), SIGNAL( movementFinished( QGraphicsItem* ) ),
+             this, SLOT( toolMoved( QGraphicsItem* ) ) );
 
     setZValue( 10000000 );
     setFlag( ItemClipsToShape, false );
@@ -87,35 +87,27 @@ AmarokToolBox::showing() const
 QPainterPath
 AmarokToolBox::shape() const
 {
-    DEBUG_BLOCK
     QPainterPath path;
     int toolSize = ( size() * 2 )+ ( int ) m_animCircleFrame;
-
-    debug() << "animCircleFrame: " << m_animCircleFrame;    
-    debug() << "boundingRect: " << boundingRect();
     
     QPointF center( boundingRect().width()/2, boundingRect().height() );
-    debug() << "center: " << center;
     path.moveTo( center );
 
     path.arcTo( QRectF( boundingRect().width()/2.0 - toolSize/2.0,
                         boundingRect().bottom() - toolSize/2.0 ,
                         toolSize, toolSize ), 0, 180 );
-//     path.arcTo( boundingRect(), 0, -180 );
     return path;
 }
 
 void
 AmarokToolBox::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-    DEBUG_BLOCK
     Q_UNUSED( option )
     Q_UNUSED( widget )
 
     if( !showing() )
         return;
     
-    DEBUG_LINE_INFO
     painter->save();
     painter->translate( boundingRect().topLeft() );
 
@@ -178,11 +170,26 @@ AmarokToolBox::setSize( int newSize )
 void
 AmarokToolBox::showTools()
 {
-    foreach( QGraphicsItem *c, QGraphicsItem::children() )
-        c->show();
+    int i = 1;
+    m_showingTools = true;
+    foreach( QGraphicsItem *tool, QGraphicsItem::children() )
+    {        
+        qreal rad = size()*3 + 15;
+        
+        QPoint center( boundingRect().width()/2, boundingRect().height() );
+
+        tool->setPos( center );
+        tool->show();
+        
+        qreal x = rad - ( ( tool->boundingRect().width() + 5 ) * i  ) ;
+        qreal y = -sqrt( rad * rad - x * x ) + size()*4;
+        Plasma::Animator::self()->moveItem( tool, Plasma::Animator::SlideInMovement, QPoint( x + 5, y ) );
+        
+        i++;
+    }
     if( m_animCircleId )
         Plasma::Animator::self()->stopCustomAnimation( m_animCircleId );
-    m_showingTools = true;
+    
     m_animCircleId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve,
                                                                 this, "animateCircle" );    
 }
@@ -192,14 +199,28 @@ AmarokToolBox::hideTools()
 {
     if( m_showingTools )
     {
-        foreach( QGraphicsItem *c, QGraphicsItem::children() )
-            c->hide();
+        m_showingTools = false;
+        foreach( QGraphicsItem *tool, QGraphicsItem::children() )
+        {
+
+            QPoint center( boundingRect().width()/2, boundingRect().height() );
+            Plasma::Animator::self()->moveItem( tool, Plasma::Animator::SlideInMovement, center );
+        }
         if( m_animCircleId )
             Plasma::Animator::self()->stopCustomAnimation( m_animCircleId );
-
-        m_showingTools = false;
+        
         m_animCircleId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve,
                                                                 this, "animateCircle" );
+    }
+}
+
+void
+AmarokToolBox::toolMoved( QGraphicsItem *item )
+{
+    if ( !m_showingTools&&
+        QGraphicsItem::children().indexOf( static_cast<Plasma::Applet*>( item ) ) != -1 )
+    {
+        item->hide();
     }
 }
 
@@ -277,13 +298,9 @@ AmarokToolBox::addAction( QAction *action )
     
     tool->hide();
     tool->setZValue( zValue() + 1 );
-    qreal rad = size()*3 + 15;
-    qreal x = rad - ( ( tool->size().width() + 5 ) * m_actionsCount  ) ;
-    qreal y = -sqrt( rad * rad - x * x ) + size()*4;
-    tool->setPos( x + 5, y );
+
     //make enabled/disabled tools appear/disappear instantly
 //     connect(tool, SIGNAL(changed()), this, SLOT(updateToolBox()));
-    debug() << "x,y: " << x << sqrt( rad* rad - x * x );
 }
 
 void

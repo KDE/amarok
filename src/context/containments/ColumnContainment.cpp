@@ -304,7 +304,10 @@ void ColumnContainment::updateSize( QRectF rect )
     
     if( m_currentColumns > 0 )
         recalculate();
-    
+    if( m_toolBox )
+    {
+        m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size(), geometry().height() - m_toolBox->size() * 3 );
+    }
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 

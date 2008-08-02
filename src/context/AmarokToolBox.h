@@ -78,6 +78,7 @@ private:
 private slots:
     void timeToHide();
     void animateCircle( qreal progress );
+    void toolMoved( QGraphicsItem *item );
     
 };
 
