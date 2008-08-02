@@ -80,15 +80,12 @@ void Albums::prepareElements()
 {
     DEBUG_BLOCK
 
-    /*m_albumLabels.clear();
+    qDeleteAll( m_albumLabels );
+    qDeleteAll( m_albumCovers );
+    qDeleteAll( m_albumTracks );
+    m_albumLabels.clear();
     m_albumCovers.clear();
-    m_albumTracks.clear();*/
-
-    while ( m_albumLabels.count() > 0 ) delete m_albumLabels.takeFirst();
-    while ( m_albumCovers.count() > 0 ) delete m_albumCovers.takeFirst();
-    while ( m_albumTracks.count() > 0 ) delete m_albumTracks.takeFirst();
-
-    
+    m_albumTracks.clear();
 
     //const QColor textColor( Qt::white );
     QFont labelFont;
@@ -112,7 +109,6 @@ void Albums::prepareElements()
         QString albumName = m_names[i].toString();
         QString trackCountString = m_trackCounts[i].toString();
         QPixmap image = m_covers[i].value<QPixmap>();
-
         
         AlbumTextItem           *album = new AlbumTextItem( this );
         QGraphicsSimpleTextItem *trackCount = new QGraphicsSimpleTextItem( this );
@@ -133,9 +129,7 @@ void Albums::prepareElements()
         m_albumLabels.append( album );
         m_albumCovers.append( cover );
         m_albumTracks.append( trackCount );
-
     }
-
 }
 
 QList<QAction*>
@@ -148,6 +142,7 @@ Albums::contextualActions()
 void Albums::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
+    DEBUG_BLOCK
 
     prepareGeometryChange();
 
@@ -163,8 +158,8 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
 
     // here we put all of the text items into the correct locations
 
-    debug() << "Updating constraints for " << m_albumLabels.size() << " album rows";
-    for( int i = 0; i < m_albumLabels.size(); ++i )
+    debug() << "Updating constraints for " << m_albumCount << " album rows";
+    for( int i = 0; i < m_albumCount; ++i )
     {
         QGraphicsSimpleTextItem *album      = m_albumLabels.at( i );
         QGraphicsSimpleTextItem *trackCount = m_albumTracks.at( i );
@@ -173,8 +168,8 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
         const qreal yPos = i * ( m_albumWidth + margin ) + margin;
 
         album->setPos( QPointF( textX, yPos ) );
-        cover->setPos( QPointF( margin + 2, yPos ) );
         trackCount->setPos( QPointF( textX, yPos + textHeight ) );
+        cover->setPos( QPointF( margin + 2, yPos ) );
 
         QString albumText = album->text();
         debug() << "   --> " << albumText << " " << album->pos();
@@ -208,7 +203,6 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     DEBUG_BLOCK
     Q_UNUSED( name );
 
-
     m_albumCount = data[ "count" ].toInt();
     m_names = data[ "names" ].toList();
     m_trackCounts = data[ "trackCounts" ].toList();;
@@ -223,9 +217,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     const qreal height = m_albumLabels.size() * ( m_albumWidth + margin ) + margin;
     resize( size().toSize().width(), height );
 
-    update();
-
-    //constraintsEvent( Plasma::Constraints() );
+    constraintsEvent();
 }
 
 
