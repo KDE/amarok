@@ -380,7 +380,7 @@ CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
     //TODO: figure out a way to retrieve similar artists from last.fm here
     /*if( artistNames.isEmpty() )
     {
-        artistNames = Scrobbler::instance()->similarArtists( artist->name() );
+        artistNames = Scrobbler::instance()->similarArtists( Qt::escape( artist->name() ) );
     }*/
     QueryMaker *qm = queryMaker();
     foreach( const QString &artist, artistNames )
