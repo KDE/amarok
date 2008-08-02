@@ -311,29 +311,12 @@ void ColumnContainment::updateSize( QRectF rect )
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
+
 void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& rect )
 {
     Q_UNUSED( option );
     painter->save();
 
-    /*int height = rect.height(); //?
-    int width = rect.width();
-
-    int offsetX = The::mainWindow()->contextRectGlobal().x();
-    int offsetY = The::mainWindow()->contextRectGlobal().topLeft().y();
-
-    //debug() << "offset: " << offsetX << " x " << offsetY;
-
-    painter->drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( "Context", offsetX, offsetY, 0, 0, width, height ) );
-*/
-
-    QRectF bounds = The::svgHandler()->getRenderer()->boundsOnElement ( "amarok_logo" );
-    double aspectRatio = bounds.width() / bounds.height();
-    
-    int logoWidth = 300;
-    int logoHeight = ( int )( ( double ) logoWidth / aspectRatio );
-
-    painter->drawPixmap(rect.width() - ( logoWidth + 20 ) , rect.height() - ( logoHeight + 20 ) , The::svgHandler()->renderSvg( "amarok_logo", logoWidth, logoHeight, "amarok_logo" ) );
     if( m_paintTitle )
     {
         int width = rect.width() * 0.95;
@@ -345,14 +328,6 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
         m_header->paint( painter, headerRect );
     }    
     painter->restore();
-    
-    /*QSize size = m_logo->size();
-    QSize pos = rect.size() - size;
-    qreal newHeight  = m_aspectRatio * m_width;
-    m_logo->resize( QSize( (int)m_width, (int)newHeight ) );
-    painter->save();
-    m_logo->paint( painter, QRectF( pos.width() - 10.0, pos.height() - 5.0, size.width(), size.height() ) );
-    painter->restore();*/
 }
 
 
