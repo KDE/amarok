@@ -190,7 +190,7 @@ Meta::TrackPtr
 SqlCollection::trackForUrl( const KUrl &url )
 {
     if( url.protocol() == "amarok-sqltrackuid" )
-        return m_registry->getTrackFromUid( url.url().split( "//" )[1] ); //hack because url.path() won't work
+        return m_registry->getTrackFromUid( url.host() );
     else
         return m_registry->getTrack( url.path() );
 }
