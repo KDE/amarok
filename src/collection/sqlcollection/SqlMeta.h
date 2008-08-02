@@ -60,7 +60,7 @@ class SqlTrack : public Meta::Track
         /** returns a string describing the position of the track; same as url() */
         virtual QString prettyUrl() const { return m_url.path(); }
         /** returns a string describing the position of the track */
-        virtual QString uidUrl() const { return "amarok-sqltrackuid://" + m_uid; }
+        virtual QString uidUrl() const { return playableUrl().url(); } // that is not the final thing but at least playlists are working again
 
         /** true if there is a collection and the file exists on disk */
         virtual bool isPlayable() const;
