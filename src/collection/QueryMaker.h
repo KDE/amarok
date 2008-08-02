@@ -54,8 +54,6 @@ class AMAROK_EXPORT QueryMaker : public QObject
         static const qint64 valFirstPlayed  = 1LL << 18;
         static const qint64 valLastPlayed   = 1LL << 19;
         static const qint64 valPlaycount    = 1LL << 20;
-        //id
-        static const qint64 valUniqueId     = 1LL << 21;
 
         enum AlbumQueryMode { AllAlbums = 0
                               , OnlyCompilations = 1
@@ -69,7 +67,6 @@ class AMAROK_EXPORT QueryMaker : public QObject
                             GenreFilter     =     8,
                             ComposerFilter  =    16,
                             YearFilter      =    32,
-                            UniqueIdFilter  =    64,
                             AllFilters      = 65535 };
 
         enum ReturnFunction { Count = 0,
@@ -88,7 +85,6 @@ class AMAROK_EXPORT QueryMaker : public QObject
                          Genre,
                          Composer,
                          Year,
-                         UniqueId,
                          Custom
         };
         QueryMaker();
@@ -178,7 +174,6 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre ) = 0;
         virtual QueryMaker* addMatch( const Meta::YearPtr &year ) = 0;
         virtual QueryMaker* addMatch( const Meta::DataPtr &data ) = 0;
-        virtual QueryMaker* addMatch( const QString &uid ) { Q_UNUSED(uid) return 0; }
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;

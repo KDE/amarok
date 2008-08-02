@@ -64,7 +64,7 @@ class SqlWorkerThread : public ThreadWeaver::Job
 
 struct SqlQueryMaker::Private
 {
-    enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64, URLS_TAB = 128, ALBUMARTIST_TAB = 256, UNIQUEID_TAB = 512 };
+    enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64, URLS_TAB = 128, ALBUMARTIST_TAB = 256 };
     int linkedTables;
     QueryMaker::QueryType queryType;
     QString query;
@@ -182,7 +182,6 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->linkedTables |= Private::COMPOSER_TAB;
             d->linkedTables |= Private::YEAR_TAB;
             d->linkedTables |= Private::STATISTICS_TAB;
-            d->linkedTables |= Private::UNIQUEID_TAB;
             d->queryReturnValues = SqlTrack::getTrackReturnValues();
         }
         return this;
@@ -236,16 +235,6 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->withoutDuplicates = true;
             d->linkedTables |= Private::YEAR_TAB;
             d->queryReturnValues = "years.name, years.id";
-        }
-        return this;
-
-    case QueryMaker::UniqueId:
-        if( d->queryType == QueryMaker::None )
-        {
-            d->queryType = QueryMaker::UniqueId;
-            d->withoutDuplicates = true;
-            d->linkedTables |= Private::UNIQUEID_TAB;
-            d->queryReturnValues = "uniqueid.uniqueid";
         }
         return this;
 
@@ -348,14 +337,6 @@ QueryMaker*
 SqlQueryMaker::addMatch( const DataPtr &data )
 {
     ( const_cast<DataPtr&>(data) )->addMatchTo( this );
-    return this;
-}
-
-QueryMaker*
-SqlQueryMaker::addMatch( const QString &uid )
-{
-    d->linkedTables |= Private::UNIQUEID_TAB;
-    d->queryMatch += QString( " AND uniqueid.uniqueid = '%1'" ).arg( escape( uid ) );
     return this;
 }
 
@@ -564,13 +545,6 @@ SqlQueryMaker::linkTables()
             d->queryFrom += " statistics";
         }
     }
-    if( d->linkedTables & Private::UNIQUEID_TAB )
-    {
-        if( d->linkedTables & Private::URLS_TAB )
-            d->queryFrom += " LEFT JOIN uniqueid ON uniqueid.deviceid = urls.deviceid AND uniqueid.rpath = urls.rpath";
-        else
-            d->queryFrom += " uniqueid";
-    }
 }
 
 void
@@ -651,8 +625,6 @@ SqlQueryMaker::handleResult( const QStringList &result )
         case QueryMaker::Year:
             handleYears( result );
             break;
-        case QueryMaker::UniqueId:
-            break;
 
         case QueryMaker::None:
             debug() << "Warning: queryResult with queryType == NONE";
@@ -727,9 +699,6 @@ SqlQueryMaker::nameForValue( qint64 value )
         case valPlaycount:
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.playcount";
-        case valUniqueId:
-            d->linkedTables |= Private::UNIQUEID_TAB;
-            return "uniqueid.uniqueid";
         default:
             return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
     }

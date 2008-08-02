@@ -131,7 +131,6 @@ AmpacheServiceQueryMaker::setQueryType( QueryType type )
     case QueryMaker::Genre:
     case QueryMaker::Composer:
     case QueryMaker::Year:
-    case QueryMaker::UniqueId:
     case QueryMaker::Custom:
     case QueryMaker::None:
         //TODO: Implement.

@@ -222,28 +222,24 @@ SqlCollection::sendChangedSignal()
 void
 SqlCollection::emitFilesAdded( const QHash<QString, QString> &files )
 {
-    //qDebug() << "size of files added: " << files.size();
     emit filesAdded( files );
 }
 
 void
 SqlCollection::emitFilesDeleted( const QHash<QString, QString> &files )
 {
-    //qDebug() << "size of files deleted: " << files.size();
     emit filesDeleted( files );
 }
 
 void
 SqlCollection::emitFileAdded( const QString& path, const QString &id )
 {
-    qDebug() << "file added: " << path << ", " << id;
     emit fileAdded( path, id );
 }
 
 void
 SqlCollection::emitFileDeleted( const QString& path, const QString &id )
 {
-    qDebug() << "file deleted: " << path << ", " << id;
     emit fileDeleted( path, id );    
 }
 
