@@ -73,7 +73,7 @@ private:
 
     QHBoxLayout* m_configLayout;
     int m_width;
-    qreal m_albumWidth;
+    const qreal m_albumWidth;
 
     qreal m_aspectRatio;
 

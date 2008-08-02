@@ -72,8 +72,7 @@ void Albums::init()
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
              this, SLOT( connectSource( const QString& ) ) );
 
-    constraintsEvent( Plasma::Constraints() );
-
+    updateConstraints();
 }
 
 void Albums::prepareElements()
@@ -144,8 +143,6 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints )
     DEBUG_BLOCK
 
-    prepareGeometryChange();
-
     //bah! do away with trying to get postions from an svg as this is proving wildly inaccurate
     const qreal margin = 14.0;
 
@@ -194,7 +191,9 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
         trackCount->setText( truncateTextToFit( trackText, trackCount->font(), rect ) );
     }
 
-    const qreal height = m_albumLabels.size() * ( m_albumWidth + margin ) + margin;
+    prepareGeometryChange();
+
+    const qreal height = m_albumCount * ( m_albumWidth + margin ) + margin;
     resize( size().toSize().width(), height );
 }
 
@@ -217,7 +216,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     const qreal height = m_albumLabels.size() * ( m_albumWidth + margin ) + margin;
     resize( size().toSize().width(), height );
 
-    constraintsEvent();
+    updateConstraints();
 }
 
 
