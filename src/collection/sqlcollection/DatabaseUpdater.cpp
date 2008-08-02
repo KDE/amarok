@@ -163,13 +163,13 @@ DatabaseUpdater::createTemporaryTables()
     }
     {
         QString create = "CREATE TEMPORARY TABLE uniqueid_temp "
-                    "(url " + m_collection->exactTextColumnType() +
-                    ",deviceid INTEGER"
+                    "(deviceid INTEGER"
+                    ",rpath " + m_collection->exactTextColumnType() +
                     ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE"
                     ");";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX uniqueid_temp_uniqueid ON uniqueid_temp(uniqueid);" );
-        m_collection->query( "CREATE INDEX uniqueid_temp_url ON uniqueid_temp(url);" );
+        m_collection->query( "CREATE INDEX uniqueid_temp_rpath ON uniqueid_temp(rpath);" );
     }
 }
 
@@ -502,13 +502,13 @@ DatabaseUpdater::createTables() const
     }
     {
         QString create = "CREATE TABLE uniqueid "
-                    "(url " + m_collection->exactTextColumnType() +
-                    ",deviceid INTEGER"
+                    "(deviceid INTEGER"
+                    ",rpath " + m_collection->exactTextColumnType() +
                     ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE"
                     ");";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX uniqueid_uniqueid ON uniqueid(uniqueid);" );
-        m_collection->query( "CREATE INDEX uniqueid_url ON uniqueid(url);" );
+        m_collection->query( "CREATE INDEX uniqueid_rpath ON uniqueid(rpath);" );
     }
     m_collection->query( "INSERT INTO admin(component,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );

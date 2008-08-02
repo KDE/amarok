@@ -180,7 +180,10 @@ SqlCollection::possiblyContainsTrack( const KUrl &url ) const
 Meta::TrackPtr
 SqlCollection::trackForUrl( const KUrl &url )
 {
-    return m_registry->getTrack( url.path() );
+    if( url.protocol() == "amarok-sqltrackuid" )
+        return m_registry->getTrackFromUid( url.path() );
+    else
+        return m_registry->getTrack( url.path() );
 }
 
 CollectionLocation*
@@ -210,25 +213,25 @@ SqlCollection::sendChangedSignal()
 void
 SqlCollection::emitFilesAdded( const QHash<QString, QString> &files )
 {
-
+    emit filesAdded( files );
 }
 
 void
 SqlCollection::emitFilesDeleted( const QHash<QString, QString> &files )
 {
-
+    emit filesDeleted( files );
 }
 
 void
 SqlCollection::emitFileAdded( const QString& path, const QString &id )
 {
-
+    emit fileAdded( path, id );
 }
 
 void
 SqlCollection::emitFileDeleted( const QString& path, const QString &id )
 {
-
+    emit fileDeleted( path, id );    
 }
 
 QString

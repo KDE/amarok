@@ -83,6 +83,20 @@ SqlRegistry::getTrack( const QStringList &rowData )
     }
 }
 
+TrackPtr
+SqlRegistry::getTrackFromUid( const QString &uid )
+{
+    if( m_uidMap.contains( uid ) )
+        return m_uidMap.value( uid );
+    else
+    {
+        TrackPtr track( SqlTrack::getTrackFromUid( uid, m_collection ) );
+        m_uidMap.insert( uid, track );
+        return track;
+    } 
+}
+
+
 ArtistPtr
 SqlRegistry::getArtist( const QString &name, int id )
 {
@@ -269,6 +283,7 @@ SqlRegistry::emptyCache()
         }
 
         foreachCollectGarbage( TrackId, TrackPtr, m_trackMap )
+        foreachCollectGarbage( QString, TrackPtr, m_uidMap )
         //run before artist so that album artist pointers can be garbage collected
         foreachCollectGarbage( int, AlbumPtr, m_albumMap )
         foreachCollectGarbage( int, ArtistPtr, m_artistMap )

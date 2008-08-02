@@ -116,6 +116,7 @@ class UpdateCapabilitySql : public Meta::UpdateCapability
 QString
 SqlTrack::getTrackReturnValues()
 {
+    //If you modify this, update getTrackReturnValueCount below!
     return "urls.deviceid, urls.rpath, "
            "tracks.id, tracks.title, tracks.comment, "
            "tracks.tracknumber, tracks.discnumber, "
@@ -128,13 +129,14 @@ SqlTrack::getTrackReturnValues()
            "albums.name, albums.id, albums.artist, "
            "genres.name, genres.id, "
            "composers.name, composers.id, "
-           "years.name, years.id";
+           "years.name, years.id, "
+           "uniqueid.uniqueid";
 }
 
 int
 SqlTrack::getTrackReturnValueCount()
 {
-    return 29;
+    return 30;
 }
 
 TrackPtr
@@ -148,6 +150,7 @@ SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collectio
                     "LEFT JOIN genres ON tracks.genre = genres.id "
                     "LEFT JOIN composers ON tracks.composer = composers.id "
                     "LEFT JOIN years ON tracks.year = years.id "
+                    "LEFT JOIN uniqueid.uniqueid ON uniqueid.deviceid = %2 AND uniqueid.rpath = '%3' "
                     "WHERE urls.deviceid = %2 AND urls.rpath = '%3';";
     query = query.arg( SqlTrack::getTrackReturnValues(), QString::number( deviceid ), collection->escape( rpath ) );
     QStringList result = collection->query( query );
@@ -155,6 +158,19 @@ SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collectio
         return TrackPtr();
     else
         return TrackPtr( new SqlTrack( collection, result ) );
+}
+
+TrackPtr
+SqlTrack::getTrackFromUid( const QString &uid, SqlCollection* collection )
+{
+    QString query = "SELECT uniqueid.deviceid, uniqueid.rpath FROM uniqueid "
+                    "WHERE uniqueid.uniqueid = '%1';";
+    query = query.arg( uid );
+    QStringList result = collection->query( query );
+    if( result.isEmpty() )
+        return TrackPtr();
+    else
+        return getTrack( result[0].toInt(), result[1], collection );    
 }
 
 SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
@@ -200,6 +216,7 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     QString year = *(iter++);
     int yearId = (*(iter++)).toInt();
     m_year = registry->getYear( year, yearId );
+    m_uid = *(iter++);
     Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
 }
 
@@ -430,6 +447,18 @@ SqlTrack::setTitle( const QString &newTitle )
     }
     else
         m_cache.insert( Meta::Field::TITLE, newTitle );
+}
+
+void
+SqlTrack::setUid( const QString &uid )
+{
+    if( !m_batchUpdate )
+    {
+        m_uid = uid;
+        notifyObservers();
+    }
+    else
+        m_cache.insert( Meta::Field::UNIQUEID, uid );
 }
 
 void

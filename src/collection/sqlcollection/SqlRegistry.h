@@ -42,6 +42,7 @@ class SqlRegistry : public QObject
 
         Meta::TrackPtr getTrack( const QString &url );
         Meta::TrackPtr getTrack( const QStringList &rowData );
+        Meta::TrackPtr getTrackFromUid( const QString &uid );
 
         Meta::ArtistPtr getArtist( const QString &name, int id = -1 );
         Meta::GenrePtr getGenre( const QString &name, int id = -1 );
@@ -57,6 +58,7 @@ class SqlRegistry : public QObject
 
         //we don't care about the ordering so use the faster QHash
         QHash<TrackId, Meta::TrackPtr > m_trackMap;
+        QHash<QString, Meta::TrackPtr > m_uidMap;
         QHash<int, Meta::ArtistPtr > m_artistMap;
         QHash<int, Meta::ComposerPtr > m_composerMap;
         QHash<int, Meta::GenrePtr > m_genreMap;
