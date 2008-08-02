@@ -183,17 +183,14 @@ SqlCollection::isFileInCollection( const QString &url )
 bool
 SqlCollection::possiblyContainsTrack( const KUrl &url ) const
 {
-    return url.protocol() == "file";
+    return url.protocol() == "file" || url.protocol() == "amarok-sqltrackuid";
 }
 
 Meta::TrackPtr
 SqlCollection::trackForUrl( const KUrl &url )
 {
-    DEBUG_BLOCK
-    debug() << "url = " << url.url();
-    debug() << "protocol = " << url.protocol();
     if( url.protocol() == "amarok-sqltrackuid" )
-        return m_registry->getTrackFromUid( url.path() );
+        return m_registry->getTrackFromUid( url.url().split( "//" )[1] ); //hack because url.path() won't work
     else
         return m_registry->getTrack( url.path() );
 }
