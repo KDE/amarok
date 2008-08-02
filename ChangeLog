@@ -22,6 +22,7 @@ VERSION 2.0-beta1
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
+    * Fix crash when exiting while collection scan was running. (BR 167872)
     * Automatically re-authenticate connection if the Ampache server has
       logged us out. (BR 166958)
     * Status bar now allows shrinking main window beyond it's width and does
