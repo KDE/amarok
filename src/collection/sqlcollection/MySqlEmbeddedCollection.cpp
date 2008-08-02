@@ -82,10 +82,11 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
 {
     QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config",
                     Amarok::saveLocation() + "my.cnf" ); 
-    QString defaultsLine = QString( "--defaults-file=%1" ).arg( defaultsFile );
-    QString databaseLine = QString( "--datadir=%1" ).arg(
+    char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( 
+                    defaultsFile ).toAscii().data() );
+    char* databaseLine = qstrdup( QString( "--datadir=%1" ).arg(
                     Amarok::config( "MySQLe" ).readEntry( "config",
-                    Amarok::saveLocation() + "mysqle" ) );
+                    Amarok::saveLocation() + "mysqle" ) ).toAscii().data() );
 
     if( !QFile::exists( defaultsFile ) )
     {
@@ -93,16 +94,24 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
         df.open( QIODevice::WriteOnly );
     }
 
-    const int num_elements = 3;
-    char *server_options[ num_elements + 1 ] = {
-            "amarokmysqld", 
-            defaultsLine.toAscii().data(),
-            databaseLine.toAscii().data(),
-            0 };                                                                                                                                                     
-    char *server_groups[] = { "amarokserver", "amarokclient", 0 };
+    static const int num_elements = 3;
+    char **server_options = new char* [ num_elements + 1 ];
+    server_options[0] = "amarokmysqld";
+    server_options[1] = defaultsLine;
+    server_options[2] = databaseLine;
+    server_options[3] = 0;
+
+    char **server_groups = new char* [ 3 ];
+    server_groups[0] = "amarokserver";
+    server_groups[1] = "amarokclient";
+    server_groups[2] = 0;
 
     mysql_library_init(num_elements, server_options, server_groups);
     m_db = mysql_init(NULL);
+    delete [] server_options;
+    delete [] server_groups;
+    delete [] defaultsLine;
+    delete [] databaseLine;
     if( !m_db )
     {
         error() << "MySQLe initialization failed";
