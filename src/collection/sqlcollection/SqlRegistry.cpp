@@ -91,7 +91,8 @@ SqlRegistry::getTrackFromUid( const QString &uid )
     else
     {
         TrackPtr track( SqlTrack::getTrackFromUid( uid, m_collection ) );
-        m_uidMap.insert( uid, track );
+        if( track )
+            m_uidMap.insert( uid, track );
         return track;
     } 
 }
