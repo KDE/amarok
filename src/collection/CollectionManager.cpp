@@ -87,6 +87,8 @@ CollectionManager::~CollectionManager()
 {
     DEBUG_BLOCK
 
+    qRemovePostRoutine( privateInstance.destroy );
+    
     d->collections.clear();
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
