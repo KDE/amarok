@@ -86,6 +86,8 @@ ScanManager::startFullScan()
         m_parser->deleteLater();
     }
     m_parser = new XmlParseJob( this, m_collection );
+    m_parser->setFilesAddedHash( &m_filesAdded );
+    m_parser->setFilesDeletedHash( &m_filesDeleted );
     m_parser->setIsIncremental( false );
     m_isIncremental = false;
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
@@ -127,6 +129,8 @@ void ScanManager::startIncrementalScan()
         m_parser->deleteLater();
     }
     m_parser = new XmlParseJob( this, m_collection );
+    m_parser->setFilesAddedHash( &m_filesAdded );
+    m_parser->setFilesDeletedHash( &m_filesDeleted );
     m_parser->setIsIncremental( true );
     m_isIncremental = true;
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
@@ -465,7 +469,8 @@ XmlParseJob::run()
                         data.insert( Meta::Field::FILESIZE, attrs.value( "filesize" ).toString() );
 
                     data.insert( Meta::Field::UNIQUEID, attrs.value( "uniqueid" ).toString() );
-                    (*m_filesAdded)[attrs.value( "uniqueid ").toString()] = attrs.value( "path" ).toString();
+                    if( m_filesAdded )
+                        (*m_filesAdded)[attrs.value( "uniqueid ").toString()] = attrs.value( "path" ).toString();
 
                     KUrl url( data.value( Meta::Field::URL ).toString() );
                     if( firstTrack )

@@ -494,7 +494,7 @@ DatabaseUpdater::createTables() const
                     "id " + m_collection->idType() +
                     ",url INTEGER"
                     ",lyrics " + m_collection->longTextColumnType() +
-                    ",uniqueid " + m_collection->exactTextColumnType(128) +
+                    ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE"
                     ");";
         m_collection->query( q );
         m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
@@ -532,8 +532,8 @@ DatabaseUpdater::deleteAllRedundant( const QString &type )
 void
 DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir, QHash<QString, QString> *filesRemoved )
 {
-    QString select = QString( "SELECT urls.id, urls.rpath, uniqueid.uniqueid LEFT JOIN directories ON urls.directory = directories.id "
-                              "LEFT JOIN uniqueid ON uniqueid.url = urls.rpath AND uniqueid.deviceid = urls.deviceid "
+    QString select = QString( "SELECT urls.id, urls.rpath, uniqueid.uniqueid FROM urls LEFT JOIN directories ON urls.directory = directories.id "
+                              "LEFT JOIN uniqueid ON uniqueid.rpath = urls.rpath AND uniqueid.deviceid = urls.deviceid "
                               "WHERE directories.deviceid = %1 AND directories.dir = '%2';" )
                                 .arg( QString::number( deviceid ), m_collection->escape( rdir ) );
     QStringList idResult = m_collection->query( select );

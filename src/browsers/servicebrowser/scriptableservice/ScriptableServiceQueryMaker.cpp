@@ -137,6 +137,7 @@ QueryMaker * ScriptableServiceQueryMaker::setQueryType( QueryType type )
 
     case QueryMaker::Composer:
     case QueryMaker::Year:
+    case QueryMaker::UniqueId:
     case QueryMaker::Custom:
     case QueryMaker::None:
         //TODO: Implement.
