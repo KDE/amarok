@@ -177,7 +177,6 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     , m_collection( QPointer<SqlCollection>( collection ) )
     , m_batchUpdate( false )
 {
-    DEBUG_BLOCK
     QStringList::ConstIterator iter = result.constBegin();
     m_deviceid = (*(iter++)).toInt();
     m_rpath = *(iter++);

@@ -19,23 +19,23 @@
  **************************************************************************/
 
 #include "TrackSet.h"
-#include "DynamicModel.h"
+#include "BiasSolver.h"
 
 
 Dynamic::TrackSet::TrackSet()
-    : m_bits( PlaylistBrowserNS::DynamicModel::instance()->universe().size() )
+    : m_bits( Dynamic::BiasSolver::universe().size() )
 {
 }
 
 
 Dynamic::TrackSet::TrackSet( const Meta::TrackList& tracks )
-    : m_bits( PlaylistBrowserNS::DynamicModel::instance()->universe().size() )
+    : m_bits( Dynamic::BiasSolver::universe().size() )
 {
     addTracks( tracks );
 }
 
 Dynamic::TrackSet::TrackSet( const QSet<Meta::TrackPtr>& tracks )
-    : m_bits( PlaylistBrowserNS::DynamicModel::instance()->universe().size() )
+    : m_bits( Dynamic::BiasSolver::universe().size() )
 {
     addTracks( tracks );
 }
@@ -43,7 +43,7 @@ Dynamic::TrackSet::TrackSet( const QSet<Meta::TrackPtr>& tracks )
 void
 Dynamic::TrackSet::reset()
 {
-    m_bits.resize( PlaylistBrowserNS::DynamicModel::instance()->universe().size() );
+    m_bits.resize( Dynamic::BiasSolver::universe().size() );
     m_bits.clear();
 }
 
@@ -86,7 +86,7 @@ void
 Dynamic::TrackSet::addTracks( const Meta::TrackList& tracks )
 {
     const Meta::TrackList& U =
-        PlaylistBrowserNS::DynamicModel::instance()->universe();
+        Dynamic::BiasSolver::universe();
 
     foreach( Meta::TrackPtr t, tracks )
     {
@@ -100,7 +100,7 @@ void
 Dynamic::TrackSet::addTracks( const QSet<Meta::TrackPtr>& tracks )
 {
     const Meta::TrackList& U =
-        PlaylistBrowserNS::DynamicModel::instance()->universe();
+        Dynamic::BiasSolver::universe();
 
     foreach( Meta::TrackPtr t, tracks )
     {
@@ -114,7 +114,7 @@ Meta::TrackList
 Dynamic::TrackSet::trackList() const
 {
     const Meta::TrackList& U =
-        PlaylistBrowserNS::DynamicModel::instance()->universe();
+        Dynamic::BiasSolver::universe();
 
     Meta::TrackList tracks;
 

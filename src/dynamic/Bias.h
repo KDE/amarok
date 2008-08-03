@@ -31,7 +31,6 @@
 
 class Collection;
 class QueryMaker;
-class BlockingQuery;
 class XmlQueryWriter;
 
 namespace PlaylistBrowserNS
@@ -112,10 +111,14 @@ namespace Dynamic
             CollectionDependantBias( Collection* );
 
             /**
-             * This gets called when the collection changes.
+             * This gets called when the collection changes. It's expected to
+             * emit a biasUpdated signal when finished.
              */
             virtual void update() = 0;
             bool needsUpdating();
+
+        signals:
+            void biasUpdated( CollectionDependantBias* );
 
         public slots:
             void collectionUpdated();
@@ -134,9 +137,13 @@ namespace Dynamic
      */
     class GlobalBias : public CollectionDependantBias
     {
+        Q_OBJECT
+                
         public:
             GlobalBias( double weight, XmlQueryReader::Filter );
             GlobalBias( Collection* coll, double weight, XmlQueryReader::Filter query );
+            
+            ~GlobalBias();
 
             void setQuery( XmlQueryReader::Filter );
 
@@ -156,11 +163,14 @@ namespace Dynamic
             double weight() const;
             void setWeight( double );
 
+
+        private slots:
+            void updateFinished( QString collectionId, Meta::TrackList );
+
         private:
             double m_weight; /// range: [0,1]
             QSet<Meta::TrackPtr> m_property;
             XmlQueryWriter* m_qm;
-            BlockingQuery* m_propertyQuery;
             XmlQueryReader::Filter m_filter;
     };
 }

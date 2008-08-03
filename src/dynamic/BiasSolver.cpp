@@ -18,16 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#define DEBUG_PREFIX "BiasSolver"
 
 #include "BiasSolver.h"
+#include "CollectionManager.h"
 #include "Debug.h"
-#include "DynamicModel.h"
 #include "TrackSet.h"
 
 #include <cmath>
 #include <typeinfo>
 
 #include <QHash>
+#include <QMutexLocker>
 
 #include <KRandom>
 
@@ -40,17 +42,39 @@ const double Dynamic::BiasSolver::INITIAL_TEMPERATURE = 0.1;
 const double Dynamic::BiasSolver::COOLING_RATE        = 0.8;
 
 
+const int Dynamic::BiasSolver::MUTATION_POOL_SIZE = 200;
 
-Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, RandomPlaylist* randomSource, Meta::TrackList context )
+
+Meta::TrackList Dynamic::BiasSolver::s_universe;
+QMutex          Dynamic::BiasSolver::s_universeMutex;
+QueryMaker*     Dynamic::BiasSolver::s_universeQuery = 0;
+bool            Dynamic::BiasSolver::s_universeOutdated = true;
+
+
+
+Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, QueryMaker* mutationSource, Meta::TrackList context )
     : m_biases(biases)
     , m_n(n)
     , m_context(context)
-    , m_mutationSource(randomSource)
+    , m_mutationSource(mutationSource)
+    , m_pendingBiasUpdates(0)
     , m_abortRequested(false)
 {
+    m_mutationSource->orderByRandom();
+    m_mutationSource->limitMaxResultSize( MUTATION_POOL_SIZE );
+    m_mutationSource->setQueryType( QueryMaker::Track );
+
+    connect( m_mutationSource, SIGNAL(newResultReady( QString, Meta::TrackList )),
+            SLOT(mutationsReady( QString, Meta::TrackList )), Qt::DirectConnection );
+
     int i = m_biases.size();
     while( i-- )
         m_biasEnergy.append( 0.0 );
+}
+
+Dynamic::BiasSolver::~BiasSolver()
+{
+    delete m_mutationSource;
 }
 
 void
@@ -67,13 +91,37 @@ Dynamic::BiasSolver::success() const
 
 void Dynamic::BiasSolver::run()
 {
+    // update biases
+
+    m_biasMutex.lock();
+
+    CollectionDependantBias* cb;
+    foreach( Bias* b, m_biases )
+    {
+        if( (cb = dynamic_cast<CollectionDependantBias*>( b ) ) )
+        {
+            if( cb->needsUpdating() )
+            {
+                connect( cb, SIGNAL(biasUpdated(CollectionDependantBias*)),
+                        SLOT(biasUpdated()), Qt::DirectConnection );
+                cb->update();
+                m_pendingBiasUpdates++;
+            }
+        }
+    }
+
+    if( m_pendingBiasUpdates )
+        m_biasUpdateWaitCond.wait( &m_biasMutex );
+    m_biasMutex.unlock();
+
+
     bool optimal = generateInitialPlaylist();
 
     // test for the empty collection case
     m_playlist.removeAll( Meta::TrackPtr() );
     if( m_playlist.empty() )
     {
-        debug() << "Empty collection, aborting BiasSolver.";
+        debug() << "Empty collection, aborting.";
         return;
     }
 
@@ -85,11 +133,23 @@ void Dynamic::BiasSolver::run()
 
     //const double E_0 = m_E;
 
+
     int i = ITERATION_LIMIT;
     double epsilon = 1.0 / (double)m_n;
-    while( i-- && m_E >= epsilon && !m_abortRequested )  
+    m_mutationMutex.lock();
+    while( i-- && m_E >= epsilon && !m_abortRequested )
     {
-        iterate();
+        if( m_mutationPool.isEmpty() )
+        {
+            refillMutationPool();
+            m_mutationWaitCond.wait( &m_mutationMutex );
+        }
+
+        // empty collection, abort
+        if( m_mutationPool.isEmpty() )
+            break;
+        
+        iterate( m_mutationPool.takeLast() );
 
         if( i % 250 == 0 )
         {
@@ -99,6 +159,7 @@ void Dynamic::BiasSolver::run()
             emit statusUpdate( progress >= 0 ? progress : 0 );
         }
     }
+    m_mutationMutex.unlock();
 
     debug() << "BiasSolver: System solved in " << (ITERATION_LIMIT - i) << " iterations.";
     debug() << "with E = " << m_E;
@@ -110,9 +171,33 @@ Meta::TrackList Dynamic::BiasSolver::solution()
 }
 
 
-void Dynamic::BiasSolver::iterate()
+void
+Dynamic::BiasSolver::biasUpdated()
 {
-    Meta::TrackPtr mutation = getMutation();
+    QMutexLocker locker( &m_biasMutex );
+
+    if( m_pendingBiasUpdates == 0 )
+        return;
+
+    if( --m_pendingBiasUpdates == 0 )
+        m_biasUpdateWaitCond.wakeOne();
+}
+
+
+
+void
+Dynamic::BiasSolver::mutationsReady( QString collectionId, Meta::TrackList mutations )
+{
+    Q_UNUSED( collectionId )
+    m_mutationMutex.lock();
+    m_mutationPool = mutations;
+    m_mutationMutex.unlock();
+    m_mutationWaitCond.wakeOne();
+}
+
+
+void Dynamic::BiasSolver::iterate( Meta::TrackPtr mutation )
+{
     int mutationPos = KRandom::random() % m_playlist.size();
 
     double mutationE = recalculateEnergy( mutation, mutationPos );
@@ -131,7 +216,6 @@ void Dynamic::BiasSolver::iterate()
 
     // cool the temperature
     m_T *= COOLING_RATE;
-
 }
 
 
@@ -171,6 +255,12 @@ double Dynamic::BiasSolver::recalculateEnergy( Meta::TrackPtr mutation, int muta
     }
 
     return sum / (double)activeBiases;
+}
+
+void
+Dynamic::BiasSolver::refillMutationPool()
+{
+    m_mutationSource->run();
 }
 
 
@@ -216,14 +306,23 @@ Dynamic::BiasSolver::generateInitialPlaylist()
 
     }
 
+    updateUniverse();
+
     // Empty collection
-    if( PlaylistBrowserNS::DynamicModel::instance()->universe().size() == 0 )
+    if( s_universe.isEmpty() )
         return false;
 
     // No feasible global biases
     if( globalBiases.size() == 0 )
     {
-        m_playlist = m_mutationSource->getTracks( m_n );
+        m_mutationMutex.lock();
+        m_mutationSource->limitMaxResultSize( m_n );
+        refillMutationPool();
+        m_mutationWaitCond.wait( &m_mutationMutex );
+        m_playlist = m_mutationPool;
+        m_mutationPool.clear();
+        m_mutationSource->limitMaxResultSize( MUTATION_POOL_SIZE );
+        m_mutationMutex.unlock();
         return false;
     }
 
@@ -246,9 +345,6 @@ Dynamic::BiasSolver::generateInitialPlaylist()
     for( int i = 0; i < globalBiases.size(); ++i )
         movingWeights[i] = globalBiases[i]->weight();
 
-    //const QSet<Meta::TrackPtr>& U = PlaylistBrowserNS::DynamicModel::instance()->universe();
-    //
-
     m_playlist.clear();
 
     // We use this array of indexes to randomize the order the biases are looked
@@ -262,7 +358,7 @@ Dynamic::BiasSolver::generateInitialPlaylist()
 
     double decider;
     int n = m_n;
-    while( --n )
+    while( --n && !m_abortRequested )
     {
         // For each bias, we must make a decision whether the track being chosen
         // should belong to it or not. This is simply a probabalistic choice
@@ -330,8 +426,7 @@ Dynamic::BiasSolver::generateInitialPlaylist()
         // this should never happen
         if( finalSubset.size() == 0 )
         {
-            warning() << "BiasSolver assumption failed.";
-            m_playlist.append( m_mutationSource->getTrack() );
+            error() << "BiasSolver assumption failed.";
             continue;
         }
 
@@ -346,9 +441,53 @@ Dynamic::BiasSolver::generateInitialPlaylist()
     return optimal;
 }
 
-
-Meta::TrackPtr Dynamic::BiasSolver::getMutation()
+void
+Dynamic::BiasSolver::updateUniverse()
 {
-    return m_mutationSource->getTrack();
+    QMutexLocker locker( &s_universeMutex );
+
+    if( !s_universeOutdated )
+        return;
+
+    if( !s_universeQuery )
+    {
+        s_universeQuery = CollectionManager::instance()->primaryCollection()->queryMaker();
+        s_universeQuery->setQueryType( QueryMaker::Track );
+    }
+
+    connect( s_universeQuery, SIGNAL(newResultReady( QString, Meta::TrackList )),
+            SLOT(universeUpdated( QString, Meta::TrackList )), Qt::DirectConnection );
+
+    s_universeQuery->run();
+
+    m_universeWaitCond.wait( &s_universeMutex );
+}
+
+
+void
+Dynamic::BiasSolver::universeUpdated( QString collectionId, Meta::TrackList tracks )
+{
+    Q_UNUSED(collectionId)
+
+    QMutexLocker locker( &s_universeMutex );
+
+    s_universe = tracks;
+    s_universeOutdated = false;
+
+    m_universeWaitCond.wakeAll();
+}
+
+void
+Dynamic::BiasSolver::outdateUniverse()
+{
+    QMutexLocker locker( &s_universeMutex );
+    s_universeOutdated = true;
+}
+
+const Meta::TrackList&
+Dynamic::BiasSolver::universe()
+{
+    QMutexLocker locker( &s_universeMutex );
+    return s_universe;
 }
 

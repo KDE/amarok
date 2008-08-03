@@ -20,7 +20,6 @@
 
 #include "Bias.h"
 
-#include "BlockingQuery.h"
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "Debug.h"
@@ -167,7 +166,6 @@ Dynamic::CollectionDependantBias::collectionUpdated()
 
 Dynamic::GlobalBias::GlobalBias( double weight, XmlQueryReader::Filter filter )
     : m_qm(0)
-    , m_propertyQuery(0)
 {
     setWeight( weight );
     setQuery( filter );
@@ -176,10 +174,14 @@ Dynamic::GlobalBias::GlobalBias( double weight, XmlQueryReader::Filter filter )
 Dynamic::GlobalBias::GlobalBias( Collection* coll, double weight, XmlQueryReader::Filter filter )
     : CollectionDependantBias( coll )
     , m_qm(0)
-    , m_propertyQuery(0)
 {
     setWeight( weight );
     setQuery( filter );
+}
+
+Dynamic::GlobalBias::~GlobalBias()
+{
+    delete m_qm;
 }
 
 QDomElement
@@ -240,7 +242,7 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     if( m_collection )
         qm = m_collection->queryMaker();
     else
-        qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+        qm = CollectionManager::instance()->primaryCollection()->queryMaker();
 
     m_qm = new XmlQueryWriter( qm,
             PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc() );
@@ -257,8 +259,8 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     m_qm->setQueryType( QueryMaker::Track );
     m_qm->orderByRandom(); // as to not affect the amortized time
 
-    delete m_propertyQuery;
-    m_propertyQuery = new BlockingQuery( qm );
+    connect( m_qm, SIGNAL(newResultReady( QString, Meta::TrackList )),
+            SLOT(updateFinished( QString, Meta::TrackList )) );
 
     m_filter = filter;
     collectionUpdated(); // force an update
@@ -310,35 +312,28 @@ bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t )
 void Dynamic::GlobalBias::update()
 {
     DEBUG_BLOCK
-
-    QMutexLocker locker( &m_mutex );
-
     if( !m_needsUpdating )
         return;
 
-    m_propertyQuery->resetResults();
-    m_propertyQuery->startQuery();
-
-    m_property.clear();
-
-    QHash<QString,Meta::TrackList> trackLists = m_propertyQuery->tracks();
-
-    int size = 0;
-    foreach( Meta::TrackList ts, trackLists )
-    {
-        size += ts.size();
-    }
-
-    m_property.reserve( size );
-
-    foreach( Meta::TrackList ts, trackLists )
-    {
-        foreach( Meta::TrackPtr t, ts )
-        {
-            m_property.insert( t );
-        }
-    }
-
-    m_needsUpdating = false;
+    m_qm->run();
 }
 
+void 
+Dynamic::GlobalBias::updateFinished( QString collectionId, Meta::TrackList tracks )
+{
+    DEBUG_BLOCK
+
+    Q_UNUSED(collectionId)
+
+    QMutexLocker locker( &m_mutex );
+
+    m_property.clear();
+    m_property.reserve( tracks.size() );
+    foreach( Meta::TrackPtr t, tracks )
+        m_property.insert( t );        
+
+    m_needsUpdating = false;
+
+
+    emit biasUpdated( this );
+}

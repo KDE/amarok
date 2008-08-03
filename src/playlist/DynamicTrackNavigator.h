@@ -38,13 +38,17 @@ class Model;
      * ending queue of tracks.
      */
     // TODO: this should inherit TrackNavigator and do it's work asynchronously.
-    class DynamicTrackNavigator : public SimpleTrackNavigator
+    class DynamicTrackNavigator : public TrackNavigator
     {
         Q_OBJECT
 
         public:
             DynamicTrackNavigator( Model* m, Dynamic::DynamicPlaylistPtr p ) ;
             ~DynamicTrackNavigator();
+
+            void requestNextRow();
+            void requestUserNextRow();
+            void requestLastRow();
 
             void appendUpcoming();
 
@@ -53,15 +57,19 @@ class Model;
             void activeRowChanged( int from, int to );
             void repopulate();
 
-        private:
-            int nextRow();
-            int lastRow();
+            void receiveTracks( Meta::TrackList );
 
+
+
+        private:
             void setAsUpcoming( int row );
             void setAsPlayed( int row );
             void markPlayed();
 
             void removePlayed();
+
+            bool m_waitingForNext;
+            bool m_waitingForUserNext;
             
             bool m_abortRequested;
 

@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#define DEBUG_PREFIX "BiasedPlaylist"
 
 #include "BiasedPlaylist.h"
-#include "BlockingQuery.h"
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "Debug.h"
@@ -72,7 +72,6 @@ Dynamic::BiasedPlaylist::BiasedPlaylist(
     : DynamicPlaylist(collection)
     , m_biases(biases)
     , m_solver(0)
-    , m_randomSource(collection)
 {
     setTitle( title );
 }
@@ -98,7 +97,6 @@ Dynamic::BiasedPlaylist::requestAbort()
 {
     if( m_solver )
         m_solver->requestAbort();
-    m_solverLoop.exit( -1 );
 }
 
 
@@ -115,22 +113,26 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 
     if( !m_solver )
     {
-        updateBiases();
+        QueryMaker* mutationSource;
+        if( m_collection )
+            mutationSource = m_collection->queryMaker();
+        else
+            mutationSource = CollectionManager::instance()->primaryCollection()->queryMaker();
+
         m_solver = new BiasSolver( 
-                BUFFER_SIZE, m_biases, &m_randomSource, m_context );
+                BUFFER_SIZE, m_biases, mutationSource, m_context );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
-                this, SLOT(solverFinished(ThreadWeaver::Job*)),
-                Qt::DirectConnection );
+                 SLOT(solverFinished(ThreadWeaver::Job*)) );
 
         ThreadWeaver::Weaver::instance()->enqueue( m_solver );
-    }
 
-    if( withStatusBar )
-    {
-        The::statusBar()->newProgressOperation( m_solver );
-        The::statusBar()->shortMessage( i18n("Generating playlist...") );
+        if( withStatusBar )
+        {
+            The::statusBar()->newProgressOperation( m_solver );
+            The::statusBar()->shortMessage( i18n("Generating playlist...") );
 
-        connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
+            connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
+        }
     }
 }
 
@@ -148,39 +150,19 @@ Dynamic::BiasedPlaylist::~BiasedPlaylist()
 }
 
 
-Meta::TrackPtr
-Dynamic::BiasedPlaylist::getTrack()
+void
+Dynamic::BiasedPlaylist::requestTracks( int n )
 {
-    Meta::TrackPtr track;
+    debug() << "Requesting " << n << " tracks.";
 
-    if( m_buffer.isEmpty() )
-    {
-        if( m_backbuffer.isEmpty() )
-        {
-            // we need it now !
-            debug() << "BiasedPlaylist: waiting for results.";
-            if( m_context.isEmpty() )
-                getContext();
-            startSolver( true );
-            int r = m_solverLoop.exec();
-            if( r == -1 )
-                return Meta::TrackPtr();
-        }
 
-        m_context = m_buffer;
-        m_buffer = m_backbuffer;
-        m_backbuffer.clear();
-        // start working on the backbuffer again
-        startSolver();
-    }
+    if( n <= 0 )
+        emit tracksReady( Meta::TrackList() );
 
-    // uh,oh. this means we have an empty collection.
-    if( m_buffer.isEmpty() ) return Meta::TrackPtr();
+    m_requestCache.clear();
+    m_numRequested = n;
 
-    track = m_buffer.back();
-    m_buffer.pop_back();
-
-    return track;
+    handleRequest();
 }
 
 void
@@ -206,10 +188,33 @@ Dynamic::BiasedPlaylist::biases() const
     return m_biases;
 }
 
+void
+Dynamic::BiasedPlaylist::handleRequest()
+{
+    while( m_buffer.size() && m_numRequested-- )
+        m_requestCache.append( m_buffer.takeLast() );
+
+    if( m_buffer.isEmpty() )
+    {
+        m_buffer = m_backbuffer;
+        m_backbuffer.clear();
+        startSolver( true );
+    }
+
+    if( m_numRequested <= 0 )
+    {
+        m_numRequested = 0;
+        debug() << "Returning " << m_requestCache.size() << " tracks.";
+        emit tracksReady( m_requestCache );
+    }
+}
+
 
 void
 Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
 {
+    DEBUG_BLOCK
+
     bool success;
     The::statusBar()->endProgressOperation( m_solver );
     m_backbuffer = m_solver->solution();
@@ -217,25 +222,19 @@ Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
     ThreadWeaver::Weaver::instance()->dequeue( job );
     job->deleteLater();
     m_solver = 0;
-    if( success )
-        m_solverLoop.exit(0);
-    else
-        m_solverLoop.exit(-1);
+
+    // empty collection, or it was aborted
+    if( !success || m_backbuffer.isEmpty() )
+    {
+        m_requestCache.clear();
+        m_numRequested = 0;
+
+        emit tracksReady( Meta::TrackList() );
+    }
+    else if( m_numRequested > 0 )
+        handleRequest();
 }
 
-void
-Dynamic::BiasedPlaylist::updateBiases()
-{
-    CollectionDependantBias* cb;
-    foreach( Bias* b, m_biases )
-    {
-        if( (cb = dynamic_cast<CollectionDependantBias*>( b ) ) )
-        {
-            if( cb->needsUpdating() )
-                cb->update();
-        }
-    }
-}
 
 void
 Dynamic::BiasedPlaylist::getContext()

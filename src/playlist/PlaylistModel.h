@@ -351,7 +351,7 @@ namespace Playlist
             Playlist::StopAfterMode m_stopAfterMode;
             bool m_stopPlaying;
 
-            QMutex m_waitingForNextTrack;
+            bool m_waitingForNextTrack;
 
             static Model* s_instance; //! instance variable
     };

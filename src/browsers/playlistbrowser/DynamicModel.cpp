@@ -18,14 +18,13 @@
 #include "DynamicModel.h"
 
 #include "Bias.h"
+#include "BiasSolver.h"
 #include "BiasedPlaylist.h"
-#include "BlockingQuery.h"
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "MetaQueryMaker.h"
 #include "Debug.h"
 #include "DynamicPlaylist.h"
-#include "RandomPlaylist.h"
 #include "collection/support/XmlQueryReader.h"
 #include "collection/support/XmlQueryWriter.h"
 
@@ -63,7 +62,6 @@ PlaylistBrowserNS::DynamicModel::instance()
 PlaylistBrowserNS::DynamicModel::DynamicModel()
     : QAbstractItemModel()
     , m_activeUnsaved(false)
-    , m_universeCurrent(false)
 {
     Dynamic::DynamicPlaylistPtr randomPlaylist = createDefaultPlaylist();
 
@@ -305,16 +303,6 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 }
 
 
-const Meta::TrackList&
-PlaylistBrowserNS::DynamicModel::universe()
-{
-    if( !m_universeCurrent )
-        computeUniverseSet();
-
-    QMutexLocker locker(&m_universeMutex);
-    return m_universe;
-}
-
 void
 PlaylistBrowserNS::DynamicModel::playlistModified( Dynamic::BiasedPlaylistPtr p )
 {
@@ -478,49 +466,10 @@ PlaylistBrowserNS::DynamicModel::removeActive()
     m_activeUnsaved = false;
 }
 
-
 void
 PlaylistBrowserNS::DynamicModel::universeNeedsUpdate()
 {
-    m_universeCurrent = false;
+    Dynamic::BiasSolver::outdateUniverse();
 }
 
-
-void
-PlaylistBrowserNS::DynamicModel::computeUniverseSet()
-{
-    DEBUG_BLOCK
-    if( !m_universeMutex.tryLock() )
-        return;
-
-    m_universe.clear();
-
-    QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->orderByRandom();
-    qm->setQueryType( QueryMaker::Track );
-
-    BlockingQuery bq( qm );
-
-    debug() << "Starting query for universe.";
-
-    bq.startQuery();
-
-    debug() << "Finished query for universe.";
-
-    QHash<QString, Meta::TrackList> trackLists = bq.tracks();
-
-    int size = 0;
-    foreach( Meta::TrackList ts, trackLists )
-    {
-        size += ts.size();
-    }
-
-    debug() << "Results from: " << trackLists.keys();
-
-    foreach( Meta::TrackList ts, trackLists )
-        m_universe += ts;
-
-    m_universeCurrent = true;
-    m_universeMutex.unlock();
-}
 

@@ -25,11 +25,9 @@
 #include "BiasSolver.h"
 #include "DynamicPlaylist.h"
 #include "Meta.h"
-#include "RandomPlaylist.h"
 
 #include <QDomElement>
 #include <QObject>
-#include <QEventLoop>
 
 namespace Dynamic
 {
@@ -49,7 +47,7 @@ namespace Dynamic
 
             void setContext( Meta::TrackList );
 
-            Meta::TrackPtr getTrack();
+            void requestTracks(int);
 
             QList<Bias*>& biases();
             const QList<Bias*>& biases() const;
@@ -64,20 +62,20 @@ namespace Dynamic
             void updateStatus( int progress );
 
         private:
-            void updateBiases();
             void startSolver( bool withStatusBar = false );
+            void handleRequest();
             void getContext();
 
             Meta::TrackList m_context;
             Meta::TrackList m_buffer;
             Meta::TrackList m_backbuffer;
 
+            int m_numRequested;
+            Meta::TrackList m_requestCache;
+
             QList<Bias*> m_biases;
 
             BiasSolver* m_solver;
-            QEventLoop  m_solverLoop;
-
-            RandomPlaylist m_randomSource;
 
             static const int BUFFER_SIZE;
     };

@@ -48,22 +48,6 @@ Dynamic::DynamicPlaylist::xml() const
 }
 
 
-Meta::TrackList
-Dynamic::DynamicPlaylist::getTracks( int count )
-{
-    Meta::TrackList tracks;
-    while( count-- )
-    {
-        tracks.append( getTrack() );
-        if( tracks.back() == Meta::TrackPtr() )
-            break;
-    }
-
-    tracks.removeAll( Meta::TrackPtr() );
-
-    return tracks;
-}
-
 void
 Dynamic::DynamicPlaylist::recalculate()
 {

@@ -43,8 +43,8 @@ namespace Dynamic
 
             int size() const;
 
-            void clear();
-            void setUniverseSet();
+            void clear(); //! make this the empty set
+            void setUniverseSet(); //! make this the universe set
 
 
             void setTracks( const Meta::TrackList& );

@@ -46,8 +46,7 @@ class DynamicPlaylist : public QObject, public QSharedData
 
         virtual QDomElement xml() const;
 
-        virtual Meta::TrackPtr  getTrack() = 0;
-        virtual Meta::TrackList getTracks(int);
+        virtual void requestTracks(int) = 0;
 
         QString title() const;
         int upcomingCount() const;
@@ -58,6 +57,9 @@ class DynamicPlaylist : public QObject, public QSharedData
         void setPreviousCount( int );
 
         virtual void requestAbort() {}
+
+    signals:
+        void tracksReady( Meta::TrackList );
 
     public slots:
         virtual void recalculate();

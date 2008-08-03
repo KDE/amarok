@@ -144,24 +144,33 @@ void
 Playlist::Model::requestNextTrack()
 {
     DEBUG_BLOCK
-    if( m_waitingForNextTrack.tryLock() )
+    if( !m_waitingForNextTrack )
+    {
+        m_waitingForNextTrack = true;
         m_advancer->requestNextRow();
+    }
 }
 
 void
 Playlist::Model::requestUserNextTrack()
 {
     DEBUG_BLOCK
-    if( m_waitingForNextTrack.tryLock() )
+    if( !m_waitingForNextTrack )
+    {
+        m_waitingForNextTrack = true;
         m_advancer->requestUserNextRow();
+    }
 }
 
 void
 Playlist::Model::requestPrevTrack()
 {
     DEBUG_BLOCK
-    if( m_waitingForNextTrack.tryLock() )
+    if( !m_waitingForNextTrack )
+    {
+        m_waitingForNextTrack = true;
         m_advancer->requestLastRow();
+    }
 }
 
 
@@ -176,7 +185,7 @@ Playlist::Model::setNextRow( int row )
         The::engineController()->setNextTrack( m_items.at(row)->track() );
     }
 
-    m_waitingForNextTrack.unlock();
+    m_waitingForNextTrack = false;
 }
 
 void
@@ -190,7 +199,7 @@ Playlist::Model::setUserNextRow( int row )
         play( row );
     }
 
-    m_waitingForNextTrack.unlock();
+    m_waitingForNextTrack = false;
 }
 
 void
@@ -204,7 +213,7 @@ Playlist::Model::setPrevRow( int row )
         play( row );
     }
 
-    m_waitingForNextTrack.unlock();
+    m_waitingForNextTrack = false;
 }
 
 

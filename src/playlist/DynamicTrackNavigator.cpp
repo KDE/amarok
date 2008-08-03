@@ -31,8 +31,10 @@
 
 
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Model* m, Dynamic::DynamicPlaylistPtr p )
-    : SimpleTrackNavigator(m), m_playlist(p)
+    : TrackNavigator(m), m_playlist(p)
 {
+    connect( m_playlist.data(), SIGNAL(tracksReady( Meta::TrackList )),
+            SLOT(receiveTracks(Meta::TrackList)) );
     connect( m_playlistModel, SIGNAL(activeRowChanged(int,int)),
              SLOT(activeRowChanged(int,int)));
     connect( m_playlistModel, SIGNAL(repopulate()),
@@ -61,48 +63,93 @@ Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
 }
 
 
-
-int
-Playlist::DynamicTrackNavigator::nextRow()
-{
-    appendUpcoming();
-
-    int activeRow = m_playlistModel->activeRow();
-    int updateRow = activeRow + 1;
-
-    setAsPlayed( activeRow );
-
-    if( m_playlistModel->stopAfterMode() == StopAfterCurrent )
-        return -1;
-    else if( m_playlistModel->rowExists( updateRow ) )
-        return updateRow;
-    else
-    {
-        warning() << "DynamicPlaylist is not delivering.";
-        return -1;
-    }
-}
-
-int
-Playlist::DynamicTrackNavigator::lastRow()
-{
-    setAsUpcoming( m_playlistModel->activeRow() );
-    int updateRow = m_playlistModel->activeRow() - 1;
-    return m_playlistModel->rowExists( updateRow ) ? updateRow : -1;
-}
-
 void
-Playlist::DynamicTrackNavigator::appendUpcoming()
+Playlist::DynamicTrackNavigator::requestNextRow()
 {
+    DEBUG_BLOCK
+
+    if( m_waitingForUserNext || m_waitingForNext )
+        return;
+
     int updateRow = m_playlistModel->activeRow() + 1;
     int rowCount = m_playlistModel->rowCount();
     int upcomingCountLag = m_playlist->upcomingCount() - (rowCount - updateRow);
 
     if( upcomingCountLag > 0 )
     {
-        Meta::TrackList newUpcoming = m_playlist->getTracks( upcomingCountLag );
-        m_playlistModel->insertOptioned( newUpcoming, Append );
+        m_waitingForNext = true;
+        m_playlist->requestTracks( upcomingCountLag );
     }
+
+    m_playlistModel->setNextRow( updateRow );
+}
+
+void
+Playlist::DynamicTrackNavigator::requestUserNextRow()
+{
+    DEBUG_BLOCK
+
+    if( m_waitingForUserNext || m_waitingForNext )
+        return;
+
+    int updateRow = m_playlistModel->activeRow() + 1;
+    int rowCount = m_playlistModel->rowCount();
+    int upcomingCountLag = m_playlist->upcomingCount() - (rowCount - updateRow);
+
+    if( upcomingCountLag > 0 )
+    {
+        m_waitingForUserNext = true;
+        m_playlist->requestTracks( upcomingCountLag );
+    }
+
+    m_playlistModel->setUserNextRow( updateRow );
+}
+
+void
+Playlist::DynamicTrackNavigator::requestLastRow()
+{
+    if( m_waitingForUserNext || m_waitingForNext )
+        return;
+
+    setAsUpcoming( m_playlistModel->activeRow() );
+    int updateRow = m_playlistModel->activeRow() - 1;
+    m_playlistModel->setPrevRow( updateRow );
+}
+
+void
+Playlist::DynamicTrackNavigator::receiveTracks( Meta::TrackList tracks )
+{
+    DEBUG_BLOCK
+
+    m_playlistModel->insertOptioned( tracks, Append );
+
+    if( m_waitingForNext )
+    {
+        m_waitingForNext = false;
+        int newRow = m_playlistModel->activeRow() + 1;
+        m_playlistModel->setNextRow( newRow );
+    }
+    
+    if( m_waitingForUserNext )
+    {
+        m_waitingForUserNext = false;
+        int newRow = m_playlistModel->activeRow() + 1;
+        m_playlistModel->setUserNextRow( newRow );
+    }
+}
+
+
+void
+Playlist::DynamicTrackNavigator::appendUpcoming()
+{
+    DEBUG_BLOCK
+
+    int updateRow = m_playlistModel->activeRow() + 1;
+    int rowCount = m_playlistModel->rowCount();
+    int upcomingCountLag = m_playlist->upcomingCount() - (rowCount - updateRow);
+
+    if( upcomingCountLag > 0 )
+        m_playlist->requestTracks( upcomingCountLag );
 }
 
 void
@@ -130,6 +177,9 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
     QMutexLocker locker( &m_mutex );
 
     m_playlist = newPlaylist;
+
+    connect( m_playlist.data(), SIGNAL(tracksReady( Meta::TrackList )),
+            SLOT(receiveTracks(Meta::TrackList)) );
 }
 
 void
