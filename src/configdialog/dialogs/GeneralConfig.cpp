@@ -54,7 +54,7 @@ GeneralConfig::GeneralConfig( QWidget* parent )
     kcfg_ExternalBrowser->insertItems( -1, browsers );
     int index = browsers.indexOf( AmarokConfig::externalBrowser() );
     if( index >= 0 )
-        kcfg_ExternalBrowser->setCurrentItem( index );
+        kcfg_ExternalBrowser->setCurrentIndex( index );
     else if( AmarokConfig::externalBrowser() ==
 #ifdef Q_WS_MAC
              "open"
@@ -63,10 +63,10 @@ GeneralConfig::GeneralConfig( QWidget* parent )
 #endif
            )
     {
-        kcfg_ExternalBrowser->setCurrentItem( 0 );
+        kcfg_ExternalBrowser->setCurrentIndex( 0 );
     } else {
         kcfg_ExternalBrowser->addItem( AmarokConfig::externalBrowser() );
-        kcfg_ExternalBrowser->setCurrentItem( kcfg_ExternalBrowser->count() - 1 );
+        kcfg_ExternalBrowser->setCurrentIndex( kcfg_ExternalBrowser->count() - 1 );
     }
 
 
