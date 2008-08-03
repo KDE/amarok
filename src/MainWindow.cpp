@@ -604,7 +604,7 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
     ac->addAction( "stream_add", action );
 
-    action = new KAction( KIcon( "document-save-amarok" ), i18n("&Export Playlist As..."), this );
+    action = new KAction( KIcon( "document-export-amarok" ), i18n("&Export Playlist As..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( exportPlaylist() ) );
     ac->addAction( "playlist_export", action );
 
