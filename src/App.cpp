@@ -464,7 +464,8 @@ void App::applySettings( bool firstTime )
 
 
     { //<Engine>
-        The::engineController()->setVolume( AmarokConfig::masterVolume() );
+        if( The::engineController()->volume() != AmarokConfig::masterVolume() )
+            The::engineController()->setVolume( AmarokConfig::masterVolume() );
 
 #if 0
         EngineBase *engine = EngineController::engine();
@@ -501,7 +502,6 @@ void App::applySettings( bool firstTime )
         // Bizarrely and ironically calling this causes crashes for
         // some people! FIXME
         //AmarokConfig::self()->writeConfig();
-
 }
 
 //SLOT
