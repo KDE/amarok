@@ -165,7 +165,8 @@ namespace Dynamic
 
 
         private slots:
-            void updateFinished( QString collectionId, Meta::TrackList );
+            void updateReady( QString collectionId, Meta::TrackList );
+            void updateFinished();
 
         private:
             double m_weight; /// range: [0,1]

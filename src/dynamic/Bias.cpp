@@ -260,7 +260,8 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     m_qm->orderByRandom(); // as to not affect the amortized time
 
     connect( m_qm, SIGNAL(newResultReady( QString, Meta::TrackList )),
-            SLOT(updateFinished( QString, Meta::TrackList )) );
+            SLOT(updateReady( QString, Meta::TrackList )), Qt::DirectConnection );
+    connect( m_qm, SIGNAL(queryDone()), SLOT(updateFinished()), Qt::DirectConnection );
 
     m_filter = filter;
     collectionUpdated(); // force an update
@@ -319,7 +320,7 @@ void Dynamic::GlobalBias::update()
 }
 
 void 
-Dynamic::GlobalBias::updateFinished( QString collectionId, Meta::TrackList tracks )
+Dynamic::GlobalBias::updateReady( QString collectionId, Meta::TrackList tracks )
 {
     DEBUG_BLOCK
 
@@ -332,8 +333,16 @@ Dynamic::GlobalBias::updateFinished( QString collectionId, Meta::TrackList track
     foreach( Meta::TrackPtr t, tracks )
         m_property.insert( t );        
 
-    m_needsUpdating = false;
+}
 
+void
+Dynamic::GlobalBias::updateFinished()
+{
+    DEBUG_BLOCK
+    m_mutex.lock();
+    m_needsUpdating = false;
+    m_mutex.unlock(); //do not keep locks when emitting signals
 
     emit biasUpdated( this );
 }
+
