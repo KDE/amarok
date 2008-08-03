@@ -97,7 +97,12 @@ MetaQueryMaker::abortQuery()
 int
 MetaQueryMaker::resultCount() const
 {
-    return builders.count();
+    int count = 0;
+    foreach( QueryMaker *b, builders )
+    {
+        count += b->resultCount();
+    }
+    return count;
 }
 
 QueryMaker*
