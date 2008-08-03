@@ -276,23 +276,24 @@ SqlRegistry::emptyCache()
         foreachInvalidateCache( YearPtr, KSharedPtr<SqlYear>, m_yearMap );
 
         //elem.count() == 2 is correct because elem is one pointer to the object
-        //and the other is stored in the hash map
-        #define foreachCollectGarbage( Key, Type, x ) \
+        //and the other is stored in the hash map (except for m_trackMap, where
+        //another refence is stored in m_uidMap
+        #define foreachCollectGarbage( Key, Type, RefCount, x ) \
         for( QMutableHashIterator<Key,Type > iter(x); iter.hasNext(); ) \
         { \
             Type elem = iter.next().value(); \
-            if( elem.count() == 3 ) \
+            if( elem.count() == RefCount ) \
                 iter.remove(); \
         }
 
-        foreachCollectGarbage( TrackId, TrackPtr, m_trackMap )
-        foreachCollectGarbage( QString, TrackPtr, m_uidMap )
+        foreachCollectGarbage( TrackId, TrackPtr, 3, m_trackMap )
+        foreachCollectGarbage( QString, TrackPtr, 2, m_uidMap )
         //run before artist so that album artist pointers can be garbage collected
-        foreachCollectGarbage( int, AlbumPtr, m_albumMap )
-        foreachCollectGarbage( int, ArtistPtr, m_artistMap )
-        foreachCollectGarbage( int, GenrePtr, m_genreMap )
-        foreachCollectGarbage( int, ComposerPtr, m_composerMap )
-        foreachCollectGarbage( int, YearPtr, m_yearMap )
+        foreachCollectGarbage( int, AlbumPtr, 2, m_albumMap )
+        foreachCollectGarbage( int, ArtistPtr, 2, m_artistMap )
+        foreachCollectGarbage( int, GenrePtr, 2, m_genreMap )
+        foreachCollectGarbage( int, ComposerPtr, 2, m_composerMap )
+        foreachCollectGarbage( int, YearPtr, 2, m_yearMap )
     }
 
     //make sure to unlock all necessary locks
