@@ -116,7 +116,7 @@ class UpdateCapabilitySql : public Meta::UpdateCapability
 QString
 SqlTrack::getTrackReturnValues()
 {
-    //If you modify this, update getTrackReturnValueCount below!
+    //do not use any weird column names that contains commas: this will break getTrackReturnValuesCount()
     return "urls.deviceid, urls.rpath, "
            "tracks.id, tracks.title, tracks.comment, "
            "tracks.tracknumber, tracks.discnumber, "
@@ -135,7 +135,8 @@ SqlTrack::getTrackReturnValues()
 int
 SqlTrack::getTrackReturnValueCount()
 {
-    return 29;
+    static int count = getTrackReturnValues().split( ',' ).count();
+    return count;
 }
 
 TrackPtr
