@@ -218,7 +218,7 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
 
     QString query = "SELECT uniqueid FROM uniqueid WHERE uniqueid.deviceid = %1 AND uniqueid.rpath = '%2';";
-    query = query.arg( m_deviceid ).arg( collection->escape( m_rpath ) );
+    query = query.arg( QString::number( m_deviceid ), collection->escape( m_rpath ) );
     QStringList uidresult = collection->query( query );
     if( uidresult.isEmpty() )
         m_uid = QString();
@@ -613,8 +613,12 @@ SqlTrack::updateStatisticsInDb()
         m_firstPlayed = QDateTime::currentDateTime().toTime_t();
         QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
         QString data = "%1,%2,%3,%4,%5,%6";
-        data = data.arg( urlId ).arg( m_rating ).arg( m_score );
-        data = data.arg( m_playCount ).arg( m_lastPlayed ).arg( m_firstPlayed );
+        data = data.arg( QString::number( urlId )
+                , QString::number( m_rating )
+                , QString::number( m_score )
+                , QString::number( m_playCount )
+                , QString::number( m_lastPlayed )
+                , QString::number( m_firstPlayed ) );
         insert = insert.arg( data );
         m_collection->insert( insert, "statistics" );
     }
@@ -622,7 +626,10 @@ SqlTrack::updateStatisticsInDb()
     {
         QString update = "UPDATE statistics SET %1 WHERE url = %2;";
         QString data = "rating=%1, score=%2, playcount=%3, accessdate=%4";
-        data = data.arg( m_rating ).arg( m_score ).arg( m_playCount ).arg( m_lastPlayed );
+        data = data.arg( QString::number( m_rating )
+                , QString::number( m_score )
+                , QString::number( m_playCount )
+                , QString::number( m_lastPlayed ) );
         update = update.arg( data, QString::number( urlId ) );
         m_collection->query( update );
     }
@@ -1255,8 +1262,7 @@ SqlAlbum::updateImage( const QString path ) const
     if( imageid >= 0 )
     {
         query = QString("UPDATE albums SET image = %1 WHERE albums.id = %2" )
-                    .arg( QString::number( imageid ) )
-                    .arg( QString::number( m_id ) );
+                    .arg( QString::number( imageid ), QString::number( m_id ) );
         m_hasImage = true;
         m_hasImageChecked = true;
         m_images.insert( 0, path );

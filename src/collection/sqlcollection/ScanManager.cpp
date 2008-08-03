@@ -147,8 +147,7 @@ ScanManager::isDirInCollection( QString path )
 
     QStringList values =
             m_collection->query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
-            .arg( deviceid )
-            .arg( m_collection->escape( rpath ) ) );
+            .arg( QString::number( deviceid ), m_collection->escape( rpath ) ) );
 
     return !values.isEmpty();
 }
@@ -160,8 +159,7 @@ ScanManager::isFileInCollection( const QString &url  )
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
 
     QString sql = QString( "SELECT id FROM urls WHERE rpath = '%2' AND deviceid = %1" )
-            .arg( deviceid )
-            .arg( m_collection->escape( rpath ) );
+            .arg( QString::number( deviceid ),  m_collection->escape( rpath ) );
     if ( deviceid == -1 )
     {
         sql += ';';

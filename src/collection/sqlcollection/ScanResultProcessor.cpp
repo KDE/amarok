@@ -305,15 +305,22 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     QString insert = "INSERT INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
                      "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm,"
                      "createdate,modifydate) VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8',%9"; //goes up to tracknumber
-    insert = insert.arg( url ).arg( artist ).arg( compilationId ? compilationId : album ).arg( genre ).arg( composer ).arg( year );
-    insert = insert.arg( m_collection->escape( trackData[ Field::TITLE ].toString() ), m_collection->escape( trackData[ Field::COMMENT ].toString() ) );
-    insert = insert.arg( trackData[Field::TRACKNUMBER].toInt() );
+    insert = insert.arg( QString::number( url )
+                , QString::number( artist )
+                , QString::number( compilationId ? compilationId : album )
+                , QString::number( genre )
+                , QString::number( composer )
+                , QString::number( year )
+                , m_collection->escape( trackData[ Field::TITLE ].toString() )
+                , m_collection->escape( trackData[ Field::COMMENT ].toString() )
+                , QString::number( trackData[Field::TRACKNUMBER].toInt() ) );
 
     QString insert2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9);";
-    insert2 = insert2.arg( trackData[Field::DISCNUMBER].toInt() );
-    insert2 = insert2.arg( trackData[Field::BITRATE].toInt() ).arg( trackData[Field::LENGTH].toInt() );
-    insert2 = insert2.arg( trackData[Field::SAMPLERATE].toInt() ).arg( trackData[Field::FILESIZE].toInt() );
-    insert2 = insert2.arg( "0", "0", "0", "0" ); //filetype,bpm, createdate, modifydate not implemented yet
+    insert2 = insert2.arg( QString::number( trackData[Field::DISCNUMBER].toInt() )
+                , QString::number( trackData[Field::BITRATE].toInt() )
+                , QString::number( trackData[Field::LENGTH].toInt() )
+                , QString::number( trackData[Field::SAMPLERATE].toInt() )
+                , QString::number( trackData[Field::FILESIZE].toInt() ), "0", "0", "0", "0" ); //filetype,bpm, createdate, modifydate not implemented yet
     insert += insert2;
 
     m_collection->insert( insert, "tracks_temp" );
@@ -444,7 +451,7 @@ ScanResultProcessor::imageId( const QString &image, int albumId )
     {
         // Make sure the album table is up to date
         QString update = QString( "UPDATE albums_temp SET image = %1 WHERE id = %2" )
-                            .arg( QString::number( imageId ) ).arg( QString::number( albumId ) );
+                            .arg( QString::number( imageId ), QString::number( albumId ) );
         m_collection->query( update );
         m_images.insert( key, imageId );
     }
@@ -475,8 +482,7 @@ ScanResultProcessor::albumId( const QString &album, int artistId )
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO albums_temp(artist, name) VALUES( %1, '%2' );" )
-                    .arg( artistId ? QString::number( artistId ) : "NULL" )
-                    .arg( m_collection->escape( album ) );
+                    .arg( artistId ? QString::number( artistId ) : "NULL", m_collection->escape( album ) );
         int id = m_collection->insert( insert, "albums_temp" );
         m_albums.insert( key, id );
         return id;
@@ -526,7 +532,7 @@ ScanResultProcessor::directoryId( const QString &dir )
         rpath += '/';
     }
     QString query = QString( "SELECT id, changedate FROM directories_temp WHERE deviceid = %1 AND dir = '%2';" )
-                        .arg( deviceId ).arg( m_collection->escape( rpath ) );
+                        .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
     QStringList result = m_collection->query( query );
     if( result.isEmpty() )
     {
