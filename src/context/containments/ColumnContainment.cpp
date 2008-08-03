@@ -411,6 +411,7 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
         for( int i = 0; i < rowSpan; i++ )
         {
             m_gridFreePositions[row + i][col] = false;
+            m_grid->setRowMinimumHeight( row + i, m_defaultRowHeight / 2 );
             m_grid->setRowMaximumHeight( row + i, m_defaultRowHeight );
             m_grid->setRowPreferredHeight( row + i, height );
         }
