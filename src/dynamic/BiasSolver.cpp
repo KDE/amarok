@@ -32,6 +32,7 @@
 #include <QMutexLocker>
 
 #include <KRandom>
+#include <threadweaver/ThreadWeaver.h>
 
 const int    Dynamic::BiasSolver::ITERATION_LIMIT = 5000;
 
@@ -61,11 +62,12 @@ Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, QueryMaker* mutatio
     , m_abortRequested(false)
 {
     m_mutationSource->orderByRandom();
-    m_mutationSource->limitMaxResultSize( MUTATION_POOL_SIZE );
+    m_mutationSource->limitMaxResultSize( MUTATION_POOL_SIZE / m_mutationSource->resultCount() );
     m_mutationSource->setQueryType( QueryMaker::Track );
 
     connect( m_mutationSource, SIGNAL(newResultReady( QString, Meta::TrackList )),
             SLOT(mutationsReady( QString, Meta::TrackList )), Qt::DirectConnection );
+    connect( m_mutationSource, SIGNAL( queryDone()), SLOT(mutationUpdateComplete()), Qt::DirectConnection );
 
     int i = m_biases.size();
     while( i-- )
@@ -89,9 +91,9 @@ Dynamic::BiasSolver::success() const
     return !m_abortRequested;
 }
 
-void Dynamic::BiasSolver::run()
+void Dynamic::BiasSolver::doWork()
 {
-    // update biases
+       // update biases
 
     m_biasMutex.lock();
 
@@ -109,11 +111,15 @@ void Dynamic::BiasSolver::run()
             }
         }
     }
-
-    if( m_pendingBiasUpdates )
-        m_biasUpdateWaitCond.wait( &m_biasMutex );
+    if( !m_pendingBiasUpdates )
+    {
+        ThreadWeaver::Weaver::instance()->enqueue( this );
+    }
     m_biasMutex.unlock();
+}
 
+void Dynamic::BiasSolver::run()
+{
 
     bool optimal = generateInitialPlaylist();
 
@@ -180,7 +186,7 @@ Dynamic::BiasSolver::biasUpdated()
         return;
 
     if( --m_pendingBiasUpdates == 0 )
-        m_biasUpdateWaitCond.wakeOne();
+        ThreadWeaver::Weaver::instance()->enqueue( this );
 }
 
 
@@ -188,10 +194,16 @@ Dynamic::BiasSolver::biasUpdated()
 void
 Dynamic::BiasSolver::mutationsReady( QString collectionId, Meta::TrackList mutations )
 {
-    Q_UNUSED( collectionId )
+    DEBUG_BLOCK
+    //Q_UNUSED( collectionId )
+    debug() << "Got result from " << collectionId << " with " << mutations.count() << " tracks";
     m_mutationMutex.lock();
-    m_mutationPool = mutations;
+    m_mutationPool += mutations;
     m_mutationMutex.unlock();
+}
+
+void Dynamic::BiasSolver::mutationUpdateComplete()
+{
     m_mutationWaitCond.wakeOne();
 }
 

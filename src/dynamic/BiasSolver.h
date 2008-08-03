@@ -51,6 +51,8 @@ namespace Dynamic
             void requestAbort();
             bool success() const;
 
+            void doWork();
+
             static const Meta::TrackList& universe();
             static void outdateUniverse();
 
@@ -64,6 +66,7 @@ namespace Dynamic
             void biasUpdated();
             void universeUpdated( QString collectionId, Meta::TrackList );
             void mutationsReady( QString collectionId, Meta::TrackList );
+            void mutationUpdateComplete();
             void iterate( Meta::TrackPtr mutation );
 
         private:

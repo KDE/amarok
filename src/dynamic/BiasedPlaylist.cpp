@@ -29,7 +29,6 @@
 #include "playlist/PlaylistModel.h"
 #include "StatusBar.h"
 
-#include <threadweaver/ThreadWeaver.h>
 
 
 // The bigger this is, the more accurate the result will be. Big is good.
@@ -59,17 +58,12 @@ Dynamic::BiasedPlaylist::fromXml( QDomElement e )
 }
 
 
-Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases )
-    : m_biases(biases), m_solver(0)
-{
-    setTitle( title );
-}
-
-Dynamic::BiasedPlaylist::BiasedPlaylist( 
+Dynamic::BiasedPlaylist::BiasedPlaylist(
         QString title,
         QList<Bias*> biases, 
         Collection* collection )
     : DynamicPlaylist(collection)
+    , m_numRequested(0)
     , m_biases(biases)
     , m_solver(0)
 {
@@ -117,14 +111,15 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
         if( m_collection )
             mutationSource = m_collection->queryMaker();
         else
-            mutationSource = CollectionManager::instance()->primaryCollection()->queryMaker();
+        {
+            mutationSource = CollectionManager::instance()->queryMaker();
+        }
 
         m_solver = new BiasSolver( 
                 BUFFER_SIZE, m_biases, mutationSource, m_context );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
                  SLOT(solverFinished(ThreadWeaver::Job*)) );
-
-        ThreadWeaver::Weaver::instance()->enqueue( m_solver );
+        m_solver->doWork();
 
         if( withStatusBar )
         {
@@ -219,7 +214,6 @@ Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
     The::statusBar()->endProgressOperation( m_solver );
     m_backbuffer = m_solver->solution();
     success = m_solver->success();
-    ThreadWeaver::Weaver::instance()->dequeue( job );
     job->deleteLater();
     m_solver = 0;
 

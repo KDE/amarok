@@ -38,8 +38,7 @@ namespace Dynamic
         public:
             static BiasedPlaylist* fromXml( QDomElement );
 
-            BiasedPlaylist( QString title, QList<Bias*> );
-            BiasedPlaylist( QString title, QList<Bias*>, Collection* m_collection );
+            BiasedPlaylist( QString title, QList<Bias*>, Collection* m_collection = 0 );
 
             ~BiasedPlaylist();
 
