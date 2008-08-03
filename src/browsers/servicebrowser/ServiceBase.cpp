@@ -159,7 +159,7 @@ ServiceBase::ServiceBase( const QString &name )
     m_searchWidget->setup( m_contentView );
 
     //setFrameShape( QFrame::StyledPanel );
-    //setFrameShadow( QFrame::Raised );
+    //setFrameShadow( QFrame::Sunken );
 }
 
 ServiceBase::~ServiceBase()

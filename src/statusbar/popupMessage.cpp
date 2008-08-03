@@ -55,7 +55,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
                 , m_timeout( timeout )
                 , m_showCounter( true )
 {
-    setFrameStyle( QFrame::Panel | QFrame::Raised );
+    setFrameStyle( QFrame::Panel | QFrame::Sunken );
     setFrameShape( QFrame::StyledPanel );
     setWindowFlags( Qt::WX11BypassWM | Qt::Tool | Qt::FramelessWindowHint );
 

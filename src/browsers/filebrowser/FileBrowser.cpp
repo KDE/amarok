@@ -106,7 +106,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
   setContentsMargins(0,0,0,0);
   
   setFrameShape( QFrame::StyledPanel );
-  setFrameShadow( QFrame::Raised );
+  setFrameShadow( QFrame::Sunken );
 
 
 // FIXME

@@ -83,7 +83,7 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     m_treeView->setShowTrackNumbers( true );
 
     setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Raised );
+    setFrameShadow( QFrame::Sunken );
 }
 
 void

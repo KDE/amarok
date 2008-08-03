@@ -60,7 +60,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     m_scriptableServiceManager = 0;
 
     setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Raised );
+    setFrameShadow( QFrame::Sunken );
 }
 
 
