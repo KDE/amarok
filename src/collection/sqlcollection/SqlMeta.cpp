@@ -117,7 +117,7 @@ QString
 SqlTrack::getTrackReturnValues()
 {
     //do not use any weird column names that contains commas: this will break getTrackReturnValuesCount()
-    return "urls.deviceid, urls.rpath, "
+    return "urls.deviceid, urls.rpath, urls.uniqueid, "
            "tracks.id, tracks.title, tracks.comment, "
            "tracks.tracknumber, tracks.discnumber, "
            "statistics.score, statistics.rating, "
@@ -163,8 +163,8 @@ SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collectio
 TrackPtr
 SqlTrack::getTrackFromUid( const QString &uid, SqlCollection* collection )
 {
-    QString query = "SELECT uniqueid.deviceid, uniqueid.rpath FROM uniqueid "
-                    "WHERE uniqueid.uniqueid = '%1';";
+    QString query = "SELECT urls.deviceid, urls.rpath FROM urls "
+                    "WHERE urls.uniqueid = '%1';";
     query = query.arg( uid );
     QStringList result = collection->query( query );
     if( result.isEmpty() )
@@ -181,6 +181,7 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     QStringList::ConstIterator iter = result.constBegin();
     m_deviceid = (*(iter++)).toInt();
     m_rpath = *(iter++);
+    m_uid = *(iter++);
     m_url = KUrl( MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
     m_trackId = (*(iter++)).toInt();
     m_title = *(iter++);
@@ -217,14 +218,6 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     int yearId = (*(iter++)).toInt();
     m_year = registry->getYear( year, yearId );
     Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
-
-    QString query = "SELECT uniqueid FROM uniqueid WHERE uniqueid.deviceid = %1 AND uniqueid.rpath = '%2';";
-    query = query.arg( QString::number( m_deviceid ), collection->escape( m_rpath ) );
-    QStringList uidresult = collection->query( query );
-    if( uidresult.isEmpty() )
-        m_uid = QString();
-    else
-        m_uid = uidresult[0];
 }
 
 bool
