@@ -62,6 +62,7 @@ namespace FileBrowser {
   class ToolBar: public KToolBar
   {
       Q_OBJECT
+
     public:
       ToolBar(QWidget *parent);
       virtual ~ToolBar();
@@ -132,4 +133,3 @@ namespace FileBrowser {
 
 #endif //__KATE_FILESELECTOR_H__
 
-// kate: space-indent on; indent-width 2; replace-tabs on;
