@@ -30,22 +30,20 @@
 #include "overlayWidget.h"
 #include "popupMessage.h"
 
+#include <QEvent>
 #include <QIcon>
 #include <QLabel>
+#include <QMouseEvent>
+#include <QPixmap>
+#include <QStyle>
 #include <QTimer>
 #include <QToolTip>
-//Added by qt3to4:
-#include <QPixmap>
-#include <QEvent>
-#include <QMouseEvent>
-#include <QStyle>
 
-#include <kactioncollection.h>
-#include <kglobalsettings.h>
-#include <kiconloader.h>
-#include <klocale.h>
-#include <kpassivepopup.h>
-
+#include <KActionCollection>
+#include <KGlobalSettings>
+#include <KIconLoader>
+#include <KLocale>
+#include <KPassivePopup>
 
 
 class SelectLabel : public QLabel
@@ -84,7 +82,7 @@ class SelectLabel : public QLabel
             do //TODO doesn't handle all of them being disabled, but we don't do that anyways.
             {
                 n = ( int( n ) == m_action->items().count() - 1 ) ? 0 : n + 1;
-            } while ( !m_action->menu()->isItemEnabled( n ) );
+            } while ( !m_action->action( n )->isEnabled() );
             if( isEnabled() )
             {
                 setCurrentItem( n );
