@@ -86,6 +86,7 @@ SqlRegistry::getTrack( const QStringList &rowData )
 TrackPtr
 SqlRegistry::getTrackFromUid( const QString &uid )
 {
+    QMutexLocker locker( &m_uidMutex );
     if( m_uidMap.contains( uid ) )
         return m_uidMap.value( uid );
     else
@@ -249,8 +250,8 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist )
 void
 SqlRegistry::emptyCache()
 {
-    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer;
-    hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = false;
+    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasUid;
+    hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = hasUid = false;
 
     //try to avoid possible deadlocks by aborting when we can't get all locks
     if ( ( hasTrack = m_trackMutex.tryLock() )
@@ -258,7 +259,8 @@ SqlRegistry::emptyCache()
          && ( hasArtist = m_artistMutex.tryLock() )
          && ( hasYear = m_yearMutex.tryLock() )
          && ( hasGenre = m_genreMutex.tryLock() )
-         && ( hasComposer = m_composerMutex.tryLock() ) )
+         && ( hasComposer = m_composerMutex.tryLock() )
+         && ( hasUid = m_uidMutex.tryLock() ) )
     {
         //this very simple garbage collector doesn't handle cyclic object graphs
         //so care has to be taken to make sure that we are not dealing with a cyclic graph
@@ -302,6 +304,7 @@ SqlRegistry::emptyCache()
     if( hasYear ) m_yearMutex.unlock();
     if( hasGenre ) m_genreMutex.unlock();
     if( hasComposer ) m_composerMutex.unlock();
+    if( hasUid ) m_uidMutex.unlock();
 }
 
 #include "SqlRegistry.moc"

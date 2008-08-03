@@ -71,6 +71,7 @@ class SqlRegistry : public QObject
         QMutex m_genreMutex;
         QMutex m_yearMutex;
         QMutex m_albumMutex;
+        QMutex m_uidMutex;
 
         QTimer *m_timer;
 
