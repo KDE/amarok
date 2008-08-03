@@ -28,6 +28,8 @@
 #include <QSet>
 #include <QStack>
 
+#include <KRandomSequence>
+
 using namespace Meta;
 
 //QueryJob
@@ -61,6 +63,8 @@ struct MemoryQueryMaker::Private {
     int maxsize;
     QStack<ContainerMemoryFilter*> containerFilters;
     bool usingFilters;
+    bool randomize;
+    KRandomSequence sequence;   //do not reset
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
@@ -94,6 +98,7 @@ MemoryQueryMaker::reset()
     d->containerFilters.clear();
     d->containerFilters.push( new AndContainerMemoryFilter() );
     d->usingFilters = false;
+    d->randomize = false;
     return this;
 }
 
@@ -166,6 +171,9 @@ MemoryQueryMaker::runQuery()
 // (copied from sqlquerybuilder.cpp with a few minor tweaks)
 
 #define emitProperResult( PointerType, list ) { \
+            if( d->randomize ) { \
+                d->sequence.randomize<PointerType >( list ); \
+            } \
             if ( d->returnDataPtrs ) { \
                 DataList data; \
                 foreach( PointerType p, list ) { \
@@ -213,7 +221,7 @@ MemoryQueryMaker::handleResult()
             ComposerList composers = m_memCollection->composerMap().values();
             if ( d->maxsize >= 0 && composers.count() > d->maxsize )
                 composers = composers.mid( 0, d->maxsize );
-            emitProperResult( ComposerPtr, m_memCollection->composerMap().values() );
+            emitProperResult( ComposerPtr, composers );
             break;
         }
         case QueryMaker::Genre :
@@ -247,16 +255,19 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
     switch( d->type )
     {
         case QueryMaker::Track :
+        {
+                TrackList newResult;
             if ( d->maxsize < 0 || tracks.count() <= d->maxsize )
             {
-                emitProperResult( TrackPtr, tracks );
+                newResult = tracks;
             }
             else
             {
-                TrackList newResult = tracks.mid( 0, d->maxsize );
-                emitProperResult( TrackPtr, newResult );
+                newResult = tracks.mid( 0, d->maxsize );
             }
+            emitProperResult( TrackPtr, newResult );
             break;
+        }
         case QueryMaker::Album :
         {
             QSet<AlbumPtr> albumSet;
@@ -266,7 +277,8 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                     break;
                 albumSet.insert( track->album() );
             }
-            emitProperResult( AlbumPtr, albumSet.toList() );
+            AlbumList albumList = albumSet.toList();
+            emitProperResult( AlbumPtr, albumList );
             break;
         }
         case QueryMaker::Artist :
@@ -278,7 +290,8 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                     break;
                 artistSet.insert( track->artist() );
             }
-            emitProperResult( ArtistPtr, artistSet.toList() );
+            ArtistList list = artistSet.toList();
+            emitProperResult( ArtistPtr, list );
             break;
         }
         case QueryMaker::Genre :
@@ -290,7 +303,8 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                     break;
                 genreSet.insert( track->genre() );
             }
-            emitProperResult( GenrePtr, genreSet.toList() );
+            GenreList list = genreSet.toList();
+            emitProperResult( GenrePtr, list );
             break;
         }
         case QueryMaker::Composer :
@@ -302,7 +316,8 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                     break;
                 composerSet.insert( track->composer() );
             }
-            emitProperResult( ComposerPtr, composerSet.toList() );
+            ComposerList list = composerSet.toList();
+            emitProperResult( ComposerPtr, list );
             break;
         }
         case QueryMaker::Year :
@@ -314,7 +329,8 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                     break;
                 yearSet.insert( track->year() );
             }
-            emitProperResult( YearPtr, yearSet.toList() );
+            YearList list = yearSet.toList();
+            emitProperResult( YearPtr, list );
             break;
         }
         case QueryMaker::Custom :
@@ -418,7 +434,7 @@ MemoryQueryMaker::orderBy( qint64 value, bool descending )
 QueryMaker*
 MemoryQueryMaker::orderByRandom()
 {
-    //TODO stub
+    d->randomize = true;
     return this;
 }
 
