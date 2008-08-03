@@ -368,7 +368,7 @@ void OrganizeCollectionDialog::slotUpdatePreview()
 
 void OrganizeCollectionDialog::slotDialogAccepted()
 {
-        AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentItem() );
+        AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentIndex() );
         AmarokConfig::setGroupByFiletype( ui->filetypeCheck->isChecked() );
         AmarokConfig::setGroupArtists( ui->initialCheck->isChecked() );
         AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
@@ -444,7 +444,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 
     if( base.exec() == KDialogBase::Accepted )
     {
-        AmarokConfig::setOrganizeDirectory( dialog.folderCombo->currentItem() );
+        AmarokConfig::setOrganizeDirectory( dialog.folderCombo->currentIndex() );
         AmarokConfig::setOverwriteFiles( dialog.overwriteCheck->isChecked() );
         AmarokConfig::setGroupByFiletype( dialog.filetypeCheck->isChecked() );
         AmarokConfig::setGroupArtists( dialog.initialCheck->isChecked() );
