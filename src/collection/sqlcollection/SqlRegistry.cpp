@@ -281,7 +281,7 @@ SqlRegistry::emptyCache()
         for( QMutableHashIterator<Key,Type > iter(x); iter.hasNext(); ) \
         { \
             Type elem = iter.next().value(); \
-            if( elem.count() == 2 ) \
+            if( elem.count() == 3 ) \
                 iter.remove(); \
         }
 
