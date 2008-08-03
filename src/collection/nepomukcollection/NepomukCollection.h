@@ -49,6 +49,7 @@ public:
     
     virtual QueryMaker* queryMaker();
     
+    virtual QString uidUrlProtocol() const;
     virtual QString collectionId() const;
     virtual QString prettyName() const;
     

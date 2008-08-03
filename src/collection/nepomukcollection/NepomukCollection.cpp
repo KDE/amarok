@@ -114,6 +114,13 @@ NepomukCollection::queryMaker()
 }
 
 QString
+NepomukCollection::uidUrlProtocol() const
+{
+    return "amarokcollnepomukuid";
+}
+
+
+QString
 NepomukCollection::collectionId() const
 {
 	return "nepomukCollection";
@@ -132,7 +139,7 @@ bool
 NepomukCollection::possiblyContainsTrack( const KUrl &url ) const
 {
     QString proto = url.protocol();
-    if ( proto == "file" || proto == "amarokcollnepomukuid" )
+    if ( proto == "file" || proto == uidUrlProtocol() )
         return true;
     else
         return false;

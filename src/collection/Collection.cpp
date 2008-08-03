@@ -61,6 +61,12 @@ Collection::~Collection()
 {
 }
 
+QString
+Collection::uidUrlProtocol() const
+{
+    return QString();
+}
+
 CollectionLocation*
 Collection::location() const
 {

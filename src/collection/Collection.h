@@ -68,6 +68,7 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider
         virtual void startIncrementalScan() {}
         virtual void stopScan() {};
 
+        virtual QString uidUrlProtocol() const;
         virtual QString collectionId() const = 0;
         virtual QString prettyName() const = 0;
 

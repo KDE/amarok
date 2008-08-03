@@ -107,16 +107,9 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 
     if( !m_solver )
     {
-        QueryMaker* mutationSource;
-        if( m_collection )
-            mutationSource = m_collection->queryMaker();
-        else
-        {
-            mutationSource = CollectionManager::instance()->queryMaker();
-        }
-
+        BiasSolver::setUniverseCollection( m_collection );
         m_solver = new BiasSolver( 
-                BUFFER_SIZE, m_biases, mutationSource, m_context );
+                BUFFER_SIZE, m_biases, m_context );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
                  SLOT(solverFinished(ThreadWeaver::Job*)) );
         m_solver->doWork();

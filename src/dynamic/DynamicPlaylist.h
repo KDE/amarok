@@ -39,8 +39,7 @@ class DynamicPlaylist : public QObject, public QSharedData
     Q_OBJECT
 
     public:
-        DynamicPlaylist();
-        DynamicPlaylist( Collection* );
+        DynamicPlaylist( Collection* coll = 0 );
 
         virtual ~DynamicPlaylist();
 

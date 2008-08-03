@@ -156,7 +156,7 @@ namespace Dynamic
             double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
                     Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context );
 
-            const QSet<Meta::TrackPtr>& propertySet() { return m_property; }
+            const QSet<QString>& propertySet() { return m_property; }
             bool trackSatisfies( Meta::TrackPtr );
             void update();
 
@@ -165,12 +165,12 @@ namespace Dynamic
 
 
         private slots:
-            void updateReady( QString collectionId, Meta::TrackList );
+            void updateReady( QString collectionId, QStringList );
             void updateFinished();
 
         private:
             double m_weight; /// range: [0,1]
-            QSet<Meta::TrackPtr> m_property;
+            QSet<QString> m_property;
             XmlQueryWriter* m_qm;
             XmlQueryReader::Filter m_filter;
     };

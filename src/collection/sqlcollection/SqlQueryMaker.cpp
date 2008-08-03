@@ -699,6 +699,9 @@ SqlQueryMaker::nameForValue( qint64 value )
         case valPlaycount:
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.playcount";
+        case valUniqueId:
+            d->linkedTables |= Private::URLS_TAB;
+            return "urls.uniqueid";
         default:
             return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
     }

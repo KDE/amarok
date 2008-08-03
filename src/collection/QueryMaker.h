@@ -54,6 +54,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
         static const qint64 valFirstPlayed  = 1LL << 18;
         static const qint64 valLastPlayed   = 1LL << 19;
         static const qint64 valPlaycount    = 1LL << 20;
+        static const qint64 valUniqueId     = 1LL << 21;
 
         enum AlbumQueryMode { AllAlbums = 0
                               , OnlyCompilations = 1

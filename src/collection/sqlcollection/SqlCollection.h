@@ -52,6 +52,7 @@ class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
         virtual void stopScan();
         virtual QueryMaker* queryMaker();
 
+        virtual QString uidUrlProtocol() const;
         virtual QString collectionId() const;
         virtual QString prettyName() const;
 

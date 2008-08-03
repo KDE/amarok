@@ -36,8 +36,8 @@ namespace Dynamic
     {
         public:
             TrackSet();
-            TrackSet( const Meta::TrackList& );
-            TrackSet( const QSet<Meta::TrackPtr>& );
+            TrackSet( const QStringList& uidList );
+            TrackSet( const QSet<QString>& uidSet );
 
             void reset();
 
@@ -47,13 +47,13 @@ namespace Dynamic
             void setUniverseSet(); //! make this the universe set
 
 
-            void setTracks( const Meta::TrackList& );
-            void addTracks( const Meta::TrackList& );
+            void setTracks( const QStringList& );
+            void addTracks( const QStringList& );
 
-            void setTracks( const QSet<Meta::TrackPtr>& );
-            void addTracks( const QSet<Meta::TrackPtr>& );
+            void setTracks( const QSet<QString>& );
+            void addTracks( const QSet<QString>& );
 
-            Meta::TrackList trackList() const;
+            QStringList uidList() const;
 
             void unite( const TrackSet& );
             void intersect( const TrackSet& );

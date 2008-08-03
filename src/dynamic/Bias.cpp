@@ -239,10 +239,11 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     QMutexLocker locker( &m_mutex );
 
     QueryMaker* qm;
-    if( m_collection )
-        qm = m_collection->queryMaker();
-    else
-        qm = CollectionManager::instance()->primaryCollection()->queryMaker();
+
+    if( !m_collection )
+        m_collection = CollectionManager::instance()->primaryCollection();
+
+    qm = m_collection->queryMaker();
 
     m_qm = new XmlQueryWriter( qm,
             PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc() );
@@ -256,11 +257,12 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
                     (QueryMaker::NumberComparison)filter.compare );
     }
 
-    m_qm->setQueryType( QueryMaker::Track );
+    m_qm->setQueryType( QueryMaker::Custom );
+    m_qm->addReturnValue( QueryMaker::valUniqueId );
     m_qm->orderByRandom(); // as to not affect the amortized time
 
-    connect( m_qm, SIGNAL(newResultReady( QString, Meta::TrackList )),
-            SLOT(updateReady( QString, Meta::TrackList )), Qt::DirectConnection );
+    connect( m_qm, SIGNAL(newResultReady( QString, QStringList )),
+            SLOT(updateReady( QString, QStringList )), Qt::DirectConnection );
     connect( m_qm, SIGNAL(queryDone()), SLOT(updateFinished()), Qt::DirectConnection );
 
     m_filter = filter;
@@ -306,7 +308,11 @@ double Dynamic::GlobalBias::reevaluate( double oldEnergy, const Meta::TrackList&
 bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t )
 {
     QMutexLocker locker( &m_mutex );
-    return m_property.contains( t );
+
+    // we only wan't the uid part:
+    QString uid = t->uidUrl().mid( t->uidUrl().lastIndexOf( '/' ) );
+
+    return m_property.contains( t->uidUrl() );
 }
 
 
@@ -320,7 +326,7 @@ void Dynamic::GlobalBias::update()
 }
 
 void 
-Dynamic::GlobalBias::updateReady( QString collectionId, Meta::TrackList tracks )
+Dynamic::GlobalBias::updateReady( QString collectionId, QStringList uids )
 {
     DEBUG_BLOCK
 
@@ -329,10 +335,9 @@ Dynamic::GlobalBias::updateReady( QString collectionId, Meta::TrackList tracks )
     QMutexLocker locker( &m_mutex );
 
     m_property.clear();
-    m_property.reserve( tracks.size() );
-    foreach( Meta::TrackPtr t, tracks )
-        m_property.insert( t );        
-
+    m_property.reserve( uids.size() );
+    foreach( QString uid, uids )
+        m_property.insert( uid );        
 }
 
 void

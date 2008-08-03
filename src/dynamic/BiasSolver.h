@@ -42,10 +42,8 @@ namespace Dynamic
 
         public:
             BiasSolver( 
-                    int n, QList<Bias*> biases, QueryMaker* mutationSource,
+                    int n, QList<Bias*> biases,
                     Meta::TrackList context = Meta::TrackList() );
-
-            ~BiasSolver();
 
             Meta::TrackList solution();
             void requestAbort();
@@ -53,7 +51,8 @@ namespace Dynamic
 
             void doWork();
 
-            static const Meta::TrackList& universe();
+            static void setUniverseCollection( Collection* );
+            static const QStringList& universe();
             static void outdateUniverse();
 
         protected:
@@ -64,16 +63,16 @@ namespace Dynamic
 
         private slots:
             void biasUpdated();
-            void universeUpdated( QString collectionId, Meta::TrackList );
-            void mutationsReady( QString collectionId, Meta::TrackList );
-            void mutationUpdateComplete();
+            void universeResults( QString collectionId, QStringList );
+            void universeUpdated();
             void iterate( Meta::TrackPtr mutation );
 
         private:
             void updateUniverse();
             double energy();
             double recalculateEnergy( Meta::TrackPtr mutation, int mutationPos );
-            void refillMutationPool();
+            Meta::TrackPtr trackForUid( const QString& );
+            Meta::TrackPtr getMutation();
 
 
             bool generateInitialPlaylist(); //! returns true if the initial is known to be optimal
@@ -87,12 +86,6 @@ namespace Dynamic
             Meta::TrackList m_playlist; //! playlist being generated
             Meta::TrackList m_context;  //! tracks that precede the playlist
 
-            QueryMaker* m_mutationSource;
-            Meta::TrackList m_mutationPool;
-
-            QMutex m_mutationMutex;
-            QWaitCondition m_mutationWaitCond;
-
             int m_pendingBiasUpdates;
             QMutex m_biasMutex;
             QWaitCondition m_biasUpdateWaitCond;
@@ -101,16 +94,15 @@ namespace Dynamic
 
             /** A list of every track in the collection. This ends up making Amarok
              * use quite a bit of memory. Hopefully a better idea will come along. */
-            static Meta::TrackList s_universe;
+            static QStringList     s_universe;
             static QMutex          s_universeMutex;
             static QueryMaker*     s_universeQuery;
+            static Collection*     s_universeCollection;
             static bool            s_universeOutdated;
-            QWaitCondition  m_universeWaitCond;
 
             static const int    ITERATION_LIMIT; //! give up after this many iterations
             static const double INITIAL_TEMPERATURE;
             static const double COOLING_RATE;
-            static const int    MUTATION_POOL_SIZE;
     };
 
 }

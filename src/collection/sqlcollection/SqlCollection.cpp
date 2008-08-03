@@ -127,6 +127,12 @@ SqlCollection::stopScan()
 }
 
 QString
+SqlCollection::uidUrlProtocol() const
+{
+    return "amarok-sqltrackuid";
+}
+
+QString
 SqlCollection::collectionId() const
 {
     return m_collectionId;
@@ -183,13 +189,13 @@ SqlCollection::isFileInCollection( const QString &url )
 bool
 SqlCollection::possiblyContainsTrack( const KUrl &url ) const
 {
-    return url.protocol() == "file" || url.protocol() == "amarok-sqltrackuid";
+    return url.protocol() == "file" || url.protocol() == uidUrlProtocol();
 }
 
 Meta::TrackPtr
 SqlCollection::trackForUrl( const KUrl &url )
 {
-    if( url.protocol() == "amarok-sqltrackuid" )
+    if( url.protocol() == uidUrlProtocol() )
         return m_registry->getTrackFromUid( url.host() );
     else
         return m_registry->getTrack( url.path() );

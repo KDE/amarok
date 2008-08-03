@@ -28,16 +28,16 @@ Dynamic::TrackSet::TrackSet()
 }
 
 
-Dynamic::TrackSet::TrackSet( const Meta::TrackList& tracks )
+Dynamic::TrackSet::TrackSet( const QStringList& uidList )
     : m_bits( Dynamic::BiasSolver::universe().size() )
 {
-    addTracks( tracks );
+    addTracks( uidList );
 }
 
-Dynamic::TrackSet::TrackSet( const QSet<Meta::TrackPtr>& tracks )
+Dynamic::TrackSet::TrackSet( const QSet<QString>& uidSet )
     : m_bits( Dynamic::BiasSolver::universe().size() )
 {
-    addTracks( tracks );
+    addTracks( uidSet );
 }
 
 void
@@ -69,26 +69,26 @@ Dynamic::TrackSet::setUniverseSet()
 
 
 void
-Dynamic::TrackSet::setTracks( const Meta::TrackList& tracks )
+Dynamic::TrackSet::setTracks( const QStringList& uidList )
 {
     m_bits.clear();
-    addTracks( tracks );
+    addTracks( uidList );
 }
 
 void
-Dynamic::TrackSet::setTracks( const QSet<Meta::TrackPtr>& tracks )
+Dynamic::TrackSet::setTracks( const QSet<QString>& uidSet )
 {
     m_bits.clear();
-    addTracks( tracks );
+    addTracks( uidSet );
 }
 
 void
-Dynamic::TrackSet::addTracks( const Meta::TrackList& tracks )
+Dynamic::TrackSet::addTracks( const QStringList& uidList )
 {
-    const Meta::TrackList& U =
+    const QStringList& U =
         Dynamic::BiasSolver::universe();
 
-    foreach( Meta::TrackPtr t, tracks )
+    foreach( QString t, uidList )
     {
         int i = U.indexOf( t );
         if( i != -1 )
@@ -97,12 +97,12 @@ Dynamic::TrackSet::addTracks( const Meta::TrackList& tracks )
 }
 
 void
-Dynamic::TrackSet::addTracks( const QSet<Meta::TrackPtr>& tracks )
+Dynamic::TrackSet::addTracks( const QSet<QString>& uidSet )
 {
-    const Meta::TrackList& U =
+    const QStringList& U =
         Dynamic::BiasSolver::universe();
 
-    foreach( Meta::TrackPtr t, tracks )
+    foreach( QString t, uidSet )
     {
         int i = U.indexOf( t );
         if( i != -1 )
@@ -110,25 +110,25 @@ Dynamic::TrackSet::addTracks( const QSet<Meta::TrackPtr>& tracks )
     }
 }
 
-Meta::TrackList
-Dynamic::TrackSet::trackList() const
+QStringList
+Dynamic::TrackSet::uidList() const
 {
-    const Meta::TrackList& U =
+    const QStringList& U =
         Dynamic::BiasSolver::universe();
 
-    Meta::TrackList tracks;
+    QStringList uids;
 
     int count = m_bits.count( true );
     for( int i = 0; count > 0 && i < m_bits.size(); ++i )
     {
         if( m_bits.testBit(i) )
         {
-            tracks.append( U[i] );
+            uids.append( U[i] );
             count--;
         }
     }
 
-    return tracks;
+    return uids;
 }
 
 void

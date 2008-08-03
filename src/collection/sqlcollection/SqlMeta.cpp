@@ -142,7 +142,6 @@ SqlTrack::getTrackReturnValueCount()
 TrackPtr
 SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collection )
 {
-    DEBUG_BLOCK
     QString query = "SELECT %1 FROM urls "
                     "LEFT JOIN tracks ON urls.id = tracks.url "
                     "LEFT JOIN statistics ON urls.id = statistics.url "
