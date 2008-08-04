@@ -23,9 +23,10 @@
 #include "amarok_export.h"
 #include "progressBar.h" //convenience
 
+#include <KStatusBar>
+
 #include <QEvent>
 #include <QMap>        //stack allocated
-#include <QStatusBar>
 
 class StatusBarMessageLabel;
 class QLabel;
@@ -43,7 +44,7 @@ namespace KDE
      * @short advanced statusBar
      * @author Max Howell <max.howell@methylblue.com>
      *
-     * Like a normal QStatusBar, but add widgets directly:
+     * Like a normal KStatusBar, but add widgets directly:
      *
      *    new QLabel( text, statusbar );
      *
@@ -75,7 +76,7 @@ namespace KDE
      * @see KDE::ProgressBar
      */
 
-    class StatusBar : public QStatusBar
+    class StatusBar : public KStatusBar
     {
         Q_OBJECT
 

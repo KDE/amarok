@@ -98,7 +98,7 @@ namespace SingleShotPool
 
 
 StatusBar::StatusBar( QWidget *parent, const char *name )
-        : QStatusBar( parent )
+        : KStatusBar( parent )
         , m_logCounter( -1 )
         , popupShown ( false )
 {
@@ -150,7 +150,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     connect( b2, SIGNAL(toggled( bool )), SLOT(toggleProgressWindow( bool )) );
 
     m_popupProgress = new OverlayWidget( this, mainProgressBarBox, "popupProgress" );
-    QStatusBar::addWidget( m_popupProgress );
+    KStatusBar::addWidget( m_popupProgress );
     m_popupProgress->setFrameStyle( QFrame::Panel | QFrame::Sunken );
     m_popupProgress->setFrameShape( QFrame::StyledPanel );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
@@ -208,9 +208,8 @@ StatusBar::polish()
 }
 
 void
-StatusBar::paintEvent( QPaintEvent* )
+StatusBar::paintEvent( QPaintEvent* event )
 {
-
     QPainter p( this );
 
     //paint divider
@@ -218,22 +217,9 @@ StatusBar::paintEvent( QPaintEvent* )
     p.drawPixmap( dividerOffset, 0, The::svgHandler()->renderSvg( "divider_bottom", width() - 2 * dividerOffset, 1, "divider_bottom" ) );
     p.drawPixmap( dividerOffset, 1, The::svgHandler()->renderSvg( "divider_top", width() - 2 * dividerOffset, 1, "divider_top" ) );
 
-    
-    QList<QWidget*> list = qFindChildren<QWidget *>( this );
+    p.end();
 
-
-    for( QList<QWidget*>::iterator it = list.begin(); it != list.end(); it++ )
-    {
-        QWidget *w = *it;
-
-        if ( !w->isVisible() )
-            continue;
-        QStyleOption option( 1, QStyleOption::SO_Default );
-        style()->drawPrimitive(
-                QStyle::PE_FrameStatusBar,
-                &option,
-                &p);
-    }
+    KStatusBar::paintEvent( event );    
 }
 
 bool
