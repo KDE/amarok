@@ -181,7 +181,7 @@ OSDWidget::show() //virtual
 }
 
 QRect
-OSDWidget::determineMetrics( const uint M )
+OSDWidget::determineMetrics( const int M )
 {
     // sometimes we only have a tiddly cover
     const QSize minImageSize = m_cover.size().boundedTo( QSize(100,100) );

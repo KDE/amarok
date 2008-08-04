@@ -80,7 +80,7 @@ class OSDWidget : public QWidget
         virtual ~OSDWidget();
 
         /** determine new size and position */
-        QRect determineMetrics( const uint marginMetric );
+        QRect determineMetrics( const int marginMetric );
 
         /** reimplemented */
         virtual void paintEvent( QPaintEvent* );
