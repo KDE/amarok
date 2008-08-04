@@ -63,7 +63,7 @@ M3UPlaylist::M3UPlaylist( const KUrl &url )
             return;
         }
 
-        QString contents = QString( file.readAll() );
+        QString contents( file.readAll() );
         file.close();
 
         QTextStream stream;
@@ -103,15 +103,17 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             QString url = line;
             if( url.startsWith( '/' ) )
                 url.prepend( "file://" );
-
-            if( KUrl::isRelativeUrl( url ) ) {
+            // Won't be relative if it begins with a /
+            else if( KUrl::isRelativeUrl( url ) )
+            {
                 KUrl kurl( directory );
                 kurl.addPath( line ); // adds directory separator if required
                 kurl.cleanPath();
                 debug() << "found track: " << kurl.path();
                 m_tracks.append( Meta::TrackPtr( new MetaProxy::Track( kurl ) ) );
             }
-            else {
+            else
+             {
                 m_tracks.append( Meta::TrackPtr( new MetaProxy::Track( KUrl( line ) ) ) );
                 debug() << "found track: " << line;
             }
@@ -122,7 +124,6 @@ M3UPlaylist::loadM3u( QTextStream &stream )
 
         }
     }
-
     return true;
 }
 
