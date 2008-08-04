@@ -112,7 +112,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
             QString                                         log;
             QList<QObject*>                                 guiPtrList;
             QList<QObject*>                                 wrapperList;
-            ScriptItem() :                                  running( false ){}
+            ScriptItem() : info( 0 ), engine( 0 ), running( false ), globalPtr( 0 ), servicePtr( 0 ) {}
         };
 
         typedef QMap<QString, ScriptItem> ScriptMap;

@@ -474,8 +474,12 @@ void
 ScriptManager::scriptFinished( QString name ) //SLOT
 {
     DEBUG_BLOCK
-
     //FIXME: probably can cause crash if you stop a script from evaluating. eg. if a deadlock is introduced in a menu_click_slot.
+    if( !m_scripts.contains( name ) )
+    {
+        warning() << "Script isn't in m_scripts?";
+        return;
+    }
     const QTime time;
     m_scripts[name].running = false;
     qDeleteAll( m_scripts[name].guiPtrList.begin(), m_scripts[name].guiPtrList.end() );
@@ -547,9 +551,6 @@ ScriptManager::startScriptEngine( QString name )
     m_scripts[name].wrapperList.append( m_scripts[name].globalPtr );
 
     m_scripts[name].servicePtr = new ScriptableServiceScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
-    m_global.setProperty( "ScriptableService", scriptObject );
-    m_scripts[name].wrapperList.append( objectPtr );
 
     objectPtr = new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
