@@ -432,8 +432,7 @@ MountPointManager::collectionFolders( )
     }
     if( result.isEmpty() )
     {
-        QDesktopServices ds;
-        const QString musicDir = ds.storageLocation( QDesktopServices::MusicLocation );
+        const QString musicDir = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
         if( !musicDir.isEmpty() )
         {
             QDir dir( musicDir );
@@ -451,8 +450,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
 {
     if( folders.size() == 1 )
     {
-        QDesktopServices ds;
-        if( folders[0] == ds.storageLocation( QDesktopServices::MusicLocation ) )
+        if( folders[0] == QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) )
         {
             return;
         }
