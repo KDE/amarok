@@ -144,10 +144,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     b1->setIcon( KIcon( "dialog-cancel-amarok" ) );
     b2->setIcon( KIcon( "arrow-up-double-amarok") );
     b2->setCheckable( true );
-    b1->setToolTip( i18n( "Abort all background-operations" ) );
+    b1->setToolTip( i18n( "Abort all background operations" ) );
     b2->setToolTip( i18n( "Show progress detail" ) );
-    connect( b1, SIGNAL(clicked()), SLOT(abortAllProgressOperations()) );
-    connect( b2, SIGNAL(toggled( bool )), SLOT(toggleProgressWindow( bool )) );
+    connect( b1, SIGNAL( clicked( bool ) ), SLOT( abortAllProgressOperations() ) );
+    connect( b2, SIGNAL( toggled( bool ) ), SLOT( toggleProgressWindow( bool ) ) );
 
     m_popupProgress = new OverlayWidget( this, mainProgressBarBox, "popupProgress" );
     KStatusBar::addWidget( m_popupProgress );
@@ -494,6 +494,8 @@ StatusBar::endProgressOperation( QObject *owner )
 void
 StatusBar::abortAllProgressOperations() //slot
 {
+    DEBUG_BLOCK
+
     for( ProgressMap::Iterator it = m_progressMap.begin(), end = m_progressMap.end(); it != end; ++it )
         (*it)->m_abort->animateClick();
 
