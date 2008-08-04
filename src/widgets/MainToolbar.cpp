@@ -89,10 +89,22 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_playerControlsToolbar->setIconDimensions( 32 );
     m_playerControlsToolbar->setMovable( false );
     m_playerControlsToolbar->setFloatable ( false );
-    m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "prev" ) );
-    m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "play_pause" ) );
-    m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "stop" ) );
-    m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "next" ) );
+
+    if( KApplication::isRightToLeft() )
+    {
+        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "next" ) );
+        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "stop" ) );
+        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "play_pause" ) );
+        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "prev" ) );
+    }
+    else
+    {
+        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "prev" ) );
+        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "play_pause" ) );
+        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "stop" ) );
+        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "next" ) );
+    }
+
     m_playerControlsToolbar->adjustSize();
     
 
