@@ -301,7 +301,7 @@ DatabaseUpdater::copyToPermanentTables()
         trackIds += ',';
         trackIds += trackId;
     }
-    m_collection->insert( QString( "INSERT INTO tracks SELECT * FROM tracks_temp WHERE tracks_temp.id NOT IN (%1);" ).arg( trackIds ), QString() );
+    m_collection->insert( QString( "REPLACE INTO tracks SELECT * FROM tracks_temp;" ), QString() );
 
     m_collection->sendChangedSignal();
 }
@@ -512,7 +512,7 @@ DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir, QHash<QStr
 {
     Q_UNUSED(filesRemoved)
 
-    QString select = QString( "SELECT urls.id, urls.rpath FROM urls LEFT JOIN directories ON urls.directory = directories.id "
+    QString select = QString( "SELECT urls.id FROM urls LEFT JOIN directories ON urls.directory = directories.id "
                               "WHERE directories.deviceid = %1 AND directories.dir = '%2';" )
                                 .arg( QString::number( deviceid ), m_collection->escape( rdir ) );
     QStringList idResult = m_collection->query( select );
@@ -520,12 +520,10 @@ DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir, QHash<QStr
     {
         QString id;
         QString ids;
-        QString url;
         QStringList::ConstIterator it = idResult.begin(), end = idResult.end();
         while( it != end )
         {
             id = (*(it++));
-            url = (*(it++));
             if( !ids.isEmpty() )
                 ids += ',';
             ids += id;
