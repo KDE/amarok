@@ -466,6 +466,7 @@ set(amaroklib_LIB_SRCS
     dialogs/ScriptManager.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
+    dialogs/Statistics.cpp
 #    dialogs/deletedialog.cpp
 #    dialogs/deviceconfiguredialog.cpp
     dialogs/trackpickerdialog.cpp
@@ -506,7 +507,6 @@ set(amaroklib_LIB_SRCS
     widgets/Splitter.cpp
     WidgetBackgroundPainter.cpp
 #    SmartPlaylistEditor.cpp
-#    Statistics.cpp
 )
 
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
