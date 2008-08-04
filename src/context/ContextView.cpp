@@ -93,10 +93,8 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     showHome();
     PERF_LOG( "done showing home in contextview" )
     
-    m_startupFinished = true;    
-
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
+    m_startupFinished = true;
+    
 }
 
 ContextView::~ContextView()
