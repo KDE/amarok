@@ -423,41 +423,41 @@ SqlTrack::setDiscNumber( int newDiscNumber )
 void
 SqlTrack::setComment( const QString &newComment )
 {
-    if( !m_batchUpdate )
+    if( m_batchUpdate )
+        m_cache.insert( Meta::Field::COMMENT, newComment );
+    else
     {
         m_comment = newComment;
         writeMetaDataToFile();
         writeMetaDataToDb();
         notifyObservers();
     }
-    else
-        m_cache.insert( Meta::Field::COMMENT, newComment );
 }
 
 void
 SqlTrack::setTitle( const QString &newTitle )
 {
-    if( !m_batchUpdate )
+    if( m_batchUpdate )
+        m_cache.insert( Meta::Field::TITLE, newTitle );
+    else
     {
         m_title = newTitle;
         writeMetaDataToFile();
         writeMetaDataToDb();
         notifyObservers();
     }
-    else
-        m_cache.insert( Meta::Field::TITLE, newTitle );
 }
 
 void
 SqlTrack::setUid( const QString &uid )
 {
-    if( !m_batchUpdate )
+    if( m_batchUpdate )
+        m_cache.insert( Meta::Field::UNIQUEID, uid );
+    else
     {
         m_uid = uid;
         notifyObservers();
     }
-    else
-        m_cache.insert( Meta::Field::UNIQUEID, uid );
 }
 
 void
