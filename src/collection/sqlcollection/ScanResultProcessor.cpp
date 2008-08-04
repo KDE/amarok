@@ -300,12 +300,17 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     int genre = genreId( trackData.value( Field::GENRE ).toString() );
     int composer = composerId( trackData.value( Field::COMPOSER ).toString() );
     int year = yearId( trackData.value( Field::YEAR ).toString() );
-    int url = urlId( trackData.value( Field::URL ).toString() );
 
-    QString insert = "INSERT INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
-                     "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm,"
-                     "createdate,modifydate) VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8',%9"; //goes up to tracknumber
-    insert = insert.arg( QString::number( url )
+    QString uid = trackData.value( Field::UNIQUEID ).toString();
+
+    //urlId will take care of the urls table part of AFT
+    int url = urlId( trackData.value( Field::URL ).toString(), uid );
+
+    QString sql,sql2;
+    sql = "REPLACE INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
+                    "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm,"
+                    "createdate,modifydate) VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8',%9"; //goes up to tracknumber
+    sql = sql.arg( QString::number( url )
                 , QString::number( artist )
                 , QString::number( compilationId ? compilationId : album )
                 , QString::number( genre )
@@ -315,24 +320,24 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
                 , m_collection->escape( trackData[ Field::COMMENT ].toString() )
                 , QString::number( trackData[Field::TRACKNUMBER].toInt() ) );
 
-    QString insert2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9);";
-    insert2 = insert2.arg( QString::number( trackData[Field::DISCNUMBER].toInt() )
+    sql2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9);";
+    sql2 = sql2.arg( QString::number( trackData[Field::DISCNUMBER].toInt() )
                 , QString::number( trackData[Field::BITRATE].toInt() )
                 , QString::number( trackData[Field::LENGTH].toInt() )
                 , QString::number( trackData[Field::SAMPLERATE].toInt() )
                 , QString::number( trackData[Field::FILESIZE].toInt() ), "0", "0", "0", "0" ); //filetype,bpm, createdate, modifydate not implemented yet
-    insert += insert2;
+    sql += sql2;
 
-    m_collection->insert( insert, "tracks_temp" );
+    m_collection->query( sql );
 
-    //Do AFT stuff here?  For now just put into database
-    int deviceid = MountPointManager::instance()->getIdForUrl( trackData.value( Field::URL ).toString() );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, trackData.value( Field::URL ).toString() );
-    
-    QString query = "UPDATE urls_temp SET uniqueid = '%1' WHERE deviceid = %2 AND rpath = '%3';";
-    query = query.arg( trackData.value( Field::UNIQUEID ).toString(), QString::number( deviceid ), m_collection->escape( rpath ) );
-    m_collection->query( query );
+    //Now, notify/modify SqlTrack pointers of changes (setUrl will call notifyObservers)
+    if( m_collection->registry()->checkUidExists( uid ) )
+    {
+        TrackPtr track = m_collection->registry()->getTrackFromUid( uid );
+        KSharedPtr<SqlTrack>::staticCast( track )->setUrl( trackData.value( Field::URL ).toString() );
+    }
 
+    //NEXT: this takes care of Meta, now update other tables with deviceid,rpath,uniqueid
 }
 
 int
@@ -495,27 +500,50 @@ ScanResultProcessor::albumId( const QString &album, int artistId )
 }
 
 int
-ScanResultProcessor::urlId( const QString &url )
+ScanResultProcessor::urlId( const QString &url, const QString &uid )
 {
     int deviceId = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
     //don't bother caching the data, we only call this method for each url once
     QString query = QString( "SELECT id FROM urls_temp WHERE deviceid = %1 AND rpath = '%2';" )
                         .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
-    QStringList res = m_collection->query( query );
-    if( res.isEmpty() )
+    QStringList pathres = m_collection->query( query ); //tells us if the path existed
+    query = QString( "SELECT id FROM urls_temp WHERE uniqueid='%1';" )
+                        .arg( m_collection->escape( uid ) );
+    QStringList uidres = m_collection->query( query ); //tells us if the uid existed
+    if( pathres.isEmpty() && uidres.isEmpty() ) //fresh -- insert
     {
         QFileInfo fileInfo( url );
         const QString dir = fileInfo.absoluteDir().absolutePath();
         int dirId = directoryId( dir );
-        QString insert = QString( "INSERT INTO urls_temp(directory,deviceid, rpath) VALUES ( %1, %2, '%3' );" )
-                            .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ) );
+        QString insert = QString( "INSERT INTO urls_temp(directory,deviceid,rpath,uniqueid) VALUES ( %1, %2, '%3', '%4' );" )
+                    .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ),
+                              m_collection->escape( uid ) );
         return m_collection->insert( insert, "urls_temp" );
     }
-    else
+    else if( !uidres.isEmpty() )
     {
-        return res[0].toInt();
+        //we found an existing entry with this uniqueid, update the deviceid and path
+        //Note that we ignore the situation where both a UID and path was found; UID takes precedence
+        QFileInfo fileInfo( url );
+        const QString dir = fileInfo.absoluteDir().absolutePath();
+        int dirId = directoryId( dir );
+        QString query = QString( "UPDATE urls_temp SET directory=%1,deviceid=%2,rpath='%3' WHERE uniqueid='%4';" )
+            .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ),
+                            m_collection->escape( uid ) );
+        m_collection->query( query );
+        return uidres[0].toInt();
     }
+    else if( !pathres.isEmpty() )
+    {
+        //We found an existing path; give it the most recent UID value
+        QString query = QString( "UPDATE urls_temp SET uniqueid='%1' WHERE deviceid=%2 AND rpath='%3';" )
+            .arg( uid, QString::number( deviceId ), m_collection->escape( rpath ) );
+        m_collection->query( query );
+        return pathres[0].toInt();
+    }
+    else
+        debug() << "AFT algorithm died, you shouldn't be here.";
 }
 
 int

@@ -285,6 +285,38 @@ SqlTrack::prettyName() const
 }
 
 void
+SqlTrack::setUrl( const QString &url )
+{
+    m_deviceid = MountPointManager::instance()->getIdForUrl( url );
+    m_rpath = MountPointManager::instance()->getRelativePath( m_deviceid, url );
+    if( m_batchUpdate )
+        m_cache.insert( Meta::Field::URL, MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) ); 
+    else
+    {
+        debug() << "Setting URL";
+        m_url = url;
+        writeMetaDataToDb();
+        debug() << "Notifying observers";
+        notifyObservers();
+    }
+}
+
+void
+SqlTrack::setUrl( const int deviceid, const QString &rpath )
+{
+    m_deviceid = deviceid;
+    m_rpath = rpath;
+    if( m_batchUpdate )
+        m_cache.insert( Meta::Field::URL, KUrl( MountPointManager::instance()->getAbsolutePath( deviceid, rpath ) ) );
+    else
+    {
+        m_url = KUrl( MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
+        writeMetaDataToDb();
+        notifyObservers();
+    }
+}
+
+void
 SqlTrack::setArtist( const QString &newArtist )
 {
     if( m_batchUpdate )
@@ -527,6 +559,8 @@ SqlTrack::commitMetaDataChanges()
             m_discNumber = m_cache.value( Meta::Field::DISCNUMBER ).toInt();
         if( m_cache.contains( Meta::Field::UNIQUEID ) )
             m_uid = m_cache.value( Meta::Field::UNIQUEID ).toString();
+        if( m_cache.contains( Meta::Field::URL ) )
+            m_url = m_cache.value( Meta::Field::URL ).toString();
 
         //invalidate the cache of both the old and the new object
         if( m_cache.contains( Meta::Field::ARTIST ) )
@@ -574,9 +608,14 @@ void
 SqlTrack::writeMetaDataToDb()
 {
     //TODO store the tracks id in SqlTrack
-    QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.deviceid = %1 AND urls.rpath = '%2';";
-    query = query.arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
+    QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.uniqueid = '%2';";
+    query = query.arg( QString::number( m_deviceid ), m_collection->escape( m_uid ) );
     QStringList res = m_collection->query( query );
+    if( res.isEmpty() )
+    {
+        debug() << "Could not perform update in writeMetaDataToDb";
+        return;
+    }
     int id = res[0].toInt();
     QString update = "UPDATE tracks SET %1 WHERE id = %2;";
     QString tags = "title='%1',comment='%2',tracknumber=%3,discnumber=%4, artist=%5,album=%6,genre=%7,composer=%8,year=%9";
@@ -604,14 +643,15 @@ SqlTrack::updateStatisticsInDb()
     if( count[0].toInt() == 0 )
     {
         m_firstPlayed = QDateTime::currentDateTime().toTime_t();
-        QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
-        QString data = "%1,%2,%3,%4,%5,%6";
+        QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate,uniqueid) VALUES ( %1 );";
+        QString data = "%1,%2,%3,%4,%5,%6,'%7'";
         data = data.arg( QString::number( urlId )
                 , QString::number( m_rating )
                 , QString::number( m_score )
                 , QString::number( m_playCount )
                 , QString::number( m_lastPlayed )
-                , QString::number( m_firstPlayed ) );
+                , QString::number( m_firstPlayed )
+                , m_uid );
         insert = insert.arg( data );
         m_collection->insert( insert, "statistics" );
     }
@@ -683,9 +723,10 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
     QStringList queryResult = m_collection->query( query );
     if( queryResult[0].toInt() == 0 )
     {
-        QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( '%1', '%2' );" )
+        QString insert = QString( "INSERT INTO lyrics( url, lyrics, uniqueid ) VALUES ( '%1', '%2', '%3' );" )
                             .arg( m_collection->escape( m_rpath ),
-                                  m_collection->escape( lyrics ) );
+                                  m_collection->escape( lyrics ),
+                                  m_uid );
         m_collection->insert( insert, "lyrics" );
     }
     else

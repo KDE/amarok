@@ -43,6 +43,7 @@ class SqlRegistry : public QObject
         Meta::TrackPtr getTrack( const QString &url );
         Meta::TrackPtr getTrack( const QStringList &rowData );
         Meta::TrackPtr getTrackFromUid( const QString &uid );
+        bool checkUidExists( const QString &uid );
 
         Meta::ArtistPtr getArtist( const QString &name, int id = -1 );
         Meta::GenrePtr getGenre( const QString &name, int id = -1 );

@@ -85,6 +85,9 @@ class SqlTrack : public Meta::Track
 
         virtual void setTitle( const QString &newTitle );
 
+        virtual void setUrl( const QString &url );
+        virtual void setUrl( const int deviceid, const QString &rpath );
+
         virtual QString comment() const { return m_comment; }
         virtual void setComment( const QString &newComment );
         virtual double score() const { return m_score; }

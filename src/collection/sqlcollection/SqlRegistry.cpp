@@ -98,6 +98,14 @@ SqlRegistry::getTrackFromUid( const QString &uid )
     } 
 }
 
+bool
+SqlRegistry::checkUidExists( const QString &uid )
+{
+    QMutexLocker locker( &m_uidMutex );
+    if( m_uidMap.contains( uid ) )
+        return true;
+    return false;
+}
 
 ArtistPtr
 SqlRegistry::getArtist( const QString &name, int id )

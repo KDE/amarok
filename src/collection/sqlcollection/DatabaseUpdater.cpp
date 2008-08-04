@@ -283,7 +283,7 @@ DatabaseUpdater::copyToPermanentTables()
         urlIds += ',';
         urlIds += urlId;
     }
-    m_collection->insert( QString( "INSERT INTO urls SELECT * FROM urls_temp WHERE urls_temp.id NOT IN (%1);" ).arg( urlIds ), QString() );
+    m_collection->insert( QString( "REPLACE INTO urls SELECT * FROM urls_temp;" ), QString() );
 
     //update the directories table
     //we don't know in which rows the changedate was updated, so we simply copy the whole
@@ -510,6 +510,8 @@ DatabaseUpdater::deleteAllRedundant( const QString &type )
 void
 DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir, QHash<QString, QString> *filesRemoved )
 {
+    Q_UNUSED(filesRemoved)
+
     QString select = QString( "SELECT urls.id, urls.rpath FROM urls LEFT JOIN directories ON urls.directory = directories.id "
                               "WHERE directories.deviceid = %1 AND directories.dir = '%2';" )
                                 .arg( QString::number( deviceid ), m_collection->escape( rdir ) );

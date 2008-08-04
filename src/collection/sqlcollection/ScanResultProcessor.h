@@ -58,7 +58,7 @@ class ScanResultProcessor
         int yearId( const QString &year );
         int imageId( const QString &image, int albumId );
         int albumId( const QString &album, int artistId );
-        int urlId( const QString &url );
+        int urlId( const QString &url, const QString &uid );
         int directoryId( const QString &dir );
 
         int checkExistingAlbums( const QString &album );
