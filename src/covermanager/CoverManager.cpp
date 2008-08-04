@@ -174,7 +174,7 @@ CoverManager::CoverManager()
     { //<Search LineEdit>
         m_searchEdit = new KLineEdit( hbox );
         m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
-        m_searchEdit->setFrame( QFrame::Sunken );
+        m_searchEdit->setFrame( true );
 
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         m_searchEdit->setClearButtonShown( true );
