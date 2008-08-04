@@ -57,7 +57,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 {
     setFrameStyle( QFrame::Panel | QFrame::Sunken );
     setFrameShape( QFrame::StyledPanel );
-    setWindowFlags( Qt::WX11BypassWM | Qt::Tool | Qt::FramelessWindowHint );
+    setWindowFlags( Qt::X11BypassWindowManagerHint | Qt::Tool | Qt::FramelessWindowHint );
 
     setMinimumWidth( 26 );
     setMinimumHeight( 26 );

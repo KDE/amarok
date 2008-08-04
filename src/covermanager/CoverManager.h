@@ -43,6 +43,7 @@ class KHBox;
 class QProgressBar;
 class QHBoxLayout;
 class PixmapViewer;
+class QColorGroup;
 
 class CoverManager : public QSplitter, public Meta::Observer
 {

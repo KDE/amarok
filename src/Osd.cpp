@@ -198,7 +198,7 @@ OSDWidget::determineMetrics( const int M )
 
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0, max.width() - image.width(), max.height(),
-            Qt::AlignCenter | Qt::WordBreak, m_text );
+            Qt::AlignCenter | Qt::TextWordWrap, m_text );
 
     if( m_volume )
     {
@@ -208,7 +208,7 @@ OSDWidget::determineMetrics( const int M )
 
         QRect tmpRect = fontMetrics().boundingRect( 0, 0,
             max.width() - image.width(), max.height() - fontMetrics().height(),
-            Qt::AlignCenter | Qt::WordBreak, tmp );
+            Qt::AlignCenter | Qt::TextWordWrap, tmp );
         tmpRect.setHeight( tmpRect.height() + fontMetrics().height() / 2 );
 
         rect = tmpRect;
@@ -310,7 +310,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
         shadowColor = v > 128 ? Qt::black : Qt::white;
     }
 
-    int align = Qt::AlignCenter | Qt::WordBreak;
+    int align = Qt::AlignCenter | Qt::TextWordWrap;
 
     QPainter p( this );
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );

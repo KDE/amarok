@@ -400,13 +400,18 @@ App::initCliArgs() //static
 //this class is only used in this module, so I figured I may as well define it
 //here and save creating another header/source file combination
 
+// Local version of taglib's QStringToTString macro. It is here, because taglib's one is
+// not Qt3Support clean (uses QString::utf8()). Once taglib will be clean of qt3support
+// it is safe to use QStringToTString again
+#define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
+
 class ID3v1StringHandler : public TagLib::ID3v1::StringHandler
 {
     QTextCodec *m_codec;
 
     virtual TagLib::String parse( const TagLib::ByteVector &data ) const
     {
-        return QStringToTString( m_codec->toUnicode( data.data(), data.size() ) );
+        return Qt4QStringToTString( m_codec->toUnicode( data.data(), data.size() ) );
     }
 
     virtual TagLib::ByteVector render( const TagLib::String &ts ) const
@@ -433,6 +438,8 @@ public:
     virtual ~ID3v1StringHandler()
     {}
 };
+
+#undef Qt4QStringToTString
 
 //SLOT
 void App::applySettings( bool firstTime )

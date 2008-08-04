@@ -30,6 +30,7 @@
 #include <QPointer>
 #include <QSet>
 #include <QString>
+#include <QTextCodec>
 
 #include <KLocale>
 

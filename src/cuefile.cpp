@@ -332,7 +332,7 @@ CueFile* CueFile::findCueForUrl( const QString &url, int mediaLength )
                     for ( QStringList::Iterator it = cueFilesList.begin(); it != cueFilesList.end() && !foundCueFile; ++it )
                     {
                         QFile file ( dir.filePath(*it) );
-                        if( file.open( IO_ReadOnly ) )
+                        if( file.open( QIODevice::ReadOnly ) )
                         {
                             debug() << "[CUEFILE]: " << *it << " - Opened, looking for the matching FILE stanza." << endl;
                             QTextStream stream( &file );

@@ -94,7 +94,7 @@ OverlayWidget::reposition()
 bool
 OverlayWidget::event( QEvent *e )
 {
-    if ( e->type() == QEvent::ChildInserted )
+    if ( e->type() == QEvent::ChildAdded )
         adjustSize();
 
     return QFrame::event( e );

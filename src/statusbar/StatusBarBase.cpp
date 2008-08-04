@@ -225,7 +225,7 @@ StatusBar::paintEvent( QPaintEvent* event )
 bool
 StatusBar::event( QEvent *e )
 {
-    if ( e->type() == QEvent::LayoutHint )
+    if ( e->type() == QEvent::LayoutRequest )
         update();
 
     return QWidget::event( e );

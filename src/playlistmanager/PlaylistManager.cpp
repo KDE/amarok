@@ -320,7 +320,7 @@ namespace Amarok
         lister.openUrl ( url );
 
         while ( !lister.isFinished() )
-            kapp->processEvents ( QEventLoop::ExcludeUserInput );
+            kapp->processEvents ( QEventLoop::ExcludeUserInputEvents );
 
         KFileItemList items = lister.items();
         KUrl::List urls;

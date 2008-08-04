@@ -286,7 +286,7 @@ SqlPodcastProvider::downloadResult( KJob * job )
         localUrl.addPath( m_fileNameMap[job] );
 
         QFile *localFile = new QFile( localUrl.path() );
-        if( localFile->open( IO_WriteOnly ) &&
+        if( localFile->open( QIODevice::WriteOnly ) &&
             localFile->write( static_cast<KIO::StoredTransferJob *>(job)->data() ) != -1 )
         {
             sqlEpisode->setLocalUrl( localUrl );

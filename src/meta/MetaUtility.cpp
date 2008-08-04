@@ -60,6 +60,11 @@
         static const QString XESAM_ID             = "http://freedesktop.org/standards/xesam/1.0/core#id";
         //static bool conversionMapsInitialised = false;
 
+// Local version of taglib's QStringToTString macro. It is here, because taglib's one is
+// not Qt3Support clean (uses QString::utf8()). Once taglib will be clean of qt3support
+// it is safe to use QStringToTString again
+#define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
+
 QVariantMap
 Meta::Field::mapFromTrack( const Meta::Track *track )
 {
@@ -176,31 +181,31 @@ Meta::Field::writeFields( TagLib::FileRef file, const QVariantMap &changes )
         return;
     if( changes.contains( Meta::Field::TITLE ) )
     {
-        const TagLib::String title = QStringToTString( changes.value( Meta::Field::TITLE ).toString() );
+        const TagLib::String title = Qt4QStringToTString( changes.value( Meta::Field::TITLE ).toString() );
         tag->setTitle( title );
     }
 
     if( changes.contains( Meta::Field::ALBUM ) )
     {
-        const TagLib::String album = QStringToTString( changes.value( Meta::Field::ALBUM ).toString() );
+        const TagLib::String album = Qt4QStringToTString( changes.value( Meta::Field::ALBUM ).toString() );
         tag->setAlbum( album );
     }
 
     if( changes.contains( Meta::Field::ARTIST ) )
     {
-        const TagLib::String artist = QStringToTString( changes.value( Meta::Field::ARTIST ).toString() );
+        const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ARTIST ).toString() );
         tag->setArtist( artist );
     }
 
     if( changes.contains( Meta::Field::COMMENT ) )
     {
-        const TagLib::String comment = QStringToTString( changes.value( Meta::Field::COMMENT ).toString() );
+        const TagLib::String comment = Qt4QStringToTString( changes.value( Meta::Field::COMMENT ).toString() );
         tag->setComment( comment );
     }
 
     if( changes.contains( Meta::Field::GENRE ) )
     {
-        const TagLib::String genre = QStringToTString( changes.value( Meta::Field::GENRE ).toString() );
+        const TagLib::String genre = Qt4QStringToTString( changes.value( Meta::Field::GENRE ).toString() );
         tag->setGenre( genre );
     }
     if( changes.contains( Meta::Field::YEAR ) )
@@ -214,6 +219,8 @@ Meta::Field::writeFields( TagLib::FileRef file, const QVariantMap &changes )
         tag->setTrack( trackNumber );
     }
 }
+
+#undef Qt4QStringToTString
 
 QString
 Meta::Field::xesamPrettyToFullFieldName( const QString &name )

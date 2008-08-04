@@ -25,7 +25,11 @@
 #include <QXmlStreamReader>
 #include <QObject>
 
-class KIO::Job;
+namespace KIO
+{
+    class Job;
+}
+
 class KUrl;
 
 /**
