@@ -85,7 +85,7 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
     protected:
         MemoryCollection *m_memCollection;
         QString m_collectionId;
-        class Private;
+        struct Private;
         Private * const d;
 };
 

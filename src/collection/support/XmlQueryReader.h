@@ -64,7 +64,7 @@ private:
     qint64 fieldVal( QStringRef field );
     int compareVal( QStringRef compare );
 
-    class Private;
+    struct Private;
     Private * const d;
 };
 

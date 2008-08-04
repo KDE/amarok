@@ -66,7 +66,7 @@ class AMAROK_EXPORT BlockingQuery : private QObject
         void result( const QString &collectionId, const QStringList &list );
 
     private:
-        class Private;
+        struct Private;
         Private * const d;
 };
 

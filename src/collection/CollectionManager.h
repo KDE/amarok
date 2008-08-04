@@ -139,7 +139,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         void init();
 
-        class Private;
+        struct Private;
         Private * const d;
 };
 
