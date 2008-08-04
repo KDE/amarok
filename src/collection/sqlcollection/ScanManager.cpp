@@ -368,7 +368,9 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     , m_filesDeleted( 0 )
 {
     The::statusBar()->newProgressOperation( this )
-            .setDescription( i18n( "Scanning music" ) );
+            .setDescription( i18n( "Scanning music" ) )
+            .setAbortSlot( parent, SLOT( deleteLater() ) );
+
     connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
 }
 
