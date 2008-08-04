@@ -34,6 +34,7 @@
 #include <QFile>
 #include <qtextstream.h>
 #include <QTimer>
+#include <QTextCodec>
 
 #include <KGlobal>
 #include <KLocale>

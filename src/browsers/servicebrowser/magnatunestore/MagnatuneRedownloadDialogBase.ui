@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
-    <height>431</height>
+    <width>475</width>
+    <height>432</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -45,7 +45,7 @@
      <property name="sizeType" >
       <enum>QSizePolicy::Expanding</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0" >
       <size>
        <width>170</width>
        <height>20</height>
@@ -54,7 +54,7 @@
     </spacer>
    </item>
    <item row="1" column="0" colspan="3" >
-    <widget class="Q3ListView" name="redownloadListView" >
+    <widget class="QTreeWidget" name="redownloadListView" >
      <column>
       <property name="text" >
        <string>Artist - Album</string>
@@ -66,16 +66,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
- </customwidgets>
- <includes>
-  <include location="local" >Q3ListView</include>
- </includes>
  <resources/>
  <connections>
   <connection>
@@ -99,22 +89,6 @@
    <signal>clicked()</signal>
    <receiver>magnatuneReDownloadDialogBase</receiver>
    <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>redownloadListView</sender>
-   <signal>selectionChanged()</signal>
-   <receiver>magnatuneReDownloadDialogBase</receiver>
-   <slot>selectionChanged()</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>

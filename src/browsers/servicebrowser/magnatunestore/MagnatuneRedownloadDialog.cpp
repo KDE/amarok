@@ -23,8 +23,7 @@
 #include "Debug.h"
 
 #include <QPushButton>
-
-#include <k3listview.h>
+#include <QHeaderView>
 
 MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : QDialog(parent, fl)
@@ -34,8 +33,9 @@ MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char
     setupUi(this);
     redownloadButton->setEnabled ( false );
 
-    redownloadListView->setColumnWidthMode( 0, Q3ListView::Manual );
-    redownloadListView->setResizeMode( Q3ListView::LastColumn );
+    redownloadListView->header()->setStretchLastSection( true );
+    redownloadListView->setRootIsDecorated( false );
+    connect( redownloadListView, SIGNAL(itemSelectionChanged()), SLOT(selectionChanged()) );
 }
 
 MagnatuneRedownloadDialog::~MagnatuneRedownloadDialog()
@@ -50,7 +50,7 @@ void MagnatuneRedownloadDialog::setRedownloadItems( const QStringList &items )
 
            QString currentItem = it.next();
            debug() << "Adding item to redownload dialog: " << currentItem;
-           new Q3ListViewItem(redownloadListView, currentItem);
+           redownloadListView->addTopLevelItem( new QTreeWidgetItem( QStringList(currentItem) ) );
      }
 
      debug() << "Nothing more to add...";
