@@ -700,7 +700,7 @@ CoverFetcher::showCover()
 void
 CoverFetcher::finish()
 {
-    The::statusBar()->shortMessage( "Retrieved cover successfully", KDE::StatusBar::None );
+    The::statusBar()->shortMessage( i18n( "Retrieved cover successfully" ) );
     m_albumPtr->setImage( image() );
     m_isFetching = false;
     if( !m_userCanEditQuery /*manual fetch*/ && !m_albums.isEmpty() )
