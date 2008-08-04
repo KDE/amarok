@@ -36,8 +36,8 @@ namespace Dynamic
     {
         public:
             TrackSet();
-            TrackSet( const QStringList& uidList );
-            TrackSet( const QSet<QString>& uidSet );
+            TrackSet( const QList<QByteArray>& uidList );
+            TrackSet( const QSet<QByteArray>& uidSet );
 
             void reset();
 
@@ -47,13 +47,13 @@ namespace Dynamic
             void setUniverseSet(); //! make this the universe set
 
 
-            void setTracks( const QStringList& );
-            void addTracks( const QStringList& );
+            void setTracks( const QList<QByteArray>& );
+            void addTracks( const QList<QByteArray>& );
 
-            void setTracks( const QSet<QString>& );
-            void addTracks( const QSet<QString>& );
+            void setTracks( const QSet<QByteArray>& );
+            void addTracks( const QSet<QByteArray>& );
 
-            QStringList uidList() const;
+            QList<QByteArray> uidList() const;
 
             void unite( const TrackSet& );
             void intersect( const TrackSet& );

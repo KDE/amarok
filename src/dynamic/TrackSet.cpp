@@ -28,13 +28,13 @@ Dynamic::TrackSet::TrackSet()
 }
 
 
-Dynamic::TrackSet::TrackSet( const QStringList& uidList )
+Dynamic::TrackSet::TrackSet( const QList<QByteArray>& uidList )
     : m_bits( Dynamic::BiasSolver::universe().size() )
 {
     addTracks( uidList );
 }
 
-Dynamic::TrackSet::TrackSet( const QSet<QString>& uidSet )
+Dynamic::TrackSet::TrackSet( const QSet<QByteArray>& uidSet )
     : m_bits( Dynamic::BiasSolver::universe().size() )
 {
     addTracks( uidSet );
@@ -69,26 +69,26 @@ Dynamic::TrackSet::setUniverseSet()
 
 
 void
-Dynamic::TrackSet::setTracks( const QStringList& uidList )
+Dynamic::TrackSet::setTracks( const QList<QByteArray>& uidList )
 {
     m_bits.clear();
     addTracks( uidList );
 }
 
 void
-Dynamic::TrackSet::setTracks( const QSet<QString>& uidSet )
+Dynamic::TrackSet::setTracks( const QSet<QByteArray>& uidSet )
 {
     m_bits.clear();
     addTracks( uidSet );
 }
 
 void
-Dynamic::TrackSet::addTracks( const QStringList& uidList )
+Dynamic::TrackSet::addTracks( const QList<QByteArray>& uidList )
 {
-    const QStringList& U =
+    const QList<QByteArray>& U =
         Dynamic::BiasSolver::universe();
 
-    foreach( QString t, uidList )
+    foreach( QByteArray t, uidList )
     {
         int i = U.indexOf( t );
         if( i != -1 )
@@ -97,12 +97,12 @@ Dynamic::TrackSet::addTracks( const QStringList& uidList )
 }
 
 void
-Dynamic::TrackSet::addTracks( const QSet<QString>& uidSet )
+Dynamic::TrackSet::addTracks( const QSet<QByteArray>& uidSet )
 {
-    const QStringList& U =
+    const QList<QByteArray>& U =
         Dynamic::BiasSolver::universe();
 
-    foreach( QString t, uidSet )
+    foreach( QByteArray t, uidSet )
     {
         int i = U.indexOf( t );
         if( i != -1 )
@@ -110,13 +110,13 @@ Dynamic::TrackSet::addTracks( const QSet<QString>& uidSet )
     }
 }
 
-QStringList
+QList<QByteArray>
 Dynamic::TrackSet::uidList() const
 {
-    const QStringList& U =
+    const QList<QByteArray>& U =
         Dynamic::BiasSolver::universe();
 
-    QStringList uids;
+    QList<QByteArray> uids;
 
     int count = m_bits.count( true );
     for( int i = 0; count > 0 && i < m_bits.size(); ++i )

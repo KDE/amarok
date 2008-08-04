@@ -52,7 +52,7 @@ namespace Dynamic
             void doWork();
 
             static void setUniverseCollection( Collection* );
-            static const QStringList& universe();
+            static const QList<QByteArray>& universe();
             static void outdateUniverse();
 
         protected:
@@ -71,7 +71,7 @@ namespace Dynamic
             void updateUniverse();
             double energy();
             double recalculateEnergy( Meta::TrackPtr mutation, int mutationPos );
-            Meta::TrackPtr trackForUid( const QString& );
+            Meta::TrackPtr trackForUid( const QByteArray& );
             Meta::TrackPtr getMutation();
 
 
@@ -94,11 +94,11 @@ namespace Dynamic
 
             /** A list of every track in the collection. This ends up making Amarok
              * use quite a bit of memory. Hopefully a better idea will come along. */
-            static QStringList     s_universe;
-            static QMutex          s_universeMutex;
-            static QueryMaker*     s_universeQuery;
-            static Collection*     s_universeCollection;
-            static bool            s_universeOutdated;
+            static QList<QByteArray>  s_universe;
+            static QMutex             s_universeMutex;
+            static QueryMaker*        s_universeQuery;
+            static Collection*        s_universeCollection;
+            static bool               s_universeOutdated;
 
             static const int    ITERATION_LIMIT; //! give up after this many iterations
             static const double INITIAL_TEMPERATURE;

@@ -43,11 +43,11 @@ const double Dynamic::BiasSolver::INITIAL_TEMPERATURE = 0.1;
 const double Dynamic::BiasSolver::COOLING_RATE        = 0.8;
 
 
-QStringList     Dynamic::BiasSolver::s_universe;
-QMutex          Dynamic::BiasSolver::s_universeMutex;
-QueryMaker*     Dynamic::BiasSolver::s_universeQuery = 0;
-Collection*     Dynamic::BiasSolver::s_universeCollection = 0;
-bool            Dynamic::BiasSolver::s_universeOutdated = true;
+QList<QByteArray> Dynamic::BiasSolver::s_universe;
+QMutex            Dynamic::BiasSolver::s_universeMutex;
+QueryMaker*       Dynamic::BiasSolver::s_universeQuery = 0;
+Collection*       Dynamic::BiasSolver::s_universeCollection = 0;
+bool              Dynamic::BiasSolver::s_universeOutdated = true;
 
 
 
@@ -303,7 +303,7 @@ Dynamic::BiasSolver::generateInitialPlaylist()
 
     // We are going to be computing a lot of track set intersections so we will
     // memoize to try and save time (if not memory).
-    QHash< QBitArray, QStringList > memoizedIntersections;
+    QHash< QBitArray, QList<QByteArray> > memoizedIntersections;
 
 
 
@@ -390,7 +390,7 @@ Dynamic::BiasSolver::generateInitialPlaylist()
             memoizedIntersections[branches] = S.uidList();
         }
 
-        const QStringList& finalSubset = memoizedIntersections[branches];
+        const QList<QByteArray>& finalSubset = memoizedIntersections[branches];
 
         // this should never happen
         if( finalSubset.size() == 0 )
@@ -420,10 +420,10 @@ Dynamic::BiasSolver::getMutation()
 }
 
 Meta::TrackPtr
-Dynamic::BiasSolver::trackForUid( const QString& uid )
+Dynamic::BiasSolver::trackForUid( const QByteArray& uid )
 {
     return s_universeCollection->trackForUrl( 
-            s_universeCollection->uidUrlProtocol() + "://" + uid );
+            s_universeCollection->uidUrlProtocol() + "://" + QString(uid.toHex()) );
 }
 
 void
@@ -463,7 +463,12 @@ Dynamic::BiasSolver::universeResults( QString collectionId, QStringList uids )
 
     QMutexLocker locker( &s_universeMutex );
 
-    s_universe += uids;
+    QByteArray uid;
+    foreach( QString uidString, uids )
+    {
+        uid = QByteArray::fromHex( uidString.toAscii() );
+        s_universe += uid;
+    }
 }
 
 void
@@ -498,7 +503,7 @@ Dynamic::BiasSolver::setUniverseCollection( Collection* coll )
     }
 }
 
-const QStringList&
+const QList<QByteArray>&
 Dynamic::BiasSolver::universe()
 {
     QMutexLocker locker( &s_universeMutex );
