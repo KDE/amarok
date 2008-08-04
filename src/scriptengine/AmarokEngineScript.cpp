@@ -21,10 +21,12 @@
 #include "App.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "mediabrowser.h"
+//#include "mediabrowser.h"
 #include "playlist/PlaylistModel.h"
 
 #include <QtScript>
+
+#include <KSelectAction>
 
 namespace AmarokScript
 {

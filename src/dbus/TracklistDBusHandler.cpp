@@ -21,12 +21,13 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "collection/CollectionManager.h"
-#include "mediabrowser.h"
+//#include "mediabrowser.h"
 #include "playlist/PlaylistModel.h"
 #include "dbus/PlayerDBusHandler.h"
 
 
 #include <KUrl>
+#include <KSelectAction>
 
 #include "TracklistAdaptor.h"
 

@@ -466,7 +466,7 @@ set(amaroklib_LIB_SRCS
     dialogs/ScriptManager.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
-    dialogs/deletedialog.cpp
+#    dialogs/deletedialog.cpp
 #    dialogs/deviceconfiguredialog.cpp
     dialogs/trackpickerdialog.cpp
 #    dialogs/transferdialog.cpp
@@ -519,7 +519,7 @@ kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/EditCoverSearchDialog.ui
-    dialogs/deletedialogbase.ui
+    #dialogs/deletedialogbase.ui
     dialogs/ScriptManagerBase.ui
     dialogs/tagdialogbase.ui
     dialogs/FilenameLayoutDialog.ui
@@ -534,7 +534,6 @@ target_link_libraries(amaroklib
     ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS}
     ${TAGLIB_LIBRARIES}
     ${KDE4_KFILE_LIBS}
-    ${KDE4_KDE3SUPPORT_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KNEWSTUFF2_LIBS}
     ${QT_QTOPENGL_LIBRARY}

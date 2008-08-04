@@ -21,7 +21,7 @@
 #include "StatusBar.h"
 #include "Debug.h"
 #include "MainWindow.h"
-#include "mediabrowser.h"
+//#include "mediabrowser.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "meta/MultiPlayableCapability.h"

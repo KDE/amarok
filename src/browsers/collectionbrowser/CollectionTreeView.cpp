@@ -27,7 +27,7 @@
 #include "CollectionManager.h"
 #include "browsers/collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
-#include "mediabrowser.h"
+//#include "mediabrowser.h"
 #include "Meta.h"
 #include "MetaQueryMaker.h"
 #include "meta/CustomActionsCapability.h"
@@ -47,6 +47,7 @@
 #include <QHash>
 #include <QSet>
 
+#include <KAction>
 #include <KIcon>
 #include <KLineEdit>
 #include <KMenu>

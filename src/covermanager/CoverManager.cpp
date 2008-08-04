@@ -35,8 +35,6 @@
 #include "playlist/PlaylistModel.h"
 #include "context/popupdropper/PopupDropperAction.h"
 
-#include <k3multipledrag.h>
-#include <k3urldrag.h>
 #include <KApplication>
 #include <KConfig>
 #include <KCursor>

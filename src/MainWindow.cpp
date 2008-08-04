@@ -31,7 +31,7 @@
 #include "SearchWidget.h"
 #include "Sidebar.h"
 #include "Sidebar.moc"
-#include "Statistics.h"
+//#include "Statistics.h"
 #include "StatusBar.h"
 #include "amarokconfig.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"

@@ -108,7 +108,6 @@
  </widget>
  <layoutdefault spacing="6" margin="0" />
  <layoutfunction spacing="KDialog::spacingHint" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>ScriptSelector</class>
