@@ -120,7 +120,7 @@ Medium::List Medium::createList( const QStringList &properties )
             l.append( m );
 
             QStringList::iterator first = props.begin();
-            QStringList::iterator last = props.find( SEPARATOR );
+            QStringList::iterator last = qFind( first, props.end(), SEPARATOR );
             ++last;
             props.erase( first, last );
         }
