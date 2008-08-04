@@ -64,10 +64,7 @@ ProgressBar::setDescription( const QString &text )
 ProgressBar&
 ProgressBar::setStatus( const QString &text )
 {
-    QString s = m_description;
-    s += " [";
-    s += text;
-    s += ']';
+    const QString s = m_description + " [" + text + "]";
 
     m_label->setText( s );
     parentWidget()->adjustSize();
@@ -78,6 +75,8 @@ ProgressBar::setStatus( const QString &text )
 ProgressBar&
 ProgressBar::setAbortSlot( QObject *receiver, const char *slot )
 {
+    DEBUG_BLOCK
+
     connect( m_abort, SIGNAL(clicked()), receiver, slot );
     connect( m_abort, SIGNAL(clicked()), this, SLOT(hide()) );
     m_abort->show();

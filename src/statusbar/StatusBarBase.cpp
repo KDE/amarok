@@ -150,7 +150,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     connect( b2, SIGNAL( toggled( bool ) ), SLOT( toggleProgressWindow( bool ) ) );
 
     m_popupProgress = new OverlayWidget( this, mainProgressBarBox, "popupProgress" );
-    KStatusBar::addWidget( m_popupProgress );
+    addWidget( m_popupProgress );
     m_popupProgress->setFrameStyle( QFrame::Panel | QFrame::Sunken );
     m_popupProgress->setFrameShape( QFrame::StyledPanel );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
