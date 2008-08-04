@@ -167,11 +167,13 @@ void
 Meta::Field::writeFields( TagLib::FileRef file, const QVariantMap &changes )
 {
     DEBUG_BLOCK
-   debug() << "CHANGES: " << changes;
     if( file.isNull() || changes.isEmpty() )
         return;
+    debug() << "CHANGES: " << changes;
     DEBUG_LINE_INFO
     TagLib::Tag *tag = file.tag();
+    if( !tag )
+        return;
     if( changes.contains( Meta::Field::TITLE ) )
     {
         const TagLib::String title = QStringToTString( changes.value( Meta::Field::TITLE ).toString() );
