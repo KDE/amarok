@@ -51,7 +51,6 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     , m_startupFinished( false )
     , m_toolBoxAdded( false )
 {
-    
     s_self = this;
 
     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
@@ -64,8 +63,6 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setMouseTracking( true );
-
-
 
     //make background transparent
     QPalette p = palette();
@@ -97,6 +94,9 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     PERF_LOG( "done showing home in contextview" )
     
     m_startupFinished = true;    
+
+    setFrameShape( QFrame::StyledPanel );
+    setFrameShadow( QFrame::Sunken );
 }
 
 ContextView::~ContextView()
