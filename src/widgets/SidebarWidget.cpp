@@ -35,8 +35,9 @@
 #include <QWheelEvent>
 
 
-struct SideBarWidget::Private
+class SideBarWidget::Private
 {
+public:
     QList<SideBarButton*> buttons;
     QList<QAction*> actions;
     QList<QAction*> shortcuts;
