@@ -255,7 +255,7 @@ void
 AmarokToolBox::timeToHide()
 {
     m_timer->stop();
-    m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve,
+    m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseOutCurve,
                                                                    this, "animateHighlight" );
     hideTools();
     
