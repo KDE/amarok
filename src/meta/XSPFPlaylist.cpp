@@ -93,7 +93,7 @@ XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
     QDomElement root = createElement( "playlist" );
 
     root.setAttribute( "version", 1 );
-    root.setAttribute( "xmlns", "http://xspf.org/ns/1/" );
+    root.setAttribute( "xmlns", "http://xspf.org/ns/0/" );
 
     root.appendChild( createElement( "trackList" ) );
 
@@ -110,10 +110,7 @@ XSPFPlaylist::save( const QString &location, bool relative )
 {
     DEBUG_BLOCK
     Q_UNUSED( relative );
-
     QFile file( location );
-    if( trackList().isEmpty() )
-        return false;
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
@@ -123,7 +120,7 @@ XSPFPlaylist::save( const QString &location, bool relative )
 
     QTextStream stream ( &file );
     stream.setCodec( "UTF-8" );
-
+    debug() << "saving...";
     QDomDocument::save( stream, 2 /*indent*/, QDomNode::EncodingFromTextStream );
 
     return true;
