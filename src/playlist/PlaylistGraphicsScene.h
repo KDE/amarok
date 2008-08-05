@@ -45,7 +45,7 @@ namespace Playlist
             void axisDeleted();
 
         private:
-            // what item shift-click selections are centered arround
+            // what item shift-click selections are centered around
             QPointer<GraphicsItem> m_selectionAxis;
     };
 }

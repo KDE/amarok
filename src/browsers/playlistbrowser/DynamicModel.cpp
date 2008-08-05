@@ -246,7 +246,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
     QFile file( Amarok::saveLocation() + "dynamic.xml" );
     if( !file.open( QIODevice::ReadWrite ) )
     {
-        error() << "Can't open dynamic.xml";
+        error() << "Can not open dynamic.xml";
         return;
     }
 
@@ -259,7 +259,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
     int errorLine, errorColumn;
     if( !m_savedPlaylists.setContent( raw, &errorMsg, &errorLine, &errorColumn ) )
     {
-        error() << "Can't parse dynamic.xml";
+        error() << "Can not parse dynamic.xml";
         error() << errorMsg;
         error() << QString().sprintf( "Line: %d, Column %d", errorLine, errorColumn );
 
@@ -329,7 +329,7 @@ PlaylistBrowserNS::DynamicModel::playlistModified( Dynamic::BiasedPlaylistPtr p 
 
     if( !unmodified )
     {
-        error() << "Can't parse biased playlist xml.";
+        error() << "Can not parse biased playlist xml.";
         return;
     }
 
@@ -435,7 +435,7 @@ PlaylistBrowserNS::DynamicModel::savePlaylists()
     QFile file( Amarok::saveLocation() + "dynamic.xml" );
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        error() << "Can't open dynamic.xml.";
+        error() << "Can not open dynamic.xml.";
         return;
     }
 

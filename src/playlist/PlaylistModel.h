@@ -229,7 +229,7 @@ namespace Playlist
             void requestUserNextTrack();
 
             /**
-             * Figure out the previous track and start playling it immediatly.
+             * Figure out the previous track and start playling it immediately.
              */
             void requestPrevTrack();
 

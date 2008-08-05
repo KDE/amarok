@@ -903,7 +903,7 @@ Playlist::Model::engineStateChanged( Phonon::State currentState, Phonon::State o
 
     if( currentState == Phonon::ErrorState ) {
         failures++;
-        debug() << "Error, can't play this track.";
+        debug() << "Error, can not play this track.";
         debug() << "Failure count: " << failures;
         if( failures >= maxFailures ) {
             The::statusBar()->longMessageThreadSafe( 

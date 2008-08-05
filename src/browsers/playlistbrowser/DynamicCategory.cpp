@@ -275,7 +275,7 @@ DynamicCategory::save()
     // place
     if( title == DynamicModel::instance()->defaultPlaylist()->title() )
     {
-        QMessageBox::warning( this, "Warning!", "Can't overwrite the random playlist." );
+        QMessageBox::warning( this, "Warning!", "Can not overwrite the random playlist." );
         return;
     }
 
