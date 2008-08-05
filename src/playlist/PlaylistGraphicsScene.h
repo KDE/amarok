@@ -23,9 +23,11 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
+#include <QPointer>
 
 namespace Playlist
 {
+    class GraphicsItem;
     class GraphicsScene : public QGraphicsScene
     {
         Q_OBJECT
@@ -44,7 +46,7 @@ namespace Playlist
 
         private:
             // what item shift-click selections are centered arround
-            QGraphicsItem* m_selectionAxis;
+            QPointer<GraphicsItem> m_selectionAxis;
     };
 }
 

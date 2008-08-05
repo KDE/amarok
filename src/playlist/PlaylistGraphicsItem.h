@@ -70,7 +70,7 @@ namespace Playlist
 
             void editTrackInformation();
 
-            const int groupMode() const { return m_groupMode; }
+            int groupMode() const { return m_groupMode; }
 
             void paletteChange();
 

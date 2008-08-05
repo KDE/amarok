@@ -35,7 +35,7 @@
 using namespace Playlist;
 
 GraphicsScene::GraphicsScene( QObject* parent )
-    : QGraphicsScene( parent ), m_selectionAxis(0)
+    : QGraphicsScene( parent )
 {
 }
 
@@ -171,7 +171,7 @@ GraphicsScene::axisDeleted()
     Playlist::GraphicsItem* axis = dynamic_cast<Playlist::GraphicsItem*>( newAxis );
     if( axis )
     {
-        m_selectionAxis = newAxis;
+        m_selectionAxis = axis;
         connect( axis, SIGNAL(destroyed(QObject*)), SLOT(axisDeleted()) );
     }
 }
