@@ -408,6 +408,8 @@ MountPointManager::getMountedDeviceIds() const {
 QStringList
 MountPointManager::collectionFolders( )
 {
+    DEBUG_BLOCK
+
     //TODO max: cache data
     QStringList result;
     KConfigGroup folders = Amarok::config( "Collection Folders" );
@@ -433,10 +435,12 @@ MountPointManager::collectionFolders( )
     if( result.isEmpty() )
     {
         const QString musicDir = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+        debug() << "QDesktopServices::MusicLocation: " << musicDir; 
+
         if( !musicDir.isEmpty() )
         {
-            QDir dir( musicDir );
-            if( dir.exists() )
+            const QDir dir( musicDir );
+            if( dir != QDir::home() && dir.exists() )
             {
                 result << musicDir;
             }
