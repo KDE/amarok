@@ -45,7 +45,7 @@ namespace Playlist
      */
     class GraphicsItem : public QObject, public QGraphicsItem
     {
-        class ActiveItems;
+        struct ActiveItems;
 
         public:
             GraphicsItem();

@@ -104,7 +104,7 @@ class ServiceSqlQueryMaker : public QueryMaker
         ServiceSqlRegistry * m_registry;
         ServiceMetaFactory * m_metaFactory;
 
-        class Private;
+        struct Private;
         Private * const d;
 
 };
