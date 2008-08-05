@@ -39,11 +39,11 @@ macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strig
 include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 include(CheckTagLibFileName)
 
-macro_optional_find_package(Njb)
-macro_log_feature( NJB_FOUND "libnjb" "Support Creative Labs nomad jukebox devices" "http://www.sf.net/projects/libnjb" FALSE "2.2.4" "" )
+#macro_optional_find_package(Njb)
+#macro_log_feature( NJB_FOUND "libnjb" "Support Creative Labs nomad jukebox devices" "http://www.sf.net/projects/libnjb" FALSE "2.2.4" "" )
 
-macro_optional_find_package(Ifp)
-macro_log_feature( IFP_FOUND "libifp" "Support iRiver iFP audio devices" "http://ifp-driver.sourceforge.net/libifp/" FALSE "1.0.0.2" "")
+#macro_optional_find_package(Ifp)
+#macro_log_feature( IFP_FOUND "libifp" "Support iRiver iFP audio devices" "http://ifp-driver.sourceforge.net/libifp/" FALSE "1.0.0.2" "")
 
 macro_optional_find_package(GLIB2)
 macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
