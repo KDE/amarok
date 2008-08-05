@@ -80,7 +80,7 @@ QString ShoutcastTrack::name() const
     return ancestorName;
 }
 
-QString ShoutcastTrack::url() const
+QString ShoutcastTrack::uidUrl() const
 {
     return m_playlistUrl.url();
 }
