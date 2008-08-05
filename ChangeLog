@@ -25,6 +25,7 @@ VERSION 2.0-beta1
     * Context view state is saved on exit and restored on start up.
 
   CHANGES:
+    * Reworked layout and more intuitive interface in the Guess Tags from Filenames dialog.
     * New artwork by Nuno Pinheiro <nuno@oxygen-icons.org> and Wade Olson
       <wade@corefunction.com>
     * Better zooming animation in the context view
