@@ -304,10 +304,13 @@ void ColumnContainment::updateSize( QRectF rect )
     
     if( m_currentColumns > 0 )
         recalculate();
+    
     if( m_toolBox )
     {
-        m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size(), geometry().height() - m_toolBox->size() * 3 );
+        m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
+                            geometry().height() - m_toolBox->size().height() );
     }
+    
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
@@ -680,29 +683,59 @@ ColumnContainment::addToolBox()
     if( m_toolBox )
         return;
     m_toolBox = new AmarokToolBox( this );
-    debug() << geometry().width();
-    debug() << geometry().height();
-    m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size(), geometry().height() - m_toolBox->size() *4 );
+    ContextView *cv = dynamic_cast<ContextView *>( view() );
+    if( cv )
+    {
+        DEBUG_LINE_INFO
+        connect( m_toolBox, SIGNAL( changeContainment( Plasma::Containment * ) ),
+                 cv, SLOT( setContainment( Plasma::Containment * ) ) );
+        connect( m_toolBox, SIGNAL( correctToolBoxPos() ), this, SLOT( correctToolBoxPos() ) );
+    }
+    m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
+                       geometry().height() - m_toolBox->size().height() - 30 );
     m_toolBox->show();
-    m_toolBox->addAction( action( "add widgets") );
     m_toolBox->addAction( action( "zoom in" ) );
     m_toolBox->addAction( action( "zoom out" ) );
-    
 }
 
 
 void
-ColumnContainment::correctToolBoxPos( Plasma::ZoomDirection direction )
+ColumnContainment::correctToolBoxPos()
 {
-    if( direction == Plasma::ZoomOut )
+    DEBUG_BLOCK
+    ContextView *cv = dynamic_cast<ContextView *>( view() );
+    
+    if( !cv )
+        return;
+    
+    Plasma::ZoomLevel zoomLevel = cv->zoomLevel();
+    
+    if( m_toolBox->showingMenu() )
     {
-        m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size()*3,
-                           geometry().height() - m_toolBox->size() * 7 );
+        DEBUG_LINE_INFO
+        if( zoomLevel == Plasma::GroupZoom )
+        {
+            m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width(),
+                                geometry().height() - m_toolBox->size().height() * 2 - 30 );
+        }
+        else
+        {
+            m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
+                                geometry().height() - m_toolBox->size().height() );
+        }
     }
     else
     {
-        m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size(),
-                           geometry().height() - m_toolBox->size() * 3 );
+        if( zoomLevel == Plasma::GroupZoom )
+        {
+            m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width(),
+                            geometry().height() - m_toolBox->size().height() * 2 - 25 );
+        }
+        else if( zoomLevel == Plasma::DesktopZoom )
+        {
+            m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
+                            geometry().height() - m_toolBox->size().height() );
+        }
     }
 }
 

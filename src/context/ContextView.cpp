@@ -321,7 +321,7 @@ ContextView::zoomInFinished( int id )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
         if( containment )
-            containment->correctToolBoxPos( Plasma::ZoomIn );
+            containment->correctToolBoxPos();
     }
 }
 
@@ -352,8 +352,14 @@ ContextView::zoomOutFinished( int id )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
         if( containment )
-            containment->correctToolBoxPos( Plasma::ZoomOut );
+            containment->correctToolBoxPos();
     }
+}
+
+Plasma::ZoomLevel
+ContextView::zoomLevel() const
+{
+    return m_zoomLevel;
 }
 
 void

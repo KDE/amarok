@@ -19,6 +19,10 @@
 
 #include <plasma/widgets/icon.h>
 
+#include <QGraphicsSceneMouseEvent>
+#include <QPainter>
+#include <QTextLine>
+
 class QPainterPath;
 
 class AMAROK_EXPORT ToolBoxIcon: public Plasma::Icon
@@ -26,11 +30,34 @@ class AMAROK_EXPORT ToolBoxIcon: public Plasma::Icon
     Q_OBJECT
 public:
     explicit ToolBoxIcon( QGraphicsItem *parent = 0 );
+    ~ToolBoxIcon();
     
     /**
      * reimplemented from Plasma::Icon
      */
     QPainterPath shape() const;
+
+    QRectF boundingRect() const;
+
+protected:
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+    void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+    void mousePressEvent( QGraphicsSceneMouseEvent *event );
+Q_SIGNALS:
+    void addApplet( const QString &pluginName );
+    
+private slots:
+    void animateHighlight( qreal progress );
+    void mousePressed( bool pressed );
+    
+private:
+    bool m_hovering;
+
+    qreal m_animHighlightFrame;
+    int m_animHighlightId;
+
+    QGraphicsSimpleTextItem *m_text;
 
 };
 

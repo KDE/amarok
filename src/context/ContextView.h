@@ -72,6 +72,8 @@ public:
     */
     void clear();
 
+    Plasma::ZoomLevel zoomLevel() const;
+
 public slots:
     void zoom( Plasma::Containment* containment, Plasma::ZoomDirection direction );
     void zoomIn( Plasma::Containment* containment );
