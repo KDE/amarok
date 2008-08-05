@@ -26,6 +26,8 @@
 #include "reader.h"
 
 #include <QMap>
+#include <QHash>
+#include <QHostInfo>
 #include <QtGlobal>
 
 #include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
@@ -46,21 +48,25 @@ class DaapCollectionFactory : public CollectionFactory
         virtual void init();
 
     private:
-        QString serverKey( const DNSSD::RemoteService *service ) const;
+        QString serverKey( const QString& host, quint16 port ) const;
 
     private slots:
         void connectToManualServers();
-        QString resolve( const QString &hostname );
         void serverOffline( DNSSD::RemoteService::Ptr );
         void foundDaap( DNSSD::RemoteService::Ptr );
         void resolvedDaap( bool );
         void slotCollectionReady();
         void slotCollectionDownloadFailed();
 
+        void resolvedServiceIp(QHostInfo);
+        void resolvedManualServerIp(QHostInfo);
+
     private:
         DNSSD::ServiceBrowser* m_browser;
 
         QMap<QString, DaapCollection*> m_collectionMap;
+
+        QHash<int, quint16> m_lookupHash;
 };
 
 class DaapCollection : public Collection, public MemoryCollection

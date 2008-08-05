@@ -34,7 +34,6 @@
 #include <dnssd/remoteservice.h>
 #include <dnssd/servicebase.h>
 #include <dnssd/servicebrowser.h>
-#include <k3resolver.h>
 
 AMAROK_EXPORT_PLUGIN( DaapCollectionFactory )
 
@@ -75,44 +74,17 @@ DaapCollectionFactory::connectToManualServers()
         QStringList current = server.split( ':', QString::KeepEmptyParts );
         QString host = current.first();
         quint16 port = current.last().toUShort();
-        QString ip = resolve( host );
-        if( ip != "0" )
-        {
-            //adding manual servers to the collectionMap doesn't make sense
-            DaapCollection *coll = new DaapCollection( host, ip, port );
-            connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
-            connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
-        }
-    }
-}
 
-QString
-DaapCollectionFactory::resolve( const QString &hostname )
-{
-    KNetwork::KResolver resolver( hostname );
-    resolver.setFamily( KNetwork::KResolver::KnownFamily ); //A druidic incantation from Thiago. Works around a KResolver bug #132851
-    resolver.start();
-    if( resolver.wait( 5000 ) )
-    {
-        KNetwork::KResolverResults results = resolver.results();
-/*        if( results.error() )
-            debug() << "Error resolving "  << hostname << ": ("
-                    << resolver.errorString( results.error() ) << ")";*/
-        if( !results.empty() )
-        {
-            QString ip = results[0].address().asInet().ipAddress().toString();
-            debug() << "ip found is " << ip;
-            return ip;
-        }
+        int lookup_id = QHostInfo::lookupHost( host, this, SLOT( resolvedManualServerIp(QHostInfo)));
+        m_lookupHash.insert( lookup_id, port );
     }
-    return "0"; //error condition
 }
 
 void
 DaapCollectionFactory::serverOffline( DNSSD::RemoteService::Ptr service )
 {
     DEBUG_BLOCK
-    QString key =  serverKey( service.data() );
+    QString key =  serverKey( service.data()->hostName(), service.data()->port() );
     if( m_collectionMap.contains( key ) )
     {
         DaapCollection* coll = m_collectionMap[ key ];
@@ -142,20 +114,14 @@ DaapCollectionFactory::resolvedDaap( bool success )
     if( !success || !service ) return;
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type();
 
-    QString ip = resolve( service->hostName() );
-    if( ip == "0" || m_collectionMap.contains(serverKey( service )) ) //same server from multiple interfaces
-        return;
-
-    DaapCollection *coll = new DaapCollection( service->hostName(), ip, service->port() );
-    connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
-    connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
-    m_collectionMap.insert( serverKey( service ), coll );
+    int lookup_id = QHostInfo::lookupHost( service->hostName(), this, SLOT( resolvedServiceIp(QHostInfo)));
+    m_lookupHash.insert( lookup_id, service->port() );
 }
 
 QString
-DaapCollectionFactory::serverKey( const DNSSD::RemoteService* service ) const
+DaapCollectionFactory::serverKey( const QString& host, quint16 port) const
 {
-    return service->hostName() + ':' + QString::number( service->port() );
+    return host + ':' + QString::number( port );
 }
 
 void
@@ -187,6 +153,47 @@ DaapCollectionFactory::slotCollectionDownloadFailed()
         }
     }
     collection->deleteLater();
+}
+
+void
+DaapCollectionFactory::resolvedManualServerIp( QHostInfo hostInfo )
+{
+    if ( !m_lookupHash.contains(hostInfo.lookupId()) )
+        return;
+
+    if ( hostInfo.addresses().isEmpty() )
+        return;
+
+    QString host = hostInfo.hostName();
+    QString ip = hostInfo.addresses().at(0).toString();
+    quint16 port = m_lookupHash.value( hostInfo.lookupId() );
+
+    //adding manual servers to the collectionMap doesn't make sense
+    DaapCollection *coll = new DaapCollection( host, ip, port );
+    connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
+    connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
+}
+
+void
+DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
+{
+    if ( !m_lookupHash.contains(hostInfo.lookupId()) )
+        return;
+
+    if ( hostInfo.addresses().isEmpty() )
+        return;
+
+    QString host = hostInfo.hostName();
+    QString ip = hostInfo.addresses().at(0).toString();
+    quint16 port = m_lookupHash.value( hostInfo.lookupId() );
+
+    if( m_collectionMap.contains(serverKey( host, port )) ) //same server from multiple interfaces
+        return;
+
+    DaapCollection *coll = new DaapCollection( host, ip, port );
+    connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
+    connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
+    m_collectionMap.insert( serverKey( host, port ), coll );
 }
 
 //DaapCollection
