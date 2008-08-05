@@ -45,14 +45,15 @@ TokenListWidget::TokenListWidget( QWidget *parent )
     addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), QString("<space>") ) );
     //addItem( new QListWidgetItem( KIcon("placeholder.svg"), QString( "Track" ) ) );
 
-    setViewMode( QListView::IconMode );
-    setFlow( QListView::LeftToRight );
+    //setViewMode( QListView::ListMode );   //I try to let this be handled by .ui
+    //setFlow( QListView::LeftToRight );
 }
 
 void
 TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QListWidgetItem *token = itemAt( event->pos() );
+    debug()<<"Double-clicked, gonna add token!";
     emit onDoubleClick( token->text() );
 }
 
@@ -61,6 +62,7 @@ TokenListWidget::mousePressEvent( QMouseEvent *event )
 {
     if ( event->button() == Qt::LeftButton )
         m_startPos = event->pos();            //store the start position
+    debug()<<"Mouse pressed, got start position.";
     KListWidget::mousePressEvent( event );    //feed it to parent's event
 }
 
@@ -70,6 +72,7 @@ TokenListWidget::mouseMoveEvent( QMouseEvent *event )
     if ( event->buttons() & Qt::LeftButton )
     {
         int distance = ( event->pos() - m_startPos ).manhattanLength();
+        debug()<<"Mouse moved, calculated distance from start position.";
         if ( distance >= KApplication::startDragDistance() )
         {
             performDrag( event );

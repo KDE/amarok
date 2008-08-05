@@ -99,11 +99,13 @@ FilenameLayoutWidget::dragEnterEvent( QDragEnterEvent *event )        //override
     {
         event->setDropAction( Qt::CopyAction );
         event->accept();
+        debug() << "dragEnterEvent, source is != this";
     }
     else if ( source && source == this )
     {
         event->setDropAction( Qt::MoveAction );
         event->accept();
+        debug() << "dragEnterEvent, source is == this";
     }
 }
 
