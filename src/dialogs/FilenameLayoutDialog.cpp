@@ -37,11 +37,9 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
 
     caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
-    //filenameLayoutWidget = filenameLayout;
     filenameLayoutEdit->hide();
     syntaxLabel->hide();
     QString * hintImagePath = new QString( KStandardDirs::locate( "data", "amarok/images/FilenameLayoutDialogHint.png" ) );
-    //debug() << "------------------------the path is " << *hintImagePath;
     QPixmap * hintImage = new QPixmap( *hintImagePath );
     hintPicture->setPixmap( *hintImage );
 
