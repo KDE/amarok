@@ -25,7 +25,7 @@
 #include "Debug.h"
 
 #include <QFile>
-#include <Q3TextStream>
+#include <QTextStream>
 
 using namespace Meta;
 
@@ -44,9 +44,9 @@ bool MagnatuneDownloadInfo::initFromFile( const QString &downloadInfoFileName, b
     QString xml;
 
     QFile file( downloadInfoFileName );
-    if ( file.open( QIODevice::ReadOnly ) )
+    if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-        Q3TextStream stream( &file );
+        QTextStream stream( &file );
         while ( !stream.atEnd() )
         {
             xml += (stream.readLine() + '\n');

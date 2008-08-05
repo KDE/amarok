@@ -29,9 +29,9 @@
 #include <KMessageBox>
 #include <ktempdir.h>
 
-#include <Q3TextStream>
 #include <QDir>
 #include <QFile>
+#include <QTextStream>
 
 using namespace Meta;
 
@@ -268,9 +268,9 @@ void MagnatunePurchaseHandler::saveDownloadInfo( const QString &infoXml )
         return ;
 
     //write info
-    if ( file.open( QIODevice::WriteOnly ) )
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
     {
-        Q3TextStream stream( &file );
+        QTextStream stream( &file );
         stream << infoXml << "\n";
         file.close();
     }
