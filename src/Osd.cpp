@@ -561,9 +561,10 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
 //////  Amarok::OSD below /////////////////////
 
-Amarok::OSD::OSD(): OSDWidget( 0 ), m_track( 0 )
-{
-}
+Amarok::OSD::OSD()
+    : OSDWidget( 0 )
+    , m_track( 0 )
+{}
 
 void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
@@ -630,6 +631,7 @@ Amarok::OSD::applySettings()
     setScreen( AmarokConfig::osdScreen() );
     setFont( AmarokConfig::osdFont() );
     setDrawShadow( AmarokConfig::osdDrawShadow() );
+    setWindowOpacity( AmarokConfig::osdUseTranslucency() ? 0.6 : 1.0 );
 
     if( AmarokConfig::osdUseCustomColors() )
     {
