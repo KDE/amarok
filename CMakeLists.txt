@@ -18,7 +18,7 @@ macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http
 set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
                           ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
-add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS ${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
+add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
 set(TAGLIB_MIN_VERSION "1.5")
 find_package(Taglib)
