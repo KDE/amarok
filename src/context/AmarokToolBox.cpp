@@ -141,7 +141,7 @@ AmarokToolBox::paint( QPainter *painter, const QStyleOptionGraphicsItem *option,
     }
     else
     {
-        painter->setOpacity( 0.5 );
+        painter->setOpacity( 0.6 );
         m_icon.paint( painter, QRect( QPoint( (int)boundingRect().width()/2 - 12,
                                               (int)boundingRect().height()/2 + 18 ), QSize( 24, 24 ) ),
                       Qt::AlignCenter, QIcon::Disabled, QIcon::Off );
