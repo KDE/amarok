@@ -69,7 +69,7 @@ MediaDeviceTrack::playableUrl() const
 }
 
 QString
-MediaDeviceTrack::url() const
+MediaDeviceTrack::uidUrl() const
 {
     return m_playableUrl;
 }
