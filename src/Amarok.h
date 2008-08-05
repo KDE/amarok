@@ -118,16 +118,16 @@ namespace Amarok
     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url ); //defined in PlaylistHandler.cpp
     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls ); //defined in PlaylistHandler.cpp
 
-    AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime );
+    AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
 
-    AMAROK_EXPORT QString verboseTimeSince( uint time_t );
+    AMAROK_EXPORT QString verboseTimeSince( uint time_t ); // defined in App.cpp
 
-    AMAROK_EXPORT QString conciseTimeSince( uint time_t );
+    AMAROK_EXPORT QString conciseTimeSince( uint time_t ); // defined in App.cpp
 
     /**
      * Function that must be used when separating contextBrowser escaped urls
      */
-    // defined in Statistics.cpp
+    // defined in App.cpp
     void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail );
 
     /**
@@ -215,8 +215,8 @@ namespace Amarok
     /*
      * Transform to be usable within HTML/HTML attributes
      */
-    AMAROK_EXPORT QString escapeHTMLAttr( const QString &s );
-    AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s ); //defined in statistics.cpp
+    AMAROK_EXPORT QString escapeHTMLAttr( const QString &s ); // defined in App.cpp
+    AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s ); //defined in App.cpp
 
     /* defined in scriptmanager.cpp */
     /**

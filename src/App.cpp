@@ -45,6 +45,7 @@ email                : markey@web.de
 
 #include <KAboutData>
 #include <KAction>
+#include <KCalendarSystem>
 #include <KCmdLineArgs>                  //initCliArgs()
 #include <KConfigDialogManager>
 #include <KCursor>                       //Amarok::OverrideCursor
@@ -740,6 +741,133 @@ void App::quit()
 namespace Amarok
 {
     /// @see amarok.h
+
+    /*
+    * Transform to be usable within HTML/HTML attributes
+    */
+    QString escapeHTMLAttr( const QString &s )
+    {
+        return QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "\"", "%22" ).
+                replace( "#", "%23" ).replace( "?", "%3F" );
+    }
+    QString unescapeHTMLAttr( const QString &s )
+    {
+        return QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).
+                replace( "%27", "'" ).replace( "%25", "%" );
+    }
+
+    /**
+     * Function that must be used when separating contextBrowser escaped urls
+     * detail can contain track/discnumber
+     */
+    void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail )
+    {
+        if ( !url.contains("@@@") ) return;
+        //KHTML removes the trailing space!
+        if ( url.endsWith( " @@@" ) )
+            url += ' ';
+
+        const QStringList list = url.split( " @@@ ", QString::KeepEmptyParts );
+
+        int size = list.count();
+
+        if( size<=0 )
+            error() << "size<=0";
+
+        artist = size > 0 ? unescapeHTMLAttr( list[0] ) : "";
+        album  = size > 1 ? unescapeHTMLAttr( list[1] ) : "";
+        detail = size > 2 ? unescapeHTMLAttr( list[2] ) : "";
+    }
+
+    QString verboseTimeSince( const QDateTime &datetime )
+    {
+        const QDateTime now = QDateTime::currentDateTime();
+        const int datediff = datetime.daysTo( now );
+
+        if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
+            const KCalendarSystem *cal = KGlobal::locale()->calendar();
+            const QDate date = datetime.date();
+            return i18nc( "monthname year", "%1 %2", cal->monthName(date),
+                          cal->yearString(date, KCalendarSystem::LongFormat) );
+        }
+
+        //TODO "last week" = maybe within 7 days, but prolly before last sunday
+
+        if( datediff >= 7 )  // return difference in weeks
+            return i18np( "One week ago", "%1 weeks ago", (datediff+3)/7 );
+
+        if( datediff == -1 )
+            return i18nc( "When this track was last played", "Tomorrow" );
+
+        const int timediff = datetime.secsTo( now );
+
+        if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
+            return datediff == 1 ?
+                    i18n( "Yesterday" ) :
+                    i18np( "One day ago", "%1 days ago", (timediff+12*60*60)/(24*60*60) );
+
+        if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
+            return i18np( "One hour ago", "%1 hours ago", (timediff+30*60)/(60*60) );
+
+        //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
+
+        if( timediff >= 0 )  // return difference in minutes
+            return timediff/60 ?
+                    i18np( "One minute ago", "%1 minutes ago", (timediff+30)/60 ) :
+                    i18n( "Within the last minute" );
+
+        return i18n( "The future" );
+    }
+
+    QString verboseTimeSince( uint time_t )
+    {
+        if( !time_t )
+            return i18nc( "The amount of time since last played", "Never" );
+
+        QDateTime dt;
+        dt.setTime_t( time_t );
+        return verboseTimeSince( dt );
+    }
+
+    QString conciseTimeSince( uint time_t )
+    {
+        if( !time_t )
+            return i18nc( "The amount of time since last played", "0" );
+
+        QDateTime datetime;
+        datetime.setTime_t( time_t );
+        
+        const QDateTime now = QDateTime::currentDateTime();
+        const int datediff = datetime.daysTo( now );
+
+        if( datediff >= 6*7 /*six weeks*/ ) {  // return difference in months
+            return i18nc( "number of months ago", "%1M", datediff/7/4 );
+        }
+
+        if( datediff >= 7 )  // return difference in weeks
+            return i18nc( "w for weeks", "%1w", (datediff+3)/7 );
+
+        if( datediff == -1 )
+            return i18nc( "When this track was last played", "Tomorrow" );
+
+        const int timediff = datetime.secsTo( now );
+
+        if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
+            return i18nc( "d for days", "%1d", (timediff+12*60*60)/(24*60*60) );
+
+        if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
+            return i18nc( "h for hours", "%1h", (timediff+30*60)/(60*60) );
+
+        //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
+
+        if( timediff >= 60 )  // return difference in minutes
+            return QString("%1'").arg( ( timediff + 30 )/60 );
+        if( timediff >= 0 )  // return difference in seconds
+            return QString("%1\"").arg( ( timediff + 1 )/60 );
+
+        return i18n( "0" );
+
+    }
 
     QWidget *mainWindow()
     {

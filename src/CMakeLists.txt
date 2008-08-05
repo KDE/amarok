@@ -466,7 +466,6 @@ set(amaroklib_LIB_SRCS
     dialogs/ScriptManager.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
-#    dialogs/Statistics.cpp
 #    dialogs/deletedialog.cpp
 #    dialogs/deviceconfiguredialog.cpp
     dialogs/trackpickerdialog.cpp
