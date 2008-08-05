@@ -21,6 +21,7 @@
 
 #include <KConfig>
 #include <KConfigGroup>
+#include <kstandarddirs.h>
 
 #include <QGridLayout>
 #include <QPushButton>
@@ -38,6 +39,11 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
 
     //filenameLayoutWidget = filenameLayout;
     filenameLayoutEdit->hide();
+    syntaxLabel->hide();
+    QString * hintImagePath = new QString( KStandardDirs::locate( "data", "amarok/images/FilenameLayoutDialogHint.png" ) );
+    //debug() << "------------------------the path is " << *hintImagePath;
+    QPixmap * hintImage = new QPixmap( *hintImagePath );
+    hintPicture->setPixmap( *hintImage );
 
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
@@ -160,11 +166,17 @@ FilenameLayoutDialog::toAdvancedMode()
         filenameLayout->hide();
         filenameLayoutEdit->show();
         filenameLayoutEdit->setText( filenameLayout->getParsableScheme() );
+        tokenPool->hide();
+        hintPicture->hide();
+        syntaxLabel->show();
     }
     else
     {
         kpbAdvanced->setText( i18n( "&Advanced..." ) );
         filenameLayoutEdit->hide();
         filenameLayout->show();
+        tokenPool->show();
+        hintPicture->show();
+        syntaxLabel->hide();
     }
 }
