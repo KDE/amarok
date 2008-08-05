@@ -7,6 +7,14 @@ VERSION 2.0-beta1
   FEATURES:
     * Collection Setup automatically expands to show selected directories.
       (BR 123637)
+    * Tag editing and file deletion for MTP devices
+    * Add toolbox to context view
+    * Allow selecting multiple playlist items.
+    * Implement "Move to collection" functionality in file browser.
+    * Saving/loading of biased playlists.
+    * Improved script console
+    * Set items in directory selector to partially checked when relevant.
+      patch by Sebastian Trueg <trueg@kde.org> 
     * Album is now added to the playlist when clicked in Albums applet.
     * Trigger play/pause when middle-clicking systray icon. (BR 167162)
     * New start flag --multipleinstances allows to run multiple instances of
@@ -17,12 +25,16 @@ VERSION 2.0-beta1
     * Context view state is saved on exit and restored on start up.
 
   CHANGES:
+    * New artwork by Nuno Pinheiro <nuno@oxygen-icons.org> and Wade Olson
+      <wade@corefunction.com>
+    * Better zooming animation in the context view
     * Better usage of the available space in the context view.
     * Show url in the playlist if track has no name. patch by Edward Hades 
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
     * Don't try to scan the whole $HOME on first startup.
+    * Don't pop up the OSD after changing Amarok settings. (BR: 168197)
     * Fix crash when exiting while collection scan was running. (BR 167872)
     * Automatically re-authenticate connection if the Ampache server has
       logged us out. (BR 166958)
@@ -31,8 +43,12 @@ VERSION 2.0-beta1
       <danimo@kde.org> (BR 166832)
     * Submit tracks to Last.fm also when playing Last.fm Radio. (BR 164156)
     * Check if the file is writable before allowing the tags to be edited in
-      SqlMeta ( BR 122797 )
-    * Only increment playcount if we've played more than half of the song (BR 121587)
+      SqlMeta. ( BR 122797 )
+    * Properly insert items dragged from the collection view. (BR: 166609) 
+    * Don't remove all the tracks in the group when removing the first.
+      (BR: 167251) 
+    * Only increment playcount if we've played more than half of the song.
+      (BR 121587)
     * Added protection against endless looping when a playlist contains only
       unplayable tracks.
     * Missing default playlist does not produce error message now. 
@@ -42,7 +58,7 @@ VERSION 2.0-beta1
     * Fixed the "Toggle Main Window" shortcut. (BR 167218)
     * Script manager now could stop scripts which use qt bindings.
     * Fix crash when calling GetCaps from the DBus Player interface
-    * Update album applet on track change (BR 167256)
+    * Update album applet on track change. (BR 167256)
 
 
 VERSION 2.0-alpha2:
