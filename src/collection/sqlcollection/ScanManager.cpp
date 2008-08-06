@@ -35,6 +35,7 @@
 #include <QMap>
 #include <QStringList>
 #include <QVariant>
+#include <QTextCodec>
 #include <QXmlStreamAttributes>
 
 #include <threadweaver/ThreadWeaver.h>
