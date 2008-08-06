@@ -14,11 +14,6 @@
         <whatsthis>Amarok version string, used to restart aRts in new installations.</whatsthis>
         <default></default>
     </entry>
-    <entry key="Save Playlist" type="Bool">
-        <label>Whether to save playlist on quit</label>
-        <whatsthis>If set, Amarok saves the current playlist on quit and restores it when restarted.</whatsthis>
-        <default>true</default>
-    </entry>
     <entry key="Follow Symlinks" type="Bool">
         <label>Whether to follow symlinks while adding items to playlist recursively</label>
         <whatsthis>If set, amarok follows symlinks when adding files or directories to the playlist.</whatsthis>

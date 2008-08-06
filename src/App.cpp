@@ -520,7 +520,7 @@ App::continueInit()
 
     PERF_LOG( "Begin App::continueInit" )
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-    bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "queue" )
+    const bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
     PERF_LOG( "Creating MainWindow" )
@@ -554,7 +554,7 @@ App::continueInit()
     PERF_LOG( "ScriptManager started" )
 
     //load previous playlist in separate thread
-    if ( restoreSession && AmarokConfig::savePlaylist() )
+    if ( restoreSession )
         The::playlistModel()->restoreSession();
 
     //do after applySettings(), or the OSD will flicker and other wierdness!

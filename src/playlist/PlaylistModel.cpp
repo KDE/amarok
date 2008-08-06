@@ -115,6 +115,7 @@ Playlist::Model::init()
 void
 Playlist::Model::restoreSession()
 {
+    // Restore current playlist
     if( QFile::exists( defaultPlaylistPath() ) )
         insertOptioned( Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) ), Append );
 
@@ -126,15 +127,13 @@ Playlist::Model::~Model()
 {
     DEBUG_BLOCK
 
-    if( AmarokConfig::savePlaylist() )
+    // Save current playlist
+    Meta::TrackList list;
+    foreach( Item* item, itemList() )
     {
-        Meta::TrackList list;
-        foreach( Item* item, itemList() )
-        {
-            list << item->track();
-        }
-        The::playlistManager()->exportPlaylist( list, defaultPlaylistPath() );
+        list << item->track();
     }
+    The::playlistManager()->exportPlaylist( list, defaultPlaylistPath() );
 
     m_advancer->deleteLater();
 }
