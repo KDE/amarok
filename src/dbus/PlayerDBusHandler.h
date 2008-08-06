@@ -50,7 +50,7 @@ const QDBusArgument &operator >> ( const QDBusArgument &argument, DBusStatus &st
 
 namespace Amarok
 {
-    class PlayerDBusHandler : public QObject
+    class AMAROK_EXPORT PlayerDBusHandler : public QObject
     {
         friend Amarok::PlayerDBusHandler* The::playerDBusHandler();
 
