@@ -48,15 +48,11 @@ public:
 
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 
+    using QueryMaker::addMatch;
     virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
     virtual QueryMaker* addMatch ( const Meta::DataPtr &  data );
-
-    virtual QueryMaker* addMatch ( const Meta::TrackPtr & )    { return this; } //prevent compiler warning
-    virtual QueryMaker* addMatch ( const Meta::ComposerPtr & ) { return this; } //prevent compiler warning
-    virtual QueryMaker* addMatch ( const Meta::YearPtr & )     { return this; } //prevent compiler warning
-
 
     virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
 
@@ -86,7 +82,7 @@ protected:
     ScriptableServiceCollection * m_collection;
     AmarokProcIO * m_script;
 
-    class Private;
+    struct Private;
     Private * const d;
 
     QString m_sessionId;

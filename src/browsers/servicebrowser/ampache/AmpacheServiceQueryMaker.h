@@ -76,7 +76,7 @@ protected:
     AmpacheServiceCollection * m_collection;
     KIO::StoredTransferJob * m_storedTransferJob;
 
-    class Private;
+    struct Private;
     Private * const d;
 
     QString m_server;

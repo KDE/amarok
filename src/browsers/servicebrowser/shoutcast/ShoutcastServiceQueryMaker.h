@@ -77,7 +77,7 @@ protected:
 
     QString m_genreMatch;
 
-    class Private;
+    struct Private;
     Private * const d;
 
     Meta::TrackList m_currentTrackQueryResults;

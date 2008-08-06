@@ -100,7 +100,7 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
 
         SqlCollection *m_collection;
 
-        class Private;
+        struct Private;
         Private * const d;
 
 };
