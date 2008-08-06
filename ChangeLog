@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.0-beta1
   FEATURES:
+    * Gapless playback.
+    * New "fuzzy" bias type, which matches values loosely.
+    * Saving/loading dynamic playlists.
     * Collection Setup automatically expands to show selected directories.
       (BR 123637)
     * Tag editing and file deletion for MTP devices
@@ -25,6 +28,7 @@ VERSION 2.0-beta1
     * Context view state is saved on exit and restored on start up.
 
   CHANGES:
+    * Greatly reduced memory usage when using dynamic playlists.
     * Reworked layout and more intuitive interface in the Guess Tags from Filenames dialog.
     * New artwork by Nuno Pinheiro <nuno@oxygen-icons.org> and Wade Olson
       <wade@corefunction.com>
