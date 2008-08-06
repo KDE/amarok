@@ -207,7 +207,7 @@ SideBarButton::SideBarButton( const QIcon &icon, const QString &text, QWidget *p
 
 QSize SideBarButton::sizeHint() const
 {
-    return QSize( /*widthHint()*/ 30, heightHint() ).expandedTo( QApplication::globalStrut() );
+    return QSize( /*widthHint()*/ 26, heightHint() ).expandedTo( QApplication::globalStrut() );
 }
 
 int SideBarButton::widthHint() const
@@ -272,8 +272,8 @@ void SideBarButton::paintEvent( QPaintEvent* )
     QPainter p( this );
     p.setRenderHint ( QPainter::Antialiasing, false );
 
-    const int borderWidth = 12;
-    const int borderHeight = 10;
+    const int borderWidth = 8;
+    const int borderHeight = 8;
     const int halfWidth = borderWidth / 2;
     const int halfHeight = borderHeight / 2;
 
@@ -334,7 +334,7 @@ void SideBarButton::paintEvent( QPaintEvent* )
     p.rotate( -90 );
 
     p.setPen( QPen( App::instance()->palette().text().color() ) );
-    p.drawText( 10, halfWidth / 2, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, txt ) );
+    p.drawText( 10, 0, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, txt ) );
 }
 
 QColor SideBarButton::blendColors( const QColor& color1, const QColor& color2, int percent ) //static
