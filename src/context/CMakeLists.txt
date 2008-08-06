@@ -114,8 +114,8 @@ if(APPLE)
    SET_TARGET_PROPERTIES(amarokplasma PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
-add_definitions(-DMAKE_PLASMA_LIB)
 set_target_properties(amarokplasma PROPERTIES VERSION 1.0.0 SOVERSION 1)
+SET_TARGET_PROPERTIES(amarokplasma PROPERTIES DEFINE_SYMBOL MAKE_PLASMA_LIB )
 install(TARGETS amarokplasma ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 find_package(Plasma)
