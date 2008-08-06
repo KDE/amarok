@@ -113,7 +113,7 @@
       <item>
        <widget class="QLabel" name="syntaxLabel" >
         <property name="text" >
-         <string>Syntax: %track, %artist, ...</string>
+         <string>The following tokens can be used to define a filename scheme: &lt;br>%track, %title, %artist, %composer, %year, %album, %comment, %genre&lt;br></string>
         </property>
        </widget>
       </item>
@@ -145,7 +145,6 @@
           <property name="frameShadow" >
            <enum>QFrame::Sunken</enum>
           </property>
-          <zorder>tokenPool</zorder>
          </widget>
         </item>
         <item>
