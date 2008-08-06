@@ -435,6 +435,7 @@ Dynamic::NormalBias::setScale( double scale )
 {
     m_scale = scale;
     m_sigma = sigmaFromScale(scale);
+    debug() << "std. dev. = " << m_sigma;
 }
 
 double
@@ -510,7 +511,7 @@ Dynamic::NormalBias::sigmaFromScale( double scale )
 
     // if scale is too near 1.0, we are just doing a brute force search fo
     // tracks that match the value exactly, which is pointless.
-    const double upperLimit = 0.95;
+    const double upperLimit = 0.99;
     if( scale > upperLimit )
         scale = upperLimit;
 
@@ -523,13 +524,13 @@ Dynamic::NormalBias::sigmaFromScale( double scale )
     if( m_field == QueryMaker::valYear )
         fieldScaling = 5.0;
     else if( m_field == QueryMaker::valPlaycount )
-        fieldScaling = 50.0;
+        fieldScaling = 10.0;
     else if( m_field == QueryMaker::valRating )
-        fieldScaling = 50.0;
-    else if( m_field == QueryMaker::valScore )
         fieldScaling = 2.5;
+    else if( m_field == QueryMaker::valScore )
+        fieldScaling = 50.0;
     else if( m_field == QueryMaker::valLength )
-        fieldScaling = 300.0;
+        fieldScaling = 120.0;
     else if( m_field == QueryMaker::valTrackNr )
         fieldScaling = 10.0;
     else if( m_field == QueryMaker::valDiscNr )

@@ -160,7 +160,7 @@ Dynamic::BiasedPlaylist::recalculate()
     m_backbuffer.clear();
 
     getContext();
-    startSolver();
+    startSolver( true );
 }
 
 

@@ -48,8 +48,6 @@ namespace PlaylistBrowserNS {
             void save();
 
         private:
-            void initOnOffButton();
-
             void On();
             void Off();
 

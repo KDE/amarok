@@ -52,9 +52,14 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_onoffButton = new QPushButton( this );
     m_onoffButton->setIcon( KIcon( "amarok_dynamic" ) );
+    m_onoffButton->setText( i18n( "On" ) );
+    m_onoffButton->setToolTip( i18n( "Turn dynamic mode on." ) );
+    m_onoffButton->setCheckable( true );
     m_onoffButton->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    QObject::connect( m_onoffButton, SIGNAL(clicked(bool)), this, SLOT(OnOff(bool)) );
+    QObject::connect( m_onoffButton, SIGNAL(toggled(bool)), this, SLOT(OnOff(bool)) );
+
+    m_onoffButton->setChecked( AmarokConfig::dynamicMode() );
 
 
     m_repopulateButton = new QPushButton( this );
@@ -67,13 +72,11 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)),
             The::playlistModel(), SIGNAL(repopulate()) );
             
-    initOnOffButton();
-    
 
     KHBox* presetLayout = new KHBox( this );
 
 
-    QLabel* presetLabel = new QLabel( "Preset:", presetLayout );
+    QLabel* presetLabel = new QLabel( "Playlist:", presetLayout );
 
     m_presetComboBox = new KComboBox( presetLayout );
     m_presetComboBox->setPalette( QApplication::palette() );
@@ -173,23 +176,6 @@ DynamicCategory::~DynamicCategory()
 
 
 void
-DynamicCategory::initOnOffButton()
-{
-    if( AmarokConfig::dynamicMode() )
-    {
-        m_onoffButton->setText( i18n( "Off" ) );
-        m_onoffButton->setToolTip( i18n( "Turn dynamic mode off." ) );
-        m_repopulateButton->setEnabled( true );
-    }
-    else
-    {
-        m_onoffButton->setText( i18n( "On" ) );
-        m_onoffButton->setToolTip( i18n( "Turn dynamic mode on." ) );
-        m_repopulateButton->setEnabled( false );
-    }
-}
-
-void
 DynamicCategory::enableDynamicMode( bool enable )
 {
     if( AmarokConfig::dynamicMode() == enable )
@@ -202,22 +188,21 @@ DynamicCategory::enableDynamicMode( bool enable )
 }
 
 void
-DynamicCategory::OnOff(bool)
+DynamicCategory::OnOff( bool checked )
 {
-    if( AmarokConfig::dynamicMode() ) Off();
-    else                              On();
+    if( checked )
+        On();
+    else
+        Off();
 }
 
 
 void
 DynamicCategory::On()
 {
-    m_onoffButton->setText( i18n("Off") );
     AmarokConfig::setDynamicMode( true );
     // TODO: turn off other incompatible modes
     AmarokConfig::self()->writeConfig();
-
-    initOnOffButton();
 
     The::playlistModel()->playlistModeChanged();  
 
@@ -229,8 +214,6 @@ DynamicCategory::Off()
     AmarokConfig::setDynamicMode( false );
     // TODO: should we restore the state of other modes?
     AmarokConfig::self()->writeConfig();
-
-    initOnOffButton();
 
     The::playlistModel()->playlistModeChanged();  
 }
@@ -264,8 +247,8 @@ DynamicCategory::save()
 {
     bool ok;
     QString title =
-        QInputDialog::getText( this, i18n("Preset Name"),
-                               i18n("Enter a name for the preset:"),
+        QInputDialog::getText( this, i18n("Playlist Name"),
+                               i18n("Enter a name for the playlist:"),
                                QLineEdit::Normal,
                                DynamicModel::instance()->activePlaylist()->title(),
                                &ok );

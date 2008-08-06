@@ -306,8 +306,6 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 void
 PlaylistBrowserNS::DynamicModel::playlistModified( Dynamic::BiasedPlaylistPtr p )
 {
-    DEBUG_BLOCK
-
     // this shouldn't happen
     if( p != m_playlistList[m_activePlaylist] )
     {
