@@ -32,7 +32,7 @@
 #include <QDir>
 #include <qdom.h>
 #include <QFile>
-#include <qtextstream.h>
+#include <QTextStream>
 #include <QTimer>
 #include <QTextCodec>
 
