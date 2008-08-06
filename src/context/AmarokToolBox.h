@@ -114,6 +114,7 @@ public:
 
     Containment *containment() const;
     void setContainment( Containment *newContainment );
+    bool showing() const;
 
 public slots:
     void show();
@@ -159,6 +160,8 @@ private:
     QMap<Plasma::Containment *, QStringList> m_runningApplets;
 
     QTimer *m_timer;
+    
+    bool m_showing;
 };
 
 }

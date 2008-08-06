@@ -177,11 +177,10 @@ AmarokToolBox::paint( QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     QColor color1 = KColorScheme(QPalette::Active, KColorScheme::Window,
                                Plasma::Theme::defaultTheme()->colorScheme()).background().color();
-    color1.setAlpha( 60 );
+    color1.setAlpha( 120 );
 
     QColor color2 =  KColorScheme(QPalette::Active, KColorScheme::Window,
                                Plasma::Theme::defaultTheme()->colorScheme()).foreground().color();
-    color2.setAlpha( 60 );
 
     QPainterPath p = shape();
     
@@ -192,7 +191,7 @@ AmarokToolBox::paint( QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     color2.setAlpha( 0 );
     gradient.setColorAt( 0, color2 );
-    color2.setAlpha( 60 );
+    color2.setAlpha( 120 );
     gradient.setColorAt( .80, color2 );
     gradient.setColorAt( .90, color1 );
 
@@ -420,6 +419,7 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent )
     : QGraphicsItem( parent )
     , m_containment( 0 )
     , m_menuSize( 4 )
+    , m_showing( 0 )
 {
     setAcceptsHoverEvents( true );
     
@@ -568,9 +568,20 @@ AmarokToolBoxMenu::appletRemoved( Plasma::Applet *applet )
     }
 }
 
+bool
+AmarokToolBoxMenu::showing() const
+{
+    return m_showing;
+}
+
 void
 AmarokToolBoxMenu::show()
 {
+    if( showing() )
+        return;
+    
+    m_showing = true;
+    
     if( m_bottomMenu.count() > 0 )
     {
         m_downArrow->setPos( boundingRect().width() / 2 - m_downArrow->size().width()/2,
@@ -603,6 +614,9 @@ AmarokToolBoxMenu::show()
 void
 AmarokToolBoxMenu::hide()
 {
+    if( !showing() )
+        return;
+    m_showing = false;
     foreach( QGraphicsItem *c, QGraphicsItem::children() )
         c->hide();
     emit menuHidden();
