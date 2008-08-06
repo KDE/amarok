@@ -20,6 +20,7 @@
 
 #include "SidebarWidget.h"
 
+#include "App.h"
 #include "Debug.h"
 
 #include "SvgTinter.h"
@@ -206,7 +207,7 @@ SideBarButton::SideBarButton( const QIcon &icon, const QString &text, QWidget *p
 
 QSize SideBarButton::sizeHint() const
 {
-    return QSize( widthHint(), heightHint() ).expandedTo( QApplication::globalStrut() );
+    return QSize( /*widthHint()*/ 30, heightHint() ).expandedTo( QApplication::globalStrut() );
 }
 
 int SideBarButton::widthHint() const
@@ -269,25 +270,60 @@ void SideBarButton::slotAnimTimer()
 void SideBarButton::paintEvent( QPaintEvent* )
 {
     QPainter p( this );
+    p.setRenderHint ( QPainter::Antialiasing, false );
 
-    const QColor baseColor = palette().text().color();
-    const int blendPercent = static_cast<int>( m_animCount * 3.5 );
+    const int borderWidth = 12;
+    const int borderHeight = 10;
+    const int halfWidth = borderWidth / 2;
+    const int halfHeight = borderHeight / 2;
 
-    QColor c;
-    if( isDown() )
-        c = blendColors( palette().highlight().color().darker( 150 ), baseColor, blendPercent );
-    else if( isChecked() && underMouse() )
-        c = blendColors( palette().highlight().color().lighter( 110 ), baseColor, blendPercent );
-    else if( isChecked() )
-        c = blendColors( palette().highlight().color(), palette().highlight().color().lighter(), blendPercent );
-    else if( underMouse() )
-        c = blendColors( baseColor, palette().highlight().color().lighter(), blendPercent );
-    else
-        c = blendColors( baseColor, palette().highlight().color().darker( 150 ), blendPercent );
+    QString prefix = "sidebar_button_";
+    QString shadow = "_shadow";
+    if ( isDown() || isChecked() ) shadow = "_shadow_down";
 
-    QImage background = The::svgHandler()->renderSvg( "sidebar_button", contentsRect().width(), contentsRect().height(), "sidebar_button" ).toImage();
-    KIconEffect::colorize( background, c, 0.7 );
-    p.drawImage( 0, 0, background );
+    QImage topLeft_shadow = The::svgHandler()->renderSvg( prefix + "topleft" + shadow, borderWidth, borderHeight, prefix + "topleft" + shadow).toImage();
+    QImage topLeft = The::svgHandler()->renderSvg( prefix + "topleft", halfWidth, halfHeight, prefix + "topleft" ).toImage();
+    p.drawImage( 0, 0, topLeft_shadow );
+    p.drawImage( halfWidth, halfHeight, topLeft );
+
+    QImage top_shadow = The::svgHandler()->renderSvg( prefix + "top" + shadow, width() - ( 2 * borderWidth ), borderHeight, prefix + "top" + shadow).toImage();
+    QImage top = The::svgHandler()->renderSvg( prefix + "top", width() - ( 2 * borderWidth ), halfHeight, prefix + "top" ).toImage();
+    p.drawImage( borderWidth, 0, top_shadow );
+    p.drawImage( borderWidth, halfHeight, top );
+
+    QImage topRight_shadow = The::svgHandler()->renderSvg( prefix + "topright" + shadow, borderWidth, borderHeight, prefix + "topright" + shadow).toImage();
+    QImage topRight = The::svgHandler()->renderSvg( prefix + "topright", halfWidth, halfHeight, prefix + "topright" ).toImage();
+    p.drawImage( width() - borderWidth, 0, topRight_shadow );
+    p.drawImage( width() - borderWidth, halfHeight, topRight );
+
+    QImage right_shadow = The::svgHandler()->renderSvg( prefix + "right" + shadow, borderWidth, height() - ( 2 * borderHeight ), prefix + "right" + shadow).toImage();
+    QImage right = The::svgHandler()->renderSvg( prefix + "right", halfWidth, height() - ( 2 * borderHeight ), prefix + "right" ).toImage();
+    p.drawImage( width() - borderWidth, borderHeight, right_shadow );
+    p.drawImage( width() - borderWidth, borderHeight, right);
+
+    QImage bottomRight_shadow = The::svgHandler()->renderSvg( prefix + "bottomright" + shadow, borderWidth, borderHeight, prefix + "bottomright" + shadow).toImage();
+    QImage bottomRight = The::svgHandler()->renderSvg( prefix + "bottomright", halfWidth, halfHeight, prefix + "bottomright" ).toImage();
+    p.drawImage( width() - borderWidth, height() - borderHeight, bottomRight_shadow );
+    p.drawImage( width() - borderWidth, height() - borderHeight, bottomRight );
+
+    QImage bottom_shadow = The::svgHandler()->renderSvg( prefix + "bottom" + shadow, width() - 2 * borderWidth, borderHeight, prefix + "bottom" + shadow).toImage();
+    QImage bottom = The::svgHandler()->renderSvg( prefix + "bottom", width() - 2 * borderWidth, halfHeight, prefix + "bottom" ).toImage();
+    p.drawImage( borderWidth, height() - borderHeight, bottom_shadow );
+    p.drawImage( borderWidth, height() - borderHeight, bottom );
+
+    QImage bottomLeft_shadow = The::svgHandler()->renderSvg( prefix + "bottomleft" + shadow, borderWidth, borderHeight, prefix + "bottomleft" + shadow).toImage();
+    QImage bottomLeft = The::svgHandler()->renderSvg( prefix + "bottomleft", halfWidth, halfHeight, prefix + "bottomleft" ).toImage();
+    p.drawImage( 0, height() - borderHeight, bottomLeft_shadow );
+    p.drawImage( halfWidth, height() - borderHeight , bottomLeft );
+
+    QImage left_shadow = The::svgHandler()->renderSvg( prefix + "left" + shadow, borderWidth, height() - 2 * borderHeight, prefix + "left" + shadow).toImage();
+    QImage left = The::svgHandler()->renderSvg( prefix + "left", halfWidth, height() - 2 * borderHeight, prefix + "left" ).toImage();
+    p.drawImage( 0, borderHeight, left_shadow );
+    p.drawImage( halfWidth, borderHeight, left );
+
+    
+    QImage center = The::svgHandler()->renderSvg( prefix + "center", width() - 2 * borderWidth, height() - 2 * borderHeight, prefix + "center" ).toImage();
+    p.drawImage( borderWidth, borderHeight, center );
 
     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
     const QString txt = text().remove( '&' );
@@ -297,8 +333,8 @@ void SideBarButton::paintEvent( QPaintEvent* )
     p.translate( fontMetrics().size( Qt::TextShowMnemonic, txt ).height() - 2, 0 );
     p.rotate( -90 );
 
-    p.setPen( QPen( c ) );
-    p.drawText( 10, 0, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, txt ) );
+    p.setPen( QPen( App::instance()->palette().text().color() ) );
+    p.drawText( 10, halfWidth / 2, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, txt ) );
 }
 
 QColor SideBarButton::blendColors( const QColor& color1, const QColor& color2, int percent ) //static
