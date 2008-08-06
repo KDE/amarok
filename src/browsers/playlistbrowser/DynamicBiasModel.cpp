@@ -73,22 +73,56 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
             m_widgets.append( widget );
         }
 
-        PlaylistBrowserNS::BiasAddWidget* adder =
-            new PlaylistBrowserNS::BiasAddWidget( m_listView->viewport() );
+        // add the bias adding widgets
+
+        PlaylistBrowserNS::BiasAddWidget* globalAdder =
+            new PlaylistBrowserNS::BiasAddWidget(
+                    "Add Proportional Bias", m_listView->viewport() );
         if( !m_widgets.isEmpty() )
-            adder->setAlternate( !m_widgets.back()->alternate() );
+            globalAdder->setAlternate( !m_widgets.back()->alternate() );
 
-        connect( adder, SIGNAL(addBias(Dynamic::Bias*)),
-                SLOT(appendBias(Dynamic::Bias*)) );
 
-        m_widgets.append( adder );
+        connect( globalAdder, SIGNAL(addBias()),
+                SLOT(appendGlobalBias()) );
+
+        m_widgets.append( globalAdder );
         connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
                 this, SLOT(widgetChanged(QWidget*)) );
+
+
+        PlaylistBrowserNS::BiasAddWidget* normalAdder =
+            new PlaylistBrowserNS::BiasAddWidget(
+                    "Add Fuzzy Bias", m_listView->viewport() );
+
+        if( !m_widgets.isEmpty() )
+            normalAdder->setAlternate( !m_widgets.back()->alternate() );
+
+        connect( normalAdder, SIGNAL(addBias()),
+                SLOT(appendNormalBias()) );
+
+        m_widgets.append( normalAdder );
+        connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
+                this, SLOT(widgetChanged(QWidget*)) );
+
         endInsertRows();
     }
     // TODO: else add the "Unknown Playlist Type" box.
 }
 
+void
+PlaylistBrowserNS::DynamicBiasModel::appendGlobalBias()
+{
+    Dynamic::GlobalBias* gb = 
+        new Dynamic::GlobalBias( 0.0, XmlQueryReader::Filter() );
+    gb->setActive( false );
+    appendBias( gb );
+}
+
+void
+PlaylistBrowserNS::DynamicBiasModel::appendNormalBias()
+{
+    appendBias( new Dynamic::NormalBias() );
+}
 
 void
 PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
@@ -96,7 +130,7 @@ PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
     if( !m_playlist )
         return;
 
-    beginInsertRows( QModelIndex(), rowCount()-1, rowCount()-1 );
+    beginInsertRows( QModelIndex(), rowCount()-2, rowCount()-2 );
     m_playlist->biases().append( b );
 
     PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView->viewport() );
@@ -111,9 +145,10 @@ PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
     widget->setAlternate( m_widgets.back()->alternate() );
 
     // toggle the 'add bias' dialog background
-    m_widgets.back()->toggleAlternate();
+    for( int i = rowCount()-2; i < rowCount(); ++i )
+        m_widgets[i]->toggleAlternate();
 
-    m_widgets.insert( rowCount()-1, widget );
+    m_widgets.insert( rowCount()-2, widget );
     endInsertRows();
 
     // fix a render bug
@@ -156,7 +191,7 @@ PlaylistBrowserNS::DynamicBiasModel::clearWidgets()
 {
     if( rowCount() <= 0 ) return;
 
-    beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
+    beginRemoveRows( QModelIndex(), 0, rowCount() - 2 );
 
     foreach( PlaylistBrowserNS::BiasBoxWidget* b, m_widgets )
     {

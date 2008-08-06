@@ -18,6 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#define DEBUG_PREFIX "Bias"
+
 #include "Bias.h"
 
 #include "Collection.h"
@@ -31,8 +33,18 @@
 
 #include <QMutexLocker>
 
+#include <cmath>
 
 
+// defined in gsl/gauss.c
+extern "C" {
+double gsl_cdf_gaussian_P( const double x, const double sigma );
+}
+
+double sqr( double x )
+{
+    return x*x;
+}
 
 Dynamic::Bias*
 Dynamic::Bias::fromXml( QDomElement e )
@@ -75,6 +87,8 @@ Dynamic::Bias::fromXml( QDomElement e )
 
         return new Dynamic::GlobalBias( weight, filter );
     }
+
+    // TODO: normal biases
 
     // TODO: other types of biases
     else
@@ -131,9 +145,9 @@ Dynamic::Bias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
 {
     Q_UNUSED( oldEnergy );
     // completely reevaluate by default
-    Meta::TrackList oldPlaylistCopy( oldPlaylist );
-    oldPlaylistCopy[newTrackPos] = newTrack;
-    return energy( oldPlaylist, context );
+    Meta::TrackList newPlaylist( oldPlaylist );
+    newPlaylist[newTrackPos] = newTrack;
+    return energy( newPlaylist, context );
 }
 
 
@@ -355,4 +369,201 @@ Dynamic::GlobalBias::updateFinished()
 
     emit biasUpdated( this );
 }
+
+
+
+
+Dynamic::NormalBias::NormalBias()
+    : m_mu(0.0)
+    , m_sigma(0.0)
+    , m_field(0)
+{
+}
+
+
+QDomElement
+Dynamic::NormalBias::xml() const
+{
+    QDomDocument doc =
+        PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc();
+
+    QDomElement e = doc.createElement( "bias" );
+    e.setAttribute( "type", "normal" );
+
+    // TODO: !!
+
+    return e;
+}
+
+PlaylistBrowserNS::BiasWidget*
+Dynamic::NormalBias::widget( QWidget* parent )
+{
+    return new PlaylistBrowserNS::BiasNormalWidget( this, parent );
+}
+
+
+void
+Dynamic::NormalBias::setValue( double value )
+{
+    m_mu = value;
+}
+
+double
+Dynamic::NormalBias::value() const
+{
+    return m_mu;
+}
+
+
+void
+Dynamic::NormalBias::setField( qint64 field )
+{
+    m_field = field;
+    m_scale = sigmaFromScale( m_scale );
+    setDefaultMu();
+}
+
+qint64
+Dynamic::NormalBias::field() const
+{
+    return m_field;
+}
+
+
+void
+Dynamic::NormalBias::setScale( double scale )
+{
+    m_scale = scale;
+    m_sigma = sigmaFromScale(scale);
+}
+
+double
+Dynamic::NormalBias::scale()
+{
+    return m_scale;
+}
+
+
+double
+Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackList& context )
+{
+    Q_UNUSED(context)
+
+
+    QList<double> fields;
+
+    foreach( Meta::TrackPtr t, playlist )
+        fields += releventField(t) - m_mu;
+
+    qSort( fields );
+
+    // this is the Kolmogorov-Smirnov goodness of fit test
+    const double n = fields.size();
+    double D = 0.0;
+    double count = 0.0;
+
+    for( int i = 0; i < fields.size(); ++i )
+    {
+        count += 1.0;
+        if( i < fields.size()-1 && fields[i+1] == fields[i] )
+            continue;
+
+        double Dx = qAbs( gsl_cdf_gaussian_P( fields[i], m_sigma ) - (count / n) );
+        D = qMax( Dx, D );
+    }
+
+    return D;
+}
+
+double
+Dynamic::NormalBias::releventField( Meta::TrackPtr track )
+{
+    if( m_field == QueryMaker::valYear )
+        return (double)track->year()->name().toInt();
+    if( m_field == QueryMaker::valPlaycount )
+        return (double)track->playCount();
+    if( m_field == QueryMaker::valRating )
+        return (double)track->rating();
+    if( m_field == QueryMaker::valScore )
+        return track->score();
+    if( m_field == QueryMaker::valLength )
+        return (double)track->length();
+    if( m_field == QueryMaker::valTrackNr )
+        return (double)track->trackNumber();
+    if( m_field == QueryMaker::valDiscNr )
+        return (double)track->discNumber();
+    if( m_field == QueryMaker::valFirstPlayed )
+        return (double)track->firstPlayed();
+    if( m_field == QueryMaker::valLastPlayed )
+        return (double)track->lastPlayed();
+
+    return m_mu;
+}
+
+double
+Dynamic::NormalBias::sigmaFromScale( double scale )
+{
+    if( scale < 0.0 )
+        scale = 0.0;
+    if( scale > 1.0 )
+        scale = 1.0;
+
+    // if scale is too near 1.0, we are just doing a brute force search fo
+    // tracks that match the value exactly, which is pointless.
+    const double upperLimit = 0.95;
+    if( scale > upperLimit )
+        scale = upperLimit;
+
+
+    double fieldScaling = 1.0;
+
+    // Keep in mind: ~95% of values are within two standard deviations of the
+    // mean. 'fieldScaling' is the standard deviation when scale = 0, so make
+    // sure every value is within 2*m_fieldScaling.
+    if( m_field == QueryMaker::valYear )
+        fieldScaling = 5.0;
+    else if( m_field == QueryMaker::valPlaycount )
+        fieldScaling = 50.0;
+    else if( m_field == QueryMaker::valRating )
+        fieldScaling = 50.0;
+    else if( m_field == QueryMaker::valScore )
+        fieldScaling = 2.5;
+    else if( m_field == QueryMaker::valLength )
+        fieldScaling = 300.0;
+    else if( m_field == QueryMaker::valTrackNr )
+        fieldScaling = 10.0;
+    else if( m_field == QueryMaker::valDiscNr )
+        fieldScaling = 5.0;
+    else if( m_field == QueryMaker::valFirstPlayed )
+        fieldScaling = 3000.0;
+    else if( m_field == QueryMaker::valLastPlayed )
+        fieldScaling = 3000.0;
+
+    // 'sqrt' so scale relates to the variance rather than the std. dev.
+    return fieldScaling * sqrt(1.0 - scale);
+}
+
+void
+Dynamic::NormalBias::setDefaultMu()
+{
+    if( m_field == QueryMaker::valYear )
+        m_mu = 1976.0;
+    else if( m_field == QueryMaker::valPlaycount )
+        m_mu = 0.0;
+    else if( m_field == QueryMaker::valRating )
+        m_mu = 0.0;
+    else if( m_field == QueryMaker::valScore )
+        m_mu = 0.0;
+    else if( m_field == QueryMaker::valLength )
+        m_mu = 180.0;
+    else if( m_field == QueryMaker::valTrackNr )
+        m_mu = 1.0;
+    else if( m_field == QueryMaker::valDiscNr )
+        m_mu = 1.0;
+    else if( m_field == QueryMaker::valFirstPlayed )
+        m_mu = 0.0;
+    else if( m_field == QueryMaker::valLastPlayed )
+        m_mu = 0.0;
+}
+
 

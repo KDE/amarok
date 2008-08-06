@@ -179,21 +179,32 @@ Dynamic::BiasedPlaylist::biases() const
 void
 Dynamic::BiasedPlaylist::handleRequest()
 {
-    while( m_buffer.size() && m_numRequested-- )
-        m_requestCache.append( m_buffer.takeLast() );
-
     if( m_buffer.isEmpty() )
     {
+        m_backbufferMutex.lock();
         m_buffer = m_backbuffer;
         m_backbuffer.clear();
         startSolver( true );
+        m_backbufferMutex.unlock();
     }
+
+    while( m_buffer.size() && m_numRequested-- )
+        m_requestCache.append( m_buffer.takeLast() );
 
     if( m_numRequested <= 0 )
     {
         m_numRequested = 0;
         debug() << "Returning " << m_requestCache.size() << " tracks.";
         emit tracksReady( m_requestCache );
+    }
+    // otherwise, we ran out of buffer
+    else
+    {
+        m_backbufferMutex.lock();
+        m_buffer = m_backbuffer;
+        m_backbuffer.clear();
+        startSolver( true );
+        m_backbufferMutex.unlock();
     }
 }
 
@@ -205,7 +216,9 @@ Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
 
     bool success;
     The::statusBar()->endProgressOperation( m_solver );
+    m_backbufferMutex.lock();
     m_backbuffer = m_solver->solution();
+    m_backbufferMutex.unlock();
     success = m_solver->success();
     job->deleteLater();
     m_solver = 0;

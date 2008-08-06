@@ -79,6 +79,7 @@ namespace Dynamic
 
             QList<Bias*>  m_biases;     //! current energy for the whole system
             QList<double> m_biasEnergy; //! current energy of each indivial bias
+            QList<double> m_biasMutationEnergy; //! individual bias energy for the mutation
 
             int m_n;                    //! size of playlist to generate
             double m_T;                 //! temperature

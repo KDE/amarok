@@ -70,13 +70,13 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            BiasAddWidget( QWidget* parent = 0 );
+            BiasAddWidget( const QString& caption, QWidget* parent = 0 );
             
         private slots:
-            void addBias();
+            void slotClicked();
 
         signals:
-            void addBias( Dynamic::Bias* );
+            void addBias();
             void clicked();
 
         protected:
@@ -134,7 +134,7 @@ namespace PlaylistBrowserNS
             void syncBiasToControls();
 
             void popuplateFieldSection();
-            void setValueSection( QWidget* );
+            void setValueSelection( QWidget* );
 
             void makeCompareSelection( QWidget* parent );
 
@@ -145,11 +145,9 @@ namespace PlaylistBrowserNS
             void makeAlbumSelection();
             void makeTitleSelection();
             void makeGenreSelection();
-            void makeYearSelection();
             void makeGenericNumberSelection( int min, int max, int def );
             void makePlaycountSelection();
             void makeRatingSelection();
-            void makeScoreSelection();
             void makeLengthSelection();
             void makeDateTimeSelection();
 
@@ -166,6 +164,43 @@ namespace PlaylistBrowserNS
             Dynamic::GlobalBias* m_gbias;
             XmlQueryReader::Filter m_filter;
     };
+
+    class BiasNormalWidget : public BiasWidget
+    {
+        Q_OBJECT
+
+        public:
+            explicit BiasNormalWidget( Dynamic::NormalBias*, QWidget* parent = 0 );
+
+        private slots:
+            void fieldChanged( int );
+            void valueChanged( int );
+            void valueChanged( const QDateTime& );
+            void valueChanged( const QTime& );
+            void scaleChanged( int );
+
+        private:
+            void popuplateFieldSection();
+            void syncControlsToBias();
+            void makeGenericNumberSelection( int min, int max );
+            void makeRatingSelection();
+            void makeScoreSelection();
+            void makeLengthSelection();
+            void makeDateTimeSelection();
+            void setValueSelection( QWidget* w );
+
+            QFrame*      m_controlFrame;
+            QGridLayout* m_controlLayout;
+
+            KComboBox* m_fieldSelection;
+            QLabel*  m_withLabel;
+            QWidget* m_valueSelection;
+            Amarok::Slider* m_scaleSelection;
+            QLabel* m_scaleLabel;
+
+            Dynamic::NormalBias* m_nbias;
+    };
+
 
 
 }

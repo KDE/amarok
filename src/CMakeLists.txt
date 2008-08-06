@@ -375,6 +375,7 @@ set(libdynamic_SRCS
     dynamic/Bias.cpp
     dynamic/BiasSolver.cpp
     dynamic/TrackSet.cpp
+    dynamic/gsl/gauss.c
 )
 
 #####################################################################

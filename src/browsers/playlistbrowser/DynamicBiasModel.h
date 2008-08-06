@@ -66,11 +66,13 @@ namespace PlaylistBrowserNS
 
         public slots:
             void widgetChanged( QWidget* w = 0 );
-            void appendBias( Dynamic::Bias* );
             void removeBias( Dynamic::Bias* );
             void biasChanged( Dynamic::Bias* );
+            void appendGlobalBias();
+            void appendNormalBias();
 
         private:
+            void appendBias( Dynamic::Bias* );
             void clearWidgets();
 
             QListView* m_listView;

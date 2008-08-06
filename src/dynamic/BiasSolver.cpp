@@ -39,8 +39,8 @@ const int    Dynamic::BiasSolver::ITERATION_LIMIT = 5000;
 /* These number are black magic. The best values can only be obtained through
  * exhaustive trial and error or writing another optimization program to
  * optimize this optimization program. They are very sensitive. Be carefull */
-const double Dynamic::BiasSolver::INITIAL_TEMPERATURE = 0.1;
-const double Dynamic::BiasSolver::COOLING_RATE        = 0.8;
+const double Dynamic::BiasSolver::INITIAL_TEMPERATURE = 1.0;
+const double Dynamic::BiasSolver::COOLING_RATE        = 0.99;
 
 
 QList<QByteArray> Dynamic::BiasSolver::s_universe;
@@ -60,7 +60,11 @@ Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, Meta::TrackList con
 {
     int i = m_biases.size();
     while( i-- )
+    {
         m_biasEnergy.append( 0.0 );
+        m_biasMutationEnergy.append( 0.0 );
+    }
+    
 }
 
 void
@@ -194,7 +198,9 @@ void Dynamic::BiasSolver::iterate( Meta::TrackPtr mutation )
     {
         m_playlist[ mutationPos ] = mutation;
         m_E = mutationE;
+        m_biasEnergy = m_biasMutationEnergy;
     }
+
 
     // cool the temperature
     m_T *= COOLING_RATE;
@@ -227,11 +233,11 @@ double Dynamic::BiasSolver::recalculateEnergy( Meta::TrackPtr mutation, int muta
     {
         if( m_biases[i]->active() )
         {
-            m_biasEnergy[i] = 
+            m_biasMutationEnergy[i] = 
                 m_biases[i]->reevaluate( 
                         m_biasEnergy[i], m_playlist, mutation, 
                         mutationPos, m_context );
-            sum += qAbs( m_biasEnergy[i] );
+            sum += qAbs( m_biasMutationEnergy[i] );
             activeBiases++;
         }
     }
@@ -271,7 +277,7 @@ Dynamic::BiasSolver::generateInitialPlaylist()
             // if the bias in unsatisfiable (i.e. size = 0), just ignore it
             if( gb->propertySet().size() == 0 )
             {
-                debug() << "unsitisfiable bias detected";
+                debug() << "unsatisfiable bias detected";
                 gb->setActive(false);
             }
             else
@@ -467,7 +473,8 @@ Dynamic::BiasSolver::universeResults( QString collectionId, QStringList uids )
     foreach( QString uidString, uids )
     {
         uid = QByteArray::fromHex( uidString.toAscii() );
-        s_universe += uid;
+        if( !uid.isEmpty() )
+            s_universe += uid;
     }
 }
 

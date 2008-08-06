@@ -106,7 +106,7 @@ PlaylistBrowserNS::BiasBoxWidget::resizeEvent( QResizeEvent* )
 
 
 
-PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( QWidget* parent )
+PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, QWidget* parent )
     : BiasBoxWidget( parent )
 {
     DEBUG_BLOCK
@@ -130,9 +130,9 @@ PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( QWidget* parent )
     m_addButton->setToolTip( i18n( "Add a new bias." ) );
     m_addToolbar->addWidget( m_addButton );
     m_addToolbar->adjustSize();
-    connect( m_addButton, SIGNAL( clicked() ), SLOT( addBias() ) );
+    connect( m_addButton, SIGNAL( clicked() ), SLOT( slotClicked() ) );
 
-    m_addLabel = new QLabel( "New Bias", this );
+    m_addLabel = new QLabel( caption, this );
     m_addLabel->setAlignment( Qt::AlignCenter | Qt::AlignVCenter );
     QFont font;
     font.setPointSize( 16 );
@@ -144,7 +144,7 @@ PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( QWidget* parent )
     mainLayout->addWidget( m_addLabel );
     mainLayout->setStretchFactor( m_addLabel, 1 );
 
-    connect( this, SIGNAL( clicked() ), SLOT( addBias() ) );
+    connect( this, SIGNAL( clicked() ), SLOT( slotClicked() ) );
 
     setLayout( mainLayout );
 }
@@ -156,14 +156,9 @@ PlaylistBrowserNS::BiasAddWidget::mouseReleaseEvent( QMouseEvent* )
 }
 
 void
-PlaylistBrowserNS::BiasAddWidget::addBias()
+PlaylistBrowserNS::BiasAddWidget::slotClicked()
 {
-    DEBUG_BLOCK
-
-    Dynamic::GlobalBias* gb = new Dynamic::GlobalBias( 0.0, XmlQueryReader::Filter() );
-    gb->setActive( false );
-
-    emit addBias( gb );
+    emit addBias();
 }
 
 
@@ -269,7 +264,7 @@ PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
     emit biasChanged( m_bias );
 }
 
-    void
+void
 PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
 {
     int index = m_fieldSelection->findData( m_filter.field );
@@ -279,7 +274,7 @@ PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
 }
 
 
-    void
+void
 PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
 {
     m_fieldSelection->addItem( "", (qint64)0 );
@@ -300,7 +295,7 @@ PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
     m_fieldSelection->addItem( "Comment", QueryMaker::valComment );
 }
 
-    void
+void
 PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
 {
     double fval = (double)ival;
@@ -311,7 +306,7 @@ PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
     emit biasChanged( m_bias );
 }
 
-    void
+void
 PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
 {
     qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
@@ -362,7 +357,7 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
     //etc
 }
 
-    void
+void
 PlaylistBrowserNS::BiasGlobalWidget::compareChanged( int index )
 {
     if( index < 0 )
@@ -379,7 +374,7 @@ PlaylistBrowserNS::BiasGlobalWidget::compareChanged( int index )
 
 
 void
-PlaylistBrowserNS::BiasGlobalWidget::setValueSection( QWidget* w )
+PlaylistBrowserNS::BiasGlobalWidget::setValueSelection( QWidget* w )
 {
     if( m_withLabel == 0 )
     {
@@ -486,7 +481,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, Q
     combo->setEditText( m_gbias->filter().value );
 
     combo->setAutoCompletion( true );
-    setValueSection( combo );
+    setValueSelection( combo );
 }
 
 void
@@ -546,7 +541,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeRatingSelection()
              this, SLOT(valueChanged(int)) );
     
     ratingWidget->setRating( m_gbias->filter().value.toInt() );
-    setValueSection( hLayout );
+    setValueSelection( hLayout );
 }
 
 
@@ -569,7 +564,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeLengthSelection()
 
     timeSpin->setTime( QTime().addSecs( m_gbias->filter().value.toInt() ) );
 
-    setValueSection( hLayout );
+    setValueSelection( hLayout );
 }
 
 void
@@ -591,7 +586,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericNumberSelection( int min, int ma
     else
         spin->setValue( m_gbias->filter().value.toInt() );
 
-    setValueSection( hLayout );
+    setValueSelection( hLayout );
 }
 
 
@@ -615,9 +610,226 @@ PlaylistBrowserNS::BiasGlobalWidget::makeDateTimeSelection()
 
     dateTimeSpin->setDateTime( dt );
 
-    setValueSection( hLayout );
+    setValueSelection( hLayout );
 }
 
+
+
+
+PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias, QWidget* parent )
+    : BiasWidget( bias, parent )
+    , m_controlFrame(0)
+    , m_controlLayout(0)
+    , m_fieldSelection(0)
+    , m_withLabel(0)
+    , m_valueSelection(0)
+    , m_scaleSelection(0)
+    , m_scaleLabel(0)
+    , m_nbias(bias) 
+{
+    m_controlFrame = new QFrame( m_mainLayout );
+    m_controlLayout = new QGridLayout( m_controlFrame );
+    m_controlFrame->setLayout( m_controlLayout );
+
+    QHBoxLayout* sliderLayout = new QHBoxLayout();
+    m_controlLayout->addLayout( sliderLayout, 0, 1 );
+
+    m_scaleLabel = new QLabel( " 0%", m_controlFrame );
+    m_scaleSelection = new Amarok::Slider( Qt::Horizontal, m_controlFrame, 100 );
+    m_scaleSelection->setToolTip(
+            i18n( "This controls how strictly to match the given value." ) );
+    connect( m_scaleSelection, SIGNAL(valueChanged(int)),
+            SLOT(scaleChanged(int)) );
+
+    m_fieldSelection = new KComboBox( m_controlFrame );
+    m_fieldSelection->setPalette( QApplication::palette() );
+
+    m_controlLayout->addWidget( new QLabel( "Strictness:", m_controlFrame ), 0, 0 );
+    m_controlLayout->addWidget( new QLabel( "Match:", m_controlFrame ), 1, 0 );
+
+    m_controlLayout->addWidget( m_scaleSelection, 0, 1 );
+    m_controlLayout->addWidget( m_scaleLabel, 0, 1 );
+    m_controlLayout->addWidget( m_fieldSelection, 1, 1 );
+
+    sliderLayout->addWidget( m_scaleSelection );
+    sliderLayout->addWidget( m_scaleLabel );
+
+    popuplateFieldSection();
+    connect( m_fieldSelection, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(fieldChanged(int)) );
+
+    int index = m_fieldSelection->findData( m_nbias->field() );
+    m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
+    m_scaleSelection->setValue( (int)(m_nbias->scale() * 100.0) );
+}
+
+
+void
+PlaylistBrowserNS::BiasNormalWidget::popuplateFieldSection()
+{
+    m_fieldSelection->addItem( "", (qint64)0 );
+    m_fieldSelection->addItem( "Year",   QueryMaker::valYear );
+    m_fieldSelection->addItem( "Play Count", QueryMaker::valPlaycount );
+    m_fieldSelection->addItem( "Rating", QueryMaker::valRating );
+    m_fieldSelection->addItem( "Score", QueryMaker::valScore );
+    m_fieldSelection->addItem( "Length", QueryMaker::valLength );
+    m_fieldSelection->addItem( "Track #", QueryMaker::valTrackNr );
+    m_fieldSelection->addItem( "Disc #", QueryMaker::valDiscNr );
+    m_fieldSelection->addItem( "First Played", QueryMaker::valFirstPlayed );
+    m_fieldSelection->addItem( "Last Played", QueryMaker::valLastPlayed );
+}
+
+void
+PlaylistBrowserNS::BiasNormalWidget::setValueSelection( QWidget* w )
+{
+    if( m_withLabel == 0 )
+    {
+        m_withLabel = new QLabel( "With:", m_controlFrame );
+        m_controlLayout->addWidget( m_withLabel, 2, 0 );
+    }
+
+    delete m_valueSelection;
+    m_valueSelection = w;
+    m_controlLayout->addWidget( m_valueSelection, 2, 1 );
+
+}
+
+void
+PlaylistBrowserNS::BiasNormalWidget::scaleChanged( int ival )
+{
+    double fval = (double)ival;
+    m_scaleLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
+
+    m_nbias->setScale( fval / 100.0 );
+
+    emit biasChanged( m_bias );
+}
+
+
+void
+PlaylistBrowserNS::BiasNormalWidget::fieldChanged( int i )
+{
+    qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
+    m_nbias->setField( field );
+
+    if( field == 0 )
+    {
+        delete m_valueSelection;
+        m_valueSelection = 0;
+    }
+    else if( field == QueryMaker::valYear )
+        makeGenericNumberSelection( 0, 3000 );
+    else if( field == QueryMaker::valPlaycount )
+        makeGenericNumberSelection( 0, 1000 );
+    else if( field == QueryMaker::valRating )
+        makeRatingSelection();
+    else if( field == QueryMaker::valScore )
+        makeGenericNumberSelection( 0, 100 );
+    else if( field == QueryMaker::valLength )
+        makeLengthSelection();
+    else if( field == QueryMaker::valTrackNr )
+        makeGenericNumberSelection( 0, 50 );
+    else if( field == QueryMaker::valDiscNr )
+        makeGenericNumberSelection( 0, 50 );
+    else if( field == QueryMaker::valFirstPlayed )
+        makeDateTimeSelection();
+    else if( field == QueryMaker::valLastPlayed )
+        makeDateTimeSelection();
+}
+
+void
+PlaylistBrowserNS::BiasNormalWidget::valueChanged( int value )
+{
+    m_nbias->setValue( (double)value );
+    emit biasChanged( m_bias );
+}
+
+void
+PlaylistBrowserNS::BiasNormalWidget::valueChanged( const QDateTime& value )
+{
+    m_nbias->setValue( (double)value.toTime_t() );
+    emit biasChanged( m_bias );
+}
+
+void
+PlaylistBrowserNS::BiasNormalWidget::valueChanged( const QTime& value )
+{
+    m_nbias->setValue( (double)qAbs( value.secsTo( QTime(0,0,0) ) ) );
+    emit biasChanged( m_bias );
+}
+
+void
+PlaylistBrowserNS::BiasNormalWidget::makeGenericNumberSelection( int min, int max )
+{
+    KHBox* hLayout = new KHBox( m_controlFrame );
+
+    QSpinBox* spin = new QSpinBox( hLayout );
+    spin->setMinimum( min );
+    spin->setMaximum( max );
+
+    connect( spin, SIGNAL(valueChanged(int)),
+            SLOT(valueChanged(int)) );
+
+    spin->setValue( m_nbias->value() );
+
+    setValueSelection( hLayout );
+}
+
+
+void
+PlaylistBrowserNS::BiasNormalWidget::makeRatingSelection()
+{
+    KHBox* hLayout = new KHBox( m_controlFrame );
+
+    KRatingWidget* ratingWidget = new KRatingWidget( hLayout );
+
+    connect( ratingWidget, SIGNAL(ratingChanged(int)),
+             this, SLOT(valueChanged(int)) );
+    
+    ratingWidget->setRating( (unsigned int)m_nbias->value() );
+    setValueSelection( hLayout );
+}
+
+void
+PlaylistBrowserNS::BiasNormalWidget::makeLengthSelection()
+{
+    KHBox* hLayout = new KHBox( m_controlFrame );
+
+    QTimeEdit* timeSpin = new QTimeEdit( hLayout );
+    timeSpin->setDisplayFormat( "m:ss" );
+    QTime min( 0, 0, 0 );
+    QTime max( 0, 60, 59 );
+    timeSpin->setMinimumTime( min );
+    timeSpin->setMaximumTime( max );
+
+    connect( timeSpin, SIGNAL(timeChanged(const QTime&)),
+            SLOT(valueChanged(const QTime&)) );
+
+    timeSpin->setTime( QTime().addSecs( m_nbias->value() ) );
+
+    setValueSelection( hLayout );
+}
+
+void
+PlaylistBrowserNS::BiasNormalWidget::makeDateTimeSelection()
+{
+    KHBox* hLayout = new KHBox( m_controlFrame );
+
+    QDateTimeEdit* dateTimeSpin = new QDateTimeEdit( hLayout );
+
+    connect( dateTimeSpin, SIGNAL(dateTimeChanged(const QDateTime&)),
+             SLOT(valueChanged(const QDateTime&)) );
+
+    QDateTime dt;
+    if( m_nbias->value() == 0.0 )
+        dt = QDateTime::currentDateTime();
+    else
+        dt.setTime_t( m_nbias->value() );
+
+    dateTimeSpin->setDateTime( dt );
+
+    setValueSelection( hLayout );
+}
 
 #include "DynamicBiasWidgets.moc"
 

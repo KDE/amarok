@@ -174,6 +174,54 @@ namespace Dynamic
             XmlQueryWriter* m_qm;
             XmlQueryReader::Filter m_filter;
     };
+
+    /**
+     * A bias that works with numerical fields and attempts to fit the playlist to
+     * a normal distribution.
+     */
+    class NormalBias : public Bias
+    {
+        public:
+            NormalBias();
+
+            QDomElement xml() const;
+            PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
+
+            double energy( const Meta::TrackList& playlist, const Meta::TrackList& context );
+
+            /**
+             * The mean of the distribution, the 'ideal' value.
+             */
+            void setValue( double );
+            double value() const;
+
+            /**
+             * The QueryMaker field that will be considered. Only numerical
+             * fields (e.g. year, score, etc) will work.
+             */
+            void setField( qint64 );
+            qint64 field() const;
+
+            /**
+             * A number in [0.0,1.0] that controls the variance of the
+             * distribution in a sort of contrived but user friendly way. 1.0 is
+             * maximum strictness, 0.0 means minimum strictness.
+             */
+            void setScale( double );
+            double scale();
+
+        private:
+            double sigmaFromScale( double scale );
+            double releventField( Meta::TrackPtr t );
+            void setDefaultMu();
+
+            double m_scale;
+
+            double m_mu;    //! mean
+            double m_sigma; //! standard deviation
+
+            qint64 m_field;
+    };
 }
 
 Q_DECLARE_METATYPE( Dynamic::Bias* )
