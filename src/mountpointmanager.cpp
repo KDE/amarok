@@ -47,7 +47,7 @@
 typedef Medium::List MediumList;
 
 
-K_GLOBAL_STATIC( MountPointManager, s_mountPointManager );
+K_GLOBAL_STATIC( MountPointManager, s_mountPointManager )
 
 MountPointManager::MountPointManager()
     : QObject( 0 )

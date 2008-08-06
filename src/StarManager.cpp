@@ -31,7 +31,7 @@
 #include <QPixmap>
 
 
-K_GLOBAL_STATIC( StarManager, s_starManager );
+K_GLOBAL_STATIC( StarManager, s_starManager )
 
 StarManager* StarManager::instance()
 {

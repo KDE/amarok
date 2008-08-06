@@ -28,7 +28,7 @@ struct Version
     int minor;
 };
 
-Q_DECLARE_METATYPE(Version);
+Q_DECLARE_METATYPE(Version)
 
 // Marshall the DBusVersion data into a D-BUS argument
 QDBusArgument &operator<<(QDBusArgument &argument, const Version &version);

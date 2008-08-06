@@ -75,7 +75,7 @@ namespace Amarok
             bool m_outside;
             int  m_prevValue;
 
-            Q_DISABLE_COPY( Slider );
+            Q_DISABLE_COPY( Slider )
     };
 
     class VolumeSlider: public Slider
@@ -96,7 +96,7 @@ namespace Amarok
             virtual void resizeEvent(QResizeEvent * event);
 
         private:
-            Q_DISABLE_COPY( VolumeSlider );
+            Q_DISABLE_COPY( VolumeSlider )
 
             ////////////////////////////////////////////////////////////////
             int m_iconHeight;
@@ -111,7 +111,7 @@ namespace Amarok
 
     class TimeSlider : public Amarok::Slider
     {
-        Q_OBJECT;
+        Q_OBJECT
 
         public:
             TimeSlider( QWidget *parent );
@@ -125,7 +125,7 @@ namespace Amarok
             virtual void resizeEvent(QResizeEvent * event);
 
         private:
-            Q_DISABLE_COPY( TimeSlider );
+            Q_DISABLE_COPY( TimeSlider )
             ////////////////////////////////////////////////////////////////
 
             QTimer *m_animTimer; // Used for a smooth progress.

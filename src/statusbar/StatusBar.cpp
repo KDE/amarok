@@ -121,7 +121,7 @@ StatusBar::engineNewTrackPlaying()
 //MessageQueue
 ///////////////////
 
-K_GLOBAL_STATIC( MessageQueue, s_messageQueue );
+K_GLOBAL_STATIC( MessageQueue, s_messageQueue )
 
 MessageQueue::MessageQueue()
     : m_queueMessages( true )

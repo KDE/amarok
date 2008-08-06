@@ -112,7 +112,7 @@ int chardet_get_charset(chardet_t det, char* namebuf, unsigned int buflen);
 
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif

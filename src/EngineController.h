@@ -127,7 +127,7 @@ private:
 
     static ExtensionCache s_extensionCache;
 
-    Q_DISABLE_COPY( EngineController );
+    Q_DISABLE_COPY( EngineController )
 
     Phonon::MediaObject *m_media;
     Phonon::AudioOutput *m_audio;

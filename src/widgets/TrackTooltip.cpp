@@ -48,7 +48,7 @@
 #include <QDesktopWidget>
 
 
-K_GLOBAL_STATIC( TrackToolTip, s_trackToolTip );
+K_GLOBAL_STATIC( TrackToolTip, s_trackToolTip )
 
 TrackToolTip *TrackToolTip::instance()
 {
