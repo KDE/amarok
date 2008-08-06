@@ -853,6 +853,7 @@ namespace Amarok
         const int timediff = datetime.secsTo( now );
 
         if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
+            // xgettext: no-c-format
             return i18nc( "d for days", "%1d", (timediff+12*60*60)/(24*60*60) );
 
         if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
