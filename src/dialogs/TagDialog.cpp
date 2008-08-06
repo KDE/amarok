@@ -279,7 +279,7 @@ TagDialog::accept() //SLOT
 inline void
 TagDialog::openPressed() //SLOT
 {
-    Amarok::invokeBrowser( m_path );
+    new KRun( m_path, this );
 }
 
 
