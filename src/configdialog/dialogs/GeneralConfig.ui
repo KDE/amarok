@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>409</width>
-    <height>310</height>
+    <width>395</width>
+    <height>303</height>
    </rect>
   </property>
   <layout class="QGridLayout" >
@@ -130,20 +130,7 @@
         <string>Playlist</string>
        </property>
        <layout class="QGridLayout" >
-        <item row="0" column="0" >
-         <widget class="QCheckBox" name="kcfg_RelativePlaylist" >
-          <property name="toolTip" >
-           <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
-          </property>
-          <property name="whatsThis" >
-           <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
-          </property>
-          <property name="text" >
-           <string>Manually sa&amp;ved playlists use relative path</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" >
+        <item row="2" column="0" >
          <spacer name="verticalSpacer" >
           <property name="orientation" >
            <enum>Qt::Vertical</enum>
@@ -155,6 +142,19 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QCheckBox" name="kcfg_RelativePlaylist" >
+          <property name="toolTip" >
+           <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
+          </property>
+          <property name="whatsThis" >
+           <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
+          </property>
+          <property name="text" >
+           <string>Use relative path for &amp;saving</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
