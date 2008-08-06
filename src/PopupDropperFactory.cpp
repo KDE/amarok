@@ -78,7 +78,7 @@ PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent )
     windowColor.setAlpha( 128 );
     QColor textColor( The::paletteHandler()->palette().color( QPalette::Link ) );
     QColor highlightedTextColor( The::paletteHandler()->palette().color( QPalette::LinkVisited ) );
-    QColor borderColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
+    QColor borderColor( The::paletteHandler()->palette().color( QPalette::Text ) );
     QColor fillColor( borderColor );
     fillColor.setAlpha( 48 );
     pd->setColors( windowColor, textColor, highlightedTextColor, borderColor, fillColor );
