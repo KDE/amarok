@@ -296,7 +296,7 @@ OSDWidget::determineMetrics( const int M )
 void
 OSDWidget::paintEvent( QPaintEvent *e )
 {
-    uint M = m_m;
+    int M = m_m;
     QSize size = m_size;
 
     QPoint point;
@@ -610,7 +610,8 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     if( track && track->album() )
         image = track->album()->image( 100 ).toImage();
 
-    if( m_track ) {
+    if( m_track ) 
+    {
         subscribeTo( m_track );
         if( m_track->artist() )
             subscribeTo( m_track->artist() );
@@ -653,50 +654,6 @@ Amarok::OSD::forceToggleOSD()
     else
         hide();
 }
-
-void
-Amarok::OSD::slotCoverChanged( const QString &artist, const QString &album )
-{
-    Q_UNUSED( artist ); Q_UNUSED( album );
-#if 0
-    if( AmarokConfig::osdCover() && artist == The::engineController()->bundle().artist()
-                                 && album  == The::engineController()->bundle().album()  )
-    {
-        QString location = CollectionDB::instance()->albumImage( artist, album, false, 0 );
-
-        if( location.find( "nocover" ) != -1 )
-            setImage( Amarok::icon() );
-        else
-            setImage( location );
-    }
-#endif
-}
-
-void
-Amarok::OSD::slotImageChanged( const QString &remoteURL )
-{
-    Q_UNUSED( remoteURL );
-#if 0
-    QString url = The::engineController()->bundle().url().url();
-    PodcastEpisodeBundle peb;
-    if( CollectionDB::instance()->getPodcastEpisodeBundle( url, &peb ) )
-    {
-        PodcastChannelBundle pcb;
-        if( CollectionDB::instance()->getPodcastChannelBundle( peb.parent().url(), &pcb ) )
-        {
-            if( pcb.imageURL().url() == remoteURL )
-            {
-                QString location = CollectionDB::instance()->podcastImage( remoteURL, false, 0 );
-                if( location == CollectionDB::instance()->notAvailCover( false, 0 ) )
-                    setImage( Amarok::icon() );
-                else
-                    setImage( location );
-            }
-        }
-    }
-#endif
-}
-
 
 void Amarok::OSD::metadataChanged( Meta::Track *track )
 {

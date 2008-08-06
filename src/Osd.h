@@ -172,15 +172,13 @@ namespace Amarok
         virtual void show( Meta::TrackPtr track );
 
         //Reimplemented from Meta::Observer
+        using Meta::Observer::metadataChanged;
         virtual void metadataChanged( Meta::Track *track );
         virtual void metadataChanged( Meta::Album *album );
         virtual void metadataChanged( Meta::Artist *artist );
 
         // Don't hide baseclass methods - prevent compiler warnings
         virtual void show() { OSDWidget::show(); }
-        virtual void metadataChanged( Meta::Genre * ) {};
-        virtual void metadataChanged( Meta::Composer * ) {};
-        virtual void metadataChanged( Meta::Year * ) {};
 
     public slots:
         /**
@@ -193,10 +191,6 @@ namespace Amarok
         OSD();
 
         Meta::TrackPtr m_track;
-
-    private slots:
-        void slotCoverChanged( const QString &artist, const QString &album );
-        void slotImageChanged( const QString &remoteURL );
     };
 }
 
