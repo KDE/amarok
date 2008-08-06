@@ -110,4 +110,18 @@ PopupDropperItem * PopupDropperFactory::createItem( PopupDropperAction * action 
     return pdi;
 }
 
+void PopupDropperFactory::adjustSubmenuItem( PopupDropperItem *item )
+{
+    QFont font;
+    font.setPointSize( 16 );
+    font.setBold( true );
+
+    item->setFont( font );
+    item->setHoverMsecs( 800 );
+    QColor hoverIndicatorFillColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
+    hoverIndicatorFillColor.setAlpha( 96 );
+    QBrush brush = item->hoverIndicatorFillBrush();
+    brush.setColor( hoverIndicatorFillColor );
+    item->setHoverIndicatorFillBrush( brush );
+}
 

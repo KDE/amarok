@@ -357,7 +357,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             }
             debug() << "Using morePud at address " << morePud;
             subItem = morePud->addSubmenu( &copyPud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Copy to Collection" )  );
-            subItem->setFont( font );
+            The::popupDropperFactory()->adjustSubmenuItem( subItem );
         }
 
         if ( !m_currentMoveDestination.empty() ) {
@@ -368,11 +368,11 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
                 movePud->addItem( The::popupDropperFactory()->createItem( action ), false );
             }
             subItem = morePud->addSubmenu( &movePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection",  i18n( "Move to Collection" )  );
-            subItem->setFont( font );
+            The::popupDropperFactory()->adjustSubmenuItem( subItem );
         }*/
 
         subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More..." )  );
-        subItem->setFont( font );
+        The::popupDropperFactory()->adjustSubmenuItem( subItem );
         
         m_pd->show();
     }

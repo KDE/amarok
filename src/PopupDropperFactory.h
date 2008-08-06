@@ -56,6 +56,12 @@ friend PopupDropperFactory* The::popupDropperFactory();
 
         PopupDropperItem* createItem( PopupDropperAction * action );
 
+        /**
+         * Adjusts the submenu item given to be like those created in createItem
+         * @param item The item to be adjusted
+         */
+        void adjustSubmenuItem( PopupDropperItem * item );
+
     private:
         friend class PopupDropperFactorySingleton;
         PopupDropperFactory();
