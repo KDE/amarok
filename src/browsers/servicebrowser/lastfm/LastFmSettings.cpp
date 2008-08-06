@@ -24,7 +24,7 @@
 
 namespace The
 {
-    K_GLOBAL_STATIC( LastFmSettings, s_lastFmSettings );
+    K_GLOBAL_STATIC( LastFmSettings, s_lastFmSettings )
 
     LastFmSettings &settings()
     {

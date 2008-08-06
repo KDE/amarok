@@ -27,7 +27,7 @@ namespace Meta
 
 class LastFmServiceCollection : public ServiceCollection
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     LastFmServiceCollection( const QString& userName );
     virtual ~LastFmServiceCollection();
