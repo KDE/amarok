@@ -53,13 +53,17 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
         const Meta::TrackPtr rightTrack = Meta::TrackPtr::dynamicCast( rightItem->data() );
         if( !leftTrack.isNull()  && !rightTrack.isNull() )
         {
+
             //First compare by disc number
             if ( leftTrack->discNumber() < rightTrack->discNumber() )
                 return true;
-            else if( leftTrack->discNumber() == rightTrack->discNumber() ) //Disc #'s are equal, compare by track number
-                return leftTrack->trackNumber() < rightTrack->trackNumber();
-            else
-                return false; // Right disc has a lower number
+            else if( leftTrack->discNumber() == rightTrack->discNumber() ) { //Disc #'s are equal, compare by track number
+                if ( leftTrack->trackNumber() != 0 && rightTrack->trackNumber() != 0 )
+                    return leftTrack->trackNumber() < rightTrack->trackNumber();
+                else
+                    //fallback to name sorting
+                    return QSortFilterProxyModel::lessThan( left, right );
+            }
         }
     }
     return QSortFilterProxyModel::lessThan( left, right ); //Bad idea fallthrough
