@@ -372,7 +372,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         }*/
 
         // Only 2 dots for ellipsis, cause i18n() breaks with 3 dots
-        subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More..." )  );
+        subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More.." )  );
         The::popupDropperFactory()->adjustSubmenuItem( subItem );
         
         m_pd->show();
