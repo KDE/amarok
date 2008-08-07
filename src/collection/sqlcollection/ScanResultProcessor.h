@@ -45,6 +45,7 @@ class ScanResultProcessor
         void addImage( const QString &path, const QList< QPair<QString, QString> > );
         void setScanType( ScanType type );
         void setFilesDeletedHash( QHash<QString, QString>* hash );
+        void setChangedUrlsHash( QHash<QString, QString>* hash );
         void processDirectory( const QList<QVariantMap > &data );
         void commit();
         void rollback();
@@ -81,6 +82,7 @@ class ScanResultProcessor
         QHash<QString, uint> m_filesInDirs;
 
         QHash<QString, QString>* m_filesDeleted;
+        QHash<QString, QString>* m_changedUrls;
 
         ScanType m_type;
 };

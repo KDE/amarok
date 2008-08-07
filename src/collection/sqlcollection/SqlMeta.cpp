@@ -608,8 +608,8 @@ void
 SqlTrack::writeMetaDataToDb()
 {
     //TODO store the tracks id in SqlTrack
-    QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.uniqueid = '%2';";
-    query = query.arg( QString::number( m_deviceid ), m_collection->escape( m_uid ) );
+    QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.uniqueid = '%1';";
+    query = query.arg( m_collection->escape( m_uid ) );
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
     {

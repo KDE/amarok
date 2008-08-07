@@ -60,6 +60,12 @@ ScanResultProcessor::setFilesDeletedHash( QHash<QString, QString>* hash )
 }
 
 void
+ScanResultProcessor::setChangedUrlsHash( QHash<QString, QString>* hash )
+{
+    m_changedUrls = hash;
+}
+
+void
 ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 {
     setupDatabase();
@@ -330,12 +336,8 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     m_collection->query( sql );
 
-    //Now, notify/modify SqlTrack pointers of changes (setUrl will call notifyObservers)
-    if( m_collection->registry()->checkUidExists( uid ) )
-    {
-        TrackPtr track = m_collection->registry()->getTrackFromUid( uid );
-        KSharedPtr<SqlTrack>::staticCast( track )->setUrl( trackData.value( Field::URL ).toString() );
-    }
+    if( m_changedUrls )
+        m_changedUrls->insert( uid, trackData.value( Field::URL ).toString() );
 
     //NEXT: this takes care of Meta, now update other tables with deviceid,rpath,uniqueid
 }
@@ -543,7 +545,8 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         return pathres[0].toInt();
     }
     else
-        debug() << "AFT algorithm died, you shouldn't be here.";
+        debug() << "AFT algorithm died...you shouldn't be here!  Returning something negative and bad.";
+    return -666;
 }
 
 int

@@ -35,6 +35,7 @@
 #include <QMap>
 #include <QStringList>
 #include <QVariant>
+#include <QThread>
 #include <QTextCodec>
 #include <QXmlStreamAttributes>
 
@@ -89,6 +90,7 @@ ScanManager::startFullScan()
     m_parser = new XmlParseJob( this, m_collection );
     m_parser->setFilesAddedHash( &m_filesAdded );
     m_parser->setFilesDeletedHash( &m_filesDeleted );
+    m_parser->setChangedUrlsHash( &m_changedUrls );
     m_parser->setIsIncremental( false );
     m_isIncremental = false;
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
@@ -132,6 +134,7 @@ void ScanManager::startIncrementalScan()
     m_parser = new XmlParseJob( this, m_collection );
     m_parser->setFilesAddedHash( &m_filesAdded );
     m_parser->setFilesDeletedHash( &m_filesDeleted );
+    m_parser->setChangedUrlsHash( &m_changedUrls );
     m_parser->setIsIncremental( true );
     m_isIncremental = true;
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
@@ -305,6 +308,18 @@ ScanManager::slotJobDone()
 {
     m_parser->deleteLater();
     m_parser = 0;
+
+    //this must be done here instead of in the ScanResultProcessor because that's running
+    //in a different thread, and when notifyObservers is called it does GUI things...
+    foreach( QString key, m_changedUrls.keys() )
+    {
+        if( m_collection->registry()->checkUidExists( key ) )
+        {
+            Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( key );
+            if( track )
+                KSharedPtr<Meta::SqlTrack>::staticCast( track )->setUrl( m_changedUrls[key] );
+        }
+    }   
 }
 
 void
@@ -343,6 +358,7 @@ ScanManager::handleRestart()
         m_parser->setIsIncremental( m_isIncremental );
         m_parser->setFilesAddedHash( &m_filesAdded );
         m_parser->setFilesDeletedHash( &m_filesDeleted );
+        m_parser->setChangedUrlsHash( &m_changedUrls );
         connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
         ThreadWeaver::Weaver::instance()->enqueue( m_parser );
     }
@@ -367,7 +383,9 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     , m_isIncremental( false )
     , m_filesAdded( 0 )
     , m_filesDeleted( 0 )
+    , m_changedUrls( 0 )
 {
+    DEBUG_BLOCK
     The::statusBar()->newProgressOperation( this )
             .setDescription( i18n( "Scanning music" ) )
             .setAbortSlot( parent, SLOT( deleteLater() ) );
@@ -399,6 +417,12 @@ XmlParseJob::setFilesDeletedHash( QHash<QString, QString>* hash )
 }
 
 void
+XmlParseJob::setChangedUrlsHash( QHash<QString, QString>* hash )
+{
+    m_changedUrls = hash;
+}
+
+void
 XmlParseJob::run()
 {
     DEBUG_BLOCK
@@ -408,6 +432,7 @@ XmlParseJob::run()
 
     ScanResultProcessor processor( m_collection );
     processor.setFilesDeletedHash( m_filesDeleted );
+    processor.setChangedUrlsHash( m_changedUrls );
     if( m_isIncremental )
     {
         processor.setScanType( ScanResultProcessor::IncrementalScan );

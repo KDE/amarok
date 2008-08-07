@@ -70,6 +70,7 @@ class ScanManager : public QObject
 
         QHash<QString, QString> m_filesAdded;
         QHash<QString, QString> m_filesDeleted;
+        QHash<QString, QString> m_changedUrls;
 
         int m_restartCount;
         bool m_isIncremental;
@@ -90,6 +91,7 @@ class XmlParseJob : public ThreadWeaver::Job
         void setIsIncremental( bool incremental );
         void setFilesAddedHash( QHash<QString, QString>* hash );
         void setFilesDeletedHash( QHash<QString, QString>* hash );
+        void setChangedUrlsHash( QHash<QString, QString>* hash );
 
     signals:
         void incrementProgress();
@@ -100,6 +102,7 @@ class XmlParseJob : public ThreadWeaver::Job
         bool m_isIncremental;
         QHash<QString, QString> *m_filesAdded;
         QHash<QString, QString> *m_filesDeleted;
+        mutable QHash<QString, QString> *m_changedUrls; 
         QXmlStreamReader m_reader;
         QString m_nextData;
         QWaitCondition m_wait;

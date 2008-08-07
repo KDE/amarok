@@ -57,13 +57,17 @@ SqlRegistry::getTrack( const QString &url )
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
     TrackId id(deviceid, rpath);
     QMutexLocker locker( &m_trackMutex );
+    QMutexLocker locker2( &m_uidMutex );
     if( m_trackMap.contains( id ) )
         return m_trackMap.value( id );
     else
     {
         TrackPtr track = SqlTrack::getTrack( deviceid, rpath, m_collection );
         if( track )
+        {
             m_trackMap.insert( id, track );
+            m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uid(), track );
+        }
         return track;
     }
 }
@@ -73,12 +77,17 @@ SqlRegistry::getTrack( const QStringList &rowData )
 {
     TrackId id( rowData[0].toInt(), rowData[1] );
     QMutexLocker locker( &m_trackMutex );
+    QMutexLocker locker2( &m_uidMutex );
     if( m_trackMap.contains( id ) )
         return m_trackMap.value( id );
     else
     {
         TrackPtr track( new SqlTrack( m_collection, rowData ) );
-        m_trackMap.insert( id, track );
+        if( track )
+        {
+            m_trackMap.insert( id, track );
+            m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uid(), track );
+        }
         return track;
     }
 }
@@ -86,21 +95,28 @@ SqlRegistry::getTrack( const QStringList &rowData )
 TrackPtr
 SqlRegistry::getTrackFromUid( const QString &uid )
 {
-    QMutexLocker locker( &m_uidMutex );
+    QMutexLocker locker( &m_trackMutex );
+    QMutexLocker locker2( &m_uidMutex );
     if( m_uidMap.contains( uid ) )
         return m_uidMap.value( uid );
     else
     {
         TrackPtr track( SqlTrack::getTrackFromUid( uid, m_collection ) );
         if( track )
+        {
+            int deviceid = MountPointManager::instance()->getIdForUrl( track->playableUrl().path() );
+            QString rpath = MountPointManager::instance()->getRelativePath( deviceid, track->playableUrl().path() );
+            TrackId id(deviceid, rpath);
+            m_trackMap.insert( id, track );
             m_uidMap.insert( uid, track );
+        }
         return track;
     } 
 }
 
 bool
 SqlRegistry::checkUidExists( const QString &uid )
-{
+{ 
     QMutexLocker locker( &m_uidMutex );
     if( m_uidMap.contains( uid ) )
         return true;
