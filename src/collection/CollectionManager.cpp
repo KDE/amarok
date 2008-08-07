@@ -111,7 +111,7 @@ CollectionManager::init()
     //This code was in enginecontroller originally, it now ends up here.
     if( plugins.count() == 0 )
     {
-        KRun::runCommand( "kbuildsycoca4", 0 );
+        KRun::runCommand( "kbuildsycoca4 --noincremental", 0 );
 
         KMessageBox::error( 0, i18n(
                 "<p>Amarok could not find any collection plugins. "
@@ -121,7 +121,7 @@ CollectionManager::init()
                 "$ cd /path/to/amarok/source-code/<br>"
                 "$ su -c \"make uninstall\"<br>"
                 "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
-                "$ kbuildsycoca4<br>"
+                "$ kbuildsycoca4 --noincremental<br>"
                 "$ amarok</pre>"
                 "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
         // don't use QApplication::exit, as the eventloop may not have started yet
