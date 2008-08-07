@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>642</width>
-     <height>445</height>
+     <height>441</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -32,6 +32,12 @@
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
+   </property>
+   <property name="maximumSize" >
+    <size>
+     <width>16777215</width>
+     <height>16777215</height>
+    </size>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_4" >
     <item>
@@ -70,7 +76,7 @@
         </property>
         <property name="gridSize" >
          <size>
-          <width>64</width>
+          <width>72</width>
           <height>64</height>
          </size>
         </property>
@@ -81,6 +87,9 @@
          <number>0</number>
         </property>
         <property name="uniformItemSizes" >
+         <bool>true</bool>
+        </property>
+        <property name="wordWrap" >
          <bool>true</bool>
         </property>
        </widget>
@@ -112,6 +121,24 @@
       </item>
       <item>
        <widget class="QLabel" name="syntaxLabel" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>144</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>16777215</width>
+          <height>144</height>
+         </size>
+        </property>
         <property name="text" >
          <string>The following tokens can be used to define a filename scheme: &lt;br>%track, %title, %artist, %composer, %year, %album, %comment, %genre&lt;br></string>
         </property>
