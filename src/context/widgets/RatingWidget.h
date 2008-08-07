@@ -22,8 +22,6 @@
 
 #include "amarok_export.h"
 
-#include <plasma/widgets/widget.h>
-
 #include <QGraphicsWidget>
 
 class AMAROK_EXPORT RatingWidget : public QGraphicsWidget

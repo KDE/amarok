@@ -42,8 +42,9 @@ namespace Context
 ContextView* ContextView::s_self = 0;
 
 
-ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
-    : Plasma::View( cont, parent )
+ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWidget* parent )
+//     : Plasma::View( cont, parent )
+    : QGraphicsView( corona, parent )
     , EngineObserver( The::engineController() )
     , m_curState( Home )
     , m_appletBrowser( 0 )
@@ -53,7 +54,7 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
 {
     s_self = this;
 
-    scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
+//     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
     //setDragMode( QGraphicsView::RubberBandDrag );
     setTransformationAnchor( QGraphicsView::NoAnchor );
@@ -64,6 +65,11 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setMouseTracking( true );
 
+    scene()->setItemIndexMethod( QGraphicsScene::NoIndex );
+
+    connectContainment( cont );
+    setContainment( cont );
+    
     //make background transparent
     QPalette p = palette();
     QColor c = p.color( QPalette::Base );
@@ -78,13 +84,13 @@ ContextView::ContextView( Plasma::Containment *cont, QWidget* parent )
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
     for( int i = 0; i < 3; i++ )
-        addContainment();
+        addContainment();    
     
-    connectContainment( cont );
     setContainment( cont );
     Containment* amarokContainment = qobject_cast<Containment* >( cont );    
     if( amarokContainment )
     {
+        amarokContainment->setView( this );
         amarokContainment->setTitle( "Context #0" );    
         amarokContainment->addCurrentTrack();
     }
@@ -147,21 +153,26 @@ void ContextView::clear()
     
 }
 
-// void
-// ContextView::mousePressEvent( QMouseEvent* event )
-// {
-//     DEBUG_BLOCK
-//     QPointF pos = mapToScene( event->pos() );
-//     debug() << "Event pos: " << event->pos();
-//     debug() << "mapFromScene pos: " << mapFromScene( event->pos() );
-//     debug() << "mapToScene pos: " << mapToScene( event->pos() );
-//     if( scene()->itemAt( pos ) )
-//     {
-//         Plasma::Applet* a = dynamic_cast<Plasma::Applet* >( scene()->itemAt( event->pos() ) );
-//         if( a )
-//         {
-//             debug() << "cast successful";
-// 
+void
+ContextView::mousePressEvent( QMouseEvent* event )
+{
+    DEBUG_BLOCK
+    event->accept();
+    QPointF pos = mapToScene( event->pos() );
+    debug() << "Event pos: " << event->pos();
+    debug() << "mapFromScene pos: " << mapFromScene( event->pos() );
+    debug() << "mapToScene pos: " << mapToScene( event->pos() );
+    debug() << "sceneRect: " << sceneRect();
+    debug() << "view items at pos: " << items( event->pos() ).count();
+    debug() << "scene items: " << scene()->items( mapToScene( event->pos() ) ).count();
+//     if( itemAt( pos.x(), pos.y() ) )
+    if( itemAt( event->pos() ) )
+    {
+        Plasma::Applet* a = dynamic_cast<Plasma::Applet* >( scene()->itemAt( event->pos() ) );
+        if( a )
+        {
+            debug() << "cast successful";
+
 //             if( a->isContainment() )
 //             {
 //                 Plasma::Containment* c = dynamic_cast<Plasma::Containment* >( a );
@@ -169,14 +180,15 @@ void ContextView::clear()
 //             }
 //             else if( a->containment() )
 //                 setContainment( a->containment() );
-//         }
-//     }
-//     else
-//     {
-//         debug() << "OUTside item";
-//     }
-//     debug() << "scene rect:" << scene()->sceneRect();
-// }
+        }
+    }
+    else
+    {
+        debug() << "OUTside item";
+    }
+    debug() << "scene rect:" << scene()->sceneRect();
+    QGraphicsView::mousePressEvent( event );
+}
 
 void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
@@ -343,7 +355,9 @@ ContextView::zoomOutFinished( int id )
     m_zoomLevel = Plasma::GroupZoom;
     setDragMode( ScrollHandDrag );
     
-    setSceneRect( mapToScene( rect() ).boundingRect() );
+//     setSceneRect( mapToScene( rect() ).boundingRect() );
+    setSceneRect( QRectF() );
+    debug() << "sceneRect: " << sceneRect();
     ensureVisible( rect(), 0, 0 );
     
     disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ), this, SLOT( zoomOutFinished( int ) ) );
@@ -498,8 +512,9 @@ ContextView::addContainment()
                                 rect().height() + 60 );
         if( containment )
         {
+            containment->setView( this );
             containment->updateSize( newGeom );
-            containment->setTitle( QString( "Context #%1" ).arg( size ) );
+            containment->setTitle( QString( "Context #%1" ).arg( size ) );            
         }
         else
             debug() << "ContextView::resizeEvent NO CONTAINMENT TO UPDATE SIZE! BAD!";
@@ -558,6 +573,7 @@ ContextView::setContainment( Plasma::Containment* containment )
     DEBUG_BLOCK
     if( containment != this->containment() )
     {
+        DEBUG_LINE_INFO
 //         disconnectContainment( this->containment() );
         if( containment->isContainment() )
         {
@@ -565,8 +581,9 @@ ContextView::setContainment( Plasma::Containment* containment )
                 m_startPos = this->containment()->geometry();
 
                                                               
-            //This call will mess with the current scene geometry
-            Plasma::View::setContainment( containment );            
+//             //This call will mess with the current scene geometry
+//             setContainment( containment );
+            m_containment = containment;
 
             //this disconnect prevents from undesired containment's geometry change
             disconnect( containment, SIGNAL( geometryChanged() ), 0, 0 );
@@ -744,6 +761,12 @@ void
 ContextView::appletBrowserDestroyed()
 {
     m_appletBrowser = 0;
+}
+
+Plasma::Containment *
+ContextView::containment()
+{
+    return m_containment;
 }
 
 } // Context namespace

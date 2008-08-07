@@ -20,6 +20,7 @@
 #include "context/AmarokToolBox.h"
 #include "context/Applet.h"
 #include "context/Containment.h"
+#include "context/ContextView.h"
 #include "context/layouts/ContextLayout.h"
 #include "context/Svg.h"
 
@@ -76,6 +77,9 @@ public:
     void showTitle();
     void hideTitle();
     void addCurrentTrack();
+
+    ContextView *view();
+    void setView( ContextView *newView );
 
 public slots:
     Applet* addApplet( Plasma::Applet* applet, const QPointF &);
@@ -140,6 +144,8 @@ private:
     QQueue<QString> m_pendingApplets;
 
     AmarokToolBox *m_toolBox;
+
+    ContextView *m_view;
 
     //KSvgRenderer * m_renderer;
 };

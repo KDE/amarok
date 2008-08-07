@@ -15,6 +15,7 @@
 #define AMAROK_CONTAINMENT_H
 
 #include "amarok_export.h"
+#include "ContextView.h"
 
 #include "plasma/containment.h"
 
@@ -24,6 +25,7 @@
 namespace Context
 {
 
+class ContextView;
 
 class AMAROK_EXPORT Containment : public Plasma::Containment
 {
@@ -48,7 +50,10 @@ public:
     virtual void hideTitle() = 0;
     virtual void addCurrentTrack() = 0;
     virtual void addToolBox() = 0;
-    virtual void correctToolBoxPos() = 0;
+    virtual void correctToolBoxPos() = 0;    
+    virtual void setView( ContextView *newView ) = 0;
+    
+    virtual ContextView *view() = 0;
 
 signals:
     void appletRejected( QString pluginName, int rowSpan );

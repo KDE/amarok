@@ -28,12 +28,11 @@
 #include "Svg.h"
 
 #include "plasma/appletbrowser.h"
-#include "plasma/view.h"
+// #include "plasma/view.h"
 
 #include <QMouseEvent>
 
-//TODO: move away, not need anymore
-// #include <QGraphicsView>
+#include <QGraphicsView>
 
 class QPixmap;
 
@@ -43,12 +42,12 @@ namespace Context
 class ContextScene;
 class ControlBox;
 
-class AMAROK_EXPORT ContextView : public Plasma::View, public EngineObserver, public ContextSubject
+class AMAROK_EXPORT ContextView : public QGraphicsView, public EngineObserver, public ContextSubject
 {
     Q_OBJECT
 
 public:
-     ContextView( Plasma::Containment *containment, QWidget* parent );
+     ContextView( Plasma::Containment *containment, Plasma::Corona *corona, QWidget* parent = 0 );
     ~ContextView();
 
      /**
@@ -73,6 +72,8 @@ public:
     void clear();
 
     Plasma::ZoomLevel zoomLevel() const;
+
+    Plasma::Containment *containment();
 
 public slots:
     void zoom( Plasma::Containment* containment, Plasma::ZoomDirection direction );
@@ -101,7 +102,7 @@ protected:
 
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
-//     void mousePressEvent( QMouseEvent* event );
+    void mousePressEvent( QMouseEvent* event );
 
 private:
     static ContextView* s_self;
@@ -149,6 +150,8 @@ private:
     QRectF m_destinationPos;
 
     bool m_toolBoxAdded;
+
+    Plasma::Containment *m_containment;
 
     //ControlBox* m_controlBox;
 

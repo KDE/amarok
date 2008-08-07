@@ -66,6 +66,7 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     , m_manageCurrentTrack( 0 )
     , m_appletsFromConfigCount( 0 )
     , m_toolBox( 0 )
+    , m_view( 0 )
 {
     DEBUG_BLOCK
 
@@ -552,7 +553,7 @@ QList<QAction*> ColumnContainment::contextualActions()
 void ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
     DEBUG_BLOCK
-
+    event->accept();
     // Discoverability: We're also showing the context menu on left-click, when clicking empty space
     if( event->button() == Qt::LeftButton )
     {
@@ -683,12 +684,11 @@ ColumnContainment::addToolBox()
     if( m_toolBox )
         return;
     m_toolBox = new AmarokToolBox( this );
-    ContextView *cv = dynamic_cast<ContextView *>( view() );
-    if( cv )
+    if( view() )
     {
         DEBUG_LINE_INFO
         connect( m_toolBox, SIGNAL( changeContainment( Plasma::Containment * ) ),
-                 cv, SLOT( setContainment( Plasma::Containment * ) ) );
+                 view(), SLOT( setContainment( Plasma::Containment * ) ) );
         connect( m_toolBox, SIGNAL( correctToolBoxPos() ), this, SLOT( correctToolBoxPos() ) );
     }
     m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
@@ -703,12 +703,11 @@ void
 ColumnContainment::correctToolBoxPos()
 {
     DEBUG_BLOCK
-    ContextView *cv = dynamic_cast<ContextView *>( view() );
     
-    if( !cv )
+    if( !view() )
         return;
     
-    Plasma::ZoomLevel zoomLevel = cv->zoomLevel();
+    Plasma::ZoomLevel zoomLevel = view()->zoomLevel();
     
     if( m_toolBox->showingMenu() )
     {
@@ -753,6 +752,18 @@ ColumnContainment::addCurrentTrack()
 {
     DEBUG_BLOCK
     m_manageCurrentTrack = true;
+}
+
+ContextView *
+ColumnContainment::view()
+{
+    return m_view;
+}
+
+void
+ColumnContainment::setView( ContextView *newView )
+{
+    m_view = newView;
 }
 
 } // Context namespace
