@@ -243,6 +243,8 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 {
     DEBUG_BLOCK
 
+    const QString currentVersion = "1";
+
     QFile file( Amarok::saveLocation() + "dynamic.xml" );
     if( !file.open( QIODevice::ReadWrite ) )
     {
@@ -271,15 +273,20 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 
     // get the root node
     m_savedPlaylistsRoot = m_savedPlaylists.firstChildElement( "biasedPlaylists" );
-    if( m_savedPlaylistsRoot.isNull() )
+    if( m_savedPlaylistsRoot.isNull() || m_savedPlaylistsRoot.attribute( "version" ) != currentVersion )
     {
+        if( !m_savedPlaylistsRoot.isNull() )
+            m_savedPlaylists.removeChild( m_savedPlaylistsRoot );
+
         // dynamic.xml must be empty
         m_savedPlaylistsRoot = m_savedPlaylists.createElement( "biasedPlaylists" );
+        m_savedPlaylistsRoot.setAttribute( "version", currentVersion );
         m_savedPlaylists.appendChild( m_savedPlaylistsRoot );
         return;
     }
 
     for( int i = 0; i < m_savedPlaylistsRoot.childNodes().size(); ++ i )
+
     {
         if( !m_savedPlaylistsRoot.childNodes().at(i).isElement() )
             continue;

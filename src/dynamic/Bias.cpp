@@ -87,10 +87,23 @@ Dynamic::Bias::fromXml( QDomElement e )
 
         return new Dynamic::GlobalBias( weight, filter );
     }
+    else if( type == "normal" )
+    {
+        QDomElement meanElement = e.firstChildElement( "mean" );
+        QDomElement scaleElement = e.firstChildElement( "scale" );
+        QDomElement fieldElement = e.firstChildElement( "field" );
 
-    // TODO: normal biases
+        double mean = meanElement.attribute( "value", "0" ).toDouble();
+        double scale = scaleElement.attribute( "value", "0.5" ).toDouble();
+        qint64 field = fieldElement.attribute( "value", "0" ).toLongLong();
 
-    // TODO: other types of biases
+        Dynamic::NormalBias* nbias = new Dynamic::NormalBias();
+        nbias->setField( field );
+        nbias->setScale( scale );
+        nbias->setValue( mean );
+
+        return nbias;
+    }
     else
     {
         error() << "Unknown bias type.";
@@ -390,7 +403,18 @@ Dynamic::NormalBias::xml() const
     QDomElement e = doc.createElement( "bias" );
     e.setAttribute( "type", "normal" );
 
-    // TODO: !!
+    QDomElement fieldElement = doc.createElement( "field" );
+    fieldElement.setAttribute( "value", QString::number( m_field ) );
+
+    QDomElement meanElement = doc.createElement( "mean" );
+    meanElement.setAttribute( "value", QString::number( m_mu ) );
+
+    QDomElement scaleElement = doc.createElement( "scale" );
+    scaleElement.setAttribute( "value", QString::number( m_scale ) );
+
+    e.appendChild( fieldElement );
+    e.appendChild( meanElement );
+    e.appendChild( scaleElement );
 
     return e;
 }

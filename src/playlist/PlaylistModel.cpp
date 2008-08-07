@@ -1063,7 +1063,7 @@ Playlist::Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, i
             {
                 Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( kurl );
                 if( track )
-                    tracks.append( track );
+                    insertTrack( row, track );
             }
             //else TODO: notify user if can't decode, see also MyDirLister::matchesFilter
         }

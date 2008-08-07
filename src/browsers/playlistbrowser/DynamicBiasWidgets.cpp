@@ -321,7 +321,10 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
     qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
     m_filter.field = field;
     if( field != m_gbias->filter().field )
+    {
         m_filter.value.clear();
+        syncBiasToControls();
+    }
 
     if( field == 0 )
     {
@@ -635,6 +638,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeDateTimeSelection()
 
 
 
+
 PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias, QWidget* parent )
     : BiasWidget( bias, parent )
     , m_controlFrame(0)
@@ -659,6 +663,7 @@ PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias
             i18n( "This controls how strictly to match the given value." ) );
     connect( m_scaleSelection, SIGNAL(valueChanged(int)),
             SLOT(scaleChanged(int)) );
+    m_scaleSelection->setValue( (int)(m_nbias->scale() * 100.0) );
 
     m_fieldSelection = new KComboBox( m_controlFrame );
     m_fieldSelection->setPalette( QApplication::palette() );
@@ -719,9 +724,12 @@ PlaylistBrowserNS::BiasNormalWidget::scaleChanged( int ival )
     double fval = (double)ival;
     m_scaleLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
 
-    m_nbias->setScale( fval / 100.0 );
+    if( fval / 100.0 != m_nbias->scale() )
+    {
+        m_nbias->setScale( fval / 100.0 );
 
-    emit biasChanged( m_bias );
+        emit biasChanged( m_bias );
+    }
 }
 
 
@@ -729,7 +737,12 @@ void
 PlaylistBrowserNS::BiasNormalWidget::fieldChanged( int i )
 {
     qint64 field = qvariant_cast<qint64>( m_fieldSelection->itemData( i ) );
-    m_nbias->setField( field );
+
+    if( field != m_nbias->field() )
+    {
+        m_nbias->setField( field );
+        emit biasChanged( m_bias );
+    }
 
     if( field == 0 )
     {

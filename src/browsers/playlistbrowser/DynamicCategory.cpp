@@ -166,6 +166,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
         playlistSelectionChanged( 0 );
     }
 
+    m_onoffButton->setChecked( AmarokConfig::dynamicMode() );
 }
 
 
@@ -203,7 +204,7 @@ DynamicCategory::On()
     AmarokConfig::setDynamicMode( true );
     // TODO: turn off other incompatible modes
     AmarokConfig::self()->writeConfig();
-
+    m_repopulateButton->setEnabled( true );
     The::playlistModel()->playlistModeChanged();  
 
 }
@@ -214,7 +215,7 @@ DynamicCategory::Off()
     AmarokConfig::setDynamicMode( false );
     // TODO: should we restore the state of other modes?
     AmarokConfig::self()->writeConfig();
-
+    m_repopulateButton->setEnabled( false );
     The::playlistModel()->playlistModeChanged();  
 }
 
