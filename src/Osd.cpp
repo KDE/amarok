@@ -477,6 +477,7 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
     QFont f = font();
     f.setPointSize( 16 );
     setFont( f );
+    setTranslucent( AmarokConfig::osdUseTranslucency() );
     show( m_text, m_cover );
 }
 
@@ -632,7 +633,6 @@ Amarok::OSD::applySettings()
     setScreen( AmarokConfig::osdScreen() );
     setFont( AmarokConfig::osdFont() );
     setDrawShadow( AmarokConfig::osdDrawShadow() );
-    setWindowOpacity( AmarokConfig::osdUseTranslucency() ? 0.6 : 1.0 );
 
     if( AmarokConfig::osdUseCustomColors() )
     {
@@ -640,6 +640,8 @@ Amarok::OSD::applySettings()
         setBackgroundColor( AmarokConfig::osdBackgroundColor() );
     }
     else unsetColors();
+
+    setTranslucent( AmarokConfig::osdUseTranslucency() );
 }
 
 void
