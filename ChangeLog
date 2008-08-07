@@ -38,6 +38,7 @@ VERSION 2.0-beta1
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
+    * OSD translucency works now. (BR 166567)
     * Use name based sorting of tracks without a track number ( fixes 
       sorting in shoutcast and cool streams services )
     * Don't try to scan the whole $HOME on first startup.
