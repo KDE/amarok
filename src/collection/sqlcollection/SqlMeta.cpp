@@ -293,10 +293,8 @@ SqlTrack::setUrl( const QString &url )
         m_cache.insert( Meta::Field::URL, MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) ); 
     else
     {
-        debug() << "Setting URL";
         m_url = url;
         writeMetaDataToDb();
-        debug() << "Notifying observers";
         notifyObservers();
     }
 }

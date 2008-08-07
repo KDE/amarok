@@ -38,8 +38,10 @@ ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     , m_setupComplete( false )
     , m_filesDeleted( 0 )
     , m_type( FullScan )
+    , m_aftPermanentTables()
 {
     DEBUG_BLOCK
+    m_aftPermanentTables << "statistics" << "lyrics";
 }
 
 ScanResultProcessor::~ScanResultProcessor()
@@ -116,7 +118,6 @@ ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, 
 void
 ScanResultProcessor::commit()
 {
-    DEBUG_BLOCK
     if( m_type == ScanResultProcessor::IncrementalScan )
     {
         foreach( const QString &dir, m_directories.keys() )
@@ -534,6 +535,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
             .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ),
                             m_collection->escape( uid ) );
         m_collection->query( query );
+        updateAftPermanentTablesUrl( uidres[0].toInt(), uid );
         return uidres[0].toInt();
     }
     else if( !pathres.isEmpty() )
@@ -542,11 +544,34 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         QString query = QString( "UPDATE urls_temp SET uniqueid='%1' WHERE deviceid=%2 AND rpath='%3';" )
             .arg( uid, QString::number( deviceId ), m_collection->escape( rpath ) );
         m_collection->query( query );
+        updateAftPermanentTablesUid( pathres[0].toInt(), uid );
         return pathres[0].toInt();
     }
     else
         debug() << "AFT algorithm died...you shouldn't be here!  Returning something negative and bad.";
     return -666;
+}
+
+void
+ScanResultProcessor::updateAftPermanentTablesUrl( int urlId, QString uid )
+{
+    foreach( QString table, m_aftPermanentTables )
+    {
+        QString query = QString( "UPDATE %1 SET url=%2 WHERE uniqueid='%3';" )
+            .arg( table, QString::number( urlId ), m_collection->escape( uid ) );
+        m_collection->query( query );
+    }
+}
+
+void
+ScanResultProcessor::updateAftPermanentTablesUid( int urlId, QString uid )
+{
+    foreach( QString table, m_aftPermanentTables )
+    {
+        QString query = QString( "UPDATE %1 SET uniqueid='%2' WHERE url=%3;" )
+            .arg( table, m_collection->escape( uid ), QString::number( urlId ) );
+        m_collection->query( query );
+    }
 }
 
 int

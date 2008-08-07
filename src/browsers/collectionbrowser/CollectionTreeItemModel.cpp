@@ -220,7 +220,6 @@ namespace Amarok {
 
 void CollectionTreeItemModel::update()
 {
-    DEBUG_BLOCK
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
     d->m_collections.clear();

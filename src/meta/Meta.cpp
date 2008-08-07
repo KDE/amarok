@@ -281,8 +281,6 @@ Meta::Track::finishedPlaying( double /*playedFraction*/ )
 void
 Meta::Track::notifyObservers() const
 {
-    DEBUG_BLOCK
-
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors

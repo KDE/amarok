@@ -25,6 +25,7 @@
 #include <QMap>
 #include <QPair>
 #include <QString>
+#include <QStringList>
 #include <QVariant>
 
 class SqlCollection;
@@ -62,6 +63,9 @@ class ScanResultProcessor
         int urlId( const QString &url, const QString &uid );
         int directoryId( const QString &dir );
 
+        void updateAftPermanentTablesUrl( int urlId, QString uniqueid );
+        void updateAftPermanentTablesUid( int urlId, QString uniqueid );
+
         int checkExistingAlbums( const QString &album );
 
         QString findAlbumArtist( const QSet<QString> &artists ) const;
@@ -85,6 +89,8 @@ class ScanResultProcessor
         QHash<QString, QString>* m_changedUrls;
 
         ScanType m_type;
+
+        QStringList m_aftPermanentTables;
 };
 
 #endif
