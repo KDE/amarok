@@ -66,17 +66,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 
     m_timer->setSingleShot( true );
 
-    const QString backgroundFilename = KStandardDirs::locate( "data", "amarok/images/OsdBackground.svg" );
-
-    m_background = new Plasma::PanelSvg( this );
-    m_background->setImagePath( backgroundFilename );
-    m_background->setEnabledBorders( Plasma::PanelSvg::AllBorders );
-
-    const int topHeight = m_background->marginSize(Plasma::TopMargin);
-    const int leftWidth = m_background->marginSize(Plasma::LeftMargin);
-    const int rightWidth = m_background->marginSize(Plasma::RightMargin);
-    const int bottomHeight = m_background->marginSize(Plasma::BottomMargin);
-    setContentsMargins(leftWidth, topHeight, rightWidth, bottomHeight);
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
     //PORT 2.0
@@ -316,7 +305,12 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
 
     p.setClipRect(e->rect());
-    m_background->paintPanel(&p, e->rect());
+
+
+    QPixmap background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width(), height(), "service_list_item" );
+    p.drawPixmap( 0, 0, background );
+
+    
 //     p.setPen( palette().color( QPalette::Active, QPalette::HighlightedText ) );
     p.setPen( Qt::white ); // Revert this when the background can be colorized again.
     rect.adjust( M, M, -M, -M );
@@ -414,8 +408,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
 void
 OSDWidget::resizeEvent(QResizeEvent *e)
 {
-    m_background->resizePanel(e->size());
-    setMask(m_background->mask());
+    //setMask(m_background->mask());
     QWidget::resizeEvent(e);
 }
 

@@ -109,7 +109,6 @@ class OSDWidget : public QWidget
         QString     m_text;
         QImage      m_cover;
         QPixmap     m_scaledCover;
-        Plasma::PanelSvg *m_background;
 };
 
 
