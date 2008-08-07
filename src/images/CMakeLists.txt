@@ -6,7 +6,6 @@ add_subdirectory( icons )
 install(
         FILES
         FilenameLayoutDialogHint.png
-        OsdBackground.svg
         amarok_icon.svg
         back_stars_grey.png
         currenttrack_pause.png
