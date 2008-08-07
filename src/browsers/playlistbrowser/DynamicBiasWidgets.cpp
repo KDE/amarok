@@ -35,10 +35,10 @@
 #include "SvgHandler.h"
 #include "collection/support/XmlQueryWriter.h"
 #include "widgets/kratingwidget.h"
+#include "widgets/kdatecombo.h"
 
 #include <typeinfo>
 
-#include <QDateTimeEdit>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -54,6 +54,7 @@
 #include <KIcon>
 #include <KToolBar>
 #include <KVBox>
+#include <klocale.h>
 
 PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( QWidget* parent )
     : QWidget( parent ), m_alternate(false)
@@ -106,7 +107,7 @@ PlaylistBrowserNS::BiasBoxWidget::resizeEvent( QResizeEvent* )
 
 
 
-PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, QWidget* parent )
+PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, const QString& description, QWidget* parent )
     : BiasBoxWidget( parent )
 {
     DEBUG_BLOCK
@@ -132,17 +133,25 @@ PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, QWidget
     m_addToolbar->adjustSize();
     connect( m_addButton, SIGNAL( clicked() ), SLOT( slotClicked() ) );
 
-    m_addLabel = new QLabel( caption, this );
+
+    KVBox* textLayout = new KVBox( this );
+
+    m_addLabel = new QLabel( caption, textLayout );
     m_addLabel->setAlignment( Qt::AlignCenter | Qt::AlignVCenter );
     QFont font;
-    font.setPointSize( 16 );
+    font.setPointSize( 14 );
     m_addLabel->setFont( font );
+
+    QLabel* descLabel = new QLabel( description, textLayout );
+    descLabel->setAlignment( Qt::AlignCenter | Qt::AlignVCenter );
+    descLabel->setWordWrap( true );
+
 
     mainLayout->addWidget( m_addToolbarWidget );
     mainLayout->setStretchFactor( m_addToolbarWidget, 0 );
     mainLayout->setAlignment( m_addToolbarWidget, Qt::AlignLeft | Qt::AlignVCenter );
-    mainLayout->addWidget( m_addLabel );
-    mainLayout->setStretchFactor( m_addLabel, 1 );
+    mainLayout->addWidget( textLayout );
+    mainLayout->setStretchFactor( textLayout, 1 );
 
     connect( this, SIGNAL( clicked() ), SLOT( slotClicked() ) );
 
@@ -403,10 +412,17 @@ PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QString& value )
 }
 
 void
-PlaylistBrowserNS::BiasGlobalWidget::valueChanged( const QDateTime& value )
+PlaylistBrowserNS::BiasGlobalWidget::valueDateChanged()
 {
-    m_filter.value = QString::number( value.toTime_t() );
-    syncBiasToControls();
+    KDateCombo* dateSelection = qobject_cast<KDateCombo*>( sender() );
+    if( dateSelection )
+    {
+        QDate date;
+        dateSelection->getDate( &date );
+        QDateTime dt( date );
+        m_filter.value = QString::number( dt.toTime_t() );
+        syncBiasToControls();
+    }
 }
 
 void
@@ -451,6 +467,8 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, Q
     combo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     combo->setEditable( editable );
 
+    KCompletion* comp = combo->completionObject();
+
     if( populateQuery != 0 )
     {
         populateQuery->returnResultAsDataPtrs( true );
@@ -471,6 +489,8 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, Q
         dataList.sort();
         foreach( QString item, dataList )
             combo->addItem( item );
+
+        comp->setItems( dataList );
     }
 
     connect( combo, SIGNAL(currentIndexChanged( const QString& )),
@@ -480,7 +500,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, Q
 
     combo->setEditText( m_gbias->filter().value );
 
-    combo->setAutoCompletion( true );
+    combo->setCompletionMode( KGlobalSettings::CompletionPopup );
     setValueSelection( combo );
 }
 
@@ -597,10 +617,10 @@ PlaylistBrowserNS::BiasGlobalWidget::makeDateTimeSelection()
 
     makeCompareSelection( hLayout );
 
-    QDateTimeEdit* dateTimeSpin = new QDateTimeEdit( hLayout );
+    KDateCombo* dateSelection = new KDateCombo( hLayout );
 
-    connect( dateTimeSpin, SIGNAL(dateTimeChanged(const QDateTime&)),
-             SLOT(valueChanged(const QDateTime&)) );
+    connect( dateSelection, SIGNAL(currentIndexChanged(int)),
+            SLOT( valueDateChanged() ) );
 
     QDateTime dt;
     if( m_gbias->filter().value.isEmpty() )
@@ -608,11 +628,10 @@ PlaylistBrowserNS::BiasGlobalWidget::makeDateTimeSelection()
     else
         dt.setTime_t( m_gbias->filter().value.toUInt() );
 
-    dateTimeSpin->setDateTime( dt );
+    dateSelection->setDate( dt.date() );
 
     setValueSelection( hLayout );
 }
-
 
 
 
@@ -745,10 +764,17 @@ PlaylistBrowserNS::BiasNormalWidget::valueChanged( int value )
 }
 
 void
-PlaylistBrowserNS::BiasNormalWidget::valueChanged( const QDateTime& value )
+PlaylistBrowserNS::BiasNormalWidget::valueDateChanged()
 {
-    m_nbias->setValue( (double)value.toTime_t() );
-    emit biasChanged( m_bias );
+    KDateCombo* dateSelection = qobject_cast<KDateCombo*>( sender() );
+    if( dateSelection )
+    {
+        QDate date;
+        dateSelection->getDate( &date );
+        QDateTime dt( date );
+        m_nbias->setValue( (double)dt.toTime_t() );
+        emit biasChanged( m_bias );
+    }
 }
 
 void
@@ -815,18 +841,18 @@ PlaylistBrowserNS::BiasNormalWidget::makeDateTimeSelection()
 {
     KHBox* hLayout = new KHBox( m_controlFrame );
 
-    QDateTimeEdit* dateTimeSpin = new QDateTimeEdit( hLayout );
+    KDateCombo* dateSelection = new KDateCombo( hLayout );
 
-    connect( dateTimeSpin, SIGNAL(dateTimeChanged(const QDateTime&)),
-             SLOT(valueChanged(const QDateTime&)) );
+    connect( dateSelection, SIGNAL(currentIndexChanged(int)),
+            SLOT( valueDateChanged() ) );
 
     QDateTime dt;
     if( m_nbias->value() == 0.0 )
         dt = QDateTime::currentDateTime();
     else
-        dt.setTime_t( m_nbias->value() );
+        dt.setTime_t( (qint64)m_nbias->value() );
 
-    dateTimeSpin->setDateTime( dt );
+    dateSelection->setDate( dt.date() );
 
     setValueSelection( hLayout );
 }

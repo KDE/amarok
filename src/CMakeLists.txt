@@ -494,6 +494,7 @@ set(amaroklib_LIB_SRCS
     widgets/FilenameLayoutWidget.cpp
     widgets/MainToolbar.cpp
     widgets/ProgressSlider.cpp
+    widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp
     widgets/kratingwidget.cpp
     widgets/SearchWidget.cpp

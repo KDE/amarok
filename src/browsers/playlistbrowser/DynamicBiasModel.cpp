@@ -77,7 +77,9 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
 
         PlaylistBrowserNS::BiasAddWidget* globalAdder =
             new PlaylistBrowserNS::BiasAddWidget(
-                    "Proportional Bias", m_listView->viewport() );
+                    "Proportional Bias",
+                    "Match a certain portion of the playlist to a value.",
+                    m_listView->viewport() );
         if( !m_widgets.isEmpty() )
             globalAdder->setAlternate( !m_widgets.back()->alternate() );
 
@@ -92,7 +94,9 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
 
         PlaylistBrowserNS::BiasAddWidget* normalAdder =
             new PlaylistBrowserNS::BiasAddWidget(
-                    "Fuzzy Bias", m_listView->viewport() );
+                    "Fuzzy Bias",
+                    "Losely match the playlist to an approximate value.",
+                    m_listView->viewport() );
 
         if( !m_widgets.isEmpty() )
             normalAdder->setAlternate( !m_widgets.back()->alternate() );

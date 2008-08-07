@@ -70,7 +70,7 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            BiasAddWidget( const QString& caption, QWidget* parent = 0 );
+            BiasAddWidget( const QString& caption, const QString& description, QWidget* parent = 0 );
             
         private slots:
             void slotClicked();
@@ -126,7 +126,7 @@ namespace PlaylistBrowserNS
             void compareChanged( int );
             void valueChanged( int );
             void valueChanged( const QString& );
-            void valueChanged( const QDateTime& );
+            void valueDateChanged();
             void valueChanged( const QTime& );
 
         private:
@@ -175,7 +175,7 @@ namespace PlaylistBrowserNS
         private slots:
             void fieldChanged( int );
             void valueChanged( int );
-            void valueChanged( const QDateTime& );
+            void valueDateChanged();
             void valueChanged( const QTime& );
             void scaleChanged( int );
 
