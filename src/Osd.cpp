@@ -399,8 +399,8 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
         p.drawImage( rect.topLeft() - QPoint(5,5), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
-//     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
-    p.setPen( Qt::white ); // This too.
+    p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
+    //p.setPen( Qt::white ); // This too.
     p.setFont( font() );
     p.drawText( rect, align, m_text );
 }
