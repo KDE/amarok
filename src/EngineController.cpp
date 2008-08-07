@@ -317,9 +317,11 @@ EngineController::stop( bool forceInstant ) //SLOT
     // need to get a new instance of multi if played again
     delete m_multi;
 
+    m_mutex.lock();
     m_nextTrack.clear();
     m_nextUrl.clear();
     m_media->clearQueue();
+    m_mutex.unlock();
 
     //let Amarok know that the previous track is no longer playing
     if( m_currentTrack ) {
@@ -460,6 +462,8 @@ EngineController::trackLength() const
 void
 EngineController::setNextTrack( Meta::TrackPtr track )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( !track || track->playableUrl().isEmpty() )
         return;
 
@@ -529,7 +533,9 @@ EngineController::slotAboutToFinish()
 
     if( m_multi )
     {
+        m_mutex.lock();
         m_playWhenFetched = false;
+        m_mutex.unlock();
         m_multi->fetchNext();
     }
     else if( m_media->queue().isEmpty() )
@@ -539,20 +545,30 @@ EngineController::slotAboutToFinish()
 void
 EngineController::slotTrackEnded()
 {
+
     if( m_currentTrack )
     {
         emit trackFinished();
         m_currentTrack->finishedPlaying( 1.0 );
     }
 
+    m_mutex.lock(); // in case setNextTrack is being handled right now.
+
     // Non-local urls are not enqueued so we must play them explicitly.
     if( m_nextTrack )
+    {
         play( m_nextTrack );
+    }
     else if( !m_nextUrl.isEmpty() )
+    {
+        m_mutex.unlock();
         playUrl( m_nextUrl, 0 );
+    }
     else
         // possibly we are waiting for a fetch
         m_playWhenFetched = true;
+
+    m_mutex.unlock();
 }
 
 void
@@ -593,6 +609,8 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
 void
 EngineController::slotPlayableUrlFetched( const KUrl &url )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( url.isEmpty() )
     {
         The::playlistModel()->requestNextTrack();

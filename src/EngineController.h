@@ -17,6 +17,7 @@
 #include "meta/Meta.h"
 
 #include <QMap>
+#include <QMutex>
 #include <QObject>
 #include <QPointer>
 
@@ -141,6 +142,8 @@ private:
     QPointer<Meta::MultiPlayableCapability> m_multi;
     bool m_playWhenFetched;
     QTimer* m_fadeoutTimer;
+
+    QMutex m_mutex;
 };
 
 namespace The {

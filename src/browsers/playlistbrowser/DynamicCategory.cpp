@@ -59,7 +59,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     QObject::connect( m_onoffButton, SIGNAL(toggled(bool)), this, SLOT(OnOff(bool)) );
 
-    m_onoffButton->setChecked( AmarokConfig::dynamicMode() );
 
 
     m_repopulateButton = new QPushButton( this );
@@ -95,7 +94,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     presetLabel->setBuddy( m_presetComboBox );
 
     presetLayout->setStretchFactor( m_presetComboBox, 1 );
-
 
 
 
