@@ -21,6 +21,9 @@
 #include <QPixmap>
 #include <QWidget> //baseclass
 
+
+#define OSD_WINDOW_OPACITY 0.8
+
 namespace Plasma
 {
     class PanelSvg;
@@ -75,7 +78,7 @@ class OSDWidget : public QWidget
         void setText( const QString &text ) { m_text = text; }
         void setDrawShadow( const bool b ) { m_drawShadow = b; }
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
-        void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? 0.7 : 1.0 ); }
+        void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); }
 
     protected:
         virtual ~OSDWidget();
@@ -137,7 +140,7 @@ public slots:
             unsetColors();
         doUpdate();
     }
-    void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? 0.7 : 1.0 ); doUpdate(); }
+    void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); doUpdate(); }
 
 private:
     inline void doUpdate() { if( !isHidden() ) show(); }
