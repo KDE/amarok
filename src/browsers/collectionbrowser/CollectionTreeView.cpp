@@ -316,18 +316,20 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         }
 
         PopupDropperItem* subItem;
-        
-        PopupDropper * morePud = The::popupDropperFactory()->createPopupDropper( 0 );
-
-        debug() << "Created morePud at address " << morePud;
-
 
         actions = createExtendedActions( indices );
 
+        PopupDropper * morePud = 0;
+        if ( actions.count() > 1 ) {
+            morePud = The::popupDropperFactory()->createPopupDropper( 0 );
+            debug() << "Created morePud at address " << morePud;
 
-        foreach( PopupDropperAction * action, actions ) {
-            debug() << "1 adding action " << action->objectName();
-            morePud->addItem( The::popupDropperFactory()->createItem( action ), false );
+            foreach( PopupDropperAction * action, actions ) {
+                debug() << "1 adding action " << action->objectName();
+                morePud->addItem( The::popupDropperFactory()->createItem( action ), false );
+            }
+        } else {
+            m_pd->addItem( The::popupDropperFactory()->createItem( actions[0] ), false );
         }
 
 
@@ -372,8 +374,10 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         }*/
 
         //TODO: Keep bugging i18n team about problems with 3 dots
-        subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More..." )  );
-        The::popupDropperFactory()->adjustSubmenuItem( subItem );
+        if ( actions.count() > 1 ) {
+            subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More..." )  );
+            The::popupDropperFactory()->adjustSubmenuItem( subItem );
+        }
         
         m_pd->show();
     }
