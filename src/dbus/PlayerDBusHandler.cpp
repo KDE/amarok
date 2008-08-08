@@ -81,8 +81,10 @@ namespace Amarok
             case Phonon::PlayingState:
             case Phonon::BufferingState:
                 status.Play = 0; //Playing
+                break;
             case Phonon::PausedState:
                 status.Play = 1; //Paused
+                break;
             case Phonon::LoadingState:
             case Phonon::StoppedState:
             case Phonon::ErrorState:
