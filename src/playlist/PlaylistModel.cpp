@@ -954,6 +954,7 @@ Playlist::Model::engineNewTrackPlaying()
             {
                 if( item->track() == track )
                 {
+                    warning() << "candidate = " << m_nextRowCandidate << ", actual = " << m_items.lastIndexOf( item );
                     setActiveItem( item );
                     break;
                 }

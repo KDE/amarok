@@ -531,6 +531,8 @@ EngineController::slotAboutToFinish()
     if( m_media->state() == Phonon::BufferingState )
         return;
 
+    DEBUG_BLOCK
+
     if( m_multi )
     {
         m_mutex.lock();
@@ -545,6 +547,7 @@ EngineController::slotAboutToFinish()
 void
 EngineController::slotTrackEnded()
 {
+    DEBUG_BLOCK
 
     if( m_currentTrack )
     {
@@ -561,7 +564,6 @@ EngineController::slotTrackEnded()
     }
     else if( !m_nextUrl.isEmpty() )
     {
-        m_mutex.unlock();
         playUrl( m_nextUrl, 0 );
     }
     else
@@ -574,6 +576,7 @@ EngineController::slotTrackEnded()
 void
 EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 {
+    DEBUG_BLOCK
     Q_UNUSED( source );
 
     // the new track was taken from the queue, so clear these fields
@@ -609,6 +612,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
 void
 EngineController::slotPlayableUrlFetched( const KUrl &url )
 {
+    DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
 
     if( url.isEmpty() )
