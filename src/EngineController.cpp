@@ -224,6 +224,7 @@ EngineController::endSession()
     if ( !AmarokConfig::resumePlayback() && m_currentTrack )
     {
         trackEnded( trackPosition(), m_currentTrack->length() * 1000, "quit" );
+        emit trackChanged( Meta::TrackPtr( 0 ) );
     }
 }
 
@@ -277,7 +278,6 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     else
     {
         playUrl( m_currentTrack->playableUrl(), offset );
-        emit trackChanged( m_currentTrack );
     }
 }
 
@@ -328,6 +328,7 @@ EngineController::stop( bool forceInstant ) //SLOT
         debug() << "m_currentTrack != 0";
         m_currentTrack->finishedPlaying( 1.0 );
         trackEnded( trackPosition(), m_currentTrack->length() * 1000, "stop" );
+        emit trackChanged( Meta::TrackPtr( 0 ) );
     }
 
     if( m_fader )
@@ -592,6 +593,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     // state never changes if tracks are queued, but we need this to update the caption
     stateChangedNotify( m_media->state(), m_media->state() );
 
+    emit trackChanged( m_currentTrack );
     newTrackPlaying();
 }
 
