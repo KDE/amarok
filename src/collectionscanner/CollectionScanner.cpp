@@ -38,7 +38,7 @@
 
 #include <KGlobal>
 #include <KLocale>
-#include <KCodecs>
+#include <KMD5>
 
 //Taglib:
 #include <apetag.h>
