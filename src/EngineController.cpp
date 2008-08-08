@@ -93,7 +93,7 @@ EngineController::EngineController()
 
     // Get the next track when there is 2 seconds left on the current one.
     m_media->setPrefinishMark( 2000 );
-    connect( m_media, SIGNAL( prefinishMarkReached(qint32) ), SLOT( slotAboutToFinish() ) );
+    connect( m_media, SIGNAL( prefinishMarkReached(qint32) ), SLOT( slotPrefinishMarkReached(qint32) ) );
     connect( m_media, SIGNAL(aboutToFinish()), SLOT(slotAboutToFinish()) );
 
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
@@ -523,6 +523,17 @@ void
 EngineController::slotTick( qint64 position )
 {
     trackPositionChangedNotify( static_cast<long>( position ), false ); //it expects milliseconds
+}
+
+
+void
+EngineController::slotPrefinishMarkReached( qint32 msecToEnd )
+{
+    // For some resason, phonon occasionally emits this right when the track starts playing.
+    if( msecToEnd < 0 )
+        return;
+    else
+        slotAboutToFinish();
 }
 
 void
