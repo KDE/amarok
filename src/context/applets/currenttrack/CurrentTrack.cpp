@@ -15,6 +15,7 @@
 #include "CurrentTrack.h"
 
 #include "Amarok.h"
+#include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "context/Svg.h"
@@ -82,7 +83,17 @@ void CurrentTrack::init()
     m_numPlayed    = new QGraphicsSimpleTextItem( this );
     m_playedLast   = new QGraphicsSimpleTextItem( this );
     m_noTrack      = new QGraphicsSimpleTextItem( this );
-    m_albumCover   = new QGraphicsPixmapItem( this ); 
+    m_albumCover   = new QGraphicsPixmapItem( this );
+
+    QPen pen( App::instance()->palette().text().color() );
+
+    m_title->setPen( pen );
+    m_artist->setPen( pen );
+    m_album->setPen( pen );
+    m_score->setPen( pen );
+    m_numPlayed->setPen( pen );
+    m_playedLast->setPen( pen );
+    m_noTrack->setPen( pen );
 
 //     m_sourceEmblem = new QGraphicsPixmapItem( this );
 
