@@ -1,0 +1,236 @@
+/*
+ *  Copyright (c) 2008 Jeff Mitchell <mitchell@kde.org>
+ *  QStringToTString and TStringToQString macros Copyright 2002-2008 by Scott Wheeler, wheeler@kde.org, licensed under LGPL 2.1
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
+#include "SafeFileSaver.h"
+
+#include "taglib/fileref.h"
+#include "taglib/id3v2tag.h"
+#include "taglib/mpegfile.h"
+#include "taglib/tfile.h"
+#include "taglib/uniquefileidentifierframe.h"
+
+#include <KAboutData>
+#include <KCmdLineArgs>
+#include <KMD5>
+#include <KRandom>
+
+#include <QDebug>
+#include <QDir>
+#include <QFileInfo>
+#include <QString>
+#include <QStringList>
+
+//QT4-happy versions
+#undef QStringToTString
+#define QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
+#undef TStringToQString
+#define TStringToQString(s) QString::fromUtf8(s.toCString(true))
+
+static bool recurse = false;
+static bool verbose = false;
+static bool quiet = false;
+static int currentVersion = 1;
+
+void processPath( const QString &path );
+QString createCurrentUID();
+QString createV1UID();
+QString upgradeUID( int version, QString currValue );
+
+int main( int argc, char *argv[] )
+{
+    KAboutData aboutData( "amarok_afttagger", 0,
+    ki18n( "Amarok AFT Tagger" ), "1.0",
+    ki18n( "AFT Tagging helper application for Amarok" ), KAboutData::License_GPL,
+    ki18n( "(C) 2008, Jeff Mitchell" ),
+    ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: " __DATE__ ")" ),
+             ( "http://amarok.kde.org" ) );
+
+    aboutData.addAuthor( ki18n("Jeff Mitchell"),
+            ki18n( "Developer (jefferai)" ), "mitchell@kde.org" );
+    KCmdLineArgs::reset();
+    KCmdLineArgs::init( argc, argv, &aboutData );
+
+
+    KCmdLineOptions options;
+    options.add("+file(s)", ki18n( "Files/Directories to tag" ) );
+    options.add("r").add("recurse", ki18n( "Recursively process files and directories" ) );
+    options.add("V").add("verbose", ki18n( "More verbose output" ) );
+    options.add("q").add("quiet", ki18n( "No prompts -- Indicates you agree to the terms of use" ) );
+    KCmdLineArgs::addCmdLineOptions( options );
+    KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
+
+    if( args->isSet("recurse") )
+        recurse = true;
+    if( args->isSet("quiet") )
+        quiet = true;
+    if( args->isSet("verbose") )
+        verbose = true;
+
+    for(int i = 0; i < args->count(); i++) // Counting start at 0!
+        processPath( args->arg(i) );
+
+    return 0;
+}
+
+void processPath( const QString &path )
+{
+    QFileInfo info( path );
+    if( !info.isDir() && !info.isFile() )
+    {
+        if( verbose )
+            qDebug() << "INFO: Skipping " << path << " because it is neither a directory nor file.";
+        return;
+    }
+    if( info.isDir() )
+    {
+        if( !recurse )
+        {
+            if( verbose )
+                qDebug() << "INFO: Skipping " << path << " because it is a directory and recursion is not specified.";
+            return;
+        }
+        else
+        {
+            if( verbose )
+                qDebug() << "INFO: Processing directory " << path;
+            foreach( QString pathEntry, QDir( path ).entryList() )
+            {
+                if( pathEntry != "." && pathEntry != ".." )
+                    processPath( QDir( path ).canonicalPath() + '/' +  pathEntry );
+            }
+        }
+    }
+    else //isFile()
+    {
+        QString filePath = info.absoluteFilePath();
+        if( verbose )
+            qDebug() << "INFO: Processing file " << filePath;
+
+
+        QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
+        QString uid;
+        
+        TagLib::FileRef fileRef = TagLib::FileRef( QFile::encodeName( filePath ), true, TagLib::AudioProperties::Fast );
+        
+        if( fileRef.isNull() )
+        {
+            if( verbose )
+                qDebug() << "INFO: file " << filePath << " not able to be opened by TagLib";
+            return;
+        }
+
+        SafeFileSaver sfs( filePath );
+        sfs.setVerbose( false );
+        QString tempFilePath = sfs.prepareToSave();
+
+        TagLib::FileRef tempFileRef = TagLib::FileRef( QFile::encodeName( tempFilePath ), true, TagLib::AudioProperties::Fast );
+        if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( tempFileRef.file() ) )
+        {
+            if( verbose )
+                qDebug() << "INFO: File is a MPEG file, opening...";
+            if ( file->ID3v2Tag( true ) )
+            {
+                bool createID3 = false;
+                if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
+                {
+                    if( verbose )
+                        qDebug() << "INFO: No UFID frames found, appending one";
+                    createID3 = true;
+                    uid = createCurrentUID();
+                }
+                else
+                {
+                    if( verbose )
+                        qDebug() << "INFO: Found existing UFID frames, parsing";
+                    TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
+                    TagLib::ID3v2::FrameList::Iterator iter;
+                    qDebug() << "framelist size is " << frameList.size();
+                    for( iter = frameList.begin(); iter != frameList.end(); ++iter )
+                    {
+                        TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
+                        if( currFrame )
+                        {
+                            QString owner = TStringToQString( currFrame->owner() );
+                            if( owner.startsWith( "Amarok 2 AFT" ) )
+                            {
+                                if( verbose )
+                                    qDebug() << "Found an existing AFT identifier, checking if it's current";
+                                int version = owner.at( 13 ).digitValue();
+                                if( version < currentVersion )
+                                {
+                                    if( verbose )
+                                        qDebug() << "Upgrading AFT identifier from version " << version << " to version " << currentVersion;
+                                    uid = upgradeUID( version, QString( currFrame->identifier().data() ) );
+                                    frameList.erase( iter );
+                                    file->ID3v2Tag()->removeFrame( currFrame );
+                                    createID3 = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                if( createID3 )
+                {
+                    if( verbose )
+                        qDebug() << "Adding new frame and saving file";
+                    QByteArray array = uid.toAscii();
+                    file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
+                        QStringToTString( ourId ),
+                        TagLib::ByteVector( array.data(), array.size() ) ) );
+                    file->save();
+                }
+            }
+        }
+        else
+        {
+            if( verbose )
+            qDebug() << "INFO: File not able to be parsed by TagLib, cleaning up temp file";
+            if( !sfs.cleanupSave() )
+                qWarning() << "WARNING: file at " << filePath << " could not be cleaned up; check for strays";
+            return;
+        }
+        if( verbose )
+            qDebug() << "INFO: Safe-saving file";
+        if( !sfs.doSave() )
+            qWarning() << "WARNING: file at " << filePath << " could not be saved";
+        if( verbose )
+            qDebug() << "INFO: Cleaning up...";
+        if( !sfs.cleanupSave() )
+            qWarning() << "WARNING: file at " << filePath << " could not be cleaned up; check for strays";
+        return;
+    }
+}
+
+QString createCurrentUID()
+{
+    return createV1UID();
+}
+
+QString createV1UID()
+{
+    QString randomString = KRandom::randomString( 32 );
+    KMD5 md5sum( randomString.toAscii() );
+    return QString( md5sum.hexDigest() );
+}
+
+QString upgradeUID( int version, QString currValue )
+{
+    Q_UNUSED(version)
+    return currValue + "abcd";
+}

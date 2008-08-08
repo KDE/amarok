@@ -317,8 +317,40 @@ CollectionScanner::scanFiles( const QStringList& entries )
     }
 }
 
+const QString
+CollectionScanner::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
+{
+    int currentVersion = 1; //TODO: Make this more global?
+    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    {
+        if( !file->ID3v2Tag( false ) )
+            return QString();
+        QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
+        if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
+            return QString();
+        TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
+        TagLib::ID3v2::FrameList::Iterator iter;
+        for( iter = frameList.begin(); iter != frameList.end(); ++iter )
+        {
+            TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
+            if( currFrame )
+            {
+                QString owner = TStringToQString( currFrame->owner() );
+                if( owner.startsWith( "Amarok 2 AFT" ) )
+                {
+                    int version = owner.at( 13 ).digitValue();
+                    if( version == currentVersion )
+                        return QString( currFrame->identifier().data() );
+                }
+            }
+        }
+    }
+    else
+       return QString(); 
+}
+
 const TagLib::ByteVector
-CollectionScanner::readUniqueIdHelper( const TagLib::FileRef &fileref )
+CollectionScanner::generatedUniqueIdHelper( const TagLib::FileRef &fileref )
 {
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
@@ -374,7 +406,11 @@ CollectionScanner::readUniqueId( const QString &path )
     if( fileref.isNull() )
         return QString();
 
-    TagLib::ByteVector bv = CollectionScanner::readUniqueIdHelper( fileref );
+    //const QString embeddedString = readEmbeddedUniqueId( fileref );
+    //if( !embeddedString.isEmpty() )
+    //    return embeddedString;
+
+    TagLib::ByteVector bv = CollectionScanner::generatedUniqueIdHelper( fileref );
 
     KMD5 md5( bv.data(), bv.size() );
 

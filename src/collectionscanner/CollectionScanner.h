@@ -74,13 +74,20 @@ private:
 
     void readDir( const QString& dir, QStringList& entries );
     void scanFiles( const QStringList& entries );
+    
+    /**
+     * Get the render() of a tag from TagLib, if possible, to assist in AFT UID generation.
+     * @fileref TagLib reference to the file.
+     * @return TagLib::ByteVector that contains the tag's render, if possible, and empty otherwise.
+     */
+    static const QString readEmbeddedUniqueId( const TagLib::FileRef &fileref );
 
     /**
      * Get the render() of a tag from TagLib, if possible, to assist in AFT UID generation.
      * @fileref TagLib reference to the file.
      * @return TagLib::ByteVector that contains the tag's render, if possible, and empty otherwise.
      */
-    static const TagLib::ByteVector readUniqueIdHelper( const TagLib::FileRef &fileref );
+    static const TagLib::ByteVector generatedUniqueIdHelper( const TagLib::FileRef &fileref );
 
     /**
      * Get the render() of a tag from TagLib, if possible, to assist in AFT UID generation.

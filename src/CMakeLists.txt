@@ -489,7 +489,6 @@ set(amaroklib_LIB_SRCS
     prettypopupmenu.cpp
     refreshimages.cpp
     browsers/servicebrowser/lastfm/SimilarArtistsAction.cpp
-    SafeFileSaver.cpp
     Systray.cpp
 #    widgets/AnalyzerWidget.cpp
     widgets/FilenameLayoutWidget.cpp
@@ -612,4 +611,23 @@ install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
+
+############# AFT Tagger ##############
+
+set(amarok_afttagger_SRCS
+    afttagger/SafeFileSaver.cpp
+    afttagger/afttagger_main.cpp
+)
+
+kde4_add_executable(amarok_afttagger ${amarok_afttagger_SRCS} )
+
+target_link_libraries(amarok_afttagger
+    ${KDE4_KDECORE_LIBS} 
+    ${QT_QTCORE_LIBS}
+    ${TAGLIB_LIBRARIES}
+)
+
+install(TARGETS amarok_afttagger ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+
 

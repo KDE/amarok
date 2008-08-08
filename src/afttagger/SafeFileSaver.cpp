@@ -16,15 +16,14 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#define DEBUG_PREFIX "SafeFileSaver"
-
-#include "Debug.h"
 #include "SafeFileSaver.h"
 
 #include <KRandom>
 #include <KMD5>
 
+#include <QDebug>
 #include <QFile>
+#include <QFileInfo>
 #include <QString>
 
 #ifdef Q_WS_WIN
@@ -40,14 +39,12 @@ SafeFileSaver::SafeFileSaver( const QString &origPath )
     , m_origRenamedSavePath()
     , m_tempSaveDigest( 0 )
     , m_cleanupNeeded( false )
-
+    , m_verbose( false )
 {
-    DEBUG_BLOCK
 }
 
 SafeFileSaver::~SafeFileSaver()
 {
-    DEBUG_BLOCK
     if( m_cleanupNeeded )
         cleanupSave();
 }
@@ -55,8 +52,8 @@ SafeFileSaver::~SafeFileSaver()
 QString
 SafeFileSaver::prepareToSave()
 {
-    DEBUG_BLOCK
-
+    if( m_verbose )
+        qDebug() << "prepareToSave start";
     m_cleanupNeeded = true;
     KMD5 md5sum;
 
@@ -69,29 +66,33 @@ SafeFileSaver::prepareToSave()
 
     QString randomString = KRandom::randomString( 8 );
 
-    m_tempSavePath = m_origPath + ".amaroktemp.pid-" + pid + ".random-" + randomString;
-    m_origRenamedSavePath = m_origPath + ".amarokoriginal.pid-" + pid + ".random-" + randomString;
+    m_tempSavePath = m_origPath + ".amaroktemp.pid-" + pid + ".random-" + randomString + '.' + QFileInfo( m_origPath ).suffix();
+    m_origRenamedSavePath = m_origPath + ".amarokoriginal.pid-" + pid + ".random-" + randomString + '.' + QFileInfo( m_origPath ).suffix();
 
 
-    debug() << "Copying original file to copy and caluclating MD5" << endl;
+    if( m_verbose )
+        qDebug() << "Copying original file " << m_origPath << " to copy at " << m_tempSavePath << " and caluclating MD5";
 
     if( !QFile::copy( m_origPath, m_tempSavePath ) )
     {
-        debug() << "Could not copy the file.  Check that you have sufficient permissions/disk space "
-                   "and that the destination path does not already exist!" << endl;
+        if( m_verbose )
+            qDebug() << "Could not copy the file.  Check that you have sufficient permissions/disk space "
+                   "and that the destination path does not already exist!";
         return QString();
     }
 
     QFile tempFile( m_tempSavePath );
     if( !tempFile.open( QIODevice::ReadOnly | QIODevice::Unbuffered ) )
     {
-        debug() << "Could not open temp file for MD5 calculation!" << endl;
+        if( m_verbose )
+            qDebug() << "Could not open temp file for MD5 calculation!";
         return QString();
     }
 
     if( !md5sum.update( tempFile ) )
     {
-        debug() << "Could not get checksum of temp file!" << endl;
+        if( m_verbose )
+            qDebug() << "Could not get checksum of temp file!";
         tempFile.close();
         return QString();
     }
@@ -106,7 +107,8 @@ SafeFileSaver::prepareToSave()
     //We have successfully copied the original file to the temp location
     //We've calculated the md5sum of the original file
 
-    debug() << "MD5 sum of temp file: " << m_tempSaveDigest.data() << endl;
+    if( m_verbose )
+        qDebug() << "MD5 sum of temp file: " << m_tempSaveDigest.data();
 
     //Now, we have a MD5 sum of the original file at the time of copying saved in m_tempSaveDigest
 
@@ -116,11 +118,12 @@ SafeFileSaver::prepareToSave()
 bool
 SafeFileSaver::doSave()
 {
+    if( m_verbose )
+        qDebug() << "doSave start";
     //TODO: much commenting needed.  For now this pretty much follows algorithm laid out in bug 131353,
     //but isn't useable since I need to find a good way to switch the file path with taglib, or a good way
     //to get all the metadata copied over.
 
-    DEBUG_BLOCK
     m_cleanupNeeded = true;
 
     KMD5 md5sum;
@@ -129,25 +132,30 @@ SafeFileSaver::doSave()
 
     if( m_tempSavePath.isEmpty() || m_tempSaveDigest.isEmpty() || m_origRenamedSavePath.isEmpty() )
     {
-        debug() << "You must run prepareToSave() and it must return successfully before calling doSave()!" << endl;
+        if( m_verbose)
+            qDebug() << "You must run prepareToSave() and it must return successfully before calling doSave()!";
         return false;
     }
 
-    debug() << "Renaming original file to temporary name " << m_origRenamedSavePath << endl;
+    if( m_verbose )
+        qDebug() << "Renaming original file to temporary name " << m_origRenamedSavePath;
 
     if( !QFile::rename( m_origPath, m_origRenamedSavePath ) )
     {
-        debug() << "Could not move original!" << endl;
+        if( m_verbose )
+            qDebug() << "Could not move original!";
         failRemoveCopy( false );
         return false;
     }
 
-    debug() << "Calculating MD5 of " << m_origRenamedSavePath << endl;
+    if( m_verbose )
+        qDebug() << "Calculating MD5 of " << m_origRenamedSavePath;
 
     QFile origRenamedFile( m_origRenamedSavePath );
     if( !origRenamedFile.open( QIODevice::ReadOnly | QIODevice::Unbuffered ) )
     {
-        debug() << "Could not open temporary file!" << endl;
+        if( m_verbose )
+            qDebug() << "Could not open temporary file!";
         failRemoveCopy( true );
         return false;
     }
@@ -155,7 +163,8 @@ SafeFileSaver::doSave()
     
     if( !md5sum.update( origRenamedFile ) )
     {
-        debug() << "Error during checksumming temp file!" << endl;
+        if( m_verbose )
+            qDebug() << "Error during checksumming temp file!";
         origRenamedFile.close();
         failRemoveCopy( true );
         return false;
@@ -165,33 +174,40 @@ SafeFileSaver::doSave()
 
     origRenamedFile.close();
 
-    debug() << "md5sum of original renamed file: " << origRenamedDigest.data() << endl;
+    if( m_verbose )
+        qDebug() << "md5sum of original renamed file: " << origRenamedDigest.data();
 
     if( origRenamedDigest != m_tempSaveDigest )
     {
-        debug() << "Original checksum did not match current checksum!" << endl;
+        if( m_verbose )
+            qDebug() << "Original checksum did not match current checksum!";
         failRemoveCopy( true );
         return false;
     }
 
-    debug() << "Renaming temp file to original's filename" << endl;
+    if( m_verbose )
+        qDebug() << "Renaming temp file to original's filename";
 
     if( !QFile::rename( m_tempSavePath, m_origPath ) )
     {
-        debug() << "Could not rename new file to original!" << endl;
+        if( m_verbose )
+            qDebug() << "Could not rename new file to original!";
         failRemoveCopy( true );
         return false;
     }
 
-    debug() << "Deleting original" << endl;
+    if( m_verbose )
+        qDebug() << "Deleting original";
 
     if( !QFile::remove( m_origRenamedSavePath ) )
     {
-        debug() << "Could not delete the original file!" << endl;
+        if( m_verbose )
+            qDebug() << "Could not delete the original file!";
         return false;
     }
 
-    debug() << "Save done, returning true!" << endl;
+    if( m_verbose )
+        qDebug() << "Save done, returning true!";
 
     return true;
 }
@@ -199,24 +215,31 @@ SafeFileSaver::doSave()
 void
 SafeFileSaver::failRemoveCopy( bool revert )
 {
-    debug() << "Deleting temporary file..." << endl;
+    if( m_verbose )
+        qDebug() << "failRemoveCopy start";
     if( !QFile::remove( m_tempSavePath ) )
-        debug() << "Could not delete the temporary file!" << endl;
+    {
+        if( m_verbose )
+            qDebug() << "Could not delete the temporary file!";
+    }
 
     if( !revert )
         return;
 
-    debug() << "Reverting original file to original filename!" << endl;
+    if( m_verbose )
+        qDebug() << "Reverting original file to original filename!";
     if( !QFile::rename( m_origRenamedSavePath, m_origPath ) )
-        debug() << "Could not revert file to original filename!" << endl;
-
+    {
+        if( m_verbose )
+            qDebug() << "Could not revert file to original filename!";
+    }
 }
 
 bool
 SafeFileSaver::cleanupSave()
 {
-    DEBUG_BLOCK
-
+    if( m_verbose )
+        qDebug() << "cleanupSave start";
     bool dirty = false;
 
     if( !m_tempSavePath.isEmpty() && QFile::exists( m_tempSavePath ) )
@@ -224,7 +247,8 @@ SafeFileSaver::cleanupSave()
         if( !QFile::remove( m_tempSavePath ) )
         {
             dirty = true;
-            debug() << "Could not delete the temporary file!" << endl;
+            if( m_verbose )
+                qDebug() << "Could not delete the temporary file!";
         }
     }
 

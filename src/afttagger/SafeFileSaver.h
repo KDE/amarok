@@ -19,8 +19,6 @@
 #ifndef SAFEFILESAVER_H
 #define SAFEFILESAVER_H
 
-#include "amarok_export.h"
-
 #include <QString>
 #include <QByteArray>
 
@@ -29,7 +27,7 @@
  * @author Jeff Mitchell <kde-dev@emailgoeshere.com>
  */
 
-class AMAROK_EXPORT SafeFileSaver
+class SafeFileSaver
 {
 public:
      SafeFileSaver( const QString &origPath );
@@ -40,12 +38,15 @@ public:
     void failRemoveCopy( bool revert );
     bool cleanupSave();
 
+    void setVerbose( bool verbose ) { m_verbose = verbose; }
+
 private:
     QString m_origPath;
     QString m_tempSavePath;
     QString m_origRenamedSavePath;
     QByteArray m_tempSaveDigest;
     bool m_cleanupNeeded;
+    bool m_verbose;
 };
 
 #endif
