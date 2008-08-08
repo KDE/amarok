@@ -207,7 +207,7 @@ SideBarButton::SideBarButton( const QIcon &icon, const QString &text, QWidget *p
 
 QSize SideBarButton::sizeHint() const
 {
-    return QSize( /*widthHint()*/ 26, heightHint() ).expandedTo( QApplication::globalStrut() );
+    return QSize( widthHint(), heightHint() ).expandedTo( QApplication::globalStrut() );
 }
 
 int SideBarButton::widthHint() const
@@ -219,7 +219,7 @@ int SideBarButton::widthHint() const
         width = fontMetrics().size( Qt::TextShowMnemonic, "TEXT" ).height();
     else
         width = qMax( width, fontMetrics().size( Qt::TextShowMnemonic, text() ).height() );
-    return width + 6;
+    return width + 8;
 }
 
 int SideBarButton::heightHint() const
