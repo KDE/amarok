@@ -121,6 +121,7 @@ private:
     QString m_partnerToken;
 
     bool m_authenticated; // true if mp3tunes has authenticated successfully
+    bool m_authenticationFailed;
     QString m_sessionId; // the mp3tunes sid
 
     Mp3tunesServiceCollection *  m_collection;

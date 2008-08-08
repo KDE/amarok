@@ -94,6 +94,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
  , m_harmonyEnabled( harmonyEnabled )
  , m_partnerToken( token )
  , m_authenticated( false )
+ , m_authenticationFailed( false )
  , m_sessionId ( QString() )
  , m_collection( 0 )
  , m_loginWorker( 0 )
@@ -133,7 +134,7 @@ void Mp3tunesService::polish()
 //    initTopPanel();
     initBottomPanel();
 
-    if ( !m_authenticated )
+    if ( !m_authenticated && !m_authenticationFailed  )
         authenticate( m_email, m_password );
 }
 
@@ -267,6 +268,8 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         The::statusBar()->longMessage( error );
 
         m_serviceready = false;
+        m_authenticationFailed = true;
+
     }
     else
     {
