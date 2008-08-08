@@ -489,6 +489,7 @@ set(amaroklib_LIB_SRCS
     prettypopupmenu.cpp
     refreshimages.cpp
     browsers/servicebrowser/lastfm/SimilarArtistsAction.cpp
+    SafeFileSaver.cpp
     Systray.cpp
 #    widgets/AnalyzerWidget.cpp
     widgets/FilenameLayoutWidget.cpp
