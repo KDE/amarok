@@ -18,6 +18,8 @@
 #include <context/DataEngine.h>
 #include <context/Svg.h>
 
+#include <plasma/panelsvg.h>
+
 #include <KDialog>
 
 #include <QGraphicsProxyWidget>
@@ -63,7 +65,8 @@ private:
 
     qreal m_aspectRatio;
 
-    Context::Svg* m_theme;
+    Context::Svg* m_header;
+    Plasma::PanelSvg *m_theme;
     QSizeF m_size;
 
     QGraphicsSimpleTextItem* m_serviceName;

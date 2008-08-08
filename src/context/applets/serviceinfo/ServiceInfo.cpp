@@ -22,6 +22,8 @@
 
 #include <plasma/theme.h>
 
+#include <KStandardDirs>
+
 #include <QDBusInterface>
 #include <QPainter>
 #include <QBrush>
@@ -43,13 +45,23 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     DEBUG_BLOCK
 
     setHasConfigurationInterface( false );
+    setBackgroundHints( Plasma::Applet::NoBackground );
 
     dataEngine( "amarok-service" )->connectSource( "service", this );
 
-    m_theme = new Context::Svg( this );
-    m_theme->setImagePath( "widgets/amarok-serviceinfo" );
-    m_theme->setContainsMultipleImages( false );
-    m_theme->resize( m_size );
+    m_theme = new Plasma::PanelSvg( this );
+    QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
+
+    kDebug() << "Loading theme file: " << imagePath;
+
+    m_theme->setImagePath( imagePath );
+    m_theme->setContainsMultipleImages( true );
+    m_theme->setEnabledBorders( Plasma::PanelSvg::AllBorders );
+
+    m_header = new Context::Svg( this );
+    m_header->setImagePath( "widgets/amarok-serviceinfo" );
+    m_header->setContainsMultipleImages( false );
+    m_header->resize( m_size );
     m_width = globalConfig().readEntry( "width", 500 );
 
     m_serviceName = new QGraphicsSimpleTextItem( this );
@@ -67,8 +79,8 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     m_serviceName->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
 
     // get natural aspect ratio, so we can keep it on resize
-    m_theme->resize();
-    m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
+    m_header->resize();
+    m_aspectRatio = (qreal)m_header->size().height() / (qreal)m_header->size().width();
     resize( m_width, m_aspectRatio );
 
     constraintsEvent();
@@ -89,30 +101,30 @@ void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
 
     prepareGeometryChange();
 
-    if (constraints & Plasma::SizeConstraint && m_theme) {
-        m_theme->resize(size().toSize());
+    if (constraints & Plasma::SizeConstraint && m_header) {
+        m_header->resize(size().toSize());
     }
 
-
+    m_theme->resizePanel( size().toSize() );
 
     //make the text as large as possible:
-    m_serviceName->setFont( shrinkTextSizeToFit( m_serviceName->text(), m_theme->elementRect( "service_name" ) ) );
+    m_serviceName->setFont( shrinkTextSizeToFit( m_serviceName->text(), m_header->elementRect( "service_name" ) ) );
 
     //center it
 
     float textWidth = m_serviceName->boundingRect().width();
-    float totalWidth = m_theme->elementRect( "service_name" ).width();
+    float totalWidth = m_header->elementRect( "service_name" ).width();
     float offsetX =  ( totalWidth - textWidth ) / 2;
 
     kDebug() << "offset: " << offsetX;
 
-    m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() + QPointF ( offsetX, 0 ) );
+    m_serviceName->setPos( m_header->elementRect( "service_name" ).topLeft() + QPointF ( offsetX, 0 ) );
 
 
 
 
     //QSizeF infoSize( 200, 200 );
-    QSizeF infoSize( m_theme->elementRect( "main_info" ).bottomRight().x() - m_theme->elementRect( "main_info" ).topLeft().x(), m_theme->elementRect( "main_info" ).bottomRight().y() - m_theme->elementRect( "main_info" ).topLeft().y() );
+    QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 7 );
 
     if ( infoSize.isValid() ) {
         m_serviceMainInfo->setMinimumSize( infoSize );
@@ -157,20 +169,26 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
             childItem->show();
         }
     }
-
+    
+    m_header->resize(size().toSize());
+    m_theme->resizePanel(size().toSize());
     p->save();
-    m_theme->paint( p, contentsRect/*, "background" */);
+//     m_header->paint( p, contentsRect );
+    m_theme->paintPanel( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() ) );
     p->restore();
 
-    //m_serviceName->setPos( m_theme->elementRect( "service_name" ).topLeft() );
-    m_serviceMainInfo->setPos( m_theme->elementRect( "main_info" ).topLeft() );
+    //m_serviceName->setPos( m_header->elementRect( "service_name" ).topLeft() );
+    QPointF pos( m_header->elementRect( "main_info" ).topLeft() );
+    m_serviceMainInfo->setPos( pos.x() + 7, pos.y() );
 
-    QSizeF infoSize( m_theme->elementRect( "main_info" ).bottomRight().x() - m_theme->elementRect( "main_info" ).topLeft().x(), m_theme->elementRect( "main_info" ).bottomRight().y() - m_theme->elementRect( "main_info" ).topLeft().y() );
+    QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 10 );
     //infoSize.setHeight(  infoSize.height() - 50 );
 
     m_serviceMainInfo->setMinimumSize( infoSize );
     m_serviceMainInfo->setMaximumSize( infoSize );
     m_serviceMainInfo->show();
+    
+    
 
 }
 
