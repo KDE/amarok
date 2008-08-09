@@ -156,7 +156,14 @@ XSPFPlaylist::tracks()
 
         TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( track.location );
         if ( trackPtr ){
-            tracks << trackPtr;
+            if( !trackPtr->isPlayable() )
+            {
+                trackPtr = CollectionManager::instance()->trackForUrl( track.identifier );
+                if( trackPtr )
+                    tracks << trackPtr;
+            }
+            else
+                tracks << trackPtr;
         }
         // why do we need this? sqlplaylist is not doing this
         // we don't want (probably) unplayable tracks
@@ -516,10 +523,8 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
         QDomNode trackNum = createElement( "trackNum" );
 //The time to render a resource, in milliseconds. It MUST be a nonNegativeInteger.
         QDomNode duration = createElement( "duration" );
-
-//identifier - Canonical ID for this resource. Likely to be a hash or other
 // location-independent name, such as a MusicBrainz identifier.  MUST be a legal URI.
-//        QDomNode identifier = createElement( "identifier" );
+        QDomNode identifier = createElement( "identifier" );
 //info - URI of a place where this resource can be bought or more info can be found.
 //     QDomNode info = createElement( "info" );
 //image - URI of an image to display for the duration of the track.
@@ -536,7 +541,10 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     }
 
         if ( !track->playableUrl().url().isEmpty() )
+            APPENDNODE( location, track->playableUrl().url() )
+        else
             APPENDNODE( location, track->uidUrl() )
+        APPENDNODE( identifier, track->uidUrl() )
         Meta::StreamInfoCapability *streamInfo = track->as<Meta::StreamInfoCapability>();
         if( streamInfo ) // We have a stream, use it's metadata instead of the tracks.
         {
