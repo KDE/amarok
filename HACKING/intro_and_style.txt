@@ -44,6 +44,22 @@ Example:
  |         debug() << "Current string is " << string << endl;
  | }
 
+Class, Function & Variable Naming
+---------------------------------
+*Use CamelCase for everything.
+*Local variables should start out with a lowercase letter.
+*Class names are captialized
+*Prefix class member variables with m_, ex. m_trackList.
+*Prefix static member variables with s_, ex s_instance
+*Functions are named in the Qt style. It's like Java's, without the "get" 
+ prefix.
+  *A getter is variable()
+  *If it's a getter for a boolean, prefix with 'is', so isCondition()
+  *A setter is setVariable( arg ).
+
+
+Includes
+--------
 Header includes should be listed in the following order:
     - Own Header
     - Amarok includes
