@@ -75,7 +75,7 @@ PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent )
     //windowColor.setBlue( 255 - origWindowColor.blue() );
     //windowColor.setGreen( 255 - origWindowColor.green() );
     QColor windowColor( The::paletteHandler()->palette().color( QPalette::Base ) );
-    windowColor.setAlpha( 128 );
+    windowColor.setAlpha( 176 );
     QColor textColor( The::paletteHandler()->palette().color( QPalette::Link ) );
     QColor highlightedTextColor( The::paletteHandler()->palette().color( QPalette::LinkVisited ) );
     QColor borderColor( The::paletteHandler()->palette().color( QPalette::Text ) );
@@ -99,6 +99,9 @@ PopupDropperItem * PopupDropperFactory::createItem( PopupDropperAction * action 
 
     PopupDropperItem* pdi = new PopupDropperItem();
     pdi->setAction( action );
+    QString text = pdi->text();
+    text.remove( QChar('&') );
+    pdi->setText( text );
     pdi->setFont( font );
     pdi->setHoverMsecs( 800 );
     QColor hoverIndicatorFillColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
