@@ -91,6 +91,7 @@ Playlist::Model::Model( QObject* parent )
     , m_undoStack( new QUndoStack( this ) )
     , m_stopAfterMode( StopNever )
     , m_stopPlaying( false )
+    , m_waitingForNextTrack( false )
 {
     s_instance = this;
     playlistModeChanged(); // sets m_advancer.
