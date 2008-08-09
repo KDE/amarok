@@ -137,12 +137,10 @@ namespace AmarokScript
         };
     }
 
-    TrackMeta* AmarokEngineScript::currentTrack()
+    QVariant AmarokEngineScript::currentTrack()
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
-        TrackMeta* info = new TrackMeta( track );
-        m_wrapperList->append( info );
-        return ( info );
+        return QVariant::fromValue( track );
     }
 
     bool AmarokEngineScript::randomMode() const

@@ -49,7 +49,7 @@ namespace AmarokScript
             void setStopAfterCurrent( bool on );
             void togglePlaylist();
             QStringList filenames();
-            TrackMeta* TrackInfo( int row );
+            QVariant trackAt( int row );
         signals:
             void CountChanged( int newCount );
             void GroupingChanged();
@@ -58,6 +58,7 @@ namespace AmarokScript
             void activeRowExplicitlyChanged( int from, int to );
         private:
             QList<QObject*>* m_wrapperList;
+            QScriptEngine* m_scriptEngine;
     };
 }
 

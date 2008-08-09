@@ -22,13 +22,13 @@
 #include "EditCapability.h"
 
 #include <QObject>
-#include <QtScript>
+#include <QScriptable>
 
-
-class TrackMeta : public QObject
+class MetaTrackPrototype : public QObject, protected QScriptable
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString title WRITE setTitle READ title )
     Q_PROPERTY( int sampleRate READ sampleRate )
     Q_PROPERTY( int bitrate READ bitrate )
     Q_PROPERTY( double score WRITE setScore READ score )
@@ -53,8 +53,8 @@ class TrackMeta : public QObject
     Q_PROPERTY( QString lyrics WRITE setLyrics READ lyrics )
 
     public:
-        TrackMeta( Meta::TrackPtr track = Meta::TrackPtr() );
-        ~TrackMeta();
+        MetaTrackPrototype();
+        ~MetaTrackPrototype();
 
     private:
         int sampleRate() const;
@@ -79,6 +79,7 @@ class TrackMeta : public QObject
         bool isValid() const;
         bool isEditable() const;
         QString lyrics() const;
+        QString title() const;
     //coverImage
         void setScore( double score );
         void setRating( int rating );
@@ -91,32 +92,8 @@ class TrackMeta : public QObject
         void setYear( QString year );
         void setComment( QString comment );
         void setLyrics( QString lyrics );
+        void setTitle( const QString& name );
 
-        void setTrack( Meta::TrackPtr track );
-
-    private:
-        Meta::TrackPtr m_track;
-        Meta::EditCapability* m_ec;
 };
-
-namespace AmarokScript
-{
-    class MetaTypeExporter : public QObject
-    {
-        Q_OBJECT
-
-        public:
-            MetaTypeExporter( QScriptEngine* ScriptEngine );
-            ~MetaTypeExporter();
-        private:
-            QScriptEngine*        m_scriptEngine;
-            static QScriptValue   TrackMeta_toScriptValue(QScriptEngine *engine, TrackMeta* const &in);
-            static void           TrackMeta_fromScriptValue(const QScriptValue &value, TrackMeta* &out);
-        public:
-            void                  TrackMeta_Register();
-    };
-}
-
-Q_DECLARE_METATYPE( TrackMeta* )
 
 #endif

@@ -531,13 +531,8 @@ ScriptManager::startScriptEngine( QString name )
     DEBUG_BLOCK
 
     QScriptEngine* scriptEngine = m_scripts[name].engine;
-    QObject* objectPtr;
+    QObject* objectPtr = 0;
     QScriptValue scriptObject;
-
-    AmarokScript::MetaTypeExporter* exporter = new AmarokScript::MetaTypeExporter( scriptEngine );
-    exporter->TrackMeta_Register();
-//    scriptObject = scriptEngine->newFunction( ScriptExit );
-//    scriptEngine->globalObject().setProperty( "Exit", scriptObject );
 
     objectPtr = new AmarokScript::ScriptImporter( scriptEngine, m_scripts[name].url );
     scriptObject = scriptEngine->newQObject( objectPtr );
@@ -596,6 +591,11 @@ ScriptManager::startScriptEngine( QString name )
 
     scriptObject = scriptEngine->newObject();
     m_global.property( "Window" ).setProperty( "SettingsMenu", scriptObject );
+
+    MetaTrackPrototype* trackProto = new MetaTrackPrototype();
+    scriptEngine->setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(),
+                                scriptEngine->newQObject( trackProto ) );
+    m_scripts[name].wrapperList.append( trackProto );
 }
 
 #include "ScriptManager.moc"

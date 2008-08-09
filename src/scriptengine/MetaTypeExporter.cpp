@@ -1,6 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
- *                                                                            *
+ *           (C) 2008 Ian Monroe <ian@monroe.nu>                              *                                                            *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
  * published by the Free Software Foundation; either version 2 of             *
@@ -17,222 +17,269 @@
 
 #include "MetaTypeExporter.h"
 
-#include "App.h"
 #include "EditCapability.h"
 
 #include <QtScript>
 
-TrackMeta::TrackMeta( Meta::TrackPtr track )
+#define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );
+#define GET_TRACK_EC Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() ); \
+Meta::EditCapability* ec = track->as<Meta::EditCapability>();
+
+MetaTrackPrototype::MetaTrackPrototype()
 {
-    setTrack( track );
 }
 
-TrackMeta::~TrackMeta()
+MetaTrackPrototype::~MetaTrackPrototype()
 {
 }
 
-int TrackMeta::sampleRate() const
+int
+MetaTrackPrototype::sampleRate() const
 {
-    return m_track ? m_track->sampleRate() : 0;
+    GET_TRACK
+    return track ? track->sampleRate() : 0;
 }
 
-int TrackMeta::bitrate() const
+int
+MetaTrackPrototype::bitrate() const
 {
-    return m_track ? m_track->bitrate() : 0;
+    GET_TRACK
+    return track ? track->bitrate() : 0;
 }
 
-double TrackMeta::score() const
+double
+MetaTrackPrototype::score() const
 {
-    return m_track ? m_track->score() : 0.0;
+    GET_TRACK
+    return track ? track->score() : 0.0;
 }
 
-int TrackMeta::rating() const
+int
+MetaTrackPrototype::rating() const
 {
-    return m_track ? m_track->rating() : 0;
+    GET_TRACK
+    return track ? track->rating() : 0;
 }
 
-bool TrackMeta::inCollection() const
+bool
+MetaTrackPrototype::inCollection() const
 {
-    return m_track ? m_track->inCollection() : false;
+    GET_TRACK
+    return track ? track->inCollection() : false;
 }
 
-QString TrackMeta::type() const
+QString
+MetaTrackPrototype::type() const
 {
-    return m_track ? m_track->type() : QString();
+    GET_TRACK
+    return track ? track->type() : QString();
 }
 
-int TrackMeta::length() const
+int
+MetaTrackPrototype::length() const
 {
-    return m_track ? m_track->length() : 0;
+    GET_TRACK
+    return track ? track->length() : 0;
 }
 
-int TrackMeta::fileSize() const
+int
+MetaTrackPrototype::fileSize() const
 {
-    return m_track ? m_track->filesize() : 0;
+    GET_TRACK
+    return track ? track->filesize() : 0;
 }
 
-int TrackMeta::trackNumber() const
+int
+MetaTrackPrototype::trackNumber() const
 {
-    return m_track ? m_track->trackNumber() : 0;
+    GET_TRACK
+    return track ? track->trackNumber() : 0;
 }
 
-int TrackMeta::discNumber() const
+int
+MetaTrackPrototype::discNumber() const
 {
-    return m_track ? m_track->discNumber() : 0;
+    GET_TRACK
+    return track ? track->discNumber() : 0;
 }
 
-int TrackMeta::playCount() const
+int
+MetaTrackPrototype::playCount() const
 {
-    return m_track ? m_track->playCount() : 0;
+    GET_TRACK
+    return track ? track->playCount() : 0;
 }
 
-bool TrackMeta::playable() const
+bool
+MetaTrackPrototype::playable() const
 {
-    return m_track ? m_track->isPlayable() : false;
+    GET_TRACK
+    return track ? track->isPlayable() : false;
 }
 
-QString TrackMeta::album() const
+QString
+MetaTrackPrototype::album() const
 {
-    return m_track ? m_track->album()->prettyName() : QString();
+    GET_TRACK
+    return track ? track->album()->prettyName() : QString();
 }
 
-QString TrackMeta::artist() const
+QString
+MetaTrackPrototype::artist() const
 {
-    return m_track ? m_track->artist()->prettyName() : QString();
+    GET_TRACK
+    return track ? track->artist()->prettyName() : QString();
 }
 
-QString TrackMeta::composer() const
+QString
+MetaTrackPrototype::composer() const
 {
-    return m_track ? m_track->composer()->prettyName() : QString();
+    GET_TRACK
+    return track ? track->composer()->prettyName() : QString();
 }
 
-QString TrackMeta::genre() const
+QString
+MetaTrackPrototype::genre() const
 {
-    return m_track ? m_track->genre()->prettyName() : QString();
+    GET_TRACK
+    return track ? track->genre()->prettyName() : QString();
 }
 
-QString TrackMeta::year() const
+QString
+MetaTrackPrototype::year() const
 {
-    return m_track ? m_track->year()->prettyName() : QString();
+    GET_TRACK
+    return track ? track->year()->prettyName() : QString();
 }
 
-QString TrackMeta::comment() const
+QString
+MetaTrackPrototype::comment() const
 {
-    return m_track ? m_track->comment() : QString();
+    GET_TRACK
+    return track ? track->comment() : QString();
 }
 
-QString TrackMeta::path() const
+QString
+MetaTrackPrototype::path() const
 {
-    return m_track ? m_track->playableUrl().path() : QString();
+    GET_TRACK
+    return track ? track->playableUrl().path() : QString();
 }
 
-bool TrackMeta::isValid() const
+QString
+MetaTrackPrototype::title() const
 {
-    if ( m_track ) return true;
+    GET_TRACK
+    return track ? track->prettyName() : QString();
+}
+
+
+bool
+MetaTrackPrototype::isValid() const
+{
+    GET_TRACK
+    if ( track ) return true;
     return false;
 }
-bool TrackMeta::isEditable() const
+bool
+MetaTrackPrototype::isEditable() const
 {
-    if( m_ec )
-        return ( m_ec->isEditable() );
-    else
-        return false;
+    GET_TRACK_EC
+    return ( ec );
 }
 
-QString TrackMeta::lyrics() const
+QString
+MetaTrackPrototype::lyrics() const
 {
-    return m_track ? m_track->cachedLyrics() : QString();
+    GET_TRACK
+    return track ? track->cachedLyrics() : QString();
 }
 
-void TrackMeta::setScore( double score )
+void
+MetaTrackPrototype::setScore( double score )
 {
-    if ( m_track ) m_track->setScore( score );
+    GET_TRACK
+    if ( track ) track->setScore( score );
 }
 
-void TrackMeta::setRating( int rating )
+void
+MetaTrackPrototype::setRating( int rating )
 {
-    if ( m_track ) m_track->setRating( rating );
+    GET_TRACK
+    if ( track ) track->setRating( rating );
 }
 
-void TrackMeta::setTrackNumber( int number )
+void
+MetaTrackPrototype::setTrackNumber( int number )
 {
-    if ( isEditable() ) m_ec->setTrackNumber( number );
+    GET_TRACK_EC
+    if ( ec ) ec->setTrackNumber( number );
 }
 
-void TrackMeta::setDiscNumber( int number )
+void
+MetaTrackPrototype::setDiscNumber( int number )
 {
-    if ( isEditable() ) m_ec->setDiscNumber( number );
+    GET_TRACK_EC
+    if ( ec ) ec->setDiscNumber( number );
 }
 
-void TrackMeta::setAlbum( QString album )
+void
+MetaTrackPrototype::setAlbum( QString album )
 {
-    if ( isEditable() ) m_ec->setAlbum( album );
+    GET_TRACK_EC
+    if ( ec ) ec->setAlbum( album );
 }
 
-void TrackMeta::setArtist( QString artist )
+void
+MetaTrackPrototype::setArtist( QString artist )
 {
-    if ( isEditable() ) m_ec->setArtist( artist );
+    GET_TRACK_EC
+    if ( ec ) ec->setArtist( artist );
 }
 
-void TrackMeta::setComposer( QString composer )
+void
+MetaTrackPrototype::setComposer( QString composer )
 {
-    if ( isEditable() ) m_ec->setComposer( composer );
+    GET_TRACK_EC
+    if ( ec ) ec->setComposer( composer );
 }
 
-void TrackMeta::setGenre( QString genre )
+void
+MetaTrackPrototype::setGenre( QString genre )
 {
-    if ( isEditable() ) m_ec->setGenre( genre );
+    GET_TRACK_EC
+    if ( ec ) ec->setGenre( genre );
 }
 
-void TrackMeta::setYear( QString year )
+void
+MetaTrackPrototype::setYear( QString year )
 {
-    if ( isEditable() ) m_ec->setYear( year );
+    GET_TRACK_EC
+    if ( ec ) ec->setYear( year );
 }
 
-void TrackMeta::setComment( QString comment )
+void
+MetaTrackPrototype::setComment( QString comment )
 {
-    if ( isEditable() ) m_ec->setComment( comment );
+    GET_TRACK_EC
+    if ( ec ) ec->setComment( comment );
 }
 
-void TrackMeta::setLyrics( QString lyrics )
+void
+MetaTrackPrototype::setLyrics( QString lyrics )
 {
-    if ( m_track ) m_track->setCachedLyrics( lyrics );
+    GET_TRACK
+    if ( track ) track->setCachedLyrics( lyrics );
 }
 
-void TrackMeta::setTrack( Meta::TrackPtr track )
+void
+MetaTrackPrototype::setTitle( const QString& title )
 {
-    m_track = track;
-    if ( track )
-        m_ec = m_track->as<Meta::EditCapability>();
+    GET_TRACK_EC
+    if ( ec ) ec->setTitle( title );
 }
 
-namespace AmarokScript
-{
-
-    MetaTypeExporter::MetaTypeExporter( QScriptEngine* ScriptEngine )
-    : QObject( kapp )
-    {
-        m_scriptEngine = ScriptEngine;
-    }
-
-    MetaTypeExporter::~MetaTypeExporter()
-    {
-    }
-
-    QScriptValue MetaTypeExporter::TrackMeta_toScriptValue( QScriptEngine *engine, TrackMeta* const &in )
-    {
-        return engine->newQObject( in, QScriptEngine::ScriptOwnership, QScriptEngine::PreferExistingWrapperObject );
-    }
-
-    void MetaTypeExporter::TrackMeta_fromScriptValue( const QScriptValue &value, TrackMeta* &out )
-    {
-        out = qobject_cast<TrackMeta*>( value.toQObject() );
-    }
-
-    void MetaTypeExporter::TrackMeta_Register()
-    {
-        qScriptRegisterMetaType<TrackMeta*>( m_scriptEngine, TrackMeta_toScriptValue, TrackMeta_fromScriptValue );
-    }
-}
+#undef GET_TRACK
+#undef GET_TRACK_EC
 
 #include "MetaTypeExporter.moc"

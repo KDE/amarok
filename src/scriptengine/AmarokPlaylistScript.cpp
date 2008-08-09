@@ -27,10 +27,11 @@
 
 namespace AmarokScript
 {
-    AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList )
+    AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* scriptEngine, QList<QObject*>* wrapperList )
     : QObject( kapp )
+    , m_wrapperList( wrapperList )
+    , m_scriptEngine( scriptEngine )
     {
-        Q_UNUSED( ScriptEngine );
         m_wrapperList = wrapperList;
         connect( The::playlistModel(), SIGNAL( playlistCountChanged( int ) ), this, SIGNAL( CountChanged( int ) ) );
         connect( The::playlistModel(), SIGNAL( playlistGroupingChanged() ), this, SIGNAL( GroupingChanged() ) );
@@ -122,12 +123,11 @@ namespace AmarokScript
         return fileNames;
     }
 
-    TrackMeta* AmarokPlaylistScript::TrackInfo( int row )
+    QVariant AmarokPlaylistScript::trackAt( int row )
     {
+        DEBUG_BLOCK
         Meta::TrackPtr track = The::playlistModel()->trackForRow( row );
-        TrackMeta* info = new TrackMeta( track );
-        m_wrapperList->append( info );
-        return ( info );
+        return QVariant::fromValue( track );;
     }
 }
 

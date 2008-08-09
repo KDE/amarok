@@ -58,7 +58,7 @@ namespace AmarokScript
             void Mute();
             int  trackPosition();
             int  engineState();
-            TrackMeta* currentTrack();
+            QVariant currentTrack();
 
         signals:
             void trackFinished();
