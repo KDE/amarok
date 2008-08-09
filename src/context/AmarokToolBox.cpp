@@ -303,6 +303,8 @@ AmarokToolBox::toolMoved( QGraphicsItem *item )
 void
 AmarokToolBox::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
+    if( m_hovering )
+        return;
     if( m_animHighlightId )
         Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
     if( m_timer->isActive() )

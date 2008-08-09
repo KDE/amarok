@@ -526,10 +526,13 @@ void ColumnContainment::recalculate()
                 height = rowSpan * m_defaultRowHeight;
 
                 //add 25 pixels offSet to the right only if its the last column
-                int offSet = col == gridCols - 1 ? 25 : 3;
+                int offSetX = col == gridCols - 1 ? 25 : 3;
                 
-                applet->resize( width - offSet, height );
-                applet->setPos( left, top + 6 );
+                //keep vertical space between applets
+                int offSetY = 3;
+                applet->resize( width - offSetX, height - offSetY*2 );
+                
+                applet->setPos( left, top + offSetY );
                 row += rowSpan;
                 top += height; 
             }
