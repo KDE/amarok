@@ -47,6 +47,7 @@
 static bool recurse = false;
 static bool verbose = false;
 static bool quiet = false;
+static bool newid = false;
 static int currentVersion = 1;
 
 void processPath( const QString &path );
@@ -71,9 +72,10 @@ int main( int argc, char *argv[] )
 
     KCmdLineOptions options;
     options.add("+file(s)", ki18n( "Files/Directories to tag" ) );
+    options.add("n").add("newid", ki18n( "Generate a new ID even if an up-to-date one exists" ) );
+    options.add("q").add("quiet", ki18n( "No prompts -- Indicates you agree to the terms of use!" ) );
     options.add("r").add("recurse", ki18n( "Recursively process files and directories" ) );
     options.add("V").add("verbose", ki18n( "More verbose output" ) );
-    options.add("q").add("quiet", ki18n( "No prompts -- Indicates you agree to the terms of use!" ) );
     KCmdLineArgs::addCmdLineOptions( options );
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
@@ -83,19 +85,23 @@ int main( int argc, char *argv[] )
         quiet = true;
     if( args->isSet("verbose") )
         verbose = true;
+    if( args->isSet("newid") )
+        newid = true;
 
+    QString terms;
     if( !quiet )
     {
-        std::cout << "TERMS OF USE:" << endl << endl <<
-            "This program has been extensively tested and errs on the side of safety wherever possible." << endl << endl <<
-            "With that being said, since this program can modify thousands or hundreds of thousands of files" << endl <<
-            "at a time, here is the obligatory warning text:" << endl << endl <<
-            "This program makes use of multiple libraries not written by the author, and as such neither the" << endl <<
-            "the author nor the Amarok project can or do take any responsibility for any damage that may" << endl <<
-            "occur to your files through the use of this program." << endl << endl <<
-            "If you want more information, please see http://amarok.kde.org/wiki/AFT" << endl << endl <<
-            "If you agree to be bound by these terms of use, enter 'y' or 'Y', or anything else to exit:" << endl;
+        terms =  i18n( "TERMS OF USE:\n\n" 
+                "This program has been extensively tested and errs on the side of safety wherever possible.\n\n"
+                "With that being said, since this program can modify thousands or hundreds of thousands of files\n"
+                "at a time, here is the obligatory warning text:\n\n"
+                "This program makes use of multiple libraries not written by the author, and as such neither the\n"
+                "the author nor the Amarok project can or do take any responsibility for any damage that may\n"
+                "occur to your files through the use of this program.\n\n"
+                "If you want more information, please see http://amarok.kde.org/wiki/AFT\n\n"
+                "If you agree to be bound by these terms of use, enter 'y' or 'Y', or anything else to exit:\n" );
 
+        std::cout << terms.toUtf8().data();
         std::string response;
         std::cin >> response;
         cin.get();
@@ -201,10 +207,16 @@ void processPath( const QString &path )
                                 {
                                     if( verbose )
                                         qDebug() << "INFO: Upgrading AFT identifier from version " << version << " to version " << currentVersion;
-                                    uid = upgradeUID( version, QString( currFrame->identifier().data() ) );
+                                    uid = upgradeUID( version, TStringToQString( TagLib::String( currFrame->identifier() ) ) );
                                     iter = frameList.erase( iter );
                                     file->ID3v2Tag()->removeFrame( currFrame );
-                                    createID3 = true;
+                                }
+                                else if( version == currentVersion && newid )
+                                {
+                                    if( verbose )
+                                        qDebug() << "INFO: new IDs specified to be generated, doing so";
+                                    iter = frameList.erase( iter );
+                                    file->ID3v2Tag()->removeFrame( currFrame );
                                 }
                                 else
                                 {
@@ -220,10 +232,8 @@ void processPath( const QString &path )
                 {
                     if( verbose )
                         qDebug() << "INFO: Adding new frame and saving file";
-                    QByteArray array = uid.toAscii();
                     file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
-                        QStringToTString( ourId ),
-                        TagLib::ByteVector( array.data(), array.size() ) ) );
+                        QStringToTString( ourId ), QStringToTString( uid ).data( TagLib::String::Latin1 ) ) );
                     file->save();
                 }
             }

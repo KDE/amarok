@@ -340,7 +340,7 @@ CollectionScanner::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
                 {
                     int version = owner.at( 13 ).digitValue();
                     if( version == currentVersion )
-                        return QString( currFrame->identifier().data() );
+                        return TStringToQString( TagLib::String( currFrame->identifier() ) );
                 }
             }
         }
