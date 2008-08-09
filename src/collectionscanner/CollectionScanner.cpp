@@ -406,9 +406,9 @@ CollectionScanner::readUniqueId( const QString &path )
     if( fileref.isNull() )
         return QString();
 
-    //const QString embeddedString = readEmbeddedUniqueId( fileref );
-    //if( !embeddedString.isEmpty() )
-    //    return embeddedString;
+    const QString embeddedString = readEmbeddedUniqueId( fileref );
+    if( !embeddedString.isEmpty() )
+        return embeddedString;
 
     TagLib::ByteVector bv = CollectionScanner::generatedUniqueIdHelper( fileref );
 

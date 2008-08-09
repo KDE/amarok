@@ -36,6 +36,8 @@
 #include <QString>
 #include <QStringList>
 
+#include <iostream>
+
 //QT4-happy versions
 #undef QStringToTString
 #define QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
@@ -71,7 +73,7 @@ int main( int argc, char *argv[] )
     options.add("+file(s)", ki18n( "Files/Directories to tag" ) );
     options.add("r").add("recurse", ki18n( "Recursively process files and directories" ) );
     options.add("V").add("verbose", ki18n( "More verbose output" ) );
-    options.add("q").add("quiet", ki18n( "No prompts -- Indicates you agree to the terms of use" ) );
+    options.add("q").add("quiet", ki18n( "No prompts -- Indicates you agree to the terms of use!" ) );
     KCmdLineArgs::addCmdLineOptions( options );
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
@@ -81,6 +83,29 @@ int main( int argc, char *argv[] )
         quiet = true;
     if( args->isSet("verbose") )
         verbose = true;
+
+    if( !quiet )
+    {
+        std::cout << "TERMS OF USE:" << endl << endl <<
+            "This program has been extensively tested and errs on the side of safety wherever possible." << endl << endl <<
+            "With that being said, since this program can modify thousands or hundreds of thousands of files" << endl <<
+            "at a time, here is the obligatory warning text:" << endl << endl <<
+            "This program makes use of multiple libraries not written by the author, and as such neither the" << endl <<
+            "the author nor the Amarok project can or do take any responsibility for any damage that may" << endl <<
+            "occur to your files through the use of this program." << endl << endl <<
+            "If you want more information, please see http://amarok.kde.org/wiki/AFT" << endl << endl <<
+            "If you agree to be bound by these terms of use, enter 'y' or 'Y', or anything else to exit:" << endl;
+
+        std::string response;
+        std::cin >> response;
+        cin.get();
+
+        if( response != "y" && response != "Y" )
+        {
+            qDebug() << "INFO: Terms not accepted; exiting...";
+            return 1;
+        }
+    }
 
     for(int i = 0; i < args->count(); i++) // Counting start at 0!
         processPath( args->arg(i) );
@@ -124,7 +149,6 @@ void processPath( const QString &path )
 
 
         QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
-        QString uid;
         
         TagLib::FileRef fileRef = TagLib::FileRef( QFile::encodeName( filePath ), true, TagLib::AudioProperties::Fast );
         
@@ -139,6 +163,8 @@ void processPath( const QString &path )
         sfs.setVerbose( false );
         QString tempFilePath = sfs.prepareToSave();
 
+        QString uid = createCurrentUID();
+
         TagLib::FileRef tempFileRef = TagLib::FileRef( QFile::encodeName( tempFilePath ), true, TagLib::AudioProperties::Fast );
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( tempFileRef.file() ) )
         {
@@ -146,13 +172,11 @@ void processPath( const QString &path )
                 qDebug() << "INFO: File is a MPEG file, opening...";
             if ( file->ID3v2Tag( true ) )
             {
-                bool createID3 = false;
+                bool createID3 = true;
                 if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
                 {
                     if( verbose )
                         qDebug() << "INFO: No UFID frames found, appending one";
-                    createID3 = true;
-                    uid = createCurrentUID();
                 }
                 else
                 {
@@ -160,7 +184,8 @@ void processPath( const QString &path )
                         qDebug() << "INFO: Found existing UFID frames, parsing";
                     TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
                     TagLib::ID3v2::FrameList::Iterator iter;
-                    qDebug() << "framelist size is " << frameList.size();
+                    if( verbose )
+                        qDebug() << "INFO: Frame list size is " << frameList.size();
                     for( iter = frameList.begin(); iter != frameList.end(); ++iter )
                     {
                         TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
@@ -170,16 +195,22 @@ void processPath( const QString &path )
                             if( owner.startsWith( "Amarok 2 AFT" ) )
                             {
                                 if( verbose )
-                                    qDebug() << "Found an existing AFT identifier, checking if it's current";
+                                    qDebug() << "INFO: Found an existing AFT identifier, checking if it's current";
                                 int version = owner.at( 13 ).digitValue();
                                 if( version < currentVersion )
                                 {
                                     if( verbose )
-                                        qDebug() << "Upgrading AFT identifier from version " << version << " to version " << currentVersion;
+                                        qDebug() << "INFO: Upgrading AFT identifier from version " << version << " to version " << currentVersion;
                                     uid = upgradeUID( version, QString( currFrame->identifier().data() ) );
-                                    frameList.erase( iter );
+                                    iter = frameList.erase( iter );
                                     file->ID3v2Tag()->removeFrame( currFrame );
                                     createID3 = true;
+                                }
+                                else
+                                {
+                                    if( verbose )
+                                        qDebug() << "INFO: It is";
+                                    createID3 = false;
                                 }
                             }
                         }
@@ -188,7 +219,7 @@ void processPath( const QString &path )
                 if( createID3 )
                 {
                     if( verbose )
-                        qDebug() << "Adding new frame and saving file";
+                        qDebug() << "INFO: Adding new frame and saving file";
                     QByteArray array = uid.toAscii();
                     file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
                         QStringToTString( ourId ),
