@@ -48,6 +48,7 @@ static bool recurse = false;
 static bool verbose = false;
 static bool quiet = false;
 static bool newid = false;
+static bool removeid = false;
 static int currentVersion = 1;
 
 void processPath( const QString &path );
@@ -72,6 +73,7 @@ int main( int argc, char *argv[] )
 
     KCmdLineOptions options;
     options.add("+file(s)", ki18n( "Files/Directories to tag" ) );
+    options.add("d").add("delete", ki18n( "Delete AFT IDs from the files") );
     options.add("n").add("newid", ki18n( "Generate a new ID even if an up-to-date one exists" ) );
     options.add("q").add("quiet", ki18n( "No prompts -- Indicates you agree to the terms of use!" ) );
     options.add("r").add("recurse", ki18n( "Recursively process files and directories" ) );
@@ -87,6 +89,8 @@ int main( int argc, char *argv[] )
         verbose = true;
     if( args->isSet("newid") )
         newid = true;
+    if( args->isSet("delete") )
+        removeid = true;
 
     QString terms;
     if( !quiet )
@@ -111,6 +115,12 @@ int main( int argc, char *argv[] )
             qDebug() << "INFO: Terms not accepted; exiting...";
             return 1;
         }
+    }
+
+    if( args->count() == 0 )
+    {
+        qDebug() << "WARNING: No files or directories input; exiting...";
+        return 2;
     }
 
     for(int i = 0; i < args->count(); i++) // Counting start at 0!
@@ -150,9 +160,6 @@ void processPath( const QString &path )
     else //isFile()
     {
         QString filePath = info.absoluteFilePath();
-        if( verbose )
-            qDebug() << "INFO: Processing file " << filePath;
-
 
         QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
         
@@ -165,12 +172,15 @@ void processPath( const QString &path )
             return;
         }
 
+        qDebug() << "INFO: Processing file " << filePath;
+
         SafeFileSaver sfs( filePath );
         sfs.setVerbose( false );
+        sfs.setPrefix( "amarok-afttagger" );
         QString tempFilePath = sfs.prepareToSave();
 
         QString uid = createCurrentUID();
-
+        bool newUid = false;
         TagLib::FileRef tempFileRef = TagLib::FileRef( QFile::encodeName( tempFilePath ), true, TagLib::AudioProperties::Fast );
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( tempFileRef.file() ) )
         {
@@ -178,11 +188,16 @@ void processPath( const QString &path )
                 qDebug() << "INFO: File is a MPEG file, opening...";
             if ( file->ID3v2Tag( true ) )
             {
-                bool createID3 = true;
                 if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
                 {
                     if( verbose )
-                        qDebug() << "INFO: No UFID frames found, appending one";
+                        qDebug() << "INFO: No UFID frames found";
+                    if( removeid )
+                    {
+                        sfs.cleanupSave();
+                        return;
+                    }
+                    newUid = true;
                 }
                 else
                 {
@@ -201,15 +216,29 @@ void processPath( const QString &path )
                             if( owner.startsWith( "Amarok 2 AFT" ) )
                             {
                                 if( verbose )
-                                    qDebug() << "INFO: Found an existing AFT identifier, checking if it's current";
+                                    qDebug() << "INFO: Found an existing AFT identifier";
+
+                                if( removeid )
+                                {
+                                    iter = frameList.erase( iter );
+                                    if( verbose )
+                                        qDebug() << "INFO: Removing current AFT frame";
+                                    file->ID3v2Tag()->removeFrame( currFrame );
+                                    file->save();
+                                    continue;
+                                }
+
                                 int version = owner.at( 13 ).digitValue();
                                 if( version < currentVersion )
                                 {
                                     if( verbose )
                                         qDebug() << "INFO: Upgrading AFT identifier from version " << version << " to version " << currentVersion;
                                     uid = upgradeUID( version, TStringToQString( TagLib::String( currFrame->identifier() ) ) );
+                                    if( verbose )
+                                        qDebug() << "INFO: Removing current AFT frame";
                                     iter = frameList.erase( iter );
                                     file->ID3v2Tag()->removeFrame( currFrame );
+                                    newUid = true;
                                 }
                                 else if( version == currentVersion && newid )
                                 {
@@ -217,18 +246,18 @@ void processPath( const QString &path )
                                         qDebug() << "INFO: new IDs specified to be generated, doing so";
                                     iter = frameList.erase( iter );
                                     file->ID3v2Tag()->removeFrame( currFrame );
+                                    newUid = true;
                                 }
                                 else
                                 {
                                     if( verbose )
-                                        qDebug() << "INFO: It is";
-                                    createID3 = false;
+                                        qDebug() << "INFO: ID is current";
                                 }
                             }
                         }
                     }
                 }
-                if( createID3 )
+                if( newUid )
                 {
                     if( verbose )
                         qDebug() << "INFO: Adding new frame and saving file";
@@ -246,10 +275,13 @@ void processPath( const QString &path )
                 qWarning() << "WARNING: file at " << filePath << " could not be cleaned up; check for strays";
             return;
         }
-        if( verbose )
-            qDebug() << "INFO: Safe-saving file";
-        if( !sfs.doSave() )
-            qWarning() << "WARNING: file at " << filePath << " could not be saved";
+        if( newUid || removeid )
+        {
+            if( verbose )
+                qDebug() << "INFO: Safe-saving file";
+            if( !sfs.doSave() )
+                qWarning() << "WARNING: file at " << filePath << " could not be saved";
+        }
         if( verbose )
             qDebug() << "INFO: Cleaning up...";
         if( !sfs.cleanupSave() )

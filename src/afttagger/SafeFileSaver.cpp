@@ -40,6 +40,7 @@ SafeFileSaver::SafeFileSaver( const QString &origPath )
     , m_tempSaveDigest( 0 )
     , m_cleanupNeeded( false )
     , m_verbose( false )
+    , m_prefix( "safefilesaver" )
 {
 }
 
@@ -66,8 +67,8 @@ SafeFileSaver::prepareToSave()
 
     QString randomString = KRandom::randomString( 8 );
 
-    m_tempSavePath = m_origPath + ".amaroktemp.pid-" + pid + ".random-" + randomString + '.' + QFileInfo( m_origPath ).suffix();
-    m_origRenamedSavePath = m_origPath + ".amarokoriginal.pid-" + pid + ".random-" + randomString + '.' + QFileInfo( m_origPath ).suffix();
+    m_tempSavePath = m_origPath + '.' + m_prefix + "temp.pid-" + pid + ".random-" + randomString + '.' + QFileInfo( m_origPath ).suffix();
+    m_origRenamedSavePath = m_origPath + '.' + m_prefix + "original.pid-" + pid + ".random-" + randomString + '.' + QFileInfo( m_origPath ).suffix();
 
 
     if( m_verbose )

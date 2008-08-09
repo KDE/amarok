@@ -39,6 +39,7 @@ public:
     bool cleanupSave();
 
     void setVerbose( bool verbose ) { m_verbose = verbose; }
+    void setPrefix( const QString &prefix ) { if( !prefix.isEmpty() ) m_prefix = prefix; }
 
 private:
     QString m_origPath;
@@ -47,6 +48,7 @@ private:
     QByteArray m_tempSaveDigest;
     bool m_cleanupNeeded;
     bool m_verbose;
+    QString m_prefix;
 };
 
 #endif
