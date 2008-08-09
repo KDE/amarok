@@ -427,10 +427,14 @@ CollectionScanner::readUniqueId( const QString &path )
         {
             md5.update( databuf, readlen );
             md5.update( size.setNum( qfile.size() ) );
+            qfile.close();
             return QString( md5.hexDigest().data() );
         }
         else
+        {
+            qfile.close();
             return QString();
+        }
     }
 
     return QString();
@@ -614,7 +618,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     if( size >= 0 )
         attributes["filesize"] =  QString::number( size );
 
-    attributes["uniqueid"] = readUniqueId( path  );
+    attributes["uniqueid"] = readUniqueId( path );
 
     return attributes;
 }
