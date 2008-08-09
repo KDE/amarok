@@ -25,25 +25,7 @@ using namespace Playlist;
 int
 RepeatTrackNavigator::nextRow()
 {
-    // we need to repeat
-    if( m_previousTrack.empty() || 
-            (m_previousTrack[0] != m_playlistModel->activeRow() ) )
-    {
-        m_previousTrack.append( m_playlistModel->activeRow() );
-        return m_playlistModel->activeRow();
-    }
-    else
-    {
-        // We already repeated, so advance.
-        if( m_previousTrack[0] == m_playlistModel->activeRow() )
-        {
-            int updateRow = m_playlistModel->activeRow() + 1;
-            if( m_playlistModel->rowExists( updateRow ) ) return updateRow;
-        }
-
-    }
-
-    return -1;
+    return m_playlistModel->activeRow();
 }
 
 int

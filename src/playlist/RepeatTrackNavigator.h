@@ -20,7 +20,6 @@
 
 #include "meta/Meta.h"
 #include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistRowList.h"
 #include "playlist/SimpleTrackNavigator.h"
 
 namespace Playlist {
@@ -36,8 +35,6 @@ class Model;
         private:
             int nextRow();
             int userNextRow();
-
-            RowList m_previousTrack; // always only has one or zero elements
     };
 
  }
