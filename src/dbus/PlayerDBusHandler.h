@@ -75,10 +75,10 @@ namespace Amarok
             void Play();
             void PlayPause();
             int PositionGet();
-            void PositionSet(int in0);
+            void PositionSet(int time);
             void Stop();
             int VolumeGet();
-            void VolumeSet(int in0);
+            void VolumeSet(int vol);
             int GetCaps();
             QVariantMap GetMetadata();
         signals:
