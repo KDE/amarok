@@ -1,2 +1,0 @@
-* Apparently *all* libmtp strings are UTF-8
-* Rejig filenames - put id_###_file instead of file_###_id so that file extensions are correct
