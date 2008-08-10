@@ -21,8 +21,8 @@
 #include <QObject>
 #include <QPointer>
 
-#include <Phonon/path.h>
-#include <Phonon/mediasource.h> //Needed for the slot
+#include <Phonon/Path>
+#include <Phonon/MediaSource> //Needed for the slot
 
 class QTimer;
 
