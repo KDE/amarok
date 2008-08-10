@@ -378,9 +378,11 @@ void PlaylistBrowserNS::UserModel::createTables()
             ", title " + sqlStorage->textColumnType() +
             ", album " + sqlStorage->textColumnType() +
             ", artist " + sqlStorage->textColumnType() +
-            ", length INTEGER );" ) );
-    sqlStorage->query( "CREATE INDEX parent_playlists_tracks ON playlist_tracks( playlist_id );" );
+            ", length INTEGER "
+            ", uniqueid " + sqlStorage->textColumnType(128) + " UNIQUE);" ) );
 
+    sqlStorage->query( "CREATE INDEX parent_playlists_tracks ON playlist_tracks( playlist_id );" );
+    sqlStorage->query( "CREATE INDEX playlist_tracks_uniqueid ON playlist_tracks( uniqueid );" );
 
     sqlStorage->query( "INSERT INTO admin(component,version) "
             "VALUES('" + key + "'," + QString::number( USERPLAYLIST_DB_VERSION ) + ");" );

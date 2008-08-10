@@ -41,7 +41,7 @@ ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     , m_aftPermanentTables()
 {
     DEBUG_BLOCK
-    m_aftPermanentTables << "statistics" << "lyrics";
+    m_aftPermanentTables << "statistics" << "lyrics" << "playlist_tracks";
 }
 
 ScanResultProcessor::~ScanResultProcessor()
