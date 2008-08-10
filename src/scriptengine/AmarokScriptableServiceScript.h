@@ -21,59 +21,34 @@
 #include <QObject>
 #include <QtScript>
 
-class StreamItem : public QObject
-{
-    Q_OBJECT
+/*
+    class StreamRootItem
+    {
+        Q_PROPERTY( QString name READ name WRITE setName );
+        Q_PROPERTY( int levels READ levels WRITE setLevels );
+        Q_PROPERTY( int shortDescription READ shortDescription WRITE setShortDescription );
+        Q_PROPERTY( int rootHtml READ rootHtml WRITE setRootHtml );
+        Q_PROPERTY( int showSearchBar READ showSearchBar WRITE setShowSearchBar );
+    }
+*/    
+    class ScriptableServiceScript : public QObject
+    {
+        Q_OBJECT
 
-    Q_PROPERTY( QString name WRITE setName READ name )
-    Q_PROPERTY( QString infoHtml WRITE setInfoHtml READ infoHtml )
-    Q_PROPERTY( QString playableUrl WRITE setPlayableUrl READ playableUrl )
-    Q_PROPERTY( QString callbackData WRITE setCallbackData READ callbackData )
+        public:
+            ScriptableServiceScript( QScriptEngine* ScriptEngine );
+            ~ScriptableServiceScript();
+            void slotPopulate( int level, int parent_id, QString path, QString filter );
 
-    public:
-        StreamItem();
-        ~StreamItem();
+        public slots:
+            bool initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar );
+            int insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl);
+            void donePopulating( const QString &serviceName, int parentId );
 
-    private:
-        QString name() const;
-        QString infoHtml() const;
-        QString playableUrl() const;
-        QString callbackData() const;
-        void setName( QString name );
-        void setInfoHtml( QString infoHtml );
-        void setPlayableUrl( QString playableUrl );
-        void setCallbackData( QString callbackData );
+        signals:
+            void populate( int level, int parent_id, QString path, QString filter );
+    };
 
-        QString m_name;
-        QString m_infoHtml;
-        QString m_playableUrl;
-        QString m_callbackData;
-};
-
-class ScriptableServiceScript : public QObject, public QScriptable
-{
-    Q_OBJECT
-
-    public:
-        ScriptableServiceScript( QScriptEngine* engine );
-        ~ScriptableServiceScript();
-        void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
-
-    public slots:
-        int insertItem( int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData );
-
-    private:
-        int m_currentId;
-        QScriptEngine* m_scriptEngine;
-        QString m_serviceName;
-
-    private:
-        static QScriptValue ScriptableServiceScript_ctor( QScriptContext *context, QScriptEngine *engine );
-        static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
-
-};
-
-Q_DECLARE_METATYPE( StreamItem* )
 Q_DECLARE_METATYPE( ScriptableServiceScript* )
 
 #endif
