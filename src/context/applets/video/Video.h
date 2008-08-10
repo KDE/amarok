@@ -28,7 +28,7 @@
 #include "EngineObserver.h"
 
 #include <KDialog>
-#include <Phonon/VideoWidget>
+#include <Phonon/videowidget.h>
 
 #include <QGraphicsProxyWidget>
 #include <QTimeLine>

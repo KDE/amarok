@@ -34,10 +34,10 @@
 #include <KMessageBox>
 #include <KRun>
 
-#include <Phonon/AudioOutput>
-#include <Phonon/BackendCapabilities>
-#include <Phonon/MediaObject>
-#include <Phonon/VolumeFaderEffect>
+#include <Phonon/audiooutput.h>
+#include <Phonon/backendcapabilities.h>
+#include <Phonon/mediaobject.h>
+#include <Phonon/volumefadereffect.h>
 
 #include <QByteArray>
 #include <QFile>
