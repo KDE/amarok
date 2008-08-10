@@ -157,8 +157,8 @@ void
 ContextView::mousePressEvent( QMouseEvent* event )
 {
     DEBUG_BLOCK
-    event->accept();
-    QPointF pos = mapToScene( event->pos() );
+    // event->accept();
+    QPoint pos = mapToScene( event->pos() ).toPoint();
     debug() << "Event pos: " << event->pos();
     debug() << "mapFromScene pos: " << mapFromScene( event->pos() );
     debug() << "mapToScene pos: " << mapToScene( event->pos() );
@@ -166,9 +166,10 @@ ContextView::mousePressEvent( QMouseEvent* event )
     debug() << "view items at pos: " << items( event->pos() ).count();
     debug() << "scene items: " << scene()->items( mapToScene( event->pos() ) ).count();
 //     if( itemAt( pos.x(), pos.y() ) )
-    if( itemAt( event->pos() ) )
+    foreach( QGraphicsItem* item, items( event->pos() ) )
     {
-        Plasma::Applet* a = dynamic_cast<Plasma::Applet* >( scene()->itemAt( event->pos() ) );
+        debug() << "got an item under click, seeing if it is an applet, and its sceneBoundingRect: " << itemAt( event->pos() )->sceneBoundingRect();
+        Plasma::Applet* a = dynamic_cast<Plasma::Applet* >( item );
         if( a )
         {
             debug() << "cast successful";
@@ -181,10 +182,6 @@ ContextView::mousePressEvent( QMouseEvent* event )
 //             else if( a->containment() )
 //                 setContainment( a->containment() );
         }
-    }
-    else
-    {
-        debug() << "OUTside item";
     }
     debug() << "scene rect:" << scene()->sceneRect();
     QGraphicsView::mousePressEvent( event );
