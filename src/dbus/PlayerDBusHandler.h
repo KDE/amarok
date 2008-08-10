@@ -73,7 +73,9 @@ namespace Amarok
             DBusStatus GetStatus();
             void Pause();
             void Play();
-            void PlayPause();
+            void Prev();
+            void Next();
+            void Repeat(bool on);
             int PositionGet();
             void PositionSet(int time);
             void Stop();

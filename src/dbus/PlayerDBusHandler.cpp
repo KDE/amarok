@@ -24,6 +24,7 @@
 #include "meta/Meta.h"
 #include "PlayerAdaptor.h"
 #include "playlist/PlaylistModel.h"
+#include "ActionClasses.h"
 
 // Marshall the DBusStatus data into a D-BUS argument
 QDBusArgument &operator<<(QDBusArgument &argument, const DBusStatus &status)
@@ -71,6 +72,10 @@ namespace Amarok
         connect( The::engineController(), SIGNAL( trackFinished() ), this, SLOT( slotStatusChange() ) );
         connect( The::engineController(), SIGNAL( trackPlayPause( int ) ), this, SLOT( slotStatusChange() ) );
         connect( this, SIGNAL( StatusChange( DBusStatus ) ), this, SLOT( slotCapsChange() ) );
+
+        SelectAction* repeatAction = qobject_cast<SelectAction*>( Amarok::actionCollection()->action( "repeat" ) );
+        Q_ASSERT( repeatAction );
+        connect( repeatAction, SIGNAL( triggered( int ) ), this, SLOT( slotStatusChange() ) );
     }
 
     DBusStatus PlayerDBusHandler::GetStatus()
@@ -98,16 +103,11 @@ namespace Amarok
             status.Repeat = 1;
         else
             status.Repeat = 0;
-        if ( Amarok::repeatPlaylist() || AmarokConfig::randomMode() )
+        if ( Amarok::repeatPlaylist() || Amarok::repeatAlbum() || AmarokConfig::randomMode() )
             status.RepeatPlaylist = 1;
         else
             status.RepeatPlaylist = 0; //the music will not end if we play random
         return status;
-    }
-
-    void PlayerDBusHandler::PlayPause()
-    {
-        The::engineController() ->playPause();
     }
 
     void PlayerDBusHandler::Pause()
@@ -117,7 +117,33 @@ namespace Amarok
 
     void PlayerDBusHandler::Play()
     {
-        The::engineController() ->play();
+        The::engineController()->play();
+    }
+
+    void PlayerDBusHandler::Next()
+    {
+        The::playlistModel()->next();
+    }
+
+    void PlayerDBusHandler::Prev()
+    {
+        The::playlistModel()->back();
+    }
+
+    void PlayerDBusHandler::Repeat( bool on )
+    {
+        kDebug() << (on ? "Turning repeat on" : "Turning repeat off");
+        if ( on == Amarok::repeatTrack() ) {
+            // Don't turn off repeatAlbum or repeatPlaylist because
+            // we were asked to turn off repeatTrack
+            return;
+        }
+
+        SelectAction* repeatAction = qobject_cast<SelectAction*>( Amarok::actionCollection()->action( "repeat" ) );
+        Q_ASSERT(repeatAction);
+
+        repeatAction->setCurrentItem( on ? (int)AmarokConfig::EnumRepeat::Track
+                                         : (int)AmarokConfig::EnumRepeat::Off );
     }
 
     //position is specified in milliseconds

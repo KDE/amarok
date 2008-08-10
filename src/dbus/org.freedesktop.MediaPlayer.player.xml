@@ -14,7 +14,14 @@
     <method name="Play">
     </method>
 
-    <method name="PlayPause">
+    <method name="Prev">
+    </method>
+
+    <method name="Next">
+    </method>
+
+    <method name="Repeat">
+        <arg type="b" direction="in"/>
     </method>
 
     <method name="GetStatus">

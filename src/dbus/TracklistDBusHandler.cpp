@@ -24,6 +24,7 @@
 //#include "mediabrowser.h"
 #include "playlist/PlaylistModel.h"
 #include "dbus/PlayerDBusHandler.h"
+#include "ActionClasses.h"
 
 
 #include <KUrl>
@@ -83,13 +84,13 @@ namespace Amarok
 
     void TracklistDBusHandler::SetLoop(bool enable)
     {
-        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
+        static_cast<SelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
         ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
     }
 
     void TracklistDBusHandler::SetRandom( bool enable )
     {
-        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "random_mode" ) )
+        static_cast<SelectAction*>( Amarok::actionCollection()->action( "random_mode" ) )
         ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
     }
 
