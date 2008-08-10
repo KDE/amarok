@@ -96,7 +96,7 @@ Dynamic::DynamicPlaylistPtr
 PlaylistBrowserNS::DynamicModel::createDefaultPlaylist()
 {
     return Dynamic::DynamicPlaylistPtr(
-        new Dynamic::BiasedPlaylist( "Random Playlist", QList<Dynamic::Bias*>() ) );
+        new Dynamic::BiasedPlaylist( i18n( "Random Playlist" ), QList<Dynamic::Bias*>() ) );
 }
 
 void
@@ -476,5 +476,3 @@ PlaylistBrowserNS::DynamicModel::universeNeedsUpdate()
 {
     Dynamic::BiasSolver::outdateUniverse();
 }
-
-

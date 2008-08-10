@@ -186,7 +186,7 @@ MediaBrowser::MediaBrowser( const char * /*name*/ )
     m_toolbar->addSeparator();
 
    // m_toolbar->setIconText( KToolBar::IconTextRight, true );
-    m_customAction = new KAction(KIcon( "list-add-amarok" ), i18n("custom"), this);
+    m_customAction = new KAction(KIcon( "list-add-amarok" ), i18n("Custom"), this);
     connect(m_customAction, SIGNAL(triggered()), this, SLOT(customClicked()));
     m_customAction->setText( i18n("Special Device Functions") );
     m_customAction->setToolTip( i18n("Device-specific special functions or information") );
@@ -1259,7 +1259,7 @@ MediaBrowser::unloadDevicePlugin( MediaDevice *device )
 bool
 MediaBrowser::config()
 {
-    if( m_deviceCombo->currentText() == "No Device Available" )
+    if( m_deviceCombo->currentText() == i18n( "No Device Available" ) )
     {
         //The::statusBar()->longMessage( i18n( "No device selected to configure." ),
         //                                               KDE::StatusBar::Sorry );

@@ -236,9 +236,9 @@ PlaylistBrowserNS::PodcastModel::headerData(int section, Qt::Orientation orienta
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
         {
-            case 0: return QString("Type");
-            case 1: return QString("Title");
-            case 2: return QString("Summary");
+            case 0: return i18n("Type");
+            case 1: return i18n("Title");
+            case 2: return i18n("Summary");
             default: return QVariant();
         }
     }
@@ -277,7 +277,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
     {
         bool ok;
         QString url = QInputDialog::getText( 0,
-                            QString("Amarok"), i18n("Enter Podcast URL:"), QLineEdit::Normal,
+                            i18n("Amarok"), i18n("Enter Podcast URL:"), QLineEdit::Normal,
                             QString(), &ok );
         if ( ok && !url.isEmpty() ) {
         // user entered something and pressed OK

@@ -44,7 +44,7 @@ void  Mp3TunesTrack::setType( const QString &type )
 }
 
 QString Mp3TunesTrack::sourceName() { return "MP3tunes.com"; }
-QString Mp3TunesTrack::sourceDescription() { return "Online music locker where you can safely store and access your music: http://mp3tunes.com"; }
+QString Mp3TunesTrack::sourceDescription() { return i18n( "Online music locker where you can safely store and access your music: http://mp3tunes.com" ); }
 QPixmap Mp3TunesTrack::emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-mp3tunes.png" );  }
 
 //// Mp3TunesAlbum ////

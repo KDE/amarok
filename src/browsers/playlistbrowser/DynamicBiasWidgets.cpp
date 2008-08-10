@@ -246,8 +246,8 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
     m_fieldSelection = new KComboBox( m_controlFrame );
     m_fieldSelection->setPalette( QApplication::palette() );
 
-    m_controlLayout->addWidget( new QLabel( "Proportion:", m_controlFrame ), 0, 0 );
-    m_controlLayout->addWidget( new QLabel( "Match:", m_controlFrame ), 1, 0 );
+    m_controlLayout->addWidget( new QLabel( i18n( "Proportion:" ), m_controlFrame ), 0, 0 );
+    m_controlLayout->addWidget( new QLabel( i18n( "Match:" ), m_controlFrame ), 1, 0 );
 
     m_controlLayout->addWidget( m_weightSelection, 0, 1 );
     m_controlLayout->addWidget( m_weightLabel, 0, 1 );
@@ -287,21 +287,21 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
 {
     m_fieldSelection->addItem( "", (qint64)0 );
-    m_fieldSelection->addItem( "Artist", QueryMaker::valArtist );
-    m_fieldSelection->addItem( "Composer", QueryMaker::valComposer );
-    m_fieldSelection->addItem( "Album",  QueryMaker::valAlbum );
-    m_fieldSelection->addItem( "Title",  QueryMaker::valTitle );
-    m_fieldSelection->addItem( "Genre",  QueryMaker::valGenre );
-    m_fieldSelection->addItem( "Year",   QueryMaker::valYear );
-    m_fieldSelection->addItem( "Play Count", QueryMaker::valPlaycount );
-    m_fieldSelection->addItem( "Rating", QueryMaker::valRating );
-    m_fieldSelection->addItem( "Score", QueryMaker::valScore );
-    m_fieldSelection->addItem( "Length", QueryMaker::valLength );
-    m_fieldSelection->addItem( "Track #", QueryMaker::valTrackNr );
-    m_fieldSelection->addItem( "Disc #", QueryMaker::valDiscNr );
-    m_fieldSelection->addItem( "First Played", QueryMaker::valFirstPlayed );
-    m_fieldSelection->addItem( "Last Played", QueryMaker::valLastPlayed );
-    m_fieldSelection->addItem( "Comment", QueryMaker::valComment );
+    m_fieldSelection->addItem( i18n( "Artist" ), QueryMaker::valArtist );
+    m_fieldSelection->addItem( i18n( "Composer" ), QueryMaker::valComposer );
+    m_fieldSelection->addItem( i18n( "Album" ), QueryMaker::valAlbum );
+    m_fieldSelection->addItem( i18n( "Title" ), QueryMaker::valTitle );
+    m_fieldSelection->addItem( i18n( "Genre" ), QueryMaker::valGenre );
+    m_fieldSelection->addItem( i18n( "Year" ), QueryMaker::valYear );
+    m_fieldSelection->addItem( i18n( "Play Count" ), QueryMaker::valPlaycount );
+    m_fieldSelection->addItem( i18n( "Rating" ), QueryMaker::valRating );
+    m_fieldSelection->addItem( i18n( "Score" ), QueryMaker::valScore );
+    m_fieldSelection->addItem( i18n( "Length" ), QueryMaker::valLength );
+    m_fieldSelection->addItem( i18n( "Track #" ), QueryMaker::valTrackNr );
+    m_fieldSelection->addItem( i18n( "Disc #" ), QueryMaker::valDiscNr );
+    m_fieldSelection->addItem( i18n( "First Played" ), QueryMaker::valFirstPlayed );
+    m_fieldSelection->addItem( i18n( "Last Played" ), QueryMaker::valLastPlayed );
+    m_fieldSelection->addItem( i18n( "Comment" ), QueryMaker::valComment );
 }
 
 void
@@ -390,7 +390,7 @@ PlaylistBrowserNS::BiasGlobalWidget::setValueSelection( QWidget* w )
 {
     if( m_withLabel == 0 )
     {
-        m_withLabel = new QLabel( "With:", m_controlFrame );
+        m_withLabel = new QLabel( i18n( "With:" ), m_controlFrame );
         m_controlLayout->addWidget( m_withLabel, 2, 0 );
     }
 
@@ -442,9 +442,9 @@ PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection( QWidget* parent )
     m_compareSelection = new KComboBox( parent );
     m_compareSelection->setPalette( QApplication::palette() );
     m_compareSelection->addItem( "", -1 );
-    m_compareSelection->addItem( "less than",    (int)QueryMaker::LessThan );
-    m_compareSelection->addItem( "equal to",     (int)QueryMaker::Equals );
-    m_compareSelection->addItem( "greater than", (int)QueryMaker::GreaterThan );
+    m_compareSelection->addItem( i18n( "less than" ),    (int)QueryMaker::LessThan );
+    m_compareSelection->addItem( i18n( "equal to" ),     (int)QueryMaker::Equals );
+    m_compareSelection->addItem( i18n( "greater than" ), (int)QueryMaker::GreaterThan );
 
     connect( m_compareSelection, SIGNAL(currentIndexChanged(int)),
             SLOT(compareChanged(int)) );
@@ -668,8 +668,8 @@ PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias
     m_fieldSelection = new KComboBox( m_controlFrame );
     m_fieldSelection->setPalette( QApplication::palette() );
 
-    m_controlLayout->addWidget( new QLabel( "Strictness:", m_controlFrame ), 0, 0 );
-    m_controlLayout->addWidget( new QLabel( "Match:", m_controlFrame ), 1, 0 );
+    m_controlLayout->addWidget( new QLabel( i18n( "Strictness:" ), m_controlFrame ), 0, 0 );
+    m_controlLayout->addWidget( new QLabel( i18n( "Match:" ), m_controlFrame ), 1, 0 );
 
     m_controlLayout->addWidget( m_scaleSelection, 0, 1 );
     m_controlLayout->addWidget( m_scaleLabel, 0, 1 );
@@ -692,15 +692,15 @@ void
 PlaylistBrowserNS::BiasNormalWidget::popuplateFieldSection()
 {
     m_fieldSelection->addItem( "", (qint64)0 );
-    m_fieldSelection->addItem( "Year",   QueryMaker::valYear );
-    m_fieldSelection->addItem( "Play Count", QueryMaker::valPlaycount );
-    m_fieldSelection->addItem( "Rating", QueryMaker::valRating );
-    m_fieldSelection->addItem( "Score", QueryMaker::valScore );
-    m_fieldSelection->addItem( "Length", QueryMaker::valLength );
-    m_fieldSelection->addItem( "Track #", QueryMaker::valTrackNr );
-    m_fieldSelection->addItem( "Disc #", QueryMaker::valDiscNr );
-    m_fieldSelection->addItem( "First Played", QueryMaker::valFirstPlayed );
-    m_fieldSelection->addItem( "Last Played", QueryMaker::valLastPlayed );
+    m_fieldSelection->addItem( i18n( "Year" ), QueryMaker::valYear );
+    m_fieldSelection->addItem( i18n( "Play Count" ), QueryMaker::valPlaycount );
+    m_fieldSelection->addItem( i18n( "Rating" ), QueryMaker::valRating );
+    m_fieldSelection->addItem( i18n( "Score" ), QueryMaker::valScore );
+    m_fieldSelection->addItem( i18n( "Length" ), QueryMaker::valLength );
+    m_fieldSelection->addItem( i18n( "Track #" ), QueryMaker::valTrackNr );
+    m_fieldSelection->addItem( i18n( "Disc #" ), QueryMaker::valDiscNr );
+    m_fieldSelection->addItem( i18n( "First Played" ), QueryMaker::valFirstPlayed );
+    m_fieldSelection->addItem( i18n( "Last Played" ), QueryMaker::valLastPlayed );
 }
 
 void
@@ -708,7 +708,7 @@ PlaylistBrowserNS::BiasNormalWidget::setValueSelection( QWidget* w )
 {
     if( m_withLabel == 0 )
     {
-        m_withLabel = new QLabel( "With:", m_controlFrame );
+        m_withLabel = new QLabel( i18n( "With:" ), m_controlFrame );
         m_controlLayout->addWidget( m_withLabel, 2, 0 );
     }
 
@@ -871,4 +871,3 @@ PlaylistBrowserNS::BiasNormalWidget::makeDateTimeSelection()
 }
 
 #include "DynamicBiasWidgets.moc"
-

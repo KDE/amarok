@@ -28,6 +28,8 @@
 #include "MooseCommon.h"
 #include "logger.h"
 
+#include <KLocale>
+
 #define SKIP_LIMIT_ENABLEDx
 
 Radio::Radio( QObject* parent ) :
@@ -188,7 +190,7 @@ Radio::trackToIdReturn( Request* _r )
         playStation( StationUrl( "lastfm://play/tracks/" + QString::number( r->id() ) ) );
     else
         emit error( Radio_InvalidUrl, 
-                    tr( "Sorry, this track isn't in the Last.fm catalog, and thus cannot be streamed." ) 
+                    i18n( "Sorry, this track isn't in the Last.fm catalog, and thus cannot be streamed." ) 
                     + "<p>" + r->track().toString());
 #endif
 }
@@ -456,7 +458,7 @@ Radio::resumeStation()
 
             // Putting this back for now as personal radio aren't available to non-subscribers
             emit error( Radio_IllegalResume,
-                tr( "Can't resume a station without having listened to one first." ) );
+                i18n( "Can't resume a station without having listened to one first." ) );
         }
 
         playStation( url );
@@ -555,7 +557,7 @@ Radio::skip()
         }
         else
         {
-            emit error( Radio_SkipLimitExceeded, tr( "Skip limit exceeded." ) );
+            emit error( Radio_SkipLimitExceeded, i18n( "Skip limit exceeded." ) );
         }   
     #else
         m_audioController.loadNext();

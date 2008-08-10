@@ -219,7 +219,7 @@ PlaylistBrowserNS::UserModel::headerData(int section, Qt::Orientation orientatio
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
         {
-            case 0: return QString("Name");
+            case 0: return i18n("Name");
             default: return QVariant();
         }
     }

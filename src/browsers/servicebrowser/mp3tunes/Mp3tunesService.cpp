@@ -337,7 +337,7 @@ void Mp3tunesService::harmonyError( const QString &error )
 {
     DEBUG_BLOCK
     debug() << "Harmony Error: " << error;
-    The::statusBar()->longMessage( "Mp3tunes Harmony Error\n" + error );
+    The::statusBar()->longMessage( i18n( "Mp3tunes Harmony Error\n%1", error ) );
 }
 
 void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &download )

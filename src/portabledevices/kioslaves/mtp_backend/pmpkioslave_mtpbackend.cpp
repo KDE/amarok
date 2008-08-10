@@ -159,7 +159,7 @@ MTPBackend::del( const KUrl &url, bool isfile )
     QString path = getFilePath( url );
     if( getUIDFromPath( path ) == 0 )
     {
-        m_slave->error( KIO::ERR_INTERNAL, "URL does not contain the MTP id!" );
+        m_slave->error( KIO::ERR_INTERNAL, i18n( "URL does not contain the MTP id!" ) );
         return;
     }
     if( getObjectType( url ) == MTPBackend::TRACK ||

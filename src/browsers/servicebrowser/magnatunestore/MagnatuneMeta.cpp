@@ -267,7 +267,7 @@ QString Meta::MagnatuneTrack::sourceName()
 
 QString Meta::MagnatuneTrack::sourceDescription()
 {
-    return "The non evil record label that is fair to artists and customers alike";
+    return i18n( "The non evil record label that is fair to artists and customers alike" );
 }
 
 QPixmap Meta::MagnatuneTrack::emblem()

@@ -36,14 +36,14 @@ PMPDevice::initialize()
     if( !m_device.isValid() )
     {
         m_slave->error( KIO::ERR_CANNOT_OPEN_FOR_READING,
-                "portable media player : Device not found by Solid.  Ensure the device is turned on, you have permission to access it, and that the UDI's forward slashes are replaced by periods" );
+                i18n( "portable media player : Device not found by Solid.  Ensure the device is turned on, you have permission to access it, and that the UDI's forward slashes are replaced by periods" ) );
         return;
     }
 
     Solid::PortableMediaPlayer *pmp = m_device.as<Solid::PortableMediaPlayer>();
     if( !pmp )
     {
-        m_slave->error( KIO::ERR_CANNOT_OPEN_FOR_READING, QString( "device : Device %1 is not a portable media player" ).arg( m_device.udi() ) );
+        m_slave->error( KIO::ERR_CANNOT_OPEN_FOR_READING, i18n( "device : Device %1 is not a portable media player" ).arg( m_device.udi() ) );
         return;
     }
 
@@ -57,7 +57,7 @@ PMPDevice::initialize()
     }
 #endif
 
-    m_slave->error( KIO::ERR_CANNOT_OPEN_FOR_READING, "device : No supported protocol found" );
+    m_slave->error( KIO::ERR_CANNOT_OPEN_FOR_READING, i18n( "device : No supported protocol found" ) );
     return;
 }
 

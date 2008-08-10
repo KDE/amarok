@@ -27,6 +27,8 @@
 
 #include <QDomDocument>
 
+#include <KLocale>
+
 // Re=request XSPF when queue falls below this size
 static const int k_minQueueSize = 2;
 
@@ -214,7 +216,7 @@ RadioPlaylist::parseXspf( QByteArray& xspf )
         // finish properly on reaching the end.
         m_allXspfRetrieved = true;
         
-        QString err = tr( "The playlist could not be read. Error:\n\n%1" ).arg( e.what() );
+        QString err = i18n( "The playlist could not be read. Error:\n\n%1", e.what() );
         emit error( Radio_BadPlaylist, err );
     }
 

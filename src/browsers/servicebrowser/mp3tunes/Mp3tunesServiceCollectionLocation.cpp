@@ -39,7 +39,7 @@ Mp3tunesServiceCollectionLocation::~Mp3tunesServiceCollectionLocation()
 
 QString Mp3tunesServiceCollectionLocation::prettyLocation() const
 {
-    return "MP3tunes Locker";
+    return i18n( "MP3tunes Locker" );
 }
 
 bool Mp3tunesServiceCollectionLocation::isWritable() const

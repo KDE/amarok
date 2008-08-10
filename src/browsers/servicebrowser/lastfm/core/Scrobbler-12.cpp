@@ -737,22 +737,22 @@ Scrobbler::errorDescription( Scrobbler::Error error )
     switch ( error )
     {
         case Scrobbler::ErrorBadSession:
-            return tr( "Bad session" );
+            return i18n( "Bad session" );
 
         case Scrobbler::ErrorBannedClient:
-            return tr( "Client too old" );
+            return i18n( "Client too old" );
 
         case Scrobbler::ErrorBadAuthorisation:
-            return tr( "Wrong username / password" );
+            return i18n( "Wrong username / password" );
 
         case Scrobbler::ErrorBadTime:
-            return tr( "Wrong timezone" );
+            return i18n( "Wrong timezone" );
 
         case Scrobbler::ErrorNotInitialized:
-            return tr( "Could not reach server" );
+            return i18n( "Could not reach server" );
 
         default:
-            return "OK";
+            return i18n( "OK" );
     }
 }
 

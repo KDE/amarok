@@ -455,7 +455,7 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent )
 
     connect( hideMenu, SIGNAL( triggered() ), this, SLOT( hide() ) );
     m_hideIcon->setAction( hideMenu );
-    m_hideIcon->setToolTip( "Hide menu" );
+    m_hideIcon->setToolTip( i18n( "Hide menu" ) );
     QSizeF iconSize = m_hideIcon->sizeFromIconSize( 22 );
 
     m_hideIcon->setMinimumSize( iconSize );

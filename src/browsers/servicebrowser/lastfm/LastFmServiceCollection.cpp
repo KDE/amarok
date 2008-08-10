@@ -33,11 +33,11 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
 
     m_userName = userName;
 
-    Meta::ServiceGenre * userStreams = new Meta::ServiceGenre( userName +"'s Streams" );
+    Meta::ServiceGenre * userStreams = new Meta::ServiceGenre( i18n( "%1's Streams", userName ) );
     Meta::GenrePtr userStreamsPtr( userStreams );
     addGenre( userStreamsPtr );
 
-    Meta::ServiceGenre * globalTags = new Meta::ServiceGenre( "Global Tags" );
+    Meta::ServiceGenre * globalTags = new Meta::ServiceGenre( i18n( "Global Tags" ) );
     Meta::GenrePtr globalTagsPtr( globalTags );
     addGenre( globalTagsPtr );
 

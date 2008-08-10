@@ -148,7 +148,7 @@ QString LastFm::Track::fixedName() const
 {
 
     //unless this is a stream for a single track, return the generic name
-    if ( streamName() != "Track Radio" )
+    if ( streamName() != i18n( "Track Radio" ) )
         return streamName();
     else
         return name();

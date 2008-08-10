@@ -62,13 +62,13 @@ SearchWidget::init( QWidget *parent )
     m_sw->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_sw->setClearButtonShown( true );
     m_sw->setFrame( true );
-    m_sw->setToolTip( i18n(  "Enter space-separated terms to search in the playlist." ) );
+    m_sw->setToolTip( i18n( "Enter space-separated terms to search in the playlist." ) );
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( searchBox );
     layout->setContentsMargins( 0, 0, 0, 0 );
     setLayout( layout );
 
-    m_filterButton = new KPushButton( "Advanced", searchBox );
+    m_filterButton = new KPushButton( i18n( "Advanced" ), searchBox );
     //m_filterButton->setFlat( true ); //TODO: maybe?
     m_filterButton->setObjectName( "filter" );
     m_filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );

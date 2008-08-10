@@ -49,9 +49,9 @@ JamendoInfoParser::getInfo(ArtistPtr artist)
         description = i18n( "No description available..." );
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
-                       "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
+                       "CONTENT=\"text/html; charset=utf-8\"></HEAD><BODY>";
     infoHtml +=        "<div align=\"center\">";
-    infoHtml +=        "Artist<br><br>";
+    infoHtml +=        i18n( "Artist" ) + "<br><br>";
     infoHtml +=        "<strong>";
     infoHtml +=        jamendoArtist->fullPrettyName();
     infoHtml +=        "</strong><br><br><em>";
@@ -61,7 +61,7 @@ JamendoInfoParser::getInfo(ArtistPtr artist)
                        "\" align=\"middle\" border=\"1\"><br><br>";
 
     infoHtml +=        description;
-    infoHtml +=        "<br><br>From Jamendo.com</div>";
+    infoHtml +=        "<br><br>" + i18n( "From Jamendo.com" ) + "</div>";
     infoHtml +=        "</BODY></HTML>";
 
     emit( info( infoHtml ) );
@@ -81,9 +81,9 @@ JamendoInfoParser::getInfo(AlbumPtr album)
 
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
-                       "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
+                       "CONTENT=\"text/html; charset=utf-8\"></HEAD><BODY>";
     infoHtml +=        "<div align=\"center\">";
-    infoHtml +=        "Album<br><br>";
+    infoHtml +=        i18n( "Album" ) + "<br><br>";
     infoHtml +=        "<strong>";
     infoHtml +=        jamendoAlbum->fullPrettyName();
     infoHtml +=        "</strong><br><br><em>";
@@ -93,7 +93,7 @@ JamendoInfoParser::getInfo(AlbumPtr album)
                        "\" align=\"middle\" border=\"1\"><br><br>";
 
     infoHtml +=        description;
-    infoHtml +=        "<br><br>From Jamendo.com</div>";
+    infoHtml +=        "<br><br>" + i18n( "From Jamendo.com" ) + "</div>";
     infoHtml +=        "</BODY></HTML>";
 
     emit( info( infoHtml ) );
@@ -107,13 +107,13 @@ JamendoInfoParser::getInfo(TrackPtr track)
     if ( jamendoTrack == 0) return;
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
-                       "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
+                       "CONTENT=\"text/html; charset=utf-8\"></HEAD><BODY>";
     infoHtml +=        "<div align=\"center\">";
-    infoHtml +=        "Track<br><br>";
+    infoHtml +=        i18n( "Track" ) + "<br><br>";
     infoHtml +=        "<strong>";
     infoHtml +=        jamendoTrack->fullPrettyName();
     infoHtml +=        "</strong><br><br><em>";
-    infoHtml +=        "<br><br>From Jamendo.com</div>";
+    infoHtml +=        "<br><br>" + i18n( "From Jamendo.com" ) + "</div>";
     infoHtml +=        "</BODY></HTML>";
 
     emit( info( infoHtml ) );

@@ -56,7 +56,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
     const QString artistName = album->albumArtist()->name();
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
-                       "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
+                       "CONTENT=\"text/html; charset=utf-8\"></HEAD><BODY>";
 
     infoHtml += "<div align=\"center\"><strong>";
     infoHtml += artistName;
@@ -66,17 +66,17 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
     infoHtml += "<img src=\"" + magnatuneAlbum->coverUrl() +
                 "\" align=\"middle\" border=\"1\">";
 
-    infoHtml += "<br><br>Genre: ";// + magnatuneAlbum->
-    infoHtml += "<br>Release Year: " + QString::number( magnatuneAlbum->launchYear() );
+    infoHtml += "<br><br>" + i18n( "Genre: ");// + magnatuneAlbum->
+    infoHtml += "<br>" + i18n( "Release Year: ") + QString::number( magnatuneAlbum->launchYear() );
 
     if ( !magnatuneAlbum->description().isEmpty() ) {
 
         //debug() << "MagnatuneInfoParser: Writing description: '" << album->getDescription() << "'";
-        infoHtml += "<br><br><b>Description:</b><br><p align=\"left\" >" + magnatuneAlbum->description();
+        infoHtml += "<br><br><b>" + i18n( "Description:" ) + "</b><br><p align=\"left\" >" + magnatuneAlbum->description();
 
     }
 
-    infoHtml += "</p><br><br>From Magnatune.com</div>";
+    infoHtml += "</p><br><br>" + i18n( "From Magnatune.com" ) + "</div>";
     infoHtml += "</BODY></HTML>";
 
     emit ( info( infoHtml ) );

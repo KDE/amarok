@@ -75,7 +75,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     KHBox* presetLayout = new KHBox( this );
 
 
-    QLabel* presetLabel = new QLabel( "Playlist:", presetLayout );
+    QLabel* presetLabel = new QLabel( i18n( "Playlist:" ), presetLayout );
 
     m_presetComboBox = new KComboBox( presetLayout );
     m_presetComboBox->setPalette( QApplication::palette() );
@@ -257,7 +257,7 @@ DynamicCategory::save()
     // place
     if( title == DynamicModel::instance()->defaultPlaylist()->title() )
     {
-        QMessageBox::warning( this, "Warning!", "Can not overwrite the random playlist." );
+        QMessageBox::warning( this, i18n( "Warning!" ), i18n( "Can not overwrite the random playlist." ) );
         return;
     }
 
@@ -268,4 +268,3 @@ DynamicCategory::save()
 
 
 #include "DynamicCategory.moc"
-

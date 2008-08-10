@@ -434,7 +434,7 @@ MediaItem::createToolTip()
                     {
                         if( !text.isEmpty() )
                             text += "<br>";
-                        text += QString( "<i>Genre: %1</i>" )
+                        text += i18n( "<i>Genre: %1</i>" )
                                 .arg( track->genre()->name() );
                     }
                 }

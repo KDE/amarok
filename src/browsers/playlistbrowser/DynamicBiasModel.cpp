@@ -26,6 +26,8 @@
 
 #include <QVariant>
 
+#include <KLocale>
+
 #include <typeinfo>
 
 PlaylistBrowserNS::DynamicBiasModel::DynamicBiasModel( QListView* listView )
@@ -77,8 +79,8 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
 
         PlaylistBrowserNS::BiasAddWidget* globalAdder =
             new PlaylistBrowserNS::BiasAddWidget(
-                    "Proportional Bias",
-                    "Match a certain portion of the playlist to a value.",
+                    i18n( "Proportional Bias" ),
+                    i18n( "Match a certain portion of the playlist to a value." ),
                     m_listView->viewport() );
         if( !m_widgets.isEmpty() )
             globalAdder->setAlternate( !m_widgets.back()->alternate() );
@@ -94,8 +96,8 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
 
         PlaylistBrowserNS::BiasAddWidget* normalAdder =
             new PlaylistBrowserNS::BiasAddWidget(
-                    "Fuzzy Bias",
-                    "Losely match the playlist to an approximate value.",
+                    i18n( "Fuzzy Bias" ),
+                    i18n( "Losely match the playlist to an approximate value." ),
                     m_listView->viewport() );
 
         if( !m_widgets.isEmpty() )

@@ -170,7 +170,7 @@ Meta::JamendoTrack::sourceName()
 QString
 Meta::JamendoTrack::sourceDescription()
 {
-    return "A site where artists can freely share their music";
+    return i18n( "A site where artists can freely share their music" );
 }
 
 QPixmap
