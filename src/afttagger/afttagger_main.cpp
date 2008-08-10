@@ -213,6 +213,19 @@ void processPath( const QString &path )
                         if( currFrame )
                         {
                             QString owner = TStringToQString( currFrame->owner() );
+                            if( owner.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
+                            {
+                                if( verbose )
+                                    qDebug() << "INFO: Removing old-style ATF identifier";
+
+                                iter = frameList.erase( iter );
+                                file->ID3v2Tag()->removeFrame( currFrame );
+                                file->save();
+                                if( !removeid )
+                                    newUid = true;
+                                else
+                                    continue;
+                            }
                             if( owner.startsWith( "Amarok 2 AFT" ) )
                             {
                                 if( verbose )
