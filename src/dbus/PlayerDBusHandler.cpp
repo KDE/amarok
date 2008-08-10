@@ -20,6 +20,7 @@
 
 #include "amarokconfig.h"
 #include "App.h"
+#include "Debug.h"
 #include "EngineController.h"
 #include "meta/Meta.h"
 #include "PlayerAdaptor.h"
@@ -132,7 +133,7 @@ namespace Amarok
 
     void PlayerDBusHandler::Repeat( bool on )
     {
-        kDebug() << (on ? "Turning repeat on" : "Turning repeat off");
+        debug() << (on ? "Turning repeat on" : "Turning repeat off");
         if ( on == Amarok::repeatTrack() ) {
             // Don't turn off repeatAlbum or repeatPlaylist because
             // we were asked to turn off repeatTrack
