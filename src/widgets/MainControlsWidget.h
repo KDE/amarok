@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,54 +16,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef MAINCONTROLSWIDGET_H
+#define MAINCONTROLSWIDGET_H
 
-#ifndef MAINTOOLBAR_H
-#define MAINTOOLBAR_H
-
-#include "EngineObserver.h" //baseclass
-
-#include <KHBox>
-
-class PopupDropperAction;
-class KToolBar;
-class VolumeWidget;
+#include <QWidget>
+#include <QToolButton>
 
 /**
-A KHBox based toolbar with a nice svg background and takes care of adding any additional controls needed by individual tracks
+A small widget containing the 4 main control buttons. Manages special layout for these butons
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class MainToolbar : public KHBox, public EngineObserver
+class MainControlsWidget : public QWidget
 {
 public:
-    MainToolbar( QWidget * parent );
+    MainControlsWidget( QWidget * parent );
 
-    ~MainToolbar();
-
-    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
-
-    void reRender();
-
+    ~MainControlsWidget();
+    
 protected:
-      virtual void paintEvent( QPaintEvent * );
-      virtual void resizeEvent( QResizeEvent * event );
-      virtual bool eventFilter( QObject*, QEvent* );
-      virtual void paletteChange( const QPalette & oldPalette );
-      void handleAddActions();
-      //void centerAddActions();
+    virtual void paintEvent( QPaintEvent * );
 
 private:
-    QWidget      *m_insideBox;
-    KToolBar     *m_addControlsToolbar;
-    VolumeWidget *m_volumeWidget;
 
-    bool m_renderAddControls;
-    int m_addActionsOffsetX;
-
-    bool m_ignoreCache;
-
-    QList<PopupDropperAction *> m_additionalActions;
+    QToolButton * m_prevButton;
+    QToolButton * m_playButton;
+    QToolButton * m_stopButton;
+    QToolButton * m_nextButton;
+    
 };
 
 #endif

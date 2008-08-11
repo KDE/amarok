@@ -46,6 +46,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     m_slider = new Amarok::TimeSlider( /*Qt::Horizontal,*/ this );
     m_slider->setMouseTracking( true );
     m_slider->setToolTip( i18n( "Track Progress" ) );
+    m_slider->setMaximumSize( 600000, 20 );
 
     m_timeLabelLeft = new TimeLabel( this );
     m_timeLabelLeft->setToolTip( i18n( "The amount of time elapsed in current song" ) );
@@ -72,6 +73,8 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 
     connect( m_slider, SIGNAL(sliderReleased( int )), The::engineController(), SLOT(seek( int )) );
     connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
+
+    setBackgroundRole( QPalette::BrightText );
 }
 
 void
@@ -203,6 +206,13 @@ void
 ProgressWidget::engineNewTrackPlaying()
 {
     engineTrackLengthChanged( The::engineController()->trackLength() );
+}
+
+QSize ProgressWidget::sizeHint() const
+{
+    DEBUG_BLOCK
+    int height = fontMetrics().boundingRect( "123456789:-" ).height();
+    return QSize( width(), 12 );
 }
 
 #include "ProgressSlider.moc"

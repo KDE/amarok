@@ -149,36 +149,71 @@ Amarok::Slider::setValue( int newValue )
 
 void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos )
 {
-    static const short side = 5; // Size of the rounded parts.
 
-    double knobX;
-    if( pos < 0 )
-        knobX = ( width - height ) * ( ( double ) value() / 100.0 );
-    else
-        knobX = pos;
+    DEBUG_BLOCK
 
-    p->drawPixmap( x + side, y, The::svgHandler()->renderSvg( "slider_center", width - side * 2, height, "slider_center" ) );
-    p->drawPixmap( x, y, The::svgHandler()->renderSvg( "slider_left", side, height, "slider_left" ) );
-    p->drawPixmap( x, y, The::svgHandler()->renderSvg( "slider_left_highlight", side, height, "slider_left_highlight" ) );
-    p->drawPixmap( x + width - side , y, The::svgHandler()->renderSvg( "slider_right", side, height, "slider_right" ) );
+    const int borderWidth = 6;
+    const int borderHeight = 6;
 
-    //tile this to make it look good!
-    int tileWidth = 16;
-    QPixmap sliderTile = The::svgHandler()->renderSvg( "slider_center_highlight", tileWidth, height, "slider_center_highlight" );
+    const int sliderInsertX = 5;
+    const int sliderInsertY = 5;
+    
 
-    int offset = side;
-    int xMax =  knobX + height / 2;
-    while( ( offset + tileWidth ) <= xMax ) {
-        p->drawPixmap( x + offset , y, sliderTile );
-        offset += tileWidth;
+    QString prefix = "slider_bg_";
+
+
+    QImage topLeft = The::svgHandler()->renderSvg( prefix + "topleft", borderWidth, borderHeight, prefix + "topleft" ).toImage();
+    p->drawImage( x, y, topLeft );
+
+    QImage top = The::svgHandler()->renderSvg( prefix + "top", width - ( 2 * borderWidth ), borderHeight, prefix + "top" ).toImage();
+    p->drawImage( x + borderWidth, y, top );
+
+    QImage topRight = The::svgHandler()->renderSvg( prefix + "topright", borderWidth, borderHeight, prefix + "topright" ).toImage();
+    p->drawImage( x + ( width - borderWidth ), y, topRight );
+
+    QImage right = The::svgHandler()->renderSvg( prefix + "right", borderWidth, height - ( 2 * borderHeight ), prefix + "right" ).toImage();
+    p->drawImage( x + ( width - borderWidth ), y + borderHeight, right );
+
+    QImage bottomRight = The::svgHandler()->renderSvg( prefix + "bottomright", borderWidth, borderHeight, prefix + "bottomright" ).toImage();
+    p->drawImage( x + ( width - borderWidth ), y + ( height - borderHeight ), bottomRight );
+
+    QImage bottom = The::svgHandler()->renderSvg( prefix + "bottom", width - 2 * borderWidth, borderHeight, prefix + "bottom" ).toImage();
+    p->drawImage( x + borderWidth, y + ( height - borderHeight ), bottom );
+
+    QImage bottomLeft = The::svgHandler()->renderSvg( prefix + "bottomleft", borderWidth, borderHeight, prefix + "bottomleft" ).toImage();
+    p->drawImage( x, y + ( height - borderHeight ) , bottomLeft );
+
+    QImage left = The::svgHandler()->renderSvg( prefix + "left", borderWidth, height - 2 * borderHeight, prefix + "left" ).toImage();
+    p->drawImage( x, y + borderHeight, left );
+
+            
+
+
+    if ( value() != minimum() ) {
+
+        const int sliderHeight = height - ( sliderInsertY * 2 );
+        const int sliderLeftWidth = sliderHeight / 3;
+        const int sliderRigthWidth = sliderLeftWidth;
+
+        int knobX = ( ( ( double ) value() - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width - ( sliderLeftWidth + sliderRigthWidth + sliderInsertX * 2 ) );
+
+        debug() << "min: " << minimum();
+        debug() << "max: " << maximum();
+        debug() << "value: " << value();
+        debug() << "knobX: " << knobX;
+
+        p->drawPixmap( x + sliderInsertX, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_left",sliderLeftWidth , sliderHeight, "slider_bar_left" ) );
+        
+        p->drawPixmap( x + sliderInsertX + sliderLeftWidth, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_center", knobX, sliderHeight, "slider_bar_center" ) );
+
+        p->drawPixmap( x + sliderInsertX + knobX + sliderLeftWidth, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_right", sliderRigthWidth, sliderHeight, "slider_bar_right" ) );
+        
     }
+    
+   /* QImage center = The::svgHandler()->renderSvg( prefix + "center", width() - 2 * borderWidth, height() - 2 * borderHeight, prefix + "center" ).toImage();
+    p->drawImage( borderWidth, borderHeight, center ); */
 
-    //paint as much of the last tile as needed
-    int leftover = xMax - offset;
-    if ( leftover > 0 )
-        p->drawPixmap( x + offset, y, sliderTile, 0, 0, leftover, height );
-
-    p->drawPixmap( x + knobX, y, The::svgHandler()->renderSvg( "volume_slider_position", height, height, "slider_position" ) );
+    
 }
 
 
@@ -298,7 +333,7 @@ void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
     m_iconWidth  = static_cast<int>( m_iconHeight * 1.33 );
     m_textWidth  = 40;
     m_sliderWidth = width() - ( m_iconWidth + m_textWidth + m_margin  );
-    m_sliderHeight = (int)m_sliderWidth / 7; //maintain sane aspect ratio
+    m_sliderHeight = 20;
     if ( m_sliderHeight > height() )
         m_sliderHeight = height();
 
@@ -316,6 +351,7 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
     , m_knobX( 0.0 )
 {
     setFocusPolicy( Qt::NoFocus );
+    m_sliderHeight = 20;
 }
 
 void
@@ -342,7 +378,8 @@ Amarok::TimeSlider::paletteChange( const QPalette& )
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
 {
     Q_UNUSED( event );
-    m_sliderHeight = (int)width() / 25; //maintain sane aspect ratio
+    //m_sliderHeight = (int)width() / 25; //maintain sane aspect ratio
+    m_sliderHeight = 20;
     if ( m_sliderHeight > height() )
         m_sliderHeight = height();
 }

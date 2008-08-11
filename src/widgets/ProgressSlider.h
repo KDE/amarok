@@ -37,6 +37,8 @@ class ProgressWidget : public QWidget, public EngineObserver
         ProgressWidget( QWidget* );
         static ProgressWidget *instance() { return s_instance; }
 
+        virtual QSize sizeHint() const;
+
     public slots:
         void drawTimeDisplay( int position );
 

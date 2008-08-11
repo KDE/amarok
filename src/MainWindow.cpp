@@ -151,9 +151,16 @@ MainWindow::init()
     //via the App::m_pMainWindow pointer since App::m_pMainWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
 
-    m_controlBar = new MainToolbar( this );
+    QBoxLayout * toolbarSpacer = new QHBoxLayout( this );
+    toolbarSpacer->setContentsMargins( 0, 0, 0, 10 );
+
+    m_controlBar = new MainToolbar( 0 );
     m_controlBar->layout()->setContentsMargins( 0, 0, 0, 0 );
     m_controlBar->layout()->setSpacing( 0 );
+
+    toolbarSpacer->addStretch( 1 );
+    toolbarSpacer->addWidget( m_controlBar, 3 );
+    toolbarSpacer->addStretch( 1 );
 
     PERF_LOG( "Create sidebar" )
     m_browsers = new SideBar( this, new KVBox );
@@ -218,7 +225,7 @@ MainWindow::init()
     m_statusbarArea->setMaximumHeight( fontHeight );
     new Amarok::StatusBar( m_statusbarArea );
 
-    mainLayout->addWidget( m_controlBar );
+    mainLayout->addLayout( toolbarSpacer );
     mainLayout->addWidget( m_splitter );
     mainLayout->addWidget( m_statusbarArea);
 

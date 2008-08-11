@@ -24,6 +24,7 @@
 #include "AnalyzerWidget.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "MainControlsWidget.h"
 #include "ProgressSlider.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
@@ -57,67 +58,36 @@ MainToolbar::MainToolbar( QWidget * parent )
     layout()->setContentsMargins( 0, 0, 0, 0 );
     setAutoFillBackground ( false );
 
-    KVBox *aVBox     = new KVBox( this );
-    aVBox->setMaximumSize( 50000, 60 );
-    aVBox->setContentsMargins(0,0,0,0);
-    aVBox->layout()->setContentsMargins(0,0,0,0);
+    KHBox * hBox = new KHBox( this );
 
-    //m_insideBox = new KHBox( aVBox );
-    m_insideBox = new QWidget( aVBox );
 
-    m_insideBox->setMaximumSize( 600000, 45 );
-    m_insideBox->setContentsMargins( 0, 0, 0, 0 );
-
-    /*AnalyzerWidget *aw = new AnalyzerWidget( m_insideBox );
-    //aw->setMinimumSize( 200, 30 );
-    aw->setFixedSize( 200, 30 );
-    aw->move( 0, 0 );*/
-
-    //m_insideBox->layout()->setAlignment( aw, Qt::AlignLeft );
-
-    ProgressWidget *pWidget = new ProgressWidget( aVBox );
-    pWidget->setMinimumSize( 400, 17 );
-    pWidget->setMaximumSize( 600000, 17 );
-    pWidget->setContentsMargins( 0, 2, 0, 0 );
-
-    m_playerControlsToolbar = new Amarok::ToolBar( m_insideBox );
-    m_playerControlsToolbar->setFixedHeight( 40 );
-    m_playerControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
-
-    m_playerControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    m_playerControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-    m_playerControlsToolbar->setIconDimensions( 32 );
-    m_playerControlsToolbar->setMovable( false );
-    m_playerControlsToolbar->setFloatable ( false );
-
-    if( KApplication::isRightToLeft() )
-    {
-        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "next" ) );
-        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "stop" ) );
-        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "play_pause" ) );
-        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "prev" ) );
-    }
-    else
-    {
-        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "prev" ) );
-        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "play_pause" ) );
-        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "stop" ) );
-        m_playerControlsToolbar->addAction( Amarok::actionCollection()->action( "next" ) );
-    }
-
-    m_playerControlsToolbar->adjustSize();
+    new MainControlsWidget( hBox );
     
+    KVBox * vBox = new KVBox( hBox );
+    vBox->setContentsMargins( 0, 6, 0, 0 );
 
-    m_addControlsToolbar = new Amarok::ToolBar( m_insideBox );
+    KHBox * topHBox = new KHBox( vBox );
+
+    m_addControlsToolbar = new Amarok::ToolBar( topHBox );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_addControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_addControlsToolbar->setIconDimensions( 16 );
     m_addControlsToolbar->setMovable( false );
-    m_playerControlsToolbar->setFloatable ( false );
+    m_addControlsToolbar->setFloatable ( false );
     m_addControlsToolbar->setFixedHeight( 22 );
     m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
 
-    m_volumeWidget = new VolumeWidget( m_insideBox );
+    ProgressWidget *pWidget = new ProgressWidget( vBox );
+    pWidget->setMinimumSize( 100, 17 );
+    //pWidget->setMaximumSize( 600000, 24 );
+    pWidget->setContentsMargins( 0, 2, 0, 0 );
+
+
+    
+
+
+
+    m_volumeWidget = new VolumeWidget( topHBox );
     m_volumeWidget->setFixedSize( 160, 24 );
 
     m_renderAddControls = false;
@@ -131,23 +101,14 @@ MainToolbar::~MainToolbar()
 
 void MainToolbar::paintEvent( QPaintEvent * )
 {
-    const int controlWidth = m_playerControlsToolbar->width();
-    const int addControlWidth = m_addControlsToolbar->width();
-    const QRect controlRect( m_playerControlsToolbar->x(), m_playerControlsToolbar->y() +2, controlWidth, m_playerControlsToolbar->height() );
-    const QRect addControlRect( m_addControlsToolbar->x(), m_addControlsToolbar->y() +2, addControlWidth, m_addControlsToolbar->height() );
-
     QPainter painter( this );
-    //painter.drawPixmap( 0, 0, WidgetBackgroundPainter::instance()->getBackground( this, 0, 0, width, height, m_ignoreCache ) );
-    m_ignoreCache = false;
-    
-    const QPixmap controlArea = The::svgHandler()->renderSvg( "buttonbar", controlRect.width(), controlRect.height(), "buttonbar" );
-    painter.drawPixmap( controlRect.x(), controlRect.y(), controlArea );
 
-    if ( m_renderAddControls )
-    {
-        QPixmap addControlArea = The::svgHandler()->renderSvg( "buttonbar", addControlRect.width(), addControlRect.height(), "buttonbar" );
-        painter.drawPixmap( addControlRect.x(), addControlRect.y(), addControlArea );
-    }
+    int watermarkWidth = height() * 1.36;
+
+    //painter.drawPixmap( width() - watermarkWidth, 0, The::svgHandler()->renderSvg( "volume_watermark", watermarkWidth, height(), "volume_watermark" ) );
+    
+    painter.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "toolbar_bg", width(), height(), "toolbar_bg" ) );
+
 }
 
 void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
@@ -216,12 +177,12 @@ void MainToolbar::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent( event );
     //as we handle our own layout, we need to position items correctly
 
-    const int middle = event->size().width() / 2;
+    /*const int middle = event->size().width() / 2;
     const int controlWidth = m_playerControlsToolbar->width();
 
     m_playerControlsToolbar->move( middle - ( controlWidth / 2 ), 0 );
     m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 , 9 );
-    m_volumeWidget->move( event->size().width() - 170, 11 );
+    m_volumeWidget->move( event->size().width() - 170, 11 );*/
     //centerAddActions();
 }
 
