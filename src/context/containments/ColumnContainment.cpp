@@ -330,7 +330,16 @@ void ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGrap
                            width,
                            55 );
         m_header->paint( painter, headerRect );
-    }    
+    }
+
+    painter->restore();
+
+    painter->save();
+    //paint divider
+    int dividerOffset = rect.width() / 20;
+    painter->drawPixmap( dividerOffset, geometry().height() - 1, The::svgHandler()->renderSvg( "divider_bottom", rect.width() - 2 * dividerOffset,  1, "divider_bottom" ) );
+    painter->drawPixmap( dividerOffset, geometry().height(), The::svgHandler()->renderSvg( "divider_top", rect.width() - 2 * dividerOffset, 1, "divider_top" ) );
+
     painter->restore();
 }
 

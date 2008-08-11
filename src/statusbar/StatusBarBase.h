@@ -194,7 +194,6 @@ namespace KDE
 
         virtual void polish();
         virtual void customEvent( QEvent* );
-        virtual void paintEvent( QPaintEvent* );
         virtual bool event( QEvent* );
 
         KSqueezedTextLabel *m_mainTextLabel;

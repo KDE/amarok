@@ -207,21 +207,6 @@ StatusBar::polish()
 
 }
 
-void
-StatusBar::paintEvent( QPaintEvent* event )
-{
-    QPainter p( this );
-
-    //paint divider
-    int dividerOffset = width() / 20;
-    p.drawPixmap( dividerOffset, 0, The::svgHandler()->renderSvg( "divider_bottom", width() - 2 * dividerOffset, 1, "divider_bottom" ) );
-    p.drawPixmap( dividerOffset, 1, The::svgHandler()->renderSvg( "divider_top", width() - 2 * dividerOffset, 1, "divider_top" ) );
-
-    p.end();
-
-    KStatusBar::paintEvent( event );    
-}
-
 bool
 StatusBar::event( QEvent *e )
 {
