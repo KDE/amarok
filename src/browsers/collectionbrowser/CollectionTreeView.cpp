@@ -76,7 +76,10 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
 
     //setAnimated( true );
-    setAlternatingRowColors( false );
+
+    //even though we paint the rows ourselves, we need this to be true
+    //for the option to tell us about it
+    setAlternatingRowColors( true );
 
     //transparency
     /*QPalette p = palette();
@@ -984,6 +987,8 @@ void CollectionTreeView::newPalette( const QPalette & palette )
 
 void CollectionTreeView::drawRow(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
+
+    const QStyleOptionViewItemV4 optionV4( option );
     
 
     const int width = option.rect.width();
@@ -993,7 +998,9 @@ void CollectionTreeView::drawRow(QPainter * painter, const QStyleOptionViewItem 
         painter->save();
         QPixmap background;
 
-        if ( !index.data( AlternateCollectionRowRole ).toBool() )
+        debug() << "features: " << optionV4.features;
+
+        if ( optionV4.features & QStyleOptionViewItemV4::Alternate)
             background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
         else
             background = The::svgHandler()->renderSvgWithDividers( "alt_service_list_item", width, height, "alt_service_list_item" );
