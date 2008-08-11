@@ -196,7 +196,7 @@ Meta::TrackPtr
 SqlCollection::trackForUrl( const KUrl &url )
 {
     if( url.protocol() == uidUrlProtocol() )
-        return m_registry->getTrackFromUid( url.host() );
+        return m_registry->getTrackFromUid( url.url() );
     else
         return m_registry->getTrack( url.path() );
 }

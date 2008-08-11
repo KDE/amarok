@@ -164,7 +164,7 @@ SqlTrack::getTrackFromUid( const QString &uid, SqlCollection* collection )
 {
     QString query = "SELECT urls.deviceid, urls.rpath FROM urls "
                     "WHERE urls.uniqueid = '%1';";
-    query = query.arg( uid );
+    query = query.arg( collection->escape( uid ) );
     QStringList result = collection->query( query );
     if( result.isEmpty() )
         return TrackPtr();
@@ -479,7 +479,7 @@ SqlTrack::setTitle( const QString &newTitle )
 }
 
 void
-SqlTrack::setUid( const QString &uid )
+SqlTrack::setUidUrl( const QString &uid )
 {
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::UNIQUEID, uid );
@@ -649,7 +649,7 @@ SqlTrack::updateStatisticsInDb()
                 , QString::number( m_playCount )
                 , QString::number( m_lastPlayed )
                 , QString::number( m_firstPlayed )
-                , m_uid );
+                , m_collection->escape( m_uid ) );
         insert = insert.arg( data );
         m_collection->insert( insert, "statistics" );
     }
@@ -724,7 +724,7 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
         QString insert = QString( "INSERT INTO lyrics( url, lyrics, uniqueid ) VALUES ( '%1', '%2', '%3' );" )
                             .arg( m_collection->escape( m_rpath ),
                                   m_collection->escape( lyrics ),
-                                  m_uid );
+                                  m_collection->escape( m_uid ) );
         m_collection->insert( insert, "lyrics" );
     }
     else

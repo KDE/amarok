@@ -66,7 +66,7 @@ SqlRegistry::getTrack( const QString &url )
         if( track )
         {
             m_trackMap.insert( id, track );
-            m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uid(), track );
+            m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uidUrl(), track );
         }
         return track;
     }
@@ -86,7 +86,7 @@ SqlRegistry::getTrack( const QStringList &rowData )
         if( track )
         {
             m_trackMap.insert( id, track );
-            m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uid(), track );
+            m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uidUrl(), track );
         }
         return track;
     }

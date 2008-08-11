@@ -60,7 +60,7 @@ class SqlTrack : public Meta::Track
         /** returns a string describing the position of the track; same as url() */
         virtual QString prettyUrl() const { return m_url.path(); }
         /** returns a string describing the position of the track */
-        virtual QString uidUrl() const { return "amarok-sqltrackuid://" + m_uid; }
+        virtual QString uidUrl() const { return m_uid; }
 
         /** true if there is a collection and the file exists on disk */
         virtual bool isPlayable() const;
@@ -105,8 +105,7 @@ class SqlTrack : public Meta::Track
         virtual uint lastPlayed() const { return m_lastPlayed; }
         virtual int playCount() const { return m_playCount; }
         virtual uint firstPlayed() const { return m_firstPlayed; }
-        virtual QString uid() const { return m_uid; }
-        virtual void setUid( const QString &uid );
+        virtual void setUidUrl( const QString &uid );
 
         virtual void beginMetaDataUpdate();
         virtual void endMetaDataUpdate();

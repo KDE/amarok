@@ -78,7 +78,7 @@ bool SqlPlaylist::saveToDb( bool tracks )
         if( tracks )
         {
             //delete existing tracks and insert all
-            query = "DELETE FROM TABLE playlists_tracks where playlist_id=%1;";
+            query = "DELETE FROM TABLE playlist_tracks where playlist_id=%1;";
             query = query.arg( QString::number( m_dbId ) );
             CollectionManager::instance()->sqlStorage()->query( query );
             saveTracks();
@@ -103,14 +103,11 @@ void SqlPlaylist::saveTracks()
 
     foreach( Meta::TrackPtr trackPtr, m_tracks )
     {
-        QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, album, artist, length ) VALUES ( %1, %2, '%3', '%4', '%5', '%6', %7 );";
-        query = query.arg( QString::number( m_dbId ) );
-        query = query.arg( trackNum );
-        query = query.arg( sql->escape( trackPtr->uidUrl() ) );
-        query = query.arg( sql->escape( trackPtr->prettyName() ) );
-        query = query.arg( sql->escape( trackPtr->album()->prettyName() ) );
-        query = query.arg( sql->escape( trackPtr->artist()->prettyName() ) );
-        query = query.arg( QString::number( trackPtr->length() ) );
+        QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, album, artist, length, uniqueid ) VALUES ( %1, %2, '%3', '%4', '%5', '%6', %7, '%8' );";
+        query = query.arg( QString::number( m_dbId ), QString::number( trackNum ), sql->escape( trackPtr->uidUrl() ),
+                            sql->escape( trackPtr->prettyName() ), sql->escape( trackPtr->album()->prettyName() ),
+                            sql->escape( trackPtr->artist()->prettyName() ), QString::number( trackPtr->length() ),
+                            sql->escape( trackPtr->uidUrl() ) );
         sql->insert( query, NULL );
 
         trackNum++;

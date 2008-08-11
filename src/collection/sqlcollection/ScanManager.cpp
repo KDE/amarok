@@ -567,17 +567,10 @@ XmlParseJob::run()
     }
     else
     {
-        debug() << "no reader error, processing directory or commit";
         if( !directoryData.isEmpty() )
-        {
-            debug() << "processing directory";
             processor.processDirectory( directoryData );
-        }
-        debug() << "processor being committed";
         processor.commit();
     }
-    debug() << "m_filesDeleted size is " << m_filesDeleted->size();
-    debug() << "m_filesAdded size is " << m_filesAdded->size();
     if( !m_isIncremental )
     {
         m_collection->emitFilesDeleted( *m_filesDeleted );

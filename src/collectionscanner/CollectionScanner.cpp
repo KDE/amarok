@@ -598,7 +598,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
     attributes["path"]      = path;
     attributes["filetype"]  = QString::number( fileType );
-//     attributes["uniqueid"] = QString::number( -1 ); //FIXME: Port
     const int bitrate = fileref.audioProperties()->bitrate();
     const int length = fileref.audioProperties()->length();
     const int samplerate = fileref.audioProperties()->sampleRate();
@@ -617,7 +616,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     if( size >= 0 )
         attributes["filesize"] =  QString::number( size );
 
-    attributes["uniqueid"] = readUniqueId( path );
+    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + readUniqueId( path ) );
 
     return attributes;
 }
