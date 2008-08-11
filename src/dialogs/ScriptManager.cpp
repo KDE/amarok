@@ -441,7 +441,7 @@ ScriptManager::slotStopScript( QString name )
 void
 ScriptManager::ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter )
 {
-    m_scripts[name].servicePtr->slotPopulate( level, parent_id, path, filter );
+    m_scripts[name].servicePtr->slotPopulate( name, level, parent_id, path, filter );
 }
 
 void
@@ -547,7 +547,8 @@ ScriptManager::startScriptEngine( QString name )
 
     m_scripts[name].servicePtr = new ScriptableServiceScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( m_scripts[name].servicePtr );
-    m_global.setProperty( "ScriptableService", scriptObject );
+    m_global.setProperty( "ScriptableService", scriptObject ); //FIXME
+	scriptEngine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), scriptObject );
     m_scripts[name].wrapperList.append( m_scripts[name].servicePtr );
 
     objectPtr = new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );

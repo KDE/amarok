@@ -23,38 +23,131 @@
 
 #include <QtScript>
 
-    ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* ScriptEngine )
-    : QObject( kapp )
-    {
-        ScriptEngine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QScriptValue() );
-    }
+StreamItem::StreamItem()
+{
+}
 
-    ScriptableServiceScript::~ScriptableServiceScript()
-    {
-    }
+StreamItem::~StreamItem()
+{
+}
 
-    bool ScriptableServiceScript::initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar )
-    {
-        DEBUG_BLOCK
-        return The::scriptableServiceManager()->initService( name, levels, shortDescription, rootHtml, showSearchBar );
-    }
+QString StreamItem::name() const
+{
+    return m_name;
+}
 
-    int ScriptableServiceScript::insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl)
-    {
-        DEBUG_BLOCK
-        return The::scriptableServiceManager()->insertItem( serviceName, level, parentId, name, infoHtml, callbackData, playableUrl );
-    }
+QString StreamItem::infoHtml() const
+{
+    return m_infoHtml;
+}
 
-    void ScriptableServiceScript::donePopulating( const QString &serviceName, int parentId )
-    {
-        DEBUG_BLOCK
-        The::scriptableServiceManager()->donePopulating( serviceName, parentId );
-    }
+QString StreamItem::playableUrl() const
+{
+    return m_playableUrl;
+}
 
-    void ScriptableServiceScript::slotPopulate( int level, int parent_id, QString path, QString filter )
-    {
-        DEBUG_BLOCK
-        emit populate( level, parent_id, path, filter );
-    }
+QString StreamItem::callbackData() const
+{
+    return m_callbackData;
+}
+
+void StreamItem::setName( QString name )
+{
+    m_name = name;
+}
+
+void StreamItem::setInfoHtml( QString infoHtml )
+{
+    m_infoHtml = infoHtml;
+}
+
+void StreamItem::setPlayableUrl( QString playableUrl )
+{
+    m_playableUrl = playableUrl;
+}
+
+void StreamItem::setCallbackData( QString callbackData )
+{
+    m_callbackData = callbackData;
+}
+
+ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
+: QObject( kapp )
+, m_scriptEngine( engine )
+{
+    DEBUG_BLOCK
+
+}
+
+ScriptableServiceScript::~ScriptableServiceScript()
+{
+    DEBUG_BLOCK
+}
+
+int ScriptableServiceScript::insertItem( int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData )
+{
+    DEBUG_BLOCK
+	
+    debug() << "service name = " << m_serviceName;
+    return The::scriptableServiceManager()->insertItem( m_serviceName, level, m_currentId, name, infoHtml, callbackData, playableUrl );
+}
+
+void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter )
+{
+    DEBUG_BLOCK
+	
+    debug() << "service name = " << name;
+    debug() << "populating...";
+    debug() << level << parent_id << callbackData << filter;
+	
+    m_serviceName = name;
+    m_currentId = parent_id;
+    QScriptValueList args;
+    args << QScriptValue( m_scriptEngine, level ) << QScriptValue( m_scriptEngine, callbackData ) << QScriptValue( m_scriptEngine, filter );
+    thisObject().property( "prototype" ).property( "populate" ).call( QScriptValue(), args );
+	
+    The::scriptableServiceManager()->donePopulating( m_serviceName, m_currentId );
+}
+
+void ScriptableServiceScript::setServiceName( QString name )
+{
+}
+
+QString ScriptableServiceScript::serviceName() const
+{
+}
+
+void ScriptableServiceScript::setLevels( int levels )
+{
+}
+
+int ScriptableServiceScript::levels() const
+{
+}
+
+void ScriptableServiceScript::setShortDescription( QString shortDescription )
+{
+}
+
+QString ScriptableServiceScript::shortDescription() const
+{
+}
+
+void ScriptableServiceScript::setRootHtml( QString rootHtml )
+{
+}
+
+QString ScriptableServiceScript::rootHtml() const
+{
+}
+
+void ScriptableServiceScript::setShowSearchBar( bool showSearchBar )
+{
+}
+
+bool ScriptableServiceScript::showSearchBar() const
+{
+}
+
 
 #include "AmarokScriptableServiceScript.moc"
