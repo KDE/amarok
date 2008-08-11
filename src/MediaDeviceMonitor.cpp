@@ -94,7 +94,7 @@ MediaDeviceMonitor::checkDevices()
 }
 
 void
-MediaDeviceMonitor::checkDevicesForMtp()
+MediaDeviceMonitor::checkDevicesForIpod()
 {
 
     QStringList udiList = getDevices();
@@ -111,7 +111,7 @@ MediaDeviceMonitor::checkDevicesForMtp()
 }
 
 void
-MediaDeviceMonitor::checkDevicesForIpod()
+MediaDeviceMonitor::checkDevicesForMtp()
 {
     QStringList udiList = getDevices();
 
