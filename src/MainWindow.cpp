@@ -177,7 +177,7 @@ MainWindow::init()
     m_contextWidget = new ContextWidget( this );
     PERF_LOG( "ContextWidget created" )
     m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
-    m_contextWidget->setFrameShape( QFrame::StyledPanel );
+    m_contextWidget->setFrameShape( QFrame::NoFrame );
     m_contextWidget->setFrameShadow( QFrame::Sunken );
     PERF_LOG( "Creating ContexScene" )
 
