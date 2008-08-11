@@ -117,7 +117,7 @@ ScriptManager::ScriptManager( QWidget* parent )
         , EngineObserver( The::engineController() )
 {
     DEBUG_BLOCK
-    Ui::ScriptManagerBase* gui =  new Ui::ScriptManagerBase();
+    m_gui = new Ui::ScriptManagerBase;
     setObjectName( "ScriptManager" );
     setButtons( None );
 
@@ -133,21 +133,21 @@ ScriptManager::ScriptManager( QWidget* parent )
 #endif
 
     QWidget* main = new QWidget( this );
-    gui->setupUi( main );
+    m_gui->setupUi( main );
     setMainWidget( main );
 
-    m_scriptSelector = gui->pluginWidget;
-    gui->pluginWidget->setSizePolicy(QSizePolicy::Preferred ,QSizePolicy::Expanding);
+    m_scriptSelector = m_gui->pluginWidget;
+    m_gui->pluginWidget->setSizePolicy(QSizePolicy::Preferred ,QSizePolicy::Expanding);
 
-    connect( gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
-    connect( gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
-    connect( gui->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
+    connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
+    connect( m_gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
+    connect( m_gui->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
     connect( m_scriptSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
     connect( m_scriptSelector, SIGNAL( configCommitted ( const QByteArray & ) ), SLOT( slotConfigComitted( const QByteArray & ) ) );
 
-    gui->installButton  ->setIcon( KIcon( "folder-amarok" ) );
-    gui->retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
-    gui->uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
+    m_gui->installButton  ->setIcon( KIcon( "folder-amarok" ) );
+    m_gui->retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    m_gui->uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
 
     // Center the dialog in the middle of the mainwindow
     const int x = parentWidget()->width() / 2 - sizeHint().width() / 2;
@@ -172,6 +172,8 @@ ScriptManager::~ScriptManager()
     config.writeEntry( "Running Scripts", runningScripts );
 
     config.sync();
+
+    delete m_gui;
 
     s_instance = 0;
 }
@@ -248,12 +250,12 @@ ScriptManager::findScripts() //SLOT
     }
     foreach( const QString &key, m_scripts.keys() )
     {
-        if ( m_scripts[key].info->category() == "Generic" )
-            GenericInfoList.append( *m_scripts[key].info );
-        else if ( m_scripts[key].info->category() == "Lyrics" )
-            LyricsInfoList.append( *m_scripts[key].info );
-        else if ( m_scripts[key].info->category() == "Scriptable Service" )
-            ServiceInfoList.append( *m_scripts[key].info );
+        if ( m_scripts[key].info.category() == "Generic" )
+            GenericInfoList.append( m_scripts[key].info );
+        else if ( m_scripts[key].info.category() == "Lyrics" )
+            LyricsInfoList.append( m_scripts[key].info );
+        else if ( m_scripts[key].info.category() == "Scriptable Service" )
+            ServiceInfoList.append( m_scripts[key].info );
     }
     m_scriptSelector->addScripts( LyricsInfoList, KPluginSelector::ReadConfigFile, "Lyrics" );
     m_scriptSelector->addScripts( GenericInfoList, KPluginSelector::ReadConfigFile, "Generic" );
@@ -429,10 +431,10 @@ ScriptManager::slotStopScript( QString name )
     DEBUG_BLOCK
 
     m_scripts[name].engine->abortEvaluation();
-    if( m_scripts[name].info->category() == "Scriptable Service" )
+    if( m_scripts[name].info.category() == "Scriptable Service" )
         The::scriptableServiceManager()->removeRunningScript( name );
-    if ( m_scripts[name].info->isPluginEnabled() )
-        m_scripts[name].info->setPluginEnabled( false );
+    if ( m_scripts[name].info.isPluginEnabled() )
+        m_scripts[name].info.setPluginEnabled( false );
 
     scriptFinished( name );
 }
@@ -451,10 +453,10 @@ ScriptManager::slotConfigChanged( bool changed )
         m_scriptSelector->save();
         foreach( const QString &key, m_scripts.keys() )
         {
-            if( !m_scripts[key].running && m_scripts[key].info->isPluginEnabled() )
-                slotRunScript( m_scripts[key].info->name() );
-            if( m_scripts[key].running && !m_scripts[key].info->isPluginEnabled() )
-                slotStopScript( m_scripts[key].info->name() );
+            if( !m_scripts[key].running && m_scripts[key].info.isPluginEnabled() )
+                slotRunScript( m_scripts[key].info.name() );
+            if( m_scripts[key].running && !m_scripts[key].info.isPluginEnabled() )
+                slotStopScript( m_scripts[key].info.name() );
         }
     }
 }
@@ -508,13 +510,13 @@ ScriptManager::loadScript( const QString& path )
         {
             const KUrl url = KUrl( path );
             ScriptItem item;
-            item.info = new KPluginInfo( specPath );
-            if ( !item.info->isValid() ) return false;
-            if ( ( item.info->name() == "" ) || ( item.info->version() == "" ) || ( item.info->category() == "" ) ) return false;
-            debug() << "script info:" << item.info->name() << " " << item.info->version() << " " << item.info->category();
+            item.info = KPluginInfo( specPath );
+            if ( !item.info.isValid() ) return false;
+            if ( ( item.info.name() == "" ) || ( item.info.version() == "" ) || ( item.info.category() == "" ) ) return false;
+            debug() << "script info:" << item.info.name() << " " << item.info.version() << " " << item.info.category();
             item.url = url;
             item.running = false;
-            m_scripts[item.info->name()] = item;
+            m_scripts[item.info.name()] = item;
         }
         else
         {

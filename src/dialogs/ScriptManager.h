@@ -35,6 +35,11 @@
 #include <QMap>
 #include <QScriptValue>
 
+namespace Ui
+{
+    class ScriptManagerBase;
+}
+
 class KArchiveDirectory;
 class KPluginInfo;
 class KPluginSelector;
@@ -103,7 +108,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         bool                   m_installSuccess;
 
         struct ScriptItem {
-            KPluginInfo*                                    info;
+            KPluginInfo                                     info;
             QScriptEngine*                                  engine;
             KUrl                                            url;
             bool                                            running;
@@ -112,7 +117,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
             QString                                         log;
             QList<QObject*>                                 guiPtrList;
             QList<QObject*>                                 wrapperList;
-            ScriptItem() : info( 0 ), engine( 0 ), running( false ), globalPtr( 0 ), servicePtr( 0 ) {}
+            ScriptItem() : engine( 0 ), running( false ), globalPtr( 0 ), servicePtr( 0 ) {}
         };
 
         typedef QMap<QString, ScriptItem> ScriptMap;
@@ -121,6 +126,9 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         QScriptValue   m_global;
         bool           m_configChanged;
         QStringList    m_changedScripts;
+
+        Ui::ScriptManagerBase* m_gui;
+
 };
 
 #endif /* AMAROK_SCRIPTMANAGER_H */
