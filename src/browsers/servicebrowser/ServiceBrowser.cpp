@@ -68,6 +68,9 @@ ServiceBrowser::~ServiceBrowser()
 {
     DEBUG_BLOCK
     qDeleteAll( m_services.values() );
+    delete m_serviceListView;
+    delete m_serviceListModel;
+    delete m_delegate;
 }
 
 //TODO: This should be moved to the ScriptableServiceManager instead
