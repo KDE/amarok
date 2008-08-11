@@ -63,7 +63,8 @@ RefreshImages::RefreshImages()
         {
             //somehow we have entries without ASIN
             if ( !md5sum.isEmpty() ) //I've never seen this, just to be sure
-                ;
+            {
+            }
             //FIXME: PORT 2.0
 //                 CollectionDB::instance()->removeInvalidAmazonInfo(md5sum);
             it++;
