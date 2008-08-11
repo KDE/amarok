@@ -108,6 +108,12 @@ class AmarokToolBoxMenu: public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
+    enum ScrollDirection
+    {
+        ScrollDown = 0,
+        ScrollUp
+    };
+    
     explicit AmarokToolBoxMenu( QGraphicsItem *parent = 0 );
     ~AmarokToolBoxMenu();
     QRectF boundingRect() const;
@@ -128,19 +134,22 @@ protected:
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+    void wheelEvent( QGraphicsSceneWheelEvent *event );
 
 private slots:
     void addApplet( const QString &pluginName );
-    void scrollDown();
-    void scrollUp();
     void appletAdded( Plasma::Applet *applet );
     void appletRemoved( Plasma::Applet *applet );
-    void timeToHide();
+    void delayedScroll();
+    void scrollDown();
+    void scrollUp();
+    void timeToHide();    
+    
 private:
+    void createArrow( ToolBoxIcon *arrow, const QString &direction );
     void initRunningApplets();
     void populateMenu();
-    void setupMenuEntry( ToolBoxIcon *entry, const QString &appletName );
-    void createArrow( ToolBoxIcon *arrow, const QString &direction );
+    void setupMenuEntry( ToolBoxIcon *entry, const QString &appletName );    
     
     QMap<QString, QString> m_appletsList;
     QHash<Plasma::Applet *, QString> m_appletNames;
@@ -160,8 +169,10 @@ private:
     QMap<Plasma::Containment *, QStringList> m_runningApplets;
 
     QTimer *m_timer;
-    
+    QTimer *m_scrollDelay;
+    QList<ScrollDirection> m_pendingScrolls;
     bool m_showing;
+    int m_delay;
 };
 
 }

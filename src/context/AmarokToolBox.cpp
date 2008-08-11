@@ -43,7 +43,7 @@ AmarokToolBox::AmarokToolBox( QGraphicsItem *parent )
     , m_animCircleFrame( 0 )
     , m_animCircleId( 0 )
     , m_icon( "configure" )
-    , m_containment( 0 )
+    , m_containment( 0 )    
 {
     DEBUG_BLOCK
         
@@ -422,6 +422,7 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent )
     , m_containment( 0 )
     , m_menuSize( 4 )
     , m_showing( 0 )
+    , m_delay( 250 )
 {
     setAcceptsHoverEvents( true );
     
@@ -437,8 +438,11 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent )
     }
 
     m_timer = new QTimer( this );
+    m_scrollDelay = new QTimer( this );
+    
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( timeToHide() ) );
-
+    connect( m_scrollDelay, SIGNAL( timeout() ), this, SLOT( delayedScroll() ) );
+    
     //insert in the stack so the first applet in alphabetical order is the first one
     QStringList appletsNames = m_appletsList.keys();
     for( int i = appletsNames.size() - 1; i >= 0; i-- )
@@ -477,6 +481,8 @@ AmarokToolBoxMenu::~AmarokToolBoxMenu()
     delete m_hideIcon;
     delete m_downArrow;
     delete m_upArrow;
+    delete m_timer;
+    delete m_scrollDelay;
 }
 
 void
@@ -799,6 +805,38 @@ AmarokToolBoxMenu::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
    m_timer->start( 2000 );
    QGraphicsItem::hoverLeaveEvent( event );
+}
+
+void
+AmarokToolBoxMenu::wheelEvent( QGraphicsSceneWheelEvent *event )
+{
+    DEBUG_BLOCK
+    
+    if( event->delta() < 0 )
+        m_pendingScrolls << ScrollDown;
+    else
+        m_pendingScrolls << ScrollUp;
+    
+    if( !m_scrollDelay->isActive() )
+        m_scrollDelay->start( m_delay );
+}
+
+void
+AmarokToolBoxMenu::delayedScroll()
+{
+    if( m_pendingScrolls.empty() )
+        return;
+    
+    if( m_pendingScrolls.first() == ScrollDown )
+        scrollDown();
+    else
+        scrollUp();
+    
+    m_pendingScrolls.removeFirst();
+
+    m_scrollDelay->stop();
+    if( !m_pendingScrolls.empty() )
+        m_scrollDelay->start( qMax( 150, m_delay - m_pendingScrolls.size() * 20 ) );
 }
 
 void

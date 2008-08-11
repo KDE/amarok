@@ -482,6 +482,7 @@ void ContextView::wheelEvent( QWheelEvent* event )
         else
             zoomIn( containment() );
     }
+    QGraphicsView::wheelEvent( event );
 }
 
 
