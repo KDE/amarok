@@ -75,8 +75,8 @@ safePlug( KActionCollection *ac, const char *name, QWidget *w )
 // KActionMenu doesn't work very well, so we derived our own
 //////////////////////////////////////////////////////////////////////////////////////////
 
-MenuAction::MenuAction( KActionCollection *ac )
-  : KAction( 0 )
+MenuAction::MenuAction( KActionCollection *ac, QObject *parent )
+  : KAction( parent )
 {
     setText(i18n( "Amarok Menu" ));
     ac->addAction("amarok_menu", this);
@@ -157,8 +157,8 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 // PlayPauseAction
 //////////////////////////////////////////////////////////////////////////////////////////
 
-PlayPauseAction::PlayPauseAction( KActionCollection *ac )
-        : KToggleAction( 0 )
+PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
+        : KToggleAction( parent )
         , EngineObserver( The::engineController() )
 {
     setObjectName( "play-pause" );
@@ -200,8 +200,8 @@ PlayPauseAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldSt
 // ToggleAction
 //////////////////////////////////////////////////////////////////////////////////////////
 
-ToggleAction::ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCollection* const ac, const char *name )
-        : KToggleAction( 0 )
+ToggleAction::ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCollection* const ac, const char *name, QObject *parent )
+        : KToggleAction( parent )
         , m_function( f )
 {
     setText(text);
@@ -233,8 +233,8 @@ void ToggleAction::setEnabled( bool b )
 // SelectAction
 //////////////////////////////////////////////////////////////////////////////////////////
 
-SelectAction::SelectAction( const QString &text, void ( *f ) ( int ), KActionCollection* const ac, const char *name )
-        : KSelectAction( 0 )
+SelectAction::SelectAction( const QString &text, void ( *f ) ( int ), KActionCollection* const ac, const char *name, QObject *parent )
+        : KSelectAction( parent )
         , m_function( f )
 {
     PERF_LOG( "In SelectAction" );
@@ -297,8 +297,8 @@ QString SelectAction::currentText() const {
 //////////////////////////////////////////////////////////////////////////////////////////
 // RandomAction
 //////////////////////////////////////////////////////////////////////////////////////////
-RandomAction::RandomAction( KActionCollection *ac ) :
-    SelectAction( i18n( "Ra&ndom" ), &AmarokConfig::setRandomMode, ac, "random_mode" )
+RandomAction::RandomAction( KActionCollection *ac, QObject *parent ) :
+    SelectAction( i18n( "Ra&ndom" ), &AmarokConfig::setRandomMode, ac, "random_mode", parent )
 {
     QStringList items;
     items << i18nc( "State, as in disabled", "&Off" )
@@ -330,8 +330,8 @@ RandomAction::setCurrentItem( int n )
 //////////////////////////////////////////////////////////////////////////////////////////
 // FavorAction
 //////////////////////////////////////////////////////////////////////////////////////////
-FavorAction::FavorAction( KActionCollection *ac ) :
-    SelectAction( i18n( "&Favor" ), &AmarokConfig::setFavorTracks, ac, "favor_tracks" )
+FavorAction::FavorAction( KActionCollection *ac, QObject *parent ) :
+    SelectAction( i18n( "&Favor" ), &AmarokConfig::setFavorTracks, ac, "favor_tracks", parent )
 {
     setItems( QStringList() << i18nc( "State, as in disabled", "Off" )
                             << i18n( "Higher &Scores" )
@@ -345,8 +345,8 @@ FavorAction::FavorAction( KActionCollection *ac ) :
 //////////////////////////////////////////////////////////////////////////////////////////
 // RepeatAction
 //////////////////////////////////////////////////////////////////////////////////////////
-RepeatAction::RepeatAction( KActionCollection *ac ) :
-    SelectAction( i18n( "&Repeat" ), &AmarokConfig::setRepeat, ac, "repeat" )
+RepeatAction::RepeatAction( KActionCollection *ac, QObject *parent ) :
+    SelectAction( i18n( "&Repeat" ), &AmarokConfig::setRepeat, ac, "repeat", parent )
 {
     setItems( QStringList() << i18nc( "State, as in, disabled", "&Off" ) << i18nc( "Item, as in, music", "&Track" )
                             << i18n( "&Album" ) << i18n( "&Playlist" ) );
@@ -359,8 +359,8 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
 //////////////////////////////////////////////////////////////////////////////////////////
 // BurnMenuAction
 //////////////////////////////////////////////////////////////////////////////////////////
-BurnMenuAction::BurnMenuAction( KActionCollection *ac )
-  : KAction( 0 )
+BurnMenuAction::BurnMenuAction( KActionCollection *ac, QObject *parent )
+  : KAction( parent )
 {
     setText(i18n( "Burn" ));
     ac->addAction("burn_menu", this);
@@ -428,8 +428,8 @@ BurnMenu::slotBurnSelectedTracks() //SLOT
 // StopAction
 //////////////////////////////////////////////////////////////////////////////////////////
 
-StopAction::StopAction( KActionCollection *ac )
-  : KAction( 0 )
+StopAction::StopAction( KActionCollection *ac, QObject *parent )
+  : KAction( parent )
   , EngineObserver( The::engineController() )
 {
     setText( i18n( "Stop" ) );

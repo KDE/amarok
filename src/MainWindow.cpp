@@ -821,12 +821,12 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
 
     PERF_LOG( "MainWindow::createActions 8" )
-    new Amarok::MenuAction( ac );
-    new Amarok::StopAction( ac );
-    new Amarok::PlayPauseAction( ac );
-    new Amarok::RepeatAction( ac );
-    new Amarok::RandomAction( ac );
-    new Amarok::FavorAction( ac );
+    new Amarok::MenuAction( ac, this );
+    new Amarok::StopAction( ac, this );
+    new Amarok::PlayPauseAction( ac, this );
+    new Amarok::RepeatAction( ac, this );
+    new Amarok::RandomAction( ac, this );
+    new Amarok::FavorAction( ac, this );
 
     /*
     PERF_LOG( "MainWindow::createActions 9" )

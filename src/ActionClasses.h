@@ -43,20 +43,20 @@ namespace Amarok
     class MenuAction : public KAction
     {
         public:
-            MenuAction( KActionCollection* );
+            MenuAction( KActionCollection*, QObject* );
     };
 
     class PlayPauseAction : public KToggleAction, public EngineObserver
     {
         public:
-            PlayPauseAction( KActionCollection* );
+            PlayPauseAction( KActionCollection*, QObject* );
             virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
     };
 
     class ToggleAction : public KToggleAction
     {
         public:
-            ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCollection* const ac, const char *name );
+            ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCollection* const ac, const char *name, QObject *parent );
 
             virtual void setChecked( bool b );
 
@@ -71,7 +71,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            SelectAction( const QString &text, void ( *f ) ( int ), KActionCollection* const ac, const char *name );
+            SelectAction( const QString &text, void ( *f ) ( int ), KActionCollection* const ac, const char *name, QObject *parent );
 
             virtual void setCurrentItem( int n );
             virtual void setEnabled( bool b );
@@ -91,20 +91,20 @@ namespace Amarok
     class RandomAction : public SelectAction
     {
         public:
-            RandomAction( KActionCollection *ac );
+            RandomAction( KActionCollection *ac, QObject* );
             virtual void setCurrentItem( int n );
     };
 
     class FavorAction : public SelectAction
     {
         public:
-            FavorAction( KActionCollection *ac );
+            FavorAction( KActionCollection *ac, QObject* );
     };
 
     class RepeatAction : public SelectAction
     {
         public:
-            RepeatAction( KActionCollection *ac );
+            RepeatAction( KActionCollection *ac, QObject* );
     };
 
     class BurnMenu : public KMenu
@@ -124,14 +124,14 @@ namespace Amarok
     class BurnMenuAction : public KAction
     {
         public:
-            BurnMenuAction( KActionCollection* );
+            BurnMenuAction( KActionCollection*, QObject* );
             virtual QWidget* createWidget( QWidget* );
     };
 
     class StopAction : public KAction, public EngineObserver
     {
         public:
-            StopAction( KActionCollection* );
+            StopAction( KActionCollection*, QObject* );
             virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
     };
 
