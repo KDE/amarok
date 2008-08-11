@@ -62,7 +62,8 @@ namespace Amarok
 
     void RootDBusHandler::Quit()
     {
-        kapp->closeAllWindows();
+        // Same as KStandardAction::Quit
+        kapp->quit();
     }
 
     Version RootDBusHandler::MprisVersion()
