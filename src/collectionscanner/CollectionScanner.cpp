@@ -345,8 +345,6 @@ CollectionScanner::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
             }
         }
     }
-    else
-       return QString(); 
     return QString();
 }
 
