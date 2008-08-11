@@ -998,7 +998,7 @@ void CollectionTreeView::drawRow(QPainter * painter, const QStyleOptionViewItem 
         painter->save();
         QPixmap background;
 
-        debug() << "features: " << optionV4.features;
+        //debug() << "features: " << optionV4.features;
 
         if ( optionV4.features & QStyleOptionViewItemV4::Alternate)
             background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
