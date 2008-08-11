@@ -111,42 +111,52 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
 
 void ScriptableServiceScript::setServiceName( QString name )
 {
+    Q_UNUSED( name )
 }
 
 QString ScriptableServiceScript::serviceName() const
 {
+    return QString();
 }
 
 void ScriptableServiceScript::setLevels( int levels )
 {
+    Q_UNUSED( levels )
 }
 
 int ScriptableServiceScript::levels() const
 {
+    return 0;
 }
 
 void ScriptableServiceScript::setShortDescription( QString shortDescription )
 {
+    Q_UNUSED( shortDescription )
 }
 
 QString ScriptableServiceScript::shortDescription() const
 {
+    return QString();
 }
 
 void ScriptableServiceScript::setRootHtml( QString rootHtml )
 {
+    Q_UNUSED( rootHtml )
 }
 
 QString ScriptableServiceScript::rootHtml() const
 {
+    return QString();
 }
 
 void ScriptableServiceScript::setShowSearchBar( bool showSearchBar )
 {
+    Q_UNUSED( showSearchBar )
 }
 
 bool ScriptableServiceScript::showSearchBar() const
 {
+    return true;
 }
 
 
