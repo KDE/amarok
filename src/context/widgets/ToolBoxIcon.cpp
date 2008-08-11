@@ -112,13 +112,7 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 QRectF
 ToolBoxIcon::boundingRect() const
 {
-    QSizeF iconSize;
-    if( Plasma::Icon::drawBackground() )
-        iconSize = QSizeF( 180.0, 24 );
-    else
-        iconSize = QSizeF( 22, 22 );
-    
-    return QRectF( QPointF( 0, 0 ), iconSize );
+    return QRectF( QPointF( 0, 0 ), size() );
 }
 
 

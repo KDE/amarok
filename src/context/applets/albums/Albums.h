@@ -14,14 +14,18 @@
 #ifndef ALBUMS_APPLET_H
 #define ALBUMS_APPLET_H
 
+#include "AlbumEntry.h"
+
 #include <context/Applet.h>
 #include <context/DataEngine.h>
-#include <context/Svg.h>
 
 #include <KDialog>
 
 #include <QList>
 #include <QAction>
+#include <QGraphicsSceneHoverEvent>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsItem>
 
 class QGraphicsPixmapItem;
 class QLabel;
@@ -73,16 +77,12 @@ private:
 
     QHBoxLayout* m_configLayout;
     int m_width;
+    int m_height;
     const qreal m_albumWidth;
 
     qreal m_aspectRatio;
 
-    Context::Svg* m_theme;
-
-    QGraphicsSimpleTextItem*        m_artistLabel;
-    QList<AlbumTextItem*>           m_albumLabels;
-    QList<QGraphicsSimpleTextItem*> m_albumTracks;
-    QList<QGraphicsPixmapItem*>     m_albumCovers;
+    QList<AlbumEntry*> m_albums;
 
     int m_albumCount;
     QVariantList m_names;

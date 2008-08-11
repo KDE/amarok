@@ -248,7 +248,7 @@ AmarokToolBox::showTools()
         tool->setPos( center );
         tool->show();
         
-        qreal x = rad - ( ( tool->boundingRect().width() + 10 ) * i ) + 20;
+        qreal x = rad - ( ( tool->boundingRect().width() + 4 ) * i ) + 20;
         qreal y = -sqrt( rad * rad - x * x ) + size().width() + 30;
         Plasma::Animator::self()->moveItem( tool, Plasma::Animator::SlideInMovement, QPoint( x + 25, y ) );
         
@@ -369,7 +369,7 @@ AmarokToolBox::addAction( QAction *action )
     QSizeF iconSize = tool->sizeFromIconSize( 22 );
     tool->setMinimumSize( iconSize );
     tool->setMaximumSize( iconSize );
-    tool->resize( tool->size() );
+    tool->resize( iconSize );
     
     m_actionsCount++;
     
@@ -631,11 +631,10 @@ AmarokToolBoxMenu::setupMenuEntry( ToolBoxIcon *entry, const QString &appletName
         entry->setOrientation( Qt::Horizontal );
         entry->setText( appletName );
 
-        QSizeF iconSize = entry->sizeFromIconSize( 22 );
-
-        entry->setMinimumSize( iconSize );
-        entry->setMaximumSize( iconSize );
-        entry->resize( entry->size() );
+        QSizeF size( 180, 24 );
+        entry->setMinimumSize( size );
+        entry->setMaximumSize( size );
+        entry->resize( size );
 
         entry->setPos( 5, boundingRect().height() );
 

@@ -35,6 +35,8 @@
 #include <QLabel>
 #include <QMap>
 
+
+
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_configLayout( 0 )
@@ -53,19 +55,13 @@ Albums::~Albums()
 void Albums::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
-
-    m_theme = new Context::Svg( this );
-    m_theme->setImagePath( "widgets/amarok-albums" );
-    m_theme->setContainsMultipleImages( true );
  
     m_width = globalConfig().readEntry( "width", 500 );
-    
-    m_artistLabel = new QGraphicsSimpleTextItem( this );
+    m_height = globalConfig().readEntry( "height", 300 );
 
     // get natural aspect ratio, so we can keep it on resize
-    m_theme->resize();
-    m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
-    resize( m_width, m_width * m_aspectRatio );
+    m_aspectRatio = m_width / m_height;
+    resize( m_width, m_height );
 
     dataEngine( "amarok-current" )->connectSource( "albums", this );
 
@@ -79,14 +75,10 @@ void Albums::prepareElements()
 {
     DEBUG_BLOCK
 
-    qDeleteAll( m_albumLabels );
-    qDeleteAll( m_albumCovers );
-    qDeleteAll( m_albumTracks );
-    m_albumLabels.clear();
-    m_albumCovers.clear();
-    m_albumTracks.clear();
 
-    //const QColor textColor( Qt::white );
+    qDeleteAll( m_albums );
+    m_albums.clear();
+
     QFont labelFont;
     labelFont.setBold( true );
     labelFont.setPointSize( labelFont.pointSize() + 1  );
@@ -106,28 +98,18 @@ void Albums::prepareElements()
     {
         debug() << i;
         QString albumName = m_names[i].toString();
-        QString trackCountString = m_trackCounts[i].toString();
+        QString trackCount = m_trackCounts[i].toString();
         QPixmap image = m_covers[i].value<QPixmap>();
-        
-        AlbumTextItem           *album = new AlbumTextItem( this );
-        QGraphicsSimpleTextItem *trackCount = new QGraphicsSimpleTextItem( this );
-        QGraphicsPixmapItem     *cover = new QGraphicsPixmapItem( this );
-        
-        album->setText( albumName.isEmpty() ? i18n("Unknown") : albumName );
-        album->setFont( textFont );
-        //album->setBrush( textColor );
+
+        AlbumEntry *album = new AlbumEntry( this );
+        album->resize( QSizeF( boundingRect().width() - 10, 70 ) );
+        album->setAlbumName( albumName.isEmpty() ? i18n("Unknown") : albumName );
+        album->setCoverImage( image );
+        album->setTrackCount( trackCount );
 
         connect( album, SIGNAL( clicked( const QString& ) ), this, SLOT( enqueueAlbum( const QString& ) ) );
+        m_albums.append( album );
 
-        trackCount->setText( trackCountString );
-        trackCount->setFont( textFont );
-        //trackCount->setBrush( textColor );
-
-        cover->setPixmap( image );
-
-        m_albumLabels.append( album );
-        m_albumCovers.append( cover );
-        m_albumTracks.append( trackCount );
     }
 }
 
@@ -158,43 +140,16 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
     debug() << "Updating constraints for " << m_albumCount << " album rows";
     for( int i = 0; i < m_albumCount; ++i )
     {
-        QGraphicsSimpleTextItem *album      = m_albumLabels.at( i );
-        QGraphicsSimpleTextItem *trackCount = m_albumTracks.at( i );
-        QGraphicsPixmapItem     *cover      = m_albumCovers.at( i );
+        
+        AlbumEntry *album = m_albums.at( i );
 
-        const qreal yPos = i * ( m_albumWidth + margin ) + margin;
+        const qreal yPos = i * ( album->size().height() + margin/2 ) + margin;
 
-        album->setPos( QPointF( textX, yPos ) );
-        trackCount->setPos( QPointF( textX, yPos + textHeight ) );
-        cover->setPos( QPointF( margin + 2, yPos ) );
+        album->setPos( QPointF( margin - 10, yPos ) );
+        album->resize( QSizeF( boundingRect().width() - 10, 70 ) );
 
-        QString albumText = album->text();
-        debug() << "   --> " << albumText << " " << album->pos();
-
-        QFont textFont = shrinkTextSizeToFit( albumText, QRectF( 0, 0, textWidth, textHeight ) );
-        QFont tinyFont( textFont );
-
-        if( tinyFont.pointSize() > 5 ) tinyFont.setPointSize( tinyFont.pointSize() - 5 );
-        else                           tinyFont.setPointSize( 1 );
-    
-        tinyFont.setBold( true );
-    
-        m_maxTextWidth = size().toSize().width() - album->pos().x() - 14;
-
-        const QRectF rect = QRectF( 0, 0, textWidth, 30 );
-
-        album->setFont( textFont );
-        album->setText( truncateTextToFit( albumText, album->font(), rect ) );
-
-        QString trackText = trackCount->text();
-        trackCount->setFont( textFont );
-        trackCount->setText( truncateTextToFit( trackText, trackCount->font(), rect ) );
     }
 
-    prepareGeometryChange();
-
-    const qreal height = m_albumCount * ( m_albumWidth + margin ) + margin;
-    resize( size().toSize().width(), height );
 }
 
 void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -213,7 +168,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 
 
     const qreal margin = 14;
-    const qreal height = m_albumLabels.size() * ( m_albumWidth + margin ) + margin;
+    const qreal height = m_albums.size() * ( m_albumWidth + margin ) + margin;
     resize( size().toSize().width(), height );
 
     updateConstraints();
@@ -225,17 +180,16 @@ Albums::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
     Q_UNUSED( which )
 
-    //if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-    //{
-        //return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-        const qreal margin = 14;
-        const qreal height = m_albumLabels.size() * ( m_albumWidth + margin ) + margin;
-        return QSizeF( constraint.width(), height );
-    //}
-
-    //return constraint;
+    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
+    {
+        return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
+    }
+    else
+    {
+        return constraint;
+    }
+    
 }
-
 void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
@@ -254,32 +208,17 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
             childItem->show();
     }
 
-    /*p->save();
-    m_theme->paint( p, contentsRect.adjusted( 0, -10, 0, 10 ) , "background" );
-    QRect leftBorder( 0, 0, 14, contentsRect.height() + 20 );
-    m_theme->paint( p, leftBorder, "left-border" );
-    QRect rightBorder( contentsRect.width() + 5, 0, 14, contentsRect.height() + 20 );
-    m_theme->paint( p, rightBorder, "right-border" );
-    p->restore();*/
-
     p->save();
-    
-    
-    //m_theme->paint( p, QRectF( labelX, currentY, 16, 16 ), "artist" );
-    
+        
     const qreal margin = 14.0;
     const qreal labelX = m_albumWidth + margin;
     const qreal textHeight = 22;
     
     const qreal iconX = labelX + margin;
 
-    for( int i = 0; i < m_albumLabels.size(); ++i )
+    for( int i = 0; i < m_albums.size(); ++i )
     {
-        const qreal yPos = i * ( m_albumWidth + margin ) + margin;
-
-        m_theme->paint( p, QRect( margin - 5, yPos - 1, m_albumWidth + 12, m_albumWidth + 2), "cd-box" );
-        m_theme->paint( p, QRectF( iconX, yPos, 16, 16 ), "album" );
-        m_theme->paint( p, QRectF( iconX, yPos + textHeight, 16, 16 ), "track" );
+        m_albums.at( i )->show();
     }
     p->restore();
 }

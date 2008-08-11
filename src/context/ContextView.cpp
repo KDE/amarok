@@ -620,7 +620,8 @@ ContextView::setContainment( Plasma::Containment* containment )
                 debug() << "destinationPos: " << m_destinationPos;
             }
         }
-    }    
+    }
+    
 }
 
 void
