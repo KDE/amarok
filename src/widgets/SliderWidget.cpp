@@ -150,8 +150,6 @@ Amarok::Slider::setValue( int newValue )
 void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos )
 {
 
-    DEBUG_BLOCK
-
     const int borderWidth = 6;
     const int borderHeight = 6;
 
@@ -196,11 +194,6 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         const int sliderRigthWidth = sliderLeftWidth;
 
         int knobX = ( ( ( double ) value() - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width - ( sliderLeftWidth + sliderRigthWidth + sliderInsertX * 2 ) );
-
-        debug() << "min: " << minimum();
-        debug() << "max: " << maximum();
-        debug() << "value: " << value();
-        debug() << "knobX: " << knobX;
 
         p->drawPixmap( x + sliderInsertX, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_left",sliderLeftWidth , sliderHeight, "slider_bar_left" ) );
         
