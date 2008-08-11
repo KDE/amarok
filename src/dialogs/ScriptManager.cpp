@@ -117,7 +117,7 @@ ScriptManager::ScriptManager( QWidget* parent )
         , EngineObserver( The::engineController() )
 {
     DEBUG_BLOCK
-    m_gui = new Ui::ScriptManagerBase;
+    Ui::ScriptManagerBase gui;
     setObjectName( "ScriptManager" );
     setButtons( None );
 
@@ -133,21 +133,21 @@ ScriptManager::ScriptManager( QWidget* parent )
 #endif
 
     QWidget* main = new QWidget( this );
-    m_gui->setupUi( main );
+    gui.setupUi( main );
     setMainWidget( main );
 
-    m_scriptSelector = m_gui->pluginWidget;
-    m_gui->pluginWidget->setSizePolicy(QSizePolicy::Preferred ,QSizePolicy::Expanding);
+    m_scriptSelector = gui.pluginWidget;
+    gui.pluginWidget->setSizePolicy(QSizePolicy::Preferred ,QSizePolicy::Expanding);
 
-    connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
-    connect( m_gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
-    connect( m_gui->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
+    connect( gui.installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
+    connect( gui.retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
+    connect( gui.uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
     connect( m_scriptSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
     connect( m_scriptSelector, SIGNAL( configCommitted ( const QByteArray & ) ), SLOT( slotConfigComitted( const QByteArray & ) ) );
 
-    m_gui->installButton  ->setIcon( KIcon( "folder-amarok" ) );
-    m_gui->retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
-    m_gui->uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
+    gui.installButton  ->setIcon( KIcon( "folder-amarok" ) );
+    gui.retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    gui.uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
 
     // Center the dialog in the middle of the mainwindow
     const int x = parentWidget()->width() / 2 - sizeHint().width() / 2;
@@ -156,6 +156,7 @@ ScriptManager::ScriptManager( QWidget* parent )
 
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
+
 }
 
 ScriptManager::~ScriptManager()
@@ -172,8 +173,6 @@ ScriptManager::~ScriptManager()
     config.writeEntry( "Running Scripts", runningScripts );
 
     config.sync();
-
-    delete m_gui;
 
     s_instance = 0;
 }

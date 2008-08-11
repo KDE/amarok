@@ -35,11 +35,6 @@
 #include <QMap>
 #include <QScriptValue>
 
-namespace Ui
-{
-    class ScriptManagerBase;
-}
-
 class KArchiveDirectory;
 class KPluginInfo;
 class KPluginSelector;
@@ -126,8 +121,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         QScriptValue   m_global;
         bool           m_configChanged;
         QStringList    m_changedScripts;
-
-        Ui::ScriptManagerBase* m_gui;
 
 };
 
