@@ -111,52 +111,82 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
 
 void ScriptableServiceScript::setServiceName( QString name )
 {
-    Q_UNUSED( name )
+    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
+    if ( item )
+        m_serviceName = name;
 }
 
 QString ScriptableServiceScript::serviceName() const
 {
-    return QString();
+    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
+    if ( item )
+        return m_serviceName;
+    else
+        return QString();
 }
 
 void ScriptableServiceScript::setLevels( int levels )
 {
-    Q_UNUSED( levels )
+    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
+    if ( item )
+        m_levels = levels;
 }
 
 int ScriptableServiceScript::levels() const
 {
-    return 0;
+    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
+    if ( item )
+        return m_levels;
+    else
+        return 0;
 }
 
 void ScriptableServiceScript::setShortDescription( QString shortDescription )
 {
-    Q_UNUSED( shortDescription )
+    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
+    if ( item )
+        m_shortDescription = shortDescription;
 }
 
 QString ScriptableServiceScript::shortDescription() const
 {
-    return QString();
+    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
+    if ( item )
+        return m_shortDescription;
+    else
+        return QString();
 }
 
 void ScriptableServiceScript::setRootHtml( QString rootHtml )
 {
-    Q_UNUSED( rootHtml )
+    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
+    if ( item )
+        m_rootHtml = rootHtml;
 }
 
 QString ScriptableServiceScript::rootHtml() const
 {
-    return QString();
+    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
+    if ( item )
+        return m_rootHtml;
+    else
+        return QString();
 }
 
 void ScriptableServiceScript::setShowSearchBar( bool showSearchBar )
 {
-    Q_UNUSED( showSearchBar )
+    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
+    if ( item )
+        m_showSearchBar = showSearchBar;
 }
 
 bool ScriptableServiceScript::showSearchBar() const
 {
-    return true;
+    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
+    if ( item )
+        return m_showSearchBar;
+    else
+        return 0;
 }
 
 

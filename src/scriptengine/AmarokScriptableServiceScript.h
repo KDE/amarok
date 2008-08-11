@@ -63,10 +63,10 @@ class ScriptableServiceScript : public QObject, public QScriptable
 public:
 	ScriptableServiceScript( QScriptEngine* engine );
 	~ScriptableServiceScript();
-	
-public:
+    void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
+
+public slots:
 	int insertItem( int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData );
-	void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
 
 private:
 	int m_currentId;

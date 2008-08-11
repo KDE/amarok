@@ -60,38 +60,34 @@ var stationArray = new Array (
     new Station( "X T C Radio [Techno/Trance]",                         "http://stream.xtcradio.com:8069/listen.pls" )
 );
 
+function CoolStream()
+{
+    this.serviceName = "Cool Streams";
+    this.levels = 1;
+    this.shortDescription = "List of some high quality radio streams";
+    this.rootHtml = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers";
+    this.showSearchBar = false;
+    ScriptableServiceScript.call( this, this.serviceName, this.levels, this.shortDescription, this.rootHtml, this.showSearchBar );
+}
 
 function onConfigure()
 {
     Amarok.alert( "This script does not require any configuration." );
 }
 
-function onPopulate( level, parent_id, callback, filter )
+CoolStream.prototype.populate = function( level, callbackData, filter )
 {
     print( " Populating station level..." );
-
-    //no callback string needed for leaf nodes
-    callback_string = "";
-    html_info = ""
     //add the station streams as leaf nodes
     for ( i = 0; i < stationArray.length; i++ )
     {
         name = stationArray[i].name;
         url = stationArray[i].url;
         html_info = "A cool stream called " + name;
-
-        Amarok.ScriptableService.insertItem( service_name, 0, -1,  name, html_info, callback_string, url );
+        this.insertItem( 0, name, html_info, url, callback_string );
     }
-
-    //tell service that all items has been added to a parent item
-    Amarok.ScriptableService.donePopulating( "Cool Streams", parent_id );
 }
 
-service_name = "Cool Streams";
-levels = 1;
-short_description = "List of some high quality radio streams";
-root_html = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers";
-Amarok.ScriptableService.initService( service_name, levels, short_description, root_html, false );
-
 Amarok.configured.connect( onConfigure );
-Amarok.ScriptableService.populate.connect( onPopulate );
+
+script = new CoolStream();
