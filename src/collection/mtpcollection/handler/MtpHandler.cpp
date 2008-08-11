@@ -45,6 +45,7 @@
 #include <QFileInfo>
 #include <QString>
 #include <QStringList>
+#include <QTextStream>
 #include <QTime>
 
 using namespace Mtp;
@@ -117,6 +118,7 @@ MtpHandler::init( const QString &serial )
 
     if( m_success )
     {
+        debug() << "Got mtp list, connecting to device using thread";
         ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, serial, this ) );
     }
     else
@@ -344,12 +346,15 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
         trackmeta->genre = qstrdup( track->genre()->prettyName().toUtf8() );
     }
 
+    // TODO: port to Qt4
+
     if( track->year() > 0 )
     {
         QString date;
-        QTextOStream( &date ) << track->year() << "0101T0000.0";
+        QTextStream( &date ) << track->year() << "0101T0000.0";
         trackmeta->date = qstrdup( date.toUtf8() );
     }
+
     else
     {
         trackmeta->date = qstrdup( "00010101T0000.0" );
@@ -609,7 +614,7 @@ bool
 MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 {
     DEBUG_BLOCK
-    
+
     //If nothing is left in a folder, delete the folder
     u_int32_t object_id = track->id();
 
@@ -633,7 +638,7 @@ MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
     debug() << "object deleted";
 
     return true;
-    
+
 }
 
 int
@@ -723,7 +728,7 @@ MtpHandler::setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr t
     if( track->year() > 0 )
     {
         QString date;
-        QTextOStream( &date ) << track->year() << "0101T0000.0";
+        QTextStream( &date ) << track->year() << "0101T0000.0";
         trackmeta->date = qstrdup( date.toUtf8() );
     }
     else
@@ -1061,7 +1066,9 @@ MtpHandler::prettyName() const
 void
 MtpHandler::slotDeviceMatchSucceeded()
 {
+    DEBUG_BLOCK
     getDeviceInfo();
+    debug() << "Device matches serial, emitting succeeded()";
     emit succeeded();
 }
 void

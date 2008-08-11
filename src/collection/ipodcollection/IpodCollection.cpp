@@ -64,9 +64,9 @@ IpodCollectionFactory::init()
         connect( MediaDeviceMonitor::instance(), SIGNAL( ipodDetected( const QString &, const QString & ) ),
                  SLOT( ipodDetected( const QString &, const QString & ) ) );
 
-    // force refresh to scan for ipod
-    // NOTE: perhaps a signal/slot mechanism would make more sense
-    MediaDeviceMonitor::instance()->refreshDevices();
+    // scan for ipods
+
+    MediaDeviceMonitor::instance()->checkDevicesForIpod();
 
 
     return;

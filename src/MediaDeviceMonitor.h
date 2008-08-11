@@ -52,7 +52,10 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
     void init(); // connect to MediaDeviceCache
 
-    void refreshDevices(); // check all connected devices
+    
+    QStringList getDevices(); // get list of devices
+    void checkDevicesForMtp();
+    void checkDevicesForIpod();
 
     signals:
         void deviceRemoved( const QString &udi );
@@ -75,7 +78,7 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
         bool isIpod( const QString &udi );
         bool isMtp( const QString &udi );
 
-        void checkDevices( const QStringList &udiList); // scans for supported devices
+        void checkDevices(); // scans for supported devices
 
         static MediaDeviceMonitor* s_instance;
 

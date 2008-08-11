@@ -68,7 +68,7 @@ MtpCollectionFactory::init()
 
     // force refresh to scan for mtp, begin signal/slot process
 
-    MediaDeviceMonitor::instance()->refreshDevices();
+    MediaDeviceMonitor::instance()->checkDevicesForMtp();
 
 
     return;
@@ -78,6 +78,10 @@ void
 MtpCollectionFactory::mtpDetected( const QString & udi, const QString &serial )
 {
     MtpCollection* coll = 0;
+
+    debug() << "Udi is: " << udi;
+
+    debug() << "Udi is in map: " << (m_collectionMap.contains( udi ) ? "true" : "false" );
 
      if( !m_collectionMap.contains( udi ) )
         {
@@ -92,15 +96,19 @@ MtpCollectionFactory::mtpDetected( const QString & udi, const QString &serial )
                // begin signal/slot construction process
                coll->init();
         }
+        else
+            debug() << "MTP Collection for this device is already made: " << udi;
 
 }
 
 void
 MtpCollectionFactory::slotCollectionSucceeded( MtpCollection *coll )
 {
+    DEBUG_BLOCK
     connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
              SLOT( slotCollectionDisconnected( const QString & ) ) );
     m_collectionMap.insert( coll->udi(), coll );
+    debug() << "Inserted into the collectionMap: " << coll->udi();
     emit newCollection( coll );
     debug() << "emitting new mtp collection";
 }

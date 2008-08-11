@@ -72,41 +72,63 @@ MediaDeviceMonitor::init()
     return;
 }
 
-void
-MediaDeviceMonitor::refreshDevices()
+QStringList
+MediaDeviceMonitor::getDevices()
 {
     DEBUG_BLOCK
-    /* Refresh cache */
+    /* get list of devices */
     MediaDeviceCache::instance()->refreshCache();
-    QStringList udiList = MediaDeviceCache::instance()->getAll();
+    return MediaDeviceCache::instance()->getAll();
 
-    /* check cache for supported devices */
-
-    checkDevices( udiList );
 }
 
 void
-MediaDeviceMonitor::checkDevices( const QStringList &udiList )
+MediaDeviceMonitor::checkDevices()
 {
     DEBUG_BLOCK
     /* poll udi list for supported devices */
+
+    checkDevicesForMtp();
+    checkDevicesForIpod();
+
+}
+
+void
+MediaDeviceMonitor::checkDevicesForMtp()
+{
+
+    QStringList udiList = getDevices();
+
+    /* poll udi list for supported devices */
     foreach(const QString &udi, udiList )
     {
-        /* if iPod found, emit signal */
+        /* if mtp device found, emit signal */
         if( isIpod( udi ) )
         {
             emit ipodDetected( MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
         }
-        else if( isMtp( udi ) )
+    }
+}
+
+void
+MediaDeviceMonitor::checkDevicesForIpod()
+{
+    QStringList udiList = getDevices();
+
+    /* poll udi list for supported devices */
+    foreach(const QString &udi, udiList )
+    {
+        if( isMtp( udi ) )
         {
             Solid::PortableMediaPlayer* pmp = Solid::Device( udi ).as<Solid::PortableMediaPlayer>();
             QString serial = pmp->driverHandle( "mtp" ).toString();
             debug() << "Serial is: " << serial;
             emit mtpDetected( udi, serial );
         }
-
     }
 }
+
+
 
 void
 MediaDeviceMonitor::deviceAdded(  const QString &udi )
@@ -123,7 +145,7 @@ MediaDeviceMonitor::deviceAdded(  const QString &udi )
 
     // send new udi for testing
 
-    checkDevices( udiList );
+    checkDevices();
 
     return;
 }
