@@ -41,12 +41,14 @@ Token::Token( const QString &string, QWidget *parent )
     setMinimumSize( size + QSize( 4, 0 ) );
 }
 
+//Access for m_tokenString, private.
 void
 Token::setTokenString( const QString &string )
 {
     m_tokenString = string;
 }
 
+//Access for m_tokenString.
 QString
 Token::getTokenString()
 {

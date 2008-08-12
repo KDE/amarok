@@ -21,6 +21,7 @@
 
 #include <KListWidget>
 
+//Holds a number of icons representing parts of the filename that will become tokens when dropped on the FilenameLayoutWidget.
 class TokenListWidget
     : public KListWidget
 {
@@ -39,9 +40,9 @@ class TokenListWidget
     
     private:
         void performDrag( QMouseEvent *event );
-        QPoint m_startPos;
+        QPoint m_startPos;  //needed for starting the drag
     signals:
-        void onDoubleClick( QString text );
+        void onDoubleClick( QString text );     //connects to FilenameLayoutWidget::addToken( QString )
 };
 
 #endif    //TOKENLISTWIDGET_H

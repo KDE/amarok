@@ -1,153 +1,197 @@
 <ui version="4.0" >
  <class>FilenameLayoutDialog</class>
- <widget class="KDialog" name="FilenameLayoutDialog" >
+ <widget class="QWidget" name="FilenameLayoutDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>763</width>
-    <height>482</height>
+    <width>642</width>
+    <height>641</height>
    </rect>
   </property>
-  <property name="acceptDrops" >
-   <bool>false</bool>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
-  <property name="windowTitle" >
-   <string>Filename Scheme</string>
+  <property name="maximumSize" >
+   <size>
+    <width>16777215</width>
+    <height>16777215</height>
+   </size>
   </property>
-  <property name="modal" >
-   <bool>true</bool>
-  </property>
-  <widget class="QWidget" native="1" name="widget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>642</width>
-     <height>441</height>
-    </rect>
-   </property>
-   <property name="sizePolicy" >
-    <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="maximumSize" >
-    <size>
-     <width>16777215</width>
-     <height>16777215</height>
-    </size>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_4" >
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_3" >
-      <item>
-       <widget class="TokenListWidget" name="tokenPool" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>16777215</width>
-          <height>100</height>
-         </size>
-        </property>
-        <property name="selectionMode" >
-         <enum>QAbstractItemView::SingleSelection</enum>
-        </property>
-        <property name="iconSize" >
-         <size>
-          <width>48</width>
-          <height>48</height>
-         </size>
-        </property>
-        <property name="movement" >
-         <enum>QListView::Static</enum>
-        </property>
-        <property name="isWrapping" stdset="0" >
-         <bool>false</bool>
-        </property>
-        <property name="layoutMode" >
-         <enum>QListView::Batched</enum>
-        </property>
-        <property name="gridSize" >
-         <size>
-          <width>72</width>
-          <height>64</height>
-         </size>
-        </property>
-        <property name="viewMode" >
-         <enum>QListView::IconMode</enum>
-        </property>
-        <property name="modelColumn" >
-         <number>0</number>
-        </property>
-        <property name="uniformItemSizes" >
-         <bool>true</bool>
-        </property>
-        <property name="wordWrap" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="hintPicture" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>0</width>
-          <height>44</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>16777215</width>
-          <height>44</height>
-         </size>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="syntaxLabel" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>0</width>
-          <height>144</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>16777215</width>
-          <height>144</height>
-         </size>
-        </property>
-        <property name="text" >
-         <string>The following tokens can be used to define a filename scheme: &lt;br>%track, %title, %artist, %composer, %year, %album, %comment, %genre&lt;br></string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2" >
+  <layout class="QVBoxLayout" name="verticalLayout_4" >
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3" >
+     <item>
+      <widget class="TokenListWidget" name="tokenPool" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>16777215</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="selectionMode" >
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>48</width>
+         <height>48</height>
+        </size>
+       </property>
+       <property name="movement" >
+        <enum>QListView::Static</enum>
+       </property>
+       <property name="isWrapping" stdset="0" >
+        <bool>false</bool>
+       </property>
+       <property name="layoutMode" >
+        <enum>QListView::Batched</enum>
+       </property>
+       <property name="gridSize" >
+        <size>
+         <width>72</width>
+         <height>64</height>
+        </size>
+       </property>
+       <property name="viewMode" >
+        <enum>QListView::IconMode</enum>
+       </property>
+       <property name="modelColumn" >
+        <number>0</number>
+       </property>
+       <property name="uniformItemSizes" >
+        <bool>true</bool>
+       </property>
+       <property name="wordWrap" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="hintPicture" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>0</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>16777215</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="syntaxLabel" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>0</width>
+         <height>144</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>16777215</width>
+         <height>144</height>
+        </size>
+       </property>
+       <property name="text" >
+        <string>The following tokens can be used to define a filename scheme: &lt;br>%track, %title, %artist, %composer, %year, %album, %comment, %genre&lt;br></string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2" >
+       <item>
+        <widget class="FilenameLayoutWidget" name="filenameLayout" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>400</width>
+           <height>36</height>
+          </size>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>30000</width>
+           <height>36</height>
+          </size>
+         </property>
+         <property name="frameShape" >
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Sunken</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="KLineEdit" name="filenameLayoutEdit" />
+       </item>
+       <item>
+        <widget class="KPushButton" name="kpbAdvanced" >
+         <property name="text" >
+          <string>&amp;Advanced...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="KButtonGroup" name="optionsFrame" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>16777215</width>
+         <height>16000000</height>
+        </size>
+       </property>
+       <property name="title" >
+        <string>Options</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout" >
         <item>
-         <widget class="FilenameLayoutWidget" name="filenameLayout" >
+         <widget class="QCheckBox" name="cbCase" >
           <property name="sizePolicy" >
            <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
             <horstretch>0</horstretch>
@@ -156,259 +200,190 @@
           </property>
           <property name="minimumSize" >
            <size>
-            <width>400</width>
-            <height>36</height>
+            <width>320</width>
+            <height>0</height>
            </size>
           </property>
-          <property name="maximumSize" >
-           <size>
-            <width>30000</width>
-            <height>36</height>
-           </size>
-          </property>
-          <property name="frameShape" >
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow" >
-           <enum>QFrame::Sunken</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="KLineEdit" name="filenameLayoutEdit" />
-        </item>
-        <item>
-         <widget class="KPushButton" name="kpbAdvanced" >
           <property name="text" >
-           <string>&amp;Advanced...</string>
+           <string>Edit &amp;case</string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="QWidget" native="1" name="caseContainer" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>320</width>
+            <height>0</height>
+           </size>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2" >
+           <item>
+            <widget class="QRadioButton" name="rbTitleCase" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize" >
+              <size>
+               <width>280</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text" >
+              <string>&amp;Title case</string>
+             </property>
+             <property name="checked" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="rbFirstLetter" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize" >
+              <size>
+               <width>280</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text" >
+              <string>&amp;First letter of every word uppercase</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="rbAllUpper" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize" >
+              <size>
+               <width>280</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text" >
+              <string>All &amp;uppercase</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="rbAllLower" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize" >
+              <size>
+               <width>280</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text" >
+              <string>All &amp;lowercase</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbEliminateSpaces" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>320</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>Remove trailing &amp;spaces in tags</string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbReplaceUnderscores" >
+          <property name="text" >
+           <string>Replace &amp;underscores with spaces</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" >
-      <item>
-       <widget class="KButtonGroup" name="optionsFrame" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>16777215</width>
-          <height>16000000</height>
-         </size>
-        </property>
-        <property name="title" >
-         <string>Options</string>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout" >
-         <item>
-          <widget class="QCheckBox" name="cbCase" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize" >
-            <size>
-             <width>320</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text" >
-            <string>Edit &amp;case</string>
-           </property>
-           <property name="checked" >
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QWidget" native="1" name="caseContainer" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize" >
-            <size>
-             <width>320</width>
-             <height>0</height>
-            </size>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_2" >
-            <item>
-             <widget class="QRadioButton" name="rbTitleCase" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize" >
-               <size>
-                <width>280</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text" >
-               <string>&amp;Title case</string>
-              </property>
-              <property name="checked" >
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="rbFirstLetter" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize" >
-               <size>
-                <width>280</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text" >
-               <string>&amp;First letter of every word uppercase</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="rbAllUpper" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize" >
-               <size>
-                <width>280</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text" >
-               <string>All &amp;uppercase</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="rbAllLower" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize" >
-               <size>
-                <width>280</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text" >
-               <string>All &amp;lowercase</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cbEliminateSpaces" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize" >
-            <size>
-             <width>320</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text" >
-            <string>Remove trailing &amp;spaces in tags</string>
-           </property>
-           <property name="checked" >
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cbReplaceUnderscores" >
-           <property name="text" >
-            <string>Replace &amp;underscores with spaces</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer" >
-           <property name="orientation" >
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0" >
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>
    <class>KButtonGroup</class>
-   <extends></extends>
+   <extends>QGroupBox</extends>
    <header>kbuttongroup.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>KDialog</class>
-   <extends></extends>
-   <header>kdialog.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>KLineEdit</class>
-   <extends></extends>
+   <extends>QLineEdit</extends>
    <header>klineedit.h</header>
   </customwidget>
   <customwidget>
    <class>KPushButton</class>
-   <extends></extends>
+   <extends>QPushButton</extends>
    <header>kpushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>TokenListWidget</class>
    <extends>QListWidget</extends>
-   <header>TokenListWidget.h</header>
+   <header location="global" >widgets/TokenListWidget.h</header>
   </customwidget>
   <customwidget>
    <class>FilenameLayoutWidget</class>
    <extends>QFrame</extends>
-   <header>FilenameLayoutWidget.h</header>
+   <header location="global" >widgets/FilenameLayoutWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

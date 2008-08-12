@@ -19,6 +19,9 @@
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_H
 
 #include "meta/Meta.h"
+#include "dialogs/FilenameLayoutDialog.h"
+#include "widgets/FilenameLayoutWidget.h"
+#include "widgets/TokenListWidget.h"
 
 #include <KDialog>
 

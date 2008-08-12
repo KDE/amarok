@@ -371,18 +371,25 @@ TagDialog::loadCover()
     ui->pixmap_cover->setMaximumSize( s, s );
 }
 
+//creates a KDialog and executes the FilenameLayoutDialog. Grabs a filename scheme, extracts tags (via TagGuesser) from filename and fills the appropriate fields on TagDialog.
 void
 TagDialog::guessFromFilename() //SLOT
 {
     //was: setFilenameSchemes()
-    FilenameLayoutDialog *dialog = new FilenameLayoutDialog(this);
+    KDialog *dialog = new KDialog( this );
+    //FilenameLayoutDialog *dialog = new FilenameLayoutDialog(this);
+    dialog->setCaption( i18n( "Filename Layout Chooser" ) );
+    dialog->setButtons( KDialog::Ok | KDialog::Cancel );
+    FilenameLayoutDialog *widget = new FilenameLayoutDialog( dialog );
+    dialog->setMainWidget( widget );
+    
     int dcode = dialog->exec();
     QString schemeFromDialog = QString();       //note to self: see where to put it from an old revision
     debug() << "FilenameLayoutDialog finished.";
     schemeFromDialog = "";
     if( dcode == KDialog::Accepted )
     {
-        schemeFromDialog = dialog->getParsableScheme();
+        schemeFromDialog = widget->getParsableScheme();
     }
     else
     {
@@ -391,12 +398,18 @@ TagDialog::guessFromFilename() //SLOT
     debug() << "I have " << schemeFromDialog << " as filename scheme to use.";
     //legacy tagguesserconfigdialog code follows, needed to make everything hackishly work
     //probably not the best solution
-    QStringList schemes;
+    QStringList schemes;    //now, this is really bad: the old TagGuesser code requires a QStringList of schemes to work on, and by default uses the first one.
+                            //It was done like this because the user could pick from a list of default and previously used schemes. I'm just adding my scheme as the first in the list.
+                            //So there's a bunch of rotting unused code but I suggest leaving it like this for now so we can rollback to the old dialog if I don't manage to fix the
+                            //new one before 2.0.
     schemes += schemeFromDialog;
     
     
     if( schemeFromDialog == "" )
     {
+
+        //FIXME: remove this before release
+
         QMessageBox::warning(this, i18n( "No filename scheme to extract tags from" ), i18n( "Please choose a filename scheme to describe the layout of the filename(s) to extract the tags." ));
     }
     else
@@ -407,7 +420,7 @@ TagDialog::guessFromFilename() //SLOT
     //here starts the old guessFromFilename() code
         int cur = 0;
 
-        TagGuesser guesser( m_currentTrack->playableUrl().path(), dialog );
+        TagGuesser guesser( m_currentTrack->playableUrl().path(), widget );
         if( !guesser.title().isNull() )
             ui->kLineEdit_title->setText( guesser.title() );
 
@@ -442,6 +455,7 @@ TagDialog::guessFromFilename() //SLOT
             ui->kComboBox_genre->setItemText( cur, guesser.genre() );
         }
     }
+    delete widget;
     delete dialog;
 }
 

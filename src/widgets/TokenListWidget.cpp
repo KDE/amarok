@@ -49,6 +49,7 @@ TokenListWidget::TokenListWidget( QWidget *parent )
     //setFlow( QListView::LeftToRight );
 }
 
+//Executed on doubleclick of the TokenListWidget, emits signal onDoubleClick( QString ) that connects to FilenameLayoutWidget::addToken( QString )
 void
 TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
 {
@@ -57,6 +58,7 @@ TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
     emit onDoubleClick( token->text() );
 }
 
+//Executed on mouse press, handles start of drag.
 void
 TokenListWidget::mousePressEvent( QMouseEvent *event )
 {
@@ -66,6 +68,7 @@ TokenListWidget::mousePressEvent( QMouseEvent *event )
     KListWidget::mousePressEvent( event );    //feed it to parent's event
 }
 
+//Executed on mouse move, handles start of drag.
 void
 TokenListWidget::mouseMoveEvent( QMouseEvent *event )
 {
@@ -81,6 +84,7 @@ TokenListWidget::mouseMoveEvent( QMouseEvent *event )
     KListWidget::mouseMoveEvent( event );
 }
 
+//This doesn't do much since TokenListWidget doesn't accept objects.
 void
 TokenListWidget::dragEnterEvent( QDragEnterEvent *event )
 {
@@ -92,6 +96,7 @@ TokenListWidget::dragEnterEvent( QDragEnterEvent *event )
     }
 }
 
+//Same as above.
 void
 TokenListWidget::dragMoveEvent( QDragMoveEvent *event )        //overrides QListWidget's implementation
 {
@@ -103,6 +108,7 @@ TokenListWidget::dragMoveEvent( QDragMoveEvent *event )        //overrides QList
     }
 }
 
+//Same as above.
 void
 TokenListWidget::dropEvent( QDropEvent *event )
 {
@@ -110,6 +116,7 @@ TokenListWidget::dropEvent( QDropEvent *event )
     //does nothing, I want the item to be deleted and not dragged here
 }
 
+//Handles the creation of a QDrag object that carries the (text-only) QDataStream from an item in TokenListWidget
 void
 TokenListWidget::performDrag( QMouseEvent *event )
 {

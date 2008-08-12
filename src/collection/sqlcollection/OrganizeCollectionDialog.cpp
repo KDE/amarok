@@ -235,13 +235,14 @@ QString OrganizeCollectionDialog::buildFormatTip() const
 QString OrganizeCollectionDialog::buildFormatString() const
 {
     QString format = "%folder/";
+    //NOTE to teo: add the tokens %initial and %filetype to FilenameLayoutDialog
     if( ui->filetypeCheck->isChecked() )
         format += "%filetype/";
     if( ui->initialCheck->isChecked() )
         format += "%initial/";
 
     format += "%albumartist/";
-    if( ui->spaceCheck->isChecked() )
+    if( ui->spaceCheck->isChecked() )   //replace spaces with underscores
     {
         format += "%album{_(Disc_%discnumber)}/";
         format += "{%track_-_}%title.%filetype";
@@ -252,8 +253,8 @@ QString OrganizeCollectionDialog::buildFormatString() const
         format += "{%track - }%title.%filetype";
     }
 
-    if( ui->customschemeCheck->isChecked() )
-        format = QDir::fromNativeSeparators( ui->formatEdit->text() );
+    if( ui->customschemeCheck->isChecked() )    //get from scheme
+        format = QDir::fromNativeSeparators( ui->formatEdit->text() );      //fromNativeSeparators handles \\ under windows
 
     return format;
 }

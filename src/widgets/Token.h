@@ -21,6 +21,7 @@
 
 #include "FilenameLayoutWidget.h"
 
+//Defines a part of a filename, drag&droppable in the FilenameLayoutWidget bar from the TokenListWidget list.
 class Token
     : public QLabel
 {

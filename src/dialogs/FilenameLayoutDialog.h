@@ -19,10 +19,11 @@
 
 #include "ui_FilenameLayoutDialog.h"
 
-#include <KDialog>
+#include <QWidget>
 
+//Holds the FilenameLayoutWidget and TokenListWidget and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
 class FilenameLayoutDialog
-    : public KDialog
+    : public QWidget
     , private Ui::FilenameLayoutDialog
 {
     Q_OBJECT
@@ -33,12 +34,9 @@ class FilenameLayoutDialog
         int getCaseOptions();
         int getWhitespaceOptions();
         int getUnderscoreOptions();
-        //FilenameLayoutWidget * filenameLayout;
-        //TokenListWidget * tokenPool;
 
     private:
         QList< QRadioButton * > caseEditRadioButtons;
-        
 
     private slots:
         void editStateEnable( bool checked );

@@ -23,8 +23,9 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-class Token;
+class Token;    //forward decl for the tokens
 
+//Handles the graphical representation of the target filename as a bar that contains tokens.
 class FilenameLayoutWidget
     : public QFrame
 {
@@ -42,6 +43,7 @@ class FilenameLayoutWidget
         void dragEnterEvent( QDragEnterEvent *event );
         void dragMoveEvent( QDragMoveEvent *event );
         void dropEvent( QDropEvent *event );
+        
 
     private:
         //void performDrag();
@@ -49,16 +51,16 @@ class FilenameLayoutWidget
         void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
         void generateParsableScheme();
 
-        QList< Token * > *tokenList;
-        QLabel *backText;
-        QHBoxLayout *layout;
+        QList< Token * > *tokenList;    //Handles the indexes of the tokens
+        QLabel *backText;               //text in the back of the empty FilenameLayoutWidget
+        QHBoxLayout *layout;            //main layout that holds the tokens
         
-        QPoint m_startPos;
+        QPoint m_startPos;              //needed for initiating the drag
         unsigned int m_tokenCount;
-        QString m_parsableScheme;
+        QString m_parsableScheme;       //a string that TagGuesser will be able to use
 
     public slots:
-        void addToken( QString text, int index = 0);
+        void addToken( QString text, int index = 0);    //this one needs to be a SLOT, connects to TokenListWidget::onDoubleClick.
 };
 
 #endif    //FILENAMELAYOUTWIDGET_H

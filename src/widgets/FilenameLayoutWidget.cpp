@@ -45,8 +45,9 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     tokenList = new QList< Token * >();
 }
 
+//Adds a token with caption text at the index-th place in the FilenameLayoutWidget bar and computes the parsable scheme currently defined by the FilenameLayoutWidget.
 void
-FilenameLayoutWidget::addToken( QString text, int index )
+FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
 {
     if( !m_tokenCount )
     {
@@ -88,9 +89,10 @@ FilenameLayoutWidget::addToken( QString text, int index )
     {
         debug() << tokenList->indexOf( temp ) << " .......... " << layout->indexOf( temp ) << " .......... " << temp->text();
     }
+    generateParsableScheme();
 }
 
-
+//Executed whenever a drag object enters the FilenameLayoutWidget
 void
 FilenameLayoutWidget::dragEnterEvent( QDragEnterEvent *event )        //overrides QListWidget's implementation. this is when the drag becomes droppable
 {
@@ -109,6 +111,7 @@ FilenameLayoutWidget::dragEnterEvent( QDragEnterEvent *event )        //override
     }
 }
 
+//Executed whenever a drag object moves inside the FilenameLayoutWidget
 void
 FilenameLayoutWidget::dragMoveEvent( QDragMoveEvent *event )          //need to override QListWidget
 {
@@ -125,6 +128,7 @@ FilenameLayoutWidget::dragMoveEvent( QDragMoveEvent *event )          //need to 
     }
 }
 
+//Handles the insertion of a token over another depending on its position, computes the index and calls addToken
 void
 FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event )
 {
@@ -139,6 +143,7 @@ FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeD
     }
 }
 
+//Executed whenever a valid drag object is dropped on the FilenameLayoutWidget. Will call addToken and insertOverChild.
 void
 FilenameLayoutWidget::dropEvent( QDropEvent *event )
 {
@@ -194,30 +199,31 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     }
     event->accept();
     debug() << "Accepted drop event";
-    generateParsableScheme();
+    
 }
 
+//Access for m_tokenCount
 unsigned int
 FilenameLayoutWidget::getTokenCount()
 {
     return m_tokenCount;
 }
 
-
-
+//Executed whenever the mouse moves over the FilenameLayoutWidget. Needed for computing the start condition of the drag.
 void
 FilenameLayoutWidget::mouseMoveEvent( QMouseEvent *event )
 {
     if ( event->buttons() & Qt::LeftButton )
     {
         int distance = ( event->pos() - m_startPos ).manhattanLength();
-        if ( distance >= KApplication::startDragDistance() )
+        if ( distance >= KApplication::startDragDistance() )    //TODO:maybe it's not my business to say it but this should be done in PlaylistView too.
         {
             performDrag( event );
         }
     }
 }
 
+//Executed whenever the mouse is pressed over the FilenameLayoutWidget. Needed for computing the start condition of the drag.
 void
 FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
 {
@@ -225,6 +231,7 @@ FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
         m_startPos = event->pos();
 }
 
+//Executed when a drag is initiated from the FilenameLayoutWidget. If valid, grabs a token and instances a QDrag for it. Calls generateParsableScheme() when done.
 void
 FilenameLayoutWidget::performDrag( QMouseEvent *event )
 {
@@ -258,6 +265,7 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     generateParsableScheme();
 }
 
+//Iterates over the elements of the FilenameLayoutWidget bar (really over the elements of a QList that stores the indexes of the tokens) and generates a string that TagGuesser can digest.
 void
 FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of the layout
 {
@@ -306,6 +314,7 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
     debug() << "||| PARSABLE SCHEME ||| >>  " << m_parsableScheme;
 }
 
+//Access for m_parsableScheme.
 QString
 FilenameLayoutWidget::getParsableScheme()
 {

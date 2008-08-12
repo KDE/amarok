@@ -27,13 +27,10 @@
 #include <QPushButton>
 
 FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
-    : KDialog( parent )
+    : QWidget( parent )
 {
     setupUi( this );
 
-    setCaption( i18n( "Filename Layout Chooser" ) );
-    setButtons( KDialog::Ok | KDialog::Cancel );
-    setMainWidget( widget );
 
     caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
@@ -45,7 +42,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
 
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
-    connect( this, SIGNAL( accepted() ),
+    connect( parent, SIGNAL( accepted() ),
              this, SLOT( onAccept() ) );
     connect( tokenPool, SIGNAL( onDoubleClick( QString ) ),
              filenameLayout, SLOT( addToken( QString ) ) );
@@ -76,6 +73,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
     cbReplaceUnderscores->setChecked( underscoreOptions );
 }
 
+//Stores the configuration when the dialog is accepted.
 void
 FilenameLayoutDialog::onAccept()    //SLOT
 {
@@ -84,6 +82,7 @@ FilenameLayoutDialog::onAccept()    //SLOT
     Amarok::config( "TagGuesser" ).writeEntry( "Replace underscores", getUnderscoreOptions() );
 }
 
+//Forwards the request for a scheme to FilenameLayoutWidget
 QString
 FilenameLayoutDialog::getParsableScheme()
 {
@@ -94,6 +93,7 @@ FilenameLayoutDialog::getParsableScheme()
     return filenameLayout->getParsableScheme();
 }
 
+//Handles the radiobuttons
 void
 FilenameLayoutDialog::editStateEnable( bool checked )      //SLOT
 {
@@ -113,6 +113,7 @@ FilenameLayoutDialog::editStateEnable( bool checked )      //SLOT
     }
 }
 
+//Returns a code for the configuration.
 int
 FilenameLayoutDialog::getCaseOptions()
 {
@@ -137,6 +138,7 @@ FilenameLayoutDialog::getCaseOptions()
     }
 }
 
+//As above
 int
 FilenameLayoutDialog::getWhitespaceOptions()
 {
@@ -146,6 +148,7 @@ FilenameLayoutDialog::getWhitespaceOptions()
         return 1;
 }
 
+//As above
 int
 FilenameLayoutDialog::getUnderscoreOptions()
 {
@@ -155,10 +158,11 @@ FilenameLayoutDialog::getUnderscoreOptions()
         return 1;
 }
 
+//Handles the modifications to the dialog to toggle between advanced and basic editing mode.
 void
 FilenameLayoutDialog::toAdvancedMode()
 {
-    if( kpbAdvanced->text() == i18n( "&Advanced..." ) )
+    if( kpbAdvanced->text() == i18n( "&Advanced..." ) )     //is this a good idea?
     {
         kpbAdvanced->setText( i18n( "&Basic..." ) );
         filenameLayout->hide();
@@ -172,9 +176,9 @@ FilenameLayoutDialog::toAdvancedMode()
     {
         kpbAdvanced->setText( i18n( "&Advanced..." ) );
         filenameLayoutEdit->hide();
+        syntaxLabel->hide();
         filenameLayout->show();
         tokenPool->show();
         hintPicture->show();
-        syntaxLabel->hide();
     }
 }
