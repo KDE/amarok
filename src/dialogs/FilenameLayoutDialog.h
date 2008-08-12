@@ -17,6 +17,7 @@
 #ifndef FILENAMELAYOUTDIALOG_H
 #define FILENAMELAYOUTDIALOG_H
 
+#include "amarok_export.h"
 #include "ui_FilenameLayoutDialog.h"
 
 #include <QWidget>
@@ -29,7 +30,7 @@ class FilenameLayoutDialog
     Q_OBJECT
 
     public:
-        FilenameLayoutDialog( QWidget *parent = 0 );
+        AMAROK_EXPORT FilenameLayoutDialog( QWidget *parent = 0 );
         QString getParsableScheme();
         int getCaseOptions();
         int getWhitespaceOptions();

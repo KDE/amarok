@@ -74,6 +74,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     ui->setupUi(widget);
 
+    filenameLayoutDialog = new FilenameLayoutDialog( vbox );
+    filenameLayoutDialog->show();
+
     const QStringList folders = MountPointManager::instance()->collectionFolders();
 
     ui->folderCombo->insertItems( 0, folders );

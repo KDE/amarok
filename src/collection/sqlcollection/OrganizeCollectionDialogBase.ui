@@ -359,19 +359,6 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <widget class="QLabel" name="label" >
-      <property name="geometry" >
-       <rect>
-        <x>72</x>
-        <y>50</y>
-        <width>371</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Placeholder for FilenameLayoutDialog</string>
-      </property>
-     </widget>
     </widget>
    </item>
   </layout>
