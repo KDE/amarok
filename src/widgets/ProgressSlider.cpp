@@ -211,7 +211,7 @@ ProgressWidget::engineNewTrackPlaying()
 QSize ProgressWidget::sizeHint() const
 {
     DEBUG_BLOCK
-    int height = fontMetrics().boundingRect( "123456789:-" ).height();
+    //int height = fontMetrics().boundingRect( "123456789:-" ).height();
     return QSize( width(), 12 );
 }
 
