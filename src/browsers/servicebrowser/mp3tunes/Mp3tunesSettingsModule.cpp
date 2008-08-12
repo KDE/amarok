@@ -42,6 +42,7 @@ Mp3tunesSettingsModule::Mp3tunesSettingsModule( QWidget *parent, const QVariantL
     m_configDialog->pinEdit->setReadOnly( true );
     l->addWidget( w );
 
+    m_configDialog->passwordEdit->setEchoMode( QLineEdit::Password );
     connect ( m_configDialog->emailEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->passwordEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->enableHarmony, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
