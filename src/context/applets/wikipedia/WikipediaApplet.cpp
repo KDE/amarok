@@ -19,7 +19,8 @@
 #include "EngineController.h"
 #include <plasma/theme.h>
 
-#include "KStandardDirs"
+#include <KRun>
+#include <KStandardDirs>
 
 #include <QGraphicsTextItem>
 #include <QGraphicsSimpleTextItem>
@@ -103,7 +104,7 @@ void WikipediaApplet::init()
     connectSource( "wikipedia" );
     connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ),
             this, SLOT( connectSource( const QString & ) ) );
-    
+            
     constraintsEvent();
 
 }
@@ -114,6 +115,14 @@ WikipediaApplet::connectSource( const QString &source )
 {
     if( source == "wikipedia" )
         dataEngine( "amarok-wikipedia" )->connectSource( "wikipedia", this );
+}
+
+void
+WikipediaApplet::linkClicked( const QUrl &url )
+{
+    DEBUG_BLOCK
+    debug() << "URL: " << url;
+    KRun::runUrl( url, "text/html", 0  );    
 }
 
 void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
@@ -159,7 +168,7 @@ qreal WikipediaApplet::heightForWidth( qreal width ) const
 
 void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
-
+    
     kDebug() << "WikipediaApplet::dataUpdated: " << name;
     Q_UNUSED( name )
 
@@ -171,6 +180,10 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         m_webView->setHtml( data[ data.keys()[ 0 ] ].toString(), KUrl( QString() ) ); // set data
 
     }
+
+    m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
+
+    connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
     if( data.contains( "label" ) )
         m_label = data[ "label" ].toString() + ':';

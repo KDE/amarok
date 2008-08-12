@@ -68,6 +68,7 @@ private:
 
 private slots:
     void connectSource( const QString &source );
+    void linkClicked( const QUrl &url );
 };
 
 K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )

@@ -812,6 +812,16 @@ AmarokToolBoxMenu::wheelEvent( QGraphicsSceneWheelEvent *event )
 {
     DEBUG_BLOCK
     
+    if( event->orientation() == Qt::Horizontal )
+        return;
+    if( m_pendingScrolls.size() > 0 )
+    {
+        if( m_pendingScrolls.last() == ScrollDown && event->delta() > 0 )
+            m_pendingScrolls.clear();
+        else if( m_pendingScrolls.last() == ScrollUp && event->delta() < 0 )
+            m_pendingScrolls.clear();            
+    }
+    
     if( event->delta() < 0 )
         m_pendingScrolls << ScrollDown;
     else

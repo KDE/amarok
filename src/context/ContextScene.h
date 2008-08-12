@@ -19,6 +19,8 @@
 #include "Context.h"
 #include "plasma/corona.h"
 
+#include <QGraphicsSceneMouseEvent>
+
 namespace Context
 {
 
@@ -39,6 +41,7 @@ protected slots:
 
 protected:
     void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
+    void mousePressEvent( QGraphicsSceneMouseEvent *event );
     /*void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
     void dropEvent(QGraphicsSceneDragDropEvent* event);
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent); */
