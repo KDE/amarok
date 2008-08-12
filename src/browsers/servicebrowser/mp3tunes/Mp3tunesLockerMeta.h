@@ -58,7 +58,11 @@ class Mp3tunesLockerArtist {
         int albumCount() const;
         int trackCount() const;
     private:
-        mp3tunes_locker_artist_t *m_artist;
+        int m_artistId;
+        QString m_artistName;
+        int m_artistSize;
+        int m_albumCount;
+        int m_trackCount;
 };
 
 class Mp3tunesLockerAlbum {
@@ -73,7 +77,13 @@ class Mp3tunesLockerAlbum {
         int albumSize() const;
         bool hasArt() const;
     private:
-        mp3tunes_locker_album_t *m_album;
+        int m_albumId;
+        QString m_albumTitle;
+        int m_artistId;
+        QString m_artistName;
+        int m_trackCount;
+        int m_albumSize;
+        bool m_hasArt;
 };
 
 class Mp3tunesLockerTrack {
@@ -96,6 +106,19 @@ class Mp3tunesLockerTrack {
         QString artistName() const;
         int artistId() const;
     private:
-        mp3tunes_locker_track_t *m_track;
+        int m_trackId;
+        QString m_trackTitle;
+        int m_trackNumber;
+        float m_trackLength;
+        QString m_trackFileName;
+        QString m_trackFileKey;
+        int m_trackFileSize;
+        QString m_downloadUrl;
+        QString m_playUrl;
+        int m_albumId;
+        QString m_albumTitle;
+        int m_albumYear;
+        QString m_artistName;
+        int m_artistId;
 };
 #endif

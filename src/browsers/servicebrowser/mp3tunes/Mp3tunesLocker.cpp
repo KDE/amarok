@@ -102,20 +102,19 @@ Mp3tunesLocker::artists() const
     while ( artist_item != 0 )
     {
         // get the artist from the c lib
-        mp3tunes_locker_artist_t *artist = ( mp3tunes_locker_artist_t* )
-artist_item->value;
-        //debug() << "Wrapper Artist: " << &artist->artistName << " " <<
-artist->artistName;
+        mp3tunes_locker_artist_t *artist = ( mp3tunes_locker_artist_t* ) artist_item->value;
+        //debug() << "Wrapper Artist: " << artist->artistName;
 
         //wrap it up
-        Mp3tunesLockerArtist artistWrapped ( artist );
+        Mp3tunesLockerArtist artistWrapped (  artist );
         //and stick it in the QList
         artistsQList.append ( artistWrapped );
         //advance to next artist
+        //debug() << "Going to next artist";
         artist_item = artist_item->next;
     }
     mp3tunes_locker_artist_list_deinit ( &artists_list );
-    // debug() << "Wrapper deinit Complete";
+    debug() << "Wrapper deinit Complete";
     return artistsQList;
 }
 
