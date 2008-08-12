@@ -323,8 +323,8 @@ void Mp3tunesService::harmonyConnected()
     debug() << "Harmony Connected!";
     The::statusBar()->shortMessage( i18n( "MP3Tunes Harmony: Successfully Connected"  ) );
 
-    /* at this point since the user has input the pin, we will save the info
-       for later authentication
+    //at this point since the user has input the pin, we will save the info
+    //   for later authentication
     Mp3tunesConfig config;
     debug() << "Setting Config   email: " << theDaemon->email() << "   pin: " << theDaemon->pin();
     config.setHarmonyEmail( theDaemon->email() );
@@ -340,7 +340,7 @@ void Mp3tunesService::harmonyError( const QString &error )
     The::statusBar()->longMessage( i18n( "Mp3tunes Harmony Error\n%1", error ) );
 }
 
-void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &download )
+void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &/*download*/ )
 {
     DEBUG_BLOCK
     /*debug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
@@ -365,7 +365,7 @@ void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &downl
 
 }
 
-void Mp3tunesService::harmonyDownloadPending( const Mp3tunesHarmonyDownload &download )
+void Mp3tunesService::harmonyDownloadPending( const Mp3tunesHarmonyDownload &/*download*/ )
 {
     DEBUG_BLOCK
     /*debug() << "Got message about pending: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();*/

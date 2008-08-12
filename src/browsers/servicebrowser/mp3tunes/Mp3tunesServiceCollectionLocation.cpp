@@ -47,7 +47,7 @@ bool Mp3tunesServiceCollectionLocation::isWritable() const
     return true;
 }
 
-bool Mp3tunesServiceCollectionLocation::remove( const Meta::TrackPtr &track )
+bool Mp3tunesServiceCollectionLocation::remove( const Meta::TrackPtr &/*track*/ )
 {
     //TODO
     return false;

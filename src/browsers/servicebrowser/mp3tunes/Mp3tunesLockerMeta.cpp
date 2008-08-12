@@ -118,7 +118,7 @@ bool Mp3tunesLockerAlbum::hasArt() const
 //TRACK
 Mp3tunesLockerTrack::Mp3tunesLockerTrack(  mp3tunes_locker_track_t *track )
 {
-int m_trackId;
+//int m_trackId;
          m_trackTitle = track->trackTitle;
          m_trackNumber = track->trackNumber;
          m_trackLength = track->trackLength;
