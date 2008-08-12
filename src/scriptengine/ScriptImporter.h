@@ -35,12 +35,13 @@ namespace AmarokScript
             ~ScriptImporter();
 
         public slots:
-            void load( QString src );
-            void loadQtBinding( QString binding );
+            void loadExtension( const QString& src );
+            void loadQtBinding( const QString& binding );
+            bool include( const QString& relativeFile );
 
         private:
-            KUrl m_URL;
-            QScriptEngine*  m_ScriptEngine;
+            const KUrl m_scriptUrl;
+            QScriptEngine*  m_scriptEngine;
     };
 }
 

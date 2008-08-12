@@ -28,35 +28,48 @@
 
 namespace AmarokScript
 {
-    ScriptImporter::ScriptImporter( QScriptEngine* ScriptEngine, KUrl url )
+    ScriptImporter::ScriptImporter( QScriptEngine* scriptEngine, KUrl url )
     : QObject( kapp )
-    {
-        m_URL = url;
-        m_ScriptEngine = ScriptEngine;
-    }
+      , m_scriptUrl( url )
+      , m_scriptEngine( scriptEngine )
+    {  }
 
     ScriptImporter::~ScriptImporter()
     {
     }
 
-    void ScriptImporter::load( QString src )
+    void
+    ScriptImporter::loadExtension( const QString& src )
     {
         DEBUG_BLOCK
 
-        m_ScriptEngine->importExtension( "amarok/" + src );
+        m_scriptEngine->importExtension( "amarok/" + src );
 
     }
 
-    void ScriptImporter::loadQtBinding( QString binding )
+    void
+    ScriptImporter::loadQtBinding( const QString& binding )
     {
         DEBUG_BLOCK
         debug() << "importing qt bindings " << binding;
         QSet<QString> allowedBindings;
         allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
         if( allowedBindings.contains( binding ) )
-            m_ScriptEngine->importExtension( binding );
+            m_scriptEngine->importExtension( binding );
         else
             warning() <<"Qt Binding: " << binding << " not found!";
+    }
+
+    bool
+    ScriptImporter::include( const QString& relativeFilename )
+    {
+        KUrl includeUrl = m_scriptUrl.upUrl();
+        includeUrl.addPath( relativeFilename );
+        QFile file( includeUrl.toLocalFile() );
+        if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+            return false;
+        m_scriptEngine->evaluate( file.readAll() ), relativeFilename );
+        return true;
     }
 }
 
