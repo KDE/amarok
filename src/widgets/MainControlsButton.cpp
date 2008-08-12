@@ -17,31 +17,49 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef MAINCONTROLSWIDGET_H
-#define MAINCONTROLSWIDGET_H
+#include "MainControlsButton.h"
 
-#include <QGraphicsView>
-#include <QToolButton>
+#include "SvgHandler.h"
 
-/**
-A small widget containing the 4 main control buttons. Manages special layout for these butons
+#include <QStyleOptionGraphicsItem>
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
-class MainControlsWidget : public QGraphicsView
+MainControlsButton::MainControlsButton( QGraphicsItem * parent )
+    : QGraphicsItem( parent )
+    , m_action( 0 )
 {
-public:
-    MainControlsWidget( QWidget * parent );
+}
 
-    ~MainControlsWidget();
 
-private:
+MainControlsButton::~MainControlsButton()
+{
+}
 
-    QToolButton * m_prevButton;
-    QToolButton * m_playButton;
-    QToolButton * m_stopButton;
-    QToolButton * m_nextButton;
-    
-};
+void MainControlsButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
+{
 
-#endif
+    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( m_prefix, option->rect.width(), option->rect.height(), m_prefix ) );
+
+}
+
+void MainControlsButton::setSvgPrefix(const QString & prefix)
+{
+    m_prefix = prefix;
+}
+
+QRectF MainControlsButton::boundingRect() const
+{
+    return QRectF( 0.0, 0.0, 54.0, 54.0 );
+}
+
+void MainControlsButton::setAction(QAction * action)
+{
+    m_action = action;
+}
+
+void MainControlsButton::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+    if ( m_action != 0 )
+        m_action->trigger();
+}
+
+

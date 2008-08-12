@@ -492,6 +492,7 @@ set(amaroklib_LIB_SRCS
     Systray.cpp
 #    widgets/AnalyzerWidget.cpp
     widgets/FilenameLayoutWidget.cpp
+    widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
     widgets/MainToolbar.cpp
     widgets/ProgressSlider.cpp

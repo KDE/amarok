@@ -17,31 +17,38 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef MAINCONTROLSWIDGET_H
-#define MAINCONTROLSWIDGET_H
+#ifndef MAINCONTROLSBUTTON_H
+#define MAINCONTROLSBUTTON_H
 
-#include <QGraphicsView>
-#include <QToolButton>
+#include <QGraphicsItem>
+
+#include <QAction>
+#include <QPainter>
 
 /**
-A small widget containing the 4 main control buttons. Manages special layout for these butons
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MainControlsWidget : public QGraphicsView
+class MainControlsButton : public QGraphicsItem
 {
 public:
-    MainControlsWidget( QWidget * parent );
+    MainControlsButton( QGraphicsItem * parent );
+    ~MainControlsButton();
+    
+    void setSvgPrefix( const QString &prefix );
+    void setAction( QAction * action );
 
-    ~MainControlsWidget();
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget );
+    QRectF boundingRect() const;
 
+protected:
+
+    virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
+    
 private:
 
-    QToolButton * m_prevButton;
-    QToolButton * m_playButton;
-    QToolButton * m_stopButton;
-    QToolButton * m_nextButton;
-    
+    QString m_prefix;
+    QAction * m_action;
+
 };
 
 #endif

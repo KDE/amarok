@@ -22,47 +22,84 @@
 #include "ActionClasses.h"
 #include "Amarok.h"
 #include "SvgHandler.h"
+#include "MainControlsButton.h"
 
-#include <QPainter>
+#include <KStandardDirs>
+
+#include <QGraphicsSvgItem>
+#include <QGraphicsScene>
 
 
 
 MainControlsWidget::MainControlsWidget( QWidget * parent )
-    : QWidget( parent )
+    : QGraphicsView( parent )
 {
 
-    setFixedHeight( 54 );
-    setFixedWidth( 168 );
+    setFixedHeight( 67 );
+    setFixedWidth( 180 );
     setContentsMargins( 0, 0, 0, 0 );
+
+    setFrameStyle( QFrame::NoFrame );
 
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-    setStyleSheet( "QToolButton { border: none }" );
-
-    QToolButton * m_prevButton = new QToolButton( this );
-    QToolButton * m_playButton = new QToolButton( this );
-    QToolButton * m_stopButton = new QToolButton( this );
-    QToolButton * m_nextButton = new QToolButton( this );
-
-    m_prevButton->setDefaultAction( Amarok::actionCollection()->action( "prev" ) );
-    m_playButton->setDefaultAction( Amarok::actionCollection()->action( "play_pause" ) );
-    m_stopButton->setDefaultAction( Amarok::actionCollection()->action( "stop" ) );
-    m_nextButton->setDefaultAction( Amarok::actionCollection()->action( "next" ) );
-    m_prevButton->setIconSize( QSize( 48, 48 ) );
-    m_playButton->setIconSize( QSize( 48, 48 ) );
-    m_stopButton->setIconSize( QSize( 48, 48 ) );
-    m_nextButton->setIconSize( QSize( 48, 48 ) );
-
     
-    m_playButton->setAutoFillBackground( false );
-    
-    m_stopButton->raise();
-    m_playButton->raise();
+    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
-    m_prevButton->setGeometry( QRect( 6, 3, 48, 48 ) );
-    m_playButton->setGeometry( QRect( 42, 3, 48, 48 ) );
-    m_stopButton->setGeometry( QRect( 78, 3, 48, 48 ) );
-    m_nextButton->setGeometry( QRect( 114, 3, 48, 48 ) );
+    QPalette p = palette();
+    QColor c = p.color( QPalette::Base );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+    setPalette( p );
+
+    QGraphicsScene * scene = new QGraphicsScene();
+
+    QSvgRenderer *renderer = new QSvgRenderer( KStandardDirs::locate( "data", "amarok/images/default-theme.svg" ) );
+
+
+    QGraphicsSvgItem *shadow = new QGraphicsSvgItem();
+
+    //shadow->setSharedRenderer( The::svgHandler()->getRenderer() );
+    shadow->setSharedRenderer( renderer );
+    shadow->setElementId( QLatin1String("main_button_shadows") );
+    shadow->moveBy( 0.0, 4.0 );
+    shadow->setZValue( 1 );
+    scene->addItem( shadow );
+
+
+    MainControlsButton * backButton = new MainControlsButton( 0 );
+    backButton->setSvgPrefix( "back_button" );
+    backButton->setAction( Amarok::actionCollection()->action( "prev" ) );
+    backButton->moveBy( 3.0, 6.5 );
+    backButton->setZValue( 2 );
+    scene->addItem( backButton );
+
+    MainControlsButton * playButton = new MainControlsButton( 0 );
+    playButton->setSvgPrefix( "play_button" );
+    playButton->setAction( Amarok::actionCollection()->action( "play_pause" ) );
+    playButton->moveBy( 43.0, 6.5 );
+    playButton->setZValue( 10 );
+    scene->addItem( playButton );
+
+
+    MainControlsButton * stopButton = new MainControlsButton( 0 );
+    stopButton->setSvgPrefix( "stop_button" );
+    stopButton->setAction( Amarok::actionCollection()->action( "stop" ) );
+    stopButton->moveBy( 83.0, 6.5 );
+    stopButton->setZValue( 5 );
+    scene->addItem( stopButton );
+
+    MainControlsButton * nextButton = new MainControlsButton( 0 );
+    nextButton->setSvgPrefix( "next_button" );
+    nextButton->setAction( Amarok::actionCollection()->action( "next" ) );
+    nextButton->moveBy( 123.0, 6.5 );
+    nextButton->setZValue( 2 );
+    scene->addItem( nextButton );
+
+    setScene( scene );
+
+    show();
 }
 
 
@@ -70,10 +107,5 @@ MainControlsWidget::~MainControlsWidget()
 {
 }
 
-void MainControlsWidget::paintEvent(QPaintEvent *)
-{
-    QPainter painter( this );
-    painter.drawPixmap( 3, 0, The::svgHandler()->renderSvg( "main_button_shadows", width() - 6, height(), "main_button_shadows" ) );
-}
 
 
