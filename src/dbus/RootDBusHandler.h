@@ -24,8 +24,8 @@
 
 struct Version
 {
-    int major;
-    int minor;
+    quint16 major;
+    quint16 minor;
 };
 
 Q_DECLARE_METATYPE(Version)
