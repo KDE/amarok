@@ -55,13 +55,13 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
 
     QGraphicsScene * scene = new QGraphicsScene();
 
-    QSvgRenderer *renderer = new QSvgRenderer( KStandardDirs::locate( "data", "amarok/images/default-theme.svg" ) );
+    //QSvgRenderer *renderer = new QSvgRenderer( KStandardDirs::locate( "data", "amarok/images/default-theme.svg" ) );
 
 
-    QGraphicsSvgItem *shadow = new QGraphicsSvgItem();
+    QGraphicsSvgItem *shadow = new QGraphicsSvgItem( KStandardDirs::locate( "data", "amarok/images/default-theme.svg" ), 0 );
 
     //shadow->setSharedRenderer( The::svgHandler()->getRenderer() );
-    shadow->setSharedRenderer( renderer );
+    //shadow->setSharedRenderer( renderer );
     shadow->setElementId( QLatin1String("main_button_shadows") );
     shadow->moveBy( 0.0, 4.0 );
     shadow->setZValue( 1 );

@@ -43,11 +43,16 @@ public:
 protected:
 
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
-    
+    virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
+    virtual void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
+    virtual void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
+
 private:
 
     QString m_prefix;
     QAction * m_action;
+    bool m_mouseOver;
+    bool m_mouseDown;
 
 };
 
