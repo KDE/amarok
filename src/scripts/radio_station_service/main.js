@@ -62,12 +62,7 @@ var stationArray = new Array (
 
 function CoolStream()
 {
-    this.serviceName = "Cool Streams";
-    this.levels = 1;
-    this.shortDescription = "List of some high quality radio streams";
-    this.rootHtml = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers";
-    this.showSearchBar = false;
-    ScriptableServiceScript.call( this, this.serviceName, this.levels, this.shortDescription, this.rootHtml, this.showSearchBar );
+    ScriptableServiceScript.call( this, "Cool Streams", 1, "List of some high quality radio streams", "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers", false );
 }
 
 function onConfigure()

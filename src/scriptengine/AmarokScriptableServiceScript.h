@@ -53,12 +53,6 @@ class StreamItem : public QObject
 class ScriptableServiceScript : public QObject, public QScriptable
 {
     Q_OBJECT
-
-	Q_PROPERTY( QString serviceName WRITE setServiceName READ serviceName )
-	Q_PROPERTY( int levels WRITE setLevels READ levels )	
-	Q_PROPERTY( QString shortDescription WRITE setShortDescription READ shortDescription )
-	Q_PROPERTY( QString rootHtml WRITE setRootHtml READ rootHtml )
-	Q_PROPERTY( bool showSearchBar WRITE setShowSearchBar READ showSearchBar )
 	
 public:
 	ScriptableServiceScript( QScriptEngine* engine );
@@ -69,24 +63,11 @@ public slots:
 	int insertItem( int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData );
 
 private:
+    QScriptEngine* m_scriptEngine;
 	int m_currentId;
-	QScriptEngine* m_scriptEngine;
 	QString m_serviceName;
-	int m_levels;
-	QString m_shortDescription;
-	QString m_rootHtml;
-	bool m_showSearchBar;
-	
-	void setServiceName( QString name );
-	QString serviceName() const;
-	void setLevels( int levels );
-	int levels() const;
-	void setShortDescription( QString shortDescription );
-	QString shortDescription() const;
-	void setRootHtml( QString rootHtml );
-	QString rootHtml() const;
-	void setShowSearchBar( bool showSearchBar );
-	bool showSearchBar() const; 
+    static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
+    static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
 };
 
 Q_DECLARE_METATYPE( StreamItem* )

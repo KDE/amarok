@@ -76,12 +76,33 @@ ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
 , m_scriptEngine( engine )
 {
     DEBUG_BLOCK
-
+    m_scriptEngine = engine;
+    engine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QScriptValue() );
+    const QScriptValue ctor = engine->newFunction( ScriptableServiceScript_prototype_ctor );
+    const QScriptValue populate = engine->newFunction( ScriptableServiceScript_prototype_populate );
+    ctor.property( "prototype" ).setProperty( "populate", populate );
+    engine->globalObject().setProperty( "ScriptableServiceScript", ctor );
 }
 
 ScriptableServiceScript::~ScriptableServiceScript()
 {
     DEBUG_BLOCK
+}
+
+QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine )
+{
+    QString serviceName = context->argument(0).toString();
+    int levels = context->argument(1).toInt32();
+    QString shortDescription = context->argument(2).toString();
+    QString rootHtml = context->argument(3).toString();
+    bool showSearchBar = context->argument(4).toBoolean();
+    The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
+    return engine->undefinedValue();
+}
+
+QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine )
+{
+
 }
 
 int ScriptableServiceScript::insertItem( int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData )
@@ -108,86 +129,5 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
 	
     The::scriptableServiceManager()->donePopulating( m_serviceName, m_currentId );
 }
-
-void ScriptableServiceScript::setServiceName( QString name )
-{
-    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
-    if ( item )
-        m_serviceName = name;
-}
-
-QString ScriptableServiceScript::serviceName() const
-{
-    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
-    if ( item )
-        return m_serviceName;
-    else
-        return QString();
-}
-
-void ScriptableServiceScript::setLevels( int levels )
-{
-    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
-    if ( item )
-        m_levels = levels;
-}
-
-int ScriptableServiceScript::levels() const
-{
-    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
-    if ( item )
-        return m_levels;
-    else
-        return 0;
-}
-
-void ScriptableServiceScript::setShortDescription( QString shortDescription )
-{
-    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
-    if ( item )
-        m_shortDescription = shortDescription;
-}
-
-QString ScriptableServiceScript::shortDescription() const
-{
-    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
-    if ( item )
-        return m_shortDescription;
-    else
-        return QString();
-}
-
-void ScriptableServiceScript::setRootHtml( QString rootHtml )
-{
-    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
-    if ( item )
-        m_rootHtml = rootHtml;
-}
-
-QString ScriptableServiceScript::rootHtml() const
-{
-    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
-    if ( item )
-        return m_rootHtml;
-    else
-        return QString();
-}
-
-void ScriptableServiceScript::setShowSearchBar( bool showSearchBar )
-{
-    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
-    if ( item )
-        m_showSearchBar = showSearchBar;
-}
-
-bool ScriptableServiceScript::showSearchBar() const
-{
-    ScriptableServiceScript* item = qscriptvalue_cast<ScriptableServiceScript*>( thisObject() );
-    if ( item )
-        return m_showSearchBar;
-    else
-        return 0;
-}
-
 
 #include "AmarokScriptableServiceScript.moc"
