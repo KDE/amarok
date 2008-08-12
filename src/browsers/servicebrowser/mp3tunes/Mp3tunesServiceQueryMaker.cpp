@@ -124,30 +124,32 @@ void Mp3tunesServiceQueryMaker::abortQuery()
 QueryMaker * Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
 {
     switch( type ) {
-    case QueryMaker::Artist:
-    {
-        DEBUG_BLOCK
-        d->type = Private::ARTIST;
-    }
+        case QueryMaker::Artist:
+        {
+            DEBUG_BLOCK
+            d->type = Private::ARTIST;
+        }
 
-    case QueryMaker::Album:
-    {
-        DEBUG_BLOCK
-        d->type = Private::ALBUM;
-    }
+        case QueryMaker::Album:
+        {
+            DEBUG_BLOCK
+            d->type = Private::ALBUM;
+        }
 
-    case QueryMaker::Track:
-    {
-        DEBUG_BLOCK
-        d->type = Private::TRACK;
-    }
+        case QueryMaker::Track:
+        {
+            DEBUG_BLOCK
+            d->type = Private::TRACK;
+        }
 
-    case QueryMaker::Genre:
-    case QueryMaker::Composer:
-    case QueryMaker::Year:
-    case QueryMaker::Custom:
-    case QueryMaker::None:
-        //TODO: Implement.
+        case QueryMaker::Genre:
+        case QueryMaker::Composer:
+        case QueryMaker::Year:
+        case QueryMaker::Custom:
+        case QueryMaker::None:
+        {
+            //TODO: Implement.
+        }
     }
     return this;
 }
