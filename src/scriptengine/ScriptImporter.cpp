@@ -68,7 +68,7 @@ namespace AmarokScript
         QFile file( includeUrl.toLocalFile() );
         if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
             return false;
-        m_scriptEngine->evaluate( file.readAll() ), relativeFilename );
+        m_scriptEngine->evaluate( file.readAll(), relativeFilename );
         return true;
     }
 }
