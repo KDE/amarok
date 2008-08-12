@@ -34,7 +34,7 @@ MainControlsButton::~MainControlsButton()
 {
 }
 
-void MainControlsButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
+void MainControlsButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
 
     painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( m_prefix, option->rect.width(), option->rect.height(), m_prefix ) );
@@ -56,7 +56,7 @@ void MainControlsButton::setAction(QAction * action)
     m_action = action;
 }
 
-void MainControlsButton::mousePressEvent(QGraphicsSceneMouseEvent * event)
+void MainControlsButton::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
 {
     if ( m_action != 0 )
         m_action->trigger();
