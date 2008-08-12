@@ -147,7 +147,7 @@ Amarok::Slider::setValue( int newValue )
 }
 
 
-void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos )
+void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
 {
 
     const int borderWidth = 6;
