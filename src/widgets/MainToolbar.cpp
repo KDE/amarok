@@ -103,7 +103,7 @@ void MainToolbar::paintEvent( QPaintEvent * )
 {
     QPainter painter( this );
 
-    int watermarkWidth = height() * 1.36;
+    //int watermarkWidth = height() * 1.36;
 
     //painter.drawPixmap( width() - watermarkWidth, 0, The::svgHandler()->renderSvg( "volume_watermark", watermarkWidth, height(), "volume_watermark" ) );
     
