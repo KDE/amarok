@@ -1,8 +1,10 @@
 macro_optional_find_package(Mtp)
-INCLUDE(FindPkgConfig)
-pkg_check_modules(Mtp libmtp>=0.3.0)
 
-if (MTP_FOUND AND Mtp_VERSION>=0.3.0)
+# Old MTP stuff, which might be reverted to or reused to accompany old libmtp cmake madness
+#INCLUDE(FindPkgConfig)
+#pkg_check_modules(Mtp libmtp>=0.3.0)
+
+if (MTP_FOUND)
    include_directories( ../..
    ../../plugin
    ../../meta
@@ -35,4 +37,4 @@ if (MTP_FOUND AND Mtp_VERSION>=0.3.0)
 
 	install( FILES amarok_collection-mtpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-endif (MTP_FOUND AND Mtp_VERSION>=0.3.0)
+endif (MTP_FOUND)
