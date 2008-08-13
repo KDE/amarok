@@ -137,12 +137,12 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
         //Give this a displayable name as some services has terrible names for their streams
         //ServiceTrack( const QString & name );
         ServiceTrack( const QString & name, const QString & url );
+        ServiceTrack( const QString & url );
 
         //create track based on an sql query result
         ServiceTrack( const QStringList & resultRow );
         virtual ~ServiceTrack();
 
-        virtual QString name() const;
         virtual QString prettyName() const;
         virtual KUrl downloadableUrl() const;
         virtual KUrl playableUrl() const;
@@ -238,6 +238,7 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
         int artistId() const;
         void setUidUrl( const QString &url );
         void setDownloadableUrl( const QString &url );
+        void refresh( TrackProvider *provider );
 
     private:
         ArtistPtr m_artist;
@@ -247,7 +248,6 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
         YearPtr m_year;
 
         int m_id;
-        QString m_name;
         int m_trackNumber;
         int m_length;
         QString m_displayUrl;

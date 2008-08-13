@@ -41,7 +41,7 @@ ServiceFactory::ServiceFactory()
     CollectionManager::instance()->addTrackProvider( this );
 }
 
-ServiceFactory::~ ServiceFactory()
+ServiceFactory::~ServiceFactory()
 {
     CollectionManager::instance()->removeTrackProvider( this );
 }
@@ -56,12 +56,14 @@ ServiceFactory::trackForUrl(const KUrl & url)
         init();
     }
 
-    Meta::TrackPtr track;
+    Meta::ServiceTrack * serviceTrack = new Meta::ServiceTrack( url.url() );
+    Meta::TrackPtr track( serviceTrack );
 
     foreach( ServiceBase * service, m_activeServices )
     {
         if( !service->serviceReady() ){
             debug() << "our service is not ready!";
+            m_tracksToLocate.enqueue( track );
             return track;
         }
         if (  service->collection() ){
@@ -81,6 +83,17 @@ void ServiceFactory::clearActiveServices()
     m_activeServices.clear();
 }
 
+void ServiceFactory::serviceReady()
+{
+    DEBUG_BLOCK
+    debug() << "Found " << m_tracksToLocate.size() << " tracks to locate!";
+    while( !m_tracksToLocate.isEmpty() )
+    {
+        Meta::ServiceTrack* track = dynamic_cast< Meta::ServiceTrack* >( m_tracksToLocate.dequeue().data() );
+        if( track )
+            track->refresh( this );
+    }
+}
 
 
 ServiceBase *ServiceBase::s_instance = 0;

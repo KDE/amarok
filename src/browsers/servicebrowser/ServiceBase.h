@@ -35,6 +35,7 @@
 #include <khtml_part.h>
 
 #include <QPushButton>
+#include <QQueue>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 
@@ -108,6 +109,12 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
 
         QList<ServiceBase *> activeServices() { return m_activeServices; }
 
+    public slots:
+        /**
+         * The service is ready!
+         */
+        void serviceReady();
+
     signals:
         /**
          * This signal is emmited whenever a new service has been loaded.
@@ -117,6 +124,9 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
 
     protected:
         QList<ServiceBase *> m_activeServices;
+
+    private:
+        QQueue<Meta::TrackPtr> m_tracksToLocate;
 };
 
 
@@ -282,6 +292,11 @@ signals:
      * @param item The selected item
      */
     void selectionChanged( CollectionTreeItem * );
+
+    /**
+     * Signal emitted when the service is ready to be used.
+     */
+     void ready();
 
 protected slots:
     /**

@@ -137,7 +137,29 @@ ServiceTrack::ServiceTrack( const QString & name, const QString & url )
     , m_composer( 0 )
     , m_year( 0 )
     , m_id( 0 )
-    , m_name( name )
+    , m_trackNumber( 0 )
+    , m_length( 0 )
+    , m_displayUrl( 0 )
+    , m_playableUrl( 0 )
+    , m_downloadableUrl( 0 )
+    , m_albumId( 0 )
+    , m_albumName( 0 )
+    , m_artistId( 0 )
+    , m_artistName( 0 )
+{
+    setName( name );
+}
+
+ServiceTrack::ServiceTrack( const QString & url )
+    : MetaProxy::Track( KUrl( url ), true )
+    , ServiceDisplayInfoProvider()
+    , CustomActionsProvider()
+    , SourceInfoProvider()
+    , CurrentTrackActionsProvider()
+    , m_genre( 0 )
+    , m_composer( 0 )
+    , m_year( 0 )
+    , m_id( 0 )
     , m_trackNumber( 0 )
     , m_length( 0 )
     , m_displayUrl( 0 )
@@ -150,7 +172,6 @@ ServiceTrack::ServiceTrack( const QString & name, const QString & url )
 {
 }
 
-
 ServiceTrack::ServiceTrack( const QStringList & resultRow )
     : MetaProxy::Track( resultRow[4], true )
     , ServiceDisplayInfoProvider()
@@ -162,7 +183,7 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     , m_year( 0 )
 {
     m_id = resultRow[0].toInt();
-    m_name = resultRow[1];
+    setName( resultRow[1] );
     m_trackNumber = resultRow[2].toInt();
     m_length = resultRow[3].toInt();
     m_displayUrl = resultRow[4];
@@ -179,6 +200,11 @@ ServiceTrack::~ServiceTrack()
     //nothing to do
 }
 
+void
+ServiceTrack::refresh( TrackProvider *provider )
+{
+    this->lookupTrack( provider );
+}
 
 void
 ServiceTrack::setId(int id)
@@ -217,15 +243,9 @@ ServiceTrack::artistId() const
 }
 
 QString
-ServiceTrack::name() const
-{
-    return m_name;
-}
-
-QString
 ServiceTrack::prettyName() const
 {
-    return m_name;
+    return name();
 }
 
 KUrl
@@ -492,7 +512,7 @@ ServiceTrack::setYear( YearPtr year )
 void
 ServiceTrack::setTitle( const QString &title )
 {
-    m_name = title;
+    setName( title );
 }
 
 void

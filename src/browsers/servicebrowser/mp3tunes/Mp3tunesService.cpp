@@ -42,7 +42,9 @@ void Mp3tunesServiceFactory::init()
 
     ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled() );
     m_activeServices << service;
+    connect( service, SIGNAL( ready() ), this, SLOT( serviceReady() ) );
     emit newService( service );
+    
 }
 
 
@@ -284,6 +286,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
         m_serviceready = true;
+        emit( ready() );
     }
     polish();
 }
