@@ -127,15 +127,14 @@ void AmpacheServiceCollection::parseTrack( const QString &xml )
     QString title = element.text();
     if ( title.isEmpty() ) title = "Unknown";
 
-    m_urlTrack = new AmpacheTrack( title, service() );
-    TrackPtr trackPtr( m_urlTrack );
-
-    //debug() << "Adding track: " <<  title;
-
-    m_urlTrack->setId( m_urlTrackId );
-
     element = song.firstChildElement("url");
+   
+    m_urlTrack = new AmpacheTrack( title, element.text(), service() );
+    TrackPtr trackPtr( m_urlTrack );
+    
+    //debug() << "Adding track: " <<  title;
     m_urlTrack->setUidUrl( element.text() );
+    m_urlTrack->setId( m_urlTrackId );
 
     element = song.firstChildElement("time");
     m_urlTrack->setLength( element.text().toInt() );

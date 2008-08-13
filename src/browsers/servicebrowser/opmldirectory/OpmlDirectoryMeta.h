@@ -55,7 +55,7 @@ class OpmlDirectoryFeed  : public ServiceTrack
 
 
 public:
-    OpmlDirectoryFeed( const QString &name );
+    OpmlDirectoryFeed( const QString &name, const QString &url );
     OpmlDirectoryFeed( const QStringList &resultRow );
 
     virtual QList< PopupDropperAction *> customActions();

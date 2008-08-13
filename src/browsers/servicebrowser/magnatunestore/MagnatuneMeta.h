@@ -40,7 +40,7 @@ class MagnatuneTrack  : public ServiceTrack
 {
 
 public:
-    MagnatuneTrack( const QString &name );
+    MagnatuneTrack( const QString &name, const QString &url );
     MagnatuneTrack( const QStringList &resultRow );
 
     QString lofiUrl();

@@ -432,7 +432,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
         QString title = track.trackTitle();
         if ( title.isEmpty() ) title = "Unknown";
 
-        Mp3TunesTrack * serviceTrack = new Mp3TunesTrack( title  );
+        Mp3TunesTrack * serviceTrack = new Mp3TunesTrack( title, track.playUrl()  );
         TrackPtr trackPtr( serviceTrack );
 
       //  debug() << "Adding track: " <<  title;

@@ -502,14 +502,13 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         QString title = element.text();
         if ( title.isEmpty() )
             title = "Unknown";
-
-        AmpacheTrack * track = new AmpacheTrack( title, m_collection->service()  );
+        element = n.firstChildElement("url");
+        AmpacheTrack * track = new AmpacheTrack( title, element.text(), m_collection->service()  );
         TrackPtr trackPtr( track );
 
         //debug() << "Adding track: " <<  title;
 
         track->setId( trackId );
-        element = n.firstChildElement("url");
         track->setUidUrl( element.text() );
 
         element = n.firstChildElement("time");

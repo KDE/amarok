@@ -91,7 +91,7 @@ Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
 
     //Building a Meta::Track
     QString title = track.trackTitle().isEmpty() ? "Unknown" :  track.trackTitle();
-    Meta::Mp3TunesTrack * serviceTrack = new Meta::Mp3TunesTrack( title );
+    Meta::Mp3TunesTrack * serviceTrack = new Meta::Mp3TunesTrack( title, track.playUrl() );
     serviceTrack->setId( track.trackId() );
     serviceTrack->setUidUrl( track.playUrl() ); //was: setUrl
     serviceTrack->setDownloadableUrl( track.downloadUrl() );

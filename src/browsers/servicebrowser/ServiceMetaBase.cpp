@@ -127,8 +127,8 @@ ServiceMetaFactory::createGenre(const QStringList & rows)
 
 
 
-ServiceTrack::ServiceTrack(const QString & name)
-    : Meta::Track()
+ServiceTrack::ServiceTrack( const QString & name, const QString & url )
+    : MetaProxy::Track( KUrl( url ), false )
     , ServiceDisplayInfoProvider()
     , CustomActionsProvider()
     , SourceInfoProvider()
@@ -152,7 +152,7 @@ ServiceTrack::ServiceTrack(const QString & name)
 
 
 ServiceTrack::ServiceTrack( const QStringList & resultRow )
-    : Meta::Track()
+    : MetaProxy::Track( resultRow[4], false )
     , ServiceDisplayInfoProvider()
     , CustomActionsProvider()
     , SourceInfoProvider()
@@ -172,7 +172,6 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     //m_albumName = resultRow[6];
     m_artistId = resultRow[6].toInt();
     //m_artistName = resultRow[8].toInt();
-
 }
 
 ServiceTrack::~ServiceTrack()

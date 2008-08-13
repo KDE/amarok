@@ -302,9 +302,11 @@ JamendoXmlParser::parseTrack( const  QDomElement &e)
             n = n.nextSibling();
         }
     }
-    JamendoTrack currentTrack ( name );
-    currentTrack.setId( e.attribute( "id", "0" ).toInt() );
-    currentTrack.setUidUrl( "http://www.jamendo.com/get/track/id/track/audio/redirect/" +  QString::number( currentTrack.id() ) + "/?aue=ogg2" );
+    int id = e.attribute( "id", "0" ).toInt();
+    QString uidUrl = "http://www.jamendo.com/get/track/id/track/audio/redirect/" +  QString::number( id ) + "/?aue=ogg2";
+    JamendoTrack currentTrack ( name, uidUrl );
+    currentTrack.setId( id );
+    currentTrack.setUidUrl( uidUrl );
     currentTrack.setAlbumId( e.attribute( "albumID", "0" ).toInt() );
     //currentTrack.setArtistId( e.attribute( "artistID", "0" ).toInt() );
     currentTrack.setLength(  e.attribute( "lengths", "0" ).toInt() );

@@ -45,8 +45,8 @@ int Meta::ScriptableServiceMetaItem::level() const
 
 
 /* ScriptableServiceTrack */
-ScriptableServiceTrack::ScriptableServiceTrack( const QString & name )
-    : ServiceTrack( name )
+ScriptableServiceTrack::ScriptableServiceTrack( const QString & name, const QString & url )
+    : ServiceTrack( name, url )
     , ScriptableServiceMetaItem( 0 )
 {}
 

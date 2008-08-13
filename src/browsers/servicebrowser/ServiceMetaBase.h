@@ -23,7 +23,7 @@
 #include "amarok_export.h"
 #include "Debug.h"
 #include "InfoParserBase.h"
-#include "Meta.h"
+#include "meta/proxy/MetaProxy.h"
 #include "meta/CustomActionsCapability.h"
 #include "meta/SourceInfoCapability.h"
 #include "ServiceCustomActionsCapability.h"
@@ -127,7 +127,7 @@ typedef QList<ServiceComposerPtr> ServiceComposerList;
 typedef QList<ServiceGenrePtr > ServiceGenreList;
 typedef QList<ServiceYearPtr > ServiceYearList;
 
-class AMAROK_EXPORT ServiceTrack : public Meta::Track,
+class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
                                    public ServiceDisplayInfoProvider,
                                    public CustomActionsProvider,
                                    public SourceInfoProvider,
@@ -135,7 +135,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 {
     public:
         //Give this a displayable name as some services has terrible names for their streams
-        ServiceTrack( const QString & name );
+        //ServiceTrack( const QString & name );
+        ServiceTrack( const QString & name, const QString & url );
 
         //create track based on an sql query result
         ServiceTrack( const QStringList & resultRow );

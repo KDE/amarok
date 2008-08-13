@@ -28,7 +28,7 @@ class TrackProvider;
 
 namespace MetaProxy
 {
-    class Track : public Meta::Track
+    class AMAROK_EXPORT Track : public Meta::Track
     {
         public:
             class Private;
@@ -98,7 +98,7 @@ namespace MetaProxy
 		
 		protected:
 		/**
-		 * allows subclasses to create an instance if trackprovider which will only check the TrackProvider
+		 * allows subclasses to create an instance of trackprovider which will only check the TrackProvider
 		 * passed to lookupTrack(TrackProvider*) for the real track.
 		 */
 		Track( const KUrl &url, bool awaitLookupNotification);

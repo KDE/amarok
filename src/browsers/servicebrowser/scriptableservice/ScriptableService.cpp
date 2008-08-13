@@ -86,7 +86,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             if ( !callbackData.isEmpty() ||  playableUrl.isEmpty() )
                 return -1;
             
-            ScriptableServiceTrack * track = new ScriptableServiceTrack( name );
+            ScriptableServiceTrack * track = new ScriptableServiceTrack( name, playableUrl );
             track->setAlbumId( parentId );
             track->setUidUrl( playableUrl );
             return addTrack( track );
