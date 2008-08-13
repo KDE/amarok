@@ -1190,6 +1190,11 @@ Playlist::Model::removeTracksCommand( int position, int rows )
     bool activeRowChanged = true;
     const bool oldActiveRow = m_activeRow;
 
+    debug() << "activeRow: " << m_activeRow;
+    debug() << "position: " << position;
+    debug() << "rows: " << rows;
+    
+    
     if( m_activeRow >= position && m_activeRow < ( position + rows ) )
         m_activeRow = -1;
     else if( m_activeRow >= position )
@@ -1199,6 +1204,8 @@ Playlist::Model::removeTracksCommand( int position, int rows )
 
     if( activeRowChanged )
     {
+        debug() << "Active row has changed from " << oldActiveRow << " to " << m_activeRow;
+        
         dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
         dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
@@ -1282,10 +1289,22 @@ Playlist::Model::moveRow(int row, int to)
 
     m_items.move( row, to );
 
+    //if we are moving stuff from one side of the current track to the other, we need to update its row:
+
+    if ( row < m_activeRow && to > m_activeRow )
+        m_activeRow -= 1;
+    else if ( row > m_activeRow && to < m_activeRow )
+        m_activeRow += 1;
+    else if ( row == m_activeRow )
+        m_activeRow = to;
+    else if ( to = m_activeRow && row > m_activeRow)
+        m_activeRow += 1;
+    
     int offset = -1;
     if ( to < row )
         offset = 1;
 
+    
     emit rowMoved( row, to );
     regroupAlbums( qMin( row, to) , qMax( row, to ), OffsetBetween, offset );
 
