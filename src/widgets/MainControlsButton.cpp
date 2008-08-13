@@ -97,4 +97,11 @@ void MainControlsButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
         m_action->trigger();
 }
 
+QPainterPath MainControlsButton::shape() const
+{
+    QPainterPath path;
+    path.addEllipse(boundingRect());
+    return path;
+}
+
 
