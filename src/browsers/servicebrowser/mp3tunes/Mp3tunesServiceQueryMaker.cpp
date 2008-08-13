@@ -128,18 +128,21 @@ QueryMaker * Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
     {
         DEBUG_BLOCK
         d->type = Private::ARTIST;
+        return this;
     }
 
     case QueryMaker::Album:
     {
         DEBUG_BLOCK
         d->type = Private::ALBUM;
+        return this;
     }
 
     case QueryMaker::Track:
     {
         DEBUG_BLOCK
         d->type = Private::TRACK;
+        return this;
     }
 
     case QueryMaker::Genre:
@@ -148,8 +151,8 @@ QueryMaker * Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
     case QueryMaker::Custom:
     case QueryMaker::None:
         //TODO: Implement.
+        return this;
     }
-    return this;
 }
 
 
