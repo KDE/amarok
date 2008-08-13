@@ -381,7 +381,6 @@ TagDialog::guessFromFilename() //SLOT
     dialog->setCaption( i18n( "Filename Layout Chooser" ) );
     dialog->setButtons( KDialog::Ok | KDialog::Cancel );
     FilenameLayoutDialog *widget = new FilenameLayoutDialog( dialog );
-    widget->showOpts();
     dialog->setMainWidget( widget );
     
     int dcode = dialog->exec();

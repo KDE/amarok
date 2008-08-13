@@ -26,7 +26,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
+FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeCollection )
     : QWidget( parent )
 {
     setupUi( this );
@@ -71,6 +71,8 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
     cbEliminateSpaces->setChecked( whitespaceOptions );
     int underscoreOptions = Amarok::config( "TagGuesser" ).readEntry( "Replace underscores" ).toInt();
     cbReplaceUnderscores->setChecked( underscoreOptions );
+    if( !isOrganizeCollection )
+        optionsFrame->hide();
 }
 
 //Stores the configuration when the dialog is accepted.
@@ -181,19 +183,6 @@ FilenameLayoutDialog::toAdvancedMode()
         tokenPool->show();
         hintPicture->show();
     }
-}
-
-//The following two show and hide the Options ButtonGroup
-void
-FilenameLayoutDialog::showOpts()
-{
-    optionsFrame->show();
-}
-
-void
-FilenameLayoutDialog::hideOpts()
-{
-    optionsFrame->hide();
 }
 
 

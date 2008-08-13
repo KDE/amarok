@@ -29,8 +29,6 @@
 #include "qstringx.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 
-#include <KVBox>
-
 #include <QDir>
 
 OrganizeCollectionDialog::OrganizeCollectionDialog( QueryMaker *qm, QWidget *parent,  const char *name, bool modal,
@@ -67,18 +65,16 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
         m_allTracks = tracks;
     }
 
-    KVBox *vbox = new KVBox( this );
+    vbox = new KVBox( this );
     setMainWidget( vbox );
-    QWidget *widget;
     widget = new QWidget( vbox );
 
     ui->setupUi( widget );
 
-    //filenameLayoutDialog = new FilenameLayoutDialog( ui->fldialog, 0 );
-    //filenameLayoutDialog->move( QPoint( 0, 0 ) );
-    //ui->fldialog->setChild( filenameLayoutDialog );
-    //filenameLayoutDialog->show();
-    ui->fldialog->hideOpts();
+    filenameLayoutDialog = new FilenameLayoutDialog( widget, 1 );  //TODO: this will be nontrivial ctor
+    ui->vboxLayout->insertWidget( 2, filenameLayoutDialog );
+    filenameLayoutDialog->show();
+    //ui->fldialog->showOrganizeCollectionStuff();  //this will be handled by nontrivial ctor
 
     const QStringList folders = MountPointManager::instance()->collectionFolders();
 
@@ -357,6 +353,8 @@ void OrganizeCollectionDialog::toggleDetails()
         ui->formatEdit->hide();
         ui->formatHelp->hide();
 
+        widget->resize( widget->minimumSize() );    //TODO: FIX THE LAYOUT WHEN RESIZING
+        vbox->resize( vbox->minimumSize() );
         resize( minimumSize() );
     }
 }

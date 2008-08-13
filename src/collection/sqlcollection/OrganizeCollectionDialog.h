@@ -24,6 +24,7 @@
 #include "widgets/TokenListWidget.h"
 
 #include <KDialog>
+#include <KVBox>    //this can be in the .cpp is widget and vbox weren't members. maybe they don't need to be but I first have to fix the layout when resizing
 
 #include <QtGui/QWidget>
 
@@ -71,6 +72,8 @@ class OrganizeCollectionDialog : public KDialog
         void init();
 
         Ui::OrganizeCollectionDialogBase *ui;
+        KVBox *vbox;
+        QWidget *widget;
         FilenameLayoutDialog *filenameLayoutDialog;
         Meta::TrackPtr m_previewTrack;
         bool m_detailed;
