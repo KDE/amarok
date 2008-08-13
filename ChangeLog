@@ -2,6 +2,11 @@ Amarok ChangeLog
 ================
 (C) 2002-2007 the Amarok authors.
 
+VERSION 1.4.10
+  BUGFIX:
+    * Fix vulnerability in the Magnatune database parsing code.  Secunia
+      Advisory #SA31418.  Thanks to Google Alerts for notifying us about this
+      vulnerability.
 
 VERSION 1.4.9
   BUGFIXES:
