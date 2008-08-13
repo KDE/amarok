@@ -110,7 +110,7 @@ Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, con
     authenticate( email, password );
 
     if( m_harmonyEnabled ) {
-//        enableHarmony();
+        enableHarmony();
     }
 
     polish();
@@ -131,7 +131,7 @@ Mp3tunesService::~Mp3tunesService()
 
 void Mp3tunesService::polish()
 {
-//    initTopPanel();
+    initTopPanel();
     initBottomPanel();
 
     if ( !m_authenticated && !m_authenticationFailed  )
@@ -181,18 +181,18 @@ void Mp3tunesService::enableHarmony()
 
         connect( m_harmony, SIGNAL( disconnected() ),
                 this, SLOT( harmonyDisconnected() ));
-        connect( m_harmony, SIGNAL( waitingForEmail() ),
-                this, SLOT( harmonyWaitingForEmail() ) );
+        connect( m_harmony, SIGNAL( waitingForEmail( QString ) ),
+                this, SLOT( harmonyWaitingForEmail( QString ) ) );
         connect( m_harmony, SIGNAL( waitingForPin() ),
                  this, SLOT( harmonyWaitingForPin() ) );
         connect( m_harmony, SIGNAL( connected() ),
                 this, SLOT( harmonyConnected() ) );
         connect( m_harmony, SIGNAL( signalError( QString ) ),
                 this, SLOT( harmonyError( QString ) ) );
-        connect( m_harmony, SIGNAL( downloadReady( Mp3tunesHarmonyDownload ) ),
-                this, SLOT( harmonyDownloadReady( Mp3tunesHarmonyDownload ) ) );
-        connect( m_harmony, SIGNAL( downloadPending( Mp3tunesHarmonyDownload ) ),
-                this, SLOT( harmonyDownloadPending( Mp3tunesHarmonyDownload ) ) );
+        connect( m_harmony, SIGNAL( downloadReady( QVariantMap ) ),
+                this, SLOT( harmonyDownloadReady( QVariantMap ) ) );
+        connect( m_harmony, SIGNAL( downloadPending( QVariantMap ) ),
+                this, SLOT( harmonyDownloadPending( QVariantMap ) ) );
 
         debug() << "starting harmony";
         m_harmony->startDaemon();
@@ -295,41 +295,43 @@ void Mp3tunesService::harmonyDisconnected()
     The::statusBar()->shortMessage( i18n( "MP3Tunes Harmony: Disconnected"  ) );
 }
 
-void Mp3tunesService::harmonyWaitingForEmail()
+void Mp3tunesService::harmonyWaitingForEmail( const QString &pin )
 {
-   /* debug() << "Waiting for user to input PIN: " << theDaemon->pin();
+    DEBUG_BLOCK
+    debug() << "Waiting for user to input PIN: " << pin;
     The::statusBar()->shortMessage( i18n( "MP3Tunes Harmony: Waiting for PIN Input"  ) );
     KMessageBox::information( this,
-                              "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + theDaemon->pin(),
+                              "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + pin,
                               "MP3tunes Harmony",
                               QString(),
-                              KMessageBox::AllowLink );*/
+                              KMessageBox::AllowLink );
 }
 
 void Mp3tunesService::harmonyWaitingForPin()
 {
-   /* debug() << "Waiting for user to input PIN: " << theDaemon->pin();
+    DEBUG_BLOCK
+    QString pin = m_harmony->pin();
+    debug() << "Waiting for user to input PIN: " << pin;
     The::statusBar()->shortMessage( i18n( "MP3Tunes Harmony: Waiting for PIN Input"  ) );
     KMessageBox::information( this,
-                              "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + theDaemon->pin(),
+                              "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + pin,
                               "MP3tunes Harmony",
                               QString(),
-                              KMessageBox::AllowLink );*/
+                              KMessageBox::AllowLink );
 }
 
 void Mp3tunesService::harmonyConnected()
 {
-    /*DEBUG_BLOCK
+    DEBUG_BLOCK
     debug() << "Harmony Connected!";
     The::statusBar()->shortMessage( i18n( "MP3Tunes Harmony: Successfully Connected"  ) );
-
-    //at this point since the user has input the pin, we will save the info
-    //   for later authentication
+    /* at this point since the user has input the pin, we will save the info
+       for later authentication*/
     Mp3tunesConfig config;
-    debug() << "Setting Config   email: " << theDaemon->email() << "   pin: " << theDaemon->pin();
-    config.setHarmonyEmail( theDaemon->email() );
-    config.setPin( theDaemon->pin() );
-    config.save();*/
+    debug() << "Setting Config   email: " << m_harmony->email() << "   pin: " << m_harmony->pin();
+    config.setHarmonyEmail( m_harmony->email() );
+    config.setPin( m_harmony->pin() );
+    config.save();
 
 }
 
@@ -340,10 +342,10 @@ void Mp3tunesService::harmonyError( const QString &error )
     The::statusBar()->longMessage( i18n( "Mp3tunes Harmony Error\n%1", error ) );
 }
 
-void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &/*download*/ )
+void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )
 {
     DEBUG_BLOCK
-    /*debug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+    debug() << "Got message about ready: " << download["trackTitle"].toString() << " by " << download["artistName"].toString() << " on " << download["albumTitle"].toString();
     foreach( Collection *coll, CollectionManager::instance()->collections().keys() ) {
         if( coll && coll->isWritable() && m_collection )
         {
@@ -353,22 +355,22 @@ void Mp3tunesService::harmonyDownloadReady( const Mp3tunesHarmonyDownload &/*dow
                 debug() << "got local collection";
                 CollectionLocation *dest = coll->location();
                 CollectionLocation *source = m_collection->location();
-                if( !m_collection->possiblyContainsTrack( download.url() ) )
+                if( !m_collection->possiblyContainsTrack( download["url"].toString() ) )
                     return; //TODO some sort of error handling
-                Meta::TrackPtr track( m_collection->trackForUrl( download.url() ) );
+                Meta::TrackPtr track( m_collection->trackForUrl( download["url"].toString() ) );
                 source->prepareCopy( track, dest );
                 break;
             }
 
         }
-    }*/
+    }
 
 }
 
-void Mp3tunesService::harmonyDownloadPending( const Mp3tunesHarmonyDownload &/*download*/ )
+void Mp3tunesService::harmonyDownloadPending( const QVariantMap &download )
 {
     DEBUG_BLOCK
-    /*debug() << "Got message about pending: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();*/
+    debug() << "Got message about ready: " << download["trackTitle"].toString() << " by " << download["artistName"].toString() << " on " << download["albumTitle"].toString();
 }
 
 #include "Mp3tunesService.moc"

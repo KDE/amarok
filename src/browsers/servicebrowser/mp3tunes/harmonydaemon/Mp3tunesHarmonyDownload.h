@@ -20,6 +20,7 @@
 #define MP3TUNESHARMONYDOWNLOAD_H
 
 #include <QString>
+#include <QVariantMap>
 extern "C" {
    // Get libmp3tunes declarations
     #include "../libmp3tunes/harmony.h"
@@ -36,6 +37,7 @@ class Mp3tunesHarmonyDownload {
          * Default constructor does nothing.
          */
         Mp3tunesHarmonyDownload();
+	Mp3tunesHarmonyDownload( const QVariantMap &map );
         Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download );
         ~Mp3tunesHarmonyDownload();
 
@@ -50,6 +52,8 @@ class Mp3tunesHarmonyDownload {
         QString deviceBitrate() const;
         QString fileBitrate() const;
         QString url() const;
+	QVariantMap serialize() const;
+
     private:
         QString m_fileKey;
         QString m_fileName;

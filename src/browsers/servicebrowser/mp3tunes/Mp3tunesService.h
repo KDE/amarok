@@ -27,6 +27,7 @@
 #include "Mp3tunesWorkers.h"
 #include "harmonydaemon/Mp3tunesHarmonyDownload.h"
 #include "Mp3tunesHarmonyHandler.h"
+#include <QVariantMap>
 
 class Mp3tunesServiceFactory: public ServiceFactory
 {
@@ -96,13 +97,13 @@ private slots:
      * so he/she (comments must be gender neutral) can add it to his/her mp3tunes
      * account.
      */
-    void harmonyWaitingForEmail();
+    void harmonyWaitingForEmail( const QString &pin );
     void harmonyWaitingForPin();
     void harmonyConnected();
     void harmonyDisconnected();
     void harmonyError( const QString &error );
-    void harmonyDownloadReady( const Mp3tunesHarmonyDownload &download );
-    void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );
+    void harmonyDownloadReady( const QVariantMap &download );
+    void harmonyDownloadPending( const QVariantMap &download );
 
 private:
     /**

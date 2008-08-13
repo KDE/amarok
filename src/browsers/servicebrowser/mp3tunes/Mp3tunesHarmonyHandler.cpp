@@ -96,7 +96,6 @@ bool Mp3tunesHarmonyHandler::daemonConnected()
     if( !daemonRunning() )
         return false;
     QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon-" + QString::number( m_daemon->pid() );
-    //QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon";
     debug() << "Making Dbus call about daemonConnected to: " << name;
     QDBusMessage m = QDBusMessage::createMethodCall( name,
                                                "/Mp3tunesHarmonyDaemon",
@@ -105,32 +104,113 @@ bool Mp3tunesHarmonyHandler::daemonConnected()
     QDBusMessage response = QDBusConnection::sessionBus().call( m );
     if( response.type() == QDBusMessage::ErrorMessage )
     {
-            debug() << "Got ERROR response";
+            debug() << "Got ERROR response daemonConnected";
             debug() << response.errorName() << ":  " << response.errorMessage();
     }
     QList<QVariant> args = response.arguments();
     if( args.count() == 1)
     {
-        if( args[0].toString() == "true" )
+        if( args[0].toString() == "true" ) {
+            debug() << "Daemon Connected";
             return true;
+        } else if( args[0].toString() == "false" ) {
+            debug() << "Daemon Not Connected";
+            return false;
+        }
     }
-    debug() << "Unexpected DBUS return.";
-    //debug() << "response has #args: " << args.count();
-    /*int i = 0;
-    foreach( QVariant q, args )
-    {
-        debug() << QString::number(i) << ": " << q.toString();
-        i++;
-    }*/
+    debug() << "Unexpected DBUS return. " << args.count();
     return false;
 }
 
 void Mp3tunesHarmonyHandler::makeConnection()
 {
+    DEBUG_BLOCK
+    if( !daemonRunning() )
+        return;
+    QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon-" + QString::number( m_daemon->pid() );
+    debug() << "Making Dbus call about makeConnection to: " << name;
+    QDBusMessage m = QDBusMessage::createMethodCall( name,
+                                               "/Mp3tunesHarmonyDaemon",
+                                               "",
+                                               "makeConnection" );
+    QDBusMessage response = QDBusConnection::sessionBus().call( m );
+    if( response.type() == QDBusMessage::ErrorMessage )
+    {
+            debug() << "Got ERROR response makeConnection";
+            debug() << response.errorName() << ":  " << response.errorMessage();
+    }
 }
 
 void Mp3tunesHarmonyHandler::breakConnection()
 {
+        DEBUG_BLOCK
+    if( !daemonRunning() )
+        return;
+    QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon-" + QString::number( m_daemon->pid() );
+    //QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon";
+    debug() << "Making Dbus call about breakConnection to: " << name;
+    QDBusMessage m = QDBusMessage::createMethodCall( name,
+                                               "/Mp3tunesHarmonyDaemon",
+                                               "",
+                                               "breakConnection" );
+    QDBusMessage response = QDBusConnection::sessionBus().call( m );
+    if( response.type() == QDBusMessage::ErrorMessage )
+    {
+            debug() << "Got ERROR response ";
+            debug() << response.errorName() << ":  " << response.errorMessage();
+    }
+}
+
+QString Mp3tunesHarmonyHandler::pin()
+{
+        DEBUG_BLOCK
+    if( !daemonRunning() )
+        return QString();
+    QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon-" + QString::number( m_daemon->pid() );
+    //QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon";
+    debug() << "Making Dbus call about pin to: " << name;
+    QDBusMessage m = QDBusMessage::createMethodCall( name,
+                                               "/Mp3tunesHarmonyDaemon",
+                                               "",
+                                               "pin" );
+    QDBusMessage response = QDBusConnection::sessionBus().call( m );
+    if( response.type() == QDBusMessage::ErrorMessage )
+    {
+            debug() << "Got ERROR response pin";
+            debug() << response.errorName() << ":  " << response.errorMessage();
+    }
+    QList<QVariant> args = response.arguments();
+    if( args.count() == 1)
+    {
+        return args[0].toString();
+    }
+    return QString();
+}
+
+QString Mp3tunesHarmonyHandler::email()
+{
+    DEBUG_BLOCK
+    if( !daemonRunning() )
+        return QString();
+    QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon-" + QString::number( m_daemon->pid() );
+    //QString name = "org.kde.amarok.Mp3tunesHarmonyDaemon";
+    debug() << "Making Dbus call about email to: " << name;
+    QDBusMessage m = QDBusMessage::createMethodCall( name,
+                                               "/Mp3tunesHarmonyDaemon",
+                                               "",
+                                               "email" );
+    QDBusMessage response = QDBusConnection::sessionBus().call( m );
+    if( response.type() == QDBusMessage::ErrorMessage )
+    {
+            debug() << "Got ERROR response email";
+            debug() << response.errorName() << ":  " << response.errorMessage();
+    }
+    QList<QVariant> args = response.arguments();
+    if( args.count() == 1)
+    {
+        return args[0].toString();
+    }
+    return QString();
 }
 
 void
@@ -140,9 +220,9 @@ Mp3tunesHarmonyHandler::emitError( const QString &error )
 }
 
 void
-Mp3tunesHarmonyHandler::emitWaitingForEmail()
+Mp3tunesHarmonyHandler::emitWaitingForEmail( const QString &pin )
 {
-    emit( waitingForEmail() );
+    emit( waitingForEmail( pin ) );
 }
 
 void
@@ -164,13 +244,13 @@ Mp3tunesHarmonyHandler::emitDisconnected()
 }
 
 void
-Mp3tunesHarmonyHandler::emitDownloadReady( QString download[11]  )
+Mp3tunesHarmonyHandler::emitDownloadReady( const QVariantMap &download  )
 {
-   /// emit( downloadReady( download ) );
+    emit( downloadReady( download ) );
 }
 
 void
-Mp3tunesHarmonyHandler::emitDownloadPending( QString download[11]  )
+Mp3tunesHarmonyHandler::emitDownloadPending( const QVariantMap &download  )
 {
-   // emit( downloadPending( download ) );
+    emit( downloadReady( download ) );
 }

@@ -25,6 +25,8 @@
 
 #include <QObject>
 #include <QString>
+#include <QMap>
+
 
 class Mp3tunesHarmonyHandler : public QObject {
     Q_OBJECT
@@ -41,24 +43,26 @@ class Mp3tunesHarmonyHandler : public QObject {
         bool daemonConnected();
         void makeConnection();
         void breakConnection();
+        QString pin();
+        QString email();
 
     signals:
-      void waitingForEmail();
+      void waitingForEmail( const QString &pin );
       void waitingForPin();
       void connected();
       void disconnected();
       void signalError( const QString &error );
-      void downloadReady( const Mp3tunesHarmonyDownload &download );
-      void downloadPending( const Mp3tunesHarmonyDownload &download );
+      void downloadReady( const QVariantMap &download );
+      void downloadPending( const QVariantMap &download );
 
     public slots:
         virtual void emitError( const QString &error );
-        virtual void emitWaitingForEmail();
+        virtual void emitWaitingForEmail( const QString &pin );
         virtual void emitWaitingForPin();
         virtual void emitConnected();
         virtual void emitDisconnected();
-        virtual void emitDownloadReady( QString download[11] );
-        virtual void emitDownloadPending( QString download[11] );
+        virtual void emitDownloadReady( const QVariantMap &download  );
+        virtual void emitDownloadPending( const QVariantMap &download  );
 
     private slots:
         void slotFinished();

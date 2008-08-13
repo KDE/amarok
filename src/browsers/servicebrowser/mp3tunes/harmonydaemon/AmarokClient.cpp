@@ -19,41 +19,107 @@
 
 #include "AmarokClient.h"
 
+#include <QDBusMessage>
+#include <QDBusConnection>
+#include <QtDebug>
+
 Mp3tunesAmarokClient::Mp3tunesAmarokClient() : Mp3tunesHarmonyClient()
 {}
-/* SLOTS */
-/*void
-Mp3tunesAmarokClient::harmonyError()
+
+void Mp3tunesAmarokClient::dbusEmitMessage( const QString &message, const QString &param = QString() )
 {
+    QString name = "org.kde.amarok";
+    QDBusMessage m = QDBusMessage::createMethodCall( name,
+                                               "/Mp3tunesHarmonyHandler",
+                                               "",
+                                               message );
+    if( !param.isEmpty() )
+    {
+      QList<QVariant> args;
+      args.append( param );
+      m.setArguments(args);
+    }
+    QDBusMessage response = QDBusConnection::sessionBus().call( m );
+    if( response.type() == QDBusMessage::ErrorMessage )
+    {
+            qDebug() << "Got ERROR response " << message;
+            qDebug() << response.errorName() << ":  " << response.errorMessage();
+    }
+}
+
+
+/* SLOTS */
+void
+Mp3tunesAmarokClient::harmonyError( const QString &error )
+{
+    qDebug() << "Received Error: " << error;
 }
 
 void
-Mp3tunesAmarokClient::harmonyWaitingForEmail()
+Mp3tunesAmarokClient::harmonyWaitingForEmail( const QString &pin )
 {
+    qDebug() << "Received HARMONY_WAITING_FOR_EMAIL " << pin;
+    dbusEmitMessage( "emitWaitingForEmail", pin );
 }
 
 void
 Mp3tunesAmarokClient::harmonyWaitingForPin()
 {
+    qDebug() << "Received HARMONY_WAITING_FOR_PIN";
+    dbusEmitMessage( "emitWaitingForPin" );
 }
 
 void
 Mp3tunesAmarokClient::harmonyConnected()
 {
+    qDebug() << "Apparently Harmony is connected";
+    dbusEmitMessage( "emitConnected" );
 }
 
 void
 Mp3tunesAmarokClient::harmonyDisconnected()
 {
+    qDebug() << "Harmony said see ya later.";
+    dbusEmitMessage( "emitDisconnected" );
 }
 
 void
 Mp3tunesAmarokClient::harmonyDownloadReady( const Mp3tunesHarmonyDownload &download )
 {
+    qDebug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+    QString name = "org.kde.amarok";
+    QDBusMessage m = QDBusMessage::createMethodCall( name,
+                                               "/Mp3tunesHarmonyHandler",
+                                               "",
+                                               "emitDownloadReady" );
+    QList<QVariant> args;
+    args.append( download.serialize() );
+    m.setArguments(args);
+    QDBusMessage response = QDBusConnection::sessionBus().call( m );
+    if( response.type() == QDBusMessage::ErrorMessage )
+    {
+            qDebug() << "Got ERROR response harmonyDownloadReady";
+            qDebug() << response.errorName() << ":  " << response.errorMessage();
+    }
 }
 
 void
 Mp3tunesAmarokClient::harmonyDownloadPending( const Mp3tunesHarmonyDownload &download )
 {
+    qDebug() << "Got message about pending: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+    qDebug() << "Got message about ready: " << download.trackTitle() << " by " << download.artistName() << " on " << download. albumTitle();
+    QString name = "org.kde.amarok";
+    QDBusMessage m = QDBusMessage::createMethodCall( name,
+                                               "/Mp3tunesHarmonyHandler",
+                                               "",
+                                               "emitDownloadPending" );
+    QList<QVariant> args;
+    args.append( download.serialize() );
+    m.setArguments(args);
+    QDBusMessage response = QDBusConnection::sessionBus().call( m );
+    if( response.type() == QDBusMessage::ErrorMessage )
+    {
+            qDebug() << "Got ERROR response harmonyDownloadPending";
+            qDebug() << response.errorName() << ":  " << response.errorMessage();
+    }
 }
-*/

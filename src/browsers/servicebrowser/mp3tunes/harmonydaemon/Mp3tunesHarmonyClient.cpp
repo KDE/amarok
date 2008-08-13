@@ -30,9 +30,9 @@ Mp3tunesHarmonyClient::harmonyError( const QString &error )
 }
 
 void
-Mp3tunesHarmonyClient::harmonyWaitingForEmail()
+Mp3tunesHarmonyClient::harmonyWaitingForEmail( const QString &pin )
 {
-    qDebug() << "Received HARMONY_WAITING_FOR_EMAIL";
+    qDebug() << "Received HARMONY_WAITING_FOR_EMAIL " << pin;
 }
 
 void

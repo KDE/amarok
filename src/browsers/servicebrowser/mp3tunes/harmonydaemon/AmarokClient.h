@@ -26,14 +26,16 @@ class Mp3tunesAmarokClient : public Mp3tunesHarmonyClient {
     public:
         Mp3tunesAmarokClient();
 
-    /*public slots:
-        virtual void harmonyError();
-        virtual void harmonyWaitingForEmail();
+    public slots:
+        virtual void harmonyError( const QString &error );
+        virtual void harmonyWaitingForEmail( const QString &pin );
         virtual void harmonyWaitingForPin();
         virtual void harmonyConnected();
         virtual void harmonyDisconnected();
         virtual void harmonyDownloadReady( const Mp3tunesHarmonyDownload &download );
-        virtual void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );*/
+        virtual void harmonyDownloadPending( const Mp3tunesHarmonyDownload &download );
+    private:
+	void dbusEmitMessage( const QString &message, const QString &param);
 };
 
 #endif

@@ -98,7 +98,7 @@ class Mp3tunesHarmonyDaemon : public QCoreApplication
      * DO NOT CALL THESE METHODS
      */
     void emitError();
-    void emitWaitingForEmail();
+    void emitWaitingForEmail( const QString &pin );
     void emitWaitingForPin();
     void emitConnected();
     void emitDisconnected();
@@ -107,7 +107,7 @@ class Mp3tunesHarmonyDaemon : public QCoreApplication
 
   signals:
       /* The actual signals that get emitted */
-      void waitingForEmail();
+      void waitingForEmail( const QString &pin );
       void waitingForPin();
       void connected();
       void disconnected();

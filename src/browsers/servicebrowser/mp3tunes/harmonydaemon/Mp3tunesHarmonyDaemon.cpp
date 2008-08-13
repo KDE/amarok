@@ -67,8 +67,8 @@ Mp3tunesHarmonyDaemon::setClient( Mp3tunesHarmonyClient *client )
     m_client = client;
     connect( this, SIGNAL( disconnected() ),
             m_client, SLOT( harmonyDisconnected() ));
-    connect( this, SIGNAL( waitingForEmail() ),
-            m_client, SLOT( harmonyWaitingForEmail() ) );
+    connect( this, SIGNAL( waitingForEmail( QString ) ),
+            m_client, SLOT( harmonyWaitingForEmail( QString ) ) );
     connect( this, SIGNAL( connected() ),
             m_client, SLOT( harmonyConnected() ) );
     connect( this, SIGNAL( errorSignal( QString ) ),
@@ -269,9 +269,9 @@ Mp3tunesHarmonyDaemon::emitError()
 }
 
 void
-Mp3tunesHarmonyDaemon::emitWaitingForEmail()
+Mp3tunesHarmonyDaemon::emitWaitingForEmail( const QString &pin )
 {
-    emit( waitingForEmail() );
+    emit( waitingForEmail( pin ) );
 }
 
 void
@@ -353,7 +353,7 @@ Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint
             g_print( "Please login to mp3tunes.com and add the pin '%s' to your devices.\n",
                      mp3tunes_harmony_get_pin( harmony ) );
             theDaemon->setState( Mp3tunesHarmonyDaemon::WAITING_FOR_EMAIL );
-            theDaemon->emitWaitingForEmail();
+            theDaemon->emitWaitingForEmail( theDaemon->pin() );
             /* At this point, it would be best to store the pin in case the
              * network connection drops. As well, display to the user a status
              * message to have them perform the website authentication action.

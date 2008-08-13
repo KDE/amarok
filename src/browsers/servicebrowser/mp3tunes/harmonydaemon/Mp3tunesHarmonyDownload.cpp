@@ -21,6 +21,7 @@
 
 Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload()
 {}
+
 Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download )
 {
 
@@ -41,6 +42,21 @@ Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *d
         m_url = download->url;
     else
         m_url = QString();
+}
+
+Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( const QVariantMap &map )
+{
+    m_fileKey = map["fileKey"].toString();
+    m_fileName = map["fileName"].toString();
+    m_fileFormat = map["fileFormat"].toString();
+    m_fileSize = map["fileSize"].toInt();
+    m_artistName = map["artistName"].toString();
+    m_albumTitle = map["albumTitle"].toString();
+    m_trackTitle = map["trackTitle"].toString();
+    m_trackNumber = map["trackNumber"].toInt();
+    m_deviceBitrate = map["deviceBitrate"].toString();
+    m_fileBitrate = map["fileBitrate"].toString();
+    m_url = map["url"].toString();
 }
 
 Mp3tunesHarmonyDownload::~Mp3tunesHarmonyDownload()
@@ -110,4 +126,21 @@ QString
 Mp3tunesHarmonyDownload::url() const
 {
     return m_url;
+}
+
+QVariantMap Mp3tunesHarmonyDownload::serialize() const
+{
+  QVariantMap map;
+  map["fileKey"] = m_fileKey;
+  map["fileName"] = m_fileName;
+  map["fileFormat"] = m_fileFormat;
+  map["fileSize"] = m_fileSize;
+  map["artistName"] = m_artistName;
+  map["albumTitle"] = m_albumTitle;
+  map["trackTitle"] = m_trackTitle;
+  map["trackNumber"] = m_trackNumber;
+  map["deviceBitrate"] = m_deviceBitrate;
+  map["fileBitrate"] = m_fileBitrate;
+  map["url"] = m_url;
+  return map;
 }

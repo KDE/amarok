@@ -5,12 +5,21 @@
       <arg name="error" type="s" direction="in"/>
     </method>
     <method name="emitWaitingForEmail">
+      <arg name="pin" type="s" direction="in"/>
     </method>
     <method name="emitWaitingForPin">
     </method>
     <method name="emitConnected">
     </method>
     <method name="emitDisconnected">
+    </method>
+    <method name="emitDownloadReady">
+      <arg name="download" type="a{sv}" direction="in"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QVariantMap"/>
+    </method>
+    <method name="emitDownloadPending">
+      <arg name="download" type="a{sv}" direction="in"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QVariantMap"/>
     </method>
   </interface>
 </node>
