@@ -1285,6 +1285,10 @@ Playlist::Model::headerData(int section, Qt::Orientation orientation, int role) 
 void
 Playlist::Model::moveRow(int row, int to)
 {
+    DEBUG_BLOCK
+
+    
+    
     clearNewlyAdded();
 
     m_items.move( row, to );
@@ -1297,7 +1301,7 @@ Playlist::Model::moveRow(int row, int to)
         m_activeRow += 1;
     else if ( row == m_activeRow )
         m_activeRow = to;
-    else if ( to = m_activeRow && row > m_activeRow)
+    else if ( to == m_activeRow && row > m_activeRow)
         m_activeRow += 1;
     
     int offset = -1;
@@ -1306,7 +1310,22 @@ Playlist::Model::moveRow(int row, int to)
 
     
     emit rowMoved( row, to );
-    regroupAlbums( qMin( row, to) , qMax( row, to ), OffsetBetween, offset );
+
+
+    debug() << "row " << row << " to " << to;
+
+    
+    int min = row;
+    int max = to;
+
+    if ( row > to ) {
+        min = to;
+        max = row;
+    }
+
+    debug() << "min " << min << " max " << max;
+        
+    regroupAlbums( min, max, OffsetBetween, offset );
 
 }
 
@@ -1327,8 +1346,10 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
 
     belowLast = lastRow + 1;
     if ( belowLast > ( m_items.count() - 1 ) ) belowLast = m_items.count() - 1;
+     
 
-//     debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
+    debug() << "firstRow: " << firstRow << ", lastRow: " << lastRow;
+    debug() << "aboveFirst: " << aboveFirst << ", belowLast: " << belowLast;
 
     //delete affected groups
 
@@ -1370,6 +1391,12 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
             area2End = temp;
             removeGroupBelowLastRow = true;
         }
+
+
+        debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
+        debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
+
+        
 
         if ( removeGroupAboveFirstRow )
         { group->removeGroup( aboveFirst ); /*debug() << "removing group at row: " <<  aboveFirst;*/ }
@@ -1440,13 +1467,13 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
     }
 
 
-//     debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
-//     debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
+     debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
+     debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
 
     //debug stuff
-//     debug() << "Groups before:";
-//    foreach( AlbumGroup * ag, m_albumGroups)
-//       ag->printGroupRows();
+     debug() << "Groups before:";
+     foreach( AlbumGroup * ag, m_albumGroups)
+        ag->printGroupRows();
 
 
 
@@ -1516,9 +1543,9 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
 
     if ( ( area1Start == area2Start ) || area2Start == -1 ) {
 
-//         debug() << "Groups after:";
-//        foreach( AlbumGroup * ag, m_albumGroups)
-//            ag->printGroupRows();
+         debug() << "Groups after:";
+        foreach( AlbumGroup * ag, m_albumGroups)
+            ag->printGroupRows();
         return;
     }
 
@@ -1541,9 +1568,9 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
        }
     }
 
-//     debug() << "Groups after:";
-//    foreach( AlbumGroup *ag, m_albumGroups)
-//       ag->printGroupRows();
+     debug() << "Groups after:";
+     foreach( AlbumGroup *ag, m_albumGroups)
+      ag->printGroupRows();
 
 
 

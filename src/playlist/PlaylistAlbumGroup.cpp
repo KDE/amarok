@@ -135,6 +135,7 @@ int Playlist::AlbumGroup::elementsInGroup(int row)
 
 int Playlist::AlbumGroup::firstInGroup(int row)
 {
+    DEBUG_BLOCK
 
     foreach( const Group &group, m_groups ) {
         if ( group.rows.contains( row ) ) {
@@ -148,6 +149,7 @@ int Playlist::AlbumGroup::firstInGroup(int row)
 
 int Playlist::AlbumGroup::lastInGroup(int row)
 {
+    DEBUG_BLOCK
 
     foreach( const Group &group, m_groups ) {
         if ( group.rows.contains( row ) ) {
@@ -160,6 +162,7 @@ int Playlist::AlbumGroup::lastInGroup(int row)
 
 void Playlist::AlbumGroup::removeGroup(int row)
 {
+    DEBUG_BLOCK
 
     for (int i = 0; i < m_groups.count(); i++ ) {
         if ( m_groups[ i ].rows.contains( row ) ) {
@@ -186,8 +189,8 @@ void Playlist::AlbumGroup::printGroupRows()
 
 void Playlist::AlbumGroup::removeBetween(int first, int last)
 {
-    //DEBUG_BLOCK
-//    debug() << "first: " << first << ", last: " << last;
+    DEBUG_BLOCK
+   debug() << "first: " << first << ", last: " << last;
     for ( int i = first; i <= last; i++ ) {
         for (int j = 0; j < m_groups.count(); j++ ) {
             if ( m_groups[ j ].rows.contains( i ) ) {
@@ -203,8 +206,8 @@ void Playlist::AlbumGroup::removeBetween(int first, int last)
 void Playlist::AlbumGroup::offsetBetween(int first, int last, int offset)
 {
 
-    //DEBUG_BLOCK
-//    debug() << "first: " << first << ", last: " << last;
+    DEBUG_BLOCK
+   debug() << "first: " << first << ", last: " << last;
     for (int j = 0; j < m_groups.count(); j++ ) {
         for ( int i = first; i <= last; i++ ) {
             if ( m_groups[ j ].rows.contains( i ) ) {
