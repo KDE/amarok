@@ -1,15 +1,9 @@
 Importer.loadQtBinding( "qt.core" );
-Importer.load( "qtscript_debug/debug" );
-
-Debug.initialize();
-Debug.app_name = "QtScript Test";
-
-Debug.debug ( "this is main.js" );
 
 //test engine:
 
-var version = Amarok.Version();
-Debug.debug ( ( "Amarok Version: " + version ));
+var version = Amarok.Info.version();
+print( "Amarok Version: " + version );
 
 /*
 var Engine;
@@ -23,25 +17,25 @@ Engine.Seek ( 60*1000 );
 
 function Menu1Clicked()
 {
-    Debug.debug ("hey, menu1!");
+    print("hey, menu1!");
 }
 
 function Menu2Clicked()
 {
-    Debug.debug ("hey, menu2!");
+    print("hey, menu2!");
 }
 
 Amarok.Window.addToolsSeparator();
 
-if ( Amarok.Window.addToolsMenu( "testMenu1" ) )
-    Amarok.Window.ToolsMenu.testMenu1.triggered.connect(Menu1Clicked);
+if ( Amarok.Window.addToolsMenu( "id1", "test Menu1" ) )
+    Amarok.Window.ToolsMenu.id1.triggered.connect(Menu1Clicked);
 else
-    Debug.warning ( "Menu1 already exists!" );
+    print( "Menu1 already exists!" );
 
-if ( Amarok.Window.addToolsMenu( "testMenu2" ) )
-    Amarok.Window.ToolsMenu.testMenu2.triggered.connect(Menu2Clicked);
+if ( Amarok.Window.addToolsMenu( "id2", "test Menu2" ) )
+    Amarok.Window.ToolsMenu.id2.triggered.connect(Menu2Clicked);
 else
-    Debug.warning ( "Menu2 already exists!" );
+    print( "Menu2 already exists!" );
 
 
 var TrackInfo = Amarok.Engine.currentTrack();
@@ -57,7 +51,7 @@ if ( TrackInfo.isValid )
 }
 else
 {
-    Debug.warning (" Track is not valid! ");
+    print(" Track is not valid! ");
 }
 
 function onConfigure()
@@ -67,22 +61,22 @@ function onConfigure()
 
 function TrackChanged()
 {
-    Debug.debug( "Track Changed!" );
+    print( "Track Changed!" );
 }
 
 function TrackSeeked()
 {
-    Debug.debug( "Track Seeked!" );
+    print( "Track Seeked!" );
 }
 
 function TrackFinished()
 {
-    Debug.debug( "Track Finished!" );
+    print( "Track Finished!" );
 }
 
 function PlaylistCountChanged( count )
 {
-    Debug.debug( "Playlist Count Changed!" );
+    print( "Playlist Count Changed!" );
 }
 
 function VolumeChanged( volume )
@@ -96,7 +90,3 @@ Amarok.Engine.trackSeeked.connect( TrackSeeked );
 Amarok.Engine.trackFinished.connect( TrackFinished );
 Amarok.Playlist.CountChanged.connect( PlaylistCountChanged );
 Amarok.Engine.volumeChanged.connect( VolumeChanged );
-
-var time = QTime.currentTime();
-Debug.debug( time.hour() );
-Debug.debug( time.minute() );

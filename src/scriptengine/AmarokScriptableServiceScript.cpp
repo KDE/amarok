@@ -82,6 +82,7 @@ ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
     const QScriptValue populate = engine->newFunction( ScriptableServiceScript_prototype_populate );
     ctor.property( "prototype" ).setProperty( "populate", populate );
     engine->globalObject().setProperty( "ScriptableServiceScript", ctor );
+    qScriptConnect( this, SIGNAL( populate( QString, int, int, QString, QString ) ), QScriptValue() ,populate );
 }
 
 ScriptableServiceScript::~ScriptableServiceScript()
@@ -102,10 +103,10 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QS
 
 QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine )
 {
-
+    debug() << "prototype populating here!";
 }
 
-int ScriptableServiceScript::insertItem( int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData )
+int ScriptableServiceScript::insertItem( QString serviceName, int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData )
 {
     DEBUG_BLOCK
 	
@@ -113,21 +114,28 @@ int ScriptableServiceScript::insertItem( int level, const QString name, const QS
     return The::scriptableServiceManager()->insertItem( m_serviceName, level, m_currentId, name, infoHtml, callbackData, playableUrl );
 }
 
+int ScriptableServiceScript::donePopulating( QString serviceName, int parent_id )
+{
+    DEBUG_BLOCK
+
+    The::scriptableServiceManager()->donePopulating( serviceName, parent_id );
+}
+
 void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter )
 {
     DEBUG_BLOCK
-	
+    emit( populate( name, level, parent_id, callbackData, filter ) );
+/*
     debug() << "service name = " << name;
     debug() << "populating...";
     debug() << level << parent_id << callbackData << filter;
 	
-    m_serviceName = name;
-    m_currentId = parent_id;
     QScriptValueList args;
     args << QScriptValue( m_scriptEngine, level ) << QScriptValue( m_scriptEngine, callbackData ) << QScriptValue( m_scriptEngine, filter );
     thisObject().property( "prototype" ).property( "populate" ).call( QScriptValue(), args );
 	
-    The::scriptableServiceManager()->donePopulating( m_serviceName, m_currentId );
+    The::scriptableServiceManager()->donePopulating( name, parent_id );
+*/
 }
 
 #include "AmarokScriptableServiceScript.moc"

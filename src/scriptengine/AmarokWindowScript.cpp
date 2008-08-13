@@ -43,19 +43,18 @@ namespace AmarokScript
     {
     }
 
-    bool AmarokWindowScript::addToolsMenu( QString MenuTitle )
+    bool AmarokWindowScript::addToolsMenu( QString id, QString MenuTitle )
     {
         DEBUG_BLOCK
-        QString title = "Tools_" + MenuTitle;
         KActionCollection* const ac = Amarok::actionCollection();
-        if ( !ac->action( title ) )
+        if ( !ac->action( id ) )
         {
             KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, The::mainWindow() );
-            ac->addAction( title, action );
-            m_ToolsMenu->addAction( ac->action( title ) );
+            ac->addAction( id, action );
+            m_ToolsMenu->addAction( ac->action( id ) );
             m_ToolsMenu->addAction( action );
             QScriptValue newMenu = m_ScriptEngine->newQObject( action );
-            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( "ToolsMenu" ).setProperty( MenuTitle, newMenu );
+            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( "ToolsMenu" ).setProperty( id, newMenu );
             m_guiPtrList->append( action );
         }
         else
@@ -69,19 +68,18 @@ namespace AmarokScript
         m_guiPtrList->append( action );
     }
 
-    bool AmarokWindowScript::addSettingsMenu( QString MenuTitle )
+    bool AmarokWindowScript::addSettingsMenu( QString id, QString MenuTitle )
     {
         DEBUG_BLOCK
-        QString title = "Settings_" + MenuTitle;
         KActionCollection* const ac = Amarok::actionCollection();
-        if ( !ac->action( title ) )
+        if ( !ac->action( id ) )
         {
             KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, The::mainWindow() );
-            ac->addAction( title, action );
-            m_SettingsMenu->addAction( ac->action( title ) );
+            ac->addAction( id, action );
+            m_SettingsMenu->addAction( ac->action( id ) );
             m_SettingsMenu->addAction( action );
             QScriptValue newMenu = m_ScriptEngine->newQObject( action );
-            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( "SettingsMenu" ).setProperty( MenuTitle, newMenu );
+            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( "SettingsMenu" ).setProperty( id, newMenu );
             m_guiPtrList->append( action );
         }
         else

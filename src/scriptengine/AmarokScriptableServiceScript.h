@@ -53,21 +53,25 @@ class StreamItem : public QObject
 class ScriptableServiceScript : public QObject, public QScriptable
 {
     Q_OBJECT
-	
-public:
-	ScriptableServiceScript( QScriptEngine* engine );
-	~ScriptableServiceScript();
-    void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
 
-public slots:
-	int insertItem( int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData );
+    public:
+        ScriptableServiceScript( QScriptEngine* engine );
+        ~ScriptableServiceScript();
+        void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
 
-private:
-    QScriptEngine* m_scriptEngine;
-	int m_currentId;
-	QString m_serviceName;
-    static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
-    static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
+    public slots:
+        int insertItem( QString serviceName, int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData );
+        int donePopulating( QString serviceName, int parent_id );
+
+    private:
+        QScriptEngine* m_scriptEngine;
+        int m_currentId;
+        QString m_serviceName;
+        static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
+        static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
+
+    signals:
+        void populate( QString, int, int, QString, QString );
 };
 
 Q_DECLARE_METATYPE( StreamItem* )
