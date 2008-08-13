@@ -19,7 +19,8 @@
 #define AMAROK_SCRIPT_H
 
 #include <QObject>
-#include <QtScript>
+
+class QScriptEngine;
 
 namespace AmarokScript
 {
@@ -29,17 +30,16 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokScript( QScriptEngine* ScriptEngine );
+            AmarokScript( QScriptEngine* scriptEngine );
             ~AmarokScript();
             void slotConfigured();
 
         public slots:
-            QString     Version();
-            void        Quit();
-            int         alert( QString text, QString type = "information" );
-            bool        runScript( QString name );
-            bool        stopScript( QString name );
-            QStringList listRunningScripts();
+            void        quit() const;
+            int         alert( const QString& text, const QString& type = "information" ) const;
+            bool        runScript( const QString& name ) const;
+            bool        stopScript( const QString& name ) const;
+            QStringList listRunningScripts() const;
         signals:
             void configured();
 

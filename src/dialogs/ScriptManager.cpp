@@ -37,6 +37,7 @@
 #include "browsers/servicebrowser/scriptableservice/ScriptableServiceManager.h"
 #include "scriptengine/AmarokCollectionScript.h"
 #include "scriptengine/AmarokEngineScript.h"
+#include "scriptengine/AmarokInfoScript.h"
 #include "scriptengine/AmarokLyricsScript.h"
 #include "scriptengine/AmarokOSDScript.h"
 #include "scriptengine/AmarokPlaylistScript.h"
@@ -544,6 +545,13 @@ ScriptManager::startScriptEngine( QString name )
     m_global = scriptEngine->newQObject( m_scripts[name].globalPtr );
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
     m_scripts[name].wrapperList.append( m_scripts[name].globalPtr );
+
+    objectPtr = new InfoScript( m_scripts[name].url );
+    QScriptValue infoContext = scriptEngine->newQObject( objectPtr );
+    m_global.setProperty( "Info", infoContext );
+    m_scripts[name].wrapperList.append( objectPtr );
+    scriptObject = scriptEngine->newQMetaObject( &IconEnum::staticMetaObject );
+    infoContext.setProperty( "IconSizes", scriptObject );
 
     m_scripts[name].servicePtr = new ScriptableServiceScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( m_scripts[name].servicePtr );

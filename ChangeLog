@@ -26,6 +26,7 @@ VERSION 2.0-beta1
     * Search local collection for albums to show in the album applet when 
       playing non local content
     * Context view state is saved on exit and restored on start up.
+    * New functions available to the scripting interface, under Amarok.Info.
 
   CHANGES:
     * Greatly reduced memory usage when using dynamic playlists.

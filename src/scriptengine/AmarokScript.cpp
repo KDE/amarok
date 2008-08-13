@@ -24,31 +24,24 @@
 
 #include <KMessageBox>
 
-#include <QtScript>
-
 namespace AmarokScript
 {
-    AmarokScript::AmarokScript( QScriptEngine* ScriptEngine )
+    AmarokScript::AmarokScript( QScriptEngine* scriptEngine )
     : QObject( kapp )
     {
-        Q_UNUSED( ScriptEngine );
+        Q_UNUSED( scriptEngine );
     }
 
     AmarokScript::~AmarokScript()
     {
     }
 
-    QString AmarokScript::Version()
-    {
-        return APP_VERSION;
-    }
-
-    void AmarokScript::Quit()
+    void AmarokScript::quit() const
     {
         kapp->closeAllWindows();
     }
 
-    int AmarokScript::alert(  QString text, QString type )
+    int AmarokScript::alert(  const QString& text, const QString& type ) const
     {
         //Ok = 1, Cancel = 2, Yes = 3, No = 4, Continue = 5
         if ( type == "error" )
@@ -82,17 +75,17 @@ namespace AmarokScript
         return -1;
     }
 
-    bool AmarokScript::runScript( QString name )
+    bool AmarokScript::runScript( const QString& name ) const
     {
         return ScriptManager::instance()->runScript( name, true );
     }
 
-    bool AmarokScript::stopScript( QString name )
+    bool AmarokScript::stopScript( const QString& name ) const
     {
         return ScriptManager::instance()->stopScript( name );
     }
 
-    QStringList AmarokScript::listRunningScripts()
+    QStringList AmarokScript::listRunningScripts() const
     {
         return ScriptManager::instance()->listRunningScripts();
     }

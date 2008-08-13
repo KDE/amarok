@@ -354,6 +354,7 @@ set(dbus_SRCS
 set (scriptengine_SRCS
      scriptengine/AmarokScript.cpp
      scriptengine/AmarokCollectionScript.cpp
+     scriptengine/AmarokInfoScript.cpp
      scriptengine/AmarokLyricsScript.cpp
      scriptengine/AmarokScriptableServiceScript.cpp
      scriptengine/AmarokServicePluginManagerScript.cpp
