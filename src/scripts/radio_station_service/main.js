@@ -79,13 +79,12 @@ function onPopulating( serviceName, level, parent_id, callbackData, filter )
         name = stationArray[i].name;
         url = stationArray[i].url;
         html_info = "A cool stream called " + name;
-        this.insertItem( serviceName, 0, name, html_info, url, callback_string );
-        this.donePopulating( serviceName, parent_id );
+        script.insertItem( serviceName, 0, name, html_info, url, callback_string );
+        script.donePopulating( serviceName, parent_id );
     }
 }
 
 Amarok.configured.connect( onConfigure );
 
 script = new CoolStream();
-
 script.populate.connect( onPopulating );

@@ -554,8 +554,8 @@ ScriptManager::startScriptEngine( QString name )
     infoContext.setProperty( "IconSizes", scriptObject );
 
     m_scripts[name].servicePtr = new ScriptableServiceScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( m_scripts[name].servicePtr );
-    m_global.setProperty( "ScriptableServiceScript", scriptObject );
+//    scriptObject = scriptEngine->newQObject( m_scripts[name].servicePtr );
+//    m_global.setProperty( "ScriptableServiceScript", scriptObject );
     m_scripts[name].wrapperList.append( m_scripts[name].servicePtr );
 
     objectPtr = new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );

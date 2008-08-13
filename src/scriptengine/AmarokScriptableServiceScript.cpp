@@ -98,9 +98,8 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QS
     QString shortDescription = context->argument(2).toString();
     QString rootHtml = context->argument(3).toString();
     bool showSearchBar = context->argument(4).toBoolean();
-    QObject* obj = engine->globalObject().property( "ScriptableServiceScript" ).toQObject();
-    if ( obj == 0 ) debug() << "null pointer!"; else debug() << "not null pointer!";
-//    engine->newQObject( context->thisObject(), obj );
+    QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts[serviceName].servicePtr );
+    engine->globalObject().setProperty( "ScriptableServiceScript", obj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
     return engine->undefinedValue();
 }
