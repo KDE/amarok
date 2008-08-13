@@ -128,7 +128,7 @@ ServiceMetaFactory::createGenre(const QStringList & rows)
 
 
 ServiceTrack::ServiceTrack( const QString & name, const QString & url )
-    : MetaProxy::Track( KUrl( url ), false )
+    : MetaProxy::Track( KUrl( url ), true )
     , ServiceDisplayInfoProvider()
     , CustomActionsProvider()
     , SourceInfoProvider()
@@ -152,7 +152,7 @@ ServiceTrack::ServiceTrack( const QString & name, const QString & url )
 
 
 ServiceTrack::ServiceTrack( const QStringList & resultRow )
-    : MetaProxy::Track( resultRow[4], false )
+    : MetaProxy::Track( resultRow[4], true )
     , ServiceDisplayInfoProvider()
     , CustomActionsProvider()
     , SourceInfoProvider()
