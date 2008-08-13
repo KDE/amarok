@@ -244,6 +244,8 @@ private:
     bool         m_purchaseInProgress;
     bool         m_polished;
 
+    QString      m_tempFileName;
+
     KIO::TransferJob * m_listDownloadJob;
 };
 

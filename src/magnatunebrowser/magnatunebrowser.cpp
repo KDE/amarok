@@ -27,6 +27,7 @@ Boston, MA 02110-1301, USA.
 #include <kstandarddirs.h> //locate()
 #include <kurl.h>
 #include <kiconloader.h>   //multiTabBar icons
+#include <ktempfile.h>
 
 #include <qsplitter.h>
 #include <qdragobject.h>
@@ -373,11 +374,9 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downLoadJob );
     QString list = QString( storedJob->data() );
 
-
-    QFile file( "/tmp/album_info.xml" );
-
-    if ( file.exists() )
-        file.remove();
+    KTempFile tfile;
+    m_tempFileName = tfile.name();
+    QFile file( m_tempFileName );
 
     if ( file.open( IO_WriteOnly ) )
     {
@@ -387,7 +386,7 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
     }
 
 
-    MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
+    MagnatuneXmlParser * parser = new MagnatuneXmlParser( m_tempFileName );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
     ThreadManager::instance() ->queueJob( parser );
@@ -446,9 +445,13 @@ void MagnatuneBrowser::genreChanged()
 
 void MagnatuneBrowser::doneParsing()
 {
+    DEBUG_BLOCK
     updateList();
     updateGenreBox( );
     updateList(); // stupid stupid hack....
+    if( !QFile::remove( m_tempFileName ) )
+        debug() << "Couldn't remove temp file at " << m_tempFileName << endl;
+    m_tempFileName = QString();
 }
 
 void MagnatuneBrowser::updateGenreBox()
