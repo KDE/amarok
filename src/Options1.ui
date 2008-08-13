@@ -608,9 +608,6 @@
                     <property name="text">
                         <string>Manually sa&amp;ved playlists use relative path</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+V</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
                     </property>
@@ -624,9 +621,6 @@
                     </property>
                     <property name="text">
                         <string>Switch to Context &amp;Browser on track change</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+B</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>

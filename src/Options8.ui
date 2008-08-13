@@ -18,9 +18,6 @@
             <height>1</height>
         </size>
     </property>
-    <property name="caption">
-        <string>Options8</string>
-    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -234,9 +231,6 @@
                     <property name="text">
                         <string>Improve m&amp;y profile by submitting the tracks I play</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+Y</string>
-                    </property>
                 </widget>
                 <widget class="QCheckBox">
                     <property name="name">
@@ -247,9 +241,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Retrieve similar artists</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
                     </property>
                 </widget>
             </vbox>
