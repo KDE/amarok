@@ -82,21 +82,21 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setAlternatingRowColors( true );
 
     //transparency
-    /*QPalette p = palette();
+    QPalette p = palette();
     QColor c = p.color( QPalette::Base );
     c.setAlpha( 0 );
     p.setColor( QPalette::Base, c );
 
     c = p.color( QPalette::AlternateBase );
-    c.setAlpha( 77 );
+    c.setAlpha( 0 );
     p.setColor( QPalette::AlternateBase, c );
 
-    setPalette( p );*/
+    setPalette( p );
 
 
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
 
-    The::paletteHandler()->updateTreeView( this );
+    //The::paletteHandler()->updateTreeView( this );
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
@@ -985,11 +985,15 @@ void CollectionTreeView::newPalette( const QPalette & palette )
     The::paletteHandler()->updateTreeView( this );
 }
 
-void CollectionTreeView::drawRow(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+void CollectionTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
+    QStyleOptionViewItemV4 opt = option;
 
-    const QStyleOptionViewItemV4 optionV4( option );
-    
+    bool alternate = false;
+    if ( opt.features & QStyleOptionViewItemV2::Alternate )
+        alternate = true;
+
+
 
     const int width = option.rect.width();
     const int height = option.rect.height();
@@ -998,9 +1002,9 @@ void CollectionTreeView::drawRow(QPainter * painter, const QStyleOptionViewItem 
         painter->save();
         QPixmap background;
 
-        //debug() << "features: " << optionV4.features;
+        debug() << "features: " << opt.features;
 
-        if ( optionV4.features & QStyleOptionViewItemV4::Alternate)
+        if ( !alternate )
             background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
         else
             background = The::svgHandler()->renderSvgWithDividers( "alt_service_list_item", width, height, "alt_service_list_item" );
