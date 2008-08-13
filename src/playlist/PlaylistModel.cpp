@@ -644,7 +644,7 @@ Playlist::Model::setActiveRow( int row )
         albumName = m_items[ row ]->track()->album()->prettyName();
     }
 
-    if( m_albumGroups.contains( albumName ) && !albumName.isEmpty() )
+    if( !albumName.isEmpty() && m_albumGroups.contains( albumName ) && m_albumGroups[ albumName ] )
     {
         m_albumGroups[ albumName ]->setCollapsed( row,  false );
         emit( playlistGroupingChanged() );
