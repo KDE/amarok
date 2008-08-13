@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "AmarokLyricsScript.h"
+#include "AmarokNetworkScript.h"
 
 #include "App.h"
 
@@ -23,16 +23,16 @@
 
 namespace AmarokScript
 {
-    AmarokLyricsScript::AmarokLyricsScript( QScriptEngine* ScriptEngine )
+    AmarokNetworkScript::AmarokNetworkScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
         Q_UNUSED( ScriptEngine );
     }
 
-    AmarokLyricsScript::~AmarokLyricsScript()
+    AmarokNetworkScript::~AmarokNetworkScript()
     {
     }
 
 }
 
-#include "AmarokLyricsScript.moc"
+#include "AmarokNetworkScript.moc"

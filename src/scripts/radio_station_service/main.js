@@ -70,7 +70,7 @@ function onConfigure()
     Amarok.alert( "This script does not require any configuration." );
 }
 
-CoolStream.prototype.populate = function( serviceName, level, parent_id, callbackData, filter )
+function onPopulating( serviceName, level, parent_id, callbackData, filter )
 {
     print( " Populating station level..." );
     //add the station streams as leaf nodes
@@ -87,4 +87,5 @@ CoolStream.prototype.populate = function( serviceName, level, parent_id, callbac
 Amarok.configured.connect( onConfigure );
 
 script = new CoolStream();
-//CoolStream.populate.connect( onPopulating );
+
+script.populate.connect( onPopulating );

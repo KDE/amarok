@@ -90,3 +90,9 @@ Amarok.Engine.trackSeeked.connect( TrackSeeked );
 Amarok.Engine.trackFinished.connect( TrackFinished );
 Amarok.Playlist.CountChanged.connect( PlaylistCountChanged );
 Amarok.Engine.volumeChanged.connect( VolumeChanged );
+
+location = Amarok.Collection.collectionLocation();
+for ( var x in location )
+{
+    print ( location[x] );
+}

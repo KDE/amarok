@@ -53,7 +53,7 @@ class StreamItem : public QObject
 class ScriptableServiceScript : public QObject, public QScriptable
 {
     Q_OBJECT
-
+	
     public:
         ScriptableServiceScript( QScriptEngine* engine );
         ~ScriptableServiceScript();

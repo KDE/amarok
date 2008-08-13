@@ -70,6 +70,22 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         void ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter );
 
+        struct ScriptItem {
+            KPluginInfo                                     info;
+            QScriptEngine*                                  engine;
+            KUrl                                            url;
+            bool                                            running;
+            AmarokScript::AmarokScript*                     globalPtr;
+            ScriptableServiceScript*                        servicePtr;
+            QString                                         log;
+            QList<QObject*>                                 guiPtrList;
+            QList<QObject*>                                 wrapperList;
+            ScriptItem() : engine( 0 ), running( false ), globalPtr( 0 ), servicePtr( 0 ) {}
+        };
+
+        typedef QMap<QString, ScriptItem> ScriptMap;
+        ScriptMap      m_scripts;
+
     private slots:
         /** Finds all installed scripts and adds them to the listview */
         void findScripts();
@@ -95,6 +111,8 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         void startScriptEngine( QString name);
 
+        static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
+        static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
@@ -102,22 +120,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         ScriptSelector*        m_scriptSelector;
         bool                   m_installSuccess;
 
-        struct ScriptItem {
-            KPluginInfo                                     info;
-            QScriptEngine*                                  engine;
-            KUrl                                            url;
-            bool                                            running;
-            AmarokScript::AmarokScript*                     globalPtr;
-            ScriptableServiceScript*                        servicePtr;
-            QString                                         log;
-            QList<QObject*>                                 guiPtrList;
-            QList<QObject*>                                 wrapperList;
-            ScriptItem() : engine( 0 ), running( false ), globalPtr( 0 ), servicePtr( 0 ) {}
-        };
-
-        typedef QMap<QString, ScriptItem> ScriptMap;
-
-        ScriptMap      m_scripts;
         QScriptValue   m_global;
         bool           m_configChanged;
         QStringList    m_changedScripts;

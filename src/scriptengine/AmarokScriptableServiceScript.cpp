@@ -20,6 +20,7 @@
 #include "App.h"
 #include "Debug.h"
 #include "browsers/servicebrowser/scriptableservice/ScriptableServiceManager.h"
+#include "ScriptManager.h"
 
 #include <QtScript>
 
@@ -82,7 +83,7 @@ ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
     const QScriptValue populate = engine->newFunction( ScriptableServiceScript_prototype_populate );
     ctor.property( "prototype" ).setProperty( "populate", populate );
     engine->globalObject().setProperty( "ScriptableServiceScript", ctor );
-    qScriptConnect( this, SIGNAL( populate( QString, int, int, QString, QString ) ), QScriptValue() ,populate );
+//    qScriptConnect( this, SIGNAL( populate( QString, int, int, QString, QString ) ), QScriptValue() ,populate );
 }
 
 ScriptableServiceScript::~ScriptableServiceScript()
@@ -97,6 +98,9 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QS
     QString shortDescription = context->argument(2).toString();
     QString rootHtml = context->argument(3).toString();
     bool showSearchBar = context->argument(4).toBoolean();
+    QObject* obj = engine->globalObject().property( "ScriptableServiceScript" ).toQObject();
+    if ( obj == 0 ) debug() << "null pointer!"; else debug() << "not null pointer!";
+//    engine->newQObject( context->thisObject(), obj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
     return engine->undefinedValue();
 }
@@ -125,14 +129,14 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
 {
     DEBUG_BLOCK
     emit( populate( name, level, parent_id, callbackData, filter ) );
-/*
+
     debug() << "service name = " << name;
     debug() << "populating...";
     debug() << level << parent_id << callbackData << filter;
-	
+/*
     QScriptValueList args;
     args << QScriptValue( m_scriptEngine, level ) << QScriptValue( m_scriptEngine, callbackData ) << QScriptValue( m_scriptEngine, filter );
-    thisObject().property( "prototype" ).property( "populate" ).call( QScriptValue(), args );
+    ScriptManager::instance()->m_script[serviceName].serviceContext.thisObject().property( "prototype" ).property( "populate" ).call( QScriptValue(), args );
 	
     The::scriptableServiceManager()->donePopulating( name, parent_id );
 */

@@ -107,6 +107,13 @@ namespace AmarokScript
         CollectionManager::instance()->checkCollectionChanges();
     }
 
+    bool AmarokCollectionScript::isDirInCollection( const QString& path )
+    {
+        Q_UNUSED( path );
+        return false;
+    }
+
+
 }
 
 #include "AmarokCollectionScript.moc"

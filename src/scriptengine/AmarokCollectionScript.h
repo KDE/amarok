@@ -42,6 +42,7 @@ namespace AmarokScript
             QStringList query( const QString& sql );
             void scanCollection();
             void scanCollectionChanges();
+            bool isDirInCollection( const QString& path );
        //TODO: make this a more object oriented way, could make a wrapper class for both the Collection and Collection Manager class.
        //TODO: probably leave this to Amarok 2.1
         signals:

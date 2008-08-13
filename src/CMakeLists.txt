@@ -355,7 +355,7 @@ set (scriptengine_SRCS
      scriptengine/AmarokScript.cpp
      scriptengine/AmarokCollectionScript.cpp
      scriptengine/AmarokInfoScript.cpp
-     scriptengine/AmarokLyricsScript.cpp
+     scriptengine/AmarokNetworkScript.cpp
      scriptengine/AmarokScriptableServiceScript.cpp
      scriptengine/AmarokServicePluginManagerScript.cpp
      scriptengine/AmarokEngineScript.cpp
