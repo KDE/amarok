@@ -36,9 +36,9 @@ namespace AmarokScript
             ~AmarokWindowScript();
 
         public slots:
-            bool addToolsMenu( QString id, QString MenuTitle );
+            bool addToolsMenu( QString id, QString MenuTitle, QString icon = "amarok" );
             void addToolsSeparator();
-            bool addSettingsMenu( QString id, QString MenuTitle );
+            bool addSettingsMenu( QString id, QString MenuTitle, QString icon = "amarok" );
             void addSettingsSeparator();
             void showBrowser( QString browser );
 //TODO: show Tray Icon, Show Splash Screen

@@ -43,13 +43,13 @@ namespace AmarokScript
     {
     }
 
-    bool AmarokWindowScript::addToolsMenu( QString id, QString MenuTitle )
+    bool AmarokWindowScript::addToolsMenu( QString id, QString MenuTitle, QString icon )
     {
         DEBUG_BLOCK
         KActionCollection* const ac = Amarok::actionCollection();
         if ( !ac->action( id ) )
         {
-            KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, The::mainWindow() );
+            KAction *action = new KAction( KIcon( icon ), MenuTitle, The::mainWindow() );
             ac->addAction( id, action );
             m_ToolsMenu->addAction( ac->action( id ) );
             m_ToolsMenu->addAction( action );
@@ -68,13 +68,13 @@ namespace AmarokScript
         m_guiPtrList->append( action );
     }
 
-    bool AmarokWindowScript::addSettingsMenu( QString id, QString MenuTitle )
+    bool AmarokWindowScript::addSettingsMenu( QString id, QString MenuTitle, QString icon )
     {
         DEBUG_BLOCK
         KActionCollection* const ac = Amarok::actionCollection();
         if ( !ac->action( id ) )
         {
-            KAction *action = new KAction( KIcon( "amarok" ), MenuTitle, The::mainWindow() );
+            KAction *action = new KAction( KIcon( icon ), MenuTitle, The::mainWindow() );
             ac->addAction( id, action );
             m_SettingsMenu->addAction( ac->action( id ) );
             m_SettingsMenu->addAction( action );
