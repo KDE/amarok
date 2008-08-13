@@ -76,12 +76,14 @@ function onPopulating( serviceName, level, parent_id, callbackData, filter )
     //add the station streams as leaf nodes
     for ( i = 0; i < stationArray.length; i++ )
     {
+        callback = "";
         name = stationArray[i].name;
         url = stationArray[i].url;
         html_info = "A cool stream called " + name;
-        script.insertItem( serviceName, 0, name, html_info, url, callback_string );
-        script.donePopulating( serviceName, parent_id );
+        script.insertItem( serviceName, 0, parent_id, name, html_info, url, callback );
     }
+    script.donePopulating( serviceName, parent_id );
+    print ( serviceName );
 }
 
 Amarok.configured.connect( onConfigure );

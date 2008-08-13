@@ -60,7 +60,7 @@ class ScriptableServiceScript : public QObject, public QScriptable
         void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
 
     public slots:
-        int insertItem( QString serviceName, int level, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData );
+        int insertItem( QString serviceName, int level, int parent_id, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData );
         int donePopulating( QString serviceName, int parent_id );
 
     private:
