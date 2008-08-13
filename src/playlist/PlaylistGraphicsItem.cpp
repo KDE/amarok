@@ -105,7 +105,7 @@ Playlist::GraphicsItem::GraphicsItem()
     , m_height( -1 )
     , m_groupMode( -1 )
     , m_groupModeChanged ( false )
-    , m_collapsible ( true )
+    , m_collapsible ( false )
     , m_dataChanged( false )
 {
     setZValue( 1.0 );
@@ -181,8 +181,8 @@ Playlist::GraphicsItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
         paintSingleTrack( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
     else if ( m_groupMode == Head )
         paintHead( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
-    else if ( m_groupMode == Head_Collapsed )
-        paintCollapsedHead( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool()  );
+    /*else if ( m_groupMode == Head_Collapsed )
+        paintCollapsedHead( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool()  );*/
     else if ( m_groupMode == Body )
         paintBody( painter, option, isActiveTrack, index.data( GroupedAlternateRole ).toBool() );
     else if ( m_groupMode == End )
@@ -527,7 +527,7 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
     m_items->preDragLocation = mapToScene( boundingRect() ).boundingRect();
 
     //did we hit the collapse / expand button?
-    if( m_collapsible )
+    /*if( m_collapsible )
     {
         QRectF rect( boundingRect().width() - ( 16 + MARGIN ), MARGIN, 16, 16 );
         if( rect.contains( event->pos() ) )
@@ -537,7 +537,7 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
             else if ( m_groupMode == Head )
                 The::playlistModel()->setCollapsed( m_currentRow, true );
         }
-    }
+    }*/
 
     QGraphicsItem::mousePressEvent( event );
 }
@@ -894,7 +894,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     
 
     //paint collapse button
-    QString collapseString;
+    /*QString collapseString;
     if ( m_groupMode == Head )
     {
         if ( m_collapsible )
@@ -911,6 +911,8 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
                              (int)MARGIN,
                               The::svgHandler()->renderSvg( collapseString, 16, 16, collapseString )
                            );
+
+    */
 
     //paint cover
     QPixmap albumPixmap;
@@ -983,6 +985,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
                            );
     }
 }
+#if 0
 
 void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool /*alternate*/  )
 {
@@ -1045,6 +1048,8 @@ void Playlist::GraphicsItem::paintCollapsedHead( QPainter * painter, const QStyl
 
 
 }
+
+#endif
 
 void Playlist::GraphicsItem::paintBody( QPainter * painter, const QStyleOptionGraphicsItem * option, bool active, bool alternate )
 {
