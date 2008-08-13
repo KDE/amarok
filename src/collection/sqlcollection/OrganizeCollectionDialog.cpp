@@ -70,12 +70,15 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     KVBox *vbox = new KVBox( this );
     setMainWidget( vbox );
     QWidget *widget;
-    widget = new QWidget(vbox);
+    widget = new QWidget( vbox );
 
-    ui->setupUi(widget);
+    ui->setupUi( widget );
 
-    filenameLayoutDialog = new FilenameLayoutDialog( vbox );
-    filenameLayoutDialog->show();
+    //filenameLayoutDialog = new FilenameLayoutDialog( ui->fldialog, 0 );
+    //filenameLayoutDialog->move( QPoint( 0, 0 ) );
+    //ui->fldialog->setChild( filenameLayoutDialog );
+    //filenameLayoutDialog->show();
+    ui->fldialog->hideOpts();
 
     const QStringList folders = MountPointManager::instance()->collectionFolders();
 

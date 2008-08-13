@@ -352,12 +352,18 @@
     </widget>
    </item>
    <item row="2" column="0" >
-    <widget class="QWidget" native="1" name="fldialog" >
+    <widget class="FilenameLayoutDialog" native="1" name="fldialog" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
      </property>
     </widget>
    </item>
@@ -374,6 +380,12 @@
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FilenameLayoutDialog</class>
+   <extends>QWidget</extends>
+   <header location="global" >dialogs/FilenameLayoutDialog.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <includes>

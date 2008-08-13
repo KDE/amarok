@@ -30,7 +30,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent )
     : QWidget( parent )
 {
     setupUi( this );
-
+    optionsFrame->hide();
 
     caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
@@ -182,3 +182,18 @@ FilenameLayoutDialog::toAdvancedMode()
         hintPicture->show();
     }
 }
+
+//The following two show and hide the Options ButtonGroup
+void
+FilenameLayoutDialog::showOpts()
+{
+    optionsFrame->show();
+}
+
+void
+FilenameLayoutDialog::hideOpts()
+{
+    optionsFrame->hide();
+}
+
+

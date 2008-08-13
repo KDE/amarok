@@ -35,6 +35,8 @@ class FilenameLayoutDialog
         int getCaseOptions();
         int getWhitespaceOptions();
         int getUnderscoreOptions();
+        AMAROK_EXPORT void hideOpts();
+        AMAROK_EXPORT void showOpts();
 
     private:
         QList< QRadioButton * > caseEditRadioButtons;
