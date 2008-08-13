@@ -81,10 +81,12 @@ void
 ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 {
     int seconds = ms / 1000;
-    int seconds2 = seconds; // for the second label.
+    int seconds2 = seconds; // for the second label
     const uint trackLength = The::engineController()->trackLength();
 
-    if( AmarokConfig::leftTimeDisplayEnabled() )
+    // needed when changing TimeLabels during playback. do not show left one if
+    // right one isn't shown, as in that case we are about to stop playback
+    if( AmarokConfig::leftTimeDisplayEnabled() && !m_timeLabelRight->isHidden() )
         m_timeLabelLeft->show();
     else
         m_timeLabelLeft->hide();
@@ -168,8 +170,6 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
             m_slider->setEnabled( false );
             m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
             m_slider->setMaximum( 0 );
-//             m_timeLabelLeft->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
-//             m_timeLabelRight->setEnabled( false );
             m_timeLabelLeft->hide();
             m_timeLabelRight->hide();
             break;
