@@ -387,6 +387,8 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
     void
 Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool animate )
 {
+    DEBUG_BLOCK
+    
     if( startPosition < 0 )
         return;
 
@@ -407,12 +409,16 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool
 
         qreal desiredY = cumulativeHeight;
 
+        debug() << "item " << i << " old y=" << currentY << ", desired y=" << desiredY;
+
         double itemHeight = item->boundingRect().height();
         cumulativeHeight += itemHeight;
 
-        if( currentY == desiredY )
-            continue;
 
+        //it turns out that not repaiting stuff that is being moved, but technically
+        //already is where it needs to be, is a really bad idea.
+        //if( currentY == desiredY )
+        //    continue;
 
         // If this item already being animated, stop that animation.
         if( m_animatorsByItem.contains( item ) )

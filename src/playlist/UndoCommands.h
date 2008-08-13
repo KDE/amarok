@@ -74,6 +74,21 @@ namespace Playlist {
             Meta::TrackList m_tracks;
     };
 
+
+     /**
+     * Moves a track from one position to another in the playlist in an reversible way.
+     */
+    class MoveTracksCmd: public QUndoCommand
+    {
+        public:
+            MoveTracksCmd( QUndoCommand* parent, int from, int to );
+            void undo();
+            void redo();
+        private:
+            int m_from;
+            int m_to;
+    };
+
     /**
      * Removes the specified playlists from the Playlist::Model, and remembers them so as to add them back if requested.
      */

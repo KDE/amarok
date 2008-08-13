@@ -90,3 +90,24 @@ AddPlaylistsCmd::undo()
         The::playlistModel()->removeTracksCommand( startRow, playlist->tracks().size() );
     }
 }
+
+
+
+Playlist::MoveTracksCmd::MoveTracksCmd( QUndoCommand * parent, int from, int to )
+    : QUndoCommand( i18n("Track moved"), parent )
+    , m_from( from )
+    , m_to( to )
+{
+
+}
+
+void Playlist::MoveTracksCmd::redo()
+{
+    DEBUG_BLOCK
+    The::playlistModel()->moveRowCommand( m_from, m_to );
+}
+
+void Playlist::MoveTracksCmd::undo()
+{
+    The::playlistModel()->moveRowCommand( m_to, m_from );
+}

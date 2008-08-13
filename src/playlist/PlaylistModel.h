@@ -144,6 +144,7 @@ namespace Playlist
         friend class AddTracksCmd;
         friend class AddPlaylistsCmd;
         friend class RemoveTracksCmd;
+        friend class MoveTracksCmd;
         friend Playlist::Model* The::playlistModel();
 
         Q_OBJECT
@@ -242,7 +243,7 @@ namespace Playlist
             void setPrevRow( int row );
 
 
-            void moveRow( int row, int to );
+            bool moveRow( int row, int to );
 
             using Observer::metadataChanged;
             virtual void metadataChanged( Meta::Track *track );
@@ -310,6 +311,13 @@ namespace Playlist
              * @arg list The list to be inserted.
              */
             Meta::TrackList removeTracksCommand( int position, int rows );
+
+            /**
+             * This performs the actual work involved with mov traing a tracks. It is to be *only* called by an UndoCommand.
+             * @param from the track to be moved 
+             * @param to the position to move it to
+             */
+            void moveRowCommand( int from, int to );
 
             //TODO: implement these once Meta::Observer works for Meta::Playlists
             void registerPlaylist( Meta::PlaylistPtr playlist ) { Q_UNUSED( playlist ) };

@@ -431,6 +431,13 @@ Playlist::Model::removeRows( int position, int rows, const QModelIndex& /*parent
     return true;
 }
 
+bool
+Playlist::Model::moveRow( int from, int to )
+{
+    m_undoStack->push( new MoveTracksCmd( 0, from, to ) );
+    return true;
+}
+
 void
 Playlist::Model::insertTracks( int row, QueryMaker *qm )
 {
@@ -1283,7 +1290,7 @@ Playlist::Model::headerData(int section, Qt::Orientation orientation, int role) 
 }
 
 void
-Playlist::Model::moveRow(int row, int to)
+Playlist::Model::moveRowCommand( int row, int to )
 {
     DEBUG_BLOCK
 
@@ -1543,9 +1550,10 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
 
     if ( ( area1Start == area2Start ) || area2Start == -1 ) {
 
-         debug() << "Groups after:";
+         debug() << "Groups after v1:";
         foreach( AlbumGroup * ag, m_albumGroups)
             ag->printGroupRows();
+        emit( playlistGroupingChanged() );
         return;
     }
 
@@ -1568,20 +1576,14 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
        }
     }
 
-     debug() << "Groups after:";
+     debug() << "Groups after v2:";
      foreach( AlbumGroup *ag, m_albumGroups)
       ag->printGroupRows();
 
 
 
-    //make sure that a group containing playing track is expanded
-    if ( m_activeRow != -1 ){
-        if ( m_albumGroups.contains( m_items[ m_activeRow ]->track()->album()->prettyName() ) ) {
-            m_albumGroups[ m_items[ m_activeRow ]->track()->album()->prettyName() ]->setCollapsed( m_activeRow,  false );
-//             debug() << "Here";
-            emit( playlistGroupingChanged() );
-      }
-   }
+
+   emit( playlistGroupingChanged() );
 
    //reset();
 
