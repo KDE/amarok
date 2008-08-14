@@ -62,7 +62,7 @@ AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
 void MagnatuneServiceFactory::init()
 {
     DEBUG_BLOCK
-    MagnatuneStore* service = new MagnatuneStore( "Magnatune.com" );
+    MagnatuneStore* service = new MagnatuneStore( this, "Magnatune.com" );
     m_activeServices << service;
 
     emit newService( service );
@@ -89,8 +89,8 @@ KConfigGroup MagnatuneServiceFactory::config()
 // class MagnatuneStore
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-MagnatuneStore::MagnatuneStore( const char *name )
-        : ServiceBase( name )
+MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *name )
+        : ServiceBase( name, parent )
         , m_purchaseHandler( 0 )
         , m_redownloadHandler( 0 )
         , m_purchaseInProgress( 0 )

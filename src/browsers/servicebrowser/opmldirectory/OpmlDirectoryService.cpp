@@ -39,7 +39,7 @@ AMAROK_EXPORT_PLUGIN( OpmlDirectoryServiceFactory )
 
 void OpmlDirectoryServiceFactory::init()
 {
-    ServiceBase* service = new OpmlDirectoryService( "OpmlDirectory" );
+    ServiceBase* service = new OpmlDirectoryService( this, "OpmlDirectory" );
     m_activeServices << service;
     emit newService( service );
 }
@@ -64,8 +64,8 @@ KConfigGroup OpmlDirectoryServiceFactory::config()
 }
 
 
-OpmlDirectoryService::OpmlDirectoryService(const QString & name)
- : ServiceBase( name )
+OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString & name )
+ : ServiceBase( name, parent )
  , m_currentFeed( 0 )
 {
 

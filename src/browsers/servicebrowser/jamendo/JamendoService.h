@@ -58,7 +58,7 @@ class JamendoService : public ServiceBase
 
 Q_OBJECT
 public:
-    JamendoService( const QString &name );
+    JamendoService( JamendoServiceFactory* parent, const QString &name );
 
     ~JamendoService();
 

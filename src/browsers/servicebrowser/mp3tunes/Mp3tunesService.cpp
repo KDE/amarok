@@ -40,7 +40,7 @@ void Mp3tunesServiceFactory::init()
 {
     Mp3tunesConfig config;
 
-    ServiceBase* service = new Mp3tunesService( "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled() );
+    ServiceBase* service = new Mp3tunesService( this, "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled() );
     m_activeServices << service;
     connect( service, SIGNAL( ready() ), this, SLOT( serviceReady() ) );
     emit newService( service );
@@ -89,8 +89,8 @@ Mp3tunesServiceFactory::possiblyContainsTrack(const KUrl & url) const
 }
 
 
-Mp3tunesService::Mp3tunesService(const QString & name, const QString &token, const QString &email, const QString &password, bool harmonyEnabled )
- : ServiceBase( name )
+Mp3tunesService::Mp3tunesService( Mp3tunesServiceFactory* parent, const QString & name, const QString &token, const QString &email, const QString &password, bool harmonyEnabled )
+ : ServiceBase( name, parent )
  , m_email( email )
  , m_password( password )
  , m_harmonyEnabled( harmonyEnabled )

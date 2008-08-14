@@ -28,7 +28,7 @@
 using namespace Meta;
 
 ScriptableService::ScriptableService( const QString & name )
-    : ServiceBase( name )
+    : ServiceBase( name, 0 )
     , m_polished( false )
     , m_name( name )
     , m_trackIdCounter( 0 )

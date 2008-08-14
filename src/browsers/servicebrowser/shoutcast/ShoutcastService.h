@@ -51,7 +51,7 @@ class ShoutcastService : public ServiceBase
     Q_OBJECT
 
 public:
-    ShoutcastService( const char *name );
+    ShoutcastService( ShoutcastServiceFactory* parent, const char *name );
     ~ShoutcastService();
 
     void polish();

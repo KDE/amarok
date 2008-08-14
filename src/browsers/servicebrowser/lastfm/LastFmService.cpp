@@ -34,7 +34,7 @@ LastFmServiceFactory::init()
     //  The user activated the service, but didn't fill the username/password? Don't start it.
     if ( config.username().isEmpty() || config.password().isEmpty() ) return; 
 
-    ServiceBase* service = new LastFmService( "Last.fm", config.username(), UnicornUtils::md5Digest( config.password().toUtf8() ), config.scrobble(), config.fetchSimilar() );
+    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), UnicornUtils::md5Digest( config.password().toUtf8() ), config.scrobble(), config.fetchSimilar() );
     m_activeServices << service;
     emit newService( service );
 }
@@ -63,8 +63,8 @@ LastFmServiceFactory::config()
 }
 
 
-LastFmService::LastFmService( const QString &name, const QString &username, const QString &password, bool scrobble, bool fetchSimilar )
-    : ServiceBase( name ),
+LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, const QString &password, bool scrobble, bool fetchSimilar )
+    : ServiceBase( name, parent ),
       m_scrobbler( scrobble ? new ScrobblerAdapter( this, username, password ) : 0 ),
       m_radio( new RadioAdapter( this, username, password ) ),
       m_polished( false ),

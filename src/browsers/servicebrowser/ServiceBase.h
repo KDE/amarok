@@ -144,7 +144,7 @@ public:
      /**
       * Constructor.
       */
-    ServiceBase( const QString &name );
+    ServiceBase( const QString &name, ServiceFactory* parent );
 
     /**
      * Destructor.
@@ -268,6 +268,12 @@ public:
     bool serviceReady() const;
     //virtual void reset() = 0;
 
+    /**
+     * Returns the service's parent factory.
+     * @return the service's Factory
+     */
+     ServiceFactory* parent() const;
+
 public slots:
     //void treeViewSelectionChanged( const QItemSelection & selected );
     /**
@@ -346,6 +352,7 @@ protected:
 
     static ServiceBase *s_instance;
     ServiceCollectionTreeView *m_contentView;
+    ServiceFactory *m_parentFactory;
 
     QPushButton *m_homeButton;
 

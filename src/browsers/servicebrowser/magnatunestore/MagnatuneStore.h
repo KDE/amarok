@@ -73,7 +73,7 @@ public:
      /**
      * Constructor
      */
-    MagnatuneStore( const char *name );
+    MagnatuneStore( MagnatuneServiceFactory* parent, const char *name );
     /**
      * Destructor
      */

@@ -56,7 +56,8 @@ class Mp3tunesService : public ServiceBase
 Q_OBJECT
 
 public:
-    explicit Mp3tunesService( const QString &name,
+    explicit Mp3tunesService( Mp3tunesServiceFactory* parent,
+                              const QString &name,
                               const QString &partnerToken,
                               const QString &email = QString(),
                               const QString &password = QString(),

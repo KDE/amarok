@@ -43,7 +43,7 @@ void AmpacheServiceFactory::init()
     for( int i = 0; i < servers.size(); i++ )
     {
         AmpacheServerEntry server = servers.at( i );
-        ServiceBase* service = new AmpacheService( "Ampache (" + server.name + ')', server.url, server. username, server.password );
+        ServiceBase* service = new AmpacheService( this, "Ampache (" + server.name + ')', server.url, server. username, server.password );
         m_activeServices << service;
         debug() << "Emitting service!!!!!!";
         emit newService( service );
@@ -91,8 +91,8 @@ AmpacheServiceFactory::possiblyContainsTrack(const KUrl & url) const
 }
 
 
-AmpacheService::AmpacheService(const QString & name, const QString &url, const QString &username, const QString &password )
-    : ServiceBase( name )
+AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & name, const QString &url, const QString &username, const QString &password )
+    : ServiceBase( name,  parent )
     , m_authenticated( false )
     , m_server ( QString() )
     , m_sessionId ( QString() )

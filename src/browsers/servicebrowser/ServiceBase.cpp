@@ -98,8 +98,9 @@ void ServiceFactory::serviceReady()
 
 ServiceBase *ServiceBase::s_instance = 0;
 
-ServiceBase::ServiceBase( const QString &name )
+ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent )
         : KVBox( 0)
+        , m_parentFactory( parent )
         , m_polished( false )
         , m_serviceready( false )
         , m_infoParser( 0 )
@@ -184,6 +185,12 @@ QString
 ServiceBase::name( ) const
 {
     return m_name;
+}
+
+ServiceFactory*
+ServiceBase::parent() const
+{
+    return m_parentFactory;
 }
 
 void

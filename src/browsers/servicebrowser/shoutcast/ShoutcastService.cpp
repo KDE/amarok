@@ -30,7 +30,7 @@ AMAROK_EXPORT_PLUGIN( ShoutcastServiceFactory )
 
 void ShoutcastServiceFactory::init()
 {
-    ServiceBase* service = new ShoutcastService( "Shoutcast.com" );
+    ServiceBase* service = new ShoutcastService( this, "Shoutcast.com" );
     m_activeServices << service;
     emit newService( service );
 }
@@ -52,8 +52,8 @@ KConfigGroup ShoutcastServiceFactory::config()
     return Amarok::config( "Service_Shoutcast" );
 }
 
-ShoutcastService::ShoutcastService( const char *name )
-    : ServiceBase( "Shoutcast Directory" )
+ShoutcastService::ShoutcastService( ShoutcastServiceFactory* parent, const char *name )
+    : ServiceBase( "Shoutcast Directory", parent )
 {
     setObjectName( name );
     setShortDescription( i18n( "The biggest list of online radio stations on the Internet" ) );

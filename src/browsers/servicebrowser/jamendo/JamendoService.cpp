@@ -41,7 +41,7 @@ AMAROK_EXPORT_PLUGIN( JamendoServiceFactory )
 
 void JamendoServiceFactory::init()
 {
-    ServiceBase* service = new JamendoService( "Jamendo.com" );
+    ServiceBase* service = new JamendoService( this, "Jamendo.com" );
     m_activeServices << service;
     emit newService( service );
 }
@@ -66,8 +66,8 @@ JamendoServiceFactory::config()
     return Amarok::config( "Service_Jamendo" );
 }
 
-JamendoService::JamendoService(const QString & name)
-    : ServiceBase( name )
+JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & name)
+    : ServiceBase( name, parent )
     , m_currentAlbum( 0 )
 {
     setShortDescription(  i18n( "A site where artists can showcase their creations to the world" ) );
