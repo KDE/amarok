@@ -1,9 +1,26 @@
+/***************************************************************************
+* copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>         *
+* copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>   *
+* copyright            : (C) 2008 William Viana Soares <vianasw@gmail.com> *
+****************************************************************************/
+
+/***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
+
 #include "Amarok.h"
 #include "ColumnContainment.h"
 #include "Debug.h"
 #include "SvgHandler.h"
 
 #include <QPainter>
+
+#include <limits.h>
 
 namespace Context
 {
