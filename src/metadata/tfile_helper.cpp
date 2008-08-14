@@ -26,7 +26,7 @@
 #include <strings.h>
 #include <wchar.h>
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
 int wcscasecmp(const wchar_t *s1, const wchar_t *s2)
 {
      int i;
