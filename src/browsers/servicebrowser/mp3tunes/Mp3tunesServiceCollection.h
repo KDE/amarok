@@ -25,12 +25,15 @@
 #include "Mp3tunesMeta.h"
 #include "Mp3tunesLocker.h"
 
+#include <QMap>
+
 class Mp3tunesServiceCollection : public ServiceCollection
 {
+    Q_OBJECT
+    
 public:
     Mp3tunesServiceCollection( ServiceBase * service, const QString &sessionId,
             Mp3tunesLocker * locker );
-
 
     virtual ~Mp3tunesServiceCollection();
 
@@ -44,9 +47,16 @@ public:
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );
     virtual bool possiblyContainsTrack( const KUrl &url ) const;
 
+private slots:
+    /**
+     * Handles trackForUrl complete.
+     */
+    void trackForUrlComplete( Mp3tunesLockerTrack &track );
+
 private:
     QString m_sessionId;
     Mp3tunesLocker * m_locker;
+    QMap<QString, Meta::Mp3TunesTrack*> m_tracksFetching; // a list of tracks that are being fetched via trackForUrl and their associated threadweaver jobs
 };
 
 #endif

@@ -89,6 +89,7 @@ class Mp3tunesLockerAlbum {
 class Mp3tunesLockerTrack {
     public:
         Mp3tunesLockerTrack( mp3tunes_locker_track_t *track );
+        Mp3tunesLockerTrack();
         ~Mp3tunesLockerTrack();
         
         int trackId() const;

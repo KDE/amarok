@@ -24,7 +24,10 @@
 #include "Mp3tunesMeta.h"
 #include "Mp3tunesServiceCollectionLocation.h"
 #include "Mp3tunesServiceQueryMaker.h"
+#include "Mp3tunesWorkers.h"
 #include "Debug.h"
+
+#include <threadweaver/ThreadWeaver.h>
 
 #include <QRegExp>
 
@@ -85,13 +88,34 @@ Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
         return Meta::TrackPtr(); // It's not an mp3tunes track
     }
     debug() << "filekey: " << filekey;
-    //Lets get this thing
-    Mp3tunesLockerTrack track =  m_locker->trackWithFileKey( filekey );
-    debug() << "got track: " << track.trackTitle();
+    
+    Meta::Mp3TunesTrack * serviceTrack = new Meta::Mp3TunesTrack( QString(), url.url() );
+    
+    Mp3tunesTrackFromFileKeyFetcher* trackFetcher = new Mp3tunesTrackFromFileKeyFetcher( m_locker, filekey );
+    m_tracksFetching[filekey] = serviceTrack;
+    connect( trackFetcher, SIGNAL( trackFetched( Mp3tunesLockerTrack& ) ), this, SLOT( trackForUrlComplete( Mp3tunesLockerTrack& ) ) );
+    //debug() << "Connection complete. Enqueueing..";
+    ThreadWeaver::Weaver::instance()->enqueue( trackFetcher );
+    //debug() << "m_trackFetcher queue";
+    
+    return Meta::TrackPtr( serviceTrack );
+}
 
+void Mp3tunesServiceCollection::trackForUrlComplete( Mp3tunesLockerTrack &track )
+{
+    DEBUG_BLOCK
+    //Lets get this thing
+    debug() << "got track: " << track.trackTitle();
+    QString filekey = track.trackFileKey();
+    if( !m_tracksFetching.contains( filekey ) ) {
+        debug() << "track not found in QMap";
+        return;
+    }
+    Meta::Mp3TunesTrack * serviceTrack = m_tracksFetching.take( filekey );
+    
     //Building a Meta::Track
     QString title = track.trackTitle().isEmpty() ? "Unknown" :  track.trackTitle();
-    Meta::Mp3TunesTrack * serviceTrack = new Meta::Mp3TunesTrack( title, track.playUrl() );
+    serviceTrack->setName( title );
     serviceTrack->setId( track.trackId() );
     serviceTrack->setUidUrl( track.playUrl() ); //was: setUrl
     serviceTrack->setDownloadableUrl( track.downloadUrl() );
@@ -124,8 +148,7 @@ Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
     serviceTrack->setArtist( artistPtr );
     serviceAlbum->setArtistName( name );
     serviceAlbum->setAlbumArtist( artistPtr );
-
-    return Meta::TrackPtr( serviceTrack );
+    serviceTrack->refresh( service()->parent() );
 }
 
 Mp3tunesLocker* Mp3tunesServiceCollection::locker() const
@@ -138,3 +161,7 @@ Mp3tunesServiceCollection::location() const
 {
     return new Mp3tunesServiceCollectionLocation( this );
 }
+
+#include "Mp3tunesServiceCollection.moc"
+
+

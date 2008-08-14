@@ -197,5 +197,29 @@ class Mp3tunesSimpleUploader : public ThreadWeaver::Job
         QStringList m_tracklist;
 };
 
+/**
+ * Allows for threading a track from filekey job.
+ */
+class Mp3tunesTrackFromFileKeyFetcher : public ThreadWeaver::Job
+{
+    Q_OBJECT
+    public:
+        Mp3tunesTrackFromFileKeyFetcher( Mp3tunesLocker * locker, QString filekey );
+        ~Mp3tunesTrackFromFileKeyFetcher();
+
+        void run();
+
+    signals:
+        void trackFetched( Mp3tunesLockerTrack &track );
+
+    private slots:
+        void completeJob();
+
+    private:
+        Mp3tunesLocker* m_locker;
+        Mp3tunesLockerTrack m_track;
+        QString m_filekey;
+};
+
 #endif
 

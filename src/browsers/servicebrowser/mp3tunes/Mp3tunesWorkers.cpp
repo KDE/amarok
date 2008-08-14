@@ -294,3 +294,37 @@ void Mp3tunesSimpleUploader::completeJob()
     emit( uploadComplete() );
     deleteLater();
 }
+
+/*  TRACK from filekey FETCHER */
+Mp3tunesTrackFromFileKeyFetcher::Mp3tunesTrackFromFileKeyFetcher( Mp3tunesLocker * locker, QString filekey )
+{
+    DEBUG_BLOCK
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
+    m_locker = locker;
+    debug() << "Constructor filekey: " << filekey;
+    m_filekey = filekey;
+}
+
+Mp3tunesTrackFromFileKeyFetcher::~Mp3tunesTrackFromFileKeyFetcher()
+{
+}
+
+void Mp3tunesTrackFromFileKeyFetcher::run()
+{
+    DEBUG_BLOCK
+    if(m_locker != 0) {
+        debug() << "Track Fetch from filekey " << m_filekey;
+        Mp3tunesLockerTrack track =  m_locker->trackWithFileKey( m_filekey );
+        debug() << "Track Fetch from filekey End.";
+        m_track = track;
+    } else {
+        debug() << "Locker is NULL";
+    }
+}
+
+void Mp3tunesTrackFromFileKeyFetcher::completeJob()
+{
+    DEBUG_BLOCK
+    emit( trackFetched( m_track ) );
+    deleteLater();
+}

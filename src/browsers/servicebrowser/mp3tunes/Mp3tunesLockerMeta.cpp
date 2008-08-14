@@ -133,6 +133,10 @@ Mp3tunesLockerTrack::Mp3tunesLockerTrack(  mp3tunes_locker_track_t *track )
          m_artistName = track->artistName;
          m_artistId = track->artistId;
 }
+
+Mp3tunesLockerTrack::Mp3tunesLockerTrack()
+{}
+
 Mp3tunesLockerTrack::~Mp3tunesLockerTrack()
 {}
 
