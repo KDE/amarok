@@ -97,8 +97,6 @@ GeneralConfig::isDefault()
 void
 GeneralConfig::updateSettings() //SLOT
 {
-    Amarok::setUseScores( kcfg_UseScores->isChecked() );
-    Amarok::setUseRatings( kcfg_UseRatings->isChecked() );
 }
 
 
