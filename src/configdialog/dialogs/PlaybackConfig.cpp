@@ -23,7 +23,8 @@
 PlaybackConfig::PlaybackConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
-    setupUi( this ); 
+    setupUi( this );
+    kcfg_FadeoutOnExit->setHidden( true );
 }
 
 PlaybackConfig::~PlaybackConfig()
