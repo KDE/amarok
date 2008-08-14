@@ -55,11 +55,6 @@ namespace AmarokScript
         Amarok::OSD::instance()->setTextColor( color );
     }
 
-    void AmarokOSDScript::setBackgroundColor( const QColor &color )
-    {
-        Amarok::OSD::instance()->setBackgroundColor( color );
-    }
-
     void AmarokOSDScript::setOffset( int y )
     {
         Amarok::OSD::instance()->setOffset( y );
@@ -78,11 +73,6 @@ namespace AmarokScript
     void AmarokOSDScript::setText( const QString &text )
     {
         Amarok::OSD::instance()->setText( text );
-    }
-
-    void AmarokOSDScript::setDrawShadow( const bool b )
-    {
-        Amarok::OSD::instance()->setDrawShadow( b );
     }
 
     void AmarokOSDScript::setRating( const short rating )

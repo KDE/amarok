@@ -40,13 +40,12 @@ namespace AmarokScript
             void show();
             void setDuration( int ms );
             void setTextColor( const QColor &color );
-            void setBackgroundColor( const QColor &color );
             void setOffset( int y );
             void setImage( const QImage &image );
             void setScreen( int screen );
             void setText( const QString &text );
-            void setDrawShadow( const bool b );
             void setRating( const short rating ); //what is this?
+
         private:
             void setOsdEnabled( bool enable );
             bool osdEnabled();
