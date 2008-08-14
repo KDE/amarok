@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>335</width>
-    <height>493</height>
+    <width>336</width>
+    <height>306</height>
    </rect>
   </property>
   <property name="minimumSize" >
@@ -20,43 +20,11 @@
     <number>0</number>
    </property>
    <item row="0" column="0" >
-    <widget class="QLabel" name="kActiveLabel3" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text" >
-      <string>Amarok can send the name of every song you play to last.fm. The system automatically matches you to people with similar musical tastes, and creates personalized recommendations. To learn more about last.fm, &lt;a href="http://www.last.fm">visit the homepage&lt;/a>.</string>
-     </property>
-     <property name="wordWrap" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
     <widget class="QGroupBox" name="groupBox3" >
      <property name="title" >
       <string>Last.fm Profile</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" >
-      <item row="0" column="0" colspan="2" >
-       <widget class="QLabel" name="kActiveLabel1" >
-        <property name="text" >
-         <string>To use last.fm with Amarok, you need a &lt;a href="http://www.last.fm:80/signup.php">last.fm profile&lt;/a>.</string>
-        </property>
-        <property name="wordWrap" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0" >
        <widget class="QLabel" name="labelUsername" >
         <property name="text" >
@@ -93,46 +61,35 @@
         </property>
        </widget>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0" >
-    <widget class="QGroupBox" name="groupBox2" >
-     <property name="title" >
-      <string>Last.fm Services</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="textLabel1" >
+      <item row="3" column="1" >
+       <widget class="QLabel" name="kActiveLabel1" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text" >
-         <string>Once registered, Amarok can tell the last.fm service about your listening habits; your profile can then provide statistics and recommendations. A profile is not required to retrieve similar-artists for display in the Context Browser.</string>
+         <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;a href="http://www.last.fm:80/signup.php">&lt;span style=" text-decoration: underline; color:#0057ae;">Sign up to last.fm&lt;/span>&lt;/a>.&lt;/p>&lt;/body>&lt;/html></string>
         </property>
         <property name="wordWrap" >
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QCheckBox" name="kcfg_SubmitPlayedSongs" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="text" >
-         <string>Improve m&amp;y profile by submitting the tracks I play</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" >
-       <widget class="QCheckBox" name="kcfg_RetrieveSimilarArtists" >
-        <property name="text" >
-         <string>&amp;Retrieve similar artists</string>
-        </property>
-       </widget>
-      </item>
      </layout>
+     <zorder>labelUsername</zorder>
+     <zorder>labelPassword</zorder>
+     <zorder>kcfg_ScrobblerPassword</zorder>
+     <zorder>kcfg_ScrobblerUsername</zorder>
+     <zorder>kActiveLabel1</zorder>
     </widget>
    </item>
-   <item row="3" column="0" >
+   <item row="2" column="0" >
     <widget class="QLabel" name="kActiveLabel2" >
      <property name="text" >
       <string>Why not join the &lt;a href="http://www.last.fm:80/group/Amarok+Users">Amarok last.fm group&lt;/a> and share your musical tastes with other Amarok users?</string>
@@ -142,7 +99,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" >
+   <item row="3" column="0" >
     <spacer name="verticalSpacer" >
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
@@ -155,7 +112,41 @@
      </property>
     </spacer>
    </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="groupBox2" >
+     <property name="title" >
+      <string>Last.fm Services</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3" >
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="kcfg_SubmitPlayedSongs" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="text" >
+         <string>&amp;Submit tracks</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="kcfg_RetrieveSimilarArtists" >
+        <property name="text" >
+         <string>&amp;Retrieve similar artists</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
+  <zorder>kActiveLabel3</zorder>
+  <zorder>groupBox3</zorder>
+  <zorder>kActiveLabel2</zorder>
+  <zorder>groupBox2</zorder>
+  <zorder>kActiveLabel1</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
