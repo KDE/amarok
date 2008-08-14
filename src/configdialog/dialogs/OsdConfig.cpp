@@ -35,24 +35,19 @@ OsdConfig::OsdConfig( QWidget* parent )
     m_osdPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     m_osdPreview->setOffset( AmarokConfig::osdYOffset() );
 
+    // Enable/disable the translucency option depending on whether the QWidget has the WindowOpacity property
+    // kcfg_OsdUseTranslucency->setEnabled( CheckHasWindowOpacityProperty )
+
     connect( m_osdPreview, SIGNAL( positionChanged() ), SLOT( slotPositionChanged() ) );
 
     const int numScreens = QApplication::desktop()->numScreens();
     for( int i = 0; i < numScreens; i++ )
         kcfg_OsdScreen->addItem( QString::number( i ) );
 
-    connect( kcfg_OsdDrawShadow,      SIGNAL( toggled( bool ) ),
-             m_osdPreview,            SLOT( setDrawShadow( bool ) ) );
     connect( kcfg_OsdTextColor,       SIGNAL( changed( const QColor& ) ),
              m_osdPreview,            SLOT( setTextColor(const QColor& ) ) );
     connect( kcfg_OsdUseCustomColors, SIGNAL( toggled( bool ) ),
              this,                    SLOT( useCustomColorsToggled( bool ) ) );
-    connect( kcfg_OsdBackgroundColor, SIGNAL( changed( const QColor& ) ),
-             m_osdPreview,            SLOT( setBackgroundColor( const QColor& ) ) );
-#if 0
-    connect( kcfg_OsdFont,            SIGNAL( fontSelected(const QFont&) ),
-             m_osdPreview,            SLOT( setFont(const QFont&) ) );
-#endif
     connect( kcfg_OsdScreen,          SIGNAL( activated( int ) ),
              m_osdPreview,            SLOT( setScreen( int ) ) );
     connect( kcfg_OsdEnabled,         SIGNAL( toggled( bool ) ),
@@ -142,7 +137,6 @@ OsdConfig::showEvent( QShowEvent* )
 {
     useCustomColorsToggled( kcfg_OsdUseCustomColors->isChecked() );
 
-    //m_osdPreview->setFont( kcfg_OsdFont->font() );
     m_osdPreview->setScreen( kcfg_OsdScreen->currentIndex() );
     m_osdPreview->setVisible( kcfg_OsdEnabled->isChecked() );
 }
@@ -150,7 +144,7 @@ OsdConfig::showEvent( QShowEvent* )
 void
 OsdConfig::useCustomColorsToggled( bool on )
 {
-    m_osdPreview->setUseCustomColors( on, kcfg_OsdTextColor->color(), kcfg_OsdBackgroundColor->color() );
+    m_osdPreview->setUseCustomColors( on, kcfg_OsdTextColor->color() );
 }
 
 

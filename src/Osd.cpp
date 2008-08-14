@@ -630,7 +630,6 @@ Amarok::OSD::applySettings()
     if( AmarokConfig::osdUseCustomColors() )
     {
         setTextColor( AmarokConfig::osdTextColor() );
-        setBackgroundColor( AmarokConfig::osdBackgroundColor() );
     }
     else unsetColors();
 

@@ -65,12 +65,6 @@ class OSDWidget : public QWidget
             palette.setColor( QPalette::Active, QPalette::WindowText, color );
             setPalette(palette);
         }
-        void setBackgroundColor( const QColor &color )
-        {
-            QPalette palette = this->palette();
-            palette.setColor( QPalette::Active, QPalette::Window, color );
-            setPalette(palette);
-        }
         void setOffset( int y ) { m_y = y; }
         void setAlignment( Alignment alignment ) { m_alignment = alignment; }
         void setImage( const QImage &image ) { m_cover = image; }
@@ -126,17 +120,13 @@ public:
 
 public slots:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
-    void setBackgroundColor( const QColor &color ) { OSDWidget::setBackgroundColor( color ); doUpdate(); }
     void setDrawShadow( bool b ) { OSDWidget::setDrawShadow( b ); doUpdate(); }
     void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
-    void setUseCustomColors( const bool use, const QColor &fg, const QColor &bg )
+    void setUseCustomColors( const bool use, const QColor &fg )
     {
-        if( use ) {
-            OSDWidget::setTextColor( fg );
-            OSDWidget::setBackgroundColor( bg );
-        } else
-            unsetColors();
+        if( use ) OSDWidget::setTextColor( fg );
+        else      unsetColors();
         doUpdate();
     }
     void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); doUpdate(); }
