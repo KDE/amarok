@@ -152,6 +152,9 @@ private:
     bool m_toolBoxAdded;
 
     Plasma::Containment *m_containment;
+    int m_numContainments;
+
+    int m_placementHack;
 
     //ControlBox* m_controlBox;
 

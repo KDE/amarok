@@ -812,7 +812,7 @@ AmarokToolBoxMenu::wheelEvent( QGraphicsSceneWheelEvent *event )
 {
     DEBUG_BLOCK
     
-    if( event->orientation() == Qt::Horizontal )
+    if( event->orientation() == Qt::Horizontal || !showing() )
         return;
     if( m_pendingScrolls.size() > 0 )
     {

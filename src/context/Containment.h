@@ -41,20 +41,21 @@ public:
     
     virtual void saveToConfig( KConfigGroup &conf ) = 0;
     virtual void loadConfig( const KConfigGroup &conf ) = 0;
-    
-    virtual void updateSize( QRectF rect ) = 0;
+
     virtual bool hasPlaceForApplet( int rowSpan ) = 0;
 
     virtual void setTitle( QString title ) = 0;
     virtual void showTitle() = 0;
     virtual void hideTitle() = 0;
     virtual void addCurrentTrack() = 0;
-    virtual void addToolBox() = 0;
-    virtual void correctToolBoxPos() = 0;    
     virtual void setView( ContextView *newView ) = 0;
-    
-    virtual ContextView *view() = 0;
 
+    virtual ContextView *view() = 0;
+    
+public slots:
+    virtual void addToolBox() = 0;
+    virtual void correctToolBoxPos() = 0;
+    
 signals:
     void appletRejected( QString pluginName, int rowSpan );
         

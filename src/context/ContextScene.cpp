@@ -55,21 +55,21 @@ void ContextScene::dragMoveEvent( QGraphicsSceneDragDropEvent * event )
     Q_UNUSED( event );
 }
 
-void
-ContextScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
-{
-    DEBUG_BLOCK
-    debug() << "event->pos(): " << event->pos();
-    if( itemAt( event->pos() ) )
-    {
-        debug() << "YES!!!";
-    }
-    else
-    {
-        debug() << ":(";
-    }
-    Plasma::Corona::mousePressEvent( event );
-}
+// void
+// ContextScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
+// {
+//     DEBUG_BLOCK
+//     debug() << "event->pos(): " << event->pos();
+//     if( itemAt( event->pos() ) )
+//     {
+//         debug() << "YES!!!";
+//     }
+//     else
+//     {
+//         debug() << ":(";
+//     }
+//     Plasma::Corona::mousePressEvent( event );
+// }
 
 // TODO port to Containment
 /*

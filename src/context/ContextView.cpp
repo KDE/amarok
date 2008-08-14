@@ -51,6 +51,8 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     , m_zoomLevel( Plasma::DesktopZoom )
     , m_startupFinished( false )
     , m_toolBoxAdded( false )
+    , m_numContainments( 4 )
+    , m_placementHack( 0 )
 {
     s_self = this;
 
@@ -83,15 +85,17 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     Theme::defaultTheme()->setThemeName( "Amarok-Mockup" );
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
-    for( int i = 0; i < 3; i++ )
+    for( int i = 0; i < m_numContainments - 1; i++ )
         addContainment();    
     
     setContainment( cont );
+    cont->setPos( 0, 0 );
+    cont->updateConstraints();
     Containment* amarokContainment = qobject_cast<Containment* >( cont );    
     if( amarokContainment )
     {
         amarokContainment->setView( this );
-        amarokContainment->setTitle( "Context #0" );    
+        amarokContainment->setTitle( "Context #0" );
         amarokContainment->addCurrentTrack();
     }
 
@@ -121,6 +125,8 @@ ContextView::~ContextView()
      
     clear( m_curState );
     delete m_appletBrowser;
+    //this should be done to prevent a crash on exit
+    clearFocus();
 }
 
 
@@ -414,6 +420,7 @@ ContextScene* ContextView::contextScene()
 
 void ContextView::resizeEvent( QResizeEvent* event )
 {
+    DEBUG_BLOCK
     Q_UNUSED( event )
        
     if ( testAttribute( Qt::WA_PendingResizeEvent ) ) {
@@ -431,6 +438,16 @@ void ContextView::resizeEvent( QResizeEvent* event )
             if( containment )
                 containment->addToolBox();
         }
+    }
+
+    //HACK: this is really ugly but i don't know why the containments don't get placed correctly on startup
+    if( m_placementHack < 3 )
+        m_placementHack++;    
+    if( m_placementHack == 2 )
+    {
+        debug() << "has hack";
+        resize( size().width()+1, size().height() );
+        resize( size().width()-1, size().height() );
     }
 }
 
@@ -451,20 +468,20 @@ ContextView::updateContainmentsGeometry()
         for( int i = last; i >= 0; i-- )
         {
             Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
+
+            Plasma::Containment *cont = contextScene()->containments()[i];
             
             x = ( width + 25 ) * ( i % 2 );
             y = ( height + 65 )* ( i / 2 );
-            QRectF newGeom( rect().topLeft().x() + x,
-                                    rect().topLeft().y() + y,
-                                    width + 20 ,
-                                    height + 60 );
+            debug() << "width: "  << width;
+            debug() << "height: " << height;
+            cont->resize( width + 20, height + 60 );
+            cont->setPos( rect().topLeft().x() + x, rect().topLeft().y() + y );
+            
+            debug() << "newPos: " << rect().topLeft().x() + x << "," << rect().topLeft().y() + y;
+            cont->updateConstraints();
+            debug() << "containment geometry:" << cont->geometry();
 
-            if( containment )
-            {
-                containment->updateSize( newGeom );
-            }
-            else
-                debug() << "ContextView::resizeEvent NO CONTAINMENT TO UPDATE SIZE! BAD!";
         }
         qreal left, top, right, bottom;
         containment()->getContentsMargins( &left, &top, &right, &bottom );
@@ -498,31 +515,30 @@ ContextView::addContainment()
         Plasma::Containment *c = corona->addContainment( "context" );
         c->setScreen( 0 );
         c->setFormFactor( Plasma::Planar );
-        
+
         const int x = ( rect().width() + 25 ) * ( size % 2 );
         const int y = ( rect().height() + 65 ) * ( size / 2 );
 
-        Containment* containment = qobject_cast< Containment* >( c );
-
-        QRectF newGeom( rect().topLeft().x() + x,
-                                rect().topLeft().y() + y,
-                                rect().width() + 20,
-                                rect().height() + 60 );
-        if( containment )
-        {
-            containment->setView( this );
-            containment->updateSize( newGeom );
-            containment->setTitle( QString( "Context #%1" ).arg( size ) );            
-        }
-        else
-            debug() << "ContextView::resizeEvent NO CONTAINMENT TO UPDATE SIZE! BAD!";
+        debug() << "x: " << x;
+        debug() << "y: " << y;
         
+        QSizeF newSize( rect().width() + 20, rect().height() + 60 );
+        QPointF newPos( rect().topLeft().x() + x, rect().topLeft().y() + y );
+        debug() << "new size: " << newSize;
+        debug() << "new pos: " << newPos;
+        c->resize( newSize );
+        c->setPos( newPos );
+        c->updateConstraints();
         connectContainment( c );
-        setContainment( c );
+        Containment *amarokContainment = qobject_cast< Containment * >( c );
+        if( amarokContainment )
+        {
+            amarokContainment->setView( this );
+            amarokContainment->setTitle( QString( "Context #%1" ).arg( size ) );
+        }
         
-        debug() << "Containment added at: " << c->geometry();
-        debug() << "x,y:" << x << y;
     }
+
 }
 
 void
@@ -535,7 +551,7 @@ ContextView::connectContainment( Plasma::Containment* containment )
         connect( containment, SIGNAL( showAddWidgetsInterface( QPointF ) ),
                 this, SLOT( showAppletBrowser() ) );
         connect( containment, SIGNAL( focusRequested( Plasma::Containment* ) ),
-                 this, SLOT( setContainment( Plasma::Containment * ) ) );
+                 this, SLOT( zoomIn( Plasma::Containment * ) ) );
         Containment* amarokContainment = qobject_cast<Containment*>( containment );
         if( amarokContainment )
         {
@@ -577,14 +593,8 @@ ContextView::setContainment( Plasma::Containment* containment )
         {
             if( m_startupFinished )
                 m_startPos = this->containment()->geometry();
-
                                                               
-//             //This call will mess with the current scene geometry
-//             setContainment( containment );
             m_containment = containment;
-
-            //this disconnect prevents from undesired containment's geometry change
-            disconnect( containment, SIGNAL( geometryChanged() ), 0, 0 );
             
             //resize the containment and the scene to an appropriate size
             qreal left, top, right, bottom;
@@ -705,17 +715,17 @@ ContextView::findContainmentForApplet( QString pluginName, int rowSpan )
             {
                 if( amarokContainment->hasPlaceForApplet( rowSpan ) )
                 {
-                    
+
                     amarokContainment->addApplet( pluginName );
-                    
+
                     setContainment( amarokContainment );
                     if( m_zoomLevel == Plasma::DesktopZoom )
                     {
                         //HACK alert!
                         resize( size().width()+1, size().height() );
-                        resize( size().width()-1, size().height() );                        
+                        resize( size().width()-1, size().height() );
                     }
-                    
+
                     placeFound = true;
                 }
             }

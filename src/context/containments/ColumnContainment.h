@@ -1,142 +1,98 @@
-/***************************************************************************
-* copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>         *
-* copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>   *
-* copyright            : (C) 2008 William Viana Soares <vianasw@gmail.com> *
-****************************************************************************/
+#ifndef COLUMN_CONTAINMENT_H
+#define COLUMN_CONTAINMENT_H
 
-/***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-***************************************************************************/
+#include "AmarokToolBox.h"
+#include "Containment.h"
+#include "ContextView.h"
 
-#ifndef COLUMNCONTAINMENT_H
-#define COLUMNCONTAINMENT_H
+#include <QObject>
 
-#include "amarok_export.h"
-#include "context/AmarokToolBox.h"
-#include "context/Applet.h"
-#include "context/Containment.h"
-#include "context/ContextView.h"
-#include "context/layouts/ContextLayout.h"
-#include "context/Svg.h"
+#include <plasma/containment.h>
+#include <plasma/animator.h>
 
-#include "plasma/animator.h"
-#include "SvgHandler.h"
+#include <KConfigGroup>
 
 #include <QGraphicsGridLayout>
 #include <QGraphicsSceneMouseEvent>
-#include <QGraphicsView>
-#include <QList>
-#include <QImage>
-#include <QPixmapCache>
 #include <QQueue>
-
-#include <KTemporaryFile>
-#include <threadweaver/Job.h>
-#include <KSvgRenderer>
 
 #define MAX_ROWS 10
 #define MAX_COLUMNS 10
 
-class QGraphicsSimpleTextItem;
-
+class QAction;
 namespace Context
-{    
-    class SvgRenderJob;    
+{
     
-
-class /*AMAROK_EXPORT*/ ColumnContainment : public Containment
+class ColumnContainment : public Context::Containment
 {
     Q_OBJECT
+
 public:
     ColumnContainment( QObject *parent, const QVariantList &args );
     ~ColumnContainment();
 
-    virtual QRectF boundingRect() const;
+    void constraintsEvent( Plasma::Constraints constraints );
 
-    void saveToConfig( KConfigGroup& conf );
-    void loadConfig( const KConfigGroup& conf );
-
-    void updateSize( QRectF rect );
-
-    QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const;
+    QList<QAction*> contextualActions();
 
     virtual void paintInterface(QPainter *painter,
                                 const QStyleOptionGraphicsItem *option,
                                 const QRect& contentsRect);
 
-    QList<QAction*> contextualActions();
-    
-    bool hasPlaceForApplet( int rowSpan );
+    virtual void saveToConfig( KConfigGroup &conf );
+    virtual void loadConfig( const KConfigGroup &conf );
 
-    void setTitle( QString title );
-    void showTitle();
-    void hideTitle();
-    void addCurrentTrack();
+    virtual bool hasPlaceForApplet( int rowSpan );
 
-    ContextView *view();
-    void setView( ContextView *newView );
+    virtual void setTitle( QString title );
+    virtual void showTitle();
+    virtual void hideTitle();
+    virtual void addCurrentTrack();
+    virtual void setView( ContextView *newView );
 
-public slots:
-    Applet* addApplet( Plasma::Applet* applet, const QPointF &);
-    void addToolBox();
-    void correctToolBoxPos();
+    virtual ContextView *view();
 
 protected:
-    virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
-//     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
-//     bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
-
+    void mousePressEvent( QGraphicsSceneMouseEvent *event );
+    
 protected slots:
     void recalculate();
-    void paletteChange();
-
+    
+public slots:
+    Applet* addApplet( Plasma::Applet* applet, const QPointF & );
+    virtual void addToolBox();
+    virtual void correctToolBoxPos();
+    
 private slots:
-
     void appletRemoved( Plasma::Applet * );
-    void jobDone();
-    void showAddWidgetsInterface();
-
+    
 private:
     void rearrangeApplets( int starRow, int startColumn );
     bool insertInGrid( Plasma::Applet* applet );
-    void loadInitialConfig();    
+    void loadInitialConfig();
     
-    QAction* m_appletBrowserAction;
-
     QList<QAction*> *m_actions;
-
-//     ContextLayout* m_columns;
-    QGraphicsGridLayout* m_grid;
+    
+    QGraphicsGridLayout *m_grid;
     
     int m_currentRows;
     int m_currentColumns;
-    
+
     int m_minColumnWidth;
     int m_maxColumnWidth;
     int m_defaultRowHeight;
+
     bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];
     
     QHash< Plasma::Applet*, QList<int> > m_appletsPositions;
     QHash< Plasma::Applet*, int > m_appletsIndexes;
-    
-    Plasma::Svg* m_background;
-    Plasma::Svg* m_logo;
+
     qreal m_width;
     qreal m_aspectRatio;
-
-    KTemporaryFile m_tintedSvg;
-    QImage m_masterImage;
-    QPixmapCache m_cache;
-
-    SvgRenderJob *m_job;
-
-    QGraphicsSimpleTextItem* m_title;
-    Context::Svg* m_header;
+    
+    QGraphicsSimpleTextItem *m_title;
+    Context::Svg *m_header;
+    
     bool m_paintTitle;
     bool m_manageCurrentTrack;
     int m_appletsFromConfigCount;
@@ -146,28 +102,10 @@ private:
     AmarokToolBox *m_toolBox;
 
     ContextView *m_view;
-
-    //KSvgRenderer * m_renderer;
+//     bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];
 };
 
-K_EXPORT_AMAROK_APPLET( context, ColumnContainment )
+K_EXPORT_PLASMA_APPLET( context, ColumnContainment )
 
-
-class SvgRenderJob : public ThreadWeaver::Job
-{
-    Q_OBJECT
-    public:
-        SvgRenderJob( const QString &file )
-                : ThreadWeaver::Job()
-                , m_file( file ) {}
-
-        virtual void run();
-
-        QImage m_image;
-    private:
-        QString m_file;
-};
-
-} // namespace
-
+}
 #endif
