@@ -337,32 +337,68 @@ Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int en
     shuffleTracks( start, -1 );
 }
 
-    void
+void
 Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::GraphicsItem *above )
 {
-    int moveMeIndex = m_tracks.indexOf( moveMe );
-    int aboveIndex;
-    if ( above )
-        aboveIndex  = m_tracks.indexOf( above  );
-    else
-        aboveIndex = m_tracks.count();
+    DEBUG_BLOCK
+    if ( moveMe->groupMode() != Playlist::Head ) {
 
-    //call set row on all items below the first one potentially modified to
-    //make sure that all items have correct background color and group info
+        debug() << "normal item";
+        
+        int moveMeIndex = m_tracks.indexOf( moveMe );
+        int aboveIndex;
+        if ( above )
+            aboveIndex  = m_tracks.indexOf( above  );
+        else
+            aboveIndex = m_tracks.count();
 
-    int firstIndex = qMin( aboveIndex, moveMeIndex ) -1;
-    if ( firstIndex < 0 ) firstIndex = 0;
+        //call set row on all items below the first one potentially modified to
+        //make sure that all items have correct background color and group info
 
-    if( moveMeIndex < aboveIndex )
-    {
-        m_model->moveRow( moveMeIndex, aboveIndex -1 );
+        int firstIndex = qMin( aboveIndex, moveMeIndex ) -1;
+        if ( firstIndex < 0 ) firstIndex = 0;
+
+        if( moveMeIndex < aboveIndex )
+        {
+            m_model->moveRow( moveMeIndex, aboveIndex -1 );
+        }
+        else
+        {
+            m_model->moveRow( moveMeIndex, aboveIndex );
+        }
+
+    } else {
+
+        debug() << "HEAD item";
+
+        //we are moving a head item and all its children....
+
+        int moveMeIndex = m_tracks.indexOf( moveMe );
+
+        QList<int> albumTracks;
+
+        albumTracks << moveMeIndex;
+
+        int i = moveMeIndex + 1;
+        int count = 1;
+
+        // get the index of the body elements
+        while( ( i < m_tracks.count() ) && ( m_tracks[i]->groupMode() != Playlist::Head ) ) {
+            albumTracks << i;
+            i++;
+        }
+        
+        int aboveIndex;
+        if ( above )
+            aboveIndex  = m_tracks.indexOf( above  );
+        else
+            aboveIndex = m_tracks.count();
+
+        m_model->moveMultipleRows( albumTracks, aboveIndex );
+
+        moveViewItems( albumTracks, aboveIndex );
 
     }
-    else
-    {
-        m_model->moveRow( moveMeIndex, aboveIndex );
-    }
-
 }
 
 void Playlist::GraphicsView::moveViewItem( int row, int to )
@@ -382,6 +418,29 @@ void Playlist::GraphicsView::moveViewItem( int row, int to )
     shuffleTracks( 0 );
 
 }
+
+
+void Playlist::GraphicsView::moveViewItems( QList<int> rows, int to )
+{
+
+    int firstIndex = qMin( rows[0], to ) -1;
+    if ( firstIndex < 0 ) firstIndex = 0;
+
+    int i = 0;
+    foreach( int row, rows ) {
+        m_tracks.move( row - i, to );
+        i++;
+    }
+
+    for ( i = firstIndex; i < m_tracks.count(); i++ )
+        m_tracks.at( i )->setRow( i );
+
+
+    //shuffleTracks( moveMeIndex, aboveIndex );
+    shuffleTracks( 0 );
+
+}
+
 
 
     void

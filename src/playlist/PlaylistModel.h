@@ -244,6 +244,7 @@ namespace Playlist
 
 
             bool moveRow( int row, int to );
+            bool moveMultipleRows( QList<int> rows, int to );
 
             using Observer::metadataChanged;
             virtual void metadataChanged( Meta::Track *track );

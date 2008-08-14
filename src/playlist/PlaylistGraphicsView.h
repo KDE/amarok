@@ -79,6 +79,7 @@ namespace Playlist
             void rowsRemoved( const QModelIndex & parent, int start, int end );
             void dataChanged( const QModelIndex & index );
             void moveViewItem( int row, int to );
+            void moveViewItems( QList<int> rows, int to );
             void groupingChanged();
             void rowsChanged( int start );
 

@@ -1610,9 +1610,65 @@ Playlist::Model::clearNewlyAdded()
 }
 
 
+bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
+{
+
+    DEBUG_BLOCK
+
+    debug() << "rows " << rows << " to " << to;
+    
+    clearNewlyAdded();
+
+    int first = rows[0];
+
+    int i = 0;
+    foreach ( int row, rows ) {
+        debug() << "moving " << row - i << " to " << to;
+        //updates values to reflect new values after each move
+        m_items.move( row - i, to );
+        i++;
+    }
+
+    int last = first + i;
+    int count = i;
+
+    //if we are moving stuff from one side of the current track to the other, we need to update its row, as well as if the current track is within the album.
+
+    if ( first < m_activeRow && to > m_activeRow )
+        m_activeRow -= 1;
+    else if ( first > m_activeRow && to < m_activeRow )
+        m_activeRow += 1;
+    else if ( first < m_activeRow && last > m_activeRow)
+        m_activeRow = to + ( m_activeRow - first );
+    else if ( to == m_activeRow && first > m_activeRow)
+        m_activeRow += count; 
+
+    int offset = -1;
+    if ( to < first )
+        offset = 1;
+
+    int min = first;
+    int max = to + count -1;
+
+    if ( first > to ) {
+        min = to + count -1;
+        max = first;
+    }
+
+    debug() << "min " << min << " max " << max;
+    regroupAlbums( min, max, OffsetBetween, offset );
+
+    i = 0;
+    foreach ( int row, rows ) {
+        emit rowMoved( row - i, to );
+        i++;
+    }
+}
+
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
 }
+
 
 
 #include "PlaylistModel.moc"
