@@ -5,15 +5,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>284</width>
-    <height>154</height>
+    <width>399</width>
+    <height>205</height>
    </rect>
   </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" >
     <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
-      <string>Mp3tunes login</string>
+      <string>Mp3tunes Login</string>
      </property>
      <layout class="QGridLayout" >
       <item row="0" column="0" >
@@ -73,15 +73,27 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="1" >
+       <widget class="QLabel" name="label_5" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;a href="https://shop.mp3tunes.com/myaccount/registration/">&lt;span style=" text-decoration: underline; color:#0057ae;">Get an Mp3tunes locker&lt;/span>&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
+        </property>
+        <property name="textFormat" >
+         <enum>Qt::RichText</enum>
+        </property>
+       </widget>
+      </item>
      </layout>
-     <zorder>label</zorder>
-     <zorder>emailEdit</zorder>
-     <zorder>label_2</zorder>
-     <zorder>passwordEdit</zorder>
-     <zorder>enableHarmony</zorder>
-     <zorder>label_3</zorder>
-     <zorder>label_4</zorder>
-     <zorder>pinEdit</zorder>
     </widget>
    </item>
   </layout>
