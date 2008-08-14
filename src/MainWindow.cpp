@@ -842,9 +842,6 @@ MainWindow::createActions()
 void
 MainWindow::setRating( int n )
 {
-    if( !AmarokConfig::useRatings() )
-        return;
-
     n *= 2;
 
     const Phonon::State s = The::engineController()->state();

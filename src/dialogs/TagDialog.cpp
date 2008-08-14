@@ -599,17 +599,6 @@ void TagDialog::init()
     ui->qSpinBox_score->setSpecialValueText( " " );
     ui->qSpinBox_discNumber->setSpecialValueText( " " );
 
-    if( !AmarokConfig::useRatings() )
-    {
-        ui->kComboBox_rating->hide();
-        ui->ratingLabel->hide();
-    }
-    if( !AmarokConfig::useScores() )
-    {
-        ui->qSpinBox_score->hide();
-        ui->scoreLabel->hide();
-    }
-
     for( int i = 0; i <= 10; i++ )
     {
         ui->kComboBox_rating->insertItem( i, Meta::prettyRating( i ) );
@@ -837,10 +826,8 @@ void TagDialog::readTags()
     summaryText += body2cols.arg( i18n("Format:"), unknownSafe( m_currentTrack->type() ) );
 
     summaryText += "</table></td><td width=50%><table>";
-    if( AmarokConfig::useScores() )
-        summaryText += body2cols.arg( i18n("Score:"), QString::number( static_cast<int>( m_currentTrack->score() ) ) );
-    if( AmarokConfig::useRatings() )
-        summaryText += body2cols.arg( i18n("Rating:"), Meta::prettyRating( m_currentTrack->rating() ) );
+    summaryText += body2cols.arg( i18n("Score:"), QString::number( static_cast<int>( m_currentTrack->score() ) ) );
+    summaryText += body2cols.arg( i18n("Rating:"), Meta::prettyRating( m_currentTrack->rating() ) );
 
     summaryText += body2cols.arg( i18n("Playcount:"), QString::number( m_currentTrack->playCount() ) );
     QDate firstPlayed = QDateTime::fromTime_t( m_currentTrack->firstPlayed() ).date();
@@ -1107,19 +1094,13 @@ TagDialog::readMultipleTracks()
     const QString body = "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>";
     QString statisticsText = "<table>";
 
-    if( AmarokConfig::useRatings() )
-    {
-        statisticsText += body.arg( i18n( "Rated Songs:" ) , QString::number( ratingCount )  );
-        if( ratingCount )
-            statisticsText += body.arg( i18n( "Average Rating:" ) , QString::number( (float)ratingSum / (float)ratingCount/2.0, 'f', 1  ) );
-    }
+    statisticsText += body.arg( i18n( "Rated Songs:" ) , QString::number( ratingCount )  );
+    if( ratingCount )
+        statisticsText += body.arg( i18n( "Average Rating:" ) , QString::number( (float)ratingSum / (float)ratingCount/2.0, 'f', 1  ) );
 
-    if( AmarokConfig::useRatings() )
-    {
-        statisticsText += body.arg( i18n( "Scored Songs:" ) , QString::number( scoreCount )  );
-        if( scoreCount )
-            statisticsText += body.arg( i18n( "Average Score:" ) , QString::number( scoreSum / scoreCount, 'f', 1 ) );
-    }
+    statisticsText += body.arg( i18n( "Scored Songs:" ) , QString::number( scoreCount )  );
+    if( scoreCount )
+        statisticsText += body.arg( i18n( "Average Score:" ) , QString::number( scoreSum / scoreCount, 'f', 1 ) );
 
 
     statisticsText += "</table>";

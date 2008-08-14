@@ -698,18 +698,6 @@ void App::slotConfigToolBars()
 //     }
 }
 
-void App::setUseScores( bool use )
-{
-    AmarokConfig::setUseScores( use );
-    emit useScores( use );
-}
-
-void App::setUseRatings( bool use )
-{
-    AmarokConfig::setUseRatings( use );
-    emit useRatings( use );
-}
-
 KIO::Job *App::trashFiles( const KUrl::List &files )
 {
     KIO::Job *job = KIO::trash( files );
@@ -1064,8 +1052,6 @@ namespace Amarok
         return clean;
     }
 
-    void setUseScores( bool use ) { App::instance()->setUseScores( use ); }
-    void setUseRatings( bool use ) { App::instance()->setUseRatings( use ); }
     KIO::Job *trashFiles( const KUrl::List &files ) { return App::instance()->trashFiles( files ); }
 }
 

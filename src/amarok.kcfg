@@ -29,16 +29,6 @@
         <whatsthis>Set this to display remaining track time instead of past track time in the player window.</whatsthis>
         <default>false</default>
     </entry>
-     <entry key="Use Scores" type="Bool">
-        <label>Whether to show scores for tracks</label>
-        <whatsthis>A score is a number from 0 to 100, determined automatically by Amarok based on how often you listen to a track and how much of it you listen to.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="Use Ratings" type="Bool">
-        <label>Whether to show ratings for tracks</label>
-        <whatsthis>A rating is 1 to 5 stars, set manually by you to describe how well you like a given track.</whatsthis>
-        <default>false</default>
-    </entry>
     <entry key="Repeat" type="Enum">
         <label>Which track(s) to play repeatedly</label>
         <whatsthis>Whether to repeat the current track, the current album, or the current playlist indefinitely, or neither.</whatsthis>

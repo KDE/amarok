@@ -62,9 +62,8 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         friend class MainWindow; //requires access to applySettings()
 
     signals:
-        void useScores( bool use );
-        void useRatings( bool use );
         void prepareToQuit();
+
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
         void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
@@ -80,8 +79,6 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         void slotConfigShortcuts();
         void slotConfigToolBars();
         void slotConfigEqualizer();
-        void setUseScores( bool use );
-        void setUseRatings( bool use );
         KIO::Job *trashFiles( const KUrl::List &files );
         void quit();
 
