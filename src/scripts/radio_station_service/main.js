@@ -62,7 +62,12 @@ var stationArray = new Array (
 
 function CoolStream()
 {
-    ScriptableServiceScript.call( this, "Cool Streams", 1, "List of some high quality radio streams", "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers", false );
+    this.serviceName = "Cool Streams";
+    this.levels = 1;
+    this.shortDescription = "List of some high quality radio streams";
+    this.rootHtml = "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers";
+    this.showSearchBar = false;
+    ScriptableServiceScript.call( this );
 }
 
 function onConfigure()
@@ -70,20 +75,21 @@ function onConfigure()
     Amarok.alert( "This script does not require any configuration." );
 }
 
-function onPopulating( serviceName, level, parent_id, callbackData, filter )
+function onPopulating( level, callbackData, filter )
 {
     print( " Populating station level..." );
     //add the station streams as leaf nodes
     for ( i = 0; i < stationArray.length; i++ )
     {
-        callback = "";
-        name = stationArray[i].name;
-        url = stationArray[i].url;
-        html_info = "A cool stream called " + name;
-        script.insertItem( serviceName, 0, parent_id, name, html_info, url, callback );
+        item = Amarok.StreamItem;
+        item.level = 0;
+        item.callbackData = "";
+        item.itemName = stationArray[i].name;
+        item.playableUrl = stationArray[i].url;
+        item.infoHtml = "A cool stream called " + item.itemName;
+        script.insertItem( item );
     }
-    script.donePopulating( serviceName, parent_id );
-    print ( serviceName );
+    script.donePopulating();
 }
 
 Amarok.configured.connect( onConfigure );

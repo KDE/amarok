@@ -22,33 +22,36 @@
 #include <QtScript>
 
 class StreamItem : public QObject
-	{
-		Q_OBJECT
-		
-		Q_PROPERTY( QString name WRITE setName READ name )
-		Q_PROPERTY( QString infoHtml WRITE setInfoHtml READ infoHtml )
-		Q_PROPERTY( QString playableUrl WRITE setPlayableUrl READ playableUrl )
-		Q_PROPERTY( QString callbackData WRITE setCallbackData READ callbackData )
-		
+{
+	Q_OBJECT
+	
+	Q_PROPERTY( QString itemName WRITE setItemName READ itemName )
+	Q_PROPERTY( QString infoHtml WRITE setInfoHtml READ infoHtml )
+	Q_PROPERTY( QString playableUrl WRITE setPlayableUrl READ playableUrl )
+    Q_PROPERTY( QString callbackData WRITE setCallbackData READ callbackData )
+    Q_PROPERTY( int level WRITE setLevel READ level )
+
     public:
-        StreamItem();
+        StreamItem( QScriptEngine *engine );
         ~StreamItem();
-		
-    private:
-        QString name() const;
+
+        QString itemName() const;
         QString infoHtml() const;
         QString playableUrl() const;
         QString callbackData() const;
-        void setName( QString name );
+        int level() const;
+        void setItemName( QString name );
         void setInfoHtml( QString infoHtml );
         void setPlayableUrl( QString playableUrl );
         void setCallbackData( QString callbackData );
-		
+        void setLevel( int level );
+    private:
         QString m_name;
         QString m_infoHtml;
         QString m_playableUrl;
         QString m_callbackData;
-	};
+        int m_level;
+};
 
 class ScriptableServiceScript : public QObject, public QScriptable
 {
@@ -60,8 +63,8 @@ class ScriptableServiceScript : public QObject, public QScriptable
         void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
 
     public slots:
-        int insertItem( QString serviceName, int level, int parent_id, const QString name, const QString infoHtml, const QString playableUrl, const QString callbackData );
-        int donePopulating( QString serviceName, int parent_id );
+        int insertItem( StreamItem* item );
+        int donePopulating();
 
     private:
         QScriptEngine* m_scriptEngine;
@@ -71,7 +74,7 @@ class ScriptableServiceScript : public QObject, public QScriptable
         static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
 
     signals:
-        void populate( QString, int, int, QString, QString );
+        void populate( int, QString, QString );
 };
 
 Q_DECLARE_METATYPE( StreamItem* )
