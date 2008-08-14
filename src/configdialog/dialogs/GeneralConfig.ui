@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>392</width>
-    <height>276</height>
+    <width>350</width>
+    <height>281</height>
    </rect>
   </property>
   <layout class="QGridLayout" >
@@ -29,20 +29,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QCheckBox" name="kcfg_ShowTrayIcon" >
-        <property name="toolTip" >
-         <string>Check to enable the Amarok system tray icon.</string>
-        </property>
-        <property name="whatsThis" >
-         <string>Check to enable the Amarok system tray icon.</string>
-        </property>
-        <property name="text" >
-         <string>Show tray &amp;icon</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" >
+      <item row="6" column="0" >
        <widget class="QLabel" name="textLabel1" >
         <property name="toolTip" >
          <string>Size of the cover image in the context viewer in pixels.</string>
@@ -61,7 +48,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
+      <item row="6" column="1" >
        <widget class="QSpinBox" name="kcfg_CoverPreviewSize" >
         <property name="toolTip" >
          <string>Size of the cover images in the context viewer in pixels.</string>
@@ -83,7 +70,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" >
+      <item row="7" column="0" >
        <widget class="QLabel" name="textLabel1_2" >
         <property name="text" >
          <string>External web browser:</string>
@@ -93,7 +80,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
+      <item row="7" column="1" >
        <widget class="QComboBox" name="kcfg_ExternalBrowser" >
         <property name="toolTip" >
          <string>Select browser from the list or type in filename of custom browser</string>
@@ -103,92 +90,36 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0" colspan="2" >
+       <widget class="QCheckBox" name="checkBox" >
+        <property name="text" >
+         <string>Automatically retrieve cover art</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="kcfg_ShowTrayIcon" >
+        <property name="toolTip" >
+         <string>Check to enable the Amarok system tray icon.</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Check to enable the Amarok system tray icon.</string>
+        </property>
+        <property name="text" >
+         <string>Show tray &amp;icon</string>
+        </property>
+       </widget>
+      </item>
      </layout>
+     <zorder>kcfg_ShowSplashscreen</zorder>
+     <zorder>textLabel1</zorder>
+     <zorder>kcfg_CoverPreviewSize</zorder>
+     <zorder>textLabel1_2</zorder>
+     <zorder>kcfg_ExternalBrowser</zorder>
+     <zorder>checkBox</zorder>
+     <zorder>groupBox2</zorder>
+     <zorder>kcfg_ShowTrayIcon</zorder>
     </widget>
-   </item>
-   <item row="1" column="0" >
-    <layout class="QHBoxLayout" >
-     <item>
-      <widget class="QGroupBox" name="groupBox2" >
-       <property name="title" >
-        <string>Playlist</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout" >
-        <item>
-         <widget class="QCheckBox" name="kcfg_RelativePlaylist" >
-          <property name="toolTip" >
-           <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
-          </property>
-          <property name="whatsThis" >
-           <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
-          </property>
-          <property name="text" >
-           <string>Use relative path for &amp;saving</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer" >
-          <property name="orientation" >
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0" >
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="groupBox" >
-       <property name="title" >
-        <string>Scores</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2" >
-        <item>
-         <widget class="QCheckBox" name="kcfg_UseScores" >
-          <property name="toolTip" >
-           <string>Scores for tracks are calculated automatically, based on your listening habits.</string>
-          </property>
-          <property name="text" >
-           <string>Use &amp;scores</string>
-          </property>
-          <property name="checked" >
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="kcfg_UseRatings" >
-          <property name="toolTip" >
-           <string>You can assign ratings to tracks manually, from 1 to 5 stars.</string>
-          </property>
-          <property name="text" >
-           <string>Use ratings</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_2" >
-          <property name="orientation" >
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0" >
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item row="2" column="0" >
     <spacer>
@@ -202,6 +133,41 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="groupBox2" >
+     <property name="title" >
+      <string>Playlist</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" >
+      <item>
+       <widget class="QCheckBox" name="kcfg_RelativePlaylist" >
+        <property name="toolTip" >
+         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
+        </property>
+        <property name="whatsThis" >
+         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
+        </property>
+        <property name="text" >
+         <string>Use relative path for &amp;saving</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
