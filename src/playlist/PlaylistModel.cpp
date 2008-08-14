@@ -1294,6 +1294,7 @@ Playlist::Model::moveRowCommand( int row, int to )
 {
     DEBUG_BLOCK
 
+    debug() << "row " << row << " to " << to;
     
     
     clearNewlyAdded();
@@ -1315,13 +1316,6 @@ Playlist::Model::moveRowCommand( int row, int to )
     if ( to < row )
         offset = 1;
 
-    
-    emit rowMoved( row, to );
-
-
-    debug() << "row " << row << " to " << to;
-
-    
     int min = row;
     int max = to;
 
@@ -1333,6 +1327,8 @@ Playlist::Model::moveRowCommand( int row, int to )
     debug() << "min " << min << " max " << max;
         
     regroupAlbums( min, max, OffsetBetween, offset );
+
+    emit rowMoved( row, to );
 
 }
 

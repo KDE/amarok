@@ -20,6 +20,8 @@
 
 #include "UndoCommands.h"
 
+#include "PlaylistGraphicsView.h"
+
 
 using namespace Playlist;
 using namespace Qt;
@@ -105,9 +107,12 @@ void Playlist::MoveTracksCmd::redo()
 {
     DEBUG_BLOCK
     The::playlistModel()->moveRowCommand( m_from, m_to );
+    The::playlistView()->moveViewItem( m_from, m_to );
 }
 
 void Playlist::MoveTracksCmd::undo()
 {
+    DEBUG_BLOCK
     The::playlistModel()->moveRowCommand( m_to, m_from );
+    The::playlistView()->moveViewItem( m_to, m_from );
 }

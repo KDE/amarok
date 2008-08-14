@@ -23,6 +23,7 @@
 #define AMAROK_PLAYLISTGRAPHICSVIEW_H
 
 #include "Meta.h"
+#include "UndoCommands.h"
 
 #include <QGraphicsItemAnimation>
 #include <QGraphicsView>
@@ -50,6 +51,8 @@ namespace Playlist
 
         friend Playlist::GraphicsView* The::playlistView();
 
+        friend class Playlist::MoveTracksCmd;
+
         public:
             void  setModel( Playlist::Model *model );
 
@@ -75,7 +78,7 @@ namespace Playlist
             void rowsInserted( const QModelIndex & parent, int start, int end );
             void rowsRemoved( const QModelIndex & parent, int start, int end );
             void dataChanged( const QModelIndex & index );
- 
+            void moveViewItem( int row, int to );
             void groupingChanged();
             void rowsChanged( int start );
 

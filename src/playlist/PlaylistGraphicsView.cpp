@@ -356,30 +356,30 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
     if( moveMeIndex < aboveIndex )
     {
         m_model->moveRow( moveMeIndex, aboveIndex -1 );
-        m_tracks.move( moveMeIndex, aboveIndex - 1 );
 
-
-        int i;
-        for ( i = firstIndex; i < m_tracks.count(); i++ )
-            m_tracks.at( i )->setRow( i );
-
-
-        //shuffleTracks( moveMeIndex, aboveIndex );
-        shuffleTracks( 0 );
     }
     else
     {
         m_model->moveRow( moveMeIndex, aboveIndex );
-        m_tracks.move( moveMeIndex, aboveIndex );
-
-//         debug() << "First index: " << firstIndex;
-
-        for ( int i = firstIndex; i < m_tracks.count(); i++ )
-            m_tracks.at( i )->setRow( i );
-
-        //shuffleTracks( aboveIndex, moveMeIndex + 1);
-        shuffleTracks( 0 );
     }
+
+}
+
+void Playlist::GraphicsView::moveViewItem( int row, int to )
+{
+    int firstIndex = qMin( row, to ) -1;
+    if ( firstIndex < 0 ) firstIndex = 0;
+
+
+    m_tracks.move( row, to );
+
+    int i;
+    for ( i = firstIndex; i < m_tracks.count(); i++ )
+        m_tracks.at( i )->setRow( i );
+
+
+    //shuffleTracks( moveMeIndex, aboveIndex );
+    shuffleTracks( 0 );
 
 }
 
@@ -564,6 +564,8 @@ namespace The {
         return Playlist::GraphicsView::s_instance;
     }
 }
+
+
 
 #include "PlaylistGraphicsView.moc"
 
