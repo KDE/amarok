@@ -1,5 +1,5 @@
 /***************************************************************************
-* copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>         *
+* copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>         *
 * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>   *
 * copyright            : (C) 2008 William Viana Soares <vianasw@gmail.com> *
 ****************************************************************************/
@@ -16,9 +16,11 @@
 #ifndef COLUMN_CONTAINMENT_H
 #define COLUMN_CONTAINMENT_H
 
+
 #include "AmarokToolBox.h"
 #include "Containment.h"
 #include "ContextView.h"
+#include "context/widgets/ContainmentArrow.h"
 
 #include <QObject>
 
@@ -37,8 +39,8 @@
 class QAction;
 namespace Context
 {
-    
-class ColumnContainment : public Context::Containment
+
+class AMAROK_EXPORT ColumnContainment : public Containment
 {
     Q_OBJECT
 
@@ -66,6 +68,11 @@ public:
     virtual void setView( ContextView *newView );
 
     virtual ContextView *view();
+    void addContainmentArrow( int direction );
+    
+Q_SIGNALS:
+    void changeContainment( Plasma::Containment*, int );
+    
 
 protected:
     void mousePressEvent( QGraphicsSceneMouseEvent *event );
@@ -80,11 +87,13 @@ public slots:
     
 private slots:
     void appletRemoved( Plasma::Applet * );
-    
+    void slotArrowChangeContainment( int );
+
 private:
     void rearrangeApplets( int starRow, int startColumn );
     bool insertInGrid( Plasma::Applet* applet );
-    void loadInitialConfig();
+    void loadInitialConfig();   
+    void correctArrowPositions();
     
     QList<QAction*> *m_actions;
     
@@ -115,6 +124,8 @@ private:
     QQueue<QString> m_pendingApplets;
 
     AmarokToolBox *m_toolBox;
+
+    QHash< int, ContainmentArrow* > m_arrows;
 
     ContextView *m_view;
 //     bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];

@@ -1,5 +1,5 @@
 /***************************************************************************
-* copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>         *
+* copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>         *
 * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>   *
 * copyright            : (C) 2008 William Viana Soares <vianasw@gmail.com> *
 ****************************************************************************/
@@ -69,6 +69,21 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
 
     connect( this, SIGNAL( appletAdded( Plasma::Applet*, const QPointF & ) ),
              this, SLOT( addApplet( Plasma::Applet*, const QPointF & ) ) );
+    
+    // 
+    // foreach( QVariant arrow, args )
+    // {
+    //     if( arrow.canConvert< int >() )
+    //     {
+    //         debug() << "CREATING CONTAINMENT ARROW: " << arrow.value< int >();
+    //         addContainmentArrow( arrow.value< int >() );
+    //     }
+    // }
+    
+    // for now, just do left/right. once we get nuno's mockups we'll see
+    // what else to do.
+    addContainmentArrow( LEFT );
+    addContainmentArrow( RIGHT );
 
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
 }
@@ -176,6 +191,17 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
         m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
                             geometry().height() - m_toolBox->size().height() );
     }
+    if( m_arrows[ LEFT ] ) 
+        m_arrows[ LEFT ]->resize( geometry().size() );
+    if( m_arrows[ RIGHT ] ) 
+        m_arrows[ RIGHT ]->resize( geometry().size() );
+    if( m_arrows[ DOWN ] ) 
+        m_arrows[ DOWN ]->resize( geometry().size() );
+    if( m_arrows[ UP ] ) 
+        m_arrows[ UP ]->resize( geometry().size() );
+    correctArrowPositions();
+    
+    //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
 QList<QAction*>
@@ -388,12 +414,6 @@ ColumnContainment::correctToolBoxPos()
                             geometry().height() - m_toolBox->size().height() );
         }
     }
-}
-
-void
-ColumnContainment::setView( ContextView *newView )
-{
-    m_view = newView;
 }
 
 ContextView *
@@ -654,8 +674,61 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
 
 }
 
+void 
+ColumnContainment::addContainmentArrow( int direction )
+{
+    DEBUG_BLOCK
 
-#include "ColumnContainment.moc"
+    if( m_arrows[ direction ] != 0 )
+    {
+        debug() << "GOT BAD DIRECTION";
+        return;
+    }    
 
+    m_arrows[ direction ] = new ContainmentArrow( this, direction );
+    m_arrows[ direction ]->setZValue( 100000 );
+    debug() << "CONNECTING ARROW SIGNAL!";
+    connect( m_arrows[ direction ], SIGNAL( changeContainment( int ) ), this, SLOT( slotArrowChangeContainment( int ) ) );
+
+    correctArrowPositions();
+} 
+
+void
+ColumnContainment::slotArrowChangeContainment( int to )
+{
+    debug() << "EMITTING CHANGECONTAINMENT";
+    emit changeContainment( this, to );
 }
 
+void
+ColumnContainment::correctArrowPositions()
+{
+    if( m_arrows[ UP ] ) {
+        debug() << "setting UP arrow pos to 0,0";
+        m_arrows[ UP ]->setPos( 0, 0 );  // easy case, just position in top left
+    } if( m_arrows[ DOWN ] ) {
+        debug() << "setting DOWN arrow pos to 0," << geometry().height() - m_arrows[ DOWN ]->size().height();
+        m_arrows[ DOWN ]->setPos( 0, geometry().height() - m_arrows[ DOWN ]->size().height() ); // offset correctly to give it room to show
+    } if( m_arrows[ LEFT ] ) {
+        debug() << "setting LEFT arrow pos to " <<  m_arrows[ LEFT ]->size().width() << ",0";
+        m_arrows[ LEFT ]->setPos( m_arrows[ LEFT ]->size().width() , 0 );
+    } if( m_arrows[ RIGHT ] ) { 
+        debug() << "setting RIGHT arrow pos to "<< geometry().width() - m_arrows[ RIGHT ]->size().width() << ",0";
+        m_arrows[ RIGHT ]->setPos( geometry().width() - m_arrows[ RIGHT ]->size().width() , 0 );
+    }
+}
+
+void
+ColumnContainment::setView( ContextView *newView )
+{
+    m_view = newView;
+    // all view-dependent signals, so we do it here
+    debug() << "connecting to view";
+    connect( this, SIGNAL( changeContainment( Plasma::Containment*, int ) ), m_view, SLOT( setContainment( Plasma::Containment*, int ) ) );
+}
+
+} // Context namespace
+
+
+
+#include "ColumnContainment.moc"

@@ -1,5 +1,5 @@
 /*****************************************************************************
-* copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>           *
+* copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>      *
 *                      : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
 *                        Significant parts of this code is inspired          *
 *                        and/or copied from KDE Plasma sources, available    *
@@ -85,8 +85,32 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     Theme::defaultTheme()->setThemeName( "Amarok-Mockup" );
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
+        // now add the appropriate arrows
+        // HACK assuming 4 containments in grid layout---but since everywhere else in this code
+        // this is assumed, we have bigger problems if we want to change that.
+        
     for( int i = 0; i < m_numContainments - 1; i++ )
-        addContainment();    
+    {
+        QVariantList args;
+        if( i == 0 )
+        {
+            args.append( RIGHT );
+            args.append( DOWN );
+        } else if( i == 1 )
+        {
+            args.append( LEFT );
+            args.append( DOWN );
+        } else if( i == 2 )
+        {
+            args.append( RIGHT );
+            args.append( UP );
+        } else if( i == 3 )
+        {
+            args.append( LEFT );
+            args.append( UP );
+        }
+        addContainment( args );    
+    }
     
     setContainment( cont );
     cont->setPos( 0, 0 );
@@ -504,7 +528,7 @@ void ContextView::wheelEvent( QWheelEvent* event )
 
 
 void
-ContextView::addContainment()
+ContextView::addContainment( const QVariantList& args )
 {
     DEBUG_BLOCK
 
@@ -512,7 +536,7 @@ ContextView::addContainment()
     if (corona)
     {
         const int size = contextScene()->containments().size();
-        Plasma::Containment *c = corona->addContainment( "context" );
+        Plasma::Containment *c = corona->addContainment( "context", args );
         c->setScreen( 0 );
         c->setFormFactor( Plasma::Planar );
 
@@ -635,9 +659,58 @@ ContextView::setContainment( Plasma::Containment* containment )
     
 }
 
+
+void
+ContextView::setContainment( Plasma::Containment* from, int direction ) // SLOT
+{
+    DEBUG_BLOCK
+    const QList< Plasma::Containment* > containments = contextScene()->containments();
+    int fromIndex = containments.indexOf( containment() );    
+    int size = containments.size();
+    int newIndex = -1;
+    switch( direction ) // NOTE this only works for 2x2 grid of containments
+    {
+    case UP:
+    {
+        newIndex = ( fromIndex - 2 ) % size;
+        break;
+    } case DOWN:
+    {
+        newIndex = ( fromIndex + 2 ) % size;
+        break;
+    } case UP_RIGHT: 
+      case LEFT:
+    {
+        newIndex = ( fromIndex - 1 ) % size;
+        break;
+    } case DOWN_LEFT:
+      case RIGHT:
+    {
+        newIndex = ( fromIndex + 1 ) % size;
+        break;
+    } case UP_LEFT:
+    {
+        newIndex = ( fromIndex - 3 ) % size;
+        break;
+    } case DOWN_RIGHT:
+    {
+        newIndex = ( fromIndex + 3 ) % size;
+        break;
+    } default:
+        newIndex = 0;
+    }
+    if( newIndex < 0 )
+        newIndex = 3; // for some reason here -1 % 4 != 3
+    debug() << "switching to containment: " << newIndex;
+    setContainment( containments.value( newIndex ) );
+}
+    
+
+
 void
 ContextView::nextContainment()
 {
+    DEBUG_BLOCK
     const QList<Plasma::Containment*> containments = contextScene()->containments();
     int index = containments.indexOf( containment() );
     index = ( index + 1 ) % containments.size();
@@ -648,6 +721,7 @@ ContextView::nextContainment()
 void
 ContextView::previousContainment()
 {
+    DEBUG_BLOCK
     const QList<Plasma::Containment*> containments = contextScene()->containments();
     int index = containments.indexOf( containment() );
     index = ( index - 1 ) % containments.size();

@@ -131,7 +131,7 @@ void CurrentTrack::init()
  
 
     
-    m_noTrackText = "No track playing";
+    m_noTrackText = i18n( "No track playing" );
     m_noTrack->setText( m_noTrackText );
     
     connectSource( "current" );

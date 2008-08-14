@@ -246,6 +246,7 @@ set( libcontextview_SRCS
     context/layouts/VerticalLayout.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/ToolBoxIcon.cpp
+	context/widgets/ContainmentArrow.cpp
 )
 
 #####################################################################

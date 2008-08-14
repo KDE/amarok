@@ -26,6 +26,7 @@
 #include "ContextObserver.h"
 #include "EngineController.h"
 #include "Svg.h"
+#include "widgets/ContainmentArrow.h"
 
 #include "plasma/appletbrowser.h"
 // #include "plasma/view.h"
@@ -84,9 +85,12 @@ public slots:
     void showAppletBrowser();
 
     void setContainment( Plasma::Containment* containment );
-
+    void setContainment( Plasma::Containment* fromCont, int toDirection );
+    
     void nextContainment();
     void previousContainment();
+    
+    // void arrowChangeContainment( Plasma::Containment* from, ArrowDirection to );
 
     /**
     * Find a containment with @p rowSpan free rows to add the applet with @p pluginName.
@@ -110,7 +114,7 @@ private:
     /**
     * Add a new context containment to the view
     */
-    void addContainment();
+    void addContainment( const QVariantList &args = QVariantList() );
 
     /**
     * Connect all needed signals to a containment

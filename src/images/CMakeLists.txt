@@ -28,6 +28,7 @@ install(
         menu_sidepixmap.png
         more_albums.png
         musicbrainz.png
+		navigation_arrows.svg
         nocover.png
         pud_items.svg
         sbinner_stars.png
