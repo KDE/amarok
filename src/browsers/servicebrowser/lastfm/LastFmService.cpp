@@ -36,6 +36,7 @@ LastFmServiceFactory::init()
 
     ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), UnicornUtils::md5Digest( config.password().toUtf8() ), config.scrobble(), config.fetchSimilar() );
     m_activeServices << service;
+    connect( service, SIGNAL( ready() ), this, SLOT( serviceReady() ) );
     emit newService( service );
 }
 
@@ -81,6 +82,8 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 
     Q_ASSERT( ms_service == 0 );
     ms_service = this;
+    m_serviceready = true;
+    emit( ready() );
 }
 
 
