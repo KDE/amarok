@@ -98,7 +98,7 @@ App::App()
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
 
-    if( AmarokConfig::showSplashscreen() )
+    if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
     {
         PERF_LOG( "Init KStandardDirs cache" )
         KStandardDirs *stdDirs = KGlobal::dirs();
