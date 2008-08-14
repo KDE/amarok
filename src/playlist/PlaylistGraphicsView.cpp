@@ -427,9 +427,20 @@ void Playlist::GraphicsView::moveViewItems( QList<int> rows, int to )
     if ( firstIndex < 0 ) firstIndex = 0;
 
     int i = 0;
-    foreach( int row, rows ) {
-        m_tracks.move( row - i, to );
-        i++;
+
+    if ( rows[0] < to ) {
+    
+        foreach( int row, rows ) {
+            m_tracks.move( row - i, to );
+            i++;
+        }
+
+    } else {
+        debug() << "doing view stuff on moving up";
+        foreach( int row, rows ) {
+            m_tracks.move( row, to + i );
+            i++;
+        }
     }
 
     for ( i = firstIndex; i < m_tracks.count(); i++ )

@@ -1622,11 +1622,29 @@ bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
     int first = rows[0];
 
     int i = 0;
-    foreach ( int row, rows ) {
-        debug() << "moving " << row - i << " to " << to;
-        //updates values to reflect new values after each move
-        m_items.move( row - i, to );
-        i++;
+
+    if ( first < to ) {
+
+        // moving down
+        
+        foreach ( int row, rows ) {
+            debug() << "moving " << row - i << " to " << to;
+            //updates values to reflect new values after each move
+            m_items.move( row - i, to );
+            i++;
+        }
+
+    } else {
+
+        //moving up
+
+        foreach ( int row, rows ) {
+            debug() << "moving " << row << " to " << to + i;
+            //updates values to reflect new values after each move
+            m_items.move( row, to + i );
+            i++;
+        }
+        
     }
 
     int last = first + i;
@@ -1635,9 +1653,9 @@ bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
     //if we are moving stuff from one side of the current track to the other, we need to update its row, as well as if the current track is within the album.
 
     if ( first < m_activeRow && to > m_activeRow )
-        m_activeRow -= 1;
+        m_activeRow -= count;
     else if ( first > m_activeRow && to < m_activeRow )
-        m_activeRow += 1;
+        m_activeRow += count;
     else if ( first < m_activeRow && last > m_activeRow)
         m_activeRow = to + ( m_activeRow - first );
     else if ( to == m_activeRow && first > m_activeRow)
@@ -1659,10 +1677,24 @@ bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
     regroupAlbums( min, max, OffsetBetween, offset );
 
     i = 0;
-    foreach ( int row, rows ) {
-        emit rowMoved( row - i, to );
-        i++;
+
+    if ( first < to ) {
+    
+        foreach ( int row, rows ) {
+            emit rowMoved( row - i, to );
+            i++;
+        }
+
+    } else {
+
+        foreach ( int row, rows ) {
+            emit rowMoved( row, to + i );
+            i++;
+        }
+
     }
+
+    return true;
 }
 
 namespace The {
