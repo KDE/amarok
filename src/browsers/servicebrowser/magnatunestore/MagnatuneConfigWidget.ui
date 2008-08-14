@@ -10,7 +10,104 @@
    </rect>
   </property>
   <layout class="QGridLayout" >
-   <item row="0" column="0" >
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Membership options</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="isMemberCheckbox" >
+        <property name="text" >
+         <string>I am a member</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Membership type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QComboBox" name="typeComboBox" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text" >
+          <string>Stream</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Download</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string comment="Username for logins to Magnatune" >Username:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QLineEdit" name="usernameEdit" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>Password:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" >
+       <widget class="QLineEdit" name="passwordEdit" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2" >
+       <widget class="QLabel" name="label_4" >
+        <property name="text" >
+         <string>For more information about the Magnatune.com memberships, and to sign up, go to &lt;a href="http://magnatune.com/compare_plans">http://magnatune.com/compare_plans&lt;/a> </string>
+        </property>
+        <property name="textFormat" >
+         <enum>Qt::AutoText</enum>
+        </property>
+        <property name="wordWrap" >
+         <bool>true</bool>
+        </property>
+        <property name="openExternalLinks" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" >
     <widget class="QGroupBox" name="groupBox_2" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
@@ -38,100 +135,14 @@
         </item>
         <item>
          <property name="text" >
-          <string>Mp3</string>
+          <string>High Quality Mp3</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>Lofi mp3</string>
+          <string>Low Quality Mp3</string>
          </property>
         </item>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
-      <string>Membership options</string>
-     </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QCheckBox" name="isMemberCheckbox" >
-        <property name="text" >
-         <string>I am a member</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label" >
-        <property name="text" >
-         <string>Membership type:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QComboBox" name="typeComboBox" >
-        <item>
-         <property name="text" >
-          <string>Stream</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Download</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="label_2" >
-        <property name="text" >
-         <string comment="Username for logins to Magnatune" >Username:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" >
-       <widget class="QLineEdit" name="usernameEdit" />
-      </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="text" >
-         <string>Password:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" >
-       <widget class="QLineEdit" name="passwordEdit" />
-      </item>
-      <item row="4" column="0" colspan="2" >
-       <widget class="QLabel" name="label_4" >
-        <property name="text" >
-         <string>For more information about the Magnatune.com memberships, and to sign up, go to &lt;a href="http://magnatune.com/compare_plans">http://magnatune.com/compare_plans&lt;/a> </string>
-        </property>
-        <property name="textFormat" >
-         <enum>Qt::AutoText</enum>
-        </property>
-        <property name="wordWrap" >
-         <bool>true</bool>
-        </property>
-        <property name="openExternalLinks" >
-         <bool>true</bool>
-        </property>
        </widget>
       </item>
      </layout>
@@ -140,5 +151,54 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>isMemberCheckbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>typeComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>76</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>252</x>
+     <y>81</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>isMemberCheckbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>usernameEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>76</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>252</x>
+     <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>isMemberCheckbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>passwordEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>76</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>252</x>
+     <y>150</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
