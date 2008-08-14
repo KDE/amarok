@@ -56,7 +56,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_alignment( Middle )
         , m_screen( 0 )
         , m_y( MARGIN )
-        , m_drawShadow( false )
+        , m_drawShadow( true )
         , m_rating( 0 )
         , m_volume( false )
 {
@@ -625,13 +625,11 @@ Amarok::OSD::applySettings()
     setOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
     setFont( AmarokConfig::osdFont() );
-    setDrawShadow( AmarokConfig::osdDrawShadow() );
 
     if( AmarokConfig::osdUseCustomColors() )
-    {
         setTextColor( AmarokConfig::osdTextColor() );
-    }
-    else unsetColors();
+    else
+        unsetColors();
 
     setTranslucent( AmarokConfig::osdUseTranslucency() );
 }

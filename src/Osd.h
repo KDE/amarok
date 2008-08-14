@@ -70,7 +70,6 @@ class OSDWidget : public QWidget
         void setImage( const QImage &image ) { m_cover = image; }
         void setScreen( int screen );
         void setText( const QString &text ) { m_text = text; }
-        void setDrawShadow( const bool b ) { m_drawShadow = b; }
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
         void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); }
 
@@ -120,7 +119,6 @@ public:
 
 public slots:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
-    void setDrawShadow( bool b ) { OSDWidget::setDrawShadow( b ); doUpdate(); }
     void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
     void setUseCustomColors( const bool use, const QColor &fg )
