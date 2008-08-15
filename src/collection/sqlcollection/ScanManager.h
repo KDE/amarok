@@ -55,6 +55,7 @@ class ScanManager : public QObject
         void slotFinished();
         void slotError(QProcess::ProcessError error);
         void slotJobDone();
+        void restartScanner();
 
     private:
         QStringList getDirsToScan() const;
@@ -93,12 +94,15 @@ class XmlParseJob : public ThreadWeaver::Job
         void setFilesDeletedHash( QHash<QString, QString>* hash );
         void setChangedUrlsHash( QHash<QString, QString>* hash );
 
+        void requestAbort();
+
     signals:
         void incrementProgress();
 
     private:
         ScanManager *m_scanManager;
         SqlCollection *m_collection;
+        bool m_abortRequested;
         bool m_isIncremental;
         QHash<QString, QString> *m_filesAdded;
         QHash<QString, QString> *m_filesDeleted;
@@ -107,6 +111,7 @@ class XmlParseJob : public ThreadWeaver::Job
         QString m_nextData;
         QWaitCondition m_wait;
         QMutex m_mutex;
+        QMutex m_abortMutex;
 };
 
 #endif

@@ -225,6 +225,7 @@ ScanManager::slotFinished( )
 void
 ScanManager::slotError( QProcess::ProcessError error )
 {
+    DEBUG_BLOCK
     if( error == QProcess::Crashed )
     {
         handleRestart();
@@ -325,8 +326,10 @@ ScanManager::slotJobDone()
 void
 ScanManager::handleRestart()
 {
+    DEBUG_BLOCK
     //TODO handle collection scanner crash
     m_restartCount++;
+    debug() << "Collection scanner crashed, restart count is " << m_restartCount;
     if( m_restartCount >= MAX_RESTARTS )
     {
         //TODO:abort scan, inform user
@@ -341,27 +344,39 @@ ScanManager::handleRestart()
             m_parser->deleteLater();
             m_parser = 0;
         }
-        delete m_scanner;
-        m_scanner = new AmarokProcess( this );
-        *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
-        if( m_isIncremental )
-        {
-            *m_scanner << "-i";
-        }
-        *m_scanner << "-s";
-        m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
-        connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
-        connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
-        connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
-        m_scanner->start();
-        m_parser = new XmlParseJob( this, m_collection );
-        m_parser->setIsIncremental( m_isIncremental );
-        m_parser->setFilesAddedHash( &m_filesAdded );
-        m_parser->setFilesDeletedHash( &m_filesDeleted );
-        m_parser->setChangedUrlsHash( &m_changedUrls );
-        connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
-        ThreadWeaver::Weaver::instance()->enqueue( m_parser );
+        disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+        disconnect( m_scanner, SIGNAL( finished( int ) ), this, SLOT( slotFinished(  ) ) );
+        disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
+        m_scanner->kill();
+        m_scanner->deleteLater();
+        m_scanner = 0;
+        QTimer::singleShot( 0, this, SLOT( restartScanner() ) );
     }
+}
+
+void
+ScanManager::restartScanner()
+{
+    DEBUG_BLOCK
+    m_scanner = new AmarokProcess( this );
+    *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
+    if( m_isIncremental )
+    {
+        *m_scanner << "-i";
+    }
+    *m_scanner << "-s";
+    m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
+    connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+    connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
+    connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
+    m_scanner->start();
+    m_parser = new XmlParseJob( this, m_collection );
+    m_parser->setIsIncremental( m_isIncremental );
+    m_parser->setFilesAddedHash( &m_filesAdded );
+    m_parser->setFilesDeletedHash( &m_filesDeleted );
+    m_parser->setChangedUrlsHash( &m_changedUrls );
+    connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
+    ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
 
 void
@@ -380,6 +395,7 @@ ScanManager::cleanTables()
 XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     : ThreadWeaver::Job( parent )
     , m_collection( collection )
+    , m_abortRequested( false )
     , m_isIncremental( false )
     , m_filesAdded( 0 )
     , m_filesDeleted( 0 )
@@ -395,6 +411,7 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
 
 XmlParseJob::~XmlParseJob()
 {
+    DEBUG_BLOCK
     The::statusBar()->endProgressOperation( this );
 }
 
@@ -444,6 +461,13 @@ XmlParseJob::run()
     
     do
     {
+        m_abortMutex.lock();
+        bool abort = m_abortRequested;
+        m_abortMutex.unlock();
+        if( abort )
+        {
+            break;
+        }
         //get new xml data or wait till new xml data is available
         m_mutex.lock();
         if( m_nextData.isEmpty() )
@@ -557,12 +581,11 @@ XmlParseJob::run()
         }
     }
     while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError );
-    if( m_reader.error() != QXmlStreamReader::NoError )
+    if( m_abortRequested || m_reader.error() != QXmlStreamReader::NoError )
     {
         debug() << "do-while done with error";
         //the error cannot be PrematureEndOfDocumentError, so handle
         //an unrecoverable error here
-        //TODO implement
         processor.rollback();
     }
     else
@@ -570,24 +593,24 @@ XmlParseJob::run()
         if( !directoryData.isEmpty() )
             processor.processDirectory( directoryData );
         processor.commit();
-    }
-    if( !m_isIncremental )
-    {
-        m_collection->emitFilesDeleted( *m_filesDeleted );
-        m_collection->emitFilesAdded( *m_filesAdded );
-    }
-    else
-    {
-        QHash<QString, QString>::Iterator it;
-        for( it = m_filesAdded->begin(); it != m_filesAdded->end(); ++it )
+        if( !m_isIncremental )
         {
-            if( m_filesDeleted->contains( it.key() ) )
-                m_filesDeleted->remove( it.key() );
+            m_collection->emitFilesDeleted( *m_filesDeleted );
+            m_collection->emitFilesAdded( *m_filesAdded );
         }
-        for( it = m_filesAdded->begin(); it != m_filesAdded->end(); ++it )
-            m_collection->emitFileAdded( it.value(), it.key() );
-        for( it = m_filesDeleted->begin(); it != m_filesDeleted->end(); ++it )
-            m_collection->emitFileDeleted( it.value(), it.key() );
+        else
+        {
+            QHash<QString, QString>::Iterator it;
+            for( it = m_filesAdded->begin(); it != m_filesAdded->end(); ++it )
+            {
+                if( m_filesDeleted->contains( it.key() ) )
+                    m_filesDeleted->remove( it.key() );
+            }
+            for( it = m_filesAdded->begin(); it != m_filesAdded->end(); ++it )
+                m_collection->emitFileAdded( it.value(), it.key() );
+            for( it = m_filesDeleted->begin(); it != m_filesDeleted->end(); ++it )
+                m_collection->emitFileDeleted( it.value(), it.key() );
+        }
     } 
 }
 
@@ -602,4 +625,12 @@ XmlParseJob::addNewXmlData( const QString &data )
     m_mutex.unlock();
 }
 
+void
+XmlParseJob::requestAbort() {
+    DEBUG_BLOCK
+    m_abortMutex.lock();
+    m_abortRequested = true;
+    m_abortMutex.unlock();
+    m_wait.wakeOne();
+}
 #include "ScanManager.moc"
