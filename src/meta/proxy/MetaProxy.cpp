@@ -107,10 +107,14 @@ MetaProxy::Track::~Track()
 QString
 MetaProxy::Track::name() const
 {
-    if( d->realTrack )
-        return d->realTrack->name();
-    else
-        return d->cachedName;
+    DEBUG_BLOCK
+    if( d->realTrack ) {
+        d->realTrack->setForwardToProxy( false );
+        QString name = d->realTrack->name();
+        d->realTrack->setForwardToProxy( true );
+        return name;
+    } 
+    return d->cachedName;
 }
 
 void
@@ -122,65 +126,86 @@ MetaProxy::Track::setName( const QString &name )
 QString
 MetaProxy::Track::prettyName() const
 {
-    if( d->realTrack )
-        return d->realTrack->prettyName();
-    else
-        return d->cachedName;   //TODO maybe change this?
+    if( d->realTrack ) {
+        d->realTrack->setForwardToProxy( false );
+        QString prettyName = d->realTrack->prettyName();
+        d->realTrack->setForwardToProxy( true );
+        return prettyName;
+    } 
+    return d->cachedName;   //TODO maybe change this?
 }
 
 QString
 MetaProxy::Track::fullPrettyName() const
 {
-    if( d->realTrack )
-        return d->realTrack->fullPrettyName();
-    else
-        return d->cachedName;   //TODO maybe change this??
+    if( d->realTrack ) {
+        d->realTrack->setForwardToProxy( false );
+        QString fullPrettyName = d->realTrack->fullPrettyName();
+        d->realTrack->setForwardToProxy( true );
+        return fullPrettyName;
+    } 
+    return d->cachedName;   //TODO maybe change this??
 }
 
 QString
 MetaProxy::Track::sortableName() const
 {
-    if( d->realTrack )
-        return d->realTrack->sortableName();
-    else
-        return d->cachedName;   //TODO change this?
+    if( d->realTrack ) {
+        d->realTrack->setForwardToProxy( false );
+        QString sortableName = d->realTrack->sortableName();
+        d->realTrack->setForwardToProxy( true );
+        return sortableName;
+    }
+    return d->cachedName;   //TODO maybe change this??
 }
 
 KUrl
 MetaProxy::Track::playableUrl() const
 {
-    if( d->realTrack )
-        return d->realTrack->playableUrl();
-    else
-//         return KUrl();
-        return d->url; // Maybe?
+    if( d->realTrack ) {
+        d->realTrack->setForwardToProxy( false );
+        KUrl playableUrl = d->realTrack->playableUrl();
+        d->realTrack->setForwardToProxy( true );
+        return playableUrl;
+    }
+    //return KUrl();
+    return d->url; // Maybe?
 }
 
 QString
 MetaProxy::Track::prettyUrl() const
 {
-    if( d->realTrack )
-        return d->realTrack->prettyUrl();
-    else
-        return d->url.url();
+    if( d->realTrack ) {
+        d->realTrack->setForwardToProxy( false );
+        QString prettyUrl = d->realTrack->prettyUrl();
+        d->realTrack->setForwardToProxy( true );
+        return prettyUrl;
+    }
+    return d->url.url();
 }
 
 QString
 MetaProxy::Track::uidUrl() const
 {
-    if( d->realTrack )
-        return d->realTrack->uidUrl();
-    else
-        return d->url.url();
+    if( d->realTrack ) {
+        d->realTrack->setForwardToProxy( false );
+        QString uidUrl = d->realTrack->uidUrl();
+        d->realTrack->setForwardToProxy( true );
+        return uidUrl;
+    }
+    return d->url.url();
 }
 
 bool
 MetaProxy::Track::isPlayable() const
 {
-    if( d->realTrack )
-        return d->realTrack->isPlayable();
-    else
-        return false;
+    if( d->realTrack ) {
+        d->realTrack->setForwardToProxy( false );
+        bool isPlayable = d->realTrack->isPlayable();
+        d->realTrack->setForwardToProxy( true );
+        return isPlayable;
+    }
+    return false;
 }
 
 Meta::AlbumPtr
@@ -419,6 +444,13 @@ void
 MetaProxy::Track::lookupTrack( TrackProvider *provider )
 {
 	d->slotNewTrackProvider( provider );
+}
+
+void
+MetaProxy::Track::updateTrack( Meta::TrackPtr track )
+{
+    DEBUG_BLOCK
+    d->slotUpdateTrack( track );
 }
 
 bool

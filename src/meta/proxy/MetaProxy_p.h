@@ -70,19 +70,26 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
     public:
         void notifyObservers()
         {
-            foreach( Meta::Observer *observer, observers )
-                observer->metadataChanged( proxy );
+            DEBUG_BLOCK
+            if( proxy )
+            {
+                foreach( Meta::Observer *observer, observers ) {
+                    if( observer != this ) observer->metadataChanged( proxy );
+                }
+            }
         }
         using Observer::metadataChanged;
         void metadataChanged( Meta::Track *track )
         {
             Q_UNUSED( track )
+            DEBUG_BLOCK
             notifyObservers();
         }
 
     public slots:
         void slotNewTrackProvider( TrackProvider *newTrackProvider )
         {
+            DEBUG_BLOCK
             if ( !newTrackProvider )
             {
                 return;
@@ -101,6 +108,16 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             }
         }
 
+        void slotUpdateTrack( Meta::TrackPtr track )
+        {
+            DEBUG_BLOCK
+            if( track )
+            {
+                subscribeTo( track );
+                realTrack = track;
+                notifyObservers();
+            }
+        }
         void slotCheckCollectionManager()
         {
             Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );

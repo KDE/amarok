@@ -115,7 +115,7 @@ void Mp3tunesServiceCollection::trackForUrlComplete( Mp3tunesLockerTrack &track 
     
     //Building a Meta::Track
     QString title = track.trackTitle().isEmpty() ? "Unknown" :  track.trackTitle();
-    serviceTrack->setName( title );
+    serviceTrack->setTitle( title );
     serviceTrack->setId( track.trackId() );
     serviceTrack->setUidUrl( track.playUrl() ); //was: setUrl
     serviceTrack->setDownloadableUrl( track.downloadUrl() );
@@ -148,7 +148,7 @@ void Mp3tunesServiceCollection::trackForUrlComplete( Mp3tunesLockerTrack &track 
     serviceTrack->setArtist( artistPtr );
     serviceAlbum->setArtistName( name );
     serviceAlbum->setAlbumArtist( artistPtr );
-    serviceTrack->refresh( service()->parent() );
+    serviceTrack->update( Meta::TrackPtr( serviceTrack ) );
 }
 
 Mp3tunesLocker* Mp3tunesServiceCollection::locker() const

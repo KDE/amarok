@@ -146,8 +146,9 @@ ServiceTrack::ServiceTrack( const QString & name, const QString & url )
     , m_albumName( 0 )
     , m_artistId( 0 )
     , m_artistName( 0 )
+    , m_forwardToProxy( true )
 {
-    setName( name );
+    setTitle( name );
 }
 
 ServiceTrack::ServiceTrack( const QString & url )
@@ -169,6 +170,7 @@ ServiceTrack::ServiceTrack( const QString & url )
     , m_albumName( 0 )
     , m_artistId( 0 )
     , m_artistName( 0 )
+    , m_forwardToProxy( true )
 {
 }
 
@@ -181,9 +183,10 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
+    , m_forwardToProxy( true )
 {
     m_id = resultRow[0].toInt();
-    setName( resultRow[1] );
+    setTitle( resultRow[1] );
     m_trackNumber = resultRow[2].toInt();
     m_length = resultRow[3].toInt();
     m_displayUrl = resultRow[4];
@@ -205,6 +208,14 @@ ServiceTrack::refresh( TrackProvider *provider )
 {
     this->lookupTrack( provider );
 }
+
+void
+ServiceTrack::update( Meta::TrackPtr track )
+{
+    DEBUG_BLOCK
+    updateTrack( track );
+}
+
 
 void
 ServiceTrack::setId(int id)
@@ -240,6 +251,16 @@ int
 ServiceTrack::artistId() const
 {
     return m_artistId;
+}
+
+QString
+ServiceTrack::name() const
+{
+    DEBUG_BLOCK
+    if( m_forwardToProxy )
+        return MetaProxy::Track::name();
+
+    return m_name;
 }
 
 QString
@@ -286,6 +307,11 @@ void
 ServiceTrack::setDownloadableUrl(const QString & url)
 {
     m_downloadableUrl = url;
+}
+
+void ServiceTrack::setForwardToProxy( bool forward )
+{
+    m_forwardToProxy = forward;
 }
 
 bool
@@ -512,6 +538,8 @@ ServiceTrack::setYear( YearPtr year )
 void
 ServiceTrack::setTitle( const QString &title )
 {
+    DEBUG_BLOCK
+    m_name = title;
     setName( title );
 }
 

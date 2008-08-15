@@ -103,9 +103,14 @@ namespace MetaProxy
 		 */
 		Track( const KUrl &url, bool awaitLookupNotification);
 		/**
-		 * MetaProxy wil check the given trackprovider if it can provide the track for the proxy's url.
+		 * MetaProxy will check the given trackprovider if it can provide the track for the proxy's url.
 		 */
 		void lookupTrack(TrackProvider *provider);
+
+        /**
+         * MetaProxy will update the proxy with the track.
+         */
+        void updateTrack( Meta::TrackPtr track );
 
         private:
 			void init( const KUrl &url, bool awaitLookupNotification );
