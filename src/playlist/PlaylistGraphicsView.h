@@ -59,6 +59,8 @@ namespace Playlist
             const QList<GraphicsItem*> tracks() const { return m_tracks; }
             void  moveItem( Playlist::GraphicsItem *oldAbove, Playlist::GraphicsItem *newAbove );
 
+            void shuffleTracks( int startPosition, int stopPosition = -1, bool animate = true ); // -1: end of playlist
+
         public slots:
             virtual void dropEvent( QDropEvent *event );
 
@@ -85,7 +87,7 @@ namespace Playlist
 
             void playTrack();
             void removeSelection();
-            void shuffleTracks( int startPosition, int stopPosition = -1, bool animate = true ); // -1: end of playlist
+            
             void showItemImage();
             void fetchItemImage();
             void unsetItemImage();

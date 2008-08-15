@@ -1619,7 +1619,7 @@ bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
     
     clearNewlyAdded();
 
-    int first = rows[0];
+    int first = qMin( rows[0], to );
 
     int i = 0;
 
@@ -1674,12 +1674,16 @@ bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
     }
 
     debug() << "min " << min << " max " << max;
-    regroupAlbums( min, max, OffsetBetween, offset );
+
+
+    regroupAlbums( min, max +1, OffsetBetween, offset );
+
 
     i = 0;
 
     if ( first < to ) {
-    
+
+        //moving stuff downwards
         foreach ( int row, rows ) {
             emit rowMoved( row - i, to );
             i++;
@@ -1687,6 +1691,7 @@ bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
 
     } else {
 
+        //moving stuff upwards
         foreach ( int row, rows ) {
             emit rowMoved( row, to + i );
             i++;
@@ -1697,9 +1702,46 @@ bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
     return true;
 }
 
+int Playlist::Model::firstInGroup( int row )
+{
+
+    QMapIterator< QString, AlbumGroup *> itt(m_albumGroups);
+    while (itt.hasNext()) {
+
+        itt.next();
+        AlbumGroup * group = itt.value();
+
+        int temp = group->firstInGroup( row );
+
+        if ( temp != -1 ) return temp;
+
+    }
+
+    return -1;
+}
+
+int Playlist::Model::lastInGroup( int row )
+{
+    QMapIterator< QString, AlbumGroup *> itt(m_albumGroups);
+    while (itt.hasNext()) {
+
+        itt.next();
+        AlbumGroup * group = itt.value();
+
+        int temp = group->lastInGroup( row );
+
+        if ( temp != -1 ) return temp;
+
+    }
+
+    return -1;
+}
+
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
 }
+
+
 
 
 

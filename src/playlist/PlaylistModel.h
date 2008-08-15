@@ -266,7 +266,10 @@ namespace Playlist
             void trackListChanged( Meta::Playlist * playlist );
 
             StopAfterMode stopAfterMode() const { return m_stopAfterMode; }
-            void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; }
+            void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; } 
+
+            int firstInGroup( int row );
+            int lastInGroup( int row );
 
         public slots:
             void play( const QModelIndex& index );

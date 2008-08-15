@@ -57,6 +57,7 @@ namespace Playlist
             void refresh();
             void play();
 
+            int row();
             void setRow( int row );
 
             qreal albumHeaderHeight() const;
@@ -122,6 +123,7 @@ namespace Playlist
             static QFontMetricsF* s_nfm; //normal
             static QFontMetricsF* s_ifm; //italic
             static QFontMetricsF* s_bfm; //bold
+
     };
 
 }

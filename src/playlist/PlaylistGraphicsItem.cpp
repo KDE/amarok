@@ -60,7 +60,7 @@ struct Playlist::GraphicsItem::ActiveItems
     , topRightText( 0 )
     , lastWidth( -5 )
     , groupedTracks ( 0 )
-    , collapsible( true )
+    , collapsible( false )
      { }
 
     ~ActiveItems()
@@ -87,6 +87,8 @@ struct Playlist::GraphicsItem::ActiveItems
 
     QRectF preDragLocation;
     Meta::TrackPtr track;
+
+    QList<QPointF> childPreDragPositions;
 };
 
 
@@ -524,7 +526,41 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
         event->ignore();
         return;
     }
-    m_items->preDragLocation = mapToScene( boundingRect() ).boundingRect();
+
+    if ( groupMode() != Playlist::Head )
+        m_items->preDragLocation = mapToScene( boundingRect() ).boundingRect();
+    else {
+
+        if ( groupMode() == Playlist::Head ) {
+            //update the org positions so we can determine if we are dragging anything on itself
+            QPointF topLeft = boundingRect().topLeft();
+
+            //get last element in this group:
+
+            int lastInAlbum = The::playlistModel()->lastInGroup( m_currentRow );
+
+            debug() << "last in current album: " << lastInAlbum;
+
+            QRectF bottomRect = The::playlistView()->tracks()[lastInAlbum ]->boundingRect();
+            QPointF bottomPos = The::playlistView()->tracks()[lastInAlbum ]->pos();
+            
+            QPointF bottomRight = QPoint( bottomPos.x() + bottomRect.width(), bottomPos.y() + bottomRect.height() );
+
+            debug() << "Got points: " << topLeft << " and " << bottomRight;
+
+            QRectF orgRect( topLeft.x(), topLeft.y(), bottomRight.x() - topLeft.x(), ( bottomRight.y() - topLeft.y() ) );
+
+            debug() << "Album rect: " << orgRect;
+
+            m_items->preDragLocation = mapToScene( orgRect ).boundingRect();
+
+            for ( int i = m_currentRow; i <=lastInAlbum; i++ )
+                m_items->childPreDragPositions << The::playlistView()->tracks()[i]->pos();
+        }
+
+        
+
+    }
 
     //did we hit the collapse / expand button?
     /*if( m_collapsible )
@@ -548,6 +584,7 @@ Playlist::GraphicsItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
 {
     if( (event->buttons() & Qt::LeftButton) && ( flags() & QGraphicsItem::ItemIsMovable) && m_items )
     {
+
         QPointF scenePosition = event->scenePos();
 
         if( scenePosition.y() < 0 )
@@ -641,11 +678,22 @@ Playlist::GraphicsItem::refresh()
 
 void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
+    DEBUG_BLOCK
+    
     bool dragOverOriginalPosition = m_items->preDragLocation.contains( event->scenePos() );
     if( dragOverOriginalPosition )
     {
-        setPos( m_items->preDragLocation.topLeft() );
-        Playlist::DropVis::instance()->hide();
+
+        if ( groupMode() == Playlist::Head ) {
+           
+            int lastInAlbum = The::playlistModel()->lastInGroup( m_currentRow );
+            //restore original positions
+            for ( int i = m_currentRow; i <=lastInAlbum; i++ )
+                The::playlistView()->tracks()[i]->setPos( m_items->childPreDragPositions.takeFirst() );
+        } else {
+            setPos( m_items->preDragLocation.topLeft() );
+            Playlist::DropVis::instance()->hide();
+        }
         return;
     }
 
@@ -660,6 +708,7 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
             break;
         }
     }
+
     // if we've dropped ourself ontop of another item, then we need to shuffle the tracks below down
     if( above )
     {
@@ -1231,5 +1280,10 @@ void Playlist::GraphicsItem::paletteChange()
     }
 
     refresh();
+}
+
+int Playlist::GraphicsItem::row()
+{
+    return m_currentRow;
 }
 
