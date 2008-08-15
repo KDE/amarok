@@ -1428,10 +1428,8 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
     }
 
 
-
-
     if ( m_albumGroups.count() == 0 ) { // start from scratch
-//         debug() << "--1";
+        debug() << "--1";
         area1Start = 0;
         area1End = m_items.count();
         area2Start = area1Start; // just to skip second pass
@@ -1440,11 +1438,14 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
 
 
     if ( area1Start == -1 ) {
-        //debug() << "--2";
+        debug() << "--2";
         area1Start = aboveFirst;
         area1End = belowLast;
         area2Start = area1Start;
     }
+
+    debug() << "area1Start: " << area1Start << ", area1End: " << area1End;
+    debug() << "area2Start: " << area2Start << ", area2End: " << area2End;
 
     if ( area1End == -1 )
         area1End = belowLast;
@@ -1576,9 +1577,6 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
      foreach( AlbumGroup *ag, m_albumGroups)
       ag->printGroupRows();
 
-
-
-
    emit( playlistGroupingChanged() );
 
    //reset();
@@ -1614,6 +1612,8 @@ bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
 {
 
     DEBUG_BLOCK
+
+    if ( to >= m_items.count() ) to =  m_items.count() - 1;
 
     debug() << "rows " << rows << " to " << to;
     
@@ -1676,7 +1676,8 @@ bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
     debug() << "min " << min << " max " << max;
 
 
-    regroupAlbums( min, max +1, OffsetBetween, offset );
+    //regroupAlbums( min, max +1, OffsetBetween, offset );
+    regroupAll();
 
 
     i = 0;
@@ -1736,6 +1737,54 @@ int Playlist::Model::lastInGroup( int row )
 
     return -1;
 }
+
+
+void
+Playlist::Model::regroupAll()
+{
+    
+    //delete all groups 
+    m_albumGroups.clear();
+
+
+    int i;
+    for ( i = 0; i < m_items.count(); i++ )
+    {
+
+       //debug() << "i: " << i;
+
+        Meta::TrackPtr track = m_items.at( i )->track();
+
+        if ( !track->album() )
+            continue;
+
+        QString albumName;
+
+       //not all tracks have a valid album ( radio stations for instance... )
+        if ( !track->album().isNull() ) {
+            albumName = track->album()->prettyName();
+        }
+
+        if ( m_albumGroups.contains( albumName ) && !albumName.isEmpty() ) {
+            m_albumGroups[ albumName ]->addRow( i );
+        } else {
+            //debug() << "Create new group for album " << track->album()->name() ;
+            AlbumGroup * newGroup = new AlbumGroup();
+            newGroup->addRow( i );
+            m_albumGroups.insert( albumName, newGroup );
+        }
+    }
+
+    foreach( AlbumGroup *ag, m_albumGroups)
+        ag->printGroupRows();
+
+    emit( playlistGroupingChanged() );
+
+   //reset();
+
+}
+
+
 
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }

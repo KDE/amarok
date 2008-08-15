@@ -533,7 +533,7 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
         if ( groupMode() == Playlist::Head ) {
             //update the org positions so we can determine if we are dragging anything on itself
-            QPointF topLeft = boundingRect().topLeft();
+            QPointF topLeft = pos();
 
             //get last element in this group:
 
@@ -550,7 +550,7 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
             QRectF orgRect( topLeft.x(), topLeft.y(), bottomRight.x() - topLeft.x(), ( bottomRight.y() - topLeft.y() ) );
 
-            debug() << "Album rect: " << orgRect;
+            debug() << "Album rect: " << mapToScene( orgRect ).boundingRect();
 
             m_items->preDragLocation = mapToScene( orgRect ).boundingRect();
 
@@ -683,6 +683,8 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
     bool dragOverOriginalPosition = m_items->preDragLocation.contains( event->scenePos() );
     if( dragOverOriginalPosition )
     {
+
+        debug() << "Item dragged over org pos: " << m_items->preDragLocation << ", " << event->scenePos();
 
         if ( groupMode() == Playlist::Head ) {
            

@@ -334,6 +334,8 @@ namespace Playlist
              */
             void regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode = OffsetNone, int offset = 0 );
 
+            void regroupAll();
+
             static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
             void clearNewlyAdded();

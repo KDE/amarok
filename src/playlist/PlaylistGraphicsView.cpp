@@ -423,6 +423,8 @@ void Playlist::GraphicsView::moveViewItem( int row, int to )
 void Playlist::GraphicsView::moveViewItems( QList<int> rows, int to )
 {
 
+    if ( to >= m_tracks.count() ) to = m_tracks.count() -1;
+    
     int firstIndex = qMin( rows[0], to ) -1;
     if ( firstIndex < 0 ) firstIndex = 0;
 
