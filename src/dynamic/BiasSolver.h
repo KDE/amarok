@@ -100,6 +100,7 @@ namespace Dynamic
             static QueryMaker*        s_universeQuery;
             static Collection*        s_universeCollection;
             static bool               s_universeOutdated;
+            static unsigned int       s_uidUrlProtocolPrefixLength;
 
             static const int    ITERATION_LIMIT; //! give up after this many iterations
             static const double INITIAL_TEMPERATURE;

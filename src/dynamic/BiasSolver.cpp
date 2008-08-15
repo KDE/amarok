@@ -48,6 +48,7 @@ QMutex            Dynamic::BiasSolver::s_universeMutex;
 QueryMaker*       Dynamic::BiasSolver::s_universeQuery = 0;
 Collection*       Dynamic::BiasSolver::s_universeCollection = 0;
 bool              Dynamic::BiasSolver::s_universeOutdated = true;
+unsigned int      Dynamic::BiasSolver::s_uidUrlProtocolPrefixLength = 0;
 
 
 
@@ -451,6 +452,8 @@ Dynamic::BiasSolver::updateUniverse()
         s_universeQuery->addReturnValue( QueryMaker::valUniqueId );
     }
 
+    s_uidUrlProtocolPrefixLength = (QString(s_universeCollection->uidUrlProtocol()) + "://").length();
+
     connect( s_universeQuery, SIGNAL(newResultReady( QString, QStringList )),
             SLOT(universeResults( QString, QStringList )), Qt::DirectConnection );
     connect( s_universeQuery, SIGNAL(queryDone()),
@@ -472,7 +475,7 @@ Dynamic::BiasSolver::universeResults( QString collectionId, QStringList uids )
     QByteArray uid;
     foreach( QString uidString, uids )
     {
-        uid = QByteArray::fromHex( uidString.toAscii() );
+        uid = QByteArray::fromHex( uidString.mid(s_uidUrlProtocolPrefixLength).toAscii() );
         if( !uid.isEmpty() )
             s_universe += uid;
     }
