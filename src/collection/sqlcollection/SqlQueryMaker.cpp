@@ -275,10 +275,27 @@ QueryMaker*
 SqlQueryMaker::addMatch( const TrackPtr &track )
 {
     QString url = track->uidUrl();
-    int deviceid = MountPointManager::instance()->getIdForUrl( url );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
-    d->queryMatch += QString( " AND urls.deviceid = %1 AND urls.rpath = '%2'" )
+    KUrl kurl( url );
+    if( kurl.protocol() == "amarok-sqltrackuid" )
+    {
+        d->queryMatch += QString( " AND urls.uniqueid = '%1' " ).arg( kurl.url() );
+    }
+    else
+    {
+        QString path;
+        if( kurl.isLocalFile() )
+        {
+            path = kurl.path();
+        }
+        else
+        {
+            path = track->playableUrl().path();
+        }
+        int deviceid = MountPointManager::instance()->getIdForUrl( path );
+        QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
+        d->queryMatch += QString( " AND urls.deviceid = %1 AND urls.rpath = '%2'" )
                         .arg( QString::number( deviceid ), escape( rpath ) );
+    }
     return this;
 }
 
