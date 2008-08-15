@@ -103,11 +103,12 @@ ScriptableServiceScript::~ScriptableServiceScript()
 
 QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine )
 {
-    QString serviceName = context->thisObject().property("serviceName").toString();
-    int levels = context->thisObject().property("levels").toInt32();
-    QString shortDescription = context->thisObject().property("shortDescription").toString();
-    QString rootHtml = context->thisObject().property("rootHtml").toString();
-    bool showSearchBar = context->thisObject().property("showSearch").toBoolean();
+
+    QString serviceName = context->argument(0).toString();
+    int levels = context->argument(1).toInt32();
+    QString shortDescription = context->argument(2).toString();
+    QString rootHtml = context->argument(3).toString();
+    bool showSearchBar = context->argument(4).toBoolean();
     QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts[serviceName].servicePtr );
     engine->globalObject().setProperty( "ScriptableServiceScript", obj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
