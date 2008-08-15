@@ -466,23 +466,7 @@ void
 CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode )
 {
     //Ensure that if a parent and child are both selected we ignore the child
-    QSet<CollectionTreeItem*> parents;
-    foreach( CollectionTreeItem *item, items )
-    {
-        CollectionTreeItem *tmpItem = item;
-        while( tmpItem )
-        {
-            if( items.contains( tmpItem->parent() ) )
-            {
-                tmpItem = tmpItem->parent();
-            }
-            else
-            {
-                parents.insert( tmpItem );
-                break;
-            }
-        }
-    }
+    QSet<CollectionTreeItem*> parents( cleanItemSet( items ) );
 
     //Store the type of playlist insert to be done and cause a slot to be invoked when the tracklist has been generated.
     AmarokMimeData *mime = dynamic_cast<AmarokMimeData*>( m_treeModel->mimeData( QList<CollectionTreeItem*>::fromSet( parents ) ) );
@@ -514,41 +498,10 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
     {
         return;
     }
-    //find all selected parents in the list and ignore the rest
-    QSet<CollectionTreeItem*> parents;
-    foreach( CollectionTreeItem *item, items )
-    {
-        CollectionTreeItem *tmpItem = item;
-        while( tmpItem )
-        {
-            if( items.contains( tmpItem->parent() ) )
-            {
-                tmpItem = tmpItem->parent();
-            }
-            else
-            {
-                parents.insert( tmpItem );
-                break;
-            }
-        }
-    }
-    QList<QueryMaker*> queryMakers;
-    foreach( CollectionTreeItem *item, parents )
-    {
-        QueryMaker *qm = item->queryMaker();
-        CollectionTreeItem *tmp = item;
-        while( tmp->isDataItem() )
-        {
-            if ( tmp->data() )
-                qm->addMatch( tmp->data() );
-            else
-                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
-            tmp = tmp->parent();
-        }
-        m_treeModel->addFilters( qm );
-        queryMakers.append( qm );
-    }
-    QueryMaker *qm = new MetaQueryMaker( queryMakers );
+
+    //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
+    QueryMaker *qm = createMetaQueryFromItems( items, true );
+
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
     {
@@ -579,41 +532,10 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
     {
         return;
     }
-    //find all selected parents in the list and ignore the rest
-    QSet<CollectionTreeItem*> parents;
-    foreach( CollectionTreeItem *item, items )
-    {
-        CollectionTreeItem *tmpItem = item;
-        while( tmpItem )
-        {
-            if( items.contains( tmpItem->parent() ) )
-            {
-                tmpItem = tmpItem->parent();
-            }
-            else
-            {
-                parents.insert( tmpItem );
-                break;
-            }
-        }
-    }
-    QList<QueryMaker*> queryMakers;
-    foreach( CollectionTreeItem *item, parents )
-    {
-        QueryMaker *qm = item->queryMaker();
-        CollectionTreeItem *tmp = item;
-        while( tmp->isDataItem() )
-        {
-            if ( tmp->data() )
-                qm->addMatch( tmp->data() );
-            else
-                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
-            tmp = tmp->parent();
-        }
-        m_treeModel->addFilters( qm );
-        queryMakers.append( qm );
-    }
-    QueryMaker *qm = new MetaQueryMaker( queryMakers );
+
+    //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
+    QueryMaker *qm = createMetaQueryFromItems( items, true );
+
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
     {
@@ -641,41 +563,9 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
 void
 CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
 {
-    //find all selected parents in the list and ignore the rest
-    QSet<CollectionTreeItem*> parents;
-    foreach( CollectionTreeItem *item, items )
-    {
-        CollectionTreeItem *tmpItem = item;
-        while( tmpItem )
-        {
-            if( items.contains( tmpItem->parent() ) )
-            {
-                tmpItem = tmpItem->parent();
-            }
-            else
-            {
-                parents.insert( tmpItem );
-                break;
-            }
-        }
-    }
-    QList<QueryMaker*> queryMakers;
-    foreach( CollectionTreeItem *item, parents )
-    {
-        QueryMaker *qm = item->queryMaker();
-        CollectionTreeItem *tmp = item;
-        while( tmp->isDataItem() )
-        {
-            if ( tmp->data() )
-                qm->addMatch( tmp->data() );
-            else
-                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
-            tmp = tmp->parent();
-        }
-        m_treeModel->addFilters( qm );
-        queryMakers.append( qm );
-    }
-    QueryMaker *qm = new MetaQueryMaker( queryMakers );
+    //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
+    QueryMaker *qm = createMetaQueryFromItems( items, true );
+
     (void)new TagDialog( qm ); //the dialog will show itself automatically as soon as it is ready
 }
 
@@ -1013,6 +903,53 @@ void CollectionTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem
     
     QTreeView::drawRow( painter, option, index );
     
+}
+
+QSet<CollectionTreeItem*>
+CollectionTreeView::cleanItemSet( const QSet<CollectionTreeItem*> &items )
+{
+    QSet<CollectionTreeItem*> parents;
+    foreach( CollectionTreeItem *item, items )
+    {
+        CollectionTreeItem *tmpItem = item;
+        while( tmpItem )
+        {
+            if( items.contains( tmpItem->parent() ) )
+            {
+                tmpItem = tmpItem->parent();
+            }
+            else
+            {
+                parents.insert( tmpItem );
+                break;
+            }
+        }
+    }
+    return parents;
+}
+
+QueryMaker*
+CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems ) const
+{
+    QSet<CollectionTreeItem*> parents = cleanItems ? cleanItemSet( items ) : items;
+
+    QList<QueryMaker*> queryMakers;
+    foreach( CollectionTreeItem *item, parents )
+    {
+        QueryMaker *qm = item->queryMaker();
+        CollectionTreeItem *tmp = item;
+        while( tmp->isDataItem() )
+        {
+            if ( tmp->data() )
+                qm->addMatch( tmp->data() );
+            else
+                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+            tmp = tmp->parent();
+        }
+        m_treeModel->addFilters( qm );
+        queryMakers.append( qm );
+    }
+    return new MetaQueryMaker( queryMakers );
 }
 
 #include "CollectionTreeView.moc"

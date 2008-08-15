@@ -61,6 +61,9 @@ class CollectionTreeView: public QTreeView
         void setShowTrackNumbers( bool show ) { m_showTrackNumbers = show; }
         bool showTrackNumbers() const { return m_showTrackNumbers; }
 
+        //Helper function to remove children if their parent is already present
+        static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
+
     public slots:
         void slotSetFilterTimeout();
 
@@ -106,7 +109,9 @@ class CollectionTreeView: public QTreeView
         Collection * getCollection( const QModelIndexList &indcies );
         QHash<PopupDropperAction*, Collection*> getCopyActions( const QModelIndexList &indcies );
         QHash<PopupDropperAction*, Collection*> getMoveActions( const QModelIndexList &indcies );
-        
+
+        QueryMaker* createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems=true ) const;
+
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModelBase *m_treeModel;
         QTimer m_filterTimer;
