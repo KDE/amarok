@@ -6,4 +6,5 @@ add_subdirectory( serviceinfo )
 add_subdirectory( wikipedia )
 add_subdirectory( cloud )
 add_subdirectory( video )
-
+# WIP
+add_subdirectory( mediadevices )

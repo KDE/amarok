@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Media Devices
+Type=Service
+ServiceTypes=Plasma/Applet
+
+X-KDE-Library=amarok_context_applet_mediadevices
+X-KDE-PluginInfo-Author=Alejandro Wainzinger
+X-KDE-PluginInfo-Email=aikawarazuni@gmail.com
+X-KDE-PluginInfo-Name=mediadevices
+X-KDE-PluginInfo-Version=pre0.1
+X-KDE-PluginInfo-Website=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ParentApp=amarok
+X-KDE-PluginInfo-Category=Current
+
