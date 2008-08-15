@@ -215,16 +215,20 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
             {
                 m_ignoredDestinations.append( m_destinations[ track ] );
                 sourceLocation->movedByDestination( track, false ); //no changes, so leave the database alone
+                continue;   //we are not moving the file, no reason to continue
             }
         }
         else
         {
             job = KIO::file_copy( sources[ track ], dest, -1, flags );
         }
-        connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
-        The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Transferring Tracks" ) );
-        m_jobs.insert( job );
-        job->start();
+        if( job )   //just to be safe
+        {
+            connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
+            The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Transferring Tracks" ) );
+            m_jobs.insert( job );
+            job->start();
+        }
     }
 }
 
