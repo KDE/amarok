@@ -325,17 +325,19 @@ void
 Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint32 state,
                                                  gpointer null_pointer )
 {
-
+    qDebug() << "inside signalStateChangeHandler";
     Q_UNUSED( null_pointer )
     switch ( state ) {
         case MP3TUNES_HARMONY_STATE_DISCONNECTED:
             g_print( "Disconnected.\n" );
+	    qDebug() << "Disconnected";
             theDaemon->setState( Mp3tunesHarmonyDaemon::DISCONNECTED );
             theDaemon->emitDisconnected();
             /* Do nothing here */
             break;
         case MP3TUNES_HARMONY_STATE_CONNECTED:
             g_print( "Connected! Waiting for download requests!\n" );
+	    qDebug() << "Connected! Waiting for download requests!\n";
             theDaemon->setState( Mp3tunesHarmonyDaemon::CONNECTED );
             theDaemon->emitConnected();
             /* At this point, it would be best to store the pin, if you haven't
@@ -345,6 +347,7 @@ Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint
             break;
         case MP3TUNES_HARMONY_STATE_WAITING_FOR_PIN:
             g_print( "Connection in process!\n" );
+	    qDebug() << "Connection in process!\n";
             theDaemon->setState( Mp3tunesHarmonyDaemon::WAITING_FOR_PIN );
             theDaemon->emitWaitingForPin();
             /* At this point, just update the user status. */
@@ -352,6 +355,7 @@ Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint
         case MP3TUNES_HARMONY_STATE_WAITING_FOR_EMAIL:
             g_print( "Please login to mp3tunes.com and add the pin '%s' to your devices.\n",
                      mp3tunes_harmony_get_pin( harmony ) );
+	    qDebug() << "Please login to mp3tunes.com and add the pin '%s' to your devices. " << mp3tunes_harmony_get_pin( harmony );
             theDaemon->setState( Mp3tunesHarmonyDaemon::WAITING_FOR_EMAIL );
             theDaemon->emitWaitingForEmail( theDaemon->pin() );
             /* At this point, it would be best to store the pin in case the
