@@ -22,6 +22,7 @@
 #include "CollectionTreeView.h"
 
 #include "Amarok.h"
+#include "AmarokMimeData.h"
 #include "Debug.h"
 #include "CollectionLocation.h"
 #include "CollectionManager.h"
@@ -453,37 +454,19 @@ CollectionTreeView::slotCollapsed( const QModelIndex &index )
 }
 
 void
-CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode) const
+CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode)
 {
-    DEBUG_BLOCK
-    if( !item->allDescendentTracksLoaded() )
-    {
-        QueryMaker *qm = item->queryMaker();
-        CollectionTreeItem *tmp = item;
-        while( tmp->isDataItem() )
-        {
-            if ( tmp->data() )
-                qm->addMatch( tmp->data() );
-            else
-                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
-            tmp = tmp->parent();
-        }
-        m_treeModel->addFilters( qm );
-        The::playlistModel()->insertOptioned( qm, insertMode );
-    }
-    else
-    {
-        Meta::TrackList tracks = item->descendentTracks();
-        qStableSort( tracks.begin(), tracks.end(), Amarok::trackNumberLessThan);
-        The::playlistModel()->insertOptioned( tracks, insertMode );
-    }
+    QSet<CollectionTreeItem*> items;
+    items.insert( item );
+
+    playChildTracks( items, insertMode );
 }
 
 void
-CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode ) const
+CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode )
 {
-    //find all selected parents in the list and ignore the rest
-    QSet<CollectionTreeItem*> parents;
+    //Ensure that if a parent and child are both selected we ignore the child
+    QList<CollectionTreeItem*> parents;
     foreach( CollectionTreeItem *item, items )
     {
         CollectionTreeItem *tmpItem = item;
@@ -495,18 +478,31 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Pla
             }
             else
             {
-                parents.insert( tmpItem );
+                parents.append( tmpItem );
                 break;
             }
         }
     }
-    bool first = true;
-    foreach( CollectionTreeItem *item, parents )
-    {
-        //FIXME:we are ignoring the order of the sleected items
-        playChildTracks( item, first ? insertMode : Playlist::Append );
-        first = false;
-    }
+
+    //Store the type of playlist insert to be done and cause a slot to be invoked when the tracklist has been generated.
+    AmarokMimeData *mime = dynamic_cast<AmarokMimeData*>( m_treeModel->mimeData( parents ) );
+    m_playChildTracksMode.insert( mime, insertMode );
+    connect( mime, SIGNAL( trackListSignal( Meta::TrackList ) ), this, SLOT( playChildTracksSlot( Meta::TrackList) ) );
+    mime->getTrackListSignal();
+
+}
+
+void
+CollectionTreeView::playChildTracksSlot( Meta::TrackList list ) //slot
+{
+    AmarokMimeData *mime = dynamic_cast<AmarokMimeData*>( sender() );
+
+    Playlist::AddOptions insertMode = m_playChildTracksMode.take( mime );
+
+    qStableSort( list.begin(), list.end(), Amarok::trackNumberLessThan );
+    The::playlistModel()->insertOptioned( list, insertMode );
+
+    mime->deleteLater();
 }
 
 

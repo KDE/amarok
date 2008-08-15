@@ -153,36 +153,52 @@ CollectionTreeItemModelBase::mimeTypes() const
     return types;
 }
 
-QMimeData * CollectionTreeItemModelBase::mimeData(const QModelIndexList & indices) const
+QMimeData*
+CollectionTreeItemModelBase::mimeData(const QModelIndexList & indices) const
 {
     if ( indices.isEmpty() )
+        return 0;
+
+    QList<CollectionTreeItem*> items;
+
+    foreach( const QModelIndex &index, indices ) 
+    {
+        if ( index.isValid() )
+        {
+            items << static_cast<CollectionTreeItem*>( index.internalPointer() );
+        }
+    }
+
+    return mimeData( items );
+}
+
+QMimeData*
+CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) const
+{
+    if ( items.isEmpty() )
         return 0;
 
     Meta::TrackList tracks;
     QList<QueryMaker*> queries;
 
-    foreach( const QModelIndex &index, indices )
+    foreach( CollectionTreeItem *item, items )
     {
-        if( index.isValid() )
+        if( item->allDescendentTracksLoaded() )
+            tracks << item->descendentTracks();
+        else
         {
-            CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
-            if( item->allDescendentTracksLoaded() )
-                tracks << item->descendentTracks();
-            else
+            QueryMaker *qm = item->queryMaker();
+            CollectionTreeItem *tmpItem = item;
+            while( tmpItem->isDataItem() )
             {
-                QueryMaker *qm = item->queryMaker();
-                CollectionTreeItem *tmpItem = item;
-                while( tmpItem->isDataItem() )
-                {
-                    if( tmpItem->data() )
-                        qm->addMatch( tmpItem->data() );
-                    else
-                        qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
-                    tmpItem = tmpItem->parent();
-                }
-                addFilters( qm );
-                queries.append( qm );
+                if( tmpItem->data() )
+                    qm->addMatch( tmpItem->data() );
+                else
+                    qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+                tmpItem = tmpItem->parent();
             }
+            addFilters( qm );
+            queries.append( qm );
         }
     }
 

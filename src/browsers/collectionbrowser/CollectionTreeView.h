@@ -21,6 +21,7 @@
 #include "CollectionSortFilterProxyModel.h"
 #include "CollectionTreeItem.h"
 #include "playlist/PlaylistModel.h"
+#include "Meta.h"
 
 #include <QSet>
 #include <QSortFilterProxyModel>
@@ -32,6 +33,8 @@ class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
 class PopupDropper;
 class PopupDropperAction;
+class AmarokMimeData;
+
 
 
 typedef QList<PopupDropperAction *> PopupDropperActionList;
@@ -61,6 +64,8 @@ class CollectionTreeView: public QTreeView
     public slots:
         void slotSetFilterTimeout();
 
+        void playChildTracksSlot( Meta::TrackList list );
+
         /**
          * Bypass the filter timeout if we really need to start filtering *now*
          */
@@ -89,8 +94,8 @@ class CollectionTreeView: public QTreeView
     private:
         // Utility function to play all items
         // that have this as a parent..
-        void playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode ) const;
-        void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode ) const;
+        void playChildTracks( CollectionTreeItem *item, Playlist::AddOptions insertMode );
+        void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode );
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
         void copyTracks( const QSet<CollectionTreeItem*> &items, Collection *destination, bool removeSources ) const;
@@ -119,6 +124,8 @@ class CollectionTreeView: public QTreeView
 
         QHash<PopupDropperAction*, Collection*> m_currentCopyDestination;
         QHash<PopupDropperAction*, Collection*> m_currentMoveDestination;
+
+        QMap<AmarokMimeData*, Playlist::AddOptions> m_playChildTracksMode;
 
         QSet<CollectionTreeItem*> m_currentItems;
 

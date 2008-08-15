@@ -74,6 +74,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
         virtual QStringList mimeTypes() const;
+        virtual QMimeData* mimeData( const QList<CollectionTreeItem*> &items ) const;
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
         virtual QPixmap iconForLevel( int level ) const;
