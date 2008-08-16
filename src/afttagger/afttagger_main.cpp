@@ -163,7 +163,14 @@ void processPath( const QString &path )
 
         QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
         
-        TagLib::FileRef fileRef = TagLib::FileRef( QFile::encodeName( filePath ), true, TagLib::AudioProperties::Fast );
+#ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t *encodedName = reinterpret_cast< const wchar_t *>(filePath.utf16());
+#else
+    QByteArray fileName = QFile::encodeName( filePath );
+    const char *encodedName = fileName.constData();
+#endif
+    
+        TagLib::FileRef fileRef = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
         
         if( fileRef.isNull() )
         {
@@ -181,7 +188,13 @@ void processPath( const QString &path )
 
         QString uid = createCurrentUID();
         bool newUid = false;
-        TagLib::FileRef tempFileRef = TagLib::FileRef( QFile::encodeName( tempFilePath ), true, TagLib::AudioProperties::Fast );
+#ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t *encodedName = reinterpret_cast< const wchar_t * >(tempFilePath.utf16());
+#else
+    QByteArray tempFileName = QFile::encodeName( tempFilePath );
+    const char *tempEncodedName = tempFileName.constData();
+#endif
+        TagLib::FileRef tempFileRef = TagLib::FileRef( tempEncodedName, true, TagLib::AudioProperties::Fast );
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( tempFileRef.file() ) )
         {
             if( verbose )
