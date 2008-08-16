@@ -1,1 +1,11 @@
-SKIP /src/sqlite/\|/src/mediadevice/daap/mongrel/|/src/browsers/servicebrowser/lastfm/libUnicorn/|/src/browsers/servicebrowser/lastfm/core/|/src/context/plasma/|/src/history/|/src/browsers/servicebrowser/mp3tunes/libmp3tunes/|/src/charset-detector
+SKIP /src/context/plasma/
+SKIP /src/context/animators
+SKIP /src/context/popupdropper
+SKIP /src/sqlite/
+SKIP /src/mediadevice/daap/mongrel/
+SKIP /src/browsers/servicebrowser/lastfm/libUnicorn/
+SKIP /src/browsers/servicebrowser/lastfm/core/
+SKIP /src/history/
+SKIP /src/browsers/servicebrowser/mp3tunes/libmp3tunes/
+SKIP /src/charset-detector
+SKIP /src/scriptengine/generator/generator/
