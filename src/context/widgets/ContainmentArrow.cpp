@@ -24,7 +24,7 @@ namespace Context
 {
 
 ContainmentArrow::ContainmentArrow( QGraphicsItem *parent, int direction ) :
-    QGraphicsItem::QGraphicsItem( parent ),
+    QGraphicsItem( parent ),
     m_containment( 0 ),
     m_arrowSvg( 0 ),
     m_timer( 0 ) ,
