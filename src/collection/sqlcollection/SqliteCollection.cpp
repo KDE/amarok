@@ -59,6 +59,7 @@ SqliteCollection::SqliteCollection( const QString &id, const QString &prettyName
         }
         else
             m_initialized = true;
+        file.close();
     }
 
     if ( !m_initialized )
