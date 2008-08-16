@@ -56,7 +56,7 @@ void Mp3tunesConfig::load()
         {
             QString addr = iface.hardwareAddress();
             if( addr != "00:00:00:00:00:00" ) {
-                addr.remove( ":" );
+                addr.remove( ':' );
                 kDebug( 14310 ) << "Using iface \"" << iface.name() << " addr: " << addr;
                 setIdentifier( addr + m_partnerToken );
                 save();

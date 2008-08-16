@@ -2608,7 +2608,7 @@ IpodMediaDevice::pathExists( const QString &ipodPath, QString *realPath )
 {
     QDir curDir( mountPoint() );
     QString curPath = mountPoint();
-    QStringList components = QStringList::split( ":", ipodPath );
+    QStringList components = QStringList::split( ':', ipodPath );
 
     bool found = false;
     QStringList::iterator it = components.begin();

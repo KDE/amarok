@@ -119,7 +119,7 @@ CollectionScanner::doJob() //SLOT
             QTextStream folderStream;
             folderStream.setDevice(&folderFile);
             folderStream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
-            entries = folderStream.readAll().split( "\n" );
+            entries = folderStream.readAll().split( '\n' );
         }
 
         for( int count = entries.indexOf( lastFile ) + 1; count; --count )

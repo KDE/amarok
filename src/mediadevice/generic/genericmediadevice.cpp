@@ -672,7 +672,7 @@ GenericMediaDevice::trackExists( const Meta::TrackPtr track )
     QString path = buildDestination( m_songLocation, track);
     KUrl url( path );
     url.adjustPath( KUrl::RemoveTrailingSlash );
-    QStringList directories = url.directory().split( "/", QString::SkipEmptyParts );
+    QStringList directories = url.directory().split( '/', QString::SkipEmptyParts );
 
     Q3ListViewItem *it = view()->firstChild();
     for( QStringList::Iterator directory = directories.begin();
@@ -1040,7 +1040,7 @@ QString GenericMediaDevice::cleanPath( const QString &component )
     if( m_actuallyVfat || m_vfatTextOnly )
         result = Amarok::vfatPath( result );
 
-    result.replace( "/", "-" );
+    result.replace( '/', '-' );
 
     return result;
 }

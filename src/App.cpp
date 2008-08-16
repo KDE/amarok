@@ -735,8 +735,8 @@ namespace Amarok
     */
     QString escapeHTMLAttr( const QString &s )
     {
-        return QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "\"", "%22" ).
-                replace( "#", "%23" ).replace( "?", "%3F" );
+        return QString(s).replace( '%', "%25" ).replace( '\'', "%27" ).replace( '"', "%22" ).
+                replace( '#', "%23" ).replace( '?', "%3F" );
     }
     QString unescapeHTMLAttr( const QString &s )
     {

@@ -167,7 +167,7 @@ bool CueFile::load(int mediaLength)
                         if( indexNo == 1 )
                         {
                             QString splitMe = line.section( ' ', -1, -1 );
-                            QStringList time = splitMe.split( ":", QString::SkipEmptyParts );
+                            QStringList time = splitMe.split( ':', QString::SkipEmptyParts );
 
                             index = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75; //75 frames per second
 
@@ -186,7 +186,7 @@ bool CueFile::load(int mediaLength)
                         else if( indexNo == 0 ) // gap, use to calc prev track length
                         {
                             QString splitMe = line.section( ' ', -1, -1 );
-                            QStringList time = splitMe.split( ":", QString::SkipEmptyParts );
+                            QStringList time = splitMe.split( ':', QString::SkipEmptyParts );
 
                             length = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75; //75 frames per second
 

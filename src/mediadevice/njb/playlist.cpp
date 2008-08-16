@@ -127,7 +127,7 @@ NjbPlaylist::escapefilename( const QString& _in )
 {
     QString result = _in;
 
-    result.replace("/","%2f");
+    result.replace('/',"%2f");
 
     return result;
 }

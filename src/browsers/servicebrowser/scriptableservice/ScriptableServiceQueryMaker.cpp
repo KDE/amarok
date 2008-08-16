@@ -447,7 +447,7 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter( qint64 value, const QString
     if ( value == valTitle )
     {
         d->filter += filter + ' ';
-        d->filter = d->filter.replace( " ", "%20" );
+        d->filter = d->filter.replace( ' ', "%20" );
     }
 
     int level = 0;

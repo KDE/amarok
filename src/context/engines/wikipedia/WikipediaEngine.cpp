@@ -206,8 +206,8 @@ WikipediaEngine::wikiResult( KJob* job )
     debug() << "Even better";
 
     //remove the new-lines and tabs(replace with spaces IS needed).
-    m_wiki.replace( "\n", " " );
-    m_wiki.replace( "\t", " " );
+    m_wiki.replace( '\n', ' ' );
+    m_wiki.replace( '\t', ' ' );
 
     m_wikiLanguages.clear();
     // Get the available language list

@@ -64,7 +64,7 @@ ProgressBar::setDescription( const QString &text )
 ProgressBar&
 ProgressBar::setStatus( const QString &text )
 {
-    const QString s = m_description + " [" + text + "]";
+    const QString s = m_description + " [" + text + ']';
 
     m_label->setText( s );
     parentWidget()->adjustSize();

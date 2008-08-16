@@ -437,7 +437,7 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
         weights << map.value( key );
 
         QString escapedKey = key;
-        escapedKey.replace( " ", "%20" );
+        escapedKey.replace( ' ', "%20" );
         QVariantMap action;
         action["component"]  = "/ServicePluginManager";
         action["function"] = "sendMessage";
@@ -564,7 +564,7 @@ QString MagnatuneStore::messages()
 
 QString MagnatuneStore::sendMessage( const QString & message )
 {
-    QStringList args = message.split( " ", QString::SkipEmptyParts );
+    QStringList args = message.split( ' ', QString::SkipEmptyParts );
 
     if ( args.size() < 1 ) {
         return i18n( "ERROR: No arguments supplied" );

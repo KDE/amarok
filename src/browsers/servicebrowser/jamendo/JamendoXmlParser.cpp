@@ -223,7 +223,7 @@ JamendoXmlParser::parseAlbum( const  QDomElement &e)
             //we use tags instad of genres for creating genres in the database, as the
             //Jamendo.com genres are messy at best
             else if ( currentChildElement.tagName() == "tags" )
-                tags = currentChildElement.text().split(" ", QString::SkipEmptyParts);
+                tags = currentChildElement.text().split(' ', QString::SkipEmptyParts);
             else if ( currentChildElement.tagName() == "Covers" )
                 coverUrl = getCoverUrl( currentChildElement, 100 );
             else if ( currentChildElement.tagName() == "P2PLinks" )

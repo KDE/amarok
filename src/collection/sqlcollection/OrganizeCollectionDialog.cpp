@@ -293,7 +293,7 @@ QString OrganizeCollectionDialog::cleanPath( const QString &component ) const
     if( ui->vfatCheck->isChecked() )
         result = Amarok::vfatPath( result );
 
-    result.replace( "/", "-" );
+    result.replace( '/', '-' );
 
     return result;
 }

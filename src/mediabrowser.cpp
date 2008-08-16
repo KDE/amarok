@@ -1150,7 +1150,7 @@ MediaBrowser::loadDevicePlugin( const QString &udi )
             return 0;
         }
 
-        QStringList sl = udi.split( "|" );
+        QStringList sl = udi.split( '|' );
         name = sl[1];
         mountPoint = sl[2];
     }

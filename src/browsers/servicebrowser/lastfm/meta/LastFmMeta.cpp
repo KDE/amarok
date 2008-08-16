@@ -323,7 +323,7 @@ Track::streamName() const
 {
     // parse the url to get a name if we don't have a track name (ie we're not playing the station)
     // do it as name rather than prettyname so it shows up nice in the playlist.
-    QStringList elements = d->lastFmUri.split( "/", QString::SkipEmptyParts );
+    QStringList elements = d->lastFmUri.split( '/', QString::SkipEmptyParts );
     if( elements.size() >= 2 && elements[0] == "lastfm:" )
     {
         QString customPart = elements[2];

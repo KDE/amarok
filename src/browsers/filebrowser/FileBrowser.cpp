@@ -322,7 +322,7 @@ void FileBrowser::Widget::slotFilterChange( const QString & nf )
   }
   else
   {
-    f = "*" + f + "*"; // add regexp matches surrounding the filter
+    f = '*' + f + '*'; // add regexp matches surrounding the filter
     m_dir->setNameFilter( f );
     lastFilter = f;
     m_btnFilter->setToolTip( i18n("Clear filter") );

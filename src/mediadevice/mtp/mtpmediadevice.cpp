@@ -577,7 +577,7 @@ MtpMediaDevice::checkFolderStructure( const Meta::TrackPtr track, bool create )
         genreName = genre->prettyName();
     m_critical_mutex.lock();
     uint32_t parent_id = getDefaultParentId();
-    QStringList folders = m_folderStructure.split( "/" ); // use slash as a dir separator
+    QStringList folders = m_folderStructure.split( '/' ); // use slash as a dir separator
     QString completePath;
     for( QStringList::Iterator it = folders.begin(); it != folders.end(); ++it )
     {

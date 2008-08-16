@@ -194,7 +194,7 @@ namespace CollectionFolder {
     Model::isForbiddenPath( const QString &path ) const
     {
         // we need the trailing slash otherwise we could forbid "/dev-music" for example
-        QString _path = path.endsWith( "/" ) ? path : path + "/";
+        QString _path = path.endsWith( '/' ) ? path : path + '/';
         return _path.startsWith( "/proc/" ) || _path.startsWith( "/dev/" ) || _path.startsWith( "/sys/" );
     }
 

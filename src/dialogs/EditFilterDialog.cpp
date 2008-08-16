@@ -702,7 +702,7 @@ void EditFilterDialog::slotDefault() // SLOT
         if (m_checkOR->isChecked())
             m_filterText += "OR ";
     }
-    QStringList list = m_editKeyword->text().split( " " );
+    QStringList list = m_editKeyword->text().split( ' ' );
     const QString key = m_vector[m_selectedIndex];
     if( m_selectedIndex == 0 )
     {

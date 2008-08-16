@@ -105,7 +105,7 @@ Mp3tunesHarmonyDaemon::allAboardTheDBus()
             reversedDomain.prepend(s);
         }
     const QString pidSuffix = QString::number( applicationPid() ).prepend( QLatin1String("-") );
-    const QString serviceName = reversedDomain + this->applicationName().remove( " " ) + pidSuffix;
+    const QString serviceName = reversedDomain + this->applicationName().remove( ' ' ) + pidSuffix;
     if ( bus->registerService(serviceName) == QDBusConnectionInterface::ServiceNotRegistered ) {
         qDebug() << "FATAL: Couldn't register   name '" << serviceName << "' with DBUS - another process owns it already!" << endl;;
         ::exit(126);
