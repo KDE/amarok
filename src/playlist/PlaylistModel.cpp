@@ -725,6 +725,9 @@ Playlist::Model::insertTrackListSlot( Meta::TrackList list ) //slot
 {
     disconnect( this, SLOT( insertTrackListSlot( Meta::TrackList ) ) );
     int row = m_dragHash[sender()];
+
+    qStableSort( list.begin(), list.end(), Amarok::trackNumberLessThan );
+
     if( row < 0 )
         insertOptioned( list, Playlist::AppendAndPlay );
     else
