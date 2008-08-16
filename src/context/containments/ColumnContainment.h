@@ -40,7 +40,7 @@ class QAction;
 namespace Context
 {
 
-class AMAROK_EXPORT ColumnContainment : public Containment
+class ColumnContainment : public Containment
 {
     Q_OBJECT
 
