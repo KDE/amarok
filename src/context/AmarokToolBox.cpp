@@ -275,7 +275,7 @@ AmarokToolBox::hideTools()
             else
             {
                 ToolBoxIcon *amarokTool = dynamic_cast<ToolBoxIcon *>( tool );
-                if( amarokTool && amarokTool->text() != "" )
+                if( amarokTool && !amarokTool->text().isEmpty() )
                     continue;
             }
             

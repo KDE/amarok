@@ -405,7 +405,7 @@ TagDialog::guessFromFilename() //SLOT
     schemes += schemeFromDialog;
     
     
-    if( schemeFromDialog == "" )
+    if( schemeFromDialog.isEmpty() )
     {
 
         //FIXME: remove this before release

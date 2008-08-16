@@ -153,7 +153,7 @@ void Track::Private::readMetaData()
             if ( track_encoding == "IBM855" ) track_encoding =""; //no match
             if ( track_encoding == "IBM866" ) track_encoding = "IBM 866";
             if ( track_encoding == "TIS-620" ) track_encoding = ""; //ISO-8859-11, no match
-            if ( track_encoding != "" )
+            if ( !track_encoding.isEmpty() )
             {
                 //FIXME:about 10% tracks cannot be decoded well. It shows blank for now.
                 debug () << "Final Codec Name:" << track_encoding.toUtf8() <<endl;
