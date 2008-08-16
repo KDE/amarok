@@ -6,7 +6,7 @@ if (NOT WIN32 )
 #add_subdirectory( src/scriptengine/generator )
 endif (NOT WIN32)
 #We depend on kde4.1 now.. I believe this is the easiest way to do it.
-set(KDE_MIN_VERSION "4.00.61")
+set(KDE_MIN_VERSION "4.1.0")
 find_package( KDE4 REQUIRED )
 include (KDE4Defaults)
 include (MacroLibrary)
@@ -15,7 +15,7 @@ include(CheckTypeSize)
 include(MacroBoolTo01)
 include(MacroLogFeature)
 
-macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.00.61" "" )
+macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.1.0" "" )
 
 set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
                           ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
@@ -25,15 +25,6 @@ add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 set(TAGLIB_MIN_VERSION "1.5")
 find_package(Taglib)
 macro_log_feature( TAGLIB_FOUND "taglib" "Read and write tags in audio files" "http://www.freshmeat.net/projects/taglib" TRUE "1.5.0" "")
-if (WIN32)
-    find_package(Ruby)
-#NOTE: cmake's FindRuby does not set a RUBY_FOUND variable, making this macro not possible.
-#     macro_log_feature( Ruby_FOUND "ruby" "Support for various services within amarok that use Ruby" "http://www.ruby.org" FALSE "1.8" "")
-else (WIN32)
-    find_package(Ruby REQUIRED)
-#NOTE: cmake's FindRuby does not set a RUBY_FOUND variable, making this macro not possible.
-#     macro_log_feature( Ruby_FOUND "ruby" "Support for various services within amarok that use Ruby" "http://www.ruby.org" TRUE "1.8" "")
-endif (WIN32)
 
 find_package(Strigi REQUIRED)
 macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
