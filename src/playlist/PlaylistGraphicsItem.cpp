@@ -702,11 +702,8 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
             for ( int i = m_currentRow + 1; i <=lastInAlbum; i++ ) {
 
                 debug() << "moving child to: " <<  m_items->childPreDragPositions.first();
-                if( m_items->childPreDragPositions.size() > 1 )
+                if( m_items->childPreDragPositions.size() > 0 )
                     The::playlistView()->tracks()[i]->setPos( m_items->childPreDragPositions.takeFirst() );
-                else
-                    // SOmething should happen here... but what?
-                    ;
 
             }
         } else {
@@ -743,7 +740,6 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
 
             //we dropped above the top item, so make this the new top item
             debug() << "above first";
-
             //we know from a check earlier that we are not thetop item, so this call is safe.
             The::playlistView()->moveItem( this, dynamic_cast<Playlist::GraphicsItem *>( firstItem ) );
             
