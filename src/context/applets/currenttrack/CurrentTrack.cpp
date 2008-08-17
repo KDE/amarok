@@ -66,7 +66,7 @@ void CurrentTrack::init()
 //     const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
     //const QColor textColor( Qt::black );
     QFont labelFont;
-    labelFont.setBold( true );
+    labelFont.setBold( false );
     labelFont.setPointSize( labelFont.pointSize() + 1  );
     labelFont.setStyleHint( QFont::Times );
     labelFont.setStyleStrategy( QFont::PreferAntialias );
@@ -105,7 +105,7 @@ void CurrentTrack::init()
     
     QFont tinyFont( textFont );
     tinyFont.setPointSize( tinyFont.pointSize() - 5 );
-    tinyFont.setBold( true );
+    tinyFont.setBold( false );
 
     m_noTrack->setFont( bigFont );
     m_title->setFont( textFont );
@@ -237,8 +237,8 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     else
         tinyFont.setPointSize( 1 );
     
-    tinyFont.setBold( true );
-    labeFont.setBold( true );
+    tinyFont.setBold( false );
+    labeFont.setBold( false );
 
     m_maxTextWidth = textWidth;
     //m_maxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
