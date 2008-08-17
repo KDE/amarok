@@ -45,6 +45,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
  */
 #define K_EXPORT_AMAROK_APPLET(libname, classname) \
 K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
-K_EXPORT_PLUGIN(factory("amarok_context_applet_" #libname))
+K_EXPORT_PLUGIN(factory("amarok_context_applet_" #libname))\
+K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
 
 #endif // multiple inclusion guard

@@ -64,7 +64,8 @@ set(plasma_LIB_SRCS
     plasma/theme.cpp
     plasma/toolbox.cpp
     plasma/uiloader.cpp
-    plasma/view.cpp
+    plasma/version.cpp
+    plasma/view.cpp    
     plasma/widgets/checkbox.cpp
     plasma/widgets/combobox.cpp
     plasma/widgets/flash.cpp
@@ -114,7 +115,7 @@ if(APPLE)
    SET_TARGET_PROPERTIES(amarokplasma PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
-set_target_properties(amarokplasma PROPERTIES VERSION 1.0.0 SOVERSION 1)
+set_target_properties(amarokplasma PROPERTIES VERSION 2.0.0 SOVERSION 2)
 SET_TARGET_PROPERTIES(amarokplasma PROPERTIES DEFINE_SYMBOL MAKE_PLASMA_LIB )
 install(TARGETS amarokplasma ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
