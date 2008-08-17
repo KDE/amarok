@@ -5,6 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.0-beta1
   FEATURES:
+    * Album moves can be undone
+    * Grouped albums can be moved in the playlist by draggin the album 
+      header
+    * Track moves in the playlist can now be undone
     * Gapless playback.
     * New "fuzzy" bias type, which matches values loosely.
     * Saving/loading dynamic playlists.
