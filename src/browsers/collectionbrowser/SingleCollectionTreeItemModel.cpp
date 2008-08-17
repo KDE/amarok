@@ -111,6 +111,12 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
     return item->data( role );
 }
 
+Qt::ItemFlags 
+SingleCollectionTreeItemModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags f = CollectionTreeItemModelBase::flags( index );
+    return ( f &= ~Qt::ItemIsEditable );
+}
 
 bool
 SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const {

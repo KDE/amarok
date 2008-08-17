@@ -33,7 +33,8 @@ class CollectionTreeItem;
 class Collection;
 //typedef QPair<Collection*, CollectionTreeItem* > CollectionRoot;
 
-class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemModelBase {
+class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemModelBase 
+{
 Q_OBJECT
 
     public:
@@ -44,6 +45,7 @@ Q_OBJECT
         virtual bool canFetchMore( const QModelIndex &parent ) const;
         virtual void fetchMore( const QModelIndex &parent );
         virtual void setLevels( const QList<int> &levelType );
+        virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     protected:
         virtual void filterChildren();

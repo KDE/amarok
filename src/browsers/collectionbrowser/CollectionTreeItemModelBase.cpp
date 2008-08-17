@@ -30,6 +30,7 @@
 #include "CollectionTreeItem.h"
 #include "Debug.h"
 #include "Expression.h"
+#include "meta/EditCapability.h"
 #include "QueryMaker.h"
 
 #include <KIcon>
@@ -73,7 +74,39 @@ Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) cons
     if ( !index.isValid() )
         return Qt::ItemIsEnabled;
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    Qt::ItemFlags flags;
+    flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( static_cast<CollectionTreeItem*>( index.internalPointer() )->data() ) )
+    {
+        if( track && track->hasCapabilityInterface( Meta::Capability::Editable ) )
+            flags |= Qt::ItemIsEditable;
+    }
+    return flags;
+    
+}
+
+bool 
+CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+    
+    if( !index.isValid() )
+        return false;
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+    
+    Meta::DataPtr data = item->data();
+    // Function is only called if flags returns Qt::ItemIsEditable, where hasCapabilityInterface is called.  Therfore we don't need to check again
+    if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) )
+    {
+        Meta::EditCapability *ec = track->as<Meta::EditCapability>();
+        if( ec )
+        {
+            ec->setTitle( value.toString() );
+            emit dataChanged( index, index );
+            return true;
+        }
+        delete ec;
+    }
+    return false;
 }
 
 QVariant

@@ -208,10 +208,12 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     }
 
 
-    if ( !m_currentCopyDestination.empty() ) {
+    if ( !m_currentCopyDestination.empty() )
+    {
         debug() << "got copy actions";
         KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
-        foreach( PopupDropperAction * action, m_currentCopyDestination.keys() ) {
+        foreach( PopupDropperAction *action, m_currentCopyDestination.keys() ) 
+        {
             action->setParent( copyMenu );
             copyMenu->addAction( action );
         }
