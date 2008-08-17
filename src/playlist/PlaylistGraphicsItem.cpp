@@ -680,10 +680,15 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
 {
     DEBUG_BLOCK
 
-    debug() << "org rect: " << m_items->preDragLocation << ", drop pos " << mapToScene( event->pos() );
+    QPointF eventPos = mapToScene( event->pos() );
+
+    debug() << "org rect: " << m_items->preDragLocation << ", drop pos " << eventPos;
+
+    QGraphicsItem* firstItem = The::playlistView()->tracks().first();
+    bool movingFirstAboveTop = ( firstItem == this ) && ( eventPos.y() < 0 );
             
-    bool dragOverOriginalPosition = m_items->preDragLocation.contains( mapToScene( event->pos() ) );
-    if( dragOverOriginalPosition )
+    bool dragOverOriginalPosition = m_items->preDragLocation.contains( eventPos );
+    if( dragOverOriginalPosition || movingFirstAboveTop )
     {
 
         debug() << "Item dragged over org pos";
@@ -731,11 +736,26 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
     }
     else
     {
-        //Don't just drop item into the void, make it the last item!
+
         debug() << "whopps... we did not hit anything, not even our own old position";
-        The::playlistView()->moveItem( this, 0 );
-        //setPos( above->pos() );
-        //The::playlistView()->moveItem( this, above );
+
+        if( mapToScene( event->pos() ).y() < 0 ) {
+
+            //we dropped above the top item, so make this the new top item
+            debug() << "above first";
+
+            //we know from a check earlier that we are not thetop item, so this call is safe.
+            The::playlistView()->moveItem( this, dynamic_cast<Playlist::GraphicsItem *>( firstItem ) );
+            
+        } else {
+            debug() << "Uhm... where the hell are we? Just move to the bottom";
+            //Don't just drop item into the void, make it the last item!
+            
+            The::playlistView()->moveItem( this, 0 );
+            //setPos( above->pos() );
+            //The::playlistView()->moveItem( this, above );
+
+        }
     }
 
     //make sure item resets its z value
