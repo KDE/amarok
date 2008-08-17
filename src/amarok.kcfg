@@ -206,6 +206,10 @@
         <label>Whether to use the CoverBling album art visualization.</label>
         <default>false</default>
     </entry>
+    <entry key="AutoGetCoverArt" type="Bool">
+        <label>Whether to automatically attempt to fetch cover art as needed</label>
+        <default>false</default>
+    </entry>
 </group>
 
 <group name="Playback">
