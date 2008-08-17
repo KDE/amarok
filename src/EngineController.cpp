@@ -626,7 +626,6 @@ void
 EngineController::slotPlayableUrlFetched( const KUrl &url )
 {
     DEBUG_BLOCK
-    QMutexLocker locker( &m_mutex );
 
     if( url.isEmpty() )
     {
@@ -636,6 +635,7 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
 
     if( !m_playWhenFetched )
     {
+        m_mutex.lock();
         m_media->clearQueue();
         if( url.isLocalFile() )
             m_media->enqueue( url );
@@ -643,9 +643,14 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
         m_nextUrl = url;
         // reset this flag each time
         m_playWhenFetched = true;
+        m_mutex.unlock();
     }
     else
+    {
+        m_mutex.lock();
         playUrl( url, 0 );
+        m_mutex.unlock();
+    }
 }
 
 void
