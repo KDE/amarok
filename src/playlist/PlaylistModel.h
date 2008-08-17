@@ -144,7 +144,8 @@ namespace Playlist
         friend class AddTracksCmd;
         friend class AddPlaylistsCmd;
         friend class RemoveTracksCmd;
-        friend class MoveTracksCmd;
+        friend class MoveTrackCmd;
+        friend class MoveMultipleTracksCmd;
         friend Playlist::Model* The::playlistModel();
 
         Q_OBJECT
@@ -245,6 +246,7 @@ namespace Playlist
 
             bool moveRow( int row, int to );
             bool moveMultipleRows( QList<int> rows, int to );
+         
 
             using Observer::metadataChanged;
             virtual void metadataChanged( Meta::Track *track );
@@ -322,6 +324,8 @@ namespace Playlist
              * @param to the position to move it to
              */
             void moveRowCommand( int from, int to );
+
+            bool moveMultipleRowsCommand( QList<int> rows, int to );
 
             //TODO: implement these once Meta::Observer works for Meta::Playlists
             void registerPlaylist( Meta::PlaylistPtr playlist ) { Q_UNUSED( playlist ) };

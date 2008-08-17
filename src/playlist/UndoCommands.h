@@ -76,18 +76,33 @@ namespace Playlist {
 
 
      /**
-     * Moves a track from one position to another in the playlist in an reversible way.
+     * Moves a track from one position to another in the playlist in a reversible way.
      */
-    class MoveTracksCmd: public QUndoCommand
+    class MoveTrackCmd: public QUndoCommand
     {
         public:
-            MoveTracksCmd( QUndoCommand* parent, int from, int to );
+            MoveTrackCmd( QUndoCommand* parent, int from, int to );
             void undo();
             void redo();
         private:
             int m_from;
             int m_to;
     };
+
+         /**
+     * Moves a track from one position to another in the playlist in a reversible way.
+          */
+    class MoveMultipleTracksCmd: public QUndoCommand
+    {
+        public:
+            MoveMultipleTracksCmd( QUndoCommand* parent, QList<int> rows, int to );
+            void undo();
+            void redo();
+        private:
+            QList<int> m_rows;
+            int m_to;
+    };
+
 
     /**
      * Removes the specified playlists from the Playlist::Model, and remembers them so as to add them back if requested.

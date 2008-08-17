@@ -418,8 +418,6 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
 
         m_model->moveMultipleRows( albumTracks, aboveIndex );
 
-        moveViewItems( albumTracks, aboveIndex );
-
     }
 }
 

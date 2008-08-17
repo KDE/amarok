@@ -434,7 +434,14 @@ Playlist::Model::removeRows( int position, int rows, const QModelIndex& /*parent
 bool
 Playlist::Model::moveRow( int from, int to )
 {
-    m_undoStack->push( new MoveTracksCmd( 0, from, to ) );
+    m_undoStack->push( new MoveTrackCmd( 0, from, to ) );
+    return true;
+}
+
+bool
+Playlist::Model::moveMultipleRows(QList< int > rows, int to)
+{
+    m_undoStack->push( new MoveMultipleTracksCmd( 0, rows, to ) );
     return true;
 }
 
@@ -1611,7 +1618,7 @@ Playlist::Model::clearNewlyAdded()
 }
 
 
-bool Playlist::Model::moveMultipleRows( QList< int > rows, int to )
+bool Playlist::Model::moveMultipleRowsCommand( QList< int > rows, int to )
 {
 
     DEBUG_BLOCK
@@ -1792,6 +1799,8 @@ Playlist::Model::regroupAll()
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
 }
+
+
 
 
 

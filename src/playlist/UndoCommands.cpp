@@ -95,7 +95,7 @@ AddPlaylistsCmd::undo()
 
 
 
-Playlist::MoveTracksCmd::MoveTracksCmd( QUndoCommand * parent, int from, int to )
+Playlist::MoveTrackCmd::MoveTrackCmd( QUndoCommand * parent, int from, int to )
     : QUndoCommand( i18n("Track moved"), parent )
     , m_from( from )
     , m_to( to )
@@ -103,16 +103,49 @@ Playlist::MoveTracksCmd::MoveTracksCmd( QUndoCommand * parent, int from, int to 
 
 }
 
-void Playlist::MoveTracksCmd::redo()
+void Playlist::MoveTrackCmd::redo()
 {
     DEBUG_BLOCK
     The::playlistModel()->moveRowCommand( m_from, m_to );
     The::playlistView()->moveViewItem( m_from, m_to );
 }
 
-void Playlist::MoveTracksCmd::undo()
+void Playlist::MoveTrackCmd::undo()
 {
     DEBUG_BLOCK
     The::playlistModel()->moveRowCommand( m_to, m_from );
     The::playlistView()->moveViewItem( m_to, m_from );
+}
+
+
+Playlist::MoveMultipleTracksCmd::MoveMultipleTracksCmd(QUndoCommand * parent, QList< int > rows, int to)
+    : QUndoCommand( i18n("Group moved"), parent )
+    , m_rows( rows )
+    , m_to( to )
+{
+}
+
+void Playlist::MoveMultipleTracksCmd::undo()
+{
+    int newTo = m_rows.first();
+    QList<int> newRows;
+
+
+    if ( newTo < m_to ) {
+        for ( int i = 0; i < m_rows.count(); i++ )
+            newRows << i + m_to - ( m_rows.count() - 1 );
+    } else {
+        for ( int i = 0; i < m_rows.count(); i++ )
+            newRows << i + m_to;
+    }
+
+    The::playlistModel()->moveMultipleRowsCommand( newRows, newTo );
+    The::playlistView()->moveViewItems( newRows, newTo );
+    
+}
+
+void Playlist::MoveMultipleTracksCmd::redo()
+{
+    The::playlistModel()->moveMultipleRowsCommand( m_rows, m_to );
+    The::playlistView()->moveViewItems( m_rows, m_to );
 }

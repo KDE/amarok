@@ -51,7 +51,8 @@ namespace Playlist
 
         friend Playlist::GraphicsView* The::playlistView();
 
-        friend class Playlist::MoveTracksCmd;
+        friend class Playlist::MoveTrackCmd;
+        friend class Playlist::MoveMultipleTracksCmd;
 
         public:
             void  setModel( Playlist::Model *model );

@@ -548,11 +548,12 @@ Playlist::GraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
             QRectF orgRect( topLeft.x(), topLeft.y(), bottomRight.x() - topLeft.x(), ( bottomRight.y() - topLeft.y() ) );
 
-            debug() << "Album rect: " << mapToScene( orgRect ).boundingRect();
+            debug() << "Album rect: " << orgRect;
+            m_items->preDragLocation = orgRect;
 
-            m_items->preDragLocation = mapToScene( orgRect ).boundingRect();
+            m_items->childPreDragPositions.clear();
 
-            for ( int i = m_currentRow; i <=lastInAlbum; i++ )
+            for ( int i = m_currentRow + 1; i <=lastInAlbum; i++ )
                 m_items->childPreDragPositions << The::playlistView()->tracks()[i]->pos();
         }
 
@@ -677,23 +678,31 @@ Playlist::GraphicsItem::refresh()
 void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
     DEBUG_BLOCK
-    
-    bool dragOverOriginalPosition = m_items->preDragLocation.contains( event->scenePos() );
+
+    debug() << "org rect: " << m_items->preDragLocation << ", drop pos " << mapToScene( event->pos() );
+            
+    bool dragOverOriginalPosition = m_items->preDragLocation.contains( mapToScene( event->pos() ) );
     if( dragOverOriginalPosition )
     {
 
-        debug() << "Item dragged over org pos: " << m_items->preDragLocation << ", " << event->scenePos();
+        debug() << "Item dragged over org pos";
 
         if ( groupMode() == Playlist::Head ) {
-           
+
+            debug() << "moving head to: " << m_items->preDragLocation.topLeft(); 
+            setPos( m_items->preDragLocation.topLeft() );
             int lastInAlbum = The::playlistModel()->lastInGroup( m_currentRow );
             //restore original positions
-            for ( int i = m_currentRow; i <=lastInAlbum; i++ )
+            for ( int i = m_currentRow + 1; i <=lastInAlbum; i++ ) {
+
+                debug() << "moving child to: " <<  m_items->childPreDragPositions.first();
                 if( m_items->childPreDragPositions.size() > 1 )
                     The::playlistView()->tracks()[i]->setPos( m_items->childPreDragPositions.takeFirst() );
                 else
                     // SOmething should happen here... but what?
                     ;
+
+            }
         } else {
             setPos( m_items->preDragLocation.topLeft() );
             Playlist::DropVis::instance()->hide();
@@ -722,7 +731,7 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
     else
     {
         //Don't just drop item into the void, make it the last item!
-
+        debug() << "whopps... we did not hit anything, not even our own old position";
         The::playlistView()->moveItem( this, 0 );
         //setPos( above->pos() );
         //The::playlistView()->moveItem( this, above );
