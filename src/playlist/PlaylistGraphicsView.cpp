@@ -24,10 +24,12 @@
 #include "App.h" // application palette
 #include "Debug.h"
 
+#include "meta/Meta.h"
 #include "PlaylistDropVis.h"
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistGraphicsScene.h"
 #include "PlaylistModel.h"
+#include "PlaylistTextItem.h"
 #include "PlaylistViewCommon.h"
 #include "SvgTinter.h"
 #include "WidgetBackgroundPainter.h"
@@ -103,22 +105,42 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     if( !topItem )
         return;
 
-    Playlist::GraphicsItem *item = dynamic_cast<Playlist::GraphicsItem*>( topItem );
-    if( !item )
-        item = dynamic_cast<Playlist::GraphicsItem*>( topItem->parentItem() );
-    if( !item ) // we've clicked on empty space
-        return;
+    Playlist::TextItem *tItem = dynamic_cast<Playlist::TextItem*>( topItem );
+    if( tItem )
+    {
+        Playlist::GraphicsItem *item = dynamic_cast< Playlist::GraphicsItem *>( tItem->parentItem() );
+        if( item )
+        {
+            if( item->internalTrack()->hasCapabilityInterface( Meta::Capability::Editable ) )
+            {
+                QMenu menu( this );
+                QAction *a = new QAction( this );
+                a->setText( i18n( "Edit" ) );
+                menu.addAction( a );
+                QAction *result = menu.exec( event->globalPos() );
+                if( result == a )
+                    tItem->setTextInteractionFlags( Qt::TextEditorInteraction );
+            }
+        }
+    }
+    else
+    {
+        Playlist::GraphicsItem *item = dynamic_cast<Playlist::GraphicsItem*>( topItem );
+        if( !item )
+            item = dynamic_cast<Playlist::GraphicsItem*>( topItem->parentItem() );
+        if( !item ) // we've clicked on empty space
+            return;
 
-    item->setSelected( true );
-    event->accept();
+        item->setSelected( true );
+        event->accept();
 
-    m_contextMenuItem = item;
+        m_contextMenuItem = item;
 
-    QPointF itemClickPos = item->mapFromScene( sceneClickPos );
-    int row = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(item) );
-    const QModelIndex index = The::playlistModel()->index( row, 0 );
-    ViewCommon::trackMenu(this, &index ,event->globalPos(), item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ));
-
+        QPointF itemClickPos = item->mapFromScene( sceneClickPos );
+        int row = m_tracks.indexOf( item );
+        const QModelIndex index = The::playlistModel()->index( row, 0 );
+        ViewCommon::trackMenu(this, &index ,event->globalPos(), item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ));
+    }
 }
 
 void

@@ -20,6 +20,11 @@
 
 #include "PlaylistTextItem.h"
 
+#include "App.h"
+#include "meta/Meta.h"
+#include "meta/EditCapability.h"
+#include "PlaylistGraphicsItem.h"
+
 #include <QFontMetricsF>
 
 QFontMetricsF* Playlist::TextItem::s_fm = 0;
@@ -30,10 +35,8 @@ Playlist::TextItem::TextItem( QGraphicsItem* parent )
 {
     if( !s_fm )
     {
-        s_fm = new QFontMetricsF( QFont() );
+        s_fm = new QFontMetricsF( App::instance()->font() );
     }
-    //setDefaultTextColor( Qt::white );
-
 }
 
 ///method assumes text is currently not being edited
@@ -58,7 +61,22 @@ void
 Playlist::TextItem::focusOutEvent( QFocusEvent *event )
 {
     QGraphicsTextItem::focusOutEvent( event );
-    m_fullText = toPlainText();
+    if( m_fullText != toPlainText() )
+    {
+        // The text was changed.. we should save it.
+        Playlist::GraphicsItem *item = dynamic_cast< Playlist::GraphicsItem* >( parentItem() );
+        if( item )
+        {
+            Meta::TrackPtr internalTrack = item->internalTrack();
+            if( internalTrack )
+            {
+                Meta::EditCapability *ec = internalTrack->as<Meta::EditCapability>();
+                if( ec )
+                    ec->setTitle( toPlainText() );
+            }
+        }
+        m_fullText = toPlainText();
+    }
     setEditableText( m_fullText, m_width );
 }
 
