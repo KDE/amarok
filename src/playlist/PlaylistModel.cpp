@@ -1140,12 +1140,26 @@ Playlist::Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &l
 void
 Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
 {
+    DEBUG_BLOCK
+
+    debug() << "row: " << row << ", list count: " << list.size();
+
+    if ( row == -1 )
+        row = m_items.count();
+    
     if( !list.size() )
         return;
 
     clearNewlyAdded();
 
-    beginInsertRows( QModelIndex(), row, row + list.size() - 1 );
+    int adjCount = list.size() - 1;
+
+    if ( adjCount < 0 )
+        adjCount = 0;
+
+    beginInsertRows( QModelIndex(), row, row + adjCount );
+
+    
     int i = 0;
     foreach( Meta::TrackPtr track , list )
     {
@@ -1173,7 +1187,7 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
         //dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
         //dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
-    dataChanged( createIndex( row, 0 ), createIndex( rowCount() - 1, 0 ) );
+    dataChanged( createIndex( row, 0 ), createIndex( adjCount, 0 ) );
 
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
