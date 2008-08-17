@@ -191,6 +191,7 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
         m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
                             geometry().height() - m_toolBox->size().height() );
     }
+    
     if( m_arrows[ LEFT ] ) 
         m_arrows[ LEFT ]->resize( geometry().size() );
     if( m_arrows[ RIGHT ] ) 
@@ -725,6 +726,26 @@ ColumnContainment::setView( ContextView *newView )
     // all view-dependent signals, so we do it here
     debug() << "connecting to view";
     connect( this, SIGNAL( changeContainment( Plasma::Containment*, int ) ), m_view, SLOT( setContainment( Plasma::Containment*, int ) ) );
+}
+
+void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
+{
+    if( level == Plasma::DesktopZoom ) // zoomed in
+    {
+        foreach( ContainmentArrow* arrow, m_arrows.values() )
+        {
+            if( arrow )
+                arrow->enable();
+        }
+            
+    } else if( level == Plasma::GroupZoom )
+    {
+        foreach( ContainmentArrow* arrow, m_arrows.values() )
+        {
+            if( arrow )
+                arrow->disable();
+        }
+    }
 }
 
 } // Context namespace

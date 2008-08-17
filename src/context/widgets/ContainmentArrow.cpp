@@ -28,7 +28,8 @@ ContainmentArrow::ContainmentArrow( QGraphicsItem *parent, int direction ) :
     m_containment( 0 ),
     m_arrowSvg( 0 ),
     m_timer( 0 ) ,
-    m_showing( false )
+    m_showing( false ),
+    m_disabled( false )
 {
     DEBUG_BLOCK
     
@@ -150,6 +151,18 @@ ContainmentArrow::resize( const QSizeF newSize )
     update();
 }
 
+void
+ContainmentArrow::enable()
+{
+    m_disabled = false;
+}
+
+void ContainmentArrow::disable()
+{
+    m_disabled = true;
+}
+
+
 void 
 ContainmentArrow::show()
 {
@@ -200,7 +213,7 @@ void
 ContainmentArrow::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
     // DEBUG_BLOCK
-    if( m_hovering )
+    if( m_hovering || m_disabled )
         return;
     if( m_animHighlightId )
         Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
@@ -217,6 +230,8 @@ void
 ContainmentArrow::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
     // DEBUG_BLOCK
+    if( m_disabled )
+        return;
     if( m_animHighlightId )
         Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
     m_hovering = false;
@@ -265,7 +280,7 @@ void
 ContainmentArrow::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
     // DEBUG_BLOCK
-    if ( boundingRect().contains( event->pos() ) )
+    if ( boundingRect().contains( event->pos() ) && !m_disabled )
     {
         debug() << "EMITTING changeContainment!";
         emit changeContainment( m_arrowDirection );

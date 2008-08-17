@@ -66,7 +66,8 @@ public:
     virtual void hideTitle();
     virtual void addCurrentTrack();
     virtual void setView( ContextView *newView );
-
+    virtual void setZoomLevel( Plasma::ZoomLevel lvl );
+    
     virtual ContextView *view();
     void addContainmentArrow( int direction );
     

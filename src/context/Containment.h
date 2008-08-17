@@ -49,6 +49,7 @@ public:
     virtual void hideTitle() = 0;
     virtual void addCurrentTrack() = 0;
     virtual void setView( ContextView *newView ) = 0;
+    virtual void setZoomLevel( Plasma::ZoomLevel );
 
     virtual ContextView *view() = 0;
     
@@ -58,7 +59,9 @@ public slots:
     
 signals:
     void appletRejected( QString pluginName, int rowSpan );
-        
+  
+private:
+    Plasma::ZoomLevel m_zoomLevel;      
 };
 
 } // Context namespace

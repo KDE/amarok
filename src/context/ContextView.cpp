@@ -286,7 +286,11 @@ ContextView::zoomIn( Plasma::Containment* toContainment )
     {
         setContainment( toContainment );
     }
-    
+    // tell the containments about its zoom status
+    Containment* containment = qobject_cast< Containment* >( toContainment );
+    if( containment )
+        containment->setZoomLevel( Plasma::DesktopZoom );
+        
     if ( m_zoomLevel == Plasma::GroupZoom )
     {
         connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
@@ -310,6 +314,7 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
             if( containment )
             {
                 containment->showTitle();
+                containment->setZoomLevel( Plasma::GroupZoom);
             }
         }
 

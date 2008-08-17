@@ -56,6 +56,8 @@ public:
     QSize size() const;
     void resize( const QSizeF newSize );
     
+    void enable();
+    void disable();
     
 public slots:
     void show();
@@ -82,6 +84,7 @@ private:
     int m_animHighlightId;
     bool m_hovering;
     bool m_showing;
+    bool m_disabled;
     qreal m_aspectRatio;
     
     QTimer *m_timer;
