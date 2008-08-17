@@ -132,16 +132,25 @@ void Playlist::MoveMultipleTracksCmd::undo()
     QList<int> newRows;
 
 
+    //we need to figure out what the new position of the rows are and where to move
+    //them now to restore original layout
     if ( newTo < m_to ) {
+        //the original operation moved an album down. Hence we need to remember to subtract the
+        //number of items that was moved as these no longer count towards the postion in the list
         for ( int i = 0; i < m_rows.count(); i++ )
             newRows << i + m_to - ( m_rows.count() - 1 );
+            The::playlistModel()->moveMultipleRowsCommand( newRows, newTo );
+            The::playlistView()->moveViewItems( newRows, newTo );
     } else {
+        //The original opperation moved an album up in the list.
         for ( int i = 0; i < m_rows.count(); i++ )
             newRows << i + m_to;
+        
+        The::playlistModel()->moveMultipleRowsCommand( newRows, newTo + m_rows.count() );
+        The::playlistView()->moveViewItems( newRows, newTo + m_rows.count() );
     }
 
-    The::playlistModel()->moveMultipleRowsCommand( newRows, newTo );
-    The::playlistView()->moveViewItems( newRows, newTo );
+
     
 }
 
