@@ -1671,19 +1671,32 @@ bool Playlist::Model::moveMultipleRowsCommand( QList< int > rows, int to )
         
     }
 
-    int last = first + i;
+    int orgFirst = rows[0];
+    int orgLast = orgFirst + i;
     int count = i;
 
     //if we are moving stuff from one side of the current track to the other, we need to update its row, as well as if the current track is within the album.
 
-    if ( first < m_activeRow && to > m_activeRow )
-        m_activeRow -= count;
-    else if ( first > m_activeRow && to < m_activeRow )
+    if ( orgFirst < m_activeRow && orgLast > m_activeRow) {
+        //current track is in the selection begin moved...
+        debug() << "current track is in the selection begin moved...";
+        //if we are moving down, remember to subtract the number of rows being moved as they counted against the origitnal value of "to"
+        if ( orgFirst > to ) 
+            m_activeRow = to + ( m_activeRow - orgFirst );
+        else
+            m_activeRow = to + ( ( m_activeRow - orgFirst ) - count ) + 1;
+    } else if ( orgFirst > m_activeRow && to < m_activeRow ) {
+        //we are moving a selection from below the active track to above it
+        debug() << "we are moving a selection from below the active track to above it";
         m_activeRow += count;
-    else if ( first < m_activeRow && last > m_activeRow)
-        m_activeRow = to + ( m_activeRow - first );
-    else if ( to == m_activeRow && first > m_activeRow)
-        m_activeRow += count; 
+    } else if ( orgFirst < m_activeRow && to > m_activeRow ) {
+        //we are moving a selection from above the active track to below it
+        debug() << "we are moving a selection from above the active track to below it";
+        m_activeRow -= count;
+    } else if ( to == m_activeRow && orgFirst > m_activeRow) {
+        debug() << "we are moving something on top of the current track that was previously below it.";
+        m_activeRow += count;
+    }
 
     int offset = -1;
     if ( to < first )
