@@ -60,7 +60,6 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     KHBox * hBox = new KHBox( this );
 
-
     new MainControlsWidget( hBox );
     
     KVBox * vBox = new KVBox( hBox );
@@ -82,11 +81,6 @@ MainToolbar::MainToolbar( QWidget * parent )
     //pWidget->setMaximumSize( 600000, 24 );
     pWidget->setContentsMargins( 0, 2, 0, 0 );
 
-
-    
-
-
-
     m_volumeWidget = new VolumeWidget( topHBox );
     m_volumeWidget->setFixedSize( 160, 24 );
 
@@ -101,14 +95,13 @@ MainToolbar::~MainToolbar()
 
 void MainToolbar::paintEvent( QPaintEvent * )
 {
-    QPainter painter( this );
+    //QPainter painter( this );
 
-    //int watermarkWidth = height() * 1.36;
+    //const int watermarkWidth = height() * 1.36;
 
     //painter.drawPixmap( width() - watermarkWidth, 0, The::svgHandler()->renderSvg( "volume_watermark", watermarkWidth, height(), "volume_watermark" ) );
     
     //painter.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "toolbar_bg", width(), height(), "toolbar_bg" ) );
-
 }
 
 void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
