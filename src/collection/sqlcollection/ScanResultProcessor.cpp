@@ -75,7 +75,9 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
     setupDatabase();
     int deviceId = MountPointManager::instance()->getIdForUrl( dir );
     QString rdir = MountPointManager::instance()->getRelativePath( deviceId, dir );
-    QString query = QString( "SELECT id, changedate FROM directories_temp WHERE deviceid = %1 AND dir = '%2';" )
+    QString query = QString( "SELECT         id, changedate               "
+                             "FROM           directories_temp             "
+                             "WHERE          deviceid = %1 AND dir = '%2';" )
                         .arg( QString::number( deviceId ), m_collection->escape( rdir ) );
     QStringList res = m_collection->query( query );
     if( res.isEmpty() )
@@ -559,7 +561,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
 void
 ScanResultProcessor::updateAftPermanentTablesUrlId( int urlId, const QString &uid )
 {
-    foreach( QString table, m_aftPermanentTablesUrlId )
+    foreach( const QString &table, m_aftPermanentTablesUrlId )
     {
         QString query = QString( "UPDATE %1 SET url=%2 WHERE uniqueid='%3';" )
             .arg( table, QString::number( urlId ), m_collection->escape( uid ) );
@@ -570,7 +572,7 @@ ScanResultProcessor::updateAftPermanentTablesUrlId( int urlId, const QString &ui
 void
 ScanResultProcessor::updateAftPermanentTablesUidId( int urlId, const QString &uid )
 {
-    foreach( QString table, m_aftPermanentTablesUrlId )
+    foreach( const QString &table, m_aftPermanentTablesUrlId )
     {
         QString query = QString( "UPDATE %1 SET uniqueid='%2' WHERE url=%3;" )
             .arg( table, m_collection->escape( uid ), QString::number( urlId ) );
@@ -581,7 +583,7 @@ ScanResultProcessor::updateAftPermanentTablesUidId( int urlId, const QString &ui
 void
 ScanResultProcessor::updateAftPermanentTablesUrlString( const QString &url, const QString &uid )
 {
-    foreach( QString table, m_aftPermanentTablesUrlId )
+    foreach( const QString &table, m_aftPermanentTablesUrlId )
     {
         QString query = QString( "UPDATE %1 SET url='%2' WHERE uniqueid='%3';" )
             .arg( table, m_collection->escape( url ), m_collection->escape( uid ) );
@@ -592,7 +594,7 @@ ScanResultProcessor::updateAftPermanentTablesUrlString( const QString &url, cons
 void
 ScanResultProcessor::updateAftPermanentTablesUidString( const QString &url, const QString &uid )
 {
-    foreach( QString table, m_aftPermanentTablesUrlString )
+    foreach( const QString &table, m_aftPermanentTablesUrlString )
     {
         QString query = QString( "UPDATE %1 SET uniqueid='%2' WHERE url='%3';" )
             .arg( table, m_collection->escape( uid ), m_collection->escape( url ) );
