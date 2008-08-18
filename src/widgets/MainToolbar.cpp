@@ -107,7 +107,7 @@ void MainToolbar::paintEvent( QPaintEvent * )
 
     //painter.drawPixmap( width() - watermarkWidth, 0, The::svgHandler()->renderSvg( "volume_watermark", watermarkWidth, height(), "volume_watermark" ) );
     
-    painter.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "toolbar_bg", width(), height(), "toolbar_bg" ) );
+    //painter.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "toolbar_bg", width(), height(), "toolbar_bg" ) );
 
 }
 
