@@ -112,6 +112,7 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
         Playlist::GraphicsItem *item = dynamic_cast< Playlist::GraphicsItem *>( tItem->parentItem() );
         if( item )
         {
+            item->setSelected( true );
             if( item->internalTrack()->hasCapabilityInterface( Meta::Capability::Editable ) )
             {
                 QMenu menu( this );
