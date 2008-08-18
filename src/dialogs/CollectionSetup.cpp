@@ -67,7 +67,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     // set the model _after_ constructing the checkboxes
     m_model = new CollectionFolder::Model();
     m_view->setModel( m_model );
+    #ifndef Q_OS_WIN
     m_view->setRootIndex( m_model->setRootPath( QDir::rootPath() ) );
+    #else
+    m_view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
+    #endif
     
     // Read config values
     //we have to detect if this is the actual first run and not get the collectionFolders in that case
