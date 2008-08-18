@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta1
   FEATURES:
+    * Inline editing of tracks in the Collection is now possible.
     * Album moves can be undone
     * Grouped albums can be moved in the playlist by draggin the album 
       header
@@ -43,6 +44,8 @@ VERSION 2.0-beta1
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
+    * Amarok would not respect the user's changes in the cover search dialog.
+    * Amarok would submit tracks to lastfm reguardless of whether the user chose to enable scrobbling.
     * OSD translucency works now. (BR 166567)
     * Use name based sorting of tracks without a track number ( fixes 
       sorting in shoutcast and cool streams services )

@@ -217,8 +217,8 @@ void CoverFetcher::buildQueries( Meta::AlbumPtr album )
         m_userQuery = artistName + " - ";
     m_userQuery += albumName;
 
-    m_queries += artistName + " - " + albumName;
     m_queries += m_userQuery;
+    m_queries += artistName + " - " + albumName;
     m_queries += albumName;
 
     //don't do the same searches twice in a row
@@ -611,7 +611,7 @@ CoverFetcher::getUserQuery( QString explanation )
             debug() << m_userQuery;
             m_queries.clear();
             m_queries << m_userQuery;
-            buildQueries( m_albumPtr );
+            startFetch( m_albumPtr );
             break;
         default:
             finishWithError( i18n( "Aborted." ) );

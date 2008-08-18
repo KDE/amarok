@@ -15,6 +15,7 @@
 
 #include "ScrobblerAdapter.h"
 #include "Amarok.h"
+#include "amarokconfig.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
@@ -175,7 +176,7 @@ void
 ScrobblerAdapter::checkScrobble()
 {
     // note: in the 1.2 protocol submits are always done at end of file
-    if( ( m_current.isSkippedLovedOrBanned() || m_totalPlayed >= m_current.duration() * 1000 / 2 ) && !m_current.isEmpty() )
+    if( ( m_current.isSkippedLovedOrBanned() || m_totalPlayed >= m_current.duration() * 1000 / 2 ) && !m_current.isEmpty() && AmarokConfig::submitPlayedSongs() )
     {
         debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
         m_manager->scrobble( m_current );
