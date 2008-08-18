@@ -93,16 +93,16 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
             if ( level < m_levelType.count() )
             {
 
-                if (  m_levelType[level] == CategoryId::Album ) {
-//                     const Meta::Album* album = static_cast< const Meta::Album*> ( item->data().data() );
+                if (  m_levelType[level] == CategoryId::Album ) 
+                {
                     Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                     if( album)
                         return album->image( 32, false );
                     else
                         return iconForLevel( level );
-                } else {
-                    return iconForLevel( level );
                 }
+                else 
+                    return iconForLevel( level );
             }
         } else if ( role == AlternateCollectionRowRole )
             return ( index.row() % 2 == 1 );

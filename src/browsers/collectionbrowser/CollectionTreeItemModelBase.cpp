@@ -75,12 +75,7 @@ Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) cons
         return Qt::ItemIsEnabled;
 
     Qt::ItemFlags flags;
-    flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
-    if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( static_cast<CollectionTreeItem*>( index.internalPointer() )->data() ) )
-    {
-        if( track && track->hasCapabilityInterface( Meta::Capability::Editable ) )
-            flags |= Qt::ItemIsEditable;
-    }
+    flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEditable;
     return flags;
     
 }
@@ -94,9 +89,11 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
     
     Meta::DataPtr data = item->data();
-    // Function is only called if flags returns Qt::ItemIsEditable, where hasCapabilityInterface is called.  Therfore we don't need to check again
+    
     if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) )
     {
+        if( !track->hasCapabilityInterface( Meta::Capability::Editable ) )
+            return false;
         Meta::EditCapability *ec = track->as<Meta::EditCapability>();
         if( ec )
         {
@@ -105,6 +102,99 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
             return true;
         }
         delete ec;
+    }
+    /*else
+    {
+        QModelIndex in = index;
+        while( in.model()->hasChildren( in ) )
+        {
+            int rows = in.model()->rowCount( in );
+            for( int i = 0; i < rows; i++ )
+            {
+                setData( in.child( i, 1 ), value, role );
+                in = in.sibling( in.row() + 1, in.column() );
+            }
+        }
+    }*/
+    else if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( data ) )
+    {
+        Meta::TrackList tracks = album->tracks();
+        if( tracks.size() > 0 )
+        {
+            foreach( Meta::TrackPtr track, tracks )
+            {
+                Meta::EditCapability *ec = track->as<Meta::EditCapability>();
+                if( ec )
+                    ec->setAlbum( value.toString() );
+                delete ec;
+            }
+            emit dataChanged( index, index );
+            return true;
+        }
+    }
+    else if( Meta::ArtistPtr artist = Meta::ArtistPtr::dynamicCast( data ) )
+    {
+        Meta::TrackList tracks = artist->tracks();
+        if( tracks.size() > 0 )
+        {
+            foreach( Meta::TrackPtr track, tracks )
+            {
+                Meta::EditCapability *ec = track->as<Meta::EditCapability>();
+                if( ec )
+                    ec->setArtist( value.toString() );
+                delete ec;
+            }
+            emit dataChanged( index, index );
+            return true;
+        }
+    }
+    else if( Meta::GenrePtr genre = Meta::GenrePtr::dynamicCast( data ) )
+    {
+        Meta::TrackList tracks = genre->tracks();
+        if( tracks.size() > 0 )
+        {
+            foreach( Meta::TrackPtr track, tracks )
+            {
+                Meta::EditCapability *ec = track->as<Meta::EditCapability>();
+                if( ec )
+                    ec->setGenre( value.toString() );
+                delete ec;
+            }
+            emit dataChanged( index, index );
+            return true;
+        }
+    }
+    else if( Meta::YearPtr year = Meta::YearPtr::dynamicCast( data ) )
+    {
+        Meta::TrackList tracks = year->tracks();
+        if( tracks.size() > 0 )
+        {
+            foreach( Meta::TrackPtr track, tracks )
+            {
+                Meta::EditCapability *ec = track->as<Meta::EditCapability>();
+                if( ec )
+                    ec->setYear( value.toString() );
+                delete ec;
+            }
+            emit dataChanged( index, index );
+            return true;
+        }
+    }
+    else if( Meta::ComposerPtr composer = Meta::ComposerPtr::dynamicCast( data ) )
+    {
+        Meta::TrackList tracks = composer->tracks();
+        if( tracks.size() > 0 )
+        {
+            foreach( Meta::TrackPtr track, tracks )
+            {
+                Meta::EditCapability *ec = track->as<Meta::EditCapability>();
+                if( ec )
+                    ec->setComposer( value.toString() );
+                delete ec;
+            }
+            emit dataChanged( index, index );
+            return true;
+        }
     }
     return false;
 }
