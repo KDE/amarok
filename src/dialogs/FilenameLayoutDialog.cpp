@@ -72,7 +72,29 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     int underscoreOptions = Amarok::config( "TagGuesser" ).readEntry( "Replace underscores" ).toInt();
     cbReplaceUnderscores->setChecked( underscoreOptions );
     if( !isOrganizeCollection )
-        optionsFrame->hide();
+        optionsFrame->show();
+
+    //INIT for tokenPool
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Track" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Title" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Artist" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Composer" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Year" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Album" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Comment" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Genre" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( " _ ") ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( " - " ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "." ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), QString("<space>") ) );
+    if( isOrganizeCollection == 0 )
+    {
+        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Skip field" ) ) );
+    }
+    else
+    {
+        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "/" ) ) );
+    }
 }
 
 //Stores the configuration when the dialog is accepted.

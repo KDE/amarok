@@ -31,18 +31,6 @@ TokenListWidget::TokenListWidget( QWidget *parent )
 
     //filenameLayoutWidget = qobject_cast< FilenameLayoutDialog * >( parent )->filenameLayout;    //omg filenameLayoutDialog is NOT a parent of filenameLayoutWidget, the parent is a stupid QWidget
 
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Track" ) ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Title" ) ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Artist" ) ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Composer" ) ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Year" ) ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Album" ) ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Comment" ) ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Genre" ) ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( " _ ") ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( " - " ) ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( " . " ) ) );
-    addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), QString("<space>") ) );
     //addItem( new QListWidgetItem( KIcon("placeholder.svg"), QString( "Track" ) ) );
 
     //setViewMode( QListView::ListMode );   //I try to let this be handled by .ui

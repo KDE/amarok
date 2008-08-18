@@ -1,19 +1,20 @@
-/*
-    Copyright (c) 2008 Bonne Eggleston <b.eggleston@gmail.com>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/******************************************************************************
+ * Copyright (c) 2008 Bonne Eggleston <b.eggleston@gmail.com>                 *
+ *               2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or              *
+ * modify it under the terms of the GNU General Public License as             *
+ * published by the Free Software Foundation; either version 2 of             *
+ * the License, or (at your option) any later version.                        *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+ ******************************************************************************/
 
 #ifndef AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
@@ -71,10 +72,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     ui->setupUi( widget );
 
-    filenameLayoutDialog = new FilenameLayoutDialog( widget, 1 );  //TODO: this will be nontrivial ctor
-    ui->vboxLayout->insertWidget( 2, filenameLayoutDialog );
+    filenameLayoutDialog = new FilenameLayoutDialog( widget, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
+    ui->verticalLayout->insertWidget( 4, filenameLayoutDialog );
     filenameLayoutDialog->show();
-    //ui->fldialog->showOrganizeCollectionStuff();  //this will be handled by nontrivial ctor
 
     const QStringList folders = MountPointManager::instance()->collectionFolders();
 
@@ -83,7 +83,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
     ui->filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
     ui->initialCheck->setChecked( AmarokConfig::groupArtists() );
-    ui->spaceCheck->setChecked( AmarokConfig::replaceSpace() );
+    ui->spaceCheck->setChecked( AmarokConfig::replaceSpace() ); 
     ui->coverCheck->setChecked( AmarokConfig::coverIcons() );
     ui->ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
     ui->vfatCheck->setChecked( AmarokConfig::vfatCompatible() );

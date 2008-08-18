@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (c) 2006 Mike Diehl <madpenguin8@yahoo.com>                      *
+ *               2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
