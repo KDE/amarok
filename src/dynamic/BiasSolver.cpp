@@ -423,7 +423,14 @@ Dynamic::BiasSolver::getMutation()
     if( s_universe.size() == 0 ) 
         return Meta::TrackPtr();
 
-    return trackForUid( s_universe[ KRandom::random() % s_universe.size() ] );
+    Meta::TrackPtr track;
+
+    // this is really dumb, but we sometimes end up with uids that don't point to anything
+    int giveup = 50;
+    while( giveup-- && !track )
+        track = trackForUid( s_universe[ KRandom::random() % s_universe.size() ] );
+
+    return track;
 }
 
 Meta::TrackPtr
@@ -475,7 +482,13 @@ Dynamic::BiasSolver::universeResults( QString collectionId, QStringList uids )
     QByteArray uid;
     foreach( QString uidString, uids )
     {
-        uid = QByteArray::fromHex( uidString.mid(s_uidUrlProtocolPrefixLength).toAscii() );
+        // for some reason we sometimes get uidt without the protocol part
+        if( uidString.at( s_uidUrlProtocolPrefixLength - 1 ) != '/' )
+            uid = QByteArray::fromHex( uidString.toAscii() );
+        else
+            uid = QByteArray::fromHex( uidString.mid(s_uidUrlProtocolPrefixLength).toAscii() );
+            
+
         if( !uid.isEmpty() )
             s_universe += uid;
     }
