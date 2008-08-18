@@ -38,49 +38,52 @@ MainControlsButton::~MainControlsButton()
 {
 }
 
-void MainControlsButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
+void
+MainControlsButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
     DEBUG_BLOCK
 
-    if ( m_mouseOver && !m_mouseDown ) {
+    if ( m_mouseOver && !m_mouseDown )
         painter->drawPixmap( -2, -2, The::svgHandler()->renderSvg( m_prefix, option->rect.width() + 4, option->rect.height() + 4, m_prefix ) );
-    } else {
-    
+     else
         painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( m_prefix, option->rect.width(), option->rect.height(), m_prefix ) );
-
-    }
-
 }
 
-void MainControlsButton::setSvgPrefix(const QString & prefix)
+void 
+MainControlsButton::setSvgPrefix(const QString & prefix)
 {
     m_prefix = prefix;
 }
 
-QRectF MainControlsButton::boundingRect() const
+QRectF 
+MainControlsButton::boundingRect() const
 {
     return QRectF( 0.0, 0.0, 54.0, 54.0 );
 }
 
-void MainControlsButton::setAction(QAction * action)
+void 
+MainControlsButton::setAction(QAction * action)
 {
     m_action = action;
 }
 
-void MainControlsButton::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
+void
+MainControlsButton::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
 {
     m_mouseDown = true;
     update();
 }
 
-void MainControlsButton::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+void 
+MainControlsButton::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
     DEBUG_BLOCK
     m_mouseOver = true;
     update();
 }
 
-void MainControlsButton::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
+void 
+MainControlsButton::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
     DEBUG_BLOCK
     m_mouseOver = false;
@@ -89,7 +92,8 @@ void MainControlsButton::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 }
 
 
-void MainControlsButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+void 
+MainControlsButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
     m_mouseDown = false;
     update();
@@ -97,11 +101,10 @@ void MainControlsButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
         m_action->trigger();
 }
 
-QPainterPath MainControlsButton::shape() const
+QPainterPath 
+MainControlsButton::shape() const
 {
     QPainterPath path;
     path.addEllipse(boundingRect());
     return path;
 }
-
-
