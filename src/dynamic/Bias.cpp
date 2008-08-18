@@ -362,12 +362,15 @@ Dynamic::GlobalBias::updateReady( QString collectionId, QStringList uids )
 
     QMutexLocker locker( &m_mutex );
 
+    int protocolLength = 
+        (QString(m_collection->uidUrlProtocol()) + "://").length();
+
     m_property.clear();
     m_property.reserve( uids.size() );
     QByteArray uid;
     foreach( QString uidString, uids )
     {
-        uid = QByteArray::fromHex( uidString.toAscii() );
+        uid = QByteArray::fromHex( uidString.mid(protocolLength).toAscii() );
         m_property.insert( uid );
     }
 }
