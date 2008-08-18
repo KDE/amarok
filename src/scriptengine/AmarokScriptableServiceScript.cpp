@@ -118,6 +118,7 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QS
 QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine )
 {
     debug() << "prototype populating here!";
+    return engine->undefinedValue(); // Fixme: return something.
 }
 
 int ScriptableServiceScript::insertItem( StreamItem* item )
@@ -131,6 +132,7 @@ int ScriptableServiceScript::donePopulating()
     DEBUG_BLOCK
 
     The::scriptableServiceManager()->donePopulating( m_serviceName, m_currentId );
+    return -1; // Fixme: return the right thing.
 }
 
 void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter )
