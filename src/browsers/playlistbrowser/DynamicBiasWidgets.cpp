@@ -23,7 +23,6 @@
 #include "App.h"
 #include "Bias.h"
 #include "BiasedPlaylist.h"
-#include "BlockingQuery.h"
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "DynamicPlaylist.h"
@@ -470,31 +469,18 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, Q
     combo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     combo->setEditable( editable );
 
-    KCompletion* comp = combo->completionObject();
 
     if( populateQuery != 0 )
     {
-        populateQuery->returnResultAsDataPtrs( true );
-        BlockingQuery bq( populateQuery );
+        m_runningQueries[populateQuery] = combo;
+        connect( populateQuery, SIGNAL(newResultReady(QString,QStringList)),
+                SLOT(populateComboBox(QString,QStringList)) );
+        connect( populateQuery, SIGNAL(queryDone()),
+                SLOT(comboBoxPopulated()) );
 
-        bq.startQuery();
-
-        QSet<QString> dataSet;
-        foreach( Meta::DataList as, bq.data() )
-        {
-            foreach( Meta::DataPtr a, as )
-            {
-                dataSet.insert( a->name() );
-            }
-        }
-
-        QStringList dataList = dataSet.toList();
-        dataList.sort();
-        foreach( QString item, dataList )
-            combo->addItem( item );
-
-        comp->setItems( dataList );
+        populateQuery->run();
     }
+
 
     connect( combo, SIGNAL(currentIndexChanged( const QString& )),
             SLOT(valueChanged(const QString&)) );
@@ -507,11 +493,53 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, Q
     setValueSelection( combo );
 }
 
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::populateComboBox( QString collectionId, QStringList results )
+{
+    Q_UNUSED(collectionId);
+
+    QueryMaker* query = qobject_cast<QueryMaker*>( sender() );
+    if( !query )
+        return;
+
+    KComboBox* combo = m_runningQueries[query];
+    if( !combo )
+        return;
+
+    QSet<QString> dataSet;
+    foreach( QString r, results )
+        dataSet += r;
+
+    QStringList dataList = dataSet.toList();
+    dataList.sort();
+    foreach( QString item, dataList )
+        combo->addItem( item );
+
+    KCompletion* comp = combo->completionObject();
+    comp->setItems( dataList );
+}
+
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::comboBoxPopulated()
+{
+    QueryMaker* query = qobject_cast<QueryMaker*>( sender() );
+    if( !query )
+        return;
+
+    m_runningQueries.remove( query );
+    query->deleteLater();
+}
+
+
+
 void
 PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
 {
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->setQueryType( QueryMaker::Artist );
+    qm->setQueryType( QueryMaker::Custom );
+    qm->addReturnValue( QueryMaker::valArtist );
     makeGenericComboSelection( true, qm );
 }
 
@@ -520,7 +548,8 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::makeComposerSelection()
 {
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->setQueryType( QueryMaker::Composer );
+    qm->setQueryType( QueryMaker::Custom );
+    qm->addReturnValue( QueryMaker::valComposer );
     makeGenericComboSelection( true, qm );
 }
 
@@ -529,7 +558,8 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
 {
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->setQueryType( QueryMaker::Album );
+    qm->setQueryType( QueryMaker::Custom );
+    qm->addReturnValue( QueryMaker::valAlbum );
     makeGenericComboSelection( true, qm );
 }
 
@@ -546,7 +576,8 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
 {
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
-    qm->setQueryType( QueryMaker::Genre );
+    qm->setQueryType( QueryMaker::Custom );
+    qm->addReturnValue( QueryMaker::valGenre );
     makeGenericComboSelection( true, qm );
 }
 

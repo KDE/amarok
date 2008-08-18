@@ -129,6 +129,9 @@ namespace PlaylistBrowserNS
             void valueDateChanged();
             void valueChanged( const QTime& );
 
+            void populateComboBox( QString collectionId, QStringList );
+            void comboBoxPopulated();
+
         private:
             void syncControlsToBias();
             void syncBiasToControls();
@@ -163,6 +166,8 @@ namespace PlaylistBrowserNS
 
             Dynamic::GlobalBias* m_gbias;
             XmlQueryReader::Filter m_filter;
+
+            QMap< QueryMaker*, KComboBox* > m_runningQueries;
     };
 
     class BiasNormalWidget : public BiasWidget
