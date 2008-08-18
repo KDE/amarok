@@ -1335,6 +1335,9 @@ Playlist::Model::moveRowCommand( int row, int to )
         m_activeRow = to;
     else if ( to == m_activeRow && row > m_activeRow)
         m_activeRow += 1;
+    else if ( to == m_activeRow && row < m_activeRow)
+        m_activeRow -= 1;
+
     
     int offset = -1;
     if ( to < row )
