@@ -550,7 +550,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
     {
         if( !source->isWritable() ) //error
         {
-            warning() << "We can't write to ze source!!! OMGooses!"
+            warning() << "We can't write to ze source!!! OMGooses!";
             delete dest;
             delete source;
             delete qm;
