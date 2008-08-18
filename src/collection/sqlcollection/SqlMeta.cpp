@@ -388,7 +388,11 @@ SqlTrack::setAlbum( const QString &newAlbum )
     else
     {
         KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-        m_album = m_collection->registry()->getAlbum( newAlbum );
+        int id = -1;
+        SqlArtist *artist = dynamic_cast<SqlArtist*>(m_artist.data());
+        if( artist )
+            id = artist->id();
+        m_album = m_collection->registry()->getAlbum( newAlbum, -1, id );
         KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
         writeMetaDataToFile();
         writeMetaDataToDb();
@@ -1156,15 +1160,19 @@ SqlAlbum::isCompilation() const
 bool
 SqlAlbum::hasAlbumArtist() const
 {
+    DEBUG_BLOCK
+    debug() << "AID: " << m_artistId;
     return m_artistId != 0;
 }
 
 Meta::ArtistPtr
 SqlAlbum::albumArtist() const
 {
+    DEBUG_BLOCK
     if( m_artistId != 0 && !m_artist )
     {
         QString query = QString( "SELECT artists.name FROM artists WHERE artists.id = %1;" ).arg( m_artistId );
+        debug() << "QUERY: " << query;
         QStringList result = m_collection->query( query );
         if( result.isEmpty() )
             return Meta::ArtistPtr();
