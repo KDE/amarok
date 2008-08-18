@@ -695,6 +695,10 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
 
         if ( groupMode() == Playlist::Head ) {
 
+            if ( m_items->childPreDragPositions.count() == 0 ) {
+                //this hopefully fixes a very hard to reproduce crash where the pos of the release event is less that 0 but no drag was ever initiated on this item
+                return;
+            }
             debug() << "moving head to: " << m_items->preDragLocation.topLeft(); 
             setPos( m_items->preDragLocation.topLeft() );
             int lastInAlbum = The::playlistModel()->lastInGroup( m_currentRow );
