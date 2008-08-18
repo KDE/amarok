@@ -78,9 +78,6 @@ Q_SIGNALS:
 protected:
     void mousePressEvent( QGraphicsSceneMouseEvent *event );
     
-protected slots:
-    void recalculate();
-    
 public slots:
     Applet* addApplet( Plasma::Applet* applet, const QPointF & );
     virtual void addToolBox();
@@ -105,7 +102,8 @@ private:
 
     int m_minColumnWidth;
     int m_maxColumnWidth;
-    int m_defaultRowHeight;
+    int m_rowHeight;
+    int m_preferredRowHeight;
 
     bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];
     
