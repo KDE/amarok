@@ -615,7 +615,6 @@ Playlist::Model::playlistModeChanged()
     }
     else if( options & Playlist::RepeatPlayback )
     {
-    // TODO: implement RepeatAlbumNavigator
         if( options & Playlist::TrackPlayback )
             m_advancer = new RepeatTrackNavigator( this );
         else if( options & Playlist::PlaylistPlayback )
