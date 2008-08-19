@@ -33,10 +33,10 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QQueue>
 
-#define MAX_ROWS 10
-#define MAX_COLUMNS 10
 
 class QAction;
+class QApplication;
+
 namespace Context
 {
 
@@ -105,7 +105,11 @@ private:
     int m_rowHeight;
     int m_preferredRowHeight;
 
-    bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];
+//     bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];
+    typedef bool* PositionsRow;
+    PositionsRow *m_gridFreePositions;
+    int m_maxRows;
+    int m_maxColumns;
     
     QHash< Plasma::Applet*, QList<int> > m_appletsPositions;
     QHash< Plasma::Applet*, int > m_appletsIndexes;

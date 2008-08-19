@@ -16,8 +16,10 @@
 #include "Amarok.h"
 #include "ColumnContainment.h"
 #include "Debug.h"
+#include "MainWindow.h"
 #include "SvgHandler.h"
 
+#include <QDesktopWidget>
 #include <QPainter>
 
 #include <limits.h>
@@ -47,13 +49,13 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
 
     setMaximumSize( QSizeF( INT_MAX, INT_MAX ) );
 
-    for( int i = 0; i < MAX_ROWS; i++ )
-        for( int j = 0; j < MAX_COLUMNS; j++ )
-            m_gridFreePositions[i][j] = true;
-
     setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored));
 
     loadInitialConfig();
+
+    for( int i = 0; i < m_maxRows; i++ )
+        for( int j = 0; j < m_maxColumns; j++ )
+            m_gridFreePositions[i][j] = true;
 
     m_header = new Context::Svg( this );
     m_header->setImagePath( "widgets/amarok-containment-header" );
@@ -95,6 +97,10 @@ ColumnContainment::~ColumnContainment()
     clearApplets();
     m_appletsPositions.clear();    
     Amarok::config( "ContextView" ).writeEntry( "ContextView size", size() );
+    
+    for( int i = 0; i < m_maxRows; i++ )
+        delete [] m_gridFreePositions[i];
+    delete [] m_gridFreePositions;
 }
 
 
@@ -105,6 +111,11 @@ ColumnContainment::loadInitialConfig()
 
     QSize cvSize = Amarok::config( "ContextView" ).readEntry( "ContextView size", QSize() );
     debug() << cvSize;
+
+    // Get the CV size based on an extimation using the mainwindow size
+    if( !cvSize.isValid() )
+        cvSize = QSize( The::mainWindow()->size().width() * 0.4, The::mainWindow()->size().height() * 0.8 );
+    
     if( cvSize.isValid() )
     {
         if( cvSize.height() / m_preferredRowHeight < 4 )
@@ -119,19 +130,27 @@ ColumnContainment::loadInitialConfig()
             int numRows = cvSize.height() / m_preferredRowHeight;
             m_rowHeight = cvSize.height() / numRows;
         }
-        m_currentColumns = cvSize.width() / m_minColumnWidth;
-        m_currentRows = cvSize.height() / m_rowHeight;
+        m_currentColumns = qMax( 1, cvSize.width() / m_minColumnWidth );
+        m_currentRows = qMax( 1, cvSize.height() / m_rowHeight );
         m_width = cvSize.width();
     }
-    else
-    {
-        //FIXME: get these values based on the current application size
-        m_currentColumns = 1;
-        m_currentRows = 4;
-        m_width = 500.0;
-    }
+    
+    QRect screenRect = QApplication::desktop()->screenGeometry( screen() );
+    QRect availableScreen = QApplication::desktop()->availableGeometry( screen() );
+
+    // these are max boundaries
+    m_maxRows = availableScreen.height() / m_rowHeight;
+    m_maxColumns = availableScreen.width() / m_minColumnWidth;
+    
+    m_gridFreePositions = new PositionsRow[m_maxRows];
+    
+    for( int i = 0; i < m_maxRows; i++ )
+        m_gridFreePositions[i] = new bool[m_maxColumns];
+    
     debug() << "current columns: " << m_currentColumns;
     debug() << "current rows: " << m_currentRows;
+    debug() << "max columns: " << m_maxColumns;
+    debug() << "max rows: " << m_maxRows;
 }
 
 
