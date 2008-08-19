@@ -10,6 +10,9 @@
    </rect>
   </property>
   <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>0</number>
+   </property>
    <item row="0" column="0" >
     <widget class="QGroupBox" name="generalBox" >
      <property name="title" >
