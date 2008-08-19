@@ -127,7 +127,7 @@ ScriptManager::ScriptManager( QWidget* parent )
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n( "Script Manager" ) ) );
 
-    // Gives the window a small title bar, and skips a taskbar entry
+    // Skips a taskbar entry
 #ifdef Q_WS_X11
     KWindowSystem::setState( winId(), NET::SkipTaskbar );
 #endif
