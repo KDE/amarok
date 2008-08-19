@@ -129,7 +129,6 @@ ScriptManager::ScriptManager( QWidget* parent )
 
     // Gives the window a small title bar, and skips a taskbar entry
 #ifdef Q_WS_X11
-    KWindowSystem::setType( winId(), NET::Utility );
     KWindowSystem::setState( winId(), NET::SkipTaskbar );
 #endif
 
