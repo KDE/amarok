@@ -1,6 +1,6 @@
 /* cdf/gauss.c
  *
- * Copyright (C) 2002, 2004 Jason H. Stover.
+ * Copyright (C) 2002, 2004 Jason H. Stover <jason.stover@gcsu.edu>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
