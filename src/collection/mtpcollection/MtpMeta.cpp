@@ -77,7 +77,7 @@ class CustomActionsCapabilityMtp : public Meta::CustomActionsCapability {
 
             // Setup the remove action
             
-            PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "amarok_remove" ), i18n( "&Remove from MTP" ), 0 );
+            PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "amarok_remove" ), i18n( "&Remove from MTP Device" ), 0 );
 
             debug() << "Remove-action created";
 
@@ -103,7 +103,7 @@ class CustomActionsCapabilityMtp : public Meta::CustomActionsCapability {
 
             // Setup the disconnect action
             
-            PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Disconnect the MTP" ), 0 );
+            PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Disconnect the MTP Device" ), 0 );
 
             debug() << "Disconnect-action created";
 
