@@ -23,7 +23,7 @@
 #include "ActionClasses.h"
 #include "App.h"
 #include "MainWindow.h" 
-#include "PlaylistClassicView.h"
+//#include "PlaylistClassicView.h"
 #include "PlaylistGraphicsView.h"
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
@@ -68,7 +68,8 @@ Widget::Widget( QWidget* parent )
     playView->setModel( playModel );
 
 
-    Playlist::ClassicView * clasicalPlaylistView = new Playlist::ClassicView( this );
+    // Classic View disabled for 2.0
+    //Playlist::ClassicView * clasicalPlaylistView = new Playlist::ClassicView( this );
 
 
     mainPlaylistlayout->setSpacing( 0 );
@@ -78,7 +79,7 @@ Widget::Widget( QWidget* parent )
     m_stackedWidget = new  Amarok::StackedWidget( this );
 
     m_stackedWidget->addWidget( layoutHolder );
-    m_stackedWidget->addWidget( clasicalPlaylistView );
+    //m_stackedWidget->addWidget( clasicalPlaylistView );
 
     m_stackedWidget->setCurrentIndex( 0 );
 
@@ -103,14 +104,16 @@ Widget::Widget( QWidget* parent )
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_save") );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_export") );
-        plBar->addSeparator();
 //TODO: Re add when these work...
 //         plBar->addSeparator();
 
 // //         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::actionCollection()->action("repeat") ), plBar ) );
 // //         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::actionCollection()->action("random_mode") ), plBar ) );
 //         plBar->addSeparator();
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_switch") );
+
+        // Alternate playlist view disabled for 2.0
+        //plBar->addSeparator();
+        //plBar->addAction( Amarok::actionCollection()->action( "playlist_switch") );
         plBar->addAction( new KToolBarSpacerAction( this ) );
 
     } //END Playlist Toolbar
