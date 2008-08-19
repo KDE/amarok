@@ -34,6 +34,7 @@ VERSION 2.0-beta1
     * New functions available to the scripting interface, under Amarok.Info.
 
   CHANGES:
+    * New filename scheme widget in the Organize Collection dialog.
     * New laylout of the main toolbar using the new graphics.
     * Greatly reduced memory usage when using dynamic playlists.
     * Reworked layout and more intuitive interface in the Guess Tags from Filenames dialog.
