@@ -308,6 +308,26 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
         {
             m_parsableScheme += "%genre";
         }
+        else if( current == i18n( "File type" ) )
+        {
+            m_parsableScheme += "%filetype";
+        }
+        else if( current == i18n( "Skip field" ) )
+        {
+            m_parsableScheme += "%d";
+        }
+        else if( current == i18n( "Collection root" ) )
+        {
+            m_parsableScheme += "%folder";
+        }
+        else if( current == i18n( "Artist initial" ) )
+        {
+            m_parsableScheme += "%initial";
+        }
+        else if( current == i18n( "Disc number" ) )
+        {
+            m_parsableScheme += "%discnumber";
+        }
         else
         {
             m_parsableScheme += current;

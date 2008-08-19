@@ -244,11 +244,10 @@ OrganizeCollectionDialog::buildFormatTip() const
 QString
 OrganizeCollectionDialog::buildFormatString() const
 {
-    //this is where I need to query filenameLayoutDialog
+    //TODO: this is where I need to query filenameLayoutDialog
     if( ui->customschemeCheck->isChecked() )
         return filenameLayoutDialog->getParsableScheme();
     QString format = "%folder/";
-    //NOTE to teo: add the tokens %initial and %filetype to FilenameLayoutDialog
     if( ui->filetypeCheck->isChecked() )
         format += "%filetype/";
     if( ui->initialCheck->isChecked() )

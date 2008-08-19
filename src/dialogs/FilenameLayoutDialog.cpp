@@ -95,6 +95,10 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     else
     {
         tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "/" ) ) );
+        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Artist initial" ) ) );
+        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Collection root" ) ) );
+        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "File type" ) ) );
+        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Disc number" ) ) );
     }
 }
 
