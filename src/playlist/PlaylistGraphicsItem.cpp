@@ -201,10 +201,13 @@ void
 Playlist::GraphicsItem::init( Meta::TrackPtr track )
 {
     Q_UNUSED( track );
+    QFont font;
+    //font.setPointSize( font.pointSize() - 1 );
     // Disabling the editable text for now as it is misleading.. (it doesn't do anything.)
     #define NewText( X ) \
-        X = new Playlist::TextItem( this );
-        //X->setTextInteractionFlags( Qt::TextEditorInteraction );
+        X = new Playlist::TextItem( this ); \
+/*         X->setTextInteractionFlags( Qt::TextEditorInteraction );*/ \
+        X->setFont( font );
     NewText( m_items->topLeftText )
     NewText( m_items->bottomLeftText )
     NewText( m_items->topRightText )
@@ -284,11 +287,10 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     {
         m_items->bottomLeftText->setFont( m_items->bottomRightText->font() );
 
-        // One value, one space.  We really should have a separate item for the track. TODO -- Disabled so that track editing can work
-        /*if ( track->trackNumber() > 0 )
+        if ( track->trackNumber() > 0 )
             m_items->bottomLeftText->setEditableText( QString("%1 - %2").arg(
                 QString::number( track->trackNumber() ), track->prettyName() ) , spaceForBottomLeft );
-        else*/
+        else
             m_items->bottomLeftText->setEditableText( track->prettyName() , spaceForBottomLeft );
 
         m_items->bottomRightText->setEditableText( prettyLength, totalWidth - bottomRightAlignX );
@@ -703,13 +705,8 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
             setPos( m_items->preDragLocation.topLeft() );
             int lastInAlbum = The::playlistModel()->lastInGroup( m_currentRow );
             //restore original positions
-            for ( int i = m_currentRow + 1; i <=lastInAlbum; i++ ) {
-
-                debug() << "moving child to: " <<  m_items->childPreDragPositions.first();
-                if( m_items->childPreDragPositions.size() > 0 )
-                    The::playlistView()->tracks()[i]->setPos( m_items->childPreDragPositions.takeFirst() );
-
-            }
+            for ( int i = m_currentRow; i <=lastInAlbum; i++ )
+                The::playlistView()->tracks()[i]->setPos( m_items->childPreDragPositions.takeFirst() );
         } else {
             setPos( m_items->preDragLocation.topLeft() );
             Playlist::DropVis::instance()->hide();
