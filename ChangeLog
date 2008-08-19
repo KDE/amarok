@@ -46,17 +46,17 @@ VERSION 2.0-beta1
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
-    * Fix crash when dragging media from an external source ( or the file 
-      browser ) to the playlist (BR 848376)
-    * Fix crash when opening the setting dialog (BR 848407)
+    * Fix crash when dragging media from an external source (or the file 
+      browser) to the playlist (BR 169035)
+    * Fix crash when opening the setting dialog (BR 169215)
     * Many fixes to the behavior of the playlist when dragging things around.
     * Don't pop up multiple cover search dialogs when cancelling search in the
-      Cover Manager (BR167462)
+      Cover Manager (BR 167462)
     * Amarok would not respect the user's changes in the cover search dialog.
     * Amarok would submit tracks to lastfm reguardless of whether the user chose to enable scrobbling.
     * OSD translucency works now. (BR 166567)
-    * Use name based sorting of tracks without a track number ( fixes 
-      sorting in shoutcast and cool streams services )
+    * Use name based sorting of tracks without a track number (fixes 
+      sorting in shoutcast and cool streams services)
     * Don't try to scan the whole $HOME on first startup.
     * Don't pop up the OSD after changing Amarok settings. (BR: 168197)
     * Fix crash when exiting while collection scan was running. (BR 167872)
