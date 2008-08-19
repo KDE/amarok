@@ -877,13 +877,9 @@ void CollectionTreeView::newPalette( const QPalette & palette )
 
 void CollectionTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-    QStyleOptionViewItemV4 opt = option;
+    const QStyleOptionViewItemV4 opt = option;
 
-    bool alternate = false;
-    if ( opt.features & QStyleOptionViewItemV2::Alternate )
-        alternate = true;
-
-
+    const bool alternate = opt.features & QStyleOptionViewItemV2::Alternate;
 
     const int width = option.rect.width();
     const int height = option.rect.height();
