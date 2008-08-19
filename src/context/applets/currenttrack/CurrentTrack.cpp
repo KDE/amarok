@@ -66,7 +66,6 @@ void CurrentTrack::init()
 //     const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
     //const QColor textColor( Qt::black );
     QFont labelFont;
-    labelFont.setBold( false );
     labelFont.setPointSize( labelFont.pointSize() + 1  );
     labelFont.setStyleHint( QFont::Times );
     labelFont.setStyleStrategy( QFont::PreferAntialias );
@@ -85,7 +84,8 @@ void CurrentTrack::init()
     m_noTrack      = new QGraphicsSimpleTextItem( this );
     m_albumCover   = new QGraphicsPixmapItem( this );
 
-    QPen pen( App::instance()->palette().text().color() );
+    QPen pen( m_title->pen() );
+    pen.setColor( App::instance()->palette().text().color() );
 
     m_title->setPen( pen );
     m_artist->setPen( pen );
@@ -101,11 +101,9 @@ void CurrentTrack::init()
     bigFont.setPointSize( bigFont.pointSize() +  3 );
     
     QFont textFont = QFont( labelFont );    
-    textFont.setBold( false );
     
     QFont tinyFont( textFont );
     tinyFont.setPointSize( tinyFont.pointSize() - 5 );
-    tinyFont.setBold( false );
 
     m_noTrack->setFont( bigFont );
     m_title->setFont( textFont );
@@ -236,9 +234,6 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         tinyFont.setPointSize( tinyFont.pointSize() - 5 );
     else
         tinyFont.setPointSize( 1 );
-    
-    tinyFont.setBold( false );
-    labeFont.setBold( false );
 
     m_maxTextWidth = textWidth;
     //m_maxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
