@@ -86,6 +86,7 @@ public slots:
 private slots:
     void appletRemoved( Plasma::Applet * );
     void slotArrowChangeContainment( int );
+    void showAppletsMenu();
 
 private:
     void rearrangeApplets( int starRow, int startColumn );
@@ -105,7 +106,6 @@ private:
     int m_rowHeight;
     int m_preferredRowHeight;
 
-//     bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];
     typedef bool* PositionsRow;
     PositionsRow *m_gridFreePositions;
     int m_maxRows;

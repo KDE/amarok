@@ -72,6 +72,12 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
 
     connect( this, SIGNAL( appletAdded( Plasma::Applet*, const QPointF & ) ),
              this, SLOT( addApplet( Plasma::Applet*, const QPointF & ) ) );
+
+    QAction *appletBrowserAction = new QAction( KIcon( "list-add-amarok" ), i18n( "Add Applet..." ), this );
+    connect( appletBrowserAction, SIGNAL( triggered( bool ) ), this, SLOT( showAppletsMenu() ) );
+    // set up default context menu actions
+    m_actions = new QList<QAction*>();
+    m_actions->append( appletBrowserAction );
     
     // 
     // foreach( QVariant arrow, args )
@@ -245,10 +251,7 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
 QList<QAction*>
 ColumnContainment::contextualActions()
 {
-    QAction *appletBrowserAction = new QAction(KIcon("list-add-amarok"), i18n("Add Applet..."), this);
-    QList<QAction*> actions;
-    actions.append( appletBrowserAction );
-    return actions;
+    return *m_actions;
 }
 
 void
@@ -379,6 +382,14 @@ ColumnContainment::showTitle()
     int offSetY = rect().topLeft().y() + 10;
     m_title->setPos( offSetX , offSetY );
     m_title->show();
+}
+
+void
+ColumnContainment::showAppletsMenu()
+{
+    DEBUG_BLOCK
+    if( !m_toolBox->showingMenu() )
+        m_toolBox->showWidgetsMenu();
 }
 
 void
