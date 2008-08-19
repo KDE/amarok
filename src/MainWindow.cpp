@@ -158,9 +158,9 @@ MainWindow::init()
     m_controlBar->layout()->setContentsMargins( 0, 0, 0, 0 );
     m_controlBar->layout()->setSpacing( 0 );
 
-    //toolbarSpacer->addStretch( 1 );
-    toolbarSpacer->addWidget( m_controlBar, 3 );
-    //toolbarSpacer->addStretch( 1 );
+    toolbarSpacer->addStretch( 1 );
+    toolbarSpacer->addWidget( m_controlBar, 20);
+    toolbarSpacer->addStretch( 1 );
 
     PERF_LOG( "Create sidebar" )
     m_browsers = new SideBar( this, new KVBox );
