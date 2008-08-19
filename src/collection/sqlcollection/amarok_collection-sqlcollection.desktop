@@ -39,7 +39,7 @@ X-KDE-Library=libamarok_collection-sqlcollection
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com
-X-KDE-Amarok-framework-version=33
+X-KDE-Amarok-framework-version=34
 X-KDE-Amarok-name=sql-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
