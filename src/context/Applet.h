@@ -35,7 +35,13 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         //helper functions
         QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
         QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
+        
+    public Q_SLOTS:
+        virtual void destroy();
+    private:
+        void cleanUpAndDelete();
 
+        bool m_transient;
 };
 
 } // Context namespace

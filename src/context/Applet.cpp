@@ -13,8 +13,13 @@
 
 #include "Applet.h"
 
+#include <plasma/animator.h>
+
 #include <KService>
 #include <KServiceTypeTrader>
+
+#include <QGraphicsLayout>
+#include <QGraphicsScene>
 
 namespace Context
 {
@@ -23,6 +28,7 @@ namespace Context
 
 Context::Applet::Applet( QObject * parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
+    , m_transient( 0 )
 {
 }
 
@@ -63,3 +69,49 @@ QString Context::Applet::truncateTextToFit( QString text, const QFont& font, con
     
 }
 
+void
+Context::Applet::destroy()
+{
+    if (Plasma::Applet::immutability() != Plasma::Mutable || m_transient) {
+        return; //don't double delete
+    }
+    m_transient = true;
+    kDebug() << "animator? " << (bool)(Plasma::Animator::self() == 0);
+    cleanUpAndDelete();
+//     if (isContainment()) {
+//         cleanUpAndDelete();
+//     } else {
+//         connect(Animator::self(), SIGNAL(animationFinished(QGraphicsItem*,Plasma::Animator::Animation)),
+//                 this, SLOT(appletAnimationComplete(QGraphicsItem*,Plasma::Animator::Animation)));
+//         Animator::self()->animateItem(this, Animator::DisappearAnimation);
+//     }
+}
+
+void
+Context::Applet::cleanUpAndDelete()
+{
+    QGraphicsWidget *parent = dynamic_cast<QGraphicsWidget *>( parentItem() );
+    //it probably won't matter, but right now if there are applethandles, *they* are the parent.
+    //not the containment.
+
+    //is the applet in a containment and is the containment have a layout? if yes, we remove the applet in the layout
+    if ( parent && parent->layout() )
+    {
+        QGraphicsLayout *l = parent->layout();
+        for ( int i = 0; i < l->count(); ++i )
+        {
+            if ( this == l->itemAt( i ) )
+            {
+                l->removeAt( i );
+                break;
+            }
+        }
+    }
+
+    if ( Plasma::Applet::configScheme() ) {
+        Plasma::Applet::configScheme()->setDefaults();
+    }
+
+    Plasma::Applet::scene()->removeItem( this );
+    Plasma::Applet::deleteLater();
+}
