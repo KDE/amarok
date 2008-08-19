@@ -357,6 +357,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
 
 void CoverFetcher::parseItemNode( const QDomNode &node )
 {
+    DEBUG_BLOCK
     QDomNode it = node.firstChild();
 
     QString size;
@@ -433,6 +434,7 @@ void CoverFetcher::parseItemNode( const QDomNode &node )
 void
 CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
 {
+    DEBUG_BLOCK
     if( job->error() )
     {
         debug() << "finishedImageFetch(): KIO::error(): " << job->error();
@@ -594,6 +596,7 @@ CoverFetcher::changeLocale( int id )//SLOT
 void
 CoverFetcher::getUserQuery( QString explanation )
 {
+    DEBUG_BLOCK
     if( explanation.isEmpty() )
         explanation = i18n("Ask Amazon for covers using this query:");
 
@@ -612,6 +615,8 @@ CoverFetcher::getUserQuery( QString explanation )
             m_queries.clear();
             m_queries << m_userQuery;
             startFetch( m_albumPtr );
+            break;
+        case QDialog::Rejected:
             break;
         default:
             finishWithError( i18n( "Aborted." ) );
@@ -660,6 +665,7 @@ CoverFetcher::getUserQuery( QString explanation )
 
         virtual void accept()
         {
+            DEBUG_BLOCK
             if( qstrcmp( sender()->objectName().toAscii(), "NewSearch" ) == 0 )
                 done( 1000 );
             else if( qstrcmp( sender()->objectName().toAscii(), "NextCover" ) == 0 )
@@ -673,12 +679,16 @@ CoverFetcher::getUserQuery( QString explanation )
 void
 CoverFetcher::showCover()
 {
+    DEBUG_BLOCK
     CoverFoundDialog dialog( static_cast<QWidget*>( parent() ), m_image, m_currentCoverName );
 
     switch( dialog.exec() )
     {
     case KDialog::Accepted:
         finish();
+        break;
+    case KDialog::Rejected: //make sure we dont show any more dialogs
+        debug() << "cover rejected";
         break;
     case 1000: //showQueryEditor()
         getUserQuery();
@@ -700,6 +710,7 @@ CoverFetcher::showCover()
 void
 CoverFetcher::finish()
 {
+    DEBUG_BLOCK
     The::statusBar()->shortMessage( i18n( "Retrieved cover successfully" ) );
     m_albumPtr->setImage( image() );
     m_isFetching = false;
