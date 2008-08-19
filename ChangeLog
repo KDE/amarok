@@ -34,6 +34,7 @@ VERSION 2.0-beta1
     * New functions available to the scripting interface, under Amarok.Info.
 
   CHANGES:
+    * New laylout of the main toolbar using the new graphics.
     * Greatly reduced memory usage when using dynamic playlists.
     * Reworked layout and more intuitive interface in the Guess Tags from Filenames dialog.
     * New artwork by Nuno Pinheiro <nuno@oxygen-icons.org> and Wade Olson
@@ -44,6 +45,9 @@ VERSION 2.0-beta1
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
+    * Many fixes to the behavior of the playlist when dragging things around.
+    * Don't pop up multiple cover search dialogs when cancelling search in the
+      Cover Manager (BR167462)
     * Amarok would not respect the user's changes in the cover search dialog.
     * Amarok would submit tracks to lastfm reguardless of whether the user chose to enable scrobbling.
     * OSD translucency works now. (BR 166567)
