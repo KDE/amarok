@@ -706,7 +706,10 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
             int lastInAlbum = The::playlistModel()->lastInGroup( m_currentRow );
             //restore original positions
             for ( int i = m_currentRow; i <=lastInAlbum; i++ )
-                The::playlistView()->tracks()[i]->setPos( m_items->childPreDragPositions.takeFirst() );
+            {
+                if( m_items->childPreDragPositions.size() > 0 )
+                    The::playlistView()->tracks()[i]->setPos( m_items->childPreDragPositions.takeFirst() );
+            }
         } else {
             setPos( m_items->preDragLocation.topLeft() );
             Playlist::DropVis::instance()->hide();
