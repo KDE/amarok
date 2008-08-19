@@ -83,8 +83,9 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     
     // for now, just do left/right. once we get nuno's mockups we'll see
     // what else to do.
-    addContainmentArrow( LEFT );
-    addContainmentArrow( RIGHT );
+    // DISABLING ARROWS FOR BETA, AND UNTIL WE HAVE AN ARTIST's OPINION
+    // addContainmentArrow( LEFT );
+    // addContainmentArrow( RIGHT );
 
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
 }
