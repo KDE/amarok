@@ -61,6 +61,8 @@ class FilenameLayoutWidget
 
     public slots:
         void addToken( QString text, int index = 0);    //this one needs to be a SLOT, connects to TokenListWidget::onDoubleClick.
+    signals:
+        void schemeChanged();
 };
 
 #endif    //FILENAMELAYOUTWIDGET_H

@@ -74,7 +74,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     filenameLayoutDialog = new FilenameLayoutDialog( widget, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
     ui->verticalLayout->insertWidget( 4, filenameLayoutDialog );
-    filenameLayoutDialog->show();
+    filenameLayoutDialog->hide();
 
     const QStringList folders = MountPointManager::instance()->collectionFolders();
 
@@ -104,6 +104,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->formatEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
+    connect( filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
+    debug() << "LOOK AT ME I'M HERE =============================================================#################################################### ##############################################################################";
+    connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), filenameLayoutDialog, SLOT( setVisible( bool ) ) );
 
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
 
@@ -123,7 +126,8 @@ OrganizeCollectionDialog::~OrganizeCollectionDialog()
     delete ui;
 }
 
-QMap<Meta::TrackPtr, QString> OrganizeCollectionDialog::getDestinations()
+QMap<Meta::TrackPtr, QString>
+OrganizeCollectionDialog::getDestinations()
 {
     QString format = buildFormatString();
     QMap<Meta::TrackPtr, QString> destinations;
@@ -134,12 +138,14 @@ QMap<Meta::TrackPtr, QString> OrganizeCollectionDialog::getDestinations()
     return destinations;
 }
 
-bool OrganizeCollectionDialog::overwriteDestinations() const
+bool
+OrganizeCollectionDialog::overwriteDestinations() const
 {
     return ui->overwriteCheck->isChecked();
 }
 
-QString OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::TrackPtr &track ) const
+QString
+OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::TrackPtr &track ) const
 {
     bool isCompilation = track->album()->isCompilation();
     QMap<QString, QString> args;
@@ -207,7 +213,8 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
    return result.replace( QRegExp( "/\\.*" ), "/" );
 }
 
-QString OrganizeCollectionDialog::buildFormatTip() const
+QString
+OrganizeCollectionDialog::buildFormatTip() const
 {
     //FIXME: This is directly copied from mediadevice/generic/genericmediadeviceconfigdialog.ui.h
     QMap<QString, QString> args;
@@ -234,8 +241,12 @@ QString OrganizeCollectionDialog::buildFormatTip() const
 }
 
 
-QString OrganizeCollectionDialog::buildFormatString() const
+QString
+OrganizeCollectionDialog::buildFormatString() const
 {
+    //this is where I need to query filenameLayoutDialog
+    if( ui->customschemeCheck->isChecked() )
+        return filenameLayoutDialog->getParsableScheme();
     QString format = "%folder/";
     //NOTE to teo: add the tokens %initial and %filetype to FilenameLayoutDialog
     if( ui->filetypeCheck->isChecked() )
@@ -262,19 +273,22 @@ QString OrganizeCollectionDialog::buildFormatString() const
 }
 
 
-void OrganizeCollectionDialog::setPreviewTrack( const Meta::TrackPtr track )
+void
+OrganizeCollectionDialog::setPreviewTrack( const Meta::TrackPtr track )
 {
    m_previewTrack = track;
 }
 
 
-void OrganizeCollectionDialog::preview( const QString &format )
+void
+OrganizeCollectionDialog::preview( const QString &format )
 {
    emit updatePreview( buildDestination( format, m_previewTrack ) );
 }
 
 
-QString OrganizeCollectionDialog::cleanPath( const QString &component ) const
+QString
+OrganizeCollectionDialog::cleanPath( const QString &component ) const
 {
     QString result = component;
 
@@ -299,27 +313,32 @@ QString OrganizeCollectionDialog::cleanPath( const QString &component ) const
 }
 
 
-void OrganizeCollectionDialog::update( int dummy )
+void
+OrganizeCollectionDialog::update( int dummy )   //why the dummy?
 {
     Q_UNUSED( dummy );
+    debug() << "###################################################################################################### I'M UPDATING THE PREVIEW ############################################################################################";
 
     QString oldFormat = ui->formatEdit->text();
     if( !ui->customschemeCheck->isChecked() )
         ui->formatEdit->setText( buildFormatString() );
 
     if( ui->customschemeCheck->isChecked() || oldFormat == ui->formatEdit->text() )
-        emit updatePreview( buildDestination( ui->formatEdit->text(), m_previewTrack ) );
+        //emit updatePreview( buildDestination( ui->formatEdit->text(), m_previewTrack ) );
+        emit updatePreview( buildDestination( filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
 }
 
 
-void OrganizeCollectionDialog::update( const QString & dummy )
+void
+OrganizeCollectionDialog::update( const QString & dummy )
 {
     Q_UNUSED( dummy );
 
     update( 0 );
 }
 
-void OrganizeCollectionDialog::slotButtonClicked( int button )
+void
+OrganizeCollectionDialog::slotButtonClicked( int button )
 {
     DEBUG_BLOCK
 
@@ -329,7 +348,8 @@ void OrganizeCollectionDialog::slotButtonClicked( int button )
         KDialog::slotButtonClicked( button );
 }
 
-void OrganizeCollectionDialog::toggleDetails()
+void
+OrganizeCollectionDialog::toggleDetails()
 {
     m_detailed = !m_detailed;
 
@@ -359,19 +379,22 @@ void OrganizeCollectionDialog::toggleDetails()
     }
 }
 
-void OrganizeCollectionDialog::init()
+void
+OrganizeCollectionDialog::init()
 {
     ui->formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
             arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
     slotUpdatePreview();
 }
 
-void OrganizeCollectionDialog::slotUpdatePreview()
+void
+OrganizeCollectionDialog::slotUpdatePreview()
 {
     preview( buildFormatString() );
 }
 
-void OrganizeCollectionDialog::slotDialogAccepted()
+void
+OrganizeCollectionDialog::slotDialogAccepted()
 {
         AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentIndex() );
         AmarokConfig::setGroupByFiletype( ui->filetypeCheck->isChecked() );
@@ -386,6 +409,8 @@ void OrganizeCollectionDialog::slotDialogAccepted()
         AmarokConfig::setReplacementRegexp( ui->regexpEdit->text() );
         AmarokConfig::setReplacementString( ui->replaceEdit->text() );
 }
+
+
 
 /* Code to port
  *
@@ -528,4 +553,4 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 }
  */
 
-#endif
+#endif  //AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H

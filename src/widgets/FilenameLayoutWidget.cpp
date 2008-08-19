@@ -90,6 +90,7 @@ FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
         debug() << tokenList->indexOf( temp ) << " .......... " << layout->indexOf( temp ) << " .......... " << temp->text();
     }
     generateParsableScheme();
+    emit schemeChanged();
 }
 
 //Executed whenever a drag object enters the FilenameLayoutWidget
@@ -263,6 +264,7 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     
     drag->exec(Qt::MoveAction | Qt::CopyAction, Qt:: CopyAction);
     generateParsableScheme();
+    emit schemeChanged();
 }
 
 //Iterates over the elements of the FilenameLayoutWidget bar (really over the elements of a QList that stores the indexes of the tokens) and generates a string that TagGuesser can digest.

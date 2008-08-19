@@ -25,7 +25,7 @@
 #include "widgets/TokenListWidget.h"
 
 #include <KDialog>
-#include <KVBox>    //this can be in the .cpp is widget and vbox weren't members. maybe they don't need to be but I first have to fix the layout when resizing
+#include <KVBox>    //this can be in the .cpp if widget and vbox weren't members. maybe they don't need to be but I first have to fix the layout when resizing
 
 #include <QtGui/QWidget>
 
@@ -81,4 +81,4 @@ class OrganizeCollectionDialog : public KDialog
         Meta::TrackList m_allTracks;
 };
 
-#endif
+#endif  //AMAROK_ORGANIZECOLLECTIONDIALOG_H
