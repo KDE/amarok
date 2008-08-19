@@ -95,13 +95,13 @@ MainToolbar::~MainToolbar()
 
 void MainToolbar::paintEvent( QPaintEvent * )
 {
-    //QPainter painter( this );
+    QPainter painter( this );
 
     //const int watermarkWidth = height() * 1.36;
 
     //painter.drawPixmap( width() - watermarkWidth, 0, The::svgHandler()->renderSvg( "volume_watermark", watermarkWidth, height(), "volume_watermark" ) );
     
-    //painter.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "toolbar_bg", width(), height(), "toolbar_bg" ) );
+    painter.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "toolbar_bg", width(), height(), "toolbar_bg" ) );
 }
 
 void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
