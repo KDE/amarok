@@ -50,7 +50,7 @@ namespace Amarok
 
 
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
-        : QWidget( parent, Qt::Window | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint )
+        : QWidget( parent, Qt::Popup | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint )
         , m_duration( 2000 )
         , m_timer( new QTimer( this ) )
         , m_alignment( Middle )
