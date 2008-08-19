@@ -18,10 +18,10 @@
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "context/Svg.h"
 #include "context/popupdropper/PopupDropperAction.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "meta/MetaUtility.h"
+#include <context/widgets/RatingWidget.h>
 
 #include <plasma/theme.h>
 
@@ -73,7 +73,6 @@ void CurrentTrack::init()
     m_ratingWidget = new RatingWidget( this );
 
     connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
-    
 
     m_title        = new QGraphicsSimpleTextItem( this );
     m_artist       = new QGraphicsSimpleTextItem( this );
@@ -126,17 +125,12 @@ void CurrentTrack::init()
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
     resize( m_width, m_aspectRatio );
- 
-
     
     m_noTrackText = i18n( "No track playing" );
     m_noTrack->setText( m_noTrackText );
     
     connectSource( "current" );
-    
-    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
-            this, SLOT( connectSource( const QString& ) ) );
-
+    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
 }
 
 void
@@ -180,6 +174,7 @@ CurrentTrack::contextualActions()
                 actions.append( action );
         }
     }
+
     return actions;
 }
 
@@ -290,8 +285,7 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     
     m_currentInfo = data[ "current" ].toMap();
     m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), textRect ) );
-    QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-    
+    const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), textRect ) );
     QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();

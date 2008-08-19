@@ -17,19 +17,22 @@
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>
-#include <context/Svg.h>
-#include <context/widgets/RatingWidget.h>
+#include "context/Svg.h"
 
 #include <KDialog>
 
-#include <QList>
 #include <QAction>
+#include <QList>
 
-class QGraphicsPixmapItem;
-class QLabel;
-class QHBoxLayout;
-class QSpinBox;
+class RatingWidget;
 class QCheckBox;
+class QGraphicsPixmapItem;
+class QHBoxLayout;
+class QLabel;
+class QSpinBox;
+
+namespace Plasma { class DataEngine; }
+
 
 class CurrentTrack : public Context::Applet
 {
