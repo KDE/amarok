@@ -399,7 +399,7 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 
     trackmeta->parent_id = parent_id; // api change, set id here
     trackmeta->storage_id = 0; // default storage id
-    debug() << "Sending track... " << track->uidUrl();
+    debug() << "Sending track... " << track->playableUrl();
     debug() << "Filename is: " << QString::fromUtf8( trackmeta->filename );
 
 
@@ -407,9 +407,10 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 
     // TODO: implement callback correctly, not 0
 
-    debug() << "Playable Url is: " << track->playableUrl().fileName();
+    debug() << "Playable Url is: " << track->playableUrl();
+    debug() << "Sending file with path: " << track->playableUrl().path().toUtf8();
 
-    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->uidUrl().toUtf8() ), trackmeta,
+    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->playableUrl().path().toUtf8() ), trackmeta,
             0, this );
 
 
