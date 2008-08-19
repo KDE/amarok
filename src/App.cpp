@@ -82,7 +82,7 @@ int App::mainThreadId = 0;
 extern void setupEventHandler_mac(long);
 #endif
 
-#define AMAROK_CAPTION "Amarok 2 alpha"
+#define AMAROK_CAPTION "Amarok 2 beta"
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "Amarok" ), APP_VERSION,
