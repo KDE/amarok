@@ -536,39 +536,60 @@ Dynamic::NormalBias::sigmaFromScale( double scale )
     if( scale > 1.0 )
         scale = 1.0;
 
-    // if scale is too near 1.0, we are just doing a brute force search fo
-    // tracks that match the value exactly, which is pointless.
-    const double upperLimit = 0.99;
-    if( scale > upperLimit )
-        scale = upperLimit;
-
-
-    double fieldScaling = 1.0;
+    double minStdDev = 0.0;
+    double maxStdDev = 1.0;
 
     // Keep in mind: ~95% of values are within two standard deviations of the
-    // mean. 'fieldScaling' is the standard deviation when scale = 0, so make
-    // sure every value is within 2*m_fieldScaling.
+    // mean. When scale = 1.0, the std. dev. is minStdDev. When scale = 0.0,
+    // it's maxStdDev.
     if( m_field == QueryMaker::valYear )
-        fieldScaling = 5.0;
+    {
+        minStdDev = 0.5;
+        maxStdDev = 10.0;
+    }
     else if( m_field == QueryMaker::valPlaycount )
-        fieldScaling = 10.0;
+    {
+        minStdDev = 0.5;
+        maxStdDev = 50.0; 
+    }
     else if( m_field == QueryMaker::valRating )
-        fieldScaling = 2.5;
+    {
+        minStdDev = 0.5;
+        maxStdDev = 2.5;
+    }
     else if( m_field == QueryMaker::valScore )
-        fieldScaling = 50.0;
+    {
+        minStdDev = 1.0;
+        maxStdDev = 50.0;
+    }
     else if( m_field == QueryMaker::valLength )
-        fieldScaling = 120.0;
+    {
+        minStdDev = 10.0;
+        maxStdDev = 240.0;
+    }
     else if( m_field == QueryMaker::valTrackNr )
-        fieldScaling = 10.0;
+    {
+        minStdDev = 0.5;
+        maxStdDev = 10.0;
+    }
     else if( m_field == QueryMaker::valDiscNr )
-        fieldScaling = 5.0;
+    {
+        minStdDev = 0.5;
+        maxStdDev = 5.0;
+    }
     else if( m_field == QueryMaker::valFirstPlayed )
-        fieldScaling = 3000.0;
+    {
+        minStdDev = 3600.0;   // one hour
+        maxStdDev = 604800.0; // one week
+    }
     else if( m_field == QueryMaker::valLastPlayed )
-        fieldScaling = 3000.0;
+    {
+        minStdDev = 3600.0;   // one hour
+        maxStdDev = 604800.0; // one week
+    }
 
-    // 'sqrt' so scale relates to the variance rather than the std. dev.
-    return fieldScaling * sqrt(1.0 - scale);
+    // linear interpolation between min and max std. dev.
+    return minStdDev + (maxStdDev - minStdDev) * (1.0 - scale);
 }
 
 void

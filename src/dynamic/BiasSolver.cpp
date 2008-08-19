@@ -39,8 +39,8 @@ const int    Dynamic::BiasSolver::ITERATION_LIMIT = 5000;
 /* These number are black magic. The best values can only be obtained through
  * exhaustive trial and error or writing another optimization program to
  * optimize this optimization program. They are very sensitive. Be carefull */
-const double Dynamic::BiasSolver::INITIAL_TEMPERATURE = 1.0;
-const double Dynamic::BiasSolver::COOLING_RATE        = 0.99;
+const double Dynamic::BiasSolver::INITIAL_TEMPERATURE = 0.9;
+const double Dynamic::BiasSolver::COOLING_RATE        = 0.95;
 
 
 QList<QByteArray> Dynamic::BiasSolver::s_universe;
