@@ -83,7 +83,8 @@ Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) cons
 bool 
 CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-    
+    Q_UNUSED( role )
+     
     if( !index.isValid() )
         return false;
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
