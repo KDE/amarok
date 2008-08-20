@@ -5,9 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.0-beta2
   CHANGES:
+    * System tray tooltip is now translucent (if compositing is available).
 
   BUGFIXES:
-    * Make it possible to actually disable the audio fadeout. (BR 169022)
+    * Made it possible to actually disable the audio fadeout. (BR 169022)
 
 
 VERSION 2.0-beta1
