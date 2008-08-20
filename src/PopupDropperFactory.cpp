@@ -121,6 +121,7 @@ void PopupDropperFactory::adjustSubmenuItem( PopupDropperItem *item )
 
     item->setFont( font );
     item->setHoverMsecs( 800 );
+    item->setHoverIndicatorShowStyle( PopupDropperItem::OnHover );
     QColor hoverIndicatorFillColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
     hoverIndicatorFillColor.setAlpha( 96 );
     QBrush brush = item->hoverIndicatorFillBrush();
