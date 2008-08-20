@@ -10,5 +10,5 @@ install( PROGRAMS
 
 install( PROGRAMS
         debug/__init__.js
-        DESTINATION lib/kde4/plugins/script/amarok/qtscript_debug/debug
+        DESTINATION ${LIB_INSTALL_DIR}/kde4/plugins/script/amarok/qtscript_debug/debug
 )
