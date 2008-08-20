@@ -12,6 +12,8 @@
  ***************************************************************************/
 
 #include "LastFmService.h"
+
+#include "EngineController.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "RadioAdapter.h"
@@ -89,6 +91,10 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 
 LastFmService::~LastFmService()
 {
+    DEBUG_BLOCK
+
+    The::engineController()->stop( true ); //Needed to prevent libunicorn crashing when unloading
+
     CollectionManager::instance()->removeUnmanagedCollection( m_collection );
     ms_service = 0;
     delete m_collection;
@@ -100,7 +106,6 @@ LastFmService::polish()
 {
     if( !m_polished )
     {
-
         m_bottomPanel->setMaximumHeight( 100 );
 
         m_buttonBox = new KHBox(m_bottomPanel);
