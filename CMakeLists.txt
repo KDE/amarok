@@ -21,7 +21,7 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
                           ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
-
+include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
 
 set(TAGLIB_MIN_VERSION "1.5")
