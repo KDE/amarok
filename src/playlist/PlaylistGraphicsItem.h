@@ -45,6 +45,8 @@ namespace Playlist
      */
     class GraphicsItem : public QObject, public QGraphicsItem
     {
+        Q_OBJECT
+
         struct ActiveItems;
 
         public:
@@ -123,7 +125,6 @@ namespace Playlist
             static QFontMetricsF* s_nfm; //normal
             static QFontMetricsF* s_ifm; //italic
             static QFontMetricsF* s_bfm; //bold
-
     };
 
 }

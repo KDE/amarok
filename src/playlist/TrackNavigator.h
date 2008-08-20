@@ -38,6 +38,8 @@ class Model;
  */
     class TrackNavigator : public QObject
     {
+        Q_OBJECT
+
         public:
             TrackNavigator( Model* model ) : m_playlistModel( model ) { m_playlistChanged = true; }
             virtual ~TrackNavigator() { }
