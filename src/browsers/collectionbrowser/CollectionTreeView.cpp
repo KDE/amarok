@@ -88,8 +88,11 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     c.setAlpha( 0 );
     p.setColor( QPalette::Base, c );
 
-    c = p.color( QPalette::AlternateBase );
-    c.setAlpha( 0 );
+
+    //HACK ALERT, make a workaround, for now, for the alternating row color issue
+   /* c = p.color( QPalette::AlternateBase );*/
+    c = Qt::white;
+    c.setAlpha( 31 );
     p.setColor( QPalette::AlternateBase, c );
 
     setPalette( p );
