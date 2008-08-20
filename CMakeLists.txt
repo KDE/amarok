@@ -22,6 +22,8 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
 
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
+check_library_exists(dl dlopen "" LIBDL_FOUND)
+
 set(TAGLIB_MIN_VERSION "1.5")
 find_package(Taglib)
 macro_log_feature( TAGLIB_FOUND "taglib" "Read and write tags in audio files" "http://www.freshmeat.net/projects/taglib" TRUE "1.5.0" "")

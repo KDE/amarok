@@ -562,9 +562,9 @@ if(KDEMULTIMEDIA_FOUND)
         ${KCOMPACTDISC_LIBRARY}
     )
 endif(KDEMULTIMEDIA_FOUND)
-if(NOT WIN32)
+if(LIBDL_FOUND)
     target_link_libraries(amaroklib dl)
-endif(NOT WIN32)
+endif(LIBDL_FOUND)
 
 if(USE_SYSTEM_SQLITE)
     target_link_libraries(amaroklib ${SQLITE_LIBRARIES})
