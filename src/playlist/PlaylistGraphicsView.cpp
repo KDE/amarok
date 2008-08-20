@@ -377,11 +377,9 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
         int moveMeIndex = m_tracks.indexOf( moveMe );
 
         QList<int> albumTracks;
-
         albumTracks << moveMeIndex;
 
         int i = moveMeIndex + 1;
-        int count = 1;
 
         // get the index of the body elements
         while( ( i < m_tracks.count() ) && ( m_tracks[i]->groupMode() != Playlist::Head ) ) {
@@ -396,7 +394,6 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
             aboveIndex = m_tracks.count();
 
         m_model->moveMultipleRows( albumTracks, aboveIndex );
-
     }
 }
 
