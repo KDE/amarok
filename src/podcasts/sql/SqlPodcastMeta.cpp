@@ -24,12 +24,11 @@
 #include "SqlStorage.h"
 
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::SqlPodcastChannelPtr sqlChannel )
-    : Meta::PodcastEpisode()
+    : Meta::PodcastEpisode( Meta::PodcastChannelPtr::staticCast( sqlChannel ) )
     , m_batchUpdate( false )
     , m_sqlChannel( sqlChannel )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    setChannel( Meta::PodcastChannelPtr::staticCast( m_sqlChannel ) );
     QStringList::ConstIterator iter = result.constBegin();
     m_id = (*(iter++)).toInt();
     m_url = KUrl( *(iter++) );
@@ -55,7 +54,8 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
 {
     m_url = KUrl( episode->uidUrl() );
     m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
-
+    setChannel( episode->channel() );
+    
     if ( !m_sqlChannel ) {
         debug() << "invalid m_sqlChannel";
         debug() <<  episode->channel()->title();
