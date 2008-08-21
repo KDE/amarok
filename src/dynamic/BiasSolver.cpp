@@ -482,6 +482,9 @@ Dynamic::BiasSolver::universeResults( QString collectionId, QStringList uids )
     QByteArray uid;
     foreach( QString uidString, uids )
     {
+        if ( uidString.isEmpty() )
+            continue;
+
         // for some reason we sometimes get uidt without the protocol part
         if( uidString.at( s_uidUrlProtocolPrefixLength - 1 ) != '/' )
             uid = QByteArray::fromHex( uidString.toAscii() );
