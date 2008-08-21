@@ -61,6 +61,8 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
 Amarok2ConfigDialog::~Amarok2ConfigDialog()
 {
     DEBUG_FUNC_INFO
+
+    AmarokConfig::self()->writeConfig();
 }
 
 
