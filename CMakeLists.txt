@@ -24,6 +24,7 @@ if (NOT WIN32 )
     add_subdirectory( src/scriptengine/generator )
 endif (NOT WIN32)
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
+
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
 
@@ -52,8 +53,8 @@ macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices vi
 macro_optional_find_package(Ipod)
 macro_log_feature( IPOD_FOUND "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.6.0" "" )
 
-macro_optional_find_package(MySQL)
-macro_log_feature( MYSQL_FOUND "mysql" "Store Collection in a mysql database instead of a sqlite one" "http://www.mysql.com" FALSE "4.1.0" "" )
+#macro_optional_find_package(MySQL)
+#macro_log_feature( MYSQL_FOUND "mysql" "Store Collection in a mysql database instead of a sqlite one" "http://www.mysql.com" FALSE "4.1.0" "" )
 
 macro_optional_find_package(Mp4v2)
 macro_log_feature( MP4V2_FOUND "libmp4v2" "Enable tagging of mp4 files from within amarok" "http://www.sf.net/projects/mpeg4ip" FALSE "" "" )
