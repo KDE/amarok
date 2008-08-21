@@ -51,4 +51,4 @@ set_source_files_properties( ${Generated_QtNetwork_SRCS} PROPERTIES GENERATED tr
 add_library( qtscript_network MODULE ${Generated_QtNetwork_SRCS} )
 add_dependencies( qtscript_network generator )
 target_link_libraries( qtscript_network ${QT_LIBRARIES})
-install( TARGETS qtscript_network DESTINATION lib/kde4/plugins/script )
+install( TARGETS qtscript_network DESTINATION ${LIB_INSTALL_DIR}/kde4/plugins/script )

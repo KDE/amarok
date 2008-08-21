@@ -28,4 +28,4 @@ set_source_files_properties( ${Generated_QtXMLPatterns_SRCS} PROPERTIES GENERATE
 add_library( qtscript_xmlpatterns MODULE ${Generated_QtXMLPatterns_SRCS} )
 add_dependencies( qtscript_xmlpatterns generator )
 target_link_libraries( qtscript_xmlpatterns ${QT_LIBRARIES})
-install( TARGETS qtscript_xmlpatterns DESTINATION lib/kde4/plugins/script )
+install( TARGETS qtscript_xmlpatterns DESTINATION ${LIB_INSTALL_DIR}/kde4/plugins/script )
