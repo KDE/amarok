@@ -25,11 +25,11 @@ namespace Context
 
 ContainmentArrow::ContainmentArrow( QGraphicsItem *parent, int direction ) :
     QGraphicsItem( parent ),
-    m_containment( 0 ),
-    m_arrowSvg( 0 ),
-    m_timer( 0 ) ,
     m_showing( false ),
-    m_disabled( false )
+    m_disabled( false ),
+    m_timer( 0 ) ,
+    m_arrowSvg( 0 ),
+    m_containment( 0 )
 {
     DEBUG_BLOCK
     
