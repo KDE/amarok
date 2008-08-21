@@ -10,6 +10,9 @@ VERSION 2.0-beta2
     * System tray tooltip is now translucent (if compositing is available).
 
   BUGFIXES:
+    * "Resume playback on start" now also restores the track position.
+      (BR 168792)
+	correctly.
     * Fixed layouting issues with tagging dialog. (BR 166837)
     * Fixed crash when closing last.fm settings while playing. (BR 168828)
     * Made it possible to actually disable the audio fadeout. (BR 169022)
