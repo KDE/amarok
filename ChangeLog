@@ -5,10 +5,12 @@ Amarok ChangeLog
 
 VERSION 2.0-beta2
   CHANGES:
+    * Config is now written right after closing the settings dialog, making
+      it crash persistant.
     * System tray tooltip is now translucent (if compositing is available).
 
   BUGFIXES:
-	* Fixed crash when closing last.fm settings while playing. (BR 168828)
+    * Fixed crash when closing last.fm settings while playing. (BR 168828)
     * Made it possible to actually disable the audio fadeout. (BR 169022)
 
 
