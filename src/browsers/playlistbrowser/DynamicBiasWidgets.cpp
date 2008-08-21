@@ -469,6 +469,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, Q
     combo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     combo->setEditable( editable );
 
+    combo->addItem( QString() );
 
     if( populateQuery != 0 )
     {
