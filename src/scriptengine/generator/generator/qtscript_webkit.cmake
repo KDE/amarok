@@ -17,4 +17,4 @@ set_source_files_properties( ${Generated_QtWebkit_SRCS} PROPERTIES GENERATED tru
 add_library( qtscript_webkit MODULE ${Generated_QtWebkit_SRCS} )
 add_dependencies( qtscript_webkit generator )
 target_link_libraries( qtscript_webkit ${QT_LIBRARIES})
-install( TARGETS qtscript_webkit DESTINATION ${LIB_INSTALL_DIR}/kde4/plugins/script )
+install( TARGETS qtscript_webkit DESTINATION lib/kde4/plugins/script )

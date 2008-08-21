@@ -103,4 +103,4 @@ set_source_files_properties( ${Generated_QtCore_SRCS} PROPERTIES GENERATED true 
 add_library( qtscript_core MODULE ${Generated_QtCore_SRCS} )
 add_dependencies( qtscript_core generator )
 target_link_libraries( qtscript_core ${QT_LIBRARIES})
-install( TARGETS qtscript_core DESTINATION ${LIB_INSTALL_DIR}/kde4/plugins/script )
+install( TARGETS qtscript_core DESTINATION lib/kde4/plugins/script )

@@ -7,4 +7,4 @@ set_source_files_properties( ${Generated_QtUiTools_SRCS} PROPERTIES GENERATED tr
 add_library( qtscript_uitools MODULE ${Generated_QtUiTools_SRCS} )
 add_dependencies( qtscript_uitools generator )
 target_link_libraries( qtscript_uitools ${QT_LIBRARIES})
-install( TARGETS qtscript_uitools DESTINATION ${LIB_INSTALL_DIR}/kde4/plugins/script )
+install( TARGETS qtscript_uitools DESTINATION lib/kde4/plugins/script )
