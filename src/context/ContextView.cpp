@@ -496,8 +496,6 @@ ContextView::updateContainmentsGeometry()
     {
         for( int i = last; i >= 0; i-- )
         {
-            Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
-
             Plasma::Containment *cont = contextScene()->containments()[i];
             
             x = ( width + 25 ) * ( i % 2 );
@@ -668,11 +666,14 @@ ContextView::setContainment( Plasma::Containment* containment )
 void
 ContextView::setContainment( Plasma::Containment* from, int direction ) // SLOT
 {
+    Q_UNUSED( from )
     DEBUG_BLOCK
+
     const QList< Plasma::Containment* > containments = contextScene()->containments();
     int fromIndex = containments.indexOf( containment() );    
     int size = containments.size();
     int newIndex = -1;
+
     switch( direction ) // NOTE this only works for 2x2 grid of containments
     {
     case UP:
