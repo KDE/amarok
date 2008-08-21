@@ -330,11 +330,10 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
         QStringList result = m_collection->query( select );
         QString id = result.first();    //if result is empty something is going very wrong
         //the following sql was copied from SqlMeta.cpp
-        QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate,uniqueid) VALUES ( %1 );";
-        QString data = "%1,%2,%3,%4,%5,%6,'%7'";
+        QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
+        QString data = "%1,%2,%3,%4,%5,%6";
         data = data.arg( id, QString::number( track->rating() ), QString::number( track->score() ),
-                    QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ),
-                    m_collection->escape( track->uidUrl() ) );
+                    QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ) );
         m_collection->insert( insert.arg( data ), "statistics" );
     }
 }

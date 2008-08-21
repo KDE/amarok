@@ -442,7 +442,6 @@ DatabaseUpdater::createTables() const
                     ",score FLOAT"
                     ",rating INTEGER DEFAULT 0"
                     ",playcount INTEGER"
-                    ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE"
                     ",deleted BOOL DEFAULT " + m_collection->boolFalse() + 
                     ");";
         m_collection->query( c );
@@ -482,11 +481,9 @@ DatabaseUpdater::createTables() const
                     "id " + m_collection->idType() +
                     ",url INTEGER"
                     ",lyrics " + m_collection->longTextColumnType() +
-                    ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE"
                     ");";
         m_collection->query( q );
         m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
-        m_collection->query( "CREATE UNIQUE INDEX lyrics_uniqueid ON lyrics(uniqueid);" );
     }
     m_collection->query( "INSERT INTO admin(component,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );

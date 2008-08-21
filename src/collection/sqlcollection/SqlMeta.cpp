@@ -644,35 +644,17 @@ SqlTrack::updateStatisticsInDb()
     QStringList count = m_collection->query( QString( "SELECT count(*) FROM statistics WHERE url = %1;" ).arg( urlId ) );
     if( count[0].toInt() == 0 )
     {
-        count = m_collection->query( QString( "SELECT count(*) FROM statistics WHERE uniqueid = '%1';" ).arg( m_collection->escape( m_uid ) ) );
-        if( count[0].toInt() == 0 )
-        {
-
-            m_firstPlayed = QDateTime::currentDateTime().toTime_t();
-            QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate,uniqueid) VALUES ( %1 );";
-            QString data = "%1,%2,%3,%4,%5,%6,'%7'";
-            data = data.arg( QString::number( urlId )
-                    , QString::number( m_rating )
-                    , QString::number( m_score )
-                    , QString::number( m_playCount )
-                    , QString::number( m_lastPlayed )
-                    , QString::number( m_firstPlayed )
-                    , m_collection->escape( m_uid ) );
-            insert = insert.arg( data );
-            m_collection->insert( insert, "statistics" );
-        }
-        else
-        {
-            QString update = "UPDATE statistics SET %1 WHERE uniqueid = '2';";
-            QString data = "url=%1, rating=%2, score=%3, playcount=%4, accessdate=%5";
-            data = data.arg( QString::number( urlId )
-                    , QString::number( m_rating )
-                    , QString::number( m_score )
-                    , QString::number( m_playCount )
-                    , QString::number( m_lastPlayed ) );
-            update = update.arg( data, m_collection->escape( m_uid ) );
-            m_collection->query( update );
-        }
+        m_firstPlayed = QDateTime::currentDateTime().toTime_t();
+        QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
+        QString data = "%1,%2,%3,%4,%5,%6";
+        data = data.arg( QString::number( urlId )
+                , QString::number( m_rating )
+                , QString::number( m_score )
+                , QString::number( m_playCount )
+                , QString::number( m_lastPlayed )
+                , QString::number( m_firstPlayed ) );
+        insert = insert.arg( data );
+        m_collection->insert( insert, "statistics" );
     }
     else
     {
@@ -727,16 +709,7 @@ SqlTrack::cachedLyrics() const
                         .arg( m_collection->escape( m_rpath ) );
     QStringList result = m_collection->query( query );
     if( result.isEmpty() )
-    {
-        query = QString( "SELECT lyrics FROM lyrics WHERE uniqueid = '%1'" )
-                        .arg( m_collection->escape( m_uid ) );
-        result = m_collection->query( query );
-
-        if( result.isEmpty() )
-            return QString();
-        else
-            return result[0];
-    }
+        return QString();
     else
         return result[0];
 }
@@ -751,10 +724,9 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
     QStringList queryResult = m_collection->query( query );
     if( queryResult[0].toInt() == 0 )
     {
-        QString insert = QString( "INSERT INTO lyrics( url, lyrics, uniqueid ) VALUES ( '%1', '%2', '%3' );" )
+        QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( '%1', '%2' );" )
                             .arg( m_collection->escape( m_rpath ),
-                                  m_collection->escape( lyrics ),
-                                  m_collection->escape( m_uid ) );
+                                  m_collection->escape( lyrics ) );
         m_collection->insert( insert, "lyrics" );
     }
     else

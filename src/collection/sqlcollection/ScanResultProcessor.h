@@ -92,7 +92,6 @@ class ScanResultProcessor
 
         ScanType m_type;
 
-        QStringList m_aftPermanentTablesUrlId;
         QStringList m_aftPermanentTablesUrlString;
 };
 
