@@ -96,8 +96,9 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
     m_podcastTreeView->setModel( podcastModel );
     m_podcastTreeView->header()->hide();
 
-
     m_podcastTreeView->setAlternatingRowColors( true );
+    m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
     //transparency
     QPalette p = m_podcastTreeView->palette();
@@ -135,22 +136,18 @@ PodcastCategory::~PodcastCategory()
 {
 }
 
-
 void PlaylistBrowserNS::PodcastCategory::showInfo( const QModelIndex & index )
 {
 
     QString description = index.data( ShortDescriptionRole ).toString();
     description.replace( QRegExp("\n "), "\n" );
     description.replace( QRegExp("\n+"), "\n" );
-    
+
     QVariantMap map;
     map["service_name"] = "Podcasts";
     map["main_info"] = description;
     The::serviceInfoProxy()->setInfo( map );
 }
-
-
-
 
 ViewKicker::ViewKicker( QTreeView * treeView )
 {

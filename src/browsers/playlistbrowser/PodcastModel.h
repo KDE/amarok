@@ -58,11 +58,12 @@ class PodcastModel : public QAbstractItemModel
         void downloadItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );
 
+        
     public slots:
         void slotUpdate();
         void addPodcast();
         void refreshPodcasts();
-        void configurePodcasts();
+        void configureChannels();
         void setPodcastsInterval();
         void emitLayoutChanged();
 

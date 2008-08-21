@@ -197,8 +197,8 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 void
 SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
 {
-    SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
     DEBUG_BLOCK
+    SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
 
     KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
 
@@ -273,12 +273,18 @@ SqlPodcastProvider::downloadResult( KJob * job )
     else
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode = m_jobMap.value( job );
+        if( sqlEpisode.isNull() )
+        {
+            debug() << "sqlEpisodePtr is NULL after download";
+            return;
+        }
         QString title = sqlEpisode->channel()->title();
 
         QDir dir( Amarok::saveLocation("podcasts") );
         //save in directory with channels title
         if ( !dir.exists( title ) )
         {
+            debug() << "Making directory " << title;
             dir.mkdir( title );
         }
         dir.cd( title );
@@ -287,7 +293,7 @@ SqlPodcastProvider::downloadResult( KJob * job )
 
         QFile *localFile = new QFile( localUrl.path() );
         if( localFile->open( QIODevice::WriteOnly ) &&
-            localFile->write( static_cast<KIO::StoredTransferJob *>(job)->data() ) != -1 )
+            localFile->write( (static_cast<KIO::StoredTransferJob *>(job))->data() ) != -1 )
         {
             sqlEpisode->setLocalUrl( localUrl );
         }

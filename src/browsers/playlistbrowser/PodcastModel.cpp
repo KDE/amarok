@@ -367,9 +367,13 @@ PlaylistBrowserNS::PodcastModel::downloadItems( QModelIndexList list )
     foreach( QModelIndex index, list )
     {
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
-        if( typeid( * pmc ) == typeid( Meta::PodcastEpisode ) )
+        if( pmc->podcastType() ==  Meta::EpisodeType )
         {
             downloadEpisode( Meta::PodcastEpisodePtr( reinterpret_cast<Meta::PodcastEpisode *>(pmc) ) );
+        }
+        else if( pmc->podcastType() ==  Meta::ChannelType )
+        {
+            //TODO: download all (new) episodes
         }
     }
 }
@@ -394,9 +398,9 @@ PlaylistBrowserNS::PodcastModel::downloadEpisode( Meta::PodcastEpisodePtr episod
 }
 
 void
-PlaylistBrowserNS::PodcastModel::configurePodcasts()
+PlaylistBrowserNS::PodcastModel::configureChannels()
 {
-    debug() << "configure Podcasts";
+    debug() << "configure Channels";
 }
 
 void

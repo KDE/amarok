@@ -37,8 +37,6 @@ typedef QList<SqlPodcastChannelPtr> SqlPodcastChannelList;
 class SqlPodcastEpisode : public PodcastEpisode
 {
     public:
-//         static SqlPodcastEpisodePtr getEpisode( SqlPodcastProvider *provider );
-        
         SqlPodcastEpisode( const QStringList &queryResult, SqlPodcastChannelPtr sqlChannel );
 
         /** Copy from another PodcastEpisode
