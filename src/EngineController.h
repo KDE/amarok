@@ -47,6 +47,7 @@ public:
     static bool              canDecode( const KUrl& );
     static ExtensionCache&   extensionCache() { return s_extensionCache; }
 
+    /* returns track position (elapsed time) in seconds */
     int trackPosition() const;
 
     Meta::TrackPtr currentTrack() const;
