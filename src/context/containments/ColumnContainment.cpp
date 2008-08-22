@@ -174,7 +174,9 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
     
     m_currentRows = ( int )( rect().height() ) / m_rowHeight;
 
-    const int columns = ( int )( rect().width() ) / m_minColumnWidth;
+    int columns = ( int )( rect().width() ) / m_minColumnWidth;
+    if( columns == 0 )
+        columns = 1; // we don't want the user to have all his applets disappear on a resize. that is BAD!
     debug() << "rect(): " << rect();
     debug() << "size(): " << size();
     debug() << "geometry():" << geometry();
