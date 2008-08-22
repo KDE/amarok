@@ -225,6 +225,10 @@ namespace Meta
 
             /** Returns the type of this track, e.g. "ogg", "mp3", "Stream" */
             virtual QString type() const = 0;
+            
+            /** tell the track to perform any prerequisite
+             * operations before playing */
+            virtual void prepareToPlay();
 
             /** tell the track object that amarok finished playing it.
                 The argument is the percentage of the track which was played, in the range 0 to 1*/

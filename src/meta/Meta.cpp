@@ -274,6 +274,11 @@ Meta::Track::addMatchTo( QueryMaker *qm )
 }
 
 void
+Meta::Track::prepareToPlay()
+{
+}
+
+void
 Meta::Track::finishedPlaying( double /*playedFraction*/ )
 {
 }
