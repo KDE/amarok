@@ -674,16 +674,21 @@ MtpHandler::getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr tr
 
     debug() << "Title is: " << track->title();
 
-    // NOTE: libmtp has no access to the filesystem, no url for playing, must find way around
-//    track->setPlayableUrl( path );
+    /* set proposed temporary file path, to which track will be copied temporarily before attempting to play */
 
+    QString format = getFormat( mtptrack );
+
+    QString tempPath = track->setTempFile( format );
+    track->setPlayableUrl( tempPath );
+
+    // libmtp low-level function data
 
     track->setFolderId( mtptrack->parent_id );
     track->setId( mtptrack->item_id );
 
     debug() << "Id is: " << track->id();
 
-    track->setPlayableUrl( "" ); // defaulting, since not provided
+//    track->setPlayableUrl( "" ); // defaulting, since not provided
     track->setUrl( QString::number( track->id(), 10 ) ); // for map key
 }
 
@@ -751,6 +756,23 @@ MtpHandler::setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr t
         trackmeta->filename = qstrdup( track->playableUrl().fileName().toUtf8() );
     }
     trackmeta->filesize = track->filesize();
+}
+
+QString
+MtpHandler::getFormat( LIBMTP_track_t *mtptrack )
+{
+    QString format;
+
+    if( mtptrack->filetype == LIBMTP_FILETYPE_MP3 )
+        format = "mp3";
+    else if( mtptrack->filetype == LIBMTP_FILETYPE_WMA )
+        format = "wma";
+    else if( mtptrack->filetype == LIBMTP_FILETYPE_OGG )
+        format = "ogg";
+    else
+        format = "other";
+
+    return format;
 }
 
 void
@@ -877,8 +899,6 @@ MtpHandler::parseTracks()
 {
     // NOTE: look at ReadMtpMusic function in MTPMediaDevice
 
-
-
     TrackMap trackMap;
     ArtistMap artistMap;
     AlbumMap albumMap;
@@ -905,18 +925,11 @@ MtpHandler::parseTracks()
         /* mtptrack - provides libmtp info */
         /* track - the new track whose data is being set up */
         LIBMTP_track_t *mtptrack = tracks;
-        QString format;
-
-        if( mtptrack->filetype == LIBMTP_FILETYPE_MP3 )
-            format = "mp3";
-        else if( mtptrack->filetype == LIBMTP_FILETYPE_WMA )
-            format = "wma";
-        else if( mtptrack->filetype == LIBMTP_FILETYPE_OGG )
-            format = "ogg";
-        else
-            format = "other";
+        QString format = getFormat( mtptrack );
 
         MtpTrackPtr track( new MtpTrack( m_memColl, format ) );
+
+        /* fetch basic information */
 
         getBasicMtpTrackInfo( mtptrack, track );
 

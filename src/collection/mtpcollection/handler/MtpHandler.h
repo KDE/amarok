@@ -95,6 +95,8 @@ namespace Mtp
        void getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track );
        void setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr track );
 
+       QString getFormat( LIBMTP_track_t *mtptrack );
+
        // miscellaneous internal functions
        void addMtpTrackToCollection( LIBMTP_track_t *mtptrack );
 

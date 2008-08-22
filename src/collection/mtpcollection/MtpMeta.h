@@ -26,7 +26,10 @@
 
 #include <libmtp.h>
 
+#include <KTemporaryFile>
+
 #include <QMultiMap>
+
 
 class MtpCollection;
 class PopupDropperAction;
@@ -129,6 +132,8 @@ class MtpTrack : public Meta::Track
         virtual uint lastPlayed() const;
         virtual int playCount() const;
 
+        virtual void prepareToPlay();
+
         virtual QString type() const;
 
         virtual void beginMetaDataUpdate() { DEBUG_BLOCK }    //read only
@@ -178,6 +183,11 @@ class MtpTrack : public Meta::Track
 	void setPlayableUrl( const QString & url ) { m_playableUrl = url; }
     void setUrl ( const QString & url ) { m_url = url; }
 
+    // these methods are used to deal with the m_tempfile used for playing
+
+    QString setTempFile( const QString &format );
+    //KTemporaryFile* getTempFile() const { return m_tempfile; }
+
     private:
         MtpCollection *m_collection;
 
@@ -196,6 +206,8 @@ class MtpTrack : public Meta::Track
         MtpYearMap m_mtpYearMap;
 
         LIBMTP_track_t *m_mtptrack;
+        KTemporaryFile m_tempfile;
+        bool m_isCopied;
 //	QList<MTP_Playlist*> m_mtpplaylists;
 
         u_int32_t               m_id;

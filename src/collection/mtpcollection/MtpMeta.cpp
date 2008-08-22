@@ -33,10 +33,12 @@
 #include "context/popupdropper/PopupDropperAction.h"
 
 #include <KIcon>
+#include <KTemporaryFile>
 #include <KUrl>
 
+#include <QFileInfo>
+
 using namespace Meta;
-// Currently complaining about some vtable issue
 
 class EditCapabilityMtp : public Meta::EditCapability
 {
@@ -167,11 +169,15 @@ MtpTrack::MtpTrack( MtpCollection *collection, const QString &format)
 {
     m_displayUrl = QString();
     m_playableUrl = QString();
+    m_isCopied = false;
 }
 
 MtpTrack::~MtpTrack()
 {
-    //nothing to do
+    // clean up temporary file
+
+//    if ( m_tempfile )
+//        delete m_tempfile;
 }
 
 QString
@@ -184,6 +190,48 @@ QString
 MtpTrack::prettyName() const
 {
     return m_name;
+}
+
+void
+MtpTrack::prepareToPlay()
+{
+    KUrl url;
+    if( m_isCopied )
+    {
+        debug() << "File is already copied, simply return url";
+        //m_playableUrl = KUrl::fromPath( m_playableUrl );
+    }
+    else
+    {
+        debug() << "Beginning temporary file copy";
+        m_tempfile.open();
+        bool success = m_collection->handler()->getTrackToFile( m_id, m_playableUrl );
+        debug() << "File transfer complete";
+        if( success )
+        {
+            debug() << "File transfer successful!";
+            //m_playableUrl = KUrl::fromPath( m_playableUrl );
+            m_isCopied = true;
+        }
+        else
+        {
+            debug() << "File transfer failed!";
+            //m_playableUrl = KUrl::fromPath( "" );
+            m_isCopied = false;
+        }
+    }
+}
+
+QString
+MtpTrack::setTempFile( const QString &format )
+{
+    m_tempfile.setSuffix( format ); // set suffix based on info from libmtp
+    QFileInfo tempFileInfo( m_tempfile ); // get info for path
+    QString tempPath = tempFileInfo.absoluteFilePath(); // path
+
+//    tempfile->setAutoRemove( false );
+
+    return tempPath;
 }
 
 KUrl
