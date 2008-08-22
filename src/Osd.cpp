@@ -50,7 +50,7 @@ namespace Amarok
 
 
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
-        : QWidget( parent, Qt::Window | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint )
+        : QWidget( parent )
         , m_duration( 2000 )
         , m_timer( new QTimer( this ) )
         , m_alignment( Middle )
@@ -60,6 +60,16 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_rating( 0 )
         , m_volume( false )
 {
+    Qt::WindowFlags flags;
+    flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
+    // The best of both worlds.  On Windows, setting the widget as a popup avoids a task manager entry.  On linux, a popup steals focus.
+    // Therefore we go need to do it platform specific :(
+    #ifdef Q_OS_WIN
+    flags |= Qt::Popup;
+    #else
+    flags |= Qt::Window | Qt::X11BypassWindowManagerHint;
+    #endif
+    setWindowFlags( flags );
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
     unsetColors();
