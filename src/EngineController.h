@@ -145,7 +145,6 @@ private:
     QTimer* m_fadeoutTimer;
 
     QMutex m_mutex;
-    bool m_trackChangeInProgress;
 };
 
 namespace The {
