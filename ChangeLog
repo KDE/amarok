@@ -8,6 +8,8 @@ VERSION 2.0-beta2
     * Config is now written right after closing the settings dialog, making
       it crash persistant.
     * System tray tooltip is now translucent (if compositing is available).
+    * QtScript: Importer.include imports the file in the same context that its 
+      currently in.
 
   BUGFIXES:
     * "Resume playback on start" now also restores the track position.
