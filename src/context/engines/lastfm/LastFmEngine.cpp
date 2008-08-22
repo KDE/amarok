@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+ * copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>   *
  **************************************************************************/
 
 /***************************************************************************
@@ -38,16 +38,18 @@ LastFmEngine::LastFmEngine( QObject* parent, const QList<QVariant>& args )
     , m_sysJob( 0 )
     , m_userJob( 0 )
     , m_sources( 0 )
-    , m_userevents( false )
-    , m_friendevents( false )
-    , m_sysevents( false )
-    , m_suggestedsongs( false )
-    , m_relatedartists( false )
+    , m_userevents( true )
+    , m_friendevents( true )
+    , m_sysevents( true )
+    , m_suggestedsongs( true )
+    , m_relatedartists( true )
 {
     Q_UNUSED( args )
     DEBUG_BLOCK
 
-    m_user = AmarokConfig::scrobblerUsername();
+    //  kind of a HACK, as we read the config written by the last.fm service
+    // but we can't link to another pluggable service....
+    m_user = Amarok::config( "Service_LastFm" ).readEntry( "username" );
     m_sources << I18N_NOOP( "userevents" ) << I18N_NOOP( "sysevents" ) << I18N_NOOP( "friendevents" ) << I18N_NOOP( "relatedartists" ) << I18N_NOOP( "suggestedsongs" );
 
 }
@@ -89,6 +91,7 @@ bool LastFmEngine::sourceRequested( const QString& name )
 
     setData( name, QVariant());
     updateCurrent();
+    updateEvents();
     return true;
 }
 
@@ -147,9 +150,14 @@ void LastFmEngine::updateEvents()
     DEBUG_BLOCK
     if( m_user == QString() )
     {
-        setData( I18N_NOOP( "sysevents" ), I18N_NOOP( "username" ) );
-        setData( I18N_NOOP( "friendevents" ), I18N_NOOP( "username" ) );
-         setData( I18N_NOOP( "userevents" ), I18N_NOOP( "username" ) );
+        m_user = Amarok::config( "Service_LastFm" ).readEntry( "username" ); // try reloading one more time
+        if( m_user == QString() )
+        {
+            debug() << "Got no last.fm username or passwd, not getting events";
+            setData( I18N_NOOP( "sysevents" ), I18N_NOOP( "username" ) );
+            setData( I18N_NOOP( "friendevents" ), I18N_NOOP( "username" ) );
+            setData( I18N_NOOP( "userevents" ), I18N_NOOP( "username" ) );
+        }
         return;
     }
 
@@ -161,11 +169,13 @@ void LastFmEngine::updateEvents()
         // TODO take care of refreshing cache after its too old... say a week?
         if( cached == QString() ) // not cached, lets fetch it
         {
+            debug() << "got no cached friendevents";
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/friendevents.rss" ).arg( m_user ) );
             m_friendJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
             connect( m_friendJob, SIGNAL( result( KJob* ) ), this, SLOT( friendResult( KJob* ) ) );
         } else // load from cache
         {
+            debug() << "got cached friendevents";
             QVariantMap events = parseFeed( cached );
             QMapIterator< QString, QVariant > iter( events );
             while( iter.hasNext() )
@@ -185,16 +195,19 @@ void LastFmEngine::updateEvents()
         // TODO take care of refreshing cache after its too old... say a week?
         if( cached == QString() ) // not cached, lets fetch it
         {
+            debug() << "got no cached  sysevents";
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/eventsysrecs.rss" ).arg( m_user ) );
             m_sysJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
             connect( m_sysJob, SIGNAL( result( KJob* ) ), this, SLOT( sysResult( KJob* ) ) );
         } else // load from cache
         {
+            debug() << "got cached sysevents";
             QVariantMap events = parseFeed( cached );
             QMapIterator< QString, QVariant > iter( events );
             while( iter.hasNext() )
             {
                 iter.next();
+                debug() << "setting data with source: " << iter.key();
                 setData( "sysevents", iter.key(), iter.value() );
             }
         }
@@ -209,11 +222,13 @@ void LastFmEngine::updateEvents()
         // TODO take care of refreshing cache after its too old... say a week?
         if( cached == QString() ) // not cached, lets fetch it
         {
+            debug() << "got no cached userevents";
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/events.rss" ).arg( m_user ) );
             m_userJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
             connect( m_userJob, SIGNAL( result( KJob* ) ), this, SLOT( friendResult( KJob* ) ) );
         } else // load from cache
         {
+            debug() << "got cached userevents";
             QVariantMap events = parseFeed( cached );
             QMapIterator< QString, QVariant > iter( events );
             while( iter.hasNext() )
@@ -249,6 +264,8 @@ void LastFmEngine::friendResult( KJob* job )
     }
 
     QVariantMap events = parseFeed( data );
+
+//     debug() << "got f events: " << events;
     QMapIterator< QString, QVariant > iter( events );
     while( iter.hasNext() )
     {
@@ -275,15 +292,18 @@ void LastFmEngine::sysResult( KJob* job )
     QFile cache( QString( Amarok::saveLocation() + "lastfm.events/eventsysrecs.rss" ) );
     if ( cache.open( QFile::WriteOnly | QFile::Truncate ) )
     {
+        debug() << "writing events to file";
         QTextStream out( &cache );
         out << data;
     }
 
     QVariantMap events = parseFeed( data );
+//     debug() << "got system events: " << events;
     QMapIterator< QString, QVariant > iter( events );
     while( iter.hasNext() )
     {
         iter.next();
+        debug() << "setting system event data: " << iter.key() << iter.value();
         setData( "sysevents", iter.key(), iter.value() );
     }
 }
@@ -311,6 +331,7 @@ void LastFmEngine::userResult( KJob* job )
     }
 
     QVariantMap events = parseFeed( data );
+//     debug() << "got user events: " << events;
     QMapIterator< QString, QVariant > iter( events );
     while( iter.hasNext() )
     {
@@ -321,6 +342,7 @@ void LastFmEngine::userResult( KJob* job )
 
 QVariantMap LastFmEngine::parseFeed( QString content )
 {
+    DEBUG_BLOCK
     QDomDocument doc;
     doc.setContent( content );
     // parse the xml rss feed

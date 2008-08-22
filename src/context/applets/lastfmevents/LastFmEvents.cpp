@@ -1,5 +1,5 @@
 /***************************************************************************
-* copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+* copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>   *
 **************************************************************************/
 
 /***************************************************************************
@@ -66,13 +66,11 @@ void LastFmEvents::init()
         m_dates[ i ]->setBrush( textColor );
         m_cities[ i ]->setBrush( textColor );
     }
-    dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "sysevents" ), this );
-    dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "userevents" ), this );
-    dataEngine( "amarok-lastfm" )->connectSource( I18N_NOOP( "friendevents" ), this );
-
-    dataUpdated( "sysevents", dataEngine( "amarok-lastfm" )->query( "sysevents" ) );
-    dataUpdated( "userevents", dataEngine( "amarok-lastfm" )->query( "userevents" ) );
-    dataUpdated( "friendevents", dataEngine( "amarok-lastfm" )->query( "friendevents" ) );
+    connectSource( "sysevents" );
+    connectSource( "userevents" );
+    connectSource( "friendevents" );
+    
+    connect( dataEngine( "amarok-lastfm" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
 
     // calculate aspect ratio, and resize to desired width
     m_theme->resize();
@@ -83,6 +81,14 @@ void LastFmEvents::init()
     setMaximumSize( 10000, 10000 ); // allow effectiveSizeHint to report preferred size without limit
 
 }
+
+void
+LastFmEvents::connectSource( const QString &source )
+{
+        dataEngine( "amarok-lastfm" )->connectSource( source, this );
+        dataUpdated( source, dataEngine("amarok-lastfm" )->query( source ) ); // get data initally
+}
+
 
 void LastFmEvents::constraintsEvent( Plasma::Constraints constraints )
 {
@@ -110,7 +116,7 @@ void LastFmEvents::constraintsEvent( Plasma::Constraints constraints )
     }
 }
 
-void LastFmEvents::dataUpdated( const QString& name, const Context::DataEngine::Data& data )
+void LastFmEvents::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK
     debug() << "got data from engine: " << data;

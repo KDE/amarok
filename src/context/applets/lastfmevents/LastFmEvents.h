@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+ * copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>   *
  **************************************************************************/
 
 /***************************************************************************
@@ -41,6 +41,8 @@ public:
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
+private slots:
+    void connectSource( const QString &source );
 private:
 
     qreal m_aspectRatio;
