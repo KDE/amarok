@@ -132,6 +132,7 @@ namespace AmarokScript
             case Phonon::LoadingState:
             case Phonon::StoppedState:
                 return 2; //Stopped
+            default:
             case Phonon::ErrorState:
                 return -1;
         };
