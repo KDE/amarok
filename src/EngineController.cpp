@@ -62,8 +62,9 @@ The::engineController()
 EngineController::EngineController()
     : m_media( 0 )
     , m_audio( 0 )
-    , m_playWhenFetched(true)
+    , m_playWhenFetched( true )
     , m_fadeoutTimer( new QTimer( this ) )
+    , m_trackChangeInProgress( false )
 {
     DEBUG_BLOCK
 
@@ -481,6 +482,8 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     {
         play( track );
     }
+
+    m_trackChangeInProgress = false;
 }
 
 
@@ -540,10 +543,12 @@ void
 EngineController::slotAboutToFinish()
 {
     // For some reason, phonon emits this when it's done buffering.
-    if( m_media->state() == Phonon::BufferingState )
+    if( m_trackChangeInProgress || m_media->state() == Phonon::BufferingState )
         return;
 
     DEBUG_BLOCK
+
+    m_trackChangeInProgress = true;
 
     if( m_multi )
     {
@@ -651,6 +656,8 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
         playUrl( url, 0 );
         m_mutex.unlock();
     }
+
+    m_trackChangeInProgress = false;
 }
 
 void
