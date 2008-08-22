@@ -41,7 +41,7 @@ MainControlsButton::~MainControlsButton()
 void
 MainControlsButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
-    DEBUG_BLOCK
+ //   DEBUG_BLOCK
 
     if ( m_mouseOver && !m_mouseDown )
         painter->drawPixmap( -2, -2, The::svgHandler()->renderSvg( m_prefix, option->rect.width() + 4, option->rect.height() + 4, m_prefix ) );
@@ -77,7 +77,7 @@ MainControlsButton::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
 void 
 MainControlsButton::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
     m_mouseOver = true;
     update();
 }
@@ -85,7 +85,7 @@ MainControlsButton::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 void 
 MainControlsButton::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
     m_mouseOver = false;
     m_mouseDown = false;
     update();
