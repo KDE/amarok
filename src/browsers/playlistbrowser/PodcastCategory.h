@@ -29,6 +29,9 @@
 #include <QTreeView>
 #include <QWebPage>
 
+class PopupDropper;
+class PopupDropperAction;
+
 namespace PlaylistBrowserNS {
 
 class PodcastModel;
@@ -78,14 +81,41 @@ Q_OBJECT
 
 class PodcastView : public QTreeView
 {
+    Q_OBJECT
     public:
         explicit PodcastView( PodcastModel *model, QWidget *parent = 0 );
         ~PodcastView();
+
+
+    protected:
+        void mousePressEvent( QMouseEvent *event );
+        void mouseReleaseEvent( QMouseEvent *event );
+        void mouseDoubleClickEvent( QMouseEvent *event );
+        void startDrag( Qt::DropActions supportedActions );
 
         void contextMenuEvent( QContextMenuEvent* event );
 
     private:
         PodcastModel *m_model;
+
+        QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
+
+        PopupDropper* m_pd;
+
+        PopupDropperAction * m_appendAction;
+        PopupDropperAction * m_loadAction;
+
+        PopupDropperAction * m_deleteAction;
+        PopupDropperAction * m_renameAction;
+
+        QPoint m_dragStartPosition;
+
+    private slots:
+
+        void slotLoad();
+        void slotAppend();
+//         void slotDelete();
+//         void slotRename();
 };
 
 /**

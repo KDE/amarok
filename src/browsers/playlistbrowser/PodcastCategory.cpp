@@ -21,9 +21,14 @@
 #include "PodcastCategory.h"
 
 #include "Amarok.h"
+#include "context/ContextView.h"
+#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/PopupDropperItem.h"
+#include "context/popupdropper/PopupDropper.h"
 #include "Debug.h"
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
+#include "PopupDropperFactory.h"
 #include "ServiceInfoProxy.h"
 #include "SvgTinter.h"
 #include "SvgHandler.h"
@@ -51,9 +56,7 @@
 
 #include <typeinfo>
 
-namespace PlaylistBrowserNS {
-
-PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel )
+PlaylistBrowserNS::PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel )
     : QWidget()
     , m_podcastModel( podcastModel )
 {
@@ -99,6 +102,9 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
     m_podcastTreeView->setAlternatingRowColors( true );
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+    m_podcastTreeView->setDragEnabled(true);
+    m_podcastTreeView->setAcceptDrops(true);
+    m_podcastTreeView->setDropIndicatorShown(true);
 
     //transparency
     QPalette p = m_podcastTreeView->palette();
@@ -127,16 +133,14 @@ PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel 
     //connect( podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), podcastModel, SLOT( emitLayoutChanged() ) );
     //connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), m_viewKicker, SLOT( kickView() ) );
     connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( showInfo( const QModelIndex & ) ) );
-
-
-
 }
 
-PodcastCategory::~PodcastCategory()
+PlaylistBrowserNS::PodcastCategory::~PodcastCategory()
 {
 }
 
-void PlaylistBrowserNS::PodcastCategory::showInfo( const QModelIndex & index )
+void
+PlaylistBrowserNS::PodcastCategory::showInfo( const QModelIndex & index )
 {
 
     QString description = index.data( ShortDescriptionRole ).toString();
@@ -149,30 +153,31 @@ void PlaylistBrowserNS::PodcastCategory::showInfo( const QModelIndex & index )
     The::serviceInfoProxy()->setInfo( map );
 }
 
-ViewKicker::ViewKicker( QTreeView * treeView )
+PlaylistBrowserNS::ViewKicker::ViewKicker( QTreeView * treeView )
 {
     DEBUG_BLOCK
     m_treeView = treeView;
 }
 
-void ViewKicker::kickView()
+void
+PlaylistBrowserNS::ViewKicker::kickView()
 {
     DEBUG_BLOCK
     m_treeView->setRootIndex( QModelIndex() );
 }
 
-PodcastCategoryDelegate::PodcastCategoryDelegate( QTreeView * view ) : QItemDelegate()
+PlaylistBrowserNS::PodcastCategoryDelegate::PodcastCategoryDelegate( QTreeView * view ) : QItemDelegate()
         , m_view( view )
 {
     m_webPage = new QWebPage( view );
 }
 
-PodcastCategoryDelegate::~PodcastCategoryDelegate()
+PlaylistBrowserNS::PodcastCategoryDelegate::~PodcastCategoryDelegate()
 {
 }
 
 void
-PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option,
+PlaylistBrowserNS::PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option,
                                 const QModelIndex & index ) const
 {
     DEBUG_BLOCK
@@ -273,7 +278,7 @@ PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
 }
 
 QSize
-PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+PlaylistBrowserNS::PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
     Q_UNUSED( option );
 
@@ -308,16 +313,105 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     return QSize ( width, height );
 }
 
-}
-
 PlaylistBrowserNS::PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     : QTreeView( parent )
-        ,m_model( model )
+    , m_model( model )
+    , m_pd( 0 )
+    , m_appendAction( 0 )
+    , m_loadAction( 0 )
+    , m_deleteAction( 0 )
+    , m_renameAction( 0 )
 {
 }
 
 PlaylistBrowserNS::PodcastView::~PodcastView()
 {
+}
+
+void
+PlaylistBrowserNS::PodcastView::mousePressEvent( QMouseEvent * event )
+{
+    if( event->button() == Qt::LeftButton )
+        m_dragStartPosition = event->pos();
+
+    QTreeView::mousePressEvent( event );
+}
+
+void
+PlaylistBrowserNS::PodcastView::mouseReleaseEvent( QMouseEvent * event )
+{
+    Q_UNUSED( event )
+
+    if( m_pd )
+    {
+        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
+        m_pd->hide();
+    }
+    m_pd = 0;
+}
+
+void
+PlaylistBrowserNS::PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
+{
+    QModelIndex index = indexAt( event->pos() );
+
+    if( index.isValid() && index.internalPointer()  /*&& index.parent().isValid()*/ )
+    {
+        Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
+
+        if ( pmc->podcastType() ==  Meta::EpisodeType )
+        {
+            Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>( pmc );
+            The::playlistModel()->insertOptioned( Meta::TrackPtr( static_cast<Meta::Track *>(episode )), Playlist::Append );
+        }
+        else if ( pmc->podcastType() ==  Meta::ChannelType )
+        {
+            QModelIndexList list;
+            list << index;
+            m_model->refreshItems( list );
+        }
+
+    }
+}
+
+void
+PlaylistBrowserNS::PodcastView::startDrag( Qt::DropActions supportedActions )
+{
+    DEBUG_BLOCK
+
+    //Waah? when a parent item is dragged, startDrag is called a bunch of times
+    static bool ongoingDrags = false;
+    if( ongoingDrags )
+        return;
+    ongoingDrags = true;
+
+    if( !m_pd )
+        m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
+
+    if( m_pd && m_pd->isHidden() )
+    {
+
+        QModelIndexList indices = selectedIndexes();
+
+        QList<PopupDropperAction*> actions = createCommonActions( indices );
+
+        foreach( PopupDropperAction * action, actions ) {
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
+        }
+
+        m_pd->show();
+    }
+
+    QTreeView::startDrag( supportedActions );
+    debug() << "After the drag!";
+
+    if( m_pd )
+    {
+        debug() << "clearing PUD";
+        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        m_pd->hide();
+    }
+    ongoingDrags = false;
 }
 
 void
@@ -373,5 +467,51 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
     }
 }
 
+QList< PopupDropperAction * >
+PlaylistBrowserNS::PodcastView::createCommonActions( QModelIndexList indices )
+{
+
+    QList< PopupDropperAction * > actions;
+
+    if ( m_appendAction == 0 ) {
+        m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
+    }
+
+    if ( m_loadAction == 0 ) {
+        m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
+    }
+
+    actions << m_appendAction;
+    actions << m_loadAction;
+
+    return actions;
+}
+
+void
+PlaylistBrowserNS::PodcastView::slotAppend()
+{
+    DEBUG_BLOCK
+//     foreach( SqlPlaylistViewItemPtr item, m_currentItems )
+//         if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
+//         Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
+//         //debug() << "playlist name: " << playlist->name();
+//         //The::playlistModel()->insertOptioned( Meta::PlaylistPtr( playlist ), Playlist::Append );
+//         The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Append );
+//         }
+}
+
+void
+PlaylistBrowserNS::PodcastView::slotLoad() {
+    DEBUG_BLOCK
+//     foreach( SqlPlaylistViewItemPtr item, m_currentItems )
+//         if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
+//         Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
+//         //debug() << "playlist name: " << playlist->name();
+//         //The::playlistModel()->insertOptioned( Meta::PlaylistPtr( playlist ), Playlist::Append );
+//         The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Replace );
+//         }
+}
 
 #include "PodcastCategory.moc"
