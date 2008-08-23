@@ -45,7 +45,7 @@ protected:
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
     void mousePressEvent( QGraphicsSceneMouseEvent *event );
 Q_SIGNALS:
-    void addApplet( const QString &pluginName );
+    void appletChosen( const QString &pluginName );
     
 private slots:
     void animateHighlight( qreal progress );

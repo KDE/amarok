@@ -61,7 +61,7 @@ ToolBoxIcon::mousePressEvent( QGraphicsSceneMouseEvent *event )
     {
         DEBUG_LINE_INFO
         debug() << data( 0 ).toString();
-        emit addApplet( data( 0 ).toString() );
+        emit appletChosen( data( 0 ).toString() );
     }
     else
     {
@@ -76,7 +76,7 @@ ToolBoxIcon::mousePressed( bool pressed )
     if( pressed && data( 0 ) != QVariant() )
     {
         debug() << data( 0 ).toString();
-        emit addApplet( data( 0 ).toString() );
+        emit appletChosen( data( 0 ).toString() );
     }
 }
 

@@ -21,6 +21,7 @@
 #include "Containment.h"
 #include "ContextView.h"
 #include "context/widgets/ContainmentArrow.h"
+#include "plasma/widgets/icon.h"
 
 #include <QObject>
 
@@ -73,7 +74,8 @@ public:
     
 Q_SIGNALS:
     void changeContainment( Plasma::Containment*, int );
-    
+    void zoomOut( Plasma::Containment* );
+    void zoomIn( Plasma::Containment* );
 
 protected:
     void mousePressEvent( QGraphicsSceneMouseEvent *event );
@@ -87,12 +89,21 @@ private slots:
     void appletRemoved( Plasma::Applet * );
     void slotArrowChangeContainment( int );
     void showAppletsMenu();
-
+    void showRemoveAppletsMenu();
+    void showAddAppletsMenu();
+    
+    void zoomOutRequested();
+    void zoomInReqested();
+    
 private:
     void rearrangeApplets( int starRow, int startColumn );
     bool insertInGrid( Plasma::Applet* applet );
     void loadInitialConfig();   
     void correctArrowPositions();
+    void setupControlButtons();
+    void correctControlButtonPositions();
+    
+    Plasma::Icon* addAction( QAction* );
     
     QList<QAction*> *m_actions;
     
@@ -126,6 +137,16 @@ private:
 
     QQueue<QString> m_pendingApplets;
 
+    Plasma::ZoomLevel m_zoomLevel;
+    
+    Plasma::Icon *m_zoomInIcon;
+    Plasma::Icon *m_zoomOutIcon;
+    Plasma::Icon *m_addAppletsIcon;
+    Plasma::Icon *m_removeAppletsIcon;
+
+    AmarokToolBoxMenu *m_addAppletsMenu;
+    AmarokToolBoxMenu *m_removeAppletsMenu;
+    
     AmarokToolBox *m_toolBox;
 
     QHash< int, ContainmentArrow* > m_arrows;

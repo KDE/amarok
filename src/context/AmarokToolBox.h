@@ -19,6 +19,7 @@
 #include "Containment.h"
 #include "ContextView.h"
 #include "widgets/ToolBoxIcon.h"
+#include "widgets/ToolBoxMenu.h"
 
 #include <KIcon>
 
@@ -102,77 +103,6 @@ private slots:
     void animateCircle( qreal progress );
     void toolMoved( QGraphicsItem *item );
     
-};
-
-class AmarokToolBoxMenu: public QObject, public QGraphicsItem
-{
-    Q_OBJECT
-public:
-    enum ScrollDirection
-    {
-        ScrollDown = 0,
-        ScrollUp
-    };
-    
-    explicit AmarokToolBoxMenu( QGraphicsItem *parent = 0 );
-    ~AmarokToolBoxMenu();
-    QRectF boundingRect() const;
-
-    Containment *containment() const;
-    void setContainment( Containment *newContainment );
-    bool showing() const;
-
-public slots:
-    void show();
-    void hide();
-    
-Q_SIGNALS:
-    void menuHidden();
-    void changeContainment( Plasma::Containment *containment );
-    
-protected:
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
-    void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
-    void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
-    void wheelEvent( QGraphicsSceneWheelEvent *event );
-
-private slots:
-    void addApplet( const QString &pluginName );
-    void appletAdded( Plasma::Applet *applet );
-    void appletRemoved( Plasma::Applet *applet );
-    void delayedScroll();
-    void scrollDown();
-    void scrollUp();
-    void timeToHide();    
-    
-private:
-    void createArrow( ToolBoxIcon *arrow, const QString &direction );
-    void initRunningApplets();
-    void populateMenu();
-    void setupMenuEntry( ToolBoxIcon *entry, const QString &appletName );    
-    
-    QMap<QString, QString> m_appletsList;
-    QHash<Plasma::Applet *, QString> m_appletNames;
-
-    Containment *m_containment;
-
-    int m_menuSize;
-
-    QStack<QString> m_bottomMenu;
-    QStack<QString> m_topMenu;
-    QList<ToolBoxIcon *> m_currentMenu;
-
-    ToolBoxIcon *m_hideIcon;
-    ToolBoxIcon *m_upArrow;
-    ToolBoxIcon *m_downArrow;
-
-    QMap<Plasma::Containment *, QStringList> m_runningApplets;
-
-    QTimer *m_timer;
-    QTimer *m_scrollDelay;
-    QList<ScrollDirection> m_pendingScrolls;
-    bool m_showing;
-    int m_delay;
 };
 
 }

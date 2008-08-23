@@ -24,6 +24,8 @@
 
 #include <limits.h>
 
+#define BORDER_PADDING 30
+
 namespace Context
 {
 ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
@@ -36,6 +38,10 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     , m_paintTitle( 0 )
     , m_manageCurrentTrack( 0 )
     , m_appletsFromConfigCount( 0 )
+    , m_zoomInIcon( 0 )
+    , m_zoomOutIcon( 0 )
+    , m_addAppletsIcon( 0 )
+    , m_removeAppletsIcon( 0 )
     , m_toolBox( 0 )
     , m_view( 0 )
 {
@@ -95,6 +101,8 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     // addContainmentArrow( LEFT );
     // addContainmentArrow( RIGHT );
 
+    setupControlButtons();
+    
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
 }
 
@@ -108,7 +116,6 @@ ColumnContainment::~ColumnContainment()
         delete [] m_gridFreePositions[i];
     delete [] m_gridFreePositions;
 }
-
 
 void
 ColumnContainment::loadInitialConfig()
@@ -159,6 +166,50 @@ ColumnContainment::loadInitialConfig()
     debug() << "max rows: " << m_maxRows;
 }
 
+void
+ColumnContainment::setupControlButtons()
+{
+
+    m_addAppletsMenu = new AmarokToolBoxMenu( this, false );
+    m_addAppletsMenu->setContainment( this );
+
+    m_removeAppletsMenu = new AmarokToolBoxMenu( this, true );
+    m_removeAppletsMenu->setContainment( this );
+    
+    // TODO can't add text b/c of string freeze
+    // add after 2.0
+    QAction* zoomInAction = new QAction( "Zoom In", this );
+    zoomInAction->setIcon( KIcon( "zoom-in" ) );
+    zoomInAction->setVisible( true );
+    zoomInAction->setEnabled( true );
+
+    QAction* zoomOutAction = new QAction( "Zoom Out", this );
+    zoomOutAction->setIcon( KIcon( "zoom-out" ) );
+    zoomOutAction->setVisible( true );
+    zoomOutAction->setEnabled( true );
+
+    QAction* listAdd = new QAction( "Add Widgets...", this );
+    listAdd->setIcon( KIcon( "list-add" ) );
+    listAdd->setVisible( true );
+    listAdd->setEnabled( true );
+
+    QAction* listRemove = new QAction( "", this );
+    listRemove->setIcon( KIcon( "list-remove" ) );
+    listRemove->setVisible( true );
+    listRemove->setEnabled( true );
+
+    connect( listAdd, SIGNAL( triggered() ), this, SLOT( showAddAppletsMenu() ) );
+    connect( listRemove, SIGNAL( triggered() ), this, SLOT( showRemoveAppletsMenu() ) );
+    
+    m_zoomInIcon = addAction( zoomInAction  );
+    m_zoomOutIcon = addAction( zoomOutAction );
+    m_addAppletsIcon = addAction( listAdd );
+    m_removeAppletsIcon = addAction( listRemove );
+
+    connect( m_zoomInIcon, SIGNAL( activated() ), this, SLOT( zoomInRequested() ) );
+    connect( m_zoomOutIcon, SIGNAL( activated() ), this, SLOT( zoomOutRequested() ) );
+    
+}
 
 void
 ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
@@ -244,6 +295,8 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
     if( m_arrows[ UP ] ) 
         m_arrows[ UP ]->resize( geometry().size() );
     correctArrowPositions();
+
+    correctControlButtonPositions();
     
     //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
@@ -290,7 +343,8 @@ ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent *event )
     if( event->button() == Qt::LeftButton )
     {
         debug() << "Focus requested by containment";
-        emit focusRequested( this );
+        if( m_zoomLevel == Plasma::GroupZoom )
+            emit focusRequested( this ); //only zoom in when zoomed out
     }
     Context::Containment::mousePressEvent( event );
 }
@@ -393,6 +447,65 @@ ColumnContainment::showAppletsMenu()
 }
 
 void
+ColumnContainment::showAddAppletsMenu()
+{
+    DEBUG_BLOCK
+    qreal xpos = BORDER_PADDING;
+    qreal ypos = contentsRect().height() - m_addAppletsMenu->boundingRect().height();
+
+    m_addAppletsMenu->setPos( xpos, ypos );
+    m_addAppletsMenu->show();
+}
+
+void
+ColumnContainment::showRemoveAppletsMenu()
+{
+    DEBUG_BLOCK
+    qreal xpos = BORDER_PADDING;
+    qreal ypos = contentsRect().height() - m_removeAppletsMenu->boundingRect().height();
+
+    m_removeAppletsMenu->setPos( xpos, ypos );
+    m_removeAppletsMenu->show();
+}
+
+void
+ColumnContainment::correctControlButtonPositions()
+{
+    qreal xpos, ypos;
+    if( m_zoomInIcon && m_zoomOutIcon )
+    {
+        // we don;t know which icon is shown,
+        // but we know only one is currently visible,
+        // so put them in the same place
+        qreal xpos = boundingRect().width() - m_zoomOutIcon->size().width();
+        
+        qreal ypos = boundingRect().height() - m_zoomOutIcon->size().height();
+
+        m_zoomOutIcon->setPos( xpos, ypos );
+        m_zoomInIcon->setPos( xpos, ypos );
+
+        if( view()->zoomLevel() == Plasma::DesktopZoom )
+            m_zoomOutIcon->show();
+        else if( view()->zoomLevel() == Plasma::GroupZoom )
+           m_zoomInIcon->show();
+    }
+    if( m_addAppletsIcon && m_removeAppletsIcon )
+    {
+        qreal xpos = BORDER_PADDING;
+        qreal ypos = boundingRect().height() - m_addAppletsIcon->size().height();
+
+        m_addAppletsIcon->setPos( xpos, ypos );
+
+        xpos += m_addAppletsIcon->size().width();
+
+        m_removeAppletsIcon->setPos( xpos, ypos );
+
+        m_addAppletsIcon->show();
+        m_removeAppletsIcon->show();
+    }
+}
+
+void
 ColumnContainment::hideTitle()
 {
     m_title->hide();
@@ -403,6 +516,34 @@ void
 ColumnContainment::addCurrentTrack()
 {
     m_manageCurrentTrack = true;
+}
+
+Plasma::Icon*
+ColumnContainment::addAction( QAction *action )
+{
+    DEBUG_BLOCK
+    if ( !action ) {
+        debug() << "ERROR!!! PASSED INVALID ACTION";
+        return 0;
+    }
+
+    Plasma::Icon *tool = new Plasma::Icon( this );
+
+    tool->setAction( action );
+    tool->setText( "" );
+    tool->setToolTip( action->text() );
+    tool->setDrawBackground( false );
+    tool->setOrientation( Qt::Horizontal );
+    QSizeF iconSize = tool->sizeFromIconSize( 22 );
+    tool->setMinimumSize( iconSize );
+    tool->setMaximumSize( iconSize );
+    tool->resize( iconSize );
+
+
+    tool->hide();
+    tool->setZValue( zValue() + 1 );
+
+    return tool;
 }
 
 void
@@ -420,7 +561,7 @@ ColumnContainment::addToolBox()
         connect( m_toolBox, SIGNAL( correctToolBoxPos() ), this, SLOT( correctToolBoxPos() ) );
     }
     m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
-                       geometry().height() - m_toolBox->size().height() - 30 );
+                       boundingRect().height() - m_toolBox->size().height()  );
     m_toolBox->show();
     m_toolBox->addAction( action( "zoom in" ) );
     m_toolBox->addAction( action( "zoom out" ) );
@@ -434,15 +575,14 @@ ColumnContainment::correctToolBoxPos()
     if( !view() )
         return;
 
-    Plasma::ZoomLevel zoomLevel = view()->zoomLevel();
 
     if( m_toolBox->showingMenu() )
     {
         DEBUG_LINE_INFO
-        if( zoomLevel == Plasma::GroupZoom )
+        if( m_zoomLevel == Plasma::GroupZoom )
         {
             m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width(),
-                                geometry().height() - m_toolBox->size().height() * 2 - 30 );
+                                contentsRect().height() - m_toolBox->size().height() * 2 );
         }
         else
         {
@@ -452,12 +592,12 @@ ColumnContainment::correctToolBoxPos()
     }
     else
     {
-        if( zoomLevel == Plasma::GroupZoom )
+        if( m_zoomLevel == Plasma::GroupZoom )
         {
             m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width(),
                             geometry().height() - m_toolBox->size().height() * 2 - 25 );
         }
-        else if( zoomLevel == Plasma::DesktopZoom )
+        else if( m_zoomLevel == Plasma::DesktopZoom )
         {
             m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
                             geometry().height() - m_toolBox->size().height() );
@@ -669,6 +809,17 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
 
 }
 
+void
+ColumnContainment::zoomInReqested() // SLOT
+{
+    emit zoomIn( this );
+}
+
+void ColumnContainment::zoomOutRequested() // SLOT
+{
+    emit zoomOut( this );
+}
+
 void 
 ColumnContainment::addContainmentArrow( int direction )
 {
@@ -718,12 +869,35 @@ ColumnContainment::setView( ContextView *newView )
 {
     m_view = newView;
     // all view-dependent signals, so we do it here
-    debug() << "connecting to view";
     connect( this, SIGNAL( changeContainment( Plasma::Containment*, int ) ), m_view, SLOT( setContainment( Plasma::Containment*, int ) ) );
+
+    connect( this, SIGNAL( zoomOut( Plasma::Containment* ) ), m_view, SLOT( zoomOut( Plasma::Containment* ) ) );
+    connect( this, SIGNAL( zoomIn( Plasma::Containment* ) ), m_view, SLOT( zoomIn( Plasma::Containment* ) ) );
+
+    connect( m_addAppletsMenu, SIGNAL( changeContainment( Plasma::Containment * ) ),
+                 m_view, SLOT( setContainment( Plasma::Containment * ) ) );
+    connect( m_removeAppletsMenu, SIGNAL( changeContainment( Plasma::Containment * ) ),
+                 m_view, SLOT( setContainment( Plasma::Containment * ) ) );
+
 }
 
 void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
 {
+    m_zoomLevel = level;
+    if( m_addAppletsIcon && m_removeAppletsIcon )
+    {
+        qreal xpos = BORDER_PADDING;
+        qreal ypos = boundingRect().height() - m_addAppletsIcon->size().height();
+
+        m_addAppletsIcon->setPos( xpos, ypos );
+        m_addAppletsIcon->show();
+
+        xpos += m_addAppletsIcon->size().width();
+
+        m_removeAppletsIcon->setPos( xpos, ypos );
+        m_removeAppletsIcon->show();
+    }
+    
     if( level == Plasma::DesktopZoom ) // zoomed in
     {
         foreach( ContainmentArrow* arrow, m_arrows.values() )
@@ -731,6 +905,18 @@ void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
             if( arrow )
                 arrow->enable();
         }
+        // only option is to zoom out
+        if( m_zoomInIcon && m_zoomOutIcon )
+        {
+            m_zoomInIcon->hide();
+            qreal xpos = boundingRect().width() - m_zoomOutIcon->size().width();
+            qreal ypos = boundingRect().height() - m_zoomOutIcon->size().height();
+
+            m_zoomOutIcon->setPos( QPointF( xpos, ypos ) );
+            m_zoomOutIcon->show();
+            debug() << "set zoom out icon to showable, at: " << xpos << ypos << "and size:" << m_zoomOutIcon->size();
+        }
+        
             
     } else if( level == Plasma::GroupZoom )
     {
@@ -739,7 +925,18 @@ void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
             if( arrow )
                 arrow->disable();
         }
-    }
+         // only option is to zoom in
+         if( m_zoomInIcon && m_zoomOutIcon )
+         {
+            m_zoomOutIcon->hide();
+            qreal xpos = boundingRect().width() - m_zoomInIcon->size().width();
+            qreal ypos = boundingRect().height() - m_zoomInIcon->size().height();
+
+            m_zoomInIcon->setPos( QPointF( xpos, ypos ) );
+            m_zoomInIcon->show();
+            debug() << "set zoom in icon to showable, at: " << xpos << ypos << "and size:" << m_zoomInIcon->size();
+         }
+     }
 }
 
 } // Context namespace

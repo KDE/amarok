@@ -1,0 +1,108 @@
+/*******************************************************************************
+* copyright              : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
+*                                                                              *
+********************************************************************************/
+
+/*******************************************************************************
+*                                                                              *
+*   This program is free software; you can redistribute it and/or modify       *
+*   it under the terms of the GNU General Public License as published by       *
+*   the Free Software Foundation; either version 2 of the License, or          *
+*   (at your option) any later version.                                        *
+*                                                                              *
+********************************************************************************/
+
+#ifndef AMAROK_TOOLBOX_MENU_H
+#define AMAROK_TOOLBOX_MENU_H
+
+#include "amarok_export.h"
+#include "Containment.h"
+#include "ToolBoxIcon.h"
+
+#include <QList>
+#include <QMap>
+#include <QHash>
+#include <QTimer>
+#include <QStack>
+
+namespace Context
+{
+    
+class AMAROK_EXPORT AmarokToolBoxMenu: public QObject, public QGraphicsItem
+{
+    Q_OBJECT
+public:
+    enum ScrollDirection
+    {
+        ScrollDown = 0,
+        ScrollUp
+    };
+
+    explicit AmarokToolBoxMenu( QGraphicsItem *parent = 0, bool runningAppletsOnly = false );
+    
+    ~AmarokToolBoxMenu();
+    QRectF boundingRect() const;
+
+    Containment *containment() const;
+    void setContainment( Containment *newContainment );
+    bool showing() const;
+
+public slots:
+    void show();
+    void hide();
+
+Q_SIGNALS:
+    void menuHidden();
+    void changeContainment( Plasma::Containment *containment );
+
+protected:
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+    void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+    void wheelEvent( QGraphicsSceneWheelEvent *event );
+
+private slots:
+    void addApplet( const QString &pluginName );
+    void appletAdded( Plasma::Applet *applet );
+    void appletRemoved( Plasma::Applet *applet );
+    void delayedScroll();
+    void scrollDown();
+    void scrollUp();
+    void timeToHide();
+
+private:
+    void init( QMap< QString, QString > appletsList );
+    void createArrow( ToolBoxIcon *arrow, const QString &direction );
+    void initRunningApplets();
+    void populateMenu();
+    void setupMenuEntry( ToolBoxIcon *entry, const QString &appletName );
+
+    QMap<QString, QString> m_appletsList;
+    QHash<Plasma::Applet *, QString> m_appletNames;
+
+    Containment *m_containment;
+
+    bool m_removeApplets;
+    
+    int m_menuSize;
+
+    QStack<QString> m_bottomMenu;
+    QStack<QString> m_topMenu;
+    QList<ToolBoxIcon *> m_currentMenu;
+
+    ToolBoxIcon *m_hideIcon;
+    ToolBoxIcon *m_upArrow;
+    ToolBoxIcon *m_downArrow;
+
+    QMap<Plasma::Containment *, QStringList> m_runningApplets;
+
+    QTimer *m_timer;
+    QTimer *m_scrollDelay;
+    QList<ScrollDirection> m_pendingScrolls;
+    bool m_showing;
+    int m_delay;
+};
+
+}
+
+#endif

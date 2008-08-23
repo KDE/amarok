@@ -84,7 +84,7 @@ void CurrentTrack::init()
     m_albumCover   = new QGraphicsPixmapItem( this );
 
     QPen pen( m_title->pen() );
-    pen.setColor( App::instance()->palette().text().color() );
+    pen.setColor( App::instance()->palette().base().color() );
 
     m_title->setPen( pen );
     m_artist->setPen( pen );
@@ -128,6 +128,7 @@ void CurrentTrack::init()
     
     m_noTrackText = i18n( "No track playing" );
     m_noTrack->setText( m_noTrackText );
+    m_noTrack->setPen( pen );
     
     connectSource( "current" );
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
@@ -353,7 +354,6 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     
     if( m_noTrack->text() != QString() )
     {
-        DEBUG_LINE_INFO
         foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
             childItem->hide();
         m_noTrack->show();
