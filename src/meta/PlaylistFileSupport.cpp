@@ -92,6 +92,11 @@ loadPlaylist( const KUrl &url )
 
 
         QString tempFileName = tempFile.fileName();
+#ifdef Q_WS_WIN
+        // KIO::file_copy faild to overwrite an open file 
+        // using KTemporary.close() is not enough here
+        tempFile.remove();
+#endif
         KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite );
 
         if ( !job->exec() )
