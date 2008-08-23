@@ -117,6 +117,8 @@ void Dynamic::BiasSolver::doWork()
 void Dynamic::BiasSolver::run()
 {
     DEBUG_BLOCK
+    
+    computeDomain();
 
     bool optimal = generateInitialPlaylist();
 
@@ -263,70 +265,38 @@ Dynamic::BiasSolver::generateInitialPlaylist()
 
     // this algorithm will produce an optimal solution unless there are
     // non global biases in the system.
-    bool optimal = true;
-
-    // First we make a list of all the global biases which are feasible.
-    QList<Dynamic::GlobalBias*> globalBiases;
-    foreach( Dynamic::Bias* b, m_biases )
-    {
-        Dynamic::GlobalBias* gb = dynamic_cast<Dynamic::GlobalBias*>( b );
-
-        if( gb )
-        {
-            debug() << "property size: " << gb->propertySet().size();
-
-            // if the bias in unsatisfiable (i.e. size = 0), just ignore it
-            if( gb->propertySet().size() == 0 )
-            {
-                debug() << "unsatisfiable bias detected";
-                gb->setActive(false);
-            }
-            else
-                globalBiases.append( gb );
-        }
-        else
-            optimal = false;
-
-    }
+    bool optimal = (m_biases.size() == m_feasibleGlobalBiases.size());
 
     // Empty collection
     if( s_universe.isEmpty() )
         return false;
 
     // No feasible global biases
-    if( globalBiases.size() == 0 )
+    if( m_feasibleGlobalBiases.size() == 0 )
     {
         int n = m_n;
         while( n-- )
             m_playlist += getMutation();
-        return false;
+        return m_biases.isEmpty();
     }
-
-    // convert all the property sets to TrackSets.
-    QList<TrackSet> propertySets;
-    foreach( Dynamic::GlobalBias* b, globalBiases )
-        propertySets.append( Dynamic::TrackSet( b->propertySet() ) );
-
 
     // We are going to be computing a lot of track set intersections so we will
     // memoize to try and save time (if not memory).
     QHash< QBitArray, QList<QByteArray> > memoizedIntersections;
 
-
-
     // As we build up the playlist the weights for each bias will change to
     // reflect what proportion of the tracks that remain to be chosen should
     // have the property in question.
-    double* movingWeights = new double[globalBiases.size()];
-    for( int i = 0; i < globalBiases.size(); ++i )
-        movingWeights[i] = globalBiases[i]->weight();
+    double* movingWeights = new double[m_feasibleGlobalBiases.size()];
+    for( int i = 0; i < m_feasibleGlobalBiases.size(); ++i )
+        movingWeights[i] = m_feasibleGlobalBiases[i]->weight();
 
     m_playlist.clear();
 
     // We use this array of indexes to randomize the order the biases are looked
     // at. That was we get reasonable results when the system is infeasible.
     QList<int> indexes;
-    for( int i = 0; i < globalBiases.size(); ++i )
+    for( int i = 0; i < m_feasibleGlobalBiases.size(); ++i )
         indexes.append( i );
 
 
@@ -342,7 +312,7 @@ Dynamic::BiasSolver::generateInitialPlaylist()
 
 
         // Randomize the order.
-        int m = globalBiases.size();
+        int m = m_feasibleGlobalBiases.size();
         while( m > 1 )
         {
             int k = KRandom::random() % m;
@@ -352,11 +322,11 @@ Dynamic::BiasSolver::generateInitialPlaylist()
 
 
         // The bit array represents the choice made at each branch.
-        QBitArray branches( globalBiases.size(), 0x0 );
+        QBitArray branches( m_feasibleGlobalBiases.size(), 0x0 );
 
         S.setUniverseSet();
 
-        for( int _i = 0; _i < globalBiases.size(); ++_i )
+        for( int _i = 0; _i < m_feasibleGlobalBiases.size(); ++_i )
         {
             int i = indexes[_i];
 
@@ -367,12 +337,12 @@ Dynamic::BiasSolver::generateInitialPlaylist()
             if( decider < movingWeights[i] )
             {
                 branches.setBit( i, true );
-                R.intersect( propertySets[i] );
+                R.intersect( m_feasibleGlobalBiasSets[i] );
             }
             else
             {
                 branches.setBit( i, false );
-                R.subtract( propertySets[i] );
+                R.subtract( m_feasibleGlobalBiasSets[i] );
             }
 
             // Now we have to make sure our decision doesn't land us with an
@@ -407,8 +377,7 @@ Dynamic::BiasSolver::generateInitialPlaylist()
         }
 
         // choose a track at random from our final subset
-        int choice = KRandom::random() % finalSubset.size();
-        m_playlist.append( trackForUid( finalSubset[choice] ) );
+        m_playlist.append( getRandomTrack( finalSubset ) );
 
         if( optimal )
             emit statusUpdate( (int)(100.0 * (double)(m_n - n) / (double)n) );
@@ -417,10 +386,11 @@ Dynamic::BiasSolver::generateInitialPlaylist()
     return optimal;
 }
 
+
 Meta::TrackPtr
-Dynamic::BiasSolver::getMutation()
+Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset )
 {
-    if( s_universe.size() == 0 ) 
+    if( subset.size() == 0 ) 
         return Meta::TrackPtr();
 
     Meta::TrackPtr track;
@@ -428,9 +398,15 @@ Dynamic::BiasSolver::getMutation()
     // this is really dumb, but we sometimes end up with uids that don't point to anything
     int giveup = 50;
     while( giveup-- && !track )
-        track = trackForUid( s_universe[ KRandom::random() % s_universe.size() ] );
+        track = trackForUid( subset[ KRandom::random() % subset.size() ] );
 
     return track;
+}
+
+Meta::TrackPtr
+Dynamic::BiasSolver::getMutation()
+{
+    return getRandomTrack( m_domain );
 }
 
 Meta::TrackPtr
@@ -438,6 +414,54 @@ Dynamic::BiasSolver::trackForUid( const QByteArray& uid )
 {
     return s_universeCollection->trackForUrl( 
             s_universeCollection->uidUrlProtocol() + "://" + QString(uid.toHex()) );
+}
+
+
+void
+Dynamic::BiasSolver::computeDomain()
+{
+    foreach( Dynamic::Bias* b, m_biases )
+    {
+        Dynamic::GlobalBias* gb = dynamic_cast<Dynamic::GlobalBias*>( b );
+
+        if( gb )
+        {
+            debug() << "property size: " << gb->propertySet().size();
+
+            // if the bias is infeasable (i.e. size = 0), just ignore it
+            if( gb->propertySet().size() == 0 )
+            {
+                debug() << "infeasible bias detected";
+                gb->setActive(false);
+            }
+            else
+            {
+                m_feasibleGlobalBiases.append( gb );
+                m_feasibleGlobalBiasSets.append( TrackSet( gb->propertySet() ) );
+            }
+        }
+    }
+
+    TrackSet subset;
+    subset.setUniverseSet();
+
+    for( int i = 0; i < m_feasibleGlobalBiases.size(); ++i )
+    {
+        if( m_feasibleGlobalBiases.at(i)->weight() == 1.0 )
+            subset.intersect( m_feasibleGlobalBiasSets.at(i) );
+
+        if( m_feasibleGlobalBiases.at(i)->weight() == 0.0 )
+            subset.subtract( m_feasibleGlobalBiasSets.at(i) );
+    }
+
+    m_domain = subset.uidList();
+
+    // if we are left with an empty set, better we just use the universe than
+    // give the user what they are really asking for.
+    if( m_domain.size() == 0 )
+        m_domain = s_universe;
+
+    debug() << "domain size: " << m_domain.size();
 }
 
 void

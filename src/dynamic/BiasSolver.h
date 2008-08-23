@@ -23,6 +23,7 @@
 
 #include "Bias.h"
 #include "Meta.h"
+#include "TrackSet.h"
 
 #include <threadweaver/Job.h>
 
@@ -68,11 +69,13 @@ namespace Dynamic
             void iterate( Meta::TrackPtr mutation );
 
         private:
+            void computeDomain();
             void updateUniverse();
             double energy();
             double recalculateEnergy( Meta::TrackPtr mutation, int mutationPos );
             Meta::TrackPtr trackForUid( const QByteArray& );
             Meta::TrackPtr getMutation();
+            Meta::TrackPtr getRandomTrack( const QList<QByteArray>& subset );
 
 
             bool generateInitialPlaylist(); //! returns true if the initial is known to be optimal
@@ -90,6 +93,12 @@ namespace Dynamic
             int m_pendingBiasUpdates;
             QMutex m_biasMutex;
             QWaitCondition m_biasUpdateWaitCond;
+
+            QList<QByteArray> m_domain;
+
+            // set by computeDomain, used by generateInitialPlaylist
+            QList<GlobalBias*> m_feasibleGlobalBiases;
+            QList<TrackSet> m_feasibleGlobalBiasSets;
 
             bool m_abortRequested;
 
