@@ -49,9 +49,20 @@ FileNameScheme::FileNameScheme( const QString &s )
     int year    = s.indexOf( "%year" );
     int composer = s.indexOf( "%composer" );
     int genre   = s.indexOf( "%genre" );
+    int ignore[ 20 ] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }; // I actually need at least static_cast<int>( qRound( s.length() / 7 ) ) ] = { 0 }; elements in this array
+    int j( 0 );
+    for( int k( 0 ); k < 20; k++)
+    {
+        j = s.indexOf( "%ignore", j );
+        if( j == -1 ) break;
+        ignore[ k ] = j++;
+    }
+    //debug:
+    for( int k( 0 ); k < 20; k++) debug() << ignore[k];
 
     int fieldNumber = 1;
     int i = s.indexOf( '%' );
+     j = 0;
     while ( i > -1 ) {
         if ( title == i )
             m_titleField = fieldNumber++;
@@ -69,7 +80,11 @@ FileNameScheme::FileNameScheme( const QString &s )
             m_composerField = fieldNumber++;
         if ( genre == i )
             m_genreField = fieldNumber++;
-
+        if ( ignore[j] == i )
+        {
+            fieldNumber++;
+            j++;
+        }
         i = s.indexOf('%', i + 1);
     }
     m_regExp.setPattern( composeRegExp( s ) );

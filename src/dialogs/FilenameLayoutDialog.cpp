@@ -90,7 +90,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), QString("<space>") ) );
     if( isOrganizeCollection == 0 )
     {
-        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Skip field" ) ) );
+        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Ignore field" ) ) );
     }
     else
     {

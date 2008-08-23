@@ -312,9 +312,9 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
         {
             m_parsableScheme += "%filetype";
         }
-        else if( current == i18n( "Skip field" ) )
+        else if( current == i18n( "Ignore field" ) )
         {
-            m_parsableScheme += "%d";
+            m_parsableScheme += "%ignore";
         }
         else if( current == i18n( "Collection root" ) )
         {
