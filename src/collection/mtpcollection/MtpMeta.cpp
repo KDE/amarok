@@ -198,14 +198,14 @@ MtpTrack::prepareToPlay()
     KUrl url;
     if( m_isCopied )
     {
-        debug() << "File is already copied, simply return url";
+        debug() << "File is already copied, simply return";
         //m_playableUrl = KUrl::fromPath( m_playableUrl );
     }
     else
     {
         debug() << "Beginning temporary file copy";
         m_tempfile.open();
-        bool success = m_collection->handler()->getTrackToFile( m_id, m_playableUrl );
+        bool success = !( m_collection->handler()->getTrackToFile( m_id, m_playableUrl ) );
         debug() << "File transfer complete";
         if( success )
         {
