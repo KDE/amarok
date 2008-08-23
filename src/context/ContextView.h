@@ -153,8 +153,6 @@ private:
     QRectF m_startPos;
     QRectF m_destinationPos;
 
-    bool m_toolBoxAdded;
-
     Plasma::Containment *m_containment;
     int m_numContainments;
 

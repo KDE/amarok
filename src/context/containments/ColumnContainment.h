@@ -16,8 +16,7 @@
 #ifndef COLUMN_CONTAINMENT_H
 #define COLUMN_CONTAINMENT_H
 
-
-#include "AmarokToolBox.h"
+#include "widgets/ToolBoxMenu.h"
 #include "Containment.h"
 #include "ContextView.h"
 #include "context/widgets/ContainmentArrow.h"
@@ -82,13 +81,10 @@ protected:
     
 public slots:
     Applet* addApplet( Plasma::Applet* applet, const QPointF & );
-    virtual void addToolBox();
-    virtual void correctToolBoxPos();
     
 private slots:
     void appletRemoved( Plasma::Applet * );
     void slotArrowChangeContainment( int );
-    void showAppletsMenu();
     void showRemoveAppletsMenu();
     void showAddAppletsMenu();
     
@@ -147,8 +143,6 @@ private:
     AmarokToolBoxMenu *m_addAppletsMenu;
     AmarokToolBoxMenu *m_removeAppletsMenu;
     
-    AmarokToolBox *m_toolBox;
-
     QHash< int, ContainmentArrow* > m_arrows;
 
     ContextView *m_view;

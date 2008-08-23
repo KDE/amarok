@@ -233,7 +233,6 @@ set(collection_SRCS
 #
 
 set( libcontextview_SRCS
-    context/AmarokToolBox.cpp
     context/Applet.cpp
     context/Containment.cpp
     context/ContextObserver.cpp

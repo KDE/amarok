@@ -50,7 +50,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     , m_appletBrowser( 0 )
     , m_zoomLevel( Plasma::DesktopZoom )
     , m_startupFinished( false )
-    , m_toolBoxAdded( false )
     , m_numContainments( 4 )
     , m_placementHack( 0 )
 {
@@ -364,8 +363,6 @@ ContextView::zoomInFinished( int id )
     for( int i = 0; i < numContainments; i++ )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
-        if( containment )
-            containment->correctToolBoxPos();
     }
 }
 
@@ -397,8 +394,6 @@ ContextView::zoomOutFinished( int id )
     for( int i = 0; i < numContainments; i++ )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
-        if( containment )
-            containment->correctToolBoxPos();
     }
 }
 
@@ -457,17 +452,6 @@ void ContextView::resizeEvent( QResizeEvent* event )
     }
 
     updateContainmentsGeometry();
-    if( !m_toolBoxAdded )
-    {
-        m_toolBoxAdded = true;
-        int numContainments = contextScene()->containments().size();
-        for( int i = 0; i < numContainments; i++ )
-        {
-            Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
-            if( containment )
-                containment->addToolBox();
-        }
-    }
 
     //HACK: this is really ugly but i don't know why the containments don't get placed correctly on startup
     if( m_placementHack < 3 )

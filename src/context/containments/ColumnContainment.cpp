@@ -42,7 +42,6 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     , m_zoomOutIcon( 0 )
     , m_addAppletsIcon( 0 )
     , m_removeAppletsIcon( 0 )
-    , m_toolBox( 0 )
     , m_view( 0 )
 {
     setContainmentType( CustomContainment );
@@ -279,12 +278,6 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
 
     m_grid->updateGeometry();
     m_maxColumnWidth = rect().width();
-
-    if( m_toolBox )
-    {
-        m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
-                            geometry().height() - m_toolBox->size().height() );
-    }
     
     if( m_arrows[ LEFT ] ) 
         m_arrows[ LEFT ]->resize( geometry().size() );
@@ -438,13 +431,6 @@ ColumnContainment::showTitle()
     m_title->show();
 }
 
-void
-ColumnContainment::showAppletsMenu()
-{
-    DEBUG_BLOCK
-    if( !m_toolBox->showingMenu() )
-        m_toolBox->showWidgetsMenu();
-}
 
 void
 ColumnContainment::showAddAppletsMenu()
@@ -544,65 +530,6 @@ ColumnContainment::addAction( QAction *action )
     tool->setZValue( zValue() + 1 );
 
     return tool;
-}
-
-void
-ColumnContainment::addToolBox()
-{
-    DEBUG_BLOCK
-    if( m_toolBox )
-        return;
-    m_toolBox = new AmarokToolBox( this );
-    if( view() )
-    {
-        DEBUG_LINE_INFO
-        connect( m_toolBox, SIGNAL( changeContainment( Plasma::Containment * ) ),
-                 view(), SLOT( setContainment( Plasma::Containment * ) ) );
-        connect( m_toolBox, SIGNAL( correctToolBoxPos() ), this, SLOT( correctToolBoxPos() ) );
-    }
-    m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
-                       boundingRect().height() - m_toolBox->size().height()  );
-    m_toolBox->show();
-    m_toolBox->addAction( action( "zoom in" ) );
-    m_toolBox->addAction( action( "zoom out" ) );
-}
-
-void
-ColumnContainment::correctToolBoxPos()
-{
-    DEBUG_BLOCK
-
-    if( !view() )
-        return;
-
-
-    if( m_toolBox->showingMenu() )
-    {
-        DEBUG_LINE_INFO
-        if( m_zoomLevel == Plasma::GroupZoom )
-        {
-            m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width(),
-                                contentsRect().height() - m_toolBox->size().height() * 2 );
-        }
-        else
-        {
-            m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
-                                geometry().height() - m_toolBox->size().height() );
-        }
-    }
-    else
-    {
-        if( m_zoomLevel == Plasma::GroupZoom )
-        {
-            m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width(),
-                            geometry().height() - m_toolBox->size().height() * 2 - 25 );
-        }
-        else if( m_zoomLevel == Plasma::DesktopZoom )
-        {
-            m_toolBox->setPos( geometry().width() / 2 - m_toolBox->size().width() / 2,
-                            geometry().height() - m_toolBox->size().height() );
-        }
-    }
 }
 
 ContextView *

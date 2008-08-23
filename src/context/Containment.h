@@ -53,10 +53,6 @@ public:
 
     virtual ContextView *view() = 0;
     
-public slots:
-    virtual void addToolBox() = 0;
-    virtual void correctToolBoxPos() = 0;
-    
 signals:
     void appletRejected( QString pluginName, int rowSpan );
   
