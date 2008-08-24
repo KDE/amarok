@@ -48,7 +48,7 @@ PlaylistBrowserNS::PodcastModel::~PodcastModel()
 QVariant
 PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 {
-            
+
     if ( !index.isValid() )
         return QVariant();
 
@@ -66,7 +66,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             title = channel->title();
             description = channel->description();
             isChannel = true;
-            icon = KIcon( "x-media-podcast-amarok" );
+            icon = KIcon( "amarok_podcast" );
         }
         else if ( pmc->podcastType() == Meta::EpisodeType )
         {
@@ -184,7 +184,7 @@ int
 PlaylistBrowserNS::PodcastModel::rowCount(const QModelIndex & parent) const
 {
     //DEBUG_BLOCK
-            
+
     if (parent.column() > 0) {
         //debug () << "0, cause 1";
         return 0;

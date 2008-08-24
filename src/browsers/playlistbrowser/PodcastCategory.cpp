@@ -321,7 +321,10 @@ PlaylistBrowserNS::PodcastView::PodcastView( PodcastModel *model, QWidget * pare
     , m_appendAction( 0 )
     , m_loadAction( 0 )
     , m_deleteAction( 0 )
+    , m_removeAction( 0 )
     , m_renameAction( 0 )
+    , m_configureAction( 0 )
+    , m_labelAction( 0 )
 {
 }
 
@@ -394,7 +397,7 @@ PlaylistBrowserNS::PodcastView::startDrag( Qt::DropActions supportedActions )
 
         QModelIndexList indices = selectedIndexes();
 
-        QList<PopupDropperAction*> actions = createCommonActions( indices );
+        QList<PopupDropperAction*> actions = actionsForIndices( indices );
 
         foreach( PopupDropperAction * action, actions ) {
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
@@ -420,17 +423,27 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
 {
     DEBUG_BLOCK
 
-    QModelIndexList indices = selectionModel()->selectedIndexes();
-
     KMenu menu;
+
+    QList<PopupDropperAction *> actions =
+            actionsForIndices( selectionModel()->selectedIndexes() );
+
+    foreach( PopupDropperAction * action, actions )
+    {
+        if( action )
+            menu.addAction( action );
+    }
+
+    KAction* result = dynamic_cast< KAction* >( menu.exec( mapToGlobal( event->pos() ) ) );
+}
+
+QList< PopupDropperAction * >
+PlaylistBrowserNS::PodcastView::actionsForIndices( QModelIndexList indices )
+{
     bool episodeSelected = false;
     bool channelSelected = false;
 
     QList<PopupDropperAction *> actions = createCommonActions( indices );
-
-    foreach( PopupDropperAction * action, actions ) {
-        menu.addAction( action );
-    }
 
     m_currentItems.clear();
     foreach( const QModelIndex &index, indices )
@@ -446,11 +459,15 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
                 case Meta::EpisodeType: episodeSelected = true; break;
                 case Meta::ChannelType: channelSelected = true; break;
             }
-            //TODO: add type specific actions to PUD
         }
     }
 
-    KAction* result = dynamic_cast< KAction* >( menu.exec( mapToGlobal( event->pos() ) ) );
+    if( episodeSelected && !channelSelected )
+        actions << createEpisodeActions( indices );
+    else if( channelSelected && !episodeSelected )
+        actions << createChannelActions( indices );
+
+    return actions;
 }
 
 QList< PopupDropperAction * >
@@ -459,18 +476,118 @@ PlaylistBrowserNS::PodcastView::createCommonActions( QModelIndexList indices )
 
     QList< PopupDropperAction * > actions;
 
-    if ( m_appendAction == 0 ) {
-        m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+    if( m_appendAction == 0 )
+    {
+        m_appendAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "append",
+            KIcon( "media-track-add-amarok" ),
+            i18n( "&Append to Playlist" ),
+            this
+        );
         connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
     }
 
-    if ( m_loadAction == 0 ) {
-        m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+    if( m_loadAction == 0 )
+    {
+        m_loadAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "load",
+            KIcon( "folder-open" ),
+            i18nc( "Replace the currently loaded tracks with these",
+            "&Load" ),
+            this
+        );
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
+    }
+
+    if( m_renameAction == 0 )
+    {
+        m_renameAction =  new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "edit",
+            KIcon( "media-track-edit-amarok" ),
+            i18n( "&Rename" ),
+            this
+        );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
 
     actions << m_appendAction;
     actions << m_loadAction;
+    actions << m_renameAction;
+
+    return actions;
+}
+
+QList< PopupDropperAction * >
+PlaylistBrowserNS::PodcastView::createChannelActions( QModelIndexList indices )
+{
+
+    QList< PopupDropperAction * > actions;
+
+    if( m_removeAction == 0 )
+    {
+        m_removeAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "remove",
+            KIcon( "news-unsubscribe" ),
+            i18n( "&Remove Subscription" ),
+            this
+        );
+        connect( m_removeAction, SIGNAL( triggered() ), this, SLOT( slotRemove() ) );
+    }
+
+    if( m_labelAction == 0 )
+    {
+        m_labelAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer("amarok/images/pud_items.svg"),
+            "label",
+            KIcon( "flag-black" ),
+            i18nc( "Label (or tag) the currently selected Channel(s)", "&Label" ),
+            this
+        );
+        connect( m_labelAction, SIGNAL( triggered() ), this, SLOT( slotLabel() ) );
+    }
+
+    if( m_configureAction == 0 )
+    {
+        m_configureAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer("amarok/images/pud_items.svg"),
+            "configure",
+            KIcon( "configure" ),
+            i18n( "&Configure" ),
+            this
+        );
+        connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigure() ));
+    }
+
+    actions << m_removeAction;
+    actions << m_labelAction;
+    actions << m_configureAction;
+
+    return actions;
+}
+
+QList< PopupDropperAction * >
+PlaylistBrowserNS::PodcastView::createEpisodeActions( QModelIndexList indices )
+{
+
+    QList< PopupDropperAction * > actions;
+
+    if ( m_deleteAction == 0 )
+    {
+        m_deleteAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "delete",
+            KIcon( "edit-delete" ),
+            i18n( "&Delete Downloaded Episode" ),
+            this
+        );
+        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
+    }
+
+    actions << m_deleteAction;
 
     return actions;
 }
@@ -490,6 +607,24 @@ PlaylistBrowserNS::PodcastView::slotAppend()
 }
 
 void
+PlaylistBrowserNS::PodcastView::slotConfigure()
+{
+    DEBUG_BLOCK
+}
+
+void
+PlaylistBrowserNS::PodcastView::slotDelete()
+{
+   DEBUG_BLOCK
+}
+
+void
+PlaylistBrowserNS::PodcastView::slotLabel()
+{
+    DEBUG_BLOCK
+}
+
+void
 PlaylistBrowserNS::PodcastView::slotLoad() {
     DEBUG_BLOCK
 //     foreach( SqlPlaylistViewItemPtr item, m_currentItems )
@@ -499,6 +634,18 @@ PlaylistBrowserNS::PodcastView::slotLoad() {
 //         //The::playlistModel()->insertOptioned( Meta::PlaylistPtr( playlist ), Playlist::Append );
 //         The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Replace );
 //         }
+}
+
+void
+PlaylistBrowserNS::PodcastView::slotRename()
+{
+    DEBUG_BLOCK
+}
+
+void
+PlaylistBrowserNS::PodcastView::slotRemove()
+{
+    DEBUG_BLOCK
 }
 
 #include "PodcastCategory.moc"

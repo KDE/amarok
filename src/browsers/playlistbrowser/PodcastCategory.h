@@ -100,26 +100,38 @@ class PodcastView : public QTreeView
     private:
         PodcastModel *m_model;
 
+        QList< PopupDropperAction * > actionsForIndices( QModelIndexList indices );
+
         QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
+
+        QList<PopupDropperAction *> createEpisodeActions( QModelIndexList indices );
+
+        QList<PopupDropperAction *> createChannelActions( QModelIndexList indices );
 
         PopupDropper* m_pd;
 
         PopupDropperAction * m_appendAction;
         PopupDropperAction * m_loadAction;
 
-        PopupDropperAction * m_deleteAction;
-        PopupDropperAction * m_renameAction;
+        PopupDropperAction * m_deleteAction; //delete a downloaded Episode
+        PopupDropperAction * m_removeAction; //remove a subscription
+        PopupDropperAction * m_renameAction; //rename a Channel or Episode
+        PopupDropperAction * m_configureAction; //Configure a Channel
+        //TODO:split into add and remove label
+        PopupDropperAction * m_labelAction; //label a channel
 
         QSet<Meta::PodcastMetaCommon *> m_currentItems;
-        
+
         QPoint m_dragStartPosition;
 
     private slots:
-
-        void slotLoad();
         void slotAppend();
-//         void slotDelete();
-//         void slotRename();
+        void slotConfigure();
+        void slotDelete();
+        void slotLabel();
+        void slotLoad();
+        void slotRename();
+        void slotRemove();
 };
 
 /**
