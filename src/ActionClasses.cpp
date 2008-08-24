@@ -174,16 +174,19 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
 }
 
 void
-PlayPauseAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/ )
+PlayPauseAction::engineStateChanged( Phonon::State state,  Phonon::State oldState )
 {
-    switch( state ) {
+    DEBUG_BLOCK
+    debug() << "NEWSTATE: " << state << "OLDSTATE: " << oldState;
+    switch( state )
+    {
     case Phonon::PlayingState:
         setChecked( false );
         setIcon( KIcon("media-playback-pause-amarok") );
         break;
     case Phonon::PausedState:
         setChecked( true );
-        setIcon( KIcon("media-playback-pause-amarok") );
+        setIcon( KIcon("media-playback-start-amarok") );
         break;
     case Phonon::StoppedState:
     case Phonon::LoadingState:
