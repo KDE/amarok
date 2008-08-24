@@ -50,7 +50,7 @@ void
 ToolBoxIcon::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     DEBUG_BLOCK
-    debug() << data( 0 ).toString();
+    debug() << "got item press with data: " << data( 0 ).toString();
     if( event->button() != Qt::LeftButton )
     {
         Plasma::Icon::mousePressEvent( event );

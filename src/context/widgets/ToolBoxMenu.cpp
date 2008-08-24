@@ -30,33 +30,37 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningApplets
     , m_showing( 0 )
     , m_delay( 250 )
 {
-    QMap< QString, QString > applets;
+    QMap< QString, QString > allApplets;
+    QStringList appletsToShow; // we need to store the list of
+    // all appletname->appletpluginname pairs, even if we dont show them
+    
+    foreach ( const KPluginInfo& info, Plasma::Applet::listAppletInfo( QString(), "amarok" ) )
+    {
+        if ( info.property( "NoDisplay" ).toBool() )
+        {
+            // we don't want to show the hidden category
+            continue;
+        }
 
+        allApplets.insert( info.name(), info.pluginName() );
+        if( !runningAppletsOnly )
+            appletsToShow << info.name();        
+    }
+    
     if( runningAppletsOnly )
     {
+       m_removeApplets = true;
        Containment* cont = dynamic_cast<Containment *>( parent );
        if( cont )
        {
            foreach( Plasma::Applet* applet, cont->applets() )
            {
-               applets.insert( applet->name(), applet->pluginName() );
+               appletsToShow << applet->name();
            }
        }
-    } else
-    {
-        foreach ( const KPluginInfo& info, Plasma::Applet::listAppletInfo( QString(), "amarok" ) )
-        {
-            if ( info.property( "NoDisplay" ).toBool() )
-            {
-                // we don't want to show the hidden category
-                continue;
-            }
-
-            applets.insert( info.name(), info.pluginName() );
-        }
     }
-
-    init( applets );
+    
+    init( allApplets, appletsToShow );
 }
 
 AmarokToolBoxMenu::~AmarokToolBoxMenu()
@@ -69,11 +73,11 @@ AmarokToolBoxMenu::~AmarokToolBoxMenu()
 }
 
 void
-AmarokToolBoxMenu::init( QMap< QString, QString > applets )
+AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList appletsToShow )
 {
     setAcceptsHoverEvents( true );
 
-    m_appletsList = applets;
+    m_appletsList = allApplets;
     
     m_timer = new QTimer( this );
     m_scrollDelay = new QTimer( this );
@@ -81,10 +85,9 @@ AmarokToolBoxMenu::init( QMap< QString, QString > applets )
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( timeToHide() ) );
     connect( m_scrollDelay, SIGNAL( timeout() ), this, SLOT( delayedScroll() ) );
 
-    //insert in the stack so the first applet in alphabetical order is the first one
-    QStringList appletsNames = m_appletsList.keys();
-    for( int i = appletsNames.size() - 1; i >= 0; i-- )
-        m_bottomMenu.push( appletsNames[i] );
+    //insert in the stack so the first applet in alphabetical order is the first 
+    for( int i = appletsToShow.size() - 1; i >= 0; i-- )
+        m_bottomMenu.push( appletsToShow[i] );
 
     populateMenu();
 
@@ -153,6 +156,7 @@ AmarokToolBoxMenu::populateMenu()
 void
 AmarokToolBoxMenu::initRunningApplets()
 {
+    DEBUG_BLOCK
     if( !containment() )
         return;
 
@@ -196,6 +200,7 @@ AmarokToolBoxMenu::appletAdded( Plasma::Applet *applet )
 void
 AmarokToolBoxMenu::appletRemoved( Plasma::Applet *applet )
 {
+    DEBUG_BLOCK
     if( sender() != 0 )
     {
         Plasma::Containment *containment = dynamic_cast<Plasma::Containment *>( sender() );
@@ -221,6 +226,20 @@ AmarokToolBoxMenu::show()
         return;
 
     m_showing = true;
+
+    if( m_removeApplets ) // we need to refresh on view to get all running applets
+    {
+        debug() << "refreshing loaded applets";
+        m_bottomMenu.clear();
+        m_topMenu.clear();
+        m_currentMenu.clear();
+        foreach( Plasma::Applet* applet, containment()->applets() )
+        {
+            debug() << "found loaded applet: " << applet->name();
+            m_bottomMenu.push( applet->name() );
+        }
+        populateMenu();
+    }
     if( m_bottomMenu.count() > 0 )
     {
         m_downArrow->setPos( boundingRect().width() / 2 - m_downArrow->size().width()/2,
@@ -276,11 +295,14 @@ AmarokToolBoxMenu::setupMenuEntry( ToolBoxIcon *entry, const QString &appletName
         entry->setPos( 5, boundingRect().height() );
 
         entry->setZValue( zValue() + 1 );
+        debug() << "size of item db: " << m_appletsList.size();
+        debug() << "setting item with data: " <<  m_appletsList[appletName];
         entry->setData( 0, QVariant( m_appletsList[appletName] ) );
         entry->show();
         if( m_removeApplets )
         {
-            
+            connect( entry, SIGNAL( appletChosen( const QString & ) ),
+                     this, SLOT( removeApplet( const QString & ) ) );
         } else
         {
             connect( entry, SIGNAL( appletChosen( const QString & ) ), this, SLOT( addApplet( const QString & ) ) );
@@ -310,7 +332,28 @@ AmarokToolBoxMenu::addApplet( const QString &pluginName )
     }
 }
 
-
+void
+AmarokToolBoxMenu::removeApplet( const QString& pluginName )
+{
+    DEBUG_BLOCK
+    if( pluginName == QString() )
+        return;
+    debug() << "trying to remove applet:" << pluginName;
+    
+    // this is not ideal, but we look through all running applets to find
+    // the one that we want
+    foreach( Plasma::Applet* applet, containment()->applets() )
+    {
+        if( applet->pluginName() == pluginName )
+        {
+            // this is the applet we want to remove
+            applet->destroy();
+            // the rest of the cleanup should happen in
+            // appletRemoved, which is called by the containment
+        }
+    }
+}
+    
 void
 AmarokToolBoxMenu::createArrow( ToolBoxIcon *arrow, const QString &direction )
 {

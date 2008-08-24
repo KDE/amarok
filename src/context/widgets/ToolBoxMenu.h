@@ -63,6 +63,7 @@ protected:
 
 private slots:
     void addApplet( const QString &pluginName );
+    void removeApplet( const QString &pluginName );
     void appletAdded( Plasma::Applet *applet );
     void appletRemoved( Plasma::Applet *applet );
     void delayedScroll();
@@ -71,7 +72,7 @@ private slots:
     void timeToHide();
 
 private:
-    void init( QMap< QString, QString > appletsList );
+    void init( QMap< QString, QString > allAppletsList, QStringList appletsToShow );
     void createArrow( ToolBoxIcon *arrow, const QString &direction );
     void initRunningApplets();
     void populateMenu();

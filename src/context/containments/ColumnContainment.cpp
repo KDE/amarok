@@ -457,7 +457,6 @@ ColumnContainment::showRemoveAppletsMenu()
 void
 ColumnContainment::correctControlButtonPositions()
 {
-    qreal xpos, ypos;
     if( m_zoomInIcon && m_zoomOutIcon )
     {
         // we don;t know which icon is shown,
