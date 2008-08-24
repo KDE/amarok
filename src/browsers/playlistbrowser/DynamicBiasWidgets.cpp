@@ -345,7 +345,7 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
     else if( field == QueryMaker::valGenre )
         makeGenreSelection();
     else if( field == QueryMaker::valYear )
-        makeGenericNumberSelection( 0, 3000, 0 );
+        makeGenericNumberSelection( 0, 3000, 1976 );
     else if( field == QueryMaker::valPlaycount )
         makeGenericNumberSelection( 0, 10000, 0 );
     else if( field == QueryMaker::valRating )
