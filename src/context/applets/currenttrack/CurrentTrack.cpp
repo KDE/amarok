@@ -55,7 +55,6 @@ CurrentTrack::~CurrentTrack()
 void CurrentTrack::init()
 {
     DEBUG_BLOCK
-    //setBackgroundHints( Plasma::Applet::NoBackground );
 
     m_theme = new Context::Svg( this );
     m_theme->setImagePath( "widgets/amarok-currenttrack" );
@@ -63,8 +62,6 @@ void CurrentTrack::init()
  
     m_width = globalConfig().readEntry( "width", 500 );
 
-//     const QColor textColor = Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor );
-    //const QColor textColor( Qt::black );
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 1  );
     labelFont.setStyleHint( QFont::Times );
@@ -81,8 +78,11 @@ void CurrentTrack::init()
     m_numPlayed    = new QGraphicsSimpleTextItem( this );
     m_playedLast   = new QGraphicsSimpleTextItem( this );
     m_noTrack      = new QGraphicsSimpleTextItem( this );
-    m_albumCover   = new QGraphicsPixmapItem( this );
+    m_albumCover   = new QGraphicsPixmapItem    ( this );
 
+    m_score->setToolTip( i18n( "Score" ) );
+    m_numPlayed->setToolTip( i18n( "Play Count" ) );
+    m_playedLast->setToolTip( i18n( "Last Played" ) );
     QPen pen( m_title->pen() );
     pen.setColor( App::instance()->palette().base().color() );
 
@@ -96,31 +96,21 @@ void CurrentTrack::init()
 
 //     m_sourceEmblem = new QGraphicsPixmapItem( this );
 
-    QFont bigFont = QFont( labelFont );
+    QFont bigFont( labelFont );
     bigFont.setPointSize( bigFont.pointSize() +  3 );
     
-    QFont textFont = QFont( labelFont );    
-    
-    QFont tinyFont( textFont );
+    QFont tinyFont( labelFont );
     tinyFont.setPointSize( tinyFont.pointSize() - 5 );
 
     m_noTrack->setFont( bigFont );
-    m_title->setFont( textFont );
-    m_artist->setFont( textFont );
-    m_album->setFont( textFont );
+    m_title->setFont( labelFont );
+    m_artist->setFont( labelFont );
+    m_album->setFont( labelFont );
     
     m_score->setFont( tinyFont );
     m_numPlayed->setFont( tinyFont );
     m_playedLast->setFont( tinyFont );
 
-    /*m_noTrack->setBrush( textColor );
-    m_title->setBrush( textColor );
-    m_artist->setBrush( textColor );
-    m_album->setBrush( textColor );
-    m_score->setBrush( textColor );
-    m_numPlayed->setBrush( textColor );
-    m_playedLast->setBrush( textColor );
-*/
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
@@ -217,13 +207,13 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_numPlayed->setPos( QPointF( contentsRect().width() - 14, margin + 31 ) );
     m_playedLast->setPos( QPointF( contentsRect().width() - 15, margin + 58 ) );
 
-    QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
-    QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-    QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-    QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) : QString();
+    const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
+    const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
+    const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
+    const QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) : QString();
 
-    QFont textFont = shrinkTextSizeToFit( title, QRectF( 0, 0, textWidth, textHeight ) );
-    QFont labeFont = textFont;
+    const QFont textFont = shrinkTextSizeToFit( title, QRectF( 0, 0, textWidth, textHeight ) );
+    const QFont labeFont = textFont;
     QFont tinyFont( textFont );
 
     if ( tinyFont.pointSize() > 5 ) 
@@ -247,7 +237,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );    
     m_album->setText( truncateTextToFit( album, m_album->font(), QRectF( 0, 0, textWidth, 30 ) ) );
     
-    if( m_noTrackText != QString() )
+    if( !m_noTrackText.isEmpty() )
         m_noTrack->setText( truncateTextToFit( m_noTrackText, m_noTrack->font(), QRectF( 0, 0, textWidth, 30 ) ) );
 
     m_ratingWidget->setPos( labelX + 25, margin * 4.0 + textHeight * 3.0 - 5.0 );
@@ -266,13 +256,14 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     kDebug() << "CurrentTrack::dataUpdated";
 
-    if( data.size() == 0 ) return;
+    if( data.size() == 0 ) 
+        return;
 
     QRect textRect( 0, 0, m_maxTextWidth, 30 );
 
     m_noTrackText = data[ "notrack" ].toString();
 
-    if( m_noTrackText != QString() )
+    if( !m_noTrackText.isEmpty() )
     {
         QRect rect( 0, 0, size().toSize().width(), 30 );
         m_noTrack->setText( truncateTextToFit( m_noTrackText, m_noTrack->font(), rect ) );
@@ -286,14 +277,20 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     
     m_currentInfo = data[ "current" ].toMap();
     m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), textRect ) );
-    const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     
+    const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), textRect ) );
-    QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
+    
+    const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
     m_album->setText( truncateTextToFit( album, m_album->font(), textRect ) );
+    
     m_rating = m_currentInfo[ Meta::Field::RATING ].toInt();
-    m_score->setText( QString::number( m_currentInfo[ Meta::Field::SCORE ].toInt() ) );
+    
+    const QString score = QString::number( m_currentInfo[ Meta::Field::SCORE ].toInt() );
+    m_score->setText( score );
+    
     m_trackLength = m_currentInfo[ Meta::Field::LENGTH ].toInt();
+    
     m_playedLast->setText( Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
     m_numPlayed->setText( m_currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
 
@@ -345,16 +342,14 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     }
     
     p->save();
-    //m_theme->paint( p, contentsRect.adjusted( 0, -10, 0, 10 ) , "background" );
     QRect leftBorder( 0, 0, 14, contentsRect.height() + 20 );
-    //m_theme->paint( p, leftBorder, "left-border" );
     QRect rightBorder( contentsRect.width() + 5, 0, 14, contentsRect.height() + 20 );
-    //m_theme->paint( p, rightBorder, "right-border" );
     p->restore();
     
-    if( m_noTrack->text() != QString() )
+    if( !m_noTrack->text().isEmpty() )
     {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
+        QList<QGraphicsItem*> children = QGraphicsItem::children();
+        foreach ( QGraphicsItem *childItem, children )
             childItem->hide();
         m_noTrack->show();
         return;
@@ -366,7 +361,6 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     const qreal albumWidth = size().toSize().height() - 2.0 * margin;
 
     const qreal labelX = albumWidth + margin + 14.0;
-    //const qreal labelWidth = size().toSize().width() / 6.0;
 
     const qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 );
 

@@ -12,6 +12,8 @@ VERSION 2.0-beta2
       currently in.
 
   BUGFIXES:
+    * The Current track applet now has tooltips for the icons on the right 
+      hand side. (BR 168260)
     * "Resume playback on start" now also restores the track position.
       (BR 168792)
 	correctly.
