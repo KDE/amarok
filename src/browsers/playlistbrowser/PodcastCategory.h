@@ -32,6 +32,8 @@
 class PopupDropper;
 class PopupDropperAction;
 
+// class Meta::PodcastMetaCommon;
+
 namespace PlaylistBrowserNS {
 
 class PodcastModel;
@@ -108,6 +110,8 @@ class PodcastView : public QTreeView
         PopupDropperAction * m_deleteAction;
         PopupDropperAction * m_renameAction;
 
+        QSet<Meta::PodcastMetaCommon *> m_currentItems;
+        
         QPoint m_dragStartPosition;
 
     private slots:

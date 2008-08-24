@@ -50,6 +50,7 @@
 #include <qnamespace.h>
 #include <QWebFrame>
 
+#include <KAction>
 #include <KMenu>
 #include <KStandardDirs>
 #include <KIcon>
@@ -117,7 +118,7 @@ PlaylistBrowserNS::PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastM
     p.setColor( QPalette::AlternateBase, c );
 
     m_podcastTreeView->setPalette( p );
-    
+
     //m_podcastTreeView->setItemDelegate( new PodcastCategoryDelegate(m_podcastTreeView) );
 
     QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
@@ -195,7 +196,7 @@ PlaylistBrowserNS::PodcastCategoryDelegate::paint( QPainter * painter, const QSt
     painter->setRenderHint ( QPainter::Antialiasing );
 
 
-    
+
     QPixmap background = The::svgHandler()->renderSvg( "service_list_item", width - 40, height - 4, "service_list_item" );
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
 
@@ -419,52 +420,37 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
 {
     DEBUG_BLOCK
 
-    QModelIndexList indices = selectedIndexes();
+    QModelIndexList indices = selectionModel()->selectedIndexes();
 
-    if( !indices.isEmpty() )
+    KMenu menu;
+    bool episodeSelected = false;
+    bool channelSelected = false;
+
+    QList<PopupDropperAction *> actions = createCommonActions( indices );
+
+    foreach( PopupDropperAction * action, actions ) {
+        menu.addAction( action );
+    }
+
+    m_currentItems.clear();
+    foreach( const QModelIndex &index, indices )
     {
-
-        KMenu menu;
-        QAction* loadAction = new QAction( KIcon("folder-open" ), i18nc( "Replace the current playlist with these tracks", "&Load" ), &menu );
-        QAction* appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), &menu);
-
-        menu.addAction( loadAction );
-        menu.addAction( appendAction );
-
-        menu.addSeparator();
-
-        //TODO: only for Channels and Folders
-        QAction* refreshAction = new QAction( KIcon("view-refresh-amarok"), i18n("&Refresh"), &menu );
-        QAction *at = refreshAction;
-
-        menu.addAction( refreshAction );
-
-        //TODO: only for Episodes
-        QAction* downloadAction = new QAction( KIcon("download-amarok"), i18n("&Download"), &menu );
-        menu.addAction( downloadAction );
-
-        QAction *result = menu.exec( event->globalPos(), at );
-        if( result == loadAction )
+        if( index.isValid() && index.internalPointer() )
         {
-            debug() << "load " << indices.count() << " episodes";
-            m_model->loadItems( indices, Playlist::Replace );
-        }
-        else if( result == appendAction )
-        {
-            debug() << "append " << indices.count() << " episodes";
-            m_model->loadItems( indices, Playlist::AppendAndPlay );
-        }
-        else if( result == refreshAction )
-        {
-            debug() << "refresh " << indices.count() << " items";
-            m_model->refreshItems( indices );
-        }
-        else if( result == downloadAction )
-        {
-            debug() << "download " << indices.count() << " items";
-            m_model->downloadItems( indices );
+            Meta::PodcastMetaCommon *pmc =
+                static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
+
+            m_currentItems << pmc;
+            switch( pmc->podcastType() )
+            {
+                case Meta::EpisodeType: episodeSelected = true; break;
+                case Meta::ChannelType: channelSelected = true; break;
+            }
+            //TODO: add type specific actions to PUD
         }
     }
+
+    KAction* result = dynamic_cast< KAction* >( menu.exec( mapToGlobal( event->pos() ) ) );
 }
 
 QList< PopupDropperAction * >
@@ -493,13 +479,14 @@ void
 PlaylistBrowserNS::PodcastView::slotAppend()
 {
     DEBUG_BLOCK
-//     foreach( SqlPlaylistViewItemPtr item, m_currentItems )
-//         if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
-//         Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-//         //debug() << "playlist name: " << playlist->name();
-//         //The::playlistModel()->insertOptioned( Meta::PlaylistPtr( playlist ), Playlist::Append );
-//         The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Append );
-//         }
+    foreach( Meta::PodcastMetaCommon *pmc, m_currentItems )
+    {
+        switch( pmc->podcastType() )
+        {
+            case Meta::EpisodeType: debug() << "adding episode: " << pmc->title(); break;
+            case Meta::ChannelType: debug() << "adding channel: " << pmc->title(); break;
+        }
+    }
 }
 
 void
