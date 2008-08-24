@@ -221,7 +221,6 @@ AmarokToolBoxMenu::showing() const
 void
 AmarokToolBoxMenu::show()
 {
-    DEBUG_BLOCK
     if( showing() )
         return;
 
@@ -229,13 +228,11 @@ AmarokToolBoxMenu::show()
 
     if( m_removeApplets ) // we need to refresh on view to get all running applets
     {
-        debug() << "refreshing loaded applets";
         m_bottomMenu.clear();
         m_topMenu.clear();
         m_currentMenu.clear();
         foreach( Plasma::Applet* applet, containment()->applets() )
         {
-            debug() << "found loaded applet: " << applet->name();
             m_bottomMenu.push( applet->name() );
         }
         populateMenu();
@@ -295,8 +292,6 @@ AmarokToolBoxMenu::setupMenuEntry( ToolBoxIcon *entry, const QString &appletName
         entry->setPos( 5, boundingRect().height() );
 
         entry->setZValue( zValue() + 1 );
-        debug() << "size of item db: " << m_appletsList.size();
-        debug() << "setting item with data: " <<  m_appletsList[appletName];
         entry->setData( 0, QVariant( m_appletsList[appletName] ) );
         entry->show();
         if( m_removeApplets )
@@ -338,7 +333,6 @@ AmarokToolBoxMenu::removeApplet( const QString& pluginName )
     DEBUG_BLOCK
     if( pluginName == QString() )
         return;
-    debug() << "trying to remove applet:" << pluginName;
     
     // this is not ideal, but we look through all running applets to find
     // the one that we want
