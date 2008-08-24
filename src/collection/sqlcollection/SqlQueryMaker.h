@@ -40,7 +40,7 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
 
         virtual QueryMaker* setQueryType( QueryType type );
 
-        virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs );
+        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
 
         virtual QueryMaker* includeCollection( const QString &collectionId );
         virtual QueryMaker* excludeCollection( const QString &collectionId );

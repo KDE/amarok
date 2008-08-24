@@ -46,7 +46,7 @@ LastFmServiceQueryMaker::abortQuery()
 
 
 QueryMaker*
-LastFmServiceQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+LastFmServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     m_resultAsDataPtrs = resultAsDataPtrs;
     return this;

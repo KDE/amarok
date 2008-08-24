@@ -387,7 +387,7 @@ MemoryQueryMaker::setQueryType( QueryType type )
 }
 
 QueryMaker*
-MemoryQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+MemoryQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     d->returnDataPtrs = resultAsDataPtrs;
     return this;

@@ -136,7 +136,7 @@ XmlQueryReader::readQuery()
             }
             else if( name() == "returnResultAsDataPtrs" )
             {
-                d->qm->returnResultAsDataPtrs( true );
+                d->qm->setReturnResultAsDataPtrs( true );
             }
             else if( name() == "limit" )
             {

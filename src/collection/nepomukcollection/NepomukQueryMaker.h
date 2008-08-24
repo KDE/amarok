@@ -47,7 +47,7 @@ class NepomukQueryMaker : public QueryMaker
 	    virtual void abortQuery();
 	    virtual void run();
 	
-	    virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs );
+	    virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
 	    
         virtual QueryMaker* setQueryType( QueryType type );	
 	    virtual QueryMaker* includeCollection( const QString &collectionId );

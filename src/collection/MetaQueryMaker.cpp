@@ -290,10 +290,10 @@ MetaQueryMaker::addMatch( const DataPtr &data )
 }
 
 QueryMaker*
-MetaQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+MetaQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     foreach( QueryMaker *b, builders )
-        b->returnResultAsDataPtrs( resultAsDataPtrs );
+        b->setReturnResultAsDataPtrs( resultAsDataPtrs );
     return this;
 }
 

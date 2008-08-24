@@ -60,6 +60,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
                               , OnlyCompilations = 1
                               , OnlyNormalAlbums = 2 };
 
+        //Filters that the QueryMaker accepts for searching.
         //not all implementations will accept all filter levels, so make it possible to
         //specify which ones make sense for a given qm. Add to this as needed
         enum ValidFilters { TitleFilter     =     1,
@@ -121,13 +122,13 @@ class AMAROK_EXPORT QueryMaker : public QObject
          * exclusive.  The results of the query will be returned as objects of the
          * appropriate type, therefore it is necessary to connect the client to the
          * newResultReady( QString, Meta::Type ) signal (unless you are after Meta::Data
-         * pointers, see returnResultAsDataPtrs( bool ) for details.
+         * pointers, see setReturnResultAsDataPtrs( bool ) for details.
          *
-         * if you set QueryType custom, this starts a custom query. unlike the other startX methods, you have to set up the return
+         * if you set QueryType custom, this starts a custom query. Unlike other query types, you have to set up the return
          * values yourself using addReturnValue( qint64 ) and addReturnFunction(). The results will
          * be returned as a QStringList. Threfore you have to connect to the
          * newResultReady( QString, QStringList ) signal to receive the results. Calling
-         * returnResultsAsDataPtrs( bool ) has no effect when using a custom query.
+         * setReturnResultAsDataPtrs( bool ) has no effect when using a custom query.
          * @return this
          */
         virtual QueryMaker* setQueryType( QueryType type ) = 0;
@@ -141,10 +142,11 @@ class AMAROK_EXPORT QueryMaker : public QObject
 
             @return this
         */
-        virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs ) = 0;
+        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs ) = 0;
 
         /**
             only works after starting a custom query with startCustomQuery()
+            Use this to inform the query maker you are looking for results of value @param value.
             @return this
           */
         virtual QueryMaker* addReturnValue( qint64 value ) = 0;
@@ -155,7 +157,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
          */
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value ) = 0;
         /**
-         * returned results ordered by the field defined by value.
+         * Return results sorted by @p value.
          * @return this
          */
         virtual QueryMaker* orderBy( qint64 value, bool descending = false ) = 0;
@@ -176,7 +178,15 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addMatch( const Meta::YearPtr &year ) = 0;
         virtual QueryMaker* addMatch( const Meta::DataPtr &data ) = 0;
 
+        /**
+            Add a filter of type @p value and value @p filter. The querymaker applies this to all queries.
+            @return this
+        */
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
+        /**
+            Exclude @p filter of type @p value from all queries made by this query maker.
+            @return this
+        */
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
 
         virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, NumberComparison compare ) = 0;

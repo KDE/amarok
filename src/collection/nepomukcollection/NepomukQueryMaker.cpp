@@ -150,9 +150,9 @@ NepomukQueryMaker::run()
 }
 
 QueryMaker*
-NepomukQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+NepomukQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
-    debug() << "returnResultAsDataPtrs()" << resultAsDataPtrs << endl;
+    debug() << "setReturnResultAsDataPtrs()" << resultAsDataPtrs << endl;
 
     // we need the unchanged resulttype in the blocking result methods so prevent
     // reseting result type without reseting the QM

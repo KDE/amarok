@@ -56,7 +56,7 @@ public:
     virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
     //virtual QueryMaker* addMatch ( const Meta::DataPtr &data );
 
-    virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
+    virtual QueryMaker* setReturnResultAsDataPtrs ( bool resultAsDataPtrs );
 
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 

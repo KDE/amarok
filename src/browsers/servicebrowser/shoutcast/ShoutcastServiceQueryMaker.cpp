@@ -73,7 +73,7 @@ QueryMaker * ShoutcastServiceQueryMaker::reset()
 }
 
 QueryMaker*
-ShoutcastServiceQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+ShoutcastServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     d->returnDataPtrs = resultAsDataPtrs;
     return this;

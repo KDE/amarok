@@ -130,7 +130,7 @@ SqlQueryMaker::abortQuery()
 }
 
 QueryMaker*
-SqlQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+SqlQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     d->resultAsDataPtrs = resultAsDataPtrs;
     return this;

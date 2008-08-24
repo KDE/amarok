@@ -78,7 +78,7 @@ QueryMaker * ScriptableServiceQueryMaker::reset()
     return this;
 }
 
-QueryMaker* ScriptableServiceQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+QueryMaker* ScriptableServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     d->returnDataPtrs = resultAsDataPtrs;
     return this;

@@ -40,7 +40,7 @@ class MetaQueryMaker : public QueryMaker
 
         virtual QueryMaker* setQueryType( QueryType type );
 
-        virtual QueryMaker* returnResultAsDataPtrs( bool resultAsDataPtrs );
+        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
 
         virtual QueryMaker* addReturnValue( qint64 value);
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );

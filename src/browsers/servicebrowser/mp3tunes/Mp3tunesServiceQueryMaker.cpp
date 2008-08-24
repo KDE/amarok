@@ -88,7 +88,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::reset()
 }
 
 QueryMaker*
-Mp3tunesServiceQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+Mp3tunesServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     d->returnDataPtrs = resultAsDataPtrs;
     return this;

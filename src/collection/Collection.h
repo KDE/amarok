@@ -51,7 +51,18 @@ class AMAROK_EXPORT TrackProvider
         TrackProvider();
         virtual ~TrackProvider();
 
+        /**
+            Returns true if this track provider has a chance of providing the 
+            track specified by @p url.
+            This should do a minimal amount of checking, and return quickly.
+        */
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        /**
+            Creates a TrackPtr object for url @p url.  Returns a null track Ptr if 
+            it cannot be done. 
+            If asynchronysity is desired it is suggested to return a MetaProxy track here
+            and have the proxy watch for the real track.
+        */
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 };
 
@@ -63,13 +74,36 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider
         Collection();
         virtual ~Collection();
 
+        /**
+            The collections querymaker
+            @return A querymaker that belongs to this collection.
+        */
         virtual QueryMaker * queryMaker() = 0;
+        /**
+            Begin a full scan on the collection.  This is not valid for all collections
+        */
         virtual void startFullScan() {}
+        /**
+            Begin an incremental scan on the collection.  This is not valid for all collections.
+        */
         virtual void startIncrementalScan() {}
+        /**
+            Stop a scan on this collection.  This is not valid for all collections
+        */
         virtual void stopScan() {};
 
+        /**
+            The protocol of uids coming from this collection.
+            @return A string of the protocol, without the ://
+        */
         virtual QString uidUrlProtocol() const;
+        /**
+            @return A unique identifier for this type of collection
+        */
         virtual QString collectionId() const = 0;
+        /**
+            @return a user visible name for this collection, to be displayed in the collectionbrowser and elsewhere
+        */
         virtual QString prettyName() const = 0;
 
         virtual void collectionUpdated() { emit updated(); }

@@ -419,7 +419,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
             tmpItem = tmpItem->parent();
         }
         addFilters( qm );
-        qm->returnResultAsDataPtrs( true );
+        qm->setReturnResultAsDataPtrs( true );
         connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
         d->m_childQueries.insert( qm, parent );
@@ -708,7 +708,7 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
         tmpItem = tmpItem->parent();
     }
     addFilters( qm );
-    qm->returnResultAsDataPtrs( true );
+    qm->setReturnResultAsDataPtrs( true );
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->m_compilationQueries.insert( qm, parent );

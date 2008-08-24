@@ -30,7 +30,7 @@ public:
     virtual void run();
     virtual void abortQuery();
 
-    virtual QueryMaker *returnResultAsDataPtrs( bool resultAsDataPtrs );
+    virtual QueryMaker *setReturnResultAsDataPtrs( bool resultAsDataPtrs );
 
 private:
     bool m_resultAsDataPtrs;

@@ -56,7 +56,7 @@ public:
 
     virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
 
-    virtual QueryMaker* returnResultAsDataPtrs ( bool resultAsDataPtrs );
+    virtual QueryMaker* setReturnResultAsDataPtrs ( bool resultAsDataPtrs );
 
     void handleResult();
 

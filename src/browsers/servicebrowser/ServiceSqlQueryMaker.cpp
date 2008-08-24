@@ -132,7 +132,7 @@ ServiceSqlQueryMaker::abortQuery()
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::returnResultAsDataPtrs( bool resultAsDataPtrs )
+ServiceSqlQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     d->resultAsDataPtrs = resultAsDataPtrs;
     return this;
