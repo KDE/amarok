@@ -269,6 +269,8 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     m_nextUrl.clear();
     m_media->clearQueue();
 
+    m_currentTrack->prepareToPlay();
+
     if( m_multi )
     {
         m_media->stop();
@@ -277,7 +279,6 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     }
     else
     {
-        m_currentTrack->prepareToPlay();
         playUrl( m_currentTrack->playableUrl(), offset );
     }
 }
