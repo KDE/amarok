@@ -10,6 +10,7 @@ VERSION 2.0-beta2
     * System tray tooltip is now translucent (if compositing is available).
     * QtScript: Importer.include imports the file in the same context that its 
       currently in.
+    * PodcastCategory now uses PopupDropper actions.
 
   BUGFIXES:
     * The Current track applet now has tooltips for the icons on the right 
@@ -20,6 +21,7 @@ VERSION 2.0-beta2
     * Fixed layouting issues with tagging dialog. (BR 166837)
     * Fixed crash when closing last.fm settings while playing. (BR 168828)
     * Made it possible to actually disable the audio fadeout. (BR 169022)
+    * Podcast Episode downloading doesn't crash anymore. (BR 168203)
 
 
 VERSION 2.0-beta1
