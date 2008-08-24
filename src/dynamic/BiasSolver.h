@@ -32,6 +32,8 @@
 namespace Dynamic
 {
 
+    class TrackListEnergyPair;
+
     /**
      * A class to implement the optimization algorithm used to generate
      * playlists from a set of biases. The method used here is called 
@@ -66,19 +68,30 @@ namespace Dynamic
             void biasUpdated();
             void universeResults( QString collectionId, QStringList );
             void universeUpdated();
-            void iterate( Meta::TrackPtr mutation );
+            void iterateAnnealing( Meta::TrackPtr mutation );
 
         private:
+            void anneal( int iterations, bool updateStatus = false ); //! run SA on m_playlist for a given number of itreations
             void computeDomain();
             void updateUniverse();
-            double energy();
+            double energy(); //! calculated the average energy for m_playlist
             double recalculateEnergy( Meta::TrackPtr mutation, int mutationPos );
             Meta::TrackPtr trackForUid( const QByteArray& );
-            Meta::TrackPtr getMutation();
+            Meta::TrackPtr getMutation(); //! return a random track from the collection
             Meta::TrackPtr getRandomTrack( const QList<QByteArray>& subset );
 
+            /**
+             * Try to choose a good starting playlist using heuristics.
+             * Returns true if the playlist generated is known to be optimal.
+             */
+            bool generateInitialPlaylist();
 
-            bool generateInitialPlaylist(); //! returns true if the initial is known to be optimal
+            /**
+             * Choose MATING_POPULATION_SIZE playlists from the given population
+             * to produce offpring.
+             */
+            QList<int> generateMatingPopulation( const QList<TrackListEnergyPair>& );
+
 
             QList<Bias*>  m_biases;     //! current energy for the whole system
             QList<double> m_biasEnergy; //! current energy of each indivial bias
@@ -89,10 +102,10 @@ namespace Dynamic
             double m_E;                 //! energy
             Meta::TrackList m_playlist; //! playlist being generated
             Meta::TrackList m_context;  //! tracks that precede the playlist
+            double m_epsilon;           //! highest energy we consider optimal
 
             int m_pendingBiasUpdates;
             QMutex m_biasMutex;
-            QWaitCondition m_biasUpdateWaitCond;
 
             QList<QByteArray> m_domain;
 
@@ -100,10 +113,9 @@ namespace Dynamic
             QList<GlobalBias*> m_feasibleGlobalBiases;
             QList<TrackSet> m_feasibleGlobalBiasSets;
 
-            bool m_abortRequested;
+            bool m_abortRequested; //! flag set when the thread is aborted
 
-            /** A list of every track in the collection. This ends up making Amarok
-             * use quite a bit of memory. Hopefully a better idea will come along. */
+            // The universe set: a list of every uid in the collection.
             static QList<QByteArray>  s_universe;
             static QMutex             s_universeMutex;
             static QueryMaker*        s_universeQuery;
@@ -111,9 +123,20 @@ namespace Dynamic
             static bool               s_universeOutdated;
             static unsigned int       s_uidUrlProtocolPrefixLength;
 
-            static const int    ITERATION_LIMIT; //! give up after this many iterations
-            static const double INITIAL_TEMPERATURE;
-            static const double COOLING_RATE;
+
+            // CONSTANTS
+
+            static const int    GA_ITERATION_LIMIT;     //! iteration limit for the genetic phase
+            static const int    GA_POPULATION_SIZE;        //! population size for genetic phase
+            static const int    GA_MATING_POPULATION_SIZE; //! how many offspring are produced each generation
+            static const double GA_MUTATION_PROBABILITY; //! the chance that an offspring gets mutated
+            static const int GA_GIVE_UP_LIMIT; //! if we can't reduce the energy after this many iteration, give up
+
+            static const int    SA_ITERATION_LIMIT; //! iteration limit for the annealing phase
+            static const double SA_INITIAL_TEMPERATURE;
+            static const double SA_COOLING_RATE;
+            static const int    SA_GIVE_UP_LIMIT;
+
     };
 
 }
