@@ -394,29 +394,6 @@
 <group name="MySQLe">
 </group>
 
-<group name="Scrobbler">
-        <entry key="SubmitPlayedSongs" type="Bool">
-            <label>Submit played songs</label>
-            <whatsthis>Whether played songs are submitted to Audioscrobbler</whatsthis>
-            <default>true</default>
-        </entry>
-        <entry key="ScrobblerUsername" type="String">
-            <label context="Username for audioscrobbler login">Username</label>
-            <whatsthis>The username to use for connecting to Audioscrobbler</whatsthis>
-            <default/>
-        </entry>
-        <entry key="ScrobblerPassword" type="String">
-            <label>Password</label>
-            <whatsthis>The password to use for connecting to Audioscrobbler</whatsthis>
-            <default/>
-        </entry>
-        <entry key="RetrieveSimilarArtists" type="Bool">
-            <label>Retrieve similar artists</label>
-            <whatsthis>Whether similar songs are retrieved from Audioscrobbler</whatsthis>
-            <default>false</default>
-        </entry>
-</group>
-
 <group name="MediaDevice">
     <entry key="DeviceType" type="String">
         <label>Device type</label>
