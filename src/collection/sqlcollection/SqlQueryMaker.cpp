@@ -657,8 +657,8 @@ SqlQueryMaker::nameForValue( qint64 value )
     switch( value )
     {
         case valUrl:
-            d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.url";  //TODO figure out how to handle deviceid
+            d->linkedTables |= Private::URLS_TAB;
+            return "urls.rpath";  //TODO figure out how to handle deviceid
         case valTitle:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.title";
