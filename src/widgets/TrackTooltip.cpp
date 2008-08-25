@@ -111,26 +111,31 @@ void TrackToolTip::show( const QPoint & bottomRight )
     const int x = bottomRight.x() - sizeHint().width();
     const int y = bottomRight.y() - sizeHint().height();
 
-    if( rect.contains( x, y ) ) {
+    if( rect.contains( x, y ) )
         //widget is on the top-left of the icon
         move( x, y );
-    } else {
+    
+    else
+    {
         //so we don't have to keep calling sizeHint()
         const int w = sizeHint().width();
         const int h = sizeHint().height();
+        
         //widget is on the bottom-right of the icon
-        if( rect.contains( bottomRight.x() + w, bottomRight.y() + h ) ) {
+        if( rect.contains( bottomRight.x() + w, bottomRight.y() + h ) )
             move( bottomRight.x(), bottomRight.y() );
+
         //widget is on the bottom-left of the icon
-        } else if( rect.contains( bottomRight.x() - w, bottomRight.y() + h ) ) {
+        else if( rect.contains( bottomRight.x() - w, bottomRight.y() + h ) )
             move( bottomRight.x() - w, bottomRight.y() );
+        
         //widget is on the top-right of the icon
-        } else if( rect.contains( bottomRight.x() + w, bottomRight.y() - h ) ) {
+        else if( rect.contains( bottomRight.x() + w, bottomRight.y() - h ) )
             move( bottomRight.x(), bottomRight.y() - h );
-        } else {
-            //this shouldn't happen, because it's covered in the first case...
+        
+        //this shouldn't happen, because it's covered in the first case...
+        else
             move( x, y );
-        }
     }
 
     // Start monitoring the mouse position
