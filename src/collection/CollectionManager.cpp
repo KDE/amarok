@@ -23,6 +23,7 @@
 
 #include "BlockingQuery.h"
 #include "Collection.h"
+#include "EngineController.h"
 #include "MetaQueryMaker.h"
 #include "meta/file/File.h"
 #include "meta/stream/Stream.h"
@@ -363,7 +364,7 @@ CollectionManager::trackForUrl( const KUrl &url )
     if( url.protocol() == "http" || url.protocol() == "mms" )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    if( url.protocol() == "file" )
+    if( url.protocol() == "file" && EngineController::canDecode( url ) )
         return Meta::TrackPtr( new MetaFile::Track( url ) );
 
     return Meta::TrackPtr( 0 );
