@@ -56,7 +56,6 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
 
-
     QPixmap background;
 
     if ( !index.data( AlternateRowRole ).toBool() )
@@ -66,19 +65,15 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y(), background );
 
-
     painter->setFont(QFont("Arial", 14));
 
-
     painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
-
 
     QRectF titleRect;
     titleRect.setLeft( option.rect.topLeft().x() + iconWidth + iconPadX );
     titleRect.setTop( option.rect.top() );
     titleRect.setWidth( width - ( iconWidth  + iconPadX * 2 ) );
     titleRect.setHeight( iconHeight + iconPadY );
-
 
     /*painter->setPen( QPen ( Qt::white ) );*/
     painter->drawText ( titleRect, Qt::AlignHCenter | Qt::AlignVCenter, index.data( Qt::DisplayRole ).toString() );
@@ -113,6 +108,6 @@ ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelI
 void
 ServiceListDelegate::paletteChange()
 {
-    The::svgHandler()->reTint( );
+    The::svgHandler()->reTint();
 }
 

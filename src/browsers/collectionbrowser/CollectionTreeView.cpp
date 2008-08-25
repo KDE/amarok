@@ -887,7 +887,8 @@ void CollectionTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem
     const int width = option.rect.width();
     const int height = option.rect.height();
 
-    if ( height > 0 ) {
+    if( height > 0 )
+    {
         painter->save();
         QPixmap background;
 
@@ -901,11 +902,9 @@ void CollectionTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem
         painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
 
         painter->restore();
-
     }
     
-    QTreeView::drawRow( painter, option, index );
-    
+    QTreeView::drawRow( painter, option, index ); 
 }
 
 QSet<CollectionTreeItem*>
