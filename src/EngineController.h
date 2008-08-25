@@ -50,6 +50,11 @@ public:
     /* returns track position (elapsed time) in seconds */
     int trackPosition() const;
 
+    /**
+     * Returns the current track that is loaded into the engine.
+     * @return a Meta::TrackPtr which is either the track, or empty if phonon
+     * has a state of Phonon::ErrorState or Phonon::StoppedState
+     */
     Meta::TrackPtr currentTrack() const;
     int trackLength() const;
 
@@ -79,7 +84,7 @@ public:
         Playing  = 0,
         Paused   = 1,
         Stopped  = 2,
-        Error   = -1
+        Error    = -1
     };
 
 public slots:
