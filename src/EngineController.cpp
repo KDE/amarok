@@ -448,8 +448,9 @@ EngineController::mute() //SLOT
 Meta::TrackPtr
 EngineController::currentTrack() const
 {
+    // TODO: Should we be deleting m_currentTrack when we stop playback instead of checking for it here?
     Phonon::State state = m_media->state();
-    return state == Phonon::ErrorState ? Meta::TrackPtr() : m_currentTrack;
+    return state == ( Phonon::ErrorState || Phonon::StoppedState ) ? Meta::TrackPtr() : m_currentTrack;
 }
 
 int
