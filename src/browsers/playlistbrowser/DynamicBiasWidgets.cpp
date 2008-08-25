@@ -301,7 +301,7 @@ PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
     m_fieldSelection->addItem( i18n( "First Played" ), QueryMaker::valFirstPlayed );
     m_fieldSelection->addItem( i18n( "Last Played" ), QueryMaker::valLastPlayed );
     m_fieldSelection->addItem( i18n( "Comment" ), QueryMaker::valComment );
-    m_fieldSelection->addItem( i18n( "Filename" ), QueryMaker::valUrl );
+    m_fieldSelection->addItem( i18nc( "The name of the file this track is stored in", "Filename" ), QueryMaker::valUrl );
 }
 
 void
