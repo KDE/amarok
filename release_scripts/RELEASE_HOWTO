@@ -27,9 +27,9 @@ SECTION 3: Once Happy with the Tarball
  * Update kde-apps.org and freshmeat.net
  * Send a witty, intelligent and diligently crafted email to the following:
 
-     To:  kde-announce@kde.org
-     CC:  amarok@kde.org, amarok-promo@kde.org
-     BCC: kde-extra-gear@kde.org, kde-multimedia@kde.org
+     To:  kde-announce-apps@kde.org, amarok@kde.org
+     CC:  amarok-promo@kde.org
+     BCC: kde-extra-gear@kde.org, kde-multimedia@kde.org, amarok-packagers@googlegroups.com
 --------------------------------------------------------------------------------
 
 SECTION 4: After the Release
