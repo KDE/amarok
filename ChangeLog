@@ -8,16 +8,19 @@ VERSION 2.0-beta2
     * Config is now written right after closing the settings dialog, making
       it crash persistant.
     * System tray tooltip is now translucent (if compositing is available).
-    * QtScript: Importer.include imports the file in the same context that its 
-      currently in.
+    * QtScript: Importer.include imports the file in the same context that it
+      is currently in.
     * PodcastCategory now uses PopupDropper actions.
 
   BUGFIXES:
+    * Only add supported file formats to the playlist. Patch by Andreas Mützel
+      <andreas.muetzel@gmx.net>
+    * Don't show the context menu in the Current Track applet if playback has
+      been stopped.
     * The Current track applet now has tooltips for the icons on the right 
       hand side. (BR 168260)
-    * "Resume playback on start" now also restores the track position.
-      (BR 168792)
-	correctly.
+    * "Resume playback on start" now also restores the track position
+      correctly. (BR 168792)
     * Fixed layouting issues with tagging dialog. (BR 166837)
     * Fixed crash when closing last.fm settings while playing. (BR 168828)
     * Made it possible to actually disable the audio fadeout. (BR 169022)
