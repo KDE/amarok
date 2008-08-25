@@ -34,8 +34,6 @@ GeneralConfig::GeneralConfig( QWidget* parent )
     QStringList browsers;
     browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany" << "safari" << "mozilla";
 
-    kcfg_AutoGetCoverArt->setHidden( true );
-
 #if 0
     // Remove browsers which are not actually installed
     for( QStringList::Iterator it = browsers.begin(), end = browsers.end(); it != end; ) {

@@ -18,6 +18,7 @@
 
 #include "SqlMeta.h"
 
+#include "amarokconfig.h"
 #include "Amarok.h"
 #include "BlockingQuery.h"
 #include "Debug.h"
@@ -946,15 +947,15 @@ class CompilationAction : public PopupDropperAction
 //---------------SqlAlbum---------------------------------
 
 SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int artist ) : Album()
-    ,m_collection( QPointer<SqlCollection>( collection ) )
-    ,m_name( name )
-    ,m_id( id )
-    ,m_artistId( artist )
-    ,m_hasImage( false )
-    ,m_hasImageChecked( false )
-    ,m_tracksLoaded( false )
-    ,m_artist()
-    ,m_mutex( QMutex::Recursive )
+    , m_collection( QPointer<SqlCollection>( collection ) )
+    , m_name( name )
+    , m_id( id )
+    , m_artistId( artist )
+    , m_hasImage( false )
+    , m_hasImageChecked( false )
+    , m_tracksLoaded( false )
+    , m_artist()
+    , m_mutex( QMutex::Recursive )
 {
     //nothing to do
 }
@@ -1042,7 +1043,7 @@ SqlAlbum::image( int size, bool withShadow )
     // then updateImage() gets called which updates the cache and alerts the
     // subscribers. We use queueAlbum() because this runs the fetch as a
     // background job and doesn't give an intruding popup asking for confirmation
-    if( !m_name.isEmpty() )
+    if( !m_name.isEmpty() && AmarokConfig::autoGetCoverArt() )
         CoverFetcher::instance()->queueAlbum( KSharedPtr<Meta::Album>(this) );
 
     // If the result image is empty then we didn't find any cached image, nor 
