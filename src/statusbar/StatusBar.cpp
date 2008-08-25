@@ -65,6 +65,8 @@ StatusBar::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
     DEBUG_BLOCK
     switch ( state ) {
     case Phonon::StoppedState:
+        setMainText( QString() );
+        break;
     case Phonon::LoadingState:
         debug() << "LoadingState: clear text";
         if ( m_currentTrack )
