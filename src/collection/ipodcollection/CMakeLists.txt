@@ -28,7 +28,18 @@ if (IPOD_FOUND AND GDK_FOUND)
 	handler/IpodHandler.cpp)	
 	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
 
-	target_link_libraries(amarok_collection-ipodcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${GLIB2_LIBRARIES} ${GDK_LIBRARIES} ${IPOD_LIBRARIES} )
+	target_link_libraries(amarok_collection-ipodcollection
+        amaroklib
+        amarokpud
+        ${KDE4_KDECORE_LIBS}
+        ${KDE4_KIO_LIBS}
+        ${KDE4_KDEUI_LIBS}
+        ${KDE4_THREADWEAVER_LIBRARIES}
+        ${QT_QTGUI_LIBRARY}
+        ${GLIB2_LIBRARIES}
+        ${GDK_LIBRARIES}
+        ${IPOD_LIBRARIES} 
+        )
 
 	install(TARGETS amarok_collection-ipodcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
