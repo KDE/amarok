@@ -31,8 +31,8 @@
 int main( int argc, char *argv[] )
 {
     const KAboutData about( "amarokmp3tunesharmonydaemon", "amarok",
-    ki18n( "Amarok's MP3Tunes Harmony Daemon" ), "0.1",
-    ki18n( "Handles AutoSync for the MP3Tunes service in Amarok." ), KAboutData::License_GPL,
+    ki18n( "Amarok's MP3tunes Harmony Daemon" ), "0.1",
+    ki18n( "Handles AutoSync for the MP3tunes service in Amarok." ), KAboutData::License_GPL,
     ki18n( "(C) 2008, Casey Link" ),
     ki18n( "IRC:\nserver: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org" ),
     I18N_NOOP( "http://amarok.kde.org" ) );
