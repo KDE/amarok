@@ -88,6 +88,7 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
             ${OPENSSL_LIBRARIES}
             ${LIBXML2_LIBRARIES}
             ${CURL_LIBRARIES}
+            ${QT_QTNETWORK_LIBRARY}
         )
 
         install(TARGETS amarok_service_mp3tunes DESTINATION ${PLUGIN_INSTALL_DIR} )

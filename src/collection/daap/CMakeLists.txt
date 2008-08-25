@@ -22,7 +22,13 @@ set(amarok_collection-daapcollection_PART_SRCS
 
 kde4_add_plugin(amarok_collection-daapcollection WITH_PREFIX ${amarok_collection-daapcollection_PART_SRCS})
 
-target_link_libraries(amarok_collection-daapcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDNSSD_LIBS})
+target_link_libraries(amarok_collection-daapcollection
+    amaroklib
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${KDE4_KDNSSD_LIBS}
+    ${QT_QTNETWORK_LIBRARY}
+)
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-daapcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")

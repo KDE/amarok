@@ -55,8 +55,12 @@ kde4_add_ui_files(amarok_collection-sqlcollection_PART_SRCS
 
 kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-sqlcollection_PART_SRCS})
 
-target_link_libraries(amarok_collection-sqlcollection amaroklib
-${KDE4_KDECORE_LIBS} ${KDE4_THREADWEAVER_LIBRARIES}
+target_link_libraries(amarok_collection-sqlcollection
+    amaroklib
+    amarokpud
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_KIO_LIBS}
+    ${KDE4_THREADWEAVER_LIBRARIES}
 ### ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl
 )
 

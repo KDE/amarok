@@ -35,8 +35,10 @@ set(amarok_collection-nepomukcollection_PART_SRCS
 kde4_add_plugin(amarok_collection-nepomukcollection WITH_PREFIX ${amarok_collection-nepomukcollection_PART_SRCS})
 
 target_link_libraries(amarok_collection-nepomukcollection 
-    amaroklib 
-    ${KDE4_THREADWEAVER_LIBRARIES} 
+    amaroklib
+    amarokpud
+    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${KDE4_KDEUI_LIBS}
     ${NEPOMUK_LIBRARIES}
     ${SOPRANO_LIBRARIES})
 

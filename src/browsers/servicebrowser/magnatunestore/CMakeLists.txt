@@ -39,7 +39,14 @@
         )
 
         kde4_add_plugin(amarok_service_magnatunestore ${amarok_service_magnatune_PART_SRCS})
-        target_link_libraries(amarok_service_magnatunestore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_THREADWEAVER_LIBRARIES})
+        target_link_libraries(amarok_service_magnatunestore
+            amaroklib
+            amarokpud
+            ${KDE4_KDECORE_LIBS}
+            ${KDE4_KDEUI_LIBS}
+            ${KDE4_KIO_LIBS}
+            ${KDE4_THREADWEAVER_LIBRARIES}
+        )
 
 
         install(TARGETS amarok_service_magnatunestore DESTINATION ${PLUGIN_INSTALL_DIR} )
