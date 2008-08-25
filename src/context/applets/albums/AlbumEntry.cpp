@@ -134,7 +134,7 @@ AlbumEntry::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 void
 AlbumEntry::setAlbumName( QString albumName )
 {
-    m_albumName->setText( albumName );    
+    m_albumName->setText( albumName );
 }
 
 void
@@ -181,6 +181,12 @@ QSizeF
 AlbumEntry::size() const
 {
     return m_size;
+}
+
+QFont
+AlbumEntry::font() const
+{
+    return m_albumName->font();
 }
 
 void

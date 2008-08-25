@@ -94,7 +94,7 @@ void Albums::prepareElements()
     tinyFont.setBold( true );
 
     debug() << "Going to add " << m_albumCount << " elements";
-    
+
     for ( int i = 0; i < m_albumCount; i++ )
     {
         debug() << i;
@@ -104,7 +104,13 @@ void Albums::prepareElements()
 
         AlbumEntry *album = new AlbumEntry( this );
         album->resize( QSizeF( boundingRect().width() - 10, 70 ) );
-        album->setAlbumName( albumName.isEmpty() ? i18n("Unknown") : albumName );
+
+        if( albumName.isEmpty() )
+            album->setAlbumName( truncateTextToFit( i18n("Unknown"), album->font(), QRectF( 0, 0, album->size().width() - 121, album->size().height() ) ) );
+        else
+            album->setAlbumName( truncateTextToFit( albumName, album->font(), QRectF( 0, 0, album->size().width() - 121, album->size().height() ) ) );
+        //album->setAlbumName( albumName.isEmpty() ? i18n("Unknown") : albumName );
+
         album->setCoverImage( image );
         album->setTrackCount( trackCount );
 

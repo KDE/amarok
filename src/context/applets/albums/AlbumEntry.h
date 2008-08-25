@@ -42,6 +42,7 @@ public:
     QString trackCount() const;
 
     void resize( QSizeF newSize );
+    QFont font() const;
     QSizeF size() const;
     
 protected:
