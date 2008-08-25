@@ -153,6 +153,7 @@ namespace PlaylistBrowserNS
             void makeRatingSelection();
             void makeLengthSelection();
             void makeDateTimeSelection();
+            void makeFilenameSelection();
 
             QFrame*      m_controlFrame;
             QGridLayout* m_controlLayout;

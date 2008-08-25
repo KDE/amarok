@@ -301,6 +301,7 @@ PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
     m_fieldSelection->addItem( i18n( "First Played" ), QueryMaker::valFirstPlayed );
     m_fieldSelection->addItem( i18n( "Last Played" ), QueryMaker::valLastPlayed );
     m_fieldSelection->addItem( i18n( "Comment" ), QueryMaker::valComment );
+    m_fieldSelection->addItem( i18n( "Filename" ), QueryMaker::valUrl );
 }
 
 void
@@ -364,6 +365,8 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
         makeDateTimeSelection();
     else if( field == QueryMaker::valComment )
         makeGenericComboSelection( true, 0 );
+    else if( field == QueryMaker::valUrl )
+        makeFilenameSelection();
 
     //etc
 }
@@ -580,6 +583,13 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
     qm->setQueryType( QueryMaker::Custom );
     qm->addReturnValue( QueryMaker::valGenre );
     makeGenericComboSelection( true, qm );
+}
+
+void
+PlaylistBrowserNS::BiasGlobalWidget::makeFilenameSelection()
+{
+    // Don't populate the combobox. Too many urls.
+    makeGenericComboSelection( true, 0 );
 }
 
 
