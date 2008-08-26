@@ -33,6 +33,8 @@ VERSION 2.0-beta2
     * Podcast Episode downloading doesn't crash anymore. (BR 168203)
     * Dragging files to the playlist no longer appends, but drops in the 
       correct spot.
+    * Correctly order out-of-collection files dragged into the playlist. 
+      (BR 169064)
 
 VERSION 2.0-beta1
   FEATURES:
