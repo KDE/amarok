@@ -83,7 +83,7 @@ namespace PlaylistBrowserNS
             virtual void mouseReleaseEvent( QMouseEvent* );
 
         private:
-            KToolBar*    m_addToolbar;
+           // KToolBar*    m_addToolbar;
             QToolButton* m_addButton;
             QLabel*      m_addLabel;
     };

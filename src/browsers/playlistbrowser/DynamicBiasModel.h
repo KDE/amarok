@@ -40,8 +40,7 @@ namespace PlaylistBrowserNS
 
             enum Roles
             {
-                BiasRole = Qt::UserRole,
-                WidgetRole
+                WidgetRole = 0xf00d
             };
 
             DynamicBiasModel( QListView* listView );

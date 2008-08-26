@@ -212,19 +212,7 @@ PlaylistBrowserNS::DynamicBiasModel::clearWidgets()
 QVariant
 PlaylistBrowserNS::DynamicBiasModel::data( const QModelIndex& index, int role ) const
 {
-    Q_UNUSED(role)
-
-    if( !m_playlist )
-        return QVariant();
-
-    if( role == BiasRole )
-    {
-        if( index.row() >= m_playlist->biases().size()  )
-            return QVariant();
-        else
-            return QVariant::fromValue( m_playlist->biases().at( index.row() ) );
-    }
-    else if( role == WidgetRole )
+    if( m_playlist && role == WidgetRole && index.row() >= 0 && index.row() < m_widgets.size() )
         return QVariant::fromValue( m_widgets.at( index.row() ) );
     else
         return QVariant();

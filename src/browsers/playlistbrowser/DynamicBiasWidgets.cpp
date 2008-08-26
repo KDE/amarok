@@ -108,49 +108,39 @@ PlaylistBrowserNS::BiasBoxWidget::resizeEvent( QResizeEvent* )
 
 PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, const QString& description, QWidget* parent )
     : BiasBoxWidget( parent )
+    , m_addButton( new QToolButton( this ) )
 {
     DEBUG_BLOCK
 
     QHBoxLayout* mainLayout = new QHBoxLayout( this );
 
-    QWidget* m_addToolbarWidget = new QWidget( this );
-    m_addToolbarWidget->setMinimumSize( 30, 30 );
+    //QWidget* m_addToolbarWidget = new QWidget( this );
+    //m_addToolbarWidget->setMinimumSize( 30, 30 );
 
-    m_addToolbar = new KToolBar( m_addToolbarWidget );
+    /*m_addToolbar = new KToolBar( m_addToolbarWidget );
     m_addToolbar->setFixedHeight( 30 );
     m_addToolbar->setContentsMargins( 0, 0, 0, 0 );
     m_addToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_addToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_addToolbar->setIconDimensions( 22 );
     m_addToolbar->setMovable( false );
-    m_addToolbar->setFloatable ( false );
+    m_addToolbar->setFloatable ( false ); */
 
-    m_addButton = new QToolButton( m_addToolbar );
     m_addButton->setIcon( KIcon( "list-add-amarok" ) );
     m_addButton->setToolTip( i18n( "Add a new bias." ) );
-    m_addToolbar->addWidget( m_addButton );
-    m_addToolbar->adjustSize();
+    //m_addToolbar->addWidget( m_addButton );
+    //m_addToolbar->adjustSize();
     connect( m_addButton, SIGNAL( clicked() ), SLOT( slotClicked() ) );
 
-
-    KVBox* textLayout = new KVBox( this );
-
-    m_addLabel = new QLabel( caption, textLayout );
-    m_addLabel->setAlignment( Qt::AlignCenter | Qt::AlignVCenter );
-    QFont font;
-    font.setPointSize( 14 );
-    m_addLabel->setFont( font );
-
-    QLabel* descLabel = new QLabel( description, textLayout );
-    descLabel->setAlignment( Qt::AlignCenter | Qt::AlignVCenter );
+    QLabel* descLabel = new QLabel( QString("<b>%1</b><br>%2").arg(caption, description), this );
+    descLabel->setAlignment( Qt::AlignCenter );
     descLabel->setWordWrap( true );
 
-
-    mainLayout->addWidget( m_addToolbarWidget );
-    mainLayout->setStretchFactor( m_addToolbarWidget, 0 );
-    mainLayout->setAlignment( m_addToolbarWidget, Qt::AlignLeft | Qt::AlignVCenter );
-    mainLayout->addWidget( textLayout );
-    mainLayout->setStretchFactor( textLayout, 1 );
+    mainLayout->addWidget( m_addButton );
+    mainLayout->setStretchFactor( m_addButton, 0 );
+    mainLayout->setAlignment( m_addButton, Qt::AlignLeft | Qt::AlignVCenter );
+    mainLayout->addWidget( descLabel );
+    mainLayout->setStretchFactor( descLabel, 1 );
 
     connect( this, SIGNAL( clicked() ), SLOT( slotClicked() ) );
 
