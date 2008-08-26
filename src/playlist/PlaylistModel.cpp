@@ -910,6 +910,7 @@ void
 Playlist::Model::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
 {
     DEBUG_BLOCK
+    Q_UNUSED( oldState )
 
     static int failures = 0;
     const int maxFailures = 4;
@@ -1067,26 +1068,41 @@ Playlist::Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, i
         //drop from an external source or the file browser
         debug() << "Drop from external source or file browser";
         QList<QUrl> urls = data->urls();
-        Meta::TrackList tracks;
+        UrlListDropInfo* info = new UrlListDropInfo();
+        info->row = row;
+        QList<KIO::ListJob*> jobs;
+        //we use listOperations to figure out when we are done with the directory listing
+        //since I (think) we can't be sure what order the directory listing results
+        //happen in.
+        //listOperations are incremented for every new listRecursive.
+        //When listOperations is 0, run finishUrlListDrop, which cleans up and inserts the tracks
+        //this all assumes that listRecursive doesn't do weird threaded things and acts before
+        //this function is finished.
         foreach( const QUrl &url, urls )
         {
             KUrl kurl = KUrl( url );
             KFileItem kitem( KFileItem::Unknown, KFileItem::Unknown, kurl, true );
             if( kitem.isDir() )
             {
+                info->listOperations++;
                 KIO::ListJob* lister = KIO::listRecursive( kurl ); //kjob's delete themselves
-                connect( lister, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList&) ), SLOT( directoryListResults( KIO::Job*, const KIO::UDSEntryList& ) ) );
+                connect( lister, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList&) )
+                        , SLOT( directoryListResults( KIO::Job*, const KIO::UDSEntryList& ) ) );
+                lister->setProperty("info", QVariant::fromValue( info ) );
             }
             else if( EngineController::canDecode( kurl ) )
             {
                 Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( kurl );
                 if( track )
-                    insertTrack( row, track );
+                    info->tracks << track;
             }
             //else TODO: notify user if can't decode, see also MyDirLister::matchesFilter
         }
-        if( !tracks.isEmpty() )
-            insertOptioned( tracks, Playlist::AppendAndPlay );
+        if( info->listOperations == 0 )
+        {
+            finishUrlListDrop( info );
+            info = 0;
+        }
         return true;
     }
     return false;
@@ -1112,10 +1128,15 @@ void
 Playlist::Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
 {
 //     DEBUG_BLOCK
-    Meta::TrackList tracks;
     //dfaure says that job->redirectionUrl().isValid() ? job->redirectionUrl() : job->url(); might be needed
     //but to wait until an issue is actually found, since it might take more work
     const KUrl dir = static_cast<KIO::SimpleJob*>( job )->url();
+    UrlListDropInfo* info = job->property("info" ).value<UrlListDropInfo*>();
+    if( !info )
+    {
+        warning() << "invalid UrlListDropInfo, playlist drop will not function.";
+        return;
+    }
     foreach( const KIO::UDSEntry &entry, list )
     {
         KUrl currentUrl = dir;
@@ -1125,14 +1146,23 @@ Playlist::Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &l
         {
             Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( currentUrl );
             if( track )
-                tracks.append( track );
+                info->tracks.append( track );
         }
     }
-    if( !tracks.isEmpty() )
+    info->listOperations--;
+    if( info->listOperations < 1 )
+        finishUrlListDrop( info );
+}
+
+void
+Playlist::Model::finishUrlListDrop( UrlListDropInfo* info )
+{
+    if( !( info->tracks.isEmpty() ) )
     {
-        qStableSort(tracks.begin(), tracks.end(), Amarok::trackNumberLessThan);
-        insertOptioned( tracks, Playlist::Append );
+        qStableSort( info->tracks.begin(), info->tracks.end(), Amarok::trackNumberLessThan);
+        insertTracks( info->row, info->tracks );
     }
+    delete info;
 }
 
 

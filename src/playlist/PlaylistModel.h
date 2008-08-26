@@ -63,7 +63,6 @@ namespace The {
     AMAROK_EXPORT Playlist::Model*   playlistModel();
 }
 
-
 namespace Playlist
 {
     class TrackNavigator;
@@ -273,6 +272,15 @@ namespace Playlist
             int firstInGroup( int row );
             int lastInGroup( int row );
 
+            //only public since it is used as a QVariant
+            struct UrlListDropInfo
+            {
+                UrlListDropInfo() : listOperations( 0 ) { }
+                int listOperations;
+                int row;
+                Meta::TrackList tracks;
+            };
+
         public slots:
             void play( const QModelIndex& index );
             void next();
@@ -304,6 +312,7 @@ namespace Playlist
             void notifyAdvancersOnItemChange() { if( m_advancer ) m_advancer->setPlaylistChanged(); }
 
         private:
+
             /**
              * This performs the actual work involved with inserting tracks. It is to be *only* called by an UndoCommand.
              * @arg row Row number in the playlist to insert the list after.
@@ -317,6 +326,8 @@ namespace Playlist
              * @arg list The list to be inserted.
              */
             Meta::TrackList removeTracksCommand( int position, int rows );
+
+            void finishUrlListDrop( UrlListDropInfo* info ); //! for finishing up url list drops
 
             /**
              * This performs the actual work involved with mov traing a tracks. It is to be *only* called by an UndoCommand.
@@ -374,5 +385,7 @@ namespace Playlist
             static Model* s_instance; //! instance variable
     };
 }
+
+Q_DECLARE_METATYPE( Playlist::Model::UrlListDropInfo* )
 
 #endif

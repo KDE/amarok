@@ -31,7 +31,8 @@ VERSION 2.0-beta2
     * Fixed crash when closing last.fm settings while playing. (BR 168828)
     * Made it possible to actually disable the audio fadeout. (BR 169022)
     * Podcast Episode downloading doesn't crash anymore. (BR 168203)
-
+    * Dragging files to the playlist no longer appends, but drops in the 
+      correct spot.
 
 VERSION 2.0-beta1
   FEATURES:
