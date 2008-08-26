@@ -127,6 +127,7 @@ install(FILES
     plasma/servicetypes/plasma-dataengine.desktop
     plasma/servicetypes/plasma-runner.desktop
     plasma/servicetypes/plasma-scriptengine.desktop
+    plasma/servicetypes/plasma-containment.desktop
     DESTINATION ${SERVICETYPES_INSTALL_DIR})
 
 set(default_animator_SRCS
