@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.0-beta2
   CHANGES:
+    * The Love button in Last.fm service is now available for all tracks, not
+      just Last.fm radio.
     * Config is now written right after closing the settings dialog, making
       it crash persistant.
     * System tray tooltip is now translucent (if compositing is available).
