@@ -914,14 +914,13 @@ Playlist::Model::engineStateChanged( Phonon::State currentState, Phonon::State o
     static int failures = 0;
     const int maxFailures = 4;
 
-    debug() << "Phonon currentState: " << currentState;
-    debug() << "Phonon oldState: " << oldState;
-
-    if( currentState == Phonon::ErrorState ) {
+    if( currentState == Phonon::ErrorState )
+    {
         failures++;
         debug() << "Error, can not play this track.";
         debug() << "Failure count: " << failures;
-        if( failures >= maxFailures ) {
+        if( failures >= maxFailures )
+        {
             The::statusBar()->longMessageThreadSafe( 
                 i18n( "Too many errors encountered in playlist. Playback stopped." ),
                 KDE::StatusBar::Warning );
@@ -930,7 +929,8 @@ Playlist::Model::engineStateChanged( Phonon::State currentState, Phonon::State o
             m_stopPlaying = true;
         }
     }
-    else if( currentState == Phonon::PlayingState ) {
+    else if( currentState == Phonon::PlayingState )
+    {
         failures = 0;
         m_stopPlaying = false;
         debug() << "Successfully played track. Resetting failure count.";

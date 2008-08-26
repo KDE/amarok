@@ -904,13 +904,10 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     {
         //is the source defined
         QString source = sic->sourceName();
-        //debug() << "Got SourceInfoCapability, source: " << source;
-        if ( !source.isEmpty() ) {
+        if( !source.isEmpty() )
             painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
-        }
 
         delete sic;
-
     }
 
 
@@ -972,10 +969,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     int dividerOffset = (int)(headRect.width() / 20);
     
     painter->drawPixmap( dividerOffset, (int)trackRect.top() - 1, The::svgHandler()->renderSvg( "divider_bottom", (int)headRect.width() - 2 * dividerOffset, 1, "divider_bottom" ) );
-    painter->drawPixmap( dividerOffset, (int)trackRect.top(), The::svgHandler()->renderSvg( "divider_top", (int)headRect.width() - 2 * dividerOffset, 1, "divider_top" ) );
-    
-
-    
+    painter->drawPixmap( dividerOffset, (int)trackRect.top(), The::svgHandler()->renderSvg( "divider_top", (int)headRect.width() - 2 * dividerOffset, 1, "divider_top" ) );    
 
     //paint collapse button
     /*QString collapseString;

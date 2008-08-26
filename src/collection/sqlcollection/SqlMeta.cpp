@@ -1159,8 +1159,6 @@ SqlAlbum::isCompilation() const
 bool
 SqlAlbum::hasAlbumArtist() const
 {
-    DEBUG_BLOCK
-    debug() << "AID: " << m_artistId;
     return m_artistId != 0;
 }
 
