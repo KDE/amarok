@@ -63,6 +63,15 @@ namespace MetaFile
 
 struct MetaData
 {
+    MetaData()
+        : discNumber( 0 )
+        , trackNumber( 0 )
+        , length( 0 )
+        , fileSize( 0 )
+        , sampleRate( 0 )
+        , bitRate( 0 )
+        , year( 0 )
+    { }
     QString title;
     QString artist;
     QString album;
