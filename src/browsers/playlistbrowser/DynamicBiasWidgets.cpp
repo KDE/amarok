@@ -113,23 +113,8 @@ PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, const Q
     DEBUG_BLOCK
 
     QHBoxLayout* mainLayout = new QHBoxLayout( this );
-
-    //QWidget* m_addToolbarWidget = new QWidget( this );
-    //m_addToolbarWidget->setMinimumSize( 30, 30 );
-
-    /*m_addToolbar = new KToolBar( m_addToolbarWidget );
-    m_addToolbar->setFixedHeight( 30 );
-    m_addToolbar->setContentsMargins( 0, 0, 0, 0 );
-    m_addToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    m_addToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-    m_addToolbar->setIconDimensions( 22 );
-    m_addToolbar->setMovable( false );
-    m_addToolbar->setFloatable ( false ); */
-
     m_addButton->setIcon( KIcon( "list-add-amarok" ) );
     m_addButton->setToolTip( i18n( "Add a new bias." ) );
-    //m_addToolbar->addWidget( m_addButton );
-    //m_addToolbar->adjustSize();
     connect( m_addButton, SIGNAL( clicked() ), SLOT( slotClicked() ) );
 
     QLabel* descLabel = new QLabel( QString("<b>%1</b><br>%2").arg(caption, description), this );
@@ -163,37 +148,22 @@ PlaylistBrowserNS::BiasAddWidget::slotClicked()
 
 
 PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
-    : BiasBoxWidget( parent ), m_bias(b)
+    : BiasBoxWidget( parent )
+    , m_mainLayout( new KVBox( this ) )
+    , m_bias(b)
 {
     DEBUG_BLOCK
 
     QHBoxLayout* hLayout = new QHBoxLayout( this );
 
-    QWidget* removeToolbarWidget = new QWidget(this);
-    removeToolbarWidget->setMinimumSize( 30, 30 );
-
-    m_removeToolbar = new KToolBar(removeToolbarWidget);
-    m_removeToolbar->setFixedHeight( 30 );
-    m_removeToolbar->setContentsMargins( 0, 0, 0, 0 );
-    m_removeToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    m_removeToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-    m_removeToolbar->setIconDimensions( 22 );
-    m_removeToolbar->setMovable( false );
-    m_removeToolbar->setFloatable ( false );
-
-    QToolButton* removeButton = new QToolButton( m_removeToolbar );
+    QToolButton* removeButton = new QToolButton( this );
     removeButton->setIcon( KIcon( "list-remove-amarok" ) );
     removeButton->setToolTip( i18n( "Remove this bias." ) );
     connect( removeButton, SIGNAL( clicked() ), SLOT( biasRemoved() ), Qt::QueuedConnection );
-    m_removeToolbar->addWidget( removeButton );
-    m_removeToolbar->adjustSize();
 
-
-    m_mainLayout = new KVBox( this );
-
-    hLayout->addWidget( removeToolbarWidget );
-    hLayout->setStretchFactor( removeToolbarWidget, 0 );
-    hLayout->setAlignment( removeToolbarWidget, Qt::AlignLeft | Qt::AlignVCenter );
+    hLayout->addWidget( removeButton );
+    hLayout->setStretchFactor( removeButton, 0 );
+    hLayout->setAlignment( removeButton, Qt::AlignLeft | Qt::AlignVCenter );
 
     hLayout->addWidget( m_mainLayout );
 
@@ -218,7 +188,8 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
 {
     DEBUG_BLOCK
 
-    m_controlFrame = new QFrame( m_mainLayout );
+    m_controlFrame = new QFrame( this );
+    layout()->addWidget( m_controlFrame );
     m_controlLayout = new QGridLayout( m_controlFrame );
     m_controlFrame->setLayout( m_controlLayout );
 
@@ -682,7 +653,8 @@ PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias
     , m_scaleLabel(0)
     , m_nbias(bias) 
 {
-    m_controlFrame = new QFrame( m_mainLayout );
+    m_controlFrame = new QFrame( this );
+    layout()->addWidget( m_controlFrame );
     m_controlLayout = new QGridLayout( m_controlFrame );
     m_controlFrame->setLayout( m_controlLayout );
 

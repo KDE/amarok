@@ -103,10 +103,9 @@ namespace PlaylistBrowserNS
         private slots:
             void biasRemoved();
 
-        protected:
+        protected: //protected data members make Mike cry :'(
             KVBox* m_mainLayout;
             Dynamic::Bias* m_bias;
-
 
         private:
             KToolBar* m_removeToolbar;
