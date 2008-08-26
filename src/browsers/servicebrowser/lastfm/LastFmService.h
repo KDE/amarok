@@ -71,7 +71,7 @@ private slots:
 
     void playCustomStation();
 
-    void setButtonsEnabled( bool enable );
+    void setRadioButtons( bool hasRadio );
 
 private:
     ScrobblerAdapter *m_scrobbler;

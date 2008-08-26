@@ -76,7 +76,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     Q_UNUSED( fetchSimilar ); // TODO implement..
     //We have no use for searching currently..
     m_searchWidget->setVisible( false );
-    setShortDescription(  i18n( "Last.fm: The social music revolution." ) );
+    setShortDescription( i18n( "Last.fm: The social music revolution." ) );
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
 
     m_collection = new LastFmServiceCollection( m_userName );
@@ -129,9 +129,8 @@ LastFmService::polish()
         m_skipButton->setIcon( KIcon( "media-seek-forward-amarok" ) );
         connect( m_skipButton, SIGNAL( clicked() ), this, SLOT( skip() ) );
 
-        connect( m_radio, SIGNAL( haveTrack( bool ) ), this, SLOT( setButtonsEnabled( bool ) ) );
-
-        setButtonsEnabled( m_radio->currentTrack() );
+        connect( m_radio, SIGNAL( haveTrack( bool ) ), this, SLOT( setRadioButtons( bool ) ) );
+        setRadioButtons( m_radio->currentTrack() );
 
         KHBox * customStationBox = new KHBox( m_bottomPanel );
         customStationBox->setSpacing( 3 );
@@ -159,9 +158,17 @@ LastFmService::love()
 {
     DEBUG_BLOCK
 
-    LastFm::TrackPtr track = radio()->currentTrack();
-    if( track )
-        track->love();
+    LastFm::TrackPtr radioTrack = radio()->currentTrack();
+    if( radioTrack )
+        radioTrack->love();
+
+    // We're loving a track which isn't from radio
+    else
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        if( track )
+            m_scrobbler->loveTrack( track );
+    }
 }
 
 
@@ -188,9 +195,11 @@ LastFmService::skip()
 
 
 void
-LastFmService::setButtonsEnabled( bool enable )
+LastFmService::setRadioButtons( bool hasRadio )
 {
-    m_buttonBox->setEnabled( enable );
+    m_loveButton->setEnabled( true ); // we can love any track, anytime
+    m_skipButton->setEnabled( hasRadio );
+    m_banButton->setEnabled( hasRadio );
 }
 
 

@@ -36,9 +36,11 @@ public:
     void love();
     void ban();
 
+public slots:
+    void loveTrack( Meta::TrackPtr );
+
 private slots:
     void statusChanged( int statusCode, QVariant data );
-    void slotTrackLoved( Meta::TrackPtr );
 
 private:
     void resetVariables();
