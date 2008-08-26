@@ -20,18 +20,12 @@ include_directories( ../..
 
 ########### next target ###############
 
-# win32 can't compile these due to missing dependency
-# msvc requires sqlite compiled in due to not being able to link it (not dllexported)
-if (WIN32)
-if (MSVC)
-set (extra_src ../../sqlite/sqlite3.c)
-else (MSVC)
-set (extra_src)
-endif (MSVC)
-else (WIN32)
-set (extra_src     
-   XesamDbus.cpp
-   XesamCollectionBuilder.cpp)
+set(extra_src ../../sqlite/sqlite3.c)
+
+if (NOT WIN32)
+ set (extra_src     
+    XesamDbus.cpp
+    XesamCollectionBuilder.cpp)
 endif (WIN32)
 
 set(amarok_collection-sqlcollection_PART_SRCS
@@ -45,6 +39,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     SqlRegistry.cpp
     SqlMeta.cpp 
     SqliteCollection.cpp
+    ../../sqlite/sqlite3.c
 ###    MySqlEmbeddedCollection.cpp
    ${extra_src}
  )
