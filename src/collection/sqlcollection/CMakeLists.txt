@@ -26,7 +26,10 @@ if (NOT WIN32)
  set (extra_src     
     XesamDbus.cpp
     XesamCollectionBuilder.cpp)
-endif (WIN32)
+ set (sqlite_deps dl)
+elseif (NOT WIN32)
+ set (sqlite_deps )
+endif (NOT WIN32)
 
 set(amarok_collection-sqlcollection_PART_SRCS
     DatabaseUpdater.cpp
@@ -56,6 +59,7 @@ target_link_libraries(amarok_collection-sqlcollection
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
+    ${sqlite_deps}
 ### ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl
 )
 
