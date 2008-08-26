@@ -72,19 +72,11 @@ QString Context::Applet::truncateTextToFit( QString text, const QFont& font, con
 void
 Context::Applet::destroy()
 {
-    if (Plasma::Applet::immutability() != Plasma::Mutable || m_transient) {
+    if ( Plasma::Applet::immutability() != Plasma::Mutable || m_transient ) {
         return; //don't double delete
     }
     m_transient = true;
-    kDebug() << "animator? " << (bool)(Plasma::Animator::self() == 0);
     cleanUpAndDelete();
-//     if (isContainment()) {
-//         cleanUpAndDelete();
-//     } else {
-//         connect(Animator::self(), SIGNAL(animationFinished(QGraphicsItem*,Plasma::Animator::Animation)),
-//                 this, SLOT(appletAnimationComplete(QGraphicsItem*,Plasma::Animator::Animation)));
-//         Animator::self()->animateItem(this, Animator::DisappearAnimation);
-//     }
 }
 
 void

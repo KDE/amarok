@@ -1,6 +1,6 @@
 project(context-albums)
 
-set(albums_SRCS Albums.cpp AlbumEntry.cpp )
+set(albums_SRCS Albums.cpp AlbumsView.cpp AlbumsDelegate.cpp)
 
 include_directories( ../..
                     ../../.. )

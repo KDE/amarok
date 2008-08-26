@@ -13,7 +13,8 @@
  ***************************************************************************/
 
 #include "Albums.h"
-
+#include "AlbumsView.h"
+#include "AlbumsDelegate.h"
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h"
@@ -37,7 +38,6 @@
 #include <QMap>
 
 
-
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_configLayout( 0 )
@@ -47,7 +47,6 @@ Albums::Albums( QObject* parent, const QVariantList& args )
     , m_albumCount( 0 )
 {
     setHasConfigurationInterface( false );
-    prepareElements();
 }
 
 Albums::~Albums()
@@ -56,10 +55,20 @@ Albums::~Albums()
 void Albums::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
+
+    m_headerText = new QGraphicsSimpleTextItem( this );    
  
     m_width = globalConfig().readEntry( "width", 500 );
     m_height = globalConfig().readEntry( "height", 300 );
 
+    m_albumsView = new AlbumsView( this );
+    m_albumsView->setMinimumSize( 100, 150 );
+    
+    m_model = new QStandardItemModel();
+    m_albumsView->setModel( m_model );
+    m_albumsView->resize( size().width() - 28, size().height() - 28 );
+    m_albumsView->setPos( 7, 42 );
+    m_albumsView->show();
     // get natural aspect ratio, so we can keep it on resize
     m_aspectRatio = m_width / m_height;
     resize( m_width, m_height );
@@ -69,56 +78,11 @@ void Albums::init()
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
              this, SLOT( connectSource( const QString& ) ) );
 
+    connect( m_albumsView, SIGNAL( enqueueAlbum( const QString & ) ), this, SLOT( enqueueAlbum( const QString & ) ) );
+    connect( m_albumsView, SIGNAL( enqueueTrack( const QString & ) ), this, SLOT( enqueueTrack( const QString & ) ) );
     updateConstraints();
 }
 
-void Albums::prepareElements()
-{
-    DEBUG_BLOCK
-
-
-    qDeleteAll( m_albums );
-    m_albums.clear();
-
-    QFont labelFont;
-    labelFont.setBold( true );
-    labelFont.setPointSize( labelFont.pointSize() + 1  );
-    labelFont.setStyleHint( QFont::Times );
-    labelFont.setStyleStrategy( QFont::PreferAntialias );
-
-    QFont textFont = QFont( labelFont );
-    textFont.setBold( false );
-
-    QFont tinyFont( textFont );
-    tinyFont.setPointSize( tinyFont.pointSize() - 5 );
-    tinyFont.setBold( true );
-
-    debug() << "Going to add " << m_albumCount << " elements";
-
-    for ( int i = 0; i < m_albumCount; i++ )
-    {
-        debug() << i;
-        QString albumName = m_names[i].toString();
-        QString trackCount = m_trackCounts[i].toString();
-        QPixmap image = m_covers[i].value<QPixmap>();
-
-        AlbumEntry *album = new AlbumEntry( this );
-        album->resize( QSizeF( boundingRect().width() - 10, 70 ) );
-
-        if( albumName.isEmpty() )
-            album->setAlbumName( truncateTextToFit( i18n("Unknown"), album->font(), QRectF( 0, 0, album->size().width() - 121, album->size().height() ) ) );
-        else
-            album->setAlbumName( truncateTextToFit( albumName, album->font(), QRectF( 0, 0, album->size().width() - 121, album->size().height() ) ) );
-        //album->setAlbumName( albumName.isEmpty() ? i18n("Unknown") : albumName );
-
-        album->setCoverImage( image );
-        album->setTrackCount( trackCount );
-
-        connect( album, SIGNAL( clicked( const QString& ) ), this, SLOT( enqueueAlbum( const QString& ) ) );
-        m_albums.append( album );
-
-    }
-}
 
 QList<QAction*>
 Albums::contextualActions()
@@ -137,25 +101,12 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
 
     const qreal labelX = m_albumWidth + margin + 14.0;
     const qreal labelWidth = 15;
-    const qreal textX = labelX + labelWidth + margin;
-
-    const qreal textHeight = 22;
-    const qreal textWidth = size().toSize().width() - ( textX + margin );
 
     // here we put all of the text items into the correct locations
-
+    m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, margin );
+    
     debug() << "Updating constraints for " << m_albumCount << " album rows";
-    for( int i = 0; i < m_albumCount; ++i )
-    {
-        
-        AlbumEntry *album = m_albums.at( i );
-
-        const qreal yPos = i * ( album->size().height() + margin/2 ) + margin;
-
-        album->setPos( QPointF( margin - 10, yPos ) );
-        album->resize( QSizeF( boundingRect().width() - 10, 70 ) );
-
-    }
+    m_albumsView->resize( size().toSize().width() - margin , size().toSize().height() - margin * 4 );
 
 }
 
@@ -171,13 +122,37 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 
     kDebug() << "Albums::dataUpdated. count: " << m_albumCount << " names " << m_names.count();
 
-    prepareElements();
+    m_model->clear();
+    m_model->setColumnCount( 1 );
+    int row = 0;
+    QString artistName = The::engineController()->currentTrack()->artist()->name();
+    m_headerText->setText( i18n( "Albums by %1", artistName ) );
+    foreach( Meta::AlbumPtr aptr, The::engineController()->currentTrack()->artist()->albums() )
+    {
+        QString albumName = aptr->name();
+        
+        QStandardItem *albumItem = new QStandardItem();
+        albumItem->setData( albumName, AlbumRoles::AlbumName );
+        
+        if( m_trackCounts.size() > 0 )
+            albumItem->setData( m_trackCounts[row].toString(), AlbumRoles::TrackCount );
 
-
-    const qreal margin = 14;
-    const qreal height = m_albums.size() * ( m_albumWidth + margin ) + margin;
-    resize( size().toSize().width(), height );
-
+        if( m_covers.size() > 0 )
+            albumItem->setData( m_covers[row].value<QPixmap>(), AlbumRoles::AlbumCover );
+        
+        int childRow = 0;
+        foreach( Meta::TrackPtr track, aptr->tracks() )
+        {
+            QStandardItem *trackItem = new QStandardItem();
+            trackItem->setData( track->name(), AlbumRoles::TrackName );
+            albumItem->setChild( childRow, trackItem );
+            childRow++;
+        }
+        
+        m_model->appendRow( albumItem );
+        row++;
+    }
+    
     updateConstraints();
 }
 
@@ -200,7 +175,7 @@ Albums::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
-
+    Q_UNUSED( p )
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
     if( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
@@ -215,19 +190,6 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
             childItem->show();
     }
 
-    p->save();
-        
-    const qreal margin = 14.0;
-    const qreal labelX = m_albumWidth + margin;
-    const qreal textHeight = 22;
-    
-    const qreal iconX = labelX + margin;
-
-    for( int i = 0; i < m_albums.size(); ++i )
-    {
-        m_albums.at( i )->show();
-    }
-    p->restore();
 }
 
 void Albums::showConfigurationInterface()
@@ -254,15 +216,15 @@ void Albums::enqueueAlbum( const QString &name )
     }
 }
 
-AlbumTextItem::AlbumTextItem( QGraphicsItem * parent )
-    : QGraphicsSimpleTextItem( parent )
+void
+Albums::enqueueTrack( const QString &name )
 {
+    foreach( Meta::TrackPtr tptr, The::engineController()->currentTrack()->artist()->tracks() )
+    {
+        if( tptr->name() == name )
+            The::playlistModel()->insertOptioned( tptr, Playlist::Append );
+    }
 }
 
-void AlbumTextItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
-{
-    Q_UNUSED( event )
-    emit( clicked( text() ) );
-}
 
 #include "Albums.moc"

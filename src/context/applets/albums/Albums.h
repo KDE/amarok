@@ -15,7 +15,7 @@
 #ifndef ALBUMS_APPLET_H
 #define ALBUMS_APPLET_H
 
-#include "AlbumEntry.h"
+#include "AlbumsView.h"
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>
@@ -27,26 +27,11 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsItem>
+#include <QStandardItemModel>
 
 class QGraphicsPixmapItem;
 class QLabel;
 class QHBoxLayout;
-
-/**
- * An album text item that responds to being clicked
- */
-class AlbumTextItem : public QObject, public QGraphicsSimpleTextItem
-{
-    Q_OBJECT
-public:
-    explicit AlbumTextItem( QGraphicsItem *parent = 0 );
-
-protected:
-    virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
-
-signals:
-    void clicked( const QString &text );
-};
 
 class Albums : public Context::Applet
 {
@@ -71,6 +56,7 @@ private slots:
     void configAccepted();
     void connectSource( const QString &source );
     void enqueueAlbum( const QString &name );
+    void enqueueTrack( const QString &name );
 
 private:
     void prepareElements();
@@ -83,14 +69,17 @@ private:
 
     qreal m_aspectRatio;
 
-    QList<AlbumEntry*> m_albums;
-
     int m_albumCount;
     QVariantList m_names;
     QVariantList m_trackCounts;
     QVariantList m_covers;
 
     int m_maxTextWidth;
+    QStandardItemModel *m_model;
+
+    AlbumsView *m_albumsView;
+
+    QGraphicsSimpleTextItem *m_headerText;
 };
 
 K_EXPORT_AMAROK_APPLET( albums, Albums )
