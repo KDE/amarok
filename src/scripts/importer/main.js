@@ -29,59 +29,86 @@ Debug.initialize();
 Debug.app_name = "Importer";
 
 
+Debug.debug( "Starting importer" );
 
-Debug.debug( "Connecting to Amarok 1.4 database" );
+dlg        = new QDialog();
+mainLayout = new QVBoxLayout();
+
+databaseLayout = new QGridLayout();
+
+sqlTypeLabel = new QLabel( dlg );
+sqlTypeLabel.setText( "Database" );
+sqlTypeCombo = new QComboBox( dlg );
+sqlTypeCombo.addItem( "SQLite" );
+sqlTypeCombo.addItem( "MySQL" );
+sqlTypeCombo.addItem( "PostgreSQL" );
+
+locationLabel = new QLabel( dlg );
+locationLabel.setText( "Location" );
+locationEdit = new QLineEdit( dlg );
+locationEdit.setText( "~/.kde/share/apps/amarok/collection.db" );
+
+usernameLabel = new QLabel( dlg );
+usernameLabel.setText( "Username" );
+usernameEdit = new QLineEdit( dlg );
+
+passwordLabel = new QLabel( dlg );
+passwordLabel.setText( "Password" );
+passwordEdit = new QLineEdit( dlg );
+//passwordEdit.setEchoMode( QLineEdit.Password );
+
+databaseLayout.addWidget( sqlTypeLabel, 0, 0 );
+databaseLayout.addWidget( sqlTypeCombo, 0, 1 );
+databaseLayout.addWidget( locationLabel, 1, 0 );
+databaseLayout.addWidget( locationEdit, 1, 1 );
+databaseLayout.addWidget( usernameLabel, 2, 0 );
+databaseLayout.addWidget( usernameEdit, 2, 1 );
+databaseLayout.addWidget( passwordLabel, 3, 0 );
+databaseLayout.addWidget( passwordEdit, 3, 1 );
+
+importArtwork = new QCheckBox( "Import downloaded artwork", dlg );
+
+spacer = new QSpacerItem( 10, 10 );
+buttonBox = new QDialogButtonBox();
+buttonBox.addButton( QDialogButtonBox.Ok );
+buttonBox.addButton( QDialogButtonBox.Cancel );
+
+// connect the buttons to the dialog actions
+buttonBox.accepted.connect( dlg.accept );
+buttonBox.rejected.connect( dlg.reject );
+
+mainLayout.addLayout( databaseLayout );
+mainLayout.addWidget( importArtwork, 0, 0 );
+mainLayout.addSpacerItem( spacer );
+mainLayout.addWidget( buttonBox, 0, 0 );
+
+dlg.setLayout( mainLayout );
+
+dlg.show();
+
+if( dlg.exec() == QDialog.REJECTED )
+{
+    Debug.debug( "Cancelled" );
+    return;
+}
+
+Debug.debug( "Will proceed to convert stats" );
+
 var db = QSqlDatabase.addDatabase( "QSQLITE", "a1" );
-db.setDatabaseName( "/home/sebr/collection.db" );
+db.setDatabaseName( collectionEdit.text() );
 db.open();
 
 Debug.debug( "Fetching devices from Amarok 1.4" );
 query = db.exec( "SELECT id, lastmountpoint FROM devices" );
 
-while( query.next() )
+
+function transferData( query )
 {
-    id = query.value(0).toString();
-    lmp = query.value(1).toString();
-    print( id + " : " + lmp );
+    while( query.next() )
+    {
+        id = query.value(0).toString();
+        lmp = query.value(1).toString();
+        print( id + " : " + lmp );
+    }
 }
-
-
-function onConfigure()
-{
-    dlg        = new QDialog();
-    mainLayout = new QVBoxLayout();
-
-    collectionLayout = new QHBoxLayout();
-
-    collectionLabel = new QLabel( dlg );
-    collectionLabel.setText(  "Amarok 1.4 Collection Location" );
-
-    locationEdit = new QLineEdit( dlg );
-    locationEdit.setText( "~/.kde/share/apps/amarok/collection.db" );
-
-    collectionLayout.addWidget( collectionLabel, 0, 0 );
-    collectionLayout.addWidget( locationEdit, 0, 0 );
-
-    importArtwork = new QCheckBox( "Import downloaded artwork", dlg );
-
-    spacer = new QSpacerItem( 10, 10 );
-    buttonBox = new QDialogButtonBox();
-    buttonBox.addButton( QDialogButtonBox.Ok );
-    buttonBox.addButton( QDialogButtonBox.Cancel );
-
-    // connect the buttons to the dialog actions
-    buttonBox.accepted.connect( dlg.accept );
-    buttonBox.rejected.connect( dlg.reject );
-
-    mainLayout.addLayout( collectionLayout );
-    mainLayout.addWidget( importArtwork, 0, 0 );
-    mainLayout.addSpacerItem( spacer );
-    mainLayout.addWidget( buttonBox, 0, 0 );
-
-    dlg.setLayout( mainLayout );
-    
-    dlg.exec();
-}
-
-Amarok.configured.connect( onConfigure );
 
