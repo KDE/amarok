@@ -30,38 +30,38 @@ Debug.app_name = "Importer";
 
 Debug.debug( "Starting importer" );
 
-dlg        = new QDialog();
-mainLayout = new QVBoxLayout();
+var dlg        = new QDialog();
+var mainLayout = new QVBoxLayout();
 
-databaseLayout = new QGridLayout();
+var databaseLayout = new QGridLayout();
 
-sqlTypeLabel = new QLabel( dlg );
+var sqlTypeLabel = new QLabel( dlg );
 sqlTypeLabel.setText( "Connection" );
-sqlTypeCombo = new QComboBox( dlg );
+var sqlTypeCombo = new QComboBox( dlg );
 sqlTypeCombo.addItem( "SQLite" );
 sqlTypeCombo.addItem( "MySQL" );
 sqlTypeCombo.addItem( "PostgreSQL" );
 
-locationLabel = new QLabel( dlg );
+var locationLabel = new QLabel( dlg );
 locationLabel.setText( "Location" );
-locationEdit = new QLineEdit( dlg );
+var locationEdit = new QLineEdit( dlg );
 locationEdit.setText( "~/.kde/share/apps/amarok/collection.db" );
 
-usernameLabel = new QLabel( dlg );
+var usernameLabel = new QLabel( dlg );
 usernameLabel.setText( "Username" );
-usernameEdit = new QLineEdit( dlg );
+var usernameEdit = new QLineEdit( dlg );
 
-passwordLabel = new QLabel( dlg );
+var passwordLabel = new QLabel( dlg );
 passwordLabel.setText( "Password" );
-passwordEdit = new QLineEdit( dlg );
+var passwordEdit = new QLineEdit( dlg );
 
-dbNameLabel = new QLabel( dlg );
+var dbNameLabel = new QLabel( dlg );
 dbNameLabel.setText( "Database" );
-dbNameEdit = new QLineEdit( dlg );
+var dbNameEdit = new QLineEdit( dlg );
 
-hostnameLabel = new QLabel( dlg );
+var hostnameLabel = new QLabel( dlg );
 hostnameLabel.setText( "Hostname" );
-hostnameEdit = new QLineEdit( dlg );
+var hostnameEdit = new QLineEdit( dlg );
 hostnameEdit.setText( "localhost" );
 
 //passwordEdit.setEchoMode( QLineEdit.Password );
@@ -85,9 +85,9 @@ databaseLayout.addWidget( hostnameEdit, 5, 1 );
 sqlTypeCombo.currentIndexChanged.connect( databaseTypeChanged );
 databaseTypeChanged( sqlTypeCombo.currentText ); // make sure the correct input fields are visible
 
-importArtwork = new QCheckBox( "Import downloaded artwork", dlg );
+var importArtwork = new QCheckBox( "Import downloaded artwork", dlg );
 
-buttonBox = new QDialogButtonBox();
+var buttonBox = new QDialogButtonBox();
 buttonBox.addButton( QDialogButtonBox.Ok );
 buttonBox.addButton( QDialogButtonBox.Cancel );
 
@@ -114,7 +114,7 @@ if( dlg.exec() == QDialog.REJECTED )
 
 Debug.debug( "Will proceed to convert stats" );
 
-var db = QSqlDatabase.addDatabase( "QSQLITE", "a1" );
+var db = QSqlDatabase.addDatabase( "QSQLITE", "a1" /* just some identifier requried by QSql */ );
 db.setDatabaseName( collectionEdit.text() );
 db.open();
 
@@ -130,8 +130,8 @@ function transferData( query )
 {
     while( query.next() )
     {
-        id = query.value(0).toString();
-        lmp = query.value(1).toString();
+        var id = query.value(0).toString();
+        var lmp = query.value(1).toString();
         print( id + " : " + lmp );
     }
 }
