@@ -170,9 +170,11 @@ ColumnContainment::setupControlButtons()
 {
 
     m_addAppletsMenu = new AmarokToolBoxMenu( this, false );
+    m_addAppletsMenu->setZValue( zValue() + 10000 ); // show over applets
     m_addAppletsMenu->setContainment( this );
 
     m_removeAppletsMenu = new AmarokToolBoxMenu( this, true );
+    m_removeAppletsMenu->setZValue( zValue() + 10000 ); // show over applets
     m_removeAppletsMenu->setContainment( this );
     
     // TODO can't add text b/c of string freeze
