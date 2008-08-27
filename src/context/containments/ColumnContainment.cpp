@@ -437,7 +437,8 @@ ColumnContainment::showTitle()
 void
 ColumnContainment::showAddAppletsMenu()
 {
-    DEBUG_BLOCK
+    if( m_removeAppletsMenu->showing() )
+        m_removeAppletsMenu->hide();
     qreal xpos = BORDER_PADDING;
     qreal ypos = contentsRect().height() - m_addAppletsMenu->boundingRect().height();
 
@@ -448,7 +449,8 @@ ColumnContainment::showAddAppletsMenu()
 void
 ColumnContainment::showRemoveAppletsMenu()
 {
-    DEBUG_BLOCK
+    if( m_addAppletsMenu->showing() )
+        m_addAppletsMenu->hide();
     qreal xpos = BORDER_PADDING;
     qreal ypos = contentsRect().height() - m_removeAppletsMenu->boundingRect().height();
 
