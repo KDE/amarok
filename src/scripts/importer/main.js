@@ -66,9 +66,11 @@ databaseLayout.addWidget( usernameEdit, 2, 1 );
 databaseLayout.addWidget( passwordLabel, 3, 0 );
 databaseLayout.addWidget( passwordEdit, 3, 1 );
 
+sqlTypeCombo.currentIndexChanged.connect( databaseTypeChanged );
+databaseTypeChanged( sqlTypeCombo.currentText ); // make sure the correct input fields are visible
+
 importArtwork = new QCheckBox( "Import downloaded artwork", dlg );
 
-spacer = new QSpacerItem( 10, 10 );
 buttonBox = new QDialogButtonBox();
 buttonBox.addButton( QDialogButtonBox.Ok );
 buttonBox.addButton( QDialogButtonBox.Cancel );
@@ -79,7 +81,7 @@ buttonBox.rejected.connect( dlg.reject );
 
 mainLayout.addLayout( databaseLayout );
 mainLayout.addWidget( importArtwork, 0, 0 );
-mainLayout.addSpacerItem( spacer );
+mainLayout.addStretch();
 mainLayout.addWidget( buttonBox, 0, 0 );
 
 dlg.setLayout( mainLayout );
@@ -101,6 +103,9 @@ db.open();
 Debug.debug( "Fetching devices from Amarok 1.4" );
 query = db.exec( "SELECT id, lastmountpoint FROM devices" );
 
+/**
+ * HELPER FUNCTIONS
+ **/
 
 function transferData( query )
 {
@@ -112,3 +117,14 @@ function transferData( query )
     }
 }
 
+function databaseTypeChanged( dbType )
+{
+    locationLabel.setVisible( dbType == "SQLite" );
+    locationEdit.setVisible( dbType == "SQLite" );
+
+    usernameLabel.setVisible( dbType != "SQLite" );
+    usernameEdit.setVisible( dbType != "SQLite" );
+
+    passwordLabel.setVisible( dbType != "SQLite" );
+    passwordEdit.setVisible( dbType != "SQLite" );
+}
