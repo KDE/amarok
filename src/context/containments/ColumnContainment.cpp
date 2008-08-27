@@ -79,7 +79,7 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
              this, SLOT( addApplet( Plasma::Applet*, const QPointF & ) ) );
 
     QAction *appletBrowserAction = new QAction( KIcon( "list-add-amarok" ), i18n( "Add Applet..." ), this );
-    connect( appletBrowserAction, SIGNAL( triggered( bool ) ), this, SLOT( showAppletsMenu() ) );
+    connect( appletBrowserAction, SIGNAL( triggered( bool ) ), this, SLOT( showAddAppletsMenu() ) );
     // set up default context menu actions
     m_actions = new QList<QAction*>();
     m_actions->append( appletBrowserAction );
