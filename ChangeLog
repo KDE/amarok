@@ -4,26 +4,37 @@ Amarok ChangeLog
 
 
 VERSION 2.0-beta2
+  FEATURES:
+    * Add ability to play tracks directly off of MTP device
+    * Add option to enable/disable automatic cover fetching
+
   CHANGES:
     * The Love button in Last.fm service is now available for all tracks, not
       just Last.fm radio.
+    * Made lbum applet scrollable
+    * New icons and layout for Context View navigation and applet manipulation
     * Same default setting for proportional and fuzzy biases when filtering
       by year. Patch by Andreas Mützel <andreas.muetzel@gmx.net>
     * Config is now written right after closing the settings dialog, making
       it crash persistant.
+    * Improve biased playlist solver by using genetic algorithm
     * System tray tooltip is now translucent (if compositing is available).
     * QtScript: Importer.include imports the file in the same context that it
       is currently in.
     * PodcastCategory now uses PopupDropper actions.
-	* Libgrypt is preferred over OpenSSL at build time, for licensing reasons.
+    * Libgrypt is preferred over OpenSSL at build time, for licensing reasons.
 
   BUGFIXES:
     * Added "Ignore field" token to the Guess tags dialog. (BR 161060)
     * Only add supported file formats to the playlist. Patch by Andreas Mützel
       <andreas.muetzel@gmx.net>
     * Clear the status bar when stopping playback.
+    * Made album applet not use a lot of CPU (BR 169586)
     * Don't show the context menu in the Current Track applet if playback has
       been stopped.
+    * Made applets not disapear if Context View is shrunk too much
+      (BR 169504)
+    * Fixed last.fm events applet 
     * The Current track applet now has tooltips for the icons on the right 
       hand side. (BR 168260)
     * "Resume playback on start" now also restores the track position
