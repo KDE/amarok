@@ -1165,11 +1165,9 @@ SqlAlbum::hasAlbumArtist() const
 Meta::ArtistPtr
 SqlAlbum::albumArtist() const
 {
-    DEBUG_BLOCK
     if( m_artistId != 0 && !m_artist )
     {
         QString query = QString( "SELECT artists.name FROM artists WHERE artists.id = %1;" ).arg( m_artistId );
-        debug() << "QUERY: " << query;
         QStringList result = m_collection->query( query );
         if( result.isEmpty() )
             return Meta::ArtistPtr();
