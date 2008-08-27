@@ -348,21 +348,21 @@ Mp3tunesLocker::tracksWithFileKeys( QStringList filekeys ) const
     keys.chop(1);
     char* c_keys = convertToChar ( keys );
 
-    mp3tunes_locker_track_list_t *tracks_list;
-    mp3tunes_locker_list_item_t *track_item;
-    mp3tunes_locker_track_t *track;
+    mp3tunes_locker_track_list_t* tracks_list = 0;
+    mp3tunes_locker_list_item_t* track_item = 0;
+    mp3tunes_locker_track_t *track = 0;
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned
 
     mp3tunes_locker_tracks_with_file_key ( m_locker, c_keys, &tracks_list );
 
-     while ( track_item != 0 )
+     do
      {
          track = ( mp3tunes_locker_track_t* ) track_item->value;
          Mp3tunesLockerTrack trackWrapped ( track );
          tracksQList.append ( trackWrapped );
 
          track_item = track_item->next;
-     }
+     } while( track_item != 0 );
      mp3tunes_locker_track_list_deinit ( &tracks_list );
      return tracksQList;
 }

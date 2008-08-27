@@ -121,7 +121,8 @@ void Mp3tunesServiceQueryMaker::run()
 void Mp3tunesServiceQueryMaker::abortQuery()
 {}
 
-QueryMaker * Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
+QueryMaker*
+Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
 {
     switch( type ) {
     case QueryMaker::Artist:
@@ -150,6 +151,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
     case QueryMaker::Year:
     case QueryMaker::Custom:
     case QueryMaker::None:
+    default:
         //TODO: Implement.
         return this;
     }
