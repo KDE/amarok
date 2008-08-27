@@ -28,7 +28,6 @@ Importer.load( "qtscript_debug/debug" );
 Debug.initialize();
 Debug.app_name = "Importer";
 
-
 Debug.debug( "Starting importer" );
 
 dlg        = new QDialog();
@@ -37,7 +36,7 @@ mainLayout = new QVBoxLayout();
 databaseLayout = new QGridLayout();
 
 sqlTypeLabel = new QLabel( dlg );
-sqlTypeLabel.setText( "Database" );
+sqlTypeLabel.setText( "Connection" );
 sqlTypeCombo = new QComboBox( dlg );
 sqlTypeCombo.addItem( "SQLite" );
 sqlTypeCombo.addItem( "MySQL" );
@@ -55,16 +54,33 @@ usernameEdit = new QLineEdit( dlg );
 passwordLabel = new QLabel( dlg );
 passwordLabel.setText( "Password" );
 passwordEdit = new QLineEdit( dlg );
+
+dbNameLabel = new QLabel( dlg );
+dbNameLabel.setText( "Database" );
+dbNameEdit = new QLineEdit( dlg );
+
+hostnameLabel = new QLabel( dlg );
+hostnameLabel.setText( "Hostname" );
+hostnameEdit = new QLineEdit( dlg );
+hostnameEdit.setText( "localhost" );
+
 //passwordEdit.setEchoMode( QLineEdit.Password );
 
 databaseLayout.addWidget( sqlTypeLabel, 0, 0 );
 databaseLayout.addWidget( sqlTypeCombo, 0, 1 );
+
 databaseLayout.addWidget( locationLabel, 1, 0 );
 databaseLayout.addWidget( locationEdit, 1, 1 );
+
 databaseLayout.addWidget( usernameLabel, 2, 0 );
 databaseLayout.addWidget( usernameEdit, 2, 1 );
 databaseLayout.addWidget( passwordLabel, 3, 0 );
 databaseLayout.addWidget( passwordEdit, 3, 1 );
+
+databaseLayout.addWidget( dbNameLabel, 4, 0 );
+databaseLayout.addWidget( dbNameEdit, 4, 1 );
+databaseLayout.addWidget( hostnameLabel, 5, 0 );
+databaseLayout.addWidget( hostnameEdit, 5, 1 );
 
 sqlTypeCombo.currentIndexChanged.connect( databaseTypeChanged );
 databaseTypeChanged( sqlTypeCombo.currentText ); // make sure the correct input fields are visible
@@ -85,8 +101,10 @@ mainLayout.addStretch();
 mainLayout.addWidget( buttonBox, 0, 0 );
 
 dlg.setLayout( mainLayout );
+dlg.setMinimumSize( 400, 300 );
 
 dlg.show();
+
 
 if( dlg.exec() == QDialog.REJECTED )
 {
@@ -102,6 +120,7 @@ db.open();
 
 Debug.debug( "Fetching devices from Amarok 1.4" );
 query = db.exec( "SELECT id, lastmountpoint FROM devices" );
+
 
 /**
  * HELPER FUNCTIONS
@@ -127,4 +146,10 @@ function databaseTypeChanged( dbType )
 
     passwordLabel.setVisible( dbType != "SQLite" );
     passwordEdit.setVisible( dbType != "SQLite" );
+
+    dbNameLabel.setVisible( dbType != "SQLite" );
+    dbNameEdit.setVisible( dbType != "SQLite" );
+
+    hostnameLabel.setVisible( dbType != "SQLite" );
+    hostnameEdit.setVisible( dbType != "SQLite" );
 }
