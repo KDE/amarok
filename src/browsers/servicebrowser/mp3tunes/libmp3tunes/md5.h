@@ -27,6 +27,9 @@
  *
  * $Id: md5.h,v 1.4 2000/03/09 04:06:41 gray Exp $
  */
+#ifndef _LIBMP3TUNES_MD5_H
+#define _LIBMP3TUNES_MD5_H
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -55,29 +58,26 @@
  *
  * str_len - the length of the string.
  */
-void	md5_sig_to_string(void *signature, char *str, const int str_len)
-{
-  unsigned char	*sig_p;
-  char		*str_p, *max_p;
-  unsigned int	high, low;
-  
-  str_p = str;
-  max_p = str + str_len;
-  
-  for (sig_p = (unsigned char *)signature;
-       sig_p < (unsigned char *)signature + MD5_SIZE;
-       sig_p++) {
-    high = *sig_p / 16;
-    low = *sig_p % 16;
-    /* account for 2 chars */
-    if (str_p + 1 >= max_p) {
-      break;
-    }
-    *str_p++ = HEX_STRING[high];
-    *str_p++ = HEX_STRING[low];
-  }
-  /* account for 2 chars */
-  if (str_p < max_p) {
-    *str_p++ = '\0';
-  }
-}
+void md5_sig_to_string(void *signature, char *str, const int str_len);
+
+/*
+ * md5_calc_file_signature
+ *
+ * DESCRIPTION:
+ *
+ * Calculates MD5 signature of the specified file contents and returns
+ * hexadecimal representation of the signature.
+ *
+ * RETURNS:
+ *
+ * Hexadecimal representation of the signature of NULL if it could not be
+ * calculated. The returned pointer should be freed with the free()
+ * function when it is no longer needed.
+ *
+ * ARGUMENTS:
+ *
+ * filename - a path to the file which MD5 signature should be calculated.
+ */
+char* md5_calc_file_signature(const char *filename);
+
+#endif

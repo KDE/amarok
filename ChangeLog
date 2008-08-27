@@ -15,6 +15,7 @@ VERSION 2.0-beta2
     * QtScript: Importer.include imports the file in the same context that it
       is currently in.
     * PodcastCategory now uses PopupDropper actions.
+	* Libgrypt is preferred over OpenSSL at build time, for licensing reasons.
 
   BUGFIXES:
     * Added "Ignore field" token to the Guess tags dialog. (BR 161060)

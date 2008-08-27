@@ -23,7 +23,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <curl/curl.h>
-#include <openssl/md5.h>
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
 #include <libxml/xmlreader.h>
@@ -1423,42 +1422,7 @@ int mp3tunes_locker_generate_track_from_file_key(mp3tunes_locker_object_t *obj, 
 }
 
 char* mp3tunes_locker_generate_filekey(const char *filename) {
-  unsigned char sig[MD5_DIGEST_LENGTH];
-  char      buffer[4096];
-  char*    file_key;
-  MD5_CTX     md5;
-  int       ret;
-  FILE      *stream;
-
-  stream = fopen(filename, "r");
-  if (stream == NULL) {
-    perror(filename);
-    exit(1);
-  }
-  MD5_Init(&md5);
-
-  /* iterate over file */
-  while (1) {
-    /* read in from our file */
-    ret = fread(buffer, sizeof(char), sizeof(buffer), stream);
-    if (ret <= 0)
-      break;
-    /* process our buffer buffer */
-    MD5_Update(&md5, buffer, ret);
-  }
-
-  MD5_Final(sig, &md5);
-
-  if (stream != stdin) {
-    (void)fclose(stream);
-  }
-
-  /* convert to string to print */
-  md5_sig_to_string(sig, buffer, sizeof(buffer));
-  /*(void)printf("%25s '%s'\n", "File key:", buffer);*/
-  file_key = (char*)malloc(4096*sizeof(char));
-  strcpy (file_key,buffer);
-  return file_key;
+  return md5_calc_file_signature(filename);
 }
 
 int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, char *path) {

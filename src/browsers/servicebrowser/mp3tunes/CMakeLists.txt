@@ -1,4 +1,5 @@
-if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
+if(OPENSSL_FOUND OR LIBGCRYPT_FOUND)
+if(LIBXML2_FOUND AND CURL_FOUND)
     if(LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND AND QT4_GLIB_SUPPORT)
         include_directories(
             ../
@@ -10,7 +11,6 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
             ../../../statusbar
             ./libmp3tunes
             ./harmonydaemon
-            ${OPENSSL_INCLUDE_DIR}
             ${LIBXML2_INCLUDE_DIR}
             ${CURL_INCLUDE_DIRS}
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
@@ -26,6 +26,12 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
                 ${GOBJECT_INCLUDE_DIR}
                 ${LOUDMOUTH_INCLUDE_DIR}
             )
+            if(LIBGCRYPT_FOUND)
+                add_definitions(-DHAVE_LIBGCRYPT)
+            else(LIBGCRYPT_FOUND)
+                include_directories(${OPENSSL_INCLUDE_DIR})
+                add_definitions(-DHAVE_OPENSSL)
+            endif(LIBGCRYPT_FOUND)
 
             set(amarok_service_mp3tunes_harmony_PART_SRCS
                 harmonydaemon/Mp3tunesHarmonyDownload.cpp
@@ -33,6 +39,7 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
                 harmonydaemon/Mp3tunesHarmonyClient.cpp
                 harmonydaemon/AmarokClient.cpp
                 harmonydaemon/main.cpp
+                libmp3tunes/md5.c
                 libmp3tunes/locker.c
                 libmp3tunes/harmony.c
             )
@@ -46,15 +53,21 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
                 ${amarok_service_mp3tunes_harmony_PART_SRCS}
             )
 
-            target_link_libraries(amarokmp3tunesharmonydaemon amaroklib crypto
+            target_link_libraries(amarokmp3tunesharmonydaemon amaroklib
                 ${KDE4_KDECORE_LIBS}
                 ${GLIB2_LIBRARIES}
                 ${GOBJECT_LIBRARIES}
                 ${LOUDMOUTH_LIBRARIES}
-                ${OPENSSL_LIBRARIES}
                 ${LIBXML2_LIBRARIES}
                 ${CURL_LIBRARIES}
             )
+
+            if(LIBGCRYPT_FOUND)
+                target_link_libraries(amarokmp3tunesharmonydaemon ${LIBGCRYPT_LIBS})
+            else(LIBGCRYPT_FOUND)
+                target_link_libraries(amarokmp3tunesharmonydaemon crypto ${OPENSSL_LIBRARIES})
+            endif(LIBGCRYPT_FOUND)
+
             install(TARGETS amarokmp3tunesharmonydaemon ${INSTALL_TARGETS_DEFAULT_ARGS} )
     ########### next target ###############
 
@@ -71,6 +84,7 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
             Mp3tunesHarmonyHandler.cpp
 
             libmp3tunes/locker.c
+            libmp3tunes/md5.c
         )
 
         QT4_ADD_DBUS_ADAPTOR(amarok_service_mp3tunes_PART_SRCS
@@ -80,8 +94,7 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
         )
 
         kde4_add_plugin(amarok_service_mp3tunes ${amarok_service_mp3tunes_PART_SRCS})
-        #${OPENSSL_LIBRARIES} returns -lssl, not -lcrypto. we only need -lcrypto.
-        target_link_libraries(amarok_service_mp3tunes amaroklib crypto
+        target_link_libraries(amarok_service_mp3tunes amaroklib        
             ${KDE4_KDECORE_LIBS}
             ${KDE4_KDEUI_LIBS}
             ${KDE4_THREADWEAVER_LIBRARIES}
@@ -90,6 +103,14 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
             ${CURL_LIBRARIES}
             ${QT_QTNETWORK_LIBRARY}
         )
+
+          if(LIBGCRYPT_FOUND)
+              target_link_libraries(amarok_service_mp3tunes ${LIBGCRYPT_LIBS})
+          else(LIBGCRYPT_FOUND)
+                  #${OPENSSL_LIBRARIES} returns -lssl, not -lcrypto. we only need -lcrypto.
+              target_link_libraries(amarok_service_mp3tunes crypto ${OPENSSL_LIBRARIES})
+          endif(LIBGCRYPT_FOUND)
+
 
         install(TARGETS amarok_service_mp3tunes DESTINATION ${PLUGIN_INSTALL_DIR} )
 
@@ -116,5 +137,6 @@ if(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
         install( FILES amarok_service_mp3tunes.desktop DESTINATION ${SERVICES_INSTALL_DIR})
         install( FILES amarok_service_mp3tunes_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})
     endif(LOUDMOUTH_FOUND AND GLIB2_FOUND AND GOBJECT_FOUND AND QT4_GLIB_SUPPORT)
-endif(OPENSSL_FOUND AND LIBXML2_FOUND AND CURL_FOUND)
+endif(LIBXML2_FOUND AND CURL_FOUND)
+endif(OPENSSL_FOUND OR LIBGCRYPT_FOUND)
 
