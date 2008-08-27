@@ -45,7 +45,7 @@ sqlTypeCombo.addItem( "PostgreSQL" );
 var locationLabel = new QLabel( dlg );
 locationLabel.setText( "Location" );
 var locationEdit = new QLineEdit( dlg );
-locationEdit.setText( "~/.kde/share/apps/amarok/collection.db" );
+locationEdit.setText( QDir.homePath() + "/.kde/share/apps/amarok/collection.db" );
 
 var usernameLabel = new QLabel( dlg );
 usernameLabel.setText( "Username" );
