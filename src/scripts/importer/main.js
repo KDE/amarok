@@ -48,7 +48,39 @@ while( query.next() )
 
 function onConfigure()
 {
-    Amarok.alert( "Here database connectivity options will be placed." );
+    dlg        = new QDialog();
+    mainLayout = new QVBoxLayout();
+
+    collectionLayout = new QHBoxLayout();
+
+    collectionLabel = new QLabel( dlg );
+    collectionLabel.setText(  "Amarok 1.4 Collection Location" );
+
+    locationEdit = new QLineEdit( dlg );
+    locationEdit.setText( "~/.kde/share/apps/amarok/collection.db" );
+
+    collectionLayout.addWidget( collectionLabel, 0, 0 );
+    collectionLayout.addWidget( locationEdit, 0, 0 );
+
+    importArtwork = new QCheckBox( "Import downloaded artwork", dlg );
+
+    spacer = new QSpacerItem( 10, 10 );
+    buttonBox = new QDialogButtonBox();
+    buttonBox.addButton( QDialogButtonBox.Ok );
+    buttonBox.addButton( QDialogButtonBox.Cancel );
+
+    // connect the buttons to the dialog actions
+    buttonBox.accepted.connect( dlg.accept );
+    buttonBox.rejected.connect( dlg.reject );
+
+    mainLayout.addLayout( collectionLayout );
+    mainLayout.addWidget( importArtwork, 0, 0 );
+    mainLayout.addSpacerItem( spacer );
+    mainLayout.addWidget( buttonBox, 0, 0 );
+
+    dlg.setLayout( mainLayout );
+    
+    dlg.exec();
 }
 
 Amarok.configured.connect( onConfigure );
