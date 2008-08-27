@@ -219,24 +219,29 @@ AmarokToolBoxMenu::showing() const
 }
 
 void
-AmarokToolBoxMenu::show()
+AmarokToolBoxMenu::repopulateMenu()
+{
+    m_bottomMenu.clear();
+    m_topMenu.clear();
+    m_currentMenu.clear();
+    foreach( Plasma::Applet* applet, containment()->applets() )
+    {
+        m_bottomMenu.push( applet->name() );
+    }
+    populateMenu();
+}
+
+void
+AmarokToolBoxMenu::show( bool refreshApplets )
 {
     if( showing() )
         return;
 
     m_showing = true;
 
-    if( m_removeApplets ) // we need to refresh on view to get all running applets
-    {
-        m_bottomMenu.clear();
-        m_topMenu.clear();
-        m_currentMenu.clear();
-        foreach( Plasma::Applet* applet, containment()->applets() )
-        {
-            m_bottomMenu.push( applet->name() );
-        }
-        populateMenu();
-    }
+    if( m_removeApplets && refreshApplets ) // we need to refresh on view to get all running applets
+        repopulateMenu();
+    
     if( m_bottomMenu.count() > 0 )
     {
         m_downArrow->setPos( boundingRect().width() / 2 - m_downArrow->size().width()/2,
@@ -259,6 +264,7 @@ AmarokToolBoxMenu::show()
     {
         ToolBoxIcon *entry = m_currentMenu[m_currentMenu.count() - i - 1];
         entry->show();
+
         const int height = static_cast<int>( entry->boundingRect().height() ) + 9;
 
         Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement,
@@ -346,6 +352,14 @@ AmarokToolBoxMenu::removeApplet( const QString& pluginName )
             // appletRemoved, which is called by the containment
         }
     }
+    // get the name from the pluginName, and remove from the menu
+    foreach( ToolBoxIcon* entry, m_currentMenu )
+    {
+        if( entry->data( 0 ) == pluginName )
+            m_currentMenu.removeAll( entry );
+    }
+    hide();
+    show( false );
 }
     
 void

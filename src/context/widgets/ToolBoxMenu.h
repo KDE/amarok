@@ -48,7 +48,7 @@ public:
     bool showing() const;
 
 public slots:
-    void show();
+    void show( bool refreshApplets = true );
     void hide();
 
 Q_SIGNALS:
@@ -76,6 +76,7 @@ private:
     void createArrow( ToolBoxIcon *arrow, const QString &direction );
     void initRunningApplets();
     void populateMenu();
+    void repopulateMenu(); // used to refresh current applets
     void setupMenuEntry( ToolBoxIcon *entry, const QString &appletName );
 
     QMap<QString, QString> m_appletsList;
