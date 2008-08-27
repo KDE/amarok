@@ -362,12 +362,10 @@ EngineController::playPause() //SLOT
     if( m_media->state() == Phonon::PlayingState )
     {
         pause();
-        emit trackPlayPause( Paused );
     }
     else
     {
         play();
-        emit trackPlayPause( Playing );
     }
 }
 
@@ -623,6 +621,13 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
     }
 
     stateChangedNotify( newState, oldState );
+
+    if ( ( newState == Phonon::PlayingState || newState == Phonon::BufferingState ) &&
+         oldState != Phonon::PlayingState && oldState != Phonon::BufferingState ) {
+        emit trackPlayPause( Playing );
+    } else if ( newState == Phonon::PausedState ) {
+        emit trackPlayPause( Paused );
+    }
 }
 
 void
