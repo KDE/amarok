@@ -477,7 +477,7 @@ ScriptManager::scriptFinished( QString name ) //SLOT
     //FIXME: probably can cause crash if you stop a script from evaluating. eg. if a deadlock is introduced in a menu_click_slot.
     if( !m_scripts.contains( name ) )
     {
-        warning() << "Script isn't in m_scripts?";
+        warning() << "Script is not in m_scripts?";
         return;
     }
     const QTime time;

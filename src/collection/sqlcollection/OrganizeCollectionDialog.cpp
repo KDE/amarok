@@ -105,7 +105,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
-    debug() << "LOOK AT ME I'M HERE =============================================================#################################################### ##############################################################################";
+    debug() << "LOOK AT ME I AM HERE =============================================================#################################################### ##############################################################################";
     connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), filenameLayoutDialog, SLOT( setVisible( bool ) ) );
 
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
@@ -316,7 +316,7 @@ void
 OrganizeCollectionDialog::update( int dummy )   //why the dummy?
 {
     Q_UNUSED( dummy );
-    debug() << "###################################################################################################### I'M UPDATING THE PREVIEW ############################################################################################";
+    debug() << "###################################################################################################### I AM UPDATING THE PREVIEW ############################################################################################";
 
     QString oldFormat = ui->formatEdit->text();
     if( !ui->customschemeCheck->isChecked() )

@@ -550,7 +550,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         return pathres[0].toInt();
     }
     else
-        debug() << "AFT algorithm died...you shouldn't be here!  Returning something negative and bad.";
+        debug() << "AFT algorithm died...you should not be here!  Returning something negative and bad.";
     return -666;
 }
 

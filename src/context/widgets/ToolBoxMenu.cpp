@@ -32,7 +32,7 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningApplets
 {
     QMap< QString, QString > allApplets;
     QStringList appletsToShow; // we need to store the list of
-    // all appletname->appletpluginname pairs, even if we dont show them
+    // all appletname->appletpluginname pairs, even if we do not show them
     
     foreach ( const KPluginInfo& info, Plasma::Applet::listAppletInfo( QString(), "amarok" ) )
     {

@@ -687,7 +687,7 @@ CoverFetcher::showCover()
     case KDialog::Accepted:
         finish();
         break;
-    case KDialog::Rejected: //make sure we dont show any more dialogs
+    case KDialog::Rejected: //make sure we do not show any more dialogs
         debug() << "cover rejected";
         break;
     case 1000: //showQueryEditor()
