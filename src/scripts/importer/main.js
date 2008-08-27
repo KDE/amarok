@@ -114,13 +114,39 @@ if( dlg.exec() == QDialog.REJECTED )
 
 Debug.debug( "Will proceed to convert stats" );
 
-var db = QSqlDatabase.addDatabase( "QSQLITE", "a1" /* just some identifier requried by QSql */ );
-db.setDatabaseName( collectionEdit.text() );
+var db; // this will become the QSql database connection
+
+print( "Selected database connection:", sqlTypeCombo.currentText );
+print( "Location:", locationEdit.text );
+
+if( sqlTypeCombo.currentText == "SQLite" )
+{
+    db = QSqlDatabase.addDatabase( "QSQLITE", "sqlite" /* just some identifier requried by QSql */ );
+    db.setDatabaseName( locationEdit.text );
+}
+else if( sqlTypeCombo.currentText == "MySQL" )
+{
+    db = QSqlDatabase.addDatabase( "QMYSQL", "mysql" );
+    db.setDatabaseName( dbNameEdit.text );
+    db.setHostName( hostnameEdit.text );
+    db.setUserName( usernameEdit.text );
+    db.setPassword( passwordEdit.text );
+}
+else if( sqlTypeCombo.currentText == "PostgreSQL" )
+{
+    db = QSqlDatabase.addDatabase( "QPSQL", "psql" );
+    db.setDatabaseName( dbNameEdit.text );
+    db.setHostName( hostnameEdit.text );
+    db.setUserName( usernameEdit.text );
+    db.setPassword( passwordEdit.text );
+}
+
 db.open();
 
 Debug.debug( "Fetching devices from Amarok 1.4" );
-query = db.exec( "SELECT id, lastmountpoint FROM devices" );
+var query = db.exec( "SELECT id, lastmountpoint FROM devices" );
 
+transferData( query );
 
 /**
  * HELPER FUNCTIONS
