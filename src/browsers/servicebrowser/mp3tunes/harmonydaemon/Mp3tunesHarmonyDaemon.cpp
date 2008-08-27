@@ -20,6 +20,10 @@
 #include "Mp3tunesHarmonyDaemon.h"
 #include "mp3tunesharmonydaemonadaptor.h"
 
+#ifndef statfs
+#define statfs statvfs
+#endif
+
 #include <kcmdlineargs.h>
 #include <QtDebug>
 

@@ -31,7 +31,7 @@ extern "C" {
     #include "../libmp3tunes/harmony.h"
     #include "../libmp3tunes/locker.h"
     #include <glib.h>
-    #include <sys/vfs.h>
+    #include <sys/statvfs.h>
     #include <errno.h>
     #include <stdio.h>
     #include <string.h>
