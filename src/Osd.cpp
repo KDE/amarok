@@ -10,18 +10,18 @@
  *            (C) 2004-2006 Seb Ruiz <ruiz@kde.org>
  *            (C) 2004, 2005 Max Howell
  *            (C) 2005 Gábor Lehel <illissius@gmail.com>
+ *            (C) 2008 Mark Kretschmann <kretschmann@kde.org>
  */
 
 #include "Osd.h"
 
 #include "Amarok.h"
-#include "amarokconfig.h"
 #include "Debug.h"
 #include "EngineController.h"
-        //if osdUsePlaylistColumns()
-#include "meta/MetaUtility.h"
 #include "StarManager.h"
 #include "SvgHandler.h"
+#include "amarokconfig.h"
+#include "meta/MetaUtility.h"
 
 #include <plasma/panelsvg.h>
 
@@ -29,7 +29,6 @@
 #include <KIcon>
 #include <KStandardDirs>   //locate
 
-#include <QBitmap>
 #include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QPainter>
@@ -89,7 +88,6 @@ OSDWidget::~OSDWidget()
 {
     DEBUG_BLOCK
 }
-
 
 void
 OSDWidget::show( const QString &text, QImage newImage )
@@ -459,11 +457,10 @@ OSDWidget::setScreen( int screen )
     m_screen = (screen >= n) ? n-1 : screen;
 }
 
-//////  OSDPreviewWidget below /////////////////////
 
-#include <kcursor.h>
-#include <kiconloader.h>
-#include <klocale.h>
+/////////////////////////////////////////////////////////////////////////////////////////
+// Class OSDPreviewWidget
+/////////////////////////////////////////////////////////////////////////////////////////
 
 OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
         : OSDWidget( parent )
@@ -482,7 +479,8 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
     show( m_text, m_cover );
 }
 
-void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
+void
+OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
     m_dragOffset = event->pos();
 
@@ -492,8 +490,8 @@ void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
     }
 }
 
-
-void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
+void
+OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
 {
     if( m_dragging )
     {
@@ -514,8 +512,8 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
     }
 }
 
-
-void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
+void
+OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
     if( m_dragging && this == mouseGrabber() )
     {
@@ -560,8 +558,9 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 }
 
 
-
-//////  Amarok::OSD below /////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+// Class OSD
+/////////////////////////////////////////////////////////////////////////////////////////
 
 Amarok::OSD::OSD()
     : OSDWidget( 0 )
