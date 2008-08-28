@@ -36,7 +36,6 @@
 #include <QPixmap>
 #include <QRegExp>
 #include <QTimer>
-#include <QVector>
 
 namespace ShadowEngine
 {
@@ -130,7 +129,6 @@ OSDWidget::ratingChanged( const short rating )
     setRating( rating ); //Checks isEnabled() before doing anything
 
     show();
-
 }
 
 void
@@ -567,22 +565,12 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
 Amarok::OSD::OSD()
     : OSDWidget( 0 )
-    , m_track( 0 )
 {}
 
 void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
     DEBUG_BLOCK
-
-    if( m_track && m_track->artist() )
-        unsubscribeFrom( m_track->artist() );
-    if( m_track && m_track->album() )
-        unsubscribeFrom( m_track->album() );
-    if( m_track )
-        unsubscribeFrom( m_track );
-
-    m_track = track;
 
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setOffset( AmarokConfig::osdYOffset() );
@@ -613,15 +601,6 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     QImage image;
     if( track && track->album() )
         image = track->album()->image( 100 ).toImage();
-
-    if( m_track ) 
-    {
-        subscribeTo( m_track );
-        if( m_track->artist() )
-            subscribeTo( m_track->artist() );
-        if( m_track->album() )
-            subscribeTo( m_track->album() );
-    }
 
     OSDWidget::show( text, image );
 }
@@ -657,23 +636,12 @@ Amarok::OSD::forceToggleOSD()
         hide();
 }
 
-void Amarok::OSD::metadataChanged( Meta::Track *track )
+void
+Amarok::OSD::engineNewTrackPlaying()
 {
-    Q_UNUSED( track )
     show( The::engineController()->currentTrack() );
 }
 
-void Amarok::OSD::metadataChanged( Meta::Album *album )
-{
-    Q_UNUSED( album )
-    show( The::engineController()->currentTrack() );
-}
-
-void Amarok::OSD::metadataChanged( Meta::Artist *artist )
-{
-    Q_UNUSED( artist )
-    show( The::engineController()->currentTrack() );
-}
 
 /* Code copied from kshadowengine.cpp
  *
