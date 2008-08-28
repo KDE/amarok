@@ -354,7 +354,7 @@ ColumnContainment::saveToConfig( KConfigGroup &conf )
         QGraphicsLayoutItem *item = m_grid->itemAt( i );
         applet = dynamic_cast<Plasma::Applet*>( item );
         debug() << "trying to save an applet";
-        if( applet != 0 && applet->pluginName() != "currenttrack" ) //don't save the current track applet
+        if( applet != 0 )
         {
             debug() << "saving applet" << applet->name();
             plugins << applet->pluginName();
@@ -439,6 +439,11 @@ ColumnContainment::showAddAppletsMenu()
 {
     if( m_removeAppletsMenu->showing() )
         m_removeAppletsMenu->hide();
+    if( m_addAppletsMenu->showing() )
+    {   // hide again on double-click
+        m_addAppletsMenu->hide();
+        return;
+    }
     qreal xpos = BORDER_PADDING;
     qreal ypos = contentsRect().height() - m_addAppletsMenu->boundingRect().height();
 
@@ -451,6 +456,11 @@ ColumnContainment::showRemoveAppletsMenu()
 {
     if( m_addAppletsMenu->showing() )
         m_addAppletsMenu->hide();
+    if( m_removeAppletsMenu->showing() )
+    {   // hide again on double-click
+        m_removeAppletsMenu->hide();
+        return;
+    }
     qreal xpos = BORDER_PADDING;
     qreal ypos = contentsRect().height() - m_removeAppletsMenu->boundingRect().height();
 
