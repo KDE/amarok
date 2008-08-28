@@ -740,7 +740,7 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
 }
 
 void
-ColumnContainment::zoomInReqested() // SLOT
+ColumnContainment::zoomInRequested() // SLOT
 {
     emit zoomIn( this );
 }

@@ -89,7 +89,7 @@ private slots:
     void showAddAppletsMenu();
     
     void zoomOutRequested();
-    void zoomInReqested();
+    void zoomInRequested();
     
 private:
     void rearrangeApplets( int starRow, int startColumn );
