@@ -488,7 +488,7 @@ CollectionTreeView::playChildTracksSlot( Meta::TrackList list ) //slot
 
     Playlist::AddOptions insertMode = m_playChildTracksMode.take( mime );
 
-    qStableSort( list.begin(), list.end(), Amarok::trackNumberLessThan );
+    qStableSort( list.begin(), list.end(), Playlist::Model::trackNumberLessThan );
     The::playlistModel()->insertOptioned( list, insertMode );
 
     mime->deleteLater();

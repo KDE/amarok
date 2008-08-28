@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright        : (C) 2007 Ian Monroe <ian@monroe.nu>
+ * copyright        : (C) 2007-2008 Ian Monroe <ian@monroe.nu>
  *                    (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  *                    (C) 2008 Seb Ruiz <ruiz@kde.org>
  *
@@ -28,6 +28,7 @@
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
 #include "Debug.h"
+#include "DirectoryLoader.h"
 #include "DynamicModel.h"
 #include "DynamicTrackNavigator.h"
 #include "EngineController.h"
@@ -57,32 +58,30 @@
 
 #include <typeinfo>
 
-namespace Amarok
+// Sorting of a tracklist. Static.
+bool
+Playlist::Model::trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right )
 {
-    // Sorting of a tracklist.
-    bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right )
+    if( left->album()->name() == right->album()->name() ) // If the albums are the same
     {
-        if( left->album()->name() == right->album()->name() ) // If the albums are the same
+        //First compare by disc number
+        if ( left->discNumber() < right->discNumber() )
         {
-            //First compare by disc number
-            if ( left->discNumber() < right->discNumber() )
-            {
-                return true;
-            }
-            else if( left->discNumber() == right->discNumber() ) //Disc #'s are equal, compare by track number
-            {
-                return left->trackNumber() < right->trackNumber();
-            }
-            else
-            {
-                return false; // Right disc has a lower number
-            }
+            return true;
         }
-        else if( left->artist()->name() == right->artist()->name() )
-            return QString::localeAwareCompare( left->album()->prettyName(), right->album()->prettyName() ) < 0;
-        else // compare artists alphabetically
-            return QString::localeAwareCompare( left->artist()->prettyName(), right->artist()->prettyName() ) < 0;
+        else if( left->discNumber() == right->discNumber() ) //Disc #'s are equal, compare by track number
+        {
+            return left->trackNumber() < right->trackNumber();
+        }
+        else
+        {
+            return false; // Right disc has a lower number
+        }
     }
+    else if( left->artist()->name() == right->artist()->name() )
+        return QString::localeAwareCompare( left->album()->prettyName(), right->album()->prettyName() ) < 0;
+    else // compare artists alphabetically
+        return QString::localeAwareCompare( left->artist()->prettyName(), right->artist()->prettyName() ) < 0;
 }
 
 
@@ -738,7 +737,7 @@ Playlist::Model::insertTrackListSlot( Meta::TrackList list ) //slot
     disconnect( this, SLOT( insertTrackListSlot( Meta::TrackList ) ) );
     int row = m_dragHash[sender()];
 
-    qStableSort( list.begin(), list.end(), Amarok::trackNumberLessThan );
+    qStableSort( list.begin(), list.end(), trackNumberLessThan );
 
     if( row < 0 )
         insertOptioned( list, Playlist::AppendAndPlay );
@@ -1071,44 +1070,9 @@ Playlist::Model::dropMimeData ( const QMimeData * data, Qt::DropAction action, i
     }
     else if( data->hasUrls() )
     {
-        //drop from an external source or the file browser
-        debug() << "Drop from external source or file browser";
-        QList<QUrl> urls = data->urls();
-        UrlListDropInfo* info = new UrlListDropInfo();
-        info->row = row;
-        QList<KIO::ListJob*> jobs;
-        //we use listOperations to figure out when we are done with the directory listing
-        //since I (think) we can't be sure what order the directory listing results
-        //happen in.
-        //listOperations are incremented for every new listRecursive.
-        //When listOperations is 0, run finishUrlListDrop, which cleans up and inserts the tracks
-        //this all assumes that listRecursive doesn't do weird threaded things and acts before
-        //this function is finished.
-        foreach( const QUrl &url, urls )
-        {
-            KUrl kurl = KUrl( url );
-            KFileItem kitem( KFileItem::Unknown, KFileItem::Unknown, kurl, true );
-            if( kitem.isDir() )
-            {
-                info->listOperations++;
-                KIO::ListJob* lister = KIO::listRecursive( kurl ); //kjob's delete themselves
-                connect( lister, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList&) )
-                        , SLOT( directoryListResults( KIO::Job*, const KIO::UDSEntryList& ) ) );
-                lister->setProperty("info", QVariant::fromValue( info ) );
-            }
-            else if( EngineController::canDecode( kurl ) )
-            {
-                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( kurl );
-                if( track )
-                    info->tracks << track;
-            }
-            //else TODO: notify user if can't decode, see also MyDirLister::matchesFilter
-        }
-        if( info->listOperations == 0 )
-        {
-            finishUrlListDrop( info );
-            info = 0;
-        }
+        DirectoryLoader* dl = new DirectoryLoader(); //this deletes itself
+        dl->insertAtRow( row );
+        dl->init( data->urls() );
         return true;
     }
     return false;
@@ -1129,48 +1093,6 @@ Playlist::Model::trackForRow( int row ) const
 ////////////
 //Private Methods
 ///////////
-
-void
-Playlist::Model::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list )
-{
-//     DEBUG_BLOCK
-    //dfaure says that job->redirectionUrl().isValid() ? job->redirectionUrl() : job->url(); might be needed
-    //but to wait until an issue is actually found, since it might take more work
-    const KUrl dir = static_cast<KIO::SimpleJob*>( job )->url();
-    UrlListDropInfo* info = job->property("info" ).value<UrlListDropInfo*>();
-    if( !info )
-    {
-        warning() << "invalid UrlListDropInfo, playlist drop will not function.";
-        return;
-    }
-    foreach( const KIO::UDSEntry &entry, list )
-    {
-        KUrl currentUrl = dir;
-        currentUrl.addPath( entry.stringValue( KIO::UDSEntry::UDS_NAME ) );
-        debug() << "listing url: " << currentUrl;
-        if( !entry.isDir() &&  EngineController::canDecode( currentUrl ) )
-        {
-            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( currentUrl );
-            if( track )
-                info->tracks.append( track );
-        }
-    }
-    info->listOperations--;
-    if( info->listOperations < 1 )
-        finishUrlListDrop( info );
-}
-
-void
-Playlist::Model::finishUrlListDrop( UrlListDropInfo* info )
-{
-    if( !( info->tracks.isEmpty() ) )
-    {
-        qStableSort( info->tracks.begin(), info->tracks.end(), Amarok::trackNumberLessThan);
-        insertTracks( info->row, info->tracks );
-    }
-    delete info;
-}
-
 
 void
 Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
@@ -1309,7 +1231,7 @@ void
 Playlist::Model::newResultReady( const QString &collectionId, const Meta::TrackList &tracks ) //Slot
 {
     Meta::TrackList ourTracks = tracks;
-    qStableSort( ourTracks.begin(), ourTracks.end(), Amarok::trackNumberLessThan );
+    qStableSort( ourTracks.begin(), ourTracks.end(), trackNumberLessThan );
     Q_UNUSED( collectionId )
     QueryMaker *qm = dynamic_cast<QueryMaker*>( sender() );
     if( qm )

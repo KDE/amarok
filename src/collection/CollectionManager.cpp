@@ -40,6 +40,7 @@
 
 #include <KService>
 #include <KConfigGroup>
+#include <KFileItem>
 #include <KGlobal>
 #include <KMessageBox>
 #include <KRun>
@@ -334,7 +335,11 @@ CollectionManager::tracksForUrls( const KUrl::List &urls )
 
     Meta::TrackList tracks;
     foreach( KUrl url, urls )
-        tracks.append( trackForUrl( url ) );
+    {
+        Meta::TrackPtr track = trackForUrl( url );
+        if( track )
+            tracks.append( track );
+    }
     return tracks;
 }
 
@@ -365,7 +370,11 @@ CollectionManager::trackForUrl( const KUrl &url )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
     if( url.protocol() == "file" && EngineController::canDecode( url ) )
-        return Meta::TrackPtr( new MetaFile::Track( url ) );
+    {
+        KFileItem kitem( KFileItem::Unknown, KFileItem::Unknown, url, true );
+        if( !kitem.isDir() )
+            return Meta::TrackPtr( new MetaFile::Track( url ) );
+    }
 
     return Meta::TrackPtr( 0 );
 }

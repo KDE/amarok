@@ -49,12 +49,6 @@ class QModelIndex;
 class QueryMaker;
 class QUndoStack;
 
-namespace Amarok
-{
-    // Sorting of a tracklist.
-    bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right );
-}
-
 namespace Playlist {
     class Model;
 }
@@ -272,14 +266,7 @@ namespace Playlist
             int firstInGroup( int row );
             int lastInGroup( int row );
 
-            //only public since it is used as a QVariant
-            struct UrlListDropInfo
-            {
-                UrlListDropInfo() : listOperations( 0 ) { }
-                int listOperations;
-                int row;
-                Meta::TrackList tracks;
-            };
+            static bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right );
 
         public slots:
             void play( const QModelIndex& index );
@@ -308,7 +295,6 @@ namespace Playlist
             void queryDone();
             void newResultReady( const QString &collectionId, const Meta::TrackList &tracks );
             //void playCurrentTrack();    ///connected to EngineController::orderCurrent
-            void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list ); //! directory listing, see ListJob
             void notifyAdvancersOnItemChange() { if( m_advancer ) m_advancer->setPlaylistChanged(); }
 
         private:
@@ -326,8 +312,6 @@ namespace Playlist
              * @arg list The list to be inserted.
              */
             Meta::TrackList removeTracksCommand( int position, int rows );
-
-            void finishUrlListDrop( UrlListDropInfo* info ); //! for finishing up url list drops
 
             /**
              * This performs the actual work involved with mov traing a tracks. It is to be *only* called by an UndoCommand.
@@ -385,7 +369,5 @@ namespace Playlist
             static Model* s_instance; //! instance variable
     };
 }
-
-Q_DECLARE_METATYPE( Playlist::Model::UrlListDropInfo* )
 
 #endif
