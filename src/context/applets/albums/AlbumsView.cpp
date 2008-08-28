@@ -62,10 +62,16 @@ AlbumsView::itemClicked( const QModelIndex &index )
 void
 AlbumsView::itemDoubleClicked( const QModelIndex &index )
 {
+    DEBUG_BLOCK
     if( index.data( AlbumRoles::AlbumName ) != QVariant() )
+    {
         emit enqueueAlbum( index.data( AlbumRoles::AlbumName ).toString() );
+    }
     else
-        emit enqueueTrack( index.data( AlbumRoles::TrackName ).toString() );
+    {
+        emit enqueueTrack( index.parent().data( AlbumRoles::AlbumName ).toString(),
+                           index.data( AlbumRoles::TrackName ).toString() );
+    }
 }
 
 void

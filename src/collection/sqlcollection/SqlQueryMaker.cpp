@@ -701,6 +701,9 @@ SqlQueryMaker::nameForValue( qint64 value )
         case valFormat:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.filetype";
+        case valCreateDate:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tracks.createdate";
         case valScore:
             d->linkedTables |= Private::STATISTICS_TAB;
             return "statistics.score";

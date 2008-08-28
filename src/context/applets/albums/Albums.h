@@ -16,9 +16,10 @@
 #define ALBUMS_APPLET_H
 
 #include "AlbumsView.h"
-
+#include <collection/QueryMaker.h>
 #include <context/Applet.h>
 #include <context/DataEngine.h>
+#include <meta/Meta.h>
 
 #include <KDialog>
 
@@ -56,7 +57,9 @@ private slots:
     void configAccepted();
     void connectSource( const QString &source );
     void enqueueAlbum( const QString &name );
-    void enqueueTrack( const QString &name );
+    void enqueueTrack( const QString &albumName, const QString &trackName );
+    void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
+    void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
 
 private:
     void prepareElements();
@@ -80,6 +83,9 @@ private:
     AlbumsView *m_albumsView;
 
     QGraphicsSimpleTextItem *m_headerText;
+    QVariantList m_albumsTracks;
+    
+    QueryMaker *m_qm;
 };
 
 K_EXPORT_AMAROK_APPLET( albums, Albums )

@@ -17,6 +17,7 @@
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "meta/Meta.h" // album observer
+#include "collection/QueryMaker.h"
 
 #include <QTimer>
 /**
@@ -69,15 +70,24 @@ protected:
 
 private:
     void update();
-
+    void setupAlbumsData();
+    
     int m_coverWidth;
     QStringList m_sources;
     bool m_requested;
     Meta::TrackPtr m_currentTrack;
     QTimer *m_timer;
     
+    QueryMaker *m_qm;
+    Meta::AlbumList m_albums;
+    Meta::ArtistPtr m_currentArtist;
+    
 private slots:
-    void stoppedState();
+    void queryDone();
+    void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
+    void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+    void stoppedState();    
+    
 };
 
 K_EXPORT_AMAROK_DATAENGINE( current, CurrentEngine )

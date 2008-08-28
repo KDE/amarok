@@ -102,8 +102,7 @@ AlbumsDelegate::paint( QPainter *painter, const QStyleOptionViewItem& option, co
         QRect titleRect( QPoint( option.rect.left() + margin + 22, option.rect.top() + option.rect.height()/4  ),
                      QSize( option.rect.width() - ( margin + 22 ), option.rect.height() ) );
                      
-        titleText = fm.elidedText( index.data( AlbumRoles::TrackName ).value<QString>(), Qt::ElideRight, option.rect.width() * 0.6 );
-        
+        titleText = fm.elidedText( QString( "%1 - " ).arg( index.row() + 1 ) + index.data( AlbumRoles::TrackName ).value<QString>(), Qt::ElideRight, option.rect.width() * 0.6 );        
 
         m_trackIcon.paint( painter, QRect( QPoint( option.rect.left() + margin,
                                                  option.rect.top() + option.rect.height()/4 + 4 ),                                         

@@ -16,6 +16,8 @@
 #include "AlbumsView.h"
 #include "AlbumsDelegate.h"
 #include "Amarok.h"
+#include "collection/Collection.h"
+#include "collection/CollectionManager.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "context/Svg.h"
@@ -56,8 +58,8 @@ void Albums::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
 
-    m_headerText = new QGraphicsSimpleTextItem( this );    
- 
+    m_headerText = new QGraphicsSimpleTextItem( this );
+    m_headerText->setText( i18n( "Recently added albums" ) );
     m_width = globalConfig().readEntry( "width", 500 );
     m_height = globalConfig().readEntry( "height", 300 );
 
@@ -65,6 +67,7 @@ void Albums::init()
     m_albumsView->setMinimumSize( 100, 150 );
     
     m_model = new QStandardItemModel();
+    m_model->setColumnCount( 1 );
     m_albumsView->setModel( m_model );
     m_albumsView->resize( size().width() - 28, size().height() - 28 );
     m_albumsView->setPos( 7, 42 );
@@ -79,7 +82,8 @@ void Albums::init()
              this, SLOT( connectSource( const QString& ) ) );
 
     connect( m_albumsView, SIGNAL( enqueueAlbum( const QString & ) ), this, SLOT( enqueueAlbum( const QString & ) ) );
-    connect( m_albumsView, SIGNAL( enqueueTrack( const QString & ) ), this, SLOT( enqueueTrack( const QString & ) ) );
+    connect( m_albumsView, SIGNAL( enqueueTrack( const QString &, const QString & ) ),
+             this, SLOT( enqueueTrack( const QString &, const QString & ) ) );
     updateConstraints();
 }
 
@@ -114,25 +118,27 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
-
+    
     m_albumCount = data[ "count" ].toInt();
+    m_headerText->setText( data[ "headerText" ].toString() );
+    if( m_albumCount == 0 )
+        return;
+    
     m_names = data[ "names" ].toList();
     m_trackCounts = data[ "trackCounts" ].toList();;
     m_covers = data[ "covers" ].toList();;
-
+    m_albumsTracks = data[ "albumsTracks" ].toList();
+    
     kDebug() << "Albums::dataUpdated. count: " << m_albumCount << " names " << m_names.count();
 
-    m_model->clear();
-    m_model->setColumnCount( 1 );
+    m_model->clear();    
+       
     int row = 0;
-    QString artistName = The::engineController()->currentTrack()->artist()->name();
-    m_headerText->setText( i18n( "Albums by %1", artistName ) );
-    foreach( Meta::AlbumPtr aptr, The::engineController()->currentTrack()->artist()->albums() )
+    
+    foreach( const QVariant &albumName, m_names )
     {
-        QString albumName = aptr->name();
-        
         QStandardItem *albumItem = new QStandardItem();
-        albumItem->setData( albumName, AlbumRoles::AlbumName );
+        albumItem->setData( albumName.toString(), AlbumRoles::AlbumName );
         
         if( m_trackCounts.size() > 0 )
             albumItem->setData( m_trackCounts[row].toString(), AlbumRoles::TrackCount );
@@ -141,10 +147,10 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
             albumItem->setData( m_covers[row].value<QPixmap>(), AlbumRoles::AlbumCover );
         
         int childRow = 0;
-        foreach( Meta::TrackPtr track, aptr->tracks() )
+        foreach( const QVariant &trackName, m_albumsTracks[row].toList() )
         {
             QStandardItem *trackItem = new QStandardItem();
-            trackItem->setData( track->name(), AlbumRoles::TrackName );
+            trackItem->setData( trackName.toString(), AlbumRoles::TrackName );
             albumItem->setChild( childRow, trackItem );
             childRow++;
         }
@@ -207,24 +213,53 @@ void Albums::connectSource( const QString &source )
     }
 }
 
+
 void Albums::enqueueAlbum( const QString &name )
 {
-    foreach( Meta::AlbumPtr aptr, The::engineController()->currentTrack()->artist()->albums() )
-    {
-        if( aptr->name() == name )
-            The::playlistModel()->insertOptioned( aptr->tracks(), Playlist::Append );
-    }
+    Collection *coll = CollectionManager::instance()->primaryCollection();
+    m_qm = coll->queryMaker();
+    m_qm->setQueryType( QueryMaker::Album );
+    m_qm->addFilter( QueryMaker::valAlbum, name );
+
+    connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
+            SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+    
+    m_qm->run();
+
 }
 
 void
-Albums::enqueueTrack( const QString &name )
+Albums::enqueueTrack( const QString &albumName, const QString &trackName )
 {
-    foreach( Meta::TrackPtr tptr, The::engineController()->currentTrack()->artist()->tracks() )
-    {
-        if( tptr->name() == name )
-            The::playlistModel()->insertOptioned( tptr, Playlist::Append );
-    }
+    DEBUG_BLOCK
+    Collection *coll = CollectionManager::instance()->primaryCollection();
+    m_qm = coll->queryMaker();
+    m_qm->setQueryType( QueryMaker::Track );
+    
+    m_qm->addFilter( QueryMaker::valAlbum, albumName );
+    m_qm->addFilter( QueryMaker::valTitle, trackName );
+    
+    connect( m_qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+            SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+
+    m_qm->run();
 }
 
+void
+Albums::resultReady( const QString &collectionId, const Meta::AlbumList &albumList )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::AlbumPtr albumPtr, albumList )
+        The::playlistModel()->insertOptioned( albumPtr->tracks(), Playlist::Append );
+}
+
+void
+Albums::resultReady( const QString &collectionId, const Meta::TrackList &trackList )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( collectionId )
+    foreach( Meta::TrackPtr trackPtr, trackList )
+        The::playlistModel()->insertOptioned( trackPtr, Playlist::Append );
+}
 
 #include "Albums.moc"

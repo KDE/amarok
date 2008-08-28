@@ -72,7 +72,8 @@ private slots:
     void itemDoubleClicked( const QModelIndex &index );
 Q_SIGNALS:
     void enqueueAlbum( const QString &name );
-    void enqueueTrack( const QString &name );
+    void enqueueTrack( const QString &albumName, const QString &trackName );
+    
 };
 
 #endif // multiple inclusion guard
