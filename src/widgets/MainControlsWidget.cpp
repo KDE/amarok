@@ -22,7 +22,6 @@
 #include "ActionClasses.h"
 #include "Amarok.h"
 #include "SvgHandler.h"
-#include "MainControlsButton.h"
 
 #include <KStandardDirs>
 
@@ -43,7 +42,7 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
 
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-    
+
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
@@ -75,12 +74,12 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     backButton->setZValue( 2 );
     scene->addItem( backButton );
 
-    MainControlsButton * playButton = new MainControlsButton( 0 );
-    playButton->setSvgPrefix( "play_button" );
-    playButton->setAction( Amarok::actionCollection()->action( "play_pause" ) );
-    playButton->moveBy( 43.0, 6.5 );
-    playButton->setZValue( 10 );
-    scene->addItem( playButton );
+    m_playPauseButton = new MainControlsButton( 0 );
+    m_playPauseButton->setSvgPrefix( "play_button" );
+    m_playPauseButton->setAction( Amarok::actionCollection()->action( "play_pause" ) );
+    m_playPauseButton->moveBy( 43.0, 6.5 );
+    m_playPauseButton->setZValue( 10 );
+    scene->addItem( m_playPauseButton );
 
 
     MainControlsButton * stopButton = new MainControlsButton( 0 );
@@ -107,5 +106,14 @@ MainControlsWidget::~MainControlsWidget()
 {
 }
 
+/* Changes the PlayPause button icon to use the play icon. */
+void MainControlsWidget::setPlayButton()
+{
+    m_playPauseButton->setSvgPrefix( "play_button" );
+}
 
-
+/* Changes the PlayPause button icon to use the pause icon. */
+void MainControlsWidget::setPauseButton()
+{
+    m_playPauseButton->setSvgPrefix( "pause_button" );
+}

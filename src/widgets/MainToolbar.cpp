@@ -24,7 +24,6 @@
 #include "AnalyzerWidget.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "MainControlsWidget.h"
 #include "ProgressSlider.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
@@ -60,8 +59,8 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     KHBox * hBox = new KHBox( this );
 
-    new MainControlsWidget( hBox );
-    
+    m_mainControlsWidget = new MainControlsWidget( hBox );
+
     KVBox * vBox = new KVBox( hBox );
     vBox->setContentsMargins( 0, 6, 0, 0 );
 
@@ -106,7 +105,14 @@ void MainToolbar::paintEvent( QPaintEvent * )
 
 void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
-    Q_UNUSED( state ); Q_UNUSED( oldState );
+    if( (state != oldState) )
+    {
+        if( (state == Phonon::StoppedState) || (state == Phonon::PausedState) )
+            m_mainControlsWidget->setPlayButton();
+        else if( state == Phonon::PlayingState )
+            m_mainControlsWidget->setPauseButton();
+     }
+
     handleAddActions();
 }
 

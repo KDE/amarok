@@ -20,6 +20,8 @@
 #ifndef MAINCONTROLSWIDGET_H
 #define MAINCONTROLSWIDGET_H
 
+#include "MainControlsButton.h"
+
 #include <QGraphicsView>
 #include <QToolButton>
 
@@ -35,13 +37,17 @@ public:
 
     ~MainControlsWidget();
 
+    void setPlayButton();
+    void setPauseButton();
+
 private:
 
+    MainControlsButton * m_playPauseButton;
     QToolButton * m_prevButton;
     QToolButton * m_playButton;
     QToolButton * m_stopButton;
     QToolButton * m_nextButton;
-    
+
 };
 
 #endif

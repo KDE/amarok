@@ -21,6 +21,7 @@
 #define MAINTOOLBAR_H
 
 #include "EngineObserver.h" //baseclass
+#include "MainControlsWidget.h"
 
 #include <KHBox>
 
@@ -54,9 +55,10 @@ protected:
       //void centerAddActions();
 
 private:
-    QWidget      *m_insideBox;
-    KToolBar     *m_addControlsToolbar;
-    VolumeWidget *m_volumeWidget;
+    QWidget            *m_insideBox;
+    KToolBar           *m_addControlsToolbar;
+    VolumeWidget       *m_volumeWidget;
+    MainControlsWidget *m_mainControlsWidget;
 
     bool m_renderAddControls;
     int m_addActionsOffsetX;
