@@ -73,6 +73,8 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setSelectionBehavior( QAbstractItemView::SelectRows );
+    setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
+    setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
 
@@ -90,13 +92,12 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
 
     //HACK ALERT, make a workaround, for now, for the alternating row color issue
-   /* c = p.color( QPalette::AlternateBase );*/
+    /* c = p.color( QPalette::AlternateBase );*/
     c = Qt::white;
     c.setAlpha( 31 );
     p.setColor( QPalette::AlternateBase, c );
 
     setPalette( p );
-
 
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
 

@@ -37,6 +37,7 @@ AlbumsView::AlbumsView( QGraphicsWidget *parent )
     native->setIconSize( QSize( KIconLoader::SizeSmallMedium, KIconLoader::SizeSmallMedium ) );
     native->setRootIsDecorated( true );
     native->setMouseTracking( true );
+    native->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 
     AlbumsDelegate *delegate = new AlbumsDelegate( native );
     native->setItemDelegate( delegate );

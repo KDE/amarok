@@ -25,6 +25,7 @@ function ScriptConsoleMainWindow()
   this.historyList = new QListWidget( mainWidget );
   this.historyList.sizeHint = new QSize(900, 600);
   this.historyList.size = new QSize(900, 600);
+  this.historyList.verticalScrollMode = QAbstractItemView.ScrollPerPixel;
   this.inputLine = new QTextEdit( mainWidget );
   this.executeButton = new QPushButton( mainWidget );
   this.commandArray = [];
