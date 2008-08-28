@@ -354,7 +354,7 @@ ColumnContainment::saveToConfig( KConfigGroup &conf )
         QGraphicsLayoutItem *item = m_grid->itemAt( i );
         applet = dynamic_cast<Plasma::Applet*>( item );
         debug() << "trying to save an applet";
-        if( applet != 0 )
+        if( applet != 0 && applet->pluginName() != "currenttrack" )
         {
             debug() << "saving applet" << applet->name();
             plugins << applet->pluginName();
