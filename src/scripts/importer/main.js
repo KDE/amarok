@@ -118,11 +118,11 @@ print( "Will proceed to convert stats" );
 var db; // this will become the QSql database connection
 
 print( "Selected database connection:", sqlTypeCombo.currentText );
-print( "Location:", locationEdit.text );
 
 if( sqlTypeCombo.currentText == "SQLite" )
 {
-    db = QSqlDatabase.addDatabase( "QSQLITE", "sqlite" /* just some identifier requried by QSql */ );
+    print( "Location:", locationEdit.text );
+    db = QSqlDatabase.addDatabase( "QSQLITE", "amarok1" /* just some identifier requried by QSql */ );
     db.setDatabaseName( locationEdit.text );
 }
 else if( sqlTypeCombo.currentText == "MySQL" )
@@ -142,24 +142,94 @@ else if( sqlTypeCombo.currentText == "PostgreSQL" )
     db.setPassword( passwordEdit.text );
 }
 
-db.open();
+if( !db.open() )
+{
+    print( "[ERROR] could not open Amarok 1.4 database" );
+    print( "[ERROR]", db.lastError.text );
+    return;
+}
 
-print( "Fetching devices from Amarok 1.4" );
-var query = db.exec( "SELECT id, lastmountpoint FROM devices" );
+var a2db = QSqlDatabase.addDatabase( "QSQLITE", "amarok2" /* just some identifier requried by QSql */ );
+a2db.setDatabaseName( QDir.homePath() + "/.kde4/share/apps/amarok/collection.db" );
 
-transferData( query );
+if( !a2db.open() )
+{
+    print( "[ERROR] could not open Amarok 2 database" );
+    print( "[ERROR]", db.lastError.text );
+    return;
+}
+
+transfer();
 
 /**
  * HELPER FUNCTIONS
  **/
 
-function transferData( query )
+function transfer()
 {
+    print( "Fetching tracks from Amarok 1.4" );
+    var query = db.exec( "SELECT lastmountpoint, url, createdate, accessdate, percentage, rating, playcounter " +
+                         "FROM statistics S, devices D where S.deviceid = D.id" );
+
+    var a2_url = a2db.exec();
+    a2_url.prepare( "SELECT id FROM urls WHERE rpath = :rpath" );
+
+    var a1_insert = db.exec();
+    a1_insert.prepare( "INSERT INTO statistics( url, createdate, accessdate, score, rating, playcount ) " +
+                       "VALUES ( :urlid, :createdate, :accessdate, :score, :rating, :playcount )" );
+
+    //var staleValues = new QVariantList();
+    
     while( query.next() )
     {
-        var id = query.value(0).toString();
-        var lmp = query.value(1).toString();
-        print( id + " : " + lmp );
+        var result;
+        
+        var index = 0;
+        var mount = query.value(index++);
+        var url   = query.value(index++);
+        var createdate = query.value(index++);
+        var accessdate = query.value(index++);
+        var score = query.value(index++);
+        var rating = query.value(index++);
+        var playcount = query.value(index++);
+        
+
+        // make the url absolute path
+        url = mount + url.substring( 1 );
+
+        // then make it "relative" again, for Amarok 2 devices or something
+        url = "." + url;
+
+        a2_url.bindValue( ":rpath", url, QSql.In );
+        result = a2_url.exec();
+        if( !result )
+        {
+            print( "Insertion failed", a2_url.executedQuery() );
+            continue;
+        }
+            
+
+        if( !a2_url.next() ) // couldn't the url in the database
+        {
+            print( "Stale entry:", url );
+            //staleValues.append( url );
+            continue;
+        }
+
+        a1_insert.bindValue( ":urlid", url, QSql.In );
+        a1_insert.bindValue( ":createdate", createdate, QSql.In );
+        a1_insert.bindValue( ":accessdate", accessdate, QSql.In );
+        a1_insert.bindValue( ":score", score, QSql.In );
+        a1_insert.bindValue( ":rating", rating, QSql.In );
+        a1_insert.bindValue( ":playcount", playcount, QSql.In );
+        result = a1_insert.exec();
+
+        if( !result )
+        {
+            print( "Insertion failed", a1_insert.executedQuery() );
+            continue;
+        }
+        print( "Updated", url );
     }
 }
 
