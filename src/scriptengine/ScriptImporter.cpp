@@ -67,7 +67,10 @@ namespace AmarokScript
         includeUrl.addPath( relativeFilename );
         QFile file( includeUrl.toLocalFile() );
         if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+        {
+            warning() << "cannot open the include file!";
             return false;
+        }
         m_scriptEngine->currentContext()->setActivationObject(
                               m_scriptEngine->currentContext()->parentContext()->activationObject() );
         m_scriptEngine->evaluate( file.readAll(), relativeFilename );

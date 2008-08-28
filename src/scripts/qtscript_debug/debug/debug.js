@@ -4,9 +4,6 @@
 * (c) 2008   Peter ZHOU <peterzhoulei@gmail.com> *
 **************************************************/
 
-print ( "importing " + __extension__ );
-__setupPackage__( "Debug" );
-
 Debug.initialize = function ( key )
 {
     this.debug_prefix = "";

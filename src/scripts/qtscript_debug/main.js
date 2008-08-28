@@ -1,4 +1,5 @@
 Importer.loadQtBinding( "qt.core" );
+Importer.include( "debug/debug.js" );
 
 //test engine:
 

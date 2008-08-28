@@ -9,6 +9,6 @@ install( PROGRAMS
 )
 
 install( PROGRAMS
-        debug/__init__.js
-        DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/script/amarok/qtscript_debug/debug
+        debug/debug.js
+        DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/qtscript_debug/debug
 )
