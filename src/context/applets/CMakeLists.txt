@@ -7,5 +7,5 @@ add_subdirectory( wikipedia )
 # currently infinite loop on addition
 #add_subdirectory( cloud )
 add_subdirectory( video )
-# WIP
-add_subdirectory( mediadevices )
+# WIP, will uncomment when usable
+#add_subdirectory( mediadevices )
