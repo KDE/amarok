@@ -66,7 +66,7 @@ TrackToolTip::TrackToolTip()
     qAddPostRoutine( s_trackToolTip.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
 
     setWindowFlags( Qt::ToolTip );
-    setWindowOpacity( 0.8 );
+    setWindowOpacity( 0.9 );
 
     QGridLayout *l = new QGridLayout;
 
