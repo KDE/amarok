@@ -21,6 +21,7 @@
 
 #include "ActionClasses.h"
 #include "Amarok.h"
+#include "MainControlsButton.h"
 #include "SvgHandler.h"
 
 #include <KStandardDirs>

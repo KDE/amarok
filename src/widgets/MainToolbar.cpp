@@ -24,6 +24,7 @@
 #include "AnalyzerWidget.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "MainControlsWidget.h"
 #include "ProgressSlider.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"

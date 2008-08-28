@@ -20,10 +20,10 @@
 #ifndef MAINCONTROLSWIDGET_H
 #define MAINCONTROLSWIDGET_H
 
-#include "MainControlsButton.h"
-
 #include <QGraphicsView>
 #include <QToolButton>
+
+class MainControlsButton;
 
 /**
 A small widget containing the 4 main control buttons. Manages special layout for these butons

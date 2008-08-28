@@ -21,12 +21,12 @@
 #define MAINTOOLBAR_H
 
 #include "EngineObserver.h" //baseclass
-#include "MainControlsWidget.h"
 
 #include <KHBox>
 
-class PopupDropperAction;
 class KToolBar;
+class MainControlsWidget;
+class PopupDropperAction;
 class VolumeWidget;
 
 /**
