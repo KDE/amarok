@@ -23,12 +23,13 @@
 // "Importer" is ambiguous here. This means the QtSql importer.
 Importer.loadQtBinding( "qt.core" );
 Importer.loadQtBinding( "qt.sql" );
-Importer.load( "qtscript_debug/debug" );
+Importer.loadQtBinding( "qt.gui" );
+// Importer.include( "qtscript_debug/debug" );
 
-Debug.initialize();
-Debug.app_name = "Importer";
+// Debug.initialize();
+// Debug.app_name = "Importer";
 
-Debug.debug( "Starting importer" );
+print( "Starting importer" );
 
 var dlg        = new QDialog();
 var mainLayout = new QVBoxLayout();
@@ -108,11 +109,11 @@ dlg.show();
 
 if( dlg.exec() == QDialog.REJECTED )
 {
-    Debug.debug( "Cancelled" );
+    print( "Cancelled" );
     return;
 }
 
-Debug.debug( "Will proceed to convert stats" );
+print( "Will proceed to convert stats" );
 
 var db; // this will become the QSql database connection
 
@@ -143,7 +144,7 @@ else if( sqlTypeCombo.currentText == "PostgreSQL" )
 
 db.open();
 
-Debug.debug( "Fetching devices from Amarok 1.4" );
+print( "Fetching devices from Amarok 1.4" );
 var query = db.exec( "SELECT id, lastmountpoint FROM devices" );
 
 transferData( query );
