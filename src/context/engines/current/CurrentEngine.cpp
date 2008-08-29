@@ -233,7 +233,7 @@ CurrentEngine::setupAlbumsData()
     QList< QVariant > albumsTracks;
     foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
-        debug() << "adding album " << albumPtr->name();
+//        debug() << "adding album " << albumPtr->name();
 
         QString albumName = albumPtr->name();
         albumName =  albumName.isEmpty() ? i18n("Unknown") : albumName;

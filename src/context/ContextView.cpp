@@ -334,6 +334,7 @@ ContextView::animateZoomIn( qreal progress, int id )
     if( progress > 0 )
     {
         qreal s = ( progress / 2.0 + 0.5 ) / matrix().m11();
+ //       debug() << "matrix().m11():" << matrix().m11() <<  "progress:" << progress << "s: " << s;
         centerOnZoom( s, Plasma::ZoomIn );        
     }
 }
@@ -356,14 +357,8 @@ ContextView::zoomInFinished( int id )
     setDragMode( NoDrag );
     disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
                  this, SLOT( zoomInFinished( int ) ) );
-    resize( size().width()+1, size().height() );
-    resize( size().width()-1, size().height() );
-    
     int numContainments = contextScene()->containments().size();
-    for( int i = 0; i < numContainments; i++ )
-    {
-        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
-    }
+
 }
 
 void
@@ -372,6 +367,7 @@ ContextView::animateZoomOut( qreal progress, int id )
     Q_UNUSED( id )
 
     qreal s =  ( 1.0 - progress / 1.8 ) / matrix().m11();
+//    debug() << "matrix().m11():" << matrix().m11() <<  "progress:" << progress << "s: " << s;
     centerOnZoom( s, Plasma::ZoomOut );
 }
 
@@ -386,15 +382,10 @@ ContextView::zoomOutFinished( int id )
     
 //     setSceneRect( mapToScene( rect() ).boundingRect() );
     setSceneRect( QRectF() );
-    debug() << "sceneRect: " << sceneRect();
+//    debug() << "sceneRect: " << sceneRect();
     ensureVisible( rect(), 0, 0 );
     
     disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ), this, SLOT( zoomOutFinished( int ) ) );
-    /*int numContainments = contextScene()->containments().size();
-    for( int i = 0; i < numContainments; i++ )
-    {
-        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
-    }*/
 }
 
 Plasma::ZoomLevel
@@ -425,6 +416,7 @@ ContextView::centerOnZoom( qreal sFactor, Plasma::ZoomDirection direction )
 
     QRectF visibleRect( QPoint( left, top ), QPoint( right, bottom ) );
     scale( sFactor, sFactor );
+ //   debug() << "setting sceneRect to:" << visibleRect;
     if( direction == Plasma::ZoomIn )
     {
         containment()->getContentsMargins( &left, &top, &right, &bottom );
