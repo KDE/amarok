@@ -390,11 +390,11 @@ ContextView::zoomOutFinished( int id )
     ensureVisible( rect(), 0, 0 );
     
     disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ), this, SLOT( zoomOutFinished( int ) ) );
-    int numContainments = contextScene()->containments().size();
+    /*int numContainments = contextScene()->containments().size();
     for( int i = 0; i < numContainments; i++ )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
-    }
+    }*/
 }
 
 Plasma::ZoomLevel
