@@ -266,6 +266,8 @@ ScriptManager::findScripts() //SLOT
 bool
 ScriptManager::slotInstallScript( const QString& path )
 {
+    DEBUG_BLOCK
+
     QString _path = path;
 
     if( path.isNull() )
@@ -309,7 +311,6 @@ ScriptManager::slotInstallScript( const QString& path )
     else
     {
         KMessageBox::sorry( 0, i18n( "<p>Script installation failed.</p>"
-                                     "<p>The package did not contain an executable file. "
                                      "Please inform the package maintainer about this error.</p>" ) );
 
         // Delete directory recursively
@@ -321,6 +322,8 @@ ScriptManager::slotInstallScript( const QString& path )
 void
 ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
 {
+    DEBUG_BLOCK
+    
     const QStringList entries = archiveDir->entries();
 
     foreach( const QString &entry, entries )
@@ -334,13 +337,8 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
         }
         else
         {
-            ::chmod( QFile::encodeName( destination + entry ), archEntry->permissions() );
-
-            if( QFileInfo( destination + entry ).isExecutable() )
-            {
-                loadScript( destination + entry );
-                m_installSuccess = true;
-            }
+            loadScript( destination + entry );
+            m_installSuccess = true;
         }
     }
 }
