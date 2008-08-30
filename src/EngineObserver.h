@@ -38,7 +38,7 @@ public:
     EngineObserver( EngineSubject* );
     virtual ~EngineObserver();
     virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
-    virtual void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
+    virtual void enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason );
     virtual void engineNewTrackPlaying();
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineVolumeChanged( int percent );
@@ -63,7 +63,7 @@ protected:
     EngineSubject();
     virtual ~EngineSubject();
     void stateChangedNotify( Phonon::State newState, Phonon::State oldState );
-    void trackEnded( int /*finalPosition*/, int /*trackLength*/, const QString &reason );
+    void playbackEnded( int /*finalPosition*/, int /*trackLength*/, const QString &reason );
     void newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged ) const;
     void volumeChangedNotify( int /*percent*/ );
     /* userSeek means the position didn't change due to normal playback */

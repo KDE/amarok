@@ -47,7 +47,7 @@ EngineObserver::engineStateChanged( Phonon::State currentState, Phonon::State ol
 }
 
 void
-EngineObserver::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
+EngineObserver::enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason )
 {
     Q_UNUSED( finalPosition );
     Q_UNUSED( trackLength );
@@ -111,10 +111,10 @@ void EngineSubject::stateChangedNotify( Phonon::State newState, Phonon::State ol
     m_realState = newState;
 }
 
-void EngineSubject::trackEnded( int finalPosition, int trackLength, const QString &reason )
+void EngineSubject::playbackEnded( int finalPosition, int trackLength, const QString &reason )
 {
     foreach( EngineObserver *observer, Observers )
-        observer->engineTrackEnded( finalPosition, trackLength, reason );
+        observer->enginePlaybackEnded( finalPosition, trackLength, reason );
 }
 
 void

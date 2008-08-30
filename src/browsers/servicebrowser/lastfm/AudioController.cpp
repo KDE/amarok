@@ -133,7 +133,7 @@ AudioController::engineStateChanged( Phonon::State currentState, Phonon::State o
 
 
 void
-AudioController::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
+AudioController::enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason )
 {
     Q_UNUSED( trackLength );
     if( The::lastFmService()->radio()->currentTrack() )
