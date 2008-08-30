@@ -350,6 +350,7 @@ EngineController::stop( bool forceInstant ) //SLOT
         m_media->stop();
 
     emit trackFinished();
+    m_currentTrack = 0;
 }
 
 void
@@ -446,9 +447,7 @@ EngineController::mute() //SLOT
 Meta::TrackPtr
 EngineController::currentTrack() const
 {
-    // TODO: Should we be deleting m_currentTrack when we stop playback instead of checking for it here?
-    Phonon::State state = m_media->state();
-    return state == ( Phonon::ErrorState || Phonon::StoppedState ) ? Meta::TrackPtr() : m_currentTrack;
+    return m_currentTrack;
 }
 
 int
@@ -566,6 +565,7 @@ EngineController::slotTrackEnded()
     {
         emit trackFinished();
         m_currentTrack->finishedPlaying( 1.0 );
+        m_currentTrack = 0;
     }
 
     m_mutex.lock(); // in case setNextTrack is being handled right now.
