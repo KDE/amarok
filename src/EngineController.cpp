@@ -328,8 +328,10 @@ EngineController::stop( bool forceInstant ) //SLOT
     //let Amarok know that the previous track is no longer playing
     if( m_currentTrack ) {
         debug() << "m_currentTrack != 0";
-        m_currentTrack->finishedPlaying( 1.0 );
-        playbackEnded( trackPosition(), m_currentTrack->length(), "stop" );
+        int pos = trackPosition();
+        int length = m_currentTrack->length();
+        m_currentTrack->finishedPlaying( double(pos)/double(length) );
+        playbackEnded( pos, length, "stop" );
         emit trackChanged( Meta::TrackPtr( 0 ) );
     }
 
@@ -591,6 +593,14 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 {
     DEBUG_BLOCK
     Q_UNUSED( source );
+
+    if ( m_currentTrack )
+    {
+        emit trackFinished();
+        double pos = trackPosition();
+        double length = m_currentTrack->length();
+        m_currentTrack->finishedPlaying( pos/length );
+    }
 
     // the new track was taken from the queue, so clear these fields
     if( m_nextTrack )

@@ -49,6 +49,8 @@ VERSION 2.0-beta2
     * Correctly order out-of-collection files dragged into the playlist. 
       (BR 169064)
     * You can add directories from the Play and Add Media menus. (BR 166549)
+    * Allow statistics to be written out when we move to the next track, not
+      just when playback stops.
 
 VERSION 2.0-beta1
   FEATURES:
