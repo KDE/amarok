@@ -15,10 +15,11 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "RatingWidget.h"
+
 #include "Debug.h"
 
 #include "kratingpainter.h"
-#include "RatingWidget.h"
 
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>

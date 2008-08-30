@@ -43,9 +43,6 @@
 #include <QRect>
 #include <QTimer>
 #include <QToolTip>
-#include <QRect>
-#include <QPoint>
-#include <QDesktopWidget>
 
 
 K_GLOBAL_STATIC( TrackToolTip, s_trackToolTip )

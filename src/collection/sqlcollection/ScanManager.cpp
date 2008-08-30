@@ -312,7 +312,7 @@ ScanManager::slotJobDone()
 
     //this must be done here instead of in the ScanResultProcessor because that's running
     //in a different thread, and when notifyObservers is called it does GUI things...
-    foreach( QString key, m_changedUrls.keys() )
+    foreach( const QString &key, m_changedUrls.keys() )
     {
         if( m_collection->registry()->checkUidExists( key ) )
         {

@@ -12,8 +12,9 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "Debug.h"
 #include "ToolBoxIcon.h"
+
+#include "Debug.h"
 
 #include <plasma/animator.h>
 #include <plasma/paintutils.h>

@@ -13,8 +13,9 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "Amarok.h"
 #include "ColumnContainment.h"
+
+#include "Amarok.h"
 #include "Debug.h"
 #include "MainWindow.h"
 #include "SvgHandler.h"

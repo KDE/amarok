@@ -20,7 +20,6 @@
 
 #include "amarok_export.h"
 #include "context/Svg.h"
-#include "context/Svg.h"
 
 #include <QGraphicsItem>
 #include <QObject>

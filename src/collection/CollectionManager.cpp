@@ -334,7 +334,7 @@ CollectionManager::tracksForUrls( const KUrl::List &urls )
     debug() << "adding " << urls.size() << " tracks";
 
     Meta::TrackList tracks;
-    foreach( KUrl url, urls )
+    foreach( const KUrl &url, urls )
     {
         Meta::TrackPtr track = trackForUrl( url );
         if( track )

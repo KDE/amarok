@@ -36,7 +36,7 @@ AudioCdTrackProvider::Private::Private()
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( const QString ) ), SLOT( deviceAdded( const QString ) ) );
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString ) ), SLOT( deviceRemoved( const QString ) ) );
     QList<Solid::Device> devices = Solid::Device::listFromType( Solid::DeviceInterface::OpticalDisc );
-    foreach( Solid::Device device, devices )
+    foreach( const Solid::Device &device, devices )
     {
         Solid::OpticalDisc *od = device.as<Solid::OpticalDisc>();
         if( od->availableContent() != Solid::OpticalDisc::Audio )

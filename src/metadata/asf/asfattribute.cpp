@@ -18,8 +18,9 @@
  *   <http://www.gnu.org/licenses/>.                                       *
  ***************************************************************************/
 
-#include <taglib.h>
 #include "asfattribute.h"
+
+#include <taglib.h>
 #include "asffile.h"
 
 using namespace TagLib;

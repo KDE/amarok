@@ -111,14 +111,6 @@ namespace Meta
             virtual ~MetaBase() {}
             virtual QString name() const = 0;
 
-            /**
-             * Warning HACK! HACK!
-             * This method is used by the MetaProxy class to ensure
-             * that the getter methods of the real Meta item (track, album, artist, etc.)
-             * does not call the corresponding method on the proxy (if there is one), because this
-             * would result in infinite recursion. Did that make sense?
-             */
-            virtual void    setForwardToProxy( bool forward ) { Q_UNUSED(forward) }; 
             virtual QString prettyName() const = 0;
             virtual QString fullPrettyName() const { return prettyName(); }
             virtual QString sortableName() const { return prettyName(); }

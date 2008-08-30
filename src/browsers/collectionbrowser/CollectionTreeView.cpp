@@ -36,7 +36,6 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistGraphicsView.h"
 #include "PopupDropperFactory.h"
-#include "SvgHandler.h"
 #include "context/popupdropper/PopupDropper.h"
 #include "context/popupdropper/PopupDropperAction.h"
 #include "context/popupdropper/PopupDropperItem.h"

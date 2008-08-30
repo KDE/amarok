@@ -170,8 +170,8 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     bool multipleAlbums = false;
     if( !data.isEmpty() )
         album = data[0].value( Field::ALBUM ).toString();
-    QVariantMap row;
-    foreach( row, data )
+
+    foreach( const QVariantMap &row, data )
     {
         artists.insert( row.value( Field::ARTIST ).toString() );
         if( row.value( Field::ALBUM ).toString() != album )
@@ -179,8 +179,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     }
     if( multipleAlbums || album.isEmpty() || data.count() > 60 || artists.size() == 1 )
     {
-        QVariantMap row;
-        foreach( row, data )
+        foreach( const QVariantMap &row, data )
         {
             int artist = artistId( row.value( Field::ARTIST ).toString() );
             addTrack( row, artist );
@@ -191,8 +190,8 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
         QString albumArtist = findAlbumArtist( artists );
         //an empty string means that no albumartist was found
         int artist = albumArtist.isEmpty() ? 0 : artistId( albumArtist );
-        QVariantMap row;
-        foreach( row, data )
+
+        foreach( const QVariantMap &row, data )
         {
             addTrack( row, artist );
         }

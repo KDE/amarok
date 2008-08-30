@@ -18,8 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#include "PlaylistModel.h"
 #include "SimpleTrackNavigator.h"
+
+#include "PlaylistModel.h"
 
 Playlist::SimpleTrackNavigator::SimpleTrackNavigator( Model* model )
     : TrackNavigator( model )

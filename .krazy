@@ -9,3 +9,4 @@ SKIP /src/history/
 SKIP /src/browsers/servicebrowser/mp3tunes/libmp3tunes/
 SKIP /src/charset-detector
 SKIP /src/scriptengine/generator/generator/
+SKIP /src/mediadevice/
