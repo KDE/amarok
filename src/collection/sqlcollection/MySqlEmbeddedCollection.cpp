@@ -82,16 +82,23 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
 {
     QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config",
                     Amarok::saveLocation() + "my.cnf" ); 
+    QString databaseDir = Amarok::config( "MySQLe" ).readEntry( "data",
+                    Amarok::saveLocation() + "mysqle" );
     char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( 
                     defaultsFile ).toAscii().data() );
     char* databaseLine = qstrdup( QString( "--datadir=%1" ).arg(
-                    Amarok::config( "MySQLe" ).readEntry( "config",
-                    Amarok::saveLocation() + "mysqle" ) ).toAscii().data() );
+                    databaseDir ).toAscii().data() );
 
     if( !QFile::exists( defaultsFile ) )
     {
         QFile df( defaultsFile );
         df.open( QIODevice::WriteOnly );
+    }
+
+    if( !QFile::exists( databaseDir ) )
+    {
+        QDir dir( databaseDir );
+        dir.mkpath( "." );
     }
 
     static const int num_elements = 3;
