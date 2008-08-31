@@ -9,8 +9,10 @@ VERSION 2.0-beta2
     * Add option to enable/disable automatic cover fetching
 
   CHANGES:
-    * The Love button in Last.fm service is now available for all tracks, not
-      just Last.fm radio.
+    * The option for exporting playlists with relative urls has been moved
+      from the Amarok settings to the save file dialog.
+    * The Love action in the Last.fm service is now available for all tracks,
+      not just Last.fm radio.
     * Made album applet scrollable
     * New icons and layout for Context View navigation and applet manipulation
     * Same default setting for proportional and fuzzy biases when filtering
@@ -25,6 +27,7 @@ VERSION 2.0-beta2
     * Libgrypt is preferred over OpenSSL at build time, for licensing reasons.
 
   BUGFIXES:
+    * Exporting of M3U and PLS playlists has been fixed.
     * Make the PlayPause button actually switch icons again. (BR 169805)
     * Added "Ignore field" token to the Guess tags dialog. (BR 161060)
     * Only add supported file formats to the playlist. Patch by Andreas Mützel
