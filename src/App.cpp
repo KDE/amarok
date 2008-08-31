@@ -624,6 +624,8 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool tra
     DEBUG_BLOCK
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    if( !track )
+        return;
     Amarok::OSD::instance()->show( currentTrack );
     if( !trackChanged )
     {
