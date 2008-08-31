@@ -107,7 +107,6 @@ MetaProxy::Track::~Track()
 QString
 MetaProxy::Track::name() const
 {
-    DEBUG_BLOCK
     if( d->realTrack ) {
         d->realTrack->setForwardToProxy( false );
         QString name = d->realTrack->name();

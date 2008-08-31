@@ -256,7 +256,6 @@ ServiceTrack::artistId() const
 QString
 ServiceTrack::name() const
 {
-    DEBUG_BLOCK
     if( m_forwardToProxy )
         return MetaProxy::Track::name();
 
@@ -538,7 +537,6 @@ ServiceTrack::setYear( YearPtr year )
 void
 ServiceTrack::setTitle( const QString &title )
 {
-    DEBUG_BLOCK
     m_name = title;
     setName( title );
 }
