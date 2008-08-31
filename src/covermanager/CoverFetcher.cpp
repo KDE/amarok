@@ -281,6 +281,9 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
 
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
+    
+    if( m_userCanEditQuery )
+        The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Fetching Cover" ) );
 
 }
 
