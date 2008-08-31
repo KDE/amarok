@@ -29,17 +29,38 @@
 #include <QLayout>
 #include <QStackedWidget>
 
-
+/**
+ * A widget with multiple stacked pages, accessible by vertical tabs along 
+ * one side.  The text is laid out rotated 90 degrees from horizontal,
+ * with the lettering traveling from bottom to top
+ *
+ * @author Gábor Lehel <illissius@gmail.com>
+*/
 class SideBar: public KHBox
 {
     typedef KHBox super;
     Q_OBJECT
 
     signals:
+        /**
+         * This signal is emitted whenever the active page in the sidebar 
+         * is changed.  The active page is in the slot denoted by by @p index.
+         * If @p index is -1, the browser has been minimized.
+         */
         void widgetActivated( int index );
-        void widgetActivated( QWidget* );
+        /**
+         * This signal is emitted whenever the active page in the sidebar 
+         * is changed.  The active page is the @p widget being emitted
+         */
+        void widgetActivated( QWidget *widget );
 
     public:
+        /**
+         * Creates a new Sidebar that contains multiple browser tabs.
+         *
+         * @param parent The parent widget that this sidebar belongs to
+         * @param contentsWidget The widget that this sidebar places all of its children in
+         */
         explicit SideBar( QWidget *parent, QWidget *contentsWidget = 0 )
             : super( parent )
             , m_bar( new SideBarWidget( this ) )
