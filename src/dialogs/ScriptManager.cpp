@@ -38,6 +38,7 @@
 #include "scriptengine/AmarokCollectionScript.h"
 #include "scriptengine/AmarokEngineScript.h"
 #include "scriptengine/AmarokInfoScript.h"
+#include "scriptengine/AmarokLyricsScript.h"
 #include "scriptengine/AmarokNetworkScript.h"
 #include "scriptengine/AmarokOSDScript.h"
 #include "scriptengine/AmarokPlaylistScript.h"
@@ -228,6 +229,20 @@ ScriptManager::specForScript( const QString& name )
     return specPath;
 }
 
+bool
+ScriptManager::lyricsScriptRunning()
+{
+    return m_lyricsScript == QString();
+}
+
+void
+ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
+{
+    DEBUG_BLOCK
+    emit fetchLyrics( artist, title );
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // private slots
 ////////////////////////////////////////////////////////////////////////////////
@@ -402,6 +417,9 @@ ScriptManager::slotRunScript( QString name, bool silent )
     scriptFile.open( QIODevice::ReadOnly );
     m_scripts[name].running = true;
 
+     if( m_scripts[name].info.category() == "Lyrics" )
+         m_lyricsScript = name;
+
     m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
     m_scripts[name].engine->setProcessEventsInterval( 1000 );
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
@@ -543,6 +561,7 @@ ScriptManager::startScriptEngine( QString name )
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
     m_scripts[name].wrapperList.append( m_scripts[name].globalPtr );
 
+    
     objectPtr = new InfoScript( m_scripts[name].url );
     QScriptValue infoContext = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Info", infoContext );
@@ -559,6 +578,11 @@ ScriptManager::startScriptEngine( QString name )
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "StreamItem", scriptObject );
     scriptEngine->setDefaultPrototype( qMetaTypeId<StreamItem*>(), QScriptValue() );
+    m_scripts[name].wrapperList.append( objectPtr );
+
+    objectPtr = new AmarokScript::AmarokLyricsScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr );
+    m_global.setProperty( "Lyrics", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
     
     objectPtr = new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );

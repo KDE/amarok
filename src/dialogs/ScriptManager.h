@@ -68,6 +68,12 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         /** Returns the path of the spec file of the given script */
         QString specForScript( const QString& name );
 
+        /** Returns whether or not there is a lyrics script running */
+        bool lyricsScriptRunning();
+
+        /** Notifies any running lyric scripts to fetch lyrics */
+        void notifyFetchLyrics( const QString& artist, const QString& title );
+        
         void ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter );
 
         struct ScriptItem {
@@ -85,7 +91,12 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         typedef QMap<QString, ScriptItem> ScriptMap;
         ScriptMap      m_scripts;
+        QString        m_lyricsScript;
 
+    signals:
+        // needed so the lyrics script can connect to this
+        void fetchLyrics( const QString&, const QString& );
+        
     private slots:
         /** Finds all installed scripts and adds them to the listview */
         void findScripts();

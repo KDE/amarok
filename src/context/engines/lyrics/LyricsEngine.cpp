@@ -67,10 +67,14 @@ void LyricsEngine::update()
     Meta::TrackPtr curtrack = The::engineController()->currentTrack();
     if( !curtrack )
         return;
-    QString lyrics = curtrack->cachedLyrics();
+    //QString lyrics = curtrack->cachedLyrics();
+    // TODO lyrics caching is broken
+    // always returns the same one song... wtf!
     // don't rely on caching for streams
-    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
-
+    //const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
+    bool cached = false;
+    QString lyrics;
+    
     QString title  = The::engineController()->currentTrack()->name();
     QString artist = The::engineController()->currentTrack()->artist()->name();
 
@@ -99,8 +103,8 @@ void LyricsEngine::update()
 
         }
     }
-/*
-    if( ( !cached ) && ScriptManager::instance()->lyricsScriptRunning().isEmpty() ) // no lyrics, and no lyrics script!
+
+    if( ( !cached ) && !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
     {
         removeAllData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
@@ -116,7 +120,7 @@ void LyricsEngine::update()
         ScriptManager::instance()->notifyFetchLyrics( artist, title );
 
     }
-*/
+
 }
 
 void LyricsEngine::newLyrics( QStringList& lyrics )

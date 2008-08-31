@@ -107,8 +107,12 @@ void LastFmEngine::message( const ContextState& state )
 void LastFmEngine::updateCurrent()
 {
     DEBUG_BLOCK
+    debug() << "updating last.fm suggested songs etc.";
+    if( ! The::engineController()->currentTrack() )
+        return;
     if( m_suggestedsongs )
     {
+        debug() << "engineController: " << The::engineController() << "currentTrack:" << The::engineController()->currentTrack();
         Meta::ArtistList artists = CollectionManager::instance()->relatedArtists( The::engineController()->currentTrack()->artist(), 30 );
 
         QString token;

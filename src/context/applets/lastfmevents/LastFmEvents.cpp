@@ -119,7 +119,7 @@ void LastFmEvents::constraintsEvent( Plasma::Constraints constraints )
 void LastFmEvents::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK
-    debug() << "got data from engine: " << data;
+    //debug() << "got data from engine: " << data;
     Context::DataEngine::DataIterator iter( data );
     if( name == QString( "sysevents" ) )
     {

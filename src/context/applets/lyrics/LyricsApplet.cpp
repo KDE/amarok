@@ -78,6 +78,8 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     if( data.size() == 0 ) return;
 
+    debug() << "lyrics applet got lyrics: " << data;
+
     if( data.contains( "noscriptrunning" ) )
         m_lyrics->setPlainText( i18n( "No lyrics script is running!" ) );
     if( data.contains( "fetching" ) )

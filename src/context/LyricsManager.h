@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+ * copyright            : (C) 2007 Leo Franchi <lfranchi@kde.org>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -67,7 +67,7 @@ public:
         return s_self; 
     }
     
-    void lyricsResult( QByteArray cXmlDoc = 0, bool cached = false );
+    void lyricsResult( const QString& lyrics = 0, bool cached = false );
 private:
     static LyricsManager* s_self;
 };

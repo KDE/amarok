@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+ * copyright            : (C) 2007 Leo Franchi <lfranchi@kde.org>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -78,15 +78,17 @@ void LyricsSubject::detach( LyricsObserver *obs )
 
 LyricsManager* LyricsManager::s_self = 0;
 
-void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
+void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 {
     Q_UNUSED( cached );
 
+    debug() << "got xml: " << lyricsXML;
+    
     QDomDocument doc;
-    QString xmldoc = QString::fromUtf8( cXmlDoc );
-    if( !doc.setContent( xmldoc ) )
+    if( !doc.setContent( lyricsXML ) )
     {
     //         setData( "lyrics", "error", "error" ); // couldn't fetch
+        debug() << "couldn't read the xml of lyrics, misformed";
         sendLyricsMessage( QString( "error" ) );
         return;
     }
@@ -127,7 +129,7 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
         }
 
         lyrics = el.text();
-        The::engineController()->currentTrack()->setCachedLyrics( xmldoc); // TODO: setLyricsByPath?
+        The::engineController()->currentTrack()->setCachedLyrics( lyricsXML ); // TODO: setLyricsByPath?
 
         const QString title      = el.attribute( "title" );
 
@@ -142,5 +144,3 @@ void LyricsManager::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
 
     }
 }
-
-#include "LyricsManager.moc"
