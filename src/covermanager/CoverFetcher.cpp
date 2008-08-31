@@ -24,31 +24,22 @@
 #include "amarokconfig.h"
 #include "CoverManager.h"
 #include "Debug.h"
-//#include "AmarokStatusBar.h"
 #include "StatusBar.h"
 #include "ui_EditCoverSearchDialog.h"
 
-#include <KApplication>
-#include <KComboBox>
-#include <KCursor> //waiting cursor
 #include <KDialog>
 #include <KHBox>
-#include <KFileDialog>
 #include <KIO/Job>
 #include <KLineEdit>
 #include <KLocale>
-#include <KMessageBox>
-#include <KMenu>
 #include <KPushButton>
 #include <KUrl>
 #include <KVBox>
-#include <KWindowSystem>
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
 #include <QLabel>
-#include <QLayout>
 #include <QMutexLocker>
 #include <QRegExp>
 
@@ -290,8 +281,6 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
 
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
-
-    The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Fetching Cover" ) );
 
 }
 
@@ -632,9 +621,6 @@ CoverFetcher::getUserQuery( QString explanation )
         {
             setButtons( None );
             showButtonSeparator( false );
-            // Gives the window a small title bar, and skips a taskbar entry
-            //KWindowSystem::setType( winId(), NET::Utility );
-            //KWindowSystem::setState( winId(), NET::SkipTaskbar );
             KVBox *box = new KVBox( this );
             setMainWidget(box);
 
