@@ -116,7 +116,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
+   <item row="1" column="0" >
     <spacer>
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
@@ -128,41 +128,6 @@
       </size>
      </property>
     </spacer>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="groupBox2" >
-     <property name="title" >
-      <string>Playlist</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout" >
-      <item>
-       <widget class="QCheckBox" name="kcfg_RelativePlaylist" >
-        <property name="toolTip" >
-         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
-        </property>
-        <property name="whatsThis" >
-         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
-        </property>
-        <property name="text" >
-         <string>Use relative path for &amp;saving</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer" >
-        <property name="orientation" >
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
    </item>
   </layout>
  </widget>
