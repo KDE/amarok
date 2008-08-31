@@ -65,16 +65,12 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningApplets
 
 AmarokToolBoxMenu::~AmarokToolBoxMenu()
 {
-    delete m_hideIcon;
-    delete m_downArrow;
-    delete m_upArrow;
-    delete m_timer;
-    delete m_scrollDelay;
 }
 
 void
 AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList appletsToShow )
 {
+    DEBUG_BLOCK
     setAcceptsHoverEvents( true );
 
     m_appletsList = allApplets;
@@ -85,12 +81,11 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( timeToHide() ) );
     connect( m_scrollDelay, SIGNAL( timeout() ), this, SLOT( delayedScroll() ) );
 
-    //insert in the stack so the first applet in alphabetical order is the first 
+    //insert in the stack so the first applet in alphabetical order is the first
+    appletsToShow.sort();
     for( int i = appletsToShow.size() - 1; i >= 0; i-- )
         m_bottomMenu.push( appletsToShow[i] );
-
-    populateMenu();
-
+    
     m_hideIcon = new ToolBoxIcon( this );
 
     QAction *hideMenu = new QAction( "", this );
@@ -107,7 +102,7 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     m_hideIcon->setMaximumSize( iconSize );
     m_hideIcon->resize( m_hideIcon->size() );
 
-    m_hideIcon->setPos( 5, boundingRect().height() - 32 * m_menuSize - 50 );
+    m_hideIcon->setPos( 5, boundingRect().height() - 32 * m_menuSize - 54 );
     m_hideIcon->setZValue( zValue() + 1 );
     m_hideIcon->hide();
 
@@ -120,8 +115,27 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
 void
 AmarokToolBoxMenu::setContainment( Containment *newContainment )
 {
-    m_containment = newContainment;
-    initRunningApplets();
+    if( m_containment != newContainment )
+    {        
+        Plasma::Corona *corona = newContainment->corona();        
+        if( !corona )
+            return;
+        
+        //disconnect containments just in case we use setContainment somewhere else and we end up with
+        //more signals connected that we wanted
+        QList<Plasma::Containment *> containments = corona->containments();
+        foreach( Plasma::Containment *containment, containments )
+        {
+            disconnect( containment, SIGNAL( appletAdded( Plasma::Applet *, QPointF ) ),
+                 this, SLOT( appletAdded( Plasma::Applet *) ) );
+            disconnect( containment, SIGNAL( appletRemoved( Plasma::Applet * ) ),
+                 this, SLOT( appletRemoved( Plasma::Applet * ) ) );
+        }
+        
+        m_containment = newContainment;
+        initRunningApplets();
+        populateMenu();
+    }
 }
 
 Containment *
@@ -139,6 +153,9 @@ AmarokToolBoxMenu::boundingRect() const
 void
 AmarokToolBoxMenu::populateMenu()
 {
+    DEBUG_BLOCK
+    
+    debug() << "menu size: " << m_menuSize;
     for( int i = 0; i < m_menuSize; i++ )
     {
         if( m_bottomMenu.isEmpty() )
@@ -157,10 +174,10 @@ void
 AmarokToolBoxMenu::initRunningApplets()
 {
     DEBUG_BLOCK
-    if( !containment() )
+    if( !m_containment )
         return;
 
-    Plasma::Corona *corona = containment()->corona();
+    Plasma::Corona *corona = m_containment->corona();
 
     if( !corona )
         return;
@@ -181,6 +198,11 @@ AmarokToolBoxMenu::initRunningApplets()
         }
         m_runningApplets[containment] = appletNames;
     }
+    if( m_removeApplets )
+    {
+        m_menuSize = qMin( 4, containment()->applets().size() );
+        m_hideIcon->setPos( 5, boundingRect().height() - 32 * m_menuSize - 54 );
+    }
 }
 
 void
@@ -193,6 +215,10 @@ AmarokToolBoxMenu::appletAdded( Plasma::Applet *applet )
         {
             m_runningApplets[containment] << applet->pluginName();
             m_appletNames[applet] = applet->pluginName();
+            if( m_removeApplets )
+            {
+                m_menuSize = qMin( 4, this->containment()->applets().size() );
+            }
         }
     }
 }
@@ -208,6 +234,10 @@ AmarokToolBoxMenu::appletRemoved( Plasma::Applet *applet )
         {
             QString name = m_appletNames.take( applet );
             m_runningApplets[containment].removeAll( name );
+            if( m_removeApplets )
+            {
+                m_menuSize = qMin( 4, this->containment()->applets().size() );                
+            }
         }
     }
 }
@@ -236,7 +266,10 @@ AmarokToolBoxMenu::show( bool refreshApplets )
 {
     if( showing() )
         return;
-
+    
+    if( m_timer->isActive() )
+        m_timer->stop();
+    
     m_showing = true;
 
     if( m_removeApplets && refreshApplets ) // we need to refresh on view to get all running applets
@@ -258,7 +291,8 @@ AmarokToolBoxMenu::show( bool refreshApplets )
                             boundingRect().height() - m_menuSize * height - 50 );
         m_upArrow->show();
     }
-
+    
+    m_hideIcon->setPos( 5, boundingRect().height() - 32 * m_menuSize - 54 );
     m_hideIcon->show();
     for( int i = m_currentMenu.count() - 1; i >= 0; i-- )
     {
@@ -277,6 +311,10 @@ AmarokToolBoxMenu::hide()
 {
     if( !showing() )
         return;
+    
+    if( m_timer->isActive() )
+        m_timer->stop();
+    
     m_showing = false;
     foreach( QGraphicsItem *c, QGraphicsItem::children() )
         c->hide();

@@ -160,8 +160,9 @@ ToolBoxIcon::shape() const
 {
     if( Plasma::Icon::drawBackground() )
     {
+        QSize shapeSize( size().width() - 2, size().height() - 2 );
         return Plasma::PaintUtils::roundedRectangle( QRectF( QPointF( 0.0, 0.0 ),
-                                                             QSize( 180, 24 ) ).adjusted( -2, -2, 2,2), 10.0 );
+                                                             shapeSize ), 10.0 );
     }
     else
         return Plasma::Icon::shape();

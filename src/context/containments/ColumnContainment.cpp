@@ -172,12 +172,10 @@ ColumnContainment::setupControlButtons()
 
     m_addAppletsMenu = new AmarokToolBoxMenu( this, false );
     m_addAppletsMenu->setZValue( zValue() + 10000 ); // show over applets
-    m_addAppletsMenu->setContainment( this );
 
     m_removeAppletsMenu = new AmarokToolBoxMenu( this, true );
     m_removeAppletsMenu->setZValue( zValue() + 10000 ); // show over applets
-    m_removeAppletsMenu->setContainment( this );
-    
+
     // TODO can't add text b/c of string freeze
     // add after 2.0
     QAction* zoomInAction = new QAction( "Zoom In", this );
@@ -217,6 +215,15 @@ void
 ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
 {
     DEBUG_BLOCK
+
+    //setContainment must be done when the containment is completelly initiated
+    //otherwise the menus that receive this pointer would have problems.
+    if( constraints & Plasma::StartupCompletedConstraint )
+    {
+        m_addAppletsMenu->setContainment( this );
+        m_removeAppletsMenu->setContainment( this );
+    }
+    
     m_grid->setGeometry( contentsRect() );
     
     if( m_rowHeight < m_preferredRowHeight && rect().height() / m_preferredRowHeight >= 4 )
@@ -609,9 +616,11 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
                 consec = 0;
             i++;
         }
-        if( consec == rowSpan )
+        //most applets should work with rowSpan of at least two rows.
+        if( consec == rowSpan || consec >= 2 )
         {
             positionFound = true;
+            rowSpan = consec;
             row = i - rowSpan; //get the first of the consecutive rows
             col = j;
         }
