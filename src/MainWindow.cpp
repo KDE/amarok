@@ -54,11 +54,13 @@
 #include "widgets/Splitter.h"
 //#include "mediabrowser.h"
 
+#include <QCheckBox>
 #include <QDesktopWidget>
 #include <QList>
 #include <QVBoxLayout>
 #include <QPixmapCache>
 
+#include <kabstractfilewidget.h> //savePlaylist()
 #include <KAction>          //m_actionCollection
 #include <KActionCollection>
 #include <KActionMenu>
@@ -401,9 +403,23 @@ MainWindow::sizeHint() const
 void
 MainWindow::exportPlaylist() const //SLOT
 {
-    QString playlistName = KFileDialog::getSaveFileName();
+    KFileDialog fileDialog( KUrl("kfiledialog:///amarok-playlist-export"), QString(), 0 );
+    QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving") );
+
+    fileDialog.fileWidget()->setCustomWidget( saveRelativeCheck );
+    fileDialog.setOperationMode( KFileDialog::Saving );
+    fileDialog.setMode( KFile::File );
+    fileDialog.setCaption( i18n("Save As") );
+
+    fileDialog.exec();
+
+    QString playlistName = fileDialog.selectedFile();
+
     if( !playlistName.isEmpty() )
+    {
+        AmarokConfig::setRelativePlaylist( saveRelativeCheck->isChecked() );
         The::playlistModel()->exportPlaylist( playlistName );
+    }
 }
 
 void MainWindow::savePlaylist() const
