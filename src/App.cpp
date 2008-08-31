@@ -600,7 +600,7 @@ void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
     case Phonon::PlayingState:
         if ( oldState == Phonon::PausedState )
             Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
-        if ( !track->prettyName().isEmpty() )
+        if ( track && !track->prettyName().isEmpty() )
 //             //TODO: write a utility function somewhere
             mainWindow()->setPlainCaption( i18n( "%1 - %2 -  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown"), track->prettyName(), AMAROK_CAPTION ) );
         break;
@@ -624,7 +624,7 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool tra
     DEBUG_BLOCK
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( !track )
+    if( !currentTrack )
         return;
     Amarok::OSD::instance()->show( currentTrack );
     if( !trackChanged )
