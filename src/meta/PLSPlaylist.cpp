@@ -235,7 +235,7 @@ PLSPlaylist::save( const QString &location, bool relative )
     foreach( Meta::TrackPtr track, m_tracks )
     {
         stream << "File" << i << "=";
-        stream << KUrl( track->uidUrl() ).path();
+        stream << KUrl( track->url() ).path();
         stream << "\nTitle" << i << "=";
         stream << track->name();
         stream << "\nLength" << i << "=";
