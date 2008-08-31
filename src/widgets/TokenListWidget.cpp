@@ -43,7 +43,12 @@ TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QListWidgetItem *token = itemAt( event->pos() );
     debug()<<"Double-clicked, gonna add token!";
-    emit onDoubleClick( token->text() );
+    if( token == 0 )//is null
+    {
+        debug() << "I have NULL as token!";
+    }
+    else
+        emit onDoubleClick( token->text() );
 }
 
 //Executed on mouse press, handles start of drag.

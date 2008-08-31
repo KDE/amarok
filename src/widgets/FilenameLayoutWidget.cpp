@@ -75,9 +75,9 @@ FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
     
     token->show();
 
-    if( token->text() == "<space>" )
+    if( token->getString() == "<space>" )
     {
-        token->setText( " " );
+        token->setString( " " );
     }
 
     //testing, remove when done
@@ -87,7 +87,7 @@ FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
     //debug stuff follows
     foreach(Token *temp, *tokenList)
     {
-        debug() << tokenList->indexOf( temp ) << " .......... " << layout->indexOf( temp ) << " .......... " << temp->text();
+        debug() << tokenList->indexOf( temp ) << " .......... " << layout->indexOf( temp ) << " .......... " << temp->getString();
     }
     generateParsableScheme();
     emit schemeChanged();
@@ -163,34 +163,43 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
         debug() << "I am dragging from the layout widget";
         event->setDropAction( Qt::MoveAction );
     }
-
+    debug()<<"everything fine so far, now I'm gonna calculate where to insert the new token";
     Token *childUnder = qobject_cast< Token * >( childAt( event->pos() ) );
     if( childUnder == 0 )   //if I'm not dropping on an existing token
     {
         if( !m_tokenCount )   //if the bar is empty
         {
             addToken( textFromMimeData );
+            debug()<<">>>>>>>>> EMPTY BAR";
         }
         else                //if the bar is not empty and I'm still not dropping on an existing token
         {
             QPoint fixedPos = QPoint( event->pos().x(), size().height() / 2 );      //first I lower the y coordinate of the drop, this should handle the drops higher and lower than the tokens
+            debug()<<">>>>>>>>> CENTERING VERTICALLY";
             childUnder = qobject_cast< Token * >( childAt( fixedPos ) );            //and I look for a child (token) on these new coordinates
             if( childUnder == 0 )                                                   //if there's none, then I'm either at the beginning or at the end of the bar
             {
                 if( fixedPos.x() < childrenRect().topLeft().x() )                   //if I'm dropping before all the tokens
                 {
                     fixedPos = QPoint( fixedPos.x() + 10, fixedPos.y() );
+                    debug()<<">>>>>>>>> SIMULATING DROP TO THE RIGHT";
+                    
                 }
                 else                                                                //this covers if I'm dropping after all the tokens or in between
                 {
                     fixedPos = QPoint( fixedPos.x() - 10, fixedPos.y() );
+                    debug()<<">>>>>>>>> SIMULATING DROP TO THE LEFT";
+                    
                 }
                 childUnder = qobject_cast< Token * >( childAt( fixedPos ) );
                 insertOverChild( childUnder, textFromMimeData, event );
+                debug()<<">>>>>>>>> \\called insertOverChild";
+                
             }
             else                                                                    //if I find a token, I'm done
             {
                 insertOverChild( childUnder, textFromMimeData, event );
+                debug()<<">>>>>>>>> \\called insertOverChild";
             }
         }
     }
@@ -242,7 +251,7 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
         return;
     QByteArray itemData;
     QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-    dataStream << child->text(); // << QPoint( event->pos() - child->rect().topLeft() -child.pos() );       //I may need the QPoint of the start sooner or later
+    dataStream << child->getString(); // << QPoint( event->pos() - child->rect().topLeft() -child.pos() );       //I may need the QPoint of the start sooner or later
     QMimeData *mimeData = new QMimeData;
     mimeData->setData( "application/x-amarok-tag-token", itemData );
     QDrag *drag = new QDrag( this );
@@ -275,7 +284,7 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
     m_parsableScheme = "";
     foreach( Token *token, *tokenList)
     {
-        QString current = token->text();
+        QString current = token->getString();
         if( current == i18n( "Track" ) )
         {
             m_parsableScheme += "%track";

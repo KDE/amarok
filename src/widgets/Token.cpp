@@ -17,14 +17,30 @@
 #include "Token.h"
 #include "Debug.h"
 
+// Token::Token( QWidget *parent )
+//     :QFrame( parent )
+// {
+// 
+//     
+// }
+
 Token::Token( const QString &string, QWidget *parent )
-    : QLabel( parent )
+    : QFrame( parent )
 {
     m_myCount = qobject_cast< FilenameLayoutWidget * >( parent )->getTokenCount();
-
-    setText( string );
-    setTokenString( string );
-    setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
+    
+    //m_icon = new QPixmap( "placeholder.png"); //TODO: get icons from oxygen guys and handle loading
+    m_label = new QLabel( this );
+    QHBoxLayout *hlayout = new QHBoxLayout( this );
+    setLayout( hlayout );
+    QLabel *iconContainer = new QLabel( this );
+    //m_icon->something to get a pixmap here
+    //iconContainer->setPixmap( *m_icon );
+    hlayout->addWidget( iconContainer );
+    hlayout->addWidget( m_label );
+    //Token( parent );
+    setString( string );
+    m_label->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
     setStyleSheet( "Token {\
         color: palette( Base );\
         background-color: qlineargradient( x1: 0,\
@@ -37,20 +53,22 @@ Token::Token( const QString &string, QWidget *parent )
     }" );
 
     QFontMetrics metric( font() );
-    QSize size = metric.size( Qt::TextSingleLine, text() );
-    setMinimumSize( size + QSize( 4, 0 ) );
+    QSize size = metric.size( Qt::TextSingleLine, m_label->text() );
+    m_label->setMinimumSize( size + QSize( 4, 0 ) );
 }
 
 //Access for m_tokenString, private.
 void
-Token::setTokenString( const QString &string )
+Token::setString( const QString &string )
 {
+    m_label->setText( string );
     m_tokenString = string;
+    //TODO: code to set icon maybe
 }
 
 //Access for m_tokenString.
 QString
-Token::getTokenString()
+Token::getString()
 {
     return m_tokenString;
 }

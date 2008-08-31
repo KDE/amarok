@@ -23,18 +23,20 @@
 
 //Defines a part of a filename, drag&droppable in the FilenameLayoutWidget bar from the TokenListWidget list.
 class Token
-    : public QLabel
+    : public QFrame
 {
     Q_OBJECT
     public:
+//         explicit Token( QWidget *parent = 0 );
         explicit Token( const QString &string, QWidget *parent = 0 );
-        QString getTokenString();
-
+        QString getString();
+        void setString(const QString &string );
+        
     private:
-        void setTokenString(const QString &string );
-
         unsigned int m_myCount;
         QString m_tokenString;
+        QPixmap *m_icon;
+        QLabel *m_label;
 };
 
 #endif //TOKEN_H

@@ -147,6 +147,9 @@ OrganizeCollectionDialog::overwriteDestinations() const
 QString
 OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::TrackPtr &track ) const
 {
+    //TODO: handle if track==NULL to avoid bug 169684
+    //This could maybe happen with an empty collection, when the TrackList is empty and then m_previewTrack is null.
+    //FIXME: 169684
     bool isCompilation = track->album()->isCompilation();
     QMap<QString, QString> args;
     QString artist = track->artist()->name();
@@ -273,7 +276,7 @@ OrganizeCollectionDialog::buildFormatString() const
 
 
 void
-OrganizeCollectionDialog::setPreviewTrack( const Meta::TrackPtr track )
+OrganizeCollectionDialog::setPreviewTrack( const Meta::TrackPtr track )     //UNUSED!! I don't know what's this thing doing here but it might be the cause of BR169684
 {
    m_previewTrack = track;
 }
@@ -371,6 +374,7 @@ OrganizeCollectionDialog::toggleDetails()
         ui->formatLabel->hide();
         ui->formatEdit->hide();
         ui->formatHelp->hide();
+        filenameLayoutDialog->hide();
 
         widget->resize( widget->minimumSize() );    //TODO: FIX THE LAYOUT WHEN RESIZING
         vbox->resize( vbox->minimumSize() );
