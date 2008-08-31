@@ -311,7 +311,7 @@ ScriptManager::slotInstallScript( const QString& path )
     else
     {
         KMessageBox::sorry( 0, i18n( "<p>Script installation failed.</p>"
-                                     "Please inform the package maintainer about this error.</p>" ) );
+                                     "<p>Please inform the package maintainer about this error.</p>" ) );
 
         // Delete directory recursively
         KIO::NetAccess::del( KUrl( scriptFolder ), 0 );
