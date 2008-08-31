@@ -24,56 +24,52 @@
 #include "amarokconfig.h"
 
 #include <QMutexLocker>
+#include <QThreadStorage>
 
 #include <KRandom>
 
-#include <pthread.h>
-
-/**
- * This class is used to maintain thread safety in MySQL.
- *
- * It should be constructed after mysql_library_init() and before every
- * mysql_query() or better anything at all mysql_*
- */
 class ThreadInitializer
 {
-#ifdef Q_OS_WIN32
-    // This will not work in win32 and actually should not be needed there
-#else
-    static QList< pthread_t > m_inited;
-public:
-    ThreadInitializer( )
+    static int threadsCount;
+    static QMutex countMutex;
+    static QThreadStorage< ThreadInitializer* > storage;
+
+    ThreadInitializer()
     {
-        if( m_inited.isEmpty() )
-            m_inited << pthread_self();
-        else
-        {
-            bool inited = false;
-            foreach( pthread_t t, m_inited )
-            {
-                if( pthread_equal( t, pthread_self() ) )
-                {
-                    inited = true;
-                    break;
-                }
-            }
-            if( !inited )
-            {
-                // pthread_t is not guaranteed to be int, so if it ever
-                // breaks compilation, just remove this debug
-                debug() << "Calling mysql_thread_init() for thread " 
-                        << int( pthread_self() );
-                mysql_thread_init();
-                m_inited << pthread_self();
-            }
-        }
+        mysql_thread_init();
+
+        countMutex.lock();
+        threadsCount++;
+        countMutex.unlock();
+
+        debug() << "Initialized thread, count==" << threadsCount;
     }
-#endif
+
+public:
+    ~ThreadInitializer()
+    {
+        mysql_thread_end();
+
+        countMutex.lock();
+        threadsCount--;
+        countMutex.unlock();
+
+        debug() << "Deinitialized thread, count==" << threadsCount;
+
+        if( threadsCount == 0 )
+            mysql_library_end();
+    }
+
+    static void init()
+    {
+        if( !storage.hasLocalData() )
+            storage.setLocalData( new ThreadInitializer() );
+    }
 };
 
-#ifndef Q_OS_WIN32
-QList< pthread_t > ThreadInitializer::m_inited;
-#endif
+int ThreadInitializer::threadsCount = 0;
+QMutex ThreadInitializer::countMutex;
+QThreadStorage< ThreadInitializer* > ThreadInitializer::storage;
 
 MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, 
                                                     const QString &prettyName )
@@ -143,7 +139,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
             mysql_query(m_db, "USE amarok");
         }
     
-        ThreadInitializer ti;
+        ThreadInitializer::init();
         init();
     }
 }
@@ -151,7 +147,6 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
 MySqlEmbeddedCollection::~MySqlEmbeddedCollection()
 {
     mysql_close(m_db);
-    mysql_library_end();
 }
 
 QStringList MySqlEmbeddedCollection::query( const QString& statement )
@@ -159,7 +154,7 @@ QStringList MySqlEmbeddedCollection::query( const QString& statement )
     DEBUG_BLOCK
     debug() << "[ATTN!] MySqlEmbedded::query( " << statement << " )";
 
-    ThreadInitializer ti;
+    ThreadInitializer::init();
     QMutexLocker locker( &m_mutex );
 
     QStringList values;
@@ -211,7 +206,7 @@ int MySqlEmbeddedCollection::insert( const QString& statement, const QString& /*
     DEBUG_BLOCK
     debug() << "[ATTN!] MySqlEmbedded::insert( " << statement << " )";
 
-    ThreadInitializer ti;
+    ThreadInitializer::init();
     QMutexLocker locker( &m_mutex );
 
     if( !m_db )
