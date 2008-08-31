@@ -331,26 +331,6 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     }
     // else
     return QVariant();
-/*        switch( role )
-        {
-            case AlbumArtist: return track->album()->albumArtist()->name();
-            case Album: return track->album()->name();
-            case Artist: return track->artist()->name();
-            case Bitrate: return track->bitrate();
-            case Composer: return track->composer()->name();
-            case CoverImage: return track->album()->image( 50 );
-            case Comment: return track->comment();
-            case DiscNumber: return track->discNumber();
-            case Filesize: return track->filesize();
-            case Genre: return track->genre()->name();
-            case Length: return track->length();
-            case Rating: return track->rating();
-            case Score: return track->score();
-            case Title: return track->name();
-            case TrackNumber: return track->trackNumber();
-            case Year: return track->year()->name().toInt();
-            default: return QVariant();
-        } */
 }
 
 
@@ -998,7 +978,7 @@ Playlist::Model::flags(const QModelIndex &index) const
     if( index.isValid() )
     {
         return ( Qt::ItemIsEnabled     | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled |
-                 Qt::ItemIsDragEnabled | Qt::ItemIsSelectable );
+                 Qt::ItemIsDragEnabled );
     }
     return Qt::ItemIsDropEnabled;
 }
