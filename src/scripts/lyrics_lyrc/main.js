@@ -29,7 +29,8 @@ Importer.loadQtBinding( "qt.xml" );
 // HACK poor man's version of string substitutions
 //xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyrics artist=\"{artist}\" title=\"{title}\" page_url=\"{page}\">{lyrics}</lyrics></xml>"
 xml = "<lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
-
+suggestions_xml = "<suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
+suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />"
 
 QByteArray.prototype.toString = function()
 {
@@ -60,7 +61,7 @@ function parseLyrics( lyrics )
         // html -> plaintext:
         lyrics = lyrics.replace( /<[Bb][Rr][^>]*>/g, "\n" );
         lyrics = lyrics.replace( "\n\n", "" ).replace( "\r", "" );
-        lyrics = lyrics.replace( "\n\n", "\n" ).replace( "\r", "" );
+        //lyrics = lyrics.replace( "\n\n", "\n" ).replace( "\r", "" );
         lyrics = lyrics.replace( /<.*>/g, "" ); // erase everything after the lyric
         lyricsStr = lyrics.replace( /\n\n[\n]+/g, "\n" );
         //print( "got cleaned lyrics: " + lyrics );
@@ -82,6 +83,53 @@ function parseLyrics( lyrics )
     Amarok.Lyrics.showLyrics( xml );
 } 
 
+function parseSuggestions( lyrics )
+{
+    print( "parsing suggestions!" );
+    try
+    {
+        lyrics = lyrics.slice( lyrics.indexOf( "Suggestions : " ), lyrics.indexOf( "<br><br>" ) );
+
+        lyrics = lyrics.replace( "<font color='white'>", "" );
+        lyrics = lyrics.replace( "</font>", "" );
+        lyrics = lyrics.replace( "<br /><br />", "" );
+
+        print( "got cleaned suggestions: " + lyrics );
+        
+        suggestions = lyrics.split( "<br>" );
+
+        suggestions_xml = suggestions_xml.replace( "{provider_url}", "" ); // empty for now
+        body_xml = ""
+        for( i = 0; i < suggestions.length; i++ )
+        {
+            if( suggestions[ i ] == "" )
+                continue;
+            //print( "checking suggestion: " + suggestions[ i ] );
+            if( ! /(<a href=")([^"]*)/.exec( suggestions[ i ] ) )
+                continue;
+            url =  /(<a href=")([^"]*)/.exec( suggestions[ i ] )[ 2 ]
+            if( ! /<a href=.*>([^<]*)<\/a>/.exec( suggestions[ i ] ) )
+                continue;
+            artist_title = artist_title = /<a href=.*>([^<]*)<\/a>/.exec( suggestions[ i ] )[ 1 ]
+
+            artist = artist_title.split( " - " )[ 0 ];
+            title = artist_title.split( " - " )[ 1 ];
+
+            body_xml += suggestions_body.replace( "{artist}", artist ).replace( "{title}", title ).replace( "{url}", url );
+            //print( "done checking suggestion: " + suggestions[ i ] );
+
+        }
+
+        suggestions_xml = suggestions_xml.replace( "{suggestions}", body_xml );
+    } catch( err )
+    {
+        print( "got err in parsing suggestions: " )
+        print( err );
+    }
+    print( "got suggestions xml: " + suggestions_xml );
+    Amarok.Lyrics.showLyrics( suggestions_xml );
+}
+
 function lyricsFetchResult( reply )
 {
     //Amarok.alert( "lyrics slot called!" );
@@ -94,7 +142,7 @@ function lyricsFetchResult( reply )
         print( "got error: " + err );
     }
     
-    print( "result: " + lyrics );
+    //print( "result: " + lyrics );
 
     // no need, just complicates regexp
     lyrics.replace( "\n", "" );
@@ -108,24 +156,27 @@ function lyricsFetchResult( reply )
     // remove leftover
     lyrics = lyrics.replace( /<table align="left"><tr><td>.*<\/td><\/tr><\/table>/g, "" );
     //print( "result: " + lyrics );
-    
-    lyricsPos = lyrics.search( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*/ );
-    if( lyricsPos > 0 )
-    {
-        print( "found lyrics at pos " + lyricsPos );
-        parseLyrics( lyrics.slice( lyricsPos ) );
-    } else if( lyrics.indexOf( "Suggestions" ) > 0 )
-    {
-        //Amarok.alert( "Suggestions not implemented yet" );
-        // TODO parse suggestions
-        print( "suggestions not implemented yet" );
-    }
 
+    try {
+        lyricsPos = lyrics.search( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*/ );
+        print( "found lyrics at pos " + lyricsPos );
+        print( "found suggestions pos: " + lyrics.indexOf( "Suggestions" ) );
+        if( lyricsPos > 0 )
+        {
+            parseLyrics( lyrics.slice( lyricsPos ) );
+        } else if( lyrics.indexOf( "Suggestions" ) > 0 )
+        {
+            // TODO parse suggestions
+            parseSuggestions( lyrics );
+        }
+    } catch( err ) {
+        print( "got err: " + err );
+    }
 }
 
 
 function fetchLyrics( artist, title )
-{
+{ 
     connection = new QNetworkAccessManager();
     var host = "lyrc.com.ar";
     var path;

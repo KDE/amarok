@@ -80,6 +80,7 @@ LyricsManager* LyricsManager::s_self = 0;
 
 void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 {
+    DEBUG_BLOCK
     Q_UNUSED( cached );
 
     debug() << "got xml: " << lyricsXML;
@@ -87,7 +88,6 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     QDomDocument doc;
     if( !doc.setContent( lyricsXML ) )
     {
-    //         setData( "lyrics", "error", "error" ); // couldn't fetch
         debug() << "couldn't read the xml of lyrics, misformed";
         sendLyricsMessage( QString( "error" ) );
         return;
@@ -101,9 +101,9 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     {
         const QDomNodeList l = doc.elementsByTagName( "suggestion" );
 
+        debug() << "got suggestion list of length" << l.length();
         if( l.length() ==0 )
         {
-//             setData( "lyrics", "not found" );
             sendLyricsMessage( QString( "notfound" ) );
         }
         else
@@ -116,9 +116,9 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
                 suggested << QString( "%1 - %2 %3" ).arg( title, artist, url );
             }
-//             setData( "lyrics", "suggested", suggested );
+            setData( "lyrics", "suggested", suggested );
             // TODO for now suggested is disabled
-            sendLyricsMessage( QString( "notfound" ) ); // FIXME: Until we support it, show something...
+            //sendLyricsMessage( QString( "notfound" ) ); // FIXME: Until we support it, show something...
         }
     }
     else
