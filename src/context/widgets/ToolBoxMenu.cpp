@@ -236,7 +236,9 @@ AmarokToolBoxMenu::appletRemoved( Plasma::Applet *applet )
             m_runningApplets[containment].removeAll( name );
             if( m_removeApplets )
             {
-                m_menuSize = qMin( 4, this->containment()->applets().size() );                
+                m_menuSize = qMin( 4, this->containment()->applets().size() );
+                if( m_menuSize == 0 )
+                    hide();
             }
         }
     }

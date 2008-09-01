@@ -193,10 +193,15 @@ ColumnContainment::setupControlButtons()
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
 
-    QAction* listRemove = new QAction( "", this );
+    
+    QAction *listRemove = new QAction( "", this );
     listRemove->setIcon( KIcon( "list-remove" ) );
     listRemove->setVisible( true );
-    listRemove->setEnabled( true );
+    if( m_grid->count() > 0 )
+        listRemove->setEnabled( true );
+    else
+        listRemove->setEnabled( false );
+    
 
     connect( listAdd, SIGNAL( triggered() ), this, SLOT( showAddAppletsMenu() ) );
     connect( listRemove, SIGNAL( triggered() ), this, SLOT( showRemoveAppletsMenu() ) );
@@ -683,6 +688,8 @@ ColumnContainment::addApplet( Plasma::Applet* applet, const QPointF & )
         applet->destroy();
         return 0;
     }
+    if( m_grid->count() == 1 )
+        m_removeAppletsIcon->action()->setEnabled( true );
     return applet;
 }
 
@@ -709,6 +716,8 @@ ColumnContainment::appletRemoved( Plasma::Applet* applet )
 
         if( m_grid->count() > 0 )
             rearrangeApplets( row + rowSpan, col );
+        else
+            m_removeAppletsIcon->action()->setEnabled( false );
 
     }
 
