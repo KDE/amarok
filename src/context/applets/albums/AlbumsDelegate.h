@@ -28,7 +28,7 @@ namespace AlbumRoles
         AlbumName = Qt::UserRole + 1,
         TrackCount,
         AlbumCover,
-        TrackName,
+        TrackName
     };
 }
 
