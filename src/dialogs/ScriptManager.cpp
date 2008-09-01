@@ -232,7 +232,7 @@ ScriptManager::specForScript( const QString& name )
 bool
 ScriptManager::lyricsScriptRunning()
 {
-    return m_lyricsScript != QString();
+    return !m_lyricsScript.isEmpty();
 }
 
 void
