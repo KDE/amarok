@@ -31,6 +31,7 @@ public:
     virtual ~LyricsObserver();
     
     virtual void newLyrics( QStringList& lyrics ) { Q_UNUSED( lyrics ); }
+    virtual void newSuggestions( QStringList& suggestions ) { Q_UNUSED( suggestions ); }
     virtual void lyricsMessage( QString& msg ) { Q_UNUSED( msg ); }
 
 private:
@@ -48,6 +49,7 @@ protected:
     virtual ~LyricsSubject() {}
     
     void sendNewLyrics( QStringList lyrics );
+    void sendNewSuggestions( QStringList suggestions );
     void sendLyricsMessage( QString msg );
     
 private:

@@ -35,9 +35,9 @@ LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
 QStringList LyricsEngine::sources() const
 {
     QStringList sourcesList;
-    sourcesList << "lyrics";
+    sourcesList << "lyrics" << "suggested";
 
-    return sourcesList; // we don't have pre-set sources, as there is only one source: lyrics.
+    return sourcesList;
 }
 
 bool LyricsEngine::sourceRequested( const QString& name )
@@ -129,6 +129,14 @@ void LyricsEngine::newLyrics( QStringList& lyrics )
 
     removeAllData( "lyrics" );
     setData( "lyrics", "lyrics", lyrics );
+}
+
+void LyricsEngine::newSuggestions( QStringList& suggested )
+{
+    DEBUG_BLOCK
+    // each string is in "title - artist <url>" form
+    removeAllData( "lyrics" );
+    setData( "lyrics", "suggested", suggested );
 }
 
 void LyricsEngine::lyricsMessage( QString& msg )

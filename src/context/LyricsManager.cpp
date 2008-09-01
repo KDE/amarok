@@ -51,6 +51,14 @@ void LyricsSubject::sendNewLyrics( QStringList lyrics )
     }
 }
 
+void LyricsSubject::sendNewSuggestions( QStringList sug )
+{
+    foreach( LyricsObserver* obs, m_observers )
+    {
+        obs->newSuggestions( sug );
+    }
+}
+
 void LyricsSubject::sendLyricsMessage( QString msg )
 {
     foreach( LyricsObserver* obs, m_observers )
@@ -108,7 +116,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
         }
         else
         {
-            QVariantList suggested;
+            QStringList suggested;
             for( uint i = 0; i < l.length(); ++i ) {
                 const QString url    = l.item( i ).toElement().attribute( "url" );
                 const QString artist = l.item( i ).toElement().attribute( "artist" );
@@ -118,9 +126,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
             }
            // setData( "lyrics", "suggested", suggested );
             // TODO for now suggested is disabled
-            //QStringList suggestions;
-            //suggestions <<
-            sendLyricsMessage( QString( "notfound" ) ); // FIXME: Until we support it, show something...
+            sendNewSuggestions( suggested );
         }
     }
     else

@@ -44,6 +44,7 @@ public:
     virtual void message( const ContextState& state );
     
     void newLyrics( QStringList& lyrics );
+    void newSuggestions( QStringList& suggest );
     void lyricsMessage( QString& message );
     
 protected:

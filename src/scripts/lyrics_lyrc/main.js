@@ -61,7 +61,7 @@ function parseLyrics( lyrics )
         // html -> plaintext:
         lyrics = lyrics.replace( /<[Bb][Rr][^>]*>/g, "\n" );
         lyrics = lyrics.replace( "\n\n", "" ).replace( "\r", "" );
-        //lyrics = lyrics.replace( "\n\n", "\n" ).replace( "\r", "" );
+        lyrics = lyrics.replace( "\n\n", "\n" ).replace( "\r", "" );
         lyrics = lyrics.replace( /<.*>/g, "" ); // erase everything after the lyric
         lyricsStr = lyrics.replace( /\n\n[\n]+/g, "\n" );
         //print( "got cleaned lyrics: " + lyrics );

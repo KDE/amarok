@@ -60,8 +60,12 @@ void LyricsApplet::connectSource( const QString& source )
     if( source == "lyrics" ) {
         dataEngine( "amarok-lyrics" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-lyrics" )->query( "lyrics" ) ); // get data initally
+    } else if( source == "suggested" )
+    {
+        dataEngine( "amarok-lyrics" )->connectSource( source, this );
+        dataUpdated( source, dataEngine("amarok-lyrics" )->query( "lyrics" ) ); 
     }
-}
+} 
 
 void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
@@ -78,7 +82,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     if( data.size() == 0 ) return;
 
-    debug() << "lyrics applet got lyrics: " << data;
+    debug() << "lyrics applet got name:" << name << "and lyrics: " << data;
 
     if( data.contains( "noscriptrunning" ) )
         m_lyrics->setPlainText( i18n( "No lyrics script is running!" ) );
@@ -95,7 +99,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->setPlainText( lyrics[ 3 ].toString() );
     }
     else if( data.contains( "notfound" ) )
+    {
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
+    }
     setPreferredSize( (int)size().width(), (int)size().height() );
 }
 
