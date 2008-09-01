@@ -56,23 +56,24 @@ function parseLyrics( lyrics )
     root.setAttribute( "artist", artistStr );
 
     try {
-    lyrics = /(<\/u><\/font>)(.*)/.exec( lyrics )[ 2 ];
-    // html -> plaintext:
-    lyrics = lyrics.replace( /<[Bb][Rr][^>]*>/g, "\n" );
-    lyrics = lyrics.replace( /\n\n/g, "\n" );
-    lyrics = lyrics.replace( /<.*>/g, "" ); // erase everything after the lyric
-    lyricsStr = lyrics.replace( /\n\n\n[\n]+/g, "\n" );
-    //print( "got cleaned lyrics: " + lyrics );
+        lyrics = /(<\/u><\/font>)(.*)/.exec( lyrics )[ 2 ];
+        // html -> plaintext:
+        lyrics = lyrics.replace( /<[Bb][Rr][^>]*>/g, "\n" );
+        lyrics = lyrics.replace( "\n\n", "" ).replace( "\r", "" );
+        lyrics = lyrics.replace( "\n\n", "\n" ).replace( "\r", "" );
+        lyrics = lyrics.replace( /<.*>/g, "" ); // erase everything after the lyric
+        lyricsStr = lyrics.replace( /\n\n[\n]+/g, "\n" );
+        //print( "got cleaned lyrics: " + lyrics );
 
-    xml = xml.replace( "{artist}", artistStr );
-    xml = xml.replace( "{title}", titleStr );
-    xml = xml.replace( "{page}", page_url );
-    xml = xml.replace( "{lyrics}", lyricsStr );
-    text = doc.createTextNode( "lyricsText" );
-    text.setData( lyricsStr );
+        xml = xml.replace( "{artist}", artistStr );
+        xml = xml.replace( "{title}", titleStr );
+        xml = xml.replace( "{page}", page_url );
+        xml = xml.replace( "{lyrics}", lyricsStr );
+        text = doc.createTextNode( "lyricsText" );
+        text.setData( lyricsStr );
 
-    //xml = doc.toString();
-    print( "xml: " + xml );
+        //xml = doc.toString();
+        print( "xml: " + xml );
     } catch (err) {
         print( "error!: " + err );
     }
@@ -86,7 +87,9 @@ function lyricsFetchResult( reply )
     //Amarok.alert( "lyrics slot called!" );
     print( "got result from lyrics fetch:" + reply );
     try {
-        print( "got size of result from lyrics fetch:" + reply.size() );
+        Importer.loadQtBinding( "qt.network" );
+        Importer.loadQtBinding( "qt.core" );
+//        print( "got size of result from lyrics fetch:" + reply.size() );
         lyrics = reply.readAll().toString();
     } catch( err )
     {
@@ -115,8 +118,9 @@ function lyricsFetchResult( reply )
         parseLyrics( lyrics.slice( lyricsPos ) );
     } else if( lyrics.indexOf( "Suggestions" ) > 0 )
     {
-        Amarok.alert( "Suggestions not implemented yet" );
+        //Amarok.alert( "Suggestions not implemented yet" );
         // TODO parse suggestions
+        print( "suggestions not implemented yet" );
     }
 
 }

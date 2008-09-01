@@ -93,8 +93,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         QVariantList lyrics  = data[ "lyrics" ].toList();
 
         m_lyrics->setPlainText( lyrics[ 3 ].toString() );
-        //m_lyrics->adjustSize();
-        //m_lyricsProxy->resize( m_lyrics->size() );
     }
     else if( data.contains( "notfound" ) )
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
