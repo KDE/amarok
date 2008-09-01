@@ -186,8 +186,13 @@ Playlist::Model::setNextRow( int row )
 
     if( !m_stopPlaying && rowExists( row ) )
     {
+        debug() << "Will play row" << row;
         m_nextRowCandidate = row;
         The::engineController()->setNextTrack( m_items.at(row)->track() );
+    }
+    else
+    {
+        debug() << "Invalid row" << row;
     }
 
     m_waitingForNextTrack = false;
@@ -200,8 +205,13 @@ Playlist::Model::setUserNextRow( int row )
 
     if( !m_stopPlaying && rowExists( row ) )
     {
+        debug() << "Will play row" << row;
         m_nextRowCandidate = row;
         play( row );
+    }
+    else
+    {
+        debug() << "Invalid row" << row;
     }
 
     m_waitingForNextTrack = false;
@@ -214,8 +224,13 @@ Playlist::Model::setPrevRow( int row )
 
     if( !m_stopPlaying && rowExists( row ) )
     {
+        debug() << "Will play row" << row;
         m_nextRowCandidate = row;
         play( row );
+    }
+    else
+    {
+        debug() << "Invalid row" << row;
     }
 
     m_waitingForNextTrack = false;
@@ -465,12 +480,19 @@ Playlist::Model::play( const QModelIndex& index )
 void
 Playlist::Model::play( int row )
 {
+    DEBUG_BLOCK
+
     m_stopPlaying = false;
 
-    if( m_items.size() > row )
+    if( rowExists( row ) && m_items.size() > row )
     {
+        debug() << "Will play row" << row;
         m_nextRowCandidate = row;
         The::engineController()->play( m_items[ row ]->track() );
+    }
+    else
+    {
+        debug() << "Invalid row" << row;
     }
 }
 
@@ -945,6 +967,7 @@ Playlist::Model::engineNewTrackPlaying()
         if( rowExists( m_nextRowCandidate  ) &&
                 track == m_items.at( m_nextRowCandidate )->track() )
         {
+            debug() << "Moving to the next row in the sequence";
             setActiveRow( m_nextRowCandidate );
 
             emit activeRowChanged( oldActiveRow, activeRow() );
@@ -965,6 +988,10 @@ Playlist::Model::engineNewTrackPlaying()
 
             emit activeRowChanged( oldActiveRow, activeRow() );
         }
+    }
+    else
+    {
+        debug() << "engineNewTrackPlaying: Track not set!";
     }
 
     m_nextRowCandidate = -1;
