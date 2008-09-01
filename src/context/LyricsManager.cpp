@@ -116,9 +116,11 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
                 suggested << QString( "%1 - %2 %3" ).arg( title, artist, url );
             }
-            setData( "lyrics", "suggested", suggested );
+           // setData( "lyrics", "suggested", suggested );
             // TODO for now suggested is disabled
-            //sendLyricsMessage( QString( "notfound" ) ); // FIXME: Until we support it, show something...
+            //QStringList suggestions;
+            //suggestions <<
+            sendLyricsMessage( QString( "notfound" ) ); // FIXME: Until we support it, show something...
         }
     }
     else
