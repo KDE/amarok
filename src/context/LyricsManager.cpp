@@ -91,7 +91,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     DEBUG_BLOCK
     Q_UNUSED( cached );
 
-    debug() << "got xml: " << lyricsXML;
+    //debug() << "got xml: " << lyricsXML;
     
     QDomDocument doc;
     if( !doc.setContent( lyricsXML ) )
