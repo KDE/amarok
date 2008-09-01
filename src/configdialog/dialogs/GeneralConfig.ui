@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>350</width>
-    <height>281</height>
+    <width>376</width>
+    <height>291</height>
    </rect>
   </property>
   <layout class="QGridLayout" >
@@ -121,10 +121,13 @@
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::MinimumExpanding</enum>
+     </property>
      <property name="sizeHint" stdset="0" >
       <size>
        <width>20</width>
-       <height>0</height>
+       <height>100</height>
       </size>
      </property>
     </spacer>
