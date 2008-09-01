@@ -73,6 +73,8 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
         /** Notifies any running lyric scripts to fetch lyrics */
         void notifyFetchLyrics( const QString& artist, const QString& title );
+        /** Notifies any running lyric scripts to fetch desired lyric from given URL */
+        void notifyFetchLyricsByUrl( const QString& artist, const QString& title, const QString& url );
         
         void ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter );
 
@@ -95,7 +97,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
     signals:
         // needed so the lyrics script can connect to this
-        void fetchLyrics( const QString&, const QString& );
+        void fetchLyrics( const QString&, const QString&, const QString& url );
         
     private slots:
         /** Finds all installed scripts and adds them to the listview */

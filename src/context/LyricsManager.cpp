@@ -122,7 +122,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
                 const QString artist = l.item( i ).toElement().attribute( "artist" );
                 const QString title  = l.item( i ).toElement().attribute( "title" );
 
-                suggested << QString( "%1 - %2 %3" ).arg( title, artist, url );
+                suggested << QString( "%1 - %2 - %3" ).arg( title, artist, url );
             }
            // setData( "lyrics", "suggested", suggested );
             // TODO for now suggested is disabled

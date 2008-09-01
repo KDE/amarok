@@ -239,9 +239,14 @@ void
 ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 {
     DEBUG_BLOCK
-    emit fetchLyrics( artist, title );
+    emit fetchLyrics( artist, title, QString() );
 }
 
+void
+ScriptManager::notifyFetchLyricsByUrl( const QString& artist, const QString& title, const QString& url )
+{
+    emit fetchLyrics( artist, title, url );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // private slots

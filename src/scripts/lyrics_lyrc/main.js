@@ -169,7 +169,7 @@ function lyricsFetchResult( reply )
 }
 
 
-function fetchLyrics( artist, title )
+function fetchLyrics( artist, title, url )
 {
     // HACK this is not very pretty, but i can't get the QDomDocument stuff to work
     // so this is how it'll be for now
@@ -183,7 +183,11 @@ function fetchLyrics( artist, title )
     var host = "lyrc.com.ar";
     var path;
 
-    var path = "/en/tema1en.php?artist=" + artist + "&songname=" + title;
+    if( url == "" )
+        path = "/en/tema1en.php?artist=" + artist + "&songname=" + title;
+    else
+        path = "/en/" + url
+        
     page_url = "http://" + host + path;
 
     // TODO for now, ignoring proxy settings

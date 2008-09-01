@@ -40,15 +40,16 @@ public:
 public slots:
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+    void suggestionChosen( const QString& link );
 
 private:
     void calculateHeight();
-
+    
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
     QTextEdit* m_lyrics;
-    QGraphicsTextItem* m_suggested;
     qreal m_aspectRatio;
+    QGraphicsTextItem* m_suggested;
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
