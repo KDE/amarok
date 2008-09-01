@@ -54,8 +54,12 @@ namespace AmarokScript
         debug() << "importing qt bindings " << binding;
         QSet<QString> allowedBindings;
         allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
-        if( allowedBindings.contains( binding ) )
+        if( allowedBindings.contains( binding ) && ( !m_importedBindings.contains( binding ) ) )
+        {
+            if ( ( binding != "qt.core" ) && ( !m_importedBindings.contains( "qt.core" ) ) ) warning() << "qt.core should be included before the other bindings!";
             m_scriptEngine->importExtension( binding );
+            m_importedBindings << binding;
+        }
         else
             warning() <<"Qt Binding: " << binding << " not found!";
     }

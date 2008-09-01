@@ -40,8 +40,9 @@ namespace AmarokScript
             bool include( const QString& relativeFile );
 
         private:
-            const KUrl m_scriptUrl;
+            const KUrl      m_scriptUrl;
             QScriptEngine*  m_scriptEngine;
+            QSet<QString>   m_importedBindings;
     };
 }
 
