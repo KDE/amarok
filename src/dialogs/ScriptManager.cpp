@@ -232,7 +232,7 @@ ScriptManager::specForScript( const QString& name )
 bool
 ScriptManager::lyricsScriptRunning()
 {
-    return m_lyricsScript == QString();
+    return m_lyricsScript != QString();
 }
 
 void
@@ -422,9 +422,9 @@ ScriptManager::slotRunScript( QString name, bool silent )
     scriptFile.open( QIODevice::ReadOnly );
     m_scripts[name].running = true;
 
-     if( m_scripts[name].info.category() == "Lyrics" )
-         m_lyricsScript = name;
-
+    if( m_scripts[name].info.category() == "Lyrics" )
+        m_lyricsScript = name;
+   
     m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
     m_scripts[name].engine->setProcessEventsInterval( 1000 );
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
