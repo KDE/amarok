@@ -208,6 +208,7 @@ AmarokToolBoxMenu::initRunningApplets()
 void
 AmarokToolBoxMenu::appletAdded( Plasma::Applet *applet )
 {
+    DEBUG_BLOCK
     if( sender() != 0 )
     {
         Plasma::Containment *containment = dynamic_cast<Plasma::Containment *>( sender() );
@@ -228,10 +229,11 @@ AmarokToolBoxMenu::appletRemoved( Plasma::Applet *applet )
 {
     DEBUG_BLOCK
     if( sender() != 0 )
-    {
+    {        
         Plasma::Containment *containment = dynamic_cast<Plasma::Containment *>( sender() );
-        if( containment )
+        if( containment == this->containment() )
         {
+            DEBUG_LINE_INFO
             QString name = m_appletNames.take( applet );
             m_runningApplets[containment].removeAll( name );
             if( m_removeApplets )
