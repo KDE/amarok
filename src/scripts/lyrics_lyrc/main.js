@@ -20,8 +20,8 @@
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 **************************************************************************/
 
-Importer.loadQtBinding( "qt.network" );
 Importer.loadQtBinding( "qt.core" );
+Importer.loadQtBinding( "qt.network" );
 Importer.loadQtBinding( "qt.xml" );
 
 // HACK this is not very pretty, but i can't get the QDomDocument stuff to work
@@ -87,8 +87,6 @@ function lyricsFetchResult( reply )
     //Amarok.alert( "lyrics slot called!" );
     print( "got result from lyrics fetch:" + reply );
     try {
-        Importer.loadQtBinding( "qt.network" );
-        Importer.loadQtBinding( "qt.core" );
 //        print( "got size of result from lyrics fetch:" + reply.size() );
         lyrics = reply.readAll().toString();
     } catch( err )
