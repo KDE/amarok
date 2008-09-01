@@ -27,6 +27,7 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_lyrics( 0 )
     , m_aspectRatio( 1 )
+    , m_suggested( 0 )
 {
     setHasConfigurationInterface( false );
 }
@@ -48,6 +49,11 @@ void LyricsApplet::init()
     m_lyricsProxy->setWidget( m_lyrics );
     m_lyrics->setPlainText( i18n( "Hello, World" ) );
 
+    // only show when we need to let the user
+    // choose between suggestions
+    m_suggested = new QGraphicsTextItem( this );
+    m_suggested->hide();
+    
     connect( dataEngine( "amarok-lyrics" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
 
     constraintsEvent();
@@ -91,8 +97,11 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     else if( data.contains( "error" ) )
         m_lyrics->setPlainText( i18n( "Lyrics were not able to be downloaded. Please check your internet connection." ) );
     else if( data.contains( "suggested" ) )
-        m_lyrics->setPlainText( i18n( "Todo.... show suggestions here!" ) );
-    else if( data.contains( "lyrics" ) )
+    {
+        m_lyrics->hide();
+        QVariantList suggested = data[ "suggested" ].toList();
+        debug() << "got suggested: " << suggested;
+    } else if( data.contains( "lyrics" ) )
     {
         QVariantList lyrics  = data[ "lyrics" ].toList();
 

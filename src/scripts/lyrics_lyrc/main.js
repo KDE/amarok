@@ -33,7 +33,7 @@ QByteArray.prototype.toString = function()
 function parseLyrics( lyrics )
 {
     print( "parsing!!!" );
-    //print( lyrics );
+    print( lyrics );
     var lyricsReady = lyrics;
 
     lyrics = lyrics.replace(  /<[fF][oO][nN][tT][^>]*>/g, "" );
@@ -53,8 +53,8 @@ function parseLyrics( lyrics )
         lyrics = /(<\/u><\/font>)(.*)/.exec( lyrics )[ 2 ];
         // html -> plaintext:
         lyrics = lyrics.replace( /<[Bb][Rr][^>]*>/g, "\n" );
-        lyrics = lyrics.replace( "\n\n", "" ).replace( "\r", "" );
-        lyrics = lyrics.replace( "\n\n", "\n" ).replace( "\r", "" );
+        lyrics = lyrics.replace( "\n\r\n\r", "" ).replace( "\n", "" );
+        //lyrics = lyrics.replace( "\n\n", "\n" ).replace( "\r", "" );
         lyrics = lyrics.replace( /<.*>/g, "" ); // erase everything after the lyric
         var lyricsStr = lyrics.replace( /\n\n[\n]+/g, "\n" );
         //print( "got cleaned lyrics: " + lyrics );

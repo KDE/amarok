@@ -47,6 +47,7 @@ private:
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
     QTextEdit* m_lyrics;
+    QGraphicsTextItem* m_suggested;
     qreal m_aspectRatio;
 };
 
