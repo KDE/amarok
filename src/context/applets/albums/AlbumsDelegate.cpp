@@ -138,7 +138,6 @@ AlbumsDelegate::paint( QPainter *painter, const QStyleOptionViewItem& option, co
         QRect albumCoverRect( coverTopLeft, coverSize );
 
         QPixmap coverPixmap = index.data( AlbumRoles::AlbumCover ).value<QPixmap>();
-        coverPixmap = coverPixmap.scaled( coverSize, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
         painter->drawPixmap( albumCoverRect, coverPixmap );
     }

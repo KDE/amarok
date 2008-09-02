@@ -239,7 +239,7 @@ CurrentEngine::setupAlbumsData()
         QString trackCount = i18np( "%1 track", "%1 tracks", albumPtr->tracks().size() );
         trackCounts << trackCount;
 
-        QPixmap image = albumPtr->image( 50 );
+        QPixmap image = albumPtr->image( 60 );
         covers << image;
         QList<QString> tracks;
         foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )
