@@ -22,7 +22,9 @@
 
 #include <KUrl>
 
+#include <QList>
 #include <QObject>
+#include <QUrl>
 #include <QtScript>
 
 namespace AmarokScript
@@ -38,11 +40,11 @@ namespace AmarokScript
             int activeIndex();
             int totalTrackCount();
             QString saveCurrentPlaylist();
-            void addMedia( const KUrl &url );
-            void addMediaList( const KUrl::List &urls );
+            void addMedia( const QUrl &url );
+            void addMediaList( const QList<QUrl> &urls );
             void clearPlaylist();
             void playByIndex( int index );
-            void playMedia( const KUrl &url );
+            void playMedia( const QUrl &url );
             void removeCurrentTrack();
             void removeByIndex( int index );
             void savePlaylist( const QString& path );

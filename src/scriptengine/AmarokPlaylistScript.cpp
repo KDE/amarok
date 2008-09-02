@@ -60,15 +60,18 @@ namespace AmarokScript
         return savePath;
     }
 
-    void AmarokPlaylistScript::addMedia( const KUrl &url )
+    void AmarokPlaylistScript::addMedia( const QUrl &url )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
         The::playlistModel()->insertOptioned( track, Playlist::Append );
     }
 
-    void AmarokPlaylistScript::addMediaList( const KUrl::List &urls )
+    void AmarokPlaylistScript::addMediaList( const QList<QUrl> &urls )
     {
-        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
+        KUrl::List list;
+        foreach( const QUrl &url, urls )
+            list << url;
+        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
         The::playlistModel()->insertOptioned( tracks, Playlist::Append );
     }
 
@@ -82,7 +85,7 @@ namespace AmarokScript
         The::playlistModel()->play( index );
     }
 
-    void AmarokPlaylistScript::playMedia( const KUrl &url )
+    void AmarokPlaylistScript::playMedia( const QUrl &url )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
         if( track )
