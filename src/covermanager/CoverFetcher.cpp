@@ -274,7 +274,7 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
 
     QString url;
     url = "http://ecs.amazonaws." + tld
-            + "/onca/xml?Service=AWSECommerceService&Version=2007-10-29&Operation=ItemSearch&AssociateTag=webservices-20&AWSAccessKeyId=" + LICENSE
+            + "/onca/xml?Service=AWSECommerceService&Version=2007-10-29&Operation=ItemSearch&AssociateTag=amarok-20&AWSAccessKeyId=" + LICENSE
             + "&Keywords=" + QUrl::toPercentEncoding( query, "/" )
             + "&SearchIndex=Music&ResponseGroup=Small,Images";
     debug() << url;
