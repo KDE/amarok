@@ -1,5 +1,6 @@
 /*******************************************************************************
 * copyright              : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
+*                        : (C) 2008 Seb Ruiz <ruiz@kde.org>                    *
 *                                                                              *
 ********************************************************************************/
 
@@ -14,45 +15,107 @@
 
 #include "AlbumsView.h"
 #include "Debug.h"
+#include "SvgHandler.h"
 
-#include <QTreeView>
 #include <QHeaderView>
-#include <QItemDelegate>
+#include <QPainter>
+#include <QStyleOptionViewItem>
+#include <QTreeView>
 
 #include <KIconLoader>
 
-#include "AlbumsDelegate.h"
+class AlbumsTreeView : public QTreeView
+{
+    public:
+        AlbumsTreeView( QWidget * parent = 0 ) : QTreeView( parent )
+        {
+            setAttribute( Qt::WA_NoSystemBackground );
+            viewport()->setAutoFillBackground( false );
+    
+            setFrameStyle( QFrame::NoFrame );
+            setHeaderHidden( true );
+            setIconSize( QSize(60,60) );
 
+            // setAnimated( true ); // looks TERRIBLE
+
+            setRootIsDecorated( false );
+            setMouseTracking( true );
+    
+            setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+            setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
+            
+            setAlternatingRowColors( true );
+            //transparency
+            QPalette p = palette();
+            QColor c = p.color( QPalette::Base );
+            c.setAlpha( 0 );
+            p.setColor( QPalette::Base, c );
+            
+            //HACK ALERT, make a workaround, for now, for the alternating row color issue
+            c = Qt::white;
+            c.setAlpha( 31 );
+            p.setColor( QPalette::AlternateBase, c );
+            
+            setPalette( p );
+        }
+
+    protected:
+        void drawRow( QPainter *painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+        {
+            const QStyleOptionViewItemV4 opt = option;
+
+            const bool alternate = opt.features & QStyleOptionViewItemV2::Alternate;
+
+            const int width = option.rect.width();
+            const int height = option.rect.height();
+
+            if( height > 0 )
+            {
+                painter->save();
+                QPixmap background;
+
+                if ( !alternate )
+                    background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
+                else
+                    background = The::svgHandler()->renderSvgWithDividers( "alt_service_list_item", width, height, "alt_service_list_item" );
+
+                painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
+
+                painter->restore();
+            }
+    
+            QTreeView::drawRow( painter, option, index ); 
+        }
+};
 
 AlbumsView::AlbumsView( QGraphicsWidget *parent )
     : QGraphicsProxyWidget( parent )
 {
-    QTreeView* native = new QTreeView;
-    setWidget( native );
-    native->setAttribute( Qt::WA_NoSystemBackground );
-    native->viewport()->setAutoFillBackground( false );
-    native->setFrameStyle( QFrame::NoFrame );
-    native->setHeaderHidden( true );
+    AlbumsTreeView* treeView = new AlbumsTreeView;
+    setWidget( treeView );
+    
+    connect( treeView, SIGNAL(       clicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
+    connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
 
-    // native->setAnimated( true ); // causes flickering
-
-    native->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    native->setIconSize( QSize( KIconLoader::SizeSmallMedium, KIconLoader::SizeSmallMedium ) );
-    native->setRootIsDecorated( true );
-    native->setMouseTracking( true );
-    native->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
-
-    AlbumsDelegate *delegate = new AlbumsDelegate( native );
-    native->setItemDelegate( delegate );
-    connect( native, SIGNAL(       clicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
-    connect( native, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
-//     connect( native, SIGNAL( entered( const QModelIndex & ) ), delegate, SLOT( highlightRow( const QModelIndex & ) ) );
-
-    native->show();
+    treeView->show();
 }
 
-AlbumsView::~AlbumsView()
+void
+AlbumsView::setModel( QAbstractItemModel *model )
 {
+    nativeWidget()->setModel( model );                                                                                               
+}
+
+QAbstractItemModel *
+AlbumsView::model()
+{
+    return nativeWidget()->model();
+}
+
+QTreeView*
+AlbumsView::nativeWidget() const
+{
+    return static_cast<QTreeView*>( widget() );
 }
 
 void
@@ -81,45 +144,15 @@ AlbumsView::itemDoubleClicked( const QModelIndex &index )
 */
 
 void
-AlbumsView::setModel( QAbstractItemModel *model )
-{
-    nativeWidget()->setModel( model );
-}
-
-QAbstractItemModel *
-AlbumsView::model()
-{
-    return nativeWidget()->model();
-}
-
-void
-AlbumsView::setStyleSheet( const QString &stylesheet )
-{
-    widget()->setStyleSheet( stylesheet );
-}
-
-QString
-AlbumsView::styleSheet()
-{
-    return widget()->styleSheet();
-}
-
-QTreeView*
-AlbumsView::nativeWidget() const
-{
-    return static_cast<QTreeView*>( widget() );
-}
-
-void
 AlbumsView::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
     QGraphicsProxyWidget::resizeEvent( event );
 
     const int newWidth = size().width() / nativeWidget()->header()->count();
 
-    for ( int i = 0; i < nativeWidget()->header()->count(); ++i ) {
+    for( int i = 0; i < nativeWidget()->header()->count(); ++i )
         nativeWidget()->header()->resizeSection( i, newWidth );
-    }
+
     nativeWidget()->setColumnWidth( 0, 100 );
 }
 

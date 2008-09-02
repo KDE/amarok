@@ -125,32 +125,47 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         return;
     
     m_names = data[ "names" ].toList();
-    m_trackCounts = data[ "trackCounts" ].toList();;
+    m_trackCounts = data[ "trackCounts" ].toList();
     m_covers = data[ "covers" ].toList();;
     m_albumsTracks = data[ "albumsTracks" ].toList();
     
     kDebug() << "Albums::dataUpdated. count: " << m_albumCount << " names " << m_names.count();
 
-    m_model->clear();    
+    m_model->clear();
        
     int row = 0;
     
     foreach( const QVariant &albumName, m_names )
     {
         QStandardItem *albumItem = new QStandardItem();
-        albumItem->setData( albumName.toString(), AlbumRoles::AlbumName );
-        
+
+        QString displayText = albumName.toString();
+
         if( m_trackCounts.size() > 0 )
-            albumItem->setData( m_trackCounts[row].toString(), AlbumRoles::TrackCount );
+            displayText += "\n" + m_trackCounts[row].toString();
+
+        albumItem->setText( displayText );
 
         if( m_covers.size() > 0 )
-            albumItem->setData( m_covers[row].value<QPixmap>(), AlbumRoles::AlbumCover );
+        {
+            QPixmap cover = m_covers[row].value<QPixmap>();
+            albumItem->setIcon( QIcon( cover ) );
+        }
+        else
+            albumItem->setIcon( KIcon( "media-album-cover" ) );
+        
+        QSize sizeHint = albumItem->sizeHint();
+        sizeHint.setHeight( 80 );
+        albumItem->setSizeHint( sizeHint );
         
         int childRow = 0;
         foreach( const QVariant &trackName, m_albumsTracks[row].toList() )
         {
+            QString text = QString( "%1 - " ).arg( childRow + 1 ) + trackName.toString();
+
             QStandardItem *trackItem = new QStandardItem();
-            trackItem->setData( trackName.toString(), AlbumRoles::TrackName );
+            trackItem->setText( text );
+
             albumItem->setChild( childRow, trackItem );
             childRow++;
         }
