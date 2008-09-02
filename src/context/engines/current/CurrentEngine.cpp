@@ -163,16 +163,15 @@ void CurrentEngine::update()
     
     removeAllData( "current" );
         
-    if( m_currentTrack->album() ) {
-
+    if( m_currentTrack->album() )
+    {
         //add a source info emblem ( if available ) to the cover
-
         QPixmap art = m_currentTrack->album()->image( width );
         setData( "current", "albumart",  QVariant( art ) );
-
      }
     else
         setData( "current", "albumart", QVariant( QPixmap() ) );
+
     setData( "current", "current", trackInfo );
 
     Meta::SourceInfoCapability *sic = m_currentTrack->as<Meta::SourceInfoCapability>();
@@ -180,13 +179,13 @@ void CurrentEngine::update()
     {
         //is the source defined
         QString source = sic->sourceName();
-        if ( !source.isEmpty() ) {
+        if( !source.isEmpty() )
             setData( "current", "source_emblem",  QVariant( sic->emblem() ) );
-        }
+
         delete sic;
-    } else {
-        setData( "current", "source_emblem",  QVariant( QPixmap() ) );
     }
+    else
+        setData( "current", "source_emblem",  QVariant( QPixmap() ) );
 
     //generate data for album applet
     Meta::ArtistPtr artist = m_currentTrack->artist();
@@ -233,8 +232,6 @@ CurrentEngine::setupAlbumsData()
     QList< QVariant > albumsTracks;
     foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
-//        debug() << "adding album " << albumPtr->name();
-
         QString albumName = albumPtr->name();
         albumName =  albumName.isEmpty() ? i18n("Unknown") : albumName;
         names << albumName;
@@ -257,7 +254,6 @@ CurrentEngine::setupAlbumsData()
     setData( "albums", "covers",  QVariant( covers ) );
     setData( "albums", "count",  QVariant( m_albums.count() ) );
     setData( "albums", "albumsTracks", QVariant( albumsTracks ) );
-
 }
 
 
