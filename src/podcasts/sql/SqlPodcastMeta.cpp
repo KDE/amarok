@@ -23,6 +23,8 @@
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
 
+#include <QDate>
+
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::SqlPodcastChannelPtr sqlChannel )
     : Meta::PodcastEpisode( Meta::PodcastChannelPtr::staticCast( sqlChannel ) )
     , m_batchUpdate( false )
@@ -55,12 +57,12 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     m_url = KUrl( episode->uidUrl() );
     m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
     setChannel( episode->channel() );
-    
+
     if ( !m_sqlChannel ) {
         debug() << "invalid m_sqlChannel";
         debug() <<  episode->channel()->title();
     }
-    
+
     m_localUrl = episode->localUrl();
     m_title = episode->title();
     m_guid = episode->guid();
@@ -74,7 +76,7 @@ Meta::SqlPodcastEpisode::updateInDb()
 {
     DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    
+
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
     #define escape(x) sqlStorage->escape(x)
@@ -104,10 +106,10 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     m_copyright = *(iter++);
     m_directory = KUrl( *(iter++) );
     m_labels = QStringList( *(iter++) );
+    m_subscribeDate = QDate::fromString( *(iter++) );
     m_autoScan = sqlStorage->boolTrue() == *(iter++);
     m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ? DownloadWhenAvailable : StreamOrDownloadOnDemand;
-    m_autoTransfer = sqlStorage->boolTrue() == *(iter++);
-    m_hasPurge = sqlStorage->boolTrue() == *(iter++);
+    m_purge = sqlStorage->boolTrue() == *(iter++);
     m_purgeCount = (*(iter++)).toInt();
     loadEpisodes();
 }
@@ -116,7 +118,7 @@ void
 Meta::SqlPodcastChannel::loadEpisodes()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    
+
     QStringList results = sqlStorage->query( QString("SELECT id, url, channel, localurl, guid, title, subtitle, sequencenumber, description, mimetype, pubdate, duration, filesize, isnew FROM podcastepisodes WHERE channel = %1;").arg( m_id ) );
 
     int rowLength = 14;
@@ -139,9 +141,10 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     m_description = channel->description();
     m_copyright = channel->copyright();
     m_labels = channel->labels();
+    m_subscribeDate = channel->subscribeDate();
 
     updateInDb();
-    
+
     m_episodes = channel->episodes();
 
     foreach ( Meta::PodcastEpisodePtr episode, channel->episodes() ) {
@@ -159,22 +162,26 @@ void
 Meta::SqlPodcastChannel::updateInDb()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    
+
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
     #define escape(x) sqlStorage->escape(x)
-    QString insert = "INSERT INTO podcastchannels(url,title,weblink,image,description,copyright,labels,autoscan,fetchtype,autotransfer,haspurge,purgecount) VALUES ( %1 );";
-    QString data = "'%1','%2','%3','%4','%5','%6','%7',%8,%9,%10,%11,%12";
-    data = data.arg( escape(m_url.url()) ).arg( escape(m_title) ).arg( escape(m_webLink.url()) );
+    QString insert = "INSERT INTO podcastchannels(url,title,weblink,image,description,copyright,labels,subscribedate,autoscan,fetchtype,haspurge,purgecount) VALUES ( %1 );";
+    QString data = "'%1','%2','%3','%4','%5','%6','%7','%8',%9,%10,%11,%12";
+    data = data.arg( escape(m_url.url()) );
+    data = data.arg( escape(m_title) );
+    data = data.arg( escape(m_webLink.url()) );
     //TODO:m_image.url()
-    data = data.arg( escape(QString("")) ).arg( escape(m_description) ).arg( escape(m_copyright) );
+    data = data.arg( escape(QString("")) );
+    data = data.arg( escape(m_description) );
+    data = data.arg( escape(m_copyright) );
     //TODO: QStringList -> comma separated QString
     QString labels = QString("");
     data = data.arg( escape(labels) );
+    data = data.arg( escape(m_subscribeDate.toString()) );
     data = data.arg( m_autoScan ? boolTrue : boolFalse );
     data = data.arg( QString::number(m_fetchType) );
-    data = data.arg( m_autoTransfer ? boolTrue : boolFalse );
-    data = data.arg( m_hasPurge ? boolTrue : boolFalse );
+    data = data.arg( m_purge ? boolTrue : boolFalse );
     data = data.arg( QString::number(m_purgeCount) );
     insert = insert.arg( data );
 

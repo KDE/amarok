@@ -23,6 +23,7 @@
 #include <kio/job.h>
 #include <kurl.h>
 
+#include <QDate>
 #include <QDebug>
 #include <QMap>
 
@@ -154,6 +155,7 @@ PodcastReader::read()
                             debug() << "new channel";
                             m_channel = new Meta::PodcastChannel();
                             m_channel->setUrl( m_url );
+                            m_channel->setSubscribeDate( QDate::currentDate() );
                             m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
                         }
                     }

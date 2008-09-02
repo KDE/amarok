@@ -72,8 +72,8 @@ SqlPodcastProvider::loadPodcasts()
 {
     DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    
-    QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image, description, copyright, directory, labels, autoscan, fetchtype, autotransfer, haspurge, purgecount FROM podcastchannels;" );
+
+    QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image, description, copyright, directory, labels, subscribedate, autoscan, fetchtype, haspurge, purgecount FROM podcastchannels;" );
 
     int rowLength = 14;
     for(int i=0; i < results.size(); i+=rowLength)
@@ -332,8 +332,9 @@ SqlPodcastProvider::createTables() const
                     ",copyright "  + sqlStorage->textColumnType() +
                     ",directory "  + sqlStorage->textColumnType() +
                     ",labels " + sqlStorage->textColumnType() +
+                    ",subscribedate " + sqlStorage->textColumnType() +
                     ",autoscan BOOL, fetchtype INTEGER"
-                    ",autotransfer BOOL, haspurge BOOL, purgecount INTEGER );" ) );
+                    ",haspurge BOOL, purgecount INTEGER );" ) );
 
     sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
                     "id " + sqlStorage->idType() +

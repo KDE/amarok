@@ -31,6 +31,8 @@
 #include <QStringList>
 #include <QTextStream>
 
+class QDate;
+
 namespace Meta
 {
 
@@ -63,7 +65,7 @@ class PodcastMetaCommon
         PodcastMetaCommon() {};
         virtual ~PodcastMetaCommon() {}
 
-        virtual QString title() const { return m_title;} 
+        virtual QString title() const { return m_title;}
         virtual QString description() const { return m_description; }
         virtual QStringList keywords() const { return m_keywords; }
         virtual QString subtitle() const { return m_subtitle; }
@@ -96,7 +98,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
             : PodcastMetaCommon()
             , Track()
         {}
-        
+
         PodcastEpisode( PodcastChannelPtr channel )
             : PodcastMetaCommon()
             , Track()
@@ -223,10 +225,11 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
 
         //PodcastChannel specific methods
         KUrl url() const { return m_url; }
-        KUrl webLink() const { debug() <<"here3"; return m_webLink; }
+        KUrl webLink() const { return m_webLink; }
         QPixmap image() const { return m_image; }
         QString copyright() { return m_copyright; }
         QStringList labels() const { return m_labels; }
+        QDate subscribeDate() const { return m_subscribeDate; }
 
         void setUrl( const KUrl &url ) { m_url = url; }
         void setWebLink( const KUrl &link ) { m_webLink = link; }
@@ -234,8 +237,9 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
         void setCopyright( const QString &copyright ) { m_copyright = copyright; }
         void setLabels( const QStringList &labels ) { m_labels = labels; }
         void addLabel( const QString &label ) { m_labels << label; }
+        void setSubscribeDate( const QDate &date ) { m_subscribeDate = date; }
 
-        void addEpisode( PodcastEpisodePtr episode ) { debug() << "adding episode " << episode->title() << " to channel " << title();  m_episodes << episode; }
+        void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; }
         PodcastEpisodeList episodes() { return m_episodes; }
 
         bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
@@ -244,17 +248,28 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
 
         bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 
+        //Settings
+        bool autoScan() { return m_autoScan; }
+        FetchType fetchType() { return m_fetchType; }
+        bool hasPurge() { return m_purge; }
+        int purgeCount() { return m_purgeCount; }
+
+        void setAutoscan( bool autoScan ) { m_autoScan = autoScan; }
+        void setFetchType( FetchType fetchType ) { m_fetchType = fetchType; }
+        void setPurge( bool purge ) { m_purge = purge; }
+        void setPurgeCount( int purgeCount ) { m_purgeCount = purgeCount; }
+
     protected:
         KUrl m_url;
         KUrl m_webLink;
         QPixmap m_image;
         QStringList m_labels;
+        QDate m_subscribeDate;
         QString m_copyright;
         KUrl m_directory; //the local directory to save the files in.
         bool m_autoScan; //should this channel be checked automatically?
         PodcastChannel::FetchType m_fetchType; //'download when available' or 'stream or download on demand'
-        bool m_autoTransfer; //copy to mediadevice?
-        bool m_hasPurge; //remove old episodes?
+        bool m_purge; //remove old episodes?
         int m_purgeCount; //how many episodes do we keep on disk?
 
         PodcastEpisodeList m_episodes;
