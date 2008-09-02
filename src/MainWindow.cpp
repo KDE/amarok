@@ -422,13 +422,14 @@ MainWindow::exportPlaylist() const //SLOT
     }
 }
 
-void MainWindow::savePlaylist() const
+void
+MainWindow::savePlaylist() const
 {
     DEBUG_BLOCK
     //TODO make a nice dialog for choosing name and potentially parent group
     //if( !playlistName.isEmpty() )
 
-    QString playlistName( "Playlist" );
+    QString playlistName( i18n("Playlist") );
     The::playlistModel()->savePlaylist( playlistName );
 }
 
