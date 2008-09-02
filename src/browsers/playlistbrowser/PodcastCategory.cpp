@@ -592,17 +592,51 @@ PlaylistBrowserNS::PodcastView::createEpisodeActions( QModelIndexList indices )
     return actions;
 }
 
-void
-PlaylistBrowserNS::PodcastView::slotAppend()
+Meta::PodcastEpisodeList
+PlaylistBrowserNS::PodcastView::selectedEpisodes()
 {
-    DEBUG_BLOCK
+    Meta::PodcastEpisodeList episodes;
     foreach( Meta::PodcastMetaCommon *pmc, m_currentItems )
     {
         switch( pmc->podcastType() )
         {
-            case Meta::EpisodeType: debug() << "adding episode: " << pmc->title(); break;
-            case Meta::ChannelType: debug() << "adding channel: " << pmc->title(); break;
+            case Meta::EpisodeType:
+                debug() << "adding episode: " << pmc->title();
+                episodes << Meta::PodcastEpisodePtr(
+                    static_cast<Meta::PodcastEpisode *>(pmc)
+                );
+                break;
+            case Meta::ChannelType:
+                debug() << "adding channel: " << pmc->title();
+                episodes << static_cast<Meta::PodcastChannel *>(pmc)->episodes();
+                break;
         }
+    }
+    return episodes;
+}
+
+Meta::TrackList
+PlaylistBrowserNS::PodcastView::podcastEpisodesToTracks(
+        Meta::PodcastEpisodeList episodes
+)
+{
+    Meta::TrackList tracks;
+    foreach( Meta::PodcastEpisodePtr episode, episodes )
+        tracks << Meta::TrackPtr::staticCast( episode );
+    return tracks;
+}
+
+void
+PlaylistBrowserNS::PodcastView::slotAppend()
+{
+    DEBUG_BLOCK
+
+    Meta::PodcastEpisodeList episodes = selectedEpisodes();
+    if( !episodes.empty() )
+    {
+        The::playlistModel()->insertOptioned(
+            podcastEpisodesToTracks( episodes ),
+            Playlist::Append );
     }
 }
 
@@ -627,13 +661,16 @@ PlaylistBrowserNS::PodcastView::slotLabel()
 void
 PlaylistBrowserNS::PodcastView::slotLoad() {
     DEBUG_BLOCK
-//     foreach( SqlPlaylistViewItemPtr item, m_currentItems )
-//         if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
-//         Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-//         //debug() << "playlist name: " << playlist->name();
-//         //The::playlistModel()->insertOptioned( Meta::PlaylistPtr( playlist ), Playlist::Append );
-//         The::playlistModel()->insertOptioned( playlist->tracks(), Playlist::Replace );
-//         }
+
+    Meta::PodcastEpisodeList episodes = selectedEpisodes();
+
+    if( !episodes.empty() )
+    {
+        The::playlistModel()->insertOptioned(
+            podcastEpisodesToTracks( episodes ),
+            Playlist::Replace
+        );
+    }
 }
 
 void
