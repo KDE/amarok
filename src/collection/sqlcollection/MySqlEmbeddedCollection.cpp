@@ -97,12 +97,13 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
         dir.mkpath( "." );
     }
 
-    static const int num_elements = 3;
+    static const int num_elements = 4;
     char **server_options = new char* [ num_elements + 1 ];
     server_options[0] = "amarokmysqld";
     server_options[1] = defaultsLine;
     server_options[2] = databaseLine;
-    server_options[3] = 0;
+    server_options[3] = "--default-storage-engine=INNODB";
+    server_options[4] = 0;
 
     char **server_groups = new char* [ 3 ];
     server_groups[0] = "amarokserver";
