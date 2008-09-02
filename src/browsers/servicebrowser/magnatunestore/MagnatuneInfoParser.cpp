@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "magnatuneinfoparser.h"
+#include "MagnatuneInfoParser.h"
 
 #include "Debug.h"
 #include "StatusBar.h"
@@ -173,5 +173,5 @@ void MagnatuneInfoParser::frontPageDownloadComplete(KJob * downLoadJob)
 }
 
 
-#include "magnatuneinfoparser.moc"
+#include "MagnatuneInfoParser.moc"
 

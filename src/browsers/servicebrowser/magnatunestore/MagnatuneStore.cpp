@@ -25,11 +25,11 @@
 #include "EngineController.h"
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"
+#include "MagnatuneInfoParser.h"
 #include "../ServiceInfoProxy.h"
 #include "../ServiceSqlRegistry.h"
 #include "collection/CollectionManager.h"
 #include "Debug.h"
-#include "magnatuneinfoparser.h"
 #include "playlist/PlaylistModel.h"
 
 #include <KIconLoader>   //multiTabBar icons

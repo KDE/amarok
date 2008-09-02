@@ -14,7 +14,7 @@
 ########### next target ###############
 
         set(amarok_service_magnatune_PART_SRCS
-            magnatuneinfoparser.cpp
+            MagnatuneInfoParser.cpp
             MagnatuneStore.cpp
             MagnatuneDownloadDialog.cpp
             MagnatunePurchaseDialog.cpp
