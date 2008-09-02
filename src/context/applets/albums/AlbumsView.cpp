@@ -32,7 +32,10 @@ AlbumsView::AlbumsView( QGraphicsWidget *parent )
     native->setAttribute( Qt::WA_NoSystemBackground );
     native->viewport()->setAutoFillBackground( false );
     native->setFrameStyle( QFrame::NoFrame );
-    native->header()->hide();
+    native->setHeaderHidden( true );
+
+    // native->setAnimated( true ); // causes flickering
+
     native->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     native->setIconSize( QSize( KIconLoader::SizeSmallMedium, KIconLoader::SizeSmallMedium ) );
     native->setRootIsDecorated( true );
@@ -41,7 +44,8 @@ AlbumsView::AlbumsView( QGraphicsWidget *parent )
 
     AlbumsDelegate *delegate = new AlbumsDelegate( native );
     native->setItemDelegate( delegate );
-    connect( native, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemDoubleClicked( const QModelIndex & ) ) );
+    connect( native, SIGNAL(       clicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
+    connect( native, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
 //     connect( native, SIGNAL( entered( const QModelIndex & ) ), delegate, SLOT( highlightRow( const QModelIndex & ) ) );
 
     native->show();
@@ -54,12 +58,12 @@ AlbumsView::~AlbumsView()
 void
 AlbumsView::itemClicked( const QModelIndex &index )
 {
-    if( nativeWidget()->isExpanded( index ) )
-        nativeWidget()->collapse( index );
-    else
-        nativeWidget()->expand( index );
+    bool expanded = nativeWidget()->isExpanded( index );    
+    nativeWidget()->setExpanded( index, !expanded );
 }
 
+/*
+ * Disabled until we can reference an album/track by their internal id instead of their names.
 void
 AlbumsView::itemDoubleClicked( const QModelIndex &index )
 {
@@ -74,6 +78,7 @@ AlbumsView::itemDoubleClicked( const QModelIndex &index )
                            index.data( AlbumRoles::TrackName ).toString() );
     }
 }
+*/
 
 void
 AlbumsView::setModel( QAbstractItemModel *model )

@@ -69,10 +69,12 @@ protected:
     
 private slots:
     void itemClicked( const QModelIndex &index );
-    void itemDoubleClicked( const QModelIndex &index );
-Q_SIGNALS:
-    void enqueueAlbum( const QString &name );
-    void enqueueTrack( const QString &albumName, const QString &trackName );
+    //void itemDoubleClicked( const QModelIndex &index );
+
+signals:
+    //TODO: enqueue a MetaPtr not a QString which isn't unique.
+    //void enqueueAlbum( const QString &name );
+    //void enqueueTrack( const QString &albumName, const QString &trackName );
     
 };
 

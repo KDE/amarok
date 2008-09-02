@@ -222,7 +222,8 @@ void Albums::enqueueAlbum( const QString &name )
     m_qm->addFilter( QueryMaker::valAlbum, name );
 
     connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-            SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+             this,   SLOT(    resultReady( QString, Meta::AlbumList ) ),
+             Qt::QueuedConnection );
     
     m_qm->run();
 
@@ -240,7 +241,8 @@ Albums::enqueueTrack( const QString &albumName, const QString &trackName )
     m_qm->addFilter( QueryMaker::valTitle, trackName );
     
     connect( m_qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-            SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+             this,   SLOT(    resultReady( QString, Meta::TrackList ) ),
+             Qt::QueuedConnection );
 
     m_qm->run();
 }
