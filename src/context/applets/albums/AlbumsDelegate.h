@@ -35,16 +35,18 @@ namespace AlbumRoles
 class AlbumsDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
+
 public:
     AlbumsDelegate( QObject *parent = 0 );
     ~AlbumsDelegate();
 
     //Reimplemented
     virtual void paint( QPainter *painter,const QStyleOptionViewItem& option,const QModelIndex& index ) const;
+
 public slots:
     void highlightRow( const QModelIndex &index );
-protected:
 
+protected:
     virtual QSize sizeHint( const QStyleOptionViewItem& option , const QModelIndex& index ) const;
 
 private:

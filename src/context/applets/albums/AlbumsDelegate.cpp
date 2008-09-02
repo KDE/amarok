@@ -36,7 +36,7 @@
 
 AlbumsDelegate::AlbumsDelegate( QObject *parent )
     : QAbstractItemDelegate( parent )
-    , m_coverWidth( 50 )
+    , m_coverWidth( 60 )
 {
     m_decorations = new Context::Svg( this );
     m_decorations->setImagePath( "widgets/amarok-albums" );
@@ -134,7 +134,7 @@ AlbumsDelegate::paint( QPainter *painter, const QStyleOptionViewItem& option, co
                                          QSize( 16, 16 ) ) );
 
         QPoint coverTopLeft( option.rect.left() + margin, option.rect.top() + margin );
-        QSize  coverSize( 60, 60 );
+        QSize  coverSize( m_coverWidth, m_coverWidth );
         QRect albumCoverRect( coverTopLeft, coverSize );
 
         QPixmap coverPixmap = index.data( AlbumRoles::AlbumCover ).value<QPixmap>();
