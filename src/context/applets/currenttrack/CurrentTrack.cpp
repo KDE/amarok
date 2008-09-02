@@ -26,6 +26,7 @@
 #include <plasma/theme.h>
 
 #include <KApplication>
+#include <KColorScheme>
 #include <KIcon>
 #include <KMessageBox>
 
@@ -64,8 +65,6 @@ void CurrentTrack::init()
 
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 1  );
-    labelFont.setStyleHint( QFont::Times );
-    labelFont.setStyleStrategy( QFont::PreferAntialias );
 
     m_ratingWidget = new RatingWidget( this );
 
@@ -83,8 +82,10 @@ void CurrentTrack::init()
     m_score->setToolTip( i18n( "Score" ) );
     m_numPlayed->setToolTip( i18n( "Play Count" ) );
     m_playedLast->setToolTip( i18n( "Last Played" ) );
-    QPen pen( m_title->pen() );
-    pen.setColor( App::instance()->palette().base().color() );
+    
+    QPen pen;
+    pen.setBrush( ( KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText ) ) );
+    pen.setStyle( Qt::SolidLine );
 
     m_title->setPen( pen );
     m_artist->setPen( pen );
@@ -94,13 +95,12 @@ void CurrentTrack::init()
     m_playedLast->setPen( pen );
     m_noTrack->setPen( pen );
 
-//     m_sourceEmblem = new QGraphicsPixmapItem( this );
 
     QFont bigFont( labelFont );
-    bigFont.setPointSize( bigFont.pointSize() +  3 );
+    bigFont.setPointSize( bigFont.pointSize() +  2 );
     
     QFont tinyFont( labelFont );
-    tinyFont.setPointSize( tinyFont.pointSize() - 5 );
+    tinyFont.setPointSize( tinyFont.pointSize() - 4 );
 
     m_noTrack->setFont( bigFont );
     m_title->setFont( labelFont );
