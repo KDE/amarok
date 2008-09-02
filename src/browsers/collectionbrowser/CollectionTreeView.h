@@ -52,8 +52,8 @@ class CollectionTreeView: public QTreeView
         AMAROK_EXPORT void setLevels( const QList<int> &levels );
         void setLevel( int level, int type );
 
-        void setModel ( QAbstractItemModel * model );
-        void contextMenuEvent(QContextMenuEvent* event);
+        void setModel( QAbstractItemModel *model );
+        void contextMenuEvent(QContextMenuEvent *event);
 
         void setShowYears( bool show ) { m_showYears = show; }
         bool showYears() const { return m_showYears; }
@@ -78,9 +78,10 @@ class CollectionTreeView: public QTreeView
         void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
-        void startDrag(Qt::DropActions supportedActions);
+        void startDrag( Qt::DropActions supportedActions );
         //void changeEvent ( QEvent * event );
-        virtual void drawRow ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+        virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+
     protected slots:
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotExpand( const QModelIndex &index );
