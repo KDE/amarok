@@ -28,8 +28,10 @@ class CustomActionsProvider;
 /**
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AMAROK_EXPORT ServiceCustomActionsCapability : public Meta::CustomActionsCapability {
+class AMAROK_EXPORT ServiceCustomActionsCapability : public Meta::CustomActionsCapability
+{
     Q_OBJECT
+
     public:
         ServiceCustomActionsCapability( CustomActionsProvider * customActionsProvider  );
         virtual ~ServiceCustomActionsCapability();

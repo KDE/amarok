@@ -32,6 +32,6 @@ ServiceCustomActionsCapability::~ServiceCustomActionsCapability()
 
 QList< PopupDropperAction * > ServiceCustomActionsCapability::customActions() const
 {
-        return m_customActionsProvider->customActions();
+    return m_customActionsProvider->customActions();
 }
 
