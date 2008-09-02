@@ -234,8 +234,8 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     m_fetchMutex.unlock();
     m_albumPtr = album;
 
-    // Static license Key. Thanks hydrogen ;-)
-    const QString LICENSE( "11ZKJS8X1ETSTJ6MT802" );
+    // Amarok's Amazon license Key.
+    const QString LICENSE( "0N04TFAWZR6YVWWS3CG2" );
 
     // reset all values
     m_coverAmazonUrls.clear();
