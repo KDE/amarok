@@ -35,6 +35,7 @@
 #include <QWidget>
 
 class QGraphicsPixmapItem;
+class QGraphicsWidgetProxy;
 class QLabel;
 class QHBoxLayout;
 class QSpinBox;
@@ -54,33 +55,14 @@ public:
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     QSizeF effectiveSizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
-    bool hasHeightForWidth() const;
-    qreal heightForWidth( qreal width ) const;
-
-public slots:
-    void showConfigurationInterface();
-
-private slots:
-    void configAccepted();
 
 protected:
     void EngineNewTrackPlaying(); //reimpl EngineObserver
 
 private:
-    void resize( qreal newWidth, qreal aspectRatio );
-
-    KDialog* m_config;
-    QHBoxLayout* m_configLayout;
-    QSpinBox* m_spinWidth;
-    int m_width;
-
-    qreal m_aspectRatio;
-
-    Context::Svg* m_theme;
-    QSizeF m_size;
-
-    bool m_initialized;
     Phonon::VideoWidget* m_videoWidget;
+
+    QGraphicsProxyWidget* m_videoProxy;
 };
 
 K_EXPORT_AMAROK_APPLET( video, Video )

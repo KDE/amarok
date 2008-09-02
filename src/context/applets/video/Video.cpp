@@ -28,41 +28,25 @@
 #include "context/Svg.h"
 
 #include <QGraphicsScene>
+#include <QGraphicsProxyWidget>
 #include <QGraphicsView>
 #include <QPainter>
 
 
 Video::Video( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_config( 0 )
-    , m_configLayout( 0 )
-    , m_width( 0 )
-    , m_aspectRatio( 0 )
-    , m_size( QSizeF() )
-    , m_initialized( false )
 {
     DEBUG_BLOCK
 
     setHasConfigurationInterface( false );
 
-    m_theme = new Context::Svg( this );
-    m_theme->setImagePath( "widgets/amarok-video" );
-    m_theme->setContainsMultipleImages( false );
-    m_theme->resize( m_size );
-    m_width = globalConfig().readEntry( "width", 500 );
-
-    // get natural aspect ratio, so we can keep it on resize
-    m_theme->resize();
-    m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
-    resize( m_width, m_aspectRatio );
-    setPreferredSize( m_width, 400 );
-
     Phonon::MediaObject* mediaObject = const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() );
      
-    QWidget* view = Context::ContextView::self()->viewport();
-
+    m_videoProxy = new QGraphicsProxyWidget( this );
     m_videoWidget = new Phonon::VideoWidget();
-    m_videoWidget->setParent( view, Qt::SubWindow | Qt::FramelessWindowHint );
+    setPreferredSize( 400, 500 ); // take up all the current containment space
+    
+    m_videoProxy->setWidget( m_videoWidget );
     m_videoWidget->show();
 
     debug() << "Creating video path.";
@@ -90,41 +74,15 @@ EngineNewTrackPlaying()
 void
 Video::constraintsEvent( Plasma::Constraints constraints )
 {
-    DEBUG_BLOCK
-
-    m_videoWidget->setGeometry( geometry().toRect() );
-
     prepareGeometryChange();
-
-    if (constraints & Plasma::SizeConstraint && m_theme) {
-        m_theme->resize(size().toSize());
-    }
-
-    m_initialized = true;
+    m_videoProxy->setMinimumSize( size() );
+    m_videoProxy->setMaximumSize( size() );
 }
 
 void
 Video::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
-
-    p->save();
-    m_theme->paint( p, contentsRect/*, "background" */);
-    p->restore();
-}
-
-void
-Video::showConfigurationInterface()
-{}
-
-void
-Video::configAccepted() // SLOT
-{}
-
-void
-Video::resize( qreal newWidth, qreal aspectRatio )
-{
-    Q_UNUSED( newWidth ); Q_UNUSED( aspectRatio );
 }
 
 QSizeF
@@ -133,25 +91,7 @@ Video::effectiveSizeHint( Qt::SizeHint which, const QSizeF & constraint) const
     DEBUG_BLOCK
     Q_UNUSED( which )
 
-    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-    {
-        return QSizeF( m_aspectRatio * constraint.width(), constraint.width() );
-    }
-
     return constraint;
 }
-
-bool
-Video::hasHeightForWidth() const
-{
-    return true;
-}
-
-qreal
-Video::heightForWidth(qreal width) const
-{
-    return width * m_aspectRatio;
-}
-
 
 #include "Video.moc"
