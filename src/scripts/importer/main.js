@@ -55,6 +55,7 @@ var usernameEdit = new QLineEdit( dlg );
 var passwordLabel = new QLabel( dlg );
 passwordLabel.setText( "Password" );
 var passwordEdit = new QLineEdit( dlg );
+passwordEdit.echoMode = QLineEdit.Password;
 
 var dbNameLabel = new QLabel( dlg );
 dbNameLabel.setText( "Database" );
