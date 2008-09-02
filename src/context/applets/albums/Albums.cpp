@@ -126,7 +126,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     
     m_names = data[ "names" ].toList();
     m_trackCounts = data[ "trackCounts" ].toList();
-    m_covers = data[ "covers" ].toList();;
+    m_covers = data[ "covers" ].toList();
     m_albumsTracks = data[ "albumsTracks" ].toList();
     
     kDebug() << "Albums::dataUpdated. count: " << m_albumCount << " names " << m_names.count();
