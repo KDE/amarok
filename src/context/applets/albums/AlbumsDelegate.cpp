@@ -58,7 +58,6 @@ AlbumsDelegate::paint( QPainter *painter, const QStyleOptionViewItem& option, co
     QColor backgroundColor = KColorScheme(QPalette::Active, KColorScheme::Window,
                                Plasma::Theme::defaultTheme()->colorScheme()).background().color();
     
-
     QRect backgroundRect( option.rect );
     backgroundRect.adjust( 5, 5, 5, 0 );
 
@@ -134,9 +133,14 @@ AlbumsDelegate::paint( QPainter *painter, const QStyleOptionViewItem& option, co
         m_trackIcon.paint( painter, QRect( QPoint( option.rect.left() + iconX, option.rect.top() + ( margin + 8 )* 2 ),
                                          QSize( 16, 16 ) ) );
 
-        QRect albumCoverRect( option.rect.left() + margin, option.rect.top() + margin, 60, 60 );
-        painter->drawPixmap( albumCoverRect, index.data( AlbumRoles::AlbumCover ).value<QPixmap>() );
+        QPoint coverTopLeft( option.rect.left() + margin, option.rect.top() + margin );
+        QSize  coverSize( 60, 60 );
+        QRect albumCoverRect( coverTopLeft, coverSize );
 
+        QPixmap coverPixmap = index.data( AlbumRoles::AlbumCover ).value<QPixmap>();
+        coverPixmap = coverPixmap.scaled( coverSize, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+
+        painter->drawPixmap( albumCoverRect, coverPixmap );
     }
 
 }
