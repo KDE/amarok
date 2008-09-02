@@ -39,8 +39,7 @@ public slots:
 
     
 signals:
-    void fetchLyrics( const QString& artist, const QString& title );
-    void fetchLyricsByUrl( const QString& url );
+    void fetchLyrics( const QString& artist, const QString& title, const QString& );
 };
 
 }

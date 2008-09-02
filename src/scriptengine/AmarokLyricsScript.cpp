@@ -33,7 +33,7 @@ AmarokLyricsScript::AmarokLyricsScript( QScriptEngine* scriptEngine )
     : QObject( kapp )
 {
     Q_UNUSED( scriptEngine )
-    connect( ScriptManager::instance(), SIGNAL( fetchLyrics( const QString&, const QString& ) ), this, SIGNAL( fetchLyrics( const QString&, const QString& ) ) );
+    connect( ScriptManager::instance(), SIGNAL( fetchLyrics( const QString&, const QString&, const QString& ) ), this, SIGNAL( fetchLyrics( const QString&, const QString&, const QString& ) ) );
 }
 
 AmarokLyricsScript::~AmarokLyricsScript()
@@ -47,7 +47,7 @@ AmarokLyricsScript::showLyrics( const QString& lyrics ) const
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
-    debug() << "got lyrics: " << lyrics << " and track: " << track;
+    //debug() << "got lyrics: " << lyrics << " and track: " << track;
     track->setCachedLyrics( lyrics );
     LyricsManager::self()->lyricsResult( lyrics, false );
 }
