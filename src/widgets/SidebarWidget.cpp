@@ -22,6 +22,7 @@
 
 #include "App.h"
 #include "Debug.h"
+#include "amarokconfig.h"
 
 #include "SvgTinter.h"
 
@@ -60,7 +61,24 @@ SideBarWidget::SideBarWidget( QWidget *parent )
 
 SideBarWidget::~SideBarWidget()
 {
+    DEBUG_BLOCK
+
+    // Save index of active browser for session management
+    int i;
+    for( i = 0; i < d->buttons.count(); i++ )
+        if( d->buttons[i]->isChecked() ) break; 
+
+    AmarokConfig::setActiveBrowser( i );
+    AmarokConfig::self()->writeConfig();
+
     delete d;
+}
+
+void SideBarWidget::restoreSession()
+{
+    const int index = AmarokConfig::activeBrowser();
+    if( index < d->buttons.count() && !d->buttons[index]->isChecked() )
+        d->buttons[index]->click();
 }
 
 int SideBarWidget::addSideBar( const QIcon &icon, const QString &text )

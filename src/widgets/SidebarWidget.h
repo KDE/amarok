@@ -35,6 +35,10 @@ class SideBarWidget: public KVBox
     public:
         SideBarWidget( QWidget *parent );
         virtual ~SideBarWidget();
+
+        /* Restores visibility state of browsers from last session */
+        void restoreSession();
+
         int addSideBar( const QIcon &icon, const QString &text );
         int count() const;
         QString text( int index ) const;

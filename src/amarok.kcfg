@@ -375,6 +375,12 @@
         <label>Time to resume at, in milliseconds</label>
         <whatsthis>Internal: Playback position in the track to resume on startup.</whatsthis>
     </entry>
+    <entry key="Visible Browsers" type="IntList">
+        <label>List of bools describing which browsers are visible, from top to bottom.</label>
+    </entry>
+    <entry key="Active Browser" type="Int">
+        <label>Number (from the top) of the last active browser.</label>
+    </entry>
 </group>
 
 <group name="Collection">

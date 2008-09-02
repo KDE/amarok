@@ -270,6 +270,9 @@ MainWindow::init()
         addBrowserMacro( FileBrowser::Widget, "FileBrowser::Widget",  i18n("Files"), "folder-amarok" )
         PERF_LOG( "Created FileBrowser" )
 
+        sideBar()->sideBarWidget()->restoreSession();
+
+
         //get the plugin manager
         ServicePluginManager::instance()->setBrowser( internetContentServiceBrowser );
         PERF_LOG( "Initialising ServicePluginManager" )
