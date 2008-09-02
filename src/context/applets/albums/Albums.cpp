@@ -57,7 +57,7 @@ Albums::~Albums()
 void Albums::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
-
+    
     m_headerText = new QGraphicsSimpleTextItem( this );
     m_headerText->setText( i18n( "Recently added albums" ) );
     m_width = globalConfig().readEntry( "width", 500 );

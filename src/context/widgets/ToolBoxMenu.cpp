@@ -231,7 +231,7 @@ AmarokToolBoxMenu::appletRemoved( Plasma::Applet *applet )
     if( sender() != 0 )
     {        
         Plasma::Containment *containment = dynamic_cast<Plasma::Containment *>( sender() );
-        if( containment == this->containment() )
+        if( containment )
         {
             DEBUG_LINE_INFO
             QString name = m_appletNames.take( applet );
