@@ -127,6 +127,12 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         //debug() << "setting html: " << html;
         m_suggested->setHtml( html );
         m_suggested->show();
+    } else if( data.contains( "html" ) )
+    {
+        // show pure html in the text area
+        m_suggested->hide();
+        m_lyrics->setHtml( data[ "html" ].toString() );
+        m_lyrics->show();
     } else if( data.contains( "lyrics" ) )
     {
         m_suggested->hide();

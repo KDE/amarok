@@ -43,13 +43,25 @@ AmarokLyricsScript::~AmarokLyricsScript()
 void
 AmarokLyricsScript::showLyrics( const QString& lyrics ) const
 {
-    debug() << "in AmarokLyricsScript::showLyrics";
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
     //debug() << "got lyrics: " << lyrics << " and track: " << track;
     track->setCachedLyrics( lyrics );
     LyricsManager::self()->lyricsResult( lyrics, false );
+}
+
+void
+AmarokLyricsScript::showLyricsHTML( const QString& lyrics ) const
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( !track )
+        return;
+    //debug() << "got lyrics: " << lyrics << " and track: " << track;
+    // TODO how should we cache html lyrics properly?
+    //track->setCachedLyrics( lyrics );
+    LyricsManager::self()->lyricsResultHTML( lyrics, false );
 }
 
 void

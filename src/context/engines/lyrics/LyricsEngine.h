@@ -42,8 +42,9 @@ public:
     
     // reimplemented from Context::Observer
     virtual void message( const ContextState& state );
-    
+    // reimplemented from LyricsObserver
     void newLyrics( QStringList& lyrics );
+    void newLyricsHTML( QString& lyrics );
     void newSuggestions( QStringList& suggest );
     void lyricsMessage( QString& message );
     

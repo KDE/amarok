@@ -51,6 +51,14 @@ void LyricsSubject::sendNewLyrics( QStringList lyrics )
     }
 }
 
+void LyricsSubject::sendNewLyricsHTML( QString lyrics )
+{
+    foreach( LyricsObserver* obs, m_observers )
+    {
+        obs->newLyricsHTML( lyrics );
+    }
+}
+
 void LyricsSubject::sendNewSuggestions( QStringList sug )
 {
     foreach( LyricsObserver* obs, m_observers )
@@ -151,4 +159,20 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
         sendNewLyrics( lyricsData );
 
     }
+}
+
+
+void
+LyricsManager::lyricsResultHTML( const QString& lyricsHTML, bool cached )
+{
+    // we don't need to deal with suggestions here, because
+    // we assume the script has called showLyrics if they could
+    // be suggestions. this is for HTML display only
+
+    if( !The::engineController()->currentTrack() )
+    {
+        return;
+    }
+    sendNewLyricsHTML( lyricsHTML );
+    
 }

@@ -31,6 +31,7 @@ public:
     virtual ~LyricsObserver();
     
     virtual void newLyrics( QStringList& lyrics ) { Q_UNUSED( lyrics ); }
+    virtual void newLyricsHTML( QString& lyrics ) { Q_UNUSED( lyrics ); }
     virtual void newSuggestions( QStringList& suggestions ) { Q_UNUSED( suggestions ); }
     virtual void lyricsMessage( QString& msg ) { Q_UNUSED( msg ); }
 
@@ -49,6 +50,7 @@ protected:
     virtual ~LyricsSubject() {}
     
     void sendNewLyrics( QStringList lyrics );
+    void sendNewLyricsHTML( QString lyrics );
     void sendNewSuggestions( QStringList suggestions );
     void sendLyricsMessage( QString msg );
     
@@ -70,6 +72,7 @@ public:
     }
     
     void lyricsResult( const QString& lyrics = 0, bool cached = false );
+    void lyricsResultHTML( const QString& lyrics = 0, bool cached = false );
 private:
     static LyricsManager* s_self;
 };

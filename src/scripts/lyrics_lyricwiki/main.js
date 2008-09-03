@@ -36,7 +36,7 @@ function onFinished( reply )
         dat = ts.readAll();
         dat = "<lyric artist=\"artist name\" title=\"song title\" page_url=\"http://lyricwiki.org\">" + dat + "</lyric>"
         print( "got result: " + dat );
-        Amarok.Lyrics.showLyrics(dat);
+        Amarok.Lyrics.showLyricsHTML(dat);
     } catch( err )
     {
         print( "got error: " + err );
@@ -48,7 +48,7 @@ function openconnection(artist, title)
     try
     {
         var connection = new QNetworkAccessManager();
-        var url = new QUrl("http://lyricwiki.org/api.php?func=getSong&artist=" + artist +"&song=" + title +"&fmt=txt");
+        var url = new QUrl("http://lyricwiki.org/api.php?func=getSong&artist=" + artist +"&song=" + title +"&fmt=html");
 
         connection.finished.connect( onFinished );
 

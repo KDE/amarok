@@ -131,6 +131,12 @@ void LyricsEngine::newLyrics( QStringList& lyrics )
     setData( "lyrics", "lyrics", lyrics );
 }
 
+void LyricsEngine::newLyricsHTML( QString& lyrics )
+{
+    removeAllData( "lyrics" );
+    setData( "lyrics", "html", lyrics );
+}
+
 void LyricsEngine::newSuggestions( QStringList& suggested )
 {
     DEBUG_BLOCK
