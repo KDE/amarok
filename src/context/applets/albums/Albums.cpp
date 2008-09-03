@@ -149,7 +149,14 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         int childRow = 0;
         foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )
         {
-            QString text = QString( "%1 - %2" ).arg( QString::number(trackPtr->trackNumber()), trackPtr->prettyName() );
+            int trackNumber = trackPtr->trackNumber();
+
+            QString text;
+
+            if( trackNumber > 0 )
+                text = QString( "%1 - %2" ).arg( QString::number(trackPtr->trackNumber()), trackPtr->prettyName() );
+            else
+                text = trackPtr->prettyName();
 
             QStandardItem *trackItem = new QStandardItem();
             trackItem->setText( text );
