@@ -130,19 +130,23 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     // Here's a smallish hack to sort the albums based on year:
     // Put them into a QMultiMap with the key as the year, and then retrieve the QList. Tada!
     // A little memory inefficient but much more convenient than qSort with Meta::AlbumPtrs.
-    QMultiMap<QString, Meta::AlbumPtr> map; // MultiMap, as we can have multiple albums with the same year
-    foreach( Meta::AlbumPtr albumPtr, m_albums )
+    // We only want to sort if we have a current track playing, otherwise we mess up the "recent tracks"
+    if( currentTrack )
     {
-        int year = 0;
-        if( !albumPtr->tracks().isEmpty() )
-            year = albumPtr->tracks().first()->year()->name().toInt();
-        // Here's another little hack. Because we want the albums in reverse chronological order,
-        // we can simply store a larger number for the earlier albums.
-        year = 9999 - year;
+        QMultiMap<QString, Meta::AlbumPtr> map; // MultiMap, as we can have multiple albums with the same year
+        foreach( Meta::AlbumPtr albumPtr, m_albums )
+        {
+            int year = 0;
+            if( !albumPtr->tracks().isEmpty() )
+                year = albumPtr->tracks().first()->year()->name().toInt();
+            // Here's another little hack. Because we want the albums in reverse chronological order,
+            // we can simply store a larger number for the earlier albums.
+            year = 9999 - year;
 
-        map.insert( QString::number(year), albumPtr );
+            map.insert( QString::number(year), albumPtr );
+        }
+        m_albums = map.values();
     }
-    m_albums = map.values();
 
     foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
