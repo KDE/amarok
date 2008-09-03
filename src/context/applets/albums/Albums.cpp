@@ -124,15 +124,24 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     m_model->clear();
        
     int row = 0;
+
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     
     foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
         QStandardItem *albumItem = new QStandardItem();
 
         QString albumName = albumPtr->name();
-        albumName =  albumName.isEmpty() ? i18n("Unknown") : albumName;
+        albumName = albumName.isEmpty() ? i18n("Unknown") : albumName;
 
         QString displayText = albumName;
+
+        Meta::TrackList tracks = albumPtr->tracks();
+        QString year;
+        if( !tracks.isEmpty() )
+            year = tracks.first()->year()->prettyName();
+
+        displayText += QString( " (%1)" ).arg( year );
 
         QString trackCount = i18np( "%1 track", "%1 tracks", albumPtr->tracks().size() );
         displayText += "\n" + trackCount;
@@ -160,6 +169,14 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 
             QStandardItem *trackItem = new QStandardItem();
             trackItem->setText( text );
+            
+            // Italicise the current track to make it more visible
+            if( currentTrack == trackPtr )
+            {
+                QFont f = trackItem->font();
+                f.setItalic( true );
+                trackItem->setFont( f );
+            }
 
             albumItem->setChild( childRow, trackItem );
             childRow++;

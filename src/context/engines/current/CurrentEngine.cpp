@@ -129,13 +129,12 @@ CurrentEngine::stoppedState()
 void CurrentEngine::metadataChanged( Meta::Album* album )
 {
     DEBUG_BLOCK
-    setData( "current",  "albumart", album->image( coverWidth() ) );
+    setData( "current", "albumart", album->image( coverWidth() ) );
 }
 
 void
 CurrentEngine::metadataChanged( Meta::Track *track )
 {
-    DEBUG_BLOCK
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     setData( "current", "current", trackInfo );
 }
