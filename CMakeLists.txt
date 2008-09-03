@@ -18,11 +18,9 @@ macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http
 set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
                           ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
-if (NOT WIN32 )
-    #this line has to be before add_defintions, but after the KDE4 cmake includes
-    #because they are used to determine install locations
-    add_subdirectory( src/scriptengine/generator )
-endif (NOT WIN32)
+#this line has to be before add_defintions, but after the KDE4 cmake includes
+#because they are used to determine install locations
+add_subdirectory( src/scriptengine/generator )
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
 include(CheckLibraryExists)
