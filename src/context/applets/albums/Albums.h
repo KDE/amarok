@@ -72,10 +72,8 @@ private:
 
     qreal m_aspectRatio;
 
+    Meta::AlbumList m_albums;
     int m_albumCount;
-    QVariantList m_names;
-    QVariantList m_trackCounts;
-    QVariantList m_covers;
 
     int m_maxTextWidth;
     QStandardItemModel *m_model;

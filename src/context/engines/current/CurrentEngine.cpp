@@ -225,35 +225,9 @@ void CurrentEngine::update()
 void
 CurrentEngine::setupAlbumsData()
 {
-    QVariantList names;
-    QVariantList trackCounts;
-    QVariantList covers;
-    
-    QList< QVariant > albumsTracks;
-    foreach( Meta::AlbumPtr albumPtr, m_albums )
-    {
-        QString albumName = albumPtr->name();
-        albumName =  albumName.isEmpty() ? i18n("Unknown") : albumName;
-        names << albumName;
-
-        QString trackCount = i18np( "%1 track", "%1 tracks", albumPtr->tracks().size() );
-        trackCounts << trackCount;
-
-        QPixmap image = albumPtr->image( 60 );
-        covers << image;
-        QList<QString> tracks;
-        foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )
-        {
-            tracks << trackPtr->name();
-        }
-        albumsTracks << QVariant( tracks );
-    }
-
-    setData( "albums", "names",  QVariant( names ) );
-    setData( "albums", "trackCounts",  QVariant( trackCounts) );
-    setData( "albums", "covers",  QVariant( covers ) );
-    setData( "albums", "count",  QVariant( m_albums.count() ) );
-    setData( "albums", "albumsTracks", QVariant( albumsTracks ) );
+    QVariant v;
+    v.setValue( m_albums );
+    setData( "albums", "albums", v );
 }
 
 

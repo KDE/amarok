@@ -46,7 +46,6 @@ Albums::Albums( QObject* parent, const QVariantList& args )
     , m_width( 0 )
     , m_albumWidth( 50 )
     , m_aspectRatio( 0.0 )
-    , m_albumCount( 0 )
 {
     setHasConfigurationInterface( false );
 }
@@ -103,9 +102,6 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
     //bah! do away with trying to get postions from an svg as this is proving wildly inaccurate
     const qreal margin = 14.0;
 
-    const qreal labelX = m_albumWidth + margin + 14.0;
-    const qreal labelWidth = 15;
-
     // here we put all of the text items into the correct locations
     m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, margin );
     
@@ -118,50 +114,42 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
-    
-    m_albumCount = data[ "count" ].toInt();
-    m_headerText->setText( data[ "headerText" ].toString() );
-    if( m_albumCount == 0 )
+   
+    m_albums = data[ "albums" ].value<Meta::AlbumList>();
+    if( m_albums.isEmpty() )
         return;
-    
-    m_names = data[ "names" ].toList();
-    m_trackCounts = data[ "trackCounts" ].toList();
-    m_covers = data[ "covers" ].toList();
-    m_albumsTracks = data[ "albumsTracks" ].toList();
-    
-    kDebug() << "Albums::dataUpdated. count: " << m_albumCount << " names " << m_names.count();
 
+    m_headerText->setText( data[ "headerText" ].toString() );
+    
     m_model->clear();
        
     int row = 0;
     
-    foreach( const QVariant &albumName, m_names )
+    foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
         QStandardItem *albumItem = new QStandardItem();
 
-        QString displayText = albumName.toString();
+        QString albumName = albumPtr->name();
+        albumName =  albumName.isEmpty() ? i18n("Unknown") : albumName;
 
-        if( m_trackCounts.size() > 0 )
-            displayText += "\n" + m_trackCounts[row].toString();
+        QString displayText = albumName;
+
+        QString trackCount = i18np( "%1 track", "%1 tracks", albumPtr->tracks().size() );
+        displayText += "\n" + trackCount;
 
         albumItem->setText( displayText );
 
-        if( m_covers.size() > 0 )
-        {
-            QPixmap cover = m_covers[row].value<QPixmap>();
-            albumItem->setIcon( QIcon( cover ) );
-        }
-        else
-            albumItem->setIcon( KIcon( "media-album-cover" ) );
+        QPixmap cover = albumPtr->image( m_albumWidth );
+        albumItem->setIcon( QIcon( cover ) );
         
         QSize sizeHint = albumItem->sizeHint();
         sizeHint.setHeight( 80 );
         albumItem->setSizeHint( sizeHint );
-        
+       
         int childRow = 0;
-        foreach( const QVariant &trackName, m_albumsTracks[row].toList() )
+        foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )
         {
-            QString text = QString( "%1 - " ).arg( childRow + 1 ) + trackName.toString();
+            QString text = QString( "%1 - %2" ).arg( QString::number(trackPtr->trackNumber()), trackPtr->prettyName() );
 
             QStandardItem *trackItem = new QStandardItem();
             trackItem->setText( text );
