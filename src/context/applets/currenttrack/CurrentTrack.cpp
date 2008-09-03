@@ -197,11 +197,9 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2,
                        size().toSize().height() / 2  - 30 );
     
-    m_artist->setPos( QPointF( textX, margin ) );
-    m_album->setPos(  QPointF( textX, margin * 2 + textHeight ) );
-    m_title->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 ) );
-    
-
+    m_title->setPos( QPointF( textX, margin ) );
+    m_artist->setPos(  QPointF( textX, margin * 2 + textHeight ) );
+    m_album->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 ) );
     
     m_score->setPos( QPointF( contentsRect().width() - 15, margin + 4 ) );
     m_numPlayed->setPos( QPointF( contentsRect().width() - 14, margin + 31 ) );
@@ -371,9 +369,9 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     if( track && track->album()->hasImage() )
         m_theme->paint( p, QRect( margin - 5, margin, albumWidth + 12, albumWidth ), "cd-box" );
 
-    m_theme->paint( p, QRectF( labelX, margin + 1, 16, 16 ), "artist" );
-    m_theme->paint( p, QRectF( labelX, margin * 2.0 + textHeight + 1 , 16, 16 ), "album" );
-    m_theme->paint( p, QRectF( labelX, margin * 3.0 + textHeight * 2.0 + 1, 16, 16 ), "track" );
+    m_theme->paint( p, QRectF( labelX, margin + 1, 16, 16 ), "track" );
+    m_theme->paint( p, QRectF( labelX, margin * 2.0 + textHeight + 1 , 16, 16 ), "artist" );
+    m_theme->paint( p, QRectF( labelX, margin * 3.0 + textHeight * 2.0 + 1, 16, 16 ), "album" );
 
     m_theme->paint( p, QRectF( contentsRect.width() - 21, margin, 23, 23 ), "score" );
     m_theme->paint( p, QRectF( contentsRect.width() - 21, margin + 26, 23, 23 ), "times-played" );
