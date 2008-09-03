@@ -881,6 +881,13 @@ MainWindow::setRating( int n )
     if( s == Phonon::PlayingState || s == Phonon::PausedState )
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
+        if( !track ) return;
+
+        // if we're setting an identical rating then we really must
+        // want to set the half-star below rating
+        if( track->rating() == n )
+            n -= 1;
+
         track->setRating( n );
         Amarok::OSD::instance()->OSDWidget::ratingChanged( track->rating() );
     }
