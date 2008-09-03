@@ -109,12 +109,14 @@ CurrentEngine::stoppedState()
     setData( "current", "notrack", "No track playing" );
     removeAllData( "albums" );
     m_currentArtist = 0;
+
+    // Collect data for the recently added albums
     setData( "albums", "headerText", QVariant( i18n( "Recently added albums" ) ) );
     
     Collection *coll = CollectionManager::instance()->primaryCollection();
     m_qm = coll->queryMaker();
     m_qm->setQueryType( QueryMaker::Album );
-
+    m_qm->excludeFilter( QueryMaker::valAlbum, QString(), true, true ); 
     m_qm->orderBy( QueryMaker::valCreateDate, true );
     m_qm->limitMaxResultSize( 5 );
     m_albums.clear();
