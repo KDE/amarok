@@ -66,6 +66,10 @@ hostnameLabel.setText( "Hostname" );
 var hostnameEdit = new QLineEdit( dlg );
 hostnameEdit.setText( "localhost" );
 
+usernameEdit.text = "amarok";
+passwordEdit.text = "rockin_db";
+dbNameEdit.text   = "amarokdb";
+
 //passwordEdit.setEchoMode( QLineEdit.Password );
 
 databaseLayout.addWidget( sqlTypeLabel, 0, 0 );
@@ -186,17 +190,19 @@ function transfer()
         var result;
         
         var index = 0;
-        var mount = query.value(index++);
+        var mount = query.value(index++).toString();
         var url   = query.value(index++);
-        var createdate = query.value(index++);
-        var accessdate = query.value(index++);
+        var createdate = query.value(index++).toString();
+        var accessdate = query.value(index++).toString();
         var score = query.value(index++);
         var rating = query.value(index++);
         var playcount = query.value(index++);
         
-
         // make the url absolute path
-        url = mount + url.substring( 1 );
+        print( "url: " + url );
+        print( "toString: " + url.toString() );
+        print( "data: " + url.data() );
+        url = mount + url.substring(1);
 
         // then make it "relative" again, for Amarok 2 devices or something
         url = "." + url;

@@ -877,12 +877,9 @@ MainWindow::setRating( int n )
 {
     n *= 2;
 
-    const Phonon::State s = The::engineController()->state();
-    if( s == Phonon::PlayingState || s == Phonon::PausedState )
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( track )
     {
-        Meta::TrackPtr track = The::engineController()->currentTrack();
-        if( !track ) return;
-
         // if we're setting an identical rating then we really must
         // want to set the half-star below rating
         if( track->rating() == n )
