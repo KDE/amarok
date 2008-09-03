@@ -66,12 +66,6 @@ hostnameLabel.setText( "Hostname" );
 var hostnameEdit = new QLineEdit( dlg );
 hostnameEdit.setText( "localhost" );
 
-usernameEdit.text = "amarok";
-passwordEdit.text = "rockin_db";
-dbNameEdit.text   = "amarokdb";
-
-//passwordEdit.setEchoMode( QLineEdit.Password );
-
 databaseLayout.addWidget( sqlTypeLabel, 0, 0 );
 databaseLayout.addWidget( sqlTypeCombo, 0, 1 );
 
