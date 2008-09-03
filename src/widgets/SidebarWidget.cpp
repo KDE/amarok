@@ -65,10 +65,12 @@ SideBarWidget::~SideBarWidget()
 
     // Save index of active browser for session management
     int i;
-    for( i = 0; i < d->buttons.count(); i++ )
-        if( d->buttons[i]->isChecked() ) break; 
-
+    for( i = 0; i < d->buttons.count() && !d->buttons[i]->isChecked(); i++ ) {}
     AmarokConfig::setActiveBrowser( i );
+
+    // Save list of visible browsers for session management
+    AmarokConfig::setVisibleBrowsers( d->visible );
+
     AmarokConfig::self()->writeConfig();
 
     delete d;
@@ -76,6 +78,19 @@ SideBarWidget::~SideBarWidget()
 
 void SideBarWidget::restoreSession()
 {
+    DEBUG_BLOCK
+
+    QList<QAction*> browserActions;
+    foreach( QAction* action, d->actions )
+        if( !action->text().isEmpty() )
+            browserActions << action;
+
+    // Restore visible browsers
+    for( int i = 0; i < d->visible.count(); i++ )
+        if( !AmarokConfig::visibleBrowsers().contains( i ) )
+            browserActions[i]->toggle();
+
+    // Restore active browser
     const int index = AmarokConfig::activeBrowser();
     if( index < d->buttons.count() && !d->buttons[index]->isChecked() )
         d->buttons[index]->click();
@@ -130,6 +145,8 @@ void SideBarWidget::slotClicked( bool checked )
 
 void SideBarWidget::slotSetVisible( bool visible )
 {
+    DEBUG_BLOCK
+
     QAction *a = (QAction *)sender();
     const int index = d->actions.indexOf( a );
     if( d->visible.contains( index ) == visible )
