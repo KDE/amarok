@@ -126,7 +126,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     int row = 0;
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    
+
     foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
         QStandardItem *albumItem = new QStandardItem();
@@ -139,9 +139,16 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         Meta::TrackList tracks = albumPtr->tracks();
         QString year;
         if( !tracks.isEmpty() )
-            year = tracks.first()->year()->prettyName();
+        {
+            Meta::TrackPtr first = tracks.first();
+            year = first->year()->name();
+            // do some sanity checking
+            if( year.length() != 4 )
+                year = QString();
+        }
 
-        displayText += QString( " (%1)" ).arg( year );
+        if( !year.isEmpty() )
+            displayText += QString( " (%1)" ).arg( year );
 
         QString trackCount = i18np( "%1 track", "%1 tracks", albumPtr->tracks().size() );
         displayText += "\n" + trackCount;
