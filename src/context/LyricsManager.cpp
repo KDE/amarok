@@ -51,11 +51,11 @@ void LyricsSubject::sendNewLyrics( QStringList lyrics )
     }
 }
 
-void LyricsSubject::sendNewLyricsHTML( QString lyrics )
+void LyricsSubject::sendNewLyricsHtml( QString lyrics )
 {
     foreach( LyricsObserver* obs, m_observers )
     {
-        obs->newLyricsHTML( lyrics );
+        obs->newLyricsHtml( lyrics );
     }
 }
 
@@ -163,7 +163,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
 
 void
-LyricsManager::lyricsResultHTML( const QString& lyricsHTML, bool cached )
+LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 {
     // we don't need to deal with suggestions here, because
     // we assume the script has called showLyrics if they could
@@ -173,6 +173,6 @@ LyricsManager::lyricsResultHTML( const QString& lyricsHTML, bool cached )
     {
         return;
     }
-    sendNewLyricsHTML( lyricsHTML );
+    sendNewLyricsHtml( lyricsHTML );
     
 }

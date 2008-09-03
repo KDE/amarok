@@ -35,7 +35,7 @@ public:
 
 public slots:
     void showLyrics( const QString& lyrics ) const;
-    void showLyricsHTML( const QString& lyrics ) const;
+    void showLyricsHtml( const QString& lyrics ) const;
     void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
 
     

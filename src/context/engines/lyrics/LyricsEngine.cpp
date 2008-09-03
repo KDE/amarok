@@ -131,7 +131,7 @@ void LyricsEngine::newLyrics( QStringList& lyrics )
     setData( "lyrics", "lyrics", lyrics );
 }
 
-void LyricsEngine::newLyricsHTML( QString& lyrics )
+void LyricsEngine::newLyricsHtml( QString& lyrics )
 {
     removeAllData( "lyrics" );
     setData( "lyrics", "html", lyrics );
