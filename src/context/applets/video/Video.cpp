@@ -28,7 +28,6 @@
 #include "context/Svg.h"
 
 #include <QGraphicsScene>
-#include <QGraphicsProxyWidget>
 #include <QGraphicsView>
 #include <QPainter>
 
@@ -42,11 +41,12 @@ Video::Video( QObject* parent, const QVariantList& args )
 
     Phonon::MediaObject* mediaObject = const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() );
      
-    m_videoProxy = new QGraphicsProxyWidget( this );
+    QWidget* view = Context::ContextView::self()->viewport();
     m_videoWidget = new Phonon::VideoWidget();
+    m_videoWidget->setParent( view, Qt::SubWindow | Qt::FramelessWindowHint );
+    
     setPreferredSize( 400, 500 ); // take up all the current containment space
     
-    m_videoProxy->setWidget( m_videoWidget );
     m_videoWidget->show();
 
     debug() << "Creating video path.";
@@ -75,8 +75,7 @@ void
 Video::constraintsEvent( Plasma::Constraints constraints )
 {
     prepareGeometryChange();
-    m_videoProxy->setMinimumSize( size() );
-    m_videoProxy->setMaximumSize( size() );
+    m_videoWidget->setGeometry( QRect( pos().toPoint(),  size().toSize() ) );
 }
 
 void

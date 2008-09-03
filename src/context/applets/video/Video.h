@@ -35,7 +35,6 @@
 #include <QWidget>
 
 class QGraphicsPixmapItem;
-class QGraphicsWidgetProxy;
 class QLabel;
 class QHBoxLayout;
 class QSpinBox;
@@ -61,8 +60,6 @@ protected:
 
 private:
     Phonon::VideoWidget* m_videoWidget;
-
-    QGraphicsProxyWidget* m_videoProxy;
 };
 
 K_EXPORT_AMAROK_APPLET( video, Video )
