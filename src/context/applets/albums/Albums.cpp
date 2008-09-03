@@ -14,7 +14,6 @@
 
 #include "Albums.h"
 #include "AlbumsView.h"
-#include "AlbumsDelegate.h"
 #include "Amarok.h"
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
