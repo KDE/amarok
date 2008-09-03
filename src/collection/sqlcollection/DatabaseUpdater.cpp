@@ -479,7 +479,7 @@ DatabaseUpdater::createTables() const
     {
         QString q = "CREATE TABLE lyrics ("
                     "id " + m_collection->idType() +
-                    ",url INTEGER"
+                    ",url " + m_collection->exactTextColumnType() +
                     ",lyrics " + m_collection->longTextColumnType() +
                     ");";
         m_collection->query( q );
