@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta2
   FEATURES:
+    * Now remembers visible/invisible state of browsers. (BR 168344)
     * Add ability to play tracks directly off of MTP device
     * Add option to enable/disable automatic cover fetching
 
