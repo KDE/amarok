@@ -35,8 +35,8 @@ function onFinished( reply )
         ts = new QTextStream( response, QIODevice.ReadOnly );
         dat = ts.readAll();
         dat = "<lyric artist=\"artist name\" title=\"song title\" page_url=\"http://lyricwiki.org\">" + dat + "</lyric>"
-        print( "got result: " + dat );
-        Amarok.Lyrics.showLyricsHTML(dat);
+        //print( "got result: " + dat );
+        Amarok.Lyrics.showLyricsHtml(dat);
     } catch( err )
     {
         print( "got error: " + err );
