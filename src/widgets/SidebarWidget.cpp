@@ -80,6 +80,7 @@ void SideBarWidget::restoreSession()
 {
     DEBUG_BLOCK
 
+    /*
     QList<QAction*> browserActions;
     foreach( QAction* action, d->actions )
         if( !action->text().isEmpty() )
@@ -89,7 +90,7 @@ void SideBarWidget::restoreSession()
     for( int i = 0; i < d->visible.count(); i++ )
         if( !AmarokConfig::visibleBrowsers().contains( i ) )
             browserActions[i]->toggle();
-
+    */
     // Restore active browser
     const int index = AmarokConfig::activeBrowser();
     if( index < d->buttons.count() && !d->buttons[index]->isChecked() )
