@@ -867,7 +867,6 @@ MainWindow::createMenus()
     actionsMenu->setTitle( i18n("&Amarok") );
 #endif
     actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
-    actionsMenu->addAction( actionCollection()->action("lastfm_play") );
     actionsMenu->addAction( actionCollection()->action("play_audiocd") );
     actionsMenu->addSeparator();
     actionsMenu->addAction( actionCollection()->action("prev") );
@@ -887,7 +886,6 @@ MainWindow::createMenus()
     playlistMenu->setTitle( i18n("&Playlist") );
     playlistMenu->addAction( actionCollection()->action("playlist_add") );
     playlistMenu->addAction( actionCollection()->action("stream_add") );
-    playlistMenu->addAction( actionCollection()->action("lastfm_add") );
     playlistMenu->addAction( actionCollection()->action("playlist_save") );
     playlistMenu->addAction( actionCollection()->action("playlist_burn") );
     playlistMenu->addAction( actionCollection()->action("podcasts_update") );
@@ -988,9 +986,6 @@ void MainWindow::resizeEvent( QResizeEvent * event )
     m_controlBar->reRender();
 }
 
-#include "MainWindow.moc"
-
-
 QPoint MainWindow::globalBackgroundOffset()
 {
     return menuBar()->mapToGlobal( QPoint( 0, 0 ) );
@@ -1003,39 +998,9 @@ QRect MainWindow::contextRectGlobal()
     return QRect( contextPos.x(), contextPos.y(), m_contextWidget->width(), m_contextWidget->height() );
 }
 
-/*void MainWindow::paintEvent( QPaintEvent * e )
-{
-    //DEBUG_BLOCK
-
-    int x = e->rect().x();
-    int y = e->rect().y();
-    int w = e->rect().width();
-    int h = e->rect().height();
-
-            
-    QString key = QString("main_bg_part:%1,%2-%3x%4").arg( x ).arg( y ).arg( w ).arg( h );
-    QPixmap backgroundPart( w, h );
-
-    //debug() << "key: " << key;
-
-    if ( !QPixmapCache::find( key, backgroundPart ) ) {
-
-        //debug() << "cutout: " << x << ", " << y << ", " << w << ", " << h;
-        
-        QSize backgroundSize( width(), height() );
-        QPixmap mainBackground = The::svgHandler()->renderSvg( "main_background", backgroundSize.width(), backgroundSize.height(), "context_wallpaper" );
-        backgroundPart = mainBackground.copy( x, y, w, h );
-        QPixmapCache::insert( key, backgroundPart );
-
-    }
-    
-    QPainter painter( this );
-    painter.drawPixmap( x, y, backgroundPart );
-}*/
-
-
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }
 }
 
+#include "MainWindow.moc"
 
