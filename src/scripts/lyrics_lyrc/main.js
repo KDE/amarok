@@ -33,7 +33,7 @@ QByteArray.prototype.toString = function()
 function parseLyrics( lyrics )
 {
     print( "parsing!!!" );
-    print( lyrics );
+ //   print( lyrics );
     var lyricsReady = lyrics;
 
     lyrics = lyrics.replace(  /<[fF][oO][nN][tT][^>]*>/g, "" );

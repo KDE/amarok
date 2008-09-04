@@ -1,5 +1,5 @@
 [Desktop Entry]
-Icon=amarok
+Icon=get-hot-new-stuff-amarok
 Type=script
 ServiceTypes=KPluginInfo
 
