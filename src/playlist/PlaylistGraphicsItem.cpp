@@ -113,28 +113,28 @@ Playlist::GraphicsItem::GraphicsItem()
 {
     setZValue( 1.0 );
     QFont font;
+
     if( !s_nfm )
     {
         s_nfm = new QFontMetricsF( font );
         m_height =  qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + 2 * MARGIN;
-    if( !s_bfm )
-    {
-        font.setBold( true );
-        s_bfm = new QFontMetricsF( font );
-        font.setBold( false );
+        
+        if( !s_bfm )
+        {
+            font.setBold( true );
+            s_bfm = new QFontMetricsF( font );
+            font.setBold( false );
+        }
+        if( !s_ifm )
+        {
+            font.setItalic( true );
+            s_bfm = new QFontMetricsF( font );
+            font.setItalic( false );
+        }
     }
-    if( !s_ifm )
-    {
-        font.setItalic( true );
-        s_bfm = new QFontMetricsF( font );
-        font.setItalic( false );
-    }
-
-   }
     setFlag( QGraphicsItem::ItemIsSelectable );
     setFlag( QGraphicsItem::ItemIsMovable );
     setAcceptDrops( true );
-   // setHandlesChildEvents( true ); // don't let drops etc hit the text items, doing stupid things
 }
 
 Playlist::GraphicsItem::~GraphicsItem()
@@ -254,8 +254,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     QString album;
     if( track->album() )
         album = track->album()->name();
-//FIXME: Is this still needed?
-//     const qreal lineTwoY = m_height / 2 + MARGIN;
+    
     const qreal textWidth = ( ( qreal( totalWidth ) - ( ALBUM_WIDTH + 2 * MARGIN ) ) / 2.0 );
     const qreal leftAlignX = ALBUM_WIDTH + MARGIN;
     qreal topRightAlignX;
@@ -318,9 +317,6 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
     }
     else if ( ( m_groupMode == Head ) || ( m_groupMode == Head_Collapsed ) )
     {
-//FIXME: Is this still needed?
-//         int headingCenter = (int)( MARGIN + ( ALBUM_WIDTH - s_fm->height()) / 2 );
-
         //make the artist and album lines two lines
 
         int firstLineYOffset = (int)( ( MARGIN + ALBUM_WIDTH ) - s_nfm->height() * 2 ) / 2;
@@ -371,7 +367,6 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
 
         m_items->bottomLeftText->setPos( MARGIN, underImageY );
         m_items->bottomRightText->setPos( bottomRightAlignX, underImageY );
-
     }
     else
     {
@@ -396,10 +391,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
                 trackRect.setHeight( trackRect.height() - 2 ); // add a little space between items
         }
 
-        //debug() << "Resizing active track overlay";
-
         QPixmap background = The::svgHandler()->renderSvg(
-                                         
                                         "active_overlay",
                                         (int)trackRect.width(),
                                         (int)trackRect.height(),
@@ -407,9 +399,6 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
                                       );
         m_items->foreground->setPixmap( background );
         m_items->foreground->setZValue( 10.0 );
-
-        //debug() << "Done";
-
     }
 
     m_items->lastWidth = totalWidth;
@@ -680,8 +669,6 @@ Playlist::GraphicsItem::refresh()
 
 void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
-    DEBUG_BLOCK
-
     QPointF eventPos = mapToScene( event->pos() );
 
     debug() << "org rect: " << m_items->preDragLocation << ", drop pos " << eventPos;
@@ -692,12 +679,10 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
     bool dragOverOriginalPosition = m_items->preDragLocation.contains( eventPos );
     if( dragOverOriginalPosition || movingFirstAboveTop )
     {
-
-        debug() << "Item dragged over org pos";
-
-        if ( groupMode() == Playlist::Head ) {
-
-            if ( m_items->childPreDragPositions.count() == 0 ) {
+        if ( groupMode() == Playlist::Head )
+        {
+            if ( m_items->childPreDragPositions.count() == 0 )
+            {
                 //this hopefully fixes a very hard to reproduce crash where the pos of the release event is less that 0 but no drag was ever initiated on this item
                 return;
             }
@@ -711,7 +696,9 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
                 if( m_items->childPreDragPositions.size() > 0 )
                     The::playlistView()->tracks()[i]->setPos( m_items->childPreDragPositions.takeFirst() );
             }
-        } else {
+        }
+        else
+        {
             setPos( m_items->preDragLocation.topLeft() );
             Playlist::DropVis::instance()->hide();
         }
@@ -738,24 +725,18 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
     }
     else
     {
-
-        debug() << "whopps... we did not hit anything, not even our own old position";
-
-        if( mapToScene( event->pos() ).y() < 0 ) {
-
+        if( mapToScene( event->pos() ).y() < 0 )
+        {
             //we dropped above the top item, so make this the new top item
-            debug() << "above first";
             //we know from a check earlier that we are not thetop item, so this call is safe.
             The::playlistView()->moveItem( this, dynamic_cast<Playlist::GraphicsItem *>( firstItem ) );
             
-        } else {
-            debug() << "Uhm... where the hell are we? Just move to the bottom";
+        }
+        else
+        {
             //Don't just drop item into the void, make it the last item!
             
             The::playlistView()->moveItem( this, 0 );
-            //setPos( above->pos() );
-            //The::playlistView()->moveItem( this, above );
-
         }
     }
 
@@ -766,7 +747,6 @@ void Playlist::GraphicsItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event 
 
 void Playlist::GraphicsItem::setRow(int row)
 {
-    //DEBUG_BLOCK
     m_currentRow = row;
 
     const QModelIndex index = The::playlistModel()->index( m_currentRow, 0 );
@@ -786,16 +766,14 @@ void Playlist::GraphicsItem::setRow(int row)
         switch ( m_groupMode )
         {
             case None:
-                //debug() << "None";
                 m_height =  qMax( SINGLE_TRACK_ALBUM_WIDTH, s_nfm->height() * 2 ) + 2 * MARGIN;
-                //debug() << "Height for single track: " << m_height;
                 break;
+
             case Head:
-                //debug() << "Head";
                 m_height =  qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + MARGIN + s_nfm->height() + 4;
                 break;
+
             case Head_Collapsed:
-                debug() << "Collapsed head";
                 m_height =  qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + MARGIN * 2 + s_nfm->height() + 16;
                 if ( !m_items )
                 {
@@ -805,20 +783,20 @@ void Playlist::GraphicsItem::setRow(int row)
                     init( track );
                 }
                 m_items->groupedTracks = index.data( GroupedTracksRole ).toInt();
-                debug() << "I have this many hidden tracks: " << m_items->groupedTracks;
                 break;
+
             case Body:
-                //debug() << "Body";
                 m_height =  s_nfm->height()/*+ 2 * MARGIN*/;
                 break;
+
             case End:
-                //debug() << "End";
                 m_height =  s_nfm->height() /*+ 6*/ /*+ 2 * MARGIN*/;
                 break;
+
             case Collapsed:
-                //debug() << "Collapsed";
                 m_height =  0;
                 break;
+
             default:
                 debug() << "ERROR!!??";
         }
@@ -828,7 +806,6 @@ void Playlist::GraphicsItem::setRow(int row)
 void Playlist::GraphicsItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
     Q_UNUSED( event );
-    //DEBUG_BLOCK
 
     /*if ( m_groupMode == Head_Collapsed )
        The::playlistModel()->setCollapsed( m_currentRow, false ); */
@@ -924,8 +901,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
 
     if ( active )
     {
-        painter->drawPixmap(
-                             static_cast<int>( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 6 ),
+        painter->drawPixmap( static_cast<int>( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 6 ),
                              (int)lineTwoY,
                              The::svgHandler()->renderSvg(
                                         "active_overlay",
@@ -941,8 +917,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     //set selection marker if needed
     if( option->state & QStyle::State_Selected )
     {
-        painter->drawPixmap(
-                             static_cast<int>( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 6 ),
+        painter->drawPixmap( static_cast<int>( SINGLE_TRACK_ALBUM_WIDTH + MARGIN + 6 ),
                              (int)lineTwoY,
                              The::svgHandler()->renderSvg(
                                         "selection",
