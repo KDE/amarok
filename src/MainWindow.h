@@ -24,7 +24,6 @@
 class ContextWidget;
 class MainToolbar;
 class MainWindow;
-//class MediaBrowser;
 class PlaylistFileProvider;
 class SearchWidget;
 class SideBar;
@@ -105,27 +104,16 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void slotAddLocation( bool directPlay = false );
         void slotFinishAddLocation( const Meta::TrackList &tracks );
         void slotAddStream();
-        // TODO: reimplement with last.fm service
-#if 0
-        void playLastfmPersonal();
-        void addLastfmPersonal();
-        void playLastfmNeighbor();
-        void addLastfmNeighbor();
-        void playLastfmCustom();
-        void addLastfmCustom();
-        void playLastfmGlobaltag();
-        void addLastfmGlobaltag();
-#endif
         void showQueueManager();
         void showScriptSelector();
         void showStatistics();
         void toolsMenuAboutToShow();
         void slotToggleFocus();
-//         void slotEditFilter();
         void slotSetFilter( const QString &filter );
 
     protected:
         virtual void closeEvent( QCloseEvent* );
+        virtual void keyPressEvent( QKeyEvent* );
         virtual void showEvent( QShowEvent* );
         virtual QSize sizeHint() const;
         virtual void resizeEvent ( QResizeEvent * event );
@@ -142,6 +130,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
 
     private:
         void setRating( int n );
+        void showBrowser( const int index );
 
         QMenuBar      *m_menubar;
         KMenu         *m_toolsMenu;

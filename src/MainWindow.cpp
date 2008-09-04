@@ -355,8 +355,37 @@ void
 MainWindow::showBrowser( const QString &name )
 {
     const int index = m_browserNames.indexOf( name );
+    showBrowser( index );
+}
+
+void
+MainWindow::showBrowser( const int index )
+{
     if( index >= 0 && index != m_browsers->currentIndex() )
         m_browsers->showWidget( index );
+}
+
+void
+MainWindow::keyPressEvent( QKeyEvent *e )
+{
+    if( !e->modifiers() & Qt::ControlModifier )
+        return KXmlGuiWindow::keyPressEvent( e );
+
+    int n = -1;
+    switch( e->key() )
+    {
+        case Qt::Key_0: n = 0; break;
+        case Qt::Key_1: n = 1; break;
+        case Qt::Key_2: n = 2; break;
+        case Qt::Key_3: n = 3; break;
+        case Qt::Key_4: n = 4; break;
+        default:
+            return KXmlGuiWindow::keyPressEvent( e );
+    }
+    if( n == 0 )
+        ;//m_browsers->closeCurrentBrowser();
+    else// if( n > 0 && n <= m_browsers->visibleCount() )
+        showBrowser( n - 1 ); // map from human to computer counting
 }
 
 void
