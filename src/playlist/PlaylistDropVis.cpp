@@ -25,6 +25,8 @@
 #include "PlaylistGraphicsView.h"
 #include "PlaylistModel.h"
 
+#include <KApplication>
+
 #include <QPen>
 #include <QGraphicsScene>
 
@@ -34,7 +36,11 @@ Playlist::DropVis::DropVis( QGraphicsItem *parent )
     : QGraphicsLineItem( parent )
 {
     debug() << "Creating Playlist Drop Indicator";
-    QPen pen( Qt::green, 3, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin );
+
+    QPalette p = KApplication::palette();
+    QColor color = p.color( QPalette::Highlight );
+
+    QPen pen( color, 3, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin );
     setAcceptDrops( true );
     setPen( pen );
     setZValue( 1000 );
@@ -68,7 +74,7 @@ Playlist::DropVis::show( Playlist::GraphicsItem *above )
     // otherwise use the top of the scene
     if( above )
     {
-        yPosition = above->pos().y() - 5;
+        yPosition = above->pos().y();
     }
     else // place indicator at end of track listing
     {
