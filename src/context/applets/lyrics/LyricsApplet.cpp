@@ -243,5 +243,5 @@ LyricsApplet::refreshLyrics()
     debug() << "checking for current track:";
     if( !curtrack )
         return;
-    ScriptManager::instance()->notifyFetchLyrics( curtrack->name(), curtrack->artist()->name() );
+    ScriptManager::instance()->notifyFetchLyrics( curtrack->artist()->name(), curtrack->name() );
 }
