@@ -186,11 +186,12 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )
         {
             int trackNumber = trackPtr->trackNumber();
+            QString trackName = trackPtr->prettyName();
 
             QString text;
 
             if( trackNumber > 0 )
-                text = QString( "%1 - %2" ).arg( QString::number(trackPtr->trackNumber()), trackPtr->prettyName() );
+                text = QString( "%1\t%2" ).arg( QString::number(trackPtr->trackNumber()), trackPtr->prettyName() );
             else
                 text = trackPtr->prettyName();
 
