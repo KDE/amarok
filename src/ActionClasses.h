@@ -13,10 +13,10 @@
 #define AMAROK_ACTIONCLASSES_H
 
 #include "EngineObserver.h"
-#include "prettypopupmenu.h"
 #include "widgets/SliderWidget.h"
 
 #include <KAction>
+#include <KMenu>
 #include <KToggleAction>
 #include <KSelectAction>
 
@@ -28,7 +28,7 @@ class KHelpMenu;
 
 namespace Amarok
 {
-    class Menu : public PrettyPopupMenu
+    class Menu : public KMenu
     {
         Q_OBJECT
         public:

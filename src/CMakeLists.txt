@@ -490,7 +490,6 @@ set(amaroklib_LIB_SRCS
     PaletteHandler.cpp
     podcastsettings.cpp
     PopupDropperFactory.cpp
-    prettypopupmenu.cpp
     refreshimages.cpp
     browsers/servicebrowser/lastfm/SimilarArtistsAction.cpp
     Systray.cpp
