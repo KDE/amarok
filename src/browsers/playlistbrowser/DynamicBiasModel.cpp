@@ -97,7 +97,7 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
         PlaylistBrowserNS::BiasAddWidget* normalAdder =
             new PlaylistBrowserNS::BiasAddWidget(
                     i18n( "Fuzzy Bias" ),
-                    i18n( "Losely match the playlist to an approximate value." ),
+                    i18n( "Loosely match the playlist to an approximate value." ),
                     m_listView->viewport() );
 
         if( !m_widgets.isEmpty() )
