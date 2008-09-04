@@ -17,6 +17,7 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "context/Svg.h"
+#include "plasma/widgets/icon.h"
 
 class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
@@ -41,9 +42,15 @@ public slots:
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
     void suggestionChosen( const QString& link );
+    void refreshLyrics();
+    
 
 private:
     void calculateHeight();
+    Plasma::Icon* addAction( QAction *action );
+
+    QGraphicsSimpleTextItem* m_titleLabel;
+    Plasma::Icon* m_reloadIcon;
     
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;

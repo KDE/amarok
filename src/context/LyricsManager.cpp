@@ -145,6 +145,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
         }
 
         lyrics = el.text();
+        debug() << "setting cached lyrics";
         The::engineController()->currentTrack()->setCachedLyrics( lyricsXML ); // TODO: setLyricsByPath?
 
         const QString title      = el.attribute( "title" );

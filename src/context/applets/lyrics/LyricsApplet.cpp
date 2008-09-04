@@ -15,9 +15,12 @@
 
 #include "Amarok.h"
 #include "Debug.h"
+#include "EngineController.h"
 #include "dialogs/ScriptManager.h"
+#include "meta/Meta.h"
 #include "Theme.h"
 
+#include <QAction>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsProxyWidget>
 #include <QTextEdit>
@@ -26,6 +29,8 @@
 
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
+    , m_titleLabel( 0 )
+    , m_reloadIcon( 0 )
     , m_lyrics( 0 )
     , m_aspectRatio( 1 )
     , m_suggested( 0 )
@@ -43,12 +48,26 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
+    m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
+    QFont bigger = m_titleLabel->font();
+    bigger.setPointSize( bigger.pointSize() + 4 );
+    m_titleLabel->setFont( bigger );
+    m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
+    
+    // TODO add i18n when possible
+    QAction* reloadAction = new QAction( "Reload Lyrics", this );
+    reloadAction->setIcon( KIcon( "view-refresh" ) );
+    reloadAction->setVisible( true );
+    reloadAction->setEnabled( true );
+    m_reloadIcon = addAction( reloadAction );
+
+    connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( refreshLyrics() ) );
+    
     m_lyricsProxy = new QGraphicsProxyWidget( this );
     m_lyrics = new QTextEdit;
     m_lyrics->setReadOnly( true );
     m_lyrics->setFrameShape( QFrame::NoFrame );
     m_lyricsProxy->setWidget( m_lyrics );
-    m_lyrics->setPlainText( i18n( "Hello, World" ) );
 
     // only show when we need to let the user
     // choose between suggestions
@@ -60,6 +79,35 @@ void LyricsApplet::init()
     connect( dataEngine( "amarok-lyrics" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
 
     constraintsEvent();
+    connectSource( "lyrics" );
+}
+
+Plasma::Icon*
+LyricsApplet::addAction( QAction *action )
+{
+    DEBUG_BLOCK
+    if ( !action ) {
+        debug() << "ERROR!!! PASSED INVALID ACTION";
+        return 0;
+    }
+
+    Plasma::Icon *tool = new Plasma::Icon( this );
+
+    tool->setAction( action );
+    tool->setText( "" );
+    tool->setToolTip( action->text() );
+    tool->setDrawBackground( false );
+    tool->setOrientation( Qt::Horizontal );
+    QSizeF iconSize = tool->sizeFromIconSize( 22 );
+    tool->setMinimumSize( iconSize );
+    tool->setMaximumSize( iconSize );
+    tool->resize( iconSize );
+
+
+    tool->hide();
+    tool->setZValue( zValue() + 1 );
+
+    return tool;
 }
 
 void LyricsApplet::connectSource( const QString& source )
@@ -72,7 +120,7 @@ void LyricsApplet::connectSource( const QString& source )
     } else if( source == "suggested" )
     {
         dataEngine( "amarok-lyrics" )->connectSource( source, this );
-        dataUpdated( source, dataEngine("amarok-lyrics" )->query( "lyrics" ) ); 
+        dataUpdated( source, dataEngine("amarok-lyrics" )->query( "suggested" ) ); 
     }
 } 
 
@@ -81,6 +129,13 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     prepareGeometryChange();
 
     m_suggested->setTextWidth( size().width() );
+
+    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 0 );
+    
+    m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 20, 0 ) );
+    m_reloadIcon->show();
+    
+    //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
     
     m_lyricsProxy->setMinimumSize( size() );
     m_lyricsProxy->setMaximumSize( size() );
@@ -115,7 +170,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         QVariantList suggested = data[ "suggested" ].toList();
         // build simple HTML to show
         // a list
-        QString html = QString( "<h2 align='center'>" + i18n( "Lyrics" ) + "</h2><br />" );
+        QString html = QString( "<br><br>" );
         foreach( QVariant suggestion, suggested )
         {
                 QString sug = suggestion.toString();
@@ -139,7 +194,8 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->show();
         QVariantList lyrics  = data[ "lyrics" ].toList();
 
-        m_lyrics->setPlainText( lyrics[ 3 ].toString() );
+        //  need padding for title
+        m_lyrics->setPlainText( "\n\n" + lyrics[ 3 ].toString() );
     }
     else if( data.contains( "notfound" ) )
     {
@@ -175,4 +231,14 @@ LyricsApplet::suggestionChosen( const QString& link )
     debug() << "got link selected:" << link;
     QStringList pieces = link.split( "|" );
     ScriptManager::instance()->notifyFetchLyricsByUrl( pieces[ 1 ], pieces[ 0 ], pieces[ 2 ] );
+}
+
+void
+LyricsApplet::refreshLyrics()
+{
+    Meta::TrackPtr curtrack = The::engineController()->currentTrack();
+    debug() << "checking for current track:";
+    if( !curtrack )
+        return;
+    ScriptManager::instance()->notifyFetchLyrics( curtrack->name(), curtrack->artist()->name() );
 }

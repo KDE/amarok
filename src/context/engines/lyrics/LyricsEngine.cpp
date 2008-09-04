@@ -65,15 +65,17 @@ void LyricsEngine::update()
     DEBUG_BLOCK
 
     Meta::TrackPtr curtrack = The::engineController()->currentTrack();
+    debug() << "checking for current track:";
     if( !curtrack )
         return;
-    //QString lyrics = curtrack->cachedLyrics();
+    QString lyrics = curtrack->cachedLyrics();
+    debug() << "got cached lyrics: " << lyrics;
     // TODO lyrics caching is broken
     // always returns the same one song... wtf!
     // don't rely on caching for streams
-    //const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
-    bool cached = false;
-    QString lyrics;
+    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
+    //bool cached = false;
+    //QString lyrics;
     
     QString title  = The::engineController()->currentTrack()->name();
     QString artist = The::engineController()->currentTrack()->artist()->name();
