@@ -531,7 +531,7 @@ MainWindow::slotAddStream() //SLOT
 
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
 
-    The::playlistModel()->insertOptioned( track, Playlist::Append|Playlist::DirectPlay );
+    The::playlistModel()->insertOptioned( track, Playlist::Append );
 }
 
 void
