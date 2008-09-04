@@ -97,9 +97,9 @@ const qreal Playlist::GraphicsItem::ALBUM_WIDTH = 50.0;
 const qreal Playlist::GraphicsItem::SINGLE_TRACK_ALBUM_WIDTH = 40.0;
 const qreal Playlist::GraphicsItem::MARGIN = 3.0;
 const qreal Playlist::GraphicsItem::MARGINH = 6;
-QFontMetricsF* Playlist::GraphicsItem::s_nfm = 0;
-QFontMetricsF* Playlist::GraphicsItem::s_bfm = 0;
-QFontMetricsF* Playlist::GraphicsItem::s_ifm = 0;
+QFontMetricsF* Playlist::GraphicsItem::s_nfm = 0; // normal font metric
+QFontMetricsF* Playlist::GraphicsItem::s_bfm = 0; // bold   font metric
+QFontMetricsF* Playlist::GraphicsItem::s_ifm = 0; // italic font metric
 
 
 Playlist::GraphicsItem::GraphicsItem()
