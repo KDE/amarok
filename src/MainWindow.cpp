@@ -382,9 +382,9 @@ MainWindow::keyPressEvent( QKeyEvent *e )
         default:
             return KXmlGuiWindow::keyPressEvent( e );
     }
-    if( n == 0 )
-        ;//m_browsers->closeCurrentBrowser();
-    else// if( n > 0 && n <= m_browsers->visibleCount() )
+    if( n == 0 && m_browsers->currentIndex() >= 0 )
+        m_browsers->showWidget( m_browsers->currentIndex() );
+    else if( n > 0 )
         showBrowser( n - 1 ); // map from human to computer counting
 }
 

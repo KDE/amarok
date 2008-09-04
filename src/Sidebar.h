@@ -111,7 +111,6 @@ class SideBar: public KHBox
             m_widgets->removeWidget( widget );
         }
 
-
         QWidget *at( int index ) const { return m_widgets->widget( index ); }
 
         int currentIndex() const { return m_current; }
@@ -125,7 +124,11 @@ class SideBar: public KHBox
         }
 
     public slots:
-        void showWidget( int index ) { m_bar->open( index ); }
+        void showWidget( int index )
+        {
+            if( index >= 0 && index < m_bar->count() )
+                m_bar->open( index );
+        }
 
     protected:
         QSize sizeHint() const { return QSize( static_cast<QWidget*>(parent())->size().width() / 4, 400 ); }
