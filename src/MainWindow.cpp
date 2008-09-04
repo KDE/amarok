@@ -723,48 +723,6 @@ MainWindow::createActions()
     connect(action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(startFullScan()));
     ac->addAction( "rescan_collection", action );
 
-    // TODO: Add these via last.fm service
-#if 0
-    m_lastfmTags << "Alternative" <<  "Ambient" << "Chill Out" << "Classical" << "Dance"
-                 << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
-                 << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
-                 << "Soundtrack" << "Techno" << "Trance";
-
-    KMenu* playTagRadioMenu = new KMenu( this );
-    playTagRadioMenu->setTitle( i18n( "Global Tag Radio" ) );
-    foreach( const QString &lastfmTag, m_lastfmTags )
-    {
-        KAction *lastfmAction = new KAction( lastfmTag, this );
-        connect( lastfmAction, SIGNAL( triggered(bool) ), SLOT( playLastfmGlobaltag() ) );
-        playTagRadioMenu->addAction( lastfmAction );
-    }
-
-    KMenu* addTagRadioMenu = new KMenu( this );
-    addTagRadioMenu->setTitle( i18n( "Global Tag Radio" ) );
-    foreach( const QString &lastfmTag, m_lastfmTags )
-    {
-        KAction *lastfmAction = new KAction( lastfmTag, this );
-        connect( lastfmAction, SIGNAL( triggered(bool) ), SLOT( addLastfmGlobaltag() ) );
-        addTagRadioMenu->addAction( lastfmAction );
-    }
-
-    KActionMenu* playLastfm = new KActionMenu( KIcon("audioscrobbler-amarok"), i18n( "Play las&t.fm Stream" ), ac);
-    KMenu* playLastfmMenu = playLastfm->menu();
-    playLastfmMenu->addAction( i18n( "Personal Radio" ), this, SLOT( playLastfmPersonal() ) );
-    playLastfmMenu->addAction( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbor() ) );
-    playLastfmMenu->addAction( i18n( "Custom Station" ), this, SLOT( playLastfmCustom() ) );
-    playLastfmMenu->addMenu( playTagRadioMenu );
-    ac->addAction( "lastfm_play", playLastfm );
-
-    KActionMenu* addLastfm = new KActionMenu( KIcon("audioscrobbler-amarok"), i18n( "Add las&t.fm Stream" ), ac);
-    KMenu* addLastfmMenu = addLastfm->menu();
-    addLastfmMenu->addAction( i18n( "Personal Radio" ), this, SLOT( addLastfmPersonal() ) );
-    addLastfmMenu->addAction( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbor() ) );
-    addLastfmMenu->addAction( i18n( "Custom Station" ), this, SLOT( addLastfmCustom() ) );
-    addLastfmMenu->addMenu( addTagRadioMenu );
-    ac->addAction( "lastfm_add", addLastfm );
-#endif
-
     action = new KAction( this );
     action->setIcon( KIcon("media-skip-backward-amarok") );
     action->setText( i18n( "Previous Track" ) );
