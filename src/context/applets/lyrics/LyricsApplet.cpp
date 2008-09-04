@@ -150,6 +150,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     //debug() << "lyrics applet got name:" << name << "and lyrics: " << data;
 
+    m_titleLabel->show();
     if( data.contains( "noscriptrunning" ) )
     {
         m_suggested->hide();
@@ -186,6 +187,8 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     {
         // show pure html in the text area
         m_suggested->hide();
+        // we assume html lyrics take care of titles as well
+        m_titleLabel->hide();
         m_lyrics->setHtml( data[ "html" ].toString() );
         m_lyrics->show();
     } else if( data.contains( "lyrics" ) )
