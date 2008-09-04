@@ -291,7 +291,12 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     const int sliderY =  ( m_iconHeight -m_sliderHeight ) / 2;
 
     paintCustomSlider( p, m_sliderX, sliderY, m_sliderWidth, m_sliderHeight );
-    p->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_icon", m_iconWidth, m_iconHeight, "volume_icon" ) ) ;
+    
+    //Using pre-rendered SVG for now, cause QtSvg renders the icon wrong
+    //p->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_icon", m_iconWidth, m_iconHeight, "volume_icon" ) ) ;
+    
+    const QImage volumeIcon( KStandardDirs::locate( "data", "amarok/images/volume_icon.png" ) );
+    p->drawImage( 0, 0, volumeIcon.scaled( m_iconWidth, m_iconHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
 
     if( underMouse() )
     {
