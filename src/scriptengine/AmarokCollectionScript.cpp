@@ -17,10 +17,12 @@
 
 #include "AmarokCollectionScript.h"
 
+#include "amarokconfig.h"
 #include "App.h"
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
 #include "collection/sqlcollection/SqlCollectionLocation.h"
+#include "Debug.h"
 
 #include <QtScript>
 
@@ -109,11 +111,29 @@ namespace AmarokScript
 
     bool AmarokCollectionScript::isDirInCollection( const QString& path )
     {
-        Q_UNUSED( path );
+        DEBUG_BLOCK
+
+        KUrl url = KUrl( path );
+        KUrl parentUrl;
+        foreach( const QString &dir, collectionLocation() )
+        {
+            debug() << "Collection Location: " << dir;
+            debug() << "path: " << path;
+            debug() << "scan Recursively: " << AmarokConfig::scanRecursively();
+            parentUrl.setPath( dir );
+            if ( !AmarokConfig::scanRecursively() )
+            {
+                if ( ( dir == path ) || ( dir + "/" == path ) )
+                    return true;
+            }
+            else //scan recursively
+            {
+                if ( parentUrl.isParentOf( path ) )
+                    return true;
+            }
+        }
         return false;
     }
-
-
 }
 
 #include "AmarokCollectionScript.moc"

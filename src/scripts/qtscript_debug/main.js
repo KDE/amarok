@@ -1,5 +1,5 @@
 Importer.loadQtBinding( "qt.core" );
-Importer.include( "debug/debug.js" );
+//Importer.include( "debug/debug.js" );
 
 //test engine:
 
@@ -97,3 +97,4 @@ for ( var x in location )
 {
     print ( location[x] );
 }
+print( Amarok.Collection.isDirInCollection( "/home/eagle/Music" ) );
