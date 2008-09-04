@@ -243,20 +243,15 @@ CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId )
+    m_albums.clear();
     m_albums << albums;
 }
 
 void
 CurrentEngine::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
-    DEBUG_BLOCK
     Q_UNUSED( collectionId )
-//     m_albums << albums;
-    foreach( Meta::TrackPtr trackPtr, tracks )
-    {
-        debug() << "Track: " << trackPtr->name() << " artist: " << trackPtr->artist()->name();
-        
-    }
+    Q_UNUSED( tracks )
 }
 
 #include "CurrentEngine.moc"
