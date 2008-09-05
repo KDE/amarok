@@ -47,15 +47,15 @@
 typedef Medium::List MediumList;
 
 
-K_GLOBAL_STATIC( MountPointManager, s_mountPointManager )
+MountPointManager* MountPointManager::s_instance = 0;
 
 MountPointManager::MountPointManager()
     : QObject( 0 )
 {
     AMAROK_NOTIMPLEMENTED
-    setObjectName( "MountPointManager" );
 
-    qAddPostRoutine( s_mountPointManager.destroy );  // Ensures that the dtor gets called when QApplication destructs
+    s_instance = this;
+    setObjectName( "MountPointManager" );
 
     if ( !Amarok::config( "Collection" ).readEntry( "DynamicCollection", true ) )
     {
@@ -86,8 +86,6 @@ MountPointManager::~MountPointManager()
 {
     DEBUG_BLOCK
 
-    qRemovePostRoutine( s_mountPointManager.destroy );
-
     m_handlerMapMutex.lock();
     foreach( DeviceHandler *dh, m_handlerMap )
     {
@@ -103,7 +101,7 @@ MountPointManager::~MountPointManager()
 
 MountPointManager * MountPointManager::instance()
 {
-    return s_mountPointManager;
+    return s_instance ? s_instance : new MountPointManager();
 }
 
 void

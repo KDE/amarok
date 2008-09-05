@@ -229,6 +229,7 @@ App::~App()
     delete mainWindow();
 
     delete CollectionManager::instance();
+    delete MountPointManager::instance();
     delete The::engineController();
 
 #ifdef Q_WS_WIN

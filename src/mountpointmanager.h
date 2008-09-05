@@ -149,7 +149,6 @@ signals:
     void mediumRemoved( int deviceid );
 
 public:
-    MountPointManager();
     ~MountPointManager();
 
     //the methods of this class a called *very* often. make sure they are as fast as possible
@@ -217,6 +216,9 @@ private slots:
     void startStatisticsUpdateJob();
 
 private:
+    static MountPointManager* s_instance;
+    MountPointManager();
+
     /**
      * checks whether a medium identified by its unique database id is currently mounted.
      * Note: does not handle deviceId = -1! It only checks real devices
