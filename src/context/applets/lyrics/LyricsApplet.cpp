@@ -20,6 +20,8 @@
 #include "meta/Meta.h"
 #include "Theme.h"
 
+#include <KStandardDirs>
+
 #include <QAction>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsProxyWidget>
@@ -34,6 +36,7 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     , m_lyrics( 0 )
     , m_aspectRatio( 1 )
     , m_suggested( 0 )
+    , m_theme( 0 )
 {
     setHasConfigurationInterface( false );
 }
@@ -48,6 +51,15 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
+    m_theme = new Plasma::PanelSvg( this );
+    QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
+
+    kDebug() << "Loading theme file: " << imagePath;
+
+    m_theme->setImagePath( imagePath );
+    m_theme->setContainsMultipleImages( true );
+    m_theme->setEnabledBorders( Plasma::PanelSvg::AllBorders );
+    
     m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
     QFont bigger = m_titleLabel->font();
     bigger.setPointSize( bigger.pointSize() + 4 );
@@ -130,15 +142,19 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_suggested->setTextWidth( size().width() );
 
+    m_theme->resizePanel( size().toSize() );
+
     m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 0 );
     
     m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 20, 0 ) );
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
+    QSize lyricsSize( size().width() - 20, size().height() - 24 );
+    m_lyricsProxy->setMinimumSize( lyricsSize );
+    m_lyricsProxy->setMaximumSize( lyricsSize );
+    m_lyricsProxy->setPos( 10, 14 );
     
-    m_lyricsProxy->setMinimumSize( size() );
-    m_lyricsProxy->setMaximumSize( size() );
 }
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -213,6 +229,18 @@ bool LyricsApplet::hasHeightForWidth() const
 {
     return false;
 }
+
+void
+LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
+{
+    Q_UNUSED( option );
+
+    m_theme->resizePanel( size().toSize() );
+
+    m_theme->paintPanel( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() ) );
+
+}
+
 
 #include "LyricsApplet.moc"
 

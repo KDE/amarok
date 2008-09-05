@@ -17,7 +17,9 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "context/Svg.h"
+#include "plasma/panelsvg.h"
 #include "plasma/widgets/icon.h"
+
 
 class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
@@ -35,6 +37,8 @@ public:
     bool hasHeightForWidth() const;
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+
+    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
 
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
     
@@ -57,6 +61,8 @@ private:
     QTextEdit* m_lyrics;
     qreal m_aspectRatio;
     QGraphicsTextItem* m_suggested;
+
+    Plasma::PanelSvg* m_theme;
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
