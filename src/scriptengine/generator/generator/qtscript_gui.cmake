@@ -558,25 +558,18 @@ set( Generated_QtGUI_SRCS
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QWorkspace.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/main.cpp
 )
-if( NOT WIN32 )
-    set( Generated_QtGUI_SRCS ${Generated_QtGUI_cnv0_SRCS} ${Generated_QtGUI_cnv1_SRCS} ${Generated_QtGUI_SRCS} )
-endif( NOT WIN32 )
-
 set_source_files_properties( ${Generated_QtGUI_SRCS} PROPERTIES GENERATED true )
 #qtscript bindings don't use moc
-if( WIN32 )
-    set_source_files_properties( ${Generated_QtGUI_cnv0_SRCS} PROPERTIES GENERATED true )
-    set_source_files_properties( ${Generated_QtGUI_cnv1_SRCS} PROPERTIES GENERATED true )
+set_source_files_properties( ${Generated_QtGUI_cnv0_SRCS} PROPERTIES GENERATED true )
+set_source_files_properties( ${Generated_QtGUI_cnv1_SRCS} PROPERTIES GENERATED true )
 
-    add_library( helperLibrary0 STATIC ${Generated_QtGUI_cnv0_SRCS} )
-    add_library( helperLibrary1 STATIC ${Generated_QtGUI_cnv1_SRCS} )
-endif( WIN32 )
+add_library( helperLibrary0 STATIC ${Generated_QtGUI_cnv0_SRCS} )
+add_library( helperLibrary1 STATIC ${Generated_QtGUI_cnv1_SRCS} )
 
 add_library( qtscript_gui MODULE ${Generated_QtGUI_SRCS} )
 add_dependencies( qtscript_gui generator )
-if( WIN32 )
+
 target_link_libraries( qtscript_gui helperLibrary0 helperLibrary1 )
-endif( WIN32 )
 
 target_link_libraries( qtscript_gui ${QT_LIBRARIES})
 
