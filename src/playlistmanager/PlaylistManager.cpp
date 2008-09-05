@@ -257,11 +257,6 @@ PlaylistManager::save( const QString& fromLocation )
     }
     Meta::TrackList tracks = playlist->tracks();
     QString name = playlist->name().split(".")[0];
-
-    foreach( Meta::TrackPtr track, tracks )
-    {
-        debug() << "playlist got track:" << track->prettyName();
-    }
     
     if( tracks.isEmpty() )
         return false;
