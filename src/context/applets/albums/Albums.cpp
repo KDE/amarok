@@ -12,6 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "AlbumItem.h"
 #include "Albums.h"
 #include "AlbumsView.h"
 #include "Amarok.h"
@@ -149,39 +150,10 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
 
     foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
-        QStandardItem *albumItem = new QStandardItem();
-
-        QString albumName = albumPtr->name();
-        albumName = albumName.isEmpty() ? i18n("Unknown") : albumName;
-
-        QString displayText = albumName;
-
-        Meta::TrackList tracks = albumPtr->tracks();
-        QString year;
-        if( !tracks.isEmpty() )
-        {
-            Meta::TrackPtr first = tracks.first();
-            year = first->year()->name();
-            // do some sanity checking
-            if( year.length() != 4 )
-                year = QString();
-        }
-
-        if( !year.isEmpty() )
-            displayText += QString( " (%1)" ).arg( year );
-
-        QString trackCount = i18np( "%1 track", "%1 tracks", albumPtr->tracks().size() );
-        displayText += "\n" + trackCount;
-
-        albumItem->setText( displayText );
-
-        QPixmap cover = albumPtr->image( m_albumWidth );
-        albumItem->setIcon( QIcon( cover ) );
+        AlbumItem *albumItem = new AlbumItem();
+        albumItem->setAlbum( albumPtr );
+        albumItem->setIconSize( m_albumWidth );
         
-        QSize sizeHint = albumItem->sizeHint();
-        sizeHint.setHeight( 80 );
-        albumItem->setSizeHint( sizeHint );
-       
         int childRow = 0;
         foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )
         {
