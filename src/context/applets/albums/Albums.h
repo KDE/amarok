@@ -56,10 +56,6 @@ public slots:
 private slots:
     void configAccepted();
     void connectSource( const QString &source );
-    void enqueueAlbum( const QString &name );
-    void enqueueTrack( const QString &albumName, const QString &trackName );
-    void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
-    void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
 
 private:
     void prepareElements();

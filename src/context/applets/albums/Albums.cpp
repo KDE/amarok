@@ -81,9 +81,6 @@ void Albums::init()
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
              this, SLOT( connectSource( const QString& ) ) );
 
-    connect( m_albumsView, SIGNAL( enqueueAlbum( const QString & ) ), this, SLOT( enqueueAlbum( const QString & ) ) );
-    connect( m_albumsView, SIGNAL( enqueueTrack( const QString &, const QString & ) ),
-             this, SLOT( enqueueTrack( const QString &, const QString & ) ) );
     updateConstraints();
 }
 
@@ -126,8 +123,6 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     
     m_model->clear();
        
-    int row = 0;
-
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     Meta::AlbumPtr currentAlbum = currentTrack->album();
 
@@ -189,7 +184,6 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         m_model->appendRow( albumItem );
         if( currentAlbum && currentAlbum == albumPtr )
            m_albumsView->nativeWidget()->expand( m_model->indexFromItem( albumItem ) );
-        row++;
     }
     
     updateConstraints();
@@ -243,57 +237,6 @@ void Albums::connectSource( const QString &source )
         dataEngine( "amarok-current" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-current" )->query( "albums" ) ); // get data initally
     }
-}
-
-
-void Albums::enqueueAlbum( const QString &name )
-{
-    Collection *coll = CollectionManager::instance()->primaryCollection();
-    m_qm = coll->queryMaker();
-    m_qm->setQueryType( QueryMaker::Album );
-    m_qm->addFilter( QueryMaker::valAlbum, name );
-
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-             this,   SLOT(    resultReady( QString, Meta::AlbumList ) ),
-             Qt::QueuedConnection );
-    
-    m_qm->run();
-
-}
-
-void
-Albums::enqueueTrack( const QString &albumName, const QString &trackName )
-{
-    DEBUG_BLOCK
-    Collection *coll = CollectionManager::instance()->primaryCollection();
-    m_qm = coll->queryMaker();
-    m_qm->setQueryType( QueryMaker::Track );
-    
-    m_qm->addFilter( QueryMaker::valAlbum, albumName );
-    m_qm->addFilter( QueryMaker::valTitle, trackName );
-    
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-             this,   SLOT(    resultReady( QString, Meta::TrackList ) ),
-             Qt::QueuedConnection );
-
-    m_qm->run();
-}
-
-void
-Albums::resultReady( const QString &collectionId, const Meta::AlbumList &albumList )
-{
-    Q_UNUSED( collectionId )
-    foreach( Meta::AlbumPtr albumPtr, albumList )
-        The::playlistModel()->insertOptioned( albumPtr->tracks(), Playlist::Append );
-}
-
-void
-Albums::resultReady( const QString &collectionId, const Meta::TrackList &trackList )
-{
-    DEBUG_BLOCK
-    Q_UNUSED( collectionId )
-    foreach( Meta::TrackPtr trackPtr, trackList )
-        The::playlistModel()->insertOptioned( trackPtr, Playlist::Append );
 }
 
 #include "Albums.moc"
