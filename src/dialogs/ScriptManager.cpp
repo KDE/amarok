@@ -166,8 +166,10 @@ ScriptManager::~ScriptManager()
 
     QStringList runningScripts;
     foreach( const QString &key, m_scripts.keys() )
-        if( m_scripts[key].running )
+        if( m_scripts[key].running ) {
             runningScripts << key;
+            delete m_scripts[key].servicePtr;
+        }
 
     // Save config
     KConfigGroup config = Amarok::config( "ScriptManager" );
