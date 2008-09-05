@@ -84,12 +84,13 @@ MenuAction::MenuAction( KActionCollection *ac, QObject *parent )
 }
 
 
-K_GLOBAL_STATIC( Menu, s_menu )
+Menu* Menu::s_instance = 0;
 
-Menu::Menu()
+Menu::Menu( QWidget* parent )
+    : KMenu( parent )
 {
-    qAddPostRoutine( s_menu.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
-    
+    s_instance = this;
+
     KActionCollection *ac = Amarok::actionCollection();
 
     safePlug( ac, "repeat", this );
@@ -139,7 +140,7 @@ Menu::Menu()
 Menu*
 Menu::instance()
 {
-    return s_menu;
+    return s_instance ? s_instance : new Menu( The::mainWindow() );
 }
 
 KMenu*
