@@ -213,7 +213,8 @@ PlaylistManager::typeName(int playlistCategory)
         return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
 }
 
-bool PlaylistManager::save( Meta::TrackList tracks, const QString & name)
+bool
+PlaylistManager::save( Meta::TrackList tracks, const QString & name)
 {
     Meta::SqlPlaylist* playlist = new Meta::SqlPlaylist( name, tracks, SqlPlaylistGroupPtr() );
     int newId = playlist->id();
@@ -221,14 +222,54 @@ bool PlaylistManager::save( Meta::TrackList tracks, const QString & name)
 
     //jolt the playlist browser model to reload....
     //talk about over-coupling... :|
-    PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
+    //PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
     
     //we should really enter edit mode for the new playlist, but how...
-    PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
+    // NOTE this doesn't really make sense, especially when batch adding
+    //      during a collection scan ---lfranchi 9/5/08
+    //PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
 
     return true; //FIXME what's this supposed to return?
 }
 
+bool
+PlaylistManager::save( const QString& fromLocation )
+{
+    DEBUG_BLOCK
+    KUrl url( fromLocation );
+    Meta::Playlist* playlist = 0;
+    Meta::Format format = Meta::getFormat( fromLocation );
+    switch( format )
+    {
+        case Meta::PLS:
+            playlist = new Meta::PLSPlaylist( url );
+            break;
+        case Meta::M3U:
+            playlist = new Meta::M3UPlaylist( url );
+            break;
+        case Meta::XSPF:
+            playlist = new Meta::XSPFPlaylist( url );
+            break;
+
+        default:
+            debug() << "unknown type!";
+            break;
+    }
+    Meta::TrackList tracks = playlist->tracks();
+    QString name = playlist->name().split(".")[0];
+
+    foreach( Meta::TrackPtr track, tracks )
+    {
+        debug() << "playlist got track:" << track->prettyName();
+    }
+    
+    if( tracks.isEmpty() )
+        return false;
+
+    save( tracks, name );
+    return true;
+}
+    
 bool
 PlaylistManager::exportPlaylist( Meta::TrackList tracks,
                         const QString &location )

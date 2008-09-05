@@ -2,6 +2,7 @@
  *  Copyright (c) 2003-2005 Mark Kretschmann <kretschmann@kde.org>
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *  Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>
+ *  Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 
@@ -72,7 +74,7 @@ ScanManager::startFullScan()
     }
     cleanTables();
     m_scanner = new AmarokProcess( this );
-    *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
+    *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "-p";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << MountPointManager::instance()->collectionFolders();
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
@@ -559,7 +561,8 @@ XmlParseJob::run()
                 }
                 else if( localname == "playlist" )
                 {
-                    //TODO handle playlist
+                    //TODO check for duplicates
+                    The::playlistManager()->save( m_reader.attributes().value( "path" ).toString() );
                 }
                 else if( localname == "image" )
                 {

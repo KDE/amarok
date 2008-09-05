@@ -111,8 +111,19 @@ class PlaylistManager : public QObject
 
         void downloadPlaylist( const KUrl & path, const Meta::PlaylistPtr playlist );
 
+        /**
+        *   Saves a list of tracks to a new SQL playlist. Used in the Playlist save button.
+        *   @arg tracks list of tracks to save
+        *   @arg name name of playlist to save
+        */
         bool save( Meta::TrackList tracks, const QString &name );
 
+        /**
+         *  Saves a playlist from a file to the database.
+         *  @arg fromLocation Saved playlist file to load
+         */
+        AMAROK_EXPORT bool save( const QString& fromLocation );
+        
         bool exportPlaylist( Meta::TrackList tracks, const QString &location );
 
 
