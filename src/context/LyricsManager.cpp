@@ -104,7 +104,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     QDomDocument doc;
     if( !doc.setContent( lyricsXML ) )
     {
-        debug() << "couldn't read the xml of lyrics, misformed";
+        debug() << "could not read the xml of lyrics, misformed";
         sendLyricsMessage( QString( "error" ) );
         return;
     }

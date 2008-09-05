@@ -163,7 +163,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
         debug() << "I am dragging from the layout widget";
         event->setDropAction( Qt::MoveAction );
     }
-    debug()<<"everything fine so far, now I'm gonna calculate where to insert the new token";
+    debug()<<"everything fine so far, now I am gonna calculate where to insert the new token";
     Token *childUnder = qobject_cast< Token * >( childAt( event->pos() ) );
     if( childUnder == 0 )   //if I'm not dropping on an existing token
     {
