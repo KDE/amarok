@@ -90,7 +90,6 @@ M3UPlaylist::loadM3u( QTextStream &stream )
     for( QString line; !stream.atEnd(); )
     {
         line = stream.readLine();
-
         if( line.startsWith( "#EXTINF" ) )
         {
             //const QString extinf = line.section( ':', 1 );
@@ -104,18 +103,16 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             if( url.startsWith( '/' ) )
                 url.prepend( "file://" );
             // Won't be relative if it begins with a /
-            else if( KUrl::isRelativeUrl( url ) )
+            if( KUrl::isRelativeUrl( url ) )
             {
                 KUrl kurl( directory );
                 kurl.addPath( line ); // adds directory separator if required
                 kurl.cleanPath();
-                debug() << "found track: " << kurl.path();
                 m_tracks.append( Meta::TrackPtr( new MetaProxy::Track( kurl ) ) );
             }
             else
              {
                 m_tracks.append( Meta::TrackPtr( new MetaProxy::Track( KUrl( line ) ) ) );
-                debug() << "found track: " << line;
             }
 
             // Ensure that we always have a title: use the URL as fallback
