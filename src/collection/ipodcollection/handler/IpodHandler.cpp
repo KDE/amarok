@@ -58,8 +58,6 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 {
     DEBUG_BLOCK
 
-//    initializeIpod();
-
         GError *err = 0;
     m_success = false;
 
@@ -76,8 +74,6 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
             itdb_free( m_itdb );
             m_itdb = 0;
         }
-
-        
     }
 
     else
@@ -89,21 +85,7 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     m_device = m_itdb->device;
     debug() << "Reading device info";
     itdb_device_read_sysinfo( m_device );
-/*
-    debug() << "WARNING: Forcing model into sysinfo, to fix filesystem";
 
-    err = 0;
-
-    itdb_device_set_sysinfo( m_device, "ModelNumStr", "B147" );
-    itdb_device_write_sysinfo( m_device, &err );
-
-    if ( err )
-    {
-        g_error_free( err );
-        debug() << "ERROR: There was an error writing sysinfo";
-
-    }
-    */
     debug() << "Getting model information";
     detectModel(); // get relevant info about device
 
@@ -111,7 +93,7 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 
     m_tempdir = new KTempDir();
 
-    m_tempdir->setAutoRemove( false );
+    m_tempdir->setAutoRemove( true );
 
     qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
@@ -122,12 +104,12 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 
 IpodHandler::~IpodHandler()
 {
-        if ( m_itdb )
-            itdb_free( m_itdb );
-        if ( m_device )
-            itdb_device_free( m_device );
-        if ( m_tempdir )
-            m_tempdir->setAutoRemove( true );
+    DEBUG_BLOCK
+    debug() << "Cleaning up Ipod Database";
+    if ( m_itdb )
+        itdb_free( m_itdb );
+
+    debug() << "End of destructor reached";
 }
 
 
@@ -455,17 +437,7 @@ DEBUG_BLOCK
     }
 
     debug() << "writeItunesDB is returning true";
-/*
-    debug() << "Removing temporary files";
 
-    // Clear the tempdir, make a new one
-    m_tempdir->unlink();
-    delete m_tempdir;
-    m_tempdir = new KTempDir();
-*/
-
-    
-    
     return true;
 }
 
@@ -502,13 +474,12 @@ IpodHandler::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
 
 }
 
-// Currently Porting copyTrackToDevice
 void
 IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
 
-            debug() << "Mountpoint is: " << mountPoint();
+    debug() << "Mountpoint is: " << mountPoint();
 
     KUrl url = determineURLOnDevice(track);
 
@@ -546,7 +517,7 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
         return;
     }
 
-    // PODCASTS NOT YET PORTED
+    // NOTE: PODCASTS NOT YET PORTED
 
 //    PodcastInfo *podcastInfo = 0;
 
@@ -569,10 +540,6 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
     {
         debug() << "Track failed to create, aborting database write!";
     }
-//    debug() << "Trying to write iTunes database";
-//    writeITunesDB( false ); // false, since not threaded, implement later
-    //delete podcastInfo;
-
 
     return;
 }
@@ -718,6 +685,8 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
     ipodtrack->samplerate = track->sampleRate();
     ipodtrack->tracklen = track->length()*1000;
 
+    m_dbChanged = true;
+
 // In Amarok 2, tracks come from many places, no such reliable info
 /*
     //Get the createdate from database
@@ -770,27 +739,6 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
     }
     */
 
-    m_dbChanged = true;
-// TODO: artwork NYI
-/*
-    if( m_supportsArtwork )
-    {
-        QString image;
-        if( metaBundle.podcastBundle() )
-        {
-            PodcastChannelBundle pcb;
-            if( CollectionDB::instance()->getPodcastChannelBundle( metaBundle.podcastBundle()->parent(), &pcb ) )
-                image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 0 );
-        }
-        if( image.isEmpty() )
-            image  = CollectionDB::instance()->albumImage(metaBundle.artist(), metaBundle.album(), false, 0);
-        if( !image.endsWith( "@nocover.png" ) )
-        {
-            debug() << "adding image " << image << " to " << metaBundle.artist() << ":" << metaBundle.album();
-            itdb_track_set_thumbnails( ipodtrack, g_strdup( QFile::encodeName(image) ) );
-        }
-    }
-*/
     if( track->album()->hasImage( 50 ) )
     {
         QPixmap image = track->album()->image( 50, false );
@@ -800,11 +748,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
     else
         debug() << "No image available";
 
-    
-
     debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
-
-
 }
 
 void
@@ -1091,31 +1035,6 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
 void
 IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 {
-//    DEBUG_BLOCK
-/*    Itdb_Artwork *artwork = ipodtrack->artwork;
-    GList *thumbs = artwork->thumbnails; // Itdb_Thumb
-
-    QString thumbPath;
-    
-    // take the first thumb that's found
-    for ( thumbs = artwork->thumbnails; thumbs; thumbs = thumbs->next )
-    {
-        Itdb_Thumb *thumb = (Itdb_Thumb*) thumbs->data;
-        thumbPath = itdb_thumb_get_filename( m_device, thumb );
-        if( !thumbPath.isEmpty() )
-            break;
-    }
-
-//    //debug() << "Album: " << track->album()->name();
-
-//    //debug() << "Thumb Path: " << thumbPath;
-
-    if( !thumbPath.isEmpty() )
-        track->ipodAlbum()->setImagePath( thumbPath );
-    */
-
-    
-
     KTemporaryFile tempImageFile;
 
     tempImageFile.setSuffix( ".jpeg" ); // default suffix jpeg
@@ -1128,16 +1047,11 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 
     // pull image out of ipod
 
-//    //debug() << "Track has artwork: " << (ipodtrack->has_artwork==0x01 ? "true" : "false");
-
     if( ipodtrack->has_artwork == 0x01 )
     {
-//        //debug() << "Ipod claims track has artwork";
-//        //debug() << "Artist: " << track->artist()->name() << " Track: " << track->name();
-
         // try small first
 
-//        //debug() << "Attempting to get small cover";
+        //debug() << "Attempting to get small cover";
         thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_SMALL );
 
         // then large if needed
@@ -1146,8 +1060,6 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 //            //debug() << "Failed to get small cover, trying large";
             thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_LARGE );
         }
-
-
 
         if( thumb != NULL)
         {
@@ -1215,38 +1127,31 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
             {
                 thumbPath = QString::fromUtf8( itdb_thumb_get_filename( m_device, thumb ) );
 
-                
-
                 //debug() << "Path to thumb is: " << thumbPath;
                 //debug() << "Setting gpixbuf to this thumb";
 
                 gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
-                
+
             }
 
         }
     }
 
-    
-
-    
-
     if(gpixbuf != NULL)
     {
 
         //debug() << "Succeeded in getting pixbuf, attempting to save";
-        
 
         // temporarily save to file
         gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "jpeg", 0, 0 );
 
         // pull temporary file's image out as QImage
-    
+
         QImage image( tempImagePath );
-        
+
         track->album()->setImage( image );
-        
-    
+
+
     }
 
     return;
@@ -1272,22 +1177,10 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
     QFileInfo tempImageFileInfo( tempImageFile ); // get info for path
     QString tempImagePath = tempImageFileInfo.absoluteFilePath(); // path
     image.save( tempImagePath ); // temporarily save pixmap
-    
+
     bool success = false;
 
-    
     debug() << "Adding image that's temporarily at: " << tempImagePath;
-/*
-    if( itdb_artwork_add_thumbnail( ipodtrack->artwork, ITDB_THUMB_COVER_SMALL, QFile::encodeName( tempImagePath ), 0, 0 ) )
-        success = true;
-    else
-        success = false;
-    
-    if( itdb_artwork_add_thumbnail( ipodtrack->artwork, ITDB_THUMB_COVER_LARGE, QFile::encodeName( tempImagePath ), 0, 0 ) )
-        success = true;
-    else
-        success = false;
-*/
 
     success = itdb_track_set_thumbnails( ipodtrack, QFile::encodeName( tempImagePath ) );
     
@@ -1301,13 +1194,6 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
         debug() << "Image failed to add!";
         ipodtrack->has_artwork = 0x02;
     }
-    
-    /*
-    if( itdb_track_set_thumbnails( ipodtrack, g_strdup( QFile::encodeName( tempImagePath ) ) ) )
-        debug() << "Image added successfully!";
-    else
-        debug() << "Image failed to add!";
-    */
 }
 
 void
@@ -1404,45 +1290,6 @@ IpodHandler::setupYearMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, Year
     yearPtr->addTrack(  track );
     track->setYear(  yearPtr );
 }
-/*
-void
-IpodHandler::setupMetadataMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, DataMapPtr datamap, Metadata metadata)
-{
-    switch( metadata )
-    {
-        case Artist:
-            return;
-        case Album:
-            AlbumMapPtr albumMap = AlbumMapPtr::dynamicCast( datamap );
-            QString album( QString::fromUtf8( ipodtrack->album ) );
-            IpodAlbumPtr albumPtr;
-
-            if ( albumMap->contains( album ) )
-                albumPtr = IpodAlbumPtr::staticCast(  albumMap->value(  album ) );
-
-            else
-            {
-                albumPtr = IpodAlbumPtr(  new IpodAlbum(  album ) );
-                albumMap->insert(  album,  AlbumPtr::staticCast(  albumPtr ) );
-            }
-
-            albumPtr->addTrack(  track );
-            track->setAlbum(  albumPtr );
-            return;
-        case Genre:
-            return;
-        case Composer:
-            return;
-        case Year:
-            return;
-
-        default:
-            return;
-    }
-}
-*/
-
-
 
 void
 IpodHandler::parseTracks()

@@ -50,6 +50,7 @@ namespace Ipod
 {
 
 
+/*
 struct PodcastInfo
 {
     // per show
@@ -64,6 +65,7 @@ struct PodcastInfo
 
     PodcastInfo() { listened = false; }
 };
+*/
 
 /* The libgpod backend for all Ipod calls */
     class IpodHandler : public QObject
@@ -108,11 +110,6 @@ struct PodcastInfo
 	   bool pathExists( const QString &ipodPath, QString *realPath=0 );
 	   bool writeITunesDB( bool threaded=true );
 
-        
-
-       
- //      void setupMetadataMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, DataMapPtr datamap, Metadata metadata);
-
        // convenience methods to avoid repetitive code
 
        void setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ArtistMap &artistMap );
@@ -138,7 +135,6 @@ struct PodcastInfo
 
         // cover handling
         KTempDir *m_tempdir;
-//        Q3Dict<Itdb_Track> m_files;
 
         bool             m_trackCreated;
         bool             m_success;
@@ -163,7 +159,7 @@ struct PodcastInfo
 
         QFile            *m_lockFile;
 
-        // KIO-related Vars (to be moved elsewhere eventually)
+        // KIO-related Vars
 
         bool m_copyFailed;
         bool m_isCanceled;

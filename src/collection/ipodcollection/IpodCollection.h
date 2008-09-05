@@ -101,6 +101,10 @@ class IpodCollection : public Collection, public MemoryCollection
     void collectionDisconnected( const QString &udi );
     
     public slots:
+
+    void connectDevice();
+    void disconnectDevice();
+
 	void deleteTrackToDelete();
 	void deleteTrackSlot( Meta::IpodTrackPtr track);
 
