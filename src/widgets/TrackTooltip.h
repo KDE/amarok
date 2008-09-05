@@ -34,7 +34,7 @@ class TrackToolTip : public QWidget, public Meta::Observer
     Q_OBJECT
 
     public:
-        TrackToolTip();
+        TrackToolTip( QWidget* parent );
         ~TrackToolTip();
         static TrackToolTip* instance();
     

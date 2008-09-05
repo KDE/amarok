@@ -23,6 +23,7 @@
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "MainWindow.h"
 #include "Systray.h"
 #include "amarok_export.h"
 #include "amarokconfig.h"
@@ -45,22 +46,22 @@
 #include <QToolTip>
 
 
-K_GLOBAL_STATIC( TrackToolTip, s_trackToolTip )
+TrackToolTip* TrackToolTip::s_instance = 0;
 
 TrackToolTip *TrackToolTip::instance()
 {
-    return s_trackToolTip;
+    return s_instance ? s_instance : new TrackToolTip( The::mainWindow() );
 }
 
-TrackToolTip::TrackToolTip()
-    : QWidget( 0 )
+TrackToolTip::TrackToolTip( QWidget* parent )
+    : QWidget( parent )
     , m_track( 0 )
     , m_haspos( false )
     , m_timer( new QTimer( this ) )
 {
     DEBUG_BLOCK
 
-    qAddPostRoutine( s_trackToolTip.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
+    s_instance = this;
 
     setWindowFlags( Qt::ToolTip );
     setWindowOpacity( 0.9 );
@@ -92,8 +93,6 @@ TrackToolTip::TrackToolTip()
 TrackToolTip::~TrackToolTip()
 {
     DEBUG_BLOCK
-
-    qRemovePostRoutine( s_trackToolTip.destroy );
 }
 
 void TrackToolTip::show( const QPoint & bottomRight )
