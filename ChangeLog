@@ -5,19 +5,24 @@ Amarok ChangeLog
 
 VERSION 2.0-beta2
   FEATURES:
+    * Add playlists found during collection scan
+    * Lyricwiki support
     * Sidebars can be toggled with the keyboard: Ctrl+1..4
     * Now remembers visible/invisible state of browsers. (BR 168344)
     * Add ability to play tracks directly off of MTP device
     * Add option to enable/disable automatic cover fetching
 
   CHANGES:
+    * Do not always show status of cover fetching in the status bar (BR 166946)
     * The playlist drop visualiser respects system colours when drawn.
     * Change the ordering of CurrentTrack applet information.
     * The option for exporting playlists with relative urls has been moved
       from the Amarok settings to the save file dialog.
+    * Show recently added albums on the albums applet when no track is playing
     * The Love action in the Last.fm service is now available for all tracks,
       not just Last.fm radio.
     * Made album applet scrollable
+    * Default the OSD to the middle top of the screen
     * New icons and layout for Context View navigation and applet manipulation
     * Same default setting for proportional and fuzzy biases when filtering
       by year. Patch by Andreas Mützel <andreas.muetzel@gmx.net>
@@ -31,6 +36,9 @@ VERSION 2.0-beta2
     * Libgrypt is preferred over OpenSSL at build time, for licensing reasons.
 
   BUGFIXES:
+    * Make appending of podcasts to the playlist work
+    * Fix text color of current track applet (BR 168466)
+    * Make lyric applet work
     * Setting half ratings via global shortcuts was broken.
     * Exporting of M3U and PLS playlists has been fixed.
     * Make the PlayPause button actually switch icons again. (BR 169805)
