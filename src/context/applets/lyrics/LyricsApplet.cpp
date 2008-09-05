@@ -144,9 +144,9 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_theme->resizePanel( size().toSize() );
 
-    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 0 );
+    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 5 );
     
-    m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 20, 0 ) );
+    m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 20, 5 ) );
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
