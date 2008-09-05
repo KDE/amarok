@@ -247,11 +247,5 @@ CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &
     m_albums << albums;
 }
 
-void
-CurrentEngine::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
-{
-    Q_UNUSED( collectionId )
-    Q_UNUSED( tracks )
-}
 
 #include "CurrentEngine.moc"

@@ -85,7 +85,6 @@ private:
 private slots:
     void queryDone();
     void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
-    void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
     void stoppedState();    
     
 };
