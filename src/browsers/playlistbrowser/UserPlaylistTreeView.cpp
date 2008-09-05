@@ -49,6 +49,7 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QWidget *parent )
     , m_renameAction( 0 )
     , m_addGroupAction( 0 )
 {
+    setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
 
 
