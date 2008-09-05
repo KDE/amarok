@@ -32,12 +32,13 @@
 #include <KIcon>
 #include <KMessageBox>
 
-#include <QPainter>
 #include <QBrush>
 #include <QFont>
-#include <QVBoxLayout>
 #include <QLabel>
 #include <QMap>
+#include <QPainter>
+#include <QTreeView>
+#include <QVBoxLayout>
 
 
 Albums::Albums( QObject* parent, const QVariantList& args )
@@ -119,6 +120,8 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     if( m_albums.isEmpty() )
         return;
 
+    debug() << "Received" << m_albums.count() << "albums";
+
     m_headerText->setText( data[ "headerText" ].toString() );
     
     m_model->clear();
@@ -126,6 +129,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     int row = 0;
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    Meta::AlbumPtr currentAlbum = currentTrack->album();
 
     // Here's a smallish hack to sort the albums based on year:
     // Put them into a QMultiMap with the key as the year, and then retrieve the QList. Tada!
@@ -151,8 +155,8 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
         AlbumItem *albumItem = new AlbumItem();
-        albumItem->setAlbum( albumPtr );
         albumItem->setIconSize( m_albumWidth );
+        albumItem->setAlbum( albumPtr );
         
         int childRow = 0;
         foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )
@@ -183,6 +187,8 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         }
         
         m_model->appendRow( albumItem );
+        if( currentAlbum && currentAlbum == albumPtr )
+           m_albumsView->nativeWidget()->expand( m_model->indexFromItem( albumItem ) );
         row++;
     }
     
