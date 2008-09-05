@@ -398,11 +398,12 @@ BurnMenuAction::createWidget( QWidget *w )
 }
 
 
-K_GLOBAL_STATIC( BurnMenu, s_burnMenu )
+BurnMenu* BurnMenu::s_instance = 0;
 
-BurnMenu::BurnMenu()
+BurnMenu::BurnMenu( QWidget* parent )
+    : KMenu( parent )
 {
-    qAddPostRoutine( s_burnMenu.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
+    s_instance = this;
 
     addAction( i18n("Current Playlist"), this, SLOT( slotBurnCurrentPlaylist() ) );
     addAction( i18n("Selected Tracks"), this, SLOT( slotBurnSelectedTracks() ) );
@@ -412,7 +413,7 @@ BurnMenu::BurnMenu()
 KMenu*
 BurnMenu::instance()
 {
-    return s_burnMenu;
+    return s_instance ? s_instance : new BurnMenu( The::mainWindow() );
 }
 
 void
