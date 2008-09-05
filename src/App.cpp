@@ -228,6 +228,8 @@ App::~App()
     mainWindow()->deleteBrowsers();
     delete mainWindow();
 
+    delete The::engineController();
+
 #ifdef Q_WS_WIN
     // work around for KUniqueApplication being not completely implemented on windows
     QDBusConnectionInterface* dbusService;
@@ -523,6 +525,7 @@ App::continueInit()
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
     const bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
+
 
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();

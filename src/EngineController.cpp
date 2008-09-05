@@ -46,18 +46,18 @@
 
 EngineController::ExtensionCache EngineController::s_extensionCache;
 
-class EngineControllerSingleton
-{
-    public:
-        EngineController self;
-};
-K_GLOBAL_STATIC( EngineControllerSingleton, privateSelf )
+namespace The {
+    static EngineController* s_EngineController_instance = 0;
 
-EngineController*
-The::engineController()
-{
-    return &privateSelf->self;
+    EngineController* engineController()
+    {
+        if( !s_EngineController_instance )
+            s_EngineController_instance = new EngineController();
+
+        return s_EngineController_instance;
+    }
 }
+
 
 EngineController::EngineController()
     : m_media( 0 )
@@ -66,8 +66,6 @@ EngineController::EngineController()
     , m_fadeoutTimer( new QTimer( this ) )
 {
     DEBUG_BLOCK
-
-    qAddPostRoutine( privateSelf.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
 
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
@@ -110,8 +108,6 @@ EngineController::EngineController()
 EngineController::~EngineController()
 {
     DEBUG_BLOCK //we like to know when singletons are destroyed
-
-    qRemovePostRoutine( privateSelf.destroy );
 
     m_media->stop();
 
