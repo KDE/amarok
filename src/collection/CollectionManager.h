@@ -134,7 +134,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
         void slotCollectionChanged();
 
     private:
-        friend class CollectionManagerSingleton;
+        static CollectionManager* s_instance;
         CollectionManager();
 
         void init();

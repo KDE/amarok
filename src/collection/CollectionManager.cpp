@@ -61,26 +61,19 @@ struct CollectionManager::Private
     Collection *primaryCollection;
 };
 
-class CollectionManagerSingleton
-{
-    public:
-        CollectionManager instance;
-};
-
-K_GLOBAL_STATIC( CollectionManagerSingleton, privateInstance )
-
+CollectionManager* CollectionManager::s_instance = 0;
 
 CollectionManager *
-CollectionManager::instance( )
+CollectionManager::instance()
 {
-    return &privateInstance->instance;
+    return s_instance ? s_instance : new CollectionManager();
 }
 
 CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )
 {
-    qAddPostRoutine( privateInstance.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
+    s_instance = this;
 
     init();
 }
@@ -88,8 +81,6 @@ CollectionManager::CollectionManager()
 CollectionManager::~CollectionManager()
 {
     DEBUG_BLOCK
-
-    qRemovePostRoutine( privateInstance.destroy );
     
     d->collections.clear();
     d->unmanagedCollections.clear();
