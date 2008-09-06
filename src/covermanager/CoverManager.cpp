@@ -139,14 +139,17 @@ CoverManager::CoverManager()
     qm->setQueryType( QueryMaker::Artist );
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
-             this, SLOT( artistQueryResult( QString, Meta::ArtistList ) ) );
+             this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
 
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( continueConstruction() ) );
+    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotContinueConstruction() ) );
+
+    qm->run();
 }
 
 void
 CoverManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList artists ) //SLOT
 {
+    DEBUG_BLOCK
     foreach( Meta::ArtistPtr artist, artists )
         m_artistList << artist;
 }
@@ -154,6 +157,7 @@ CoverManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList arti
 void
 CoverManager::slotContinueConstruction() //SLOT
 {
+    DEBUG_BLOCK
     foreach( Meta::ArtistPtr artist, m_artistList )
     {
         ArtistItem* item = new ArtistItem( m_artistView, artist );
@@ -464,6 +468,7 @@ void CoverManager::slotArtistSelected() //SLOT
 
 void CoverManager::slotArtistSelectedContinue() //SLOT
 {
+    DEBUG_BLOCK
     QTreeWidgetItem *item = m_artistView->selectedItems().first();
     ArtistItem *artistItem = static_cast< ArtistItem* >(item);
     Meta::ArtistPtr artist = artistItem->artist();
@@ -487,20 +492,23 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     m_albumList.clear();
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-             this, SLOT( albumQueryResult( QString, Meta::AlbumList ) ) );
+             this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
 
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotArtistSelectedContinueAgain() ) );
+
+    qm->run();
 }
 
 void
 CoverManager::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
 {
+    DEBUG_BLOCK
     m_albumList += albums;
 }
 
 void CoverManager::slotArtistSelectedContinueAgain() //SLOT
 {
-
+    DEBUG_BLOCK
     //TODO: Port 2.0
     //also retrieve compilations when we're showing all items (first treenode) or
     //"Various Artists" (last treenode)
@@ -562,6 +570,7 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
     }
 
     updateStatusBar();
+    delete m_progressDialog();
 }
 
 // called when a cover item is clicked
