@@ -175,7 +175,7 @@ function fetchLyrics( artist, title, url )
     // so this is how it'll be for now
     // HACK poor man's version of string substitutions
     //xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyrics artist=\"{artist}\" title=\"{title}\" page_url=\"{page}\">{lyrics}</lyrics></xml>"
-    xml = "<lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
+    xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
     suggestions_xml = "<suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
     suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />"
 
