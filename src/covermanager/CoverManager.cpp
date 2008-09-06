@@ -22,7 +22,6 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "collection/BlockingQuery.h"
 #include "collection/Collection.h"
 #include "CollectionManager.h"
 #include "BrowserToolBar.h"
@@ -76,6 +75,7 @@
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
+CoverManager::s_constructed = false;
 
 class ArtistItem : public QTreeWidgetItem
 {
@@ -139,11 +139,21 @@ CoverManager::CoverManager()
     Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setQueryType( QueryMaker::Artist );
-    BlockingQuery bq( qm );
-    bq.startQuery();
 
-    Meta::ArtistList artists = bq.artists( coll->collectionId() );
-    foreach( Meta::ArtistPtr artist, artists )
+    connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
+             this, SLOT( artistQueryResult( QString, Meta::ArtistList ) ) );
+
+    connect( qm, SIGNAL( queryDone() ), this, SLOT( continueConstruction() ) );
+}
+
+CoverManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList artists ) //SLOT
+{
+    m_artistList += artists;
+}
+
+CoverManager::slotContinueConstruction() //SLOT
+{
+    foreach( Meta::ArtistPtr artist, m_artistList )
     {
         item = new ArtistItem( m_artistView, artist );
         item->setIcon( 0, SmallIcon( "view-media-artist-amarok" ) );
@@ -301,6 +311,7 @@ CoverManager::~CoverManager()
 
     Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );
 
+    s_constructed = false;
     s_instance = 0;
 }
 
@@ -327,6 +338,8 @@ void CoverManager::init()
         item = m_artistView->invisibleRootItem()->child( 0 );
 
     item->setSelected( true );
+
+    s_constructed = true;
 }
 
 
@@ -421,11 +434,13 @@ void CoverManager::fetchMissingCovers() //SLOT
 
 void CoverManager::showOnce( const QString &artist )
 {
-    if ( !s_instance ) {
+    if( !s_instance )
+    {
         artistToSelectInInitFunction = artist;
-        new CoverManager(); //shows itself
+        new CoverManager();
     }
-    else {
+    else
+    {
         s_instance->activateWindow();
         s_instance->raise();
     }
@@ -474,10 +489,21 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     else
         qm->excludeFilter( QueryMaker::valAlbum, QString(), true, true );
 
-    BlockingQuery bq( qm );
-    bq.startQuery();
-    albums = bq.albums( coll->collectionId() );
+    m_albumList.clear();
 
+    connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
+             this, SLOT( albumQueryResult( QString, Meta::AlbumList ) ) );
+
+    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotArtistSelectedContinueAgain() ) );
+}
+
+CoverManager::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
+{
+    m_albumList += albums;
+}
+
+void CoverManager::slotArtistSelectedContinueAgain() //SLOT
+{
 
     //TODO: Port 2.0
     //also retrieve compilations when we're showing all items (first treenode) or
@@ -509,7 +535,7 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     //doing it in the second loop looks really bad, unfortunately
     //this is the slowest step in the bit that we can't process events
     uint x = 0;
-    foreach( Meta::AlbumPtr album, albums )
+    foreach( Meta::AlbumPtr album, m_albumList )
     {
         m_coverItems.append( new CoverViewItem( m_coverView, album ) );
 

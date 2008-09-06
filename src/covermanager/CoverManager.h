@@ -50,11 +50,13 @@ class CoverManager : public QSplitter, public Meta::Observer
         Q_OBJECT
 
         static CoverManager *s_instance;
+        static bool s_constructed;
 
     public:
         CoverManager();
        ~CoverManager();
 
+        static bool isConstructed() { return s_constructed; }
         static CoverManager *instance() { return s_instance; }
 
         static void showOnce( const QString &artist = QString() );
@@ -74,10 +76,14 @@ class CoverManager : public QSplitter, public Meta::Observer
         void changeLocale( int id );
 
     private slots:
+        void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );
+        void slotContinueConstruction();
         void init();
 
         void slotArtistSelected();
         void slotArtistSelectedContinue();
+        void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums );
+        void slotArtistSelectedContinueAgain();
         void coverItemExecuted( QListWidgetItem *item );
         void slotSetFilter();
         void slotSetFilterTimeout();
@@ -118,6 +124,8 @@ class CoverManager : public QSplitter, public Meta::Observer
         QToolButton    *m_viewButton;
         int             m_currentLocale;
         int             m_currentView;
+
+        Meta::TrackList m_artistList;
 
         CoverFetcher   *m_fetcher;
 
