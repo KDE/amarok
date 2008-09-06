@@ -82,9 +82,8 @@ void CurrentTrack::init()
     m_numPlayed->setToolTip( i18n( "Play Count" ) );
     m_playedLast->setToolTip( i18n( "Last Played" ) );
     
-    QPen pen;
+    QPen pen( m_title->pen() );
     pen.setBrush( ( KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText ) ) );
-    pen.setStyle( Qt::SolidLine );
 
     m_title->setPen( pen );
     m_artist->setPen( pen );
