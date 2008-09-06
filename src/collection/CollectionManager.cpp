@@ -21,7 +21,6 @@
 
 #include "Debug.h"
 
-#include "BlockingQuery.h"
 #include "Collection.h"
 #include "EngineController.h"
 #include "MetaQueryMaker.h"

@@ -214,7 +214,6 @@ set(meta_SRCS
 # COLLECTION
 #####################################################################
 set(collection_SRCS
-    collection/BlockingQuery.cpp
     collection/Collection.cpp
     collection/CollectionManager.cpp
     collection/CollectionLocation.cpp
