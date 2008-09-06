@@ -182,8 +182,8 @@ NepomukQueryMaker::setQueryType( QueryType type )
         // but works around collections views assumptions about
         // the order 
         // should be fixed there and then removed here
-        orderBy(QueryMaker::valAlbum);
-        orderBy(QueryMaker::valTrackNr);
+        orderBy(Meta::valAlbum);
+        orderBy(Meta::valTrackNr);
         return this;
     case QueryMaker::Artist:
         m_queryType = Artist;

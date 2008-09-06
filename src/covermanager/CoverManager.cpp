@@ -488,7 +488,7 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     if( item != m_artistView->invisibleRootItem()->child( 0 ) )
         qm->addMatch( artist );
     else
-        qm->excludeFilter( QueryMaker::valAlbum, QString(), true, true );
+        qm->excludeFilter( Meta::valAlbum, QString(), true, true );
 
     m_albumList.clear();
 

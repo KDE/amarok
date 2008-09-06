@@ -198,61 +198,55 @@ NepomukCollection::isEmpty() const
 void
 NepomukCollection::initHashMaps()
 {
-    // this "v =" works around a linker error 
-    // (undefined reference to QueryMaker::valXYZ)
-    // does anyone know why?
+    m_nameForValue[ Meta::valAlbum ] = "album";
+    m_nameForValue[ Meta::valArtist ] = "artist";
+    m_nameForValue[ Meta::valBitrate ] = "bitrate";
+    m_nameForValue[ Meta::valComment ] = "comment";
+    m_nameForValue[ Meta::valComposer ] = "composer";
+    m_nameForValue[ Meta::valCreateDate ] = "createdate";
+    m_nameForValue[ Meta::valDiscNr ] = "discnr";
+    m_nameForValue[ Meta::valFilesize ] = "filesize";
+    m_nameForValue[ Meta::valFirstPlayed ] = "firstplayed";
+    m_nameForValue[ Meta::valFormat ] = "type";
+    m_nameForValue[ Meta::valGenre] = "genre";
+    m_nameForValue[ Meta::valLastPlayed ] = "lastplayed";
+    m_nameForValue[ Meta::valLength ] = "length";
+    m_nameForValue[ Meta::valPlaycount ] = "playcount";
+    m_nameForValue[ Meta::valRating ] = "rating";
+    m_nameForValue[ Meta::valSamplerate ] = "samplerate";
+    m_nameForValue[ Meta::valScore] = "score";
+    m_nameForValue[ Meta::valTitle ] = "title";
+    m_nameForValue[ Meta::valTrackNr ] = "tracknr";
+    m_nameForValue[ Meta::valUrl ] = "url";
+    m_nameForValue[ Meta::valYear ] = "year";   
     
-    qint64 v;
-    
-    m_nameForValue[ v = QueryMaker::valAlbum ] = "album";
-    m_nameForValue[ v = QueryMaker::valArtist ] = "artist";
-    m_nameForValue[ v = QueryMaker::valBitrate ] = "bitrate";
-    m_nameForValue[ v = QueryMaker::valComment ] = "comment";
-    m_nameForValue[ v = QueryMaker::valComposer ] = "composer";
-    m_nameForValue[ v = QueryMaker::valCreateDate ] = "createdate";
-    m_nameForValue[ v = QueryMaker::valDiscNr ] = "discnr";
-    m_nameForValue[ v = QueryMaker::valFilesize ] = "filesize";
-    m_nameForValue[ v = QueryMaker::valFirstPlayed ] = "firstplayed";
-    m_nameForValue[ v = QueryMaker::valFormat ] = "type";
-    m_nameForValue[ v = QueryMaker::valGenre] = "genre";
-    m_nameForValue[ v = QueryMaker::valLastPlayed ] = "lastplayed";
-    m_nameForValue[ v = QueryMaker::valLength ] = "length";
-    m_nameForValue[ v = QueryMaker::valPlaycount ] = "playcount";
-    m_nameForValue[ v = QueryMaker::valRating ] = "rating";
-    m_nameForValue[ v = QueryMaker::valSamplerate ] = "samplerate";
-    m_nameForValue[ v = QueryMaker::valScore] = "score";
-    m_nameForValue[ v = QueryMaker::valTitle ] = "title";
-    m_nameForValue[ v = QueryMaker::valTrackNr ] = "tracknr";
-    m_nameForValue[ v = QueryMaker::valUrl ] = "url";
-    m_nameForValue[ v = QueryMaker::valYear ] = "year";   
-    
-    m_urlForValue[ v = QueryMaker::valAlbum ] = Soprano::Vocabulary::Xesam::album().toString();
-    m_urlForValue[ v = QueryMaker::valArtist ] = Soprano::Vocabulary::Xesam::artist().toString();
-    m_urlForValue[ v = QueryMaker::valBitrate ] = Soprano::Vocabulary::Xesam::audioBitrate().toString();
-    m_urlForValue[ v = QueryMaker::valComment ] = Soprano::Vocabulary::Xesam::comment().toString();
-    m_urlForValue[ v = QueryMaker::valComposer ] = Soprano::Vocabulary::Xesam::composer().toString();
-    m_urlForValue[ v = QueryMaker::valCreateDate ] = Soprano::Vocabulary::Xesam::contentCreated().toString();
-    m_urlForValue[ v = QueryMaker::valDiscNr ] = Soprano::Vocabulary::Xesam::discNumber().toString();
-    m_urlForValue[ v = QueryMaker::valFilesize ] = Soprano::Vocabulary::Xesam::size().toString();
+    m_urlForValue[ Meta::valAlbum ] = Soprano::Vocabulary::Xesam::album().toString();
+    m_urlForValue[ Meta::valArtist ] = Soprano::Vocabulary::Xesam::artist().toString();
+    m_urlForValue[ Meta::valBitrate ] = Soprano::Vocabulary::Xesam::audioBitrate().toString();
+    m_urlForValue[ Meta::valComment ] = Soprano::Vocabulary::Xesam::comment().toString();
+    m_urlForValue[ Meta::valComposer ] = Soprano::Vocabulary::Xesam::composer().toString();
+    m_urlForValue[ Meta::valCreateDate ] = Soprano::Vocabulary::Xesam::contentCreated().toString();
+    m_urlForValue[ Meta::valDiscNr ] = Soprano::Vocabulary::Xesam::discNumber().toString();
+    m_urlForValue[ Meta::valFilesize ] = Soprano::Vocabulary::Xesam::size().toString();
     // FirstUsed = FirstPlayed?
-    m_urlForValue[ v = QueryMaker::valFirstPlayed ] = Soprano::Vocabulary::Xesam::firstUsed().toString();
-    m_urlForValue[ v = QueryMaker::valFormat ] = Soprano::Vocabulary::Xesam::fileExtension().toString();
-    m_urlForValue[ v = QueryMaker::valGenre] = Soprano::Vocabulary::Xesam::genre().toString();
+    m_urlForValue[ Meta::valFirstPlayed ] = Soprano::Vocabulary::Xesam::firstUsed().toString();
+    m_urlForValue[ Meta::valFormat ] = Soprano::Vocabulary::Xesam::fileExtension().toString();
+    m_urlForValue[ Meta::valGenre] = Soprano::Vocabulary::Xesam::genre().toString();
     // LastUsed = LastPlayed?
-    m_urlForValue[ v = QueryMaker::valLastPlayed ] = Soprano::Vocabulary::Xesam::lastUsed().toString();
-    m_urlForValue[ v = QueryMaker::valLength ] = Soprano::Vocabulary::Xesam::mediaDuration().toString();
+    m_urlForValue[ Meta::valLastPlayed ] = Soprano::Vocabulary::Xesam::lastUsed().toString();
+    m_urlForValue[ Meta::valLength ] = Soprano::Vocabulary::Xesam::mediaDuration().toString();
     // useCount = Playcount?
-    m_urlForValue[ v = QueryMaker::valPlaycount ] = Soprano::Vocabulary::Xesam::useCount().toString();
+    m_urlForValue[ Meta::valPlaycount ] = Soprano::Vocabulary::Xesam::useCount().toString();
     
     // there is a Xesam Value (userRating) but using Nepomuk one as Dolphin uses it (ok?)
-    m_urlForValue[ v = QueryMaker::valRating ] = Soprano::Vocabulary::NAO::numericRating().toString();
-    m_urlForValue[ v = QueryMaker::valSamplerate ] = Soprano::Vocabulary::Xesam::audioSampleRate().toString();
-    m_urlForValue[ v = QueryMaker::valScore] = Soprano::Vocabulary::Xesam::autoRating().toString();
-    m_urlForValue[ v = QueryMaker::valTitle ] = Soprano::Vocabulary::Xesam::title().toString();
-    m_urlForValue[ v = QueryMaker::valTrackNr ] = Soprano::Vocabulary::Xesam::trackNumber().toString();
-    m_urlForValue[ v = QueryMaker::valUrl ] = Soprano::Vocabulary::Xesam::url().toString();
+    m_urlForValue[ Meta::valRating ] = Soprano::Vocabulary::NAO::numericRating().toString();
+    m_urlForValue[ Meta::valSamplerate ] = Soprano::Vocabulary::Xesam::audioSampleRate().toString();
+    m_urlForValue[ Meta::valScore] = Soprano::Vocabulary::Xesam::autoRating().toString();
+    m_urlForValue[ Meta::valTitle ] = Soprano::Vocabulary::Xesam::title().toString();
+    m_urlForValue[ Meta::valTrackNr ] = Soprano::Vocabulary::Xesam::trackNumber().toString();
+    m_urlForValue[ Meta::valUrl ] = Soprano::Vocabulary::Xesam::url().toString();
     // Amarok seems to use Xesam contentCreated for year in SQL-Collection, so I assume it is ok here  
-    m_urlForValue[ v = QueryMaker::valYear ] = Soprano::Vocabulary::Xesam::contentCreated().toString();
+    m_urlForValue[ Meta::valYear ] = Soprano::Vocabulary::Xesam::contentCreated().toString();
     
     QHashIterator<qint64, QString> it( m_nameForValue );
     while ( it.hasNext() ) 

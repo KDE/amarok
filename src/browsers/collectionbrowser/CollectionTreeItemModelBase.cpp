@@ -31,6 +31,7 @@
 #include "Debug.h"
 #include "Expression.h"
 #include "meta/EditCapability.h"
+#include "MetaConstants.h"
 #include "QueryMaker.h"
 
 #include <KIcon>
@@ -456,23 +457,23 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                     {
                         case CategoryId::Album:
                             if ( ( validFilters & QueryMaker::AlbumFilter ) == 0 ) continue;
-                            value = QueryMaker::valAlbum;
+                            value = Meta::valAlbum;
                             break;
                         case CategoryId::Artist:
                             if ( ( validFilters & QueryMaker::ArtistFilter ) == 0 ) continue;
-                            value = QueryMaker::valArtist;
+                            value = Meta::valArtist;
                             break;
                         case CategoryId::Composer:
                             if ( ( validFilters & QueryMaker::ComposerFilter ) == 0 ) continue;
-                            value = QueryMaker::valComposer;
+                            value = Meta::valComposer;
                             break;
                         case CategoryId::Genre:
                             if ( ( validFilters & QueryMaker::GenreFilter ) == 0 ) continue;
-                            value = QueryMaker::valGenre;
+                            value = Meta::valGenre;
                             break;
                         case CategoryId::Year:
                             if ( ( validFilters & QueryMaker::YearFilter ) == 0 ) continue;
-                            value = QueryMaker::valYear;
+                            value = Meta::valYear;
                             break;
                         default:
                             value = -1;
@@ -486,7 +487,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 //always add track filter ( if supported..)
                 if ( ( validFilters & QueryMaker::TitleFilter ) != 0 ) {
                     qm->beginOr();
-                    qm->addFilter ( QueryMaker::valTitle, elem.text, false, false ); //always filter for track title too
+                    qm->addFilter ( Meta::valTitle, elem.text, false, false ); //always filter for track title too
                     qm->endAndOr();
                 }
             }
@@ -511,55 +512,55 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "album" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & QueryMaker::AlbumFilter ) == 0 ) continue;
-                    qm->addFilter ( QueryMaker::valAlbum, elem.text, false, false );
+                    qm->addFilter ( Meta::valAlbum, elem.text, false, false );
                 } 
                 else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "artist" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & QueryMaker::ArtistFilter ) == 0 ) continue;
-                    qm->addFilter ( QueryMaker::valArtist, elem.text, false, false );
+                    qm->addFilter ( Meta::valArtist, elem.text, false, false );
                 }
                 else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "genre" ), Qt::CaseInsensitive ) == 0)
                 {
                     if ( ( validFilters & QueryMaker::GenreFilter ) == 0 ) continue;
-                    qm->addFilter ( QueryMaker::valGenre, elem.text, false, false );
+                    qm->addFilter ( Meta::valGenre, elem.text, false, false );
                 }
                 else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0|| lcField.compare( i18n( "composer" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & QueryMaker::ComposerFilter ) == 0 ) continue;
-                    qm->addFilter ( QueryMaker::valComposer, elem.text, false, false );
+                    qm->addFilter ( Meta::valComposer, elem.text, false, false );
                 }
                 else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "year" ), Qt::CaseInsensitive ) == 0)
                 {
                     if ( ( validFilters & QueryMaker::YearFilter ) == 0 ) continue;
-                    qm->addFilter ( QueryMaker::valYear, elem.text, false, false );
+                    qm->addFilter ( Meta::valYear, elem.text, false, false );
                 }
                 else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "comment" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    qm->addFilter ( QueryMaker::valYear, elem.text, false, false );
+                    qm->addFilter ( Meta::valYear, elem.text, false, false );
                 }
                 else if( lcField.compare( "rating", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "rating" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    qm->addNumberFilter( QueryMaker::valRating, elem.text.toInt(), compare );
+                    qm->addNumberFilter( Meta::valRating, elem.text.toInt(), compare );
                 }
                 else if( lcField.compare( "score", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "score" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    qm->addNumberFilter( QueryMaker::valScore, elem.text.toInt(), compare );
+                    qm->addNumberFilter( Meta::valScore, elem.text.toInt(), compare );
                 }
                 else if( lcField.compare( "playcount", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "playcount" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    qm->addNumberFilter( QueryMaker::valPlaycount, elem.text.toInt(), compare );
+                    qm->addNumberFilter( Meta::valPlaycount, elem.text.toInt(), compare );
                 }
                 else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "length" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    qm->addNumberFilter( QueryMaker::valLength, elem.text.toInt(), compare );
+                    qm->addNumberFilter( Meta::valLength, elem.text.toInt(), compare );
                 }
                 else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "discnumber" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    qm->addNumberFilter( QueryMaker::valDiscNr, elem.text.toInt(), compare );
+                    qm->addNumberFilter( Meta::valDiscNr, elem.text.toInt(), compare );
                 }
                 else if( lcField.compare( "tracknumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "tracknumber" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    qm->addNumberFilter( QueryMaker::valTrackNr, elem.text.toInt(), compare );
+                    qm->addNumberFilter( Meta::valTrackNr, elem.text.toInt(), compare );
                 }
             }
             qm->endAndOr();

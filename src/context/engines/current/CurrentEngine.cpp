@@ -116,8 +116,8 @@ CurrentEngine::stoppedState()
     Collection *coll = CollectionManager::instance()->primaryCollection();
     m_qm = coll->queryMaker();
     m_qm->setQueryType( QueryMaker::Album );
-    m_qm->excludeFilter( QueryMaker::valAlbum, QString(), true, true ); 
-    m_qm->orderBy( QueryMaker::valCreateDate, true );
+    m_qm->excludeFilter( Meta::valAlbum, QString(), true, true ); 
+    m_qm->orderBy( Meta::valCreateDate, true );
     m_qm->limitMaxResultSize( 5 );
     m_albums.clear();
     

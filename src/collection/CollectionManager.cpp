@@ -386,7 +386,7 @@ CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
     QueryMaker *qm = queryMaker();
     foreach( const QString &artist, artistNames )
     {
-        qm->addFilter( QueryMaker::valArtist, artist, true, true );
+        qm->addFilter( Meta::valArtist, artist, true, true );
     }
     qm->setQueryType( QueryMaker::Artist );
     qm->limitMaxResultSize( maxArtists );

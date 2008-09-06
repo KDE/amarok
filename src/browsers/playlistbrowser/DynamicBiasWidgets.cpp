@@ -247,22 +247,22 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
 {
     m_fieldSelection->addItem( "", (qint64)0 );
-    m_fieldSelection->addItem( i18n( "Artist" ), QueryMaker::valArtist );
-    m_fieldSelection->addItem( i18n( "Composer" ), QueryMaker::valComposer );
-    m_fieldSelection->addItem( i18n( "Album" ), QueryMaker::valAlbum );
-    m_fieldSelection->addItem( i18n( "Title" ), QueryMaker::valTitle );
-    m_fieldSelection->addItem( i18n( "Genre" ), QueryMaker::valGenre );
-    m_fieldSelection->addItem( i18n( "Year" ), QueryMaker::valYear );
-    m_fieldSelection->addItem( i18n( "Play Count" ), QueryMaker::valPlaycount );
-    m_fieldSelection->addItem( i18n( "Rating" ), QueryMaker::valRating );
-    m_fieldSelection->addItem( i18n( "Score" ), QueryMaker::valScore );
-    m_fieldSelection->addItem( i18n( "Length" ), QueryMaker::valLength );
-    m_fieldSelection->addItem( i18n( "Track #" ), QueryMaker::valTrackNr );
-    m_fieldSelection->addItem( i18n( "Disc #" ), QueryMaker::valDiscNr );
-    m_fieldSelection->addItem( i18n( "First Played" ), QueryMaker::valFirstPlayed );
-    m_fieldSelection->addItem( i18n( "Last Played" ), QueryMaker::valLastPlayed );
-    m_fieldSelection->addItem( i18n( "Comment" ), QueryMaker::valComment );
-    m_fieldSelection->addItem( i18nc( "The name of the file this track is stored in", "Filename" ), QueryMaker::valUrl );
+    m_fieldSelection->addItem( i18n( "Artist" ), Meta::valArtist );
+    m_fieldSelection->addItem( i18n( "Composer" ), Meta::valComposer );
+    m_fieldSelection->addItem( i18n( "Album" ), Meta::valAlbum );
+    m_fieldSelection->addItem( i18n( "Title" ), Meta::valTitle );
+    m_fieldSelection->addItem( i18n( "Genre" ), Meta::valGenre );
+    m_fieldSelection->addItem( i18n( "Year" ), Meta::valYear );
+    m_fieldSelection->addItem( i18n( "Play Count" ), Meta::valPlaycount );
+    m_fieldSelection->addItem( i18n( "Rating" ), Meta::valRating );
+    m_fieldSelection->addItem( i18n( "Score" ), Meta::valScore );
+    m_fieldSelection->addItem( i18n( "Length" ), Meta::valLength );
+    m_fieldSelection->addItem( i18n( "Track #" ), Meta::valTrackNr );
+    m_fieldSelection->addItem( i18n( "Disc #" ), Meta::valDiscNr );
+    m_fieldSelection->addItem( i18n( "First Played" ), Meta::valFirstPlayed );
+    m_fieldSelection->addItem( i18n( "Last Played" ), Meta::valLastPlayed );
+    m_fieldSelection->addItem( i18n( "Comment" ), Meta::valComment );
+    m_fieldSelection->addItem( i18nc( "The name of the file this track is stored in", "Filename" ), Meta::valUrl );
 }
 
 void
@@ -296,37 +296,37 @@ PlaylistBrowserNS::BiasGlobalWidget::fieldChanged( int i )
         delete m_valueSelection;
         m_valueSelection = 0;
     }
-    else if( field == QueryMaker::valArtist )
+    else if( field == Meta::valArtist )
         makeArtistSelection();
-    else if( field == QueryMaker::valComposer )
+    else if( field == Meta::valComposer )
         makeComposerSelection();
-    else if( field == QueryMaker::valAlbum )
+    else if( field == Meta::valAlbum )
         makeAlbumSelection();
-    else if( field == QueryMaker::valTitle )
+    else if( field == Meta::valTitle )
         makeTitleSelection();
-    else if( field == QueryMaker::valGenre )
+    else if( field == Meta::valGenre )
         makeGenreSelection();
-    else if( field == QueryMaker::valYear )
+    else if( field == Meta::valYear )
         makeGenericNumberSelection( 0, 3000, 1976 );
-    else if( field == QueryMaker::valPlaycount )
+    else if( field == Meta::valPlaycount )
         makeGenericNumberSelection( 0, 10000, 0 );
-    else if( field == QueryMaker::valRating )
+    else if( field == Meta::valRating )
         makeRatingSelection();
-    else if( field == QueryMaker::valScore )
+    else if( field == Meta::valScore )
         makeGenericNumberSelection( 0, 100, 0 );
-    else if( field == QueryMaker::valLength )
+    else if( field == Meta::valLength )
         makeLengthSelection();
-    else if( field == QueryMaker::valTrackNr )
+    else if( field == Meta::valTrackNr )
         makeGenericNumberSelection( 0, 1000, 0 );
-    else if( field == QueryMaker::valDiscNr )
+    else if( field == Meta::valDiscNr )
         makeGenericNumberSelection( 0, 1000, 0 );
-    else if( field == QueryMaker::valFirstPlayed )
+    else if( field == Meta::valFirstPlayed )
         makeDateTimeSelection();
-    else if( field == QueryMaker::valLastPlayed )
+    else if( field == Meta::valLastPlayed )
         makeDateTimeSelection();
-    else if( field == QueryMaker::valComment )
+    else if( field == Meta::valComment )
         makeGenericComboSelection( true, 0 );
-    else if( field == QueryMaker::valUrl )
+    else if( field == Meta::valUrl )
         makeFilenameSelection();
 
     //etc
@@ -504,7 +504,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
 {
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
-    qm->addReturnValue( QueryMaker::valArtist );
+    qm->addReturnValue( Meta::valArtist );
     makeGenericComboSelection( true, qm );
 }
 
@@ -514,7 +514,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeComposerSelection()
 {
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
-    qm->addReturnValue( QueryMaker::valComposer );
+    qm->addReturnValue( Meta::valComposer );
     makeGenericComboSelection( true, qm );
 }
 
@@ -524,7 +524,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
 {
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
-    qm->addReturnValue( QueryMaker::valAlbum );
+    qm->addReturnValue( Meta::valAlbum );
     makeGenericComboSelection( true, qm );
 }
 
@@ -542,7 +542,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
 {
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
-    qm->addReturnValue( QueryMaker::valGenre );
+    qm->addReturnValue( Meta::valGenre );
     makeGenericComboSelection( true, qm );
 }
 
@@ -696,15 +696,15 @@ void
 PlaylistBrowserNS::BiasNormalWidget::popuplateFieldSection()
 {
     m_fieldSelection->addItem( "", (qint64)0 );
-    m_fieldSelection->addItem( i18n( "Year" ), QueryMaker::valYear );
-    m_fieldSelection->addItem( i18n( "Play Count" ), QueryMaker::valPlaycount );
-    m_fieldSelection->addItem( i18n( "Rating" ), QueryMaker::valRating );
-    m_fieldSelection->addItem( i18n( "Score" ), QueryMaker::valScore );
-    m_fieldSelection->addItem( i18n( "Length" ), QueryMaker::valLength );
-    m_fieldSelection->addItem( i18n( "Track #" ), QueryMaker::valTrackNr );
-    m_fieldSelection->addItem( i18n( "Disc #" ), QueryMaker::valDiscNr );
-    m_fieldSelection->addItem( i18n( "First Played" ), QueryMaker::valFirstPlayed );
-    m_fieldSelection->addItem( i18n( "Last Played" ), QueryMaker::valLastPlayed );
+    m_fieldSelection->addItem( i18n( "Year" ), Meta::valYear );
+    m_fieldSelection->addItem( i18n( "Play Count" ), Meta::valPlaycount );
+    m_fieldSelection->addItem( i18n( "Rating" ), Meta::valRating );
+    m_fieldSelection->addItem( i18n( "Score" ), Meta::valScore );
+    m_fieldSelection->addItem( i18n( "Length" ), Meta::valLength );
+    m_fieldSelection->addItem( i18n( "Track #" ), Meta::valTrackNr );
+    m_fieldSelection->addItem( i18n( "Disc #" ), Meta::valDiscNr );
+    m_fieldSelection->addItem( i18n( "First Played" ), Meta::valFirstPlayed );
+    m_fieldSelection->addItem( i18n( "Last Played" ), Meta::valLastPlayed );
 }
 
 void
@@ -753,23 +753,23 @@ PlaylistBrowserNS::BiasNormalWidget::fieldChanged( int i )
         delete m_valueSelection;
         m_valueSelection = 0;
     }
-    else if( field == QueryMaker::valYear )
+    else if( field == Meta::valYear )
         makeGenericNumberSelection( 0, 3000 );
-    else if( field == QueryMaker::valPlaycount )
+    else if( field == Meta::valPlaycount )
         makeGenericNumberSelection( 0, 1000 );
-    else if( field == QueryMaker::valRating )
+    else if( field == Meta::valRating )
         makeRatingSelection();
-    else if( field == QueryMaker::valScore )
+    else if( field == Meta::valScore )
         makeGenericNumberSelection( 0, 100 );
-    else if( field == QueryMaker::valLength )
+    else if( field == Meta::valLength )
         makeLengthSelection();
-    else if( field == QueryMaker::valTrackNr )
+    else if( field == Meta::valTrackNr )
         makeGenericNumberSelection( 0, 50 );
-    else if( field == QueryMaker::valDiscNr )
+    else if( field == Meta::valDiscNr )
         makeGenericNumberSelection( 0, 50 );
-    else if( field == QueryMaker::valFirstPlayed )
+    else if( field == Meta::valFirstPlayed )
         makeDateTimeSelection();
-    else if( field == QueryMaker::valLastPlayed )
+    else if( field == Meta::valLastPlayed )
         makeDateTimeSelection();
 }
 

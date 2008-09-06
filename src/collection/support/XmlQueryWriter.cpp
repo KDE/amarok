@@ -19,6 +19,7 @@
  **************************************************************************/
 
 #include "XmlQueryWriter.h"
+#include "MetaConstants.h"
 
 #include "Debug.h"
 
@@ -426,28 +427,28 @@ XmlQueryWriter::fieldName( qint64 val )
 {
     switch( val )
     {
-        case valUrl:         return "url";
-        case valTitle:       return "title";
-        case valArtist:      return "artist";
-        case valAlbum:       return "album";
-        case valGenre:       return "genre";
-        case valComposer:    return "composer";
-        case valYear:        return "year";
-        case valComment:     return "comment";
-        case valTrackNr:     return "tracknr";
-        case valDiscNr:      return "discnr";
-        case valLength:      return "length";
-        case valBitrate:     return "bitrate";
-        case valSamplerate:  return "samplerate";
-        case valFilesize:    return "filesize";
-        case valFormat:      return "format";
-        case valCreateDate:  return "createdate";
-        case valScore:       return "score";
-        case valRating:      return "rating";
-        case valFirstPlayed: return "firstplay";
-        case valLastPlayed:  return "listplay";
-        case valPlaycount:   return "playcount";
-        default:             return "";
+        case Meta::valUrl:         return "url";
+        case Meta::valTitle:       return "title";
+        case Meta::valArtist:      return "artist";
+        case Meta::valAlbum:       return "album";
+        case Meta::valGenre:       return "genre";
+        case Meta::valComposer:    return "composer";
+        case Meta::valYear:        return "year";
+        case Meta::valComment:     return "comment";
+        case Meta::valTrackNr:     return "tracknr";
+        case Meta::valDiscNr:      return "discnr";
+        case Meta::valLength:      return "length";
+        case Meta::valBitrate:     return "bitrate";
+        case Meta::valSamplerate:  return "samplerate";
+        case Meta::valFilesize:    return "filesize";
+        case Meta::valFormat:      return "format";
+        case Meta::valCreateDate:  return "createdate";
+        case Meta::valScore:       return "score";
+        case Meta::valRating:      return "rating";
+        case Meta::valFirstPlayed: return "firstplay";
+        case Meta::valLastPlayed:  return "listplay";
+        case Meta::valPlaycount:   return "playcount";
+        default:                   return "";
     }
 }
 

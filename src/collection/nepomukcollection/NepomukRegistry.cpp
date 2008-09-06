@@ -261,7 +261,7 @@ NepomukRegistry::nepomukUpdate( const Soprano::Statement &statement )
                 QString oldurl = tp->resource().resourceUri().toString();
                 debug() << "nepo old uld: " << oldurl << " new url" << uri << endl;
                 tp->setResource( Nepomuk::Resource( uri ) );
-                tp->valueChangedInNepomuk( QueryMaker::valUrl, uri );
+                tp->valueChangedInNepomuk( Meta::valUrl, uri );
 
                 // update hash
                 debug() << "nepo length before " << m_tracks.count() << endl;

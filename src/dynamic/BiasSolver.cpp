@@ -23,6 +23,7 @@
 #include "BiasSolver.h"
 #include "CollectionManager.h"
 #include "Debug.h"
+#include "MetaConstants.h"
 #include "TrackSet.h"
 
 #include <cmath>
@@ -688,7 +689,7 @@ Dynamic::BiasSolver::updateUniverse()
 
         s_universeQuery = s_universeCollection->queryMaker();
         s_universeQuery->setQueryType( QueryMaker::Custom );
-        s_universeQuery->addReturnValue( QueryMaker::valUniqueId );
+        s_universeQuery->addReturnValue( Meta::valUniqueId );
     }
 
     s_uidUrlProtocolPrefixLength = (QString(s_universeCollection->uidUrlProtocol()) + "://").length();

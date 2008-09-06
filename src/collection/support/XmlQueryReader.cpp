@@ -223,11 +223,11 @@ XmlQueryReader::readReturnValues()
                 //TODO write a mapping function somewhere
                 if( name() == "title" )
                 {
-                    d->qm->addReturnValue( QueryMaker::valTitle );
+                    d->qm->addReturnValue( Meta::valTitle );
                 }
                 else if( name() == "artist" )
                 {
-                    d->qm->addReturnValue( QueryMaker::valArtist );
+                    d->qm->addReturnValue( Meta::valArtist );
                 }
             }
         }
@@ -314,27 +314,27 @@ XmlQueryReader::readFilters()
 qint64
 XmlQueryReader::fieldVal( QStringRef field )
 {
-    if     ( field == "url"        ) return QueryMaker::valUrl;
-    else if( field == "title"      ) return QueryMaker::valTitle;
-    else if( field == "artist"     ) return QueryMaker::valArtist;
-    else if( field == "album"      ) return QueryMaker::valAlbum;
-    else if( field == "genre"      ) return QueryMaker::valGenre;
-    else if( field == "composer"   ) return QueryMaker::valComposer;
-    else if( field == "year"       ) return QueryMaker::valYear;
-    else if( field == "comment"    ) return QueryMaker::valComment; 
-    else if( field == "tracknr"    ) return QueryMaker::valTrackNr;
-    else if( field == "discnr"     ) return QueryMaker::valDiscNr;
-    else if( field == "length"     ) return QueryMaker::valLength;
-    else if( field == "bitrate"    ) return QueryMaker::valBitrate;
-    else if( field == "samplerate" ) return QueryMaker::valSamplerate;
-    else if( field == "filesize"   ) return QueryMaker::valFilesize;
-    else if( field == "format"     ) return QueryMaker::valFormat;
-    else if( field == "createdate" ) return QueryMaker::valCreateDate;
-    else if( field == "score"      ) return QueryMaker::valScore;
-    else if( field == "rating"     ) return QueryMaker::valRating;
-    else if( field == "firstplay"  ) return QueryMaker::valFirstPlayed;
-    else if( field == "lastplay"   ) return QueryMaker::valLastPlayed;
-    else if( field == "playcount"  ) return QueryMaker::valPlaycount;
+    if     ( field == "url"        ) return Meta::valUrl;
+    else if( field == "title"      ) return Meta::valTitle;
+    else if( field == "artist"     ) return Meta::valArtist;
+    else if( field == "album"      ) return Meta::valAlbum;
+    else if( field == "genre"      ) return Meta::valGenre;
+    else if( field == "composer"   ) return Meta::valComposer;
+    else if( field == "year"       ) return Meta::valYear;
+    else if( field == "comment"    ) return Meta::valComment; 
+    else if( field == "tracknr"    ) return Meta::valTrackNr;
+    else if( field == "discnr"     ) return Meta::valDiscNr;
+    else if( field == "length"     ) return Meta::valLength;
+    else if( field == "bitrate"    ) return Meta::valBitrate;
+    else if( field == "samplerate" ) return Meta::valSamplerate;
+    else if( field == "filesize"   ) return Meta::valFilesize;
+    else if( field == "format"     ) return Meta::valFormat;
+    else if( field == "createdate" ) return Meta::valCreateDate;
+    else if( field == "score"      ) return Meta::valScore;
+    else if( field == "rating"     ) return Meta::valRating;
+    else if( field == "firstplay"  ) return Meta::valFirstPlayed;
+    else if( field == "lastplay"   ) return Meta::valLastPlayed;
+    else if( field == "playcount"  ) return Meta::valPlaycount;
     else                             return 0;
 }
 

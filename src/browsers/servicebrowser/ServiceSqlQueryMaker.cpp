@@ -22,6 +22,7 @@
 
 #include "Debug.h"
 
+#include "MetaConstants.h"
 #include "ServiceSqlCollection.h"
 
 #include <threadweaver/Job.h>
@@ -600,16 +601,16 @@ ServiceSqlQueryMaker::nameForValue(qint64 value)
 
     switch( value )
     {
-        case valTitle:
+        case Meta::valTitle:
             d->linkedTables |= Private::TRACKS_TABLE;
             return prefix + "_tracks.name";
-        case valArtist:
+        case Meta::valArtist:
             d->linkedTables |= Private::ARTISTS_TABLE;
             return prefix + "_artists.name";
-        case valAlbum:
+        case Meta::valAlbum:
             d->linkedTables |= Private::ALBUMS_TABLE;
             return prefix + "_albums.name";
-        case valGenre:
+        case Meta::valGenre:
             d->queryFrom = prefix + "_tracks";
             d->linkedTables |= Private::ALBUMS_TABLE;
             d->linkedTables |= Private::GENRE_TABLE;

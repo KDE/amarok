@@ -53,53 +53,53 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *regi
 
     m_nepores = Nepomuk::Resource( data[ "r"].uri() ) ;
     m_uid = data[ "trackuid" ].toString();
-    m_title = data[ collection->getNameForValue( QueryMaker::valTitle ) ].toString();
-    m_url = KUrl( data[ collection->getNameForValue( QueryMaker::valUrl ) ].toString() );
-    m_artist = data[ collection->getNameForValue( QueryMaker::valArtist ) ].toString();
-    m_album = data[ collection->getNameForValue( QueryMaker::valAlbum ) ].toString();
-    m_genre = data[ collection->getNameForValue( QueryMaker::valGenre ) ].toString();
-    m_type = data[ collection->getNameForValue( QueryMaker::valFormat ) ].toString();
-    m_comment = data[ collection->getNameForValue( QueryMaker::valComment ) ].toString();
-    m_composer = data[ collection->getNameForValue( QueryMaker::valComposer ) ].toString();
-    m_trackNumber = data[ collection->getNameForValue( QueryMaker::valTrackNr ) ]
+    m_title = data[ collection->getNameForValue( Meta::valTitle ) ].toString();
+    m_url = KUrl( data[ collection->getNameForValue( Meta::valUrl ) ].toString() );
+    m_artist = data[ collection->getNameForValue( Meta::valArtist ) ].toString();
+    m_album = data[ collection->getNameForValue( Meta::valAlbum ) ].toString();
+    m_genre = data[ collection->getNameForValue( Meta::valGenre ) ].toString();
+    m_type = data[ collection->getNameForValue( Meta::valFormat ) ].toString();
+    m_comment = data[ collection->getNameForValue( Meta::valComment ) ].toString();
+    m_composer = data[ collection->getNameForValue( Meta::valComposer ) ].toString();
+    m_trackNumber = data[ collection->getNameForValue( Meta::valTrackNr ) ]
             .literal().toInt();
-    m_length = data[ collection->getNameForValue( QueryMaker::valLength ) ]
+    m_length = data[ collection->getNameForValue( Meta::valLength ) ]
             .literal().toInt();
-    m_rating = data[ collection->getNameForValue( QueryMaker::valRating ) ]
+    m_rating = data[ collection->getNameForValue( Meta::valRating ) ]
             .literal().toInt();
-    m_bitrate = data[ collection->getNameForValue( QueryMaker::valBitrate ) ]
+    m_bitrate = data[ collection->getNameForValue( Meta::valBitrate ) ]
             .literal().toInt();
-    m_discNumber = data[ collection->getNameForValue( QueryMaker::valDiscNr ) ]
+    m_discNumber = data[ collection->getNameForValue( Meta::valDiscNr ) ]
             .literal().toInt();
-    m_filesize = data[ collection->getNameForValue( QueryMaker::valFilesize ) ]
+    m_filesize = data[ collection->getNameForValue( Meta::valFilesize ) ]
             .literal().toInt();
-    m_playCount = data[ collection->getNameForValue( QueryMaker::valPlaycount ) ]
+    m_playCount = data[ collection->getNameForValue( Meta::valPlaycount ) ]
             .literal().toInt();
-    m_sampleRate = data[ collection->getNameForValue( QueryMaker::valSamplerate ) ]
+    m_sampleRate = data[ collection->getNameForValue( Meta::valSamplerate ) ]
             .literal().toInt();
-    m_score = data[ collection->getNameForValue( QueryMaker::valScore ) ]
+    m_score = data[ collection->getNameForValue( Meta::valScore ) ]
             .literal().toInt();
     
     // Soprano gives a warning when they are empty
     Soprano::LiteralValue litval;
     
-    litval = data[ collection->getNameForValue( QueryMaker::valFirstPlayed ) ]
+    litval = data[ collection->getNameForValue( Meta::valFirstPlayed ) ]
             .literal();
     if ( litval.isDateTime() )
         m_firstPlayed = litval.toDateTime();
 
-    litval = data[ collection->getNameForValue( QueryMaker::valLastPlayed ) ]
+    litval = data[ collection->getNameForValue( Meta::valLastPlayed ) ]
             .literal();
     if ( litval.isDateTime() )
         m_lastPlayed = litval.toDateTime();
     
-    litval = data[ collection->getNameForValue( QueryMaker::valCreateDate ) ]
+    litval = data[ collection->getNameForValue( Meta::valCreateDate ) ]
             .literal();
     if ( litval.isDateTime() )
         m_createDate = litval.toDateTime();
  
     // assuming that Xesam content created is a DateTime, we only want the year
-    litval = data[ collection->getNameForValue( QueryMaker::valYear ) ].literal();
+    litval = data[ collection->getNameForValue( Meta::valYear ) ].literal();
     if ( litval.isDateTime() )
         m_year = litval.toDateTime().toString( "yyyy");
 }
@@ -213,7 +213,7 @@ NepomukTrack::setScore( double newScore )
     
     debug() << "setscore " << endl;
     int tmpScore =  int( newScore*100 );
-    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( QueryMaker::valScore ) ), Nepomuk::Variant( tmpScore ) );
+    m_nepores.setProperty( QUrl( m_collection->getUrlForValue( Meta::valScore ) ), Nepomuk::Variant( tmpScore ) );
     m_score = newScore;
     notifyObservers();
     
@@ -334,9 +334,9 @@ void
 NepomukTrack::writeStatistics()
 {
     m_lastWrote = QTime::currentTime();
-    m_registry->writeToNepomukAsync( m_nepores, QUrl( m_collection->getUrlForValue( QueryMaker::valLastPlayed ) ), Nepomuk::Variant( m_lastPlayed ) );
-    m_registry->writeToNepomukAsync( m_nepores, QUrl( m_collection->getUrlForValue( QueryMaker::valPlaycount) ), Nepomuk::Variant( m_playCount ) );
-    m_registry->writeToNepomukAsync( m_nepores, QUrl( m_collection->getUrlForValue( QueryMaker::valFirstPlayed) ), Nepomuk::Variant( m_firstPlayed) );
+    m_registry->writeToNepomukAsync( m_nepores, QUrl( m_collection->getUrlForValue( Meta::valLastPlayed ) ), Nepomuk::Variant( m_lastPlayed ) );
+    m_registry->writeToNepomukAsync( m_nepores, QUrl( m_collection->getUrlForValue( Meta::valPlaycount) ), Nepomuk::Variant( m_playCount ) );
+    m_registry->writeToNepomukAsync( m_nepores, QUrl( m_collection->getUrlForValue( Meta::valFirstPlayed) ), Nepomuk::Variant( m_firstPlayed) );
 }
 
 QUrl
@@ -358,10 +358,10 @@ NepomukTrack::valueChangedInNepomuk( qint64 value, const Soprano::LiteralValue &
     debug() << "nepo data changed " << m_collection->getNameForValue( value ) << " last wrote " << m_lastWrote.secsTo( QTime::currentTime() ) << endl;
     switch ( value )
     {
-        case QueryMaker::valUrl:
+        case Meta::valUrl:
             m_url = KUrl ( literal.toString() );
             break;
-        case QueryMaker::valRating:
+        case Meta::valRating:
             m_rating = literal.toInt();
             break;
     }

@@ -171,10 +171,10 @@ NepomukAlbum::setImage( const QImage &image )
     QString query = QString("SELECT ?r WHERE {"
             "?r <%1> \"%2\"^^<%3> ."  // only for current artist
             "?r <%4> \"%5\"^^<%6> . }" ) // only for current album
-            .arg( m_collection->getUrlForValue( QueryMaker::valArtist ) )
+            .arg( m_collection->getUrlForValue( Meta::valArtist ) )
             .arg( m_artist )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() )
-            .arg( m_collection->getUrlForValue( QueryMaker::valAlbum ) )
+            .arg( m_collection->getUrlForValue( Meta::valAlbum ) )
             .arg( m_name )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
 
@@ -229,10 +229,10 @@ NepomukAlbum::removeImage()
     QString query = QString("SELECT ?r WHERE {"
             "?r <%1> \"%2\"^^<%3> ."  // only for current artist
             "?r <%4> \"%5\"^^<%6> . }" ) // only for current album
-            .arg( m_collection->getUrlForValue( QueryMaker::valArtist ) )
+            .arg( m_collection->getUrlForValue( Meta::valArtist ) )
             .arg( m_artist )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() )
-            .arg( m_collection->getUrlForValue( QueryMaker::valAlbum ) )
+            .arg( m_collection->getUrlForValue( Meta::valAlbum ) )
             .arg( m_name )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
 
@@ -365,10 +365,10 @@ NepomukAlbum::findImageInNepomuk() const
             "?r <%4> \"%5\"^^<%6> ." // only for current album
             "?r <http://amarok.kde.org/metadata/1.0/track#coverUrl> ?path . " // we want to know the coverUrl
             "} LIMIT 1") // we need not more than 2
-            .arg( m_collection->getUrlForValue( QueryMaker::valArtist ) )
+            .arg( m_collection->getUrlForValue( Meta::valArtist ) )
             .arg( m_artist )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() )
-            .arg( m_collection->getUrlForValue( QueryMaker::valAlbum ) )
+            .arg( m_collection->getUrlForValue( Meta::valAlbum ) )
             .arg( m_name )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
                         
@@ -395,10 +395,10 @@ NepomukAlbum::findImageInDir() const
                 "?r <%4> \"%5\"^^<%6> ." // only for current album
                 "?r <http://strigi.sf.net/ontologies/0.9#parentUrl> ?path . " // we want to know the parenturl
                 "} LIMIT 2") // we need not more than 2
-                .arg( m_collection->getUrlForValue( QueryMaker::valArtist ) )
+                .arg( m_collection->getUrlForValue( Meta::valArtist ) )
                 .arg( m_artist )
                 .arg( Soprano::Vocabulary::XMLSchema::string().toString() )
-                .arg( m_collection->getUrlForValue( QueryMaker::valAlbum ) )
+                .arg( m_collection->getUrlForValue( Meta::valAlbum ) )
                 .arg( m_name )
                 .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
                         

@@ -17,6 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "MetaConstants.h"
 #include "ScriptableServiceQueryMaker.h"
 #include "ScriptableServiceMeta.h"
 #include "ScriptManager.h"
@@ -444,7 +445,7 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter( qint64 value, const QString
 
     DEBUG_BLOCK
 
-    if ( value == valTitle )
+    if ( value == Meta::valTitle )
     {
         d->filter += filter + ' ';
         d->filter = d->filter.replace( ' ', "%20" );

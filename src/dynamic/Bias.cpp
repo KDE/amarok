@@ -27,6 +27,7 @@
 #include "Debug.h"
 #include "DynamicBiasWidgets.h"
 #include "DynamicModel.h"
+#include "MetaConstants.h"
 #include "MetaQueryMaker.h"
 #include "QueryMaker.h"
 #include "collection/support/XmlQueryWriter.h"
@@ -285,7 +286,7 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     }
 
     m_qm->setQueryType( QueryMaker::Custom );
-    m_qm->addReturnValue( QueryMaker::valUniqueId );
+    m_qm->addReturnValue( Meta::valUniqueId );
     m_qm->orderByRandom(); // as to not affect the amortized time
 
     connect( m_qm, SIGNAL(newResultReady( QString, QStringList )),
@@ -506,23 +507,23 @@ Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 double
 Dynamic::NormalBias::releventField( Meta::TrackPtr track )
 {
-    if( m_field == QueryMaker::valYear )
+    if( m_field == Meta::valYear )
         return (double)track->year()->name().toInt();
-    if( m_field == QueryMaker::valPlaycount )
+    if( m_field == Meta::valPlaycount )
         return (double)track->playCount();
-    if( m_field == QueryMaker::valRating )
+    if( m_field == Meta::valRating )
         return (double)track->rating();
-    if( m_field == QueryMaker::valScore )
+    if( m_field == Meta::valScore )
         return track->score();
-    if( m_field == QueryMaker::valLength )
+    if( m_field == Meta::valLength )
         return (double)track->length();
-    if( m_field == QueryMaker::valTrackNr )
+    if( m_field == Meta::valTrackNr )
         return (double)track->trackNumber();
-    if( m_field == QueryMaker::valDiscNr )
+    if( m_field == Meta::valDiscNr )
         return (double)track->discNumber();
-    if( m_field == QueryMaker::valFirstPlayed )
+    if( m_field == Meta::valFirstPlayed )
         return (double)track->firstPlayed();
-    if( m_field == QueryMaker::valLastPlayed )
+    if( m_field == Meta::valLastPlayed )
         return (double)track->lastPlayed();
 
     return m_mu;
@@ -542,47 +543,47 @@ Dynamic::NormalBias::sigmaFromScale( double scale )
     // Keep in mind: ~95% of values are within two standard deviations of the
     // mean. When scale = 1.0, the std. dev. is minStdDev. When scale = 0.0,
     // it's maxStdDev.
-    if( m_field == QueryMaker::valYear )
+    if( m_field == Meta::valYear )
     {
         minStdDev = 0.5;
         maxStdDev = 10.0;
     }
-    else if( m_field == QueryMaker::valPlaycount )
+    else if( m_field == Meta::valPlaycount )
     {
         minStdDev = 0.5;
         maxStdDev = 50.0; 
     }
-    else if( m_field == QueryMaker::valRating )
+    else if( m_field == Meta::valRating )
     {
         minStdDev = 0.5;
         maxStdDev = 2.5;
     }
-    else if( m_field == QueryMaker::valScore )
+    else if( m_field == Meta::valScore )
     {
         minStdDev = 1.0;
         maxStdDev = 50.0;
     }
-    else if( m_field == QueryMaker::valLength )
+    else if( m_field == Meta::valLength )
     {
         minStdDev = 10.0;
         maxStdDev = 240.0;
     }
-    else if( m_field == QueryMaker::valTrackNr )
+    else if( m_field == Meta::valTrackNr )
     {
         minStdDev = 0.5;
         maxStdDev = 10.0;
     }
-    else if( m_field == QueryMaker::valDiscNr )
+    else if( m_field == Meta::valDiscNr )
     {
         minStdDev = 0.5;
         maxStdDev = 5.0;
     }
-    else if( m_field == QueryMaker::valFirstPlayed )
+    else if( m_field == Meta::valFirstPlayed )
     {
         minStdDev = 3600.0;   // one hour
         maxStdDev = 604800.0; // one week
     }
-    else if( m_field == QueryMaker::valLastPlayed )
+    else if( m_field == Meta::valLastPlayed )
     {
         minStdDev = 3600.0;   // one hour
         maxStdDev = 604800.0; // one week
@@ -595,23 +596,23 @@ Dynamic::NormalBias::sigmaFromScale( double scale )
 void
 Dynamic::NormalBias::setDefaultMu()
 {
-    if( m_field == QueryMaker::valYear )
+    if( m_field == Meta::valYear )
         m_mu = 1976.0;
-    else if( m_field == QueryMaker::valPlaycount )
+    else if( m_field == Meta::valPlaycount )
         m_mu = 0.0;
-    else if( m_field == QueryMaker::valRating )
+    else if( m_field == Meta::valRating )
         m_mu = 0.0;
-    else if( m_field == QueryMaker::valScore )
+    else if( m_field == Meta::valScore )
         m_mu = 0.0;
-    else if( m_field == QueryMaker::valLength )
+    else if( m_field == Meta::valLength )
         m_mu = 180.0;
-    else if( m_field == QueryMaker::valTrackNr )
+    else if( m_field == Meta::valTrackNr )
         m_mu = 1.0;
-    else if( m_field == QueryMaker::valDiscNr )
+    else if( m_field == Meta::valDiscNr )
         m_mu = 1.0;
-    else if( m_field == QueryMaker::valFirstPlayed )
+    else if( m_field == Meta::valFirstPlayed )
         m_mu = 0.0;
-    else if( m_field == QueryMaker::valLastPlayed )
+    else if( m_field == Meta::valLastPlayed )
         m_mu = 0.0;
 }
 

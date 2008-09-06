@@ -27,32 +27,32 @@ namespace FilterFactory
         MemoryFilter *result = 0;
         switch( value )
         {
-            case QueryMaker::valTitle:
+            case Meta::valTitle:
             {
                 result = new TitleMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
-            case QueryMaker::valAlbum:
+            case Meta::valAlbum:
             {
                 result = new AlbumMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
-            case QueryMaker::valArtist:
+            case Meta::valArtist:
             {
                 result = new ArtistMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
-            case QueryMaker::valYear:
+            case Meta::valYear:
             {
                 result = new YearMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
-            case QueryMaker::valComposer:
+            case Meta::valComposer:
             {
                 result = new ComposerMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
-            case QueryMaker::valComment:
+            case Meta::valComment:
             {
                 result = new CommentMemoryFilter( filter, matchBegin, matchEnd );
             }
@@ -65,37 +65,37 @@ namespace FilterFactory
         NumberMemoryFilter *result = 0;
         switch( value )
         {
-            case QueryMaker::valTrackNr:
+            case Meta::valTrackNr:
                 result = new TrackNumberFilter();
                 break;
-            case QueryMaker::valDiscNr:
+            case Meta::valDiscNr:
                 result = new DiscNumberFilter();
                 break;
-            case QueryMaker::valRating:
+            case Meta::valRating:
                 result = new RatingFilter();
                 break;
-            case QueryMaker::valScore:
+            case Meta::valScore:
                 result = new ScoreFilter();
                 break;
-            case QueryMaker::valPlaycount:
+            case Meta::valPlaycount:
                 result = new PlaycountFilter();
                 break;
-            case QueryMaker::valFirstPlayed:
+            case Meta::valFirstPlayed:
                 result = new FirstPlayedFilter();
                 break;
-            case QueryMaker::valLastPlayed:
+            case Meta::valLastPlayed:
                 result = new LastPlayedFilter();
                 break;
-            case QueryMaker::valLength:
+            case Meta::valLength:
                 result = new LengthFilter();
                 break;
-            case QueryMaker::valFilesize:
+            case Meta::valFilesize:
                 result = new FilesizeFilter();
                 break;
-            case QueryMaker::valSamplerate:
+            case Meta::valSamplerate:
                 result = new SampleRateFilter();
                 break;
-            case QueryMaker::valBitrate:
+            case Meta::valBitrate:
                 result = new BitrateFilter();
                 break;
         }
