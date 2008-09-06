@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
+#define DEBUG_PREFIX "TrackTooltip"
+
 #include "TrackTooltip.h"
 
 #include "Amarok.h"
@@ -267,6 +269,8 @@ void TrackToolTip::setTrackPosition( int pos )
 
 void TrackToolTip::clear()
 {
+    DEBUG_BLOCK
+
     m_trackPosition = 0;
     m_tooltip = i18n( "Amarok - No track playing." );
     m_track = Meta::TrackPtr();

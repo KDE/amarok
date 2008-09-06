@@ -602,7 +602,6 @@ void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
     case Phonon::StoppedState:
     case Phonon::LoadingState:
         mainWindow()->setPlainCaption( i18n( AMAROK_CAPTION ) );
-        TrackToolTip::instance()->clear();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         break;
 
@@ -626,6 +625,17 @@ void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
     default:
         ;
     }
+}
+
+void App::engineNewTrackPlaying()
+{
+    DEBUG_BLOCK
+
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    debug() << "engineNewTrackPlaying:" << currentTrack->prettyName();
+    if( !currentTrack )
+        return;
+    TrackToolTip::instance()->setTrack( currentTrack );
 }
 
 void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )

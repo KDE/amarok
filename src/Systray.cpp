@@ -217,13 +217,18 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
 }
 
 void
+Amarok::TrayIcon::engineNewTrackPlaying( )
+{
+    setupMenu();
+}
+
+void
 Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
     Q_UNUSED( trackChanged )
     trackLength = newMetaData.value( Meta::valLength ).toInt() * 1000;
 
     setupMenu();
-
 }
 
 void
@@ -360,7 +365,7 @@ Amarok::TrayIcon::setupMenu()
         Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-            //remove the two bottom itmes, so we can push them to the button again
+            //remove the two bottom items, so we can push them to the button again
             contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
             contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 
