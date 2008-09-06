@@ -36,8 +36,10 @@ namespace The {
 /**
 A class to abstract out some common opperations of users of tinted svgs
 */
-class AMAROK_EXPORT SvgHandler
+class AMAROK_EXPORT SvgHandler : public QObject
 {
+    Q_OBJECT
+
     friend SvgHandler* The::svgHandler();
 
     public:
@@ -73,8 +75,7 @@ class AMAROK_EXPORT SvgHandler
         void setThemeFile( const QString  & themeFile );
 
     private:
-        friend class SvgHandlerSingleton;
-        SvgHandler();
+        SvgHandler( QObject* parent );
         ~SvgHandler();
 
         class Private;

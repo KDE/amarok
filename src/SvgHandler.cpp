@@ -45,29 +45,24 @@ class SvgHandler::Private
         bool customTheme;
 };
 
-class SvgHandlerSingleton
-{
-    public:
-        SvgHandler instance;
-};
-
-K_GLOBAL_STATIC( SvgHandlerSingleton, s_privateInstance )
 
 namespace The {
-    SvgHandler*
-    svgHandler()
+    static SvgHandler* s_SvgHandler_instance = 0;
+
+    SvgHandler* svgHandler()
     {
-        return &s_privateInstance->instance;;
+        if( !s_SvgHandler_instance )
+            s_SvgHandler_instance = new SvgHandler( The::mainWindow() );
+
+        return s_SvgHandler_instance;
     }
 }
 
 
-
-SvgHandler::SvgHandler()
-    : d( new Private() )
+SvgHandler::SvgHandler( QObject* parent )
+    : QObject( parent )
+    , d( new Private() )
 {
-    qAddPostRoutine( s_privateInstance.destroy );  // Ensures that the dtor gets called when QApplication destructs
-
     //use default theme
     d->themeFile = "amarok/images/default-theme.svg";
     d->customTheme = false;
@@ -77,7 +72,6 @@ SvgHandler::~SvgHandler()
 {
     DEBUG_BLOCK
 
-    qRemovePostRoutine( s_privateInstance.destroy );
     delete d;
 }
 
