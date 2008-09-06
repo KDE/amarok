@@ -30,14 +30,13 @@
 #include <KIcon>
 #include <KMessageBox>
 
-#include <QPainter>
-#include <QBrush>
-#include <QFont>
-#include <QVBoxLayout>
 #include <QCheckBox>
-#include <QSpinBox>
+#include <QFont>
 #include <QLabel>
-#include <QMap>
+#include <QPainter>
+#include <QSpinBox>
+#include <QVBoxLayout>
+
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )

@@ -19,8 +19,6 @@
 #include <context/DataEngine.h>
 #include "context/Svg.h"
 
-#include <KDialog>
-
 #include <QAction>
 #include <QList>
 
