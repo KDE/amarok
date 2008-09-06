@@ -83,13 +83,8 @@ void WikipediaApplet::init()
 
     QPalette p = m_webView->palette();
     p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
-    m_webView->setPalette( p );
-
-    
-    p = m_webView->page()->palette();
     p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
-    m_webView->page()->setPalette( p );
-
+    m_webView->setPalette( p );
 
     //m_wikiPage = new QGraphicsProxyWidget( this );
     //m_wikiPage->setWidget( m_webView );
