@@ -56,7 +56,7 @@ AmarokLyricsScript::showLyrics( QString lyrics, const QString& encoding ) const
 }
 
 void
-AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
+AmarokLyricsScript::showLyricsHtml( QString lyrics, const QString& encoding ) const
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
@@ -64,6 +64,8 @@ AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
     //debug() << "got lyrics: " << lyrics << " and track: " << track;
     // TODO how should we cache html lyrics properly?
     //track->setCachedLyrics( lyrics );
+    QTextCodec *codec = QTextCodec::codecForName( encoding.toUtf8() );
+    lyrics = codec->toUnicode( lyrics.toLatin1() );
     LyricsManager::self()->lyricsResultHtml( lyrics, false );
 }
 

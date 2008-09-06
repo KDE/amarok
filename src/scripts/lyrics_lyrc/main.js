@@ -180,7 +180,7 @@ function fetchLyrics( artist, title, url )
     suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />"
 
     var connection = new QNetworkAccessManager();
-    var host = "c";
+    var host = "lyrc.com.ar";
     var path;
 
     if( url == "" )
