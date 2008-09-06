@@ -781,7 +781,7 @@ void TagDialog::readTags()
                     m_currentTrack->name(),  m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString() ) ) );
 
     QString niceTitle;
-    if ( m_currentTrack->album()->name().isEmpty() )
+    if( m_currentTrack->album() && m_currentTrack->album()->name().isEmpty() )
     {
         if( !m_currentTrack->name().isEmpty() )
         {
@@ -793,11 +793,14 @@ void TagDialog::readTags()
         else
             niceTitle = m_currentTrack->prettyName();
     }
-    else
+    else if( m_currentTrack->album() )
     {
         niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" ,
             m_currentTrack->name(), m_currentTrack->artist()->name(), m_currentTrack->album()->name() );
     }
+    else
+        niceTitle = i18n( "<b>%1</b> by <b>%2</b>" , m_currentTrack->name(), m_currentTrack->artist()->name() );
+
     ui->trackArtistAlbumLabel->setText( niceTitle );
     ui->trackArtistAlbumLabel2->setText( niceTitle );
 
