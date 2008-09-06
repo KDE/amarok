@@ -36,13 +36,13 @@ A small singleton class to handle propagating palette change notifications and h
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
- class AMAROK_EXPORT PaletteHandler: public QObject {
-Q_OBJECT
+class AMAROK_EXPORT PaletteHandler : public QObject
+{
+    Q_OBJECT
 
 friend PaletteHandler* The::paletteHandler();
 
 public:
-    ~PaletteHandler();
 
     QPalette palette();
 
@@ -53,8 +53,8 @@ signals:
     void newPalette( const QPalette & palette );
     
 private:
-    friend class PaletteHandlerSingleton;
-    PaletteHandler();
+    PaletteHandler( QObject* parent );
+    ~PaletteHandler();
 
     QPalette m_palette;
 };
