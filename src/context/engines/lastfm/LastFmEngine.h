@@ -15,6 +15,7 @@
 #define LAST_FM_ENGINE
 
 #include "ContextObserver.h"
+#include "meta/Meta.h"
 
 #include <context/DataEngine.h>
 
@@ -52,6 +53,8 @@ private slots:
     void friendResult( KJob* );
     void sysResult( KJob* );
     void userResult( KJob* );
+
+    void artistQueryResult( QString collectionId, Meta::TrackList );
     
 private:
     void updateEvents();

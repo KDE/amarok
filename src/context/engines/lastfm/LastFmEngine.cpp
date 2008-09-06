@@ -16,7 +16,6 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "Debug.h"
-#include "collection/BlockingQuery.h"
 #include "collection/CollectionManager.h"
 #include "collection/QueryMaker.h"
 #include "ContextObserver.h"
@@ -123,19 +122,10 @@ void LastFmEngine::updateCurrent()
         qm->limitMaxResultSize( 10 );
         foreach( Meta::ArtistPtr artist, artists )
             qm->addFilter( QueryMaker::valArtist, artist->name() );
-        BlockingQuery bq( qm );
-        bq.startQuery();
 
-        Meta::TrackList tracks = bq.tracks( coll->collectionId() );
-        if( !tracks.empty() )
-        {
-            foreach( Meta::TrackPtr track, tracks ) // we iterate through each song + song info
-            {
-                QVariantList song;
-                song << track->uidUrl() << track->name() << track->prettyName() << track->score() << track->rating();
-                setData( "suggestedsongs", track->prettyName(), song ); // data keyed  by song title
-            }
-        }
+        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( artistQueryResult( QString, Meta::TrackList ) ) );
+
+        qm->run();       
     }
 
     if( m_relatedartists )
@@ -145,6 +135,20 @@ void LastFmEngine::updateCurrent()
         foreach( Meta::ArtistPtr artist, artists )
             data << artist->name();
         setData( "relatedartists", data );
+    }
+}
+
+void
+LastFmEngine::artistQueryResult( QString collectionId, Meta::TrackList tracks )
+{
+    if( !tracks.empty() )
+    {
+        foreach( Meta::TrackPtr track, tracks ) // we iterate through each song + song info
+        {
+            QVariantList song;
+            song << track->uidUrl() << track->name() << track->prettyName() << track->score() << track->rating();
+            setData( "suggestedsongs", track->prettyName(), song ); // data keyed  by song title
+        }
     }
 }
 
