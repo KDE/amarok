@@ -74,8 +74,6 @@ class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
         {
             DEBUG_BLOCK
 
-            //TODO: wrong svg stuff, don't know labels of remove stuff
-
             // Setup the remove action
             
             PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
@@ -92,9 +90,6 @@ class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
 
             // Add the action to the list of custom actions
             m_actions.append( removeAction );
-
-            //TODO: this should only be available in the top-level
-            // node of the tree, not every individual track
 
             // Setup the disconnect action
             PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 

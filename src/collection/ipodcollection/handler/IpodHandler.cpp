@@ -512,7 +512,9 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
         return;
     }
 
-    if( !kioCopyTrack( KUrl::fromPath( track->uidUrl() ), url ) )
+    debug() << "About to copy from: " << track->playableUrl().path();
+
+    if( !kioCopyTrack( KUrl::fromPath( track->playableUrl().path() ), url ) )
     {
         return;
     }
@@ -830,6 +832,8 @@ bool
 IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 {
     DEBUG_BLOCK
+
+    debug() << "Copying from *" << src << "* to *" << dst << "*";
 
     KIO::FileCopyJob *job = KIO::file_copy( src, dst,
                                             -1 /* permissions */,
