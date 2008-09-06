@@ -21,7 +21,7 @@
 #include "Amarok.h"
 #include <config-amarok.h>  
 #include "Debug.h"
-
+#include "MainWindow.h"
 
 #include <KIconEffect>
 #include <KStandardDirs>   //KGlobal::dirs()
@@ -31,19 +31,22 @@
 #include <QPixmap>
 
 
-K_GLOBAL_STATIC( StarManager, s_starManager )
+
+StarManager* StarManager::s_instance = 0;
+
 
 StarManager* StarManager::instance()
 {
-    return s_starManager;
+    return s_instance ? s_instance : new StarManager( The::mainWindow() );
 }
 
 
-StarManager::StarManager()
+StarManager::StarManager( QObject* parent )
+    : QObject( parent )
 {
     DEBUG_BLOCK
 
-    qAddPostRoutine( s_starManager.destroy );  // Ensure that the dtor gets called when QCoreApplication destructs
+    s_instance = this;
 
     /*if( AmarokConfig::customRatingsColors() )
         AmarokConfig::setCustomRatingsColors( false );

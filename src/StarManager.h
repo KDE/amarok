@@ -16,7 +16,6 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-
 #ifndef AMAROK_STAR_MANAGER_H
 #define AMAROK_STAR_MANAGER_H
 
@@ -25,12 +24,9 @@
 
 class StarManager : public QObject
 {
-
     Q_OBJECT
 
     public:
-        StarManager();
-        ~StarManager();
         static StarManager *instance();
 
         QPixmap* getStar( int num );
@@ -49,6 +45,10 @@ class StarManager : public QObject
         void ratingsColorsChanged();
 
     private:
+        StarManager( QObject* parent );
+        ~StarManager();
+
+        static StarManager* s_instance;
 
         int m_height;
         int m_margin;
