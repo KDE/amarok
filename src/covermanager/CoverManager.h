@@ -44,6 +44,7 @@ class QProgressBar;
 class QHBoxLayout;
 class PixmapViewer;
 class QColorGroup;
+class QProgressDialog;
 
 class CoverManager : public QSplitter, public Meta::Observer
 {
@@ -125,8 +126,12 @@ class CoverManager : public QSplitter, public Meta::Observer
         int             m_currentLocale;
         int             m_currentView;
 
-        Meta::TrackList m_artistList;
+        Meta::ArtistList m_artistList;
+        QList< QTreeWidgetItem* > m_items;
+        Meta::AlbumList m_albumList;
 
+        QProgressDialog* m_progressDialog;
+        
         CoverFetcher   *m_fetcher;
 
         QAction        *m_selectAllAlbums;

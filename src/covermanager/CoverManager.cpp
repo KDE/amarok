@@ -75,7 +75,6 @@
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
-CoverManager::s_constructed = false;
 
 class ArtistItem : public QTreeWidgetItem
 {
@@ -131,10 +130,9 @@ CoverManager::CoverManager()
     setSizes( QList<int>() << 120 << width() - 120 );
 
     ArtistItem *item = 0;
-    QList<QTreeWidgetItem*> items;
     item = new ArtistItem( i18n( "All Artists" ) );
     item->setIcon(0, SmallIcon( "media-optical-audio-amarok" ) );
-    items.append( item );
+    m_items.append( item );
 
     Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
@@ -146,20 +144,23 @@ CoverManager::CoverManager()
     connect( qm, SIGNAL( queryDone() ), this, SLOT( continueConstruction() ) );
 }
 
+void
 CoverManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList artists ) //SLOT
 {
-    m_artistList += artists;
+    foreach( Meta::ArtistPtr artist, artists )
+        m_artistList << artist;
 }
 
+void
 CoverManager::slotContinueConstruction() //SLOT
 {
     foreach( Meta::ArtistPtr artist, m_artistList )
     {
-        item = new ArtistItem( m_artistView, artist );
+        ArtistItem* item = new ArtistItem( m_artistView, artist );
         item->setIcon( 0, SmallIcon( "view-media-artist-amarok" ) );
-        items.append( item );
+        m_items.append( item );
     }
-    m_artistView->insertTopLevelItems( 0, items );
+    m_artistView->insertTopLevelItems( 0, m_items );
 
     //TODO: Port Compilation listing
 //     ArtistItem *last = static_cast<ArtistItem *>(m_artistView->item( m_artistView->count() - 1));
@@ -309,10 +310,7 @@ CoverManager::~CoverManager()
 {
     DEBUG_BLOCK
 
-    Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );
-
-    s_constructed = false;
-    s_instance = 0;
+    Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );    s_instance = 0;
 }
 
 
@@ -339,7 +337,6 @@ void CoverManager::init()
 
     item->setSelected( true );
 
-    s_constructed = true;
 }
 
 
@@ -471,14 +468,12 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     ArtistItem *artistItem = static_cast< ArtistItem* >(item);
     Meta::ArtistPtr artist = artistItem->artist();
 
-    QProgressDialog progress( this );
-    progress.setLabelText( i18n("Loading Thumbnails...") );
-    progress.setWindowModality( Qt::WindowModal );
+    m_progressDialog = new QProgressDialog( this );
+    m_progressDialog->setLabelText( i18n("Loading Thumbnails...") );
+    m_progressDialog->setWindowModality( Qt::WindowModal );
 
     //this can be a bit slow
     QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    Meta::AlbumList albums;
 
     Collection *coll = CollectionManager::instance()->primaryCollection();
 
@@ -497,6 +492,7 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotArtistSelectedContinueAgain() ) );
 }
 
+void
 CoverManager::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
 {
     m_albumList += albums;
@@ -529,7 +525,7 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
 
     QApplication::restoreOverrideCursor();
 
-    progress.setMaximum( albums.count() );
+    m_progressDialog->setMaximum( m_albumList.count() );
 
     //insert the covers first because the list view is soooo paint-happy
     //doing it in the second loop looks really bad, unfortunately
@@ -540,11 +536,11 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
         m_coverItems.append( new CoverViewItem( m_coverView, album ) );
 
         if ( ++x % 50 == 0 ) {
-            progress.setValue( x );
+            m_progressDialog->setValue( x );
             kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
 
             //only worth testing for after processEvents() is called
-            if( progress.wasCanceled() )
+            if( m_progressDialog->wasCanceled() )
                break;
         }
     }
@@ -556,10 +552,10 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
           i < m_coverView->count();
           item = m_coverView->item( i++ ) )
     {
-        progress.setValue( progress.value() + 1 );
+        m_progressDialog->setValue( m_progressDialog->value() + 1 );
         kapp->processEvents();
 
-        if( progress.wasCanceled() )
+        if( m_progressDialog->wasCanceled() )
            break;
 
         static_cast<CoverViewItem*>(item)->loadCover();
