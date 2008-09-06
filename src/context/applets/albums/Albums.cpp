@@ -124,7 +124,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     m_model->clear();
        
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    Meta::AlbumPtr currentAlbum = currentTrack->album();
+    Meta::AlbumPtr currentAlbum;
 
     // Here's a smallish hack to sort the albums based on year:
     // Put them into a QMultiMap with the key as the year, and then retrieve the QList. Tada!
@@ -132,6 +132,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     // We only want to sort if we have a current track playing, otherwise we mess up the "recent tracks"
     if( currentTrack )
     {
+        currentAlbum = currentTrack->album();
         QMultiMap<QString, Meta::AlbumPtr> map; // MultiMap, as we can have multiple albums with the same year
         foreach( Meta::AlbumPtr albumPtr, m_albums )
         {
