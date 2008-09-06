@@ -120,7 +120,7 @@ function parseSuggestions( lyrics )
         print( err );
     }
     print( "got suggestions xml: " + suggestions_xml );
-    Amarok.Lyrics.showLyrics( suggestions_xml );
+    Amarok.Lyrics.showLyrics( suggestions_xml, "ISO 8859-1" );
 }
 
 function lyricsFetchResult( reply )
@@ -175,16 +175,16 @@ function fetchLyrics( artist, title, url )
     // so this is how it'll be for now
     // HACK poor man's version of string substitutions
     //xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyrics artist=\"{artist}\" title=\"{title}\" page_url=\"{page}\">{lyrics}</lyrics></xml>"
-    xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
-    suggestions_xml = "<suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
+    xml = "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
+    suggestions_xml = "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?><suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
     suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />"
 
     var connection = new QNetworkAccessManager();
-    var host = "lyrc.com.ar";
+    var host = "c";
     var path;
 
     if( url == "" )
-        path = "/en/tema1en.php?artist=" + artist + "&songname=" + title;
+        path = "/en/tema1en.php?artist=" + encodeURI( artist ) + "&songname=" + encodeURI( title );
     else
         path = "/en/" + url
         

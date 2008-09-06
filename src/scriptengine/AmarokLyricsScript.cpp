@@ -41,13 +41,15 @@ AmarokLyricsScript::~AmarokLyricsScript()
 }
 
 void
-AmarokLyricsScript::showLyrics( const QString& lyrics ) const
+AmarokLyricsScript::showLyrics( QString lyrics, const QString& encoding ) const
 {
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
     //debug() << "got lyrics: " << lyrics << " and track: " << track;
+    QTextCodec *codec = QTextCodec::codecForName( encoding.toUtf8() );
+    lyrics = codec->toUnicode( lyrics.toLatin1() );
     track->setCachedLyrics( lyrics );
     LyricsManager::self()->lyricsResult( lyrics, false );
 }

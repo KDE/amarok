@@ -165,10 +165,10 @@ ScriptManager::~ScriptManager()
     DEBUG_BLOCK
 
     QStringList runningScripts;
-    foreach( const QString &name, m_scripts.keys() )
-        if( m_scripts[name].running ) {
-            runningScripts << name;
-            slotStopScript( name );
+    foreach( const QString &key, m_scripts.keys() )
+        if( m_scripts[key].running ) {
+            runningScripts << key;
+            slotStopScript( key );
         }
 
     // Save config
