@@ -366,7 +366,7 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     
     
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track && track->album()->hasImage() )
+    if( track && track->album() && track->album()->hasImage() )
         m_theme->paint( p, QRect( margin - 5, margin, albumWidth + 12, albumWidth ), "cd-box" );
 
     m_theme->paint( p, QRectF( labelX, margin + 1, 16, 16 ), "track" );
