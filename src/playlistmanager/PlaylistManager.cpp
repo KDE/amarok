@@ -217,7 +217,6 @@ bool
 PlaylistManager::save( Meta::TrackList tracks, const QString & name)
 {
     Meta::SqlPlaylist* playlist = new Meta::SqlPlaylist( name, tracks, SqlPlaylistGroupPtr() );
-    int newId = playlist->id();
     delete playlist;
 
     //jolt the playlist browser model to reload....
