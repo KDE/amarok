@@ -560,8 +560,11 @@ void TagDialog::init()
     ui->kTabWidget->addTab( ui->tagsTab      , i18n( "Tags" ) );
     ui->kTabWidget->addTab( ui->lyricsTab    , i18n( "Lyrics" ) );
     ui->kTabWidget->addTab( ui->statisticsTab, i18n( "Statistics" ) );
-    ui->kTabWidget->addTab( ui->labelsTab    , i18n( "Labels" ) );
+
+    const int labelsIndex = ui->kTabWidget->addTab( ui->labelsTab    , i18n( "Labels" ) );
     ui->labelsTab->setEnabled( false );
+    ui->kTabWidget->removeTab( labelsIndex ); //Labels are not yet implemented, therefore disable the tab for now
+
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
     ui->kComboBox_artist->completionObject()->setIgnoreCase( true );
