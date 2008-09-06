@@ -23,7 +23,6 @@
 
 #include "Debug.h"
 #include "collection/CollectionManager.h"
-#include "collection/BlockingQuery.h"
 #include "meta/Meta.h"
 
 #include <math.h>
@@ -55,10 +54,13 @@ CoverBling::CoverBling( QWidget* parent )
     QueryMaker *qm = coll->queryMaker();
     qm->setQueryType( QueryMaker::Album );
     qm->limitMaxResultSize( 10 );
-    BlockingQuery bq( qm );
-    bq.startQuery();
 
-    Meta::AlbumList albums = bq.albums( coll->collectionId() );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SLOT( queryResult( QString, Meta::AlbumList ) ) );
+}
+
+void
+CoverBling::queryResult( QString collectionId, Meta::AlbumList albums )
+{
     foreach( Meta::AlbumPtr album, albums )
         m_covers << album->image();
 

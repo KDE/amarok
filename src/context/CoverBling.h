@@ -20,6 +20,8 @@
 #ifndef AMAROK_COVERBLING_H
 #define AMAROK_COVERBLING_H
 
+#include "meta/Meta.h"
+
 #include <QGLWidget>
 
 
@@ -38,6 +40,9 @@ class CoverBling : public QGLWidget
         void draw( GLuint selected = 0 );
         GLuint objectAtPosition( const QPoint& pos );
 
+    private slots:
+        void queryResult( QString collectionId, Meta::AlbumList albums );
+        
     private:
         QList<QPixmap> m_covers;
         QList<GLuint> m_textureIds;
