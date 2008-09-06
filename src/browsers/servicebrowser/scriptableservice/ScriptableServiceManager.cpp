@@ -34,9 +34,15 @@ using namespace Meta;
 
 ScriptableServiceManager * ScriptableServiceManager::s_instance = 0;
 
-ScriptableServiceManager::ScriptableServiceManager( )
+
+ScriptableServiceManager::ScriptableServiceManager()
+{}
+
+
+ScriptableServiceManager::~ScriptableServiceManager()
 {
-}
+    DEBUG_BLOCK
+}  
 
 
 bool ScriptableServiceManager::initService( const QString &name, int levels, const QString &shortDescription,  const QString &rootHtml, bool showSearchBar ) {

@@ -86,11 +86,18 @@ class ScriptableServiceManager : public QObject
         /**
         * Constructor
         */
-        ScriptableServiceManager( );
+        ScriptableServiceManager();
+
+        /**
+        * Destructor
+        */
+        ~ScriptableServiceManager();
 
         static ScriptableServiceManager * s_instance;
 
         QMap<QString, ScriptableService *> m_serviceMap;
         QString m_rootHtml;
 };
+
 #endif
+
