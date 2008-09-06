@@ -34,10 +34,10 @@ public:
     ~AmarokLyricsScript();
 
 public slots:
-    void showLyrics( QString lyrics, const QString& encoding = "UTF-8") const;
-    void showLyricsHtml( QString lyrics, const QString& encoding = "UTF-8" ) const;
+    void showLyrics( const QString& lyrics ) const;
+    void showLyricsHtml( const QString& lyrics ) const;
     void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
-
+    QString codecForName( const QByteArray& lyrics, const QString& encoding = "UTF-8" );
     
 signals:
     void fetchLyrics( const QString& artist, const QString& title, const QString& );
