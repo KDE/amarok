@@ -18,7 +18,6 @@
 #include "Debug.h"
 #include "context/Svg.h"
 #include "playlist/PlaylistModel.h"
-#include "meta/XSPFPlaylist.h"
 
 #include <plasma/theme.h>
 
@@ -40,6 +39,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     , m_aspectRatio( 0 )
     , m_size( QSizeF() )
     , m_initialized( false )
+    , m_currentPlaylist( 0 )
 
 {
     DEBUG_BLOCK
@@ -67,14 +67,19 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     m_serviceName = new QGraphicsSimpleTextItem( this );
     m_serviceName->setText( i18n("Service Info (No service active)") );
 
-    m_webView = new QWebView( 0 );
-    m_serviceMainInfo = new QGraphicsProxyWidget( this );
-    m_serviceMainInfo->setWidget( m_webView );
+    //m_serviceMainInfo = new QGraphicsProxyWidget( this );
+    //m_webView = new QWebView( 0 );
 
-    m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
+    m_webView = new Plasma::WebContent( this );
+
+    QPalette p = m_webView->palette();
+    p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
+    p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
+    m_webView->setPalette( p );
+
+    //m_serviceMainInfo->setWidget( m_webView );
 
     connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
-
 
     m_serviceName->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
 
@@ -89,9 +94,9 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
 ServiceInfo::~ServiceInfo()
 {
     //hacky stuff to keep QWebView from causing a crash
-    m_serviceMainInfo->setWidget( 0 );
+    /*m_serviceMainInfo->setWidget( 0 );
     delete m_serviceMainInfo;
-    m_serviceMainInfo = 0;
+    m_serviceMainInfo = 0;*/
     delete m_webView;
 
 }
@@ -126,10 +131,12 @@ void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
     //QSizeF infoSize( 200, 200 );
     QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 7 );
 
-    if ( infoSize.isValid() ) {
+    /*if ( infoSize.isValid() ) {
         m_serviceMainInfo->setMinimumSize( infoSize );
         m_serviceMainInfo->setMaximumSize( infoSize );
-    }
+    }*/
+    
+    m_webView->resize( infoSize );
 
     m_initialized = true;
 
@@ -146,7 +153,8 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
 
     if  ( m_initialized ) {
         m_serviceName->setText( data[ "service_name" ].toString() );
-        m_webView->setHtml( data[ "main_info" ].toString() );
+        m_webView->setHtml( data[ "main_info" ].toString(), KUrl( QString() ) );
+        m_webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
         constraintsEvent();
     }
 
@@ -179,15 +187,17 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
 
     //m_serviceName->setPos( m_header->elementRect( "service_name" ).topLeft() );
     QPointF pos( m_header->elementRect( "main_info" ).topLeft() );
-    m_serviceMainInfo->setPos( pos.x() + 7, pos.y() );
+    //m_serviceMainInfo->setPos( pos.x() + 7, pos.y() );
+    m_webView->setPos( pos.x() + 7, pos.y() );
 
     QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 10 );
     //infoSize.setHeight(  infoSize.height() - 50 );
 
-    m_serviceMainInfo->setMinimumSize( infoSize );
+    /*m_serviceMainInfo->setMinimumSize( infoSize );
     m_serviceMainInfo->setMaximumSize( infoSize );
     m_serviceMainInfo->show();
-    
+*/
+    m_webView->resize( infoSize );
     
 
 }
@@ -237,10 +247,17 @@ void ServiceInfo::linkClicked( const QUrl & url )
 
     if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) ) {
 
-        Meta::PlaylistPtr playlistPtr( new Meta::XSPFPlaylist( url ) );
-        The::playlistModel()->insertPlaylist( The::playlistModel()->rowCount(), playlistPtr );
+        Meta::XSPFPlaylist * playlist = new Meta::XSPFPlaylist( url );
+        playlist->subscribe( this );
 
     }
+}
+
+void ServiceInfo::trackListChanged( Meta::Playlist * playlist )
+{
+    playlist->unsubscribe( this );
+    Meta::PlaylistPtr playlistPtr( playlist );
+    The::playlistModel()->insertPlaylist( The::playlistModel()->rowCount(), playlistPtr );
 }
 
 

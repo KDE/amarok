@@ -18,6 +18,9 @@
 #include <context/DataEngine.h>
 #include <context/Svg.h>
 
+#include "meta/XSPFPlaylist.h"
+#include "meta/Playlist.h"
+
 #include <plasma/panelsvg.h>
 
 #include <KDialog>
@@ -25,13 +28,15 @@
 #include <QGraphicsProxyWidget>
 #include <qwebview.h>
 
+#include "context/plasma/widgets/webcontent.h"
+
 class QGraphicsPixmapItem;
 class QLabel;
 class QHBoxLayout;
 class QSpinBox;
 class QCheckBox;
 
-class ServiceInfo : public Context::Applet
+class ServiceInfo : public Context::Applet, public Meta::PlaylistObserver
 {
     Q_OBJECT
 public:
@@ -46,6 +51,8 @@ public:
     qreal heightForWidth( qreal width ) const;
 
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
+
+    virtual void trackListChanged( Meta::Playlist* playlist );
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
@@ -70,11 +77,15 @@ private:
     QSizeF m_size;
 
     QGraphicsSimpleTextItem* m_serviceName;
-    QGraphicsProxyWidget* m_serviceMainInfo;
+    //QGraphicsProxyWidget* m_serviceMainInfo;
 
-    QWebView * m_webView;
+    //QWebView * m_webView;
+
+    Plasma::WebContent * m_webView;
 
     bool m_initialized;
+
+    Meta::XSPFPlaylist * m_currentPlaylist;
 
 
 };

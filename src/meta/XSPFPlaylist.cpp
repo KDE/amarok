@@ -129,16 +129,22 @@ XSPFPlaylist::save( const QString &location, bool relative )
 bool
 XSPFPlaylist::loadXSPF( QTextStream &stream )
 {
+    DEBUG_BLOCK
     QString errorMsg;
     int errorLine, errorColumn;
 
     QString rawText = stream.readAll();
+
+    debug() << "raw text: " << rawText;
+    
     if ( !setContent( rawText, &errorMsg, &errorLine, &errorColumn ) )
     {
         debug() << "[XSPFPlaylist]: Error loading xml file: " "(" << errorMsg << ")"
                 << " at line " << errorLine << ", column " << errorColumn;
         return false;
     }
+
+    notifyObservers();
 
     return true;
 }
@@ -442,6 +448,7 @@ XSPFPlaylist::setLink( const KUrl &link )
 XSPFTrackList
 XSPFPlaylist::trackList()
 {
+    DEBUG_BLOCK
     XSPFTrackList list;
 
     QDomNode trackList = documentElement().namedItem( "trackList" );
@@ -454,6 +461,8 @@ XSPFPlaylist::trackList()
         subSubNode = subNode.firstChild();
         if ( subNode.nodeName() == "track" )
         {
+
+            debug() << "got track: " << track.title;
             while ( !subSubNode.isNull() )
             {
                 if ( subSubNode.nodeName() == "location" )
@@ -481,6 +490,8 @@ XSPFPlaylist::trackList()
 
                 subSubNode = subSubNode.nextSibling();
             }
+
+            debug() << "got track: " << track.title;
         }
         list.append( track );
         subNode = subNode.nextSibling();
