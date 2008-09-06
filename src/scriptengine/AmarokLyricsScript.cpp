@@ -43,7 +43,7 @@ AmarokLyricsScript::~AmarokLyricsScript()
 void
 AmarokLyricsScript::showLyrics( QString lyrics, const QString& encoding ) const
 {
-
+    DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
@@ -51,6 +51,7 @@ AmarokLyricsScript::showLyrics( QString lyrics, const QString& encoding ) const
     QTextCodec *codec = QTextCodec::codecForName( encoding.toUtf8() );
     lyrics = codec->toUnicode( lyrics.toLatin1() );
     track->setCachedLyrics( lyrics );
+    debug() << lyrics;
     LyricsManager::self()->lyricsResult( lyrics, false );
 }
 

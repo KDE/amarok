@@ -136,7 +136,7 @@ function lyricsFetchResult( reply )
         print( "got error: " + err );
     }
     
-    //print( "result: " + lyrics );
+    print( "result: " + lyrics );
 
     // no need, just complicates regexp
     lyrics.replace( "\n", "" );
@@ -175,8 +175,8 @@ function fetchLyrics( artist, title, url )
     // so this is how it'll be for now
     // HACK poor man's version of string substitutions
     //xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyrics artist=\"{artist}\" title=\"{title}\" page_url=\"{page}\">{lyrics}</lyrics></xml>"
-    xml = "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
-    suggestions_xml = "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?><suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
+    xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
+    suggestions_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
     suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />"
 
     var connection = new QNetworkAccessManager();

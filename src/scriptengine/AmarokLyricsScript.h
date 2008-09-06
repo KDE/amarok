@@ -34,7 +34,7 @@ public:
     ~AmarokLyricsScript();
 
 public slots:
-    void showLyrics( QString lyrics, const QString& encoding ) const;
+    void showLyrics( QString lyrics, const QString& encoding = "UTF-8") const;
     void showLyricsHtml( const QString& lyrics ) const;
     void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
 
