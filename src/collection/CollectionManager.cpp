@@ -370,9 +370,10 @@ CollectionManager::trackForUrl( const KUrl &url )
     return Meta::TrackPtr( 0 );
 }
 
-Meta::ArtistList
+void
 CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
 {
+    m_maxArtists = maxArtists;
     SqlStorage *sql = sqlStorage();
     QString query = QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' ORDER BY %2 LIMIT %3 OFFSET 0;" )
                .arg( sql->escape( artist->name() ), sql->randomFunc(), QString::number( maxArtists ) );
@@ -390,29 +391,57 @@ CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
     }
     qm->setQueryType( QueryMaker::Artist );
     qm->limitMaxResultSize( maxArtists );
-    BlockingQuery bq( qm );
-    bq.startQuery();
 
-    QStringList ids = bq.collectionIds();
-    Meta::ArtistList result;
-    QSet<QString> artistNameSet;
-    foreach( const QString &collectionId, ids )
+    connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
+             this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
+
+    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotContinueRelatedArtists() ) );
+
+    m_resultEmitted = false;
+    m_resultArtistList.clear();
+    m_artistNameSet.clear();
+
+    qm->run();
+}
+
+void
+CollectionManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList artists )
+{
+    Q_UNUSED(collectionId);
+
+    foreach( Meta::ArtistPtr artist, artists )
     {
-        Meta::ArtistList artists = bq.artists( collectionId );
-        foreach( Meta::ArtistPtr artist, artists )
+        if( !m_artistNameSet.contains( artist->name() ) )
         {
-            if( !artistNameSet.contains( artist->name() ) )
+            m_resultArtistList.append( artist );
+            m_artistNameSet.insert( artist->name() );
+            if( m_resultArtistList.size() == m_maxArtists )
             {
-                result.append( artist );
-                artistNameSet.insert( artist->name() );
-                if( result.size() == maxArtists )
-                    break;
+                m_resultEmitted = true;
+                emit( foundRelatedArtists( m_resultArtistList ) );
+                return;
             }
         }
-        if( result.size() == maxArtists )
-                    break;
     }
-    return result;
+    if( m_resultArtistList.size() == m_maxArtists && !m_resultEmitted )
+    {
+        m_resultEmitted = true;
+        emit( foundRelatedArtists( m_resultArtistList ) );
+    }
+}
+
+void
+CollectionManager::slotContinueRelatedArtists() //SLOT
+{
+    disconnect( this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
+
+    disconnect( this, SLOT( slotContinueRelatedArtists() ) );
+
+    if( !m_resultEmitted )
+    {
+        m_resultEmitted = true;
+        emit( foundRelatedArtists( m_resultArtistList ) );
+    }
 }
 
 void

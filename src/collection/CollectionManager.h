@@ -70,7 +70,12 @@ class AMAROK_EXPORT CollectionManager : public QObject
         */
         Meta::TrackPtr trackForUrl( const KUrl &url );
         Meta::TrackList tracksForUrls( const KUrl::List &urls );
-        Meta::ArtistList relatedArtists( Meta::ArtistPtr artist, int maxArtists );
+
+        /**
+         * When using this method, you must watch for the foundRelatedArtists signal
+         * for the returned Meta::ArtistList
+         */
+        void relatedArtists( Meta::ArtistPtr artist, int maxArtists );
 
         /**
             retrieve an interface which allows client-code to store/load data in a relational database.
@@ -128,16 +133,26 @@ class AMAROK_EXPORT CollectionManager : public QObject
         //it will not be emitted on minor changes (e.g. the tags of a song were changed)
         void collectionDataChanged( Collection *changedCollection );
 
+        void foundRelatedArtists( Meta::ArtistList artists );
+
     private slots:
         void slotNewCollection( Collection *newCollection );
         void slotRemoveCollection();
         void slotCollectionChanged();
+        void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );
+        void slotContinueRelatedArtists();
 
     private:
         static CollectionManager* s_instance;
         CollectionManager();
 
         void init();
+
+        //used for related artists query
+        QSet<QString>    m_artistNameSet;
+        Meta::ArtistList m_resultArtistList;
+        bool             m_resultEmitted;
+        int              m_maxArtists;
 
         struct Private;
         Private * const d;

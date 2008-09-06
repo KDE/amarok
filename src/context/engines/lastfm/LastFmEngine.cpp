@@ -112,35 +112,56 @@ void LastFmEngine::updateCurrent()
     if( m_suggestedsongs )
     {
         debug() << "engineController: " << The::engineController() << "currentTrack:" << The::engineController()->currentTrack();
-        Meta::ArtistList artists = CollectionManager::instance()->relatedArtists( The::engineController()->currentTrack()->artist(), 30 );
+        connect( CollectionManager::instance(), SIGNAL( foundRelatedArtists(Meta::ArtistList) ),
+                this, SLOT( suggestedSongsArtistQueryResult(Meta::ArtistList) ) ); 
+        CollectionManager::instance()->relatedArtists( The::engineController()->currentTrack()->artist(), 30 );
 
-        QString token;
-
-        Collection *coll = CollectionManager::instance()->primaryCollection();
-        QueryMaker *qm = coll->queryMaker();
-        qm->setQueryType( QueryMaker::Track );
-        qm->limitMaxResultSize( 10 );
-        foreach( Meta::ArtistPtr artist, artists )
-            qm->addFilter( QueryMaker::valArtist, artist->name() );
-
-        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( artistQueryResult( QString, Meta::TrackList ) ) );
-
-        qm->run();       
     }
 
     if( m_relatedartists )
     {
-        Meta::ArtistList artists = CollectionManager::instance()->relatedArtists( The::engineController()->currentTrack()->artist(), 30 );
-        QStringList data;
-        foreach( Meta::ArtistPtr artist, artists )
-            data << artist->name();
-        setData( "relatedartists", data );
+        connect( CollectionManager::instance(), SIGNAL( foundRelatedArtists(Meta::ArtistList) ),
+                this, SLOT( relatedArtistsQueryResult(Meta::ArtistList) ) ); 
+        CollectionManager::instance()->relatedArtists( The::engineController()->currentTrack()->artist(), 30 );
     }
+}
+
+void
+LastFmEngine::suggestedSongsArtistQueryResult( Meta::ArtistList artists ) //SLOT
+{
+    disconnect( CollectionManager::instance(), SIGNAL( foundRelatedArtists(Meta::ArtistList) ),
+                this, SLOT( suggestedSongsArtistQueryResult(Meta::ArtistList) ) ); 
+
+    QString token;
+
+    Collection *coll = CollectionManager::instance()->primaryCollection();
+    QueryMaker *qm = coll->queryMaker();
+    qm->setQueryType( QueryMaker::Track );
+    qm->limitMaxResultSize( 10 );
+    foreach( Meta::ArtistPtr artist, artists )
+        qm->addFilter( QueryMaker::valArtist, artist->name() );
+
+    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( artistQueryResult( QString, Meta::TrackList ) ) );
+
+    qm->run();
+}
+
+void
+LastFmEngine::relatedArtistsQueryResult( Meta::ArtistList artists ) //SLOT
+{
+    disconnect( CollectionManager::instance(), SIGNAL( foundRelatedArtists(Meta::ArtistList) ),
+                this, SLOT( relatedArtistsQueryResult(Meta::ArtistList) ) ); 
+
+    QStringList data;
+    foreach( Meta::ArtistPtr artist, artists )
+        data << artist->name();
+    setData( "relatedartists", data );
 }
 
 void
 LastFmEngine::artistQueryResult( QString collectionId, Meta::TrackList tracks )
 {
+    Q_UNUSED( collectionId );
     if( !tracks.empty() )
     {
         foreach( Meta::TrackPtr track, tracks ) // we iterate through each song + song info

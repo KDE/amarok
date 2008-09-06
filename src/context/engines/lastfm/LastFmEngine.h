@@ -45,6 +45,7 @@ public:
     QStringList sources() const;
     
     void message( const ContextState& state );
+    
 protected:
 
     bool sourceRequested( const QString& name );
@@ -54,6 +55,8 @@ private slots:
     void sysResult( KJob* );
     void userResult( KJob* );
 
+    void suggestedSongsArtistQueryResult( Meta::ArtistList artists );
+    void relatedArtistsQueryResult( Meta::ArtistList artists );
     void artistQueryResult( QString collectionId, Meta::TrackList );
     
 private:
