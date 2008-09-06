@@ -124,7 +124,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     m_model->clear();
        
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    Meta::AlbumPtr currentAlbum;
+    Meta::AlbumPtr currentAlbum = 0;
 
     // Here's a smallish hack to sort the albums based on year:
     // Put them into a QMultiMap with the key as the year, and then retrieve the QList. Tada!
