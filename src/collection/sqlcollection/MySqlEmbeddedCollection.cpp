@@ -28,12 +28,20 @@
 
 #include <KRandom>
 
+/**
+ * This class is used by MySqlEmbeddedCollection to fulfill mysql's thread
+ * requirements. In every function, that calls mysql_*, an init() method of
+ * this class must be invoked.
+ */
 class ThreadInitializer
 {
     static int threadsCount;
     static QMutex countMutex;
     static QThreadStorage< ThreadInitializer* > storage;
 
+    /**
+     * This should be called ONLY by init()
+     */
     ThreadInitializer()
     {
         mysql_thread_init();
@@ -46,6 +54,9 @@ class ThreadInitializer
     }
 
 public:
+    /**
+     * This is called by QThreadStorage when a thread is destroyed
+     */
     ~ThreadInitializer()
     {
         mysql_thread_end();
@@ -174,7 +185,7 @@ QStringList MySqlEmbeddedCollection::query( const QString& statement )
     }
 
     MYSQL_RES *pres = mysql_store_result( m_db );
-    if( !pres )
+    if( !pres ) // No results... check if any were expected
     {
         if( mysql_field_count( m_db ) ) reportError();
         return values;

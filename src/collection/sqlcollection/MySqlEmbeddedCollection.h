@@ -25,6 +25,9 @@
 
 #include <mysql.h>
 
+/**
+ * Implements a SqlCollection using a MySQL Embedded Server
+ */
 class MySqlEmbeddedCollection : public SqlCollection
 {
     Q_OBJECT
