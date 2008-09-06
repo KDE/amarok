@@ -150,6 +150,7 @@ void
 CoverManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList artists ) //SLOT
 {
     DEBUG_BLOCK
+    Q_UNUSED( collectionId );
     foreach( Meta::ArtistPtr artist, artists )
         m_artistList << artist;
 }
@@ -503,6 +504,7 @@ void
 CoverManager::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
 {
     DEBUG_BLOCK
+    Q_UNUSED( collectionId );
     m_albumList += albums;
 }
 
@@ -570,7 +572,7 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
     }
 
     updateStatusBar();
-    delete m_progressDialog();
+    delete m_progressDialog;
 }
 
 // called when a cover item is clicked
