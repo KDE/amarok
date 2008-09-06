@@ -43,7 +43,6 @@
 #include "StatusBar.h"
 #include "UndoCommands.h"
 
-#include "collection/BlockingQuery.h"
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
 #include "collection/QueryMaker.h"
