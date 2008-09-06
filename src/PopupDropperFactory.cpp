@@ -24,33 +24,29 @@
 #include "PaletteHandler.h"
 #include "context/popupdropper/PopupDropperAction.h"
 #include "context/popupdropper/PopupDropperItem.h"
+#include "MainWindow.h"
 #include "SvgHandler.h"
-
 
 #include <kglobal.h>
 
-class PopupDropperFactorySingleton
+
+namespace The
 {
-    public:
-        PopupDropperFactory instance;
-};
+    static PopupDropperFactory* s_PopupDropperFactory_instance = 0;
 
-K_GLOBAL_STATIC( PopupDropperFactorySingleton, s_privateInstance )
-
-namespace The {
-
-    PopupDropperFactory*
-            popupDropperFactory()
+    PopupDropperFactory* popupDropperFactory()
     {
-        return &s_privateInstance->instance;
+        if( !s_PopupDropperFactory_instance )
+            s_PopupDropperFactory_instance = new PopupDropperFactory( The::mainWindow() );
+
+        return s_PopupDropperFactory_instance;
     }
 }
 
 
-PopupDropperFactory::PopupDropperFactory()
-{
-    qAddPostRoutine( s_privateInstance.destroy );  // Ensures that the dtor gets called when QApplication destructs
-}
+PopupDropperFactory::PopupDropperFactory( QObject* parent )
+    : QObject( parent )
+{}
 
 
 PopupDropperFactory::~PopupDropperFactory()
@@ -62,9 +58,11 @@ PopupDropperFactory::~PopupDropperFactory()
 PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent )
 {
     DEBUG_BLOCK
+
     PopupDropper* pd = new PopupDropper( parent );
     if( !pd )
         return 0;
+
     pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
     pd->setQuitOnDragLeave( false );
     pd->setFadeInTime( 500 );

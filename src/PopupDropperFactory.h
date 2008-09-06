@@ -34,13 +34,13 @@ namespace The {
     AMAROK_EXPORT PopupDropperFactory* popupDropperFactory();
 }
 
-class AMAROK_EXPORT PopupDropperFactory {
- 
-friend PopupDropperFactory* The::popupDropperFactory();
+class AMAROK_EXPORT PopupDropperFactory : public QObject
+{
+    Q_OBJECT
+
+    friend PopupDropperFactory* The::popupDropperFactory();
 
     public:
-        ~PopupDropperFactory();
-
         /**
          * Create a new PopupDropper with correct system colors. This function creates it on top of the context viev
          * @return The newly created PopupDropper
@@ -63,8 +63,8 @@ friend PopupDropperFactory* The::popupDropperFactory();
         void adjustSubmenuItem( PopupDropperItem * item );
 
     private:
-        friend class PopupDropperFactorySingleton;
-        PopupDropperFactory();
+        PopupDropperFactory( QObject* parent );
+        ~PopupDropperFactory();
  };
 
 
