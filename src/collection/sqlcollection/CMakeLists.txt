@@ -44,7 +44,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     SqlMeta.cpp 
     SqliteCollection.cpp
     ../../sqlite/sqlite3.c
-    MySqlEmbeddedCollection.cpp
+    #    MySqlEmbeddedCollection.cpp
    ${extra_src}
  )
 
@@ -61,7 +61,7 @@ target_link_libraries(amarok_collection-sqlcollection
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${sqlite_deps}
-    ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl
+    #    ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl
 )
 
 if(APPLE)
