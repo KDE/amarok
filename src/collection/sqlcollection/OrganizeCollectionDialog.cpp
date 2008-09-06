@@ -24,10 +24,11 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "amarokconfig.h"
-#include "collection/BlockingQuery.h"
 #include "file/File.h"
 #include "mountpointmanager.h"
+#include "QueryMaker.h"
 #include "qstringx.h"
+#include "SqlQueryMaker.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 
 #include <QDir>
@@ -35,14 +36,17 @@
 OrganizeCollectionDialog::OrganizeCollectionDialog( QueryMaker *qm, QWidget *parent,  const char *name, bool modal,
                                                     const QString &caption, QFlags<KDialog::ButtonCode> buttonMask )
 {
-    qm->setQueryType( QueryMaker::Track );
-    BlockingQuery bq( qm );
-    bq.startQuery();
+    SqlQueryMaker *sqlqm  = static_cast<SqlQueryMaker*>( qm );
+    sqlqm->setQueryType( QueryMaker::Track );
+    sqlqm->setBlocking( true );
+    sqlqm->run();
     Meta::TrackList tracks;
-    foreach( const QString &collectionId, bq.collectionIds() )
+    foreach( const QString &collectionId, sqlqm->collectionIds() )
     {
-        tracks << bq.tracks( collectionId );
+        tracks << sqlqm->tracks( collectionId );
     }
+    // FIXME: someone has to delete it. should it really be done here?
+    delete qm;
     OrganizeCollectionDialog( tracks, parent, name, modal, caption, buttonMask );
 }
 

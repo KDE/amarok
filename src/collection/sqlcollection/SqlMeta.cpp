@@ -1,5 +1,6 @@
 /* This file is part of the KDE project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2008 Daniel Winter <dw@danielwinter.de>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -20,10 +21,10 @@
 
 #include "amarokconfig.h"
 #include "Amarok.h"
-#include "BlockingQuery.h"
 #include "Debug.h"
 #include "MetaUtility.h"
 #include "SqlCollection.h"
+#include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
 #include "browsers/servicebrowser/lastfm/SimilarArtistsAction.h"
 #include "context/popupdropper/PopupDropperAction.h"
@@ -820,12 +821,13 @@ SqlArtist::tracks()
     }
     else if( m_collection )
     {
-        QueryMaker *qm = m_collection->queryMaker();
+        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
-        BlockingQuery bq( qm );
-        bq.startQuery();
-        m_tracks = bq.tracks( m_collection->collectionId() );
+        qm->setBlocking( true );
+        qm->run();
+        m_tracks = qm->tracks( m_collection->collectionId() );
+        delete qm;
         m_tracksLoaded = true;
         return m_tracks;
     }
@@ -843,12 +845,13 @@ SqlArtist::albums()
     }
     else if( m_collection )
     {
-        QueryMaker *qm = m_collection->queryMaker();
+        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Album );
         addMatchTo( qm );
-        BlockingQuery bq( qm );
-        bq.startQuery();
-        m_albums = bq.albums( m_collection->collectionId() );
+        qm->setBlocking( true );
+        qm->run();
+        m_albums = qm->albums( m_collection->collectionId() );
+        delete qm;
         m_albumsLoaded = true;
         return m_albums;
     }
@@ -982,12 +985,13 @@ SqlAlbum::tracks()
     }
     else if( m_collection )
     {
-        QueryMaker *qm = m_collection->queryMaker();
+        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
-        BlockingQuery bq( qm );
-        bq.startQuery();
-        m_tracks = bq.tracks( m_collection->collectionId() );
+        qm->setBlocking( true );
+        qm->run();
+        m_tracks = qm->tracks( m_collection->collectionId() );
+        delete qm;
         m_tracksLoaded = true;
         return m_tracks;
     }
@@ -1411,12 +1415,13 @@ SqlComposer::tracks()
     }
     else if( m_collection )
     {
-        QueryMaker *qm = m_collection->queryMaker();
+        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
-        BlockingQuery bq( qm );
-        bq.startQuery();
-        m_tracks = bq.tracks( m_collection->collectionId() );
+        qm->setBlocking( true );
+        qm->run();
+        m_tracks = qm->tracks( m_collection->collectionId() );
+        delete qm;
         m_tracksLoaded = true;
         return m_tracks;
     }
@@ -1455,12 +1460,13 @@ SqlGenre::tracks()
     }
     else if( m_collection )
     {
-        QueryMaker *qm = m_collection->queryMaker();
+        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
-        BlockingQuery bq( qm );
-        bq.startQuery();
-        m_tracks = bq.tracks( m_collection->collectionId() );
+        qm->setBlocking( true );
+        qm->run();
+        m_tracks = qm->tracks( m_collection->collectionId() );
+        delete qm;
         m_tracksLoaded = true;
         return m_tracks;
     }
@@ -1499,12 +1505,13 @@ SqlYear::tracks()
     }
     else if( m_collection )
     {
-        QueryMaker *qm = m_collection->queryMaker();
+        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
-        BlockingQuery bq( qm );
-        bq.startQuery();
-        m_tracks = bq.tracks( m_collection->collectionId() );
+        qm->setBlocking( true );
+        qm->run();
+        m_tracks = qm->tracks( m_collection->collectionId() );
+        delete qm;
         m_tracksLoaded = true;
         return m_tracks;
     }

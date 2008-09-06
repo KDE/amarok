@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -82,6 +83,10 @@ struct SqlQueryMaker::Private
     SqlWorkerThread *worker;
 
     QStack<bool> andStack;
+
+    Meta::DataList data;
+    bool blocking;
+    bool used;
 };
 
 SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
@@ -119,6 +124,9 @@ SqlQueryMaker::reset()
     d->maxResultSize = -1;
     d->andStack.clear();
     d->andStack.push( true );   //and is default
+    d->blocking = false;
+    d->used = false;
+    d->data.clear();
     return this;
 }
 
@@ -132,6 +140,11 @@ SqlQueryMaker::abortQuery()
 QueryMaker*
 SqlQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
+    // we need the unchanged resulttype in the blocking result methods so prevent
+    // reseting result type without reseting the QM
+    if ( d->used )
+        return this;
+    
     d->resultAsDataPtrs = resultAsDataPtrs;
     return this;
 }
@@ -139,21 +152,31 @@ SqlQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 void
 SqlQueryMaker::run()
 {
-    if( d->queryType == QueryMaker::None )
+    if( d->queryType == QueryMaker::None || d->used )
+    {
+        debug() << "sql querymaker used without reset or initialization" << endl;
         return; //better error handling?
+    }
     if( d->worker && !d->worker->isFinished() )
     {
         //the worker thread seems to be running
         //TODO: wait or job to complete
 
     }
-    else
+    else if ( ! d->blocking )
     {
         //debug() << "Query is " << query();
         d->worker = new SqlWorkerThread( this );
         connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
     }
+    else //use it blocking 
+    {
+        QString query = this->query();
+        QStringList result = runQuery( query );
+        handleResult( result );
+    }
+    d->used = true;
 }
 
 void
@@ -168,6 +191,11 @@ SqlQueryMaker::done( ThreadWeaver::Job *job )
 QueryMaker*
 SqlQueryMaker::setQueryType( QueryType type )
 {
+    // we need the unchanged m_queryType in the blocking result methods so prevent
+    // reseting queryType without reseting the QM
+    if ( d->used )
+        return this;
+    
     switch( type ) {
     case QueryMaker::Track:
         //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
@@ -651,6 +679,133 @@ SqlQueryMaker::handleResult( const QStringList &result )
     //queryDone will be emitted in done(Job*)
 }
 
+void
+SqlQueryMaker::setBlocking( bool enabled )
+{
+    d->blocking = enabled;
+}
+
+QStringList
+SqlQueryMaker::collectionIds() const
+{
+    QStringList list;
+    list << m_collection->collectionId();
+    return list;
+}
+
+Meta::DataList
+SqlQueryMaker::data( const QString &id ) const
+{
+    if ( d->blocking && d->used && d->resultAsDataPtrs && m_collection->collectionId() == id )
+        return d->data;
+    else
+        return Meta::DataList();
+}
+
+Meta::TrackList
+SqlQueryMaker::tracks( const QString &id ) const
+{
+    if ( d->blocking && d->used && d->queryType == QueryMaker::Track && m_collection->collectionId() == id  )
+    {
+        Meta::TrackList list;
+        foreach( DataPtr p, d->data )
+        {
+            list << Meta::TrackPtr::staticCast( p );
+        }
+        return list;
+    }
+    else
+        return Meta::TrackList();
+}
+
+Meta::AlbumList
+SqlQueryMaker::albums( const QString &id ) const
+{
+    if ( d->blocking && d->used && d->queryType == QueryMaker::Album && m_collection->collectionId() == id  )
+    {
+        Meta::AlbumList list;
+        foreach( DataPtr p, d->data )
+        {
+            list << Meta::AlbumPtr::staticCast( p );
+        }
+        return list;
+    }
+    else
+        return Meta::AlbumList();
+}
+
+Meta::ArtistList
+SqlQueryMaker::artists( const QString &id ) const
+{
+    if ( d->blocking && d->used && d->queryType == QueryMaker::Artist && m_collection->collectionId() == id  )
+    {
+        Meta::ArtistList list;
+        foreach( DataPtr p, d->data )
+        {
+            list << Meta::ArtistPtr::staticCast( p );
+        }
+        return list;
+    }
+    else
+        return Meta::ArtistList();
+}
+
+Meta::GenreList
+SqlQueryMaker::genres( const QString &id ) const
+{
+    if ( d->blocking && d->used && d->queryType == QueryMaker::Genre && m_collection->collectionId() == id  )
+    {
+        Meta::GenreList list;
+        foreach( DataPtr p, d->data )
+        {
+            list << Meta::GenrePtr::staticCast( p );
+        }
+        return list;
+    }
+    else
+        return Meta::GenreList();
+}
+
+Meta::ComposerList
+SqlQueryMaker::composers( const QString &id ) const
+{
+    if ( d->blocking && d->used && d->queryType == QueryMaker::Composer && m_collection->collectionId() == id  )
+    {
+        Meta::ComposerList list;
+        foreach( DataPtr p, d->data )
+        {
+            list << Meta::ComposerPtr::staticCast( p );
+        }
+        return list;
+    }
+    else
+        return Meta::ComposerList();
+}
+
+Meta::YearList
+SqlQueryMaker::years( const QString &id ) const
+{
+    if ( d->blocking && d->used && d->queryType == QueryMaker::Year && m_collection->collectionId() == id  )
+    {
+        Meta::YearList list;
+        foreach( DataPtr p, d->data )
+        {
+            list << Meta::YearPtr::staticCast( p );
+        }
+        return list;
+    }
+    else
+        return Meta::YearList();
+}
+
+QStringList
+SqlQueryMaker::customData( const QString &id ) const
+{
+    Q_UNUSED( id )
+    // not implemented yet
+            return QStringList();
+}
+
 QString
 SqlQueryMaker::nameForValue( qint64 value )
 {
@@ -737,19 +892,20 @@ SqlQueryMaker::andOr() const
 // The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
 // it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
 // signal that takes the list of the specific class.
+// If qm is used blocking it only stores the result ptrs into data as DataPtrs
 
-#define emitProperResult( PointerType, list ) { \
-            if ( d->resultAsDataPtrs ) { \
-                DataList data; \
+#define emitOrStoreProperResult( PointerType, list ) { \
+            if ( d->resultAsDataPtrs || d->blocking ) { \
                 foreach( PointerType p, list ) { \
-                    data << DataPtr::staticCast( p ); \
+                    d->data << DataPtr::staticCast( p ); \
                 } \
-                emit newResultReady( m_collection->collectionId(), data ); \
+                if ( !d->blocking ) \
+                emit newResultReady( m_collection->collectionId(), d->data ); \
             } \
             else { \
                 emit newResultReady( m_collection->collectionId(), list ); \
             } \
-        }
+       }
 
 void
 SqlQueryMaker::handleTracks( const QStringList &result )
@@ -764,7 +920,7 @@ SqlQueryMaker::handleTracks( const QStringList &result )
         QStringList row = result.mid( i*returnCount, returnCount );
         tracks.append( reg->getTrack( row ) );
     }
-    emitProperResult( TrackPtr, tracks );
+    emitOrStoreProperResult( TrackPtr, tracks );
 }
 
 void
@@ -778,7 +934,7 @@ SqlQueryMaker::handleArtists( const QStringList &result )
         QString id = iter.next();
         artists.append( reg->getArtist( name, id.toInt() ) );
     }
-    emitProperResult( ArtistPtr, artists );
+    emitOrStoreProperResult( ArtistPtr, artists );
 }
 
 void
@@ -793,7 +949,7 @@ SqlQueryMaker::handleAlbums( const QStringList &result )
         QString artist = iter.next();
         albums.append( reg->getAlbum( name, id.toInt(), artist.toInt() ) );
     }
-    emitProperResult( AlbumPtr, albums );
+    emitOrStoreProperResult( AlbumPtr, albums );
 }
 
 void
@@ -807,7 +963,7 @@ SqlQueryMaker::handleGenres( const QStringList &result )
         QString id = iter.next();
         genres.append( reg->getGenre( name, id.toInt() ) );
     }
-    emitProperResult( GenrePtr, genres );
+    emitOrStoreProperResult( GenrePtr, genres );
 }
 
 void
@@ -821,7 +977,7 @@ SqlQueryMaker::handleComposers( const QStringList &result )
         QString id = iter.next();
         composers.append( reg->getComposer( name, id.toInt() ) );
     }
-    emitProperResult( ComposerPtr, composers );
+    emitOrStoreProperResult( ComposerPtr, composers );
 }
 
 void
@@ -835,7 +991,7 @@ SqlQueryMaker::handleYears( const QStringList &result )
         QString id = iter.next();
         years.append( reg->getYear( name, id.toInt() ) );
     }
-    emitProperResult( YearPtr, years );
+    emitOrStoreProperResult( YearPtr, years );
 }
 
 QString

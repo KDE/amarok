@@ -76,6 +76,21 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
         QStringList runQuery( const QString &query );
         void handleResult( const QStringList &result );
 
+        // for using it blocking (only for collection internal use)
+
+        void setBlocking( bool enabled );
+        
+        QStringList collectionIds() const;
+
+        Meta::DataList data( const QString &id ) const;
+        Meta::TrackList tracks( const QString &id ) const;
+        Meta::AlbumList albums( const QString &id ) const;
+        Meta::ArtistList artists( const QString &id ) const;
+        Meta::GenreList genres( const QString &id ) const;
+        Meta::ComposerList composers( const QString &id ) const;
+        Meta::YearList years( const QString &id ) const;
+        QStringList customData( const QString &id ) const;
+
     protected:
         virtual QString escape( QString text ) const;
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
