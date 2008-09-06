@@ -217,6 +217,8 @@ App::~App()
     // do even if trayicon is not shown, it is safe
     Amarok::config().writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
+    delete ScriptManager::instance();
+
     // this must be deleted before the connection to the Xserver is
     // severed, or we risk a crash when the QApplication is exited,
     // I asked Trolltech! *smug*
