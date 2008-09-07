@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Leo Franchi <lfranchi@kde.org>                          *
+ *               2008 Peter ZHOU  <peterzhoulei@gmail.com>                    *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -72,12 +73,19 @@ AmarokLyricsScript::setLyricsForTrack( const QString& trackUrl, const QString& l
 }
 
 QString
-AmarokLyricsScript::codecForName( const QByteArray& lyrics, const QString& encoding )
+AmarokLyricsScript::toUtf8( const QByteArray& lyrics, const QString& encoding )
 {
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
     QTextCodec::setCodecForCStrings( utf8codec );
     return codec->toUnicode( lyrics );
+}
+
+QByteArray
+AmarokLyricsScript::fromUtf8( const QString& str, const QString& encoding )
+{
+    QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
+    return codec->fromUnicode( str );
 }
 
 }

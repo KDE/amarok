@@ -1,5 +1,6 @@
-/******************************************************************************
+/*****************************************************************************
 * Copyright (C) 2008 Leo Franchi <lfranchi@kde.org>                          *
+*               2008 Peter ZHOU  <peterzhoulei@gmail.com>                    *
 *                                                                            *
 * This program is free software; you can redistribute it and/or              *
 * modify it under the terms of the GNU General Public License as             *
@@ -37,7 +38,8 @@ public slots:
     void showLyrics( const QString& lyrics ) const;
     void showLyricsHtml( const QString& lyrics ) const;
     void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
-    QString codecForName( const QByteArray& lyrics, const QString& encoding = "UTF-8" );
+    QString toUtf8( const QByteArray& lyrics, const QString& encoding = "UTF-8" );
+    QByteArray fromUtf8( const QString& str, const QString& encoding );
     
 signals:
     void fetchLyrics( const QString& artist, const QString& title, const QString& );
