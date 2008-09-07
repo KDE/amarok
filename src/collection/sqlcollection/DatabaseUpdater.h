@@ -41,7 +41,7 @@ public:
 
     void deleteAllRedundant( const QString &type ); //type is artist,album,genre,composer or year
 
-    void removeFilesInDir( int deviceid, const QString &rdir, QHash<QString, QString> *filesDeleted );
+    void removeFilesInDir( int deviceid, const QString &rdir );
     void removeFilesInDirFromTemporaryTables( int deviceid, const QString &rdir );
 
 private:

@@ -505,10 +505,8 @@ DatabaseUpdater::deleteAllRedundant( const QString &type )
 }
 
 void
-DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir, QHash<QString, QString> *filesRemoved )
+DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
 {
-    Q_UNUSED(filesRemoved)
-
     QString select = QString( "SELECT urls.id FROM urls LEFT JOIN directories ON urls.directory = directories.id "
                               "WHERE directories.deviceid = %1 AND directories.dir = '%2';" )
                                 .arg( QString::number( deviceid ), m_collection->escape( rdir ) );

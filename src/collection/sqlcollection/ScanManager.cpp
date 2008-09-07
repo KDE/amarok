@@ -102,8 +102,6 @@ ScanManager::startFullScan()
         m_parser->deleteLater();
     }
     m_parser = new XmlParseJob( this, m_collection );
-    m_parser->setFilesAddedHash( &m_filesAdded );
-    m_parser->setFilesDeletedHash( &m_filesDeleted );
     m_parser->setChangedUrlsHash( &m_changedUrls );
     m_parser->setIsIncremental( false );
     m_isIncremental = false;
@@ -146,8 +144,6 @@ void ScanManager::startIncrementalScan()
         m_parser->deleteLater();
     }
     m_parser = new XmlParseJob( this, m_collection );
-    m_parser->setFilesAddedHash( &m_filesAdded );
-    m_parser->setFilesDeletedHash( &m_filesDeleted );
     m_parser->setChangedUrlsHash( &m_changedUrls );
     m_parser->setIsIncremental( true );
     m_isIncremental = true;
@@ -380,8 +376,6 @@ ScanManager::restartScanner()
     m_scanner->start();
     m_parser = new XmlParseJob( this, m_collection );
     m_parser->setIsIncremental( m_isIncremental );
-    m_parser->setFilesAddedHash( &m_filesAdded );
-    m_parser->setFilesDeletedHash( &m_filesDeleted );
     m_parser->setChangedUrlsHash( &m_changedUrls );
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
@@ -405,8 +399,6 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     , m_collection( collection )
     , m_abortRequested( false )
     , m_isIncremental( false )
-    , m_filesAdded( 0 )
-    , m_filesDeleted( 0 )
     , m_changedUrls( 0 )
 {
     DEBUG_BLOCK
@@ -430,18 +422,6 @@ XmlParseJob::setIsIncremental( bool incremental )
 }
 
 void
-XmlParseJob::setFilesAddedHash( QHash<QString, QString>* hash )
-{
-    m_filesAdded = hash;
-}
-
-void
-XmlParseJob::setFilesDeletedHash( QHash<QString, QString>* hash )
-{
-    m_filesDeleted = hash;
-}
-
-void
 XmlParseJob::setChangedUrlsHash( QHash<QString, QString>* hash )
 {
     m_changedUrls = hash;
@@ -456,7 +436,6 @@ XmlParseJob::run()
     QString currentDir;
 
     ScanResultProcessor processor( m_collection );
-    processor.setFilesDeletedHash( m_filesDeleted );
     processor.setChangedUrlsHash( m_changedUrls );
     if( m_isIncremental )
     {
@@ -527,8 +506,6 @@ XmlParseJob::run()
                         data.insert( Meta::Field::FILESIZE, attrs.value( "filesize" ).toString() );
 
                     data.insert( Meta::Field::UNIQUEID, attrs.value( "uniqueid" ).toString() );
-                    if( m_filesAdded )
-                        m_filesAdded->insert( attrs.value( "uniqueid").toString(), attrs.value( "path" ).toString() );
 
                     KUrl url( data.value( Meta::Field::URL ).toString() );
                     if( firstTrack )
@@ -602,24 +579,6 @@ XmlParseJob::run()
         if( !directoryData.isEmpty() )
             processor.processDirectory( directoryData );
         processor.commit();
-        if( !m_isIncremental )
-        {
-            m_collection->emitFilesDeleted( *m_filesDeleted );
-            m_collection->emitFilesAdded( *m_filesAdded );
-        }
-        else
-        {
-            QHash<QString, QString>::Iterator it;
-            for( it = m_filesAdded->begin(); it != m_filesAdded->end(); ++it )
-            {
-                if( m_filesDeleted->contains( it.key() ) )
-                    m_filesDeleted->remove( it.key() );
-            }
-            for( it = m_filesAdded->begin(); it != m_filesAdded->end(); ++it )
-                m_collection->emitFileAdded( it.value(), it.key() );
-            for( it = m_filesDeleted->begin(); it != m_filesDeleted->end(); ++it )
-                m_collection->emitFileDeleted( it.value(), it.key() );
-        }
     } 
 }
 

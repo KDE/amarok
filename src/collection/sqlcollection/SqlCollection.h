@@ -74,10 +74,6 @@ class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
 
         //sqlcollection internal methods
         void sendChangedSignal();
-        void emitFilesAdded( const QHash<QString, QString> &files );
-        void emitFilesDeleted( const QHash<QString, QString> &files );
-        void emitFileAdded( const QString &path, const QString &id );
-        void emitFileDeleted( const QString &path, const QString &id );
 
         //methods defined in SqlStorage
         virtual int sqlDatabasePriority() const;
@@ -98,12 +94,6 @@ class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
         virtual QString randomFunc() const;
 
         virtual void vacuum() const;
-
-    signals:
-        void filesAdded( const QHash<QString, QString> &files );
-        void filesDeleted( const QHash<QString, QString> &files );
-        void fileAdded( const QString &path, const QString &id );
-        void fileDeleted( const QString &path, const QString &id );
 
     protected:
         //this method MUST be called from subclass constructors
