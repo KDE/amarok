@@ -573,18 +573,21 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         if ( !disc.isEmpty() )
         {
             int i = disc.indexOf('/');
+            // guard against b0rked tags
+            int discnumber;
             if ( i != -1 )
                 // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
-                attributes["discnumber"] = disc.left( i ).toInt();
+                discnumber = disc.left( i ).toInt();
             else
-                attributes["discnumber"] = disc.toInt();
+                discnumber = disc.toInt();
+            attributes["discnumber"] = QString::number( discnumber );
         }
 
         if ( compilation.isEmpty() )
         {
             // well, it wasn't set, but if the artist is VA assume it's a compilation
             if ( attributes["artist"] == i18n( "Various Artists" ) )
-                attributes["compilation"] = true;
+                attributes["compilation"] = QString::number( 1 );
         }
         else
         {
