@@ -87,15 +87,20 @@ class SideBarButton: public QAbstractButton
     private:
         static QColor blendColors( const QColor& color1, const QColor& color2, int percent );
 
+        virtual void dragEnterEvent( QDragEnterEvent* );
+        virtual void dragLeaveEvent( QDragLeaveEvent* );
+
         int widthHint() const;
         int heightHint() const;
 
         static const int ANIM_INTERVAL = 18;
         static const int ANIM_MAX = 20;
+        static const int AUTO_OPEN_TIME = 1000;
 
         bool m_animEnter;
         int m_animCount;
         QTimer* m_animTimer;
+        QTimer* m_autoOpenTimer;
 };
 
 #endif

@@ -230,15 +230,20 @@ SideBarButton::SideBarButton( const QIcon &icon, const QString &text, QWidget *p
     : QAbstractButton( parent )
     , m_animCount( 0 )
     , m_animTimer( new QTimer( this ) )
+    , m_autoOpenTimer( new QTimer( this ) )
 {
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
     setCheckable( true );
+    setAcceptDrops( true );
     setIcon( icon );
     setText( text );
 
     setForegroundRole( QPalette::HighlightedText );
 
+    m_autoOpenTimer->setSingleShot( true );
+
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
+    connect( m_autoOpenTimer, SIGNAL( timeout() ), this, SLOT( click() ) );
 }
 
 QSize SideBarButton::sizeHint() const
@@ -268,6 +273,18 @@ int SideBarButton::heightHint() const
     else
         height += fontMetrics().size( Qt::TextShowMnemonic, text() ).width();
     return height + 12;
+}
+
+void SideBarButton::dragEnterEvent( QDragEnterEvent* event )
+{
+    event->accept(); // so we can get a possible QDragLeaveEvent
+    if( !isChecked() )
+        m_autoOpenTimer->start( AUTO_OPEN_TIME );
+}
+
+void SideBarButton::dragLeaveEvent( QDragLeaveEvent* )
+{
+    m_autoOpenTimer->stop();
 }
 
 void SideBarButton::enterEvent( QEvent* )
