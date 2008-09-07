@@ -117,9 +117,14 @@ function parseSuggestions( lyrics )
 
 function lyricsFetchResult( reply )
 {
-    print( "got result from lyrics fetch:" + reply );
-    var lyrics = reply.readAll().toUtf8( reply.readAll(), "ISO 8859-1" );
-
+    print( "got result from lyrics fetch:" + reply ); 
+    try
+    {
+        var lyrics = Amarok.Lyrics.toUtf8( reply.readAll(), "ISO 8859-1" );
+    } catch( err )
+    {
+        print( "error converting lyrics: " + err );
+    }
     //print( "result: " + lyrics );
 
     // no need, just complicates regexp
@@ -158,17 +163,27 @@ function fetchLyrics( artist, title, url )
     suggestions_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
     suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />"
 
+    print( artist + "-" + title + "-" + url );
+
     var connection = new QNetworkAccessManager();
     try{
-        var path = "http://lyrc.com.ar/en/temalen.php";
-        encodedTitle = Amarok.Lyrics.fromUtf8( title, "ISO 8859-1" );
-        encodedTitleKey = Amarok.Lyrics.fromUtf8( "songname", "ISO 8859-1" );
-        encodedArtist = Amarok.Lyrics.fromUtf8( artist, "ISO 8859-1" )
-        encodedArtistKey = Amarok.Lyrics.fromUtf8( "artist", "ISO 8859-1" );
-        url = new QUrl( path );
-        url.addEncodedQueryItem( encodedArtistKey, encodedArtist );
-        url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
-        print( "fetching from: " + url.toString() );
+        if( url == "" )
+        {
+            var path = "http://lyrc.com.ar/en/tema1en.php";
+            encodedTitle = Amarok.Lyrics.fromUtf8( title, "ISO 8859-1" );
+            encodedTitleKey = Amarok.Lyrics.fromUtf8( "songname", "ISO 8859-1" );
+            encodedArtist = Amarok.Lyrics.fromUtf8( artist, "ISO 8859-1" )
+            encodedArtistKey = Amarok.Lyrics.fromUtf8( "artist", "ISO 8859-1" );
+            url = new QUrl( path );
+            url.addEncodedQueryItem( encodedArtistKey, encodedArtist );
+            url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
+            print( "fetching from: " + url.toString() );
+        } else
+        {   // we are told to fetch a specific url
+            var path = "http://lyrc.com.ar/en/" + url;
+            url = new QUrl( path );
+            print( "fetching from given url: " + url.toString() );
+        }
     }
     catch( err )
     {
