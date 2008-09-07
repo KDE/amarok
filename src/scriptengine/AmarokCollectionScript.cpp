@@ -38,7 +38,7 @@ namespace AmarokScript
     {
     }
 
-    int AmarokCollectionScript::totalAlbums()
+    int AmarokCollectionScript::totalAlbums() const
     {
         SqlStorage *s = CollectionManager::instance()->sqlStorage();
         Q_ASSERT(s);
@@ -49,7 +49,7 @@ namespace AmarokScript
             return total.toInt();
     }
 
-    int AmarokCollectionScript::totalArtists()
+    int AmarokCollectionScript::totalArtists() const
     {
         QStringList artists = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM artists;" );
         if( artists.size() < 1 )
@@ -58,7 +58,7 @@ namespace AmarokScript
         return total.toInt();
     }
 
-    int AmarokCollectionScript::totalComposers()
+    int AmarokCollectionScript::totalComposers() const
     {
         QStringList composers = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM composers;" );
         if( composers.size() < 1 )
@@ -67,7 +67,7 @@ namespace AmarokScript
         return total.toInt();
     }
 
-    int AmarokCollectionScript::totalGenres()
+    int AmarokCollectionScript::totalGenres() const
     {
         QStringList genres = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM genres;" );
         if( genres.size() < 1 )
@@ -76,7 +76,7 @@ namespace AmarokScript
         return total.toInt();
     }
 
-    int AmarokCollectionScript::totalTracks()
+    int AmarokCollectionScript::totalTracks() const
     {
         QStringList tracks = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( url ) FROM tracks;" );
         if( tracks.size() < 0 )
@@ -86,7 +86,7 @@ namespace AmarokScript
         return final;
     }
 
-    QStringList AmarokCollectionScript::collectionLocation()
+    QStringList AmarokCollectionScript::collectionLocation() const
     {
         CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
         QStringList result = location->actualLocation();
@@ -94,22 +94,22 @@ namespace AmarokScript
         return result;
     }
 
-    QStringList AmarokCollectionScript::query( const QString& sql )
+    QStringList AmarokCollectionScript::query( const QString& sql ) const
     {
         return CollectionManager::instance()->sqlStorage()->query( sql );
     }
 
-    void AmarokCollectionScript::scanCollection()
+    void AmarokCollectionScript::scanCollection() const
     {
         CollectionManager::instance()->startFullScan();
     }
 
-    void AmarokCollectionScript::scanCollectionChanges()
+    void AmarokCollectionScript::scanCollectionChanges() const
     {
         CollectionManager::instance()->checkCollectionChanges();
     }
 
-    bool AmarokCollectionScript::isDirInCollection( const QString& path )
+    bool AmarokCollectionScript::isDirInCollection( const QString& path ) const
     {
         DEBUG_BLOCK
 

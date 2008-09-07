@@ -538,6 +538,7 @@ ScriptManager::loadScript( const QString& path )
             debug() << "script info:" << item.info.name() << " " << item.info.version() << " " << item.info.category();
             item.url = url;
             item.running = false;
+            //FIXME: non english name will cause the crash
             m_scripts[item.info.name()] = item;
         }
         else

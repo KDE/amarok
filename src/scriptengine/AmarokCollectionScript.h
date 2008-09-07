@@ -33,16 +33,16 @@ namespace AmarokScript
             ~AmarokCollectionScript();
 
         public slots:
-            int totalAlbums();
-            int totalArtists();
-            int totalComposers();
-            int totalGenres();
-            int totalTracks();
-            QStringList collectionLocation();
-            QStringList query( const QString& sql );
-            void scanCollection();
-            void scanCollectionChanges();
-            bool isDirInCollection( const QString& path );
+            int totalAlbums() const;
+            int totalArtists() const;
+            int totalComposers() const;
+            int totalGenres() const;
+            int totalTracks() const;
+            QStringList collectionLocation() const;
+            QStringList query( const QString& sql ) const;
+            void scanCollection() const;
+            void scanCollectionChanges() const;
+            bool isDirInCollection( const QString& path ) const;
        //TODO: make this a more object oriented way, could make a wrapper class for both the Collection and Collection Manager class.
        //TODO: probably leave this to Amarok 2.1
         signals:
