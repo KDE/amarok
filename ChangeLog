@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.0-beta2
   FEATURES:
+    * Numerous under-the-hood improvements to improve the stability of Amarok.
+      Rejoice!
     * Incremental collection scanning support. (BR 169602)
     * Playlists found during a collection scan are automatically added to
       Amarok's Playlist Browser.
