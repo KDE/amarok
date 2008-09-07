@@ -129,8 +129,6 @@ MainWindow::~MainWindow()
     config.writeEntry( "MainWindow Size", size() );
     config.writeEntry( "MainWindow Position", pos() );
 
-    CollectionManager::instance()->stopScan();
-
     delete m_playlistFiles;
     delete m_contextView;
     delete m_corona;

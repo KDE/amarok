@@ -58,6 +58,18 @@ ScanManager::ScanManager( SqlCollection *parent )
     //nothing to do
 }
 
+ScanManager::~ScanManager()
+{
+    DEBUG_BLOCK
+
+    if( m_parser ) {
+        m_parser->requestAbort();
+        while( !m_parser->isFinished() ) {};
+        delete m_parser;
+    }
+}
+
+
 void
 ScanManager::startFullScan()
 {
@@ -629,11 +641,15 @@ XmlParseJob::addNewXmlData( const QString &data )
 }
 
 void
-XmlParseJob::requestAbort() {
+XmlParseJob::requestAbort()
+{
     DEBUG_BLOCK
+
     m_abortMutex.lock();
     m_abortRequested = true;
     m_abortMutex.unlock();
     m_wait.wakeOne();
 }
+
 #include "ScanManager.moc"
+

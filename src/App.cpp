@@ -194,6 +194,8 @@ App::~App()
     delete m_splash;
     m_splash = 0;
 
+    CollectionManager::instance()->stopScan();
+
     // Hiding the OSD before exit prevents crash
     Amarok::OSD::instance()->hide();
 

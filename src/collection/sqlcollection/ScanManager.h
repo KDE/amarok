@@ -40,6 +40,7 @@ class ScanManager : public QObject
 
     public:
         ScanManager( SqlCollection *parent );
+        ~ScanManager();
 
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url );
