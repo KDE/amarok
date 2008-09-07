@@ -30,8 +30,10 @@
 
 class SqlCollection;
 
-class ScanResultProcessor
+class ScanResultProcessor : public QObject
 {
+    Q_OBJECT
+
     public:
         enum ScanType
         {
@@ -45,10 +47,12 @@ class ScanResultProcessor
         void addDirectory( const QString &dir, uint mtime );
         void addImage( const QString &path, const QList< QPair<QString, QString> > );
         void setScanType( ScanType type );
-        void setChangedUrlsHash( QHash<QString, QString>* hash );
         void processDirectory( const QList<QVariantMap > &data );
         void commit();
         void rollback();
+
+    signals:
+        void changedTrackUrls( QHash<QString,QString> );
 
     private:
         void addTrack( const QVariantMap &trackData, int albumArtistId );
@@ -86,7 +90,7 @@ class ScanResultProcessor
 
         QHash<QString, uint> m_filesInDirs;
 
-        QHash<QString, QString>* m_changedUrls;
+        QHash<QString, QString> m_changedUrls;
 
         ScanType m_type;
 

@@ -102,7 +102,6 @@ ScanManager::startFullScan()
         m_parser->deleteLater();
     }
     m_parser = new XmlParseJob( this, m_collection );
-    m_parser->setChangedUrlsHash( &m_changedUrls );
     m_parser->setIsIncremental( false );
     m_isIncremental = false;
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
@@ -144,7 +143,6 @@ void ScanManager::startIncrementalScan()
         m_parser->deleteLater();
     }
     m_parser = new XmlParseJob( this, m_collection );
-    m_parser->setChangedUrlsHash( &m_changedUrls );
     m_parser->setIsIncremental( true );
     m_isIncremental = true;
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
@@ -313,18 +311,6 @@ ScanManager::slotJobDone()
 {
     m_parser->deleteLater();
     m_parser = 0;
-
-    //this must be done here instead of in the ScanResultProcessor because that's running
-    //in a different thread, and when notifyObservers is called it does GUI things...
-    foreach( const QString &key, m_changedUrls.keys() )
-    {
-        if( m_collection->registry()->checkUidExists( key ) )
-        {
-            Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( key );
-            if( track )
-                KSharedPtr<Meta::SqlTrack>::staticCast( track )->setUrl( m_changedUrls[key] );
-        }
-    }   
 }
 
 void
@@ -376,7 +362,6 @@ ScanManager::restartScanner()
     m_scanner->start();
     m_parser = new XmlParseJob( this, m_collection );
     m_parser->setIsIncremental( m_isIncremental );
-    m_parser->setChangedUrlsHash( &m_changedUrls );
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
@@ -399,7 +384,6 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     , m_collection( collection )
     , m_abortRequested( false )
     , m_isIncremental( false )
-    , m_changedUrls( 0 )
 {
     DEBUG_BLOCK
     The::statusBar()->newProgressOperation( this )
@@ -422,12 +406,6 @@ XmlParseJob::setIsIncremental( bool incremental )
 }
 
 void
-XmlParseJob::setChangedUrlsHash( QHash<QString, QString>* hash )
-{
-    m_changedUrls = hash;
-}
-
-void
 XmlParseJob::run()
 {
     DEBUG_BLOCK
@@ -436,7 +414,6 @@ XmlParseJob::run()
     QString currentDir;
 
     ScanResultProcessor processor( m_collection );
-    processor.setChangedUrlsHash( m_changedUrls );
     if( m_isIncremental )
     {
         processor.setScanType( ScanResultProcessor::IncrementalScan );

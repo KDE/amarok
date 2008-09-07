@@ -95,6 +95,9 @@ class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
 
         virtual void vacuum() const;
 
+    public slots:
+        void updateTrackUrls( QHash<QString,QString> changedUrls );
+
     protected:
         //this method MUST be called from subclass constructors
         void init();

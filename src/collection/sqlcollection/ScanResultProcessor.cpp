@@ -19,6 +19,7 @@
 
 #include "ScanResultProcessor.h"
 
+#include "CollectionManager.h"
 #include "Debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
@@ -36,7 +37,6 @@ using namespace Meta;
 ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     : m_collection( collection )
     , m_setupComplete( false )
-    , m_changedUrls( 0 )
     , m_type( FullScan )
     , m_aftPermanentTablesUrlString()
 {
@@ -53,12 +53,6 @@ void
 ScanResultProcessor::setScanType( ScanType type )
 {
     m_type = type;
-}
-
-void
-ScanResultProcessor::setChangedUrlsHash( QHash<QString, QString>* hash )
-{
-    m_changedUrls = hash;
 }
 
 void
@@ -140,6 +134,13 @@ ScanResultProcessor::commit()
     }
     debug() << "Sending changed signal";
     m_collection->sendChangedSignal();
+
+    connect( this,
+             SIGNAL( changedTrackUrls(QHash<QString,QString>) ),
+             CollectionManager::instance()->primaryCollection(),
+             SLOT( updateTrackUrls(QHash<QString,QString>) ) );
+
+    emit changedTrackUrls( m_changedUrls );
 }
 
 void
@@ -332,8 +333,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     m_collection->query( sql );
 
-    if( m_changedUrls )
-        m_changedUrls->insert( uid, trackData.value( Field::URL ).toString() );
+    m_changedUrls.insert( uid, trackData.value( Field::URL ).toString() );
 }
 
 int
@@ -635,3 +635,6 @@ ScanResultProcessor::setupDatabase()
         m_setupComplete = true;
     }
 }
+
+#include "ScanResultProcessor.moc"
+

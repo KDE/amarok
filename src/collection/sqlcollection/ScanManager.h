@@ -70,8 +70,6 @@ class ScanManager : public QObject
 
         XmlParseJob *m_parser;
 
-        QHash<QString, QString> m_changedUrls;
-
         int m_restartCount;
         bool m_isIncremental;
         bool m_blockScan;
@@ -89,7 +87,6 @@ class XmlParseJob : public ThreadWeaver::Job
         void addNewXmlData( const QString &data );
 
         void setIsIncremental( bool incremental );
-        void setChangedUrlsHash( QHash<QString, QString>* hash );
 
         void requestAbort();
 
@@ -101,7 +98,6 @@ class XmlParseJob : public ThreadWeaver::Job
         SqlCollection *m_collection;
         bool m_abortRequested;
         bool m_isIncremental;
-        mutable QHash<QString, QString> *m_changedUrls; 
         QXmlStreamReader m_reader;
         QString m_nextData;
         QWaitCondition m_wait;

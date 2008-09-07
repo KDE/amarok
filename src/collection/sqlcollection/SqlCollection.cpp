@@ -293,7 +293,21 @@ SqlCollection::vacuum() const
 }
 
 void
-SqlCollection::initXesam()
+SqlCollection::updateTrackUrls( QHash<QString,QString> changedUrls ) //SLOT
+{
+    foreach( const QString &key, changedUrls.keys() )
+    {
+        if( m_registry->checkUidExists( key ) )
+        {
+            Meta::TrackPtr track = m_registry->getTrackFromUid( key );
+            if( track )
+                KSharedPtr<Meta::SqlTrack>::staticCast( track )->setUrl( changedUrls[key] );
+        }
+    }
+}
+
+void
+SqlCollection::initXesam() //SLOT
 {
     m_xesamBuilder = new XesamCollectionBuilder( this );
 }
