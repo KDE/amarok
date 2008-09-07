@@ -33,6 +33,22 @@
 #include <taglib/tag.h>
 #include <tlist.h>
 #include <tstring.h>
+#include <flacfile.h>
+#include <id3v2tag.h>
+#include <mpegfile.h>
+#include <oggfile.h>
+#include <oggflacfile.h>
+#include <vorbisfile.h>
+#ifdef HAVE_MP4V2
+#include "metadata/mp4/mp4file.h"
+#include "metadata/mp4/mp4tag.h"
+#else
+#include "metadata/m4a/mp4file.h"
+#include "metadata/m4a/mp4itunestag.h"
+#endif
+#include <textidentificationframe.h>
+#include <xiphcomment.h>
+
 
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
         static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
@@ -169,14 +185,14 @@ Meta::Field::writeFields( const QString &filename, const QVariantMap &changes )
 }
 
 void
-Meta::Field::writeFields( TagLib::FileRef file, const QVariantMap &changes )
+Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
 {
     DEBUG_BLOCK
-    if( file.isNull() || changes.isEmpty() )
+    if( fileref.isNull() || changes.isEmpty() )
         return;
     debug() << "CHANGES: " << changes;
     DEBUG_LINE_INFO
-    TagLib::Tag *tag = file.tag();
+    TagLib::Tag *tag = fileref.tag();
     if( !tag )
         return;
     if( changes.contains( Meta::Field::TITLE ) )
@@ -218,7 +234,73 @@ Meta::Field::writeFields( TagLib::FileRef file, const QVariantMap &changes )
         const unsigned int trackNumber = changes.value( Meta::Field::YEAR ).toUInt();
         tag->setTrack( trackNumber );
     }
-    file.save();
+    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    {
+        if( changes.contains( Meta::Field::COMPOSER ) )
+        {
+            if ( file->ID3v2Tag() )
+            {
+                file->ID3v2Tag()->removeFrames( "TCOM" );
+            }
+            QString composer = changes.value( Meta::Field::COMPOSER ).toString();
+            if ( !composer.isEmpty() )
+            {
+                TagLib::ID3v2::TextIdentificationFrame* frame =
+                        new TagLib::ID3v2::TextIdentificationFrame( "TCOM" );
+                frame->setText( Qt4QStringToTString( composer ) );
+                file->ID3v2Tag(true)->addFrame( frame );
+            }
+        }
+    }
+    else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
+    {
+        if( changes.contains( Meta::Field::COMPOSER ) )
+        {
+            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
+            mp4tag->setComposer( composer );
+        }
+    }
+    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+    {
+        if( changes.contains( Meta::Field::COMPOSER ) )
+        {
+            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
+            file->tag()->addField("COMPOSER", composer);
+        }
+        if( changes.contains( Meta::Field::DISCNUMBER ) )
+        {
+            const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
+            file->tag()->addField("DISCNUMBER", disc);
+        }
+    }
+    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
+    {
+        if( changes.contains( Meta::Field::COMPOSER ) )
+        {
+            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
+            file->tag()->addField("COMPOSER", composer);
+        }
+        if( changes.contains( Meta::Field::DISCNUMBER ) )
+        {
+            const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
+            file->tag()->addField("DISCNUMBER", disc);
+        }
+    }
+    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+    {
+        if( changes.contains( Meta::Field::COMPOSER ) )
+        {
+            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
+            file->xiphComment()->addField("COMPOSER", composer);
+        }
+        if( changes.contains( Meta::Field::DISCNUMBER ) )
+        {
+            const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
+            file->xiphComment()->addField("DISCNUMBER", disc);
+        }
+    }
+    fileref.save();
 }
 
 #undef Qt4QStringToTString
