@@ -27,6 +27,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <QDBusInterface>
 #include <QHash>
 #include <QStringList>
 
@@ -62,8 +63,8 @@ private slots:
     void doJob();
 
 private:
-
-    enum FileType {
+    enum FileType
+    {
         mp3,
         ogg,
         flac,
@@ -133,6 +134,7 @@ private:
     const bool    m_restart;
     const QString m_logfile;
     QStringList   m_scannedFolders;
+    QDBusInterface *m_amarokCollectionInterface;
 };
 
 

@@ -30,7 +30,8 @@
 
 #include <QByteArray>
 #include <QDir>
-#include <qdom.h>
+#include <QDBusReply>
+#include <QDomDocument>
 #include <QFile>
 #include <QTextStream>
 #include <QTimer>
@@ -83,12 +84,15 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
     if( !restart )
         QFile::remove( m_logfile );
 
+    m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/Collection" );
+
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
 
 
 CollectionScanner::~CollectionScanner()
 {
+    delete m_amarokCollectionInterface;
 }
 
 
@@ -198,10 +202,9 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
             bool isInCollection = false;
             if( m_incremental )
             {
-                // TODO: Check whether the directory is in the collection
-                // use dbus or other similar method to query Amarok core
-                // @see http://websvn.kde.org/trunk/extragear/multimedia/amarok/src/collectionscanner/CollectionScanner.cpp?revision=631604&view=markup
-                // isInCollection = ???;
+                QDBusReply<bool> reply = m_amarokCollectionInterface->call( "isDirInCollection", f.canonicalFilePath() );
+                if( reply.isValid() )
+                    isInCollection = reply.value();
             }
 
             if( !m_incremental || !isInCollection )
