@@ -1161,14 +1161,16 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
 
     Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
 
-    if ( currentTrackPtr )
+    if ( currentTrackPtr && m_activeRow == -1 ) {
 
-    for ( int i = 0; i < list.size(); i++ ) {
+        for ( int i = 0; i < list.size(); i++ ) {
 
-        if ( currentTrackPtr->uidUrl() == list[i]->uidUrl() ) {
-            m_activeRow = i + row;
-            break;
+            if ( currentTrackPtr->uidUrl() == list[i]->uidUrl() ) {
+                m_activeRow = i + row;
+                break;
+            }
         }
+
     }
 
     
