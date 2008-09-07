@@ -19,10 +19,10 @@
 
 #include "amarokconfig.h"
 #include "App.h"
+#include "Collection.h"
 #include "CollectionAdaptor.h"
 #include "collection/CollectionManager.h"
-#include "collection/SqlStorage.h"
-#include "collection/sqlcollection/SqlCollectionLocation.h"
+#include "collection/sqlcollection/SqlCollection.h"
 #include "Debug.h"
 
 namespace Amarok
@@ -34,41 +34,19 @@ namespace Amarok
 
         new CollectionAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/Collection", this);
-
-    }
-
-    QStringList AmarokCollectionDBusHandler::collectionLocation()
-    {
-        CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
-        QStringList result = location->actualLocation();
-        delete location;
-        return result;
     }
 
     bool AmarokCollectionDBusHandler::isDirInCollection( const QString& path )
     {
         DEBUG_BLOCK
 
-        KUrl url = KUrl( path );
-        KUrl parentUrl;
-        foreach( const QString &dir, collectionLocation() )
-        {
-            debug() << "Collection Location: " << dir;
-            debug() << "path: " << path;
-            debug() << "scan Recursively: " << AmarokConfig::scanRecursively();
-            parentUrl.setPath( dir );
-            if ( !AmarokConfig::scanRecursively() )
-            {
-                if ( ( dir == path ) || ( dir + "/" == path ) )
-                    return true;
-            }
-            else //scan recursively
-            {
-                if ( parentUrl.isParentOf( path ) )
-                    return true;
-            }
-        }
-        return false;
+        // Assume the primary location is the sql collection. This is true for now, and we do this in other places too
+
+        Collection *coll = CollectionManager::instance()->primaryCollection();
+        SqlCollection* sqlColl = (SqlCollection*)( coll ); //FIXME: god-cast is bad. dynamic_cast won't compile for me unfortunately.
+        if( !sqlColl )
+            return false;
+        return sqlColl->isDirInCollection( path );
     }
 } // namespace Amarok
 

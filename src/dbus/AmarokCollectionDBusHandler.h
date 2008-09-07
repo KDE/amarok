@@ -31,9 +31,6 @@ namespace Amarok
 
         public slots:
             bool isDirInCollection( const QString& path );
-
-        private:
-            QStringList collectionLocation();
     };
 
 } // namespace Amarok
