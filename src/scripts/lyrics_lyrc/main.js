@@ -27,7 +27,7 @@ Importer.loadQtBinding( "qt.xml" );
 
 function parseLyrics( lyrics )
 {
-    print( "parsing..." );
+    //print( "parsing..." );
 
     var lyricsReady = lyrics;
 
@@ -40,7 +40,7 @@ function parseLyrics( lyrics )
     print( "got title: " + titleStr );
     root.setAttribute( "title", titleStr );
     var artistStr = /(<u>)([^<]*)/.exec( lyrics )[ 2 ];
-    print( "got artist: " + artistStr );
+    //print( "got artist: " + artistStr );
     root.setAttribute( "artist", artistStr );
 
     try {
@@ -79,7 +79,7 @@ function parseSuggestions( lyrics )
         lyrics = lyrics.replace( "</font>", "" );
         lyrics = lyrics.replace( "<br /><br />", "" );
 
-        print( "got cleaned suggestions: " + lyrics );
+        //print( "got cleaned suggestions: " + lyrics );
         
         var suggestions = lyrics.split( "<br>" );
 
@@ -111,7 +111,7 @@ function parseSuggestions( lyrics )
         print( "got err in parsing suggestions: " )
         print( err );
     }
-    print( "got suggestions xml: " + suggestions_xml );
+    //print( "got suggestions xml: " + suggestions_xml );
     Amarok.Lyrics.showLyrics( suggestions_xml );
 }
 
@@ -163,8 +163,6 @@ function fetchLyrics( artist, title, url )
     suggestions_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
     suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />"
 
-    print( artist + "-" + title + "-" + url );
-
     var connection = new QNetworkAccessManager();
     try{
         if( url == "" )
@@ -177,12 +175,12 @@ function fetchLyrics( artist, title, url )
             url = new QUrl( path );
             url.addEncodedQueryItem( encodedArtistKey, encodedArtist );
             url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
-            print( "fetching from: " + url.toString() );
+            //print( "fetching from: " + url.toString() );
         } else
         {   // we are told to fetch a specific url
             var path = "http://lyrc.com.ar/en/" + url;
             url = new QUrl( path );
-            print( "fetching from given url: " + url.toString() );
+            //print( "fetching from given url: " + url.toString() );
         }
     }
     catch( err )
