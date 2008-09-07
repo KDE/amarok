@@ -218,6 +218,7 @@ Meta::Field::writeFields( TagLib::FileRef file, const QVariantMap &changes )
         const unsigned int trackNumber = changes.value( Meta::Field::YEAR ).toUInt();
         tag->setTrack( trackNumber );
     }
+    file.save();
 }
 
 #undef Qt4QStringToTString
