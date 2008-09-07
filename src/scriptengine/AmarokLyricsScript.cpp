@@ -49,7 +49,6 @@ AmarokLyricsScript::showLyrics( const QString& lyrics ) const
     if( !track )
         return;
     //debug() << "got lyrics: " << lyrics << " and track: " << track;
-    track->setCachedLyrics( lyrics );
     debug() << lyrics;
     LyricsManager::self()->lyricsResult( lyrics, false );
 }
