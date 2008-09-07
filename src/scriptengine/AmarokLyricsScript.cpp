@@ -74,10 +74,10 @@ AmarokLyricsScript::setLyricsForTrack( const QString& trackUrl, const QString& l
 QString
 AmarokLyricsScript::codecForName( const QByteArray& lyrics, const QString& encoding )
 {
-    QTextCodec* gbkcodec = QTextCodec::codecForName( encoding.toUtf8() );
+    QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
     QTextCodec::setCodecForCStrings( utf8codec );
-    return gbkcodec->toUnicode( lyrics );
+    return codec->toUnicode( lyrics );
 }
 
 }
