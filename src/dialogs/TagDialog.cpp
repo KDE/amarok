@@ -120,6 +120,8 @@ TagDialog::TagDialog( QueryMaker *qm )
     , m_queryMaker( qm )
     , ui( new Ui::TagDialogBase() )
 {
+    DEBUG_BLOCK
+
     ui->setupUi( this );
     startDataQuery();
     qm->setQueryType( QueryMaker::Track );
@@ -175,6 +177,8 @@ TagDialog::resultReady( const QString &collectionId, const Meta::TrackList &trac
 void
 TagDialog::queryDone()
 {
+    DEBUG_BLOCK
+
     delete m_queryMaker;
     m_trackIterator = QListIterator<Meta::TrackPtr >( m_tracks );
     if( m_tracks.size() )
@@ -232,19 +236,34 @@ TagDialog::resultReady( const QString &collectionId, const Meta::GenreList &genr
 void
 TagDialog::dataQueryDone()
 {
+    DEBUG_BLOCK
+
     m_dataQueryMaker->deleteLater();
     m_dataQueryMaker = 0;
     //we simply clear the completion data of all comboboxes
     //then load the current track again. that's more work than necessary
     //but the performance impact should be negligible
+
+    QString saveText(ui->kComboBox_artist->lineEdit()->text());
     ui->kComboBox_artist->clear();
     ui->kComboBox_artist->insertItems( 0, m_artists );
+    ui->kComboBox_artist->lineEdit()->setText(saveText);
+
+    saveText = ui->kComboBox_album->lineEdit()->text();
     ui->kComboBox_album->clear();
     ui->kComboBox_album->insertItems( 0, m_albums );
+    ui->kComboBox_album->lineEdit()->setText(saveText);
+
+    saveText = ui->kComboBox_composer->lineEdit()->text();
     ui->kComboBox_composer->clear();
     ui->kComboBox_composer->insertItems( 0, m_composers );
+    ui->kComboBox_composer->lineEdit()->setText(saveText);
+
+    saveText = ui->kComboBox_genre->lineEdit()->text();
     ui->kComboBox_genre->clear();
     ui->kComboBox_genre->insertItems( 0, m_genres );
+    ui->kComboBox_genre->lineEdit()->setText(saveText);
+
     if( !m_queryMaker )  //track query complete or not necessary
     {
         if( m_perTrack )
