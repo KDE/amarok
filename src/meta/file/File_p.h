@@ -167,6 +167,8 @@ void Track::Private::readMetaData()
                 //FIXME:about 10% tracks cannot be decoded well. It shows blank for now.
                 debug () << "Final Codec Name:" << track_encoding.toUtf8() <<endl;
                 QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
+                QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
+                QTextCodec::setCodecForCStrings( utf8codec );
                 m_data.title = codec->toUnicode( m_data.title.toLatin1() );
                 m_data.artist = codec->toUnicode( m_data.artist.toLatin1() );
                 m_data.album = codec->toUnicode( m_data.album.toLatin1() );
