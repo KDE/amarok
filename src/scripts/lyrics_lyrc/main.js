@@ -3,6 +3,7 @@
 *                                                                         *
 *   Copyright                                                             *
 *   (C) 2008 Leo Franchi <lfranchi@kde.org>                               *
+*   (C) 2008 Peter ZHOU  <peterzhoulei@gmail.com>                         *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
 *   it under the terms of the GNU General Public License as published by  *
@@ -24,16 +25,10 @@ Importer.loadQtBinding( "qt.core" );
 Importer.loadQtBinding( "qt.network" );
 Importer.loadQtBinding( "qt.xml" );
 
-QByteArray.prototype.toString = function()
-{
-  ts = new QTextStream( this, QIODevice.ReadOnly );
-  return ts.readAll();
-}
-
 function parseLyrics( lyrics )
 {
-    print( "parsing!!!" );
- //   print( lyrics );
+    print( "parsing..." );
+
     var lyricsReady = lyrics;
 
     lyrics = lyrics.replace(  /<[fF][oO][nN][tT][^>]*>/g, "" );
@@ -41,7 +36,6 @@ function parseLyrics( lyrics )
 
     var root = doc.createElement( "lyrics" );
 
-    root.setAttribute( "page_url", page_url );
     var titleStr = /(<b>)([^<]*)/.exec( lyrics )[ 2 ];
     print( "got title: " + titleStr );
     root.setAttribute( "title", titleStr );
@@ -61,7 +55,6 @@ function parseLyrics( lyrics )
 
         xml = xml.replace( "{artist}", artistStr );
         xml = xml.replace( "{title}", titleStr );
-        xml = xml.replace( "{page}", page_url );
         xml = xml.replace( "{lyrics}", lyricsStr );
         var text = doc.createTextNode( "lyricsText" );
         text.setData( lyricsStr );
@@ -71,8 +64,7 @@ function parseLyrics( lyrics )
     } catch (err) {
         print( "error!: " + err );
     }
-    
-    //Amarok.alert( xml );
+
     Amarok.Lyrics.showLyrics( xml );
 } 
 
@@ -120,23 +112,15 @@ function parseSuggestions( lyrics )
         print( err );
     }
     print( "got suggestions xml: " + suggestions_xml );
-    Amarok.Lyrics.showLyrics( suggestions_xml, "ISO 8859-1" );
+    Amarok.Lyrics.showLyrics( suggestions_xml );
 }
 
 function lyricsFetchResult( reply )
 {
-    //Amarok.alert( "lyrics slot called!" );
     print( "got result from lyrics fetch:" + reply );
-    var lyrics = ""
-    try {
-//        print( "got size of result from lyrics fetch:" + reply.size() );
-        lyrics = reply.readAll().toString();
-    } catch( err )
-    {
-        print( "got error: " + err );
-    }
-    
-    print( "result: " + lyrics );
+    var lyrics = reply.readAll().toUtf8( reply.readAll(), "ISO 8859-1" );
+
+    //print( "result: " + lyrics );
 
     // no need, just complicates regexp
     lyrics.replace( "\n", "" );
@@ -160,7 +144,6 @@ function lyricsFetchResult( reply )
             parseLyrics( lyrics.slice( lyricsPos ) );
         } else if( lyrics.indexOf( "Suggestions" ) > 0 )
         {
-            // TODO parse suggestions
             parseSuggestions( lyrics );
         }
     } catch( err ) {
@@ -171,34 +154,31 @@ function lyricsFetchResult( reply )
 
 function fetchLyrics( artist, title, url )
 {
-    // HACK this is not very pretty, but i can't get the QDomDocument stuff to work
-    // so this is how it'll be for now
-    // HACK poor man's version of string substitutions
-    //xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyrics artist=\"{artist}\" title=\"{title}\" page_url=\"{page}\">{lyrics}</lyrics></xml>"
     xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
     suggestions_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
     suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />"
 
     var connection = new QNetworkAccessManager();
-    var host = "lyrc.com.ar";
-    var path;
-
-    if( url == "" )
-        path = "/en/tema1en.php?artist=" + encodeURI( artist ) + "&songname=" + encodeURI( title );
-    else
-        path = "/en/" + url
-        
-    page_url = "http://" + host + path;
-
+    try{
+        var path = "http://lyrc.com.ar/en/temalen.php";
+        encodedTitle = Amarok.Lyrics.fromUtf8( title, "ISO 8859-1" );
+        encodedTitleKey = Amarok.Lyrics.fromUtf8( "songname", "ISO 8859-1" );
+        encodedArtist = Amarok.Lyrics.fromUtf8( artist, "ISO 8859-1" )
+        encodedArtistKey = Amarok.Lyrics.fromUtf8( "artist", "ISO 8859-1" );
+        url = new QUrl( path );
+        url.addEncodedQueryItem( encodedArtistKey, encodedArtist );
+        url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
+        print( "fetching from: " + url.toString() );
+    }
+    catch( err )
+    {
+        print( err );
+    }
     // TODO for now, ignoring proxy settings
     //page_url = QUrl.toPercentEncoding( page_url )
 
     connection.finished.connect( lyricsFetchResult );
-
-    //Amarok.alert( "GOT LYRICS REQUEST: " + page_url  );
-
-    connection.get( new QNetworkRequest( new QUrl( page_url ) ) );
+    connection.get( new QNetworkRequest( url ) );
 }
 
 Amarok.Lyrics.fetchLyrics.connect( fetchLyrics );
-//fetchLyrics( "The Beatles", "Hey Jude" );

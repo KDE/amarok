@@ -1,13 +1,14 @@
 [Desktop Entry]
-Icon=get-hot-new-stuff-amarok
+Icon=edit-find
 Type=script
 ServiceTypes=KPluginInfo
 
-Name=Chinese Lyrics
+Name=Lyrics( Chinese Support )
+Comment=A lyric fetching script that checks mp3.sogou.com
 
 X-KDE-PluginInfo-Author=Peter ZHOU
 X-KDE-PluginInfo-Email=peterzhoulei@gmail.com
-X-KDE-PluginInfo-Name=Chinese lyrics support
+X-KDE-PluginInfo-Name=Lyrics( Chinese Support )
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Lyrics
 X-KDE-PluginInfo-Depends=Amarok2.0

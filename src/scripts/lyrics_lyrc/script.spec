@@ -1,9 +1,9 @@
 [Desktop Entry]
-Icon=get-hot-new-stuff-amarok
+Icon=edit-find
 Type=script
 ServiceTypes=KPluginInfo
 
-Name=Lyrc
+Name=Lyrics
 Comment=A lyric fetching script that checks lyrc.com.ar
 
 X-KDE-PluginInfo-Author=Leo Franchi

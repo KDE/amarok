@@ -1,5 +1,5 @@
 [Desktop Entry]
-Icon=mypluginicon
+Icon=services
 Type=script
 ServiceTypes=KPluginInfo
 

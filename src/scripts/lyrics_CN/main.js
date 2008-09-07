@@ -66,12 +66,13 @@ function fetchLyrics( artist, title )
 {
     xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
     connection = new QNetworkAccessManager();
-    var path = "http://mp3.sogou.com/gecisearch.so?query";
-    encodedTitle = Amarok.Lyrics.fromUtf8( "query=" + title + "+" + artist, "GB2312" );
+    var path = "http://mp3.sogou.com/gecisearch.so";
+    encodedTitleKey = Amarok.Lyrics.fromUtf8( "query", "GB2312" );
+    encodedTitle = Amarok.Lyrics.fromUtf8( title + "+" + artist, "GB2312" );
     connection.finished.connect( lyricsFetchResult );
     url = new QUrl( path );
-    url.setEncodedQuery( encodedTitle );
-    print( url.toString() );
+    url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
+    print( "fetching from: " + url.toString() );
     connection.get( new QNetworkRequest( url ) );
 }
 

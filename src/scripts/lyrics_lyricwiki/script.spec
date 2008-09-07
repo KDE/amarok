@@ -1,5 +1,5 @@
 [Desktop Entry]
-Icon=get-hot-new-stuff-amarok
+Icon=view-pim-journal
 Type=script
 ServiceTypes=KPluginInfo
 
