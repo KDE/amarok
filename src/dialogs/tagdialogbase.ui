@@ -39,7 +39,7 @@
          </rect>
         </property>
         <attribute name="title" >
-         <string>S&amp;ummary</string>
+         <string>S&amp;&amp;ummary</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_7" >
          <item>
