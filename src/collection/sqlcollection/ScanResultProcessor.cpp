@@ -36,6 +36,7 @@ using namespace Meta;
 ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     : m_collection( collection )
     , m_setupComplete( false )
+    , m_changedUrls( 0 )
     , m_type( FullScan )
     , m_aftPermanentTablesUrlString()
 {
