@@ -1155,25 +1155,19 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 
-
-
     //check if one of the tracks we added is the currently playing one, and if so make it active.
-
     Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
-
-    if ( currentTrackPtr && m_activeRow == -1 ) {
-
-        for ( int i = 0; i < list.size(); i++ ) {
-
-            if ( currentTrackPtr->uidUrl() == list[i]->uidUrl() ) {
+    if( currentTrackPtr && m_activeRow == -1 )
+    {
+        for( int i = 0; i < list.size(); i++ )
+        {
+            if( currentTrackPtr->uidUrl() == list[i]->uidUrl() )
+            {
                 m_activeRow = i + row;
                 break;
             }
         }
-
     }
-
-    
 
     emit playlistCountChanged( rowCount() );
 }
