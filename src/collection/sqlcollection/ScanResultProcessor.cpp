@@ -340,8 +340,6 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     if( m_changedUrls )
         m_changedUrls->insert( uid, trackData.value( Field::URL ).toString() );
-
-    //NEXT: this takes care of Meta, now update other tables with deviceid,rpath,uniqueid
 }
 
 int
