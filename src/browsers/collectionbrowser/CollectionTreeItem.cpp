@@ -108,7 +108,6 @@ CollectionTreeItem::data( int role ) const {
                     }
                 }
             }
-            /*
             if ( CollectionWidget::instance()->view()->showYears() )
             {
                 if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
@@ -121,11 +120,14 @@ CollectionTreeItem::data( int role ) const {
                     track ?
                         year = track->year() ? track->year()->prettyName() : QString() :
                         year = QString();
-                    name = ( year.isEmpty() ? "" : year + " - " ) + album->prettyName();
+
+                    QString albumName = album->prettyName();
+                    if( albumName.isEmpty() )
+                        albumName = i18nc( "The Name is not known", "Unknown" );
+                    name = ( (year.isEmpty() || year == "0" )? "" : year + " - " ) + albumName;
                 }
             }
-            */
-            if ( name.isEmpty() )
+            if( name.isEmpty() )
                 return i18nc( "The Name is not known", "Unknown" );
             return name;
         }
