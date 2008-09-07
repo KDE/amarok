@@ -80,9 +80,9 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
 
     QStringList lastfmGenres;
     lastfmGenres << "Alternative" << "Ambient" << "Chill Out" << "Classical"<< "Dance"
-            << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
-            << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
-            << "Soundtrack" << "Techno" << "Trance";
+            << "Electronica" << "Favorites" << "Gospel" << "Heavy Metal" << "Hip Hop"
+            << "Indie Rock" << "Industrial" << "Japanese" << "Pop" << "Psytrance"
+            << "Rap" << "Rock" << "Soundtrack" << "Techno" << "Trance";
 
 
     foreach( const QString &genre, lastfmGenres ) {
