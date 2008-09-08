@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta2
   FEATURES:
+    * Scripts now able to access web via KDE-wide proxy.
     * Middle click on playlist will append URLs from the clipboard.
     * Numerous under-the-hood improvements to improve the stability of Amarok.
       Rejoice!
