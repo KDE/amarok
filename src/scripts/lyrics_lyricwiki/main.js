@@ -26,14 +26,11 @@ Importer.loadQtBinding("qt.core");
 Importer.loadQtBinding("qt.gui");
 Importer.loadQtBinding("qt.network");
 
-function onFinished( reply )
+function onFinished( dat )
 {
     try
     {
         //Amarok.alert("reply.finished was emitted!");
-        response = reply.readAll();
-        ts = new QTextStream( response, QIODevice.ReadOnly );
-        dat = ts.readAll();
         dat = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"artist name\" title=\"song title\" page_url=\"http://lyricwiki.org\">" + dat + "</lyric>"
         //print( "got result: " + dat );
         Amarok.Lyrics.showLyricsHtml(dat);
@@ -47,14 +44,10 @@ function openconnection(artist, title)
 {
     try
     {
-        var connection = new QNetworkAccessManager();
-        var url = new QUrl("http://lyricwiki.org/api.php?func=getSong&artist=" + artist +"&song=" + title +"&fmt=html");
-
-        connection.finished.connect( onFinished );
+        var url ="http://lyricwiki.org/api.php?func=getSong&artist=" + artist +"&song=" + title +"&fmt=html";
 
         //Amarok.alert( "fetching: " + (new QUrl( url )).toString() );
-        connection.get( new QNetworkRequest( new QUrl( url ) ) );
-
+        new Downloader( url, onFinished );
     } catch( err )
     {
         print( "error!: " + err );

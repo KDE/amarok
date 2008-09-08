@@ -18,23 +18,64 @@
 #ifndef AMAROK_NETWORK_SCRIPT_H
 #define AMAROK_NETWORK_SCRIPT_H
 
+#include <kio/job.h> // KIO::Job
+
 #include <QObject>
 #include <QtScript>
 
-namespace AmarokScript
+class AmarokDownloadHelper;
+
+class AmarokNetworkScript : public QObject
 {
+    Q_OBJECT
 
-    class AmarokNetworkScript : public QObject
-    {
-        Q_OBJECT
+    public:
+        AmarokNetworkScript( QScriptEngine* ScriptEngine );
+        ~AmarokNetworkScript();
 
-        public:
-            AmarokNetworkScript( QScriptEngine* ScriptEngine );
-            ~AmarokNetworkScript();
 
-        public slots:
+};
 
-    };
-}
+
+class Downloader : public QObject
+{
+    Q_OBJECT
+
+    public:
+        Downloader( QScriptEngine* scriptEngine );
+        ~Downloader();
+
+    private:
+        static QScriptValue Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
+
+        QScriptEngine* m_scriptEngine;
+
+};
+
+Q_DECLARE_METATYPE( Downloader* )
+
+// this internal class manages multiple downloads from a script.
+// keeps track of each unique download
+class AmarokDownloadHelper : public QObject
+{
+    Q_OBJECT
+
+    static AmarokDownloadHelper *s_instance;
+    
+public:
+    AmarokDownloadHelper();
+
+    static AmarokDownloadHelper *instance();
+    
+    // called by the wrapper class to register a new download
+    void newDownload( KJob* download, QScriptEngine* engine, QScriptValue obj );
+
+public slots:
+    void result( KJob* job );
+    
+private:
+    QHash< KJob*, QScriptEngine* > m_engines;
+    QHash< KJob*, QScriptValue > m_jobs;
+};
 
 #endif

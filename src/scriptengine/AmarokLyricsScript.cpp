@@ -49,7 +49,7 @@ AmarokLyricsScript::showLyrics( const QString& lyrics ) const
     if( !track )
         return;
     //debug() << "got lyrics: " << lyrics << " and track: " << track;
-    debug() << lyrics;
+//    debug() << lyrics;
     LyricsManager::self()->lyricsResult( lyrics, false );
 }
 
@@ -60,8 +60,6 @@ AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
     if( !track )
         return;
     //debug() << "got lyrics: " << lyrics << " and track: " << track;
-    // TODO how should we cache html lyrics properly?
-    //track->setCachedLyrics( lyrics );
     LyricsManager::self()->lyricsResultHtml( lyrics, false );
 }
 

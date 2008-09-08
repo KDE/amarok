@@ -120,7 +120,8 @@ function lyricsFetchResult( reply )
     print( "got result from lyrics fetch:" + reply ); 
     try
     {
-        var lyrics = Amarok.Lyrics.toUtf8( reply.readAll(), "ISO 8859-1" );
+        //var lyrics = Amarok.Lyrics.toUtf8( reply.readAll(), "ISO 8859-1" );
+        lyrics = reply;
     } catch( err )
     {
         print( "error converting lyrics: " + err );
@@ -163,23 +164,22 @@ function fetchLyrics( artist, title, url )
     suggestions_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
     suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />"
 
-    var connection = new QNetworkAccessManager();
     try{
         if( url == "" )
         {
-            var path = "http://lyrc.com.ar/en/tema1en.php";
-            encodedTitle = Amarok.Lyrics.fromUtf8( title, "ISO 8859-1" );
-            encodedTitleKey = Amarok.Lyrics.fromUtf8( "songname", "ISO 8859-1" );
-            encodedArtist = Amarok.Lyrics.fromUtf8( artist, "ISO 8859-1" )
-            encodedArtistKey = Amarok.Lyrics.fromUtf8( "artist", "ISO 8859-1" );
-            url = new QUrl( path );
-            url.addEncodedQueryItem( encodedArtistKey, encodedArtist );
-            url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
+            path = "http://lyrc.com.ar/en/tema1en.php?songname=" + title + "&artist=" + artist;
+            //encodedTitle = Amarok.Lyrics.fromUtf8( title, "ISO 8859-1" );
+            //encodedTitleKey = Amarok.Lyrics.fromUtf8( "songname", "ISO 8859-1" );
+            //encodedArtist = Amarok.Lyrics.fromUtf8( artist, "ISO 8859-1" )
+            //encodedArtistKey = Amarok.Lyrics.fromUtf8( "artist", "ISO 8859-1" );
+            //url = new QUrl( path );
+            //url.addEncodedQueryItem( encodedArtistKey, encodedArtist );
+            //url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
             //print( "fetching from: " + url.toString() );
         } else
         {   // we are told to fetch a specific url
-            var path = "http://lyrc.com.ar/en/" + url;
-            url = new QUrl( path );
+            path = "http://lyrc.com.ar/en/" + url;
+            //url = new QUrl( path );
             //print( "fetching from given url: " + url.toString() );
         }
     }
@@ -190,8 +190,7 @@ function fetchLyrics( artist, title, url )
     // TODO for now, ignoring proxy settings
     //page_url = QUrl.toPercentEncoding( page_url )
 
-    connection.finished.connect( lyricsFetchResult );
-    connection.get( new QNetworkRequest( url ) );
+    a = new Downloader( path, lyricsFetchResult );
 }
 
 Amarok.Lyrics.fetchLyrics.connect( fetchLyrics );
