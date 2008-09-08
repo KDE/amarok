@@ -97,13 +97,6 @@ SqlCollection::init()
     {
         QTimer::singleShot( 0, m_scanManager, SLOT( startFullScan() ) );
     }
-    else
-    {
-        //the collection already exists, so check if it is up to date
-
-        //This causes amarok to often crash on startup, so disable for now
-        //QTimer::singleShot( 0, m_scanManager, SLOT( startIncrementalScan() ) );
-    }
 }
 
 void
