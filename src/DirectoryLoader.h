@@ -25,6 +25,7 @@
 
 #include "Meta.h"
 
+class KJob;
 namespace KIO {
     class Job;
     class UDSEntry;
@@ -50,6 +51,7 @@ class DirectoryLoader : public QObject
 
     private slots:
         void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list );
+        void listJobFinished(KJob*);
         void doInsertAtRow();
 
     private:

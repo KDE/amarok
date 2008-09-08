@@ -73,6 +73,8 @@ DirectoryLoader::init( const QList<KUrl>& urls )
         {
             m_listOperations++;
             KIO::ListJob* lister = KIO::listRecursive( kurl ); //kjob's delete themselves
+            connect( lister, SIGNAL( finished( KJob*) )
+                    , SLOT( listJobFinished( KJob*) ) );
             connect( lister, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList&) )
                     , SLOT( directoryListResults( KIO::Job*, const KIO::UDSEntryList& ) ) );
         }
@@ -109,6 +111,11 @@ DirectoryLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &l
                 m_tracks.append( track );
         }
     }
+}
+
+void
+DirectoryLoader::listJobFinished(KJob*)
+{
     m_listOperations--;
     if( m_listOperations < 1 )
         finishUrlList();
