@@ -147,6 +147,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
         device = LIBMTP_Open_Raw_Device(&rawdevices[i]);
         if (device == NULL) {
             debug() << "Unable to open raw device: " << i;
+            success = false;
             continue;
         }
 
@@ -154,6 +155,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
         if( serial != QString::fromUtf8( LIBMTP_Get_Serialnumber( device ) ) )
         {
             debug() << "Wrong device, going to next";
+            success = false;
             continue;
         }
 
@@ -175,7 +177,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
 
     debug() << "Serial is: " << serial;
 
-    return m_success;
+    return success;
 }
 
 void
