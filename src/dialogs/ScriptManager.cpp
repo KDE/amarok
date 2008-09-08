@@ -618,9 +618,12 @@ ScriptManager::startScriptEngine( QString name )
     m_global.setProperty( "Playlist", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
-    objectPtr = new AmarokScript::AmarokNetworkScript( scriptEngine );
+    objectPtr = new AmarokNetworkScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Network", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
+
+    objectPtr = new Downloader( scriptEngine );
     m_scripts[name].wrapperList.append( objectPtr );
 
     objectPtr = new AmarokScript::AmarokStatusbarScript( scriptEngine );
