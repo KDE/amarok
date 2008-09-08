@@ -125,6 +125,8 @@ CollectionTreeItem::data( int role ) const {
                             albumName = i18nc( "The Name is not known", "Unknown" );
                         name = ( (year.isEmpty() || year == "0" )? "" : year + " - " ) + albumName;
                     }
+                    else
+                        name = album->prettyName();
                 }
             }
             if( name.isEmpty() )
@@ -138,33 +140,31 @@ CollectionTreeItem::data( int role ) const {
     }
     else if( m_isVariousArtistsNode )
     {
-        if ( role == Qt::DisplayRole ) {
+        if( role == Qt::DisplayRole )
             return i18n( "Various Artists" );
-        }
         return QVariant();
     }
-    else {
-        if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
-            return m_parentCollection->prettyName();
+    else if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
+        return m_parentCollection->prettyName();
 
-        return QVariant();
-    }
+    return QVariant();
 }
 
 int
-CollectionTreeItem::row() const {
-    if (m_parent)
+CollectionTreeItem::row() const
+{
+    if( m_parent )
         return m_parent->m_childItems.indexOf( const_cast<CollectionTreeItem*>(this) );
 
     return 0;
 }
 
 int
-CollectionTreeItem::level() const {
-    if ( !m_parent )
-        return -1;
-    else
+CollectionTreeItem::level() const
+{
+    if( m_parent )
         return m_parent->level() + 1;
+    return -1;
 }
 
 bool
@@ -176,20 +176,21 @@ CollectionTreeItem::isDataItem() const
 }
 
 QueryMaker*
-CollectionTreeItem::queryMaker() const {
+CollectionTreeItem::queryMaker() const
+{
     if ( m_parentCollection )
         return m_parentCollection->queryMaker();
-    else {
-        CollectionTreeItem *tmp = m_parent;
-        while( tmp->isDataItem() )
-            tmp = tmp->parent();
-        QueryMaker *qm = tmp->parentCollection()->queryMaker();
-        return qm;
-    }
+        
+    CollectionTreeItem *tmp = m_parent;
+    while( tmp->isDataItem() )
+        tmp = tmp->parent();
+    QueryMaker *qm = tmp->parentCollection()->queryMaker();
+    return qm;
 }
 
 KUrl::List
-CollectionTreeItem::urls() const {
+CollectionTreeItem::urls() const
+{
     /*QueryBuilder qb = queryBuilder();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     QStringList values = qb.run();
@@ -203,11 +204,11 @@ CollectionTreeItem::urls() const {
 }
 
 bool
-CollectionTreeItem::operator<( const CollectionTreeItem& other ) const {
+CollectionTreeItem::operator<( const CollectionTreeItem& other ) const
+{
     if( m_isVariousArtistsNode )
         return true;
-    else
-        return m_data->sortableName() < other.m_data->sortableName();
+    return m_data->sortableName() < other.m_data->sortableName();
 }
 
 QList<Meta::TrackPtr>
@@ -236,19 +237,16 @@ CollectionTreeItem::allDescendentTracksLoaded() const
     Meta::TrackPtr track;
     if( isDataItem() && !( track = Meta::TrackPtr::dynamicCast( m_data ) ).isNull() )
         return true;
-    else
+    
+    if( childrenLoaded() )
     {
-        if ( childrenLoaded() )
-        {
-            foreach( CollectionTreeItem *item, m_childItems )
-                if( !item->allDescendentTracksLoaded() )
-                    return false;
+        foreach( CollectionTreeItem *item, m_childItems )
+            if( !item->allDescendentTracksLoaded() )
+                return false;
 
-            return true;
-        }
-        else
-            return false;
+        return true;
     }
+    return false;
 }
 
 void

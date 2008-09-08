@@ -46,7 +46,6 @@
 PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     : Amarok::Widget( parent )
 {
-
     setContentsMargins(0,0,0,0);
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -56,7 +55,6 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_playlistView->setContentsMargins(0,0,0,0);
     m_playlistView->setModel( PlaylistBrowserNS::UserModel::instance() );
     m_playlistView->header()->hide();
-
 
     m_playlistView->setSelectionMode(QAbstractItemView::SingleSelection);
     m_playlistView->setDragEnabled(true);
