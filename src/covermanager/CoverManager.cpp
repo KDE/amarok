@@ -360,10 +360,11 @@ CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
                     album->albumArtist()? album->albumArtist()->prettyName() : i18n( "Various Artists" ),
                     album->prettyName() ) ) );
 
-    m_layout = new QHBoxLayout( this );
-    m_layout->setSizeConstraint( QLayout::SetFixedSize );
     m_pixmapViewer = new PixmapViewer( this, m_pixmap );
+
+    m_layout = new QHBoxLayout( this );
     m_layout->addWidget( m_pixmapViewer );
+    m_layout->setSizeConstraint( QLayout::SetFixedSize );
 }
 
 

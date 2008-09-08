@@ -76,7 +76,7 @@ void PixmapViewer::mouseMoveEvent(QMouseEvent *event)
 
 QSize PixmapViewer::sizeHint() const
 {
-    return size().boundedTo( KApplication::desktop()->size() );
+    return size().boundedTo( KApplication::desktop()->size() ) + QSize( 3, 3 ) /* buffer zone */;
 }
 
 #include "PixmapViewer.moc"
