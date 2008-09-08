@@ -174,7 +174,7 @@ void
 Meta::Field::writeFields( const QString &filename, const QVariantMap &changes )
 {
     #ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t encodedName = reinterpret_cast<const wchar_t *>(filename.utf16());
+    const wchar_t* encodedName = reinterpret_cast<const wchar_t *>(filename.utf16());
     #else
     QByteArray fileName = QFile::encodeName( filename );
     const char * encodedName = fileName.constData(); // valid as long as fileName exists
