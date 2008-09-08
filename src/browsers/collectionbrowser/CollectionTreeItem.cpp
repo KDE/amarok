@@ -112,19 +112,19 @@ CollectionTreeItem::data( int role ) const {
             {
                 if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
                 {
-                    if( album->tracks().size() == 0 )
-                        return i18n( "CRASH!!!! :-(" );
+                    if( !album->tracks().isEmpty() )
+                    {   
+                        Meta::TrackPtr track = album->tracks()[0];
+                        QString year;
+                        track ?
+                            year = track->year() ? track->year()->prettyName() : QString() :
+                            year = QString();
 
-                    Meta::TrackPtr track = album->tracks()[0];
-                    QString year;
-                    track ?
-                        year = track->year() ? track->year()->prettyName() : QString() :
-                        year = QString();
-
-                    QString albumName = album->prettyName();
-                    if( albumName.isEmpty() )
-                        albumName = i18nc( "The Name is not known", "Unknown" );
-                    name = ( (year.isEmpty() || year == "0" )? "" : year + " - " ) + albumName;
+                        QString albumName = album->prettyName();
+                        if( albumName.isEmpty() )
+                            albumName = i18nc( "The Name is not known", "Unknown" );
+                        name = ( (year.isEmpty() || year == "0" )? "" : year + " - " ) + albumName;
+                    }
                 }
             }
             if( name.isEmpty() )
