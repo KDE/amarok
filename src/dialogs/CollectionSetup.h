@@ -22,10 +22,12 @@
 
 #include <QCheckBox>
 #include <QFileSystemModel>
-#include <QTreeView>
 #include <QTreeWidgetItem>
 
 #include "Debug.h"
+
+class KPushButton;
+class QTreeView;
 
 namespace CollectionFolder { class Model; }
 
@@ -49,6 +51,7 @@ class CollectionSetup : public KVBox
         QTreeView *m_view;
         CollectionFolder::Model *m_model;
         QStringList m_dirs;
+        KPushButton *m_rescan;
         QCheckBox *m_recursive;
         QCheckBox *m_monitor;
 };

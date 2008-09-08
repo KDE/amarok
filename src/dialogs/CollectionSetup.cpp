@@ -18,11 +18,13 @@
 
 #include "CollectionSetup.h"
 
+#include "CollectionManager.h"
 #include "amarokconfig.h"
 #include "mountpointmanager.h"
 
 #include <KFileItem>
 #include <KLocale>
+#include <KPushButton>
 #include <KVBox>
 
 #include <QDir>
@@ -54,6 +56,9 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setRootIsDecorated( true );
     m_view->setAnimated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+    m_rescan = new KPushButton( i18n( "Rescan Collection" ), this );
+    connect( m_rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
