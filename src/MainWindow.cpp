@@ -44,7 +44,6 @@
 #include "context/ContextView.h"
 #include "context/plasma/plasma.h"
 #include "covermanager/CoverManager.h" // for actions
-#include "DirectoryLoader.h"
 #include "playlist/PlaylistGraphicsView.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
@@ -494,28 +493,8 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     dlg.exec();
     files = dlg.selectedUrls();
     if( files.isEmpty() ) return;
-    const int options = directPlay ? Playlist::Append | Playlist::DirectPlay : Playlist::Append;
-    debug() << "playing files: " << files;
-    DirectoryLoader* dl = new DirectoryLoader(); //dl handles memory management
-    dl->setProperty("options", QVariant( options ) );
-    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotFinishAddLocation( const Meta::TrackList& ) ) );
-    dl->init( files );
-}
 
-void
-MainWindow::slotFinishAddLocation( const Meta::TrackList& tracks )
-{
-    DEBUG_BLOCK
-    if( !tracks.isEmpty() )
-    {
-        The::playlistModel()->insertOptioned( tracks.first(), sender()->property("options").toInt() );
-        debug() << tracks.first();
-        // If this isn't done each track will be inserted with Option, which is not ideal.
-        for( int i = 1; i < tracks.size(); ++i )
-        {
-            The::playlistModel()->insertOptioned( tracks.at( i ), Playlist::Append );
-        }
-    }
+    The::playlistModel()->addRecursively( files );
 }
 
 void

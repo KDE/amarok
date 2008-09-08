@@ -102,7 +102,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void slotShowCoverManager() const;
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
-        void slotFinishAddLocation( const Meta::TrackList &tracks );
         void slotAddStream();
         void showQueueManager();
         void showScriptSelector();

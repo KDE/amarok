@@ -37,13 +37,14 @@
 #include <KAction>
 #include <KMenu>
 
+#include <QClipboard>
 #include <QGraphicsItemAnimation>
-#include <QModelIndex>
 #include <QKeyEvent>
+#include <QModelIndex>
 #include <QPixmapCache>
+#include <QScrollBar>
 #include <QTimeLine>
 #include <QVariant>
-#include <QScrollBar>
 
 #include <typeinfo>
 
@@ -246,6 +247,19 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
         }
     }
     QGraphicsView::keyPressEvent( event );
+}
+
+void
+Playlist::GraphicsView::mouseReleaseEvent( QMouseEvent* event )
+{
+    DEBUG_BLOCK
+
+    if( event->button() == Qt::MidButton )
+    {
+        QList<KUrl> urls;
+        urls << KUrl( kapp->clipboard()->text() );
+        The::playlistModel()->addRecursively( urls );
+    }
 }
 
 void

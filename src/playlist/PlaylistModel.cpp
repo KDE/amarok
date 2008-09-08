@@ -423,6 +423,19 @@ Playlist::Model::insertTracks( int row, Meta::TrackList tracks )
     }
 }
 
+void
+Playlist::Model::addRecursively( const QList<KUrl>& urls )
+{
+    DEBUG_BLOCK
+
+    const int options = Playlist::Append | Playlist::DirectPlay;
+    DirectoryLoader* dl = new DirectoryLoader(); //dl handles memory management
+    dl->setProperty("options", QVariant( options ) );
+    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotFinishAddRecursively( const Meta::TrackList& ) ) );
+
+    dl->init( urls );
+}
+
 bool
 Playlist::Model::removeRows( int position, int rows, const QModelIndex& /*parent*/  )
 {
@@ -1801,6 +1814,22 @@ Playlist::Model::regroupAll()
 
 }
 
+void
+Playlist::Model::slotFinishAddRecursively( const Meta::TrackList& tracks )
+{
+    DEBUG_BLOCK
+
+    if( !tracks.isEmpty() )
+    {
+        insertOptioned( tracks.first(), sender()->property( "options" ).toInt() );
+        debug() << tracks.first();
+        // If this isn't done each track will be inserted with Option, which is not ideal.
+        for( int i = 1; i < tracks.size(); ++i )
+        {
+            insertOptioned( tracks.at( i ), Playlist::Append );
+        }
+    }
+}
 
 
 namespace The {

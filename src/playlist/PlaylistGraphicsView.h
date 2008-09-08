@@ -71,6 +71,7 @@ namespace Playlist
             virtual void dragMoveEvent( QDragMoveEvent *event );
             virtual void dragLeaveEvent( QDragLeaveEvent *event );
             virtual void keyPressEvent( QKeyEvent *event );
+            virtual void mouseReleaseEvent( QMouseEvent* event ); //Reimplemented from QWidget
             virtual void paletteChange( const QPalette & oldPalette );
 
             //virtual void drawBackground ( QPainter * painter, const QRectF & rect );

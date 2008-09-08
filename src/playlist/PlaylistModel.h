@@ -194,6 +194,9 @@ namespace Playlist
             void insertTracks( int row, Meta::TrackList list );
             void insertTracks( int row, QueryMaker *qm );
 
+            /** Adds the files to the playlist, including recursion for folders */
+            void addRecursively( const QList<KUrl>& urls );
+
             /**
              * Insert Meta::Playlists into the playlist with some handy options.
              * @param list Playlist to add
@@ -296,9 +299,9 @@ namespace Playlist
             void newResultReady( const QString &collectionId, const Meta::TrackList &tracks );
             //void playCurrentTrack();    ///connected to EngineController::orderCurrent
             void notifyAdvancersOnItemChange() { if( m_advancer ) m_advancer->setPlaylistChanged(); }
+            void slotFinishAddRecursively( const Meta::TrackList& tracks );
 
         private:
-
             /**
              * This performs the actual work involved with inserting tracks. It is to be *only* called by an UndoCommand.
              * @arg row Row number in the playlist to insert the list after.
