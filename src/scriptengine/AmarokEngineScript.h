@@ -38,27 +38,27 @@ namespace AmarokScript
         Q_PROPERTY ( int fadeoutLength READ fadeoutLength WRITE setFadeoutLength )
 
         public:
-            AmarokEngineScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList );
+            AmarokEngineScript( QScriptEngine* ScriptEngine );
             ~AmarokEngineScript();
 
         public slots:
-            void Play();
-            void Stop( bool forceInstant = false );
-            void Pause();
-            void Next();
-            void Prev();
-            void PlayPause();
-            void PlayAudioCD();
-            void Seek( int ms );
-            void SeekRelative( int ms );
-            void SeekForward( int ms = 10000 );
-            void SeekBackward( int ms = 10000 );
+            void Play() const;
+            void Stop( bool forceInstant = false ) const;
+            void Pause() const;
+            void Next() const;
+            void Prev() const;
+            void PlayPause() const;
+            void PlayAudioCD() const;
+            void Seek( int ms ) const;
+            void SeekRelative( int ms ) const;
+            void SeekForward( int ms = 10000 ) const;
+            void SeekBackward( int ms = 10000 ) const;
             int  IncreaseVolume( int ticks = 100/25 );
             int  DecreaseVolume( int ticks = 100/25 );
             void Mute();
-            int  trackPosition();
-            int  engineState();
-            QVariant currentTrack();
+            int  trackPosition() const;
+            int  engineState() const;
+            QVariant currentTrack() const;
 
         signals:
             void trackFinished();
@@ -80,7 +80,6 @@ namespace AmarokScript
             void setVolume( int percent );
             int  fadeoutLength() const;
             void setFadeoutLength( int length ); //TODO:implement
-            QList<QObject*>* m_wrapperList;
     };
 }
 

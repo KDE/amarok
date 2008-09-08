@@ -603,7 +603,7 @@ ScriptManager::startScriptEngine( QString name )
     m_global.setProperty( "Collection", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
-    objectPtr = new AmarokScript::AmarokEngineScript( scriptEngine, &m_scripts[name].wrapperList );
+    objectPtr = new AmarokScript::AmarokEngineScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Engine", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );

@@ -30,11 +30,10 @@
 
 namespace AmarokScript
 {
-    AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList )
+    AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine )
     : QObject( kapp )
     {
         Q_UNUSED( ScriptEngine );
-        m_wrapperList = wrapperList;
         connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SIGNAL( trackChanged() ) );
         connect( The::engineController(), SIGNAL( trackFinished() ), this, SIGNAL( trackFinished() ) );
         connect( The::engineController(), SIGNAL( trackSeeked( int ) ), this, SIGNAL( trackSeeked( int ) ) );
@@ -46,56 +45,56 @@ namespace AmarokScript
     {
     }
 
-    void AmarokEngineScript::Play()
+    void AmarokEngineScript::Play() const
     {
         The::engineController()->play();
     }
 
-    void AmarokEngineScript::Stop( bool forceInstant )
+    void AmarokEngineScript::Stop( bool forceInstant ) const
     {
         The::engineController()->stop( forceInstant );
     }
 
-    void AmarokEngineScript::Pause()
+    void AmarokEngineScript::Pause() const
     {
         The::engineController()->pause();
     }
 
-    void AmarokEngineScript::Next()
+    void AmarokEngineScript::Next() const
     {
         The::playlistModel()->next();
     }
-    void AmarokEngineScript::Prev()
+    void AmarokEngineScript::Prev() const
     {
         The::playlistModel()->back();
     }
 
-    void AmarokEngineScript::PlayPause()
+    void AmarokEngineScript::PlayPause() const
     {
         The::engineController()->playPause();
     }
 
-    void AmarokEngineScript::PlayAudioCD()
+    void AmarokEngineScript::PlayAudioCD() const
     {
         The::mainWindow()->playAudioCD();
     }
 
-    void AmarokEngineScript::Seek( int ms )
+    void AmarokEngineScript::Seek( int ms ) const
     {
         The::engineController()->seek( ms );
     }
 
-    void AmarokEngineScript::SeekRelative( int ms )
+    void AmarokEngineScript::SeekRelative( int ms ) const
     {
         The::engineController()->seekRelative( ms );
     }
 
-    void AmarokEngineScript::SeekForward( int ms )
+    void AmarokEngineScript::SeekForward( int ms ) const
     {
         The::engineController()->seekForward( ms );
     }
 
-    void AmarokEngineScript::SeekBackward( int ms )
+    void AmarokEngineScript::SeekBackward( int ms ) const
     {
         The::engineController()->seekBackward( ms );
     }
@@ -115,12 +114,12 @@ namespace AmarokScript
         The::engineController()->mute();
     }
 
-    int AmarokEngineScript::trackPosition()
+    int AmarokEngineScript::trackPosition() const
     {
         return The::engineController()->trackPosition();
     }
 
-    int AmarokEngineScript::engineState()
+    int AmarokEngineScript::engineState() const
     {
         switch( The::engineController()->state() )
         {
@@ -138,7 +137,7 @@ namespace AmarokScript
         };
     }
 
-    QVariant AmarokEngineScript::currentTrack()
+    QVariant AmarokEngineScript::currentTrack() const
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return QVariant::fromValue( track );
