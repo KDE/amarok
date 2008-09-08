@@ -1163,7 +1163,7 @@ SqlAlbum::isCompilation() const
 bool
 SqlAlbum::hasAlbumArtist() const
 {
-    return m_artistId != 0;
+    return albumArtist();
 }
 
 Meta::ArtistPtr
@@ -1174,7 +1174,7 @@ SqlAlbum::albumArtist() const
         QString query = QString( "SELECT artists.name FROM artists WHERE artists.id = %1;" ).arg( m_artistId );
         QStringList result = m_collection->query( query );
         if( result.isEmpty() )
-            return Meta::ArtistPtr();
+            return Meta::ArtistPtr(); //FIXME BORKED LOGIC: can return 0, although m_artistId != 0
         const_cast<SqlAlbum*>( this )->m_artist =
             m_collection->registry()->getArtist( result.first(), m_artistId );
     }
