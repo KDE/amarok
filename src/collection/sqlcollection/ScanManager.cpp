@@ -43,8 +43,11 @@
 
 #include <threadweaver/ThreadWeaver.h>
 
+#include <unistd.h>
+
 static const int MAX_RESTARTS = 80;
 static const int MAX_FAILURE_PERCENTAGE = 5;
+
 
 ScanManager::ScanManager( SqlCollection *parent )
     :QObject( parent )
@@ -64,7 +67,9 @@ ScanManager::~ScanManager()
 
     if( m_parser ) {
         m_parser->requestAbort();
-        while( !m_parser->isFinished() ) {};
+        while( !m_parser->isFinished() )
+            usleep( 100000 ); // Sleep 100 msec
+
         delete m_parser;
     }
 }
