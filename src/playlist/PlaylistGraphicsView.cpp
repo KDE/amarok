@@ -259,6 +259,9 @@ Playlist::GraphicsView::mouseReleaseEvent( QMouseEvent* event )
         QList<KUrl> urls;
         urls << KUrl( kapp->clipboard()->text() );
         The::playlistModel()->addRecursively( urls );
+    } else
+    {
+        QGraphicsView::mouseReleaseEvent( event );
     }
 }
 
