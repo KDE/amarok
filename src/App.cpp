@@ -589,6 +589,8 @@ App::continueInit()
 
     handleCliArgs();
 
+    m_metaDataHistory = new QList<QHash<qint64, QString> >;
+
     delete m_splash;
     m_splash = 0;
     PERF_LOG( "App init done" )
@@ -647,12 +649,16 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool tra
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( !currentTrack )
         return;
-    Amarok::OSD::instance()->show( currentTrack );
+
     if( !trackChanged )
     {
         if ( !currentTrack->prettyName().isEmpty() )
            mainWindow()->setPlainCaption( i18n( "%1 - %2 -  %3", newMetaData.value( Meta::valArtist ), newMetaData.value( Meta::valTitle ), AMAROK_CAPTION ) );
+        if( !isMetaDataSpam( newMetaData ))// metadata spam protection from streams
+            Amarok::OSD::instance()->show( currentTrack );
     }
+    else
+        Amarok::OSD::instance()->show( currentTrack );
 
     TrackToolTip::instance()->setTrack( currentTrack );
 }
@@ -719,6 +725,26 @@ void App::slotConfigToolBars()
 //         mainWindow()->reloadXML();
 //         mainWindow()->createGUI();
 //     }
+}
+
+/* Try to detect MetaData spam in Streams. */
+bool App::isMetaDataSpam( const QHash<qint64, QString> &newMetaData )
+{
+    // search for Metadata in history
+    for( int i = 0; i < m_metaDataHistory->size(); i++)
+    {
+        if( m_metaDataHistory->at( i ) == newMetaData ) // we already had that one -> spam!
+        {
+            m_metaDataHistory->move( i, 0 ); // move spam to the beginning of the list
+            return true;
+        }
+    }
+
+    if( m_metaDataHistory->size() == 12 )
+        m_metaDataHistory->removeLast();
+
+    m_metaDataHistory->insert( 0, newMetaData);
+    return false;
 }
 
 KIO::Job *App::trashFiles( const KUrl::List &files )
