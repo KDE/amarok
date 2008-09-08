@@ -634,9 +634,10 @@ void App::engineNewTrackPlaying()
     DEBUG_BLOCK
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    debug() << "engineNewTrackPlaying:" << currentTrack->prettyName();
     if( !currentTrack )
         return;
+
+    debug() << "engineNewTrackPlaying:" << currentTrack->prettyName();
     TrackToolTip::instance()->setTrack( currentTrack );
 }
 
