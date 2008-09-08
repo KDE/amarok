@@ -30,10 +30,10 @@ DirectoryLoader::DirectoryLoader()
         , m_listOperations( 0 )
         , m_localConnection( false )
         , m_row( 0 )
-{  }
+{}
 
 DirectoryLoader::~DirectoryLoader()
-{ }
+{}
 
 void
 DirectoryLoader::insertAtRow( int row )
@@ -56,6 +56,7 @@ DirectoryLoader::init( const QList<QUrl>& qurls )
     QList<KUrl> kurls;
     foreach( const QUrl qurl, qurls )
         kurls << KUrl( qurl );
+
     init( kurls );
 }
 
@@ -73,10 +74,10 @@ DirectoryLoader::init( const QList<KUrl>& urls )
         {
             m_listOperations++;
             KIO::ListJob* lister = KIO::listRecursive( kurl ); //kjob's delete themselves
-            connect( lister, SIGNAL( finished( KJob*) )
-                    , SLOT( listJobFinished( KJob*) ) );
-            connect( lister, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList&) )
-                    , SLOT( directoryListResults( KIO::Job*, const KIO::UDSEntryList& ) ) );
+            connect( lister, SIGNAL( finished( KJob*) ),
+                     SLOT( listJobFinished( KJob*) ) );
+            connect( lister, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList& ) ),
+                     SLOT( directoryListResults( KIO::Job*, const KIO::UDSEntryList& ) ) );
         }
         else
         {
@@ -124,7 +125,7 @@ DirectoryLoader::listJobFinished(KJob*)
 void
 DirectoryLoader::finishUrlList()
 {
-    if( !( m_tracks.isEmpty() ) )
+    if( !m_tracks.isEmpty() )
     {
         qStableSort( m_tracks.begin(), m_tracks.end(), Playlist::Model::trackNumberLessThan );
         emit finished( m_tracks );
@@ -132,3 +133,4 @@ DirectoryLoader::finishUrlList()
     if( !m_localConnection )
         deleteLater();
 }
+
