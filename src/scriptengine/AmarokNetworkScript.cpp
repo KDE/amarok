@@ -69,16 +69,16 @@ Downloader::Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* e
     {
         debug() << "ERROR! Constructor not called with exactly 1 argument:" << context->argumentCount();
         return object;
-    } else if( !context->argument( 0 ).isString() && !context->argument( 1 ).isFunction() )
+    } else if( !context->argument( 1 ).isFunction() ) //TODO: check QUrl
     {
-        debug() << "ERROR! Constructor not called with a string and function!";
+        debug() << "ERROR! Constructor not called with a QUrl and function!";
         return object;
     }
-    QString url = context->argument( 0 ).toString();
-
-    debug() << "got url:" << url;
+    
+    QUrl url = qscriptvalue_cast<QUrl>( context->argument( 0 ) );
     // start download, and connect to it
-    KIO::Job* job = KIO::storedGet( url , KIO::NoReload, KIO::HideProgressInfo );
+    //FIXME: url is not working directly, which makes the encoding still a problem.
+    KIO::Job* job = KIO::storedGet( url.toString() , KIO::NoReload, KIO::HideProgressInfo );
 
     AmarokDownloadHelper::instance()->newDownload( job, engine, context->argument( 1 ) );
     // connect to a local slot to extract the qstring

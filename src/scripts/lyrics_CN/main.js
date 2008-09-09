@@ -72,7 +72,7 @@ function fetchLyrics( artist, title )
     url = new QUrl( path );
     url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
     print( "url address:" + url.toString() );
-    d = new Downloader( url.toString(), lyricsFetchResult );
+    d = new Downloader( url, lyricsFetchResult );
     }
     catch( err )
     {

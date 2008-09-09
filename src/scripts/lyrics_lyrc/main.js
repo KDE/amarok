@@ -125,7 +125,7 @@ function lyricsFetchResult( reply )
     {
         print( "error converting lyrics: " + err );
     }
-    //print( "result: " + lyrics );
+    print( "result: " + lyrics );
 
     // no need, just complicates regexp
     lyrics.replace( "\n", "" );
@@ -159,9 +159,9 @@ function lyricsFetchResult( reply )
 
 function fetchLyrics( artist, title, url )
 {
-    xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
-    suggestions_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>"
-    suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />"
+    xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>";
+    suggestions_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><suggestions page_url=\"{provider_url}\" >{suggestions}</suggestions>";
+    suggestions_body="<suggestion artist=\"{artist}\" title=\"{title}\" url=\"{url}\" />";
 
     try{
         if( url == "" )
@@ -171,21 +171,19 @@ function fetchLyrics( artist, title, url )
             encodedTitleKey = Amarok.Lyrics.fromUtf8( "songname", "ISO 8859-1" );
             encodedArtist = Amarok.Lyrics.fromUtf8( artist, "ISO 8859-1" )
             encodedArtistKey = Amarok.Lyrics.fromUtf8( "artist", "ISO 8859-1" );
-            url = new QUrl( path );
-            url.addEncodedQueryItem( encodedArtistKey, encodedArtist );
-            url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
-            path = url.toString();
+            qurl = new QUrl( path );
+            qurl.addEncodedQueryItem( encodedArtistKey, encodedArtist );
+            qurl.addEncodedQueryItem( encodedTitleKey, encodedTitle );
             //print( "fetching from: " + url.toString() );
         } else
         {   // we are told to fetch a specific url
             path = "http://lyrc.com.ar/en/" + url;
-            //url = new QUrl( path );
+            qurl = new QUrl( path );
             //print( "fetching from given url: " + url.toString() );
         }
         // TODO for now, ignoring proxy settings
         //page_url = QUrl.toPercentEncoding( page_url )
-        print( path );
-        a = new Downloader( path, lyricsFetchResult );
+        a = new Downloader( qurl, lyricsFetchResult );
     }
     catch( err )
     {
