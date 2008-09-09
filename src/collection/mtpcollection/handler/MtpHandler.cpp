@@ -148,6 +148,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
         if (device == NULL) {
             debug() << "Unable to open raw device: " << i;
             success = false;
+            LIBMTP_Release_Device( device );
             continue;
         }
 
@@ -156,6 +157,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
         {
             debug() << "Wrong device, going to next";
             success = false;
+            LIBMTP_Release_Device( device );
             continue;
         }
 
