@@ -40,6 +40,7 @@ namespace AmarokScript
             bool        runScript( const QString& name ) const;
             bool        stopScript( const QString& name ) const;
             QStringList listRunningScripts() const;
+
         signals:
             void configured();
 
