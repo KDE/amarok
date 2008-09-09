@@ -797,11 +797,14 @@ const QStringList TagDialog::statisticsData()
 
 void TagDialog::readTags()
 {
+    DEBUG_BLOCK
+
     const bool local = m_currentTrack->playableUrl().isLocalFile();
 
     setWindowTitle( KDialog::makeStandardCaption( i18n("Track Details: %1 by %2",
                     m_currentTrack->name(),  m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString() ) ) );
 
+    debug() << "before album() stuff";
     QString niceTitle;
     if( m_currentTrack->album() && m_currentTrack->album()->name().isEmpty() )
     {
@@ -822,6 +825,8 @@ void TagDialog::readTags()
     }
     else
         niceTitle = i18n( "<b>%1</b> by <b>%2</b>" , m_currentTrack->name(), m_currentTrack->artist()->name() );
+
+    debug() << "after album() stuff";
 
     ui->trackArtistAlbumLabel->setText( niceTitle );
     ui->trackArtistAlbumLabel2->setText( niceTitle );
