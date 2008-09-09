@@ -246,6 +246,48 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
             return;
         }
     }
+    else if( event->matches( QKeySequence::MoveToNextLine ) ||
+             event->matches( QKeySequence::MoveToPreviousLine ) )
+    {
+        event->accept();
+
+        int row = -1; // default to first item if no item already focused
+        QGraphicsItem *focused = 0;
+
+        if( !scene()->selectedItems().isEmpty() )
+        {
+            focused = scene()->selectedItems().last();
+            if( focused )
+                row = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(focused) );
+        }
+
+        // clear any other selected items
+        scene()->clearSelection();
+
+        // find the new item to focus
+        if( event->matches( QKeySequence::MoveToNextLine ) )
+        {
+            if( row == m_tracks.size() - 1 )
+                row = -1; // loop back to the first item
+
+            focused = m_tracks.at( ++row );
+        }
+        else // previous line
+        {
+            if( row == 0 )
+                row = m_tracks.size(); // loop to the last item
+
+            focused = m_tracks.at( --row );
+        }
+
+        if( focused )
+        {
+            focused->setSelected( true );
+            scene()->setFocusItem( focused );
+        }
+        return;
+    }
+
     QGraphicsView::keyPressEvent( event );
 }
 
@@ -259,7 +301,8 @@ Playlist::GraphicsView::mouseReleaseEvent( QMouseEvent* event )
         QList<KUrl> urls;
         urls << KUrl( kapp->clipboard()->text() );
         The::playlistModel()->addRecursively( urls );
-    } else
+    }
+    else
     {
         QGraphicsView::mouseReleaseEvent( event );
     }
@@ -284,13 +327,17 @@ Playlist::GraphicsView::removeSelection()
 {
     QList<QGraphicsItem*> selection = scene()->selectedItems();
 
+    if( selection.isEmpty() )
+        return; // our job here is done.
+
     int firstIndex = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>( selection.first() ) );
-    if ( firstIndex > 0) firstIndex -= 1;
+    if( firstIndex > 0 )
+        firstIndex -= 1;
 
     foreach( QGraphicsItem *i, selection )
         m_model->removeRows( m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(i) ), 1 );
 
-    for ( int i = firstIndex ; i < m_tracks.count(); i++ )
+    for( int i = firstIndex ; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 }
 
@@ -308,7 +355,6 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
     for ( int j = 0; j < start; j++ )
         cumulativeHeight += m_tracks.at( j )->boundingRect().height();
 
-    //     debug() << "start: " << start << " ,end: " << end;
     for( int i = start; i <= end; i++ )
     {
 
