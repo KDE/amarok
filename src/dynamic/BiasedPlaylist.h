@@ -57,6 +57,7 @@ namespace Dynamic
             virtual void recalculate();
 
         private slots:
+            void solverReady();
             void solverFinished( ThreadWeaver::Job* );
             void updateStatus( int progress );
 

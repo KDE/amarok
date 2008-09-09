@@ -29,6 +29,8 @@
 #include "playlist/PlaylistModel.h"
 #include "StatusBar.h"
 
+#include <threadweaver/ThreadWeaver.h>
+
 
 
 // The bigger this is, the more accurate the result will be. Big is good.
@@ -112,7 +114,6 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
                 BUFFER_SIZE, m_biases, m_context );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
                  SLOT(solverFinished(ThreadWeaver::Job*)) );
-        m_solver->doWork();
 
         if( withStatusBar )
         {
@@ -121,8 +122,19 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 
             connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
         }
+
+        connect( m_solver, SIGNAL(readyToRun()), SLOT(solverReady()) );
+        m_solver->prepareToRun();
     }
 }
+
+void
+Dynamic::BiasedPlaylist::solverReady()
+{
+    if( m_solver )
+        ThreadWeaver::Weaver::instance()->enqueue( m_solver );
+}
+
 
 void
 Dynamic::BiasedPlaylist::updateStatus( int progress )

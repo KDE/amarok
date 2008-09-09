@@ -38,7 +38,7 @@
 
 /* These number are black magic. The best values can only be obtained through
  * exhaustive trial and error or writing another optimization program to
- * optimize this optimization program. They are very sensitive. Be carefull */
+ * optimize this optimization program. They are very sensitive. Be careful */
 
 const int    Dynamic::BiasSolver::GA_ITERATION_LIMIT         = 100;
 const int    Dynamic::BiasSolver::GA_POPULATION_SIZE         = 30;
@@ -63,7 +63,8 @@ unsigned int      Dynamic::BiasSolver::s_uidUrlProtocolPrefixLength = 0;
 
 
 /*
- * A playlist/energy pair, just so we can sort playlists by energy.
+ * A playlist/energy pair, used by ga_optimize to sort lists of playlists by
+ * their energy.
  */
 namespace Dynamic
 {
@@ -110,9 +111,10 @@ Dynamic::BiasSolver::success() const
     return !m_abortRequested;
 }
 
-void Dynamic::BiasSolver::doWork()
+void Dynamic::BiasSolver::prepareToRun()
 {
     DEBUG_BLOCK
+
     // update biases
 
     m_biasMutex.lock();
@@ -132,15 +134,19 @@ void Dynamic::BiasSolver::doWork()
         }
     }
 
+    // nothing to update
+    if( !m_pendingBiasUpdates && !s_universeOutdated )
+    {
+        emit readyToRun();
+        return;
+    }
+
+
     // update universe
 
     if( s_universeOutdated )
         updateUniverse();
 
-    if( !m_pendingBiasUpdates && !s_universeOutdated )
-    {
-        ThreadWeaver::Weaver::instance()->enqueue( this );
-    }
     m_biasMutex.unlock();
 }
 
@@ -150,47 +156,158 @@ void Dynamic::BiasSolver::run()
     
     computeDomain();
 
-    bool optimal = generateInitialPlaylist();
-    if( optimal )
+    /*
+     * Two stage solver: Run ga_optimize and feed it's result into sa_optimize.
+     *
+     * Rationale: Genetic algorithms take better advantage of the heuristic used
+     * by generateInitialPlaylist and also have tendency to converge faster
+     * initially. How ever, they also tend to get stuck in local minima unless
+     * the population size is quite large, which is why we switch over to
+     * simulated annealing when that happens.
+     */
+    Meta::TrackList playlist = ga_optimize( GA_ITERATION_LIMIT, true );
+
+    if( playlist.isEmpty() )
         return;
 
-    // test for the empty collection case
-    m_playlist.removeAll( Meta::TrackPtr() );
-    if( m_playlist.empty() )
+    sa_optimize( playlist, SA_ITERATION_LIMIT, true );
+
+    m_solution = playlist;
+}
+
+
+void
+Dynamic::BiasSolver::sa_optimize( Meta::TrackList& playlist, int i, bool updateStatus )
+{
+    /*
+     * The process used here is called "simulated annealing". The basic idea is
+     * that the playlist is randomly mutated one track at a time. Mutations that
+     * improve the playlist (decrease the energy) are always accepted, mutations
+     * that make the playlist worse (increase the energy) are sometimes
+     * accepted. The decision to accept is made randomly based on a special
+     * probability curve that changes as the algorithm progresses.
+     *
+     * Accepting some bad mutations makes the algorithm resilient to getting
+     * stuck in local minima (playlists that are not optimal but can't be
+     * improved by making just one change). There is much more reading available
+     * on the internet or your local library.
+     */
+
+    double E = energy( playlist );
+    double T = SA_INITIAL_TEMPERATURE;
+
+    Meta::TrackPtr mutation;
+    double prevE = 0.0;
+    int giveUpCount = 0;
+    while( i-- && E >= m_epsilon && !m_abortRequested )
     {
-        warning() << "Empty collection, aborting.";
-        return;
+        // if the energy hasn't changed in SA_GIVE_UP_LIMIT iterations, we give
+        // up and bail out.
+        if( prevE == E )
+            giveUpCount++;
+        else
+        {
+            prevE = E;
+            giveUpCount = 0;
+        }
+
+        if( giveUpCount >= SA_GIVE_UP_LIMIT )
+            break;
+
+
+        // get a random mutation track.
+        mutation = getMutation();
+
+        if( !mutation )
+            break;
+
+        // choose the mutation position
+        int mutationPos = KRandom::random() % playlist.size();
+
+        double mutationE = recalculateEnergy( playlist, mutation, mutationPos );
+
+
+        double p = 1.0 / ( 1.0 + exp( (mutationE - E)  / T ) );
+        double r = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
+
+        // accept the mutation ?
+        if( r <= p )
+        {
+            playlist[ mutationPos ] = mutation;
+            E = mutationE;
+            m_biasEnergy = m_biasMutationEnergy;
+        }
+
+        // cool the temperature
+        T *= SA_COOLING_RATE;
+
+        
+        if( updateStatus && i % 100 == 0 )
+        {
+            debug() << "SA: E = " << E;
+            int progress = (int)(100.0 * (1.0 - E));
+            emit statusUpdate( progress >= 0 ? progress : 0 );
+        }
     }
+}
 
-    if( optimal )
-        return;
+Meta::TrackList
+Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
+{
+    /**
+     * Here we attempt to produce an optimal playlist using a genetic algorithm.
+     * The basic steps:
+     *
+     *   1. Generate a population of playlists using generateInitialPlaylist.
+     *
+     * REPEAT:
+     *   2. Choose a portion of that population to reproduce. The better the
+     *      playlist (the lower the energy) the more likely it is to reproduce.
+     *   3. The mating population playlists are mixed with each other producing
+     *      offspring playlists.
+     *   4. The worst playlists in the population are thrown out and replaced
+     *      with the new offspring.
+     */
 
-    // generate initial population
+    // 1.  Generate initial population
+    bool optimal;
     QList<TrackListEnergyPair> population;
-    population.append( TrackListEnergyPair( m_playlist, energy() ) );
+    Meta::TrackList playlist;
     while( population.size() < GA_POPULATION_SIZE )
     {
-        generateInitialPlaylist();
-        population.append( TrackListEnergyPair( m_playlist, energy() ) );
+        // TODO: OPTIMIZATION: most of the time spend solving now is spent
+        // getting Meta::Tracks, since we request so many with this. Experiment
+        // with lowering the population size, or finding a faster way to get a
+        // bunch of random tracks.
+        playlist = generateInitialPlaylist( optimal );
+
+        playlist.removeAll( Meta::TrackPtr() );
+
+        // test for the empty collection case
+        if( playlist.empty() )
+        {
+            warning() << "Empty collection, aborting.";
+            return Meta::TrackList();
+        }
+
+        if( optimal )
+            return playlist;
+
+        population.append( TrackListEnergyPair( playlist, energy( playlist ) ) );
     }
 
-    qSort( population ); // sort playlists by energy
+    qSort( population ); // sort the population by energy.
 
-    /*
-     * GENETIC OPTIMIZATION PHASE
-     * Genetic algorithms tend converge faster initially. So we begin with a
-     * genetic phase before switching over to annealing.
-     */
 
     double prevMin = 0.0;
     int giveUpCount = 0;
-    int i = GA_ITERATION_LIMIT;
+    int i = iterationLimit;
     QList<int> matingPopulation;
     while( i-- && population.first().energy >= m_epsilon && !m_abortRequested )
     {
-        // Sometime the optimal playlist can't have an energy of 0.0. So if the
-        // energy hasn't changed after GIVE_UP_LIMIT iterations, we assume we've
-        // found the optimal playlist and bail out.
+        // Sometime the optimal playlist can't have an energy of 0.0, or the
+        // algorithm just gets stuck. So if the energy hasn't changed after
+        // GIVE_UP_LIMIT iterations, we assume we bail out.
         if( population.first().energy == prevMin )
             giveUpCount++;
         else
@@ -199,11 +316,12 @@ void Dynamic::BiasSolver::run()
             giveUpCount = 0;
         }
 
-
         if( giveUpCount >= GA_GIVE_UP_LIMIT )
             break;
 
-        if( i % 5 == 0 )
+
+        // status updates
+        if( updateStatus && i % 5 == 0 )
         {
             int progress = (int)(100.0 * (1.0 - population.first().energy));
             emit statusUpdate( progress >= 0 ? progress : 0 );
@@ -212,6 +330,9 @@ void Dynamic::BiasSolver::run()
         debug() << "GA: min E = " << population.first().energy;
         debug() << "GA: max E = " << population.last().energy;
 
+
+
+        // 2. Choose the portion of the population to reproduce.
         matingPopulation = generateMatingPopulation( population );
 
         // randomize the order of the mating population so we don't get the same
@@ -250,7 +371,7 @@ void Dynamic::BiasSolver::run()
         }
 #endif
         
-        // rerpoduce using uniform crossover
+        // 3. Reproduce (using uniform crossover).
         for( int j = 0; j < matingPopulation.size(); ++j )
         {
             int parent1 = matingPopulation[j];
@@ -277,16 +398,13 @@ void Dynamic::BiasSolver::run()
         }
 
 
-        // Replace the worst in the population with the offspring.
+        // 4. Replace the worst in the population with the offspring.
         int j = population.size() - 1;
         foreach( Meta::TrackList p, offspring )
         {
-            m_playlist = p;
-            m_E = energy();
-            
-            // TODO: try introducing mutations
+            // TODO: try introducing mutations to the offspring here.
 
-            population[j--] = TrackListEnergyPair( p, m_E );
+            population[j--] = TrackListEnergyPair( p, energy(p) );
         }
 
         qSort( population ); // sort playlists by energy
@@ -294,61 +412,23 @@ void Dynamic::BiasSolver::run()
 
 
     // select the best solution
-    m_playlist = population.first().trackList;
-    m_E = energy(); // (we have to recalculate, so m_biasEnergy gets set correctly.) 
+    playlist = population.first().trackList;
+    energy( playlist ); // (we have to recalculate, so m_biasEnergy gets set correctly.) 
 
-
-    // SIMULATE ANNEALING PHASE
-    // Now let annealing have a go at it.
-    m_T = SA_INITIAL_TEMPERATURE;
-    anneal( SA_ITERATION_LIMIT, true );
-
-    debug() << "System solved in " << (GA_ITERATION_LIMIT - i)
-            << "GA iterations, with E = " << m_E;
+    return playlist;
 }
 
-
-void
-Dynamic::BiasSolver::anneal( int i, bool updateStatus )
-{
-    Meta::TrackPtr mutation;
-    double prevE = 0.0;
-    int giveUpCount = 0;
-    while( i-- && m_E >= m_epsilon && !m_abortRequested )
-    {
-        if( prevE == m_E )
-            giveUpCount++;
-        else
-        {
-            prevE = m_E;
-            giveUpCount = 0;
-        }
-
-        if( giveUpCount >= SA_GIVE_UP_LIMIT )
-            break;
-
-        mutation = getMutation();
-
-        // empty collection, abort
-        if( !mutation )
-            break;
-        
-        iterateAnnealing( mutation );
-
-        if( updateStatus && i % 100 == 0 )
-        {
-            debug() << "SA: E = " << m_E;
-            int progress = (int)(100.0 * (1.0 - m_E));
-            emit statusUpdate( progress >= 0 ? progress : 0 );
-        }
-    }
-}
 
 
 QList<int>
 Dynamic::BiasSolver::generateMatingPopulation( const QList<TrackListEnergyPair>& population )
 {
-    // Selection using stochastic universal sampling.
+    /**
+     * Used by the reproduction phase of each iteration of the ge_optimize, this
+     * algorithm chooses the subset of the population that will be used to
+     * produce offspring. The technique used here is called "stochastic
+     * universal sampling".
+     */
 
     double sum = 0.0;
     foreach( TrackListEnergyPair p, population )
@@ -376,7 +456,7 @@ Dynamic::BiasSolver::generateMatingPopulation( const QList<TrackListEnergyPair>&
 
 Meta::TrackList Dynamic::BiasSolver::solution()
 {
-    return m_playlist;
+    return m_solution;
 }
 
 
@@ -386,40 +466,16 @@ Dynamic::BiasSolver::biasUpdated()
     DEBUG_BLOCK
     QMutexLocker locker( &m_biasMutex );
 
-    if( m_pendingBiasUpdates == 0 )
+    if( m_pendingBiasUpdates <= 0 )
         return;
 
     if( --m_pendingBiasUpdates == 0 && !s_universeOutdated )
-        ThreadWeaver::Weaver::instance()->enqueue( this );
+        emit readyToRun();
 }
 
 
-void Dynamic::BiasSolver::iterateAnnealing( Meta::TrackPtr mutation )
-{
-    int mutationPos = KRandom::random() % m_playlist.size();
 
-    double mutationE = recalculateEnergy( mutation, mutationPos );
-
-    double p = 1.0 / ( 1.0 + exp( (mutationE - m_E)  / m_T ) );
-
-    // generate a random number in [0,1]
-    double r = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
-
-    // accept the mutation ?
-    if( r <= p )
-    {
-        m_playlist[ mutationPos ] = mutation;
-        m_E = mutationE;
-        m_biasEnergy = m_biasMutationEnergy;
-    }
-
-
-    // cool the temperature
-    m_T *= SA_COOLING_RATE;
-}
-
-
-double Dynamic::BiasSolver::energy()
+double Dynamic::BiasSolver::energy( const Meta::TrackList& playlist )
 {
     int activeBiases = 0;
     double sum = 0.0;
@@ -427,7 +483,7 @@ double Dynamic::BiasSolver::energy()
     {
         if( m_biases[i]->active() )
         {
-            m_biasEnergy[i] = m_biases[i]->energy( m_playlist, m_context );
+            m_biasEnergy[i] = m_biases[i]->energy( playlist, m_context );
             sum += qAbs( m_biasEnergy[i]  );
             activeBiases++;
         }
@@ -437,7 +493,7 @@ double Dynamic::BiasSolver::energy()
 }
 
 
-double Dynamic::BiasSolver::recalculateEnergy( Meta::TrackPtr mutation, int mutationPos )
+double Dynamic::BiasSolver::recalculateEnergy( const Meta::TrackList& playlist, Meta::TrackPtr mutation, int mutationPos )
 {
     int activeBiases = 0;
     double sum = 0.0;
@@ -447,7 +503,7 @@ double Dynamic::BiasSolver::recalculateEnergy( Meta::TrackPtr mutation, int muta
         {
             m_biasMutationEnergy[i] = 
                 m_biases[i]->reevaluate( 
-                        m_biasEnergy[i], m_playlist, mutation, 
+                        m_biasEnergy[i], playlist, mutation, 
                         mutationPos, m_context );
             sum += qAbs( m_biasMutationEnergy[i] );
             activeBiases++;
@@ -458,36 +514,85 @@ double Dynamic::BiasSolver::recalculateEnergy( Meta::TrackPtr mutation, int muta
 }
 
 
-bool
-Dynamic::BiasSolver::generateInitialPlaylist()
+Meta::TrackList
+Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 {
     DEBUG_BLOCK
-    // Playlist generation is NP-Hard, but the subset of playlist generation
-    // that consists of just global, proportional biases can be solved in linear
-    // time (to be precise, O(m*n), where m is the number of biases, and n is
-    // the size of the playlist to generate.  Here we do that. Solving it
-    // otherwise could be potentially very slow.
 
-    // Note that this is just a heuristic for the system as whole. We cross our
-    // fingers a bit and assume it is mostly composed of global biases.
-
+    /*
+     * Playlist generation is NP-Hard, but the subset of playlist generation
+     * that consists of just global, proportional biases can be solved in linear
+     * time (to be precise, O(m*n), where m is the number of biases, and n is
+     * the size of the playlist to generate.  Here we do that. Since we rely on
+     * random mutations, and the subset of the proportional bias may be very
+     * small, solving it otherwise could be potentially very slow. 
+     *
+     * Note that this is just a heuristic for the system as whole. We cross our
+     * fingers a bit and assume it is mostly composed of global biases.
+     *
+     * The Algorithm:
+     * (I invented this, but it seems like something that would already exist. If
+     * anyone knows what this is called, please let me know. --DCJ)
+     *
+     * We start with a collection of proportional biases, those with
+     * with a [0,1] proportion p_i and a subset of the universe, S_i.
+     *
+     * We build up a playlist one track at a time.  For each bias we must make a
+     * decision: is the the track in the set S_i, or not in the set S_i. So the
+     * algorithm can be thought of as working its way down a tree:
+     *
+     *                              In S_0?
+     *                               /   \
+     *                            (yes) (no)
+     *                             /      \
+     *                         In S_1?   In S_1? 
+     *                          /  \     /  \
+     *                        ... ...  ...  ...
+     *
+     * In this way we find a subset from which to choose a random track so it
+     * will satisfy the biases. We start with S = U (the universe set), then at
+     * each step, if we decide the track is in S_i, we set "S := S intersect
+     * S_i", on the other hand, if we decide the track is not in S_i, we take "S
+     * := S subtract S_i". Once we get to the bottom of the tree, S is a subset
+     * from which we choose a random track.
+     *
+     * Ok, but how do we decide if the track is in or not in a set S_i? We use
+     * the proportions (p_i) and decide at random. If p_0 = 0.4, there is a 0.4
+     * chance the we decide the track is in S_0, and a 0.6 chance it is not.
+     *
+     * But it's not quite that simple. As the playlist gets built up, we change
+     * the p_i value to reflect the proportion of _remaining_ tracks should be
+     * in S_i. So if, p_0 = 0.4, and we add a track that is in S_0, then that
+     * number will go down, since we need fewer tracks to satisfy that bias.
+     * This way we always get a the best possible playlist.
+     *
+     * There are a couple of other caveats (such as producing reasonable
+     * playlists when given infeasible systems of biases, e.g. 100% Radiohead,
+     * AND 100% Bob Dylon), that you can read on to learn about.
+     *
+     */                
 
     // this algorithm will produce an optimal solution unless there are
     // non global biases in the system.
-    bool optimal = (m_biases.size() == m_feasibleGlobalBiases.size());
-    m_playlist.clear();
+    optimal = (m_biases.size() == m_feasibleGlobalBiases.size());
+    Meta::TrackList playlist;
 
     // Empty collection
     if( s_universe.isEmpty() )
-        return false;
+    {
+        optimal = false;
+        return Meta::TrackList();
+    }
 
     // No feasible global biases
     if( m_feasibleGlobalBiases.size() == 0 )
     {
         int n = m_n;
         while( n-- )
-            m_playlist += getMutation();
-        return m_biases.isEmpty();
+            playlist += getMutation();
+
+        optimal = m_biases.isEmpty();
+        return playlist;
     }
 
     // We are going to be computing a lot of track set intersections so we will
@@ -504,6 +609,8 @@ Dynamic::BiasSolver::generateInitialPlaylist()
 
     // We use this array of indexes to randomize the order the biases are looked
     // at. That was we get reasonable results when the system is infeasible.
+    // That is, specifying 100% of two mutually exclusive artists, will get you
+    // about 50% of each.
     QList<int> indexes;
     for( int i = 0; i < m_feasibleGlobalBiases.size(); ++i )
         indexes.append( i );
@@ -516,7 +623,7 @@ Dynamic::BiasSolver::generateInitialPlaylist()
     while( n-- && !m_abortRequested )
     {
         // For each bias, we must make a decision whether the track being chosen
-        // should belong to it or not. This is simply a probabalistic choice
+        // should belong to it or not. This is simply a probabilistic choice
         // based on the current weight. 
 
 
@@ -586,13 +693,13 @@ Dynamic::BiasSolver::generateInitialPlaylist()
         }
 
         // choose a track at random from our final subset
-        m_playlist.append( getRandomTrack( finalSubset ) );
+        playlist.append( getRandomTrack( finalSubset ) );
 
         if( optimal )
             emit statusUpdate( (int)(100.0 * (double)(m_n - n) / (double)n) );
     }
 
-    return optimal;
+    return playlist;
 }
 
 
@@ -637,7 +744,7 @@ Dynamic::BiasSolver::computeDomain()
         {
             debug() << "property size: " << gb->propertySet().size();
 
-            // if the bias is infeasable (i.e. size = 0), just ignore it
+            // if the bias is infeasible (i.e. size = 0), just ignore it
             if( gb->propertySet().size() == 0 )
             {
                 debug() << "infeasible bias detected";
@@ -677,6 +784,18 @@ void
 Dynamic::BiasSolver::updateUniverse()
 {
     DEBUG_BLOCK
+
+    /* TODO: Using multiple collections.
+     * One problem with just using MetaQueryMaker is that we can't store uids as
+     * QByteArrays unless we keep separate lists for each collection. If we do
+     * keep separate lists, we have to do some extra kung-fu when generating
+     * random tracks to decide which list to choose from.
+     *
+     * We could just deal with the extra memory usage and store them as uid-url
+     * strings, but when I first wrote this, I don't this there was a general
+     * function to get a track from a uid-url.
+     */
+
     QMutexLocker locker( &s_universeMutex );
 
     if( !s_universeOutdated )
@@ -718,7 +837,7 @@ Dynamic::BiasSolver::universeResults( QString collectionId, QStringList uids )
         if ( uidString.isEmpty() )
             continue;
 
-        // for some reason we sometimes get uidt without the protocol part
+        // for some reason we sometimes get uids without the protocol part
         if( uidString.at( s_uidUrlProtocolPrefixLength - 1 ) != '/' )
             uid = QByteArray::fromHex( uidString.toAscii() );
         else
@@ -739,7 +858,7 @@ Dynamic::BiasSolver::universeUpdated()
     s_universeOutdated = false;
 
     if( m_pendingBiasUpdates == 0 )
-        ThreadWeaver::Weaver::instance()->enqueue( this );
+        return readyToRun();
 }
 
 void
