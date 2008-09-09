@@ -120,8 +120,7 @@ function lyricsFetchResult( reply )
     print( "got result from lyrics fetch:" + reply ); 
     try
     {
-        //var lyrics = Amarok.Lyrics.toUtf8( reply.readAll(), "ISO 8859-1" );
-        lyrics = reply;
+        lyrics = Amarok.Lyrics.toUtf8( reply, "ISO 8859-1" );
     } catch( err )
     {
         print( "error converting lyrics: " + err );
@@ -167,14 +166,15 @@ function fetchLyrics( artist, title, url )
     try{
         if( url == "" )
         {
-            path = "http://lyrc.com.ar/en/tema1en.php?songname=" + title + "&artist=" + artist;
-            //encodedTitle = Amarok.Lyrics.fromUtf8( title, "ISO 8859-1" );
-            //encodedTitleKey = Amarok.Lyrics.fromUtf8( "songname", "ISO 8859-1" );
-            //encodedArtist = Amarok.Lyrics.fromUtf8( artist, "ISO 8859-1" )
-            //encodedArtistKey = Amarok.Lyrics.fromUtf8( "artist", "ISO 8859-1" );
-            //url = new QUrl( path );
-            //url.addEncodedQueryItem( encodedArtistKey, encodedArtist );
-            //url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
+            path = "http://lyrc.com.ar/en/tema1en.php";
+            encodedTitle = Amarok.Lyrics.fromUtf8( title, "ISO 8859-1" );
+            encodedTitleKey = Amarok.Lyrics.fromUtf8( "songname", "ISO 8859-1" );
+            encodedArtist = Amarok.Lyrics.fromUtf8( artist, "ISO 8859-1" )
+            encodedArtistKey = Amarok.Lyrics.fromUtf8( "artist", "ISO 8859-1" );
+            url = new QUrl( path );
+            url.addEncodedQueryItem( encodedArtistKey, encodedArtist );
+            url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
+            path = url.toString();
             //print( "fetching from: " + url.toString() );
         } else
         {   // we are told to fetch a specific url
@@ -182,15 +182,15 @@ function fetchLyrics( artist, title, url )
             //url = new QUrl( path );
             //print( "fetching from given url: " + url.toString() );
         }
+        // TODO for now, ignoring proxy settings
+        //page_url = QUrl.toPercentEncoding( page_url )
+        print( path );
+        a = new Downloader( path, lyricsFetchResult );
     }
     catch( err )
     {
         print( err );
     }
-    // TODO for now, ignoring proxy settings
-    //page_url = QUrl.toPercentEncoding( page_url )
-
-    a = new Downloader( path, lyricsFetchResult );
 }
 
 Amarok.Lyrics.fetchLyrics.connect( fetchLyrics );

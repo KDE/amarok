@@ -46,8 +46,8 @@ function parseLyrics( lyrics )
 
 function lyricsFetchResult( reply )
 {
-    lyrics = Amarok.Lyrics.toUtf8( reply.readAll(), "GB2312" );
-
+    lyrics = Amarok.Lyrics.toUtf8( reply, "GB2312" );
+    print( lyrics );
     lyrics = lyrics.replace( /<[iI][mM][gG][^>]*>/g, "");
     lyrics = lyrics.replace( /<[aA][^>]*>[^<]*<\/[aA]>/g, "" );
     lyrics = lyrics.replace( /<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][cC][rR][iI][pP][tT]>/g, "" );
@@ -64,16 +64,20 @@ function lyricsFetchResult( reply )
 
 function fetchLyrics( artist, title )
 {
-    xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>"
-    connection = new QNetworkAccessManager();
+    try{
+    xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>";
     var path = "http://mp3.sogou.com/gecisearch.so";
     encodedTitleKey = Amarok.Lyrics.fromUtf8( "query", "GB2312" );
     encodedTitle = Amarok.Lyrics.fromUtf8( title + "+" + artist, "GB2312" );
-    connection.finished.connect( lyricsFetchResult );
     url = new QUrl( path );
     url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
-    print( "fetching from: " + url.toString() );
-    connection.get( new QNetworkRequest( url ) );
+    print( "url address:" + url.toString() );
+    d = new Downloader( url.toString(), lyricsFetchResult );
+    }
+    catch( err )
+    {
+        print (err);
+    }
 }
 
 Amarok.Lyrics.fetchLyrics.connect( fetchLyrics );

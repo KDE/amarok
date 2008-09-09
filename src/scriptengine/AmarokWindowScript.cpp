@@ -93,7 +93,7 @@ namespace AmarokScript
         m_guiPtrList->append( action );
     }
 
-    void AmarokWindowScript::showBrowser( QString browser )
+    void AmarokWindowScript::showBrowser( QString browser ) const
     {
         if ( browser == "collection" )
             The::mainWindow()->showBrowser( "CollectionBrowser" );

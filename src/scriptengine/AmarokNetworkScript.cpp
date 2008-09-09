@@ -109,12 +109,10 @@ AmarokDownloadHelper::result( KJob* job )
     DEBUG_BLOCK
 
     KIO::StoredTransferJob* const storedJob = static_cast< KIO::StoredTransferJob* >( job );
-    QString data = QString( storedJob->data() );
-    //debug() << "got fetch result: " << data;
-    
-    // now send the data to the associated script object
     QScriptValue obj = m_jobs[ job ];
     QScriptEngine* engine = m_engines[ job ];
+    
+    // now send the data to the associated script object
     if( !obj.isFunction() )
     {
         debug() << "script object is valid but not a function!!";
@@ -124,8 +122,9 @@ AmarokDownloadHelper::result( KJob* job )
         debug() << "stored script engine is not valid!";
         return;
     }
+    QScriptValue data = engine->newVariant( qVariantFromValue( storedJob->data() ) );
     QScriptValueList args;
-    args << QScriptValue( engine, data );
+    args << data;
     obj.call( obj, args );
 
     m_jobs.remove( job );

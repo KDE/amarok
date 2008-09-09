@@ -64,7 +64,7 @@ class ScriptableServiceScript : public QObject, public QScriptable
 
     public slots:
         int insertItem( StreamItem* item );
-        int donePopulating();
+        int donePopulating() const;
 
     private:
         QScriptEngine* m_scriptEngine;

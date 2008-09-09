@@ -127,7 +127,7 @@ int ScriptableServiceScript::insertItem( StreamItem* item )
     return The::scriptableServiceManager()->insertItem( m_serviceName, item->level(), m_currentId, item->itemName(), item->infoHtml(), item->callbackData(), item->playableUrl() );
 }
 
-int ScriptableServiceScript::donePopulating()
+int ScriptableServiceScript::donePopulating() const
 {
     DEBUG_BLOCK
 
