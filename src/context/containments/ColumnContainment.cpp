@@ -806,33 +806,17 @@ ColumnContainment::setView( ContextView *newView )
 void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
 {
     m_zoomLevel = level;
-    if( m_addAppletsIcon && m_removeAppletsIcon )
-    {
-        qreal xpos = BORDER_PADDING;
-        qreal ypos = boundingRect().height() - m_addAppletsIcon->size().height();
-
-        m_addAppletsIcon->setPos( xpos, ypos );
-        m_addAppletsIcon->show();
-
-        xpos += m_addAppletsIcon->size().width();
-
-        m_removeAppletsIcon->setPos( xpos, ypos );
-        m_removeAppletsIcon->show();
-    }
-    
+    correctControlButtonPositions();
     if( level == Plasma::DesktopZoom ) // zoomed in
     {
         // only option is to zoom out
         if( m_zoomInIcon && m_zoomOutIcon )
         {
             m_zoomInIcon->hide();
-            qreal xpos = boundingRect().width() - m_zoomOutIcon->size().width();
-            qreal ypos = boundingRect().height() - m_zoomOutIcon->size().height();
-
-            m_zoomOutIcon->setPos( QPointF( xpos, ypos ) );
             m_zoomOutIcon->show();
-            debug() << "set zoom out icon to showable, at: " << xpos << ypos << "and size:" << m_zoomOutIcon->size();
         }
+         m_switchRightIcon->show();
+         m_switchLeftIcon->show();
         
             
     } else if( level == Plasma::GroupZoom )
@@ -841,13 +825,11 @@ void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
          if( m_zoomInIcon && m_zoomOutIcon )
          {
             m_zoomOutIcon->hide();
-            qreal xpos = boundingRect().width() - m_zoomInIcon->size().width();
-            qreal ypos = boundingRect().height() - m_zoomInIcon->size().height();
-
-            m_zoomInIcon->setPos( QPointF( xpos, ypos ) );
             m_zoomInIcon->show();
-            debug() << "set zoom in icon to showable, at: " << xpos << ypos << "and size:" << m_zoomInIcon->size();
          }
+         // don't show switching arrows
+         m_switchRightIcon->hide();
+         m_switchLeftIcon->hide();
      }
 }
 
