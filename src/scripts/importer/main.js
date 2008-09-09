@@ -164,6 +164,12 @@ transfer();
  * HELPER FUNCTIONS
  **/
 
+QByteArray.prototype.toString = function()
+{
+    ts = new QTextStream( this, QIODevice.ReadOnly );
+    return ts.readAll();
+}
+
 function transfer()
 {
     print( "Fetching tracks from Amarok 1.4" );
@@ -173,8 +179,8 @@ function transfer()
     var a2_url = a2db.exec();
     a2_url.prepare( "SELECT id FROM urls WHERE rpath = :rpath" );
 
-    var a1_insert = db.exec();
-    a1_insert.prepare( "INSERT INTO statistics( url, createdate, accessdate, score, rating, playcount ) " +
+    var a2_insert = a2db.exec();
+    a2_insert.prepare( "INSERT INTO statistics( url, createdate, accessdate, score, rating, playcount ) " +
                        "VALUES ( :urlid, :createdate, :accessdate, :score, :rating, :playcount )" );
 
     //var staleValues = new QVariantList();
@@ -184,31 +190,39 @@ function transfer()
         var result;
         
         var index = 0;
-        var mount = query.value(index++).toString();
-        var url   = query.value(index++);
-        var createdate = query.value(index++).toString();
-        var accessdate = query.value(index++).toString();
+        var mount = query.value(index++);
+
+        if( sqlTypeCombo.currentText == "MySQL" )
+        {
+            // QByteArray -> QString conversion
+            var _url  = query.value(index++);
+            ts = new QTextStream( _url, QIODevice.ReadOnly );
+            url = ts.readAll();
+        }
+        else
+            url = query.value(index++);
+
+        var createdate = query.value(index++);
+        var accessdate = query.value(index++);
         var score = query.value(index++);
         var rating = query.value(index++);
         var playcount = query.value(index++);
         
         // make the url absolute path
-        print( "url: " + url );
-        print( "toString: " + url.toString() );
-        print( "data: " + url.data() );
         url = mount + url.substring(1);
 
         // then make it "relative" again, for Amarok 2 devices or something
         url = "." + url;
 
+        print( "retrieved url:" + url );
+
         a2_url.bindValue( ":rpath", url, QSql.In );
         result = a2_url.exec();
         if( !result )
         {
-            print( "Insertion failed", a2_url.executedQuery() );
+            print( "URL lookup failed", a2_url.executedQuery() );
             continue;
         }
-            
 
         if( !a2_url.next() ) // couldn't the url in the database
         {
@@ -216,18 +230,19 @@ function transfer()
             //staleValues.append( url );
             continue;
         }
+        print( "found in Amarok 2.0 database" );
 
-        a1_insert.bindValue( ":urlid", url, QSql.In );
-        a1_insert.bindValue( ":createdate", createdate, QSql.In );
-        a1_insert.bindValue( ":accessdate", accessdate, QSql.In );
-        a1_insert.bindValue( ":score", score, QSql.In );
-        a1_insert.bindValue( ":rating", rating, QSql.In );
-        a1_insert.bindValue( ":playcount", playcount, QSql.In );
-        result = a1_insert.exec();
+        a2_insert.bindValue( ":urlid", url, QSql.In );
+        a2_insert.bindValue( ":createdate", createdate, QSql.In );
+        a2_insert.bindValue( ":accessdate", accessdate, QSql.In );
+        a2_insert.bindValue( ":score", score, QSql.In );
+        a2_insert.bindValue( ":rating", rating, QSql.In );
+        a2_insert.bindValue( ":playcount", playcount, QSql.In );
+        result = a2_insert.exec();
 
         if( !result )
         {
-            print( "Insertion failed", a1_insert.executedQuery() );
+            print( "Insertion failed", a2_insert.executedQuery() );
             continue;
         }
         print( "Updated", url );
@@ -251,3 +266,4 @@ function databaseTypeChanged( dbType )
     hostnameLabel.setVisible( dbType != "SQLite" );
     hostnameEdit.setVisible( dbType != "SQLite" );
 }
+
