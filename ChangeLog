@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta2
   FEATURES:
+    * Arrows to switch between containments directly.
     * Scripted services can now show source info in the statusbar like most 
       other services.
     * Scripts now able to access web via KDE-wide proxy.
