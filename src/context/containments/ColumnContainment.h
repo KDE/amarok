@@ -139,6 +139,8 @@ private:
     Plasma::Icon *m_zoomOutIcon;
     Plasma::Icon *m_addAppletsIcon;
     Plasma::Icon *m_removeAppletsIcon;
+    Plasma::Icon *m_switchRightIcon;
+    Plasma::Icon *m_switchLeftIcon;
 
     AmarokToolBoxMenu *m_addAppletsMenu;
     AmarokToolBoxMenu *m_removeAppletsMenu;

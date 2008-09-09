@@ -706,8 +706,10 @@ ContextView::previousContainment()
     DEBUG_BLOCK
     const QList<Plasma::Containment*> containments = contextScene()->containments();
     int index = containments.indexOf( containment() );
-    index = ( index - 1 ) % containments.size();
-
+    index--;
+    if( index == -1 )
+        index = contextScene()->containments().size() - 1; // last containment
+        
     setContainment( containments.at( index ) );
 }
 

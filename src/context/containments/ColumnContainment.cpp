@@ -84,22 +84,6 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     // set up default context menu actions
     m_actions = new QList<QAction*>();
     m_actions->append( appletBrowserAction );
-    
-    // 
-    // foreach( QVariant arrow, args )
-    // {
-    //     if( arrow.canConvert< int >() )
-    //     {
-    //         debug() << "CREATING CONTAINMENT ARROW: " << arrow.value< int >();
-    //         addContainmentArrow( arrow.value< int >() );
-    //     }
-    // }
-    
-    // for now, just do left/right. once we get nuno's mockups we'll see
-    // what else to do.
-    // DISABLING ARROWS FOR BETA, AND UNTIL WE HAVE AN ARTIST's OPINION
-    // addContainmentArrow( LEFT );
-    // addContainmentArrow( RIGHT );
 
     setupControlButtons();
     
@@ -201,16 +185,29 @@ ColumnContainment::setupControlButtons()
         listRemove->setEnabled( true );
     else
         listRemove->setEnabled( false );
-    
 
-    connect( listAdd, SIGNAL( triggered() ), this, SLOT( showAddAppletsMenu() ) );
-    connect( listRemove, SIGNAL( triggered() ), this, SLOT( showRemoveAppletsMenu() ) );
+    // TODO can't add text due to string freeze. :(
+    QAction *switchRight = new QAction( "", this );
+    switchRight->setIcon( KIcon( "arrow-right" ) );
+    switchRight->setVisible( true );
+    switchRight->setEnabled( true );
+
+    // TODO can't add text due to string freeze. :(
+    QAction *switchLeft = new QAction( "", this );
+    switchLeft->setIcon( KIcon( "arrow-left" ) );
+    switchLeft->setVisible( true );
+    switchLeft->setEnabled( true );
     
     m_zoomInIcon = addAction( zoomInAction  );
     m_zoomOutIcon = addAction( zoomOutAction );
     m_addAppletsIcon = addAction( listAdd );
     m_removeAppletsIcon = addAction( listRemove );
+    m_switchLeftIcon = addAction( switchLeft );
+    m_switchRightIcon = addAction( switchRight );
 
+    connect( listAdd, SIGNAL( triggered() ), this, SLOT( showAddAppletsMenu() ) );
+    connect( listRemove, SIGNAL( triggered() ), this, SLOT( showRemoveAppletsMenu() ) );
+    
     connect( m_zoomInIcon, SIGNAL( activated() ), this, SLOT( zoomInRequested() ) );
     connect( m_zoomOutIcon, SIGNAL( activated() ), this, SLOT( zoomOutRequested() ) );
     
@@ -293,16 +290,6 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
 
     m_grid->updateGeometry();
     m_maxColumnWidth = rect().width();
-    
-    if( m_arrows[ LEFT ] ) 
-        m_arrows[ LEFT ]->resize( geometry().size() );
-    if( m_arrows[ RIGHT ] ) 
-        m_arrows[ RIGHT ]->resize( geometry().size() );
-    if( m_arrows[ DOWN ] ) 
-        m_arrows[ DOWN ]->resize( geometry().size() );
-    if( m_arrows[ UP ] ) 
-        m_arrows[ UP ]->resize( geometry().size() );
-    correctArrowPositions();
 
     correctControlButtonPositions();
     
@@ -484,23 +471,7 @@ ColumnContainment::showRemoveAppletsMenu()
 void
 ColumnContainment::correctControlButtonPositions()
 {
-    if( m_zoomInIcon && m_zoomOutIcon )
-    {
-        // we don;t know which icon is shown,
-        // but we know only one is currently visible,
-        // so put them in the same place
-        qreal xpos = boundingRect().width() - m_zoomOutIcon->size().width();
-        
-        qreal ypos = boundingRect().height() - m_zoomOutIcon->size().height();
-
-        m_zoomOutIcon->setPos( xpos, ypos );
-        m_zoomInIcon->setPos( xpos, ypos );
-
-        if( view()->zoomLevel() == Plasma::DesktopZoom )
-            m_zoomOutIcon->show();
-        else if( view()->zoomLevel() == Plasma::GroupZoom )
-           m_zoomInIcon->show();
-    }
+    
     if( m_addAppletsIcon && m_removeAppletsIcon )
     {
         qreal xpos = BORDER_PADDING;
@@ -514,6 +485,39 @@ ColumnContainment::correctControlButtonPositions()
 
         m_addAppletsIcon->show();
         m_removeAppletsIcon->show();
+    }
+    if( m_switchRightIcon && m_switchLeftIcon )
+    {
+        // we place these icons to the RIGHT of the zoom icon
+        // rightmost corner
+        qreal xpos = boundingRect().width() - m_switchRightIcon->size().width();
+        qreal ypos = boundingRect().height() - m_switchRightIcon->size().height();
+        m_switchRightIcon->setPos( xpos, ypos );
+
+        // next to it on the left
+        xpos = m_switchRightIcon->pos().x() - m_switchLeftIcon->size().width();
+        m_switchLeftIcon->setPos( xpos, ypos );
+
+        m_switchLeftIcon->show();
+        m_switchRightIcon->show();
+    }
+    if( m_zoomInIcon && m_zoomOutIcon )
+    {
+        // we don;t know which icon is shown,
+        // but we know only one is currently visible,
+        // so put them in the same place
+        // location is to the left of the switching arrows
+        
+        qreal xpos = m_switchLeftIcon->pos().x() - m_zoomOutIcon->size().width();
+        qreal ypos = m_switchLeftIcon->pos().y();
+
+        m_zoomOutIcon->setPos( xpos, ypos );
+        m_zoomInIcon->setPos( xpos, ypos );
+
+        if( view()->zoomLevel() == Plasma::DesktopZoom )
+            m_zoomOutIcon->show();
+        else if( view()->zoomLevel() == Plasma::GroupZoom )
+           m_zoomInIcon->show();
     }
 }
 
@@ -837,6 +841,9 @@ ColumnContainment::setView( ContextView *newView )
                  m_view, SLOT( setContainment( Plasma::Containment * ) ) );
     connect( m_removeAppletsMenu, SIGNAL( changeContainment( Plasma::Containment * ) ),
                  m_view, SLOT( setContainment( Plasma::Containment * ) ) );
+
+    connect( m_switchRightIcon, SIGNAL( activated() ), m_view, SLOT( nextContainment() ) );
+    connect( m_switchLeftIcon, SIGNAL( activated() ), m_view, SLOT( previousContainment() ) );
 
 }
 
