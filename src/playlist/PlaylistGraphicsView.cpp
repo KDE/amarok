@@ -472,8 +472,6 @@ void Playlist::GraphicsView::moveViewItems( QList<int> rows, int to )
     void
 Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool animate )
 {
-    DEBUG_BLOCK
-    
     if( startPosition < 0 )
         return;
 
@@ -494,11 +492,8 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool
 
         qreal desiredY = cumulativeHeight;
 
-        debug() << "item " << i << " old y=" << currentY << ", desired y=" << desiredY;
-
         double itemHeight = item->boundingRect().height();
         cumulativeHeight += itemHeight;
-
 
         //it turns out that not repaiting stuff that is being moved, but technically
         //already is where it needs to be, is a really bad idea.
@@ -518,11 +513,11 @@ Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool
         double visibleBottom = mapToScene( 0, height() ).y();
 
         // Animate the repositioning of the item if it is within the viewable area and this playlist is visible...
-       if ( animate &&
+        if ( animate &&
             (visibleTop <= desiredY && desiredY <= visibleBottom || 
             visibleTop <= currentY && currentY <= visibleBottom) &&
             itemHeight != 0 && isVisible() )
-       {
+        {
             if ( timeline == 0 )
             {
                 timeline = new QTimeLine( 300 ); // 0.3 second duration
