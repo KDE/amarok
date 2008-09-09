@@ -19,7 +19,6 @@
 #include "widgets/ToolBoxMenu.h"
 #include "Containment.h"
 #include "ContextView.h"
-#include "context/widgets/ContainmentArrow.h"
 #include "plasma/widgets/icon.h"
 
 #include <QObject>
@@ -69,7 +68,6 @@ public:
     virtual void setZoomLevel( Plasma::ZoomLevel lvl );
     
     virtual ContextView *view();
-    void addContainmentArrow( int direction );
     
 Q_SIGNALS:
     void changeContainment( Plasma::Containment*, int );
@@ -84,7 +82,6 @@ public slots:
     
 private slots:
     void appletRemoved( Plasma::Applet * );
-    void slotArrowChangeContainment( int );
     void showRemoveAppletsMenu();
     void showAddAppletsMenu();
     
@@ -95,7 +92,6 @@ private:
     void rearrangeApplets( int starRow, int startColumn );
     bool insertInGrid( Plasma::Applet* applet );
     void loadInitialConfig();   
-    void correctArrowPositions();
     void setupControlButtons();
     void correctControlButtonPositions();
     
@@ -144,8 +140,6 @@ private:
 
     AmarokToolBoxMenu *m_addAppletsMenu;
     AmarokToolBoxMenu *m_removeAppletsMenu;
-    
-    QHash< int, ContainmentArrow* > m_arrows;
 
     ContextView *m_view;
 //     bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];

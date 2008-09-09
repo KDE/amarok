@@ -783,50 +783,6 @@ void ColumnContainment::zoomOutRequested() // SLOT
     emit zoomOut( this );
 }
 
-void 
-ColumnContainment::addContainmentArrow( int direction )
-{
-    DEBUG_BLOCK
-
-    if( m_arrows[ direction ] != 0 )
-    {
-        debug() << "GOT BAD DIRECTION";
-        return;
-    }    
-
-    m_arrows[ direction ] = new ContainmentArrow( this, direction );
-    m_arrows[ direction ]->setZValue( 100000 );
-    debug() << "CONNECTING ARROW SIGNAL!";
-    connect( m_arrows[ direction ], SIGNAL( changeContainment( int ) ), this, SLOT( slotArrowChangeContainment( int ) ) );
-
-    correctArrowPositions();
-} 
-
-void
-ColumnContainment::slotArrowChangeContainment( int to )
-{
-    debug() << "EMITTING CHANGECONTAINMENT";
-    emit changeContainment( this, to );
-}
-
-void
-ColumnContainment::correctArrowPositions()
-{
-    if( m_arrows[ UP ] ) {
-        debug() << "setting UP arrow pos to 0,0";
-        m_arrows[ UP ]->setPos( 0, 0 );  // easy case, just position in top left
-    } if( m_arrows[ DOWN ] ) {
-        debug() << "setting DOWN arrow pos to 0," << geometry().height() - m_arrows[ DOWN ]->size().height();
-        m_arrows[ DOWN ]->setPos( 0, geometry().height() - m_arrows[ DOWN ]->size().height() ); // offset correctly to give it room to show
-    } if( m_arrows[ LEFT ] ) {
-        debug() << "setting LEFT arrow pos to " <<  m_arrows[ LEFT ]->size().width() << ",0";
-        m_arrows[ LEFT ]->setPos( m_arrows[ LEFT ]->size().width() , 0 );
-    } if( m_arrows[ RIGHT ] ) { 
-        debug() << "setting RIGHT arrow pos to "<< geometry().width() - m_arrows[ RIGHT ]->size().width() << ",0";
-        m_arrows[ RIGHT ]->setPos( geometry().width() - m_arrows[ RIGHT ]->size().width() , 0 );
-    }
-}
-
 void
 ColumnContainment::setView( ContextView *newView )
 {
@@ -866,11 +822,6 @@ void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
     
     if( level == Plasma::DesktopZoom ) // zoomed in
     {
-        foreach( ContainmentArrow* arrow, m_arrows.values() )
-        {
-            if( arrow )
-                arrow->enable();
-        }
         // only option is to zoom out
         if( m_zoomInIcon && m_zoomOutIcon )
         {
@@ -886,11 +837,6 @@ void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
             
     } else if( level == Plasma::GroupZoom )
     {
-        foreach( ContainmentArrow* arrow, m_arrows.values() )
-        {
-            if( arrow )
-                arrow->disable();
-        }
          // only option is to zoom in
          if( m_zoomInIcon && m_zoomOutIcon )
          {
