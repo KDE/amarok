@@ -177,6 +177,8 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
 
     debug() << "Serial is: " << serial;
 
+    debug() << "Success is: " << ( success ? "true" : "false" );
+
     return success;
 }
 
@@ -1087,9 +1089,13 @@ MtpHandler::slotDeviceMatchSucceeded()
     debug() << "Device matches serial, emitting succeeded()";
     emit succeeded();
 }
+
 void
 MtpHandler::slotDeviceMatchFailed()
 {
+    DEBUG_BLOCK
+    debug() << "Running slot device match failed";
+    disconnect( sender(), SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDeviceMatchSucceeded() ) );
     emit failed();
 }
 
@@ -1101,8 +1107,8 @@ WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, 
     , m_serial( serial )
     , m_handler( handler )
 {
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchSucceeded() ) );
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchFailed() ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchSucceeded() ) );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
 }
 
