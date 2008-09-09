@@ -63,24 +63,28 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
     }
 }
 
-CollectionTreeItem::~CollectionTreeItem() {
+CollectionTreeItem::~CollectionTreeItem()
+{
     qDeleteAll(m_childItems);
 }
 
 void
-CollectionTreeItem::appendChild(CollectionTreeItem *child) {
+CollectionTreeItem::appendChild(CollectionTreeItem *child)
+{
     m_childItems.append(child);
 }
 
 void
-CollectionTreeItem::removeChild( int index ) {
+CollectionTreeItem::removeChild( int index )
+{
     CollectionTreeItem *child = m_childItems[index];
     m_childItems.removeAt( index );
     delete child;
 }
 
 CollectionTreeItem*
-CollectionTreeItem::child( int row ) {
+CollectionTreeItem::child( int row )
+{
     if ( row >= 0 && row < m_childItems.count() )
         return m_childItems.value(row);
     else
@@ -88,8 +92,8 @@ CollectionTreeItem::child( int row ) {
 }
 
 QVariant
-CollectionTreeItem::data( int role ) const {
-
+CollectionTreeItem::data( int role ) const
+{
     if( !m_data.isNull() )
     {
         if( role == Qt::DisplayRole || role == CustomRoles::FilterRole )
