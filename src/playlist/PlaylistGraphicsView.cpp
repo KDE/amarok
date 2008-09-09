@@ -283,6 +283,7 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
         if( focused )
         {
             focused->setSelected( true );
+            focused->ensureVisible();
             scene()->setFocusItem( focused );
         }
         return;
