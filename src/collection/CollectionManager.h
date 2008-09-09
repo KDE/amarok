@@ -124,6 +124,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
         void checkCollectionChanges();
 
     signals:
+        void scanFinished();
         void collectionAdded( Collection *newCollection );
         void collectionRemoved( QString collectionId );
         void trackProviderAdded( TrackProvider *provider );

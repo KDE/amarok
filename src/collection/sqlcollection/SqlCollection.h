@@ -40,9 +40,10 @@ class CollectionLocation;
 class XesamCollectionBuilder;
 class ScanManager;
 
-class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
+class SqlCollection : public Collection, public SqlStorage
 {
     Q_OBJECT
+
     public:
         SqlCollection( const QString &id, const QString &prettyName );
         virtual ~SqlCollection();
@@ -98,6 +99,9 @@ class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
     public slots:
         void updateTrackUrls( QHash<QString,QString> changedUrls );
 
+    signals:
+        void scanFinished();
+
     protected:
         //this method MUST be called from subclass constructors
         void init();
@@ -106,7 +110,6 @@ class /*AMAROK_EXPORT*/ SqlCollection : public Collection, public SqlStorage
         void initXesam();
 
     private:
-
         SqlRegistry* const m_registry;
         DatabaseUpdater * const m_updater;
         ScanManager * const m_scanManager;
