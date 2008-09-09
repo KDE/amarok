@@ -160,7 +160,7 @@ SqlPodcastProvider::podcastChannelForId( int podcastChannelId )
     QListIterator<Meta::SqlPodcastChannelPtr> i( m_channels );
     while( i.hasNext() )
     {
-        int id = i.next()->id();
+        int id = i.next()->dbId();
         if( id == podcastChannelId )
             return i.previous();
     }

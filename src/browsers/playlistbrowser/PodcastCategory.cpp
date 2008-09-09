@@ -26,6 +26,7 @@
 #include "context/popupdropper/PopupDropperItem.h"
 #include "context/popupdropper/PopupDropper.h"
 #include "Debug.h"
+#include "PodcastSettingsDialog.h"
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
@@ -592,6 +593,26 @@ PlaylistBrowserNS::PodcastView::createEpisodeActions( QModelIndexList indices )
     return actions;
 }
 
+Meta::PodcastChannelList
+PlaylistBrowserNS::PodcastView::selectedChannels()
+{
+    Meta::PodcastChannelList channels;
+    foreach( Meta::PodcastMetaCommon *pmc, m_currentItems )
+    {
+            switch( pmc->podcastType() )
+        {
+            case Meta::EpisodeType:
+                break;
+            case Meta::ChannelType:
+                channels << Meta::PodcastChannelPtr(
+                    static_cast<Meta::PodcastChannel *>(pmc)
+                );
+                break;
+        }
+    }
+    return channels;
+}
+
 Meta::PodcastEpisodeList
 PlaylistBrowserNS::PodcastView::selectedEpisodes()
 {
@@ -601,13 +622,11 @@ PlaylistBrowserNS::PodcastView::selectedEpisodes()
         switch( pmc->podcastType() )
         {
             case Meta::EpisodeType:
-                debug() << "adding episode: " << pmc->title();
                 episodes << Meta::PodcastEpisodePtr(
                     static_cast<Meta::PodcastEpisode *>(pmc)
                 );
                 break;
             case Meta::ChannelType:
-                debug() << "adding channel: " << pmc->title();
                 episodes << static_cast<Meta::PodcastChannel *>(pmc)->episodes();
                 break;
         }
@@ -644,6 +663,9 @@ void
 PlaylistBrowserNS::PodcastView::slotConfigure()
 {
     DEBUG_BLOCK
+    Meta::PodcastChannelPtr channel = selectedChannels().first();
+    PodcastSettingsDialog dialog( channel, this );
+    dialog.configure();
 }
 
 void

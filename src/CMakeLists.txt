@@ -467,6 +467,7 @@ set(amaroklib_LIB_SRCS
     dialogs/EditFilterDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
     dialogs/PixmapViewer.cpp
+    dialogs/PodcastSettingsDialog.cpp
     dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
     dialogs/TagDialog.cpp
@@ -488,7 +489,6 @@ set(amaroklib_LIB_SRCS
     medium.cpp
     mountpointmanager.cpp
     PaletteHandler.cpp
-    podcastsettings.cpp
     PopupDropperFactory.cpp
     refreshimages.cpp
     browsers/servicebrowser/lastfm/SimilarArtistsAction.cpp
@@ -530,9 +530,9 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/ScriptManagerBase.ui
     dialogs/tagdialogbase.ui
     dialogs/FilenameLayoutDialog.ui
+    dialogs/PodcastSettingsBase.ui
     dialogs/trackpickerdialogbase.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
-    podcastsettingsbase.ui
 )
 
 kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
@@ -630,7 +630,7 @@ set(amarok_afttagger_SRCS
 kde4_add_executable(amarok_afttagger ${amarok_afttagger_SRCS} )
 
 target_link_libraries(amarok_afttagger
-    ${KDE4_KDECORE_LIBS} 
+    ${KDE4_KDECORE_LIBS}
     ${QT_QTCORE_LIBS}
     ${TAGLIB_LIBRARIES}
 )

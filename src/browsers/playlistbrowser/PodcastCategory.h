@@ -108,6 +108,10 @@ class PodcastView : public QTreeView
 
         QList<PopupDropperAction *> createChannelActions( QModelIndexList indices );
 
+        /** @returns all channels currently selected
+        **/
+        Meta::PodcastChannelList selectedChannels();
+
         /** @returns all episodes currently selected, this includes children of a selected
         * channel
         **/

@@ -1,5 +1,5 @@
 /* This file is part of the KDE project
-   Copyright (C) 20078 Bart Cerneels <bart.cerneels@kde.org>
+   Copyright (C) 2008 Bart Cerneels <bart.cerneels@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,7 +32,7 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::Sql
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
-    m_id = (*(iter++)).toInt();
+    m_dbId = (*(iter++)).toInt();
     m_url = KUrl( *(iter++) );
     int channelId = (*(iter++)).toInt();
     Q_UNUSED( channelId );
@@ -71,6 +71,11 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     updateInDb();
 }
 
+Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
+{
+    updateInDb();
+}
+
 void
 Meta::SqlPodcastEpisode::updateInDb()
 {
@@ -82,14 +87,14 @@ Meta::SqlPodcastEpisode::updateInDb()
     #define escape(x) sqlStorage->escape(x)
     QString insert = "INSERT INTO podcastepisodes(url,channel,localurl,guid,title,subtitle,sequencenumber,description,mimetype,pubdate,duration,filesize,isnew) VALUES ( %1 );";
     QString data = "'%1','%2','%3','%4','%5','%6',%7,'%8','%9','%10',%11,%12,%13";
-    data = data.arg( escape(m_url.url())).arg( m_sqlChannel->id() );
+    data = data.arg( escape(m_url.url())).arg( m_sqlChannel->dbId() );
     data = data.arg( escape(m_localUrl.url()) ).arg( escape(m_guid) ).arg( escape(m_title) ).arg( escape(m_subtitle) );
     data = data.arg( QString::number(m_sequenceNumber) ).arg( escape(m_description) ).arg( escape(m_mimeType) );
     data = data.arg( escape(m_pubDate) ).arg( QString::number(m_duration) ).arg( QString::number(m_fileSize) );
     data = data.arg( m_isNew ? boolTrue : boolFalse );
     insert = insert.arg( data );
 
-    m_id = sqlStorage->insert( insert, "podcastepisodes" );
+    m_dbId = sqlStorage->insert( insert, "podcastepisodes" );
 }
 
 Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
@@ -97,7 +102,7 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
-    m_id = (*(iter++)).toInt();
+    m_dbId = (*(iter++)).toInt();
     m_url = KUrl( *(iter++) );
     m_title = *(iter++);
     m_webLink = *(iter++);
@@ -114,25 +119,9 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     loadEpisodes();
 }
 
-void
-Meta::SqlPodcastChannel::loadEpisodes()
-{
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-
-    QStringList results = sqlStorage->query( QString("SELECT id, url, channel, localurl, guid, title, subtitle, sequencenumber, description, mimetype, pubdate, duration, filesize, isnew FROM podcastepisodes WHERE channel = %1;").arg( m_id ) );
-
-    int rowLength = 14;
-    for(int i=0; i < results.size(); i+=rowLength)
-    {
-        QStringList episodesResult = results.mid( i, rowLength );
-        SqlPodcastEpisode *sqlEpisode = new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) );
-        m_sqlEpisodes << SqlPodcastEpisodePtr( sqlEpisode );
-        m_episodes << PodcastEpisodePtr( sqlEpisode );
-    }
-}
-
 Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     : Meta::PodcastChannel()
+    , m_dbId( 0 )
 {
     DEBUG_BLOCK
     m_url = channel->url();
@@ -154,38 +143,81 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
         m_episodes << PodcastEpisodePtr( sqlEpisode );
         m_sqlEpisodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
+}
 
+Meta::SqlPodcastChannel::~SqlPodcastChannel()
+{
+    DEBUG_BLOCK
     updateInDb();
 }
 
 void
 Meta::SqlPodcastChannel::updateInDb()
 {
+    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
     #define escape(x) sqlStorage->escape(x)
-    QString insert = "INSERT INTO podcastchannels(url,title,weblink,image,description,copyright,labels,subscribedate,autoscan,fetchtype,haspurge,purgecount) VALUES ( %1 );";
-    QString data = "'%1','%2','%3','%4','%5','%6','%7','%8',%9,%10,%11,%12";
-    data = data.arg( escape(m_url.url()) );
-    data = data.arg( escape(m_title) );
-    data = data.arg( escape(m_webLink.url()) );
+    QString insert = "INSERT INTO podcastchannels(url,title,weblink,image\
+        ,description,copyright,directory,labels,subscribedate,autoscan\
+        ,fetchtype,haspurge,purgecount) VALUES ( '%1','%2','%3','%4','%5'\
+        ,'%6','%7','%8','%9',%10,%11,%12,%13 );";
+    QString update = "UPDATE podcastchannels SET url='%1'\
+        ,title='%2',weblink='%3',image='%4',description='%5',copyright='%6'\
+        ,directory='%7',labels='%8',subscribedate=%'9',autoscan=%10\
+        ,fetchtype=%11,haspurge=%12,purgecount=%13;";
+    //if we don't have a database ID yet we should insert;
+    QString command;
+    if( m_dbId )
+    {
+        command = update;
+        debug() << QString("UPDATE podcastchannels WHERE title=\"%s\"").arg( title() );
+    }
+    else
+    {
+        debug() << QString("INSERT INTO podcastchannels; title=\"%s\"").arg( title() );
+        command = insert;
+    }
+    command = command.arg( escape(m_url.url()) );
+    command = command.arg( escape(m_title) );
+    command = command.arg( escape(m_webLink.url()) );
     //TODO:m_image.url()
-    data = data.arg( escape(QString("")) );
-    data = data.arg( escape(m_description) );
-    data = data.arg( escape(m_copyright) );
+    command = command.arg( escape(QString("")) ); //image
+    command = command.arg( escape(m_description) );
+    command = command.arg( escape(m_copyright) );
+    command = command.arg( escape(m_directory.url()) );
     //TODO: QStringList -> comma separated QString
     QString labels = QString("");
-    data = data.arg( escape(labels) );
-    data = data.arg( escape(m_subscribeDate.toString()) );
-    data = data.arg( m_autoScan ? boolTrue : boolFalse );
-    data = data.arg( QString::number(m_fetchType) );
-    data = data.arg( m_purge ? boolTrue : boolFalse );
-    data = data.arg( QString::number(m_purgeCount) );
-    insert = insert.arg( data );
+    command = command.arg( escape(labels) );
+    command = command.arg( escape(m_subscribeDate.toString()) );
+    command = command.arg( m_autoScan ? boolTrue : boolFalse );
+    command = command.arg( QString::number(m_fetchType) );
+    command = command.arg( m_purge ? boolTrue : boolFalse );
+    command = command.arg( QString::number(m_purgeCount) );
 
-    m_id = sqlStorage->insert( insert, "podcastchannels" );
+    if( !m_dbId )
+        m_dbId = sqlStorage->insert( command, "podcastchannels" );
+    else
+        sqlStorage->query( command );
+}
+
+void
+Meta::SqlPodcastChannel::loadEpisodes()
+{
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+
+    QStringList results = sqlStorage->query( QString("SELECT id, url, channel, localurl, guid, title, subtitle, sequencenumber, description, mimetype, pubdate, duration, filesize, isnew FROM podcastepisodes WHERE channel = %1;").arg( m_dbId ) );
+
+    int rowLength = 14;
+    for(int i=0; i < results.size(); i+=rowLength)
+    {
+        QStringList episodesResult = results.mid( i, rowLength );
+        SqlPodcastEpisode *sqlEpisode = new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) );
+        m_sqlEpisodes << SqlPodcastEpisodePtr( sqlEpisode );
+        m_episodes << PodcastEpisodePtr( sqlEpisode );
+    }
 }
 
 #include "SqlPodcastMeta.moc"

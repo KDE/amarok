@@ -249,12 +249,14 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
         bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 
         //Settings
+        KUrl saveLocation() const { return m_directory; };
         bool autoScan() { return m_autoScan; }
         FetchType fetchType() { return m_fetchType; }
         bool hasPurge() { return m_purge; }
         int purgeCount() { return m_purgeCount; }
 
-        void setAutoscan( bool autoScan ) { m_autoScan = autoScan; }
+        void setSaveLocation( const KUrl &url ) { m_directory = url; }
+        void setAutoScan( bool autoScan ) { m_autoScan = autoScan; }
         void setFetchType( FetchType fetchType ) { m_fetchType = fetchType; }
         void setPurge( bool purge ) { m_purge = purge; }
         void setPurgeCount( int purgeCount ) { m_purgeCount = purgeCount; }

@@ -43,22 +43,20 @@ class SqlPodcastEpisode : public PodcastEpisode
         */
         SqlPodcastEpisode( PodcastEpisodePtr episode );
 
-        ~SqlPodcastEpisode() {};
+        ~SqlPodcastEpisode();
 
         //Track Methods
         QString type() const { return i18n("SQL Podcast"); };
 
         //SqlPodcastEpisode specific methods
-        int id() const { return m_id; };
-
-        //virtual int podcastType() {  debug() <<"here5"; return ChannelType; }
+        int dbId() const { return m_dbId; };
 
     private:
         void updateInDb();
 
         bool m_batchUpdate;
 
-        int m_id; //database ID
+        int m_dbId; //database ID
         SqlPodcastChannelPtr m_sqlChannel; //the parent of this episode
 };
 
@@ -71,20 +69,18 @@ class SqlPodcastChannel : public PodcastChannel
         */
         SqlPodcastChannel( PodcastChannelPtr channel );
 
-        ~SqlPodcastChannel() {};
+        ~SqlPodcastChannel();
 
         //SqlPodcastChannel specific methods
-        int id() const { return m_id; };
+        int dbId() const { return m_dbId; };
         virtual void addEpisode( SqlPodcastEpisodePtr episode ) { m_sqlEpisodes << episode; };
         void addEpisode( PodcastEpisodePtr episode ) { debug() << "adding episode " << episode->title() << " to sqlchannel " << title();  m_episodes << episode; addEpisode( SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) ) ); }
-
-        //virtual int podcastType() {  debug() <<"here6"; return ChannelType; }
 
     private:
         void updateInDb();
         void loadEpisodes();
 
-        int m_id; //database ID
+        int m_dbId; //database ID
 
         SqlPodcastEpisodeList m_sqlEpisodes;
 };
