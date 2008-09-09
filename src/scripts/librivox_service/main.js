@@ -108,8 +108,7 @@ function episodeFetchResult( result )
     try
     {
 
-        //HAAAAAAAAAAAAAAAACK!!  How the hell do you get the string out of this result otherwise?
-        html = Amarok.Lyrics.toUtf8( result, "ISO 8859-1" );
+        html = result;
 
         //remove all <em> and </em> as they screw up simple parsing if present ( basicaly be cause on some pages they are there and on some they are not
         //in a way that is difficult to take into account in a regexp )
