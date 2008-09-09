@@ -56,6 +56,8 @@ CoverBling::CoverBling( QWidget* parent )
     qm->limitMaxResultSize( 10 );
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SLOT( queryResult( QString, Meta::AlbumList ) ) );
+
+    qm->run();
 }
 
 void
