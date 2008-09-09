@@ -170,7 +170,6 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 
 void CoverFetcher::buildQueries( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
     m_fetchMutex.lock();
     m_isFetching = true;
     m_fetchMutex.unlock();
@@ -228,7 +227,6 @@ void CoverFetcher::buildQueries( Meta::AlbumPtr album )
 void
 CoverFetcher::startFetch( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
     m_fetchMutex.lock();
     m_isFetching = true;
     m_fetchMutex.unlock();
@@ -290,8 +288,6 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
 void
 CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
 {
-    DEBUG_BLOCK
-
     // NOTE: job can become 0 when this method is called from attemptAnotherFetch()
     if( job && job->error() )
     {
@@ -349,7 +345,6 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
 
 void CoverFetcher::parseItemNode( const QDomNode &node )
 {
-    DEBUG_BLOCK
     QDomNode it = node.firstChild();
 
     QString size;
@@ -426,7 +421,6 @@ void CoverFetcher::parseItemNode( const QDomNode &node )
 void
 CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
 {
-    DEBUG_BLOCK
     if( job->error() )
     {
         debug() << "finishedImageFetch(): KIO::error(): " << job->error();
@@ -458,7 +452,6 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
 void
 CoverFetcher::attemptAnotherFetch()
 {
-    DEBUG_BLOCK
 
     if( !m_coverUrls.isEmpty() )
     {
@@ -588,7 +581,6 @@ CoverFetcher::changeLocale( int id )//SLOT
 void
 CoverFetcher::getUserQuery( QString explanation )
 {
-    DEBUG_BLOCK
     if( explanation.isEmpty() )
         explanation = i18n("Ask Amazon for covers using this query:");
 
@@ -654,7 +646,6 @@ CoverFetcher::getUserQuery( QString explanation )
 
         virtual void accept()
         {
-            DEBUG_BLOCK
             if( qstrcmp( sender()->objectName().toAscii(), "NewSearch" ) == 0 )
                 done( 1000 );
             else if( qstrcmp( sender()->objectName().toAscii(), "NextCover" ) == 0 )
@@ -668,7 +659,6 @@ CoverFetcher::getUserQuery( QString explanation )
 void
 CoverFetcher::showCover()
 {
-    DEBUG_BLOCK
     CoverFoundDialog dialog( static_cast<QWidget*>( parent() ), m_image, m_currentCoverName );
 
     switch( dialog.exec() )
@@ -699,7 +689,6 @@ CoverFetcher::showCover()
 void
 CoverFetcher::finish()
 {
-    DEBUG_BLOCK
     The::statusBar()->shortMessage( i18n( "Retrieved cover successfully" ) );
     m_albumPtr->setImage( image() );
     m_isFetching = false;
@@ -710,7 +699,6 @@ CoverFetcher::finish()
 void
 CoverFetcher::finishWithError( const QString &message, KJob *job )
 {
-    DEBUG_BLOCK
     if( job )
         warning() << message << " KIO::error(): " << job->errorText();
 
