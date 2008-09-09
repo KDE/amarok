@@ -83,7 +83,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
         case 0:
         {
 
-            if ( !callbackData.isEmpty() ||  playableUrl.isEmpty() )
+            if ( !callbackData.isEmpty() || playableUrl.isEmpty() )
                 return -1;
             
             ScriptableServiceTrack * track = new ScriptableServiceTrack( name, playableUrl );
@@ -94,7 +94,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             
         } case 1:
         {
-            if ( callbackData.isEmpty() ||  !playableUrl.isEmpty() )
+            if ( callbackData.isEmpty() || !playableUrl.isEmpty() )
                 return -1;
 
             ScriptableServiceAlbum * album = new ScriptableServiceAlbum( name );
@@ -105,7 +105,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             
         } case 2:
         {
-            if ( callbackData.isEmpty() ||  !playableUrl.isEmpty() )
+            if ( callbackData.isEmpty() || !playableUrl.isEmpty() )
                 return -1;
 
             ScriptableServiceArtist * artist = new ScriptableServiceArtist( name );

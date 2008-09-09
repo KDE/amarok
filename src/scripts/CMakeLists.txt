@@ -2,7 +2,7 @@
 add_subdirectory( radio_station_service )
 add_subdirectory( webcontrol)
 #add_subdirectory( seeqpod_service )
-#add_subdirectory( librivox_service )
+add_subdirectory( librivox_service )
 add_subdirectory( script_console )
 add_subdirectory( templates )
 add_subdirectory( importer )
