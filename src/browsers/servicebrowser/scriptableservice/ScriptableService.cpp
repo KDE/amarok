@@ -89,6 +89,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             ScriptableServiceTrack * track = new ScriptableServiceTrack( name, playableUrl );
             track->setAlbumId( parentId );
             track->setUidUrl( playableUrl );
+            track->setServiceName( m_name );
             return addTrack( track );
             break;
             
@@ -101,6 +102,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             album->setCallbackString( callbackData );
             album->setArtistId( parentId );
             album->setDescription( infoHtml );
+            album->setServiceName( m_name );
             return addAlbum( album );
             
         } case 2:
@@ -112,6 +114,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             artist->setCallbackString( callbackData );
             artist->setGenreId( parentId );
             artist->setDescription( infoHtml );
+            artist->setServiceName( m_name );
             return addArtist( artist );
             
         } case 3:
@@ -123,6 +126,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             ScriptableServiceGenre * genre = new ScriptableServiceGenre( name );
             genre->setCallbackString( callbackData );
             genre->setDescription( infoHtml );
+            genre->setServiceName( m_name );
             return addGenre( genre );
             
         }

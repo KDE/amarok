@@ -25,6 +25,9 @@ using namespace Meta;
 ScriptableServiceMetaItem::ScriptableServiceMetaItem( int level )
     : m_callbackString( QString() )
     , m_level( level )
+    , m_serviceName( QString() )
+    , m_serviceDescription( QString() )
+    , m_serviceEmblem( QPixmap() )
 {}
 
 void Meta::ScriptableServiceMetaItem::setCallbackString( const QString &callbackString )
@@ -42,6 +45,21 @@ int Meta::ScriptableServiceMetaItem::level() const
     return m_level;
 }
 
+void Meta::ScriptableServiceMetaItem::setServiceName( const QString & name )
+{
+    m_serviceName = name;
+}
+
+void Meta::ScriptableServiceMetaItem::setServiceDescription( const QString & description )
+{
+    m_serviceDescription = description;
+}
+
+void Meta::ScriptableServiceMetaItem::setServiceEmblem( const QPixmap & emblem )
+{
+    m_serviceEmblem = emblem;
+}
+
 
 
 /* ScriptableServiceTrack */
@@ -54,6 +72,21 @@ ScriptableServiceTrack::ScriptableServiceTrack( const QStringList & resultRow )
     : ServiceTrack( resultRow )
     , ScriptableServiceMetaItem( 0 )
 {}
+
+QString Meta::ScriptableServiceTrack::sourceName()
+{
+    return m_serviceName;
+}
+
+QString Meta::ScriptableServiceTrack::sourceDescription()
+{
+    return m_serviceDescription;
+}
+
+QPixmap Meta::ScriptableServiceTrack::emblem()
+{
+    return m_serviceEmblem;
+}
 
 
 
@@ -114,4 +147,7 @@ QString Meta::ScriptableServiceGenre::description()
 {
     return m_description;
 }
+
+
+
 

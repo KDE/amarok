@@ -42,13 +42,21 @@ class ScriptableServiceMetaItem
         void setCallbackString( const QString &callbackString );
         QString callbackString() const;
         int level() const;
+
+        void setServiceName( const QString & name );
+        void setServiceDescription( const QString & description );
+        void setServiceEmblem( const QPixmap & emblem );
+
     
-    private:
+    protected:
     
         /* this is arbitrary string data to pass back to the script. This can be whatever
         information the script needs to fetch the children of this item... */
         QString m_callbackString;
         int m_level;
+        QString m_serviceName;
+        QString m_serviceDescription;
+        QPixmap m_serviceEmblem;
 };
 
 
@@ -57,6 +65,10 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
     public:
         ScriptableServiceTrack( const QString & name, const QString & url );
         ScriptableServiceTrack( const QStringList & resultRow );
+
+        virtual QString sourceName();
+        virtual QString sourceDescription();
+        virtual QPixmap emblem();
 
 };
 
