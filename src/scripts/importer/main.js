@@ -106,7 +106,7 @@ dlg.setMinimumSize( 400, 300 );
 dlg.show();
 
 
-if( dlg.exec() == QDialog.REJECTED )
+if( dlg.exec() == QDialog.Rejected )
 {
     print( "Cancelled" );
     return;
