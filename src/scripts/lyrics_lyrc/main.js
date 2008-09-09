@@ -120,7 +120,7 @@ function lyricsFetchResult( reply )
     print( "got result from lyrics fetch:" + reply ); 
     try
     {
-        lyrics = Amarok.Lyrics.toUtf8( reply, "ISO 8859-1" );
+        lyrics = reply;
     } catch( err )
     {
         print( "error converting lyrics: " + err );

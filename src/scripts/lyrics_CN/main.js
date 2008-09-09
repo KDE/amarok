@@ -46,7 +46,7 @@ function parseLyrics( lyrics )
 
 function lyricsFetchResult( reply )
 {
-    lyrics = Amarok.Lyrics.toUtf8( reply, "GB2312" );
+    lyrics = reply;
     print( lyrics );
     lyrics = lyrics.replace( /<[iI][mM][gG][^>]*>/g, "");
     lyrics = lyrics.replace( /<[aA][^>]*>[^<]*<\/[aA]>/g, "" );
@@ -72,7 +72,7 @@ function fetchLyrics( artist, title )
     url = new QUrl( path );
     url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
     print( "url address:" + url.toString() );
-    d = new Downloader( url, lyricsFetchResult );
+    d = new Downloader( url, lyricsFetchResult, "GB2312" );
     }
     catch( err )
     {

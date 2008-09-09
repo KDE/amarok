@@ -65,22 +65,25 @@ Downloader::Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* e
         object.setPrototype( context->callee().property("prototype") );
     }
 
-    if( context->argumentCount() != 2 )
+    if( context->argumentCount() < 2 )
     {
-        debug() << "ERROR! Constructor not called with exactly 1 argument:" << context->argumentCount();
+        debug() << "ERROR! Constructor not called with enough arguments:" << context->argumentCount();
         return object;
     } else if( !context->argument( 1 ).isFunction() ) //TODO: check QUrl
     {
         debug() << "ERROR! Constructor not called with a QUrl and function!";
         return object;
     }
+    QString encoding;
+    if( context->argumentCount() == 3 ) // encoding specified
+        encoding = context->argument( 2 ).toString();
     
     QUrl url = qscriptvalue_cast<QUrl>( context->argument( 0 ) );
     // start download, and connect to it
     //FIXME: url is not working directly, which makes the encoding still a problem.
     KIO::Job* job = KIO::storedGet( url.toString() , KIO::NoReload, KIO::HideProgressInfo );
 
-    AmarokDownloadHelper::instance()->newDownload( job, engine, context->argument( 1 ) );
+    AmarokDownloadHelper::instance()->newDownload( job, engine, context->argument( 1 ), encoding );
     // connect to a local slot to extract the qstring
     //qScriptConnect( job, SIGNAL( result( KJob* ) ), object, fetchResult( job ) );
     connect( job, SIGNAL( result( KJob* ) ), AmarokDownloadHelper::instance(), SLOT( result( KJob* ) ) );
@@ -97,10 +100,11 @@ AmarokDownloadHelper::AmarokDownloadHelper()
 }
 
 void
-AmarokDownloadHelper::newDownload( KJob* download, QScriptEngine* engine, QScriptValue obj )
+AmarokDownloadHelper::newDownload( KJob* download, QScriptEngine* engine, QScriptValue obj, QString encoding )
 {
     m_jobs[ download ] = obj ;
     m_engines[ download ] = engine;
+    m_encodings[ download ] = encoding;
 }
 
 void
@@ -111,6 +115,19 @@ AmarokDownloadHelper::result( KJob* job )
     KIO::StoredTransferJob* const storedJob = static_cast< KIO::StoredTransferJob* >( job );
     QScriptValue obj = m_jobs[ job ];
     QScriptEngine* engine = m_engines[ job ];
+    QString encoding = m_encodings[ job ];
+
+    QString data;
+    
+    if( encoding == "" )
+        data = QString( storedJob->data() );
+    else
+    {
+        QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
+        QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
+        QTextCodec::setCodecForCStrings( utf8codec );
+        data = codec->toUnicode( storedJob->data() );
+    }
     
     // now send the data to the associated script object
     if( !obj.isFunction() )
@@ -122,13 +139,13 @@ AmarokDownloadHelper::result( KJob* job )
         debug() << "stored script engine is not valid!";
         return;
     }
-    QScriptValue data = engine->newVariant( qVariantFromValue( storedJob->data() ) );
     QScriptValueList args;
-    args << data;
+    args <<  QScriptValue( engine, data );
     obj.call( obj, args );
 
     m_jobs.remove( job );
     m_engines.remove( job );
+    m_encodings.remove( job );
 }
 
 AmarokDownloadHelper*
