@@ -128,7 +128,7 @@ function episodeFetchResult( result ) {
 
         //rx = new RegExp("<li>(.*?)<br\\s\\/>\\n.*\\n.*\\n.*href=\\\"(.*?\\.ogg)\\\">ogg\\svorbis/)");
         //rx = new RegExp("href=\\\"([\\.a-zA-Z0-9_:\\/]*\\.ogg)\\\">ogg\\svorbis");
-        rx = new RegExp("<li>([^\\n]*)<br\\s\\/>\\n[^\\n]*\\n[^\\n]*\\n[^\\n]*href=\\\"([\\.a-zA-Z0-9_:\\/]*\\.ogg)\\\">ogg\\svorbis", "g");
+        rx = new RegExp("<li>([^\\n]*)<br\\s\\/>\\s*\\n[^\\n]*\\n?[^\\n]*\\n[^\\n]*\\n[^\\n]*href=\\\"([\\.a-zA-Z0-9_:\\/]*\\.ogg)\\\">ogg\\svorbis", "g");
         //list = rx.exec( html );
         list = html.match( rx );
 
@@ -137,7 +137,7 @@ function episodeFetchResult( result ) {
 
 
 
-        rx2 = new RegExp("<li>([^\\n]*)<br\\s\\/>\\n[^\\n]*\\n[^\\n]*\\n[^\\n]*href=\\\"([\\.a-zA-Z0-9_:\\/]*\\.ogg)\\\">ogg\\svorbis" );
+        rx2 = new RegExp("<li>([^\\n]*)<br\\s\\/>\\s*\\n[^\\n]*\\n?[^\\n]*\\n[^\\n]*\\n[^\\n]*href=\\\"([\\.a-zA-Z0-9_:\\/]*\\.ogg)\\\">ogg\\svorbis" );
         for ( i = 0; i < list.length; i++ ) {
             list2 = list[i].match( rx2 );
             title = list2[1];
