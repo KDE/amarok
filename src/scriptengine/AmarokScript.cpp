@@ -36,7 +36,7 @@ namespace AmarokScript
 
     void AmarokScript::quitAmarok()
     {
-        kapp->closeAllWindows();
+        kapp->quit();
     }
 
     int AmarokScript::alert(  const QString& text, const QString& type ) const
