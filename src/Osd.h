@@ -19,10 +19,12 @@
 #include "EngineObserver.h"
 #include "meta/Meta.h"
 
+#include <QHash>
 #include <QImage>
+#include <QList>
 #include <QPixmap>
+#include <QString>
 #include <QWidget> //baseclass
-
 
 #define OSD_WINDOW_OPACITY 0.8
 
@@ -160,12 +162,15 @@ namespace Amarok
             static OSD *s_instance = new OSD;
             return s_instance;
         }
+        ~OSD();
 
         void applySettings();
         virtual void show( Meta::TrackPtr track );
 
         //Reimplemented from EngineObserver
+        virtual void engineNewMetaData( const QHash<qint64, QString>&, bool );
         virtual void engineNewTrackPlaying();
+        virtual void engineVolumeChanged(int);
 
         // Don't hide baseclass methods - prevent compiler warnings
         virtual void show() { OSDWidget::show(); }
@@ -179,6 +184,8 @@ namespace Amarok
 
     private:
         OSD();
+        bool isMetaDataSpam( const QHash<qint64, QString>& );
+        QList<QHash<qint64, QString> > m_metaDataHistory;
     };
 }
 

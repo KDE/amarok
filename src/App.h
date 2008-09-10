@@ -71,7 +71,6 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         void engineNewTrackPlaying();
         void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
         void engineTrackPositionChanged( long position, bool /*userSeek*/ );
-        void engineVolumeChanged( int );
 
     private slots:
         void continueInit();
@@ -89,13 +88,11 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         void slotTrashResult( KJob *job );
 
     private:
-        bool isMetaDataSpam( const QHash<qint64, QString> &newMetaData );
         // ATTRIBUTES ------
         MainWindow          *m_mainWindow;
         Amarok::TrayIcon    *m_tray;
         MediaDeviceManager  *m_mediaDeviceManager;
         KSplashScreen       *m_splash;
-        QList<QHash<qint64, QString> >        *m_metaDataHistory;
 
 };
 

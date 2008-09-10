@@ -13,6 +13,8 @@
  *            (C) 2008 Mark Kretschmann <kretschmann@kde.org>
  */
 
+#define DEBUG_PREFIX "OSD"
+
 #include "Osd.h"
 
 #include "Amarok.h"
@@ -92,6 +94,7 @@ OSDWidget::~OSDWidget()
 void
 OSDWidget::show( const QString &text, QImage newImage )
 {
+    DEBUG_BLOCK
     m_volume = false;
     if ( !newImage.isNull() )
     {
@@ -564,7 +567,14 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
 Amarok::OSD::OSD()
     : OSDWidget( 0 )
-{}
+{
+    The::engineController()->attach( this );
+}
+
+Amarok::OSD::~OSD()
+{
+    The::engineController()->detach( this );
+}
 
 void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
@@ -636,11 +646,46 @@ Amarok::OSD::forceToggleOSD()
 }
 
 void
+Amarok::OSD::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+{
+    if (!trackChanged && !isMetaDataSpam( newMetaData ))// metadata spam protection from streams
+        show( The::engineController()->currentTrack() );
+    else
+        show( The::engineController()->currentTrack() );
+}
+
+void
 Amarok::OSD::engineNewTrackPlaying()
 {
     show( The::engineController()->currentTrack() );
 }
 
+void
+Amarok::OSD::engineVolumeChanged( int newVolume )
+{
+    volChanged( newVolume );
+}
+
+/* Try to detect MetaData spam in Streams. */
+bool
+Amarok::OSD::isMetaDataSpam( const QHash<qint64, QString> &newMetaData )
+{
+    // search for Metadata in history
+    for( int i = 0; i < m_metaDataHistory.size(); i++)
+    {
+        if( m_metaDataHistory.at( i ) == newMetaData ) // we already had that one -> spam!
+        {
+            m_metaDataHistory.move( i, 0 ); // move spam to the beginning of the list
+            return true;
+        }
+    }
+
+    if( m_metaDataHistory.size() == 12 )
+        m_metaDataHistory.removeLast();
+
+    m_metaDataHistory.insert( 0, newMetaData);
+    return false;
+}
 
 /* Code copied from kshadowengine.cpp
  *
