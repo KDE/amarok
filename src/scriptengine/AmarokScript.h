@@ -24,28 +24,32 @@ class QScriptEngine;
 
 namespace AmarokScript
 {
-
     class AmarokScript : public QObject
     {
         Q_OBJECT
 
         public:
-            AmarokScript( QScriptEngine* scriptEngine );
+            AmarokScript( const QString& name );
             ~AmarokScript();
             void slotConfigured();
 
         public slots:
             void        quit() const;
             int         alert( const QString& text, const QString& type = "information" ) const;
+
+            /** Signals Amarok that this script has ended. */
+            void        end();
+
             bool        runScript( const QString& name ) const;
             bool        stopScript( const QString& name ) const;
+
             QStringList listRunningScripts() const;
 
         signals:
             void configured();
 
-        private slots:
-
+        private:
+            QString m_name;
     };
 }
 

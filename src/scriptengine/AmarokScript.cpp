@@ -26,15 +26,13 @@
 
 namespace AmarokScript
 {
-    AmarokScript::AmarokScript( QScriptEngine* scriptEngine )
+    AmarokScript::AmarokScript( const QString& name )
     : QObject( kapp )
-    {
-        Q_UNUSED( scriptEngine );
-    }
+    , m_name( name )
+    {}
 
     AmarokScript::~AmarokScript()
-    {
-    }
+    {}
 
     void AmarokScript::quit() const
     {
@@ -73,6 +71,11 @@ namespace AmarokScript
         warning() << "alert type not found!";
         //TODO: write to error log since it's a script error
         return -1;
+    }
+
+    void AmarokScript::end()
+    {
+        ScriptManager::instance()->stopScript( m_name );
     }
 
     bool AmarokScript::runScript( const QString& name ) const

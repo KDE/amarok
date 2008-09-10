@@ -564,7 +564,7 @@ ScriptManager::startScriptEngine( QString name )
     scriptEngine->globalObject().setProperty( "Importer", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
 
-    m_scripts[name].globalPtr = new AmarokScript::AmarokScript( scriptEngine );
+    m_scripts[name].globalPtr = new AmarokScript::AmarokScript( name );
     m_global = scriptEngine->newQObject( m_scripts[name].globalPtr );
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
     m_scripts[name].wrapperList.append( m_scripts[name].globalPtr );
