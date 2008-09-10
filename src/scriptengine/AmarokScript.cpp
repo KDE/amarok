@@ -27,8 +27,8 @@
 namespace AmarokScript
 {
     AmarokScript::AmarokScript( const QString& name )
-    : QObject( kapp )
-    , m_name( name )
+        : QObject( kapp )
+        , m_name( name )
     {}
 
     AmarokScript::~AmarokScript()

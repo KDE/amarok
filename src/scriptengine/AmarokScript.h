@@ -31,16 +31,33 @@ namespace AmarokScript
         public:
             AmarokScript( const QString& name );
             ~AmarokScript();
+
             void slotConfigured();
 
         public slots:
+            /** Shuts down Amarok completely. */
             void        quit() const;
+
+            /**
+              * Show an information dialog in Amarok.
+              * @text The text to display.
+              * @type Type of the dialog. See KMessageBox docs.
+              */
             int         alert( const QString& text, const QString& type = "information" ) const;
 
             /** Signals Amarok that this script has ended. */
             void        end();
 
+            /**
+              * Start another Amarok script.
+              * @name Name of the script to start.
+              */
             bool        runScript( const QString& name ) const;
+
+            /**
+              * Stop another Amarok script.
+              * @name Name of the script to stop.
+              */
             bool        stopScript( const QString& name ) const;
 
             QStringList listRunningScripts() const;
