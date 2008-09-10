@@ -134,14 +134,20 @@ void
 FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event )
 {
     int index = layout->indexOf( childUnder );
-    if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )
+    debug()<< "I'm in insertOverChild";
+    debug()<< "Inserting at " << index;
+    debug()<< "Get outta here, it's gonna blow!";
+    if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )     //I'm WTF-ing here
     {
+        debug()<< "About to call addToken(..., index)";
         addToken( textFromMimeData, index );
     }
     else
     {
+        debug()<< "About to call addToken(..., index + 1)";
         addToken( textFromMimeData, index + 1 );
     }
+    debug()<< "BOOM!";
 }
 
 //Executed whenever a valid drag object is dropped on the FilenameLayoutWidget. Will call addToken and insertOverChild.
@@ -174,6 +180,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
         }
         else                //if the bar is not empty and I'm still not dropping on an existing token
         {
+            debug() << ">>>>>>>>>>>>>> I'm picking up a drop at " << event->pos().x()<<", "<<event->pos().y();
             QPoint fixedPos = QPoint( event->pos().x(), size().height() / 2 );      //first I lower the y coordinate of the drop, this should handle the drops higher and lower than the tokens
             debug()<<">>>>>>>>> CENTERING VERTICALLY";
             childUnder = qobject_cast< Token * >( childAt( fixedPos ) );            //and I look for a child (token) on these new coordinates
@@ -185,13 +192,29 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
                     debug()<<">>>>>>>>> SIMULATING DROP TO THE RIGHT";
                     
                 }
-                else                                                                //this covers if I'm dropping after all the tokens or in between
+                else if( fixedPos.x() > childrenRect().topLeft().x() + childrenRect().size().width() )          //this covers if I'm dropping after all the tokens or in between
                 {
-                    fixedPos = QPoint( fixedPos.x() - 10, fixedPos.y() );
+                    fixedPos = QPoint( fixedPos.x() - 10, fixedPos.y() );           //to self: why the f am I moving to the left as else? I should do that only if I'm on the end of the childrenRect
                     debug()<<">>>>>>>>> SIMULATING DROP TO THE LEFT";
                     
                 }
                 childUnder = qobject_cast< Token * >( childAt( fixedPos ) );
+                QWidget * fakeChild = childAt( fixedPos );
+                if( childUnder == 0)
+                {
+                    if( fakeChild == 0 )
+                    {
+                        debug()<< "There's really no QWidget under the fixedPos";
+                    }
+                    else
+                    {
+                        debug()<<"There's something under fixedPos but it's not a Token";
+                        childUnder = qobject_cast< Token * >( childAt( fixedPos )->parent() );
+                    }
+                }
+                delete fakeChild;
+                debug()<<"I'm looking for a child at "<<fixedPos.x()<<","<<fixedPos.y()<< "Why does it fail?";
+                if( childUnder == 0 ) debug()<<"ERROR: childUnder is null";     //FIXME: I need to pick up Token*, not a member of his
                 insertOverChild( childUnder, textFromMimeData, event );
                 debug()<<">>>>>>>>> \\called insertOverChild";
                 
