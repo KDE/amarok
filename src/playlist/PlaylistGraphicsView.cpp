@@ -274,7 +274,7 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
         }
         else // previous line
         {
-            if( row == 0 )
+            if( row <= 0 )
                 row = m_tracks.size(); // loop to the last item
 
             focused = m_tracks.at( --row );
