@@ -232,6 +232,7 @@ App::~App()
     mainWindow()->deleteBrowsers();
     delete mainWindow();
 
+    delete The::playlistManager();
     delete CollectionManager::instance();
     delete MountPointManager::instance();
     delete The::engineController();
@@ -873,7 +874,7 @@ namespace Amarok
 
         QDateTime datetime;
         datetime.setTime_t( time_t );
-        
+
         const QDateTime now = QDateTime::currentDateTime();
         const int datediff = datetime.daysTo( now );
 

@@ -43,9 +43,10 @@ class PlaylistManager : public QObject
 {
     Q_OBJECT
 
-    friend PlaylistManager* The::playlistManager();
-
     public:
+        ~PlaylistManager();
+
+        static PlaylistManager *instance();
         //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamically.
 
         //Don't forget to add a new default Category to PlaylistManager::typeName(int playlistCategory)
@@ -123,11 +124,11 @@ class PlaylistManager : public QObject
          *  @arg fromLocation Saved playlist file to load
          */
         AMAROK_EXPORT bool save( const QString& fromLocation );
-        
+
         bool exportPlaylist( Meta::TrackList tracks, const QString &location );
 
 
-        //the next two functions are needed to support some services that have no othe rway of presenting data to the user
+        //the next two functions are needed to support some services that have no other way of presenting data to the user
         //than wrapping the url to a playlist in a track.
 
         bool canExpand( Meta::TrackPtr track );
@@ -139,16 +140,13 @@ class PlaylistManager : public QObject
         void updated();
         void categoryAdded( int category );
 
-    protected:
-        PlaylistManager();
-        ~PlaylistManager();
-
     private slots:
         void slotUpdated( /*PlaylistProvider * provider*/ );
         void downloadComplete( KJob *job );
 
     private:
         static PlaylistManager* s_instance;
+        PlaylistManager();
 
         PodcastProvider *m_defaultPodcastProvider;
 

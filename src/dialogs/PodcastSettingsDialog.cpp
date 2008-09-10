@@ -125,7 +125,7 @@ PodcastSettingsDialog::slotApply()       //slot
     m_channel->setSaveLocation( m_ps->m_saveLocation->url() );
     if( moveFiles )
     {
-        debug() << QString("We need to move downloaded episodes of \"%s\" to %s")
+        debug() << QString("We need to move downloaded episodes of \"%1\" to %2")
             .arg( m_channel->title())
             .arg(m_channel->saveLocation().prettyUrl());
         //TODO: move files

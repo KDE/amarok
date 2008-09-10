@@ -36,7 +36,8 @@ class SqlPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
     public:
-        static SqlPodcastProvider *instance();
+        SqlPodcastProvider();
+        ~SqlPodcastProvider();
 
         bool possiblyContainsTrack( const KUrl &url ) const;
         Meta::TrackPtr trackForUrl( const KUrl &url );
@@ -57,8 +58,6 @@ class SqlPodcastProvider : public PodcastProvider
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 
-        SqlStorage* sqlStorage() const;
-
     public slots:
         void updateAll();
         void update( Meta::PodcastChannelPtr channel );
@@ -77,11 +76,6 @@ class SqlPodcastProvider : public PodcastProvider
             void updated();
 
     private:
-        static SqlPodcastProvider* s_instance;
-
-        SqlPodcastProvider();
-        ~SqlPodcastProvider();
-
         /** creates all the necessary tables, indexes etc. for the database */
         void createTables() const;
         void loadPodcasts();

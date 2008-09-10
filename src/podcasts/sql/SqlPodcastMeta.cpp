@@ -79,7 +79,6 @@ Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 void
 Meta::SqlPodcastEpisode::updateInDb()
 {
-    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
@@ -123,7 +122,6 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     : Meta::PodcastChannel()
     , m_dbId( 0 )
 {
-    DEBUG_BLOCK
     m_url = channel->url();
     m_title = channel->title();
     m_webLink = channel->webLink();
@@ -147,39 +145,29 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
 
 Meta::SqlPodcastChannel::~SqlPodcastChannel()
 {
-    DEBUG_BLOCK
     updateInDb();
 }
 
 void
 Meta::SqlPodcastChannel::updateInDb()
 {
-    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
     #define escape(x) sqlStorage->escape(x)
-    QString insert = "INSERT INTO podcastchannels(url,title,weblink,image\
-        ,description,copyright,directory,labels,subscribedate,autoscan\
-        ,fetchtype,haspurge,purgecount) VALUES ( '%1','%2','%3','%4','%5'\
-        ,'%6','%7','%8','%9',%10,%11,%12,%13 );";
-    QString update = "UPDATE podcastchannels SET url='%1'\
-        ,title='%2',weblink='%3',image='%4',description='%5',copyright='%6'\
-        ,directory='%7',labels='%8',subscribedate=%'9',autoscan=%10\
-        ,fetchtype=%11,haspurge=%12,purgecount=%13;";
+    QString insert = "INSERT INTO podcastchannels("
+    "url,title,weblink,image,description,copyright,directory,labels,"
+    "subscribedate,autoscan,fetchtype,haspurge,purgecount) "
+    "VALUES ( '%1','%2','%3','%4','%5','%6','%7','%8','%9',%10,%11,%12,%13 );";
+
+    QString update = "UPDATE podcastchannels SET url='%1',title='%2'"
+    ",weblink='%3',image='%4',description='%5',copyright='%6',directory='%7'"
+    ",labels='%8',subscribedate='%9',autoscan=%10,fetchtype=%11,haspurge=%12,"
+    "purgecount=%13 WHERE id=%14;";
     //if we don't have a database ID yet we should insert;
-    QString command;
-    if( m_dbId )
-    {
-        command = update;
-        debug() << QString("UPDATE podcastchannels WHERE title=\"%s\"").arg( title() );
-    }
-    else
-    {
-        debug() << QString("INSERT INTO podcastchannels; title=\"%s\"").arg( title() );
-        command = insert;
-    }
+    QString command = m_dbId ? update : insert;
+
     command = command.arg( escape(m_url.url()) );
     command = command.arg( escape(m_title) );
     command = command.arg( escape(m_webLink.url()) );
@@ -197,10 +185,10 @@ Meta::SqlPodcastChannel::updateInDb()
     command = command.arg( m_purge ? boolTrue : boolFalse );
     command = command.arg( QString::number(m_purgeCount) );
 
-    if( !m_dbId )
-        m_dbId = sqlStorage->insert( command, "podcastchannels" );
+    if( m_dbId )
+        sqlStorage->query( command.arg( m_dbId ) );
     else
-        sqlStorage->query( command );
+        m_dbId = sqlStorage->insert( command, "podcastchannels" );
 }
 
 void

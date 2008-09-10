@@ -37,17 +37,6 @@ using namespace Meta;
 static const int PODCAST_DB_VERSION = 1;
 static const QString key("AMAROK_PODCAST");
 
-SqlPodcastProvider * SqlPodcastProvider::s_instance = 0;
-
-SqlPodcastProvider *
-SqlPodcastProvider::instance()
-{
-    if ( s_instance == 0 )
-        s_instance = new SqlPodcastProvider();
-
-    return s_instance;
-}
-
 SqlPodcastProvider::SqlPodcastProvider()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -65,7 +54,12 @@ SqlPodcastProvider::SqlPodcastProvider()
 }
 
 SqlPodcastProvider::~SqlPodcastProvider()
-{}
+{
+    foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
+    {
+        channel->updateInDb();
+    }
+}
 
 void
 SqlPodcastProvider::loadPodcasts()
@@ -165,12 +159,6 @@ SqlPodcastProvider::podcastChannelForId( int podcastChannelId )
             return i.previous();
     }
     return Meta::SqlPodcastChannelPtr();
-}
-
-SqlStorage*
-SqlPodcastProvider::sqlStorage() const
-{
-    return CollectionManager::instance()->sqlStorage();
 }
 
 void

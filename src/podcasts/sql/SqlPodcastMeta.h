@@ -76,8 +76,8 @@ class SqlPodcastChannel : public PodcastChannel
         virtual void addEpisode( SqlPodcastEpisodePtr episode ) { m_sqlEpisodes << episode; };
         void addEpisode( PodcastEpisodePtr episode ) { debug() << "adding episode " << episode->title() << " to sqlchannel " << title();  m_episodes << episode; addEpisode( SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) ) ); }
 
-    private:
         void updateInDb();
+    private:
         void loadEpisodes();
 
         int m_dbId; //database ID

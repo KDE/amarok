@@ -41,15 +41,30 @@
 
 #include <QFileInfo>
 
-PlaylistManager * PlaylistManager::s_instance = 0;
+PlaylistManager *PlaylistManager::s_instance = 0;
 
-PlaylistManager*
-The::playlistManager()
+namespace The
 {
-    if ( PlaylistManager::s_instance == 0 )
-        PlaylistManager::s_instance = new PlaylistManager();
+    PlaylistManager *playlistManager() { return PlaylistManager::instance(); }
+}
 
-    return PlaylistManager::s_instance;
+PlaylistManager *
+PlaylistManager::instance()
+{
+    return s_instance ? s_instance : new PlaylistManager();
+}
+
+PlaylistManager::PlaylistManager()
+{
+    s_instance = this;
+    m_defaultPodcastProvider = new SqlPodcastProvider();
+    addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
+    CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
+}
+
+PlaylistManager::~PlaylistManager()
+{
+    delete m_defaultPodcastProvider;
 }
 
 bool
@@ -80,18 +95,6 @@ PlaylistManager::newPlaylistFilePath( const QString & fileExtension )
         url.setFileName( fileName.subs( ++trailingNumber ).toString() );
 
     return KUrl( url.path() + fileExtension );
-}
-
-PlaylistManager::PlaylistManager()
-{
-    m_defaultPodcastProvider = SqlPodcastProvider::instance();
-    addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
-    CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
-}
-
-PlaylistManager::~PlaylistManager()
-{
-    delete m_defaultPodcastProvider;
 }
 
 void
@@ -222,7 +225,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name)
     //jolt the playlist browser model to reload....
     //talk about over-coupling... :|
     //PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
-    
+
     //we should really enter edit mode for the new playlist, but how...
     // NOTE this doesn't really make sense, especially when batch adding
     //      during a collection scan ---lfranchi 9/5/08
@@ -256,14 +259,14 @@ PlaylistManager::save( const QString& fromLocation )
     }
     Meta::TrackList tracks = playlist->tracks();
     QString name = playlist->name().split(".")[0];
-    
+
     if( tracks.isEmpty() )
         return false;
 
     save( tracks, name );
     return true;
 }
-    
+
 bool
 PlaylistManager::exportPlaylist( Meta::TrackList tracks,
                         const QString &location )
@@ -387,7 +390,5 @@ namespace Amarok
         return urls;
     }
 }
-
-
 
 #include "PlaylistManager.moc"
