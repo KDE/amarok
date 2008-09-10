@@ -627,7 +627,7 @@ ContextView::setContainment( Plasma::Containment* containment )
             {                
                 m_destinationPos = containment->geometry();                               
 
-                Plasma::Animator::self()->customAnimation( m_startPos.width() / 8, 800,
+                Plasma::Animator::self()->customAnimation( m_startPos.width() / 8, 250,
                                                             Plasma::Animator::EaseInOutCurve,                                                           
                                                             this, "animateContainmentChange" );
                 debug() << "startPos: " << m_startPos;
