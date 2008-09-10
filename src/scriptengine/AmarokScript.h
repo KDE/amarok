@@ -36,7 +36,7 @@ namespace AmarokScript
 
         public slots:
             /** Shuts down Amarok completely. */
-            void        quit() const;
+            void        quitAmarok();
 
             /**
               * Show an information dialog in Amarok.

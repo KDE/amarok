@@ -34,7 +34,7 @@ namespace AmarokScript
     AmarokScript::~AmarokScript()
     {}
 
-    void AmarokScript::quit() const
+    void AmarokScript::quitAmarok()
     {
         kapp->closeAllWindows();
     }
