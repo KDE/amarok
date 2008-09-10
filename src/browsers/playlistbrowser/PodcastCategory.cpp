@@ -87,12 +87,6 @@ PlaylistBrowserNS::PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastM
     connect( updateAllAction, SIGNAL(triggered( bool )),
                                 m_podcastModel, SLOT(refreshPodcasts()) );
 
-    QAction* configureAction = new QAction( KIcon("configure-amarok"),
-                                            i18n("&Configure"), toolBar );
-    toolBar->addAction( configureAction );
-    connect( configureAction, SIGNAL(triggered( bool )),
-             m_podcastModel, SLOT(configurePodcasts()) );
-
     vLayout->addWidget( toolBar );
 
     m_podcastTreeView = new PodcastView( podcastModel, this );
