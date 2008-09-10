@@ -130,6 +130,14 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     m_labels = channel->labels();
     m_subscribeDate = channel->subscribeDate();
 
+    //Default Settings
+    m_directory = KUrl( Amarok::saveLocation("podcasts") );
+    m_directory.addPath( m_title );
+    m_autoScan = true;
+    m_fetchType = StreamOrDownloadOnDemand;
+    m_purge = false;
+    m_purgeCount = 10;
+
     updateInDb();
 
     m_episodes = channel->episodes();
