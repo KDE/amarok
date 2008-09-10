@@ -51,9 +51,12 @@ VERSION 2.0-beta2
 
   BUGFIXES:
     * Keyboard navigation in the playlist. (BR 170489)
+    * Fix edit bookmark feature (BR 170008)
     * Don't show scroll bars on the pixmap viewer when viewing a full sized
       cover.
     * Activate the SideBar tabs when dragging something over them. (BR 169712)
+    * Save composer and disc number correctly (BR 167184)
+    * Handle multidisc albums properly (BR 167238)
     * Make the currently playing track active in the playlist if it has been 
       removed and is later re added. (BR 167552)
     * Show the album year in the Collection Browser if requested.
@@ -63,7 +66,7 @@ VERSION 2.0-beta2
     * Setting half ratings via global shortcuts was broken.
     * Exporting of M3U and PLS playlists has been fixed.
     * Make the PlayPause button actually switch icons again. (BR 169805)
-    * Added "Ignore field" token to the Guess tags dialog. (BR 161060)
+    * Add "Ignore field" token to the Guess tags dialog. (BR 161060)
     * Only add supported file formats to the playlist. Patch by Andreas Mützel
       <andreas.muetzel@gmx.net>.
     * Clear the status bar when stopping playback.
@@ -71,14 +74,14 @@ VERSION 2.0-beta2
     * Don't show the context menu in the Current Track applet if playback has
       been stopped.
     * Applets do not disappear if Context View is shrunk too much. (BR 169504)
-    * Fixed last.fm events applet.
+    * Fix last.fm events applet.
     * The Current track applet now has tooltips for the icons on the right 
       hand side. (BR 168260)
     * "Resume playback on start" now also restores the track position
       correctly. (BR 168792)
-    * Fixed layouting issues with tagging dialog. (BR 166837)
-    * Fixed crash when closing last.fm settings while playing. (BR 168828)
-    * Made it possible to actually disable the audio fadeout. (BR 169022)
+    * Fix layouting issues with tagging dialog. (BR 166837)
+    * Fix crash when closing last.fm settings while playing. (BR 168828)
+    * Make it possible to actually disable the audio fadeout. (BR 169022)
     * Podcast Episode downloading doesn't crash anymore. (BR 168203)
     * Dragging files to the playlist no longer appends, but drops in the 
       correct spot.
