@@ -109,7 +109,7 @@ dlg.show();
 if( dlg.exec() == QDialog.Rejected )
 {
     print( "Cancelled" );
-    return;
+    Amarok.end();
 }
 
 print( "Will proceed to convert stats" );
