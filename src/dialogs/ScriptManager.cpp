@@ -113,7 +113,6 @@ namespace Amarok
 
 ScriptManager* ScriptManager::s_instance = 0;
 
-
 ScriptManager::ScriptManager( QWidget* parent )
         : KDialog( parent )
         , EngineObserver( The::engineController() )
@@ -176,8 +175,14 @@ ScriptManager::~ScriptManager()
     config.writeEntry( "Running Scripts", runningScripts );
 
     config.sync();
+}
 
-    s_instance = 0;
+void
+ScriptManager::destroy() {
+    if (s_instance) {
+        delete s_instance;
+        s_instance = 0;
+    }
 }
 
 ScriptManager*

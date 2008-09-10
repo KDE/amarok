@@ -44,9 +44,8 @@ class PlaylistManager : public QObject
     Q_OBJECT
 
     public:
-        ~PlaylistManager();
-
         static PlaylistManager *instance();
+        static void destroy();
         //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamically.
 
         //Don't forget to add a new default Category to PlaylistManager::typeName(int playlistCategory)
@@ -147,6 +146,7 @@ class PlaylistManager : public QObject
     private:
         static PlaylistManager* s_instance;
         PlaylistManager();
+        ~PlaylistManager();
 
         PodcastProvider *m_defaultPodcastProvider;
 

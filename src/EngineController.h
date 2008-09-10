@@ -42,8 +42,8 @@ class AMAROK_EXPORT EngineController : public QObject, public EngineSubject
 public:
     typedef QMap<QString, bool>  ExtensionCache;
 
-    EngineController();
-    ~EngineController();
+    static EngineController* instance();
+    static void destroy();
 
     static bool              canDecode( const KUrl& );
     static ExtensionCache&   extensionCache() { return s_extensionCache; }
@@ -130,6 +130,10 @@ private slots:
     void slotStopFadeout(); //called after the fade-out has finished
 
 private:
+    static EngineController* s_instance;
+    EngineController();
+    ~EngineController();
+
     static ExtensionCache s_extensionCache;
 
     Q_DISABLE_COPY( EngineController )

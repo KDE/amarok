@@ -46,7 +46,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
     public:
         static ScriptManager* instance();
-        virtual ~ScriptManager();
+        static void destroy();
 
         /**
          * Runs the script with the given name.
@@ -116,6 +116,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 
     private:
         explicit ScriptManager( QWidget* parent );
+        virtual ~ScriptManager();
 
         bool loadScript( const QString& path ); //return false if loadScript failed.
 

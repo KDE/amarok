@@ -47,17 +47,23 @@
 EngineController::ExtensionCache EngineController::s_extensionCache;
 
 namespace The {
-    static EngineController* s_EngineController_instance = 0;
-
-    EngineController* engineController()
-    {
-        if( !s_EngineController_instance )
-            s_EngineController_instance = new EngineController();
-
-        return s_EngineController_instance;
-    }
+    EngineController* engineController() { return EngineController::instance(); }
 }
 
+EngineController* EngineController::s_instance = 0;
+
+EngineController*
+EngineController::instance() {
+    return s_instance ? s_instance : new EngineController();
+}
+
+void
+EngineController::destroy() {
+    if (s_instance) {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
 
 EngineController::EngineController()
     : m_media( 0 )
@@ -103,6 +109,8 @@ EngineController::EngineController()
                        SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
 
     connect( m_fadeoutTimer, SIGNAL( timeout() ), SLOT( slotStopFadeout() ) );
+
+    s_instance = this;
 }
 
 EngineController::~EngineController()

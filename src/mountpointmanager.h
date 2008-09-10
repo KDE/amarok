@@ -149,8 +149,6 @@ signals:
     void mediumRemoved( int deviceid );
 
 public:
-    ~MountPointManager();
-
     //the methods of this class a called *very* often. make sure they are as fast as possible
     // (inline them?)
 
@@ -159,6 +157,11 @@ public:
      * @return a MountPointManager instance
      */
     AMAROK_EXPORT static MountPointManager *instance();
+
+    /**
+     * frees the singleton
+     */
+    AMAROK_EXPORT static void destroy();
 
     /**
      *
@@ -218,6 +221,7 @@ private slots:
 private:
     static MountPointManager* s_instance;
     MountPointManager();
+    ~MountPointManager();
 
     /**
      * checks whether a medium identified by its unique database id is currently mounted.

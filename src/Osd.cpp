@@ -48,7 +48,6 @@ namespace Amarok
     QImage icon() { return QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ); }
 }
 
-
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
         : QWidget( parent )
         , m_duration( 2000 )
@@ -565,9 +564,26 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 // Class OSD
 /////////////////////////////////////////////////////////////////////////////////////////
 
+Amarok::OSD* Amarok::OSD::s_instance = 0;
+
+Amarok::OSD*
+Amarok::OSD::instance()
+{
+    return s_instance ? s_instance : new OSD();
+}
+
+void
+Amarok::OSD::destroy() {
+    if (s_instance) {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
+
 Amarok::OSD::OSD()
     : OSDWidget( 0 )
 {
+    s_instance = this;
     The::engineController()->attach( this );
 }
 

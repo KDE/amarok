@@ -48,7 +48,6 @@ CoverLabel::CoverLabel ( QWidget * parent, Qt::WindowFlags f )
         : QLabel( parent, f)
 {}
 
-
 void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
     if (pEvent->button() == Qt::LeftButton || pEvent->button() == Qt::RightButton)
     {
@@ -56,18 +55,19 @@ void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
     }
 }
 
-class CoverFetcherSingleton
-{
-    public:
-        CoverFetcher instance;
-};
-
-K_GLOBAL_STATIC( CoverFetcherSingleton, s_privateInstance )
+CoverFetcher* CoverFetcher::s_instance = 0;
 
 CoverFetcher*
 CoverFetcher::instance()
 {
-    return &s_privateInstance->instance;
+    return s_instance ? s_instance : new CoverFetcher();
+}
+
+void CoverFetcher::destroy() {
+    if (s_instance) {
+        delete s_instance;
+        s_instance = 0;
+    }
 }
 
 CoverFetcher::CoverFetcher()
@@ -79,7 +79,7 @@ CoverFetcher::CoverFetcher()
     DEBUG_FUNC_INFO
     setObjectName( "CoverFetcher" );
 
-    qAddPostRoutine( s_privateInstance.destroy ); //Ensures that the dtor gets called when QApplication destructs
+    s_instance = this;
 }
 
 CoverFetcher::~CoverFetcher()

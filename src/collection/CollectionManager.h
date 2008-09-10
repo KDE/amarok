@@ -47,8 +47,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
         };
 
         static CollectionManager * instance();
-
-        ~CollectionManager();
+        static void destroy();
 
         QueryMaker * queryMaker() const;
 
@@ -146,6 +145,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
     private:
         static CollectionManager* s_instance;
         CollectionManager();
+        ~CollectionManager();
 
         void init();
 

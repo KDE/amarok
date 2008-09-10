@@ -21,6 +21,7 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
+#include "covermanager/CoverFetcher.h"
 #include "Debug.h"
 #include "EngineController.h"
 //#include "equalizersetup.h"
@@ -219,12 +220,12 @@ App::~App()
     // do even if trayicon is not shown, it is safe
     Amarok::config().writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
-    delete ScriptManager::instance();
+    ScriptManager::destroy();
 
     // this must be deleted before the connection to the Xserver is
     // severed, or we risk a crash when the QApplication is exited,
     // I asked Trolltech! *smug*
-    delete Amarok::OSD::instance();
+    Amarok::OSD::destroy();
 
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::self()->writeConfig();
@@ -232,10 +233,11 @@ App::~App()
     mainWindow()->deleteBrowsers();
     delete mainWindow();
 
-    delete The::playlistManager();
-    delete CollectionManager::instance();
-    delete MountPointManager::instance();
-    delete The::engineController();
+    PlaylistManager::destroy();
+    CollectionManager::destroy();
+    MountPointManager::destroy();
+    EngineController::destroy();
+    CoverFetcher::destroy();
 
 #ifdef Q_WS_WIN
     // work around for KUniqueApplication being not completely implemented on windows

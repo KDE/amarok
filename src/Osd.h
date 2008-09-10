@@ -157,12 +157,8 @@ namespace Amarok
         Q_OBJECT
 
     public:
-        static OSD *instance()
-        {
-            static OSD *s_instance = new OSD;
-            return s_instance;
-        }
-        ~OSD();
+        static OSD* instance();
+        static void destroy();
 
         void applySettings();
         virtual void show( Meta::TrackPtr track );
@@ -184,6 +180,8 @@ namespace Amarok
 
     private:
         OSD();
+        ~OSD();
+        static OSD* s_instance;
         bool isMetaDataSpam( const QHash<qint64, QString>& );
         QList<QHash<qint64, QString> > m_metaDataHistory;
     };

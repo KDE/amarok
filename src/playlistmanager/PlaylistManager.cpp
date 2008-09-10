@@ -54,6 +54,15 @@ PlaylistManager::instance()
     return s_instance ? s_instance : new PlaylistManager();
 }
 
+void
+PlaylistManager::destroy()
+{
+    if (s_instance) {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
+
 PlaylistManager::PlaylistManager()
 {
     s_instance = this;

@@ -68,6 +68,15 @@ CollectionManager::instance()
     return s_instance ? s_instance : new CollectionManager();
 }
 
+void
+CollectionManager::destroy()
+{
+    if (s_instance) {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
+
 CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )

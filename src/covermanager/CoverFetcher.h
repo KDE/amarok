@@ -63,8 +63,7 @@ class CoverFetcher : public QObject
 
 public:
     AMAROK_EXPORT static CoverFetcher* instance();
-
-   ~CoverFetcher();
+    AMAROK_EXPORT static void destroy();
 
     /// allow the user to edit the query?
     void setUserCanEditQuery( bool b ) { m_userCanEditQuery = b; }
@@ -92,8 +91,10 @@ private slots:
     void changeLocale( int id );
 
 private:
-    friend class CoverFetcherSingleton;
+    static CoverFetcher* s_instance;
     CoverFetcher();
+    ~CoverFetcher();
+
     void parseItemNode( const QDomNode &node );
 
     Meta::AlbumList m_albums;
