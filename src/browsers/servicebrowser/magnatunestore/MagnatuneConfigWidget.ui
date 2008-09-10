@@ -91,7 +91,11 @@
       <item row="4" column="0" colspan="2" >
        <widget class="QLabel" name="label_4" >
         <property name="text" >
-         <string>For more information about the Magnatune.com memberships, and to sign up, go to &lt;a href="http://magnatune.com/compare_plans">http://magnatune.com/compare_plans&lt;/a> </string>
+         <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">For more information about the Magnatune.com memberships, and to sign up, go to  &lt;a href="http://magnatune.com/compare_plans?referal_id=amarok">&lt;span style=" text-decoration: underline; color:#0000ff;">http://magnatune.com/compare_plans&lt;/span>&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
         </property>
         <property name="textFormat" >
          <enum>Qt::AutoText</enum>
