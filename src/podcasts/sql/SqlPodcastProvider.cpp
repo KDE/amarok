@@ -55,9 +55,11 @@ SqlPodcastProvider::SqlPodcastProvider()
 
 SqlPodcastProvider::~SqlPodcastProvider()
 {
+    debug() << "SqlChannels refcount:";
     foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
     {
         channel->updateInDb();
+        debug() << channel.count();
     }
 }
 
@@ -111,13 +113,27 @@ SqlPodcastProvider::addPodcast(const KUrl & url)
 
     KUrl kurl = KUrl( url );
 
-    bool result = false;
-    PodcastReader * podcastReader = new PodcastReader( this );
+    QString command = "SELECT title FROM podcastchannels WHERE url='%1';";
+    command = command.arg( kurl.url() );
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    QStringList dbResult = sqlStorage->query( command );
+    if( !dbResult.isEmpty() )
+    {
+        //Already subscribed to this Channel
+        //notify the user.
+        //TODO: add statusbar message after the 2.0 string freeze
+        debug() << QString("Already subscribed to %1.").arg( dbResult.first() );
+    }
+    else
+    {
+        bool result = false;
+        PodcastReader * podcastReader = new PodcastReader( this );
 
-    connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
-             SLOT( slotReadResult( PodcastReader *, bool ) ) );
+        connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
+                SLOT( slotReadResult( PodcastReader *, bool ) ) );
 
-    result = podcastReader->read( kurl );
+        result = podcastReader->read( kurl );
+    }
 }
 
 Meta::PodcastChannelPtr
