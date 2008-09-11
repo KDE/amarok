@@ -199,9 +199,9 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_artist->setPos(  QPointF( textX, margin * 2 + textHeight ) );
     m_album->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 ) );
     
-    m_score->setPos( QPointF( contentsRect().width() - 15, margin + 4 ) );
-    m_numPlayed->setPos( QPointF( contentsRect().width() - 14, margin + 31 ) );
-    m_playedLast->setPos( QPointF( contentsRect().width() - 15, margin + 58 ) );
+    m_score->setPos( QPointF( contentsRect().width() - 22, margin + 5 ) );
+    m_numPlayed->setPos( QPointF( contentsRect().width() - 22, margin + 47 ) );
+    m_playedLast->setPos( QPointF( contentsRect().width() - 25, margin + 87 ) );
 
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
@@ -212,10 +212,10 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     const QFont labeFont = textFont;
     QFont tinyFont( textFont );
 
-    if ( tinyFont.pointSize() > 5 ) 
-        tinyFont.setPointSize( tinyFont.pointSize() - 5 );
+    if ( tinyFont.pointSize() > 7 )
+        tinyFont.setPointSize( tinyFont.pointSize() - 2 );
     else
-        tinyFont.setPointSize( 1 );
+        tinyFont.setPointSize( 5 );
 
     m_maxTextWidth = textWidth;
     //m_maxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
@@ -225,9 +225,9 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_artist->setFont( textFont );
     m_album->setFont( textFont );
     
-    m_score->setFont( tinyFont );
-    m_numPlayed->setFont( tinyFont );
-    m_playedLast->setFont( tinyFont );
+    m_score->setFont( textFont );
+    m_numPlayed->setFont( textFont );
+    m_playedLast->setFont( textFont );
 
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), QRectF( 0, 0, textWidth, 30 ) ) );
     m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );    
@@ -286,11 +286,19 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     m_score->setText( score );
     
     m_trackLength = m_currentInfo[ Meta::Field::LENGTH ].toInt();
-    
-    m_playedLast->setText( Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) );
-    m_numPlayed->setText( m_currentInfo[ Meta::Field::PLAYCOUNT ].toString() );
 
+    QString playedLast = Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() );
+    QString playedLastVerbose =  Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() );
+    m_playedLast->setText( playedLast  );
+
+    QString numPlayed = m_currentInfo[ Meta::Field::PLAYCOUNT ].toString();
+    m_numPlayed->setText( numPlayed );
+    
     m_ratingWidget->setRating( m_rating );
+
+    m_score->setToolTip( i18n( "Score" ) + ' ' + score );
+    m_numPlayed->setToolTip( i18n( "Play Count" ) + ' ' + numPlayed );
+    m_playedLast->setToolTip( i18n( "Last Played" ) + ' ' + playedLastVerbose );
 
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
@@ -367,13 +375,13 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     if( track && track->album() && track->album()->hasImage() )
         m_theme->paint( p, QRect( margin - 5, margin, albumWidth + 12, albumWidth ), "cd-box" );
 
-    m_theme->paint( p, QRectF( labelX, margin + 1, 16, 16 ), "track" );
-    m_theme->paint( p, QRectF( labelX, margin * 2.0 + textHeight + 1 , 16, 16 ), "artist" );
-    m_theme->paint( p, QRectF( labelX, margin * 3.0 + textHeight * 2.0 + 1, 16, 16 ), "album" );
+    m_theme->paint( p, QRectF( labelX, margin + 1, 23, 23 ), "track" );
+    m_theme->paint( p, QRectF( labelX - 40, margin * 2.0 + textHeight + 1 , 80, 23 ), "artist" );
+    m_theme->paint( p, QRectF( labelX, margin * 3.0 + textHeight * 2.0 + 1, 23, 23 ), "album" );
 
-    m_theme->paint( p, QRectF( contentsRect.width() - 21, margin, 23, 23 ), "score" );
-    m_theme->paint( p, QRectF( contentsRect.width() - 21, margin + 26, 23, 23 ), "times-played" );
-    m_theme->paint( p, QRectF( contentsRect.width() - 21, margin + 54, 23, 23 ), "last-time" );
+    m_theme->paint( p, QRectF( contentsRect.width() - 31, margin, 30, 30 ), "score" );
+    m_theme->paint( p, QRectF( contentsRect.width() - 31, margin + 40, 30, 30 ), "times-played" );
+    m_theme->paint( p, QRectF( contentsRect.width() - 34, margin + 77, 40, 40 ), "last-time" );
 
     p->restore();
 
