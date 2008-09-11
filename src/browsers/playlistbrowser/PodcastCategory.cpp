@@ -430,6 +430,7 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
     }
 
     KAction* result = dynamic_cast< KAction* >( menu.exec( mapToGlobal( event->pos() ) ) );
+    Q_UNUSED( result )
 }
 
 QList< PopupDropperAction * >
@@ -468,7 +469,7 @@ PlaylistBrowserNS::PodcastView::actionsForIndices( QModelIndexList indices )
 QList< PopupDropperAction * >
 PlaylistBrowserNS::PodcastView::createCommonActions( QModelIndexList indices )
 {
-
+    Q_UNUSED( indices )
     QList< PopupDropperAction * > actions;
 
     if( m_appendAction == 0 )
@@ -518,7 +519,7 @@ PlaylistBrowserNS::PodcastView::createCommonActions( QModelIndexList indices )
 QList< PopupDropperAction * >
 PlaylistBrowserNS::PodcastView::createChannelActions( QModelIndexList indices )
 {
-
+    Q_UNUSED( indices )
     QList< PopupDropperAction * > actions;
 
     if( m_removeAction == 0 )
@@ -567,7 +568,7 @@ PlaylistBrowserNS::PodcastView::createChannelActions( QModelIndexList indices )
 QList< PopupDropperAction * >
 PlaylistBrowserNS::PodcastView::createEpisodeActions( QModelIndexList indices )
 {
-
+    Q_UNUSED( indices )
     QList< PopupDropperAction * > actions;
 
     if ( m_deleteAction == 0 )
