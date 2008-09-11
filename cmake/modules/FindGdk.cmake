@@ -1,10 +1,10 @@
-# - Try to find the libgpod library
+# - Try to find the GDK library
 # Once done this will define
 #
-#  GDK_FOUND - system has libgpod
-#  GDK_INCLUDE_DIR - the libgpod include directory
-#  GDK_LIBRARIES - Link these to use libgpod
-#  GDK_DEFINITIONS - Compiler switches required for using libgpod
+#  GDK_FOUND - system has GDK
+#  GDK_INCLUDE_DIR - the GDK include directory
+#  GDK_LIBRARIES - Link these to use GDK
+#  GDK_DEFINITIONS - Compiler switches required for using GDK
 #
 
 if (GDK_INCLUDE_DIR AND GDK_LIBRARIES)
