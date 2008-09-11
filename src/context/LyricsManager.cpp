@@ -166,14 +166,15 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 void
 LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 {
+    Q_UNUSED( cached )
+
     // we don't need to deal with suggestions here, because
     // we assume the script has called showLyrics if they could
     // be suggestions. this is for HTML display only
 
-    if( !The::engineController()->currentTrack() )
+    if( The::engineController()->currentTrack() )
     {
-        return;
+        sendNewLyricsHtml( lyricsHTML );
     }
-    sendNewLyricsHtml( lyricsHTML );
-    
 }
+
