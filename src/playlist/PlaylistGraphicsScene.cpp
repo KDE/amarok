@@ -82,6 +82,7 @@ GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
         m_selectionAxis = clicked;
         connect( clicked, SIGNAL(destroyed(QObject*)), SLOT(axisDeleted()) );
 
+        m_selectionStack.clear();
         prevSelected.clear();
     }
 
@@ -123,6 +124,8 @@ GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
         QPainterPath path;
         path.addRect( boundingRect );
         setSelectionArea( path, Qt::ContainsItemBoundingRect );
+
+        //TODO: add these newly selected items to the selection stack
     }
     else
     {
@@ -148,6 +151,7 @@ GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
             rect.moveTo( item->pos() );
             rect.adjust( 1, 1, -1, -1 );
             path.addRect( rect );
+            m_selectionStack.push( static_cast<Playlist::GraphicsItem*>(item) );
         }
 
         setSelectionArea( path, Qt::IntersectsItemBoundingRect );
