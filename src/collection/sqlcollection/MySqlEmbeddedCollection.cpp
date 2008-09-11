@@ -113,7 +113,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
     server_options[0] = "amarokmysqld";
     server_options[1] = defaultsLine;
     server_options[2] = databaseLine;
-    server_options[3] = "--default-storage-engine=INNODB";
+    server_options[3] = "--default-storage-engine=MYISAM";
     server_options[4] = 0;
 
     char **server_groups = new char* [ 3 ];
