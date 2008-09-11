@@ -27,6 +27,7 @@
 #include "PlaylistModel.h"
 
 #include <QGraphicsView>
+#include <QKeyEvent>
 #include <QMimeData>
 
 #include <typeinfo>
@@ -176,20 +177,6 @@ GraphicsScene::axisDeleted()
     }
 }
 
-
-
-void
-GraphicsScene::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
-{
-    QGraphicsScene::dragLeaveEvent( event );
-}
-
-void
-GraphicsScene::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
-{
-    QGraphicsScene::dragEnterEvent( event );
-}
-
 void
 GraphicsScene::dropEvent( QGraphicsSceneDragDropEvent *event )
 {
@@ -198,16 +185,101 @@ GraphicsScene::dropEvent( QGraphicsSceneDragDropEvent *event )
 
     if( itemAt( event->pos() ) )
     {
-        debug() << "[GS] ignoring";
         event->ignore();
         QGraphicsScene::dropEvent( event );
     }
     else
     {
-        debug() << "[GS] accepting drop";
         event->accept();
         The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
         DropVis::instance()->hide();
     }
 }
+void
+GraphicsScene::keyPressEvent( QKeyEvent* event )
+{
+    const bool moveLine = event->matches( QKeySequence::MoveToNextLine ) ||
+                          event->matches( QKeySequence::MoveToPreviousLine );
 
+    const bool selectLine = event->matches( QKeySequence::SelectNextLine ) ||
+                            event->matches( QKeySequence::SelectPreviousLine );
+
+    const bool nextLine = event->matches( QKeySequence::MoveToNextLine ) ||
+                          event->matches( QKeySequence::SelectNextLine );
+
+    const bool prevLine = event->matches( QKeySequence::MoveToPreviousLine ) ||
+                          event->matches( QKeySequence::SelectPreviousLine );
+
+    if( moveLine || selectLine )
+    {
+        event->accept();
+
+        const int selectedCount = selectedItems().count();
+        int row = -1; // default to first item if no item already focused
+        Playlist::GraphicsItem *focused = 0;
+
+        // if we've previously selected an item we need to continue the selection from there
+        // we can't rely on selectedItems() since the list order is not specified
+        if( !m_selectionStack.isEmpty() && m_selectionStack.top() )
+            focused = m_selectionStack.top();
+        else if( selectedCount > 0 )
+            focused = static_cast<Playlist::GraphicsItem*>( selectedItems().last() );
+
+        if( focused )
+            row = The::playlistView()->tracks().indexOf( focused );
+
+        // clear any other selected items if we aren't extending the selection
+        if( moveLine )
+        {
+            clearSelection();
+            m_selectionStack.clear();
+        }
+
+        // find the new item to select/deselect
+        // If we're extending the selection, then we don't want to change the
+        // item which we're updating the focus/selection for if we've switched
+        // directions.
+        if( nextLine )
+        {
+            if( row == The::playlistView()->tracks().size() - 1 )
+                row = -1; // loop back to the first item
+
+            focused = The::playlistView()->tracks().at( ++row );
+        }
+        else if( prevLine ) // previous line
+        {
+            if( row <= 0 )
+                row = The::playlistView()->tracks().size(); // loop to the last item
+
+            focused = The::playlistView()->tracks().at( --row );
+        }
+
+        if( focused )
+        {
+            if( selectLine )
+            {
+                if( m_selectionStack.contains( focused ) )
+                {
+                    m_selectionStack.pop()->setSelected( false );
+                }
+                else
+                {
+                    m_selectionStack.push( focused );
+                    focused->setSelected( true );
+                    setFocusItem( focused );
+                    focused->ensureVisible();
+                }
+            }
+            else if( moveLine )
+            {
+                m_selectionStack.push( focused );
+                focused->setSelected( true );
+                setFocusItem( focused );
+                focused->ensureVisible();
+            }
+        }
+
+        return;
+    }
+    QGraphicsScene::keyPressEvent( event );
+}

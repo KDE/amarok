@@ -24,6 +24,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
 #include <QPointer>
+#include <QStack>
 
 namespace Playlist
 {
@@ -36,10 +37,9 @@ namespace Playlist
             GraphicsScene( QObject *parent = 0 );
 
         protected:
-            virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
-            virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
-            virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
             virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
+            virtual void keyPressEvent( QKeyEvent *event );
+            virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
 
         private slots:
             void axisDeleted();
@@ -47,6 +47,9 @@ namespace Playlist
         private:
             // what item shift-click selections are centered around
             QPointer<GraphicsItem> m_selectionAxis;
+
+            // Keeps track of selected items to help with keyboard selection
+            QStack<Playlist::GraphicsItem*> m_selectionStack;
     };
 }
 

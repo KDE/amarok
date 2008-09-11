@@ -27,7 +27,6 @@
 
 #include <QGraphicsItemAnimation>
 #include <QGraphicsView>
-#include <QStack>
 #include <QTimeLine>
 
 class GraphicsItem;
@@ -102,9 +101,6 @@ namespace Playlist
             QList<GraphicsItem*>  m_tracks;
             Model                *m_model;
             Playlist::GraphicsItem *m_contextMenuItem;
-
-            // Keeps track of selected items to help with keyboard selection
-            QStack<Playlist::GraphicsItem*> m_selectionStack;
 
             QMultiHash< QTimeLine*, QGraphicsItemAnimation* > m_animatorsByTimeline;
             QHash< QGraphicsItem*, QGraphicsItemAnimation* > m_animatorsByItem;
