@@ -69,6 +69,7 @@ namespace Mtp
        void copyTrackToDevice( const Meta::TrackPtr &track );
        bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
        int getTrackToFile( const uint32_t id, const QString & filename );
+       int getTempTrack( const uint32_t id, const QString & filename );
        void parseTracks();
        void updateTrackInDB( const Meta::MtpTrackPtr track );
        QString prettyName() const;
@@ -169,6 +170,25 @@ namespace Mtp
             LIBMTP_raw_device_t* m_rawdevices;
             QString m_serial;
             MtpHandler *m_handler;
+    };
+
+    class TrackFetcherThread : public ThreadWeaver::Job
+    {
+        Q_OBJECT
+        public:
+            TrackFetcherThread( const uint32_t id, const QString & filename, MtpHandler* handler );
+            virtual ~TrackFetcherThread();
+
+            //virtual bool success() const;
+
+        protected:
+            virtual void run();
+
+        private:
+            //bool m_success;
+            MtpHandler *m_handler;
+            uint32_t m_id;
+            QString m_filename;
     };
     
 }
