@@ -155,7 +155,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
         debug() << "Testing serial number";
 
         QString mtpSerial = QString::fromUtf8( LIBMTP_Get_Serialnumber( device ) );
-        if( serial != mtpSerial || !mtpSerial.contains(serial) )
+        if( !mtpSerial.contains(serial) )
         {
             debug() << "Wrong device, going to next";
             debug() << "Expected: " << serial << " but got: " << mtpSerial;
