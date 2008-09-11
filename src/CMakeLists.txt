@@ -604,8 +604,8 @@ endif(Q_WS_MAC)
 
 install(FILES amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
-install(FILES amarok_append.desktop DESTINATION
-${SERVICES_INSTALL_DIR}/ServiceMenus)
+install(FILES amarok_codecinstall.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
+install(FILES amarok_append.desktop DESTINATION ${SERVICES_INSTALL_DIR}/ServiceMenus)
 install(FILES amarok.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 
 install(FILES context/servicetypes/amarok_context_applet.desktop
