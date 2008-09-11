@@ -278,7 +278,16 @@ GraphicsScene::keyPressEvent( QKeyEvent* event )
                 focused->ensureVisible();
             }
         }
-
+        return;
+    }
+    else if( event->key() == Qt::Key_Return )
+    {
+        if( !m_selectionStack.isEmpty() && m_selectionStack.top() )
+        {
+            Playlist::GraphicsItem *item = m_selectionStack.top();
+            if( item )
+                The::playlistModel()->play( The::playlistView()->tracks().indexOf( item ) );
+        }
         return;
     }
     QGraphicsScene::keyPressEvent( event );
