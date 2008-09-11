@@ -117,8 +117,8 @@ namespace Mtp
            void failed();
 
         private slots:
-            void slotDeviceMatchSucceeded();
-            void slotDeviceMatchFailed();
+            void slotDeviceMatchSucceeded( ThreadWeaver::Job* job);
+            void slotDeviceMatchFailed( ThreadWeaver::Job* job);
 
         private:
             MtpCollection *m_memColl;
