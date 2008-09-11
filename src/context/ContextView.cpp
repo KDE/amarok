@@ -355,10 +355,7 @@ ContextView::zoomInFinished( int id )
     }
     m_zoomLevel = Plasma::DesktopZoom;
     setDragMode( NoDrag );
-    disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
-                 this, SLOT( zoomInFinished( int ) ) );
-    int numContainments = contextScene()->containments().size();
-
+    disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ), this, SLOT( zoomInFinished( int ) ) );
 }
 
 void
