@@ -23,6 +23,10 @@ VERSION 2.0-beta2
     * Add option to enable/disable automatic cover fetching.
 
   CHANGES:
+    * Make the values for score, play count and time since last play appear in
+      tooltip when hovering over the icons in the current track applet.
+    * Make values for score, play count and time since last play in the current
+      track applet readable.
     * The Librivox.org scripted service is back after a rather long, API-change
       induced hiatus.
     * Do not show the OSD if a stream repeatedly sends the same metadata.
