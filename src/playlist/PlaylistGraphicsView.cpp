@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
  * copyright            : (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * copyright            : (C) 2008 Seb Ruiz <ruiz@kde.org> 
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -43,6 +44,7 @@
 #include <QModelIndex>
 #include <QPixmapCache>
 #include <QScrollBar>
+#include <QStack>
 #include <QTimeLine>
 #include <QVariant>
 
@@ -59,13 +61,11 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     setAcceptDrops( true );
     setAlignment( Qt::AlignLeft | Qt::AlignTop );
     setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
-    //setBackgroundBrush( App::instance()->palette().window().color() );
 
     setScene( new Playlist::GraphicsScene() );
     scene()->addItem( Playlist::DropVis::instance() );
 
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-
 
     //make background transparent
     QPalette p = palette();
@@ -120,7 +120,6 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     int row = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(item) );
     const QModelIndex index = The::playlistModel()->index( row, 0 );
     ViewCommon::trackMenu(this, &index ,event->globalPos(), item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ));
-
 }
 
 void
@@ -187,6 +186,7 @@ Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
     }
     QGraphicsView::dragEnterEvent( event );
 }
+
 void
 Playlist::GraphicsView::dragMoveEvent( QDragMoveEvent *event )
 {
@@ -210,6 +210,7 @@ Playlist::GraphicsView::dragMoveEvent( QDragMoveEvent *event )
     }
     QGraphicsView::dragMoveEvent( event );
 }
+
 void
 Playlist::GraphicsView::dragLeaveEvent( QDragLeaveEvent *event )
 {
@@ -237,6 +238,18 @@ Playlist::GraphicsView::dropEvent( QDropEvent *event )
 void
 Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
 {
+    const bool moveLine = event->matches( QKeySequence::MoveToNextLine ) ||
+                          event->matches( QKeySequence::MoveToPreviousLine );
+
+    const bool selectLine = event->matches( QKeySequence::SelectNextLine ) ||
+                            event->matches( QKeySequence::SelectPreviousLine );
+
+    const bool nextLine = event->matches( QKeySequence::MoveToNextLine ) ||
+                          event->matches( QKeySequence::SelectNextLine );
+
+    const bool prevLine = event->matches( QKeySequence::MoveToPreviousLine ) ||
+                          event->matches( QKeySequence::SelectPreviousLine );
+
     if( event->matches( QKeySequence::Delete ) )
     {
         if( !scene()->selectedItems().isEmpty() )
@@ -246,46 +259,75 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
             return;
         }
     }
-    else if( event->matches( QKeySequence::MoveToNextLine ) ||
-             event->matches( QKeySequence::MoveToPreviousLine ) )
+    else if( moveLine || selectLine )
     {
         event->accept();
 
+        const int selectedCount = scene()->selectedItems().count();
         int row = -1; // default to first item if no item already focused
-        QGraphicsItem *focused = 0;
+        Playlist::GraphicsItem *focused = 0;
 
-        if( !scene()->selectedItems().isEmpty() )
+        // if we've previously selected an item we need to continue the selection from there
+        // we can't rely on selectedItems() since the list order is not specified
+        if( !m_selectionStack.isEmpty() && m_selectionStack.top() )
+            focused = m_selectionStack.top();
+        else if( selectedCount > 0 )
+            focused = static_cast<Playlist::GraphicsItem*>( scene()->selectedItems().last() );
+        
+        if( focused )
+            row = m_tracks.indexOf( focused );
+
+        // clear any other selected items if we aren't extending the selection
+        if( moveLine )
         {
-            focused = scene()->selectedItems().last();
-            if( focused )
-                row = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(focused) );
+            scene()->clearSelection();
+            m_selectionStack.clear();
         }
 
-        // clear any other selected items
-        scene()->clearSelection();
-
-        // find the new item to focus
-        if( event->matches( QKeySequence::MoveToNextLine ) )
+        // find the new item to select/deselect
+        // If we're extending the selection, then we don't want to change the
+        // item which we're updating the focus/selection for if we've switched
+        // directions.
+        if( nextLine )
         {
             if( row == m_tracks.size() - 1 )
                 row = -1; // loop back to the first item
 
             focused = m_tracks.at( ++row );
         }
-        else // previous line
+        else if( prevLine ) // previous line
         {
             if( row <= 0 )
                 row = m_tracks.size(); // loop to the last item
 
             focused = m_tracks.at( --row );
         }
-
+        
         if( focused )
         {
-            focused->setSelected( true );
-            focused->ensureVisible();
-            scene()->setFocusItem( focused );
+            if( selectLine )
+            {
+                if( m_selectionStack.contains( focused ) )
+                {
+                    m_selectionStack.pop()->setSelected( false );
+                }
+                else
+                {
+                    m_selectionStack.push( focused );
+                    focused->setSelected( true );
+                    scene()->setFocusItem( focused );
+                    focused->ensureVisible();                
+                }
+            }
+            else if( moveLine )
+            {
+                m_selectionStack.push( focused );
+                focused->setSelected( true );
+                scene()->setFocusItem( focused );
+                focused->ensureVisible();
+            }
         }
+
         return;
     }
 
@@ -327,6 +369,8 @@ void
 Playlist::GraphicsView::removeSelection()
 {
     QList<QGraphicsItem*> selection = scene()->selectedItems();
+
+    m_selectionStack.clear();
 
     if( selection.isEmpty() )
         return; // our job here is done.
@@ -424,18 +468,12 @@ Playlist::GraphicsView::moveItem( Playlist::GraphicsItem *moveMe, Playlist::Grap
         if ( firstIndex < 0 ) firstIndex = 0;
 
         if( moveMeIndex < aboveIndex )
-        {
             m_model->moveRow( moveMeIndex, aboveIndex -1 );
-        }
         else
-        {
             m_model->moveRow( moveMeIndex, aboveIndex );
-        }
-
-    } else {
-
-        debug() << "HEAD item";
-
+    }
+    else
+    {
         //we are moving a head item and all its children....
 
         int moveMeIndex = m_tracks.indexOf( moveMe );
@@ -473,16 +511,12 @@ void Playlist::GraphicsView::moveViewItem( int row, int to )
     for ( i = firstIndex; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 
-
-    //shuffleTracks( moveMeIndex, aboveIndex );
     shuffleTracks( 0 );
-
 }
 
 
 void Playlist::GraphicsView::moveViewItems( QList<int> rows, int to )
 {
-
     if ( to >= m_tracks.count() ) to = m_tracks.count() -1;
     
     int firstIndex = qMin( rows[0], to ) -1;
@@ -490,16 +524,19 @@ void Playlist::GraphicsView::moveViewItems( QList<int> rows, int to )
 
     int i = 0;
 
-    if ( rows[0] < to ) {
-    
-        foreach( int row, rows ) {
+    if( rows[0] < to )
+    {
+        foreach( int row, rows )
+        {
             m_tracks.move( row - i, to );
             i++;
         }
 
-    } else {
-        debug() << "doing view stuff on moving up";
-        foreach( int row, rows ) {
+    }
+    else
+    {
+        foreach( int row, rows )
+        {
             m_tracks.move( row, to + i );
             i++;
         }
@@ -509,14 +546,10 @@ void Playlist::GraphicsView::moveViewItems( QList<int> rows, int to )
         m_tracks.at( i )->setRow( i );
 
 
-    //shuffleTracks( moveMeIndex, aboveIndex );
     shuffleTracks( 0 );
-
 }
 
-
-
-    void
+void
 Playlist::GraphicsView::shuffleTracks( int startPosition, int stopPosition, bool animate )
 {
     if( startPosition < 0 )

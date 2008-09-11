@@ -27,6 +27,7 @@
 
 #include <QGraphicsItemAnimation>
 #include <QGraphicsView>
+#include <QStack>
 #include <QTimeLine>
 
 class GraphicsItem;
@@ -45,6 +46,7 @@ namespace Playlist
 {
     class GraphicsItem;
     class Model;
+    class SelectionHelper; // private
     class GraphicsView : public QGraphicsView
     {
         Q_OBJECT
@@ -74,9 +76,6 @@ namespace Playlist
             virtual void mouseReleaseEvent( QMouseEvent* event ); //Reimplemented from QWidget
             virtual void paletteChange( const QPalette & oldPalette );
 
-            //virtual void drawBackground ( QPainter * painter, const QRectF & rect );
-            
-
         private slots:
             void modelReset();
             void rowsInserted( const QModelIndex & parent, int start, int end );
@@ -103,6 +102,9 @@ namespace Playlist
             QList<GraphicsItem*>  m_tracks;
             Model                *m_model;
             Playlist::GraphicsItem *m_contextMenuItem;
+
+            // Keeps track of selected items to help with keyboard selection
+            QStack<Playlist::GraphicsItem*> m_selectionStack;
 
             QMultiHash< QTimeLine*, QGraphicsItemAnimation* > m_animatorsByTimeline;
             QHash< QGraphicsItem*, QGraphicsItemAnimation* > m_animatorsByItem;
