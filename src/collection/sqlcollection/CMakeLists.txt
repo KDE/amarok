@@ -61,7 +61,7 @@ target_link_libraries(amarok_collection-sqlcollection
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${sqlite_deps}
-    #    ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl
+    #    ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl crypto z
 )
 
 if(APPLE)
