@@ -66,7 +66,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
     infoHtml += "<img src=\"" + magnatuneAlbum->coverUrl() +
                 "\" align=\"middle\" border=\"1\">";
 
-    infoHtml += "<br><br>" + i18n( "Genre: ");// + magnatuneAlbum->
+    //infoHtml += "<br><br>" + i18n( "Genre: ");// + magnatuneAlbum->
     infoHtml += "<br>" + i18n( "Release Year: ") + QString::number( magnatuneAlbum->launchYear() );
 
     if ( !magnatuneAlbum->description().isEmpty() ) {
