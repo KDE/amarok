@@ -195,26 +195,28 @@ MtpTrack::prettyName() const
 void
 MtpTrack::prepareToPlay()
 {
-    DEBUG_BLOCK
     KUrl url;
     if( m_isCopied )
     {
         debug() << "File is already copied, simply return";
+        //m_playableUrl = KUrl::fromPath( m_playableUrl );
     }
     else
     {
         debug() << "Beginning temporary file copy";
         m_tempfile.open();
-        bool success = !( m_collection->handler()->getTempTrack( m_id, m_playableUrl ) );
+        bool success = !( m_collection->handler()->getTrackToFile( m_id, m_playableUrl ) );
         debug() << "File transfer complete";
         if( success )
         {
             debug() << "File transfer successful!";
+            //m_playableUrl = KUrl::fromPath( m_playableUrl );
             m_isCopied = true;
         }
         else
         {
             debug() << "File transfer failed!";
+            //m_playableUrl = KUrl::fromPath( "" );
             m_isCopied = false;
         }
     }
@@ -226,6 +228,8 @@ MtpTrack::setTempFile( const QString &format )
     m_tempfile.setSuffix( ("." + format) ); // set suffix based on info from libmtp
     QFileInfo tempFileInfo( m_tempfile ); // get info for path
     QString tempPath = tempFileInfo.absoluteFilePath(); // path
+
+//    tempfile->setAutoRemove( false );
 
     return tempPath;
 }
@@ -253,7 +257,7 @@ bool
 MtpTrack::isPlayable() const
 {
     // TODO: somehow temporarily copy file to local disk to play
-    return true;
+    return false;
 }
 
 bool

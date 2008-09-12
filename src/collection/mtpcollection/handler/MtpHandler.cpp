@@ -654,17 +654,7 @@ MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 int
 MtpHandler::getTrackToFile( const uint32_t id, const QString & filename )
 {
-    DEBUG_BLOCK
-    debug() << "Filename is: " << filename;
     return LIBMTP_Get_Track_To_File( m_device, id, filename.toUtf8(), 0, 0 );
-}
-
-int
-MtpHandler::getTempTrack( const uint32_t id, const QString & filename )
-{
-    DEBUG_BLOCK
-    debug() << "Filename is: " << filename;
-    ThreadWeaver::Weaver::instance()->enqueue( new TrackFetcherThread( id, filename, this ) );
 }
 
 int
@@ -1147,23 +1137,3 @@ WorkerThread::run()
     m_success = m_handler->iterateRawDevices( m_numrawdevices, m_rawdevices, m_serial );
 }
 
-// TrackFetcherThread
-TrackFetcherThread::TrackFetcherThread( const uint32_t id, const QString & filename, MtpHandler* handler )
- : ThreadWeaver::Job()
-        , m_id( id )
-        , m_filename( filename )
-        , m_handler( handler )
-{
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
-}
-
-TrackFetcherThread::~TrackFetcherThread()
-{
-    //nothing to do
-}
-
-void
-TrackFetcherThread::run()
-{
-    m_handler->getTrackToFile( m_id, m_filename );
-}
