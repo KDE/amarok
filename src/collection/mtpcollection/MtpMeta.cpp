@@ -226,6 +226,7 @@ QString
 MtpTrack::setTempFile( const QString &format )
 {
     m_tempfile.setSuffix( ("." + format) ); // set suffix based on info from libmtp
+    m_tempfile.open();
     QFileInfo tempFileInfo( m_tempfile ); // get info for path
     QString tempPath = tempFileInfo.absoluteFilePath(); // path
 
