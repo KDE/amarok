@@ -366,13 +366,13 @@ EngineController::playPause() //SLOT
 
     DEBUG_BLOCK
 
-    if( m_media->state() == Phonon::PlayingState )
+    if( m_media->state() == Phonon::PausedState )
     {
-        pause();
+        play();
     }
     else
     {
-        play();
+        pause();
     }
 }
 
