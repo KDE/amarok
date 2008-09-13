@@ -39,13 +39,10 @@ ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
     
     m_text->setFont( font );
     m_text->setBrush( Qt::white );
-//     connect( this, SIGNAL( pressed( bool ) ), this, SLOT( mousePressed( bool ) ) );
 }
 
 ToolBoxIcon::~ToolBoxIcon()
-{
-    delete m_text;    
-}
+{}
 
 void
 ToolBoxIcon::mousePressEvent( QGraphicsSceneMouseEvent *event )
@@ -114,7 +111,6 @@ ToolBoxIcon::boundingRect() const
     return QRectF( QPointF( 0, 0 ), size() );
 }
 
-
 void
 ToolBoxIcon::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
@@ -122,9 +118,8 @@ ToolBoxIcon::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
         Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
 
     m_hovering = true;
-    
-    m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve,
-                                                                   this, "animateHighlight" );
+    m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve, this, "animateHighlight" );
+
     Plasma::Icon::hoverEnterEvent( event );
 }
 
@@ -135,9 +130,8 @@ ToolBoxIcon::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
         Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
     
     m_hovering = false;
-    
-    m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseOutCurve,
-                                                                   this, "animateHighlight" );
+    m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseOutCurve, this, "animateHighlight" );
+
     Plasma::Icon::hoverLeaveEvent( event );
 }
 
@@ -151,6 +145,7 @@ ToolBoxIcon::animateHighlight( qreal progress )
 
     if( progress >= 1.0 )
         m_animHighlightId = 0;
+
     update();
 }
 
@@ -161,11 +156,11 @@ ToolBoxIcon::shape() const
     if( Plasma::Icon::drawBackground() )
     {
         QSize shapeSize( size().width() - 2, size().height() - 2 );
-        return Plasma::PaintUtils::roundedRectangle( QRectF( QPointF( 0.0, 0.0 ),
-                                                             shapeSize ), 10.0 );
+        return Plasma::PaintUtils::roundedRectangle( QRectF( QPointF( 0.0, 0.0 ), shapeSize ), 10.0 );
     }
-    else
-        return Plasma::Icon::shape();
+
+    return Plasma::Icon::shape();
 }
 
 #include "ToolBoxIcon.moc"
+

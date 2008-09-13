@@ -28,6 +28,7 @@ class QPainterPath;
 class AMAROK_EXPORT ToolBoxIcon: public Plasma::Icon
 {
     Q_OBJECT
+
 public:
     explicit ToolBoxIcon( QGraphicsItem *parent = 0 );
     ~ToolBoxIcon();
@@ -44,6 +45,7 @@ protected:
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
     void mousePressEvent( QGraphicsSceneMouseEvent *event );
+
 Q_SIGNALS:
     void appletChosen( const QString &pluginName );
     
@@ -61,3 +63,4 @@ private:
 };
 
 #endif
+

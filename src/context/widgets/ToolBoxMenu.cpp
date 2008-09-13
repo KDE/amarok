@@ -64,8 +64,7 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningApplets
 }
 
 AmarokToolBoxMenu::~AmarokToolBoxMenu()
-{
-}
+{}
 
 void
 AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList appletsToShow )
@@ -305,8 +304,7 @@ AmarokToolBoxMenu::show( bool refreshApplets )
 
         const int height = static_cast<int>( entry->boundingRect().height() ) + 9;
 
-        Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement,
-                                            QPoint( 5, boundingRect().height() - height * i - 50 ) );
+        Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement, QPoint( 5, boundingRect().height() - height * i - 50 ) );
     }
 }
 
@@ -322,41 +320,43 @@ AmarokToolBoxMenu::hide()
     m_showing = false;
     foreach( QGraphicsItem *c, QGraphicsItem::children() )
         c->hide();
+
     emit menuHidden();
 }
 
 void
 AmarokToolBoxMenu::setupMenuEntry( ToolBoxIcon *entry, const QString &appletName )
 {
-        entry->setDrawBackground( true );
-        entry->setOrientation( Qt::Horizontal );
-        entry->setText( appletName );
+    entry->setDrawBackground( true );
+    entry->setOrientation( Qt::Horizontal );
+    entry->setText( appletName );
 
-        QSizeF size( 180, 24 );
-        entry->setMinimumSize( size );
-        entry->setMaximumSize( size );
-        entry->resize( size );
+    const QSizeF size( 180, 24 );
+    entry->setMinimumSize( size );
+    entry->setMaximumSize( size );
+    entry->resize( size );
 
-        entry->setPos( 5, boundingRect().height() );
+    entry->setPos( 5, boundingRect().height() );
 
-        entry->setZValue( zValue() + 1 );
-        entry->setData( 0, QVariant( m_appletsList[appletName] ) );
-        entry->show();
-        if( m_removeApplets )
-        {
-            connect( entry, SIGNAL( appletChosen( const QString & ) ),
-                     this, SLOT( removeApplet( const QString & ) ) );
-        } else
-        {
-            connect( entry, SIGNAL( appletChosen( const QString & ) ), this, SLOT( addApplet( const QString & ) ) );
-        }
+    entry->setZValue( zValue() + 1 );
+    entry->setData( 0, QVariant( m_appletsList[appletName] ) );
+    entry->show();
+    if( m_removeApplets )
+    {
+        connect( entry, SIGNAL( appletChosen( const QString & ) ),
+                 this, SLOT( removeApplet( const QString & ) ) );
+    } else
+    {
+        connect( entry, SIGNAL( appletChosen( const QString & ) ), this, SLOT( addApplet( const QString & ) ) );
+    }
 }
 
 void
 AmarokToolBoxMenu::addApplet( const QString &pluginName )
 {
     DEBUG_BLOCK
-    if( pluginName != QString() )
+
+    if( !pluginName.isEmpty() )
     {
         bool appletFound = false;
         //First we check if the applet is already running and in that case we just change
@@ -379,7 +379,8 @@ void
 AmarokToolBoxMenu::removeApplet( const QString& pluginName )
 {
     DEBUG_BLOCK
-    if( pluginName == QString() )
+
+    if( pluginName.isEmpty()  )
         return;
     
     // this is not ideal, but we look through all running applets to find
@@ -433,13 +434,13 @@ AmarokToolBoxMenu::createArrow( ToolBoxIcon *arrow, const QString &direction )
 
     arrow->setZValue( zValue() + 1 );
     arrow->hide();
-
 }
 
 void
 AmarokToolBoxMenu::scrollDown()
 {
     DEBUG_BLOCK
+
     if( !m_bottomMenu.empty() )
     {
         ToolBoxIcon *entryToRemove = m_currentMenu.first();
