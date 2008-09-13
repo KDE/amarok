@@ -204,11 +204,6 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track )
         left << i18n("Track");
 
         const QString length = Meta::secToPrettyTime( m_track->length() );
-        if( !length.isEmpty() )
-        {
-            right << length;
-            left << i18n( "Length" );
-        }
 
         if( length > 0 )
         {
