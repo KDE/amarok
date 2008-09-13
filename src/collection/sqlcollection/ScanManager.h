@@ -32,6 +32,7 @@
 #include <threadweaver/Job.h>
 
 class SqlCollection;
+class SqlCollectionDBusHandler;
 class XmlParseJob;
 
 class ScanManager : public QObject
@@ -65,6 +66,7 @@ class ScanManager : public QObject
 
     private:
         SqlCollection *m_collection;
+        SqlCollectionDBusHandler *m_dbusHandler;
 
         AmarokProcess *m_scanner;
 

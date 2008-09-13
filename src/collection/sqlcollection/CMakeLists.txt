@@ -38,6 +38,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     ScanManager.cpp
     ScanResultProcessor.cpp
     SqlCollection.cpp
+    SqlCollectionDBusHandler.cpp
     SqlCollectionLocation.cpp
     SqlQueryMaker.cpp
     SqlRegistry.cpp
@@ -51,6 +52,8 @@ set(amarok_collection-sqlcollection_PART_SRCS
 kde4_add_ui_files(amarok_collection-sqlcollection_PART_SRCS
     OrganizeCollectionDialogBase.ui
 )
+
+qt4_add_dbus_adaptor( amarok_collection-sqlcollection_PART_SRCS org.kde.amarok.sqlcollection.xml SqlCollectionDBusHandler.h SqlCollectionDBusHandler SqlCollectionAdaptor SqlCollectionAdaptor)
 
 kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-sqlcollection_PART_SRCS})
 

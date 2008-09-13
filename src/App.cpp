@@ -16,8 +16,7 @@ email                : markey@web.de
  ***************************************************************************/
 #include "App.h"
 
-#include "Amarok.h"
-#include "AmarokCollectionDBusHandler.h"
+#include "Amarok.h"‚
 #include "amarokconfig.h"
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
@@ -550,7 +549,6 @@ App::continueInit()
     new Amarok::RootDBusHandler();
     new Amarok::PlayerDBusHandler();
     new Amarok::TracklistDBusHandler();
-    new Amarok::AmarokCollectionDBusHandler();
     QDBusConnection::sessionBus().registerService("org.mpris.amarok");
     PERF_LOG( "Done creating DBus handlers" )
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)

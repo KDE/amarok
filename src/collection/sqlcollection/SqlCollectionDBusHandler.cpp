@@ -15,24 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_COLLECTION__DBUS_HANDLER_H
-#define AMAROK_COLLECTION__DBUS_HANDLER_H
+#include "SqlCollectionDBusHandler.h"
 
-#include <QObject>
-#include <QDBusArgument>
+#include "SqlCollectionAdaptor.h"
+#include "SqlCollection.h"
+#include "Debug.h"
 
-namespace Amarok
+SqlCollectionDBusHandler::SqlCollectionDBusHandler( SqlCollection *coll )
+    : QObject( coll )
+    , m_collection( coll )
 {
-    class AmarokCollectionDBusHandler : public QObject
-    {
-        Q_OBJECT
-        public:
-            AmarokCollectionDBusHandler();
+    setObjectName("SqlCollectionDBusHandler");
 
-        public slots:
-            bool isDirInCollection( const QString& path );
-    };
+    new SqlCollectionAdaptor( this );
+    QDBusConnection::sessionBus().registerObject("/SqlCollection/" + coll->collectionId(), this);
+}
 
-} // namespace Amarok
+bool
+SqlCollectionDBusHandler::isDirInCollection( const QString& path )
+{
+    return m_collection->isDirInCollection( path );
+}
 
-#endif
+#include "SqlCollectionDBusHandler.moc"

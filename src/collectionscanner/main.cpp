@@ -49,6 +49,7 @@ int main( int argc, char *argv[] )
     options.add("importplaylists", ki18n( "Import playlist" ));
     options.add("s");
     options.add("restart", ki18n( "Restart the scanner at last position, after a crash" ));
+    options.add("collectionid <argument>", ki18n( "The SqlCollection instance to connect to. Must be set for incremental scans" ));
     KCmdLineArgs::addCmdLineOptions( options );  //add our own options
 
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
@@ -62,10 +63,9 @@ int main( int argc, char *argv[] )
     const bool incremental      = args->isSet( "incremental" );
     const bool importplaylists  = args->isSet( "importplaylists" );
     const bool restart          = args->isSet( "restart" );
+    const QString collectionId  = args->getOption( "collectionid" );
 
-    //KApplication::disableAutoDcopRegistration();
-
-    CollectionScanner scanner( folders, recursive, incremental, importplaylists, restart );
+    CollectionScanner scanner( folders, collectionId, recursive, incremental, importplaylists, restart );
 
     registerTaglibPlugins();
 

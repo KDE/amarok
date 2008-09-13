@@ -51,6 +51,7 @@ class CollectionScanner : public KApplication
 
 public:
     CollectionScanner( const QStringList& folders,
+                       const QString &collectionId,
                        bool recursive,
                        bool incremental,
                        bool importPlaylists,

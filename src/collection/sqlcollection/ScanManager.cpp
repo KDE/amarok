@@ -31,6 +31,7 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
+#include "SqlCollectionDBusHandler.h"
 
 #include <QFileInfo>
 #include <QListIterator>
@@ -52,6 +53,7 @@ static const int MAX_FAILURE_PERCENTAGE = 5;
 ScanManager::ScanManager( SqlCollection *parent )
     :QObject( parent )
     , m_collection( parent )
+    , m_dbusHandler( 0 )
     , m_scanner( 0 )
     , m_parser( 0 )
     , m_restartCount( 0 )
@@ -131,8 +133,12 @@ void ScanManager::startIncrementalScan()
     {
         return;
     }
+    if( !m_dbusHandler )
+    {
+        m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
+    }
     m_scanner = new AmarokProcess( this );
-    *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "-i";
+    *m_scanner << "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << m_collection->collectionId();
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << dirs;
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
@@ -227,6 +233,11 @@ ScanManager::slotFinished( )
     m_scanner->deleteLater();
     m_scanner = 0;
     m_restartCount = 0;
+    if( m_dbusHandler )
+    {
+        m_dbusHandler->deleteLater();
+        m_dbusHandler = 0;
+    }
 }
 
 void

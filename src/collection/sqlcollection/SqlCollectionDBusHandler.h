@@ -15,39 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "AmarokCollectionDBusHandler.h"
+#ifndef SQLCOLLECTION__DBUS_HANDLER_H
+#define SQLCOLLECTION__DBUS_HANDLER_H
 
-#include "amarokconfig.h"
-#include "App.h"
-#include "Collection.h"
-#include "CollectionAdaptor.h"
-#include "collection/CollectionManager.h"
-#include "collection/sqlcollection/SqlCollection.h"
-#include "Debug.h"
+#include <QObject>
+#include <QDBusArgument>
 
-namespace Amarok
+class SqlCollection;
+
+class SqlCollectionDBusHandler : public QObject
 {
-    AmarokCollectionDBusHandler::AmarokCollectionDBusHandler()
-        : QObject(kapp)
-    {
-        setObjectName("AmarokCollectionDBusHandler");
+    Q_OBJECT
+    public:
+        SqlCollectionDBusHandler( SqlCollection *coll );
 
-        new CollectionAdaptor( this );
-        QDBusConnection::sessionBus().registerObject("/Collection", this);
-    }
+    public slots:
+        bool isDirInCollection( const QString& path );
+    
+    private:
+    SqlCollection *m_collection;
+};
 
-    bool AmarokCollectionDBusHandler::isDirInCollection( const QString& path )
-    {
-        DEBUG_BLOCK
 
-        // Assume the primary location is the sql collection. This is true for now, and we do this in other places too
-
-        Collection *coll = CollectionManager::instance()->primaryCollection();
-        SqlCollection* sqlColl = (SqlCollection*)( coll ); //FIXME: god-cast is bad. dynamic_cast won't compile for me unfortunately.
-        if( !sqlColl )
-            return false;
-        return sqlColl->isDirInCollection( path );
-    }
-} // namespace Amarok
-
-#include "AmarokCollectionDBusHandler.moc"
+#endif

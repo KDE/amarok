@@ -2,7 +2,7 @@
 "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 
 <node>
-  <interface name="org.freedesktop.MediaPlayer">
+  <interface name="org.kde.amarok.sqlcollection">
 
     <method name="isDirInCollection">
         <arg type="s" direction="in" />

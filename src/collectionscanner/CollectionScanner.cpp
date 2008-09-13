@@ -68,6 +68,7 @@
 #include <xiphcomment.h>
 
 CollectionScanner::CollectionScanner( const QStringList& folders,
+                                      const QString &collectionId,
                                       bool recursive,
                                       bool incremental,
                                       bool importPlaylists,
@@ -84,7 +85,10 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
     if( !restart )
         QFile::remove( m_logfile );
 
-    m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/Collection" );
+    if( !collectionId.isEmpty() )
+        m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/SqlCollection/" + collectionId );
+    else
+        m_amarokCollectionInterface = 0;
 
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
@@ -200,7 +204,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
         {
             bool isInCollection = false;
-            if( m_incremental )
+            if( m_incremental && m_amarokCollectionInterface )
             {
                 QDBusReply<bool> reply = m_amarokCollectionInterface->call( "isDirInCollection", f.canonicalFilePath() );
                 if( reply.isValid() )
