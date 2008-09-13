@@ -368,7 +368,7 @@ ScanManager::restartScanner()
     *m_scanner << "amarokcollectionscanner" << "--nocrashhandler";
     if( m_isIncremental )
     {
-        *m_scanner << "-i";
+        *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
     }
     *m_scanner << "-s";
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
