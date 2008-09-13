@@ -213,7 +213,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track )
         }
 
         //NOTE it seems to be necessary to <center> each element indivdually
-        m_tooltip += "<center><b>Amarok</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
+        m_tooltip += "<table cellpadding='2' cellspacing='2' align='center'><tr>";
 
         if( m_track->album() )
             m_image = m_track->album()->image( 100 );
