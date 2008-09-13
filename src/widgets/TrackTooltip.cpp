@@ -230,11 +230,13 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track )
         m_title = "<b>" + fontMetrics.elidedText( m_track->prettyName(), Qt::ElideRight, elideWidth ) + "</b>";
         if( m_track->artist() ) {
             const QString artist = fontMetrics.elidedText( m_track->artist()->prettyName(), Qt::ElideRight, elideWidth );
-            m_title += i18n( " by <b>%1</b>", artist );
+            if( !artist.isEmpty() )
+                m_title += i18n( " by <b>%1</b>", artist );
         }
         if( m_track->album() ) {
             const QString album = fontMetrics.elidedText( m_track->album()->prettyName(), Qt::ElideRight, elideWidth );
-            m_title += i18n( " on <b>%1</b>", album );
+            if( !album.isEmpty() )
+                m_title += i18n( " on <b>%1</b>", album );
         }
 
         m_tooltip += "</table></td>";
