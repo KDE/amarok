@@ -47,7 +47,7 @@ function parseLyrics( lyrics )
 function lyricsFetchResult( reply )
 {
     lyrics = reply;
-    print( lyrics );
+    //print( lyrics );
     lyrics = lyrics.replace( /<[iI][mM][gG][^>]*>/g, "");
     lyrics = lyrics.replace( /<[aA][^>]*>[^<]*<\/[aA]>/g, "" );
     lyrics = lyrics.replace( /<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][cC][rR][iI][pP][tT]>/g, "" );
