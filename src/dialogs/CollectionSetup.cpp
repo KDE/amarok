@@ -57,7 +57,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setAnimated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-    m_rescan = new KPushButton( i18n( "Rescan Collection" ), this );
+    m_rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Rescan Collection" ), this );
     connect( m_rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
