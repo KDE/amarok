@@ -526,14 +526,6 @@ XmlParseJob::run()
                     const QFileInfo info( folder );
 
                     processor.addDirectory( folder, info.lastModified().toTime_t() );
-
-                    /*// Update dir statistics for rescanning purposes
-                    if( info.exists() )
-                        CollectionDB::instance()->updateDirStats( folder, info.lastModified().toTime_t(), true);
-
-                    if( m_incremental ) {
-                        m_foldersToRemove += folder;
-                    }*/
                 }
                 else if( localname == "playlist" )
                 {
