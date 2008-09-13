@@ -288,7 +288,7 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 
     // We use this list to filter out some obscure genres
     QStringList bannedGenres;
-    bannedGenres << "alles" << "any" << "anything" << "autopilot" << "backup" << "bandas" << "beer";
+    bannedGenres << "aaa" << "alles" << "any" << "anything" << "autopilot" << "backup" << "bandas" << "beer";
     bannedGenres << "catholic" << "chr" << "das" << "domaca" << "everything" << "fire" << "her" << "hollands";
     bannedGenres << "http" << "just" << "lokale" << "middle" << "noticias" << "only" << "scanner" << "shqip";
     bannedGenres << "good" << "super" << "wusf" << "www" << "zabavna" << "zouk" << "whatever" << "varios";
@@ -299,7 +299,8 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
     bannedGenres << "voor" << "post" << "playlist" << "ned" << "gramy" << "deportes" << "bhangra" << "exitos";
     bannedGenres << "doowop" << "radio" << "radyo" << "railroad" << "program" << "mostly" << "hot";
     bannedGenres << "deejay" << "cool" << "big" << "exitos" << "mp3" << "muzyczne" << "nederlandstalig";
-    bannedGenres << "max" << "informaci" << "halk" << "dobra" << "welcome" << "genre";
+    bannedGenres << "max" << "informaci" << "halk" << "dobra" << "welcome" << "genre" << "nederlands";
+    bannedGenres << "nederlandse" << "hrvatska" << "populara" << "universidad";
 
 
     GenreMap genreMap;
