@@ -227,7 +227,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track )
         const QFontMetrics fontMetrics( font() );
         const int elideWidth = 200;
        
-        m_title = "<b>" + fontMetrics.elidedText( m_track->prettyName(), Qt::ElideRight, elideWidth ) + "</b>";
+        m_title = "<center><b>" + fontMetrics.elidedText( m_track->prettyName(), Qt::ElideRight, elideWidth ) + "</b>";
         if( m_track->artist() ) {
             const QString artist = fontMetrics.elidedText( m_track->artist()->prettyName(), Qt::ElideRight, elideWidth );
             if( !artist.isEmpty() )
@@ -236,7 +236,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track )
         if( m_track->album() ) {
             const QString album = fontMetrics.elidedText( m_track->album()->prettyName(), Qt::ElideRight, elideWidth );
             if( !album.isEmpty() )
-                m_title += i18n( " on <b>%1</b>", album );
+                m_title += i18n( " on <b>%1</b></center>", album );
         }
 
         m_tooltip += "</table></td>";
