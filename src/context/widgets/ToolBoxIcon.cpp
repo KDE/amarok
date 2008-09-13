@@ -125,7 +125,7 @@ ToolBoxIcon::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
     
     m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve,
                                                                    this, "animateHighlight" );
-    QGraphicsItem::hoverEnterEvent( event );
+    Plasma::Icon::hoverEnterEvent( event );
 }
 
 void
@@ -138,7 +138,7 @@ ToolBoxIcon::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
     
     m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseOutCurve,
                                                                    this, "animateHighlight" );
-    QGraphicsItem::hoverLeaveEvent( event );
+    Plasma::Icon::hoverLeaveEvent( event );
 }
 
 void
