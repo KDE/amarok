@@ -29,46 +29,36 @@
 class QueryMaker;
 
 /**
-    This base class defines the the methods necessary to allow the copying and moving of
-tracks between
-    different collections in a generic way.
+    This base class defines the the methods necessary to allow the copying and moving 
+    of tracks between different collections in a generic way.
 
     This class should be used as follows in client code:
-
-    -select a source and a destination CollectionLocation
-    -call prepareCopy or prepareMove on the source CollectionLocation
-    -forget about the rest of the workflow
+    - select a source and a destination CollectionLocation
+    - call prepareCopy or prepareMove on the source CollectionLocation
+    - forget about the rest of the workflow
 
     Implementations which are writeable must reimplement the following methods
-    -prettyLocation()
-    -isWritable()
-    -remove( Meta::Track )
-    -copyUrlsToCollection( QMap<Meta::TrackPtr, KUrl> )
+    - prettyLocation()
+    - isWritable()
+    - remove( Meta::Track )
+    - copyUrlsToCollection( QMap<Meta::TrackPtr, KUrl> )
 
     Writable collections that are also organizable should reimplement isOrganizable().
     Organizable means that the user is able to decide (to varying degrees, the details
-depend
-    on the actual collection) where the files are stored in the filesystem (or some kind
-of VFS).
-    An example would be the local collection, where the user can select the directory
-structure
-    that Amarok uses to store the files. An example for a writable collection that is not
-    organizable are ipods, where the user has no control about the actual location of the
-music files
+    depend on the actual collection) where the files are stored in the filesystem (or some 
+    kind of VFS). An example would be the local collection, where the user can select the directory
+    structure that Amarok uses to store the files. An example for a writable collection that is not
+    organizable are ipods, where the user has no control about the actual location of the music files
     (they are automatically stored in a not human-readable form).
 
-    Implementations which are only readable can reimplement getKIOCopyableUrls(
-Meta::TrackList )
+    Implementations which are only readable can reimplement getKIOCopyableUrls( Meta::TrackList )
     if it is necessary, but can use the default implementations if possible.
 
-    Implementations that have a string expressable location(s), such as a URL or path on
-disk
+    Implementations that have a string expressable location(s), such as a URL or path on disk
     should reimplement actualLocation().
 
-    Implementations that need additional information provided by the user have to
-implement
-    showSourceDialog() and showDestinationDialog(), depending on whether the information
-is required
+    Implementations that need additional information provided by the user have to implement
+    showSourceDialog() and showDestinationDialog(), depending on whether the information is required
     in the source, the destination, or both.
 
     The methods will be called in the following order:
@@ -86,9 +76,11 @@ is required
     slotCopyOperationFinished (destination)
     slotFinishCopy (source)
 */
+
 class AMAROK_EXPORT CollectionLocation : public QObject
 {
     Q_OBJECT
+
     public:
         CollectionLocation();
         CollectionLocation( const Collection* parentCollection );
@@ -102,67 +94,57 @@ class AMAROK_EXPORT CollectionLocation : public QObject
 
         /**
             a displayable string representation of the collection location. use the return
-value
-            of this method to display the collection location to the user.
+            value of this method to display the collection location to the user.
             @return a string representation of the collection location
         */
         virtual QString prettyLocation() const;
 
         /**
             Returns a list of machine usable strings representingthe collection location.
-For example,
-            a local collection would return a list of paths where tracks are stored, while
-an Ampache
-            collection would return a list with one string containing the URL of an
-ampache server.
-            An iPod collection and a MTP device collection are examples of collections
-that do
-            not need to reimplement this method.
+            For example, a local collection would return a list of paths where tracks are 
+            stored, while an Ampache collection would return a list with one string 
+            containing the URL of an ampache server. An iPod collection and a MTP device 
+            collection are examples of collections that do not need to reimplement this method.
         */
         virtual QStringList actualLocation() const;
 
         /**
             Returns whether the collection location is writeable or not. For example, a
-local collection or an ipod
-            collection would return true, a daap collection or a service collection false.
-The value returned by this
-            method indicates if it is possible to copy tracks to the collection, and if it
-is generally possible to
-            remove/delete files from the collection.
+            local collection or an ipod collection would return true, a daap collection 
+            or a service collection false. The value returned by this method indicates 
+            if it is possible to copy tracks to the collection, and if it is generally 
+            possible to remove/delete files from the collection.
             @return @c true if the collection location is writeable
             @return @c false if the collection location is not writeable
         */
         virtual bool isWritable() const;
 
         /**
-         * Returns whether the collection is organizable or not. Organizable collections
-allow move operations where
-         * the source and destination collection are the same.
-         * @return @c true if the collection location is organizable, false otherwise
+           Returns whether the collection is organizable or not. Organizable collections
+           allow move operations where the source and destination collection are the same.
+           @return @c true if the collection location is organizable, false otherwise
          */
         virtual bool isOrganizable() const;
 
         /**
-            convenience method for copying a single track, @see prepareCopy(
-Meta::TrackList, CollectionLocation* )
+           convenience method for copying a single track, 
+           @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
-        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination
-);
+        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
         void prepareCopy( QueryMaker *qm, CollectionLocation *destination );
 
         /**
-            convenience method for moving a single track, @see prepareMove(
-Meta::TrackList, CollectionLocation* )
+           convenience method for moving a single track, 
+           @see prepareMove( Meta::TrackList, CollectionLocation* )
         */
         void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
-        void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination
-);
+        void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
         void prepareMove( QueryMaker *qm, CollectionLocation *destination );
 
         /**
-         * remove the track from the collection.
-         * Return true if the removal was successful, false otherwise.
+           remove the track from the collection.
+           Return true if the removal was successful, false otherwise.
          */
         virtual bool remove( const Meta::TrackPtr &track );
 
@@ -186,47 +168,39 @@ Meta::TrackList, CollectionLocation* )
         CollectionLocation* source() const;
         /**
             this method is called on the source location, and should return a list of urls
-which the destination
-            location can copy using KIO.
-            you must call slotGetKIOCopyableUrlsDone( QMap<Meta::TrackPtr, KUrl> ) after
-retrieving the urls. The order of urls
-            passed to that method has to be the same as the order of the tracks passed to
-this method.
+            which the destination location can copy using KIO. You must call 
+            slotGetKIOCopyableUrlsDone( QMap<Meta::TrackPtr, KUrl> ) after retrieving the 
+            urls. The order of urls passed to that method has to be the same as the order 
+            of the tracks passed to this method.
         */
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
         /**
-            this method is called on the destination. reimplement it if your
-implementation
-            is writeable. you must call slotCopyOperationFinished() when you are done
-copying
+            this method is called on the destination. reimplement it if your implementation
+            is writeable. you must call slotCopyOperationFinished() when you are done copying
             the files.
         */
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
 
         /**
          * this method is called on the source. It allows the source CollectionLocation to
-show a dialog.
-         * Classes that reimplement this method must call slotShowSourceDialogDone() after
-they have
-         * acquired all necessary information from the user.
+         * show a dialog. Classes that reimplement this method must call 
+         * slotShowSourceDialogDone() after they have acquired all necessary information from the user.
          */
-        virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources
-);
+        virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
+
         /**
-         * this method is called on the destination. It allows the destination
-CollectionLocation to show
-         * a dialog. Classes that reimplement this method must call
-slotShowDestinationDialogDone() after
-         * they have acquired all necessary information from the user.
+         * this method is called on the destination. It allows the destination 
+         * CollectionLocation to show a dialog. Classes that reimplement this method 
+         * must call slotShowDestinationDialogDone() after they have acquired all necessary 
+         * information from the user.
          */
-        virtual void showDestinationDialog( const Meta::TrackList &tracks, bool
-removeSources );
+        virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
 
     protected slots:
         /**
          * this slot has to be called from getKIOCopyableUrls( Meta::TrackList )
          * Please note: the order of urls in the argument has to be the same as in the
-tracklist
+         * tracklist
          */
         void slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources );
         void slotCopyOperationFinished();
