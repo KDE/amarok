@@ -53,16 +53,16 @@ namespace The {
 EngineController* EngineController::s_instance = 0;
 
 EngineController*
-EngineController::instance() {
+EngineController::instance()
+{
     return s_instance ? s_instance : new EngineController();
 }
 
 void
-EngineController::destroy() {
-    if (s_instance) {
-        delete s_instance;
-        s_instance = 0;
-    }
+EngineController::destroy()
+{
+    delete s_instance;
+    s_instance = 0;
 }
 
 EngineController::EngineController()
