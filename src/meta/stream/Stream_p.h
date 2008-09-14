@@ -80,8 +80,9 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
 
             if ( state ==  Phonon::PlayingState ) {
                 Meta::TrackPtr track = The::engineController()->currentTrack();
-                if ( track->playableUrl().url() == url.url() ) { 
 
+                if ( track && track->playableUrl().url() == url.url() )
+                { 
                     if( track->artist() )
                         artist = track->artist()->name();
                     title = track->name();
