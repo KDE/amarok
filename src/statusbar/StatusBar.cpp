@@ -63,60 +63,53 @@ void
 StatusBar::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
     DEBUG_BLOCK
-    switch ( state ) {
-    case Phonon::StoppedState:
-        setMainText( QString() );
-        break;
-    case Phonon::LoadingState:
-        debug() << "LoadingState: clear text";
-        if ( m_currentTrack )
-            updateInfo( m_currentTrack );
-        else
+    switch ( state )
+    {
+        case Phonon::StoppedState:
             setMainText( QString() );
-        break;
+            break;
 
-    case Phonon::PausedState:
-        m_mainTextLabel->setText( i18n( "Amarok is paused" ) ); // display TEMPORARY message
-        break;
+        case Phonon::LoadingState:
+            debug() << "LoadingState: clear text";
+            if ( m_currentTrack )
+                updateInfo( m_currentTrack );
+            else
+                setMainText( QString() );
+            break;
 
-    case Phonon::PlayingState:
-        debug() << "PlayingState: clear text";
-        if ( m_currentTrack )
-            updateInfo( m_currentTrack );
-        else
-            resetMainText(); // if we were paused, this is necessary
-        break;
+        case Phonon::PausedState:
+            m_mainTextLabel->setText( i18n( "Amarok is paused" ) ); // display TEMPORARY message
+            break;
 
-    case Phonon::ErrorState:
-    case Phonon::BufferingState:
-        break;
+        case Phonon::PlayingState:
+            debug() << "PlayingState: clear text";
+            if ( m_currentTrack )
+                updateInfo( m_currentTrack );
+            else
+                resetMainText(); // if we were paused, this is necessary
+            break;
 
+        case Phonon::ErrorState:
+        case Phonon::BufferingState:
+            break;
     }
 }
 
 void
 StatusBar::engineNewTrackPlaying()
 {
-
-    DEBUG_BLOCK
-
     if( m_currentTrack )
         unsubscribeFrom( m_currentTrack );
 
     m_currentTrack = The::engineController()->currentTrack();
     
-    if( !m_currentTrack ) {
+    if( !m_currentTrack )
+    {
         m_currentTrack = Meta::TrackPtr();
-        debug() << "no track";
         return;
     }
-
     subscribeTo( m_currentTrack );
-
     updateInfo( m_currentTrack );
-
-
-
 }
 
 ///////////////////
@@ -149,7 +142,7 @@ MessageQueue::instance()
 void
 MessageQueue::addMessage(const QString& message)
 {
-    if(m_queueMessages)
+    if( m_queueMessages )
         m_messages.push(message);
     else
         StatusBar::instance()->longMessage(message);
@@ -159,7 +152,7 @@ void
 MessageQueue::sendMessages()
 {
      m_queueMessages = false;
-     while(! m_messages.isEmpty())
+     while( !m_messages.isEmpty() )
      {
         StatusBar::instance()->longMessage(m_messages.pop());
      }
@@ -175,20 +168,11 @@ void Amarok::StatusBar::metadataChanged( Meta::Track * /*track*/ )
 
 void Amarok::StatusBar::updateInfo( Meta::TrackPtr track )
 {
-
     QString title       = Qt::escape( track->name() );
     QString prettyTitle = Qt::escape( track->prettyName() );
     QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
     QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
     QString length      = Qt::escape( Meta::secToPrettyTime( track->length() ) );
-
-    if ( artist == "Mike Oldfield" && title == "Amarok" ) {
-        longMessage( i18n(
-                     "<p>One of Mike Oldfield's best pieces of work, Amarok, inspired the name behind "
-                "the audio-player you are currently using. Thanks for choosing Amarok!</p>"
-                "<p align=right>Mark Kretschmann<br/>Max Howell<br/>Chris Muehlhaeuser<br/>"
-                "The many other people who have helped make Amarok what it is</p>" ), KDE::StatusBar::Information );
-    }
 
     // ugly because of translation requirements
     if( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
@@ -215,7 +199,8 @@ void Amarok::StatusBar::updateInfo( Meta::TrackPtr track )
     {
         //is the source defined
         QString source = sic->sourceName();
-        if ( !source.isEmpty() ) {
+        if ( !source.isEmpty() )
+        {
             title += ' ' + i18n("from") + " <b>" + source + "</b>";
             setMainTextIcon( sic->emblem() );
         }
@@ -225,7 +210,8 @@ void Amarok::StatusBar::updateInfo( Meta::TrackPtr track )
     }
 
     // don't show '-' or '?'
-    if( length.length() > 1 ) {
+    if( length.length() > 1 )
+    {
         title += " (";
         title += length;
         title += ')';
@@ -233,3 +219,4 @@ void Amarok::StatusBar::updateInfo( Meta::TrackPtr track )
 
     setMainText( i18n( "Playing: %1", title ) );
 }
+
