@@ -1188,14 +1188,9 @@ Playlist::Model::insertTracksCommand( int row, Meta::TrackList list )
 Meta::TrackList
 Playlist::Model::removeTracksCommand( int position, int rows )
 {
-    DEBUG_BLOCK
-
     clearNewlyAdded();
 
     beginRemoveRows( QModelIndex(), position, position + rows - 1 );
-//     TrackList::iterator start = m_tracks.begin() + position;
-//     TrackList::iterator end = start + rows;
-//     m_tracks.erase( start, end );
     Meta::TrackList ret;
     for( int i = position; i < position + rows; i++ )
     {
@@ -1211,11 +1206,6 @@ Playlist::Model::removeTracksCommand( int position, int rows )
     bool activeRowChanged = true;
     const bool oldActiveRow = m_activeRow;
 
-    debug() << "activeRow: " << m_activeRow;
-    debug() << "position: " << position;
-    debug() << "rows: " << rows;
-    
-    
     if( m_activeRow >= position && m_activeRow < ( position + rows ) )
         m_activeRow = -1;
     else if( m_activeRow >= position )
@@ -1225,13 +1215,9 @@ Playlist::Model::removeTracksCommand( int position, int rows )
 
     if( activeRowChanged )
     {
-        debug() << "Active row has changed from " << oldActiveRow << " to " << m_activeRow;
-        
         dataChanged( createIndex( oldActiveRow, 0 ), createIndex( oldActiveRow, columnCount() -1 ) );
         dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() -1 ) );
     }
-    //dataChanged( createIndex( position, 0 ), createIndex( rowCount(), 0 ) );
-
 
     //we need to regroup everything below this point as all the index changes
     //also, use the count before the rows was removed to make sure all groups are deleted
@@ -1280,7 +1266,6 @@ Playlist::Model::newResultReady( const QString &collectionId, const Meta::TrackL
 QVariant
 Playlist::Model::headerData(int section, Qt::Orientation orientation, int role) const
 {
-
     Q_UNUSED( orientation );
 
     if ( role != Qt::DisplayRole )
@@ -1299,8 +1284,6 @@ Playlist::Model::headerData(int section, Qt::Orientation orientation, int role) 
         default:
             return QVariant();
      }
-
-
 }
 
 void
