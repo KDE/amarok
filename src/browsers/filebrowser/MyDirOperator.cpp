@@ -21,6 +21,7 @@
 #include "Debug.h"
 #include "MainWindow.h"
 #include "collection/Collection.h"
+#include "collection/CollectionLocation.h"
 #include "collection/CollectionManager.h"
 #include "playlist/PlaylistModel.h"
 
@@ -121,8 +122,6 @@ void MyDirOperator::aboutToShowContextMenu()
         urlList << item.url();
     }
 
-    Meta::TrackList trackList = CollectionManager::instance()->tracksForUrls( urlList );
-
     QList<Collection*> writableCollections;
     QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
     QHash<Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
@@ -142,7 +141,7 @@ void MyDirOperator::aboutToShowContextMenu()
         foreach( Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, this );
-            connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotCopyTracks( false /*don't move*/) ) );
+            connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
             copyMenu->addAction( moveAction );
         }
         menu->addMenu( copyMenu );
@@ -150,10 +149,9 @@ void MyDirOperator::aboutToShowContextMenu()
 }
 
 void
-MyDirOperator::slotCopyTracks( bool move )
+MyDirOperator::slotMoveTracks()
 {
     DEBUG_BLOCK
-    Q_UNUSED( move );
 
     CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
     if( !action )
@@ -163,6 +161,13 @@ MyDirOperator::slotCopyTracks( bool move )
     if( list.isEmpty() )
         return;
 
+    CollectionLocation *source      = new CollectionLocation();
+    CollectionLocation *destination = action->collection()->location();
+
+    CollectionManager *cm = CollectionManager::instance();
+    Meta::TrackList tracks = cm->tracksForUrls( list.urlList() );
+
+    source->prepareMove( tracks, destination );
 }
 
 
