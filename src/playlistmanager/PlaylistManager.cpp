@@ -324,9 +324,6 @@ PlaylistManager::exportPlaylist( Meta::TrackList tracks,
 bool
 PlaylistManager::canExpand( Meta::TrackPtr track )
 {
-    //DEBUG_BLOCK
-    //debug() << "name: " <<  track->name();
-    //debug() << "url: " << track->url();
     if( !track )
         return false;
     else
