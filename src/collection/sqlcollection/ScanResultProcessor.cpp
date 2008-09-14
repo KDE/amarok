@@ -112,7 +112,6 @@ ScanResultProcessor::commit()
     {
         foreach( const QString &dir, m_directories.keys() )
         {
-            debug() << "removing " << dir << " from database";
             int deviceid = MountPointManager::instance()->getIdForUrl( dir );
             const QString rpath = MountPointManager::instance()->getRelativePath( deviceid, dir );
             m_collection->dbUpdater()->removeFilesInDir( deviceid, rpath );
@@ -600,22 +599,45 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
     //check if this album already exists, ignoring the albumartist
     //if it does, and if each file of the album is alone in its directory
     //it's probably a compilation.
-    QString query = "SELECT urls.deviceid,urls.rpath,albums.id,albums.artist FROM urls_temp AS urls "
+    QString query = "SELECT urls.deviceid,urls.rpath,Tracks_temp.id,albums.id,albums.artist FROM urls_temp AS urls "
                     "LEFT JOIN tracks_temp on urls.id = tracks_temp.url LEFT JOIN albums_temp AS albums ON "
                     "tracks_temp.album = albums.id WHERE albums.name = '%1';";
     query = query.arg( m_collection->escape( album ) );
     QStringList result = m_collection->query( query );
+    QList<QString> trackIds;
     for( QListIterator<QString> iter( result ); iter.hasNext(); )
     {
         int deviceid = iter.next().toInt();
         QString rpath = iter.next();
-        iter.next(); //albumId
-        QString albumArtist = iter.next();
+        QString trackId = iter.next();
+        QString albumId = iter.next();
+        QString albumArtistId = iter.next();
         QString currentPath = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
         QFileInfo info( currentPath );
-        //uint dirCount = m_filesInDirs.value( info.dir().absolutePath() ); //FIXME what's the point?
+        uint dirCount = m_filesInDirs.value( info.dir().absolutePath() );
+        if( dirCount == 1 )
+        {
+            trackIds << trackId;
+        }
     }
-    return 0;
+    
+    if( trackIds.isEmpty() )
+    {
+        return 0;
+    }
+    else
+    {
+        int compilationId = albumId( album, 0 );
+        QString trackIdsSql = "-1";
+        foreach( const QString &trackId, trackIds )
+        {
+            trackIdsSql += ',';
+            trackIdsSql += trackId;
+        }
+        QString update = "UPDATE tracks_temp SET album = %1 where id IN (%2);";
+        m_collection->query( update.arg( QString::number( compilationId ), trackIdsSql ) );
+        return compilationId;
+    }
 }
 
 void
