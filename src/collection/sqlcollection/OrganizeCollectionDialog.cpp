@@ -153,7 +153,9 @@ OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::T
     //TODO: handle if track==NULL to avoid bug 169684
     //This could maybe happen with an empty collection, when the TrackList is empty and then m_previewTrack is null.
     //FIXME: 169684
-    bool isCompilation = track->album()->isCompilation();
+    
+    bool isCompilation = track->album() && track->album()->isCompilation();
+    
     QMap<QString, QString> args;
     QString artist = track->artist()->name();
     QString albumartist;
@@ -192,9 +194,8 @@ OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::T
     args["year"] = cleanPath( track->year()->prettyName() );
     args["album"] = cleanPath( track->album()->prettyName() );
 
-    if( track->discNumber() ) {
+    if( track->discNumber() )
         args["discnumber"] = QString::number( track->discNumber() );
-    }
 
     args["genre"] = cleanPath( track->genre()->prettyName() );
     args["comment"] = cleanPath( track->comment() );
@@ -206,7 +207,8 @@ OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::T
     args["filesize"] = track->filesize();
     args["length"] = track->length();
 
-    if ( track->trackNumber() ) {
+    if ( track->trackNumber() )
+    {
         QString trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
         args["track"] = trackNum;
     }
