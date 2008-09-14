@@ -1,4 +1,4 @@
-    /***************************************************************************
+/***************************************************************************
  *   Copyright (C) 2005 by Max Howell <max.howell@methylblue.com>          *
  *   Copyright (C) 2005 by Ian Monroe <ian@monroe.nu>                      *
  *   Copyright (C) 2007 by Seb Ruiz <ruiz@kde.org>                         *

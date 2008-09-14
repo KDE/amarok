@@ -180,7 +180,6 @@ set(libstatusbar_SRCS
     statusbar/popupMessage.cpp
     statusbar/progressBar.cpp
     statusbar/selectLabel.cpp
-#   statusbar/queueLabel.cpp
 )
 
 #####################################################################
