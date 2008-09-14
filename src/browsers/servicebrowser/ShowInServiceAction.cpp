@@ -42,7 +42,7 @@ void ShowInServiceAction::slotTriggered()
 
     //artist or album?
 
-    if ( m_service == 0 )
+    if ( m_service == 0 || !m_track || !m_track->artist() )
         return;
 
     The::mainWindow()->showBrowser( "Internet" );
