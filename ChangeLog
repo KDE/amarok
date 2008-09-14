@@ -56,7 +56,9 @@ VERSION 2.0-beta2
     * Libgrypt is preferred over OpenSSL at build time, for licensing reasons.
 
   BUGFIXES:
-    * Keyboard navigation in the playlist. (BR 170489)
+    * The playlist drop visualiser will snap to the end of the playlist if
+      required. (BR 171016)
+    * Enhanced keyboard navigation in the playlist. (BR 170489)
     * Fix edit bookmark feature (BR 170008)
     * Don't show scroll bars on the pixmap viewer when viewing a full sized
       cover.
