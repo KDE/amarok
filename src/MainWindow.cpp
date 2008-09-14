@@ -594,6 +594,7 @@ MainWindow::loveTrack()
     if( cTrack )
         emit loveTrack( cTrack );
 }
+
 void
 MainWindow::activate()
 {

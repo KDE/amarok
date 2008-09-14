@@ -149,16 +149,13 @@ Amarok::Slider::setValue( int newValue )
 
 void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
 {
-
     const int borderWidth = 6;
     const int borderHeight = 6;
 
     const int sliderInsertX = 5;
     const int sliderInsertY = 5;
     
-
     QString prefix = "slider_bg_";
-
 
     QImage topLeft = The::svgHandler()->renderSvg( prefix + "topleft", borderWidth, borderHeight, prefix + "topleft" ).toImage();
     p->drawImage( x, y, topLeft );
@@ -184,11 +181,8 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
     QImage left = The::svgHandler()->renderSvg( prefix + "left", borderWidth, height - 2 * borderHeight, prefix + "left" ).toImage();
     p->drawImage( x, y + borderHeight, left );
 
-            
-
-
-    if ( value() != minimum() ) {
-
+    if ( value() != minimum() )
+    {
         const int sliderHeight = height - ( sliderInsertY * 2 );
         const int sliderLeftWidth = sliderHeight / 3;
         const int sliderRigthWidth = sliderLeftWidth;
@@ -196,17 +190,9 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         int knobX = ( ( ( double ) value() - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width - ( sliderLeftWidth + sliderRigthWidth + sliderInsertX * 2 ) );
 
         p->drawPixmap( x + sliderInsertX, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_left",sliderLeftWidth , sliderHeight, "slider_bar_left" ) );
-        
         p->drawPixmap( x + sliderInsertX + sliderLeftWidth, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_center", knobX, sliderHeight, "slider_bar_center" ) );
-
         p->drawPixmap( x + sliderInsertX + knobX + sliderLeftWidth, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_right", sliderRigthWidth, sliderHeight, "slider_bar_right" ) );
-        
     }
-    
-   /* QImage center = The::svgHandler()->renderSvg( prefix + "center", width() - 2 * borderWidth, height() - 2 * borderHeight, prefix + "center" ).toImage();
-    p->drawImage( borderWidth, borderHeight, center ); */
-
-    
 }
 
 
@@ -224,6 +210,13 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
 void
 Amarok::VolumeSlider::mousePressEvent( QMouseEvent *e )
 {
+    const QRect iconBox( 0, 0, m_iconHeight, m_iconWidth );
+    if( iconBox.contains( e->pos() ) )
+    {
+        emit mute();
+        return;
+    }
+    
     if( e->button() != Qt::RightButton )
     {
         Amarok::Slider::mousePressEvent( e );

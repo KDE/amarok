@@ -35,14 +35,17 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_slider->setToolTip( i18n( "Volume Control" ) );
 
     EngineController* const ec = The::engineController();
-    connect( m_slider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );
-    connect( m_slider, SIGNAL(sliderReleased( int )), ec, SLOT(setVolume( int )) );
+    connect( m_slider, SIGNAL( mute()                ), ec, SLOT( mute() )           );
+    connect( m_slider, SIGNAL( sliderMoved( int )    ), ec, SLOT( setVolume( int ) ) );
+    connect( m_slider, SIGNAL( sliderReleased( int ) ), ec, SLOT( setVolume( int ) ) );
+
+    connect( ec, SIGNAL( volumeChanged( int ) ), this, SLOT( setVolume( int ) ) );
 }
 
 void
 VolumeWidget::engineVolumeChanged( int value )
 {
-    if( m_slider )
+    if( m_slider && value != m_slider->value() )
         m_slider->setValue( value );
 }
 

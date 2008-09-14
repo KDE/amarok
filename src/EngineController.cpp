@@ -447,7 +447,14 @@ EngineController::volume() const
 void
 EngineController::mute() //SLOT
 {
+    // if it's already muted then we restore to previous value
+    int newPercent = m_audio->isMuted() ? volume() : 0;
+    
     m_audio->setMuted( !m_audio->isMuted() );
+
+    AmarokConfig::setMasterVolume( newPercent );
+    volumeChangedNotify( newPercent );
+    emit volumeChanged( newPercent );
 }
 
 Meta::TrackPtr

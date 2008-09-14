@@ -95,6 +95,9 @@ namespace Amarok
             virtual void wheelEvent( QWheelEvent *e );
             virtual void resizeEvent(QResizeEvent * event);
 
+        signals:
+            void mute();
+
         private:
             Q_DISABLE_COPY( VolumeSlider )
 
