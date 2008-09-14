@@ -35,7 +35,7 @@ namespace Playlist
             static void destroy();
 
             void show( qreal yPosition );
-            void show( Playlist::GraphicsItem *above = 0 );
+            void show( Playlist::GraphicsItem *item = 0, bool showBelow = false );
 
         private:
             DropVis( QGraphicsItem *parent = 0 );

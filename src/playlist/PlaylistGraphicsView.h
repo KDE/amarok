@@ -99,6 +99,8 @@ namespace Playlist
             ~GraphicsView();
             static GraphicsView  *s_instance;
 
+            void showDropVisEvent( QPoint pos );
+
             QList<GraphicsItem*>  m_tracks;
             Model                *m_model;
             Playlist::GraphicsItem *m_contextMenuItem;

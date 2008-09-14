@@ -173,18 +173,10 @@ Playlist::GraphicsView::dragEnterEvent( QDragEnterEvent *event )
     {
         if( event->mimeData()->hasFormat( mime ) )
         {
-            Playlist::GraphicsItem* aboveItem = 0;
-            QList<QGraphicsItem*> aboveItems = items( event->pos() );
-            if( !aboveItems.isEmpty() )
-                aboveItem = dynamic_cast<Playlist::GraphicsItem*>( aboveItems.last() );
-
+            showDropVisEvent( event->pos() );
+            
             QGraphicsView::dragEnterEvent( event );
             event->acceptProposedAction();
-
-            if( aboveItem )
-                Playlist::DropVis::instance()->show( aboveItem );
-            else
-                Playlist::DropVis::instance()->show( event->pos().y() );
 
             return;
         }
@@ -199,21 +191,41 @@ Playlist::GraphicsView::dragMoveEvent( QDragMoveEvent *event )
     {
         if( event->mimeData()->hasFormat( mime ) )
         {
-            Playlist::GraphicsItem* aboveItem = 0;
-            QList<QGraphicsItem*> aboveItems = items( event->pos() );
-            if( !aboveItems.isEmpty() )
-                aboveItem = dynamic_cast<Playlist::GraphicsItem*>( aboveItems.last() );
-
+            showDropVisEvent( event->pos() );
+            
             QGraphicsView::dragMoveEvent( event );
-            if( aboveItem )
-                Playlist::DropVis::instance()->show( aboveItem );
-            else
-                Playlist::DropVis::instance()->show( event->pos().y() );
             event->acceptProposedAction();
+
             return;
         }
     }
     QGraphicsView::dragMoveEvent( event );
+}
+
+void
+Playlist::GraphicsView::showDropVisEvent( QPoint pos )
+{
+    Playlist::GraphicsItem* hoverItem = 0;
+    QList<QGraphicsItem*> hoverItems = items( pos );
+    if( !hoverItems.isEmpty() )
+        hoverItem = dynamic_cast<Playlist::GraphicsItem*>( hoverItems.last() );
+
+    if( hoverItem )
+    {
+        bool showBelow = false;
+        if( hoverItem == m_tracks.last() )
+        {
+            QPointF halfPos = hoverItem->mapToScene( QPointF(0,0) );
+            halfPos.setY( halfPos.y() + ( hoverItem->boundingRect().height() / 2 ) );
+            QPointF scenePos = mapToScene( pos );
+
+            if( scenePos.y() >= halfPos.y() )
+                showBelow = true;
+        }
+        Playlist::DropVis::instance()->show( hoverItem, showBelow );
+    }
+    else
+        Playlist::DropVis::instance()->show();
 }
 
 void
@@ -234,7 +246,21 @@ Playlist::GraphicsView::dropEvent( QDropEvent *event )
     if( aboveItems.isEmpty() )
         row = -1;
     else
-        row = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(aboveItems.last() ) );
+    {
+        Playlist::GraphicsItem *aboveItem = dynamic_cast<Playlist::GraphicsItem*>( aboveItems.last() );
+        
+        row = m_tracks.indexOf( aboveItem );
+        
+        if( aboveItem == m_tracks.last() )
+        {
+            QPointF halfPos = aboveItem->mapToScene( QPointF(0,0) );
+            halfPos.setY( halfPos.y() + ( aboveItem->boundingRect().height() / 2 ) );
+            QPointF scenePos = mapToScene( event->pos() );
+
+            if( scenePos.y() >= halfPos.y() ) // we want to drop it below
+                row = -1; // append
+        }
+    }
 
     The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, row, 0, QModelIndex() );
     Playlist::DropVis::instance()->hide();

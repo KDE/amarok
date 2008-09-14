@@ -71,7 +71,7 @@ Playlist::DropVis::show( qreal yPosition )
 }
 
 void
-Playlist::DropVis::show( Playlist::GraphicsItem *above )
+Playlist::DropVis::show( Playlist::GraphicsItem *item, bool showBelow )
 {
     if( !scene() )
         return;
@@ -79,9 +79,11 @@ Playlist::DropVis::show( Playlist::GraphicsItem *above )
     qreal yPosition = 0;
     // if we have an item to place it above, then move the indicator,
     // otherwise use the top of the scene
-    if( above )
+    if( item )
     {
-        yPosition = above->pos().y();
+        yPosition = item->pos().y();
+        if( showBelow )
+            yPosition += item->boundingRect().height();
     }
     else // place indicator at end of track listing
     {
