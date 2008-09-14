@@ -375,6 +375,17 @@ void
 Playlist::Model::insertTracks( int row, Meta::TrackList tracks )
 {
     DEBUG_BLOCK
+    
+    //remove any null pointers from the list
+    Meta::TrackList tracksTmp;
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        if( track )
+            tracksTmp << track;
+    }
+    tracks = tracksTmp;
+    if( tracks.isEmpty() )
+        return;
 
     clearNewlyAdded();
 
@@ -762,7 +773,13 @@ Playlist::Model::insertTrackListSlot( Meta::TrackList list ) //slot
 void
 Playlist::Model::insertOptioned( Meta::TrackList list, int options )
 {
-    //DEBUG_BLOCK
+    Meta::TrackList listTmp;
+    foreach( const Meta::TrackPtr &track, list )
+    {
+        if( track )
+            listTmp << track;
+    }
+    list = listTmp;
     //TODO: we call insertOptioned on resume before the statusbar is fully created... We need a better way to handle this
     if( list.isEmpty() )
     {

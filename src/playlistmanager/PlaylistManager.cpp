@@ -327,7 +327,10 @@ PlaylistManager::canExpand( Meta::TrackPtr track )
     //DEBUG_BLOCK
     //debug() << "name: " <<  track->name();
     //debug() << "url: " << track->url();
-    return Meta::getFormat( track->uidUrl() ) != Meta::NotPlaylist;
+    if( track )
+        return false;
+    else
+        return Meta::getFormat( track->uidUrl() ) != Meta::NotPlaylist;
 }
 
 Meta::PlaylistPtr
