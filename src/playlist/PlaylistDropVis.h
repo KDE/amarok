@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright 2007  Seb Ruiz <ruiz@kde.org>                                 *
+ * Copyright 2007-2008  Seb Ruiz <ruiz@kde.org>                            *
  *                                                                         *
  * This program is free software; you can redistribute it and/or           *
  * modify it under the terms of the GNU General Public License as          *
@@ -21,8 +21,9 @@
 #ifndef AMAROK_PLAYLISTDROPVIS_H
 #define AMAROK_PLAYLISTDROPVIS_H
 
-#include <QGraphicsLineItem>
 #include "PlaylistGraphicsItem.h"
+
+#include <QGraphicsLineItem>
 
 namespace Playlist
 {
@@ -31,13 +32,14 @@ namespace Playlist
         // we can only have one drop visualiser so it is a singleton class
         public:
             static DropVis *instance();
-            ~DropVis() { }
+            static void destroy();
 
             void show( qreal yPosition );
             void show( Playlist::GraphicsItem *above = 0 );
 
         private:
             DropVis( QGraphicsItem *parent = 0 );
+            ~DropVis() { }
 
             static DropVis *s_instance;
     };

@@ -96,6 +96,7 @@ namespace Playlist
         
         private:
             GraphicsView( QWidget *parent = 0 );
+            ~GraphicsView();
             static GraphicsView  *s_instance;
 
             QList<GraphicsItem*>  m_tracks;

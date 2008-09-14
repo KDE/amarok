@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright 2007  Seb Ruiz <ruiz@kde.org>                                 *
+ * Copyright 2007-2008  Seb Ruiz <ruiz@kde.org>                            *
  *                                                                         *
  * This program is free software; you can redistribute it and/or           *
  * modify it under the terms of the GNU General Public License as          *
@@ -52,6 +52,13 @@ Playlist::DropVis::instance()
     if( !s_instance )
         s_instance = new Playlist::DropVis();
     return s_instance;
+}
+
+void
+Playlist::DropVis::destroy()
+{
+    delete s_instance;
+    s_instance = 0;
 }
 
 void

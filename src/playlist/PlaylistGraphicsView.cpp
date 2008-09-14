@@ -79,6 +79,12 @@ Playlist::GraphicsView::GraphicsView( QWidget *parent )
     setObjectName( "PlaylistGraphicsView" );
 }
 
+Playlist::GraphicsView::~GraphicsView()
+{
+    // We don't need the drop visualiser once the view has gone
+    Playlist::DropVis::destroy();
+}
+
 void
 Playlist::GraphicsView::setModel( Playlist::Model *model )
 {
