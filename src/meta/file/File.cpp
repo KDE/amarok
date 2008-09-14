@@ -418,7 +418,7 @@ Track::playCount() const
 QString
 Track::type() const
 {
-    return "";
+    return d->url.fileName().mid( d->url.fileName().lastIndexOf( '.' ) + 1 );
 }
 
 void
