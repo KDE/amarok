@@ -133,6 +133,11 @@ FilenameLayoutWidget::dragMoveEvent( QDragMoveEvent *event )          //need to 
 void
 FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event )
 {
+    if ( !childUnder )
+    {
+        debug() << "childUnder is NULL!";
+        return;
+    }
     int index = layout->indexOf( childUnder );
     debug()<< "I'm in insertOverChild";
     debug()<< "Inserting at " << index;
