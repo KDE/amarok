@@ -118,7 +118,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
             QFileInfo file( sqlTrack->playableUrl().path() );
             QDir dir = file.dir();
             const QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
-            while( !collectionFolders.contains( dir.absolutePath() ) || !dir.isRoot() || dir.count() == 0 )
+            while( !collectionFolders.contains( dir.absolutePath() ) && !dir.isRoot() && dir.count() == 0 )
             {
                 const QString name = dir.dirName();
                 dir.cdUp();
