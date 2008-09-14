@@ -55,7 +55,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     : KDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
     , m_detailed( true )
-
 {
     Q_UNUSED( name )
 
@@ -65,7 +64,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     showButtonSeparator( true );
     m_previewTrack = 0;
 
-    if ( tracks.size() > 0) {
+    if ( tracks.size() > 0 )
+    {
         m_previewTrack = tracks[0];
         m_allTracks = tracks;
     }
@@ -104,7 +104,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->asciiCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->customschemeCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->customschemeCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->formatEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
@@ -164,13 +164,9 @@ OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::T
     else
     {
         if( track->album() && track->album()->albumArtist() )
-        {
             albumartist = track->album()->albumArtist()->name();
-        }
         else
-        {
             albumartist = artist;
-        }
     }
     args["theartist"] = cleanPath( artist );
     args["thealbumartist"] = cleanPath( albumartist );
