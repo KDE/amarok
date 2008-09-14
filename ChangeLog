@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta2
   FEATURES:
+    * Clicking on the volume icon in the toolbar toggles mute. (BR 171017)
     * Arrows to switch between containments directly.
     * Scripted services can now show source info in the statusbar like most 
       other services.
