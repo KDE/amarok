@@ -578,7 +578,7 @@ EngineController::slotTrackEnded()
 {
     DEBUG_BLOCK
 
-    if( m_currentTrack )
+    if( m_currentTrack && !m_multi )
     {
         emit trackFinished();
         m_currentTrack->finishedPlaying( 1.0 );
