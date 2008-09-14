@@ -40,12 +40,9 @@
 #include <QTextDocument>
 #include <QTimer>
 
-#include "timeLabel.h"
 #include <KSqueezedTextLabel>
 
-
 using namespace Amarok;
-
 
 KAction *action( const char *name ) { return (KAction*)Amarok::actionCollection()->action( name ); }
 
