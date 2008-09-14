@@ -113,6 +113,20 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
                 m_collection->query( query );
             }
         }
+        if( removed )
+        {
+            QFileInfo file( sqlTrack->playableUrl().path() );
+            QDir dir = file.dir();
+            const QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
+            while( !collectionFolders.contains( dir.absolutePath() ) || !dir.isRoot() || dir.count() == 0 )
+            {
+                const QString name = dir.dirName();
+                dir.cdUp();
+                if( !dir.rmdir( name ) )
+                    break;
+            }
+                  
+        }
         return removed;
     }
     else
