@@ -18,7 +18,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "meta/MetaUtility.h"
-#include "timeLabel.h"
+#include "TimeLabel.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
