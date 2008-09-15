@@ -182,7 +182,6 @@ App::App()
     setupEventHandler_mac((long)this);
 #endif
 
-
     QTimer::singleShot( 0, this, SLOT( continueInit() ) );
     PERF_LOG( "Done App ctor" )
 }
@@ -590,6 +589,9 @@ App::continueInit()
 
     handleCliArgs();
 
+    // Restore keyboard shortcuts etc from config
+    Amarok::actionCollection()->readSettings();
+
     delete m_splash;
     m_splash = 0;
     PERF_LOG( "App init done" )
@@ -701,6 +703,7 @@ void App::slotConfigAmarok( const QByteArray& page )
 void App::slotConfigShortcuts()
 {
     KShortcutsDialog::configure( Amarok::actionCollection(), KShortcutsEditor::LetterShortcutsAllowed, mainWindow() );
+    AmarokConfig::self()->writeConfig();
 }
 
 void App::slotConfigToolBars()
