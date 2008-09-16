@@ -394,16 +394,16 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     const int line2Y = line1Y + lineSpacing;
     const int line3Y = line2Y + lineSpacing;
     
-    m_theme->paint( p, QRectF( labelX, line1Y, 23, 23 ), "track" );
-    m_theme->paint( p, QRectF( labelX - 40, line2Y , 80, 23 ), "artist" );
-    m_theme->paint( p, QRectF( labelX, line3Y, 23, 23 ), "album" );
+    m_theme->paint( p, QRectF( labelX, line1Y, 23, 23 ), "track_png_23" );
+    m_theme->paint( p, QRectF( labelX, line2Y , 23, 23 ), "artist_png_23" );
+    m_theme->paint( p, QRectF( labelX, line3Y, 23, 23 ), "album_png_23" );
 
 
     const int label2X = contentsRect.width() - 53;
     
-    m_theme->paint( p, QRectF( label2X, line1Y, 23, 23 ), "score" );
-    m_theme->paint( p, QRectF( label2X, line2Y, 23, 23 ), "times-played" );
-    m_theme->paint( p, QRectF( label2X, line3Y, 23, 23 ), "last-time" );
+    m_theme->paint( p, QRectF( label2X, line1Y, 23, 23 ), "score_png_23" );
+    m_theme->paint( p, QRectF( label2X, line2Y, 23, 23 ), "times-played_png_23" );
+    m_theme->paint( p, QRectF( label2X, line3Y, 23, 23 ), "last-time_png_23" );
 
     p->restore();
 
