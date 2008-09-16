@@ -340,7 +340,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
     {
         const int diff = end - m_tracks.size();
         start -= diff;
-        end -= diff;
+        end   -= diff;
     }
 
     // Call setRow on track imidiately preceding the insertion as this might have to change its
@@ -354,7 +354,6 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
 
     for( int i = start; i <= end; i++ )
     {
-
         Playlist::GraphicsItem* item = new Playlist::GraphicsItem();
         item->setRow( i );
         item->setPos( 0.0, cumulativeHeight );
@@ -367,7 +366,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
     for ( int i = end + 1 ; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 
-    shuffleTracks( end + 1 );
+    shuffleTracks( end );
 }
 
 void
