@@ -56,6 +56,7 @@ private slots:
     void configAccepted();
     void changeTrackRating( int rating );
     void connectSource( const QString &source );
+    void paletteChanged( const QPalette & palette );
 
 private:
     QList<QAction*> contextualActions();

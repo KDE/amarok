@@ -21,6 +21,7 @@
 #include "context/popupdropper/PopupDropperAction.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "meta/MetaUtility.h"
+#include "PaletteHandler.h"
 #include <context/widgets/RatingWidget.h>
 
 #include <plasma/theme.h>
@@ -82,16 +83,17 @@ void CurrentTrack::init()
     m_numPlayed->setToolTip( i18n( "Play Count" ) );
     m_playedLast->setToolTip( i18n( "Last Played" ) );
     
-    QPen pen( m_title->pen() );
-    pen.setBrush( ( KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText ) ) );
 
-    m_title->setPen( pen );
-    m_artist->setPen( pen );
-    m_album->setPen( pen );
-    m_score->setPen( pen );
-    m_numPlayed->setPen( pen );
-    m_playedLast->setPen( pen );
-    m_noTrack->setPen( pen );
+    QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
+
+    m_title->setBrush( brush );
+    m_artist->setBrush( brush );
+    m_album->setBrush( brush );
+    m_score->setBrush( brush );
+    m_numPlayed->setBrush( brush );
+    m_playedLast->setBrush( brush );
+    m_noTrack->setBrush( brush );
+    m_noTrack->setBrush( brush );
 
 
     QFont bigFont( labelFont );
@@ -116,10 +118,11 @@ void CurrentTrack::init()
     
     m_noTrackText = i18n( "No track playing" );
     m_noTrack->setText( m_noTrackText );
-    m_noTrack->setPen( pen );
+
     
     connectSource( "current" );
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 }
 
 void
@@ -187,7 +190,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     const qreal textX = labelX + labelWidth + margin;
 
     const qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 ) ;
-    const qreal textWidth = size().toSize().width() - ( textX + margin + 23 ); // add 23 to ensure that we do not paint into the small labels
+    const qreal textWidth = size().toSize().width() - ( textX + margin + 53 ); // add 53 to ensure room for small label + their text
     
 
     // here we put all of the text items into the correct locations
@@ -195,13 +198,15 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2,
                        size().toSize().height() / 2  - 30 );
     
-    m_title->setPos( QPointF( textX, margin ) );
-    m_artist->setPos(  QPointF( textX, margin * 2 + textHeight ) );
-    m_album->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 ) );
+    m_title->setPos( QPointF( textX, margin + 2 ) );
+    m_artist->setPos(  QPointF( textX, margin * 2 + textHeight + 2  ) );
+    m_album->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 + 2 ) );
+
+    const int addLabelOffset = contentsRect().width() - 25;
     
-    m_score->setPos( QPointF( contentsRect().width() - 22, margin + 5 ) );
-    m_numPlayed->setPos( QPointF( contentsRect().width() - 22, margin + 47 ) );
-    m_playedLast->setPos( QPointF( contentsRect().width() - 25, margin + 87 ) );
+    m_score->setPos( QPointF( addLabelOffset, margin + 2 ) );
+    m_numPlayed->setPos( QPointF( addLabelOffset, margin * 2 + textHeight + 2 ) );
+    m_playedLast->setPos( QPointF( addLabelOffset, margin * 3 + textHeight * 2.0 + 2 ) );
 
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
@@ -236,9 +241,18 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     if( !m_noTrackText.isEmpty() )
         m_noTrack->setText( truncateTextToFit( m_noTrackText, m_noTrack->font(), QRectF( 0, 0, textWidth, 30 ) ) );
 
-    m_ratingWidget->setPos( labelX + 25, margin * 4.0 + textHeight * 3.0 - 5.0 );
+
+
     m_ratingWidget->setMinimumSize( contentsRect().width() / 5, textHeight );
     m_ratingWidget->setMaximumSize( contentsRect().width() / 5, textHeight );
+    
+    //lets center this widget
+
+    const int availableSpace = contentsRect().width() - labelX;
+    const int offsetX = ( availableSpace - ( contentsRect().width() / 5 ) ) / 2;
+
+    m_ratingWidget->setPos( labelX + offsetX, margin * 4.0 + textHeight * 3.0 - 5.0 );
+
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->show();
 
@@ -375,13 +389,21 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     if( track && track->album() && track->album()->hasImage() )
         m_theme->paint( p, QRect( margin - 5, margin, albumWidth + 12, albumWidth ), "cd-box" );
 
-    m_theme->paint( p, QRectF( labelX, margin + 1, 23, 23 ), "track" );
-    m_theme->paint( p, QRectF( labelX - 40, margin * 2.0 + textHeight + 1 , 80, 23 ), "artist" );
-    m_theme->paint( p, QRectF( labelX, margin * 3.0 + textHeight * 2.0 + 1, 23, 23 ), "album" );
+    const int lineSpacing = margin + textHeight;
+    const int line1Y = margin + 1;
+    const int line2Y = line1Y + lineSpacing;
+    const int line3Y = line2Y + lineSpacing;
+    
+    m_theme->paint( p, QRectF( labelX, line1Y, 23, 23 ), "track" );
+    m_theme->paint( p, QRectF( labelX - 40, line2Y , 80, 23 ), "artist" );
+    m_theme->paint( p, QRectF( labelX, line3Y, 23, 23 ), "album" );
 
-    m_theme->paint( p, QRectF( contentsRect.width() - 31, margin, 30, 30 ), "score" );
-    m_theme->paint( p, QRectF( contentsRect.width() - 31, margin + 40, 30, 30 ), "times-played" );
-    m_theme->paint( p, QRectF( contentsRect.width() - 34, margin + 77, 40, 40 ), "last-time" );
+
+    const int label2X = contentsRect.width() - 53;
+    
+    m_theme->paint( p, QRectF( label2X, line1Y, 23, 23 ), "score" );
+    m_theme->paint( p, QRectF( label2X, line2Y, 23, 23 ), "times-played" );
+    m_theme->paint( p, QRectF( label2X, line3Y, 23, 23 ), "last-time" );
 
     p->restore();
 
@@ -427,6 +449,20 @@ bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
         return true;
     }
     return false;
+}
+
+void CurrentTrack::paletteChanged( const QPalette & palette )
+{
+    DEBUG_BLOCK
+
+    m_title->setBrush( palette.text() );
+    m_artist->setBrush( palette.text() );
+    m_album->setBrush( palette.text() );
+    m_score->setBrush( palette.text() );
+    m_numPlayed->setBrush( palette.text() );
+    m_playedLast->setBrush( palette.text() );
+    m_noTrack->setBrush( palette.text() );
+    m_noTrack->setBrush( palette.text() );
 }
 
 #include "CurrentTrack.moc"
