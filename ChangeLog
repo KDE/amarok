@@ -57,7 +57,6 @@ VERSION 2.0-beta2
 
   BUGFIXES:
     * Keyboard shortcut configuration is now remembered. (BR 170260)
-    * Fixed crash when dragging multiple streams to the playlist. (BR 170247)
     * The playlist drop visualiser will snap to the end of the playlist if
       required. (BR 171016)
     * Enhanced keyboard navigation in the playlist. (BR 170489)
