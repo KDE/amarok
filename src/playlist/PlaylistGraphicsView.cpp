@@ -336,14 +336,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
 {
     Q_UNUSED( parent );
 
-    if( end >= m_tracks.size() )
-    {
-        const int diff = end - m_tracks.size();
-        start -= diff;
-        end   -= diff;
-    }
-
-    // Call setRow on track imidiately preceding the insertion as this might have to change its
+    //call setRow on track imidiately preceding the insertion as this might have to change its
     // look and height if it has been grouped by the model.
     if ( start > 0 )
         m_tracks[ start-1 ]->setRow( start-1 );
@@ -354,6 +347,7 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
 
     for( int i = start; i <= end; i++ )
     {
+
         Playlist::GraphicsItem* item = new Playlist::GraphicsItem();
         item->setRow( i );
         item->setPos( 0.0, cumulativeHeight );
@@ -366,10 +360,10 @@ Playlist::GraphicsView::rowsInserted( const QModelIndex& parent, int start, int 
     for ( int i = end + 1 ; i < m_tracks.count(); i++ )
         m_tracks.at( i )->setRow( i );
 
-    shuffleTracks( end );
+    shuffleTracks( end + 1 );
 }
 
-void
+    void
 Playlist::GraphicsView::rowsRemoved(const QModelIndex& parent, int start, int end )
 {
     Q_UNUSED( parent );
