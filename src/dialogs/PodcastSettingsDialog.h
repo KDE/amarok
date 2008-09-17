@@ -25,7 +25,7 @@
 
 namespace Ui {
     class PodcastSettingsBase;
-};
+}
 
 class PodcastSettingsDialog : public KDialog
 {
