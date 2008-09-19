@@ -149,33 +149,36 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
-        virtual void  setForwardToProxy( bool forward );
+        virtual void setForwardToProxy( bool forward );
 
         virtual bool isPlayable() const;
         virtual bool isEditable() const;
 
         virtual AlbumPtr album() const;
+        virtual void setAlbum( const QString &newAlbum );
+        
         virtual ArtistPtr artist() const;
+        virtual void setArtist( const QString &newArtist );
+        
         virtual GenrePtr genre() const;
+        virtual void setGenre( const QString &newGenre );
+        
         virtual ComposerPtr composer() const;
+        virtual void setComposer( const QString &newComposer );
+        
         virtual YearPtr year() const;
-
-        virtual void setAlbum ( const QString &newAlbum );
-        virtual void setArtist ( const QString &newArtist );
-        virtual void setGenre ( const QString &newGenre );
-        virtual void setComposer ( const QString &newComposer );
-        virtual void setYear ( const QString &newYear );
+        virtual void setYear( const QString &newYear );
 
         virtual void setTitle( const QString &newTitle );
 
         virtual QString comment() const;
-        virtual void setComment ( const QString &newComment );
+        virtual void setComment( const QString &newComment );
 
         virtual double score() const;
-        virtual void setScore ( double newScore );
+        virtual void setScore( double newScore );
 
         virtual int rating() const;
-        virtual void setRating ( int newRating );
+        virtual void setRating( int newRating );
 
         virtual int length() const;
 
@@ -184,10 +187,10 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
         virtual int bitrate() const;
 
         virtual int trackNumber() const;
-        virtual void setTrackNumber ( int newTrackNumber );
+        virtual void setTrackNumber( int newTrackNumber );
 
         virtual int discNumber() const;
-        virtual void setDiscNumber ( int newDiscNumber );
+        virtual void setDiscNumber( int newDiscNumber );
 
         virtual uint lastPlayed() const;
         virtual int playCount() const;
@@ -213,13 +216,9 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else if ( type == Meta::Capability::CurrentTrackActions ) {
-                debug() << "here";
+            else if ( type == Meta::Capability::CurrentTrackActions )
                 return new ServiceCurrentTrackActionsCapability( this );
-
-            }
-            else
-                return 0;
+            return 0;
         }
 
         //ServiceTrack specific methods
@@ -233,38 +232,36 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
         void setLength( int length );
 
         void setId( int id );
-        int id( ) const;
+        int  id( ) const;
         void setAlbumId( int albumId );
-        int albumId() const;
+        int  albumId() const;
         void setArtistId( int id );
-        int artistId() const;
+        int  artistId() const;
         void setUidUrl( const QString &url );
         void setDownloadableUrl( const QString &url );
         void refresh( TrackProvider *provider );
         void update( Meta::TrackPtr track );
 
     private:
-        ArtistPtr m_artist;
-        AlbumPtr m_album;
-        GenrePtr m_genre;
+        ArtistPtr   m_artist;
+        AlbumPtr    m_album;
+        GenrePtr    m_genre;
         ComposerPtr m_composer;
-        YearPtr m_year;
+        YearPtr     m_year;
 
-        int m_id;
-        int m_trackNumber;
-        int m_length;
+        int     m_id;
+        int     m_trackNumber;
+        int     m_length;
         QString m_displayUrl;
         QString m_playableUrl;
         QString m_downloadableUrl;
-        int m_albumId;
+        int     m_albumId;
         QString m_albumName;
-        int m_artistId;
+        int     m_artistId;
         QString m_artistName;
         QString m_name;
 
         bool m_forwardToProxy;
-
-//         QString m_type;
 };
 
 class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
@@ -299,8 +296,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else
-                return 0;
+            return 0;
         }
 
         //ServiceArtist specific methods
@@ -314,9 +310,9 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
         void setTitle( const QString &title );
 
     private:
-        int m_id;
-        QString m_name;
-        QString m_description;
+        int       m_id;
+        QString   m_name;
+        QString   m_description;
         TrackList m_tracks;
 };
 
@@ -352,8 +348,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else
-                return 0;
+            return 0;
         }
 
         //ServiceAlbum specific methods
@@ -363,23 +358,27 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
 
         void setDescription( const QString &description );
         QString description( ) const;
+        
         void setId( int id );
-        int id( ) const;
+        int  id() const;
+        
         void setArtistId( int artistId );
-        int artistId( ) const;
+        int  artistId( ) const;
+
         void setArtistName( const QString &name );
         QString artistName() const;
+        
         void setTitle( const QString &title );
 
     private:
-        int m_id;
-        QString m_name;
+        int       m_id;
+        QString   m_name;
         TrackList m_tracks;
-        bool m_isCompilation;
+        bool      m_isCompilation;
         ArtistPtr m_albumArtist;
-        QString m_description;
-        int m_artistId;
-        QString m_artistName;
+        QString   m_description;
+        int       m_artistId;
+        QString   m_artistName;
 };
 
 class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
@@ -411,23 +410,23 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else
-                return 0;
+            return 0;
         }
 
         //ServiceGenre specific methods
         void setId( int id );
-        int id( ) const;
+        int id() const;
 
         void addTrack( TrackPtr track );
         void setName( const QString &name );
-        int albumId();
+
+        int  albumId();
         void setAlbumId( int albumId );
 
     private:
-        int m_id;
-        int m_albumId;
-        QString m_name;
+        int       m_id;
+        int       m_albumId;
+        QString   m_name;
         TrackList m_tracks;
 };
 
@@ -459,15 +458,14 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else
-                return 0;
+            return 0;
         }
 
         //ServiceComposer specific methods
         void addTrack( ServiceTrackPtr track );
 
     private:
-        QString m_name;
+        QString   m_name;
         TrackList m_tracks;
 };
 
@@ -490,7 +488,7 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() );
+                   ( type == Meta::Capability::SourceInfo && hasSourceInfo() );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
@@ -499,15 +497,14 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
-            else
-                return 0;
+            return 0;
         }
 
         //ServiceYear specific methods
         void addTrack( ServiceTrackPtr track );
 
     private:
-        QString m_name;
+        QString   m_name;
         TrackList m_tracks;
 };
 
