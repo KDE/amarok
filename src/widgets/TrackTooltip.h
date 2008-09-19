@@ -20,6 +20,7 @@
 #ifndef TRACKTOOLTIP_H
 #define TRACKTOOLTIP_H
 
+#include "EngineObserver.h"
 #include "meta/Meta.h"
 
 #include <QWidget>
@@ -28,8 +29,7 @@
 class QLabel;
 class QWidget;
 
-// class TrackToolTip: public QObject, public Amarok::ToolTipClient, public Meta::Observer
-class TrackToolTip : public QWidget, public Meta::Observer
+class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserver
 {
     Q_OBJECT
 
@@ -38,19 +38,22 @@ class TrackToolTip : public QWidget, public Meta::Observer
         ~TrackToolTip();
         static TrackToolTip* instance();
     
-        void setTrack( const Meta::TrackPtr track );
-        void setTrackPosition( int pos );
+        void setTrack();
         void clear();
         void show( const QPoint &bottomRight );
     
         //Reimplemented from Meta::Observer
         virtual void metadataChanged( Meta::Track *track );
-        virtual void metadataChanged( Meta::Album *album );
-        virtual void metadataChanged( Meta::Artist *artist );
-    
+        virtual void metadataChanged( Meta::Album * ) {}; //prevent compiler warning
+        virtual void metadataChanged( Meta::Artist * ) {}; //prevent compiler warning
         virtual void metadataChanged( Meta::Genre * ) {}; //prevent compiler warning
         virtual void metadataChanged( Meta::Composer * ) {}; //prevent compiler warning
         virtual void metadataChanged( Meta::Year * ) {}; //prevent compiler warning
+
+        //Reimplemented from EngineObserver
+        virtual void engineNewTrackPlaying();
+        virtual void enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason );
+        virtual void engineTrackPositionChanged( long position, bool userSeek );
 
     public slots:
        void hide(); 

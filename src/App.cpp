@@ -40,7 +40,6 @@ email                : markey@web.de
 #include "StatusBar.h"
 #include "Systray.h"
 #include "TracklistDBusHandler.h"
-#include "TrackTooltip.h"                //engineNewMetaData()
 
 #include <iostream>
 
@@ -459,19 +458,12 @@ void App::applySettings( bool firstTime )
 
     DEBUG_BLOCK
 
-#ifndef Q_WS_MAC
-    //probably needs to be done in TrayIcon when it receives a QEvent::ToolTip (see QSystemtrayIcon documentation)
-//     TrackToolTip::instance()->removeFromWidget( m_tray );
-#endif
     Amarok::OSD::instance()->applySettings();
     m_tray->setVisible( AmarokConfig::showTrayIcon() );
-//     TrackToolTip::instance()->addToWidget( m_tray );
-
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
-
 
     if( ( main_window && firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
     {
@@ -479,7 +471,6 @@ void App::applySettings( bool firstTime )
         main_window->show();
         PERF_LOG( "after showing mainWindow" )
     }
-
 
     { //<Engine>
         if( The::engineController()->volume() != AmarokConfig::masterVolume() )
@@ -631,18 +622,6 @@ void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
     }
 }
 
-void App::engineNewTrackPlaying()
-{
-    DEBUG_BLOCK
-
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( !currentTrack )
-        return;
-
-    debug() << "engineNewTrackPlaying:" << currentTrack->prettyName();
-    TrackToolTip::instance()->setTrack( currentTrack );
-}
-
 void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
     DEBUG_BLOCK
@@ -656,13 +635,6 @@ void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool tra
         if ( !currentTrack->prettyName().isEmpty() )
            mainWindow()->setPlainCaption( i18n( "%1 - %2 -  %3", newMetaData.value( Meta::valArtist ), newMetaData.value( Meta::valTitle ), AMAROK_CAPTION ) );
     }
-
-    TrackToolTip::instance()->setTrack( currentTrack );
-}
-
-void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )
-{
-    TrackToolTip::instance()->setTrackPosition( position );
 }
 
 void App::slotConfigEqualizer() //SLOT
@@ -671,7 +643,6 @@ void App::slotConfigEqualizer() //SLOT
 //    EqualizerSetup::instance()->show();
 //    EqualizerSetup::instance()->raise();
 }
-
 
 void App::slotConfigAmarok( const QByteArray& page )
 {

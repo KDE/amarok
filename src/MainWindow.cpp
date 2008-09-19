@@ -51,6 +51,7 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "queuemanager/QueueManager.h"
 #include "widgets/Splitter.h"
+#include "widgets/TrackTooltip.h"
 //#include "mediabrowser.h"
 
 #include <QCheckBox>
@@ -289,6 +290,7 @@ MainWindow::init()
     }
     //</Browsers>
 
+    TrackToolTip::instance(); //Instantiate
     Amarok::MessageQueue::instance()->sendMessages();
 }
 

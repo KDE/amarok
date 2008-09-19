@@ -57,6 +57,7 @@ TrackToolTip *TrackToolTip::instance()
 
 TrackToolTip::TrackToolTip( QWidget* parent )
     : QWidget( parent )
+    , EngineObserver( The::engineController() )
     , m_track( 0 )
     , m_haspos( false )
     , m_timer( new QTimer( this ) )
@@ -143,26 +144,20 @@ void TrackToolTip::show( const QPoint & bottomRight )
     QTimer::singleShot( 15000, this, SLOT( hide() ) );
 }
 
-void TrackToolTip::setTrack( const Meta::TrackPtr track )
+void TrackToolTip::setTrack()
 {
     DEBUG_BLOCK
 
-    if( m_track && m_track->artist() )
-        unsubscribeFrom( m_track->artist() );
-    if( m_track && m_track->album() )
-        unsubscribeFrom( m_track->album() );
-    unsubscribeFrom( m_track );
+    clear();
 
-    if( track )
+    if( m_track )
     {
         m_haspos = false;
-        m_tooltip.clear();
 
         QStringList left, right;
         const QString tableRow = "<tr><td width=70 align=right>%1: </td><td align=left>%2</td></tr>";
 
         QString filename = "", title = ""; //special case these, put the first one encountered on top
-        m_track = track;
 
         const float score = m_track->score();
         if( score > 0.f )
@@ -213,7 +208,7 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track )
         }
 
         //NOTE it seems to be necessary to <center> each element indivdually
-        m_tooltip += "<table cellpadding='2' cellspacing='2' align='center'><tr>";
+        m_tooltip = "<table cellpadding='2' cellspacing='2' align='center'><tr>";
 
         if( m_track->album() )
             m_image = m_track->album()->image( 100 );
@@ -243,24 +238,6 @@ void TrackToolTip::setTrack( const Meta::TrackPtr track )
         m_tooltip += "</tr></table></center>";
 
         updateWidgets();
-
-        subscribeTo( m_track );
-        if( m_track->artist() )
-            subscribeTo( m_track->artist() );
-        if( m_track->album() )
-            subscribeTo( m_track->album() );
-    }
-    else
-    {
-        debug() << "track = null. Aborting.";
-    }
-}
-
-void TrackToolTip::setTrackPosition( int pos )
-{
-    if( !isHidden() && m_trackPosition != pos ) {
-        m_trackPosition = pos;
-        updateWidgets();
     }
 }
 
@@ -270,7 +247,6 @@ void TrackToolTip::clear()
 
     m_trackPosition = 0;
     m_tooltip = i18n( "Amarok - No track playing." );
-    m_track = Meta::TrackPtr();
     m_title.clear();
     m_image = QPixmap();
 
@@ -284,26 +260,51 @@ QString TrackToolTip::tooltip() const
 
 void TrackToolTip::updateWidgets()
 {
-    if( !m_image.isNull() )
-        m_imageLabel->setPixmap( m_image );
-
+    m_imageLabel->setPixmap( m_image );
     m_titleLabel->setText( m_title );
     m_otherInfoLabel->setText( tooltip() );
 }
 
-void TrackToolTip::metadataChanged( Meta::Track * /*track*/ )
+void TrackToolTip::metadataChanged( Meta::Track *track )
 {
-    setTrack( The::engineController()->currentTrack() );
+    Q_UNUSED( track )
+    DEBUG_BLOCK
+
+    setTrack();
 }
 
-void TrackToolTip::metadataChanged( Meta::Album * /*album*/ )
+void TrackToolTip::engineNewTrackPlaying()
 {
-    setTrack( The::engineController()->currentTrack() );
+    DEBUG_BLOCK
+
+    m_track =  The::engineController()->currentTrack();
+    subscribeTo( m_track );
+
+    setTrack();
 }
 
-void TrackToolTip::metadataChanged( Meta::Artist * /*artist*/ )
+void TrackToolTip::enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason )
 {
-    setTrack( The::engineController()->currentTrack() );
+    Q_UNUSED( finalPosition )
+    Q_UNUSED( trackLength )
+    Q_UNUSED( reason )
+
+    DEBUG_BLOCK
+
+    unsubscribeFrom( m_track );
+
+    m_track = 0;
+    clear();
+}
+
+void TrackToolTip::engineTrackPositionChanged( long position, bool userSeek )
+{
+        Q_UNUSED( userSeek )
+
+        if( !isHidden() && m_trackPosition != position ) {
+            m_trackPosition = position;
+            updateWidgets();
+        }
 }
 
 bool TrackToolTip::eventFilter( QObject* obj, QEvent* event )
