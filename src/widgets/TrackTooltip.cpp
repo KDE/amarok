@@ -191,12 +191,21 @@ void TrackToolTip::setTrack()
             left << i18n( "Play Count" );
         }
 
+        right << QString::number( m_track->rating() );
+        left << i18n( "Rating" );
+
+        right << QString::number( m_track->playCount() );
+        left << i18n( "Playcount" );
+
         const uint lastPlayed = m_track->lastPlayed();
         right << Amarok::verboseTimeSince( lastPlayed );
         left << i18n( "Last Played" );
 
-        right << m_track->prettyName();
-        left << i18n("Track");
+        right << QString::number( m_track->bitrate() );
+        left << i18n( "Bitrate" );
+
+        right << m_track->type();
+        left << i18n( "Type" );
 
         const QString length = Meta::secToPrettyTime( m_track->length() );
 
