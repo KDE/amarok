@@ -38,8 +38,6 @@ class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserve
         ~TrackToolTip();
         static TrackToolTip* instance();
     
-        void setTrack();
-        void clear();
         void show( const QPoint &bottomRight );
     
         //Reimplemented from Meta::Observer
@@ -66,6 +64,8 @@ class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserve
        void slotTimer();
 
     private:
+        void setTrack();
+        void clear();
         QString tooltip() const;
         void updateWidgets();
     
