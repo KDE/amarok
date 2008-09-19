@@ -18,6 +18,7 @@
 
 #include "amarok_export.h"
 #include "meta/Meta.h"
+#include "EngineObserver.h"
 
 #include <KXmlGuiWindow>
 
@@ -53,7 +54,7 @@ namespace The {
   *
   * This is the main window widget.
   */
-class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
+class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, public Meta::Observer
 {
     friend MainWindow* The::mainWindow();
 
@@ -93,6 +94,18 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         void showHide();
         void loveTrack();
         void playAudioCD();
+
+    protected:
+        //Reimplemented from EngineObserver
+        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
+
+        //Reimplemented from Meta::Observer
+        virtual void metadataChanged( Meta::Track *track );
+        virtual void metadataChanged( Meta::Album * ) {}; //prevent compiler warning
+        virtual void metadataChanged( Meta::Artist * ) {}; //prevent compiler warning
+        virtual void metadataChanged( Meta::Genre * ) {}; //prevent compiler warning
+        virtual void metadataChanged( Meta::Composer * ) {}; //prevent compiler warning
+        virtual void metadataChanged( Meta::Year * ) {}; //prevent compiler warning
 
     private slots:
         void slotShrinkBrowsers( int index );
@@ -150,6 +163,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow
         Context::ContextView *m_contextView;
 
         PlaylistFileProvider *m_playlistFiles;
+        Meta::TrackPtr m_currentTrack;
 
         void    createActions();
         void    createMenus();

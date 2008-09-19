@@ -82,7 +82,6 @@ int App::mainThreadId = 0;
 extern void setupEventHandler_mac(long);
 #endif
 
-#define AMAROK_CAPTION "Amarok 2 beta"
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "Amarok" ), APP_VERSION,
@@ -596,44 +595,21 @@ void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
     {
     case Phonon::StoppedState:
     case Phonon::LoadingState:
-        mainWindow()->setPlainCaption( i18n( AMAROK_CAPTION ) );
         Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         break;
 
     case Phonon::PlayingState:
         if ( oldState == Phonon::PausedState )
             Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
-        if ( track && !track->prettyName().isEmpty() )
-//             //TODO: write a utility function somewhere
-            mainWindow()->setPlainCaption( i18n( "%1 - %2 -  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown"), track->prettyName(), AMAROK_CAPTION ) );
         break;
 
     case Phonon::PausedState:
-        mainWindow()->setPlainCaption( i18n( "Paused  -  %1", QString( AMAROK_CAPTION ) ) );
         Amarok::OSD::instance()->OSDWidget::show( i18n("Paused") );
         break;
 
     case Phonon::ErrorState:
     case Phonon::BufferingState:
         break;
-
-    default:
-        ;
-    }
-}
-
-void App::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
-{
-    DEBUG_BLOCK
-
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( !currentTrack )
-        return;
-
-    if( !trackChanged )
-    {
-        if ( !currentTrack->prettyName().isEmpty() )
-           mainWindow()->setPlainCaption( i18n( "%1 - %2 -  %3", newMetaData.value( Meta::valArtist ), newMetaData.value( Meta::valTitle ), AMAROK_CAPTION ) );
     }
 }
 

@@ -78,6 +78,8 @@
 #include <fixx11h.h>
 #endif
 
+#define AMAROK_CAPTION "Amarok 2 beta"
+
 class ContextWidget : public KVBox
 {
     // Set a useful size default of the center tab.
@@ -90,11 +92,12 @@ MainWindow *MainWindow::s_instance = 0;
 
 MainWindow::MainWindow()
     : KXmlGuiWindow( 0 )
+    , EngineObserver( The::engineController() )
     , m_lastBrowser( 0 )
 {
     DEBUG_BLOCK
 
-    setObjectName("MainWindow");
+    setObjectName( "MainWindow" );
     s_instance = this;
 
     PERF_LOG( "Creating PlaylistModel" )
@@ -1001,6 +1004,45 @@ QRect MainWindow::contextRectGlobal()
     return QRect( contextPos.x(), contextPos.y(), m_contextWidget->width(), m_contextWidget->height() );
 }
 
+void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState )
+{
+    Q_UNUSED( oldState )
+
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    //track is 0 if the engien state is Empty. we check that in the switch
+    switch( state )
+    {
+    case Phonon::StoppedState:
+        setPlainCaption( i18n( AMAROK_CAPTION ) );
+        break;
+
+    case Phonon::PlayingState:
+        if ( track && !track->prettyName().isEmpty() ) {
+            unsubscribeFrom( m_currentTrack );
+            m_currentTrack = track;
+            subscribeTo( track );
+            setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
+        }
+        break;
+
+    case Phonon::PausedState:
+        setPlainCaption( i18n( "Paused  ::  %1", QString( AMAROK_CAPTION ) ) );
+        break;
+
+    case Phonon::LoadingState:
+    case Phonon::ErrorState:
+    case Phonon::BufferingState:
+        break;
+    }
+}
+
+void MainWindow::metadataChanged( Meta::Track *track )
+{
+    DEBUG_BLOCK
+
+    setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
+}
+ 
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }
 }

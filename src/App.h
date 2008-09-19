@@ -44,6 +44,7 @@ class KSplashScreen;
 class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
 {
     Q_OBJECT
+
     public:
         App();
        ~App();
@@ -68,7 +69,6 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
 
     protected: /* for OSD, tray, and dcop */
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-        virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
     private slots:
         void continueInit();
