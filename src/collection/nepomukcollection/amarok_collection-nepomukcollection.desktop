@@ -1,6 +1,30 @@
 [Desktop Entry]
 Type=Service
 Name=Nepomuk Collection
+Name[bg]=Nepomuk колекция
+Name[ca]=Col·lecció Nepomuk
+Name[csb]=Kòlekcëjô Nepomuka
+Name[de]=Nepomuk-Sammlung
+Name[el]=Συλλογή Nepomuk
+Name[es]=Colección Nepomuk
+Name[et]=Nepomuki kogu
+Name[fr]=Collection Nepomuk
+Name[ga]=Bailiúchán Nepomuk
+Name[gl]=Colección de Nepomuk
+Name[it]=Collezione Nepomuk
+Name[ja]=Nepomuk コレクション
+Name[km]=ការ​សម្រាំង​របស់ Nepomuk
+Name[lt]=Nepomuk fonoteka
+Name[lv]=Nepomuk kolekcija
+Name[nds]=Nepomuk-Sammeln
+Name[nl]=Nepomuk-collectie
+Name[pl]=Kolekcja Nepomuk
+Name[pt]=Colecção do Nepomuk
+Name[pt_BR]=Coleção Nepomuk
+Name[sv]=Nepomuk-samling
+Name[tr]=Nepomuk Koleksiyonu
+Name[uk]=Збірка Nepomuk
+Name[x-test]=xxNepomuk Collectionxx
 
 
 ServiceTypes=Amarok/Plugin

@@ -1,5 +1,20 @@
 [Desktop Entry]
 Name=Cloud
+Name[de]=Wolke
+Name[es]=Nube
+Name[et]=Pilv
+Name[fr]=Nuage
+Name[gl]=Nuve
+Name[it]=Nuvola
+Name[km]=ពពក
+Name[lt]=Debesis
+Name[lv]=Mākonis
+Name[nds]=Wulk
+Name[oc]=Nívol
+Name[pt]=Nuvem
+Name[pt_BR]=Nuvem
+Name[ro]=Nor
+Name[x-test]=xxCloudxx
 Type=Service
 ServiceTypes=Plasma/Applet
 

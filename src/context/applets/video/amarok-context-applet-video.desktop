@@ -1,5 +1,20 @@
 [Desktop Entry]
 Name=Video
+Name[bg]=Видео
+Name[ca]=Vídeo
+Name[el]=Βίντεο
+Name[es]=Vídeo
+Name[fr]=Vidéo
+Name[ga]=Fís
+Name[gl]=Vídeo
+Name[ja]=ビデオ
+Name[km]=វីដេអូ
+Name[oc]=Vidèo
+Name[pl]=Wideo
+Name[pt]=Vídeo
+Name[pt_BR]=Vídeo
+Name[uk]=Відео
+Name[x-test]=xxVideoxx
 Type=Service
 ServiceTypes=Plasma/Applet
 

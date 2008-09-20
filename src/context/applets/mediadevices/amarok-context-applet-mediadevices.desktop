@@ -1,5 +1,20 @@
 [Desktop Entry]
 Name=Media Devices
+Name[ca]=Dispositius de suports
+Name[de]=Media-Player
+Name[el]=Συσκευές πολυμέσων
+Name[et]=Meediaseadmed
+Name[ga]=Gléasanna Meán
+Name[gl]=Dispositivos de medios
+Name[it]=Dispositivi multimediali
+Name[ja]=メディアデバイス
+Name[km]=ឧបករណ៍​មេឌៀ
+Name[nds]=Medienreedschap
+Name[nl]=Media-apparaten
+Name[pt]=Dispositivos Multimédia
+Name[pt_BR]=Dispositivos de Mídia
+Name[sv]=Mediaenheter
+Name[uk]=Медіа-пристрої
 Type=Service
 ServiceTypes=Plasma/Applet
 

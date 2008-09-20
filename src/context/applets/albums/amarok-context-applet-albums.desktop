@@ -1,5 +1,23 @@
 [Desktop Entry]
 Name=Albums
+Name[bg]=Албуми
+Name[ca]=Àlbums
+Name[de]=Alben
+Name[el]=Άλμπουμ
+Name[et]=Albumid
+Name[ga]=Albaim
+Name[gl]=Albuns
+Name[it]=Album
+Name[ja]=アルバム
+Name[km]=អាប់ប៊ុម
+Name[lv]=Albūmi
+Name[nds]=Alben
+Name[pl]=Albumy
+Name[pt]=Álbuns
+Name[pt_BR]=Álbuns
+Name[sv]=Album
+Name[tr]=Albümler
+Name[uk]=Альбоми
 Type=Service
 ServiceTypes=Plasma/Applet
 

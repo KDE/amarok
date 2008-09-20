@@ -1,5 +1,34 @@
 [Desktop Entry]
 Name=Current Track Info
+Name[bg]=Информация за записа
+Name[ca]=Informació de la peça actual
+Name[csb]=Wëdowiedzô ò biéżnym sztëczkù
+Name[de]=Informationen zum aktuellen Stück
+Name[el]=Πληροφορίες τρέχοντος κομματιού
+Name[eo]=Aktuala traka informo
+Name[es]=Información de la pista actual
+Name[et]=Aktiivse pala info
+Name[fr]=Informations sur le morceau courant
+Name[ga]=Eolas faoin Amhrán Reatha
+Name[gl]=Información do tema actual
+Name[it]=Informazioni traccia attuale
+Name[ja]=現在のトラック情報
+Name[km]=ព័ត៌មាន​បទ​បច្ចុប្បន្ន
+Name[ko]=현재 트랙 정보
+Name[lt]=Dabartinės dainos informacija
+Name[lv]=Pašreizējā celiņa informācija
+Name[nb]=Informasjon for gjeldende spor
+Name[nds]=Aktuell Stückinfo
+Name[nl]=Trackinformatie
+Name[pl]=Informacja o bieżącym utworze
+Name[pt]=Informação Actual da Faixa
+Name[pt_BR]=Informações da Faixa Atual
+Name[sv]=Information om aktuellt spår
+Name[th]=ข้อมูลเพลงปัจจุบัน
+Name[tr]=Şu anki İz Bilgisi
+Name[uk]=Інформація про поточну доріжку
+Name[x-test]=xxCurrent Track Infoxx
+Name[zh_CN]=当前音轨信息
 Type=Service
 ServiceTypes=Plasma/Applet
 

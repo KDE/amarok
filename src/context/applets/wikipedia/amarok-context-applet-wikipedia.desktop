@@ -1,5 +1,33 @@
 [Desktop Entry]
 Name=Wikipedia Applet
+Name[bg]=Аплет за Уикипедия
+Name[ca]=Miniaplicació de la Viquipèdia
+Name[de]=Wikipedia-Miniprogramm
+Name[el]=Μικροεφαρμογή Wikipedia
+Name[eo]=Vikipedia apleto
+Name[es]=Applet de Wikipedia
+Name[et]=Wikipedia aplett
+Name[fr]=Applet Wikipédia
+Name[ga]=Feidhmchláirín Vicipéide
+Name[gl]=Applet da Wikipedia
+Name[it]=Applet Wikipedia
+Name[ja]=Wikipedia アプレット
+Name[km]=អាប់ភ្លេត​វីគីភីឌៀ
+Name[ko]=위키백과 애플릿
+Name[lt]=Vikipedijos įskiepis
+Name[lv]=Wikipēdijas sīkrīks
+Name[nb]=Wikipediapanel
+Name[nds]=Wikipedia-Lüttprogramm
+Name[nl]=Wikipedia-applet
+Name[pl]=Aplet Wikipedii
+Name[pt]='Applet' do Wikipédia
+Name[pt_BR]=Mini-Aplicativo da Wikipedia
+Name[ro]=Miniaplicație Wikipedia
+Name[sv]=Wikipedia-miniprogram
+Name[tr]=Wikipedia Uygulamacığı
+Name[uk]=Аплет Wikipedia
+Name[x-test]=xxWikipedia Appletxx
+Name[zh_CN]=维基百科小程序
 Type=Service
 ServiceTypes=Plasma/Applet
 
