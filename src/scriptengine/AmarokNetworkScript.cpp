@@ -75,14 +75,15 @@ Downloader::Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* e
         return object;
     }
     QString encoding;
+    QString urlstr;
+    KUrl tmpUrl;
+    QUrl url = qscriptvalue_cast<QUrl>( context->argument( 0 ) );
     if( context->argumentCount() == 3 ) // encoding specified
         encoding = context->argument( 2 ).toString();
-    
-    QUrl url = qscriptvalue_cast<QUrl>( context->argument( 0 ) );
+    tmpUrl.setEncodedUrl( url.toEncoded() );
     // start download, and connect to it
-    //FIXME: url is not working directly, which makes the encoding still a problem.
-    KIO::Job* job = KIO::storedGet( url.toString() , KIO::NoReload, KIO::HideProgressInfo );
-
+    //FIXME: url is not working directly.
+    KIO::Job* job = KIO::storedGet( tmpUrl, KIO::NoReload, KIO::HideProgressInfo );
     AmarokDownloadHelper::instance()->newDownload( job, engine, context->argument( 1 ), encoding );
     // connect to a local slot to extract the qstring
     //qScriptConnect( job, SIGNAL( result( KJob* ) ), object, fetchResult( job ) );
