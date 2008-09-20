@@ -75,7 +75,6 @@ Downloader::Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* e
         return object;
     }
     QString encoding;
-    QString urlstr;
     KUrl tmpUrl;
     QUrl url = qscriptvalue_cast<QUrl>( context->argument( 0 ) );
     if( context->argumentCount() == 3 ) // encoding specified
