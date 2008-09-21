@@ -84,14 +84,11 @@ public:
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
-    void showConfigurationInterface();
 
 private slots:
-    void configAccepted();
     void cloudItemActivated( const QString &text );
 
 private:
-    void resize( qreal newWidth, qreal aspectRatio );
 
     void addText( const QString &text, int weight );
 

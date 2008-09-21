@@ -4,8 +4,7 @@ add_subdirectory( currenttrack )
 add_subdirectory( lyrics )
 add_subdirectory( serviceinfo )
 add_subdirectory( wikipedia )
-# currently infinite loop on addition
-#add_subdirectory( cloud )
+add_subdirectory( cloud )
 add_subdirectory( video )
 # WIP, will uncomment when usable
 #add_subdirectory( mediadevices )

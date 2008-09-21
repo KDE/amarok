@@ -67,7 +67,6 @@ Cloud::Cloud( QObject* parent, const QVariantList& args )
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
-    resize( m_width, m_aspectRatio );
 
     setPreferredSize( m_theme->size() );
 
@@ -141,16 +140,18 @@ void Cloud::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
 
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
-    if ( ( contentsRect.width() < 40 ) || ( contentsRect.height() < 40 ) ) {
+    if ( ( contentsRect.width() < 40 ) || ( contentsRect.height() < 40 ) )
+    {
         debug() << "Too little room to paint, hiding all children ( making myself invisible but still painted )!";
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() ) {
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
+        {
             childItem->hide();
         }
         return;
-    }
-    else
+    } else
     {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () ) {
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
+        {
             childItem->show();
         }
     }
@@ -158,17 +159,6 @@ void Cloud::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option,
     p->save();
     m_theme->paint( p, contentsRect/*, "background" */);
     p->restore();
-}
-
-void Cloud::showConfigurationInterface()
-{}
-
-void Cloud::configAccepted() // SLOT
-{}
-
-void Cloud::resize( qreal newWidth, qreal aspectRatio )
-{
-    Q_UNUSED( newWidth ); Q_UNUSED( aspectRatio );
 }
 
 bool Cloud::hasHeightForWidth() const
@@ -413,16 +403,19 @@ void Cloud::cloudItemActivated( const QString & text )
 
     kDebug() << component << ", " << function << ", " << arg1 << ", " << arg2 << ", " << arg3 << ", " << arg4;
 
-    QDBusInterface interface( "org.kde.amarok", component );
+    if( ( component != "" ) && ( function != "" ) )
+    {
+        QDBusInterface interface( "org.kde.amarok", component );
 
-    if ( !arg4.isEmpty() )
-        interface.call( function, arg1, arg2, arg3, arg4 );
-    else if ( !arg3.isEmpty() )
-        interface.call( function, arg1, arg2, arg3 );
-    else if ( !arg2.isEmpty() )
-        interface.call( function, arg1, arg2 );
-    else if ( !arg1.isEmpty() )
-        interface.call( function, arg1 );
+        if ( !arg4.isEmpty() )
+            interface.call( function, arg1, arg2, arg3, arg4 );
+        else if ( !arg3.isEmpty() )
+            interface.call( function, arg1, arg2, arg3 );
+        else if ( !arg2.isEmpty() )
+            interface.call( function, arg1, arg2 );
+        else if ( !arg1.isEmpty() )
+            interface.call( function, arg1 );
+    }
 }
 
 #include "Cloud.moc"
