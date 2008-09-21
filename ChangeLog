@@ -25,6 +25,8 @@ VERSION 2.0-beta2
     * Add option to enable/disable automatic cover fetching.
 
   CHANGES:
+    * When saving a new user playlist, the playlist browser immediately shows
+      the newly saved playlist and starts an edit operation on it.
     * Many small visual and layout tweaks.
     * Make the values for score, play count and time since last play appear in
       tooltip when hovering over the icons in the current track applet.
