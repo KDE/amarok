@@ -40,6 +40,10 @@ class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserve
     
         void show( const QPoint &bottomRight );
     
+    public slots:
+       void hide(); 
+
+    protected:
         //Reimplemented from Meta::Observer
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::Track *track );
@@ -49,10 +53,6 @@ class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserve
         virtual void enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason );
         virtual void engineTrackPositionChanged( long position, bool userSeek );
 
-    public slots:
-       void hide(); 
-
-    protected:
         bool eventFilter( QObject* obj, QEvent* event );
         virtual void mousePressEvent( QMouseEvent* );
 
