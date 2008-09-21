@@ -205,7 +205,7 @@ void TrackToolTip::setTrack()
         left << i18n( "Bitrate" );
 
         right << m_track->type();
-        left << i18n( "Type" );
+        left << i18n( "Format" );
 
         const QString length = Meta::secToPrettyTime( m_track->length() );
 
