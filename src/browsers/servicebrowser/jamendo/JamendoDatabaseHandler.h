@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #ifndef JAMENDODATABASEHANDLER_H
@@ -22,27 +22,22 @@
 
 #include "JamendoMeta.h"
 
-
 #include <QStringList>
 #include <QMap>
-
-
 
 /**
 * This class wraps the database operations needed by the JamendoBrowser
 *
 * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class JamendoDatabaseHandler {
+class JamendoDatabaseHandler
+{
 public:
-
-
     /**
      * Private constructor (singleton pattern)
      * @return Pointer to new object
      */
     JamendoDatabaseHandler();
-
 
     ~JamendoDatabaseHandler();
 
@@ -84,7 +79,6 @@ public:
      */
     int insertGenre( Meta::ServiceGenre *genre );
 
-
     /**
      * Begins a database transaction. Must be followed by a later call to commit()
      */
@@ -95,19 +89,12 @@ public:
      */
     void commit();
 
-
-    
-     /**
-      * Remove all genres that are applied to too few albums in an attempt to weed out the worst mistags and
-      * speed up queries a bit!
-      * @param minCount cutoff value...
-      */
-     void trimGenres( int minCount );
-
-
-
-protected:
-
+    /**
+     * Remove all genres that are applied to too few albums in an attempt to weed out the worst mistags and
+     * speed up queries a bit!
+     * @param minCount cutoff value...
+     */
+    void trimGenres( int minCount );
 };
 
 #endif
