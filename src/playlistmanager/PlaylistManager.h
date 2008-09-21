@@ -116,7 +116,7 @@ class PlaylistManager : public QObject
         *   @arg tracks list of tracks to save
         *   @arg name name of playlist to save
         */
-        bool save( Meta::TrackList tracks, const QString &name );
+        bool save( Meta::TrackList tracks, const QString &name, bool editNow = false );
 
         /**
          *  Saves a playlist from a file to the database.
@@ -138,6 +138,7 @@ class PlaylistManager : public QObject
     signals:
         void updated();
         void categoryAdded( int category );
+        void showCategory( int category );
 
     private slots:
         void slotUpdated( /*PlaylistProvider * provider*/ );

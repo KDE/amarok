@@ -26,6 +26,7 @@
 #include "PodcastProvider.h"
 #include "sql/SqlPodcastProvider.h"
 #include "Debug.h"
+#include "MainWindow.h"
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"
@@ -207,7 +208,7 @@ PlaylistManager::downloadComplete( KJob * job )
 }
 
 QString
-PlaylistManager::typeName(int playlistCategory)
+PlaylistManager::typeName( int playlistCategory )
 {
     switch( playlistCategory )
     {
@@ -226,19 +227,30 @@ PlaylistManager::typeName(int playlistCategory)
 }
 
 bool
-PlaylistManager::save( Meta::TrackList tracks, const QString & name)
+PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow )
 {
     Meta::SqlPlaylist* playlist = new Meta::SqlPlaylist( name, tracks, SqlPlaylistGroupPtr() );
+    int newId = playlist->id();
     delete playlist;
+    playlist = 0;
 
-    //jolt the playlist browser model to reload....
-    //talk about over-coupling... :|
-    //PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
+    if ( editNow ) {
 
-    //we should really enter edit mode for the new playlist, but how...
-    // NOTE this doesn't really make sense, especially when batch adding
-    //      during a collection scan ---lfranchi 9/5/08
-    //PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
+        //jolt the playlist browser model to reload so the newly added item is shown
+        //talk about over-coupling... :|
+        // That might be so, but it is needed when manually saving a list, otherwise
+        // the user will not know that anything has happend and will end up with
+        // 20 entries just named "playlist" in the view
+        PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
+
+        // NOTE this doesn't really make sense, especially when batch adding
+        //      during a collection scan ---lfranchi 9/5/08
+
+        The::mainWindow()->showBrowser( "PlaylistBrowser" );
+        emit( showCategory( UserPlaylist - 1 ) );
+        PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
+
+    }
 
     return true; //FIXME what's this supposed to return?
 }

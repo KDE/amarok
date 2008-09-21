@@ -70,7 +70,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
     }
 
 
-    connect( The::playlistManager(), SIGNAL(categoryAdded(int)), SLOT(addCategory(int)) );
+    connect( The::playlistManager(), SIGNAL( categoryAdded( int ) ), SLOT( addCategory( int ) ) );
+    connect( The::playlistManager(), SIGNAL( showCategory( int ) ), SLOT( showCategory( int ) ) );
 }
 
 PlaylistBrowser::~PlaylistBrowser()
@@ -97,7 +98,6 @@ PlaylistBrowser::addCategory( int category )
         case PlaylistManager::CurrentPlaylist: return;
         //TODO: add the UserPlaylistCategory widget
         case PlaylistManager::UserPlaylist: widget = new PlaylistCategory( m_toolBox ); break;
-
         case PlaylistManager::PodcastChannel: widget = loadPodcastCategory(); break;
         case PlaylistManager::Dynamic: widget = loadDynamicCategory(); break;
         //TODO: add the SmartPlaylistCategory widget
@@ -123,4 +123,14 @@ PlaylistBrowser::loadDynamicCategory()
     return new DynamicCategory( m_toolBox );
 }
 
+void
+PlaylistBrowser::showCategory( int category )
+{
+    DEBUG_BLOCK;
+    m_toolBox->setCurrentIndex( category );
 }
+
+}
+
+#include "PlaylistBrowser.moc"
+

@@ -938,7 +938,7 @@ bool Playlist::Model::savePlaylist( const QString & name ) const
     foreach( Item* item, itemList() )
         tl << item->track();
     
-    return The::playlistManager()->save( tl, name );
+    return The::playlistManager()->save( tl, name, true );
 }
 
 

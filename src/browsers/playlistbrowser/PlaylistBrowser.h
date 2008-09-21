@@ -35,13 +35,16 @@ class PodcastCategory;
 */
 class PlaylistBrowser : public KVBox
 {
+Q_OBJECT
 public:
     PlaylistBrowser( const char *name, QWidget *parent );
 
     ~PlaylistBrowser();
 
+
 public slots:
     void addCategory( int category );
+    void showCategory( int category );
 
 private:
     QWidget * loadPodcastCategory();
