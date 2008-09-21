@@ -100,12 +100,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
 
         //Reimplemented from Meta::Observer
+        using Observer::metadataChanged;
         virtual void metadataChanged( Meta::Track *track );
-        virtual void metadataChanged( Meta::Album * ) {}; //prevent compiler warning
-        virtual void metadataChanged( Meta::Artist * ) {}; //prevent compiler warning
-        virtual void metadataChanged( Meta::Genre * ) {}; //prevent compiler warning
-        virtual void metadataChanged( Meta::Composer * ) {}; //prevent compiler warning
-        virtual void metadataChanged( Meta::Year * ) {}; //prevent compiler warning
 
     private slots:
         void slotShrinkBrowsers( int index );
