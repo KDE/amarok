@@ -72,8 +72,6 @@ void ExpressionParser::parseChar( const QChar &c )
         handleQuote( c );
     else
         handleChar( c );
-
-    debug() << m_string;
 }
 
 void ExpressionParser::handleSpace( const QChar& )
@@ -120,13 +118,11 @@ void ExpressionParser::handleQuote( const QChar& )
 {
     if( m_inQuote )
     {
-        //debug() << "end quote";
         finishedElement();
         m_inQuote = false;
     }
     else
     {
-        //debug() << "start quote";
         if( !m_string.isEmpty() )
             finishedToken();
         m_state = ExpectText;
