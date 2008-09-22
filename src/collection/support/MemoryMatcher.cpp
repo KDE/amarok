@@ -47,8 +47,7 @@ MemoryMatcher::next() const
 void
 MemoryMatcher::setNext( MemoryMatcher *next )
 {
-    if ( !m_next )
-        delete m_next;
+    delete m_next;
     m_next = next;
 }
 
