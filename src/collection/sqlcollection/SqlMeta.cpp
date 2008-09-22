@@ -988,6 +988,7 @@ SqlAlbum::tracks()
         SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
+        qm->orderBy( Meta::valTrackNr );
         qm->setBlocking( true );
         qm->run();
         m_tracks = qm->tracks( m_collection->collectionId() );
