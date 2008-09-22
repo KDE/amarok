@@ -699,6 +699,8 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
             emit statusUpdate( (int)(100.0 * (double)(m_n - n) / (double)n) );
     }
 
+    delete[] movingWeights;
+
     return playlist;
 }
 
