@@ -176,6 +176,7 @@ namespace Playlist
 
             //Return list of items in playlist
             QList<Item*> itemList() const { return m_items; }
+            int itemCount() const { return m_items.count(); }
             //Return TrackPtr for a given row in the playlist
             Meta::TrackPtr trackForRow( int row ) const;
 

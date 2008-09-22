@@ -420,7 +420,7 @@ Playlist::Model::insertTracks( int row, Meta::TrackList tracks )
             if( ( playlistIndex  - lastIndex ) > 0 )
             {
                 m_undoStack->push( new AddTracksCmd( 0, row + lastIndex + offset, tracks.mid( lastIndex, playlistIndex  - lastIndex ) ) );
-                row = row + ( playlistIndex  - lastIndex );
+                row = row + ( playlistIndex - lastIndex );
             }
 
             Meta::PlaylistPtr playlist =  The::playlistManager()->expand( tracks.at( playlistIndex ) );

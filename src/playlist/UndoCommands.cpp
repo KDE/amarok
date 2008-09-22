@@ -22,6 +22,7 @@
 #include "UndoCommands.h"
 
 #include "PlaylistGraphicsView.h"
+#include "PlaylistModel.h"
 
 
 using namespace Playlist;
@@ -31,7 +32,10 @@ AddTracksCmd::AddTracksCmd( QUndoCommand* parent, int row, Meta::TrackList track
     : QUndoCommand( i18n("Tracks Added"), parent )
     , m_tracks( tracks )
 {
-    m_row = row < 0 ? 0 : row;
+    if( row < 0 )
+        m_row = The::playlistModel()->itemCount();
+    else
+        m_row = row;
 }
 
 void
