@@ -30,8 +30,9 @@ using namespace Qt;
 AddTracksCmd::AddTracksCmd( QUndoCommand* parent, int row, Meta::TrackList tracks )
     : QUndoCommand( i18n("Tracks Added"), parent )
     , m_tracks( tracks )
-    , m_row( row )
-{  }
+{
+    m_row = row < 0 ? 0 : row;
+}
 
 void
 AddTracksCmd::redo()
