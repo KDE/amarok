@@ -180,10 +180,8 @@ void ExpressionParser::finishedElement()
     m_element.text = m_string;
     m_string.clear();
 
-    if( !m_element.text.isEmpty() ) {
-        debug() << "appending '" << m_element.field << ":" << m_element.text << "'";
+    if( !m_element.text.isEmpty() )
         m_or.append( m_element );
-    }
 
     //m_element = expression_element();
     m_element.field.clear();

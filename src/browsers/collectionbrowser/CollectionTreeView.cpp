@@ -265,7 +265,6 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *e )
 {
-    DEBUG_BLOCK
     QTreeView::mousePressEvent( e );
 }
 
@@ -278,12 +277,12 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 
     // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
     m_dragMutex.lock();
-        if( m_ongoingDrag )
-        {
-            m_dragMutex.unlock();
-            return;
-        }
-        m_ongoingDrag = true;
+    if( m_ongoingDrag )
+    {
+        m_dragMutex.unlock();
+        return;
+    }
+    m_ongoingDrag = true;
     m_dragMutex.unlock();
 
     if( !m_pd )

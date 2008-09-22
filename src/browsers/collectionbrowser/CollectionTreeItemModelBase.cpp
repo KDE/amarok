@@ -589,7 +589,6 @@ void
 CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::DataList data)
 {
     Q_UNUSED( collectionId )
-    DEBUG_BLOCK
 
     if ( data.count() == 0 )
         return;
@@ -748,11 +747,10 @@ CollectionTreeItemModelBase::slotFilter()
         foreach( Collection *expanded, m_expandedCollections )
         {
             CollectionTreeItem *expandedItem = d->m_collections.value( expanded->collectionId() ).second;
-            if ( expandedItem == 0 ) {
+            if( expandedItem == 0 )
                 debug() << "ARRG! expandedItem is 0!!! id=" << expanded->collectionId() ;
-            } else {
+            else
                 emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
-            }
         }
     }
 }
