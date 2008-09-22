@@ -369,7 +369,7 @@ MainWindow::showBrowser( const int index )
 void
 MainWindow::keyPressEvent( QKeyEvent *e )
 {
-    if( !e->modifiers() & Qt::ControlModifier )
+    if( !( e->modifiers() & Qt::ControlModifier ) )
         return KXmlGuiWindow::keyPressEvent( e );
 
     int n = -1;
