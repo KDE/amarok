@@ -59,6 +59,8 @@ VERSION 2.0-beta2
     * Libgrypt is preferred over OpenSSL at build time, for licensing reasons.
 
   BUGFIXES:
+    * Don't crash when undoing an action which added tracks to an empty
+      playlist.
     * Keyboard shortcut configuration is now remembered. (BR 170260)
     * The playlist drop visualiser will snap to the end of the playlist if
       required. (BR 171016)
