@@ -93,11 +93,14 @@ LastFmEvents::connectSource( const QString &source )
 void LastFmEvents::constraintsEvent( Plasma::Constraints constraints )
 {
     DEBUG_BLOCK
+
+    if( !m_theme )
+        return;
+
     prepareGeometryChange();
 
-    if (constraints & Plasma::SizeConstraint && m_theme) {
+    if( constraints & Plasma::SizeConstraint )
         m_theme->resize(size().toSize());
-    }
 
     debug() << "resized LastFmEvents svg to " << size().toSize() << ", now re-laying out";
     for( int i = 0; i < 14; i++ ) // go through each row
