@@ -122,11 +122,12 @@ WikipediaApplet::linkClicked( const QUrl &url )
 
 void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 {
+    if( !m_header )
+        return;
+
     prepareGeometryChange();
-    if ( constraints & Plasma::SizeConstraint && m_header )
-    {
-        m_header->resize(size().toSize());
-    }
+    if ( constraints & Plasma::SizeConstraint )
+        m_header->resize( size().toSize() );
 
     m_theme->resizePanel(size().toSize());
 
@@ -138,17 +139,13 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_wikipediaLabel->setPos( offsetX, m_header->elementRect( "wikipedialabel" ).topLeft().y() );
 
-
     m_webView->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
 
     QSizeF infoSize( m_header->elementRect( "wikipediainformation" ).bottomRight().x() - m_header->elementRect( "wikipediainformation" ).topLeft().x(), m_header->elementRect( "wikipediainformation" ).bottomRight().y() - m_header->elementRect( "wikipediainformation" ).topLeft().y() );
 
-    if ( infoSize.isValid() ) {
+    if ( infoSize.isValid() )
         m_webView->resize( infoSize );
-    }
-
-        //m_webView->show();
-    }
+}
 
 bool WikipediaApplet::hasHeightForWidth() const
 {

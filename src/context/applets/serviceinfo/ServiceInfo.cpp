@@ -103,12 +103,13 @@ ServiceInfo::~ServiceInfo()
 
 void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
 {
+    if( !m_header )
+        return;
 
     prepareGeometryChange();
 
-    if (constraints & Plasma::SizeConstraint && m_header) {
-        m_header->resize(size().toSize());
-    }
+    if( constraints & Plasma::SizeConstraint )
+        m_header->resize( ize().toSize() );
 
     m_theme->resizePanel( size().toSize() );
 
@@ -121,21 +122,10 @@ void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
     float totalWidth = m_header->elementRect( "service_name" ).width();
     float offsetX =  ( totalWidth - textWidth ) / 2;
 
-    kDebug() << "offset: " << offsetX;
-
     m_serviceName->setPos( m_header->elementRect( "service_name" ).topLeft() + QPointF ( offsetX, 0 ) );
 
-
-
-
-    //QSizeF infoSize( 200, 200 );
     QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 7 );
 
-    /*if ( infoSize.isValid() ) {
-        m_serviceMainInfo->setMinimumSize( infoSize );
-        m_serviceMainInfo->setMaximumSize( infoSize );
-    }*/
-    
     m_webView->resize( infoSize );
 
     m_initialized = true;
