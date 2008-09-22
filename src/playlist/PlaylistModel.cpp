@@ -1449,7 +1449,6 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
     if( area2End > ( m_items.count() - 1 ) )
         area2End = m_items.count() - 1;
 
-
     // regroup the two affected areas
 
     if( area1Start == area2Start ) //merge areas
@@ -1459,9 +1458,6 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
         area1Start = qMin( area1Start, area2Start );
         area2Start = area1Start;
     }
-
-    foreach( AlbumGroup * ag, m_albumGroups)
-        ag->printGroupRows();
 
     if( offsetMode != OffsetNone )
     {
@@ -1521,8 +1517,6 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
 
     if( ( area1Start == area2Start ) || area2Start == -1 )
     {
-        foreach( AlbumGroup * ag, m_albumGroups)
-            ag->printGroupRows();
         emit( playlistGroupingChanged() );
         return;
     }
@@ -1543,9 +1537,6 @@ Playlist::Model::regroupAlbums( int firstRow, int lastRow, OffsetMode offsetMode
             m_albumGroups.insert( track->album()->prettyName(), newGroup );
        }
     }
-
-    foreach( AlbumGroup *ag, m_albumGroups)
-        ag->printGroupRows();
 
     emit( playlistGroupingChanged() );
 }
@@ -1740,9 +1731,6 @@ Playlist::Model::regroupAll()
             m_albumGroups.insert( albumName, newGroup );
         }
     }
-
-    foreach( AlbumGroup *ag, m_albumGroups)
-        ag->printGroupRows();
 
     emit( playlistGroupingChanged() );
 }
