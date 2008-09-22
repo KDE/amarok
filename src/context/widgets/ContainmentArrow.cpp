@@ -52,55 +52,56 @@ ContainmentArrow::ContainmentArrow( QGraphicsItem *parent, int direction ) :
     if( !m_containment )
     {
         debug() << "ERROR! ContainmentArrow needs to be passed a Containment parent!";
-    } else
+    }
+    else
     {
-        qreal height, width;
+        qreal height = 0, width = 0;
         switch( direction )
         {
-        case DOWN:
-        case UP:
-        {
-            width = m_containment->size().width();
-            debug() << " up/down arrow original width: " << width;
-            QRectF arrow;
-            if( direction == UP )
-                arrow = m_arrowSvg->elementRect( "up_arrow" );
-            else
-                arrow = m_arrowSvg->elementRect( "down_arrow" );
-            m_aspectRatio = arrow.width() / arrow.height();
+            case DOWN:
+            case UP:
+            {
+                width = m_containment->size().width();
+                debug() << " up/down arrow original width: " << width;
+                QRectF arrow;
+                if( direction == UP )
+                    arrow = m_arrowSvg->elementRect( "up_arrow" );
+                else
+                    arrow = m_arrowSvg->elementRect( "down_arrow" );
+                m_aspectRatio = arrow.width() / arrow.height();
             
-            height = width / m_aspectRatio;
-            debug() << "up/down arrow m_aspectRatio and height is: " << m_aspectRatio << height;
-            debug() << "got UP/DOWN arrow with sizes: " << width << height;
-            break;
-        }
-        case LEFT:
-        case RIGHT:
-        {
-            height = m_containment->size().height();
-            QRectF arrow;
-            debug() << " left/right arrow original height: " << height;
+                height = width / m_aspectRatio;
+                debug() << "up/down arrow m_aspectRatio and height is: " << m_aspectRatio << height;
+                debug() << "got UP/DOWN arrow with sizes: " << width << height;
+                break;
+            }
+            case LEFT:
+            case RIGHT:
+            {
+                height = m_containment->size().height();
+                QRectF arrow;
+                debug() << " left/right arrow original height: " << height;
             
-            if( direction == LEFT )
-                arrow = m_arrowSvg->elementRect( "left_arrow" );
-            else
-                arrow = m_arrowSvg->elementRect( "right_arrow" );            
-            m_aspectRatio = arrow.width() / arrow.height();
+                if( direction == LEFT )
+                    arrow = m_arrowSvg->elementRect( "left_arrow" );
+                else
+                    arrow = m_arrowSvg->elementRect( "right_arrow" );            
+                m_aspectRatio = arrow.width() / arrow.height();
 
-            width = height * m_aspectRatio;
-            debug() << "left/right arrow m_aspectRatio and width is: " << m_aspectRatio << width;
+                width = height * m_aspectRatio;
+                debug() << "left/right arrow m_aspectRatio and width is: " << m_aspectRatio << width;
 
-            debug() << "got RIGHT/LEFT arrow with sizes: " << width << height;
-            break;
+                debug() << "got RIGHT/LEFT arrow with sizes: " << width << height;
+                break;
+            }
+            default:
+                error() << "Unspecified state, setting 0 size for arrows";
         }
-        }
-        
-        m_size = QSize( width, height );     
+        m_size = QSize( width, height );
     }
     
     debug() << "ContainmentArrow: SETTING DIRECTION TO: " << direction;
     m_arrowDirection = direction;
-    
 }
 
 ContainmentArrow::~ContainmentArrow()
