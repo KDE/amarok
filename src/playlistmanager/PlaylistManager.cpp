@@ -275,8 +275,8 @@ PlaylistManager::save( const QString& fromLocation )
             break;
 
         default:
-            debug() << "unknown type!";
-            break;
+            debug() << "unknown type, cannot save playlist!";
+            return false;
     }
     Meta::TrackList tracks = playlist->tracks();
     QString name = playlist->name().split(".")[0];
