@@ -434,8 +434,8 @@ bool
 IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     DEBUG_BLOCK
-        switch(  type )
-        {
+    switch( type )
+    {
         case Meta::Capability::Editable:
             return true;
         case Meta::Capability::CustomActions:
@@ -445,15 +445,15 @@ IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 
         default:
             return false;
-        }
+    }
 }
 
 Meta::Capability*
 IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
 {
         DEBUG_BLOCK
-        switch( type )
-        {
+    switch( type )
+    {
         case Meta::Capability::Editable:
             return new EditCapabilityIpod( this );
         case Meta::Capability::CustomActions:
@@ -463,7 +463,7 @@ IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
 
         default:
             return 0;
-        }
+    }
 }
 
 void
@@ -494,8 +494,8 @@ IpodTrack::setAlbum( const QString &newAlbum )
     }
     else
     {
-        albumPtr = IpodAlbumPtr(  new IpodAlbum(  newAlbum ) );
-        albumMap.insert(  newAlbum,  AlbumPtr::staticCast(  albumPtr ) );
+        albumPtr = IpodAlbumPtr( new IpodAlbum( newAlbum ) );
+        albumMap.insert( newAlbum, AlbumPtr::staticCast( albumPtr ) );
     }
 
     // add track to album's tracklist
@@ -504,7 +504,7 @@ IpodTrack::setAlbum( const QString &newAlbum )
     setAlbum( albumPtr );
 
     m_collection->acquireWriteLock();
-    m_collection->setAlbumMap(  albumMap );
+    m_collection->setAlbumMap( albumMap );
     m_collection->releaseLock();
 
 }
