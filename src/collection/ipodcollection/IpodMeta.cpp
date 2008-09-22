@@ -397,6 +397,8 @@ IpodTrack::lastPlayed() const
 QString
 IpodTrack::type() const
 {
+    if( !m_playableUrl.isEmpty() )
+        return m_playableUrl.mid( m_playableUrl.lastIndexOf( '.' ) + 1 );
     return m_type;
 }
 

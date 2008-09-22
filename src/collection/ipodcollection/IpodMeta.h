@@ -143,9 +143,6 @@ class IpodTrack : public Meta::Track
 	virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         //IpodTrack specific methods
-    
-    public:
-
         IpodAlbumPtr ipodAlbum() const { return m_album; }
         
         // These methods are for MemoryMatcher to use
@@ -173,7 +170,7 @@ class IpodTrack : public Meta::Track
 
     
         void setLength( int length );
-	void setPlayableUrl( QString Url ) { m_playableUrl = Url; }
+	void setPlayableUrl( QString url ) { m_playableUrl = url; }
 
     private:
         IpodCollection *m_collection;
