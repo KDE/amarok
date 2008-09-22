@@ -766,16 +766,16 @@ void Playlist::GraphicsItem::setRow(int row)
         switch ( m_groupMode )
         {
             case None:
-                m_height =  qMax( SINGLE_TRACK_ALBUM_WIDTH, s_nfm->height() * 2 ) + 2 * MARGIN;
+                m_height = qMax( SINGLE_TRACK_ALBUM_WIDTH, s_nfm->height() * 2 ) + 2 * MARGIN;
                 break;
 
             case Head:
-                m_height =  qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + MARGIN + s_nfm->height() + 4;
+                m_height = qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + MARGIN + s_nfm->height() + 4;
                 break;
 
             case Head_Collapsed:
-                m_height =  qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + MARGIN * 2 + s_nfm->height() + 16;
-                if ( !m_items )
+                m_height = qMax( ALBUM_WIDTH, s_nfm->height() * 2 ) + MARGIN * 2 + s_nfm->height() + 16;
+                if( !m_items )
                 {
                     const Meta::TrackPtr track = index.data( ItemRole ).value< Playlist::Item* >()->track();
                     m_items = new Playlist::GraphicsItem::ActiveItems();
@@ -786,19 +786,19 @@ void Playlist::GraphicsItem::setRow(int row)
                 break;
 
             case Body:
-                m_height =  s_nfm->height()/*+ 2 * MARGIN*/;
+                m_height = s_nfm->height()/*+ 2 * MARGIN*/;
                 break;
 
             case End:
-                m_height =  s_nfm->height() /*+ 6*/ /*+ 2 * MARGIN*/;
+                m_height = s_nfm->height() /*+ 6*/ /*+ 2 * MARGIN*/;
                 break;
 
             case Collapsed:
-                m_height =  0;
+                m_height = 0;
                 break;
 
             default:
-                debug() << "ERROR!!??";
+                warning() << "Unhandled group state:" << m_groupMode;
         }
     }
 }
