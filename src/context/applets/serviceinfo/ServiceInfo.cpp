@@ -109,7 +109,7 @@ void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
     prepareGeometryChange();
 
     if( constraints & Plasma::SizeConstraint )
-        m_header->resize( ize().toSize() );
+        m_header->resize( size().toSize() );
 
     m_theme->resizePanel( size().toSize() );
 
