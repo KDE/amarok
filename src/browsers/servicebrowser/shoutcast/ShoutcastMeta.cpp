@@ -27,25 +27,19 @@ ShoutcastTrack::ShoutcastTrack( const QString &name, const KUrl & playlistUrl )
     , m_playlistUrl( playlistUrl )
     , m_title( name )
 {
-    DEBUG_BLOCK
     setTitle( name );
 }
 
-ShoutcastTrack::~ ShoutcastTrack()
+ShoutcastTrack::~ShoutcastTrack()
 {}
 
 KUrl ShoutcastTrack::playableUrl() const
 {
-    DEBUG_BLOCK
-
-    if ( !MetaStream::Track::playableUrl().url().isEmpty() ) {
+    if( !MetaStream::Track::playableUrl().url().isEmpty() )
         return MetaStream::Track::playableUrl();
-    }
 
-    if ( !m_playlist ) {
+    if( !m_playlist )
         m_playlist = Meta::loadPlaylist( m_playlistUrl );
-        //debug() << "here";
-    }
 
     //did it go well?
     if ( !m_playlist )
