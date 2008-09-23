@@ -15,6 +15,7 @@ Name[pt]=Dispositivos Multimédia
 Name[pt_BR]=Dispositivos de Mídia
 Name[sv]=Mediaenheter
 Name[uk]=Медіа-пристрої
+Name[x-test]=xxMedia Devicesxx
 Type=Service
 ServiceTypes=Plasma/Applet
 

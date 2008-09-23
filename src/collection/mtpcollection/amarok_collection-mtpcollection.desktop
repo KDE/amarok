@@ -17,6 +17,7 @@ Name[pt]=Colecção do MTP
 Name[pt_BR]=Coleção MTP
 Name[sv]=MTP-samling
 Name[uk]=Збірка MTP
+Name[x-test]=xxMTP Collectionxx
 Comment=MTP collection plugin for Amarok
 Comment[ca]=Connector de col·leccions MTP per a l'Amarok
 Comment[de]=MTP-Sammlungsmodul für Amarok
@@ -34,6 +35,7 @@ Comment[pt]=Um 'plugin' de colecção do MTP no Amarok
 Comment[pt_BR]=Plugin de coleção MTP para o Amarok
 Comment[sv]=Insticksprogram med MTP-samling för Amarok
 Comment[uk]=Втулка збірки MTP для Amarok
+Comment[x-test]=xxMTP collection plugin for Amarokxx
 
 ServiceTypes=Amarok/Plugin
 

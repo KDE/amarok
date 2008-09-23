@@ -18,6 +18,7 @@ Name[pt_BR]=Álbuns
 Name[sv]=Album
 Name[tr]=Albümler
 Name[uk]=Альбоми
+Name[x-test]=xxAlbumsxx
 Type=Service
 ServiceTypes=Plasma/Applet
 
