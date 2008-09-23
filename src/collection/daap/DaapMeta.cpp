@@ -37,7 +37,7 @@ DaapTrack::DaapTrack( DaapCollection *collection, const QString &host, quint16 p
     , m_displayUrl()
     , m_playableUrl()
 {
-    QString url = QString( "daap://%1:%2/%3/%4.%5" )
+    QString url = QString( "daap://%1:%2/databases/%3/items/%4.%5" )
                     .arg( host, QString::number( port ), dbId, itemId, format );
     m_displayUrl = url;
     m_playableUrl = url;
@@ -64,6 +64,7 @@ KUrl
 DaapTrack::playableUrl() const
 {
     KUrl url( m_playableUrl );
+    url.setProtocol( "http" );
     return url;
 }
 
