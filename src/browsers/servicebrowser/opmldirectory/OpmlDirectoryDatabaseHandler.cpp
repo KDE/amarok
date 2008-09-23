@@ -42,7 +42,7 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
 
     // create table containing feeds
     QString queryString = "CREATE TABLE opmldirectory_tracks ("
-                           "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                          "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
                           "name " + db->textColumnType() + ',' +
                           "track_number INTEGER,"
                           "length INTEGER,"
@@ -59,7 +59,7 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
 
     // create table containing categories
     queryString = "CREATE TABLE opmldirectory_albums ("
-                  "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                  "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
                   "name " + db->textColumnType() + ',' +
                   "description " + db->exactTextColumnType() + ',' +
                   "artist_id INTEGER );";
@@ -74,7 +74,7 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
     // we also need a dummy genre it would seem....
 
     queryString = "CREATE TABLE opmldirectory_artists ("
-            "id INTEGER PRIMARY KEY, "
+            "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
             "name " + db->textColumnType() + ',' +
             "description " + db->exactTextColumnType() + ");";
 
@@ -91,7 +91,7 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
 
     //create genre table
     queryString = "CREATE TABLE opmldirectory_genre ("
-            "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
             "name " + db->textColumnType() + ',' +
             "album_id INTEGER );";
 
