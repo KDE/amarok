@@ -33,6 +33,9 @@ macro_log_feature( TAGLIB_FOUND "taglib" "Read and write tags in audio files" "h
 find_package(Strigi REQUIRED)
 macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
 
+find_package(MySQLAmarok REQUIRED)
+macro_log_feature( MYSQL_EMBEDDED_FOUND "mysqld" "Embedded MySQL" "http://www.mysql.com" TRUE "" "" )
+
 include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 include(CheckTagLibFileName)
 

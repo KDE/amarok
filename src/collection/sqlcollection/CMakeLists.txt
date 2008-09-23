@@ -16,7 +16,7 @@ include_directories( ../..
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES}
-	#	${MYSQL_INCLUDE_DIR}
+        ${MYSQL_INCLUDE_DIR}
         )
 
 ########### next target ###############
@@ -45,7 +45,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     SqlMeta.cpp 
     SqliteCollection.cpp
     ../../sqlite/sqlite3.c
-    #    MySqlEmbeddedCollection.cpp
+    MySqlEmbeddedCollection.cpp
    ${extra_src}
  )
 
@@ -64,7 +64,7 @@ target_link_libraries(amarok_collection-sqlcollection
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${sqlite_deps}
-    #    ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl crypto z
+    ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl crypto z
 )
 
 if(APPLE)
@@ -77,7 +77,7 @@ endif(APPLE)
 #        MySqlQueryMaker.cpp)
 #
 #    kde4_add_plugin(amarok_collection-mysql WITH_PREFIX ${amarok_mysql_SRCS})
-#    target_link_libraries(amarok_collection-mysql amaroklib ${MYSQL_LIBS} ${KDE4_KDECORE_LIBS} )
+#    target_link_libraries(amarok_collection-mysql amaroklib ${MYSQL_LIBS} ${KDE4_KDECORE_LIBS} ssl )
 #    install(TARGETS amarok_collection-mysql DESTINATION ${PLUGIN_INSTALL_DIR})
 #    install(FILES amarok_collection-mysql.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 #endif(MYSQL_FOUND)

@@ -39,24 +39,11 @@ MagnatuneDatabaseHandler::createDatabase( )
     //Get database instance
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
 
-    QString tracksAutoIncrement = "";
-    QString albumsAutoIncrement = "";
-    QString artistAutoIncrement = "";
-    QString genreAutoIncrement = "";
-    QString moodsAutoIncrement = "";
-
-    /*
-    if ( sqlDb->type() == DbConnection::mysql )
-    {
-        tracksAutoIncrement = "AUTO_INCREMENT";
-        albumsAutoIncrement = "AUTO_INCREMENT";
-        artistAutoIncrement = "AUTO_INCREMENT";
-        moodsAutoIncrement = "AUTO_INCREMENT";
-    }*/
+    QString autoIncrement = "AUTO_INCREMENT";
 
     // create table containing tracks
     QString queryString = "CREATE TABLE magnatune_tracks ("
-                          "id INTEGER PRIMARY KEY " + tracksAutoIncrement + ',' +
+                          "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                           "name " + sqlDb->textColumnType() + ',' +
                           "track_number INTEGER,"
                           "length INTEGER,"
@@ -76,7 +63,7 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     //Create album table
     queryString = "CREATE TABLE magnatune_albums ("
-                  "id INTEGER PRIMARY KEY " + albumsAutoIncrement + ',' +
+                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "name " + sqlDb->textColumnType() + ',' +
                   "year INTEGER,"
                   "artist_id INTEGER,"
@@ -94,7 +81,7 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     //Create artist table
     queryString = "CREATE TABLE magnatune_artists ("
-                  "id INTEGER PRIMARY KEY " + artistAutoIncrement + ',' +
+                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "name " + sqlDb->textColumnType() + ',' +
                   "artist_page " + sqlDb->exactTextColumnType() + ',' +
                   "description " + sqlDb->textColumnType() + ',' +
@@ -108,7 +95,7 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     //create genre table
     queryString = "CREATE TABLE magnatune_genre ("
-                  "id INTEGER PRIMARY KEY " + genreAutoIncrement + ',' +
+                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "name " + sqlDb->textColumnType() + ',' +
                   "album_id INTEGER" + ");";
 
@@ -120,7 +107,7 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     //create moods table
      queryString = "CREATE TABLE magnatune_moods ("
-                  "id INTEGER PRIMARY KEY " + moodsAutoIncrement + ',' +
+                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "track_id INTEGER," +
                   "mood " + sqlDb->textColumnType() + ");";
 

@@ -25,7 +25,7 @@
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
 #include "SqliteCollection.h"
-//#include "MySqlEmbeddedCollection.h"
+#include "MySqlEmbeddedCollection.h"
 //#include "mysqlcollection.h"
 
 #ifdef Q_OS_WIN32
@@ -62,8 +62,8 @@ SqlCollectionFactory::init()
             break;
     }*/
 // uncomment next to test MySQLe (and comment the next to next)
-//    collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
-    collection = new SqliteCollection( "localCollection", i18n( "Local Collection" ) );
+    collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
+//    collection = new SqliteCollection( "localCollection", i18n( "Local Collection" ) );
     emit newCollection( collection );
 }
 

@@ -25,6 +25,8 @@ VERSION 2.0-beta2
     * Add option to enable/disable automatic cover fetching.
 
   CHANGES:
+    * Switch from Sqlite to MySQL Embedded (libmysqld), resulting in faster
+      scanning and collection filtering times.
     * When saving a new user playlist, the playlist browser immediately shows
       the newly saved playlist and starts an edit operation on it.
     * Many small visual and layout tweaks.
