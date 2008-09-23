@@ -164,8 +164,8 @@ MySqlEmbeddedCollection::~MySqlEmbeddedCollection()
 
 QStringList MySqlEmbeddedCollection::query( const QString& statement )
 {
-    DEBUG_BLOCK
-    debug() << "[ATTN!] MySqlEmbedded::query( " << statement << " )";
+    //DEBUG_BLOCK
+    //debug() << "[ATTN!] MySqlEmbedded::query( " << statement << " )";
 
     ThreadInitializer::init();
     QMutexLocker locker( &m_mutex );
