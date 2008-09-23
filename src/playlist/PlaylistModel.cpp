@@ -773,9 +773,8 @@ Playlist::Model::insertTrackListSlot( Meta::TrackList list ) //slot
 void
 Playlist::Model::insertOptioned( Meta::TrackList list, int options )
 {
+    DEBUG_BLOCK
 
-    const int oldRowCount = rowCount();
-    
     Meta::TrackList listTmp;
     foreach( const Meta::TrackPtr &track, list )
     {
@@ -847,15 +846,17 @@ Playlist::Model::insertOptioned( Meta::TrackList list, int options )
         //TODO implement queue
     }
 
+    const Phonon::State engineState = The::engineController()->state();
+    debug() << "engine state: " << engineState;
+
     if( options & DirectPlay )
     {
         if ( rowCount() > firstItemAdded )
             play( firstItemAdded );
     }
     else if( ( options & StartPlay )
-               && ( The::engineController()->state() != Phonon::PlayingState )
-               && ( rowCount() != 0 ) 
-               && ( oldRowCount == 0 ) ) //ONLY if adding to an empty playlist as the phonon state check above is not always enough it seems
+               && ( ( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) )
+               && ( rowCount() != 0 ) )
     {
         play( firstItemAdded );
     }
