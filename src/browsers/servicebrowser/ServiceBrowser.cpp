@@ -173,7 +173,8 @@ ServiceBrowser::removeService( const QString &name )
     if ( m_currentService == service )
         home();
 
-    m_serviceListModel->removeService( service );
+    if( service )
+        m_serviceListModel->removeService( service );
     delete service;
     m_serviceListView->reset();
 }

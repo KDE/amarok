@@ -68,6 +68,11 @@ ServiceListModel::data(const QModelIndex & index, int role) const
 void
 ServiceListModel::addService(ServiceBase * service)
 {
+    if( !service )
+    {
+        debug() << "Trying to add a nonexistent service to the ServiceListModel!";
+        return;
+    }
     beginInsertRows ( QModelIndex(), m_services.count(), m_services.count() + 1 );
     m_services.push_back( service );
     endInsertRows();
@@ -76,6 +81,11 @@ ServiceListModel::addService(ServiceBase * service)
 void
 ServiceListModel::removeService( ServiceBase * service )
 {
+    if( !service )
+    {
+        debug() << "Trying to remove a nonexistent service from the ServiceListModel!";
+        return;
+    }
     int index = m_services.indexOf( service );
     beginRemoveRows ( QModelIndex(), index, index );
     m_services.removeAt( index );
