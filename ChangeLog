@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.0-beta2
   FEATURES:
+    * Automatically check for collection changes on startup if monitoring
+      is enabled.
     * Files can be moved into collections from the Filebrowser. (BR 170077)
     * Clicking on the volume icon in the toolbar toggles mute. (BR 171017)
     * Arrows to switch between containments directly.
@@ -75,8 +77,11 @@ VERSION 2.0-beta2
     * Activate the SideBar tabs when dragging something over them. (BR 169712)
     * Save composer and disc number correctly (BR 167184)
     * Handle multidisc albums properly (BR 167238)
+    * Remove empty folders after organizing the collection. (BR 141555)
+    * Display rating (when present) in OSD. (BR: 167263)
     * Make the currently playing track active in the playlist if it has been 
       removed and is later re added. (BR 167552)
+    * Detect Amarok 1.x style compilations when scanning the collection.
     * Show the album year in the Collection Browser if requested.
     * Make appending of podcasts to the playlist work.
     * Fix text color of current track applet. (BR 168466)
