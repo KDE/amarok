@@ -14,18 +14,21 @@
 
 
 find_path(MYSQL_INCLUDE_DIR mysql.h
+   ~/usr/include/mysql
    /usr/include/mysql
    /usr/local/include/mysql
 )
 
 find_library(MYSQL_LIBRARIES NAMES mysqlclient
    PATHS
+   ~/usr/lib/mysql
    /usr/lib/mysql
    /usr/local/lib/mysql
 )
 
 find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld
    PATHS
+   ~/usr/lib/mysql
    /usr/lib/mysql
    /usr/lib64/mysql
    /usr/local/lib/mysql
