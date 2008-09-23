@@ -773,6 +773,9 @@ Playlist::Model::insertTrackListSlot( Meta::TrackList list ) //slot
 void
 Playlist::Model::insertOptioned( Meta::TrackList list, int options )
 {
+
+    const int oldRowCount = rowCount();
+    
     Meta::TrackList listTmp;
     foreach( const Meta::TrackPtr &track, list )
     {
@@ -851,7 +854,8 @@ Playlist::Model::insertOptioned( Meta::TrackList list, int options )
     }
     else if( ( options & StartPlay )
                && ( The::engineController()->state() != Phonon::PlayingState )
-               && ( rowCount() != 0 ) )
+               && ( rowCount() != 0 ) 
+               && ( oldRowCount == 0 ) ) //ONLY if adding to an empty playlist as the phonon state check above is not always enough it seems
     {
         play( firstItemAdded );
     }
