@@ -1279,15 +1279,14 @@ IpodHandler::parseTracks()
 
     GList *cur;
 
-/* iterate through tracklist and add to appropriate map */
-    for ( cur = m_itdb->tracks; cur; cur = cur->next )
+    /* iterate through tracklist and add to appropriate map */
+    for( cur = m_itdb->tracks; cur; cur = cur->next )
     {
         /* ipodtrack - provides libgpod itdb info */
         /* track - the new track whose data is being set up */
         Itdb_Track *ipodtrack = (Itdb_Track*) cur->data;
 
-        QString format( ipodtrack->filetype );
-        IpodTrackPtr track( new IpodTrack( m_memColl, format ) );
+        IpodTrackPtr track( new IpodTrack( m_memColl ) );
 
         getBasicIpodTrackInfo( ipodtrack, track );
 
