@@ -363,8 +363,6 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
 
                 QString name =  e.attribute( "name" );
 
-                debug() << "add track: " <<  name;
-
                 QString playlistUrl = "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
                         + e.attribute( "id" ) + "&file=filename.pls";
                 
