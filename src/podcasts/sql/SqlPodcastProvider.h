@@ -79,6 +79,7 @@ class SqlPodcastProvider : public PodcastProvider
         /** creates all the necessary tables, indexes etc. for the database */
         void createTables() const;
         void loadPodcasts();
+        void updateDatabase( int fromVersion, int toVersion );
 
         Meta::SqlPodcastChannelList m_channels;
 

@@ -34,7 +34,7 @@
 
 using namespace Meta;
 
-static const int PODCAST_DB_VERSION = 1;
+static const int PODCAST_DB_VERSION = 2;
 static const QString key("AMAROK_PODCAST");
 
 SqlPodcastProvider::SqlPodcastProvider()
@@ -47,20 +47,18 @@ SqlPodcastProvider::SqlPodcastProvider()
         debug() << "creating Podcast Tables";
         createTables();
     }
-    else /*verion == PODCAST_DB_VERSION */
+    else
     {
-        loadPodcasts();
+        int version = values.first().toInt();
+        if( version == PODCAST_DB_VERSION )
+            loadPodcasts();
+        else
+            updateDatabase( version /*from*/, PODCAST_DB_VERSION /*to*/ );
     }
 }
 
 SqlPodcastProvider::~SqlPodcastProvider()
 {
-    debug() << "SqlChannels refcount:";
-    foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
-    {
-        channel->updateInDb();
-        debug() << channel.count();
-    }
 }
 
 void
@@ -362,6 +360,29 @@ SqlPodcastProvider::createTables() const
 
     sqlStorage->query( "INSERT INTO admin(component,version) "
                        "VALUES('" + key + "'," + QString::number( PODCAST_DB_VERSION ) + ");" );
+}
+
+void
+SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
+{
+    debug() << QString( "Updating Podcast tables from version %1 to version %2" ).arg(fromVersion).arg(toVersion);
+
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    #define escape(x) sqlStorage->escape(x)
+
+    if( fromVersion == 1 && toVersion == 2 )
+    {
+        QString updateChannelQuery = QString( "ALTER TABLE podcastchannels"
+            " ADD subscribedate " + sqlStorage->textColumnType() + ";" );
+
+        sqlStorage->query( updateChannelQuery );
+
+        QString setDateQuery = QString( "UPDATE podcastchannels SET subscribedate='%1' WHERE subscribedate='';" ).arg( escape(QDate::currentDate().toString()) );
+        sqlStorage->query( setDateQuery );
+    }
+
+    QString updateAdmin = QString( "UPDATE admin SET version=%1 WHERE component='%2';" );
+    sqlStorage->query( updateAdmin.arg( toVersion ).arg( escape(key) ) );
 }
 
 #include "SqlPodcastProvider.moc"

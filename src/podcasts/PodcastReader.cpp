@@ -113,7 +113,6 @@ PodcastReader::read()
         if( !error() )
         {
             readNext();
-            debug() << "reading " << tokenString();
         }
         else if ( error() == PrematureEndOfDocumentError )
         {
@@ -121,7 +120,6 @@ PodcastReader::read()
                     << QXmlStreamReader::name().toString() << " at "
                     << QXmlStreamReader::lineNumber();
             readNext();
-            debug() << "reading " << tokenString();
         }
         else
             debug() << "some other error occurred: " << errorString();
@@ -217,7 +215,7 @@ PodcastReader::read()
                 }
                 else if( QXmlStreamReader::name() == "enclosure" )
                 {
-                    debug() << "enclosure: url = " << m_urlString;
+//                     debug() << "enclosure: url = " << m_urlString;
                     static_cast<PodcastEpisode *>(m_current)->setUidUrl( KUrl( m_urlString ) );
                     m_urlString.clear();
                 }
@@ -348,19 +346,19 @@ PodcastReader::podcastEpisodeCheck(Meta::PodcastEpisodePtr episode)
     Meta::PodcastEpisodeList episodes = m_channel->episodes();
 
 //     debug() << "episode title: " << episode->title();
-//     debug() << "episode url: " << episode->url();
+//     debug() << "episode url: " << episode->prettyUrl();
 //     debug() << "episode guid: " << episode->guid();
 
     foreach( PodcastEpisodePtr match, episodes )
     {
 //         debug() << "match title: " << match->title();
-//         debug() << "match url: " << match->url();
+//         debug() << "match url: " << match->prettyUrl();
 //         debug() << "match guid: " << match->guid();
 
         int score = 0;
         if( !episode->title().isEmpty() && episode->title() == match->title() )
             score += 1;
-        if( !episode->uidUrl().isEmpty() && episode->uidUrl() == match->uidUrl() )
+        if( !episode->prettyUrl().isEmpty() && episode->prettyUrl() == match->prettyUrl() )
             score += 3;
         if( !episode->guid().isEmpty() && episode->guid() == match->guid() )
             score += 3;
