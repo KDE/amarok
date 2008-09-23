@@ -21,15 +21,16 @@ include_directories( ../..
 
 ########### next target ###############
 
-set(extra_src ../../sqlite/sqlite3.c)
-
 if (NOT WIN32)
  set (extra_src     
     XesamDbus.cpp
     XesamCollectionBuilder.cpp)
- set (sqlite_deps dl)
 elseif (NOT WIN32)
- set (sqlite_deps )
+ set (extra_src ../../sqlite/sqlite3.c)
+ set (amarok_collection-sqlcollection_PART_SRCS
+     SqliteCollection.cpp
+     ../../sqlite/sqlite3.c
+     )
 endif (NOT WIN32)
 
 set(amarok_collection-sqlcollection_PART_SRCS
@@ -43,10 +44,9 @@ set(amarok_collection-sqlcollection_PART_SRCS
     SqlQueryMaker.cpp
     SqlRegistry.cpp
     SqlMeta.cpp 
-    SqliteCollection.cpp
-    ../../sqlite/sqlite3.c
     MySqlEmbeddedCollection.cpp
-   ${extra_src}
+    ${amarok_collection-sqlcollection_PART_SRCS}
+    ${extra_src}
  )
 
 kde4_add_ui_files(amarok_collection-sqlcollection_PART_SRCS
@@ -63,7 +63,6 @@ target_link_libraries(amarok_collection-sqlcollection
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
-    ${sqlite_deps}
     ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl crypto z
 )
 
