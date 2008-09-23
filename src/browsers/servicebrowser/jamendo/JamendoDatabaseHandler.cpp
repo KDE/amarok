@@ -39,17 +39,12 @@ JamendoDatabaseHandler::createDatabase( )
     //Get database instance
     SqlStorage *db = CollectionManager::instance()->sqlStorage();
 
-    QString genreAutoIncrement = "";
 
-    //FIXME: We don't currently support non sqlite databases, and thus this doesn't work and DbConnection will need to be moved..
-//     else if ( db->getDbConnectionType() == DbConnection::mysql )
-//     {
-//         genreAutoIncrement = "AUTO_INCREMENT";
-//     }
+    QString autoIncrement = "AUTO_INCREMENT";
 
     // create table containing tracks
     QString queryString = "CREATE TABLE jamendo_tracks ("
-                          "id INTEGER PRIMARY KEY, "
+            "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                           "name " + db->textColumnType() + ',' +
                           "track_number INTEGER,"
                           "length INTEGER,"
@@ -66,7 +61,7 @@ JamendoDatabaseHandler::createDatabase( )
 
     //Create album table
     queryString = "CREATE TABLE jamendo_albums ("
-                  "id INTEGER PRIMARY KEY, "
+                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "name " + db->textColumnType() + ',' +
                   "description " + db->exactTextColumnType() + ',' +
                   "popularity FLOAT, " +
@@ -86,7 +81,7 @@ JamendoDatabaseHandler::createDatabase( )
 
     //Create artist table
     queryString = "CREATE TABLE jamendo_artists ("
-                  "id INTEGER PRIMARY KEY, "
+                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "name " + db->textColumnType() + ',' +
                   "description " + db->textColumnType() + ',' +
                   "country " + db->textColumnType() + ',' +
@@ -102,7 +97,7 @@ JamendoDatabaseHandler::createDatabase( )
 
     //create genre table
     queryString = "CREATE TABLE jamendo_genre ("
-                  "id INTEGER PRIMARY KEY " + genreAutoIncrement + ',' +
+                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "name " + db->textColumnType() + ',' +
                   "album_id INTEGER" + ");";
 
