@@ -42,29 +42,25 @@ class ShoutcastServiceFactory: public ServiceFactory
 };
 
 /**
-A service for showing the shoutcast directory of online radio stations. Based on the shoutcast directory in the 1.4 series by 
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    A service for showing the shoutcast directory of online radio stations.
+    Based on the shoutcast directory in the 1.4 series
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class ShoutcastService : public ServiceBase
 {
     Q_OBJECT
 
-public:
-    ShoutcastService( ShoutcastServiceFactory* parent, const char *name );
-    ~ShoutcastService();
+    public:
+        ShoutcastService( ShoutcastServiceFactory* parent, const char *name );
+        ~ShoutcastService();
 
-    void polish();
+        void polish();
 
-    virtual Collection * collection() { return m_collection; }
+        virtual Collection *collection() { return m_collection; }
 
-
-private:
-    ShoutcastServiceCollection * m_collection;
-    QString m_tempFileName;
-    KIO::StoredTransferJob * m_storedTransferJob;
+    private:
+        ShoutcastServiceCollection *m_collection;
 };
-
 
 #endif
 

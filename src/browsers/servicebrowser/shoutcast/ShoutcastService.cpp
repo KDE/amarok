@@ -54,6 +54,7 @@ KConfigGroup ShoutcastServiceFactory::config()
 
 ShoutcastService::ShoutcastService( ShoutcastServiceFactory* parent, const char *name )
     : ServiceBase( "Shoutcast Directory", parent )
+    , m_collection( 0 )
 {
     setObjectName( name );
     setShortDescription( i18n( "The biggest list of online radio stations on the Internet" ) );
