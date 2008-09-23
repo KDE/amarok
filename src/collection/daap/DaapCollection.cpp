@@ -20,13 +20,13 @@
 
 #define DEBUG_PREFIX "DaapCollection"
 
-#include "daapcollection.h"
+#include "DaapCollection.h"
 
 #include "amarokconfig.h"
-#include "daapmeta.h"
+#include "DaapMeta.h"
 #include "Debug.h"
 #include "MemoryQueryMaker.h"
-#include "reader.h"
+#include "Reader.h"
 
 #include <QStringList>
 #include <QTimer>
@@ -280,5 +280,5 @@ DaapCollection::parsingFailed()
     emit remove();
 }
 
-#include "daapcollection.moc"
+#include "DaapCollection.moc"
 

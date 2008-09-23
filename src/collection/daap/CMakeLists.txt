@@ -1,21 +1,21 @@
 include_directories( ../..
-        ../../plugin
-   ../../meta
-   ../../collection
-   ${CMAKE_CURRENT_BINARY_DIR}/../..
-   ${AMAROK_COLLECTION_SUPPORT_DIR}
-   daapreader
-   /daapreader/authentication
-   ${KDE4_INCLUDE_DIR}
-   ${QT_INCLUDES} )
+    ../../plugin
+    ../../meta
+    ../../collection
+    ${CMAKE_CURRENT_BINARY_DIR}/../..
+    ${AMAROK_COLLECTION_SUPPORT_DIR}
+    daapreader
+    /daapreader/authentication
+    ${KDE4_INCLUDE_DIR}
+    ${QT_INCLUDES} )
 
 
 ########### next target ###############
 
 set(amarok_collection-daapcollection_PART_SRCS
-   daapmeta.cpp
-   daapcollection.cpp
-   daapreader/reader.cpp
+   DaapMeta.cpp
+   DaapCollection.cpp
+   daapreader/Reader.cpp
    daapreader/authentication/contentfetcher.cpp
    daapreader/authentication/hasher.c
    daapreader/authentication/md5.c )
@@ -31,7 +31,7 @@ target_link_libraries(amarok_collection-daapcollection
 )
 
 if(APPLE)
-	SET_TARGET_PROPERTIES(amarok_collection-daapcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    SET_TARGET_PROPERTIES(amarok_collection-daapcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
 install(TARGETS amarok_collection-daapcollection DESTINATION ${PLUGIN_INSTALL_DIR} )

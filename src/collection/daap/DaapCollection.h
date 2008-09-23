@@ -23,7 +23,7 @@
 
 #include "Collection.h"
 #include "MemoryCollection.h"
-#include "reader.h"
+#include "Reader.h"
 
 #include <QMap>
 #include <QHash>

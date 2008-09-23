@@ -14,11 +14,11 @@
 
 #define DEBUG_PREFIX "DaapReader"
 
-#include "reader.h"
+#include "Reader.h"
 
 #include "authentication/contentfetcher.h"
-#include "daapcollection.h"
-#include "daapmeta.h"
+#include "DaapCollection.h"
+#include "DaapMeta.h"
 #include "Debug.h"
 
 #include <QByteArray>
@@ -535,5 +535,5 @@ WorkerThread::run()
     m_success = m_reader->parseSongList( m_data );
 }
 
-#include "reader.moc"
+#include "Reader.moc"
 
