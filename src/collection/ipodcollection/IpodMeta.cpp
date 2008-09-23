@@ -136,7 +136,7 @@ class UpdateCapabilityIpod : public Meta::UpdateCapability
 };
 
 
-IpodTrack::IpodTrack( IpodCollection *collection, const QString &format)
+IpodTrack::IpodTrack( IpodCollection *collection )
     : Meta::Track()
     , m_collection( collection )
     , m_artist( 0 )
@@ -145,7 +145,7 @@ IpodTrack::IpodTrack( IpodCollection *collection, const QString &format)
     , m_composer( 0 )
     , m_year( 0 )
     , m_name()
-    , m_type( format )
+    , m_type( QString() )
     , m_length( 0 )
     , m_trackNumber( 0 )
     , m_displayUrl()
@@ -397,7 +397,7 @@ IpodTrack::lastPlayed() const
 QString
 IpodTrack::type() const
 {
-    if( !m_playableUrl.isEmpty() )
+    if( m_type.isEmpty() && !m_playableUrl.isEmpty() )
         return m_playableUrl.mid( m_playableUrl.lastIndexOf( '.' ) + 1 );
     return m_type;
 }

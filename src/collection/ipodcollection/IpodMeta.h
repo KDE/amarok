@@ -60,7 +60,7 @@ class IpodTrack : public Meta::Track
 {
 
     public:
-        IpodTrack( IpodCollection *collection, const QString &format);
+        IpodTrack( IpodCollection *collection );
         virtual ~IpodTrack();
 
         virtual QString name() const;

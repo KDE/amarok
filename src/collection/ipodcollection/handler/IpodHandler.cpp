@@ -58,14 +58,14 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 {
     DEBUG_BLOCK
 
-        GError *err = 0;
+    GError *err = 0;
     m_success = false;
 
     // Assuming database exists for now, later will port init db code
     debug() << "Calling the db parser";
     m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
 
-    if ( err )
+    if( err )
     {
         g_error_free( err );
         if ( m_itdb )
@@ -75,30 +75,23 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
             m_itdb = 0;
         }
     }
-
     else
     {
-        
+        // read device info
+        debug() << "Grabbing device struct";
+        m_device = m_itdb->device;
+        debug() << "Reading device info";
+        itdb_device_read_sysinfo( m_device );
 
-    // read device info
-    debug() << "Grabbing device struct";
-    m_device = m_itdb->device;
-    debug() << "Reading device info";
-    itdb_device_read_sysinfo( m_device );
+        debug() << "Getting model information";
+        detectModel(); // get relevant info about device
 
-    debug() << "Getting model information";
-    detectModel(); // get relevant info about device
+        // set tempdir up
+        m_tempdir = new KTempDir();
+        m_tempdir->setAutoRemove( true );
+        qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
-    // set tempdir up
-
-    m_tempdir = new KTempDir();
-
-    m_tempdir->setAutoRemove( true );
-
-    qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
-
-    m_success = true;
-
+        m_success = true;
     }
 }
 
@@ -591,9 +584,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
         ipodtrack = existingIpodTrack;
 
     if( !ipodtrack )
-    {
         return;
-    }
 
     QString type = pathname.section('.', -1).toLower();
 
@@ -606,6 +597,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
         ipodtrack->title = g_strdup( track->name().toUtf8() );
     else
         ipodtrack->title = g_strdup( KUrl::fromPath( track->uidUrl() ).fileName().toUtf8() );
+    
     ipodtrack->album = g_strdup( track->album()->name().toUtf8() );
     ipodtrack->artist = g_strdup( track->artist()->name().toUtf8() );
     ipodtrack->genre = g_strdup( track->genre()->name().toUtf8() );
@@ -758,11 +750,11 @@ IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
 {
     DEBUG_BLOCK
 
-            debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
+    debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
     itdb_track_add(m_itdb, ipodtrack, -1);
 
-        // TODO: podcasts NYI
-        // if(podcastInfo)
+    // TODO: podcasts NYI
+    // if(podcastInfo)
     if( false )
     {
         Itdb_Playlist *podcasts = itdb_playlist_podcasts(m_itdb);
@@ -776,8 +768,8 @@ IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
     }
     else
     {
-            // gtkpod 0.94 does not like if not all songs in the db are on the master playlist
-            // but we try anyway
+        // gtkpod 0.94 does not like if not all songs in the db are on the master playlist
+        // but we try anyway
         Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
         if( !mpl )
         {
@@ -792,16 +784,11 @@ IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
 bool
 IpodHandler::removeDBTrack( Itdb_Track *track )
 {
-    if(!m_itdb)
+    if( !m_itdb || !track )
         return false;
 
-    if(!track)
+    if( track->itdb != m_itdb )
         return false;
-
-    if(track->itdb != m_itdb)
-    {
-        return false;
-    }
 
     m_dbChanged = true;
 
@@ -842,7 +829,7 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( job ).setDescription(  i18n(  "Transferring Tracks to iPod" )  );
+    The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Transferring Tracks to iPod" )  );
     job->start();
 
     return true;
@@ -873,7 +860,7 @@ IpodHandler::deleteFile( const KUrl &url )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileDeleted( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( job ).setDescription(  i18n(  "Deleting Tracks from iPod" ) );
+    The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Deleting Tracks from iPod" ) );
     job->start();
 
     return;
@@ -909,7 +896,7 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
         int dir = num % music_dirs;
         QString dirname;
         debug() << "itunesDir(): " << itunesDir();
-        dirname = QString( "%1Music:F%2" ).arg(  "iPod_Control:" ).arg( QString::number( dir, 10 ), 2, QLatin1Char( '0' ) );
+        dirname = QString( "%1Music:F%2" ).arg( "iPod_Control:" ).arg( QString::number( dir, 10 ), 2, QLatin1Char( '0' ) );
 
         debug() << "Copying to dirname: " << dirname;
         if( !pathExists( dirname ) )
@@ -928,9 +915,9 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
 }
 
 QString
-IpodHandler::ipodPath(const QString &realPath)
+IpodHandler::ipodPath( const QString &realPath )
 {
-    if(m_itdb)
+    if( m_itdb )
     {
         QString mp = QFile::decodeName(itdb_get_mountpoint(m_itdb));
         if(realPath.startsWith(mp))
@@ -946,10 +933,10 @@ IpodHandler::ipodPath(const QString &realPath)
 }
 
 QString
-IpodHandler::realPath(const char *ipodPath)
+IpodHandler::realPath( const char *ipodPath )
 {
     QString path;
-    if(m_itdb)
+    if( m_itdb )
     {
         path = QFile::decodeName(itdb_get_mountpoint(m_itdb));
         path.append(QString(ipodPath).replace(':', "/"));
@@ -968,9 +955,7 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
     ComposerMap composerMap = m_memColl->composerMap();
     YearMap yearMap = m_memColl->yearMap();
 
-
-    QString format( ipodtrack->filetype );
-    IpodTrackPtr track( new IpodTrack( m_memColl, format ) );
+    IpodTrackPtr track( new IpodTrack( m_memColl ) );
 
     /* 1-liner info retrieval */
 
@@ -992,18 +977,16 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
     //ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation
 
     // Finally, assign the created maps to the collection
-
     m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap(  trackMap );
-    m_memColl->setArtistMap(  artistMap );
-    m_memColl->setAlbumMap(  albumMap );
-    m_memColl->setGenreMap(  genreMap );
-    m_memColl->setComposerMap(  composerMap );
-    m_memColl->setYearMap(  yearMap );
+    m_memColl->setTrackMap( trackMap );
+    m_memColl->setArtistMap( artistMap );
+    m_memColl->setAlbumMap( albumMap );
+    m_memColl->setGenreMap( genreMap );
+    m_memColl->setComposerMap( composerMap );
+    m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
 
     return;
-
 }
 
 void
@@ -1014,7 +997,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     track->setTitle( QString::fromUtf8( ipodtrack->title ) );
     track->setLength( ( ipodtrack->tracklen ) / 1000 );
     track->setTrackNumber( ipodtrack->track_nr );
-    track->setComment( QString::fromUtf8(  ipodtrack->comment ) );
+    track->setComment( QString::fromUtf8( ipodtrack->comment ) );
     track->setDiscNumber( ipodtrack->cd_nr );
     track->setBitrate( ipodtrack->bitrate );
     track->setBpm( ipodtrack->BPM );
@@ -1027,11 +1010,8 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     QString filetype = QString::fromUtf8( ipodtrack->filetype );
 
 
-    if(filetype=="mpeg")
-    {
+    if( filetype == "mpeg" )
         track->setType( "mp3" );
-    }
-
 
     return;
 }
@@ -1131,31 +1111,19 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
             {
                 thumbPath = QString::fromUtf8( itdb_thumb_get_filename( m_device, thumb ) );
 
-                //debug() << "Path to thumb is: " << thumbPath;
-                //debug() << "Setting gpixbuf to this thumb";
-
                 gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
-
             }
-
         }
     }
 
     if(gpixbuf != NULL)
     {
-
-        //debug() << "Succeeded in getting pixbuf, attempting to save";
-
         // temporarily save to file
         gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "jpeg", 0, 0 );
 
         // pull temporary file's image out as QImage
-
         QImage image( tempImagePath );
-
         track->album()->setImage( image );
-
-
     }
 
     return;
@@ -1169,7 +1137,7 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
     // use tempdir's path
     tempImageFile.setPrefix( m_tempdir->name() );
     tempImageFile.setSuffix( ".jpeg" ); // default suffix jpeg
-    // temdpir will nuke the file afterward anyway
+    // tempdir will nuke the file afterward anyway
     tempImageFile.setAutoRemove( false);
 
     if( !tempImageFile.open() )
@@ -1203,21 +1171,21 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
 void
 IpodHandler::setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ArtistMap &artistMap )
 {
-    QString artist ( QString::fromUtf8( ipodtrack->artist ) );
+    QString artist( QString::fromUtf8( ipodtrack->artist ) );
     IpodArtistPtr artistPtr;
 
-    if (  artistMap.contains(  artist ) )
+    if ( artistMap.contains( artist ) )
     {
-        artistPtr = IpodArtistPtr::staticCast(  artistMap.value(  artist ) );
+        artistPtr = IpodArtistPtr::staticCast( artistMap.value( artist ) );
     }
     else
     {
-        artistPtr = IpodArtistPtr(  new IpodArtist(  artist ) );
-        artistMap.insert(  artist,  ArtistPtr::staticCast(  artistPtr ) );
+        artistPtr = IpodArtistPtr( new IpodArtist( artist ) );
+        artistMap.insert( artist, ArtistPtr::staticCast( artistPtr ) );
     }
 
-    artistPtr->addTrack(  track );
-    track->setArtist(  artistPtr );
+    artistPtr->addTrack( track );
+    track->setArtist( artistPtr );
 }
 
 void
@@ -1227,16 +1195,16 @@ IpodHandler::setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, Alb
     IpodAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
-        albumPtr = IpodAlbumPtr::staticCast(  albumMap.value(  album ) );
+        albumPtr = IpodAlbumPtr::staticCast( albumMap.value( album ) );
 
     else
     {
-        albumPtr = IpodAlbumPtr(  new IpodAlbum(  album ) );
-        albumMap.insert(  album,  AlbumPtr::staticCast(  albumPtr ) );
+        albumPtr = IpodAlbumPtr( new IpodAlbum( album ) );
+        albumMap.insert( album, AlbumPtr::staticCast( albumPtr ) );
     }
 
-    albumPtr->addTrack(  track );
-    track->setAlbum(  albumPtr );
+    albumPtr->addTrack( track );
+    track->setAlbum( albumPtr );
 }
 
 void
@@ -1245,13 +1213,13 @@ IpodHandler::setupGenreMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, Gen
     QString genre = ipodtrack->genre;
     IpodGenrePtr genrePtr;
 
-    if (  genreMap.contains(  genre ) )
-        genrePtr = IpodGenrePtr::staticCast(  genreMap.value(  genre ) );
+    if ( genreMap.contains( genre ) )
+        genrePtr = IpodGenrePtr::staticCast( genreMap.value( genre ) );
 
     else
     {
-        genrePtr = IpodGenrePtr(  new IpodGenre(  genre ) );
-        genreMap.insert(  genre,  GenrePtr::staticCast(  genrePtr ) );
+        genrePtr = IpodGenrePtr( new IpodGenre( genre ) );
+        genreMap.insert( genre, GenrePtr::staticCast( genrePtr ) );
     }
 
     genrePtr->addTrack( track );
@@ -1284,15 +1252,15 @@ IpodHandler::setupYearMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, Year
     QString year;
     year = year.setNum( ipodtrack->year );
     IpodYearPtr yearPtr;
-    if (  yearMap.contains(  year ) )
-        yearPtr = IpodYearPtr::staticCast(  yearMap.value(  year ) );
+    if ( yearMap.contains( year ) )
+        yearPtr = IpodYearPtr::staticCast( yearMap.value( year ) );
     else
     {
-        yearPtr = IpodYearPtr(  new IpodYear(  year ) );
-        yearMap.insert(  year,  YearPtr::staticCast(  yearPtr ) );
+        yearPtr = IpodYearPtr( new IpodYear( year ) );
+        yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
     }
-    yearPtr->addTrack(  track );
-    track->setYear(  yearPtr );
+    yearPtr->addTrack( track );
+    track->setYear( yearPtr );
 }
 
 void
@@ -1316,7 +1284,7 @@ IpodHandler::parseTracks()
     {
         /* ipodtrack - provides libgpod itdb info */
         /* track - the new track whose data is being set up */
-        Itdb_Track *ipodtrack = ( Itdb_Track * )cur->data;
+        Itdb_Track *ipodtrack = (Itdb_Track*) cur->data;
 
         QString format( ipodtrack->filetype );
         IpodTrackPtr track( new IpodTrack( m_memColl, format ) );
@@ -1336,15 +1304,11 @@ IpodHandler::parseTracks()
         //debug() << "Supports artwork: " << ( m_supportsArtwork ? "true" : "false" );
 
         if( m_supportsArtwork )
-        {
-          //  debug() << "Fetching cover art";
             getCoverArt( ipodtrack, track );
-        }
 
         //getCoverArt( ipodtrack, track );
         
         /* TrackMap stuff to be subordinated later */
-
         trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
 
         track->setIpodTrack( ipodtrack ); // convenience pointer
@@ -1369,12 +1333,11 @@ IpodHandler::parseTracks()
     // Finally, assign the created maps to the collection
 
     m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap(  trackMap );
-    m_memColl->setArtistMap(  artistMap );
-    m_memColl->setAlbumMap(  albumMap );
-    m_memColl->setGenreMap(  genreMap );
-    m_memColl->setComposerMap(  composerMap );
-    m_memColl->setYearMap(  yearMap );
+    m_memColl->setTrackMap( trackMap );
+    m_memColl->setArtistMap( artistMap );
+    m_memColl->setAlbumMap( albumMap );
+    m_memColl->setGenreMap( genreMap );
+    m_memColl->setComposerMap( composerMap );
+    m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
-
 }
