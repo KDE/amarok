@@ -387,7 +387,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
             p.drawPixmap( r.left() + i * star->width(), r.top(), *star );
         }
 
-        m_rating = 0;
     }
 
     rect.setBottom( rect.bottom() - graphicsHeight );
@@ -599,6 +598,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
 
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setOffset( AmarokConfig::osdYOffset() );
+    setRating( track->rating() );
     QString text = "";
     if( !track || track->playableUrl().isEmpty() )
         text = i18n( "No track playing" );
