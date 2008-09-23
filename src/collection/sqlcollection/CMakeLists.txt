@@ -1,5 +1,3 @@
-macro_optional_find_package(MySQL)
-
 #build-time only dependency in XesamDbus.h
 #remove at some point
 
@@ -63,8 +61,11 @@ target_link_libraries(amarok_collection-sqlcollection
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
-    ${MYSQL_EMBEDDED_LIBRARIES} crypt ssl crypto z
+    ${MYSQL_EMBEDDED_LIBRARIES} ${ZLIB_LIBRARIES}
 )
+if(NOT WIN32)
+    target_link_libraries(amarok_collection-sqlcollection crypt crypto ssl)
+endif(NOT WIN32)
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-sqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")

@@ -36,6 +36,10 @@ macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strig
 find_package(MySQLAmarok REQUIRED)
 macro_log_feature( MYSQL_EMBEDDED_FOUND "mysqld" "Embedded MySQL" "http://www.mysql.com" TRUE "" "" )
 
+# zlib is required for mysql embedded
+find_package(ZLIB REQUIRED)
+macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
+
 include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 include(CheckTagLibFileName)
 
