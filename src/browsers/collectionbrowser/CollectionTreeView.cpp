@@ -791,7 +791,7 @@ bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
 Collection * CollectionTreeView::getCollection( const QModelIndex & index )
 {
     Collection *collection = 0;
-    if( !index.isValid() )
+    if( index.isValid() )
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
         while( item->isDataItem() )
