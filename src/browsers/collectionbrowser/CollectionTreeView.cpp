@@ -702,30 +702,27 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
 QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
 {
     QHash<PopupDropperAction*, Collection*> m_currentCopyDestination;
-    if( !indices.isEmpty() )
+
+    if( onlyOneCollection( indices) )
     {
-        if( onlyOneCollection( indices) )
+        Collection *collection = getCollection( indices.first() );
+        QList<Collection*> writableCollections;
+        foreach( Collection *coll, CollectionManager::instance()->collections().keys() )
         {
-            Collection *collection = getCollection( indices.first() );
-            QList<Collection*> writableCollections;
-            foreach( Collection *coll, CollectionManager::instance()->collections().keys() )
+            if( coll && coll->isWritable() && coll != collection )
             {
-                if( coll && coll->isWritable() && coll != collection )
-                {
-                    writableCollections.append( coll );
-                }
+                writableCollections.append( coll );
             }
-            if( !writableCollections.isEmpty() )
+        }
+        if( !writableCollections.isEmpty() )
+        {
+            foreach( Collection *coll, writableCollections )
             {
-                foreach( Collection *coll, writableCollections )
-                {
-                    PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
+                PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
 
-                    connect( action, SIGNAL( triggered() ), this, SLOT( slotCopyTracks() ) );
+                connect( action, SIGNAL( triggered() ), this, SLOT( slotCopyTracks() ) );
 
-                    m_currentCopyDestination.insert( action, coll );
-                }
-
+                m_currentCopyDestination.insert( action, coll );
             }
         }
     }
@@ -735,34 +732,32 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const
 QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( const QModelIndexList & indices )
 {
     QHash<PopupDropperAction*, Collection*> m_currentMoveDestination;
-    if( !indices.isEmpty() )
-    {
-        if( onlyOneCollection( indices) )
-        {
-            Collection *collection = getCollection( indices.first() );
-            QList<Collection*> writableCollections;
-            QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
-            QHash<Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
-            while ( it != hash.constEnd() )
-            {
-                Collection *coll = it.key();
-                if( coll && coll->isWritable() && coll != collection )
-                {
-                    writableCollections.append( coll );
-                }
-                ++it;
-            }
-            if( !writableCollections.isEmpty() )
-            {
-                if( collection->isWritable() )
-                {
-                    foreach( Collection *coll, writableCollections )
-                    {
-                        PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
 
-                        connect( action, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
-                        m_currentMoveDestination.insert( action, coll );
-                    }
+    if( onlyOneCollection( indices) )
+    {
+        Collection *collection = getCollection( indices.first() );
+        QList<Collection*> writableCollections;
+        QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
+        QHash<Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+        while ( it != hash.constEnd() )
+        {
+            Collection *coll = it.key();
+            if( coll && coll->isWritable() && coll != collection )
+            {
+                writableCollections.append( coll );
+            }
+            ++it;
+        }
+        if( !writableCollections.isEmpty() )
+        {
+            if( collection->isWritable() )
+            {
+                foreach( Collection *coll, writableCollections )
+                {
+                    PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
+
+                    connect( action, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
+                    m_currentMoveDestination.insert( action, coll );
                 }
             }
         }
