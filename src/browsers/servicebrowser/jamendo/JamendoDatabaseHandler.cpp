@@ -261,11 +261,16 @@ JamendoDatabaseHandler::commit( )
 }
 
 void
-JamendoDatabaseHandler::trimGenres(int minCount)
+JamendoDatabaseHandler::trimGenres( int minCount )
 {
     QString query = QString("delete from jamendo_genre where name IN ( SELECT name from jamendo_genre GROUP BY jamendo_genre.name HAVING COUNT ( jamendo_genre.name ) < %1 );").arg( minCount );
 
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     sqlDb->query( query );
+
+    //also trim genre names that have only 1 or 2 chars
+    query = QString ("delete from jamendo_genre where name REGEXP '^.{1,2}$';" );
+    sqlDb->query( query );
+    
 }
 
