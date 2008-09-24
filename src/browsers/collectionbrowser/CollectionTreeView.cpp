@@ -189,8 +189,8 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     KMenu menu;
 
     int count = 0;
-    foreach( PopupDropperAction * action, actions ) {
-        debug() << "adding: " << action->text();
+    foreach( PopupDropperAction * action, actions )
+    {
         menu.addAction( action );
 
         //HACK this is a really ugly hack, find a better solution for the separator position
@@ -202,8 +202,10 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     m_currentCopyDestination = getCopyActions( indices );
     m_currentMoveDestination = getMoveActions( indices );
 
-    if ( !( m_currentCopyDestination.empty() && m_currentMoveDestination.empty() ) ) {
-        if ( m_cmSeperator == 0 ) {
+    if ( !( m_currentCopyDestination.empty() && m_currentMoveDestination.empty() ) )
+    {
+        if ( m_cmSeperator == 0 )
+        {
             m_cmSeperator = new PopupDropperAction( this );
             m_cmSeperator->setSeparator ( true );
         }
@@ -213,7 +215,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 
     if ( !m_currentCopyDestination.empty() )
     {
-        debug() << "got copy actions";
         KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
         foreach( PopupDropperAction *action, m_currentCopyDestination.keys() ) 
         {
@@ -223,10 +224,11 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
         menu.addMenu( copyMenu );
     }
 
-    if ( !m_currentMoveDestination.empty() ) {
-        debug() << "got move actions";
+    if ( !m_currentMoveDestination.empty() )
+    {
         KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
-        foreach( PopupDropperAction * action, m_currentCopyDestination.keys() ) {
+        foreach( PopupDropperAction * action, m_currentCopyDestination.keys() )
+        {
             action->setParent( moveMenu );
             moveMenu->addAction( action );
         }
@@ -244,7 +246,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 
     PopupDropperAction* result = dynamic_cast< PopupDropperAction* > ( menu.exec( event->globalPos() ) );
     if ( result == 0 ) return;
-
 }
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
@@ -700,19 +701,17 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
 
 QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
 {
-    DEBUG_BLOCK
     QHash<PopupDropperAction*, Collection*> m_currentCopyDestination;
     if( !indices.isEmpty() )
     {
-
         if( onlyOneCollection( indices) )
         {
             Collection *collection = getCollection( indices );
             QList<Collection*> writableCollections;
-            foreach( Collection *coll, CollectionManager::instance()->collections().keys() ) {
+            foreach( Collection *coll, CollectionManager::instance()->collections().keys() )
+            {
                 if( coll && coll->isWritable() && coll != collection )
                 {
-                    debug() << "got writable collection";
                     writableCollections.append( coll );
                 }
             }
@@ -720,8 +719,7 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const
             {
                 foreach( Collection *coll, writableCollections )
                 {
-                    debug() << "creating action";
-                    PopupDropperAction *action = new PopupDropperAction(  The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
+                    PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
 
                     connect( action, SIGNAL( triggered() ), this, SLOT( slotCopyTracks() ) );
 
@@ -731,13 +729,11 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const
             }
         }
     }
-    debug() << "returning " << m_currentCopyDestination.size() << " actions.";
     return m_currentCopyDestination;
 }
 
 QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( const QModelIndexList & indices )
 {
-    DEBUG_BLOCK
     QHash<PopupDropperAction*, Collection*> m_currentMoveDestination;
     if( !indices.isEmpty() )
     {
@@ -747,11 +743,11 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( cons
             QList<Collection*> writableCollections;
             QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
             QHash<Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
-            while ( it != hash.constEnd() ) {
+            while ( it != hash.constEnd() )
+            {
                 Collection *coll = it.key();
                 if( coll && coll->isWritable() && coll != collection )
                 {
-                    debug() << "got writable collection";
                     writableCollections.append( coll );
                 }
                 ++it;
@@ -762,7 +758,7 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( cons
                 {
                     foreach( Collection *coll, writableCollections )
                     {
-                        PopupDropperAction *action = new PopupDropperAction(  The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
+                        PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
 
                         connect( action, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
                         m_currentMoveDestination.insert( action, coll );
@@ -771,7 +767,6 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( cons
             }
         }
     }
-    debug() << "returning " << m_currentMoveDestination.size() << " actions.";
     return m_currentMoveDestination;
 }
 
@@ -801,11 +796,9 @@ bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
 
 Collection * CollectionTreeView::getCollection( const QModelIndexList & indices )
 {
-    DEBUG_BLOCK
     Collection *collection = 0;
     if( !indices.isEmpty() )
     {
-
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
         while( item->isDataItem() )
         {
@@ -819,7 +812,6 @@ Collection * CollectionTreeView::getCollection( const QModelIndexList & indices 
 
 void CollectionTreeView::mouseReleaseEvent( QMouseEvent * event )
 {
-
     if( m_pd )
     {
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
@@ -830,7 +822,8 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent * event )
     QTreeView::mouseReleaseEvent( event );
 }
 
-void CollectionTreeView::slotPlayChildTracks() {
+void CollectionTreeView::slotPlayChildTracks()
+{
     playChildTracks( m_currentItems, Playlist::Replace );
 }
 
