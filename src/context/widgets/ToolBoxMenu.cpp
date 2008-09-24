@@ -14,12 +14,9 @@
 
 #include "ToolBoxMenu.h"
 
-#include "Debug.h"
-
 #include "plasma/applet.h"
 
 namespace Context
-
 {
     
 AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningAppletsOnly )
@@ -69,7 +66,6 @@ AmarokToolBoxMenu::~AmarokToolBoxMenu()
 void
 AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList appletsToShow )
 {
-    DEBUG_BLOCK
     setAcceptsHoverEvents( true );
 
     m_appletsList = allApplets;
@@ -152,9 +148,6 @@ AmarokToolBoxMenu::boundingRect() const
 void
 AmarokToolBoxMenu::populateMenu()
 {
-    DEBUG_BLOCK
-    
-    debug() << "menu size: " << m_menuSize;
     for( int i = 0; i < m_menuSize; i++ )
     {
         if( m_bottomMenu.isEmpty() )
@@ -172,7 +165,6 @@ AmarokToolBoxMenu::populateMenu()
 void
 AmarokToolBoxMenu::initRunningApplets()
 {
-    DEBUG_BLOCK
     if( !m_containment )
         return;
 
@@ -207,7 +199,6 @@ AmarokToolBoxMenu::initRunningApplets()
 void
 AmarokToolBoxMenu::appletAdded( Plasma::Applet *applet )
 {
-    DEBUG_BLOCK
     if( sender() != 0 )
     {
         Plasma::Containment *containment = dynamic_cast<Plasma::Containment *>( sender() );
@@ -226,13 +217,11 @@ AmarokToolBoxMenu::appletAdded( Plasma::Applet *applet )
 void
 AmarokToolBoxMenu::appletRemoved( Plasma::Applet *applet )
 {
-    DEBUG_BLOCK
     if( sender() != 0 )
     {        
         Plasma::Containment *containment = dynamic_cast<Plasma::Containment *>( sender() );
         if( containment )
         {
-            DEBUG_LINE_INFO
             QString name = m_appletNames.take( applet );
             m_runningApplets[containment].removeAll( name );
             if( m_removeApplets )
@@ -354,8 +343,6 @@ AmarokToolBoxMenu::setupMenuEntry( ToolBoxIcon *entry, const QString &appletName
 void
 AmarokToolBoxMenu::addApplet( const QString &pluginName )
 {
-    DEBUG_BLOCK
-
     if( !pluginName.isEmpty() )
     {
         bool appletFound = false;
@@ -378,8 +365,6 @@ AmarokToolBoxMenu::addApplet( const QString &pluginName )
 void
 AmarokToolBoxMenu::removeApplet( const QString& pluginName )
 {
-    DEBUG_BLOCK
-
     if( pluginName.isEmpty()  )
         return;
     
@@ -439,8 +424,6 @@ AmarokToolBoxMenu::createArrow( ToolBoxIcon *arrow, const QString &direction )
 void
 AmarokToolBoxMenu::scrollDown()
 {
-    DEBUG_BLOCK
-
     if( !m_bottomMenu.empty() )
     {
         ToolBoxIcon *entryToRemove = m_currentMenu.first();
@@ -480,7 +463,6 @@ AmarokToolBoxMenu::scrollDown()
 void
 AmarokToolBoxMenu::scrollUp()
 {
-    DEBUG_BLOCK
     if( !m_topMenu.empty() )
     {
         ToolBoxIcon *entryToRemove = m_currentMenu.last();
@@ -541,8 +523,6 @@ AmarokToolBoxMenu::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 void
 AmarokToolBoxMenu::wheelEvent( QGraphicsSceneWheelEvent *event )
 {
-    DEBUG_BLOCK
-
     if( event->orientation() == Qt::Horizontal || !showing() )
         return;
     if( m_pendingScrolls.size() > 0 )
