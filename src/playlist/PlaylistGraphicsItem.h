@@ -71,8 +71,6 @@ namespace Playlist
             void unsetImage();
             void dataChanged();
 
-            void editTrackInformation();
-
             int groupMode() const { return m_groupMode; }
 
             void paletteChange();

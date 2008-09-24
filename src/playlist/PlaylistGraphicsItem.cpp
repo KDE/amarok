@@ -490,13 +490,6 @@ Playlist::GraphicsItem::dataChanged()
 }
 
 void
-Playlist::GraphicsItem::editTrackInformation()
-{
-    TagDialog *dialog = new TagDialog( m_items->track, The::playlistView() );
-    dialog->show();
-}
-
-void
 Playlist::GraphicsItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 {
     if( m_items )
