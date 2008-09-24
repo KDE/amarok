@@ -216,8 +216,6 @@ ColumnContainment::setupControlButtons()
 void
 ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
 {
-    DEBUG_BLOCK
-
     //setContainment must be done when the containment is completelly initiated
     //otherwise the menus that receive this pointer would have problems.
     if( constraints & Plasma::StartupCompletedConstraint )
@@ -237,15 +235,7 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
     m_currentRows = ( int )( rect().height() ) / m_rowHeight;
 
     int columns = qMax( 1, ( int )( rect().width() ) / m_minColumnWidth );
-    debug() << "rect(): " << rect();
-    debug() << "size(): " << size();
-    debug() << "geometry():" << geometry();
-    debug() << "boundingRect(): " << boundingRect();
-    debug() << "rect.width(): " << rect().width();
-    debug() << "m_minColumnWidth(): " << m_minColumnWidth;
-    debug() << "columns: " << columns;
-
-
+    
     if( columns != m_currentColumns )
     {
         const int rowCount = m_grid->rowCount();
@@ -257,14 +247,10 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
         {
             for( int i = 0; i < rowCount; )
             {
-                debug() << "Column: " << j << " Row: " << i;
                 Plasma::Applet* applet = static_cast< Plasma::Applet* >( m_grid->itemAt( i, j ) );
 
                 if( !applet ) //probably there are no applets left in the column
-                {
-                    debug() << "no applet";
                     break;
-                }
 
                 if( hide )
                     applet->hide();
@@ -292,8 +278,6 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
     m_maxColumnWidth = rect().width();
 
     correctControlButtonPositions();
-    
-    //debug() << "ColumnContainment updating size to:" << geometry() << "sceneRect is:" << scene()->sceneRect() << "max size is:" << maximumSize();
 }
 
 QList<QAction*>
