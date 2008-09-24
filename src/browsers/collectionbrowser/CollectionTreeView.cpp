@@ -706,7 +706,7 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const
     {
         if( onlyOneCollection( indices) )
         {
-            Collection *collection = getCollection( indices );
+            Collection *collection = getCollection( indices.first() );
             QList<Collection*> writableCollections;
             foreach( Collection *coll, CollectionManager::instance()->collections().keys() )
             {
@@ -739,7 +739,7 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( cons
     {
         if( onlyOneCollection( indices) )
         {
-            Collection *collection = getCollection( indices );
+            Collection *collection = getCollection( indices.first() );
             QList<Collection*> writableCollections;
             QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
             QHash<Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
@@ -773,33 +773,27 @@ QHash<PopupDropperAction*, Collection*> CollectionTreeView::getMoveActions( cons
 bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
 {
     DEBUG_BLOCK
-    bool onlyOneCollection = true;
+
     if( !indices.isEmpty() )
     {
-        Collection *collection = getCollection( indices );
+        Collection *collection = getCollection( indices.first() );
         foreach( const QModelIndex &index, indices )
         {
-            Q_UNUSED( index )
-            CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
-            while( item->isDataItem() )
-            {
-                item = item->parent();
-            }
-            onlyOneCollection = item->parentCollection() == collection;
-            if( !onlyOneCollection )
-                break;
+            Collection *currentCollection = getCollection( index );
+            if( collection != currentCollection )
+                return false;
         }
     }
 
-    return onlyOneCollection;
+    return true;
 }
 
-Collection * CollectionTreeView::getCollection( const QModelIndexList & indices )
+Collection * CollectionTreeView::getCollection( const QModelIndex & index )
 {
     Collection *collection = 0;
-    if( !indices.isEmpty() )
+    if( !index.isValid() )
     {
-        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
         while( item->isDataItem() )
         {
             item = item->parent();

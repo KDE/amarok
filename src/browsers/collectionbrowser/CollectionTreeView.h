@@ -106,8 +106,8 @@ class CollectionTreeView: public QTreeView
         PopupDropperActionList createBasicActions( const QModelIndexList &indcies );
         PopupDropperActionList createExtendedActions( const QModelIndexList &indcies );
 
-        bool onlyOneCollection(  const QModelIndexList &indcies );
-        Collection * getCollection( const QModelIndexList &indcies );
+        bool onlyOneCollection( const QModelIndexList &indices );
+        Collection *getCollection( const QModelIndex &index );
         QHash<PopupDropperAction*, Collection*> getCopyActions( const QModelIndexList &indcies );
         QHash<PopupDropperAction*, Collection*> getMoveActions( const QModelIndexList &indcies );
 
