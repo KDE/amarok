@@ -170,7 +170,7 @@ namespace AmarokScript
 
     void AmarokEngineScript::setDynamicMode( bool enable )
     {
-        
+        Q_UNUSED( enable );
     }
 
     void AmarokEngineScript::setRepeatPlaylist( bool enable )
@@ -200,7 +200,7 @@ namespace AmarokScript
 
     void AmarokEngineScript::setFadeoutLength( int length )
     {
-        
+        Q_UNUSED( length );
     }
 }
 

@@ -66,7 +66,8 @@ AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
 void
 AmarokLyricsScript::setLyricsForTrack( const QString& trackUrl, const QString& lyrics ) const
 {
-    debug() << "bar";
+    Q_UNUSED( trackUrl );
+    Q_UNUSED( lyrics );
 }
 
 QString

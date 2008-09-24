@@ -26,6 +26,7 @@
 
 StreamItem::StreamItem( QScriptEngine *engine )
 {
+    Q_UNUSED( engine );
 }
 
 StreamItem::~StreamItem()
@@ -117,6 +118,7 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QS
 
 QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine )
 {
+    Q_UNUSED( context );
     debug() << "prototype populating here!";
     return engine->undefinedValue(); // Fixme: return something.
 }
