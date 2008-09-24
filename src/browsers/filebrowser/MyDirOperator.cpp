@@ -18,7 +18,6 @@
 
 #include "MyDirOperator.h"
 
-#include "Debug.h"
 #include "MainWindow.h"
 #include "collection/Collection.h"
 #include "collection/CollectionLocation.h"
@@ -86,7 +85,6 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
 
 MyDirOperator::~MyDirOperator()
 {
-    DEBUG_BLOCK
 }
 
 void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
@@ -106,7 +104,6 @@ void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
 
 void MyDirOperator::aboutToShowContextMenu()
 {
-    DEBUG_BLOCK
     QMenu *menu = dynamic_cast<QMenu*>( sender() );
     if( !menu )
         return;
@@ -130,7 +127,6 @@ void MyDirOperator::aboutToShowContextMenu()
         Collection *coll = it.key();
         if( coll && coll->isWritable() )
         {
-            debug() << "got writable collection";
             writableCollections.append( coll );
         }
         ++it;
@@ -151,8 +147,6 @@ void MyDirOperator::aboutToShowContextMenu()
 void
 MyDirOperator::slotMoveTracks()
 {
-    DEBUG_BLOCK
-
     CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
     if( !action )
         return;
