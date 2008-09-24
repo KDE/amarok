@@ -109,7 +109,7 @@ UnsetCoverAction::slotTriggered()
 void SetCustomCoverAction::init()
 {
     setText( i18n("Set Custom Cover") );
-    setIcon( KIcon("insert-image") );
+    setIcon( KIcon("document-open-folder") );
     setToolTip( i18np("Set custom artwork for this album", "Set custom artwork for these %1 albums", m_albums.count()) );
 }
 
