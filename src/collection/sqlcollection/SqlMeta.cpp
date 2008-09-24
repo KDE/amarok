@@ -1361,21 +1361,22 @@ SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::CustomActions:
         {
             QList<PopupDropperAction*> actions;
-            //actions.append( new CopyToDeviceAction( m_collection, this ) );
             actions.append( new CompilationAction( m_collection, this ) );
-            PopupDropperAction* separator = new PopupDropperAction( m_collection );
-            separator->setSeparator( true );
-            actions.append( separator );
-            actions.append( new FetchCoverAction( m_collection, this ) );
-            actions.append( new SetCustomCoverAction( m_collection, this ) );
+            
+            PopupDropperAction *separator          = new PopupDropperAction( m_collection );
             PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, this );
             PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, this );
+
+            separator->setSeparator( true );
+            actions.append( separator );
+            actions.append( displayCoverAction );
+            actions.append( new FetchCoverAction( m_collection, this ) );
+            actions.append( new SetCustomCoverAction( m_collection, this ) );
             if( !hasImage() )
             {
                 displayCoverAction->setEnabled( false );
                 unsetCoverAction->setEnabled( false );
             }
-            actions.append( displayCoverAction );
             actions.append( unsetCoverAction );
             return new CustomActionsCapability( actions );
         }
