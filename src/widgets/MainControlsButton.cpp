@@ -77,7 +77,7 @@ MainControlsButton::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
 void 
 MainControlsButton::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
-//    DEBUG_BLOCK
+    Q_UNUSED( event );
     m_mouseOver = true;
     update();
 }
@@ -85,7 +85,7 @@ MainControlsButton::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 void 
 MainControlsButton::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
-//    DEBUG_BLOCK
+    Q_UNUSED( event );
     m_mouseOver = false;
     m_mouseDown = false;
     update();
@@ -95,6 +95,7 @@ MainControlsButton::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 void 
 MainControlsButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
+    Q_UNUSED( event );
     m_mouseDown = false;
     update();
     if ( m_action != 0 )
