@@ -55,14 +55,21 @@ qt4_add_dbus_adaptor( amarok_collection-sqlcollection_PART_SRCS org.kde.amarok.s
 
 kde4_add_plugin(amarok_collection-sqlcollection WITH_PREFIX ${amarok_collection-sqlcollection_PART_SRCS})
 
+STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN ${CMAKE_SHARED_LINKER_FLAGS})
+SET(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
+
+STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN ${CMAKE_MODULE_LINKER_FLAGS})
+SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
+
 target_link_libraries(amarok_collection-sqlcollection
     amaroklib
     amarokpud
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
-    ${MYSQL_EMBEDDED_LIBRARIES} ${ZLIB_LIBRARIES}
+    ${MYSQL_EMBEDDED_LIBRARIES}
     ${MYSQL_LIBRARIES}
+    ${ZLIB_LIBRARIES}
 )
 if(NOT WIN32)
     target_link_libraries(amarok_collection-sqlcollection crypt crypto ssl)
