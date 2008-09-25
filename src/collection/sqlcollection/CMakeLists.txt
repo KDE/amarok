@@ -62,6 +62,7 @@ target_link_libraries(amarok_collection-sqlcollection
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${MYSQL_EMBEDDED_LIBRARIES} ${ZLIB_LIBRARIES}
+    ${MYSQL_LIBRARIES}
 )
 if(NOT WIN32)
     target_link_libraries(amarok_collection-sqlcollection crypt crypto ssl)
