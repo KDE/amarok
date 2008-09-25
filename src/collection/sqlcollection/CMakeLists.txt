@@ -71,7 +71,7 @@ target_link_libraries(amarok_collection-sqlcollection
     #this line may be needed on Debian or other systems where mysql is compiled
     #in the prescence of yassl. However it seems to cause problems for other people,
     #so its been disabled.
-    #See http://bugs.mysql.com/bug.php?id=214891
+    #See http://bugs.mysql.com/bug.php?id=21489
     #${MYSQL_LIBRARIES}
     ${ZLIB_LIBRARIES}
 )
