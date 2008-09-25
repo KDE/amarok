@@ -386,8 +386,10 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     
     
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track && track->album() && track->album()->hasImage() )
-        m_theme->paint( p, QRect( margin - 5, margin, albumWidth + 12, albumWidth ), "cd-box" );
+
+    //dont paint this until we have something better looking that also works with non square covers
+    /*if( track && track->album() && track->album()->hasImage() )
+        m_theme->paint( p, QRect( margin - 5, margin, albumWidth + 12, albumWidth ), "cd-box" );*/
 
     const int lineSpacing = margin + textHeight;
     const int line1Y = margin + 1;
@@ -441,7 +443,7 @@ bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
             cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
             moveByY = qAbs( cover.rect().height() - cover.rect().width() ) / 2.0;
         }
-        m_albumCover->setPos( margin + moveByX + 7.0, margin + moveByY );
+        m_albumCover->setPos( margin + moveByX, margin + moveByY );
 //         m_sourceEmblem->setPos( margin + moveByX, margin + moveByY );
 
         m_albumCover->setPixmap( cover );
