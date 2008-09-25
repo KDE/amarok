@@ -28,6 +28,8 @@
 
 #include <KRandom>
 
+#include <mysql.h>
+
 /**
  * This class is used by MySqlEmbeddedCollection to fulfill mysql's thread
  * requirements. In every function, that calls mysql_*, an init() method of
@@ -140,7 +142,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
         if( !mysql_real_connect(m_db, NULL,NULL,NULL, 0, 0,NULL,0) )
         {
             error() << "Could not connect to mysql!";
-            reportError();
+            reportError("na");
             mysql_close( m_db );
             m_db = 0;
         }
@@ -181,14 +183,15 @@ QStringList MySqlEmbeddedCollection::query( const QString& statement )
     
     if( res )
     {
-        reportError();
+        reportError( statement );
         return values;
     }
 
     MYSQL_RES *pres = mysql_store_result( m_db );
     if( !pres ) // No results... check if any were expected
     {
-        if( mysql_field_count( m_db ) ) reportError();
+        if( mysql_field_count( m_db ) )
+            reportError( statement );
         return values;
     }
     
@@ -231,7 +234,7 @@ int MySqlEmbeddedCollection::insert( const QString& statement, const QString& /*
     int res = mysql_query(m_db, statement.toUtf8() ); 
     if( res )
     {
-        reportError();
+        reportError( statement );
         return 0;
     }
 
@@ -260,9 +263,9 @@ MySqlEmbeddedCollection::randomFunc(  ) const
 }
 
 void
-MySqlEmbeddedCollection::reportError()
+MySqlEmbeddedCollection::reportError( const QString& message )
 {
-    error() << "GREPME MySQLe query failed!" << mysql_error( m_db );
+    error() << "GREPME MySQLe query failed!" << mysql_error( m_db ) << " on " << message;
 }
 
 QString

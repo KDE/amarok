@@ -23,8 +23,8 @@
 
 #include <QMutex>
 
-#include <mysql.h>
-
+class st_mysql;
+typedef struct st_mysql MYSQL;
 /**
  * Implements a SqlCollection using a MySQL Embedded Server
  */
@@ -44,7 +44,7 @@ class MySqlEmbeddedCollection : public SqlCollection
         virtual QString type() const;
 
     private:
-        void reportError();
+        void reportError( const QString& message );
 
         MYSQL* m_db;
         QMutex m_mutex;
