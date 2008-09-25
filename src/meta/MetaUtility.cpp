@@ -460,6 +460,9 @@ Meta::prettyBitrate( int bitrate )
 QString
 Meta::prettyRating( int rating )
 {
+    // Use the graphical star rating widget instead -- stharward
+    // I would remove this entirely, but I'm not sure if it would break the A2 string freeze
+    AMAROK_DEPRECATED
     switch( rating )
     {
         case 1: return i18nc( "The quality of music", "Awful" );

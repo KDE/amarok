@@ -18,6 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
+#define DEBUG_PREFIX "TagDialog"
+
 #include "TagDialog.h"
 
 #include "Amarok.h"
@@ -621,11 +623,6 @@ void TagDialog::init()
     ui->qSpinBox_score->setSpecialValueText( " " );
     ui->qSpinBox_discNumber->setSpecialValueText( " " );
 
-    for( int i = 0; i <= 10; i++ )
-    {
-        ui->kComboBox_rating->insertItem( i, Meta::prettyRating( i ) );
-    }
-
     // Connects for modification check
     connect( ui->kLineEdit_title,     SIGNAL(textChanged( const QString& )),     SLOT(checkModified()) );
     connect( ui->kComboBox_composer,  SIGNAL(activated( int )),                  SLOT(checkModified()) );
@@ -636,8 +633,7 @@ void TagDialog::init()
     connect( ui->kComboBox_album,     SIGNAL(editTextChanged( const QString& )), SLOT(checkModified()) );
     connect( ui->kComboBox_genre,     SIGNAL(activated( int )),                  SLOT(checkModified()) );
     connect( ui->kComboBox_genre,     SIGNAL(editTextChanged( const QString& )), SLOT(checkModified()) );
-    connect( ui->kComboBox_rating,    SIGNAL(activated( int )),                  SLOT(checkModified()) );
-    connect( ui->kComboBox_rating,    SIGNAL(editTextChanged( const QString& )), SLOT(checkModified()) );
+    connect( ui->ratingWidget,        SIGNAL(ratingChanged( int )),              SLOT(checkModified()) );
     connect( ui->qSpinBox_track,      SIGNAL(valueChanged( int )),               SLOT(checkModified()) );
     connect( ui->qSpinBox_year,       SIGNAL(valueChanged( int )),               SLOT(checkModified()) );
     connect( ui->qSpinBox_score,      SIGNAL(valueChanged( int )),               SLOT(checkModified()) );
@@ -836,7 +832,8 @@ void TagDialog::readTags()
     selectOrInsertText( m_currentTrack->album()->name(), ui->kComboBox_album );
     selectOrInsertText( m_currentTrack->genre()->name(), ui->kComboBox_genre );
     selectOrInsertText( m_currentTrack->composer()->name(), ui->kComboBox_composer );
-    ui->kComboBox_rating->setCurrentIndex( m_currentTrack->rating() );
+    ui->ratingWidget->setRating( m_currentTrack->rating() );
+    ui->ratingWidget->setMaxRating( 10 );
     ui->qSpinBox_track->setValue( m_currentTrack->trackNumber() );
     ui->qSpinBox_year->setValue( m_currentTrack->year()->name().toInt() );
     ui->qSpinBox_score->setValue( static_cast<int>(m_currentTrack->score()) );
@@ -857,7 +854,8 @@ void TagDialog::readTags()
 
     summaryText += "</table></td><td width=50%><table>";
     summaryText += body2cols.arg( i18n("Score:"), QString::number( static_cast<int>( m_currentTrack->score() ) ) );
-    summaryText += body2cols.arg( i18n("Rating:"), Meta::prettyRating( m_currentTrack->rating() ) );
+    // TODO: this should say something pretty like "3½ stars", but that can't happen until after strings are unfrozen
+    summaryText += body2cols.arg( i18n("Rating:"), QString::number( static_cast<double>(m_currentTrack->rating())/2.0) );
 
     summaryText += body2cols.arg( i18n("Playcount:"), QString::number( m_currentTrack->playCount() ) );
     QDate firstPlayed = QDateTime::fromTime_t( m_currentTrack->firstPlayed() ).date();
@@ -909,7 +907,7 @@ void TagDialog::readTags()
     enableOrDisable( kComboBox_album );
     enableOrDisable( kComboBox_genre );
 #undef enableOrDisable
-    ui->kComboBox_rating->setEnabled( editable );
+    ui->ratingWidget->setEnabled( editable );
     ui->qSpinBox_track->setEnabled( editable );
     ui->qSpinBox_discNumber->setEnabled( editable );
     ui->qSpinBox_year->setEnabled( editable );
@@ -972,7 +970,7 @@ TagDialog::setMultipleTracksMode()
     ui->qSpinBox_year->setValue( ui->qSpinBox_year->minimum() );
 
     ui->qSpinBox_score->setValue( ui->qSpinBox_score->minimum() );
-    ui->kComboBox_rating->setCurrentItem(  0 );
+    ui->ratingWidget->setRating( 0 );
 
     ui->kLineEdit_title->setEnabled( false );
     ui->qSpinBox_track->setEnabled( false );
@@ -1113,7 +1111,7 @@ TagDialog::readMultipleTracks()
     if( rating )
     {
         m_currentData.insert( Meta::Field::RATING, first.value( Meta::Field::RATING ) );
-        ui->kComboBox_rating->setCurrentIndex( first.value( Meta::Field::RATING ).toInt() );
+        ui->ratingWidget->setRating( first.value( Meta::Field::RATING ).toUInt() );
     }
 
     m_trackIterator.toFront();
@@ -1218,8 +1216,8 @@ TagDialog::changes()
 
     if( ui->qSpinBox_score->value() != m_currentData.value( Meta::Field::SCORE ).toInt() )
         result |= TagDialog::SCORECHANGED;
-    int currentRating = m_currentData.value( Meta::Field::RATING ).toInt();
-    if( ui->kComboBox_rating->currentIndex() != currentRating )
+    unsigned int currentRating = m_currentData.value( Meta::Field::RATING ).toUInt();
+    if( ui->ratingWidget->rating() != currentRating )
         result |= TagDialog::RATINGCHANGED;
 
     if( !m_tracks.count() || m_perTrack )
@@ -1269,7 +1267,7 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
     if( result & TagDialog::RATINGCHANGED )
     {
         storedRatings.remove( track );
-        storedRatings.insert( track, ui->kComboBox_rating->currentIndex() );
+        storedRatings.insert( track, ui->ratingWidget->rating() );
     }
 
     if( result & TagDialog::LYRICSCHANGED )
@@ -1613,11 +1611,11 @@ TagDialog::applyToAllTracks()
             changed |= TagDialog::SCORECHANGED;
         }
 
-        int rating = data.contains( Meta::Field::RATING ) ? data.value( Meta::Field::RATING ).toInt() : 0;
-        if( ( ui->kComboBox_rating->currentIndex() && ui->kComboBox_rating->currentIndex() != rating )
-            || ( !ui->kComboBox_rating->currentIndex() && rating ) )
+        unsigned int rating = data.contains( Meta::Field::RATING ) ? data.value( Meta::Field::RATING ).toUInt() : 0;
+        if( ( ui->ratingWidget->rating() && ui->ratingWidget->rating() != rating )
+            || ( !ui->ratingWidget->rating() && rating ) )
         {
-            data.insert( Meta::Field::RATING, ui->kComboBox_rating->currentIndex() );
+            data.insert( Meta::Field::RATING, ui->ratingWidget->rating() );
             changed |= TagDialog::RATINGCHANGED;
         }
         storeTags( track, changed, data );
