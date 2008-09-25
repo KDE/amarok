@@ -42,6 +42,13 @@ Required
       (metadata tagging library)
       http://freshmeat.net/projects/taglib
 
+    * MySQL 5.0 (possibly 5.1.26rc) Embedded: libmysqld compiled with fPIC
+      (In-process database support)
+      Currently MySQL provides a static library, which is less then ideal.
+      This causes problems that we hope the release of 2.0-beta2 will help
+      address. On x86-64 especially, libmysqld.a may have to be compiled with
+      the CFLAGS -fPIC.
+
 Optional
     * libgpod 0.4.2 (or newer)
       (iPod support)
