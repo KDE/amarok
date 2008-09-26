@@ -40,15 +40,15 @@
  * exhaustive trial and error or writing another optimization program to
  * optimize this optimization program. They are very sensitive. Be careful */
 
-const int    Dynamic::BiasSolver::GA_ITERATION_LIMIT         = 100;
-const int    Dynamic::BiasSolver::GA_POPULATION_SIZE         = 30;
-const int    Dynamic::BiasSolver::GA_MATING_POPULATION_SIZE  = 10;
+const int    Dynamic::BiasSolver::GA_ITERATION_LIMIT         = 70;
+const int    Dynamic::BiasSolver::GA_POPULATION_SIZE         = 15;
+const int    Dynamic::BiasSolver::GA_MATING_POPULATION_SIZE  = 5;
 const double Dynamic::BiasSolver::GA_MUTATION_PROBABILITY    = 0.05;
 const int    Dynamic::BiasSolver::GA_GIVE_UP_LIMIT           = 10;
 
-const int    Dynamic::BiasSolver::SA_ITERATION_LIMIT     = 2000;
-const double Dynamic::BiasSolver::SA_INITIAL_TEMPERATURE = 0.01;
-const double Dynamic::BiasSolver::SA_COOLING_RATE        = 0.8;
+const int    Dynamic::BiasSolver::SA_ITERATION_LIMIT     = 1000;
+const double Dynamic::BiasSolver::SA_INITIAL_TEMPERATURE = 0.28;
+const double Dynamic::BiasSolver::SA_COOLING_RATE        = 0.82;
 const int    Dynamic::BiasSolver::SA_GIVE_UP_LIMIT       = 250;
 
 
