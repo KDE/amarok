@@ -69,7 +69,7 @@ AlbumItem::metadataChanged( Meta::Album *album )
 
     setText( displayText );
 
-    QPixmap cover = album->image( m_iconSize );
+    QPixmap cover = album->imageWithBorder( m_iconSize, 3 );
     setIcon( QIcon( cover ) );
 }
 
