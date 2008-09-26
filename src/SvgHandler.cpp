@@ -235,3 +235,64 @@ void SvgHandler::setThemeFile( const QString & themeFile )
 }
 
 
+
+
+QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache )
+{
+
+    DEBUG_BLOCK
+    
+    int newWidth = orgPixmap.width() + borderWidth * 2;
+    int newHeight = orgPixmap.height() + borderWidth *2;
+
+    QPixmap pixmap( newWidth, newHeight );
+    pixmap.fill( Qt::transparent );
+    
+    QReadLocker readLocker( &d->lock );
+    if( ! d->renderers[d->themeFile] )
+    {
+        readLocker.unlock();
+        if( ! d->loadSvg( d->themeFile ) )
+            return pixmap;
+        readLocker.relock();
+    }
+
+    const QString key = QString("%1:%2x%3b%4")
+            .arg( name )
+            .arg( newWidth )
+            .arg( newHeight )
+            .arg( borderWidth );
+
+    debug() << "key: " << key;
+
+
+    if ( !QPixmapCache::find( key, pixmap ) || skipCache ) {
+
+        debug() << "Cache miss!";
+        
+        QPainter pt( &pixmap );
+
+
+        pt.drawPixmap( borderWidth, borderWidth, orgPixmap.width(), orgPixmap.height(), orgPixmap );
+
+        d->renderers[d->themeFile]->render( &pt, "cover_border_topleft", QRectF( 0, 0, borderWidth, borderWidth ) );
+        d->renderers[d->themeFile]->render( &pt, "cover_border_top", QRectF( borderWidth, 0, orgPixmap.width(), borderWidth ) );
+        d->renderers[d->themeFile]->render( &pt, "cover_border_topright", QRectF( newWidth - borderWidth , 0, borderWidth, borderWidth ) );
+        d->renderers[d->themeFile]->render( &pt, "cover_border_right", QRectF( newWidth - borderWidth, borderWidth, borderWidth, orgPixmap.height() ) );
+        d->renderers[d->themeFile]->render( &pt, "cover_border_bottomright", QRectF( newWidth - borderWidth, newHeight - borderWidth, borderWidth, borderWidth ) );
+        d->renderers[d->themeFile]->render( &pt, "cover_border_bottom", QRectF( borderWidth, newHeight - borderWidth, orgPixmap.width(), borderWidth ) );
+        d->renderers[d->themeFile]->render( &pt, "cover_border_bottomleft", QRectF( 0, newHeight - borderWidth, borderWidth, borderWidth ) );
+        d->renderers[d->themeFile]->render( &pt, "cover_border_left", QRectF( 0, borderWidth, borderWidth, orgPixmap.height() ) );
+    
+        QPixmapCache::insert( key, pixmap );
+    }
+
+    return pixmap;
+
+
+
+    
+
+
+    
+}

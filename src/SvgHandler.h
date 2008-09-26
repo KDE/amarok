@@ -68,6 +68,9 @@ class AMAROK_EXPORT SvgHandler : public QObject
          * @return The svg element/file rendered into a pixmap
          */
         QPixmap renderSvgWithDividers( const QString& keyname, int width, int height, const QString& element = QString() );
+
+
+        QPixmap addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache =false );
         
         void reTint( );
 

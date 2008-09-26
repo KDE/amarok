@@ -270,6 +270,7 @@ public:
                 img.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );
             }
 
+            m_noCoverImage = true;
             return QPixmap::fromImage( img );
         }
             

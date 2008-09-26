@@ -25,6 +25,7 @@
 #include "Collection.h"
 #include "Debug.h"
 #include "QueryMaker.h"
+#include "SvgHandler.h"
 
 #include <QDir>
 #include <QImage>
@@ -376,8 +377,39 @@ Meta::Album::image( int size, bool withShadow )
     //if ( withShadow )
         //s = makeShadowedImage( s );
 
+    m_noCoverImage = true;
+    
     return QPixmap::fromImage( img );
 }
+
+
+QPixmap
+Meta::Album::imageWithBorder( int size, int borderWidth )
+{
+
+
+    
+    
+
+    QPixmap coverWithBorders;
+
+    m_noCoverImage = false;
+    
+    const int imageSize = size - borderWidth * 2;
+    QPixmap cover = image( imageSize, false );
+
+    QString nameForKey = name();
+
+    if ( m_noCoverImage == true )
+        nameForKey = "nocover";
+
+    coverWithBorders = The::svgHandler()->addBordersToPixmap( cover, borderWidth, nameForKey );
+
+
+    return coverWithBorders;
+
+}
+
 
 bool
 Meta::Album::operator==( const Meta::Album &album ) const

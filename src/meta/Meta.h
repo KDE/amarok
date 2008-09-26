@@ -289,6 +289,7 @@ namespace Meta
         Q_PROPERTY( QPixmap image READ image WRITE setImage )
         public:
 
+            Album() : m_noCoverImage( false ) {}
             virtual ~Album() {}
             virtual bool isCompilation() const = 0;
 
@@ -303,6 +304,8 @@ namespace Meta
             virtual bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return false; }
             /** returns the cover of the album */
             virtual QPixmap image( int size = 1, bool withShadow = false );
+            /** returns the cover of the album with a nice border around it*/
+            virtual QPixmap imageWithBorder( int size = 1, int borderWidth = 5 );
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }
             /** updates the cover of the album */
@@ -316,6 +319,12 @@ namespace Meta
 
         protected:
             virtual void notifyObservers() const;
+
+            /** This should be set true whenever the nocover image is returned. Most subclasses
+            should not care as they fall back on the ::image method in this base class, but a few
+            might want to use custom nocover images.*/
+            bool m_noCoverImage;
+
     };
 
     class AMAROK_EXPORT Composer : public MetaBase
