@@ -856,7 +856,7 @@ void Playlist::GraphicsItem::paintSingleTrack( QPainter * painter, const QStyleO
     //paint cover
     QPixmap albumPixmap;
     if( m_items->track->album() )
-        albumPixmap =  m_items->track->album()->image( int( SINGLE_TRACK_ALBUM_WIDTH ) );
+        albumPixmap =  m_items->track->album()->imageWithBorder( int( SINGLE_TRACK_ALBUM_WIDTH ), 3 );
 
     //offset cover if non square
     QPointF offset = centerImage( albumPixmap, imageLocation() );
@@ -963,7 +963,7 @@ void Playlist::GraphicsItem::paintHead( QPainter * painter, const QStyleOptionGr
     //paint cover
     QPixmap albumPixmap;
     if( m_items->track->album() )
-        albumPixmap =  m_items->track->album()->image( int( ALBUM_WIDTH ) );
+        albumPixmap =  m_items->track->album()->imageWithBorder( int( ALBUM_WIDTH ), 3 );
 
     //offset cover if non square
     QPointF offset = centerImage( albumPixmap, imageLocation() );
