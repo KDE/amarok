@@ -110,21 +110,25 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
         dir.mkpath( "." );
     }
 
-    static const int num_elements = 5;
+    static const int num_elements = 4;
     char **server_options = new char* [ num_elements + 1 ];
     server_options[0] = "amarokmysqld";
     server_options[1] = defaultsLine;
     server_options[2] = databaseLine;
     server_options[3] = "--default-storage-engine=MYISAM";
-    server_options[4] = "--skip-innodb";
-    server_options[5] = 0;
+    server_options[4] = 0;
 
     char **server_groups = new char* [ 3 ];
     server_groups[0] = "amarokserver";
     server_groups[1] = "amarokclient";
     server_groups[2] = 0;
 
-    mysql_library_init(num_elements, server_options, server_groups);
+    if( mysql_library_init(num_elements, server_options, server_groups) != 0 )
+    {
+        error() << "MySQL library initialization failed.";
+        return;
+    }
+
     m_db = mysql_init(NULL);
     delete [] server_options;
     delete [] server_groups;
