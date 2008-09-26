@@ -208,7 +208,7 @@ void TrackToolTip::setTrack()
         m_tooltip = "<table cellpadding='2' cellspacing='2' align='center'><tr>";
 
         if( m_track->album() )
-            m_image = m_track->album()->image( 100 );
+            m_image = m_track->album()->imageWithBorder( 100, 5 );
 
         m_tooltip += "<td><table cellpadding='0' cellspacing='0'>";
 
