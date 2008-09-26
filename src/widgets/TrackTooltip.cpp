@@ -191,12 +191,6 @@ void TrackToolTip::setTrack()
             left << i18n( "Play Count" );
         }
 
-        right << QString::number( m_track->rating() );
-        left << i18n( "Rating" );
-
-        right << QString::number( m_track->playCount() );
-        left << i18n( "Playcount" );
-
         const uint lastPlayed = m_track->lastPlayed();
         right << Amarok::verboseTimeSince( lastPlayed );
         left << i18n( "Last Played" );
