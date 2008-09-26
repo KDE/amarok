@@ -97,7 +97,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
                 {
                     Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                     if( album)
-                        return album->image( 32, false );
+                        return album->imageWithBorder( 32, 2 );
                     else
                         return iconForLevel( level );
                 }
