@@ -138,6 +138,7 @@ void LyricsApplet::connectSource( const QString& source )
 
 void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
+    Q_UNUSED( constraints );
     prepareGeometryChange();
 
     m_suggested->setTextWidth( size().width() );
@@ -234,6 +235,7 @@ void
 LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
+    Q_UNUSED( contentsRect );
 
     m_theme->resizePanel( size().toSize() );
 
@@ -247,13 +249,11 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
 QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
 {
+    Q_UNUSED( which );
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-    {
         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-    } else
-    {
-        return constraint;
-    }
+    
+    return constraint;
 }
 void
 LyricsApplet::suggestionChosen( const QString& link )
