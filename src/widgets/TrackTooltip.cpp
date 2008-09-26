@@ -201,12 +201,6 @@ void TrackToolTip::setTrack()
         right << Amarok::verboseTimeSince( lastPlayed );
         left << i18n( "Last Played" );
 
-        right << QString::number( m_track->bitrate() );
-        left << i18n( "Bitrate" );
-
-        right << m_track->type();
-        left << i18n( "Format" );
-
         const QString length = Meta::secToPrettyTime( m_track->length() );
 
         if( length > 0 )
