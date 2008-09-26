@@ -22,6 +22,7 @@
 #include "meta/CurrentTrackActionsCapability.h"
 #include "meta/MetaUtility.h"
 #include "PaletteHandler.h"
+#include "SvgHandler.h"
 #include <context/widgets/RatingWidget.h>
 
 #include <plasma/theme.h>
@@ -422,8 +423,13 @@ void CurrentTrack::configAccepted() // SLOT
 
 bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
 {
+    const int borderWidth = 5;
+    
     if( !cover.isNull() )
     {
+
+        width -= borderWidth * 2;
+        
         //QSizeF rectSize = m_theme->elementRect( "albumart" ).size();
         //QPointF rectPos = m_theme->elementRect( "albumart" ).topLeft();
         qreal size = width;
@@ -446,7 +452,11 @@ bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
         m_albumCover->setPos( margin + moveByX, margin + moveByY );
 //         m_sourceEmblem->setPos( margin + moveByX, margin + moveByY );
 
-        m_albumCover->setPixmap( cover );
+
+        QPixmap coverWithBorders = The::svgHandler()->addBordersToPixmap( cover, borderWidth, m_album->text(), true );
+
+        
+        m_albumCover->setPixmap( coverWithBorders );
 //         m_sourceEmblem->setPixmap( m_sourceEmblemPixmap );
         return true;
     }
