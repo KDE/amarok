@@ -625,7 +625,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
 
     QImage image;
     if( track && track->album() )
-        image = track->album()->image( 100 ).toImage();
+        image = track->album()->imageWithBorder( 100, 5 ).toImage();
 
     OSDWidget::show( text, image );
 }
