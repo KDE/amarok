@@ -24,17 +24,6 @@ add_subdirectory( strigi )
 add_subdirectory( themes )
 
 
-OPTION(USE_SYSTEM_SQLITE "Use system sqlite instead of amarok's own copy" OFF)
-
-if (USE_SYSTEM_SQLITE)
-    find_package(Sqlite REQUIRED)
-    set(libsqlite_SRCS )
-else (USE_SYSTEM_SQLITE)
-    # Use our own copy
-    set(libsqlite_SRCS sqlite/sqlite3.c)
-endif (USE_SYSTEM_SQLITE)
-
-
 include_directories(
 #    analyzers
     browsers/playlistbrowser
@@ -425,7 +414,6 @@ set(amaroklib_LIB_SRCS
     ${libplugin_SRCS}
     ${libpodcasts_SRCS}
     ${libservicebrowser_SRCS}
-    ${libsqlite_SRCS}
     ${libstatusbar_SRCS}
     ${libdynamic_SRCS}
     ${meta_SRCS}
@@ -569,10 +557,6 @@ endif(KDEMULTIMEDIA_FOUND)
 if(LIBDL_FOUND)
     target_link_libraries(amaroklib dl)
 endif(LIBDL_FOUND)
-
-if(USE_SYSTEM_SQLITE)
-    target_link_libraries(amaroklib ${SQLITE_LIBRARIES})
-endif(USE_SYSTEM_SQLITE)
 
 if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME MATCHES Linux)
     set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=iso9899:1999" )

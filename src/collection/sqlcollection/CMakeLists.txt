@@ -23,12 +23,6 @@ if (NOT WIN32)
  set (extra_src     
     XesamDbus.cpp
     XesamCollectionBuilder.cpp)
-elseif (NOT WIN32)
- set (extra_src ../../sqlite/sqlite3.c)
- set (amarok_collection-sqlcollection_PART_SRCS
-     SqliteCollection.cpp
-     ../../sqlite/sqlite3.c
-     )
 endif (NOT WIN32)
 
 set(amarok_collection-sqlcollection_PART_SRCS
@@ -64,7 +58,6 @@ SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
 target_link_libraries(amarok_collection-sqlcollection
     amaroklib
     amarokpud
-    dl
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
