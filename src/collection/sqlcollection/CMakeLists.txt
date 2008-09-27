@@ -61,7 +61,7 @@ target_link_libraries(amarok_collection-sqlcollection
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
-    dl
+    ${CMAKE_DL_LIBS}
     ${MYSQL_EMBEDDED_LIBRARIES}
     #this line may be needed on Debian or other systems where mysql is compiled
     #in the prescence of yassl. However it seems to cause problems for other people,
