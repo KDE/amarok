@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Ipod Collection
+Name[be]=Калекцыя Ipod
 Name[bg]=IPod колекция
 Name[ca]=Col·lecció ipod
 Name[csb]=Kòlekcëjô Ipoda
@@ -26,6 +27,7 @@ Name[tr]=Ipod Koleksiyonu
 Name[uk]=Збірка Ipod
 Name[x-test]=xxIpod Collectionxx
 Comment=Ipod collection plugin for Amarok
+Comment[be]=Утулка калекцыі Ipod для Amarok
 Comment[bg]=Приставка за Ipod колекция (Amarok)
 Comment[ca]=Connector de col·leccions ipod per a l'Amarok
 Comment[csb]=Wtëkôcz kòlekcëji Ipoda dlô Amaroka

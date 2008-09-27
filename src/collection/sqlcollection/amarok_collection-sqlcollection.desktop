@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=SQL Collection
+Name[be]=Калекцыя SQL
 Name[bg]=SQL колекция
 Name[ca]=Col·lecció SQL
 Name[csb]=Kòlekcëjô SQL
@@ -33,6 +34,7 @@ Name[uk]=Збірка SQL
 Name[x-test]=xxSQL Collectionxx
 Name[zh_CN]=SQL 收藏
 Comment=Collection plugin for Amarok
+Comment[be]=Утулка калекцыі для Amarok
 Comment[bg]=Приставка за колекция (Amarok)
 Comment[ca]=Connector de col·leccions per a l'Amarok
 Comment[csb]=Wtëkôcz kòlekcëji dlô Amaroka

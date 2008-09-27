@@ -3,6 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-lastfm-amarok
 Name=Last.fm Service
+Name[be]=Сервіс Last.fm
 Name[bg]=Услуга Last.fm
 Name[ca]=Servei pel last.fm
 Name[csb]=Serwis Last.fm

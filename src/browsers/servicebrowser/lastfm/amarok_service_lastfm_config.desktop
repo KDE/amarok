@@ -9,6 +9,7 @@ X-KDE-ParentApp=amarok_service_lastfm
 X-KDE-ParentComponents=amarok_service_lastfm
 
 Name=Last.fm Service Config
+Name[be]=Настаўленне сервісу Last.fm
 Name[bg]=Настройване на Last.fm
 Name[ca]=Configuració del servei last.fm
 Name[csb]=Kònfigùrator serwisu Last.fm
