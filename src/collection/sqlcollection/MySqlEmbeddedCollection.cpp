@@ -127,6 +127,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
     if( mysql_library_init(num_elements, server_options, server_groups) != 0 )
     {
         error() << "MySQL library initialization failed.";
+        reportError( "init" );
         return;
     }
 
