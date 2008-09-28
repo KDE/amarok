@@ -112,16 +112,16 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
 
     static const int num_elements = 5;
     char **server_options = new char* [ num_elements + 1 ];
-    server_options[0] = (char*) "amarokmysqld";
+    server_options[0] = const_cast<char*>( "amarokmysqld" );
     server_options[1] = defaultsLine;
     server_options[2] = databaseLine;
-    server_options[3] = (char*) "--default-storage-engine=MYISAM";
-    server_options[4] = (char*) "--loose-skip-innodb";
+    server_options[3] = const_cast<char*>( "--default-storage-engine=MYISAM" );
+    server_options[4] = const_cast<char*>( "--loose-skip-innodb" );
     server_options[5] = 0;
 
     char **server_groups = new char* [ 3 ];
-    server_groups[0] = (char*) "amarokserver";
-    server_groups[1] = (char*) "amarokclient";
+    server_groups[0] = const_cast<char*>( "amarokserver" );
+    server_groups[1] = const_cast<char*>( "amarokclient" );
     server_groups[2] = 0;
 
     if( mysql_library_init(num_elements, server_options, server_groups) != 0 )
