@@ -10,7 +10,6 @@ if(APPLE)
 endif(APPLE)
 
 # add_subdirectory( playlistmanager )
-#add_subdirectory( mediadevice )
 add_subdirectory( browsers/collectionbrowser )
 add_subdirectory( browsers/servicebrowser )
 add_subdirectory( collection )
@@ -40,7 +39,6 @@ include_directories(
     dbus
     dialogs
     dynamic
-#    mediadevice
     meta
     playlistmanager
     plugin
@@ -320,13 +318,6 @@ if(KDEMULTIMEDIA_FOUND)
 endif(KDEMULTIMEDIA_FOUND)
 
 #####################################################################
-# MEDIADEVICE
-#####################################################################
-#set(mediadevice_SRCS
-#    mediadevice/CopyToDeviceAction.cpp
-#)
-
-#####################################################################
 # DBUS
 #####################################################################
 set(dbus_SRCS
@@ -422,7 +413,6 @@ set(amaroklib_LIB_SRCS
     ${libplaylistbrowser_SRCS}
     ${libqueuemanager_SRCS}
     ${libplaylistmanager_SRCS}
-#    ${mediadevice_SRCS}
     ${dbus_SRCS}
     ${scriptengine_SRCS}
     ActionClasses.cpp
@@ -471,7 +461,6 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/MyDirOperator.cpp
     browsers/filebrowser/kbookmarkhandler.cpp
     ktrm.cpp
-#    mediabrowser.cpp
     medium.cpp
     mountpointmanager.cpp
     PaletteHandler.cpp
