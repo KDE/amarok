@@ -639,9 +639,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
 
     stateChangedNotify( newState, oldState );
 
-    const bool wasntPlaying = oldState != Phonon::PlayingState && oldState != Phonon::BufferingState;
-
-    if( newState == Phonon::PlayingState && wasntPlaying )
+    if( newState == Phonon::PlayingState )
         emit trackPlayPause( Playing );
     else if( newState == Phonon::PausedState )
         emit trackPlayPause( Paused );
