@@ -642,11 +642,60 @@ MainWindow::createActions()
 
     KStandardAction::quit( kapp, SLOT( quit() ), ac );
 
+    // FIXME FIXME FIXME
+    // Remove this block before Final release. It is needed only to cleanup
+    // global shortcut registers due to prior mishandling. Must be included in our
+    // next release so that everyone with beta1/beta2 gets cleanup up.
+    //
+    //
+    // During kde4 development amarok handled global shortcuts wrong for some
+    // time. You could see this by opening 'kcmshell4 keys'. The problem was
+    // change the actions objectName() after assigning a global shortcut. The
+    // following code removes the duplicate global Shortcuts.
+    {
+        KAction action(NULL);
+
+        action.setObjectName("addMedia");
+        action.setGlobalShortcut(KShortcut());
+        action.forgetGlobalShortcut();
+
+        action.setObjectName("seekForward");
+        action.setGlobalShortcut(KShortcut());
+        action.forgetGlobalShortcut();
+
+        action.setObjectName("seekBackward");
+        action.setGlobalShortcut(KShortcut());
+        action.forgetGlobalShortcut();
+
+        action.setObjectName("previousTrack");
+        action.setGlobalShortcut(KShortcut());
+        action.forgetGlobalShortcut();
+
+        action.setObjectName("nextTrack");
+        action.setGlobalShortcut(KShortcut());
+        action.forgetGlobalShortcut();
+
+        action.setObjectName("Toggle Main Window");
+        action.setGlobalShortcut(KShortcut());
+        action.forgetGlobalShortcut();
+
+        action.setObjectName("muteVolume");
+        action.setGlobalShortcut(KShortcut());
+        action.forgetGlobalShortcut();
+
+        action.setObjectName("play-pause");
+        action.setGlobalShortcut(KShortcut());
+        action.forgetGlobalShortcut();
+
+        action.setObjectName("showOSD");
+        action.setGlobalShortcut(KShortcut());
+        action.forgetGlobalShortcut();
+    }
+
     KAction *action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Media..."), this );
-    connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
-    action->setObjectName( "addMedia" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
     ac->addAction( "playlist_add", action );
+    connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
 
     action = new KAction( KIcon( "edit-clear-list-amarok" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
     connect( action, SIGNAL( triggered( bool ) ), The::playlistModel(), SLOT( clear() ) );
@@ -707,18 +756,16 @@ MainWindow::createActions()
     ac->addAction( "queue_manager", action );
 
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
+    ac->addAction( "seek_forward", action );
     action->setShortcut( Qt::Key_Right );
-    action->setObjectName( "seekForward" );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
     connect(action, SIGNAL(triggered(bool)), ec, SLOT(seekForward()));
-    ac->addAction( "seek_forward", action );
 
     action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n("&Seek Backward"), this );
+    ac->addAction( "seek_backward", action );
     action->setShortcut( Qt::Key_Left );
-    action->setObjectName( "seekBackward" );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
     connect(action, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
-    ac->addAction( "seek_backward", action );
 
     action = new KAction( KIcon("view-statistics-amarok"), i18n( "Statistics" ), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(showStatistics()));
@@ -730,19 +777,17 @@ MainWindow::createActions()
     ac->addAction( "update_collection", action );
 
     action = new KAction( this );
+    ac->addAction( "prev", action );
     action->setIcon( KIcon("media-skip-backward-amarok") );
     action->setText( i18n( "Previous Track" ) );
-    action->setObjectName( "previousTrack" );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Z ) );
-    ac->addAction( "prev", action );
     connect( action, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( back() ) );
 
     action = new KAction( this );
-    action->setObjectName( "nextTrack" );
+    ac->addAction( "next", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
     action->setIcon( KIcon("media-skip-forward-amarok") );
     action->setText( i18n( "Next Track" ) );
-    ac->addAction( "next", action );
     connect( action, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( next() ) );
 
     action = new KAction(i18n( "Toggle Focus" ), this);
@@ -750,71 +795,60 @@ MainWindow::createActions()
     connect( action, SIGNAL(triggered(bool)), SLOT( slotToggleFocus() ));
 
     action = new KAction( i18n( "Increase Volume" ), this );
-    action->setObjectName( "increaseVolume" );
+    ac->addAction( "increaseVolume", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Plus ) );
     action->setShortcut( Qt::Key_Plus );
-    ac->addAction( "increaseVolume", action );
     connect( action, SIGNAL( triggered() ), ec, SLOT( increaseVolume() ) );
 
     action = new KAction( i18n( "Decrease Volume" ), this );
-    action->setObjectName( "decreaseVolume" );
+    ac->addAction( "decreaseVolume", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Minus ) );
     action->setShortcut( Qt::Key_Minus );
-    ac->addAction( "decreaseVolume", action );
     connect( action, SIGNAL( triggered() ), ec, SLOT( decreaseVolume() ) );
 
     action = new KAction( i18n( "Toggle Main Window" ), this );
-    action->setObjectName( "toggleMainWindow" );
+    ac->addAction( "toggleMainWindow", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
-    ac->addAction( "Toggle Main Window", action );
     connect( action, SIGNAL( triggered() ), SLOT( showHide() ) );
 
     action = new KAction( i18n( "Show On Screen Display" ), this );
-    action->setObjectName( "showOSD" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
     ac->addAction( "showOsd", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
     connect( action, SIGNAL( triggered() ), Amarok::OSD::instance(), SLOT( forceToggleOSD() ) );
 
     action = new KAction( i18n( "Mute Volume" ), this );
-    action->setObjectName( "muteVolume" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_M ) );
     ac->addAction( "mute", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_M ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( mute() ) );
 
     action = new KAction( i18n( "Love Current Track" ), this );
-    action->setObjectName( "loveTrack" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_L ) );
     ac->addAction( "loveTrack", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_L ) );
     connect( action, SIGNAL(triggered()), SLOT(loveTrack()) );
 
     action = new KAction( i18n( "Rate Current Track: 1" ), this );
-    action->setObjectName( "rate1" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_1 ) );
     ac->addAction( "rate1", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_1 ) );
     connect( action, SIGNAL( triggered() ), SLOT( setRating1() ) );
 
     action = new KAction( i18n( "Rate Current Track: 2" ), this );
-    action->setObjectName( "rate2" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_2 ) );
     ac->addAction( "rate2", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_2 ) );
     connect( action, SIGNAL( triggered() ), SLOT( setRating2() ) );
 
     action = new KAction( i18n( "Rate Current Track: 3" ), this );
-    action->setObjectName( "rate3" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_3 ) );
     ac->addAction( "rate3", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_3 ) );
     connect( action, SIGNAL( triggered() ), SLOT( setRating3() ) );
 
     action = new KAction( i18n( "Rate Current Track: 4" ), this );
-    action->setObjectName( "rate4" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_4 ) );
     ac->addAction( "rate4", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_4 ) );
     connect( action, SIGNAL( triggered() ), SLOT( setRating4() ) );
 
     action = new KAction( i18n( "Rate Current Track: 5" ), this );
-    action->setObjectName( "rate5" );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
     ac->addAction( "rate5", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
     connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
 
     PERF_LOG( "MainWindow::createActions 8" )
