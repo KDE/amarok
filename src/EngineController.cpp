@@ -362,18 +362,11 @@ EngineController::stop( bool forceInstant ) //SLOT
 void
 EngineController::playPause() //SLOT
 {
-    //this is used by the TrayIcon, PlayPauseAction and DCOP
-
-    DEBUG_BLOCK
-
+    //this is used by the TrayIcon, PlayPauseAction and DBus
     if( m_media->state() == Phonon::PausedState || m_media->state() == Phonon::StoppedState )
-    {
         play();
-    }
     else
-    {
         pause();
-    }
 }
 
 void
@@ -641,18 +634,16 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
     if( newState == oldState || newState == Phonon::BufferingState )
         return;
 
-    if( newState == Phonon::ErrorState ) {  // If media is borked, skip to next track
+    if( newState == Phonon::ErrorState )  // If media is borked, skip to next track
         warning() << "Phonon failed to play this URL. Error: " << m_media->errorString();
-    }
 
     stateChangedNotify( newState, oldState );
 
-    if ( ( newState == Phonon::PlayingState || newState == Phonon::BufferingState ) &&
-         oldState != Phonon::PlayingState && oldState != Phonon::BufferingState ) {
+    if( ( newState == Phonon::PlayingState || newState == Phonon::BufferingState ) &&
+         oldState != Phonon::PlayingState && oldState != Phonon::BufferingState )
         emit trackPlayPause( Playing );
-    } else if ( newState == Phonon::PausedState ) {
+    else if( newState == Phonon::PausedState )
         emit trackPlayPause( Paused );
-    }
 }
 
 void
