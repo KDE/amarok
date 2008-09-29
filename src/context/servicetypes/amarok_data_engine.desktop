@@ -58,6 +58,6 @@ Comment[uk]=Рушій даних Amarok
 Comment[x-test]=xxAmarok Data Enginexx
 Comment[zh_CN]=Amarok 数据引擎
 
-[PropertyDef::X-Plasma-EngineName]
+[PropertyDef::X-KDE-PluginInfo-Name]
 Type=QString
 

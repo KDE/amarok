@@ -46,7 +46,8 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     , m_view( 0 )
 {
     setContainmentType( CustomContainment );
-
+    setDrawWallpaper( false );
+    
     m_grid = new QGraphicsGridLayout();
     setLayout( m_grid );
     m_grid->setSpacing( 3 );

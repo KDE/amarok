@@ -54,6 +54,11 @@ ContextSubject::~ContextSubject()
 
 void ContextSubject::messageNotify( const Context::ContextState& message )
 {
+    /*DEBUG_BLOCK
+    if( message == Context::Home )
+        debug() << "notifying with Home";
+    else if( message == Context::Current )
+        debug() << "notifying with  Current"; */    
     foreach( ContextObserver* obs, m_observers )
         obs->message( message );
 }

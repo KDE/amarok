@@ -34,22 +34,33 @@ set(plasma_LIB_SRCS
     plasma/appletbrowser/openwidgetassistant.cpp
     plasma/appletbrowser/plasmaappletitemmodel.cpp
     plasma/applet.cpp
-    plasma/applethandle.cpp
     plasma/configxml.cpp
     plasma/containment.cpp
+    plasma/context.cpp
     plasma/corona.cpp
     plasma/datacontainer.cpp
     plasma/dataengine.cpp
     plasma/dataenginemanager.cpp
     plasma/delegate.cpp
-    plasma/desktoptoolbox.cpp
     plasma/dialog.cpp
-    plasma/packages.cpp
+    plasma/extender.cpp
+    plasma/extenderitem.cpp
     plasma/paintutils.cpp
     plasma/panelsvg.cpp
-    plasma/paneltoolbox.cpp
     plasma/plasma.cpp
     plasma/plasma_export.h
+    plasma/popupapplet.cpp
+    plasma/private/applethandle.cpp
+    plasma/private/datacontainer_p.cpp
+    plasma/private/desktoptoolbox.cpp
+    plasma/private/extenderapplet.cpp
+    plasma/private/nativetabbar.cpp
+    plasma/private/packages.cpp
+    plasma/private/paneltoolbox.cpp
+    plasma/private/style.cpp
+    plasma/private/toolbox.cpp
+    plasma/private/tooltip.cpp
+    plasma/private/windowpreview.cpp
     plasma/scripting/appletscript.cpp
     plasma/scripting/dataenginescript.cpp
     plasma/scripting/runnerscript.cpp
@@ -59,16 +70,17 @@ set(plasma_LIB_SRCS
     plasma/runnermanager.cpp
     plasma/service.cpp
     plasma/servicejob.cpp
-    plasma/shadowitem.cpp
     plasma/svg.cpp
     plasma/theme.cpp
-    plasma/toolbox.cpp
+    plasma/tooltipmanager.cpp
     plasma/uiloader.cpp
     plasma/version.cpp
     plasma/view.cpp    
+    plasma/wallpaper.cpp    
     plasma/widgets/checkbox.cpp
     plasma/widgets/combobox.cpp
     plasma/widgets/flash.cpp
+    plasma/widgets/frame.cpp
     plasma/widgets/groupbox.cpp
     plasma/widgets/icon.cpp
     plasma/widgets/label.cpp
@@ -76,7 +88,10 @@ set(plasma_LIB_SRCS
     plasma/widgets/meter.cpp
     plasma/widgets/pushbutton.cpp
     plasma/widgets/radiobutton.cpp
+    plasma/widgets/scrollbar.cpp
     plasma/widgets/signalplotter.cpp
+    plasma/widgets/slider.cpp
+    plasma/widgets/tabbar.cpp
     plasma/widgets/textedit.cpp
     plasma/widgets/webcontent.cpp
 )
@@ -102,6 +117,7 @@ target_link_libraries(amarokplasma
     ${QT_QTWEBKIT_LIBRARY}
     ${KDE4_KNEWSTUFF2_LIBS}
     ${KDE4_SOLID_LIBRARY}
+    ${X11_LIBRARIES}
 )
 
 if(QT_QTOPENGL_FOUND AND OPENGL_FOUND)

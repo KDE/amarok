@@ -33,4 +33,4 @@ X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=wikipedia
 X-KDE-Library=amarok_data_engine_wikipedia
-X-Plasma-EngineName=amarok-wikipedia
+X-KDE-PluginInfo-Name=amarok-wikipedia

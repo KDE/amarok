@@ -33,4 +33,4 @@ X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=lyrics
 X-KDE-Library=amarok_data_engine_lyrics
-X-Plasma-EngineName=amarok-lyrics
+X-KDE-PluginInfo-Name=amarok-lyrics
