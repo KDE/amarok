@@ -67,6 +67,7 @@ PlaylistManager::destroy()
 PlaylistManager::PlaylistManager()
 {
     s_instance = this;
+
     m_defaultPodcastProvider = new SqlPodcastProvider();
     addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
     CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
@@ -204,7 +205,6 @@ PlaylistManager::downloadComplete( KJob * job )
     stream.setString( &contents );
 
     playlist->load( stream );
-
 }
 
 QString
@@ -229,13 +229,11 @@ PlaylistManager::typeName( int playlistCategory )
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow )
 {
-    Meta::SqlPlaylist* playlist = new Meta::SqlPlaylist( name, tracks, SqlPlaylistGroupPtr() );
-    int newId = playlist->id();
-    delete playlist;
-    playlist = 0;
+    Meta::SqlPlaylist playlist( name, tracks, SqlPlaylistGroupPtr() );
+    const int newId = playlist.id();
 
-    if ( editNow ) {
-
+    if ( editNow )
+    {
         //jolt the playlist browser model to reload so the newly added item is shown
         //talk about over-coupling... :|
         // That might be so, but it is needed when manually saving a list, otherwise
@@ -249,7 +247,6 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
         The::mainWindow()->showBrowser( "PlaylistBrowser" );
         emit( showCategory( UserPlaylist - 1 ) );
         PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
-
     }
 
     return true; //FIXME what's this supposed to return?
@@ -259,9 +256,11 @@ bool
 PlaylistManager::save( const QString& fromLocation )
 {
     DEBUG_BLOCK
+
     KUrl url( fromLocation );
     Meta::Playlist* playlist = 0;
     Meta::Format format = Meta::getFormat( fromLocation );
+
     switch( format )
     {
         case Meta::PLS:
@@ -338,8 +337,8 @@ PlaylistManager::canExpand( Meta::TrackPtr track )
 {
     if( !track )
         return false;
-    else
-        return Meta::getFormat( track->uidUrl() ) != Meta::NotPlaylist;
+        
+    return Meta::getFormat( track->uidUrl() ) != Meta::NotPlaylist;
 }
 
 Meta::PlaylistPtr
