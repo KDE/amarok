@@ -598,13 +598,14 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
 
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setOffset( AmarokConfig::osdYOffset() );
-    setRating( track->rating() );
-    QString text = "";
+
+    QString text;
     if( !track || track->playableUrl().isEmpty() )
         text = i18n( "No track playing" );
 
     else
     {
+        setRating( track->rating() );
         text = track->prettyName();
         if( track->artist() )
             text = track->artist()->prettyName() + " - " + text;
