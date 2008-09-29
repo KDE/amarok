@@ -71,7 +71,10 @@ target_link_libraries(amarok_collection-sqlcollection
     ${ZLIB_LIBRARIES}
 )
 if(NOT WIN32)
-    target_link_libraries(amarok_collection-sqlcollection crypt crypto ssl)
+    target_link_libraries(amarok_collection-sqlcollection crypto ssl)
+    if(NOT APPLE)
+        target_link_libraries(amarok_collection-sqlcollection crypt)
+    endif(NOT APPLE)
 endif(NOT WIN32)
 
 if(APPLE)
