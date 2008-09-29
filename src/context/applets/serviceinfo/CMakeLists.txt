@@ -15,3 +15,4 @@ target_link_libraries(amarok_context_applet_serviceinfo amaroklib amarokplasma $
 install(TARGETS amarok_context_applet_serviceinfo DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-serviceinfo.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 install(FILES amarok-serviceinfo.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/default/widgets/ )
+install(FILES ServiceInfoCustomStyle.css DESTINATION ${DATA_INSTALL_DIR}/amarok/data )

@@ -30,6 +30,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QLabel>
+#include <QWebFrame>
 
 ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -77,6 +78,9 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
     m_webView->setPalette( p );
 
+    //some css voodoo to make sure the background of the page is a sane color
+    m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/ServiceInfoCustomStyle.css" ) );
+    
     //m_serviceMainInfo->setWidget( m_webView );
 
     connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
@@ -142,9 +146,12 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
     kDebug() << "got data from engine: " << data[ "service_name" ].toString();
 
     if  ( m_initialized ) {
+        //m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/ServiceInfoCustomStyle.css" ) );
         m_serviceName->setText( data[ "service_name" ].toString() );
         m_webView->setHtml( data[ "main_info" ].toString(), KUrl( QString() ) );
         m_webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+        //some css voodoo to make sure the background of the page is a sane color
+        
         constraintsEvent();
     }
 
