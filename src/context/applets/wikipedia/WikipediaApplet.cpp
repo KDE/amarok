@@ -78,6 +78,8 @@ void WikipediaApplet::init()
 
     m_webView = new Plasma::WebContent( this );
 
+    m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
+
 
     //make background transparent
 
