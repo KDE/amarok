@@ -25,11 +25,34 @@ Importer.loadQtBinding( "qt.core" );
 Importer.loadQtBinding( "qt.xml" );
 Importer.loadQtBinding( "qt.network" );
 
+QByteArray.prototype.toString = function() 
+{
+    ts = new QTextStream( this, QIODevice.ReadOnly );
+    return ts.readAll();
+}
+
 function Librivox()
 {
 
+
+    var html = "";
+
+    var currentDir = Amarok.Info.scriptPath();
+    currentDir = currentDir.slice(0, -7)
+
+    var file = new QFile( currentDir + "LibrivoxService.html" );
+    file.open( QIODevice.OpenMode( QIODevice.ReadOnly, QIODevice.Text ) );
+
+    while ( !file.atEnd() ) {
+        html += file.readLine().toString();
+    }
+
+    html = html.replace( "_IMAGE_DIR_", currentDir );
+
+
     print ("creating service...");
-    ScriptableServiceScript.call( this, "Librivox.org", 3, "Search for books from Librivox", "Librivox service script", true );
+    print ("html: " + html );
+    ScriptableServiceScript.call( this, "Librivox.org", 3, "Search for books from Librivox", html, true );
     print ("done creating service!");
 }
 
