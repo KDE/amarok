@@ -183,6 +183,10 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
         indices = tmp;
     }
 
+    // Abort if nothing is selected
+    if( indices.isEmpty() )
+        return;
+        
     PopupDropperActionList actions = createBasicActions( indices );
     actions += createExtendedActions( indices );
 
