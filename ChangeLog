@@ -2,14 +2,11 @@ Amarok ChangeLog
 ================
 (C) 2002-2008 the Amarok authors.
 
-VERSION 2.0-beta3
-
-  FEATURES:
-    * Add themable borders to album covers.
-
 
 VERSION 2.0-beta2
   FEATURES:
+    * Add themable borders to album covers where ever they are shown ( with 
+      very few exceptions )
     * Automatically check for collection changes on startup if monitoring
       is enabled.
     * Files can be moved into collections from the Filebrowser. (BR 170077)
@@ -32,6 +29,10 @@ VERSION 2.0-beta2
     * Add option to enable/disable automatic cover fetching.
 
   CHANGES:
+    * Add a new nice Service Info home page to the LibriVox script. Logo used with
+      Permision.
+    * Use custom stylesheets to ensure that html pages shown in the Wikipedia and
+      Service Info applets always have a nice white background.
     * Jamendo service: Filter out genre names less than 3 characters long. This
       gets rid of some uninformative genres like "3" and "07". All content is
       likely still available under other genres.
