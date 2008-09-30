@@ -64,9 +64,10 @@ void LyricsEngine::update()
 {
     DEBUG_BLOCK
 
-    Meta::TrackPtr curtrack = The::engineController()->currentTrack();
-    if( !curtrack )
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    if( !currentTrack || !currentTrack->artist() )
         return;
+
     //QString lyrics = curtrack->cachedLyrics();
     // TODO lyrics caching is broken
     // always returns the same one song... wtf!
@@ -75,8 +76,8 @@ void LyricsEngine::update()
     bool cached = false;
     QString lyrics;
     
-    QString title  = The::engineController()->currentTrack()->name();
-    QString artist = The::engineController()->currentTrack()->artist()->name();
+    QString title  = currentTrack->name();
+    QString artist = currentTrack->artist()->name();
 
     if( title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
         title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
@@ -100,7 +101,6 @@ void LyricsEngine::update()
                 if( artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
                     artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
             }
-
         }
     }
 
@@ -120,7 +120,6 @@ void LyricsEngine::update()
         ScriptManager::instance()->notifyFetchLyrics( artist, title );
 
     }
-
 }
 
 void LyricsEngine::newLyrics( QStringList& lyrics )
