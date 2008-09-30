@@ -29,9 +29,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11.313709"
+     inkscape:zoom="16.000001"
      inkscape:cx="61.701675"
-     inkscape:cy="1312.488"
+     inkscape:cy="1295.4169"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -7573,8 +7573,7 @@
        id="cover_border_left"
        height="5"
        width="5"
-       sodipodi:absref="/home/amarok-dev/temp/left.png"
-       xlink:href="/home/amarok-dev/temp/left.png"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAQAAAAnZu5uAAAAAXNSR0IArs4c6QAAAAJiS0dEAP+H j8y/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2AkaCgMlbbPjOgAAAEJJREFUCB0BNwDI /wAACgATACH/////AgABAAQABQAAAAACAAEAAgADAAAAAAIAAQAAAAAAAAAAAgAAAAEAAAAAAADI 0gRV6u1OggAAAABJRU5ErkJggg== "
        inkscape:label="#image3510" />
     <image
        y="-133.85638"
@@ -7582,8 +7581,7 @@
        id="cover_border_topleft"
        height="5"
        width="5"
-       sodipodi:absref="/home/amarok-dev/temp/topleft.png"
-       xlink:href="/home/amarok-dev/temp/topleft.png"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAQAAAAnZu5uAAAAAXNSR0IArs4c6QAAAAJiS0dEAP+H j8y/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2AkaCgQ5NvMpsgAAAEJJREFUCB0BNwDI /wAAAAAAAAAAAAAAAQABAAIAAQADAAIEAAIAAgAEAAUABQIAAQAEAAcAC//sAgADAAUACf/mAAAk zwQdu+XyagAAAABJRU5ErkJggg== "
        inkscape:label="#image3560" />
     <image
        y="115.95168"
@@ -7591,8 +7589,7 @@
        id="cover_border_bottomright"
        height="5"
        width="5"
-       sodipodi:absref="/home/amarok-dev/temp/topleft.png"
-       xlink:href="/home/amarok-dev/temp/topleft.png"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAQAAAAnZu5uAAAAAXNSR0IArs4c6QAAAAJiS0dEAP+H j8y/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2AkaCgQ5NvMpsgAAAEJJREFUCB0BNwDI /wAAAAAAAAAAAAAAAQABAAIAAQADAAIEAAIAAgAEAAUABQIAAQAEAAcAC//sAgADAAUACf/mAAAk zwQdu+XyagAAAABJRU5ErkJggg== "
        transform="scale(-1,-1)"
        inkscape:label="#image3564" />
     <image
@@ -7601,8 +7598,7 @@
        id="cover_border_bottomleft"
        height="5"
        width="5"
-       sodipodi:absref="/home/amarok-dev/temp/topleft.png"
-       xlink:href="/home/amarok-dev/temp/topleft.png"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAQAAAAnZu5uAAAAAXNSR0IArs4c6QAAAAJiS0dEAP+H j8y/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2AkaCgQ5NvMpsgAAAEJJREFUCB0BNwDI /wAAAAAAAAAAAAAAAQABAAIAAQADAAIEAAIAAgAEAAUABQIAAQAEAAcAC//sAgADAAUACf/mAAAk zwQdu+XyagAAAABJRU5ErkJggg== "
        transform="matrix(0,-1,1,0,0,0)"
        inkscape:label="#image3566" />
     <image
@@ -7611,8 +7607,7 @@
        id="cover_border_topright"
        height="5"
        width="5"
-       sodipodi:absref="/home/amarok-dev/temp/topleft.png"
-       xlink:href="/home/amarok-dev/temp/topleft.png"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAQAAAAnZu5uAAAAAXNSR0IArs4c6QAAAAJiS0dEAP+H j8y/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2AkaCgQ5NvMpsgAAAEJJREFUCB0BNwDI /wAAAAAAAAAAAAAAAQABAAIAAQADAAIEAAIAAgAEAAUABQIAAQAEAAcAC//sAgADAAUACf/mAAAk zwQdu+XyagAAAABJRU5ErkJggg== "
        transform="scale(-1,1)"
        inkscape:label="#image3568" />
     <image
@@ -7621,8 +7616,7 @@
        id="cover_border_bottom"
        height="5"
        width="5"
-       sodipodi:absref="/home/amarok-dev/temp/left.png"
-       xlink:href="/home/amarok-dev/temp/left.png"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAQAAAAnZu5uAAAAAXNSR0IArs4c6QAAAAJiS0dEAP+H j8y/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2AkaCgMlbbPjOgAAAEJJREFUCB0BNwDI /wAACgATACH/////AgABAAQABQAAAAACAAEAAgADAAAAAAIAAQAAAAAAAAAAAgAAAAEAAAAAAADI 0gRV6u1OggAAAABJRU5ErkJggg== "
        transform="matrix(0,-1,1,0,0,0)"
        inkscape:label="#image4342" />
     <image
@@ -7631,8 +7625,7 @@
        id="cover_border_right"
        height="5"
        width="5"
-       sodipodi:absref="/home/amarok-dev/temp/left.png"
-       xlink:href="/home/amarok-dev/temp/left.png"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAQAAAAnZu5uAAAAAXNSR0IArs4c6QAAAAJiS0dEAP+H j8y/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2AkaCgMlbbPjOgAAAEJJREFUCB0BNwDI /wAACgATACH/////AgABAAQABQAAAAACAAEAAgADAAAAAAIAAQAAAAAAAAAAAgAAAAEAAAAAAADI 0gRV6u1OggAAAABJRU5ErkJggg== "
        transform="scale(-1,1)"
        inkscape:label="#image4344" />
     <image
@@ -7641,8 +7634,7 @@
        id="cover_border_top"
        height="5"
        width="5"
-       sodipodi:absref="/home/amarok-dev/temp/left.png"
-       xlink:href="/home/amarok-dev/temp/left.png"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAQAAAAnZu5uAAAAAXNSR0IArs4c6QAAAAJiS0dEAP+H j8y/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2AkaCgMlbbPjOgAAAEJJREFUCB0BNwDI /wAACgATACH/////AgABAAQABQAAAAACAAEAAgADAAAAAAIAAQAAAAAAAAAAAgAAAAEAAAAAAADI 0gRV6u1OggAAAABJRU5ErkJggg== "
        transform="matrix(0,1,-1,0,0,0)"
        inkscape:label="#image4346" />
   </g>
