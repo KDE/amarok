@@ -34,9 +34,6 @@ QByteArray.prototype.toString = function()
 function Librivox()
 {
 
-
-    var html = "";
-
     var currentDir = Amarok.Info.scriptPath();
     currentDir = currentDir.slice(0, -7)
 
@@ -51,7 +48,7 @@ function Librivox()
 
 
     print ("creating service...");
-    print ("html: " + html );
+    //print ("html: " + html );
     ScriptableServiceScript.call( this, "Librivox.org", 3, "Search for books from Librivox", html, true );
     print ("done creating service!");
 }
@@ -107,7 +104,7 @@ function bookFetchResult( reply )
             item.callbackData = link;
             item.itemName = title;
             item.playableUrl = "";
-            item.infoHtml = "";
+            item.infoHtml = html;
 
             script.insertItem( item );
 
@@ -131,19 +128,24 @@ function episodeFetchResult( result )
     try
     {
 
-        html = result;
+        htmlPage = result;
 
         //remove all <em> and </em> as they screw up simple parsing if present ( basicaly be cause on some pages they are there and on some they are not
         //in a way that is difficult to take into account in a regexp )
-        html = html.replace( "<em>", "" );
-        html = html.replace( "</em>", "" );
+        htmlPage = htmlPage.replace( "<em>", "" );
+        htmlPage = htmlPage.replace( "</em>", "" );
 
         //print( " Got reply from librivox: " +  html );
+
+        //get the book description. Unfortunately this will not work currently, as tracks do not have a description, and there is no easy way to apply this to the book level.
+        //In the long term, I think we should add a "get info" callback instead of having to pass html info for each object at creation 
+        //descriptionRx = new RegExp( "<blockquote>(.*)<\\/blockquote>" );
+        //description = htmlPage.match( descriptionRx );
 
         //Apparently we cannot bot do multiple matches and multiple capture groups as well in qt-script, so use the same regexp twice, one for getting each book, and once for getting
         //book, and once for getting the two parts of the book element that we are interested in, the title and the url.
         rx = new RegExp( "<li>([^\\n]*)<br\\s\\/>\\s*\\n[^\\n]*\\n?[^\\n]*\\n[^\\n]*\\n[^\\n]*href=\\\"([\\.a-zA-Z0-9_:\\/]*\\.ogg)\\\">ogg\\svorbis", "g" );
-        list = html.match( rx );
+        list = htmlPage.match( rx );
 
 
 
@@ -159,7 +161,7 @@ function episodeFetchResult( result )
             item.callbackData = "";
             item.itemName = title;
             item.playableUrl = url;
-            item.infoHtml = "";
+            item.infoHtml = html;
 
             script.insertItem( item );
         }
@@ -190,7 +192,6 @@ function onPopulate( level, callback, filter )
 
     if ( level == 2 ) {
         
-        html = "The results of your query for: " + filter;
         if ( offset > 0 )
             name = name + " ( " + offset + " - " + (offset + 100) + " )";
 
@@ -248,6 +249,7 @@ doc = new QDomDocument("doc");
 elt = new QDomElement;
 elt2 = new QDomElement;
 bookElements = new QDomNodeList;
+html = "";
 
 Amarok.configured.connect( onConfigure );
 script = new Librivox();
