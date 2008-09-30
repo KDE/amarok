@@ -192,7 +192,6 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
 void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
-    DEBUG_BLOCK
     Q_UNUSED( option );
 
     m_header->resize(size().toSize());
