@@ -280,25 +280,28 @@ WikipediaEngine::wikiResult( KJob* job )
     setData( "wikipedia", "page", m_wikiHTMLSource );
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( selection() == "artist" ) // default, or applet told us to fetch artist
+    if( currentTrack )
     {
-        if( currentTrack->artist() )
+        if( selection() == "artist" ) // default, or applet told us to fetch artist
         {
-            setData( "wikipedia", "label", "Artist" );
-            setData( "wikipedia", "title", currentTrack->artist()->prettyName() );
+            if( currentTrack->artist() )
+            {
+                setData( "wikipedia", "label", "Artist" );
+                setData( "wikipedia", "title", currentTrack->artist()->prettyName() );
+            }
         }
-    }
-    else if( selection() == "title" )
-    {
-        setData( "wikipedia", "label", "Title" );
-        setData( "wikipedia", "title", currentTrack->prettyName() );
-    }
-    else if( selection() == "album" )
-    {
-        if( currentTrack->album() )
+        else if( selection() == "title" )
         {
-            setData( "wikipedia", "label", "Album" );
-            setData( "wikipedia", "title", currentTrack->album()->prettyName() );
+            setData( "wikipedia", "label", "Title" );
+            setData( "wikipedia", "title", currentTrack->prettyName() );
+        }
+        else if( selection() == "album" )
+        {
+            if( currentTrack->album() )
+            {
+                setData( "wikipedia", "label", "Album" );
+                setData( "wikipedia", "title", currentTrack->album()->prettyName() );
+            }
         }
     }
 
