@@ -56,10 +56,10 @@ Q_SIGNALS:
     void changeContainment( Plasma::Containment *containment );
 
 protected:
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
-    void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
-    void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
-    void wheelEvent( QGraphicsSceneWheelEvent *event );
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+    virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+    virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+    virtual void wheelEvent( QGraphicsSceneWheelEvent *event );
 
 private slots:
     void addApplet( const QString &pluginName );

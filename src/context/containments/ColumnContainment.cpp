@@ -320,12 +320,17 @@ ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     DEBUG_BLOCK
     debug() << event->pos();
+
     if( event->button() == Qt::LeftButton )
     {
         debug() << "Focus requested by containment";
         if( m_zoomLevel == Plasma::GroupZoom )
             emit focusRequested( this ); //only zoom in when zoomed out
     }
+
+    m_addAppletsMenu->hide();
+    m_removeAppletsMenu->hide();
+
     Context::Containment::mousePressEvent( event );
 }
 

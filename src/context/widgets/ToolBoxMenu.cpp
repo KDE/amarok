@@ -14,6 +14,8 @@
 
 #include "ToolBoxMenu.h"
 
+#include "Debug.h"
+
 #include "plasma/applet.h"
 
 namespace Context
