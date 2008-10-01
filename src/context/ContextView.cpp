@@ -719,7 +719,6 @@ ContextView::previousContainment()
 void
 ContextView::animateContainmentChange( qreal progress, int id )
 {
-    DEBUG_BLOCK
     Q_UNUSED( id )
 
     qreal incrementX;
