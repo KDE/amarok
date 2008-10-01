@@ -34,6 +34,7 @@ def fetchTranslations()
 
     for lang in l10nlangs
         lang.chomp!()
+        next if lang == "x-test"
 
         pofilename = "l10n-kde4/#{lang}/messages/#{COMPONENT}-#{SECTION}"
         # TODO: ruby-svn
