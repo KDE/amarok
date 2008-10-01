@@ -247,6 +247,8 @@ class SqlAlbum : public Meta::Album
         QString findCachedImage( int size ) const;
         QString findImage( int size );
         void updateImage( const QString path ) const; // Updates the database to ensure the album has the correct path
+        // Finds or creates a magic value in the database which tells Amarok not to auto fetch an image since it has been explicitly unset.
+        int unsetImageId() const;
 
     private:
         SqlCollection* m_collection;
@@ -255,6 +257,8 @@ class SqlAlbum : public Meta::Album
         int m_artistId;
         mutable bool m_hasImage;
         mutable bool m_hasImageChecked;
+        mutable int m_unsetImageId;
+        static const QString AMAROK_UNSET_MAGIC;
         mutable QHash<int, QString> m_images; // Cache mapping size -> path. hash used for O(1) insertion and O(1) lookup
         bool m_tracksLoaded;
         Meta::ArtistPtr m_artist;

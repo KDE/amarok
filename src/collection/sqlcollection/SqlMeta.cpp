@@ -948,6 +948,7 @@ class CompilationAction : public PopupDropperAction
 
 
 //---------------SqlAlbum---------------------------------
+const QString SqlAlbum::AMAROK_UNSET_MAGIC = QString( "AMAROK_UNSET_MAGIC" );
 
 SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int artist ) : Album()
     , m_collection( QPointer<SqlCollection>( collection ) )
@@ -956,6 +957,7 @@ SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int 
     , m_artistId( artist )
     , m_hasImage( false )
     , m_hasImageChecked( false )
+    , m_unsetImageId( -1 )
     , m_tracksLoaded( false )
     , m_artist()
     , m_mutex( QMutex::Recursive )
@@ -1033,6 +1035,12 @@ SqlAlbum::image( int size, bool withShadow )
     else
     {
         QString image = findImage( size );
+
+        // If we return this value then we don't need to do anything else
+        // as we know that the user has explicitly set no cover
+        if( image == AMAROK_UNSET_MAGIC )
+            return Meta::Album::image( size, withShadow );
+
         if( !image.isEmpty() && size < 1000 )
             result = image;
     }
@@ -1127,9 +1135,11 @@ SqlAlbum::removeImage()
         int imageId    = res[0].toInt();
         int references = res[1].toInt();
 
-        // Set the album image to empty
-        query = "UPDATE albums SET image = NULL WHERE id = %1";
-        m_collection->query( query.arg( QString::number( m_id ) ) );
+        // Set the album image to a magic value which will tell Amarok not to fetch it automatically
+        const int unsetId = unsetImageId();
+
+        query = "UPDATE albums SET image = %1 WHERE id = %2";
+        m_collection->query( query.arg( QString::number( unsetId ), QString::number( m_id ) ) );
 
         // We've just removed a references to that imageid
         references--;
@@ -1151,8 +1161,34 @@ SqlAlbum::removeImage()
     }
 
     m_images.clear();
+    m_images.insert( 0, AMAROK_UNSET_MAGIC ); // Set the cached image to be the magic value
 
     notifyObservers();
+}
+
+int
+SqlAlbum::unsetImageId() const
+{
+    // Return the cached value if we have already done the lookup before
+    if( m_unsetImageId >= 0 )
+        return m_unsetImageId;
+
+    QString query = "SELECT id FROM images WHERE path = '%1'";
+    QStringList res = m_collection->query( query.arg( AMAROK_UNSET_MAGIC ) ); 
+
+    // We already have the AMAROK_UNSET_MAGIC variable in the database
+    if( !res.isEmpty() )
+    {
+        m_unsetImageId = res[0].toInt();
+    }
+    else
+    {
+        // We need to create this value
+        query = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
+                         .arg( m_collection->escape( AMAROK_UNSET_MAGIC ) );
+        m_unsetImageId = m_collection->insert( query, "images" );
+    }
+    return m_unsetImageId;
 }
 
 bool
@@ -1265,10 +1301,13 @@ SqlAlbum::findImage( int size )
         if( !res.isEmpty() )
         {
             fullsize = res.first();
-            if( !fullsize.isEmpty() )
+            if( !fullsize.isEmpty() ) 
                 m_images.insert( 0, fullsize ); // store the full size version
         }
     }
+
+    if( fullsize == AMAROK_UNSET_MAGIC )
+        return AMAROK_UNSET_MAGIC;
 
     if( QFile::exists( fullsize ) )
     {
