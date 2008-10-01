@@ -239,9 +239,6 @@ void SvgHandler::setThemeFile( const QString & themeFile )
 
 QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache )
 {
-
-    DEBUG_BLOCK
-    
     int newWidth = orgPixmap.width() + borderWidth * 2;
     int newHeight = orgPixmap.height() + borderWidth *2;
 
@@ -249,10 +246,10 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     pixmap.fill( Qt::transparent );
     
     QReadLocker readLocker( &d->lock );
-    if( ! d->renderers[d->themeFile] )
+    if( !d->renderers[d->themeFile] )
     {
         readLocker.unlock();
-        if( ! d->loadSvg( d->themeFile ) )
+        if( !d->loadSvg( d->themeFile ) )
             return pixmap;
         readLocker.relock();
     }
@@ -263,15 +260,11 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
             .arg( newHeight )
             .arg( borderWidth );
 
-    debug() << "key: " << key;
-
-
-    if ( !QPixmapCache::find( key, pixmap ) || skipCache ) {
-
+    if( !QPixmapCache::find( key, pixmap ) || skipCache )
+    {
         debug() << "Cache miss!";
         
         QPainter pt( &pixmap );
-
 
         pt.drawPixmap( borderWidth, borderWidth, orgPixmap.width(), orgPixmap.height(), orgPixmap );
 
@@ -287,12 +280,5 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
         QPixmapCache::insert( key, pixmap );
     }
 
-    return pixmap;
-
-
-
-    
-
-
-    
+    return pixmap;    
 }
