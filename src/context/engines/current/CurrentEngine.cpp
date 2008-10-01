@@ -131,14 +131,21 @@ CurrentEngine::stoppedState()
 void CurrentEngine::metadataChanged( Meta::Album* album )
 {
     DEBUG_BLOCK
-    setData( "current", "albumart", album->image( coverWidth() ) );
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    if ( currentTrack && currentTrack->album() == album )
+    {
+        setData( "current", "albumart", album->image( coverWidth() ) );
+    }
 }
 
 void
 CurrentEngine::metadataChanged( Meta::Track *track )
 {
-    QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
-    setData( "current", "current", trackInfo );
+    if ( The::engineController()->currentTrack() == track )
+    {
+        QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
+        setData( "current", "current", trackInfo );
+    }
 }
 
 void CurrentEngine::update()
