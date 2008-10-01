@@ -272,6 +272,9 @@ namespace Playlist
 
             static bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right );
 
+            int getTotalLength();
+            
+
         public slots:
             void play( const QModelIndex& index );
             void next();

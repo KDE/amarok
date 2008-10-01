@@ -1757,6 +1757,19 @@ Playlist::Model::slotFinishAddRecursively( const Meta::TrackList& tracks )
     }
 }
 
+int
+Playlist::Model::getTotalLength()
+{
+    int totalLength = 0;
+    //debug()<<"The itemList().size() is " << itemList().size() << "  " << itemCount();
+    foreach( Item* item, itemList() ){
+        totalLength += item->track()->length();
+        //debug()<<"I'm at item " << totalLength;
+    }
+    return totalLength;
+    
+}
+
 
 namespace The {
     Playlist::Model* playlistModel() { return Playlist::Model::s_instance; }
