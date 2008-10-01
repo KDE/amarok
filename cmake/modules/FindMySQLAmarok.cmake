@@ -17,6 +17,7 @@ find_path(MYSQL_INCLUDE_DIR mysql.h
    ~/usr/include/mysql
    /usr/include/mysql
    /usr/local/include/mysql
+   /opt/local/include/mysql5/mysql
 )
 
 find_library(MYSQL_LIBRARIES NAMES mysqlclient
@@ -24,6 +25,7 @@ find_library(MYSQL_LIBRARIES NAMES mysqlclient
    ~/usr/lib/mysql
    /usr/lib/mysql
    /usr/local/lib/mysql
+   /opt/local/lib/mysql5/mysql
 )
 
 find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld libmysqld
@@ -33,6 +35,7 @@ find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld libmysqld
    /usr/lib64/mysql
    /usr/local/lib/mysql
    /opt/mysql/lib/mysql
+   /opt/local/lib/mysql5/mysql
 )
 
 macro_push_required_vars()
