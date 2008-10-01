@@ -262,7 +262,7 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
 
     if( !QPixmapCache::find( key, pixmap ) || skipCache )
     {
-        debug() << "Cache miss!";
+        // Cache miss! We need to create the pixmap
         
         QPainter pt( &pixmap );
 
