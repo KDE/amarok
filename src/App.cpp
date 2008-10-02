@@ -180,8 +180,9 @@ App::App()
     setupEventHandler_mac((long)this);
 #endif
 
-    QTimer::singleShot( 0, this, SLOT( continueInit() ) );
     PERF_LOG( "Done App ctor" )
+
+    continueInit();
 }
 
 App::~App()
@@ -1026,8 +1027,10 @@ namespace Amarok
 
 int App::newInstance()
 {
+    DEBUG_BLOCK
+
     static bool first = true;
-    if ( isSessionRestored() && first)
+    if ( isSessionRestored() && first )
     {
         first = false;
         return 0;
