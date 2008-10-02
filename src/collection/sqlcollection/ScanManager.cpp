@@ -128,7 +128,7 @@ void ScanManager::startIncrementalScan()
         debug() << "scanning currently blocked";
         return;
     }
-    QStringList dirs = getDirsToScan();
+    const QStringList dirs = getDirsToScan();
     if( dirs.isEmpty() )
     {
         return;
