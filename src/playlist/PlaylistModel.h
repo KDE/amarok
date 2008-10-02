@@ -272,7 +272,7 @@ namespace Playlist
 
             static bool trackNumberLessThan( Meta::TrackPtr left, Meta::TrackPtr right );
 
-            int getTotalLength();
+            int totalLength();
             
 
         public slots:

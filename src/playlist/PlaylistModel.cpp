@@ -1758,13 +1758,11 @@ Playlist::Model::slotFinishAddRecursively( const Meta::TrackList& tracks )
 }
 
 int
-Playlist::Model::getTotalLength()
+Playlist::Model::totalLength()
 {
     int totalLength = 0;
-    //debug()<<"The itemList().size() is " << itemList().size() << "  " << itemCount();
     foreach( Item* item, itemList() ){
         totalLength += item->track()->length();
-        //debug()<<"I'm at item " << totalLength;
     }
     return totalLength;
     
