@@ -192,14 +192,25 @@ MtpHandler::getDeviceInfo()
 {
     // Get information for device
 
+
+
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
+
+    // NOTE: on next libmtp bump, may reintroduce owner name
+    // for now it doesn't work as expected
+    /*
     QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );
     m_name = modelname;
     if(! ownername.isEmpty() )
         if( modelname != ownername )
             m_name += " (" + ownername + ')';
+    
     else
         m_name += " (No Owner Name)";
+
+    */
+
+    m_name = modelname;
 
     m_default_parent_folder = m_device->default_music_folder;
     debug() << "setting default parent : " << m_default_parent_folder;
