@@ -72,6 +72,7 @@ VERSION 2.0-beta2
     * Libgrypt is preferred over OpenSSL at build time, for licensing reasons.
 
   BUGFIXES:
+    * Fixed crash on startup when using --nofork option with a URL argument.
     * Don't automatically refetch images after they have been removed.
       (BR 169619)
     * Fixed crash when playing certain podcasts. (BR 171890)
