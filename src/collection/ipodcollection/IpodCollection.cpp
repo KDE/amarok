@@ -68,7 +68,7 @@ IpodCollectionFactory::init()
 
     // scan for ipods
 
-    MediaDeviceMonitor::instance()->checkDevicesForIpod();
+    //MediaDeviceMonitor::instance()->checkDevicesForIpod();
 
 
     return;
