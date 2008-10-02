@@ -120,7 +120,6 @@ XSPFPlaylist::save( const QString &location, bool relative )
 
     QTextStream stream ( &file );
     stream.setCodec( "UTF-8" );
-    debug() << "saving...";
     QDomDocument::save( stream, 2 /*indent*/, QDomNode::EncodingFromTextStream );
 
     return true;
@@ -129,13 +128,10 @@ XSPFPlaylist::save( const QString &location, bool relative )
 bool
 XSPFPlaylist::loadXSPF( QTextStream &stream )
 {
-    DEBUG_BLOCK
     QString errorMsg;
     int errorLine, errorColumn;
 
     QString rawText = stream.readAll();
-
-    debug() << "raw text: " << rawText;
     
     if ( !setContent( rawText, &errorMsg, &errorLine, &errorColumn ) )
     {
@@ -152,8 +148,6 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
 TrackList
 XSPFPlaylist::tracks()
 {
-    DEBUG_BLOCK
-    
     XSPFTrackList xspfTracks = trackList();
     TrackList tracks;
 
@@ -194,8 +188,6 @@ XSPFPlaylist::tracks()
         }*/
         
     }
-    debug() << "returning " <<  tracks.size() << "tracks!";
-    
     return tracks;
 }
 
@@ -448,7 +440,6 @@ XSPFPlaylist::setLink( const KUrl &link )
 XSPFTrackList
 XSPFPlaylist::trackList()
 {
-    DEBUG_BLOCK
     XSPFTrackList list;
 
     QDomNode trackList = documentElement().namedItem( "trackList" );
@@ -461,8 +452,6 @@ XSPFPlaylist::trackList()
         subSubNode = subNode.firstChild();
         if ( subNode.nodeName() == "track" )
         {
-
-            debug() << "got track: " << track.title;
             while ( !subSubNode.isNull() )
             {
                 if ( subSubNode.nodeName() == "location" )
@@ -490,8 +479,6 @@ XSPFPlaylist::trackList()
 
                 subSubNode = subSubNode.nextSibling();
             }
-
-            debug() << "got track: " << track.title;
         }
         list.append( track );
         subNode = subNode.nextSibling();
