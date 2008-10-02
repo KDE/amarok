@@ -20,8 +20,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#define DEBUG_PREFIX "Playlist::GraphicsView"
-
 #include "PlaylistGraphicsView.h"
 
 #include "Amarok.h"
@@ -35,7 +33,6 @@
 #include "PlaylistViewCommon.h"
 #include "SvgTinter.h"
 #include "WidgetBackgroundPainter.h"
-#include "dialogs/TagDialog.h"
 #include "meta/CurrentTrackActionsCapability.h"
 
 #include <KAction>
@@ -51,6 +48,7 @@
 #include <QVariant>
 
 #include <typeinfo>
+
 
 Playlist::GraphicsView *Playlist::GraphicsView::s_instance = 0;
 
@@ -107,7 +105,6 @@ Playlist::GraphicsView::setModel( Playlist::Model *model )
 void
 Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
 {
-    DEBUG_BLOCK
     QPointF sceneClickPos = mapToScene( event->pos() );
     QGraphicsItem *topItem = scene()->itemAt( sceneClickPos );
     if( !topItem )
@@ -127,7 +124,7 @@ Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
     QPointF itemClickPos = item->mapFromScene( sceneClickPos );
     int row = m_tracks.indexOf( static_cast<Playlist::GraphicsItem*>(item) );
     const QModelIndex index = The::playlistModel()->index( row, 0 );
-    ViewCommon::trackMenu(this, &index, event->globalPos(), item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ));
+    ViewCommon::trackMenu(this, &index ,event->globalPos(), item->groupMode() < Playlist::Body && item->imageLocation().contains( itemClickPos ));
 }
 
 void
@@ -160,23 +157,12 @@ Playlist::GraphicsView::unsetItemImage()
 void
 Playlist::GraphicsView::editTrackInformation()
 {
-    DEBUG_BLOCK
-    QList<QGraphicsItem*> selection = scene()->selectedItems();
-
-    if( selection.isEmpty() )
-        return; // our job here is done.
-
-    Meta::TrackList selected;
-    foreach (QGraphicsItem* item, selection) {
-        Playlist::GraphicsItem* pli = dynamic_cast<Playlist::GraphicsItem*>(item);
-        if (pli) {
-            selected.append(pli->internalTrack());
-            debug() << pli->internalTrack()->prettyName() << "will be edited";
-        }
+    if( !m_contextMenuItem )
+    {
+        return;
     }
-    debug() << "total of" << selected.size() << "tracks to edit";
-    TagDialog *dialog = new TagDialog(selected, The::playlistView());
-    dialog->show();
+    m_contextMenuItem->editTrackInformation();
+    m_contextMenuItem = 0;
 }
 
 void
@@ -298,6 +284,8 @@ Playlist::GraphicsView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::GraphicsView::mouseReleaseEvent( QMouseEvent* event )
 {
+    DEBUG_BLOCK
+
     if( event->button() == Qt::MidButton )
     {
         QList<KUrl> urls;

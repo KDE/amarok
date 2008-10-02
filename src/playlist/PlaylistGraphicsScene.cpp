@@ -48,10 +48,6 @@ GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
     QGraphicsScene::mousePressEvent( event );
 
-    // right and middle mouse button actions are handled in PlaylistGraphicsView::mouseReleaseEvent
-    if (event->button() != Qt::LeftButton)
-        return;
-
     if( clickedItems.isEmpty() )
         return;
 
