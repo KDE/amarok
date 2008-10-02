@@ -61,7 +61,9 @@ IpodCollectionFactory::init()
 
             // connect to the monitor
 
-        connect( MediaDeviceMonitor::instance(), SIGNAL( ipodDetected( const QString &, const QString & ) ),
+    // TODO: the connection to this slot needs to be redone elsewhere
+
+        connect( MediaDeviceMonitor::instance(), SIGNAL( ipodReadyToConnect( const QString &, const QString & ) ),
                  SLOT( ipodDetected( const QString &, const QString & ) ) );
 
     // scan for ipods

@@ -229,3 +229,9 @@ MediaDeviceMonitor::isMtp( const QString &udi )
     return false;
 }
 
+void
+MediaDeviceMonitor::connectIpod( const QString &mountpoint, const QString &udi )
+{
+    emit ipodReadyToConnect( mountpoint, udi );
+}
+

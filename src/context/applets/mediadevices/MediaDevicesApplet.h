@@ -17,13 +17,40 @@
 
 #include <KIcon>
 
+#include <QList>
+
 #include <context/Applet.h>
 #include <context/Svg.h>
 
-#include <plasma/widgets/icon.h>
+namespace Plasma {
+    class Icon;
+    class Label;
+}
+
 
 class QSizeF;
 class QGraphicsLinearLayout;
+
+// A convenience class to store and send connection information
+class IpodInfo : public QObject
+{
+    Q_OBJECT
+    public:
+        IpodInfo( QObject *parent, const QString &mountpoint, const QString &udi );
+        ~IpodInfo();
+
+    signals:
+        void readyToConnect( const QString &mountpoint, const QString &udi );
+
+    public slots:
+        void connectClicked();
+
+    private:
+        QString m_mountpoint;
+        QString m_udi;
+};
+
+//class QList<IpodInfo>;
 
 
 // Define our plasma Applet
@@ -48,6 +75,11 @@ class MediaDevicesApplet : public Context::Applet
         Plasma::Icon *m_connect;
         Plasma::Icon *m_disconnect;
         QGraphicsLinearLayout *m_layout;
+
+        QList<IpodInfo> m_ipodInfoList;
+
+    private slots:
+        void ipodDetected( const QString &mountPoint, const QString &udi );
 
 };
 
