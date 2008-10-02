@@ -45,6 +45,10 @@ class IpodCollectionFactory : public CollectionFactory
 
     private:
 
+    public slots:
+        // convenience slot
+        void removeIpod( const QString &udi ) { deviceRemoved( udi ); }
+
     private slots:
 
     void ipodDetected( const QString &mountPoint, const QString &udi );
