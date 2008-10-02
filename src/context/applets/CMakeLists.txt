@@ -6,4 +6,5 @@ add_subdirectory( serviceinfo )
 add_subdirectory( wikipedia )
 add_subdirectory( cloud )
 add_subdirectory( video )
-add_subdirectory( mediadevices )
+# commented out until later version of Amarok for tagging purposes
+#add_subdirectory( mediadevices )
