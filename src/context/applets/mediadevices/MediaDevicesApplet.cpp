@@ -141,6 +141,13 @@ MediaDevicesApplet::ipodDetected( const QString &mountPoint, const QString &udi 
 
     DEBUG_BLOCK
 
+    // if already in list, do not add twice to applet
+
+    if( m_udiList.contains( udi ) )
+            return;
+    else
+        m_udiList << udi;
+
     // set up info class
 
     IpodInfo *ipodInfo = new IpodInfo( this, mountPoint, udi );

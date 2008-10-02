@@ -18,6 +18,7 @@
 #include <KIcon>
 
 #include <QList>
+#include <QStringList>
 
 #include <context/Applet.h>
 #include <context/Svg.h>
@@ -77,6 +78,7 @@ class MediaDevicesApplet : public Context::Applet
         QGraphicsLinearLayout *m_layout;
 
         QList<IpodInfo> m_ipodInfoList;
+        QStringList m_udiList;
 
     private slots:
         void ipodDetected( const QString &mountPoint, const QString &udi );
