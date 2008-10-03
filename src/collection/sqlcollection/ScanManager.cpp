@@ -266,11 +266,10 @@ ScanManager::getDirsToScan() const
     QString deviceIds;
     foreach( int id, list )
     {
-        debug() << "got mounted device id:" << id;
         if ( !deviceIds.isEmpty() ) deviceIds += ',';
         deviceIds += QString::number( id );
     }
-
+    
     const QStringList values = m_collection->query(
             QString( "SELECT id, deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" )
             .arg( deviceIds ) );
@@ -292,7 +291,6 @@ ScanManager::getDirsToScan() const
             {
                 result << folder;
                 changedFolderIds << id;
-//                 debug() << "Collection dir changed: " << folder;
             }
         }
         else
@@ -300,7 +298,6 @@ ScanManager::getDirsToScan() const
             // this folder has been removed
             result << folder;
             changedFolderIds << id;
-//             debug() << "Collection dir removed: " << folder;
         }
     }
     {
@@ -311,22 +308,24 @@ ScanManager::getDirsToScan() const
                 ids += ',';
             ids += QString::number( id );
         }
-        QString query = QString( "SELECT id FROM urls WHERE directory IN ( %1 );" ).arg( ids );
-        QStringList urlIds = m_collection->query( query );
-        ids.clear();
-        foreach( const QString &id, urlIds )
+        if( !ids.isEmpty() )
         {
+            QString query = QString( "SELECT id FROM urls WHERE directory IN ( %1 );" ).arg( ids );
+            QStringList urlIds = m_collection->query( query );
+            ids.clear();
+            foreach( const QString &id, urlIds )
+            {
+                if( !ids.isEmpty() )
+                    ids += ',';
+                ids += id;
+            }
             if( !ids.isEmpty() )
-                ids += ',';
-            ids += id;
+            {
+                QString sql = QString( "DELETE FROM tracks WHERE url IN ( %1 );" ).arg( ids );
+                m_collection->query( sql );
+            }
         }
-        QString sql = QString( "DELETE FROM tracks WHERE url IN ( %1 );" ).arg( ids );
-        m_collection->query( sql );
     }
-// //     if( result.isEmpty() )
-// //         debug() << "incremental scan not necessary";
-// // //     else
-// // //         debug() << "scanning dirs: " << result;
     return result;
 }
 
