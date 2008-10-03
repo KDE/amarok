@@ -29,7 +29,7 @@ email                : markey@web.de
 #include "Meta.h"
 #include "meta/MetaConstants.h"
 #include "metadata/tplugins.h"
-#include "mountpointmanager.h"
+#include "MountPointManager.h"
 #include "Osd.h"
 #include "PlayerDBusHandler.h"
 #include "playlist/PlaylistModel.h"
