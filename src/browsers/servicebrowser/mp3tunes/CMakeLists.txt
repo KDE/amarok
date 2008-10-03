@@ -98,7 +98,6 @@ if(LIBXML2_FOUND AND CURL_FOUND)
             ${KDE4_KDECORE_LIBS}
             ${KDE4_KDEUI_LIBS}
             ${KDE4_THREADWEAVER_LIBRARIES}
-            ${OPENSSL_LIBRARIES}
             ${LIBXML2_LIBRARIES}
             ${CURL_LIBRARIES}
             ${QT_QTNETWORK_LIBRARY}
