@@ -22,16 +22,17 @@
 #include "ScanManager.h"
 
 #include "amarokconfig.h"
-#include "statusbar/StatusBar.h"
-#include "statusbar/progressBar.h"
 #include "Debug.h"
-#include "meta/MetaConstants.h"
-#include "meta/MetaUtility.h"
 #include "mountpointmanager.h"
-#include "playlistmanager/PlaylistManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlCollectionDBusHandler.h"
+
+#include "meta/MetaConstants.h"
+#include "meta/MetaUtility.h"
+#include "playlistmanager/PlaylistManager.h"
+#include "statusbar/StatusBar.h"
+#include "statusbar/progressBar.h"
 
 #include <QFileInfo>
 #include <QListIterator>
@@ -51,7 +52,7 @@ static const int MAX_FAILURE_PERCENTAGE = 5;
 
 
 ScanManager::ScanManager( SqlCollection *parent )
-    :QObject( parent )
+    : QObject( parent )
     , m_collection( parent )
     , m_dbusHandler( 0 )
     , m_scanner( 0 )
@@ -67,7 +68,8 @@ ScanManager::~ScanManager()
 {
     DEBUG_BLOCK
 
-    if( m_parser ) {
+    if( m_parser )
+    {
         m_parser->requestAbort();
         while( !m_parser->isFinished() )
             usleep( 100000 ); // Sleep 100 msec
