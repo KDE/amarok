@@ -599,7 +599,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
     //check if this album already exists, ignoring the albumartist
     //if it does, and if each file of the album is alone in its directory
     //it's probably a compilation.
-    QString query = "SELECT urls.deviceid,urls.rpath,Tracks_temp.id,albums.id,albums.artist FROM urls_temp AS urls "
+    QString query = "SELECT urls.deviceid,urls.rpath,tracks_temp.id,albums.id,albums.artist FROM urls_temp AS urls "
                     "LEFT JOIN tracks_temp on urls.id = tracks_temp.url LEFT JOIN albums_temp AS albums ON "
                     "tracks_temp.album = albums.id WHERE albums.name = '%1';";
     query = query.arg( m_collection->escape( album ) );
