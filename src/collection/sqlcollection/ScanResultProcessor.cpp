@@ -23,7 +23,7 @@
 #include "Debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
-#include "mountpointmanager.h"
+#include "MountPointManager.h"
 #include "SqlCollection.h"
 
 #include <QDir>

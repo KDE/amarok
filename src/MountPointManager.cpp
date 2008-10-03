@@ -18,7 +18,7 @@
 
 #define DEBUG_PREFIX "MountPointManager"
 
-#include "mountpointmanager.h"
+#include "MountPointManager.h"
 
 #include "Amarok.h"
 #include "CollectionManager.h"
@@ -657,4 +657,4 @@ void UrlUpdateJob::updateLabels( )
     }
 }
 
-#include "mountpointmanager.moc"
+#include "MountPointManager.moc"

@@ -462,7 +462,7 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/kbookmarkhandler.cpp
     ktrm.cpp
     medium.cpp
-    mountpointmanager.cpp
+    MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     refreshimages.cpp

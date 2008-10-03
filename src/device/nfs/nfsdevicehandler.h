@@ -18,7 +18,7 @@
 #ifndef NFSDEVICEHANDLER_H
 #define NFSDEVICEHANDLER_H
 
-#include <mountpointmanager.h>
+#include <MountPointManager.h>
 
 class NfsDeviceHandlerFactory : public DeviceHandlerFactory
 {

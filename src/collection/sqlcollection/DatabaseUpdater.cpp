@@ -19,7 +19,7 @@
 #include "DatabaseUpdater.h"
 
 #include "Debug.h"
-#include "mountpointmanager.h"
+#include "MountPointManager.h"
 #include "SqlCollection.h"
 
 static const int DB_VERSION = 1;

@@ -25,7 +25,7 @@
 #include "Debug.h"
 #include "amarokconfig.h"
 #include "file/File.h"
-#include "mountpointmanager.h"
+#include "MountPointManager.h"
 #include "QueryMaker.h"
 #include "qstringx.h"
 #include "SqlQueryMaker.h"

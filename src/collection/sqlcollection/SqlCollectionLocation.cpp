@@ -21,7 +21,7 @@
 #include "Debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
-#include "mountpointmanager.h"
+#include "MountPointManager.h"
 #include "OrganizeCollectionDialog.h"
 #include "ScanManager.h"
 #include "ScanResultProcessor.h"

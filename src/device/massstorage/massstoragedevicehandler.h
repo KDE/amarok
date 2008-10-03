@@ -18,7 +18,7 @@
 #ifndef MASSSTORAGEDEVICEHANDLER_H
 #define MASSSTORAGEDEVICEHANDLER_H
 
-#include <mountpointmanager.h>
+#include <MountPointManager.h>
 
 class MassStorageDeviceHandlerFactory : public DeviceHandlerFactory
 {

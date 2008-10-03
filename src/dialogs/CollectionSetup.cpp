@@ -20,7 +20,7 @@
 
 #include "CollectionManager.h"
 #include "amarokconfig.h"
-#include "mountpointmanager.h"
+#include "MountPointManager.h"
 
 #include <KFileItem>
 #include <KLocale>

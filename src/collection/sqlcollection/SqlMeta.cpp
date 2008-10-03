@@ -34,7 +34,7 @@
 #include "meta/EditCapability.h"
 #include "meta/OrganiseCapability.h"
 #include "meta/UpdateCapability.h"
-#include "mountpointmanager.h"
+#include "MountPointManager.h"
 //#include "ScriptManager.h"
 //#include "mediadevice/CopyToDeviceAction.h"
 

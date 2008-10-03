@@ -22,7 +22,7 @@
 
 #include "Debug.h"
 
-#include "mountpointmanager.h"
+#include "MountPointManager.h"
 #include "SqlCollection.h"
 
 #include <QHashIterator>

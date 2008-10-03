@@ -18,7 +18,7 @@
 #ifndef SMBDEVICEHANDLER_H
 #define SMBDEVICEHANDLER_H
 
-#include <mountpointmanager.h>
+#include <MountPointManager.h>
 
 class SmbDeviceHandlerFactory : public DeviceHandlerFactory
 {

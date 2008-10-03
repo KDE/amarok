@@ -23,7 +23,7 @@
 
 #include "amarokconfig.h"
 #include "Debug.h"
-#include "mountpointmanager.h"
+#include "MountPointManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlCollectionDBusHandler.h"
@@ -131,6 +131,11 @@ void ScanManager::startIncrementalScan()
         return;
     }
     const QStringList dirs = getDirsToScan();
+
+    debug() << "GOING TO SCAN:";
+    foreach( QString dir, dirs )
+        debug() << "    " << dir;
+
     if( dirs.isEmpty() )
     {
         return;
@@ -261,6 +266,7 @@ ScanManager::getDirsToScan() const
     QString deviceIds;
     foreach( int id, list )
     {
+        debug() << "got mounted device id:" << id;
         if ( !deviceIds.isEmpty() ) deviceIds += ',';
         deviceIds += QString::number( id );
     }
