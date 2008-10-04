@@ -50,8 +50,10 @@ namespace Amarok
     static QImage
     loadOverlay( const char *iconName )
     {
-        return QImage( KStandardDirs::locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" )
-                                                      .scaled( 10, 10, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+        QImage img = QImage( KStandardDirs::locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" );
+        if (!img.isNull())
+            img = img.scaled( 10, 10, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+        return img;
     }
 
     TrayIcon* TrayIcon::s_instance = 0;
