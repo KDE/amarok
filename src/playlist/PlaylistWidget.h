@@ -24,7 +24,10 @@
 
 #include "widgets/StackedWidget.h"
 
+
 #include <KVBox>
+
+#include <QLabel>
 
 namespace Playlist {
 
@@ -36,12 +39,14 @@ namespace Playlist {
 
         public slots:
             void switchView();
+            void updateTotalLength();
 
         protected:
             QSize sizeHint() const;
             
         private:
             Amarok::StackedWidget *m_stackedWidget;
+            QLabel *m_totalTime;
     };
 }
 

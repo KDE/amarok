@@ -26,9 +26,9 @@
 //#include "PlaylistClassicView.h"
 #include "PlaylistGraphicsView.h"
 #include "PlaylistHeader.h"
-#include "PlaylistModel.h"
 #include "statusbar/selectLabel.h"
 #include "ToolBar.h"
+#include "PlaylistModel.h"
 #include "WidgetBackgroundPainter.h"
 #include "widgets/Widget.h"
 
@@ -37,6 +37,9 @@
 #include <QHBoxLayout>
 #include <QTreeView>
 #include <QStackedWidget>
+#include <QTime>
+
+#include <cmath>
 
 
 using namespace Playlist;
@@ -86,6 +89,22 @@ Widget::Widget( QWidget* parent )
     KToolBar *plBar = new Amarok::ToolBar( this );
     plBar->setObjectName( "PlaylistToolBar" );
 
+    m_totalTime = new QLabel( "00:00", this );
+    connect( playModel, SIGNAL( playlistCountChanged( int ) ), this, SLOT( updateTotalLength() ) );
+    connect( playModel, SIGNAL( playlistGroupingChanged() ), this, SLOT( updateTotalLength() ) );
+    connect( playModel, SIGNAL( rowsChanged( int ) ), this, SLOT( updateTotalLength() ) );
+    connect( playModel, SIGNAL( rowMoved( int, int ) ), this, SLOT( updateTotalLength() ) );
+    connect( playModel, SIGNAL( activeRowChanged( int, int ) ), this, SLOT( updateTotalLength() ) );
+    connect( playModel, SIGNAL( repopulate() ), this, SLOT( updateTotalLength() ) );
+/*
+    signals:
+        void playlistCountChanged( int newCount );
+        void playlistGroupingChanged();
+        void rowsChanged( int startRow );
+        void rowMoved( int from, int to );
+        void activeRowChanged( int from, int to );
+        void repopulate();*/
+
     KAction * action = new KAction( KIcon( "view-media-playlist-amarok" ), i18nc( "switch view", "Switch Playlist &View" ), this );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( switchView() ) );
             Amarok::actionCollection()->addAction( "playlist_switch", action );
@@ -133,5 +152,15 @@ void Widget::switchView()
     m_stackedWidget->setCurrentIndex( ( m_stackedWidget->currentIndex() + 1 ) % 2 );
 }
 
+void
+Widget::updateTotalLength() //SLOT
+{
+    int totalLength = The::playlistModel()->totalLength();
+    QTime *totalTime = new QTime(0, 0, 0);
+    *totalTime = totalTime->addSecs( totalLength );
+    m_totalTime->setText( totalTime->toString() );
+    //QTime sec = QTime( static_cast<int>( std::floor( totalLength / (60*60.) ) ) % 60 , static_cast<int>( std::floor( totalLength / 60. ) ) % 60, totalLength % 60); //Use addSecs
+    
+}
 
 #include "PlaylistWidget.moc"
