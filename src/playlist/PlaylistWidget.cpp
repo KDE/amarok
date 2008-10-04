@@ -87,7 +87,7 @@ Widget::Widget( QWidget* parent )
     m_stackedWidget->setCurrentIndex( 0 );
 
     KHBox *barBox = new KHBox( this );
-    barBox->setMargin( 3 );
+    barBox->setMargin( 6 );
     //QHBoxLayout *barAndLength = new QHBoxLayout( barBox );
     
     //barAndLength->addStretch();
@@ -99,6 +99,7 @@ Widget::Widget( QWidget* parent )
     //barAndLength->addStretch();
     
     m_totalTime = new QLabel( "00:00", barBox );
+    m_totalTime->setAlignment( Qt::AlignCenter );
     //barAndLength->addWidget( m_totalTime );
     m_totalTime->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
 
