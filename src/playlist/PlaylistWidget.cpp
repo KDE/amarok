@@ -156,9 +156,10 @@ void
 Widget::updateTotalLength() //SLOT
 {
     int totalLength = The::playlistModel()->totalLength();
+    int trackCount = The::playlistModel()->rowCount();
     QTime *totalTime = new QTime(0, 0, 0);
     *totalTime = totalTime->addSecs( totalLength );
-    m_totalTime->setText( totalTime->toString() );
+    m_totalTime->setText( QString::number( trackCount ) + " tracks (" + totalTime->toString( "h:mm:ss" ) + ")" );
     //QTime sec = QTime( static_cast<int>( std::floor( totalLength / (60*60.) ) ) % 60 , static_cast<int>( std::floor( totalLength / 60. ) ) % 60, totalLength % 60); //Use addSecs
     
 }
