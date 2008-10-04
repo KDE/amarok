@@ -163,9 +163,9 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
             QString text;
 
             if( trackNumber > 0 )
-                text = QString( "%1\t%2" ).arg( QString::number(trackPtr->trackNumber()), trackPtr->prettyName() );
+                text = QString( "%1\t%2" ).arg( QString::number( trackNumber ), trackPtr->prettyName() );
             else
-                text = trackPtr->prettyName();
+                text = QString( "\t%1" ).arg( trackPtr->prettyName() );
 
             QStandardItem *trackItem = new QStandardItem();
             trackItem->setText( text );
