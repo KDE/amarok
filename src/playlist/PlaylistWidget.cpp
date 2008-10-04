@@ -70,7 +70,7 @@ Widget::Widget( QWidget* parent )
     playView->setFrameShape( QFrame::NoFrame );  // Get rid of the redundant border
     playView->setModel( playModel );
 
-
+    
     // Classic View disabled for 2.0
     //Playlist::ClassicView * clasicalPlaylistView = new Playlist::ClassicView( this );
 
@@ -86,25 +86,32 @@ Widget::Widget( QWidget* parent )
 
     m_stackedWidget->setCurrentIndex( 0 );
 
-    KToolBar *plBar = new Amarok::ToolBar( this );
-    plBar->setObjectName( "PlaylistToolBar" );
+    KHBox *barBox = new KHBox( this );
+    barBox->setMargin( 3 );
+    //QHBoxLayout *barAndLength = new QHBoxLayout( barBox );
+    
+    //barAndLength->addStretch();
 
-    m_totalTime = new QLabel( "00:00", this );
+    KToolBar *plBar = new Amarok::ToolBar( barBox );
+    //barAndLength->addWidget( plBar );
+    plBar->setObjectName( "PlaylistToolBar" );
+    
+    //barAndLength->addStretch();
+    
+    m_totalTime = new QLabel( "00:00", barBox );
+    //barAndLength->addWidget( m_totalTime );
+    m_totalTime->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+
+    //barAndLength->addStretch();
+    
     connect( playModel, SIGNAL( playlistCountChanged( int ) ), this, SLOT( updateTotalLength() ) );
     connect( playModel, SIGNAL( playlistGroupingChanged() ), this, SLOT( updateTotalLength() ) );
     connect( playModel, SIGNAL( rowsChanged( int ) ), this, SLOT( updateTotalLength() ) );
     connect( playModel, SIGNAL( rowMoved( int, int ) ), this, SLOT( updateTotalLength() ) );
     connect( playModel, SIGNAL( activeRowChanged( int, int ) ), this, SLOT( updateTotalLength() ) );
     connect( playModel, SIGNAL( repopulate() ), this, SLOT( updateTotalLength() ) );
-/*
-    signals:
-        void playlistCountChanged( int newCount );
-        void playlistGroupingChanged();
-        void rowsChanged( int startRow );
-        void rowMoved( int from, int to );
-        void activeRowChanged( int from, int to );
-        void repopulate();*/
 
+        
     KAction * action = new KAction( KIcon( "view-media-playlist-amarok" ), i18nc( "switch view", "Switch Playlist &View" ), this );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( switchView() ) );
             Amarok::actionCollection()->addAction( "playlist_switch", action );
@@ -112,7 +119,7 @@ Widget::Widget( QWidget* parent )
 
     { //START Playlist toolbar
 //         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-        plBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+        plBar->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
         plBar->setIconDimensions( 22 );
         plBar->setMovable( false );
         plBar->addAction( new KToolBarSpacerAction( this ) );
@@ -156,10 +163,10 @@ void
 Widget::updateTotalLength() //SLOT
 {
     int totalLength = The::playlistModel()->totalLength();
-    int trackCount = The::playlistModel()->rowCount();
+    const int trackCount = The::playlistModel()->rowCount();
     QTime *totalTime = new QTime(0, 0, 0);
     *totalTime = totalTime->addSecs( totalLength );
-    m_totalTime->setText( QString::number( trackCount ) + " tracks (" + totalTime->toString( "h:mm:ss" ) + ")" );
+    m_totalTime->setText( QString::number( trackCount ) + " " + i18n( "tracks" ) + " (" + totalTime->toString( "h:mm:ss" ) + ")" );
     //QTime sec = QTime( static_cast<int>( std::floor( totalLength / (60*60.) ) ) % 60 , static_cast<int>( std::floor( totalLength / 60. ) ) % 60, totalLength % 60); //Use addSecs
     
 }
