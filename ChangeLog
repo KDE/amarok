@@ -7,8 +7,20 @@ VERSION 2.0-beta3
   FEATURES:
 
   CHANGES:
+    * All services ( or any other part of Amarok ) can now add context 
+      actions to any item in any collection. This is only used for the "play 
+      similar artists from last.fm" currently, but it allows this kind of 
+      action to be added without hardcoding it in the core. The immidiate 
+      effect of this is that the last.fm action is now available for any 
+      artist in any collection.
+    * Major restructuring of the directory layout of the service framework
+    * New "playground" directory added for plugins and applets that are not 
+      yet ready for prime time.
 
   BUGFIXES:
+    * Cloud applet moved to playground as it still needs a lot of work 
+      (BR 170613)
+
 
 
 
