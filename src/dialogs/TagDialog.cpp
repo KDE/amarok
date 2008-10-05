@@ -83,7 +83,7 @@ private:
 
 
 TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
-    :KDialog( parent )
+    : KDialog( parent )
     , m_currentCover()
     , m_tracks( tracks )
     , m_currentTrack( tracks.first() )
@@ -91,6 +91,8 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     , m_queryMaker( 0 )
     , ui( new Ui::TagDialogBase() )
 {
+    DEBUG_BLOCK
+
     ui->setupUi( this );
     init();
     startDataQuery();
@@ -105,6 +107,8 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     , m_queryMaker( 0 )
     , ui( new Ui::TagDialogBase() )
 {
+    DEBUG_BLOCK
+
     m_tracks.append( track );
     //we changed the list after creating the iterator, so create a new iterator
     m_trackIterator = QListIterator<Meta::TrackPtr >( m_tracks );
@@ -114,7 +118,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
 }
 
 TagDialog::TagDialog( QueryMaker *qm )
-    :KDialog( The::mainWindow() )
+    : KDialog( The::mainWindow() )
     , m_currentCover()
     , m_tracks()
     , m_currentTrack()
@@ -246,25 +250,25 @@ TagDialog::dataQueryDone()
     //then load the current track again. that's more work than necessary
     //but the performance impact should be negligible
 
-    QString saveText(ui->kComboBox_artist->lineEdit()->text());
+    QString saveText( ui->kComboBox_artist->lineEdit()->text() );
     ui->kComboBox_artist->clear();
     ui->kComboBox_artist->insertItems( 0, m_artists );
-    ui->kComboBox_artist->lineEdit()->setText(saveText);
+    ui->kComboBox_artist->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_album->lineEdit()->text();
     ui->kComboBox_album->clear();
     ui->kComboBox_album->insertItems( 0, m_albums );
-    ui->kComboBox_album->lineEdit()->setText(saveText);
+    ui->kComboBox_album->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_composer->lineEdit()->text();
     ui->kComboBox_composer->clear();
     ui->kComboBox_composer->insertItems( 0, m_composers );
-    ui->kComboBox_composer->lineEdit()->setText(saveText);
+    ui->kComboBox_composer->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_genre->lineEdit()->text();
     ui->kComboBox_genre->clear();
     ui->kComboBox_genre->insertItems( 0, m_genres );
-    ui->kComboBox_genre->lineEdit()->setText(saveText);
+    ui->kComboBox_genre->lineEdit()->setText( saveText );
 
     if( !m_queryMaker )  //track query complete or not necessary
     {
@@ -387,6 +391,7 @@ TagDialog::loadCover()
     ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( AmarokConfig::coverPreviewSize() ) );
     QString artist = m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString();
     ui->pixmap_cover->setInformation( artist, m_currentTrack->album()->name() );
+
     const int s = AmarokConfig::coverPreviewSize();
     ui->pixmap_cover->setMinimumSize( s, s );
     ui->pixmap_cover->setMaximumSize( s, s );
@@ -404,7 +409,7 @@ TagDialog::guessFromFilename() //SLOT
     FilenameLayoutDialog *widget = new FilenameLayoutDialog( dialog );
     dialog->setMainWidget( widget );
     
-    int dcode = dialog->exec();
+    const int dcode = dialog->exec();
     QString schemeFromDialog = QString();       //note to self: see where to put it from an old revision
     debug() << "FilenameLayoutDialog finished.";
     schemeFromDialog = "";
@@ -522,8 +527,8 @@ TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
     ui->pushButton_musicbrainz->setEnabled( true );
     ui->pushButton_musicbrainz->setText( m_buttonMbText );
 #else
-    Q_UNUSED(results);
-    Q_UNUSED(error);
+    Q_UNUSED( results );
+    Q_UNUSED( error );
 #endif
 }
 
@@ -531,9 +536,6 @@ void
 TagDialog::fillSelected( KTRMResult selected ) //SLOT
 {
 #ifdef HAVE_TUNEPIMP
-    kDebug() ;
-
-
     if ( m_bundle.url() == m_mbTrack ) {
         if ( !selected.title().isEmpty() )    kLineEdit_title->setText( selected.title() );
         if ( !selected.artist().isEmpty() )   ui->kComboBox_artist->setCurrentText( selected.artist() );
@@ -559,7 +561,6 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
 void TagDialog::resetMusicbrainz() //SLOT
 {
 #ifdef HAVE_TUNEPIMP
-
     m_mbTrack = "";
 #endif
 }
@@ -718,7 +719,8 @@ TagDialog::startDataQuery()
 }
 
 
-inline const QString TagDialog::unknownSafe( QString s ) {
+inline const QString TagDialog::unknownSafe( QString s )
+{
     return ( s.isNull() || s.isEmpty() || s == "?" || s == "-" )
            ? i18nc( "The value for this tag is not known", "Unknown" )
            : s;
@@ -726,6 +728,7 @@ inline const QString TagDialog::unknownSafe( QString s ) {
 
 const QStringList TagDialog::statisticsData()
 {
+    AMAROK_NOTIMPLEMENTED
 
     QStringList data, values;
     //TODO: port
@@ -1007,7 +1010,7 @@ TagDialog::setSingleTrackMode()
 void
 TagDialog::readMultipleTracks()
 {
-    setWindowTitle( KDialog::makeStandardCaption( i18ncp( "The amount of tracks being edited", "1 Track", "Information for %1 Tracks", m_tracks.count()) ) );
+    setWindowTitle( KDialog::makeStandardCaption( i18ncp( "The amount of tracks being edited", "1 Track", "Information for %1 Tracks", m_tracks.count() ) ) );
 
     //Check which fields are the same for all selected tracks
     QListIterator< Meta::TrackPtr > it( m_tracks );
@@ -1195,7 +1198,7 @@ TagDialog::hasChanged()
 int
 TagDialog::changes()
 {
-    int result=TagDialog::NOCHANGE;
+    int result = TagDialog::NOCHANGE;
     bool modified = false;
     modified |= !equalString( ui->kComboBox_artist->lineEdit()->text(), m_currentData.value( Meta::Field::ARTIST ).toString() );
     modified |= !equalString( ui->kComboBox_album->lineEdit()->text(), m_currentData.value( Meta::Field::ALBUM ).toString() );
@@ -1637,7 +1640,7 @@ TagDialog::applyToAllTracks()
 QStringList
 TagDialog::labelListFromText( const QString &text )
 {
-    QStringList tmp = text.split(',', QString::SkipEmptyParts);
+    const QStringList tmp = text.split(',', QString::SkipEmptyParts);
     //insert each string into a map to remove duplicates
     QMap<QString, int> map;
     oldForeach( tmp )
