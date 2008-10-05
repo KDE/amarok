@@ -1,6 +1,5 @@
 /***************************************************************************
  *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2007  Leo Franchi <lfranchi@gmail.com>                  * 
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,56 +16,67 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-
-#ifndef AMAROK_CLOUD_ENGINE
-#define AMAROK_CLOUD_ENGINE
-
-#include "ContextObserver.h"
-#include "services/ServiceInfoObserver.h"
-#include "context/DataEngine.h"
-
-/**
-    This class provides context information realted to the currently active service 
-
-    There is no data source: if you connect to the engine, you immediately
-    start getting updates when there is data. 
-
-    The key of the data is "service".
-    The data is a QMap with the keys
-        * service_name - the name of the currently running service
  
+#include "ShoutcastMeta.h"
+#include "meta/PlaylistFileSupport.h"
 
-*/
+#include "Debug.h"
 
-class CloudEngine : public Context::DataEngine,
-                      public ServiceInfoObserver,
-                      public ContextObserver
+ShoutcastTrack::ShoutcastTrack( const QString &name, const KUrl & playlistUrl )
+    : MetaStream::Track( KUrl() )
+    , m_playlistUrl( playlistUrl )
+    , m_title( name )
 {
-    Q_OBJECT
+    setTitle( name );
+}
 
+ShoutcastTrack::~ShoutcastTrack()
+{}
+
+KUrl ShoutcastTrack::playableUrl() const
+{
+    if( !MetaStream::Track::playableUrl().url().isEmpty() )
+        return MetaStream::Track::playableUrl();
+
+    if( !m_playlist )
+        m_playlist = Meta::loadPlaylist( m_playlistUrl );
+
+    //did it go well?
+    if ( !m_playlist )
+        return KUrl();
+
+    if ( m_playlist->tracks().size() > 0 ) {
+        //debug() << "returning url: " << m_playlist->tracks()[0]->playableUrl();
+        //updateUrl( m_playlist->tracks()[0]->playableUrl() );
+        return m_playlist->tracks()[0]->playableUrl();
+    }
+
+    return KUrl();
+}
+
+Meta::GenrePtr ShoutcastTrack::genre() const
+{
+    return m_genre;
+}
+
+void ShoutcastTrack::setGenre( Meta::GenrePtr genre )
+{
+    m_genre = genre;
+}
+
+QString ShoutcastTrack::name() const
+{
+    const QString ancestorName = MetaStream::Track::name();
     
-public:
+    if ( ancestorName.isEmpty() )
+        return m_title;
 
-    CloudEngine( QObject* parent, const QList<QVariant>& args );
-    ~CloudEngine();
+    return ancestorName;
+}
 
-    QStringList sources() const;
-    void message( const Context::ContextState& state );
+QString ShoutcastTrack::uidUrl() const
+{
+    return m_playlistUrl.url();
+}
 
-    void serviceInfoChanged( QVariantMap infoMap );
 
-protected:
-    bool sourceRequested( const QString& name );
-    
-private:
-    void update();
-
-    QStringList m_sources;
-    bool m_requested;
-    QVariantMap m_storedCloud;
-
-};
-
-K_EXPORT_AMAROK_DATAENGINE( service, CloudEngine )
-
-#endif

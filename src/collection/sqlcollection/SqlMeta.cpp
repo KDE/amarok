@@ -26,7 +26,7 @@
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
-#include "browsers/servicebrowser/lastfm/SimilarArtistsAction.h"
+#include "services/lastfm/SimilarArtistsAction.h"
 #include "context/popupdropper/PopupDropperAction.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"

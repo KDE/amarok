@@ -20,7 +20,7 @@
 #include "ServiceListDelegate.h"
 
 #include "Debug.h"
-#include "ServiceBase.h"
+#include "services/ServiceBase.h"
 #include "ServiceListModel.h"
 #include "SvgTinter.h"
 

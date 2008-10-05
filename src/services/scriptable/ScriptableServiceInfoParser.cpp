@@ -1,6 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2007  Leo Franchi <lfranchi@gmail.com>                  * 
+ *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,55 +17,51 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef AMAROK_CLOUD_ENGINE
-#define AMAROK_CLOUD_ENGINE
+//
+#include "ScriptableServiceInfoParser.h"
+#include "../ServiceMetaBase.h"
 
-#include "ContextObserver.h"
-#include "services/ServiceInfoObserver.h"
-#include "context/DataEngine.h"
+using namespace Meta;
 
-/**
-    This class provides context information realted to the currently active service 
-
-    There is no data source: if you connect to the engine, you immediately
-    start getting updates when there is data. 
-
-    The key of the data is "service".
-    The data is a QMap with the keys
-        * service_name - the name of the currently running service
- 
-
-*/
-
-class CloudEngine : public Context::DataEngine,
-                      public ServiceInfoObserver,
-                      public ContextObserver
+ScriptableServiceInfoParser::ScriptableServiceInfoParser()
+ : InfoParserBase()
 {
-    Q_OBJECT
+}
 
-    
-public:
 
-    CloudEngine( QObject* parent, const QList<QVariant>& args );
-    ~CloudEngine();
+ScriptableServiceInfoParser::~ScriptableServiceInfoParser()
+{
+}
 
-    QStringList sources() const;
-    void message( const Context::ContextState& state );
+void ScriptableServiceInfoParser::getInfo(ArtistPtr artist)
+{
+    ServiceArtist * serviceArtist = dynamic_cast< ServiceArtist * >( artist.data() );
+    if (serviceArtist == 0) return;
+    emit( info( serviceArtist->description() ) );
+}
 
-    void serviceInfoChanged( QVariantMap infoMap );
+void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
+{
+    DEBUG_BLOCK
+    ServiceAlbum * serviceAlbum = dynamic_cast< ServiceAlbum * >( album.data() );
+    if (serviceAlbum == 0) return;
+    emit( info( serviceAlbum->description() ) );
+}
 
-protected:
-    bool sourceRequested( const QString& name );
-    
-private:
-    void update();
+void ScriptableServiceInfoParser::getInfo(TrackPtr track)
+{
+    DEBUG_BLOCK
+    emit( info( track->name() ) );
+}
 
-    QStringList m_sources;
-    bool m_requested;
-    QVariantMap m_storedCloud;
 
-};
+void ScriptableServiceInfoParser::getInfo(Meta::GenrePtr genre)
+{
+    ScriptableServiceGenre * serviceGenre = dynamic_cast< ScriptableServiceGenre * >( genre.data() );
+    if (serviceGenre == 0) return;
+    emit( info( serviceGenre->description() ) );
+}
 
-K_EXPORT_AMAROK_DATAENGINE( service, CloudEngine )
+#include "ScriptableServiceInfoParser.moc"
 
-#endif
+                 

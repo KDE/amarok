@@ -21,7 +21,7 @@
 #define SERVICECONFIGSCREEN_H
 
 #include "ConfigDialogBase.h"
-#include "ServicePluginManager.h"
+#include "services/ServicePluginManager.h"
 
 #include <KPluginSelector>
 

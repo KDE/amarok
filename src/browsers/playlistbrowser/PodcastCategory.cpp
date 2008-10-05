@@ -30,7 +30,7 @@
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
-#include "ServiceInfoProxy.h"
+#include "services/ServiceInfoProxy.h"
 #include "SvgTinter.h"
 #include "SvgHandler.h"
 

@@ -21,7 +21,7 @@
 #include "CollectionSortFilterProxyModel.h"
 #include "CollectionTreeItem.h"
 #include "playlist/PlaylistModel.h"
-#include "Meta.h"
+#include "meta/Meta.h"
 
 #include <QSet>
 #include <QSortFilterProxyModel>

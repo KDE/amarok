@@ -21,8 +21,8 @@
 #define AMAROKSERVICEBROWSER_H
 
 
-#include "scriptableservice/ScriptableServiceManager.h"
-#include "ServiceBase.h"
+#include "services/scriptable/ScriptableServiceManager.h"
+#include "services/ServiceBase.h"
 #include "ServiceListModel.h"
 
 #include <KVBox>

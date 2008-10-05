@@ -1,0 +1,9 @@
+include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ../ )
+
+add_subdirectory( magnatune )
+add_subdirectory( jamendo )
+add_subdirectory( mp3tunes )
+add_subdirectory( ampache )
+add_subdirectory( shoutcast )
+add_subdirectory( lastfm )
+add_subdirectory( opmldirectory )

@@ -18,6 +18,7 @@ add_subdirectory( context )
 add_subdirectory( data )
 add_subdirectory( images )
 add_subdirectory( metadata )
+add_subdirectory( services )
 add_subdirectory( scripts )
 add_subdirectory( strigi )
 add_subdirectory( themes )
@@ -65,41 +66,49 @@ set(libplugin_SRCS
 )
 
 #####################################################################
+# SERVICEFRAMEWORK
+#####################################################################
+set(libserviceframework_SRCS
+    services/DynamicServiceQueryMaker.cpp
+    services/InfoParserBase.cpp
+    services/ServiceAlbumCoverDownloader.cpp
+    services/ServiceBase.cpp
+    services/ServiceCollection.cpp
+    services/ServiceCollectionLocation.cpp
+    services/ServiceCollectionTreeView.cpp
+    services/ServiceCurrentTrackActionsCapability.cpp
+    services/ServiceCustomActionsCapability.cpp
+    services/ServiceInfoProxy.cpp
+    services/ServiceMetaBase.cpp
+    services/ServicePluginManager.cpp
+    services/ServiceSourceInfoCapability.cpp
+    services/ServiceSqlCollection.cpp
+    services/ServiceSqlQueryMaker.cpp
+    services/ServiceSqlRegistry.cpp
+    services/ShowInServiceAction.cpp
+)
+
+
+#####################################################################
 # SERVICEBROWSER
 #####################################################################
-set(libservicebrowser_SRCS
-    browsers/servicebrowser/DynamicServiceQueryMaker.cpp
-    browsers/servicebrowser/InfoParserBase.cpp
-    browsers/servicebrowser/ServiceAlbumCoverDownloader.cpp
-    browsers/servicebrowser/ServiceBase.cpp
+    set(libservicebrowser_SRCS
     browsers/servicebrowser/ServiceBrowser.cpp
-    browsers/servicebrowser/ServiceCollection.cpp
-    browsers/servicebrowser/ServiceCollectionLocation.cpp
-    browsers/servicebrowser/ServiceCollectionTreeView.cpp
-    browsers/servicebrowser/ServiceCurrentTrackActionsCapability.cpp
-    browsers/servicebrowser/ServiceCustomActionsCapability.cpp
-    browsers/servicebrowser/ServiceInfoProxy.cpp
     browsers/servicebrowser/ServiceListDelegate.cpp
     browsers/servicebrowser/ServiceListModel.cpp
-    browsers/servicebrowser/ServiceMetaBase.cpp
-    browsers/servicebrowser/ServicePluginManager.cpp
-    browsers/servicebrowser/ServiceSourceInfoCapability.cpp
-    browsers/servicebrowser/ServiceSqlCollection.cpp
-    browsers/servicebrowser/ServiceSqlQueryMaker.cpp
-    browsers/servicebrowser/ServiceSqlRegistry.cpp
-    browsers/servicebrowser/ShowInServiceAction.cpp
 )
+        
 
 #####################################################################
 # SCRIPTABLESERVICE
 #####################################################################
 set(libscriptableservice_SRCS
-    browsers/servicebrowser/scriptableservice/ScriptableService.cpp
-    browsers/servicebrowser/scriptableservice/ScriptableServiceCollection.cpp
-    browsers/servicebrowser/scriptableservice/ScriptableServiceInfoParser.cpp
-    browsers/servicebrowser/scriptableservice/ScriptableServiceManager.cpp
-    browsers/servicebrowser/scriptableservice/ScriptableServiceMeta.cpp
-    browsers/servicebrowser/scriptableservice/ScriptableServiceQueryMaker.cpp
+    services/scriptable/ScriptableService.cpp
+    services/scriptable/ScriptableServiceCollection.cpp
+    services/scriptable/ScriptableServiceInfoParser.cpp
+    services/scriptable/ScriptableServiceManager.cpp
+    services/scriptable/ScriptableServiceMeta.cpp
+    services/scriptable/ScriptableServiceQueryMaker.cpp
 )
 
 #####################################################################
@@ -121,10 +130,6 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/OsdConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
-)
-
-kde4_add_ui_files(libconfigdialog_SRCS
-    browsers/servicebrowser/magnatunestore/MagnatunePurchaseDialogBase.ui
 )
 
 #####################################################################
@@ -404,6 +409,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylist_SRCS}
     ${libplugin_SRCS}
     ${libpodcasts_SRCS}
+    ${libserviceframework_SRCS}
     ${libservicebrowser_SRCS}
     ${libstatusbar_SRCS}
     ${libdynamic_SRCS}
@@ -466,7 +472,7 @@ set(amaroklib_LIB_SRCS
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     refreshimages.cpp
-    browsers/servicebrowser/lastfm/SimilarArtistsAction.cpp
+    services/lastfm/SimilarArtistsAction.cpp
     Systray.cpp
 #    widgets/AnalyzerWidget.cpp
     widgets/FilenameLayoutWidget.cpp

@@ -34,7 +34,7 @@
 #include "Osd.h"
 #include "StatusBar.h"
 #include "amarokconfig.h"
-#include "browsers/servicebrowser/scriptableservice/ScriptableServiceManager.h"
+#include "services/scriptable/ScriptableServiceManager.h"
 #include "scriptengine/AmarokCollectionScript.h"
 #include "scriptengine/AmarokEngineScript.h"
 #include "scriptengine/AmarokInfoScript.h"

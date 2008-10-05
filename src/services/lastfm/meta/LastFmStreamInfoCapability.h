@@ -1,6 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2007  Leo Franchi <lfranchi@gmail.com>                  * 
+ *   Copyright (c) 2008  Dan Meltzer <hydrogen@notyetimplemented.com>      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,55 +17,28 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef AMAROK_CLOUD_ENGINE
-#define AMAROK_CLOUD_ENGINE
+#ifndef AMAROK_LASTFMSTREAMINFOCAPABILITY_H
+#define AMAROK_LASTFMSTREAMINFOCAPABILITY_H
 
-#include "ContextObserver.h"
-#include "services/ServiceInfoObserver.h"
-#include "context/DataEngine.h"
+#include "meta/StreamInfoCapability.h"
 
-/**
-    This class provides context information realted to the currently active service 
-
-    There is no data source: if you connect to the engine, you immediately
-    start getting updates when there is data. 
-
-    The key of the data is "service".
-    The data is a QMap with the keys
-        * service_name - the name of the currently running service
- 
-
-*/
-
-class CloudEngine : public Context::DataEngine,
-                      public ServiceInfoObserver,
-                      public ContextObserver
+namespace LastFm
+{
+    class Track;
+}
+class LastFmStreamInfoCapability : public Meta::StreamInfoCapability
 {
     Q_OBJECT
+    public:
+        LastFmStreamInfoCapability( LastFm::Track *track );
+        ~LastFmStreamInfoCapability();
 
-    
-public:
+        virtual QString streamName() const;
+        virtual QString streamSource() const;
 
-    CloudEngine( QObject* parent, const QList<QVariant>& args );
-    ~CloudEngine();
-
-    QStringList sources() const;
-    void message( const Context::ContextState& state );
-
-    void serviceInfoChanged( QVariantMap infoMap );
-
-protected:
-    bool sourceRequested( const QString& name );
-    
-private:
-    void update();
-
-    QStringList m_sources;
-    bool m_requested;
-    QVariantMap m_storedCloud;
+    private:
+        LastFm::Track *m_sourceTrack;
 
 };
-
-K_EXPORT_AMAROK_DATAENGINE( service, CloudEngine )
 
 #endif

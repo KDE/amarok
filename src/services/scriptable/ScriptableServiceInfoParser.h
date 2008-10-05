@@ -1,6 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2007  Leo Franchi <lfranchi@gmail.com>                  * 
+ *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,55 +17,31 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef AMAROK_CLOUD_ENGINE
-#define AMAROK_CLOUD_ENGINE
+#ifndef SCRIPTABLESERVICEINFOPARSER_H
+#define SCRIPTABLESERVICEINFOPARSER_H
 
-#include "ContextObserver.h"
-#include "services/ServiceInfoObserver.h"
-#include "context/DataEngine.h"
+#include "../InfoParserBase.h"
+#include "ScriptableServiceMeta.h"
 
 /**
-    This class provides context information realted to the currently active service 
+Info parser for the scriptable services
 
-    There is no data source: if you connect to the engine, you immediately
-    start getting updates when there is data. 
-
-    The key of the data is "service".
-    The data is a QMap with the keys
-        * service_name - the name of the currently running service
- 
-
+	@author
 */
-
-class CloudEngine : public Context::DataEngine,
-                      public ServiceInfoObserver,
-                      public ContextObserver
+class ScriptableServiceInfoParser : public InfoParserBase
 {
-    Q_OBJECT
-
-    
+Q_OBJECT
 public:
+    ScriptableServiceInfoParser();
 
-    CloudEngine( QObject* parent, const QList<QVariant>& args );
-    ~CloudEngine();
+    ~ScriptableServiceInfoParser();
 
-    QStringList sources() const;
-    void message( const Context::ContextState& state );
 
-    void serviceInfoChanged( QVariantMap infoMap );
-
-protected:
-    bool sourceRequested( const QString& name );
-    
-private:
-    void update();
-
-    QStringList m_sources;
-    bool m_requested;
-    QVariantMap m_storedCloud;
+    virtual void getInfo( Meta::GenrePtr genre );
+    virtual void getInfo( Meta::ArtistPtr artist );
+    virtual void getInfo( Meta::AlbumPtr album ) ;
+    virtual void getInfo( Meta::TrackPtr track );
 
 };
-
-K_EXPORT_AMAROK_DATAENGINE( service, CloudEngine )
 
 #endif

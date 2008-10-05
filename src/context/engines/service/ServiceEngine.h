@@ -22,7 +22,7 @@
 #define AMAROK_SERVICE_ENGINE
 
 #include "ContextObserver.h"
-#include "ServiceInfoObserver.h"
+#include "services/ServiceInfoObserver.h"
 #include "context/DataEngine.h"
 
 /**

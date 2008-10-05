@@ -20,7 +20,7 @@
 #ifndef SERVICELISTMODEL_H
 #define SERVICELISTMODEL_H
 
-#include "ServiceBase.h"
+#include "services/ServiceBase.h"
 
 #include <QAbstractListModel>
 
