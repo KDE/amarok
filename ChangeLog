@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.0-beta3
   FEATURES:
+    * Track count an total play time is now shown below the playlist
+      (BR 171652)
 
   CHANGES:
     * All services ( or any other part of Amarok ) can now add context 
