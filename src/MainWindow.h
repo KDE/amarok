@@ -149,7 +149,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         SearchWidget  *m_searchWidget;
         MainToolbar   *m_controlBar;
         QTimer        *m_timer;  //search filter timer
-        QStringList    m_lastfmTags;
         //MediaBrowser  *m_currMediaBrowser;
         QSplitter     *m_splitter;
         QByteArray     m_splitterState;

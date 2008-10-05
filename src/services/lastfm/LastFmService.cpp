@@ -18,6 +18,9 @@
 #include "LastFmServiceConfig.h"
 #include "RadioAdapter.h"
 #include "ScrobblerAdapter.h"
+#include "SimilarArtistsAction.h"
+
+#include "GlobalCollectionActions.h"
 
 #include "collection/CollectionManager.h"
 #include "meta/LastFmCapability.h"
@@ -81,6 +84,10 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
+
+
+    //add the "plas simmilar artists" action to all artist
+    The::globalCollectionActions()->addArtistAction( new SimilarArtistsAction( this ) );
 
     Q_ASSERT( ms_service == 0 );
     ms_service = this;

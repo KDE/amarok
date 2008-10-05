@@ -24,21 +24,19 @@
 
 #include <KIcon>
 
-SimilarArtistsAction::SimilarArtistsAction( QObject *parent, Meta::Artist *artist)
-    : PopupDropperAction( parent )
-    , m_artist( artist )
+SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
+    : GlobalCollectionArtistAction( i18n( "Play Similar Artists from Last.fm" ), parent )
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 
     setIcon( KIcon("view-services-lastfm-amarok") );
-    setText( i18n( "Play Similar Artists from Last.fm" ) );
     setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
     setElementId( "lastfm" );
 }
 
 void SimilarArtistsAction::slotTriggered()
 {
-    const QString url = "lastfm://artist/" + m_artist->prettyName() + "/similarartists";
+    const QString url = "lastfm://artist/" + artist()->prettyName() + "/similarartists";
     Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
     The::playlistModel()->insertOptioned( lastfmtrack, Playlist::AppendAndPlay );
 }

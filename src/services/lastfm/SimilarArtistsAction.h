@@ -20,23 +20,21 @@
 #ifndef LASTFMSIMILARARTISTSACTION_H
 #define LASTFMSIMILARARTISTSACTION_H
 
-#include "context/popupdropper/PopupDropperAction.h"
+#include "GlobalCollectionActions.h"
 
 #include "amarok_export.h"
 #include "meta/Meta.h"
 
 
-class AMAROK_EXPORT SimilarArtistsAction : public PopupDropperAction
+class AMAROK_EXPORT SimilarArtistsAction : public GlobalCollectionArtistAction
 {
     Q_OBJECT
 public:
-    SimilarArtistsAction( QObject *parent, Meta::Artist *artist );
+    SimilarArtistsAction( QObject *parent );
 
     private slots:
         void slotTriggered();
 
-    private:
-        Meta::Artist *m_artist;
 };
 
 #endif

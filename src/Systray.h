@@ -56,7 +56,6 @@ private slots:
 
 private:
     virtual bool event( QEvent *e );
-    //void setLastFm( bool );
     void setupMenu();
 
     // repaints trayIcon showing progress (and overlay if present)

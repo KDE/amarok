@@ -26,7 +26,6 @@
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
-#include "services/lastfm/SimilarArtistsAction.h"
 #include "context/popupdropper/PopupDropperAction.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
@@ -882,9 +881,6 @@ SqlArtist::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     switch( type )
     {
-        case Meta::Capability::CustomActions:
-            return true;
-
         default:
             return false;
     }
@@ -895,14 +891,6 @@ SqlArtist::asCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {
-        case Meta::Capability::CustomActions:
-        {
-            QList<PopupDropperAction *> actions;
-            //actions.append( new CopyToDeviceAction( m_collection, this ) );
-            actions.append( new SimilarArtistsAction( m_collection, this ) );
-            return new CustomActionsCapability( actions );
-        }
-
         default:
             return 0;
     }

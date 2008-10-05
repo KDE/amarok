@@ -28,6 +28,7 @@
 #include "CollectionManager.h"
 #include "browsers/collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
+#include "GlobalCollectionActions.h"
 //#include "mediabrowser.h"
 #include "Meta.h"
 #include "MetaQueryMaker.h"
@@ -662,6 +663,23 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
                     }
                     actions.append( m_organizeAction );
                 }
+            }
+        }
+
+
+        //hmmm... figure out what kind of item we are dealing with....
+
+        if ( indices.size() == 1 )
+        {
+
+            debug() << "checking for global actions";
+            CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
+
+            PopupDropperActionList gActions = The::globalCollectionActions()->actionsFor( item->data() );
+            foreach( PopupDropperAction *action, gActions )
+            {
+                actions.append( action );
+                debug() << "Got global action: " << action->text();
             }
         }
 
