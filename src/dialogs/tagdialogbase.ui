@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>734</width>
-    <height>454</height>
+    <width>670</width>
+    <height>428</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -24,14 +24,14 @@
      <item>
       <widget class="KTabWidget" name="kTabWidget" >
        <property name="currentIndex" >
-        <number>4</number>
+        <number>1</number>
        </property>
        <property name="currentPage" stdset="0" >
         <number>4</number>
        </property>
        <widget class="QWidget" name="summaryTab" >
         <attribute name="title" >
-         <string>S&amp;ummary</string>
+         <string>S&amp;&amp;ummary</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_7" >
          <item>
@@ -139,7 +139,7 @@
        </widget>
        <widget class="QWidget" name="tagsTab" >
         <attribute name="title" >
-         <string>Ta&amp;gs</string>
+         <string>Ta&amp;&amp;gs</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_6" >
          <item>
@@ -442,7 +442,7 @@
        </widget>
        <widget class="QWidget" name="lyricsTab" >
         <attribute name="title" >
-         <string>L&amp;yrics</string>
+         <string>L&amp;&amp;yrics</string>
         </attribute>
         <layout class="QHBoxLayout" >
          <item>
@@ -459,166 +459,158 @@
        </widget>
        <widget class="QWidget" name="statisticsTab" >
         <attribute name="title" >
-         <string>St&amp;atistics</string>
+         <string>St&amp;&amp;atistics</string>
         </attribute>
-        <widget class="QWidget" name="layoutWidget" >
-         <property name="geometry" >
-          <rect>
-           <x>5</x>
-           <y>5</y>
-           <width>651</width>
-           <height>481</height>
-          </rect>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2" >
-          <item>
-           <layout class="QGridLayout" name="gridLayout_2" >
-            <item row="0" column="0" >
-             <widget class="QLabel" name="trackArtistAlbumLabel2" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text" >
-               <string>Track by Artist on Album</string>
-              </property>
-              <property name="alignment" >
-               <set>Qt::AlignVCenter</set>
-              </property>
-              <property name="wordWrap" >
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <spacer name="horizontalSpacer" >
-              <property name="orientation" >
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType" >
-               <enum>QSizePolicy::Expanding</enum>
-              </property>
-              <property name="sizeHint" stdset="0" >
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="2" >
-             <layout class="QGridLayout" name="gridLayout" >
-              <item row="0" column="0" >
-               <widget class="QLabel" name="scoreLabel" >
-                <property name="text" >
-                 <string>Score:</string>
-                </property>
-                <property name="wordWrap" >
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1" >
-               <widget class="QSpinBox" name="qSpinBox_score" >
-                <property name="sizePolicy" >
-                 <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="specialValueText" >
-                 <string/>
-                </property>
-                <property name="maximum" >
-                 <number>100</number>
-                </property>
-                <property name="value" >
-                 <number>0</number>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0" >
-               <widget class="QLabel" name="ratingLabel" >
-                <property name="text" >
-                 <string>Rating:</string>
-                </property>
-                <property name="wordWrap" >
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1" >
-               <widget class="KRatingWidget" name="ratingWidget" >
-                <property name="sizePolicy" >
-                 <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="frameShape" >
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow" >
-                 <enum>QFrame::Plain</enum>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QLabel" name="statisticsLabel" >
-            <property name="text" >
-             <string/>
-            </property>
-            <property name="alignment" >
-             <set>Qt::AlignTop</set>
-            </property>
-            <property name="wordWrap" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="spacer3_2" >
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0" >
-             <size>
-              <width>20</width>
-              <height>200</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_3" >
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0" >
-             <size>
-              <width>638</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-         <zorder>statisticsLabel</zorder>
-         <zorder></zorder>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_4" >
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_2" >
+           <item>
+            <layout class="QGridLayout" name="gridLayout_2" >
+             <item row="0" column="0" >
+              <widget class="QLabel" name="trackArtistAlbumLabel2" >
+               <property name="sizePolicy" >
+                <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text" >
+                <string>Track by Artist on Album</string>
+               </property>
+               <property name="alignment" >
+                <set>Qt::AlignVCenter</set>
+               </property>
+               <property name="wordWrap" >
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" >
+              <spacer name="horizontalSpacer" >
+               <property name="orientation" >
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType" >
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0" >
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="2" >
+              <layout class="QGridLayout" name="gridLayout" >
+               <item row="0" column="0" >
+                <widget class="QLabel" name="scoreLabel" >
+                 <property name="text" >
+                  <string>Score:</string>
+                 </property>
+                 <property name="wordWrap" >
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QSpinBox" name="qSpinBox_score" >
+                 <property name="sizePolicy" >
+                  <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="specialValueText" >
+                  <string/>
+                 </property>
+                 <property name="maximum" >
+                  <number>100</number>
+                 </property>
+                 <property name="value" >
+                  <number>0</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="ratingLabel" >
+                 <property name="text" >
+                  <string>Rating:</string>
+                 </property>
+                 <property name="wordWrap" >
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1" >
+                <widget class="KRatingWidget" name="ratingWidget" >
+                 <property name="sizePolicy" >
+                  <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="frameShape" >
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow" >
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="statisticsLabel" >
+             <property name="text" >
+              <string/>
+             </property>
+             <property name="alignment" >
+              <set>Qt::AlignTop</set>
+             </property>
+             <property name="wordWrap" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="spacer3_2" >
+             <property name="orientation" >
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType" >
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0" >
+              <size>
+               <width>20</width>
+               <height>200</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_3" >
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0" >
+              <size>
+               <width>638</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="labelsTab" >
         <attribute name="title" >
-         <string>La&amp;bels</string>
+         <string>La&amp;&amp;bels</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_8" >
          <item>
