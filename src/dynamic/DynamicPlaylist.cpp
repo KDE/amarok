@@ -27,9 +27,9 @@
 Dynamic::DynamicPlaylist::DynamicPlaylist( Collection* coll )
      : m_collection(coll), m_upcoming(10), m_previous(5)
 {
-    if( !m_collection )
+    if( !m_collection ) {
         m_collection = CollectionManager::instance()->primaryCollection();
-    connect( coll, SIGNAL(updated()), this, SLOT(recalculate()) );
+    connect( m_collection, SIGNAL(updated()), this, SLOT(recalculate()) );
 }
 
 Dynamic::DynamicPlaylist::~DynamicPlaylist()
