@@ -37,7 +37,7 @@ LastFmEvents::LastFmEvents( QObject* parent, const QVariantList& args )
     debug() << "Loading LastFmEvents applet";
 
     setBackgroundHints( Plasma::Applet::DefaultBackground );
-    setHasConfigurationInterface( true );
+    setHasConfigurationInterface( false );
 }
 
 LastFmEvents::~LastFmEvents()
