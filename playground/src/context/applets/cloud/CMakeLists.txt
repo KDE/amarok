@@ -2,8 +2,8 @@ project(context-cloud)
 
 set(cloud_SRCS Cloud.cpp )
 
-include_directories( ../..
-                     ../../.. )
+include_directories( ../../../../../src/
+                     ../../../../../src/context )
 
 kde4_add_plugin(amarok_context_applet_cloud ${cloud_SRCS})
 if(APPLE)
