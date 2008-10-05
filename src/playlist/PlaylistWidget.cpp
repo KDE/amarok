@@ -98,7 +98,7 @@ Widget::Widget( QWidget* parent )
     
     //barAndLength->addStretch();
     
-    m_totalTime = new QLabel( "00:00", barBox );
+    m_totalTime = new QLabel( "00:00:00", barBox );
     m_totalTime->setAlignment( Qt::AlignCenter );
     //barAndLength->addWidget( m_totalTime );
     m_totalTime->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
@@ -120,7 +120,7 @@ Widget::Widget( QWidget* parent )
 
     { //START Playlist toolbar
 //         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-        plBar->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+        plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setIconDimensions( 22 );
         plBar->setMovable( false );
         plBar->addAction( new KToolBarSpacerAction( this ) );
