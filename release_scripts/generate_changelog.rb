@@ -21,12 +21,9 @@ for bug in allmatches
 end
 
 # Make bullets
-newOldArray = $changelog.split("VERSION 1.2.1:")
-a=newOldArray[0].split('*')
+a= $changelog.split('*')
 a.shift
-a.each{|s|
-    $changelog.sub!("*#{s}","<li>#{s}</li>")
-}
+a.each{ |s| $changelog.sub!("*#{s}","<li>#{s}</li>") }
 
 # Beautify heading
 $changelog.gsub!( /Amarok ChangeLog\n\=*\n/, "<h2>Amarok ChangeLog</h2>" )
@@ -35,11 +32,9 @@ $changelog.gsub!( /Amarok ChangeLog\n\=*\n/, "<h2>Amarok ChangeLog</h2>" )
 ['FEATURES','CHANGES','BUGFIXES'].each { |header|
     $changelog.gsub!( "#{header}:\n", "</ul><h4>#{header.capitalize!}</h4><ul>" )
 }
-$changelog.gsub!("VERSION 1.2.1:", "</ul>VERSION 1.2.1:" )
 
 # Replace newlines in old format of changelog
-$changelog.sub!(newOldArray[1],newOldArray[1].gsub( /\n/, "</br>\n" ))
-
+$changelog.sub!( /\n/, "</br>\n" )
 
 # Format version headers
 $changelog.gsub!(/(VERSION)(.*$)/, '</ul><h3>Version\2</h3>');
