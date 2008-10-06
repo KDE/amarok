@@ -20,9 +20,9 @@ VERSION 2.0-beta3
       yet ready for prime time.
 
   BUGFIXES:
+    * Play option from playlist context menu works now. (BR 172141)
     * Cloud applet moved to playground as it still needs a lot of work 
       (BR 170613)
-
 
 
 
