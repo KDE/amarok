@@ -147,6 +147,10 @@ class AMAROK_EXPORT CollectionManager : public QObject
         CollectionManager();
         ~CollectionManager();
 
+        // Disable copy constructor and assignment
+        CollectionManager( const CollectionManager& );
+        CollectionManager& operator= ( const CollectionManager& );
+
         void init();
 
         //used for related artists query

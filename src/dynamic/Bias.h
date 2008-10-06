@@ -173,6 +173,10 @@ namespace Dynamic
             QSet<QByteArray> m_property;
             XmlQueryWriter* m_qm;
             XmlQueryReader::Filter m_filter;
+
+            // Disable copy constructor and assignment
+            GlobalBias( const GlobalBias& );
+            GlobalBias& operator= ( const GlobalBias& );
     };
 
     /**

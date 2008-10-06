@@ -78,6 +78,10 @@ private:
     QString m_sessionId;
 
     AmpacheServiceCollection *  m_collection;
+
+    // Disable copy constructor and assignment
+    AmpacheService( const AmpacheService& );
+    AmpacheService& operator=( const AmpacheService& );
 };
 
 #endif

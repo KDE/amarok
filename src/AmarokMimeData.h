@@ -84,6 +84,9 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
     private:
         class Private;
         Private * const d;
+
+        AmarokMimeData( const AmarokMimeData& );
+        AmarokMimeData& operator=( const AmarokMimeData& );
 };
 
 

@@ -93,6 +93,10 @@ public slots:
     void albumDownloadComplete(KJob *job );
     void trackDownloadComplete(KJob *job );
 
+private:
+    // Disable copy constructor and assignment
+    AmpacheServiceQueryMaker( const AmpacheServiceQueryMaker& );
+    AmpacheServiceQueryMaker& operator= ( const AmpacheServiceQueryMaker& );
 
 };
 

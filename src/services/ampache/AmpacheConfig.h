@@ -58,7 +58,10 @@ private:
 
     bool m_hasChanged;
     AmpacheServerList m_servers;
-    
+
+    // Disable copy constructor and assignment
+    AmpacheConfig( const AmpacheConfig& );
+    AmpacheConfig& operator=( const AmpacheConfig& );
 
 };
 

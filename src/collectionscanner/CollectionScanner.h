@@ -136,6 +136,11 @@ private:
     const QString m_logfile;
     QStringList   m_scannedFolders;
     QDBusInterface *m_amarokCollectionInterface;
+
+    // Disable copy constructor and assignment
+    CollectionScanner( const CollectionScanner& );
+    CollectionScanner& operator= ( const CollectionScanner& );
+
 };
 
 
