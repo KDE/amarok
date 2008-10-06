@@ -24,6 +24,7 @@
 
 #include <QLabel>
 #include <kglobalsettings.h>
+#include <QFontMetrics>
 #include <QMouseEvent>
 
 
@@ -38,22 +39,40 @@ public:
 
     virtual void mousePressEvent( QMouseEvent * )
     {
-        if( AmarokConfig::leftTimeDisplayEnabled() )
-        {
-            AmarokConfig::setLeftTimeDisplayEnabled( false );
-            AmarokConfig::setLeftTimeDisplayRemaining( true );
-        }
-        else if( AmarokConfig::leftTimeDisplayRemaining() )
-        {
-            AmarokConfig::setLeftTimeDisplayRemaining( false );
-        }
-        else
-        {
-            AmarokConfig::setLeftTimeDisplayEnabled( true );
-        }
+        AmarokConfig::setLeftTimeDisplayRemaining( !AmarokConfig::leftTimeDisplayRemaining() );
 
         ProgressWidget::instance()->drawTimeDisplay( The::engineController()->trackPosition() );
     }
+    
+    virtual QSize sizeHint() const
+    {
+        //TODO: replace this with a localized time format
+        return fontMetrics().boundingRect( "-0:00:00" ).size();
+    }
+    
+    void setShowTime( bool showTime )
+    {
+        m_showTime = showTime;
+        if( !showTime )
+        {
+            QLabel::setText( "" );
+        }
+    }
+    
+    bool showTime() const
+    {
+        return m_showTime;
+    }
+    
+    void setText( const QString &text )
+    {
+        if( m_showTime )
+            QLabel::setText( text );
+    }
+    
+private:
+    bool m_showTime;
+
 };
 
 #endif /*AMAROK_TIMELABEL_H*/

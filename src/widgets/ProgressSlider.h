@@ -24,7 +24,7 @@
 #include <QWidget>
 
 namespace Amarok { class TimeSlider; }
-class QLabel;
+class TimeLabel;
 
 
 class ProgressWidget : public QWidget, public EngineObserver
@@ -49,8 +49,8 @@ class ProgressWidget : public QWidget, public EngineObserver
         virtual void engineNewTrackPlaying();
 
     private:
-        QLabel *m_timeLabelLeft;
-        QLabel *m_timeLabelRight;
+        TimeLabel *m_timeLabelLeft;
+        TimeLabel *m_timeLabelRight;
         int m_timeLength;
         Amarok::TimeSlider *m_slider;
 };

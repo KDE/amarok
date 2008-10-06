@@ -54,8 +54,10 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     m_timeLabelRight = new TimeLabel( this );
     m_timeLabelLeft->setToolTip( i18n( "The amount of time remaining in current song" ) );
 
-    m_timeLabelLeft->hide();
-    m_timeLabelRight->hide();
+    m_timeLabelLeft->setShowTime( false);
+    m_timeLabelRight->setShowTime( false );
+    m_timeLabelLeft->show();
+    m_timeLabelRight->show();
 
     box->addSpacing( 3 );
     box->addWidget( m_timeLabelLeft );
@@ -64,10 +66,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 #ifdef Q_WS_MAC
     // don't overlap the resize handle with the time display
     box->addSpacing( 12 );
-#endif
-
-    if( !AmarokConfig::leftTimeDisplayEnabled() )
-        m_timeLabelLeft->hide();
+#endif‚
 
     engineStateChanged( Phonon::StoppedState );
 
@@ -83,13 +82,6 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label
     const uint trackLength = The::engineController()->trackLength();
-
-    // needed when changing TimeLabels during playback. do not show left one if
-    // right one isn't shown, as in that case we are about to stop playback
-    if( AmarokConfig::leftTimeDisplayEnabled() && !m_timeLabelRight->isHidden() )
-        m_timeLabelLeft->show();
-    else
-        m_timeLabelLeft->hide();
 
     // when the left label shows the remaining time and it's not a stream
     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
@@ -170,13 +162,17 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
             m_slider->setEnabled( false );
             m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
             m_slider->setMaximum( 0 );
-            m_timeLabelLeft->hide();
-            m_timeLabelRight->hide();
+            m_timeLabelLeft->setEnabled( false );
+            m_timeLabelLeft->setEnabled( false );
+            m_timeLabelLeft->setShowTime( false );
+            m_timeLabelRight->setShowTime( false );
             break;
 
         case Phonon::PlayingState:
-            m_timeLabelLeft->show();
-            m_timeLabelRight->show();
+            m_timeLabelLeft->setEnabled( true );
+            m_timeLabelLeft->setEnabled( true );
+            m_timeLabelLeft->setShowTime( true );
+            m_timeLabelRight->setShowTime( true );
             //fallthrough
             break;
 
