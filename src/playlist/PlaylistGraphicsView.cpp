@@ -105,6 +105,8 @@ Playlist::GraphicsView::setModel( Playlist::Model *model )
 void
 Playlist::GraphicsView::contextMenuEvent( QContextMenuEvent *event )
 {
+    DEBUG_BLOCK
+
     QPointF sceneClickPos = mapToScene( event->pos() );
     QGraphicsItem *topItem = scene()->itemAt( sceneClickPos );
     if( !topItem )
@@ -301,15 +303,15 @@ Playlist::GraphicsView::mouseReleaseEvent( QMouseEvent* event )
 void
 Playlist::GraphicsView::playTrack()
 {
-    QAction *playAction = dynamic_cast<QAction*>( sender() );
-    if( !playAction )
-        return;
+    DEBUG_BLOCK
 
-    QPointF sceneClickPos = playAction->data().toPointF();
-    Playlist::GraphicsItem *item = dynamic_cast<Playlist::GraphicsItem*>( scene()->itemAt( sceneClickPos )->parentItem() );
-    if( !item )
+    QAction *playAction = dynamic_cast<QAction*>( sender() );
+    if( !playAction ) {
+        debug() << "Action is 0. Aborting.";
         return;
-    item->play();
+    }
+
+    m_model->play( playAction->data().toInt() );
 }
 
 void

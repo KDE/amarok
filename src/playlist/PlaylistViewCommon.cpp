@@ -37,11 +37,14 @@
 
 void Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, const QPoint &pos, bool coverActions)
 {
+    DEBUG_BLOCK
+
     Meta::TrackPtr track = index->data( Playlist::ItemRole ).value< Playlist::Item* >()->track();
 
-    KMenu          *menu = new KMenu( parent );
-    KAction  *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
-
+    KMenu *menu = new KMenu( parent );
+   
+    KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
+    playAction->setData( index->row() );
     QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playTrack() ) );
 
     menu->addAction( playAction );
