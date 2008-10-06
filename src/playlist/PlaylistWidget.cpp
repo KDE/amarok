@@ -165,9 +165,13 @@ Widget::updateTotalLength() //SLOT
 {
     int totalLength = The::playlistModel()->totalLength();
     const int trackCount = The::playlistModel()->rowCount();
-    QTime *totalTime = new QTime(0, 0, 0);
-    *totalTime = totalTime->addSecs( totalLength );
-    m_totalTime->setText( i18ncp("%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime->toString( "h:mm:ss" ) ) );
+    QTime *minsecTime = new QTime(0, 0, 0);
+    *minsecTime = minsecTime->addSecs( totalLength );
+    int hrsTime = floor( totalLength / 3600. );
+    QString totalTime = QString::number( hrsTime ) + ":" + minsecTime->toString( "mm:ss" ); //workaround for QTime limitations
+    //QTime keeps h between 0 and 23, I don't want that but I do want to use QTime's formatting without implementing my own so
+    //I use QTime for mm:ss and handle hours separately.
+    m_totalTime->setText( i18ncp("%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
 }
 
 #include "PlaylistWidget.moc"
