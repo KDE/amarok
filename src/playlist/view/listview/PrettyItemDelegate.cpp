@@ -275,16 +275,16 @@ Playlist::PrettyItemDelegate::paintHead(QPainter* painter, const QStyleOptionVie
     //paint cover
     QPixmap albumPixmap;
     if (track->album())
-        albumPixmap = track->album()->imageWithBorder(int(ALBUM_WIDTH), 3);
+        albumPixmap = track->album()->imageWithBorder( int( ALBUM_WIDTH ), 3 );
 
     //offset cover if non square
-    QPointF offset = centerImage(albumPixmap, imageLocation());
-    QRectF imageRect( imageLocationSingleTrack().x() + offset.x(),
-                      imageLocationSingleTrack().y() + offset.y(),
-                      imageLocationSingleTrack().width() - offset.x() * 2,
-                      imageLocationSingleTrack().height() - offset.y() * 2 );
+    QPointF offset = centerImage( albumPixmap, imageLocation() );
+    QRectF imageRect( imageLocation().x() + offset.x(),
+                      imageLocation().y() + offset.y(),
+                      imageLocation().width() - offset.x() * 2,
+                      imageLocation().height() - offset.y() * 2 );
 
-    painter->drawPixmap(imageRect, albumPixmap, QRectF(albumPixmap.rect()));
+    painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
     //check if there is a emblem to display
     //does this track have the SourceInfoCapability?
