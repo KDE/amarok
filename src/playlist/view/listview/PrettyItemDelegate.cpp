@@ -127,7 +127,7 @@ Playlist::PrettyItemDelegate::paint(QPainter* painter, const QStyleOptionViewIte
     else if ( groupMode == Body )
         paintBody( painter, option, index );
     else if ( groupMode == Tail )
-        paintTail( painter, option, index );
+        paintBody( painter, option, index );
     /*else if ( groupMode == Head_Collapsed )
         paintCollapsedHead( painter, option, index );
     else if ( m_groupMode == Collapsed )
@@ -442,64 +442,6 @@ Playlist::PrettyItemDelegate::paintBody(QPainter* painter, const QStyleOptionVie
     }
 }
 
-void
-Playlist::PrettyItemDelegate::paintTail(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const {
-    QRectF trackRect(option.rect);
-
-    QRectF line(MARGINH, MARGINBODY, trackRect.width() - (2*MARGINH), trackRect.height() - MARGINBODY - MARGIN);
-
-    // draw the "current track" highlight underneath the text
-    if (index.data(ActiveTrackRole).toBool()) {
-        painter->drawPixmap( (int)line.x(),(int)line.y(),
-                             The::svgHandler()->renderSvg(
-                                        "active_overlay",
-                                        (int)line.width(), (int)line.height(),
-                                        "active_overlay"
-                                      )
-                           );
-    }
-
-    Meta::TrackPtr track = index.data(TrackRole).value<Meta::TrackPtr>();
-
-    // right: track time
-    QString timeString;
-    if (track->length() > 3600)
-        timeString = QTime().addSecs(track->length()).toString("h:mm:ss");
-    else
-        timeString = QTime().addSecs(track->length()).toString("m:ss");
-    QSizeF timeStringSize(s_nfm->size(Qt::TextSingleLine, timeString));
-    timeStringSize.setHeight(line.height());
-    QPointF textLoc(trackRect.width() - MARGINH - timeStringSize.width() - PADDING, MARGIN);
-    QRectF timeTextBox(textLoc, timeStringSize);
-    timeTextBox = timeTextBox.adjusted(0,PADDING,0,-PADDING);
-
-    // left: track number and name
-    QRectF textBox = line.adjusted(PADDING,PADDING,-2*PADDING-timeStringSize.width(),-PADDING);
-    
-    QString trackString;
-    QString trackName = track->prettyName();
-    if ( track->trackNumber() > 0 ) {
-        QString trackNumber = QString::number( track->trackNumber() );
-        trackString = s_nfm->elidedText(QString(trackNumber + " - " + trackName), Qt::ElideRight, (int)textBox.width());
-    } else
-        trackString = s_nfm->elidedText( QString( trackName ), Qt::ElideRight, (int)textBox.width() );
-
-    // render text in here
-    //setTextColor(index.data(ActiveTrackRole).toBool());
-    painter->drawText(textBox, Qt::AlignLeft | Qt::AlignVCenter, trackString);
-    painter->drawText(timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString);
-
-    //set selection marker if needed
-    if (option.state & QStyle::State_Selected) {
-        painter->drawPixmap( (int)line.x(),(int)line.y(),
-                             The::svgHandler()->renderSvg(
-                                        "selection",
-                                        (int)line.width(), (int)line.height(),
-                                        "selection"
-                                      )
-                           );
-    }
-}
 
 
 QPointF
