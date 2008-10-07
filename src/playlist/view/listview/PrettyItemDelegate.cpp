@@ -357,9 +357,15 @@ Playlist::PrettyItemDelegate::paintHead(QPainter* painter, const QStyleOptionVie
 
     // left: track number and name
     QRectF textBox = line.adjusted(PADDING,PADDING,-2*PADDING -timeStringSize.width(),-PADDING);
-    QString trackNumber = QString::number(track->trackNumber());
+
+
+    QString trackString;
     QString trackName = track->prettyName();
-    QString trackString = s_nfm->elidedText(QString(trackNumber + " - " + trackName), Qt::ElideRight, (int)textBox.width());
+    if ( track->trackNumber() > 0 ) {
+        QString trackNumber = QString::number( track->trackNumber() );
+        trackString = s_nfm->elidedText(QString(trackNumber + " - " + trackName), Qt::ElideRight, (int)textBox.width());
+    } else
+        trackString = s_nfm->elidedText( QString( trackName ), Qt::ElideRight, (int)textBox.width() );
 
     // render text in here
     //setTextColor(index.data(ActiveTrackRole).toBool());
@@ -410,9 +416,14 @@ Playlist::PrettyItemDelegate::paintBody(QPainter* painter, const QStyleOptionVie
 
     // left: track number and name
     QRectF textBox = line.adjusted(PADDING,PADDING,-2*PADDING-timeStringSize.width(),-PADDING);
-    QString trackNumber = QString::number(track->trackNumber());
+
+    QString trackString;
     QString trackName = track->prettyName();
-    QString trackString = s_nfm->elidedText(QString(trackNumber + " - " + trackName), Qt::ElideRight, (int)textBox.width());
+    if ( track->trackNumber() > 0 ) {
+        QString trackNumber = QString::number( track->trackNumber() );
+        trackString = s_nfm->elidedText(QString(trackNumber + " - " + trackName), Qt::ElideRight, (int)textBox.width());
+    } else
+        trackString = s_nfm->elidedText( QString( trackName ), Qt::ElideRight, (int)textBox.width() );
 
     // render text in here
     //setTextColor(index.data(ActiveTrackRole).toBool());
@@ -464,9 +475,14 @@ Playlist::PrettyItemDelegate::paintTail(QPainter* painter, const QStyleOptionVie
 
     // left: track number and name
     QRectF textBox = line.adjusted(PADDING,PADDING,-2*PADDING-timeStringSize.width(),-PADDING);
-    QString trackNumber = QString::number(track->trackNumber());
+    
+    QString trackString;
     QString trackName = track->prettyName();
-    QString trackString = s_nfm->elidedText(QString(trackNumber + " - " + trackName), Qt::ElideRight, (int)textBox.width());
+    if ( track->trackNumber() > 0 ) {
+        QString trackNumber = QString::number( track->trackNumber() );
+        trackString = s_nfm->elidedText(QString(trackNumber + " - " + trackName), Qt::ElideRight, (int)textBox.width());
+    } else
+        trackString = s_nfm->elidedText( QString( trackName ), Qt::ElideRight, (int)textBox.width() );
 
     // render text in here
     //setTextColor(index.data(ActiveTrackRole).toBool());
@@ -484,6 +500,8 @@ Playlist::PrettyItemDelegate::paintTail(QPainter* painter, const QStyleOptionVie
                            );
     }
 }
+
+
 QPointF
 Playlist::PrettyItemDelegate::centerImage(const QPixmap& pixmap, const QRectF& rect) const
 {
