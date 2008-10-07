@@ -850,13 +850,13 @@ IpodAlbum::tracks()
 }
 
 QPixmap
-IpodAlbum::image( int size, bool withShadow )
+IpodAlbum::image( int size )
 {
     //DEBUG_BLOCK
     if( m_hasCover )
         return QPixmap::fromImage( m_image );
-    else
-        return Meta::Album::image( size, withShadow );
+    
+    return Meta::Album::image( size );
 }
 
 bool

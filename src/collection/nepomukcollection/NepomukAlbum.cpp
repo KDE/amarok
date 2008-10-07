@@ -119,7 +119,7 @@ NepomukAlbum::hasImage( int size ) const
 }
 
 QPixmap
-NepomukAlbum::image( int size, bool withShadow )
+NepomukAlbum::image( int size )
 {
     if ( !m_hasImageChecked )
     {
@@ -129,7 +129,7 @@ NepomukAlbum::image( int size, bool withShadow )
             m_hasImage = true;
     }
     if( !m_hasImage )
-        return Meta::Album::image( size, withShadow );
+        return Meta::Album::image( size );
 
     if( size == 0) // fullsize image
         return QPixmap( m_imagePath );
@@ -143,7 +143,7 @@ NepomukAlbum::image( int size, bool withShadow )
         return QPixmap( path );
     }
  
-    return Meta::Album::image( size, withShadow );
+    return Meta::Album::image( size );
 }
 
 void

@@ -337,9 +337,9 @@ public:
         return name();
     }
 
-    QPixmap image( int size, bool withShadow )
+    QPixmap image( int size )
     {
-        return Meta::Album::image( size, withShadow );
+        return Meta::Album::image( size );
     }
 
     QPointer<MetaFile::Track::Private> const d;

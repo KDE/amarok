@@ -49,7 +49,7 @@ class NepomukAlbum : public Album
 
         virtual bool hasImage( int size = 1 ) const;
         virtual bool canUpdateImage() const { return true; }
-        virtual QPixmap image( int size = 1, bool withShadow = false );
+        virtual QPixmap image( int size = 1 );
         virtual void setImage( const QImage &image );
         virtual void removeImage();
 

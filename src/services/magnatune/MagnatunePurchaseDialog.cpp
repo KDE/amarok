@@ -69,14 +69,14 @@ void MagnatunePurchaseDialog::setAlbum( MagnatuneAlbum * album )
     Meta::AlbumPtr albumptr( album );
     subscribeTo( albumptr );
 
-    coverPixmapLabel->setPixmap( album->image( 200, false ) );
+    coverPixmapLabel->setPixmap( album->image( 200 ) );
 }
 
 void MagnatunePurchaseDialog::purchase( )
 {
     if ( verifyEntries( ) )
     {
-	    setEnabled( false ); //to prevent accidental double purchases
+        setEnabled( false ); //to prevent accidental double purchases
 
         if ( ccRadioButton->isChecked() )
             emit( makePurchase( ccEdit->text(), expYearEdit->text(), expMonthEdit->text(), nameEdit->text(), emailEdit->text(), m_albumCode, amountComboBox->currentText().toInt() ) );
@@ -175,7 +175,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
 void MagnatunePurchaseDialog::metadataChanged(Album * album)
 {
-    coverPixmapLabel->setPixmap( album->image( 200, false ) );
+    coverPixmapLabel->setPixmap( album->image( 200 ) );
 }
 
 

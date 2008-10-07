@@ -418,9 +418,9 @@ DaapAlbum::tracks()
 }
 
 QPixmap
-DaapAlbum::image( int size, bool withShadow )
+DaapAlbum::image( int size )
 {
-    return Meta::Album::image( size, withShadow );
+    return Meta::Album::image( size );
 }
 
 bool

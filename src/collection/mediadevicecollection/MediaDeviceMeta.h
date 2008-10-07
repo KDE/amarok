@@ -155,7 +155,7 @@ namespace Meta
 	    virtual ArtistPtr albumArtist() const;
 	    virtual TrackList tracks();
 	    
-	    virtual QPixmap image( int size = 1, bool withShadow = false );
+	    virtual QPixmap image( int size = 1 );
 	    virtual bool canUpdateImage() const;
 	    virtual void setImage( const QImage &image);
 	    

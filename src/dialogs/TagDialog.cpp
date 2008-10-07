@@ -889,7 +889,7 @@ void TagDialog::readTags()
     //lyrics
     ui->kTextEdit_lyrics->setText( m_lyrics );
 
-    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( AmarokConfig::coverPreviewSize(), false ) );
+    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( AmarokConfig::coverPreviewSize() ) );
     ui->pixmap_cover->setInformation( m_currentTrack->artist()->name(), m_currentTrack->album()->name() );
     const int s = AmarokConfig::coverPreviewSize();
     ui->pixmap_cover->setMinimumSize( s, s );

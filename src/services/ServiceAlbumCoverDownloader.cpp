@@ -50,26 +50,20 @@ Meta::ServiceAlbumWithCover::~ServiceAlbumWithCover()
 }
 
 QPixmap
-ServiceAlbumWithCover::image(int size, bool withShadow)
+ServiceAlbumWithCover::image( int size )
 {
-    //DEBUG_BLOCK
-
-    //debug() << "size: " << size;
-
     if( size > 1000 )
     {
         debug() << "Giant image detected, are you sure you want this?";
-        return Meta::Album::image( size, withShadow );
+        return Meta::Album::image( size );
     }
     QString coverName = downloadPrefix() + '_' + albumArtist()->name() + '_' + name() + "_cover.png";
-
 
     QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
 
     //make sure that this dir exists
-    if ( !cacheCoverDir.exists() ) {
+    if ( !cacheCoverDir.exists() )
         cacheCoverDir.mkpath( Amarok::saveLocation( "albumcovers/cache/" ) );
-    }
 
     if ( size <= 1 )
         size = AmarokConfig::coverPreviewSize();
@@ -77,22 +71,21 @@ ServiceAlbumWithCover::image(int size, bool withShadow)
 
     QImage img;
 
-    if( QFile::exists( cacheCoverDir.filePath( sizeKey + coverName ) ) ) {
-        //debug() << "Image exists in cache";
+    if( QFile::exists( cacheCoverDir.filePath( sizeKey + coverName ) ) )
+    {
         img = QImage( cacheCoverDir.filePath( sizeKey + coverName ) );
         return QPixmap::fromImage( img );
     }
-    else if ( m_hasFetchedCover ) {
-        //debug() << "Large cover loaded, resizing, saving and returning";
-
+    else if ( m_hasFetchedCover )
+    {
         img = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         img.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
         return QPixmap::fromImage( img );
 
-    } else if ( !m_isFetchingCover ) {
+    }
+    else if ( !m_isFetchingCover )
+    {
         m_isFetchingCover = true;
-
-        //debug() << "hmmm.... no cover, need to fetch it";
 
         if ( m_coverDownloader == 0 )
             m_coverDownloader = new ServiceAlbumCoverDownloader();
@@ -100,7 +93,7 @@ ServiceAlbumWithCover::image(int size, bool withShadow)
 
     }
 
-    return Album::image( size, withShadow );
+    return Album::image( size );
 }
 
 void

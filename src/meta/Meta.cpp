@@ -353,10 +353,8 @@ Meta::Album::notifyObservers() const
 }
 
 QPixmap
-Meta::Album::image( int size, bool withShadow )
+Meta::Album::image( int size )
 {
-    Q_UNUSED( withShadow );
-
     // Return "nocover" until it's fetched.
     QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     if ( size <= 1 )
@@ -374,9 +372,6 @@ Meta::Album::image( int size, bool withShadow )
         img.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
     }
 
-    //if ( withShadow )
-        //s = makeShadowedImage( s );
-
     m_noCoverImage = true;
     
     return QPixmap::fromImage( img );
@@ -391,7 +386,7 @@ Meta::Album::imageWithBorder( int size, int borderWidth )
     m_noCoverImage = false;
     
     const int imageSize = size - borderWidth * 2;
-    QPixmap cover = image( imageSize, false );
+    QPixmap cover = image( imageSize );
 
     QString nameForKey = name();
 

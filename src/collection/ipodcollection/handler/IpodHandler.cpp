@@ -735,7 +735,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
 
     if( track->album()->hasImage( 50 ) )
     {
-        QPixmap image = track->album()->image( 50, false );
+        QPixmap image = track->album()->image( 50 );
         debug() << "Got image of height: " << image.height() << "and width: " << image.width();
         setCoverArt( ipodtrack, image );
     }

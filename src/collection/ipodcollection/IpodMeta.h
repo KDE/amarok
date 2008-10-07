@@ -244,9 +244,9 @@ class IpodAlbum : public Meta::Album
         virtual ArtistPtr albumArtist() const;
         virtual TrackList tracks();
 
-        virtual QPixmap image( int size = 1, bool withShadow = false );
+        virtual QPixmap image( int size = 1 );
         virtual bool canUpdateImage() const;
-        virtual void setImage( const QImage &image);
+        virtual void setImage( const QImage &image );
         virtual bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return m_hasCover; }
 
         //IpodAlbum specific methods

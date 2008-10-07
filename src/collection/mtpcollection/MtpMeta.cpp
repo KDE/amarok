@@ -913,9 +913,9 @@ MtpAlbum::tracks()
 }
 
 QPixmap
-MtpAlbum::image( int size, bool withShadow )
+MtpAlbum::image( int size )
 {
-    return Meta::Album::image( size, withShadow );
+    return Meta::Album::image( size );
 }
 
 bool

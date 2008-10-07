@@ -252,14 +252,14 @@ public:
             return name();
     }
 
-    QPixmap image( int size, bool withShadow )
+    QPixmap image( int size )
     {
         if( d && d->realTrack ) {
             if ( d->realTrack->album() )
-                return d->realTrack->album()->image( size, withShadow );
-            return Meta::Album::image( size, withShadow );
+                return d->realTrack->album()->image( size );
+            return Meta::Album::image( size );
         } else
-            return Meta::Album::image( size, withShadow );
+            return Meta::Album::image( size );
     }
 
     virtual bool operator==( const Meta::Album &album ) const

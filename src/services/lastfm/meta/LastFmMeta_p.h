@@ -245,10 +245,8 @@ public:
             return QString();
     }
 
-    QPixmap image( int size, bool withShadow )
+    QPixmap image( int size )
     {
-        Q_UNUSED( withShadow )
-
         if( !d || d->albumArt.isNull() ) {
             //return Meta::Album::image( size, withShadow );
             //TODO implement shadow

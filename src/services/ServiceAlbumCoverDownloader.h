@@ -107,7 +107,7 @@ public:
      * @param withShadow Unused.
      * @return The cover image or a default cover.
      */
-    virtual QPixmap image( int size = 1, bool withShadow = false); //overridden from Meta::Album
+    virtual QPixmap image( int size = 1 ); //overridden from Meta::Album
 
 private:
 

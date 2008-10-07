@@ -999,10 +999,10 @@ SqlAlbum::hasImage( int size ) const
 }
 
 QPixmap
-SqlAlbum::image( int size, bool withShadow )
+SqlAlbum::image( int size )
 {
     if( m_hasImageChecked && !m_hasImage )
-        return Meta::Album::image( size, withShadow );
+        return Meta::Album::image( size );
 
     m_hasImageChecked = true;
 
@@ -1027,7 +1027,7 @@ SqlAlbum::image( int size, bool withShadow )
         // If we return this value then we don't need to do anything else
         // as we know that the user has explicitly set no cover
         if( image == AMAROK_UNSET_MAGIC )
-            return Meta::Album::image( size, withShadow );
+            return Meta::Album::image( size );
 
         if( !image.isEmpty() && size < 1000 )
             result = image;
@@ -1054,7 +1054,7 @@ SqlAlbum::image( int size, bool withShadow )
 
     m_hasImage = false;
 
-    return Meta::Album::image( size, withShadow );
+    return Meta::Album::image( size );
 }
 
 void

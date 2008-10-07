@@ -418,9 +418,9 @@ MediaDeviceAlbum::tracks()
 }
 
 QPixmap
-MediaDeviceAlbum::image( int size, bool withShadow )
+MediaDeviceAlbum::image( int size )
 {
-    return Meta::Album::image( size, withShadow );
+    return Meta::Album::image( size );
 }
 
 bool
