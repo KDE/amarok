@@ -111,6 +111,7 @@ Playlist::PrettyItemDelegate::paint(QPainter* painter, const QStyleOptionViewIte
         return;
 
     painter->save();
+    QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
     painter->translate(option.rect.topLeft());
 
     if ((index.row() % 2) == 0)
@@ -255,7 +256,7 @@ Playlist::PrettyItemDelegate::paintSingleTrack(QPainter* painter, const QStyleOp
     painter->drawText(albumTextBox, Qt::AlignRight | Qt::AlignVCenter, albumString);
 
     //set selection marker if needed
-    if (option.state & QStyle::State_Selected) {
+    /*if (option.state & QStyle::State_Selected) {
         painter->drawPixmap( (int)topLine.x(),(int)topLine.y(),
                              The::svgHandler()->renderSvg(
                                         "selection",
@@ -263,7 +264,7 @@ Playlist::PrettyItemDelegate::paintSingleTrack(QPainter* painter, const QStyleOp
                                         "selection"
                                       )
                            );
-    }
+    }*/
 }
 
 void
@@ -372,19 +373,10 @@ Playlist::PrettyItemDelegate::paintHead(QPainter* painter, const QStyleOptionVie
     painter->drawText(textBox, Qt::AlignLeft | Qt::AlignVCenter, trackString);
     painter->drawText(timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString);
 
-    //set selection marker if needed
-    if (option.state & QStyle::State_Selected) {
-        painter->drawPixmap( (int)line.x(),(int)line.y(),
-                             The::svgHandler()->renderSvg(
-                                        "selection",
-                                        (int)line.width(), (int)line.height(),
-                                        "selection"
-                                      )
-                           );
-    }
 }
 void
-Playlist::PrettyItemDelegate::paintBody(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const {
+Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
+
     QRectF trackRect(option.rect);
 
     QRectF line(MARGINH, MARGINBODY, trackRect.width() - (2*MARGINH), trackRect.height() - (2*MARGINBODY));
@@ -430,16 +422,6 @@ Playlist::PrettyItemDelegate::paintBody(QPainter* painter, const QStyleOptionVie
     painter->drawText(textBox, Qt::AlignLeft | Qt::AlignVCenter, trackString);
     painter->drawText(timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString);
 
-    //set selection marker if needed
-    if (option.state & QStyle::State_Selected) {
-        painter->drawPixmap( (int)line.x(),(int)line.y(),
-                             The::svgHandler()->renderSvg(
-                                        "selection",
-                                        (int)line.width(), (int)line.height(),
-                                        "selection"
-                                      )
-                           );
-    }
 }
 
 void
@@ -489,16 +471,6 @@ Playlist::PrettyItemDelegate::paintTail(QPainter* painter, const QStyleOptionVie
     painter->drawText(textBox, Qt::AlignLeft | Qt::AlignVCenter, trackString);
     painter->drawText(timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString);
 
-    //set selection marker if needed
-    if (option.state & QStyle::State_Selected) {
-        painter->drawPixmap( (int)line.x(),(int)line.y(),
-                             The::svgHandler()->renderSvg(
-                                        "selection",
-                                        (int)line.width(), (int)line.height(),
-                                        "selection"
-                                      )
-                           );
-    }
 }
 
 
