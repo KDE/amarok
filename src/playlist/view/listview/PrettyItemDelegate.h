@@ -41,7 +41,7 @@ namespace Playlist {
             void paintHead(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
             //void paintCollapsedHead(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
             void paintBody(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
-            //void paintTail(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
+            void paintTail(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
             //void paintCollapsed() const;
 
             QPointF centerImage(const QPixmap&, const QRectF&) const;
