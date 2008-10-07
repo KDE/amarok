@@ -1332,6 +1332,10 @@ SqlAlbum::updateImage( const QString path ) const
                     .arg( QString::number( imageid ), QString::number( m_id ) );
         m_hasImage = true;
         m_hasImageChecked = true;
+
+        // Make sure we remove any old cached image locations when setting a new cover
+        m_images.clear();
+
         m_images.insert( 0, path );
         m_collection->query( query );
     }
