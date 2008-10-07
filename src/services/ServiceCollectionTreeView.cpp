@@ -19,6 +19,7 @@
 
 #include "ServiceCollectionTreeView.h"
 
+#include "Debug.h"
 #include "../meta/CustomActionsCapability.h"
 #include "../context/popupdropper/PopupDropperAction.h"
 

@@ -18,13 +18,15 @@ VERSION 2.0-beta3
     * Major restructuring of the directory layout of the service framework
     * New "playground" directory added for plugins and applets that are not 
       yet ready for prime time.
+    * Major overhaul of playlist subsystem, including a completely new view
+      (even though it looks a lot like to old one).  Programmers should
+      review the SVN commit notes to learn about other changes.
 
   BUGFIXES:
     * Play option from playlist context menu works now. (BR 172141)
     * Cloud applet moved to playground as it still needs a lot of work 
       (BR 170613)
-
-
+    * Playlist overhaul fixes a couple of bugs. (BR 167861) (BR 171048)
 
 VERSION 2.0-beta2
   FEATURES:

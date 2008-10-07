@@ -22,6 +22,7 @@
 #include "DynamicBiasDelegate.h"
 #include "DynamicBiasModel.h"
 #include "amarokconfig.h"
+#include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 
 #include <QInputDialog>
@@ -68,8 +69,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_repopulateButton->setEnabled( enabled );
     m_repopulateButton->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)),
-            The::playlistModel(), SIGNAL(repopulate()) );
+    QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)), The::playlistActions(), SLOT(repopulateDynamicPlaylist()) );
             
 
     KHBox* presetLayout = new KHBox( this );
@@ -203,7 +203,7 @@ DynamicCategory::On()
     // TODO: turn off other incompatible modes
     AmarokConfig::self()->writeConfig();
     m_repopulateButton->setEnabled( true );
-    The::playlistModel()->playlistModeChanged();  
+    The::playlistActions()->playlistModeChanged();
 
 }
 
@@ -214,7 +214,7 @@ DynamicCategory::Off()
     // TODO: should we restore the state of other modes?
     AmarokConfig::self()->writeConfig();
     m_repopulateButton->setEnabled( false );
-    The::playlistModel()->playlistModeChanged();  
+    The::playlistActions()->playlistModeChanged();
 }
 
 void

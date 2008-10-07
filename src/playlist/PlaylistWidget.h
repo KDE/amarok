@@ -28,14 +28,17 @@
 #include <KVBox>
 
 #include <QLabel>
+class QWidget;
 
 namespace Playlist {
 
     class Widget : public KVBox
     {
         Q_OBJECT
+
         public:
             Widget( QWidget* parent );
+            QWidget* currentView() { return m_playlistView; }
 
         public slots:
             void switchView();
@@ -47,6 +50,7 @@ namespace Playlist {
         private:
             Amarok::StackedWidget *m_stackedWidget;
             QLabel *m_totalTime;
+            QWidget* m_playlistView;
     };
 }
 

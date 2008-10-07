@@ -54,10 +54,9 @@ namespace AmarokScript
             QVariant trackAt( int row );
         signals:
             void CountChanged( int newCount );
-            void GroupingChanged();
-            void rowMoved( int from, int to );
-            void activeRowChanged( int from, int to );
-            void activeRowExplicitlyChanged( int from, int to );
+            void activeRowChanged( int row );
+        private slots:
+            void slotCountChanged();
         private:
             QList<QObject*>* m_wrapperList;
             QScriptEngine* m_scriptEngine;

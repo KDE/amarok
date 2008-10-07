@@ -33,11 +33,9 @@
 #include <QStringList>
 #include <QVBoxLayout>
 
-using namespace Playlist;
+const QString Playlist::HeaderWidget::HeaderMimeType = "application/x-amarok-playlist-header";
 
-const QString HeaderWidget::HeaderMimeType = "application/x-amarok-playlist-header";
-
-HeaderWidget::HeaderWidget( QWidget* parent )
+Playlist::HeaderWidget::HeaderWidget( QWidget* parent )
     : QWidget( parent )
     , m_topLayout( new QHBoxLayout( this ) )
 {
@@ -65,7 +63,8 @@ HeaderWidget::HeaderWidget( QWidget* parent )
     setAcceptDrops( true );
 }
 
-void HeaderWidget::dragEnterEvent(QDragEnterEvent *event)
+void
+Playlist::HeaderWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     if ( event->mimeData()->hasFormat( HeaderMimeType )  && event->source() == this )
     {
@@ -76,7 +75,7 @@ void HeaderWidget::dragEnterEvent(QDragEnterEvent *event)
 }
 
 void
-HeaderWidget::dropEvent( QDropEvent *event)
+Playlist::HeaderWidget::dropEvent( QDropEvent *event)
 {
     if( event->mimeData()->hasFormat( HeaderMimeType ) )
     {
@@ -100,19 +99,19 @@ HeaderWidget::dropEvent( QDropEvent *event)
 }
 
 void
-HeaderWidget::enterEvent( QEvent* event )
+Playlist::HeaderWidget::enterEvent( QEvent* event )
 {
     Q_UNUSED( event );
 }
 
 void
-HeaderWidget::leaveEvent( QEvent* event )
+Playlist::HeaderWidget::leaveEvent( QEvent* event )
 {
     Q_UNUSED( event );
 }
 
 void
-HeaderWidget::mousePressEvent(QMouseEvent *event)
+Playlist::HeaderWidget::mousePressEvent(QMouseEvent *event)
 {
     QLabel *child = dynamic_cast<QLabel*>(childAt(event->pos()));
     if( !child ) return;
@@ -130,5 +129,3 @@ HeaderWidget::mousePressEvent(QMouseEvent *event)
     //drag->setHotSpot( QPoint( labelPixmap.width()/2, labelPixmap.height() ) );
     drag->exec();
 }
-
-#include "PlaylistHeader.moc"

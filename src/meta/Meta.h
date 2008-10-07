@@ -251,7 +251,9 @@ namespace Meta
             */
             virtual void setCachedLyrics( const QString &lyrics );
 
-            virtual bool operator==( const Meta::Track &track ) const;
+            virtual bool operator==( const Track &track ) const;
+
+            static bool lessThan( TrackPtr left, TrackPtr right );
 
         protected:
             virtual void notifyObservers() const;

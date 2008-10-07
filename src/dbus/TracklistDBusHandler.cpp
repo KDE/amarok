@@ -21,7 +21,7 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "collection/CollectionManager.h"
-//#include "mediabrowser.h"
+#include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 #include "dbus/PlayerDBusHandler.h"
 #include "ActionClasses.h"
@@ -40,10 +40,8 @@ namespace Amarok
     {
         new TracklistAdaptor(this);
         QDBusConnection::sessionBus().registerObject( "/TrackList", this );
-        // FIXME: currently The::playlistModel() returns null at this point
-        //        so the signals don't get connected
-        connect( The::playlistModel(), SIGNAL( playlistCountChanged( int ) ), this, SLOT( slotTrackListChange() ) );
-        connect( The::playlistModel(), SIGNAL( rowMoved( int, int ) ), this, SLOT( slotTrackListChange() ) );
+        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
+        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
     }
 
     int TracklistDBusHandler::AddTrack( const QString& url, bool playImmediately )
@@ -52,9 +50,9 @@ namespace Amarok
         if( track )
         {
             if( playImmediately )
-                The::playlistModel()->insertOptioned( track, Playlist::DirectPlay );
+                The::playlistController()->insertOptioned( track, Playlist::DirectPlay );
             else
-                The::playlistModel()->insertOptioned( track, Playlist::Append );
+                The::playlistController()->insertOptioned( track, Playlist::Append );
             return 0;
         }
         else
@@ -64,7 +62,7 @@ namespace Amarok
     void TracklistDBusHandler::DelTrack( int index )
     {
         if( index < GetLength() )
-            The::playlistModel()->removeRows( index, 1 );
+            The::playlistController()->removeRow( index );
     }
 
     int TracklistDBusHandler::GetCurrentTrack()
@@ -79,7 +77,7 @@ namespace Amarok
 
     QVariantMap TracklistDBusHandler::GetMetadata( int position )
     {
-        return The::playerDBusHandler()->GetTrackMetadata( The::playlistModel()->trackForRow( position ) );
+        return The::playerDBusHandler()->GetTrackMetadata( The::playlistModel()->trackAt( position ) );
     }
 
     void TracklistDBusHandler::SetLoop(bool enable)

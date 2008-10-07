@@ -24,6 +24,7 @@
 #include "EngineController.h"
 #include "meta/Meta.h"
 #include "PlayerAdaptor.h"
+#include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 #include "ActionClasses.h"
 
@@ -123,12 +124,12 @@ namespace Amarok
 
     void PlayerDBusHandler::Next()
     {
-        The::playlistModel()->next();
+        The::playlistActions()->next();
     }
 
     void PlayerDBusHandler::Prev()
     {
-        The::playlistModel()->back();
+        The::playlistActions()->back();
     }
 
     void PlayerDBusHandler::Repeat( bool on )

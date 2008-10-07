@@ -21,7 +21,7 @@
 #include "StatusBar.h"
 #include "amarokconfig.h"
 #include "covermanager/CoverManager.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistActions.h"
 
 #include <KAuthorized>
 #include <KHBox>
@@ -316,7 +316,7 @@ RandomAction::RandomAction( KActionCollection *ac, QObject *parent ) :
           << "media-album-shuffle-amarok";
     setIcons( icons );
 
-    connect( this, SIGNAL( triggered( int ) ), The::playlistModel(), SLOT( playlistModeChanged() ) );
+    connect( this, SIGNAL( triggered( int ) ), The::playlistActions(), SLOT( playlistModeChanged() ) );
 }
 
 void
@@ -355,7 +355,7 @@ RepeatAction::RepeatAction( KActionCollection *ac, QObject *parent ) :
     setIcons( QStringList() << "media-playlist-repeat-off-amarok" << "media-track-repeat-amarok" << "media-album-repeat-amarok" << "media-playlist-repeat-amarok" );
     setCurrentItem( AmarokConfig::repeat() );
 
-    connect( this, SIGNAL( triggered( int ) ), The::playlistModel(), SLOT( playlistModeChanged() ) );
+    connect( this, SIGNAL( triggered( int ) ), The::playlistActions(), SLOT( playlistModeChanged() ) );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

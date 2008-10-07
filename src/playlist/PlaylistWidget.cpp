@@ -23,8 +23,10 @@
 #include "ActionClasses.h"
 #include "App.h"
 #include "MainWindow.h" 
-//#include "PlaylistClassicView.h"
-#include "PlaylistGraphicsView.h"
+//#include "view/graphic/PlaylistClassicView.h"
+#include "view/graphic/PlaylistGraphicsView.h"
+#include "PlaylistController.h"
+#include "view/listview/PrettyListView.h"
 #include "PlaylistHeader.h"
 #include "statusbar/selectLabel.h"
 #include "ToolBar.h"
@@ -41,14 +43,9 @@
 
 #include <cmath>
 
-
-using namespace Playlist;
-
-
-Widget::Widget( QWidget* parent )
+Playlist::Widget::Widget( QWidget* parent )
     : KVBox( parent )
 {
-    
     setContentsMargins( 1, 1, 1, 1 );
 
     Amarok::Widget * layoutHolder = new Amarok::Widget( this );
@@ -62,24 +59,20 @@ Widget::Widget( QWidget* parent )
 
     //Playlist::HeaderWidget* header = new Playlist::HeaderWidget( layoutHolder );
 
-    Playlist::Model* playModel = The::playlistModel();
-    playModel->init();
-
-
-    Playlist::GraphicsView* playView = The::playlistView();
-    playView->setFrameShape( QFrame::NoFrame );  // Get rid of the redundant border
-    playView->setModel( playModel );
-
+    QWidget* playView = new PrettyListView( this );
+    //playView->setFrameShape( QFrame::NoFrame );  // Get rid of the redundant border
+    //playView->setModel();
+    playView->show();
+    m_playlistView = playView;
     
     // Classic View disabled for 2.0
     //Playlist::ClassicView * clasicalPlaylistView = new Playlist::ClassicView( this );
-
 
     mainPlaylistlayout->setSpacing( 0 );
     //mainPlaylistlayout->addWidget( header );
     mainPlaylistlayout->addWidget( playView );
 
-    m_stackedWidget = new  Amarok::StackedWidget( this );
+    m_stackedWidget = new Amarok::StackedWidget( this );
 
     m_stackedWidget->addWidget( layoutHolder );
     //m_stackedWidget->addWidget( clasicalPlaylistView );
@@ -105,18 +98,19 @@ Widget::Widget( QWidget* parent )
 
     //barAndLength->addStretch();
     
-    connect( playModel, SIGNAL( playlistCountChanged( int ) ), this, SLOT( updateTotalLength() ) );
-    connect( playModel, SIGNAL( playlistGroupingChanged() ), this, SLOT( updateTotalLength() ) );
-    connect( playModel, SIGNAL( rowsChanged( int ) ), this, SLOT( updateTotalLength() ) );
-    connect( playModel, SIGNAL( rowMoved( int, int ) ), this, SLOT( updateTotalLength() ) );
-    connect( playModel, SIGNAL( activeRowChanged( int, int ) ), this, SLOT( updateTotalLength() ) );
-    connect( playModel, SIGNAL( repopulate() ), this, SLOT( updateTotalLength() ) );
-
+    Model* playModel = Model::instance();
+    connect( playModel, SIGNAL( dataChanged(const QModelIndex&, const QModelIndex&) ), this, SLOT( updateTotalLength() ) );
+    connect( playModel, SIGNAL( rowsInserted(const QModelIndex&, int, int ) ), this, SLOT( updateTotalLength() ) );
+    connect( playModel, SIGNAL( rowsRemoved(const QModelIndex&, int, int ) ), this, SLOT( updateTotalLength() ) );
+    updateTotalLength();
         
     KAction * action = new KAction( KIcon( "view-media-playlist-amarok" ), i18nc( "switch view", "Switch Playlist &View" ), this );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( switchView() ) );
             Amarok::actionCollection()->addAction( "playlist_switch", action );
 
+    // the Controller ctor creates the undo/redo actions that we use below, so we want
+    // to make sure that it's been constructed and the the actions registered
+    Controller::instance();
 
     { //START Playlist toolbar
 //         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -150,18 +144,20 @@ Widget::Widget( QWidget* parent )
 
 }
 
-QSize Widget::sizeHint() const
+QSize
+Playlist::Widget::sizeHint() const
 {
     return QSize( static_cast<QWidget*>(parent())->size().width() / 4 , 300 );
 }
 
-void Widget::switchView()
+void
+Playlist::Widget::switchView()
 {
     m_stackedWidget->setCurrentIndex( ( m_stackedWidget->currentIndex() + 1 ) % 2 );
 }
 
 void
-Widget::updateTotalLength() //SLOT
+Playlist::Widget::updateTotalLength() //SLOT
 {
     int totalLength = The::playlistModel()->totalLength();
     const int trackCount = The::playlistModel()->rowCount();
@@ -173,5 +169,3 @@ Widget::updateTotalLength() //SLOT
     //I use QTime for mm:ss and handle hours separately.
     m_totalTime->setText( i18ncp("%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
 }
-
-#include "PlaylistWidget.moc"

@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
- * copyright            : (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *                      : (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *                      : (C) 2008 Soren Harward <stharward@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,146 +22,58 @@
 
 #include "UndoCommands.h"
 
-#include "PlaylistGraphicsView.h"
 #include "PlaylistModel.h"
 
-
-using namespace Playlist;
-using namespace Qt;
-
-AddTracksCmd::AddTracksCmd( QUndoCommand* parent, int row, Meta::TrackList tracks )
+/************************
+ * Insert
+ ************************/
+Playlist::InsertTracksCmd::InsertTracksCmd( QUndoCommand* parent, const InsertCmdList& cmds )
     : QUndoCommand( i18n("Tracks Added"), parent )
-    , m_tracks( tracks )
-{
-    if( row < 0 )
-        m_row = The::playlistModel()->itemCount();
-    else
-        m_row = row;
+    , m_cmdlist( cmds )
+{ }
+
+void
+Playlist::InsertTracksCmd::redo() {
+    Model::instance()->insertTracksCommand( m_cmdlist );
 }
 
 void
-AddTracksCmd::redo()
-{
-    The::playlistModel()->insertTracksCommand( m_row, m_tracks );
+Playlist::InsertTracksCmd::undo() {
+    Model::instance()->removeTracksCommand( m_cmdlist );
 }
 
-void
-AddTracksCmd::undo()
-{
-    The::playlistModel()->removeTracksCommand( m_row, m_tracks.size() );
-}
-
-RemoveTracksCmd::RemoveTracksCmd( QUndoCommand* parent, int position, int numOfRows )
+/************************
+ * Remove
+ ************************/
+Playlist::RemoveTracksCmd::RemoveTracksCmd( QUndoCommand* parent, const RemoveCmdList& cmds )
     : QUndoCommand( i18n("Tracks Removed"), parent )
-    , m_numOfRows( numOfRows )
-    , m_position( position )
-{  }
+    , m_cmdlist( cmds )
+{ }
 
 void
-RemoveTracksCmd::redo()
-{
-    m_tracks = The::playlistModel()->removeTracksCommand( m_position, m_numOfRows );
+Playlist::RemoveTracksCmd::redo() {
+    Model::instance()->removeTracksCommand( m_cmdlist );
 }
 
 void
-RemoveTracksCmd::undo()
-{
-    The::playlistModel()->insertTracksCommand( m_position, m_tracks );
+Playlist::RemoveTracksCmd::undo() {
+    Model::instance()->insertTracksCommand( m_cmdlist );
 }
 
-AddPlaylistsCmd::AddPlaylistsCmd( QUndoCommand * parent, int row, Meta::PlaylistList playlists )
-    : QUndoCommand( i18n("Playlists Added"), parent )
-        , m_playlists( playlists )
-        , m_row( row )
-{
+/************************
+ * Move
+ ************************/
+Playlist::MoveTracksCmd::MoveTracksCmd( QUndoCommand* parent, const MoveCmdList& cmds )
+    : QUndoCommand( i18n("Track moved"), parent ) // FIXME: better translation after string freeze
+    , m_cmdlist( cmds )
+{ }
+
+void
+Playlist::MoveTracksCmd::redo() {
+    Model::instance()->moveTracksCommand( m_cmdlist, false );
 }
 
 void
-AddPlaylistsCmd::redo()
-{
-    /* A playlist isn't actually added, only it's tracks are.
-    * But the Playlist is observed for changes to it's trackList.
-    */
-    foreach( Meta::PlaylistPtr playlist, m_playlists )
-    {
-        The::playlistModel()->registerPlaylist( playlist );
-        The::playlistModel()->insertTracksCommand( m_row, playlist->tracks() );
-    }
-}
-
-void
-AddPlaylistsCmd::undo()
-{
-    int startRow = m_row;
-    foreach( Meta::PlaylistPtr playlist, m_playlists )
-    {
-        The::playlistModel()->unRegisterPlaylist( playlist );
-        The::playlistModel()->removeTracksCommand( startRow, playlist->tracks().size() );
-    }
-}
-
-
-
-Playlist::MoveTrackCmd::MoveTrackCmd( QUndoCommand * parent, int from, int to )
-    : QUndoCommand( i18n("Track moved"), parent )
-    , m_from( from )
-    , m_to( to )
-{
-
-}
-
-void Playlist::MoveTrackCmd::redo()
-{
-    DEBUG_BLOCK
-    The::playlistModel()->moveRowCommand( m_from, m_to );
-    The::playlistView()->moveViewItem( m_from, m_to );
-}
-
-void Playlist::MoveTrackCmd::undo()
-{
-    DEBUG_BLOCK
-    The::playlistModel()->moveRowCommand( m_to, m_from );
-    The::playlistView()->moveViewItem( m_to, m_from );
-}
-
-
-Playlist::MoveMultipleTracksCmd::MoveMultipleTracksCmd(QUndoCommand * parent, QList< int > rows, int to)
-    : QUndoCommand( i18n("Group moved"), parent )
-    , m_rows( rows )
-    , m_to( to )
-{
-}
-
-void Playlist::MoveMultipleTracksCmd::undo()
-{
-    int newTo = m_rows.first();
-    QList<int> newRows;
-
-
-    //we need to figure out what the new position of the rows are and where to move
-    //them now to restore original layout
-    if ( newTo < m_to ) {
-        //the original operation moved an album down. Hence we need to remember to subtract the
-        //number of items that was moved as these no longer count towards the postion in the list
-        for ( int i = 0; i < m_rows.count(); i++ )
-            newRows << i + m_to - ( m_rows.count() - 1 );
-            The::playlistModel()->moveMultipleRowsCommand( newRows, newTo );
-            The::playlistView()->moveViewItems( newRows, newTo );
-    } else {
-        //The original opperation moved an album up in the list.
-        for ( int i = 0; i < m_rows.count(); i++ )
-            newRows << i + m_to;
-        
-        The::playlistModel()->moveMultipleRowsCommand( newRows, newTo + m_rows.count() );
-        The::playlistView()->moveViewItems( newRows, newTo + m_rows.count() );
-    }
-
-
-    
-}
-
-void Playlist::MoveMultipleTracksCmd::redo()
-{
-    The::playlistModel()->moveMultipleRowsCommand( m_rows, m_to );
-    The::playlistView()->moveViewItems( m_rows, m_to );
+Playlist::MoveTracksCmd::undo() {
+    Model::instance()->moveTracksCommand( m_cmdlist, true );
 }

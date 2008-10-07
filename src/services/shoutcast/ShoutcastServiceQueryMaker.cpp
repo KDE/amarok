@@ -27,6 +27,8 @@
 #include "ShoutcastMeta.h"
 #include "collection/support/MemoryMatcher.h"
 
+#include <kio/job.h>
+
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 

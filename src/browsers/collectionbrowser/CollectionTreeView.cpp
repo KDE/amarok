@@ -34,8 +34,7 @@
 #include "MetaQueryMaker.h"
 #include "meta/CustomActionsCapability.h"
 #include "PaletteHandler.h"
-#include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistGraphicsView.h"
+#include "playlist/PlaylistController.h"
 #include "PopupDropperFactory.h"
 #include "context/popupdropper/PopupDropper.h"
 #include "context/popupdropper/PopupDropperAction.h"
@@ -493,8 +492,8 @@ CollectionTreeView::playChildTracksSlot( Meta::TrackList list ) //slot
 
     Playlist::AddOptions insertMode = m_playChildTracksMode.take( mime );
 
-    qStableSort( list.begin(), list.end(), Playlist::Model::trackNumberLessThan );
-    The::playlistModel()->insertOptioned( list, insertMode );
+    qStableSort( list.begin(), list.end(), Meta::Track::lessThan );
+    The::playlistController()->insertOptioned( list, insertMode );
 
     mime->deleteLater();
 }

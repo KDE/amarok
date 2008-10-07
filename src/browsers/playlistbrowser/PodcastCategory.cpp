@@ -361,7 +361,7 @@ PlaylistBrowserNS::PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
         if ( pmc->podcastType() ==  Meta::EpisodeType )
         {
             Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>( pmc );
-            The::playlistModel()->insertOptioned( Meta::TrackPtr( static_cast<Meta::Track *>(episode )), Playlist::Append );
+            The::playlistController()->insertOptioned( Meta::TrackPtr( static_cast<Meta::Track *>(episode )), Playlist::Append );
         }
         else if ( pmc->podcastType() ==  Meta::ChannelType )
         {
@@ -648,7 +648,7 @@ PlaylistBrowserNS::PodcastView::slotAppend()
     Meta::PodcastEpisodeList episodes = selectedEpisodes();
     if( !episodes.empty() )
     {
-        The::playlistModel()->insertOptioned(
+        The::playlistController()->insertOptioned(
             podcastEpisodesToTracks( episodes ),
             Playlist::Append );
     }
@@ -683,7 +683,7 @@ PlaylistBrowserNS::PodcastView::slotLoad() {
 
     if( !episodes.empty() )
     {
-        The::playlistModel()->insertOptioned(
+        The::playlistController()->insertOptioned(
             podcastEpisodesToTracks( episodes ),
             Playlist::Replace
         );

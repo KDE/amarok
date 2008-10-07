@@ -41,7 +41,7 @@ namespace Amarok
             void SetRandom( bool enable );
         signals:
             void TrackListChange( int );
-        private:
+        private slots:
             void slotTrackListChange();
     };
 }

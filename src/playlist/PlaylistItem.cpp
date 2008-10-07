@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu> 
+ *                      : (C) 2008 Soren Harward <stharward@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,13 +19,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#define DEBUG_PREFIX "Playlist::Item"
+
 #include "PlaylistItem.h"
 
 #include "Debug.h"
 
+#include <KRandom>
+
 Playlist::Item::Item( Meta::TrackPtr track )
-    : m_track( track ), m_state( Normal )
-{ }
+    : m_track( track ), m_state( NewlyAdded )
+{
+    m_id = ((quint64)KRandom::random() << 32) | (quint64)KRandom::random();
+}
 
 Playlist::Item::~Item()
 { }

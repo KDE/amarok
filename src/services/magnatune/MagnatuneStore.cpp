@@ -30,7 +30,7 @@
 #include "../ServiceSqlRegistry.h"
 #include "CollectionManager.h"
 #include "Debug.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 
 #include <KIconLoader>   //multiTabBar icons
 #include <KMenuBar>
@@ -50,8 +50,6 @@
 #include <QTextStream>
 
 #include <typeinfo>
-
-using namespace Meta;
 
 AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
 
@@ -343,18 +341,18 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem )
 
     //we only enable the purchase button if there is only one item selected and it happens to
     //be an album or a track
-    DataPtr dataPtr = selectedItem->data();
+    Meta::DataPtr dataPtr = selectedItem->data();
 
-    if ( typeid( * dataPtr.data() ) == typeid( MagnatuneTrack ) )  {
+    if ( typeid( * dataPtr.data() ) == typeid( Meta::MagnatuneTrack ) )  {
 
         debug() << "is right type (track)";
-        MagnatuneTrack * track = static_cast<MagnatuneTrack *> ( dataPtr.data() );
-        m_currentAlbum = static_cast<MagnatuneAlbum *> ( track->album().data() );
+        Meta::MagnatuneTrack * track = static_cast<Meta::MagnatuneTrack *> ( dataPtr.data() );
+        m_currentAlbum = static_cast<Meta::MagnatuneAlbum *> ( track->album().data() );
         m_purchaseAlbumButton->setEnabled( true );
 
-    } else if ( typeid( * dataPtr.data() ) == typeid( MagnatuneAlbum ) ) {
+    } else if ( typeid( * dataPtr.data() ) == typeid( Meta::MagnatuneAlbum ) ) {
 
-        m_currentAlbum = static_cast<MagnatuneAlbum *> ( dataPtr.data() );
+        m_currentAlbum = static_cast<Meta::MagnatuneAlbum *> ( dataPtr.data() );
         debug() << "is right type (album) named " << m_currentAlbum->name();
 
         m_purchaseAlbumButton->setEnabled( true );
@@ -488,11 +486,11 @@ void MagnatuneStore::purchaseCurrentTrackAlbum()
     //so far so good...
     //now the casting begins:
 
-    MagnatuneTrack * magnatuneTrack = dynamic_cast<MagnatuneTrack *> ( track.data() );
+    Meta::MagnatuneTrack * magnatuneTrack = dynamic_cast<Meta::MagnatuneTrack *> ( track.data() );
     if ( !magnatuneTrack )
         return;
 
-    MagnatuneAlbum * magnatuneAlbum = dynamic_cast<MagnatuneAlbum *> ( magnatuneTrack->album().data() );
+    Meta::MagnatuneAlbum * magnatuneAlbum = dynamic_cast<Meta::MagnatuneAlbum *> ( magnatuneTrack->album().data() );
     if ( !magnatuneAlbum )
         return;
 
@@ -548,9 +546,7 @@ void MagnatuneStore::timestampDownloadComplete( KJob *  job )
 void MagnatuneStore::moodyTracksReady( Meta::TrackList tracks )
 {
     DEBUG_BLOCK
-    /*I know it is bad form to use hardcoded value 4 ( = eplace here )
-    but I was gettingall sorts of ambiguity between different "Playlist" definitions*/
-    The::playlistModel()->insertOptioned( tracks, 4 );
+    The::playlistController()->insertOptioned( tracks, Playlist::Replace );
 }
 
 

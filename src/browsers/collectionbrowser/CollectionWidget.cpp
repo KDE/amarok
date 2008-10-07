@@ -25,6 +25,7 @@
 
 #include <KConfigGroup>
 #include <KLineEdit>
+#include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
 

@@ -18,11 +18,12 @@
  ***************************************************************************/
 
 #include "SimilarArtistsAction.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 #include "collection/CollectionManager.h"
 #include "SvgHandler.h"
 
 #include <KIcon>
+#include <KLocale>
 
 SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
     : GlobalCollectionArtistAction( i18n( "Play Similar Artists from Last.fm" ), parent )
@@ -38,7 +39,7 @@ void SimilarArtistsAction::slotTriggered()
 {
     const QString url = "lastfm://artist/" + artist()->prettyName() + "/similarartists";
     Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-    The::playlistModel()->insertOptioned( lastfmtrack, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( lastfmtrack, Playlist::AppendAndPlay );
 }
 
 #include "SimilarArtistsAction.moc"

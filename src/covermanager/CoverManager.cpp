@@ -31,7 +31,7 @@
 #include "QueryMaker.h"
 #include <config-amarok.h>
 #include "PixmapViewer.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 #include "context/popupdropper/PopupDropperAction.h"
 
 #include <KApplication>
@@ -731,7 +731,7 @@ void CoverManager::playSelectedAlbums()
     {
         qm->addMatch( item->albumPtr() );
     }
-    The::playlistModel()->insertOptioned( qm, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( qm, Playlist::AppendAndPlay );
 }
 
 QList<CoverViewItem*> CoverManager::selectedItems()

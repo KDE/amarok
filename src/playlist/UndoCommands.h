@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
+ *                      : (C) 2008 Soren Harward <stharward@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -22,103 +23,45 @@
 #define AMAROK_UNDOCOMMANDS_H
 
 #include "meta/Meta.h"
-#include "meta/Playlist.h"
-#include "PlaylistModel.h"
+#include "PlaylistController.h"
 
-
+#include <QList>
+#include <QPair>
 #include <QUndoCommand>
 
 namespace Playlist {
-    /**
-    * AddTracksCmd adds tracks to the Playlist::Model. Is a friend of the Playlist::Model.
-    * See Qt's QUndoCommand documentation for explanation of the command pattern and such.
-    */
-    class AddTracksCmd : public QUndoCommand
-    {
+    typedef QPair<Meta::TrackPtr,int> InsertCmd;
+    typedef QList<InsertCmd> InsertCmdList;
+    class InsertTracksCmd : public QUndoCommand {
         public:
-            AddTracksCmd( QUndoCommand* parent, int row, Meta::TrackList tracks );
+            InsertTracksCmd( QUndoCommand* parent, const InsertCmdList& );
             void undo();
             void redo();
         private:
-            Meta::TrackList m_tracks;
-            int m_row;
+            const InsertCmdList m_cmdlist;
     };
 
-    /**
-     * AddPlaylistCmd adds playlists to the Playlist::Model. Is a friend of the Playlist::Model.
-     * See Qt's QUndoCommand documentation for explanation of the command pattern and such.
-     */
-    class AddPlaylistsCmd : public QUndoCommand
-    {
+    typedef QPair<Meta::TrackPtr,int> RemoveCmd;
+    typedef QList<RemoveCmd> RemoveCmdList;
+    class RemoveTracksCmd: public QUndoCommand {
         public:
-            AddPlaylistsCmd( QUndoCommand* parent, int row, Meta::PlaylistList playlists );
+            RemoveTracksCmd( QUndoCommand* parent, const RemoveCmdList& );
             void undo();
             void redo();
         private:
-            Meta::PlaylistList m_playlists;
-            int m_row;
+            const RemoveCmdList m_cmdlist;
     };
 
-    /**
-    * Removes the specified tracks from the Playlist::Model, and remembers them so as to add them back if requested.
-    */
-    class RemoveTracksCmd: public QUndoCommand
-    {
+    typedef QPair<int,int> MoveCmd;
+    typedef QList<MoveCmd> MoveCmdList;
+    class MoveTracksCmd: public QUndoCommand {
         public:
-            RemoveTracksCmd( QUndoCommand* parent, int position, int numOfRows );
+            MoveTracksCmd( QUndoCommand* parent, const MoveCmdList& );
             void undo();
             void redo();
         private:
-            int m_numOfRows;
-            int m_position;
-            Meta::TrackList m_tracks;
+            const MoveCmdList m_cmdlist;
     };
-
-
-     /**
-     * Moves a track from one position to another in the playlist in a reversible way.
-     */
-    class MoveTrackCmd: public QUndoCommand
-    {
-        public:
-            MoveTrackCmd( QUndoCommand* parent, int from, int to );
-            void undo();
-            void redo();
-        private:
-            int m_from;
-            int m_to;
-    };
-
-         /**
-     * Moves a track from one position to another in the playlist in a reversible way.
-          */
-    class MoveMultipleTracksCmd: public QUndoCommand
-    {
-        public:
-            MoveMultipleTracksCmd( QUndoCommand* parent, QList<int> rows, int to );
-            void undo();
-            void redo();
-        private:
-            QList<int> m_rows;
-            int m_to;
-    };
-
-
-    /**
-     * Removes the specified playlists from the Playlist::Model, and remembers them so as to add them back if requested.
-     */
-    //TODO: make undo/redo of playlist remove possible
-//     class RemovePlaylistsCmd: public QUndoCommand
-//     {
-//         public:
-//             RemovePlaylistCmd( QUndoCommand* parent, int position, int numOfRows );
-//             void undo();
-//             void redo();
-//         private:
-//             int m_numOfRows;
-//             int m_position;
-//             Meta::PlaylistList m_playlists;
-//     };
 }
 
 #endif

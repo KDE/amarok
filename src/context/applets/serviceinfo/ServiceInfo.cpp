@@ -17,7 +17,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "context/Svg.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 
 #include <plasma/theme.h>
 
@@ -254,7 +254,7 @@ void ServiceInfo::trackListChanged( Meta::Playlist * playlist )
 {
     playlist->unsubscribe( this );
     Meta::PlaylistPtr playlistPtr( playlist );
-    The::playlistModel()->insertPlaylist( The::playlistModel()->rowCount(), playlistPtr );
+    The::playlistController()->insertOptioned( playlistPtr, Playlist::Append );
 }
 
 

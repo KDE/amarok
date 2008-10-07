@@ -286,29 +286,27 @@ set(libplaylistmanager_SRCS
 # PLAYLIST
 #####################################################################
 set(libplaylist_SRCS
-    playlist/PlaylistAlbumGroup.cpp
-    playlist/PlaylistClassicView.cpp
-    playlist/PlaylistDropVis.cpp
-    playlist/PlaylistGraphicsItem.cpp
-    playlist/PlaylistGraphicsScene.cpp
-    playlist/PlaylistGraphicsView.cpp
+    playlist/GroupingProxy.cpp
+    playlist/PlaylistActions.cpp
+    playlist/PlaylistController.cpp
     playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
-    playlist/PlaylistRowList.cpp
-    playlist/PlaylistTextItem.cpp
-    playlist/PlaylistViewCommon.cpp
     playlist/PlaylistWidget.cpp
-    playlist/RandomAlbumNavigator.cpp
-    playlist/RandomTrackNavigator.cpp
-    playlist/RepeatAlbumNavigator.cpp
-    playlist/RepeatPlaylistNavigator.cpp
-    playlist/RepeatTrackNavigator.cpp
-    playlist/StandardTrackNavigator.cpp
-    playlist/TrackNavigator.cpp
-    playlist/SimpleTrackNavigator.cpp
-    playlist/DynamicTrackNavigator.cpp
     playlist/UndoCommands.cpp
+    playlist/navigators/RandomAlbumNavigator.cpp
+    playlist/navigators/RandomTrackNavigator.cpp
+    playlist/navigators/RepeatAlbumNavigator.cpp
+    playlist/navigators/RepeatPlaylistNavigator.cpp
+    playlist/navigators/RepeatTrackNavigator.cpp
+    playlist/navigators/StandardTrackNavigator.cpp
+    playlist/navigators/TrackNavigator.cpp
+    playlist/navigators/SimpleTrackNavigator.cpp
+    playlist/navigators/DynamicTrackNavigator.cpp
+    playlist/view/PlaylistViewCommon.cpp
+    playlist/view/classic/PlaylistClassicView.cpp
+    playlist/view/listview/PrettyItemDelegate.cpp
+    playlist/view/listview/PrettyListView.cpp
 )
 
 #####################################################################

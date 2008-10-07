@@ -24,7 +24,7 @@
 
 #include "collection/CollectionManager.h"
 #include "meta/LastFmCapability.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
 
 #include <QComboBox>
@@ -233,7 +233,7 @@ void LastFmService::playCustomStation()
 void LastFmService::playLastFmStation( const KUrl &url )
 {
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-    The::playlistModel()->insertOptioned( track, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
 }
 
 Collection * LastFmService::collection()

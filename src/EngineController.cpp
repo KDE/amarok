@@ -25,7 +25,8 @@
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "meta/MultiPlayableCapability.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistActions.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "PluginManager.h"
 
 #include <KApplication>
@@ -253,7 +254,7 @@ EngineController::play() //SLOT
     }
     else
     {
-        play( The::playlistModel()->activeTrack() );
+        The::playlistActions()->play();
     }
 }
 
@@ -363,6 +364,7 @@ void
 EngineController::playPause() //SLOT
 {
     //this is used by the TrayIcon, PlayPauseAction and DBus
+    debug() << "PlayPause: phonon state" << m_media->state();
     if( m_media->state() == Phonon::PausedState || m_media->state() == Phonon::StoppedState )
         play();
     else
@@ -563,7 +565,7 @@ EngineController::slotAboutToFinish()
         m_multi->fetchNext();
     }
     else if( m_media->queue().isEmpty() )
-        The::playlistModel()->requestNextTrack();
+        The::playlistActions()->requestNextTrack();
 }
 
 void
@@ -652,7 +654,7 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
 
     if( url.isEmpty() )
     {
-        The::playlistModel()->requestNextTrack();
+        The::playlistActions()->requestNextTrack();
         return;
     }
 

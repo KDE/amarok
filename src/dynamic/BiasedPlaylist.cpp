@@ -253,12 +253,11 @@ Dynamic::BiasedPlaylist::getContext()
 {
     m_context.clear();
 
-    QList<Playlist::Item*> items = The::playlistModel()->itemList();
     int i = qMax( 0, The::playlistModel()->activeRow() );
 
-    for( ; i < items.size(); ++i )
+    for( ; i < The::playlistModel()->rowCount(); ++i )
     {
-        m_context.append( items[i]->track() );
+        m_context.append( The::playlistModel()->trackAt(i) );
     }
 }
 

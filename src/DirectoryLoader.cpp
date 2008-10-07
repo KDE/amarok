@@ -20,10 +20,12 @@
 
 #include "DirectoryLoader.h"
 
+#include "Debug.h"
 #include "CollectionManager.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 
 #include <KFileItem>
+#include <kio/job.h> // KIO::listRecursive
 
 DirectoryLoader::DirectoryLoader()
     : QObject( 0 )
@@ -46,7 +48,7 @@ DirectoryLoader::insertAtRow( int row )
 void
 DirectoryLoader::doInsertAtRow()
 {
-    The::playlistModel()->insertTracks( m_row, m_tracks );
+    The::playlistController()->insertTracks( m_row, m_tracks );
     deleteLater();
 }
 
@@ -127,7 +129,7 @@ DirectoryLoader::finishUrlList()
 {
     if( !m_tracks.isEmpty() )
     {
-        qStableSort( m_tracks.begin(), m_tracks.end(), Playlist::Model::trackNumberLessThan );
+        qStableSort( m_tracks.begin(), m_tracks.end(), Meta::Track::lessThan );
         emit finished( m_tracks );
     }
     if( !m_localConnection )

@@ -28,6 +28,7 @@
 #include "meta/CurrentTrackActionsCapability.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
+#include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 #include "context/popupdropper/PopupDropperAction.h"
 
@@ -140,8 +141,8 @@ Amarok::TrayIcon::event( QEvent *e )
         if( e->modifiers() == Qt::ControlModifier )
         {
             const bool up = e->delta() > 0;
-            if( up ) The::playlistModel()->back();
-            else     The::playlistModel()->next();
+            if( up ) The::playlistActions()->back();
+            else     The::playlistActions()->next();
             break;
         }
         else if( e->modifiers() == Qt::ShiftModifier )

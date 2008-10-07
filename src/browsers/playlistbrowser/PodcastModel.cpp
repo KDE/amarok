@@ -315,8 +315,8 @@ PlaylistBrowserNS::PodcastModel::loadItems(QModelIndexList list, Playlist::AddOp
                 default: debug() << "error, neither Channel nor Episode";
         }
     }
-    The::playlistModel()->insertOptioned( episodes, insertMode );
-    The::playlistModel()->insertOptioned( channels, insertMode );
+    The::playlistController()->insertOptioned( episodes, insertMode );
+    The::playlistController()->insertOptioned( channels, insertMode );
 }
 
 void

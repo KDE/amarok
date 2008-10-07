@@ -44,9 +44,11 @@
 #include "context/ContextView.h"
 #include "context/plasma/plasma.h"
 #include "covermanager/CoverManager.h" // for actions
-#include "playlist/PlaylistGraphicsView.h"
+#include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
+#include "playlist/view/graphic/PlaylistGraphicsView.h"
 #include "playlistmanager/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "queuemanager/QueueManager.h"
@@ -72,6 +74,7 @@
 #include <KMessageBox>      //savePlaylist()
 #include <KMenu>
 #include <KPushButton>
+#include <KStandardAction>
 #include <KWindowSystem>
 
 #ifdef Q_WS_X11
@@ -99,10 +102,6 @@ MainWindow::MainWindow()
 
     setObjectName( "MainWindow" );
     s_instance = this;
-
-    PERF_LOG( "Creating PlaylistModel" )
-    new Playlist::Model( this );
-    PERF_LOG( "Created PlaylistModel" )
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
@@ -172,6 +171,7 @@ MainWindow::init()
     PERF_LOG( "Create Playlist" )
     Playlist::Widget *playlistWidget = new Playlist::Widget( this );
     playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
+    playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
     PERF_LOG( "Playlist created" )
 
     createMenus();
@@ -421,10 +421,6 @@ MainWindow::closeEvent( QCloseEvent *e )
 void
 MainWindow::showEvent( QShowEvent* )
 {
-    static bool firstTime = true;
-    if( firstTime )
-        The::playlistView()->setFocus( Qt::ActiveWindowFocusReason );
-    firstTime = false;
 }
 
 QSize
@@ -498,7 +494,7 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     files = dlg.selectedUrls();
     if( files.isEmpty() ) return;
 
-    The::playlistModel()->addRecursively( files );
+    The::playlistController()->insertOptioned( files , Playlist::Append );
 }
 
 void
@@ -512,7 +508,7 @@ MainWindow::slotAddStream() //SLOT
 
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
 
-    The::playlistModel()->insertOptioned( track, Playlist::Append );
+    The::playlistController()->insertOptioned( track, Playlist::Append );
 }
 
 void
@@ -523,7 +519,7 @@ MainWindow::playAudioCD() //SLOT
     {
         Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
         if( !tracks.isEmpty() )
-            The::playlistModel()->insertOptioned( tracks, Playlist::Replace );
+            The::playlistController()->insertOptioned( tracks, Playlist::Replace );
     }
     else
     { // Default behaviour
@@ -633,6 +629,8 @@ MainWindow::createActions()
 {
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = The::engineController();
+    const Playlist::Actions* const pa = The::playlistActions();
+    const Playlist::Controller* const pc = The::playlistController();
 
     KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
     KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
@@ -698,7 +696,7 @@ MainWindow::createActions()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
 
     action = new KAction( KIcon( "edit-clear-list-amarok" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
-    connect( action, SIGNAL( triggered( bool ) ), The::playlistModel(), SLOT( clear() ) );
+    connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( clear() ) );
     ac->addAction( "playlist_clear", action );
 
     action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Stream..."), this );
@@ -781,14 +779,14 @@ MainWindow::createActions()
     action->setIcon( KIcon("media-skip-backward-amarok") );
     action->setText( i18n( "Previous Track" ) );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Z ) );
-    connect( action, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( back() ) );
+    connect( action, SIGNAL(triggered(bool)), pa, SLOT( back() ) );
 
     action = new KAction( this );
     ac->addAction( "next", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
     action->setIcon( KIcon("media-skip-forward-amarok") );
     action->setText( i18n( "Next Track" ) );
-    connect( action, SIGNAL(triggered(bool)), The::playlistModel(), SLOT( next() ) );
+    connect( action, SIGNAL(triggered(bool)), pa, SLOT( next() ) );
 
     action = new KAction(i18n( "Toggle Focus" ), this);
     action->setShortcut( Qt::ControlModifier + Qt::Key_Tab );
@@ -850,6 +848,18 @@ MainWindow::createActions()
     ac->addAction( "rate5", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
     connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
+
+    action = KStandardAction::redo(pc, SLOT(redo()), this);
+    ac->addAction( "playlist_redo", action );
+    action->setEnabled(false);
+    action->setIcon( KIcon( "edit-redo-amarok" ) );
+    connect(pc, SIGNAL(canRedoChanged(bool)), action, SLOT(setEnabled(bool)));
+
+    action = KStandardAction::undo(pc, SLOT(undo()), this);
+    ac->addAction( "playlist_undo", action );
+    action->setEnabled(false);
+    action->setIcon( KIcon( "edit-undo-amarok" ) );
+    connect(pc, SIGNAL(canUndoChanged(bool)), action, SLOT(setEnabled(bool)));
 
     PERF_LOG( "MainWindow::createActions 8" )
     new Amarok::MenuAction( ac, this );

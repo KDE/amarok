@@ -22,10 +22,11 @@
 #include "collection/Collection.h"
 #include "collection/CollectionLocation.h"
 #include "collection/CollectionManager.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 
 #include <KActionCollection>
 #include <KActionMenu>
+#include <KLocale>
 
 #include <QAbstractItemView>
 #include <QMenu>
@@ -98,7 +99,7 @@ void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
     }
 
     Meta::TrackList trackList = CollectionManager::instance()->tracksForUrls( urlList );
-    The::playlistModel()->insertOptioned( trackList, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( trackList, Playlist::AppendAndPlay );
     view()->selectionModel()->clear();
 }
 

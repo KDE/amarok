@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu> 
+ *                        (C) 2008 Soren Harward <stharward@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -26,14 +27,13 @@
 
 namespace Playlist {
 
-    class Item
-    {
+    class Item {
         public:
-            enum State
-            {
-                Normal,
+            enum State {
+                Invalid,
                 NewlyAdded,
-                DynamicPlayed
+                Unplayed,
+                Played
             };
 
             Item() { }
@@ -44,9 +44,12 @@ namespace Playlist {
             State state() const { return m_state; }
             void setState( State s ) { m_state = s; }
 
+            qint64 id() const { return m_id; }
+
         private:
             Meta::TrackPtr m_track;
             State m_state;
+            quint64 m_id;
     };
 
 }

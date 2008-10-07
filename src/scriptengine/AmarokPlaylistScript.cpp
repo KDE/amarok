@@ -21,6 +21,8 @@
 #include "collection/CollectionManager.h"
 #include "EngineController.h"
 #include "MainWindow.h"
+#include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 
 #include <QtScript>
@@ -33,11 +35,9 @@ namespace AmarokScript
     , m_scriptEngine( scriptEngine )
     {
         m_wrapperList = wrapperList;
-        connect( The::playlistModel(), SIGNAL( playlistCountChanged( int ) ), this, SIGNAL( CountChanged( int ) ) );
-        connect( The::playlistModel(), SIGNAL( playlistGroupingChanged() ), this, SIGNAL( GroupingChanged() ) );
-        connect( The::playlistModel(), SIGNAL( rowMoved( int, int ) ), this, SIGNAL( rowMoved( int, int ) ) );
-        connect( The::playlistModel(), SIGNAL( activeRowChanged( int, int ) ), this, SIGNAL( activeRowChanged( int, int ) ) );
-        connect( The::playlistModel(), SIGNAL( activeRowExplicitlyChanged( int, int ) ), this, SIGNAL( activeRowExplicitlyChanged( int, int ) ) );
+        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotCountChanged( ) ) );
+        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotCountChanged( ) ) );
+        connect( The::playlistModel(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
     }
 
     AmarokPlaylistScript::~AmarokPlaylistScript()
@@ -63,7 +63,7 @@ namespace AmarokScript
     void AmarokPlaylistScript::addMedia( const QUrl &url )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-        The::playlistModel()->insertOptioned( track, Playlist::Append );
+        The::playlistController()->insertOptioned( track, Playlist::Append );
     }
 
     void AmarokPlaylistScript::addMediaList( const QList<QUrl> &urls )
@@ -72,35 +72,35 @@ namespace AmarokScript
         foreach( const QUrl &url, urls )
             list << url;
         Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
-        The::playlistModel()->insertOptioned( tracks, Playlist::Append );
+        The::playlistController()->insertOptioned( tracks, Playlist::Append );
     }
 
     void AmarokPlaylistScript::clearPlaylist()
     {
-        The::playlistModel()->clear();
+        The::playlistController()->clear();
     }
 
     void AmarokPlaylistScript::playByIndex( int index )
     {
-        The::playlistModel()->play( index );
+        The::playlistActions()->play( index );
     }
 
     void AmarokPlaylistScript::playMedia( const QUrl &url )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
         if( track )
-            The::playlistModel()->insertOptioned( track, Playlist::DirectPlay | Playlist::Unique );
+            The::playlistController()->insertOptioned( track, Playlist::DirectPlay | Playlist::Unique );
     }
 
     void AmarokPlaylistScript::removeCurrentTrack()
     {
-        The::playlistModel()->removeRows( activeIndex(), 1 );
+        The::playlistController()->removeRow( activeIndex() );
     }
 
     void AmarokPlaylistScript::removeByIndex( int index )
     {
         if( index < totalTrackCount() )
-            The::playlistModel()->removeRows( index, 1 );
+            The::playlistController()->removeRow( index );
     }
 
     void AmarokPlaylistScript::savePlaylist( const QString& path )
@@ -110,7 +110,7 @@ namespace AmarokScript
 
     void AmarokPlaylistScript::setStopAfterCurrent( bool on )
     {
-        The::playlistModel()->setStopAfterMode( on ? Playlist::StopAfterCurrent : Playlist::StopNever );
+        The::playlistActions()->setStopAfterMode( on ? Playlist::StopAfterCurrent : Playlist::StopNever );
     }
 
     void AmarokPlaylistScript::togglePlaylist()
@@ -121,16 +121,21 @@ namespace AmarokScript
     QStringList AmarokPlaylistScript::filenames()
     {
         QStringList fileNames;
-        foreach( Playlist::Item* item, The::playlistModel()->itemList() )
-        fileNames << item->track()->prettyUrl();
+        for (int i=0; i < The::playlistModel()->rowCount(); i++)
+            fileNames << The::playlistModel()->trackAt(i)->prettyUrl();
         return fileNames;
     }
 
     QVariant AmarokPlaylistScript::trackAt( int row )
     {
         DEBUG_BLOCK
-        Meta::TrackPtr track = The::playlistModel()->trackForRow( row );
+        Meta::TrackPtr track = The::playlistModel()->trackAt( row );
         return QVariant::fromValue( track );;
+    }
+
+    void AmarokPlaylistScript::slotCountChanged( )
+    {
+        emit CountChanged ( The::playlistModel()->rowCount() );
     }
 }
 

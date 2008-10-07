@@ -20,9 +20,10 @@
 
 #include "CollectionSortFilterProxyModel.h"
 #include "CollectionTreeItem.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 #include "meta/Meta.h"
 
+#include <QMutex>
 #include <QSet>
 #include <QSortFilterProxyModel>
 #include <QTimer>

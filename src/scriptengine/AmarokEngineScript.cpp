@@ -22,7 +22,7 @@
 #include "EngineController.h"
 #include "MainWindow.h"
 //#include "mediabrowser.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistActions.h"
 
 #include <QtScript>
 
@@ -62,11 +62,11 @@ namespace AmarokScript
 
     void AmarokEngineScript::Next() const
     {
-        The::playlistModel()->next();
+        The::playlistActions()->next();
     }
     void AmarokEngineScript::Prev() const
     {
-        The::playlistModel()->back();
+        The::playlistActions()->back();
     }
 
     void AmarokEngineScript::PlayPause() const

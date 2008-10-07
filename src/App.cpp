@@ -32,7 +32,9 @@ email                : markey@web.de
 #include "MountPointManager.h"
 #include "Osd.h"
 #include "PlayerDBusHandler.h"
+#include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "PluginManager.h"
 #include "refreshimages.h"
 #include "RootDBusHandler.h"
@@ -231,6 +233,8 @@ App::~App()
     delete mainWindow();
 
     PlaylistManager::destroy();
+    Playlist::Actions::destroy();
+    Playlist::Model::destroy();
     CollectionManager::destroy();
     MountPointManager::destroy();
     EngineController::destroy();
@@ -285,7 +289,7 @@ App::handleCliArgs() //static
             options |= Playlist::DirectPlay;
 
         Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
-        The::playlistModel()->insertOptioned( tracks, options );
+        The::playlistController()->insertOptioned( tracks, options );
     }
 
     //we shouldn't let the user specify two of these since it is pointless!
@@ -316,12 +320,12 @@ App::handleCliArgs() //static
     else if ( args->isSet( "next" ) )
     {
         haveArgs = true;
-        The::playlistModel()->next();
+        The::playlistActions()->next();
     }
     else if ( args->isSet( "previous" ) )
     {
         haveArgs = true;
-        The::playlistModel()->back();
+        The::playlistActions()->back();
     }
     else if (args->isSet("cdplay"))
     {
@@ -331,7 +335,7 @@ App::handleCliArgs() //static
         if (The::engineController()->getAudioCDContents(device, urls))
         {
             Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
-            The::playlistModel()->insertOptioned( tracks, Playlist::Replace|Playlist::DirectPlay );
+            The::playlistController()->insertOptioned( tracks, Playlist::Replace|Playlist::DirectPlay );
         }
         else
         { // Default behaviour
@@ -554,10 +558,6 @@ App::continueInit()
     PERF_LOG( "Starting ScriptManager" )
     ScriptManager::instance();
     PERF_LOG( "ScriptManager started" )
-
-    //load previous playlist in separate thread
-    if ( restoreSession )
-        The::playlistModel()->restoreSession();
 
     //do after applySettings(), or the OSD will flicker and other wierdness!
     //do before restoreSession()!
