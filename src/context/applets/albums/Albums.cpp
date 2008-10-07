@@ -25,6 +25,7 @@
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "playlist/PlaylistModel.h"
+#include "TrackItem.h"
 
 #include <plasma/theme.h>
 
@@ -157,26 +158,12 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         int childRow = 0;
         foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )
         {
-            int trackNumber = trackPtr->trackNumber();
-            QString trackName = trackPtr->prettyName();
-
-            QString text;
-
-            if( trackNumber > 0 )
-                text = QString( "%1\t%2" ).arg( QString::number( trackNumber ), trackPtr->prettyName() );
-            else
-                text = QString( "\t%1" ).arg( trackPtr->prettyName() );
-
-            QStandardItem *trackItem = new QStandardItem();
-            trackItem->setText( text );
+            TrackItem *trackItem = new TrackItem();
+            trackItem->setTrack( trackPtr );
             
             // Italicise the current track to make it more visible
             if( currentTrack == trackPtr )
-            {
-                QFont f = trackItem->font();
-                f.setItalic( true );
-                trackItem->setFont( f );
-            }
+                trackItem->italicise();
 
             albumItem->setChild( childRow, trackItem );
             childRow++;
