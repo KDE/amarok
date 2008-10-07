@@ -386,11 +386,6 @@ Meta::Album::image( int size, bool withShadow )
 QPixmap
 Meta::Album::imageWithBorder( int size, int borderWidth )
 {
-
-
-    
-    
-
     QPixmap coverWithBorders;
 
     m_noCoverImage = false;
@@ -400,14 +395,12 @@ Meta::Album::imageWithBorder( int size, int borderWidth )
 
     QString nameForKey = name();
 
-    if ( m_noCoverImage == true )
+    if( m_noCoverImage == true )
         nameForKey = "nocover";
 
     coverWithBorders = The::svgHandler()->addBordersToPixmap( cover, borderWidth, nameForKey );
 
-
     return coverWithBorders;
-
 }
 
 
