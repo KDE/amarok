@@ -22,6 +22,7 @@
 
 #define DEBUG_PREFIX "Playlist::PrettyItemDelegate"
 
+#include "App.h"
 #include "Debug.h"
 #include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
@@ -119,6 +120,13 @@ Playlist::PrettyItemDelegate::paint(QPainter* painter, const QStyleOptionViewIte
     else
         painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "alt_track", (int)option.rect.width(), (int)option.rect.height(), "alt_track" ) );
 
+
+
+    if ( option.state & QStyle::State_Selected )
+        painter->setPen( App::instance()->palette().highlightedText().color() );
+    else
+        painter->setPen( App::instance()->palette().text().color() );
+    
     // call paint method based on type
     int groupMode = index.data(GroupRole).toInt();
     if ( groupMode == None )
