@@ -120,7 +120,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     else
         toggleDetails();
 
-    ui->formatEdit->hide(); // This is box is old (from A1) and is being replaced by Teo's filenamelayout dialog
+    // These are old (from A1) and are being replaced by Teo's filenamelayout dialog
+    ui->formatEdit->hide(); 
+    ui->formatLabel->hide();
+    ui->formatHelp->hide();
+
     init();
 }
 
@@ -274,7 +278,6 @@ OrganizeCollectionDialog::buildFormatString() const
 
     if( ui->customschemeCheck->isChecked() )    //get from scheme
         //format = QDir::fromNativeSeparators( ui->formatEdit->text() );      //fromNativeSeparators handles \\ under windows
-
     return format;
 }
 
@@ -331,6 +334,8 @@ OrganizeCollectionDialog::update( int dummy )   //why the dummy?
 
     if( ui->customschemeCheck->isChecked() )
         emit updatePreview( buildDestination( filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
+    else
+        emit updatePreview( buildDestination( buildFormatString(), m_previewTrack ) );
 }
 
 
@@ -363,9 +368,9 @@ OrganizeCollectionDialog::toggleDetails()
         ui->ignoreTheCheck->show();
         ui->customschemeCheck->show();
         ui->replacementGroup->show();
-        ui->formatLabel->show();
+//        ui->formatLabel->show(); These are being replaced by the filenamelayout dialog
 //        ui->formatEdit->show();
-        ui->formatHelp->show();
+//        ui->formatHelp->hide();
 
         adjustSize();
     }
@@ -374,9 +379,9 @@ OrganizeCollectionDialog::toggleDetails()
         ui->ignoreTheCheck->hide();
         ui->customschemeCheck->hide();
         ui->replacementGroup->hide();
-        ui->formatLabel->hide();
-        //ui->formatEdit->hide();
-        ui->formatHelp->hide();
+//        ui->formatLabel->hide();
+//        ui->formatEdit->hide();
+//        ui->formatHelp->hide();
         filenameLayoutDialog->hide();
 
         widget->resize( widget->minimumSize() );    //TODO: FIX THE LAYOUT WHEN RESIZING
