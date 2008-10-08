@@ -93,7 +93,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
     ui->asciiCheck->setChecked( AmarokConfig::asciiOnly() );
     ui->customschemeCheck->setChecked( AmarokConfig::useCustomScheme() );
-    ui->formatEdit->setText( AmarokConfig::customScheme() );
+    //ui->formatEdit->setText( AmarokConfig::customScheme() );
     ui->regexpEdit->setText( AmarokConfig::replacementRegexp() );
     ui->replaceEdit->setText( AmarokConfig::replacementString() );
 
@@ -105,7 +105,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->asciiCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->customschemeCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->formatEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
+    //connect( ui->formatEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
@@ -120,6 +120,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     else
         toggleDetails();
 
+    ui->formatEdit->hide(); // This is box is old (from A1) and is being replaced by Teo's filenamelayout dialog
     init();
 }
 
@@ -272,7 +273,7 @@ OrganizeCollectionDialog::buildFormatString() const
     }
 
     if( ui->customschemeCheck->isChecked() )    //get from scheme
-        format = QDir::fromNativeSeparators( ui->formatEdit->text() );      //fromNativeSeparators handles \\ under windows
+        //format = QDir::fromNativeSeparators( ui->formatEdit->text() );      //fromNativeSeparators handles \\ under windows
 
     return format;
 }
@@ -324,12 +325,11 @@ OrganizeCollectionDialog::update( int dummy )   //why the dummy?
     Q_UNUSED( dummy );
     debug() << "###################################################################################################### I AM UPDATING THE PREVIEW ############################################################################################";
 
-    QString oldFormat = ui->formatEdit->text();
+    /*QString oldFormat = ui->formatEdit->text();
     if( !ui->customschemeCheck->isChecked() )
-        ui->formatEdit->setText( buildFormatString() );
+        ui->formatEdit->setText( buildFormatString() );*/
 
-    if( ui->customschemeCheck->isChecked() || oldFormat == ui->formatEdit->text() )
-        //emit updatePreview( buildDestination( ui->formatEdit->text(), m_previewTrack ) );
+    if( ui->customschemeCheck->isChecked() )
         emit updatePreview( buildDestination( filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
 }
 
@@ -364,7 +364,7 @@ OrganizeCollectionDialog::toggleDetails()
         ui->customschemeCheck->show();
         ui->replacementGroup->show();
         ui->formatLabel->show();
-        ui->formatEdit->show();
+//        ui->formatEdit->show();
         ui->formatHelp->show();
 
         adjustSize();
@@ -375,7 +375,7 @@ OrganizeCollectionDialog::toggleDetails()
         ui->customschemeCheck->hide();
         ui->replacementGroup->hide();
         ui->formatLabel->hide();
-        ui->formatEdit->hide();
+        //ui->formatEdit->hide();
         ui->formatHelp->hide();
         filenameLayoutDialog->hide();
 
@@ -411,7 +411,7 @@ OrganizeCollectionDialog::slotDialogAccepted()
         AmarokConfig::setVfatCompatible( ui->vfatCheck->isChecked() );
         AmarokConfig::setAsciiOnly( ui->asciiCheck->isChecked() );
         AmarokConfig::setUseCustomScheme( ui->customschemeCheck->isChecked() );
-        AmarokConfig::setCustomScheme( ui->formatEdit->text() );
+        //AmarokConfig::setCustomScheme( ui->formatEdit->text() );
         AmarokConfig::setReplacementRegexp( ui->regexpEdit->text() );
         AmarokConfig::setReplacementString( ui->replaceEdit->text() );
 }
