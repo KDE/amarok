@@ -314,7 +314,10 @@ CollectionLocation::startWorkflow( const Meta::TrackList &tracks, bool removeSou
     m_removeSources = removeSources;
     m_sourceTracks = tracks;
     setupConnections();
-    showSourceDialog( tracks, m_removeSources );
+    if( tracks.size() <= 0 )
+        abort();
+    else
+        showSourceDialog( tracks, m_removeSources );
 }
 
 void

@@ -165,6 +165,9 @@ MyDirOperator::slotMoveTracks()
     CollectionManager *cm = CollectionManager::instance();
     Meta::TrackList tracks = cm->tracksForUrls( expanded );
 
+    if( tracks.size() <= 0 )
+        return;
+
     source->prepareMove( tracks, destination );
 }
 
