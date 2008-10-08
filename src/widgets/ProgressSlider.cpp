@@ -66,7 +66,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 #ifdef Q_WS_MAC
     // don't overlap the resize handle with the time display
     box->addSpacing( 12 );
-#endif‚
+#endif
 
     engineStateChanged( Phonon::StoppedState );
 
