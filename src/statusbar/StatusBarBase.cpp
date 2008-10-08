@@ -131,8 +131,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     b1->setObjectName( "cancelButton" );
     m_mainProgressBar  = new QProgressBar( mainProgressBarBox);
 
-    QToolButton *b2 = new QToolButton( mainProgressBarBox ); //showprogressdetails button
-    b2->setObjectName( "showAllProgressDetails" );
+
+    //comment out for now as the details view is not working yet, so lets not advertise it
+    /*QToolButton *b2 = new QToolButton( mainProgressBarBox ); //showprogressdetails button
+    b2->setObjectName( "showAllProgressDetails" );*/
     mainProgressBarBox->setSpacing( 2 );
     mainProgressBarBox->hide();
     addWidget(mainProgressBarBox);
@@ -142,12 +144,12 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     connect( shortLongButton, SIGNAL(clicked()), SLOT(showShortLongDetails()) );
 
     b1->setIcon( KIcon( "dialog-cancel-amarok" ) );
-    b2->setIcon( KIcon( "arrow-up-double-amarok") );
-    b2->setCheckable( true );
+    //b2->setIcon( KIcon( "arrow-up-double-amarok") );
+    //b2->setCheckable( true );
     b1->setToolTip( i18n( "Abort all background operations" ) );
-    b2->setToolTip( i18n( "Show progress detail" ) );
+    //b2->setToolTip( i18n( "Show progress detail" ) );
     connect( b1, SIGNAL( clicked( bool ) ), SLOT( abortAllProgressOperations() ) );
-    connect( b2, SIGNAL( toggled( bool ) ), SLOT( toggleProgressWindow( bool ) ) );
+    //connect( b2, SIGNAL( toggled( bool ) ), SLOT( toggleProgressWindow( bool ) ) );
 
     m_popupProgress = new OverlayWidget( this, mainProgressBarBox, "popupProgress" );
     addWidget( m_popupProgress );
@@ -386,8 +388,8 @@ StatusBar::newProgressOperationInternal( QObject *owner )
         // if we're allDone then we need to remove the old progressBars before
         // we start anything new or the total progress will not be accurate
         pruneProgressBars();
-    else
-        toggleProgressWindowButton()->show();
+    /*else
+        toggleProgressWindowButton()->show();*/
     QLabel *label = new QLabel( m_popupProgress );
     m_progressMap.insert( owner, new ProgressBar( m_popupProgress, label ) );
 
@@ -428,8 +430,8 @@ StatusBar::newProgressOperation( KJob *job )
     bar.setMinimum( 0 );
     bar.setMaximum( 100 );
 
-    if(!allDone())
-        toggleProgressWindowButton()->show();
+    /*if(!allDone())
+        toggleProgressWindowButton()->show();*/
     connect( job, SIGNAL(result( KJob* )), SLOT(endProgressOperation()) );
     //TODO connect( job, SIGNAL(infoMessage( KIO::Job *job, const QString& )), SLOT() );
     connect( job, SIGNAL(percent( KJob*, unsigned long )), SLOT(setProgress( KJob*, unsigned long )) );
@@ -613,7 +615,7 @@ StatusBar::updateTotalProgress()
 void
 StatusBar::updateProgressAppearance()
 {
-    toggleProgressWindowButton()->setVisible( m_progressMap.count() > 1 );
+    //toggleProgressWindowButton()->setVisible( m_progressMap.count() > 1 );
 
     resetMainText();
 
@@ -645,7 +647,7 @@ StatusBar::pruneProgressBars()
     if(count==1 && removedBar) //if its gone from 2 or more bars to one bar...
     {
         resetMainText();
-        toggleProgressWindowButton()->hide();
+        //toggleProgressWindowButton()->hide();
         m_popupProgress->setVisible(false);
     }
 }

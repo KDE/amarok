@@ -220,7 +220,7 @@ namespace KDE
         int  m_logCounter;
 
         QWidget *cancelButton()               { return findChild<QWidget*>( "cancelButton" ); }
-        QWidget *toggleProgressWindowButton() { return findChild<QWidget*>( "showAllProgressDetails" ); }
+        //QWidget *toggleProgressWindowButton() { return findChild<QWidget*>( "showAllProgressDetails" ); }
         QWidget *progressBox()                { return findChild<QWidget*>( "progressBox" ); }
         QWidget *shortLongButton()            { return findChild<QWidget*>( "shortLongButton" ); }
 
