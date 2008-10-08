@@ -89,7 +89,7 @@ bool SvgHandler::Private::loadSvg( const QString& name )
 
     if ( ! renderer->isValid() )
     {
-        debug() << "Bluddy 'ell guvna, aye canna' load ya Ess Vee Gee at " << svgFilename;
+        debug() << "Bluddy 'ell mateys, aye canna' load ya Ess Vee Gee at " << svgFilename;
         delete renderer;
         return false;
     }
